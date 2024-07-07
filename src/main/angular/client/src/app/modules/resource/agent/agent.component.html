@@ -319,7 +319,7 @@
                       {{cluster.version}}
                     </td>
                     <td>{{cluster.processLimit}}</td>
-                    <td>{{(cluster.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</td>
+                    <td>{{(cluster.disabled) | translate}}</td>
                     <td>{{cluster.runningTasks}}</td>
                   </tr>
                   <ng-container *ngIf="cluster.showSubagent">
@@ -363,7 +363,14 @@
                         <i *ngIf="cluster.sortBy == 'version' && cluster.reverse"
                            class="fa fa-caret-down "></i></a>
                       </td>
-                      <td colspan="3" (click)="sort('runningTasks', cluster)" class="custom-th"><a><span class="p-r-xs" translate>agent.label.runningTasks</span>
+                      <td></td>
+                      <td (click)="sort('disabled', cluster)" class="custom-th"><a><span class="p-r-xs" translate>agent.label.disabled</span>
+                        <i *ngIf="cluster.sortBy == 'disabled' && !cluster.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i *ngIf="cluster.sortBy == 'disabled' && cluster.reverse"
+                           class="fa fa-caret-down "></i></a>
+                      </td>
+                      <td (click)="sort('runningTasks', cluster)" class="custom-th" colspan="2"><a><span class="p-r-xs" translate>agent.label.runningTasks</span>
                         <i *ngIf="cluster.sortBy == 'runningTasks' && !cluster.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="cluster.sortBy == 'runningTasks' && cluster.reverse"
@@ -413,7 +420,9 @@
                           &nbsp;
                           {{subagent.version}}
                         </td>
-                        <td colspan="3">{{subagent.runningTasks}}</td>
+                        <td></td>
+                        <td>{{(subagent.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</td>
+                        <td>{{subagent.runningTasks}}</td>
                       </tr>
                       <ng-container *ngIf="subagent.show">
                         <tr>

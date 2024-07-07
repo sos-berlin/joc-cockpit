@@ -296,6 +296,7 @@ export class ScheduleComponent {
       orderName: '',
       variables: [],
       positions: {},
+      tags: []
     };
     if (this.schedule.configuration.orderParameterisations) {
       if (!this.coreService.isLastEntryEmpty(this.schedule.configuration.orderParameterisations, 'orderName', '') || this.schedule.configuration.orderParameterisations.length < 2) {
@@ -1316,7 +1317,7 @@ export class ScheduleComponent {
         variables: item.variables,
         positions: item.positions,
         forceJobAdmission: item.forceJobAdmission,
-        tags: this.tags
+        tags: item.tags
       };
     });
 
@@ -1569,10 +1570,21 @@ export class ScheduleComponent {
       }
 
       if (this.schedule.configuration.orderParameterisations) {
-        this.schedule.configuration.orderParameterisations.forEach((item) => {
-          if(item?.tags){
-            this.tags = item.tags
+        this.schedule.configuration.orderParameterisations.map((item) => {
+          if(item?.tags && item.tags.length > 0){
+            let arr: any = item;
+            arr.inputVisible = false;
+            arr.inputValue = '';
+            return arr;
+          }else{
+            let arr: any = item;
+            arr.tags = [];
+            arr.inputVisible = false;
+            arr.inputValue = '';
+            return arr;
           }
+        })
+        this.schedule.configuration.orderParameterisations.forEach((item) => {
           item.variables = this.coreService.convertObjectToArray(item, 'variables');
           if (!item.positions) {
             item.positions = {};
@@ -1604,7 +1616,6 @@ export class ScheduleComponent {
   }
 
   changeWorkflow(data): void {
-    this.tags = [];
     if (this.schedule.configuration.workflowNames.length === 0) {
       this.schedule.configuration.orderParameterisations = [];
       this.variableList = [];
@@ -1757,15 +1768,16 @@ export class ScheduleComponent {
     });
   }
 
-  onChange(value: string): void {
+  onChange(value: string, index): void {
     this.filteredOptions = this.allTags.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) !== -1);
     this.filteredOptions = this.filteredOptions.filter((tag) => {
-      return this.tags.indexOf(tag) == -1;
+      return this.schedule.configuration.orderParameterisations[index].tags.indexOf(tag) == -1;
     })
   }
 
-  handleClose(removedTag: {}): void {
-    this.tags = this.tags.filter(tag => tag !== removedTag);
+  handleClose(removedTag: {}, index): void {
+    this.schedule.configuration.orderParameterisations[index].tags = this.schedule.configuration.orderParameterisations[index].tags.filter(tag => tag !== removedTag);
+    this.saveJSON();
   }
 
   sliceTagName(tag: string): string {
@@ -1773,20 +1785,17 @@ export class ScheduleComponent {
     return isLongTag ? `${tag.slice(0, 20)}...` : tag;
   }
 
-  showInput(): void {
-    this.inputVisible = true;
+  showInput(index): void {
+    this.schedule.configuration.orderParameterisations[index].inputVisible = true;
     this.filteredOptions = this.allTags;
-    setTimeout(() => {
-      this.inputElement?.nativeElement.focus();
-    }, 10);
   }
 
-  handleInputConfirm(): void {
-    if (this.inputValue && this.tags.indexOf(this.inputValue) === -1 && this.workflowService.isValidObject(this.inputValue)) {
-      this.tags = [...this.tags, this.inputValue];
+  handleInputConfirm(index): void {
+    if (this.schedule.configuration.orderParameterisations[index].inputValue && this.schedule.configuration.orderParameterisations[index].tags.indexOf(this.inputValue) === -1 && this.workflowService.isValidObject(this.inputValue)) {
+      this.schedule.configuration.orderParameterisations[index].tags = [...this.schedule.configuration.orderParameterisations[index].tags, this.schedule.configuration.orderParameterisations[index].inputValue];
     }
-    this.inputValue = '';
-    this.inputVisible = false;
+    this.schedule.configuration.orderParameterisations[index].inputValue = '';
+    this.schedule.configuration.orderParameterisations[index].inputVisible = false;
     this.saveJSON();
   }
 

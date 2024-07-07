@@ -360,7 +360,7 @@
                      (ngModelChange)="saveJSON()"></label>
             </div>
           </div>
-          <div *ngIf="(schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) || schedule.configuration.orderParameterisations.length"
+          <div
                class="form-group row">
             <label class="col-md-12 _600" translate>inventory.label.orderParameterisations</label>
           </div>
@@ -396,30 +396,30 @@
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
                     <nz-tag
-                      *ngFor="let tag of tags; let i = index"
+                      *ngFor="let tag of variableSet.tags; let i = index"
                       [nzMode]="'closeable'"
-                      (nzOnClose)="handleClose(tag)"
+                      (nzOnClose)="handleClose(tag, j)"
                     >
                       {{ sliceTagName(tag) }}
                     </nz-tag>
-                    <nz-tag *ngIf="!inputVisible" class="editable-tag" nzNoAnimation (click)="showInput()">
+                    <nz-tag *ngIf="!variableSet.inputVisible" class="editable-tag" nzNoAnimation (click)="showInput(j)">
                       <span nz-icon nzType="plus"></span>
                       {{'inventory.button.newTag' | translate}}
                     </nz-tag>
-                    <div class="d-inline-block" *ngIf="inputVisible" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+                    <div class="d-inline-block" *ngIf="variableSet.inputVisible" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
                       <input
                         #name="ngModel"
                         #inputElement
                         identifierValidation
                         [nzAutocomplete]="auto"
                         nz-input
-                        name="tag"
+                        name="tag{{j}}"
                         type="text"
-                        [(ngModel)]="inputValue"
-                        (ngModelChange)="onChange($event)"
+                        [(ngModel)]="variableSet.inputValue"
+                        (ngModelChange)="onChange($event,j)"
                         style="width: 128px;"
-                        (blur)="handleInputConfirm()"
-                        (keydown.enter)="handleInputConfirm()"
+                        (blur)="handleInputConfirm(j)"
+                        (keydown.enter)="handleInputConfirm(j)"
                       />
                       <nz-autocomplete [nzDataSource]="filteredOptions" #auto></nz-autocomplete>
                     </div>
@@ -427,7 +427,7 @@
                 </div>
               </div>
 
-              <div class="form-group row" *ngIf="blockPositions?.size > 0">
+              <div class="form-group row" *ngIf="blockPositions?.size > 0 && ((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)">
                 <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.blockPosition' | translate) : ''"
                        [nzTooltipMouseEnterDelay]="0.5"
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.blockPosition</label>
@@ -436,7 +436,7 @@
                                      [type]="'BLOCK_POSITION'" [workflow]="workflow" (onBlur)="getNewPositions($event, variableSet.positions)"></app-node-position>
                 </div>
               </div>
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)">
                 <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.startNode' | translate) : ''"
                        [nzTooltipMouseEnterDelay]="0.5"
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.startNode</label>
@@ -445,7 +445,7 @@
                                      [type]="'START'" [workflow]="workflow"></app-node-position>
                 </div>
               </div>
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)">
                 <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.endNode' | translate) : ''"
                        [nzTooltipMouseEnterDelay]="0.5"
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.endNode</label>
@@ -456,7 +456,7 @@
                                      [workflow]="workflow"></app-node-position>
                 </div>
               </div>
-              <div class="form-group row">
+              <div class="form-group row" *ngIf="((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)">
                 <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.ignoreAdmissionTimes' | translate) : ''"
                        [nzTooltipMouseEnterDelay]="0.5"
                        class="col-lg-3 col-xl-3 col-xxl-3"
@@ -468,7 +468,7 @@
                 </div>
               </div>
 
-              <ng-container *ngIf="variableSet.variables.length">
+              <ng-container *ngIf="variableSet.variables.length && ((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)">
                 <div class="row m-b-sm">
                   <label class="_600 font14 col-sm-8 col-xl-6">
                     <span translate>order.label.variables</span>
@@ -495,7 +495,7 @@
                   </div>
                 </div>
               </ng-container>
-              <ng-container *ngIf="!variableSet.isCollapseVariable">
+              <ng-container *ngIf="!variableSet.isCollapseVariable && ((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)">
                 <div *ngFor="let variable of variableSet.variables; let i = index" class="form-group row m-b-0">
                   <div *ngIf="i==0" class="col-md-6 col-lg-4 col-xl-3 m-b-sm" translate>common.label.name</div>
                   <div *ngIf="i==0" class="col-md-6 col-lg-8 col-xl-9 m-b-sm" translate>common.label.value</div>
@@ -638,7 +638,7 @@
               </div>
             </div>
             <div [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}" class="form-group row">
-              <div *ngIf="variableList.length > 0 || (schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1)"
+              <div *ngIf="variableList.length > 0 || (schedule.configuration.workflowNames && schedule.configuration.workflowNames.length >=1)"
                    class="col-sm-12">
                 <a (click)="addVariableSet()" class="text-u-l" translate>inventory.button.addOrderParameter</a>
               </div>

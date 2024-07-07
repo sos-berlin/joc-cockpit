@@ -96,78 +96,83 @@ export class AgentStatusComponent {
     }
   }
 
-  groupBy(data): any {
-    const results = [];
+groupBy(data): Promise<any[]> {
+    const results = new Map<string, any>();
     if (!(data)) {
-      return;
-    }
-    data.forEach((value) => {
-      const result = {count: 1, _text: '', color: '', hoverColor: ''};
-      let label: string;
-      if (value.state) {
-        label = value.state._text;
-        result.color = this.coreService.getColorBySeverity(value.state.severity, false);
-        result.hoverColor = this.coreService.getColorBySeverity(value.state.severity, true);
-        this.translate.get(label).subscribe(translatedValue => {
-          result._text = translatedValue;
-        });
-        if (results.length > 0) {
-          for (let i = 0; i < results.length; i++) {
-            if (results[i]._text === result._text) {
-              result.count = result.count + results[i].count;
-              results.splice(i, 1);
-              break;
-            }
-          }
-        }
-        this.mapObj.set(result.count + ' ' + result._text, value.state._text);
-        results.push(result);
-      }
-    });
-    return results;
-  }
+    return Promise.resolve([]);
+}
 
-  prepareAgentClusterData(result): void {
+const translationPromises = data.map((value) => {
+    return new Promise((resolve) => {
+        if (value.state) {
+            const label = value.state._text;
+            const isDisabled = value.disabled;
+            const color = this.coreService.getColorBySeverity(value.state.severity, false, isDisabled);
+            const hoverColor = this.coreService.getColorBySeverity(value.state.severity, true, isDisabled);
+            const key = `${label}_${isDisabled ? 'disabled' : 'enabled'}`;
+
+            this.translate.get(label).subscribe(translatedValue => {
+                if (results.has(key)) {
+                    results.get(key).count++;
+                } else {
+                    results.set(key, {
+                        count: 1,
+                        _text: translatedValue,
+                        color: color,
+                        hoverColor: hoverColor,
+                        isDisabled: isDisabled
+                    });
+                }
+                resolve(null);
+            });
+        } else {
+            resolve(null);
+        }
+    });
+});
+
+return Promise.all(translationPromises).then(() => Array.from(results.values()));
+}
+
+prepareAgentClusterData(result): void {
     this.agentClusters = result.agents;
     this.mapObj.clear();
-    this.groupBy(result.agents).forEach((value) => {
-      if (this.pieChartData.datasets.length === 0) {
-        this.pieChartData.datasets = [{
-          data: [],
-          borderWidth: 0,
-          backgroundColor: [],
-          hoverBackgroundColor: []
-        }];
-      }
-      this.pieChartData.datasets[0].data.push(value.count);
-      this.pieChartData.datasets[0].backgroundColor.push(value.color);
-      this.pieChartData.datasets[0].hoverBackgroundColor.push(value.hoverColor);
-      this.pieChartData.labels.push(value.count + ' ' + value._text);
-    });
-  }
-
-  getStatus(): void {
     this.pieChartData.labels = [];
-    this.pieChartData.datasets = []
-    this.coreService.post('agents', {
-      controllerId: this.schedulerIds.selected,
-      compact: true,
-      onlyVisibleAgents: true,
-      flat: true
-    }).subscribe({
-      next: res => {
-        this.prepareAgentClusterData(res);
-        this.isLoaded = true;
-      }, error: () => this.isLoaded = true
-    });
-  }
+    this.pieChartData.datasets = [{ data: [], borderWidth: 0, backgroundColor: [], hoverBackgroundColor: [] }];
 
-  // events
-  onChartClick({active}: { active: any }): void {
+    this.groupBy(result.agents).then(groupedData => {
+        groupedData.forEach((value) => {
+            this.pieChartData.datasets[0].data.push(value.count);
+            this.pieChartData.datasets[0].backgroundColor.push(value.color);
+            this.pieChartData.datasets[0].hoverBackgroundColor.push(value.hoverColor);
+            const labelPrefix = value.isDisabled ? 'Disabled' : 'Enabled';
+            this.pieChartData.labels.push(`${value.count} ${labelPrefix} ${value._text}`);
+        });
+    });
+}
+
+getStatus(): void {
+    this.pieChartData.labels = [];
+    this.pieChartData.datasets = [];
+    this.coreService.post('agents', {
+        controllerId: this.schedulerIds.selected,
+        compact: true,
+        onlyVisibleAgents: true,
+        flat: true
+    }).subscribe({
+        next: res => {
+            this.prepareAgentClusterData(res);
+            this.isLoaded = true;
+        }, error: () => this.isLoaded = true
+    });
+}
+
+// events
+onChartClick({active}: { active: any }): void {
     if(this.pieChartData.labels && active[0]) {
-      this.navToAgentView(this.pieChartData.labels[active[0].index]);
-    }
-  }
+    this.navToAgentView(this.pieChartData.labels[active[0].index]);
+}
+}
 
   navToAgentView(text): void {
 

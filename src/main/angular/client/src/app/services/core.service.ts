@@ -738,31 +738,31 @@ export class CoreService {
     }
   }
 
-  getColorBySeverity(d: number, isHover: boolean): string {
+  getColorBySeverity(d: number, isHover: boolean, isDisabled: boolean = false): string {
     if (d === 0) {
-      return isHover ? 'rgba(122,185,122, .7)' : '#7ab97a';
+      return isDisabled ? (isHover ? 'rgba(144,238,144, .7)' : '#90ee90') : (isHover ? 'rgba(122,185,122, .7)' : '#7ab97a');
     } else if (d === 1) {
-      return isHover ? 'rgba(255,201,26, .7)' : '#ffc91a';
+      return isDisabled ? (isHover ? 'rgba(255,229,150, .7)' : '#ffe596') : (isHover ? 'rgba(255,201,26, .7)' : '#ffc91a');
     } else if (d === 2) {
-      return isHover ? 'rgba(239,72,106,.7)' : '#ef486a';
+      return isDisabled ? (isHover ? 'rgba(239,174,190, .7)' : '#efaeae') : (isHover ? 'rgba(239,72,106, .7)' : '#ef486a');
     } else if (d === 3) {
-      return isHover ? 'rgba(163,198,234, .7)' : '#a3c6ea';
+      return isDisabled ? (isHover ? 'rgba(203,222,245, .7)' : '#cbdef5') : (isHover ? 'rgba(163,198,234, .7)' : '#a3c6ea');
     } else if (d === 4) {
-      return isHover ? '#ccc' : '#bbb';
+      return isDisabled ? (isHover ? '#ddd' : '#ccc') : (isHover ? '#ccc' : '#bbb');
     } else if (d === 5) {
-      return isHover ? 'rgba(255,141,26,.7)' : '#FF8d1a';
+      return isDisabled ? (isHover ? 'rgba(255,188,117, .7)' : '#ffbc75') : (isHover ? 'rgba(255,141,26, .7)' : '#FF8d1a');
     } else if (d === 6) {
-      return isHover ? 'rgba(21,145,212, .7)' : '#1591d4';
+      return isDisabled ? (isHover ? 'rgba(133,188,228, .7)' : '#85bce4') : (isHover ? 'rgba(21,145,212, .7)' : '#1591d4');
     } else if (d === 7) {
-      return isHover ? 'rgba(185,102,185, .7)' : '#b966b9';
+      return isDisabled ? (isHover ? 'rgba(221,167,221, .7)' : '#dda7dd') : (isHover ? 'rgba(185,102,185, .7)' : '#b966b9');
     } else if (d === 8) {
-      return isHover ? 'rgba(204,204,0, .7)' : '#cccc00';
+      return isDisabled ? (isHover ? 'rgba(238,238,204, .7)' : '#eeeecc') : (isHover ? 'rgba(204,204,0, .7)' : '#cccc00');
     } else if (d === 9) {
-      return isHover ? 'rgba(243,120,145, .7)' : '#f37891';
+      return isDisabled ? (isHover ? 'rgba(243,182,197, .7)' : '#f3b6c5') : (isHover ? 'rgba(243,120,145, .7)' : '#f37891');
     } else if (d === 10) {
-      return isHover ? 'rgba(255,255,0, .7)' : '#ffff00';
+      return isDisabled ? (isHover ? 'rgba(255,255,150, .7)' : '#ffff96') : (isHover ? 'rgba(255,255,0, .7)' : '#ffff00');
     } else if (d === 11) {
-      return isHover ? 'rgba(255,166,64, .7)' : '#FFA640';
+      return isDisabled ? (isHover ? 'rgba(255,206,145, .7)' : '#ffce91') : (isHover ? 'rgba(255,166,64, .7)' : '#FFA640');
     } else {
       return '';
     }

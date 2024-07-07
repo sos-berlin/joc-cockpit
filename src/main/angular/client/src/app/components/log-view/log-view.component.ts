@@ -419,18 +419,20 @@ export class LogViewComponent {
       observe: 'response' as 'response'
     }).subscribe({
       next: (res: any) => {
-        if (res && res?.body) {
+        if (res && res.body) {
           this.renderData(res.body, null);
-        }
-        if (res?.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
-          const obj = {
-            controllerId: this.controllerId,
-            taskId: res.headers.get('x-log-task-id') || jobs.taskId,
-            eventId: res.headers.get('x-log-event-id')
-          };
-          this.runningTaskLog(obj, '');
+          if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
+            const obj = {
+              controllerId: this.controllerId,
+              taskId: res.headers.get('x-log-task-id') || jobs.taskId,
+              eventId: res.headers.get('x-log-event-id')
+            };
+            this.runningTaskLog(obj, '');
+          } else {
+            this.finished = true;
+          }
         } else {
-          this.finished = true;
+          this.loading = false;
         }
         this.isLoading = false;
       }, error: (err) => {
@@ -812,30 +814,30 @@ export class LogViewComponent {
           col += ', end(' + dt[i].cycle.prepared.end + ')';
         }
       }else if (dt[i].orderAdded) {
-      col += `, OrderAdded(id=${dt[i].orderAdded.orderId}, workflow=${dt[i].orderAdded.workflowPath}, arguments(`;
-      if (dt[i].orderAdded.arguments) {
-        let arr: any = Object.entries(dt[i].orderAdded.arguments).map(([k1, v1]) => {
-          if (v1 && typeof v1 == 'object') {
-            v1 = Object.entries(v1).map(([k1, v1]) => {
-              return {name: k1, value: v1};
-            });
-          }
-          return {name: k1, value: v1};
-        });
-        col = this.coreService.createLogOutputString(arr, col);
+        col += `, OrderAdded(id=${dt[i].orderAdded.orderId}, workflow=${dt[i].orderAdded.workflowPath}, arguments(`;
+        if (dt[i].orderAdded.arguments) {
+          let arr: any = Object.entries(dt[i].orderAdded.arguments).map(([k1, v1]) => {
+            if (v1 && typeof v1 == 'object') {
+              v1 = Object.entries(v1).map(([k1, v1]) => {
+                return {name: k1, value: v1};
+              });
+            }
+            return {name: k1, value: v1};
+          });
+          col = this.coreService.createLogOutputString(arr, col);
+        }
+        col += '))';
       }
-      col += '))';
-    }
 
-    if (dt[i].logEvent === 'OrderProcessingStarted') {
-      const cls = !this.object.checkBoxs.main ? ' hide-block' : '';
-      const x = `<div class="main log_main${cls}"><span class="tx_order"><i id="ex_` + this.taskCount + `" class="cursor caret down"></i></span>` + col + `</div><div id="tx_log_` + this.taskCount + `" class="hide inner-log-m"><div id="tx_id_` + this.taskCount + `" class="hide">` + dt[i].taskId + `</div><div class="tx_data_` + this.taskCount + `"></div></div>`;
-      this.taskCount++;
-      div.innerHTML = x;
-    } else {
-      div.className += ' p-l-21';
-      div.innerHTML = `<span class="">` + col;
-    }
+      if (dt[i].logEvent === 'OrderProcessingStarted') {
+        const cls = !this.object.checkBoxs.main ? ' hide-block' : '';
+        const x = `<div class="main log_main${cls}"><span class="tx_order"><i id="ex_` + this.taskCount + `" class="cursor caret down"></i></span>` + col + `</div><div id="tx_log_` + this.taskCount + `" class="hide inner-log-m"><div id="tx_id_` + this.taskCount + `" class="hide">` + dt[i].taskId + `</div><div class="tx_data_` + this.taskCount + `"></div></div>`;
+        this.taskCount++;
+        div.innerHTML = x;
+      } else {
+        div.className += ' p-l-21';
+        div.innerHTML = `<span class="">` + col;
+      }
 
       if (POPOUT_MODALS['windowInstance']?.document.getElementById('logs')) {
         POPOUT_MODALS['windowInstance']?.document.getElementById('logs').appendChild(div);
@@ -859,15 +861,13 @@ export class LogViewComponent {
   renderData(res: any, domId: string | null): void {
     this.loading = false;
     this.calculateHeight();
-    if(res?.body){
-      this.coreService.renderData(res, domId, this.object, {
-        isFatalLevel: this.isFatalLevel,
-        isWarnLevel: this.isWarnLevel,
-        isTraceLevel: this.isTraceLevel,
-        isStdErrLevel: this.isStdErrLevel,
-        isInfoLevel: this.isInfoLevel
-      }, POPOUT_MODALS['windowInstance']);
-    }
+    this.coreService.renderData(res, domId, this.object, {
+      isFatalLevel: this.isFatalLevel,
+      isWarnLevel: this.isWarnLevel,
+      isTraceLevel: this.isTraceLevel,
+      isStdErrLevel: this.isStdErrLevel,
+      isInfoLevel: this.isInfoLevel
+    }, POPOUT_MODALS['windowInstance']);
   }
 
   private checkAndExpand(): void {

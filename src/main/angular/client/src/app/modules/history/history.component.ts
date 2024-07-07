@@ -4392,7 +4392,7 @@ export class HistoryComponent {
     this.coreService.checkedTags.add(tag.name);
     this.coreService.removeDuplicates();
     const obj: any = {
-      tags: Array.from(this.coreService.checkedTags),
+      workflowTags: Array.from(this.coreService.checkedTags),
       controllerId: this.schedulerIds.selected
     };
     this.searchByTags(obj);
@@ -4557,6 +4557,7 @@ export class HistoryComponent {
   }
 
   onTagChecked(tag, checked: boolean): void {
+    console.log(tag,">>")
     if (checked) {
       this.coreService.checkedTags.add(tag);
     } else {
@@ -4566,7 +4567,7 @@ export class HistoryComponent {
     this.updateSelectAllTags();
 
     const obj: any = {
-      tags: Array.from(this.coreService.checkedTags),
+      workflowTags: Array.from(this.coreService.checkedTags),
       controllerId: this.schedulerIds.selected
     };
     this.searchByTags(obj);
@@ -4612,9 +4613,9 @@ export class HistoryComponent {
   }
 
   private updateWorkflowsAndOrdersByTags(): void {
-    const tags = Array.from(this.coreService.checkedTags);
+    const workflowTags = Array.from(this.coreService.checkedTags);
     const obj: any = {
-      tags,
+      workflowTags,
       controllerId: this.schedulerIds.selected
     };
     this.searchByTags(obj);
@@ -4698,7 +4699,6 @@ export class HistoryComponent {
     }).afterClose.subscribe(res => {
       if (res) {
         const obj: any = {
-          tags: [],
           controllerId: this.schedulerIds.selected
         };
         this.coreService.selectedTags.forEach(tag => {
