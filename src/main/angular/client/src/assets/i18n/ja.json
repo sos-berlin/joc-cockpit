@@ -59,7 +59,7 @@
   "PLANNED": "予定",
   "REMOVED": "削除されました",
   "RUNNING": "実行中",
-  "PROCESSING":"processing",
+  "PROCESSING":"処理中",
   "SETBACK": "セットバック",
   "SINGLE_AGENT": "シングルエージェント",
   "SKIPPED": "スキップされました",
@@ -227,7 +227,7 @@
     "label.primary": "プライマリー",
     "label.secondary": "セカンダリー",
     "label.processLimit": "プロセス上限",
-    "label.addCertificateAlias": "Add Certificate Alias",
+    "label.addCertificateAlias": "証明書エイリアス追加",
     "button.createToken": "ワンタイムトークン作成",
     "button.addAgent": "単独エージェント追加",
     "button.addSubagent": "サブエージェント追加",
@@ -252,7 +252,7 @@
     "button.exportAgentConfiguration": "エージェント設定エキスポート",
     "button.importAgentConfiguration": "エージェント設定インポート",
     "button.confirmNodeLoss": "ノードロスト確認",
-    "button.addEnciphermentCertificate": "Add Certificate",
+    "button.addEnciphermentCertificate": "暗号化証明書追加",
     "message.dropHereToDetach": "ここにドロップしてサブエージェントを削除",
     "message.noClusterFound": "クラスターはありません",
     "message.clickHereToAdd": "クリックして追加",
@@ -368,7 +368,7 @@
     "label.permissions": "パーミッション",
     "label.manageIdentityServices": "IDサービス管理",
     "label.clusterAgents": "クラスターエージェント",
-    "label.manageEnciphermentKey": "Manage Encipherment Key"
+    "label.manageEnciphermentKey": "暗号化鍵管理"
   },
   "configuration": {
     "tab.inventory": "インベントリー",
@@ -404,34 +404,34 @@
     "tooltip.backupTitle": "セカンダリータイトル"
   },
   "encipherment": {
-    "label.addCertificate": "Add Encipherment Certificate",
-    "label.updateCertificate": "Update Encipherment Certificate",
-    "label.agentId": "Agent ID",
-    "label.certAlias": "Certificate Alias",
-    "label.certificate": "Certificate",
-    "label.certificates": "Certificates",
-    "label.privateKeyPath": "Private Key Path",
-    "label.jobResourceFolder": "Job Resource Folder",
-    "label.importCertificate": "Import Encipherment Certificate",
-    "label.encrypt": "Encrypted Value",
-    "label.encryptValue": "Encrypt Value",
-    "label.encryptAll": "Encrypt All",
-    "label.optional": "Optional",
-    "label.showAssignedAgents": "Show Agents assigned the certificate alias",
-    "label.assignedAgents": "Agents assigned",
-    "label.selectCertAlias": "Select Certificate from Alias",
-    "label.pasteCertificate": "Paste Certificate",
-    "placeholder.agentId": "Agent Id",
-    "placeholder.certAlias": "Cetificate Alias Name",
-    "placeholder.certificate": "Paste Certificate here",
-    "placeholder.privateKeyPath": "Path to Certificate Private Key",
-    "placeholder.jobResourceFolder": "Select Job Resource Folder",
-    "placeholder.encrypt": "Encrypted Value",
-    "button.encrypt": "Encrypt",
-    "button.addNewCertificate": "Add New Certificate",
-    "button.importCertificate": "Import Certificate",
-    "button.deleteCertificate": "Delete Certificate",
-    "button.updateCertificate": "Update Certificate"
+    "label.addCertificate": "暗号化証明書追加",
+    "label.updateCertificate": "暗号化証明書更新",
+    "label.agentId": "エージェントID",
+    "label.certAlias": "証明書エイリアス",
+    "label.certificate": "証明書",
+    "label.certificates": "証明書",
+    "label.privateKeyPath": "秘密鍵パス",
+    "label.jobResourceFolder": "ジョブリソースフォルダー",
+    "label.importCertificate": "暗号化証明書インポート",
+    "label.encrypt": "暗号化属性",
+    "label.encryptValue": "暗号化属性",
+    "label.encryptAll": "全て暗号化",
+    "label.optional": "オプショナル",
+    "label.showAssignedAgents": "証明書エイリアスを持つエージェント表示",
+    "label.assignedAgents": "配置エージェント",
+    "label.selectCertAlias": "エイリアスから証明書を選択",
+    "label.pasteCertificate": "証明書をペースト",
+    "placeholder.agentId": "エージェントID",
+    "placeholder.certAlias": "証明書エイリアス名",
+    "placeholder.certificate": "証明書をペースト",
+    "placeholder.privateKeyPath": "証明書秘密鍵パス",
+    "placeholder.jobResourceFolder": "ジョブリソースフォルダー選択",
+    "placeholder.encrypt": "暗号化属性",
+    "button.encrypt": "暗号化",
+    "button.addNewCertificate": "証明書追加",
+    "button.importCertificate": "証明書インポート",
+    "button.deleteCertificate": "証明書削除",
+    "button.updateCertificate": "証明書更新"
   },
   "--------COMMON LABEL AND BUTTONS------------": "複数ページで使用",
   "common": {
@@ -456,7 +456,7 @@
     "label.duration": "実行時間",
     "label.sortBy": "表示順",
     "label.deleteAllDocument": "全てのドキュメントを削除",
-    "label.deleteAllReport": "Delete all Reports",
+    "label.deleteAllReport": "全てのレポートを削除",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "label.dateRange": "期間",
     "label.to": "至",
@@ -541,7 +541,7 @@
     "label.selectAllEntries": "全{{count}}アイテムを選択",
     "label.clearSelection": "選択解除",
     "label.clipboard": "クリップボード",
-    "label.stickToDailyPlanDate": "Stick to Daily Plan date",
+    "label.stickToDailyPlanDate": "実行計画日付を守る",
     "button.all": "全て",
     "button.save": "保存",
     "button.apply": "適用",
@@ -630,7 +630,7 @@
     "message.noObjectFoundToDelete": "オブジェクトはありません",
     "message.uniqueError": "既にある名称です",
     "message.noDataMatched": "一致するデータがありません",
-    "message.monthFromAfterMonthTo": "Invalid Input: Month-From is after Month-To.",
+    "message.monthFromAfterMonthTo": "無効な入力：開始月が終了月より後です",
     "--------POPUP WINDOW MESSAGES BEGIN------------": "確認ポップアップで使用",
     "message.resetLayout": "本当にダッシュボードレイアウトをリセットしますか?",
     "message.resetProfilePreferences": "本当にこのプロファイルをデフォルトにリセットしますか?",
@@ -678,9 +678,9 @@
     "message.deleteAllTag": "本当に選択した全てのタグを削除しますか?",
     "message.deleteReport": "本当にこのレポートを削除しますか?",
     "message.deleteAllReport": "本当に選択したすべてのレポートを削除しますか?",
-    "message.stickToDailyPlanDate": "Are you sure you want to submit the operation to have orders stick to their original Daily Plan date?",
-    "message.deleteCertificate": "Are you sure you want to delete this certificate?",
-    "message.removeCertificate": "Are you sure you want to remove this certificate alias?",
+    "message.stickToDailyPlanDate": "本当に元の実行計画日付のままのオーダーを追加しますか？",
+    "message.deleteCertificate": "本当にこの証明書を削除しますか？",
+    "message.removeCertificate": "本当にこの証明書エイリアスを消去しますか？",
     "--------POPUP WINDOW MESSAGES END------------": "確認ポップアップで使用",
     "tooltip.exportInXLS": "xlsx形式でエキスポート",
     "tooltip.expandDetails": "詳細表示",
@@ -788,7 +788,7 @@
     "button.cleanupService": "クリーンアップサービス",
     "button.monitorService": "モニターサービス",
     "button.restartServiceName": "サービス再起動",
-    "button.proxyService": "Proxy Service",
+    "button.proxyService": "プロキシーサービス",
     "button.removeFromInventory": " インベントリーから削除",
     "button.viewAllAgentsDetails": "エージェント詳細表示",
     "button.confirmNodeLoss": "ノードロストが確認されました",
@@ -867,7 +867,7 @@
     "label.periodsFound": "ピリオドがあります",
     "label.plannedAllAutomatically": "自動計画",
     "label.copyOrder": "オーダーコピー",
-    "label.oneTimeOrders": "One-time Orders",
+    "label.oneTimeOrders": "一回限りオーダー",
     "button.late": "遅延",
     "button.setStartTime": "開始時刻編集",
     "button.setParameter": "オーダー変数編集",
@@ -889,7 +889,7 @@
     "button.groupByScheduleTemplate": "スケジュール別",
     "button.recreate": "再作成",
     "button.calendarView": "カレンダー表示",
-    "button.continueOrder": "Let Run Order",
+    "button.continueOrder": "オーダー実行",
     "placeholder.selectOrderTemplate": "オーダーテンプレート選択",
     "placeholder.selectSubmissionHistory": "登録履歴選択",
     "placeholder.timeRange": "now, (+/-)(d), today",
@@ -1509,7 +1509,7 @@
     "button.manageControllersAndAgents": "コントローラー/エージェント管理",
     "button.manageDeployment": "デプロイ管理",
     "button.logOut": "ログアウト",
-    "button.manageEnciphermentKey": "Manage Encipherment Key"
+    "button.manageEnciphermentKey": "暗号化鍵管理"
   },
   "history": {
     "label.all": "全て",
@@ -1787,7 +1787,7 @@
     "label.renameTag": "タグ名変更",
     "label.tagName": "タグ名",
     "label.testMail": "テストメール",
-    "label.impactedSchedules": "Impacted Schedules",
+    "label.impactedSchedules": "影響するスケジュール",
     "button.modifyVariableSet": "変数設定変更",
     "button.addOrderParameter": "オーダー変数追加",
     "button.setVersion": "バージョン設定",
@@ -1919,13 +1919,13 @@
     "message.localChangesWillBeOverwritten": "この操作により、ローカルでの変更はすべて上書きされます",
     "message.changeDeductInWorkflow": "ワークフローの変数を変更し、変数を調整して再度スケジュールをリリースしてください",
     "message.noTagFound": "タグはありません",
-    "message.impactedSchedules": "The schedules below have been put into draft mode and will require adjustments to be released.",
+    "message.impactedSchedules": "以下のスケジュールはドラフトモードになっていますので、リリースには調整が必要です。",
     "tab": {
       "folders": "フォルダー",
       "trash": "ゴミ箱",
       "tagging": "タグ",
-      "workflowTagging": "Workflow Tags",
-      "orderTagging": "Order Tags"
+      "workflowTagging": "ワークフロータグ",
+      "orderTagging": "オーダータグ"
     },
     "cronTab": {
       "label.convertCron": "crontab変換",
@@ -2008,7 +2008,7 @@
         "endNode": "ワークフロー命令より前の終了位置",
         "blockPosition": "ブロック位置",
         "ignoreAdmissionTimes": "許可時間を無視",
-        "tagName": "Tag Name"
+        "tagName": "タグ名"
       },
       "script": {
         "name": "スクリプトインクルードは、定期的に発生するコードスニペットをジョブスクリプトに含めるために使用します。スクリプトインクルード名は、インベントリー内で一意です。スクリプトインクルード名には、ドットやハイフンなど、ほとんどのユニコード文字を使用できますが、先頭や末尾のドットやハイフンは使用できません。",
@@ -2020,29 +2020,29 @@
       "report": {
         "name": "レポート名はインベントリ内で一意です。ほとんどのユニコード文字、ドット、ハイフンを使用できますが、スペース、先頭または末尾のドット、ハイフンは使用できません。",
         "title": "レポートのタイトルは任意に指定できます。",
-        "template": "Determines the report to be executed.",
-        "frequencies": "The frequency determines the period with which the reporting period is subdivided.",
-        "controllerId": "The report can be limited to the data of one controller",
+        "template": "実行するレポートを指定",
+        "frequencies": "頻度は報告期間を細分化します",
+        "controllerId": "レポートはコントローラーごとに限定できます",
         "interval": {
-          "interval": "Defines how to define the reporting period. The Presets or relative settings will be transformed to according values for month_from and month_to and vice versa, if possible.",
+          "interval": "報告期間の定義方法を定義します。プリセットまたは相対設定は、可能であれば開始月および終了月、またはその逆の値に変換されます。",
           "absolute": {
-            "monthFrom": "Determines the start of the reporting period. Absolute values in the form yyyy-mm or relative values, e.g. 1y, can be specified.",
-            "monthTo": "Determines the end of the reporting period. Absolute values in the form yyyy-mm or relative values, e.g. 2m, can be specified. If empty, the last month will be used."
+            "monthFrom": "報告期間の開始日を指定します。yyyy-mm形式の絶対値または1yなどの相対値を指定できます。",
+            "monthTo": "報告期間の終了日を指定します。yyyy-mm形式の絶対値または2mなどの相対値を指定できます。空の場合、最後の月が使用されます。"
           },
           "relative": {
-            "from": "The start of the reporting period starts From*Unit from the time of generation in the past.\nExample: Unit=Month, From=12, Count=12 --> The last 12 months",
-            "unit": "Determines the unit by which the reporting period extends into the past from the time of generation.\nExample: Unit=Year, From=1, Count=1 --> LastYear",
-            "count": "The end of the reporting period is (From-Count+1)*Unit from the time of generation in the past. The month is calculated using the frequency. Yearly: 12, Quarter: the last month of the quarter...."
+            "from": "T報告期間の開始は、過去の発生時点からFrom*単位で開始します： \n単位=月, From=12, Count=12 --> 過去12ヶ月」とする",
+            "unit": "報告期間を発生時点から過去に延長する単位を決定します： \n単位=年, From=1, Count=1 --> 過去１年間",
+            "count": "報告期間の終わりは、過去の発生時点から(From-Count+1)*単位。月は頻度で計算。年： 12, Quarter: 四半期の最終月など"
           },
           "preset": {
-            "fromSample": "from sample",
-            "preset": "preset"
+            "fromSample": "開始例",
+            "preset": "プリセット"
           }
         },
-        "sort": "Each report can provide the highest or lowest values found.",
-        "hits": "Determines the number of entries in the report",
-        "periodLength": "Determines the length of the period for the reports Top ${hits} periods with....",
-        "periodStep": "Determines the step size for the calculation of the next period. Example: Period_Length=5, Period_Step=2, 00:00-00:05, 02:00-00:07, 00:04-00:09 ...."
+        "sort": "各レポートは、見つかった最高値または最低値を提供することができます。",
+        "hits": "レポート内のエントリ数を決定する",
+        "periodLength": "レポート期間の長さを指定します。Top ${hits} レポート期間....",
+        "periodStep": "次の期間の計算のためのステップサイズを指定します。例: Period_Length=5, Period_Step=2, 00:00-00:05, 02:00-00:07, 00:04-00:09 ...."
       },
       "workflow": {
         "name": "ワークフロー名は、インベントリー内で一意です。ほとんどのユニコード文字が使用可能で、ドットやハイフンも使用できますが、先頭または末尾のドットやハイフンは使用できません。",
@@ -2169,7 +2169,7 @@
           "question": "質問"
         },
         "retry": {
-          "maxTries": "再試行回数が最大になると、Retry命令は終了し、オーダーは失敗ステートになります。",
+          "maxTries": "試行回数が最大になると、Retry命令は終了し、オーダーは失敗ステートになります。",
           "delay": "遅延は、次のリトライが実行されるまでの時間を秒単位で指定します。コンマで区切って複数の値を指定した場合は、左から右に向かってそれぞれの値が次のリトライを待つ期間に適用されます。"
         },
         "cycle": {
@@ -2444,8 +2444,8 @@
     "label.cycleEndTime": "サイクル終了時間",
     "label.ignoreAdmissionTimes": "許可時間を無視",
     "label.blockPosition": "ブロック位置",
-    "label.stickToDailyPlanDate": "Stick to Daily Plan date",
-    "label.variableMap": "Variable Map",
+    "label.stickToDailyPlanDate": "実行計画の日付を守る",
+    "label.variableMap": "Map属性",
     "button.allOrders": "全オーダー",
     "button.cancel": "キャンセル",
     "button.startNow": "即時開始",
@@ -2498,9 +2498,9 @@
     },
     "retryState": {
       "label": {
-        "retryState": "Retry State",
-        "next": "Next",
-        "attempt": "Attempt"
+        "retryState": "再試行ステート",
+        "next": "次回",
+        "attempt": "試行回数"
       }
     }
   },
@@ -2639,9 +2639,9 @@
       "label.resumeFailed": "回復して失敗",
       "label.controller": "コントローラー",
       "label.managePositions": "位置管理",
-      "label.confirm": "confirm",
-      "label.encipherment": "Encipherment",
-      "label.encrypt": "encrypt"
+      "label.confirm": "確認",
+      "label.encipherment": "暗号化",
+      "label.encrypt": "暗号"
     },
     "keyManagement": {
       "label.keysAndCertificates": "鍵と証明書",
@@ -2922,26 +2922,26 @@
       "chooseFrequencies": "周期選択",
       "runReport": "レポート実行",
       "reportRunning": "レポート実行中...",
-      "periodLength": "Period Length",
-      "periodStep": "Period Step",
-      "interval": "Interval",
-      "relative": "Relative",
-      "absolute": "Report Period",
-      "count": "Count",
-      "unit": "Unit",
-      "sort": "Sort",
-      "HIGHEST": "HIGHEST",
-      "LOWEST": "LOWEST",
-      "highest": "Highest",
-      "lowest": "Lowest",
-      "fromSample": "preset",
-      "preset": "Preset",
-      "manageCards": "Manage Cards",
-      "templateType": "Template Type",
-      "lastMonth": "Last Month",
-      "last3Months": "Last 3 Months",
-      "last6Months": "Last 6 Month",
-      "lastYear": "Last Year"
+      "periodLength": "レポート期間長",
+      "periodStep": "期間ステップ",
+      "interval": "間隔",
+      "relative": "相対",
+      "absolute": "レポート期間",
+      "count": "カウント",
+      "unit": "単位",
+      "sort": "ソート",
+      "HIGHEST": "最大値",
+      "LOWEST": "最小値",
+      "highest": "最大",
+      "lowest": "最小",
+      "fromSample": "プリセット",
+      "preset": "プリセット",
+      "manageCards": "カード管理",
+      "templateType": "テンプレートタイプ",
+      "lastMonth": "前月",
+      "last3Months": "前3ヶ月",
+      "last6Months": "前6ヶ月",
+      "lastYear": "前年"
     },
     "button" : {
       "runReport": "レポート実行",
@@ -2960,17 +2960,17 @@
       "reports": "レポート"
     },
     "templates": {
-      "WORKFLOWS_FREQUENTLY_FAILED": "Top ${hits} ${sort} number of failed workflows",
-      "JOBS_FREQUENTLY_FAILED": "Top ${hits} ${sort} number of failed jobs",
-      "AGENTS_PARALLEL_JOB_EXECUTIONS": "Top ${hits} ${sort} agents with most parallel job execution",
-      "JOBS_EXECUTIONS_FREQUENCY": "Top ${hits} ${sort} high criticality failed jobs",
-      "ORDERS_EXECUTIONS_FREQUENCY": "Top ${hits} ${sort} number of failed workflows with cancelled orders",
-      "WORKFLOWS_LONGEST_EXECUTION_TIMES": "Top ${hits} ${sort} workflows with the longest execution time",
-      "JOBS_LONGEST_EXECUTION_TIMES": "Top ${hits} ${sort} jobs with the longest execution time",
-      "PERIODS_MOST_ORDER_EXECUTIONS": "Top ${hits} ${sort} periods during which mostly workflows executed",
-      "PERIODS_MOST_JOB_EXECUTIONS": "Top ${hits} ${sort} periods during which mostly jobs executed",
-      "JOBS_SUCCESSFUL_EXECUTIONS": "Top ${hits} jobs with ${sort} number of successful executions",
-      "WORKFLOWS_SUCCESSFUL_EXECUTIONS": "Top ${hits} workflows with ${sort} number of successful executions"
+      "WORKFLOWS_FREQUENTLY_FAILED": "Top ${hits} ${sort} 失敗ワークフロー",
+      "JOBS_FREQUENTLY_FAILED": "Top ${hits} ${sort} 失敗ジョブ",
+      "AGENTS_PARALLEL_JOB_EXECUTIONS": "Top ${hits} ${sort} 並列ジョブ実行エージェント",
+      "JOBS_EXECUTIONS_FREQUENCY": "Top ${hits} ${sort} 重要度の高い失敗ジョブ",
+      "ORDERS_EXECUTIONS_FREQUENCY": "Top ${hits} ${sort} オーダーキャンセルされた失敗ワークフロー",
+      "WORKFLOWS_LONGEST_EXECUTION_TIMES": "Top ${hits} ${sort} 実行時間の長いワークフロー",
+      "JOBS_LONGEST_EXECUTION_TIMES": "Top ${hits} ${sort} 実行時間の長いジョブ",
+      "PERIODS_MOST_ORDER_EXECUTIONS": "Top ${hits} ${sort} 期間中実行回数の多いワークフロー",
+      "PERIODS_MOST_JOB_EXECUTIONS": "Top ${hits} ${sort} 期間中実行回数の多いジョブ",
+      "JOBS_SUCCESSFUL_EXECUTIONS": "Top ${hits} ${sort} 成功ジョブ",
+      "WORKFLOWS_SUCCESSFUL_EXECUTIONS": "Top ${hits} ${sort} 成功ワークフロー"
     }
   },
   "settings": {
@@ -3004,7 +3004,7 @@
       "max_pool_size": "最大プールサイズを指定します。",
       "profile_age": "プロファイル保存期間を指定します。",
       "failed_login_history_age": "ログイン失敗履歴保存期間を指定します。",
-      "reporting_age": "Specifies the retention period of the Reports and Report Run History. Any report entries older than the value specified will be purged."
+      "reporting_age": "レポートおよびレポート実行履歴の保存期間を指定します。指定した値より古いレポートエントリはすべて削除されます。"
     },
     "dailyplan": {
       "time_zone": "デイリープランサービスの開始時刻とデイリープランの期間に適用されるタイムゾーンを指定します。",
@@ -3052,7 +3052,7 @@
       "display_folders_in_views": "フォルダーを表示",
       "node_command_line_options": "ノードコマンドラインオプション",
       "num_of_tags_displayed_as_order_id": "num_of_tags_displayed_as_order_id",
-      "report_java_options": "report java options"
+      "report_java_options": "Javaオプション表示"
     },
     "user": {
       "welcome_got_it": "了解",
@@ -3570,7 +3570,7 @@
     "label.consumeBoardExpression": "ConsumeNotice条件式",
     "label.showNoticeBoardNames": "Ctrl+スペースで通知ボード検索",
     "label.children": "オーダー変数",
-    "label.childrenMap": "Map Variable",
+    "label.childrenMap": "Map属性",
     "label.childToId": "オーダーId",
     "label.createForkListVariable": "ForkList変数作成",
     "label.updateForkListVariable": "ForkList変数更新",
@@ -3618,9 +3618,9 @@
     "label.selectTags": "タグを選択",
     "label.selectAllTags": "全てのタグを選択",
     "label.removeAllTags": "全てのタグを削除",
-    "label.filtersOrdersAsWell": "Filters Orders as well",
-    "label.ascending": "Ascending",
-    "label.descending": "Descending",
+    "label.filtersOrdersAsWell": "オーダーフィルタリング",
+    "label.ascending": "昇順",
+    "label.descending": "降順",
     "button.addScheme": "サイクル追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",

@@ -2008,7 +2008,7 @@
         "endNode": "Die End-Position eines Auftrags kann vor der anggegebenen Anweisung im Arbeitsablauf liegen. Der Auftrag endet vor der angegebenen Position.",
         "blockPosition": "Block Position",
         "ignoreAdmissionTimes": "Die Ausführung von Jobs im Arbeitslauf kann durch Zutrittszeiten der Jobs eingeschränkt sein. Diese Option ignoriert Zutrittszeiten und forciert den Start der Jobs.",
-        "tagName": "Es kann eine beliebige Anzahl von Tags hinzugefügt werden, die den aus dem Zeitplan erstellten Aufträgen zugewiesen werden"
+        "tagName": "Es kann eine beliebige Anzahl von Kennzeeichnungen hinzugefügt werden, die den aus dem Zeitplan erstellten Aufträgen zugewiesen werden"
       },
       "script": {
         "name": "Ein Skript Baustein wird verwendet, um wiederkehrend verwendeten Code in Job-Skripte einzufügen. Der Name eines Skript Bausteins ist eindeutig im Inventar. Für den Namen des Skript Bausteins können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
