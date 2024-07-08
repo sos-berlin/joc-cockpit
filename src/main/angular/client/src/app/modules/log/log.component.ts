@@ -808,13 +808,15 @@ export class LogComponent {
   renderData(res: any, domId: string | null): void {
     this.loading = false;
     LogComponent.calculateHeight();
-    this.coreService.renderData(res, domId, this.object, {
-      isFatalLevel: this.isFatalLevel,
-      isWarnLevel: this.isWarnLevel,
-      isTraceLevel: this.isTraceLevel,
-      isStdErrLevel: this.isStdErrLevel,
-      isInfoLevel: this.isInfoLevel
-    });
+    if(res) {
+      this.coreService.renderData(res, domId, this.object, {
+        isFatalLevel: this.isFatalLevel,
+        isWarnLevel: this.isWarnLevel,
+        isTraceLevel: this.isTraceLevel,
+        isStdErrLevel: this.isStdErrLevel,
+        isInfoLevel: this.isInfoLevel
+      });
+    }
   }
 
   expandAll(): void {
