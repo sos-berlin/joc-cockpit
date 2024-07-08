@@ -319,7 +319,7 @@
                       {{cluster.version}}
                     </td>
                     <td>{{cluster.processLimit}}</td>
-                    <td>{{(cluster.disabled) | translate}}</td>
+                    <td>{{(cluster.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</td>
                     <td>{{cluster.runningTasks}}</td>
                   </tr>
                   <ng-container *ngIf="cluster.showSubagent">
