@@ -1102,6 +1102,7 @@ export class DailyPlanComponent {
   filterByOrders(type): void {
     if (this.dailyPlanFilters.filter.filterBy !== type) {
       this.dailyPlanFilters.filter.filterBy = type;
+      this.object.isLetRun = this.dailyPlanFilters.filter.filterBy === 'ONETIMEORDERS';
       this.searchInResult();
     }
   }
@@ -1905,6 +1906,7 @@ export class DailyPlanComponent {
     }
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
     this.checkState(this.object, this.object.mapOfCheckedId);
+    this.object.isLetRun = this.dailyPlanFilters.filter.filterBy === 'ONETIMEORDERS';
   }
 
   checkOrderTemplate(template): void {
@@ -2302,7 +2304,6 @@ export class DailyPlanComponent {
     object.isCancel = false;
     object.isModify = true;
     object.isModifyStartTime = true;
-    object.isLetRun = true;
     let finishedCount = 0;
     let count = 0;
     let workflow = null;
@@ -2317,10 +2318,6 @@ export class DailyPlanComponent {
       }
       if (order.state._text === 'PLANNED' || order.state._text === 'FINISHED') {
         object.isCancel = true;
-      }
-
-      if (order.state._text !== 'SUBMITTED' || order.cyclicOrder) {
-        object.isLetRun = false;
       }
       if (order.state._text === 'FINISHED') {
         ++finishedCount;

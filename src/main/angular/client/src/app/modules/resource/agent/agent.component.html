@@ -319,7 +319,7 @@
                       {{cluster.version}}
                     </td>
                     <td>{{cluster.processLimit}}</td>
-                    <td>{{(cluster.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</td>
+                    <td><span *ngIf="cluster.disabled || cluster.disabled == false">{{(cluster.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
                     <td>{{cluster.runningTasks}}</td>
                   </tr>
                   <ng-container *ngIf="cluster.showSubagent">
@@ -421,7 +421,7 @@
                           {{subagent.version}}
                         </td>
                         <td></td>
-                        <td>{{(subagent.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</td>
+                        <td><span *ngIf="subagent.disabled || subagent.disabled == false">{{(subagent.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
                         <td>{{subagent.runningTasks}}</td>
                       </tr>
                       <ng-container *ngIf="subagent.show">

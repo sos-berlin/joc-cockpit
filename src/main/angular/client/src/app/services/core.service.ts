@@ -1040,8 +1040,8 @@ export class CoreService {
       this.popupService.focusPopoutWindow();
     }
   }
-
-  renderData(res, domId, object, obj, windowInstance?): void {
+  
+  renderData(res, domId, object, obj, preferences, windowInstance?): void {
     let lastLevel = '';
     let lastClass = '';
     const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;
@@ -1059,8 +1059,8 @@ export class CoreService {
           date = arr[0];
         }
         if (date && /\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}.(\d+)([+,-]){1}(\d+)$/.test(date)) {
-          const datetime = this.preferences.logTimezone ? this.getLogDateFormat(date, this.preferences.zone) : date;
-          if (this.preferences.logTimezone && datetime && timestampRegex.test(datetime)) {
+          const datetime = preferences.logTimezone ? this.getLogDateFormat(date, preferences.zone) : date;
+          if (preferences.logTimezone && datetime && timestampRegex.test(datetime)) {
             match = match.replace(timestampRegex, datetime);
           }
         }

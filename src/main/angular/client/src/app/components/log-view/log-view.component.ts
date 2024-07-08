@@ -419,8 +419,10 @@ export class LogViewComponent {
       observe: 'response' as 'response'
     }).subscribe({
       next: (res: any) => {
-        if (res && res.body) {
-          this.renderData(res.body, null);
+        if (res) {
+          if (res.body) {
+            this.renderData(res.body, null);
+          }
           if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
             const obj = {
               controllerId: this.controllerId,
@@ -867,7 +869,7 @@ export class LogViewComponent {
       isTraceLevel: this.isTraceLevel,
       isStdErrLevel: this.isStdErrLevel,
       isInfoLevel: this.isInfoLevel
-    }, POPOUT_MODALS['windowInstance']);
+    }, this.preferences, POPOUT_MODALS['windowInstance']);
   }
 
   private checkAndExpand(): void {

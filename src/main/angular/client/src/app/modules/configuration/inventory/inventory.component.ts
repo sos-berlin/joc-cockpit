@@ -467,7 +467,9 @@ export class SingleDeployComponent {
     const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.dateFormat = this.coreService.getDateFormat(preferences.dateFormat);
     this.init();
-    this.getReferences()
+    if(this.data?.objectType === 'WORKFLOW' || this.data?.type === 'WORKFLOW') {
+      this.getReferences();
+    }
   }
 
   init(): void {

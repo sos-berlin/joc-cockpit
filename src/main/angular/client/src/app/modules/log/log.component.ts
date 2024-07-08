@@ -385,7 +385,9 @@ export class LogComponent {
     }).subscribe({
       next: (res: any) => {
         if (res) {
-          this.renderData(res.body, null);
+          if(res.body) {
+            this.renderData(res.body, null);
+          }
           if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
             const obj = {
               controllerId: this.controllerId,
@@ -396,8 +398,6 @@ export class LogComponent {
           } else {
             this.finished = true;
           }
-        } else {
-          this.loading = false;
         }
         this.isLoading = false;
       }, error: (err) => {
@@ -815,7 +815,7 @@ export class LogComponent {
         isTraceLevel: this.isTraceLevel,
         isStdErrLevel: this.isStdErrLevel,
         isInfoLevel: this.isInfoLevel
-      });
+      }, this.preferences);
     }
   }
 
