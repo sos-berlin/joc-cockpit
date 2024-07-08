@@ -385,7 +385,9 @@ export class LogComponent {
     }).subscribe({
       next: (res: any) => {
         if (res) {
-          this.renderData(res.body, null);
+          if(res.body) {
+            this.renderData(res.body, null);
+          }
           if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
             const obj = {
               controllerId: this.controllerId,
@@ -396,8 +398,6 @@ export class LogComponent {
           } else {
             this.finished = true;
           }
-        } else {
-          this.loading = false;
         }
         this.isLoading = false;
       }, error: (err) => {
@@ -765,6 +765,20 @@ export class LogComponent {
         if (dt[i].cycle.prepared.end) {
           col += ', end(' + dt[i].cycle.prepared.end + ')';
         }
+      }else if (dt[i].orderAdded) {
+        col += `, OrderAdded(id=${dt[i].orderAdded.orderId}, workflow=${dt[i].orderAdded.workflowPath}, arguments(`;
+        if (dt[i].orderAdded.arguments) {
+          let arr: any = Object.entries(dt[i].orderAdded.arguments).map(([k1, v1]) => {
+            if (v1 && typeof v1 == 'object') {
+              v1 = Object.entries(v1).map(([k1, v1]) => {
+                return {name: k1, value: v1};
+              });
+            }
+            return {name: k1, value: v1};
+          });
+          col = this.coreService.createLogOutputString(arr, col);
+        }
+        col += '))';
       }
 
       if (dt[i].logEvent === 'OrderProcessingStarted') {
@@ -794,13 +808,15 @@ export class LogComponent {
   renderData(res: any, domId: string | null): void {
     this.loading = false;
     LogComponent.calculateHeight();
-    this.coreService.renderData(res, domId, this.object, {
-      isFatalLevel: this.isFatalLevel,
-      isWarnLevel: this.isWarnLevel,
-      isTraceLevel: this.isTraceLevel,
-      isStdErrLevel: this.isStdErrLevel,
-      isInfoLevel: this.isInfoLevel
-    });
+    if(res) {
+      this.coreService.renderData(res, domId, this.object, {
+        isFatalLevel: this.isFatalLevel,
+        isWarnLevel: this.isWarnLevel,
+        isTraceLevel: this.isTraceLevel,
+        isStdErrLevel: this.isStdErrLevel,
+        isInfoLevel: this.isInfoLevel
+      }, this.preferences);
+    }
   }
 
   expandAll(): void {

@@ -419,8 +419,10 @@ export class LogViewComponent {
       observe: 'response' as 'response'
     }).subscribe({
       next: (res: any) => {
-        if (res && res.body) {
-          this.renderData(res.body, null);
+        if (res) {
+          if (res.body) {
+            this.renderData(res.body, null);
+          }
           if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
             const obj = {
               controllerId: this.controllerId,
@@ -548,7 +550,7 @@ export class LogViewComponent {
               && this.treeStructure[x]['consumeNotices'] == dt[i].consumeNotices && this.treeStructure[x]['moved'] == dt[i].moved
               && this.treeStructure[x]['question'] == dt[i].question && this.treeStructure[x]['cycle'] == dt[i].cycle && this.treeStructure[x]['attached'] == dt[i].attached)) {
             if (this.treeStructure[x]['orderId'] == dt[i].orderId) {
-              if(dt[i].label){
+              if (dt[i].label) {
                 this.treeStructure[x]['label'] = dt[i].label;
               }
               if (dt[i].logLevel) {
@@ -813,6 +815,20 @@ export class LogViewComponent {
         if (dt[i].cycle.prepared.end) {
           col += ', end(' + dt[i].cycle.prepared.end + ')';
         }
+      } else if (dt[i].orderAdded) {
+        col += `, OrderAdded(id=${dt[i].orderAdded.orderId}, workflow=${dt[i].orderAdded.workflowPath}, arguments(`;
+        if (dt[i].orderAdded.arguments) {
+          let arr: any = Object.entries(dt[i].orderAdded.arguments).map(([k1, v1]) => {
+            if (v1 && typeof v1 == 'object') {
+              v1 = Object.entries(v1).map(([k1, v1]) => {
+                return {name: k1, value: v1};
+              });
+            }
+            return {name: k1, value: v1};
+          });
+          col = this.coreService.createLogOutputString(arr, col);
+        }
+        col += '))';
       }
 
       if (dt[i].logEvent === 'OrderProcessingStarted') {
@@ -853,7 +869,7 @@ export class LogViewComponent {
       isTraceLevel: this.isTraceLevel,
       isStdErrLevel: this.isStdErrLevel,
       isInfoLevel: this.isInfoLevel
-    }, POPOUT_MODALS['windowInstance']);
+    }, this.preferences, POPOUT_MODALS['windowInstance']);
   }
 
   private checkAndExpand(): void {
