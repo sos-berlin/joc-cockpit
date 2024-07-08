@@ -4266,9 +4266,11 @@ export class InventoryComponent {
     }
   }
 
-  updateObjects(data: any, isTrash: boolean, recursive: boolean, cb: any, isExpandConfiguration: boolean): void {
+  updateObjects(data: any, isTrash: boolean, recursive: boolean, cb, isExpandConfiguration: boolean, extraCb?): void {
     if (!data.permitted) {
-      cb([]);
+      if (cb) {
+        cb([]);
+      }
       return;
     }
     let flag = true;
@@ -4384,6 +4386,7 @@ export class InventoryComponent {
     const URL = isTrash ? 'inventory/trash/read/folder' : 'inventory/read/folder';
     this.coreService.post(URL, obj).subscribe({
       next: (res: any) => {
+
         if (res.workflows && (res.workflows.length || res.fileOrderSources.length || res.jobResources.length
           || res.noticeBoards.length || res.locks.length)) {
           controllerObj.isArrow = true;
@@ -4479,35 +4482,56 @@ export class InventoryComponent {
         if (this.selectedData.reload) {
           this.selectedData.reload = false;
         }
-        if(recursive){
+        if (recursive) {
           data.children.forEach((item) => {
-            if(!item.controller && !item.dailyPlan) {
-              if(item.expanded){
-                console.log(item);
-                this.updateObjects(item, isTrash, recursive, cb, isExpandConfiguration);
+            if (!item.controller && !item.dailyPlan) {
+              if (item.expanded) {
+                this.updateObjects(item, isTrash, recursive, null, isExpandConfiguration, (children) => {
+                  if (children.length > 0) {
+                    let folders = item.children;
+                    if (item.children.length > 1 && item.children[0].controller) {
+                      const index = item.children[0].controller ? 1 : 0;
+                      const index2 = item.children[1].dailyPlan ? 1 : 0;
+                      item.children.splice(0, index, children[0]);
+                      item.children.splice(1, index2, children[1]);
+                    } else {
+                      item.children = children;
+                      if (folders.length > 0 && !folders[0].controller) {
+                        item.children = item.children.concat(folders);
+                      }
+                    }
+                  }
+                  this.updateTree(isTrash);
+                });
               }
             }
           })
         }
-        cb(conf);
+        if (cb) {
+          cb(conf);
+        } else if(extraCb){
+          extraCb(conf);
+        }
       }, error: () => {
-        cb([{
-          name: 'Controller',
-          title: 'Controller',
-          controller: 'CONTROLLER',
-          key: (KEY + 'Controller$'),
-          children: controllerObj.controllerArr,
-          path: data.path,
-          deleted: data.deleted
-        }, {
-          name: 'Daily Plan',
-          title: 'Automation',
-          dailyPlan: 'DAILYPLAN',
-          key: (KEY + 'Automation$'),
-          children: dailyPlanObj.dailyPlanArr,
-          path: data.path,
-          deleted: data.deleted
-        }]);
+        if (cb) {
+          cb([{
+            name: 'Controller',
+            title: 'Controller',
+            controller: 'CONTROLLER',
+            key: (KEY + 'Controller$'),
+            children: controllerObj.controllerArr,
+            path: data.path,
+            deleted: data.deleted
+          }, {
+            name: 'Daily Plan',
+            title: 'Automation',
+            dailyPlan: 'DAILYPLAN',
+            key: (KEY + 'Automation$'),
+            children: dailyPlanObj.dailyPlanArr,
+            path: data.path,
+            deleted: data.deleted
+          }]);
+        }
       }
     });
   }
@@ -4906,7 +4930,7 @@ export class InventoryComponent {
             if (this.selectedData.path && (origin.path.indexOf(this.selectedData.path) > -1 || origin.path === this.selectedData.path)) {
               this.selectedData.reload = true;
             }
-            this.initTree(origin.path, '', false,true);
+            this.initTree(origin.path, '', false, true);
           }
         }, 750);
       }
@@ -5388,7 +5412,7 @@ export class InventoryComponent {
     if (data.name === this.selectedObj.name && data.path === this.selectedObj.path) {
       this.selectedObj.name = data.name1;
     }
-    this.updateFolders(data.path, false, false,() => {
+    this.updateFolders(data.path, false, false, () => {
       this.updateTree(false);
     });
   }
@@ -5664,7 +5688,7 @@ export class InventoryComponent {
     request.newPath = request.newPath + (request.newPath === '/' ? '' : '/') + this.copyObj.name;
     this.coreService.post('inventory/rename', request).subscribe((res) => {
       let obj: any = this.coreService.clone(this.copyObj);
-      this.updateFolders(this.copyObj.path, false, false,() => {
+      this.updateFolders(this.copyObj.path, false, false, () => {
         this.updateTree(false);
         obj.path = res.path.substring(0, res.path.lastIndexOf('/')) || '/';
         obj.name = res.path.substring(res.path.lastIndexOf('/') + 1);
@@ -6112,7 +6136,7 @@ export class InventoryComponent {
     if (!(data.length > 1 && data[0].controller)) {
       node.origin.loading = true;
     }
-    this.updateObjects(node.origin, this.isTrash, false,(children) => {
+    this.updateObjects(node.origin, this.isTrash, false, (children) => {
       if (data.length > 1 && data[0].controller) {
         node.isExpanded = true;
         if (children.length > 0) {
@@ -6383,7 +6407,7 @@ export class InventoryComponent {
                 paths = paths.filter((path) => {
                   return path !== args.eventSnapshots[j].path;
                 });
-                this.updateFolders(args.eventSnapshots[j].path, isTrash, true,() => {
+                this.updateFolders(args.eventSnapshots[j].path, isTrash, true, () => {
                   this.updateTree(isTrash);
                 });
               }
@@ -6403,14 +6427,14 @@ export class InventoryComponent {
       if (paths.length > 0) {
         paths.forEach((path, index) => {
           if (_isTrash) {
-            this.updateFolders(path, _isTrash, false,() => {
+            this.updateFolders(path, _isTrash, false, () => {
               if (index == paths.length - 1) {
                 this.updateTree(_isTrash);
               }
             });
           }
           if (_isNormal) {
-            this.updateFolders(path, false, true,() => {
+            this.updateFolders(path, false, true, () => {
               if (index == paths.length - 1) {
                 this.updateTree(false);
               }

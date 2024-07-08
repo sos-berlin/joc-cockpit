@@ -1042,8 +1042,17 @@ export class CoreService {
   }
   
   renderData(res, domId, object, obj, preferences, windowInstance?): void {
+    let argu = {
+      lastLevel: '',
+      lastClass: ''
+    };
+    let arr = res.split('\n');
+
+    let index = 0;
+
     let lastLevel = '';
     let lastClass = '';
+    let continueClass = [];
     const timestampRegex = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9].(\d)+([+,-])(\d+)(:\d+)*/;
     ('\n' + res).replace(/\r?\n([^\r\n]+((\[)(main|success|error|info\s?|fatal\s?|warn\s?|debug\d?|trace|stdout|stderr)(\])||([a-z0-9:\/\\]))[^\r\n]*)/img, (match, prefix, level, suffix, offset) => {
       let div;// Now create a div element and append it to a non-appended span.
@@ -1190,18 +1199,61 @@ export class CoreService {
       } else if (!lastLevel) {
         lastClass = '';
       }
-
-      if (windowInstance) {
-        if (!domId) {
-          windowInstance.document.getElementById('logs')?.appendChild(div);
+      div.className += ' scheduler scheduler_' + level;
+      if (arr.length - 1 == index && !res.endsWith("\n")) {
+        div.className += ' continue';
+      }
+      let flag = true;
+      if (index == 0) {
+        let dom;
+        if (windowInstance) {
+          if (!domId) {
+            dom = windowInstance.document.getElementById('logs');
+          } else {
+            dom = windowInstance.document.getElementById(domId);
+          }
         } else {
-          windowInstance.document.getElementById(domId)?.appendChild(div);
+          if (!domId) {
+            dom = window.document.getElementById('logs');
+          } else {
+            dom = window.document.getElementById(domId);
+          }
         }
-      } else {
-        if (!domId) {
-          window.document.getElementById('logs')?.appendChild(div);
+
+        if (dom) {
+          // Get all the <div> children of the parent
+          let divs = dom.getElementsByTagName('div');
+          // Get the last <div> child
+          let lastDiv = divs[divs.length - 1];
+          if (lastDiv) {
+            // Log the last <div> to the console
+            console.log('lastDiv', lastDiv.innerText, lastDiv.classList);
+            if (lastDiv.classList.contains('continue')) {
+              let text = lastDiv.innerText;
+              match = match.replace(/^\r?\n/, '');
+              console.log(text + ' >< ' + match);
+              lastDiv.innerText = (text + '' + match);
+              continueClass = lastDiv.classList;
+              flag = false;
+            }
+
+          }
+        }
+      }
+      ++index;
+      if (flag) {
+        if (windowInstance) {
+          if (!domId) {
+            windowInstance.document.getElementById('logs')?.appendChild(div);
+          } else {
+            windowInstance.document.getElementById(domId)?.appendChild(div);
+          }
         } else {
-          window.document.getElementById(domId)?.appendChild(div);
+          if (!domId) {
+            window.document.getElementById('logs')?.appendChild(div);
+          } else {
+            window.document.getElementById(domId)?.appendChild(div);
+          }
         }
       }
       return '';

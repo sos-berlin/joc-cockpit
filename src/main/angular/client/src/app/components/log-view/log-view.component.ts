@@ -815,7 +815,7 @@ export class LogViewComponent {
         if (dt[i].cycle.prepared.end) {
           col += ', end(' + dt[i].cycle.prepared.end + ')';
         }
-      }else if (dt[i].orderAdded) {
+      } else if (dt[i].orderAdded) {
         col += `, OrderAdded(id=${dt[i].orderAdded.orderId}, workflow=${dt[i].orderAdded.workflowPath}, arguments(`;
         if (dt[i].orderAdded.arguments) {
           let arr: any = Object.entries(dt[i].orderAdded.arguments).map(([k1, v1]) => {
