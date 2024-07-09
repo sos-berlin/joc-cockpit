@@ -111,6 +111,9 @@ export class AddOrderModalComponent {
   }
   isCollapsed: boolean[] = [];
   displayModal = false;
+
+  allowEmptyArguments: any;
+  argumentsValid: boolean = true;
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
               private modal: NzModalService, private ref: ChangeDetectorRef, private workflowService: WorkflowService) {
   }
