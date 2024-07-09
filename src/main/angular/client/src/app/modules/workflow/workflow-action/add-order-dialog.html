@@ -379,7 +379,7 @@
     </div>
   </div>
   <div class="modal-footer text-left">
-    <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
+    <button [disabled]="areArgumentsEmpty() || submitted" class="btn btn-primary btn-sm"
             type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}

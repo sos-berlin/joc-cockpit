@@ -120,7 +120,7 @@ export class AddOrderModalComponent {
     this.permission = this.modalData.permission;
     this.preferences = this.modalData.preferences;
     this.workflow = this.modalData.workflow;
-
+    this.allowEmptyArguments = sessionStorage['allowEmptyArguments'] == 'true';
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.display = this.preferences.auditLog;
@@ -594,6 +594,30 @@ export class AddOrderModalComponent {
       }, error: () => this.submitted = false
     });
   }
+
+
+  areArgumentsEmpty(): boolean {
+    if (this.allowEmptyArguments) return false;
+
+    let anyListEmpty = this.arguments.some(arg =>
+      arg.type === 'List' &&
+      (!arg.actualList || arg.actualList.some(listItem => listItem.list.some(item => !item.value)))
+    );
+
+    let anyMapEmpty = this.arguments.some(arg =>
+      arg.type === 'Map' &&
+      (!arg.actualMap || arg.actualMap.some(mapItem => mapItem.map.some(item => !item.value)))
+    );
+
+    let anyStringEmpty = this.arguments.some(arg =>
+      arg.type === 'String' && (!arg.value)
+    );
+
+    this.argumentsValid = !(anyListEmpty || anyMapEmpty || anyStringEmpty);
+    return anyListEmpty || anyMapEmpty || anyStringEmpty;
+  }
+
+
 
   addVariableToList(data): void {
     const arr = [];

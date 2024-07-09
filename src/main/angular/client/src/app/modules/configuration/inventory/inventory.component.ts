@@ -3351,6 +3351,7 @@ export class InventoryComponent {
   }
 
   initTree(path: string, mainPath: string, redirect = false, recursive = false): void {
+
     if (!path) {
       this.isLoading = true;
     }
@@ -3414,6 +3415,7 @@ export class InventoryComponent {
             this.tree = tree;
             if (this.tree.length > 0) {
               this.updateObjects(this.tree[0], false, recursive, (children: any) => {
+
                 this.isLoading = false;
                 if (children.length > 0) {
                   this.tree[0].children.splice(0, 0, children[0]);
@@ -3450,6 +3452,7 @@ export class InventoryComponent {
             if (this.trashTree.length > 0) {
               this.trashTree[0].expanded = true;
               this.updateObjects(this.trashTree[0], true, false, (children) => {
+
                 this.isTreeLoaded = false;
                 if (children.length > 0) {
                   this.trashTree[0].children.splice(0, 0, children[0]);
@@ -3522,6 +3525,7 @@ export class InventoryComponent {
         if (flag) {
           if (!data.controller && !data.dailyPlan) {
             self.updateObjects(data, self.isTrash, false, (children: any) => {
+
               if (children.length > 0) {
                 const index = data.children[0] && data.children[0].controller ? 1 : 0;
                 data.children.splice(0, index, children[0]);
