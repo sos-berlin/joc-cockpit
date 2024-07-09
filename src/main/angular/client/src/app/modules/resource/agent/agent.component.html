@@ -232,6 +232,13 @@
                     <i *ngIf="agentsFilters.filter.sortBy == 'processLimit' && agentsFilters.reverse"
                        class="fa fa-caret-down "></i></a>
                   </th>
+                  <th (click)="sort('disabled')">
+                    <a><span class="p-r-xs" translate>agent.label.disabled</span>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'disabled' && !agentsFilters.reverse"
+                         class="fa fa-caret-up "></i>
+                      <i *ngIf="agentsFilters.filter.sortBy == 'disabled' && agentsFilters.reverse"
+                         class="fa fa-caret-down "></i></a>
+                  </th>
                   <th (click)="sort('runningTasks')"><a><span class="p-r-xs" translate>agent.label.runningTasks</span>
                     <i *ngIf="agentsFilters.filter.sortBy == 'runningTasks' && !agentsFilters.reverse"
                        class="fa fa-caret-up "></i>
@@ -312,6 +319,7 @@
                       {{cluster.version}}
                     </td>
                     <td>{{cluster.processLimit}}</td>
+                    <td><span *ngIf="cluster.disabled || cluster.disabled == false">{{(cluster.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
                     <td>{{cluster.runningTasks}}</td>
                   </tr>
                   <ng-container *ngIf="cluster.showSubagent">
@@ -355,7 +363,14 @@
                         <i *ngIf="cluster.sortBy == 'version' && cluster.reverse"
                            class="fa fa-caret-down "></i></a>
                       </td>
-                      <td colspan="2" (click)="sort('runningTasks', cluster)" class="custom-th"><a><span class="p-r-xs" translate>agent.label.runningTasks</span>
+                      <td></td>
+                      <td (click)="sort('disabled', cluster)" class="custom-th"><a><span class="p-r-xs" translate>agent.label.disabled</span>
+                        <i *ngIf="cluster.sortBy == 'disabled' && !cluster.reverse"
+                           class="fa fa-caret-up "></i>
+                        <i *ngIf="cluster.sortBy == 'disabled' && cluster.reverse"
+                           class="fa fa-caret-down "></i></a>
+                      </td>
+                      <td (click)="sort('runningTasks', cluster)" class="custom-th" colspan="2"><a><span class="p-r-xs" translate>agent.label.runningTasks</span>
                         <i *ngIf="cluster.sortBy == 'runningTasks' && !cluster.reverse"
                            class="fa fa-caret-up "></i>
                         <i *ngIf="cluster.sortBy == 'runningTasks' && cluster.reverse"
@@ -405,7 +420,9 @@
                           &nbsp;
                           {{subagent.version}}
                         </td>
-                        <td colspan="2">{{subagent.runningTasks}}</td>
+                        <td></td>
+                        <td><span *ngIf="subagent.disabled || subagent.disabled == false">{{(subagent.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+                        <td>{{subagent.runningTasks}}</td>
                       </tr>
                       <ng-container *ngIf="subagent.show">
                         <tr>
@@ -414,7 +431,7 @@
                           <td class="custom-th" colspan="2"><span translate>order.label.workflow</span></td>
                           <td class="custom-th" colspan="2"><span translate>workflow.label.label</span></td>
                           <td class="custom-th"><span translate>order.label.state</span></td>
-                          <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
+                          <td class="custom-th" colspan="2"><span translate>order.label.scheduledFor</span></td>
                         </tr>
                         <ng-container *ngIf="!subagent.loading">
                           <tr *ngFor="let order of subagent.orders">
@@ -434,12 +451,12 @@
                               <span [ngClass]="coreService.getColor(order.state.severity,'bg')"
                                     class="label">{{order.state._text | translate}}</span>
                             </td>
-                            <td>{{order.scheduledFor | stringToDate}}</td>
+                            <td colspan="2">{{order.scheduledFor | stringToDate}}</td>
                           </tr>
                         </ng-container>
                         <ng-container *ngIf="subagent.loading">
                           <tr>
-                            <td colspan="9">
+                            <td colspan="10">
                               <div class="text-center m-t m-b">
                                 <nz-spin nzSimple></nz-spin>
                               </div>
@@ -448,7 +465,7 @@
                         </ng-container>
                         <ng-container *ngIf="!subagent.loading && (!subagent.orders || subagent.orders.length  === 0)">
                           <tr>
-                            <td colspan="9">
+                            <td colspan="10">
                               <div style="margin-top: 8px; margin-bottom: 5px">
                                 <app-empty-data></app-empty-data>
                               </div>
@@ -465,7 +482,7 @@
                       <td class="custom-th" colspan="2"><span translate>order.label.workflow</span></td>
                       <td class="custom-th" colspan="2"><span translate>workflow.label.label</span></td>
                       <td class="custom-th"><span translate>order.label.state</span></td>
-                      <td class="custom-th"><span translate>order.label.scheduledFor</span></td>
+                      <td class="custom-th" colspan="2"><span translate>order.label.scheduledFor</span></td>
                     </tr>
                     <ng-container *ngIf="!cluster.loading">
                       <tr *ngFor="let order of cluster.orders">
@@ -485,12 +502,12 @@
                           <span [ngClass]="coreService.getColor(order.state.severity,'bg')"
                                 class="label">{{order.state._text | translate}}</span>
                         </td>
-                        <td>{{order.scheduledFor | stringToDate}}</td>
+                        <td colspan="2">{{order.scheduledFor | stringToDate}}</td>
                       </tr>
                     </ng-container>
                     <ng-container *ngIf="cluster.loading">
                       <tr>
-                        <td colspan="9">
+                        <td colspan="10">
                           <div class="text-center m-t m-b">
                             <nz-spin nzSimple></nz-spin>
                           </div>
@@ -499,7 +516,7 @@
                     </ng-container>
                     <ng-container *ngIf="!cluster.loading && (!cluster.orders || cluster.orders.length  === 0)">
                       <tr>
-                        <td colspan="9">
+                        <td colspan="10">
                           <div style="margin-top: 8px; margin-bottom: 5px">
                             <app-empty-data></app-empty-data>
                           </div>

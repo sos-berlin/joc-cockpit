@@ -120,7 +120,7 @@ export class AddOrderModalComponent {
     this.permission = this.modalData.permission;
     this.preferences = this.modalData.preferences;
     this.workflow = this.modalData.workflow;
-
+    this.allowEmptyArguments = sessionStorage['allowEmptyArguments'] == 'true';
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.display = this.preferences.auditLog;
@@ -594,6 +594,11 @@ export class AddOrderModalComponent {
       }, error: () => this.submitted = false
     });
   }
+
+
+ 
+
+
 
   addVariableToList(data): void {
     const arr = [];
