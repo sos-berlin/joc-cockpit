@@ -421,17 +421,21 @@
     "label.assignedAgents": "配置エージェント",
     "label.selectCertAlias": "エイリアスから証明書を選択",
     "label.pasteCertificate": "証明書をペースト",
+    "label.showEncryptionSample": "Certificate Sample Encryption",
+    "label.plainText": "Plain Text",
     "placeholder.agentId": "エージェントID",
     "placeholder.certAlias": "証明書エイリアス名",
     "placeholder.certificate": "証明書をペースト",
     "placeholder.privateKeyPath": "証明書秘密鍵パス",
     "placeholder.jobResourceFolder": "ジョブリソースフォルダー選択",
     "placeholder.encrypt": "暗号化属性",
+    "placeholder.plainText": "Enter Plain Text",
     "button.encrypt": "暗号化",
     "button.addNewCertificate": "証明書追加",
     "button.importCertificate": "証明書インポート",
     "button.deleteCertificate": "証明書削除",
-    "button.updateCertificate": "証明書更新"
+    "button.updateCertificate": "証明書更新",
+    "button.copyEncryptValue": "Copy Encrypted Value"
   },
   "--------COMMON LABEL AND BUTTONS------------": "複数ページで使用",
   "common": {
@@ -3158,6 +3162,7 @@
     "label.iamLdapSystemPassword": "LDAPシステムパスワード",
     "label.iamLdapReadTimeout": "LDAPリードタイムアウト",
     "label.iamLdapConnectTimeout": "LDAP接続タイムアウト",
+    "label.iamLdapSysemUserDnTemplate": "LDAP System User DN Template",
     "label.disableNestedGroupSearch": "ネストしたグループ検索を無効にする",
     "label.iamOidcName": "OIDC名",
     "label.iamOidcAuthenticationUrl": "OIDC認証URL",
@@ -3294,6 +3299,7 @@
     "placeholder.iamLdapSystemPassword": "LDAPシステムパスワードを入力",
     "placeholder.iamLdapReadTimeout": "LDAPリードタイムアウト入力",
     "placeholder.iamLdapConnectTimeout": "LDAP接続タイムアウト入力",
+    "placeholder.iamLdapSysemUserDnTemplate": "Enter LDAP System User DN Template",
     "placeholder.iamOidcName": "OIDC名入力",
     "placeholder.iamOidcAuthenticationUrl": "OIDC認証URL入力",
     "placeholder.iamOidcClientId": "OIDCクライアントID入力",
@@ -3381,6 +3387,7 @@
         "iamLdapSystemPassword": "LDAPシステムパスワード",
         "iamLdapReadTimeout": "LDAPリードタイムアウト",
         "iamLdapConnectTimeout": "LDAP接続タイムアウト",
+        "iamLdapSysemUserDnTemplate": "LDAP System User DN Template",
         "disableNestedGroupSearch": "ネストしたグループ検索を無効にする"
       },
       "keycloak": {

@@ -99,6 +99,34 @@
         <a *ngIf="certificateObj.certAlias" (click)="showAssignedAgents(certificateObj.certAlias)" class="text-u-l" translate>encipherment.label.showAssignedAgents</a>
       </div>
     </div>
+
+    <div *ngIf="!showEncryptionSample" class="form-group row">
+      <div class="col-sm-12">
+        <a (click)="toggleEncryptionSample()" class="text-u-l" translate>encipherment.label.showEncryptionSample</a>
+      </div>
+    </div>
+    <div *ngIf="showEncryptionSample">
+      <div class="form-group row">
+        <label class="col-sm-3" translate>encipherment.label.plainText</label>
+        <div class="col-sm-8">
+          <input [(ngModel)]="plainText" name="plainText" class="form-control" placeholder="{{'encipherment.placeholder.plainText' | translate}}" />
+        </div>
+        <div class="col-sm-1">
+          <i (click)="encryptText(certificateObj.certAlias)" class="m-t-sm text-hover-color cursor"
+             nz-icon nzType="property-safety" nzTheme="outline"></i>
+          <a><i (click)="toggleEncryptionSample()" class="fa fa-times m-t-sm text-hover-color m-l-12"></i></a>
+        </div>
+      </div>
+      <div *ngIf="encryptedText" class="form-group row">
+        <label class="col-sm-3 form-control-label" translate>encipherment.label.encrypt</label>
+        <div class="col-sm-8">
+          <textarea readonly style="width: 100%" >{{ encryptedText }}</textarea>
+        </div>
+        <div class="col-sm-1">
+          <span (click)="copyToClipboard()" class="fa fa-copy cursor" nz-tooltip="{{'encipherment.button.copyEncryptValue' | translate}}"></span>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"
