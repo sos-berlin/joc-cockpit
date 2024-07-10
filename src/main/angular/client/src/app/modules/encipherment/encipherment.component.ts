@@ -12,6 +12,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { ConfirmModalComponent } from 'src/app/components/comfirm-modal/confirm.component';
 import { CommentModalComponent } from 'src/app/components/comment-modal/comment.component';
 import {ShowAgentsModalComponent} from "../configuration/inventory/inventory.component";
+import {ClipboardService} from "ngx-clipboard";
 
 declare const $: any;
 
@@ -30,13 +31,17 @@ export class AddEnciphermentModalComponent {
   encipherment: any;
   title: any;
   schedulerIds: any;
+  showEncryptionSample = false;
+  plainText = '';
+  encryptedText = '';
+
 
   nodes = [];
   folderObj: any = {paths: []};
 
   @ViewChild('treeSelectCtrl', {static: false}) treeSelectCtrl;
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService,private modal: NzModalService){}
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService,private modal: NzModalService, private clipboardService: ClipboardService,){}
 
   ngOnInit(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
@@ -129,6 +134,28 @@ export class AddEnciphermentModalComponent {
       },
       error: () => this.submitted = false
     });
+  }
+
+  toggleEncryptionSample(): void {
+    this.showEncryptionSample = !this.showEncryptionSample;
+    this.plainText = ''
+    this.encryptedText = ''
+  }
+
+  encryptText(selectedCert): void {
+    const obj = {
+      toEncrypt: this.plainText,
+      certAlias: selectedCert
+    }
+    this.coreService.post('encipherment/encrypt', obj).subscribe({
+      next: (res: any) => {
+      this.encryptedText = res.encryptedValue;
+      }
+    });
+  }
+
+  copyToClipboard(): void {
+    this.clipboardService.copy(this.encryptedText);
   }
 }
 

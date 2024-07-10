@@ -421,17 +421,21 @@
     "label.assignedAgents": "Use by Agents",
     "label.selectCertAlias": "Select Certificate",
     "label.pasteCertificate": "Paste Certificate",
+    "label.showEncryptionSample": "Certificate Sample Encryption",
+    "label.plainText": "Plain Text",
     "placeholder.agentId": "Agent ID",
     "placeholder.certAlias": "Certificate Alias Name",
     "placeholder.certificate": "Paste Certificate here",
     "placeholder.privateKeyPath": "Path to Private Key File",
     "placeholder.jobResourceFolder": "Select Job Resource Folder",
     "placeholder.encrypt": "Encrypted Value",
+    "placeholder.plainText": "Enter Plain Text",
     "button.encrypt": "Encrypt",
     "button.addNewCertificate": "Add Certificate",
     "button.importCertificate": "Import Certificate",
     "button.deleteCertificate": "Delete Certificate",
-    "button.updateCertificate": "Update Certificate"
+    "button.updateCertificate": "Update Certificate",
+    "button.copyEncryptValue": "Copy Encrypted Value"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
@@ -3158,6 +3162,7 @@
     "label.iamLdapSystemPassword": "LDAP System User Password",
     "label.iamLdapReadTimeout": "LDAP Read Timeout",
     "label.iamLdapConnectTimeout": "LDAP Connect Timeout",
+    "label.iamLdapSysemUserDnTemplate": "LDAP System User DN Template",
     "label.disableNestedGroupSearch": "Disable nested group search",
     "label.iamOidcName": "OIDC Name",
     "label.iamOidcAuthenticationUrl": "OIDC Authentication URL",
@@ -3294,6 +3299,7 @@
     "placeholder.iamLdapSystemPassword": "Enter LDAP System User Password",
     "placeholder.iamLdapReadTimeout": "Enter LDAP Read Timeout",
     "placeholder.iamLdapConnectTimeout": "Enter LDAP Connect Timeout",
+    "placeholder.iamLdapSysemUserDnTemplate": "Enter LDAP System User DN Template",
     "placeholder.iamOidcName": "Enter OIDC Name",
     "placeholder.iamOidcAuthenticationUrl": "Enter OIDC Authentication URL",
     "placeholder.iamOidcClientId": "Enter OIDC Client ID",
@@ -3381,6 +3387,7 @@
         "iamLdapSystemPassword": "An LDAP System User Password is usually required when an LDAP System User Account is specified.",
         "iamLdapReadTimeout": "LDAP Read Timeout",
         "iamLdapConnectTimeout": "LDAP Connect Timeout",
+        "iamLdapSysemUserDnTemplate": "LDAP System User DN Template",
         "disableNestedGroupSearch": "Disable nested group search"
       },
       "keycloak": {

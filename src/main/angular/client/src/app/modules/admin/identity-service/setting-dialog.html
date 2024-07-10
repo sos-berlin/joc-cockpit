@@ -479,6 +479,20 @@
                          required type="text">
                 </div>
               </div>
+
+              <div class="form-group row">
+                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapSysemUserDnTemplate' | translate"
+                       [nzTooltipMouseEnterDelay]="0.5"
+                       class="col-sm-4 form-control-label"
+                       translate>user.label.iamLdapSysemUserDnTemplate
+                </label>
+                <div class="col-sm-6">
+                  <input [(ngModel)]="currentObj.iamLdapSysemUserDnTemplate"
+                         [placeholder]="'user.placeholder.iamLdapSysemUserDnTemplate' | translate"
+                         class="form-control" name="iamLdapSysemUserDnTemplate"
+                         type="text">
+                </div>
+              </div>
               <div class="form-group row">
                 <label [nz-tooltip]="'user.tooltips.ldap.iamLdapSystemUser' | translate"
                        [nzTooltipMouseEnterDelay]="0.5"

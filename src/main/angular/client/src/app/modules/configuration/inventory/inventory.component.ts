@@ -3519,7 +3519,6 @@ export class EncryptArgumentModalComponent {
       submittedVal.toEncrypt = typeof args[index].value === 'object' ? args[index].value.default : args[index].value;
     } else if (this.type === 'jobTemplate') {
       if (args[index].value.type === 'List' || args[index].value.type === 'Map') {
-        // Encrypt each list or map parameter separately
         this.processListOrMapEncryption(args[index], () => {
           this.processBulkEncryption(args, index + 1);
         });
