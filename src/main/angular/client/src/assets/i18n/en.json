@@ -421,7 +421,7 @@
     "label.assignedAgents": "Use by Agents",
     "label.selectCertAlias": "Select Certificate",
     "label.pasteCertificate": "Paste Certificate",
-    "label.showEncryptionSample": "Certificate Sample Encryption",
+    "label.showEncryptionSample": "Encryption Test",
     "label.plainText": "Plain Text",
     "placeholder.agentId": "Agent ID",
     "placeholder.certAlias": "Certificate Alias Name",
@@ -429,13 +429,13 @@
     "placeholder.privateKeyPath": "Path to Private Key File",
     "placeholder.jobResourceFolder": "Select Job Resource Folder",
     "placeholder.encrypt": "Encrypted Value",
-    "placeholder.plainText": "Enter Plain Text",
+    "placeholder.plainText": "Enter plain text",
     "button.encrypt": "Encrypt",
     "button.addNewCertificate": "Add Certificate",
     "button.importCertificate": "Import Certificate",
     "button.deleteCertificate": "Delete Certificate",
     "button.updateCertificate": "Update Certificate",
-    "button.copyEncryptValue": "Copy Encrypted Value"
+    "button.copyEncryptValue": "Copy encrypted value"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
