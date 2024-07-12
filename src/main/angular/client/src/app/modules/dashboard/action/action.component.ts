@@ -27,6 +27,7 @@ export class CommentModalComponent {
     this.obj = this.modalData.obj;
     this.performAction = this.modalData.performAction;
     this.controllerID = this.modalData.controllerID;
+    this.show = this.modalData.show;
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
     }
