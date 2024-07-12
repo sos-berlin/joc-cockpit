@@ -15,36 +15,43 @@ export function count(countFrom: number, countTo: number, countDecimals: number,
   const duration = Number(countDuration) * 1000;
   let startTime;
 
-  function runCount(timestamp: number) {
-    let frameVal;
-    const progress = timestamp - startTime;
+  function runCount(timestamp: number): number {
+  let frameVal;
+  const progress = timestamp - startTime;
 
-    if (countDown) {
-      frameVal = startVal - easeOutExpo(progress, 0, startVal - endVal, duration);
-    } else {
-      frameVal = easeOutExpo(progress, startVal, endVal - startVal, duration);
-    }
-
-    if (countDown) {
-      frameVal = frameVal < endVal ? endVal : frameVal;
-    } else {
-      frameVal = frameVal > endVal ? endVal : frameVal;
-    }
-
-    frameVal = Math.round(frameVal * dec) / dec;
-
-    const tick = progress < duration;
-    callback({
-      value: frameVal,
-      progress,
-      timestamp,
-      finished: !tick
-    });
-
-    if (tick) {
-      return requestAnimationFrame(val => runCount(val));
-    }
+  if (countDown) {
+    frameVal = startVal - easeOutExpo(progress, 0, startVal - endVal, duration);
+  } else {
+    frameVal = easeOutExpo(progress, startVal, endVal - startVal, duration);
   }
+
+  if (countDown) {
+    frameVal = frameVal < endVal ? endVal : frameVal;
+  } else {
+    frameVal = frameVal > endVal ? endVal : frameVal;
+  }
+
+  frameVal = Math.round(frameVal * dec) / dec;
+
+  const tick = progress < duration;
+  callback({
+    value: frameVal,
+    progress,
+    timestamp,
+    finished: !tick
+  });
+
+  if (tick) {
+    requestAnimationFrame(val => runCount(val));
+  }
+  return frameVal; // Ensuring a return value
+}
+
+return requestAnimationFrame(timestamp => {
+  startTime = timestamp;
+  return runCount(timestamp);
+});
+
 
   return requestAnimationFrame(timestamp => {
     startTime = timestamp;

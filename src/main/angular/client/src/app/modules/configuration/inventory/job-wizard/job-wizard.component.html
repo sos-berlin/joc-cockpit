@@ -262,25 +262,20 @@
               </div>
             </div>
             <ng-container *ngIf="node">
-              <div *ngFor="let param of job.paramList; let i = index" class="form-group row m-b-0">
-                <div class="col-sm-1 m-b-sm text-center">
-                  <label [(nzChecked)]="!!param.name" [nzDisabled]="true" nz-checkbox
-                         style="position: relative;top:5px"></label>
-                </div>
-                <div class="col-sm-5 m-b-sm p-l-0">
-                  <input [(ngModel)]="param.name" autocomplete="off" class="form-control" name="name{{i}}" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}"
-                         type="text">
-                </div>
-                <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-                     class="col-sm-5 m-b-sm p-r-0">
-                  <input #value="ngModel" (keydown)="onKeyPress($event);" [(ngModel)]="param.newValue" [required]="!!param.name" autocomplete="off"
-                         class="form-control" name="value{{i}}" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
-                         type="text">
-                </div>
-                <div class="col-sm-1">
-                  <a><i (click)="removeParams(i)" class="fa fa-times m-t-sm text-muted"></i></a>
-                </div>
+            <div *ngFor="let param of job.paramList; let i = index" class="form-group row m-b-0">
+              <div class="col-sm-1 m-b-sm text-center">
+                <label nz-checkbox [nzChecked]="!!param.name" [nzDisabled]="true" style="position: relative;top:5px"></label>
               </div>
+              <div class="col-sm-5 m-b-sm p-l-0">
+                <input [(ngModel)]="param.name" autocomplete="off" class="form-control" name="name{{i}}" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" type="text">
+              </div>
+              <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}" class="col-sm-5 m-b-sm p-r-0">
+                <input #value="ngModel" (keydown)="onKeyPress($event);" [(ngModel)]="param.newValue" [required]="!!param.name" autocomplete="off" class="form-control" name="value{{i}}" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" type="text">
+              </div>
+              <div class="col-sm-1">
+                <a><i (click)="removeParams(i)" class="fa fa-times m-t-sm text-muted"></i></a>
+              </div>
+            </div>
             </ng-container>
           </div>
         </div>

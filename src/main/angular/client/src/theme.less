@@ -19,18 +19,16 @@
 
 // Color used by default to control hover and active backgrounds and for
 // alert info backgrounds.
-@primary-1: color(~`colorPalette('@{primary-color}', 1) `); // replace tint(@primary-color, 90%)
-@primary-2: color(~`colorPalette('@{primary-color}', 2) `); // replace tint(@primary-color, 80%)
-@primary-3: color(~`colorPalette('@{primary-color}', 3) `); // unused
-@primary-4: color(~`colorPalette('@{primary-color}', 4) `); // unused
-@primary-5: color(
-  ~`colorPalette('@{primary-color}', 5) `
-); // color used to control the text color in many active and hover states, replace tint(@primary-color, 20%)
+@primary-1: tint(@primary-color, 90%); // replace tint(@primary-color, 90%)
+@primary-2: tint(@primary-color, 80%); // replace tint(@primary-color, 80%)
+@primary-3: tint(@primary-color, 70%); // unused
+@primary-4: tint(@primary-color, 60%); // unused
+@primary-5: tint(@primary-color, 50%); // replace tint(@primary-color, 50%)
 @primary-6: @primary-color; // color used to control the text color of active buttons, don't use, use @primary-color
-@primary-7: color(~`colorPalette('@{primary-color}', 7) `); // replace shade(@primary-color, 5%)
-@primary-8: color(~`colorPalette('@{primary-color}', 8) `); // unused
-@primary-9: color(~`colorPalette('@{primary-color}', 9) `); // unused
-@primary-10: color(~`colorPalette('@{primary-color}', 10) `); // unused
+@primary-7: shade(@primary-color, 10%); // replace shade(@primary-color, 10%)
+@primary-8: shade(@primary-color, 20%); // unused
+@primary-9: shade(@primary-color, 30%); // unused
+@primary-10: shade(@primary-color, 40%); // unused
 
 // Base Scaffolding Variables
 // ---
@@ -80,8 +78,8 @@
 
 // LINK
 @link-color: @primary-color;
-@link-hover-color: color(~`colorPalette('@{link-color}', 5) `);
-@link-active-color: color(~`colorPalette('@{link-color}', 7) `);
+@link-hover-color: tint(@link-color, 20%);
+@link-active-color: shade(@link-color, 10%);
 @link-decoration: none;
 @link-hover-decoration: none;
 
@@ -133,8 +131,8 @@
 @btn-default-border: @border-color-base;
 
 @btn-danger-color: #fff;
-@btn-danger-bg: color(~`colorPalette('@{error-color}', 5) `);
-@btn-danger-border: color(~`colorPalette('@{error-color}', 5) `);
+@btn-danger-bg: tint(@error-color, 20%);
+@btn-danger-border: tint(@error-color, 20%);
 
 @btn-disable-color: @disabled-color;
 @btn-disable-bg: @disabled-bg;
@@ -186,7 +184,7 @@
 @radio-button-hover-color: @primary-5;
 @radio-button-active-color: @primary-7;
 
-//Dropdown
+// Dropdown
 @dropdown-vertical-padding: 5px;
 @dropdown-font-size: @font-size-base;
 @dropdown-line-height: 22px;
@@ -235,7 +233,6 @@
 @select-item-selected-bg: @background-color-light;
 @select-item-active-bg: @item-active-bg;
 
-
 // Tooltip
 // ---
 // Tooltip max width
@@ -268,7 +265,6 @@
 @popover-arrow-outer-color: @popover-bg;
 // Popover distance with trigger
 @popover-distance: @popover-arrow-width + 4px;
-
 
 // Menu
 // ---
@@ -389,8 +385,6 @@
 // ---
 @message-notice-content-padding: 10px 16px;
 
-
 // Typography
 // ---
 @typography-title-font-weight: 600;
-
