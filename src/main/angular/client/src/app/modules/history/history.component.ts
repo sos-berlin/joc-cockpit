@@ -16,7 +16,7 @@ import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component
 import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
 import {FileTransferService} from '../../services/file-transfer.service';
 import {InventoryForHistory} from '../../models/enums';
-
+import { CommentModalComponent } from 'src/app/components/comment-modal/comment.component';
 declare const $: any;
 
 @Component({
@@ -2338,21 +2338,123 @@ export class HistoryComponent {
       workflowPath: workflow,
       job: name ? name : undefined
     };
-    if (this.savedIgnoreList.jobs.indexOf(obj) === -1) {
-      this.savedIgnoreList.jobs.push(obj);
-      this.saveIgnoreList((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true));
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Remove',
+        operation: 'Ignore',
+        name: name
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzAutofocus: null,
+        nzData: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          let auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          };
+          if (this.savedIgnoreList.jobs.indexOf(obj) === -1) {
+            this.savedIgnoreList.jobs.push(obj);
+            this.saveIgnoreList((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true), auditLog);
+          }
+        }
+      });
+    }else{
+      if (this.savedIgnoreList.jobs.indexOf(obj) === -1) {
+        this.savedIgnoreList.jobs.push(obj);
+        this.saveIgnoreList((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true), '');
+      }
     }
   }
 
   addWorkflowToIgnoreList(name): void {
-    if (this.savedIgnoreList.workflows.indexOf(name) === -1) {
-      this.savedIgnoreList.workflows.push(name);
-      this.saveIgnoreList((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true));
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Remove',
+        operation: 'Ignore List',
+        name: name
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzAutofocus: null,
+        nzData: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          let auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          };
+          if (this.savedIgnoreList.jobs.indexOf(name) === -1) {
+            this.savedIgnoreList.jobs.push(name);
+            this.saveIgnoreList((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true), auditLog);
+          }
+        }
+      });
+    }else{
+      if (this.savedIgnoreList.workflows.indexOf(name) === -1) {
+        this.savedIgnoreList.workflows.push(name);
+        this.saveIgnoreList((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true), '');
+      }
     }
   }
 
   removeObjectFromIgnoreList(): void {
-    this.saveIgnoreList(true);
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Remove',
+        operation: 'Ignore List',
+        name: name
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzAutofocus: null,
+        nzData: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          let auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          };
+          this.saveIgnoreList(true, auditLog);
+        }
+      });
+    }else{
+      this.saveIgnoreList(true, '');
+    }
   }
 
   editIgnoreList(): void {
@@ -2376,16 +2478,50 @@ export class HistoryComponent {
   enableDisableIgnoreList(): void {
     if (this.schedulerIds.selected) {
       this.savedIgnoreList.isEnable = !this.savedIgnoreList.isEnable;
-      const configObj = {
+      const configObj: any = {
         controllerId: this.schedulerIds.selected,
         account: this.authService.currentUserData,
         configurationType: 'IGNORELIST',
         id: this.ignoreListConfigId,
         configurationItem: JSON.stringify(this.savedIgnoreList)
       };
-      this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-        this.ignoreListConfigId = res.id;
-      });
+      if (this.preferences.auditLog) {
+        const comments = {
+          radio: 'predefined',
+          type: 'Remove',
+          operation: 'Ignore List',
+          name: name
+        };
+        const modal = this.modal.create({
+          nzTitle: undefined,
+          nzContent: CommentModalComponent,
+          nzClassName: 'lg',
+          nzAutofocus: null,
+          nzData: {
+            comments,
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+
+        modal.afterClose.subscribe(result => {
+          if (result) {
+            configObj.auditLog = {
+              comment: result.comment,
+              timeSpent: result.timeSpent,
+              ticketLink: result.ticketLink
+            };
+            this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+              this.ignoreListConfigId = res.id;
+            });
+          }
+        });
+      }else{
+        this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+          this.ignoreListConfigId = res.id;
+        });
+      }
       if ((!isEmpty(this.jobSearch) && this.historyFilters.type === 'TASK') || (!isEmpty(this.orderSearch) && this.historyFilters.type === 'ORDER')) {
         this.search(this.historyFilters.type === 'TASK' ? this.jobSearch : this.orderSearch);
       } else {
@@ -2412,16 +2548,50 @@ export class HistoryComponent {
       this.savedIgnoreList.workflows = [];
       this.savedIgnoreList.jobs = [];
       this.savedIgnoreList.isEnable = false;
-      const configObj = {
+      const configObj: any = {
         controllerId: this.schedulerIds.selected,
         account: this.authService.currentUserData,
         configurationType: 'IGNORELIST',
         id: this.ignoreListConfigId,
         configurationItem: JSON.stringify(this.savedIgnoreList)
       };
-      this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
-        this.ignoreListConfigId = res.id;
-      });
+      if (this.preferences.auditLog) {
+        const comments = {
+          radio: 'predefined',
+          type: 'Remove',
+          operation: 'Ignore List',
+          name: name
+        };
+        const modal = this.modal.create({
+          nzTitle: undefined,
+          nzContent: CommentModalComponent,
+          nzClassName: 'lg',
+          nzAutofocus: null,
+          nzData: {
+            comments,
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+
+        modal.afterClose.subscribe(result => {
+          if (result) {
+            configObj.auditLog = {
+              comment: result.comment,
+              timeSpent: result.timeSpent,
+              ticketLink: result.ticketLink
+            };
+            this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+              this.ignoreListConfigId = res.id;
+            });
+          }
+        });
+      }else{
+        this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
+          this.ignoreListConfigId = res.id;
+        });
+      }
     }
   }
 
@@ -2742,7 +2912,7 @@ export class HistoryComponent {
     });
   }
 
-  private saveIgnoreList(flag): void {
+  private saveIgnoreList(flag, auditLog): void {
     if (this.schedulerIds.selected) {
       if (!flag) {
         let msg;
@@ -2758,13 +2928,16 @@ export class HistoryComponent {
           this.init(false);
         }
       }
-      const configObj = {
+      const configObj: any = {
         controllerId: this.schedulerIds.selected,
         account: this.authService.currentUserData,
         configurationType: 'IGNORELIST',
         id: this.ignoreListConfigId,
         configurationItem: JSON.stringify(this.savedIgnoreList)
       };
+      if(this.preferences.auditLog){
+        configObj.auditLog = auditLog;
+      }
       this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
         this.ignoreListConfigId = res.id;
       });
