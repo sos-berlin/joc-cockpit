@@ -423,6 +423,7 @@
     "label.pasteCertificate": "Zertifikat einfügen",
     "label.showEncryptionSample": "Verschlüsselungstest",
     "label.plainText": "Klartext",
+    "label.assignAgents": "Assign Agents",
     "placeholder.agentId": "Agenten-Kennung",
     "placeholder.certAlias": "Alias des Zertifikats",
     "placeholder.certificate": "Zertifikat hier einfügen",

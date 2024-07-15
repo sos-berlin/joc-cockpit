@@ -423,6 +423,7 @@
     "label.pasteCertificate": "Coller Certificat",
     "label.showEncryptionSample": "Test de Cryptage",
     "label.plainText": "Texte clair",
+    "label.assignAgents": "Assign Agents",
     "placeholder.agentId": "ID Agent",
     "placeholder.certAlias": "Alias de Certificat",
     "placeholder.certificate": "Coller le Certificat ici",

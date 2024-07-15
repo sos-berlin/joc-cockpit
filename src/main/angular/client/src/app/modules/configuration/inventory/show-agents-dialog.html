@@ -1,6 +1,9 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span class="drag-text" translate>encipherment.label.assignedAgents</span>
+    <span *ngIf="selectedCert; else assignAgents" class="drag-text" translate>encipherment.label.assignedAgents</span>
+    <ng-template #assignAgents>
+      <span class="drag-text" translate>encipherment.label.assignAgents</span>
+    </ng-template>
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -8,24 +11,76 @@
 </div>
 
 <div class="modal-body p-a">
-  <nz-table #agentsTable [nzData]="agents" [nzBordered]="true"
-            [nzFrontPagination]="false"
-            [nzShowPagination]="false"
-            [nzShowSizeChanger]="false" [nzSize]="'small'">
+  <!-- Standalone Agents -->
+  <div *ngIf="agents.length > 0">
+    <div class="m-t p-b-xs" translate>agent.label.agents</div>
+    <nz-table #agentsTable [nzData]="agents" [nzBordered]="true"
+              [nzFrontPagination]="false"
+              [nzShowPagination]="false"
+              [nzShowSizeChanger]="false" [nzSize]="'small'">
+      <thead>
+        <tr>
+          <th *ngIf="!selectedCert" nzShowCheckbox [(nzChecked)]="allAgentsChecked" [nzIndeterminate]="allAgentsIndeterminate" (nzCheckedChange)="toggleSelectAllAgents($event)" nzWidth="50px" class="chk"></th>
+          <th nzWidth="150px" translate>agent.label.agentName</th>
+          <th nzWidth="250px" translate>agent.label.url</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let agent of agentsTable.data">
+          <td *ngIf="!selectedCert" nzShowCheckbox [(nzChecked)]="agent.checked" (nzCheckedChange)="onAgentChecked()" class="chk"></td>
+          <td>{{ agent.agentName }}</td>
+          <td><a [href]="agent.agentUrl" target="_blank">{{ agent.agentUrl }}</a></td>
+        </tr>
+      </tbody>
+    </nz-table>
+  </div>
 
-    <thead>
-    <tr>
-      <th translate>agent.label.agentName</th>
-      <th translate>agent.label.url</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let agent of agentsTable.data">
-      <td>{{ agent.agentName }}</td>
-      <td><a [href]="agent.agentUrl" target="_blank">{{ agent.agentUrl }}</a></td>
-    </tr>
-    </tbody>
-  </nz-table>
+  <!-- Cluster Agents -->
+  <div *ngIf="clusterAgents.length > 0">
+    <div class="m-t p-b-xs" translate>agent.label.agentGroups</div>
+    <nz-table #clusterAgentsTable [nzData]="clusterAgents" [nzBordered]="true"
+              [nzFrontPagination]="false" [nzShowPagination]="false" [nzShowSizeChanger]="false" nzSize="small">
+      <thead>
+        <tr>
+          <th *ngIf="!selectedCert" nzShowCheckbox [(nzChecked)]="allClusterAgentsChecked" [nzIndeterminate]="allClusterAgentsIndeterminate" (nzCheckedChange)="toggleSelectAllClusterAgents($event)" nzWidth="50px" class="chk"></th>
+          <th nzWidth="150px" translate>agent.label.agentName</th>
+          <th nzWidth="250px" translate>agent.label.url</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let clusterAgent of clusterAgentsTable.data">
+          <tr>
+            <td *ngIf="!selectedCert" nzShowCheckbox [(nzChecked)]="clusterAgent.checked" (nzCheckedChange)="onClusterAgentChecked()" class="chk"></td>
+            <td (click)="toggleClusterAgent(clusterAgent)" class="cursor-pointer">{{ clusterAgent.agentName }}
+              <i class="fa" [ngClass]="clusterAgent.show ? 'fa-caret-up' : 'fa-caret-down'"></i>
+            </td>
+            <td>{{ clusterAgent.agentUrl }}</td>
+          </tr>
+          <tr *ngIf="clusterAgent.show">
+            <td colspan="3" style="padding: 0 !important; border-top: none !important;">
+              <nz-table [nzData]="clusterAgent.subagents" [nzBordered]="true"
+                        [nzFrontPagination]="false" [nzShowPagination]="false" [nzShowSizeChanger]="false" nzSize="small">
+                <thead>
+                  <tr>
+                    <th *ngIf="!selectedCert" nzShowCheckbox [(nzChecked)]="clusterAgent.checked" class="chk"></th>
+                    <th nzWidth="150px" translate>agent.label.subagentId</th>
+                    <th nzWidth="250px" translate>agent.label.url</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let subagent of clusterAgent.subagents">
+                    <td *ngIf="!selectedCert" nzShowCheckbox [(nzChecked)]="subagent.checked" (nzCheckedChange)="onClusterAgentChecked()" class="chk"></td>
+                    <td>{{ subagent.agentName }}</td>
+                    <td><a [href]="subagent.agentUrl" target="_blank">{{ subagent.agentUrl }}</a></td>
+                  </tr>
+                </tbody>
+              </nz-table>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </nz-table>
+  </div>
 </div>
 
 <div class="modal-footer">

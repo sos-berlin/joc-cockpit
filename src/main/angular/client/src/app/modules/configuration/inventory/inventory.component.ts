@@ -3273,13 +3273,17 @@ export class ShowAgentsModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
 
   selectedCert: any;
-  agents: Array<{ agentName: string, agentUrl: string }> = [];
+  agents: Array<{ agentName: string, agentUrl: string, checked?: boolean }> = [];
+  clusterAgents: any[] = [];
   schedulerId: any;
   inventoryAgents: any = [];
   inventoryClusterAgents: any = [];
+  allAgentsChecked: boolean = false;
+  allAgentsIndeterminate: boolean = false;
+  allClusterAgentsChecked: boolean = false;
+  allClusterAgentsIndeterminate: boolean = false;
 
-  constructor(private activeModal: NzModalRef, public coreService: CoreService) {
-  }
+  constructor(private activeModal: NzModalRef, public coreService: CoreService) {}
 
   ngOnInit(): void {
     this.selectedCert = this.modalData.selectedCert;
@@ -3288,44 +3292,100 @@ export class ShowAgentsModalComponent {
   }
 
   getAssignedAgents() {
-    const certAliases = {certAliases: [this.selectedCert]};
+    if (this.selectedCert) {
+      const certAliases = { certAliases: [this.selectedCert] };
 
-    this.coreService.post('encipherment/assignment', certAliases).subscribe({
-      next: (res: any) => {
-        const assignedAgents = res.mappings
-          .filter((mapping: any) => mapping.certAlias === this.selectedCert)
-          .map((mapping: any) => mapping.agentId)
-          .flat();
+      this.coreService.post('encipherment/assignment', certAliases).subscribe({
+        next: (res: any) => {
+          const assignedAgents = res.mappings
+            .filter((mapping: any) => mapping.certAlias === this.selectedCert)
+            .map((mapping: any) => mapping.agentId)
+            .flat();
 
-        this.agents = assignedAgents.map((agentId: string) => {
-          let agentData = this.findAgentData(agentId);
+          this.agents = [];
+          this.clusterAgents = [];
 
-          return {
-            agentName: agentData ? agentData.agentName : agentId,
-            agentUrl: agentData ? agentData.url : 'URL not found'
-          };
-        });
-      },
-      error: (err) => {
-        console.error('Error fetching assigned agents:', err);
-      },
-    });
+          assignedAgents.forEach((agentId: string) => {
+            let agentData = this.findAgentData(agentId);
+            if (agentData) {
+              if (agentData.isClusterAgent) {
+                let clusterAgent = this.clusterAgents.find(ca => ca.agentId === agentData.agentId);
+                if (!clusterAgent) {
+                  clusterAgent = {
+                    agentId: agentData.agentId,
+                    agentName: agentData.agentName,
+                    agentUrl: agentData.url,
+                    show: true,
+                    subagents: []
+                  };
+                  this.clusterAgents.push(clusterAgent);
+                }
+                clusterAgent.subagents.push({
+                  agentName: agentData.subagentId,
+                  agentUrl: agentData.url,
+                  checked: true
+                });
+              } else {
+                this.agents.push({
+                  agentName: agentData.agentName,
+                  agentUrl: agentData.url,
+                  checked: true
+                });
+              }
+            }
+          });
+
+          this.updateAgentSelectionState();
+          this.updateClusterAgentSelectionState();
+        },
+        error: (err) => {
+          console.error('Error fetching assigned agents:', err);
+        },
+      });
+    } else {
+      this.loadAllAgents();
+    }
+  }
+
+  loadAllAgents() {
+    this.agents = [
+      ...this.inventoryAgents.agents.map((agent: any) => ({
+        agentName: agent.agentName,
+        agentUrl: agent.url,
+        checked: false
+      }))
+    ];
+
+    this.clusterAgents = this.inventoryClusterAgents.agents.map((clusterAgent: any) => ({
+      agentId: clusterAgent.agentId,
+      agentName: clusterAgent.agentName,
+      agentUrl: clusterAgent.url,
+      show: true,
+      subagents: clusterAgent.subagents.map((subagent: any) => ({
+        agentName: subagent.subagentId,
+        agentUrl: subagent.url,
+        checked: false
+      }))
+    }));
+
+    this.updateAgentSelectionState();
+    this.updateClusterAgentSelectionState();
   }
 
   findAgentData(agentId: string): any {
     let agentData = this.inventoryAgents.agents.find((agent: any) => agent.agentId === agentId);
     if (agentData) {
-      return agentData;
+      return { ...agentData, isClusterAgent: false };
     }
 
     for (let clusterAgent of this.inventoryClusterAgents.agents) {
       if (clusterAgent.agentId === agentId) {
-        return clusterAgent;
+        return { ...clusterAgent, isClusterAgent: true };
       }
 
       const subAgentData = clusterAgent.subagents.find((subagent: any) => subagent.subagentId === agentId);
       if (subAgentData) {
-        return {...subAgentData, agentName: clusterAgent.agentName};
+        return { ...subAgentData, agentName: clusterAgent.agentName, agentId: clusterAgent.agentId, isClusterAgent: true };
       }
     }
 
@@ -3360,12 +3420,59 @@ export class ShowAgentsModalComponent {
     });
   }
 
+  toggleClusterAgent(agent: any): void {
+    agent.show = !agent.show;
+  }
+
   cancel(): void {
     this.activeModal.destroy();
   }
 
   onSubmit(): void {
     // Implementation for the submit action
+  }
+
+  toggleSelectAllAgents(checked: boolean) {
+    this.allAgentsChecked = checked;
+    this.agents.forEach(agent => agent.checked = checked);
+    this.updateAgentSelectionState();
+  }
+
+  toggleSelectAllClusterAgents(checked: boolean) {
+    this.allClusterAgentsChecked = checked;
+    this.clusterAgents.forEach(clusterAgent => {
+      clusterAgent.checked = checked;
+      clusterAgent.subagents.forEach(subagent => subagent.checked = checked);
+    });
+    this.updateClusterAgentSelectionState();
+  }
+
+  updateAgentSelectionState() {
+    const allChecked = this.agents.every(agent => agent.checked);
+    const noneChecked = this.agents.every(agent => !agent.checked);
+
+    this.allAgentsChecked = allChecked;
+    this.allAgentsIndeterminate = !allChecked && !noneChecked;
+  }
+
+  updateClusterAgentSelectionState() {
+    const allChecked = this.clusterAgents.every(clusterAgent => {
+      return clusterAgent.checked && clusterAgent.subagents.every(subagent => subagent.checked);
+    });
+    const noneChecked = this.clusterAgents.every(clusterAgent => {
+      return !clusterAgent.checked && clusterAgent.subagents.every(subagent => !subagent.checked);
+    });
+
+    this.allClusterAgentsChecked = allChecked;
+    this.allClusterAgentsIndeterminate = !allChecked && !noneChecked;
+  }
+
+  onAgentChecked() {
+    this.updateAgentSelectionState();
+  }
+
+  onClusterAgentChecked() {
+    this.updateClusterAgentSelectionState();
   }
 }
 
@@ -3386,7 +3493,7 @@ export class EncryptArgumentModalComponent {
   certificate: string = '';
   encryptedValue: string = '';
   isBulkOperation: boolean = false;
-  certificateMode: 'alias' | 'paste' = 'alias'; // new property for the radio button selection
+  certificateMode: 'alias' | 'paste' = 'alias';
 
   constructor(private activeModal: NzModalRef, public coreService: CoreService, private modal: NzModalService) {
   }

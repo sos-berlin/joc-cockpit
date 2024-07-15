@@ -423,6 +423,7 @@
     "label.pasteCertificate": "証明書をペースト",
     "label.showEncryptionSample": "Certificate Sample Encryption",
     "label.plainText": "Plain Text",
+    "label.assignAgents": "Assign Agents",
     "placeholder.agentId": "エージェントID",
     "placeholder.certAlias": "証明書エイリアス名",
     "placeholder.certificate": "証明書をペースト",

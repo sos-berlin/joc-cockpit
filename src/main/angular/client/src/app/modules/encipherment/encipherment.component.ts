@@ -94,7 +94,7 @@ export class AddEnciphermentModalComponent {
     return data.key;
   }
 
-  showAssignedAgents(selectedCert) {
+  showAssignedAgents(selectedCert?) {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ShowAgentsModalComponent,

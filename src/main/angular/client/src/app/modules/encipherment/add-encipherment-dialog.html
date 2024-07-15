@@ -96,11 +96,17 @@
     </div>
     <div class="form-group row">
       <div class="col-sm-12">
-        <a *ngIf="certificateObj.certAlias" (click)="showAssignedAgents(certificateObj.certAlias)" class="text-u-l" translate>encipherment.label.showAssignedAgents</a>
+        <a *ngIf="certificateObj.certAlias && title === 'updateCertificate'" (click)="showAssignedAgents(certificateObj.certAlias)" class="text-u-l" translate>encipherment.label.showAssignedAgents</a>
       </div>
     </div>
 
-    <div *ngIf="!showEncryptionSample" class="form-group row">
+    <div *ngIf="title === 'updateCertificate'" class="form-group row">
+      <div class="col-sm-12">
+        <a (click)="showAssignedAgents()" class="text-u-l" translate>encipherment.label.assignAgents</a>
+      </div>
+    </div>
+
+    <div *ngIf="!showEncryptionSample && title === 'updateCertificate'" class="form-group row">
       <div class="col-sm-12">
         <a (click)="toggleEncryptionSample()" class="text-u-l" translate>encipherment.label.showEncryptionSample</a>
       </div>
