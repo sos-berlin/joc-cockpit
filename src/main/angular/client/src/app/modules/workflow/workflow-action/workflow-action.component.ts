@@ -871,8 +871,9 @@ export class AddOrderModalComponent {
     for (let i in this.schedules) {
       if (this.schedules[i].name == name) {
         this.selectedSchedule = this.schedules[i];
+
         if (this.selectedSchedule.orderParameterisations && this.selectedSchedule.orderParameterisations.length == 1) {
-          this.selectOrder(this.selectedSchedule.orderParameterisations[0].name || '-');
+          this.selectOrder(this.selectedSchedule.orderParameterisations[0].orderName || '-');
         }
         break;
       }

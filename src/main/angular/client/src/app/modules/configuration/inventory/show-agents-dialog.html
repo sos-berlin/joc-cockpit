@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="selectedCert; else assignAgents" class="drag-text" translate>encipherment.label.assignedAgents</span>
+    <span *ngIf="!flag; else assignAgents" class="drag-text" translate>encipherment.label.assignedAgents</span>
     <ng-template #assignAgents>
       <span class="drag-text" translate>encipherment.label.assignAgents</span>
     </ng-template>
@@ -20,14 +20,14 @@
               [nzShowSizeChanger]="false" [nzSize]="'small'">
       <thead>
         <tr>
-          <th *ngIf="!selectedCert" nzShowCheckbox [(nzChecked)]="allAgentsChecked" [nzIndeterminate]="allAgentsIndeterminate" (nzCheckedChange)="toggleSelectAllAgents($event)" nzWidth="50px" class="chk"></th>
+          <th *ngIf="flag" nzShowCheckbox [(nzChecked)]="allAgentsChecked" [nzIndeterminate]="allAgentsIndeterminate" (nzCheckedChange)="toggleSelectAllAgents($event)" nzWidth="50px" class="chk"></th>
           <th nzWidth="150px" translate>agent.label.agentName</th>
           <th nzWidth="250px" translate>agent.label.url</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let agent of agentsTable.data">
-          <td *ngIf="!selectedCert" nzShowCheckbox [(nzChecked)]="agent.checked" (nzCheckedChange)="onAgentChecked()" class="chk"></td>
+          <td *ngIf="flag" nzShowCheckbox [(nzChecked)]="agent.checked" (nzCheckedChange)="onAgentChecked()" class="chk"></td>
           <td>{{ agent.agentName }}</td>
           <td><a [href]="agent.agentUrl" target="_blank">{{ agent.agentUrl }}</a></td>
         </tr>
@@ -42,7 +42,7 @@
               [nzFrontPagination]="false" [nzShowPagination]="false" [nzShowSizeChanger]="false" nzSize="small">
       <thead>
         <tr>
-          <th *ngIf="!selectedCert" nzShowCheckbox [(nzChecked)]="allClusterAgentsChecked" [nzIndeterminate]="allClusterAgentsIndeterminate" (nzCheckedChange)="toggleSelectAllClusterAgents($event)" nzWidth="50px" class="chk"></th>
+          <th *ngIf="flag" nzShowCheckbox [(nzChecked)]="allClusterAgentsChecked" [nzIndeterminate]="allClusterAgentsIndeterminate" (nzCheckedChange)="toggleSelectAllClusterAgents($event)" nzWidth="50px" class="chk"></th>
           <th nzWidth="150px" translate>agent.label.agentName</th>
           <th nzWidth="250px" translate>agent.label.url</th>
         </tr>
@@ -50,7 +50,7 @@
       <tbody>
         <ng-container *ngFor="let clusterAgent of clusterAgentsTable.data">
           <tr>
-            <td *ngIf="!selectedCert" nzShowCheckbox [(nzChecked)]="clusterAgent.checked" (nzCheckedChange)="onClusterAgentChecked()" class="chk"></td>
+            <td *ngIf="flag"></td>
             <td (click)="toggleClusterAgent(clusterAgent)" class="cursor-pointer">{{ clusterAgent.agentName }}
               <i class="fa" [ngClass]="clusterAgent.show ? 'fa-caret-up' : 'fa-caret-down'"></i>
             </td>
@@ -62,14 +62,14 @@
                         [nzFrontPagination]="false" [nzShowPagination]="false" [nzShowSizeChanger]="false" nzSize="small">
                 <thead>
                   <tr>
-                    <th *ngIf="!selectedCert" nzShowCheckbox [(nzChecked)]="clusterAgent.checked" class="chk"></th>
+                    <th *ngIf="flag" nzShowCheckbox [(nzChecked)]="clusterAgent.checked" [nzIndeterminate]="clusterAgent.indeterminate" (nzCheckedChange)="onClusterAgentChecked(clusterAgent)" class="chk"></th>
                     <th nzWidth="150px" translate>agent.label.subagentId</th>
                     <th nzWidth="250px" translate>agent.label.url</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr *ngFor="let subagent of clusterAgent.subagents">
-                    <td *ngIf="!selectedCert" nzShowCheckbox [(nzChecked)]="subagent.checked" (nzCheckedChange)="onClusterAgentChecked()" class="chk"></td>
+                    <td *ngIf="flag" nzShowCheckbox [(nzChecked)]="subagent.checked" (nzCheckedChange)="onSubagentChecked(clusterAgent)" class="chk"></td>
                     <td>{{ subagent.agentName }}</td>
                     <td><a [href]="subagent.agentUrl" target="_blank">{{ subagent.agentUrl }}</a></td>
                   </tr>
@@ -84,6 +84,9 @@
 </div>
 
 <div class="modal-footer">
+  <button [disabled]="isSubmitDisabled" class="btn btn-primary btn-sm" (click)="onSubmit()">
+    {{'xml.button.assign' | translate}}
+  </button>
   <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
     common.button.close
   </button>

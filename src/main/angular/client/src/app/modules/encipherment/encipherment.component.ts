@@ -94,14 +94,15 @@ export class AddEnciphermentModalComponent {
     return data.key;
   }
 
-  showAssignedAgents(selectedCert?) {
+  showAssignedAgents(selectedCert, flag?) {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ShowAgentsModalComponent,
       nzAutofocus: null,
       nzData: {
         controllerId: this.schedulerIds.selected,
-        selectedCert
+        selectedCert,
+        flag
       },
       nzFooter: null,
       nzClosable: false,

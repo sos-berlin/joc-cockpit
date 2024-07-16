@@ -102,7 +102,7 @@
 
     <div *ngIf="title === 'updateCertificate'" class="form-group row">
       <div class="col-sm-12">
-        <a (click)="showAssignedAgents()" class="text-u-l" translate>encipherment.label.assignAgents</a>
+        <a (click)="showAssignedAgents(certificateObj.certAlias, true)" class="text-u-l" translate>encipherment.label.assignAgents</a>
       </div>
     </div>
 
