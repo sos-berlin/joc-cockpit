@@ -319,6 +319,7 @@
                           <tr>
                             <th><span translate>resource.board.label.postOrderToNoticeId</span></th>
                             <th><span translate>resource.board.label.expectOrderToNoticeId</span></th>
+                            <th><span translate>resource.board.label.endOfLifeOfNotices</span></th>
                           </tr>
                           </thead>
                           <tbody>
@@ -328,6 +329,9 @@
                             </td>
                             <td>
                               <span [innerHtml]="board.expectOrderToNoticeId"></span>
+                            </td>
+                            <td>
+                              <span [innerHtml]="board.endOfLife"></span>
                             </td>
                           </tr>
                           </tbody>
