@@ -122,6 +122,7 @@ export class AddOrderModalComponent {
   allowEmptyArguments: any;
   argumentsValid: boolean = true;
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
+
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
               private modal: NzModalService, private ref: ChangeDetectorRef, private workflowService: WorkflowService) {
   }

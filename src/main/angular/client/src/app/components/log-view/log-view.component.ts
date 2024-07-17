@@ -550,7 +550,7 @@ export class LogViewComponent {
               && this.treeStructure[x]['consumeNotices'] == dt[i].consumeNotices && this.treeStructure[x]['moved'] == dt[i].moved
               && this.treeStructure[x]['question'] == dt[i].question && this.treeStructure[x]['cycle'] == dt[i].cycle && this.treeStructure[x]['attached'] == dt[i].attached)) {
             if (this.treeStructure[x]['orderId'] == dt[i].orderId) {
-              if(dt[i].label){
+              if (dt[i].label) {
                 this.treeStructure[x]['label'] = dt[i].label;
               }
               if (dt[i].logLevel) {

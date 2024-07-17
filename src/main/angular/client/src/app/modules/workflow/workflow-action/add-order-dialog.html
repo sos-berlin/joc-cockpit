@@ -497,7 +497,7 @@
                  class="col-md-6 col-lg-6 m-b-sm">
               <nz-select #list="ngModel" [(ngModel)]="argument.value"
                          [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [required]="argument.isRequired" name="list{{i}}{{argument.name}}"
-                         nzAllowClear>
+                         nzShowSearch nzAllowClear>
                 <ng-container *ngFor="let option of argument.list">
                   <nz-option [nzLabel]="option.name" [nzValue]="option.name" nzCustomContent>
                     <div>

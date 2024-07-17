@@ -84,7 +84,7 @@
 </div>
 
 <div class="modal-footer">
-  <button [disabled]="isSubmitDisabled" class="btn btn-primary btn-sm" (click)="onSubmit()">
+  <button *ngIf="flag" [disabled]="isSubmitDisabled" class="btn btn-primary btn-sm" (click)="onSubmit()">
     {{'xml.button.assign' | translate}}
   </button>
   <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">

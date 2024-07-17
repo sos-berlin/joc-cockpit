@@ -1050,6 +1050,7 @@ export class CoreService {
 
     let index = 0;
 
+
     let lastLevel = '';
     let lastClass = '';
     let continueClass = [];

@@ -17,6 +17,7 @@ import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
 import {FileTransferService} from '../../services/file-transfer.service';
 import {InventoryForHistory} from '../../models/enums';
 import { CommentModalComponent } from 'src/app/components/comment-modal/comment.component';
+
 import {CreateTagModalComponent} from "../configuration/inventory/inventory.component";
 
 declare const $: any;

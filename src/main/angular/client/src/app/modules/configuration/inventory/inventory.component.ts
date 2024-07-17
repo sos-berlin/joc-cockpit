@@ -3968,6 +3968,7 @@ export class InventoryComponent {
   }
 
   initTree(path: string, mainPath: string, redirect = false, recursive= false): void {
+
     if (!path) {
       this.isLoading = true;
     }
@@ -3993,6 +3994,7 @@ export class InventoryComponent {
           }, redirect);
           if (mainPath && path !== mainPath) {
             this.updateFolders(mainPath, false, recursive,() => {
+
               this.updateTree(false);
             });
           }
@@ -4031,6 +4033,7 @@ export class InventoryComponent {
             this.tree = tree;
             if (this.tree.length > 0) {
               this.updateObjects(this.tree[0], false, recursive,(children: any) => {
+
                 this.isLoading = false;
                 if (children.length > 0) {
                   this.tree[0].children.splice(0, 0, children[0]);
@@ -4067,6 +4070,7 @@ export class InventoryComponent {
             if (this.trashTree.length > 0) {
               this.trashTree[0].expanded = true;
               this.updateObjects(this.trashTree[0], true, false,(children) => {
+
                 this.isTreeLoaded = false;
                 if (children.length > 0) {
                   this.trashTree[0].children.splice(0, 0, children[0]);
@@ -4091,6 +4095,7 @@ export class InventoryComponent {
           this.findObjectByPath(res.path);
         }, error: () => {
           this.updateObjects(this.tree[0], this.isTrash, false,(children) => {
+
             this.isLoading = false;
             if (children.length > 0) {
               this.tree[0].children.splice(0, 0, children[0]);
@@ -4138,7 +4143,9 @@ export class InventoryComponent {
 
         if (flag) {
           if (!data.controller && !data.dailyPlan) {
+
             self.updateObjects(data, self.isTrash, false,(children: any) => {
+
               if (children.length > 0) {
                 const index = data.children[0] && data.children[0].controller ? 1 : 0;
                 data.children.splice(0, index, children[0]);
@@ -4275,7 +4282,9 @@ export class InventoryComponent {
     if ((!isTrash && this.tree.length > 0) || (isTrash && this.trashTree.length > 0)) {
       function traverseTree(data: any) {
         if (path && data.path && (path === data.path)) {
+
           self.updateObjects(data, isTrash, recursive,(children: any) => {
+
             if (children.length > 0) {
               let folders = data.children;
               if (data.children.length > 1 && data.children[0].controller) {
