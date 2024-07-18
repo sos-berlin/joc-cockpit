@@ -401,6 +401,7 @@ export class SingleDeployComponent {
   required = false;
   comments: any = {radio: 'predefined'};
   dateFormat: any = {};
+  includeLate: boolean = false;
   object: any = {
     store: {draftConfigurations: [], deployConfigurations: []},
     delete: {deployConfigurations: []}
@@ -512,7 +513,8 @@ export class SingleDeployComponent {
     this.getJSObject();
     const obj: any = {
       controllerIds: this.selectedSchedulerIds,
-      auditLog: {}
+      auditLog: {},
+      includeLate: this.includeLate
     };
     if ((this.data.objectType == 'WORKFLOW' || this.releasable || this.isRemoved) && this.deployablesObject.length > 0) {
       if (!this.isRevoke) {
@@ -554,7 +556,8 @@ export class SingleDeployComponent {
   release(): void {
     const PATH = this.data.path1 ? ((this.data.path1 + (this.data.path1 === '/' ? '' : '/') + this.data.name)) : ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name));
     let obj: any = {
-      auditLog: {}
+      auditLog: {},
+      includeLate: this.includeLate
     };
     if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
       obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
