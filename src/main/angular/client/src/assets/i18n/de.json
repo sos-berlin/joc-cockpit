@@ -1793,6 +1793,7 @@
     "label.tagName": "Kennzeichnung",
     "label.testMail": "E-Mail testen",
     "label.impactedSchedules": "Betroffene Zeitpläne",
+    "label.includeTodaysLateOrders": "Include Today's Late Orders",
     "button.modifyVariableSet": "Variablensatz ändern",
     "button.addOrderParameter": "Auftragsvorlage hinzufügen",
     "button.setVersion": "Version setzen",
