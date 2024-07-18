@@ -1726,6 +1726,8 @@
     "label.renameTag": "Schlagwort umbenennen",
     "label.tagName": "Schlagwort Name",
     "label.testMail": "E-Mail testen",
+
+    "label.includeTodaysLateOrders": "Include Today's Late Orders",
     "button.modifyVariableSet": "Variablensatz ändern",
     "button.addOrderParameter": "Auftragsvorlage hinzufügen",
     "button.setVersion": "Version setzen",

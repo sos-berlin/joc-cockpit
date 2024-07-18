@@ -1726,6 +1726,8 @@
     "label.renameTag": "タグ名変更",
     "label.tagName": "タグ名",
     "label.testMail": "テストメール",
+
+    "label.includeTodaysLateOrders": "Include Today's Late Orders",
     "button.modifyVariableSet": "変数設定変更",
     "button.addOrderParameter": "オーダー変数追加",
     "button.setVersion": "バージョン設定",

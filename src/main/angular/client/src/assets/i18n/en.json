@@ -1726,6 +1726,8 @@
     "label.renameTag": "Rename Tag",
     "label.tagName": "Tag Name",
     "label.testMail": "Test E-Mail",
+
+    "label.includeTodaysLateOrders": "Include Today's Late Orders",
     "button.modifyVariableSet": "Modify Variable Set",
     "button.addOrderParameter": "Add Order Template",
     "button.setVersion": "Set Version",
