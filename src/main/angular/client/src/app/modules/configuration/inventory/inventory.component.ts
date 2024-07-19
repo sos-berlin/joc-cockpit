@@ -3299,7 +3299,8 @@ export class ShowAgentsModalComponent {
   allClusterAgentsIndeterminate: boolean = false;
   isSubmitDisabled: boolean = true;
 
-  constructor(private activeModal: NzModalRef, public coreService: CoreService) {}
+  constructor(private activeModal: NzModalRef, public coreService: CoreService) {
+  }
 
   ngOnInit(): void {
     this.selectedCert = this.modalData.selectedCert;
@@ -3309,7 +3310,7 @@ export class ShowAgentsModalComponent {
   }
 
   getAgentData() {
-    this.coreService.post('agents/inventory', { controllerId: this.schedulerId }).subscribe({
+    this.coreService.post('agents/inventory', {controllerId: this.schedulerId}).subscribe({
       next: data => {
         this.inventoryAgents = data;
         this.getAgentClusterData();
@@ -3321,7 +3322,7 @@ export class ShowAgentsModalComponent {
   }
 
   getAgentClusterData() {
-    this.coreService.post('agents/inventory/cluster', { controllerId: this.schedulerId }).subscribe({
+    this.coreService.post('agents/inventory/cluster', {controllerId: this.schedulerId}).subscribe({
       next: data => {
         this.inventoryClusterAgents = data;
         this.getAssignedAgents();
@@ -3334,7 +3335,7 @@ export class ShowAgentsModalComponent {
 
   getAssignedAgents() {
     if (this.selectedCert && !this.flag) {
-      const certAliases = { certAliases: [this.selectedCert] };
+      const certAliases = {certAliases: [this.selectedCert]};
       this.coreService.post('encipherment/assignment', certAliases).subscribe({
         next: res => {
           const assignedAgents = res.mappings
@@ -3361,7 +3362,12 @@ export class ShowAgentsModalComponent {
         if (agentData.isClusterAgent) {
           this.addClusterAgent(agentData);
         } else {
-          this.agents.push({agentId: agentData.agentId ,agentName: agentData.agentName, agentUrl: agentData.url, checked: true });
+          this.agents.push({
+            agentId: agentData.agentId,
+            agentName: agentData.agentName,
+            agentUrl: agentData.url,
+            checked: true
+          });
         }
       }
     });
@@ -3384,7 +3390,12 @@ export class ShowAgentsModalComponent {
       };
       this.clusterAgents.push(clusterAgent);
     }
-    clusterAgent.subagents.push({agentId: agentData.subagentId, agentName: agentData.subagentId, agentUrl: agentData.url, checked: true });
+    clusterAgent.subagents.push({
+      agentId: agentData.subagentId,
+      agentName: agentData.subagentId,
+      agentUrl: agentData.url,
+      checked: true
+    });
   }
 
   loadAllAgents() {
@@ -3418,17 +3429,22 @@ export class ShowAgentsModalComponent {
   findAgentData(agentId: string): any {
     let agentData = this.inventoryAgents.agents.find(agent => agent.agentId === agentId);
     if (agentData) {
-      return { ...agentData, isClusterAgent: false };
+      return {...agentData, isClusterAgent: false};
     }
 
     for (let clusterAgent of this.inventoryClusterAgents.agents) {
       if (clusterAgent.agentId === agentId) {
-        return { ...clusterAgent, isClusterAgent: true };
+        return {...clusterAgent, isClusterAgent: true};
       }
 
       const subAgentData = clusterAgent.subagents.find(subagent => subagent.subagentId === agentId);
       if (subAgentData) {
-        return { ...subAgentData, agentName: clusterAgent.agentName, agentId: clusterAgent.agentId, isClusterAgent: true };
+        return {
+          ...subAgentData,
+          agentName: clusterAgent.agentName,
+          agentId: clusterAgent.agentId,
+          isClusterAgent: true
+        };
       }
     }
 

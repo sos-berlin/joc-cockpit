@@ -1417,8 +1417,8 @@
                nz-tooltip="{{'common.button.copyArguments' | translate}}">
               <i class="fa fa-copy"></i>
             </a>
-            <a *ngIf="storedArguments?.length > 0" (click)="handlePaste(storedArguments[0])" class="anchor-with-icon pos-abt m-t-n-1"
-               nz-tooltip="{{'common.button.paste' | translate}}" style="right: 66px;">
+            <a *ngIf="storedArguments?.length > 0 || storedIndlArguments?.length > 0" (click)="handleIndlPaste()" class="anchor-with-icon pos-abt m-t-n-1"
+               nz-tooltip="{{'common.button.paste' | translate}}"  [ngStyle]="{'right': ((storedArguments?.length > 0 || storedIndlArguments) && variableDeclarations.parameters?.length > 0) ? '66px' : (storedArguments?.length > 0 && !variableDeclarations.parameters?.length > 0) ? '66px' : '42px'}">
               <i class="fa fa-paste"></i>
             </a>
             <a *ngIf="storedArguments?.length > 0" nz-popover [nzPopoverTitle]="'common.label.clipboard' | translate" [nzPopoverContent]="contentTemplate"
@@ -1451,16 +1451,9 @@
                          [ngClass]="!variable.isCollapse ? 'fa-angle-up' : 'fa-angle-down' "></i>
                     </label>
                     <a *ngIf="variableDeclarations.parameters?.length > 0" (click)="copyIndlArguments(i)" class="anchor-with-icon pos-abt m-t-n-1"
-                       [ngStyle]="{'right': (storedIndlArguments?.length > 0 && getStoredIndlArgumentsName() === variable?.name) ? '50px' : '27px'}"
+                       [ngStyle]="{'right': '50px'}"
                        nz-tooltip="{{'common.button.copyArguments' | translate}}">
                       <i class="fa fa-copy"></i>
-                    </a>
-                    <a *ngIf="getStoredIndlArgumentsName() === variable?.name"
-                       (click)="handleIndlPaste(storedIndlArguments[0])"
-                       class="anchor-with-icon pos-abt m-t-n-1"
-                       nz-tooltip="{{'common.button.paste' | translate}}"
-                       style="right: 27px;">
-                      <i class="fa fa-paste"></i>
                     </a>
                   </div>
                 </div>
