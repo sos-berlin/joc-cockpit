@@ -3596,26 +3596,30 @@ export class WorkflowComponent {
   }
 
   copyArguments(): void {
-    let storedData = sessionStorage.getItem('$SOS$copiedDeclaredArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedDeclaredArgument')) : [];
+    let storedData = sessionStorage.getItem('$SOS$copiedArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedArgument')) : [];
     storedData.push(JSON.stringify(this.variableDeclarations.parameters));
     if (storedData.length > 20) {
       storedData.shift();
     }
-    sessionStorage.setItem('$SOS$copiedDeclaredArgument', JSON.stringify(storedData));
+    sessionStorage.setItem('$SOS$copiedArgument', JSON.stringify(storedData));
     this.coreService.showCopyMessage(this.message);
     this.fetchClipboard();
   }
 
   copyIndlArguments(index): void {
-    let storedData = sessionStorage.getItem('$SOS$copiedIndlDeclaredArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedIndlDeclaredArgument')) : [];
-    storedData = [JSON.stringify(this.variableDeclarations.parameters[index])];
-    if (storedData.length > 20) {
-      storedData.shift();
+    let newData = JSON.stringify(this.variableDeclarations.parameters[index]);
+   this.storedArguments = sessionStorage.getItem('$SOS$copiedArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedArgument')) : [];
+    this.storedArguments.push(newData);
+    if (this.storedArguments.length > 20) {
+      this.storedArguments.shift();
     }
-    sessionStorage.setItem('$SOS$copiedIndlDeclaredArgument', JSON.stringify(storedData));
+
+    sessionStorage.setItem('$SOS$copiedArgument', JSON.stringify(this.storedArguments));
+    sessionStorage.setItem('$SOS$copiedArgument', JSON.stringify([newData]));
     this.coreService.showCopyMessage(this.message);
     this.fetchIndlClipboard();
   }
+
 
 
   handlePaste(data) {
@@ -3624,53 +3628,83 @@ export class WorkflowComponent {
     }
     if (data && typeof data == 'string') {
       const clipboardDataArray = JSON.parse(data);
-      if (!isArray(clipboardDataArray)) {
-        return;
+      if (Array.isArray(clipboardDataArray)) {
+        clipboardDataArray.forEach(arg => {
+          let flag = true;
+          for (let i in this.variableDeclarations.parameters) {
+            if (arg.name === this.variableDeclarations.parameters[i].name) {
+              flag = false;
+            }
+          }
+          if (flag) {
+            this.variableDeclarations.parameters.push(arg);
+          }
+        });
+      } else {
+        const existingParameter = this.variableDeclarations.parameters.find(
+          parameter => parameter.name === clipboardDataArray.name
+        );
+
+        if (existingParameter) {
+          if (clipboardDataArray.value) {
+            existingParameter.value = clipboardDataArray.value;
+
+            if (clipboardDataArray.value.type === 'List') {
+              existingParameter.value.listParameters = clipboardDataArray.value.listParameters;
+            }
+          }
+        } else {
+          this.variableDeclarations.parameters.push(clipboardDataArray);
+        }
       }
-      clipboardDataArray.forEach(argu => {
-        let flag = true;
-        for (let i in this.variableDeclarations.parameters) {
-          if (argu.name == this.variableDeclarations.parameters[i].name) {
-            flag = false;
+      this.updateOtherProperties('variable');
+    }
+  }
+
+    handleIndlPaste(): void {
+      let data;
+
+        data = this.storedArguments[this.storedArguments.length - 1];
+
+
+      if (data && typeof data === 'string') {
+        const clipboardDataArray = JSON.parse(data);
+
+        if (Array.isArray(clipboardDataArray)) {
+          clipboardDataArray.forEach(arg => {
+            let flag = true;
+            for (let i in this.variableDeclarations.parameters) {
+              if (arg.name === this.variableDeclarations.parameters[i].name) {
+                flag = false;
+              }
+            }
+            if (flag) {
+              this.variableDeclarations.parameters.push(arg);
+            }
+          });
+        } else {
+          const existingParameter = this.variableDeclarations.parameters.find(
+            parameter => parameter.name === clipboardDataArray.name
+          );
+
+          if (existingParameter) {
+            if (clipboardDataArray.value) {
+              existingParameter.value = clipboardDataArray.value;
+
+              if (clipboardDataArray.value.type === 'List') {
+                existingParameter.value.listParameters = clipboardDataArray.value.listParameters;
+              }
+            }
+          } else {
+            this.variableDeclarations.parameters.push(clipboardDataArray);
           }
         }
-        if (flag) {
-          this.variableDeclarations.parameters.push(argu);
-        }
-      })
-      this.updateOtherProperties('variable');
-    }
-  }
 
-  handleIndlPaste(data): void {
-    if (!data || data.type) {
-      data = this.storedIndlArguments[0];
-    }
-
-    if (data && typeof data === 'string') {
-      const clipboardDataArray = JSON.parse(data);
-      const existingParameter = this.variableDeclarations.parameters.find(
-        parameter => parameter.name === clipboardDataArray.name
-      );
-      if (existingParameter && existingParameter.value.listParameters && clipboardDataArray.value.listParameters) {
-        existingParameter.value = clipboardDataArray.value;
-        if (clipboardDataArray.value && clipboardDataArray.value.type === 'List' && clipboardDataArray.value.listParameters) {
-          existingParameter.value.listParameters = clipboardDataArray.value.listParameters;
-        }
+        this.updateOtherProperties('variable');
       }
-
-
-      this.updateOtherProperties('variable');
     }
-  }
 
-  getStoredIndlArgumentsName(): string | undefined {
-    if (this.storedIndlArguments?.length > 0) {
-      const parsedArguments = JSON.parse(this.storedIndlArguments[0]);
-      return parsedArguments?.name;
-    }
-    return undefined;
-  }
+
 
 
   removeClipboard(): void {
@@ -3679,7 +3713,7 @@ export class WorkflowComponent {
   }
 
   fetchClipboard(): void {
-    this.storedArguments = sessionStorage.getItem('$SOS$copiedDeclaredArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedDeclaredArgument')) : [];
+    this.storedArguments = sessionStorage.getItem('$SOS$copiedArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedArgument')) : [];
   }
 
   fetchIndlClipboard(): void {
