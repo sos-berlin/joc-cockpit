@@ -216,21 +216,20 @@ export class ScheduleComponent {
 
 
   handleIndlPaste(data: any, index1: number, index2: number): void {
-
-    if (!data || data.type) {
+    if (!data || !data.type) {
       data = this.storedIndlArguments[0];
     }
 
     if (data && typeof data === 'string') {
       const clipboardData = JSON.parse(data);
-      if (typeof clipboardData === 'object') {
+      if (typeof clipboardData === 'object' && clipboardData.actualList) {
 
         const existingParameter = this.schedule.configuration.orderParameterisations[index1].variables.find(
           scheduleArgu => scheduleArgu.name === clipboardData.name
         );
 
-        if (existingParameter && existingParameter.actualList && clipboardData.actualList) {
-          existingParameter.actualList = clipboardData.actualList;
+        if (existingParameter) {
+            existingParameter.actualList = existingParameter.actualList.concat(clipboardData.actualList);
         }
 
         if (existingParameter && existingParameter.actualMap && clipboardData.actualMap) {
@@ -239,6 +238,8 @@ export class ScheduleComponent {
       }
     }
   }
+
+
 
   getStoredIndlArgumentsName(): string | undefined {
     if (this.storedIndlArguments?.length > 0) {

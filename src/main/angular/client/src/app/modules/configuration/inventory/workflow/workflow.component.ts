@@ -4145,8 +4145,9 @@ export class WorkflowComponent {
 
               if (clipboardDataArray.value.type === 'List' || clipboardDataArray.value.type === 'Map') {
 
-                existingParameter.value.listParameters = clipboardDataArray.value.listParameters;
-              }
+                this.variableDeclarations.parameters.push(clipboardDataArray);
+
+             
             }
           } else {
             this.variableDeclarations.parameters.push(clipboardDataArray);
@@ -4162,7 +4163,7 @@ export class WorkflowComponent {
 
   removeClipboard(): void {
     this.storedArguments = [];
-    sessionStorage.removeItem('$SOS$copiedDeclaredArgument');
+    sessionStorage.removeItem('$SOS$copiedArgument');
   }
 
   fetchClipboard(): void {

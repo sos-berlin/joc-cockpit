@@ -319,7 +319,7 @@
                           <tr>
                             <th><span translate>resource.board.label.postOrderToNoticeId</span></th>
                             <th><span translate>resource.board.label.expectOrderToNoticeId</span></th>
-                            <th><span translate>resource.board.label.endOfLifeOfNotices</span></th>
+                            <th><span translate>resource.board.label.postOrderToExpirationDate</span></th>
                           </tr>
                           </thead>
                           <tbody>
@@ -361,6 +361,7 @@
                             <th><span translate>resource.board.label.id</span></th>
                             <th><span translate>common.label.state</span></th>
                             <th><span translate>resource.board.label.expectingOrders</span></th>
+                            <th><span translate>resource.board.label.expirationDate</span></th>
                           </tr>
                           </thead>
                           <tbody>
@@ -398,6 +399,7 @@
                               <td><span [innerHtml]="notice.state._text | translate" [ngClass]="coreService.getColor(notice.state.severity, 'bg')"
                                         class="label"></span></td>
                               <td>{{notice.expectingOrders?.length}}</td>
+                              <td>{{notice.endOfLife | stringToDate}}</td>
                             </tr>
                             <ng-container *ngIf="notice.expectingOrders && notice.expectingOrders.length > 0">
                               <tr>

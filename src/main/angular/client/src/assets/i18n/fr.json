@@ -2868,6 +2868,8 @@
       "label.noticeId": "ID Affichage",
       "label.endOfLife": "fin de vie",
       "label.expectingOrders": "Ordres en attente",
+      "label.expirationDate": "Expiration Date",
+      "label.postOrderToExpirationDate": "Notice ID for expiration date",
       "button.post": "Afficher une Annonce",
       "button.postAll": "Afficher les Annonces sélectionnées",
       "button.delete": "Supprimer l'Annonce",

@@ -387,8 +387,6 @@ export class AddOrderModalComponent {
   }
 
 
-
-
   checkClipboardContent() {
     this.storedArguments = sessionStorage.getItem('$SOS$copiedArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedArgument')) : [];
     this.storedArguments = this.storedArguments.reverse();
