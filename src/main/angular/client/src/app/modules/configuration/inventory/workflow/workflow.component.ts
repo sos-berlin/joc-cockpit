@@ -4099,7 +4099,9 @@ export class WorkflowComponent {
           if (clipboardDataArray.value) {
             existingParameter.value = clipboardDataArray.value;
 
+
             if (clipboardDataArray.value.type === 'List' || clipboardDataArray.value.type === 'Map') {
+
               existingParameter.value.listParameters = clipboardDataArray.value.listParameters;
             }
           }
@@ -4142,6 +4144,7 @@ export class WorkflowComponent {
               existingParameter.value = clipboardDataArray.value;
 
               if (clipboardDataArray.value.type === 'List' || clipboardDataArray.value.type === 'Map') {
+
                 existingParameter.value.listParameters = clipboardDataArray.value.listParameters;
               }
             }

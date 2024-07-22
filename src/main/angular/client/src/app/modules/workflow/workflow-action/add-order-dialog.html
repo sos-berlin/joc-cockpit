@@ -515,7 +515,7 @@
                 </div>
               </div>
             </div>
-            <div class="col-sm-1 p-l-0 d-flex justify-content-around align-items-center">
+            <div class="col-sm-1 p-l-0 d-flex justify-content-around align-items-center" [ngClass]="{'right-16px': !argument.isRequired}">
               <a *ngIf="argument.name && argument.type === 'String'"><i (click)="encryptValue(argument, 'job')" class="m-t-sm text-hover-color"
                   nz-icon nzType="property-safety" nzTheme="outline"></i></a>
               <a *ngIf="!argument.isRequired"><i (click)="removeArgument(i)" class="fa fa-times m-t-sm text-muted"></i></a>

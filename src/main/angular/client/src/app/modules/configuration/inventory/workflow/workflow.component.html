@@ -1031,7 +1031,7 @@
                       </div>
                     </div>
                     <div *ngFor="let actualListArr of listVariables.actualList; let i = index"
-                         [ngClass]="{'b-b m-b-sm': i !== listVariables.actualList.length - 1}"
+                         [ngClass]="{'b-2b m-b-sm': i !== listVariables.actualList.length - 1}"
                          class="form-group row m-b-0 m-l-12">
                       <div (click)="addArgumentToList(listVariables)"
                            *ngIf="listVariables.actualList && (i === listVariables.actualList.length - 1)" class="pos-abt cursor"
@@ -1130,7 +1130,7 @@
                       </div>
                     </div>
                     <div *ngFor="let actualMapArr of listVariables.actualMap; let i = index"
-                          [ngClass]="{'b-b m-b-sm': i !== listVariables.actualMap.length - 1}"
+                          [ngClass]="{'b-2b m-b-sm': i !== listVariables.actualMap.length - 1}"
                           class="form-group row m-b-0 m-l-12">
                       <div *ngFor="let argument of actualMapArr; let k = index" class="col-md-12">
                         <div class="form-group row m-b-0">
@@ -1444,8 +1444,8 @@
                 <div *ngIf="variable.value.type === 'List' || variable.value.type === 'Map'" class="form-group row m-b-0 m-l-sm m-r-n-30">
                   <div class="col-md-12 m-b-sm" *ngIf="variable.value.type === 'List' || variable.value.type === 'Map'">
                     <label>
-                      <span class="p-r-xs" *ngIf="variable.value.type === 'List'" translate>workflow.label.children</span>
-                      <span class="p-r-xs" *ngIf="variable.value.type === 'Map'" translate>workflow.label.childrenMap</span>:
+                      <span class="p-r-xs _600" *ngIf="variable.value.type === 'List'" translate>workflow.label.children</span>
+                      <span class="p-r-xs _600" *ngIf="variable.value.type === 'Map'" translate>workflow.label.childrenMap</span>:
                       {{variable.name}}
                       <i (click)="variable.isCollapse = !variable.isCollapse" class="cursor fa fa-lg p-l-sm"
                          [ngClass]="!variable.isCollapse ? 'fa-angle-up' : 'fa-angle-down' "></i>
@@ -1555,7 +1555,7 @@
                     </div>
                     <div class="col-md-12" (cdkDropListDropped)="nestedDrop($event,variable)" cdkDropList>
                       <div *ngFor="let param of variable.value.listParameters; let j = index"
-                           [ngClass]="{'b-b m-b-sm': j === variable.value.listParameters.length - 1}"
+                           [ngClass]="{'b-2b m-b-sm': j === variable.value.listParameters.length - 1}"
                            class=" row p-r-0" cdkDrag>
                         <div (click)="addVariableToList(variable.value)"
                              *ngIf="j === variable.value.listParameters.length - 1"

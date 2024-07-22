@@ -104,7 +104,7 @@
                       <div translate>common.message.requiredError</div>
                     </div>
                   </div>
-                  <div class="pos-abt r-t-n-28 add-order-encrypt">
+                  <div class="pos-abt r-t-n-28 add-order-encrypt"[ngClass]="{'right-44px': listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1}">
                     <a *ngIf="argument.name && argument.type === 'String'"><i (click)="encryptValue(argument, 'job')" class="m-t-sm text-hover-color"
                       nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                     <a *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1"
