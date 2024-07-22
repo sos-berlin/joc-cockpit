@@ -2758,6 +2758,8 @@
       "label.noticeId": "Notice ID",
       "label.endOfLife": "End of Life",
       "label.expectingOrders": "Expecting Orders",
+      "label.expirationDate": "Expiration Date",
+      "label.postOrderToExpirationDate": "Notice ID for expiration date",
       "button.post": "Post Notice",
       "button.postAll": "Post selected Notices",
       "button.delete": "Delete Notice",

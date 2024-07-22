@@ -2757,6 +2757,8 @@
       "label.noticeId": "通知ID",
       "label.endOfLife": "通知期限終了",
       "label.expectingOrders": "Expectオーダー",
+      "label.expirationDate": "Expiration Date",
+      "label.postOrderToExpirationDate": "Notice ID for expiration date",
       "button.post": "PostNotice",
       "button.postAll": "全てPostNotice",
       "button.delete": "通知削除",

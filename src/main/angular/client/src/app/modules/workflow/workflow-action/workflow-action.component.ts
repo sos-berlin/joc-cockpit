@@ -243,59 +243,98 @@ export class AddOrderModalComponent {
     if (!data || data.type) {
       data = this.storedArguments[0];
     }
-    if (data && typeof data == 'string') {
-      const clipboardDataArray = JSON.parse(data);
-      if (!isArray(clipboardDataArray)) {
-        return;
+
+    if (data && typeof data === 'string') {
+      const clipboardData = JSON.parse(data);
+      if (Array.isArray(clipboardData)) {
+        clipboardData.forEach(clipboardItem => {
+          this.updateArguments(clipboardItem);
+        });
+      } else {
+        this.updateArguments(clipboardData);
       }
-      let tempArr = [];
-      clipboardDataArray.forEach(clipboardItem => {
-        let flag = true;
+    }
+  }
 
-        if (this.variableList && this.variableList.length > 0) {
-          this.variableList.forEach(variable => {
-            if (variable.name === clipboardItem.name) {
-              flag = false;
-              if (typeof clipboardItem.value === 'string') {
-                variable.value.default = clipboardItem.value;
+  updateArguments(clipboardItem) {
+    if (this.arguments && this.arguments.length > 0) {
+      this.arguments.forEach(variable => {
+        if (variable.name === clipboardItem.name) {
+          if (Array.isArray(clipboardItem.value)) {
+            clipboardItem.value.forEach(innerArray => {
+              if (Array.isArray(innerArray)) {
+                innerArray.forEach(item => {
+                  this.updateVariable(variable, item);
+                });
+              } else if (typeof innerArray === 'object') {
+                this.updateVariable(variable, innerArray);
               }
+            });
+          } else if (typeof clipboardItem.value === 'object') {
+            if (clipboardItem.value.listParameters && Array.isArray(clipboardItem.value.listParameters)) {
+              clipboardItem.value.listParameters.forEach(item => {
+                this.updateVariable(variable, item);
+              });
+            } else {
+              variable.value = clipboardItem.value;
             }
-          });
+          } else {
+            variable.value = clipboardItem.value;
+          }
+        }else{
+          if (clipboardItem.variables && Array.isArray(clipboardItem.variables)) {
+            clipboardItem.variables.forEach(variable => {
+              this.updateArguments(variable);
+            });
+          }
         }
-
-        if (this.arguments && this.arguments.length > 0) {
-          this.arguments.forEach(variable => {
-            if (variable.name === clipboardItem.name) {
-              flag = false;
-              if (isArray(clipboardItem.value)) {
-                clipboardItem.value.forEach((innerArray) => {
+      });
+    }
+  }
+  processVariableList(variableList, clipboardDataVariables) {
+    variableList.forEach(clipboardItem => {
+      if (clipboardDataVariables && clipboardDataVariables.length > 0) {
+        clipboardDataVariables.forEach(variable => {
+          if (variable.name === clipboardItem.name && variable.isSelected) {
+            if (Array.isArray(clipboardItem.value)) {
+              clipboardItem.value.forEach(innerArray => {
+                if (Array.isArray(innerArray)) {
                   innerArray.forEach(item => {
-                    variable.actualList.forEach((actualList) => {
-                      actualList.list.forEach((argument) => {
-                        if (argument.name === item.name) {
-                          argument.value = item.value;
-                        }
-                      });
-                    });
+                    this.updateVariable(variable, item);
                   });
+                } else if (typeof innerArray === 'object') {
+                  this.updateVariable(variable, innerArray);
+                }
+              });
+            } else if (typeof clipboardItem.value === 'object') {
+              if (clipboardItem.value.listParameters && Array.isArray(clipboardItem.value.listParameters)) {
+                clipboardItem.value.listParameters.forEach(item => {
+                  this.updateVariable(variable, item);
                 });
               } else {
                 variable.value = clipboardItem.value;
               }
+            } else {
+              variable.value = clipboardItem.value;
             }
-          });
-        }
-        if (flag) {
-          clipboardItem.isTextField = true;
-          tempArr.push(clipboardItem);
-        }
-      });
-
-      if (tempArr.length > 0) {
-        this.arguments = this.arguments.concat(tempArr);
+          }
+        });
       }
+    });
+  }
+
+  updateVariable(variable, item) {
+    if (variable.actualList) {
+      variable.actualList.forEach(actualList => {
+        actualList.list.forEach(argument => {
+          if (argument.name === item.name) {
+            argument.value = item.value.default || item.value;
+          }
+        });
+      });
     }
   }
+
 
   checkClipboardContent() {
     this.storedArguments = sessionStorage.getItem('$SOS$copiedArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedArgument')) : [];

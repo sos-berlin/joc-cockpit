@@ -14,7 +14,7 @@
          class="time-picker">
       <input #dateAndTime="ngModel" [(ngModel)]="object[attributeTime]" [disabled]="isDisable" [required]="isTimeRequired" class="form-control"
              [name]="name + 'Time'" (timeChanged)="onTimeChanged($event, attributeTime)"
-             placeholder="HH:MM:SS" timevalidatorReqex
+             placeholder="HH:MM:SS" timevalidatorReqex timevalidator
              type="text">
       <nz-time-picker [(ngModel)]="object[attributeTime + '1']"
                       (ngModelChange)="selectTime($event, false, attributeTime)"

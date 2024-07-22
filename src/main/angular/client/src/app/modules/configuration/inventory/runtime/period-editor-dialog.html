@@ -30,7 +30,7 @@
                    class="col-sm-3">
                 <input #startTime="ngModel" [(ngModel)]="period.period.singleStart" [appAutofocus]="true" autocomplete="off" class="form-control"
                        maxlength="8" name="startTime" placeholder="HH:MM:SS"
-                       timevalidator type="text" validTimeReqex>
+                        validTimeReqex timevalidator type="text" >
                 <div *ngIf="startTime.errors && (startTime.dirty || startTime.touched)" class="help-block text-danger">
                   <div *ngIf="!startTime.valid" translate>common.message.invalid</div>
                 </div>
