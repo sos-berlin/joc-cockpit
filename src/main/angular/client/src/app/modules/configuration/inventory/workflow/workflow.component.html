@@ -1323,8 +1323,8 @@
                        nz-tooltip="{{'common.button.copyArguments' | translate}}">
                       <i class="fa fa-copy"></i>
                     </a>
-                    <a *ngIf="getStoredIndlArgumentsName() === variable?.name"
-                       (click)="handleIndlPaste(storedIndlArguments[0])"
+                    <a *ngIf="storedArguments?.length > 0"
+                       (click)="handleIndlPaste()"
                        class="anchor-with-icon pos-abt m-t-n-1"
                        nz-tooltip="{{'common.button.paste' | translate}}"
                        style="right: 27px;">
