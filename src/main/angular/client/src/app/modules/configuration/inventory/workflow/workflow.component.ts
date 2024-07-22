@@ -3700,7 +3700,8 @@ export class WorkflowComponent {
           }
         }
 
-        this.updateOtherProperties('variable');
+          this.updateOtherProperties('variable');
+        }
       }
     }
 
