@@ -226,6 +226,9 @@
                   </li>
                 </ul>
                 <ul *ngIf="isTrash && permission.joc" nz-menu>
+                  <li (click)="showJson(data, false)" nz-menu-item>
+                    <a translate>inventory.button.showJSON</a>
+                  </li>
                   <li (click)="deletePermanently(data);" *ngIf="permission.joc.inventory.manage" class="bg-hover-color"
                       nz-menu-item>
                     <a translate>inventory.button.delete</a></li>

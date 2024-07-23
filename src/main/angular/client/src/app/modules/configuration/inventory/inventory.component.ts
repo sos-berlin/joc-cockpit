@@ -4969,7 +4969,8 @@ export class InventoryComponent {
   }
 
   showJson(obj: any): void {
-    this.coreService.post('inventory/read/configuration', {
+    const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
+    this.coreService.post(URL, {
       objectType: obj.showJson.objectType,
       path: (obj.showJson.path + (obj.showJson.path === '/' ? '' : '/') + obj.showJson.name)
     }).subscribe((res: any) => {
@@ -5107,7 +5108,8 @@ export class InventoryComponent {
     }
 
     if (obj.path && obj.name) {
-      this.coreService.post('inventory/read/configuration', {
+      const  URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
+      this.coreService.post(URL, {
         path: (obj.path + (obj.path === '/' ? '' : '/') + obj.name),
         objectType: type,
       }).subscribe((res: any) => {

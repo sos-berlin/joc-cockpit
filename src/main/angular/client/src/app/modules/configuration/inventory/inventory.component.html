@@ -740,6 +740,13 @@
     </li>
   </ul>
   <ul *ngIf="isTrash && node.origin && permission.joc" nz-menu>
+    <li (click)="exportJSON(node.origin)" *ngIf="node.origin.type"
+        nz-menu-item>
+      <a translate>inventory.button.downloadJSON</a>
+    </li>
+    <li (click)="editJson(node.origin, false)" *ngIf="node.origin.type" nz-menu-item>
+      <a translate>inventory.button.showJSON</a>
+    </li>
     <li (click)="deletePermanently(node);" *ngIf="permission.joc.inventory.manage" [nzDisabled]="(node.origin.object && node.origin.children?.length === 0)" class="bg-hover-color"
         nz-menu-item>
       <a translate>inventory.button.delete</a></li>

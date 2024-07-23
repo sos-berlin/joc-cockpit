@@ -88,7 +88,7 @@
   "INCLUDE": "含む",
   "DEPLOYED": "配置済",
   "NOT_DEPLOYED": "未配置",
-  "UPDATE": "保存",
+  "UPDATE": "store",
   "DELETE": "削除",
   "EXPECTED": "expected",
   "POSTED": "posted",
