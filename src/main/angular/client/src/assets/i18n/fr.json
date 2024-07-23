@@ -89,7 +89,7 @@
   "INCLUDE": "inclure",
   "DEPLOYED": "déployé",
   "NOT_DEPLOYED": "non deployé",
-  "UPDATE": "store",
+  "UPDATE": "enregistrer",
   "DELETE": "supprimer",
   "EXPECTED": "attendu",
   "POSTED": "posté",
