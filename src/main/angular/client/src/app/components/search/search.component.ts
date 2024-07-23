@@ -57,8 +57,12 @@ export class SearchComponent {
     {label: 'notSynchronized', value: 'NOT_IN_SYNC', checked: false}
   ];
 
-  jobCriticality=[{value: 'NORMAL' , name:'common.label.normal'},
-  {value: 'CRITICAL' , name:'common.label.critical'}]
+  jobCriticality=[
+    {value: 'CRITICAL' , name:'common.label.critical'},
+    {value: 'MAJOR' , name:'common.label.major'},
+    {value: 'MINOR' , name:'common.label.minor'},
+    {value: 'NORMAL' , name:'common.label.normal'}
+  ]
 
   availabilityStatusOptions = [
     {label: 'suspended', value: 'SUSPENDED', checked: false},

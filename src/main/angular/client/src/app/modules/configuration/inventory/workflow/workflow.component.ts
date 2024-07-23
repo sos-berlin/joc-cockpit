@@ -4113,21 +4113,22 @@ export class WorkflowComponent {
     }
   }
 
-  handleIndlPaste(): void {
-    let data;
+    handleIndlPaste(): void {
+      let data;
 
-    data = this.storedArguments[this.storedArguments.length - 1];
+      data = this.storedArguments[this.storedArguments.length - 1];
 
 
-    if (data && typeof data === 'string') {
-      const clipboardDataArray = JSON.parse(data);
+      if (data && typeof data === 'string') {
+        const clipboardDataArray = JSON.parse(data);
 
-      if (Array.isArray(clipboardDataArray)) {
-        clipboardDataArray.forEach(arg => {
-          let flag = true;
-          for (let i in this.variableDeclarations.parameters) {
-            if (arg.name === this.variableDeclarations.parameters[i].name) {
-              flag = false;
+        if (Array.isArray(clipboardDataArray)) {
+          clipboardDataArray.forEach(arg => {
+            let flag = true;
+            for (let i in this.variableDeclarations.parameters) {
+              if (arg.name === this.variableDeclarations.parameters[i].name) {
+                flag = false;
+              }
             }
             if (flag) {
               this.variableDeclarations.parameters.push(arg);
@@ -4146,37 +4147,17 @@ export class WorkflowComponent {
 
                 this.variableDeclarations.parameters.push(clipboardDataArray);
 
-             
-            }
-          } else {
-            this.variableDeclarations.parameters.push(clipboardDataArray);
 
-          }
-          if (flag) {
-            this.variableDeclarations.parameters.push(arg);
-          }
-        });
-      } else {
-        const existingParameter = this.variableDeclarations.parameters.find(
-          parameter => parameter.name === clipboardDataArray.name
-        );
-
-        if (existingParameter) {
-          if (clipboardDataArray.value) {
-            existingParameter.value = clipboardDataArray.value;
-
-            if (clipboardDataArray.value.type === 'List') {
+              }
+            } else {
               this.variableDeclarations.parameters.push(clipboardDataArray);
             }
           }
-        } else {
-          this.variableDeclarations.parameters.push(clipboardDataArray);
+
+          this.updateOtherProperties('variable');
         }
       }
-
-      this.updateOtherProperties('variable');
     }
-  }
 
 
 
