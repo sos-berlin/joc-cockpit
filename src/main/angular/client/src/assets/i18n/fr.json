@@ -2859,7 +2859,7 @@
       "label.name": "Nom",
       "label.postOrderToNoticeId": "ID Annonce pour les Ordres d'affichage",
       "label.expectOrderToNoticeId": "ID Annonce pour les Ordres en attente des affichages",
-      "label.endOfLifeOfNotices": "Fin de vie de l'Annonce",
+      "label.endOfLifeOfNotices": "Fin de vie de l'Annonce",n
       "label.deploymentDate": "Date de Déploiement",
       "label.boardsFound": "Tableaux de Condition trouvés",
       "label.boardFound": "Tableau de Condition trouvé",
