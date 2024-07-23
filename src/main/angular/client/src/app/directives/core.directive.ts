@@ -15,6 +15,89 @@ import {SaveService} from '../services/save.service';
 declare const $: any;
 
 @Directive({
+  selector: '[timeDurationValidator]',
+  providers: [NgModel]
+})
+
+export class TimeDurationValidatorDirective {
+  isEnter = false;
+  isBackslash = false;
+
+  constructor(private model: NgModel) { }
+
+  @HostListener('keydown', ['$event'])
+  onKeyPress(event): void {
+    if (event.key === 'Enter' || event.which === 13) {
+      this.isEnter = true;
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    if (event.key === 'Backspace' || event.which === 8) {
+      this.isBackslash = true;
+    }
+  }
+
+  @HostListener('input', ['$event.target'])
+  onInputChange(target): void {
+    if (this.isEnter || this.isBackslash) {
+      this.isEnter = false;
+      this.isBackslash = false;
+      return;
+    } else {
+      if (target.value) {
+        if (/[^0-9s:]/.test(target.value)) {
+          this.model.valueAccessor.writeValue(null);
+        } else if (target.value.endsWith('s')) {
+          this.model.valueAccessor.writeValue(target.value);
+        } else if (/^\d{2}$/.test(target.value)) {
+          this.model.valueAccessor.writeValue(target.value + ':');
+        } else if (/^\d{2}:\d{2}$/.test(target.value)) {
+          this.model.valueAccessor.writeValue(target.value + ':');
+        } else {
+          if (target.value.length > 1 && target.value.length < 3 && !(/^\d{2}$/.test(target.value))) {
+            this.model.valueAccessor.writeValue('');
+          } else if (target.value.length === 5 && !(/^\d{2}:\d{2}$/.test(target.value))) {
+            this.model.valueAccessor.writeValue(target.value.substring(0, 3));
+          } else if (target.value.length === 8 && !(/^\d{2}:\d{2}:\d{2}$/.test(target.value))) {
+            this.model.valueAccessor.writeValue(target.value.substring(0, 6) + '00');
+          }
+        }
+      }
+    }
+  }
+
+  @HostListener('focusout', ['$event.target'])
+  onFocusout(target): void {
+    if (target.value) {
+      if (/[^0-9s:]/.test(target.value)) {
+        this.model.valueAccessor.writeValue(null);
+      } else if (target.value.endsWith('s')) {
+        this.model.valueAccessor.writeValue(target.value);
+      } else {
+        let value = target.value;
+        const parts = value.split(':');
+
+        if (parts.length > 0 && parseInt(parts[0], 10) > 24) {
+          this.model.valueAccessor.writeValue('24:00:00');
+        } else {
+          if (parts.length === 1 && value.length === 2) {
+            value += ':00:00';
+          } else if (parts.length === 2 && parts[1].length === 2) {
+            value += ':00';
+          }
+          if (value.substring(0, 2) === '24') {
+            this.model.valueAccessor.writeValue('24:00:00');
+          } else {
+            this.model.valueAccessor.writeValue(value);
+          }
+        }
+      }
+    }
+  }
+}
+
+
+@Directive({
   selector: '[timevalidator]',
   providers: [NgModel]
 })

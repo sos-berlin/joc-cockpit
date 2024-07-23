@@ -119,7 +119,7 @@
                 class="nav-item dropdown-separator">
               <span class="separator"></span>
             </li>
-            <li *ngIf="!isTrash && permission.joc && permission.joc.inventory.manage" [nz-tooltip]="'inventory.button.download' | translate"
+            <li *ngIf="permission.joc && permission.joc.inventory.manage" [nz-tooltip]="'inventory.button.download' | translate"
                 class="nav-item">
               <a (click)="exportJSON()" class="nav-link">
                 <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="download"></i></span>
@@ -1660,7 +1660,7 @@
             </div>
           </div>
         </div>
-        <div class="box-body p-t-0">
+        <div *ngIf="!isTrash" class="box-body p-t-0">
           <div class="b-t p-t-sm font14 _500" translate>
             inventory.label.tags
             <i (click)="expandCollapseTags()" class="cursor fa fa-lg p-l-sm"
