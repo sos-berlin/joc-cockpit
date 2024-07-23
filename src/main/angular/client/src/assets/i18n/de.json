@@ -2869,7 +2869,7 @@
       "label.endOfLife": "Verfallsfrist",
       "label.expectingOrders": "Wartende Aufträge",
       "label.expirationDate": "Ablaufdatum",
-      "label.postOrderToExpirationDate": "Notiz für Ablaufdatum",
+      "label.postOrderToExpirationDate": "Lebensspanne der Notiz",
       "button.post": "Notiz senden",
       "button.postAll": "Ausgewählte Notizen senden",
       "button.delete": "Notiz löschen",

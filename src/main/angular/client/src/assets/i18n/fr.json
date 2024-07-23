@@ -2869,7 +2869,7 @@
       "label.endOfLife": "fin de vie",
       "label.expectingOrders": "Ordres en attente",
       "label.expirationDate": "Date d'Expiration",
-      "label.postOrderToExpirationDate": "Annonce pour date d'expiration",
+      "label.postOrderToExpirationDate": "Durée de vie de l'Annonce",
       "button.post": "Afficher une Annonce",
       "button.postAll": "Afficher les Annonces sélectionnées",
       "button.delete": "Supprimer l'Annonce",
