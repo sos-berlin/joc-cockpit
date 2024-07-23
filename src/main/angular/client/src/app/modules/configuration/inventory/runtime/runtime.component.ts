@@ -6,6 +6,7 @@ import {CoreService} from '../../../../services/core.service';
 import {CalendarService} from '../../../../services/calendar.service';
 import {NZ_MODAL_DATA} from 'ng-zorro-antd/modal';
 import * as moment from "moment/moment";
+import {NgModel} from "@angular/forms";
 
 declare const Holidays;
 declare const $;
@@ -875,6 +876,25 @@ export class PeriodComponent {
       }
       this.period.period.whenHoliday = this.data.whenHoliday;
     }
+  }
+
+  onBlur(repeat: NgModel) {
+    this.period.period.repeat = this.padTime(this.period.period.repeat);
+    repeat.control.setErrors(null);
+    repeat.control.updateValueAndValidity();
+  }
+
+  private padTime(value: string): string {
+    const parts = value.split(':');
+    if (parts.length === 2) {
+      parts[0] = parts[0].padStart(2, '0');
+      parts[1] = parts[1].padStart(2, '0');
+    } else if (parts.length === 3) {
+      parts[0] = parts[0].padStart(2, '0');
+      parts[1] = parts[1].padStart(2, '0');
+      parts[2] = parts[2].padStart(2, '0');
+    }
+    return parts.join(':');
   }
 
   isRepeatIntervalShort($event): void {

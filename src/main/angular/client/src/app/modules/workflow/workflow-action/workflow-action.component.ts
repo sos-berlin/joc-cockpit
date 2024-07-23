@@ -559,7 +559,8 @@ export class AddOrderModalComponent {
     } else if (this.order.at === 'never') {
       order.scheduledFor = 'never';
     } else if (this.order.at === 'later') {
-      order.scheduledFor = 'now + ' + this.order.atTime;
+      let atTime = this.order.atTime.replace(/s/g, '');
+      order.scheduledFor = 'now + ' + atTime;
     } else {
       if (this.order.fromDate) {
         this.coreService.getDateAndTime(this.order);

@@ -4344,9 +4344,11 @@ export class WorkflowComponent {
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     this.coreService.post(URL, obj).subscribe({
       next: (res: any) => {
-        this.fetchWorkflowTags(res.path, () => {
-          this.autoExpandVariable(res.path);
-        });
+        if(!this.isTrash){
+          this.fetchWorkflowTags(res.path, () => {
+            this.autoExpandVariable(res.path);
+          });
+        }
         this.isLocalChange = '';
         this.lastModified = res.configurationDate;
         this.isReferencedBy = res.isReferencedBy;

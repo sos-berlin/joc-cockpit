@@ -60,7 +60,7 @@
           </div>
         </div>
       </div>
-      <div *ngIf="!isRevoke"  class="form-group row">
+      <div *ngIf="!isRevoke && !isRemoved"  class="form-group row">
         <label class="col-md-3 " translate>inventory.label.includeTodaysLateOrders</label>
         <div class="col-md-6">
           <label nz-checkbox [(ngModel)]="includeLate" name="includeLate"></label>
