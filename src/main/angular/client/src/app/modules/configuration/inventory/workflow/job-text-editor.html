@@ -923,10 +923,10 @@
                        [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" [nzPlaceHolder]="'inventory.placeholder.selectCriticality' | translate" class="w-full"
                        name="criticality"
                        nzAllowClear>
+              <nz-option [nzLabel]="'common.label.critical' | translate" [nzValue]="'CRITICAL'"></nz-option>
+              <nz-option [nzLabel]="'common.label.major' | translate" [nzValue]="'MAJOR'"></nz-option>
               <nz-option [nzLabel]="'common.label.minor' | translate" [nzValue]="'MINOR'"></nz-option>
               <nz-option [nzLabel]="'common.label.normal' | translate" [nzValue]="'NORMAL'"></nz-option>
-              <nz-option [nzLabel]="'common.label.major' | translate" [nzValue]="'MAJOR'"></nz-option>
-              <nz-option [nzLabel]="'common.label.critical' | translate" [nzValue]="'CRITICAL'"></nz-option>
             </nz-select>
           </div>
           <div *ngIf="isModal" class="col-md-1">
