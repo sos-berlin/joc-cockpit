@@ -234,14 +234,13 @@
                   <div class="pos-abt r-t-n-28 add-order-encrypt">
                     <a  *ngIf="argument.name && argument.type === 'String'"><i (click)="encryptValue(argument, 'job')"
                       class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
-                    <a *ngIf="listVariables.actualMap && listVariables.actualMap.length > 1 && k === actualMapArr.length - 1"><i (click)="removeVariableFromList(i, listVariables.actualMap)"
-                    
-                    class="pos-abt r-t-n-28 copy-item">
-                    <a><i (click)="copyVariableFromList(i, listVariables.actualList)"
-                          class="fa fa-copy m-t-sm text-muted"></i></a>
+                    <a *ngIf="listVariables.actualMap && listVariables.actualMap.length > 1 && k === actualMapArr.length - 1">
+                      <i (click)="removeVariableFromList(i, listVariables.actualMap)"class="fa fa-copy m-t-sm text-muted"></i></a>
+<!--                    <a><i (click)="copyVariableFromList(i, listVariables.actualList)"-->
+<!--                          class="fa fa-copy m-t-sm text-muted"></i></a>-->
                     <a><i (click)="removeVariableFromList(i, listVariables.actualList)"
                           class="fa fa-times m-t-sm text-muted"></i></a>
-                  </div>
+                </div>
                 </div>
               </ng-container>
             </ng-container>
