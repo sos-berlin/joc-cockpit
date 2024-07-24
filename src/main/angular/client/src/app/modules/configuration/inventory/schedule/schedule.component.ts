@@ -50,6 +50,7 @@ export class ScheduleComponent {
   allowUndeclaredVariables: boolean;
   storedArguments = [];
   storedIndlArguments = [];
+  storedIndlItem = [];
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
@@ -239,6 +240,21 @@ export class ScheduleComponent {
     }
   }
 
+  copyVariableFromList(index: number, list: any[]): void {
+    const variableToCopy = list[index];
+    console.log(variableToCopy, "copy variable")
+    sessionStorage.setItem('$SOS$copiedIndlSheduledArgument', JSON.stringify(variableToCopy));
+    this.storedIndlArguments = sessionStorage.getItem('$SOS$copiedIndlSheduledArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedIndlSheduledArgument')) : [];
+  }
+
+  pasteVariableToList(list: any[]): void {
+    const copiedVariable = sessionStorage.getItem('$SOS$copiedIndlSheduledArgument');
+    if (copiedVariable) {
+      const variableToPaste = JSON.parse(copiedVariable);
+      list.push(variableToPaste);
+      this.saveJSON();
+    }
+  }
 
 
   getStoredIndlArgumentsName(): string | undefined {
@@ -430,6 +446,7 @@ export class ScheduleComponent {
     list.splice(index, 1);
     this.saveJSON();
   }
+
 
   removeVariable(index, variableSet): void {
     variableSet.variables.splice(index, 1);

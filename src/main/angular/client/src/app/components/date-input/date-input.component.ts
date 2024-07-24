@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Optional, Output} from '@angular/core';
 import {differenceInCalendarDays} from "date-fns";
-import {ControlContainer, NgForm} from "@angular/forms";
+import {ControlContainer, NgForm, NgModel} from "@angular/forms";
 import {CoreService} from "../../services/core.service";
 
 @Component({
@@ -41,6 +41,14 @@ export class DateInputComponent {
       this.isTimeRequired = this.isRequired;
     }
   }
+
+  onBlur(repeat: NgModel, propertyName: string) {
+    this.object[propertyName] = this.coreService.padTime(this.object[propertyName]);
+    repeat.control.setErrors({incorrect: false});
+    repeat.control.updateValueAndValidity();
+  }
+
+
 
   selectTime(time, isEditor = false, val = 'from'): void {
     if (this.ignoreThirdParam) {

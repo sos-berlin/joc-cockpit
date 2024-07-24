@@ -44,9 +44,9 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-6">
-        <input #time="ngModel" [(ngModel)]="postObj.atTime" [appAutofocus]="true" class="form-control" name="atTime"
-               placeholder="+1(s|m|h|d|w|M|y)"
-               relativeDateValidatorRegex required type="text">
+        <input #time="ngModel" [(ngModel)]="postObj.atTime" (blur)="onBlur(time, 'atTime')" [appAutofocus]="true" class="form-control" name="atTime"
+               placeholder="+1(s|m|h|d|w|M|y) | hh:mm:ss"
+               timeDurationValidator required type="text">
         <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
           <div *ngIf="!time.valid && !time.errors['required']" translate>common.message.invalid</div>
           <div *ngIf="time.errors['required']" translate>

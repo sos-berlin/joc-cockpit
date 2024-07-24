@@ -327,7 +327,7 @@
       </label>
       <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-6">
         <input #time="ngModel" [(ngModel)]="order.atTime" [required]="order.at == 'later'" class="form-control" name="atTime"
-               placeholder="{{'common.placeholder.enterSecond' | translate}}" type="text" timeDurationValidator  >
+               placeholder="{{'common.placeholder.enterSecond' | translate}}" type="text" timeRelativeValidatorReqex (blur)="onBlur(time,'atTime')">
         <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
           <div *ngIf="!time.valid" translate>common.message.invalid</div>
         </div>

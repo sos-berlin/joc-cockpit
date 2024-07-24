@@ -10,6 +10,7 @@ import {WorkflowService} from '../../../services/workflow.service';
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
 import { EncryptArgumentModalComponent } from '../../configuration/inventory/inventory.component';
+import {NgModel} from "@angular/forms";
 
 @Component({
   selector: 'app-show-dependency',
@@ -921,7 +922,10 @@ export class AddOrderModalComponent {
     }
     this.order.reload = false;
     if (name && name !== '-') {
-      this.order.orderId = name;
+      if(!this.order.orderId){
+        this.order.orderId = name;
+
+      }
     }
 
     for (let i in this.selectedSchedule.orderParameterisations) {
@@ -1215,6 +1219,14 @@ export class AddOrderModalComponent {
       }
     });
   }
+  onBlur(repeat: NgModel, propertyName: string) {
+    this.order[propertyName] = this.coreService.padTime(this.order[propertyName]);
+    repeat.control.setErrors({incorrect: false});
+    repeat.control.updateValueAndValidity();
+  }
+
+
+
 }
 
 @Component({

@@ -9713,6 +9713,7 @@ cdk-virtual-scroll-viewport {
   margin: 0;
 }
 
+<<<<<<< HEAD
 .ant-drawer .report-drawer {
   width: calc(100% - 48px) !important;
   margin-right: 24px;
@@ -9788,4 +9789,11 @@ cdk-virtual-scroll-viewport {
 
 .b-2b {
   border-bottom: 2px solid var(--border-color);
+}
+.copy-item{
+  right: -44px;
+  display: flex;
+  gap: 10px;
+  justify-content: space-around;
+  align-items: baseline;
 }

@@ -3403,5 +3403,110 @@ export class CoreService {
 
   getSortedTags(): string[] {
     return this.sortedTags;
+}
+  convertToSeconds(timeString: string): string {
+    const hhmmssRegex = /^(\d{2}):(\d{2}):(\d{2})$/i;
+    const hhmmRegex = /^(\d{2}):(\d{2})$/i;
+    const durationRegex = /^(\d+y\s?)?(\d+M\s?)?(\d+w\s?)?(\d+d\s?)?(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i;
+
+    const hhmmssMatch = timeString.match(hhmmssRegex);
+    const hhmmMatch = timeString.match(hhmmRegex);
+    const durationMatch = timeString.match(durationRegex);
+
+    console.log("Input timeString:", timeString);
+    console.log("HHMMSS Match:", hhmmssMatch);
+    console.log("HHMM Match:", hhmmMatch);
+    console.log("Duration Match:", durationMatch);
+
+    let totalSeconds = 0;
+
+    if (hhmmssMatch) {
+      const hours = parseInt(hhmmssMatch[1], 10);
+      const minutes = parseInt(hhmmssMatch[2], 10);
+      const seconds = parseInt(hhmmssMatch[3], 10);
+
+      totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
+      return totalSeconds + 's';
+    }
+
+    if (hhmmMatch) {
+      const hours = parseInt(hhmmMatch[1], 10);
+      const minutes = parseInt(hhmmMatch[2], 10);
+
+      totalSeconds = (hours * 3600) + (minutes * 60);
+      return totalSeconds + 's';
+    }
+
+    if (durationMatch) {
+      if (durationMatch[1]) {
+        const years = parseInt(durationMatch[1].replace(/y/i, ''), 10);
+        totalSeconds += years * 31536000; // 1 year = 365 days
+      }
+      if (durationMatch[2]) {
+        const months = parseInt(durationMatch[2].replace(/M/i, ''), 10);
+        totalSeconds += months * 2592000; // 1 month = 30 days
+      }
+      if (durationMatch[3]) {
+        const weeks = parseInt(durationMatch[3].replace(/w/i, ''), 10);
+        totalSeconds += weeks * 604800; // 1 week = 7 days
+      }
+      if (durationMatch[4]) {
+        const days = parseInt(durationMatch[4].replace(/d/i, ''), 10);
+        totalSeconds += days * 86400; // 1 day = 24 hours
+      }
+      if (durationMatch[5]) {
+        const hours = parseInt(durationMatch[5].replace(/h/i, ''), 10);
+        totalSeconds += hours * 3600;
+      }
+      if (durationMatch[6]) {
+        const minutes = parseInt(durationMatch[6].replace(/m/i, ''), 10);
+        totalSeconds += minutes * 60;
+      }
+      if (durationMatch[7]) {
+        const seconds = parseInt(durationMatch[7].replace(/s/i, ''), 10);
+        totalSeconds += seconds;
+      }
+
+      return totalSeconds + 's';
+    }
+
+    return 'Invalid time format';
+  }
+
+   padTime(value: string): string {
+    if (!value) {
+      return value;
+    }
+
+    const parts = value.split(':');
+    if (parts.length === 2) {
+      parts[0] = parts[0].padStart(2, '0');
+      parts[1] = parts[1].padEnd(2, '0');
+      return parts.join(':');
+    } else if (parts.length === 3) {
+      parts[0] = parts[0].padStart(2, '0');
+      parts[1] = parts[1].padStart(2, '0');
+      parts[2] = parts[2].padEnd(2, '0');
+      return parts.join(':');
+    }
+
+    // Handle cases where ':' is not included in the value
+    if (value.length === 1) {
+      return `0${value}:00:00`;
+    } else if (value.length === 2) {
+      return `${value}:00:00`;
+    } else if (value.length === 3) {
+      return `${value[0]}${value[1]}:0${value[2]}:00`;
+    } else if (value.length === 4) {
+      return `${value[0]}${value[1]}:${value[2]}${value[3]}:00`;
+    } else if (value.length === 5) {
+      return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}0`;
+    } else if (value.length === 6) {
+      return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}${value[5]}0`;
+    } else if (value.length === 7) {
+      return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}${value[5]}${value[6]}0`;
+    }
+
+    return value;
   }
 }

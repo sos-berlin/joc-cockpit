@@ -58,10 +58,11 @@ export class SearchComponent {
   ];
 
   jobCriticality=[
-    {value: 'CRITICAL' , name:'common.label.critical'},
-    {value: 'MAJOR' , name:'common.label.major'},
     {value: 'MINOR' , name:'common.label.minor'},
-    {value: 'NORMAL' , name:'common.label.normal'}
+    {value: 'NORMAL' , name:'common.label.normal'},
+    {value: 'MAJOR' , name:'common.label.major'},
+    {value: 'CRITICAL' , name:'common.label.critical'},
+
   ]
 
   availabilityStatusOptions = [
