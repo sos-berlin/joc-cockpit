@@ -584,7 +584,6 @@ export class ControllersComponent {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          console.log(result);
           this._deleteController(matser, result);
         }
       });

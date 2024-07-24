@@ -16,14 +16,17 @@ declare const $: any;
 
 @Directive({
   selector: '[timeDurationValidator]',
-  providers: [NgModel]
+  providers: [
+    {
+      provide: NG_VALIDATORS,
+      useExisting: TimeDurationValidatorDirective,
+      multi: true
+    }
+  ]
 })
-
-export class TimeDurationValidatorDirective {
+export class TimeDurationValidatorDirective implements Validator {
   isEnter = false;
   isBackslash = false;
-
-  constructor(private model: NgModel) { }
 
   @HostListener('keydown', ['$event'])
   onKeyPress(event): void {
@@ -45,22 +48,29 @@ export class TimeDurationValidatorDirective {
       return;
     } else {
       if (target.value) {
-        if (/[^0-9s:]/.test(target.value)) {
-          this.model.valueAccessor.writeValue(null);
-        } else if (target.value.endsWith('s')) {
-          this.model.valueAccessor.writeValue(target.value);
-        } else if (/^\d{2}$/.test(target.value)) {
-          this.model.valueAccessor.writeValue(target.value + ':');
-        } else if (/^\d{2}:\d{2}$/.test(target.value)) {
-          this.model.valueAccessor.writeValue(target.value + ':');
-        } else {
-          if (target.value.length > 1 && target.value.length < 3 && !(/^\d{2}$/.test(target.value))) {
-            this.model.valueAccessor.writeValue('');
-          } else if (target.value.length === 5 && !(/^\d{2}:\d{2}$/.test(target.value))) {
-            this.model.valueAccessor.writeValue(target.value.substring(0, 3));
-          } else if (target.value.length === 8 && !(/^\d{2}:\d{2}:\d{2}$/.test(target.value))) {
-            this.model.valueAccessor.writeValue(target.value.substring(0, 6) + '00');
-          }
+        // Allow formats like 1h 2m 3s or 1H 2M 3S
+        if (/^(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i.test(target.value) ||
+          /^(\d+d\s?)?(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i.test(target.value) ||
+          /^(\d+w\s?)?(\d+d\s?)?(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i.test(target.value) ||
+          /^(\d+M\s?)?(\d+w\s?)?(\d+d\s?)?(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i.test(target.value) ||
+          /^(\d+y\s?)?(\d+M\s?)?(\d+w\s?)?(\d+d\s?)?(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i.test(target.value)) {
+          target.value = target.value;
+        }
+        // Handle two digits input and add ':'
+        else if (target.value.length === 2 && /^[0-2][0-9]$/i.test(target.value)) {
+          target.value = target.value + ':';
+        }
+        // Handle hh:mm input and add ':'
+        else if (target.value.length === 5 && /^[0-2][0-9]:[0-5][0-9]$/i.test(target.value)) {
+          target.value = target.value + ':';
+        }
+        // Handle hh:mm:ss input
+        else if (target.value.length === 8 && /^[0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/i.test(target.value)) {
+          target.value = target.value;
+        }
+        // Invalid input handling
+        else {
+          target.value = target.value;
         }
       }
     }
@@ -69,33 +79,56 @@ export class TimeDurationValidatorDirective {
   @HostListener('focusout', ['$event.target'])
   onFocusout(target): void {
     if (target.value) {
-      if (/[^0-9s:]/.test(target.value)) {
-        this.model.valueAccessor.writeValue(null);
-      } else if (target.value.endsWith('s')) {
-        this.model.valueAccessor.writeValue(target.value);
+      // Ensure format consistency on focus out
+      if (/^\d{2}:\d{2}(:\d{2})?$/i.test(target.value) ||
+        /^(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i.test(target.value) ||
+        /^(\d+d\s?)?(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i.test(target.value) ||
+        /^(\d+w\s?)?(\d+d\s?)?(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i.test(target.value) ||
+        /^(\d+M\s?)?(\d+w\s?)?(\d+d\s?)?(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i.test(target.value) ||
+        /^(\d+y\s?)?(\d+M\s?)?(\d+w\s?)?(\d+d\s?)?(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i.test(target.value)) {
+        target.value = target.value;
       } else {
-        let value = target.value;
-        const parts = value.split(':');
-
-        if (parts.length > 0 && parseInt(parts[0], 10) > 24) {
-          this.model.valueAccessor.writeValue('24:00:00');
-        } else {
-          if (parts.length === 1 && value.length === 2) {
-            value += ':00:00';
-          } else if (parts.length === 2 && parts[1].length === 2) {
-            value += ':00';
-          }
-          if (value.substring(0, 2) === '24') {
-            this.model.valueAccessor.writeValue('24:00:00');
-          } else {
-            this.model.valueAccessor.writeValue(value);
-          }
+        // Handle cases to fill missing parts with zeros
+        if (target.value.length === 3) {
+          target.value = target.value + '00';
+        } else if (target.value.length === 4) {
+          target.value = target.value + '0';
+        } else if (target.value.length === 6) {
+          target.value = target.value + '00';
+        } else if (target.value.length === 7) {
+          target.value = target.value + '0';
         }
       }
     }
   }
-}
 
+  validate(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    if (value) {
+      // Check for hh:mm:ss or hh:mm format
+      if (/^\d{2}:\d{2}(:\d{2})?$/i.test(value)) {
+        const parts = value.split(':');
+        const hours = parseInt(parts[0], 10);
+        const minutes = parseInt(parts[1], 10);
+        const seconds = parts[2] ? parseInt(parts[2], 10) : 0;
+        if (hours >= 0  && minutes >= 0 && minutes < 60 && seconds >= 0 && seconds < 60) {
+          return null;
+        } else {
+          return { validateRegex: true };
+        }
+      }
+      // Check for 1h 2m 3s or 1H 2M 3S format, including days, weeks, months, and years
+      if (/^(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i.test(value) ||
+        /^(\d+d\s?)?(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i.test(value) ||
+        /^(\d+w\s?)?(\d+d\s?)?(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i.test(value) ||
+        /^(\d+M\s?)?(\d+w\s?)?(\d+d\s?)?(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i.test(value) ||
+        /^(\d+y\s?)?(\d+M\s?)?(\d+w\s?)?(\d+d\s?)?(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i.test(value)) {
+        return null;
+      }
+    }
+    return { validateRegex: true };
+  }
+}
 
 @Directive({
   selector: '[timevalidator]',
@@ -893,8 +926,21 @@ export class TimeValidatorReqexDirective implements Validator {
         this.timeChanged.emit('00:00:00');
       }
     } else {
-      if (value.length === 5 && !(/^([0-2][0-9]):([0-5][0-9])?$/i.test(value))) {
-        this.timeChanged.emit(value.substring(0, 3));
+      let formattedValue = value;
+      if (value.length === 3) {
+        formattedValue = value[0] + value[1] + ':0' + value[2] + ':00';
+      } else if (value.length === 4) {
+        formattedValue = value[0] + value[1] + ':' + value[2] + value[3] + ':00';
+      } else if (value.length === 5) {
+        if (!/^([0-2][0-9]):([0-5][0-9])?$/i.test(value)) {
+          formattedValue = value.substring(0, 3);
+        } else {
+          formattedValue = value + ':00';
+        }
+      } else if (value.length === 6) {
+        formattedValue = value[0] + value[1] + ':' + value[2] + value[3] + ':' + value[4] + value[5] + '0';
+      } else if (value.length === 7) {
+        formattedValue = value[0] + value[1] + ':' + value[2] + value[3] + ':' + value[4] + value[5] + value[6] + '0';
       } else if (value.length === 8 && !(/^([0-2][0-9]):([0-5][0-9]):([0-5][0-9])?$/i.test(value))) {
         this.timeChanged.emit(value.substring(0, 6) + '00');
       }
@@ -913,6 +959,122 @@ export class TimeValidatorReqexDirective implements Validator {
         || v === '24:00'
         || v === '24:00:00'
         || /^\s*\d+\s*$/i.test(v) || this.regex.test(v)
+      ) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+    return {
+      validTimeReqex: true
+    };
+  }
+}
+
+
+@Directive({
+  selector: '[timeRelativeValidatorReqex]',
+  providers: [
+    { provide: NG_VALIDATORS, useExisting: forwardRef(() => TimeValidatorRelativeReqexDirective), multi: true }
+  ]
+})
+export class TimeValidatorRelativeReqexDirective implements Validator {
+
+  regex = /^(?:(\d+)h\s*,?\s*)?(?:(\d+)m\s*,?\s*)?(?:(\d+)s)?$/;
+  isEnter = false;
+  isBackslash = false;
+
+  @HostListener('keydown', ['$event'])
+  onKeyPress(event): void {
+    if (event.key === 'Enter' || event.which === 13) {
+      this.isEnter = true;
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    if (event.key === 'Backspace' || event.which === 8) {
+      this.isBackslash = true;
+    }
+  }
+
+  @HostListener('input', ['$event.target'])
+  onInputChange(target): void {
+    if (this.isEnter || this.isBackslash) {
+      this.isEnter = false;
+      this.isBackslash = false;
+      return;
+    } else {
+      if (target.value) {
+        if (target.value.length === 2 && /^([0-2][0-9])?$/i.test(target.value)) {
+          if (parseInt(target.value) <= 24) {
+            target.value += ':';
+          }
+        } else if (target.value.length === 5 && /^([0-2][0-9]):([0-5][0-9])?$/i.test(target.value)) {
+          target.value += ':';
+        }
+      }
+    }
+  }
+
+  @HostListener('focusout', ['$event.target'])
+  onFocusout(target): void {
+    const value = target.value.trim();
+
+    const matches = this.regex.exec(value);
+    if (!value) {
+      target.value = '';
+      return;
+    }
+    if (matches) {
+      let hours = parseInt(matches[1] || '0', 10);
+      let minutes = parseInt(matches[2] || '0', 10);
+      let seconds = parseInt(matches[3] || '0', 10);
+
+      minutes += Math.floor(seconds / 60);
+      seconds = seconds % 60;
+
+      hours += Math.floor(minutes / 60);
+      minutes = minutes % 60;
+
+      if (hours < 24 || (hours === 24 && minutes === 0 && seconds === 0)) {
+        const formattedValue = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        target.value = formattedValue;
+      } else {
+        target.value = '00:00:00';
+      }
+    } else {
+      let formattedValue = value;
+      if (value.length === 3) {
+        formattedValue = value[0] + value[1] + ':0' + value[2] + ':00';
+      } else if (value.length === 4) {
+        formattedValue = value[0] + value[1] + ':' + value[2] + value[3] + ':00';
+      } else if (value.length === 5) {
+        if (!/^([0-2][0-9]):([0-5][0-9])?$/i.test(value)) {
+          formattedValue = value.substring(0, 3);
+        } else {
+          formattedValue = value + ':00';
+        }
+      } else if (value.length === 6) {
+        formattedValue = value[0] + value[1] + ':' + value[2] + value[3] + ':' + value[4] + value[5] + '0';
+      } else if (value.length === 7) {
+        formattedValue = value[0] + value[1] + ':' + value[2] + value[3] + ':' + value[4] + value[5] + value[6] + '0';
+      } else if (value.length === 8 && !(/^([0-2][0-9]):([0-5][0-9]):([0-5][0-9])?$/i.test(value))) {
+        target.value = value.substring(0, 6) + '00';
+      }
+      if (!((/^([0-2][0-9]):([0-5][0-9])?$/i.test(value)) || /^([0-2][0-9]):([0-5][0-9]):([0-5][0-9])?$/i.test(value))) {
+        target.value = '00:00:00';
+      }
+    }
+  }
+
+  validate(c: AbstractControl): { [key: string]: any } {
+    const v = c.value;
+    if (v) {
+      if (/^\s*$/i.test(v) ||
+        /^(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\s*$/.test(v) ||
+        /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]\s*$/i.test(v) ||
+        v === '24:00' ||
+        v === '24:00:00' ||
+        /^\s*\d+\s*$/i.test(v) || this.regex.test(v)
       ) {
         return null;
       }

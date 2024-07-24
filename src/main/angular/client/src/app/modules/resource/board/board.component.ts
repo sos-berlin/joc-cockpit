@@ -10,6 +10,7 @@ import {TreeComponent} from '../../../components/tree-navigation/tree.component'
 import {OrderPipe, SearchPipe} from '../../../pipes/core.pipe';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
+import {NgModel} from "@angular/forms";
 
 declare const $: any;
 
@@ -60,6 +61,11 @@ export class PostModalComponent {
       this.postObj.noticeId = this.coreService.getStringDate(null);
     }
   }
+ onBlur(repeat: NgModel, propertyName: string) {
+  this.postObj[propertyName] = this.coreService.padTime(this.postObj[propertyName]);
+  repeat.control.setErrors({incorrect: false});
+  repeat.control.updateValueAndValidity();
+}
 
   onSubmit(): void {
     this.submitted = true;
@@ -78,7 +84,13 @@ export class PostModalComponent {
         obj.endOfLife = this.coreService.getDateByFormat(this.postObj.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
       }
     } else if (this.postObj.at === 'later') {
-      obj.endOfLife = this.postObj.atTime;
+      const atTime = this.postObj.atTime;
+      const convertedTime = this.coreService.convertToSeconds(atTime);
+      if (convertedTime !== 'Invalid time format') {
+        obj.endOfLife = convertedTime;
+      } else {
+        obj.endOfLife = atTime;
+      }
     }
     this.coreService.post('notices/post', obj).subscribe({
       next: (res) => {

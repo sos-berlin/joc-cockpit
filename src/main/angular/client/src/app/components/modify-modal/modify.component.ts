@@ -6,6 +6,7 @@ import {CoreService} from '../../services/core.service';
 import {AuthService} from "../guard";
 import {ValueEditorComponent} from "../value-editor/value.component";
 import { ConfirmModalComponent } from '../comfirm-modal/confirm.component';
+import {NgModel} from "@angular/forms";
 
 @Component({
   selector: 'app-change-parameter',
@@ -858,5 +859,11 @@ export class ModifyStartTimeModalComponent {
 
   cancel(): void {
     this.activeModal.destroy();
+  }
+
+  onBlur(repeat: NgModel, propertyName: string) {
+    this.order[propertyName] = this.coreService.padTime(this.order[propertyName]);
+    repeat.control.setErrors({incorrect: false});
+    repeat.control.updateValueAndValidity();
   }
 }

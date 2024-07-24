@@ -9581,3 +9581,10 @@ cdk-virtual-scroll-viewport {
   margin: 0;
 }
 
+.copy-item{
+  right: -44px;
+  display: flex;
+  gap: 10px;
+  justify-content: space-around;
+  align-items: baseline;
+}
