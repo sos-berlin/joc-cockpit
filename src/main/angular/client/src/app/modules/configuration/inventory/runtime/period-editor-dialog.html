@@ -30,7 +30,7 @@
                    class="col-sm-3">
                 <input #startTime="ngModel" [(ngModel)]="period.period.singleStart" (blur)="onBlur(startTime,'singleStart')" [appAutofocus]="true" autocomplete="off" class="form-control"
                        maxlength="8" name="startTime" placeholder="HH:MM:SS"
-                        validTimeReqex timevalidator type="text" >
+                       timeRelativeValidatorReqex type="text" >
                 <div *ngIf="startTime.errors && (startTime.dirty || startTime.touched)" class="help-block text-danger">
                   <div *ngIf="!startTime.valid" translate>common.message.invalid</div>
                 </div>
@@ -45,7 +45,7 @@
               </label>
               <div [ngClass]="{ 'has-error' : (((repeat.dirty || repeat.touched) && repeat.invalid))}" class="col-sm-3">
                 <input #repeat="ngModel" [(ngModel)]="period.period.repeat" class="form-control" (blur)="onBlur(repeat,'repeat')" maxlength="8" name="repeat" placeholder="HH:MM:SS"
-                       timevalidator (ngModelChange)="isRepeatIntervalShort($event)" type="text" validTimeReqex>
+                        (ngModelChange)="isRepeatIntervalShort($event)" type="text" timeRelativeValidatorReqex>
                 <div *ngIf="repeat.errors && (repeat.dirty || repeat.touched)" class="help-block text-danger">
                   <div *ngIf="!repeat.valid" translate>common.message.invalid</div>
                 </div>
@@ -55,7 +55,7 @@
               <label class="col-sm-4 form-control-label" translate>runtime.label.begin</label>
               <div [ngClass]="{'has-error': (begin.dirty || begin.touched) && begin.invalid}" class="col-sm-3">
                 <input #begin="ngModel" [(ngModel)]="period.period.begin" (blur)="onBlur(begin, 'begin')" class="form-control" maxlength="8" name="begin" placeholder="HH:MM:SS"
-                       timevalidator type="text" validTimeReqex>
+                        type="text" timeRelativeValidatorReqex>
                 <div *ngIf="begin.errors && (begin.dirty || begin.touched)" class="help-block text-danger">
                   <div *ngIf="!begin.valid" translate>common.message.invalid</div>
                 </div>
@@ -63,7 +63,7 @@
               <label class="col-sm-2 form-control-label text-right" translate>runtime.label.end</label>
               <div [ngClass]="{'has-error': (end.dirty || end.touched) && end.invalid}" class="col-sm-3">
                 <input #end="ngModel" [(ngModel)]="period.period.end" (blur)="onBlur(end, 'end')" class="form-control" maxlength="8" name="end" placeholder="HH:MM:SS"
-                       timevalidator type="text" validTimeReqex>
+                        type="text" timeRelativeValidatorReqex>
                 <div *ngIf="end.errors && (end.dirty || end.touched)" class="help-block text-danger">
                   <div *ngIf="!end.valid" translate>common.message.invalid</div>
                 </div>

@@ -838,7 +838,7 @@ export class PeriodComponent {
     {label: 'runtime.label.singleStart', value: 'singleStart'},
     {label: 'runtime.label.repeat', value: 'repeat'}
   ]
-  constructor(public activeModal: NzModalRef, private calendarService: CalendarService) {
+  constructor( private coreService: CoreService,public activeModal: NzModalRef, private calendarService: CalendarService) {
   }
 
   @HostListener('window:click', ['$event'])
@@ -879,35 +879,9 @@ export class PeriodComponent {
   }
 
   onBlur(repeat: NgModel, propertyName: string) {
-    this.period.period[propertyName] = this.padTime(this.period.period[propertyName]);
+    this.period.period[propertyName] = this.coreService.padTime(this.period.period[propertyName]);
     repeat.control.setErrors({incorrect: false});
     repeat.control.updateValueAndValidity();
-  }
-
-  private padTime(value: string): string {
-    const parts = value.split(':');
-    if (parts.length === 2) {
-      parts[0] = parts[0].padStart(2, '0');
-      parts[1] = parts[1].padEnd(2, '0');
-      return parts.join(':');
-    } else if (parts.length === 3) {
-      parts[0] = parts[0].padStart(2, '0');
-      parts[1] = parts[1].padStart(2, '0');
-      parts[2] = parts[2].padEnd(2, '0');
-      return parts.join(':');
-    }
-
-    if (value.length === 3) {
-      return value[0] + value[1] + ':0' + value[2];
-    } else if (value.length === 4) {
-      return value[0] + value[1] + ':' + value[2] + value[3] + '0';
-    } else if (value.length === 6) {
-      return value[0] + value[1] + ':' + value[2] + value[3] + ':' + value[4] + value[5] + '0';
-    } else if (value.length === 7) {
-      return value[0] + value[1] + ':' + value[2] + value[3] + ':' + value[4] + value[5] + value[6] + '0';
-    }
-
-    return value;
   }
 
 

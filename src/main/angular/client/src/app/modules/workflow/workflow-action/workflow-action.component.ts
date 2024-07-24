@@ -9,6 +9,7 @@ import {AuthService} from '../../../components/guard';
 import {WorkflowService} from '../../../services/workflow.service';
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
+import {NgModel} from "@angular/forms";
 
 @Component({
   selector: 'app-show-dependency',
@@ -962,6 +963,14 @@ export class AddOrderModalComponent {
       });
     }
   }
+
+  onBlur(repeat: NgModel, propertyName: string) {
+    this.order[propertyName] = this.coreService.padTime(this.order[propertyName]);
+    repeat.control.setErrors({incorrect: false});
+    repeat.control.updateValueAndValidity();
+  }
+
+
 
 }
 

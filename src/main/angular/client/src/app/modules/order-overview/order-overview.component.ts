@@ -1171,7 +1171,6 @@ export class OrderOverviewComponent {
       if (operation === 'Suspend' && !order.isSuspendible) {
         return;
       }
-      console.log(obj,"?????????");
 
       if (obj.orderIds) {
         obj.orderIds.push(order.orderId);
@@ -1199,7 +1198,6 @@ export class OrderOverviewComponent {
         return orderInMap && orderInMap.isSuspendible;
       })
     } : obj;
-    console.log(filteredOrders,">>")
 
     if (this.preferences.auditLog) {
       const comments = {
