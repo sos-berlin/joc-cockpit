@@ -217,19 +217,22 @@ export class ScheduleComponent {
 
 
   handleIndlPaste(data: any, index1: number, index2: number): void {
-    if (!data || !data.type) {
-      data = this.storedIndlArguments[0];
-    }
+    if(this.storedIndlArguments[0].isFromVariableList){
+      this.pasteVariableToList([index1],[index2]);
+    }else{
+      if (!data || !data.type) {
+        data = this.storedIndlArguments[0];
+      }
 
-    if (data && typeof data === 'string') {
-      const clipboardData = JSON.parse(data);
-      if (typeof clipboardData === 'object' && clipboardData.actualList) {
+      if (data && typeof data === 'string') {
+        const clipboardData = JSON.parse(data);
+        if (typeof clipboardData === 'object' && clipboardData.actualList) {
 
-        const existingParameter = this.schedule.configuration.orderParameterisations[index1].variables.find(
-          scheduleArgu => scheduleArgu.name === clipboardData.name
-        );
+          const existingParameter = this.schedule.configuration.orderParameterisations[index1].variables.find(
+            scheduleArgu => scheduleArgu.name === clipboardData.name
+          );
 
-        if (existingParameter) {
+          if (existingParameter) {
             existingParameter.actualList = existingParameter.actualList.concat(clipboardData.actualList);
         }
 
@@ -240,21 +243,37 @@ export class ScheduleComponent {
     }
   }
 
-  copyVariableFromList(index: number, list: any[]): void {
-    const variableToCopy = list[index];
-    console.log(variableToCopy, "copy variable")
-    sessionStorage.setItem('$SOS$copiedIndlSheduledArgument', JSON.stringify(variableToCopy));
-    this.storedIndlArguments = sessionStorage.getItem('$SOS$copiedIndlSheduledArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedIndlSheduledArgument')) : [];
   }
 
-  pasteVariableToList(list: any[]): void {
+  copyVariableFromList(index: number, list: any[]): void {
+    const variableToCopy = list[index];
+    const markedVariable = { ...variableToCopy, isFromVariableList: true };
+    sessionStorage.setItem('$SOS$copiedIndlSheduledArgument', JSON.stringify(markedVariable));
+    this.storedIndlArguments = [markedVariable];
+  }
+
+
+  pasteVariableToList(index1: any, index2: any): void {
     const copiedVariable = sessionStorage.getItem('$SOS$copiedIndlSheduledArgument');
+
     if (copiedVariable) {
-      const variableToPaste = JSON.parse(copiedVariable);
-      list.push(variableToPaste);
-      this.saveJSON();
+      let variableToPaste = JSON.parse(copiedVariable);
+
+      delete variableToPaste.isFromVariableList;
+      const arrayOfObjects = Object.keys(variableToPaste).map(key => variableToPaste[key]);
+
+      const actualList = this.schedule.configuration.orderParameterisations[index1].variables[index2].actualList;
+    let data=[]
+      arrayOfObjects.forEach(variable => {
+        data.push(variable);
+      });
+    console.log(data,">>")
+      actualList.push(data);
     }
   }
+
+
+
 
 
   getStoredIndlArgumentsName(): string | undefined {
