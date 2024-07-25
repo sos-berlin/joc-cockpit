@@ -367,7 +367,7 @@ export class SearchComponent {
 
   clear(): void {
     const type = this.searchObj.returnType;
-    this.searchObj = {advanced: {}, returnType: type};
+    this.searchObj = {advanced: {}, folders: [], returnType: type};
     this.results = [];
     this.object.mapOfCheckedId = new Set();
     this.object.checked = false;
