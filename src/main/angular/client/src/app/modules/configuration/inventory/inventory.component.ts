@@ -254,7 +254,7 @@ export class CreateTagModalComponent {
 
   private storeFolderTags(obj): void {
     obj.folders = [{
-      folder: this.data.path,
+      folder: (this.data.path ? this.data.path : '/'),
       recursive: this.object.isRecursive
     }];
     obj.addTags = this.tags;
