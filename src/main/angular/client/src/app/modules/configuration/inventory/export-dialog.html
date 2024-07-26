@@ -152,7 +152,6 @@
             [nzCheckable]="true"
             (nzCheckBoxChange)="checkBoxChange($event)"
             (nzExpandChange)="getDeploymentVersion($event)"
-            [nzCheckStrictly]="!exportObj.isRecursive"
             [nzData]="nodes"
             [nzTreeTemplate]="nzTreeTemplate"
             nzNoAnimation

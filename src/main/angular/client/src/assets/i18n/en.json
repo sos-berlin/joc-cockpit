@@ -1726,6 +1726,7 @@
     "label.renameTag": "Rename Tag",
     "label.tagName": "Tag Name",
     "label.testMail": "Test E-Mail",
+    "label.impactedWorkflows": "Affected Workflows",
 
     "label.includeTodaysLateOrders": "Include Today's Late Orders",
     "button.modifyVariableSet": "Modify Variable Set",

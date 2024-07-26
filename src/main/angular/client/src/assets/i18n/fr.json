@@ -1726,6 +1726,7 @@
     "label.renameTag": "Renommer Mot-clé",
     "label.tagName": "Nom Mot-clé",
     "label.testMail": "Tester l'E-Mail",
+    "label.impactedWorkflows": "Affected Workflows",
 
     "label.includeTodaysLateOrders": "Include Today's Late Orders",
     "button.modifyVariableSet": "Modifier le Jeu de Variable",
