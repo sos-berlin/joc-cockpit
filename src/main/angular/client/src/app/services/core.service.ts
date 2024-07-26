@@ -3350,35 +3350,40 @@ export class CoreService {
       return value;
     }
 
-    const parts = value.split(':');
-    if (parts.length === 2) {
-      parts[0] = parts[0].padStart(2, '0');
-      parts[1] = parts[1].padEnd(2, '0');
-      return parts.join(':');
-    } else if (parts.length === 3) {
-      parts[0] = parts[0].padStart(2, '0');
-      parts[1] = parts[1].padStart(2, '0');
-      parts[2] = parts[2].padEnd(2, '0');
-      return parts.join(':');
-    }
+  const parts = value.split(':');
+  if (parts.length === 2) {
+    parts[0] = parts[0].padStart(2, '0');
+    parts[1] = parts[1].padEnd(2, '0');
+    return parts.join(':') + ':00';
+  } else if (parts.length === 3) {
+    parts[0] = parts[0].padStart(2, '0');
+    parts[1] = parts[1].padStart(2, '0');
+    parts[2] = parts[2].padEnd(2, '0');
+    return parts.join(':');
+  }
 
     // Handle cases where ':' is not included in the value
-    if (value.length === 1) {
-      return `0${value}:00:00`;
-    } else if (value.length === 2) {
-      return `${value}:00:00`;
-    } else if (value.length === 3) {
-      return `${value[0]}${value[1]}:0${value[2]}:00`;
-    } else if (value.length === 4) {
-      return `${value[0]}${value[1]}:${value[2]}${value[3]}:00`;
-    } else if (value.length === 5) {
-      return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}0`;
-    } else if (value.length === 6) {
-      return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}${value[5]}0`;
-    } else if (value.length === 7) {
-      return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}${value[5]}${value[6]}0`;
+    const isDigit = (str: string) => /^\d+$/.test(str);
+
+    if (isDigit(value)) {
+      if (value.length === 1) {
+        return `0${value}:00:00`;
+      } else if (value.length === 2) {
+        return `${value}:00:00`;
+      } else if (value.length === 3) {
+        return `${value[0]}${value[1]}:0${value[2]}:00`;
+      } else if (value.length === 4) {
+        return `${value[0]}${value[1]}:${value[2]}${value[3]}:00`;
+      } else if (value.length === 5) {
+        return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}0`;
+      } else if (value.length === 6) {
+        return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}${value[5]}0`;
+      } else if (value.length === 7) {
+        return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}${value[5]}${value[6]}0`;
+      }
     }
 
     return value;
   }
+
 }

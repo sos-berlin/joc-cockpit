@@ -1726,7 +1726,7 @@
     "label.renameTag": "Schlagwort umbenennen",
     "label.tagName": "Schlagwort Name",
     "label.testMail": "E-Mail testen",
-
+    "label.impactedWorkflows": "Affected Workflows",
     "label.includeTodaysLateOrders": "Include Today's Late Orders",
     "button.modifyVariableSet": "Variablensatz ändern",
     "button.addOrderParameter": "Auftragsvorlage hinzufügen",
