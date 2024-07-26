@@ -83,7 +83,7 @@
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
-              <input timeRelativeValidatorReqex (blur)="onBlur(time,'atTimeFromCur')" type="text" #time="ngModel" class="form-control" required
+              <input nValidTimeRegex (blur)="onBlur(time,'atTimeFromCur')" type="text" #time="ngModel" class="form-control" required
                      name="atTime" [(ngModel)]="order.atTimeFromCur" placeholder="±HH:MM:[SS] or ±SECONDS">
               <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
                 <div *ngIf="!time.valid" translate>common.message.invalid</div>

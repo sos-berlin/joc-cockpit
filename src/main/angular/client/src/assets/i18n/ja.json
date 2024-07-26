@@ -1793,6 +1793,7 @@
     "label.tagName": "タグ名",
     "label.testMail": "テストメール",
     "label.impactedSchedules": "影響するスケジュール",
+    "label.impactedWorkflows": "Affected Workflows",
     "label.includeTodaysLateOrders": "Include Today's Late Orders",
     "button.modifyVariableSet": "変数設定変更",
     "button.addOrderParameter": "オーダー変数追加",

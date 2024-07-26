@@ -1793,6 +1793,7 @@
     "label.tagName": "Kennzeichnung",
     "label.testMail": "E-Mail testen",
     "label.impactedSchedules": "Betroffene Zeitpläne",
+    "label.impactedWorkflows": "Affected Workflows",
     "label.includeTodaysLateOrders": "Heutige verspätete Aufträge einschließen",
     "button.modifyVariableSet": "Variablensatz ändern",
     "button.addOrderParameter": "Auftragsvorlage hinzufügen",

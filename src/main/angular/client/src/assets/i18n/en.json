@@ -1793,6 +1793,7 @@
     "label.tagName": "Tag Name",
     "label.testMail": "Test E-Mail",
     "label.impactedSchedules": "Affected Schedules",
+    "label.impactedWorkflows": "Affected Workflows",
     "label.includeTodaysLateOrders": "Include today's late Orders",
     "button.modifyVariableSet": "Modify Variable Set",
     "button.addOrderParameter": "Add Order Template",

@@ -1793,6 +1793,7 @@
     "label.tagName": "Nom Balise",
     "label.testMail": "Tester l'E-Mail",
     "label.impactedSchedules": "Planifications concernéés",
+    "label.impactedWorkflows": "Affected Workflows",
     "label.includeTodaysLateOrders": "Inclure les Ordres tardifs du jour",
     "button.modifyVariableSet": "Modifier le Jeu de Variable",
     "button.addOrderParameter": "Ajouter un Modèle d'Ordre",
