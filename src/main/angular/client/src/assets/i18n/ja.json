@@ -2244,7 +2244,7 @@
     "button.logIn": "ログイン",
     "button.loginWith": "{{identityServiceName}}IDサービスでログイン",
     "button.registerDevice": "新規デバイス登録",
-    "message.loginError": "アカウントかパスワードが間違っています",
+    "message.loginError": "アクセス拒否",
     "message.operationTimeoutOrCancelled": "操作がタイムアウトになったか、キャンセルされました",
     "message.notSecureConnection": "JOCコックピットへの接続が安全ではありません。アイデンティティサービスを使用するには、安全な HTTPS 接続が必要です。"
   },

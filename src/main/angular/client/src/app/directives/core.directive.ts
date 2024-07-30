@@ -1037,7 +1037,7 @@ export class TimeValidatorReqexDirective implements Validator {
 })
 export class TimeValidatorRelativeReqexDirective implements Validator {
 
-  regex = /^(?:(\d+)h\s*,?\s*)?(?:(\d+)m\s*,?\s*)?(?:(\d+)s)?$/;
+  regex = /^\+?\s*(?:(\d+)h\s*,?\s*)?(?:(\d+)m\s*,?\s*)?(?:(\d+)s)?$/;
   isEnter = false;
   isBackslash = false;
 
@@ -1062,8 +1062,10 @@ export class TimeValidatorRelativeReqexDirective implements Validator {
     } else {
       if (target.value) {
         if (target.value.length === 2 && /^([0-2][0-9])?$/i.test(target.value)) {
-          if (parseInt(target.value) <= 24) {
-            target.value += ':';
+          if(!target.value.startsWith('+')){
+            if (parseInt(target.value) <= 24) {
+              target.value += ':';
+            }
           }
         } else if (target.value.length === 5 && /^([0-2][0-9]):([0-5][0-9])?$/i.test(target.value)) {
           target.value += ':';
