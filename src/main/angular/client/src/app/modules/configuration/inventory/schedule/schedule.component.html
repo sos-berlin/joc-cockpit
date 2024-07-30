@@ -108,11 +108,11 @@
                       <div translate>common.message.requiredError</div>
                     </div>
                   </div>
-                  <div class="pos-abt r-t-n-28 add-order-encrypt"[ngClass]="(listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1) ? 'right-58px' : 'right-15px'">
+                  <div class="pos-abt r-t-n-28 add-order-encrypt"[ngClass]="(listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1) ? 'right-58px' : 'right-34px'">
 
                   <a *ngIf="argument.name && argument.type === 'String'"><i (click)="encryptValue(argument, 'job')" class="m-t-sm text-hover-color"
                       nz-icon nzType="property-safety" nzTheme="outline"></i></a>
-                    <a  *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1"><i (click)="copyVariableFromList(i, listVariables.actualList)"
+                    <a  *ngIf="listVariables.actualList && listVariables.actualList.length >= 1 && k === actualListArr.length - 1"><i (click)="copyVariableFromList(i, listVariables.actualList)"
                           class="fa fa-copy m-t-sm"></i></a>
                     <a *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1"
                     ><i (click)="removeVariableFromList(i, listVariables.actualList)"
@@ -237,8 +237,8 @@
                   <div class="pos-abt r-t-n-28 add-order-encrypt" style="right: -34px">
                     <a  *ngIf="argument.name && argument.type === 'String'"><i (click)="encryptValue(argument, 'job')"
                       class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
-                    <a *ngIf="listVariables.actualMap && listVariables.actualMap.length > 1 && k === actualMapArr.length - 1">
-                      <i (click)="removeVariableFromList(i, listVariables.actualMap)"class="fa fa-copy m-t-sm text-muted"></i></a>
+                    <a *ngIf="listVariables.actualMap && listVariables.actualMap.length >= 1 && k === actualMapArr.length - 1">
+                      <i (click)="removeVariableFromList(i, listVariables.actualMap)"class="fa fa-times m-t-sm text-muted"></i></a>
                 </div>
                 </div>
               </ng-container>

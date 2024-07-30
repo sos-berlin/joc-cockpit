@@ -2345,7 +2345,7 @@
     "button.loginWith": "Fortsetzen mit {{identityServiceName}}",
     "button.registerDevice": "Sicherheitsschlüssel registrieren",
     "button.registerKeyFor": "Sicherheitsschlüssel registrieren für {{identityServiceName}}",
-    "message.loginError": "Zugriff verweigert",
+    "message.loginError": "Konto oder Kennwort falsch",
     "message.operationTimeoutOrCancelled": "Der Vorogang ist zeitlich abgelaufen oder wurde abgebrochen",
     "message.notSecureConnection": "Ihre Verbindung zu JOC Cockpit ist nicht sicher. Die Verwendung des Identitätsdienstes verlangt eine sichere HTTPS Verbindung."
   },
