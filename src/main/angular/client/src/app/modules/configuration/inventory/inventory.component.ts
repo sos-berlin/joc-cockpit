@@ -647,7 +647,6 @@ impactedWorkflows: any = {
     };
     this.coreService.post('inventory/noticeboard/references', obj).subscribe({
       next: (res: any) => {
-        console.log(res);
         if (res.workflows) {
           this.impactedWorkflows = {
             workflows: res.workflows.map((workflow: any) => ({

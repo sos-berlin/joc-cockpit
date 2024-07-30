@@ -2244,7 +2244,7 @@
     "button.logIn": "Log In",
     "button.loginWith": "Continue with {{identityServiceName}}",
     "button.registerDevice": "Register Security Key",
-    "message.loginError": "Account or password wrong",
+    "message.loginError": "Access denied",
     "message.operationTimeoutOrCancelled": "The operation timed out or was cancelled",
     "message.notSecureConnection": "Your connection to JOC Cockpit is not secure. Use of the Identity Service requires a secure HTTPS connection."
   },
