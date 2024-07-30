@@ -727,7 +727,6 @@ export class SingleDeployComponent {
     };
     this.coreService.post('inventory/noticeboard/references', obj).subscribe({
       next: (res: any) => {
-        console.log(res);
         if (res.workflows) {
           this.impactedWorkflows = {
             workflows: res.workflows.map((workflow: any) => ({
@@ -2103,7 +2102,7 @@ export class ExportComponent {
     if (this.exportObj.exportType !== 'folders') {
       deployObjectTypes.push(InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
         InventoryObject.NOTICEBOARD, InventoryObject.LOCK);
-      releaseObjectTypes.push(InventoryObject.REPORT, InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
+      releaseObjectTypes.push( InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
     }
 
     const APIs = [];
