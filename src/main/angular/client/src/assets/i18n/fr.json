@@ -2344,7 +2344,7 @@
     "button.logIn": "Connexion",
     "button.loginWith": "Continuer avec {{identityServiceName}}",
     "button.registerDevice": "Enregistrer une Clé de Sécurité",
-    "message.loginError": "Compte ou Mot de Passe est incorrect",
+    "message.loginError": "Accès refusé",
     "message.operationTimeoutOrCancelled": "L'opération a dépassé le temps imparti ou a été annulée",
     "message.notSecureConnection": "Votre connexion à JOC Cockpit n'est pas sécurisée. L'utilisation du service d'identité nécessite une connexion HTTPS sécurisée."
   },

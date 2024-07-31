@@ -1390,7 +1390,6 @@ export class ExportComponent {
   fileFormat = [{value: 'ZIP', name: 'ZIP'},
     {value: 'TAR_GZ', name: 'TAR_GZ'}
   ]
-  folderArr = [];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService,
               private inventoryService: InventoryService) {
@@ -1852,33 +1851,12 @@ export class ExportComponent {
 
     let folders = [];
     if (this.exportObj.exportType !== 'folders') {
-      this.buildTreeOnSubmit(this.path, null, () => {
-        const self = this;
-        function recursive(node: any): void {
-          for (const i in node) {
-            if (!node[i].isLeaf) {
-              node[i].expanded = true;
-            }
-            if (node[i].children && node[i].children.length > 0) {
-              if (!node[i].isCall) {
-                self.inventoryService.checkAndUpdateVersionList(node[i], self.exportObj.exportType === 'folders');
-              }
-              recursive(node[i].children);
-            }
-          }
-        }
-        recursive(this.nodes);
-        this.nodes = [...this.nodes];
-      }, true);
-      setTimeout(() => {
-        this.checkFolderSelection(folders);
-      }, 100);
+      this.checkFolderSelection(folders);
     }
-    setTimeout(() => {
-      if ((folders.length > 0) || (this.object.deployConfigurations && this.object.deployConfigurations.length > 0) ||
-      (this.object.draftConfigurations.length && this.object.draftConfigurations.length > 0) ||
-      (this.object.releasedConfigurations && this.object.releasedConfigurations.length > 0) ||
-      (this.object.releaseDraftConfigurations.length && this.object.releaseDraftConfigurations.length > 0)) {
+    if ((folders.length > 0) || (this.object.deployConfigurations && this.object.deployConfigurations.length > 0) ||
+    (this.object.draftConfigurations.length && this.object.draftConfigurations.length > 0) ||
+    (this.object.releasedConfigurations && this.object.releasedConfigurations.length > 0) ||
+    (this.object.releaseDraftConfigurations.length && this.object.releaseDraftConfigurations.length > 0)) {
       if (this.object.deployConfigurations && this.object.deployConfigurations.length === 0) {
         delete this.object.deployConfigurations;
       }
@@ -1979,33 +1957,23 @@ export class ExportComponent {
         this.submitted = false;
       }
     }
-    }, 100);
   }
 
   private checkFolderSelection(folders): void {
-    function recursive(nodes, folderArr) {
+    function recursive(nodes, isRecursive) {
       for (let i in nodes.children) {
         if (nodes.children[i] && !nodes.children[i].type) {
           if (nodes.children[i].checked) {
             folders.push({
               configuration: {
                 path: nodes.children[i].path,
-                objectType: 'FOLDER'
+                objectType: 'FOLDER',
+                recursive: isRecursive ? true : false
               }
             });
-            folderArr.forEach((arr) => {
-              if (arr.path.split('/')[1] === nodes.children[i].name && arr.path !== nodes.children[i].path) {
-                folders.push({
-                  configuration: {
-                    path: arr.path,
-                    objectType: 'FOLDER'
-                  }
-                });
-              }
-            })
           }
           if (nodes.children[i].children?.length > 0) {
-            recursive(nodes.children[i], folderArr);
+            recursive(nodes.children[i], isRecursive);
           }
         }
       }
@@ -2017,23 +1985,14 @@ export class ExportComponent {
           folders.push({
             configuration: {
               path: x.path,
-              objectType: 'FOLDER'
+              objectType: 'FOLDER',
+              recursive: this.exportObj?.isRecursive ? true : false
             }
           });
-          this.folderArr.forEach((arr) => {
-            if (arr.path.split('/')[1] === x.name && arr.path !== x.path) {
-              folders.push({
-                configuration: {
-                  path: arr.path,
-                  objectType: 'FOLDER'
-                }
-              });
-            }
-          })
         }
 
         if (x.children?.length > 0) {
-          recursive(x, this.folderArr);
+          recursive(x, this.exportObj?.isRecursive);
         }
       }
     })
@@ -2073,99 +2032,6 @@ export class ExportComponent {
 
   cancel(): void {
     this.activeModal.destroy();
-  }
-
-
-  buildTreeOnSubmit(path: string, merge?: any, cb?: any, flag = false): void {
-    const obj: any = {
-      folder: path || '/',
-      onlyValidObjects: this.filter.valid,
-      recursive: flag,
-      withoutDrafts: !this.filter.draft,
-      withoutDeployed: !this.filter.deploy,
-      withoutRemovedObjects: true
-    };
-
-    let deployObjectTypes = [];
-    let releaseObjectTypes = [];
-    if (this.exportObj.objectTypes.length > 0) {
-      this.exportObj.objectTypes.forEach((item) => {
-        if (item === InventoryObject.WORKFLOW || item === InventoryObject.FILEORDERSOURCE || item === InventoryObject.JOBRESOURCE ||
-          item === InventoryObject.NOTICEBOARD || item === InventoryObject.LOCK) {
-          deployObjectTypes.push(item);
-        } else {
-          releaseObjectTypes.push(item);
-        }
-      })
-    }
-
-    if (this.exportObj.exportType !== 'folders') {
-      deployObjectTypes.push(InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
-        InventoryObject.NOTICEBOARD, InventoryObject.LOCK);
-      releaseObjectTypes.push(InventoryObject.REPORT, InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
-    }
-
-    const APIs = [];
-    if (this.filter.controller && this.filter.dailyPlan) {
-      obj.withoutReleased = !this.filter.release;
-      if (deployObjectTypes.length > 0) {
-        APIs.push(this.coreService.post('inventory/deployables', {...obj, ...{objectTypes: deployObjectTypes}}).pipe(
-          catchError(error => of(error))
-        ));
-      }
-      if (releaseObjectTypes.length > 0) {
-        APIs.push(this.coreService.post('inventory/releasables', {...obj, ...{objectTypes: releaseObjectTypes}}).pipe(
-          catchError(error => of(error))
-        ));
-      }
-    } else {
-      if (this.filter.dailyPlan) {
-        obj.withoutReleased = !this.filter.release;
-        if (releaseObjectTypes.length > 0) {
-          obj.objectTypes = releaseObjectTypes;
-          APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
-            catchError(error => of(error))
-          ));
-        }
-      } else {
-        obj.withVersions = !this.filter.deploy;
-        if (deployObjectTypes.length > 0) {
-          obj.objectTypes = deployObjectTypes;
-          APIs.push(this.coreService.post('inventory/deployables', obj).pipe(
-            catchError(error => of(error))
-          ));
-        }
-      }
-    }
-
-    forkJoin(APIs).subscribe({
-      next: (res: any) => {
-        for(let i in res){
-          this.updateDataRecursively(res[i], res[i].deployables ? 'deployables' : 'releasables');
-        }
-
-      }
-    })
-  }
-
-  private updateDataRecursively(list, type, callback?): void {
-    // for(let i=0; i<list[type]?.length; i++){
-    //   console.log(list[type][i]);
-    // }
-
-    for (let j in list['folders']) {
-
-      if (list['folders'][j]) {
-        this.updateDataRecursively(list['folders'][j], type);
-        this.folderArr.push({
-          path: list['folders'][j]?.path,
-        });
-      }
-    }
-
-    if (callback) {
-      callback();
-    }
   }
 
 }
