@@ -819,7 +819,11 @@ export class ModifyStartTimeModalComponent {
         if (!/^[+-]/.test(this.order.atTimeFromCur)) {
           this.order.atTimeFromCur = "+" + this.order.atTimeFromCur;
         }
-        obj.scheduledFor = 'cur ' + this.order.atTimeFromCur;
+        if (/s$/.test(this.order.atTimeFromCur)) {
+          obj.scheduledFor = 'cur ' + this.order.atTimeFromCur.slice(0, -1);
+        } else {
+          obj.scheduledFor = 'cur ' + this.order.atTimeFromCur;
+        }
       } else {
         this.coreService.getDateAndTime(this.order);
         if (this.order.fromTime) {
@@ -859,6 +863,11 @@ export class ModifyStartTimeModalComponent {
   }
 
   cancel(): void {
+    delete this.order.atTime;
+    delete this.order.atTimeFromCur;
+    delete this.order.fromDate;
+    delete this.order.fromTime1;
+    delete this.order.fromTime;
     this.activeModal.destroy();
   }
 
