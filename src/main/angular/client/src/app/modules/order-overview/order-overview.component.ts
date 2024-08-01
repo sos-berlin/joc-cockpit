@@ -1070,7 +1070,7 @@ export class OrderOverviewComponent {
         }
       }
     });
-    if (count == this.object.mapOfCheckedId.size) {
+    if (count == this.object.mapOfCheckedId.size && this.object.mapOfCheckedId.size > 0) {
       this.object.isPrompt = true;
     }
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;

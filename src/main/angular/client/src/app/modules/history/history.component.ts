@@ -4558,7 +4558,6 @@ export class HistoryComponent {
   }
 
   onTagChecked(tag, checked: boolean): void {
-    console.log(tag,">>")
     if (checked) {
       this.coreService.checkedTags.add(tag);
     } else {
