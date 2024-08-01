@@ -376,7 +376,7 @@ export class NegativeTimeRegexValidator implements Validator {
     const v = c.value;
     if (v) {
       if (/^\s*$/i.test(v) ||
-        /^[+-]?((?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?|\d+)$/.test(v)
+      /^[+-]?((?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?|\d+)[s]?$/i.test(v)
         || v === '24:00' || v === '+24:00' || v === '-24:00' || v === '24:00:00'
         || v === '+24:00:00' || v === '-24:00:00'
       ) {
