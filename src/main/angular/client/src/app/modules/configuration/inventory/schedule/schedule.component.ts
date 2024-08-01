@@ -267,7 +267,6 @@ export class ScheduleComponent {
       arrayOfObjects.forEach(variable => {
         data.push(variable);
       });
-    console.log(data,">>")
       actualList.push(data);
     }
   }
