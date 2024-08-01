@@ -843,11 +843,11 @@ export class PeriodComponent {
 
   @HostListener('window:click', ['$event'])
   onClick(): void {
-    if (this.isDisplay) {
-      setTimeout(() => {
-        $('#repeatId').click();
-      }, 10);
-    }
+    // if (this.isDisplay) {
+    //   setTimeout(() => {
+    //     $('#repeatId').click();
+    //   }, 10);
+    // }
   }
 
   ngOnInit(): void {
