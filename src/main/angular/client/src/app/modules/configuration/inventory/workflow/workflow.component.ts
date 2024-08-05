@@ -2435,6 +2435,7 @@ export class JobComponent {
   }
 
   addArgument(): void {
+
     const param = {
       name: '',
       value: ''
@@ -4113,51 +4114,49 @@ export class WorkflowComponent {
     }
   }
 
-    handleIndlPaste(): void {
-      let data;
 
-      data = this.storedArguments[this.storedArguments.length - 1];
+  handleIndlPaste(): void {
+let data = this.storedArguments[this.storedArguments.length - 1];
 
+    if (data && typeof data === 'string') {
+      const clipboardDataArray = JSON.parse(data);
 
-      if (data && typeof data === 'string') {
-        const clipboardDataArray = JSON.parse(data);
-
-        if (Array.isArray(clipboardDataArray)) {
-          clipboardDataArray.forEach(arg => {
-            let flag = true;
-            for (let i in this.variableDeclarations.parameters) {
-              if (arg.name === this.variableDeclarations.parameters[i].name) {
-                flag = false;
-              }
-            }
-            if (flag) {
-              this.variableDeclarations.parameters.push(arg);
-            }
-          });
-        } else {
-          const existingParameter = this.variableDeclarations.parameters.find(
-            parameter => parameter.name === clipboardDataArray.name
-          );
-
-          if (existingParameter) {
-            if (clipboardDataArray.value) {
-              existingParameter.value = clipboardDataArray.value;
-
-              if (clipboardDataArray.value.type === 'List' || clipboardDataArray.value.type === 'Map') {
-
-                this.variableDeclarations.parameters.push(clipboardDataArray);
-
-
-              }
-            } else {
-              this.variableDeclarations.parameters.push(clipboardDataArray);
+      if (Array.isArray(clipboardDataArray)) {
+        clipboardDataArray.forEach(arg => {
+          let flag = true;
+          for (let i in this.variableDeclarations.parameters) {
+            if (arg.name === this.variableDeclarations.parameters[i].name) {
+              flag = false;
             }
           }
+          if (flag) {
+            const newArg = JSON.parse(JSON.stringify(arg));
+            this.variableDeclarations.parameters.push(newArg);
+          }
+        });
+      } else {
+        const existingParameter = this.variableDeclarations.parameters.find(
+          parameter => parameter.name === clipboardDataArray.name
+        );
 
-          this.updateOtherProperties('variable');
+        if (existingParameter) {
+          if (clipboardDataArray.value) {
+            existingParameter.value = JSON.parse(JSON.stringify(clipboardDataArray.value));
+
+            if (clipboardDataArray.value.type === 'List' || clipboardDataArray.value.type === 'Map') {
+              this.variableDeclarations.parameters.push(JSON.parse(JSON.stringify(clipboardDataArray)));
+            }
+          }
+        } else {
+          this.variableDeclarations.parameters.push(JSON.parse(JSON.stringify(clipboardDataArray)));
         }
       }
-    }
+
+      this.updateOtherProperties('variable');
+    }   
+ }
+
+
 
 
 

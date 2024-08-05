@@ -3408,17 +3408,18 @@ export class CoreService {
     const hhmmssRegex = /^(\d{2}):(\d{2}):(\d{2})$/i;
     const hhmmRegex = /^(\d{2}):(\d{2})$/i;
     const durationRegex = /^(\d+y\s?)?(\d+M\s?)?(\d+w\s?)?(\d+d\s?)?(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i;
+    const singleUnitRegex = /^\d+[a-zA-Z]$/; // Regex to detect single unit patterns
 
     const hhmmssMatch = timeString.match(hhmmssRegex);
     const hhmmMatch = timeString.match(hhmmRegex);
     const durationMatch = timeString.match(durationRegex);
 
-    console.log("Input timeString:", timeString);
-    console.log("HHMMSS Match:", hhmmssMatch);
-    console.log("HHMM Match:", hhmmMatch);
-    console.log("Duration Match:", durationMatch);
-
     let totalSeconds = 0;
+
+    // Check if it's a single unit pattern like 1s or 1m, return as it is
+    if (singleUnitRegex.test(timeString)) {
+      return timeString;
+    }
 
     if (hhmmssMatch) {
       const hours = parseInt(hhmmssMatch[1], 10);
@@ -3473,22 +3474,29 @@ export class CoreService {
     return 'Invalid time format';
   }
 
-   padTime(value: string): string {
+
+
+  padTime(value: string): string {
     if (!value) {
       return value;
     }
 
-  const parts = value.split(':');
-  if (parts.length === 2) {
-    parts[0] = parts[0].padStart(2, '0');
-    parts[1] = parts[1].padEnd(2, '0');
-    return parts.join(':') + ':00';
-  } else if (parts.length === 3) {
-    parts[0] = parts[0].padStart(2, '0');
-    parts[1] = parts[1].padStart(2, '0');
-    parts[2] = parts[2].padEnd(2, '0');
-    return parts.join(':');
-  }
+    const containsAlphabet = /[a-zA-Z]/.test(value);
+
+    if (containsAlphabet) {
+      return value;
+    }
+    const parts = value.split(':');
+    if (parts.length === 2) {
+      parts[0] = parts[0].padStart(2, '0');
+      parts[1] = parts[1].padEnd(2, '0');
+      return parts.join(':') + ':00';
+    } else if (parts.length === 3) {
+      parts[0] = parts[0].padStart(2, '0');
+      parts[1] = parts[1].padStart(2, '0');
+      parts[2] = parts[2].padEnd(2, '0');
+      return parts.join(':');
+    }
 
     // Handle cases where ':' is not included in the value
     const isDigit = (str: string) => /^\d+$/.test(str);

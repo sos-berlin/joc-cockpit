@@ -7,7 +7,8 @@ import {
   HostListener,
   Input,
   OnChanges,
-  Output
+  Output,
+  Renderer2
 } from '@angular/core';
 import {AbstractControl, NG_VALIDATORS, NgModel, ValidationErrors, Validator} from '@angular/forms';
 import {SaveService} from '../services/save.service';
@@ -27,7 +28,7 @@ declare const $: any;
 export class TimeDurationValidatorDirective implements Validator {
   isEnter = false;
   isBackslash = false;
-
+  constructor(private renderer: Renderer2, private el: ElementRef) {}
   @HostListener('keydown', ['$event'])
   onKeyPress(event): void {
     if (event.key === 'Enter' || event.which === 13) {
@@ -41,45 +42,42 @@ export class TimeDurationValidatorDirective implements Validator {
   }
 
   @HostListener('input', ['$event.target'])
-  onInputChange(target): void {
-    if (this.isEnter || this.isBackslash) {
-      this.isEnter = false;
-      this.isBackslash = false;
-      return;
-    } else {
-      if (target.value) {
-        // Allow formats like +1h 2m 3s or +1H 2M 3S
-        if (/^\+?(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i.test(target.value) ||
-          /^\+?(\d+d\s?)?(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i.test(target.value) ||
-          /^\+?(\d+w\s?)?(\d+d\s?)?(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i.test(target.value) ||
-          /^\+?(\d+M\s?)?(\d+w\s?)?(\d+d\s?)?(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i.test(target.value) ||
-          /^\+?(\d+y\s?)?(\d+M\s?)?(\d+w\s?)?(\d+d\s?)?(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i.test(target.value)) {
-          target.value = target.value;
-        }
+onInputChange(target): void {
+  if (this.isEnter || this.isBackslash) {
+    this.isEnter = false;
+    this.isBackslash = false;
+    return;
+  } else {
+    if (target.value) {
+      const regexRelative = /^\+?(\d+y\s?)?(\d+M\s?)?(\d+w\s?)?(\d+d\s?)?(\d+h\s?)?(\d+m\s?)?(\d+s\s?)?$/i;
+      const lastChar = target.value[target.value.length - 1];
+
+      if (regexRelative.test(target.value)) {
+        // Handle relative time formats (like +1h 2m 3s)
+        target.value = target.value.replace(/:/g, '');  // remove all colons if they exist
+      } else if (target.value.length === 2 && /^[0-2][0-9]$/i.test(target.value)) {
         // Handle two digits input and add ':'
-        else if (target.value.length === 2 && /^[0-2][0-9]$/i.test(target.value)) {
-          target.value = target.value + ':';
-        }
+        target.value = target.value + ':';
+      } else if (target.value.length === 5 && /^[0-2][0-9]:[0-5][0-9]$/i.test(target.value)) {
         // Handle hh:mm input and add ':'
-        else if (target.value.length === 5 && /^[0-2][0-9]:[0-5][0-9]$/i.test(target.value)) {
-          target.value = target.value + ':';
-        }
+        target.value = target.value + ':';
+      } else if (target.value.length === 8 && /^[0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/i.test(target.value)) {
         // Handle hh:mm:ss input
-        else if (target.value.length === 8 && /^[0-2][0-9]:[0-5][0-9]:[0-5][0-9]$/i.test(target.value)) {
-          target.value = target.value;
-        }
-        // Invalid input handling
-        else {
-          target.value = target.value;
-        }
+        target.value = target.value;
+      } else if (lastChar.match(/[hmsdwyM]/i)) {
+        // Remove colons if a time unit is detected after digits
+        target.value = target.value.replace(/:/g, '');
+        target.dispatchEvent(new Event('input', { bubbles: true }));
       }
     }
   }
+}
 
   @HostListener('focusout', ['$event.target'])
   onFocusout(target): void {
     if (target.value) {
       target.value = this.padTime(target.value);
+      target.dispatchEvent(new Event('input', { bubbles: true }));
     }
   }
 
@@ -115,11 +113,15 @@ export class TimeDurationValidatorDirective implements Validator {
       return value;
     }
 
+    // Check if the value contains any alphabets
+    const containsAlphabet = /[a-zA-Z]/.test(value);
+
+
     const parts = value.split(':');
     if (parts.length === 2) {
       parts[0] = parts[0].padStart(2, '0');
       parts[1] = parts[1].padEnd(2, '0');
-      return parts.join(':');
+      return parts.join(':') + ':00';
     } else if (parts.length === 3) {
       parts[0] = parts[0].padStart(2, '0');
       parts[1] = parts[1].padStart(2, '0');

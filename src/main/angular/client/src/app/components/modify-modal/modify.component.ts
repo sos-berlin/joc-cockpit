@@ -6,7 +6,6 @@ import {CoreService} from '../../services/core.service';
 import {AuthService} from "../guard";
 import {ValueEditorComponent} from "../value-editor/value.component";
 import { ConfirmModalComponent } from '../comfirm-modal/confirm.component';
-import { EncryptArgumentModalComponent } from 'src/app/modules/configuration/inventory/inventory.component';
 import {NgModel} from "@angular/forms";
 
 @Component({

@@ -60,11 +60,12 @@
           </div>
         </div>
       </div>
-      <div *ngIf="!isRevoke && !isRemoved"  class="form-group row">
-        <label class="col-md-3 " translate>inventory.label.includeTodaysLateOrders</label>
+      <div *ngIf="!isRevoke && !isRemoved && (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR')"  class="form-group row">
         <div class="col-md-6">
-          <label nz-checkbox [(ngModel)]="includeLate" name="includeLate"></label>
+          <label nz-checkbox class="mr-2" [(ngModel)]="includeLate" name="includeLate"></label>
+          <label translate>inventory.label.includeTodaysLateOrders</label>
         </div>
+
       </div>
       <div *ngIf="deployablesObject.length > 0" class="row">
         <div class="col-md-12">
