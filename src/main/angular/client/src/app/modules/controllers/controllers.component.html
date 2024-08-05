@@ -621,11 +621,13 @@
                             </td>
                           </tr>
                           <tr *ngIf="clusterAgent.show">
-                            <td colspan="10" style="padding: 0 !important;border-top: none!important;">
-                              <nz-table #subagentClusterTable [nzBordered]="true" [nzData]="clusterAgent.subagents | orderBy: 'ordering'"
-                                        [nzFrontPagination]="false"
-                                        [nzShowPagination]="false"
-                                        class="m-a-0 inner-table" nzSize="small">
+
+                            <td colspan="11" style="padding: 0 !important;border-top: none!important;">
+                              <nz-table class="m-a-0 inner-table" #subagentClusterTable nzSize="small"
+                                        [nzBordered]="true"
+                                        [nzData]="clusterAgent.subagents | orderBy: 'ordering'"
+                                        [nzShowPagination]="false" [nzFrontPagination]="false">
+
                                 <thead>
                                 <tr class="order-history-template0">
                                   <th *ngIf="permission.joc && permission.joc.administration.controllers.manage"
