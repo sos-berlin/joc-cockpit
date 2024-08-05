@@ -384,7 +384,11 @@ export class AgentComponent {
   navToController(agent, cluster): void {
     if (this.permission.joc && this.permission.joc.administration.controllers.view) {
       if (cluster) {
-        this.router.navigate(['/controllers/cluster_agent', cluster.controllerId, cluster.agentId]).then();
+        this.coreService.preferences.controllers.clear();
+        this.coreService.preferences.controllers.add(cluster.controllerId);
+        this.coreService.preferences.controllers.add(cluster.controllerId + (cluster.subagents ? '$cluster$' : '$standalone$'));
+      
+        this.router.navigate(['/controllers']).then();
       } else {
         this.coreService.preferences.controllers.clear();
         this.coreService.preferences.controllers.add(agent.controllerId);

@@ -2195,6 +2195,7 @@ export class JobComponent {
   }
 
   addArgument(): void {
+
     const param = {
       name: '',
       value: ''
@@ -3662,10 +3663,7 @@ export class WorkflowComponent {
   }
 
   handleIndlPaste(): void {
-    let data;
-
-    data = this.storedArguments[this.storedArguments.length - 1];
-
+    let data = this.storedArguments[this.storedArguments.length - 1];
 
     if (data && typeof data === 'string') {
       const clipboardDataArray = JSON.parse(data);
@@ -3679,7 +3677,8 @@ export class WorkflowComponent {
             }
           }
           if (flag) {
-            this.variableDeclarations.parameters.push(arg);
+            const newArg = JSON.parse(JSON.stringify(arg));
+            this.variableDeclarations.parameters.push(newArg);
           }
         });
       } else {
@@ -3689,20 +3688,22 @@ export class WorkflowComponent {
 
         if (existingParameter) {
           if (clipboardDataArray.value) {
-            existingParameter.value = clipboardDataArray.value;
+            existingParameter.value = JSON.parse(JSON.stringify(clipboardDataArray.value));
 
             if (clipboardDataArray.value.type === 'List') {
-              this.variableDeclarations.parameters.push(clipboardDataArray);
+              this.variableDeclarations.parameters.push(JSON.parse(JSON.stringify(clipboardDataArray)));
             }
           }
         } else {
-          this.variableDeclarations.parameters.push(clipboardDataArray);
+          this.variableDeclarations.parameters.push(JSON.parse(JSON.stringify(clipboardDataArray)));
         }
       }
 
       this.updateOtherProperties('variable');
     }
   }
+
+
 
 
 

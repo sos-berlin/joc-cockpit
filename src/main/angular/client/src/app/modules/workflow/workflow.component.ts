@@ -1304,9 +1304,9 @@ export class WorkflowComponent {
       if (this.workflows[i].path) {
         if (this.workflows[i].show) {
           request.workflowIds.push({path: this.workflows[i].path, versionId: this.workflows[i].versionId});
-        } else {
-          request2.workflowIds.push({path: this.workflows[i].path, versionId: this.workflows[i].versionId});
         }
+          request2.workflowIds.push({path: this.workflows[i].path, versionId: this.workflows[i].versionId});
+
       }
     }
     if (request.workflowIds.length > 0) {
