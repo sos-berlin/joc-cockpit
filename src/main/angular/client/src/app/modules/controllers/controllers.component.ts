@@ -131,7 +131,88 @@ export class ExportComponent {
 
 }
 
+@Component({
+  selector: 'app-export-bulk-modal',
+  templateUrl: './export-bulk-dialog.html'
+})
+export class ExportBulkComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  preferences;
+  display: any;
+  angentList: any;
+  submitted = false;
+  required = false;
+  comments: any = {radio: 'predefined'};
+  inValid = false;
+  exportObj = {
+    filename: '',
+    fileFormat: 'ZIP'
+  };
 
+  fileFormat=[{value: 'ZIP' , name:'ZIP'},
+  {value: 'TAR_GZ' , name:'TAR_GZ'}
+]
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    this.preferences = this.modalData.preferences;
+    this.display = this.modalData.display;
+    this.angentList = this.modalData.angentList;
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+      this.required = true;
+      this.display = true;
+    }
+  }
+
+  checkFileName(): void {
+    if (this.exportObj.filename) {
+      const ext = this.exportObj.filename.split('.').pop();
+      if (ext && this.exportObj.filename.indexOf('.') > -1) {
+        if ((ext === 'ZIP' || ext === 'zip')) {
+          this.exportObj.fileFormat = 'ZIP';
+        } else if ((ext === 'tar' || ext === 'gz')) {
+          this.exportObj.fileFormat = 'TAR_GZ';
+        }
+      } else {
+        this.inValid = false;
+        this.exportObj.filename = this.exportObj.filename + (this.exportObj.fileFormat === 'ZIP' ? '.zip' : '.tar.gz');
+      }
+    }
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    const obj: any = {
+      agentIds: [],
+      exportFile: {filename: this.exportObj.filename, format: this.exportObj.fileFormat}
+    };
+    if (this.comments.comment) {
+      obj.auditLog = {};
+      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+    }
+
+    if (this.angentList.length > 0) {
+      obj.agentIds = this.angentList;
+    }
+
+    if (obj.agentIds.length > 0) {
+      this.coreService.download('agents/export', obj, this.exportObj.filename, (res) => {
+        if (res) {
+          this.activeModal.close('ok');
+        } else {
+          this.submitted = false;
+        }
+      });
+    }
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+
+}
 @Component({
   selector: 'app-create-token-modal',
   templateUrl: './create-token.dialog.html'
@@ -491,6 +572,29 @@ export class ControllersComponent {
         preferences: this.preferences,
         display: this.preferences.auditLog,
         controller
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
+  exportBulkAgents(): void{
+    let angentList = [];
+    if(this.object.mapOfCheckedId.size > 0){
+      this.object.mapOfCheckedId.forEach((k, v) => angentList.push(v));
+    }
+    if(this.object.mapOfCheckedId2.size > 0){
+      this.object.mapOfCheckedId2.forEach((k, v) => angentList.push(v));
+    }
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ExportBulkComponent,
+      nzAutofocus: null,
+      nzData: {
+        preferences: this.preferences,
+        display: this.preferences.auditLog,
+        angentList
       },
       nzFooter: null,
       nzClosable: false,

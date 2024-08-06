@@ -245,9 +245,9 @@ export class ScheduleComponent {
 
   }
 
-  copyVariableFromList(index: number, list: any[]): void {
-    const variableToCopy = list[index];
-    const markedVariable = { ...variableToCopy, isFromVariableList: true };
+  copyVariableFromList(index: number, list: any): void {
+    const variableToCopy = list.actualList[index];
+    const markedVariable = { ...variableToCopy, isFromVariableList: true, text: list.name };
     sessionStorage.setItem('$SOS$copiedIndlSheduledArgument', JSON.stringify(markedVariable));
     this.storedIndlArguments = [markedVariable];
   }
@@ -259,16 +259,20 @@ export class ScheduleComponent {
     if (copiedVariable) {
       let variableToPaste = JSON.parse(copiedVariable);
 
-      delete variableToPaste.isFromVariableList;
-      const arrayOfObjects = Object.keys(variableToPaste).map(key => variableToPaste[key]);
+      if (this.schedule.configuration.orderParameterisations[index1].variables[index2].name === variableToPaste.text) {
+        delete variableToPaste.isFromVariableList;
+        delete variableToPaste.text;
 
-      const actualList = this.schedule.configuration.orderParameterisations[index1].variables[index2].actualList;
-    let data=[]
-      arrayOfObjects.forEach(variable => {
-        data.push(variable);
-      });
-      actualList.push(data);
+        const arrayOfObjects = Object.keys(variableToPaste).map(key => variableToPaste[key]);
+        const actualList = this.schedule.configuration.orderParameterisations[index1].variables[index2].actualList;
+        let data = []
+        arrayOfObjects.forEach(variable => {
+          data.push(variable);
+        });
+        actualList.push(data);
+      }
     }
+
   }
 
 

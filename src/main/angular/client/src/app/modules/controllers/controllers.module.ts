@@ -6,7 +6,8 @@ import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {
   ControllersComponent,
   CreateTokenModalComponent,
-  ExportComponent
+  ExportComponent,
+  ExportBulkComponent
 } from './controllers.component';
 import {
   AddClusterModalComponent,
@@ -40,7 +41,8 @@ const routes: Routes = [
     AgentComponent,
     ExportComponent,
     AddCertificateModalComponent,
-    ShowCertificateListModalComponent
+    ShowCertificateListModalComponent,
+    ExportBulkComponent
   ],
   imports: [
     RouterModule.forChild(routes),

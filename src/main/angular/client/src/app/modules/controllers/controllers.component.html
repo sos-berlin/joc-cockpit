@@ -59,6 +59,7 @@
                       class="btn btn-grey btn-sm m-l-12" translate>agent.button.resetForced
               </button>
               <button (click)="deleteAll()" class="btn btn-grey btn-sm m-l-12" translate>common.button.delete</button>
+              <button (click)="exportBulkAgents()" class="btn btn-grey btn-sm m-l-12" translate>common.button.export</button>
             </div>
             <div *ngIf="object.mapOfCheckedId3.size>0 && (object.mapOfCheckedId.size == 0 && object.mapOfCheckedId2.size == 0)"
                  class="show-inline">
