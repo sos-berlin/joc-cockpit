@@ -721,11 +721,8 @@ export class SingleDeployComponent {
     });
   }
 
-<<<<<<< HEAD
-  private getNoticeReferences(): void {
-=======
  private getNoticeReferences(): void {
->>>>>>> release/2.6
+
     const obj = {
       path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
       objectType: this.data.objectType || this.data.type
