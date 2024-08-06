@@ -9075,7 +9075,9 @@ export class WorkflowComponent {
                 return !argu.invalid;
               });
             }
-            self.coreService.convertArrayToObject(self.selectedNode.newObj, 'defaultArguments', false);
+            if (self.selectedNode.newObj.defaultArguments.length > 0) {
+              self.coreService.convertArrayToObject(self.selectedNode.newObj, 'defaultArguments', false);
+            }
           }
         }
         if (self.selectedNode.type === 'If') {
