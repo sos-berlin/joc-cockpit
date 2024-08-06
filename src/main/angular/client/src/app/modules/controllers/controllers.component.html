@@ -547,10 +547,10 @@
                             <td>
                               <span class="show-in-single-line">
                                 <i class="cursor fa fa-caret-down fa-lg"
-                                   *ngIf="!clusterAgent.show"
+                                   *ngIf="!clusterAgent.show && !coreService.preferences.controllers.has(clusterAgent.agentId)"
                                    (click)="clusterAgent.show = true;$event.stopPropagation()"></i>
                                 <i class="cursor fa fa-caret-up fa-lg"
-                                   *ngIf="clusterAgent.show"
+                                   *ngIf="clusterAgent.show || coreService.preferences.controllers.has(clusterAgent.agentId)"
                                    (click)="clusterAgent.show = false;$event.stopPropagation()"></i>
                                 <i class="cursor fa fa-list p-l-xs"
                                    [nz-tooltip]="'agent.button.manageCluster' | translate"
@@ -603,7 +603,7 @@
                               <span *ngIf="!clusterAgent.token">-</span>
                             </td>
                           </tr>
-                          <tr *ngIf="clusterAgent.show">
+                          <tr *ngIf="clusterAgent.show || coreService.preferences.controllers.has(clusterAgent.agentId)">
                             <td colspan="11" style="padding: 0 !important;border-top: none!important;">
                               <nz-table class="m-a-0 inner-table" #subagentClusterTable nzSize="small"
                                         [nzBordered]="true"

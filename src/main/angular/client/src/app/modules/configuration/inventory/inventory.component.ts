@@ -409,7 +409,8 @@ export class SingleDeployComponent {
   dailyPlanDate: any = {
     addOrdersDateFrom: 'now',
   };
-impactedWorkflows: any = {
+  impactedSchedules: any;
+  impactedWorkflows: any = {
     workflows: [],
     isRenamed: false
   }
@@ -435,6 +436,9 @@ impactedWorkflows: any = {
     const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.dateFormat = this.coreService.getDateFormat(preferences.dateFormat);
     this.init();
+    if(this.data?.objectType === 'WORKFLOW' || this.data?.type === 'WORKFLOW') {
+      this.getReferences();
+    }
    if(this.data?.objectType === 'NOTICEBOARD' || this.data?.type === 'NOTICEBOARD') {
       this.getNoticeReferences();
     }
@@ -638,6 +642,23 @@ impactedWorkflows: any = {
         }, error: () => this.loading = false
       });
     }
+  }
+
+  private getReferences(): void {
+    const obj = {
+      path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
+      objectType: this.data.objectType || this.data.type
+    };
+    this.coreService.post('inventory/workflow/references', obj).subscribe({
+      next: (res: any) => {
+        if (res.schedules) {
+          this.impactedSchedules = res.schedules.map((schedule: any) => ({
+            ...schedule,
+            selected: true
+          }));
+        }
+      }
+    });
   }
 
  private getNoticeReferences(): void {
