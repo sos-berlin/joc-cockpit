@@ -112,7 +112,7 @@
 
                   <a *ngIf="argument.name && argument.type === 'String'"><i (click)="encryptValue(argument, 'job')" class="m-t-sm text-hover-color"
                       nz-icon nzType="property-safety" nzTheme="outline"></i></a>
-                    <a  *ngIf="listVariables.actualList && listVariables.actualList.length >= 1 && k === actualListArr.length - 1"><i (click)="copyVariableFromList(i, listVariables.actualList)"
+                    <a  *ngIf="listVariables.actualList && listVariables.actualList.length >= 1 && k === actualListArr.length - 1"><i (click)="copyVariableFromList(i, listVariables)"
                           class="fa fa-copy m-t-sm"></i></a>
                     <a *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1"
                     ><i (click)="removeVariableFromList(i, listVariables.actualList)"
