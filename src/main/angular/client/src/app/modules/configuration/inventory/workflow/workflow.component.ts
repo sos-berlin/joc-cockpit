@@ -9812,6 +9812,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
               checkEachIntructions(obj.list, obj.data);
             }
           }
+
           obj.jobName = cell.getAttribute('jobName');
           obj.defaultArguments = cell.getAttribute('defaultArguments');
           if (!obj.defaultArguments || isEmpty(obj.defaultArguments) || typeof obj.defaultArguments !== 'string') {

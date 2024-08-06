@@ -386,8 +386,8 @@ export class AgentComponent {
       if (cluster) {
         this.coreService.preferences.controllers.clear();
         this.coreService.preferences.controllers.add(cluster.controllerId);
-        this.coreService.preferences.controllers.add(cluster.controllerId + (cluster.subagents ? '$cluster$' : '$standalone$'));
-      
+        this.coreService.preferences.controllers.add(cluster.controllerId + (cluster.subagents ? '$standalone$' : '$cluster$'));
+        this.coreService.preferences.controllers.add(cluster.agentId);
         this.router.navigate(['/controllers']).then();
       } else {
         this.coreService.preferences.controllers.clear();

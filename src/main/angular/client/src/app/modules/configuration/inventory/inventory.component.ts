@@ -474,7 +474,8 @@ export class SingleDeployComponent {
     this.init();
     if(this.data?.objectType === 'WORKFLOW' || this.data?.type === 'WORKFLOW') {
       this.getReferences();
-    }if(this.data?.objectType === 'NOTICEBOARD' || this.data?.type === 'NOTICEBOARD') {
+    }
+   if(this.data?.objectType === 'NOTICEBOARD' || this.data?.type === 'NOTICEBOARD') {
       this.getNoticeReferences();
     }
   }
@@ -720,7 +721,11 @@ export class SingleDeployComponent {
     });
   }
 
+<<<<<<< HEAD
   private getNoticeReferences(): void {
+=======
+ private getNoticeReferences(): void {
+>>>>>>> release/2.6
     const obj = {
       path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
       objectType: this.data.objectType || this.data.type

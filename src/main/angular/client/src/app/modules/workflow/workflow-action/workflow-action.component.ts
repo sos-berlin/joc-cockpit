@@ -1225,7 +1225,25 @@ export class AddOrderModalComponent {
     repeat.control.updateValueAndValidity();
   }
 
-
+  onTimeChange(e){
+    if (e === 'date') {
+      delete this.order.atTime
+    } else if (e === 'later') {
+      delete this.order.fromDate
+      delete this.order.fromTime
+      delete this.order.fromTime1
+    } else if (e === 'never') {
+      delete this.order.atTime
+      delete this.order.fromDate
+      delete this.order.fromTime
+      delete this.order.fromTime1
+    } else {
+      delete this.order.atTime
+      delete this.order.fromDate
+      delete this.order.fromTime
+      delete this.order.fromTime1
+    }
+  }
 
 }
 

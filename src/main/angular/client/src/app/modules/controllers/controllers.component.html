@@ -578,6 +578,7 @@
                                    *ngIf="clusterAgent.show"
                                    class="cursor fa fa-caret-up fa-lg"></i>
                                 <i (click)="navToController(controller.controllerId, clusterAgent.agentId)"
+
                                    [nz-tooltip]="'agent.button.manageCluster' | translate"
                                    class="cursor fa fa-list p-l-xs"></i>
                                 <i (click)="addSubagent(clusterAgent, controller)"
@@ -627,7 +628,8 @@
                               <span *ngIf="!clusterAgent.token">-</span>
                             </td>
                           </tr>
-                          <tr *ngIf="clusterAgent.show">
+
+                          <tr *ngIf="clusterAgent.show || coreService.preferences.controllers.has(clusterAgent.agentId)">
 
                             <td colspan="11" style="padding: 0 !important;border-top: none!important;">
                               <nz-table class="m-a-0 inner-table" #subagentClusterTable nzSize="small"

@@ -313,7 +313,7 @@
     <div class="form-group row">
       <label class="col-sm-4 " translate>common.label.startTime</label>
       <div class="col-md-8">
-        <nz-radio-group [(ngModel)]="order.at" name="at">
+        <nz-radio-group [(ngModel)]="order.at" name="at" (ngModelChange)="onTimeChange($event)">
           <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
           <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
           <label nz-radio nzValue="later"><span translate>common.label.relativeTime</span></label>
