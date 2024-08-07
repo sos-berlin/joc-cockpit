@@ -1356,8 +1356,8 @@ export class ScheduleComponent {
         orderName: item.orderName,
         variables: item.variables,
         positions: item.positions,
+        tags: item.tags,
         forceJobAdmission: item.forceJobAdmission,
-        tags: item.tags
       };
     });
 

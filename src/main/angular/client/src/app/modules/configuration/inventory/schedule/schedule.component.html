@@ -55,9 +55,9 @@
                     </div>
                   </div>
                   <div
-                    *ngIf="listVariables.actualList && listVariables.actualList.length >= 1 && k === actualListArr.length - 1"
+                    *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1"
                     class="pos-abt r-t-n-28 copy-item">
-                    <a><i (click)="copyVariableFromList(i, listVariables)"
+                    <a *ngIf="listVariables.actualList && listVariables.actualList.length >= 1"><i (click)="copyVariableFromList(i, listVariables)"
                           class="fa fa-copy m-t-sm "></i></a>
                     <a><i (click)="removeVariableFromList(i, listVariables.actualList)"
                           class="fa fa-times m-t-sm "></i></a>
@@ -81,11 +81,11 @@
                     </div>
                   </div>
                   <div
-                    *ngIf="listVariables.actualList && listVariables.actualList.length >= 1 && k === actualListArr.length - 1"
+                    *ngIf="k === actualListArr.length - 1"
                     class="pos-abt r-t-n-28 copy-item">
-                    <a><i (click)="copyVariableFromList(i, listVariables)"
+                    <a *ngIf="listVariables.actualList && listVariables.actualList.length >= 1"><i (click)="copyVariableFromList(i, listVariables)"
                           class="fa fa-copy m-t-sm "></i></a>
-                    <a><i (click)="removeVariableFromList(i, listVariables.actualList)"
+                    <a *ngIf="listVariables.actualList && listVariables.actualList.length > 1"><i (click)="removeVariableFromList(i, listVariables.actualList)"
                           class="fa fa-times m-t-sm "></i></a>
                   </div>
                 </div>
@@ -109,11 +109,10 @@
                     </div>
                   </div>
                   <div class="pos-abt r-t-n-28 add-order-encrypt"[ngClass]="(listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1) ? 'right-58px' : 'right-34px'">
-
-                  <a *ngIf="argument.name && argument.type === 'String'"><i (click)="encryptValue(argument, 'job')" class="m-t-sm text-hover-color"
-                      nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                     <a  *ngIf="listVariables.actualList && listVariables.actualList.length >= 1 && k === actualListArr.length - 1"><i (click)="copyVariableFromList(i, listVariables)"
-                          class="fa fa-copy m-t-sm"></i></a>
+                                                                                                                                      class="fa fa-copy m-t-sm"></i></a>
+                    <a *ngIf="argument.name && argument.type === 'String'"><i (click)="encryptValue(argument, 'job')" class="m-t-sm text-hover-color"
+                      nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                     <a *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1"
                     ><i (click)="removeVariableFromList(i, listVariables.actualList)"
 
@@ -144,10 +143,6 @@
         <a class="cursor" (click)="copyIndlArguments(j, x)"
            nz-tooltip="{{'common.button.copyArguments' | translate}}">
           <i class="fa fa-copy"></i>
-        </a>
-        <a class="cursor p-l-12" (click)="handleIndlPaste(storedIndlArguments[0], j, x)" *ngIf="storedIndlArguments?.length > 0 && !storedIndlArguments[0].isFromVariableList"
-           nz-tooltip="{{'common.button.paste' | translate}}">
-          <i class="fa fa-paste"></i>
         </a>
       </div>
     </div>
@@ -238,7 +233,7 @@
                   <div class="pos-abt r-t-n-28 add-order-encrypt" style="right: -34px">
                     <a  *ngIf="argument.name && argument.type === 'String'"><i (click)="encryptValue(argument, 'job')"
                       class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
-                    <a *ngIf="listVariables.actualMap && listVariables.actualMap.length >= 1 && k === actualMapArr.length - 1">
+                    <a *ngIf="listVariables.actualMap && listVariables.actualMap.length > 1 && k === actualMapArr.length - 1">
                       <i (click)="removeVariableFromList(i, listVariables.actualMap)"class="fa fa-times m-t-sm text-muted"></i></a>
                 </div>
                 </div>

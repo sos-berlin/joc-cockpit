@@ -44,7 +44,12 @@ export class StringDatePipe implements PipeTransform {
       if (!n.zone) {
         return '';
       }
-      return moment(date).tz(n.zone).format(n.dateFormat);
+      const dateY = new Date(date);
+      if (dateY.getFullYear() === 10000) {
+        return 'common.label.never'
+      } else {
+        return moment(date).tz(n.zone).format(n.dateFormat);
+      }
     } else {
       return moment(date).format('DD.MM.YYYY HH:mm:ss');
     }

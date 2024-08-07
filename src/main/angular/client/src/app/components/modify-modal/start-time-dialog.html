@@ -50,7 +50,7 @@
           <div class="form-group row">
             <label class="col-md-3" translate>common.label.startTime</label>
             <div class="col-md-9">
-              <nz-radio-group [(ngModel)]="dateType.at" name="at">
+              <nz-radio-group [(ngModel)]="dateType.at" name="at" (ngModelChange)="onTimeChange($event)">
                 <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
                 <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
                 <label nz-radio nzValue="later"><span translate>common.label.relativeTime</span></label>
@@ -71,7 +71,7 @@
               <sup class="text-danger text-sm">*</sup>
             </label>
             <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
-              <input timeRelativeValidatorReqex (blur)="onBlur(time,'atTime')" type="text" #time="ngModel" class="form-control" required
+              <input nRValidTimeRegex (blur)="onBlur(time,'atTime')" type="text" #time="ngModel" class="form-control" required
                      name="atTime" [(ngModel)]="order.atTime" placeholder="{{'common.placeholder.enterSecond' | translate}}">
               <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
                 <div *ngIf="!time.valid" translate>common.message.invalid</div>

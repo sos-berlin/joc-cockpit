@@ -120,7 +120,7 @@
                     [ngClass]="history.orderState.severity === 0?'bg-light-green cl-b':coreService.getColor(history.orderState.severity,'bg')"
                     class="label"></span>
             </td>
-            <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)" [innerHtml]="history.plannedTime | stringToDate"></td>
+            <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)" [innerHtml]="history.plannedTime | stringToDate | translate"></td>
             <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)" [innerHtml]="history.startTime | stringToDate"></td>
             <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)" [innerHtml]="history.endTime | stringToDate"></td>
             <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)" [innerHtml]="history.startTime | duration:history.endTime"></td>

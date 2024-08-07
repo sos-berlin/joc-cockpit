@@ -1040,7 +1040,7 @@ export class CoreService {
       this.popupService.focusPopoutWindow();
     }
   }
-  
+
   renderData(res, domId, object, obj, preferences, windowInstance?): void {
     let argu = {
       lastLevel: '',
