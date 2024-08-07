@@ -55,9 +55,9 @@
                     </div>
                   </div>
                   <div
-                    *ngIf="listVariables.actualList && listVariables.actualList.length >= 1 && k === actualListArr.length - 1"
+                    *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1"
                     class="pos-abt r-t-n-28 copy-item">
-                    <a><i (click)="copyVariableFromList(i, listVariables)"
+                    <a *ngIf="listVariables.actualList && listVariables.actualList.length >= 1"><i (click)="copyVariableFromList(i, listVariables)"
                           class="fa fa-copy m-t-sm "></i></a>
                     <a><i (click)="removeVariableFromList(i, listVariables.actualList)"
                           class="fa fa-times m-t-sm "></i></a>
@@ -81,11 +81,11 @@
                     </div>
                   </div>
                   <div
-                    *ngIf="listVariables.actualList && listVariables.actualList.length >= 1 && k === actualListArr.length - 1"
+                    *ngIf="k === actualListArr.length - 1"
                     class="pos-abt r-t-n-28 copy-item">
-                    <a><i (click)="copyVariableFromList(i, listVariables)"
+                    <a *ngIf="listVariables.actualList && listVariables.actualList.length >= 1"><i (click)="copyVariableFromList(i, listVariables)"
                           class="fa fa-copy m-t-sm "></i></a>
-                    <a><i (click)="removeVariableFromList(i, listVariables.actualList)"
+                    <a *ngIf="listVariables.actualList && listVariables.actualList.length > 1"><i (click)="removeVariableFromList(i, listVariables.actualList)"
                           class="fa fa-times m-t-sm "></i></a>
                   </div>
                 </div>
@@ -109,11 +109,11 @@
                     </div>
                   </div>
                   <div
-                    *ngIf="listVariables.actualList && listVariables.actualList.length >= 1 && k === actualListArr.length - 1"
+                    *ngIf="k === actualListArr.length - 1"
                     class="pos-abt r-t-n-28 copy-item">
-                    <a><i (click)="copyVariableFromList(i, listVariables)"
+                    <a *ngIf="listVariables.actualList && listVariables.actualList.length >= 1"><i (click)="copyVariableFromList(i, listVariables)"
                           class="fa fa-copy m-t-sm "></i></a>
-                    <a><i (click)="removeVariableFromList(i, listVariables.actualList)"
+                    <a *ngIf="listVariables.actualList && listVariables.actualList.length > 1"><i (click)="removeVariableFromList(i, listVariables.actualList)"
                           class="fa fa-times m-t-sm text-muted"></i></a>
                   </div>
                 </div>
