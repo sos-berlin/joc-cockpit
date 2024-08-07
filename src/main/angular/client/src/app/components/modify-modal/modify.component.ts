@@ -813,7 +813,11 @@ export class ModifyStartTimeModalComponent {
       } else if (this.dateType.at === 'never') {
         obj.scheduledFor = 'never';
       } else if (this.dateType.at === 'later') {
-        obj.scheduledFor = 'now + ' + this.order.atTime;
+        if (/s$/.test(this.order.atTime)) {
+          obj.scheduledFor = 'now + ' + this.order.atTime.slice(0, -1);
+        } else {
+          obj.scheduledFor = 'now + '+ this.order.atTime;
+        }
       } else if (this.dateType.at === 'cur') {
         if (!/^[+-]/.test(this.order.atTimeFromCur)) {
           this.order.atTimeFromCur = "+" + this.order.atTimeFromCur;
@@ -871,8 +875,85 @@ export class ModifyStartTimeModalComponent {
   }
 
   onBlur(repeat: NgModel, propertyName: string) {
-    this.order[propertyName] = this.coreService.padTime(this.order[propertyName]);
+    this.order[propertyName] = this.padTime(this.order[propertyName]);
     repeat.control.setErrors({incorrect: false});
     repeat.control.updateValueAndValidity();
   }
+
+  onTimeChange(e){
+    delete this.order.atTime;
+    delete this.order.atTimeFromCur;
+    delete this.order.fromDate;
+    delete this.order.fromTime1;
+    delete this.order.fromTime;
+  }
+
+  padTime(value: string): string {
+    if (!value) {
+      return value;
+    }
+
+    const containsAlphabet = /[a-zA-Z]/.test(value);
+
+    if (containsAlphabet) {
+      return value;
+    }
+
+    const isDigit = (str: string) => /^\d+$/.test(str);
+    const isSignedDigit = (str: string) => /^[+-]\d+$/.test(str);
+
+    const parts = value.split(':');
+    if (parts.length === 2) {
+      parts[0] = parts[0].padStart(2, '0');
+      parts[1] = parts[1].padEnd(2, '0');
+      return parts.join(':') + ':00';
+    } else if (parts.length === 3) {
+      parts[0] = parts[0].padStart(2, '0');
+      parts[1] = parts[1].padStart(2, '0');
+      parts[2] = parts[2].padEnd(2, '0');
+      return parts.join(':');
+    }
+
+    if (isDigit(value)) {
+      if (value.length === 1) {
+        return `0${value}:00:00`;
+      } else if (value.length === 2) {
+        return `${value}:00:00`;
+      } else if (value.length === 3) {
+        return `${value[0]}${value[1]}:0${value[2]}:00`;
+      } else if (value.length === 4) {
+        return `${value[0]}${value[1]}:${value[2]}${value[3]}:00`;
+      } else if (value.length === 5) {
+        return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}0`;
+      } else if (value.length === 6) {
+        return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}${value[5]}0`;
+      } else if (value.length === 7) {
+        return `${value[0]}${value[1]}:${value[2]}${value[3]}:${value[4]}${value[5]}${value[6]}0`;
+      }
+    }
+
+    if (isSignedDigit(value)) {
+      const sign = value[0];
+      const num = value.substring(1);
+
+      if (num.length === 1) {
+        return `${sign}0${num}:00:00`;
+      } else if (num.length === 2) {
+        return `${sign}${num}:00:00`;
+      } else if (num.length === 3) {
+        return `${sign}${num[0]}${num[1]}:0${num[2]}:00`;
+      } else if (num.length === 4) {
+        return `${sign}${num[0]}${num[1]}:${num[2]}${num[3]}:00`;
+      } else if (num.length === 5) {
+        return `${sign}${num[0]}${num[1]}:${num[2]}${num[3]}:${num[4]}0`;
+      } else if (num.length === 6) {
+        return `${sign}${num[0]}${num[1]}:${num[2]}${num[3]}:${num[4]}${num[5]}0`;
+      } else if (num.length === 7) {
+        return `${sign}${num[0]}${num[1]}:${num[2]}${num[3]}:${num[4]}${num[5]}${num[6]}0`;
+      }
+    }
+
+    return value;
+  }
+
 }

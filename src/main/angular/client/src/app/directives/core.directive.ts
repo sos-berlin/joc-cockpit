@@ -357,22 +357,32 @@ export class NegativeTimeRegexValidator implements Validator {
 
   @HostListener('input', ['$event.target'])
   onInputChange(target): void {
-    if (this.isEnter || this.isBackslash) {
-      this.isEnter = false;
-      this.isBackslash = false;
-      return;
-    } else {
-      if (target.value) {
-        if (target.value.length === 2 && /^([0-2][0-9])?$/i.test(target.value)) {
-          if (parseInt(target.value) <= 24) {
-            target.value += ':';
-          }
-        } else if (target.value.length === 5 && /^([0-2][0-9]):([0-5][0-9])?$/i.test(target.value)) {
-          target.value += ':';
+  if (this.isEnter || this.isBackslash) {
+    this.isEnter = false;
+    this.isBackslash = false;
+    return;
+  } else {
+    if (target.value) {
+      const value = target.value;
+      const lastChar = value[value.length - 1];
+      const startsWithSign = value.startsWith('+') || value.startsWith('-');
+      const valueWithoutSign = startsWithSign ? value.substring(1) : value;
+
+      if (valueWithoutSign.length === 2 && /^([0-2][0-9])?$/i.test(valueWithoutSign)) {
+        if (parseInt(valueWithoutSign) <= 24) {
+          target.value = startsWithSign ? value[0] + valueWithoutSign + ':' : valueWithoutSign + ':';
         }
+      } else if (valueWithoutSign.length === 5 && /^([0-2][0-9]):([0-5][0-9])?$/i.test(valueWithoutSign)) {
+        target.value = startsWithSign ? value[0] + valueWithoutSign + ':' : valueWithoutSign + ':';
+      }
+
+      if (lastChar.match(/[hmsdwyM]/i)) {
+        target.value = target.value.replace(/:/g, '');
+        target.dispatchEvent(new Event('input', { bubbles: true }));
       }
     }
   }
+}
 
   validate(c: AbstractControl): { [key: string]: any } {
     const v = c.value;
@@ -391,6 +401,81 @@ export class NegativeTimeRegexValidator implements Validator {
       nValidTimeRegex: true
     };
   }
+}
+
+@Directive({
+  selector: '[nRValidTimeRegex]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => NegativeRelativeTimeRegexValidator), multi: true}
+  ]
+})
+export class NegativeRelativeTimeRegexValidator implements Validator {
+  regex = /^[+-]?(?:(\d+)h\s*,?\s*)?(?:(\d+)m\s*,?\s*)?(?:(\d+)s)?$/;
+  isEnter = false;
+  isBackslash = false;
+
+  @HostListener('keydown', ['$event'])
+  onKeyPress(event): void {
+    if (event.key === 'Enter' || event.which === 13) {
+      this.isEnter = true;
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    if (event.key === 'Backspace' || event.which === 8) {
+      this.isBackslash = true;
+    }
+  }
+
+  @HostListener('input', ['$event.target'])
+  onInputChange(target): void {
+    if (this.isEnter || this.isBackslash) {
+      this.isEnter = false;
+      this.isBackslash = false;
+      return;
+    } else {
+      if (target.value) {
+        if (target.value.length === 2 && /^([0-2][0-9])?$/i.test(target.value)) {
+          if (parseInt(target.value) <= 24) {
+            target.value += ':';
+          }
+        } else if (target.value.length === 5 && /^([0-2][0-9]):([0-5][0-9])?$/i.test(target.value)) {
+          target.value += ':';
+        }
+
+        // Remove colons if a time unit is detected after digits
+        const lastChar = target.value[target.value.length - 1];
+        if (lastChar.match(/[hmsdwyM]/i)) {
+          target.value = target.value.replace(/:/g, '');
+          target.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      }
+    }
+  }
+
+  validate(c: AbstractControl): { [key: string]: any } {
+    const v = c.value;
+    if (v) {
+      // Check for empty input
+      if (/^\s*$/i.test(v)) {
+        return null;
+      }
+
+      // Check for valid time formats, excluding + and - values
+      const timeRegex = /^(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/;
+      const singleUnitRegex = /^\d+[hmsdwyM]$/;
+
+      if (timeRegex.test(v) || singleUnitRegex.test(v) || v === '24:00' || v === '24:00:00') {
+        return null;
+      }
+    } else {
+      return null;
+    }
+
+    return {
+      nValidTimeRegex: true
+    };
+  }
+
 }
 
 @Directive({
