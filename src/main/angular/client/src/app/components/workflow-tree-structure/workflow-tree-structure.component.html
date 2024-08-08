@@ -57,7 +57,7 @@
       {{ order.retryState.attempt }}
     </div>
   </ng-template>
-  <span [nz-tooltip]="contentTemplate" nzTooltipPlacement="right">
+  <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="contentTemplate" nzTooltipPlacement="right">
     <i [ngClass]="coreService.getColor(order.state.severity, 'text')" class="fa fa-circle p-r-s"></i>
     {{order.orderId}} <i *ngIf="order.cyclicOrder" aria-hidden="true" class="fa fa-repeat p-l-xs p-r-xs"></i>
     <i *ngIf="order.scheduledFor && !order.scheduledNever" class="text-sm text-muted">{{order.scheduledFor |
@@ -79,7 +79,7 @@
       </ng-container>
     </div>
   </ng-template>
-  <span [nz-tooltip]="contentTemplate2" class="_600"> {{orders.size - 1}} others</span>
+  <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="contentTemplate2" class="_600"> {{orders.size - 1}} others</span>
 </ng-template>
 <div *ngFor="let instruction of configuration.instructions; let i = index">
   <ul class="m-b-0">
@@ -108,7 +108,7 @@
           <span *ngIf="instruction.TYPE === 'Lock'">: </span>
           <span *ngIf="(instruction.TYPE === 'Lock')">
             <span *ngFor="let item of instruction.demands" class="text-muted">
-              <span [nz-tooltip]="lockItemTemplate" class="text-muted">
+              <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="lockItemTemplate" class="text-muted">
                 {{item.lockName}}
               </span>
               <ng-template #lockItemTemplate>
@@ -163,7 +163,7 @@
         <i *ngIf="instruction.TYPE === 'Job' && instruction.label"
            class="p-l-xs p-r-xs text-muted _400">({{instruction.label}})</i>
         <span *ngIf="instruction.TYPE !== 'Job'" [ngClass]="{'drop-area-text' : instruction.enabled}"
-              [nz-tooltip]="(instruction.question || instruction.message)" class="inst-text"
+              [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="(instruction.question || instruction.message)" class="inst-text"
               id="{{instruction.positionString}}$">
           {{instruction.TYPE | translate}}
           <i *ngIf="instruction.label" class="p-l-xs p-r-xs text-muted _400">({{instruction.label}})</i>

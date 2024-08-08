@@ -65,7 +65,7 @@
                 </span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, controllerId, null,viewContainerRef)">
-                <span class="cur-point" *ngIf="history.label" [innerHtml]="history.label" [nz-tooltip]="history.position"></span>
+                <span class="cur-point" *ngIf="history.label" [innerHtml]="history.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="history.position"></span>
                 <span *ngIf="!history.label" [innerHtml]="history.position"></span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, controllerId, null,viewContainerRef)">
@@ -151,7 +151,7 @@
                 </span>
               </td>
               <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null,viewContainerRef)">
-                <span class="cur-point" *ngIf="jobHistory.label" [innerHtml]="jobHistory.label" [nz-tooltip]="jobHistory.position"></span>
+                <span class="cur-point" *ngIf="jobHistory.label" [innerHtml]="jobHistory.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="jobHistory.position"></span>
                 <span *ngIf="!jobHistory.label" [innerHtml]="jobHistory.position"></span>
               </td>
               <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null,viewContainerRef)">

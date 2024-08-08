@@ -84,10 +84,10 @@
       </div>
       <div *ngIf="!isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects" class="row m-b-sm">
         <div class="col-md-12">
-          <a (click)="expandAll();" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
+          <a (click)="expandAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
             <i class="fa fa-angle-double-down fa-lg"></i>
           </a>
-          <a (click)="collapseAll();" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
+          <a (click)="collapseAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
             <i class="fa fa-angle-double-up fa-lg"></i>
           </a>
         </div>
@@ -127,7 +127,7 @@
                    nzTheme="outline" nzType="calendar"></i>
                 <span *ngIf="node.origin.type" [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' :(node.origin.deployed || node.origin.released) || node.origin.deployId || node.origin.releaseId,
                     'opacity7': node.origin.syncState && (node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING')}" class="fa fa-check-circle-o orange text-xs m-t-xs"></span>
-                <span *ngIf="node.origin.type && node.origin.syncState" [nz-tooltip]="node.origin.syncState._text | translate"
+                <span *ngIf="node.origin.type && node.origin.syncState" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="node.origin.syncState._text | translate"
                       class="p-l-xxs">
                       <i
                         *ngIf="node.origin.syncState._text === 'IN_SYNC' || node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING'"
@@ -163,7 +163,7 @@
                               class="fa fa-circle-o text-xs p-r-xs"></span>
                         {{version.versionDate | stringToDate}} <span [ngClass]="version.deploymentOperation === 'delete' ? ' text-danger': ''"
                                                                      class="p-l-sm">{{version.deploymentOperation}}</span>
-                        <i *ngIf="version.deploymentPath" [nz-tooltip]="version.deploymentPath"
+                        <i *ngIf="version.deploymentPath" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="version.deploymentPath"
                            class="text-muted p-l-sm">{{version.deploymentPath}}</i></div>
                       <div *ngFor="let ver of version.versions" class="version-inner-list">
                         {{ver.controllerId}} <i *ngIf="ver.version">,</i> {{ver.version}}

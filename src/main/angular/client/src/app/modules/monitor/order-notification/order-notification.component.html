@@ -237,7 +237,7 @@
             </ng-template>
             <span *ngIf="monitor.message && monitor.message.length < 100">{{monitor.message }}</span>
             <span *ngIf="monitor.message && monitor.message.length >= 100"
-                  [nz-tooltip]="htmlContent">{{monitor.message.substring(0, 99)}}...</span>
+                  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="htmlContent">{{monitor.message.substring(0, 99)}}...</span>
           </td>
           <td><span [innerHtml]="monitor.configuration"></span></td>
           <td><span [innerHtml]="monitor.error"></span></td>

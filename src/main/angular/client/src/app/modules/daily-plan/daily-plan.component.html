@@ -90,10 +90,10 @@
           <i (click)="addDetailsOfOrder(value)" *ngIf="value.show"
              aria-hidden="true" class="fa fa-caret-up cursor fa-lg p-r-xs"></i>
           <span *ngIf="value.state && (value.state._text !== 'FINISHED')"
-                [innerHtml]="coreService.getModifiedOrderId(value) | highlight : dailyPlanFilters.searchText"></span>
+                [innerHtml]="coreService.getModifiedOrderId(value, dailyPlanFilters.searchText)"></span>
           <a (click)="navToOrderHistory(value)"
              *ngIf="value.state && (value.state._text === 'FINISHED')"
-             [innerHtml]="coreService.getModifiedOrderId(value)| highlight : dailyPlanFilters.searchText" class="text-hover-primary">
+             [innerHtml]="coreService.getModifiedOrderId(value, dailyPlanFilters.searchText)" class="text-hover-primary">
           </a>
           <i *ngIf="value.cyclicOrder" [nzTooltipPlacement]="'left'" [nzTooltipTitle]="tooltipTemplate" aria-hidden="true"
              class="fa fa-repeat p-l-xs" nz-tooltip></i>
@@ -402,7 +402,7 @@
               </nz-dropdown-menu>
             </div>
             <div *ngIf="permission.joc && permission.joc.administration.customization.view && dailyPlanFilters.tabIndex == 0" class="btn-group dropdown">
-              <button [ngClass]="{'btn-primary': selectedFiltered.name}" [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization"
+              <button [ngClass]="{'btn-primary': selectedFiltered.name}" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization"
                       [nzPlacement]="'bottomRight'"
                       class="btn btn-grey btn-sm m-l-12" nz-dropdown
                       nzTrigger="click" translate type="button">
@@ -424,10 +424,10 @@
                       [ngClass]="{'ant-select-dropdown-menu-item-active': (savedFilter.selected === filter.id)}"
                       nz-menu-item>
                     <a>
-                      <span [nz-tooltip]="filter.account">{{filter.name}}</span>
+                      <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
                       <i (click)="changeFilter(null);$event.stopPropagation();"
                          *ngIf="savedFilter.selected === filter.id"
-                         [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                         [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
                          class="fa fa-times-circle-o remove"></i>
                     </a>
                   </li>
@@ -435,7 +435,7 @@
               </nz-dropdown-menu>
             </div>
             <button (click)="exportToExcel()" [disabled]="(dailyPlanFilters.tabIndex == 0 && planOrders?.length===0) || (dailyPlanFilters.tabIndex !== 0 && projectionData?.length===0)"
-                    [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
+                    [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
                     class="btn btn-grey btn-sm m-l-12">
               <i class="fa fa-share-square-o"></i>
             </button>
@@ -1026,7 +1026,7 @@
               <span translate>dailyPlan.button.recreate</span>
             </button>
             <div class="inline pull-right m-r-12 pos-rel t-xxs">
-              <label [nz-tooltip]="'dailyPlan.tooltip.invertProjection' | translate" (nzCheckedChange)="loadProjectionForCalendar()" [(ngModel)]="dailyPlanFilters.projection.withoutStartTime" name="withoutStartTime1" nz-checkbox>
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.invertProjection' | translate" (nzCheckedChange)="loadProjectionForCalendar()" [(ngModel)]="dailyPlanFilters.projection.withoutStartTime" name="withoutStartTime1" nz-checkbox>
               {{'dailyPlan.label.invertProjection' | translate}}
               </label>
             </div>

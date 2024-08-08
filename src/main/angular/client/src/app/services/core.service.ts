@@ -11,6 +11,7 @@ import {saveAs} from 'file-saver';
 import {AuthService} from '../components/guard';
 import {POPOUT_MODALS, PopoutData, PopupService} from "./popup.service";
 import {LogViewComponent} from "../components/log-view/log-view.component";
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 declare const $: any;
 
@@ -62,7 +63,7 @@ export class CoreService {
   private sortedTags: string[] = [];
 
   constructor(private http: HttpClient, private authService: AuthService, private router: Router, private toasterService: ToastrService,
-              private clipboardService: ClipboardService, private translate: TranslateService, private popupService: PopupService) {
+              private clipboardService: ClipboardService, private translate: TranslateService, private popupService: PopupService, private sanitizer: DomSanitizer) {
     this.init();
     this.dashboard._dashboard = {};
     this.dashboard._dashboard.order = {};
@@ -3383,19 +3384,41 @@ export class CoreService {
     this.showCopyMessage(message);
   }
 
-  getModifiedOrderId(order: any): string {
-    this.numOfTags = sessionStorage.getItem('numOfTagsDisplayedAsOrderId')
+  getModifiedOrderId(order: any, searchText?: string): SafeHtml {
+    this.numOfTags = sessionStorage.getItem('numOfTagsDisplayedAsOrderId');
     const match = order.orderId.match(/^(#\d{4}-\d{2}-\d{2}#(T|P|C|D|F))(\d+)-(.+?)(\|.+)?$/);
     if (match && order.tags && order.tags.length > 0) {
       const prefix = match[1];
       const orderName = match[4] || '';
       const branch = match[5] || '';
       const tagsString = order.tags.slice(0, this.numOfTags).map(tag => `<span class="tag-oval">${tag}</span>`).join('');
+      const modifiedOrderId = `${prefix}${orderName} ${tagsString}${branch}`;
 
-      return `${prefix}${orderName} ${tagsString}${branch}`;
+      const highlightedOrderId = this.highlightText(modifiedOrderId, searchText);
+      return this.sanitizer.bypassSecurityTrustHtml(highlightedOrderId);
     }
     return order.orderId;
   }
+
+  highlightText(value: string, searchText?: string): string {
+    if (!searchText) {
+      return value;
+    }
+
+    // Split the value into parts, preserving HTML tags
+    const parts = value.split(/(<[^>]+>)/g);
+    // Apply highlighting only to text nodes
+    const highlighted = parts.map(part => {
+      if (part.startsWith('<') && part.endsWith('>')) {
+        return part;
+      } else {
+        return part.replace(new RegExp(searchText, 'gi'), '<span class="highlighted">$&</span>');
+      }
+    });
+
+    return highlighted.join('');
+  }
+
 
   setSortedTags(tags: string[]): void {
     this.sortedTags = tags;

@@ -744,7 +744,7 @@ export class DailyPlanComponent {
   selectedDate: Date;
   submissionHistory: any = [];
   reloadState = 'no';
-  searchableProperties = ['orderId', 'schedulePath', 'workflowPath', 'status', 'plannedStartTime', 'expectedEndTime'];
+  searchableProperties = ['orderId', 'schedulePath', 'workflowPath', 'status', 'plannedStartTime', 'expectedEndTime', 'tagsString'];
   expandedPaths = new Set();
   dateRanges = [];
   isProcessing = false;
@@ -2753,55 +2753,65 @@ export class DailyPlanComponent {
     }
   }
 
-  private filterData(planItems): void {
+private filterData(planItems: any[]): void {
     if (!planItems || planItems.length === 0) {
-      this.dailyPlanFilters.currentPage = 1;
+        this.dailyPlanFilters.currentPage = 1;
     }
     if (planItems && planItems.length) {
-      for (let i = 0; i < planItems.length; i++) {
-        planItems[i].plannedDate = planItems[i].plannedStartTime;
-        planItems[i].expectedDuration = this.coreService.calDuration(planItems[i].plannedStartTime, planItems[i].expectedEndTime);
-        planItems[i].expectedDuration1 = new Date(planItems[i].plannedStartTime).getTime() - new Date(planItems[i].expectedEndTime).getTime();
-        planItems[i].duration = this.coreService.calDuration(planItems[i].startTime, planItems[i].endTime);
-        planItems[i].plannedStartTime = this.coreService.stringToDate(this.preferences, planItems[i].plannedStartTime);
-        planItems[i].expectedEndTime = this.coreService.stringToDate(this.preferences, planItems[i].expectedEndTime);
-        planItems[i].startTime = this.coreService.stringToDate(this.preferences, planItems[i].startTime);
-        planItems[i].endTime = this.coreService.stringToDate(this.preferences, planItems[i].endTime);
-        if (planItems[i].state && planItems[i].state._text) {
-          this.translate.get(planItems[i].state._text).subscribe(translatedValue => {
-            planItems[i].status = translatedValue;
-          });
-        }
-        for (let j = 0; j < this.plans.length; j++) {
-          if (this.plans[j].show && this.plans[j].orderId === planItems[i].orderId) {
-            planItems[i].show = true;
-            planItems[i].variables = this.plans[j].variables;
-            break;
-          }
+        for (let i = 0; i < planItems.length; i++) {
+            planItems[i].plannedDate = planItems[i].plannedStartTime;
+            planItems[i].expectedDuration = this.coreService.calDuration(planItems[i].plannedStartTime, planItems[i].expectedEndTime);
+            planItems[i].expectedDuration1 = new Date(planItems[i].plannedStartTime).getTime() - new Date(planItems[i].expectedEndTime).getTime();
+            planItems[i].duration = this.coreService.calDuration(planItems[i].startTime, planItems[i].endTime);
+            planItems[i].plannedStartTime = this.coreService.stringToDate(this.preferences, planItems[i].plannedStartTime);
+            planItems[i].expectedEndTime = this.coreService.stringToDate(this.preferences, planItems[i].expectedEndTime);
+            planItems[i].startTime = this.coreService.stringToDate(this.preferences, planItems[i].startTime);
+            planItems[i].endTime = this.coreService.stringToDate(this.preferences, planItems[i].endTime);
 
+            if (planItems[i].state && planItems[i].state._text) {
+                this.translate.get(planItems[i].state._text).subscribe(translatedValue => {
+                    planItems[i].status = translatedValue;
+                });
+            }
+
+            // Add tags to the searchable properties
+            if (planItems[i].tags && planItems[i].tags.length > 0) {
+                planItems[i].tagsString = planItems[i].tags.join(', ');
+            } else {
+                planItems[i].tagsString = '';
+            }
+
+            for (let j = 0; j < this.plans.length; j++) {
+                if (this.plans[j].show && this.plans[j].orderId === planItems[i].orderId) {
+                    planItems[i].show = true;
+                    planItems[i].variables = this.plans[j].variables;
+                    break;
+                }
+            }
         }
-      }
-      this.plans = planItems;
-      this.sortBy();
-      this.updateTable(this.dailyPlanFilters.searchText ? this.searchPipe.transform(this.plans, this.dailyPlanFilters.searchText, this.searchableProperties) : this.plans);
+        this.plans = planItems;
+        this.sortBy();
+        this.updateTable(this.dailyPlanFilters.searchText ? this.searchPipe.transform(this.plans, this.dailyPlanFilters.searchText, this.searchableProperties) : this.plans);
     } else {
-      this.plans = [];
-      this.planOrders = [];
-      this.resetCheckBox();
+        this.plans = [];
+        this.planOrders = [];
+        this.resetCheckBox();
     }
     if (this.object.mapOfCheckedId.size > 0) {
-      const tempObject = new Map();
-      this.plans.forEach((order) => {
-        if (this.object.mapOfCheckedId.has(order.orderId)) {
-          tempObject.set(order.orderId, order);
-        }
-      });
-      this.object.mapOfCheckedId = tempObject;
-      this.object.mapOfCheckedId.size > 0 ? this.updateMainCheckbox() : this.resetCheckBox();
+        const tempObject = new Map();
+        this.plans.forEach((order) => {
+            if (this.object.mapOfCheckedId.has(order.orderId)) {
+                tempObject.set(order.orderId, order);
+            }
+        });
+        this.object.mapOfCheckedId = tempObject;
+        this.object.mapOfCheckedId.size > 0 ? this.updateMainCheckbox() : this.resetCheckBox();
     } else {
-      this.resetCheckBox();
+        this.resetCheckBox();
     }
-  }
+}
+
+
 
   onTagChecked(tag, checked: boolean): void {
     if (checked) {

@@ -88,7 +88,7 @@
             </div>
             <button (click)="exportToExcel()" [disabled]="pageView=='grid' || data.length===0"
                     [ngClass]="{'hide': (pageView === 'bulk')}"
-                    [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
+                    [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
                     class="btn btn-grey btn-sm m-l-12"><i class="fa fa-share-square-o"></i></button>
             <app-toggle (messageEvent)="receiveMessage($event)" [type]="'ORDER'"></app-toggle>
           </div>
@@ -627,8 +627,8 @@
                             </label>
                             <div class="text-left block-ellipsis m-l-md">
                               <i class="p-r-xs" nz-icon nzTheme="outline" nzType="unordered-list"></i>
-                              <span [innerHtml]="coreService.getModifiedOrderId(order) | highlight : orderFilters.searchText"
-                                    [nz-tooltip]="order.title"></span>
+                              <span [innerHtml]="coreService.getModifiedOrderId(order, orderFilters.searchText)"
+                                    [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.title"></span>
                             </div>
                             <div class="btn-group dropdown pull-right abt-dropdown ">
                               <app-order-action (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)"
@@ -642,11 +642,11 @@
                               <span
                                 [innerHtml]="order.state._text | translate | highlight : orderFilters.searchText"
                                 [ngClass]="coreService.getColor(order.state.severity, 'text')"
-                                [nz-tooltip]="((order.obstacles && order.obstacles.length > 0) || order.state._reason || order.cycleState) ? tooltipTemplate1 : ''"></span>
+                                [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="((order.obstacles && order.obstacles.length > 0) || order.state._reason || order.cycleState) ? tooltipTemplate1 : ''"></span>
                               <span *ngIf="order.marked"
                                     [ngClass]="coreService.getColor(order.marked.severity, 'text')">/{{order.marked._text | translate}}</span>
                               <span *ngIf="order.state._text === 'PROMPTING' && order.question" class="p-l-xs"><i
-                                [nz-tooltip]="order.question" class="fa fa-info-circle"></i></span>
+                                [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.question" class="fa fa-info-circle"></i></span>
                             </div>
                             <ng-template #tooltipTemplate1>
                               <div class="p-l-sm">
@@ -725,7 +725,7 @@
                             </ng-template>
                             <div class="text-sm text-left text-muted p-t-xs block-ellipsis" style="width: 100%">
                               <span translate>workflow.label.label </span>:
-                              <span class="text-black-dk cur-point" *ngIf="order.label" [innerHtml]="order.label | highlight : orderFilters.searchText" [nz-tooltip]="order.positionString"></span>
+                              <span class="text-black-dk cur-point" *ngIf="order.label" [innerHtml]="order.label | highlight : orderFilters.searchText" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.positionString"></span>
                               <span class="text-black-dk" *ngIf="!order.label" [innerHtml]="order.positionString | highlight : orderFilters.searchText"></span>
                             </div>
                             <div class="text-sm text-left text-muted p-t-xs block-ellipsis" style="width: 100%">
@@ -863,7 +863,7 @@
                           <i (click)="hidePanelFuc(order)" *ngIf="order.show"
                              class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
                           <a (click)="showPanelFunc(order)" class="text-dark"> <span
-                            [innerHtml]="coreService.getModifiedOrderId(order) | highlight : orderFilters.searchText"></span></a>
+                            [innerHtml]="coreService.getModifiedOrderId(order, orderFilters.searchText)"></span></a>
                           <span *ngIf="order.title">-</span>
                           <i class="text-muted">{{order.title}}</i>
                           <i *ngIf="order.cyclicOrder" [nzTooltipPlacement]="'left'" [nzTooltipTitle]="tooltipTemplate"
@@ -896,20 +896,20 @@
                         </span>
                           </td>
                           <td>
-                            <span class="cur-point" *ngIf="order.label" [innerHtml]="order.label | highlight : orderFilters.searchText" [nz-tooltip]="order.positionString"></span>
+                            <span class="cur-point" *ngIf="order.label" [innerHtml]="order.label | highlight : orderFilters.searchText" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.positionString"></span>
                             <span *ngIf="!order.label" [innerHtml]="order.positionString | highlight : orderFilters.searchText"></span>
                           </td>
                           <td (mouseover)="getObstacles(order)" class="combine-two-label" nowrap>
                         <span
                           *ngIf="order.state"
                           [innerHtml]="order.state._text | translate  | highlight : orderFilters.searchText" [ngClass]="[coreService.getColor(order.state.severity, 'bg'),order.marked ? 'label1' : '']"
-                          [nz-tooltip]="((order.obstacles && order.obstacles.length > 0) || order.state._reason || order.cycleState) ? tooltipTemplate1 : ''"
+                          [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="((order.obstacles && order.obstacles.length > 0) || order.state._reason || order.cycleState) ? tooltipTemplate1 : ''"
                           class="label"></span>
                             <span *ngIf="order.marked" [innerHtml]="order.marked._text | translate"
                                   [ngClass]="coreService.getColor(order.marked.severity, 'bg')"
                                   class="label label2"></span>
                             <span *ngIf="order.state._text === 'PROMPTING' && order.question" class="p-l-xs"><i
-                              [nz-tooltip]="order.question" class="fa fa-info-circle"></i></span>
+                              [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.question" class="fa fa-info-circle"></i></span>
                             <ng-template #tooltipTemplate1>
                               <div class="p-l-sm">
                                 <span translate> order.label.state </span>:
@@ -1062,7 +1062,7 @@
                                 </span>
                                   </td>
                                   <td>
-                                    <span class="cur-point" *ngIf="history.label" [innerHtml]="history.label" [nz-tooltip]="history.position"></span>
+                                    <span class="cur-point" *ngIf="history.label" [innerHtml]="history.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="history.position"></span>
                                     <span *ngIf="!history.label" [innerHtml]="history.position"></span>
                                   </td>
                                   <td>

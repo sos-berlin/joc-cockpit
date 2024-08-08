@@ -10,8 +10,8 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
     <div class="form-group row">
-      <label [nz-tooltip]="'user.tooltips.webauthn.sendMailToNotifyRegistrationEmail' | translate"
-             [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.sendMailToNotifyRegistrationEmail' | translate"
+              class="col-sm-4 form-control-label"
              translate>user.label.to
       </label>
       <div class="col-sm-6">
@@ -22,8 +22,8 @@
       </div>
     </div>
     <div class="form-group row">
-      <label [nz-tooltip]="'user.tooltips.webauthn.cc' | translate"
-             [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.cc' | translate"
+              class="col-sm-4 form-control-label"
              translate>user.label.cc
       </label>
       <div class="col-sm-6">

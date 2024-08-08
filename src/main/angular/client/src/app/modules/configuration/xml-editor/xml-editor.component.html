@@ -221,10 +221,10 @@
         <div class="pl-20 m-l-xs editor-tree">
           <div *ngIf="nodes?.length > 0" class="row">
             <div class="col-12 p-l-sm">
-              <a (click)="expandAll();" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
+              <a (click)="expandAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
                 <i class="fa fa-angle-double-down fa-lg"></i>
               </a>
-              <a (click)="collapseAll();" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
+              <a (click)="collapseAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
                 <i class="fa fa-angle-double-up fa-lg"></i>
               </a>
               <a class="text resize-cursor a-1" style="position: absolute; right: 34px;">
@@ -296,7 +296,7 @@
                     <span
                       (click)="selectNode(node);addContent(node.origin.values);"
                       [ngClass]="cutData && node.origin.uuid === copyItem.uuid? 'cut-row' : ''"
-                      [nz-tooltip]="((node.origin.attributes && node.origin.attributes.length>0) || (node.origin.values && node.origin.values.length>0)) ? (htmlContent) : ''" nzTooltipOverlayClassName="custom-tooltip"
+                      [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="((node.origin.attributes && node.origin.attributes.length>0) || (node.origin.values && node.origin.values.length>0)) ? (htmlContent) : ''" nzTooltipOverlayClassName="custom-tooltip"
                       nzTooltipPlacement="right">{{node.origin.ref}}
                       </span>
                     <span (click)="selectNode(node)"

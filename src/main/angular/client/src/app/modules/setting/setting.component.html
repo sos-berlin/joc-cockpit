@@ -50,7 +50,7 @@
                 <div *ngFor="let val of setting.value | orderBy: 'ordering': false" class="row m-t-sm">
                   <ng-container *ngIf="val.value">
                     <div class="col-sm-4 col-lg-3 form-control-label"><span class="p-l">
-                    <label class="_600">{{val.name}}</label> <i [nz-tooltip]="'settings.' + setting.name +'.' + val.name | translate"
+                    <label class="_600">{{val.name}}</label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'settings.' + setting.name +'.' + val.name | translate"
                                                                 class="p-l-sm fa fa-info-circle"></i>
                   </span></div>
                     <div class="col-sm-2 col-lg-2 form-control-label">

@@ -152,7 +152,7 @@
                       <a (click)="editController(controller.controllerId)"
                          *ngIf="!currentSecurityLevel || currentSecurityLevel === controller.securityLevel">
                         <i *ngIf="controller.compatibility" [ngClass]="controller.compatibility === 'COMPATIBLE' ? 'text-success' : controller.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'"
-                           [nz-tooltip]="controller.compatibility | translate"
+                           [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="controller.compatibility | translate"
                            class="fa fa-check"></i>
                         &nbsp;{{controller.controllerId}}
                       </a>
@@ -382,7 +382,7 @@
                           <td (click)="editAgent(agent, controller)"><span [innerHtml]="agent.url | highlight : agentsFilters.searchText"></span></td>
                           <td (click)="editAgent(agent, controller)">
                             <i *ngIf="agent.compatibility" [ngClass]="agent.compatibility === 'COMPATIBLE' ? 'text-success' : agent.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'"
-                               [nz-tooltip]="agent.compatibility | translate"
+                               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="agent.compatibility | translate"
                                class="fa fa-check"></i>&nbsp;
                             <span [innerHtml]="agent.version"></span>
                           </td>
@@ -580,11 +580,11 @@
                                    class="cursor fa fa-caret-up fa-lg"></i>
                                 <i (click)="navToController(controller.controllerId, clusterAgent.agentId)"
 
-                                   [nz-tooltip]="'agent.button.manageCluster' | translate"
+                                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.button.manageCluster' | translate"
                                    class="cursor fa fa-list p-l-xs"></i>
                                 <i (click)="addSubagent(clusterAgent, controller)"
                                    *ngIf="permission.joc && permission.joc.administration.controllers.manage"
-                                   [nz-tooltip]="'agent.button.addSubagent' | translate"
+                                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.button.addSubagent' | translate"
                                    class="cursor fa fa-plus p-l-xs"></i>
                                 <a (click)="editAgent(clusterAgent, controller, true)" class="text-dark p-l-xxs">
                                   <span [innerHtml]="clusterAgent.agentId | highlight : agentsFilters.searchText"></span>
@@ -600,7 +600,7 @@
 
                             <td (click)="editAgent(clusterAgent, controller, true)">
                               <i *ngIf="clusterAgent.compatibility" [ngClass]="clusterAgent.compatibility === 'COMPATIBLE' ? 'text-success' : clusterAgent.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'"
-                                 [nz-tooltip]="clusterAgent.compatibility | translate"
+                                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="clusterAgent.compatibility | translate"
                                  class="fa fa-check"></i>&nbsp;
                               <span [innerHtml]="clusterAgent.version"></span>
                             </td>
@@ -718,7 +718,7 @@
                                   <td (click)="editSubagent(sub, clusterAgent, controller)">{{sub.url}}</td>
                                   <td (click)="editSubagent(sub, clusterAgent, controller)">
                                     <i *ngIf="sub.compatibility" [ngClass]="sub.compatibility === 'COMPATIBLE' ? 'text-success' : sub.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'"
-                                       [nz-tooltip]="sub.compatibility | translate"
+                                       [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="sub.compatibility | translate"
                                        class="fa fa-check"></i>&nbsp;
                                     <span [innerHtml]="sub.version"></span>
                                   </td>

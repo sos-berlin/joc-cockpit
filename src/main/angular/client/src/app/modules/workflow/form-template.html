@@ -53,7 +53,7 @@
                 {{node.origin.name}}
                 <i (click)="addFolder(node.origin.path);$event.stopPropagation()"
                    *ngIf="filter.paths && filter.paths.indexOf(node.origin.path) === -1"
-                   [nz-tooltip]="'user.button.addFolder' | translate" [nzType]="'plus'" class="p-l-sm" nz-icon></i>
+                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.button.addFolder' | translate" [nzType]="'plus'" class="p-l-sm" nz-icon></i>
                 <i (click)="remove(node.origin.path);$event.stopPropagation()"
                    *ngIf="filter.paths && filter.paths.indexOf(node.origin.path) > -1" [nzType]="'delete'" class="p-l-sm"
                    nz-icon></i>

@@ -52,7 +52,7 @@
                   class="show-in-single-line w-full">{{ch.job}}</span>
           </td>
           <td (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,viewContainerRef)">
-            <span class="cur-point" *ngIf="ch.label" [innerHtml]="ch.label" [nz-tooltip]="ch.position"></span>
+            <span class="cur-point" *ngIf="ch.label" [innerHtml]="ch.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="ch.position"></span>
             <span *ngIf="!ch.label" [innerHtml]="ch.position"></span>
           </td>
           <td (click)="coreService.showLogWindow(null,ch,null,ch.controllerId,null,viewContainerRef)">

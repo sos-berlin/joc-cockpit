@@ -106,13 +106,13 @@
          class="col-md-3">
       <div class="inline pull-right">
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
-          <li [nz-tooltip]="'workflow.button.undo' | translate" class="nav-item">
+          <li [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.undo' | translate" class="nav-item">
             <a (click)="undo()"
                class="nav-link">
               <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="undo"></i></span>
             </a>
           </li>
-          <li [nz-tooltip]="'workflow.button.redo' | translate" class="nav-item">
+          <li [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.redo' | translate" class="nav-item">
             <a (click)="redo()"
                class="nav-link">
               <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="redo"></i></span>
@@ -121,13 +121,13 @@
           <li class="nav-item dropdown-separator">
             <span class="separator"></span>
           </li>
-          <li [nz-tooltip]="'inventory.button.download' | translate" class="nav-item">
+          <li [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.button.download' | translate" class="nav-item">
             <a (click)="download()"
                class="nav-link">
               <span class="nav-text">  <i nz-icon nzTheme="outline" nzType="download"></i></span>
             </a>
           </li>
-          <li [nz-tooltip]="'inventory.button.upload' | translate" class="nav-item">
+          <li [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.button.upload' | translate" class="nav-item">
             <a (click)="upload()" class="nav-link">
               <span class="nav-text">  <i nz-icon nzTheme="outline" nzType="upload"></i></span>
             </a>
@@ -200,7 +200,7 @@
                 <ng-container *ngFor="let option of allObjects[key] | orderBy: 'name'">
                   <nz-auto-option (click)="selectObject(option)" [nzValue]="option.path" class="min-ht-opt">
                     <div class="node-wrapper p-l">
-                      <div [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
+                      <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
                            class="node-content-wrapper2"
                            nzTooltipPlacement="right">
                         <i class="fa fa-circle-o text-xs"></i>
@@ -281,7 +281,7 @@
                           class="fa fa-check-circle-o orange text-xs w-11 m-t-xs"></span>
                     <span
                       *ngIf="node.origin.type && node.origin.syncState && inventoryService.checkDeploymentStatus.isChecked"
-                      [nz-tooltip]="node.origin.syncState._text | translate">
+                      [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="node.origin.syncState._text | translate">
                       <i
                         *ngIf="node.origin.syncState._text === 'IN_SYNC' || node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING'"
                         class="fa fa-refresh font11 p-l-xxs"></i>
@@ -376,7 +376,7 @@
                           class="fa fa-check-circle-o orange text-xs w-11 m-t-xs"></span>
                     <span
                       *ngIf="node.type && node.syncState && inventoryService.checkDeploymentStatus.isChecked"
-                      [nz-tooltip]="node.syncState._text | translate">
+                      [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="node.syncState._text | translate">
                       <i
                         *ngIf="node.syncState._text === 'IN_SYNC' || node.syncState._text === 'SUSPENDED' || node.syncState._text === 'SUSPENDING'"
                         class="fa fa-refresh font11 p-l-xxs"></i>
@@ -392,8 +392,8 @@
                 </div>
               </ng-template>
               <div class="sort-icons m-l-xxs">
-                <i nz-icon nzType="down-square" nzTheme="outline" [nz-tooltip]="'workflow.label.ascending' | translate" aria-hidden="true" class="cursor" (click)="sortTags('asc')"></i>
-                <i nz-icon nzType="up-square" nzTheme="outline" [nz-tooltip]="'workflow.label.descending' | translate" aria-hidden="true" class="m-l-sm cursor" (click)="sortTags('desc')"></i>
+                <i nz-icon nzType="down-square" nzTheme="outline" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.label.ascending' | translate" aria-hidden="true" class="cursor" (click)="sortTags('asc')"></i>
+                <i nz-icon nzType="up-square" nzTheme="outline" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.label.descending' | translate" aria-hidden="true" class="m-l-sm cursor" (click)="sortTags('desc')"></i>
                 <a  (click)="addTags(node)" *ngIf="permission.joc.inventory.manage" class="text-u-l m-l-sm cursor" translate>inventory.button.manageTags</a>
               </div>
               <div (cdkDropListDropped)="drop($event)" cdkDropList class="role-list m-t-sm">

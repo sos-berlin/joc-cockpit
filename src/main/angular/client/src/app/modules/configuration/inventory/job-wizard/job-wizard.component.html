@@ -91,7 +91,7 @@
                   <ng-container *ngFor="let option of jobTemplates | orderBy: 'name'">
                     <nz-auto-option (click)="selectJobTemp(option)" [nzValue]="option.path" class="min-ht-opt">
                       <div class="node-wrapper p-l">
-                        <div [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
+                        <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
                              class="node-content-wrapper2" nzTooltipPlacement="right">
                           <i class="icon-jobs-icon icon-color tree-icon"></i>
                           <span class="p-l-sm">{{ option.name }}</span>
@@ -125,7 +125,7 @@
                           </i>
                           <i (click)="showDoc(item.assignReference || item.documentationName);$event.stopPropagation()" *ngIf="item.documentationName"
                              class="fa fa-book p-r-sm"></i>
-                          <i *ngIf="item.description" [nz-tooltip]="contentTemplate"
+                          <i *ngIf="item.description" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="contentTemplate"
                              class="fa fa-info-circle p-r-sm"></i>
                           <ng-template #contentTemplate>
                             <div [innerHTML]="item.description"></div>
@@ -207,7 +207,7 @@
                              [(ngModel)]="param.newValue" [facetValidation]="param.facet" [required]="param.required && !allowEmptyArguments" autocomplete="off"
                              class="form-control" name="_value{{i}}" placeholder="{{'common.placeholder.value' | translate}}"
                              type="text">
-                      <i *ngIf="param.message" [nz-tooltip]="param.message" class="pos-abt cursor fa fa-info-circle"
+                      <i *ngIf="param.message" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="param.message" class="pos-abt cursor fa fa-info-circle"
                          style="right: 32px;top:1px;"></i>
                       <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                            class="text-danger help-block">
@@ -255,7 +255,7 @@
                 </div>
               </div>
               <div *ngIf="param.description" class="col-sm-1">
-                <i [nz-tooltip]="contentTemplate" class="cursor fa fa-info-circle m-t-sm"></i>
+                <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="contentTemplate" class="cursor fa fa-info-circle m-t-sm"></i>
                 <ng-template #contentTemplate>
                   <div [innerHTML]="param.description"></div>
                 </ng-template>

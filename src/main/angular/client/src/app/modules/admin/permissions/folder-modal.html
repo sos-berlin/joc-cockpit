@@ -56,7 +56,7 @@
                       translate>user.label.folderNotExist</span>
                 <i (click)="addFolder(node.origin.path);$event.stopPropagation()"
                    *ngIf="folderObj.paths && folderObj.paths.indexOf(node.origin.path) === -1"
-                   [nz-tooltip]="'user.button.addFolder' | translate" [nzType]="'plus'" class="p-l-sm" nz-icon></i>
+                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.button.addFolder' | translate" [nzType]="'plus'" class="p-l-sm" nz-icon></i>
                 <i (click)="remove(node.origin.path);$event.stopPropagation()"
                    *ngIf="folderObj.paths && folderObj.paths.indexOf(node.origin.path) > -1" [nzType]="'delete'" class="p-l-sm"
                    nz-icon></i>
@@ -64,7 +64,7 @@
             </div>
           </ng-template>
         </nz-tree-select>
-        <i [nz-tooltip]="'user.tooltip.toAddNonExistFolders' | translate"
+        <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltip.toAddNonExistFolders' | translate"
            aria-hidden="true" class="cursor pos-abt m-l-sm m-t-sm fa fa-info-circle"></i>
       </div>
     </div>

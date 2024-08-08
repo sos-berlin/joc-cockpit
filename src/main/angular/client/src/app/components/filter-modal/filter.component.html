@@ -23,9 +23,9 @@
           <td>{{i + 1}}</td>
           <td nowrap>
             <a (click)="removeFavorite()" *ngIf="favorite == filter.id"
-               [nz-tooltip]="'customization.tooltip.useDefault' | translate" class="fa fa-star text-primary fa-lg m-r-xs"></a>
+               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.useDefault' | translate" class="fa fa-star text-primary fa-lg m-r-xs"></a>
             <a (click)="makeFavorite(filter)" *ngIf="favorite !=filter.id"
-               [nz-tooltip]="'customization.tooltip.useDefault' | translate" class="fa fa-star-o fa-lg m-r-xs"></a>
+               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.useDefault' | translate" class="fa fa-star-o fa-lg m-r-xs"></a>
             {{filter.name}} <label *ngIf="filter.shared" class="label label-info"
                                    translate>customization.label.share</label>
           </td>

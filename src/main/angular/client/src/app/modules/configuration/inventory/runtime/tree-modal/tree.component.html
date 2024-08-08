@@ -15,7 +15,7 @@
         <ng-container *ngFor="let option of objectList | orderBy: 'name'">
           <nz-auto-option (click)="selectObject(option.name)" [nzValue]="option.path" class="min-ht-opt">
             <div class="node-wrapper p-l">
-              <div [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
+              <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
                    class="node-content-wrapper2" nzTooltipPlacement="right">
                 <i class="icon-jobs-icon icon-color tree-icon"></i>
                 <span class="p-l-sm">{{ option.name }}</span>

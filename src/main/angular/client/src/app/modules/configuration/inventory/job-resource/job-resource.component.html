@@ -40,8 +40,8 @@
       </div>
       <div *ngIf="jobResource.configuration">
         <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="form-group row">
-          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.jobResource.name' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.jobResource.name' | translate) : ''"
+                 
                  class="col-md-4 col-lg-3 form-control-label" translate>common.label.name
             <sup class="text-danger text-sm">*</sup>
           </label>
@@ -59,8 +59,8 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.jobResource.title' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.jobResource.title' | translate) : ''"
+                 
                  class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
             <input (blur)="saveJSON()" [(ngModel)]="jobResource.configuration.title" [readonly]="isTrash || !permission.joc.inventory.manage"
@@ -74,8 +74,8 @@
           </div>
         </div>
         <div *ngIf="coreService.expertMode" class="form-group row">
-          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.jobResource.documentation' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.jobResource.documentation' | translate) : ''"
+                 
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
             <app-select-document (funcCall)="saveJSON($event)" [data]="jobResource.configuration"

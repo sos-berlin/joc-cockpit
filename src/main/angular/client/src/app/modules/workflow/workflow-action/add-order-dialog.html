@@ -67,7 +67,7 @@
                            name="_value{{i}}{{j}}{{k}}" placeholder="{{'common.placeholder.value' | translate}}"
                            type="text">
                     <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
-                       style="right: 13px;top:1px;" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
+                       style="right: 13px;top:1px;" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
                     <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                          class="text-danger help-block">
                       <div *ngIf="value.errors['required']">
@@ -189,7 +189,7 @@
                          name="_value{{i}}{{j}}{{k}}" placeholder="{{'common.placeholder.value' | translate}}"
                          type="text">
                   <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
-                     style="right: 13px;top:1px;" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
+                     style="right: 13px;top:1px;" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
                   <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                        class="text-danger help-block">
                     <div *ngIf="value.errors['required']">
@@ -405,10 +405,10 @@
     <div>
       <div class="row" *ngIf="isForkList">
         <div class="col-sm-12">
-          <i class="fa fa-angle-double-down fa-lg cursor" [nz-tooltip]="'common.tooltip.expandAll' | translate"
+          <i class="fa fa-angle-double-down fa-lg cursor" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate"
              (click)="expandAll();"></i>
           <i class="fa fa-angle-double-up fa-lg cursor" style="margin-left: 4px"
-             [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="collapseAll();"></i>
+             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="collapseAll();"></i>
         </div>
       </div>
       <div *ngIf="arguments.length > 0" class="form-group row m-b-0 ">
@@ -477,8 +477,8 @@
                            class="form-control" name="value{{i}}{{argument.name}}"
                            placeholder="{{'common.placeholder.value' | translate}}" type="text">
                     <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
-                       style="right: 13px;top:1px;" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
-                    <i *ngIf="argument.message" [nz-tooltip]="argument.message" class="pos-abt cursor fa fa-info-circle"
+                       style="right: 13px;top:1px;" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
+                    <i *ngIf="argument.message" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="argument.message" class="pos-abt cursor fa fa-info-circle"
                        style="right: 32px;top:1px;"></i>
                     <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                          class="text-danger help-block">
@@ -566,12 +566,12 @@
         </div>
       </ng-template>
       <button (click)="handlePaste(storedArguments[0])"
-              class="btn btn-grey btn-sm m-r-12" type="button" [nz-tooltip]="'common.button.paste' | translate" >
+              class="btn btn-grey btn-sm m-r-12" type="button" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.button.paste' | translate" >
         <i class="fa fa-paste"></i>
       </button>
       <button nz-button nz-popover [nzPopoverTitle]="'common.label.clipboard' | translate" [nzPopoverContent]="contentTemplate"
               nzPopoverTrigger="click" [nzPopoverOverlayClassName]="'clipboard-list'"
-              class="btn btn-grey btn-sm" type="button" [nz-tooltip]="'common.button.showClipboard' | translate" >
+              class="btn btn-grey btn-sm" type="button" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.button.showClipboard' | translate" >
         <i class="fa fa-list"></i>
       </button>
     </div>

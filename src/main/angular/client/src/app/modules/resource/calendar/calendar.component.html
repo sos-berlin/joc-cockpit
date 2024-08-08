@@ -124,7 +124,7 @@
                              *ngIf="calendar.documentationName"
                              class="cursor fa fa-book p-l-xs p-r-xs"></i>
                           <a (click)="previewCalendar(calendar)" [innerHtml]="calendar.name | highlight : calendarFilters.searchText"
-                             [nz-tooltip]="calendar.title"
+                             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="calendar.title"
                              class="text-primary-hover"></a>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">

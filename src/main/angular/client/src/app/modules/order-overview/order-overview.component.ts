@@ -227,7 +227,7 @@ export class OrderOverviewComponent {
   tags: string[] = [];
   searchTag = { text: '', loading: false, tags: [], token: '' };
   searchOrderTag = { text: '', loading: false, tags: [], token: '' }
-  searchableProperties = ['orderId', 'workflowId', 'path', 'state', '_text', 'scheduledFor', 'position'];
+  searchableProperties = ['orderId', 'workflowId', 'path', 'state', '_text', 'scheduledFor', 'position', 'tags'];
   object = {
     mapOfCheckedId: new Map(),
     checked: false,

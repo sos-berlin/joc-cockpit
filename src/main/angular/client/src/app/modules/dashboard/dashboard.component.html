@@ -46,7 +46,7 @@
       <gridster-item *ngFor="let item of dashboard" [item]="item" id="{{item.name}}">
         <div class="destroy-button">
           <i (click)="removeWidget($event, item)" (mousedown)="$event.stopPropagation()" *ngIf="editLayoutObj"
-             [nz-tooltip]="'common.button.remove' | translate" class="fa fa-times-circle"></i>
+             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.button.remove' | translate" class="fa fa-times-circle"></i>
         </div>
         <div *ngIf="item.name === 'agentStatus'">
           <app-agent-status [layout]="item"></app-agent-status>

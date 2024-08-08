@@ -11,7 +11,7 @@
     </div>
   </div>
 </ng-template>
-<span [nz-tooltip]="contentTemplate" nzTooltipPlacement="top">
+<span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="contentTemplate" nzTooltipPlacement="top">
     <i (mouseenter)="getTooltipInfo(workflow)" class="fa fa-info-circle p-l-xs"></i>
 </span>
 

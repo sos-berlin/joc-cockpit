@@ -54,7 +54,7 @@
           </td>
           <td (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,viewContainerRef)"
               class="show-in-single-line w-full">
-            <span class="cur-point" *ngIf="ch.label" [nz-tooltip]="ch.position">{{ch.label}}</span>
+            <span class="cur-point" *ngIf="ch.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="ch.position">{{ch.label}}</span>
             <span *ngIf="!ch.label">{{ch.position}}</span>
           </td>
           <td (click)="coreService.showLogWindow(null,ch,null,ch.controllerId,null,viewContainerRef)">
@@ -120,7 +120,7 @@
     </td>
     <td
       (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null,viewContainerRef)">
-      <span class="show-in-single-line w-full cur-point" *ngIf="child.order.label" [nz-tooltip]="child.order.position">{{child.order.label}}</span>
+      <span class="show-in-single-line w-full cur-point" *ngIf="child.order.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="child.order.position">{{child.order.label}}</span>
       <span class="show-in-single-line w-full" *ngIf="!child.order.label">{{child.order.position}}</span>
     </td>
     <td

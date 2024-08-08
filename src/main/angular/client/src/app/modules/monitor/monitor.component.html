@@ -204,7 +204,7 @@
           </div>
           <button (click)="exportToExcel()"
                   *ngIf="monitorFilters.tabIndex == 2 || monitorFilters.tabIndex == 3"
-                  [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
+                  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
                   class="btn btn-grey btn-sm m-l-12"><i class="fa fa fa-share-square-o"></i></button>
         </div>
       </div>

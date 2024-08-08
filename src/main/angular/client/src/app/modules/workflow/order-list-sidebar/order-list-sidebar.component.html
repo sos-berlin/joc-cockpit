@@ -182,20 +182,20 @@
             </span>
           </td>
           <td style="max-width: 160px">
-            <span class="cur-point" *ngIf="order.label" [innerHtml]="order.label" [nz-tooltip]="order.positionString"></span>
+            <span class="cur-point" *ngIf="order.label" [innerHtml]="order.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.positionString"></span>
             <span *ngIf="!order.label" [innerHtml]="order.positionString"></span>
           </td>
           <td (mouseover)="getObstacles(order)" class="combine-two-label" nowrap>
             <span
               *ngIf="order.state"
               [innerHtml]="order.state._text | translate" [ngClass]="[coreService.getColor(order.state.severity, 'bg'),order.marked ? 'label1' : '']"
-              [nz-tooltip]="((order.obstacles && order.obstacles.length > 0) || order.state._reason || order.cycleState) ? tooltipTemplate1 : ''"
+              [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="((order.obstacles && order.obstacles.length > 0) || order.state._reason || order.cycleState) ? tooltipTemplate1 : ''"
               class="label"></span>
             <span *ngIf="order.marked" [innerHtml]="order.marked._text | translate"
                   [ngClass]="coreService.getColor(order.marked.severity, 'bg')"
                   class="label label2"></span>
             <span *ngIf="order.state._text === 'PROMPTING' && order.question" class="p-l-xs"><i
-              [nz-tooltip]="order.question" class="fa fa-info-circle"></i></span>
+              [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.question" class="fa fa-info-circle"></i></span>
             <ng-template #tooltipTemplate1>
               <div class="p-l-sm">
                 <span translate> order.label.state </span>:

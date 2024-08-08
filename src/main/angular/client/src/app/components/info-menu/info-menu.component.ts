@@ -42,7 +42,7 @@ import {DataService} from "../../services/data.service";
             <label class="col-sm-3" translate>info.label.licenseType</label>
             <div class="col-sm-9">
               <span *ngIf="licenseType !== 'OPENSOURCE'">
-                <i *ngIf="licenseType == 'COMMERCIAL_INVALID'" [nz-tooltip]="'info.tooltip.invalidLicense' | translate"
+                <i *ngIf="licenseType == 'COMMERCIAL_INVALID'" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'info.tooltip.invalidLicense' | translate"
                    class="fa fa-times-circle text-danger" aria-hidden="true"></i>
                 {{'info.label.commercialLicense' | translate}}
               </span>

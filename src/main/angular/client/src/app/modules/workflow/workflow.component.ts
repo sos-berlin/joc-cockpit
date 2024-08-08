@@ -1091,11 +1091,10 @@ export class WorkflowComponent {
             if (path) {
               request.workflowIds.push({path, versionId: res.workflows[i].versionId});
             }
-          } else {
+          }
             if (path) {
               request2.workflowIds.push({path, versionId: res.workflows[i].versionId});
             }
-          }
 
           if (this.showPanel && this.showPanel.path === path) {
             flag = false;

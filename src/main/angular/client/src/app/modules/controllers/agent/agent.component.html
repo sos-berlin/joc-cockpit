@@ -247,7 +247,7 @@
                 <div>{{agent.url}}</div>
                 <div *ngIf="agent.title" class="text-muted">{{agent.title}}</div>
               </ng-template>
-              <div [nz-tooltip]="contentTemplate" cdkDragHandle class="draggable">
+              <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="contentTemplate" cdkDragHandle class="draggable">
                 <span>{{agent.subagentId}}</span>
               </div>
             </li>
@@ -288,14 +288,14 @@
           <div class="inline" id="toolbar-icons">
             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
               <li class="nav-item">
-                <a (click)="zoomIn()" [nz-tooltip]="'workflow.button.zoomIn' | translate"
+                <a (click)="zoomIn()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.zoomIn' | translate"
                    class="nav-link">
                   <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="zoom-in"></i></span>
                 </a>
               </li>
               <li class="nav-item">
                 <a (click)="zoomOut()"
-                   [nz-tooltip]="'workflow.button.zoomOut' | translate" class="nav-link">
+                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.zoomOut' | translate" class="nav-link">
                   <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="zoom-out"></i></span>
                 </a>
               </li>
@@ -303,13 +303,13 @@
                 <span class="separator"></span>
               </li>
               <li class="nav-item">
-                <a (click)="actual()" [nz-tooltip]="'workflow.button.actual' | translate"
+                <a (click)="actual()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.actual' | translate"
                    class="nav-link">
                   <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="fullscreen-exit"></i></span>
                 </a>
               </li>
               <li class="nav-item">
-                <a (click)="fit()" [nz-tooltip]="'workflow.button.fit' | translate"
+                <a (click)="fit()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.fit' | translate"
                    class="nav-link">
                   <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="column-width"></i></span>
                 </a>

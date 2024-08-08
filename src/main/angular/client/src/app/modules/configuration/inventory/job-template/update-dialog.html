@@ -7,7 +7,7 @@
   {{item.name}}
   <span *ngIf="item.value" [innerHtml]="item.value.state._text | translate" [ngClass]="coreService.getColor(item.value.state.severity,'bg')"
         class="label m-l"></span>
-  <i *ngIf="item.value.state.message" [nz-tooltip]="item.value.state.message" class="fa fa-info-circle p-l-sm"></i>
+  <i *ngIf="item.value.state.message" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="item.value.state.message" class="fa fa-info-circle p-l-sm"></i>
   <div *ngIf="item.show" class="m-l m-t-xs">
     <div *ngIf="item.value.actions?.changes">
       <ul class="m-b-sm p-t-xxs">
@@ -134,7 +134,7 @@
                nzType="apartment"></i>
             <span [ngClass]="{'fa-circle dark-blue' : item.deployed}"
                   class="fa fa-check-circle-o orange text-xs w-11 m-t-xs p-r-sm"></span>
-            <span *ngIf="item.state" [nz-tooltip]="item.state._text | translate" class="p-l-xs p-r-sm">
+            <span *ngIf="item.state" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="item.state._text | translate" class="p-l-xs p-r-sm">
               <i *ngIf="item.state._text === 'IN_SYNC'"
                  class="fa fa-refresh font11"></i>
               <i *ngIf="item.state._text === 'UNKNOWN'"
@@ -160,7 +160,7 @@
                  nzType="apartment"></i>
               <span [ngClass]="{'fa-circle dark-blue' : item.deployed}"
                     class="fa fa-check-circle-o orange text-xs w-11 m-t-xs p-r-sm"></span>
-              <span *ngIf="item.state" [nz-tooltip]="item.state._text | translate" class="p-l-xs p-r-sm">
+              <span *ngIf="item.state" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="item.state._text | translate" class="p-l-xs p-r-sm">
               <i *ngIf="item.state._text === 'IN_SYNC'"
                  class="fa fa-refresh font11"></i>
               <i *ngIf="item.state._text === 'UNKNOWN'"

@@ -401,7 +401,7 @@
                                    placeholder="{{'common.placeholder.value' | translate}}"
                                    type="text">
                             <i (click)="openEditor(argument)"
-                               [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
+                               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
                                nzTheme="outline" nzType="form"
                                style="right: 23px;top:1px;"></i>
                             <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
@@ -592,10 +592,10 @@
                                  [required]="variable.isRequired || variable.facet" autocomplete="off"
                                  class="form-control" name="value{{i}}{{j}}" placeholder="{{'common.placeholder.value' | translate}}"
                                  type="text">
-                          <i *ngIf="variable.message" [nz-tooltip]="variable.message"
+                          <i *ngIf="variable.message" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="variable.message"
                              class="pos-abt cursor fa fa-info-circle" style="right: 18px;top:9px;"></i>
                           <i (click)="openEditor(variable)"
-                             [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
+                             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
                              nzTheme="outline" nzType="form"
                              style="right: 13px;top:1px;"></i>
                           <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"

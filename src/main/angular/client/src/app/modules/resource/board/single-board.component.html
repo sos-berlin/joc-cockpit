@@ -183,7 +183,7 @@
                              class="text-hover-primary">{{order.workflowId.path}} </a>
                         </td>
                         <td>
-                          <span class="cur-point" *ngIf="order.label" [innerHtml]="order.label" [nz-tooltip]="order.positionString"></span>
+                          <span class="cur-point" *ngIf="order.label" [innerHtml]="order.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.positionString"></span>
                           <span *ngIf="!order.label" [innerHtml]="order.positionString"></span>
                         </td>
                       </tr>

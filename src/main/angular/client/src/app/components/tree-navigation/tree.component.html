@@ -15,7 +15,7 @@
     <nz-auto-option (click)="selectObject(option)" *ngFor="let option of allObjects | orderBy: 'name'"
                     [nzValue]="option.path" class="min-ht-opt">
       <div class="node-wrapper p-l-xs">
-        <div [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
+        <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
              class="node-content-wrapper2"
              nzTooltipPlacement="right">
           <i class="fa fa-circle-o text-xs"></i>
@@ -26,10 +26,10 @@
   </nz-autocomplete>
 </div>
 <div class="pl-20">
-  <a (click)="expandAll();" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
+  <a (click)="expandAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
     <i class="fa fa-angle-double-down fa-lg"></i>
   </a>
-  <a (click)="collapseAll();" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
+  <a (click)="collapseAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
     <i class="fa fa-angle-double-up fa-lg"></i>
   </a>
   <a class="text resize-cursor a-1 pos-abt r-22">

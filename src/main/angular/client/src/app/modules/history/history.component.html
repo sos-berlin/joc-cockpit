@@ -86,7 +86,7 @@
               </nz-dropdown-menu>
             </div>
             <div *ngIf="permission.joc && permission.joc.administration.customization.view" class="btn-group dropdown">
-              <button [nz-tooltip]="selectedFiltered1.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
+              <button [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered1.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
                       class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
                       type="button">{{'customization.label.customizations' | translate}}
                 <span [innerHtml]="selectedFiltered1.name" class="text-primary"></span>
@@ -107,9 +107,9 @@
                       [ngClass]="{'ant-select-dropdown-menu-item-active': (savedHistoryFilter.selected == filter.id)}"
                       nz-menu-item>
                     <a>
-                      <span [nz-tooltip]="filter.account">{{filter.name}}</span>
+                      <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
                       <i (click)="changeFilter(null);$event.stopPropagation();"
-                         *ngIf="savedHistoryFilter.selected == filter.id" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                         *ngIf="savedHistoryFilter.selected == filter.id" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
                          class="fa fa-times-circle-o remove"></i>
                     </a>
                   </li>
@@ -192,7 +192,7 @@
               </nz-dropdown-menu>
             </div>
             <div *ngIf="permission.joc && permission.joc.administration.customization.view" class="btn-group dropdown">
-              <button [nz-tooltip]="selectedFiltered2.account" [nzDropdownMenu]="customization2" [nzPlacement]="'bottomRight'"
+              <button [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered2.account" [nzDropdownMenu]="customization2" [nzPlacement]="'bottomRight'"
                       class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
                       type="button">
                 {{'customization.label.customizations' | translate}} <span [innerHtml]="selectedFiltered2.name"
@@ -214,9 +214,9 @@
                       [ngClass]="{'ant-select-dropdown-menu-item-active': (savedJobHistoryFilter.selected == filter.id)}"
                       nz-menu-item>
                     <a>
-                      <span [nz-tooltip]="filter.account">{{filter.name}}</span>
+                      <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
                       <i (click)="changeFilter(null);$event.stopPropagation();"
-                         *ngIf="savedJobHistoryFilter.selected == filter.id" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                         *ngIf="savedJobHistoryFilter.selected == filter.id" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
                          class="fa fa-times-circle-o remove"></i>
                     </a>
                   </li>
@@ -297,7 +297,7 @@
           </div>
           <div *ngIf="historyFilters.type == 'YADE'" class="inline m-b-xs">
             <div *ngIf="permission.joc && permission.joc.administration.customization.view" class="btn-group dropdown">
-              <button [nz-tooltip]="selectedFiltered3.account" [nzDropdownMenu]="customization3" [nzPlacement]="'bottomRight'"
+              <button [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered3.account" [nzDropdownMenu]="customization3" [nzPlacement]="'bottomRight'"
                       class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
                       type="button">
                 {{'customization.label.customizations' | translate}} <span [innerHtml]="selectedFiltered3.name"
@@ -319,9 +319,9 @@
                       [ngClass]="{'ant-select-dropdown-menu-item-active': (savedYadeHistoryFilter.selected == filter.id)}"
                       nz-menu-item>
                     <a>
-                      <span [nz-tooltip]="filter.account">{{filter.name}}</span>
+                      <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
                       <i (click)="changeFilter(null);$event.stopPropagation();"
-                         *ngIf="savedYadeHistoryFilter.selected == filter.id" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                         *ngIf="savedYadeHistoryFilter.selected == filter.id" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
                          class="fa fa-times-circle-o remove"></i>
                     </a>
                   </li>
@@ -399,7 +399,7 @@
               </nz-dropdown-menu>
             </div>
             <div *ngIf="permission.joc && permission.joc.administration.customization.view" class="btn-group dropdown">
-              <button [nz-tooltip]="selectedFiltered4.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
+              <button [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered4.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
                       class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
                       type="button">
                 {{'customization.label.customizations' | translate}} <span [innerHtml]="selectedFiltered4.name"
@@ -421,9 +421,9 @@
                       [ngClass]="{'ant-select-dropdown-menu-item-active': (savedDeploymentHistoryFilter.selected == filter.id)}"
                       nz-menu-item>
                     <a>
-                      <span [nz-tooltip]="filter.account">{{filter.name}}</span>
+                      <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
                       <i (click)="changeFilter(null);$event.stopPropagation();"
-                         *ngIf="savedDeploymentHistoryFilter.selected == filter.id" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                         *ngIf="savedDeploymentHistoryFilter.selected == filter.id" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
                          class="fa fa-times-circle-o remove"></i>
                     </a>
                   </li>
@@ -502,7 +502,7 @@
               </nz-dropdown-menu>
             </div>
             <div *ngIf="permission.joc && permission.joc.administration.customization.view" class="btn-group dropdown">
-              <button [nz-tooltip]="selectedFiltered5.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
+              <button [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered5.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
                       class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
                       type="button">
                 {{'customization.label.customizations' | translate}} <span [innerHtml]="selectedFiltered5.name"
@@ -524,9 +524,9 @@
                       [ngClass]="{'ant-select-dropdown-menu-item-active': (savedSubmissionHistoryFilter.selected == filter.id)}"
                       nz-menu-item>
                     <a>
-                      <span [nz-tooltip]="filter.account">{{filter.name}}</span>
+                      <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
                       <i (click)="changeFilter(null);$event.stopPropagation();"
-                         *ngIf="savedSubmissionHistoryFilter.selected == filter.id" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                         *ngIf="savedSubmissionHistoryFilter.selected == filter.id" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
                          class="fa fa-times-circle-o remove"></i>
                     </a>
                   </li>
@@ -566,7 +566,7 @@
             </nz-dropdown-menu>
           </div>
           <button (click)="exportToExcel()" [disabled]="data.length === 0"
-                  [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
+                  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
                   class="btn btn-grey btn-sm m-l-12"><i class="fa fa fa-share-square-o"></i></button>
         </div>
       </div>
@@ -1040,7 +1040,7 @@
                   <i (click)="downloadLog(history,history.controllerId);$event.stopPropagation()"
                      *ngIf="historyFilters.current"
                      class="cursor fa fa-download text-hover-primary p-r-xs"></i>
-                  <span [innerHtml]="coreService.getModifiedOrderId(history) | highlight : order.searchText"></span>
+                  <span [innerHtml]="coreService.getModifiedOrderId(history, order.searchText)"></span>
                 </span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)">
@@ -1053,7 +1053,7 @@
                 </span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)">
-                <span class="cur-point" *ngIf="history.label" [innerHtml]="history.label" [nz-tooltip]="history.position"></span>
+                <span class="cur-point" *ngIf="history.label" [innerHtml]="history.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="history.position"></span>
                 <span *ngIf="!history.label" [innerHtml]="history.position"></span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)">
@@ -1246,7 +1246,7 @@
                 </span>
                     </td>
                     <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null,viewContainerRef)">
-                      <span class="cur-point" *ngIf="jobHistory.label" [innerHtml]="jobHistory.label | highlight : task.searchText" [nz-tooltip]="jobHistory.position"></span>
+                      <span class="cur-point" *ngIf="jobHistory.label" [innerHtml]="jobHistory.label | highlight : task.searchText" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="jobHistory.position"></span>
                       <span *ngIf="!jobHistory.label" [innerHtml]="jobHistory.position | highlight : task.searchText"></span>
                     </td>
                     <td (click)="coreService.showLogWindow(null,jobHistory,null,jobHistory.controllerId,null,viewContainerRef)">
@@ -1346,7 +1346,7 @@
                  class="fa fa-caret-down "></i></a>
             </th>
             <th (click)="sort2('numOfFiles')" nzWidth="65px"><a>
-              <span [nz-tooltip]="'fileTransfer.tooltip.totalNumberOfFiles' | translate" class="p-r-xs" translate>fileTransfer.label.total</span>
+              <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'fileTransfer.tooltip.totalNumberOfFiles' | translate" class="p-r-xs" translate>fileTransfer.label.total</span>
               <i *ngIf="yade.filter.sortBy == 'numOfFiles' && !yade.reverse"
                  class="fa fa-caret-up "></i>
               <i *ngIf="yade.filter.sortBy == 'numOfFiles' && yade.reverse"
@@ -1806,7 +1806,7 @@
                           </tr>
                           <tr
                             *ngFor="let order of child.orderIds | filter: submission.searchText: ['workflowPath', 'orderId'] | orderBy: 'scheduledFor': true">
-                            <td colspan="3"><span [innerHtml]="coreService.getModifiedOrderId(order) | highlight : submission.searchText" [ngClass]="{'p-l-lg' : !historyFilters.current }"
+                            <td colspan="3"><span [innerHtml]="coreService.getModifiedOrderId(order, submission.searchText)" [ngClass]="{'p-l-lg' : !historyFilters.current }"
                                                   class="p-l-md"></span></td>
                             <td colspan="3">
                               <i (click)="navToWorkflowTab(order.workflowPath);$event.stopPropagation()"

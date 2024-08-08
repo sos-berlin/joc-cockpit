@@ -369,7 +369,6 @@ export class EnciphermentUpdateKeyComponent {
 })
 export class EnciphermentComponent {
   permission: any = {};
-  isJOCActive = false;
 
   username = '';
   securityLevel: string;
@@ -384,7 +383,6 @@ export class EnciphermentComponent {
 
   constructor(private authService: AuthService, public coreService: CoreService,
     private modal: NzModalService, private translate: TranslateService, private i18n: NzI18nService) {
-    this.isJOCActive = sessionStorage['$SOS$ISJOCACTIVE'] == 'YES';
     this.permission = JSON.parse(this.authService.permission) || {};
   }
 

@@ -81,7 +81,7 @@
     <app-order-action (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)" [order]="order"
                       [permission]="permission" [preferences]="preferences" [viewContainerRef]="viewContainerRef"
                       [schedulerId]="schedulerId"></app-order-action>
-    <span (mouseover)="getObstacles(order)" [nz-tooltip]="contentTemplate" style="position: relative;top:2px">
+    <span (mouseover)="getObstacles(order)" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="contentTemplate" style="position: relative;top:2px">
       <i *ngIf="!order.marked" [ngClass]="coreService.getColor(order.state.severity, 'text')"
          class="fa fa-circle p-r-s"></i>
       <span *ngIf="order.marked" [ngClass]="coreService.getColor(order.state.severity, 'bg')"
@@ -195,7 +195,7 @@
         </div>
         <i (click)="collapse(instruction)" [ngClass]="{'fa-minus' : (instruction.show)}" class="fa fa-plus pr-2"></i>
         <span class="_600">
-          <span *ngIf="instruction['TYPE'] !== 'If' && instruction['TYPE'] !== 'Cycle' && instruction['TYPE'] !== 'Retry'" [nz-tooltip]="(instruction['TYPE'] === 'ConsumeNotices') ? instruction.noticeBoardNames : ''">{{instruction['TYPE']}}</span>
+          <span *ngIf="instruction['TYPE'] !== 'If' && instruction['TYPE'] !== 'Cycle' && instruction['TYPE'] !== 'Retry'" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="(instruction['TYPE'] === 'ConsumeNotices') ? instruction.noticeBoardNames : ''">{{instruction['TYPE']}}</span>
           <span *ngIf="instruction['TYPE'] === 'Retry'" nz-popover nzPopoverTrigger="click" [nzPopoverContent]="contentTemplate" nzPopoverPlacement="right">{{instruction['TYPE']}}</span>
           <a (click)="showConfiguration(instruction);" *ngIf="instruction['TYPE'] === 'If' || instruction['TYPE'] === 'Cycle'"
              class="cursor">{{instruction['TYPE']}}</a><span
@@ -208,7 +208,7 @@
               <i (click)="coreService.navToInventoryTab(item.lockName, 'LOCK');$event.stopPropagation();"
                  *ngIf="permission.joc && permission.joc.inventory.view"
                  class="cursor fa fa-pencil text-hover-primary p-l-sm p-r-xs"></i>
-              <a (click)="coreService.showLock(item.lockName);$event.stopPropagation();" [nz-tooltip]="lockItemTemplate"
+              <a (click)="coreService.showLock(item.lockName);$event.stopPropagation();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="lockItemTemplate"
                  class="text-hover-primary">{{item.lockName}}</a>
               <ng-template #lockItemTemplate>
                 <div>
@@ -359,7 +359,7 @@
         </span>
         <span (click)="openWorkflowDependency(instruction);"
               *ngIf="instruction['TYPE'] !== 'Job'"
-              [ngClass]="{'cursor' : (instruction['TYPE'] === 'PostNotices' || instruction['TYPE'] === 'AddOrder')}" [nz-tooltip]="(instruction['TYPE'] === 'ExpectNotices') ? instruction.noticeBoardNames : (instruction.question || instruction.message)" >
+              [ngClass]="{'cursor' : (instruction['TYPE'] === 'PostNotices' || instruction['TYPE'] === 'AddOrder')}" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="(instruction['TYPE'] === 'ExpectNotices') ? instruction.noticeBoardNames : (instruction.question || instruction.message)" >
           {{instruction['TYPE'] | translate}}
           <span *ngIf="instruction.label" class="p-l-xs  _400">(</span>
            <i *ngIf="instruction.label" class="text-muted _400">{{instruction.label}}</i>

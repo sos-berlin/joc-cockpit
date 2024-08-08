@@ -64,13 +64,13 @@
             </li>
           </ul>
         </nz-dropdown-menu>
-        <span (click)="edit(item)" [innerHtml]="item.name | highlight : filter.searchKey" [nz-tooltip]="item.content" [nzTooltipPlacement]="'right'"
+        <span (click)="edit(item)" [innerHtml]="item.name | highlight : filter.searchKey" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="item.content" [nzTooltipPlacement]="'right'"
               class="cursor p-r-xs"></span>&nbsp;
         <i *ngIf="item.shared && account === item.account"
-           [nz-tooltip]="'profile.favoriteManagement.tooltip.sharedByMe' | translate" aria-hidden="true"
+           [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.favoriteManagement.tooltip.sharedByMe' | translate" aria-hidden="true"
            class="fa fa-share-square-o pos-rel text-primary t-n-xs m-r-sm" style="left:-2px"></i>
         <i *ngIf="item.shared && account !== item.account"
-           [nz-tooltip]="'profile.favoriteManagement.tooltip.sharedWithMe' | translate" aria-hidden="true"
+           [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.favoriteManagement.tooltip.sharedWithMe' | translate" aria-hidden="true"
            class="fa fa-share-alt pos-rel text-primary t-n-xs m-r-sm" style="left:-2px"></i>
         <i *ngIf="item.content && type=== 'AGENT'">-</i>
         &nbsp;<span *ngIf="item.content && type=== 'AGENT'" [innerHtml]="item.content | highlight : filter.searchKey"

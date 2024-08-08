@@ -93,9 +93,9 @@
             <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)">
               <span class="show-in-single-line w-full">
                  <i (click)="showAllPanelFuc(history);$event.stopPropagation()" *ngIf="!history.showAll"
-                    [nz-tooltip]="'history.button.expandAll' | translate" class="cursor fa fa-chevron-down p-l-xs p-r-xs"></i>
+                    [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'history.button.expandAll' | translate" class="cursor fa fa-chevron-down p-l-xs p-r-xs"></i>
                 <i (click)="hideAllPanelFuc(history);$event.stopPropagation()" *ngIf="history.showAll"
-                   [nz-tooltip]="'history.button.collapseAll' | translate" class="cursor fa fa-chevron-up p-l-xs p-r-xs"></i>
+                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'history.button.collapseAll' | translate" class="cursor fa fa-chevron-up p-l-xs p-r-xs"></i>
                 <i (click)="showPanelFuc(history);$event.stopPropagation()"
                    *ngIf="!history.show"
                    class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
@@ -108,7 +108,7 @@
               </span>
             </td>
             <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)">
-              <span class="cur-point" *ngIf="history.label" [innerHtml]="history.label" [nz-tooltip]="history.position"></span>
+              <span class="cur-point" *ngIf="history.label" [innerHtml]="history.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="history.position"></span>
               <span *ngIf="!history.label" [innerHtml]="history.position"></span>
             </td>
             <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)">
@@ -232,7 +232,7 @@
                </span>
             </td>
             <td>
-              <span class="cur-point" *ngIf="history.label" [innerHtml]="history.label" [nz-tooltip]="history.position"></span>
+              <span class="cur-point" *ngIf="history.label" [innerHtml]="history.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="history.position"></span>
               <span *ngIf="!history.label" [innerHtml]="history.position"></span>
             </td>
             <td>
@@ -328,7 +328,7 @@
         <ng-template [ngForOf]="jobHistoryTable.data" let-history ngFor>
           <tr (click)="coreService.showLogWindow(null, history, null, history.controllerId, null,viewContainerRef)" class="cursor">
             <td>
-              <span class="cur-point" *ngIf="history.label" [innerHtml]="history.label" [nz-tooltip]="history.position"></span>
+              <span class="cur-point" *ngIf="history.label" [innerHtml]="history.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="history.position"></span>
               <span *ngIf="!history.label" [innerHtml]="history.position"></span>
             </td>
             <td>

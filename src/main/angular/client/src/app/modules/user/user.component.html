@@ -502,7 +502,7 @@
                               </span>
                             </span>
                             <a (click)="showKey('certificate')"
-                               [nz-tooltip]="'profile.keyManagement.label.showCertificate' | translate"
+                               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.label.showCertificate' | translate"
                                class="text-hover-primary m-l-12"><i class="fa fa-television"></i></a>
                           </span>
                           <span *ngIf="!caCertificates.keyID" translate>
@@ -510,17 +510,17 @@
                           </span>
                           <div class="inline pull-right m-t-n-xs" style="margin-bottom: 2px">
                             <button (click)="pasteKey('certificate')"
-                                    *ngIf="permission.joc.administration.certificates.manage" [nz-tooltip]="'profile.keyManagement.tooltip.updateCertificate' | translate"
+                                    *ngIf="permission.joc.administration.certificates.manage" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.tooltip.updateCertificate' | translate"
                                     class="btn btn-sm btn-grey m-l-12">
                               <i class="fa fa-paste"></i>
                             </button>
                             <button (click)="importKey('certificate')"
-                                    *ngIf="permission.joc.administration.certificates.manage" [nz-tooltip]="'profile.keyManagement.tooltip.importCertificate' | translate"
+                                    *ngIf="permission.joc.administration.certificates.manage" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.tooltip.importCertificate' | translate"
                                     class="btn btn-sm btn-grey m-l-12">
                               <i nz-icon nzTheme="outline" nzType="upload"></i>
                             </button>
                             <button (click)="deleteCertificate('certificate')" [disabled]="!caCertificates.keyID"
-                                    *ngIf="permission.joc.administration.certificates.manage" [nz-tooltip]="'profile.keyManagement.tooltip.deleteCertificate' | translate"
+                                    *ngIf="permission.joc.administration.certificates.manage" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.tooltip.deleteCertificate' | translate"
                                     class="btn btn-sm btn-grey m-l-12">
                               <i class="fa fa-trash"></i>
                             </button>
@@ -550,7 +550,7 @@
                               </span>
                             </span>
                             <a (click)="showKey()"
-                               [nz-tooltip]="'profile.keyManagement.label.showKey' | translate"
+                               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.label.showKey' | translate"
                                class="text-hover-primary m-l-12"><i class="fa fa-television"></i></a>
                           </span>
                           <span *ngIf="!keys.keyID && !keys.keyAlgorithm" translate>
@@ -558,24 +558,24 @@
                           </span>
                           <div class="inline pull-right m-t-n-xs" style="margin-bottom: 2px">
                             <button (click)="pasteKey()"
-                                    *ngIf="permission.joc.administration.certificates.manage" [nz-tooltip]="'profile.keyManagement.tooltip.updateKey' | translate"
+                                    *ngIf="permission.joc.administration.certificates.manage" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.tooltip.updateKey' | translate"
                                     class="btn btn-sm btn-grey m-l-12">
                               <i class="fa fa-paste"></i>
                             </button>
                             <button (click)="importKey()"
-                                    *ngIf="permission.joc.administration.certificates.manage" [nz-tooltip]="'profile.keyManagement.tooltip.import' | translate"
+                                    *ngIf="permission.joc.administration.certificates.manage" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.tooltip.import' | translate"
                                     class="btn btn-sm btn-grey m-l-12">
                               <i nz-icon nzTheme="outline" nzType="upload"></i>
                             </button>
                             <button
                               (click)="showGenerateKeyModal()"
                               *ngIf="securityLevel ==='MEDIUM' && permission.joc.administration.certificates.manage"
-                              [nz-tooltip]="'profile.keyManagement.tooltip.generate' | translate"
+                              [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.tooltip.generate' | translate"
                               class="btn btn-sm btn-grey m-l-12">
                               <i nz-icon nzTheme="outline" nzType="file-protect"></i>
                             </button>
                             <button (click)="deleteCertificate('key')" [disabled]="!keys.keyID"
-                                    *ngIf="permission.joc.administration.certificates.manage" [nz-tooltip]="'profile.keyManagement.tooltip.deleteKey' | translate"
+                                    *ngIf="permission.joc.administration.certificates.manage" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.tooltip.deleteKey' | translate"
                                     class="btn btn-sm btn-grey m-l-12">
                               <i class="fa fa-trash"></i>
                             </button>
@@ -617,7 +617,7 @@
                               </span>
                             </span>
                             <a (click)="showKey('ca')"
-                               [nz-tooltip]="'profile.keyManagement.label.showKey' | translate"
+                               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.label.showKey' | translate"
                                class="text-hover-primary m-l-12"><i class="fa fa-television"></i></a>
                           </span>
                           <span *ngIf="!certificates.keyID && !certificates.keyAlgorithm" translate>
@@ -625,16 +625,16 @@
                           </span>
                           <div *ngIf="permission.joc.administration.certificates.manage" class="inline pull-right m-t-n-xs"
                                style="margin-bottom: 2px">
-                            <button (click)="pasteKey('ca')" [nz-tooltip]="'profile.keyManagement.tooltip.updateKey' | translate"
+                            <button (click)="pasteKey('ca')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.tooltip.updateKey' | translate"
                                     class="btn btn-sm btn-grey m-l-12">
                               <i class="fa fa-paste"></i>
                             </button>
-                            <button (click)="importKey('ca')" [nz-tooltip]="'profile.keyManagement.tooltip.import' | translate"
+                            <button (click)="importKey('ca')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.tooltip.import' | translate"
                                     class="btn btn-sm btn-grey m-l-12">
                               <i nz-icon nzTheme="outline" nzType="upload"></i>
                             </button>
                             <button (click)="showGenerateKeyModal('ca')"
-                                    [nz-tooltip]="'profile.keyManagement.tooltip.generate' | translate"
+                                    [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.keyManagement.tooltip.generate' | translate"
                                     class="btn btn-sm btn-grey m-l-12">
                               <i nz-icon nzTheme="outline" nzType="file-protect"></i>
                             </button>

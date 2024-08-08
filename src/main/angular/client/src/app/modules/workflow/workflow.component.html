@@ -130,7 +130,7 @@
               </nz-dropdown-menu>
             </div>
             <div *ngIf="permission.joc && permission.joc.administration.customization.view" class="btn-group dropdown">
-              <button [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
+              <button [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
                       class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" type="button">
                 {{'customization.label.customizations' | translate}}
                 <span [innerHtml]="selectedFiltered.name" class="text-primary"></span>
@@ -149,9 +149,9 @@
                   <li (click)="changeFilter(filter)" *ngFor="let filter of filterList | orderBy: 'name'" [ngClass]="{'ant-select-dropdown-menu-item-active': (savedFilter.selected == filter.id)}"
                       nz-menu-item>
                     <a>
-                      <span [nz-tooltip]="filter.account">{{filter.name}}</span>
+                      <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
                       <i (click)="changeFilter(null);$event.stopPropagation();"
-                         *ngIf="savedFilter.selected == filter.id" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                         *ngIf="savedFilter.selected == filter.id" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
                          class="fa fa-times-circle-o remove"></i>
                     </a>
                   </li>
@@ -159,7 +159,7 @@
               </nz-dropdown-menu>
             </div>
             <button (click)="exportToExcel()" [disabled]="data.length===0"
-                    [nz-tooltip]="'common.tooltip.exportInXLS' | translate" class="btn btn-grey btn-sm m-l-12">
+                    [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.exportInXLS' | translate" class="btn btn-grey btn-sm m-l-12">
               <i class="fa fa-share-square-o"></i></button>
             <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
           </div>
@@ -543,7 +543,7 @@
                              *ngIf="workflow.documentationName"
                              class="cursor fa fa-book p-l-xs p-r-xs"></i>
                           <span [innerHtml]="workflow.name | highlight : workflowFilters.searchText"
-                                [nz-tooltip]="workflow.title"></span>
+                                [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="workflow.title"></span>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
                           <app-workflow-action (isChanged)="changedHandler($event)"
@@ -797,10 +797,10 @@
                       <td>
                         <span class="show-in-single-line">
                           <i (click)="workflow.isExpand = true;showPanelFuc(workflow)" *ngIf="!workflow.show"
-                             [nz-tooltip]="'common.tooltip.expandAll' | translate"
+                             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate"
                              class="cursor fa fa-chevron-down p-l-xs p-r-xs t-n-1 pos-rel"></i>
                           <i (click)="workflow.isExpand = false;hidePanelFuc(workflow)" *ngIf="workflow.show"
-                             [nz-tooltip]="'common.tooltip.collapseAll' | translate"
+                             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate"
                              class="cursor fa fa-chevron-up p-l-xs p-r-xs t-n-1 pos-rel"></i>
                           <i (click)="showPanelFuc(workflow)"
                              *ngIf="!workflow.show" class="cursor fa fa-caret-down fa-lg p-l-xxs t-n-1 pos-rel"></i>
@@ -809,17 +809,17 @@
                           <i
                             (click)="addOrder(workflow)"
                             *ngIf="permission.currentController && permission.currentController.orders.create && workflow.isCurrentVersion && workflow.state._text !== 'NOT_IN_SYNC'"
-                            [nz-tooltip]="'workflow.button.addOrder' | translate" class="cursor fa fa-plus p-l-xs"></i>
+                            [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.addOrder' | translate" class="cursor fa fa-plus p-l-xs"></i>
                           <i (click)="navToDetailView('list', workflow)"
-                             [nz-tooltip]="'workflow.button.showTabularView' | translate"
+                             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.showTabularView' | translate"
                              class="cursor fa fa-list p-l-xs"></i>
                           <i (click)="navToDetailView('grid', workflow)"
-                             [nz-tooltip]="'workflow.button.showGraphicalView' | translate"
+                             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.showGraphicalView' | translate"
                              class="cursor fa fa-th p-l-xs p-r-xs"></i>
                           <i
                             (click)="showDependency(workflow)"
                             *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies"
-                            [nz-tooltip]="'workflow.button.showDependency' | translate"
+                            [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.showDependency' | translate"
                             class="cursor fa fa-codepen p-l-xs p-r-xs"></i>
                           <i (click)="coreService.showDocumentation(workflow.documentationName, preferences)"
                              *ngIf="workflow.documentationName"
@@ -953,10 +953,10 @@
                             <a class="text-primary noExl" translate>workflow.label.start</a>
                             <span class="expand-collapse-btn">
                                   <i (click)="workflow.isExpand = true;"
-                                     [nz-tooltip]="'common.tooltip.expandAll' | translate"
+                                     [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate"
                                      class="cursor fa fa-lg fa-angle-double-down"></i>
                                   <i (click)="workflow.isExpand = false;"
-                                     [nz-tooltip]="'common.tooltip.collapseAll' | translate"
+                                     [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate"
                                      class="cursor fa fa-lg fa-angle-double-up p-l-xs"></i>
                                 </span>
                           </div>

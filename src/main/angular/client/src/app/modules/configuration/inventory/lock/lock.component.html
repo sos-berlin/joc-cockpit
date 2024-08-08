@@ -37,8 +37,8 @@
       <form *ngIf="lock.configuration">
         <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
              class="form-group row">
-          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.lock.name' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.lock.name' | translate) : ''"
+                 
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
                  translate>common.label.name
             <sup class="text-danger text-sm">*</sup>
@@ -56,8 +56,8 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.lock.title' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.lock.title' | translate) : ''"
+                 
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
                  translate>common.label.title</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -67,8 +67,8 @@
           </div>
         </div>
         <div *ngIf="coreService.expertMode" class="form-group row">
-          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.lock.documentation' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.lock.documentation' | translate) : ''"
+                 
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
                  translate>inventory.label.documentation</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -77,8 +77,8 @@
           </div>
         </div>
         <div [ngClass]="{ 'has-error' : (((limit.dirty || limit.touched) && limit.invalid))}" class="form-group row">
-          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.lock.limit' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.lock.limit' | translate) : ''"
+                 
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
                  translate>inventory.label.limit
             <sup class="text-danger text-sm">*</sup>

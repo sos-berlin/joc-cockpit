@@ -17,7 +17,7 @@
         <textarea [facetValidation]="object.facet" #value="ngModel" nz-input name="value" #myinput (keyup)="do_resize()" [(ngModel)]="data" rows="10"
                   placeholder="{{'common.placeholder.value' | translate}}"
         ></textarea>
-        <i class="pos-abt cursor fa fa-info-circle" *ngIf="object.message" [nz-tooltip]="object.message" style="right: 22px;top:9px;"></i>
+        <i class="pos-abt cursor fa fa-info-circle" *ngIf="object.message" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="object.message" style="right: 22px;top:9px;"></i>
         <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
              class="text-danger help-block">
           <div *ngIf="value.errors['required']">

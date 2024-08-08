@@ -121,7 +121,7 @@
               </nz-dropdown-menu>
             </div>
             <div *ngIf="permission.joc && permission.joc.administration.customization.view" class="btn-group dropdown">
-              <button [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization" class="btn btn-grey btn-sm m-l-12"
+              <button [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization" class="btn btn-grey btn-sm m-l-12"
                       nz-dropdown nzPlacement="bottomRight" nzTrigger="click" type="button">
                 {{'customization.label.customizations' | translate}}
                 <span [innerHtml]="selectedFiltered.name" class="text-primary"></span>
@@ -139,9 +139,9 @@
                   <li *ngIf="filterList.length>0" nz-menu-divider></li>
                   <li (click)="changeFilter(filter)" *ngFor="let filter of filterList | orderBy: 'name'" nz-menu-item>
                     <a>
-                      <span [nz-tooltip]="filter.account">{{filter.name}}</span>
+                      <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
                       <i (click)="changeFilter(null);$event.stopPropagation();"
-                         *ngIf="savedFilter.selected == filter.id" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                         *ngIf="savedFilter.selected == filter.id" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
                          class="fa fa-times-circle-o remove"></i>
                     </a>
                   </li>
@@ -261,7 +261,7 @@
               <i *ngIf="yadeFilters.filter.sortBy == 'orderId' && yadeFilters.reverse"
                  class="fa fa-caret-down "></i></a>
             </th>
-            <th (click)="sort('numOfFiles')" [nz-tooltip]="'fileTransfer.tooltip.totalNumberOfFiles' | translate"
+            <th (click)="sort('numOfFiles')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'fileTransfer.tooltip.totalNumberOfFiles' | translate"
                 nzWidth="65px"><a>
               <span class="p-r-xs" translate>fileTransfer.label.total</span>
               <i *ngIf="yadeFilters.filter.sortBy == 'numOfFiles' && !yadeFilters.reverse"

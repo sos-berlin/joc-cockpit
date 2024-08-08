@@ -121,7 +121,7 @@
                          nz-tooltip="{{'agent.label.cluster' | translate}}" nzTheme="outline" nzType="cluster" style="position: relative;top:1px"></i>&nbsp;
                       <span (click)="navToController(cluster, null);$event.stopPropagation()"
                             [innerHtml]="cluster.agentId | highlight : agentsFilters.searchText"
-                            [nz-tooltip]="cluster.path"
+                            [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="cluster.path"
                             class="text text-ellipsis1 cursor m-l-xs"></span>
                     </div>
                     <div *ngIf="permission.currentController && permission.currentController.switchOver"
@@ -152,7 +152,7 @@
                           [innerHtml]="cluster.state._text | highlight : agentsFilters.searchText"></span>
                     <span *ngIf="!cluster.state && cluster.healthState"
                           [innerHtml]="cluster.healthState._text | highlight : agentsFilters.searchText"></span>
-                    <i *ngIf="cluster.state && cluster.state._text == 'INITIALISED'" [nz-tooltip]="cluster.state._reason | translate"
+                    <i *ngIf="cluster.state && cluster.state._text == 'INITIALISED'" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="cluster.state._reason | translate"
                        class="fa fa-info-circle p-l-sm"></i>
                   </div>
                   <div class="text-sm text-left text-muted p-t-sm">
@@ -287,17 +287,17 @@
                     <td (click)="navToController(cluster, null)" class="cursor"><span
                       [innerHtml]="cluster.agentName | highlight : agentsFilters.searchText"></span></td>
                     <td (click)="navToController(cluster, null)" class="cursor">
-                      <span *ngIf="cluster.state" [ngClass]="coreService.getColor(cluster.state.severity,'bg')" [nz-tooltip]="cluster.errorMessage"
+                      <span *ngIf="cluster.state" [ngClass]="coreService.getColor(cluster.state.severity,'bg')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="cluster.errorMessage"
                             class="label">
                         <span
                           [innerHtml]="cluster.state._text | translate | highlight : agentsFilters.searchText"></span>
                       </span>
                       <span *ngIf="!cluster.state && cluster.healthState" [ngClass]="coreService.getColor(cluster.healthState.severity,'bg')"
-                            [nz-tooltip]="cluster.errorMessage" class="label">
+                            [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="cluster.errorMessage" class="label">
                         <span
                           [innerHtml]="cluster.healthState._text | translate | highlight : agentsFilters.searchText"></span>
                       </span>
-                      <i *ngIf="cluster.state && cluster.state._text == 'INITIALISED'" [nz-tooltip]="cluster.state._reason | translate"
+                      <i *ngIf="cluster.state && cluster.state._text == 'INITIALISED'" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="cluster.state._reason | translate"
                          class="fa fa-info-circle p-l-sm"></i>
                     </td>
                     <td (click)="navToController(cluster, null)" class="cursor">
@@ -313,7 +313,7 @@
                     </td>
                     <td>
                       <i *ngIf="cluster.compatibility" [ngClass]="cluster.compatibility === 'COMPATIBLE' ? 'text-success' : cluster.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'"
-                         [nz-tooltip]="cluster.compatibility | translate"
+                         [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="cluster.compatibility | translate"
                          class="fa fa-check"></i>
                       &nbsp;
                       {{cluster.version}}
@@ -394,13 +394,13 @@
                         <td (click)="navToController(subagent, cluster)"
                             class="cursor">{{subagent.isDirector | translate}}</td>
                         <td (click)="navToController(subagent, cluster)" class="cursor">
-                          <span *ngIf="subagent.state" [ngClass]="coreService.getColor(subagent.state.severity,'bg')" [nz-tooltip]="subagent.errorMessage"
+                          <span *ngIf="subagent.state" [ngClass]="coreService.getColor(subagent.state.severity,'bg')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="subagent.errorMessage"
                                 class="label">
                             <span
                               [innerHtml]="subagent.state._text | translate | highlight : agentsFilters.searchText"></span>
                           </span>
                           <i *ngIf="subagent.state && subagent.state._text == 'INITIALISED'"
-                             [nz-tooltip]="subagent.state._reason" class="fa fa-info-circle p-l-sm"></i>
+                             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="subagent.state._reason" class="fa fa-info-circle p-l-sm"></i>
                         </td>
                         <td (click)="navToController(subagent, cluster)" class="cursor">
                           <span *ngIf="subagent.clusterNodeState" [ngClass]="coreService.getColor(subagent.clusterNodeState.severity,'bg')"
@@ -415,7 +415,7 @@
                         </td>
                         <td>
                           <i *ngIf="subagent.compatibility" [ngClass]="subagent.compatibility === 'COMPATIBLE' ? 'text-success' : subagent.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'"
-                             [nz-tooltip]="subagent.compatibility | translate"
+                             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="subagent.compatibility | translate"
                              class="fa fa-check"></i>
                           &nbsp;
                           {{subagent.version}}
@@ -444,7 +444,7 @@
                                  class="text-hover-primary">{{order.workflowId.path}} </a>
                             </td>
                             <td colspan="2">
-                              <span class="cur-point" *ngIf="order.label" [innerHtml]="order.label" [nz-tooltip]="order.positionString"></span>
+                              <span class="cur-point" *ngIf="order.label" [innerHtml]="order.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.positionString"></span>
                               <span *ngIf="!order.label" [innerHtml]="order.positionString"></span>
                             </td>
                             <td>
@@ -495,7 +495,7 @@
                              class="text-hover-primary">{{order.workflowId.path}} </a>
                         </td>
                         <td colspan="2">
-                          <span class="cur-point" *ngIf="order.label" [innerHtml]="order.label" [nz-tooltip]="order.positionString"></span>
+                          <span class="cur-point" *ngIf="order.label" [innerHtml]="order.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.positionString"></span>
                           <span *ngIf="!order.label" [innerHtml]="order.positionString"></span>
                         </td>
                         <td>

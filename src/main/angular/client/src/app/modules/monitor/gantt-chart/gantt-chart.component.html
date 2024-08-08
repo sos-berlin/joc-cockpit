@@ -71,7 +71,7 @@
               left: status.offset + 'px',
               width: status.width + 'px',
               'background-color': status.color
-            }" [nz-tooltip]="status.start + ' to ' + (status.end === '25:00' ? '24:00:00' : status.end)"
+            }" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="status.start + ' to ' + (status.end === '25:00' ? '24:00:00' : status.end)"
           class="statusBar"
         >
           <i translate>COUPLED</i>

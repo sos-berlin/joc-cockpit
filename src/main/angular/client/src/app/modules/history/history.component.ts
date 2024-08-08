@@ -1136,7 +1136,7 @@ export class HistoryComponent {
   sideView: any = {};
   showPanel: any;
 
-  orderSearchableProperties = ['controllerId', 'orderId', 'workflow', 'state', '_text', 'orderState', 'position'];
+  orderSearchableProperties = ['controllerId', 'orderId', 'workflow', 'state', '_text', 'orderState', 'position', 'tags'];
   taskSearchableProperties = ['controllerId', 'job', 'criticality', 'request', 'workflow', 'orderId', 'position'];
   deploymentSearchableProperties = ['controllerId', 'deploymentDate', 'account', 'state'];
   submissionSearchableProperties = ['date', 'countSubmitted', 'countTotal'];

@@ -7,12 +7,12 @@
         <span class="text-muted">{{roleName}}</span>
       </div>
       <button (click)="undoPermission()" *ngIf="previousPermission.length>0"
-              [nz-tooltip]="'workflow.button.undo' | translate"
+              [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.undo' | translate"
               class="btn btn-sm btn-grey m-t-n-xs">
         <i nz-icon nzTheme="outline" nzType="undo"></i>
       </button>
       <button (click)="resetPermission()" *ngIf="isReset"
-              [nz-tooltip]="'agent.button.reset' | translate"
+              [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.button.reset' | translate"
               class="btn btn-sm btn-grey m-l-sm m-t-n-xs">
         <i nz-icon nzTheme="outline" nzType="sync"></i>
       </button>

@@ -33,7 +33,7 @@
     <div [ngClass]="{'show': totalPlanData > 0}" class="hide m-t-sm">
       <div [ngClass]="{'show-block': planned > 0}" [ngStyle]="{'width': arrayWidth[0]+'%'}"
            class="plan-overview bg-planned hide">
-        <label [nz-tooltip]="tooltipTemplate1" class="w-full">
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate1" class="w-full">
           <a (click)="navigate(1)" class="nav-link w-full">
             <div class="show-inline block-ellipsis-job" translate>dashboard.label.planned</div>
             - {{planned | number : '1.1-1'}} %
@@ -46,7 +46,7 @@
       </div>
       <div [ngClass]="{'show-block': plannedLate > 0}" [ngStyle]="{width: arrayWidth[1]+'%'}"
            class="plan-overview bg-gold hide">
-        <label [nz-tooltip]="tooltipTemplate2" class="w-full">
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate2" class="w-full">
           <a (click)="navigate(2)" class="nav-link w-full">
             <div class="show-inline block-ellipsis-job" translate>dashboard.label.plannedLate</div>
             - {{plannedLate | number : '1.1-1' }} %
@@ -59,7 +59,7 @@
       </div>
       <div [ngClass]="{'show-block': submitted > 0}" [ngStyle]="{width: arrayWidth[2]+'%'}"
            class="plan-overview bg-orange hide">
-        <label [nz-tooltip]="tooltipTemplate3" class="w-full">
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate3" class="w-full">
           <a (click)="navigate(4)" class="nav-link w-full">
             <div class="show-inline block-ellipsis-job" translate>dashboard.label.submitted</div>
             - {{submitted | number : '1.1-1' }} %
@@ -72,7 +72,7 @@
       </div>
       <div [ngClass]="{'show-block': submittedLate > 0}" [ngStyle]="{width: arrayWidth[3]+'%'}"
            class="plan-overview bg-late hide">
-        <label [nz-tooltip]="tooltipTemplate4" class="w-full">
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate4" class="w-full">
           <a (click)="navigate(5)" class="nav-link w-full">
             <div class="show-inline block-ellipsis-job" translate>dashboard.label.submittedLate</div>
             - {{submittedLate | number : '1.1-1' }} %
@@ -85,7 +85,7 @@
       </div>
       <div [ngClass]="{'show-block': finished > 0}" [ngStyle]="{width: arrayWidth[4]+'%'}"
            class="plan-overview bg-dark-blue hide">
-        <label [nz-tooltip]="tooltipTemplate5" class="w-full">
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate5" class="w-full">
           <a (click)="navigate(6)" class="nav-link w-full">
             <div class="show-inline block-ellipsis-job" translate>dashboard.label.finished</div>
             - {{finished | number : '1.1-1'}} %

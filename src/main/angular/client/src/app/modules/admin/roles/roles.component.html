@@ -6,11 +6,11 @@
            [nzIndeterminate]="object.indeterminate"
            (nzCheckedChange)="checkAll($event)"
            style="margin-left: 13px"></label>
-    <a (click)="expandAll();" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text"
+    <a (click)="expandAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text"
        style="padding-left: 12px;">
       <i class="fa fa-angle-double-down fa-lg"></i>
     </a>
-    <a (click)="collapseAll();" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
+    <a (click)="collapseAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
       <i class="fa fa-angle-double-up fa-lg"></i>
     </a>
   </div>

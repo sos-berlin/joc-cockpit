@@ -17,7 +17,7 @@
     </div>
     <div *ngIf="!data">
       <div [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}" class="form-group row">
-        <label [nz-tooltip]="'user.tooltips.general.sessionTimeout' | translate" [nzTooltipMouseEnterDelay]="0.5"
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.general.sessionTimeout' | translate" 
                class="col-sm-4 form-control-label" translate>user.label.sessionTimeout
           <sup class="text-danger text-sm">*</sup>
         </label>
@@ -34,7 +34,7 @@
       </div>
       <div [ngClass]="{'has-error' : ((pwd.dirty || pwd.touched) && pwd.invalid) || !isLengthMatch}"
            class="form-group row">
-        <label [nz-tooltip]="'user.tooltips.general.initialPassword' | translate" [nzTooltipMouseEnterDelay]="0.5"
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.general.initialPassword' | translate" 
                class="col-sm-4 form-control-label" translate>user.label.initialPassword
           <sup class="text-danger text-sm">*</sup>
         </label>
@@ -60,7 +60,7 @@
       <div
         [ngClass]="{'has-error' : ((minPasswordLength.dirty || minPasswordLength.touched) && minPasswordLength.invalid)}"
         class="form-group row">
-        <label [nz-tooltip]="'user.tooltips.general.minPasswordLength' | translate" [nzTooltipMouseEnterDelay]="0.5"
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.general.minPasswordLength' | translate" 
                class="col-sm-4 form-control-label" translate>user.label.minPasswordLength
           <sup class="text-danger text-sm">*</sup>
         </label>
@@ -80,7 +80,7 @@
     <!------------------------------------BEGIN KEYCLOAK----------------------------------------->
     <div *ngIf="data && data['identityServiceType'].match('KEYCLOAK')">
       <div class="form-group row">
-        <label [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakUrl' | translate" [nzTooltipMouseEnterDelay]="0.5"
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakUrl' | translate" 
                class="col-sm-4 form-control-label" translate>user.label.iamKeycloakUrl
           <sup class="text-danger text-sm">*</sup>
         </label>
@@ -98,8 +98,8 @@
         </div>
       </div>
       <div *ngIf="data['identityServiceType'] === 'KEYCLOAK'" class="form-group row">
-        <label [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakAdminAccount' | translate"
-               [nzTooltipMouseEnterDelay]="0.5"
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakAdminAccount' | translate"
+               
                class="col-sm-4 form-control-label"
                translate>user.label.iamKeycloakAdminAccount
           <sup class="text-danger text-sm">*</sup>
@@ -121,8 +121,8 @@
         </div>
       </div>
       <div *ngIf="data['identityServiceType'] === 'KEYCLOAK'" class="form-group row">
-        <label [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakAdminPassword' | translate"
-               [nzTooltipMouseEnterDelay]="0.5"
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakAdminPassword' | translate"
+               
                class="col-sm-4 form-control-label"
                translate>user.label.iamKeycloakAdminPassword</label>
         <div class="col-sm-6">
@@ -136,8 +136,8 @@
         </div>
       </div>
       <div class="form-group row">
-        <label [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakTrustStorePath' | translate"
-               [nzTooltipMouseEnterDelay]="0.5"
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakTrustStorePath' | translate"
+               
                class="col-sm-4 form-control-label"
                translate>user.label.iamKeycloakTrustStorePath</label>
         <div class="col-sm-6">
@@ -148,8 +148,8 @@
         </div>
       </div>
       <div class="form-group row">
-        <label [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakTrustStorePassword' | translate"
-               [nzTooltipMouseEnterDelay]="0.5"
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakTrustStorePassword' | translate"
+               
                class="col-sm-4 form-control-label" translate>user.label.iamKeycloakTrustStorePassword</label>
         <div class="col-sm-6">
           <input [(ngModel)]="currentObj.iamKeycloakTruststorePassword"
@@ -163,8 +163,8 @@
         </div>
       </div>
       <div class="form-group row">
-        <label [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakTrustStoreType' | translate"
-               [nzTooltipMouseEnterDelay]="0.5"
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakTrustStoreType' | translate"
+               
                class="col-sm-4 form-control-label"
                translate>user.label.iamKeycloakTrustStoreType
           <sup *ngIf="currentObj.iamKeycloakTruststorePath" class="text-danger text-sm">*</sup>
@@ -183,8 +183,8 @@
         </div>
       </div>
       <div class="form-group row">
-        <label [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakClientId' | translate"
-               [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakClientId' | translate"
+                class="col-sm-4 form-control-label"
                translate>user.label.iamKeycloakClientId</label>
         <div class="col-sm-6">
           <input [(ngModel)]="currentObj.iamKeycloakClientId"
@@ -194,8 +194,8 @@
         </div>
       </div>
       <div class="form-group row">
-        <label [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakClientSecret' | translate"
-               [nzTooltipMouseEnterDelay]="0.5"
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakClientSecret' | translate"
+               
                class="col-sm-4 form-control-label"
                translate>user.label.iamKeycloakClientSecret</label>
         <div class="col-sm-6">
@@ -209,7 +209,7 @@
         </div>
       </div>
       <div class="form-group row">
-        <label [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakRealm' | translate" [nzTooltipMouseEnterDelay]="0.5"
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakRealm' | translate" 
                class="col-sm-4 form-control-label" translate>user.label.iamKeycloakRealm</label>
         <div class="col-sm-6">
           <input [(ngModel)]="currentObj.iamKeycloakRealm"
@@ -219,7 +219,7 @@
         </div>
       </div>
       <div class="form-group row">
-        <label [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakVersionCompatibility' | translate" [nzTooltipMouseEnterDelay]="0.5"
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakVersionCompatibility' | translate" 
                class="col-sm-4 form-control-label" translate>user.label.iamKeycloakVersionCompatibility</label>
         <div class="col-sm-6">
           <label nz-checkbox [(ngModel)]="versionCompatibility.isCheck" (ngModelChange)="checkVersionCompatibility($event, currentObj)"
@@ -233,7 +233,7 @@
         <nz-tab [nzTitle]="'user.tab.simpleMode' | translate">
           <div class="m-l-12 m-r-12">
             <div class="form-group row">
-              <label [nz-tooltip]="'user.tooltips.ldap.iamLdapHost' | translate" [nzTooltipMouseEnterDelay]="0.5"
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapHost' | translate" 
                      class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapHost
                 <sup class="text-danger text-sm">*</sup>
               </label>
@@ -246,7 +246,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [nz-tooltip]="'user.tooltips.ldap.iamLdapProtocol' | translate" [nzTooltipMouseEnterDelay]="0.5"
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapProtocol' | translate" 
                      class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapProtocol
                 <sup class="text-danger text-sm">*</sup>
               </label>
@@ -257,7 +257,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [nz-tooltip]="'user.tooltips.ldap.iamLdapPort' | translate" [nzTooltipMouseEnterDelay]="0.5"
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapPort' | translate" 
                      class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapPort
                 <sup class="text-danger text-sm">*</sup>
               </label>
@@ -269,7 +269,7 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [nz-tooltip]="'user.tooltips.ldap.iamLdapAD' | translate" [nzTooltipMouseEnterDelay]="0.5"
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapAD' | translate" 
                      class="col-sm-4" translate>user.usermode.label.iamLdapAD</label>
               <div class="col-sm-6">
                 <label nz-checkbox [(ngModel)]="userObj.iamLdapAD" name="iamLdapAD"
@@ -277,8 +277,8 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [nz-tooltip]="'user.tooltips.ldap.iamLdapADWithSamAccount' | translate"
-                     [nzTooltipMouseEnterDelay]="0.5"
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapADWithSamAccount' | translate"
+                     
                      class="col-sm-4" translate>user.usermode.label.iamLdapADWithSamAccount</label>
               <div class="col-sm-6">
                 <label nz-checkbox [(ngModel)]="userObj.iamLdapADwithSamAccount" [nzDisabled]="!userObj.iamLdapAD"
@@ -286,8 +286,8 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [nz-tooltip]="'user.tooltips.ldap.iamLdapWithMemberOf' | translate"
-                     [nzTooltipMouseEnterDelay]="0.5"
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapWithMemberOf' | translate"
+                     
                      class="col-sm-4" translate>user.usermode.label.iamLdapWithMemberOf</label>
               <div class="col-sm-6">
                 <label nz-checkbox [(ngModel)]="userObj.iamLdapWithMemberOf"
@@ -295,8 +295,8 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [nz-tooltip]="'user.tooltips.ldap.iamLdapUserDnTemplate' | translate"
-                     [nzTooltipMouseEnterDelay]="0.5"
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapUserDnTemplate' | translate"
+                     
                      class="col-sm-4 form-control-label"
                      translate>user.label.iamLdapUserDnTemplate
                 <sup class="text-danger text-sm">*</sup>
@@ -310,8 +310,8 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [nz-tooltip]="'user.tooltips.ldap.iamLdapSearchBase' | translate"
-                     [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapSearchBase' | translate"
+                      class="col-sm-4 form-control-label"
                      translate>user.label.iamLdapSearchBase
                 <sup *ngIf="userObj.iamLdapWithMemberOf" class="text-danger text-sm">*</sup>
               </label>
@@ -325,8 +325,8 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [nz-tooltip]="'user.tooltips.ldap.iamLdapUserSearchFilter' | translate"
-                     [nzTooltipMouseEnterDelay]="0.5"
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapUserSearchFilter' | translate"
+                     
                      class="col-sm-4 form-control-label"
                      translate>user.label.iamLdapUserSearchFilter</label>
               <div class="col-sm-6">
@@ -345,8 +345,8 @@
             </div>
             <div class="p-a b-a">
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapServerUrl' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapServerUrl' | translate"
+                        class="col-sm-4 form-control-label"
                        translate>user.label.iamLdapServerUrl
                   <sup class="text-danger text-sm">*</sup>
                 </label>
@@ -361,8 +361,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapReadTimeout' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapReadTimeout' | translate"
+                       
                        class="col-sm-4 form-control-label"
                        translate>user.label.iamLdapReadTimeout
                 </label>
@@ -376,8 +376,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapConnectTimeout' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapConnectTimeout' | translate"
+                       
                        class="col-sm-4 form-control-label"
                        translate>user.label.iamLdapConnectTimeout
                 </label>
@@ -391,8 +391,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapUseStartTls' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapUseStartTls' | translate"
+                       
                        class="col-sm-4" translate>user.label.iamLdapUseStartTls</label>
                 <div class="col-sm-6">
                   <label nz-checkbox [(ngModel)]="currentObj.iamLdapUseStartTls"
@@ -400,8 +400,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapHostNameVerification' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapHostNameVerification' | translate"
+                       
                        class="col-sm-4" translate>user.label.iamLdapHostNameVerification</label>
                 <div class="col-sm-6">
                   <label [(ngModel)]="currentObj.iamLdapHostNameVerification" name="iamLdapHostNameVerification"
@@ -409,8 +409,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapTrustStorePath' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapTrustStorePath' | translate"
+                       
                        class="col-sm-4 form-control-label"
                        translate>user.label.iamLdapTrustStorePath</label>
                 <div class="col-sm-6">
@@ -422,8 +422,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapTrustStorePassword' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapTrustStorePassword' | translate"
+                       
                        class="col-sm-4 form-control-label" translate>user.label.iamLdapTrustStorePassword</label>
                 <div class="col-sm-6">
                   <input [(ngModel)]="currentObj.iamLdapTruststorePassword"
@@ -437,8 +437,8 @@
                 </div>
               </div>
               <div class="row">
-                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapTrustStoreType' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapTrustStoreType' | translate"
+                       
                        class="col-sm-4 form-control-label"
                        translate>user.label.iamLdapTrustStoreType
                   <sup *ngIf="currentObj.iamLdapTruststorePath" class="text-danger text-sm">*</sup>
@@ -465,8 +465,8 @@
             </div>
             <div class="p-a b-a">
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapUserDnTemplate' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapUserDnTemplate' | translate"
+                       
                        class="col-sm-4 form-control-label"
                        translate>user.label.iamLdapUserDnTemplate
                   <sup class="text-danger text-sm">*</sup>
@@ -481,8 +481,8 @@
               </div>
 
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapSysemUserDnTemplate' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapSysemUserDnTemplate' | translate"
+                       
                        class="col-sm-4 form-control-label"
                        translate>user.label.iamLdapSysemUserDnTemplate
                 </label>
@@ -494,8 +494,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapSystemUser' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapSystemUser' | translate"
+                       
                        class="col-sm-4 form-control-label"
                        translate>user.label.iamLdapSystemUser</label>
                 <div class="col-sm-6">
@@ -507,8 +507,8 @@
                 </div>
               </div>
               <div class="row">
-                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapSystemPassword' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapSystemPassword' | translate"
+                       
                        class="col-sm-4 form-control-label"
                        translate>user.label.iamLdapSystemPassword</label>
                 <div class="col-sm-6">
@@ -527,8 +527,8 @@
             </div>
             <div *ngIf="data['identityServiceType'] !== 'LDAP-JOC'" class="p-a b-a">
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapSearchBase' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapSearchBase' | translate"
+                       
                        class="col-sm-4 form-control-label"
                        translate>user.label.iamLdapSearchBase
                   <sup *ngIf="userObj.iamLdapWithMemberOf" class="text-danger text-sm">*</sup>
@@ -543,8 +543,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapGroupSearchBase' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapGroupSearchBase' | translate"
+                       
                        class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupSearchBase</label>
                 <div class="col-sm-6">
                   <input [(ngModel)]="currentObj.iamLdapGroupSearchBase" [disabled]="userObj.iamLdapWithMemberOf"
@@ -555,8 +555,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapGroupSearchFilter' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapGroupSearchFilter' | translate"
+                       
                        class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupSearchFilter</label>
                 <div class="col-sm-6">
                   <input [(ngModel)]="currentObj.iamLdapGroupSearchFilter" [disabled]="userObj.iamLdapWithMemberOf"
@@ -567,8 +567,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapUserSearchFilter' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapUserSearchFilter' | translate"
+                       
                        class="col-sm-4 form-control-label" translate>user.label.iamLdapUserSearchFilter</label>
                 <div class="col-sm-6">
                   <input [(ngModel)]="currentObj.iamLdapUserSearchFilter"
@@ -578,8 +578,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapGroupNameAttribute' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapGroupNameAttribute' | translate"
+                       
                        class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupNameAttribute</label>
                 <div class="col-sm-6">
                   <input (blur)="changeInput('GroupName')" [(ngModel)]="currentObj.iamLdapGroupNameAttribute"
@@ -590,8 +590,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapUserNameAttribute' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapUserNameAttribute' | translate"
+                       
                        class="col-sm-4 form-control-label" translate>user.label.iamLdapUserNameAttribute</label>
                 <div class="col-sm-6">
                   <input [(ngModel)]="currentObj.iamLdapUserNameAttribute"
@@ -601,13 +601,13 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.ldap.iamLdapGroupRolesMap' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapGroupRolesMap' | translate"
+                       
                        class="col-sm-5 _600" translate>user.label.iamLdapGroupRolesMap</label>
               </div>
               <div class="form-group row" *ngIf="currentObj.iamLdapGroupRolesMap">
-                <label [nz-tooltip]="'user.tooltips.ldap.disableNestedGroupSearch' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.disableNestedGroupSearch' | translate"
+                       
                        class="col-sm-4"
                        translate>user.label.disableNestedGroupSearch</label>
                 <div class="col-sm-6">
@@ -651,7 +651,7 @@
     <!------------------------------------BEGIN OIDC--------------------------------------------->
     <div *ngIf="data && data['identityServiceType'].match('OIDC')">
       <div class="form-group row">
-        <label [nz-tooltip]="'user.tooltips.oidc.iamOidcName' | translate" [nzTooltipMouseEnterDelay]="0.5"
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcName' | translate" 
                class="col-sm-4 form-control-label" translate>user.label.iamOidcName
           <sup class="text-danger text-sm">*</sup>
         </label>
@@ -669,8 +669,8 @@
         </div>
       </div>
       <div class="form-group row">
-        <label [nz-tooltip]="'user.tooltips.oidc.iamOidcAuthenticationUrl' | translate"
-               [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcAuthenticationUrl' | translate"
+                class="col-sm-4 form-control-label"
                translate>user.label.iamOidcAuthenticationUrl
           <sup class="text-danger text-sm">*</sup>
         </label>
@@ -691,7 +691,7 @@
         </div>
       </div>
       <div class="m-b-12 row">
-        <label [nz-tooltip]="'user.tooltips.oidc.iamOidcFlowType' | translate" [nzTooltipMouseEnterDelay]="0.5"
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcFlowType' | translate" 
                class="col-sm-4"
                translate>user.label.iamOidcFlowType
         </label>
@@ -705,7 +705,7 @@
         </div>
       </div>
       <div class="form-group row">
-        <label [nz-tooltip]="'user.tooltips.oidc.iamOidcClientId' | translate" [nzTooltipMouseEnterDelay]="0.5"
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcClientId' | translate" 
                class="col-sm-4 form-control-label" translate>user.label.iamOidcClientId
           <sup class="text-danger text-sm">*</sup>
         </label>
@@ -726,7 +726,7 @@
       </div>
       <ng-container *ngIf="currentObj.iamOidcFlowType == 'AUTHENTICATION'">
         <div class="form-group row">
-          <label [nz-tooltip]="'user.tooltips.oidc.iamOidcClientSecret' | translate" [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcClientSecret' | translate" 
                  class="col-sm-4 form-control-label" translate>user.label.iamOidcClientSecret
             <sup class="text-danger text-sm">*</sup>
           </label>
@@ -751,7 +751,7 @@
         </div>
       </ng-container>
       <div class="form-group row" *ngIf="currentObj.iamOidcFlowType !== 'CLIENT-CREDENTIAL'">
-        <label [nz-tooltip]="'user.tooltips.oidc.iamOidcUserAttribute' | translate" [nzTooltipMouseEnterDelay]="0.5"
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcUserAttribute' | translate" 
                class="col-sm-4 form-control-label" translate>user.label.iamOidcUserAttribute
         </label>
         <div
@@ -772,8 +772,8 @@
       <ng-container *ngIf="data['identityServiceType'] === 'OIDC'">
         <div *ngFor="let groupClaim of currentObj.iamOidcGroupClaims; let i = index" class="form-group row">
           <div class="col-sm-4 form-control-label">
-            <label *ngIf="i == 0" [nz-tooltip]="'user.tooltips.oidc.iamOidcGroupClaims' | translate"
-                   [nzTooltipMouseEnterDelay]="0.5" translate>user.label.iamOidcGroupClaims</label>
+            <label *ngIf="i == 0" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcGroupClaims' | translate"
+                    translate>user.label.iamOidcGroupClaims</label>
           </div>
           <div class="col-sm-6">
             <input [(ngModel)]="groupClaim.name" [placeholder]="'user.placeholder.iamOidcGroupClaims' | translate"
@@ -787,7 +787,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nz-tooltip]="'user.tooltips.oidc.iamOidcGroupRolesMap' | translate" [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcGroupRolesMap' | translate" 
                  class="col-sm-12 _600" translate>user.label.iamOidcGroupRolesMap</label>
         </div>
         <div *ngIf="currentObj.iamOidcGroupRolesMap && currentObj.iamOidcGroupRolesMap.items.length > 0"
@@ -821,7 +821,7 @@
         </div>
       </ng-container>
       <div class="form-group row">
-        <label [nz-tooltip]="'user.tooltips.oidc.iamOidcImage' | translate" [nzTooltipMouseEnterDelay]="0.5"
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcImage' | translate" 
                class="col-sm-4" translate>user.label.iamOidcImage
         </label>
         <div *ngIf="!imageUrl && fileList.length === 0" class="col-sm-6">
@@ -856,8 +856,8 @@
 
       <div class="p-a b-a">
         <div class="form-group row">
-          <label [nz-tooltip]="'user.tooltips.oidc.iamOidcTruststorePath' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcTruststorePath' | translate"
+                  class="col-sm-4 form-control-label"
                  translate>user.label.iamOidcTruststorePath
           </label>
           <div class="col-sm-6">
@@ -868,8 +868,8 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nz-tooltip]="'user.tooltips.oidc.iamOidcTruststoreType' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcTruststoreType' | translate"
+                  class="col-sm-4 form-control-label"
                  translate>user.label.iamOidcTruststoreType
           </label>
           <div class="col-sm-6">
@@ -885,8 +885,8 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nz-tooltip]="'user.tooltips.oidc.iamOidcTruststorePassword' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcTruststorePassword' | translate"
+                 
                  class="col-sm-4 form-control-label"
                  translate>user.label.iamOidcTruststorePassword
           </label>
@@ -908,8 +908,8 @@
     <div *ngIf="data && data['identityServiceType'] == 'FIDO'">
       <ng-container *ngIf="!fullScreen && !fullScreen2 && !fullScreen3">
         <div class="m-b-12 row">
-          <label [nz-tooltip]="'user.tooltips.webauthn.iamAuthenticatorType' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.iamAuthenticatorType' | translate"
+                 
                  class="col-sm-4"
                  translate>user.label.iamFidoAuthenticatorType
           </label>
@@ -922,7 +922,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nz-tooltip]="'user.tooltips.webauthn.iamRequireAccount' | translate" [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.iamRequireAccount' | translate" 
                  class="col-sm-4" translate>user.label.requireAccount</label>
           <div class="col-sm-6">
             <label [(ngModel)]="currentObj.iamFidoRequireAccount" name="iamFidoRequireAccount" nz-checkbox>
@@ -930,7 +930,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nz-tooltip]="'user.tooltips.webauthn.iamTimeout' | translate" [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.iamTimeout' | translate" 
                  class="col-sm-4 form-control-label" translate>user.label.iamFidoTimeout
           </label>
           <div [ngClass]="{'has-error' : ((iamFidoTimeout.dirty || iamFidoTimeout.touched) && iamFidoTimeout.invalid)}"
@@ -942,7 +942,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nz-tooltip]="'user.tooltips.webauthn.iamTransports' | translate" [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.iamTransports' | translate" 
                  class="col-sm-4 form-control-label" translate>user.label.iamFidoTransports
           </label>
           <div class="col-sm-6">
@@ -952,8 +952,8 @@
         </div>
         <div class="form-group row">
           <label [ngClass]="{'form-control-label' : currentObj.iamFidoProtocolType !== 'FIDO2'}"
-                 [nz-tooltip]="'user.tooltips.webauthn.iamUserVerification' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5"
+                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.iamUserVerification' | translate"
+                 
                  class="col-sm-4 " translate>user.label.iamFidoUserVerification
           </label>
           <div *ngIf="currentObj.iamFidoProtocolType !== 'FIDO2'" class="col-sm-6">
@@ -963,16 +963,16 @@
           <div *ngIf="currentObj.iamFidoProtocolType === 'FIDO2'" class="col-sm-6">Required</div>
         </div>
         <div class="form-group row">
-          <label [nz-tooltip]="'user.tooltips.webauthn.iamResidentKey' | translate"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.iamResidentKey' | translate"
+                 
                  class="col-sm-4" translate>user.label.iamFidoResidentKey
           </label>
           <div class="col-sm-6">Required</div>
         </div>
         <div class="row">
           <div class="col-sm-12">
-            <label [nz-tooltip]="'user.tooltips.webauthn.emailSettings' | translate"
-                   [nzTooltipMouseEnterDelay]="0.5"
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.emailSettings' | translate"
+                   
                    class=" _500" translate>user.label.emailSettings
             </label>
           </div>
@@ -981,7 +981,7 @@
           <nz-tab [nzTitle]="'user.label.connection' | translate">
             <div *ngIf="currentObj.iamFidoEmailSettings">
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.jobResource' | translate" [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.jobResource' | translate" 
                        class="col-sm-4 form-control-label"
                        title="{{'user.label.jobResourceName' | translate}}"
                        translate>user.label.jobResourceName
@@ -1000,8 +1000,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.contentType' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.contentType' | translate"
+                        class="col-sm-4 form-control-label"
                        translate>user.label.contentType
                   <sup class="text-danger text-sm">*</sup>
                 </label>
@@ -1020,8 +1020,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.charset' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.charset' | translate"
+                        class="col-sm-4 form-control-label"
                        translate>user.label.charset
                   <sup class="text-danger text-sm">*</sup>
                 </label>
@@ -1040,8 +1040,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.encoding' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.encoding' | translate"
+                        class="col-sm-4 form-control-label"
                        translate>user.label.encoding
                   <sup class="text-danger text-sm">*</sup>
                 </label>
@@ -1060,8 +1060,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.priority' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.priority' | translate"
+                        class="col-sm-4 form-control-label"
                        translate>user.label.priority
                 </label>
                 <div class="col-sm-6">
@@ -1077,8 +1077,8 @@
           <nz-tab [nzTitle]="'user.label.confirmationEmail' | translate">
             <div *ngIf="currentObj.iamFidoEmailSettings">
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.sendMailToConfirmEmail' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.sendMailToConfirmEmail' | translate"
+                       
                        class="col-sm-4" translate>user.label.sendMailToConfirmEmail</label>
                 <div class="col-sm-6">
                   <label [(ngModel)]="currentObj.iamFidoEmailSettings.sendMailToConfirm" name="sendMailToConfirmEmail"
@@ -1086,8 +1086,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.cc' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.cc' | translate"
+                        class="col-sm-4 form-control-label"
                        translate>user.label.cc
                 </label>
                 <div class="col-sm-6">
@@ -1098,8 +1098,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.bcc' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.bcc' | translate"
+                        class="col-sm-4 form-control-label"
                        translate>user.label.bcc
                 </label>
                 <div class="col-sm-6">
@@ -1110,8 +1110,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.subject' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.subject' | translate"
+                        class="col-sm-4 form-control-label"
                        translate>user.label.subject
                 </label>
                 <div class="col-sm-6">
@@ -1122,8 +1122,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.body' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.body' | translate"
+                        class="col-sm-4 form-control-label"
                        translate>user.label.body
                 </label>
                 <div class="col-sm-6">
@@ -1155,8 +1155,8 @@
           <nz-tab [nzTitle]="'user.label.notificationEmail' | translate">
             <div *ngIf="currentObj.iamFidoEmailSettings">
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.sendMailToNotifyRegistrationEmail' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.sendMailToNotifyRegistrationEmail' | translate"
+                       
                        class="col-sm-4" translate>user.label.sendMailToNotifyRegistrationEmail</label>
                 <div class="col-sm-6">
                   <label [(ngModel)]="currentObj.iamFidoEmailSettings.sendMailToNotifySuccessfulRegistration"
@@ -1165,8 +1165,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.cc' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.cc' | translate"
+                        class="col-sm-4 form-control-label"
                        translate>user.label.cc
                 </label>
                 <div class="col-sm-6">
@@ -1177,8 +1177,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.bcc' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.bcc' | translate"
+                        class="col-sm-4 form-control-label"
                        translate>user.label.bcc
                 </label>
                 <div class="col-sm-6">
@@ -1189,8 +1189,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.subject' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.subject' | translate"
+                        class="col-sm-4 form-control-label"
                        translate>user.label.subject
                 </label>
                 <div class="col-sm-6">
@@ -1201,8 +1201,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.body' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.body' | translate"
+                        class="col-sm-4 form-control-label"
                        translate>user.label.body
                 </label>
                 <div class="col-sm-6">
@@ -1232,8 +1232,8 @@
           <nz-tab [nzTitle]="'user.label.administrationEmail' | translate">
             <div *ngIf="currentObj.iamFidoEmailSettings">
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.sendMailToNotifyConfirmationReceived' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.sendMailToNotifyConfirmationReceived' | translate"
+                       
                        class="col-sm-4"
                        translate>user.label.sendMailToNotifyConfirmationReceived</label>
                 <div class="col-sm-6">
@@ -1243,8 +1243,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.recipient' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.recipient' | translate"
+                        class="col-sm-4 form-control-label"
                        translate>user.label.recipient
                 </label>
                 <div class="col-sm-6">
@@ -1255,8 +1255,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.cc' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.cc' | translate"
+                        class="col-sm-4 form-control-label"
                        translate>user.label.cc
                 </label>
                 <div class="col-sm-6">
@@ -1267,8 +1267,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.bcc' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.bcc' | translate"
+                        class="col-sm-4 form-control-label"
                        translate>user.label.bcc
                 </label>
                 <div class="col-sm-6">
@@ -1279,8 +1279,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.subject' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.subject' | translate"
+                        class="col-sm-4 form-control-label"
                        translate>user.label.subject
                 </label>
                 <div class="col-sm-6">
@@ -1291,8 +1291,8 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nz-tooltip]="'user.tooltips.webauthn.body' | translate"
-                       [nzTooltipMouseEnterDelay]="0.5" class="col-sm-4 form-control-label"
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.body' | translate"
+                        class="col-sm-4 form-control-label"
                        translate>user.label.body
                 </label>
                 <div class="col-sm-6">

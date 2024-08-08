@@ -7,7 +7,7 @@
           <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
             <div>
               <div *ngIf="hasLicense" class="form-group row">
-                <label [nz-tooltip]="'controller.tooltip.type' | translate" class="col-sm-4" translate>common.label.type</label>
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.type' | translate" class="col-sm-4" translate>common.label.type</label>
                 <div class="col-sm-8">
                   <nz-radio-group [(ngModel)]="controller.type" name="type">
                     <label nz-radio nzValue="STANDALONE"><span translate>controller.label.standalone</span></label>
@@ -17,7 +17,7 @@
               </div>
               <div *ngIf="controller.type === 'STANDALONE'" class="p-a b-a">
                 <div class="form-group row">
-                  <label [nz-tooltip]="'controller.tooltip.standaloneTitle' | translate" class="col-sm-4 form-control-label"
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.standaloneTitle' | translate" class="col-sm-4 form-control-label"
                          translate>controller.label.caption
                     <sup class="text-danger text-sm">*</sup>
                   </label>
@@ -33,7 +33,7 @@
                   </div>
                 </div>
                 <div class="form-group row">
-                  <label [nz-tooltip]="'controller.tooltip.standaloneUrlForJOC' | translate" class="col-sm-4 form-control-label"
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.standaloneUrlForJOC' | translate" class="col-sm-4 form-control-label"
                          translate>controller.label.standaloneUrl
                     <sup class="text-danger text-sm">*</sup>
                   </label>
@@ -66,7 +66,7 @@
                 </div>
                 <div class="p-a b-a">
                   <div class="form-group row">
-                    <label [nz-tooltip]="'controller.tooltip.primaryTitle' | translate" class="col-sm-4 form-control-label"
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.primaryTitle' | translate" class="col-sm-4 form-control-label"
                            translate>controller.label.caption
                       <sup class="text-danger text-sm">*</sup>
                     </label>
@@ -84,7 +84,7 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label [nz-tooltip]="'controller.tooltip.primaryUrlForJOC' | translate" class="col-sm-4 form-control-label"
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.primaryUrlForJOC' | translate" class="col-sm-4 form-control-label"
                            translate>controller.label.jocUrlForPrimary
                       <sup class="text-danger text-sm">*</sup>
                     </label>
@@ -101,7 +101,7 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label [nz-tooltip]="'controller.tooltip.urlForBackup' | translate" class="col-sm-4 form-control-label"
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.urlForBackup' | translate" class="col-sm-4 form-control-label"
                            translate>controller.label.backupUrl</label>
                     <div [ngClass]="{ 'has-error' : ((primaryClusterUrl.dirty || primaryClusterUrl.touched) && primaryClusterUrl.invalid)}"
                          class="col-sm-8">
@@ -129,7 +129,7 @@
                 </div>
                 <div class="p-a b-a">
                   <div class="form-group row">
-                    <label [nz-tooltip]="'controller.tooltip.backupTitle' | translate" class="col-sm-4 form-control-label"
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.backupTitle' | translate" class="col-sm-4 form-control-label"
                            translate>controller.label.caption
                       <sup class="text-danger text-sm">*</sup>
                     </label>
@@ -147,7 +147,7 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label [nz-tooltip]="'controller.tooltip.backupUrlForJOC' | translate" class="col-sm-4 form-control-label"
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.backupUrlForJOC' | translate" class="col-sm-4 form-control-label"
                            translate>controller.label.jocUrlForBackup
                       <sup class="text-danger text-sm">*</sup>
                     </label>
@@ -164,7 +164,7 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label [nz-tooltip]="'controller.tooltip.urlForPrimary' | translate" class="col-sm-4 form-control-label"
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.urlForPrimary' | translate" class="col-sm-4 form-control-label"
                            translate>controller.label.primaryUrl</label>
                     <div [ngClass]="{ 'has-error' : ((backupClusterUrl.dirty || backupClusterUrl.touched) && backupClusterUrl.invalid)}"
                          class="col-sm-8">

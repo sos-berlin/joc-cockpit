@@ -14,8 +14,8 @@
         <form #myForm="ngForm" (ngSubmit)="onSubmit()" novalidate>
           <div>
             <div class="form-group row">
-              <label [nz-tooltip]="isTooltipVisible ? ((!isCycle ? 'inventory.tooltips.workflow.admissionTime.periodBeginOfAdmissionTime'
-             : 'inventory.tooltips.workflow.admissionTime.startTime') | translate) : ''" [nzTooltipMouseEnterDelay]="0.5"
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ((!isCycle ? 'inventory.tooltips.workflow.admissionTime.periodBeginOfAdmissionTime'
+             : 'inventory.tooltips.workflow.admissionTime.startTime') | translate) : ''" 
                      class="col-sm-3 form-control-label" translate>workflow.admissionTime.label.startTime
                 <sup class="text-danger text-sm">*</sup>
               </label>
@@ -39,8 +39,8 @@
               </div>
             </div>
             <div class="form-group row">
-              <label [nz-tooltip]="isTooltipVisible ? ((!isCycle ? 'inventory.tooltips.workflow.admissionTime.durationOfAdmissionTime'
-             : 'inventory.tooltips.workflow.admissionTime.duration') | translate) : ''" [nzTooltipMouseEnterDelay]="0.5" class="col-sm-3 form-control-label"
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ((!isCycle ? 'inventory.tooltips.workflow.admissionTime.durationOfAdmissionTime'
+             : 'inventory.tooltips.workflow.admissionTime.duration') | translate) : ''"  class="col-sm-3 form-control-label"
                      translate>common.label.duration
                 <sup class="text-danger text-sm">*</sup>
               </label>

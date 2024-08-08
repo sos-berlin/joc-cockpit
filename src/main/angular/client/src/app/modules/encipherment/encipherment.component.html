@@ -14,11 +14,10 @@
             "
             class="inline"
           >
-            <ng-container *ngIf="isJOCActive">
+            <ng-container >
               <div class="btn-group"></div>
               <button
                 (click)="importKey('encipherment')"
-                *ngIf="isJOCActive"
                 class="btn btn-grey btn-sm m-l-12"
               >
                 <i nz-icon nzTheme="outline" nzType="import"></i>&nbsp;
@@ -26,7 +25,6 @@
               </button>
               <button
                 (click)="addEnciphermentCertificate()"
-                *ngIf="isJOCActive"
                 class="btn btn-grey btn-sm m-l-12"
               >
                 <i nz-icon nzType="plus" nzTheme="outline"></i>&nbsp;

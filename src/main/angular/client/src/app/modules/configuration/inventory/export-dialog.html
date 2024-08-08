@@ -121,7 +121,7 @@
       </div>
       <div *ngIf="nodes.length > 0 && (path && path != '/')" class="form-group row">
         <div class="col-md-3">
-          <label [nz-tooltip]="'inventory.tooltips.export.useRelativePathOnly' | translate" translate>inventory.export.label.useRelativePathOnly</label>
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.tooltips.export.useRelativePathOnly' | translate" translate>inventory.export.label.useRelativePathOnly</label>
         </div>
         <div class="col-md-6">
           <label [(ngModel)]="exportObj.useShortPath" name="useShortPath" nz-checkbox></label>
@@ -137,10 +137,10 @@
       </div>
       <div *ngIf="nodes.length > 0" class="row m-b-sm">
         <div class="col-md-12">
-          <a (click)="expandAll();" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
+          <a (click)="expandAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
             <i class="fa fa-angle-double-down fa-lg"></i>
           </a>
-          <a (click)="collapseAll();" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
+          <a (click)="collapseAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
             <i class="fa fa-angle-double-up fa-lg"></i>
           </a>
         </div>
@@ -206,7 +206,7 @@
                               class="fa fa-circle-o text-xs p-r-xs"></span>
                         {{version.versionDate | stringToDate}} <span [ngClass]="version.deploymentOperation === 'delete' ? ' text-danger': ''"
                                                                      class="p-l-sm">{{version.deploymentOperation}}</span>
-                        <i *ngIf="version.deploymentPath" [nz-tooltip]="version.deploymentPath"
+                        <i *ngIf="version.deploymentPath" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="version.deploymentPath"
                            class="text-muted p-l-sm">{{version.deploymentPath}}</i></div>
                       <div *ngFor="let ver of version.versions" class="version-inner-list">
                         {{ver.controllerId}} <i *ngIf="ver.version">,</i> {{ver.version}}
@@ -237,7 +237,7 @@
                         <span [ngClass]="version.releaseId ? ' dark-blue': ''"
                               class="fa fa-circle-o text-xs p-r-xs"></span>
                         {{version.versionDate | stringToDate}} <i *ngIf="version.releasePath"
-                                                                  [nz-tooltip]="version.releasePath"
+                                                                  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="version.releasePath"
                                                                   class="text-muted p-l-sm">{{version.releasePath}}</i>
                       </div>
                     </nz-option>

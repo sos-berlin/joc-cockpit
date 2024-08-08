@@ -175,13 +175,13 @@
                   <div *ngIf="object.setOfCheckedId.size==0" class="">
                     <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 " style="margin-top:-10px">
                       <li class="nav-item">
-                        <a (click)="expandAll()" [nz-tooltip]="'common.button.expandDetails' | translate"
+                        <a (click)="expandAll()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.button.expandDetails' | translate"
                            class="nav-link">
                           <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="plus"></i></span>
                         </a>
                       </li>
                       <li class="nav-item">
-                        <a (click)="collapseAll()" [nz-tooltip]="'common.button.collapseDetails' | translate"
+                        <a (click)="collapseAll()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.button.collapseDetails' | translate"
                            class="nav-link">
                           <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="minus"></i></span>
                         </a>
@@ -189,12 +189,12 @@
                       <li class="nav-item dropdown-separator">
                         <span class="separator"></span>
                       </li>
-                      <li [nz-tooltip]="'workflow.button.undo' | translate" class="nav-item">
+                      <li [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.undo' | translate" class="nav-item">
                         <a (click)="undo()" [ngClass]="{'disable-link': indexOfNextAdd == 0}" class="nav-link">
                           <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="undo"></i></span>
                         </a>
                       </li>
-                      <li [nz-tooltip]="'workflow.button.redo' | translate" class="nav-item">
+                      <li [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.redo' | translate" class="nav-item">
                         <a (click)="redo()" [ngClass]="(indexOfNextAdd < history.length) ? '' : 'disable-link'"
                            class="nav-link">
                           <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="redo"></i></span>
@@ -203,13 +203,13 @@
                       <li *ngIf="permission.joc?.inventory.manage" class="nav-item dropdown-separator">
                         <span class="separator"></span>
                       </li>
-                      <li *ngIf="permission.joc?.inventory.manage" [nz-tooltip]="'inventory.button.download' | translate"
+                      <li *ngIf="permission.joc?.inventory.manage" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.button.download' | translate"
                           class="nav-item">
                         <a (click)="download()" class="nav-link">
                           <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="download"></i></span>
                         </a>
                       </li>
-                      <li *ngIf="permission.joc?.inventory.manage" [nz-tooltip]="'inventory.button.upload' | translate"
+                      <li *ngIf="permission.joc?.inventory.manage" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.button.upload' | translate"
                           class="nav-item">
                         <a (click)="upload()" class="nav-link">
                           <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="upload"></i></span>
@@ -233,7 +233,7 @@
                         <label translate>deploymentService.descriptor.label.descriptorId
                           <sup class="text-danger text-sm">*</sup>
                         </label>
-                        <i [nz-tooltip]="'deploymentService.descriptor.tooltip.descriptorId' | translate"
+                        <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.descriptor.tooltip.descriptorId' | translate"
                            class="p-l-sm fa fa-info-circle"></i>
                       </div>
                       <div [ngClass]="{'has-error' : ((descriptorId.dirty || descriptorId.touched) && descriptorId.invalid)}"
@@ -255,7 +255,7 @@
                     <div *ngIf="obj.isMoreDescriptorDetail" class="row m-t-sm">
                       <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                         <label translate>deploymentService.descriptor.label.title</label> <i
-                        [nz-tooltip]="'deploymentService.descriptor.tooltip.title' | translate"
+                        [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.descriptor.tooltip.title' | translate"
                         class="p-l-sm fa fa-info-circle"></i>
                       </div>
                       <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-46">
@@ -268,7 +268,7 @@
                     <div *ngIf="obj.isMoreDescriptorDetail" class="row m-t-sm">
                       <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                         <label translate>deploymentService.descriptor.label.account</label> <i
-                        [nz-tooltip]="'deploymentService.descriptor.tooltip.account' | translate"
+                        [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.descriptor.tooltip.account' | translate"
                         class="p-l-sm fa fa-info-circle"></i>
                       </div>
                       <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-46">
@@ -281,7 +281,7 @@
                     <div *ngIf="obj.isMoreDescriptorDetail" class="row m-t-sm">
                       <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                         <label translate>deploymentService.descriptor.label.scheduled</label> <i
-                        [nz-tooltip]="'deploymentService.descriptor.tooltip.scheduled' | translate"
+                        [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.descriptor.tooltip.scheduled' | translate"
                         class="p-l-sm fa fa-info-circle"></i>
                       </div>
                       <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-46">
@@ -292,7 +292,7 @@
                     <div *ngIf="obj.isMoreDescriptorDetail" class="row m-t-sm">
                       <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                         <label translate>deploymentService.descriptor.label.created</label> <i
-                        [nz-tooltip]="'deploymentService.descriptor.tooltip.created' | translate"
+                        [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.descriptor.tooltip.created' | translate"
                         class="p-l-sm fa fa-info-circle"></i>
                       </div>
                       <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-46">
@@ -324,7 +324,7 @@
                       <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                         <label translate>deploymentService.license.label.licenseKeyFile
                           <sup class="text-danger text-sm">*</sup>
-                        </label> <i [nz-tooltip]="'deploymentService.license.tooltip.licenseKeyFile' | translate"
+                        </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.license.tooltip.licenseKeyFile' | translate"
                                     class="p-l-sm fa fa-info-circle"></i>
                       </div>
                       <div [ngClass]="{'has-error' : ((licenseKeyFile.dirty || licenseKeyFile.touched) && licenseKeyFile.invalid)}"
@@ -346,7 +346,7 @@
                       <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                         <label translate>deploymentService.license.label.licenseBinFile
                           <sup class="text-danger text-sm">*</sup>
-                        </label> <i [nz-tooltip]="'deploymentService.license.tooltip.licenseBinFile' | translate"
+                        </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.license.tooltip.licenseBinFile' | translate"
                                     class="p-l-sm fa fa-info-circle"></i>
                       </div>
                       <div [ngClass]="{'has-error' : ((licenseBinFile.dirty || licenseBinFile.touched) && licenseBinFile.invalid)}"
@@ -372,11 +372,11 @@
                     <i (click)="obj.isCertificateExpanded = !obj.isCertificateExpanded"
                        [ngClass]="{'fa-caret-up': obj.isCertificateExpanded}"
                        class="fa fa-caret-down p-l-xs text-hover-primary"></i>
-                    <a (click)="toggleNode('certificates');" [nz-tooltip]="'common.tooltip.expandAll' | translate"
+                    <a (click)="toggleNode('certificates');" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate"
                        class="m-l-sm fa-icon">
                       <i class="fa fa-angle-double-down"></i>
                     </a>
-                    <a (click)="toggleNode('certificates', false);" [nz-tooltip]="'common.tooltip.collapseAll' | translate"
+                    <a (click)="toggleNode('certificates', false);" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate"
                        class="m-l-xs fa-icon">
                       <i class="fa fa-angle-double-up"></i>
                     </a>
@@ -395,7 +395,7 @@
                       <div class="row ">
                         <div class="col-md-4 col-lg-3 form-control-label">
                           <label translate>deploymentService.certificate.label.primaryControllerCert
-                          </label> <i [nz-tooltip]="'deploymentService.certificate.tooltip.primaryControllerCert' | translate"
+                          </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.certificate.tooltip.primaryControllerCert' | translate"
                                       class="p-l-sm fa fa-info-circle"></i>
                         </div>
                         <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-36">
@@ -410,7 +410,7 @@
                       <div class="row m-t-sm">
                         <div class="col-md-4 col-lg-3 form-control-label">
                           <label translate>deploymentService.certificate.label.secondaryControllerCert
-                          </label> <i [nz-tooltip]="'deploymentService.certificate.tooltip.secondaryControllerCert' | translate"
+                          </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.certificate.tooltip.secondaryControllerCert' | translate"
                                       class="p-l-sm fa fa-info-circle"></i>
                         </div>
                         <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-36">
@@ -432,7 +432,7 @@
                       <div class="row">
                         <div class="col-md-4 col-lg-3 form-control-label">
                           <label translate>deploymentService.certificate.label.primaryJocCert
-                          </label> <i [nz-tooltip]="'deploymentService.certificate.tooltip.primaryJocCert' | translate"
+                          </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.certificate.tooltip.primaryJocCert' | translate"
                                       class="p-l-sm fa fa-info-circle"></i>
                         </div>
                         <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-36">
@@ -446,7 +446,7 @@
                       <div class="row m-t-sm">
                         <div class="col-md-4 col-lg-3 form-control-label">
                           <label translate>deploymentService.certificate.label.secondaryJocCert
-                          </label> <i [nz-tooltip]="'deploymentService.certificate.tooltip.secondaryJocCert' | translate"
+                          </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.certificate.tooltip.secondaryJocCert' | translate"
                                       class="p-l-sm fa fa-info-circle"></i>
                         </div>
                         <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-36">
@@ -466,11 +466,11 @@
                     <i (click)="obj.isAgentExpanded = !obj.isAgentExpanded"
                        [ngClass]="{'fa-caret-up': obj.isAgentExpanded}"
                        class="fa fa-caret-down p-l-xs text-hover-primary"></i>
-                    <a (click)="toggleNode('agents');" [nz-tooltip]="'common.tooltip.expandAll' | translate"
+                    <a (click)="toggleNode('agents');" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate"
                        class="m-l-sm fa-icon">
                       <i class="fa fa-angle-double-down"></i>
                     </a>
-                    <a (click)="toggleNode('agents', false);" [nz-tooltip]="'common.tooltip.collapseAll' | translate"
+                    <a (click)="toggleNode('agents', false);" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate"
                        class="m-l-xs fa-icon">
                       <i class="fa fa-angle-double-up"></i>
                     </a>
@@ -496,7 +496,7 @@
                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                             <label translate>deploymentService.agent.label.controllerId
                               <sup class="text-danger text-sm">*</sup>
-                            </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.controllerId' | translate"
+                            </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.controllerId' | translate"
                                         class="p-l-sm fa fa-info-circle"></i>
                           </div>
                           <div [ngClass]="{'has-error' : ((controllerId.dirty || controllerId.touched) && controllerId.invalid)}"
@@ -545,7 +545,7 @@
                               <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                 <label translate>deploymentService.agent.label.agentId
                                   <sup class="text-danger text-sm">*</sup>
-                                </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.agentId' | translate"
+                                </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.agentId' | translate"
                                             class="p-l-sm fa fa-info-circle"></i>
                               </div>
                               <div [ngClass]="{'has-error' : ((agentId.dirty || agentId.touched) && agentId.invalid)}"
@@ -579,7 +579,7 @@
                                   <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                     <label translate>deploymentService.agent.label.host
                                       <sup class="text-danger text-sm">*</sup>
-                                    </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.host' | translate"
+                                    </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.host' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
                                   <div [ngClass]="{'has-error' : ((host.dirty || host.touched) && host.invalid)}"
@@ -601,7 +601,7 @@
                                 <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                   <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                     <label translate>deploymentService.agent.label.port
-                                    </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.port' | translate"
+                                    </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.port' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
                                   <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
@@ -619,7 +619,7 @@
                                   <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                     <label translate>deploymentService.agent.label.method
                                       <sup class="text-danger text-sm">*</sup>
-                                    </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.method' | translate"
+                                    </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.method' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
                                   <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
@@ -634,7 +634,7 @@
                                   <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                     <label translate>deploymentService.agent.label.user
                                       <sup class="text-danger text-sm">*</sup>
-                                    </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.user' | translate"
+                                    </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.user' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
                                   <div [ngClass]="{'has-error' : ((user.dirty || user.touched) && user.invalid)}"
@@ -655,7 +655,7 @@
                                 <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                   <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                     <label translate>deploymentService.agent.label.keyFile
-                                    </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.keyFile' | translate"
+                                    </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.keyFile' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
                                   <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
@@ -671,7 +671,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.agent.label.packageLocation
                                     <sup class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.packageLocation' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.packageLocation' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((packageLocation.dirty || packageLocation.touched) && packageLocation.invalid)}"
@@ -694,7 +694,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.agent.label.execPre
-                                  </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.execPre' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.execPre' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -708,7 +708,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.agent.label.execPost
-                                  </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.execPost' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.execPost' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -722,7 +722,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3">
                                   <label translate>deploymentService.agent.label.makeService
-                                  </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.makeService' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.makeService' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -734,7 +734,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3">
                                   <label translate>deploymentService.agent.label.forceSudo
-                                  </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.forceSudo' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.forceSudo' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -745,7 +745,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.agent.label.serviceName
-                                  </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.serviceName' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.serviceName' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -759,7 +759,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.agent.label.serviceDir
-                                  </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.serviceDir' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.serviceDir' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -786,7 +786,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.agent.label.release
                                     <sup class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.release' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.release' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((release.dirty || release.touched) && release.invalid)}"
@@ -808,7 +808,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.agent.label.tarball
                                     <sup class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.tarball' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.tarball' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((tarball.dirty || tarball.touched) && tarball.invalid)}"
@@ -842,7 +842,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.agent.label.home
                                     <sup class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.home' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.home' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((home.dirty || home.touched) && home.invalid)}"
@@ -864,7 +864,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.agent.label.data
                                     <sup class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.data' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.data' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((aData.dirty || aData.touched) && aData.invalid)}"
@@ -886,7 +886,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.agent.label.homeOwner
 
-                                  </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.homeOwner' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.homeOwner' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -901,7 +901,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.agent.label.dataOwner
 
-                                  </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.dataOwner' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.dataOwner' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -916,7 +916,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.agent.label.runUser
 
-                                  </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.runUser' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.runUser' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -931,7 +931,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.agent.label.httpPort
                                     <sup *ngIf="!item.installation.httpsPort" class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.httpPort' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.httpPort' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((httpPort.dirty || httpPort.touched) && httpPort.invalid)}"
@@ -955,7 +955,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.agent.label.httpsPort
                                     <sup *ngIf="!item.installation.httpPort" class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.httpsPort' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.httpsPort' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((httpsPort.dirty || httpsPort.touched) && httpsPort.invalid)}"
@@ -978,7 +978,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3">
                                   <label translate>deploymentService.agent.label.javaHome
-                                  </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.javaHome' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.javaHome' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -993,7 +993,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3">
                                   <label translate>deploymentService.agent.label.javaOptions
 
-                                  </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.javaOptions' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.javaOptions' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -1022,7 +1022,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.agent.label.keyStore
                                         <sup class="text-danger text-sm">*</sup>
-                                      </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.keyStore' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.keyStore' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div [ngClass]="{'has-error' : ((keyStore.dirty || keyStore.touched) && keyStore.invalid)}"
@@ -1044,7 +1044,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.agent.label.keyStorePassword
                                         <sup class="text-danger text-sm">*</sup>
-                                      </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.keyStorePassword' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.keyStorePassword' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div [ngClass]="{'has-error' : ((keyStorePassword.dirty || keyStorePassword.touched) && keyStorePassword.invalid)}"
@@ -1069,7 +1069,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.agent.label.keyPassword
                                         <sup class="text-danger text-sm">*</sup>
-                                      </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.keyPassword' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.keyPassword' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div [ngClass]="{'has-error' : ((keyPassword.dirty || keyPassword.touched) && keyPassword.invalid)}"
@@ -1092,7 +1092,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.agent.label.keyAlias
 
-                                      </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.keyAlias' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.keyAlias' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
@@ -1107,7 +1107,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.agent.label.trustStore
                                         <sup class="text-danger text-sm">*</sup>
-                                      </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.trustStore' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.trustStore' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div [ngClass]="{'has-error' : ((trustStore.dirty || trustStore.touched) && trustStore.invalid)}"
@@ -1129,7 +1129,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.agent.label.trustStorePassword
                                         <sup class="text-danger text-sm">*</sup>
-                                      </label> <i [nz-tooltip]="'deploymentService.agent.tooltip.trustStorePassword' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.trustStorePassword' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div [ngClass]="{'has-error' : ((trustStorePassword.dirty || trustStorePassword.touched) && trustStorePassword.invalid)}"
@@ -1157,7 +1157,7 @@
                                   <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                     <label *ngIf="k == 0" translate>deploymentService.agent.label.templates
 
-                                    </label> <i *ngIf="k == 0" [nz-tooltip]="'deploymentService.agent.tooltip.templates' | translate"
+                                    </label> <i *ngIf="k == 0" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.agent.tooltip.templates' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
                                   <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -1202,11 +1202,11 @@
                     <i (click)="obj.isControllerExpanded = !obj.isControllerExpanded"
                        [ngClass]="{'fa-caret-up': obj.isControllerExpanded}"
                        class="fa fa-caret-down p-l-xs text-hover-primary"></i>
-                    <a (click)="toggleNode('controllers');" [nz-tooltip]="'common.tooltip.expandAll' | translate"
+                    <a (click)="toggleNode('controllers');" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate"
                        class="m-l-sm fa-icon">
                       <i class="fa fa-angle-double-down"></i>
                     </a>
-                    <a (click)="toggleNode('controllers', false);" [nz-tooltip]="'common.tooltip.collapseAll' | translate"
+                    <a (click)="toggleNode('controllers', false);" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate"
                        class="m-l-xs fa-icon">
                       <i class="fa fa-angle-double-up"></i>
                     </a>
@@ -1232,7 +1232,7 @@
                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                             <label translate>deploymentService.controller.label.controllerId
                               <sup class="text-danger text-sm">*</sup>
-                            </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.controllerId' | translate"
+                            </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.controllerId' | translate"
                                         class="p-l-sm fa fa-info-circle"></i>
                           </div>
                           <div [ngClass]="{'has-error' : ((controllerId.dirty || controllerId.touched) && controllerId.invalid)}"
@@ -1254,7 +1254,7 @@
                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                             <label translate>deploymentService.controller.label.jocRef
                               <sup class="text-danger text-sm">*</sup>
-                            </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.jocRef' | translate"
+                            </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.jocRef' | translate"
                                         class="p-l-sm fa fa-info-circle"></i>
                           </div>
                           <div [ngClass]="{'has-error' : ((jocRef.dirty || jocRef.touched) && jocRef.invalid)}"
@@ -1314,7 +1314,7 @@
                                   <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                     <label translate>deploymentService.controller.label.host
                                       <sup class="text-danger text-sm">*</sup>
-                                    </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.host' | translate"
+                                    </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.host' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
                                   <div [ngClass]="{'has-error' : ((host.dirty || host.touched) && host.invalid)}"
@@ -1338,7 +1338,7 @@
                                   <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                     <label translate>deploymentService.controller.label.port
 
-                                    </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.port' | translate"
+                                    </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.port' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
                                   <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
@@ -1355,7 +1355,7 @@
                                   <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                     <label translate>deploymentService.controller.label.method
                                       <sup class="text-danger text-sm">*</sup>
-                                    </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.method' | translate"
+                                    </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.method' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
                                   <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
@@ -1370,7 +1370,7 @@
                                   <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                     <label translate>deploymentService.controller.label.user
                                       <sup class="text-danger text-sm">*</sup>
-                                    </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.user' | translate"
+                                    </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.user' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
                                   <div [ngClass]="{'has-error' : ((user.dirty || user.touched) && user.invalid)}"
@@ -1393,7 +1393,7 @@
                                   <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                     <label translate>deploymentService.controller.label.keyFile
 
-                                    </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.keyFile' | translate"
+                                    </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.keyFile' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
                                   <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
@@ -1409,7 +1409,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.controller.label.packageLocation
                                     <sup class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.packageLocation' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.packageLocation' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((packageLocation.dirty || packageLocation.touched) && packageLocation.invalid)}"
@@ -1433,7 +1433,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.controller.label.execPre
-                                  </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.execPre' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.execPre' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -1448,7 +1448,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.controller.label.execPost
-                                  </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.execPost' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.execPost' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -1463,7 +1463,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3">
                                   <label translate>deploymentService.controller.label.makeService
-                                  </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.makeService' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.makeService' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -1475,7 +1475,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3">
                                   <label translate>deploymentService.controller.label.forceSudo
-                                  </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.forceSudo' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.forceSudo' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -1487,7 +1487,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.controller.label.serviceName
-                                  </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.serviceName' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.serviceName' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -1502,7 +1502,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.controller.label.serviceDir
-                                  </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.serviceDir' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.serviceDir' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -1530,7 +1530,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.controller.label.release
                                     <sup class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.release' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.release' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((release.dirty || release.touched) && release.invalid)}"
@@ -1552,7 +1552,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.controller.label.tarball
                                     <sup class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.tarball' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.tarball' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((tarball.dirty || tarball.touched) && tarball.invalid)}"
@@ -1587,7 +1587,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.controller.label.home
                                     <sup class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.home' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.home' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((home.dirty || home.touched) && home.invalid)}"
@@ -1610,7 +1610,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.controller.label.data
                                     <sup class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.data' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.data' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((cData.dirty || cData.touched) && cData.invalid)}"
@@ -1633,7 +1633,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.controller.label.homeOwner
 
-                                  </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.homeOwner' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.homeOwner' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -1649,7 +1649,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.controller.label.dataOwner
 
-                                  </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.dataOwner' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.dataOwner' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -1665,7 +1665,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.controller.label.runUser
 
-                                  </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.runUser' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.runUser' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -1681,7 +1681,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.controller.label.httpPort
                                     <sup *ngIf="!item.installation.httpsPort" class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.httpPort' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.httpPort' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((httpPort.dirty || httpPort.touched) && httpPort.invalid)}"
@@ -1705,7 +1705,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.controller.label.httpsPort
                                     <sup *ngIf="!item.installation.httpPort" class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.httpsPort' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.httpsPort' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((httpsPort.dirty || httpsPort.touched) && httpsPort.invalid)}"
@@ -1728,7 +1728,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3">
                                   <label translate>deploymentService.controller.label.javaHome
-                                  </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.javaHome' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.javaHome' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -1743,7 +1743,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3">
                                   <label translate>deploymentService.controller.label.javaOptions
 
-                                  </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.javaOptions' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.javaOptions' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -1772,7 +1772,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.controller.label.keyStore
                                         <sup class="text-danger text-sm">*</sup>
-                                      </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.keyStore' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.keyStore' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div [ngClass]="{'has-error' : ((keyStore.dirty || keyStore.touched) && keyStore.invalid)}"
@@ -1795,7 +1795,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.controller.label.keyStorePassword
                                         <sup class="text-danger text-sm">*</sup>
-                                      </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.keyStorePassword' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.keyStorePassword' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div [ngClass]="{'has-error' : ((keyStorePassword.dirty || keyStorePassword.touched) && keyStorePassword.invalid)}"
@@ -1820,7 +1820,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.controller.label.keyPassword
                                         <sup class="text-danger text-sm">*</sup>
-                                      </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.keyPassword' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.keyPassword' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div [ngClass]="{'has-error' : ((keyPassword.dirty || keyPassword.touched) && keyPassword.invalid)}"
@@ -1844,7 +1844,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.controller.label.keyAlias
 
-                                      </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.keyAlias' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.keyAlias' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
@@ -1859,7 +1859,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.controller.label.trustStore
                                         <sup class="text-danger text-sm">*</sup>
-                                      </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.trustStore' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.trustStore' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div [ngClass]="{'has-error' : ((trustStore.dirty || trustStore.touched) && trustStore.invalid)}"
@@ -1883,7 +1883,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.controller.label.trustStorePassword
                                         <sup class="text-danger text-sm">*</sup>
-                                      </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.trustStorePassword' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.trustStorePassword' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div [ngClass]="{'has-error' : ((trustStorePassword.dirty || trustStorePassword.touched) && trustStorePassword.invalid)}"
@@ -1907,7 +1907,7 @@
                                   <div class="row m-t-sm">
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.controller.label.controllerCert
-                                      </label> <i [nz-tooltip]="'deploymentService.controller.tooltip.controllerCert' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.controllerCert' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
@@ -1926,7 +1926,7 @@
                                   <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                     <label *ngIf="k == 0" translate>deploymentService.controller.label.templates
 
-                                    </label> <i *ngIf="k == 0" [nz-tooltip]="'deploymentService.controller.tooltip.templates' | translate"
+                                    </label> <i *ngIf="k == 0" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.controller.tooltip.templates' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
                                   <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -1973,11 +1973,11 @@
                     <i (click)="obj.isJOCExpanded = !obj.isJOCExpanded"
                        [ngClass]="{'fa-caret-up': obj.isJOCExpanded}"
                        class="fa fa-caret-down p-l-xs text-hover-primary"></i>
-                    <a (click)="toggleNode('joc');" [nz-tooltip]="'common.tooltip.expandAll' | translate"
+                    <a (click)="toggleNode('joc');" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate"
                        class="m-l-sm fa-icon">
                       <i class="fa fa-angle-double-down"></i>
                     </a>
-                    <a (click)="toggleNode('joc', false);" [nz-tooltip]="'common.tooltip.collapseAll' | translate"
+                    <a (click)="toggleNode('joc', false);" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate"
                        class="m-l-xs fa-icon">
                       <i class="fa fa-angle-double-up"></i>
                     </a>
@@ -2003,7 +2003,7 @@
                           <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                             <label translate>deploymentService.joc.label.jocClusterId
                               <sup class="text-danger text-sm">*</sup>
-                            </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.jocClusterId' | translate"
+                            </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.jocClusterId' | translate"
                                         class="p-l-sm fa fa-info-circle"></i>
                           </div>
                           <div [ngClass]="{'has-error' : ((clusterId.dirty || clusterId.touched) && clusterId.invalid)}"
@@ -2047,7 +2047,7 @@
                               <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                 <label translate>deploymentService.joc.label.jocInstanceId
                                   <sup class="text-danger text-sm">*</sup>
-                                </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.jocInstanceId' | translate"
+                                </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.jocInstanceId' | translate"
                                             class="p-l-sm fa fa-info-circle"></i>
                               </div>
                               <div [ngClass]="{'has-error' : ((jocInstanceId.dirty || jocInstanceId.touched) && jocInstanceId.invalid)}"
@@ -2082,7 +2082,7 @@
                                   <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                     <label translate>deploymentService.joc.label.host
                                       <sup class="text-danger text-sm">*</sup>
-                                    </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.host' | translate"
+                                    </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.host' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
                                   <div [ngClass]="{'has-error' : ((host.dirty || host.touched) && host.invalid)}"
@@ -2106,7 +2106,7 @@
                                   <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                     <label translate>deploymentService.joc.label.port
 
-                                    </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.port' | translate"
+                                    </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.port' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
                                   <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
@@ -2124,7 +2124,7 @@
                                   <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                     <label translate>deploymentService.joc.label.method
                                       <sup class="text-danger text-sm">*</sup>
-                                    </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.method' | translate"
+                                    </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.method' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
                                   <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
@@ -2139,7 +2139,7 @@
                                   <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                     <label translate>deploymentService.joc.label.user
                                       <sup class="text-danger text-sm">*</sup>
-                                    </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.user' | translate"
+                                    </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.user' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
                                   <div [ngClass]="{'has-error' : ((user.dirty || user.touched) && user.invalid)}"
@@ -2162,7 +2162,7 @@
                                   <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                     <label translate>deploymentService.joc.label.keyFile
 
-                                    </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.keyFile' | translate"
+                                    </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.keyFile' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
                                   <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
@@ -2177,7 +2177,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.packageLocation
                                     <sup class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.packageLocation' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.packageLocation' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((packageLocation.dirty || packageLocation.touched) && packageLocation.invalid)}"
@@ -2201,7 +2201,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.execPre
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.execPre' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.execPre' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -2215,7 +2215,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.execPost
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.execPost' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.execPost' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -2229,7 +2229,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3">
                                   <label translate>deploymentService.joc.label.makeService
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.makeService' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.makeService' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -2241,7 +2241,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3">
                                   <label translate>deploymentService.joc.label.forceSudo
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.forceSudo' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.forceSudo' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -2252,7 +2252,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.serviceName
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.serviceName' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.serviceName' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -2266,7 +2266,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.serviceDir
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.serviceDir' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.serviceDir' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -2293,7 +2293,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.release
                                     <sup class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.release' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.release' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((release.dirty || release.touched) && release.invalid)}"
@@ -2315,7 +2315,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.tarball
                                     <sup class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.tarball' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.tarball' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((tarball.dirty || tarball.touched) && tarball.invalid)}"
@@ -2348,7 +2348,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.setupDir
 
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.setupDir' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.setupDir' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -2364,7 +2364,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.home
                                     <sup class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.home' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.home' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((home.dirty || home.touched) && home.invalid)}"
@@ -2387,7 +2387,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.data
                                     <sup class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.data' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.data' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((jocData.dirty || jocData.touched) && jocData.invalid)}"
@@ -2410,7 +2410,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.homeOwner
 
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.homeOwner' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.homeOwner' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -2426,7 +2426,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.dataOwner
 
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.dataOwner' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.dataOwner' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -2442,7 +2442,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.runUser
 
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.runUser' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.runUser' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -2457,7 +2457,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.title
 
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.title' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.title' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -2472,7 +2472,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.securityLevel
 
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.securityLevel' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.securityLevel' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -2486,7 +2486,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.dbmsConfig
 
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.dbmsConfig' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.dbmsConfig' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -2501,7 +2501,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.dbmsDriver
 
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.dbmsDriver' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.dbmsDriver' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -2516,7 +2516,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.dbmsInit
 
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.dbmsInit' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.dbmsInit' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -2531,7 +2531,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.httpPort
                                     <sup *ngIf="!item.installation.httpsPort" class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.httpPort' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.httpPort' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((httpPort.dirty || httpPort.touched) && httpPort.invalid)}"
@@ -2556,7 +2556,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                   <label translate>deploymentService.joc.label.httpsPort
                                     <sup *ngIf="!item.installation.httpPort" class="text-danger text-sm">*</sup>
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.httpsPort' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.httpsPort' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div [ngClass]="{'has-error' : ((httpsPort.dirty || httpsPort.touched) && httpsPort.invalid)}"
@@ -2579,7 +2579,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3">
                                   <label translate>deploymentService.joc.label.javaHome
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.javaHome' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.javaHome' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -2594,7 +2594,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3">
                                   <label translate>deploymentService.joc.label.javaOptions
 
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.javaOptions' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.javaOptions' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -2608,7 +2608,7 @@
                               <div *ngIf="item.isMoreKeyFileDetail" class="row m-t-sm">
                                 <div class="col-md-4 col-lg-3 col-xl-3">
                                   <label translate>deploymentService.joc.label.isUser
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.isUser' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.isUser' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -2621,7 +2621,7 @@
                                 <div class="col-md-4 col-lg-3 col-xl-3">
                                   <label translate>deploymentService.joc.label.isPreserveEnv
 
-                                  </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.isPreserveEnv' | translate"
+                                  </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.isPreserveEnv' | translate"
                                               class="p-l-sm fa fa-info-circle"></i>
                                 </div>
                                 <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -2645,7 +2645,7 @@
                                 <div class="row">
                                   <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                     <label translate>deploymentService.joc.label.responseDir
-                                    </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.responseDir' | translate"
+                                    </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.responseDir' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
                                   <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">
@@ -2662,7 +2662,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.joc.label.keyStore
                                         <sup class="text-danger text-sm">*</sup>
-                                      </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.keyStore' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.keyStore' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div [ngClass]="{'has-error' : ((keyStore.dirty || keyStore.touched) && keyStore.invalid)}"
@@ -2685,7 +2685,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.joc.label.keyStorePassword
                                         <sup class="text-danger text-sm">*</sup>
-                                      </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.keyStorePassword' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.keyStorePassword' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div [ngClass]="{'has-error' : ((keyStorePassword.dirty || keyStorePassword.touched) && keyStorePassword.invalid)}"
@@ -2710,7 +2710,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.joc.label.keyPassword
                                         <sup class="text-danger text-sm">*</sup>
-                                      </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.keyPassword' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.keyPassword' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div [ngClass]="{'has-error' : ((keyPassword.dirty || keyPassword.touched) && keyPassword.invalid)}"
@@ -2734,7 +2734,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.joc.label.keyAlias
 
-                                      </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.keyAlias' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.keyAlias' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
@@ -2749,7 +2749,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.joc.label.trustStore
                                         <sup class="text-danger text-sm">*</sup>
-                                      </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.trustStore' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.trustStore' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div [ngClass]="{'has-error' : ((trustStore.dirty || trustStore.touched) && trustStore.invalid)}"
@@ -2773,7 +2773,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.joc.label.trustStorePassword
                                         <sup class="text-danger text-sm">*</sup>
-                                      </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.trustStorePassword' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.trustStorePassword' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div [ngClass]="{'has-error' : ((trustStorePassword.dirty || trustStorePassword.touched) && trustStorePassword.invalid)}"
@@ -2797,7 +2797,7 @@
                                   <div class="row m-t-sm">
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.joc.label.jocCert</label> <i
-                                      [nz-tooltip]="'deploymentService.joc.tooltip.jocCert' | translate"
+                                      [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.jocCert' | translate"
                                       class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
@@ -2815,7 +2815,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.joc.label.httpIni
 
-                                      </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.httpIni' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.httpIni' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
@@ -2830,7 +2830,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.joc.label.httpsIni
 
-                                      </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.httpIni' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.httpIni' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
@@ -2845,7 +2845,7 @@
                                     <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                       <label translate>deploymentService.joc.label.sslIni
 
-                                      </label> <i [nz-tooltip]="'deploymentService.joc.tooltip.sslIni' | translate"
+                                      </label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.sslIni' | translate"
                                                   class="p-l-sm fa fa-info-circle"></i>
                                     </div>
                                     <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 p-r-0">
@@ -2863,7 +2863,7 @@
                                   <div class="col-md-4 col-lg-3 col-xl-3 form-control-label">
                                     <label *ngIf="k == 0" translate>deploymentService.joc.label.templates
 
-                                    </label> <i *ngIf="k == 0" [nz-tooltip]="'deploymentService.joc.tooltip.templates' | translate"
+                                    </label> <i *ngIf="k == 0" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'deploymentService.joc.tooltip.templates' | translate"
                                                 class="p-l-sm fa fa-info-circle"></i>
                                   </div>
                                   <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 pl-20">

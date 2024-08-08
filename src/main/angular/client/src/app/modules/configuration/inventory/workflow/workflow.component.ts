@@ -4153,7 +4153,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
       }
 
       this.updateOtherProperties('variable');
-    }   
+    }
  }
 
 

@@ -9,10 +9,10 @@
 <div class="modal-body p-a">
   <div class="row m-b-sm">
     <div class="col-md-2">
-      <button (click)="expandAll()" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="btn btn-sm btn-grey">
+      <button (click)="expandAll()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="btn btn-sm btn-grey">
         <i class="fa fa-expand"></i>
       </button>
-      <button (click)="collapseAll()" [nz-tooltip]="'common.tooltip.collapseAll' | translate"
+      <button (click)="collapseAll()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate"
               class="btn btn-sm btn-grey m-l-12">
         <i class="fa fa-compress"></i>
       </button>

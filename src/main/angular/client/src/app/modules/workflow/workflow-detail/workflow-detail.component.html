@@ -318,9 +318,9 @@
                   <a class="text-primary noExl" translate>workflow.label.start</a>
                   <span class="expand-collapse-btn">
                     <i (click)="expandAll()"
-                       [nz-tooltip]="'common.tooltip.expandAll' | translate" class="cursor fa fa-lg fa-angle-double-down"></i>
+                       [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="cursor fa fa-lg fa-angle-double-down"></i>
                     <i (click)="collapseAll()"
-                       [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="cursor fa fa-lg fa-angle-double-up p-l-xs"></i>
+                       [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="cursor fa fa-lg fa-angle-double-up p-l-xs"></i>
                   </span>
                 </div>
                 <app-type (isChanged)="changedHandler($event)" (isDropdownChangedHandler)="dropdownChangedHandler($event)"

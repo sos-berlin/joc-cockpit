@@ -73,5 +73,5 @@
   </div>
 </div>
 <div class="download-bar box-shadow-z1 download-bar-hide animated opacity0" *ngIf="coreService.reportStartRunning">
-  <i [nz-tooltip]="'Show reporting progress' | translate" class="text-hover-primary cursor" (click)="hideDownloadPanel(false)" nz-icon nzType="arrow-up" nzTheme="outline"></i>
+  <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'Show reporting progress' | translate" class="text-hover-primary cursor" (click)="hideDownloadPanel(false)" nz-icon nzType="arrow-up" nzTheme="outline"></i>
 </div>

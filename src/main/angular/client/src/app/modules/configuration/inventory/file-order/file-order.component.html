@@ -40,8 +40,8 @@
       </div>
       <div *ngIf="fileOrder.configuration">
         <div class="form-group row">
-          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.name' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.name' | translate) : ''"
+                 
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
                  translate>common.label.name
             <sup class="text-danger text-sm">*</sup>
@@ -61,8 +61,8 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.title' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.title' | translate) : ''"
+                 
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
                  translate>common.label.title</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -108,8 +108,8 @@
           </div>
         </div>
         <div *ngIf="coreService.expertMode" class="form-group row">
-          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.documentation' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.documentation' | translate) : ''"
+                 
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
                  translate>inventory.label.documentation</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -119,8 +119,8 @@
         </div>
         <div [ngClass]="{ 'has-error' : (((workflowName.dirty || workflowName.touched) && workflowName.invalid))}"
              class="form-group row">
-          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.workflowName' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.workflowName' | translate) : ''"
+                 
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.workflowName
             <sup class="text-danger text-sm">*</sup>
           </label>
@@ -144,8 +144,8 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.agent' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.agent' | translate) : ''"
+                 
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>workflow.label.agent
             <sup class="text-danger text-sm">*</sup>
           </label>
@@ -155,8 +155,8 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.directory' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.directory' | translate) : ''"
+                 
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.directory
             <sup class="text-danger text-sm">*</sup>
           </label>
@@ -168,8 +168,8 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.pattern' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.pattern' | translate) : ''"
+                 
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.pattern</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
             <input (blur)="saveJSON()" [(ngModel)]="fileOrder.configuration.pattern" [readonly]="isTrash" autocomplete="off"
@@ -181,8 +181,8 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.timeZone' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.timeZone' | translate) : ''"
+                 
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.timeZone</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
             <app-select-input (modelChange)="changeValue($event, 'timeZone')" [attributeName]="'timeZone'"
@@ -192,8 +192,8 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.delay' | translate) : ''"
-                 [nzTooltipMouseEnterDelay]="0.5"
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.delay' | translate) : ''"
+                 
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>workflow.label.delay</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
             <nz-input-number (nzBlur)="saveJSON()" [(ngModel)]="fileOrder.configuration.delay" [nzMin]="1" [nzStep]="1"
