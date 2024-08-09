@@ -799,7 +799,7 @@
     "button.confirmNodeLoss": "ノードロストが確認されました",
     "button.removeRepository": "リポジトリーから削除",
     "button.updateURL": "URL更新",
-    "button.logmanagement": "Log Management Service",
+    "button.lognotification": "Log Notification Service",
     "message.noWidgetFound": "追加できるウィジェットはありません",
     "message.agentStatus": "パイチャートウィジェットはエージェントのステータスを表示します",
     "message.agentClusterStatus": "パイチャートウィジェットはエージェントクラスターのステータスを表示します",
