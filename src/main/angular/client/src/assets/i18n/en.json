@@ -799,6 +799,7 @@
     "button.confirmNodeLoss": "Confirm loss of a Controller Instance",
     "button.removeRepository": "Remove from inventory",
     "button.updateURL": "Update URL",
+    "button.logmanagement": "Log Management Service",
     "message.noWidgetFound": "No widget found to add",
     "message.agentStatus": "The Pie Chart widget identifies the current component status of Agents",
     "message.agentClusterStatus": "The Pie Chart widget identifies the current status of Agent Clusters",

@@ -118,6 +118,10 @@
                       class="btn btn-grey btn-sm"
                       translate>monitor.notification.button.controller
               </button>
+              <button (click)="changeCategories('AGENT')" [ngClass]="{'btn-primary': monitorFilters.systemNotification.filter.categories == 'AGENT'}"
+                      class="btn btn-grey btn-sm"
+                      translate>monitor.notification.button.agent
+              </button>
             </div>
           </div>
           <div *ngIf="monitorFilters.tabIndex == 3 && monitorFilters.systemNotification.mapOfCheckedId.size ===0"

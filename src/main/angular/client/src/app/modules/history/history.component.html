@@ -1066,7 +1066,7 @@
                       class="label"></span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)"
-                  [innerHtml]="history.plannedTime | stringToDate"></td>
+                  [innerHtml]="history.plannedTime | stringToDate | translate"></td>
               <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)"
                   [innerHtml]="history.startTime | stringToDate"></td>
               <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)"

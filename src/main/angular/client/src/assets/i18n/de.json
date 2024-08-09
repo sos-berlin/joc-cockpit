@@ -799,6 +799,7 @@
     "button.confirmNodeLoss": "Verlust einer Controller Instanz bestätigen",
     "button.removeRepository": "Aus Inventar entfernen",
     "button.updateURL": "URL aktualisieren",
+    "button.logmanagement": "Log Management Service",
     "message.noWidgetFound": "Keine Darstellungskomponente zum Hinzufügen gefunden",
     "message.agentStatus": "Tortendiagramm zur Anzeige des aktuellen Komponentenstatus der Agenten",
     "message.agentClusterStatus": "Tortendiagramm zur Anzeige des aktuellen Cluster Status der Agenten",

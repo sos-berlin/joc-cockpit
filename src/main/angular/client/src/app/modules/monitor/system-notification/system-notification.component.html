@@ -180,20 +180,28 @@
                 </div>
               </ng-template>
             </td>
-            <td>
-              <ng-template #htmlMsgContent>
-                <div [innerHTML]="notify.message | highlight : filters.filter.searchText | safeHtml"
-                     style="padding: 3px;"></div>
-              </ng-template>
-              <span *ngIf="notify.message && notify.message.length < 100"
-                    [innerHtml]="notify.message | highlight : filters.filter.searchText"></span>
-              <span *ngIf="notify.message && notify.message.length >= 100"
-                    [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="htmlMsgContent">{{notify.message.substring(0, 99)}}...</span>
-              <div *ngIf="notify.acknowledgement">
-                <b translate>monitor.notification.label.comment</b> :
-                <span>{{notify.acknowledgement.comment}}</span>
+            <td style="display: flex; justify-content: space-between; align-items: center;">
+              <div style="flex-grow: 1;">
+                <ng-template #htmlMsgContent>
+                  <div [innerHTML]="notify.message | highlight : filters.filter.searchText | safeHtml"
+                       style="padding: 3px;"></div>
+                </ng-template>
+                <span *ngIf="notify.message && notify.message.length < 100"
+                      [innerHtml]="notify.message | highlight : filters.filter.searchText"></span>
+                <span *ngIf="notify.message && notify.message.length >= 100"
+                      [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="htmlMsgContent">{{notify.message.substring(0, 99)}}...</span>
+                <div *ngIf="notify.acknowledgement">
+                  <b translate>monitor.notification.label.comment</b> :
+                  <span>{{notify.acknowledgement.comment}}</span>
+                </div>
               </div>
+              <i class="fa fa-copy cursor-pointer m-l-1 cursor"
+                 nz-tooltip="{{'log.button.copyToClipboard' | translate}}"
+                 (click)="copyToClipboard(notify.message)"
+                 style="margin-left: 8px;">
+              </i>
             </td>
+
             <td>
               <ng-template #htmlExpContent>
                 <div [innerHTML]="notify.exception | highlight : filters.filter.searchText" style="padding: 3px;"></div>

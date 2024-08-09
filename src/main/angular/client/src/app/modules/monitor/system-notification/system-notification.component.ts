@@ -10,6 +10,8 @@ import {AuthService} from '../../../components/guard';
 import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 import {AcknowledgeModalComponent} from "../acknowledge-notification/acknowledge.component";
 import {ExcelService} from "../../../services/excel.service";
+import {ClipboardService} from "ngx-clipboard";
+
 
 @Component({
   selector: 'app-system-notification',
@@ -38,7 +40,7 @@ export class SystemNotificationComponent {
 
   constructor(public coreService: CoreService, private authService: AuthService, private router: Router, private orderPipe: OrderPipe,
               private modal: NzModalService, private dataService: DataService, private searchPipe: SearchPipe,
-              private translate: TranslateService, private excelService: ExcelService) {
+              private translate: TranslateService, private excelService: ExcelService,  private clipboardService: ClipboardService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -335,4 +337,9 @@ export class SystemNotificationComponent {
       this.getData();
     }
   }
+
+  copyToClipboard(msg): void {
+    this.clipboardService.copy(msg);
+  }
+
 }

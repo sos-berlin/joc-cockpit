@@ -77,7 +77,7 @@
       <li class="nav-item">
         <a [ngClass]="{'text-white': colorOfJOCEvent == 0, 'text-warning': colorOfJOCEvent == 1, 'text-danger': colorOfJOCEvent == 2}" class="nav-link pointer"
            style="top: 3px">
-          <span (click)="resetJOCEvent()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'info.tooltip.jocMonitorEvent' | translate" [nzPopoverContent]="jocMonitorEvent" 
+          <span (click)="resetJOCEvent()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'info.tooltip.jocMonitorEvent' | translate" [nzPopoverContent]="jocMonitorEvent"
                 class="p-l-xs cursor" nz-popover
                 nzPopoverPlacement="bottomRight" nzPopoverTitle="{{'info.label.jocMonitorEvent' | translate}}"
                 nzPopoverTrigger="click"
@@ -90,7 +90,7 @@
         <a [ngClass]="{'text-white': colorOfSystemEvent == 0, 'text-warning': colorOfSystemEvent == 1, 'text-danger': colorOfSystemEvent == 2}"
            class="nav-link pointer"
            style="top: 3px">
-          <span (click)="resetSystemEvent()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'info.tooltip.systemMonitorEvent' | translate" [nzPopoverContent]="systemMonitorEvent" 
+          <span (click)="resetSystemEvent()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'info.tooltip.systemMonitorEvent' | translate" [nzPopoverContent]="systemMonitorEvent"
                 class="p-l-xs cursor" nz-popover
                 nzPopoverPlacement="bottomRight" nzPopoverTitle="{{'info.label.systemMonitorEvent' | translate}}"
                 nzPopoverTrigger="click"
