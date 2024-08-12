@@ -500,6 +500,21 @@ export class SingleDeployComponent {
             if (objDep.configuration.commitId) {
               self.object.store.deployConfigurations.push(objDep);
             } else {
+              if (this.impactedWorkflows && this.impactedWorkflows.workflows.length > 0 && this.impactedWorkflows.isRenamed) {
+
+                const selectedWorkflows = this.impactedWorkflows.workflows.filter(workflow => workflow.selected);
+                if (selectedWorkflows.length > 0) {
+                  const workflowConfigurations = selectedWorkflows.map(workflow => ({
+                    configuration: {
+                      objectType: 'WORKFLOW',
+                      path: workflow.path
+                    }
+                  }));
+
+                  this.object.store.draftConfigurations.push(...workflowConfigurations);
+                }
+              }
+
               self.object.store.draftConfigurations.push(objDep);
             }
           }
@@ -555,17 +570,6 @@ export class SingleDeployComponent {
     if ((isEmpty(obj.store) && isEmpty(obj.delete)) && !this.isRevoke) {
       this.submitted = false;
       return;
-    }
-    if (this.impactedWorkflows && this.impactedWorkflows.workflows.length > 0 && this.impactedWorkflows.isRenamed) {
-      const selectedWorkflows = this.impactedWorkflows.workflows.filter(workflow => workflow.selected);
-      if (selectedWorkflows.length > 0) {
-        this.object.store.draftConfigurations.push(selectedWorkflows.map(workflow => ({
-          configuration: {
-            objectType: 'WORKFLOW',
-            path: workflow.path
-          }
-        })));
-      }
     }
 
     this.coreService.post(this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy', obj).subscribe({
