@@ -364,6 +364,10 @@
                                     <a translate>agent.button.resetForced</a>
                                   </li>
                                   <li nz-menu-divider></li>
+                                  <li (click)="exportBulkAgents(agent.agentId)" nz-menu-item>
+                                    <a translate>common.button.export</a>
+                                  </li>
+                                  <li nz-menu-divider></li>
                                   <li (click)="removeAgent(agent, controller)" class="bg-hover-color" nz-menu-item>
                                     <a translate>common.button.delete</a>
                                   </li>
@@ -558,6 +562,11 @@
                                     <li (click)="resetAgent(clusterAgent, controller, true)"
                                         *ngIf="permission.joc && permission.joc.administration.controllers.manage" nz-menu-item>
                                       <a translate>agent.button.resetForced</a>
+                                    </li>
+                                    <li *ngIf="permission.joc && permission.joc.administration.controllers.manage"
+                                        nz-menu-divider></li>
+                                    <li (click)="exportBulkAgents(clusterAgent.agentId)" *ngIf="permission.joc && permission.joc.administration.controllers.manage" nz-menu-item>
+                                      <a translate>common.button.export</a>
                                     </li>
                                     <li *ngIf="permission.joc && permission.joc.administration.controllers.manage"
                                         nz-menu-divider></li>

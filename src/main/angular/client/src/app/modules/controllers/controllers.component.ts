@@ -579,14 +579,19 @@ export class ControllersComponent {
     });
   }
 
-  exportBulkAgents(): void{
-    let angentList = [];
-    if(this.object.mapOfCheckedId.size > 0){
-      this.object.mapOfCheckedId.forEach((k, v) => angentList.push(v));
+  exportBulkAgents(agentId?: any): void {
+    let angentList: string[] = [];
+    if (agentId && agentId.length > 0) {
+      angentList = [agentId];
+    } else {
+      if (this.object.mapOfCheckedId.size > 0) {
+        this.object.mapOfCheckedId.forEach((k, v) => angentList.push(v));
+      }
+      if (this.object.mapOfCheckedId2.size > 0) {
+        this.object.mapOfCheckedId2.forEach((k, v) => angentList.push(v));
+      }
     }
-    if(this.object.mapOfCheckedId2.size > 0){
-      this.object.mapOfCheckedId2.forEach((k, v) => angentList.push(v));
-    }
+
     this.modal.create({
       nzTitle: undefined,
       nzContent: ExportBulkComponent,
