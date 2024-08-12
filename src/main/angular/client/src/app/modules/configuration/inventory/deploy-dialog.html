@@ -53,12 +53,6 @@
           ></app-date-input>
         </div>
       </div>
-      <div *ngIf="!isRevoke && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects"  class="form-group row">
-        <label class="col-md-3 " translate>inventory.label.includeTodaysLateOrders</label>
-        <div class="col-md-6">
-          <label nz-checkbox [(ngModel)]="includeLate" name="includeLate"></label>
-        </div>
-      </div>
       <div *ngIf="!isRevoke && !isDeleted && !releasable && !isRemove && !isSelectedObjects" class="form-group row">
         <div class="col-md-3">
           <label translate>inventory.export.label.filter</label>

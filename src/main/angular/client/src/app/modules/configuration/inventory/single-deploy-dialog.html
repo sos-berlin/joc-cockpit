@@ -60,14 +60,6 @@
           </div>
         </div>
       </div>
-      <div *ngIf="!isRevoke && !isRemoved && (data.objectType == 'WORKFLOW' ? impactedSchedules?.length > 0 : true) && (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR')"
-      class="form-group row">
-        <div class="col-md-6">
-          <label nz-checkbox class="mr-2" [(ngModel)]="includeLate" name="includeLate"></label>
-          <label translate>inventory.label.includeTodaysLateOrders</label>
-        </div>
-
-      </div>
       <div *ngIf="deployablesObject.length > 0" class="row">
         <div class="col-md-12">
           <div class="m-b-sm">
@@ -139,19 +131,7 @@
           <span class="p-l-sm">{{item.name }}</span>
         </div>
       </div>
-<div *ngIf="impactedWorkflows.workflows?.length > 0 && impactedWorkflows.isRenamed  " class="m-t-md">
-      <i nz-icon nzTheme="outline" nzType="apartment" class="p-r-xs"></i>
-        {{'inventory.label.impactedWorkflows' | translate}}
-      </div>
-      <div *ngIf="impactedWorkflows.isRenamed"  class="p-l">
-        <div *ngFor="let item of impactedWorkflows.workflows">
-          &nbsp;<label nz-checkbox [(ngModel)]="item.selected" [ngModelOptions]="{standalone: true}" name="selectedSchedules">
-           <span [ngClass]="{'fa-circle-o': !item.valid, 'fa-circle dark-blue' :item.deployed || item.deployed, 'opacity7': item.syncState}"
-                 class="fa fa-check-circle-o orange text-xs p-l-xs"
-                 style="margin-top: 4px"></span>
-          {{item.path}}</label>
-        </div>
-      </div>    </div>
+    </div>
     <div *ngIf="deployablesObject.length===0 && !loading && !isRemoved" class="m-t-md">
       <app-empty-data></app-empty-data>
     </div>

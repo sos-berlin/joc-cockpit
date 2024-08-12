@@ -410,10 +410,6 @@ export class SingleDeployComponent {
     addOrdersDateFrom: 'now',
   };
   impactedSchedules: any;
-  impactedWorkflows: any = {
-    workflows: [],
-    isRenamed: false
-  }
   dateObj: any = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
@@ -439,9 +435,7 @@ export class SingleDeployComponent {
     if(this.data?.objectType === 'WORKFLOW' || this.data?.type === 'WORKFLOW') {
       this.getReferences();
     }
-   if(this.data?.objectType === 'NOTICEBOARD' || this.data?.type === 'NOTICEBOARD') {
-      this.getNoticeReferences();
-    }
+
   }
 
   init(): void {
@@ -500,21 +494,6 @@ export class SingleDeployComponent {
             if (objDep.configuration.commitId) {
               self.object.store.deployConfigurations.push(objDep);
             } else {
-              if (this.impactedWorkflows && this.impactedWorkflows.workflows.length > 0 && this.impactedWorkflows.isRenamed) {
-
-                const selectedWorkflows = this.impactedWorkflows.workflows.filter(workflow => workflow.selected);
-                if (selectedWorkflows.length > 0) {
-                  const workflowConfigurations = selectedWorkflows.map(workflow => ({
-                    configuration: {
-                      objectType: 'WORKFLOW',
-                      path: workflow.path
-                    }
-                  }));
-
-                  this.object.store.draftConfigurations.push(...workflowConfigurations);
-                }
-              }
-
               self.object.store.draftConfigurations.push(objDep);
             }
           }
@@ -664,26 +643,7 @@ export class SingleDeployComponent {
       }
     });
   }
-
- private getNoticeReferences(): void {
-    const obj = {
-      path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
-      objectType: this.data.objectType || this.data.type
-    };
-    this.coreService.post('inventory/noticeboard/references', obj).subscribe({
-      next: (res: any) => {
-        if (res.workflows) {
-          this.impactedWorkflows = {
-            workflows: res.workflows.map((workflow: any) => ({
-              ...workflow,
-              selected: true
-            })),
-            isRenamed: res.isRenamed
-          };
-        }
-      }
-    });
-  }}
+}
 
 @Component({
   selector: 'app-deploy-draft-modal',
