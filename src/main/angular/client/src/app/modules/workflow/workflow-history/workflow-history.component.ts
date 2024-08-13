@@ -319,8 +319,14 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
       filter.order.selectedView = false;
       filter.order.workflow = this.workflow.path;
       if (this.orderHistory[this.orderHistory.length - 1]) {
-        filter.order.fromDate = new Date(this.orderHistory[this.orderHistory.length - 1].plannedTime);
+        const plannedTime = new Date(this.orderHistory[this.orderHistory.length - 1].plannedTime);
+        if (plannedTime.getFullYear() === 10000) {
+          filter.order.fromDate = ''
+        } else {
+          filter.order.fromDate = plannedTime;
+        }
       }
+
     } else {
       filter.task.selectedView = false;
       filter.task.workflow = this.workflow.path;

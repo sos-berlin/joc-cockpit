@@ -1616,12 +1616,6 @@ export class ScheduleComponent {
             arr.inputVisible = false;
             arr.inputValue = '';
             return arr;
-          }else{
-            let arr: any = item;
-            arr.tags = [];
-            arr.inputVisible = false;
-            arr.inputValue = '';
-            return arr;
           }
         })
         this.schedule.configuration.orderParameterisations.forEach((item) => {

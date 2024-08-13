@@ -3361,7 +3361,6 @@ export class ShowAgentsModalComponent {
         this.getAgentClusterData();
       },
       error: err => {
-        console.error('Error fetching inventory agents:', err);
       }
     });
   }
@@ -3373,13 +3372,12 @@ export class ShowAgentsModalComponent {
         this.getAssignedAgents();
       },
       error: err => {
-        console.error('Error fetching inventory cluster agents:', err);
       }
     });
   }
 
   getAssignedAgents() {
-    if (this.selectedCert && !this.flag) {
+    if (this.selectedCert) {
       const certAliases = {certAliases: [this.selectedCert]};
       this.coreService.post('encipherment/assignment', certAliases).subscribe({
         next: res => {
@@ -3390,7 +3388,6 @@ export class ShowAgentsModalComponent {
           this.processAssignedAgents(assignedAgents);
         },
         error: err => {
-          console.error('Error fetching assigned agents:', err);
         },
       });
     } else {
@@ -3399,27 +3396,42 @@ export class ShowAgentsModalComponent {
   }
 
   processAssignedAgents(assignedAgents: string[]) {
-    this.agents = [];
-    this.clusterAgents = [];
-    assignedAgents.forEach(agentId => {
-      const agentData = this.findAgentData(agentId);
-      if (agentData) {
-        if (agentData.isClusterAgent) {
-          this.addClusterAgent(agentData);
-        } else {
-          this.agents.push({
-            agentId: agentData.agentId,
-            agentName: agentData.agentName,
-            agentUrl: agentData.url,
-            checked: true
-          });
-        }
-      }
-    });
+    console.log(assignedAgents, "showAssignedAgents");
+
+    this.agents = this.inventoryAgents.agents
+      .filter(agent => this.flag || assignedAgents.includes(agent.agentId))
+      .map(agent => ({
+        agentId: agent.agentId,
+        agentName: agent.agentName,
+        agentUrl: agent.url,
+        checked: assignedAgents.includes(agent.agentId)
+      }));
+
+    this.clusterAgents = this.inventoryClusterAgents.agents
+      .filter(clusterAgent => this.flag || assignedAgents.includes(clusterAgent.agentId) || clusterAgent.subagents.some(subagent => assignedAgents.includes(subagent.subagentId)))
+      .map(clusterAgent => ({
+        agentId: clusterAgent.agentId,
+        agentName: clusterAgent.agentName,
+        agentUrl: clusterAgent.url,
+        show: true,
+        checked: assignedAgents.includes(clusterAgent.agentId),
+        indeterminate: false,
+        subagents: clusterAgent.subagents
+          .filter(subagent => this.flag || assignedAgents.includes(subagent.subagentId))
+          .map(subagent => ({
+            agentId: subagent.subagentId,
+            agentName: subagent.subagentId,
+            agentUrl: subagent.url,
+            checked: assignedAgents.includes(subagent.subagentId)
+          }))
+      }));
+
     this.updateAgentSelectionState();
     this.updateClusterAgentSelectionState();
     this.updateSubmitButtonState();
   }
+
+
 
   addClusterAgent(agentData: any) {
     let clusterAgent = this.clusterAgents.find(ca => ca.agentId === agentData.agentId);
@@ -3502,20 +3514,36 @@ export class ShowAgentsModalComponent {
 
   toggleSelectAllAgents(checked: boolean) {
     this.allAgentsChecked = checked;
-    this.agents.forEach(agent => agent.checked = checked);
+    this.agents.forEach(agent => {
+      agent.checked = checked;
+      if (checked) {
+        this.assignAgent(agent.agentId);
+      } else {
+        this.removeAgent(agent.agentId);
+      }
+    });
     this.updateAgentSelectionState();
     this.updateSubmitButtonState();
   }
+
 
   toggleSelectAllClusterAgents(checked: boolean) {
     this.allClusterAgentsChecked = checked;
     this.clusterAgents.forEach(clusterAgent => {
       clusterAgent.checked = checked;
-      clusterAgent.subagents.forEach(subagent => subagent.checked = checked);
+      clusterAgent.subagents.forEach(subagent => {
+        subagent.checked = checked;
+        if (checked) {
+          this.assignAgent(subagent.agentId);
+        } else {
+          this.removeAgent(subagent.agentId);
+        }
+      });
     });
     this.updateClusterAgentSelectionState();
     this.updateSubmitButtonState();
   }
+
 
   updateAgentSelectionState() {
     const allChecked = this.agents.every(agent => agent.checked);
@@ -3541,26 +3569,46 @@ export class ShowAgentsModalComponent {
     this.allClusterAgentsIndeterminate = !allChecked && !noneChecked;
   }
 
-  onAgentChecked() {
+  onAgentChecked(agent: any) {
     this.updateAgentSelectionState();
     this.updateSubmitButtonState();
+    if (agent.checked) {
+      this.assignAgent(agent.agentId);
+    } else {
+      this.removeAgent(agent.agentId);
+    }
   }
 
   onClusterAgentChecked(clusterAgent: any) {
-    clusterAgent.subagents.forEach(subagent => subagent.checked = clusterAgent.checked);
+    clusterAgent.subagents.forEach(subagent => {
+      subagent.checked = clusterAgent.checked;
+      if (clusterAgent.checked) {
+        this.assignAgent(subagent.agentId);
+      } else {
+        this.removeAgent(subagent.agentId);
+      }
+    });
     this.updateClusterAgentSelectionState();
     this.updateSubmitButtonState();
   }
 
-  onSubagentChecked(clusterAgent: any) {
+  onSubagentChecked(clusterAgent: any, subagent: any) {
     const allSubagentsChecked = clusterAgent.subagents.every(subagent => subagent.checked);
     const noneSubagentsChecked = clusterAgent.subagents.every(subagent => !subagent.checked);
 
     clusterAgent.checked = allSubagentsChecked;
     clusterAgent.indeterminate = !allSubagentsChecked && !noneSubagentsChecked;
+
+    if (subagent.checked) {
+      this.assignAgent(subagent.agentId);
+    } else {
+      this.removeAgent(subagent.agentId);
+    }
+
     this.updateClusterAgentSelectionState();
     this.updateSubmitButtonState();
   }
+
 
   updateSubmitButtonState() {
     const anyAgentChecked = this.agents.some(agent => agent.checked);
@@ -3569,12 +3617,6 @@ export class ShowAgentsModalComponent {
     );
 
     this.isSubmitDisabled = !(anyAgentChecked || anyClusterAgentChecked);
-  }
-
-  // Recursively sends selected agent IDs to the API
-  onSubmit(): void {
-    const selectedAgentIds = this.getSelectedAgentIds();
-    this.submitAgentIdsRecursively(selectedAgentIds);
   }
 
   // Collects all selected agent IDs
@@ -3597,7 +3639,33 @@ export class ShowAgentsModalComponent {
 
     return selectedAgentIds;
   }
+  assignAgent(agentId: string) {
+    const payload = {
+      agentId: agentId,
+      certAlias: this.selectedCert
+    };
 
+    this.coreService.post('encipherment/assignment/add', payload).subscribe({
+      next: (data: any) => {
+      },
+      error: (err) => {
+      }
+    });
+  }
+
+  removeAgent(agentId: string) {
+    const payload = {
+      agentId: agentId,
+      certAlias: this.selectedCert
+    };
+
+    this.coreService.post('encipherment/assignment/remove', payload).subscribe({
+      next: (data: any) => {
+      },
+      error: (err) => {
+      }
+    });
+  }
   // Recursively submits agent IDs to the API
   submitAgentIdsRecursively(agentIds: string[], index: number = 0): void {
     if (index >= agentIds.length) {
@@ -3616,7 +3684,6 @@ export class ShowAgentsModalComponent {
         this.submitAgentIdsRecursively(agentIds, index + 1);
       },
       error: (err) => {
-        console.error(`Error assigning agent ID ${agentId}:`, err);
         this.activeModal.destroy();
       }
     });

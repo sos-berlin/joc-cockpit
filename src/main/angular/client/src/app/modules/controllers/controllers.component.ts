@@ -2017,14 +2017,15 @@ export class ControllersComponent {
     });
   }
 
-  showCertificateAliases(agent, agentType): void{
+  showCertificateAliases(agent,sub, agentType): void{
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ShowCertificateListModalComponent,
       nzAutofocus: null,
       nzData: {
         agent,
-        agentType
+        agentType,
+        sub
       },
       nzFooter: null,
       nzClosable: false,

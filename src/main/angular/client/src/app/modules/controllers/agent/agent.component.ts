@@ -472,12 +472,14 @@ export class ShowCertificateListModalComponent {
   data: any;
   agentType: string;
   certificateList: any = [];
+  sub: any;
 
   constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService){}
 
   ngOnInit(): void {
     this.data = this.modalData.agent;
     this.agentType = this.modalData.agentType;
+    this.sub = this.modalData.sub;
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
@@ -503,10 +505,20 @@ export class ShowCertificateListModalComponent {
   }
 
   deleteCertificateAlias(certAlias){
-    let obj: any = {
-      agentId: this.data.agentId,
-      certAlias: certAlias
-    };
+    let obj: any;
+    if (this.data.subagents && this.data.subagents.length > 0) {
+      obj = {
+        agentId: this.sub.subagentId,
+        certAlias: certAlias,
+      };
+    } else {
+      obj = {
+        agentId: this.data.agentId,
+        certAlias: certAlias
+      };
+    }
+
+    console.log(this.data,"???")
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',

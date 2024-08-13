@@ -27,7 +27,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let agent of agentsTable.data">
-          <td *ngIf="flag" nzShowCheckbox [(nzChecked)]="agent.checked" (nzCheckedChange)="onAgentChecked()" class="chk"></td>
+          <td *ngIf="flag" nzShowCheckbox [(nzChecked)]="agent.checked" (nzCheckedChange)="onAgentChecked(agent)" class="chk"></td>
           <td>{{ agent.agentName }}</td>
           <td><a [href]="agent.agentUrl" target="_blank">{{ agent.agentUrl }}</a></td>
         </tr>
@@ -69,7 +69,7 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let subagent of clusterAgent.subagents">
-                    <td *ngIf="flag" nzShowCheckbox [(nzChecked)]="subagent.checked" (nzCheckedChange)="onSubagentChecked(clusterAgent)" class="chk"></td>
+                    <td *ngIf="flag" nzShowCheckbox [(nzChecked)]="subagent.checked" (nzCheckedChange)="onSubagentChecked(clusterAgent, subagent)" class="chk"></td>
                     <td>{{ subagent.agentName }}</td>
                     <td><a [href]="subagent.agentUrl" target="_blank">{{ subagent.agentUrl }}</a></td>
                   </tr>
@@ -84,9 +84,6 @@
 </div>
 
 <div class="modal-footer">
-  <button *ngIf="flag" [disabled]="isSubmitDisabled" class="btn btn-primary btn-sm" (click)="onSubmit()">
-    {{'xml.button.assign' | translate}}
-  </button>
   <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
     common.button.close
   </button>
