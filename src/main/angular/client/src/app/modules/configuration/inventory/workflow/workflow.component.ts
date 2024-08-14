@@ -21,7 +21,7 @@ import {clone, extend, isArray, isEmpty, isEqual, isNaN, sortBy} from 'underscor
 import {saveAs} from 'file-saver';
 import {ToastrService} from 'ngx-toastr';
 import {Router} from '@angular/router';
-import {AbstractControl, NG_VALIDATORS, Validator} from '@angular/forms';
+import {AbstractControl, NG_VALIDATORS, NgModel, Validator} from '@angular/forms';
 import {CdkDragDrop, DragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {WorkflowService} from '../../../../services/workflow.service';
 import {DataService} from '../../../../services/data.service';
@@ -111,6 +111,95 @@ export class DurationValidator implements Validator {
   }
 }
 
+@Directive({
+  selector: '[appValidateDurationChange]',
+  providers: [
+    {provide: NG_VALIDATORS, useExisting: forwardRef(() => DurationValidatorChange), multi: true}
+  ]
+})
+export class DurationValidatorChange implements Validator {
+
+  // Regex to match duration format with optional weeks, days, hours, minutes, and seconds
+  regex = /^((\d+)w[ ]?)?((\d+)d[ ]?)?((\d+)h[ ]?)?((\d+)m[ ]?)?((\d+)s[ ]?)?\s*$/;
+
+  isEnter = false;
+  isBackslash = false;
+
+  @HostListener('keydown', ['$event'])
+  onKeyPress(event): void {
+    if (event.key === 'Enter' || event.which === 13) {
+      this.isEnter = true;
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    if (event.key === 'Backspace' || event.which === 8) {
+      this.isBackslash = true;
+    }
+  }
+
+  @HostListener('input', ['$event.target'])
+  onInputChange(target): void {
+    const lastChar = target.value.slice(-1);
+    if (this.isEnter || this.isBackslash) {
+      this.isEnter = false;
+      this.isBackslash = false;
+      return;
+    } else {
+      if (target.value) {
+        if (target.value.length === 2 && /^([0-2][0-9])?$/i.test(target.value)) {
+          if (parseInt(target.value) <= 24) {
+            target.value += ':';
+          }
+        } else if (target.value.length === 5 && /^([0-2][0-9]):([0-5][0-9])?$/i.test(target.value)) {
+          target.value += ':';
+        }
+
+        if (lastChar.match(/[hmsdwyM]/i)) {
+          target.value = target.value.replace(/:/g, '');
+          target.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      }
+    }
+  }
+
+
+
+
+  validate(c: AbstractControl): { [key: string]: any } {
+    const v = c.value;
+    if (v) {
+      const matches = this.regex.exec(v);
+      if (matches) {
+        const days = parseInt(matches[4] || '0', 10);
+        const hours = parseInt(matches[6] || '0', 10);
+
+        // Allow 1 day, but invalidate more than 1 day or more than 24 hours
+        if (days > 1 || (days === 1 && (hours > 0)) || hours > 24 || (hours === 24 && (matches[8] || matches[10]))) {
+          return {
+            invalidDuration: true,
+            message: 'Duration cannot exceed 24 hours or 1 day.'
+          };
+        }
+      }
+
+      if (/^\s*$/i.test(v) ||
+        /^(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\s*$/.test(v) ||
+        /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]\s*$/i.test(v) ||
+        v === '24:00' ||
+        v === '24:00:00' ||
+        /^\s*\d+\s*$/i.test(v) || this.regex.test(v)
+      ) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+    return {
+      invalidDuration: true,
+      message: 'Invalid duration format.'
+    };
+  }
+}
 
 @Directive({
   selector: '[appValidateOffset]',
@@ -1015,6 +1104,18 @@ export class AdmissionTimeComponent {
       this.isValid = false;
     }
     return obj;
+  }
+
+  onBlur(repeat: NgModel, propertyName: string) {
+    this.repeatObject[propertyName] = this.coreService.padTime(this.repeatObject[propertyName]);
+    repeat.control.setErrors({incorrect: false});
+    repeat.control.updateValueAndValidity();
+  }
+
+  onBlur2(repeat: NgModel, propertyName: string) {
+    this.object[propertyName] = this.coreService.padTime(this.object[propertyName]);
+    repeat.control.setErrors({incorrect: false});
+    repeat.control.updateValueAndValidity();
   }
 
   private addSpecificWeekdayFrequency(frequency, temp, p, periods): any {

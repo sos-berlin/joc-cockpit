@@ -1661,7 +1661,12 @@ export class CoreService {
     if (!preferences.zone) {
       return moment(date).tz(this.getTimeZone()).format('DD.MM.YYYY HH:mm:ss');
     }
-    return moment(date).tz(preferences.zone).format(preferences.dateFormat);
+    const dateY = new Date(date);
+    if (dateY.getFullYear() === 10000) {
+      return 'common.label.never'
+    }else{
+      return moment(date).tz(preferences.zone).format(preferences.dateFormat);
+    }
   }
 
   getTimeDiff(preferences: any, date: any): number {

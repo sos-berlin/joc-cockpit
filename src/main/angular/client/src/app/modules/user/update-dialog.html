@@ -20,11 +20,11 @@
       <div class="col-sm-3" translate>profile.keyManagement.label.keyAlgorithm</div>
       <div class="col-sm-9">
         <nz-radio-group [(ngModel)]="algorithm.keyAlg" name="alg">
-          <label *ngIf="type === 'key'" nz-radio nzValue="PGP"><span
-            translate>profile.keyManagement.label.pgp</span></label>
+          <label nz-radio  nzValue="ECDSA"><span translate>profile.keyManagement.label.ecdsa</span></label>
           <label *ngIf="type === 'key'" nz-radio nzValue="RSA"><span
             translate>profile.keyManagement.label.rsa</span></label>
-          <label nz-radio nzValue="ECDSA"><span translate>profile.keyManagement.label.ecdsa</span></label>
+          <label *ngIf="type === 'key'" nz-radio nzValue="PGP"><span
+            translate>profile.keyManagement.label.pgp</span></label>
         </nz-radio-group>
       </div>
     </div>
@@ -41,7 +41,7 @@
            class="col-sm-12">
         <textarea #privateKey="ngModel" [(ngModel)]="data.privateKey" [readOnly]="!paste" autocomplete="false"
                   autofocus class="form-control"
-                  name="privateKey" placeholder="{{'profile.keyManagement.placeholder.pastePrivateKey' | translate}}" required rows="10"></textarea>
+                  name="privateKey" placeholder="{{'profile.keyManagement.placeholder.pastePrivateKey' | translate}}" required rows="10" style="font-family: monospace;"></textarea>
         <div *ngIf="privateKey.invalid && (privateKey.dirty || privateKey.touched)" class="text-danger help-block">
           <div *ngIf="privateKey.errors.required">
             <div translate>common.message.requiredError</div>
@@ -57,7 +57,7 @@
       <div [ngClass]="{'has-error' : ((publicKey.dirty || publicKey.touched) && publicKey.invalid) }" class="col-sm-12">
         <textarea #publicKey="ngModel" [(ngModel)]="data.publicKey" [readOnly]="!paste" autocomplete="false" class="form-control"
                   name="publicKey" placeholder="{{'profile.keyManagement.placeholder.pastePublicKey' | translate}}"
-                  required rows="10"></textarea>
+                  required rows="10" style="font-family: monospace;"></textarea>
 
         <div *ngIf="publicKey.invalid && (publicKey.dirty || publicKey.touched)" class="text-danger help-block">
           <div *ngIf="publicKey.errors.required">
@@ -76,7 +76,7 @@
            class="col-sm-12">
         <textarea #certificate="ngModel" [(ngModel)]="data.certificate" [readOnly]="!paste" autocomplete="false" class="form-control"
                   name="certificate" placeholder="{{'profile.keyManagement.placeholder.pasteCertificate' | translate}}"
-                  required rows="10"></textarea>
+                  required rows="10" style="font-family: monospace;"></textarea>
 
         <div *ngIf="certificate.invalid && (certificate.dirty || certificate.touched)" class="text-danger help-block">
           <div *ngIf="certificate.errors.required">

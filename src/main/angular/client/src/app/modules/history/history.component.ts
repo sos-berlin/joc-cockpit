@@ -3096,7 +3096,10 @@ export class HistoryComponent {
       this.translate.get(this.historys[i].orderState._text).subscribe(translatedValue => {
         obj[orderState] = translatedValue;
       });
-      obj[plannedTime] = this.coreService.stringToDate(this.preferences, this.historys[i].plannedTime);
+      const plannedTime = this.coreService.stringToDate(this.preferences, this.historys[i].plannedTime);
+      this.translate.get(plannedTime).subscribe((translatedValue: string) => {
+        obj['plannedTime'] = translatedValue;
+      });
       obj[startTime] = this.coreService.stringToDate(this.preferences, this.historys[i].startTime);
       obj[endTime] = this.coreService.stringToDate(this.preferences, this.historys[i].endTime);
       obj[duration] = this.coreService.calDuration(this.historys[i].startTime, this.historys[i].endTime);

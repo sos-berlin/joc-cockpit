@@ -178,7 +178,7 @@ export class ImportEnciphermentModalComponent {
   showProgressBar = false;
   uploadError = false;
   comments: any = {};
-  key = {keyAlg: 'RSA'};
+  key = {keyAlg: 'ECDSA'};
 
   certificateObj: any = {};
 

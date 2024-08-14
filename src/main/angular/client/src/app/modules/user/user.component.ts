@@ -439,7 +439,7 @@ export class UpdateKeyModalComponent {
     this.securityLevel = this.modalData.securityLevel;
     this.type = this.modalData.type;
     this.display = this.modalData.display;
-    this.algorithm.keyAlg = this.securityLevel !== 'HIGH' ? 'RSA' : 'PGP';
+    this.algorithm.keyAlg = this.securityLevel !== 'HIGH' ? 'ECDSA' : 'PGP';
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -511,7 +511,7 @@ export class ImportKeyModalComponent {
   showProgressBar = false;
   uploadError = false;
   comments: any = {};
-  key = {keyAlg: 'RSA'};
+  key = {keyAlg: 'ECDSA'};
 
   certificateObj: any = {};
   isTreeShow: boolean;
@@ -673,7 +673,7 @@ export class GenerateKeyComponent {
   comments: any = {};
   useSSLcA = false;
   key: any = {
-    keyAlg: 'RSA'
+    keyAlg: 'ECDSA'
   };
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService,

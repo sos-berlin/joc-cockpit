@@ -681,7 +681,8 @@ export class ScheduleComponent {
                     list: val.listParameters,
                     actualList: [actualList]
                   }],
-                  positions: {}
+                  positions: {},
+                  tags: []
                 });
             } else {
               let isExist = false;
@@ -754,7 +755,8 @@ export class ScheduleComponent {
                     map: val.listParameters,
                     actualMap: [actualMap]
                   }],
-                  positions: {}
+                  positions: {},
+                  tags:[]
                 });
             } else {
               let isExist = false;
@@ -797,7 +799,7 @@ export class ScheduleComponent {
           if (this.schedule.configuration.orderParameterisations.length === 0) {
             if (!val.default && val.default !== false && val.default !== 0) {
               if (!val.final) {
-                this.schedule.configuration.orderParameterisations.push({orderName: '', variables: [], positions: {}});
+                this.schedule.configuration.orderParameterisations.push({orderName: '', variables: [], positions: {}, tags: []});
               }
             }
           }

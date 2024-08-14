@@ -30,7 +30,7 @@ import {
   OffsetValidator,
   FacetEditorComponent,
   ShowReferenceComponent,
-  NoticeBoardEditorComponent, ChangeImpactDialogComponent
+  NoticeBoardEditorComponent, ChangeImpactDialogComponent, DurationValidatorChange
 } from './workflow/workflow.component';
 import {ScheduleComponent} from './schedule/schedule.component';
 import {LockComponent} from './lock/lock.component';
@@ -78,6 +78,7 @@ const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, Calen
     LabelValidator,
     EnvVariableValidator,
     DurationValidator,
+    DurationValidatorChange,
     OffsetValidator,
     MonthValidator,
     RelativeMonthValidator,
