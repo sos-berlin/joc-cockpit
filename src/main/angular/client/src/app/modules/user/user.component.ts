@@ -1211,18 +1211,6 @@ export class UserComponent {
         this.keys = {};
       }
     });
-    if (this.permission.joc && this.permission.joc.administration.certificates.view) {
-      this.coreService.post('profile/key/ca', {}).subscribe({
-        next: (res: any) => {
-          this.caCertificates = res;
-          if (this.caCertificates.validUntil) {
-            this.caCertificates.isKeyExpired = this.coreService.getTimeDiff(this.preferences, this.caCertificates.validUntil) < 0;
-          }
-        }, error: () => {
-          this.caCertificates = {};
-        }
-      });
-    }
   }
 
   getCA(): void {

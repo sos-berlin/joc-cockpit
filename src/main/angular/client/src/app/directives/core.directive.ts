@@ -1117,6 +1117,125 @@ export class TimeValidatorReqexDirective implements Validator {
 
 
 @Directive({
+  selector: '[timeRelativeStartValidatorReqex]',
+  providers: [
+    { provide: NG_VALIDATORS, useExisting: forwardRef(() => TimeValidatorRelativeStartReqexDirective), multi: true }
+  ]
+})
+export class TimeValidatorRelativeStartReqexDirective implements Validator {
+
+  regex = /^\+?\s*(?:(\d+)h\s*,?\s*)?(?:(\d+)m\s*,?\s*)?(?:(\d+)s)?$/;
+  isEnter = false;
+  isBackslash = false;
+
+  @HostListener('keydown', ['$event'])
+  onKeyPress(event): void {
+    if (event.key === 'Enter' || event.which === 13) {
+      this.isEnter = true;
+      event.stopPropagation();
+      event.preventDefault();
+    }
+    if (event.key === 'Backspace' || event.which === 8) {
+      this.isBackslash = true;
+    }
+  }
+
+  @HostListener('input', ['$event.target'])
+  onInputChange(target): void {
+    if (this.isEnter || this.isBackslash) {
+      this.isEnter = false;
+      this.isBackslash = false;
+      return;
+    } else {
+      if (target.value) {
+        if (target.value.length === 2 && /^([0-2][0-9])?$/i.test(target.value)) {
+          if(!target.value.startsWith('+')){
+            if (parseInt(target.value)) {
+              target.value += ':';
+            }
+          }
+        } else if (target.value.length === 5 && /^([0-2][0-9]):([0-5][0-9])?$/i.test(target.value)) {
+          target.value += ':';
+        }
+        const lastChar = target.value[target.value.length - 1];
+        if (lastChar.match(/[hms]/i)) {
+          target.value = target.value.replace(/:/g, '');
+          target.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      }
+    }
+  }
+
+  @HostListener('focusout', ['$event.target'])
+  onFocusout(target): void {
+    const value = target.value.trim();
+
+    const matches = this.regex.exec(value);
+    if (!value) {
+      target.value = '';
+      return;
+    }
+    if (matches) {
+      let hours = parseInt(matches[1] || '0', 10);
+      let minutes = parseInt(matches[2] || '0', 10);
+      let seconds = parseInt(matches[3] || '0', 10);
+
+      minutes += Math.floor(seconds / 60);
+      seconds = seconds % 60;
+
+      hours += Math.floor(minutes / 60);
+      minutes = minutes % 60;
+
+      // No need to check if hours exceed 24; we allow more than 24 hours
+      const formattedValue = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      target.value = formattedValue;
+    } else {
+      let formattedValue = value;
+      if (value.length === 3) {
+        formattedValue = value[0] + value[1] + ':0' + value[2] + ':00';
+      } else if (value.length === 4) {
+        formattedValue = value[0] + value[1] + ':' + value[2] + value[3] + ':00';
+      } else if (value.length === 5) {
+        if (!/^([0-2][0-9]):([0-5][0-9])?$/i.test(value)) {
+          formattedValue = value.substring(0, 3);
+        } else {
+          formattedValue = value + ':00';
+        }
+      } else if (value.length === 6) {
+        formattedValue = value[0] + value[1] + ':' + value[2] + value[3] + ':' + value[4] + value[5] + '0';
+      } else if (value.length === 7) {
+        formattedValue = value[0] + value[1] + ':' + value[2] + value[3] + ':' + value[4] + value[5] + value[6] + '0';
+      } else if (value.length === 8 && !(/^([0-9]+):([0-5][0-9]):([0-5][0-9])?$/i.test(value))) {
+        target.value = value.substring(0, 6) + '00';
+      }
+
+      if (!((/^([0-9]+):([0-5][0-9])?$/i.test(value)) || /^([0-9]+):([0-5][0-9]):([0-5][0-9])?$/i.test(value))) {
+        target.value = '00:00:00';
+      }
+    }
+  }
+
+
+  validate(c: AbstractControl): { [key: string]: any } | null {
+    const v = c.value;
+    if (v) {
+      if (/^\s*$/i.test(v) ||
+        /^(\d+):([0-5][0-9]):([0-5][0-9])\s*$/.test(v) ||  // Allow hours greater than 24
+        /^(\d+):([0-5][0-9])\s*$/i.test(v) ||
+        /^\s*\d+\s*$/i.test(v) || this.regex.test(v)
+      ) {
+        return null;
+      }
+    } else {
+      return null;
+    }
+    return {
+      validTimeReqex: true
+    };
+  }
+
+}
+@Directive({
   selector: '[timeRelativeValidatorReqex]',
   providers: [
     { provide: NG_VALIDATORS, useExisting: forwardRef(() => TimeValidatorRelativeReqexDirective), multi: true }
