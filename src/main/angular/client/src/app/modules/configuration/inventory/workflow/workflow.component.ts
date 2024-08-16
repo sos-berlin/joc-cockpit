@@ -6693,32 +6693,35 @@ let data = this.storedArguments[this.storedArguments.length - 1];
     let lastCells = [];
 
     function checkRemainingNodes(node) {
-      node.edges.forEach(edge => {
-        if (edge.source && edge.source.id !== node.id) {
-          let targetId = edge.source.id;
-          const obj: any = createObject(node);
-          if (obj.TYPE === 'Try') {
-            obj.instructions = [];
-            obj.catch = {
-              id: (+(node.id) + 1) + '',
-              instructions: []
-            };
-            delete obj.parentId;
-          }
-          const isMatch = traverseJSONObject(targetId, obj, edge);
-          if (!isMatch) {
-            if (self.workflowService.checkClosingCell(edge.source.value.tagName) && targetId != edge.source.getAttribute('targetId')) {
-              targetId = edge.source.getAttribute('targetId');
-              const isFound = traverseJSONObject(targetId, obj, edge);
-              if (!isFound) {
+      if(node.edges && node.edges.length > 0) {
+        node.edges.forEach(edge => {
+          if (edge.source && edge.source.id !== node.id) {
+            let targetId = edge.source.id;
+            const obj: any = createObject(node);
+            if (obj.TYPE === 'Try') {
+              obj.instructions = [];
+              obj.catch = {
+                id: (+(node.id) + 1) + '',
+                instructions: []
+              };
+              delete obj.parentId;
+            }
+            const isMatch = traverseJSONObject(targetId, obj, edge);
+            if (!isMatch) {
+              if (self.workflowService.checkClosingCell(edge.source.value.tagName) && targetId != edge.source.getAttribute('targetId')) {
+                targetId = edge.source.getAttribute('targetId');
+                const isFound = traverseJSONObject(targetId, obj, edge);
+                if (!isFound) {
+                  lastCells.push(node);
+                }
+              } else {
                 lastCells.push(node);
               }
-            } else {
-              lastCells.push(node);
             }
           }
-        }
-      });
+        });
+      }
+
     }
 
     if (nodes.length > 0) {

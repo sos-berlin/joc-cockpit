@@ -649,9 +649,16 @@ export class AddOrderModalComponent {
     } else if (this.order.at === 'never') {
       order.scheduledFor = 'never';
     } else if (this.order.at === 'later') {
-      let atTime = this.order.atTime.replace(/s/g, '');
+      let atTime = this.order.atTime
+
+      if (atTime.includes('h') || atTime.includes('m') || atTime.includes('s')) {
+        atTime = this.convertToSeconds(atTime);
+        console.log(atTime,">>")
+      }
+
       order.scheduledFor = 'now + ' + atTime;
-    } else {
+    }
+    else {
       if (this.order.fromDate) {
         this.coreService.getDateAndTime(this.order);
         order.scheduledFor = this.coreService.getDateByFormat(this.order.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
@@ -737,6 +744,26 @@ export class AddOrderModalComponent {
         this.activeModal.close('Done');
       }, error: () => this.submitted = false
     });
+  }
+
+   convertToSeconds(timeString: string): number {
+    const timePattern = /(\d+)\s*h|\s*(\d+)\s*m|\s*(\d+)\s*s/g;
+    let totalSeconds = 0;
+
+    let match;
+    while ((match = timePattern.exec(timeString)) !== null) {
+      if (match[1]) {
+        totalSeconds += parseInt(match[1], 10) * 3600; // Convert hours to seconds
+      }
+      if (match[2]) {
+        totalSeconds += parseInt(match[2], 10) * 60; // Convert minutes to seconds
+      }
+      if (match[3]) {
+        totalSeconds += parseInt(match[3], 10); // Seconds
+      }
+    }
+
+    return totalSeconds;
   }
 
 

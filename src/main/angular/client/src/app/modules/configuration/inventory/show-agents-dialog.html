@@ -84,6 +84,9 @@
 </div>
 
 <div class="modal-footer">
+  <button *ngIf="flag" (click)="submit()" class="btn btn-primary btn-sm" [disabled]="isSubmitDisabled" translate type="button">
+    common.button.submit
+  </button>
   <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
     common.button.close
   </button>

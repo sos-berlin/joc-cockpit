@@ -3601,12 +3601,6 @@ export class HistoryComponent {
     if(!this.historyFilters.tagType){
       this.historyFilters.tagType = 'workflowTags';
     }
-    if (this.historyFilters.tagType === 'workflowTags') {
-      this.switchToTagging('workflowTags');
-
-    } else if (this.historyFilters.tagType === 'orderTags') {
-      this.switchToTagging('orderTags');
-    }
     this.searchTerm.pipe(debounceTime(200))
       .subscribe((searchValue: string) => {
         this.searchObjects(searchValue);

@@ -336,8 +336,13 @@ export class ControllerMonitorComponent {
     this.ganttData = this.ganttData.reverse();
   }
 
-  setView(view): void {
+  setView(view: string): void {
     this.filters.filter.view = view;
+
+    if (view === 'Week') {
+      this.setWeekDatesToCurrentWeek();
+    }
+
     if (view !== 'Custom') {
       this.coreService.renderTimeSheetHeader(this.filters, this.weekStart, () => {
         this.getData();
@@ -346,6 +351,24 @@ export class ControllerMonitorComponent {
       this.filters.filter.dateRange = [this.filters.filter.startDate, this.filters.filter.endDate];
     }
   }
+
+  setWeekDatesToCurrentWeek(): void {
+    const currentDate = new Date();
+    const currentDay = currentDate.getDay(); // 0 (Sunday) to 6 (Saturday)
+
+    const daysFromStartOfWeek = (currentDay + 7 - this.weekStart) % 7;
+    const startOfWeek = new Date(currentDate);
+    startOfWeek.setDate(currentDate.getDate() - daysFromStartOfWeek);
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+    endOfWeek.setHours(23, 59, 59, 999);
+
+    this.filters.filter.startDate = startOfWeek;
+    this.filters.filter.endDate = endOfWeek;
+  }
+
 
   onChangeDate(): void {
     if (this.filters.filter.dateRange) {

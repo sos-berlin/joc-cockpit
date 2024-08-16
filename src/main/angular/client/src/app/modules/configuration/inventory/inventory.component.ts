@@ -472,10 +472,10 @@ export class SingleDeployComponent {
     const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.dateFormat = this.coreService.getDateFormat(preferences.dateFormat);
     this.init();
-    if(this.data?.objectType === 'WORKFLOW' || this.data?.type === 'WORKFLOW') {
+    if (this.data?.objectType === 'WORKFLOW' || this.data?.type === 'WORKFLOW') {
       this.getReferences();
     }
-   if(this.data?.objectType === 'NOTICEBOARD' || this.data?.type === 'NOTICEBOARD') {
+    if (this.data?.objectType === 'NOTICEBOARD' || this.data?.type === 'NOTICEBOARD') {
       this.getNoticeReferences();
     }
   }
@@ -725,7 +725,7 @@ export class SingleDeployComponent {
     });
   }
 
- private getNoticeReferences(): void {
+  private getNoticeReferences(): void {
 
     const obj = {
       path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
@@ -1860,9 +1860,9 @@ export class ExportComponent {
       this.checkFolderSelection(folders);
     }
     if ((folders.length > 0) || (this.object.deployConfigurations && this.object.deployConfigurations.length > 0) ||
-    (this.object.draftConfigurations.length && this.object.draftConfigurations.length > 0) ||
-    (this.object.releasedConfigurations && this.object.releasedConfigurations.length > 0) ||
-    (this.object.releaseDraftConfigurations.length && this.object.releaseDraftConfigurations.length > 0)) {
+      (this.object.draftConfigurations.length && this.object.draftConfigurations.length > 0) ||
+      (this.object.releasedConfigurations && this.object.releasedConfigurations.length > 0) ||
+      (this.object.releaseDraftConfigurations.length && this.object.releaseDraftConfigurations.length > 0)) {
       if (this.object.deployConfigurations && this.object.deployConfigurations.length === 0) {
         delete this.object.deployConfigurations;
       }
@@ -3343,6 +3343,8 @@ export class ShowAgentsModalComponent {
   allClusterAgentsChecked: boolean = false;
   allClusterAgentsIndeterminate: boolean = false;
   isSubmitDisabled: boolean = true;
+  previouslyAssignedAgentIds: string[] = [];
+
 
   constructor(private activeModal: NzModalRef, public coreService: CoreService) {
   }
@@ -3395,8 +3397,16 @@ export class ShowAgentsModalComponent {
     }
   }
 
+  getPreviouslyAssignedAgentIds(): string[] {
+    return this.previouslyAssignedAgentIds;
+  }
+
+  isAgentAlreadyAssigned(agentId: string): boolean {
+    return this.previouslyAssignedAgentIds.includes(agentId);
+  }
+
   processAssignedAgents(assignedAgents: string[]) {
-    console.log(assignedAgents, "showAssignedAgents");
+    this.previouslyAssignedAgentIds = assignedAgents;
 
     this.agents = this.inventoryAgents.agents
       .filter(agent => this.flag || assignedAgents.includes(agent.agentId))
@@ -3430,7 +3440,6 @@ export class ShowAgentsModalComponent {
     this.updateClusterAgentSelectionState();
     this.updateSubmitButtonState();
   }
-
 
 
   addClusterAgent(agentData: any) {
@@ -3516,11 +3525,6 @@ export class ShowAgentsModalComponent {
     this.allAgentsChecked = checked;
     this.agents.forEach(agent => {
       agent.checked = checked;
-      if (checked) {
-        this.assignAgent(agent.agentId);
-      } else {
-        this.removeAgent(agent.agentId);
-      }
     });
     this.updateAgentSelectionState();
     this.updateSubmitButtonState();
@@ -3533,11 +3537,6 @@ export class ShowAgentsModalComponent {
       clusterAgent.checked = checked;
       clusterAgent.subagents.forEach(subagent => {
         subagent.checked = checked;
-        if (checked) {
-          this.assignAgent(subagent.agentId);
-        } else {
-          this.removeAgent(subagent.agentId);
-        }
       });
     });
     this.updateClusterAgentSelectionState();
@@ -3572,21 +3571,11 @@ export class ShowAgentsModalComponent {
   onAgentChecked(agent: any) {
     this.updateAgentSelectionState();
     this.updateSubmitButtonState();
-    if (agent.checked) {
-      this.assignAgent(agent.agentId);
-    } else {
-      this.removeAgent(agent.agentId);
-    }
   }
 
   onClusterAgentChecked(clusterAgent: any) {
     clusterAgent.subagents.forEach(subagent => {
       subagent.checked = clusterAgent.checked;
-      if (clusterAgent.checked) {
-        this.assignAgent(subagent.agentId);
-      } else {
-        this.removeAgent(subagent.agentId);
-      }
     });
     this.updateClusterAgentSelectionState();
     this.updateSubmitButtonState();
@@ -3598,12 +3587,6 @@ export class ShowAgentsModalComponent {
 
     clusterAgent.checked = allSubagentsChecked;
     clusterAgent.indeterminate = !allSubagentsChecked && !noneSubagentsChecked;
-
-    if (subagent.checked) {
-      this.assignAgent(subagent.agentId);
-    } else {
-      this.removeAgent(subagent.agentId);
-    }
 
     this.updateClusterAgentSelectionState();
     this.updateSubmitButtonState();
@@ -3639,6 +3622,7 @@ export class ShowAgentsModalComponent {
 
     return selectedAgentIds;
   }
+
   assignAgent(agentId: string) {
     const payload = {
       agentId: agentId,
@@ -3666,6 +3650,7 @@ export class ShowAgentsModalComponent {
       }
     });
   }
+
   // Recursively submits agent IDs to the API
   submitAgentIdsRecursively(agentIds: string[], index: number = 0): void {
     if (index >= agentIds.length) {
@@ -3687,6 +3672,19 @@ export class ShowAgentsModalComponent {
         this.activeModal.destroy();
       }
     });
+  }
+
+  submit(): void {
+    const selectedAgentIds = this.getSelectedAgentIds();
+
+    const agentsToAdd = selectedAgentIds.filter(agentId => !this.isAgentAlreadyAssigned(agentId));
+    const agentsToRemove = this.getPreviouslyAssignedAgentIds().filter(agentId => !selectedAgentIds.includes(agentId));
+
+    agentsToAdd.forEach(agentId => this.assignAgent(agentId));
+
+    agentsToRemove.forEach(agentId => this.removeAgent(agentId));
+
+    this.activeModal.destroy();
   }
 
   cancel(): void {
@@ -4101,7 +4099,7 @@ export class InventoryComponent {
     this.coreService.getAgents(this.inventoryService, this.schedulerIds.selected);
   }
 
-  initTree(path: string, mainPath: string, redirect = false, recursive= false): void {
+  initTree(path: string, mainPath: string, redirect = false, recursive = false): void {
 
     if (!path) {
       this.isLoading = true;
@@ -4127,7 +4125,7 @@ export class InventoryComponent {
             }
           }, redirect);
           if (mainPath && path !== mainPath) {
-            this.updateFolders(mainPath, false, recursive,() => {
+            this.updateFolders(mainPath, false, recursive, () => {
 
               this.updateTree(false);
             });
@@ -4166,7 +4164,7 @@ export class InventoryComponent {
           } else {
             this.tree = tree;
             if (this.tree.length > 0) {
-              this.updateObjects(this.tree[0], false, recursive,(children: any) => {
+              this.updateObjects(this.tree[0], false, recursive, (children: any) => {
 
                 this.isLoading = false;
                 if (children.length > 0) {
@@ -4196,14 +4194,14 @@ export class InventoryComponent {
           const tree = this.coreService.prepareTree(res, false);
           if (path) {
             this.trashTree = this.recursiveTreeUpdate(tree, this.trashTree, true);
-            this.updateFolders(path, true, false,() => {
+            this.updateFolders(path, true, false, () => {
               this.updateTree(true);
             });
           } else {
             this.trashTree = tree;
             if (this.trashTree.length > 0) {
               this.trashTree[0].expanded = true;
-              this.updateObjects(this.trashTree[0], true, false,(children) => {
+              this.updateObjects(this.trashTree[0], true, false, (children) => {
 
                 this.isTreeLoaded = false;
                 if (children.length > 0) {
@@ -4228,7 +4226,7 @@ export class InventoryComponent {
         next: (res) => {
           this.findObjectByPath(res.path);
         }, error: () => {
-          this.updateObjects(this.tree[0], this.isTrash, false,(children) => {
+          this.updateObjects(this.tree[0], this.isTrash, false, (children) => {
 
             this.isLoading = false;
             if (children.length > 0) {
@@ -4278,7 +4276,7 @@ export class InventoryComponent {
         if (flag) {
           if (!data.controller && !data.dailyPlan) {
 
-            self.updateObjects(data, self.isTrash, false,(children: any) => {
+            self.updateObjects(data, self.isTrash, false, (children: any) => {
 
               if (children.length > 0) {
                 const index = data.children[0] && data.children[0].controller ? 1 : 0;
@@ -4417,7 +4415,7 @@ export class InventoryComponent {
       function traverseTree(data: any) {
         if (path && data.path && (path === data.path)) {
 
-          self.updateObjects(data, isTrash, recursive,(children: any) => {
+          self.updateObjects(data, isTrash, recursive, (children: any) => {
 
             if (children.length > 0) {
               let folders = data.children;
@@ -4842,7 +4840,7 @@ export class InventoryComponent {
         }
         if (cb) {
           cb(conf);
-        } else if(extraCb){
+        } else if (extraCb) {
           extraCb(conf);
         }
       }, error: () => {
@@ -5890,7 +5888,7 @@ export class InventoryComponent {
     }
 
     if (obj.path && obj.name) {
-      const  URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
+      const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
       this.coreService.post(URL, {
         path: (obj.path + (obj.path === '/' ? '' : '/') + obj.name),
         objectType: type,
