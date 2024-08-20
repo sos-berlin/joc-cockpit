@@ -3108,25 +3108,39 @@ private filterData(planItems: any[]): void {
 
   continueOrder(orderId?) {
     if (orderId) {
-      this.coreService.post('orders/continue', {
-        controllerId: this.schedulerIds.selected,
-        orderIds: [orderId]
-      }).subscribe({
-        next: (res: any) => {
-          this.resetCheckBox()
-        },
-        error: () => {
-        }
-      });
-    } else {
-      const orderIdsToContinue = this.planOrders
-        .filter(value => value.state._text === 'SUBMITTED' && !value.cyclicOrder)
-        .map(order => order.orderId);
-
-      if (orderIdsToContinue.length > 0) {
+      if (this.preferences.auditLog) {
+        let comments = {
+          radio: 'predefined',
+          type: 'Order',
+          operation: 'Continue',
+          name: orderId
+        };
+        const modal = this.modal.create({
+          nzTitle: undefined,
+          nzContent: CommentModalComponent,
+          nzClassName: 'lg',
+          nzData: {
+            comments,
+            obj: {
+              controllerId: this.schedulerIds.selected,
+              orderIds: [orderId]
+            },
+            url: 'orders/continue'
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+        modal.afterClose.subscribe(result => {
+          if (result) {
+            this.isProcessing = true;
+            this.resetAction(5000);
+          }
+        });
+      } else {
         this.coreService.post('orders/continue', {
           controllerId: this.schedulerIds.selected,
-          orderIds: orderIdsToContinue
+          orderIds: [orderId]
         }).subscribe({
           next: (res: any) => {
             this.resetCheckBox()
@@ -3134,11 +3148,59 @@ private filterData(planItems: any[]): void {
           error: () => {
           }
         });
-      } else {
-        console.log('No orders to continue');
+      }
+    } else {
+      const orderIdsToContinue = this.planOrders
+        .filter(value => value.state._text === 'SUBMITTED' && !value.cyclicOrder)
+        .map(order => order.orderId);
+      if (orderIdsToContinue.length > 0) {
+        if (this.preferences.auditLog) {
+          let comments = {
+            radio: 'predefined',
+            type: 'Order',
+            operation: 'Continue',
+            name: orderId
+          };
+          const modal = this.modal.create({
+            nzTitle: undefined,
+            nzContent: CommentModalComponent,
+            nzClassName: 'lg',
+            nzData: {
+              comments,
+              obj: {
+                controllerId: this.schedulerIds.selected,
+                orderIds: orderIdsToContinue
+              },
+              url: 'orders/continue'
+            },
+            nzFooter: null,
+            nzClosable: false,
+            nzMaskClosable: false
+          });
+          modal.afterClose.subscribe(result => {
+            if (result) {
+              this.isProcessing = true;
+              this.resetAction(5000);
+            }
+          });
+        } else {
+          if (orderIdsToContinue.length > 0) {
+            this.coreService.post('orders/continue', {
+              controllerId: this.schedulerIds.selected,
+              orderIds: orderIdsToContinue
+            }).subscribe({
+              next: (res: any) => {
+                this.resetCheckBox()
+              },
+              error: () => {
+              }
+            });
+          }
+        }
       }
     }
   }
+
 
   switchToTagging(flag): void {
     this.dailyPlanFilters.tagType = flag;

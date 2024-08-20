@@ -590,8 +590,10 @@ export class SingleDeployComponent {
 
     }
     if (this.impactedSchedules && this.impactedSchedules.length > 0) {
-      this.release();
-
+      const selectedSchedules = this.impactedSchedules.filter(schedule => schedule.selected);
+      if (selectedSchedules.length > 0){
+        this.release();
+      }
     }
     if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
       if (this.object.store.draftConfigurations.length === 0) {

@@ -25,8 +25,11 @@ export class ChangePasswordComponent {
   settings: any = {};
   comments: any = {};
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService) {
-  }
+  showOldPassword = false;
+  showNewPassword = false;
+  showConfirmPassword = false;
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService) {}
 
   ngOnInit(): void {
     this.username = this.modalData.username;
@@ -95,6 +98,17 @@ export class ChangePasswordComponent {
       });
     }
   }
+
+  // Methods to toggle password visibility
+  toggleShowOldPassword(): void {
+    this.showOldPassword = !this.showOldPassword;
+  }
+
+  toggleShowNewPassword(): void {
+    this.showNewPassword = !this.showNewPassword;
+  }
+
+  toggleShowConfirmPassword(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
 }
-
-
