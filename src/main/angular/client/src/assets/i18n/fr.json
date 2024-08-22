@@ -2139,7 +2139,8 @@
           "agentAssignment": "La tâche se voit attribuer un Agent Autonome ou un Cluster de Sous-agents pour son exécution. Dans un bloc des instructions ForkList ou StickySubagent un Cluster d'Agents est attribué. Il est également possible de spécifier une Expression qui fournit l'identification du Cluster de Sous-agents à partir d'une variable.",
           "agent": "Un Agent est assigné à la Tâche qui exécutera le script/la classe de la Tâche. Faites votre choix dans la liste des Agents disponibles.",
           "agentCluster": "Sélectionne le Cluster d'Agents pour lequel la ID du Cluster de Sous-agents est spécifié à partir d'une expression dans un champ de saisie ultérieur.",
-          "subagentClusterIdExpr": "L'Expression spécifie l'ID du Cluster de Sous-agents à partir d'une variable. Si aucune variable n'est spécifiée, un défaut intégré devient actif si le job est inclus dans une instruction ForkList ou StickySubagent. Les utilisateurs peuvent spécifier une variable individuelle, par exemple si les jobs prédécesseurs sont utilisés pour déterminer le Cluster de Sous-agents sur lequel exécuter un job successeur."
+          "subagentClusterIdExpr": "L'Expression spécifie l'ID du Cluster de Sous-agents à partir d'une variable. Si aucune variable n'est spécifiée, un défaut intégré devient actif si le job est inclus dans une instruction ForkList ou StickySubagent. Les utilisateurs peuvent spécifier une variable individuelle, par exemple si les jobs prédécesseurs sont utilisés pour déterminer le Cluster de Sous-agents sur lequel exécuter un job successeur.",
+          "jobNotRestartable": "Job Not Restartable"
         },
         "admissionTime": {
           "admissionType": "Le type d'heures d'admission permet de spécifier les jours de la semaine, les jours de la semaine spécifiques et les jours du mois.",
@@ -2861,7 +2862,7 @@
       "label.name": "Nom",
       "label.postOrderToNoticeId": "ID Annonce pour les Ordres d'affichage",
       "label.expectOrderToNoticeId": "ID Annonce pour les Ordres en attente des affichages",
-      "label.endOfLifeOfNotices": "Fin de vie de l'Annonce",n
+      "label.endOfLifeOfNotices": "Fin de vie de l'Annonce",
       "label.deploymentDate": "Date de Déploiement",
       "label.boardsFound": "Tableaux de Condition trouvés",
       "label.boardFound": "Tableau de Condition trouvé",
@@ -3634,6 +3635,7 @@
     "label.filtersOrdersAsWell": "Filtrer l'affichage des Ordres",
     "label.ascending": "Ascendant",
     "label.descending": "Descendant",
+    "label.jobNotRestartable": "Job not restartable",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",

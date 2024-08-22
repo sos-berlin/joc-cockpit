@@ -13,6 +13,9 @@ import {ValueEditorComponent} from "../../../../components/value-editor/value.co
 import { WorkflowService } from 'src/app/services/workflow.service';
 import { EncryptArgumentModalComponent } from '../inventory.component';
 import { AuthService } from 'src/app/components/guard';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+
+
 
 @Component({
   selector: 'app-schedule',
@@ -65,7 +68,7 @@ export class ScheduleComponent {
 
   constructor(public coreService: CoreService, private translate: TranslateService, private toasterService: ToastrService,
               private calendarService: CalendarService, private dataService: DataService, private authService: AuthService,
-              private ref: ChangeDetectorRef, private modal: NzModalService, private workflowService: WorkflowService) {
+              private ref: ChangeDetectorRef, private modal: NzModalService, private workflowService: WorkflowService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
       if (res && !isEmpty(res)) {
         if (res.reloadTree && this.schedule.actual) {
@@ -1813,6 +1816,19 @@ export class ScheduleComponent {
 
   handleClose(removedTag: {}, index): void {
     this.schedule.configuration.orderParameterisations[index].tags = this.schedule.configuration.orderParameterisations[index].tags.filter(tag => tag !== removedTag);
+    this.saveJSON();
+  }
+
+  trackByFn(index: number, item: any): any {
+    return item;
+  }
+
+
+  drop(event: CdkDragDrop<string[]>, index: number) {
+    moveItemInArray(this.schedule.configuration.orderParameterisations[index].tags, event.previousIndex, event.currentIndex);
+    setTimeout(() => {
+      this.cdr.detectChanges();
+    });
     this.saveJSON();
   }
 

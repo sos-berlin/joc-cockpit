@@ -2139,7 +2139,8 @@
           "description": "説明",
           "onWarning": "リターンコードで警告",
           "agentAssignment": "エージェント指定",
-          "agentCluster": "エージェントクラスター"
+          "agentCluster": "エージェントクラスター",
+          "jobNotRestartable": "Job Not Restartable"
         },
         "admissionTime": {
           "admissionType": "許可時間タイプ",
@@ -3634,6 +3635,7 @@
     "label.filtersOrdersAsWell": "オーダーフィルタリング",
     "label.ascending": "昇順",
     "label.descending": "降順",
+    "label.jobNotRestartable": "Job not restartable",
     "button.addScheme": "サイクル追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",

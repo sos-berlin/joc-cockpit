@@ -82,12 +82,15 @@
     </nz-table>
   </div>
 </div>
-
+<div *ngIf="agents.length === 0 && clusterAgents.length === 0">
+  <app-empty-data></app-empty-data>
+</div>
 <div class="modal-footer">
-  <button *ngIf="flag" (click)="submit()" class="btn btn-primary btn-sm" [disabled]="isSubmitDisabled" translate type="button">
+  <button *ngIf="flag" (click)="submit()" class="btn btn-primary btn-sm" translate type="button">
     common.button.submit
   </button>
   <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
     common.button.cancel
   </button>
 </div>
+

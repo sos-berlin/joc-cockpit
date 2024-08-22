@@ -395,21 +395,41 @@
               </div>
 
               <div class="form-group row">
-                <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.tagName</label>
+                <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>
+                  inventory.label.tagName
+                </label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
-                    <nz-tag
-                      *ngFor="let tag of variableSet.tags; let i = index"
-                      [nzMode]="'closeable'"
-                      (nzOnClose)="handleClose(tag, j)"
+                    <div
+                      cdkDropList
+                      cdkDropListOrientation="horizontal"
+                      (cdkDropListDropped)="drop($event, j)"
+                      class="d-inline-block"
                     >
-                      {{ sliceTagName(tag) }}
-                    </nz-tag>
-                    <nz-tag *ngIf="!variableSet.inputVisible" class="editable-tag" nzNoAnimation (click)="showInput(j)">
+                      <nz-tag class="cursor"
+                        *ngFor="let tag of variableSet.tags; let i = index; trackBy: trackByFn"
+                        cdkDrag
+                        nzNoAnimation
+                        [nzMode]="'closeable'"
+                        (nzOnClose)="handleClose(tag, j)"
+                      >
+                        {{ sliceTagName(tag) }}
+                      </nz-tag>
+                    </div>
+                    <nz-tag
+                      *ngIf="!variableSet.inputVisible"
+                      class="editable-tag"
+                      nzNoAnimation
+                      (click)="showInput(j)"
+                    >
                       <span nz-icon nzType="plus"></span>
-                      {{'inventory.button.newTag' | translate}}
+                      {{ 'inventory.button.newTag' | translate }}
                     </nz-tag>
-                    <div class="d-inline-block" *ngIf="variableSet.inputVisible" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+                    <div
+                      class="d-inline-block"
+                      *ngIf="variableSet.inputVisible"
+                      [ngClass]="{ 'has-error': (name.dirty || name.touched) && name.invalid }"
+                    >
                       <input
                         #name="ngModel"
                         #inputElement

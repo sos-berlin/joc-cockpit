@@ -933,13 +933,52 @@
             <label [(ngModel)]="checkboxObjects.criticality" class="m-t-xs" name="ccriticality" nz-checkbox></label>
           </div>
         </div>
-        <div *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (coreService.expertMode || isModal)"
-             class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.credentialKey' | translate) : ''" 
-                 class="col-md-4 col-lg-3 form-control-label"
-                 title="{{'workflow.label.credentialKey' | translate}}"
-                 translate>workflow.label.credentialKey
-            <sup *ngIf="selectedNode.job.executable.login.withUserProfile" class="text-danger text-sm">*</sup>
+        <div
+          class="form-group row"
+          *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (coreService.expertMode || isModal)"
+        >
+          <label
+            [nzTooltipMouseEnterDelay]="0.5"
+            [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.jobNotRestartable' | translate) : ''"
+            class="col-md-4 col-lg-3 block-ellipsis-job"
+            title="{{'workflow.label.jobNotRestartable' | translate}}"
+            translate
+            >workflow.label.jobNotRestartable</label
+          >
+          <div
+            [ngClass]="{'col-md-8 col-lg-9': !isModal}"
+            class="col-md-6 col-lg-8"
+          >
+            <label
+              [(ngModel)]="selectedNode.job.isNotRestartable"
+              name="isNotRestartable"
+              nz-checkbox
+            ></label>
+          </div>
+          <div *ngIf="isModal" class="col-md-1">
+            <label
+              [(ngModel)]="checkboxObjects.isNotRestartable"
+              name="cisNotRestartable"
+              nz-checkbox
+            ></label>
+          </div>
+        </div>
+        <div
+          *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (coreService.expertMode || isModal)"
+          class="form-group row"
+        >
+          <label
+            [nzTooltipMouseEnterDelay]="0.5"
+            [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.credentialKey' | translate) : ''"
+            class="col-md-4 col-lg-3 form-control-label"
+            title="{{'workflow.label.credentialKey' | translate}}"
+            translate
+            >workflow.label.credentialKey
+            <sup
+              *ngIf="selectedNode.job.executable.login.withUserProfile"
+              class="text-danger text-sm"
+              >*</sup
+            >
           </label>
           <div [ngClass]="{'has-error' : ((credentialKey.dirty || credentialKey.touched) && credentialKey.invalid), 'col-md-8 col-lg-9': !isModal}"
                class="col-md-6 col-lg-8">

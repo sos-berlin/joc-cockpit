@@ -125,7 +125,7 @@ export class AddOrderModalComponent {
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
 
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
-              private modal: NzModalService, private ref: ChangeDetectorRef, private workflowService: WorkflowService) {
+              private modal: NzModalService, private ref: ChangeDetectorRef, private workflowService: WorkflowService, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -989,6 +989,12 @@ export class AddOrderModalComponent {
               this.order.endPositions.push(this.coreService.getPositionStr(pos, newPositions, this.positions));
             })
           }
+          if(this.selectedSchedule.orderParameterisations[i].forceJobAdmission){
+            this.order.forceJobAdmission = this.selectedSchedule.orderParameterisations[i].forceJobAdmission;
+          }
+          if(this.selectedSchedule.orderParameterisations[i].tags.length > 0){
+            this.tags = this.selectedSchedule.orderParameterisations[i].tags;
+          }
           this.order.reload = true;
         }
         break;
@@ -1189,6 +1195,18 @@ export class AddOrderModalComponent {
 
   handleClose(removedTag: {}): void {
     this.tags = this.tags.filter(tag => tag !== removedTag);
+  }
+
+  trackByFn(index: number, item: any): any {
+    return item;
+  }
+
+
+  dropTag(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.tags, event.previousIndex, event.currentIndex);
+    setTimeout(() => {
+      this.cdr.detectChanges();
+    });
   }
 
   sliceTagName(tag: string): string {

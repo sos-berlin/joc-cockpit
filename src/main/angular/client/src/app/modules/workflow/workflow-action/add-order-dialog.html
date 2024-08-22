@@ -272,13 +272,21 @@
       <label class="col-md-4 form-control-label" translate>inventory.label.tagName</label>
       <div class="col-sm-6">
         <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
-          <nz-tag
-            *ngFor="let tag of tags; let i = index"
+          <div
+            cdkDropList
+            cdkDropListOrientation="horizontal"
+            (cdkDropListDropped)="dropTag($event)"
+            class="d-inline-block"
+          >
+          <nz-tag class="cursor" style="transition: none !important;"
+            *ngFor="let tag of tags; let i = index; trackBy: trackByFn"
+            cdkDrag
             [nzMode]="'closeable'"
             (nzOnClose)="handleClose(tag)"
           >
             {{ sliceTagName(tag) }}
           </nz-tag>
+          </div>
           <nz-tag *ngIf="!inputVisible" class="editable-tag" nzNoAnimation (click)="showInput()">
             <span nz-icon nzType="plus"></span>
             {{'inventory.button.newTag' | translate}}

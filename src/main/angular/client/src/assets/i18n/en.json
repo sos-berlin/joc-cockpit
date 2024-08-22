@@ -2139,7 +2139,8 @@
           "agentAssignment": "The Job is assigned an Autonomous Agent or Subagent Cluster for execution. Within a block of ForkList or StickySubagent Instructions an Agent Cluster is assigned. As an alternative an Expression can be specified that provides the unique Subagent Cluster ID from a variable.",
           "agent": "The job is assigned an Agent that will execute the job script/class. Select from the list of available Agents.",
           "agentCluster": "Selects the Agent Cluster for which a Subagent Cluster ID is specified from an expression in a later input field.",
-          "subagentClusterIdExpr": "The Expression specifies the Subagent Cluster ID from a variable. If no variable is specified then a built-in default becomes active if the job is included with a ForkList or StickySubagent Instruction. Users can specify an individual variable for example if predecessor jobs are used to determine the Subagent Cluster on which to execute a successor job."
+          "subagentClusterIdExpr": "The Expression specifies the Subagent Cluster ID from a variable. If no variable is specified then a built-in default becomes active if the job is included with a ForkList or StickySubagent Instruction. Users can specify an individual variable for example if predecessor jobs are used to determine the Subagent Cluster on which to execute a successor job.",
+          "jobNotRestartable": "Job Not Restartable"
         },
         "admissionTime": {
           "admissionType": "The type of admission times includes to specify Weekdays, Specific Weekdays and Month Days.",
@@ -3634,6 +3635,7 @@
     "label.filtersOrdersAsWell": "Filter display of Orders",
     "label.ascending": "Ascending",
     "label.descending": "Descending",
+    "label.jobNotRestartable": "Job not restartable",
     "button.addScheme": "Add Cycle",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",
