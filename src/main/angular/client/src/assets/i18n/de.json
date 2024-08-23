@@ -3635,7 +3635,7 @@
     "label.filtersOrdersAsWell": "Anzeige der Aufträge filtern",
     "label.ascending": "Aufsteigend",
     "label.descending": "Absteigend",
-    "label.jobNotRestartable": "Job not restartable",
+    "label.jobNotRestartable": "Job nicht wiederanlauffähig",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
