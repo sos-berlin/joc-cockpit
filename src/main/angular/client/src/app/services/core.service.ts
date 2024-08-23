@@ -710,34 +710,39 @@ export class CoreService {
   }
 
   getColor(d: number, type: string): string {
-    if (d === 0) {
-      return type === 'text' ? 'green' : type === 'border' ? 'green-box' : 'bg-green';
-    } else if (d === 1) {
-      return type === 'text' ? 'gold' : type === 'border' ? 'gold-box' : 'bg-gold';
-    } else if (d === 2) {
-      return type === 'text' ? 'red' : type === 'border' ? 'red-box' : 'bg-red';
-    } else if (d === 3) {
-      return type === 'text' ? 'light-blue' : type === 'border' ? 'light-blue-box' : 'bg-light-blue';
-    } else if (d === 4) {
-      return type === 'text' ? 'planned' : type === 'border' ? 'planned-box' : 'bg-planned';
-    } else if (d === 5) {
-      return type === 'text' ? 'orange' : type === 'border' ? 'orange-box' : 'bg-orange';
-    } else if (d === 6) {
-      return type === 'text' ? 'dark-blue' : type === 'border' ? 'dark-blue-box' : 'bg-dark-blue';
-    } else if (d === 7) {
-      return type === 'text' ? 'mangenta' : type === 'border' ? 'mangenta-box' : 'bg-mangenta';
-    } else if (d === 8) {
-      return type === 'text' ? 'yellow-green' : type === 'border' ? 'yellow-green-box' : 'bg-yellow-green';
-    } else if (d === 9) {
-      return type === 'text' ? 'calling' : type === 'border' ? 'calling-box' : 'bg-calling';
-    } else if (d === 10) {
-      return type === 'text' ? 'light-yellow' : type === 'border' ? 'light-yellow-box' : 'bg-light-yellow';
-    } else if (d === 11) {
-      return type === 'text' ? 'light-orange' : type === 'border' ? 'light-orange-box' : 'bg-light-orange';
+    const preferenceObj = JSON.parse(sessionStorage['preferences']);
+    console.log(preferenceObj,">>")
+    const orderStateColors = preferenceObj.orderStateColors || [];
+
+    const stateColorMap = {
+      0: 'running',
+      1: 'scheduled',
+      2: 'failed',
+      3: 'inProgress',
+      4: 'planned',
+      5: 'suspended',
+      6: 'finished',
+      7: 'blocked',
+      8: 'waiting',
+      9: 'prompting',
+      10: 'light-yellow',
+      11: 'light-orange',
+    };
+
+    const state = stateColorMap[d] || 'default';
+    const colorObj = orderStateColors.find(item => item.state === state);
+    const className = colorObj ? state : 'light-green';
+
+    if (type === 'text') {
+      return `text-${className}`;
+    } else if (type === 'border') {
+      return `border-${className}-box`;
     } else {
-      return type === 'text' ? 'light-green' : type === 'border' ? 'light-green-box' : 'bg-light-green';
+      return `bg-${className}`;
     }
   }
+
+
 
   getColorBySeverity(d: number, isHover: boolean, isDisabled: boolean = false): string {
     if (d === 0) {

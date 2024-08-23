@@ -12,7 +12,7 @@ import {
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
 import {SharedModule} from '../shared/shared.module';
 import {UserRoutingModule} from './user-routing.module';
-
+import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
 @NgModule({
   declarations: [
     UserComponent,
@@ -27,7 +27,8 @@ import {UserRoutingModule} from './user-routing.module';
   imports: [
     SharedModule,
     NzTabsModule,
-    UserRoutingModule
+    UserRoutingModule,
+    NzColorPickerModule
   ]
 })
 export class UserModule {

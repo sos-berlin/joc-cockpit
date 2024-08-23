@@ -968,6 +968,9 @@ export class UserComponent {
   favList: any = [];
   sharedList: any = [];
   type = 'AGENT';
+  showAdditionalFields: boolean = false;
+  orderStateColors: { state: string, color: string }[] = [];
+  selectedTheme: string;
 
   constructor(public coreService: CoreService, private dataService: DataService, public authService: AuthService,
               private modal: NzModalService, private translate: TranslateService, private i18n: NzI18nService) {
@@ -994,6 +997,10 @@ export class UserComponent {
     this.zones.unshift(this.timeZone, '-----------------------------');
     this.configObj.accountName = this.username;
     this.entryPerPage.push({value: this.preferences.maxEntryPerPage, name: this.preferences.maxEntryPerPage});
+    this.initializeOrderStateColors();
+    this.loadOrderStateColors();
+    this.applyThemeColors(this.orderStateColors);
+
   }
 
   ngOnDestroy(): void {
@@ -1148,12 +1155,76 @@ export class UserComponent {
   changeTheme(theme): void {
     $('#style-color').attr('href', './styles/' + theme + '-style.css');
     localStorage['$SOS$THEME'] = theme;
+    this.selectedTheme = theme;
+    this.loadOrderStateColors();
     this.savePreferences();
   }
 
   changeMenuTheme(): void {
     this.savePreferences(true);
   }
+
+  toggleFieldsVisibility(): void {
+    this.showAdditionalFields = !this.showAdditionalFields;
+  }
+
+  initializeOrderStateColors(): void {
+    // Define default order state colors
+    const defaultOrderStateColor = [
+      { state: 'pending', color: '#ffff00' },
+      { state: 'scheduled', color: '#efcc00' },
+      { state: 'inProgress', color: '#a3c6ea' },
+      { state: 'running', color: '#52c41a' },
+      { state: 'suspended', color: '#FF8000' },
+      { state: 'finished', color: '#1171a6' },
+      { state: 'prompting', color: '#f37891' },
+      { state: 'waiting', color: '#b3b300' },
+      { state: 'blocked', color: '#a500a5' },
+      { state: 'failed', color: '#dc143c' },
+      { state: 'planned', color: '#696969' },
+      { state: 'light-yellow', color: '#ffff00' },
+      { state: 'light-orange', color: '#FFA640' }
+    ];
+
+    this.orderStateColors = JSON.parse(JSON.stringify(defaultOrderStateColor));
+  }
+
+  loadOrderStateColors(): void {
+    if (!this.preferences.orderStateColors) {
+      this.preferences.orderStateColors = JSON.parse(JSON.stringify(this.orderStateColors));
+    }
+    this.orderStateColors = this.preferences.orderStateColors;
+  }
+
+  updateColor(state: string, color: string): void {
+    // Update color for the specified state
+    const stateColor = this.orderStateColors.find(item => item.state === state);
+    if (stateColor) {
+      stateColor.color = color;
+      this.savePreferences();
+    }
+  }
+
+  applyThemeColors(themeColors: any[]): void {
+    // Apply styles to the document
+    let style = document.createElement('style');
+    themeColors.forEach(colorObj => {
+      style.innerHTML += `
+        .bg-${colorObj.state} { background-color: ${colorObj.color}; }
+        .border-${colorObj.state}-box { border-color: ${colorObj.color}; }
+        .text-${colorObj.state} { color: ${colorObj.color}; }
+      `;
+    });
+    document.head.appendChild(style);
+  }
+
+
+  resetDefault(): void {
+    // Reset colors to default
+    this.initializeOrderStateColors();
+    this.savePreferences();
+  }
+
 
   resetProfile(): void {
     const modal = this.modal.create({
@@ -1187,6 +1258,13 @@ export class UserComponent {
         this.dataService.isProfileReload.next(true);
       }
     });
+    setTimeout(()=>{
+      this.initializeOrderStateColors();
+      this.selectedTheme = this.preferences.theme;
+      this.loadOrderStateColors();
+      this.applyThemeColors(this.orderStateColors);
+    },100)
+
   }
 
   private getDefaultUserConfiguration(): void {

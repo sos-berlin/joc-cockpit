@@ -1840,16 +1840,24 @@ export class ScheduleComponent {
   showInput(index): void {
     this.schedule.configuration.orderParameterisations[index].inputVisible = true;
     this.filteredOptions = this.allTags;
+    setTimeout(() => {
+      this.inputElement?.nativeElement.focus();
+    }, 10);
   }
 
-  handleInputConfirm(index): void {
-    if (this.schedule.configuration.orderParameterisations[index].inputValue && this.schedule.configuration.orderParameterisations[index].tags.indexOf(this.inputValue) === -1 && this.workflowService.isValidObject(this.inputValue)) {
-      this.schedule.configuration.orderParameterisations[index].tags = [...this.schedule.configuration.orderParameterisations[index].tags, this.schedule.configuration.orderParameterisations[index].inputValue];
+  handleInputConfirm(index: number): void {
+    const inputValue = this.schedule.configuration.orderParameterisations[index].inputValue;
+    const tags = this.schedule.configuration.orderParameterisations[index].tags;
+
+    if (inputValue && tags.indexOf(inputValue) === -1 && this.workflowService.isValidObject(inputValue)) {
+      this.schedule.configuration.orderParameterisations[index].tags = [...tags, inputValue];
     }
+
     this.schedule.configuration.orderParameterisations[index].inputValue = '';
     this.schedule.configuration.orderParameterisations[index].inputVisible = false;
     this.saveJSON();
   }
+
 
   checkValidInput(): void {
     this.isUnique = true;

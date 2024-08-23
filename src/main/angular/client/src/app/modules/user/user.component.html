@@ -266,13 +266,164 @@
                 </div>
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.theme</div>
-                  <div class="col-md-6">
+                  <div class="col-md-6" style="display: flex">
                     <app-select-input (modelChange)="changeTheme(preferences.theme)" [attributeName]="'theme'" [classNames]="'w-xl'"
                                       [listArray]="themeArray" [object]="preferences"
                                       [optionLabel]="'name'"
                                       [optionValue]="'value'"></app-select-input>
+                    <a (click)="toggleFieldsVisibility()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'profile.tooltip.stateColorChange' | translate" nz-icon class="p-l-sm text-md" nzType="aim" nzTheme="outline"></a>
                   </div>
                 </div>
+
+                <div *ngIf="showAdditionalFields" class="b-a p-a m-t">
+                  <div class="row m-t">
+                    <!-- Pending -->
+                    <div class="col-md-2 col-sm-4">
+                      <div class="row">
+                        <div class="col-4 text-dark form-control-label" translate>common.label.pending</div>
+                        <div class="col-8" style="position: relative;">
+                          <input [(ngModel)]="orderStateColors[0].color" class="form-control w-sm" type="text"
+                                 placeholder="{{'profile.label.enterColor' | translate}}">
+                          <nz-color-picker [(ngModel)]="orderStateColors[0].color"
+                                           (ngModelChange)="updateColor('pending', orderStateColors[0].color)"
+                                           nzSize="small" class="color-picker-circle"></nz-color-picker>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Scheduled -->
+                    <div class="col-md-2 col-sm-4">
+                      <div class="row">
+                        <div class="col-4 text-dark form-control-label" translate>common.label.scheduled</div>
+                        <div class="col-8" style="position: relative;">
+                          <input [(ngModel)]="orderStateColors[1].color" class="form-control w-sm" type="text"
+                                 placeholder="{{'profile.label.enterColor' | translate}}">
+                          <nz-color-picker [(ngModel)]="orderStateColors[1].color"
+                                           (ngModelChange)="updateColor('scheduled', orderStateColors[1].color)"
+                                           nzSize="small" class="color-picker-circle"></nz-color-picker>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- In Progress -->
+                    <div class="col-md-2 col-sm-4">
+                      <div class="row">
+                        <div class="col-4 text-dark form-control-label" translate>common.label.incomplete</div>
+                        <div class="col-8" style="position: relative;">
+                          <input [(ngModel)]="orderStateColors[2].color" class="form-control w-sm" type="text"
+                                 placeholder="{{'profile.label.enterColor' | translate}}">
+                          <nz-color-picker [(ngModel)]="orderStateColors[2].color"
+                                           (ngModelChange)="updateColor('inProgress', orderStateColors[2].color)"
+                                           nzSize="small" class="color-picker-circle"></nz-color-picker>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Running -->
+                    <div class="col-md-2 col-sm-4">
+                      <div class="row">
+                        <div class="col-4 text-dark form-control-label" translate>common.label.running</div>
+                        <div class="col-8" style="position: relative;">
+                          <input [(ngModel)]="orderStateColors[3].color" class="form-control w-sm" type="text"
+                                 placeholder="{{'profile.label.enterColor' | translate}}">
+                          <nz-color-picker [(ngModel)]="orderStateColors[3].color"
+                                           (ngModelChange)="updateColor('running', orderStateColors[3].color)"
+                                           nzSize="small" class="color-picker-circle"></nz-color-picker>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Suspended -->
+                    <div class="col-md-2 col-sm-4">
+                      <div class="row">
+                        <div class="col-4 text-dark form-control-label" translate>common.label.suspended</div>
+                        <div class="col-8" style="position: relative;">
+                          <input [(ngModel)]="orderStateColors[4].color" class="form-control w-sm" type="text"
+                                 placeholder="{{'profile.label.enterColor' | translate}}">
+                          <nz-color-picker [(ngModel)]="orderStateColors[4].color"
+                                           (ngModelChange)="updateColor('suspended', orderStateColors[4].color)"
+                                           nzSize="small" class="color-picker-circle"></nz-color-picker>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row m-t">
+                    <!-- Completed -->
+                    <div class="col-md-2 col-sm-4">
+                      <div class="row">
+                        <div class="col-4 text-dark form-control-label" translate>common.label.completed</div>
+                        <div class="col-8" style="position: relative;">
+                          <input [(ngModel)]="orderStateColors[5].color" class="form-control w-sm" type="text"
+                                 placeholder="{{'profile.label.enterColor' | translate}}">
+                          <nz-color-picker [(ngModel)]="orderStateColors[5].color"
+                                           (ngModelChange)="updateColor('finished', orderStateColors[5].color)"
+                                           nzSize="small" class="color-picker-circle"></nz-color-picker>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Prompting -->
+                    <div class="col-md-2 col-sm-4">
+                      <div class="row">
+                        <div class="col-4 text-dark form-control-label" translate>common.label.prompting</div>
+                        <div class="col-8" style="position: relative;">
+                          <input [(ngModel)]="orderStateColors[6].color" class="form-control w-sm" type="text"
+                                 placeholder="{{'profile.label.enterColor' | translate}}">
+                          <nz-color-picker [(ngModel)]="orderStateColors[6].color"
+                                           (ngModelChange)="updateColor('prompting', orderStateColors[6].color)"
+                                           nzSize="small" class="color-picker-circle"></nz-color-picker>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Waiting -->
+                    <div class="col-md-2 col-sm-4">
+                      <div class="row">
+                        <div class="col-4 text-dark form-control-label" translate>common.label.waiting</div>
+                        <div class="col-8" style="position: relative;">
+                          <input [(ngModel)]="orderStateColors[7].color" class="form-control w-sm" type="text"
+                                 placeholder="{{'profile.label.enterColor' | translate}}">
+                          <nz-color-picker [(ngModel)]="orderStateColors[7].color"
+                                           (ngModelChange)="updateColor('waiting', orderStateColors[7].color)"
+                                           nzSize="small" class="color-picker-circle"></nz-color-picker>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Blocked -->
+                    <div class="col-md-2 col-sm-4">
+                      <div class="row">
+                        <div class="col-4 text-dark form-control-label" translate>common.label.blocked</div>
+                        <div class="col-8" style="position: relative;">
+                          <input [(ngModel)]="orderStateColors[8].color" class="form-control w-sm" type="text"
+                                 placeholder="{{'profile.label.enterColor' | translate}}">
+                          <nz-color-picker [(ngModel)]="orderStateColors[8].color"
+                                           (ngModelChange)="updateColor('blocked', orderStateColors[8].color)"
+                                           nzSize="small" class="color-picker-circle"></nz-color-picker>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Failed -->
+                    <div class="col-md-2 col-sm-4">
+                      <div class="row">
+                        <div class="col-4 text-dark form-control-label" translate>common.label.failed</div>
+                        <div class="col-8" style="position: relative;">
+                          <input [(ngModel)]="orderStateColors[9].color" class="form-control w-sm" type="text"
+                                 placeholder="{{'profile.label.enterColor' | translate}}">
+                          <nz-color-picker [(ngModel)]="orderStateColors[9].color"
+                                           (ngModelChange)="updateColor('failed', orderStateColors[9].color)"
+                                           nzSize="small" class="color-picker-circle"></nz-color-picker>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <a (click)="resetDefault()" class="text-u-l rev" translate>profile.label.resetDefault</a>
+                </div>
+
+
                 <div *ngIf="this.preferences.theme === 'light'" class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.menuBarTheme</div>
                   <div class="col-md-6">
@@ -282,6 +433,7 @@
                                       [optionValue]="'value'"></app-select-input>
                   </div>
                 </div>
+
                 <div class="row m-t">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.themeTitle</div>
                   <div class="col-md-6">

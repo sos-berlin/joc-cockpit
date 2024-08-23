@@ -66,6 +66,58 @@
 }
 
 /***
+Dynamic Color classes
+***/
+/* Background color classes */
+.bg-pending { background-color: #ffff00; }
+.bg-scheduled { background-color: #efcc00; }
+.bg-inProgress { background-color: #a3c6ea; }
+.bg-running { background-color: #7ab97a; }
+.bg-planned { background-color: #bbb; }
+.bg-finished { background-color: #1591d4; }
+.bg-prompting { background-color: #f37891; }
+.bg-waiting { background-color: #cccc00; }
+.bg-blocked { background-color: #b966b9; }
+.bg-failed { background-color: #ed365b; }
+.bg-suspended { background-color: #FF8d1a; }
+.bg-light-yellow { background-color: #ffff00; }
+.bg-light-orange { background-color: rgba(255, 166, 64, 0.9); }
+.bg-light-green { background-color: #90EE90; }
+
+/* Border color classes */
+.border-pending-box { border-color: #ffff00; }
+.border-scheduled-box { border-color: #efcc00; }
+.border-inProgress-box { border-color: #a3c6ea; }
+.border-running-box { border-color: #7ab97a; }
+.border-planned-box { border-color: #bbb; }
+.border-finished-box { border-color: #1591d4; }
+.border-prompting-box { border-color: #f37891; }
+.border-waiting-box { border-color: #cccc00; }
+.border-blocked-box { border-color: #b966b9; }
+.border-failed-box { border-color: #ed365b; }
+.border-suspended-box { border-color: #FF8d1a; }
+.border-light-yellow-box { border-color: #ffff00; }
+.border-light-orange-box { border-color: rgba(255, 166, 64, 0.9); }
+.border-light-green-box { border-color: #90EE90; }
+
+/* Text color classes */
+.text-pending { color: #ffff00; }
+.text-scheduled { color: #efcc00; }
+.text-inProgress { color: #a3c6ea; }
+.text-running { color: #9ccc65 ; }
+.text-planned { color: #696969; }
+.text-finished { color: #1171a6; }
+.text-prompting { color: #f37891; }
+.text-waiting { color: #b3b300; }
+.text-blocked { color: #a500a5; }
+.text-failed { color: #dc143c; }
+.text-suspended { color: #FF8000; }
+.text-light-yellow { color: #ffff00; }
+.text-light-orange { color: #FFA640; }
+.text-light-green { color: #90EE90; }
+
+
+/***
  Custom icon for Workflow and XMl editor
 ***/
 
@@ -9794,3 +9846,28 @@ cdk-virtual-scroll-viewport {
   border-bottom: 2px solid var(--border-color);
 }
 
+.color-picker-circle {
+  position: absolute;
+  left: 140px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.ant-color-picker-color-block {
+  border-radius: 50%;
+}
+
+.ant-color-picker-trigger.ant-color-picker-sm{
+  border: none;
+}
+
+.ant-color-picker-color-block-inner{
+  border: none;
+}
+
+.rev{
+  display: flex;
+  flex-direction: row-reverse;
+}

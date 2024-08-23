@@ -291,7 +291,7 @@
           <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
                class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.name' | translate) : ''"
-                   
+
                    class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.orderTemplateName
               <sup class="text-danger text-sm">*</sup>
             </label>
@@ -309,7 +309,7 @@
           </div>
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.title' | translate) : ''"
-                   
+
                    class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
               <input (blur)="saveJSON()" [(ngModel)]="schedule.configuration.title" [readOnly]="isTrash || !permission.joc.inventory.manage"
@@ -319,7 +319,7 @@
           </div>
           <div *ngIf="coreService.expertMode" class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.documentation' | translate) : ''"
-                   
+
                    class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
               <app-select-document (funcCall)="saveJSON($event)" [data]="schedule.configuration"
@@ -328,7 +328,7 @@
           </div>
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.workflowName' | translate) : ''"
-                   
+
                    class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.workflowNames
               <sup class="text-danger text-sm">*</sup>
             </label>
@@ -343,7 +343,7 @@
           </div>
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.planOrderAutomatically' | translate) : ''"
-                   
+
                    class="col-lg-3 col-xl-3 col-xxl-3 block-ellipsis-job"
                    title="{{'inventory.label.planOrderAutomatically' | translate}}" translate>inventory.label.planOrderAutomatically</label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -354,7 +354,7 @@
           </div>
           <div class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.submitOrderToControllerWhenPlanned' | translate) : ''"
-                   
+
                    class="col-lg-3 col-xl-3 col-xxl-3 block-ellipsis-job"
                    title="{{'inventory.label.submitOrderToControllerWhenPlanned' | translate}}" translate>inventory.label.submitOrderToControllerWhenPlanned</label>
             <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -372,7 +372,7 @@
                  [ngClass]="{'b-t b-t-2x p-t' : j != 0}">
               <div class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.orderName' | translate) : ''"
-                       
+
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.orderName</label>
                 <div [ngClass]="{ 'has-error' : (((orderName.dirty || orderName.touched) && orderName.invalid))}"
                      class="col-lg-9 col-xl-8 col-xxl-6">
@@ -406,7 +406,7 @@
                       (cdkDropListDropped)="drop($event, j)"
                       class="d-inline-block"
                     >
-                      <nz-tag class="cursor"
+                      <nz-tag class="cursor" style="transition: none"
                         *ngFor="let tag of variableSet.tags; let i = index; trackBy: trackByFn"
                         cdkDrag
                         nzNoAnimation
@@ -452,7 +452,7 @@
 
               <div class="form-group row" *ngIf="blockPositions?.size > 0 && ((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.blockPosition' | translate) : ''"
-                       
+
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.blockPosition</label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <app-node-position [obj]="variableSet.positions" [blockPositions]="blockPositions" [blockPositionList]="blockPositionList"
@@ -461,7 +461,7 @@
               </div>
               <div class="form-group row" *ngIf="((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.startNode' | translate) : ''"
-                       
+
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.startNode</label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <app-node-position (onBlur)="saveJSON()" [obj]="variableSet.positions" [newPositions]="variableSet.positions.newPositions" [positions]="positions"
@@ -470,7 +470,7 @@
               </div>
               <div class="form-group row" *ngIf="((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.endNode' | translate) : ''"
-                       
+
                        class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.endNode</label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
                   <app-node-position (onBlur)="updateEndNode(variableSet.positions)" [newPositions]="variableSet.positions.newPositions" [obj]="variableSet.positions"
@@ -481,7 +481,7 @@
               </div>
               <div class="form-group row" *ngIf="((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.ignoreAdmissionTimes' | translate) : ''"
-                       
+
                        class="col-lg-3 col-xl-3 col-xxl-3"
                        translate>order.label.ignoreAdmissionTimes</label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
