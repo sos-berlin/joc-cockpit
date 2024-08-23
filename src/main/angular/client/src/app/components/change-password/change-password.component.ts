@@ -99,7 +99,6 @@ export class ChangePasswordComponent {
     }
   }
 
- 
   toggleShowOldPassword(): void {
     this.showOldPassword = !this.showOldPassword;
   }
