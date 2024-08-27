@@ -711,7 +711,6 @@ export class CoreService {
 
   getColor(d: number, type: string): string {
     const preferenceObj = JSON.parse(sessionStorage['preferences']);
-    console.log(preferenceObj,">>")
     const orderStateColors = preferenceObj.orderStateColors || [];
 
     const stateColorMap = {

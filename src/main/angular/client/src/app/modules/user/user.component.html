@@ -282,7 +282,7 @@
                       <div class="row">
                         <div class="col-4 text-dark form-control-label" translate>common.label.pending</div>
                         <div class="col-8" style="position: relative;">
-                          <input [(ngModel)]="orderStateColors[0].color" class="form-control w-sm" type="text"
+                          <input [(ngModel)]="orderStateColors[0].color"  class="form-control w-sm color-input" type="text"
                                  placeholder="{{'profile.label.enterColor' | translate}}">
                           <nz-color-picker [(ngModel)]="orderStateColors[0].color"
                                            (ngModelChange)="updateColor('pending', orderStateColors[0].color)"
@@ -296,7 +296,7 @@
                       <div class="row">
                         <div class="col-4 text-dark form-control-label" translate>common.label.scheduled</div>
                         <div class="col-8" style="position: relative;">
-                          <input [(ngModel)]="orderStateColors[1].color" class="form-control w-sm" type="text"
+                          <input [(ngModel)]="orderStateColors[1].color"  class="form-control w-sm color-input" type="text"
                                  placeholder="{{'profile.label.enterColor' | translate}}">
                           <nz-color-picker [(ngModel)]="orderStateColors[1].color"
                                            (ngModelChange)="updateColor('scheduled', orderStateColors[1].color)"
@@ -310,7 +310,7 @@
                       <div class="row">
                         <div class="col-4 text-dark form-control-label" translate>common.label.incomplete</div>
                         <div class="col-8" style="position: relative;">
-                          <input [(ngModel)]="orderStateColors[2].color" class="form-control w-sm" type="text"
+                          <input [(ngModel)]="orderStateColors[2].color"  class="form-control w-sm color-input" type="text"
                                  placeholder="{{'profile.label.enterColor' | translate}}">
                           <nz-color-picker [(ngModel)]="orderStateColors[2].color"
                                            (ngModelChange)="updateColor('inProgress', orderStateColors[2].color)"
@@ -324,7 +324,7 @@
                       <div class="row">
                         <div class="col-4 text-dark form-control-label" translate>common.label.running</div>
                         <div class="col-8" style="position: relative;">
-                          <input [(ngModel)]="orderStateColors[3].color" class="form-control w-sm" type="text"
+                          <input [(ngModel)]="orderStateColors[3].color"  class="form-control w-sm color-input" type="text"
                                  placeholder="{{'profile.label.enterColor' | translate}}">
                           <nz-color-picker [(ngModel)]="orderStateColors[3].color"
                                            (ngModelChange)="updateColor('running', orderStateColors[3].color)"
@@ -338,7 +338,7 @@
                       <div class="row">
                         <div class="col-4 text-dark form-control-label" translate>common.label.suspended</div>
                         <div class="col-8" style="position: relative;">
-                          <input [(ngModel)]="orderStateColors[4].color" class="form-control w-sm" type="text"
+                          <input [(ngModel)]="orderStateColors[4].color"  class="form-control w-sm color-input" type="text"
                                  placeholder="{{'profile.label.enterColor' | translate}}">
                           <nz-color-picker [(ngModel)]="orderStateColors[4].color"
                                            (ngModelChange)="updateColor('suspended', orderStateColors[4].color)"
@@ -354,7 +354,7 @@
                       <div class="row">
                         <div class="col-4 text-dark form-control-label" translate>common.label.completed</div>
                         <div class="col-8" style="position: relative;">
-                          <input [(ngModel)]="orderStateColors[5].color" class="form-control w-sm" type="text"
+                          <input [(ngModel)]="orderStateColors[5].color"  class="form-control w-sm color-input" type="text"
                                  placeholder="{{'profile.label.enterColor' | translate}}">
                           <nz-color-picker [(ngModel)]="orderStateColors[5].color"
                                            (ngModelChange)="updateColor('finished', orderStateColors[5].color)"
@@ -368,7 +368,7 @@
                       <div class="row">
                         <div class="col-4 text-dark form-control-label" translate>common.label.prompting</div>
                         <div class="col-8" style="position: relative;">
-                          <input [(ngModel)]="orderStateColors[6].color" class="form-control w-sm" type="text"
+                          <input [(ngModel)]="orderStateColors[6].color"  class="form-control w-sm color-input" type="text"
                                  placeholder="{{'profile.label.enterColor' | translate}}">
                           <nz-color-picker [(ngModel)]="orderStateColors[6].color"
                                            (ngModelChange)="updateColor('prompting', orderStateColors[6].color)"
@@ -382,7 +382,7 @@
                       <div class="row">
                         <div class="col-4 text-dark form-control-label" translate>common.label.waiting</div>
                         <div class="col-8" style="position: relative;">
-                          <input [(ngModel)]="orderStateColors[7].color" class="form-control w-sm" type="text"
+                          <input [(ngModel)]="orderStateColors[7].color"  class="form-control w-sm color-input" type="text"
                                  placeholder="{{'profile.label.enterColor' | translate}}">
                           <nz-color-picker [(ngModel)]="orderStateColors[7].color"
                                            (ngModelChange)="updateColor('waiting', orderStateColors[7].color)"
@@ -396,7 +396,7 @@
                       <div class="row">
                         <div class="col-4 text-dark form-control-label" translate>common.label.blocked</div>
                         <div class="col-8" style="position: relative;">
-                          <input [(ngModel)]="orderStateColors[8].color" class="form-control w-sm" type="text"
+                          <input [(ngModel)]="orderStateColors[8].color"  class="form-control w-sm color-input" type="text"
                                  placeholder="{{'profile.label.enterColor' | translate}}">
                           <nz-color-picker [(ngModel)]="orderStateColors[8].color"
                                            (ngModelChange)="updateColor('blocked', orderStateColors[8].color)"
@@ -410,7 +410,7 @@
                       <div class="row">
                         <div class="col-4 text-dark form-control-label" translate>common.label.failed</div>
                         <div class="col-8" style="position: relative;">
-                          <input [(ngModel)]="orderStateColors[9].color" class="form-control w-sm" type="text"
+                          <input [(ngModel)]="orderStateColors[9].color"  class="form-control w-sm color-input" type="text"
                                  placeholder="{{'profile.label.enterColor' | translate}}">
                           <nz-color-picker [(ngModel)]="orderStateColors[9].color"
                                            (ngModelChange)="updateColor('failed', orderStateColors[9].color)"

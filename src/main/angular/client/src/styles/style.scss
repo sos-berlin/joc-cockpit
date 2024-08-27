@@ -9848,11 +9848,18 @@ cdk-virtual-scroll-viewport {
 
 .color-picker-circle {
   position: absolute;
-  left: 140px;
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
   border-radius: 50%;
+}
+
+.color-input {
+  position: absolute;
+  left: 40px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
 }
 
 .ant-color-picker-color-block {

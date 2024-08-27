@@ -653,7 +653,6 @@ export class AddOrderModalComponent {
 
       if (atTime.includes('h') || atTime.includes('m') || atTime.includes('s')) {
         atTime = this.convertToSeconds(atTime);
-        console.log(atTime,">>")
       }
 
       order.scheduledFor = 'now + ' + atTime;

@@ -2476,6 +2476,7 @@
     "button.assignFromSchedule": "Parametrisierung aus Zeitplan",
     "button.cloneOrder": "Auftrag klonen",
     "button.continue": "Loslaufen lassen",
+    "button.addOrderParameterization": "Add Order Parameterization",
     "placeholder.selectStartNode": "Start-Position auswählen",
     "placeholder.selectEndNode": "End-Position auswählen",
     "placeholder.selectBlockPosition": "Block-Position angeben",

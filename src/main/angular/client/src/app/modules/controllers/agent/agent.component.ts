@@ -518,7 +518,6 @@ export class ShowCertificateListModalComponent {
       };
     }
 
-    console.log(this.data,"???")
     if (this.preferences.auditLog) {
       const comments = {
         radio: 'predefined',

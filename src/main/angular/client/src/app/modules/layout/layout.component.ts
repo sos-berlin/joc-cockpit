@@ -738,6 +738,60 @@ export class LayoutComponent {
     preferences.interRankCellSpacing = '100';
     preferences.intraCellSpacing = '100';
     preferences.edgeRounded = true;
+    preferences.orderStateColors = [
+      {
+        "state": "pending",
+        "color": "#ffff00"
+      },
+      {
+        "state": "scheduled",
+        "color": "#efcc00"
+      },
+      {
+        "state": "inProgress",
+        "color": "#a3c6ea"
+      },
+      {
+        "state": "running",
+        "color": "#52c41a"
+      },
+      {
+        "state": "suspended",
+        "color": "#FF8000"
+      },
+      {
+        "state": "finished",
+        "color": "#1171a6"
+      },
+      {
+        "state": "prompting",
+        "color": "#f37891"
+      },
+      {
+        "state": "waiting",
+        "color": "#b3b300"
+      },
+      {
+        "state": "blocked",
+        "color": "#a500a5"
+      },
+      {
+        "state": "failed",
+        "color": "#dc143c"
+      },
+      {
+        "state": "planned",
+        "color": "#696969"
+      },
+      {
+        "state": "light-yellow",
+        "color": "#ffff00"
+      },
+      {
+        "state": "light-orange",
+        "color": "#FFA640"
+      }
+    ]
 
     if (sessionStorage['$SOS$FORCELOGING'] === 'true' || sessionStorage['$SOS$FORCELOGING'] === true) {
       preferences.auditLog = true;
