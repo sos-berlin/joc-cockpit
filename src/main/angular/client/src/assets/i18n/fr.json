@@ -2476,7 +2476,7 @@
     "button.assignFromSchedule": "Assigner à partir d'une Planification",
     "button.cloneOrder": "Cloner l'Ordre",
     "button.continue": "Faire courir",
-    "button.addOrderParameterization": "Add Order Parameterization",
+    "button.addOrderParameterization": "Ajouter Paramétrage de l'Ordre",
     "placeholder.selectStartNode": "Sélectionner la Position de Départ",
     "placeholder.selectEndNode": "Sélectionner la Position de Fin",
     "placeholder.selectBlockPosition": "Sélectionner la Position d Bloc",
