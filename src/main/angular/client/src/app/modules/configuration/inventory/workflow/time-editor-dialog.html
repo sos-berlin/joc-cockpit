@@ -46,7 +46,7 @@
               </label>
               <div [ngClass]="{ 'has-error' : (((duration.dirty || duration.touched) && duration.invalid))}"
                    class="col-sm-6">
-                <input #duration="ngModel" [(ngModel)]="object.duration" appValidateDuration class="form-control" name="duration"
+                <input #duration="ngModel" [(ngModel)]="object.duration" appValidateDurationChange (blur)="onBlur2(duration,'duration')" class="form-control" name="duration"
                        placeholder="{{'workflow.placeholder.durationPeriod' | translate}}"
                        required type="text">
                 <div *ngIf="duration.invalid && (duration.dirty || duration.touched)" class="text-danger help-block">

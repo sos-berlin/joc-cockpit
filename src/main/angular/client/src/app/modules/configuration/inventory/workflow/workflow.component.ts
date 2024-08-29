@@ -21,7 +21,7 @@ import {clone, extend, isArray, isEmpty, isEqual, isNaN, sortBy} from 'underscor
 import {saveAs} from 'file-saver';
 import {ToastrService} from 'ngx-toastr';
 import {Router} from '@angular/router';
-import {AbstractControl, NG_VALIDATORS, Validator} from '@angular/forms';
+import {AbstractControl, NG_VALIDATORS,NgModel, Validator} from '@angular/forms';
 import {CdkDragDrop, DragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {WorkflowService} from '../../../../services/workflow.service';
 import {DataService} from '../../../../services/data.service';
@@ -433,7 +433,7 @@ export class RepeatEditorComponent {
   isNew: boolean;
   object: any = {};
 
-  constructor(public activeModal: NzModalRef) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
@@ -506,6 +506,12 @@ export class TimeEditorComponent {
 
   selectTime(time, isEditor = false): void {
     this.coreService.selectTime(time, isEditor, this.object, 'start');
+  }
+
+  onBlur2(repeat: NgModel, propertyName: string) {
+    this.object[propertyName] = this.coreService.padTime(this.object[propertyName]);
+    repeat.control.setErrors({incorrect: false});
+    repeat.control.updateValueAndValidity();
   }
 
   onSubmit(): void {
