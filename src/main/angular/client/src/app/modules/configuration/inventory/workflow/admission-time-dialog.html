@@ -29,7 +29,7 @@
        <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-9" [ngClass]="{ 'has-error' : (((period.dirty || period.touched) && period.invalid))}">
-        <input [appAutofocus]="true" appValidateDuration required class="form-control" name="period"
+        <input [appAutofocus]="true" appValidateDurationChange (blur)="onBlur(period,'period')" required class="form-control" name="period"
                #period="ngModel" [(ngModel)]="repeatObject.period"
                placeholder="{{'workflow.placeholder.durationPeriod' | translate}}" type="text">
         <div *ngIf="period.invalid && (period.dirty || period.touched)" class="text-danger help-block">
@@ -65,7 +65,7 @@
        <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-9" [ngClass]="{ 'has-error' : (((pause.dirty || pause.touched) && pause.invalid))}">
-        <input appValidateDuration required class="form-control" name="pause"
+        <input appValidateDurationChange (blur)="onBlur(pause,'pause')" required class="form-control" name="pause"
                #pause="ngModel" [(ngModel)]="repeatObject.pause"
                placeholder="{{'workflow.placeholder.durationPeriod' | translate}}" type="text">
         <div *ngIf="pause.invalid && (pause.dirty || pause.touched)" class="text-danger help-block">
@@ -92,7 +92,7 @@
        <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-9" [ngClass]="{ 'has-error' : (((interval.dirty || interval.touched) && interval.invalid))}">
-        <input appValidateDuration required class="form-control" name="interval"
+        <input appValidateDurationChange (blur)="onBlur(interval,'interval')" required class="form-control" name="interval"
                #interval="ngModel" [(ngModel)]="repeatObject.interval"
                placeholder="{{'workflow.placeholder.durationPeriod' | translate}}" type="text">
         <div *ngIf="interval.invalid && (interval.dirty || interval.touched)" class="text-danger help-block">
@@ -287,8 +287,8 @@
          <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-9" [ngClass]="{ 'has-error' : (((duration.dirty || duration.touched) && duration.invalid))}">
-          <input appValidateDuration required class="form-control" name="duration"
-                 #duration="ngModel" [(ngModel)]="object.duration"
+          <input appValidateDurationChange required class="form-control" name="duration"
+                 #duration="ngModel" [(ngModel)]="object.duration" (blur)="onBlur2(duration,'duration')"
                  placeholder="{{'workflow.placeholder.durationPeriod' | translate}}" type="text">
           <div *ngIf="duration.invalid && (duration.dirty || duration.touched)" class="text-danger help-block">
             <div *ngIf="duration.errors['required']">
