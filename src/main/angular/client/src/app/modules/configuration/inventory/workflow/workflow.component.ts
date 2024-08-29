@@ -508,6 +508,12 @@ export class TimeEditorComponent {
     this.coreService.selectTime(time, isEditor, this.object, 'start');
   }
 
+  onBlur2(repeat: NgModel, propertyName: string) {
+    this.object[propertyName] = this.coreService.padTime(this.object[propertyName]);
+    repeat.control.setErrors({incorrect: false});
+    repeat.control.updateValueAndValidity();
+  }
+
   onSubmit(): void {
     const obj: any = {};
     const h = this.object.startTime1.getHours();

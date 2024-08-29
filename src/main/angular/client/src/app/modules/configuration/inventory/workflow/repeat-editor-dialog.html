@@ -33,7 +33,7 @@
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div [ngClass]="{ 'has-error' : (((period.dirty || period.touched) && period.invalid))}" class="col-sm-6">
-                <input #period="ngModel" [(ngModel)]="object.period" [appAutofocus]="true" appValidateDuration class="form-control"
+                <input #period="ngModel" [(ngModel)]="object.period" [appAutofocus]="true" appValidateDurationChange (blur)="onBlur(period,'period')" class="form-control"
                        name="period" placeholder="{{'workflow.placeholder.durationPeriod' | translate}}"
                        required type="text">
                 <div *ngIf="period.invalid && (period.dirty || period.touched)" class="text-danger help-block">
@@ -70,7 +70,7 @@
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <div [ngClass]="{ 'has-error' : (((pause.dirty || pause.touched) && pause.invalid))}" class="col-sm-6">
-                <input #pause="ngModel" [(ngModel)]="object.pause" appValidateDuration class="form-control"
+                <input #pause="ngModel" [(ngModel)]="object.pause" appValidateDurationChange (blur)="onBlur(pause,'pause')" class="form-control"
                        name="pause" placeholder="{{'workflow.placeholder.durationPeriod' | translate}}"
                        required type="text">
                 <div *ngIf="pause.invalid && (pause.dirty || pause.touched)" class="text-danger help-block">
