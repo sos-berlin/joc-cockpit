@@ -98,7 +98,7 @@
               </label>
               <div [ngClass]="{ 'has-error' : (((interval.dirty || interval.touched) && interval.invalid))}"
                    class="col-sm-6">
-                <input #interval="ngModel" [(ngModel)]="object.interval" appValidateDuration class="form-control"
+                <input #interval="ngModel" [(ngModel)]="object.interval" appValidateDurationChange (blur)="onBlur(interval,'interval')" class="form-control"
                        name="interval" placeholder="{{'workflow.placeholder.durationPeriod' | translate}}"
                        required type="text">
                 <div *ngIf="interval.invalid && (interval.dirty || interval.touched)" class="text-danger help-block">

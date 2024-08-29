@@ -4794,7 +4794,8 @@ export class XmlEditorComponent {
         type: 'XML_EDITOR',
         importObj,
         otherSchema: this.otherSchema,
-        importXsd: false
+        importXsd: false,
+        display: this.preferences.auditLog,
       },
       nzFooter: null,
       nzAutofocus: null,

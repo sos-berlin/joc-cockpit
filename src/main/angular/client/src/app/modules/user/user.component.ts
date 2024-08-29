@@ -1206,7 +1206,6 @@ export class UserComponent {
   }
 
   applyThemeColors(themeColors: any[]): void {
-    // Apply styles to the document
     let style = document.createElement('style');
     themeColors.forEach(colorObj => {
       style.innerHTML += `

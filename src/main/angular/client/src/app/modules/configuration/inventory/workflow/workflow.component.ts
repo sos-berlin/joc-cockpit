@@ -433,7 +433,7 @@ export class RepeatEditorComponent {
   isNew: boolean;
   object: any = {};
 
-  constructor(public activeModal: NzModalRef) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
   ngOnInit(): void {
@@ -452,6 +452,12 @@ export class RepeatEditorComponent {
       this.data = this.object;
     }
     this.activeModal.close(this.data);
+  }
+
+  onBlur(repeat: NgModel, propertyName: string) {
+    this.object[propertyName] = this.coreService.padTime(this.object[propertyName]);
+    repeat.control.setErrors({incorrect: false});
+    repeat.control.updateValueAndValidity();
   }
 
   cancel(): void {
@@ -943,6 +949,8 @@ export class AdmissionTimeComponent {
     this.editor.isEnable = this.frequency.days.length > 0;
     this.checkDays();
   }
+
+
 
   checkDays(): void {
     this.frequency.all = this.frequency.days.length === 7;

@@ -9,7 +9,7 @@ import {AuthService} from '../../../components/guard';
 import {WorkflowService} from '../../../services/workflow.service';
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
-import { EncryptArgumentModalComponent } from '../../configuration/inventory/inventory.component';
+import {EncryptArgumentModalComponent} from '../../configuration/inventory/inventory.component';
 import {NgModel} from "@angular/forms";
 
 @Component({
@@ -89,8 +89,8 @@ export class AddOrderModalComponent {
   preferences: any;
   workflow: any;
 
-  order: any = {};
-  arguments: any = [];
+  orders: any[] = [{}];
+  arguments: any[][] = [[]];
   isForkList = false;
 
   dateFormat: any;
@@ -111,7 +111,7 @@ export class AddOrderModalComponent {
     orderName: '',
     name: ''
   }
-  isCollapsed: boolean[] = [];
+  isCollapsed: any[] = [];
   displayModal = false;
   tag: any;
   tags = [];
@@ -133,99 +133,63 @@ export class AddOrderModalComponent {
     this.permission = this.modalData.permission;
     this.preferences = this.modalData.preferences;
     this.workflow = this.modalData.workflow;
-    this.allowEmptyArguments = sessionStorage['allowEmptyArguments'] == 'true';
+    this.allowEmptyArguments = sessionStorage['allowEmptyArguments'] === 'true';
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
+
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
-    this.order.timeZone = this.preferences.zone;
-    this.order.at = 'now';
+
+    this.orders = [{
+      orderId: '',
+      timeZone: this.preferences.zone,
+      at: 'now',
+      forceJobAdmission: false,
+      tags: [],
+      arguments: [],
+      startPosition: '',
+      endPositions: [],
+      blockPosition: '',
+      reload: false,
+    }];
+
+    this.orders[0].timeZone = this.preferences.zone;
+    this.orders[0].at = 'now';
+
     if (!this.workflow.configuration) {
       this.workflow.configuration = this.coreService.clone(this.workflow);
       this.workflowService.convertTryToRetry(this.workflow.configuration, null, {}, {count: 0});
     }
+
     this.fetchTags();
     this.getPositions();
-    this.updateVariableList();
+    this.updateVariableList(0);
     this.checkClipboardContent();
+    this.initializeOrders();
     if (this.modalData.order) {
-      this.order.at = 'date';
-      if (this.modalData.order.scheduledFor && typeof this.modalData.order.scheduledFor == 'number') {
-        //this.order.fromDate = this.coreService.convertTimeToLocalTZ(this.preferences, new Date(this.modalData.order.scheduledFor));
-        this.order.fromTime1 = this.coreService.convertTimeToLocalTZ(this.preferences, new Date(this.modalData.order.scheduledFor));
-        this.order.fromTime = this.coreService.getDateByFormat(new Date(this.modalData.order.scheduledFor), null, 'HH:mm:ss');
-        this.order.fromDate = new Date(this.modalData.order.scheduledFor);
+      this.orders[0].at = 'date';
+      if (this.modalData.order.scheduledFor && typeof this.modalData.order.scheduledFor === 'number') {
+        this.orders[0].fromTime1 = this.coreService.convertTimeToLocalTZ(this.preferences, new Date(this.modalData.order.scheduledFor));
+        this.orders[0].fromTime = this.coreService.getDateByFormat(new Date(this.modalData.order.scheduledFor), null, 'HH:mm:ss');
+        this.orders[0].fromDate = new Date(this.modalData.order.scheduledFor);
       }
-      let _arguments: any = this.coreService.convertObjectToArray(this.modalData.order, 'arguments');
-      if (_arguments && _arguments.length > 0) {
-        _arguments.forEach(argu => {
-          for (let i in this.variableList) {
-            if (argu.name == this.variableList[i].name) {
-              if (isArray(argu.value)) {
-                if(argu.type === 'List'){
-                  for (let j in argu.value) {
-                    Object.entries(argu.value[j]).map(([k1, v1]) => {
-                      for (let x in this.variableList[i].value.actualList) {
-                        if (k1 == this.variableList[i].value.actualList[x].name) {
-                          this.variableList[i].value.actualList[x].value = v1;
-                          break;
-                        }
-                      }
-                    });
-                  }
-                }else if(argu.type === 'Map'){
-                  for (let j in argu.value) {
-                    Object.entries(argu.value[j]).map(([k1, v1]) => {
-                      for (let x in this.variableList[i].value.actualMap) {
-                        if (k1 == this.variableList[i].value.actualMap[x].name) {
-                          this.variableList[i].value.actualMap[x].value = v1;
-                          break;
-                        }
-                      }
-                    });
-                  }
-                }
-                if(this.variableList[i].value.type === 'List'){
-                  this.arguments.push({
-                    name: argu.name,
-                    type: this.variableList[i].value.type,
-                    isRequired: true,
-                    actualList: [{list: this.variableList[i].value.actualList}],
-                    list: this.variableList[i].value.listParameters
-                  });
-                }else if(this.variableList[i].value.type === 'Map'){
-                  this.arguments.push({
-                    name: argu.name,
-                    type: this.variableList[i].value.type,
-                    isRequired: true,
-                    actualMap: [{map: this.variableList[i].value.actualMap}],
-                    map: this.variableList[i].value.listParameters
-                  });
-                }
-              } else {
-                this.arguments.push({
-                  name: argu.name,
-                  value: argu.value,
-                  type: this.variableList[i].value.type,
-                  isRequired: true,
-                  facet: this.variableList[i].value.facet,
-                  message: this.variableList[i].value.message,
-                  list: this.variableList[i].value.list,
-                  map: this.variableList[i].value.map
-                });
-              }
-              break;
-            }
-          }
 
-
-        })
-      }
     }
+    this.initializeArguments(this.orders[0]);
+    this.isCollapsed = this.orders.map(order => order.arguments.map(() => false));
+  }
+
+  initializeOrders(): void {
+    this.orders.forEach(order => {
+      order.tags = [];
+      order.inputVisible = false;
+      order.inputValue = '';
+      order.filteredOptions = [];
+    });
   }
 
   ngAfterViewInit(): void {
@@ -233,37 +197,120 @@ export class AddOrderModalComponent {
       this.displayModal = true;
     }, 100);
   }
-  toggleCollapse(k: number): void {
+
+initializeArguments(order: any): void {
+    if (this.modalData.order) {
+        let _arguments: any = this.coreService.convertObjectToArray(this.modalData.order, 'arguments');
+        if (_arguments && _arguments.length > 0) {
+            _arguments.forEach(argu => {
+                for (let i in this.variableList) {
+                    if (argu.name == this.variableList[i].name) {
+                        if (Array.isArray(argu.value)) {
+                            if (argu.type === 'List') {
+                                // Handle List Type
+                                argu.value.forEach((listItem) => {
+                                    Object.entries(listItem).forEach(([key, value]) => {
+                                        this.variableList[i].value.actualList.forEach((variable) => {
+                                            if (key === variable.name) {
+                                                variable.value = value;
+                                            }
+                                        });
+                                    });
+                                });
+                                order.arguments.push({
+                                    name: argu.name,
+                                    type: argu.type,
+                                    isRequired: true,
+                                    actualList: [{ list: this.variableList[i].value.actualList }],
+                                    list: this.variableList[i].value.listParameters
+                                });
+                            } else if (argu.type === 'Map') {
+                                // Handle Map Type
+                                argu.value.forEach((mapItem) => {
+                                    Object.entries(mapItem).forEach(([key, value]) => {
+                                        this.variableList[i].value.actualMap.forEach((variable) => {
+                                            if (key === variable.name) {
+                                                variable.value = value;
+                                            }
+                                        });
+                                    });
+                                });
+                                order.arguments.push({
+                                    name: argu.name,
+                                    type: argu.type,
+                                    isRequired: true,
+                                    actualMap: [{ map: this.variableList[i].value.actualMap }],
+                                    map: this.variableList[i].value.listParameters
+                                });
+                            }
+                        } else {
+                            // Handling normal types (e.g., String, Number, Boolean)
+                            if (argu.type !== 'List' && argu.type !== 'Map') {
+                                order.arguments.push({
+                                    name: argu.name,
+                                    value: argu.value,
+                                    type: this.variableList[i].value.type,
+                                    isRequired: true,
+                                    facet: this.variableList[i].value.facet,
+                                    message: this.variableList[i].value.message,
+                                    list: this.variableList[i].value.list,
+                                    map: this.variableList[i].value.map
+                                });
+                            }
+                        }
+                        break;
+                    }
+                }
+            });
+        }
+    }
+}
+
+
+
+  toggleCollapse(k: number, selectedOrderIndex: number): void {
+    if (!this.isCollapsed[selectedOrderIndex]) {
+      this.isCollapsed[selectedOrderIndex] = [];
+    }
 
     if (this.preferences.listVariableCollapse) {
-      if (this.allValuesAssigned(this.arguments[k])) {
-        this.isCollapsed[k] = !this.isCollapsed[k];
+      if (this.allValuesAssigned(this.orders[selectedOrderIndex].arguments[k])) {
+        this.isCollapsed[selectedOrderIndex][k] = !this.isCollapsed[selectedOrderIndex][k];
       }
     } else {
-      this.isCollapsed[k] = !this.isCollapsed[k];
+      this.isCollapsed[selectedOrderIndex][k] = !this.isCollapsed[selectedOrderIndex][k];
     }
   }
 
-  expandAll(): void {
-    this.isCollapsed = this.isCollapsed.map(() => false);
+
+  expandAll(orderIndex: number): void {
+    if (!this.isCollapsed[orderIndex]) {
+      this.isCollapsed[orderIndex] = [];
+    }
+    this.isCollapsed[orderIndex] = this.orders[orderIndex].arguments.map(() => false);
   }
 
-  collapseAll(): void {
-    for (let k = 0; k < this.arguments.length; k++) {
-      if (this.arguments[k].type == 'List' || this.arguments[k].type == 'Map') {
+  collapseAll(orderIndex: number): void {
+    const orderArgs = this.orders[orderIndex].arguments;
+
+    if (!this.isCollapsed[orderIndex]) {
+      this.isCollapsed[orderIndex] = [];
+    }
+
+    this.isCollapsed[orderIndex] = orderArgs.map((arg) => {
+      if (arg.type === 'List' || arg.type === 'Map') {
         if (this.preferences.listVariableCollapse) {
-          if (this.allValuesAssigned(this.arguments[k])) {
-            this.isCollapsed[k] = true;
-          }
-        } else {
-          this.isCollapsed[k] = true;
+          return !this.allValuesAssigned(arg);
         }
+        return true;
       }
-    }
+      return false;
+    });
   }
+
 
   allValuesAssigned(listVariables): boolean {
-    if(listVariables.type === 'List'){
+    if (listVariables.type === 'List') {
       for (let actualListArr of listVariables.actualList) {
         for (let argument of actualListArr?.list) {
           if (!argument.value) {
@@ -271,7 +318,7 @@ export class AddOrderModalComponent {
           }
         }
       }
-    }else if(listVariables.type === 'Map'){
+    } else if (listVariables.type === 'Map') {
       for (let actualMapArr of listVariables.actualMap) {
         for (let argument of actualMapArr?.map) {
           if (!argument.value) {
@@ -283,7 +330,7 @@ export class AddOrderModalComponent {
     return true;
   }
 
-  handlePaste(data) {
+  handlePaste(data, orderIndex: number): void {
     if (!data || data.type) {
       data = this.storedArguments[0];
     }
@@ -292,17 +339,19 @@ export class AddOrderModalComponent {
       const clipboardData = JSON.parse(data);
       if (Array.isArray(clipboardData)) {
         clipboardData.forEach(clipboardItem => {
-          this.updateArguments(clipboardItem);
+          this.updateArguments(clipboardItem, orderIndex);
         });
       } else {
-        this.updateArguments(clipboardData);
+        this.updateArguments(clipboardData, orderIndex);
       }
     }
   }
 
-  updateArguments(clipboardItem) {
-    if (this.arguments && this.arguments.length > 0) {
-      this.arguments.forEach(variable => {
+
+  updateArguments(clipboardItem: any, orderIndex: number): void {
+    const orderArgs = this.orders[orderIndex].arguments;
+    if (orderArgs && orderArgs.length > 0) {
+      orderArgs.forEach(variable => {
         if (variable.name === clipboardItem.name) {
           if (Array.isArray(clipboardItem.value)) {
             clipboardItem.value.forEach(innerArray => {
@@ -325,16 +374,17 @@ export class AddOrderModalComponent {
           } else {
             variable.value = clipboardItem.value;
           }
-        }else{
+        } else {
           if (clipboardItem.variables && Array.isArray(clipboardItem.variables)) {
             clipboardItem.variables.forEach(variable => {
-              this.updateArguments(variable);
+              this.updateArguments(variable, orderIndex);
             });
           }
         }
       });
     }
   }
+
   processVariableList(variableList, clipboardDataVariables) {
     variableList.forEach(clipboardItem => {
       if (clipboardDataVariables && clipboardDataVariables.length > 0) {
@@ -411,35 +461,44 @@ export class AddOrderModalComponent {
     }).subscribe({
       next: (res) => {
         this.positions = new Map();
-        if (this.modalData.order) {
-          this.order.endPositions = [];
-         // this.order.startPosition = this.modalData.order.positionString;
-          this.order.blockPosition = this.modalData.order.blockPosition;
-        }
-        res.positions.forEach((item) => {
-          this.positions.set(item.positionString, (item.position));
-          if (this.modalData.order && this.modalData.order.endPositions) {
-            for (let i in this.modalData.order.endPositions) {
-              if (JSON.stringify(this.modalData.order.endPositions[i]) == JSON.stringify(item.position)) {
-                this.order.endPositions.push(item.positionString);
-                break;
-              }
-            }
+
+        this.orders.forEach(order => {
+          order.endPositions = [];
+          if (this.modalData.order) {
+            order.blockPosition = this.modalData.order.blockPosition;
           }
         });
 
+        // Map positions
+        res.positions.forEach((item) => {
+          this.positions.set(item.positionString, item.position);
+          this.orders.forEach(order => {
+            if (this.modalData.order && this.modalData.order.endPositions) {
+              for (let i in this.modalData.order.endPositions) {
+                if (JSON.stringify(this.modalData.order.endPositions[i]) === JSON.stringify(item.position)) {
+                  order.endPositions.push(item.positionString);
+                  break;
+                }
+              }
+            }
+          });
+        });
+
+        // Initialize block positions
         this.blockPositions = new Map();
         this.blockPositionList = new Map();
         res.blockPositions.forEach((item) => {
-          this.blockPositions.set(item.positionString, (item.position));
+          this.blockPositions.set(item.positionString, item.position);
           this.blockPositionList.set(item.positionString, item.positions);
         });
 
-      }, error: () => this.submitted = false
+      },
+      error: () => this.submitted = false
     });
   }
 
-  updateVariableList(): void {
+
+  updateVariableList(orderIndex?: number): void {
     if (this.workflow.orderPreparation && this.workflow.orderPreparation.parameters && !isEmpty(this.workflow.orderPreparation.parameters)) {
       this.variableList = Object.entries(this.workflow.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
@@ -449,15 +508,15 @@ export class AddOrderModalComponent {
             if (val.list) {
               list = [];
               val.list.forEach((item) => {
-                let obj = {name: item}
+                let obj = {name: item};
                 this.coreService.removeSlashToString(obj, 'name');
                 list.push(obj);
               });
             }
 
             if (!val.default && val.default !== false && val.default !== 0) {
-              if(!this.modalData.order){
-                this.arguments.push({
+              if (!this.modalData.order && orderIndex !== undefined) {
+                this.orders[orderIndex].arguments.push({
                   name: k,
                   type: val.type,
                   isRequired: true,
@@ -477,11 +536,11 @@ export class AddOrderModalComponent {
               val.list = list;
             }
           }
-        } else if(val.type === 'List') {
+        } else if (val.type === 'List') {
           this.isForkList = true;
           const actualList = [];
           if (val.listParameters) {
-            if (isArray(val.listParameters)) {
+            if (Array.isArray(val.listParameters)) {
               val.listParameters.forEach((item) => {
                 const obj = {name: item.name, type: item.value.type, value: item.value.default, isRequired: true};
                 if (item.value.default || item.value.default == 0 || item.value.default == false) {
@@ -502,8 +561,9 @@ export class AddOrderModalComponent {
                 return {name: k1, value: val1};
               });
             }
-            if(!this.modalData.order){
-              this.arguments.push({
+            // Update arguments for the specific order index
+            if (!this.modalData.order && orderIndex !== undefined) {
+              this.orders[orderIndex].arguments.push({
                 name: k,
                 type: val.type,
                 isRequired: true,
@@ -514,11 +574,10 @@ export class AddOrderModalComponent {
               val.actualList = actualList;
             }
           }
-        }else if(val.type === 'Map') {
-          // this.isForkList = true;
+        } else if (val.type === 'Map') {
           const actualMap = [];
           if (val.listParameters) {
-            if (isArray(val.listParameters)) {
+            if (Array.isArray(val.listParameters)) {
               val.listParameters.forEach((item) => {
                 const obj = {name: item.name, type: item.value.type, value: item.value.default, isRequired: true};
                 if (item.value.default || item.value.default == 0 || item.value.default == false) {
@@ -539,8 +598,9 @@ export class AddOrderModalComponent {
                 return {name: k1, value: val1};
               });
             }
-            if(!this.modalData.order){
-              this.arguments.push({
+
+            if (!this.modalData.order && orderIndex !== undefined) {
+              this.orders[orderIndex].arguments.push({
                 name: k,
                 type: val.type,
                 isRequired: true,
@@ -558,10 +618,11 @@ export class AddOrderModalComponent {
         return !item.value.final;
       });
     }
-    this.updateSelectItems();
+    this.updateSelectItems(orderIndex);
   }
 
-  checkVariableType(argument): void {
+
+  checkVariableType(argument, orderIndex: number): void {
     const obj = this.workflow.orderPreparation.parameters[argument.name];
     if (obj) {
       argument.type = obj.type;
@@ -594,17 +655,18 @@ export class AddOrderModalComponent {
         }
       }
     }
-    this.updateSelectItems();
+    this.updateSelectItems(orderIndex);
   }
 
-  updateSelectItems(): void {
+
+  updateSelectItems(orderIndex?: number): void {
     for (let i = 0; i < this.variableList.length; i++) {
       this.variableList[i].isSelected = false;
       if (this.variableList[i].actualList?.length) {
         this.variableList[i].isSelected = true;
       } else {
-        for (let j = 0; j < this.arguments.length; j++) {
-          if (this.variableList[i].name === this.arguments[j].name) {
+        for (let j = 0; j < this.orders[orderIndex]?.arguments?.length; j++) {
+          if (this.variableList[i].name === this.orders[orderIndex]?.arguments[j].name) {
             this.variableList[i].isSelected = true;
             break;
           }
@@ -613,139 +675,164 @@ export class AddOrderModalComponent {
     }
   }
 
+
   drop(event: CdkDragDrop<string[]>): void {
     moveItemInArray(this.arguments, event.previousIndex, event.currentIndex);
   }
 
-  selectTime(time, isEditor = false): void {
-    this.coreService.selectTime(time, isEditor, this.order);
-  }
+  // selectTime(time, isEditor = false): void {
+  //   this.coreService.selectTime(time, isEditor, this.order);
+  // }
 
-  getNewPositions(positions): void {
+  getNewPositions(positions: any, index: number): void {
+    // Reset newPositions for the specific index
     this.newPositions = undefined;
+
     if (positions) {
       this.newPositions = new Map();
       positions.forEach(item => {
-        this.newPositions.set(item.positionString, (item.position));
+        this.newPositions.set(item.positionString, item.position);
       });
+
+      this.updatePositionsForIndex(index);
     }
+  }
+
+  private updatePositionsForIndex(index: number): void {
+    if (this.orders && this.orders[index]) {
+      if (this.newPositions) {
+        this.orders[index].positions = Array.from(this.newPositions.values());
+      } else {
+        this.orders[index].positions = [];
+      }
+    } else {
+      console.error(`Order at index ${index} does not exist.`);
+    }
+  }
+
+  selectedOrderIndex: number = 0;
+
+  setSelectedOrderIndex(index: number): void {
+    this.selectedOrderIndex = index;
   }
 
   onSubmit(): void {
     this.submitted = true;
-    const obj: any = {
-      controllerId: this.schedulerId,
-      orders: []
-    };
 
-    const order: any = {
-      workflowPath: this.workflow.path,
-      orderName: this.order.orderId,
-      forceJobAdmission: this.order.forceJobAdmission,
-      tags: this.tags
-    };
-    if (this.order.at === 'now') {
-      order.scheduledFor = 'now';
-    } else if (this.order.at === 'never') {
-      order.scheduledFor = 'never';
-    } else if (this.order.at === 'later') {
-      let atTime = this.order.atTime
+    const allRequests = this.orders.map((order, index) => {
+      const orderObj: any = {
+        workflowPath: this.workflow.path,
+        orderName: order.orderId,
+        forceJobAdmission: order.forceJobAdmission,
+        tags: order.tags || this.tags,
+        arguments: {}
+      };
 
-      if (atTime.includes('h') || atTime.includes('m') || atTime.includes('s')) {
-        atTime = this.convertToSeconds(atTime);
+      if (order.at === 'now') {
+        orderObj.scheduledFor = 'now';
+      } else if (order.at === 'never') {
+        orderObj.scheduledFor = 'never';
+      } else if (order.at === 'later') {
+        let atTime = order.atTime;
+        if (atTime.includes('h') || atTime.includes('m') || atTime.includes('s')) {
+          atTime = this.convertToSeconds(atTime);
+        }
+        orderObj.scheduledFor = 'now + ' + atTime;
+      } else {
+        if (order.fromDate) {
+          this.coreService.getDateAndTime(order);
+          orderObj.scheduledFor = this.coreService.getDateByFormat(order.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
+          orderObj.timeZone = order.timeZone;
+        }
       }
 
-      order.scheduledFor = 'now + ' + atTime;
-    }
-    else {
-      if (this.order.fromDate) {
-        this.coreService.getDateAndTime(this.order);
-        order.scheduledFor = this.coreService.getDateByFormat(this.order.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
-        order.timeZone = this.order.timeZone;
-      }
-    }
-    if (this.arguments.length > 0) {
-      let argu = [...this.arguments];
-      if (this.coreService.isLastEntryEmpty(argu, 'name', '')) {
-        argu.splice(argu.length - 1, 1);
-      }
-      if (argu.length > 0) {
-        order.arguments = this.coreService.keyValuePair(argu);
-      }
-    }
-    if (this.arguments && this.arguments.length > 0) {
-      if (!order.arguments) {
-        order.arguments = {};
-      }
-      this.arguments.forEach((item) => {
-        if (item.type === 'List') {
-          order.arguments[item.name] = [];
-          if (item.actualList?.length > 0) {
-            for (const i in item.actualList) {
-              const listObj = {};
-              item.actualList[i].list.forEach((data) => {
-                listObj[data.name] = data.value;
+      // **Argument Processing**
+      if (order.arguments && order.arguments.length > 0) {
+        order.arguments.forEach(arg => {
+          if (arg.type === 'List') {
+            orderObj.arguments[arg.name] = [];
+            if (arg.actualList?.length > 0) {
+              arg.actualList.forEach(listItem => {
+                const listObj = {};
+                listItem.list.forEach(data => {
+                  listObj[data.name] = data.value;
+                });
+                orderObj.arguments[arg.name].push(listObj);
               });
-              order.arguments[item.name].push(listObj);
+            }
+          } else if (arg.type === 'Map') {
+            const mapObj = {};
+            if (arg.actualMap?.length > 0) {
+              arg.actualMap.forEach(mapItem => {
+                mapItem.map.forEach(data => {
+                  mapObj[data.name] = data.value;
+                });
+              });
+            }
+            orderObj.arguments[arg.name] = mapObj;
+          } else {
+            orderObj.arguments[arg.name] = arg.value;
+          }
+        });
+      }
+
+      // Handle positions
+      if (order.blockPosition && this.blockPositions?.size) {
+        if (this.blockPositions.has(order.blockPosition)) {
+          orderObj.blockPosition = this.blockPositions.get(order.blockPosition);
+        }
+      }
+
+      if (order.startPosition) {
+        if (this.newPositions && this.newPositions?.size > 0) {
+          if (this.newPositions.has(order.startPosition)) {
+            orderObj.startPosition = this.newPositions.get(order.startPosition);
+          }
+        } else if (this.positions && this.positions?.size > 0) {
+          if (this.positions.has(order.startPosition)) {
+            orderObj.startPosition = this.positions.get(order.startPosition);
+          }
+        }
+      }
+
+      if (order.endPositions && order.endPositions.length > 0) {
+        orderObj.endPositions = [];
+        order.endPositions.forEach(pos => {
+          if (this.newPositions && this.newPositions?.size > 0) {
+            if (this.newPositions.has(pos)) {
+              orderObj.endPositions.push(this.newPositions.get(pos));
+            }
+          } else if (this.positions && this.positions?.size > 0) {
+            if (this.positions.has(pos)) {
+              orderObj.endPositions.push(this.positions.get(pos));
             }
           }
-        }else if(item.type === 'Map'){
-          order.arguments[item.name] = [];
-          if (item.actualMap?.length > 0) {
-            for (const i in item.actualMap) {
-              const mapObj = {};
-              item.actualMap[i].map.forEach((data) => {
-                mapObj[data.name] = data.value;
-              });
-              order.arguments[item.name] = { ...mapObj };
-            }
-          }
-        }
-      });
-    }
-    if (this.order.blockPosition && this.blockPositions && this.blockPositions?.size) {
-      if (this.blockPositions.has(this.order.blockPosition)) {
-        order.blockPosition = (this.blockPositions.get(this.order.blockPosition));
+        });
       }
-    }
 
-    if (this.order.startPosition) {
-      if (this.newPositions && this.newPositions?.size > -1) {
-        if (this.newPositions.has(this.order.startPosition)) {
-          order.startPosition = (this.newPositions.get(this.order.startPosition));
-        }
-      } else if (this.positions && this.positions?.size) {
-        if (this.positions.has(this.order.startPosition)) {
-          order.startPosition = (this.positions.get(this.order.startPosition));
-        }
-      }
-    }
 
-    if (this.order.endPositions && this.order.endPositions.length > 0) {
-      order.endPositions = [];
-      this.order.endPositions.forEach(pos => {
-        if (this.newPositions && this.newPositions?.size > -1) {
-          if (this.newPositions.has(pos)) {
-            order.endPositions.push((this.newPositions.get(pos)));
-          }
-        } else if (this.positions && this.positions?.size) {
-          if (this.positions.has(pos)) {
-            order.endPositions.push((this.positions.get(pos)));
-          }
-        }
-      });
-    }
-    obj.orders.push(order);
-    obj.auditLog = {};
-    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-    this.coreService.post('orders/add', obj).subscribe({
-      next: () => {
-        this.activeModal.close('Done');
-      }, error: () => this.submitted = false
+      const reqObj = {
+        controllerId: this.schedulerId,
+        orders: [orderObj],
+        auditLog: {}
+      };
+
+      this.coreService.getAuditLogObj(this.comments, reqObj.auditLog);
+
+      return this.coreService.post('orders/add', reqObj).toPromise();
     });
+
+    Promise.all(allRequests)
+      .then(() => {
+        this.activeModal.close('Done');
+      })
+      .catch(() => {
+        this.submitted = false;
+      });
   }
 
-   convertToSeconds(timeString: string): number {
+
+  convertToSeconds(timeString: string): number {
     const timePattern = /(\d+)\s*h|\s*(\d+)\s*m|\s*(\d+)\s*s/g;
     let totalSeconds = 0;
 
@@ -765,26 +852,60 @@ export class AddOrderModalComponent {
     return totalSeconds;
   }
 
+  addOrder(): void {
+    const newOrder = {
+      orderId: '',
+      timeZone: this.preferences.zone,
+      at: 'now',
+      forceJobAdmission: false,
+      tags: [],
+      arguments: [],
+      startPosition: '',
+      endPositions: [],
+      blockPosition: '',
+      reload: false,
+    };
+
+    const newOrderIndex = this.orders.length;
+    this.orders.push(newOrder);
+
+    this.updateVariableList(newOrderIndex);
+
+    this.initializeArguments(this.orders[newOrderIndex]);
+    this.isCollapsed = this.orders.map(order => order.arguments.map(() => false));
+  }
+
 
   areArgumentsEmpty(): boolean {
-    if (this.allowEmptyArguments) return false;
+    const allowEmptyArguments = this.allowEmptyArguments;
 
-    let anyListEmpty = this.arguments.some(arg =>
-      arg.type === 'List' &&
-      (!arg.actualList || arg.actualList.some(listItem => listItem.list.some(item => !item.value)))
-    );
+    if (allowEmptyArguments) return false;
 
-    let anyMapEmpty = this.arguments.some(arg =>
-      arg.type === 'Map' &&
-      (!arg.actualMap || arg.actualMap.some(mapItem => mapItem.map.some(item => !item.value)))
-    );
+    for (const order of this.orders) {
+      const orderArgs = order.arguments;
 
-    let anyStringEmpty = this.arguments.some(arg =>
-      arg.type === 'String' && (!arg.value)
-    );
+      let anyListEmpty = orderArgs.some(arg =>
+        arg.type === 'List' &&
+        (!arg.actualList || arg.actualList.some(listItem => listItem.list.some(item => !item.value)))
+      );
 
-    this.argumentsValid = !(anyListEmpty || anyMapEmpty || anyStringEmpty);
-    return anyListEmpty || anyMapEmpty || anyStringEmpty;
+      let anyMapEmpty = orderArgs.some(arg =>
+        arg.type === 'Map' &&
+        (!arg.actualMap || arg.actualMap.some(mapItem => mapItem.map.some(item => !item.value)))
+      );
+
+      let anyStringEmpty = orderArgs.some(arg =>
+        arg.type === 'String' && (!arg.value)
+      );
+
+      if (anyListEmpty || anyMapEmpty || anyStringEmpty) {
+        this.argumentsValid = false;
+        return true;
+      }
+    }
+
+    this.argumentsValid = true;
+    return false;
   }
 
 
@@ -816,28 +937,28 @@ export class AddOrderModalComponent {
     }
   }
 
-  addArgument(isNew = false): void {
+  addArgument(orderIndex, isNew = false): void {
     const param: any = {
       name: '',
       value: ''
     };
-    if (this.arguments) {
-      const lastArgument = this.arguments[this.arguments.length - 1];
+    if (this.orders[orderIndex].arguments) {
+      const lastArgument = this.orders[orderIndex].arguments[this.orders[orderIndex].arguments.length - 1];
 
-      if (!this.coreService.isLastEntryEmpty(this.arguments, 'name', '') || !lastArgument) {
+      if (!this.coreService.isLastEntryEmpty(this.orders[orderIndex].arguments, 'name', '') || !lastArgument) {
         if (isNew) {
           param.isTextField = true;
         }
-        this.arguments.push(param);
+        this.orders[orderIndex].arguments.push(param);
       } else if (lastArgument && (lastArgument.type === 'Map' || lastArgument.type === 'List')) {
 
-        this.arguments.push(param);
+        this.orders[orderIndex].arguments.push(param);
       }
     }
   }
 
-  addArguments(): void {
-    this.arguments = this.arguments.filter(arg => arg.name.trim() !== '');
+  addArguments(orderIndex): void {
+    this.orders[orderIndex].arguments = this.orders[orderIndex].arguments.filter(arg => arg.name.trim() !== '');
 
     this.variableList.forEach(variable => {
       if (!variable.isSelected) {
@@ -845,27 +966,29 @@ export class AddOrderModalComponent {
           name: variable.name,
           value: ''
         };
-        this.arguments.push(param);
-        this.checkVariableType(param);
+        this.orders[orderIndex].arguments.push(param);
+        this.checkVariableType(param, orderIndex);
       }
     });
   }
 
-  removeArgument(index): void {
-    this.arguments.splice(index, 1);
-    this.updateSelectItems();
+  removeArgument(index, orderIndex): void {
+    this.orders[orderIndex].arguments.splice(index, 1);
+    this.updateSelectItems(orderIndex);
   }
+
 
   removeVariableFromList(index, list): void {
     list.splice(index, 1);
   }
 
-  onKeyPress($event): void {
-    if ($event.which === '13' || $event.which === 13) {
+  onKeyPress($event, orderIndex: number): void {
+    if ($event.which === 13) {
       $event.preventDefault();
-      this.addArgument();
+      this.addArgument(orderIndex);
     }
   }
+
 
   cancel(): void {
     this.activeModal.destroy();
@@ -893,27 +1016,31 @@ export class AddOrderModalComponent {
     });
   }
 
-  selectSchedule(name): void {
-    this.object.orderName = '';
+  selectSchedule(name: string, orderIndex: number): void {
+    this.orders[orderIndex].orderName = '';
+
     for (let i in this.schedules) {
       if (this.schedules[i].name == name) {
-        this.selectedSchedule = this.schedules[i];
+        this.orders[orderIndex].selectedSchedule = this.schedules[i];
 
-        if (this.selectedSchedule.orderParameterisations && this.selectedSchedule.orderParameterisations.length == 1) {
-          this.selectOrder(this.selectedSchedule.orderParameterisations[0].orderName || '-');
+        if (this.orders[orderIndex].selectedSchedule.orderParameterisations &&
+          this.orders[orderIndex].selectedSchedule.orderParameterisations.length == 1) {
+          this.selectOrder(this.orders[orderIndex].selectedSchedule.orderParameterisations[0].orderName || '-', null, null, null, orderIndex);
         }
         break;
       }
     }
   }
 
-  selectVarFromSchedule(name, listVariables, data, index): void {
-    listVariables.orderName = '';
-    for (let i in this.schedules) {
-      if (this.schedules[i].name == name) {
-        listVariables.orderParameterisations = this.schedules[i].orderParameterisations;
-        if (listVariables.orderParameterisations && listVariables.orderParameterisations.length == 1) {
-          this.selectOrder(listVariables.orderParameterisations[0].name || '-', listVariables, data, index);
+
+  selectVarFromSchedule(name: string, variableContext: any, listVariables: any, index: number, orderIndex: number): void {
+    variableContext.orderName = ''; // Reset the order name for the specific context
+    for (let schedule of this.schedules) {
+      if (schedule.name === name) {
+        variableContext.orderParameterisations = schedule.orderParameterisations;
+        // If there is only one order parameterization, auto-select it
+        if (variableContext.orderParameterisations && variableContext.orderParameterisations.length === 1) {
+          this.selectOrder(variableContext.orderParameterisations[0].orderName || '-', variableContext, listVariables, index, orderIndex);
         }
         break;
       }
@@ -921,12 +1048,17 @@ export class AddOrderModalComponent {
   }
 
   private selectVarForOrder(name, listVariables, data, index): void {
+
     for (let i in listVariables.orderParameterisations) {
       if (listVariables.orderParameterisations[i].orderName == name ||
-        (listVariables.orderParameterisations[i].orderName == '' && name == '-') || listVariables.orderParameterisations.length == 1) {
+        (listVariables.orderParameterisations[i].orderName == '' && name == '-') ||
+        listVariables.orderParameterisations.length == 1) {
+
         let list = listVariables.orderParameterisations[i];
+
         for (let x in list.variables) {
-          if (isArray(list.variables[x]) && x == data.name) {
+          // Handling List Type
+          if (isArray(list.variables[x]) && x === data.name && data.type === 'List') {
             for (let z in data.actualList[index].list) {
               for (let m in list.variables[x]) {
                 if (list.variables[x][m][data.actualList[index].list[z].name]) {
@@ -935,91 +1067,117 @@ export class AddOrderModalComponent {
               }
             }
           }
+
+          // Handling Map Type
+          if (typeof list.variables[x] === 'object' && x === data.name && data.type === 'Map') {
+            const mapVariables = list.variables[x];
+            for (let mapIndex in data.actualMap[index].map) {
+              const mapItem = data.actualMap[index].map[mapIndex];
+              if (mapVariables.hasOwnProperty(mapItem.name)) {
+                mapItem.value = mapVariables[mapItem.name];
+              }
+            }
+          }
         }
         break;
       }
     }
   }
 
-  selectOrder(name, listVariables?, data?, index?): void {
+
+  selectOrder(name: string, listVariables?: any, data?: any, index?: number, orderIndex?: number): void {
     if (listVariables) {
       this.selectVarForOrder(name, listVariables, data, index);
       return;
     }
-    this.order.reload = false;
-    if (name && name !== '-') {
-      if(!this.order.orderId){
-        this.order.orderId = name;
 
+    const order = this.orders[orderIndex];
+    order.reload = false;
+
+    if (name && name !== '-') {
+      if (!order.orderId) {
+        order.orderId = name;
       }
     }
 
-    for (let i in this.selectedSchedule.orderParameterisations) {
-      if (this.selectedSchedule.orderParameterisations[i].orderName == name ||
-        (this.selectedSchedule.orderParameterisations[i].orderName == '' && name == '-') || this.selectedSchedule.orderParameterisations.length == 1) {
-        this.updateVariablesFromSchedule(this.selectedSchedule.orderParameterisations[i]);
-        if (this.selectedSchedule.orderParameterisations[i].positions) {
+    for (let i in order.selectedSchedule.orderParameterisations) {
+      const param = order.selectedSchedule.orderParameterisations[i];
+
+      if (param.orderName == name || (param.orderName === '' && name === '-') || order.selectedSchedule.orderParameterisations.length == 1) {
+        this.updateVariablesFromSchedule(param, orderIndex);
+
+        if (param.positions) {
           let newPositions;
-          if (this.selectedSchedule.orderParameterisations[i].positions.blockPosition) {
+
+          if (param.positions.blockPosition) {
             for (const [key, value] of this.blockPositions) {
-              if (JSON.stringify(this.selectedSchedule.orderParameterisations[i].positions.blockPosition) === JSON.stringify(value)) {
-                this.order.blockPosition = key;
+              if (JSON.stringify(param.positions.blockPosition) === JSON.stringify(value)) {
+                order.blockPosition = key;
                 break;
               }
             }
-            if (this.blockPositionList.has(this.selectedSchedule.orderParameterisations[i].positions.blockPosition) ||
-              this.blockPositionList.has(this.order.blockPosition)) {
-              newPositions = this.blockPositionList.get(this.selectedSchedule.orderParameterisations[i].positions.blockPosition) ||
-                this.blockPositionList.get(this.order.blockPosition);
-              if (newPositions && isArray(newPositions)) {
-                this.selectedSchedule.orderParameterisations[i].positions.newPositions = new Map();
+
+            if (this.blockPositionList.has(param.positions.blockPosition) || this.blockPositionList.has(order.blockPosition)) {
+              newPositions = this.blockPositionList.get(param.positions.blockPosition) || this.blockPositionList.get(order.blockPosition);
+              if (newPositions && Array.isArray(newPositions)) {
+                param.positions.newPositions = new Map();
                 newPositions.forEach((item) => {
-                  this.selectedSchedule.orderParameterisations[i].positions.newPositions.set(item.positionString, (item.position));
+                  param.positions.newPositions.set(item.positionString, item.position);
                 });
               }
             }
           }
-          if (this.selectedSchedule.orderParameterisations[i].positions.startPosition) {
-            this.order.startPosition = this.coreService.getPositionStr(this.selectedSchedule.orderParameterisations[i].positions.startPosition, newPositions, this.positions)
+
+          if (param.positions.startPosition) {
+            order.startPosition = this.coreService.getPositionStr(param.positions.startPosition, newPositions, this.positions);
           }
-          if (this.selectedSchedule.orderParameterisations[i].positions.endPositions && this.selectedSchedule.orderParameterisations[i].positions.endPositions.length > 0) {
-            this.order.endPositions = [];
-            this.selectedSchedule.orderParameterisations[i].positions.endPositions.forEach(pos => {
-              this.order.endPositions.push(this.coreService.getPositionStr(pos, newPositions, this.positions));
-            })
+
+          if (param.positions.endPositions && param.positions.endPositions.length > 0) {
+            order.endPositions = [];
+            param.positions.endPositions.forEach(pos => {
+              order.endPositions.push(this.coreService.getPositionStr(pos, newPositions, this.positions));
+            });
           }
-          if(this.selectedSchedule.orderParameterisations[i].forceJobAdmission){
-            this.order.forceJobAdmission = this.selectedSchedule.orderParameterisations[i].forceJobAdmission;
+
+          if (param.forceJobAdmission) {
+            order.forceJobAdmission = param.forceJobAdmission;
           }
-          if(this.selectedSchedule.orderParameterisations[i].tags.length > 0){
-            this.tags = this.selectedSchedule.orderParameterisations[i].tags;
+
+          if (param.tags && param.tags.length > 0) {
+            order.tags = param.tags;
           }
-          this.order.reload = true;
+
+          order.reload = true;
         }
         break;
       }
     }
   }
 
-  private updateVariablesFromSchedule(orderParameterisations): void {
-    this.arguments = [];
+
+  private updateVariablesFromSchedule(orderParameterisations: any, index: number): void {
+    // Initialize the arguments array for the specific order using the index
+    this.orders[index].arguments = []; // Set up arguments per order
+
     if (this.workflow.orderPreparation && this.workflow.orderPreparation.parameters && !isEmpty(this.workflow.orderPreparation.parameters)) {
       this.variableList = Object.entries(this.workflow.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
+
         if (val.type !== 'List' && val.type !== 'Map') {
           if (!val.final) {
             let list;
             if (val.list) {
               list = [];
               val.list.forEach((item) => {
-                let obj = {name: item}
+                let obj = {name: item};
                 this.coreService.removeSlashToString(obj, 'name');
                 list.push(obj);
               });
             }
             for (let x in orderParameterisations.variables) {
               if (k == x) {
-                this.arguments.push({
+                // Push into the specific order's arguments array
+                this.orders[index].arguments.push({
                   name: k,
                   type: val.type,
                   isRequired: true,
@@ -1032,8 +1190,7 @@ export class AddOrderModalComponent {
               }
             }
           }
-        } else if(val.type === 'List') {
-
+        } else if (val.type === 'List') {
           const actualList = [];
           if (val.listParameters) {
             if (!isArray(val.listParameters)) {
@@ -1064,6 +1221,7 @@ export class AddOrderModalComponent {
                 }
               }
             }
+
             if (actualList.length === 0) {
               let arr = [];
               val.listParameters.forEach((item) => {
@@ -1076,7 +1234,8 @@ export class AddOrderModalComponent {
 
             for (let x in orderParameterisations.variables) {
               if (k == x) {
-                this.arguments.push({
+                // Push into the specific order's arguments array
+                this.orders[index].arguments.push({
                   name: k,
                   isRequired: true,
                   type: val.type,
@@ -1087,8 +1246,7 @@ export class AddOrderModalComponent {
               }
             }
           }
-        }else if(val.type === 'Map') {
-
+        } else if (val.type === 'Map') {
           const actualMap = [];
           if (val.listParameters) {
             if (!isArray(val.listParameters)) {
@@ -1098,27 +1256,28 @@ export class AddOrderModalComponent {
               });
             }
 
-            for (let x in orderParameterisations.variables) {
-              if (k === x) {
-                if (isArray(orderParameterisations.variables[x])) {
-                  orderParameterisations.variables[x].forEach((key) => {
-                    let arr = [];
-                    for (let y in val.listParameters) {
-                      if (key[val.listParameters[y].name] || key[val.listParameters[y].name] == false || key[val.listParameters[y].name] == 0) {
-                        arr.push({
-                          name: val.listParameters[y].name,
-                          type: val.listParameters[y].value.type,
-                          value: key[val.listParameters[y].name]
-                        });
-                      }
+                    for (let x in orderParameterisations.variables) {
+                        if (k === x) {
+                            const mapEntries = orderParameterisations.variables[x];
+                            if (typeof mapEntries === 'object' && !Array.isArray(mapEntries)) {
+                                let arr = [];
+                                for (let y in val.listParameters) {
+                                    const paramName = val.listParameters[y].name;
+                                    if (mapEntries[paramName] || mapEntries[paramName] == false || mapEntries[paramName] == 0) {
+                                        arr.push({
+                                            name: paramName,
+                                            type: val.listParameters[y].value.type,
+                                            value: mapEntries[paramName]
+                                        });
+                                    }
+                                }
+                                if (arr.length > 0) {
+                                    actualMap.push({map: arr});
+                                }
+                            }
+                        }
                     }
-                    if (arr.length > 0) {
-                      actualMap.push({map: arr});
-                    }
-                  });
-                }
-              }
-            }
+
             if (actualMap.length === 0) {
               let arr = [];
               val.listParameters.forEach((item) => {
@@ -1131,7 +1290,8 @@ export class AddOrderModalComponent {
 
             for (let x in orderParameterisations.variables) {
               if (k == x) {
-                this.arguments.push({
+                // Push into the specific order's arguments array
+                this.orders[index].arguments.push({
                   name: k,
                   isRequired: true,
                   type: val.type,
@@ -1143,23 +1303,26 @@ export class AddOrderModalComponent {
             }
           }
         }
+
         return {name: k, value: val};
       });
+
       this.variableList = this.variableList.filter((item) => {
         return !item.value.final;
       });
     } else {
       for (let x in orderParameterisations.variables) {
-        this.arguments.push({
+        this.orders[index].arguments.push({
           name: x,
           isTextField: true,
           value: orderParameterisations.variables[x]
         });
       }
     }
-    this.updateSelectItems();
 
+    this.updateSelectItems(index); // Pass the order index
   }
+
 
   assignParameterizationFromSchedules(): void {
     if (!this.schedules) {
@@ -1177,7 +1340,8 @@ export class AddOrderModalComponent {
   private fetchTags(): void {
     this.coreService.post('orders/tag/search', {
       search: '',
-      controllerId: this.schedulerId}).subscribe((res) => {
+      controllerId: this.schedulerId
+    }).subscribe((res) => {
       this.allTags = res.results;
       this.allTags = this.allTags.map((item) => {
         return item.name;
@@ -1185,49 +1349,59 @@ export class AddOrderModalComponent {
     });
   }
 
-  onChange(value: string): void {
-    this.filteredOptions = this.allTags.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) !== -1);
-    this.filteredOptions = this.filteredOptions.filter((tag) => {
-      return this.tags.indexOf(tag) == -1;
-    })
+  onChange(value: string, orderIndex: number): void {
+    const order = this.orders[orderIndex];
+    const inputValue = value.trim().toLowerCase();
+    order.filteredOptions = this.allTags
+      .filter(option => option.toLowerCase().includes(inputValue))
+      .filter(tag => !order.tags.includes(tag));
   }
 
-  handleClose(removedTag: {}): void {
-    this.tags = this.tags.filter(tag => tag !== removedTag);
+
+  handleClose(removedTag: string, orderIndex: number): void {
+    const order = this.orders[orderIndex];
+    order.tags = order.tags.filter(tag => tag !== removedTag);
   }
+
+
+
+
 
   trackByFn(index: number, item: any): any {
-    return item;
+    return index;
   }
 
 
-  dropTag(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.tags, event.previousIndex, event.currentIndex);
+  dropTag(event: CdkDragDrop<string[]>, orderIndex: number): void {
+    moveItemInArray(this.orders[orderIndex].tags, event.previousIndex, event.currentIndex);
     setTimeout(() => {
       this.cdr.detectChanges();
     });
   }
+
 
   sliceTagName(tag: string): string {
     const isLongTag = tag.length > 20;
     return isLongTag ? `${tag.slice(0, 20)}...` : tag;
   }
 
-  showInput(): void {
-    this.inputVisible = true;
-    this.filteredOptions = this.allTags;
+  showInput(orderIndex: number): void {
+    this.orders[orderIndex].inputVisible = true;
+    this.orders[orderIndex].filteredOptions = this.allTags;
     setTimeout(() => {
       this.inputElement?.nativeElement.focus();
     }, 10);
   }
 
-  handleInputConfirm(): void {
-    if (this.inputValue && this.tags.indexOf(this.inputValue) === -1 && this.workflowService.isValidObject(this.inputValue)) {
-      this.tags = [...this.tags, this.inputValue];
+  handleInputConfirm(orderIndex: number): void {
+    const order = this.orders[orderIndex];
+    if (order.inputValue && order.tags.indexOf(order.inputValue) === -1) {
+      order.tags.push(order.inputValue); // Add the tag to the order-specific tags
     }
-    this.inputValue = '';
-    this.inputVisible = false;
+    order.inputValue = '';
+    order.inputVisible = false;
   }
+
 
   checkValidInput(): void {
     this.isUnique = true;
@@ -1239,8 +1413,8 @@ export class AddOrderModalComponent {
     }
   }
 
-  encryptValue(currentVariable, typeArg){
-    let selectedAgent  = [];
+  encryptValue(currentVariable, typeArg) {
+    let selectedAgent = [];
     const argu = currentVariable;
     const type = typeArg;
     const modal = this.modal.create({
@@ -1263,18 +1437,21 @@ export class AddOrderModalComponent {
       }
     });
   }
-  onBlur(repeat: NgModel, propertyName: string) {
-    this.order[propertyName] = this.coreService.padTime(this.order[propertyName]);
+
+  onBlur(repeat: NgModel, propertyName: string, index: number): void {
+    this.orders[index][propertyName] = this.coreService.padTime(this.orders[index][propertyName]);
     repeat.control.setErrors({incorrect: false});
     repeat.control.updateValueAndValidity();
   }
 
-  onTimeChange(e){
-    delete this.order.atTime
-    delete this.order.fromDate
-    delete this.order.fromTime
-    delete this.order.fromTime1
+
+  onTimeChange(e: any, index: number): void {
+    delete this.orders[index].atTime;
+    delete this.orders[index].fromDate;
+    delete this.orders[index].fromTime;
+    delete this.orders[index].fromTime1;
   }
+
 
 }
 
