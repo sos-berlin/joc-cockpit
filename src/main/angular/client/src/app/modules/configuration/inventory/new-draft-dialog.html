@@ -11,6 +11,11 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a">
+    <div class="row">
+      <div [ngClass]="{'show': display}" class="col-md-12 hide">
+        <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
+      </div>
+    </div>
     <div *ngIf="deployablesObject.length > 0 && !loading">
       <div *ngIf="deployablesObject.length > 0" class="row">
         <div class="col-md-12">

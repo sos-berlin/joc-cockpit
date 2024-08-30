@@ -343,6 +343,19 @@ export class NewDraftComponent {
       path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
       objectType: this.data.objectType,
     }
+    let auditLog: any = {};
+    if (this.comments.comment) {
+      auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      auditLog.ticketLink = this.comments.ticketLink;
+    }
+    if (auditLog.comment) {
+      obj.auditLog = auditLog;
+    }
     if (this.deployablesObject && this.deployablesObject.length > 0 && this.deployablesObject[0].deployId && this.deployablesObject[0].deployId != 'new') {
       for (let j = 0; j < this.deployablesObject[0].deployablesVersions.length; j++) {
         if (this.deployablesObject[0].deployablesVersions[j].deploymentId === this.deployablesObject[0].deployId) {
