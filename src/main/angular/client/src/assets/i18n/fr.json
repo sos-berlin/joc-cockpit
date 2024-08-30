@@ -2477,6 +2477,7 @@
     "button.cloneOrder": "Cloner l'Ordre",
     "button.continue": "Faire courir",
     "button.addOrderParameterization": "Ajouter Paramétrage de l'Ordre",
+    "button.addOrdersFromAllSchedules": "Add Orders From All Schedules",
     "placeholder.selectStartNode": "Sélectionner la Position de Départ",
     "placeholder.selectEndNode": "Sélectionner la Position de Fin",
     "placeholder.selectBlockPosition": "Sélectionner la Position d Bloc",

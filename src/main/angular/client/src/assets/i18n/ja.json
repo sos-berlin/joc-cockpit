@@ -2477,6 +2477,7 @@
     "button.cloneOrder": "オーダークローン",
     "button.continue": "継続",
     "button.addOrderParameterization": "Add Order Parameterization",
+    "button.addOrdersFromAllSchedules": "Add Orders From All Schedules",
     "placeholder.selectStartNode": "開始ノード選択",
     "placeholder.selectEndNode": "終了ノード選択",
     "placeholder.selectBlockPosition": "ブロック位置選択",

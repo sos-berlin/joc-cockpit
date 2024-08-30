@@ -122,6 +122,10 @@ export class AddOrderModalComponent {
   inputValue = '';
   allowEmptyArguments: any;
   argumentsValid: boolean = true;
+  commonStartTime: string = 'now';
+  commonStartTimeValue: any = '';
+  commonStartDate: any = {fromDate: null, fromTime: null, timeZone: null};
+
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
 
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
@@ -192,80 +196,89 @@ export class AddOrderModalComponent {
     });
   }
 
+
+  removeOrder(orderIndex: number): void {
+    if (this.orders.length > 1) {
+      this.orders.splice(orderIndex, 1);
+      this.isCollapsed.splice(orderIndex, 1);
+      this.updateVariableList();
+    }
+  }
+
+
   ngAfterViewInit(): void {
     setTimeout(() => {
       this.displayModal = true;
     }, 100);
   }
 
-initializeArguments(order: any): void {
+  initializeArguments(order: any): void {
     if (this.modalData.order) {
-        let _arguments: any = this.coreService.convertObjectToArray(this.modalData.order, 'arguments');
-        if (_arguments && _arguments.length > 0) {
-            _arguments.forEach(argu => {
-                for (let i in this.variableList) {
-                    if (argu.name == this.variableList[i].name) {
-                        if (Array.isArray(argu.value)) {
-                            if (argu.type === 'List') {
-                                // Handle List Type
-                                argu.value.forEach((listItem) => {
-                                    Object.entries(listItem).forEach(([key, value]) => {
-                                        this.variableList[i].value.actualList.forEach((variable) => {
-                                            if (key === variable.name) {
-                                                variable.value = value;
-                                            }
-                                        });
-                                    });
-                                });
-                                order.arguments.push({
-                                    name: argu.name,
-                                    type: argu.type,
-                                    isRequired: true,
-                                    actualList: [{ list: this.variableList[i].value.actualList }],
-                                    list: this.variableList[i].value.listParameters
-                                });
-                            } else if (argu.type === 'Map') {
-                                // Handle Map Type
-                                argu.value.forEach((mapItem) => {
-                                    Object.entries(mapItem).forEach(([key, value]) => {
-                                        this.variableList[i].value.actualMap.forEach((variable) => {
-                                            if (key === variable.name) {
-                                                variable.value = value;
-                                            }
-                                        });
-                                    });
-                                });
-                                order.arguments.push({
-                                    name: argu.name,
-                                    type: argu.type,
-                                    isRequired: true,
-                                    actualMap: [{ map: this.variableList[i].value.actualMap }],
-                                    map: this.variableList[i].value.listParameters
-                                });
-                            }
-                        } else {
-                            // Handling normal types (e.g., String, Number, Boolean)
-                            if (argu.type !== 'List' && argu.type !== 'Map') {
-                                order.arguments.push({
-                                    name: argu.name,
-                                    value: argu.value,
-                                    type: this.variableList[i].value.type,
-                                    isRequired: true,
-                                    facet: this.variableList[i].value.facet,
-                                    message: this.variableList[i].value.message,
-                                    list: this.variableList[i].value.list,
-                                    map: this.variableList[i].value.map
-                                });
-                            }
+      let _arguments: any = this.coreService.convertObjectToArray(this.modalData.order, 'arguments');
+      if (_arguments && _arguments.length > 0) {
+        _arguments.forEach(argu => {
+          for (let i in this.variableList) {
+            if (argu.name == this.variableList[i].name) {
+              if (Array.isArray(argu.value)) {
+                if (argu.type === 'List') {
+                  // Handle List Type
+                  argu.value.forEach((listItem) => {
+                    Object.entries(listItem).forEach(([key, value]) => {
+                      this.variableList[i].value.actualList.forEach((variable) => {
+                        if (key === variable.name) {
+                          variable.value = value;
                         }
-                        break;
-                    }
+                      });
+                    });
+                  });
+                  order.arguments.push({
+                    name: argu.name,
+                    type: argu.type,
+                    isRequired: true,
+                    actualList: [{list: this.variableList[i].value.actualList}],
+                    list: this.variableList[i].value.listParameters
+                  });
+                } else if (argu.type === 'Map') {
+                  // Handle Map Type
+                  argu.value.forEach((mapItem) => {
+                    Object.entries(mapItem).forEach(([key, value]) => {
+                      this.variableList[i].value.actualMap.forEach((variable) => {
+                        if (key === variable.name) {
+                          variable.value = value;
+                        }
+                      });
+                    });
+                  });
+                  order.arguments.push({
+                    name: argu.name,
+                    type: argu.type,
+                    isRequired: true,
+                    actualMap: [{map: this.variableList[i].value.actualMap}],
+                    map: this.variableList[i].value.listParameters
+                  });
                 }
-            });
-        }
+              } else {
+                // Handling normal types (e.g., String, Number, Boolean)
+                if (argu.type !== 'List' && argu.type !== 'Map') {
+                  order.arguments.push({
+                    name: argu.name,
+                    value: argu.value,
+                    type: this.variableList[i].value.type,
+                    isRequired: true,
+                    facet: this.variableList[i].value.facet,
+                    message: this.variableList[i].value.message,
+                    list: this.variableList[i].value.list,
+                    map: this.variableList[i].value.map
+                  });
+                }
+              }
+              break;
+            }
+          }
+        });
+      }
     }
-}
-
+  }
 
 
   toggleCollapse(k: number, selectedOrderIndex: number): void {
@@ -728,19 +741,29 @@ initializeArguments(order: any): void {
         arguments: {}
       };
 
-      if (order.at === 'now') {
-        orderObj.scheduledFor = 'now';
-      } else if (order.at === 'never') {
-        orderObj.scheduledFor = 'never';
-      } else if (order.at === 'later') {
-        let atTime = order.atTime;
-        if (atTime.includes('h') || atTime.includes('m') || atTime.includes('s')) {
-          atTime = this.convertToSeconds(atTime);
+      if (this.orders.length > 1) {
+        if (this.commonStartTime === 'now' || this.commonStartTime === 'never') {
+          orderObj.scheduledFor = this.commonStartTime;
+        } else if (this.commonStartTime === 'later') {
+          let atTime = this.commonStartTimeValue
+          if (atTime.includes('h') || atTime.includes('m') || atTime.includes('s')) {
+            atTime = this.convertToSeconds(atTime);
+          }
+          orderObj.scheduledFor = 'now + ' + atTime;
+        } else if (this.commonStartTime === 'date') {
+          orderObj.scheduledFor = this.coreService.getDateByFormat(order.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
+          orderObj.timeZone = order.timeZone;
         }
-        orderObj.scheduledFor = 'now + ' + atTime;
       } else {
-        if (order.fromDate) {
-          this.coreService.getDateAndTime(order);
+        if (order.at === 'now' || order.at === 'never') {
+          orderObj.scheduledFor = order.at;
+        } else if (order.at === 'later') {
+          let atTime = order.atTime
+          if (atTime.includes('h') || atTime.includes('m') || atTime.includes('s')) {
+            atTime = this.convertToSeconds(atTime);
+          }
+          orderObj.scheduledFor = 'now + ' + atTime;
+        } else if (order.at === 'date') {
           orderObj.scheduledFor = this.coreService.getDateByFormat(order.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
           orderObj.timeZone = order.timeZone;
         }
@@ -875,6 +898,107 @@ initializeArguments(order: any): void {
     this.isCollapsed = this.orders.map(order => order.arguments.map(() => false));
   }
 
+  createOrdersFromAllSchedules(): void {
+    this.coreService.post('workflow/order_templates', {
+      controllerId: this.schedulerId,
+      workflowPath: this.workflow.path
+    }).subscribe({
+      next: (res) => {
+        const schedules = res.schedules;
+        if (schedules && schedules.length > 0) {
+          this.orders = [];
+          schedules.forEach((schedule, scheduleIndex) => {
+            const newOrder = {
+              orderId: schedule.orderParameterisations[0].orderName,
+              timeZone: this.preferences.zone,
+              at: 'now', // Default to 'now', can be adjusted based on commonStartTime
+              forceJobAdmission: schedule.orderParameterisations[0]?.forceJobAdmission || false, // Set from schedule
+              tags: schedule.orderParameterisations[0]?.tags || [], // Set tags from schedule
+              arguments: [],
+              startPosition: '',
+              endPositions: [],
+              blockPosition: '',
+              reload: false,
+              selectedSchedule: schedule, // Link this order to the current schedule
+              orderName: schedule.orderParameterisations[0].orderName
+            };
+
+            if (schedule.orderParameterisations[0]?.positions) {
+              const param = schedule.orderParameterisations[0].positions;
+
+              let newPositions;
+
+              if (param.blockPosition) {
+                for (const [key, value] of this.blockPositions) {
+                  if (JSON.stringify(param.blockPosition) === JSON.stringify(value)) {
+                    newOrder.blockPosition = key;
+                    break;
+                  }
+                }
+
+                if (this.blockPositionList.has(param.blockPosition)) {
+                  newPositions = this.blockPositionList.get(param.blockPosition);
+                  if (newPositions && Array.isArray(newPositions)) {
+                    param.newPositions = new Map();
+                    newPositions.forEach((item) => {
+                      param.newPositions.set(item.positionString, item.position);
+                    });
+                  }
+                }
+              }
+
+
+              if (param.startPosition) {
+                newOrder.startPosition = this.coreService.getPositionStr(param.startPosition, newPositions, this.positions);
+              }
+
+
+              if (param.endPositions && param.endPositions.length > 0) {
+                newOrder.endPositions = [];
+                param.endPositions.forEach(pos => {
+                  newOrder.endPositions.push(this.coreService.getPositionStr(pos, newPositions, this.positions));
+                });
+              }
+
+
+              if (param.forceJobAdmission) {
+                newOrder.forceJobAdmission = param.forceJobAdmission;
+              }
+
+              if (param.tags && param.tags.length > 0) {
+                newOrder.tags = param.tags;
+              }
+
+              newOrder.reload = true;
+            }
+
+            this.orders.push(newOrder);
+
+
+            this.initializeArguments(newOrder);
+            this.isCollapsed.push(newOrder.arguments.map(() => false));
+
+            if (schedule.orderParameterisations) {
+              const firstParam = schedule.orderParameterisations[0];
+              if (firstParam) {
+                this.updateVariablesFromSchedule(firstParam, scheduleIndex);
+              }
+            }
+          });
+
+
+          if (this.orders.length > 1) {
+            this.commonStartTime = 'now';
+            this.onCommonTimeChange(this.commonStartTime);
+          }
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching schedules:', err);
+      }
+    });
+  }
+
 
   areArgumentsEmpty(): boolean {
     const allowEmptyArguments = this.allowEmptyArguments;
@@ -907,7 +1031,6 @@ initializeArguments(order: any): void {
     this.argumentsValid = true;
     return false;
   }
-
 
 
   addVariableToList(data): void {
@@ -1256,27 +1379,27 @@ initializeArguments(order: any): void {
               });
             }
 
-                    for (let x in orderParameterisations.variables) {
-                        if (k === x) {
-                            const mapEntries = orderParameterisations.variables[x];
-                            if (typeof mapEntries === 'object' && !Array.isArray(mapEntries)) {
-                                let arr = [];
-                                for (let y in val.listParameters) {
-                                    const paramName = val.listParameters[y].name;
-                                    if (mapEntries[paramName] || mapEntries[paramName] == false || mapEntries[paramName] == 0) {
-                                        arr.push({
-                                            name: paramName,
-                                            type: val.listParameters[y].value.type,
-                                            value: mapEntries[paramName]
-                                        });
-                                    }
-                                }
-                                if (arr.length > 0) {
-                                    actualMap.push({map: arr});
-                                }
-                            }
-                        }
+            for (let x in orderParameterisations.variables) {
+              if (k === x) {
+                const mapEntries = orderParameterisations.variables[x];
+                if (typeof mapEntries === 'object' && !Array.isArray(mapEntries)) {
+                  let arr = [];
+                  for (let y in val.listParameters) {
+                    const paramName = val.listParameters[y].name;
+                    if (mapEntries[paramName] || mapEntries[paramName] == false || mapEntries[paramName] == 0) {
+                      arr.push({
+                        name: paramName,
+                        type: val.listParameters[y].value.type,
+                        value: mapEntries[paramName]
+                      });
                     }
+                  }
+                  if (arr.length > 0) {
+                    actualMap.push({map: arr});
+                  }
+                }
+              }
+            }
 
             if (actualMap.length === 0) {
               let arr = [];
@@ -1364,9 +1487,6 @@ initializeArguments(order: any): void {
   }
 
 
-
-
-
   trackByFn(index: number, item: any): any {
     return index;
   }
@@ -1444,6 +1564,13 @@ initializeArguments(order: any): void {
     repeat.control.updateValueAndValidity();
   }
 
+  onCommonBlur(control: NgModel, propertyName: string, value: string): void {
+    if (propertyName === 'commonStartTimeValue') {
+      this.commonStartTimeValue = this.coreService.padTime(value);
+      control.control.setErrors({incorrect: false});
+      control.control.updateValueAndValidity();
+    }
+  }
 
   onTimeChange(e: any, index: number): void {
     delete this.orders[index].atTime;
@@ -1452,7 +1579,27 @@ initializeArguments(order: any): void {
     delete this.orders[index].fromTime1;
   }
 
-
+  onCommonTimeChange(event: any): void {
+    if (this.orders.length > 1) {
+      if (this.commonStartTime === 'now' || this.commonStartTime === 'never') {
+        this.orders.forEach(order => {
+          order.at = this.commonStartTime;
+        });
+      } else if (this.commonStartTime === 'later') {
+        this.orders.forEach(order => {
+          order.at = 'later';
+          order.atTime = this.commonStartTimeValue; // Apply the common time value to each order
+        });
+      } else if (this.commonStartTime === 'date') {
+        this.orders.forEach(order => {
+          order.at = 'date';
+          order.fromDate = this.commonStartDate.fromDate;
+          order.fromTime = this.commonStartDate.fromTime;
+          order.timeZone = this.commonStartDate.timeZone;
+        });
+      }
+    }
+  }
 }
 
 @Component({

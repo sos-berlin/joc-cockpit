@@ -26,7 +26,7 @@
                          placeholder="HH:MM:SS"
                          (ngModelChange)="selectTime(object.startTime, true)"
                          required timevalidator
-                         type="text" validTimeReqex>
+                         type="text">
                   <nz-time-picker (keydown.Tab)="onTab()" [(ngModel)]="object.startTime1"
                                   [nzAllowEmpty]="false" (ngModelChange)="selectTime($event)"
                                   name="startTimeIcon"></nz-time-picker>

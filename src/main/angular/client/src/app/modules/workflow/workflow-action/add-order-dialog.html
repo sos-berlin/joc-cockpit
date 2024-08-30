@@ -256,9 +256,62 @@
       <div [ngClass]="{'show': display}" class="hide">
         <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
       </div>
+      <div class="form-group row" *ngIf="orders.length > 1">
+        <label class="col-sm-4 form-control-label" translate>common.label.startTime</label>
+        <div class="col-md-8">
+          <nz-radio-group [(ngModel)]="commonStartTime" name="commonStartTime" (ngModelChange)="onCommonTimeChange($event)">
+            <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
+            <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
+            <label nz-radio nzValue="later"><span translate>common.label.relativeTime</span></label>
+            <label nz-radio nzValue="never"><span translate>common.label.never</span></label>
+          </nz-radio-group>
+        </div>
+      </div>
 
+      <!-- Time for 'later' option -->
+      <div *ngIf="commonStartTime == 'later' && orders.length > 1" class="form-group row">
+        <label class="col-sm-4 form-control-label" translate>common.label.time
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-6">
+          <input #time="ngModel" [(ngModel)]="commonStartTimeValue" [required]="commonStartTime == 'later'" class="form-control"
+                 name="commonStartTimeValue" placeholder="{{'HH:MM:[SS] or 1(s|m|h)'}}" type="text"
+                 timeRelativeStartValidatorReqex (blur)="onCommonBlur(time, 'commonStartTimeValue',commonStartTimeValue)">
+          <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
+            <div *ngIf="!time.valid" translate>common.message.invalid</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Date for 'date' option -->
+      <div *ngIf="commonStartTime == 'date' && orders.length > 1" class="form-group row">
+        <label class="col-sm-4 form-control-label" translate>workflow.label.enterDateAndTime
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-6">
+          <app-date-input [object]="commonStartDate" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
+                          [isRequired]="true" [isTime]="true" [ignoreThirdParam]="true" [isAllowClear]="true"
+                          [name]="'from'" [dateFormat]="dateFormat" [isPreviousDateDisabled]="true"
+                          [placeholder]="( dateFormat | uppercase )"></app-date-input>
+        </div>
+      </div>
+
+      <!-- Time Zone for 'date' option -->
+      <div [hidden]="!(commonStartTime =='date')" *ngIf="orders.length > 1" class="form-group row">
+        <div class="col-sm-4 form-control-label" translate>common.label.timeZone</div>
+        <div class="col-sm-6">
+          <app-select-input [attributeName]="'timeZone'" [isAllowClear]="true" [isSearchable]="true"
+                            [listArray]="zones" [name]="'timeZoneCommon'" [ignoreTranslate]="true"
+                            [object]="commonStartDate"></app-select-input>
+        </div>
+      </div>
+      <hr *ngIf="orders.length > 1">
       <div *ngFor="let  order of orders; let orderIndex = index" (click)="setSelectedOrderIndex(orderIndex)">
         <!-- Order Name -->
+        <div class="mb-2 order-label" *ngIf="orders.length > 1">
+          <span class="_600 p-b-sm" translate>breadcrumb.label.order</span> #{{ orderIndex + 1 }}
+          <i (click)="removeOrder(orderIndex)" class="fa fa-times fa-lg cursor float-right"></i>
+        </div>
         <div class="form-group row">
           <label class="col-sm-4 form-control-label" translate>order.label.orderName</label>
           <div [ngClass]="{ 'has-error' : (((orderId.dirty || orderId.touched) && orderId.invalid))}" class="col-sm-6">
@@ -308,8 +361,8 @@
         </div>
 
         <!-- Start Time -->
-        <div class="form-group row">
-          <label class="col-sm-4 " translate>common.label.startTime</label>
+        <div class="form-group row" *ngIf="orders.length < 2">
+        <label class="col-sm-4 " translate>common.label.startTime</label>
           <div class="col-md-8">
             <nz-radio-group [(ngModel)]="order.at" name="at{{orderIndex}}" (ngModelChange)="onTimeChange($event, orderIndex)">
               <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
@@ -321,7 +374,7 @@
         </div>
 
         <!-- Time for 'later' option -->
-        <div *ngIf="order.at == 'later'" class="form-group row">
+        <div *ngIf="order.at == 'later' && orders.length < 2" class="form-group row">
           <label class="col-sm-4 form-control-label" translate>common.label.time
             <sup class="text-danger text-sm">*</sup>
           </label>
@@ -336,7 +389,7 @@
         </div>
 
         <!-- Date for 'date' option -->
-        <div *ngIf="order.at == 'date'" class="form-group row">
+        <div *ngIf="order.at == 'date' && orders.length < 2" class="form-group row">
           <label class="col-sm-4 form-control-label" translate>workflow.label.enterDateAndTime
             <sup class="text-danger text-sm">*</sup>
           </label>
@@ -349,7 +402,7 @@
         </div>
 
         <!-- Time Zone for 'date' option -->
-        <div [hidden]="!(order.at =='date')" class="form-group row">
+        <div [hidden]="!(order.at =='date')" *ngIf="orders.length < 2" class="form-group row">
           <div class="col-sm-4 form-control-label" translate>common.label.timeZone</div>
           <div class="col-sm-6">
             <app-select-input [attributeName]="'timeZone'" [isAllowClear]="true" [isSearchable]="true"
@@ -561,6 +614,7 @@
         <div class="form-group row">
           <div class="col-sm-12">
             <a (click)="addOrder()" class="text-u-l" translate>order.button.addOrderParameterization</a>
+            <a (click)="createOrdersFromAllSchedules()" class="text-u-l m-l" translate>order.button.addOrdersFromAllSchedules</a>
           </div>
         </div>
     </div>
