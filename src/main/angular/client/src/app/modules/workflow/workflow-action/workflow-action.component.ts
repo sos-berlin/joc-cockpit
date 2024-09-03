@@ -898,106 +898,131 @@ export class AddOrderModalComponent {
     this.isCollapsed = this.orders.map(order => order.arguments.map(() => false));
   }
 
-  createOrdersFromAllSchedules(): void {
-    this.coreService.post('workflow/order_templates', {
-      controllerId: this.schedulerId,
-      workflowPath: this.workflow.path
-    }).subscribe({
-      next: (res) => {
-        const schedules = res.schedules;
-        if (schedules && schedules.length > 0) {
-          this.orders = [];
-          schedules.forEach((schedule, scheduleIndex) => {
-            const newOrder = {
-              orderId: schedule.orderParameterisations[0].orderName,
-              timeZone: this.preferences.zone,
-              at: 'now', // Default to 'now', can be adjusted based on commonStartTime
-              forceJobAdmission: schedule.orderParameterisations[0]?.forceJobAdmission || false, // Set from schedule
-              tags: schedule.orderParameterisations[0]?.tags || [], // Set tags from schedule
-              arguments: [],
-              startPosition: '',
-              endPositions: [],
-              blockPosition: '',
-              reload: false,
-              selectedSchedule: schedule, // Link this order to the current schedule
-              orderName: schedule.orderParameterisations[0].orderName
-            };
-
-            if (schedule.orderParameterisations[0]?.positions) {
-              const param = schedule.orderParameterisations[0].positions;
-
-              let newPositions;
-
-              if (param.blockPosition) {
-                for (const [key, value] of this.blockPositions) {
-                  if (JSON.stringify(param.blockPosition) === JSON.stringify(value)) {
-                    newOrder.blockPosition = key;
-                    break;
-                  }
-                }
-
-                if (this.blockPositionList.has(param.blockPosition)) {
-                  newPositions = this.blockPositionList.get(param.blockPosition);
-                  if (newPositions && Array.isArray(newPositions)) {
-                    param.newPositions = new Map();
-                    newPositions.forEach((item) => {
-                      param.newPositions.set(item.positionString, item.position);
-                    });
-                  }
-                }
-              }
-
-
-              if (param.startPosition) {
-                newOrder.startPosition = this.coreService.getPositionStr(param.startPosition, newPositions, this.positions);
-              }
-
-
-              if (param.endPositions && param.endPositions.length > 0) {
-                newOrder.endPositions = [];
-                param.endPositions.forEach(pos => {
-                  newOrder.endPositions.push(this.coreService.getPositionStr(pos, newPositions, this.positions));
-                });
-              }
-
-
-              if (param.forceJobAdmission) {
-                newOrder.forceJobAdmission = param.forceJobAdmission;
-              }
-
-              if (param.tags && param.tags.length > 0) {
-                newOrder.tags = param.tags;
-              }
-
-              newOrder.reload = true;
-            }
-
-            this.orders.push(newOrder);
-
-
-            this.initializeArguments(newOrder);
-            this.isCollapsed.push(newOrder.arguments.map(() => false));
-
-            if (schedule.orderParameterisations) {
-              const firstParam = schedule.orderParameterisations[0];
-              if (firstParam) {
-                this.updateVariablesFromSchedule(firstParam, scheduleIndex);
-              }
-            }
-          });
-
-
-          if (this.orders.length > 1) {
-            this.commonStartTime = 'now';
-            this.onCommonTimeChange(this.commonStartTime);
-          }
-        }
+  addSchedules(): void{
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: AddSchedulesModalComponent,
+      nzClassName: 'sm',
+      nzAutofocus: null,
+      nzData: {
+        preferences: this.preferences,
+        permission: this.permission,
+        schedulerId: this.schedulerId,
+        workflowPath: this.workflow.path,
       },
-      error: (err) => {
-        console.error('Error fetching schedules:', err);
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.createOrdersFromAllSchedules(result)
       }
     });
   }
+
+  createOrdersFromAllSchedules(selectedScheduleNames: string[]): void {
+    this.coreService.post('workflow/order_templates', {
+        controllerId: this.schedulerId,
+        workflowPath: this.workflow.path
+    }).subscribe({
+        next: (res) => {
+            const schedules = res.schedules;
+            if (schedules && schedules.length > 0) {
+                this.orders = [];
+
+                // Filter schedules to only include the selected ones
+                const filteredSchedules = schedules.filter(schedule =>
+                    selectedScheduleNames.includes(schedule.name)
+                );
+
+                filteredSchedules.forEach((schedule, scheduleIndex) => {
+                    const newOrder = {
+                        orderId: schedule.orderParameterisations[0].orderName,
+                        timeZone: this.preferences.zone,
+                        at: 'now', // Default to 'now', can be adjusted based on commonStartTime
+                        forceJobAdmission: schedule.orderParameterisations[0]?.forceJobAdmission || false, // Set from schedule
+                        tags: schedule.orderParameterisations[0]?.tags || [], // Set tags from schedule
+                        arguments: [],
+                        startPosition: '',
+                        endPositions: [],
+                        blockPosition: '',
+                        reload: false,
+                        selectedSchedule: schedule, // Link this order to the current schedule
+                        orderName: schedule.orderParameterisations[0].orderName
+                    };
+
+                    if (schedule.orderParameterisations[0]?.positions) {
+                        const param = schedule.orderParameterisations[0].positions;
+
+                        let newPositions;
+
+                        if (param.blockPosition) {
+                            for (const [key, value] of this.blockPositions) {
+                                if (JSON.stringify(param.blockPosition) === JSON.stringify(value)) {
+                                    newOrder.blockPosition = key;
+                                    break;
+                                }
+                            }
+
+                            if (this.blockPositionList.has(param.blockPosition)) {
+                                newPositions = this.blockPositionList.get(param.blockPosition);
+                                if (newPositions && Array.isArray(newPositions)) {
+                                    param.newPositions = new Map();
+                                    newPositions.forEach((item) => {
+                                        param.newPositions.set(item.positionString, item.position);
+                                    });
+                                }
+                            }
+                        }
+
+                        if (param.startPosition) {
+                            newOrder.startPosition = this.coreService.getPositionStr(param.startPosition, newPositions, this.positions);
+                        }
+
+                        if (param.endPositions && param.endPositions.length > 0) {
+                            newOrder.endPositions = [];
+                            param.endPositions.forEach(pos => {
+                                newOrder.endPositions.push(this.coreService.getPositionStr(pos, newPositions, this.positions));
+                            });
+                        }
+
+                        if (param.forceJobAdmission) {
+                            newOrder.forceJobAdmission = param.forceJobAdmission;
+                        }
+
+                        if (param.tags && param.tags.length > 0) {
+                            newOrder.tags = param.tags;
+                        }
+
+                        newOrder.reload = true;
+                    }
+
+                    this.orders.push(newOrder);
+
+                    this.initializeArguments(newOrder);
+                    this.isCollapsed.push(newOrder.arguments.map(() => false));
+
+                    if (schedule.orderParameterisations) {
+                        const firstParam = schedule.orderParameterisations[0];
+                        if (firstParam) {
+                            this.updateVariablesFromSchedule(firstParam, scheduleIndex);
+                        }
+                    }
+                });
+
+                if (this.orders.length > 1) {
+                    this.commonStartTime = 'now';
+                    this.onCommonTimeChange(this.commonStartTime);
+                }
+            }
+        },
+        error: (err) => {
+            console.error('Error fetching schedules:', err);
+        }
+    });
+}
+
 
 
   areArgumentsEmpty(): boolean {
@@ -1601,6 +1626,79 @@ export class AddOrderModalComponent {
     }
   }
 }
+
+
+@Component({
+  selector: 'app-add-schedules',
+  templateUrl: './add-schedules-dialog.html',
+})
+
+export class AddSchedulesModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  schedulerId: any;
+  permission: any;
+  preferences: any;
+  workflowPath: any;
+  schedules: any[] = [];
+  allSelected: boolean = false;
+  submitted = false;
+
+  constructor(
+    public coreService: CoreService,
+    private activeModal: NzModalRef,
+    private modal: NzModalService
+  ) {}
+
+  ngOnInit(): void {
+    this.schedulerId = this.modalData.schedulerId;
+    this.permission = this.modalData.permission;
+    this.preferences = this.modalData.preferences;
+    this.workflowPath = this.modalData.workflowPath;
+    this.fetchSchedules();
+  }
+
+  fetchSchedules(): void {
+    this.coreService.post('workflow/order_templates', {
+      controllerId: this.schedulerId,
+      workflowPath: this.workflowPath
+    }).subscribe({
+      next: (res) => {
+        res.schedules.forEach(schedule => {
+          schedule.selected = false;
+        });
+        this.schedules = res.schedules;
+      },
+      error: (err) => {
+        console.error('Error fetching schedules:', err);
+      }
+    });
+  }
+
+  toggleSelectAll(isChecked: boolean): void {
+    this.schedules.forEach(schedule => {
+      schedule.selected = isChecked;
+    });
+  }
+
+  onScheduleChange(): void {
+    this.allSelected = this.schedules.every(schedule => schedule.selected);
+  }
+
+  submit(): void {
+    this.submitted = true
+    const selectedSchedules = this.schedules
+      .filter(schedule => schedule.selected)
+      .map(schedule => schedule.name);
+
+    this.activeModal.close(selectedSchedules);
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+}
+
+
 
 @Component({
   selector: 'app-workflow-action',

@@ -462,9 +462,14 @@ export class SingleDeployComponent {
     workflows: [],
     isRenamed: false
   }
-
   dateObj: any = {};
-
+  dependencies: any;
+  affectedObjectsByType: { [key: string]: any[] } = {};
+  referencedObjectsByType: { [key: string]: any[] } = {};
+  affectedObjectTypes: string[] = [];
+  referencedObjectTypes: string[] = [];
+  selectAllAffected: { [key: string]: boolean } = {};
+  selectAllReferenced: { [key: string]: boolean } = {};
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
@@ -491,6 +496,7 @@ export class SingleDeployComponent {
     if (this.data?.objectType === 'NOTICEBOARD' || this.data?.type === 'NOTICEBOARD') {
       this.getNoticeReferences();
     }
+    this.getDependencies()
   }
 
   init(): void {
@@ -737,6 +743,104 @@ export class SingleDeployComponent {
           }));
         }
       }
+    });
+  }
+
+  private getDependencies(): void {
+    const configurations = [{
+      name: this.data.name,
+      type: this.data.objectType || this.data.type
+    }];
+
+    const obj = {
+      configurations: configurations
+    };
+
+    this.coreService.post('inventory/dependencies', obj).subscribe({
+      next: (res: any) => {
+        this.dependencies = res.dependencies;
+        console.log(this.dependencies,">>")
+        this.prepareObject(this.dependencies);
+      },
+      error: (err) => {
+        console.error('Error fetching dependencies:', err);
+        this.loading = false;
+      }
+    });
+  }
+
+  prepareObject(dependencies): void {
+    if (dependencies && dependencies.length > 0) {
+      dependencies.forEach(dep => {
+        // Group affected objects
+        if (dep.referencedBy) {
+          dep.referencedBy.forEach(refObj => {
+            const type = refObj.objectType;
+            if (!this.affectedObjectsByType[type]) {
+              this.affectedObjectsByType[type] = [];
+              this.affectedObjectTypes.push(type);
+            }
+            this.affectedObjectsByType[type].push(refObj);
+          });
+        }
+
+        // Group referenced objects
+        if (dep.references) {
+          dep.references.forEach(refObj => {
+            const type = refObj.objectType;
+            if (!this.referencedObjectsByType[type]) {
+              this.referencedObjectsByType[type] = [];
+              this.referencedObjectTypes.push(type);
+            }
+            this.referencedObjectsByType[type].push(refObj);
+          });
+        }
+      });
+    }
+  }
+
+  getIcon(objectType: string): string {
+    const iconMapping = {
+      'WORKFLOW': 'apartment',
+      'JOBRESOURCE': 'icon-resources-icon',  // Custom class
+      'LOCK': 'lock',
+      'NOTICEBOARD': 'pushpin',
+      'FILEORDERSOURCE': 'icon-orders-icon', // Custom class
+      'CALENDAR': 'calendar',
+      'SCHEDULE': 'schedule',
+      'JOBTEMPLATE': 'icon-jobs-icon'       // Custom class
+    };
+    return iconMapping[objectType] || 'folder';
+  }
+
+  isCustomIcon(objectType: string): boolean {
+    const customIcons = ['icon-resources-icon', 'icon-orders-icon', 'icon-jobs-icon'];
+    return customIcons.includes(this.getIcon(objectType));
+  }
+
+  getObjectTypeLabel(objectType: string): string {
+    const labelMapping = {
+      'WORKFLOW': 'inventory.label.workflows',
+      'JOBRESOURCE': 'inventory.label.jobResources',
+      'LOCK': 'inventory.label.locks',
+      'NOTICEBOARD': 'inventory.label.boards',
+      'FILEORDERSOURCE': 'inventory.label.fileOrderSources',
+      'CALENDAR': 'inventory.label.calendars',
+      'SCHEDULE': 'dashboard.label.schedules',
+      'JOBTEMPLATE': 'inventory.label.jobTemplates'
+    };
+    return labelMapping[objectType] || objectType;
+  }
+
+  toggleAllAffected(objectType: string, isChecked: boolean): void {
+    this.affectedObjectsByType[objectType].forEach(obj => {
+      obj.selected = isChecked;
+    });
+  }
+
+  toggleAllReferenced(objectType: string, isChecked: boolean): void {
+    this.referencedObjectsByType[objectType].forEach(obj => {
+      obj.selected = isChecked;
     });
   }
 

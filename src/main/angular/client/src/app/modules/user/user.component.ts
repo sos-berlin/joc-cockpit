@@ -1169,7 +1169,6 @@ export class UserComponent {
   }
 
   initializeOrderStateColors(): void {
-    // Define default order state colors
     const defaultOrderStateColor = [
       { state: 'pending', color: '#ffff00' },
       { state: 'scheduled', color: '#efcc00' },
@@ -1197,25 +1196,34 @@ export class UserComponent {
   }
 
   updateColor(state: string, color: string): void {
-    // Update color for the specified state
     const stateColor = this.orderStateColors.find(item => item.state === state);
     if (stateColor) {
       stateColor.color = color;
+      this.preferences.orderStateColors = JSON.parse(JSON.stringify(this.orderStateColors));
+      this.applyThemeColors(this.orderStateColors);
       this.savePreferences();
     }
   }
 
   applyThemeColors(themeColors: any[]): void {
+    const existingStyleElement = document.getElementById('theme-color-styles');
+    if (existingStyleElement) {
+      existingStyleElement.remove();
+    }
+
     let style = document.createElement('style');
+    style.id = 'theme-color-styles';
     themeColors.forEach(colorObj => {
       style.innerHTML += `
-        .bg-${colorObj.state} { background-color: ${colorObj.color}; }
-        .border-${colorObj.state}-box { border-color: ${colorObj.color}; }
-        .text-${colorObj.state} { color: ${colorObj.color}; }
-      `;
+      .bg-${colorObj.state} { background-color: ${colorObj.color}; }
+      .border-${colorObj.state}-box { border-color: ${colorObj.color}; }
+      .text-${colorObj.state} { color: ${colorObj.color}; }
+    `;
     });
     document.head.appendChild(style);
+
   }
+
 
 
   resetDefault(): void {

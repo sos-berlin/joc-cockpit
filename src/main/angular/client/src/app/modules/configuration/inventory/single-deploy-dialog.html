@@ -139,32 +139,64 @@
           <span class="p-l-sm">{{item.name }}</span>
         </div>
       </div>
-      <div *ngIf="impactedSchedules?.length > 0 " class="m-t-md">
-      <i nz-icon nzTheme="outline" nzType="schedule" class="p-r-xs"></i>
-        {{'inventory.label.impactedSchedules' | translate}}
-      </div>
-      <div *ngFor="let item of impactedSchedules" class="p-l">
-        <div>
-          &nbsp;<label nz-checkbox [(ngModel)]="item.selected" [ngModelOptions]="{standalone: true}" name="selectedSchedules">
-           <span [ngClass]="{'fa-circle-o': !item.valid, 'fa-circle dark-blue' :item.deployed || item.released, 'opacity7': item.syncState}"
-                 class="fa fa-check-circle-o orange text-xs p-l-xs"
-                 style="margin-top: 4px"></span>
-          {{item.path}}</label>
+      <div class="form-group row m-t-md">
+        <div class="col-md-6">
+          <label translate>inventory.label.affectedObjects</label>
+          <div class="m-t-sm m-l-sm">
+            <ng-container *ngFor="let objectType of affectedObjectTypes">
+              <div class="m-t-sm" *ngIf="affectedObjectsByType[objectType]?.length">
+                <label nz-checkbox [(ngModel)]="selectAllAffected[objectType]" [name]="'checkbox_' + objectType" (ngModelChange)="toggleAllAffected(objectType, $event)">
+                  <span *ngIf="!isCustomIcon(objectType)" class="icon-color p-r-sm">
+                        <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+                    </span>
+                  <span *ngIf="isCustomIcon(objectType)" class="icon-color p-r-sm" [ngClass]="getIcon(objectType)"></span>
+                  {{ getObjectTypeLabel(objectType) | translate }}
+                </label>
+                <div class="m-t-sm m-l-md" *ngFor="let obj of affectedObjectsByType[objectType]">
+                  <label class="m-l-sm" nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-' + obj.path">
+                    <span [ngClass]="{
+                                'fa-circle-o': !obj.valid,
+                                'fa-circle dark-blue': obj.deployed || obj.released,
+                                'opacity7': obj.syncState
+                            }" class="fa fa-check-circle-o orange text-xs p-l-xs"
+                          style="margin-top: 4px"></span>
+                    {{ obj.path }}
+                  </label>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label translate>inventory.label.referencedObjects</label>
+          <div class="m-t-sm m-l-sm">
+            <ng-container *ngFor="let objectType of referencedObjectTypes">
+              <div class="m-t-sm" *ngIf="referencedObjectsByType[objectType]?.length">
+                <label nz-checkbox [(ngModel)]="selectAllReferenced[objectType]" [name]="'checkbox_' + objectType" (ngModelChange)="toggleAllReferenced(objectType, $event)">
+                   <span *ngIf="!isCustomIcon(objectType)" class="icon-color p-r-sm">
+                        <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+                    </span>
+                  <span *ngIf="isCustomIcon(objectType)" class="icon-color p-r-sm" [ngClass]="getIcon(objectType)"></span>
+                  {{ getObjectTypeLabel(objectType) | translate }}
+                </label>
+                <div class="m-t-sm m-l-md" *ngFor="let obj of referencedObjectsByType[objectType]">
+                  <label class="m-l-sm" nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-' + obj.path">
+                    <span [ngClass]="{
+                                'fa-circle-o': !obj.valid,
+                                'fa-circle dark-blue': obj.deployed || obj.released,
+                                'opacity7': obj.syncState
+                            }" class="fa fa-check-circle-o orange text-xs p-l-xs"
+                          style="margin-top: 4px"></span>
+                    {{ obj.path }}
+                  </label>
+                </div>
+              </div>
+            </ng-container>
+          </div>
         </div>
       </div>
-      <div *ngIf="impactedWorkflows.workflows?.length > 0 && impactedWorkflows.isRenamed  " class="m-t-md">
-      <i nz-icon nzTheme="outline" nzType="apartment" class="p-r-xs"></i>
-        {{'inventory.label.impactedWorkflows' | translate}}
-      </div>
-      <div *ngIf="impactedWorkflows.isRenamed"  class="p-l">
-        <div *ngFor="let item of impactedWorkflows.workflows">
-          &nbsp;<label nz-checkbox [(ngModel)]="item.selected" [ngModelOptions]="{standalone: true}" name="selectedSchedules">
-           <span [ngClass]="{'fa-circle-o': !item.valid, 'fa-circle dark-blue' :item.deployed || item.deployed, 'opacity7': item.syncState}"
-                 class="fa fa-check-circle-o orange text-xs p-l-xs"
-                 style="margin-top: 4px"></span>
-          {{item.path}}</label>
-        </div>
-      </div>
+
+
     </div>
     <div *ngIf="deployablesObject.length===0 && !loading && !isRemoved" class="m-t-md">
       <app-empty-data></app-empty-data>

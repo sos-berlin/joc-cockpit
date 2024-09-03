@@ -7,6 +7,7 @@ import {SharedModule} from '../shared/shared.module';
 import {WorkflowRoutingModule} from './workflow-routing.module';
 import {
   AddOrderModalComponent,
+  AddSchedulesModalComponent,
   ShowDependencyComponent,
   WorkflowActionComponent
 } from './workflow-action/workflow-action.component';
@@ -38,6 +39,7 @@ import {TooltipInfoComponent} from "./tooltip-info/tooltip-info.component";
     WorkflowTemplateComponent,
     SingleWorkflowComponent,
     AddOrderModalComponent,
+    AddSchedulesModalComponent,
     WorkflowActionComponent,
     OrderListSidebarComponent,
     ShowDependencyComponent,
