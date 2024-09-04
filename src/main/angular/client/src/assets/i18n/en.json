@@ -2477,7 +2477,7 @@
     "button.cloneOrder": "Clone Order",
     "button.continue": "Let run",
     "button.addOrderParameterization": "Add Order",
-    "button.addOrdersFromAllSchedules": "Add Orders From Schedules",
+    "button.addOrdersFromAllSchedules": "Add Orders from Schedules",
     "placeholder.selectStartNode": "Select Start Position",
     "placeholder.selectEndNode": "Select End Position",
     "placeholder.selectBlockPosition": "Select Block Position",
