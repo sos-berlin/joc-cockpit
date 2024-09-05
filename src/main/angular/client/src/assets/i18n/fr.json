@@ -1793,6 +1793,8 @@
     "label.renameTag": "Renommer Balise",
     "label.tagName": "Nom Balise",
     "label.testMail": "Tester l'E-Mail",
+    "label.impactedSchedules": "Planifications concernéés",
+    "label.impactedWorkflows": "Workflows concernéés",
     "label.affectedObjects": "Affected Objects",
     "label.referencedObjects": "Referenced Objects",
     "label.includeTodaysLateOrders": "Inclure les Ordres tardifs du jour",

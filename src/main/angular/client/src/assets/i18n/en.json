@@ -1793,6 +1793,8 @@
     "label.renameTag": "Rename Tag",
     "label.tagName": "Tag Name",
     "label.testMail": "Test E-Mail",
+    "label.impactedSchedules": "Affected Schedules",
+    "label.impactedWorkflows": "Affected Workflows",
     "label.affectedObjects": "Affected Objects",
     "label.referencedObjects": "Referenced Objects",
     "label.includeTodaysLateOrders": "Include today's late Orders",

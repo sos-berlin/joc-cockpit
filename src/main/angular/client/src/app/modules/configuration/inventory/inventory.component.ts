@@ -457,11 +457,6 @@ export class SingleDeployComponent {
   dailyPlanDate: any = {
     addOrdersDateFrom: 'now',
   };
-  impactedSchedules: any;
-  impactedWorkflows: any = {
-    workflows: [],
-    isRenamed: false
-  }
   dateObj: any = {};
   dependencies: any;
   affectedObjectsByType: { [key: string]: any[] } = {};
@@ -470,6 +465,11 @@ export class SingleDeployComponent {
   referencedObjectTypes: string[] = [];
   selectAllAffected: { [key: string]: boolean } = {};
   selectAllReferenced: { [key: string]: boolean } = {};
+  affectedCollapsed: { [key: string]: boolean } = {};
+  referencedCollapsed: { [key: string]: boolean } = {};
+  isAffectedCollapsed: boolean = true;
+  isReferencedCollapsed: boolean = true;
+
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
@@ -490,13 +490,9 @@ export class SingleDeployComponent {
     const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.dateFormat = this.coreService.getDateFormat(preferences.dateFormat);
     this.init();
-    if (this.data?.objectType === 'WORKFLOW' || this.data?.type === 'WORKFLOW') {
-      this.getReferences();
-    }
-    if (this.data?.objectType === 'NOTICEBOARD' || this.data?.type === 'NOTICEBOARD') {
-      this.getNoticeReferences();
-    }
     this.getDependencies()
+    this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
+    this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
   }
 
   init(): void {
@@ -521,6 +517,32 @@ export class SingleDeployComponent {
       store: {draftConfigurations: [], deployConfigurations: []},
       delete: {deployConfigurations: []}
     };
+
+    Object.keys(this.affectedObjectsByType).forEach(type => {
+      this.affectedObjectsByType[type].forEach(obj => {
+        if (obj.valid && !obj.deployed && obj.objectType != 'SCHEDULE' && obj.objectType != 'JOBTEMPLATE' && obj.objectType != 'WORKINGDAYSCALENDAR' && obj.objectType != 'NONWORKINGDAYSCALENDAR') {
+          this.object.store.draftConfigurations.push({
+            configuration: {
+              objectType: obj.objectType,
+              path: obj.path
+            }
+          });
+        }
+      });
+    });
+
+    Object.keys(this.referencedObjectsByType).forEach(type => {
+      this.referencedObjectsByType[type].forEach(obj => {
+        if (obj.valid && !obj.deployed && obj.objectType != 'SCHEDULE' && obj.objectType != 'JOBTEMPLATE' && obj.objectType != 'WORKINGDAYSCALENDAR' && obj.objectType != 'NONWORKINGDAYSCALENDAR') {
+          this.object.store.draftConfigurations.push({
+            configuration: {
+              objectType: obj.objectType,
+              path: obj.path
+            }
+          });
+        }
+      });
+    });
     const self = this;
     for (let i = 0; i < this.deployablesObject.length; i++) {
       if (this.deployablesObject[i].isChecked || !this.data.object) {
@@ -555,22 +577,8 @@ export class SingleDeployComponent {
             if (objDep.configuration.commitId) {
               self.object.store.deployConfigurations.push(objDep);
             } else {
-              if (this.impactedWorkflows && this.impactedWorkflows.workflows.length > 0 && this.impactedWorkflows.isRenamed) {
-
-                const selectedWorkflows = this.impactedWorkflows.workflows.filter(workflow => workflow.selected);
-                if (selectedWorkflows.length > 0) {
-                  const workflowConfigurations = selectedWorkflows.map(workflow => ({
-                    configuration: {
-                      objectType: 'WORKFLOW',
-                      path: workflow.path
-                    }
-                  }));
-
-                  this.object.store.draftConfigurations.push(...workflowConfigurations);
-                }
-              }
-
               self.object.store.draftConfigurations.push(objDep);
+
             }
           }
 
@@ -579,14 +587,58 @@ export class SingleDeployComponent {
     }
   }
 
+  getReleaseDeployObject(): void {
+    const obj: any = {
+      controllerIds: this.selectedSchedulerIds,
+      auditLog: {},
+      includeLate: this.includeLate
+    };
+
+    Object.keys(this.affectedObjectsByType).forEach(type => {
+      this.affectedObjectsByType[type].forEach(obj => {
+        if (obj.valid && !obj.deployed && obj.objectType != 'SCHEDULE' && obj.objectType != 'JOBTEMPLATE' && obj.objectType != 'WORKINGDAYSCALENDAR' && obj.objectType != 'NONWORKINGDAYSCALENDAR') {
+          this.object.store.draftConfigurations.push({
+            configuration: {
+              objectType: obj.objectType,
+              path: obj.path
+            }
+          });
+        }
+      });
+    });
+
+    Object.keys(this.referencedObjectsByType).forEach(type => {
+      this.referencedObjectsByType[type].forEach(obj => {
+        if (obj.valid && !obj.deployed && obj.objectType != 'SCHEDULE' && obj.objectType != 'JOBTEMPLATE' && obj.objectType != 'WORKINGDAYSCALENDAR' && obj.objectType != 'NONWORKINGDAYSCALENDAR') {
+          this.object.store.draftConfigurations.push({
+            configuration: {
+              objectType: obj.objectType,
+              path: obj.path
+            }
+          });
+        }
+      });
+    });
+
+    obj.store = this.object.store;
+    this.coreService.post(this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy', obj).subscribe({
+      next: () => {
+        this.activeModal.close();
+      }, error: () => this.submitted = false
+    });
+  }
+
   deploy(): void {
+    console.log(this.object.store.draftConfigurations,">>")
+
     this.submitted = true;
     if (this.isRemoved) {
       this.remove();
       return;
     }
-    if (this.releasable) {
+    if (this.releasable && !this.shouldCallRelease()) {
       this.release();
+      this.getReleaseDeployObject();
       return;
     }
 
@@ -598,7 +650,7 @@ export class SingleDeployComponent {
     };
     if ((this.data.objectType == 'WORKFLOW' || this.releasable || this.isRemoved) && this.deployablesObject.length > 0) {
       if (!this.isRevoke) {
-        if (this.impactedSchedules && this.impactedSchedules.length === 0) {
+        if (this.dependencies && this.shouldAddOrdersDateFrom()) {
           if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
             obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
           } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
@@ -606,14 +658,15 @@ export class SingleDeployComponent {
           }
         }
       }
+    }
 
+
+    if (this.dependencies && this.shouldCallRelease()) {
+      this.release();
     }
-    if (this.impactedSchedules && this.impactedSchedules.length > 0) {
-      const selectedSchedules = this.impactedSchedules.filter(schedule => schedule.selected);
-      if (selectedSchedules.length > 0){
-        this.release();
-      }
-    }
+
+
+
     if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
       if (this.object.store.draftConfigurations.length === 0) {
         delete this.object.store.draftConfigurations;
@@ -647,7 +700,8 @@ export class SingleDeployComponent {
     const PATH = this.data.path1 ? ((this.data.path1 + (this.data.path1 === '/' ? '' : '/') + this.data.name)) : ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name));
     let obj: any = {
       auditLog: {},
-      includeLate: this.includeLate
+      includeLate: this.includeLate,
+      update:[]
     };
 
     if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
@@ -659,22 +713,33 @@ export class SingleDeployComponent {
     if (this.data.deleted) {
       obj.delete = [{objectType: this.data.objectType, path: PATH}];
     } else {
-      obj.update = [{objectType: this.data.objectType, path: PATH}];
-    }
-
-    if (this.impactedSchedules && this.impactedSchedules.length > 0) {
-      const selectedSchedules = this.impactedSchedules.filter(schedule => schedule.selected);
-      if (selectedSchedules.length > 0) {
-        obj.update = selectedSchedules.map(schedule => ({
-          objectType: 'SCHEDULE',
-          path: schedule.path
-        }));
-      }
-    } else {
-      if (this.impactedSchedules && this.impactedSchedules.length === 0) {
+      if(!this.shouldCallRelease()){
         obj.update = [{objectType: this.data.objectType, path: PATH}];
       }
     }
+
+    Object.keys(this.affectedObjectsByType).forEach(type => {
+      this.affectedObjectsByType[type].forEach(objItem => {
+   
+        if (objItem.valid && !objItem.released && objItem.objectType === 'SCHEDULE' || objItem.objectType === 'JOBTEMPLATE' || objItem.objectType === 'WORKINGDAYSCALENDAR' || objItem.objectType === 'NONWORKINGDAYSCALENDAR') {
+          obj.update.push({
+              objectType: objItem.objectType,
+              path: objItem.path
+          });
+        }
+      });
+    });
+
+    Object.keys(this.referencedObjectsByType).forEach(type => {
+      this.referencedObjectsByType[type].forEach(objItem => {
+        if (objItem.valid && !objItem.released && objItem.objectType === 'SCHEDULE' && objItem.objectType === 'JOBTEMPLATE' && objItem.objectType === 'WORKINGDAYSCALENDAR' && objItem.objectType === 'NONWORKINGDAYSCALENDAR') {
+          obj.update.push({
+              objectType: objItem.objectType,
+              path: objItem.path
+          });
+        }
+      });
+    });
 
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
@@ -686,6 +751,51 @@ export class SingleDeployComponent {
     });
   }
 
+
+  shouldCallRelease(): boolean {
+    let shouldRelease = false;
+
+    const allowedTypes = ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'];
+
+    Object.keys(this.affectedObjectsByType).forEach(type => {
+      this.affectedObjectsByType[type].forEach(obj => {
+        if (obj.valid && !obj.released && allowedTypes.includes(obj.objectType)) {
+          shouldRelease = true;
+        }
+      });
+    });
+
+    Object.keys(this.referencedObjectsByType).forEach(type => {
+      this.referencedObjectsByType[type].forEach(obj => {
+        if (obj.valid && !obj.released && allowedTypes.includes(obj.objectType)) {
+          shouldRelease = true;
+        }
+      });
+    });
+
+    return shouldRelease;
+  }
+
+  shouldAddOrdersDateFrom(): boolean {
+    let shouldAdd = true;
+    Object.keys(this.affectedObjectsByType).forEach(type => {
+      this.affectedObjectsByType[type].forEach(obj => {
+        if (!(obj.valid && obj.released) || (obj.valid && obj.released)) {
+          shouldAdd = false;
+        }
+      });
+    });
+
+    Object.keys(this.referencedObjectsByType).forEach(type => {
+      this.referencedObjectsByType[type].forEach(obj => {
+        if (!(obj.valid && obj.released) || (obj.valid && obj.released)) {
+          shouldAdd = false;
+        }
+      });
+    });
+
+    return shouldAdd;
+  }
 
   cancel(): void {
     this.activeModal.destroy();
@@ -729,23 +839,6 @@ export class SingleDeployComponent {
     }
   }
 
-  private getReferences(): void {
-    const obj = {
-      path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
-      objectType: this.data.objectType || this.data.type
-    };
-    this.coreService.post('inventory/workflow/references', obj).subscribe({
-      next: (res: any) => {
-        if (res.schedules) {
-          this.impactedSchedules = res.schedules.map((schedule: any) => ({
-            ...schedule,
-            selected: true
-          }));
-        }
-      }
-    });
-  }
-
   private getDependencies(): void {
     const configurations = [{
       name: this.data.name,
@@ -759,7 +852,6 @@ export class SingleDeployComponent {
     this.coreService.post('inventory/dependencies', obj).subscribe({
       next: (res: any) => {
         this.dependencies = res.dependencies;
-        console.log(this.dependencies,">>")
         this.prepareObject(this.dependencies);
       },
       error: (err) => {
@@ -772,7 +864,6 @@ export class SingleDeployComponent {
   prepareObject(dependencies): void {
     if (dependencies && dependencies.length > 0) {
       dependencies.forEach(dep => {
-        // Group affected objects
         if (dep.referencedBy) {
           dep.referencedBy.forEach(refObj => {
             const type = refObj.objectType;
@@ -780,11 +871,13 @@ export class SingleDeployComponent {
               this.affectedObjectsByType[type] = [];
               this.affectedObjectTypes.push(type);
             }
+
+            refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
+            refObj.disabled = !refObj.valid || refObj.deployed || refObj.released;
             this.affectedObjectsByType[type].push(refObj);
           });
         }
 
-        // Group referenced objects
         if (dep.references) {
           dep.references.forEach(refObj => {
             const type = refObj.objectType;
@@ -792,23 +885,92 @@ export class SingleDeployComponent {
               this.referencedObjectsByType[type] = [];
               this.referencedObjectTypes.push(type);
             }
+
+            refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
+            refObj.disabled = !refObj.valid || refObj.deployed || refObj.released;
             this.referencedObjectsByType[type].push(refObj);
           });
         }
       });
+
+      this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
+      this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
     }
+  }
+
+
+  toggleAffectedCollapse(objectType: string): void {
+    this.affectedCollapsed[objectType] = !this.affectedCollapsed[objectType];
+  }
+
+  toggleReferencedCollapse(objectType: string): void {
+    this.referencedCollapsed[objectType] = !this.referencedCollapsed[objectType];
+  }
+
+  toggleAllAffectedCollapse(): void {
+    this.isAffectedCollapsed = !this.isAffectedCollapsed;
+  }
+
+  toggleAllReferencedCollapse(): void {
+    this.isReferencedCollapsed = !this.isReferencedCollapsed;
+  }
+
+  expandAllAffected(): void {
+    this.isAffectedCollapsed = true;
+    this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
+  }
+
+  collapseAllAffected(): void {
+    this.isAffectedCollapsed = false;
+    this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = false);
+  }
+
+  expandAllReferenced(): void {
+    this.isReferencedCollapsed = true;
+    this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
+  }
+
+  collapseAllReferenced(): void {
+    this.isReferencedCollapsed = false;
+    this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = false);
+  }
+
+  toggleAllAffected(objectType: string, isChecked: boolean): void {
+    this.affectedObjectsByType[objectType].forEach(obj => {
+      if (!obj.disabled) {
+        obj.selected = isChecked;
+      }
+    });
+  }
+
+  toggleAllReferenced(objectType: string, isChecked: boolean): void {
+    this.referencedObjectsByType[objectType].forEach(obj => {
+      if (!obj.disabled) {
+        obj.selected = isChecked;
+      }
+    });
+  }
+
+  updateParentCheckboxAffected(objectType: string): void {
+    const allSelected = this.affectedObjectsByType[objectType].every(obj => obj.selected || obj.disabled);
+    this.selectAllAffected[objectType] = allSelected;
+  }
+
+  updateParentCheckboxReferenced(objectType: string): void {
+    const allSelected = this.referencedObjectsByType[objectType].every(obj => obj.selected || obj.disabled);
+    this.selectAllReferenced[objectType] = allSelected;
   }
 
   getIcon(objectType: string): string {
     const iconMapping = {
       'WORKFLOW': 'apartment',
-      'JOBRESOURCE': 'icon-resources-icon',  // Custom class
+      'JOBRESOURCE': 'icon-resources-icon',
       'LOCK': 'lock',
       'NOTICEBOARD': 'pushpin',
-      'FILEORDERSOURCE': 'icon-orders-icon', // Custom class
+      'FILEORDERSOURCE': 'icon-orders-icon',
       'CALENDAR': 'calendar',
       'SCHEDULE': 'schedule',
-      'JOBTEMPLATE': 'icon-jobs-icon'       // Custom class
+      'JOBTEMPLATE': 'icon-jobs-icon'
     };
     return iconMapping[objectType] || 'folder';
   }
@@ -830,39 +992,6 @@ export class SingleDeployComponent {
       'JOBTEMPLATE': 'inventory.label.jobTemplates'
     };
     return labelMapping[objectType] || objectType;
-  }
-
-  toggleAllAffected(objectType: string, isChecked: boolean): void {
-    this.affectedObjectsByType[objectType].forEach(obj => {
-      obj.selected = isChecked;
-    });
-  }
-
-  toggleAllReferenced(objectType: string, isChecked: boolean): void {
-    this.referencedObjectsByType[objectType].forEach(obj => {
-      obj.selected = isChecked;
-    });
-  }
-
-  private getNoticeReferences(): void {
-
-    const obj = {
-      path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
-      objectType: this.data.objectType || this.data.type
-    };
-    this.coreService.post('inventory/noticeboard/references', obj).subscribe({
-      next: (res: any) => {
-        if (res.workflows) {
-          this.impactedWorkflows = {
-            workflows: res.workflows.map((workflow: any) => ({
-              ...workflow,
-              selected: true
-            })),
-            isRenamed: res.isRenamed
-          };
-        }
-      }
-    });
   }
 
 
