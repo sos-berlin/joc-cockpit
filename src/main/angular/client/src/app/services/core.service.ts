@@ -712,7 +712,7 @@ export class CoreService {
   getColor(d: number, type: string): string {
     const preferenceObj = JSON.parse(sessionStorage['preferences']);
     const orderStateColors = preferenceObj.orderStateColors || [];
-
+    this.applyThemeColors(orderStateColors)
     const stateColorMap = {
       0: 'running',
       1: 'scheduled',
@@ -723,11 +723,11 @@ export class CoreService {
       6: 'finished',
       7: 'blocked',
       8: 'waiting',
-      9: 'prompting',
-      10: 'light-yellow',
+      // 9: 'prompting',
+      10: 'pending',
       11: 'light-orange',
+      12: 'prompting',
     };
-
     const state = stateColorMap[d] || 'default';
     const colorObj = orderStateColors.find(item => item.state === state);
 
@@ -743,6 +743,25 @@ export class CoreService {
     } else {
       return this.defaultColor(d, type);
     }
+  }
+
+  applyThemeColors(themeColors: any[]): void {
+    const existingStyleElement = document.getElementById('theme-color-styles');
+    if (existingStyleElement) {
+      existingStyleElement.remove();
+    }
+
+    let style = document.createElement('style');
+    style.id = 'theme-color-styles';
+    themeColors.forEach(colorObj => {
+      style.innerHTML += `
+      .bg-${colorObj.state} { background-color: ${colorObj.color}; }
+      .border-${colorObj.state}-box { border-color: ${colorObj.color}; }
+      .text-${colorObj.state} { color: ${colorObj.color}; }
+    `;
+    });
+    document.head.appendChild(style);
+
   }
 
  defaultColor(d: number, type: string): string {

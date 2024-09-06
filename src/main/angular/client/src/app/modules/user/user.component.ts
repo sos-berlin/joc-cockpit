@@ -1176,7 +1176,7 @@ export class UserComponent {
       { state: 'running', color: '#52c41a' },
       { state: 'suspended', color: '#FF8000' },
       { state: 'finished', color: '#1171a6' },
-      { state: 'prompting', color: '#f37891' },
+      { state: 'prompting', color: '#90EE90' },
       { state: 'waiting', color: '#b3b300' },
       { state: 'blocked', color: '#a500a5' },
       { state: 'failed', color: '#dc143c' },

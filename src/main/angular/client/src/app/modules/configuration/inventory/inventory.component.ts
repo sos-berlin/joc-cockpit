@@ -490,7 +490,7 @@ export class SingleDeployComponent {
     const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.dateFormat = this.coreService.getDateFormat(preferences.dateFormat);
     this.init();
-    this.getDependencies()
+    // this.getDependencies()
     this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
     this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
   }
@@ -629,7 +629,6 @@ export class SingleDeployComponent {
   }
 
   deploy(): void {
-    console.log(this.object.store.draftConfigurations,">>")
 
     this.submitted = true;
     if (this.isRemoved) {
@@ -638,7 +637,9 @@ export class SingleDeployComponent {
     }
     if (this.releasable && !this.shouldCallRelease()) {
       this.release();
-      this.getReleaseDeployObject();
+      if(this.shouldCallDeploy()){
+        this.getReleaseDeployObject();
+      }
       return;
     }
 
@@ -720,7 +721,7 @@ export class SingleDeployComponent {
 
     Object.keys(this.affectedObjectsByType).forEach(type => {
       this.affectedObjectsByType[type].forEach(objItem => {
-   
+
         if (objItem.valid && !objItem.released && objItem.objectType === 'SCHEDULE' || objItem.objectType === 'JOBTEMPLATE' || objItem.objectType === 'WORKINGDAYSCALENDAR' || objItem.objectType === 'NONWORKINGDAYSCALENDAR') {
           obj.update.push({
               objectType: objItem.objectType,
@@ -774,6 +775,30 @@ export class SingleDeployComponent {
     });
 
     return shouldRelease;
+  }
+
+  shouldCallDeploy(): boolean {
+    let shouldDeploy = false;
+
+    const allowedTypes = ['WORKFLOW', 'JOBRESOURCE', 'LOCK','NOTICEBOARD', 'FILEORDERSOURCE'];
+
+    Object.keys(this.affectedObjectsByType).forEach(type => {
+      this.affectedObjectsByType[type].forEach(obj => {
+        if (obj.valid && !obj.deployed && allowedTypes.includes(obj.objectType)) {
+          shouldDeploy = true;
+        }
+      });
+    });
+
+    Object.keys(this.referencedObjectsByType).forEach(type => {
+      this.referencedObjectsByType[type].forEach(obj => {
+        if (obj.valid && !obj.deployed && allowedTypes.includes(obj.objectType)) {
+          shouldDeploy = true;
+        }
+      });
+    });
+
+    return shouldDeploy;
   }
 
   shouldAddOrdersDateFrom(): boolean {
@@ -855,7 +880,6 @@ export class SingleDeployComponent {
         this.prepareObject(this.dependencies);
       },
       error: (err) => {
-        console.error('Error fetching dependencies:', err);
         this.loading = false;
       }
     });
@@ -1043,6 +1067,17 @@ export class DeployComponent {
   required = false;
   comments: any = {radio: 'predefined'};
   isDeleted = false;
+  dependencies: any;
+  affectedObjectsByType: { [key: string]: any[] } = {};
+  referencedObjectsByType: { [key: string]: any[] } = {};
+  affectedObjectTypes: string[] = [];
+  referencedObjectTypes: string[] = [];
+  selectAllAffected: { [key: string]: boolean } = {};
+  selectAllReferenced: { [key: string]: boolean } = {};
+  affectedCollapsed: { [key: string]: boolean } = {};
+  referencedCollapsed: { [key: string]: boolean } = {};
+  isAffectedCollapsed: boolean = true;
+  isReferencedCollapsed: boolean = true;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private ref: ChangeDetectorRef,
               private inventoryService: InventoryService, private toasterService: ToastrService, private translate: TranslateService) {
@@ -1080,6 +1115,9 @@ export class DeployComponent {
     } else {
       this.buildTree(this.path);
     }
+    // this.getDependencies()
+    this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
+    this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
   }
 
   handleRecursive(): void {
@@ -1151,8 +1189,12 @@ export class DeployComponent {
   }
 
   checkBoxChange(e: NzFormatEmitEvent): void {
+    const node: any = e.node;
+
+    // if (node.isChecked && node.origin.type) {
+    //   this.getDependencies(node.origin);
+    // }
     if (!this.object.isRecursive) {
-      const node: any = e.node;
       if (node.origin['type'] && node.parentNode) {
         node.parentNode.isHalfChecked = true;
         let flag;
@@ -1162,6 +1204,11 @@ export class DeployComponent {
         } else {
           flag = this.inventoryService.checkHalfCheckBox(node.parentNode, true);
           node.parentNode.isChecked = flag;
+
+
+          if (node.parentNode.origin.type) {
+            // this.getDependencies(node.parentNode.origin);
+          }
         }
         node.parentNode.isHalfChecked = !flag;
       }
@@ -1169,6 +1216,10 @@ export class DeployComponent {
         for (let i = 0; i < node.children.length; i++) {
           if (node.children[i].origin['type']) {
             node.children[i].isChecked = node.isChecked;
+
+            if (node.isChecked) {
+              // this.getDependencies(node.children[i].origin);
+            }
           }
           if (!node.children[i].origin['object'] && !node.children[i].origin['type']) {
             break;
@@ -1302,6 +1353,11 @@ export class DeployComponent {
           } else {
             cb();
           }
+        }
+        const preCheckedObjects = this.collectCheckedObjects(this.nodes);
+        // Make a single API call with the collected checked objects
+        if (preCheckedObjects.length > 0) {
+          this.getDependencies(preCheckedObjects);
         }
       }, error: () => {
         if (merge) {
@@ -1574,6 +1630,187 @@ export class DeployComponent {
       }
     });
   }
+
+  private collectCheckedObjects(nodes: any[]): any[] {
+    const checkedObjects: any[] = [];
+
+    const traverseNodes = (nodes: any[]) => {
+      nodes.forEach(node => {
+
+        if (node.checked && node.type) {
+          checkedObjects.push({ name: node.name, type: node.type });
+        }
+
+        if (node.children && node.children.length > 0) {
+          traverseNodes(node.children);
+        }
+      });
+    };
+
+    // Start traversing the nodes
+    traverseNodes(nodes);
+
+    return checkedObjects;
+  }
+
+
+
+// Updated getDependencies method to handle array of objects in a single API call
+  private getDependencies(objects: any[]): void {
+    const configurations = objects.map(object => ({
+      name: object.name,
+      type: object.type,
+    }));
+
+    const requestPayload = {
+      configurations: configurations
+    };
+
+    this.coreService.post('inventory/dependencies', requestPayload).subscribe({
+      next: (res: any) => {
+        this.dependencies = res.dependencies;
+        this.prepareObject(this.dependencies);  // Prepare the affected/referenced objects
+      },
+      error: (err) => {
+        console.error('Error fetching dependencies:', err);
+        this.loading = false;
+      }
+    });
+  }
+
+  prepareObject(dependencies): void {
+    if (dependencies && dependencies.length > 0) {
+      dependencies.forEach(dep => {
+        if (dep.referencedBy) {
+          dep.referencedBy.forEach(refObj => {
+            const type = refObj.objectType;
+            if (!this.affectedObjectsByType[type]) {
+              this.affectedObjectsByType[type] = [];
+              this.affectedObjectTypes.push(type);
+            }
+
+            refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
+            refObj.disabled = !refObj.valid || refObj.deployed || refObj.released;
+            this.affectedObjectsByType[type].push(refObj);
+          });
+        }
+
+        if (dep.references) {
+          dep.references.forEach(refObj => {
+            const type = refObj.objectType;
+            if (!this.referencedObjectsByType[type]) {
+              this.referencedObjectsByType[type] = [];
+              this.referencedObjectTypes.push(type);
+            }
+
+            refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
+            refObj.disabled = !refObj.valid || refObj.deployed || refObj.released;
+            this.referencedObjectsByType[type].push(refObj);
+          });
+        }
+      });
+
+      this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
+      this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
+    }
+  }
+
+
+  toggleAffectedCollapse(objectType: string): void {
+    this.affectedCollapsed[objectType] = !this.affectedCollapsed[objectType];
+  }
+
+  toggleReferencedCollapse(objectType: string): void {
+    this.referencedCollapsed[objectType] = !this.referencedCollapsed[objectType];
+  }
+
+  toggleAllAffectedCollapse(): void {
+    this.isAffectedCollapsed = !this.isAffectedCollapsed;
+  }
+
+  toggleAllReferencedCollapse(): void {
+    this.isReferencedCollapsed = !this.isReferencedCollapsed;
+  }
+
+  expandAllAffected(): void {
+    this.isAffectedCollapsed = true;
+    this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
+  }
+
+  collapseAllAffected(): void {
+    this.isAffectedCollapsed = false;
+    this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = false);
+  }
+
+  expandAllReferenced(): void {
+    this.isReferencedCollapsed = true;
+    this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
+  }
+
+  collapseAllReferenced(): void {
+    this.isReferencedCollapsed = false;
+    this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = false);
+  }
+
+  toggleAllAffected(objectType: string, isChecked: boolean): void {
+    this.affectedObjectsByType[objectType].forEach(obj => {
+      if (!obj.disabled) {
+        obj.selected = isChecked;
+      }
+    });
+  }
+
+  toggleAllReferenced(objectType: string, isChecked: boolean): void {
+    this.referencedObjectsByType[objectType].forEach(obj => {
+      if (!obj.disabled) {
+        obj.selected = isChecked;
+      }
+    });
+  }
+
+  updateParentCheckboxAffected(objectType: string): void {
+    const allSelected = this.affectedObjectsByType[objectType].every(obj => obj.selected || obj.disabled);
+    this.selectAllAffected[objectType] = allSelected;
+  }
+
+  updateParentCheckboxReferenced(objectType: string): void {
+    const allSelected = this.referencedObjectsByType[objectType].every(obj => obj.selected || obj.disabled);
+    this.selectAllReferenced[objectType] = allSelected;
+  }
+
+  getIcon(objectType: string): string {
+    const iconMapping = {
+      'WORKFLOW': 'apartment',
+      'JOBRESOURCE': 'icon-resources-icon',
+      'LOCK': 'lock',
+      'NOTICEBOARD': 'pushpin',
+      'FILEORDERSOURCE': 'icon-orders-icon',
+      'CALENDAR': 'calendar',
+      'SCHEDULE': 'schedule',
+      'JOBTEMPLATE': 'icon-jobs-icon'
+    };
+    return iconMapping[objectType] || 'folder';
+  }
+
+  isCustomIcon(objectType: string): boolean {
+    const customIcons = ['icon-resources-icon', 'icon-orders-icon', 'icon-jobs-icon'];
+    return customIcons.includes(this.getIcon(objectType));
+  }
+
+  getObjectTypeLabel(objectType: string): string {
+    const labelMapping = {
+      'WORKFLOW': 'inventory.label.workflows',
+      'JOBRESOURCE': 'inventory.label.jobResources',
+      'LOCK': 'inventory.label.locks',
+      'NOTICEBOARD': 'inventory.label.boards',
+      'FILEORDERSOURCE': 'inventory.label.fileOrderSources',
+      'CALENDAR': 'inventory.label.calendars',
+      'SCHEDULE': 'dashboard.label.schedules',
+      'JOBTEMPLATE': 'inventory.label.jobTemplates'
+    };
+    return labelMapping[objectType] || objectType;
+  }
+
 
   remove(): void {
     this.submitted = true;

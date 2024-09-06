@@ -140,13 +140,10 @@
         </div>
       </div>
       <div class="form-group row m-t-md">
-        <!-- Conditionally show the Affected Objects column only if there are affected objects -->
         <div *ngIf="affectedObjectTypes.length > 0" class="col-md-6" [class.col-md-12]="referencedObjectTypes.length === 0">
-          <!-- Collapse/Expand Icon for Affected Objects Section -->
           <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isAffectedCollapsed, 'fa-caret-down': isAffectedCollapsed}"
              (click)="toggleAllAffectedCollapse()"></i>
           <label class="m-l-sm" translate>inventory.label.affectedObjects</label>
-          <!-- Always Visible Collapse All / Expand All Icons -->
           <i class="cursor text-16 fa fa-angle-double-down m-l-sm"
              (click)="expandAllAffected()"></i>
           <i class="cursor text-16 fa fa-angle-double-up m-l-xs"
@@ -182,13 +179,10 @@
           </div>
         </div>
 
-        <!-- Conditionally show the Referenced Objects column only if there are referenced objects -->
         <div *ngIf="referencedObjectTypes.length > 0" class="col-md-6" [class.col-md-12]="affectedObjectTypes.length === 0">
-          <!-- Collapse/Expand Icon for Referenced Objects Section -->
           <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isReferencedCollapsed, 'fa-caret-down': isReferencedCollapsed}"
              (click)="toggleAllReferencedCollapse()"></i>
           <label class="m-l-sm" translate>inventory.label.referencedObjects</label>
-          <!-- Always Visible Collapse All / Expand All Icons -->
           <i class="cursor text-16 fa fa-angle-double-down m-l-sm"
              (click)="expandAllReferenced()"></i>
           <i class="cursor text-16 fa fa-angle-double-up m-l-xs"
@@ -196,7 +190,6 @@
           <div class="m-t-sm m-l-sm" *ngIf="isReferencedCollapsed">
             <ng-container *ngFor="let objectType of referencedObjectTypes">
               <div class="m-t-sm" *ngIf="referencedObjectsByType[objectType]?.length">
-                <!-- Collapse/Expand Icon for Each Object Type -->
                 <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !referencedCollapsed[objectType], 'fa-caret-down': referencedCollapsed[objectType]}"
                    (click)="toggleReferencedCollapse(objectType)"></i>
                 <label class="m-l-sm" nz-checkbox [(ngModel)]="selectAllReferenced[objectType]" [name]="'checkbox_' + objectType"
