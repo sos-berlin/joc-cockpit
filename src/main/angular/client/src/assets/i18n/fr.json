@@ -1794,7 +1794,7 @@
     "label.tagName": "Nom Balise",
     "label.testMail": "Tester l'E-Mail",
     "label.impactedSchedules": "Planifications concernéés",
-    "label.impactedWorkflows": "Workflows concernéés",
+    "label.impactedWorkflows": "Workflows concernés",
     "label.affectedObjects": "Objets concernés",
     "label.referencedObjects": "Objets référencés",
     "label.includeTodaysLateOrders": "Inclure les Ordres tardifs du jour",
