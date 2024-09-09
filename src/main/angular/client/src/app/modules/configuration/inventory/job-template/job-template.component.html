@@ -47,7 +47,7 @@
       <div *ngIf="job.configuration && permission.joc">
         <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}" class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.name' | translate) : ''"
-                 
+
                  class="col-md-4 col-lg-3 form-control-label" translate>common.label.name
             <sup class="text-danger text-sm">*</sup>
           </label>
@@ -66,7 +66,7 @@
         </div>
         <div class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.title' | translate) : ''"
-                 
+
                  class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
             <input #title="ngModel" (blur)="saveJSON()" [(ngModel)]="job.configuration.title"
@@ -77,7 +77,7 @@
         </div>
         <div *ngIf="coreService.expertMode" class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.documentation' | translate) : ''"
-                 
+
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'inventory.label.documentation' | translate}}" translate>inventory.label.documentation</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -87,7 +87,7 @@
         </div>
         <div class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.jobResourceNames' | translate) : ''"
-                 
+
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
                  title="{{'workflow.label.jobResourceNames' | translate}}" translate>workflow.label.jobResourceNames</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -97,7 +97,7 @@
         </div>
         <div class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.description' | translate) : ''"
-                 
+
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.description' | translate}}" translate>workflow.label.description</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -108,7 +108,7 @@
         </div>
         <div *ngIf="job.configuration.executable && job.configuration.executable.TYPE === 'ShellScriptExecutable'"
              class="form-group row">
-          <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.returnCode' | translate) : ''" 
+          <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.returnCode' | translate) : ''"
                class="col-md-4 col-lg-3"
                translate>workflow.label.returnCode
           </div>
@@ -144,7 +144,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.onWarning' | translate) : ''" 
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.onWarning' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.onWarning' | translate}}" translate>
             workflow.label.onWarning
@@ -166,7 +166,7 @@
         </div>
         <div *ngIf="job.configuration.executable" class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.jobClass' | translate) : ''"
-                 
+
                  class="col-md-4 col-lg-3 form-control-label"
                  translate>workflow.label.jobClass</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -568,7 +568,7 @@
                 <div class="job-property-editor">
                   <div class="form-group row">
                     <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.parallelism' | translate) : ''"
-                           
+
                            class="col-md-4 col-lg-3 form-control-label"
                            title="{{'workflow.label.parallelism' | translate}}"
                            translate>workflow.label.parallelism</label>
@@ -586,7 +586,7 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.timeout' | translate) : ''" 
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.timeout' | translate) : ''"
                            class="col-md-4 col-lg-3 form-control-label"
                            title="{{'workflow.label.timeout' | translate}}"
                            translate>workflow.label.timeout</label>
@@ -603,7 +603,7 @@
                   </div>
                   <div class="form-group row">
                     <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.graceTimeout' | translate) : ''"
-                           
+
                            class="col-md-4 col-lg-3 form-control-label"
                            title="{{'workflow.label.graceTimeout' | translate}}" translate>workflow.label.graceTimeout</label>
                     <div [ngClass]="{'has-error' : ((graceTimeout.dirty || graceTimeout.touched) && graceTimeout.invalid)}"
@@ -619,7 +619,7 @@
                   </div>
                   <div class="form-group row">
                     <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.warnIfShorter' | translate) : ''"
-                           
+
                            class="col-md-4 col-lg-3 form-control-label"
                            title="{{'workflow.label.warnIfShorter' | translate}}" translate>workflow.label.warnIfShorter</label>
                     <div [ngClass]="{'has-error' : ((warnIfShorter.dirty || warnIfShorter.touched) && warnIfShorter.invalid)}"
@@ -636,7 +636,7 @@
                   </div>
                   <div class="form-group row">
                     <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.warnIfLonger' | translate) : ''"
-                           
+
                            class="col-md-4 col-lg-3 form-control-label"
                            title="{{'workflow.label.warnIfLonger' | translate}}" translate>workflow.label.warnIfLonger</label>
                     <div [ngClass]="{'has-error' : ((warnIfLonger.dirty || warnIfLonger.touched) && warnIfLonger.invalid)}"
@@ -652,7 +652,7 @@
                   </div>
                   <div *ngIf="job.configuration.executable && job.configuration.executable.TYPE === 'ShellScriptExecutable' && (coreService.expertMode)"
                        class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.compatibleMode' | translate) : ''" 
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.compatibleMode' | translate) : ''"
                            class="col-md-4 col-lg-3 form-control-label"
                            title="{{'workflow.label.compatibleMode' | translate}}"
                            translate>workflow.label.compatibleMode</label>
@@ -665,7 +665,7 @@
                   </div>
                   <div class="form-group row">
                     <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.criticality' | translate) : ''"
-                           
+
                            class="col-md-4 col-lg-3 form-control-label"
                            title="{{'workflow.label.criticality' | translate}}" translate>workflow.label.criticality</label>
                     <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -680,13 +680,7 @@
                       </nz-select>
                     </div>
                   </div>
-                  <div
-                    *ngIf="
-                      job.configuration.executable &&
-                      job.configuration.executable.TYPE ===
-                        'ShellScriptExecutable' &&
-                      coreService.expertMode
-                    "
+                  <div *ngIf="(coreService.expertMode)"
                     class="form-group row"
                   >
                     <label
@@ -715,7 +709,7 @@
                   </div>
                   <div class="form-group row">
                     <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.credentialKey' | translate) : ''"
-                           
+
                            class="col-md-4 col-lg-3 form-control-label"
                            title="{{'workflow.label.credentialKey' | translate}}" translate>workflow.label.credentialKey
                       <sup *ngIf="job.configuration.executable.login.withUserProfile"
@@ -734,7 +728,7 @@
                   </div>
                   <div class="form-group row">
                     <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.loadUserProfile' | translate) : ''"
-                           
+
                            class="col-md-4 col-lg-3 block-ellipsis-job"
                            title="{{'workflow.label.loadUserProfile' | translate}}" translate>workflow.label.loadUserProfile</label>
                     <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -745,7 +739,7 @@
                   </div>
                   <div class="form-group row">
                     <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.failOnOutputErr' | translate) : ''"
-                           
+
                            class="col-md-4 col-lg-3 block-ellipsis-job"
                            title="{{'workflow.label.failOnOutputErr' | translate}}" translate>workflow.label.failOnOutputErr</label>
                     <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -756,7 +750,7 @@
                   </div>
                   <div class="form-group row">
                     <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.warnOnOutputErr' | translate) : ''"
-                           
+
                            class="col-md-4 col-lg-3 block-ellipsis-job"
                            title="{{'workflow.label.warnOnOutputErr' | translate}}"
                            translate>workflow.label.warnOnOutputErr</label>
@@ -768,7 +762,7 @@
                   </div>
                   <div class="form-group row">
                     <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.skipIfNoAdmissionForOrderDay' | translate) : ''"
-                           
+
                            class="col-md-4 col-lg-3 block-ellipsis-job"
                            title="{{'workflow.label.skipIfNoAdmissionForOrderDay' | translate}}"
                            translate>workflow.label.skipIfNoAdmissionForOrderDay</label>
@@ -780,7 +774,7 @@
                   </div>
                   <div class="form-group row">
                     <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.admissionTime' | translate) : ''"
-                           
+
                            class="col-md-4 col-lg-3 block-ellipsis-job"
                            title="{{'workflow.label.admissionTime' | translate}}"
                            translate>workflow.label.admissionTime</label>
@@ -793,7 +787,7 @@
               <nz-tab [nzTitle]="'workflow.tab.notification' | translate">
                 <div class="job-property-editor">
                   <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailOn' | translate) : ''" 
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailOn' | translate) : ''"
                            class="col-md-4 col-lg-3 form-control-label"
                            title="{{'workflow.label.mailOn' | translate}}" translate>workflow.label.mailOn</label>
                     <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -807,7 +801,7 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailTo' | translate) : ''" 
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailTo' | translate) : ''"
                            class="col-md-4 col-lg-3 form-control-label"
                            title="{{'workflow.label.mailTo' | translate}}" translate>workflow.label.mailTo</label>
                     <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -820,7 +814,7 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailCC' | translate) : ''" 
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailCC' | translate) : ''"
                            class="col-md-4 col-lg-3 form-control-label"
                            title="{{'workflow.label.mailCC' | translate}}" translate>workflow.label.mailCC</label>
                     <div class="col-lg-9 col-xl-8 col-xxl-6">
@@ -833,7 +827,7 @@
                     </div>
                   </div>
                   <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailBcc' | translate) : ''" 
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailBcc' | translate) : ''"
                            class="col-md-4 col-lg-3 form-control-label"
                            title="{{'workflow.label.mailBcc' | translate}}" translate>workflow.label.mailBcc</label>
                     <div class="col-lg-9 col-xl-8 col-xxl-6">

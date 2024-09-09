@@ -490,7 +490,7 @@ export class SingleDeployComponent {
     const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.dateFormat = this.coreService.getDateFormat(preferences.dateFormat);
     this.init();
-    // this.getDependencies()
+    this.getDependencies()
     this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
     this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
   }
@@ -1080,7 +1080,7 @@ export class DeployComponent {
   isReferencedCollapsed: boolean = true;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private ref: ChangeDetectorRef,
-              private inventoryService: InventoryService, private toasterService: ToastrService, private translate: TranslateService) {
+              private inventoryService: InventoryService, private toasterService: ToastrService, private translate: TranslateService, private cdRef: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -1188,48 +1188,64 @@ export class DeployComponent {
     this.buildTree(this.path);
   }
 
-  checkBoxChange(e: NzFormatEmitEvent): void {
-    const node: any = e.node;
+checkBoxChange(e: NzFormatEmitEvent): void {
+  const node: any = e.node;
 
-    // if (node.isChecked && node.origin.type) {
-    //   this.getDependencies(node.origin);
-    // }
-    if (!this.object.isRecursive) {
-      if (node.origin['type'] && node.parentNode) {
-        node.parentNode.isHalfChecked = true;
-        let flag;
-        if (!node.isChecked) {
-          node.parentNode.isChecked = false;
-          flag = this.inventoryService.checkHalfCheckBox(node.parentNode, false);
-        } else {
-          flag = this.inventoryService.checkHalfCheckBox(node.parentNode, true);
-          node.parentNode.isChecked = flag;
+  if (node.isChecked && node.origin.type) {
+    // Call getDependencies and pass the object name and type
+    this.getDependencies([{ name: node.origin.name, type: node.origin.type }], node);
+  }
 
+  if (!this.object.isRecursive) {
+    if (node.origin['type'] && node.parentNode) {
+      node.parentNode.isHalfChecked = true;
+      let flag;
+      if (!node.isChecked) {
+        node.parentNode.isChecked = false;
+        flag = this.inventoryService.checkHalfCheckBox(node.parentNode, false);
+      } else {
+        flag = this.inventoryService.checkHalfCheckBox(node.parentNode, true);
+        node.parentNode.isChecked = flag;
 
-          if (node.parentNode.origin.type) {
-            // this.getDependencies(node.parentNode.origin);
+        if (node.parentNode.origin.type) {
+          this.getDependencies([{ name: node.parentNode.origin.name, type: node.parentNode.origin.type }], node);
+        }
+      }
+      node.parentNode.isHalfChecked = !flag;
+    }
+    if (!node.origin['type']) {
+      for (let i = 0; i < node.children.length; i++) {
+        if (node.children[i].origin['type']) {
+          node.children[i].isChecked = node.isChecked;
+
+          if (node.isChecked) {
+            this.getDependencies([{ name: node.children[i].origin.name, type: node.children[i].origin.type }], node);
           }
         }
-        node.parentNode.isHalfChecked = !flag;
-      }
-      if (!node.origin['type']) {
-        for (let i = 0; i < node.children.length; i++) {
-          if (node.children[i].origin['type']) {
-            node.children[i].isChecked = node.isChecked;
-
-            if (node.isChecked) {
-              // this.getDependencies(node.children[i].origin);
-            }
-          }
-          if (!node.children[i].origin['object'] && !node.children[i].origin['type']) {
-            break;
-          }
+        if (!node.children[i].origin['object'] && !node.children[i].origin['type']) {
+          break;
         }
       }
     }
   }
+}
 
-  buildTree(path: string, merge?: any, cb?: any, flag = false): void {
+// Method to collect all checked objects from the nodes
+private collectCheckedObjects(nodes: any[]): any[] {
+    const checkedObjects = [];
+    nodes.forEach(node => {
+        if (node.checked && node.type) {
+            checkedObjects.push({ name: node.name, type: node.type });
+        }
+        if (node.children && node.children.length > 0) {
+            checkedObjects.push(...this.collectCheckedObjects(node.children));
+        }
+    });
+    return checkedObjects;
+}
+
+// Modified buildTree method to include dependency API call
+buildTree(path: string, merge?: any, cb?: any, flag = false): void {
     const obj: any = {
       folder: path || '/',
       recursive: !!cb,
@@ -1258,21 +1274,23 @@ export class DeployComponent {
         obj.withRemovedObjects = false;
         obj.withoutDrafts = true;
         obj.latest = true;
-      }
     }
-    if (this.isChecked && !this.releasable) {
-      obj.controllerId = this.schedulerIds.selected;
-    }
-    if (!this.isRemove && !this.isDeleted && !this.releasable) {
-      obj.withoutDrafts = !this.filter.draft;
-      obj.withoutDeployed = !this.filter.deploy;
-    }
-    if (this.isSelectedObjects) {
-      obj.objectTypes = this.data.objectType === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.objectType];
-    }
-    const URL = this.releasable ? 'inventory/releasables' : 'inventory/deployables';
-    this.coreService.post(URL, obj).subscribe({
-      next: (res: any) => {
+}
+if (this.isChecked && !this.releasable) {
+    obj.controllerId = this.schedulerIds.selected;
+}
+if (!this.isRemove && !this.isDeleted && !this.releasable) {
+    obj.withoutDrafts = !this.filter.draft;
+    obj.withoutDeployed = !this.filter.deploy;
+}
+if (this.isSelectedObjects) {
+    obj.objectTypes = this.data.objectType === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.objectType];
+}
+
+const URL = this.releasable ? 'inventory/releasables' : 'inventory/deployables';
+
+this.coreService.post(URL, obj).subscribe({
+    next: (res: any) => {
         let tree = [];
         if (this.isSelectedObjects) {
           res.folders = [];
@@ -1354,11 +1372,7 @@ export class DeployComponent {
             cb();
           }
         }
-        const preCheckedObjects = this.collectCheckedObjects(this.nodes);
-        // Make a single API call with the collected checked objects
-        if (preCheckedObjects.length > 0) {
-          this.getDependencies(preCheckedObjects);
-        }
+
       }, error: () => {
         if (merge) {
           delete merge.loading;
@@ -1631,52 +1645,41 @@ export class DeployComponent {
     });
   }
 
-  private collectCheckedObjects(nodes: any[]): any[] {
-    const checkedObjects: any[] = [];
+/// Updated getDependencies method to store dependencies for each node
+private getDependencies(objects: { name: string, type: string }[], node: any): void {
+  const configurations = objects.map(object => ({
+    name: object.name,
+    type: object.type,
+  }));
 
-    const traverseNodes = (nodes: any[]) => {
-      nodes.forEach(node => {
+  const obj = {
+    configurations: configurations
+  };
 
-        if (node.checked && node.type) {
-          checkedObjects.push({ name: node.name, type: node.type });
-        }
+  // Call the API with the object configuration
+  this.coreService.post('inventory/dependencies', obj).subscribe({
+    next: (res: any) => {
+      // Store dependencies directly in the node
+      node.dependencies = res.dependencies || [];
+      this.prepareObject(node.dependencies);
+      this.cdRef.detectChanges();
+    },
+    error: (err) => {
+      console.error('Error fetching dependencies:', err);
+      this.loading = false;
+    }
+  });
+}
 
-        if (node.children && node.children.length > 0) {
-          traverseNodes(node.children);
-        }
-      });
-    };
+  getUniqueObjectTypes(objects: any[]): string[] {
+    return [...new Set(objects.map(obj => obj.objectType))];
+  }
 
-    // Start traversing the nodes
-    traverseNodes(nodes);
-
-    return checkedObjects;
+  getObjectsByType(objects: any[], type: string): any[] {
+    return objects.filter(obj => obj.objectType === type);
   }
 
 
-
-// Updated getDependencies method to handle array of objects in a single API call
-  private getDependencies(objects: any[]): void {
-    const configurations = objects.map(object => ({
-      name: object.name,
-      type: object.type,
-    }));
-
-    const requestPayload = {
-      configurations: configurations
-    };
-
-    this.coreService.post('inventory/dependencies', requestPayload).subscribe({
-      next: (res: any) => {
-        this.dependencies = res.dependencies;
-        this.prepareObject(this.dependencies);  // Prepare the affected/referenced objects
-      },
-      error: (err) => {
-        console.error('Error fetching dependencies:', err);
-        this.loading = false;
-      }
-    });
-  }
 
   prepareObject(dependencies): void {
     if (dependencies && dependencies.length > 0) {
@@ -1716,12 +1719,13 @@ export class DeployComponent {
   }
 
 
-  toggleAffectedCollapse(objectType: string): void {
-    this.affectedCollapsed[objectType] = !this.affectedCollapsed[objectType];
+  toggleAffectedCollapse(nodeKey: string): void {
+    this.affectedCollapsed[nodeKey] = !this.affectedCollapsed[nodeKey];
   }
 
-  toggleReferencedCollapse(objectType: string): void {
-    this.referencedCollapsed[objectType] = !this.referencedCollapsed[objectType];
+// Toggle referenced objects collapse for a specific node
+  toggleReferencedCollapse(nodeKey: string): void {
+    this.referencedCollapsed[nodeKey] = !this.referencedCollapsed[nodeKey];
   }
 
   toggleAllAffectedCollapse(): void {
@@ -1732,27 +1736,25 @@ export class DeployComponent {
     this.isReferencedCollapsed = !this.isReferencedCollapsed;
   }
 
-  expandAllAffected(): void {
-    this.isAffectedCollapsed = true;
-    this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
+  expandAllAffected(node: any): void {
+    node.isAffectedCollapsed = true;
   }
 
-  collapseAllAffected(): void {
-    this.isAffectedCollapsed = false;
-    this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = false);
+  collapseAllAffected(node: any): void {
+    node.isAffectedCollapsed = false;
   }
 
-  expandAllReferenced(): void {
-    this.isReferencedCollapsed = true;
-    this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
+  expandAllReferenced(node: any): void {
+    node.isReferencedCollapsed = true;
   }
 
-  collapseAllReferenced(): void {
-    this.isReferencedCollapsed = false;
-    this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = false);
+  collapseAllReferenced(node: any): void {
+    node.isReferencedCollapsed = false;
   }
+
 
   toggleAllAffected(objectType: string, isChecked: boolean): void {
+    // This toggles all checkboxes for the given objectType
     this.affectedObjectsByType[objectType].forEach(obj => {
       if (!obj.disabled) {
         obj.selected = isChecked;
@@ -1761,6 +1763,7 @@ export class DeployComponent {
   }
 
   toggleAllReferenced(objectType: string, isChecked: boolean): void {
+    // This toggles all checkboxes for the given objectType
     this.referencedObjectsByType[objectType].forEach(obj => {
       if (!obj.disabled) {
         obj.selected = isChecked;
@@ -1768,15 +1771,31 @@ export class DeployComponent {
     });
   }
 
+// Individual checkbox toggling should not affect others
   updateParentCheckboxAffected(objectType: string): void {
-    const allSelected = this.affectedObjectsByType[objectType].every(obj => obj.selected || obj.disabled);
+    const allSelected = this.affectedObjectsByType[objectType].every((obj: any) => obj.selected || obj.disabled);
     this.selectAllAffected[objectType] = allSelected;
   }
 
   updateParentCheckboxReferenced(objectType: string): void {
-    const allSelected = this.referencedObjectsByType[objectType].every(obj => obj.selected || obj.disabled);
+    const allSelected = this.referencedObjectsByType[objectType].every((obj: any) => obj.selected || obj.disabled);
     this.selectAllReferenced[objectType] = allSelected;
   }
+
+
+// Add a function to toggle visibility of dependencies (affected/referenced objects)
+  toggleDependenciesVisibility(node: any): void {
+    // Toggle visibility of dependencies without calling the API again
+    node.showDependencies = !node.showDependencies;
+
+    // Fetch dependencies only if they haven't been loaded yet
+    if (node.showDependencies && !node.dependencies) {
+      this.getDependencies([node.origin], node);  // Provide both arguments
+    }
+  }
+
+
+
 
   getIcon(objectType: string): string {
     const iconMapping = {
