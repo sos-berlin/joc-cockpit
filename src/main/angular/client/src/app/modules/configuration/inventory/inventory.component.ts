@@ -842,7 +842,6 @@ export class SingleDeployComponent {
   private getSingleObject(obj): void {
     if (this.isRemoved) {
       this.loading = false;
-      // this.deployablesObject.push(this.data);
     } else {
       this.coreService.post((this.releasable ? 'inventory/releasable' : 'inventory/deployable'), obj).subscribe({
         next: (res: any) => {
@@ -1114,14 +1113,25 @@ export class DeployComponent {
       this.ref.detectChanges();
     } else {
       this.buildTree(this.path);
+
     }
-    // this.getDependencies()
     this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
     this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
   }
 
+
+
+
   handleRecursive(): void {
     this.ref.detectChanges();
+
+    const checkedNodes = this.collectCheckedObjects(this.nodes);
+
+    if (checkedNodes.length > 0) {
+      setTimeout(() => {
+        this.getDependencies(checkedNodes);
+      },100)
+    }
   }
 
   expandAll(): void {
@@ -1183,54 +1193,170 @@ export class DeployComponent {
   filterList(): void {
     this.checkedObject.clear();
     this.recursiveCheck(this.nodes);
-    //  this.nodes = [];
     this.loading = true;
     this.buildTree(this.path);
   }
 
-checkBoxChange(e: NzFormatEmitEvent): void {
-  const node: any = e.node;
-
-  if (node.isChecked && node.origin.type) {
-    // Call getDependencies and pass the object name and type
-    this.getDependencies([{ name: node.origin.name, type: node.origin.type }], node);
-  }
-
-  if (!this.object.isRecursive) {
-    if (node.origin['type'] && node.parentNode) {
-      node.parentNode.isHalfChecked = true;
-      let flag;
-      if (!node.isChecked) {
-        node.parentNode.isChecked = false;
-        flag = this.inventoryService.checkHalfCheckBox(node.parentNode, false);
-      } else {
-        flag = this.inventoryService.checkHalfCheckBox(node.parentNode, true);
-        node.parentNode.isChecked = flag;
-
-        if (node.parentNode.origin.type) {
-          this.getDependencies([{ name: node.parentNode.origin.name, type: node.parentNode.origin.type }], node);
+  checkBoxChange(e: NzFormatEmitEvent): void {
+    const node: any = e.node;
+    if (!this.object.isRecursive) {
+      if (node.origin['type'] && node.parentNode) {
+        node.parentNode.isHalfChecked = true;
+        let flag;
+        if (!node.isChecked) {
+          node.parentNode.isChecked = false;
+          flag = this.inventoryService.checkHalfCheckBox(node.parentNode, false);
+        } else {
+          flag = this.inventoryService.checkHalfCheckBox(node.parentNode, true);
+          node.parentNode.isChecked = flag;
         }
+        node.parentNode.isHalfChecked = !flag;
       }
-      node.parentNode.isHalfChecked = !flag;
-    }
-    if (!node.origin['type']) {
-      for (let i = 0; i < node.children.length; i++) {
-        if (node.children[i].origin['type']) {
-          node.children[i].isChecked = node.isChecked;
 
-          if (node.isChecked) {
-            this.getDependencies([{ name: node.children[i].origin.name, type: node.children[i].origin.type }], node);
+      if (!node.origin['type']) {
+        for (let i = 0; i < node.children.length; i++) {
+          if (node.children[i].origin['type']) {
+            node.children[i].isChecked = node.isChecked;
+          }
+          if (!node.children[i].origin['object'] && !node.children[i].origin['type']) {
+            break;
           }
         }
-        if (!node.children[i].origin['object'] && !node.children[i].origin['type']) {
-          break;
+      }
+    }
+    const checkedNodes = this.collectCheckedNodes(node);
+
+    if (checkedNodes.length > 0) {
+      this.getDependencies(checkedNodes);
+    }else {
+      this.clearDependenciesForNode(node);
+    }
+  }
+
+  private clearDependenciesForNode(node: any): void {
+    console.log(node,">>")
+    if (node) {
+      node.origin.dependencies = null;
+      if (node.children && node.children.length > 0) {
+        node.children.forEach((child: any) => {
+          this.clearDependenciesForNode(child);
+        });
+      }
+      this.ref.detectChanges();
+    }
+  }
+  private collectCheckedNodes(node: any): { name: string, type: string }[] {
+    const checkedNodes = [];
+
+    if (node.isChecked && node.origin.type) {
+      checkedNodes.push({ name: node.origin.name, type: node.origin.type });
+    }
+
+    if (node.children && node.children.length > 0) {
+      node.children.forEach(child => {
+        checkedNodes.push(...this.collectCheckedNodes(child));
+      });
+    }
+    return checkedNodes;
+  }
+
+  private getDependencies(checkedNodes: { name: string, type: string }[]): void {
+    const configurations = checkedNodes.map(node => ({
+      name: node.name,
+      type: node.type,
+    }));
+
+    const requestBody = { configurations: configurations };
+
+    this.coreService.post('inventory/dependencies', requestBody).subscribe({
+      next: (res: any) => {
+
+        if (res.dependencies && res.dependencies.length > 0) {
+          this.updateNodeDependencies(res.dependencies);
+          this.prepareObject(res.dependencies);
+          this.ref.detectChanges();
+        } else {
+        }
+      },
+      error: (err) => {
+        console.error('Error fetching dependencies:', err);
+      }
+    });
+  }
+
+  private updateNodeDependencies(dependenciesResponse: any[]): void {
+    dependenciesResponse.forEach(dep => {
+      const matchedNode = this.findAndUpdateNodeWithDependencies(dep, this.nodes);
+      if (matchedNode) {
+      } else {
+      }
+    });
+
+    this.nodes = [...this.nodes];
+
+  }
+
+  private findAndUpdateNodeWithDependencies(dep: any, nodes: any[]): any {
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i];
+      if (node.name === dep.name && node.type === dep.type) {
+        node.dependencies = dep;
+        this.ref.detectChanges();
+        return node;
+      }
+
+      if (node.children && node.children.length > 0) {
+        const foundNode = this.findAndUpdateNodeWithDependencies(dep, node.children);
+        if (foundNode) {
+          return foundNode;
         }
       }
     }
-  }
-}
 
-// Method to collect all checked objects from the nodes
+    return null;
+  }
+
+  private prepareObject(dependencies: any[]): void {
+    if (dependencies && dependencies.length > 0) {
+
+      dependencies.forEach(dep => {
+        if (dep.referencedBy) {
+          dep.referencedBy.forEach(refObj => {
+            const type = refObj.objectType;
+            if (!this.affectedObjectsByType[type]) {
+              this.affectedObjectsByType[type] = [];
+              this.affectedObjectTypes.push(type);
+            }
+
+            refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
+            refObj.disabled = !refObj.valid || refObj.deployed || refObj.released;
+            this.affectedObjectsByType[type].push(refObj);
+
+          });
+        }
+
+        if (dep.references) {
+          dep.references.forEach(refObj => {
+            const type = refObj.objectType;
+            if (!this.referencedObjectsByType[type]) {
+              this.referencedObjectsByType[type] = [];
+              this.referencedObjectTypes.push(type);
+            }
+
+            refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
+            refObj.disabled = !refObj.valid || refObj.deployed || refObj.released;
+            this.referencedObjectsByType[type].push(refObj);
+
+          });
+        }
+      });
+
+      this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
+      this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
+
+    }
+  }
+
 private collectCheckedObjects(nodes: any[]): any[] {
     const checkedObjects = [];
     nodes.forEach(node => {
@@ -1244,7 +1370,7 @@ private collectCheckedObjects(nodes: any[]): any[] {
     return checkedObjects;
 }
 
-// Modified buildTree method to include dependency API call
+
 buildTree(path: string, merge?: any, cb?: any, flag = false): void {
     const obj: any = {
       folder: path || '/',
@@ -1366,6 +1492,10 @@ this.coreService.post(URL, obj).subscribe({
                 this.inventoryService.preselected(this.nodes[0]);
                 this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
               }
+              const checkedNodes = this.collectCheckedObjects(this.nodes);
+              if (checkedNodes.length > 0) {
+                this.getDependencies(checkedNodes);
+              }
               this.ref.detectChanges();
             }, 0);
           } else {
@@ -1386,6 +1516,18 @@ this.coreService.post(URL, obj).subscribe({
         }
       }
     });
+  }
+  collectChildrenObjectsForDependency(): { name: string, type: string }[] {
+    const objects: { name: string, type: string }[] = [];
+    const childrenCopy = [...this.nodes[0].children];
+
+    childrenCopy.forEach(child => {
+      if (child.type) {
+        objects.push({ name: child.name, type: child.type });
+      }
+    });
+
+    return objects;
   }
 
   openFolder(node, skip = true): void {
@@ -1645,32 +1787,6 @@ this.coreService.post(URL, obj).subscribe({
     });
   }
 
-/// Updated getDependencies method to store dependencies for each node
-private getDependencies(objects: { name: string, type: string }[], node: any): void {
-  const configurations = objects.map(object => ({
-    name: object.name,
-    type: object.type,
-  }));
-
-  const obj = {
-    configurations: configurations
-  };
-
-  // Call the API with the object configuration
-  this.coreService.post('inventory/dependencies', obj).subscribe({
-    next: (res: any) => {
-      // Store dependencies directly in the node
-      node.dependencies = res.dependencies || [];
-      this.prepareObject(node.dependencies);
-      this.cdRef.detectChanges();
-    },
-    error: (err) => {
-      console.error('Error fetching dependencies:', err);
-      this.loading = false;
-    }
-  });
-}
-
   getUniqueObjectTypes(objects: any[]): string[] {
     return [...new Set(objects.map(obj => obj.objectType))];
   }
@@ -1680,77 +1796,14 @@ private getDependencies(objects: { name: string, type: string }[], node: any): v
   }
 
 
-
-  prepareObject(dependencies): void {
-    if (dependencies && dependencies.length > 0) {
-      dependencies.forEach(dep => {
-        if (dep.referencedBy) {
-          dep.referencedBy.forEach(refObj => {
-            const type = refObj.objectType;
-            if (!this.affectedObjectsByType[type]) {
-              this.affectedObjectsByType[type] = [];
-              this.affectedObjectTypes.push(type);
-            }
-
-            refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
-            refObj.disabled = !refObj.valid || refObj.deployed || refObj.released;
-            this.affectedObjectsByType[type].push(refObj);
-          });
-        }
-
-        if (dep.references) {
-          dep.references.forEach(refObj => {
-            const type = refObj.objectType;
-            if (!this.referencedObjectsByType[type]) {
-              this.referencedObjectsByType[type] = [];
-              this.referencedObjectTypes.push(type);
-            }
-
-            refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
-            refObj.disabled = !refObj.valid || refObj.deployed || refObj.released;
-            this.referencedObjectsByType[type].push(refObj);
-          });
-        }
-      });
-
-      this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
-      this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
-    }
-  }
-
-
   toggleAffectedCollapse(nodeKey: string): void {
     this.affectedCollapsed[nodeKey] = !this.affectedCollapsed[nodeKey];
   }
 
-// Toggle referenced objects collapse for a specific node
   toggleReferencedCollapse(nodeKey: string): void {
     this.referencedCollapsed[nodeKey] = !this.referencedCollapsed[nodeKey];
   }
 
-  toggleAllAffectedCollapse(): void {
-    this.isAffectedCollapsed = !this.isAffectedCollapsed;
-  }
-
-  toggleAllReferencedCollapse(): void {
-    this.isReferencedCollapsed = !this.isReferencedCollapsed;
-  }
-
-  expandAllAffected(node: any): void {
-    node.isAffectedCollapsed = true;
-  }
-
-  collapseAllAffected(node: any): void {
-    node.isAffectedCollapsed = false;
-  }
-
-  expandAllReferenced(node: any): void {
-    node.isReferencedCollapsed = true;
-  }
-
-  collapseAllReferenced(node: any): void {
-    node.isReferencedCollapsed = false;
-  }
 
 
   toggleAllAffected(objectType: string, isChecked: boolean): void {
@@ -1771,7 +1824,7 @@ private getDependencies(objects: { name: string, type: string }[], node: any): v
     });
   }
 
-// Individual checkbox toggling should not affect others
+
   updateParentCheckboxAffected(objectType: string): void {
     const allSelected = this.affectedObjectsByType[objectType].every((obj: any) => obj.selected || obj.disabled);
     this.selectAllAffected[objectType] = allSelected;
@@ -1780,18 +1833,6 @@ private getDependencies(objects: { name: string, type: string }[], node: any): v
   updateParentCheckboxReferenced(objectType: string): void {
     const allSelected = this.referencedObjectsByType[objectType].every((obj: any) => obj.selected || obj.disabled);
     this.selectAllReferenced[objectType] = allSelected;
-  }
-
-
-// Add a function to toggle visibility of dependencies (affected/referenced objects)
-  toggleDependenciesVisibility(node: any): void {
-    // Toggle visibility of dependencies without calling the API again
-    node.showDependencies = !node.showDependencies;
-
-    // Fetch dependencies only if they haven't been loaded yet
-    if (node.showDependencies && !node.dependencies) {
-      this.getDependencies([node.origin], node);  // Provide both arguments
-    }
   }
 
 
