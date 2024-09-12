@@ -771,6 +771,10 @@ export class ControllerClusterComponent {
     this.postCall('joc/cluster/restart', {type});
   }
 
+  runService(type): void {
+    this.postCall('joc/cluster/run', {type});
+  }
+
   proxyService(): void {
     this.postCall('joc/proxies/restart', {});
   }

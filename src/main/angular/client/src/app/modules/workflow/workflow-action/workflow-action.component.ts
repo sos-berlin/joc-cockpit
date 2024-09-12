@@ -921,7 +921,7 @@ export class AddOrderModalComponent {
     });
   }
 
-  createOrdersFromAllSchedules(selectedScheduleNames: string[]): void {
+createOrdersFromAllSchedules(selectedScheduleNames: string[]): void {
     this.coreService.post('workflow/order_templates', {
         controllerId: this.schedulerId,
         workflowPath: this.workflow.path
@@ -936,77 +936,79 @@ export class AddOrderModalComponent {
                     selectedScheduleNames.includes(schedule.name)
                 );
 
-                filteredSchedules.forEach((schedule, scheduleIndex) => {
-                    const newOrder = {
-                        orderId: schedule.orderParameterisations[0].orderName,
-                        timeZone: this.preferences.zone,
-                        at: 'now', // Default to 'now', can be adjusted based on commonStartTime
-                        forceJobAdmission: schedule.orderParameterisations[0]?.forceJobAdmission || false, // Set from schedule
-                        tags: schedule.orderParameterisations[0]?.tags || [], // Set tags from schedule
-                        arguments: [],
-                        startPosition: '',
-                        endPositions: [],
-                        blockPosition: '',
-                        reload: false,
-                        selectedSchedule: schedule, // Link this order to the current schedule
-                        orderName: schedule.orderParameterisations[0].orderName
-                    };
+                filteredSchedules.forEach((schedule) => {
+                    // Loop through all order parameterizations for the current schedule
+                    schedule.orderParameterisations.forEach((parameterisation) => {
+                        const newOrder = {
+                            orderId: parameterisation.orderName,
+                            timeZone: this.preferences.zone,
+                            at: 'now', // Default to 'now', can be adjusted based on commonStartTime
+                            forceJobAdmission: parameterisation?.forceJobAdmission || false, // Set from parameterization
+                            tags: parameterisation?.tags || [], // Set tags from parameterization
+                            arguments: [],
+                            startPosition: '',
+                            endPositions: [],
+                            blockPosition: '',
+                            reload: false,
+                            selectedSchedule: schedule, // Link this order to the current schedule
+                            orderName: parameterisation.orderName
+                        };
 
-                    if (schedule.orderParameterisations[0]?.positions) {
-                        const param = schedule.orderParameterisations[0].positions;
+                        if (parameterisation?.positions) {
+                            const param = parameterisation.positions;
+                            let newPositions;
 
-                        let newPositions;
+                            if (param.blockPosition) {
+                                for (const [key, value] of this.blockPositions) {
+                                    if (JSON.stringify(param.blockPosition) === JSON.stringify(value)) {
+                                        newOrder.blockPosition = key;
+                                        break;
+                                    }
+                                }
 
-                        if (param.blockPosition) {
-                            for (const [key, value] of this.blockPositions) {
-                                if (JSON.stringify(param.blockPosition) === JSON.stringify(value)) {
-                                    newOrder.blockPosition = key;
-                                    break;
+                                if (this.blockPositionList.has(param.blockPosition)) {
+                                    newPositions = this.blockPositionList.get(param.blockPosition);
+                                    if (newPositions && Array.isArray(newPositions)) {
+                                        param.newPositions = new Map();
+                                        newPositions.forEach((item) => {
+                                            param.newPositions.set(item.positionString, item.position);
+                                        });
+                                    }
                                 }
                             }
 
-                            if (this.blockPositionList.has(param.blockPosition)) {
-                                newPositions = this.blockPositionList.get(param.blockPosition);
-                                if (newPositions && Array.isArray(newPositions)) {
-                                    param.newPositions = new Map();
-                                    newPositions.forEach((item) => {
-                                        param.newPositions.set(item.positionString, item.position);
-                                    });
-                                }
+                            if (param.startPosition) {
+                                newOrder.startPosition = this.coreService.getPositionStr(param.startPosition, newPositions, this.positions);
                             }
+
+                            if (param.endPositions && param.endPositions.length > 0) {
+                                newOrder.endPositions = [];
+                                param.endPositions.forEach(pos => {
+                                    newOrder.endPositions.push(this.coreService.getPositionStr(pos, newPositions, this.positions));
+                                });
+                            }
+
+                            if (param.forceJobAdmission) {
+                                newOrder.forceJobAdmission = param.forceJobAdmission;
+                            }
+
+                            if (param.tags && param.tags.length > 0) {
+                                newOrder.tags = param.tags;
+                            }
+
+                            newOrder.reload = true;
                         }
 
-                        if (param.startPosition) {
-                            newOrder.startPosition = this.coreService.getPositionStr(param.startPosition, newPositions, this.positions);
-                        }
+                        this.orders.push(newOrder);
+                        this.initializeArguments(newOrder);
+                        this.isCollapsed.push(newOrder.arguments.map(() => false));
+                    });
 
-                        if (param.endPositions && param.endPositions.length > 0) {
-                            newOrder.endPositions = [];
-                            param.endPositions.forEach(pos => {
-                                newOrder.endPositions.push(this.coreService.getPositionStr(pos, newPositions, this.positions));
-                            });
-                        }
-
-                        if (param.forceJobAdmission) {
-                            newOrder.forceJobAdmission = param.forceJobAdmission;
-                        }
-
-                        if (param.tags && param.tags.length > 0) {
-                            newOrder.tags = param.tags;
-                        }
-
-                        newOrder.reload = true;
-                    }
-
-                    this.orders.push(newOrder);
-
-                    this.initializeArguments(newOrder);
-                    this.isCollapsed.push(newOrder.arguments.map(() => false));
-
+                    // Handle the first parameterization variables
                     if (schedule.orderParameterisations) {
                         const firstParam = schedule.orderParameterisations[0];
                         if (firstParam) {
-                            this.updateVariablesFromSchedule(firstParam, scheduleIndex);
+                            this.updateVariablesFromSchedule(firstParam, this.orders.length - 1);
                         }
                     }
                 });
@@ -1242,10 +1244,9 @@ export class AddOrderModalComponent {
     const order = this.orders[orderIndex];
     order.reload = false;
 
+
     if (name && name !== '-') {
-      if (!order.orderId) {
         order.orderId = name;
-      }
     }
 
     for (let i in order.selectedSchedule.orderParameterisations) {
@@ -1289,6 +1290,8 @@ export class AddOrderModalComponent {
 
           if (param.forceJobAdmission) {
             order.forceJobAdmission = param.forceJobAdmission;
+          }else{
+            order.forceJobAdmission = false;
           }
 
           if (param.tags && param.tags.length > 0) {

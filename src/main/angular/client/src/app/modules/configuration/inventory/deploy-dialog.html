@@ -189,11 +189,11 @@
               </div>
             </div>
 
-            <div *ngIf="node.origin.dependencies">
+            <div *ngIf="node.origin.dependencies" style="width: 400px" >
             <!-- Affected and Referenced Objects Section -->
-            <div *ngFor="let dependency of [node.origin.dependencies]" class="dependencies-list m-l-md m-t-xs">
+            <div *ngFor="let dependency of [node.origin.dependencies]" class="dependencies-list m-l-20 m-t-xs">
 
-              <div class="form-group row">
+              <div *ngIf="dependency?.referencedBy?.length > 0 || dependency?.references?.length > 0 " class="form-group row">
                 <!-- Affected Objects Section -->
                 <div *ngIf="dependency?.referencedBy?.length > 0" class="col-md-6">
                   <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !affectedCollapsed[node.key], 'fa-caret-down': affectedCollapsed[node.key]}"

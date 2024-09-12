@@ -800,6 +800,7 @@
     "button.removeRepository": "リポジトリーから削除",
     "button.updateURL": "URL更新",
     "button.lognotification": "Log Notification Service",
+    "button.runService": "Run Service",
     "message.noWidgetFound": "追加できるウィジェットはありません",
     "message.agentStatus": "パイチャートウィジェットはエージェントのステータスを表示します",
     "message.agentClusterStatus": "パイチャートウィジェットはエージェントクラスターのステータスを表示します",

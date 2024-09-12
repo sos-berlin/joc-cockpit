@@ -680,7 +680,12 @@
                       </nz-select>
                     </div>
                   </div>
-                  <div *ngIf="(coreService.expertMode)"
+                  <div  *ngIf="
+                      job.configuration.executable &&
+                      job.configuration.executable.TYPE ===
+                        'ShellScriptExecutable' &&
+                      coreService.expertMode
+                    "
                     class="form-group row"
                   >
                     <label

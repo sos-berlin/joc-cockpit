@@ -636,10 +636,11 @@ export class SingleDeployComponent {
       return;
     }
     if (this.releasable && !this.shouldCallRelease()) {
-      this.release();
+
       if(this.shouldCallDeploy()){
         this.getReleaseDeployObject();
       }
+      this.release();
       return;
     }
 
@@ -662,9 +663,7 @@ export class SingleDeployComponent {
     }
 
 
-    if (this.dependencies && this.shouldCallRelease()) {
-      this.release();
-    }
+
 
 
 
@@ -695,6 +694,9 @@ export class SingleDeployComponent {
         this.activeModal.close();
       }, error: () => this.submitted = false
     });
+    if (this.dependencies && this.shouldCallRelease()) {
+      this.release();
+    }
   }
 
   release(): void {
@@ -1115,6 +1117,7 @@ export class DeployComponent {
       this.buildTree(this.path);
 
     }
+    console.log(this.affectedObjectTypes,">>")
     this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
     this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
   }
@@ -1129,7 +1132,7 @@ export class DeployComponent {
 
     if (checkedNodes.length > 0) {
       setTimeout(() => {
-        this.getDependencies(checkedNodes);
+        this.getDependencies(checkedNodes, this.nodes[0]);
       },100)
     }
   }
@@ -1227,7 +1230,7 @@ export class DeployComponent {
     const checkedNodes = this.collectCheckedNodes(node);
 
     if (checkedNodes.length > 0) {
-      this.getDependencies(checkedNodes);
+      this.getDependencies(checkedNodes, node);
     }else {
       this.clearDependenciesForNode(node);
     }
@@ -1260,7 +1263,7 @@ export class DeployComponent {
     return checkedNodes;
   }
 
-  private getDependencies(checkedNodes: { name: string, type: string }[]): void {
+  private getDependencies(checkedNodes: { name: string, type: string }[], node): void {
     const configurations = checkedNodes.map(node => ({
       name: node.name,
       type: node.type,
@@ -1357,7 +1360,8 @@ export class DeployComponent {
     }
   }
 
-private collectCheckedObjects(nodes: any[]): any[] {
+
+  private collectCheckedObjects(nodes: any[]): any[] {
     const checkedObjects = [];
     nodes.forEach(node => {
         if (node.checked && node.type) {
@@ -1494,7 +1498,7 @@ this.coreService.post(URL, obj).subscribe({
               }
               const checkedNodes = this.collectCheckedObjects(this.nodes);
               if (checkedNodes.length > 0) {
-                this.getDependencies(checkedNodes);
+                this.getDependencies(checkedNodes, this.nodes[0]);
               }
               this.ref.detectChanges();
             }, 0);
@@ -1591,6 +1595,7 @@ this.coreService.post(URL, obj).subscribe({
               objectType: nodes[i].type
             };
           }
+
           if (objDep.configuration) {
             if (nodes[i].deleted || self.isRevoke) {
               if (objDep.configuration.objectType === 'FOLDER') {
@@ -1690,102 +1695,301 @@ this.coreService.post(URL, obj).subscribe({
     recursive(this.nodes);
   }
 
-  deploy(): void {
-    this.submitted = true;
-    if (this.releasable) {
-      this.getReleaseObject();
-    } else {
-      this.getJSObject();
-    }
-    const obj: any = {
-      includeLate: this.includeLate
+  private shouldDeployOrRelease(): { shouldDeploy: boolean, shouldRelease: boolean } {
+    let shouldDeploy = false;
+    let shouldRelease = false;
+
+    const allowedDeployTypes = ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'];
+    const allowedReleaseTypes = ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'];
+
+    const checkNodeForDependencies = (node: any): void => {
+      if (node.dependencies) {
+        // Check referencedBy (affected objects) for valid and not deployed or released
+        node.dependencies.referencedBy.forEach(dep => {
+          if (dep.valid && !dep.deployed && allowedDeployTypes.includes(dep.objectType)) {
+            shouldDeploy = true;
+          }
+          if (dep.valid && !dep.released && allowedReleaseTypes.includes(dep.objectType)) {
+            shouldRelease = true;
+          }
+        });
+
+        // Check references (referenced objects) for valid and not deployed or released
+        node.dependencies.references.forEach(ref => {
+          if (ref.valid && !ref.deployed && allowedDeployTypes.includes(ref.objectType)) {
+            shouldDeploy = true;
+          }
+          if (ref.valid && !ref.released && allowedReleaseTypes.includes(ref.objectType)) {
+            shouldRelease = true;
+          }
+        });
+      }
+
+      // Recursively check child nodes
+      if (node.children && node.children.length > 0) {
+        node.children.forEach(childNode => {
+          checkNodeForDependencies(childNode);
+        });
+      }
     };
 
-    if (!this.releasable) {
-      obj.controllerIds = this.selectedSchedulerIds;
-      if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
-        if (this.object.store.draftConfigurations.length === 0) {
-          delete this.object.store.draftConfigurations;
-        }
-        if (this.object.store.deployConfigurations.length === 0) {
-          delete this.object.store.deployConfigurations;
-        }
-        obj.store = this.object.store;
-      }
+    // Start checking the root nodes
+    this.nodes.forEach(node => {
+      checkNodeForDependencies(node);
+    });
 
-      if (!this.isRevoke && this.object.deleteObj.deployConfigurations.length > 0) {
-        obj.delete = this.object.deleteObj;
+    return { shouldDeploy, shouldRelease };
+  }
+
+  deploy(): void {
+    this.submitted = true;
+    const { shouldDeploy, shouldRelease } = this.shouldDeployOrRelease();
+
+    if (this.releasable && !shouldRelease) {
+      if (shouldDeploy) {
+        this.processDependenciesForDeploy();
       }
-      if (this.isRevoke && this.object.deleteObj.deployConfigurations.length > 0) {
-        obj.deployConfigurations = this.object.deleteObj.deployConfigurations;
+      this.handleRelease();
+      return;
+    } else {
+      if (shouldRelease) {
+        this.processDependenciesForRelease();
       }
-    } else if (this.releasable) {
-      if (this.operation !== 'recall') {
-        if (this.object.delete.length > 0) {
-          obj.delete = this.object.delete;
-        }
-        if (this.object.update.length > 0) {
-          obj.update = this.object.update;
-        }
-      } else {
-        if (this.object.releasables.length > 0) {
-          obj.releasables = this.object.releasables;
-        } else {
+    }
+
+    this.handleDeploy();
+    this.submitted = false;
+  }
+
+  private handleDeploy(): void {
+    this.getJSObject();
+
+    const obj: any = {
+      includeLate: this.includeLate,
+      controllerIds: this.selectedSchedulerIds
+    };
+
+    if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
+      if (this.object.store.draftConfigurations.length === 0) {
+        delete this.object.store.draftConfigurations;
+      }
+      if (this.object.store.deployConfigurations.length === 0) {
+        delete this.object.store.deployConfigurations;
+      }
+      obj.store = this.object.store;
+    }
+
+    if (!this.isRevoke && this.object.deleteObj.deployConfigurations.length > 0) {
+      obj.delete = this.object.deleteObj;
+    }
+    if (this.isRevoke && this.object.deleteObj.deployConfigurations.length > 0) {
+      obj.deployConfigurations = this.object.deleteObj.deployConfigurations;
+    }
+
+    obj.auditLog = {};
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+
+    if (!isEmpty(obj.store) || !isEmpty(obj.delete)) {
+      const deployURL = this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy';
+      this.coreService.post(deployURL, obj).subscribe({
+        next: () => {
+          this.activeModal.close();
+        },
+        error: () => {
+          this.submitted = false;
           this.ref.detectChanges();
-          return;
         }
+      });
+    } else {
+      this.submitted = false;
+      this.ref.detectChanges();
+    }
+  }
+
+  private handleRelease(): void {
+    this.getReleaseObject();
+
+    const obj: any = {
+      includeLate: this.includeLate,
+    };
+
+    if (this.operation !== 'recall') {
+      if (this.object.delete.length > 0) {
+        obj.delete = this.object.delete;
+      }
+      if (this.object.update.length > 0) {
+        obj.update = this.object.update;
+      }
+    } else {
+      if (this.object.releasables.length > 0) {
+        obj.releasables = this.object.releasables;
+      } else {
+        this.ref.detectChanges();
+        return;
       }
     }
 
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-    if (!this.releasable && isEmpty(obj.store) && isEmpty(obj.delete) && !this.isRevoke) {
+
+    if (!isEmpty(obj.update) || !isEmpty(obj.delete) || !isEmpty(obj.releasables)) {
+      const releaseURL = this.operation === 'recall' ? 'inventory/releasables/recall' : 'inventory/release';
+      this.coreService.post(releaseURL, obj).subscribe({
+        next: () => {
+          this.activeModal.close();
+        },
+        error: () => {
+          this.submitted = false;
+          this.ref.detectChanges();
+        }
+      });
+    } else {
       this.submitted = false;
       this.ref.detectChanges();
-      return;
-    } else {
-      if (this.releasable && this.operation !== 'recall') {
-        if (isEmpty(obj) || (isEmpty(obj.update) && isEmpty(obj.delete))) {
-          this.submitted = false;
-          let msg = '';
-          this.translate.get('inventory.message.noObjectFoundToRelease').subscribe(translatedValue => {
-            msg = translatedValue;
-          });
-          this.toasterService.info(msg);
-          this.ref.detectChanges();
-          return;
-        }
-      }
     }
-
-    if (this.operation !== 'recall') {
-      if (((!this.data.controller && !this.data.dailyPlan && !this.data.object && !this.data.objectType) ||
-        ((this.data.object && (this.data.object == 'WORKFLOW' || this.data.object == 'SCHEDULE' || this.data.object.match('CALENDAR'))) ||
-          (this.data.objectType && (this.data.objectType == 'WORKFLOW' || this.data.objectType == 'SCHEDULE' || this.data.objectType.match('CALENDAR'))) || this.data.controller || this.data.dailyPlan))) {
-        if (!this.isRevoke) {
-          if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
-            obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-          } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
-            obj.addOrdersDateFrom = 'now';
-          }
-        }
-      }
-    }
-
-    const URL = this.releasable ? this.operation === 'recall' ? 'inventory/releasables/recall' : 'inventory/release' : this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy';
-    this.coreService.post(URL, obj).subscribe({
-      next: () => {
-        if (this.isSelectedObjects) {
-          this.activeModal.close('CLOSE');
-        } else {
-          this.activeModal.close();
-        }
-      }, error: () => {
-        this.submitted = false;
-        this.ref.detectChanges();
-      }
-    });
   }
+
+  private handleDependenciesForRelease(node: any, obj: any): void {
+    if (node.dependencies) {
+      node.dependencies.referencedBy.forEach(dep => {
+        if (dep.valid && !dep.released && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
+          if (!obj.update) {
+            obj.update = [];
+          }
+          obj.update.push({
+            path: dep.path,
+            objectType: dep.objectType,
+          });
+        }
+      });
+
+      node.dependencies.references.forEach(ref => {
+        if (ref.valid && !ref.released && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(ref.objectType) && ref.path !== '/' && ref.name !== '/') {
+          if (!obj.update) {
+            obj.update = [];
+          }
+          obj.update.push({
+            path: ref.path,
+            objectType: ref.objectType,
+          });
+        }
+      });
+    }
+
+    if (node.children && node.children.length > 0) {
+      node.children.forEach(childNode => {
+        this.handleDependenciesForRelease(childNode, obj);
+      });
+    }
+  }
+
+  private processDependenciesForRelease(): void {
+    let obj: any = {
+      auditLog: {},
+      includeLate: this.includeLate,
+      update: []
+    };
+    this.nodes.forEach(node => {
+      this.handleDependenciesForRelease(node, obj);
+    });
+
+    if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
+      obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+    } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
+      obj.addOrdersDateFrom = 'now';
+    }
+
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+
+    if (obj.update && obj.update.length > 0) {
+      const URL = 'inventory/release';
+      this.coreService.post(URL, obj).subscribe({
+        next: () => {
+          console.log('Release API call successful');
+        },
+        error: (err) => {
+          console.error('Error calling release API:', err);
+        }
+      });
+    } else {
+      console.log('No dependencies to release.');
+    }
+  }
+
+  private handleDependenciesForDeploy(node: any, obj: any): void {
+    if (node.dependencies) {
+      node.dependencies.referencedBy.forEach(dep => {
+        if (dep.valid && !dep.deployed && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
+          if (!obj.store) {
+            obj.store = { draftConfigurations: [] };
+          }
+          obj.store.draftConfigurations.push({
+            configuration: {
+              path: dep.path,
+              objectType: dep.objectType,
+              recursive: false
+            }
+          });
+        }
+      });
+
+      node.dependencies.references.forEach(ref => {
+        if (ref.valid && !ref.deployed && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(ref.objectType) && ref.path !== '/' && ref.name !== '/') {
+          if (!obj.store) {
+            obj.store = { draftConfigurations: [] };
+          }
+          obj.store.draftConfigurations.push({
+            configuration: {
+              path: ref.path,
+              objectType: ref.objectType,
+              recursive: false
+            }
+          });
+        }
+      });
+    }
+
+    if (node.children && node.children.length > 0) {
+      node.children.forEach(childNode => {
+        this.handleDependenciesForDeploy(childNode, obj);
+      });
+    }
+  }
+
+  private processDependenciesForDeploy(): void {
+    let obj: any = {
+      auditLog: {},
+      includeLate: this.includeLate,
+      controllerIds: this.selectedSchedulerIds
+    };
+
+    this.nodes.forEach(node => {
+      this.handleDependenciesForDeploy(node, obj);
+    });
+
+    if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
+      obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+    } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
+      obj.addOrdersDateFrom = 'now';
+    }
+
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+
+    if (obj.store) {
+      const URL = 'inventory/deployment/deploy';
+      this.coreService.post(URL, obj).subscribe({
+        next: () => {
+          console.log('Deploy API call successful');
+        },
+        error: (err) => {
+          console.error('Error calling deploy API:', err);
+        }
+      });
+    } else {
+      console.log('No dependencies to deploy.');
+    }
+  }
+
 
   getUniqueObjectTypes(objects: any[]): string[] {
     return [...new Set(objects.map(obj => obj.objectType))];
