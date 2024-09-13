@@ -1144,8 +1144,10 @@ export class AgentComponent {
     for (let i in this.clusters) {
       if (this.selectedCluster.subagentClusterId === this.clusters[i].subagentClusterId) {
         if (subagent) {
+          subagent.priority = subagent.priority.toString();
           this.clusters[i].subagentIds.push(subagent);
         }
+        this.clusters[i].subagentIds.forEach(sub => sub.priority = sub.priority.toString());
         obj.subagentClusters.push({
           controllerId: this.clusters[i].controllerId,
           title: this.clusters[i].title,
@@ -1164,7 +1166,10 @@ export class AgentComponent {
         controllerId: this.selectedCluster.controllerId || this.controllerId,
         agentId: this.selectedCluster.agentId,
         subagentClusterId: this.selectedCluster.subagentClusterId,
-        subagentIds: this.selectedCluster.subagentIds,
+        subagentIds: this.selectedCluster.subagentIds.map(sub => ({
+          ...sub,
+          priority: sub.priority.toString()
+        })),
       });
     }
     this.store(obj);
@@ -1905,11 +1910,12 @@ export class AgentComponent {
         let source;
         let colorCode;
         let flag = this.selectedCluster.subagentIds.length === 1;
-        if (priority > -1 && priority !== subagent.priority) {
+        let currentPriority = parseInt(subagent.priority, 10);
+        if (priority > -1 && priority !== currentPriority) {
           j++;
         }
         let y = j * 70;
-        if (priority === subagent.priority) {
+        if (priority === currentPriority) {
           i++;
           if (v1) {
             source = v1;
@@ -1933,7 +1939,7 @@ export class AgentComponent {
             flag = true;
           }
         }
-        priority = subagent.priority;
+        priority = currentPriority;
         let x = (230 * i) + 10;
         v1 = this.editor.graph.insertVertex(defaultParent, null, _node, x, y, 180, 40, 'rectangle;strokeColor=' + colorCode + ';fillColor=' + colorCode + ';gradientColor=#fff;whiteSpace=wrap;html=1');
         if (source) {

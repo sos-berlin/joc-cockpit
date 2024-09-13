@@ -1117,7 +1117,6 @@ export class DeployComponent {
       this.buildTree(this.path);
 
     }
-    console.log(this.affectedObjectTypes,">>")
     this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
     this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
   }
@@ -1237,7 +1236,6 @@ export class DeployComponent {
   }
 
   private clearDependenciesForNode(node: any): void {
-    console.log(node,">>")
     if (node) {
       node.origin.dependencies = null;
       if (node.children && node.children.length > 0) {

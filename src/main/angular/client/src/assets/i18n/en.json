@@ -3071,6 +3071,7 @@
       "display_folders_in_views": "Displays folders of scheduling objects in views. If this setting is set to 'false' then object names only will be displayed. In JS7 object names are unique.",
       "node_command_line_options": "Node.js command line options can be specified. Consider that applicability of options depends on the version of Node.js in use.",
       "num_of_tags_displayed_as_order_id": "Specifies the number of tags displayed with each order. A value 0 will suppress display of tags.",
+      "num_of_workflow_tags_displayed": "Specifies the number of tags displayed with each workflow. A value 0 will suppress display of tags.",
       "report_java_options": "Reports are created from a Java class that can be configured to use Java options. It is recommended to use the -Xmx<number>m option to limit memory usage."
     },
     "user": {

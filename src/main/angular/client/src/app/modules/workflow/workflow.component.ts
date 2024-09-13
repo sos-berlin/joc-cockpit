@@ -590,7 +590,7 @@ export class WorkflowComponent {
   private searchOrderTerm = new Subject<string>();
   private searchTerm = new Subject<string>();
 
-  searchableProperties = ['name', 'path', 'versionDate', 'state', '_text'];
+  searchableProperties = ['name', 'path', 'versionDate', 'state', '_text', 'tagsString'];
 
   filterState: any = [
     {state: 'IN_SYNC', text: 'synchronized'},
@@ -1080,6 +1080,11 @@ export class WorkflowComponent {
           const path = res.workflows[i].path;
           res.workflows[i].name = path.substring(path.lastIndexOf('/') + 1);
           res.workflows[i].path1 = path.substring(0, path.lastIndexOf('/')) || path.substring(0, path.lastIndexOf('/') + 1);
+          if (res.workflows[i].workflowTags && res.workflows[i].workflowTags.length > 0) {
+            res.workflows[i].tagsString = res.workflows[i].workflowTags.join(', ');
+          } else {
+            res.workflows[i].tagsString = '';
+          }
           if (!res.workflows[i].ordersSummary) {
             res.workflows[i].ordersSummary = {};
           }

@@ -834,6 +834,9 @@
                             <i *ngIf="workflow.title"> - </i>
                             <i [innerHtml]="workflow.title | stringToLink" class="text-muted"></i>
                           </a>
+                        <a *ngIf="workflow.workflowTags?.length > 0" [innerHTML]="coreService.getModifiedWorkflowTags(workflow, workflowFilters.searchText)">
+                        </a>
+
                         </span>
                       </td>
                       <td *ngIf="isPathDisplay">

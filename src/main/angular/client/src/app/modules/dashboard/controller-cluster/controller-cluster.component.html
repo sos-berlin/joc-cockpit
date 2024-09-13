@@ -116,6 +116,9 @@
         <li *ngIf="joc && joc.current && (!joc.clusterNodeState || joc.clusterNodeState._text == 'active') && permission.joc.administration.controllers.manage" nz-submenu
             nzTitle="{{'dashboard.button.runService' | translate}}">
           <ul>
+            <li (click)="runService('cleanup')" nz-menu-item>
+              <a>{{'dashboard.button.cleanupService' | translate}}</a>
+            </li>
             <li (click)="runService('dailyplan')" nz-menu-item>
               <a>{{'dashboard.button.dailyPlanService' | translate}}</a>
             </li>

@@ -59,6 +59,7 @@ export class CoreService {
 
   searchResults: any = {};
   numOfTags: any;
+  numOfWorkflowTags: any;
   windowProperties: any = ',scrollbars=1,resizable=1,status=0,toolbar=0,menubar=0,location=0toolbar=0';
   private sortedTags: string[] = [];
 
@@ -3132,6 +3133,7 @@ export class CoreService {
     sessionStorage['allowUndeclaredVariables'] = result.allowUndeclaredVariables;
     sessionStorage['displayFoldersInViews'] = result.displayFoldersInViews;
     sessionStorage['numOfTagsDisplayedAsOrderId'] = result.numOfTagsDisplayedAsOrderId;
+    sessionStorage['numOfWorkflowTagsDisplayed'] = result.numOfWorkflowTagsDisplayed;
     if (result.licenseValidFrom) {
       sessionStorage['licenseValidFrom'] = result.licenseValidFrom;
     }
@@ -3468,9 +3470,7 @@ export class CoreService {
       return value;
     }
 
-    // Split the value into parts, preserving HTML tags
     const parts = value.split(/(<[^>]+>)/g);
-    // Apply highlighting only to text nodes
     const highlighted = parts.map(part => {
       if (part.startsWith('<') && part.endsWith('>')) {
         return part;
@@ -3480,6 +3480,18 @@ export class CoreService {
     });
 
     return highlighted.join('');
+  }
+
+  getModifiedWorkflowTags(workflow: any, searchText?: string): SafeHtml {
+    this.numOfWorkflowTags = parseInt(sessionStorage.getItem('numOfWorkflowTagsDisplayed'), 10) || workflow.workflowTags.length;
+
+    if (workflow.workflowTags && workflow.workflowTags.length > 0) {
+      const visibleTags = workflow.workflowTags.slice(0, this.numOfWorkflowTags).map(tag => `<span class="tag-oval">${tag}</span>`).join('');
+      const highlightedOrderId = this.highlightText(visibleTags, searchText);
+      return this.sanitizer.bypassSecurityTrustHtml(highlightedOrderId);
+    }
+
+    return '';
   }
 
 

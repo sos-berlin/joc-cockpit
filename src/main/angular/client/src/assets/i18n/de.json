@@ -3071,6 +3071,7 @@
       "display_folders_in_views": "Zeigt Ordner von Objekten in Ansichten an. Wenn diese Einstellung auf 'false' gesetzt ist, werden nur die Objektnamen angezeigt. In JS7 sind die Objektnamen eindeutig.",
       "node_command_line_options": "Node.js Kommandozeilenoptionen können angegeben werden. Beachten Sie, dass die Anwendbarkeit der Optionen von der verwendeten Version von Node.js abhängt.",
       "num_of_tags_displayed_as_order_id": "Gibt die Anzahl Kennzeichnungen an, die mit jedem Auftrag angezeigt werden. Ein Wert 0 unterdrückt die Anzeige der Kennzeichnung.",
+      "num_of_workflow_tags_displayed": "num_of_workflow_tags_displayed",
       "report_java_options": "Berichte werden aus einer Java-Klasse erstellt, die für die Verwendung von Java Optionen konfiguriert werden kann. Es wird empfohlen, die Option -Xmx<number>m zu verwenden, um die Speichernutzung zu begrenzen."
     },
     "user": {

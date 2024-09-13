@@ -3071,6 +3071,7 @@
       "display_folders_in_views": "フォルダーを表示",
       "node_command_line_options": "ノードコマンドラインオプション",
       "num_of_tags_displayed_as_order_id": "num_of_tags_displayed_as_order_id",
+      "num_of_workflow_tags_displayed": "num_of_workflow_tags_displayed",
       "report_java_options": "Javaオプション表示"
     },
     "user": {

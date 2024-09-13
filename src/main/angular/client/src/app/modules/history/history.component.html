@@ -1050,6 +1050,8 @@
                      class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
                   <span (click)="coreService.showWorkflow(history.workflow);$event.stopPropagation()"
                         [innerHtml]="history.workflow | highlight : order.searchText" class="text-hover-primary"></span>
+                   <a *ngIf="history.workflowTags?.length > 0" [innerHTML]="coreService.getModifiedWorkflowTags(history, workflowFilters.searchText)">
+                   </a>
                 </span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)">
