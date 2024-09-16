@@ -1135,9 +1135,10 @@ export class HistoryComponent {
   submissionHistoryFilterList: any;
   sideView: any = {};
   showPanel: any;
+  workflowTagsPerWorkflow: any;
 
-  orderSearchableProperties = ['controllerId', 'orderId', 'workflow', 'state', '_text', 'orderState', 'position', 'tags'];
-  taskSearchableProperties = ['controllerId', 'job', 'criticality', 'request', 'workflow', 'orderId', 'position'];
+  orderSearchableProperties = ['controllerId', 'orderId', 'workflow', 'state', '_text', 'orderState', 'position', 'tags', 'filteredWorkflowTags'];
+  taskSearchableProperties = ['controllerId', 'job', 'criticality', 'request', 'workflow', 'orderId', 'position', 'filteredWorkflowTags'];
   deploymentSearchableProperties = ['controllerId', 'deploymentDate', 'account', 'state'];
   submissionSearchableProperties = ['date', 'countSubmitted', 'countTotal'];
   yadeSearchableProperties = ['controllerId', 'profile', 'start', 'end', '_operation', 'numOfFiles', 'workflowPath', 'orderId'];
@@ -1325,6 +1326,7 @@ export class HistoryComponent {
       next: (res: any) => {
         this.isLoading = true;
         this.historys = this.setDuration(res);
+        this.workflowTagsPerWorkflow = res?.workflowTagsPerWorkflow || {};
         this.historys = this.orderPipe.transform(this.historys, this.order.filter.sortBy, this.order.reverse);
         if (flag) {
           this.mergeOldData();
@@ -2265,8 +2267,22 @@ export class HistoryComponent {
   searchInResult(): void {
     if (this.historyFilters.type === 'ORDER') {
       this.data = this.order.searchText ? this.searchPipe.transform(this.historys, this.order.searchText, this.orderSearchableProperties) : this.historys;
+      this.data.forEach((history: any) => {
+        const workflowKey = this.getLastPartOfWorkflow(history.workflow);
+        if (this.workflowTagsPerWorkflow[workflowKey]) {
+          history.filteredWorkflowTags = this.workflowTagsPerWorkflow[workflowKey]
+            .filter((tag: string) => tag?.toLowerCase().includes(this.order.searchText?.toLowerCase()));
+        }
+      });
     } else if (this.historyFilters.type === 'TASK') {
       this.data = this.task.searchText ? this.searchPipe.transform(this.taskHistorys, this.task.searchText, this.taskSearchableProperties) : this.taskHistorys;
+      this.data.forEach((history: any) => {
+        const workflowKey = this.getLastPartOfWorkflow(history.workflow);
+        if (this.workflowTagsPerWorkflow[workflowKey]) {
+          history.filteredWorkflowTags = this.workflowTagsPerWorkflow[workflowKey]
+            .filter((tag: string) => tag?.toLowerCase().includes(this.task.searchText?.toLowerCase()));
+        }
+      });
     } else if (this.historyFilters.type === 'YADE') {
       this.data = this.yade.searchText ? this.searchPipe.transform(this.yadeHistorys, this.yade.searchText, this.yadeSearchableProperties) : this.yadeHistorys;
     } else if (this.historyFilters.type === 'DEPLOYMENT') {
@@ -4759,4 +4775,13 @@ export class HistoryComponent {
     };
     this.searchByTags(obj);
   }
+
+  getLastPartOfWorkflow(workflow: string): string {
+    if (workflow) {
+      const parts = workflow.split('/');
+      return parts[parts.length - 1]; // Return the last part
+    }
+    return '';
+  }
+
 }

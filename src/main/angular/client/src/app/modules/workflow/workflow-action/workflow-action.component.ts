@@ -23,7 +23,7 @@ export class ShowDependencyComponent {
   permission: any = {}
   loading = true;
 
-  constructor(private coreService: CoreService, private activeModal: NzModalRef, private authService: AuthService) {
+  constructor(public coreService: CoreService, private activeModal: NzModalRef, private authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -162,6 +162,7 @@ export class AddOrderModalComponent {
     }];
 
     this.orders[0].timeZone = this.preferences.zone;
+    this.commonStartDate.timeZone = this.preferences.zone;
     this.orders[0].at = 'now';
 
     if (!this.workflow.configuration) {
@@ -751,8 +752,8 @@ export class AddOrderModalComponent {
           }
           orderObj.scheduledFor = 'now + ' + atTime;
         } else if (this.commonStartTime === 'date') {
-          orderObj.scheduledFor = this.coreService.getDateByFormat(order.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
-          orderObj.timeZone = order.timeZone;
+          orderObj.scheduledFor = this.coreService.getDateByFormat(this.commonStartDate.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
+          orderObj.timeZone = this.commonStartDate.timeZone;
         }
       } else {
         if (order.at === 'now' || order.at === 'never') {
@@ -937,20 +938,19 @@ createOrdersFromAllSchedules(selectedScheduleNames: string[]): void {
                 );
 
                 filteredSchedules.forEach((schedule) => {
-                    // Loop through all order parameterizations for the current schedule
                     schedule.orderParameterisations.forEach((parameterisation) => {
                         const newOrder = {
                             orderId: parameterisation.orderName,
                             timeZone: this.preferences.zone,
-                            at: 'now', // Default to 'now', can be adjusted based on commonStartTime
-                            forceJobAdmission: parameterisation?.forceJobAdmission || false, // Set from parameterization
-                            tags: parameterisation?.tags || [], // Set tags from parameterization
+                            at: 'now',
+                            forceJobAdmission: parameterisation?.forceJobAdmission || false,
+                            tags: parameterisation?.tags || [],
                             arguments: [],
                             startPosition: '',
                             endPositions: [],
                             blockPosition: '',
                             reload: false,
-                            selectedSchedule: schedule, // Link this order to the current schedule
+                            selectedSchedule: schedule,
                             orderName: parameterisation.orderName
                         };
 
@@ -1004,7 +1004,7 @@ createOrdersFromAllSchedules(selectedScheduleNames: string[]): void {
                         this.isCollapsed.push(newOrder.arguments.map(() => false));
                     });
 
-                    // Handle the first parameterization variables
+
                     if (schedule.orderParameterisations) {
                         const firstParam = schedule.orderParameterisations[0];
                         if (firstParam) {

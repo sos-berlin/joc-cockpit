@@ -1903,7 +1903,6 @@ this.coreService.post(URL, obj).subscribe({
       const URL = 'inventory/release';
       this.coreService.post(URL, obj).subscribe({
         next: () => {
-          console.log('Release API call successful');
         },
         error: (err) => {
           console.error('Error calling release API:', err);
@@ -1977,7 +1976,6 @@ this.coreService.post(URL, obj).subscribe({
       const URL = 'inventory/deployment/deploy';
       this.coreService.post(URL, obj).subscribe({
         next: () => {
-          console.log('Deploy API call successful');
         },
         error: (err) => {
           console.error('Error calling deploy API:', err);

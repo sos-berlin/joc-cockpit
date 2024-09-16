@@ -737,6 +737,8 @@
                                  class="text-hover-primary text-black-dk">
                                 <span [innerHtml]="order.workflowId.path | highlight : orderFilters.searchText"></span>
                               </a>
+                              <span *ngIf="workflowTagsPerWorkflow[getLastPartOfWorkflow(order.workflowId.path)]?.length > 0" [innerHtml]="coreService.getModifiedWorkflowTags(workflowTagsPerWorkflow[getLastPartOfWorkflow(order.workflowId.path)], orderFilters.searchText)" class="m-l-sm">
+           </span>
                             </div>
                             <div class="text-sm text-left text-muted p-t-xs">
                               <span translate>order.label.scheduledFor </span>:
@@ -893,6 +895,11 @@
                              class="text-hover-primary">
                             <span [innerHtml]="order.workflowId.path | highlight : orderFilters.searchText"></span>
                           </a>
+                                <span
+                                  *ngIf="workflowTagsPerWorkflow[getLastPartOfWorkflow(order.workflowId.path)]?.length > 0"
+                                  [innerHtml]="coreService.getModifiedWorkflowTags(workflowTagsPerWorkflow[getLastPartOfWorkflow(order.workflowId.path)], orderFilters.searchText)"
+                                  class="m-l-sm">
+                                 </span>
                         </span>
                           </td>
                           <td>

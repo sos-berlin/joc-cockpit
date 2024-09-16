@@ -3489,7 +3489,13 @@ export class CoreService {
       const visibleTags = workflow.workflowTags.slice(0, this.numOfWorkflowTags).map(tag => `<span class="tag-oval">${tag}</span>`).join('');
       const highlightedOrderId = this.highlightText(visibleTags, searchText);
       return this.sanitizer.bypassSecurityTrustHtml(highlightedOrderId);
-    }
+    }else if (workflow && workflow.length > 0) {
+        const visibleTags = workflow.slice(0, this.numOfWorkflowTags)
+          .map(tag => `<span class="tag-oval">${tag}</span>`)
+          .join('');
+        const highlightedTags = this.highlightText(visibleTags, searchText);
+        return this.sanitizer.bypassSecurityTrustHtml(highlightedTags);
+      }
 
     return '';
   }

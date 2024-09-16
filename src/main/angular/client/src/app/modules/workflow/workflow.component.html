@@ -544,6 +544,8 @@
                              class="cursor fa fa-book p-l-xs p-r-xs"></i>
                           <span [innerHtml]="workflow.name | highlight : workflowFilters.searchText"
                                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="workflow.title"></span>
+                          <a *ngIf="workflow.workflowTags?.length > 0" [innerHTML]="coreService.getModifiedWorkflowTags(workflow, workflowFilters.searchText)">
+                          </a>
                         </div>
                         <div class="btn-group dropdown pull-right abt-dropdown ">
                           <app-workflow-action (isChanged)="changedHandler($event)"
@@ -836,7 +838,6 @@
                           </a>
                         <a *ngIf="workflow.workflowTags?.length > 0" [innerHTML]="coreService.getModifiedWorkflowTags(workflow, workflowFilters.searchText)">
                         </a>
-
                         </span>
                       </td>
                       <td *ngIf="isPathDisplay">

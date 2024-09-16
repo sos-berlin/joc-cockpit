@@ -227,7 +227,8 @@ export class OrderOverviewComponent {
   tags: string[] = [];
   searchTag = { text: '', loading: false, tags: [], token: '' };
   searchOrderTag = { text: '', loading: false, tags: [], token: '' }
-  searchableProperties = ['orderId', 'workflowId', 'path', 'state', '_text', 'scheduledFor', 'position', 'tags'];
+  searchableProperties = ['orderId', 'workflowId', 'path', 'state', '_text', 'scheduledFor', 'position', 'tags', 'filteredTags'];
+  workflowTagsPerWorkflow: any
   object = {
     mapOfCheckedId: new Map(),
     checked: false,
@@ -617,6 +618,7 @@ export class OrderOverviewComponent {
     this.coreService.post('orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         res.orders = this.orderPipe.transform(res.orders, this.orderFilters.filter.sortBy, this.orderFilters.reverse);
+        this.workflowTagsPerWorkflow = res.workflowTagsPerWorkflow
         this.orders = res.orders;
         if (this.orders.length === 0) {
           this.orderFilters.currentPage = 1;
@@ -897,6 +899,13 @@ export class OrderOverviewComponent {
 
   searchInResult(): void {
     this.data = this.orderFilters.searchText ? this.searchPipe.transform(this.orders, this.orderFilters.searchText, this.searchableProperties) : this.orders;
+    this.data.forEach((value: any) => {
+      const workflowKey = this.getLastPartOfWorkflow(value.workflowId.path);
+      if (this.workflowTagsPerWorkflow[workflowKey]) {
+        value.filteredTags = this.workflowTagsPerWorkflow[workflowKey]
+          .filter((tag: string) => tag?.toLowerCase().includes(this.orderFilters.searchText?.toLowerCase()));
+      }
+    });
     this.data = [...this.data];
   }
 
@@ -1760,5 +1769,13 @@ export class OrderOverviewComponent {
       obj.orderTags = orderTags;
     }
     this.getOrders({ controllerId: this.schedulerIds.selected, states: this.getState() });
+  }
+
+  getLastPartOfWorkflow(workflow: string): string {
+    if (workflow) {
+      const parts = workflow.split('/');
+      return parts[parts.length - 1]; // Return the last part
+    }
+    return '';
   }
 }

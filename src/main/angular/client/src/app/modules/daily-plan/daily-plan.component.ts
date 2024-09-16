@@ -744,7 +744,7 @@ export class DailyPlanComponent {
   selectedDate: Date;
   submissionHistory: any = [];
   reloadState = 'no';
-  searchableProperties = ['orderId', 'schedulePath', 'workflowPath', 'status', 'plannedStartTime', 'expectedEndTime', 'tagsString'];
+  searchableProperties = ['orderId', 'schedulePath', 'workflowPath', 'status', 'plannedStartTime', 'expectedEndTime', 'tagsString', 'workflowTagsString'];
   expandedPaths = new Set();
   dateRanges = [];
   isProcessing = false;
@@ -757,6 +757,7 @@ export class DailyPlanComponent {
   selectedMonth: any;
   weekStart = 1;
   dateFormat: string;
+  workflowTagsPerWorkflow: any;
   object = {
     mapOfCheckedId: new Map(),
     checked: false,
@@ -1007,6 +1008,7 @@ export class DailyPlanComponent {
       obj.limit = this.preferences.maxDailyPlanRecords;
       this.coreService.post('daily_plan/orders', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
         next: (res: any) => {
+          this.workflowTagsPerWorkflow = res?.workflowTagsPerWorkflow
           this.filterData(res.plannedOrderItems);
           this.isLoaded = true;
           this.isRefreshed = false;
@@ -2780,6 +2782,12 @@ private filterData(planItems: any[]): void {
             } else {
                 planItems[i].tagsString = '';
             }
+          const workflowLastPart = planItems[i].workflowPath ? this.getLastPartOfWorkflow(planItems[i].workflowPath) : null;
+          if (workflowLastPart && this.workflowTagsPerWorkflow && this.workflowTagsPerWorkflow[workflowLastPart]) {
+            planItems[i].workflowTagsString = this.workflowTagsPerWorkflow[workflowLastPart].join(', ');
+          } else {
+            planItems[i].workflowTagsString = '';
+          }
 
             for (let j = 0; j < this.plans.length; j++) {
                 if (this.plans[j].show && this.plans[j].orderId === planItems[i].orderId) {
@@ -3410,5 +3418,13 @@ private filterData(planItems: any[]): void {
       controllerId: this.schedulerIds.selected
     };
     this.loadOrderPlan();;
+  }
+
+  getLastPartOfWorkflow(workflow: string): string {
+    if (workflow) {
+      const parts = workflow.split('/');
+      return parts[parts.length - 1]; // Return the last part
+    }
+    return '';
   }
 }

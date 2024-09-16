@@ -235,7 +235,9 @@ export class SettingComponent {
             this.mergeData(this.defaultGlobals);
             this.changeConfiguration(null, null, null);
             this.loading = true;
+
           }
+
         }, error: () => {
           this.loading = true;
         }
@@ -245,90 +247,129 @@ export class SettingComponent {
     }
   }
 
-  private mergeData(defaultGlobals: any): void {
-    for (let prop in defaultGlobals) {
-      let isExist = false;
-      for (let setProp in this.settings) {
-        if (setProp === prop) {
-          if (this.settings[setProp].ordering > -1) {
-          } else {
-            this.settings[setProp].ordering = this.defaultGlobals[setProp].ordering;
-          }
-          isExist = true;
-          for (let x in defaultGlobals[prop]) {
-            let flag = true;
-            if (!isEmpty(this.settings[setProp])) {
-              for (let i in this.settings[setProp]) {
-                if (x === i) {
-                  flag = false;
-                  if (defaultGlobals[prop][i] && defaultGlobals[prop][i].type) {
-                    this.settings[setProp][i].ordering = defaultGlobals[prop][i].ordering;
-                    this.settings[setProp][i].type = defaultGlobals[prop][i].type;
-                    this.settings[setProp][i].default = defaultGlobals[prop][i].default;
-                    if (defaultGlobals[prop][i].values) {
-                      this.settings[setProp][i].values = defaultGlobals[prop][i].values;
-                    }
-                    break;
-                  }
-                } else if (!defaultGlobals[prop][i] && this.settings[prop][i] && i !== 'ordering') {
-                  delete this.settings[prop][i];
-                }
-              }
-            }
-            if (flag) {
-              this.settings[setProp][x] = defaultGlobals[prop][x];
-            }
-          }
+private mergeData(defaultGlobals: any): void {
+  for (let prop in defaultGlobals) {
+    let isExist = false;
+    for (let setProp in this.settings) {
+      if (setProp === prop) {
+        // Update ordering if not already set
+        if (this.settings[setProp].ordering > -1) {
+        } else {
+          this.settings[setProp].ordering = this.defaultGlobals[setProp].ordering;
+        }
+        isExist = true;
+
+        // Merge properties for this setting
+        this.mergeProperties(defaultGlobals[prop], this.settings[setProp]);
+
+        break;
+      }
+    }
+    if (!isExist) {
+      this.settings[prop] = defaultGlobals[prop];
+    }
+  }
+
+  // Process and update settingArr
+  const temp = this.coreService.clone(this.settingArr);
+  this.settingArr = [];
+  for (let prop in this.settings) {
+    const obj: any = {
+      name: prop,
+      ordering: this.settings[prop].ordering,
+      value: this.mapProperties(this.settings[prop]) // Map all properties, including children
+    };
+
+    // Maintain visibility status (show) from previous state
+    if (temp.length > 0) {
+      for (let x = 0; x < temp.length; x++) {
+        if (temp[x].name === obj.name) {
+          obj.show = temp[x].show;
+          temp.slice(x, 1);
           break;
         }
       }
-      if (!isExist) {
-        this.settings[prop] = defaultGlobals[prop];
-      }
     }
-    const temp = this.coreService.clone(this.settingArr);
-    this.settingArr = [];
-    for (let prop in this.settings) {
-      const obj: any = {
-        name: prop,
-        ordering: this.settings[prop].ordering,
-        value: []
-      };
-      obj.value = Object.entries(this.settings[prop]).map(([k, v]) => {
-        const _v: any = v;
-        if (k === 'ordering') {
-          return {name: k, value: null};
-        }
-        if (_v.type === 'WEEKDAYS' && _v.value) {
-          _v.value = _v.value.split(',').map(Number);
-        }
-        if (_v.type === 'ARRAY') {
-          if (typeof _v.default === 'string') {
-            _v.default = _v.default.split(';');
-          }
-          if (_v.value) {
-            let arr = _v.value.split(';');
-            _v.value = [];
-            for (let i = 0; i < arr.length; i++) {
-              _v.value.push({name: arr[i]});
+
+    this.settingArr.push(obj);
+  }
+
+  this.settingArr = this.orderPipe.transform(this.settingArr, 'ordering', false);
+}
+
+/**
+ * Merges properties of a setting, including handling nested children.
+ */
+private mergeProperties(defaultSetting: any, existingSetting: any): void {
+  for (let key in defaultSetting) {
+    let flag = true;
+    if (!isEmpty(existingSetting)) {
+      for (let existingKey in existingSetting) {
+        if (key === existingKey) {
+          flag = false;
+          if (defaultSetting[existingKey] && defaultSetting[existingKey].type) {
+            // Copy properties like ordering, type, and default values
+            existingSetting[existingKey].ordering = defaultSetting[existingKey].ordering;
+            existingSetting[existingKey].type = defaultSetting[existingKey].type;
+            existingSetting[existingKey].default = defaultSetting[existingKey].default;
+            if (defaultSetting[existingKey].values) {
+              existingSetting[existingKey].values = defaultSetting[existingKey].values;
             }
-          }
-        }
-        return {name: k, value: _v, ordering: _v.ordering};
-      });
-      if (temp.length > 0) {
-        for (let x = 0; x < temp.length; x++) {
-          if (temp[x].name === obj.name) {
-            obj.show = temp[x].show;
-            temp.slice(x, 1);
+
+            // Handle nested children if they exist
+            if (defaultSetting[existingKey].children) {
+              if (!existingSetting[existingKey].children) {
+                existingSetting[existingKey].children = {};
+              }
+              this.mergeProperties(defaultSetting[existingKey].children, existingSetting[existingKey].children);
+            }
+
             break;
           }
+        } else if (!defaultSetting[existingKey] && existingSetting[existingKey] && existingKey !== 'ordering') {
+          delete existingSetting[existingKey];
         }
       }
-      this.settingArr.push(obj);
     }
-    this.settingArr = this.orderPipe.transform(this.settingArr, 'ordering', false);
+    if (flag) {
+      existingSetting[key] = defaultSetting[key];
+    }
   }
+}
+
+/**
+ * Maps properties of settings, including handling nested children.
+ */
+private mapProperties(setting: any): any[] {
+  return Object.entries(setting).map(([key, value]) => {
+    const _value: any = value;
+    if (key === 'ordering') {
+      return { name: key, value: null };
+    }
+    if (_value.type === 'WEEKDAYS' && _value.value) {
+      _value.value = _value.value.split(',').map(Number);
+    }
+    if (_value.type === 'ARRAY') {
+      if (typeof _value.default === 'string') {
+        _value.default = _value.default.split(';');
+      }
+      if (_value.value) {
+        let arr = _value.value.split(';');
+        _value.value = [];
+        for (let i = 0; i < arr.length; i++) {
+          _value.value.push({ name: arr[i] });
+        }
+      }
+    }
+
+    // Handle mapping of children recursively
+    if (_value.children) {
+      _value.children = this.mapProperties(_value.children);
+    }
+
+    return { name: key, value: _value, ordering: _value.ordering };
+  });
+}
 
   showHashValue(data: any): void {
     let pswd = data.value.default;

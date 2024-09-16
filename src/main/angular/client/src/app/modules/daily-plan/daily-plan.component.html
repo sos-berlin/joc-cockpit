@@ -119,7 +119,8 @@
            <a *ngIf="!isPathDisplay" (click)="coreService.showWorkflow(value?.workflowPath);"
               [innerHtml]="value?.workflowPath.substring(value?.workflowPath.lastIndexOf('/') + 1) | highlight : dailyPlanFilters.searchText"
               class="text-hover-primary"></a>
-
+           <span *ngIf="workflowTagsPerWorkflow[getLastPartOfWorkflow(value.workflowPath)]?.length > 0" [innerHtml]="coreService.getModifiedWorkflowTags(workflowTagsPerWorkflow[getLastPartOfWorkflow(value.workflowPath)], dailyPlanFilters.searchText)" class="m-l-sm">
+           </span>
          </span>
       </td>
       <td class="combine-two-label" nowrap>
@@ -244,6 +245,8 @@
             <a *ngIf="!isPathDisplay" (click)="coreService.showWorkflow(plan.value[0]?.workflowPath);"
                [innerHtml]="plan.value[0]?.workflowPath.substring(plan.value[0]?.workflowPath.lastIndexOf('/') + 1) | highlight : dailyPlanFilters.searchText"
                class="text-hover-primary"></a>
+            <span *ngIf="workflowTagsPerWorkflow[getLastPartOfWorkflow(plan.value[0]?.workflowPath)]?.length > 0" [innerHtml]="coreService.getModifiedWorkflowTags(workflowTagsPerWorkflow[getLastPartOfWorkflow(plan.value[0]?.workflowPath)], dailyPlanFilters.searchText)" class="m-l-sm">
+           </span>
           </span>
           <span *ngIf="dailyPlanFilters.filter.groupBy !== 'WORKFLOW'">
             <i (click)="coreService.navToInventoryTab(plan.value[0]?.schedulePath, 'SCHEDULE');"
