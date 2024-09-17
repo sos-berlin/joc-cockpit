@@ -1245,8 +1245,12 @@
                   <span (click)="coreService.showWorkflow(jobHistory.workflow);$event.stopPropagation()"
                         [innerHtml]="jobHistory.workflow | highlight : task.searchText"
                         class="text-hover-primary"></span>
-                  <span *ngIf="workflowTagsPerWorkflow[getLastPartOfWorkflow(jobHistory.workflow)]?.length > 0" [innerHtml]="coreService.getModifiedWorkflowTags(workflowTagsPerWorkflow[getLastPartOfWorkflow(jobHistory.workflow)], task.searchText)" class="m-l-sm">
-                  </span>
+                 <span
+  *ngIf="workflowTagsPerWorkflow && jobHistory?.workflow && workflowTagsPerWorkflow[getLastPartOfWorkflow(jobHistory.workflow)]?.length > 0"
+  [innerHtml]="coreService.getModifiedWorkflowTags(workflowTagsPerWorkflow[getLastPartOfWorkflow(jobHistory.workflow)], task?.searchText)"
+  class="m-l-sm">
+</span>
+
                 </span>
                     </td>
                     <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null,viewContainerRef)">

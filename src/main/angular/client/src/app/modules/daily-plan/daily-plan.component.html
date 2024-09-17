@@ -119,8 +119,12 @@
            <a *ngIf="!isPathDisplay" (click)="coreService.showWorkflow(value?.workflowPath);"
               [innerHtml]="value?.workflowPath.substring(value?.workflowPath.lastIndexOf('/') + 1) | highlight : dailyPlanFilters.searchText"
               class="text-hover-primary"></a>
-           <span *ngIf="workflowTagsPerWorkflow[getLastPartOfWorkflow(value.workflowPath)]?.length > 0" [innerHtml]="coreService.getModifiedWorkflowTags(workflowTagsPerWorkflow[getLastPartOfWorkflow(value.workflowPath)], dailyPlanFilters.searchText)" class="m-l-sm">
-           </span>
+          <span
+            *ngIf="workflowTagsPerWorkflow && value?.workflowPath && workflowTagsPerWorkflow[getLastPartOfWorkflow(value.workflowPath)]?.length > 0"
+            [innerHtml]="coreService.getModifiedWorkflowTags(workflowTagsPerWorkflow[getLastPartOfWorkflow(value.workflowPath)], dailyPlanFilters.searchText)"
+            class="m-l-sm">
+          </span>
+
          </span>
       </td>
       <td class="combine-two-label" nowrap>

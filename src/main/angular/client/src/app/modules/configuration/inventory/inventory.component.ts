@@ -7945,6 +7945,25 @@ export class InventoryComponent {
     this.selectedObj.id = '$ID';
     this.findObjectByPath(data.path);
   }
+
+  updateDependencies(){
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ConfirmModalComponent,
+      nzData: {
+        title: 'updateDependencies',
+        message: 'updateDependencies',
+        type: 'Update',
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      this.coreService.post('inventory/dependencies/update', {}).subscribe((res) => {
+      });
+    });
+  }
 }
 
 

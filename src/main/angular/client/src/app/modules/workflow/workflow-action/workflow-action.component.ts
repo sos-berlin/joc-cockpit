@@ -178,6 +178,7 @@ export class AddOrderModalComponent {
     if (this.modalData.order) {
       this.orders[0].at = 'date';
       if (this.modalData.order.scheduledFor && typeof this.modalData.order.scheduledFor === 'number') {
+        // this.orders[0].fromDate = this.coreService.convertTimeToLocalTZ(this.preferences, new Date(this.modalData.order.scheduledFor));
         this.orders[0].fromTime1 = this.coreService.convertTimeToLocalTZ(this.preferences, new Date(this.modalData.order.scheduledFor));
         this.orders[0].fromTime = this.coreService.getDateByFormat(new Date(this.modalData.order.scheduledFor), null, 'HH:mm:ss');
         this.orders[0].fromDate = new Date(this.modalData.order.scheduledFor);
@@ -752,6 +753,7 @@ export class AddOrderModalComponent {
           }
           orderObj.scheduledFor = 'now + ' + atTime;
         } else if (this.commonStartTime === 'date') {
+          this.coreService.getDateAndTime(this.commonStartDate);
           orderObj.scheduledFor = this.coreService.getDateByFormat(this.commonStartDate.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
           orderObj.timeZone = this.commonStartDate.timeZone;
         }
@@ -765,6 +767,7 @@ export class AddOrderModalComponent {
           }
           orderObj.scheduledFor = 'now + ' + atTime;
         } else if (order.at === 'date') {
+          this.coreService.getDateAndTime(order);
           orderObj.scheduledFor = this.coreService.getDateByFormat(order.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
           orderObj.timeZone = order.timeZone;
         }

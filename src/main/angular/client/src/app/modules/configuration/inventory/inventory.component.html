@@ -669,6 +669,10 @@
         </li>
       </ul>
     </li>
+    <li (click)="updateDependencies();" *ngIf="permission.joc.inventory.manage && (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan && !node.origin.object && node.origin.path === '/')"
+        nz-menu-item>
+      <a translate>inventory.button.updateDependencies</a>
+    </li>
     <li *ngIf="(node.origin.type || node.origin.controller || (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan))
                        && permission.joc.inventory.manage && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" nz-menu-divider></li>
     <li (click)="deployObject(node, false);" *ngIf="permission.joc.inventory.deploy && securityLevel !== 'HIGH' && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && !node.origin.object.match('CALENDAR') && node.origin.object !== 'SCHEDULE' && node.origin.object !== 'INCLUDESCRIPT' && node.origin.object !== 'REPORT' && node.origin.object !== 'JOBTEMPLATE')

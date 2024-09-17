@@ -895,11 +895,13 @@
                              class="text-hover-primary">
                             <span [innerHtml]="order.workflowId.path | highlight : orderFilters.searchText"></span>
                           </a>
-                                <span
-                                  *ngIf="workflowTagsPerWorkflow[getLastPartOfWorkflow(order.workflowId.path)]?.length > 0"
-                                  [innerHtml]="coreService.getModifiedWorkflowTags(workflowTagsPerWorkflow[getLastPartOfWorkflow(order.workflowId.path)], orderFilters.searchText)"
-                                  class="m-l-sm">
-                                 </span>
+                                <div *ngIf="workflowTagsPerWorkflow && order.workflowId">
+                                <span *ngIf="workflowTagsPerWorkflow[getLastPartOfWorkflow(order.workflowId.path)]?.length > 0"
+                                      [innerHtml]="coreService.getModifiedWorkflowTags(workflowTagsPerWorkflow[getLastPartOfWorkflow(order.workflowId.path)], orderFilters.searchText)"
+                                      class="m-l-sm">
+                                </span>
+                              </div>
+
                         </span>
                           </td>
                           <td>
