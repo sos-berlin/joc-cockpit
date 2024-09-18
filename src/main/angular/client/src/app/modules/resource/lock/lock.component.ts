@@ -83,6 +83,7 @@ export class SingleLockComponent {
               this.locks[0].acquiredLockCount = lock.acquiredLockCount;
               this.locks[0].ordersHoldingLocksCount = lock.ordersHoldingLocksCount;
               this.locks[0].ordersWaitingForLocksCount = lock.ordersWaitingForLocksCount;
+              this.locks[0].workflowTagsPerWorkflow = lock.workflowTagsPerWorkflow;
               this.locks[0].workflows = lock.workflows;
             }
           });
@@ -316,6 +317,7 @@ export class LockComponent {
               this.locks[x].acquiredLockCount = value.acquiredLockCount;
               this.locks[x].ordersHoldingLocksCount = value.ordersHoldingLocksCount;
               this.locks[x].ordersWaitingForLocksCount = value.ordersWaitingForLocksCount;
+              this.locks[x].workflowTagsPerWorkflow = value.workflowTagsPerWorkflow;
               this.locks[x].workflows = value.workflows;
               break;
             }
@@ -443,6 +445,7 @@ export class LockComponent {
               lock.ordersHoldingLocksCount = data[i].ordersHoldingLocksCount;
               lock.ordersWaitingForLocksCount = data[i].ordersWaitingForLocksCount;
               lock.workflows = data[i].workflows;
+              lock.workflowTagsPerWorkflow = data[i].workflowTagsPerWorkflow;
               lock.workflows.forEach((item) => {
                 item.show = true;
               });
@@ -481,6 +484,7 @@ export class LockComponent {
             lock.ordersHoldingLocksCount = data[i].ordersHoldingLocksCount;
             lock.ordersWaitingForLocksCount = data[i].ordersWaitingForLocksCount;
             lock.workflows = data[i].workflows;
+            lock.workflowTagsPerWorkflow = data[i].workflowTagsPerWorkflow;
             break;
           }
         }
@@ -514,6 +518,15 @@ export class LockComponent {
       this.loading = true;
       this.loadLocks();
     }
+  }
+
+  getLastPartOfWorkflow(workflow: string): string {
+    console.log(workflow,"f")
+    if (workflow) {
+      const parts = workflow.split('/');
+      return parts[parts.length - 1];
+    }
+    return '';
   }
 }
 

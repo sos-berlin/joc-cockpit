@@ -12940,6 +12940,9 @@ let data = this.storedArguments[this.storedArguments.length - 1];
   }
 
   private storeData(data, onlyStore = false): void {
+    if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules) {
+      this.changeImpact();
+    }
     if (this.isTrash || !this.workflow || !this.workflow.path || !this.permission.joc.inventory.manage) {
       return;
     }
@@ -12953,10 +12956,9 @@ let data = this.storedArguments[this.storedArguments.length - 1];
       }
       if (this.history.type === 'new') {
         this.history = {
-          // push previous present into past for undo
           past: [this.history.present, ...this.history.past],
           present: JSON.stringify(newObj),
-          future: [], // clear future
+          future: [],
           type: 'new'
         };
       } else {

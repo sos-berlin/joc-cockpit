@@ -925,108 +925,108 @@ export class AddOrderModalComponent {
     });
   }
 
-createOrdersFromAllSchedules(selectedScheduleNames: string[]): void {
+  createOrdersFromAllSchedules(selectedScheduleNames: string[]): void {
     this.coreService.post('workflow/order_templates', {
-        controllerId: this.schedulerId,
-        workflowPath: this.workflow.path
+      controllerId: this.schedulerId,
+      workflowPath: this.workflow.path
     }).subscribe({
-        next: (res) => {
-            const schedules = res.schedules;
-            if (schedules && schedules.length > 0) {
-                this.orders = [];
+      next: (res) => {
+        const schedules = res.schedules;
+        if (schedules && schedules.length > 0) {
+          this.orders = [];
 
-                // Filter schedules to only include the selected ones
-                const filteredSchedules = schedules.filter(schedule =>
-                    selectedScheduleNames.includes(schedule.name)
-                );
+          const filteredSchedules = schedules.filter(schedule =>
+            selectedScheduleNames.includes(schedule.name)
+          );
 
-                filteredSchedules.forEach((schedule) => {
-                    schedule.orderParameterisations.forEach((parameterisation) => {
-                        const newOrder = {
-                            orderId: parameterisation.orderName,
-                            timeZone: this.preferences.zone,
-                            at: 'now',
-                            forceJobAdmission: parameterisation?.forceJobAdmission || false,
-                            tags: parameterisation?.tags || [],
-                            arguments: [],
-                            startPosition: '',
-                            endPositions: [],
-                            blockPosition: '',
-                            reload: false,
-                            selectedSchedule: schedule,
-                            orderName: parameterisation.orderName
-                        };
+          filteredSchedules.forEach((schedule) => {
+            schedule.orderParameterisations.forEach((parameterisation) => {
+              const newOrder = {
+                orderId: parameterisation.orderName,
+                timeZone: this.preferences.zone,
+                at: 'now',
+                forceJobAdmission: parameterisation?.forceJobAdmission || false,
+                tags: parameterisation?.tags || [],
+                arguments: [],
+                startPosition: '',
+                endPositions: [],
+                blockPosition: '',
+                reload: false,
+                selectedSchedule: schedule,
+                orderName: parameterisation.orderName
+              };
 
-                        if (parameterisation?.positions) {
-                            const param = parameterisation.positions;
-                            let newPositions;
+              if (parameterisation?.positions) {
+                const param = parameterisation.positions;
+                let newPositions;
 
-                            if (param.blockPosition) {
-                                for (const [key, value] of this.blockPositions) {
-                                    if (JSON.stringify(param.blockPosition) === JSON.stringify(value)) {
-                                        newOrder.blockPosition = key;
-                                        break;
-                                    }
-                                }
-
-                                if (this.blockPositionList.has(param.blockPosition)) {
-                                    newPositions = this.blockPositionList.get(param.blockPosition);
-                                    if (newPositions && Array.isArray(newPositions)) {
-                                        param.newPositions = new Map();
-                                        newPositions.forEach((item) => {
-                                            param.newPositions.set(item.positionString, item.position);
-                                        });
-                                    }
-                                }
-                            }
-
-                            if (param.startPosition) {
-                                newOrder.startPosition = this.coreService.getPositionStr(param.startPosition, newPositions, this.positions);
-                            }
-
-                            if (param.endPositions && param.endPositions.length > 0) {
-                                newOrder.endPositions = [];
-                                param.endPositions.forEach(pos => {
-                                    newOrder.endPositions.push(this.coreService.getPositionStr(pos, newPositions, this.positions));
-                                });
-                            }
-
-                            if (param.forceJobAdmission) {
-                                newOrder.forceJobAdmission = param.forceJobAdmission;
-                            }
-
-                            if (param.tags && param.tags.length > 0) {
-                                newOrder.tags = param.tags;
-                            }
-
-                            newOrder.reload = true;
-                        }
-
-                        this.orders.push(newOrder);
-                        this.initializeArguments(newOrder);
-                        this.isCollapsed.push(newOrder.arguments.map(() => false));
-                    });
-
-
-                    if (schedule.orderParameterisations) {
-                        const firstParam = schedule.orderParameterisations[0];
-                        if (firstParam) {
-                            this.updateVariablesFromSchedule(firstParam, this.orders.length - 1);
-                        }
+                if (param.blockPosition) {
+                  for (const [key, value] of this.blockPositions) {
+                    if (JSON.stringify(param.blockPosition) === JSON.stringify(value)) {
+                      newOrder.blockPosition = key;
+                      break;
                     }
-                });
+                  }
 
-                if (this.orders.length > 1) {
-                    this.commonStartTime = 'now';
-                    this.onCommonTimeChange(this.commonStartTime);
+                  if (this.blockPositionList.has(param.blockPosition)) {
+                    newPositions = this.blockPositionList.get(param.blockPosition);
+                    if (newPositions && Array.isArray(newPositions)) {
+                      param.newPositions = new Map();
+                      newPositions.forEach((item) => {
+                        param.newPositions.set(item.positionString, item.position);
+                      });
+                    }
+                  }
                 }
+
+                if (param.startPosition) {
+                  newOrder.startPosition = this.coreService.getPositionStr(param.startPosition, newPositions, this.positions);
+                }
+
+                if (param.endPositions && param.endPositions.length > 0) {
+                  newOrder.endPositions = [];
+                  param.endPositions.forEach(pos => {
+                    newOrder.endPositions.push(this.coreService.getPositionStr(pos, newPositions, this.positions));
+                  });
+                }
+
+                if (param.forceJobAdmission) {
+                  newOrder.forceJobAdmission = param.forceJobAdmission;
+                }
+
+                if (param.tags && param.tags.length > 0) {
+                  newOrder.tags = param.tags;
+                }
+
+                newOrder.reload = true;
+              }
+
+              this.updateVariablesForOrderParameterisations(parameterisation, newOrder);
+              this.orders.push(newOrder);
+              this.initializeArguments(newOrder);
+              this.isCollapsed.push(newOrder.arguments.map(() => false));
+            });
+
+
+            if (schedule.orderParameterisations) {
+              const firstParam = schedule.orderParameterisations[0];
+              if (firstParam) {
+                this.updateVariablesFromSchedule(firstParam, this.orders.length - 1);
+              }
             }
-        },
-        error: (err) => {
-            console.error('Error fetching schedules:', err);
+          });
+
+          if (this.orders.length > 1) {
+            this.commonStartTime = 'now';
+            this.onCommonTimeChange(this.commonStartTime);
+          }
         }
+      },
+      error: (err) => {
+        console.error('Error fetching schedules:', err);
+      }
     });
-}
+  }
 
 
 
@@ -1249,7 +1249,7 @@ createOrdersFromAllSchedules(selectedScheduleNames: string[]): void {
 
 
     if (name && name !== '-') {
-        order.orderId = name;
+      order.orderId = name;
     }
 
     for (let i in order.selectedSchedule.orderParameterisations) {
@@ -1477,6 +1477,60 @@ createOrdersFromAllSchedules(selectedScheduleNames: string[]): void {
     this.updateSelectItems(index); // Pass the order index
   }
 
+  private updateVariablesForOrderParameterisations(orderParameterisation: any, order: any): void {
+    // Initialize the arguments array for the specific order
+    order.arguments = [];
+
+    if (this.workflow.orderPreparation && this.workflow.orderPreparation.parameters) {
+      Object.entries(this.workflow.orderPreparation.parameters).forEach(([key, val]: [string, any]) => {
+        if (val.type !== 'List' && val.type !== 'Map') {
+          // Handle simple types (String, Number, Boolean)
+          if (orderParameterisation.variables && orderParameterisation.variables[key]) {
+            order.arguments.push({
+              name: key,
+              type: val.type,
+              value: orderParameterisation.variables[key],
+              isRequired: true
+            });
+          }
+        } else if (val.type === 'List') {
+          // Handle List type
+          const actualList = [];
+          if (orderParameterisation.variables && orderParameterisation.variables[key]) {
+            orderParameterisation.variables[key].forEach(item => {
+              const listEntry = val.listParameters.map(param => ({
+                name: param.name,
+                value: item[param.name] || ''
+              }));
+              actualList.push({ list: listEntry });
+            });
+          }
+          order.arguments.push({
+            name: key,
+            type: val.type,
+            actualList: actualList,
+            list: val.listParameters
+          });
+        } else if (val.type === 'Map') {
+          // Handle Map type
+          const actualMap = [];
+          if (orderParameterisation.variables && typeof orderParameterisation.variables[key] === 'object') {
+            const mapEntry = val.listParameters.map(param => ({
+              name: param.name,
+              value: orderParameterisation.variables[key][param.name] || ''
+            }));
+            actualMap.push({ map: mapEntry });
+          }
+          order.arguments.push({
+            name: key,
+            type: val.type,
+            actualMap: actualMap,
+            map: val.listParameters
+          });
+        }
+      });
+    }
+  }
 
   assignParameterizationFromSchedules(): void {
     if (!this.schedules) {

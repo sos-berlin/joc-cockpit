@@ -1018,5 +1018,13 @@ export class BoardComponent {
       this.loadBoards();
     }
   }
+
+  getLastPartOfWorkflow(workflow: string): string {
+    if (workflow) {
+      const parts = workflow.split('/');
+      return parts[parts.length - 1];
+    }
+    return '';
+  }
 }
 

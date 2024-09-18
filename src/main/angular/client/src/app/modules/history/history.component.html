@@ -1246,10 +1246,10 @@
                         [innerHtml]="jobHistory.workflow | highlight : task.searchText"
                         class="text-hover-primary"></span>
                  <span
-  *ngIf="workflowTagsPerWorkflow && jobHistory?.workflow && workflowTagsPerWorkflow[getLastPartOfWorkflow(jobHistory.workflow)]?.length > 0"
-  [innerHtml]="coreService.getModifiedWorkflowTags(workflowTagsPerWorkflow[getLastPartOfWorkflow(jobHistory.workflow)], task?.searchText)"
-  class="m-l-sm">
-</span>
+                  *ngIf="workflowTagsPerWorkflow && jobHistory?.workflow && workflowTagsPerWorkflow[getLastPartOfWorkflow(jobHistory.workflow)]?.length > 0"
+                  [innerHtml]="coreService.getModifiedWorkflowTags(workflowTagsPerWorkflow[getLastPartOfWorkflow(jobHistory.workflow)], task?.searchText)"
+                  class="m-l-sm">
+                </span>
 
                 </span>
                     </td>

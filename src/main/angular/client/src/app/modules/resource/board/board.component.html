@@ -419,6 +419,11 @@
                                      class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
                                   <a (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);"
                                      class="text-hover-primary">{{order.workflowId.path}} </a>
+                                  <span
+                                    *ngIf="notice.workflowTagsPerWorkflow && order?.workflowId && notice.workflowTagsPerWorkflow[getLastPartOfWorkflow(order.workflowId.path)]?.length > 0"
+                                    [innerHtml]="coreService.getModifiedWorkflowTags(notice.workflowTagsPerWorkflow[getLastPartOfWorkflow(order.workflowId.path)], boardsFilters?.searchText)"
+                                    class="m-l-sm">
+                                  </span>
                                 </td>
                                 <td>
                                   <span class="cur-point" *ngIf="order.label" [innerHtml]="order.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.positionString"></span>

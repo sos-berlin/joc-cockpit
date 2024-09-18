@@ -305,6 +305,11 @@
                            class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
                         <a (click)="coreService.showWorkflow(workflow.path, workflow.versionId);"
                            class="text-hover-primary">{{workflow.path}} </a>
+                        <span
+                        *ngIf="lock.workflowTagsPerWorkflow && workflow?.path && lock.workflowTagsPerWorkflow[getLastPartOfWorkflow(workflow.path)]?.length > 0"
+                        [innerHtml]="coreService.getModifiedWorkflowTags(lock.workflowTagsPerWorkflow[getLastPartOfWorkflow(workflow.path)], locksFilters?.searchText)"
+                        class="m-l-sm">
+                        </span>
                       </td>
                     </tr>
                     <ng-container *ngIf="workflow.show">
