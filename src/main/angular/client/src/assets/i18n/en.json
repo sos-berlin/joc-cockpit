@@ -687,7 +687,7 @@
     "message.stickToDailyPlanDate": "Are you sure you want to change start times of orders and keep their original Daily Plan assignment?",
     "message.deleteCertificate": "Are you sure you want to delete this certificate?",
     "message.removeCertificate": "Are you sure you want to remove this certificate alias?",
-    "message.updateDependencies": "Are you sure you want to update dependencies.",
+    "message.updateDependencies": "Are you sure you want to update dependencies?",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Export to .xlsx format",
     "tooltip.expandDetails": "Expand Details",
