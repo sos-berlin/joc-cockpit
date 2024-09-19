@@ -1136,6 +1136,7 @@ export class HistoryComponent {
   sideView: any = {};
   showPanel: any;
   workflowTagsPerWorkflow: any;
+  isPathDisplay: any;
 
   orderSearchableProperties = ['controllerId', 'orderId', 'workflow', 'state', '_text', 'orderState', 'position', 'tags', 'filteredWorkflowTags'];
   taskSearchableProperties = ['controllerId', 'job', 'criticality', 'request', 'workflow', 'orderId', 'position', 'filteredWorkflowTags'];
@@ -1200,6 +1201,7 @@ export class HistoryComponent {
 
   ngOnInit(): void {
     this.sideView = this.coreService.getSideView()
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'true';
     this.initConf();
   }
 

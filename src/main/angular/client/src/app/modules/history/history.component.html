@@ -1048,7 +1048,9 @@
                   <i (click)="navToWorkflowTab(history.workflow);$event.stopPropagation()"
                      *ngIf="permission.joc && permission.joc.inventory.view"
                      class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                  <span (click)="coreService.showWorkflow(history.workflow);$event.stopPropagation()"
+                  <span *ngIf="!isPathDisplay" (click)="coreService.showWorkflow(history.workflow);$event.stopPropagation()"
+                        [innerHtml]="getLastPartOfWorkflow(history.workflow) | highlight : order.searchText" class="text-hover-primary"></span>
+                  <span *ngIf="isPathDisplay" (click)="coreService.showWorkflow(history.workflow);$event.stopPropagation()"
                         [innerHtml]="history.workflow | highlight : order.searchText" class="text-hover-primary"></span>
                     <span *ngIf="workflowTagsPerWorkflow[getLastPartOfWorkflow(history.workflow)]?.length > 0" [innerHtml]="coreService.getModifiedWorkflowTags(workflowTagsPerWorkflow[getLastPartOfWorkflow(history.workflow)], order.searchText)" class="m-l-sm">
                   </span>

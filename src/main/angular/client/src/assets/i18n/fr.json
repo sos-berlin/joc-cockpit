@@ -547,7 +547,7 @@
     "label.clearSelection": "Remise à zéro de la sélection",
     "label.clipboard": "Presse-papiers",
     "label.stickToDailyPlanDate": "Maintenir l'adhérence au Plan Quotidien",
-    "label.updateDependencies": "Update Dependencies",
+    "label.updateDependencies": "Actualiser les dépendances",
     "button.all": "Tous",
     "button.save": "Enregistrer",
     "button.apply": "Appliquer",
@@ -687,7 +687,7 @@
     "message.stickToDailyPlanDate": "Êtes-vous sûr de vouloir modifier l'heure de démarrage des ordres et maintenir l'adhérence au Plan Quotidien ?",
     "message.deleteCertificate": "Êtes-vous sûr de vouloir supprimer le certificat ?",
     "message.removeCertificate": "Êtes-vous sûr de vouloir supprimer l'alias du certificat ?",
-    "message.updateDependencies": "Are you sure you want to update dependencies.",
+    "message.updateDependencies": "Êtes-vous sûr de vouloir actualiser les dépendances ?",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Exporter au format xlsx",
     "tooltip.expandDetails": "Développer les Détails",
@@ -1873,7 +1873,7 @@
     "button.renameTag": "Renommer Balise",
     "button.testMail": "Tester l'E-Mail",
     "button.sendMail": "Envoyer un E-Mail",
-    "button.updateDependencies": "Update Dependencies",
+    "button.updateDependencies": "Actualiser les dépendances",
     "tooltip.setVersion": "Définir la version",
     "placeholder.enterUniqueName": "Entrer un nom d'objet unique",
     "placeholder.enterFileName": "Entrer le nom du fichier",
@@ -3026,7 +3026,9 @@
       "max_pool_size": "La taille maximale du pool de connexions spécifie le nombre de connexions à la base de données utilisées. Pour les environnements ayant un grand nombre d'entrées de l'historique des tâches quotidiennes à purger, il peut être avantageux d'augmenter cette valeur, par exemple à 10. Les utilisateurs doivent vérifier que leur SGBD permet l'utilisation d'un plus grand nombre de connexions.",
       "profile_age": "Spécifie le nombre maximum de jours pendant lesquels un profil n'a pas été utilisé depuis la connexion par un compte utilisateur avant qu'il ne soit purgé.",
       "failed_login_history_age": "Spécifie le nombre maximum de jours pendant lesquels les entrées de l'historique des connexions échouées sont conservées avant d'être purgées.",
-      "reporting_age": "Spécifie la période de conservation des rapports et de l'historique d'exécution des rapports. Toutes les entrées de rapport antérieures à la valeur spécifiée seront supprimées."
+      "reporting_age": "Spécifie la période de conservation des rapports et de l'historique d'exécution des rapports. Toutes les entrées de rapport antérieures à la valeur spécifiée seront supprimées.",
+      "history_pause_duration": "history_pause_duration.",
+      "history_pause_delay": "history_pause_delay."
     },
     "dailyplan": {
       "time_zone": "Spécifie le fuseau horaire qui est appliqué à l'heure de démarrage du service du Plan Quotidien et à la période du Plan Quotidien.",

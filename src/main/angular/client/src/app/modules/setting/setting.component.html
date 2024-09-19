@@ -281,6 +281,247 @@
                       </ng-container>
                     </ng-container>
                   </ng-container>
+                  <div *ngIf="val?.value?.value === true && val?.value?.children" class="row m-t-sm" style="display: contents">
+                  <ng-container *ngIf="val?.value?.children && val?.value?.children?.length">
+                    <div class="col-sm-12">
+                    <ng-container *ngFor="let child of val?.value?.children; let i = index">
+                      <div class="row m-t-sm" style="margin-left: 10px;">
+                      <div class="col-sm-4 col-lg-3 form-control-label"><span class="p-l">
+                            <label class="_600">{{child.name}}</label> <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'settings.' + setting.name +'.' + child.name | translate"
+                                                                          class="p-l-sm fa fa-info-circle"></i>
+                            </span></div>
+                                                  <div class="col-sm-2 col-lg-2 form-control-label">
+                            <span *ngIf="child?.value?.type !== 'ARRAY'">
+                              {{child.value.default || '  -  '}}
+                              <i
+                                (click)="openEditField(child)"
+                                *ngIf="permission.joc.administration.settings.manage && !child.value.edit && (!child.value.value && child.value.value !== '' && child.value.value !== 0 && child.value.value !== false)"
+                                class="p-l-sm text-hover-primary fa fa-pencil"></i>
+                            <a (click)="showHashValue(child)"
+                               *ngIf="child.value.type === 'PASSWORD' && !child.value.edit && (!child.value.value && child.value.value !== '')" [nzPopoverContent]="contentTemplate" class="text-hover-primary m-l"
+                               nz-popover nzPopoverTrigger="click" translate>settings.button.showHashValue</a>
+                            <ng-template #contentTemplate>
+                            <div>
+                              <b translate>settings.label.hash</b> :
+                            <span>{{child.value.hash}} <i (click)="showCopyMessage()" [cbContent]="child.value.hash"
+                                                          class="cursor primary-text-hover-color p-l-sm fa fa-copy"
+                                                          ngxClipboard></i></span>
+                            </div>
+                            </ng-template>
+                            </span>
+                        <div *ngIf="child?.value?.type == 'ARRAY'">
+                          <div *ngFor="let arr of child.value.default;let x=index" class="m-b-xs">
+                            {{arr || '  -  '}}
+                            <i
+                              (click)="openEditField(child)"
+                              *ngIf="permission.joc.administration.settings.manage && !child.value.edit && (!child.value.value && child.value.value !== 0 && child.value.value !== false) && x === 0"
+                              class="p-l-sm text-hover-primary fa fa-pencil"></i>
+                          </div>
+                        </div>
+                      </div>
+                      <ng-container
+                        *ngIf="child?.value?.edit || (child.value.value || child.value.value === 0 || child.value.value === false || (child.value.value === '' && child.value.type === 'PASSWORD'))">
+                        <ng-container [ngSwitch]="child.value.type">
+                          <ng-container *ngSwitchCase="'TIMEZONE'">
+                            <div class="col-sm-4 col-lg-3">
+                              <nz-select [(ngModel)]="child.value.value" class="w-xxxl"
+                                         name="{{child.name}}{{i}}" (nzFocus)="addEditToValue(child)" (ngModelChange)="changeConfiguration(null, child, setting.name === 'joc')"
+                                         nzShowSearch>
+                                <nz-option *ngFor="let option of zones" [nzLabel]="option" [nzValue]="option"></nz-option>
+                              </nz-select>
+                              <i (click)="removeValue(child, setting.name === 'joc')"
+                                 *ngIf="permission.joc.administration.settings.manage"
+                                 class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                            </div>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="'DURATION'">
+                            <div [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}"
+                                 class="col-sm-4 col-lg-3">
+                              <input #timeout="ngModel" (focus)="addEditToValue(child)" (blur)="changeConfiguration(timeout, child, setting.name === 'joc')" [(ngModel)]="child.value.value" autocomplete="off"
+                                     class="form-control w-xxxl" name="{{child.name}}{{i}}" placeholder="{{'workflow.placeholder.duration' | translate}}"
+                                     required
+                                     type="text"
+                                     validateDurtionReqex>
+                              <i (click)="removeValue(child, setting.name === 'joc')"
+                                 *ngIf="permission.joc.administration.settings.manage"
+                                 class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                            </div>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="'WEEKDAYS'">
+                            <div [ngClass]="{'has-error' : ((wkday.dirty || wkday.touched) && wkday.invalid)}"
+                                 class="col-sm-4 col-lg-3">
+                              <nz-select #wkday="ngModel" [(ngModel)]="child.value.value" class="w-xxxl"
+                                         name="{{child.name}}{{i}}" nzMode="multiple"
+                                         required (nzFocus)="addEditToValue(child)" (ngModelChange)="changeConfiguration(wkday, child, setting.name === 'joc')" >
+                                <nz-option *ngFor="let option of daysOptions"
+                                           [nzLabel]="'runtime.label.'+ option.label | translate"
+                                           [nzValue]="option.value"></nz-option>
+                              </nz-select>
+                              <i (click)="removeValue(child, setting.name === 'joc')"
+                                 *ngIf="permission.joc.administration.settings.manage"
+                                 class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                            </div>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="'LIST'">
+                            <div [ngClass]="{'has-error' : ((list.dirty || list.touched) && list.invalid)}"
+                                 class="col-sm-4 col-lg-3">
+                              <nz-select #list="ngModel" [(ngModel)]="child.value.value"
+                                         class="w-xxxl" name="{{child.name}}{{i}}"
+                                         required (nzFocus)="addEditToValue(child)" (ngModelChange)="changeConfiguration(list, child, setting.name === 'joc')">
+                                <nz-option *ngFor="let option of child.value.values"
+                                           [nzLabel]="option" [nzValue]="option"></nz-option>
+                              </nz-select>
+                              <i (click)="removeValue(child, setting.name === 'joc')"
+                                 *ngIf="permission.joc.administration.settings.manage"
+                                 class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                            </div>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="'TIME'">
+                            <div [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}"
+                                 class="col-sm-4 col-lg-3">
+                              <input #startTime="ngModel" (focus)="addEditToValue(child)" (blur)="changeConfiguration(startTime, child, setting.name === 'joc')" [(ngModel)]="child.value.value" [maxLength]="8"
+                                     autocomplete="off"
+                                     class="form-control w-xxxl" name="{{child.name}}{{i}}" placeholder="HH:MM:SS" required
+                                     timevalidator
+                                     type="text" validTimeReqex>
+                              <i (click)="removeValue(child, setting.name === 'joc')"
+                                 *ngIf="permission.joc.administration.settings.manage"
+                                 class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                            </div>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="'POSITIVENUMBER'">
+                            <div [ngClass]="{ 'has-error' : (((pnum.dirty || pnum.touched) && pnum.invalid))}"
+                                 class="col-sm-4 col-lg-3">
+                              <nz-input-number #pnum="ngModel" (nzFocus)="addEditToValue(child)" (nzBlur)="changeConfiguration(pnum, child, setting.name === 'joc')"
+                                               [(ngModel)]="child.value.value"
+                                               [nzMin]="1"
+                                               [nzStep]="1" class="w-xxxl"
+                                               name="value{{i}}" nzPlaceHolder="{{'settings.placeholder.enterPositiveNumber' | translate}}"
+                                               required></nz-input-number>
+                              <i (click)="removeValue(child, setting.name === 'joc')"
+                                 *ngIf="permission.joc.administration.settings.manage"
+                                 class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                            </div>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="'NONNEGATIVENUMBER'">
+                            <div [ngClass]="{ 'has-error' : (((nonnegnum.dirty || nonnegnum.touched) && nonnegnum.invalid))}"
+                                 class="col-sm-4 col-lg-3">
+                              <nz-input-number #nonnegnum="ngModel" (nzFocus)="addEditToValue(child)" (nzBlur)="changeConfiguration(nonnegnum, child, setting.name === 'joc')"
+                                               [(ngModel)]="child.value.value"
+                                               [nzMin]="0"
+                                               [nzStep]="1" class="w-xxxl"
+                                               name="value{{i}}" nzPlaceHolder="{{'settings.placeholder.enterNonNegativeNumber' | translate}}"
+                                               required></nz-input-number>
+                              <i (click)="removeValue(child, setting.name === 'joc')"
+                                 *ngIf="permission.joc.administration.settings.manage"
+                                 class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                            </div>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="'POSITIVEINTEGER'">
+                            <div [ngClass]="{ 'has-error' : (((positiveNum.dirty || positiveNum.touched) && positiveNum.invalid))}"
+                                 class="col-sm-4 col-lg-3">
+                              <input #positiveNum="ngModel" (focus)="addEditToValue(child)" (blur)="changeConfiguration(positiveNum, child, setting.name === 'joc')" [(ngModel)]="child.value.value"
+                                     autocomplete="off"
+                                     class="form-control w-xxxl" name="{{child.name}}{{i}}" pattern="[1-9]+[0-9]*"
+                                     placeholder="{{'settings.placeholder.enterPositiveInteger' | translate}}" required
+                                     type="text">
+                              <i (click)="removeValue(child, setting.name === 'joc')"
+                                 *ngIf="permission.joc.administration.settings.manage"
+                                 class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                            </div>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="'NONNEGATIVEINTEGER'">
+                            <div [ngClass]="{ 'has-error' : (((nonNegNum.dirty || nonNegNum.touched) && nonNegNum.invalid))}"
+                                 class="col-sm-4 col-lg-3">
+                              <input #nonNegNum="ngModel" (focus)="addEditToValue(child)" (blur)="changeConfiguration(nonNegNum, child, setting.name === 'joc')" [(ngModel)]="child.value.value"
+                                     autocomplete="off"
+                                     class="form-control w-xxxl" name="{{child.name}}{{i}}" pattern="[0-9]+"
+                                     placeholder="{{'settings.placeholder.enterNonNegativeInteger' | translate}}" required
+                                     type="text">
+                              <i (click)="removeValue(child, setting.name === 'joc')"
+                                 *ngIf="permission.joc.administration.settings.manage"
+                                 class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                            </div>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="'BOOLEAN'">
+                            <div [ngClass]="{ 'has-error' : (((booleanChild.dirty || booleanChild.touched) && booleanChild.invalid))}"
+                                 class="col-sm-4 col-lg-3">
+                              <nz-select #booleanChild="ngModel" [(ngModel)]="child.value.value" [nzPlaceHolder]="'common.placeholder.selectValue' | translate" class="w-xxxl"
+                                         name="{{child.name}}{{i}}" (nzFocus)="addEditToValue(child)" (ngModelChange)="changeConfiguration(booleanChild, child, setting.name === 'joc')"
+                                         nzAllowClear>
+                                <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                                <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+                              </nz-select>
+                              <i (click)="removeValue(child, setting.name === 'joc')"
+                                 *ngIf="permission.joc.administration.settings.manage"
+                                 class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                            </div>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="'ARRAY'">
+                            <div class="col-sm-4 col-lg-3">
+                              <div *ngFor="let item of child.value.value;let m = index" [ngClass]="{ 'has-error' : (((arr.dirty || arr.touched) && arr.invalid))}"
+                                   class="m-b-n-8">
+                                <input #arr="ngModel" (focus)="addEditToValue(child)" (blur)="changeConfiguration(arr, child, setting.name === 'joc')" (keydown)="checkSemicolon($event, child)" [(ngModel)]="item.name"
+                                       autocomplete="off"
+                                       class="form-control w-xxxl" name="{{child.name}}{{i}}{{m + 1}}"
+                                       placeholder="{{'common.placeholder.value' | translate}}{{m + 1}}" required
+                                       type="text">
+                                <i (click)="removeValInArr(child, m)"
+                                   class="text-hover-color fa fa-trash setting-cancel-btn-390"></i>
+                              </div>
+                              <i (click)="removeValue(child, setting.name === 'joc')"
+                                 *ngIf="permission.joc.administration.settings.manage"
+                                 class="text-hover-color fa fa-times setting-cancel-btn-422"></i>
+                              <i (click)="addValInArr(child)"
+                                 *ngIf="permission.joc.administration.settings.manage"
+                                 class="text-hover-primary fa fa-plus"></i>
+                            </div>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="'PASSWORD'">
+                            <div class="col-sm-4 col-lg-3">
+                              <input #pswd="ngModel" (focus)="addEditToValue(child)" (blur)="changeConfiguration(pswd, child, setting.name === 'joc')"
+                                     [(ngModel)]="child.value.value"
+                                     autocomplete="off"
+                                     class="form-control w-xxxl" name="{{child.name}}{{i}}"
+                                     type="{{!child.value.show ? 'password' : 'text'}}">
+                              <i (click)="child.value.show = !child.value.show" [ngClass]="!child.value.show ? 'fa-eye' : 'fa-eye-slash'"
+                                 class="fa pswd-hide-icon"></i>
+                              <i (click)="removeValue(child, setting.name === 'joc')"
+                                 *ngIf="permission.joc.administration.settings.manage"
+                                 class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                              <div class="pos-abt w-full" style="top: 0; left: 420px">
+                                <a (click)="showHashValue(child)" [nzPopoverContent]="contentTemplate" class="text-hover-primary pos-rel t-xs"
+                                   nz-popover nzPopoverTrigger="click" translate>settings.button.showHashValue</a>
+                                <ng-template #contentTemplate>
+                                  <div>
+                                    <b translate>settings.label.hash</b> :
+                                    <span>{{child.value.hash}} <i (click)="showCopyMessage()" [cbContent]="child.value.hash"
+                                                                  class="cursor primary-text-hover-color p-l-sm fa fa-copy"
+                                                                  ngxClipboard></i></span>
+                                  </div>
+                                </ng-template>
+                              </div>
+                            </div>
+                          </ng-container>
+                          <ng-container *ngSwitchCase="'STRING'">
+                            <div [ngClass]="{ 'has-error' : (((common.dirty || common.touched) && common.invalid))}"
+                                 class="col-sm-4 col-lg-3">
+                              <input #common="ngModel" (focus)="addEditToValue(child)" (blur)="changeConfiguration(common, child, setting.name === 'joc')" [(ngModel)]="child.value.value" autocomplete="off"
+                                     class="form-control w-xxxl"
+                                     name="{{child.name}}{{i}}" required
+                                     type="text">
+                              <i (click)="removeValue(child, setting.name === 'joc')"
+                                 *ngIf="permission.joc.administration.settings.manage"
+                                 class="text-hover-color fa fa-times setting-cancel-btn"></i>
+                            </div>
+                          </ng-container>
+                        </ng-container>
+                      </ng-container>
+                      </div>
+                    </ng-container>
+                    </div>
+                  </ng-container>
+                </div>
                 </div>
               </div>
               <hr *ngIf="i !== (settingArr.length - 1)" [ngClass]="{'m-t-0': setting.show}">

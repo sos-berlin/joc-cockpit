@@ -88,10 +88,34 @@ export class SettingComponent {
             tempSetting[prop][x] = setting[prop].ordering;
           }
         }
+         if (setting[prop][x]?.children && Array.isArray(setting[prop][x].children)) {
+        tempSetting[prop][x].children = this.generateChildStoreObject(setting[prop][x].children);
+      }
       }
     }
     return tempSetting;
   }
+
+// Helper function to process child objects recursively
+static generateChildStoreObject(children): any {
+  const childSettings: any = [];
+
+  children.forEach(child => {
+    const childSetting: any = {
+      name: child.name,
+      ordering: child.ordering,
+      value: child.value?.value
+    };
+
+    if (child.children && Array.isArray(child.children)) {
+      // Recursive call for further nested children
+      childSetting.children = this.generateChildStoreObject(child.children);
+    }
+
+    childSettings.push(childSetting);
+  });
+  return childSettings;
+}
 
   ngOnInit(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
@@ -127,6 +151,8 @@ export class SettingComponent {
 
   changeConfiguration(form, value, isJoc): void {
     const tempSetting = this.coreService.clone(this.settings);
+
+    // Validate form before proceeding
     if (form && form.invalid) {
       let msg = 'Oops';
       this.translate.get('common.message.notValidInput').subscribe(translatedValue => {
@@ -134,16 +160,65 @@ export class SettingComponent {
       });
       this.toasterService.error(msg);
       return;
-    } else if (value?.value && value.value.type === 'TIME') {
+    }
+
+    // Handle TIME type values
+    if (value?.value?.type === 'TIME') {
       value.value.value = SettingComponent.checkTime(value.value.value);
     }
+
+    // Special case for force_comments_for_audit_log
     if (value?.name === 'force_comments_for_audit_log') {
       sessionStorage['$SOS$FORCELOGING'] = value.value.value;
     }
+
+    // Special case for time_zone
     if (value?.name === 'time_zone') {
       sessionStorage.setItem('$SOS$DAILYPLANTIMEZONE', value.value.value);
     }
+
+    // Update child values recursively
+    if (value?.children && value.children.length > 0) {
+      this.updateChildValues(tempSetting, value);
+    }
+
+    // Save preferences
     this.savePreferences(SettingComponent.generateStoreObject(tempSetting), isJoc);
+
+  }
+
+// Function to update child values recursively
+  updateChildValues(tempSetting: any, parentValue: any): void {
+    if (parentValue?.children && Array.isArray(parentValue.children)) {
+      parentValue.children.forEach(child => {
+        // Traverse to find the correct place in tempSetting
+        const tempChildSetting = this.getSettingValue(tempSetting, child.name);
+        if (tempChildSetting) {
+          // Assign the updated value to the child in tempSetting
+          tempChildSetting.value = child.value.value;
+        }
+      });
+    }
+  }
+
+// Helper function to find the correct child setting in the cloned settings
+  getSettingValue(settings: any, name: string): any {
+    // First, check if the setting name is directly in the object
+    if (settings[name]) {
+      return settings[name];
+    }
+
+    // If not found, traverse the children recursively
+    for (const key in settings) {
+      if (settings[key]?.children) {
+        const childSetting = this.getSettingValue(settings[key].children, name);
+        if (childSetting) {
+          return childSetting;
+        }
+      }
+    }
+
+    return null;
   }
 
   openEditField(val): void {
@@ -227,6 +302,7 @@ export class SettingComponent {
           if (res.configurations[0]) {
             this.configId = res.configurations[0].id || 0;
             this.orignalSetting = JSON.parse(res.configurations[0].configurationItem);
+
             this.settings = JSON.parse(res.configurations[0].configurationItem);
             this.mergeData(this.defaultGlobals);
             this.loading = true;
@@ -247,129 +323,185 @@ export class SettingComponent {
     }
   }
 
-private mergeData(defaultGlobals: any): void {
-  for (let prop in defaultGlobals) {
-    let isExist = false;
-    for (let setProp in this.settings) {
-      if (setProp === prop) {
-        // Update ordering if not already set
-        if (this.settings[setProp].ordering > -1) {
-        } else {
-          this.settings[setProp].ordering = this.defaultGlobals[setProp].ordering;
-        }
-        isExist = true;
+  private mergeData(defaultGlobals: any): void {
+    for (let prop in defaultGlobals) {
+      let isExist = false;
+      for (let setProp in this.settings) {
+        if (setProp === prop) {
+          if (this.settings[setProp].ordering > -1) {
+          } else {
+            this.settings[setProp].ordering = this.defaultGlobals[setProp].ordering;
+          }
+          isExist = true;
 
-        // Merge properties for this setting
-        this.mergeProperties(defaultGlobals[prop], this.settings[setProp]);
+          for (let x in defaultGlobals[prop]) {
+            let flag = true;
+            if (!isEmpty(this.settings[setProp])) {
+              for (let i in this.settings[setProp]) {
+                if (x === i) {
+                  flag = false;
+                  if (defaultGlobals[prop][i] && defaultGlobals[prop][i].type) {
+                    this.settings[setProp][i].ordering = defaultGlobals[prop][i].ordering;
+                    this.settings[setProp][i].type = defaultGlobals[prop][i].type;
+                    this.settings[setProp][i].default = defaultGlobals[prop][i].default;
+                    if (defaultGlobals[prop][i].values) {
+                      this.settings[setProp][i].values = defaultGlobals[prop][i].values;
+                    }
 
-        break;
-      }
-    }
-    if (!isExist) {
-      this.settings[prop] = defaultGlobals[prop];
-    }
-  }
+                    if (defaultGlobals[prop][i].children) {
+                      if (Array.isArray(this.settings[setProp][i].children)) {
+                        this.settings[setProp][i].children = this.convertChildrenArrayToObject(this.settings[setProp][i].children);
+                      }
 
-  // Process and update settingArr
-  const temp = this.coreService.clone(this.settingArr);
-  this.settingArr = [];
-  for (let prop in this.settings) {
-    const obj: any = {
-      name: prop,
-      ordering: this.settings[prop].ordering,
-      value: this.mapProperties(this.settings[prop]) // Map all properties, including children
-    };
+                      if (!this.settings[setProp][i].children) {
+                        this.settings[setProp][i].children = {};
+                      }
 
-    // Maintain visibility status (show) from previous state
-    if (temp.length > 0) {
-      for (let x = 0; x < temp.length; x++) {
-        if (temp[x].name === obj.name) {
-          obj.show = temp[x].show;
-          temp.slice(x, 1);
+                      this.mergeChildProperties(defaultGlobals[prop][i].children, this.settings[setProp][i].children);
+                    }
+
+                    break;
+                  }
+                } else if (!defaultGlobals[prop][i] && this.settings[prop][i] && i !== 'ordering') {
+                  delete this.settings[prop][i];
+                }
+              }
+            }
+            if (flag) {
+              this.settings[setProp][x] = defaultGlobals[prop][x];
+            }
+          }
           break;
         }
       }
+      if (!isExist) {
+        this.settings[prop] = defaultGlobals[prop];
+      }
     }
 
-    this.settingArr.push(obj);
-  }
+    const temp = this.coreService.clone(this.settingArr);
+    this.settingArr = [];
+    for (let prop in this.settings) {
+      const obj: any = {
+        name: prop,
+        ordering: this.settings[prop].ordering,
+        value: []
+      };
 
-  this.settingArr = this.orderPipe.transform(this.settingArr, 'ordering', false);
-}
-
-/**
- * Merges properties of a setting, including handling nested children.
- */
-private mergeProperties(defaultSetting: any, existingSetting: any): void {
-  for (let key in defaultSetting) {
-    let flag = true;
-    if (!isEmpty(existingSetting)) {
-      for (let existingKey in existingSetting) {
-        if (key === existingKey) {
-          flag = false;
-          if (defaultSetting[existingKey] && defaultSetting[existingKey].type) {
-            // Copy properties like ordering, type, and default values
-            existingSetting[existingKey].ordering = defaultSetting[existingKey].ordering;
-            existingSetting[existingKey].type = defaultSetting[existingKey].type;
-            existingSetting[existingKey].default = defaultSetting[existingKey].default;
-            if (defaultSetting[existingKey].values) {
-              existingSetting[existingKey].values = defaultSetting[existingKey].values;
+      obj.value = Object.entries(this.settings[prop]).map(([k, v]) => {
+        const _v: any = v;
+        if (k === 'ordering') {
+          return { name: k, value: null };
+        }
+        if (_v.type === 'WEEKDAYS' && _v.value) {
+          _v.value = _v.value.split(',').map(Number);
+        }
+        if (_v.type === 'ARRAY') {
+          if (typeof _v.default === 'string') {
+            _v.default = _v.default.split(';');
+          }
+          if (_v.value) {
+            let arr = _v.value.split(';');
+            _v.value = [];
+            for (let i = 0; i < arr.length; i++) {
+              _v.value.push({ name: arr[i] });
             }
+          }
+        }
 
-            // Handle nested children if they exist
-            if (defaultSetting[existingKey].children) {
-              if (!existingSetting[existingKey].children) {
-                existingSetting[existingKey].children = {};
-              }
-              this.mergeProperties(defaultSetting[existingKey].children, existingSetting[existingKey].children);
-            }
+        if (_v.children) {
+          _v.children = this.mapChildProperties(_v.children);
+        }
 
+        return { name: k, value: _v, ordering: _v.ordering };
+      });
+
+      if (temp.length > 0) {
+        for (let x = 0; x < temp.length; x++) {
+          if (temp[x].name === obj.name) {
+            obj.show = temp[x].show;
+            temp.slice(x, 1);
             break;
           }
-        } else if (!defaultSetting[existingKey] && existingSetting[existingKey] && existingKey !== 'ordering') {
-          delete existingSetting[existingKey];
         }
       }
+      this.settingArr.push(obj);
     }
-    if (flag) {
-      existingSetting[key] = defaultSetting[key];
+    this.settingArr = this.orderPipe.transform(this.settingArr, 'ordering', false);
+  }
+  private mergeChildProperties(defaultChildren: any, existingChildren: any): void {
+    // Convert existing children from an array to an object if needed
+    if (Array.isArray(existingChildren)) {
+      const tempChildren = {};
+      existingChildren.forEach(child => {
+        tempChildren[child.name] = child;
+      });
+      existingChildren = tempChildren;
+    }
+
+    for (let childKey in defaultChildren) {
+      if (!existingChildren[childKey]) {
+        existingChildren[childKey] = { ...defaultChildren[childKey] };
+      } else {
+        existingChildren[childKey].ordering = defaultChildren[childKey].ordering;
+        existingChildren[childKey].type = defaultChildren[childKey].type;
+        existingChildren[childKey].default = defaultChildren[childKey].default;
+
+        existingChildren[childKey].value = existingChildren[childKey].value || defaultChildren[childKey].default;
+
+        if (defaultChildren[childKey].children) {
+          if (!existingChildren[childKey].children) {
+            existingChildren[childKey].children = {};
+          }
+          this.mergeChildProperties(defaultChildren[childKey].children, existingChildren[childKey].children);
+        }
+      }
     }
   }
-}
+  private convertChildrenArrayToObject(childrenArray: any[]): any {
+    const childrenObject = {};
+    childrenArray.forEach(child => {
+      childrenObject[child.name] = child;
+    });
+    return childrenObject;
+  }
 
-/**
- * Maps properties of settings, including handling nested children.
- */
-private mapProperties(setting: any): any[] {
-  return Object.entries(setting).map(([key, value]) => {
-    const _value: any = value;
-    if (key === 'ordering') {
-      return { name: key, value: null };
-    }
-    if (_value.type === 'WEEKDAYS' && _value.value) {
-      _value.value = _value.value.split(',').map(Number);
-    }
-    if (_value.type === 'ARRAY') {
-      if (typeof _value.default === 'string') {
-        _value.default = _value.default.split(';');
-      }
-      if (_value.value) {
-        let arr = _value.value.split(';');
-        _value.value = [];
-        for (let i = 0; i < arr.length; i++) {
-          _value.value.push({ name: arr[i] });
+  private mapChildProperties(children: any): any[] {
+    return Object.entries(children)
+      .filter(([childKey, _]) => !Number.isInteger(Number(childKey)))
+      .map(([childKey, childValue]) => {
+        const _childValue: any = childValue;
+
+        if (_childValue && _childValue.type) {
+          if (_childValue.type === 'ARRAY') {
+            if (typeof _childValue.default === 'string') {
+              _childValue.default = _childValue.default.split(';');
+            }
+            if (_childValue.value && typeof _childValue.value === 'string') {
+              let arr = _childValue.value.split(';');
+              _childValue.value = arr.map((item: string) => ({ name: item }));
+            }
+          }
+
+          if (_childValue.children && Object.keys(_childValue.children).length > 0) {
+            _childValue.children = this.mapChildProperties(_childValue.children);
+          }
+
+          return {
+            name: childKey,
+            value: {
+              ..._childValue,
+              value: _childValue.value || _childValue.default
+            },
+            ordering: _childValue.ordering
+          };
         }
-      }
-    }
 
-    // Handle mapping of children recursively
-    if (_value.children) {
-      _value.children = this.mapProperties(_value.children);
-    }
+        return null;
+      })
+      .filter(child => child !== null);
+  }
 
-    return { name: key, value: _value, ordering: _value.ordering };
-  });
-}
 
   showHashValue(data: any): void {
     let pswd = data.value.default;

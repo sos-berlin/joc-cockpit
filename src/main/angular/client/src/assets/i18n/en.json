@@ -687,7 +687,7 @@
     "message.stickToDailyPlanDate": "Are you sure you want to change start times of orders and keep their original Daily Plan assignment?",
     "message.deleteCertificate": "Are you sure you want to delete this certificate?",
     "message.removeCertificate": "Are you sure you want to remove this certificate alias?",
-    "message.updateDependencies": "Are you sure you want to update dependencies.",
+    "message.updateDependencies": "Are you sure you want to update dependencies?",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Export to .xlsx format",
     "tooltip.expandDetails": "Expand Details",
@@ -3026,7 +3026,9 @@
       "max_pool_size": "The max. connection pool size specifies the number of database connection used. For environmentns with larger numbers of daily task history entries to purge it can be benefitial to increase this value for example to 10. Users have to check that their DBMS allows an increased number of connections to be used.",
       "profile_age": "Specifies the max. number of days that a Profile has not been used from login by a user account before it is purged.",
       "failed_login_history_age": "Specifies the max. number of days for which entries in the history of failed logins are retained before they are purged.",
-      "reporting_age": "Specifies the retention period of the Reports and Report Run History. Any report entries older than the value specified will be purged."
+      "reporting_age": "Specifies the retention period of the Reports and Report Run History. Any report entries older than the value specified will be purged.",
+      "history_pause_duration": "history_pause_duration.",
+      "history_pause_delay": "history_pause_delay."
     },
     "dailyplan": {
       "time_zone": "Specifies the time zone that is applied to the start time of the Daily Plan Service and period of the Daily Plan.",
