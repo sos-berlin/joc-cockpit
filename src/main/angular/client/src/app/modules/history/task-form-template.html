@@ -186,6 +186,14 @@
         </nz-select>
       </div>
     </div>
+    <div class="form-group row">
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
+             translate>history.label.orderId</label>
+      <div class="col-sm-6">
+        <input [(ngModel)]="filter.orderId" autocomplete="off" class="form-control" name="orderId"
+               placeholder="{{'history.placeholder.orderId' | translate}}" type="text">
+      </div>
+    </div>
     <div class="m-b-sm row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4" translate>history.label.status</label>
       <div class="col-sm-8">

@@ -96,26 +96,25 @@ export class SettingComponent {
     return tempSetting;
   }
 
-// Helper function to process child objects recursively
 static generateChildStoreObject(children): any {
-  const childSettings: any = [];
+  const childSettings: any = {};
 
   children.forEach(child => {
     const childSetting: any = {
-      name: child.name,
-      ordering: child.ordering,
-      value: child.value?.value
+      value: child.value?.value,
+      ordering: child.ordering
     };
 
     if (child.children && Array.isArray(child.children)) {
-      // Recursive call for further nested children
       childSetting.children = this.generateChildStoreObject(child.children);
     }
 
-    childSettings.push(childSetting);
+    childSettings[child.name] = childSetting;
   });
+
   return childSettings;
 }
+
 
   ngOnInit(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};

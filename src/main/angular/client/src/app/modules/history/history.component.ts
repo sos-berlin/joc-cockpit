@@ -1922,6 +1922,9 @@ export class HistoryComponent {
       if(obj.orderTags?.length > 0){
         filter.orderTags = obj.orderTags;
       }
+      if(obj.orderId?.length > 0){
+        filter.orderId = obj.orderId;
+      }
       this.convertRequestBody(filter);
       if ((this.savedIgnoreList.isEnable == true || this.savedIgnoreList.isEnable == 'true')
         && (this.savedIgnoreList.jobs && this.savedIgnoreList.jobs.length > 0)) {
