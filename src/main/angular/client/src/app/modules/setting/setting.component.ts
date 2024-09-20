@@ -83,14 +83,18 @@ export class SettingComponent {
                 value = value.map((item) => item.name).join(';');
               }
             }
+            if (setting[prop][x]?.children && Array.isArray(setting[prop][x]?.children)) {
+              if (setting[prop][x].value !== undefined && setting[prop][x].value !== null) {
+                tempSetting[prop][x].children = this.generateChildStoreObject(setting[prop][x]?.children);
+              } else {
+                tempSetting[prop][x].children = undefined;
+              }
+            }
             tempSetting[prop][x].value = value;
           } else {
             tempSetting[prop][x] = setting[prop].ordering;
           }
         }
-         if (setting[prop][x]?.children && Array.isArray(setting[prop][x].children)) {
-        tempSetting[prop][x].children = this.generateChildStoreObject(setting[prop][x].children);
-      }
       }
     }
     return tempSetting;
@@ -151,7 +155,6 @@ static generateChildStoreObject(children): any {
   changeConfiguration(form, value, isJoc): void {
     const tempSetting = this.coreService.clone(this.settings);
 
-    // Validate form before proceeding
     if (form && form.invalid) {
       let msg = 'Oops';
       this.translate.get('common.message.notValidInput').subscribe(translatedValue => {
@@ -161,53 +164,42 @@ static generateChildStoreObject(children): any {
       return;
     }
 
-    // Handle TIME type values
     if (value?.value?.type === 'TIME') {
       value.value.value = SettingComponent.checkTime(value.value.value);
     }
 
-    // Special case for force_comments_for_audit_log
     if (value?.name === 'force_comments_for_audit_log') {
       sessionStorage['$SOS$FORCELOGING'] = value.value.value;
     }
 
-    // Special case for time_zone
     if (value?.name === 'time_zone') {
       sessionStorage.setItem('$SOS$DAILYPLANTIMEZONE', value.value.value);
     }
 
-    // Update child values recursively
     if (value?.children && value.children.length > 0) {
       this.updateChildValues(tempSetting, value);
     }
-
-    // Save preferences
     this.savePreferences(SettingComponent.generateStoreObject(tempSetting), isJoc);
 
   }
 
-// Function to update child values recursively
   updateChildValues(tempSetting: any, parentValue: any): void {
     if (parentValue?.children && Array.isArray(parentValue.children)) {
       parentValue.children.forEach(child => {
         // Traverse to find the correct place in tempSetting
         const tempChildSetting = this.getSettingValue(tempSetting, child.name);
         if (tempChildSetting) {
-          // Assign the updated value to the child in tempSetting
           tempChildSetting.value = child.value.value;
         }
       });
     }
   }
 
-// Helper function to find the correct child setting in the cloned settings
   getSettingValue(settings: any, name: string): any {
-    // First, check if the setting name is directly in the object
     if (settings[name]) {
       return settings[name];
     }
 
-    // If not found, traverse the children recursively
     for (const key in settings) {
       if (settings[key]?.children) {
         const childSetting = this.getSettingValue(settings[key].children, name);
