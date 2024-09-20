@@ -26,12 +26,14 @@ export class AuthInterceptor implements HttpInterceptor {
             headers: req.headers.set('Content-Type', req.url.match('validate/predicate') ? 'text/plain' : 'application/json')
           });
           if (req.url.match('authentication/login')) {
+            const encodedConfig = sessionStorage.getItem('X-Openid-Configuration');
             const user = req.body;
+
             if (user.idToken) {
               const headerOptions: any = {
                 'X-ID-TOKEN': user.idToken,
                 'X-IDENTITY-SERVICE': user.identityServiceName,
-                'X-OPENID-CONFIGURATION': user.oidcDocument
+                'X-OPENID-CONFIGURATION': encodedConfig
               };
               const headers = new HttpHeaders(headerOptions);
               req = req.clone({headers, body: {}});

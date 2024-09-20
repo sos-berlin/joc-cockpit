@@ -60,7 +60,7 @@ export class OIDCAuthService {
 
   configure(config: any) {
     this.issuer = config.iamOidcAuthenticationUrl;
-    this.redirectUri = window.location.origin + '/joc';
+    this.redirectUri = window.location.origin;
     this.showDebugInformation = true;
   }
 
@@ -83,6 +83,14 @@ export class OIDCAuthService {
               this.toasterService.error('discovery_document_validation_error');
               return;
             }
+
+            const filteredConfig = {
+              claims_supported: doc.claims_supported,
+              jwks_uri: doc.jwks_uri
+            };
+
+            const encodedConfig = this.base64EncodeConfig(filteredConfig);
+            sessionStorage.setItem('X-Openid-Configuration', encodedConfig);
             this.loginUrl = doc.authorization_endpoint;
             this.logoutUrl = doc.revocation_endpoint || doc.end_session_endpoint || '';
             this.issuer = doc.issuer;
@@ -92,13 +100,10 @@ export class OIDCAuthService {
             this.responseTypesSupported = doc.response_types_supported || ['code'];
             this.tokenEndMethodsSupported = doc.token_endpoint_auth_methods_supported || ['client_secret_post'];
             this.discoveryDocumentLoaded = true;
-            const result = {
-              discoveryDocument: doc,
 
-            };
-            resolve(result);
-
-          }, error: (err) => {
+            resolve({ discoveryDocument: doc });
+          },
+          error: (err) => {
             reject(err);
           }
         });
@@ -106,6 +111,10 @@ export class OIDCAuthService {
     });
   }
 
+  private base64EncodeConfig(config: any): string {
+    const jsonString = JSON.stringify(config);
+    return btoa(jsonString);
+  }
   private validateDiscoveryDocument(doc: any): boolean {
     let errors: any;
     errors = this.validateUrlFromDiscoveryDocument(doc.authorization_endpoint);
@@ -283,7 +292,7 @@ export class OIDCAuthService {
               .set('token', content.token)
               .set('token_type_hint', 'access_token');
             if (logoutUrl.includes('login.windows.net') || logoutUrl.includes('login.microsoftonline.com')) {
-  
+
               // navigate to the logout URL
               window.location.replace(logoutUrl + '?post_logout_redirect_uri=' + window.location.href);
               return
