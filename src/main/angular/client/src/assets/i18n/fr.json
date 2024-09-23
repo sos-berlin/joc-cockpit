@@ -3027,8 +3027,8 @@
       "profile_age": "Spécifie le nombre maximum de jours pendant lesquels un profil n'a pas été utilisé depuis la connexion par un compte utilisateur avant qu'il ne soit purgé.",
       "failed_login_history_age": "Spécifie le nombre maximum de jours pendant lesquels les entrées de l'historique des connexions échouées sont conservées avant d'être purgées.",
       "reporting_age": "Spécifie la période de conservation des rapports et de l'historique d'exécution des rapports. Toutes les entrées de rapport antérieures à la valeur spécifiée seront supprimées.",
-      "history_pause_duration": "history_pause_duration.",
-      "history_pause_delay": "history_pause_delay."
+      "history_pause_duration": "Spécifie la durée pendant laquelle le Service de l'Historique sera mis en pause lorsque le Service d'Assainissement est lancé.",
+      "history_pause_delay": "Spécifie le délai entre les exécutions répétées du Service d'Assainissement."
     },
     "dailyplan": {
       "time_zone": "Spécifie le fuseau horaire qui est appliqué à l'heure de démarrage du service du Plan Quotidien et à la période du Plan Quotidien.",
