@@ -83,12 +83,10 @@ export class OIDCAuthService {
               this.toasterService.error('discovery_document_validation_error');
               return;
             }
-
             const filteredConfig = {
               claims_supported: doc.claims_supported,
               jwks_uri: doc.jwks_uri
             };
-
             const encodedConfig = this.base64EncodeConfig(filteredConfig);
             sessionStorage.setItem('X-Openid-Configuration', encodedConfig);
             this.loginUrl = doc.authorization_endpoint;
@@ -100,7 +98,6 @@ export class OIDCAuthService {
             this.responseTypesSupported = doc.response_types_supported || ['code'];
             this.tokenEndMethodsSupported = doc.token_endpoint_auth_methods_supported || ['client_secret_post'];
             this.discoveryDocumentLoaded = true;
-
             resolve({ discoveryDocument: doc });
           },
           error: (err) => {

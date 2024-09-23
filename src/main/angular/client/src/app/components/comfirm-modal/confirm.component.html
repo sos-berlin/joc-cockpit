@@ -86,6 +86,85 @@
       </div>
     </div>
   </div>
+  <div class="form-group row m-t-md">
+    <div *ngIf="affectedObjectTypes.length > 0" class="col-md-6" [class.col-md-12]="referencedObjectTypes.length === 0">
+      <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isAffectedCollapsed, 'fa-caret-down': isAffectedCollapsed}"
+         (click)="toggleAllAffectedCollapse()"></i>
+      <label class="m-l-sm" translate>inventory.label.affectedObjects</label>
+      <i class="cursor text-16 fa fa-angle-double-down m-l-sm"
+         (click)="expandAllAffected()"></i>
+      <i class="cursor text-16 fa fa-angle-double-up m-l-xs"
+         (click)="collapseAllAffected()"></i>
+      <div class="m-t-sm m-l-sm" *ngIf="isAffectedCollapsed">
+        <ng-container *ngFor="let objectType of affectedObjectTypes">
+          <div class="m-t-sm" *ngIf="affectedObjectsByType[objectType]?.length">
+            <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !affectedCollapsed[objectType], 'fa-caret-down': affectedCollapsed[objectType]}"
+               (click)="toggleAffectedCollapse(objectType)"></i>
+            <label class="m-l-sm" nz-checkbox [(ngModel)]="selectAllAffected[objectType]" [name]="'checkbox_' + objectType"
+                   (ngModelChange)="toggleAllAffected(objectType, $event)">
+                        <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
+                            <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+                        </span>
+              <span *ngIf="isCustomIcon(objectType)" class="icon-color" [ngClass]="getIcon(objectType)"></span>
+              {{ getObjectTypeLabel(objectType) | translate }}
+            </label>
+            <div class="m-t-sm m-l-md" *ngIf="affectedCollapsed[objectType]">
+              <div *ngFor="let obj of affectedObjectsByType[objectType]">
+                <label class="m-l-sm" nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-' + obj.path"
+                       [disabled]="obj.disabled" (ngModelChange)="updateParentCheckboxAffected(objectType)">
+                                <span [ngClass]="{
+                                    'fa-circle-o': !obj.valid,
+                                    'fa-circle dark-blue': obj.deployed || obj.released,
+                                    'opacity7': obj.syncState
+                                }" class="fa fa-check-circle-o orange text-xs p-l-xs m-l-xs"></span>
+                  {{ obj.path }}
+                </label>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <div *ngIf="referencedObjectTypes.length > 0" class="col-md-6" [class.col-md-12]="affectedObjectTypes.length === 0">
+      <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isReferencedCollapsed, 'fa-caret-down': isReferencedCollapsed}"
+         (click)="toggleAllReferencedCollapse()"></i>
+      <label class="m-l-sm" translate>inventory.label.referencedObjects</label>
+      <i class="cursor text-16 fa fa-angle-double-down m-l-sm"
+         (click)="expandAllReferenced()"></i>
+      <i class="cursor text-16 fa fa-angle-double-up m-l-xs"
+         (click)="collapseAllReferenced()"></i>
+      <div class="m-t-sm m-l-sm" *ngIf="isReferencedCollapsed">
+        <ng-container *ngFor="let objectType of referencedObjectTypes">
+          <div class="m-t-sm" *ngIf="referencedObjectsByType[objectType]?.length">
+            <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !referencedCollapsed[objectType], 'fa-caret-down': referencedCollapsed[objectType]}"
+               (click)="toggleReferencedCollapse(objectType)"></i>
+            <label class="m-l-sm" nz-checkbox [(ngModel)]="selectAllReferenced[objectType]" [name]="'checkbox_' + objectType"
+                   (ngModelChange)="toggleAllReferenced(objectType, $event)">
+                        <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
+                            <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+                        </span>
+              <span *ngIf="isCustomIcon(objectType)" class="icon-color" [ngClass]="getIcon(objectType)"></span>
+              {{ getObjectTypeLabel(objectType) | translate }}
+            </label>
+            <div class="m-t-sm m-l-md" *ngIf="referencedCollapsed[objectType]">
+              <div *ngFor="let obj of referencedObjectsByType[objectType]">
+                <label class="m-l-sm" nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-' + obj.path"
+                       [disabled]="obj.disabled" (ngModelChange)="updateParentCheckboxReferenced(objectType)">
+                                <span [ngClass]="{
+                                    'fa-circle-o': !obj.valid,
+                                    'fa-circle dark-blue': obj.deployed || obj.released,
+                                    'opacity7': obj.syncState
+                                }" class="fa fa-check-circle-o orange text-xs p-l-xs m-l-xs"></span>
+                  {{ obj.path }}
+                </label>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="modal-footer">
   <button (click)="activeModal.close('close')" [disabled]="count == 0"

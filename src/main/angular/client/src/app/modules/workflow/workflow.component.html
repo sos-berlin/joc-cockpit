@@ -459,65 +459,78 @@
                       <div translate>common.label.failed</div>
                     </td>
                   </tr>
-                  <tr class="text-center">
-                    <td [width]="'9.09%'" style="padding:0 !important;">
-                      <span (click)="viewOrderState('ALL')" [innerHtml]="(numOfAllOrders.pending || 0) + (numOfAllOrders.inProgress || 0) +
-                       (numOfAllOrders.running || 0) + (numOfAllOrders.suspended || 0) + (numOfAllOrders.terminated || 0)
-                        + (numOfAllOrders.waiting || 0) + (numOfAllOrders.scheduled || 0) + (numOfAllOrders.prompting || 0) +
-                         (numOfAllOrders.blocked || 0) + (numOfAllOrders.failed || 0)"
-                            class="font14 _600 cursor text-black-lt "></span>
-                    </td>
-                    <td [width]="'9.09%'" style="padding:0 !important;">
-                      <span (click)="viewOrderState('PENDING')" [innerHtml]="numOfAllOrders.pending || 0"
-                            [ngClass]="{'light-yellow' : numOfAllOrders.pending > 0}"
-                            class="font14 _600 cursor "></span>
-                    </td>
-                    <td [width]="'9.09%'" style="padding:0 !important;">
-                      <span (click)="viewOrderState('SCHEDULED')" [innerHtml]="numOfAllOrders.scheduled || 0"
-                            [ngClass]="{'gold' : numOfAllOrders.scheduled > 0}"
-                            class="font14 _600 cursor"></span>
-                    </td>
-                    <td [width]="'9.09%'" style="padding:0 !important;">
-                      <span (click)="viewOrderState('INPROGRESS')" [innerHtml]="numOfAllOrders.inProgress || 0"
-                            [ngClass]="{'light-blue' : numOfAllOrders.inProgress > 0}"
-                            class="font14 _600 cursor"></span>
-                    </td>
-                    <td [width]="'9.09%'" style="padding:0 !important;">
-                      <span (click)="viewOrderState('RUNNING')" [innerHtml]="numOfAllOrders.running || 0"
-                            [ngClass]="{'green' : numOfAllOrders.running > 0}"
-                            class="font14 _600 cursor"></span>
-                    </td>
-                    <td [width]="'9.09%'" style="padding:0 !important;">
-                      <span (click)="viewOrderState('SUSPENDED')" [innerHtml]="numOfAllOrders.suspended || 0"
-                            [ngClass]="{'orange' : numOfAllOrders.suspended > 0}"
-                            class="font14 _600 cursor"></span>
-                    </td>
-                    <td [width]="'9.09%'" style="padding:0 !important;">
-                      <span (click)="viewOrderState('COMPLETED')" [innerHtml]="numOfAllOrders.terminated || 0"
-                            [ngClass]="{'dark-blue' : numOfAllOrders.terminated > 0}"
-                            class="font14 _600 cursor"></span>
-                    </td>
-                    <td [width]="'9.09%'" style="padding:0 !important;">
-                      <span (click)="viewOrderState('PROMPTING')" [innerHtml]="numOfAllOrders.prompting || 0"
-                            [ngClass]="{'light-green' : numOfAllOrders.prompting > 0}"
-                            class="font14 _600 cursor "></span>
-                    </td>
-                    <td [width]="'9.09%'" style="padding:0 !important;">
-                      <span (click)="viewOrderState('WAITING')" [innerHtml]="numOfAllOrders.waiting || 0"
-                            [ngClass]="{'yellow-green' : numOfAllOrders.waiting > 0}"
-                            class="font14 _600 cursor"></span>
-                    </td>
-                    <td [width]="'9.09%'" style="padding:0 !important;">
-                      <span (click)="viewOrderState('BLOCKED')" [innerHtml]="numOfAllOrders.blocked || 0"
-                            [ngClass]="{'mangenta' : numOfAllOrders.blocked > 0}"
-                            class="font14 _600 cursor"></span>
-                    </td>
-                    <td [width]="'9.09%'" style="padding:0 !important;">
-                      <span (click)="viewOrderState('FAILED')" [innerHtml]="numOfAllOrders.failed || 0"
-                            [ngClass]="{'red' : numOfAllOrders.failed > 0}"
-                            class="font14 _600 cursor"></span>
-                    </td>
-                  </tr>
+               <tr class="text-center">
+  <td [width]="'9.09%'" style="padding:0 !important;">
+    <span (click)="viewOrderState('ALL')"
+          [innerHtml]="(numOfAllOrders.pending || 0) + (numOfAllOrders.inProgress || 0) +
+                       (numOfAllOrders.running || 0) + (numOfAllOrders.suspended || 0) +
+                       (numOfAllOrders.terminated || 0) + (numOfAllOrders.waiting || 0) +
+                       (numOfAllOrders.scheduled || 0) + (numOfAllOrders.prompting || 0) +
+                       (numOfAllOrders.blocked || 0) + (numOfAllOrders.failed || 0)"
+          class="font14 _600 cursor text-black-lt"></span>
+  </td>
+  <td [width]="'9.09%'" style="padding:0 !important;">
+    <span (click)="viewOrderState('PENDING')"
+          [innerHtml]="numOfAllOrders.pending || 0"
+          [ngClass]="numOfAllOrders.pending > 0 ? coreService.getColor(10, 'text') : ''"
+          class="font14 _600 cursor"></span>
+  </td>
+  <td [width]="'9.09%'" style="padding:0 !important;">
+    <span (click)="viewOrderState('SCHEDULED')"
+          [innerHtml]="numOfAllOrders.scheduled || 0"
+          [ngClass]="numOfAllOrders.scheduled > 0 ? coreService.getColor(1, 'text') : ''"
+          class="font14 _600 cursor"></span>
+  </td>
+  <td [width]="'9.09%'" style="padding:0 !important;">
+    <span (click)="viewOrderState('INPROGRESS')"
+          [innerHtml]="numOfAllOrders.inProgress || 0"
+          [ngClass]="numOfAllOrders.inProgress > 0 ? coreService.getColor(3, 'text') : ''"
+          class="font14 _600 cursor"></span>
+  </td>
+  <td [width]="'9.09%'" style="padding:0 !important;">
+    <span (click)="viewOrderState('RUNNING')"
+          [innerHtml]="numOfAllOrders.running || 0"
+          [ngClass]="numOfAllOrders.running > 0 ? coreService.getColor(0, 'text') : ''"
+          class="font14 _600 cursor"></span>
+  </td>
+  <td [width]="'9.09%'" style="padding:0 !important;">
+    <span (click)="viewOrderState('SUSPENDED')"
+          [innerHtml]="numOfAllOrders.suspended || 0"
+          [ngClass]="numOfAllOrders.suspended > 0 ? coreService.getColor(5, 'text') : ''"
+          class="font14 _600 cursor"></span>
+  </td>
+  <td [width]="'9.09%'" style="padding:0 !important;">
+    <span (click)="viewOrderState('COMPLETED')"
+          [innerHtml]="numOfAllOrders.terminated || 0"
+          [ngClass]="numOfAllOrders.terminated > 0 ? coreService.getColor(6, 'text') : ''"
+          class="font14 _600 cursor"></span>
+  </td>
+  <td [width]="'9.09%'" style="padding:0 !important;">
+    <span (click)="viewOrderState('PROMPTING')"
+          [innerHtml]="numOfAllOrders.prompting || 0"
+          [ngClass]="numOfAllOrders.prompting > 0 ? coreService.getColor(12, 'text') : ''"
+          class="font14 _600 cursor"></span>
+  </td>
+  <td [width]="'9.09%'" style="padding:0 !important;">
+    <span (click)="viewOrderState('WAITING')"
+          [innerHtml]="numOfAllOrders.waiting || 0"
+          [ngClass]="numOfAllOrders.waiting > 0 ? coreService.getColor(8, 'text') : ''"
+          class="font14 _600 cursor"></span>
+  </td>
+  <td [width]="'9.09%'" style="padding:0 !important;">
+    <span (click)="viewOrderState('BLOCKED')"
+          [innerHtml]="numOfAllOrders.blocked || 0"
+          [ngClass]="numOfAllOrders.blocked > 0 ? coreService.getColor(7, 'text') : ''"
+          class="font14 _600 cursor"></span>
+  </td>
+  <td [width]="'9.09%'" style="padding:0 !important;">
+    <span (click)="viewOrderState('FAILED')"
+          [innerHtml]="numOfAllOrders.failed || 0"
+          [ngClass]="numOfAllOrders.failed > 0 ? coreService.getColor(2, 'text') : ''"
+          class="font14 _600 cursor"></span>
+  </td>
+</tr>
+
                 </table>
               </div>
             </div>
