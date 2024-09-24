@@ -3029,7 +3029,7 @@
       "reporting_age": "Specifies the retention period of the Reports and Report Run History. Any report entries older than the value specified will be purged.",
       "history_pause_duration": "Specifies the duration for which the History Service will be paused when the Cleanup Service is started.",
       "history_pause_delay": "Specifies the delay between repeated executions of the Cleanup Service.",
-      "force_cleanup": "force_cleanup."
+      "force_cleanup": "Forces the Cleanup Service to start including a situation when the History Service is actively creating history entries. The Cleanup Service will pause the History Service for a configurable maximum or until termination of the Cleanup Service whichever happens first."
     },
     "dailyplan": {
       "time_zone": "Specifies the time zone that is applied to the start time of the Daily Plan Service and period of the Daily Plan.",

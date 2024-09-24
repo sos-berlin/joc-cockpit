@@ -3029,7 +3029,7 @@
       "reporting_age": "Legt den Aufbewahrungszeitraum für Berichte und die Berichtslaufhistorie fest. Alle Berichtseinträge, die älter als der angegebene Wert sind, werden gelöscht.",
       "history_pause_duration": "Gibt die Dauer an, für die der Historiendienst angehalten wird, wenn der Bereinigungsdienst gestartet wird.",
       "history_pause_delay": "Gibt die Verzögerung zwischen wiederholten Ausführungen des Bereinigungsdienstes an.",
-      "force_cleanup": "force_cleanup."
+      "force_cleanup": "Erzwingt den Start des Bereinigungsdienstes auch dann, wenn der Historiendienst aktiv Historieneinträge erstellt. Der Bereinigungsdienst hält den Historiendienst für eine konfigurierbare Höchstdauer oder bis zur Beendigung des Bereinigungsdienstes an, je nachdem, was zuerst eintritt."
     },
     "dailyplan": {
       "time_zone": "Benennt die Zeitzone der Startzeit des Tagesplandienstes und der Periode des Tagesplans.",
