@@ -3042,7 +3042,7 @@
     "joc": {
       "force_comments_for_audit_log": "Specifies that for any changes applied to an object such as to add an order, to cancel an order etc. a reason has to be added for the Audit Log.",
       "comments_for_audit_log": "Specifies a list of predefined reasons that is made available when adding reasons to the Audit Log is enforced.",
-      "default_profile_account": "Specifies the account that is used to populate profiles for any new accounts.",
+      "default_profile_account": "Specifies the account that is used to populate profiles for new accounts.",
       "enable_remember_me": "Specifies that the login window offers the 'remember me' checkbox to store credentials with the browser.",
       "copy_paste_suffix": "Specifies the suffix to be used for object names when performing copy & paste operations.",
       "copy_paste_prefix": "Specifies the prefix to be used for object names when performing copy & paste operations.",
@@ -3092,7 +3092,8 @@
       "git_hold_notice_boards": "Specifies if Notice Boards should be considered local to an environment or are intended for rollout with Git.",
       "git_hold_resource_locks": "Specifies if Resource Locks should be considered local to an environment or are intended for rollout with Git.",
       "git_hold_script_includes": "Specifies if Script Includes should be considered local to an environment or are intended for rollout with Git.",
-      "git_hold_file_order_sources": "Specifies if File Order Sources should be considered local to an environment or are intended for rollout with Git."
+      "git_hold_file_order_sources": "Specifies if File Order Sources should be considered local to an environment or are intended for rollout with Git.",
+      "git_hold_job_templates": "Specifies if Job Templates should be considered local to an environment or are intended for rollout with Git."
     },
     "lognotification": {
       "log_server_active": "log_server_active.",
