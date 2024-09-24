@@ -3027,8 +3027,8 @@
       "profile_age": "Specifies the max. number of days that a Profile has not been used from login by a user account before it is purged.",
       "failed_login_history_age": "Specifies the max. number of days for which entries in the history of failed logins are retained before they are purged.",
       "reporting_age": "Specifies the retention period of the Reports and Report Run History. Any report entries older than the value specified will be purged.",
-      "history_pause_duration": "history_pause_duration.",
-      "history_pause_delay": "history_pause_delay.",
+      "history_pause_duration": "Specifies the duration for which the History Service will be paused when the Cleanup Service is started.",
+      "history_pause_delay": "Specifies the delay between repeated executions of the Cleanup Service.",
       "force_cleanup": "force_cleanup."
     },
     "dailyplan": {
