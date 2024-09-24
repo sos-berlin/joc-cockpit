@@ -3028,7 +3028,8 @@
       "failed_login_history_age": "Spécifie le nombre maximum de jours pendant lesquels les entrées de l'historique des connexions échouées sont conservées avant d'être purgées.",
       "reporting_age": "Spécifie la période de conservation des rapports et de l'historique d'exécution des rapports. Toutes les entrées de rapport antérieures à la valeur spécifiée seront supprimées.",
       "history_pause_duration": "history_pause_duration.",
-      "history_pause_delay": "history_pause_delay."
+      "history_pause_delay": "history_pause_delay.",
+      "force_cleanup": "force_cleanup."
     },
     "dailyplan": {
       "time_zone": "Spécifie le fuseau horaire qui est appliqué à l'heure de démarrage du service du Plan Quotidien et à la période du Plan Quotidien.",

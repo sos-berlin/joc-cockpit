@@ -51,12 +51,12 @@
                 </div>
               </div>
             </div>
-            <div *ngIf="!showRegister && !showLogin" class="md-form-group">
+            <div *ngIf="!showRegister && !showLogin && needAccountPassword" class="md-form-group">
               <input [(ngModel)]="user.userName" class="md-input" id="account" name="userName"
                      type="text">
               <label class="font14" for="account"> {{ 'login.label.account' | translate}}</label>
             </div>
-            <div *ngIf="!showRegister && !showLogin" class="md-form-group">
+            <div *ngIf="!showRegister && !showLogin && needAccountPassword" class="md-form-group">
               <input [(ngModel)]="user.password" autocomplete="off" class="md-input" id="password" name="password"
                      type="{{!passwordField ? 'password' : 'text'}}">
               <i (click)="passwordField = !passwordField"
@@ -64,12 +64,12 @@
                  class="fa login-pswd-hide-icon"></i>
               <label class="font14" for="password"> {{'login.label.password' | translate}}</label>
             </div>
-            <div *ngIf="defaultSetting.enableRememberMe && !showRegister && !showLogin" class="m-b-md">
+            <div *ngIf="defaultSetting.enableRememberMe && !showRegister && !showLogin && needAccountPassword" class="m-b-md">
               <label [(ngModel)]="rememberMe" name="rememberMe" nz-checkbox>
                 {{'login.label.rememberMe' | translate}}
               </label>
             </div>
-            <button *ngIf="!showRegister || showLogin" [disabled]="submitted" class="btn btn-primary btn-block p-x-md"
+            <button *ngIf="(!showRegister || showLogin) && needAccountPassword" [disabled]="submitted" class="btn btn-primary btn-block p-x-md"
                     type="submit">
               <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
               <i *ngIf="!submitted" class="fa fa-sign-in p-r-xs"></i>
@@ -86,7 +86,7 @@
             aria-hidden="true" class="fa fa-arrow-left p-r-xs"></i> {{'register.button.back' | translate}}</a>
 
           <ng-container *ngIf="!showRegister && !showLogin">
-            <div *ngIf="oidcIdentityServiceItems?.length > 0 || fidoIdentityServiceItems?.length > 0"
+            <div *ngIf="(oidcIdentityServiceItems?.length > 0 || fidoIdentityServiceItems?.length > 0) && needAccountPassword"
                  class="horz-line-text text-u-c" translate>common.label.or
             </div>
 

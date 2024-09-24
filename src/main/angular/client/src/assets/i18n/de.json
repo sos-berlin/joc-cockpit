@@ -3028,7 +3028,8 @@
       "failed_login_history_age": "Gibt die maximale Anzahl von Tagen an, für die Einträge in der Historie der fehlgeschlagenen Anmeldungen aufbewahrt werden, bevor sie bereinigt werden.",
       "reporting_age": "Legt den Aufbewahrungszeitraum für Berichte und die Berichtslaufhistorie fest. Alle Berichtseinträge, die älter als der angegebene Wert sind, werden gelöscht.",
       "history_pause_duration": "history_pause_duration.",
-      "history_pause_delay": "history_pause_delay."
+      "history_pause_delay": "history_pause_delay.",
+      "force_cleanup": "force_cleanup."
     },
     "dailyplan": {
       "time_zone": "Benennt die Zeitzone der Startzeit des Tagesplandienstes und der Periode des Tagesplans.",

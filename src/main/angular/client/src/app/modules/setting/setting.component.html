@@ -35,9 +35,9 @@
               </div>
               <h5 class="m-l p-l-sm">
                 {{setting.name}}
-                <i (click)="setting.show = true;" *ngIf="!setting.show" class="cursor fa fa-caret-up m-l-xs"></i>
+                <i (click)="setting.show = true;" *ngIf="!setting.show" class="cursor fa fa-caret-down m-l-xs"></i>
                 <i (click)="setting.show = false" *ngIf="setting.show"
-                   class="cursor fa fa-caret-down m-l-xs"></i>
+                   class="cursor fa fa-caret-up m-l-xs"></i>
               </h5>
               <div *ngIf="setting.show" class="m-l-md">
                 <div class="row m-t m-b">

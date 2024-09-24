@@ -3028,7 +3028,8 @@
       "failed_login_history_age": "ログイン失敗履歴保存期間を指定します。",
       "reporting_age": "レポートおよびレポート実行履歴の保存期間を指定します。指定した値より古いレポートエントリはすべて削除されます。",
       "history_pause_duration": "history_pause_duration.",
-      "history_pause_delay": "history_pause_delay."
+      "history_pause_delay": "history_pause_delay.",
+      "force_cleanup": "force_cleanup."
     },
     "dailyplan": {
       "time_zone": "デイリープランサービスの開始時刻とデイリープランの期間に適用されるタイムゾーンを指定します。",
