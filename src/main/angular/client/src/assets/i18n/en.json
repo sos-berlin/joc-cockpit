@@ -3093,6 +3093,11 @@
       "git_hold_resource_locks": "Specifies if Resource Locks should be considered local to an environment or are intended for rollout with Git.",
       "git_hold_script_includes": "Specifies if Script Includes should be considered local to an environment or are intended for rollout with Git.",
       "git_hold_file_order_sources": "Specifies if File Order Sources should be considered local to an environment or are intended for rollout with Git."
+    },
+    "lognotification": {
+      "log_server_active": "log_server_active.",
+      "log_server_max_messages_per_second": "log_server_max_messages_per_second.",
+      "log_server_port": "log_server_port."
     }
   },
   "user": {

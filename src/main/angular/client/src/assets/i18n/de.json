@@ -3093,6 +3093,11 @@
       "git_hold_resource_locks": "Vereinbart, dass Ressourcen-Sperren als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind.",
       "git_hold_script_includes": "Vereinbart, dass Skript Bausteine als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind.",
       "git_hold_file_order_sources": "Vereinbart, dass Dateiauftragsquellen als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind."
+    },
+    "lognotification": {
+      "log_server_active": "log_server_active.",
+      "log_server_max_messages_per_second": "log_server_max_messages_per_second.",
+      "log_server_port": "log_server_port."
     }
   },
   "user": {

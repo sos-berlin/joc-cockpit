@@ -3093,6 +3093,11 @@
       "git_hold_resource_locks": "ロック保存ディレクトリ",
       "git_hold_script_includes": "script_includes保存ディレクトリ",
       "git_hold_file_order_sources": "ファイルオーダーソース保存ディレクトリ"
+    },
+    "lognotification": {
+      "log_server_active": "log_server_active.",
+      "log_server_max_messages_per_second": "log_server_max_messages_per_second.",
+      "log_server_port": "log_server_port."
     }
   },
   "user": {

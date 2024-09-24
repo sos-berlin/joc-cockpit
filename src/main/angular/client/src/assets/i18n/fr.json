@@ -3093,6 +3093,11 @@
       "git_hold_resource_locks": "Indique si les Verroux de Ressource doivent être considérées comme locales dans un environnement ou s'ils sont destinés à être déployés avec Git.",
       "git_hold_script_includes": "Indique si les Scripts Éléments doivent être considérées comme locales dans un environnement ou s'ils sont destinés à être déployés avec Git.",
       "git_hold_file_order_sources": "Indique si les Sources d'Ordre de Fichier doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git."
+    },
+    "lognotification": {
+      "log_server_active": "log_server_active.",
+      "log_server_max_messages_per_second": "log_server_max_messages_per_second.",
+      "log_server_port": "log_server_port."
     }
   },
   "user": {
