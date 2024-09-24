@@ -3096,9 +3096,9 @@
       "git_hold_job_templates": "Indique si les Modèles de Tâche de Fichier doivent être considérées comme locales dans un environnement ou si elles sont destinées à être déployées avec Git."
     },
     "lognotification": {
-      "log_server_active": "log_server_active.",
-      "log_server_max_messages_per_second": "log_server_max_messages_per_second.",
-      "log_server_port": "log_server_port."
+      "log_server_active": "Active le Service de Notification des Logs disponible sur un serveur syslog. Le service recevra les avertissements et les erreurs des instances du Contrôleur et des Agents. Pour plus de détails, voir https://kb.sos-berlin.com/x/_5Y0CQ",
+      "log_server_max_messages_per_second": "Spécifie le nombre maximum de messages par seconde traités par le serveur syslog.",
+      "log_server_port": "Spécifie le port UDP que le serveur syslog écoute afin de recevoir les avertissements et les erreurs des instances du Contrôleur et des Agents."
     }
   },
   "user": {

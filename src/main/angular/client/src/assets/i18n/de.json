@@ -3096,9 +3096,9 @@
       "git_hold_job_templates": "Vereinbart, dass Job-Vorlagen als lokal zur Umgebung betrachtet werden oder für das Ausrollen mit Git vorgesehen sind."
     },
     "lognotification": {
-      "log_server_active": "log_server_active.",
-      "log_server_max_messages_per_second": "log_server_max_messages_per_second.",
-      "log_server_port": "log_server_port."
+      "log_server_active": "Aktiviert den Protokollbenachrichtigungsdienst, der über einen Syslog Server verfügbar ist. Der Dienst empfängt Warnungen und Fehler von Instanzen des Controller und der Agenten. Einzelheiten finden Sie unter https://kb.sos-berlin.com/x/_5Y0CQ",
+      "log_server_max_messages_per_second": "Gibt die maximale Anzahl der vom Syslog-Server verarbeiteten Nachrichten pro Sekunde an.",
+      "log_server_port": "Gibt den UDP Port an, den der Syslog Server überwacht, um Warnungen und Fehler von Controller und Agenten zu empfangen."
     }
   },
   "user": {
