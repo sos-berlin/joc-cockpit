@@ -443,6 +443,7 @@
   },
   "changes": {
     "label.addChange": "Add Change",
+    "label.updateChange": "Update Change",
     "label.open": "Open",
     "label.closed": "Closed",
     "label.published": "Published",

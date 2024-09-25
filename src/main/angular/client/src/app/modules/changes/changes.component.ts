@@ -22,6 +22,7 @@ export class AddChangesModalComponent{
   changesObj: any = {};
   changes: any
   originalName: any
+  flag = false
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService ){}
 
   ngOnInit(): void {
@@ -29,6 +30,7 @@ export class AddChangesModalComponent{
     this.display = this.modalData.display;
     this.title = this.modalData.title;
     this.changes = this.modalData.changes;
+    this.flag = this.modalData.flag;
     this.originalName = this.modalData.originalName;
     if(this.changes){
       this.changesObj.name = this.changes.name;
@@ -64,8 +66,7 @@ export class AddChangesModalComponent{
       auditLog: auditLog.comment ? auditLog : undefined,
       store: this.changesObj
     };
-console.log(this.changesObj.name, this.originalName,">>")
-    if (this.changesObj.name !== this.originalName) {
+    if (this.changesObj.name !== this.originalName && this.flag) {
       this._delete(this.originalName, obj);
     } else {
       this._submitChange(obj);
@@ -124,7 +125,7 @@ export class ChangesComponent {
       nzContent: AddChangesModalComponent,
       nzClassName: 'sm',
       nzData: {
-        title: 'addChanges',
+        title: 'addChange',
         display: this.preferences.auditLog,
       },
       nzFooter: null,
@@ -165,10 +166,11 @@ export class ChangesComponent {
       nzContent: AddChangesModalComponent,
       nzClassName: 'sm',
       nzData: {
-        title: title ? title : 'addChanges',
+        title: title ? title : 'addChange',
         display: this.preferences.auditLog,
         changes: changes,
-        originalName: changes.name
+        originalName: changes.name,
+        flag: true
       },
       nzFooter: null,
       nzAutofocus: null,
