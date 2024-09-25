@@ -368,7 +368,8 @@
     "label.permissions": "Berechtigungen",
     "label.manageIdentityServices": "Identitätsdienste verwalten",
     "label.clusterAgents": "Cluster Agenten",
-    "label.manageEnciphermentKey": "Verschlüsselungsschlüssel verwalten"
+    "label.manageEnciphermentKey": "Verschlüsselungsschlüssel verwalten",
+    "label.manageChanges": "Manage Changes"
   },
   "configuration": {
     "tab.inventory": "Inventar",
@@ -424,6 +425,8 @@
     "label.showEncryptionSample": "Verschlüsselungstest",
     "label.plainText": "Klartext",
     "label.assignAgents": "Zertifikat den Agenten hinzufügen",
+    "label.enciphermentsFound": "Encryption keys",
+    "label.enciphermentFound": "Encryption key",
     "placeholder.agentId": "Agenten-Kennung",
     "placeholder.certAlias": "Alias des Zertifikats",
     "placeholder.certificate": "Zertifikat hier einfügen",
@@ -437,6 +440,25 @@
     "button.deleteCertificate": "Zertifikat löschen",
     "button.updateCertificate": "Zertifikat aktualisieren",
     "button.copyEncryptValue": "Verschlüsselten Wert kopieren"
+  },
+  "changes": {
+    "label.addChange": "Add Change",
+    "label.open": "Open",
+    "label.closed": "Closed",
+    "label.published": "Published",
+    "label.created": "Created",
+    "label.modified": "Modified",
+    "label.owner": "Owner",
+    "label.changesFound": "changes",
+    "label.changeFound": "change",
+    "label.addToChange": "Add to Change",
+    "label.removeFromChange": "Remove from Change",
+    "label.state": "change",
+    "placeholder.state": "State",
+    "button.addChange": "Add Change",
+    "button.addToChange": "Add to Change",
+    "button.removeFromChange": "Remove from Change",
+    "button.publishChange": "Publish Change"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
@@ -1518,7 +1540,8 @@
     "button.manageControllersAndAgents": "Controller/Agenten verwalten",
     "button.manageDeployment": "Ausrollen verwalten",
     "button.logOut": "Abmelden",
-    "button.manageEnciphermentKey": "Verschlüsselungsschlüssel verwalten"
+    "button.manageEnciphermentKey": "Verschlüsselungsschlüssel verwalten",
+    "button.manageChanges": "Manage Changes"
   },
   "history": {
     "label.all": "Alle",

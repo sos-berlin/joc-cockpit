@@ -92,6 +92,12 @@ const routes: Routes = [
         data: {breadcrumb: 'breadcrumb.label.manageEnciphermentKey'}
       },
       {
+        path: 'changes',
+        loadChildren: () => import('./../changes/changes.module').then(m => m.changesModule),
+        canActivate: [AuthGuard],
+        data: {breadcrumb: 'breadcrumb.label.manageChanges'}
+      },
+      {
         path: 'user',
         loadChildren: () => import('./../user/user.module').then(m => m.UserModule),
         canActivate: [AuthGuard],

@@ -369,11 +369,9 @@ export class EnciphermentUpdateKeyComponent {
 })
 export class EnciphermentComponent {
   permission: any = {};
-
   username = '';
   securityLevel: string;
   preferences: any = {};
-
   data: any = [];
   isLoading = false;
   enciphermentFilters: any = {

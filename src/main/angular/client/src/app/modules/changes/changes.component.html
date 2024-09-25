@@ -1,0 +1,124 @@
+<div class="white box-shadow sub-header">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="padding">
+        <div class="text-right">
+          <div class="pull-left">
+            <app-breadcrumbs></app-breadcrumbs>
+          </div>
+          <div *ngIf="
+              permission &&
+              permission.joc
+            " class="inline">
+            <ng-container>
+              <div class="btn-group"></div>
+              <button (click)="addChange()"
+                      class="btn btn-grey btn-sm m-l-12">
+                <i class="fa fa-plus"></i>&nbsp;
+                <span translate>changes.button.addChange</span>
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="scroll-y max-ht">
+  <div class="padding p-b-0">
+    <div class="m-t-sm box p-a">
+      <div class="table-responsive" id="changesTable">
+        <nz-table
+          #changesTable
+          (nzPageIndexChange)="pageIndexChange($event)"
+          (nzPageSizeChange)="pageSizeChange($event)"
+          [nzBordered]="true"
+          [nzData]="data"
+          [nzLoading]="!isLoading"
+          [nzPageIndex]="changesFilters.currentPage"
+          [nzPageSizeOptions]="[10, 25, 50, 100, +preferences.maxEntryPerPage]"
+          [nzPageSize]="changesFilters.entryPerPage || preferences.entryPerPage || 25"
+          [nzShowPagination]="data.length > 0"
+          [nzShowSizeChanger]="true"
+          [nzSize]="'small'">
+          <thead>
+          <tr>
+            <th class="menu" rowspan="2">
+              <span translate>common.label.action</span>
+            </th>
+            <th rowspan="2"><span translate>common.label.name</span></th>
+            <th rowspan="2"><span translate>common.label.title</span></th>
+            <th rowspan="2"><span translate>changes.label.state</span></th>
+            <th rowspan="2"><span translate>changes.label.owner</span></th>
+            <th rowspan="2"><span translate>changes.label.created</span></th>
+            <th rowspan="2"><span translate>changes.label.modified</span></th>
+          </tr>
+          </thead>
+          <tbody>
+          <ng-template
+            [ngForOf]="changesTable.data"
+            let-changes
+            ngFor>
+            <tr>
+              <td>
+                <div class="btn-group dropdown">
+                  <button [nzDropdownMenu]="export3" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                          type="button">
+                    <i class="fa fa-ellipsis-h"></i>
+                  </button>
+                  <nz-dropdown-menu #export3="nzDropdownMenu" role="menu">
+                    <ul nz-menu>
+                      <li (click)="updateChanges(changes,'updateChnages')" nz-menu-item>
+                        <a translate>common.button.edit</a>
+                      </li>
+                      <li nz-menu-divider></li>
+                      <li (click)="deleteChanges(changes?.name)" nz-menu-item>
+                        <a translate>common.button.delete</a>
+                      </li>
+                    </ul>
+                  </nz-dropdown-menu>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex justify-content-between algin-item-center">
+                  <span (click)="updateChanges(changes,'updateCertificate')" class="cursor">{{ changes?.name }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex justify-content-between algin-item-center">
+                  <span *ngIf="changes?.title">{{ changes?.title }}</span>
+                </div>
+              </td><td>
+                <div class="d-flex justify-content-between algin-item-center">
+                  <span *ngIf="changes?.state">{{ changes?.state }}</span>
+                </div>
+              </td><td>
+                <div class="d-flex justify-content-between algin-item-center">
+                  <span *ngIf="changes?.owner">{{ changes?.owner }}</span>
+                </div>
+              </td><td>
+                <div class="d-flex justify-content-between algin-item-center">
+                  <span *ngIf="changes?.created">{{ changes?.created | stringToDate }}</span>
+                </div>
+              </td><td>
+                <div class="d-flex justify-content-between algin-item-center">
+                  <span *ngIf="changes?.modified">{{ changes?.modified | stringToDate  }}</span>
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+          </tbody>
+        </nz-table>
+        <div *ngIf="changesTable.data.length > 0" class="w-half label-top">
+          <span translate>common.label.total</span> {{ data.length }}
+          <span *ngIf="changesTable.data.length > 1" translate
+          >changes.label.changesFound</span
+          >
+          <span *ngIf="changesTable.data.length === 1" translate
+          >changes.label.changeFound</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

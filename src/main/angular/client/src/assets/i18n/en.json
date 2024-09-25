@@ -368,7 +368,8 @@
     "label.permissions": "Permissions",
     "label.manageIdentityServices": "Manage Identity Services",
     "label.clusterAgents": "Cluster Agents",
-    "label.manageEnciphermentKey": "Manage Encryption Keys"
+    "label.manageEnciphermentKey": "Manage Encryption Keys",
+    "label.manageChanges": "Manage Changes"
   },
   "configuration": {
     "tab.inventory": "Inventory",
@@ -424,6 +425,8 @@
     "label.showEncryptionSample": "Encryption Test",
     "label.plainText": "Plain Text",
     "label.assignAgents": "Assign Certificate to Agents",
+    "label.enciphermentsFound": "Encryption keys",
+    "label.enciphermentFound": "Encryption key",
     "placeholder.agentId": "Agent ID",
     "placeholder.certAlias": "Certificate Alias Name",
     "placeholder.certificate": "Paste Certificate here",
@@ -437,6 +440,25 @@
     "button.deleteCertificate": "Delete Certificate",
     "button.updateCertificate": "Update Certificate",
     "button.copyEncryptValue": "Copy encrypted value"
+  },
+  "changes": {
+    "label.addChange": "Add Change",
+    "label.open": "Open",
+    "label.closed": "Closed",
+    "label.published": "Published",
+    "label.created": "Created",
+    "label.modified": "Modified",
+    "label.owner": "Owner",
+    "label.changesFound": "changes",
+    "label.changeFound": "change",
+    "label.addToChange": "Add to Change",
+    "label.removeFromChange": "Remove from Change",
+    "label.state": "change",
+    "placeholder.state": "State",
+    "button.addChange": "Add Change",
+    "button.addToChange": "Add to Change",
+    "button.removeFromChange": "Remove from Change",
+    "button.publishChange": "Publish Change"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
@@ -688,6 +710,7 @@
     "message.deleteCertificate": "Are you sure you want to delete this certificate?",
     "message.removeCertificate": "Are you sure you want to remove this certificate alias?",
     "message.updateDependencies": "Are you sure you want to update dependencies?",
+    "message.deleteChanges": "Are you sure you want to delete this Change?",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Export to .xlsx format",
     "tooltip.expandDetails": "Expand Details",
@@ -1518,7 +1541,8 @@
     "button.manageControllersAndAgents": "Manage Controllers/Agents",
     "button.manageDeployment": "Manage Deployments",
     "button.logOut": "Log Out",
-    "button.manageEnciphermentKey": "Manage Encryption Keys"
+    "button.manageEnciphermentKey": "Manage Encryption Keys",
+    "button.manageChanges": "Manage Changes"
   },
   "history": {
     "label.all": "All",

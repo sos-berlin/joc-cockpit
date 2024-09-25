@@ -673,6 +673,18 @@
         nz-menu-item>
       <a translate>inventory.button.updateDependencies</a>
     </li>
+    <li (click)="addToChange(node);" *ngIf="permission.joc.inventory.manage"
+        nz-menu-item>
+      <a translate>changes.button.addToChange</a>
+    </li>
+    <li (click)="removeFromChange(node);" *ngIf="permission.joc.inventory.manage"
+        nz-menu-item>
+      <a translate>changes.button.removeFromChange</a>
+    </li>
+    <li (click)="publishChange(node);" *ngIf="!node.origin.type" [nzDisabled]="(node.origin.object && node.origin.children?.length === 0) && securityLevel !== 'HIGH'"
+        nz-menu-item>
+      <a translate>changes.button.publishChange</a>
+    </li>
     <li *ngIf="(node.origin.type || node.origin.controller || (!node.origin.type && !node.origin.controller && !node.origin.dailyPlan))
                        && permission.joc.inventory.manage && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" nz-menu-divider></li>
     <li (click)="deployObject(node, false);" *ngIf="permission.joc.inventory.deploy && securityLevel !== 'HIGH' && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && ((node.origin.object && !node.origin.object.match('CALENDAR') && node.origin.object !== 'SCHEDULE' && node.origin.object !== 'INCLUDESCRIPT' && node.origin.object !== 'REPORT' && node.origin.object !== 'JOBTEMPLATE')

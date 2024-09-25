@@ -368,7 +368,8 @@
     "label.permissions": "パーミッション",
     "label.manageIdentityServices": "IDサービス管理",
     "label.clusterAgents": "クラスターエージェント",
-    "label.manageEnciphermentKey": "暗号化鍵管理"
+    "label.manageEnciphermentKey": "暗号化鍵管理",
+    "label.manageChanges": "Manage Changes"
   },
   "configuration": {
     "tab.inventory": "インベントリー",
@@ -424,6 +425,8 @@
     "label.showEncryptionSample": "Certificate Sample Encryption",
     "label.plainText": "Plain Text",
     "label.assignAgents": "Assign Agents",
+    "label.enciphermentsFound": "Encryption keys",
+    "label.enciphermentFound": "Encryption key",
     "placeholder.agentId": "エージェントID",
     "placeholder.certAlias": "証明書エイリアス名",
     "placeholder.certificate": "証明書をペースト",
@@ -437,6 +440,25 @@
     "button.deleteCertificate": "証明書削除",
     "button.updateCertificate": "証明書更新",
     "button.copyEncryptValue": "Copy Encrypted Value"
+  },
+  "changes": {
+    "label.addChange": "Add Change",
+    "label.open": "Open",
+    "label.closed": "Closed",
+    "label.published": "Published",
+    "label.created": "Created",
+    "label.modified": "Modified",
+    "label.owner": "Owner",
+    "label.changesFound": "changes",
+    "label.changeFound": "change",
+    "label.addToChange": "Add to Change",
+    "label.removeFromChange": "Remove from Change",
+    "label.state": "change",
+    "placeholder.state": "State",
+    "button.addChange": "Add Change",
+    "button.addToChange": "Add to Change",
+    "button.removeFromChange": "Remove from Change",
+    "button.publishChange": "Publish Change"
   },
   "--------COMMON LABEL AND BUTTONS------------": "複数ページで使用",
   "common": {
@@ -1518,7 +1540,8 @@
     "button.manageControllersAndAgents": "コントローラー/エージェント管理",
     "button.manageDeployment": "デプロイ管理",
     "button.logOut": "ログアウト",
-    "button.manageEnciphermentKey": "暗号化鍵管理"
+    "button.manageEnciphermentKey": "暗号化鍵管理",
+    "button.manageChanges": "Manage Changes"
   },
   "history": {
     "label.all": "全て",

@@ -11,9 +11,22 @@ import {InventoryService} from './inventory.service';
 import {SharedModule} from '../../shared/shared.module';
 import {CalendarService} from '../../../services/calendar.service';
 import {
-  CreateFolderModalComponent, CreateObjectModalComponent, CreateTagModalComponent, DeployComponent, ExportComponent,
-  GitComponent, InventoryComponent, JsonEditorModalComponent, NewDraftComponent, NotificationComponent,
-  RepositoryComponent, ShowObjectsComponent, SingleDeployComponent, EncryptArgumentModalComponent, ShowAgentsModalComponent
+  CreateFolderModalComponent,
+  CreateObjectModalComponent,
+  CreateTagModalComponent,
+  DeployComponent,
+  ExportComponent,
+  GitComponent,
+  InventoryComponent,
+  JsonEditorModalComponent,
+  NewDraftComponent,
+  NotificationComponent,
+  RepositoryComponent,
+  ShowObjectsComponent,
+  SingleDeployComponent,
+  EncryptArgumentModalComponent,
+  ShowAgentsModalComponent,
+  ChangeModalComponent
 } from './inventory.component';
 import {TableComponent} from './table-data/table.component';
 import {
@@ -60,7 +73,7 @@ const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, Calen
   NotificationComponent, RepositoryComponent, GitComponent, ScriptEditorComponent, UpdateJobTemplatesComponent, CreateTagModalComponent,
   UpdateObjectComponent, FindAndReplaceComponent, ShowObjectsComponent, CycleInstructionComponent, UpdateJobComponent, PeriodComponent,
   ShowReferenceComponent, AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, AddRestrictionComponent, TestMailComponent,
-  RunTimeComponent, TreeModalComponent, JobWizardComponent, FacetEditorComponent, FavoriteListComponent, NewDraftComponent, NoticeBoardEditorComponent, ReportComponent, ChangeImpactDialogComponent, EncryptArgumentModalComponent,ShowAgentsModalComponent ];
+  RunTimeComponent, TreeModalComponent, JobWizardComponent, FacetEditorComponent, FavoriteListComponent,ChangeModalComponent, NewDraftComponent, NoticeBoardEditorComponent, ReportComponent, ChangeImpactDialogComponent, EncryptArgumentModalComponent,ShowAgentsModalComponent ];
 
 @NgModule({
   imports: [

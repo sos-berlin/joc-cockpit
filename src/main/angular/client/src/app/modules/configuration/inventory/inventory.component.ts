@@ -3060,17 +3060,34 @@ export class ExportComponent {
 
   private handleDependenciesForDeploy(node: any, obj: any): void {
     if (!obj.shallowCopy) {
-      obj.shallowCopy = {
-        deployables: {
-          deployConfigurations: [],
-          draftConfigurations: []
-        },
-        releasables: {
-          releasedConfigurations: [],
-          releaseDraftConfigurations: []
-        }
-      };
+      obj.shallowCopy = {};
     }
+
+
+    if (!obj.shallowCopy.deployables) {
+      obj.shallowCopy.deployables = {};
+    }
+
+    if (!obj.shallowCopy.deployables.deployConfigurations) {
+      obj.shallowCopy.deployables.deployConfigurations = [];
+    }
+
+    if (!obj.shallowCopy.deployables.draftConfigurations) {
+      obj.shallowCopy.deployables.draftConfigurations = [];
+    }
+
+    if (!obj.shallowCopy.releasables) {
+      obj.shallowCopy.releasables = {};
+    }
+
+    if (!obj.shallowCopy.releasables.releasedConfigurations) {
+      obj.shallowCopy.releasables.releasedConfigurations = [];
+    }
+
+    if (!obj.shallowCopy.releasables.draftConfigurations) {
+      obj.shallowCopy.releasables.draftConfigurations = [];
+    }
+
     const isDuplicate = (array: any[], config: any): boolean => {
       return array.some(item => item.configuration.path === config.configuration.path && item.configuration.objectType === config.configuration.objectType);
     };
@@ -3084,7 +3101,6 @@ export class ExportComponent {
               objectType: dep.objectType,
             }
           };
-
           if (dep.deployed && dep.valid) {
             if (!isDuplicate(obj.shallowCopy.deployables.deployConfigurations, config)) {
               obj.shallowCopy.deployables.deployConfigurations.push(config);
@@ -3097,7 +3113,7 @@ export class ExportComponent {
             if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
               obj.shallowCopy.deployables.draftConfigurations.push(config);
             }
-          }else if((!dep.valid || dep.valid) && (dep.deployed || !dep.deployed) && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType)) {
+          }else if((!dep.valid || dep.valid) && (dep.released || !dep.released) && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType)) {
             if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
               obj.shallowCopy.releasables.draftConfigurations.push(config);
             }
@@ -3114,7 +3130,6 @@ export class ExportComponent {
               objectType: ref.objectType,
             }
           };
-
           if (ref.deployed && ref.valid)  {
             if (!isDuplicate(obj.shallowCopy.deployables.deployConfigurations, config)) {
               obj.shallowCopy.deployables.deployConfigurations.push(config);
@@ -3127,11 +3142,12 @@ export class ExportComponent {
             if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
               obj.shallowCopy.deployables.draftConfigurations.push(config);
             }
-          }else if((!ref.valid || ref.valid) && (ref.deployed || !ref.deployed) && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(ref.objectType)) {
+          }else if((!ref.valid || ref.valid) && (ref.released || !ref.released) && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(ref.objectType)) {
             if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
               obj.shallowCopy.releasables.draftConfigurations.push(config);
             }
           }
+
         }
       });
     }
@@ -5101,6 +5117,358 @@ export class EncryptArgumentModalComponent {
   }
 }
 
+@Component({
+  selector: 'app-change-modal',
+  templateUrl: './change-dialog.html'
+})
+export class ChangeModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  schedulerIds: any;
+  preferences: any;
+  comments: any = {radio: 'predefined'};
+  display: any;
+  nodes: any = [];
+  submitted = false;
+  required = false;
+  removeChange = false;
+  loading = true;
+  origin: any;
+  data: any;
+  changeObj: any;
+  path = '';
+  title: string;
+  filter = {
+    controller: true,
+    dailyPlan: true,
+    draft: true,
+    deploy: true,
+    release: true,
+    valid: false,
+  };
+  constructor(public activeModal: NzModalRef, private coreService: CoreService,  private inventoryService: InventoryService) {
+  }
+
+  ngOnInit():void {
+    this.schedulerIds = this.modalData.schedulerIds;
+    this.preferences = this.modalData.preferences;
+    this.origin = this.modalData.origin;
+    this.display = this.modalData.display;
+    this.removeChange = this.modalData.remove;
+    this.title = this.modalData.title;
+    this.data = this.modalData.data;
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+      this.required = true;
+      this.display = true;
+    }
+    if (this.origin) {
+      if (this.origin.object) {
+      }
+      this.path = this.origin.path;
+      if (this.origin.dailyPlan || (this.origin.object &&
+        (this.origin.object === InventoryObject.SCHEDULE || this.origin.object === InventoryObject.JOBTEMPLATE || this.origin.object === InventoryObject.INCLUDESCRIPT ||
+          this.origin.object === InventoryObject.REPORT || this.origin.object.match('CALENDAR')))) {
+        this.filter.controller = false;
+        this.filter.deploy = false;
+      } else {
+        if (this.origin.controller || this.origin.object) {
+          this.filter.dailyPlan = false;
+          this.filter.release = false;
+        }
+      }
+    }
+    this.buildTree(this.path);
+    this.changes()
+  }
+
+  changes():void{
+    this.coreService.post('inventory/changes', {}).subscribe({
+      next: (res) => {
+        this.changeObj = res.changes
+        this.loading = true;
+      },
+      error: ()=> {
+        this.loading = true;
+      }
+    });
+  }
+
+  onChange(selected: string): void {
+    this.nodes.changeName = selected;
+  }
+
+  addChange(): void {
+    const checkedNodes = this.getCheckedNodes(this.nodes);
+    this.submitted = true;
+
+    let auditLog: any = {};
+    if (this.comments.comment) {
+      auditLog.comment = this.comments.comment;
+    }
+    if (this.comments.timeSpent) {
+      auditLog.timeSpent = this.comments.timeSpent;
+    }
+    if (this.comments.ticketLink) {
+      auditLog.ticketLink = this.comments.ticketLink;
+    }
+
+    const obj = {
+      auditLog: auditLog.comment ? auditLog : undefined,
+      change: {
+        name: this.nodes.changeName
+      },
+      [this.removeChange ? 'remove' : 'add']: checkedNodes
+    };
+
+    const endpoint = this.removeChange ? 'inventory/change/remove' : 'inventory/change/add';
+
+    if (checkedNodes && checkedNodes.length > 0) {
+      this.coreService.post(endpoint, obj).subscribe({
+        next: (res) => {
+          this.activeModal.close();
+        },
+        error: () => {
+          this.activeModal.close();
+        }
+      });
+    }
+  }
+
+
+  getCheckedNodes(nodeList: any[]): any[] {
+    const result: any[] = [];
+
+    function collectCheckedNodes(nodes: any[]): void {
+      nodes.forEach(node => {
+        if (node.checked && node.type) {
+          result.push({
+            objectType: node.type,
+            name: node.name
+          });
+        }
+
+        if (node.children && node.children.length > 0) {
+          collectCheckedNodes(node.children);
+        }
+      });
+    }
+
+    collectCheckedNodes(nodeList);
+    return result;
+  }
+
+  checkBoxChange(e: NzFormatEmitEvent): void {
+    const node: any = e.node;
+      if (node.origin['type'] && node.parentNode) {
+        node.parentNode.isHalfChecked = true;
+        let flag;
+        if (!node.isChecked) {
+          node.parentNode.isChecked = false;
+          flag = this.inventoryService.checkHalfCheckBox(node.parentNode, false);
+        } else {
+          flag = this.inventoryService.checkHalfCheckBox(node.parentNode, true);
+          node.parentNode.isChecked = flag;
+        }
+        node.parentNode.isHalfChecked = !flag;
+      }
+
+      if (!node.origin['type']) {
+        for (let i = 0; i < node.children.length; i++) {
+          if (node.children[i].origin['type']) {
+            node.children[i].isChecked = node.isChecked;
+          }
+          if (!node.children[i].origin['object'] && !node.children[i].origin['type']) {
+            break;
+          }
+        }
+      }
+  }
+
+  openFolder(node, skip = true): void {
+    if (skip) {
+      node.isExpanded = !node.isExpanded;
+    }
+    if (node && node.origin && node.origin.expanded && !node.origin['isCall']) {
+      if (!node.origin['type'] && !node.origin['object']) {
+        node.origin['loading'] = true;
+        this.buildTree(node.origin['path'], node.origin);
+      }
+
+    }
+  }
+  getDeploymentVersion(e: NzFormatEmitEvent): void {
+    const node = e.node;
+    this.openFolder(node, false);
+  }
+  buildTree(path: string, merge?: any, cb?: any, flag = false): void {
+    const obj: any = {
+      folder: path || '/',
+      onlyValidObjects: this.filter.valid,
+      recursive: flag,
+      withoutDrafts: !this.filter.draft,
+      withoutDeployed: !this.filter.deploy,
+      withoutRemovedObjects: true
+    };
+
+    let deployObjectTypes = [];
+    let releaseObjectTypes = [];
+
+    if (this.data && this.data.object) {
+      deployObjectTypes = this.data.object === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.object];
+      releaseObjectTypes = this.data.object === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.object];
+    }else if(this.data.objectType){
+
+      deployObjectTypes = this.data.objectType === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.objectType];
+      releaseObjectTypes = this.data.objectType === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.objectType];
+    }else if(this.data.name === '/'){
+
+      deployObjectTypes = this.data.objectType === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
+        InventoryObject.NOTICEBOARD, InventoryObject.LOCK];
+      releaseObjectTypes = this.data.objectType === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [InventoryObject.REPORT, InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE];
+    }else if(this.data.name === 'Controller'){
+      deployObjectTypes = this.data.objectType === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
+        InventoryObject.NOTICEBOARD, InventoryObject.LOCK];
+    }else if(this.data.name === 'Daily Plan'){
+      releaseObjectTypes = this.data.objectType === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [InventoryObject.REPORT, InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE];
+    }else{
+      deployObjectTypes = this.data.objectType === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
+        InventoryObject.NOTICEBOARD, InventoryObject.LOCK];
+      releaseObjectTypes = this.data.objectType === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [InventoryObject.REPORT, InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE];
+    }
+    const APIs = [];
+    if (this.filter.controller && this.filter.dailyPlan) {
+      obj.withoutReleased = !this.filter.release;
+      if (deployObjectTypes.length > 0) {
+        APIs.push(this.coreService.post('inventory/deployables', {...obj, ...{objectTypes: deployObjectTypes}}).pipe(
+          catchError(error => of(error))
+        ));
+      }
+      if (releaseObjectTypes.length > 0) {
+        APIs.push(this.coreService.post('inventory/releasables', {...obj, ...{objectTypes: releaseObjectTypes}}).pipe(
+          catchError(error => of(error))
+        ));
+      }
+    } else {
+      if (this.filter.dailyPlan) {
+        obj.withoutReleased = !this.filter.release;
+        if (releaseObjectTypes.length > 0) {
+          obj.objectTypes = releaseObjectTypes;
+          APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
+            catchError(error => of(error))
+          ));
+        }
+      } else {
+        obj.withVersions = !this.filter.deploy;
+        if (deployObjectTypes.length > 0) {
+          obj.objectTypes = deployObjectTypes;
+          APIs.push(this.coreService.post('inventory/deployables', obj).pipe(
+            catchError(error => of(error))
+          ));
+        }
+      }
+    }
+    if (APIs.length === 0) {
+      this.nodes = [];
+      this.loading = false;
+      return;
+    }
+    forkJoin(APIs).subscribe({
+      next: (res: any) => {
+        let mergeObj: any = {};
+        if (res.length > 1) {
+          if (res[0].path && res[1].path) {
+            mergeObj = this.mergeDeep(res[0], res[1]);
+          } else if (res[0].path && !res[1].path) {
+            mergeObj = res[0];
+          } else if (!res[0].path && res[1].path) {
+            mergeObj = res[1];
+          }
+        } else {
+          if (res[0].path) {
+            mergeObj = res[0];
+          }
+        }
+        let tree = [];
+        if (mergeObj.folders && mergeObj.folders.length > 0 ||
+          ((mergeObj.deployables && mergeObj.deployables.length > 0) || (mergeObj.releasables && mergeObj.releasables.length > 0))) {
+          tree = this.coreService.prepareTree({
+            folders: [{
+              name: mergeObj.name,
+              path: mergeObj.path,
+              folders: mergeObj.folders,
+              deployables: mergeObj.deployables,
+              releasables: mergeObj.releasables
+            }]
+          }, false);
+          this.inventoryService.updateTree(tree[0]);
+        }
+        if (merge) {
+          if (tree.length > 0) {
+            merge.children = tree[0].children;
+          }
+          delete merge.loading;
+          if (!flag) {
+            this.nodes = [...this.nodes];
+          }
+        } else {
+          this.nodes = tree;
+          if (!cb) {
+            setTimeout(() => {
+              this.loading = false;
+              if (this.nodes.length > 0) {
+                this.nodes[0].expanded = true;
+                this.inventoryService.preselected(this.nodes[0]);
+              }
+              this.nodes = [...this.nodes];
+            }, 0);
+          } else {
+            cb();
+          }
+        }
+      }
+    })
+  }
+
+  private mergeDeep(deployables: any, releasables: any): any {
+    function recursive(sour: any, dest: any): void {
+      if (!sour.deployables) {
+        sour.deployables = [];
+      }
+      sour.deployables = sour.deployables.concat(dest.releasables || []);
+      if (dest.folders && dest.folders.length > 0) {
+        for (const i in sour.folders) {
+          for (const j in dest.folders) {
+            if (sour.folders[i].path === dest.folders[j].path) {
+              recursive(sour.folders[i], dest.folders[j]);
+              dest.folders.splice(j, 1);
+              break;
+            }
+          }
+        }
+      }
+      if (dest.folders && dest.folders.length > 0) {
+        sour.folders = sour.folders.concat(dest.folders);
+      }
+    }
+
+    recursive(deployables, releasables);
+    return deployables;
+  }
+
+
+  remove(): void {
+    this.submitted = true;
+    const obj: any = {
+      auditLog: {}
+    };
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+    this.activeModal.close(obj);
+  }
+
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+
+}
 
 @Component({
   selector: 'app-inventory',
@@ -8530,6 +8898,53 @@ export class InventoryComponent {
       this.coreService.post('inventory/dependencies/update', {}).subscribe((res) => {
       });
     });
+  }
+
+  addToChange(node):void {
+    const origin = this.coreService.clone(node.origin ? node.origin : node);
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ChangeModalComponent,
+      nzClassName: 'lg',
+      nzData: {
+        schedulerIds: this.getAllowedControllerOnly(),
+        preferences: this.preferences,
+        display: this.preferences.auditLog,
+        title: 'addToChange',
+        path: origin.path,
+        data: origin,
+        isChecked: this.inventoryService.checkDeploymentStatus.isChecked,
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
+
+  removeFromChange(node):void {
+    const origin = this.coreService.clone(node.origin ? node.origin : node);
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ChangeModalComponent,
+      nzClassName: 'lg',
+      nzData: {
+        schedulerIds: this.getAllowedControllerOnly(),
+        preferences: this.preferences,
+        display: this.preferences.auditLog,
+        title: 'removeFromChange',
+        path: origin.path,
+        data: origin,
+        isChecked: this.inventoryService.checkDeploymentStatus.isChecked,
+        remove: true
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
+
+  publishChange(node):void {
+
   }
 }
 

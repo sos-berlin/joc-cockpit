@@ -139,6 +139,13 @@
                   {{'header.button.manageDeployment' | translate}}
                 </a>
               </li>
+              <li *ngIf="permission && permission.joc" [routerLinkActive]="['active']" nz-menu-item
+                  routerLink="/changes">
+                <a>
+                  <i class="wd-14 fa fa-refresh"></i>
+                  {{'header.button.manageChanges' | translate}}
+                </a>
+              </li>
               <li *ngIf="permission && permission.joc && permission.joc.administration.settings.view" [routerLinkActive]="['active']" nz-menu-item
                   routerLink="/settings">
                 <a>

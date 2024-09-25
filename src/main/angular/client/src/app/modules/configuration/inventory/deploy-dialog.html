@@ -140,8 +140,8 @@
                          class="icon3-reload-error font11 pos-rel t-1 p-l-xxs"></i>
                     </span>
                 <span *ngIf="node.origin.object" class="p-l-sm text-capitalize">{{node.origin.name | translate}}</span>
-                <span *ngIf="!node.origin.object" class="p-l-sm">{{node.origin.name}}</span>
-                <span *ngIf="!node.origin.object && !isRemove" class="p-l-sm">{{node.origin.path}}</span>
+                <span *ngIf="!node.origin.object && !isRemove" class="p-l-sm">{{node.origin.name}}</span>
+                <span *ngIf="!node.origin.object && isRemove" class="p-l-sm">{{node.origin.name}}</span>
               </div>
               <div *ngIf="!isRemove && node.origin.type && node.origin.deployablesVersions && node.origin.deployablesVersions.length >0"
                    class="m-l">

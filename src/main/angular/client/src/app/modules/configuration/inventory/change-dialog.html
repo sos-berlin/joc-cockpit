@@ -1,0 +1,114 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>{{'changes.label.'+ title}}</span>  </h4>
+  <button (click)="cancel()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="addChange()" spellcheck="false">
+  <div class="modal-body p-a min-ht-150">
+    <div>
+      <div [ngClass]="{'show': display && nodes.length > 0}" class="hide">
+        <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
+      </div>
+      <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="form-group row">
+        <label class="col-sm-3 form-control-label" translate>common.label.name
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-6">
+          <nz-select #name="ngModel" required [(ngModel)]="this.nodes.changeName" (ngModelChange)="onChange($event)"
+                     name="name"  nzPlaceHolder="{{'common.placeholder.name' | translate}}" nzShowSearch>
+            <nz-option *ngFor="let option of changeObj" [nzLabel]="option.name"
+                       [nzValue]="option.name"></nz-option>
+          </nz-select>
+          <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
+            <div *ngIf="name.errors['required']">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <nz-tree
+            #treeCtrl
+            [nzCheckable]="true"
+            (nzExpandChange)="getDeploymentVersion($event)"
+            (nzCheckBoxChange)="checkBoxChange($event)"
+            [nzData]="nodes"
+            [nzTreeTemplate]="nzTreeTemplate"
+            nzNoAnimation
+          ></nz-tree>
+
+
+          <ng-template #nzTreeTemplate let-node>
+            <div class="node-wrapper">
+              <i *ngIf="node.origin.loading" class="pos-abt" style="margin-left: -42px">
+                <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
+              </i>
+              <div (click)="openFolder(node)" [ngClass]="{'m-t-xs' :node.origin.object}" class="node-content-wrapper2">
+                <i *ngIf="!node.origin.object && !node.origin.type" [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+                   class="w-14" nz-icon></i>
+                <i *ngIf="node.origin.object == 'WORKFLOW'" class="icon-color" nz-icon nzTheme="outline"
+                   nzType="apartment"></i>
+                <i *ngIf="node.origin.object == 'FILEORDERSOURCE'" class="icon-orders-icon icon-color tree-icon"></i>
+                <i *ngIf="node.origin.object == 'JOBRESOURCE'" class="icon-resources-icon icon-color tree-icon"></i>
+                <i *ngIf="node.origin.object == 'JOBTEMPLATE'" class="icon-jobs-icon icon-color tree-icon"></i>
+                <i *ngIf="node.origin.object == 'NOTICEBOARD'" class="icon-color" nz-icon nzTheme="outline"
+                   nzType="pushpin"></i>
+                <i *ngIf="node.origin.object == 'LOCK'" class="icon-color" nz-icon nzTheme="outline" nzType="lock"></i>
+                <i *ngIf="node.origin.object == 'SCHEDULE'" class="icon-color" nz-icon nzTheme="outline"
+                   nzType="schedule"></i>
+                <i *ngIf="node.origin.object == 'INCLUDESCRIPT'" class="fa fa-terminal w-13"></i>
+                <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" class="icon-color" nz-icon
+                   nzTheme="outline" nzType="calendar"></i>
+                <span *ngIf="node.origin.type" [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' :(node.origin.deployed || node.origin.released) || node.origin.deployId || node.origin.releaseId,
+                    'opacity7': node.origin.syncState && (node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING')}" class="fa fa-check-circle-o orange text-xs m-t-xs"></span>
+                <span *ngIf="node.origin.type && node.origin.syncState" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="node.origin.syncState._text | translate"
+                      class="p-l-xxs">
+                      <i
+                        *ngIf="node.origin.syncState._text === 'IN_SYNC' || node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING'"
+                        class="fa fa-refresh font11 p-l-xxs"></i>
+                      <i *ngIf="node.origin.syncState._text === 'UNKNOWN'"
+                         class="fa fa-exclamation-triangle font11 p-l-xxs"></i>
+                      <i *ngIf="node.origin.syncState._text === 'NOT_IN_SYNC'"
+                         class="icon3-reload-error font11 pos-rel t-1 p-l-xxs"></i>
+                    </span>
+                <span *ngIf="node.origin.object" class="p-l-sm text-capitalize">{{node.origin.name | translate}}</span>
+                <span *ngIf="!node.origin.object" class="p-l-sm">{{node.origin.name}}</span>
+              </div>
+              <div *ngIf=" node.origin.type  && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)"
+                   class="m-l">
+                <i *ngIf="!node.origin.deleted" class="text-muted" translate>workflow.label.draft</i>
+                <i *ngIf="node.origin.deleted && node.origin.deploymentId" class="text-danger" translate>inventory.label.deployMarkDelete</i>
+                <i *ngIf="node.origin.deleted && !node.origin.deploymentId" class="text-danger" translate>inventory.label.markForDelete</i>
+              </div>
+              <div *ngIf=" !node.origin.type && !node.origin.object" class="m-l">
+                <i *ngIf="node.origin.deleted && node.origin.deploymentId" class="text-danger" translate>inventory.label.deployMarkDelete</i>
+                <i *ngIf="node.origin.deleted && !node.origin.deploymentId" class="text-danger" translate>inventory.label.markForDelete</i>
+              </div>
+            </div>
+
+
+          </ng-template>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="nodes.length===0 && !loading" class="m-t-md">
+      <app-empty-data></app-empty-data>
+    </div>
+    <div *ngIf="loading" [ngClass]="{'loading-on-text': nodes.length>0}" class="text-center m-t-md">
+      <nz-spin nzSimple></nz-spin>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button *ngIf="nodes.length > 0" [disabled]="!myForm.form.valid  || submitted || loading" class="btn btn-primary btn-sm"
+            type="submit">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
+      common.button.cancel
+    </button>
+  </div>
+</form>

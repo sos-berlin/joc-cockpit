@@ -1,0 +1,61 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>{{'changes.label'+ title}}</span>  </h4>
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+  <div class="modal-body p-a">
+    <div class="row">
+      <div [ngClass]="{'show': display}" class="col-md-12 hide">
+        <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
+      </div>
+    </div>
+    <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
+         class="form-group row">
+      <label class="col-sm-3 form-control-label" translate>common.label.name
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-6">
+        <input #name="ngModel" [(ngModel)]="changesObj.name" [appAutofocus]="true" autocomplete="off" class="form-control"
+               name="name" placeholder="{{'common.placeholder.name' | translate}}" required type="text"/>
+        <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
+          <div *ngIf="name.errors['required']">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-3 form-control-label" translate>common.label.title
+      </label>
+      <div class="col-sm-9">
+        <input [(ngModel)]="changesObj.title" autocomplete="off" class="form-control"
+               name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text"/>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-3 form-control-label" translate>common.label.state
+      </label>
+      <div class="col-sm-9">
+        <nz-select nzShowSearch nzAllowClear [nzPlaceHolder]="'changes.placeholder.state' | translate" [(ngModel)]="changesObj.state" name="state" (ngModelChange)="changeState($event)">
+          <nz-option [nzLabel]="'changes.label.open' | translate" [nzValue]="'OPEN'"></nz-option>
+          <nz-option [nzLabel]="'changes.label.closed' | translate" [nzValue]="'CLOSED'"></nz-option>
+          <nz-option [nzLabel]="'changes.label.published' | translate" [nzValue]="'PUBLISHED'"></nz-option>
+        </nz-select>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"
+            type="submit">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      <span translate>common.button.cancel</span>
+    </button>
+  </div>
+</form>

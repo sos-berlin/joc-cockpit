@@ -27,7 +27,7 @@
                 (click)="addEnciphermentCertificate()"
                 class="btn btn-grey btn-sm m-l-12"
               >
-                <i nz-icon nzType="plus" nzTheme="outline"></i>&nbsp;
+                <i class="fa fa-plus"></i>&nbsp;
                 <span translate>encipherment.button.addNewCertificate</span>
               </button>
             </ng-container>
@@ -108,10 +108,10 @@
         <div *ngIf="enciphermentTable.data.length > 0" class="w-half label-top">
           <span translate>common.label.total</span> {{ data.length }}
           <span *ngIf="enciphermentTable.data.length > 1" translate
-            >history.label.historiesFound</span
+            >encipherment.label.enciphermentsFound</span
           >
           <span *ngIf="enciphermentTable.data.length === 1" translate
-            >history.label.historyFound</span
+            >encipherment.label.enciphermentFound</span
           >
         </div>
       </div>
