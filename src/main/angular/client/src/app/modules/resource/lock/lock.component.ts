@@ -521,7 +521,6 @@ export class LockComponent {
   }
 
   getLastPartOfWorkflow(workflow: string): string {
-    console.log(workflow,"f")
     if (workflow) {
       const parts = workflow.split('/');
       return parts[parts.length - 1];

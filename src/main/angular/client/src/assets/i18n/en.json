@@ -1826,6 +1826,7 @@
     "label.affectedObjects": "Affected Objects",
     "label.referencedObjects": "Referenced Objects",
     "label.includeTodaysLateOrders": "Include today's late Orders",
+    "label.changes": "Changes",
     "button.modifyVariableSet": "Modify Variable Set",
     "button.addOrderParameter": "Add Order Template",
     "button.setVersion": "Set Version",

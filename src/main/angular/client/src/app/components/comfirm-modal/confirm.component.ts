@@ -52,7 +52,6 @@ export class ConfirmModalComponent {
     this.updateFromJobTemplate = this.modalData.updateFromJobTemplate;
     this.lossNode = this.modalData.lossNode;
     this.dependencies = this.modalData.dependencies;
-console.log(this.dependencies,">>");
     if(this.dependencies){
       this.prepareObject(this.dependencies)
     }
