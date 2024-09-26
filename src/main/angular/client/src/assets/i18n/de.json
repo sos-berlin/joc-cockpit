@@ -369,7 +369,7 @@
     "label.manageIdentityServices": "Identitätsdienste verwalten",
     "label.clusterAgents": "Cluster Agenten",
     "label.manageEnciphermentKey": "Verschlüsselungsschlüssel verwalten",
-    "label.manageChanges": "Manage Changes"
+    "label.manageChanges": "Änderungen verwalten"
   },
   "configuration": {
     "tab.inventory": "Inventar",
@@ -425,8 +425,8 @@
     "label.showEncryptionSample": "Verschlüsselungstest",
     "label.plainText": "Klartext",
     "label.assignAgents": "Zertifikat den Agenten hinzufügen",
-    "label.enciphermentsFound": "Encryption keys",
-    "label.enciphermentFound": "Encryption key",
+    "label.enciphermentsFound": "Verschlüsselungsschlüssel",
+    "label.enciphermentFound": "Verschlüsselungsschlüssel",
     "placeholder.agentId": "Agenten-Kennung",
     "placeholder.certAlias": "Alias des Zertifikats",
     "placeholder.certificate": "Zertifikat hier einfügen",
@@ -442,24 +442,24 @@
     "button.copyEncryptValue": "Verschlüsselten Wert kopieren"
   },
   "changes": {
-    "label.addChange": "Add Change",
-    "label.updateChange": "update Change",
-    "label.open": "Open",
-    "label.closed": "Closed",
-    "label.published": "Published",
-    "label.created": "Created",
-    "label.modified": "Modified",
-    "label.owner": "Owner",
-    "label.changesFound": "changes",
-    "label.changeFound": "change",
-    "label.addToChange": "Add to Change",
-    "label.removeFromChange": "Remove from Change",
-    "label.state": "change",
-    "placeholder.state": "State",
-    "button.addChange": "Add Change",
-    "button.addToChange": "Add to Change",
-    "button.removeFromChange": "Remove from Change",
-    "button.publishChange": "Publish Change"
+    "label.addChange": "Änderung hinzufügen",
+    "label.updateChange": "Änderung aktualisieren",
+    "label.open": "Offen",
+    "label.closed": "Geschlossen",
+    "label.published": "Ausgerollt",
+    "label.created": "Angelegt",
+    "label.modified": "Geändert",
+    "label.owner": "Besitzer",
+    "label.changesFound": "Änderungen",
+    "label.changeFound": "Änderung",
+    "label.addToChange": "Zu Änderung hinzufügen",
+    "label.removeFromChange": "Aus Änderung entfernen",
+    "label.state": "Änderung",
+    "placeholder.state": "Status",
+    "button.addChange": "Änderung hinzufügen",
+    "button.addToChange": "Zu Änderung hinzufügen",
+    "button.removeFromChange": "Aus Änderung entfernen",
+    "button.publishChange": "Änderung ausrollen"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
@@ -1542,7 +1542,7 @@
     "button.manageDeployment": "Ausrollen verwalten",
     "button.logOut": "Abmelden",
     "button.manageEnciphermentKey": "Verschlüsselungsschlüssel verwalten",
-    "button.manageChanges": "Manage Changes"
+    "button.manageChanges": "Änderungen verwalten"
   },
   "history": {
     "label.all": "Alle",

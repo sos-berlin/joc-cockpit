@@ -369,7 +369,7 @@
     "label.manageIdentityServices": "Gérer les Services d'Identité",
     "label.clusterAgents": "Agents Cluster",
     "label.manageEnciphermentKey": "Gérer les Clefs de Cryptage",
-    "label.manageChanges": "Manage Changes"
+    "label.manageChanges": "Gérer les Changements"
   },
   "configuration": {
     "tab.inventory": "Inventaire",
@@ -406,7 +406,7 @@
   },
   "encipherment": {
     "label.addCertificate": "Ajouter un Certificat de Cryptage",
-    "label.updateCertificate": "Actualisier le Certificat de Cryptage",
+    "label.updateCertificate": "Actualiser le Certificat de Cryptage",
     "label.agentId": "ID Agent",
     "label.certAlias": "Alias de Certificat",
     "label.certificate": "Certificat",
@@ -438,28 +438,28 @@
     "button.addNewCertificate": "Ajouter Certificat",
     "button.importCertificate": "Importer Certificat",
     "button.deleteCertificate": "Supprimer Certificat",
-    "button.updateCertificate": "Actualisier Certificat",
+    "button.updateCertificate": "Actualiser Certificat",
     "button.copyEncryptValue": "Copier la valeur cryptée"
   },
   "changes": {
-    "label.addChange": "Add Change",
-    "label.updateChange": "update Change",
-    "label.open": "Open",
-    "label.closed": "Closed",
-    "label.published": "Published",
-    "label.created": "Created",
-    "label.modified": "Modified",
-    "label.owner": "Owner",
-    "label.changesFound": "changes",
-    "label.changeFound": "change",
-    "label.addToChange": "Add to Change",
-    "label.removeFromChange": "Remove from Change",
-    "label.state": "change",
-    "placeholder.state": "State",
-    "button.addChange": "Add Change",
-    "button.addToChange": "Add to Change",
-    "button.removeFromChange": "Remove from Change",
-    "button.publishChange": "Publish Change"
+    "label.addChange": "Ajouter au Changement",
+    "label.updateChange": "Actualiser le Changement",
+    "label.open": "Ouvert",
+    "label.closed": "Fermé",
+    "label.published": "Publié",
+    "label.created": "Créé",
+    "label.modified": "Modifié",
+    "label.owner": "Responsable",
+    "label.changesFound": "Changements",
+    "label.changeFound": "Changement",
+    "label.addToChange": "Ajouter au Changement",
+    "label.removeFromChange": "Supprimer du Changement",
+    "label.state": "Changement",
+    "placeholder.state": "Status",
+    "button.addChange": "Ajouter Changement",
+    "button.addToChange": "Ajouter au Changement",
+    "button.removeFromChange": "Supprimer du Changement",
+    "button.publishChange": "Publier Changement"
   },
   "--------COMMON LABEL AND BUTTONS------------": "Used multiple pages",
   "common": {
@@ -1542,7 +1542,7 @@
     "button.manageDeployment": "Gérer le Deploiement",
     "button.logOut": "Se Déconnecter",
     "button.manageEnciphermentKey": "Gérer les Clefs de Cryptage",
-    "button.manageChanges": "Manage Changes"
+    "button.manageChanges": "Gérer les Changements"
   },
   "history": {
     "label.all": "Tous",
