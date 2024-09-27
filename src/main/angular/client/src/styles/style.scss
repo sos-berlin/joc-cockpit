@@ -9878,3 +9878,11 @@ cdk-virtual-scroll-viewport {
   display: flex;
   flex-direction: row-reverse;
 }
+
+.empty-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  min-width: 100%;
+}

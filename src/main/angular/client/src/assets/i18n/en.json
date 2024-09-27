@@ -634,6 +634,7 @@
     "button.copyArguments": "Copy arguments",
     "button.showClipboard": "Show clipboard",
     "button.copyOrderId": "Copy Order ID",
+    "button.showDependencies": "Show Dependencies",
     "placeholder.search": "Filter results",
     "placeholder.name": "Name",
     "placeholder.value": "Value",

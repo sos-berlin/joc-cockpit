@@ -634,6 +634,7 @@
     "button.copyArguments": "Argumente kopieren",
     "button.showClipboard": "Zwischenablage anzeigen",
     "button.copyOrderId": "Auftragskennung kopieren",
+    "button.showDependencies": "Show Dependencies",
     "placeholder.search": "Ergebnisse filtern",
     "placeholder.name": "Name",
     "placeholder.value": "Wert",

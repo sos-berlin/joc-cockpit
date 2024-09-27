@@ -9967,7 +9967,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           if (!tags) {
             tags = [];
           } else {
-            tags = JSON.parse(tags);
+            tags = tags;
           }
           obj.arguments = argument;
           obj.tags = tags

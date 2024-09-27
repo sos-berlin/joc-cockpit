@@ -634,6 +634,7 @@
     "button.copyArguments": "変数コピー",
     "button.showClipboard": "クリップボード表示",
     "button.copyOrderId": "オーダーIDコピー",
+    "button.showDependencies": "Show Dependencies",
     "placeholder.search": "検索",
     "placeholder.name": "名称",
     "placeholder.value": "値",

@@ -681,6 +681,10 @@
         nz-menu-item>
       <a translate>changes.button.removeFromChange</a>
     </li>
+    <li (click)="showDependencies(node);" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && node.origin.type"
+        nz-menu-item>
+      <a translate>common.button.showDependencies</a>
+    </li>
     <li (click)="publishChange(node);" *ngIf="!node.origin.type" [nzDisabled]="(node.origin.object && node.origin.children?.length === 0) && securityLevel !== 'HIGH'"
         nz-menu-item>
       <a translate>changes.button.publishChange</a>

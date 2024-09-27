@@ -2243,6 +2243,10 @@ export class ExportComponent {
   selectAllReferenced: { [key: string]: boolean } = {};
   affectedCollapsed: { [key: string]: boolean } = {};
   referencedCollapsed: { [key: string]: boolean } = {};
+  changeObj: any;
+  selectedChange: any;
+  changesNodes: any =  [];
+  data: any;
   fileFormat = [{value: 'ZIP', name: 'ZIP'},
     {value: 'TAR_GZ', name: 'TAR_GZ'}
   ]
@@ -2613,8 +2617,171 @@ export class ExportComponent {
     }
   }
 
+  changes(): void {
+    this.coreService.post('inventory/changes', {}).subscribe({
+      next: (res) => {
+        this.changeObj = res.changes
+      },
+      error: () => {
+        this.loading = true;
+      }
+    });
+  }
+
+  onChange(selected: string): void {
+    const obj = {
+      names: [],
+      details: true
+    }
+    obj.names.push(selected);
+    this.coreService.post('inventory/changes', obj).subscribe({
+      next: (res) => {
+        if (res.changes) {
+          this.data = res.changes
+          this.changesNodes = this.prepareGroupedTree(this.data[0].configurations)
+          // const checkedNodes = this.collectCheckedObjects(this.changesNodes);
+          // if (checkedNodes.length > 0) {
+          //   this.getDependencies(checkedNodes, this.changesNodes);
+          // }
+          this.changesNodes = [...this.changesNodes]
+        }
+      },
+      error: () => {
+        this.loading = true;
+      }
+    });
+  }
+
+  checkBoxChanges(e: NzFormatEmitEvent): void {
+    const node: any = e.node;
+
+
+    this.updateChildCheckboxes(node, node.isChecked);
+
+    this.updateParentCheckboxes(node);
+
+    const checkedNodes = this.collectCheckedNodes(node);
+
+    if (checkedNodes.length > 0) {
+      this.getDependencies(checkedNodes, node);
+    } else {
+      this.clearDependenciesForNode(node);
+    }
+  }
+
+  updateChildCheckboxes(node: any, isChecked: boolean): void {
+    node.children.forEach((child: any) => {
+      child.isChecked = isChecked;
+
+      if (child.children && child.children.length > 0) {
+        this.updateChildCheckboxes(child, isChecked);
+      }
+
+      child.isHalfChecked = false;
+    });
+  }
+
+  updateParentCheckboxes(node: any): void {
+    if (node.parentNode) {
+      const siblings = node.parentNode.children;
+
+      const allChecked = siblings.every((sibling: any) => sibling.isChecked);
+      const someChecked = siblings.some((sibling: any) => sibling.isChecked || sibling.isHalfChecked);
+
+      node.parentNode.isChecked = allChecked;
+      node.parentNode.isHalfChecked = !allChecked && someChecked;
+
+      this.updateParentCheckboxes(node.parentNode);
+    }
+  }
+
+
+  prepareGroupedTree(data: any[]): any[] {
+    const root = {
+      name: '/',
+      path: '/',
+      key: '/',
+      isLeaf: false,
+      expanded: true,
+      checked: true,
+      children: []
+    };
+
+    const groupedObjects: { [key: string]: any[] } = {
+      "WORKFLOW": [],
+      "JOBRESOURCE": [],
+      "SCHEDULE": [],
+      "NOTICEBOARD": [],
+      "LOCK": [],
+      "JOBTEMPLATE": [],
+      "INCLUDESCRIPT": [],
+      "WORKINGDAYSCALENDAR": [],
+      "NONWORKINGDAYSCALENDAR": []
+    };
+
+    data.forEach((item: any) => {
+      switch (item.objectType) {
+        case "WORKFLOW":
+          groupedObjects["WORKFLOW"].push(item);
+          break;
+        case "JOBRESOURCE":
+          groupedObjects["JOBRESOURCE"].push(item);
+          break;
+        case "SCHEDULE":
+          groupedObjects["SCHEDULE"].push(item);
+          break;
+        case "NOTICEBOARD":
+          groupedObjects["NOTICEBOARD"].push(item);
+          break;
+        case "LOCK":
+          groupedObjects["LOCK"].push(item);
+          break;
+        case "JOBTEMPLATE":
+          groupedObjects["JOBTEMPLATE"].push(item);
+          break;
+        case "INCLUDESCRIPT":
+          groupedObjects["INCLUDESCRIPT"].push(item);
+          break;
+        case "WORKINGDAYSCALENDAR":
+          groupedObjects["WORKINGDAYSCALENDAR"].push(item);
+          break;
+        case "NONWORKINGDAYSCALENDAR":
+          groupedObjects["NONWORKINGDAYSCALENDAR"].push(item);
+          break;
+        default:
+          break;
+      }
+    });
+
+    Object.keys(groupedObjects).forEach((type: string) => {
+      if (groupedObjects[type].length > 0) {
+        const groupNode = {
+          name: type,
+          object: type,
+          path: '/',
+          key: `/${type}`,
+          disableCheckbox: true,
+          expanded: true,
+          isLeaf: false,
+          children: groupedObjects[type].map((item: any) => ({
+            name: item.name,
+            path: item.path,
+            key: item.path,
+            type: item.objectType,
+            isLeaf: true,
+            checked: true,
+          }))
+        };
+        root.children.push(groupNode);
+      }
+    });
+    return [root];
+  }
 
   filterList(isChecked = true): void {
+    if(this.exportObj.exportType === 'changes'){
+      this.changes()
+    }
     this.checkedObject.clear();
     if (isChecked) {
       this.recursiveCheck(this.nodes);
@@ -5497,6 +5664,7 @@ export class PublishChangeModalComponent {
   changeObj: any;
   data: any;
   nodes: any = [];
+  show: boolean = false;
   selectedChange: any;
   dependencies: any;
   affectedObjectsByType: { [key: string]: any[] } = {};
@@ -5516,6 +5684,7 @@ export class PublishChangeModalComponent {
     this.preferences = this.modalData.preferences;
     this.display = this.modalData.display;
     this.title = this.modalData.title;
+    this.show = this.modalData.show;
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -6122,6 +6291,223 @@ export class PublishChangeModalComponent {
     }
   }
 
+  cancel(): void {
+    this.activeModal.destroy();
+  }
+
+}
+
+@Component({
+  selector: 'app-show-dependencies-modal',
+  templateUrl: './show-dependencies-dialog.html'
+})
+export class ShowDependenciesModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  schedulerIds: any;
+  preferences: any;
+  comments: any = {radio: 'predefined'};
+  display: any;
+  title: string;
+  submitted = false;
+  required = false;
+  loading = true;
+  data: any;
+  dependencies: any;
+  affectedObjectsByType: { [key: string]: any[] } = {};
+  referencedObjectsByType: { [key: string]: any[] } = {};
+  affectedObjectTypes: string[] = [];
+  referencedObjectTypes: string[] = [];
+  selectAllAffected: { [key: string]: boolean } = {};
+  selectAllReferenced: { [key: string]: boolean } = {};
+  affectedCollapsed: { [key: string]: boolean } = {};
+  referencedCollapsed: { [key: string]: boolean } = {};
+  isAffectedCollapsed: boolean = true;
+  isReferencedCollapsed: boolean = true;
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private inventoryService: InventoryService) {
+  }
+
+  ngOnInit(): void {
+    this.schedulerIds = this.modalData.schedulerIds;
+    this.preferences = this.modalData.preferences;
+    this.display = this.modalData.display;
+    this.data = this.modalData.data;
+    this.title = this.modalData.title;
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+      this.required = true;
+      this.display = true;
+    }
+    this.getDependencies()
+  }
+
+  private getDependencies(): void {
+    const configurations = [{
+      name: this.data.name,
+      type: this.data.objectType || this.data.type
+    }];
+    const obj = {
+      configurations: configurations
+    };
+
+    this.coreService.post('inventory/dependencies', obj).subscribe({
+      next: (res: any) => {
+        this.dependencies = res.dependencies;
+        this.prepareObject(this.dependencies);
+      },
+      error: (err) => {
+        this.loading = false;
+      }
+    });
+  }
+  prepareObject(dependencies): void {
+    if (dependencies && dependencies.length > 0) {
+      dependencies.forEach(dep => {
+        if (dep.referencedBy) {
+          const affectedTypeSet = new Set<string>();
+          dep.referencedBy.forEach(refObj => {
+            const type = refObj.objectType;
+            affectedTypeSet.add(type);
+            if (!this.affectedObjectsByType[type]) {
+              this.affectedObjectsByType[type] = [];
+              this.affectedObjectTypes.push(type);
+            }
+
+            refObj.selected =  refObj.valid && (!refObj.deployed && !refObj.released);
+            refObj.disabled = !refObj.valid;
+            refObj.change = refObj.deployed;
+
+            this.affectedObjectsByType[type].push(refObj);
+          });
+
+
+          affectedTypeSet.forEach(type => {
+            this.updateParentCheckboxAffected(type);
+          });
+        }
+
+
+        if (dep.references) {
+          const referencedTypeSet = new Set<string>();
+          dep.references.forEach(refObj => {
+            const type = refObj.objectType;
+            referencedTypeSet.add(type);
+            if (!this.referencedObjectsByType[type]) {
+              this.referencedObjectsByType[type] = [];
+              this.referencedObjectTypes.push(type);
+            }
+
+            refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
+            refObj.disabled = !refObj.valid;
+            refObj.change = refObj.deployed;
+
+
+            this.referencedObjectsByType[type].push(refObj);
+          });
+
+          referencedTypeSet.forEach(type => {
+            this.updateParentCheckboxReferenced(type);
+          });
+        }
+      });
+
+      this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
+      this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
+    }
+  }
+
+  toggleAffectedCollapse(objectType: string): void {
+    this.affectedCollapsed[objectType] = !this.affectedCollapsed[objectType];
+  }
+
+  toggleReferencedCollapse(objectType: string): void {
+    this.referencedCollapsed[objectType] = !this.referencedCollapsed[objectType];
+  }
+
+  toggleAllAffectedCollapse(): void {
+    this.isAffectedCollapsed = !this.isAffectedCollapsed;
+  }
+
+  toggleAllReferencedCollapse(): void {
+    this.isReferencedCollapsed = !this.isReferencedCollapsed;
+  }
+
+  expandAllAffected(): void {
+    this.isAffectedCollapsed = true;
+    this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
+  }
+
+  collapseAllAffected(): void {
+    this.isAffectedCollapsed = false;
+    this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = false);
+  }
+
+  expandAllReferenced(): void {
+    this.isReferencedCollapsed = true;
+    this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
+  }
+
+  collapseAllReferenced(): void {
+    this.isReferencedCollapsed = false;
+    this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = false);
+  }
+
+  toggleAllAffected(objectType: string, isChecked: boolean): void {
+    this.affectedObjectsByType[objectType].forEach(obj => {
+      if (!obj.disabled) {
+        obj.selected = isChecked;
+      }
+    });
+  }
+
+  toggleAllReferenced(objectType: string, isChecked: boolean): void {
+    this.referencedObjectsByType[objectType].forEach(obj => {
+      if (!obj.disabled) {
+        obj.selected = isChecked;
+      }
+    });
+  }
+
+  updateParentCheckboxAffected(objectType: string): void {
+    const allSelected = this.affectedObjectsByType[objectType].every(obj => obj.selected || obj.disabled);
+    this.selectAllAffected[objectType] = allSelected;
+  }
+
+  updateParentCheckboxReferenced(objectType: string): void {
+    const allSelected = this.referencedObjectsByType[objectType].every(obj => obj.selected || obj.disabled);
+    this.selectAllReferenced[objectType] = allSelected;
+  }
+
+  getIcon(objectType: string): string {
+    const iconMapping = {
+      'WORKFLOW': 'apartment',
+      'JOBRESOURCE': 'icon-resources-icon',
+      'LOCK': 'lock',
+      'NOTICEBOARD': 'pushpin',
+      'FILEORDERSOURCE': 'icon-orders-icon',
+      'CALENDAR': 'calendar',
+      'SCHEDULE': 'schedule',
+      'JOBTEMPLATE': 'icon-jobs-icon'
+    };
+    return iconMapping[objectType] || 'folder';
+  }
+
+  isCustomIcon(objectType: string): boolean {
+    const customIcons = ['icon-resources-icon', 'icon-orders-icon', 'icon-jobs-icon'];
+    return customIcons.includes(this.getIcon(objectType));
+  }
+
+  getObjectTypeLabel(objectType: string): string {
+    const labelMapping = {
+      'WORKFLOW': 'inventory.label.workflows',
+      'JOBRESOURCE': 'inventory.label.jobResources',
+      'LOCK': 'inventory.label.locks',
+      'NOTICEBOARD': 'inventory.label.boards',
+      'FILEORDERSOURCE': 'inventory.label.fileOrderSources',
+      'CALENDAR': 'inventory.label.calendars',
+      'SCHEDULE': 'dashboard.label.schedules',
+      'JOBTEMPLATE': 'inventory.label.jobTemplates'
+    };
+    return labelMapping[objectType] || objectType;
+  }
   cancel(): void {
     this.activeModal.destroy();
   }
@@ -9572,6 +9958,28 @@ export class InventoryComponent {
         path: origin.path,
         data: origin,
         isChecked: this.inventoryService.checkDeploymentStatus.isChecked,
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
+
+  showDependencies(node):void{
+    const origin = this.coreService.clone(node.origin ? node.origin : node);
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: ShowDependenciesModalComponent,
+      nzClassName: 'lg',
+      nzData: {
+        schedulerIds: this.getAllowedControllerOnly(),
+        preferences: this.preferences,
+        display: this.preferences.auditLog,
+        title: 'showDependencies',
+        path: origin.path,
+        data: origin,
+        isChecked: this.inventoryService.checkDeploymentStatus.isChecked,
+        show: true
       },
       nzFooter: null,
       nzClosable: false,
