@@ -15,7 +15,7 @@ import {
   AgentModalComponent,
   SubagentModalComponent,
   AddCertificateModalComponent,
-  ShowCertificateListModalComponent
+  ShowCertificateListModalComponent, AddPriorityModalComponent
 } from './agent/agent.component';
 import {SharedModule} from '../shared/shared.module';
 
@@ -42,6 +42,7 @@ const routes: Routes = [
     ExportComponent,
     AddCertificateModalComponent,
     ShowCertificateListModalComponent,
+    AddPriorityModalComponent,
     ExportBulkComponent
   ],
   imports: [

@@ -1052,8 +1052,11 @@
                         [innerHtml]="getLastPartOfWorkflow(history.workflow) | highlight : order.searchText" class="text-hover-primary"></span>
                   <span *ngIf="isPathDisplay" (click)="coreService.showWorkflow(history.workflow);$event.stopPropagation()"
                         [innerHtml]="history.workflow | highlight : order.searchText" class="text-hover-primary"></span>
+                  <div *ngIf="workflowTagsPerWorkflow && history.workflow">
                     <span *ngIf="workflowTagsPerWorkflow[getLastPartOfWorkflow(history.workflow)]?.length > 0" [innerHtml]="coreService.getModifiedWorkflowTags(workflowTagsPerWorkflow[getLastPartOfWorkflow(history.workflow)], order.searchText)" class="m-l-sm">
-                  </span>
+                    </span>
+                  </div>
+
                 </span>
               </td>
               <td (click)="coreService.showLogWindow(history,null, null, history.controllerId, null,viewContainerRef)">

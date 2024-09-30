@@ -253,6 +253,7 @@
     "button.importAgentConfiguration": "エージェント設定インポート",
     "button.confirmNodeLoss": "ノードロスト確認",
     "button.addEnciphermentCertificate": "暗号化証明書追加",
+    "button.metricsPriority": "Metric Priority",
     "message.dropHereToDetach": "ここにドロップしてサブエージェントを削除",
     "message.noClusterFound": "クラスターはありません",
     "message.clickHereToAdd": "クリックして追加",
@@ -262,6 +263,7 @@
     "placeholder.enterAgentNameAlias": "エイリアス名を入力",
     "placeholder.enterClusterName": "クラスター名を入力",
     "placeholder.enterPrimaryDirectorId": "プライマリーディレクターID",
+    "placeholder.enterPriority": "Enter Priority",
     "tooltip.agentId": "エージェントID は、エージェントの一意な識別子であり、エージェントの存続期間中に変更することはでき ません。エージェントIDには、ほとんどのユニコード文字、ドット、ハイフンを使用できますが、スペース、先頭または末尾のドット、ハイフンは使用できません。",
     "tooltip.agentName": "エージェント名は、変更可能なエージェント固有の名前です。エージェントは、エージェント名によってジョブに割り当てられます。エージェント名には、ほとんどのユニコード文字、ドット、ハイフンを使用できますが、スペース、先頭または末尾のドット、ハイフンは使用できません。",
     "tooltip.title": "タイトルは任意に指定することができます。",
@@ -3119,7 +3121,8 @@
       "git_hold_notice_boards": "通知ボード保存ディレクトリ",
       "git_hold_resource_locks": "ロック保存ディレクトリ",
       "git_hold_script_includes": "script_includes保存ディレクトリ",
-      "git_hold_file_order_sources": "ファイルオーダーソース保存ディレクトリ"
+      "git_hold_file_order_sources": "ファイルオーダーソース保存ディレクトリ",
+      "git_hold_job_templates": "Specifies if Job Templates should be considered local to an environment or are intended for rollout with Git."
     },
     "lognotification": {
       "log_server_active": "log_server_active.",

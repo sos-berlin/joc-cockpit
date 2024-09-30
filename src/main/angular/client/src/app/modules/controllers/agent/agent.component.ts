@@ -579,11 +579,42 @@ export class ShowCertificateListModalComponent {
 }
 
 @Component({
+  selector: 'app-add-priority-modal',
+  templateUrl: './add-priority-dialog.html'
+})
+export class AddPriorityModalComponent {
+
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  preferences: any = {};
+  data: any;
+  agentType: string;
+  certificateList: any = [];
+  sub: any;
+  submitted = false
+  priority: any
+  cluster: any
+  node: any;
+  constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService){}
+
+  ngOnInit(): void {
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']) || {};
+      this.node = this.modalData.node;
+      this.priority = this.modalData.priority;
+
+    }
+  }
+
+  onSubmit(): void {
+    this.activeModal.close(this.priority)
+  }
+}
+
+@Component({
   selector: 'app-agent',
   templateUrl: './agent.component.html',
   styleUrls: ['./agent.component.scss']
-})
-export class AgentComponent {
+})export class AgentComponent {
   isLoading = true;
   isVisible = false;
   isActionMenuVisible = false;
@@ -1851,6 +1882,62 @@ export class AgentComponent {
     }
   }
 
+  addPriority(): void {
+    if (this.node && this.node.cell) {
+      const currentNode = this.node.cell;
+      const currentPriority = currentNode.getAttribute('priority');
+      this.modal.create({
+        nzAutofocus: null,
+        nzContent: AddPriorityModalComponent,
+        nzClassName: 'md',
+        nzData: {
+          node: currentNode,
+          priority: currentPriority
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          this.updatePriority(result, currentNode);
+        }
+      });
+    } else {
+      console.error("No node is selected.");
+    }
+  }
+
+
+  private updatePriority(newPriority: string, node: any): void {
+    // Set the new priority on the selected node (cell)
+    node.setAttribute('priority', newPriority);
+
+    // Prepare the request to update the priority in the backend
+    const updatedSubagent = {
+      subagentId: node.getAttribute('label'), // Assuming 'label' holds subagentId
+      priority: newPriority
+    };
+
+    const obj: any = {
+      subagentClusters: [{
+        agentId: this.agentId,
+        controllerId: this.controllerId,
+        subagentClusterId: this.selectedCluster.subagentClusterId,
+        subagentIds: [updatedSubagent]
+      }]
+    };
+    this.coreService.post('agents/cluster/store', obj).subscribe({
+      next: (response) => {
+        this.getClusters(); // Refresh the clusters after updating
+      },
+      error: (error) => {
+        console.error('Error updating priority', error);
+      }
+    });
+  }
+
+
+
   private updateList(): void {
     this.agentList = this.clusterAgents.filter((item) => {
       let flag = true;
@@ -1891,87 +1978,91 @@ export class AgentComponent {
     }
   }
 
-  private createClusterWorkflow(): void {
-    const graph = this.editor.graph;
-    const doc = mxUtils.createXmlDocument();
-    const defaultParent = graph.getDefaultParent();
-    let i = 0, j = 1;
-    let priority = -1;
-    let v1;
-    let styleColor = '#fafafa';
-    if (this.preferences.theme === 'light' || this.preferences.theme === 'lighter') {
-      styleColor = '#3d464d';
-    }
+private createClusterWorkflow(): void {
+  const graph = this.editor.graph;
+  const doc = mxUtils.createXmlDocument();
+  const defaultParent = graph.getDefaultParent();
+  let i = 0, j = 1;
+  let priority = -1;
+  let v1;
+  let styleColor = '#fafafa';
+  if (this.preferences.theme === 'light' || this.preferences.theme === 'lighter') {
+    styleColor = '#3d464d';
+  }
 
-    if (this.selectedCluster.subagentIds && this.selectedCluster.subagentIds.length > 0) {
-      let colorIndex = 0;
-      this.selectedCluster.subagentIds.sort(AgentComponent.compare).forEach((subagent, index) => {
-        const _node = this.getCellNode('Agent', subagent.subagentId);
-        let source;
-        let colorCode;
-        let flag = this.selectedCluster.subagentIds.length === 1;
-        let currentPriority = parseInt(subagent.priority, 10);
-        if (priority > -1 && priority !== currentPriority) {
-          j++;
+  if (this.selectedCluster.subagentIds && this.selectedCluster.subagentIds.length > 0) {
+    let colorIndex = 0;
+    this.selectedCluster.subagentIds.sort(AgentComponent.compare).forEach((subagent, index) => {
+      const _node = this.getCellNode('Agent', subagent.subagentId);
+
+      _node.setAttribute('priority', subagent.priority.toString());
+
+      let source;
+      let colorCode;
+      let flag = this.selectedCluster.subagentIds.length === 1;
+      let currentPriority = parseInt(subagent.priority, 10);
+
+      if (priority > -1 && priority !== currentPriority) {
+        j++;
+      }
+      let y = j * 70;
+      if (priority === currentPriority) {
+        i++;
+        if (v1) {
+          source = v1;
         }
-        let y = j * 70;
-        if (priority === currentPriority) {
-          i++;
-          if (v1) {
-            source = v1;
-          }
-        } else {
-          i = 0;
-          if (priority > -1) {
-            colorIndex++;
-          }
+      } else {
+        i = 0;
+        if (priority > -1) {
+          colorIndex++;
         }
-        if (this.colors.length - 1 === colorIndex) {
-          colorIndex = 0;
-        }
-        colorCode = this.colors[colorIndex];
-        if (!flag) {
-          if (this.selectedCluster.subagentIds[index + 1]) {
-            if (subagent.priority !== this.selectedCluster.subagentIds[index + 1].priority) {
-              flag = true;
-            }
-          } else {
+      }
+      if (this.colors.length - 1 === colorIndex) {
+        colorIndex = 0;
+      }
+      colorCode = this.colors[colorIndex];
+      if (!flag) {
+        if (this.selectedCluster.subagentIds[index + 1]) {
+          if (subagent.priority !== this.selectedCluster.subagentIds[index + 1].priority) {
             flag = true;
           }
+        } else {
+          flag = true;
         }
-        priority = currentPriority;
-        let x = (230 * i) + 10;
-        v1 = this.editor.graph.insertVertex(defaultParent, null, _node, x, y, 180, 40, 'rectangle;strokeColor=' + colorCode + ';fillColor=' + colorCode + ';gradientColor=#fff;whiteSpace=wrap;html=1');
-        if (source) {
-          graph.insertEdge(defaultParent, null, doc.createElement('Connection'), source, v1, 'edgeStyle');
-        }
-        if (flag) {
-          const mainNode = doc.createElement('Process');
-          mainNode.setAttribute('label', 'dragAndDropForRoundRobin');
-          mainNode.setAttribute('priority', priority);
-          const v2 = graph.insertVertex(defaultParent, null, mainNode, x + 230, y - 5, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fontColor=' + styleColor + ';strokeColor=' + styleColor + ';');
-          graph.insertEdge(defaultParent, null, doc.createElement('Connection'), v1, v2, 'edgeStyle;dashed=1;');
-        }
-        if (0 === index) {
-          const mainNode = doc.createElement('Process');
-          mainNode.setAttribute('label', 'dragAndDropFixedPriority');
-          mainNode.setAttribute('priority', (priority + 1));
-          graph.insertVertex(defaultParent, null, mainNode, 0, -10, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fontColor=' + styleColor + ';strokeColor=' + styleColor + ';');
-        }
-        if (this.selectedCluster.subagentIds.length - 1 === index) {
-          const mainNode = doc.createElement('Process');
-          mainNode.setAttribute('label', 'dragAndDropFixedPriority');
-          mainNode.setAttribute('priority', -1);
-          graph.insertVertex(defaultParent, null, mainNode, 0, y + 70, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fontColor=' + styleColor + ';strokeColor=' + styleColor + ';');
-        }
-      })
-    } else {
-      const mainNode = doc.createElement('Process');
-      mainNode.setAttribute('label', 'dragAndDropFixedPriority');
-      mainNode.setAttribute('priority', 0);
-      graph.insertVertex(defaultParent, null, mainNode, 0, 0, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fontColor=' + styleColor + ';strokeColor=' + styleColor + ';');
-    }
+      }
+      priority = currentPriority;
+      let x = (230 * i) + 10;
+      v1 = this.editor.graph.insertVertex(defaultParent, null, _node, x, y, 180, 40, 'rectangle;strokeColor=' + colorCode + ';fillColor=' + colorCode + ';gradientColor=#fff;whiteSpace=wrap;html=1');
+      if (source) {
+        graph.insertEdge(defaultParent, null, doc.createElement('Connection'), source, v1, 'edgeStyle');
+      }
+      if (flag) {
+        const mainNode = doc.createElement('Process');
+        mainNode.setAttribute('label', 'dragAndDropForRoundRobin');
+        mainNode.setAttribute('priority', priority.toString());
+        const v2 = graph.insertVertex(defaultParent, null, mainNode, x + 230, y - 5, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fontColor=' + styleColor + ';strokeColor=' + styleColor + ';');
+        graph.insertEdge(defaultParent, null, doc.createElement('Connection'), v1, v2, 'edgeStyle;dashed=1;');
+      }
+      if (0 === index) {
+        const mainNode = doc.createElement('Process');
+        mainNode.setAttribute('label', 'dragAndDropFixedPriority');
+        mainNode.setAttribute('priority', (priority + 1).toString());
+        graph.insertVertex(defaultParent, null, mainNode, 0, -10, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fontColor=' + styleColor + ';strokeColor=' + styleColor + ';');
+      }
+      if (this.selectedCluster.subagentIds.length - 1 === index) {
+        const mainNode = doc.createElement('Process');
+        mainNode.setAttribute('label', 'dragAndDropFixedPriority');
+        mainNode.setAttribute('priority', '-1');
+        graph.insertVertex(defaultParent, null, mainNode, 0, y + 70, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fontColor=' + styleColor + ';strokeColor=' + styleColor + ';');
+      }
+    });
+  } else {
+    const mainNode = doc.createElement('Process');
+    mainNode.setAttribute('label', 'dragAndDropFixedPriority');
+    mainNode.setAttribute('priority', '0');
+    graph.insertVertex(defaultParent, null, mainNode, 0, 0, 200, 50, 'rectangle;whiteSpace=wrap;html=1;dashed=1;shadow=0;opacity=70;fontColor=' + styleColor + ';strokeColor=' + styleColor + ';');
   }
+}
 
   /* ---------------------------- Broadcast messages ----------------------------------*/
   receiveMessage($event): void {
@@ -2024,3 +2115,4 @@ export class AgentComponent {
   }
 
 }
+
