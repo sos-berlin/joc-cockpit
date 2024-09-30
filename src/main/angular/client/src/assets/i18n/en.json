@@ -253,7 +253,7 @@
     "button.importAgentConfiguration": "Import Agent Configuration",
     "button.confirmNodeLoss": "Confirm loss of a Director Agent instance",
     "button.addEnciphermentCertificate": "Assign Encryption Certificate",
-    "button.metricsPriority": "Metric Priority",
+    "button.metricsPriority": "Metrics-based Priority",
     "message.dropHereToDetach": "Drop here to remove Subagent",
     "message.noClusterFound": "No Cluster Found",
     "message.clickHereToAdd": "Click here to add",
