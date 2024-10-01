@@ -254,6 +254,7 @@
     "button.confirmNodeLoss": "ノードロスト確認",
     "button.addEnciphermentCertificate": "暗号化証明書追加",
     "button.metricsPriority": "Metric Priority",
+    "button.SubmitAllSubagents": "Submit to all Subagents",
     "message.dropHereToDetach": "ここにドロップしてサブエージェントを削除",
     "message.noClusterFound": "クラスターはありません",
     "message.clickHereToAdd": "クリックして追加",
@@ -290,7 +291,8 @@
       "tooltip.subagentId": "サブエージェントIDはサブエージェントの一意な識別子であり、サブエージェントの存続期間中は変更することができません。サブエージェントIDには、ほとんどのユニコード文字、ドット、ハイフンを使用できますが、スペース、先頭または末尾のドットやハイフンを使用することはできません。",
       "tooltip.title": "タイトルは任意に指定可能です。",
       "tooltip.url": "URL は、プロトコル、HTTP または HTTPS、ホスト名または IP アドレス、およびエージェントのポート（例： http://localhost:4445 ）が指定されます。",
-      "tooltip.withGenerateSubagentCluster": "サブエージェントは、このサブエージェントを含む別のサブエージェントクラスターとして構成することができます。これにより、ジョブはサブエージェント上で別に実行することができます。"
+      "tooltip.withGenerateSubagentCluster": "サブエージェントは、このサブエージェントを含む別のサブエージェントクラスターとして構成することができます。これにより、ジョブはサブエージェント上で別に実行することができます。",
+      "tooltip.priority": "priority"
     }
   },
   "auditLog": {

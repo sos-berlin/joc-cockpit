@@ -1,4 +1,4 @@
-import {Component, HostListener, inject, ViewChild} from '@angular/core';
+import {Component,Output,EventEmitter , HostListener, inject, ViewChild} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {isEmpty, sortBy} from "underscore";
@@ -594,6 +594,7 @@ export class AddPriorityModalComponent {
   priority: any
   cluster: any
   node: any;
+  @Output() submitAll = new EventEmitter<string>();
   constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService){}
 
   ngOnInit(): void {
@@ -605,8 +606,19 @@ export class AddPriorityModalComponent {
     }
   }
 
-  onSubmit(): void {
-    this.activeModal.close(this.priority)
+  onSubmit(flag?): void {
+    const obj = {
+      priority: this.priority,
+      flag: flag
+    }
+    this.activeModal.close(obj)
+  }
+
+  submitToAllSubagents(flag): void {
+    if(flag){
+      this.onSubmit(flag)
+    }
+    this.activeModal.close()
   }
 }
 
@@ -614,7 +626,8 @@ export class AddPriorityModalComponent {
   selector: 'app-agent',
   templateUrl: './agent.component.html',
   styleUrls: ['./agent.component.scss']
-})export class AgentComponent {
+})
+export class AgentComponent {
   isLoading = true;
   isVisible = false;
   isActionMenuVisible = false;
@@ -1162,7 +1175,7 @@ export class AddPriorityModalComponent {
     }
   }
 
-  private storeCluster(subagent?) {
+  private storeCluster(subagent?, isBulkUpdate = false) {
     const obj: any = {
       subagentClusters: []
     }
@@ -1174,9 +1187,26 @@ export class AddPriorityModalComponent {
     let flag = false;
     for (let i in this.clusters) {
       if (this.selectedCluster.subagentClusterId === this.clusters[i].subagentClusterId) {
-        if (subagent) {
+        if (isBulkUpdate) {
+          this.selectedCluster.subagentIds.forEach(sub => {
+            sub.priority = sub.priority.toString();  // Ensure priority is a string
+            const existingSubagent = this.clusters[i].subagentIds.find(item => item.subagentId === sub.subagentId);
+
+            if (existingSubagent) {
+              existingSubagent.priority = sub.priority;
+            } else {
+              this.clusters[i].subagentIds.push(sub);
+            }
+          });
+        } else if (subagent) {
           subagent.priority = subagent.priority.toString();
-          this.clusters[i].subagentIds.push(subagent);
+          const existingSubagent = this.clusters[i].subagentIds.find(item => item.subagentId === subagent.subagentId);
+
+          if (existingSubagent) {
+            existingSubagent.priority = subagent.priority;
+          } else {
+            this.clusters[i].subagentIds.push(subagent);
+          }
         }
         this.clusters[i].subagentIds.forEach(sub => sub.priority = sub.priority.toString());
         obj.subagentClusters.push({
@@ -1203,6 +1233,8 @@ export class AddPriorityModalComponent {
         })),
       });
     }
+    console.log(obj,">>obj>")
+
     this.store(obj);
   }
 
@@ -1590,7 +1622,7 @@ export class AddPriorityModalComponent {
         // Cancels the bubbling of events to the container so
         // that the droptarget is not reset due to an mouseMove
         // fired on the container with no associated state.
-        mxEvent.consume(me.getEvent());
+        mxEvent.consume(me.getEvent(), false);
       } else if ((this.isMoveEnabled() || this.isCloneEnabled()) && this.updateCursor && !me.isConsumed() &&
         (me.getState() != null || me.sourceState != null) && !graph.isMouseDown) {
         let cursor = graph.getCursorForMouseEvent(me);
@@ -1736,8 +1768,8 @@ export class AddPriorityModalComponent {
       } else if (cell) {
         if (!(cell.value.tagName === 'Connection' || cell.value.tagName === 'Connector' || cell.value.tagName === 'Process')) {
           tip = "<div class='vertex-text2'>";
-          if (cell.getAttribute('label')) {
-            tip = tip + cell.getAttribute('label');
+          if (cell.getAttribute('priority')) {
+            tip += `Priority: ${cell.getAttribute('priority')}`;
           }
           tip = tip + '</div>';
         }
@@ -1812,7 +1844,7 @@ export class AddPriorityModalComponent {
           this.previousStyle = state.style;
           state.style = mxUtils.clone(state.style);
           if (state.style) {
-            if (state.cell && state.cell.value.tagName === 'Process') {
+            if (state.cell && state.cell && state.cell.value.tagName === 'Process') {
               const classList = $('#graph').attr('class');
               if (classList.indexOf('cdk-drop-list-dragging') > -1) {
                 this.currentHighlight = new mxCellHighlight(graph, 'green');
@@ -1899,7 +1931,11 @@ export class AddPriorityModalComponent {
         nzMaskClosable: false
       }).afterClose.subscribe(result => {
         if (result) {
-          this.updatePriority(result, currentNode);
+          if(result.flag){
+            this.submitToAllSubagents(result.priority)
+          }else{
+            this.updatePriority(result.priority, currentNode);
+          }
         }
       });
     } else {
@@ -1907,34 +1943,38 @@ export class AddPriorityModalComponent {
     }
   }
 
+  submitToAllSubagents(priority): void {
+    if (!priority) {
+      return;
+    }
+
+    this.selectedCluster.subagentIds.forEach(subagent => {
+      subagent.priority = priority;
+    });
+console.log(this.selectedCluster.subagentIds,">>>")
+    this.updateCluster();
+    this.storeCluster(null, true);
+
+  }
 
   private updatePriority(newPriority: string, node: any): void {
-    // Set the new priority on the selected node (cell)
-    node.setAttribute('priority', newPriority);
+    const subagentId = node.getAttribute('label');
+    const existingSubagentIndex = this.selectedCluster.subagentIds.findIndex(sub => sub.subagentId === subagentId);
 
-    // Prepare the request to update the priority in the backend
-    const updatedSubagent = {
-      subagentId: node.getAttribute('label'), // Assuming 'label' holds subagentId
-      priority: newPriority
-    };
+    if (existingSubagentIndex !== -1) {
+      this.selectedCluster.subagentIds[existingSubagentIndex].priority = newPriority;
+    } else {
+      const obj = {
+        subagentId,
+        priority: newPriority
+      };
+      this.selectedCluster.subagentIds.push(obj);
+    }
 
-    const obj: any = {
-      subagentClusters: [{
-        agentId: this.agentId,
-        controllerId: this.controllerId,
-        subagentClusterId: this.selectedCluster.subagentClusterId,
-        subagentIds: [updatedSubagent]
-      }]
-    };
-    this.coreService.post('agents/cluster/store', obj).subscribe({
-      next: (response) => {
-        this.getClusters(); // Refresh the clusters after updating
-      },
-      error: (error) => {
-        console.error('Error updating priority', error);
-      }
-    });
+    this.updateCluster();
+    this.storeCluster({ subagentId, priority: newPriority });
   }
+
 
 
 
@@ -2001,7 +2041,9 @@ private createClusterWorkflow(): void {
       let colorCode;
       let flag = this.selectedCluster.subagentIds.length === 1;
       let currentPriority = parseInt(subagent.priority, 10);
-
+        if (isNaN(currentPriority)) {
+              currentPriority = 0;
+            }
       if (priority > -1 && priority !== currentPriority) {
         j++;
       }

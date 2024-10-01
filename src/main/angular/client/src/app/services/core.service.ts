@@ -2319,11 +2319,6 @@ export class CoreService {
           data.label = item.label;
         }
         data.isLeaf = true;
-        // if (parentNode && parentNode.title === 'StickySubagent') {
-        //   parentNode.children.push(data);
-        // } else {
-        //   delete data.children;
-        // }
       }
 
       if (nodes.length == 0) {

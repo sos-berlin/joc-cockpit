@@ -253,7 +253,8 @@
     "button.importAgentConfiguration": "Import Agent Configuration",
     "button.confirmNodeLoss": "Confirm loss of a Director Agent instance",
     "button.addEnciphermentCertificate": "Assign Encryption Certificate",
-    "button.metricsPriority": "Metric Priority",
+    "button.metricsPriority": "Metrics-based Priority",
+    "button.SubmitAllSubagents": "Submit to all Subagents",
     "message.dropHereToDetach": "Drop here to remove Subagent",
     "message.noClusterFound": "No Cluster Found",
     "message.clickHereToAdd": "Click here to add",
@@ -290,7 +291,8 @@
       "tooltip.subagentId": "The Subagent ID is a unique identifier of a Subagent that cannot be changed during the Subagent's lifetime. For Subagent IDs most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
       "tooltip.title": "The Title of a Subagent can be specified as desired.",
       "tooltip.url": "The URL of a Subagent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Subagent, e.g. http://localhost:4445",
-      "tooltip.withGenerateSubagentCluster": "A Subagent can be set up as a separate Subagent Cluster that includes this single Subagent. This allows jobs to be run specifically on a Subagent."
+      "tooltip.withGenerateSubagentCluster": "A Subagent can be set up as a separate Subagent Cluster that includes this single Subagent. This allows jobs to be run specifically on a Subagent.",
+      "tooltip.priority": "priority"
     }
   },
   "auditLog": {

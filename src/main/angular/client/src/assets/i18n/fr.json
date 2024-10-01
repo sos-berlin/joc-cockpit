@@ -253,7 +253,8 @@
     "button.importAgentConfiguration": "Importer la configuration des Agents",
     "button.confirmNodeLoss": "Confirmer la perte d'une Instance d'Agent Directeur",
     "button.addEnciphermentCertificate": "Attribuer Certificat",
-    "button.metricsPriority": "Metric Priority",
+    "button.metricsPriority": "Priorité basée sur des Métriques",
+    "button.SubmitAllSubagents": "Submit to all Subagents",
     "message.dropHereToDetach": "Cliquez ici pour supprimer le Sous-agent",
     "message.noClusterFound": "Aucun Cluster trouvé",
     "message.clickHereToAdd": "Cliquez ici pour ajouter",
@@ -263,7 +264,7 @@
     "placeholder.enterAgentNameAlias": "Entrer le Nom d'Alias",
     "placeholder.enterClusterName": "Entrer le nom du Cluster",
     "placeholder.enterPrimaryDirectorId": "Entrer l'ID de l'Agent Directeur",
-    "placeholder.enterPriority": "Enter Priority",
+    "placeholder.enterPriority": "Entrer la Priorité",
     "tooltip.agentId": "L'ID Agent est un identifiant unique d'un Agent qui ne peut pas être modifié pendant la durée de vie de l'Agent. Pour l'ID Agent, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
     "tooltip.agentName": "Le Nom de l'Agent est une description unique qui peut être modifiée. Les Agents sont associés à des tâches par leur Nom de l'Agent. Pour le Nom de l'Agent, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
     "tooltip.title": "Le Titre d'un Agent peut être spécifié à volonté.",
@@ -290,7 +291,8 @@
       "tooltip.subagentId": "L'ID Sous-agent est un identifiant unique d'un Sous-agent qui ne peut être modifié pendant la durée de vie du Sous-agent. Pour l'ID Sous-agent, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
       "tooltip.title": "Le Titre d'un Sous-agent peut être spécifié à volonté.",
       "tooltip.url": "L'URL d'un Sous-agent spécifie le protocole, HTTP ou HTTPS, le nom d'hôte ou l'adresse IP et le port de du Sous-agent, par exemple http://localhost:4445.",
-      "tooltip.withGenerateSubagentCluster": "Un Sous-agent peut être configuré comme un cluster de Sous-agents distinct qui inclut ce seul Sous-agent. Cela permet d'exécuter des tâches spécifiquement sur un Sous-agent."
+      "tooltip.withGenerateSubagentCluster": "Un Sous-agent peut être configuré comme un cluster de Sous-agents distinct qui inclut ce seul Sous-agent. Cela permet d'exécuter des tâches spécifiquement sur un Sous-agent.",
+      "tooltip.priority": "priority"
     }
   },
   "auditLog": {
