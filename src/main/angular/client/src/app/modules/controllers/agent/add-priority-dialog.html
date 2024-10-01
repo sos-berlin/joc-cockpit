@@ -12,11 +12,50 @@
       <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.subagent.tooltip.priority' | translate" class="col-sm-3 form-control-label"
              translate>inventory.label.priority</label>
       <div class="col-sm-8">
-        <textarea [(ngModel)]="priority" [appAutofocus]="true" [maxLength]="255" class="form-control"
-               name="title" placeholder="{{'agent.placeholder.enterPriority' | translate}}" type="text">
+        <textarea [(ngModel)]="priority" (ngModelChange)="onPriorityChange()" [appAutofocus]="true" [maxLength]="255" class="form-control"
+               name="priority" placeholder="{{'agent.placeholder.enterPriority' | translate}}">
         </textarea>
       </div>
     </div>
+    <div class="form-group row">
+      <div class="p-l-xs" nz-dropdown [nzDropdownMenu]="menu">
+        <a class="cursor text-u-l" translate>agent.label.indicatorVariable</a>
+      </div>
+      <nz-dropdown-menu #menu="nzDropdownMenu">
+        <ul nz-menu nzSelectable>
+          <li
+            *ngFor="let item of indicatorItems"
+            nz-menu-item
+            nz-tooltip
+            [nzTooltipTitle]="'agent.tooltip.' + item.value | translate"
+            (click)="onDropdownSelect(item.value)">
+            {{ item.value }}
+          </li>
+        </ul>
+      </nz-dropdown-menu>
+    </div>
+    <div class="form-group row">
+      <a class="cursor p-l-xs text-u-l" (click)="toggleTableVisibility()" translate>
+        agent.label.examples
+      </a>
+
+      <nz-table *ngIf="isTableVisible" class="m-t-sm" [nzData]="dataSource" [nzBordered]="true" [nzShowPagination]="false">
+        <thead>
+        <tr>
+          <th translate>agent.label.expression</th>
+          <th translate>agent.label.description</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of dataSource">
+          <td>{{ item.variable }}
+            <span nz-icon nzType="copy" class="cursor p-l-xs float-right" (click)="onCopyExpression(item.variable)"></span></td>
+          <td>{{'agent.examples.' + item.expression | translate}}</td>
+        </tr>
+        </tbody>
+      </nz-table>
+    </div>
+
   </div>
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"

@@ -594,6 +594,27 @@ export class AddPriorityModalComponent {
   priority: any
   cluster: any
   node: any;
+  indicatorItems = [
+    { value: '$js7SubagentProcessCount'},
+    { value: '$js7ClusterSubagentProcessCount'},
+    { value: '$js7CpuLoad'},
+    { value: '$js7CommittedVirtualMemorySize'},
+    { value: '$js7FreeMemorySize'},
+    { value: '$js7TotalMemorySize'}
+  ];
+  dataSource = [
+    { variable: '$js7SubagentProcessCount', expression: 'expression1'},
+    { variable: '$js7ClusterSubagentProcessCount', expression: 'expression2'},
+    { variable: 'if $js7SubagentProcessCount == 0 then 1 else missing', expression: 'expression3'},
+    { variable: 'if $js7ClusterSubagentProcessCount == 0 then 1 else missing', expression: 'expression4'},
+    { variable: 'if $js7SubagentProcessCount =< 10 then $js7SubagentProcessCount else missing', expression: 'expression5'},
+    { variable: 'if $js7ClusterSubagentProcessCount =< 10 then $js7ClusterSubagentProcessCount else missing', expression: 'expression6'},
+    { variable: '-1 / ( $js7CpuLoad*2 - 1/$js7FreeMemorySize + $js7SubagentProcessCount*3 )', expression: 'expression7'}
+  ];
+  priorityFromDropdown: string = '';
+  isManualPriority: boolean = false;
+  isTableVisible = false;
+
   @Output() submitAll = new EventEmitter<string>();
   constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService){}
 
@@ -607,8 +628,10 @@ export class AddPriorityModalComponent {
   }
 
   onSubmit(flag?): void {
+    const finalPriority = this.isManualPriority ? this.priority : this.priorityFromDropdown;
+
     const obj = {
-      priority: this.priority,
+      priority: finalPriority,
       flag: flag
     }
     this.activeModal.close(obj)
@@ -620,6 +643,28 @@ export class AddPriorityModalComponent {
     }
     this.activeModal.close()
   }
+onDropdownSelect(selectedValue: string): void {
+    if (!this.isManualPriority) {
+      this.priority = selectedValue;
+    }
+    this.priorityFromDropdown = selectedValue;
+  }
+
+  onPriorityChange(): void {
+    this.isManualPriority = true;
+  }
+
+  toggleTableVisibility(): void {
+    this.isTableVisible = !this.isTableVisible;
+  }
+
+  onCopyExpression(expression: string): void {
+    if (!this.isManualPriority) {
+      this.priority = expression;
+    }
+    this.priorityFromDropdown = expression;
+  }
+
 }
 
 @Component({
@@ -1233,7 +1278,6 @@ export class AgentComponent {
         })),
       });
     }
-    console.log(obj,">>obj>")
 
     this.store(obj);
   }
@@ -1921,7 +1965,7 @@ export class AgentComponent {
       this.modal.create({
         nzAutofocus: null,
         nzContent: AddPriorityModalComponent,
-        nzClassName: 'md',
+        nzClassName: 'lg',
         nzData: {
           node: currentNode,
           priority: currentPriority
@@ -1951,7 +1995,6 @@ export class AgentComponent {
     this.selectedCluster.subagentIds.forEach(subagent => {
       subagent.priority = priority;
     });
-console.log(this.selectedCluster.subagentIds,">>>")
     this.updateCluster();
     this.storeCluster(null, true);
 

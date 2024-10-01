@@ -228,6 +228,10 @@
     "label.secondary": "セカンダリー",
     "label.processLimit": "プロセス上限",
     "label.addCertificateAlias": "証明書エイリアス追加",
+    "label.indicatorVariable": "Indicator Variable",
+    "label.examples": "Examples",
+    "label.expression": "Expression",
+    "label.description": "Description",
     "button.createToken": "ワンタイムトークン作成",
     "button.addAgent": "単独エージェント追加",
     "button.addSubagent": "サブエージェント追加",
@@ -274,6 +278,12 @@
     "tooltip.asStandaloneAgent": "スタンドアロンエージェント",
     "tooltip.primaryDirectorId": "プライマリーディレクターID",
     "tooltip.processLimit": "プロセス上限",
+    "tooltip.$js7SubagentProcessCount": "Number of processes running with the Subagent.",
+    "tooltip.$js7ClusterSubagentProcessCount": "Number of processes running with the Subagent for the given Subagent Cluster.",
+    "tooltip.$js7CpuLoad": "Returns the \"recent cpu usage\" for the operating environment. This value is a double in the [0.0,1.0] interval. A value of 0.0 means that all CPUs were idle during the recent period of time observed, while a value of 1.0 means that all CPUs were actively running 100% of the time during the recent period being observed. All values betweens 0.0 and 1.0 are possible depending of the activities going on. If the recent cpu usage is not available, the method returns a negative value.\n\nA negative value is reported as missing. CPU Load is not available for MacOS and is reported as missing.",
+    "tooltip.$js7CommittedVirtualMemorySize": "Returns the amount of virtual memory that is guaranteed to be available to the running process in bytes, or -1 if this operation is not supported.\n\nA negative value is reported as missing.",
+    "tooltip.$js7FreeMemorySize": "Returns the amount of free memory in bytes.",
+    "tooltip.$js7TotalMemorySize": "Returns the total amount of memory in bytes.",
     "cluster": {
       "tooltip.agentClusterName": "エージェントクラスター名は、エージェントクラスターの一意な識別子で、エージェントクラスターが存続している間は変更することができません。エージェントクラスター名には、ほとんどのユニコード文字、ドットおよびハイフンを使用できますが、スペース、先頭または末尾のドットまたはハイフンを使用できません。",
       "tooltip.subagentId": "サブエージェントIDはディレクターエージェントの一意な識別子で、ディレクターエージェントの存続期間中に変更することはできません。サブエージェントIDには、ほとんどのユニコード文字、ドット、ハイフンを使用できますが、スペース、先頭または末尾のドットやハイフンを使用することはできません。",
@@ -293,6 +303,15 @@
       "tooltip.url": "URL は、プロトコル、HTTP または HTTPS、ホスト名または IP アドレス、およびエージェントのポート（例： http://localhost:4445 ）が指定されます。",
       "tooltip.withGenerateSubagentCluster": "サブエージェントは、このサブエージェントを含む別のサブエージェントクラスターとして構成することができます。これにより、ジョブはサブエージェント上で別に実行することができます。",
       "tooltip.priority": "priority"
+    },
+    "examples": {
+      "expression1": "Example for consideration of the Subagent with the least number of tasks running for any Subagent Cluster that the Subagent is a member of.",
+      "expression2": "Example for consideration of the Subagent with the least number of tasks running for the given Subagent Cluster.",
+      "expression3": "Example for conditional use of a Subagent if it does not run any tasks.",
+      "expression4": "Example for conditional use of a Subagent if it does not run any tasks in the given Subagent Cluster.",
+      "expression5": "Example for conditional use of a Subagent if it runs fewer than 10 tasks.",
+      "expression6": "Example for conditional use of a Subagent if it runs fewer than 10 tasks for the given Subagent Cluster.",
+      "expression7": "Example for least consumption of CPU weighted by 2, free Memory and the least overall number of tasks running in the Subagent weighted by 3."
     }
   },
   "auditLog": {
