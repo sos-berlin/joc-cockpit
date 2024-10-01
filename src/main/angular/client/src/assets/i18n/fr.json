@@ -254,7 +254,10 @@
     "button.confirmNodeLoss": "Confirmer la perte d'une Instance d'Agent Directeur",
     "button.addEnciphermentCertificate": "Attribuer Certificat",
     "button.metricsPriority": "Priorité basée sur des Métriques",
+<<<<<<< HEAD
     "button.SubmitAllSubagents": "Submit to all Subagents",
+=======
+>>>>>>> a8f27fe0d5aed55dee46e5c5763d1b0cd8a0634b
     "message.dropHereToDetach": "Cliquez ici pour supprimer le Sous-agent",
     "message.noClusterFound": "Aucun Cluster trouvé",
     "message.clickHereToAdd": "Cliquez ici pour ajouter",
