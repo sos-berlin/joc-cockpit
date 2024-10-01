@@ -292,7 +292,7 @@
       "tooltip.title": "Der Titel eines Subagenten kann nach Belieben angegeben werden.",
       "tooltip.url": "Die URL eines Subagenten benennt das Protokoll, HTTP oder HTTPS, den Rechnernamen oder die IP-Adresse und den Port des Agenten, z.B. http://localhost:4445",
       "tooltip.withGenerateSubagentCluster": "Ein Subagent kann als eigener Subagenten Cluster eingerichtet werden, der diesen einzigen Subagenten aufführt. Dadurch lassen sich Jobs gezielt auf einem Subagenten ausführen.",
-      "tooltip.priority": "Die Priorität des Subagenten-Clusters gibt einen Ausdruck an, der bei einem Aktiv-Passiv Cluster für den ersten Subagenten den Wert 0 und für die nachfolgenden Subagenten den Wert 1 hat. Bei einem Aktiv-Aktiv Cluster wird allen Subagenten der Prioritätswert 0 zugewiesen. Bei einem metrik-basierten Subagenten-Cluster enthält die Priorität einen Ausdruck, der Indikatorvariablen wie die Anzahl der laufenden Jobs verwendet."
+      "tooltip.priority": "Die Priorität des Subagenten Cluster gibt einen Ausdruck an, der bei einem Aktiv-Passiv Cluster für den ersten Subagenten den Wert 0 und für die nachfolgenden Subagenten den Wert 1 hat. Bei einem Aktiv-Aktiv Cluster wird allen Subagenten der Prioritätswert 0 zugewiesen. Bei einem metrik-basierten Subagenten Cluster enthält die Priorität einen Ausdruck, der Indikatorvariablen wie die Anzahl der laufenden Jobs verwendet."
     }
   },
   "auditLog": {
