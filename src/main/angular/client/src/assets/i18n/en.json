@@ -292,7 +292,7 @@
       "tooltip.title": "The Title of a Subagent can be specified as desired.",
       "tooltip.url": "The URL of a Subagent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Subagent, e.g. http://localhost:4445",
       "tooltip.withGenerateSubagentCluster": "A Subagent can be set up as a separate Subagent Cluster that includes this single Subagent. This allows jobs to be run specifically on a Subagent.",
-      "tooltip.priority": "priority"
+      "tooltip.priority": "The Subagent Cluster's Priority specifies an expression that for an active-passive cluster evaluates to 0 for the first Subagent and to 1 for subsequent Subagents. For an active-active cluster all Subagents are assigned the priority value 0. For a metrics-based Subagent Cluster the priority holds an expression that makes use of indicator vaiables such as the number of running tasks."
     }
   },
   "auditLog": {
@@ -1826,9 +1826,9 @@
     "label.renameTag": "Rename Tag",
     "label.tagName": "Tag Name",
     "label.testMail": "Test E-Mail",
-    "label.impactedSchedules": "Affected Schedules",
-    "label.impactedWorkflows": "Affected Workflows",
-    "label.affectedObjects": "Affected Objects",
+    "label.impactedSchedules": "Referencing Schedules",
+    "label.impactedWorkflows": "Referencing Workflows",
+    "label.affectedObjects": "Referencing Objects",
     "label.referencedObjects": "Referenced Objects",
     "label.includeTodaysLateOrders": "Include today's late Orders",
     "label.changes": "Changes",
