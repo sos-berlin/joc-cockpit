@@ -303,7 +303,7 @@
       "tooltip.url": "L'URL d'un Sous-Agent spécifie le protocole, HTTP ou HTTPS, le nom d'hôte ou l'adresse IP et le port de du Sous-Agent, par exemple http://localhost:4445.",
       "tooltip.withGenerateSubagentCluster": "Un Sous-Agent peut être configuré comme un cluster de Sous-Agents distinct qui inclut ce seul Sous-Agent. Cela permet d'exécuter des tâches spécifiquement sur un Sous-Agent.",
       "tooltip.priority": "La priorité du Cluster de Sous-Agents spécifie une expression qui, pour un cluster active-passive, vaut 0 pour le premier Sous-Agent et 1 pour les Sous-Agents suivants. Dans le cas d'un cluster active-active, tous les Sous-Agents se voient attribuer la valeur de priorité 0. Pour un Cluster de Sous-Agents basée sur des métriques, la priorité contient une expression qui utilise des variables indicatrices telles que le nombre de tâches en cours d'exécution."
-}
+},
       "examples": {
         "expression1": "Example for consideration of the Subagent with the least number of tasks running for any Subagent Cluster that the Subagent is a member of.",
         "expression2": "Example for consideration of the Subagent with the least number of tasks running for the given Subagent Cluster.",
@@ -313,7 +313,6 @@
         "expression6": "Example for conditional use of a Subagent if it runs fewer than 10 tasks for the given Subagent Cluster.",
         "expression7": "Example for least consumption of CPU weighted by 2, free Memory and the least overall number of tasks running in the Subagent weighted by 3."
       }
-    }
   },
   "auditLog": {
     "label.auditLog": "Journal d'Audit",
