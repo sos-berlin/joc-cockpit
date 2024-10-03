@@ -228,7 +228,7 @@
     "label.secondary": "Secondaire",
     "label.processLimit": "Limite du processus",
     "label.addCertificateAlias": "Attribuer Alias de Certificat",
-    "label.indicatorVariable": "Indicator Variable",
+    "label.indicatorVariable": "Variable d'Indicateur",
     "label.examples": "Examples",
     "label.expression": "Expression",
     "label.description": "Description",
@@ -280,10 +280,10 @@
     "tooltip.processLimit": "Les Agents exécutent par défaut un nombre illimité de processus parallèles pour les Tâches. Une limite de processus peut être attribuée pour restreindre l'utilisation des ressources. Une valeur de 0 pour la limite de processus empêchera les Tâches de démarrer.",
     "tooltip.$js7SubagentProcessCount": "Number of processes running with the Subagent.",
     "tooltip.$js7ClusterSubagentProcessCount": "Number of processes running with the Subagent for the given Subagent Cluster.",
-    "tooltip.$js7CpuLoad": "Returns the \"recent cpu usage\" for the operating environment. This value is a double in the [0.0,1.0] interval. A value of 0.0 means that all CPUs were idle during the recent period of time observed, while a value of 1.0 means that all CPUs were actively running 100% of the time during the recent period being observed. All values betweens 0.0 and 1.0 are possible depending of the activities going on. If the recent cpu usage is not available, the method returns a negative value.\n\nA negative value is reported as missing. CPU Load is not available for MacOS and is reported as missing.",
-    "tooltip.$js7CommittedVirtualMemorySize": "Returns the amount of virtual memory that is guaranteed to be available to the running process in bytes, or -1 if this operation is not supported.\n\nA negative value is reported as missing.",
-    "tooltip.$js7FreeMemorySize": "Returns the amount of free memory in bytes.",
-    "tooltip.$js7TotalMemorySize": "Returns the total amount of memory in bytes.",
+    "tooltip.$js7CpuLoad": "Documentation Java %https://docs.oracle.com/en/java/javase/17/docs/api/jdk.management/com/sun/management/OperatingSystemMXBean.html%: Returns the \"recent cpu usage\" for the operating environment. This value is a double in the [0.0,1.0] interval. A value of 0.0 means that all CPUs were idle during the recent period of time observed, while a value of 1.0 means that all CPUs were actively running 100% of the time during the recent period being observed. All values betweens 0.0 and 1.0 are possible depending of the activities going on. If the recent cpu usage is not available, the method returns a negative value.\n\nA negative value is reported as missing. CPU Load is not available for MacOS and is reported as missing.",
+    "tooltip.$js7CommittedVirtualMemorySize": "Documentation Java %https://docs.oracle.com/en/java/javase/17/docs/api/jdk.management/com/sun/management/OperatingSystemMXBean.html%: Returns the amount of virtual memory that is guaranteed to be available to the running process in bytes, or -1 if this operation is not supported.\n\nA negative value is reported as missing.",
+    "tooltip.$js7FreeMemorySize": "Documentation Java %https://docs.oracle.com/en/java/javase/17/docs/api/jdk.management/com/sun/management/OperatingSystemMXBean.html%: Returns the amount of free memory in bytes.",
+    "tooltip.$js7TotalMemorySize": "Documentation Java %https://docs.oracle.com/en/java/javase/17/docs/api/jdk.management/com/sun/management/OperatingSystemMXBean.html%: Returns the total amount of memory in bytes.",
     "cluster": {
       "tooltip.agentClusterName": "Le nom du Cluster d'Agents est un identifiant unique qui ne peut pas être modifié pendant la durée de vie du Cluster d'Agents. Pour le Nom du Cluster d'Agents, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
       "tooltip.subagentId": "L'ID Sous-Agent est un identifiant unique qui ne peut être modifié pendant la durée de vie de l'Agent Directeur. Pour l'ID Sous-Agent, la plupart des caractères Unicode peuvent être utilisés, des points et des tirets, cependant, aucune espace, aucun point ni tiret au début ou à la fin doit être utilisé.",
@@ -305,13 +305,13 @@
       "tooltip.priority": "La priorité du Cluster de Sous-Agents spécifie une expression qui, pour un cluster active-passive, vaut 0 pour le premier Sous-Agent et 1 pour les Sous-Agents suivants. Dans le cas d'un cluster active-active, tous les Sous-Agents se voient attribuer la valeur de priorité 0. Pour un Cluster de Sous-Agents basée sur des métriques, la priorité contient une expression qui utilise des variables indicatrices telles que le nombre de tâches en cours d'exécution."
 },
       "examples": {
-        "expression1": "Example for consideration of the Subagent with the least number of tasks running for any Subagent Cluster that the Subagent is a member of.",
-        "expression2": "Example for consideration of the Subagent with the least number of tasks running for the given Subagent Cluster.",
-        "expression3": "Example for conditional use of a Subagent if it does not run any tasks.",
-        "expression4": "Example for conditional use of a Subagent if it does not run any tasks in the given Subagent Cluster.",
-        "expression5": "Example for conditional use of a Subagent if it runs fewer than 10 tasks.",
-        "expression6": "Example for conditional use of a Subagent if it runs fewer than 10 tasks for the given Subagent Cluster.",
-        "expression7": "Example for least consumption of CPU weighted by 2, free Memory and the least overall number of tasks running in the Subagent weighted by 3."
+        "expression1": "Exemple de prise en compte du Sous-Agent ayant le moins de tâches en cours d'exécution pour tous Cluster de Sous-Agents dont il est membre.",
+        "expression2": "Exemple de prise en compte du Sous-Agent ayant le moins de tâches en cours d'exécution pour le Cluster de Sous-Agents donné.",
+        "expression3": "Exemple d'utilisation conditionnelle d'un Sous-Agent s'il n'exécute aucune tâche.",
+        "expression4": "Exemple d'utilisation conditionnelle d'un Sous-Agent s'il n'exécute aucune tâche pour le Cluster de Sous-Agents donné.",
+        "expression5": "Exemple d'utilisation conditionnelle d'un Sous-Agent s'il exécute moins de 10 tâches.",
+        "expression6": "Exemple d'utilisation conditionnelle d'un Sous-Agent s'il exécute moins de 10 tâches pour le Cluster de Sous-Agents donné.",
+        "expression7": "Exemple pour la plus petite consommation de CPU pondérée par 2, la mémoire libre et le plus petit nombre global de tâches exécutées dans le Sous-Agent pondéré par 3."
       }
   },
   "auditLog": {
@@ -1924,6 +1924,7 @@
     "button.testMail": "Tester l'E-Mail",
     "button.sendMail": "Envoyer un E-Mail",
     "button.updateDependencies": "Actualiser les dépendances",
+    "button.change": "Change",
     "tooltip.setVersion": "Définir la version",
     "placeholder.enterUniqueName": "Entrer un nom d'objet unique",
     "placeholder.enterFileName": "Entrer le nom du fichier",
@@ -2534,6 +2535,10 @@
     "button.continue": "Faire courir",
     "button.addOrderParameterization": "Ajouter Paramétrage de l'Ordre",
     "button.addOrdersFromAllSchedules": "Ajouter Ordres à partir des Planifications",
+    "button.normal": "Normal",
+    "button.force": "Force",
+    "button.reset": "Reset",
+    "button.forceReset": "Force/reset",
     "placeholder.selectStartNode": "Sélectionner la Position de Départ",
     "placeholder.selectEndNode": "Sélectionner la Position de Fin",
     "placeholder.selectBlockPosition": "Sélectionner la Position d Bloc",

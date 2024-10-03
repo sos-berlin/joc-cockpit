@@ -33,6 +33,7 @@ export class LoginComponent {
   fidoIdentityServiceItems = [];
   fido2ndFactorServiceItems = [];
   needAccountPassword = true;
+  needLoginButton = true;
   showRegister = false;
   showLogin = false;
   passwordField = false;
@@ -142,6 +143,7 @@ export class LoginComponent {
         this.fidoIdentityServiceItems = res.fidoServiceItems || [];
         this.fido2ndFactorServiceItems = res.fido2ndFactorServiceItems || [];
         this.needAccountPassword = res.needAccountPassword;
+        this.needLoginButton = res.needLoginButton;
       }, error(err) {
         console.error(err)
       },

@@ -567,6 +567,22 @@ export class WorkflowGraphicalComponent {
     });
   }
 
+  normal(): void {
+    this.restCall(false, 'Suspend', this.order, 'suspend', null, false);
+  }
+
+  force(): void {
+    this.restCall(true, 'Suspend', this.order, 'suspend', null, false);
+  }
+
+  reset(): void {
+    this.restCall(false, 'Suspend', this.order, 'suspend', null, true);
+  }
+
+  forceReset(): void {
+    this.restCall(true, 'Suspend', this.order, 'suspend', false, true);
+  }
+
   suspendOrder(): void {
     this.restCall(false, 'Suspend', this.order, 'suspend');
   }
@@ -1755,9 +1771,9 @@ export class WorkflowGraphicalComponent {
     });
   }
 
-  private restCall(isKill, type, order, url, deep = false): void {
+  private restCall(isKill, type, order, url, deep = false, reset?): void {
     const obj: any = {
-      controllerId: this.controllerId, orderIds: [order.orderId], kill: isKill
+      controllerId: this.controllerId, orderIds: [order.orderId], kill: isKill, reset: reset
     };
     if (deep) {
       obj.deep = true;

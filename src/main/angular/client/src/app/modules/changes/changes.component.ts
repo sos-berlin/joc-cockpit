@@ -141,7 +141,7 @@ export class ChangesComponent {
   }
 
   changes():void{
-    this.coreService.post('inventory/changes', {}).subscribe({
+    this.coreService.post('inventory/changes', {details: true}).subscribe({
       next: (res) => {
         this.data = res.changes
         this.isLoading = true;

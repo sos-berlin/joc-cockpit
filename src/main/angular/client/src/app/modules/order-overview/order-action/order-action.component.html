@@ -5,35 +5,64 @@
   </button>
   <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
     <ul nz-menu>
-      <li (click)="cancelOrder(order)" *ngIf="permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')"
-          nz-menu-item>
-        <a translate>order.button.cancel</a>
+      <li (click)="$event.preventDefault();$event.stopPropagation()" *ngIf="permission && permission.currentController && permission.currentController.orders.cancel && order.state"
+          nz-submenu
+        [nzTitle]="'order.button.cancel' | translate">
+        <ul>
+          <li (click)="cancelOrder(order)" *ngIf="permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')"
+              nz-menu-item>
+            <a translate>order.button.cancel</a>
+          </li>
+          <li (click)="cancelOrderWithKill()" *ngIf="permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text === 'RUNNING')"
+              nz-menu-item>
+            <a translate>order.button.cancelAndKillTask</a>
+          </li>
+          <li (click)="deepCancel()" *ngIf="order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')"
+              nz-menu-item>
+            <a translate>order.button.deepCancel</a>
+          </li>
+          <li (click)="cancelOrderWithKill(true)" *ngIf="order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')"
+              nz-menu-item>
+            <a translate>order.button.deepCancelAndKillTask</a>
+          </li>
+        </ul>
       </li>
-      <li (click)="cancelOrderWithKill()" *ngIf="permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text === 'RUNNING')"
-          nz-menu-item>
-        <a translate>order.button.cancelAndKillTask</a>
-      </li>
-      <li (click)="deepCancel()" *ngIf="order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')"
-          nz-menu-item>
-        <a translate>order.button.deepCancel</a>
-      </li>
-      <li (click)="cancelOrderWithKill(true)" *ngIf="order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')"
-          nz-menu-item>
-        <a translate>order.button.deepCancelAndKillTask</a>
-      </li>
-      <li (click)="suspendOrder(order)" *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && (order.isSuspendible)" nz-menu-item>
-        <a translate>order.button.suspend</a>
-      </li>
-      <li (click)="suspendOrderWithKill()" *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && (order.state._text === 'RUNNING')"
-          nz-menu-item>
-        <a translate>order.button.suspendAndKillTask</a>
-      </li>
-      <li (click)="deepSuspend()" *ngIf="order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.suspendResume && (order.isSuspendible)" nz-menu-item>
-        <a translate>order.button.deepSuspend</a>
-      </li>
-      <li (click)="suspendOrderWithKill(true)" *ngIf="order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.suspendResume && (order.state._text === 'RUNNING' || order.state._text === 'SCHEDULED' || order.state._text === 'PENDING'
-       || order.state._text === 'INPROGRESS' || order.state._text === 'PROMPTING' || order.state._text === 'WAITING')" nz-menu-item>
-        <a translate>order.button.deepSuspendAndKillTask</a>
+      <li (click)="$event.preventDefault();$event.stopPropagation()" *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && order.isSuspendible || (order.state._text === 'RUNNING') || (order.state._text === 'RUNNING' || order.state._text === 'SCHEDULED' || order.state._text === 'PENDING'
+             || order.state._text === 'INPROGRESS' || order.state._text === 'PROMPTING' || order.state._text === 'WAITING')"
+          [nzTitle]="'order.button.suspend' | translate" nz-submenu>
+        <ul>
+            <li (click)="$event.preventDefault();$event.stopPropagation()" *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && (order.isSuspendible)"  [nzTitle]="'order.button.suspend' | translate" nz-submenu>
+              <ul>
+                <li (click)="normal(order)" *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && (order.isSuspendible)"
+                    nz-menu-item>
+                  <a translate>order.button.normal</a>
+                </li>
+                <li (click)="force(order)" *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && (order.isSuspendible)"
+                    nz-menu-item>
+                  <a translate>order.button.force</a>
+                </li>
+                <li (click)="reset(order)" *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && (order.isSuspendible)"
+                    nz-menu-item>
+                  <a translate>order.button.reset</a>
+                </li>
+                <li (click)="forceReset(order)" *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && (order.isSuspendible)"
+                    nz-menu-item>
+                  <a translate>order.button.forceReset</a>
+                </li>
+              </ul>
+            </li>
+            <li (click)="suspendOrderWithKill()" *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && (order.state._text === 'RUNNING')"
+                nz-menu-item>
+              <a translate>order.button.suspendAndKillTask</a>
+            </li>
+            <li (click)="deepSuspend()" *ngIf="order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.suspendResume && (order.isSuspendible)" nz-menu-item>
+              <a translate>order.button.deepSuspend</a>
+            </li>
+            <li (click)="suspendOrderWithKill(true)" *ngIf="order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.suspendResume && (order.state._text === 'RUNNING' || order.state._text === 'SCHEDULED' || order.state._text === 'PENDING'
+             || order.state._text === 'INPROGRESS' || order.state._text === 'PROMPTING' || order.state._text === 'WAITING')" nz-menu-item>
+              <a translate>order.button.deepSuspendAndKillTask</a>
+            </li>
+        </ul>
       </li>
        <li (click)="resumeOrder()" *ngIf="permission && permission.currentController && (permission.currentController.orders.suspendResume || (permission.currentController.orders.resumeFailed && order.state._text === 'FAILED')) && order.isResumable" nz-menu-item>
         <a>{{'order.button.resume' | translate}} ..</a>

@@ -65,6 +65,22 @@ export class OrderActionComponent {
     }
   }
 
+  normal(order): void {
+    this.restCall(false, 'Suspend', order, 'suspend', null, false);
+  }
+
+  force(order): void {
+    this.restCall(true, 'Suspend', order, 'suspend', null, false);
+  }
+
+  reset(order): void {
+    this.restCall(false, 'Suspend', order, 'suspend', null, true);
+  }
+
+  forceReset(order): void {
+    this.restCall(true, 'Suspend', order, 'suspend', false, true);
+  }
+
   suspendOrder(order): void {
     this.restCall(false, 'Suspend', order, 'suspend');
   }
@@ -125,9 +141,9 @@ export class OrderActionComponent {
     this.restCall(true, 'Terminate', this.order, 'remove_when_terminated');
   }
 
-  private restCall(isKill, type, order, url, deep = false): void {
+  private restCall(isKill, type, order, url, deep = false, reset?): void {
     const obj: any = {
-      controllerId: this.schedulerId, orderIds: [order.orderId], kill: isKill
+      controllerId: this.schedulerId, orderIds: [order.orderId], kill: isKill, reset: reset
     };
     if (deep) {
       obj.deep = true;

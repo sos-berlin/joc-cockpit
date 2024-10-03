@@ -43,7 +43,6 @@
         <nz-select nzShowSearch nzAllowClear [nzPlaceHolder]="'changes.placeholder.state' | translate" [(ngModel)]="changesObj.state" name="state" (ngModelChange)="changeState($event)">
           <nz-option [nzLabel]="'changes.label.open' | translate" [nzValue]="'OPEN'"></nz-option>
           <nz-option [nzLabel]="'changes.label.closed' | translate" [nzValue]="'CLOSED'"></nz-option>
-          <nz-option [nzLabel]="'changes.label.published' | translate" [nzValue]="'PUBLISHED'"></nz-option>
         </nz-select>
       </div>
     </div>

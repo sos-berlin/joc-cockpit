@@ -69,7 +69,7 @@
                 {{'login.label.rememberMe' | translate}}
               </label>
             </div>
-            <button *ngIf="(!showRegister || showLogin) && needAccountPassword" [disabled]="submitted" class="btn btn-primary btn-block p-x-md"
+            <button *ngIf="(!showRegister || showLogin) && needAccountPassword || needLoginButton" [disabled]="submitted" class="btn btn-primary btn-block p-x-md"
                     type="submit">
               <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
               <i *ngIf="!submitted" class="fa fa-sign-in p-r-xs"></i>

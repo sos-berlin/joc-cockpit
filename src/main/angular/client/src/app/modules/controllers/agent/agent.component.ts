@@ -603,13 +603,13 @@ export class AddPriorityModalComponent {
     { value: '$js7TotalMemorySize'}
   ];
   dataSource = [
-    { variable: '$js7SubagentProcessCount', expression: 'expression1'},
-    { variable: '$js7ClusterSubagentProcessCount', expression: 'expression2'},
+    { variable: '-$js7SubagentProcessCount', expression: 'expression1'},
+    { variable: '-$js7ClusterSubagentProcessCount', expression: 'expression2'},
     { variable: 'if $js7SubagentProcessCount == 0 then 1 else missing', expression: 'expression3'},
     { variable: 'if $js7ClusterSubagentProcessCount == 0 then 1 else missing', expression: 'expression4'},
-    { variable: 'if $js7SubagentProcessCount =< 10 then $js7SubagentProcessCount else missing', expression: 'expression5'},
-    { variable: 'if $js7ClusterSubagentProcessCount =< 10 then $js7ClusterSubagentProcessCount else missing', expression: 'expression6'},
-    { variable: '-1 / ( $js7CpuLoad*2 - 1/$js7FreeMemorySize + $js7SubagentProcessCount*3 )', expression: 'expression7'}
+    { variable: 'if $js7SubagentProcessCount =< 10 then -$js7SubagentProcessCount else missing', expression: 'expression5'},
+    { variable: 'if $js7ClusterSubagentProcessCount =< 10 then -$js7ClusterSubagentProcessCount else missing', expression: 'expression6'},
+    { variable: '-$js7CpuLoad * 2 + $js7FreeMemorySize / 1000000000 - $js7SubagentProcessCount * 3', expression: 'expression7'}
   ];
   priorityFromDropdown: string = '';
   isManualPriority: boolean = false;
