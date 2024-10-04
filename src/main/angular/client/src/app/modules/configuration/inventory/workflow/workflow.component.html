@@ -195,7 +195,7 @@
       </div>
       <div *ngIf="selectedNode" class="m-l-sm m-r-12 text-left">
         <div *ngIf="selectedNode.type === 'Job'" class="box-body p-t-0">
-          <app-job-content (updateFromJobTemplateFn)="updateFromJobTemplate($event)" [agents]="inventoryService.agentList"
+          <app-job-content (updateFromJobTemplateFn)="updateFromJobTemplate($event)" [workflowPath]="workflowPath" (jobTagsEvent)="onJobTags($event)" [agents]="inventoryService.agentList"
                            [documentationTree]="documentationTree"
                            [isTooltipVisible]="!preferences.showTooltipInfo" [jobResourcesTree]="jobResourcesTree"
                            [jobs]="jobs"
@@ -207,7 +207,7 @@
         <div class="box-body">
           <div *ngIf="selectedNode.type !== 'Job' && selectedNode.type !== 'Cycle'" class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.label' | translate) : ''"
-                   
+
                    class="col-md-4 col-lg-3 form-control-label"
                    translate>workflow.label.label
             </label>
@@ -229,7 +229,7 @@
           </div>
           <div *ngIf="selectedNode.type === 'Fork'">
             <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.fork.joinIfFailed' | translate) : ''" 
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.fork.joinIfFailed' | translate) : ''"
                      class="col-md-4 col-lg-3 block-ellipsis-job"
                      title="{{'workflow.label.joinIfFailed' | translate}}" translate>workflow.label.joinIfFailed</label>
               <div class="col-md-8 col-lg-9">
@@ -332,7 +332,7 @@
                   <div [ngClass]="{'has-error' : ((children.dirty || children.touched) && children.invalid)}"
                        class="form-group row">
                     <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.children' | translate) : ''"
-                           
+
                            class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.children
                       <sup class="text-danger text-sm">*</sup>
                     </label>
@@ -359,7 +359,7 @@
                   </div>
                   <div class="form-group row">
                     <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.childToId' | translate) : ''"
-                           
+
                            class="col-md-4 col-lg-3 form-control-label" title="{{'workflow.label.childToId' | translate}}"
                            translate>workflow.label.childToId</label>
                     <div class="col-md-8 col-lg-9">
@@ -411,7 +411,7 @@
                       <sup class="text-danger text-sm">*</sup>
                     </label>
                     <label *ngIf="selectedNode.radio == 'expression'" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.agentCluster' | translate) : ''"
-                           
+
                            class="col-md-4 col-lg-3 form-control-label">
                       <span translate>workflow.label.agentCluster</span>
                       <sup class="text-danger text-sm">*</sup>
@@ -430,7 +430,7 @@
                   </div>
                   <div *ngIf="selectedNode.radio == 'expression'" class="form-group row">
                     <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.subagentClusterIdExpr' | translate) : ''"
-                           
+
                            class="col-md-4 col-lg-3 form-control-label"
                            translate>workflow.label.subagentClusterIdExpr
                       <sup class="text-danger text-sm">*</sup>
@@ -455,7 +455,7 @@
             </nz-collapse>
 
             <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.joinIfFailed' | translate) : ''" 
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.forkList.joinIfFailed' | translate) : ''"
                      class="col-md-4 col-lg-3 block-ellipsis-job"
                      title="{{'workflow.label.joinIfFailed' | translate}}" translate>workflow.label.joinIfFailed</label>
               <div class="col-md-8 col-lg-9">
@@ -590,7 +590,7 @@
           </div>
           <div *ngIf="selectedNode.type === 'PostNotices'">
             <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.board.boardNames' | translate) : ''" 
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.board.boardNames' | translate) : ''"
                      class="col-md-4 col-lg-3 form-control-label"
                      title="{{'workflow.label.boardNames' | translate}}" translate>workflow.label.boardNames
                 <sup class="text-danger text-sm">*</sup>
@@ -604,13 +604,13 @@
           <div *ngIf="selectedNode.type === 'ExpectNotices' || selectedNode.type === 'ConsumeNotices'">
             <div class="form-group row">
               <label *ngIf="selectedNode.type === 'ExpectNotices'" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.board.expectBoardExpression' | translate) : ''"
-                     
+
                      class="col-md-4 col-lg-3 form-control-label"
                      title="{{'workflow.label.expectBoardExpression' | translate}}" translate>workflow.label.expectBoardExpression
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <label *ngIf="selectedNode.type === 'ConsumeNotices'" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.board.consumeBoardExpression' | translate) : ''"
-                     
+
                      class="col-md-4 col-lg-3 form-control-label"
                      title="{{'workflow.label.consumeBoardExpression' | translate}}" translate>workflow.label.consumeBoardExpression
                 <sup class="text-danger text-sm">*</sup>
@@ -640,7 +640,7 @@
           <div *ngIf="selectedNode.type === 'Prompt'">
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.prompt.question' | translate) : ''"
-                     
+
                      class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.question</label>
               <div class="col-md-8 col-lg-9">
                 <textarea [(ngModel)]="selectedNode.obj.question" [appAutofocus]="true" class="form-control" name="question"
@@ -670,7 +670,7 @@
             </div>
             <div *ngIf="selectedNode.obj.type == 'unsuccessful'" class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.finish.message' | translate) : ''"
-                     
+
                      class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.message</label>
               <div class="col-md-8 col-lg-9">
                 <textarea [(ngModel)]="selectedNode.obj.message" [appAutofocus]="true" class="form-control" name="message"
@@ -681,7 +681,7 @@
           <div *ngIf="selectedNode.type === 'Options'">
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.options.stopOnFailure' | translate) : ''"
-                     
+
                      class="col-md-4 col-lg-3 block-ellipsis-job" translate>workflow.label.stopOnFailure</label>
               <div class="col-md-8 col-lg-9">
                 <label [(ngModel)]="selectedNode.obj.stopOnFailure" name="stopOnFailure" nz-checkbox></label>
@@ -691,7 +691,7 @@
           <div *ngIf="selectedNode.type === 'Fail'">
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.fail.message' | translate) : ''"
-                     
+
                      class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.message</label>
               <div class="col-md-8 col-lg-9">
                 <textarea [(ngModel)]="selectedNode.obj.message" [appAutofocus]="true" class="form-control" name="message"
@@ -700,7 +700,7 @@
             </div>
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.fail.returnCode' | translate) : ''"
-                     
+
                      class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.returnCode</label>
               <div class="col-md-8 col-lg-9">
                 <nz-input-number [(ngModel)]="selectedNode.obj.outcome.returnCode" [nzMin]="0" [nzStep]="1"
@@ -709,7 +709,7 @@
             </div>
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.fail.uncatchable' | translate) : ''"
-                     
+
                      class="col-md-4 col-lg-3 block-ellipsis-job" translate>workflow.label.uncatchable</label>
               <div class="col-md-8 col-lg-9">
                 <label [(ngModel)]="selectedNode.obj.uncatchable" name="uncatchable" nz-checkbox></label>
@@ -731,7 +731,7 @@
             <ng-container *ngIf="selectedNode.obj.tries == 'limited'">
               <div class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.retry.maxTries' | translate) : ''"
-                       
+
                        class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.maxTries
                   <sup class="text-danger text-sm">*</sup>
                 </label>
@@ -748,7 +748,7 @@
               </div>
               <div class="form-group row" *ngIf="selectedNode.obj.retryDelays?.length > 0">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.retry.delay' | translate) : ''"
-                       
+
                        class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.delay</label>
                 <div class="col-md-8 col-lg-9">
                   <div (cdkDropListDropped)="dropDelay($event, selectedNode.obj.retryDelays)" cdkDropList>
@@ -788,7 +788,7 @@
           </div>
           <div *ngIf="selectedNode.type === 'StickySubagent'">
             <div *ngIf="hasLicense" class="form-group row">
-              <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? (titleTemplate) : ''" 
+              <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? (titleTemplate) : ''"
                    class="col-md-4 col-lg-3" translate>workflow.label.agentAssignment
                 <sup class="text-danger text-sm">*</sup>
               </div>
@@ -812,7 +812,7 @@
                 <sup class="text-danger text-sm">*</sup>
               </label>
               <label *ngIf="selectedNode.radio == 'expression'" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.stickySubagent.agentCluster' | translate) : ''"
-                     
+
                      class="col-md-4 col-lg-3 form-control-label">
                 <span translate>workflow.label.agentCluster</span>
                 <sup class="text-danger text-sm">*</sup>
@@ -831,7 +831,7 @@
             </div>
             <div *ngIf="selectedNode.radio == 'expression'" class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.stickySubagent.subagentClusterIdExpr' | translate) : ''"
-                     
+
                      class="col-md-4 col-lg-3 form-control-label"
                      translate>workflow.label.subagentClusterIdExpr
               </label>
@@ -852,7 +852,7 @@
           <div *ngIf="selectedNode.type === 'Lock'">
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.lock.name' | translate) : ''"
-                     
+
                      class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.name
                 <sup class="text-danger text-sm">*</sup>
               </label>
@@ -875,7 +875,7 @@
             <div *ngIf="selectedNode.obj.countProperty === 'shared'">
               <div *ngFor="let item of selectedNode.obj.lockNames;let i = index" class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.lock.count' | translate) : ''"
-                       
+
                        class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.count</label>
                 <div class="col-md-8 col-lg-9">
                   <nz-input-number [(ngModel)]="selectedNode.obj[item]" [nzMin]="1" [nzStep]="1"
@@ -892,7 +892,7 @@
           <div *ngIf="selectedNode.type === 'AddOrder'">
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.workflowName' | translate) : ''"
-                     
+
                      class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.workflowName
                 <sup class="text-danger text-sm">*</sup>
               </label>
@@ -957,7 +957,7 @@
             </div>
             <div class="form-group row" [hidden]="!blockPositions || blockPositions?.size == 0">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.blockPosition' | translate) : ''"
-                     
+
                      class="col-md-4 col-lg-3 form-control-label"
                      title="{{'workflow.label.blockPosition' | translate}}" translate>workflow.label.blockPosition</label>
               <div *ngIf="positions" class="col-md-8 col-lg-9">
@@ -967,7 +967,7 @@
             </div>
             <div class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.startPosition' | translate) : ''"
-                       
+
                        class="col-md-4 col-lg-3 form-control-label"
                        title="{{'workflow.label.startPosition' | translate}}" translate>workflow.label.startPosition</label>
                 <div *ngIf="positions" class="col-md-8 col-lg-9">
@@ -977,7 +977,7 @@
               </div>
             <div class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.endPositions' | translate) : ''"
-                       
+
                        class="col-md-4 col-lg-3 form-control-label"
                        title="{{'workflow.label.endPositions' | translate}}" translate>workflow.label.endPositions</label>
                 <div *ngIf="positions" class="col-md-8 col-lg-9">
@@ -989,7 +989,7 @@
 
             <div class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.ignoreAdmissionTimes' | translate) : ''"
-                       
+
                        class="col-md-4 col-lg-3 block-ellipsis-job"
                        title="{{'order.label.ignoreAdmissionTimes' | translate}}" translate>order.label.ignoreAdmissionTimes</label>
                 <div class="col-md-8 col-lg-9">
@@ -998,7 +998,7 @@
               </div>
             <div class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.remainWhenTerminated' | translate) : ''"
-                       
+
                        class="col-md-4 col-lg-3 block-ellipsis-job"
                        title="{{'workflow.label.remainWhenTerminated' | translate}}" translate>workflow.label.remainWhenTerminated</label>
                 <div class="col-md-8 col-lg-9">
@@ -1012,7 +1012,7 @@
                 <div class="form-group row">
                   <div class="col-md-12">
                     <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.addOrder.arguments' | translate) : ''"
-                           
+
                            class="_600" translate>workflow.label.arguments</label>
                   </div>
                 </div>
@@ -1332,7 +1332,7 @@
           <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid), 'hide': fullScreen}"
                class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.name' | translate) : ''"
-                   
+
                    class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.name
               <sup class="text-danger text-sm">*</sup>
             </label>
@@ -1350,7 +1350,7 @@
           </div>
           <div [ngClass]="{'hide': fullScreen}" class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.title' | translate) : ''"
-                   
+
                    class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.title</label>
             <div class="col-md-8 col-lg-9">
               <input (blur)="updateOtherProperties('title')" [(ngModel)]="extraConfiguration.title" [readonly]="isTrash" autocomplete="off"
@@ -1359,7 +1359,7 @@
             </div>
           </div>
           <div *ngIf="coreService.expertMode" [ngClass]="{'hide': fullScreen}" class="form-group row">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.documentation' | translate) : ''" 
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.documentation' | translate) : ''"
                    class="col-md-4 col-lg-3 form-control-label"
                    title="{{'inventory.label.documentation' | translate}}" translate>inventory.label.documentation</label>
             <div class="col-md-8 col-lg-9">
@@ -1369,7 +1369,7 @@
           </div>
           <div [ngClass]="{'hide': fullScreen}" class="form-group row">
             <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.jobResourceNames' | translate) : ''"
-                   
+
                    class="col-md-4 col-lg-3 form-control-label"
                    title="{{'workflow.label.jobResourceNames' | translate}}" translate>workflow.label.jobResourceNames</label>
             <div class="col-md-8 col-lg-9">
@@ -1379,7 +1379,7 @@
             </div>
           </div>
           <div [ngClass]="{'hide': fullScreen}" class="form-group row">
-            <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.timeZone' | translate) : ''" 
+            <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.timeZone' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.timeZone' | translate}}" translate>workflow.label.timeZone
             </div>
@@ -1391,7 +1391,7 @@
             </div>
           </div>
           <div class="form-group row" *ngIf="allowUndeclaredVariables || variableDeclarations.allowUndeclared">
-            <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.allowUndeclared' | translate}}" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.allowUndeclared' | translate) : ''" 
+            <label class="col-md-4 col-lg-3 block-ellipsis-job" title="{{'workflow.label.allowUndeclared' | translate}}" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.allowUndeclared' | translate) : ''"
                    translate>workflow.label.allowUndeclared</label>
             <div class="col-md-8 col-lg-9">
               <label nz-checkbox [(ngModel)]="variableDeclarations.allowUndeclared" (nzCheckedChange)="updateOtherProperties('allowUndeclared')"
@@ -1662,7 +1662,7 @@
         </div>
         <div *ngIf="!isTrash" class="box-body p-t-0">
           <div class="b-t p-t-sm font14 _500" translate>
-            inventory.label.tags
+            inventory.label.workflowTags
             <i (click)="expandCollapseTags()" class="cursor fa fa-lg p-l-sm"
                [ngClass]="isExpandTag ? 'fa-angle-up' : 'fa-angle-down' "></i>
           </div>

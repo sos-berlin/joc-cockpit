@@ -1851,6 +1851,8 @@
     "label.referencedObjects": "Referenced Objects",
     "label.includeTodaysLateOrders": "Include today's late Orders",
     "label.changes": "Changes",
+    "label.workflowTags": "Workflow Tags",
+    "label.jobTags": "Job Tags",
     "button.modifyVariableSet": "Modify Variable Set",
     "button.addOrderParameter": "Add Order Template",
     "button.setVersion": "Set Version",
@@ -1990,6 +1992,7 @@
       "trash": "Trash",
       "tagging": "Tags",
       "workflowTagging": "Workflow Tags",
+      "jobTagging": "Job Tags",
       "orderTagging": "Order Tags"
     },
     "cronTab": {
@@ -3757,6 +3760,7 @@
     "tab.jobOptions": "Job Options",
     "tab.nodeProperties": "Node Properties",
     "tab.notification": "Notification",
+    "tab.jobTags": "Job Tags",
     "message.noBranchFound": "No Branch found",
     "message.invalidTarget": "Invalid Target",
     "message.validationError": "Instruction can use only one outgoing and one incoming edge",

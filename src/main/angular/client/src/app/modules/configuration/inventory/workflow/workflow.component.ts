@@ -1433,7 +1433,8 @@ export class JobComponent {
   @Input() exactMatch: boolean;
   @Input() timeZone;
   @Input() checkboxObjects: any = {};
-
+  @Input() workflowPath: any = {};
+  @Output() jobTagsEvent = new EventEmitter<any>();
   history = [];
   showToken = /\w/;
   indexOfNextAdd = 0;
@@ -1449,6 +1450,8 @@ export class JobComponent {
   presentObj: any = {};
   returnCodes: any = {on: 'success'};
   state: any = {};
+  isExpandTag = true;
+  tagsData: any;
   jobresources = {
     list: []
   }
@@ -1477,8 +1480,12 @@ export class JobComponent {
   copiedParamObjects: any = {};
   hasLicense: boolean;
   isTreeShow = false;
+  allTags = [];
+  inputVisible = false;
+  inputValue = '';
+  tags = [];
   subscription: Subscription;
-
+  @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
   @ViewChild('codeMirror', {static: false}) cm: any;
 
   @Output() updateFromJobTemplateFn: EventEmitter<any> = new EventEmitter();
@@ -1662,7 +1669,14 @@ export class JobComponent {
   tabChange($event): void {
     if ($event.index === 0) {
       this.updateSelectItems();
+    }else if($event.index === 2){
+      this.fetchAllJobTags()
+      this.fetchJobTags()
     }
+  }
+
+  expandCollapseTags(): void {
+    this.isExpandTag = !this.isExpandTag;
   }
 
   getTemplateData(): void {
@@ -2689,6 +2703,62 @@ export class JobComponent {
     this.filteredOptions = [...this.filteredOptions.filter(option => option.name.toLowerCase().indexOf(value.toLowerCase()) === -1)];
   }
 
+  onChangeTags(value: string): void {
+    this.filteredOptions = this.allTags.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    this.filteredOptions = this.filteredOptions.filter((tag) => {
+      return this.tags.indexOf(tag) == -1;
+    })
+  }
+
+  private fetchAllJobTags() {
+    this.coreService.post('workflows/tag/job/search', {
+      search: '',
+      controllerId: this.schedulerId
+    }).subscribe({
+      next: (res: any) => {
+        this.allTags = res.results;
+      }
+    });
+  }
+
+  private fetchJobTags() {
+    const obj = {
+      path: this.workflowPath,
+    }
+    this.coreService.post('inventory/workflow/tags/job', obj).subscribe({
+      next: (res: any) => {
+        this.tagsData = res;
+      }
+    });
+  }
+
+  handleClose(removedTag: {}): void {
+    this.tags = this.tags.filter(tag => tag !== removedTag);
+  }
+
+  sliceTagName(tag: string): string {
+    const isLongTag = tag.length > 20;
+    return isLongTag ? `${tag.slice(0, 20)}...` : tag;
+  }
+
+  showInput(): void {
+    this.inputVisible = true;
+    this.filteredOptions = this.allTags;
+    setTimeout(() => {
+      this.inputElement?.nativeElement.focus();
+    }, 10);
+  }
+
+  handleInputConfirm(): void {
+    if (this.inputValue && this.tags.indexOf(this.inputValue) === -1 && this.workflowService.isValidObject(this.inputValue)) {
+      this.tags = [...this.tags, this.inputValue];
+    }
+    this.jobTagsEvent.emit(this.tags);
+    this.inputValue = '';
+    this.inputVisible = false;
+  }
+
+
   selectArgu(name, argu): void {
     const data = this.filteredOptions.find(item => item.name == name);
     data.selected = true;
@@ -3521,7 +3591,9 @@ export class WorkflowComponent {
   allTags = [];
   filteredOptions: string[] = [];
   inputVisible = false;
+  jobTags: any[] = [];
   inputValue = '';
+  workflowPath: any;
   subscription1: Subscription;
   subscription2: Subscription;
 
@@ -3553,6 +3625,7 @@ export class WorkflowComponent {
     this.subscription2 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
+
     this.zones = coreService.getTimeZoneList();
     this.translate.get('inventory.tooltips.workflow.forkList.infoOfListVariable').subscribe(translatedValue => {
       translatedValue = translatedValue.replace(new RegExp(/\n/, 'gi'), '<br\>');
@@ -3615,6 +3688,7 @@ export class WorkflowComponent {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.workflowPath = (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name);
     if (changes['copyObj'] && !changes['data']) {
       return;
     }
@@ -12739,6 +12813,9 @@ let data = this.storedArguments[this.storedArguments.length - 1];
   }
 
   private saveJSON(noValidate): void {
+    if (this.jobTags.length > 0) {
+      this.storeJobTags();
+    }
     if (this.selectedNode) {
       if (noValidate === 'false' || noValidate === false) {
         this.initEditorConf(this.editor, false, true);
@@ -13029,6 +13106,25 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           this.ref.detectChanges();
         }
       }, error: () => this.isStore = false
+    });
+  }
+
+  private storeJobTags(): void{
+
+    const request: any = {
+      path: this.workflow.path,
+      tags: this.jobTags,
+    }
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+      this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+        request.auditLog = {comment: translatedValue};
+      });
+    }
+    this.coreService.post('inventory/workflow/tags/job/store', request).subscribe({
+      next: (res: any) => {
+      },
+      error: (err: any) => {
+      }
     });
   }
 
@@ -13354,5 +13450,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
       this.inputVisible = false;
     }
 
-
+    onJobTags(jobData: any) {
+      this.jobTags = jobData
+    }
 }

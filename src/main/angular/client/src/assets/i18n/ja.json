@@ -1851,6 +1851,8 @@
     "label.impactedWorkflows": "Affected Workflows",
     "label.includeTodaysLateOrders": "Include Today's Late Orders",
     "label.changes": "Changes",
+    "label.workflowTags": "Workflow Tags",
+    "label.jobTags": "Job Tags",
     "button.modifyVariableSet": "変数設定変更",
     "button.addOrderParameter": "オーダー変数追加",
     "button.setVersion": "バージョン設定",
@@ -1990,6 +1992,7 @@
       "trash": "ゴミ箱",
       "tagging": "タグ",
       "workflowTagging": "ワークフロータグ",
+      "jobTagging": "Job Tags",
       "orderTagging": "オーダータグ"
     },
     "cronTab": {
@@ -3757,6 +3760,7 @@
     "tab.jobOptions": "ジョブオプション",
     "tab.nodeProperties": "ノードプロパティ",
     "tab.notification": "通知",
+    "tab.jobTags": "Job Tags",
     "message.noBranchFound": "分岐はありません",
     "message.invalidTarget": "無効なターゲット",
     "message.validationError": "命令は一つの入力と一つの出力しか持てません",

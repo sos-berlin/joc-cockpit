@@ -148,6 +148,7 @@
             <nz-tabset class="custom-tab" [(nzSelectedIndex)]="inventoryConfig.selectedIndex" [nzAnimated]="false" [nzType]="'line'">
               <nz-tab (nzClick)="switchToTrash(false);inventoryConfig.selectedIndex = 0" [nzTitle]="'inventory.tab.folders' | translate"></nz-tab>
               <nz-tab (nzClick)="switchToTagging()"[nzTitle]="'inventory.tab.workflowTagging' | translate"></nz-tab>
+              <nz-tab (nzClick)="switchToJobTagging()"[nzTitle]="'inventory.tab.jobTagging' | translate"></nz-tab>
             </nz-tabset>
           </div>
           <a *ngIf="!isTrash" class="text resize-cursor a-1 pos-abt r-28 z-index-99">
@@ -394,7 +395,7 @@
               <div class="sort-icons m-l-xxs">
                 <i nz-icon nzType="down-square" nzTheme="outline" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.label.ascending' | translate" aria-hidden="true" class="cursor" (click)="sortTags('asc')"></i>
                 <i nz-icon nzType="up-square" nzTheme="outline" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.label.descending' | translate" aria-hidden="true" class="m-l-sm cursor" (click)="sortTags('desc')"></i>
-                <a  (click)="addTags(node)" *ngIf="permission.joc.inventory.manage" class="text-u-l m-l-sm cursor" translate>inventory.button.manageTags</a>
+                <a  (click)="addTags(node)" *ngIf="permission.joc.inventory.manage && !isJobTag" class="text-u-l m-l-sm cursor" translate>inventory.button.manageTags</a>
               </div>
               <div (cdkDropListDropped)="drop($event)" cdkDropList class="role-list m-t-sm">
                 <div class="w-full role-box" *ngFor="let tag of tags" cdkDrag>

@@ -44,7 +44,7 @@
       <div *ngIf="index === 0" class="job-property-editor">
         <div [hidden]="fullScreen || (!exactMatch && isModal)" class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.name' | translate) : ''"
-                 
+
                  class="col-md-4 col-lg-3 form-control-label"
                  translate>workflow.label.name
             <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
@@ -71,7 +71,7 @@
         </div>
         <div *ngIf="!isModal" [hidden]="fullScreen" class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.label' | translate) : ''"
-                 
+
                  class="col-md-4 col-lg-3 form-control-label"
                  translate>workflow.label.label
             <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
@@ -96,7 +96,7 @@
         </div>
         <div [hidden]="fullScreen" class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.title' | translate) : ''"
-                 
+
                  class="col-md-4 col-lg-3 form-control-label"
                  translate>workflow.label.title</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
@@ -112,7 +112,7 @@
           </div>
         </div>
         <div *ngIf="(coreService.expertMode || isModal)" [hidden]="fullScreen" class="form-group row doc-in-workflow">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.documentation' | translate) : ''" 
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.documentation' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'inventory.label.documentation' | translate}}"
                  translate>inventory.label.documentation</label>
@@ -128,7 +128,7 @@
         <div *ngIf="hasLicense && (coreService.expertMode || isModal)" [hidden]="fullScreen"
              class="form-group row">
           <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agentAssignment' | translate) : ''"
-               
+
                class="col-md-4 col-lg-3" translate>workflow.label.agentAssignment
           </div>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
@@ -148,7 +148,7 @@
             <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
           </label>
           <label *ngIf="selectedNode.radio == 'expression'" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.agentCluster' | translate) : ''"
-                 
+
                  class="col-md-4 col-lg-3 form-control-label">
             <span translate>workflow.label.agentCluster</span>
             <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
@@ -171,7 +171,7 @@
         </div>
         <div *ngIf="selectedNode.radio == 'expression'" [hidden]="fullScreen" class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.subagentClusterIdExpr' | translate) : ''"
-                 
+
                  class="col-md-4 col-lg-3 form-control-label"
                  translate>workflow.label.subagentClusterIdExpr
             <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
@@ -187,7 +187,7 @@
           </div>
         </div>
         <div [hidden]="fullScreen" class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.jobResourceNames' | translate) : ''" 
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.jobResourceNames' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.jobResourceNames' | translate}}"
                  translate>workflow.label.jobResourceNames</label>
@@ -204,7 +204,7 @@
         <div *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable'"
              [hidden]="fullScreen"
              class="form-group row">
-          <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.returnCode' | translate) : ''" 
+          <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.returnCode' | translate) : ''"
                class="col-md-4 col-lg-3"
                translate>workflow.label.returnCode
           </div>
@@ -247,7 +247,7 @@
         </div>
 
         <div [hidden]="fullScreen" class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.onWarning' | translate) : ''" 
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.onWarning' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.onWarning' | translate}}"
                  translate>
@@ -275,7 +275,7 @@
         </div>
         <div *ngIf="selectedNode.job.executable" [hidden]="fullScreen" class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.jobClass' | translate) : ''"
-                 
+
                  class="col-md-4 col-lg-3 form-control-label"
                  translate>workflow.label.jobClass</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
@@ -805,7 +805,7 @@
     <nz-tab [nzTitle]="'workflow.tab.jobOptions' | translate">
       <div *ngIf="index === 1" class="job-property-editor">
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.parallelism' | translate) : ''" 
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.parallelism' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.parallelism' | translate}}"
                  translate>workflow.label.parallelism</label>
@@ -826,7 +826,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.timeout' | translate) : ''" 
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.timeout' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.timeout' | translate}}"
                  translate>workflow.label.timeout</label>
@@ -844,7 +844,7 @@
           </div>
         </div>
         <div *ngIf="coreService.expertMode || isModal" class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.graceTimeout' | translate) : ''" 
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.graceTimeout' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.graceTimeout' | translate}}"
                  translate>workflow.label.graceTimeout</label>
@@ -862,7 +862,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnIfShorter' | translate) : ''" 
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnIfShorter' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.warnIfShorter' | translate}}"
                  translate>workflow.label.warnIfShorter</label>
@@ -880,7 +880,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnIfLonger' | translate) : ''" 
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnIfLonger' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.warnIfLonger' | translate}}"
                  translate>workflow.label.warnIfLonger</label>
@@ -899,7 +899,7 @@
         </div>
         <div *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (coreService.expertMode || isModal)"
              class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.compatibleMode' | translate) : ''" 
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.compatibleMode' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.compatibleMode' | translate}}"
                  translate>workflow.label.compatibleMode</label>
@@ -914,7 +914,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.criticality' | translate) : ''" 
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.criticality' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.criticality' | translate}}"
                  translate>workflow.label.criticality</label>
@@ -996,7 +996,7 @@
         </div>
         <div *ngIf="selectedNode.job.executable && selectedNode.job.executable.TYPE === 'ShellScriptExecutable' && (coreService.expertMode || isModal)"
              class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.loadUserProfile' | translate) : ''" 
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.loadUserProfile' | translate) : ''"
                  class="col-md-4 col-lg-3 block-ellipsis-job"
                  title="{{'workflow.label.loadUserProfile' | translate}}"
                  translate>workflow.label.loadUserProfile</label>
@@ -1010,7 +1010,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.failOnOutputErr' | translate) : ''" 
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.failOnOutputErr' | translate) : ''"
                  class="col-md-4 col-lg-3 block-ellipsis-job"
                  title="{{'workflow.label.failOnOutputErr' | translate}}"
                  translate>workflow.label.failOnOutputErr</label>
@@ -1024,7 +1024,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnOnOutputErr' | translate) : ''" 
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.warnOnOutputErr' | translate) : ''"
                  class="col-md-4 col-lg-3 block-ellipsis-job"
                  title="{{'workflow.label.warnOnOutputErr' | translate}}"
                  translate>workflow.label.warnOnOutputErr</label>
@@ -1039,7 +1039,7 @@
         </div>
         <div class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.skipIfNoAdmissionForOrderDay' | translate) : ''"
-                 
+
                  class="col-md-4 col-lg-3 block-ellipsis-job"
                  title="{{'workflow.label.skipIfNoAdmissionForOrderDay' | translate}}"
                  translate>workflow.label.skipIfNoAdmissionForOrderDay</label>
@@ -1053,13 +1053,62 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.admissionTime' | translate) : ''" 
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.admissionTime' | translate) : ''"
                  class="col-md-4 col-lg-3 block-ellipsis-job"
                  title="{{'workflow.label.admissionTime' | translate}}"
                  translate>workflow.label.admissionTime</label>
           <div class="col-md-8 col-lg-9">
             <a (click)="showRuntime()" class="text-hover-primary" translate>workflow.label.showPeriods</a>
           </div>
+        </div>
+      </div>
+    </nz-tab>
+    <nz-tab [nzTitle]="'workflow.tab.jobTags' | translate">
+      <div class="form-group row">
+        <label class="col-md-3 form-control-label" translate>inventory.label.tags
+        </label>
+        <div class="col-md-8">
+          <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
+            <nz-tag
+              *ngFor="let tag of tags; let i = index"
+              [nzMode]="'closeable'"
+              (nzOnClose)="handleClose(tag)"
+            >
+              {{ sliceTagName(tag) }}
+            </nz-tag>
+            <nz-tag *ngIf="!inputVisible" class="editable-tag" nzNoAnimation (click)="showInput()">
+              <span nz-icon nzType="plus"></span>
+              {{'inventory.button.newTag' | translate}}
+            </nz-tag>
+            <div class="d-inline-block" *ngIf="inputVisible" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+              <input
+                #name="ngModel"
+                #inputElement
+                identifierValidation
+                [nzAutocomplete]="auto"
+                nz-input
+                name="tag"
+                type="text"
+                [(ngModel)]="inputValue"
+                (ngModelChange)="onChangeTags($event)"
+                style="width: 128px;"
+                (blur)="handleInputConfirm()"
+                (keydown.enter)="handleInputConfirm()"
+              />
+              <nz-autocomplete [nzDataSource]="filteredOptions" #auto></nz-autocomplete>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="b-t p-t-sm font14 _500" translate>
+        inventory.label.jobTags
+        <i (click)="expandCollapseTags()" class="cursor fa fa-lg p-l-sm"
+           [ngClass]="isExpandTag ? 'fa-angle-up' : 'fa-angle-down' "></i>
+      </div>
+      <div *ngIf="isExpandTag">
+        <div class="p-l-sm p-t-sm" *ngFor="let tag of tagsData">
+          <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
+          <span class="p-l-6">{{tag}}</span>
         </div>
       </div>
     </nz-tab>
@@ -1164,7 +1213,7 @@
     <nz-tab [nzTitle]="'workflow.tab.notification' | translate">
       <div class="job-property-editor">
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailOn' | translate) : ''" 
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailOn' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.mailOn' | translate}}"
                  translate>workflow.label.mailOn</label>
@@ -1182,7 +1231,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailTo' | translate) : ''" 
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailTo' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.mailTo' | translate}}"
                  translate>workflow.label.mailTo</label>
@@ -1198,7 +1247,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailCC' | translate) : ''" 
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailCC' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.mailCC' | translate}}"
                  translate>workflow.label.mailCC</label>
@@ -1214,7 +1263,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailBcc' | translate) : ''" 
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.mailBcc' | translate) : ''"
                  class="col-md-4 col-lg-3 form-control-label"
                  title="{{'workflow.label.mailBcc' | translate}}"
                  translate>workflow.label.mailBcc</label>

@@ -55,6 +55,7 @@ export class CreateTagModalComponent {
     isRecursive: false
   };
   tags = [];
+  isJobTag: any
   allTags = [];
   allOrderTags = [];
   filteredOptions: string[] = [];
@@ -84,6 +85,7 @@ export class CreateTagModalComponent {
     } else {
       this.preferences = this.modalData.preferences;
       this.data = this.modalData.data;
+      this.isJobTag = this.modalData.isJobTag;
       if (this.modalData.isRename) {
         this.isRename = this.modalData.isRename;
         this.tag = this.coreService.clone(this.modalData.tag);
@@ -122,16 +124,22 @@ export class CreateTagModalComponent {
   }
 
   private fetchTags(): void {
-    this.coreService.post('tags', {}).subscribe((res) => {
+    const url = this.isJobTag ? 'tags/job' : 'tags';
+    this.coreService.post(url, {}).subscribe((res) => {
       this.allTags = res.tags;
     });
   }
 
+
   private fetchWorkflowTags(): void {
-    this.coreService.post('inventory/workflow/tags', {path: (this.data.path + (this.data.path == '/' ? '' : '/') + this.data.name)}).subscribe((res) => {
+    const url = this.isJobTag ? 'inventory/workflow/tags/job' : 'inventory/workflow/tags';
+    const path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
+
+    this.coreService.post(url, { path }).subscribe((res) => {
       this.tags = res.tags;
     });
   }
+
 
   private fetchUsedTags(): void {
     const requestPayload: any = {};
@@ -241,7 +249,10 @@ export class CreateTagModalComponent {
       } else {
         obj.tags = this.tags;
       }
-      const URL = this.data ? 'inventory/workflow/tags/store' : this.isRename ? 'tag/rename' : 'tags/add'
+      const URL = this.isJobTag
+        ? (this.data ? 'inventory/workflow/tags/job/store' : this.isRename ? 'tag/job/rename' : 'tags/job/add')
+        : (this.data ? 'inventory/workflow/tags/store' : this.isRename ? 'tag/rename' : 'tags/add');
+
       this.coreService.post(URL, obj).subscribe({
         next: () => {
           this.activeModal.close(this.isRename ? this.tag.name : 'DONE');
@@ -6526,8 +6537,10 @@ export class InventoryComponent {
   tree: any = [];
   trashTree: any = [];
   tags: any = [];
+  jobTags: any = [];
   isLoading = true;
   isTagLoaded = true;
+  isJobTagLoaded = true;
   pageView = 'grid';
   options: any = {};
   data: any = {};
@@ -6542,6 +6555,7 @@ export class InventoryComponent {
   isTreeLoaded = false;
   isTrash = false;
   isTag = false;
+  isJobTag = false;
   isSearchVisible = false;
   isNavigationComplete = true;
   revalidating = false;
@@ -7107,12 +7121,13 @@ export class InventoryComponent {
 
   private updateTagOrder(): void {
     let comments = {};
+    const url = this.isJobTag ? 'tags/job/ordering' : 'tags/ordering';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
         comments = {comment: translatedValue};
       });
     }
-    this.coreService.post('tags/ordering', {
+    this.coreService.post(url, {
       tags: this.tags.map(tag => tag.name),
       auditLog: comments
     }).subscribe();
@@ -7120,6 +7135,7 @@ export class InventoryComponent {
 
 
   selectTag(tag: any, isArray = false, cb?): void {
+    const url = this.isJobTag ? 'inventory/read/job/tag' : 'inventory/read/tag';
     if (this.preferences.expandOption === 'both' || isArray) {
       tag.isExpanded = !tag.isExpanded;
     }
@@ -7135,7 +7151,7 @@ export class InventoryComponent {
     }
 
     if (tag.isExpanded) {
-      this.coreService.post('inventory/read/tag', obj).subscribe({
+      this.coreService.post(url, obj).subscribe({
         next: (res: any) => {
           tag.loading = false;
           tag.children = res.workflows.map(workflow => {
@@ -7619,6 +7635,7 @@ export class InventoryComponent {
 
   switchToTagging(): void {
     this.inventoryConfig.selectedIndex = 1;
+    this.isJobTag = false;
     this.isTag = true;
     this.isTrash = false;
     this.isTagLoaded = false;
@@ -7658,8 +7675,51 @@ export class InventoryComponent {
     });
   }
 
+  switchToJobTagging(): void {
+    this.inventoryConfig.selectedIndex = 2;
+    this.isTag = true;
+    this.isJobTag = true;
+    this.isTrash = false;
+    this.isTagLoaded = false;
+    if (this.type) {
+      this.tempObjSelection = {
+        type: clone(this.type),
+        selectedData: this.coreService.clone(this.selectedData),
+        selectedObj: clone(this.selectedObj)
+      };
+    }
+    this.type = '';
+    this.coreService.post('tags/job', {}).subscribe({
+      next: (res) => {
+        this.tags = res.tags.map((tag) => {
+          return {name: tag, children: []}
+        });
+        for (let i in this.tags) {
+          if (this.inventoryConfig.selectTagName === this.tags[i].name) {
+            this.selectTag(this.tags[i], false, () => {
+              if (this.tags[i].children?.length > 0) {
+                for (let j in this.tags[i].children) {
+                  if (this.tags[i].children[j].name == this.inventoryConfig.selectedObj.name) {
+                    this.selectWorkflow(this.tags[i].children[j], false);
+                    break;
+                  }
+                }
+              }
+            });
+            break;
+          }
+        }
+        this.clearSelection();
+        this.isTagLoaded = true;
+      }, error: () => {
+        this.isTagLoaded = true;
+      }
+    });
+  }
+
   private updateTags(): void {
-    this.coreService.post('tags', {}).subscribe({
+    const url = this.isJobTag ? 'tags/job' : 'tags';
+    this.coreService.post(url, {}).subscribe({
       next: (res) => {
         const _tags = this.coreService.clone(this.tags);
         this.tags = res.tags.map((tag) => {
@@ -9702,7 +9762,8 @@ export class InventoryComponent {
       nzAutofocus: null,
       nzData: {
         preferences: this.preferences,
-        data: node?.origin || node
+        data: node?.origin || node,
+        isJobTag: this.isJobTag
       },
       nzFooter: null,
       nzClosable: false,
@@ -9765,7 +9826,8 @@ export class InventoryComponent {
   }
 
   private _deleteTag(obj, tagName): void {
-    this.coreService.post('tags/delete', obj).subscribe(() => {
+    const url = this.isJobTag ? 'tags/job/delete' : 'tags/delete';
+    this.coreService.post(url, obj).subscribe(() => {
       this.tags = this.tags.filter(tag => {
         if (this.selectTagName == tagName) {
           this.selectTagName = null;
@@ -9784,7 +9846,8 @@ export class InventoryComponent {
       nzData: {
         preferences: this.preferences,
         tag: tag,
-        isRename: true
+        isRename: true,
+        isJobTag: this.isJobTag
       },
       nzFooter: null,
       nzClosable: false,
