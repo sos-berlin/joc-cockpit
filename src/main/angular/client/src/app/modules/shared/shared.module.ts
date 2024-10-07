@@ -73,6 +73,7 @@ import {SelectInputComponent} from "../../components/select-input/select-input.c
 import {FileUploaderComponent} from '../../components/file-uploader/file-uploader.component';
 import {DateInputComponent} from "../../components/date-input/date-input.component";
 import {NzProgressModule} from "ng-zorro-antd/progress";
+import {DependencyTreeComponent} from "../../components/dependency-tree/dependency-tree.component";
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
   NzInputNumberModule, NzSpinModule, NzAutocompleteModule, NzTagModule, NzSelectModule,
@@ -87,7 +88,7 @@ const DIRECTIVES = [TimeValidatorDirective,TimeDurationValidatorDirective,TimeVa
   FacetValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponent, FileTransferSearchComponent, AuditLogInputComponent,
   StartUpModalComponent, TreeComponent, AgentSelectionComponent, ValueEditorComponent, WorkflowTreeStructureComponent, NodePositionComponent, SearchComponent,
-  SelectDocumentComponent, PermissionViewComponent, MultiSelectComponent, SearchInputComponent, SelectInputComponent, FileUploaderComponent, DateInputComponent];
+  SelectDocumentComponent, PermissionViewComponent, MultiSelectComponent, SearchInputComponent, SelectInputComponent, FileUploaderComponent, DateInputComponent, DependencyTreeComponent];
 
 @NgModule({
   imports: [
