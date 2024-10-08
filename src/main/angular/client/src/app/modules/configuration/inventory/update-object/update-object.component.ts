@@ -735,10 +735,12 @@ export class UpdateObjectComponent {
       obj.auditLog = this.comments;
     }
     this.data.forEach((item) => {
+
       const configuration = {
         path: item.path,
-        objectType: this.type
+        objectType: this.type === 'CALENDAR' ? item.objectType : this.type
       };
+
       if (isDeploy) {
         obj.store.draftConfigurations.push({configuration});
       } else {
@@ -1035,5 +1037,9 @@ export class UpdateObjectComponent {
       this.step = 2;
       this.submitted = false;
     });
+  }
+
+  toggleCheckbox(field: string, value: any): void {
+    this.checkboxObjects[field] = !!value;
   }
 }

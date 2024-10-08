@@ -38,7 +38,8 @@ export class SearchInputComponent {
 
   @Output() onSelect = new EventEmitter<string>();
   @Output() onBlur = new EventEmitter<string>();
-
+  @Output() onChange = new EventEmitter<boolean>();
+  selectedValue: any;
   @ViewChild('changeFocusInput') changeFocusInput!: ElementRef<HTMLInputElement>;
   @ViewChild(NzTreeSelectComponent, {static: false}) treeSelectComponent: NzTreeSelectComponent;
 
@@ -210,8 +211,13 @@ export class SearchInputComponent {
   onDropdownOpenChange(isOpen: boolean): void {
     if (!isOpen) {
       Promise.resolve().then(() => {
-        this.treeSelectComponent.openDropdown(); // Open the dropdown programmatically
+        this.treeSelectComponent.openDropdown();
       });
     }
+  }
+
+  handleSelectionChange(value: any): void {
+    this.selectedValue = value;
+    this.onChange.emit(!!value);
   }
 }

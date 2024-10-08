@@ -18,7 +18,7 @@ export class SelectDocumentComponent {
   @ViewChild('docInput') docInputField;
   @Input() data: any;
   @Input() documentationTree: any = [];
-
+  @Output() onSelectDocument = new EventEmitter<any>();
   @Output() funcCall: EventEmitter<any> = new EventEmitter();
 
   constructor(private coreService: CoreService, private ref: ChangeDetectorRef) {
@@ -85,5 +85,9 @@ export class SelectDocumentComponent {
 
   onExpand(e): void {
     this.loadData(e.node, null);
+  }
+
+  onDocumentationChange(selectedDoc: any): void {
+    this.onSelectDocument.emit(selectedDoc);
   }
 }

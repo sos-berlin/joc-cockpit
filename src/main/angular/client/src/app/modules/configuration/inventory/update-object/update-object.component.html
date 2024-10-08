@@ -15,7 +15,7 @@
           <label class="col-md-4 form-control-label"
                  translate>workflow.label.title</label>
           <div class="col-md-6">
-            <input [(ngModel)]="object.title" autocomplete="off" class="form-control"
+            <input [(ngModel)]="object.title" (ngModelChange)="toggleCheckbox('title', $event)" autocomplete="off" class="form-control"
                    name="title"
                    placeholder="{{'common.placeholder.title' | translate}}" type="text"/>
           </div>
@@ -27,7 +27,7 @@
           <label class="col-md-4 form-control-label" title="{{'inventory.label.documentation' | translate}}"
                  translate>inventory.label.documentation</label>
           <div class="col-md-6">
-            <app-select-document [data]="object" [documentationTree]="documentationTree"></app-select-document>
+            <app-select-document [data]="object"  [documentationTree]="documentationTree" (onSelectDocument)="toggleCheckbox('documentation', $event)"></app-select-document>
           </div>
           <div class="col-md-1">
             <label [(ngModel)]="checkboxObjects.documentation" class="m-t-xs" name="cdocumentation" nz-checkbox></label>
@@ -56,7 +56,7 @@
                           </div>
                           <div [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}"
                                class="col-md-6  m-b-sm">
-                            <input #aname="ngModel" (blur)="isStringValid(argu, aname.invalid);" [(ngModel)]="argu.name" autocomplete="off"
+                            <input #aname="ngModel" (blur)="isStringValid(argu, aname.invalid);" [(ngModel)]="argu.name" (ngModelChange)="toggleCheckbox('argu_name{{i}}', $event)" autocomplete="off"
                                    class="form-control" identifierValidation
                                    name="argu_name{{i}}" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}"
                                    type="text">
@@ -66,7 +66,7 @@
                             </div>
                           </div>
                           <div class="col-md-6 m-b-sm">
-                            <input (keydown)="onKeyPress2($event, 'ARGU')" [(ngModel)]="argu.value" autocomplete="off" class="form-control"
+                            <input (keydown)="onKeyPress2($event, 'ARGU')" [(ngModel)]="argu.value" (ngModelChange)="toggleCheckbox('argu_value{{i}}', $event)" autocomplete="off" class="form-control"
                                    name="argu_value{{i}}" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
                                    type="text"/>
                             <i (click)="openEditor(argu)" class="pos-abt cursor r-t-13" nz-icon nzTheme="outline"
@@ -100,7 +100,7 @@
                           </div>
                           <div [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}"
                                class="col-md-6 m-b-sm">
-                            <input #ename="ngModel" (blur)="isStringValid(env, ename.invalid);upperCase(env)" [(ngModel)]="env.name" class="form-control"
+                            <input #ename="ngModel" (blur)="isStringValid(env, ename.invalid);upperCase(env)" [(ngModel)]="env.name" (ngModelChange)="toggleCheckbox('name{{i}}', $event)" class="form-control"
                                    envVariableValidation name="name{{i}}"
                                    placeholder="{{'common.placeholder.name' | translate}} {{i+1}}"
                                    type="text">
@@ -110,7 +110,7 @@
                             </div>
                           </div>
                           <div class="col-md-6 m-b-sm">
-                            <input (keydown)="onKeyPress2($event, 'ENV')" [(ngModel)]="env.value" autocomplete="off" class="form-control"
+                            <input (keydown)="onKeyPress2($event, 'ENV')" [(ngModel)]="env.value" (ngModelChange)="toggleCheckbox('value{{i}}', $event)" autocomplete="off" class="form-control"
                                    name="value{{i}}" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
                                    type="text"/>
                             <i (click)="openEditor(env)" class="pos-abt cursor r-t-13" nz-icon nzTheme="outline"
@@ -135,7 +135,7 @@
             <label class="col-md-4 form-control-label"
                    translate>workflow.label.jobResourceNames</label>
             <div class="col-md-6">
-              <app-multi-select [attribute]="'jobResourceNames'" [list]="object" [nodes]="jobResourcesTree"
+              <app-multi-select [attribute]="'jobResourceNames'" [list]="object" (onChange)="toggleCheckbox('jobResourceNames', $event)">[nodes]="jobResourcesTree"
                                 [type]="'JOBRESOURCE'"></app-multi-select>
             </div>
             <div class="col-md-1">
@@ -146,7 +146,7 @@
           <div class="form-group row">
             <div class="col-md-4 form-control-label" translate>workflow.label.timeZone</div>
             <div class="col-md-6">
-              <nz-select [(ngModel)]="object.timeZone" name="timeZone" nzAllowClear nzShowSearch>
+              <nz-select [(ngModel)]="object.timeZone" (ngModelChange)="toggleCheckbox('timeZone', $event)" name="timeZone" nzAllowClear nzShowSearch>
                 <nz-option *ngFor="let zone of zones" [nzLabel]="zone" [nzValue]="zone"></nz-option>
               </nz-select>
             </div>
@@ -159,10 +159,10 @@
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>inventory.label.workflowName</label>
             <div class="col-md-6">
-              <input (click)="isTreeShow = true;" [(ngModel)]="object.workflowName" autocomplete="off" class="form-control"
+              <input (click)="isTreeShow = true;" [(ngModel)]="object.workflowName" (ngModelChange)="toggleCheckbox('workflowName', $event)" autocomplete="off" class="form-control"
                      name="workflowName" type="text">
               <div *ngIf="isTreeShow" [ngStyle]="{'margin-top': '-29px'}" class="z-index-9999 w-full">
-                <app-search-input (onBlur)="onBlur()" (onSelect)="onSelect($event)" [isDisplay]="true" [nodes]="workflowTree"
+                <app-search-input (onBlur)="onBlur()" (onSelect)="onSelect($event)"  (onChange)="toggleCheckbox('workflowName', $event)" [isDisplay]="true" [nodes]="workflowTree"
                                   [type]="'WORKFLOW'"></app-search-input>
               </div>
               <i (click)="object.workflowName = '';" *ngIf="object.workflowName"
@@ -175,7 +175,7 @@
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>workflow.label.agent</label>
             <div class="col-md-6">
-              <app-agent-selection [agents]="agentList" [data]="object" [preferences]="preferences"
+              <app-agent-selection [agents]="agentList" [data]="object" name="agent"  (agentChanged)="toggleCheckbox('agent', $event)" [preferences]="preferences"
                                    [skipSubagents]="true"></app-agent-selection>
             </div>
             <div class="col-md-1">
@@ -185,7 +185,7 @@
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>inventory.label.directory</label>
             <div class="col-md-6">
-              <input [(ngModel)]="object.directoryExpr" autocomplete="off" class="form-control"
+              <input [(ngModel)]="object.directoryExpr" (ngModelChange)="toggleCheckbox('directoryExpr', $event)" autocomplete="off" class="form-control"
                      name="directory"
                      placeholder="{{'inventory.placeholder.directory' | translate}}" type="text">
             </div>
@@ -197,7 +197,7 @@
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>inventory.label.pattern</label>
             <div class="col-md-6">
-              <input [(ngModel)]="object.pattern" autocomplete="off" class="form-control"
+              <input [(ngModel)]="object.pattern" (ngModelChange)="toggleCheckbox('pattern', $event)" autocomplete="off" class="form-control"
                      name="pattern"
                      placeholder="{{'inventory.placeholder.pattern' | translate}}" type="text">
             </div>
@@ -208,7 +208,7 @@
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>common.label.timeZone</label>
             <div class="col-md-6">
-              <nz-select [(ngModel)]="object.timeZone" name="timeZone" nzAllowClear nzShowSearch>
+              <nz-select [(ngModel)]="object.timeZone" (ngModelChange)="toggleCheckbox('timeZone', $event)" name="timeZone" nzAllowClear nzShowSearch>
                 <nz-option *ngFor="let zone of zones" [nzLabel]="zone" [nzValue]="zone"></nz-option>
               </nz-select>
             </div>
@@ -219,7 +219,8 @@
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>workflow.label.delay</label>
             <div class="col-md-6">
-              <nz-input-number [(ngModel)]="object.delay" [nzMin]="1" [nzStep]="1" name="delay"></nz-input-number>
+              <nz-input-number [(ngModel)]="object.delay"
+                               (ngModelChange)="toggleCheckbox('delay',$event)" [nzMin]="1" [nzStep]="1" name="delay"></nz-input-number>
             </div>
             <div class="col-md-1">
               <label [(ngModel)]="checkboxObjects.delay" class="m-t-xs" name="cdelay" nz-checkbox></label>
@@ -231,12 +232,12 @@
             <label class="col-md-4 form-control-label" translate>inventory.label.toNotice</label>
             <div class="col-md-6">
               <nz-input-group [nzAddOnAfter]="addOnAfterTemplate">
-                <input [(ngModel)]="object.postOrderToNoticeId" autocomplete="off" name="toNotice" nz-input
+                <input [(ngModel)]="object.postOrderToNoticeId" (ngModelChange)="toggleCheckbox('postOrderToNoticeId', $event)" autocomplete="off" name="toNotice" nz-input
                        placeholder="{{'inventory.placeholder.toNotice' | translate}}"
                        type="text">
               </nz-input-group>
               <ng-template #addOnAfterTemplate>
-                <nz-select [(ngModel)]="object.toNoticeMsg" (ngModelChange)="changeExp($event, 'toNotice')"
+                <nz-select [(ngModel)]="object.toNoticeMsg" (ngModelChange)="changeExp($event, 'toNotice');toggleCheckbox('toNoticeMsg', $event)"
                            [nzAllowClear]="true" name="toNoticeMsg"
                            nzPlaceHolder="{{'inventory.placeholder.selectPredefinedExpression' | translate}}" style="width: 220px">
                   <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDate' | translate"
@@ -257,12 +258,12 @@
             <label class="col-md-4 form-control-label" translate>inventory.label.readingOrderToNoticeId</label>
             <div class="col-md-6">
               <nz-input-group [nzAddOnAfter]="addOnAfterTemplate3">
-                <input [(ngModel)]="object.expectOrderToNoticeId" autocomplete="off" name="readingOrderToNoticeId" nz-input
+                <input [(ngModel)]="object.expectOrderToNoticeId" (ngModelChange)="toggleCheckbox('expectOrderToNoticeId', $event)" autocomplete="off" name="readingOrderToNoticeId" nz-input
                        placeholder="{{'inventory.placeholder.readingOrderToNoticeId' | translate}}"
                        type="text">
               </nz-input-group>
               <ng-template #addOnAfterTemplate3>
-                <nz-select [(ngModel)]="object.readingOrderToNoticeIdMsg" (ngModelChange)="changeExp($event, 'NoticeId')"
+                <nz-select [(ngModel)]="object.readingOrderToNoticeIdMsg" (ngModelChange)="changeExp($event, 'NoticeId');toggleCheckbox('readingOrderToNoticeIdMsg', $event)"
                            [nzAllowClear]="true" name="readingOrderToNoticeIdMsg"
                            nzPlaceHolder="{{'inventory.placeholder.selectPredefinedExpression' | translate}}" style="width: 220px">
                   <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDate' | translate"
@@ -283,17 +284,17 @@
             <label class="col-md-4 form-control-label" translate>inventory.label.endOfLife</label>
             <div class="col-md-6">
               <nz-input-group [nzAddOnAfter]="addOnAfterTemplate2">
-                <input [(ngModel)]="object.endOfLife" [hidden]="object.units !== 'HH:MM:SS'" autocomplete="off" maxlength="8" name="endOfLife"
+                <input [(ngModel)]="object.endOfLife" (ngModelChange)="toggleCheckbox('endOfLife', $event)" [hidden]="object.units !== 'HH:MM:SS'" autocomplete="off" maxlength="8" name="endOfLife"
                        nz-input placeholder="{{'inventory.placeholder.endOfLife' | translate}}" timevalidator
                        type="text"
                        validTimeReqex>
-                <nz-input-number [(ngModel)]="object.endOfLife" [hidden]="object.units === 'HH:MM:SS'"
+                <nz-input-number [(ngModel)]="object.endOfLife" (ngModelChange)="toggleCheckbox('endOfLife', $event)" [hidden]="object.units === 'HH:MM:SS'"
                                  [nzMin]="1" name="endOfLife1"
                                  nzPlaceHolder="{{'inventory.placeholder.endOfLife' | translate}}"
                 ></nz-input-number>
               </nz-input-group>
               <ng-template #addOnAfterTemplate2>
-                <nz-select [(ngModel)]="object.units" name="units" (ngModelChange)="changeUnit($event)"
+                <nz-select [(ngModel)]="object.units"  (ngModelChange)="changeUnit($event);toggleCheckbox('units', $event)" name="units"
                            style="width: 220px">
                   <nz-option [nzLabel]="'inventory.label.milliseconds' | translate" nzValue="Milliseconds"></nz-option>
                   <nz-option [nzLabel]="'inventory.label.seconds' | translate" nzValue="Seconds"></nz-option>
@@ -314,7 +315,7 @@
             <label class="col-md-4 form-control-label"
                    translate>inventory.label.limit</label>
             <div class="col-md-6">
-              <nz-input-number [(ngModel)]="object.limit" [nzMin]="0" [nzPlaceHolder]="'inventory.placeholder.enterLimit' | translate"
+              <nz-input-number [(ngModel)]="object.limit" (ngModelChange)="toggleCheckbox('limit', $event)" [nzMin]="0" [nzPlaceHolder]="'inventory.placeholder.enterLimit' | translate"
                                [nzStep]="1" name="limit"></nz-input-number>
             </div>
             <div class="col-md-1">
@@ -344,7 +345,7 @@
                   <div *ngFor="let argument of actualListArr; let k = index" class="col-md-12">
                     <div class="form-group row m-b-0">
                       <div class="col-md-4  m-b-sm" style="padding-right: 34px">
-                        <input [(ngModel)]="argument.name" class="form-control" name="_name{{i}}{{j}}{{k}}{{x}}" readonly
+                        <input [(ngModel)]="argument.name" (ngModelChange)="toggleCheckbox('_name{{i}}{{j}}{{k}}{{x}}', $event)" class="form-control" name="_name{{i}}{{j}}{{k}}{{x}}" readonly
                                type="text">
                       </div>
                       <ng-container [ngSwitch]="argument.type">
@@ -396,12 +397,12 @@
                         <ng-container *ngSwitchDefault>
                           <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                                class="col-md-6 m-b-sm">
-                            <input #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired"
+                            <input #value="ngModel" [(ngModel)]="argument.value" (ngModelChange)="toggleCheckbox('_value{{i}}{{j}}{{k}}{{x}}', $event)" [required]="argument.isRequired"
                                    autocomplete="off" class="form-control m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
                                    placeholder="{{'common.placeholder.value' | translate}}"
                                    type="text">
                             <i (click)="openEditor(argument)"
-                               [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
+                               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
                                nzTheme="outline" nzType="form"
                                style="right: 23px;top:1px;"></i>
                             <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
@@ -429,7 +430,7 @@
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>inventory.label.workflowNames</label>
             <div class="col-md-6">
-              <app-multi-select (onSelectCall)="changeWorkflow($event)" [attribute]="'workflowNames'" [list]="object"
+              <app-multi-select (onSelectCall)="changeWorkflow($event)" (onChange)="toggleCheckbox('workflowNames', $event)" [attribute]="'workflowNames'" [list]="object"
                                 [nodes]="workflowTree" [type]="'WORKFLOW'"></app-multi-select>
             </div>
             <div class="col-md-1">
@@ -440,10 +441,10 @@
           <div class="form-group row">
             <label class="col-md-4 block-ellipsis-job" translate>inventory.label.planOrderAutomatically</label>
             <div class="col-md-6">
-              <label [(ngModel)]="object.planOrderAutomatically" name="planOrderAutomatically" nz-checkbox></label>
+              <label [(ngModel)]="object.planOrderAutomatically" (ngModelChange)="toggleCheckbox('planOrderAutomatically', $event)" name="planOrderAutomatically" nz-checkbox></label>
             </div>
             <div class="col-md-1">
-              <label [(ngModel)]="checkboxObjects.planOrderAutomatically" name="cplanOrderAutomatically"
+              <label [(ngModel)]="checkboxObjects.planOrderAutomatically"  name="cplanOrderAutomatically"
                      nz-checkbox></label>
             </div>
           </div>
@@ -451,7 +452,7 @@
             <label class="col-md-4 block-ellipsis-job"
                    translate>inventory.label.submitOrderToControllerWhenPlanned</label>
             <div class="col-md-6">
-              <label [(ngModel)]="object.submitOrderToControllerWhenPlanned" name="submitOrderToControllerWhenPlanned"
+              <label [(ngModel)]="object.submitOrderToControllerWhenPlanned" (ngModelChange)="toggleCheckbox('submitOrderToControllerWhenPlanned', $event)"  name="submitOrderToControllerWhenPlanned"
                      nz-checkbox></label>
             </div>
             <div class="col-md-1">
@@ -471,7 +472,7 @@
                 <div [ngClass]="{ 'has-error' : (((orderName.dirty || orderName.touched) && orderName.invalid))}"
                      class="col-md-6">
                   <input #orderName="ngModel" (blur)="isOrderNameValid(variableSet, orderName, object.orderParameterisations)" (keydown)="onKeyPress($event, null)"
-                         [(ngModel)]="variableSet.orderName" autocomplete="off"
+                         [(ngModel)]="variableSet.orderName" (ngModelChange)="toggleCheckbox('orderName{{j}}', $event)" autocomplete="off"
                          class="form-control"
                          identifierValidation maxlength="30" name="orderName{{j}}"
                          placeholder="{{'inventory.placeholder.orderName' | translate}}"
@@ -531,12 +532,12 @@
                 <ng-container *ngIf="variable.type !== 'List'">
                   <div *ngIf="variable.isTextField" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
                        class="col-md-4 m-b-sm">
-                    <input #name="ngModel" [(ngModel)]="variable.name" autocomplete="off" class="form-control" name="name_{{i}}{{j}}"
+                    <input #name="ngModel" [(ngModel)]="variable.name" (ngModelChange)="toggleCheckbox('name_{{i}}{{j}}', $event)" autocomplete="off" class="form-control" name="name_{{i}}{{j}}"
                            placeholder="{{'common.placeholder.name' | translate}}" required type="text">
                   </div>
                   <div *ngIf="!variable.isTextField" class="col-md-4 m-b-sm">
                     <nz-select [(ngModel)]="variable.name" [nzDisabled]="variable.isRequired"
-                                name="name{{i}}{{j}}" (ngModelChange)="checkVariableType(variable);"
+                                name="name{{i}}{{j}}" (ngModelChange)="checkVariableType(variable);toggleCheckbox('name{{i}}{{j}}', $event)"
                                 nzPlaceHolder="{{'common.placeholder.selectVariable' | translate}}" nzShowSearch>
                       <nz-option *ngFor="let list of variableSet.variableList" [nzDisabled]="list.isSelected"
                                  [nzLabel]="list.name" [nzValue]="list.name"></nz-option>
@@ -569,7 +570,7 @@
                              class="col-md-6 m-b-sm">
                           <nz-select #value="ngModel" [(ngModel)]="variable.value"
                                      [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [required]="variable.isRequired"
-                                     name="value{{i}}{{j}}" nzAllowClear  (ngModelChange)="checkVal()">
+                                     name="value{{i}}{{j}}" nzAllowClear  (ngModelChange)="checkVal();toggleCheckbox('value_{{i}}_{{j}}', $event)">
                             <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                             <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                           </nz-select>
@@ -588,14 +589,14 @@
                         <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                              class="col-md-6 m-b-sm">
                           <input #value="ngModel" (keydown)="onKeyPress($event, variableSet)"
-                                 [(ngModel)]="variable.value" [facetValidation]="variable.facet"
+                                 [(ngModel)]="variable.value"  (ngModelChange)="toggleCheckbox('value{{i}}{{j}}', $event)" [facetValidation]="variable.facet"
                                  [required]="variable.isRequired || variable.facet" autocomplete="off"
                                  class="form-control" name="value{{i}}{{j}}" placeholder="{{'common.placeholder.value' | translate}}"
                                  type="text">
-                          <i *ngIf="variable.message" [nz-tooltip]="variable.message"
+                          <i *ngIf="variable.message" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="variable.message"
                              class="pos-abt cursor fa fa-info-circle" style="right: 18px;top:9px;"></i>
                           <i (click)="openEditor(variable)"
-                             [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
+                             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
                              nzTheme="outline" nzType="form"
                              style="right: 13px;top:1px;"></i>
                           <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
@@ -703,7 +704,7 @@
             <label class="col-md-4 form-control-label" translate>inventory.label.script</label>
             <div class="col-md-6">
               <div class="b-a" *ngIf="isDisplay">
-                <ngx-codemirror [(ngModel)]="object.script" [options]="cmOption" name="cm"></ngx-codemirror>
+                <ngx-codemirror [(ngModel)]="object.script" (ngModelChange)="toggleCheckbox('script', $event)"  [options]="cmOption" name="cm"></ngx-codemirror>
               </div>
             </div>
             <div class="col-md-1">
