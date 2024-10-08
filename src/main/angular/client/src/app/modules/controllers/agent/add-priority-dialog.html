@@ -10,7 +10,9 @@
   <div class="modal-body p-a">
     <div class="form-group row">
       <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.subagent.tooltip.priority' | translate" class="col-sm-3 form-control-label"
-             translate>inventory.label.priority</label>
+             translate>inventory.label.priority
+        <sup class="text-danger text-sm">*</sup>
+      </label>
       <div class="col-sm-8">
         <textarea [(ngModel)]="priority" (ngModelChange)="onPriorityChange()" [appAutofocus]="true" [maxLength]="255" class="form-control"
                name="priority" placeholder="{{'agent.placeholder.enterPriority' | translate}}">
@@ -58,19 +60,29 @@
 
   </div>
   <div class="modal-footer">
-    <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
-            type="submit">
+    <button
+      [disabled]="!myForm.form.valid || !priority || submitted"
+      class="btn btn-primary btn-sm"
+      type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="submitToAllSubagents(true)" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
-            type="button">
+    <button
+      (click)="submitToAllSubagents(true)"
+      [disabled]="!myForm.form.valid || !priority || submitted"
+      class="btn btn-primary btn-sm"
+      type="button">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'agent.button.SubmitAllSubagents' | translate}}
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
+    <button
+      (click)="activeModal.destroy()"
+      class="btn btn-grey btn-sm"
+      translate
+      type="button">
       common.button.cancel
     </button>
   </div>
+
 </form>
 

@@ -1188,37 +1188,39 @@ export class AgentComponent {
     }
   }
 
-  drop($event): void {
+ drop($event): void {
     if ($event.isPointerOverContainer && this.dropTarget) {
-      const dropTargetCell = this.editor.graph.getModel().getCell(this.dropTarget);
-      if (dropTargetCell) {
-        const subagentId = this.agentList[$event.previousIndex].subagentId;
-        this.agentList.splice($event.previousIndex, 1);
-        const obj = {
-          subagentId,
-          priority: parseInt(dropTargetCell.getAttribute('priority'), 10)
-        };
-        if (obj.priority == -1) {
-          obj.priority = 0
-          for (let i in this.clusters) {
-            if (this.selectedCluster.subagentClusterId === this.clusters[i].subagentClusterId) {
-              this.selectedCluster.subagentIds.forEach((item) => {
-                item.priority = item.priority + 1;
-              });
-              this.clusters[i].subagentIds.forEach((item) => {
-                item.priority = item.priority + 1;
-              });
-              break;
+        const dropTargetCell = this.editor.graph.getModel().getCell(this.dropTarget);
+        if (dropTargetCell) {
+            const subagentId = this.agentList[$event.previousIndex].subagentId;
+            this.agentList.splice($event.previousIndex, 1);
+            const obj = {
+                subagentId,
+                priority: parseInt(dropTargetCell.getAttribute('priority'), 10) 
+            };
+            if (obj.priority === -1) {
+                obj.priority = 0;
+                for (let cluster of this.clusters) {
+                    if (this.selectedCluster.subagentClusterId === cluster.subagentClusterId) {
+                        this.selectedCluster.subagentIds.forEach((item) => {
+                            item.priority = parseInt(item.priority, 10) + 1; 
+                        });
+                        cluster.subagentIds.forEach((item) => {
+                            item.priority = parseInt(item.priority, 10) + 1; 
+                        });
+                        break;
+                    }
+                }
             }
-          }
-        }
 
-        this.selectedCluster.subagentIds.push(obj);
-        this.updateCluster();
-        this.storeCluster(obj);
-      }
+            this.selectedCluster.subagentIds.push(obj);
+
+            this.updateCluster();
+            this.storeCluster(obj);
+        }
     }
-  }
+}
+
 
   private storeCluster(subagent?, isBulkUpdate = false) {
     const obj: any = {
@@ -1666,7 +1668,7 @@ export class AgentComponent {
         // Cancels the bubbling of events to the container so
         // that the droptarget is not reset due to an mouseMove
         // fired on the container with no associated state.
-        mxEvent.consume(me.getEvent(), false);
+        mxEvent.consume(me.getEvent());
       } else if ((this.isMoveEnabled() || this.isCloneEnabled()) && this.updateCursor && !me.isConsumed() &&
         (me.getState() != null || me.sourceState != null) && !graph.isMouseDown) {
         let cursor = graph.getCursorForMouseEvent(me);
@@ -1888,7 +1890,7 @@ export class AgentComponent {
           this.previousStyle = state.style;
           state.style = mxUtils.clone(state.style);
           if (state.style) {
-            if (state.cell && state.cell && state.cell.value.tagName === 'Process') {
+            if (state.cell && state.cell.value.tagName === 'Process') {
               const classList = $('#graph').attr('class');
               if (classList.indexOf('cdk-drop-list-dragging') > -1) {
                 this.currentHighlight = new mxCellHighlight(graph, 'green');
@@ -2072,7 +2074,6 @@ private createClusterWorkflow(): void {
   if (this.preferences.theme === 'light' || this.preferences.theme === 'lighter') {
     styleColor = '#3d464d';
   }
-
   if (this.selectedCluster.subagentIds && this.selectedCluster.subagentIds.length > 0) {
     let colorIndex = 0;
     this.selectedCluster.subagentIds.sort(AgentComponent.compare).forEach((subagent, index) => {
@@ -2092,6 +2093,7 @@ private createClusterWorkflow(): void {
       }
       let y = j * 70;
       if (priority === currentPriority) {
+
         i++;
         if (v1) {
           source = v1;
@@ -2102,6 +2104,7 @@ private createClusterWorkflow(): void {
           colorIndex++;
         }
       }
+
       if (this.colors.length - 1 === colorIndex) {
         colorIndex = 0;
       }
