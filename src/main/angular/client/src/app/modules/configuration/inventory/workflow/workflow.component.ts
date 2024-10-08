@@ -3089,6 +3089,9 @@ export class JobComponent {
     return selectedAgentIds = [];
   }
 
+  toggleCheckbox(field: string, value: any): void {
+    this.checkboxObjects[field] = !!value;
+  }
 }
 
 @Component({
@@ -12566,9 +12569,20 @@ let data = this.storedArguments[this.storedArguments.length - 1];
               });
               endPositions = arr;
             }
-            if(typeof tags === 'string'){
-              tags = JSON.parse(tags);
+            if (typeof tags === 'string') {
+              try {
+                tags = JSON.parse(tags);
+              } catch (error) {
+                console.error("Failed to parse tags:", error);
+                tags = [];
+              }
             }
+
+            if (!Array.isArray(tags)) {
+              tags = [];
+            }
+
+
             json.instructions[x].workflowName = workflowName;
             json.instructions[x].arguments = argu;
             json.instructions[x].remainWhenTerminated = remainWhenTerminated == true || remainWhenTerminated == 'true';
@@ -13414,8 +13428,16 @@ let data = this.storedArguments[this.storedArguments.length - 1];
 
 
     private fetchTags(): void {
-      this.coreService.post('tags', {}).subscribe((res) => {
-        this.allTags = res.tags;
+      this.coreService.post('orders/tag/search', {
+        search: '',
+        controllerId: this.schedulerId
+      }).subscribe({
+        next: (res: any) => {
+          this.allTags = res.results;
+          this.allTags = this.allTags.map((item) => {
+            return item.name;
+          })
+        }
       });
     }
 

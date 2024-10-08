@@ -28,7 +28,7 @@ export class AgentSelectionComponent {
 
   @Output() selectSubagentCluster: EventEmitter<any> = new EventEmitter();
   @Output() onBlur: EventEmitter<any> = new EventEmitter();
-
+  @Output() agentChanged = new EventEmitter<boolean>();
   constructor(private coreService: CoreService, private dataService: DataService) {
   }
 
@@ -245,6 +245,9 @@ export class AgentSelectionComponent {
     this.agentList = [...this.agentList];
     if (!value) {
       this.onBlur.emit();
+      this.agentChanged.emit(false);
+    } else {
+      this.agentChanged.emit(true);
     }
   }
 

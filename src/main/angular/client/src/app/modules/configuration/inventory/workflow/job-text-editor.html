@@ -101,7 +101,7 @@
                  translate>workflow.label.title</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
             <label class="w-full">
-              <input (blur)="saveToHistory();" [(ngModel)]="selectedNode.job.title"
+              <input (blur)="saveToHistory();" [(ngModel)]="selectedNode.job.title" (ngModelChange)="toggleCheckbox('title', $event)"
                      [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" [maxLength]="255" autocomplete="off" class="form-control"
                      name="title"
                      placeholder="{{'common.placeholder.title' | translate}}" type="text">
@@ -119,7 +119,7 @@
           <div [ngClass]="{'disable-link' : (selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name), 'col-md-8 col-lg-9': !isModal}"
                class="col-md-6 col-lg-8">
             <app-select-document (funcCall)="saveToHistory()" [data]="selectedNode.job"
-                                 [documentationTree]="documentationTree"></app-select-document>
+                                 [documentationTree]="documentationTree" (onSelectDocument)="toggleCheckbox('documentation', $event)"></app-select-document>
           </div>
           <div *ngIf="isModal" class="col-md-1">
             <label [(ngModel)]="checkboxObjects.documentation" class="m-t-xs" name="cdocumentation" nz-checkbox></label>
@@ -156,12 +156,12 @@
           <div *ngIf="selectedNode.radio == 'agent'" [ngClass]="{'col-md-8 col-lg-9': !isModal}"
                class="col-md-6 col-lg-8">
             <app-agent-selection (selectSubagentCluster)="selectSubagentCluster($event)" [agents]="agents" [data]="selectedNode.job"
-                                 [obj]="obj"
+                                 [obj]="obj" name="agent" (agentChanged)="toggleCheckbox('radio', $event)"
                                  [preferences]="preferences"></app-agent-selection>
           </div>
           <div *ngIf="selectedNode.radio == 'expression'" [ngClass]="{'col-md-8 col-lg-9': !isModal}"
                class="col-md-6 col-lg-8">
-            <app-agent-selection [agents]="agents" [data]="selectedNode.job" [obj]="obj"
+            <app-agent-selection [agents]="agents" [data]="selectedNode.job" [obj]="obj" (agentChanged)="toggleCheckbox('radio', $event)"
                                  [preferences]="preferences" [skipStandaloneAgent]="true"
                                  [skipSubagents]="true"></app-agent-selection>
           </div>
@@ -177,7 +177,7 @@
             <sup *ngIf="!isModal" class="text-danger text-sm">*</sup>
           </label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
-              <textarea [(ngModel)]="selectedNode.job.subagentClusterIdExpr" [attr.placeholder]="'workflow.placeholder.enterSubagentClusterIdExpr' | translate"
+              <textarea [(ngModel)]="selectedNode.job.subagentClusterIdExpr" (ngModelChange)="toggleCheckbox('subagentClusterIdExpr', $event)" [attr.placeholder]="'workflow.placeholder.enterSubagentClusterIdExpr' | translate"
                         class="form-control"
                         name="subagentClusterIdExpr"></textarea>
           </div>
@@ -192,7 +192,7 @@
                  title="{{'workflow.label.jobResourceNames' | translate}}"
                  translate>workflow.label.jobResourceNames</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
-            <app-multi-select [isDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" (onSelectCall)="onChangeJobResource()" [attribute]="'list'" [list]="jobresources"
+            <app-multi-select [isDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" (onSelectCall)="onChangeJobResource()" (onChange)="toggleCheckbox('jobResourceNames', $event)" [attribute]="'list'" [list]="jobresources"
                               [nodes]="jobResourcesTree"
                               [type]="'JOBRESOURCE'"></app-multi-select>
           </div>
@@ -230,7 +230,7 @@
                class="col-md-6 col-lg-8">
             <label class="w-full">
               <input #success="ngModel" (blur)="validateReturnCode(selectedNode.job.executable.returnCodeMeaning, success);saveToHistory();"
-                     [(ngModel)]="selectedNode.job.executable.returnCodeMeaning[returnCodes.on]" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off"
+                     [(ngModel)]="selectedNode.job.executable.returnCodeMeaning[returnCodes.on]" (ngModelChange)="toggleCheckbox('returnCode', $event)" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off"
                      class="form-control"
                      name="success"
                      placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}" type="text"
@@ -257,7 +257,7 @@
                class="col-md-6 col-lg-8">
             <label class="w-full">
               <input #warning="ngModel" (blur)="validateReturnCode(selectedNode.job.executable.returnCodeMeaning, warning);saveToHistory();"
-                     [(ngModel)]="selectedNode.job.executable.returnCodeMeaning.warning" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off"
+                     [(ngModel)]="selectedNode.job.executable.returnCodeMeaning.warning" (ngModelChange)="toggleCheckbox('warningReturnCode', $event)" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off"
                      class="form-control"
                      name="warning"
                      placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}" type="text"
@@ -279,7 +279,7 @@
                  class="col-md-4 col-lg-3 form-control-label"
                  translate>workflow.label.jobClass</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
-            <nz-select [(ngModel)]="selectedNode.job.executable.TYPE" [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
+            <nz-select [(ngModel)]="selectedNode.job.executable.TYPE" (ngModelChange)="toggleCheckbox('executableTYPE', $event)" [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
                        name="executableType" (ngModelChange)="changeType()">
               <nz-option [nzLabel]="'workflow.label.shell' | translate" [nzValue]="'ShellScriptExecutable'"></nz-option>
               <nz-option [nzLabel]="'workflow.label.jitl' | translate" [nzValue]="'InternalExecutable'"></nz-option>
@@ -315,7 +315,7 @@
                     <div [ngClass]="{'invalid': obj.script || (script.invalid && (script.dirty && script.touched))}" class="b-a"
                          id="scriptId">
                       <ngx-codemirror #codeMirror #script="ngModel"
-                                      [(ngModel)]="selectedNode.job.executable.script"
+                                      [(ngModel)]="selectedNode.job.executable.script" (ngModelChange)="toggleCheckbox('script', $event)"
                                       [options]="{
                                          lineNumbers: true,
                                          autoRefresh: true,
@@ -360,7 +360,7 @@
                        class="col-md-11">
                     <label class="w-full">
                       <input #className="ngModel" name="className"  placeholder="{{'workflow.placeholder.className' | translate}}" required
-                             (blur)="onBlur();" [(ngModel)]="selectedNode.job.executable.className" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off" class="form-control"
+                             (blur)="onBlur();" [(ngModel)]="selectedNode.job.executable.className" (ngModelChange)="toggleCheckbox('className', $event)" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off" class="form-control"
                              type="text">
                     </label>
                     <div *ngIf="obj.className || (className.invalid && (className.dirty && className.touched))"
@@ -812,7 +812,7 @@
           <div [ngClass]="{'has-error' : ((parallelism.dirty || parallelism.touched) && parallelism.invalid), 'col-md-8 col-lg-9': !isModal}"
                class="col-md-6 col-lg-8">
             <nz-input-number #parallelism="ngModel"
-                             [(ngModel)]="selectedNode.job.parallelism" [appAutofocus]="true" [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" [nzMin]="0" [nzStep]="1"
+                             [(ngModel)]="selectedNode.job.parallelism" (ngModelChange)="toggleCheckbox('parallelism', $event)" [appAutofocus]="true" [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" [nzMin]="0" [nzStep]="1"
                              name="parallelism" required></nz-input-number>
             <div *ngIf="parallelism.invalid && (parallelism.dirty || parallelism.touched)"
                  class="text-danger help-block">
@@ -833,7 +833,7 @@
           <div [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid), 'col-md-8 col-lg-9': !isModal}"
                class="col-md-6 col-lg-8">
             <label class="w-full">
-              <input #timeout="ngModel" [(ngModel)]="selectedNode.job.timeout1"
+              <input #timeout="ngModel" [(ngModel)]="selectedNode.job.timeout1" (ngModelChange)="toggleCheckbox('timeout1', $event)"
                      [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off" class="form-control" name="timeout"
                      placeholder="{{'workflow.placeholder.duration' | translate}}"
                      type="text" validateDurtionReqex>
@@ -851,7 +851,7 @@
           <div [ngClass]="{'has-error' : ((graceTimeout.dirty || graceTimeout.touched) && graceTimeout.invalid), 'col-md-8 col-lg-9': !isModal}"
                class="col-md-6 col-lg-8">
             <label class="w-full">
-              <input #graceTimeout="ngModel" [(ngModel)]="selectedNode.job.graceTimeout1"
+              <input #graceTimeout="ngModel" [(ngModel)]="selectedNode.job.graceTimeout1" (ngModelChange)="toggleCheckbox('graceTimeout1', $event)"
                      [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off" class="form-control" name="graceTimeout"
                      placeholder="{{'workflow.placeholder.duration' | translate}}"
                      type="text" validateDurtionReqex>
@@ -869,7 +869,7 @@
           <div [ngClass]="{'has-error' : ((warnIfShorter.dirty || warnIfShorter.touched) && warnIfShorter.invalid), 'col-md-8 col-lg-9': !isModal}"
                class="col-md-6 col-lg-8">
             <label class="w-full">
-              <input #warnIfShorter="ngModel" [(ngModel)]="selectedNode.job.warnIfShorter"
+              <input #warnIfShorter="ngModel" [(ngModel)]="selectedNode.job.warnIfShorter" (ngModelChange)="toggleCheckbox('warnIfShorter', $event)"
                      [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off" class="form-control" name="warnIfShorter"
                      placeholder="{{'workflow.placeholder.durationWithPercentage' | translate}}"
                      type="text" validateDurtionWithPercentageReqex>
@@ -887,7 +887,7 @@
           <div [ngClass]="{'has-error' : ((warnIfLonger.dirty || warnIfLonger.touched) && warnIfLonger.invalid), 'col-md-8 col-lg-9': !isModal}"
                class="col-md-6 col-lg-8">
             <label class="w-full">
-              <input #warnIfLonger="ngModel" [(ngModel)]="selectedNode.job.warnIfLonger"
+              <input #warnIfLonger="ngModel" [(ngModel)]="selectedNode.job.warnIfLonger" (ngModelChange)="toggleCheckbox('warnIfLonger', $event)"
                      [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" autocomplete="off" class="form-control" name="warnIfLonger"
                      placeholder="{{'workflow.placeholder.durationWithPercentage' | translate}}"
                      type="text" validateDurtionWithPercentageReqex>
@@ -904,7 +904,7 @@
                  title="{{'workflow.label.compatibleMode' | translate}}"
                  translate>workflow.label.compatibleMode</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
-            <nz-select [(ngModel)]="selectedNode.job.executable.v1Compatible" [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" name="v1Compatible"
+            <nz-select [(ngModel)]="selectedNode.job.executable.v1Compatible" (ngModelChange)="toggleCheckbox('v1Compatible', $event)" [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" name="v1Compatible"
                        nzAllowClear (ngModelChange)="saveToHistory();">
               <nz-option [nzLabel]="'workflow.label.branch1.x' | translate" [nzValue]="true"></nz-option>
             </nz-select>
@@ -919,7 +919,7 @@
                  title="{{'workflow.label.criticality' | translate}}"
                  translate>workflow.label.criticality</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
-            <nz-select [(ngModel)]="selectedNode.job.criticality"
+            <nz-select [(ngModel)]="selectedNode.job.criticality" (ngModelChange)="toggleCheckbox('criticality', $event)"
                        [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name" [nzPlaceHolder]="'inventory.placeholder.selectCriticality' | translate" class="w-full"
                        name="criticality"
                        nzAllowClear>
@@ -957,7 +957,7 @@
           </div>
           <div *ngIf="isModal" class="col-md-1">
             <label
-              [(ngModel)]="checkboxObjects.isNotRestartable"
+              [(ngModel)]="checkboxObjects.isNotRestartable" (ngModelChange)="toggleCheckbox('isNotRestartable', $event)"
               name="cisNotRestartable"
               nz-checkbox
             ></label>
@@ -984,7 +984,7 @@
                class="col-md-6 col-lg-8">
             <label class="w-full">
               <input #credentialKey="ngModel"
-                     [(ngModel)]="selectedNode.job.executable.login.credentialKey" [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
+                     [(ngModel)]="selectedNode.job.executable.login.credentialKey" (ngModelChange)="toggleCheckbox('credentialKey', $event)"  [disabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
                      [required]="selectedNode.job.executable.login.withUserProfile" autocomplete="off" class="form-control"
                      name="credentialKey" placeholder="{{'workflow.placeholder.enterCredentialKey' | translate}}"
                      type="text">
@@ -1001,7 +1001,7 @@
                  title="{{'workflow.label.loadUserProfile' | translate}}"
                  translate>workflow.label.loadUserProfile</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
-            <label [(ngModel)]="selectedNode.job.executable.login.withUserProfile" [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
+            <label [(ngModel)]="selectedNode.job.executable.login.withUserProfile" (ngModelChange)="toggleCheckbox('withUserProfile', $event)"   [nzDisabled]="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name"
                    name="loadUserProfile" nz-checkbox></label>
           </div>
           <div *ngIf="isModal" class="col-md-1">
@@ -1016,7 +1016,7 @@
                  translate>workflow.label.failOnOutputErr</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
             <label
-              [(ngModel)]="selectedNode.job.failOnErrWritten"
+              [(ngModel)]="selectedNode.job.failOnErrWritten" (ngModelChange)="toggleCheckbox('failOnErrWritten', $event)"
               [nzDisabled]="(selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name) || selectedNode.job.warnOnErrWritten" name="failOnErrWritten" nz-checkbox></label>
           </div>
           <div *ngIf="isModal" class="col-md-1">
@@ -1030,7 +1030,7 @@
                  translate>workflow.label.warnOnOutputErr</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
             <label
-              [(ngModel)]="selectedNode.job.warnOnErrWritten"
+              [(ngModel)]="selectedNode.job.warnOnErrWritten" (ngModelChange)="toggleCheckbox('warnOnErrWritten', $event)"
               [nzDisabled]="(selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name) || selectedNode.job.failOnErrWritten" name="warnOnErrWritten" nz-checkbox></label>
           </div>
           <div *ngIf="isModal" class="col-md-1">
@@ -1044,7 +1044,7 @@
                  title="{{'workflow.label.skipIfNoAdmissionForOrderDay' | translate}}"
                  translate>workflow.label.skipIfNoAdmissionForOrderDay</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
-            <label [(ngModel)]="selectedNode.job.skipIfNoAdmissionForOrderDay" name="skipIfNoAdmissionForOrderDay"
+            <label [(ngModel)]="selectedNode.job.skipIfNoAdmissionForOrderDay" (ngModelChange)="toggleCheckbox('skipIfNoAdmissionForOrderDay', $event)" name="skipIfNoAdmissionForOrderDay"
                    nz-checkbox></label>
           </div>
           <div *ngIf="isModal" class="col-md-1">
@@ -1218,7 +1218,7 @@
                  title="{{'workflow.label.mailOn' | translate}}"
                  translate>workflow.label.mailOn</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
-            <nz-select [(ngModel)]="selectedNode.job.notification.types" [nzPlaceHolder]="'workflow.placeholder.mailOn' | translate" class="w-full"
+            <nz-select [(ngModel)]="selectedNode.job.notification.types" (ngModelChange)="toggleCheckbox('types', $event)" [nzPlaceHolder]="'workflow.placeholder.mailOn' | translate" class="w-full"
                        name="types"
                        nzMode="multiple">
               <nz-option [nzLabel]="'ERROR'" [nzValue]="'ERROR'"></nz-option>
@@ -1237,7 +1237,7 @@
                  translate>workflow.label.mailTo</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
             <label class="w-full">
-              <input (blur)="checkLength()" [(ngModel)]="selectedNode.job.notification.mail.to" class="form-control" name="mailTo"
+              <input (blur)="checkLength()" [(ngModel)]="selectedNode.job.notification.mail.to" (ngModelChange)="toggleCheckbox('mailTo', $event)"class="form-control" name="mailTo"
                      placeholder="{{'workflow.placeholder.mailTo' | translate}}"
                      type="text">
             </label>
@@ -1253,7 +1253,7 @@
                  translate>workflow.label.mailCC</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
             <label class="w-full">
-              <input (blur)="checkLength()" [(ngModel)]="selectedNode.job.notification.mail.cc" class="form-control" name="mailCC"
+              <input (blur)="checkLength()" [(ngModel)]="selectedNode.job.notification.mail.cc" (ngModelChange)="toggleCheckbox('mailCC', $event)" class="form-control" name="mailCC"
                      placeholder="{{'workflow.placeholder.mailCC' | translate}}"
                      type="text">
             </label>
@@ -1269,7 +1269,7 @@
                  translate>workflow.label.mailBcc</label>
           <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
             <label class="w-full">
-              <input (blur)="checkLength()" [(ngModel)]="selectedNode.job.notification.mail.bcc" class="form-control" name="mailBcc"
+              <input (blur)="checkLength()" [(ngModel)]="selectedNode.job.notification.mail.bcc" (ngModelChange)="toggleCheckbox('mailBcc', $event)" class="form-control" name="mailBcc"
                      placeholder="{{'workflow.placeholder.mailBcc' | translate}}"
                      type="text">
             </label>

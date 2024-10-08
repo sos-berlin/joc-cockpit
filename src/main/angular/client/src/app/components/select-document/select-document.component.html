@@ -11,6 +11,7 @@
     [nzDropdownStyle]="{ 'max-height': '300px' }"
     nzShowSearch
     [(ngModel)]="data.documentationName1"
+    (ngModelChange)="onDocumentationChange($event)"
     (nzExpandChange)="onExpand($event)"
   >
     <ng-template #nzTreeTemplate let-node>

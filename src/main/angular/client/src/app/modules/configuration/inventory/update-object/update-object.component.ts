@@ -1039,5 +1039,7 @@ export class UpdateObjectComponent {
     });
   }
 
-
+  toggleCheckbox(field: string, value: any): void {
+    this.checkboxObjects[field] = !!value;
+  }
 }

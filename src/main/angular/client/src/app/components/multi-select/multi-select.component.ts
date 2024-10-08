@@ -22,7 +22,7 @@ export class MultiSelectComponent {
 
   @Output() funcCall: EventEmitter<any> = new EventEmitter();
   @Output() onSelectCall: EventEmitter<any> = new EventEmitter();
-
+  @Output() onChange = new EventEmitter<boolean>();
   constructor(public coreService: CoreService) {
   }
 
@@ -53,6 +53,7 @@ export class MultiSelectComponent {
       this.list[this.attribute].push(selectedValue);
       this.onSelectCall.emit({add: selectedValue});
     }
+    this.onChange.emit(true);
   }
 
   onBlur(evt): void {
@@ -66,6 +67,7 @@ export class MultiSelectComponent {
     this.list[this.attribute] = this.list[this.attribute].filter((val) => val != item);
     this.onSelectCall.emit({remove: item});
     this.funcCall.emit(evn);
+    this.onChange.emit(this.list[this.attribute]?.length > 0);
   }
 
 }
