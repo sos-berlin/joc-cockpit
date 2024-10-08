@@ -1,0 +1,191 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.sos-berlin</groupId>
+    <artifactId>joc-gui</artifactId>
+    <version>2.7.2-SNAPSHOT</version>
+    <packaging>war</packaging>
+    <name>JOC Web GUI</name>
+    <description>The Web GUI for the Jobscheduler</description>
+
+    <scm>
+        <connection>scm:git:git@github.com:sos-berlin/joc-cockpit.git</connection>
+        <developerConnection>scm:git:git@github.com:sos-berlin/joc-cockpit.git</developerConnection>
+        <url>https://github.com/sos-berlin/joc-cockpit.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <properties>
+        <build.timestamp>${maven.build.timestamp}</build.timestamp>
+        <maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <plugins>
+            <!-- Copy the Angular UI sources to target/angular -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <executions>
+                    <execution>
+                        <id>copy-angular-dir</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/angular</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/angular</directory>
+                                    <includes>
+                                        <include>**/*.*</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- Call npm install to resolve the dependencies of the Angular 
+                UI in package.json -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <executable>npm</executable>
+                            <arguments>
+                                <argument>install</argument>
+                            </arguments>
+                            <workingDirectory>${basedir}/target/angular/client</workingDirectory>
+                            <target>
+                                <echo message="Npm install" />
+                            </target>
+                        </configuration>
+                    </execution>
+                    <!-- Build the Angular UI with Angular CLI -->
+ <!--                   <execution>
+                       <id>angular-cli build</id>
+                       <goals>
+                          <goal>exec</goal>
+                       </goals>
+                       <phase>generate-resources</phase>
+                       <configuration>
+                          <executable>node</executable>
+                          <arguments>
+                             <argument>- -max-old-space-size=2048 ./node_modules/@angular/cli/bin/ng build - -prod - -base-href=./</argument>
+                          </arguments>
+                          <workingDirectory>${basedir}/target/angular/client</workingDirectory>
+                       </configuration>
+                    </execution>
+-->               
+                </executions>
+            </plugin>
+            <!-- configuration of the release properties -->
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <!-- for release:prepare -->
+                    <tagNameFormat>v@{project.version}</tagNameFormat>
+                    <updateVersionsToSnapshot>true</updateVersionsToSnapshot>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.2</version>
+                <executions>
+                    <execution>
+                        <id>get-git-revision</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                        <configuration>
+                            <buildNumberPropertyName>git.build.number</buildNumberPropertyName>
+                            <doCheck>false</doCheck>
+                            <doUpdate>false</doUpdate>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <webResources>
+                        <resource>
+                            <directory>src/main/templates</directory>
+                            <filtering>true</filtering>
+                            <includes>
+                                <include>version.json</include>
+                            </includes>
+                        </resource>
+                        <resource>
+                            <directory>target/angular/client/dist</directory>
+                            <filtering>false</filtering>
+                            <!--includes> <include>version.json</include> 
+                                </includes -->
+                        </resource>
+                        <resource>
+                            <directory>src/main/webapp</directory>
+                            <filtering>false</filtering>
+                            <includes>
+                                <include>api-server/**</include>
+                            </includes>
+                        </resource>                        
+                    </webResources>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>delete-local-repository</id>
+            <build>
+                <plugins>
+                    <!-- clean local repository once before build and log 
+                        deleted files and folders -->
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <inherited>false</inherited>
+                        <executions>
+                            <execution>
+                                <id>delete-local-repository</id>
+                                <phase>pre-clean</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <target
+                                        name="clean-local-repo">
+                                        <echo>Purging
+                                            ${settings.localRepository}/com/sos-berlin...</echo>
+                                        <delete
+                                            dir="${settings.localRepository}/com/sos-berlin"
+                                            verbose="true" />
+                                    </target>
+                                    <failOnError>false</failOnError>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>
