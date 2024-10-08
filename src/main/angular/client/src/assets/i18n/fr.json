@@ -1851,8 +1851,8 @@
     "label.referencedObjects": "Objets référencés",
     "label.includeTodaysLateOrders": "Inclure les Ordres tardifs du jour",
     "label.changes": "Changements",
-    "label.workflowTags": "Workflow Tags",
-    "label.jobTags": "Job Tags",
+    "label.workflowTags": "Balises Workflow",
+    "label.jobTags": "Balises Tâche",
     "button.modifyVariableSet": "Modifier le Jeu de Variable",
     "button.addOrderParameter": "Ajouter un Modèle d'Ordre",
     "button.setVersion": "Définir la Version",
@@ -1992,7 +1992,7 @@
       "trash": "Corbeille",
       "tagging": "Balises",
       "workflowTagging": "Balises Workflow",
-      "jobTagging": "Job Tags",
+      "jobTagging": "Balieses Tâche",
       "orderTagging": "Balises Ordre"
     },
     "cronTab": {
@@ -3760,7 +3760,7 @@
     "tab.jobOptions": "Options de Tâche",
     "tab.nodeProperties": "Propriétés du Nœud",
     "tab.notification": "Notification",
-    "tab.jobTags": "Job Tags",
+    "tab.jobTags": "Balises Tâche",
     "message.noBranchFound": "Aucune Branche trouvée",
     "message.invalidTarget": "Cible non valide",
     "message.validationError": "L'instruction ne peut utiliser qu'un bord sortant et un bord entrant",
