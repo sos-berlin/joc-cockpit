@@ -950,14 +950,14 @@
             class="col-md-6 col-lg-8"
           >
             <label
-              [(ngModel)]="selectedNode.job.isNotRestartable"
+              [(ngModel)]="selectedNode.job.isNotRestartable" (ngModelChange)="toggleCheckbox('isNotRestartable', $event)"
               name="isNotRestartable"
               nz-checkbox
             ></label>
           </div>
           <div *ngIf="isModal" class="col-md-1">
             <label
-              [(ngModel)]="checkboxObjects.isNotRestartable" (ngModelChange)="toggleCheckbox('isNotRestartable', $event)"
+              [(ngModel)]="checkboxObjects.isNotRestartable"
               name="cisNotRestartable"
               nz-checkbox
             ></label>

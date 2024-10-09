@@ -534,11 +534,19 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   handleInputConfirm(): void {
-    if (this.inputValue && this.tags.indexOf(this.inputValue) === -1 && this.workflowService.isValidObject(this.inputValue)) {
+    if (!this.inputValue || this.inputValue.trim() === '') {
+      this.inputVisible = false;
+      return;
+    }
+
+    if (this.tags.indexOf(this.inputValue) === -1 && this.workflowService.isValidObject(this.inputValue)) {
       this.tags = [...this.tags, this.inputValue];
     }
+
     this.inputValue = '';
     this.inputVisible = false;
+
     this.saveJSON(true, true);
   }
+
 }

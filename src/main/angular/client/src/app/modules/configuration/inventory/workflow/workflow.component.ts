@@ -3090,7 +3090,11 @@ export class JobComponent {
   }
 
   toggleCheckbox(field: string, value: any): void {
-    this.checkboxObjects[field] = !!value;
+    if (Array.isArray(value)) {
+      this.checkboxObjects[field] = value.length > 0;
+    } else {
+      this.checkboxObjects[field] = !!value;
+    }
   }
 }
 
@@ -4603,6 +4607,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
         this.coreService.showCopyMessage(this.message);
       }
     }
+    this.saveCopyInstruction()
   }
 
   cut(node): void {
@@ -6689,15 +6694,12 @@ let data = this.storedArguments[this.storedArguments.length - 1];
       let isMatch = false;
 
       function getObject(json): void {
+
         if (json.instructions) {
           for (let x = 0; x < json.instructions.length; x++) {
             if (json.instructions[x].id == nodeId) {
               if (json.instructions[x].instructions) {
-                if (!json.instructions[x].then) {
-                  json.instructions.splice(x + 1, 0, obj);
-                } else {
                   json.instructions[x].instructions.push(obj);
-                }
               } else {
                 if (json.instructions[x].TYPE == 'If') {
                   if (edge.getAttribute('displayLabel') === 'then') {
@@ -6712,6 +6714,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                         instructions: [obj]
                       };
                     }
+
                   } else if (edge.getAttribute('displayLabel') === 'endIf') {
                       json.instructions.splice(x + 1, 0, obj);
                   }
@@ -6738,9 +6741,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                     json.instructions.splice(x + 1, 0, obj);
                   }
                 } else {
-
                     json.instructions.splice(x + 1, 0, obj);
-
 
                 }
               }
@@ -8690,7 +8691,11 @@ let data = this.storedArguments[this.storedArguments.length - 1];
               for (let x in cell.cells) {
                 if (cell.cells[x].value) {
                   if (cell.cells[x].value.tagName === 'ForkList') {
-                    flag = false;
+                    if(cell.isOutside){
+                      flag = true;
+                    }else{
+                      flag = false;
+                    }
                     break;
                   } else if (self.workflowService.isInstructionCollapsible(cell.cells[x].value.tagName)) {
                     if (flag) {
@@ -10061,6 +10066,9 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           obj.blockPosition = cell.getAttribute('blockPosition');
           if (obj.blockPosition && obj.blockPosition != 'undefined' && typeof obj.blockPosition == 'string') {
             obj.blockPosition = JSON.parse(obj.blockPosition);
+          }
+          if (obj.tags && obj.tags != 'undefined' && typeof obj.tags == 'string') {
+            obj.tags = JSON.parse(obj.tags);
           }
 
           const val1 = cell.getAttribute('remainWhenTerminated');
@@ -12573,16 +12581,13 @@ let data = this.storedArguments[this.storedArguments.length - 1];
               try {
                 tags = JSON.parse(tags);
               } catch (error) {
-                console.error("Failed to parse tags:", error);
-                tags = [];
+                tags = tags.split(',').map(tag => tag.trim());
               }
             }
 
             if (!Array.isArray(tags)) {
               tags = [];
             }
-
-
             json.instructions[x].workflowName = workflowName;
             json.instructions[x].arguments = argu;
             json.instructions[x].remainWhenTerminated = remainWhenTerminated == true || remainWhenTerminated == 'true';

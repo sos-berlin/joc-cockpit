@@ -607,8 +607,8 @@ export class AddPriorityModalComponent {
     { variable: '-$js7ClusterSubagentProcessCount', expression: 'expression2'},
     { variable: 'if $js7SubagentProcessCount == 0 then 1 else missing', expression: 'expression3'},
     { variable: 'if $js7ClusterSubagentProcessCount == 0 then 1 else missing', expression: 'expression4'},
-    { variable: 'if $js7SubagentProcessCount =< 10 then -$js7SubagentProcessCount else missing', expression: 'expression5'},
-    { variable: 'if $js7ClusterSubagentProcessCount =< 10 then -$js7ClusterSubagentProcessCount else missing', expression: 'expression6'},
+    { variable: 'if $js7SubagentProcessCount < 10 then -$js7SubagentProcessCount else missing', expression: 'expression5'},
+    { variable: 'if $js7ClusterSubagentProcessCount < 10 then -$js7ClusterSubagentProcessCount else missing', expression: 'expression6'},
     { variable: '-$js7CpuLoad * 2 + $js7FreeMemorySize / 1000000000 - $js7SubagentProcessCount * 3', expression: 'expression7'}
   ];
   priorityFromDropdown: string = '';
@@ -1196,17 +1196,17 @@ export class AgentComponent {
             this.agentList.splice($event.previousIndex, 1);
             const obj = {
                 subagentId,
-                priority: parseInt(dropTargetCell.getAttribute('priority'), 10) 
+                priority: parseInt(dropTargetCell.getAttribute('priority'), 10)
             };
             if (obj.priority === -1) {
                 obj.priority = 0;
                 for (let cluster of this.clusters) {
                     if (this.selectedCluster.subagentClusterId === cluster.subagentClusterId) {
                         this.selectedCluster.subagentIds.forEach((item) => {
-                            item.priority = parseInt(item.priority, 10) + 1; 
+                            item.priority = parseInt(item.priority, 10) + 1;
                         });
                         cluster.subagentIds.forEach((item) => {
-                            item.priority = parseInt(item.priority, 10) + 1; 
+                            item.priority = parseInt(item.priority, 10) + 1;
                         });
                         break;
                     }
