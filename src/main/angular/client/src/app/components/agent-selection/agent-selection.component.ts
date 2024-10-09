@@ -245,7 +245,6 @@ export class AgentSelectionComponent {
     this.agentList = [...this.agentList];
     if (!value) {
       this.onBlur.emit();
-      this.agentChanged.emit(false);
     } else {
       this.agentChanged.emit(true);
     }

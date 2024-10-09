@@ -2640,7 +2640,13 @@ export class JobComponent {
   updateFromJobTemplate(): void {
     this.updateFromJobTemplateFn.emit(this.selectedNode)
   }
-}
+ toggleCheckbox(field: string, value: any): void {
+    if (Array.isArray(value)) {
+      this.checkboxObjects[field] = value.length > 0;
+    } else {
+      this.checkboxObjects[field] = !!value;
+    }
+  }}
 
 @Component({
   selector: 'app-script-content',
@@ -4071,6 +4077,7 @@ export class WorkflowComponent {
         this.coreService.showCopyMessage(this.message);
       }
     }
+    this.saveCopyInstruction()
   }
 
   cut(node): void {
@@ -6018,11 +6025,7 @@ export class WorkflowComponent {
           for (let x = 0; x < json.instructions.length; x++) {
             if (json.instructions[x].id == nodeId) {
               if (json.instructions[x].instructions) {
-                if (!json.instructions[x].then) {
-                  json.instructions.splice(x + 1, 0, obj);
-                } else {
                   json.instructions[x].instructions.push(obj);
-                }
               } else {
                 if (json.instructions[x].TYPE == 'If') {
                   if (edge.getAttribute('displayLabel') === 'then') {
@@ -6037,6 +6040,7 @@ export class WorkflowComponent {
                         instructions: [obj]
                       };
                     }
+
                   } else if (edge.getAttribute('displayLabel') === 'endIf') {
                       json.instructions.splice(x + 1, 0, obj);
                   }
@@ -6063,9 +6067,7 @@ export class WorkflowComponent {
                     json.instructions.splice(x + 1, 0, obj);
                   }
                 } else {
-
                     json.instructions.splice(x + 1, 0, obj);
-
 
                 }
               }
@@ -8012,7 +8014,11 @@ export class WorkflowComponent {
               for (let x in cell.cells) {
                 if (cell.cells[x].value) {
                   if (cell.cells[x].value.tagName === 'ForkList') {
-                    flag = false;
+                    if(cell.isOutside){
+                      flag = true;
+                    }else{
+                      flag = false;
+                    }
                     break;
                   } else if (self.workflowService.isInstructionCollapsible(cell.cells[x].value.tagName)) {
                     if (flag) {
