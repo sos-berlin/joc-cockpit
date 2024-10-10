@@ -39,6 +39,7 @@ export class SearchInputComponent {
   @Output() onSelect = new EventEmitter<string>();
   @Output() onBlur = new EventEmitter<string>();
   @Output() onChange = new EventEmitter<boolean>();
+  selectedValue: any;
   @ViewChild('changeFocusInput') changeFocusInput!: ElementRef<HTMLInputElement>;
   @ViewChild(NzTreeSelectComponent, {static: false}) treeSelectComponent: NzTreeSelectComponent;
 
@@ -97,7 +98,6 @@ export class SearchInputComponent {
       }
     } else {
       this.onSelect.emit(this.isPath ? node.origin.path : node.origin.name);
-      this.onChange.emit(true);
     }
   }
 
@@ -217,6 +217,7 @@ export class SearchInputComponent {
   }
 
   handleSelectionChange(value: any): void {
+    this.selectedValue = value;
     this.onChange.emit(!!value);
   }
 }

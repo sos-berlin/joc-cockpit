@@ -90,7 +90,4 @@ export class SelectDocumentComponent {
   onDocumentationChange(selectedDoc: any): void {
     this.onSelectDocument.emit(selectedDoc);
   }
-  clearDocumentation(): void {
-    this.onSelectDocument.emit(null);
-  }
 }
