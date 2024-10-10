@@ -3776,7 +3776,7 @@
     "message.classNameIsMissing": "Class name is missing, but is required",
     "message.duplicateLabel": "Same Label found in more than one Job",
     "message.predicateIsMissing": "Predicate is missing, but is required",
-    "message.runtimeIsMissing": "In Cycle Instruction, run-time is missing, but is required",
+    "message.runtimeIsMissing": "In Cycle Instruction, runtime is missing, but is required",
     "message.lockNameIsMissing": "Resource Lock Name is missing, but is required",
     "message.childrenIsMissing": "ForkList children is missing, but is required",
     "message.invalidIfInstruction": "If Instruction cannot be empty",
