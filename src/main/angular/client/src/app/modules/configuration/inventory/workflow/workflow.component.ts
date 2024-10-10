@@ -6025,7 +6025,11 @@ export class WorkflowComponent {
           for (let x = 0; x < json.instructions.length; x++) {
             if (json.instructions[x].id == nodeId) {
               if (json.instructions[x].instructions) {
+                if (!json.instructions[x].then) {
+                  json.instructions.splice(x + 1, 0, obj);
+                } else {
                   json.instructions[x].instructions.push(obj);
+                }
               } else {
                 if (json.instructions[x].TYPE == 'If') {
                   if (edge.getAttribute('displayLabel') === 'then') {
