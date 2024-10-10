@@ -1008,8 +1008,8 @@ export class UpdateObjectComponent {
         obj.type = object.type;
       }
       if (this.checkboxObjects.validFrom) {
-        obj.from = object.from;
-        obj.to = object.to;
+        obj.from = this.coreService.getStringDate(object.from);
+        obj.to = this.coreService.getStringDate(object.validTo);
       }
     } else if (this.type === InventoryObject.INCLUDESCRIPT) {
       if (this.checkboxObjects.script) {
@@ -1040,6 +1040,11 @@ export class UpdateObjectComponent {
   }
 
   toggleCheckbox(field: string, value: any): void {
-    this.checkboxObjects[field] = !!value;
+    if (Array.isArray(value)) {
+      this.checkboxObjects[field] = value.length > 0;
+    } else {
+      this.checkboxObjects[field] = !!value;
+    }
+
   }
 }
