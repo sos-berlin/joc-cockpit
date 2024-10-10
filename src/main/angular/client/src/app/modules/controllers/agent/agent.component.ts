@@ -2075,6 +2075,7 @@ private createClusterWorkflow(): void {
       let currentPriority = parseInt(subagent.priority, 10);
         if (isNaN(currentPriority)) {
               currentPriority = 0;
+              colorCode = '#008000';
             }
       if (priority > -1 && priority !== currentPriority) {
         j++;
