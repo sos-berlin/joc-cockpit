@@ -2538,7 +2538,7 @@
     "button.continue": "Let run",
     "button.addOrderParameterization": "Add Order",
     "button.addOrdersFromAllSchedules": "Add Orders from Schedules",
-    "button.normal": "soft",
+    "button.normal": "softly",
     "button.force": "terminate task",
     "button.reset": "reset",
     "button.forceReset": "reset/terminate task",
