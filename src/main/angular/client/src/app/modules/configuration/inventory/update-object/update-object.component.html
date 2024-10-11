@@ -237,7 +237,7 @@
                        type="text">
               </nz-input-group>
               <ng-template #addOnAfterTemplate>
-                <nz-select [(ngModel)]="object.toNoticeMsg" (ngModelChange)="changeExp($event, 'toNotice');toggleCheckbox('toNoticeMsg', $event)"
+                <nz-select [(ngModel)]="object.toNoticeMsg" (ngModelChange)="changeExp($event, 'toNotice');toggleCheckbox('postOrderToNoticeId', $event)"
                            [nzAllowClear]="true" name="toNoticeMsg"
                            nzPlaceHolder="{{'inventory.placeholder.selectPredefinedExpression' | translate}}" style="width: 220px">
                   <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDate' | translate"
@@ -263,7 +263,7 @@
                        type="text">
               </nz-input-group>
               <ng-template #addOnAfterTemplate3>
-                <nz-select [(ngModel)]="object.readingOrderToNoticeIdMsg" (ngModelChange)="changeExp($event, 'NoticeId');toggleCheckbox('readingOrderToNoticeIdMsg', $event)"
+                <nz-select [(ngModel)]="object.readingOrderToNoticeIdMsg" (ngModelChange)="changeExp($event, 'NoticeId');toggleCheckbox('expectOrderToNoticeId', $event)"
                            [nzAllowClear]="true" name="readingOrderToNoticeIdMsg"
                            nzPlaceHolder="{{'inventory.placeholder.selectPredefinedExpression' | translate}}" style="width: 220px">
                   <nz-option [nzLabel]="'inventory.label.matchingDailyPlanDate' | translate"
@@ -670,7 +670,7 @@
           <div class="form-group row">
             <label class="col-md-4 form-control-label" translate>common.label.type</label>
             <div class="col-md-6">
-              <nz-select [(ngModel)]="object.type" name="cType">
+              <nz-select [(ngModel)]="object.type" name="cType" (ngModelChange)="toggleCheckbox('type', $event)">
                 <nz-option [nzLabel]="'runtime.label.workingDay' | translate" nzValue="WORKINGDAYSCALENDAR"></nz-option>
                 <nz-option [nzLabel]="'runtime.label.nonWorkingDay' | translate"
                            nzValue="NONWORKINGDAYSCALENDAR"></nz-option>
@@ -683,14 +683,14 @@
           <div class="form-group row">
             <label class="col-md-3 col-md-4 form-control-label" translate>runtime.label.validFrom</label>
             <div class="col-md-3 col-xl-3 col-xxl-2">
-              <nz-date-picker [(ngModel)]="object.from"
+              <nz-date-picker [(ngModel)]="object.from" (ngModelChange)="toggleCheckbox('validFrom', $event)"
                               [nzFormat]="dateFormat" [nzPlaceHolder]="'common.placeholder.setStartDate' | translate"
                               name="from"></nz-date-picker>
             </div>
             <label class="col-md-3 col-xl-2 col-xxl-2 form-control-label date-center"
                    translate>runtime.label.validTo</label>
             <div class="col-md-3 col-xl-3 col-xxl-2 date-right">
-              <nz-date-picker [(ngModel)]="object.to" [nzFormat]="dateFormat"
+              <nz-date-picker [(ngModel)]="object.validTo" (ngModelChange)="toggleCheckbox('validTo', $event)" [nzFormat]="dateFormat"
                               [nzPlaceHolder]="'common.placeholder.setEndDate' | translate" id="to"
                               name="to"></nz-date-picker>
             </div>

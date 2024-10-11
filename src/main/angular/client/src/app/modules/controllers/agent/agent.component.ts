@@ -612,7 +612,6 @@ export class AddPriorityModalComponent {
     { variable: '-$js7CpuLoad * 2 + $js7FreeMemorySize / 1000000000 - $js7SubagentProcessCount * 3', expression: 'expression7'}
   ];
   priorityFromDropdown: string = '';
-  isManualPriority: boolean = false;
   isTableVisible = false;
 
   @Output() submitAll = new EventEmitter<string>();
@@ -628,8 +627,7 @@ export class AddPriorityModalComponent {
   }
 
   onSubmit(flag?): void {
-    const finalPriority = this.isManualPriority ? this.priority : this.priorityFromDropdown;
-
+    const finalPriority = this.priority;
     const obj = {
       priority: finalPriority,
       flag: flag
@@ -643,15 +641,8 @@ export class AddPriorityModalComponent {
     }
     this.activeModal.close()
   }
-onDropdownSelect(selectedValue: string): void {
-    if (!this.isManualPriority) {
-      this.priority = selectedValue;
-    }
-    this.priorityFromDropdown = selectedValue;
-  }
-
-  onPriorityChange(): void {
-    this.isManualPriority = true;
+  onDropdownSelect(selectedValue: string): void {
+    this.priority = selectedValue;
   }
 
   toggleTableVisibility(): void {
@@ -659,10 +650,7 @@ onDropdownSelect(selectedValue: string): void {
   }
 
   onCopyExpression(expression: string): void {
-    if (!this.isManualPriority) {
       this.priority = expression;
-    }
-    this.priorityFromDropdown = expression;
   }
 
 }
@@ -2105,10 +2093,11 @@ private createClusterWorkflow(): void {
         }
       }
 
-      if (this.colors.length - 1 === colorIndex) {
-        colorIndex = 0;
+      if (isNaN(Number(subagent.priority)) && !/^\d+$/.test(subagent.priority)) {
+        colorCode = '#31c331';
+      } else {
+        colorCode = this.colors[colorIndex];
       }
-      colorCode = this.colors[colorIndex];
       if (!flag) {
         if (this.selectedCluster.subagentIds[index + 1]) {
           if (subagent.priority !== this.selectedCluster.subagentIds[index + 1].priority) {
