@@ -553,6 +553,22 @@ export class WorkflowService {
     }
   }
 
+  isValidTag(v: string): boolean {
+    if (
+      !v.match(/[!?~'"}\[\]{@;#\/\\^$%\^\&*\)\(+=]/) &&
+      /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(v) &&
+      /^(?!-)(?!.*--)/.test(v) &&
+      !v.substring(0, 1).match(/[-]/) &&
+      !v.substring(v.length - 1).match(/[-]/) &&
+      !/\s/.test(v)
+    ) {
+      return !/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(v);
+    } else {
+      return false;
+    }
+  }
+
+
   isValidLabel(v: string): boolean {
     return !v.match(/[?~'"}\[\]{@;\/\\^%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(v) && /^(?!-)(?!.*--)/.test(v)
       && !v.substring(0, 1).match(/[-,/|:!#$]/) && !v.substring(v.length - 1).match(/[-,/|:!#$]/) && !/\s/.test(v);

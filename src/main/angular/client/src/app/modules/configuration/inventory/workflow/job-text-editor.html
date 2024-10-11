@@ -1084,7 +1084,7 @@
               <input
                 #name="ngModel"
                 #inputElement
-                identifierValidation
+                tagValidation
                 [nzAutocomplete]="auto"
                 nz-input
                 name="tag"
@@ -1106,10 +1106,13 @@
            [ngClass]="isExpandTag ? 'fa-angle-up' : 'fa-angle-down' "></i>
       </div>
       <div *ngIf="isExpandTag">
-        <div class="p-l-sm p-t-sm" *ngFor="let tag of tagsData">
-          <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
-          <span class="p-l-6">{{tag}}</span>
+        <div *ngFor="let job of tagsData">
+          <div class="p-l-sm p-t-sm" *ngFor="let tag of job.jobTags">
+            <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
+            <span class="p-l-6">{{tag}}</span>
+          </div>
         </div>
+
       </div>
     </nz-tab>
     <nz-tab *ngIf="!isModal" [nzTitle]="'workflow.tab.nodeProperties' | translate">

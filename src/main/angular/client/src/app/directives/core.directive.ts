@@ -695,6 +695,42 @@ export class IdentifierValidator implements Validator {
 }
 
 @Directive({
+  selector: '[tagValidation]',
+  providers: [
+    { provide: NG_VALIDATORS, useExisting: forwardRef(() => TagValidator), multi: true }
+  ]
+})
+export class TagValidator implements Validator {
+  validate(c: AbstractControl): { [key: string]: any } | null {
+    let v = c.value;
+    if (v != null) {
+      if (v === '') {
+        return null;
+      }
+
+      if (!v.match(/[!?~'"}\[\]{@;#\/\\^$%\^\&*\)\(+=]/) && // ':' is now allowed; other characters remain restricted
+        /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(v) && // Prevents dots at the start/end and consecutive dots
+        /^(?!-)(?!.*--)/.test(v) && // Prevents hyphen at the start or consecutive hyphens
+        !v.substring(0, 1).match(/[-]/) && // Prevents hyphen at the start
+        !v.substring(v.length - 1).match(/[-]/) && // Prevents hyphen at the end
+        !/\s/.test(v) // Disallows whitespace
+      ) {
+        if (/^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(v)) {
+          return { invalidIdentifier: true };
+        } else {
+          return null;
+        }
+      } else {
+        return { invalidIdentifier: true };
+      }
+    } else {
+      return null;
+    }
+  }
+}
+
+
+@Directive({
   selector: '[facetValidation]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => FacetValidator), multi: true}

@@ -2711,23 +2711,26 @@ export class JobComponent {
   }
 
   private fetchAllJobTags() {
-    this.coreService.post('workflows/tag/job/search', {
-      search: '',
-      controllerId: this.schedulerId
+    this.coreService.post('tags/job', {
     }).subscribe({
       next: (res: any) => {
-        this.allTags = res.results;
+        this.allTags = res.tags;
       }
     });
   }
 
   private fetchJobTags() {
+    console.log(this.jobs)
     const obj = {
       path: this.workflowPath,
+      jobNames: []
     }
+    this.jobs.forEach(item => {
+      obj.jobNames.push(item.name)
+    });
     this.coreService.post('inventory/workflow/tags/job', obj).subscribe({
       next: (res: any) => {
-        this.tagsData = res;
+        this.tagsData = res.jobs;
       }
     });
   }
@@ -2750,7 +2753,7 @@ export class JobComponent {
   }
 
   handleInputConfirm(): void {
-    if (this.inputValue && this.tags.indexOf(this.inputValue) === -1 && this.workflowService.isValidObject(this.inputValue)) {
+    if (this.inputValue && this.tags.indexOf(this.inputValue) === -1 && this.workflowService.isValidTag(this.inputValue)) {
       this.tags = [...this.tags, this.inputValue];
     }
     this.jobTagsEvent.emit(this.tags);
@@ -13135,8 +13138,11 @@ let data = this.storedArguments[this.storedArguments.length - 1];
   private storeJobTags(): void{
 
     const request: any = {
-      path: this.workflow.path,
-      tags: this.jobTags,
+      path: this.workflow.path, // required: path of the workflow
+      jobs: this.jobs.map((job: any) => ({
+        jobName: job.name,
+        jobTags: this.jobTags
+      })),
     }
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
@@ -13474,7 +13480,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
     }
 
     handleInputConfirm(): void {
-      if (this.inputValue && this.orderTags.indexOf(this.inputValue) === -1 && this.workflowService.isValidObject(this.inputValue)) {
+      if (this.inputValue && this.orderTags.indexOf(this.inputValue) === -1 && this.workflowService.isValidTag(this.inputValue)) {
         this.selectedNode.obj.tags = [...this.selectedNode.obj.tags, this.inputValue];
       }
       this.inputValue = '';

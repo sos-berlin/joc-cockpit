@@ -1849,7 +1849,7 @@ export class ScheduleComponent {
     const inputValue = this.schedule.configuration.orderParameterisations[index].inputValue;
     const tags = this.schedule.configuration.orderParameterisations[index].tags;
 
-    if (inputValue && tags.indexOf(inputValue) === -1 && this.workflowService.isValidObject(inputValue)) {
+    if (inputValue && tags.indexOf(inputValue) === -1 && this.workflowService.isValidTag(inputValue)) {
       this.schedule.configuration.orderParameterisations[index].tags = [...tags, inputValue];
     }
 

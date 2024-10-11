@@ -200,7 +200,7 @@ export class CreateTagModalComponent {
   }
 
   handleInputConfirm(): void {
-    if (this.inputValue && this.tags.indexOf(this.inputValue) === -1 && this.workflowService.isValidObject(this.inputValue)) {
+    if (this.inputValue && this.tags.indexOf(this.inputValue) === -1 && this.workflowService.isValidTag(this.inputValue)) {
       this.tags = [...this.tags, this.inputValue];
     }
     this.inputValue = '';
@@ -1112,7 +1112,6 @@ export class DeployComponent {
   selectedSchedulerIds: any = [];
   loading = true;
   nodes: any = [];
-  change: any
   checkedObject = new Set();
   dateFormat: any = '';
   dateObj: any = {};
@@ -1154,325 +1153,6 @@ export class DeployComponent {
   }
 
   ngOnInit(): void {
-    this.change = {
-      "dependency": {
-        "id": 98,
-        "path": "/test2",
-        "objectType": "WORKFLOW",
-        "name": "test2",
-        "configuration": {
-          "TYPE": "Workflow",
-          "version": "1.7.2",
-          "timeZone": "Asia/Calcutta",
-          "title": "hbf;-hhk",
-          "orderPreparation": {
-            "parameters": {
-              "file": {
-                "type": "String"
-              }
-            },
-            "allowUndeclared": false
-          },
-          "instructions": [
-            {
-              "TYPE": "Execute.Named",
-              "jobName": "job",
-              "label": "job1d"
-            },
-            {
-              "TYPE": "AddOrder",
-              "workflowName": "test3",
-              "remainWhenTerminated": false,
-              "forceJobAdmission": false
-            }
-          ],
-          "jobs": {
-            "job": {
-              "agentName": "Primary Agent",
-              "withSubagentClusterIdExpr": false,
-              "executable": {
-                "TYPE": "ShellScriptExecutable",
-                "script": "c",
-                "v1Compatible": false
-              },
-              "skipIfNoAdmissionForOrderDay": false,
-              "parallelism": 1,
-              "graceTimeout": 1,
-              "failOnErrWritten": false,
-              "warnOnErrWritten": false,
-              "jobTemplate": {
-                "name": "x",
-                "hash": "9aacb35b6864b56de5c5e2edc524e84ba2c4d99fd7f789ddf0d1a9e0a19de4c9"
-              },
-              "title": "x",
-              "isNotRestartable": false
-            }
-          }
-        },
-        "valid": true,
-        "deleted": false,
-        "deployed": false,
-        "released": false,
-        "configurationDate": "2024-10-07T11:03:21.000+00:00",
-        "deliveryDate": "2024-10-07T11:39:44.044+00:00"
-      },
-      "references": [],
-      "referencedBy": [
-        {
-          "dependency": {
-            "id": 91,
-            "path": "/mac",
-            "objectType": "SCHEDULE",
-            "name": "s1",
-            "configuration": {
-              "version": "1.7.2",
-              "workflowNames": [
-                "test7"
-              ],
-              "title": "ddvffmyjjhoir",
-              "submitOrderToControllerWhenPlanned": true,
-              "planOrderAutomatically": true,
-              "calendars": [
-                {
-                  "calendarName": "d",
-                  "timeZone": "Asia/Calcutta",
-                  "periods": [
-                    {
-                      "singleStart": "11:00:00",
-                      "whenHoliday": "SUPPRESS"
-                    }
-                  ]
-                }
-              ],
-              "orderParameterisations": [
-                {
-                  "orderName": "",
-                  "variables": {
-                    "file": "u"
-                  },
-                  "positions": {},
-                  "tags": []
-                }
-              ]
-            },
-            "valid": true,
-            "deleted": false,
-            "deployed": false,
-            "released": true,
-            "configurationDate": "2024-10-07T11:03:16.000+00:00",
-            "deliveryDate": "2024-10-07T11:39:44.040+00:00",
-            "selected": false,
-            "disabled": false,
-            "change": false
-          },
-          "references": [],
-          "referencedBy": [
-            {
-              "dependency": {
-                "id": 96,
-                "path": "/r3",
-                "objectType": "SCHEDULE",
-                "name": "r3",
-                "configuration": {
-                  "version": "1.7.2",
-                  "workflowNames": [
-                    "tnyr"
-                  ],
-                  "title": "ddvffmyjjhoir",
-                  "submitOrderToControllerWhenPlanned": true,
-                  "planOrderAutomatically": true,
-                  "calendars": [
-                    {
-                      "calendarName": "d",
-                      "timeZone": "Asia/Calcutta",
-                      "periods": [
-                        {
-                          "singleStart": "11:00:00",
-                          "whenHoliday": "SUPPRESS"
-                        }
-                      ]
-                    }
-                  ],
-                  "orderParameterisations": [
-                    {
-                      "orderName": "",
-                      "variables": {
-                        "file": "u"
-                      },
-                      "positions": {},
-                      "tags": []
-                    }
-                  ]
-                },
-                "valid": true,
-                "deleted": false,
-                "deployed": false,
-                "released": true,
-                "configurationDate": "2024-10-07T11:03:16.000+00:00",
-                "deliveryDate": "2024-10-07T11:39:44.040+00:00",
-                "selected": false,
-                "disabled": false,
-                "change": false
-              },
-              "references": [],
-              "referencedBy": []
-            },
-            {
-              "dependency": {
-                "id": 108,
-                "path": "/pop",
-                "objectType": "SCHEDULE",
-                "name": "pop",
-                "configuration": {
-                  "version": "1.7.2",
-                  "workflowNames": [
-                    "mig"
-                  ],
-                  "submitOrderToControllerWhenPlanned": true,
-                  "planOrderAutomatically": true,
-                  "calendars": [
-                    {
-                      "calendarName": "d",
-                      "timeZone": "Asia/Calcutta",
-                      "periods": [
-                        {
-                          "singleStart": "11:00:00",
-                          "whenHoliday": "SUPPRESS"
-                        }
-                      ]
-                    }
-                  ],
-                  "orderParameterisations": [
-                    {
-                      "orderName": "",
-                      "variables": {},
-                      "positions": {},
-                      "tags": []
-                    }
-                  ]
-                },
-                "valid": false,
-                "deleted": false,
-                "deployed": false,
-                "released": false,
-                "configurationDate": "2024-10-07T11:02:52.000+00:00",
-                "deliveryDate": "2024-10-07T11:39:44.044+00:00",
-                "selected": false,
-                "disabled": true,
-                "change": false
-              },
-              "references": [],
-              "referencedBy": []
-            },
-            {
-              "dependency": {
-                "id": 109,
-                "path": "/fileorder",
-                "objectType": "FILEORDERSOURCE",
-                "name": "fileorder",
-                "configuration": {
-                  "TYPE": "FileWatch",
-                  "version": "1.7.2",
-                  "workflowName": "test2",
-                  "agentName": "Primary Agent",
-                  "directoryExpr": "\"/\"",
-                  "timeZone": "UTC",
-                  "delay": 2,
-                  "title": "m"
-                },
-                "valid": true,
-                "deleted": false,
-                "deployed": false,
-                "released": false,
-                "configurationDate": "2024-10-07T10:54:16.000+00:00",
-                "deliveryDate": "2024-10-07T11:39:44.044+00:00",
-                "selected": true,
-                "disabled": false,
-                "change": false
-              },
-              "references": [],
-              "referencedBy": []
-            }
-          ]
-        },
-        {
-          "dependency": {
-            "id": 101,
-            "path": "/folder-b/s2",
-            "objectType": "SCHEDULE",
-            "name": "s2",
-            "configuration": {
-              "version": "1.7.2",
-              "workflowNames": [
-                "test2"
-              ],
-              "submitOrderToControllerWhenPlanned": true,
-              "planOrderAutomatically": true,
-              "calendars": [
-                {
-                  "calendarName": "d",
-                  "timeZone": "Asia/Calcutta",
-                  "periods": [
-                    {
-                      "singleStart": "11:00:00",
-                      "whenHoliday": "SUPPRESS"
-                    }
-                  ]
-                }
-              ],
-              "orderParameterisations": [
-                {
-                  "orderName": "",
-                  "variables": {},
-                  "positions": {},
-                  "tags": []
-                }
-              ]
-            },
-            "valid": false,
-            "deleted": false,
-            "deployed": false,
-            "released": false,
-            "configurationDate": "2024-10-07T11:02:52.000+00:00",
-            "deliveryDate": "2024-10-07T11:39:44.044+00:00",
-            "selected": false,
-            "disabled": true,
-            "change": false
-          },
-          "references": [],
-          "referencedBy": []
-        },
-        {
-          "dependency": {
-            "id": 107,
-            "path": "/fileorder",
-            "objectType": "FILEORDERSOURCE",
-            "name": "fileorder",
-            "configuration": {
-              "TYPE": "FileWatch",
-              "version": "1.7.2",
-              "workflowName": "test2",
-              "agentName": "Primary Agent",
-              "directoryExpr": "\"/\"",
-              "timeZone": "UTC",
-              "delay": 2,
-              "title": "m"
-            },
-            "valid": true,
-            "deleted": false,
-            "deployed": false,
-            "released": false,
-            "configurationDate": "2024-10-07T10:54:16.000+00:00",
-            "deliveryDate": "2024-10-07T11:39:44.044+00:00",
-            "selected": true,
-            "disabled": false,
-            "change": false
-          },
-          "references": [],
-          "referencedBy": []
-        }
-      ]
-    }
     this.schedulerIds = this.modalData.schedulerIds;
     this.preferences = this.modalData.preferences;
     this.path = this.modalData.path;
@@ -1677,26 +1357,24 @@ export class DeployComponent {
   private updateNodeDependencies(dependenciesResponse: any[]): void {
     dependenciesResponse.forEach(dep => {
       const matchedNode = this.findAndUpdateNodeWithDependencies(dep, this.nodes);
+      if (matchedNode) {
+      } else {
+      }
     });
 
     this.nodes = [...this.nodes];
+
   }
 
   private findAndUpdateNodeWithDependencies(dep: any, nodes: any[]): any {
-    const dependency = dep.dependency; // Access the actual dependency properties
-
     for (let i = 0; i < nodes.length; i++) {
       const node = nodes[i];
-
-      // Check if node name and type match with the dependency
-      if (node.name === dependency.name && node.type === dependency.objectType) {
+      if (node.name === dep.name && node.type === dep.type) {
         node.dependencies = dep;
-        this.ref.detectChanges(); // Trigger UI update
-
+        this.ref.detectChanges();
         return node;
       }
 
-      // Recursively check child nodes
       if (node.children && node.children.length > 0) {
         const foundNode = this.findAndUpdateNodeWithDependencies(dep, node.children);
         if (foundNode) {
@@ -1705,30 +1383,21 @@ export class DeployComponent {
       }
     }
 
-    console.warn(`No match for dependency: ${dependency.name} in provided nodes.`);
     return null;
   }
 
   private prepareObject(dependencies: any[]): void {
-    const processDependencies = (deps: any[], isAffected = true) => {
-      deps.forEach((depWrapper, index) => {
-        const dep = depWrapper.dependency;
+    if (dependencies && dependencies.length > 0) {
 
-        const processDependencyArray = (
-          depArray: any[],
-          targetTypeSet: Set<string>,
-          typeCollection: { [key: string]: any[] },
-          collapsedCollection: { [key: string]: boolean },
-          updateCheckboxMethod: (type: string) => void
-        ) => {
-          depArray.forEach(refObjWrapper => {
-            const refObj = refObjWrapper.dependency;
+      dependencies.forEach(dep => {
+        if (dep.referencedBy) {
+          const affectedTypeSet = new Set<string>();
+          dep.referencedBy.forEach(refObj => {
             const type = refObj.objectType;
-            targetTypeSet.add(type);
-
-            if (!typeCollection[type]) {
-              typeCollection[type] = [];
-              collapsedCollection[type] = true;
+            affectedTypeSet.add(type);
+            if (!this.affectedObjectsByType[type]) {
+              this.affectedObjectsByType[type] = [];
+              this.affectedObjectTypes.push(type);
             }
 
             refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
@@ -1739,30 +1408,44 @@ export class DeployComponent {
               refObj.disabled = false;
               refObj.selected = true;
             }
-
-            typeCollection[type].push(refObj);
+            this.affectedObjectsByType[type].push(refObj);
+            affectedTypeSet.forEach(type => {
+              this.updateParentCheckboxAffected(type);
+            });
           });
-
-          targetTypeSet.forEach(type => updateCheckboxMethod.call(this, type));
-        };
-
-        if (isAffected && depWrapper.referencedBy && depWrapper.referencedBy.length) {
-          const affectedTypeSet = new Set<string>();
-          processDependencyArray(depWrapper.referencedBy, affectedTypeSet, this.affectedObjectsByType, this.affectedCollapsed, this.updateParentCheckboxAffected);
-          processDependencies(depWrapper.referencedBy, true);
         }
 
-        if (!isAffected && depWrapper.references && depWrapper.references.length) {
+        if (dep.references) {
           const referencedTypeSet = new Set<string>();
-          processDependencyArray(depWrapper.references, referencedTypeSet, this.referencedObjectsByType, this.referencedCollapsed, this.updateParentCheckboxReferenced);
-          processDependencies(depWrapper.references, false);
+          dep.references.forEach(refObj => {
+            const type = refObj.objectType;
+            referencedTypeSet.add(type);
+            if (!this.referencedObjectsByType[type]) {
+              this.referencedObjectsByType[type] = [];
+              this.referencedObjectTypes.push(type);
+            }
+
+            refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
+            refObj.disabled = !refObj.valid;
+            refObj.change = refObj.deployed;
+            if (this.isRemove) {
+              refObj.disabled = false;
+              refObj.selected = true;
+            }
+            this.referencedObjectsByType[type].push(refObj);
+
+            referencedTypeSet.forEach(type => {
+              this.updateParentCheckboxReferenced(type);
+            });
+          });
         }
       });
-    };
 
-    processDependencies(dependencies);
+      this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
+      this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
+
+    }
   }
-
 
 
   private collectCheckedObjects(nodes: any[]): any[] {
@@ -2515,7 +2198,6 @@ export class DeployComponent {
   }
 
 }
-
 @Component({
   selector: 'app-export-modal',
   templateUrl: './export-dialog.html'

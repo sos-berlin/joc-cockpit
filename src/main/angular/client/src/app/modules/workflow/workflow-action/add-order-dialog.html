@@ -342,7 +342,7 @@
                     {{'inventory.button.newTag' | translate}}
                 </nz-tag>
                 <div class="d-inline-block" *ngIf="order.inputVisible" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-                    <input #name="ngModel" #inputElement identifierValidation [nzAutocomplete]="auto" nz-input name="tag"
+                    <input #name="ngModel" #inputElement tagValidation [nzAutocomplete]="auto" nz-input name="tag"
                         type="text" [(ngModel)]="order.inputValue" (ngModelChange)="onChange($event, orderIndex)"
                         style="width: 128px;" (blur)="handleInputConfirm(orderIndex)"
                         (keydown.enter)="handleInputConfirm(orderIndex)">

@@ -1047,4 +1047,8 @@ export class UpdateObjectComponent {
     }
 
   }
+
+  clear(field: string, value: any): void {
+    this.checkboxObjects[field] = false;
+  }
 }
