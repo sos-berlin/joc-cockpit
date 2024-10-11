@@ -165,7 +165,7 @@
                 <app-search-input (onBlur)="onBlur()" (onSelect)="onSelect($event)"  (onChange)="toggleCheckbox('workflowName', $event)" [isDisplay]="true" [nodes]="workflowTree"
                                   [type]="'WORKFLOW'"></app-search-input>
               </div>
-              <i (click)="object.workflowName = '';" *ngIf="object.workflowName"
+              <i (click)="object.workflowName = '';clear('workflowName', $event)" *ngIf="object.workflowName"
                  class="tree-search-clear ant-select-clear" nz-icon nzTheme="fill" nzType="close-circle"></i>
             </div>
             <div class="col-md-1">
