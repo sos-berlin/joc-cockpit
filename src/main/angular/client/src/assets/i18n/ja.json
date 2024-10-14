@@ -2517,6 +2517,7 @@
     "label.variableMap": "Map属性",
     "button.allOrders": "全オーダー",
     "button.cancel": "キャンセル",
+    "button.cancelSoftly": "Softly",
     "button.startNow": "即時開始",
     "button.cancelAndKillTask": "タスクキャンセル/即時終了",
     "button.suspend": "一時停止",

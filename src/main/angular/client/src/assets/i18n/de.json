@@ -2517,6 +2517,7 @@
     "label.variableMap": "Variable in Map",
     "button.allOrders": "Alle Aufträge",
     "button.cancel": "Abbrechen",
+    "button.cancelSoftly": "Softly",
     "button.startNow": "Jetzt starten",
     "button.cancelAndKillTask": "Abbrechen/beenden",
     "button.suspend": "Aussetzen",

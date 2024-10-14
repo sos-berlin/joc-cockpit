@@ -52,6 +52,7 @@
             <th rowspan="2"><span translate>changes.label.owner</span></th>
             <th rowspan="2"><span translate>changes.label.created</span></th>
             <th rowspan="2"><span translate>changes.label.modified</span></th>
+            <th rowspan="2"><span translate>changes.label.changesFound</span></th>
           </tr>
           </thead>
           <tbody>
@@ -81,28 +82,37 @@
               </td>
               <td>
                 <div class="d-flex justify-content-between algin-item-center">
-                  <span (click)="updateChanges(changes,'updateCertificate')" class="cursor">{{ changes?.name }}</span>
+                  <span (click)="updateChanges(changes,'updateChange')" class="cursor">{{ changes?.name }}</span>
                 </div>
               </td>
               <td>
                 <div class="d-flex justify-content-between algin-item-center">
                   <span *ngIf="changes?.title">{{ changes?.title }}</span>
                 </div>
-              </td><td>
+              </td>
+              <td>
                 <div class="d-flex justify-content-between algin-item-center">
                   <span *ngIf="changes?.state">{{ changes?.state }}</span>
                 </div>
-              </td><td>
+              </td>
+              <td>
                 <div class="d-flex justify-content-between algin-item-center">
                   <span *ngIf="changes?.owner">{{ changes?.owner }}</span>
                 </div>
-              </td><td>
+              </td>
+              <td>
                 <div class="d-flex justify-content-between algin-item-center">
                   <span *ngIf="changes?.created">{{ changes?.created | stringToDate }}</span>
                 </div>
-              </td><td>
+              </td>
+              <td>
                 <div class="d-flex justify-content-between algin-item-center">
                   <span *ngIf="changes?.modified">{{ changes?.modified | stringToDate  }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex justify-content-between algin-item-center">
+                  <span *ngIf="changes" class="cursor" (click)="changesFound(changes,'changesFound')"><i class="fa fa-television "></i></span>
                 </div>
               </td>
             </tr>

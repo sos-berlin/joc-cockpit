@@ -5,6 +5,8 @@
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
+<div *ngIf="title != 'changesFound'">
+
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
     <div class="row">
@@ -58,3 +60,68 @@
     </button>
   </div>
 </form>
+</div>
+
+<div *ngIf="title === 'changesFound'">
+  <div class="modal-body p-a">
+   <div *ngIf="this.changes?.configurations?.length>0" class="row">
+     <div [ngClass]="{'show': display && nodes.length > 0}" class="hide">
+       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
+     </div>
+    <div class="col-md-12">
+      <nz-tree
+        [nzCheckable]="true"
+        (nzCheckBoxChange)="checkBoxChanges($event)"
+        [nzData]="nodes"
+        [nzTreeTemplate]="nzTreeChnagesTemplate"
+        [nzShowExpand]="false"
+        nzNoAnimation
+      ></nz-tree>
+
+
+      <ng-template #nzTreeChnagesTemplate let-node>
+        <div class="node-wrapper">
+          <i *ngIf="node.origin.loading" class="pos-abt" style="margin-left: -42px">
+            <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
+          </i>
+          <div  [ngClass]="{'m-t-xs' :node.origin.object}" class="node-content-wrapper2">
+            <i *ngIf="!node.origin.object && !node.origin.type" [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
+               class="w-14" nz-icon></i>
+            <i *ngIf="node.origin.object == 'WORKFLOW'" class="icon-color" nz-icon nzTheme="outline"
+               nzType="apartment"></i>
+            <i *ngIf="node.origin.object == 'FILEORDERSOURCE'" class="icon-orders-icon icon-color tree-icon"></i>
+            <i *ngIf="node.origin.object == 'JOBRESOURCE'" class="icon-resources-icon icon-color tree-icon"></i>
+            <i *ngIf="node.origin.object == 'JOBTEMPLATE'" class="icon-jobs-icon icon-color tree-icon"></i>
+            <i *ngIf="node.origin.object == 'NOTICEBOARD'" class="icon-color" nz-icon nzTheme="outline"
+               nzType="pushpin"></i>
+            <i *ngIf="node.origin.object == 'LOCK'" class="icon-color" nz-icon nzTheme="outline" nzType="lock"></i>
+            <i *ngIf="node.origin.object == 'SCHEDULE'" class="icon-color" nz-icon nzTheme="outline"
+               nzType="schedule"></i>
+            <i *ngIf="node.origin.object == 'INCLUDESCRIPT'" class="fa fa-terminal w-13"></i>
+            <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" class="icon-color" nz-icon
+               nzTheme="outline" nzType="calendar"></i>
+            <span *ngIf="node.origin.object" class="p-l-sm text-capitalize">{{node.origin.name | translate}}</span>
+            <span *ngIf="!node.origin.object">{{node.origin.name}}</span>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+    <div *ngIf="!this.changes.configurations && !loading" class="m-t-md">
+      <app-empty-data></app-empty-data>
+    </div>
+    <div *ngIf="loading" [ngClass]="{'loading-on-text': this.changes?.configurations?.length>0}" class="text-center m-t-md">
+      <nz-spin nzSimple></nz-spin>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button *ngIf="this.changes?.configurations?.length > 0" class="btn btn-primary btn-sm" (click)="removeFromChange()"
+            type="submit">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'changes.button.removeFromChange' | translate}}
+    </button>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
+      <span translate>common.button.cancel</span>
+    </button>
+  </div>
+</div>

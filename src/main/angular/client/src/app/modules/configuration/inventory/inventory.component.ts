@@ -928,8 +928,8 @@ export class SingleDeployComponent {
   }
 
   prepareObject(dependencies): void {
-    if (dependencies && dependencies.length > 0) {
-      dependencies.forEach(dep => {
+    if (dependencies && dependencies?.requestedItems.length > 0) {
+      dependencies?.requestedItems.forEach(dep => {
         if (dep.referencedBy) {
           const affectedTypeSet = new Set<string>();
           dep.referencedBy.forEach(refObj => {
@@ -1342,7 +1342,7 @@ export class DeployComponent {
     this.coreService.post('inventory/dependencies', requestBody).subscribe({
       next: (res: any) => {
 
-        if (res.dependencies && res.dependencies.length > 0) {
+        if (res.dependencies && res.dependencies?.requestedItems.length > 0 && res.dependencies?.affectedItems.length > 0) {
           this.updateNodeDependencies(res.dependencies);
           this.prepareObject(res.dependencies);
           this.ref.detectChanges();
@@ -1354,8 +1354,8 @@ export class DeployComponent {
     });
   }
 
-  private updateNodeDependencies(dependenciesResponse: any[]): void {
-    dependenciesResponse.forEach(dep => {
+  private updateNodeDependencies(dependenciesResponse: any): void {
+    dependenciesResponse?.requestedItems.forEach(dep => {
       const matchedNode = this.findAndUpdateNodeWithDependencies(dep, this.nodes);
       if (matchedNode) {
       } else {
@@ -1386,10 +1386,10 @@ export class DeployComponent {
     return null;
   }
 
-  private prepareObject(dependencies: any[]): void {
-    if (dependencies && dependencies.length > 0) {
+  private prepareObject(dependencies: any): void {
+    if (dependencies && dependencies?.requestedItems.length > 0) {
 
-      dependencies.forEach(dep => {
+      dependencies?.requestedItems.forEach(dep => {
         if (dep.referencedBy) {
           const affectedTypeSet = new Set<string>();
           dep.referencedBy.forEach(refObj => {
@@ -1821,7 +1821,6 @@ export class DeployComponent {
     this.nodes.forEach(node => {
       checkNodeForDependencies(node);
     });
-
     return {shouldDeploy, shouldRelease};
   }
 
@@ -1848,7 +1847,6 @@ export class DeployComponent {
 
   private handleDeploy(): void {
     this.getJSObject();
-
     const obj: any = {
       includeLate: this.includeLate,
       controllerIds: this.selectedSchedulerIds
@@ -1873,7 +1871,9 @@ export class DeployComponent {
 
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-
+    this.nodes.forEach(node => {
+      this.handleDependenciesForDeploy(node, obj);
+    });
     if (!isEmpty(obj.store) || !isEmpty(obj.delete)) {
       const deployURL = this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy';
       this.coreService.post(deployURL, obj).subscribe({
@@ -1893,7 +1893,6 @@ export class DeployComponent {
 
   private handleRelease(): void {
     this.getReleaseObject();
-
     const obj: any = {
       includeLate: this.includeLate,
     };
@@ -1916,7 +1915,9 @@ export class DeployComponent {
 
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-
+    this.nodes.forEach(node => {
+      this.handleDependenciesForRelease(node, obj);
+    });
     if (!isEmpty(obj.update) || !isEmpty(obj.delete) || !isEmpty(obj.releasables)) {
       const releaseURL = this.operation === 'recall' ? 'inventory/releasables/recall' : 'inventory/release';
       this.coreService.post(releaseURL, obj).subscribe({
@@ -1935,7 +1936,7 @@ export class DeployComponent {
   }
 
   private handleDependenciesForRelease(node: any, obj: any): void {
-    if (node.dependencies) {
+    if (node.dependencies && !this.isRevoke && this.operation !== 'recall') {
       node.dependencies.referencedBy.forEach(dep => {
         if (dep.valid && dep.selected && !dep.released && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
           if (!obj.update) {
@@ -1999,7 +2000,7 @@ export class DeployComponent {
   }
 
   private handleDependenciesForDeploy(node: any, obj: any): void {
-    if (node.dependencies) {
+    if (node.dependencies && !this.isRevoke && this.operation !== 'recall') {
       node.dependencies.referencedBy.forEach(dep => {
         if (dep.valid && dep.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
           if (!obj.store) {
@@ -2485,7 +2486,7 @@ export class ExportComponent {
     this.coreService.post('inventory/dependencies', requestBody).subscribe({
       next: (res: any) => {
 
-        if (res.dependencies && res.dependencies.length > 0) {
+        if (res.dependencies && res.dependencies?.requestedItems.length > 0 && res.dependencies?.affectedItems.length > 0) {
           this.dependencies = res.dependencies
           this.updateNodeDependencies(this.dependencies);
           this.prepareObject(this.dependencies);
@@ -2497,8 +2498,8 @@ export class ExportComponent {
     });
   }
 
-  private updateNodeDependencies(dependenciesResponse: any[]): void {
-    dependenciesResponse.forEach(dep => {
+  private updateNodeDependencies(dependenciesResponse: any): void {
+    dependenciesResponse?.requestedItems.forEach(dep => {
       const matchedNode = this.findAndUpdateNodeWithDependencies(dep, this.nodes);
       if (matchedNode) {
       } else {
@@ -2527,9 +2528,9 @@ export class ExportComponent {
     }
     return null;
 }
-  private prepareObject(dependencies: any[]): void {
-    if (dependencies && dependencies.length > 0) {
-      dependencies.forEach(dep => {
+  private prepareObject(dependencies: any): void {
+    if (dependencies && dependencies?.requestedItems.length > 0) {
+      dependencies?.requestedItems.forEach(dep => {
         if (dep.referencedBy) {
           const affectedTypeSet = new Set<string>();
           dep.referencedBy.forEach(refObj => {
@@ -5843,7 +5844,7 @@ export class PublishChangeModalComponent {
     this.coreService.post('inventory/dependencies', requestBody).subscribe({
       next: (res: any) => {
 
-        if (res.dependencies && res.dependencies.length > 0) {
+        if (res.dependencies && res.dependencies?.requestedItems.length > 0 && res.dependencies?.affectedItems.length > 0) {
           this.dependencies = res.dependencies
           this.updateNodeDependencies(this.dependencies);
           this.prepareObject(this.dependencies);
@@ -5855,8 +5856,8 @@ export class PublishChangeModalComponent {
     });
   }
 
-  private updateNodeDependencies(dependenciesResponse: any[]): void {
-    dependenciesResponse.forEach(dep => {
+  private updateNodeDependencies(dependenciesResponse: any): void {
+    dependenciesResponse?.requestedItems.forEach(dep => {
       const matchedNode = this.findAndUpdateNodeWithDependencies(dep, this.nodes);
       if (matchedNode) {
       } else {
@@ -5886,9 +5887,9 @@ export class PublishChangeModalComponent {
     return null;
   }
 
-  private prepareObject(dependencies: any[]): void {
-    if (dependencies && dependencies.length > 0) {
-      dependencies.forEach(dep => {
+  private prepareObject(dependencies: any): void {
+    if (dependencies && dependencies?.requestedItems.length > 0) {
+      dependencies?.requestedItems.forEach(dep => {
         if (dep.referencedBy) {
           const affectedTypeSet = new Set<string>();
           dep.referencedBy.forEach(refObj => {
@@ -6368,8 +6369,8 @@ export class ShowDependenciesModalComponent {
     });
   }
   prepareObject(dependencies): void {
-    if (dependencies && dependencies.length > 0) {
-      dependencies.forEach(dep => {
+    if (dependencies && dependencies?.requestedItems.length > 0) {
+      dependencies?.requestedItems.forEach(dep => {
         if (dep.referencedBy) {
           const affectedTypeSet = new Set<string>();
           dep.referencedBy.forEach(refObj => {

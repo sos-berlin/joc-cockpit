@@ -2720,7 +2720,6 @@ export class JobComponent {
   }
 
   private fetchJobTags() {
-    console.log(this.jobs)
     const obj = {
       path: this.workflowPath,
       jobNames: []
