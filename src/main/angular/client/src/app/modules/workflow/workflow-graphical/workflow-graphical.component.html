@@ -123,7 +123,10 @@
       </div>
       <nz-dropdown-menu #menu="nzDropdownMenu">
         <ul *ngIf="order" nz-menu>
-          <li (click)="$event.preventDefault();$event.stopPropagation()" *ngIf="permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text === 'RUNNING' || (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED' && order.hasChildOrders) )"
+          <li (click)="$event.preventDefault();$event.stopPropagation()" *ngIf="permission && permission.currentController && permission.currentController.orders.cancel && order.state &&
+           (order.state._text === 'RUNNING' ||
+           (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED' && order.hasChildOrders) ||
+           (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED'))"
               nz-submenu
               [nzTitle]="'order.button.cancel' | translate">
             <ul>
