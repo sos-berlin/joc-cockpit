@@ -437,7 +437,7 @@
     "label.privateKeyPath": "Path to Private Key File",
     "label.jobResourceFolder": "Job Resource Folder",
     "label.importCertificate": "Import Encryption Certificate",
-    "label.encrypt": "Encrypted Value",
+    "label.encrypt": "Encryption Result",
     "label.encryptValue": "Encrypt Value",
     "label.encryptAll": "Encrypt All",
     "label.optional": "Optional",
@@ -455,14 +455,14 @@
     "placeholder.certificate": "Paste Certificate here",
     "placeholder.privateKeyPath": "Path to Private Key File",
     "placeholder.jobResourceFolder": "Select Job Resource Folder",
-    "placeholder.encrypt": "Encrypted Value",
+    "placeholder.encrypt": "Encryption Result",
     "placeholder.plainText": "Enter plain text",
     "button.encrypt": "Encrypt",
     "button.addNewCertificate": "Add Certificate",
     "button.importCertificate": "Import Certificate",
     "button.deleteCertificate": "Delete Certificate",
     "button.updateCertificate": "Update Certificate",
-    "button.copyEncryptValue": "Copy encrypted value"
+    "button.copyEncryptValue": "Copy encrypion resuslt"
   },
   "changes": {
     "label.addChange": "Add Change",
