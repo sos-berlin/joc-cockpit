@@ -2722,11 +2722,8 @@ export class JobComponent {
   private fetchJobTags() {
     const obj = {
       path: this.workflowPath,
-      jobNames: []
+      jobNames: [this.selectedNode.job.jobName]
     }
-    this.jobs.forEach(item => {
-      obj.jobNames.push(item.name)
-    });
     this.coreService.post('inventory/workflow/tags/job', obj).subscribe({
       next: (res: any) => {
         this.tagsData = res.jobs;
@@ -3602,6 +3599,7 @@ export class WorkflowComponent {
   inputVisible = false;
   jobTags: any[] = [];
   inputValue = '';
+  selectedJob: any
   workflowPath: any;
   subscription1: Subscription;
   subscription2: Subscription;
@@ -12043,7 +12041,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
       return false;
     }
     job = this.workflowService.convertJobObject(job, false);
-
+    this.selectedJob = job.jobName
     let flag = true;
     let isChange = true;
     for (let i = 0; i < this.jobs.length; i++) {
@@ -13135,13 +13133,12 @@ let data = this.storedArguments[this.storedArguments.length - 1];
   }
 
   private storeJobTags(): void{
-
     const request: any = {
-      path: this.workflow.path, // required: path of the workflow
-      jobs: this.jobs.map((job: any) => ({
-        jobName: job.name,
+      path: this.workflow.path,
+      jobs: [{
+        jobName: this.selectedJob,
         jobTags: this.jobTags
-      })),
+      }],
     }
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {

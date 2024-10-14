@@ -20,6 +20,11 @@
               <i nz-icon nzTheme="outline" nzType="search"></i>&nbsp;
               <span translate>common.button.search</span>
             </button>
+            <button (click)="tagDrawer()"
+                    class="btn btn-sm btn-grey m-l-12">
+              <i nz-icon nzTheme="outline" nzType="tags"></i>&nbsp;
+              <span translate>common.button.tagGroups</span>
+            </button>
             <div *ngIf="permission.joc.inventory.manage" class="btn-group">
               <div class="btn-group dropdown ">
                 <button [nzDropdownMenu]="order" class="btn btn-grey btn-sm m-l-12" nz-dropdown nzPlacement="bottomRight"
@@ -807,6 +812,17 @@
       </div>
       <app-inventory-search (onCancel)="closeSearch()" (onNavigate)="onNavigate($event)"
                             [agentData]="inventoryService.agentList" [controllerId]="schedulerIds.selected"></app-inventory-search>
+    </div>
+  </ng-container>
+</nz-drawer>
+
+<nz-drawer (nzOnClose)="closeTagDrawer()" [nzVisible]="isTagVisible" nzPlacement="right">
+  <ng-container *nzDrawerContent>
+    <div (click)="closeTagDrawer()" class="close-btn"></div>
+    <div *ngIf="isTagVisible">
+      <div class="text-center m-b-sm text"><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.label.groupTags</span>
+      </div>
+      <app-tags ></app-tags>
     </div>
   </ng-container>
 </nz-drawer>

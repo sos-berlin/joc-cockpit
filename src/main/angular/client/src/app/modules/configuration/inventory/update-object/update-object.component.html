@@ -162,7 +162,7 @@
               <input (click)="isTreeShow = true;" [(ngModel)]="object.workflowName" (ngModelChange)="toggleCheckbox('workflowName', $event)" autocomplete="off" class="form-control"
                      name="workflowName" type="text">
               <div *ngIf="isTreeShow" [ngStyle]="{'margin-top': '-29px'}" class="z-index-9999 w-full">
-                <app-search-input (onBlur)="onBlur()" (onSelect)="onSelect($event)"  (onChange)="toggleCheckbox('workflowName', $event)" [isDisplay]="true" [nodes]="workflowTree"
+                <app-search-input (onBlur)="onBlur();toggleCheckbox('workflowName', $event)" (onSelect)="onSelect($event)"  (onChange)="toggleCheckbox('workflowName', $event)" [isDisplay]="true" [nodes]="workflowTree"
                                   [type]="'WORKFLOW'"></app-search-input>
               </div>
               <i (click)="object.workflowName = '';clear('workflowName', $event)" *ngIf="object.workflowName"

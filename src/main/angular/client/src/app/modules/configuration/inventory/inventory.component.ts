@@ -6556,6 +6556,7 @@ export class InventoryComponent {
   isTag = false;
   isJobTag = false;
   isSearchVisible = false;
+  isTagVisible = false;
   isNavigationComplete = true;
   revalidating = false;
   tempObjSelection: any = {};
@@ -9975,8 +9976,16 @@ export class InventoryComponent {
     this.isSearchVisible = true;
   }
 
+  tagDrawer(): void {
+    this.isTagVisible = true;
+  }
+
   closeSearch(): void {
     this.isSearchVisible = false;
+  }
+
+  closeTagDrawer(): void {
+    this.isTagVisible = false;
   }
 
   onNavigate(data): void {
