@@ -437,7 +437,7 @@
     "label.privateKeyPath": "Pfad zum Privaten Scchlüssel",
     "label.jobResourceFolder": "Ordner der Job-Ressource",
     "label.importCertificate": "Zertifikat importieren",
-    "label.encrypt": "Verschlüsselter Wert",
+    "label.encrypt": "Verschlüssellungsergebnis",
     "label.encryptValue": "Wert verschlüsseln",
     "label.encryptAll": "Alle verschlüsseln",
     "label.optional": "Optional",
@@ -455,14 +455,14 @@
     "placeholder.certificate": "Zertifikat hier einfügen",
     "placeholder.privateKeyPath": "Pfad zum Privaten Schlüssel des Zertifikats",
     "placeholder.jobResourceFolder": "Ordner der Job-Ressource auswählen",
-    "placeholder.encrypt": "Verschlüsselter Wert",
+    "placeholder.encrypt": "Verschlüsselungsergebnis",
     "placeholder.plainText": "Klartext angeben",
     "button.encrypt": "Verschlüsseln",
     "button.addNewCertificate": "Zertifikat hinzufügen",
     "button.importCertificate": "Zertifikat importieren",
     "button.deleteCertificate": "Zertifikat löschen",
     "button.updateCertificate": "Zertifikat aktualisieren",
-    "button.copyEncryptValue": "Verschlüsselten Wert kopieren"
+    "button.copyEncryptValue": "Verschlüssellungsergebnis kopieren"
   },
   "changes": {
     "label.addChange": "Änderung hinzufügen",
