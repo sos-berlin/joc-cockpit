@@ -473,7 +473,7 @@
     "label.created": "Created",
     "label.modified": "Modified",
     "label.owner": "Owner",
-    "label.changesFound": "Changes",
+    "label.changesFound": "Objects",
     "label.changeFound": "Change",
     "label.addToChange": "Add to Change",
     "label.removeFromChange": "Remove from Change",
