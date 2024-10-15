@@ -587,12 +587,12 @@ export class WorkflowGraphicalComponent {
     this.restCall(false, 'Suspend', this.order, 'suspend', isDeep);
   }
 
-  deepSuspendForce(isDeep = false): void {
-    this.restCall(true, 'Suspend', this.order, 'suspend', isDeep);
-  }
-
   deepSuspendReset(isDeep = false): void {
     this.restCall(false, 'Suspend', this.order, 'suspend', isDeep, true);
+  }
+
+  deepSuspendForce(isDeep = false): void {
+    this.restCall(true, 'Suspend', this.order, 'suspend', true, false);
   }
 
   deepSuspendForceReset(isDeep = false): void {
