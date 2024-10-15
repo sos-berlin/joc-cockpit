@@ -12599,7 +12599,9 @@ let data = this.storedArguments[this.storedArguments.length - 1];
             json.instructions[x].endPositions = endPositions;
             json.instructions[x].blockPosition = blockPosition;
             json.instructions[x].forceJobAdmission = forceJobAdmission == true || forceJobAdmission == 'true';
-            json.instructions[x].tags = tags;
+            if(tags.length > 0){
+              json.instructions[x].tags = tags;
+            }
           } else if (json.instructions[x].TYPE === 'Lock') {
             json.instructions[x].lockedWorkflow = {
               instructions: json.instructions[x].instructions

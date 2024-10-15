@@ -22,13 +22,22 @@
               nz-menu-item>
             <a translate>order.button.cancelAndKillTask</a>
           </li>
-          <li (click)="deepCancel()" *ngIf="order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')"
+          <li (click)="cancelOrderWithKill(false)" *ngIf="order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')"
               nz-menu-item>
-            <a translate>order.button.deepCancel</a>
+            <a translate>order.button.force</a>
+          </li>
+        </ul>
+      </li>
+      <li *ngIf="order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')"
+          nz-submenu [nzTitle]="'order.button.deepCancel' | translate">
+        <ul>
+          <li (click)="deepCancel(true)" *ngIf="order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')"
+              nz-menu-item>
+            <a translate>order.button.cancelSoftly</a>
           </li>
           <li (click)="cancelOrderWithKill(true)" *ngIf="order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')"
               nz-menu-item>
-            <a translate>order.button.deepCancelAndKillTask</a>
+            <a translate>order.button.force</a>
           </li>
         </ul>
       </li>
@@ -42,7 +51,7 @@
             <a translate>order.button.normal</a>
           </li>
           <li (click)="force(order)"
-              *ngIf="order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.suspendResume && (order.isSuspendible) && order.state && (order.state._text === 'RUNNING')"
+              *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && (order.isSuspendible) && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')"
               nz-menu-item>
             <a translate>order.button.force</a>
           </li>
@@ -61,7 +70,7 @@
       <li (click)="$event.preventDefault();$event.stopPropagation()" *ngIf="order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.suspendResume"
           [nzTitle]="'order.button.deepSuspend' | translate" nz-submenu>
         <ul>
-          <li (click)="deepSuspendNormal()"
+          <li (click)="deepSuspendNormal(true)"
               *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && (order.isSuspendible)"
               nz-menu-item>
             <a translate>order.button.normal</a>

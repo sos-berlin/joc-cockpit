@@ -816,7 +816,7 @@
   </ng-container>
 </nz-drawer>
 
-<nz-drawer (nzOnClose)="closeTagDrawer()" [nzVisible]="isTagVisible" nzPlacement="right">
+<nz-drawer (nzOnClose)="closeTagDrawer()" [nzWidth]="'20% !important'" [nzVisible]="isTagVisible" nzPlacement="right">
   <ng-container *nzDrawerContent>
     <div (click)="closeTagDrawer()" class="close-btn"></div>
     <div *ngIf="isTagVisible">

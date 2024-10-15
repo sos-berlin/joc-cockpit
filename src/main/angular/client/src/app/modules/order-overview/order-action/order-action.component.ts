@@ -109,8 +109,8 @@ export class OrderActionComponent {
     this.restCall(true, 'Cancel', this.order, 'cancel', isDeep);
   }
 
-  deepCancel(): void {
-    this.restCall(false, 'Cancel', this.order, 'cancel', true);
+  deepCancel(isDeep = false): void {
+    this.restCall(false, 'Cancel', this.order, 'cancel', isDeep);
   }
 
   showLog(order): void {
