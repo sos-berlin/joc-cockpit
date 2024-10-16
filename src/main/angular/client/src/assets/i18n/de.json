@@ -1850,7 +1850,7 @@
     "label.impactedWorkflows": "Referenzierende Arbeitsabläufe",
     "label.affectedObjects": "Referenzierende Objekte",
     "label.referencedObjects": "Referenzierte Objekte",
-    "label.filteredAffectedItems": "Associated Objects",
+    "label.filteredAffectedItems": "Assoziierte Objekte",
     "label.includeTodaysLateOrders": "Heutige verspätete Aufträge einschließen",
     "label.changes": "Änderungen",
     "label.workflowTags": "Kennz. Arbeitsabläufe",
