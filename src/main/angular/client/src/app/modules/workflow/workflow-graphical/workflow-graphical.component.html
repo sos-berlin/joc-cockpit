@@ -138,7 +138,7 @@
         </li>
         <li (click)="cancelOrderWithKill()" *ngIf="permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text === 'RUNNING')"
             nz-menu-item>
-            <a translate>order.button.cancelAndKillTask</a>
+            <a translate>order.button.force</a>
         </li>
         <li (click)="cancelOrderWithKill(false)" *ngIf="order.hasChildOrders && permission && permission.currentController && permission.currentController.orders.cancel && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')"
             nz-menu-item>
