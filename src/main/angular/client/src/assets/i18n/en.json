@@ -1850,6 +1850,7 @@
     "label.impactedWorkflows": "Referencing Workflows",
     "label.affectedObjects": "Referencing Objects",
     "label.referencedObjects": "Referenced Objects",
+    "label.filteredAffectedItems": "Associated Objects",
     "label.includeTodaysLateOrders": "Include today's late Orders",
     "label.changes": "Changes",
     "label.workflowTags": "Workflow Tags",

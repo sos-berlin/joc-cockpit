@@ -1147,6 +1147,10 @@ export class DeployComponent {
   referencedCollapsed: { [key: string]: boolean } = {};
   isAffectedCollapsed: boolean = true;
   isReferencedCollapsed: boolean = true;
+  filteredAffectedItems: any[] = [];
+  filteredAffectedCollapsed: boolean = true;
+  selectAllFilteredAffected: { [key: string]: boolean } = {};
+
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private ref: ChangeDetectorRef,
               private inventoryService: InventoryService, private toasterService: ToastrService, private translate: TranslateService, private cdRef: ChangeDetectorRef) {
@@ -1348,6 +1352,8 @@ export class DeployComponent {
           this.ref.detectChanges();
         } else {
         }
+        console.log(this.filteredAffectedItems,":DKD")
+
       },
       error: (err) => {
       }
@@ -1355,15 +1361,29 @@ export class DeployComponent {
   }
 
   private updateNodeDependencies(dependenciesResponse: any): void {
-    dependenciesResponse?.requestedItems.forEach(dep => {
-      const matchedNode = this.findAndUpdateNodeWithDependencies(dep, this.nodes);
-      if (matchedNode) {
-      } else {
-      }
+    const requestedItems = dependenciesResponse.requestedItems;
+    const affectedItems = dependenciesResponse.affectedItems || [];
+
+    const referencedSet = new Set<string>();
+    requestedItems.forEach(item => {
+      item.references?.forEach(ref => {
+        referencedSet.add(`${ref.name}-${ref.objectType}`);
+      });
+      item.referencedBy?.forEach(refBy => {
+        referencedSet.add(`${refBy.name}-${refBy.objectType}`);
+      });
+    });
+
+    this.filteredAffectedItems = affectedItems.filter(item => {
+      const uniqueKey = `${item.name}-${item.objectType}`;
+      return !referencedSet.has(uniqueKey);
+    });
+
+    requestedItems.forEach(dep => {
+      this.findAndUpdateNodeWithDependencies(dep, this.nodes);
     });
 
     this.nodes = [...this.nodes];
-
   }
 
   private findAndUpdateNodeWithDependencies(dep: any, nodes: any[]): any {
@@ -1385,7 +1405,6 @@ export class DeployComponent {
 
     return null;
   }
-
   private prepareObject(dependencies: any): void {
     if (dependencies && dependencies?.requestedItems.length > 0) {
 
@@ -1434,8 +1453,24 @@ export class DeployComponent {
             }
             this.referencedObjectsByType[type].push(refObj);
 
-            referencedTypeSet.forEach(type => {
-              this.updateParentCheckboxReferenced(type);
+
+            const filteredAffectedTypeSet = new Set<string>();
+            this.filteredAffectedItems.forEach(item => {
+              const type = item.objectType;
+              filteredAffectedTypeSet.add(type);
+
+              item.selected = item.valid && (!item.deployed && !item.released);
+              item.disabled = !item.valid;
+              item.change = item.deployed;
+
+              if (this.isRemove) {
+                item.disabled = false;
+                item.selected = true;
+              }
+
+              filteredAffectedTypeSet.forEach(type => {
+                this.updateParentCheckboxFilteredAffected(type);
+              });
             });
           });
         }
@@ -1445,6 +1480,18 @@ export class DeployComponent {
       this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
 
     }
+  }
+  toggleAllFilteredAffected(objectType: string, isChecked: boolean): void {
+    this.filteredAffectedItems.filter(item => item.objectType === objectType).forEach(obj => {
+      if (!obj.disabled) {
+        obj.selected = isChecked;
+      }
+    });
+  }
+
+  updateParentCheckboxFilteredAffected(objectType: string): void {
+    const allSelected = this.filteredAffectedItems.filter(item => item.objectType === objectType).every(obj => obj.selected || obj.disabled);
+    this.selectAllFilteredAffected[objectType] = allSelected;
   }
 
 
@@ -1818,11 +1865,24 @@ export class DeployComponent {
       }
     };
 
+    // Check each node in the nodes list
     this.nodes.forEach(node => {
       checkNodeForDependencies(node);
     });
-    return {shouldDeploy, shouldRelease};
+
+    // Check filteredAffectedItems for deploy/release criteria
+    this.filteredAffectedItems.forEach(item => {
+      if (item.valid && allowedDeployTypes.includes(item.objectType)) {
+        shouldDeploy = true;
+      }
+      if (item.valid && !item.released && allowedReleaseTypes.includes(item.objectType)) {
+        shouldRelease = true;
+      }
+    });
+
+    return { shouldDeploy, shouldRelease };
   }
+
 
   deploy(): void {
     this.submitted = true;
@@ -1830,23 +1890,27 @@ export class DeployComponent {
 
     if (this.releasable && !shouldRelease) {
       this.handleRelease();
-
       if (shouldDeploy) {
         this.processDependenciesForDeploy();
+
       }
       return;
     } else {
       if (shouldRelease) {
         this.processDependenciesForRelease();
+
       }
     }
 
     this.handleDeploy();
+
     this.submitted = false;
   }
 
   private handleDeploy(): void {
-    this.getJSObject();
+    if (!this.releasable) {
+      this.getJSObject();
+    }
     const obj: any = {
       includeLate: this.includeLate,
       controllerIds: this.selectedSchedulerIds
@@ -1874,6 +1938,7 @@ export class DeployComponent {
     this.nodes.forEach(node => {
       this.handleDependenciesForDeploy(node, obj);
     });
+    this.handleAffectedItemsForDeploy(obj)
     if (!isEmpty(obj.store) || !isEmpty(obj.delete)) {
       const deployURL = this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy';
       this.coreService.post(deployURL, obj).subscribe({
@@ -1918,6 +1983,7 @@ export class DeployComponent {
     this.nodes.forEach(node => {
       this.handleDependenciesForRelease(node, obj);
     });
+    this.handleAffectedItemsForRelease(obj)
     if (!isEmpty(obj.update) || !isEmpty(obj.delete) || !isEmpty(obj.releasables)) {
       const releaseURL = this.operation === 'recall' ? 'inventory/releasables/recall' : 'inventory/release';
       this.coreService.post(releaseURL, obj).subscribe({
@@ -1934,8 +2000,49 @@ export class DeployComponent {
       this.ref.detectChanges();
     }
   }
+  handleAffectedItemsForRelease(obj): void {
+    this.filteredAffectedItems.forEach(item => {
+      if (item.valid && item.selected && !item.released && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType) && item.path !== '/' && item.name !== '/') {
+        if (!obj.update) {
+          obj.update = [];
+        }
+        obj.update.push({
+          path: item.path,
+          objectType: item.objectType,
+        });
+      }
+    });
+  }
 
-  private handleDependenciesForRelease(node: any, obj: any): void {
+  handleAffectedItemsForDeploy(obj): void {
+    // Add configurations from filteredAffectedItems
+    this.filteredAffectedItems.forEach(item => {
+      if (item.valid && item.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType) && item.path !== '/' && item.name !== '/') {
+        if (!obj.store) {
+          obj.store = { draftConfigurations: [], deployConfigurations: [] };
+        }
+        if (!obj.store.deployConfigurations) {
+          obj.store.deployConfigurations = [];
+        }
+        if (!obj.store.draftConfigurations) {
+          obj.store.draftConfigurations = [];
+        }
+        const config = {
+          configuration: {
+            path: item.path,
+            objectType: item.objectType,
+            recursive: false
+          }
+        };
+        if (item.deployed) {
+          obj.store.deployConfigurations.push(config);
+        } else {
+          obj.store.draftConfigurations.push(config);
+        }
+      }
+    });
+  }
+private handleDependenciesForRelease(node: any, obj: any): void {
     if (node.dependencies && !this.isRevoke && this.operation !== 'recall') {
       node.dependencies.referencedBy.forEach(dep => {
         if (dep.valid && dep.selected && !dep.released && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
@@ -1968,7 +2075,6 @@ export class DeployComponent {
       });
     }
   }
-
   private processDependenciesForRelease(): void {
     let obj: any = {
       auditLog: {},
@@ -1978,6 +2084,7 @@ export class DeployComponent {
     this.nodes.forEach(node => {
       this.handleDependenciesForRelease(node, obj);
     });
+    this.handleAffectedItemsForRelease(obj)
 
     if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
       obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
@@ -1991,6 +2098,7 @@ export class DeployComponent {
       const URL = 'inventory/release';
       this.coreService.post(URL, obj).subscribe({
         next: () => {
+          this.activeModal.close();
         },
         error: (err) => {
         }
@@ -2004,7 +2112,13 @@ export class DeployComponent {
       node.dependencies.referencedBy.forEach(dep => {
         if (dep.valid && dep.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
           if (!obj.store) {
-            obj.store = {draftConfigurations: [], deployConfigurations: []};
+            obj.store = { draftConfigurations: [], deployConfigurations: [] };
+          }
+          if (!obj.store.deployConfigurations) {
+            obj.store.deployConfigurations = [];
+          }
+          if (!obj.store.draftConfigurations) {
+            obj.store.draftConfigurations = [];
           }
           const config = {
             configuration: {
@@ -2024,7 +2138,13 @@ export class DeployComponent {
       node.dependencies.references.forEach(ref => {
         if (ref.valid && ref.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(ref.objectType) && ref.path !== '/' && ref.name !== '/') {
           if (!obj.store) {
-            obj.store = {draftConfigurations: [], deployConfigurations: []};
+            obj.store = { draftConfigurations: [], deployConfigurations: [] };
+          }
+          if (!obj.store.deployConfigurations) {
+            obj.store.deployConfigurations = [];
+          }
+          if (!obj.store.draftConfigurations) {
+            obj.store.draftConfigurations = [];
           }
           const config = {
             configuration: {
@@ -2041,7 +2161,6 @@ export class DeployComponent {
         }
       });
     }
-
 
     if (node.children && node.children.length > 0) {
       node.children.forEach(childNode => {
@@ -2060,6 +2179,7 @@ export class DeployComponent {
     this.nodes.forEach(node => {
       this.handleDependenciesForDeploy(node, obj);
     });
+    this.handleAffectedItemsForDeploy(obj)
 
     if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
       obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
@@ -2073,6 +2193,7 @@ export class DeployComponent {
       const URL = 'inventory/deployment/deploy';
       this.coreService.post(URL, obj).subscribe({
         next: () => {
+          this.activeModal.close();
         },
         error: (err) => {
         }
