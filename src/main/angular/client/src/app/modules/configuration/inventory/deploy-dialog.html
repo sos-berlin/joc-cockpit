@@ -24,9 +24,15 @@
           <label translate>inventory.label.controllers</label>
         </label>
         <div class="col-md-6">
-          <app-select-input [isSearchable]="true" [isMultiple]="true" [ignoreTranslate]="true"
-                            [listArray]="schedulerIds.controllerIds" [name]="'schedulerIds'"
-                            [object]="selectedSchedulerIds"></app-select-input>
+          <nz-select
+            [(ngModel)]="selectedSchedulerIds"
+            name="schedulerIds"
+            nzMode="multiple"
+            nzShowSearch>
+            <ng-container *ngFor="let id of schedulerIds.controllerIds">
+              <nz-option [nzLabel]="id" [nzValue]="id"></nz-option>
+            </ng-container>
+          </nz-select>
         </div>
       </div>
 
@@ -201,9 +207,8 @@
                   <div *ngIf="affectedCollapsed[node.key]" class="m-t-sm m-l-md">
                     <ng-container *ngFor="let objectType of getUniqueObjectTypes(dependency?.referencedBy)">
                       <div *ngIf="getObjectsByType(dependency?.referencedBy, objectType)?.length" class="m-t-sm">
-                         <ng-container *ngIf="objectType === 'WORKFLOW' || objectType === 'JOBRESOURCE' || objectType === 'LOCK' || objectType === 'NOTICEBOARD' || objectType === 'FILEORDERSOURCE'; else changeTemplate">
-                          <label nz-checkbox [(ngModel)]="selectAllAffected[objectType]" [name]="'checkbox_' + objectType"
-                                 (ngModelChange)="toggleAllAffected(objectType, $event)">
+                         <ng-container>
+                          <label>
                             <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
                               <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
                             </span>
@@ -211,16 +216,6 @@
                             {{ getObjectTypeLabel(objectType) | translate }}
                           </label>
                         </ng-container>
-
-                        <ng-template #changeTemplate>
-                        <span class="disabled-object">
-                          <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
-                            <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
-                          </span>
-                          <span *ngIf="isCustomIcon(objectType)" class="icon-color" [ngClass]="getIcon(objectType)"></span>
-                          {{ getObjectTypeLabel(objectType) | translate }}
-                        </span>
-                        </ng-template>
 
                           <div *ngIf="affectedCollapsed[objectType]" class="m-t-sm m-l-md">
                             <div *ngFor="let obj of getObjectsByType(dependency?.referencedBy, objectType)">
@@ -249,9 +244,8 @@
                   <div *ngIf="referencedCollapsed[node.key]" class="m-t-sm m-l-md">
                     <ng-container *ngFor="let objectType of getUniqueObjectTypes(dependency?.references)">
                       <div *ngIf="getObjectsByType(dependency?.references, objectType)?.length" class="m-t-sm">
-                        <ng-container *ngIf="objectType === 'WORKFLOW' || objectType === 'JOBRESOURCE' || objectType === 'LOCK' || objectType === 'NOTICEBOARD' || objectType === 'FILEORDERSOURCE'; else changeTemplate">
-                          <label nz-checkbox [(ngModel)]="selectAllReferenced[objectType]" [name]="'checkbox_' + objectType"
-                                 (ngModelChange)="toggleAllReferenced(objectType, $event)">
+                        <ng-container >
+                          <label>
                             <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
                               <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
                             </span>
@@ -259,16 +253,6 @@
                             {{ getObjectTypeLabel(objectType) | translate }}
                           </label>
                         </ng-container>
-
-                        <ng-template #changeTemplate>
-                        <span class="disabled-object">
-                          <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
-                            <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
-                          </span>
-                          <span *ngIf="isCustomIcon(objectType)" class="icon-color" [ngClass]="getIcon(objectType)"></span>
-                          {{ getObjectTypeLabel(objectType) | translate }}
-                        </span>
-                        </ng-template>
 
                         <div *ngIf="referencedCollapsed[objectType]" class="m-t-sm m-l-md">
                           <div *ngFor="let obj of getObjectsByType(dependency?.references, objectType)">
