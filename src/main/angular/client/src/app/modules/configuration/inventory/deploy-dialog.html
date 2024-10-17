@@ -225,7 +225,7 @@
                                   <span [ngClass]="{
                                       'fa-circle-o': !obj.valid,
                                       'fa-circle dark-blue': obj.deployed || obj.released
-                                  }" class="fa fa-check-circle-o orange text-xs p-l-xs m-l-xs"></span>
+                                  }" class="fa fa-check-circle-o orange text-xs"></span>
                                   {{ obj.path }}
                                 </label>
                               </ng-container>
@@ -277,7 +277,7 @@
             </div>
             </div>
           </ng-template>
-          <div *ngIf="filteredAffectedItems?.length > 0" class="form-group row m-t-sm m-l-sm" style="justify-content: space-between">
+          <div *ngIf="filteredAffectedItems?.length > 0 && !isRevoke && operation != 'recall'" class="form-group row m-t-sm m-l-sm" style="justify-content: space-between">
             <!-- Filtered Affected Objects -->
             <div class="form-group">
               <i class="cursor text-16 fa"
