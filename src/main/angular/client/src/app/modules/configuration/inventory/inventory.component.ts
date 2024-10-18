@@ -540,11 +540,7 @@ export class SingleDeployComponent {
               path: obj.path
             }
           };
-          if (obj.deployed) {
-            this.object.store.deployConfigurations.push(config);
-          } else {
             this.object.store.draftConfigurations.push(config);
-          }
         }
       });
     });
@@ -558,24 +554,20 @@ export class SingleDeployComponent {
               path: obj.path
             }
           };
-          if (obj.deployed) {
-            this.object.store.deployConfigurations.push(config);
-          } else {
             this.object.store.draftConfigurations.push(config);
-          }
         }
       });
     });
 
     this.filteredAffectedItems.forEach(item => {
       if (item.valid && item.selected && item.objectType != 'SCHEDULE' && item.objectType != 'JOBTEMPLATE' && item.objectType != 'WORKINGDAYSCALENDAR' && item.objectType != 'NONWORKINGDAYSCALENDAR') {
-        this.object.store.deployConfigurations.push({
+        const config = {
           configuration: {
             objectType: item.objectType,
             path: item.path
           }
-        });
-
+        };
+          this.object.store.draftConfigurations.push(config);
       }
     });
 
@@ -636,12 +628,13 @@ export class SingleDeployComponent {
     Object.keys(this.affectedObjectsByType).forEach(type => {
       this.affectedObjectsByType[type].forEach(obj => {
         if (obj.valid && obj.selected && (obj.objectType != 'SCHEDULE' || obj.objectType != 'JOBTEMPLATE' || obj.objectType != 'WORKINGDAYSCALENDAR' || obj.objectType != 'NONWORKINGDAYSCALENDAR')) {
-          this.object.store.draftConfigurations.push({
+          const config = {
             configuration: {
               objectType: obj.objectType,
               path: obj.path
             }
-          });
+          };
+            this.object.store.draftConfigurations.push(config);
         }
       });
     });
@@ -649,24 +642,26 @@ export class SingleDeployComponent {
     Object.keys(this.referencedObjectsByType).forEach(type => {
       this.referencedObjectsByType[type].forEach(obj => {
         if (obj.valid && obj.selected && (obj.objectType != 'SCHEDULE' || obj.objectType != 'JOBTEMPLATE' || obj.objectType != 'WORKINGDAYSCALENDAR' || obj.objectType != 'NONWORKINGDAYSCALENDAR')) {
-          this.object.store.draftConfigurations.push({
+          const config = {
             configuration: {
               objectType: obj.objectType,
               path: obj.path
             }
-          });
+          };
+            this.object.store.draftConfigurations.push(config);
         }
       });
     });
 
     this.filteredAffectedItems.forEach(item => {
-      if (item.valid && item.selected && (obj.objectType != 'SCHEDULE' || obj.objectType != 'JOBTEMPLATE' || obj.objectType != 'WORKINGDAYSCALENDAR' || obj.objectType != 'NONWORKINGDAYSCALENDAR')) {
-        this.object.store.draftConfigurations.push({
+      if (item.valid && item.selected && (item.objectType != 'SCHEDULE' || item.objectType != 'JOBTEMPLATE' || item.objectType != 'WORKINGDAYSCALENDAR' || item.objectType != 'NONWORKINGDAYSCALENDAR')) {
+        const config = {
           configuration: {
             objectType: item.objectType,
             path: item.path
           }
-        });
+        };
+          this.object.store.draftConfigurations.push(config);
       }
     });
 
@@ -2166,11 +2161,7 @@ export class DeployComponent {
             recursive: false
           }
         };
-        if (item.deployed) {
-          obj.store.deployConfigurations.push(config);
-        } else {
           obj.store.draftConfigurations.push(config);
-        }
       }
     });
   }
@@ -2259,11 +2250,7 @@ private handleDependenciesForRelease(node: any, obj: any): void {
               recursive: false
             }
           };
-          if (dep.deployed) {
-            obj.store.deployConfigurations.push(config);
-          } else {
             obj.store.draftConfigurations.push(config);
-          }
         }
       });
 
@@ -2285,11 +2272,7 @@ private handleDependenciesForRelease(node: any, obj: any): void {
               recursive: false
             }
           };
-          if (ref.deployed) {
-            obj.store.deployConfigurations.push(config);
-          } else {
             obj.store.draftConfigurations.push(config);
-          }
         }
       });
     }
@@ -6495,11 +6478,7 @@ export class PublishChangeModalComponent {
               recursive: false
             }
           };
-          if (dep.deployed) {
-            obj.store.deployConfigurations.push(config);
-          } else {
             obj.store.draftConfigurations.push(config);
-          }
         }
       });
 
@@ -6515,11 +6494,7 @@ export class PublishChangeModalComponent {
               recursive: false
             }
           };
-          if (ref.deployed) {
-            obj.store.deployConfigurations.push(config);
-          } else {
             obj.store.draftConfigurations.push(config);
-          }
         }
       });
     }
