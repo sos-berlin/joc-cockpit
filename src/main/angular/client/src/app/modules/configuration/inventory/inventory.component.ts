@@ -793,6 +793,11 @@ export class SingleDeployComponent {
       }
     });
 
+    if (obj.update.length === 0 && !obj.delete) {
+      this.submitted = false;
+      return;
+    }
+
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
     this.coreService.post('inventory/release', obj).subscribe({
@@ -914,6 +919,8 @@ export class SingleDeployComponent {
 
   getSelectedObjects(): any[] {
     const selectedObjects = [];
+    console.log(this.affectedObjectsByType,"oo")
+    console.log(this.referencedObjectsByType,"ii")
     Object.keys(this.affectedObjectsByType).forEach(type => {
       this.affectedObjectsByType[type].forEach(obj => {
         selectedObjects.push(obj);
@@ -924,6 +931,10 @@ export class SingleDeployComponent {
       this.referencedObjectsByType[type].forEach(obj => {
         selectedObjects.push(obj);
       });
+    });
+
+    this.filteredAffectedItems.forEach(item => {
+      selectedObjects.push(item);
     });
 
     return selectedObjects;
@@ -8541,7 +8552,13 @@ export class InventoryComponent {
 
   callRevokeAPI(objects): void {
     const payload = {
-      deployConfigurations: objects
+      controllerIds: [this.getAllowedControllerOnly().selected],
+      deployConfigurations: objects.map(obj => ({
+        configuration: {
+          path: obj.path,
+          objectType: obj.objectType
+        }
+      }))
     };
 
     this.coreService.post('inventory/deployment/revoke', payload).subscribe({

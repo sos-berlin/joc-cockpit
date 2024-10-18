@@ -257,7 +257,7 @@
                         <div *ngIf="referencedCollapsed[objectType]" class="m-t-sm m-l-md">
                           <div *ngFor="let obj of getObjectsByType(dependency?.references, objectType)">
                             <ng-container>
-                              <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-' + obj.path"
+                              <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox_' + obj.path"
                                      [disabled]="obj.disabled" (ngModelChange)="updateParentCheckboxReferenced(objectType)">
                                 <span [ngClass]="{
                                     'fa-circle-o': !obj.valid,
@@ -297,7 +297,7 @@
                     </label>
                     <div *ngIf="filteredAffectedCollapsed" class="m-t-sm m-l-md">
                       <div *ngFor="let obj of getObjectsByType(filteredAffectedItems, objectType)">
-                        <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-' + obj.path" [disabled]="obj.disabled"
+                        <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox--' + obj.path" [disabled]="obj.disabled"
                                (ngModelChange)="updateParentCheckboxFilteredAffected(objectType)">
                 <span [ngClass]="{
                     'fa-circle-o': !obj.valid,
