@@ -1850,7 +1850,7 @@
     "label.impactedWorkflows": "Workflows référents",
     "label.affectedObjects": "Objets référents",
     "label.referencedObjects": "Objets référencés",
-    "label.filteredAffectedItems": "Objets associés",
+    "label.filteredAffectedItems": "Objets connexes",
     "label.includeTodaysLateOrders": "Inclure les Ordres tardifs du jour",
     "label.changes": "Changements",
     "label.workflowTags": "Balises Workflow",
