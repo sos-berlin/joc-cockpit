@@ -680,7 +680,7 @@ export class SingleDeployComponent {
       this.remove();
       return;
     }
-    if (this.releasable && !this.shouldCallRelease()) {
+    if (this.releasable && this.shouldCallRelease()) {
       this.release();
       if (this.shouldCallDeploy()) {
         this.getReleaseDeployObject();
@@ -740,6 +740,7 @@ export class SingleDeployComponent {
   }
 
   release(): void {
+
     const PATH = this.data.path1 ? ((this.data.path1 + (this.data.path1 === '/' ? '' : '/') + this.data.name)) : ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name));
     let obj: any = {
       auditLog: {},
@@ -792,7 +793,6 @@ export class SingleDeployComponent {
         });
       }
     });
-
     if (obj.update.length === 0 && !obj.delete) {
       this.submitted = false;
       return;
