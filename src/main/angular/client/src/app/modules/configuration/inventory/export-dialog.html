@@ -277,9 +277,8 @@
                   <div *ngIf="affectedCollapsed[node.key]" class="m-t-sm m-l-md">
                     <ng-container *ngFor="let objectType of getUniqueObjectTypes(dependency?.referencedBy)">
                       <div *ngIf="getObjectsByType(dependency?.referencedBy, objectType)?.length" class="m-t-sm">
-                        <ng-container *ngIf="objectType === 'WORKFLOW' || objectType === 'JOBRESOURCE' || objectType === 'LOCK' || objectType === 'NOTICEBOARD' || objectType === 'FILEORDERSOURCE'; else changeTemplate">
-                          <label nz-checkbox [(ngModel)]="selectAllAffected[objectType]" [name]="'checkbox_' + objectType"
-                                 (ngModelChange)="toggleAllAffected(objectType, $event)">
+                         <ng-container>
+                          <label>
                             <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
                               <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
                             </span>
@@ -288,37 +287,18 @@
                           </label>
                         </ng-container>
 
-                        <ng-template #changeTemplate>
-                        <span class="disabled-object">
-                          <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
-                            <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
-                          </span>
-                          <span *ngIf="isCustomIcon(objectType)" class="icon-color" [ngClass]="getIcon(objectType)"></span>
-                          {{ getObjectTypeLabel(objectType) | translate }}
-                        </span>
-                        </ng-template>
-
                           <div *ngIf="affectedCollapsed[objectType]" class="m-t-sm m-l-md">
                             <div *ngFor="let obj of getObjectsByType(dependency?.referencedBy, objectType)">
-                              <ng-container *ngIf="obj.change; else changeObjectTemplate">
+                              <ng-container>
                                 <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-' + obj.path"
                                        [disabled]="obj.disabled" (ngModelChange)="updateParentCheckboxAffected(objectType)">
                                   <span [ngClass]="{
                                       'fa-circle-o': !obj.valid,
                                       'fa-circle dark-blue': obj.deployed || obj.released
-                                  }" class="fa fa-check-circle-o orange text-xs p-l-xs m-l-xs"></span>
+                                  }" class="fa fa-check-circle-o orange text-xs"></span>
                                   {{ obj.path }}
                                 </label>
                               </ng-container>
-                              <ng-template #changeObjectTemplate>
-                                <span class="disabled-object">
-                                  <span [ngClass]="{
-                                      'fa-circle-o': !obj.valid,
-                                      'fa-circle dark-blue': obj.deployed || obj.released
-                                  }" class="fa fa-check-circle-o orange text-xs p-l-xs m-l-xs"></span>
-                                  {{ obj.path }}
-                                </span>
-                              </ng-template>
                             </div>
                           </div>
                         </div>
@@ -334,9 +314,8 @@
                   <div *ngIf="referencedCollapsed[node.key]" class="m-t-sm m-l-md">
                     <ng-container *ngFor="let objectType of getUniqueObjectTypes(dependency?.references)">
                       <div *ngIf="getObjectsByType(dependency?.references, objectType)?.length" class="m-t-sm">
-                        <ng-container *ngIf="objectType === 'WORKFLOW' || objectType === 'JOBRESOURCE' || objectType === 'LOCK' || objectType === 'NOTICEBOARD' || objectType === 'FILEORDERSOURCE'; else changeTemplate">
-                          <label nz-checkbox [(ngModel)]="selectAllReferenced[objectType]" [name]="'checkbox_' + objectType"
-                                 (ngModelChange)="toggleAllReferenced(objectType, $event)">
+                        <ng-container >
+                          <label>
                             <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
                               <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
                             </span>
@@ -345,21 +324,10 @@
                           </label>
                         </ng-container>
 
-                        <ng-template #changeTemplate>
-                        <span class="disabled-object">
-                          <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
-                            <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
-                          </span>
-                          <span *ngIf="isCustomIcon(objectType)" class="icon-color" [ngClass]="getIcon(objectType)"></span>
-                          {{ getObjectTypeLabel(objectType) | translate }}
-                        </span>
-                        </ng-template>
-
                         <div *ngIf="referencedCollapsed[objectType]" class="m-t-sm m-l-md">
                           <div *ngFor="let obj of getObjectsByType(dependency?.references, objectType)">
-
-                            <ng-container *ngIf="obj.change; else changeReferencedTemplate">
-                              <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-' + obj.path"
+                            <ng-container>
+                              <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox_' + obj.path"
                                      [disabled]="obj.disabled" (ngModelChange)="updateParentCheckboxReferenced(objectType)">
                                 <span [ngClass]="{
                                     'fa-circle-o': !obj.valid,
@@ -368,15 +336,6 @@
                                 {{ obj.path }}
                               </label>
                             </ng-container>
-                            <ng-template #changeReferencedTemplate>
-                              <span class="disabled-object">
-                                <span [ngClass]="{
-                                    'fa-circle-o': !obj.valid,
-                                    'fa-circle dark-blue': obj.deployed || obj.released
-                                }" class="fa fa-check-circle-o orange text-xs"></span>
-                                {{ obj.path }}
-                              </span>
-                            </ng-template>
                           </div>
                         </div>
                       </div>
@@ -386,6 +345,41 @@
               </div>
             </div>
           </ng-template>
+          <div *ngIf="filteredAffectedItems?.length > 0" class="form-group row m-t-sm m-l-sm" style="justify-content: space-between">
+            <!-- Filtered Affected Objects -->
+            <div class="form-group">
+              <i class="cursor text-16 fa"
+                 [ngClass]="{'fa-caret-right': !filteredAffectedCollapsed, 'fa-caret-down': filteredAffectedCollapsed}"
+                 (click)="filteredAffectedCollapsed = !filteredAffectedCollapsed"></i>
+              <label class="m-l-sm">{{ 'inventory.label.filteredAffectedItems' | translate }}</label>
+              <div *ngIf="filteredAffectedCollapsed" class="m-t-sm m-l-md">
+                <ng-container *ngFor="let objectType of getUniqueObjectTypes(filteredAffectedItems)">
+                  <div *ngIf="getObjectsByType(filteredAffectedItems, objectType)?.length" class="m-t-sm">
+                    <label nz-checkbox [(ngModel)]="selectAllFilteredAffected[objectType]" [name]="'checkbox_' + objectType"
+                           (ngModelChange)="toggleAllFilteredAffected(objectType, $event)">
+            <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
+              <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+            </span>
+                      <span *ngIf="isCustomIcon(objectType)" class="icon-color" [ngClass]="getIcon(objectType)"></span>
+                      {{ getObjectTypeLabel(objectType) | translate }}
+                    </label>
+                    <div *ngIf="filteredAffectedCollapsed" class="m-t-sm m-l-md">
+                      <div *ngFor="let obj of getObjectsByType(filteredAffectedItems, objectType)">
+                        <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox--' + obj.path" [disabled]="obj.disabled"
+                               (ngModelChange)="updateParentCheckboxFilteredAffected(objectType)">
+                <span [ngClass]="{
+                    'fa-circle-o': !obj.valid,
+                    'fa-circle dark-blue': obj.deployed || obj.released
+                }" class="fa fa-check-circle-o orange text-xs m-t-xs p-l-xs m-l-xs"></span>
+                          {{ obj.path }}
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div *ngIf="changesNodes.length>0 && exportObj.exportType === 'changes'" class="row">
