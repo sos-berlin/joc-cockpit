@@ -135,7 +135,7 @@ export class CreateTagModalComponent {
     const url = this.isJobTag ? 'inventory/workflow/tags/job' : 'inventory/workflow/tags';
     const path = this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name;
 
-    this.coreService.post(url, { path }).subscribe((res) => {
+    this.coreService.post(url, {path}).subscribe((res) => {
       this.tags = res.tags;
     });
   }
@@ -483,6 +483,7 @@ export class SingleDeployComponent {
   filteredAffectedItems: any[] = [];
   filteredAffectedCollapsed: boolean = false;
   selectAllFilteredAffected: { [key: string]: boolean } = {};
+
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
@@ -540,7 +541,7 @@ export class SingleDeployComponent {
               path: obj.path
             }
           };
-            this.object.store.draftConfigurations.push(config);
+          this.object.store.draftConfigurations.push(config);
         }
       });
     });
@@ -554,7 +555,7 @@ export class SingleDeployComponent {
               path: obj.path
             }
           };
-            this.object.store.draftConfigurations.push(config);
+          this.object.store.draftConfigurations.push(config);
         }
       });
     });
@@ -567,12 +568,12 @@ export class SingleDeployComponent {
             path: item.path
           }
         };
-          this.object.store.draftConfigurations.push(config);
+        this.object.store.draftConfigurations.push(config);
       }
     });
 
     const self = this;
-    if(!this.releasable){
+    if (!this.releasable) {
       for (let i = 0; i < this.deployablesObject.length; i++) {
         if (this.deployablesObject[i].isChecked || !this.data.object) {
           const obj: any = {}, objDep: any = {};
@@ -619,53 +620,64 @@ export class SingleDeployComponent {
   }
 
   getReleaseDeployObject(): void {
+    const allowedTypes = ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'];
+
     const obj: any = {
       controllerIds: this.selectedSchedulerIds,
       auditLog: {},
       includeLate: this.includeLate
     };
-
     Object.keys(this.affectedObjectsByType).forEach(type => {
       this.affectedObjectsByType[type].forEach(obj => {
-        if (obj.valid && obj.selected && (obj.objectType != 'SCHEDULE' || obj.objectType != 'JOBTEMPLATE' || obj.objectType != 'WORKINGDAYSCALENDAR' || obj.objectType != 'NONWORKINGDAYSCALENDAR')) {
-          const config = {
-            configuration: {
-              objectType: obj.objectType,
-              path: obj.path
-            }
-          };
+        if (obj.valid && obj.selected && allowedTypes.includes(obj.objectType)) {
+          if (!(this.releasable && obj.deployed)){
+            const config = {
+              configuration: {
+                objectType: obj.objectType,
+                path: obj.path
+              }
+            };
             this.object.store.draftConfigurations.push(config);
+          }
         }
       });
     });
 
     Object.keys(this.referencedObjectsByType).forEach(type => {
       this.referencedObjectsByType[type].forEach(obj => {
-        if (obj.valid && obj.selected && (obj.objectType != 'SCHEDULE' || obj.objectType != 'JOBTEMPLATE' || obj.objectType != 'WORKINGDAYSCALENDAR' || obj.objectType != 'NONWORKINGDAYSCALENDAR')) {
+        if (obj.valid && obj.selected && allowedTypes.includes(obj.objectType)) {
+          if (!(this.releasable && obj.deployed)){
+            const config = {
+              configuration: {
+                objectType: obj.objectType,
+                path: obj.path
+              }
+            };
+            this.object.store.draftConfigurations.push(config);
+          }
+        }
+      });
+    });
+
+    this.filteredAffectedItems.forEach(item => {
+      if (item.valid && item.selected && allowedTypes.includes(item.objectType)) {
+        if (!(this.releasable && item.deployed)){
           const config = {
             configuration: {
               objectType: obj.objectType,
               path: obj.path
             }
           };
-            this.object.store.draftConfigurations.push(config);
-        }
-      });
-    });
-
-    this.filteredAffectedItems.forEach(item => {
-      if (item.valid && item.selected && (item.objectType != 'SCHEDULE' || item.objectType != 'JOBTEMPLATE' || item.objectType != 'WORKINGDAYSCALENDAR' || item.objectType != 'NONWORKINGDAYSCALENDAR')) {
-        const config = {
-          configuration: {
-            objectType: item.objectType,
-            path: item.path
-          }
-        };
           this.object.store.draftConfigurations.push(config);
+        }
       }
     });
 
     obj.store = this.object.store;
+    if ((obj.store.deployConfigurations.length === 0 && obj.store.draftConfigurations.length === 0) && !obj.delete) {
+      this.submitted = false;
+      return;
+    }
     this.coreService.post(this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy', obj).subscribe({
       next: () => {
         this.activeModal.close();
@@ -680,6 +692,7 @@ export class SingleDeployComponent {
       this.remove();
       return;
     }
+
     if (this.releasable && this.shouldCallRelease()) {
       this.release();
       if (this.shouldCallDeploy()) {
@@ -687,8 +700,9 @@ export class SingleDeployComponent {
       }
       return;
     }
-
-    this.getJSObject();
+    if (!this.releasable) {
+      this.getJSObject();
+    }
     const obj: any = {
       controllerIds: this.selectedSchedulerIds,
       auditLog: {},
@@ -919,8 +933,6 @@ export class SingleDeployComponent {
 
   getSelectedObjects(): any[] {
     const selectedObjects = [];
-    console.log(this.affectedObjectsByType,"oo")
-    console.log(this.referencedObjectsByType,"ii")
     Object.keys(this.affectedObjectsByType).forEach(type => {
       this.affectedObjectsByType[type].forEach(obj => {
         selectedObjects.push(obj);
@@ -990,7 +1002,7 @@ export class SingleDeployComponent {
     });
   }
 
-private updateNodeDependencies(dependenciesResponse: any, requestedKeys: Set<string>): void {
+  private updateNodeDependencies(dependenciesResponse: any, requestedKeys: Set<string>): void {
     const requestedItems = dependenciesResponse.requestedItems;
     const affectedItems = dependenciesResponse.affectedItems || [];
 
@@ -1013,12 +1025,12 @@ private updateNodeDependencies(dependenciesResponse: any, requestedKeys: Set<str
       const item = itemWrapper.item;
       const uniqueKey = `${item.name}-${item.objectType}`;
       if (!referencedSet.has(uniqueKey) && !requestedSet.has(uniqueKey) &&
-          !requestedKeys.has(uniqueKey) &&
-          !this.filteredAffectedItems.some(existing => `${existing.name}-${existing.objectType}` === uniqueKey)) {
+        !requestedKeys.has(uniqueKey) &&
+        !this.filteredAffectedItems.some(existing => `${existing.name}-${existing.objectType}` === uniqueKey)) {
         this.filteredAffectedItems.push(item);
       }
     });
-}
+  }
 
   prepareObject(dependencies): void {
     if (dependencies && dependencies?.requestedItems.length > 0) {
@@ -1033,7 +1045,7 @@ private updateNodeDependencies(dependenciesResponse: any, requestedKeys: Set<str
               this.affectedObjectTypes.push(type);
             }
 
-            refObj.selected =  refObj.valid && (!refObj.deployed && !refObj.released);
+            refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.change = refObj.deployed;
 
@@ -1081,14 +1093,15 @@ private updateNodeDependencies(dependenciesResponse: any, requestedKeys: Set<str
       });
 
 
-        const filteredAffectedTypeSet = new Set<string>();
-        this.filteredAffectedItems.forEach(itemWrapper => {
-            const item = itemWrapper;
-            const type = item.objectType;
-            filteredAffectedTypeSet.add(type);
+      const filteredAffectedTypeSet = new Set<string>();
+      this.filteredAffectedItems.forEach(itemWrapper => {
+        const item = itemWrapper;
+        const type = item.objectType;
+        filteredAffectedTypeSet.add(type);
 
         item.selected = item.valid && (!item.deployed && !item.released);
-        item.disabled = !item.valid || item.valid && (!item.deployed && !item.released);;
+        item.disabled = !item.valid || item.valid && (!item.deployed && !item.released);
+        ;
         item.change = item.deployed;
 
         if (this.isRemoved) {
@@ -1436,9 +1449,9 @@ export class DeployComponent {
     const checkedNodes = this.collectCheckedNodes(node);
 
     if (checkedNodes.length > 0) {
-      if(node.isChecked){
+      if (node.isChecked) {
         this.getDependencies(checkedNodes, node, true);
-      }else{
+      } else {
         this.getDependencies(checkedNodes, node, false);
       }
     } else {
@@ -1473,7 +1486,7 @@ export class DeployComponent {
     return checkedNodes;
   }
 
-  private getDependencies(checkedNodes: { name: string, type: string }[], node, isChecked =  false): void {
+  private getDependencies(checkedNodes: { name: string, type: string }[], node, isChecked = false): void {
     const configurations = checkedNodes.map(node => ({
       name: node.name,
       type: node.type,
@@ -1517,12 +1530,12 @@ export class DeployComponent {
     });
 
     affectedItems.forEach(itemWrapper => {
-        const item = itemWrapper.item;
-        const uniqueKey = `${item.name}-${item.objectType}`;
-        if (!referencedSet.has(uniqueKey) && !requestedSet.has(uniqueKey) &&
-            !this.filteredAffectedItems.some(existing => `${existing.name}-${existing.objectType}` === uniqueKey)) {
-            this.filteredAffectedItems.push(item);
-        }
+      const item = itemWrapper.item;
+      const uniqueKey = `${item.name}-${item.objectType}`;
+      if (!referencedSet.has(uniqueKey) && !requestedSet.has(uniqueKey) &&
+        !this.filteredAffectedItems.some(existing => `${existing.name}-${existing.objectType}` === uniqueKey)) {
+        this.filteredAffectedItems.push(item);
+      }
     });
 
     if (isChecked) {
@@ -1562,6 +1575,7 @@ export class DeployComponent {
 
     return null;
   }
+
   private prepareObject(dependencies: any): void {
     if (dependencies && dependencies?.requestedItems.length > 0) {
 
@@ -1577,7 +1591,8 @@ export class DeployComponent {
             }
 
             refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
-            refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);;
+            refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
+            ;
             refObj.change = refObj.deployed;
 
             if (this.isRemove) {
@@ -1606,7 +1621,6 @@ export class DeployComponent {
               refObj.selected = true;
             }
             this.referencedObjectsByType[type].push(refObj);
-
 
 
           });
@@ -2022,7 +2036,7 @@ export class DeployComponent {
       }
     });
 
-    return { shouldDeploy, shouldRelease };
+    return {shouldDeploy, shouldRelease};
   }
 
 
@@ -2054,6 +2068,12 @@ export class DeployComponent {
       includeLate: this.includeLate,
       controllerIds: this.selectedSchedulerIds
     };
+
+    if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
+      obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+    } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
+      obj.addOrdersDateFrom = 'now';
+    }
 
     if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
       if (this.object.store.draftConfigurations.length === 0) {
@@ -2101,6 +2121,12 @@ export class DeployComponent {
       includeLate: this.includeLate,
     };
 
+    if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
+      obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+    } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
+      obj.addOrdersDateFrom = 'now';
+    }
+
     if (this.operation !== 'recall') {
       if (this.object.delete.length > 0) {
         obj.delete = this.object.delete;
@@ -2139,6 +2165,7 @@ export class DeployComponent {
       this.ref.detectChanges();
     }
   }
+
   handleAffectedItemsForRelease(obj): void {
     this.filteredAffectedItems.forEach(item => {
       if (item.valid && item.selected && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType) && item.path !== '/' && item.name !== '/') {
@@ -2156,27 +2183,30 @@ export class DeployComponent {
   handleAffectedItemsForDeploy(obj): void {
     this.filteredAffectedItems.forEach(item => {
       if (item.valid && item.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType) && item.path !== '/' && item.name !== '/') {
-        if (!obj.store) {
-          obj.store = { draftConfigurations: [], deployConfigurations: [] };
-        }
-        if (!obj.store.deployConfigurations) {
-          obj.store.deployConfigurations = [];
-        }
-        if (!obj.store.draftConfigurations) {
-          obj.store.draftConfigurations = [];
-        }
-        const config = {
-          configuration: {
-            path: item.path,
-            objectType: item.objectType,
-            recursive: false
+        if (!(this.releasable && item.deployed)) {
+          if (!obj.store) {
+            obj.store = {draftConfigurations: [], deployConfigurations: []};
           }
-        };
+          if (!obj.store.deployConfigurations) {
+            obj.store.deployConfigurations = [];
+          }
+          if (!obj.store.draftConfigurations) {
+            obj.store.draftConfigurations = [];
+          }
+          const config = {
+            configuration: {
+              path: item.path,
+              objectType: item.objectType,
+              recursive: false
+            }
+          };
           obj.store.draftConfigurations.push(config);
+        }
       }
     });
   }
-private handleDependenciesForRelease(node: any, obj: any): void {
+
+  private handleDependenciesForRelease(node: any, obj: any): void {
     if (node.dependencies && !this.isRevoke && this.operation !== 'recall') {
       node.dependencies.referencedBy.forEach(dep => {
         if (dep.valid && dep.selected && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
@@ -2209,6 +2239,7 @@ private handleDependenciesForRelease(node: any, obj: any): void {
       });
     }
   }
+
   private processDependenciesForRelease(): void {
     let obj: any = {
       auditLog: {},
@@ -2245,45 +2276,49 @@ private handleDependenciesForRelease(node: any, obj: any): void {
     if (node.dependencies && !this.isRevoke && this.operation !== 'recall') {
       node.dependencies.referencedBy.forEach(dep => {
         if (dep.valid && dep.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
-          if (!obj.store) {
-            obj.store = { draftConfigurations: [], deployConfigurations: [] };
-          }
-          if (!obj.store.deployConfigurations) {
-            obj.store.deployConfigurations = [];
-          }
-          if (!obj.store.draftConfigurations) {
-            obj.store.draftConfigurations = [];
-          }
-          const config = {
-            configuration: {
-              path: dep.path,
-              objectType: dep.objectType,
-              recursive: false
+          if (!(this.releasable && dep.deployed)) {
+            if (!obj.store) {
+              obj.store = {draftConfigurations: [], deployConfigurations: []};
             }
-          };
+            if (!obj.store.deployConfigurations) {
+              obj.store.deployConfigurations = [];
+            }
+            if (!obj.store.draftConfigurations) {
+              obj.store.draftConfigurations = [];
+            }
+            const config = {
+              configuration: {
+                path: dep.path,
+                objectType: dep.objectType,
+                recursive: false
+              }
+            };
             obj.store.draftConfigurations.push(config);
+          }
         }
       });
 
       node.dependencies.references.forEach(ref => {
         if (ref.valid && ref.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(ref.objectType) && ref.path !== '/' && ref.name !== '/') {
-          if (!obj.store) {
-            obj.store = { draftConfigurations: [], deployConfigurations: [] };
-          }
-          if (!obj.store.deployConfigurations) {
-            obj.store.deployConfigurations = [];
-          }
-          if (!obj.store.draftConfigurations) {
-            obj.store.draftConfigurations = [];
-          }
-          const config = {
-            configuration: {
-              path: ref.path,
-              objectType: ref.objectType,
-              recursive: false
+          if (!(this.releasable && ref.deployed)) {
+            if (!obj.store) {
+              obj.store = {draftConfigurations: [], deployConfigurations: []};
             }
-          };
+            if (!obj.store.deployConfigurations) {
+              obj.store.deployConfigurations = [];
+            }
+            if (!obj.store.draftConfigurations) {
+              obj.store.draftConfigurations = [];
+            }
+            const config = {
+              configuration: {
+                path: ref.path,
+                objectType: ref.objectType,
+                recursive: false
+              }
+            };
             obj.store.draftConfigurations.push(config);
+          }
         }
       });
     }
@@ -2458,6 +2493,7 @@ private handleDependenciesForRelease(node: any, obj: any): void {
   }
 
 }
+
 @Component({
   selector: 'app-export-modal',
   templateUrl: './export-dialog.html'
@@ -2515,7 +2551,7 @@ export class ExportComponent {
   referencedCollapsed: { [key: string]: boolean } = {};
   changeObj: any;
   selectedChange: any;
-  changesNodes: any =  [];
+  changesNodes: any = [];
   data: any;
   fileFormat = [{value: 'ZIP', name: 'ZIP'},
     {value: 'TAR_GZ', name: 'TAR_GZ'}
@@ -2769,24 +2805,25 @@ export class ExportComponent {
 
   }
 
- private findAndUpdateNodeWithDependencies(dep: any, nodes: any[]): any {
+  private findAndUpdateNodeWithDependencies(dep: any, nodes: any[]): any {
     const dependencyData = dep.dependency;
 
     for (let node of nodes) {
-        if (node.name === dependencyData.name && node.type === dependencyData.objectType) {
-            node.dependencies = dep;
-            return node;
-        }
+      if (node.name === dependencyData.name && node.type === dependencyData.objectType) {
+        node.dependencies = dep;
+        return node;
+      }
 
-        if (node.children && node.children.length > 0) {
-            const foundNode = this.findAndUpdateNodeWithDependencies(dep, node.children);
-            if (foundNode) {
-                return foundNode;
-            }
+      if (node.children && node.children.length > 0) {
+        const foundNode = this.findAndUpdateNodeWithDependencies(dep, node.children);
+        if (foundNode) {
+          return foundNode;
         }
+      }
     }
     return null;
-}
+  }
+
   private prepareObject(dependencies: any): void {
     if (dependencies && dependencies?.requestedItems.length > 0) {
       dependencies?.requestedItems.forEach(dep => {
@@ -2800,7 +2837,7 @@ export class ExportComponent {
               this.affectedObjectTypes.push(type);
             }
 
-            refObj.selected =  refObj.valid && (!refObj.deployed && !refObj.released);
+            refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.disabled = !refObj.valid;
             refObj.change = refObj.deployed;
 
@@ -3047,7 +3084,7 @@ export class ExportComponent {
   }
 
   filterList(isChecked = true): void {
-    if(this.exportObj.exportType === 'changes'){
+    if (this.exportObj.exportType === 'changes') {
       this.changes()
     }
     this.checkedObject.clear();
@@ -5944,6 +5981,7 @@ export class PublishChangeModalComponent {
   affectedCollapsed: { [key: string]: boolean } = {};
   referencedCollapsed: { [key: string]: boolean } = {};
   selectedSchedulerIds: any = [];
+
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private inventoryService: InventoryService) {
   }
 
@@ -6197,6 +6235,7 @@ export class PublishChangeModalComponent {
 
     }
   }
+
   checkBoxChange(e: NzFormatEmitEvent): void {
     const node: any = e.node;
 
@@ -6355,17 +6394,17 @@ export class PublishChangeModalComponent {
     this.submitted = true;
     const {shouldDeploy, shouldRelease} = this.shouldDeployOrRelease();
 
-      if (shouldDeploy) {
-        this.processDependenciesForDeploy();
-      }else{
-        this.activeModal.close();
-      }
+    if (shouldDeploy) {
+      this.processDependenciesForDeploy();
+    } else {
+      this.activeModal.close();
+    }
 
-      if (shouldRelease) {
-        this.processDependenciesForRelease();
-      }else{
-        this.activeModal.close();
-      }
+    if (shouldRelease) {
+      this.processDependenciesForRelease();
+    } else {
+      this.activeModal.close();
+    }
   }
 
   private shouldDeployOrRelease(): { shouldDeploy: boolean, shouldRelease: boolean } {
@@ -6409,6 +6448,7 @@ export class PublishChangeModalComponent {
 
     return {shouldDeploy, shouldRelease};
   }
+
   private handleDependenciesForRelease(node: any, obj: any): void {
     if (node.dependencies) {
       node.dependencies.referencedBy.forEach(dep => {
@@ -6489,7 +6529,7 @@ export class PublishChangeModalComponent {
               recursive: false
             }
           };
-            obj.store.draftConfigurations.push(config);
+          obj.store.draftConfigurations.push(config);
         }
       });
 
@@ -6505,7 +6545,7 @@ export class PublishChangeModalComponent {
               recursive: false
             }
           };
-            obj.store.draftConfigurations.push(config);
+          obj.store.draftConfigurations.push(config);
         }
       });
     }
@@ -6583,6 +6623,7 @@ export class ShowDependenciesModalComponent {
   referencedCollapsed: { [key: string]: boolean } = {};
   isAffectedCollapsed: boolean = true;
   isReferencedCollapsed: boolean = true;
+
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private inventoryService: InventoryService) {
   }
 
@@ -6618,6 +6659,7 @@ export class ShowDependenciesModalComponent {
       }
     });
   }
+
   prepareObject(dependencies): void {
     if (dependencies && dependencies?.requestedItems.length > 0) {
       dependencies?.requestedItems.forEach(dep => {
@@ -6631,7 +6673,7 @@ export class ShowDependenciesModalComponent {
               this.affectedObjectTypes.push(type);
             }
 
-            refObj.selected =  refObj.valid && (!refObj.deployed && !refObj.released);
+            refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.disabled = !refObj.valid;
             refObj.change = refObj.deployed;
 
@@ -6768,6 +6810,7 @@ export class ShowDependenciesModalComponent {
     };
     return labelMapping[objectType] || objectType;
   }
+
   cancel(): void {
     this.activeModal.destroy();
   }
@@ -10292,7 +10335,7 @@ export class InventoryComponent {
     })
   }
 
-  showDependencies(node):void{
+  showDependencies(node): void {
     const origin = this.coreService.clone(node.origin ? node.origin : node);
     this.modal.create({
       nzTitle: undefined,
