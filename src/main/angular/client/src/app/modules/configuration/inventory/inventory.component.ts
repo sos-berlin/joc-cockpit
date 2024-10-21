@@ -664,8 +664,8 @@ export class SingleDeployComponent {
         if (!(this.releasable && item.deployed)){
           const config = {
             configuration: {
-              objectType: obj.objectType,
-              path: obj.path
+              objectType: item.objectType,
+              path: item.path
             }
           };
           this.object.store.draftConfigurations.push(config);
@@ -699,6 +699,8 @@ export class SingleDeployComponent {
         this.getReleaseDeployObject();
       }
       return;
+    }else if (this.releasable && !this.shouldCallRelease() && !this.shouldCallDeploy()){
+      this.release();
     }
     if (!this.releasable) {
       this.getJSObject();
