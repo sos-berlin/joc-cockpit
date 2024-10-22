@@ -1,9 +1,10 @@
 <div class="modal-header">
   <h4 class="modal-title">
     <span *ngIf="!isRevoke && !releasable && !isRemoved" translate>inventory.label.deploy</span>
-    <span *ngIf="!isRevoke && releasable && !isRemoved" translate>inventory.label.release</span>
+    <span *ngIf="!isRevoke && releasable && !isRemoved && operation != 'recall'" translate>inventory.label.release</span>
     <span *ngIf="isRevoke" translate>inventory.label.revoke</span>
     <span *ngIf="isRemoved" translate>inventory.label.remove</span>
+    <span *ngIf="operation === 'recall'" translate>inventory.label.recall</span>
     <span *ngIf="isRemoved">
       {{data.path}} <span *ngIf="data.name">{{data.path == '/' ? '' : '/'}}</span>{{data.name}}
     </span>
@@ -34,7 +35,7 @@
           </nz-select>
         </div>
       </div>
-      <div *ngIf="!isRevoke && ((data.objectType == 'WORKFLOW' || releasable) && deployablesObject.length > 0) || isRemoved"
+      <div *ngIf="!isRevoke && operation != 'recall' && ((data.objectType == 'WORKFLOW' || releasable) && deployablesObject.length > 0) || isRemoved"
            class="form-group row">
         <div class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
         <div class="col-md-9">
@@ -60,7 +61,7 @@
           </div>
         </div>
       </div>
-      <div *ngIf="!isRevoke && !isRemoved &&  (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR')"
+      <div *ngIf="!isRevoke && !isRemoved && operation != 'recall' &&  (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR')"
       class="form-group row">
         <div class="col-md-6">
           <label nz-checkbox class="mr-2" [(ngModel)]="includeLate" name="includeLate"></label>

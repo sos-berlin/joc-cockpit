@@ -195,7 +195,7 @@
               </div>
             </div>
 
-            <div *ngIf="node.origin.dependencies && !isRevoke && operation !== 'recall'" style="width: 400px" >
+            <div *ngIf="node.origin.dependencies" style="width: 400px" >
             <div *ngFor="let dependency of [node.origin.dependencies]" class="dependencies-list m-l-20 m-t-xs">
 
               <div *ngIf="dependency?.referencedBy?.length > 0 || dependency?.references?.length > 0 " class="form-group row" style="justify-content: space-between">
@@ -277,7 +277,7 @@
             </div>
             </div>
           </ng-template>
-          <div *ngIf="filteredAffectedItems?.length > 0 && !isRevoke && operation != 'recall'" class="form-group row m-t-sm m-l-sm" style="justify-content: space-between">
+          <div *ngIf="filteredAffectedItems?.length > 0" class="form-group row m-t-sm m-l-sm" style="justify-content: space-between">
             <!-- Filtered Affected Objects -->
             <div class="form-group">
               <i class="cursor text-16 fa"
