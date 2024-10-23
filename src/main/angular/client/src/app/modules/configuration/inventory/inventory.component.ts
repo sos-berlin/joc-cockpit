@@ -872,7 +872,7 @@ export class SingleDeployComponent {
       obj.releasables = [];
     } else {
       if (this.releasable) {
-        obj.update = [];
+        obj.update = [{objectType: this.data.objectType, path: PATH}];
       }
     }
     Object.keys(this.affectedObjectsByType).forEach(type => {
