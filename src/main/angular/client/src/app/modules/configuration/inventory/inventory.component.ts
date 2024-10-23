@@ -893,15 +893,15 @@ export class SingleDeployComponent {
       this.referencedObjectsByType[type].forEach(objItem => {
         if (objItem.valid && objItem.selected && (objItem.objectType === 'SCHEDULE' || objItem.objectType === 'JOBTEMPLATE' || objItem.objectType === 'WORKINGDAYSCALENDAR' || objItem.objectType === 'NONWORKINGDAYSCALENDAR')) {
           if (recall) {
-              obj.releasables.push({
-                objectType: objItem.objectType,
-                path: objItem.path
-              });
-            } else {
-              obj.update.push({
-                objectType: objItem.objectType,
-                path: objItem.path
-              });
+            obj.releasables.push({
+              objectType: objItem.objectType,
+              path: objItem.path
+            });
+          } else {
+            obj.update.push({
+              objectType: objItem.objectType,
+              path: objItem.path
+            });
           }
         }
       });
@@ -1232,20 +1232,7 @@ export class SingleDeployComponent {
         const type = item.objectType;
         filteredAffectedTypeSet.add(type);
 
-        item.selected = item.valid && (!item.deployed && !item.released);
         item.disabled = !item.valid || item.valid && (!item.deployed && !item.released);
-        ;
-        item.change = item.deployed;
-
-        if (this.isRemoved) {
-          item.disabled = false;
-          item.selected = true;
-        }
-
-        if (this.isRevoke || this.operation === 'recall') {
-          item.selected = item.valid && (item.released || item.deployed);
-          item.disabled = false;
-        }
 
         filteredAffectedTypeSet.forEach(type => {
           this.updateParentCheckboxFilteredAffected(type);
@@ -1732,7 +1719,6 @@ export class DeployComponent {
 
             if (this.isRemove) {
               refObj.disabled = false;
-              refObj.selected = true;
             }
 
             if (this.isRevoke || this.operation === 'recall') {
@@ -1778,19 +1764,7 @@ export class DeployComponent {
         const type = item.objectType;
         filteredAffectedTypeSet.add(type);
 
-        item.selected = item.valid && (!item.deployed && !item.released);
         item.disabled = !item.valid || item.valid && (!item.deployed && !item.released);
-        item.change = item.deployed;
-
-        if (this.isRemove) {
-          item.disabled = false;
-          item.selected = true;
-        }
-
-        if (this.isRevoke || this.operation === 'recall') {
-          item.selected = item.valid && (item.released || item.deployed);
-          item.disabled = false;
-        }
 
         filteredAffectedTypeSet.forEach(type => {
           this.updateParentCheckboxFilteredAffected(type);
@@ -2230,7 +2204,7 @@ export class DeployComponent {
   deploy(): void {
     this.submitted = true;
     const {shouldDeploy, shouldRelease} = this.shouldDeployOrRelease();
-    if(this.operation === 'recall'){
+    if (this.operation === 'recall') {
       this.handleRelease(true);
       return
     }
@@ -2432,17 +2406,7 @@ export class DeployComponent {
             existingConfig.configuration.path === config.configuration.path &&
             existingConfig.configuration.objectType === config.configuration.objectType);
         };
-
-        if (revoke) {
-          if (!obj.deployConfigurations) {
-            obj.deployConfigurations = [];
-          }
-          if (!isConfigPresent(obj.deployConfigurations, config)) {
-            obj.deployConfigurations.push(config);
-          }
-        } else {
-          obj.store.draftConfigurations.push(config);
-        }
+        obj.store.draftConfigurations.push(config);
       };
 
       const handleSingleDeployable = (item, revoke) => {
@@ -2490,13 +2454,13 @@ export class DeployComponent {
   }
 
   private handleDependenciesForRelease(node: any, obj: any, recall?): void {
-        const isConfigPresent = (arr, config) => {
+    const isConfigPresent = (arr, config) => {
       return arr.some(existingConfig =>
         existingConfig.objectType === config.objectType &&
         existingConfig.path === config.path
       );
     };
-    if (node.dependencies ) {
+    if (node.dependencies) {
       node.dependencies.referencedBy.forEach(dep => {
         if (dep.valid && dep.selected && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
           if (recall) {
@@ -2508,7 +2472,7 @@ export class DeployComponent {
             if (!isConfigPresent(obj.releasables, config)) {
               obj.releasables.push(config);
             }
-          } else{
+          } else {
             if (!obj.update) {
               obj.update = [];
             }
@@ -2539,7 +2503,7 @@ export class DeployComponent {
               objectType: ref.objectType,
               path: ref.path
             });
-            }
+          }
         }
       });
     }
@@ -2558,7 +2522,7 @@ export class DeployComponent {
     };
     if (recall) {
       obj.releasables = [];
-    }else{
+    } else {
       obj.update = [];
     }
     this.nodes.forEach(node => {
@@ -6552,6 +6516,9 @@ export class PublishChangeModalComponent {
   affectedCollapsed: { [key: string]: boolean } = {};
   referencedCollapsed: { [key: string]: boolean } = {};
   selectedSchedulerIds: any = [];
+  filteredAffectedItems: any[] = [];
+  filteredAffectedCollapsed: boolean = true;
+  selectAllFilteredAffected: { [key: string]: boolean } = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private inventoryService: InventoryService) {
   }
@@ -6629,36 +6596,38 @@ export class PublishChangeModalComponent {
     };
 
     data.forEach((item: any) => {
-      switch (item.objectType) {
-        case "WORKFLOW":
-          groupedObjects["WORKFLOW"].push(item);
-          break;
-        case "JOBRESOURCE":
-          groupedObjects["JOBRESOURCE"].push(item);
-          break;
-        case "SCHEDULE":
-          groupedObjects["SCHEDULE"].push(item);
-          break;
-        case "NOTICEBOARD":
-          groupedObjects["NOTICEBOARD"].push(item);
-          break;
-        case "LOCK":
-          groupedObjects["LOCK"].push(item);
-          break;
-        case "JOBTEMPLATE":
-          groupedObjects["JOBTEMPLATE"].push(item);
-          break;
-        case "INCLUDESCRIPT":
-          groupedObjects["INCLUDESCRIPT"].push(item);
-          break;
-        case "WORKINGDAYSCALENDAR":
-          groupedObjects["WORKINGDAYSCALENDAR"].push(item);
-          break;
-        case "NONWORKINGDAYSCALENDAR":
-          groupedObjects["NONWORKINGDAYSCALENDAR"].push(item);
-          break;
-        default:
-          break;
+      if (item.valid) {
+        switch (item.objectType) {
+          case "WORKFLOW":
+            groupedObjects["WORKFLOW"].push(item);
+            break;
+          case "JOBRESOURCE":
+            groupedObjects["JOBRESOURCE"].push(item);
+            break;
+          case "SCHEDULE":
+            groupedObjects["SCHEDULE"].push(item);
+            break;
+          case "NOTICEBOARD":
+            groupedObjects["NOTICEBOARD"].push(item);
+            break;
+          case "LOCK":
+            groupedObjects["LOCK"].push(item);
+            break;
+          case "JOBTEMPLATE":
+            groupedObjects["JOBTEMPLATE"].push(item);
+            break;
+          case "INCLUDESCRIPT":
+            groupedObjects["INCLUDESCRIPT"].push(item);
+            break;
+          case "WORKINGDAYSCALENDAR":
+            groupedObjects["WORKINGDAYSCALENDAR"].push(item);
+            break;
+          case "NONWORKINGDAYSCALENDAR":
+            groupedObjects["NONWORKINGDAYSCALENDAR"].push(item);
+            break;
+          default:
+            break;
+        }
       }
     });
 
@@ -6677,6 +6646,9 @@ export class PublishChangeModalComponent {
             path: item.path,
             key: item.path,
             type: item.objectType,
+            released: item.released,
+            deployed: item.deployed,
+            valid: item.valid,
             isLeaf: true,
             checked: true,
           }))
@@ -6700,7 +6672,7 @@ export class PublishChangeModalComponent {
     return checkedObjects;
   }
 
-  private getDependencies(checkedNodes: { name: string, type: string }[], node): void {
+  private getDependencies(checkedNodes: { name: string, type: string }[], node, isChecked = false): void {
     const configurations = checkedNodes.map(node => ({
       name: node.name,
       type: node.type,
@@ -6710,30 +6682,63 @@ export class PublishChangeModalComponent {
 
     this.coreService.post('inventory/dependencies', requestBody).subscribe({
       next: (res: any) => {
-
         if (res.dependencies && res.dependencies?.requestedItems.length > 0 && res.dependencies?.affectedItems.length > 0) {
-          this.dependencies = res.dependencies
-          this.updateNodeDependencies(this.dependencies);
-          this.prepareObject(this.dependencies);
+          this.updateNodeDependencies(res.dependencies, isChecked);
+          this.prepareObject(res.dependencies);
         } else {
         }
+
       },
       error: (err) => {
       }
     });
   }
 
-  private updateNodeDependencies(dependenciesResponse: any): void {
-    dependenciesResponse?.requestedItems.forEach(dep => {
-      const matchedNode = this.findAndUpdateNodeWithDependencies(dep, this.nodes);
-      if (matchedNode) {
-      } else {
+  private updateNodeDependencies(dependenciesResponse: any, isChecked: boolean): void {
+    const requestedItems = dependenciesResponse.requestedItems;
+    const affectedItems = dependenciesResponse.affectedItems || [];
+
+    const referencedSet = new Set<string>();
+    requestedItems.forEach(item => {
+      item.references?.forEach(ref => {
+        referencedSet.add(`${ref.name}-${ref.objectType}`);
+      });
+      item.referencedBy?.forEach(refBy => {
+        referencedSet.add(`${refBy.name}-${refBy.objectType}`);
+      });
+    });
+
+    const requestedSet = new Set<string>();
+    requestedItems.forEach(item => {
+      requestedSet.add(`${item.name}-${item.objectType}`);
+    });
+
+    affectedItems.forEach(itemWrapper => {
+      const item = itemWrapper.item;
+      const uniqueKey = `${item.name}-${item.objectType}`;
+      if (!referencedSet.has(uniqueKey) && !requestedSet.has(uniqueKey) &&
+        !this.filteredAffectedItems.some(existing => `${existing.name}-${existing.objectType}` === uniqueKey)) {
+        this.filteredAffectedItems.push(item);
       }
     });
 
-    this.nodes = [...this.nodes];
+    if (isChecked) {
+      requestedItems.forEach(dep => {
+        const uniqueKey = `${dep.name}-${dep.objectType}`;
+        if (!referencedSet.has(uniqueKey) && !requestedSet.has(uniqueKey) &&
+          !this.filteredAffectedItems.some(existing => `${existing.name}-${existing.objectType}` === uniqueKey)) {
+          this.filteredAffectedItems.push(dep);
+        }
+      });
+    }
 
+    requestedItems.forEach(dep => {
+      this.findAndUpdateNodeWithDependencies(dep, this.nodes);
+    });
+
+    this.nodes = [...this.nodes];
   }
+
 
   private findAndUpdateNodeWithDependencies(dep: any, nodes: any[]): any {
     for (let i = 0; i < nodes.length; i++) {
@@ -6756,6 +6761,7 @@ export class PublishChangeModalComponent {
 
   private prepareObject(dependencies: any): void {
     if (dependencies && dependencies?.requestedItems.length > 0) {
+
       dependencies?.requestedItems.forEach(dep => {
         if (dep.referencedBy) {
           const affectedTypeSet = new Set<string>();
@@ -6768,13 +6774,10 @@ export class PublishChangeModalComponent {
             }
 
             refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
-            refObj.disabled = !refObj.valid;
+            refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.change = refObj.deployed;
 
             this.affectedObjectsByType[type].push(refObj);
-            affectedTypeSet.forEach(type => {
-              this.updateParentCheckboxAffected(type);
-            });
           });
         }
 
@@ -6789,18 +6792,29 @@ export class PublishChangeModalComponent {
             }
 
             refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
-            refObj.disabled = !refObj.valid;
+            refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.change = refObj.deployed;
 
             this.referencedObjectsByType[type].push(refObj);
 
-            referencedTypeSet.forEach(type => {
-              this.updateParentCheckboxReferenced(type);
-            });
+
           });
         }
-      });
 
+      });
+      const filteredAffectedTypeSet = new Set<string>();
+      this.filteredAffectedItems.forEach(item => {
+        const type = item.objectType;
+        filteredAffectedTypeSet.add(type);
+
+        item.selected = item.valid && (!item.deployed && !item.released);
+        item.disabled = !item.valid || item.valid && (!item.deployed && !item.released);
+        item.change = item.deployed;
+
+        filteredAffectedTypeSet.forEach(type => {
+          this.updateParentCheckboxFilteredAffected(type);
+        });
+      });
       this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
       this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
 
@@ -6816,9 +6830,12 @@ export class PublishChangeModalComponent {
     this.updateParentCheckboxes(node);
 
     const checkedNodes = this.collectCheckedNodes(node);
-
     if (checkedNodes.length > 0) {
-      this.getDependencies(checkedNodes, node);
+      if (node.isChecked) {
+        this.getDependencies(checkedNodes, node, true);
+      } else {
+        this.getDependencies(checkedNodes, node, false);
+      }
     } else {
       this.clearDependenciesForNode(node);
     }
@@ -6898,23 +6915,18 @@ export class PublishChangeModalComponent {
     this.referencedCollapsed[nodeKey] = !this.referencedCollapsed[nodeKey];
   }
 
-
-  toggleAllAffected(objectType: string, isChecked: boolean): void {
-    this.affectedObjectsByType[objectType].forEach(obj => {
+  toggleAllFilteredAffected(objectType: string, isChecked: boolean): void {
+    this.filteredAffectedItems.filter(item => item.objectType === objectType).forEach(obj => {
       if (!obj.disabled) {
         obj.selected = isChecked;
       }
     });
   }
 
-  toggleAllReferenced(objectType: string, isChecked: boolean): void {
-    this.referencedObjectsByType[objectType].forEach(obj => {
-      if (!obj.disabled) {
-        obj.selected = isChecked;
-      }
-    });
+  updateParentCheckboxFilteredAffected(objectType: string): void {
+    const allSelected = this.filteredAffectedItems.filter(item => item.objectType === objectType).every(obj => obj.selected || obj.disabled);
+    this.selectAllFilteredAffected[objectType] = allSelected;
   }
-
 
   updateParentCheckboxAffected(objectType: string): void {
     const allSelected = this.affectedObjectsByType[objectType].every((obj: any) => obj.selected || obj.disabled);
@@ -6964,7 +6976,6 @@ export class PublishChangeModalComponent {
   onSubmit(): void {
     this.submitted = true;
     const {shouldDeploy, shouldRelease} = this.shouldDeployOrRelease();
-
     if (shouldDeploy) {
       this.processDependenciesForDeploy();
     } else {
@@ -6991,7 +7002,7 @@ export class PublishChangeModalComponent {
           if (dep.valid && allowedDeployTypes.includes(dep.objectType)) {
             shouldDeploy = true;
           }
-          if (dep.valid && !dep.released && allowedReleaseTypes.includes(dep.objectType)) {
+          if (dep.valid && allowedReleaseTypes.includes(dep.objectType)) {
             shouldRelease = true;
           }
         });
@@ -7000,7 +7011,7 @@ export class PublishChangeModalComponent {
           if (ref.valid && allowedDeployTypes.includes(ref.objectType)) {
             shouldDeploy = true;
           }
-          if (ref.valid && !ref.released && allowedReleaseTypes.includes(ref.objectType)) {
+          if (ref.valid && allowedReleaseTypes.includes(ref.objectType)) {
             shouldRelease = true;
           }
         });
@@ -7015,6 +7026,15 @@ export class PublishChangeModalComponent {
 
     this.nodes.forEach(node => {
       checkNodeForDependencies(node);
+    });
+
+    this.filteredAffectedItems.forEach(item => {
+      if (item.valid && allowedDeployTypes.includes(item.objectType)) {
+        shouldDeploy = true;
+      }
+      if (item.valid && !item.released && allowedReleaseTypes.includes(item.objectType)) {
+        shouldRelease = true;
+      }
     });
 
     return {shouldDeploy, shouldRelease};
@@ -7088,6 +7108,20 @@ export class PublishChangeModalComponent {
 
   private handleDependenciesForDeploy(node: any, obj: any): void {
     if (node.dependencies) {
+      if (node.valid && node.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(node.objectType) && node.path !== '/' && node.name !== '/') {
+        if (!obj.store) {
+          obj.store = {draftConfigurations: [], deployConfigurations: []};
+        }
+        const config = {
+          configuration: {
+            path: node.path,
+            objectType: node.objectType,
+            recursive: false
+          }
+        };
+        obj.store.draftConfigurations.push(config);
+      }
+
       node.dependencies.referencedBy.forEach(dep => {
         if (dep.valid && dep.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
           if (!obj.store) {
@@ -7144,6 +7178,7 @@ export class PublishChangeModalComponent {
     // } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
     //   obj.addOrdersDateFrom = 'now';
     // }
+
 
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
