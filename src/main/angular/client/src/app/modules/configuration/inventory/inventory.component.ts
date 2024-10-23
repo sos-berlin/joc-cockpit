@@ -570,7 +570,7 @@ export class SingleDeployComponent {
               },
               error: () => {
                 this.loading = false;
-                resolve(); // Resolve even if error occurs
+                resolve();
               }
             });
           } else {
@@ -580,7 +580,6 @@ export class SingleDeployComponent {
         });
       };
 
-      // Process affectedObjectsByType
       Object.keys(this.affectedObjectsByType).forEach(type => {
         this.affectedObjectsByType[type].forEach(obj => {
           if (obj.valid && obj.selected && obj.objectType !== 'SCHEDULE' && obj.objectType !== 'JOBTEMPLATE' && obj.objectType !== 'WORKINGDAYSCALENDAR' && obj.objectType !== 'NONWORKINGDAYSCALENDAR') {
@@ -589,7 +588,6 @@ export class SingleDeployComponent {
         });
       });
 
-      // Process referencedObjectsByType
       Object.keys(this.referencedObjectsByType).forEach(type => {
         this.referencedObjectsByType[type].forEach(obj => {
           if (obj.valid && obj.selected && obj.objectType !== 'SCHEDULE' && obj.objectType !== 'JOBTEMPLATE' && obj.objectType !== 'WORKINGDAYSCALENDAR' && obj.objectType !== 'NONWORKINGDAYSCALENDAR') {
@@ -598,14 +596,12 @@ export class SingleDeployComponent {
         });
       });
 
-      // Process filteredAffectedItems
       this.filteredAffectedItems.forEach(item => {
         if (item.valid && item.selected && item.objectType !== 'SCHEDULE' && item.objectType !== 'JOBTEMPLATE' && item.objectType !== 'WORKINGDAYSCALENDAR' && item.objectType !== 'NONWORKINGDAYSCALENDAR') {
           promises.push(handleSingleDeployable(item, revoke));
         }
       });
 
-      // Resolve all promises and handle any errors
       Promise.all(promises)
         .then(() => {
           const self = this;
@@ -657,7 +653,7 @@ export class SingleDeployComponent {
         })
         .catch((err) => {
           console.error("Error in processing promises:", err);
-          reject(); // Reject the promise if any error occurs
+          reject();
         });
     });
   }
@@ -897,15 +893,15 @@ export class SingleDeployComponent {
       this.referencedObjectsByType[type].forEach(objItem => {
         if (objItem.valid && objItem.selected && (objItem.objectType === 'SCHEDULE' || objItem.objectType === 'JOBTEMPLATE' || objItem.objectType === 'WORKINGDAYSCALENDAR' || objItem.objectType === 'NONWORKINGDAYSCALENDAR')) {
           if (recall) {
-            obj.releasables.push({
-              objectType: objItem.objectType,
-              path: objItem.path
-            });
-          } else {
-            obj.update.push({
-              objectType: objItem.objectType,
-              path: objItem.path
-            });
+              obj.releasables.push({
+                objectType: objItem.objectType,
+                path: objItem.path
+              });
+            } else {
+              obj.update.push({
+                objectType: objItem.objectType,
+                path: objItem.path
+              });
           }
         }
       });
@@ -926,7 +922,7 @@ export class SingleDeployComponent {
         }
       }
     });
-    if(this.operation === 'recall'){
+    if (this.operation === 'recall') {
       if (recall) {
         obj.releasables.push({
           objectType: this.data.objectType,
@@ -1114,7 +1110,7 @@ export class SingleDeployComponent {
       configurations: configurations
     };
 
-    // Track configurations to exclude them from affected items
+
     const requestedKeys = new Set(configurations.map(config => `${config.name}-${config.type}`));
 
     this.coreService.post('inventory/dependencies', obj).subscribe({
@@ -1732,12 +1728,16 @@ export class DeployComponent {
 
             refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
-            ;
             refObj.change = refObj.deployed;
 
             if (this.isRemove) {
               refObj.disabled = false;
               refObj.selected = true;
+            }
+
+            if (this.isRevoke || this.operation === 'recall') {
+              refObj.selected = refObj.valid && (refObj.released || refObj.deployed);
+              refObj.disabled = false;
             }
             this.affectedObjectsByType[type].push(refObj);
           });
@@ -1756,9 +1756,15 @@ export class DeployComponent {
             refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.change = refObj.deployed;
+
             if (this.isRemove) {
               refObj.disabled = false;
               refObj.selected = true;
+            }
+
+            if (this.isRevoke || this.operation === 'recall') {
+              refObj.selected = refObj.valid && (refObj.released || refObj.deployed);
+              refObj.disabled = false;
             }
             this.referencedObjectsByType[type].push(refObj);
 
@@ -1779,6 +1785,11 @@ export class DeployComponent {
         if (this.isRemove) {
           item.disabled = false;
           item.selected = true;
+        }
+
+        if (this.isRevoke || this.operation === 'recall') {
+          item.selected = item.valid && (item.released || item.deployed);
+          item.disabled = false;
         }
 
         filteredAffectedTypeSet.forEach(type => {
@@ -1928,9 +1939,9 @@ export class DeployComponent {
               }
               const checkedNodes = this.collectCheckedObjects(this.nodes);
 
-                if (checkedNodes.length > 0) {
-                  this.getDependencies(checkedNodes, this.nodes[0]);
-                }
+              if (checkedNodes.length > 0) {
+                this.getDependencies(checkedNodes, this.nodes[0]);
+              }
               this.ref.detectChanges();
             }, 0);
           } else {
@@ -2113,7 +2124,7 @@ export class DeployComponent {
               self.object.update.push(obj);
             }
             self.object.releasables.push({
-              path: nodes[i].name,
+              path: nodes[i].path + (nodes[i].path === '/' ? '' : '/') + nodes[i].name,
               objectType: nodes[i].type
             });
           }
@@ -2162,12 +2173,10 @@ export class DeployComponent {
       }
     };
 
-    // Check each node in the nodes list
     this.nodes.forEach(node => {
       checkNodeForDependencies(node);
     });
 
-    // Check filteredAffectedItems for deploy/release criteria
     this.filteredAffectedItems.forEach(item => {
       if (item.valid && allowedDeployTypes.includes(item.objectType)) {
         shouldDeploy = true;
@@ -2205,12 +2214,10 @@ export class DeployComponent {
       }
     };
 
-    // Check each node in the nodes list
     this.nodes.forEach(node => {
       checkNodeForDependencies(node);
     });
 
-    // Check filteredAffectedItems for deploy/release criteria
     this.filteredAffectedItems.forEach(item => {
       if (item.selected) {
         shouldRelease = false;
@@ -2223,7 +2230,10 @@ export class DeployComponent {
   deploy(): void {
     this.submitted = true;
     const {shouldDeploy, shouldRelease} = this.shouldDeployOrRelease();
-
+    if(this.operation === 'recall'){
+      this.handleRelease(true);
+      return
+    }
     if (this.releasable && !shouldRelease && !this.isRevoke && this.operation != 'recall') {
       this.handleRelease();
       if (shouldDeploy) {
@@ -2231,8 +2241,13 @@ export class DeployComponent {
       }
       return;
     } else {
-      if (shouldRelease && this.operation != 'recall') {
+      if (shouldRelease && !this.isRevoke && this.operation != 'recall') {
         this.processDependenciesForRelease();
+      }
+    }
+    if (this.isRevoke) {
+      if (shouldRelease) {
+        this.processDependenciesForRelease(true);
       }
     }
 
@@ -2240,54 +2255,54 @@ export class DeployComponent {
     this.submitted = false;
   }
 
-private handleDeploy(): void {
-  if (!this.releasable) {
-    this.getJSObject()
-  }
+  private handleDeploy(): void {
+    if (!this.releasable) {
+      this.getJSObject()
+    }
     this.prepareAndSendDeployObject();
-}
-
-private prepareAndSendDeployObject(): void {
-  const obj: any = {
-    includeLate: this.includeLate,
-    controllerIds: this.selectedSchedulerIds
-  };
-  const promises = [
-    ...this.nodes.map(node => this.handleDependenciesForDeploy(node, obj)),
-    this.handleAffectedItemsForDeploy(obj)
-  ];
-  if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
-    obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-  } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
-    obj.addOrdersDateFrom = 'now';
   }
 
-  if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
-    if (this.object.store.draftConfigurations.length === 0) {
-      delete this.object.store.draftConfigurations;
+  private prepareAndSendDeployObject(): void {
+    const obj: any = {
+      includeLate: this.includeLate,
+      controllerIds: this.selectedSchedulerIds
+    };
+    const promises = [
+      ...this.nodes.map(node => this.handleDependenciesForDeploy(node, obj)),
+      this.handleAffectedItemsForDeploy(obj)
+    ];
+    if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
+      obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+    } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
+      obj.addOrdersDateFrom = 'now';
     }
-    if (this.object.store.deployConfigurations.length === 0) {
-      delete this.object.store.deployConfigurations;
-    }
-    obj.store = this.object.store;
-  }
 
-  if (!this.isRevoke && this.object.deleteObj.deployConfigurations.length > 0) {
-    obj.delete = this.object.deleteObj;
-  }
-  if (this.isRevoke && this.object.deleteObj.deployConfigurations.length > 0) {
-    obj.deployConfigurations = this.object.deleteObj.deployConfigurations;
-  }
-
-  obj.auditLog = {};
-  this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-
-  Promise.all(promises)
-    .then(() => {
-      if ((isEmpty(obj.store) && isEmpty(obj.delete)) && !this.isRevoke) {
-        this.submitted = false;
-        return;
+    if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
+      if (this.object.store.draftConfigurations.length === 0) {
+        delete this.object.store.draftConfigurations;
       }
+      if (this.object.store.deployConfigurations.length === 0) {
+        delete this.object.store.deployConfigurations;
+      }
+      obj.store = this.object.store;
+    }
+
+    if (!this.isRevoke && this.object.deleteObj.deployConfigurations.length > 0) {
+      obj.delete = this.object.deleteObj;
+    }
+    if (this.isRevoke && this.object.deleteObj.deployConfigurations.length > 0) {
+      obj.deployConfigurations = this.object.deleteObj.deployConfigurations;
+    }
+
+    obj.auditLog = {};
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+
+    Promise.all(promises)
+      .then(() => {
+        if ((isEmpty(obj.store) && isEmpty(obj.delete)) && !this.isRevoke) {
+          this.submitted = false;
+          return;
+        }
         const deployURL = this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy';
         this.coreService.post(deployURL, obj).subscribe({
           next: () => {
@@ -2298,14 +2313,14 @@ private prepareAndSendDeployObject(): void {
             this.ref.detectChanges();
           }
         });
-    })
-    .catch(() => {
-      this.submitted = false;
-      this.ref.detectChanges();
-    });
-}
+      })
+      .catch(() => {
+        this.submitted = false;
+        this.ref.detectChanges();
+      });
+  }
 
-  private handleRelease(): void {
+  private handleRelease(recall?): void {
     this.getReleaseObject();
     const obj: any = {
       includeLate: this.includeLate,
@@ -2339,9 +2354,9 @@ private prepareAndSendDeployObject(): void {
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     this.nodes.forEach(node => {
-      this.handleDependenciesForRelease(node, obj);
+      this.handleDependenciesForRelease(node, obj, recall);
     });
-    this.handleAffectedItemsForRelease(obj)
+    this.handleAffectedItemsForRelease(obj, recall)
     if (!isEmpty(obj.update) || !isEmpty(obj.delete) || !isEmpty(obj.releasables)) {
       const releaseURL = this.operation === 'recall' ? 'inventory/releasables/recall' : 'inventory/release';
       this.coreService.post(releaseURL, obj).subscribe({
@@ -2359,16 +2374,32 @@ private prepareAndSendDeployObject(): void {
     }
   }
 
-  handleAffectedItemsForRelease(obj): void {
+  handleAffectedItemsForRelease(obj, recall?): void {
+    const isConfigPresent = (arr, config) => {
+      return arr.some(existingConfig =>
+        existingConfig.objectType === config.objectType &&
+        existingConfig.path === config.path
+      );
+    };
     this.filteredAffectedItems.forEach(item => {
       if (item.valid && item.selected && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType) && item.path !== '/' && item.name !== '/') {
-        if (!obj.update) {
-          obj.update = [];
+        if (recall) {
+          const config = {
+            objectType: item.objectType,
+            path: item.path
+          };
+          if (!isConfigPresent(obj.releasables, config)) {
+            obj.releasables.push(config);
+          }
+        } else {
+          if (!obj.update) {
+            obj.update = [];
+          }
+          obj.update.push({
+            path: item.path,
+            objectType: item.objectType,
+          });
         }
-        obj.update.push({
-          path: item.path,
-          objectType: item.objectType,
-        });
       }
     });
   }
@@ -2383,7 +2414,6 @@ private prepareAndSendDeployObject(): void {
             path: item.path,
             objectType: item.objectType,
             commitId: commitId || '',
-            recursive: false
           }
         };
 
@@ -2393,16 +2423,23 @@ private prepareAndSendDeployObject(): void {
         if (!obj.store?.deployConfigurations && !this.isRevoke) {
           obj.store.deployConfigurations = [];
         }
-
         if (!obj.store?.draftConfigurations && !this.isRevoke) {
           obj.store.draftConfigurations = [];
         }
 
+        const isConfigPresent = (arr, config) => {
+          return arr.some(existingConfig =>
+            existingConfig.configuration.path === config.configuration.path &&
+            existingConfig.configuration.objectType === config.configuration.objectType);
+        };
+
         if (revoke) {
           if (!obj.deployConfigurations) {
-            obj = { deployConfigurations: [] };
+            obj.deployConfigurations = [];
           }
-          obj.deployConfigurations.push(config);
+          if (!isConfigPresent(obj.deployConfigurations, config)) {
+            obj.deployConfigurations.push(config);
+          }
         } else {
           obj.store.draftConfigurations.push(config);
         }
@@ -2425,7 +2462,7 @@ private prepareAndSendDeployObject(): void {
                 resolve();
               },
               error: () => {
-                resolve(); // Resolve even on error to continue processing
+                resolve();
               }
             });
           } else {
@@ -2443,7 +2480,6 @@ private prepareAndSendDeployObject(): void {
         }
       });
 
-      // Wait for all promises to complete
       Promise.all(promises)
         .then(() => resolve())
         .catch(err => {
@@ -2453,56 +2489,88 @@ private prepareAndSendDeployObject(): void {
     });
   }
 
-  private handleDependenciesForRelease(node: any, obj: any): void {
-    if (node.dependencies && !this.isRevoke && this.operation !== 'recall') {
+  private handleDependenciesForRelease(node: any, obj: any, recall?): void {
+        const isConfigPresent = (arr, config) => {
+      return arr.some(existingConfig =>
+        existingConfig.objectType === config.objectType &&
+        existingConfig.path === config.path
+      );
+    };
+    if (node.dependencies ) {
       node.dependencies.referencedBy.forEach(dep => {
         if (dep.valid && dep.selected && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
-          if (!obj.update) {
-            obj.update = [];
+          if (recall) {
+            const config = {
+              objectType: dep.objectType,
+              path: dep.path
+            };
+
+            if (!isConfigPresent(obj.releasables, config)) {
+              obj.releasables.push(config);
+            }
+          } else{
+            if (!obj.update) {
+              obj.update = [];
+            }
+            obj.update.push({
+              path: dep.path,
+              objectType: dep.objectType,
+            });
           }
-          obj.update.push({
-            path: dep.path,
-            objectType: dep.objectType,
-          });
         }
       });
 
       node.dependencies.references.forEach(ref => {
         if (ref.valid && ref.selected && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(ref.objectType) && ref.path !== '/' && ref.name !== '/') {
-          if (!obj.update) {
-            obj.update = [];
-          }
-          obj.update.push({
-            path: ref.path,
-            objectType: ref.objectType,
-          });
+          if (recall) {
+            const config = {
+              objectType: ref.objectType,
+              path: ref.path
+            };
+
+            if (!isConfigPresent(obj.releasables, config)) {
+              obj.releasables.push(config);
+            }
+          } else {
+            if (!obj.update) {
+              obj.update = [];
+            }
+            obj.update.push({
+              objectType: ref.objectType,
+              path: ref.path
+            });
+            }
         }
       });
     }
 
     if (node.children && node.children.length > 0) {
       node.children.forEach(childNode => {
-        this.handleDependenciesForRelease(childNode, obj);
+        this.handleDependenciesForRelease(childNode, obj, recall);
       });
     }
   }
 
-  private processDependenciesForRelease(): void {
+  private processDependenciesForRelease(recall?): void {
     let obj: any = {
       auditLog: {},
-      includeLate: this.includeLate,
-      update: []
+      includeLate: this.includeLate
     };
+    if (recall) {
+      obj.releasables = [];
+    }else{
+      obj.update = [];
+    }
     this.nodes.forEach(node => {
-      this.handleDependenciesForRelease(node, obj);
+      this.handleDependenciesForRelease(node, obj, recall);
     });
-    this.handleAffectedItemsForRelease(obj)
+    this.handleAffectedItemsForRelease(obj, recall)
 
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
-    if (obj.update && obj.update.length > 0) {
-      const URL = 'inventory/release';
-      this.coreService.post(URL, obj).subscribe({
+    if (obj.update && obj.update.length > 0 || obj.releasables.length > 0) {
+      const releaseURL = recall ? 'inventory/releasables/recall' : 'inventory/release';
+      this.coreService.post(releaseURL, obj).subscribe({
         next: () => {
           this.activeModal.close();
         },
@@ -2513,102 +2581,105 @@ private prepareAndSendDeployObject(): void {
     }
   }
 
-private handleDependenciesForDeploy(node: any, obj: any): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const promises = [];
+  private handleDependenciesForDeploy(node: any, obj: any): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const promises = [];
+      const isConfigPresent = (arr, config) => {
+        return arr.some(existingConfig =>
+          existingConfig.configuration.path === config.configuration.path &&
+          existingConfig.configuration.objectType === config.configuration.objectType
+        );
+      };
 
-    const processConfig = (obj, commitId, revoke) => {
-      const config = {
-        configuration: {
-          path: obj.path,
-          objectType: obj.objectType,
-          commitId: commitId || '',
-          recursive: false
+      const processConfig = (depObj, commitId, revoke) => {
+        const config = {
+          configuration: {
+            path: depObj.path,
+            objectType: depObj.objectType,
+            commitId: commitId || '',
+            recursive: false
+          }
+        };
+        if (!obj.store && !this.isRevoke) {
+          obj.store = {draftConfigurations: [], deployConfigurations: []};
+        }
+        if (!obj.store?.deployConfigurations && !this.isRevoke) {
+          obj.store.deployConfigurations = [];
+        }
+        if (!obj.store?.draftConfigurations && !this.isRevoke) {
+          obj.store.draftConfigurations = [];
+        }
+        if (this.isRevoke) {
+          if (!obj.deployConfigurations) {
+            obj.deployConfigurations = [];
+          }
+          if (!isConfigPresent(obj.deployConfigurations, config)) {
+            obj.deployConfigurations.push(config);
+          }
+        } else {
+          obj.store.draftConfigurations.push(config);
         }
       };
-      if (!obj.store && !this.isRevoke) {
-        obj.store = {draftConfigurations: [], deployConfigurations: []};
-      }
-      if (!obj.store?.deployConfigurations && !this.isRevoke) {
-        obj.store.deployConfigurations = [];
-      }
-      if (!obj.store?.draftConfigurations && !this.isRevoke) {
-        obj.store.draftConfigurations = [];
-      }
 
-      if (this.isRevoke) {
-        if (!obj.deployConfigurations) {
-          obj = { deployConfigurations: [] };
-        }
-        obj.deployConfigurations.push(config);
-      } else {
-        obj.store.draftConfigurations.push(config);
-      }
-    };
+      const handleSingleDeployable = (dep, revoke) => {
+        return new Promise<void>((resolve) => {
+          const depObj: any = {
+            onlyValidObjects: true,
+            withVersions: true,
+            path: dep.path,
+            objectType: dep.objectType
+          };
 
-    const handleSingleDeployable = (dep, revoke) => {
-      return new Promise<void>((resolve) => {
-        const depObj: any = {
-          onlyValidObjects: true,
-          withVersions: true,
-          path: dep.path,
-          objectType: dep.objectType
-        };
+          if (this.isRevoke) {
+            this.coreService.post('inventory/deployable', depObj).subscribe({
+              next: (res: any) => {
+                const commitId = res.deployable.deployablesVersions[0]?.commitId || '';
+                processConfig(dep, commitId, revoke);
+                resolve();
+              },
+              error: () => {
+                resolve();
+              }
+            });
+          } else {
+            processConfig(dep, '', revoke);
+            resolve();
+          }
+        });
+      };
 
-        if (this.isRevoke) {
-          this.coreService.post('inventory/deployable', depObj).subscribe({
-            next: (res: any) => {
-              const commitId = res.deployable.deployablesVersions[0]?.commitId || '';
-              processConfig(dep, commitId, revoke);
-              resolve();
-            },
-            error: () => {
-              resolve(); // Resolve even on error to ensure execution continues
+      if (node.dependencies && !this.isRevoke && this.operation !== 'recall') {
+        node.dependencies.referencedBy.forEach(dep => {
+          if (dep.valid && dep.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
+            if (!(this.releasable && dep.deployed)) {
+              promises.push(handleSingleDeployable(dep, this.isRevoke));
             }
-          });
-        } else {
-          processConfig(dep, '', revoke);
-          resolve();
-        }
-      });
-    };
-
-    // Process referencedBy dependencies
-    if (node.dependencies && !this.isRevoke && this.operation !== 'recall') {
-      node.dependencies.referencedBy.forEach(dep => {
-        if (dep.valid && dep.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
-          if (!(this.releasable && dep.deployed)) {
-            promises.push(handleSingleDeployable(dep, this.isRevoke));
           }
-        }
-      });
+        });
 
-      // Process references dependencies
-      node.dependencies.references.forEach(ref => {
-        if (ref.valid && ref.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(ref.objectType) && ref.path !== '/' && ref.name !== '/') {
-          if (!(this.releasable && ref.deployed)) {
-            promises.push(handleSingleDeployable(ref, this.isRevoke));
+        node.dependencies.references.forEach(ref => {
+          if (ref.valid && ref.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(ref.objectType) && ref.path !== '/' && ref.name !== '/') {
+            if (!(this.releasable && ref.deployed)) {
+              promises.push(handleSingleDeployable(ref, this.isRevoke));
+            }
           }
-        }
-      });
-    }
+        });
+      }
 
-    // Recursively process child nodes
-    if (node.children && node.children.length > 0) {
-      node.children.forEach(childNode => {
-        promises.push(this.handleDependenciesForDeploy(childNode, obj));
-      });
-    }
+      if (node.children && node.children.length > 0) {
+        node.children.forEach(childNode => {
+          promises.push(this.handleDependenciesForDeploy(childNode, obj));
+        });
+      }
 
-    // Resolve all promises
-    Promise.all(promises)
-      .then(() => resolve())
-      .catch(err => {
-        console.error("Error in handling dependencies for deploy:", err);
-        reject();
-      });
-  });
-}
+      Promise.all(promises)
+        .then(() => resolve())
+        .catch(err => {
+          console.error("Error in handling dependencies for deploy:", err);
+          reject();
+        });
+    });
+  }
 
   private processDependenciesForDeploy(): void {
     let obj: any = {
