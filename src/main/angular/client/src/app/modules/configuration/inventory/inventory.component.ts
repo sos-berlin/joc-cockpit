@@ -3443,6 +3443,9 @@ export class ExportComponent {
             path: item.path,
             key: item.path,
             type: item.objectType,
+            released: item.released,
+            deployed: item.deployed,
+            valid: item.valid,
             isLeaf: true,
             checked: true,
           }))
