@@ -478,6 +478,7 @@
     "label.addToChange": "Zu Änderung hinzufügen",
     "label.removeFromChange": "Aus Änderung entfernen",
     "label.state": "Änderung",
+    "label.changes": "Changes",
     "placeholder.state": "Status",
     "button.addChange": "Änderung hinzufügen",
     "button.addToChange": "Zu Änderung hinzufügen",

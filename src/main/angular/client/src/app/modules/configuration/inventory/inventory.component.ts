@@ -24,6 +24,7 @@ import {UpdateJobTemplatesComponent} from "./job-template/job-template.component
 import {FileUploaderComponent} from "../../../components/file-uploader/file-uploader.component";
 import {WorkflowService} from "../../../services/workflow.service";
 import {NzSelectComponent} from 'ng-zorro-antd/select';
+import {AddChangesModalComponent} from "../../changes/changes.component";
 
 declare const $: any;
 
@@ -1106,8 +1107,21 @@ export class SingleDeployComponent {
       type: this.data.objectType || this.data.type
     }];
 
+    let operationType = 'DEPLOY';
+
+    if (this.isRevoke) {
+      operationType = 'REVOKE';
+    } else if (this.operation === 'recall') {
+      operationType = 'RECALL';
+    } else if (this.releasable) {
+      operationType = 'RELEASE';
+    } else if (this.isRemoved) {
+      operationType = 'REMOVE';
+    }
+
     const obj = {
-      configurations: configurations
+      configurations: configurations,
+      operationType: operationType
     };
 
 
@@ -1232,7 +1246,8 @@ export class SingleDeployComponent {
         const type = item.objectType;
         filteredAffectedTypeSet.add(type);
 
-        item.disabled = !item.valid || item.valid && (!item.deployed && !item.released);
+        item.disabled = !item.valid;
+        item.selected = item.valid && (!item.deployed && !item.released);
 
         filteredAffectedTypeSet.forEach(type => {
           this.updateParentCheckboxFilteredAffected(type);
@@ -1278,42 +1293,6 @@ export class SingleDeployComponent {
 
   toggleAllReferencedCollapse(): void {
     this.isReferencedCollapsed = !this.isReferencedCollapsed;
-  }
-
-  expandAllAffected(): void {
-    this.isAffectedCollapsed = true;
-    this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
-  }
-
-  collapseAllAffected(): void {
-    this.isAffectedCollapsed = false;
-    this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = false);
-  }
-
-  expandAllReferenced(): void {
-    this.isReferencedCollapsed = true;
-    this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
-  }
-
-  collapseAllReferenced(): void {
-    this.isReferencedCollapsed = false;
-    this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = false);
-  }
-
-  toggleAllAffected(objectType: string, isChecked: boolean): void {
-    this.affectedObjectsByType[objectType].forEach(obj => {
-      if (!obj.disabled || this.isRemoved) {
-        obj.selected = isChecked;
-      }
-    });
-  }
-
-  toggleAllReferenced(objectType: string, isChecked: boolean): void {
-    this.referencedObjectsByType[objectType].forEach(obj => {
-      if (!obj.disabled || this.isRemoved) {
-        obj.selected = isChecked;
-      }
-    });
   }
 
   updateParentCheckboxAffected(objectType: string): void {
@@ -1616,7 +1595,22 @@ export class DeployComponent {
       type: node.type,
     }));
 
-    const requestBody = {configurations: configurations};
+    let operationType = 'DEPLOY';
+
+    if (this.isRevoke) {
+      operationType = 'REVOKE';
+    } else if (this.operation === 'recall') {
+      operationType = 'RECALL';
+    } else if (this.releasable) {
+      operationType = 'RELEASE';
+    }else if (this.isRemove) {
+      operationType = 'REMOVE';
+    }
+
+    const requestBody = {
+      configurations: configurations,
+      operationType: operationType
+    };
 
     this.coreService.post('inventory/dependencies', requestBody).subscribe({
       next: (res: any) => {
@@ -1764,7 +1758,8 @@ export class DeployComponent {
         const type = item.objectType;
         filteredAffectedTypeSet.add(type);
 
-        item.disabled = !item.valid || item.valid && (!item.deployed && !item.released);
+        item.disabled = !item.valid;
+        item.selected = item.valid && (!item.deployed && !item.released);
 
         filteredAffectedTypeSet.forEach(type => {
           this.updateParentCheckboxFilteredAffected(type);
@@ -3093,7 +3088,12 @@ export class ExportComponent {
       type: node.type,
     }));
 
-    const requestBody = {configurations: configurations};
+    const operationType = 'EXPORT';
+
+    const requestBody = {
+      configurations: configurations,
+      operationType: operationType
+    };
 
     this.coreService.post('inventory/dependencies', requestBody).subscribe({
       next: (res: any) => {
@@ -7054,7 +7054,6 @@ export class PublishChangeModalComponent {
             recursive: false
           }
         };
-        console.log(config,"config")
         obj.store.draftConfigurations.push(config);
       }
 
@@ -7292,6 +7291,7 @@ export class ShowDependenciesModalComponent {
   }
 
   private getDependencies(): void {
+    this.loading = true;
     const configurations = [{
       name: this.data.name,
       type: this.data.objectType || this.data.type
@@ -7305,6 +7305,8 @@ export class ShowDependenciesModalComponent {
         this.dependencies = res.dependencies;
         this.updateNodeDependencies(this.dependencies, requestedKeys);
         this.prepareObject(this.dependencies);
+        this.loading = false;
+
       },
       error: (err) => {
         this.loading = false;
@@ -10997,6 +10999,26 @@ export class InventoryComponent {
 
   search(): void {
     this.isSearchVisible = true;
+  }
+
+  changes() {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: AddChangesModalComponent,
+      nzClassName: 'sm',
+      nzData: {
+        title: 'changes',
+        display: this.preferences.auditLog,
+        INVchanges: true,
+      },
+      nzFooter: null,
+      nzAutofocus: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+
+    });
   }
 
   tagDrawer(): void {

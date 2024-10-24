@@ -24,8 +24,16 @@ export class AddChangesModalComponent{
   changes: any
   originalName: any
   flag = false
-  nodes: any;
+  nodes: any[] = [];
   loading = false
+  INVchanges = false
+  data: any;
+  affectedObjectsByType: { [key: string]: any[] } = {};
+  referencedObjectsByType: { [key: string]: any[] } = {};
+  affectedObjectTypes: string[] = [];
+  referencedObjectTypes: string[] = [];
+  affectedCollapsed: { [key: string]: boolean } = {};
+  referencedCollapsed: { [key: string]: boolean } = {};
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService ){}
 
   ngOnInit(): void {
@@ -35,6 +43,7 @@ export class AddChangesModalComponent{
     this.changes = this.modalData.changes;
     this.flag = this.modalData.flag;
     this.originalName = this.modalData.originalName;
+    this.INVchanges = this.modalData.INVchanges;
     if(this.changes){
       this.changesObj.name = this.changes.name;
       this.changesObj.title = this.changes.title;
@@ -49,6 +58,29 @@ export class AddChangesModalComponent{
     if(this.title === 'changesFound'){
       this.nodes = this.prepareGroupedTree(this.changes.configurations)
     }
+    if(this.INVchanges){
+      this.changesData()
+    }
+  }
+  changesData():void{
+    this.loading = true;
+    this.coreService.post('inventory/changes', {details: true}).subscribe({
+      next: (res) => {
+        this.changes = res.changes
+        this.nodes = this.prepareChangesTree(this.changes)
+        const checkedNodes = this.collectObjects(this.nodes);
+
+        if (checkedNodes.length > 0) {
+          setTimeout(() => {
+            this.getDependencies(checkedNodes);
+          }, 100)
+        }
+        this.loading = false;
+      },
+      error: ()=> {
+        this.loading = false;
+      }
+    });
   }
 
   changeState(selectedState: string): void {
@@ -145,7 +177,6 @@ export class AddChangesModalComponent{
       key: '/',
       isLeaf: false,
       expanded: true,
-      checked: true,
       children: []
     };
 
@@ -206,7 +237,6 @@ export class AddChangesModalComponent{
           object: type,
           path: '/',
           key: `/${type}`,
-          disableCheckbox: true,
           expanded: true,
           isLeaf: false,
           children: groupedObjects[type].map((item: any) => ({
@@ -226,6 +256,279 @@ export class AddChangesModalComponent{
     });
     return [root];
   }
+
+
+  prepareChangesTree(dataArray: any[]): any[] {
+
+    const rootNodes = [];
+
+    dataArray.forEach(data => {
+      if (data.state !== "OPEN") {
+        return;
+      }
+      const ownerRoot = {
+        name: data.name || 'root',
+        path: '/',
+        key: `/owner/${data.name || 'root'}`,
+        isLeaf: false,
+        expanded: false,
+        checked: true,
+        children: []
+      };
+
+      const groupedObjects: { [key: string]: any[] } = {
+        "WORKFLOW": [],
+        "JOBRESOURCE": [],
+        "FILEORDERSOURCE": [],
+        "SCHEDULE": [],
+        "NOTICEBOARD": [],
+        "LOCK": [],
+        "JOBTEMPLATE": [],
+        "INCLUDESCRIPT": [],
+        "WORKINGDAYSCALENDAR": [],
+        "NONWORKINGDAYSCALENDAR": []
+      };
+
+      data?.configurations?.forEach((item: any) => {
+        switch (item.objectType) {
+          case "WORKFLOW":
+            groupedObjects["WORKFLOW"].push(item);
+            break;
+          case "JOBRESOURCE":
+            groupedObjects["JOBRESOURCE"].push(item);
+            break;
+          case "FILEORDERSOURCE":
+            groupedObjects["FILEORDERSOURCE"].push(item);
+            break;
+          case "SCHEDULE":
+            groupedObjects["SCHEDULE"].push(item);
+            break;
+          case "NOTICEBOARD":
+            groupedObjects["NOTICEBOARD"].push(item);
+            break;
+          case "LOCK":
+            groupedObjects["LOCK"].push(item);
+            break;
+          case "JOBTEMPLATE":
+            groupedObjects["JOBTEMPLATE"].push(item);
+            break;
+          case "INCLUDESCRIPT":
+            groupedObjects["INCLUDESCRIPT"].push(item);
+            break;
+          case "WORKINGDAYSCALENDAR":
+            groupedObjects["WORKINGDAYSCALENDAR"].push(item);
+            break;
+          case "NONWORKINGDAYSCALENDAR":
+            groupedObjects["NONWORKINGDAYSCALENDAR"].push(item);
+            break;
+          default:
+            break;
+        }
+      });
+
+      Object.keys(groupedObjects).forEach((type: string) => {
+        if (groupedObjects[type].length > 0) {
+          const groupNode = {
+            name: type,
+            object: type,
+            path: '/',
+            key: `/${type}`,
+            disableCheckbox: true,
+            expanded: true,
+            isLeaf: false,
+            children: groupedObjects[type].map((item: any) => ({
+              name: item.name,
+              path: item.path,
+              key: item.path,
+              type: item.objectType,
+              released: item.released,
+              deployed: item.deployed,
+              valid: item.valid,
+              isLeaf: true,
+              checked: true,
+            }))
+          };
+          ownerRoot.children.push(groupNode);
+        }
+      });
+
+      rootNodes.push(ownerRoot);
+    });
+
+    return rootNodes;
+  }
+
+  getIcon(objectType: string): string {
+    const iconMapping = {
+      'WORKFLOW': 'apartment',
+      'JOBRESOURCE': 'icon-resources-icon',
+      'LOCK': 'lock',
+      'NOTICEBOARD': 'pushpin',
+      'FILEORDERSOURCE': 'icon-orders-icon',
+      'CALENDAR': 'calendar',
+      'SCHEDULE': 'schedule',
+      'JOBTEMPLATE': 'icon-jobs-icon'
+    };
+    return iconMapping[objectType] || 'folder';
+  }
+
+  isCustomIcon(objectType: string): boolean {
+    const customIcons = ['icon-resources-icon', 'icon-orders-icon', 'icon-jobs-icon'];
+    return customIcons.includes(this.getIcon(objectType));
+  }
+
+  getObjectTypeLabel(objectType: string): string {
+    const labelMapping = {
+      'WORKFLOW': 'inventory.label.workflows',
+      'JOBRESOURCE': 'inventory.label.jobResources',
+      'LOCK': 'inventory.label.locks',
+      'NOTICEBOARD': 'inventory.label.boards',
+      'FILEORDERSOURCE': 'inventory.label.fileOrderSources',
+      'CALENDAR': 'inventory.label.calendars',
+      'SCHEDULE': 'dashboard.label.schedules',
+      'JOBTEMPLATE': 'inventory.label.jobTemplates'
+    };
+    return labelMapping[objectType] || objectType;
+  }
+
+  getUniqueObjectTypes(objects: any[]): string[] {
+    return [...new Set(objects.map(obj => obj.objectType))];
+  }
+
+  getObjectsByType(objects: any[], type: string): any[] {
+    return objects.filter(obj => obj.objectType === type);
+  }
+  toggleAffectedCollapse(nodeKey: string): void {
+    this.affectedCollapsed[nodeKey] = !this.affectedCollapsed[nodeKey];
+  }
+
+  toggleReferencedCollapse(nodeKey: string): void {
+    this.referencedCollapsed[nodeKey] = !this.referencedCollapsed[nodeKey];
+  }
+
+  private collectObjects(nodes: any[]): any[] {
+    const objects = [];
+    nodes.forEach(node => {
+      if (node.type) {
+        objects.push({name: node.name, type: node.type});
+      }
+      if (node.children && node.children.length > 0) {
+        objects.push(...this.collectObjects(node.children));
+      }
+    });
+    return objects;
+  }
+
+  private getDependencies(checkedNodes: { name: string, type: string }[]): void {
+    const configurations = checkedNodes.map(node => ({
+      name: node.name,
+      type: node.type,
+    }));
+
+    const requestBody = {configurations: configurations};
+
+    this.coreService.post('inventory/dependencies', requestBody).subscribe({
+      next: (res: any) => {
+        if (res.dependencies && res.dependencies?.requestedItems.length > 0 && res.dependencies?.affectedItems.length > 0) {
+          this.updateNodeDependencies(res.dependencies);
+          this.prepareObject(res.dependencies);
+        } else {
+        }
+
+      },
+      error: (err) => {
+      }
+    });
+  }
+
+  private prepareObject(dependencies: any): void {
+    if (dependencies && dependencies?.requestedItems.length > 0) {
+
+      dependencies?.requestedItems.forEach(dep => {
+        if (dep.referencedBy) {
+          const affectedTypeSet = new Set<string>();
+          dep.referencedBy.forEach(refObj => {
+            const type = refObj.objectType;
+            affectedTypeSet.add(type);
+            if (!this.affectedObjectsByType[type]) {
+              this.affectedObjectsByType[type] = [];
+              this.affectedObjectTypes.push(type);
+            }
+
+
+            this.affectedObjectsByType[type].push(refObj);
+          });
+        }
+
+        if (dep.references) {
+          const referencedTypeSet = new Set<string>();
+          dep.references.forEach(refObj => {
+            const type = refObj.objectType;
+            referencedTypeSet.add(type);
+            if (!this.referencedObjectsByType[type]) {
+              this.referencedObjectsByType[type] = [];
+              this.referencedObjectTypes.push(type);
+            }
+
+            this.referencedObjectsByType[type].push(refObj);
+
+
+          });
+        }
+
+      });
+      this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
+      this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
+
+    }
+  }
+
+  private updateNodeDependencies(dependenciesResponse: any): void {
+    const requestedItems = dependenciesResponse.requestedItems;
+
+    const referencedSet = new Set<string>();
+    requestedItems.forEach(item => {
+      item.references?.forEach(ref => {
+        referencedSet.add(`${ref.name}-${ref.objectType}`);
+      });
+      item.referencedBy?.forEach(refBy => {
+        referencedSet.add(`${refBy.name}-${refBy.objectType}`);
+      });
+    });
+
+    const requestedSet = new Set<string>();
+    requestedItems.forEach(item => {
+      requestedSet.add(`${item.name}-${item.objectType}`);
+    });
+
+
+    requestedItems.forEach(dep => {
+      this.findAndUpdateNodeWithDependencies(dep, this.nodes);
+    });
+
+    this.nodes = [...this.nodes];
+  }
+
+
+  private findAndUpdateNodeWithDependencies(dep: any, nodes: any[]): any {
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i];
+      if (node.name === dep.name && node.type === dep.type) {
+        node.dependencies = dep;
+        return node;
+      }
+
+      if (node.children && node.children.length > 0) {
+        const foundNode = this.findAndUpdateNodeWithDependencies(dep, node.children);
+        if (foundNode) {
+          return foundNode;
+        }
+      }
+    }
+
+    return null;
+  }
+
 
   removeFromChange(): void {
     const uncheckedNodes = this.getUncheckedNodes(this.nodes);

@@ -137,10 +137,13 @@
   </div>
   </div>
   <ng-template #noData>
-    <div class="empty-container">
+    <div *ngIf="!loading" class="empty-container">
       <app-empty-data></app-empty-data>
     </div>
   </ng-template>
+  <div *ngIf="loading"  class="text-center m-t-md">
+    <nz-spin nzSimple></nz-spin>
+  </div>
 </div>
 
 <div class="modal-footer">
