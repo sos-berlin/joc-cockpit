@@ -214,6 +214,9 @@ export class AddChangesModalComponent{
             path: item.path,
             key: item.path,
             type: item.objectType,
+            released: item.released,
+            deployed: item.deployed,
+            valid: item.valid,
             isLeaf: true,
             checked: true,
           }))
@@ -225,7 +228,7 @@ export class AddChangesModalComponent{
   }
 
   removeFromChange(): void {
-    const checkedNodes = this.getCheckedNodes(this.nodes);
+    const uncheckedNodes = this.getUncheckedNodes(this.nodes);
 
     let auditLog: any = {};
     if (this.comments.comment) {
@@ -243,12 +246,12 @@ export class AddChangesModalComponent{
       change: {
         name: this.changes.name
       },
-      remove: checkedNodes
+      remove: uncheckedNodes
     };
 
     const endpoint = 'inventory/change/remove';
 
-    if (checkedNodes && checkedNodes.length > 0) {
+    if (uncheckedNodes && uncheckedNodes.length > 0) {
       this.coreService.post(endpoint, obj).subscribe({
         next: (res) => {
           this.activeModal.close('Done');
@@ -260,12 +263,12 @@ export class AddChangesModalComponent{
     }
   }
 
-  getCheckedNodes(nodeList: any[]): any[] {
+  getUncheckedNodes(nodeList: any[]): any[] {
     const result: any[] = [];
 
-    function collectCheckedNodes(nodes: any[]): void {
+    function collectUncheckedNodes(nodes: any[]): void {
       nodes.forEach(node => {
-        if (node.checked && node.type) {
+        if (!node.checked && node.type) {
           result.push({
             objectType: node.type,
             name: node.name
@@ -273,14 +276,15 @@ export class AddChangesModalComponent{
         }
 
         if (node.children && node.children.length > 0) {
-          collectCheckedNodes(node.children);
+          collectUncheckedNodes(node.children);
         }
       });
     }
 
-    collectCheckedNodes(nodeList);
+    collectUncheckedNodes(nodeList);
     return result;
   }
+
 
 
 }

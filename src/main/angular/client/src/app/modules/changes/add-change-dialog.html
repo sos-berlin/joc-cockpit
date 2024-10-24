@@ -100,8 +100,10 @@
             <i *ngIf="node.origin.object == 'INCLUDESCRIPT'" class="fa fa-terminal w-13"></i>
             <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" class="icon-color" nz-icon
                nzTheme="outline" nzType="calendar"></i>
+            <span *ngIf="node.origin.type" [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' :(node.origin.deployed || node.origin.released) || node.origin.deployId || node.origin.releaseId,
+                    'opacity7': node.origin.syncState && (node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING')}" class="fa fa-check-circle-o orange text-xs m-t-xs"></span>
             <span *ngIf="node.origin.object" class="p-l-sm text-capitalize">{{node.origin.name | translate}}</span>
-            <span *ngIf="!node.origin.object">{{node.origin.name}}</span>
+            <span *ngIf="!node.origin.object" class="p-l-sm">{{node.origin.name}}</span>
           </div>
         </div>
       </ng-template>
@@ -118,7 +120,7 @@
     <button *ngIf="this.changes?.configurations?.length > 0" class="btn btn-primary btn-sm" (click)="removeFromChange()"
             type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      {{'changes.button.removeFromChange' | translate}}
+      {{'common.button.submit' | translate}}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
       <span translate>common.button.cancel</span>

@@ -2447,7 +2447,6 @@ export class DeployComponent {
       Promise.all(promises)
         .then(() => resolve())
         .catch(err => {
-          console.error("Error in handling affected items for deploy:", err);
           reject();
         });
     });
@@ -6981,7 +6980,6 @@ export class PublishChangeModalComponent {
     } else {
       this.activeModal.close();
     }
-
     if (shouldRelease) {
       this.processDependenciesForRelease();
     } else {
@@ -7042,6 +7040,21 @@ export class PublishChangeModalComponent {
 
   private handleDependenciesForRelease(node: any, obj: any): void {
     if (node.dependencies) {
+      if (node.valid && node.selected && !node.released && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(node.objectType) && node.path !== '/' && node.name !== '/') {
+        if (!obj.store) {
+          obj.store = {draftConfigurations: [], deployConfigurations: []};
+        }
+        const config = {
+          configuration: {
+            path: node.path,
+            objectType: node.type,
+            recursive: false
+          }
+        };
+        console.log(config,"config")
+        obj.store.draftConfigurations.push(config);
+      }
+
       node.dependencies.referencedBy.forEach(dep => {
         if (dep.valid && dep.selected && !dep.released && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
           if (!obj.update) {
@@ -7062,6 +7075,18 @@ export class PublishChangeModalComponent {
           obj.update.push({
             path: ref.path,
             objectType: ref.objectType,
+          });
+        }
+      });
+
+      this.filteredAffectedItems.forEach(item => {
+        if (item.valid && item.selected && !item.released && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType) && item.path !== '/' && item.name !== '/') {
+          if (!obj.update) {
+            obj.update = [];
+          }
+          obj.update.push({
+            path: item.path,
+            objectType: item.objectType,
           });
         }
       });
@@ -7108,14 +7133,14 @@ export class PublishChangeModalComponent {
 
   private handleDependenciesForDeploy(node: any, obj: any): void {
     if (node.dependencies) {
-      if (node.valid && node.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(node.objectType) && node.path !== '/' && node.name !== '/') {
+      if (node.valid && node.checked && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(node.type) && node.path !== '/' && node.name !== '/') {
         if (!obj.store) {
           obj.store = {draftConfigurations: [], deployConfigurations: []};
         }
         const config = {
           configuration: {
             path: node.path,
-            objectType: node.objectType,
+            objectType: node.type,
             recursive: false
           }
         };
@@ -7147,6 +7172,22 @@ export class PublishChangeModalComponent {
             configuration: {
               path: ref.path,
               objectType: ref.objectType,
+              recursive: false
+            }
+          };
+          obj.store.draftConfigurations.push(config);
+        }
+      });
+
+      this.filteredAffectedItems.forEach(item => {
+        if (item.valid && item.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType) && item.path !== '/' && item.name !== '/') {
+          if (!obj.store) {
+            obj.store = {draftConfigurations: [], deployConfigurations: []};
+          }
+          const config = {
+            configuration: {
+              path: item.path,
+              objectType: item.objectType,
               recursive: false
             }
           };
@@ -7229,7 +7270,8 @@ export class ShowDependenciesModalComponent {
   referencedCollapsed: { [key: string]: boolean } = {};
   isAffectedCollapsed: boolean = true;
   isReferencedCollapsed: boolean = true;
-
+  filteredAffectedItems: any[] = [];
+  filteredAffectedCollapsed: boolean = false;
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private inventoryService: InventoryService) {
   }
 
@@ -7254,10 +7296,11 @@ export class ShowDependenciesModalComponent {
     const obj = {
       configurations: configurations
     };
-
+    const requestedKeys = new Set(configurations.map(config => `${config.name}-${config.type}`));
     this.coreService.post('inventory/dependencies', obj).subscribe({
       next: (res: any) => {
         this.dependencies = res.dependencies;
+        this.updateNodeDependencies(this.dependencies, requestedKeys);
         this.prepareObject(this.dependencies);
       },
       error: (err) => {
@@ -7265,6 +7308,37 @@ export class ShowDependenciesModalComponent {
       }
     });
   }
+
+  private updateNodeDependencies(dependenciesResponse: any, requestedKeys: Set<string>): void {
+    const requestedItems = dependenciesResponse.requestedItems;
+    const affectedItems = dependenciesResponse.affectedItems || [];
+
+    const referencedSet = new Set<string>();
+    requestedItems.forEach(item => {
+      item.references?.forEach(ref => {
+        referencedSet.add(`${ref.name}-${ref.objectType}`);
+      });
+      item.referencedBy?.forEach(refBy => {
+        referencedSet.add(`${refBy.name}-${refBy.objectType}`);
+      });
+    });
+
+    const requestedSet = new Set<string>();
+    requestedItems.forEach(item => {
+      requestedSet.add(`${item.name}-${item.objectType}`);
+    });
+
+    affectedItems.forEach(itemWrapper => {
+      const item = itemWrapper.item;
+      const uniqueKey = `${item.name}-${item.objectType}`;
+      if (!referencedSet.has(uniqueKey) && !requestedSet.has(uniqueKey) &&
+        !requestedKeys.has(uniqueKey) &&
+        !this.filteredAffectedItems.some(existing => `${existing.name}-${existing.objectType}` === uniqueKey)) {
+        this.filteredAffectedItems.push(item);
+      }
+    });
+  }
+
 
   prepareObject(dependencies): void {
     if (dependencies && dependencies?.requestedItems.length > 0) {
@@ -7280,7 +7354,7 @@ export class ShowDependenciesModalComponent {
             }
 
             refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
-            refObj.disabled = !refObj.valid;
+            refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.change = refObj.deployed;
 
             this.affectedObjectsByType[type].push(refObj);
@@ -7304,9 +7378,8 @@ export class ShowDependenciesModalComponent {
             }
 
             refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
-            refObj.disabled = !refObj.valid;
+            refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.change = refObj.deployed;
-
 
             this.referencedObjectsByType[type].push(refObj);
           });
@@ -7317,9 +7390,27 @@ export class ShowDependenciesModalComponent {
         }
       });
 
+
+      const filteredAffectedTypeSet = new Set<string>();
+      this.filteredAffectedItems.forEach(itemWrapper => {
+        const item = itemWrapper;
+        const type = item.objectType;
+        filteredAffectedTypeSet.add(type);
+
+        item.disabled = !item.valid || item.valid && (!item.deployed && !item.released);
+
+      });
       this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
       this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
     }
+  }
+
+  getUniqueObjectTypes(objects: any[]): string[] {
+    return [...new Set(objects.map(obj => obj.objectType))];
+  }
+
+  getObjectsByType(objects: any[], type: string): any[] {
+    return objects.filter(obj => obj.objectType === type);
   }
 
   toggleAffectedCollapse(objectType: string): void {
