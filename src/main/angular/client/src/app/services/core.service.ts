@@ -11,7 +11,7 @@ import {saveAs} from 'file-saver';
 import {AuthService} from '../components/guard';
 import {POPOUT_MODALS, PopoutData, PopupService} from "./popup.service";
 import {LogViewComponent} from "../components/log-view/log-view.component";
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 
 declare const $: any;
 
@@ -291,8 +291,8 @@ export class CoreService {
     this.tabs._reporting = {
 
       manageList: {
-        expandedKeys : ['/'],
-        selectedkeys : ['/'],
+        expandedKeys: ['/'],
+        selectedkeys: ['/'],
         filter: {
           sortBy: 'name',
           reverse: true,
@@ -765,7 +765,7 @@ export class CoreService {
 
   }
 
- defaultColor(d: number, type: string): string {
+  defaultColor(d: number, type: string): string {
     if (d === 0) {
       return type === 'text' ? 'green' : type === 'border' ? 'green-box' : 'bg-green';
     } else if (d === 1) {
@@ -794,8 +794,6 @@ export class CoreService {
       return type === 'text' ? 'light-green' : type === 'border' ? 'light-green-box' : 'bg-light-green';
     }
   }
-
-
 
 
   getColorBySeverity(d: number, isHover: boolean, isDisabled: boolean = false): string {
@@ -1683,7 +1681,7 @@ export class CoreService {
     return moment(date).format(format);
   }
 
-   getPreferredDateByFormat(date: any, timeZone: string | null, format: string): string {
+  getPreferredDateByFormat(date: any, timeZone: string | null, format: string): string {
     if (!date) {
       return '-';
     }
@@ -1723,7 +1721,7 @@ export class CoreService {
     const dateY = new Date(date);
     if (dateY.getFullYear() === 10000) {
       return 'common.label.never'
-    }else{
+    } else {
       return moment(date).tz(preferences.zone).format(preferences.dateFormat);
     }
   }
@@ -2333,8 +2331,8 @@ export class CoreService {
           flag: false
         };
         for (let i in nodes) {
-          if(parentNode){
-            if(nodes[i].title === parentNode.title && nodes[i].position === parentNode.position){
+          if (parentNode) {
+            if (nodes[i].title === parentNode.title && nodes[i].position === parentNode.position) {
               obj.flag = true;
               continue;
             }
@@ -2399,7 +2397,7 @@ export class CoreService {
                         }
                         flag = true;
                         break;
-                      } else if(nodes[prop].position1 && data.title == 'Job' && nodes[prop].position1 == data.position.substring(0, data.position.lastIndexOf(':'))) {
+                      } else if (nodes[prop].position1 && data.title == 'Job' && nodes[prop].position1 == data.position.substring(0, data.position.lastIndexOf(':'))) {
                         if (nodes[prop].children) {
                           nodes[prop].children.push(data)
                         }
@@ -3302,12 +3300,12 @@ export class CoreService {
           if (Array.isArray(item.value)) {
             item.value = item.value.map(subItem => {
               if (typeof subItem === 'object' && !Array.isArray(subItem)) {
-                return this.convertObjectToArray1({ value: subItem }, 'value');
+                return this.convertObjectToArray1({value: subItem}, 'value');
               }
               return subItem;
             }).flat();
           } else {
-            item.value = this.convertObjectToArray1({ value: item.value }, 'value');
+            item.value = this.convertObjectToArray1({value: item.value}, 'value');
           }
         }
       });
@@ -3336,7 +3334,7 @@ export class CoreService {
 // Helper method to convert object to array
   convertObjectToArray1(data, type): any[] {
     return Object.keys(data[type]).map(key => {
-      return { name: key, value: data[type][key] };
+      return {name: key, value: data[type][key]};
     });
   }
 
@@ -3488,13 +3486,13 @@ export class CoreService {
       const visibleTags = workflow.workflowTags.slice(0, this.numOfWorkflowTags).map(tag => `<span class="tag-oval">${tag}</span>`).join('');
       const highlightedOrderId = this.highlightText(visibleTags, searchText);
       return this.sanitizer.bypassSecurityTrustHtml(highlightedOrderId);
-    }else if (workflow && workflow.length > 0) {
-        const visibleTags = workflow.slice(0, this.numOfWorkflowTags)
-          .map(tag => `<span class="tag-oval">${tag}</span>`)
-          .join('');
-        const highlightedTags = this.highlightText(visibleTags, searchText);
-        return this.sanitizer.bypassSecurityTrustHtml(highlightedTags);
-      }
+    } else if (workflow && workflow.length > 0) {
+      const visibleTags = workflow.slice(0, this.numOfWorkflowTags)
+        .map(tag => `<span class="tag-oval">${tag}</span>`)
+        .join('');
+      const highlightedTags = this.highlightText(visibleTags, searchText);
+      return this.sanitizer.bypassSecurityTrustHtml(highlightedTags);
+    }
 
     return '';
   }
@@ -3506,7 +3504,8 @@ export class CoreService {
 
   getSortedTags(): string[] {
     return this.sortedTags;
-}
+  }
+
   convertToSeconds(timeString: string): string {
     const hhmmssRegex = /^(\d{2}):(\d{2}):(\d{2})$/i;
     const hhmmRegex = /^(\d{2}):(\d{2})$/i;
@@ -3576,7 +3575,6 @@ export class CoreService {
 
     return 'Invalid time format';
   }
-
 
 
   padTime(value: string): string {

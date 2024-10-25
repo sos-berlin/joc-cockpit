@@ -4293,7 +4293,19 @@ export class RepositoryComponent {
 
   listOfDeployables: any = [];
   listOfReleaseables: any = [];
-
+  affectedObjectsByType: { [key: string]: any[] } = {};
+  referencedObjectsByType: { [key: string]: any[] } = {};
+  affectedObjectTypes: string[] = [];
+  referencedObjectTypes: string[] = [];
+  selectAllAffected: { [key: string]: boolean } = {};
+  selectAllReferenced: { [key: string]: boolean } = {};
+  affectedCollapsed: { [key: string]: boolean } = {};
+  referencedCollapsed: { [key: string]: boolean } = {};
+  isAffectedCollapsed: boolean = true;
+  isReferencedCollapsed: boolean = true;
+  filteredAffectedItems: any[] = [];
+  filteredAffectedCollapsed: boolean = true;
+  selectAllFilteredAffected: { [key: string]: boolean } = {};
   constructor(public activeModal: NzModalRef, private coreService: CoreService,
               private inventoryService: InventoryService) {
   }
@@ -4672,6 +4684,161 @@ export class RepositoryComponent {
       if (this.operation === 'store') {
         this.inventoryService.checkAndUpdateVersionList(node.origin);
       }
+    }
+  }
+
+  private getDependencies(checkedNodes: { name: string, type: string }[], node, isChecked = false): void {
+    const configurations = checkedNodes.map(node => ({
+      name: node.name,
+      type: node.type,
+    }));
+
+    let operationType = 'DEPLOY';
+
+
+
+    const requestBody = {
+      configurations: configurations,
+      operationType: operationType
+    };
+
+    this.coreService.post('inventory/dependencies', requestBody).subscribe({
+      next: (res: any) => {
+        if (res.dependencies && res.dependencies?.requestedItems.length > 0 && res.dependencies?.affectedItems.length > 0) {
+          this.updateNodeDependencies(res.dependencies, isChecked);
+          this.prepareObject(res.dependencies);
+        } else {
+        }
+
+      },
+      error: (err) => {
+      }
+    });
+  }
+
+  private updateNodeDependencies(dependenciesResponse: any, isChecked: boolean): void {
+    const requestedItems = dependenciesResponse.requestedItems;
+    const affectedItems = dependenciesResponse.affectedItems || [];
+
+    const referencedSet = new Set<string>();
+    requestedItems.forEach(item => {
+      item.references?.forEach(ref => {
+        referencedSet.add(`${ref.name}-${ref.objectType}`);
+      });
+      item.referencedBy?.forEach(refBy => {
+        referencedSet.add(`${refBy.name}-${refBy.objectType}`);
+      });
+    });
+
+    const requestedSet = new Set<string>();
+    requestedItems.forEach(item => {
+      requestedSet.add(`${item.name}-${item.objectType}`);
+    });
+
+    affectedItems.forEach(itemWrapper => {
+      const item = itemWrapper.item;
+      const uniqueKey = `${item.name}-${item.objectType}`;
+      if (!referencedSet.has(uniqueKey) && !requestedSet.has(uniqueKey) &&
+        !this.filteredAffectedItems.some(existing => `${existing.name}-${existing.objectType}` === uniqueKey)) {
+        this.filteredAffectedItems.push(item);
+      }
+    });
+
+    if (isChecked) {
+      requestedItems.forEach(dep => {
+        const uniqueKey = `${dep.name}-${dep.objectType}`;
+        if (!referencedSet.has(uniqueKey) && !requestedSet.has(uniqueKey) &&
+          !this.filteredAffectedItems.some(existing => `${existing.name}-${existing.objectType}` === uniqueKey)) {
+          this.filteredAffectedItems.push(dep);
+        }
+      });
+    }
+
+    requestedItems.forEach(dep => {
+      this.findAndUpdateNodeWithDependencies(dep, this.nodes);
+    });
+
+    this.nodes = [...this.nodes];
+  }
+
+
+  private findAndUpdateNodeWithDependencies(dep: any, nodes: any[]): any {
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i];
+      if (node.name === dep.name && node.type === dep.type) {
+        node.dependencies = dep;
+        return node;
+      }
+
+      if (node.children && node.children.length > 0) {
+        const foundNode = this.findAndUpdateNodeWithDependencies(dep, node.children);
+        if (foundNode) {
+          return foundNode;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  private prepareObject(dependencies: any): void {
+    if (dependencies && dependencies?.requestedItems.length > 0) {
+
+      dependencies?.requestedItems.forEach(dep => {
+        if (dep.referencedBy) {
+          const affectedTypeSet = new Set<string>();
+          dep.referencedBy.forEach(refObj => {
+            const type = refObj.objectType;
+            affectedTypeSet.add(type);
+            if (!this.affectedObjectsByType[type]) {
+              this.affectedObjectsByType[type] = [];
+              this.affectedObjectTypes.push(type);
+            }
+
+            refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
+            refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
+            refObj.change = refObj.deployed;
+
+
+            this.affectedObjectsByType[type].push(refObj);
+          });
+        }
+
+        if (dep.references) {
+          const referencedTypeSet = new Set<string>();
+          dep.references.forEach(refObj => {
+            const type = refObj.objectType;
+            referencedTypeSet.add(type);
+            if (!this.referencedObjectsByType[type]) {
+              this.referencedObjectsByType[type] = [];
+              this.referencedObjectTypes.push(type);
+            }
+
+            refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
+            refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
+            refObj.change = refObj.deployed;
+
+
+            this.referencedObjectsByType[type].push(refObj);
+
+
+          });
+        }
+
+      });
+      const filteredAffectedTypeSet = new Set<string>();
+      this.filteredAffectedItems.forEach(item => {
+        const type = item.objectType;
+        filteredAffectedTypeSet.add(type);
+
+        item.disabled = !item.valid;
+        item.selected = item.valid && (!item.deployed && !item.released);
+
+
+      });
+      this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
+      this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
+
     }
   }
 
@@ -6152,6 +6319,7 @@ export class ChangeModalComponent {
   changeObj: any;
   path = '';
   title: string;
+  changeName: any;
   filter = {
     controller: true,
     dailyPlan: true,
@@ -6172,6 +6340,7 @@ export class ChangeModalComponent {
     this.removeChange = this.modalData.remove;
     this.title = this.modalData.title;
     this.data = this.modalData.data;
+    this.path = this.modalData.path;
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
@@ -6179,7 +6348,6 @@ export class ChangeModalComponent {
     if (this.origin) {
       if (this.origin.object) {
       }
-      this.path = this.origin.path;
       if (this.origin.dailyPlan || (this.origin.object &&
         (this.origin.object === InventoryObject.SCHEDULE || this.origin.object === InventoryObject.JOBTEMPLATE || this.origin.object === InventoryObject.INCLUDESCRIPT ||
           this.origin.object === InventoryObject.REPORT || this.origin.object.match('CALENDAR')))) {
@@ -6208,7 +6376,7 @@ export class ChangeModalComponent {
   }
 
   onChange(selected: string): void {
-    this.nodes.changeName = selected;
+    this.changeName = selected;
   }
 
   addChange(): void {
@@ -6229,7 +6397,7 @@ export class ChangeModalComponent {
     const obj = {
       auditLog: auditLog.comment ? auditLog : undefined,
       change: {
-        name: this.nodes.changeName
+        name: this.changeName
       },
       [this.removeChange ? 'remove' : 'add']: checkedNodes
     };
@@ -6317,6 +6485,7 @@ export class ChangeModalComponent {
   }
 
   buildTree(path: string, merge?: any, cb?: any, flag = false): void {
+
     const obj: any = {
       folder: path || '/',
       onlyValidObjects: this.filter.valid,
@@ -6328,6 +6497,8 @@ export class ChangeModalComponent {
 
     let deployObjectTypes = [];
     let releaseObjectTypes = [];
+    const deployableTypes = ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'];
+    const releasableTypes = ['SCHEDULE', 'JOBTEMPLATE','REPORT', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'];
 
     if (this.data && this.data.object) {
       deployObjectTypes = this.data.object === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.object];
@@ -6395,14 +6566,28 @@ export class ChangeModalComponent {
         let mergeObj: any = {};
         if (res.length > 1) {
           if (res[0].path && res[1].path) {
-            mergeObj = this.mergeDeep(res[0], res[1]);
+            if(releasableTypes.includes(this.data.object)){
+              mergeObj = res[1];
+            }else if(deployableTypes.includes(this.data.object)){
+              mergeObj = res[0];
+            }else if (this.data.objectType) {
+              mergeObj = this.data
+            }else{
+              mergeObj = this.mergeDeep(res[0], res[1]);
+            }
           } else if (res[0].path && !res[1].path) {
             mergeObj = res[0];
           } else if (!res[0].path && res[1].path) {
             mergeObj = res[1];
           }
         } else {
-          if (res[0].path) {
+          if(this.data.objectType){
+            if(releasableTypes.includes(this.data.object)){
+              mergeObj = res[1];
+            }else if(deployableTypes.includes(this.data.object)){
+              mergeObj = res[0];
+            }
+          }else if (res[0].path) {
             mergeObj = res[0];
           }
         }
@@ -6413,7 +6598,7 @@ export class ChangeModalComponent {
             folders: [{
               name: mergeObj.name,
               path: mergeObj.path,
-              folders: mergeObj.folders,
+              folders:  (this.data.dailyPlan || this.data.object || this.data.controller) ? [] : mergeObj.folders,
               deployables: mergeObj.deployables,
               releasables: mergeObj.releasables
             }]

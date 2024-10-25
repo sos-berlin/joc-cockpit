@@ -16,7 +16,7 @@
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-6">
-          <nz-select #name="ngModel" required [(ngModel)]="this.nodes.changeName" (ngModelChange)="onChange($event)"
+          <nz-select #name="ngModel" required [(ngModel)]="this.changeName" (ngModelChange)="onChange($event)"
                      name="name"  nzPlaceHolder="{{'common.placeholder.name' | translate}}" nzShowSearch>
             <nz-option *ngFor="let option of changeObj" [nzLabel]="option.name"
                        [nzValue]="option.name"></nz-option>
