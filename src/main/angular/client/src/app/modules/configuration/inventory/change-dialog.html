@@ -91,10 +91,18 @@
 
 
           </ng-template>
-        </div>
+          <div *ngIf="data?.objectType">
+            <i [nzType]="'folder'"
+               class="w-14" nz-icon></i> {{'/'}}<br/>
+               <span *ngIf="data.objectType" [ngClass]="{'fa-circle-o': !data.valid, 'fa-circle dark-blue' :(data.deployed || data.released) || data.releaseId,
+                                'opacity7': data.syncState && (data.syncState._text === 'SUSPENDED' || data.syncState._text === 'SUSPENDING')}" class="fa fa-check-circle-o orange text-xs m-t-xs p-l-md"></span>
+            <span *ngIf="data.object" class="p-l-sm text-capitalize">{{data.name | translate}}</span>
+            <span *ngIf="!data.object" class="p-l-sm">{{data.name}}</span>
+
+          </div>        </div>
       </div>
     </div>
-    <div *ngIf="nodes.length===0 && !loading" class="m-t-md">
+    <div *ngIf="nodes.length===0 && !loading && !data.objectType" class="m-t-md">
       <app-empty-data></app-empty-data>
     </div>
     <div *ngIf="loading" [ngClass]="{'loading-on-text': nodes.length>0}" class="text-center m-t-md">
@@ -102,7 +110,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button *ngIf="nodes.length > 0" [disabled]="!myForm.form.valid  || submitted || loading" class="btn btn-primary btn-sm"
+    <button *ngIf="nodes.length > 0 || data.objectType" [disabled]="!myForm.form.valid  || submitted || loading" class="btn btn-primary btn-sm"
             type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
