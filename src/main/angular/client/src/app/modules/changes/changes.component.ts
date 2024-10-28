@@ -27,6 +27,7 @@ export class AddChangesModalComponent{
   nodes: any[] = [];
   loading = false
   INVchanges = false
+  selectedChange: any;
   data: any;
   affectedObjectsByType: { [key: string]: any[] } = {};
   referencedObjectsByType: { [key: string]: any[] } = {};
@@ -67,20 +68,25 @@ export class AddChangesModalComponent{
     this.coreService.post('inventory/changes', {details: true}).subscribe({
       next: (res) => {
         this.changes = res.changes
-        this.nodes = this.prepareChangesTree(this.changes)
-        const checkedNodes = this.collectObjects(this.nodes);
-
-        if (checkedNodes.length > 0) {
-          setTimeout(() => {
-            this.getDependencies(checkedNodes);
-          }, 100)
-        }
         this.loading = false;
       },
       error: ()=> {
         this.loading = false;
       }
     });
+  }
+
+  onChange(selected: string): void {
+    console.log(selected);
+    const slectedChange = this.changes.filter(change => change.name === selected);
+    this.nodes = this.prepareChangesTree(slectedChange);
+    const checkedNodes = this.collectObjects(this.nodes);
+
+    if (checkedNodes.length > 0) {
+      setTimeout(() => {
+        this.getDependencies(checkedNodes);
+      }, 100)
+    }
   }
 
   changeState(selectedState: string): void {

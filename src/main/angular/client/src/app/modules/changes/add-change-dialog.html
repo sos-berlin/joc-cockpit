@@ -135,6 +135,23 @@
       <div [ngClass]="{'show': display && nodes.length > 0}" class="hide">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
       </div>
+      <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="form-group row">
+        <label class="col-sm-3 form-control-label" translate>common.label.name
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-6">
+          <nz-select #name="ngModel" required [(ngModel)]="selectedChange" (ngModelChange)="onChange($event)"
+                     name="name"  nzPlaceHolder="{{'common.placeholder.name' | translate}}" nzShowSearch>
+            <nz-option *ngFor="let option of changes" [nzLabel]="option.name"
+                       [nzValue]="option.name"></nz-option>
+          </nz-select>
+          <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
+            <div *ngIf="name.errors['required']">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="col-md-12">
         <nz-tree
           [nzData]="nodes"
