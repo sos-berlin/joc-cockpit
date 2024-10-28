@@ -131,27 +131,27 @@
 
 <div *ngIf="INVchanges">
   <div class="modal-body p-a">
-    <div *ngIf="nodes.length > 0" class="row">
-      <div [ngClass]="{'show': display && nodes.length > 0}" class="hide">
-        <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
-      </div>
-      <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="form-group row">
-        <label class="col-sm-3 form-control-label" translate>common.label.name
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div class="col-sm-6">
-          <nz-select #name="ngModel" required [(ngModel)]="selectedChange" (ngModelChange)="onChange($event)"
-                     name="name"  nzPlaceHolder="{{'common.placeholder.name' | translate}}" nzShowSearch>
-            <nz-option *ngFor="let option of changes" [nzLabel]="option.name"
-                       [nzValue]="option.name"></nz-option>
-          </nz-select>
-          <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-            <div *ngIf="name.errors['required']">
-              <div translate>common.message.requiredError</div>
-            </div>
+    <div [ngClass]="{'show': display && nodes.length > 0}" class="hide">
+      <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
+    </div>
+    <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="form-group row">
+      <label class="col-sm-3 form-control-label" translate>common.label.name
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-6">
+        <nz-select #name="ngModel" required [(ngModel)]="selectedChange" (ngModelChange)="onChange($event)"
+                   name="name"  nzPlaceHolder="{{'common.placeholder.name' | translate}}" nzShowSearch>
+          <nz-option *ngFor="let option of changes" [nzLabel]="option.name"
+                     [nzValue]="option.name"></nz-option>
+        </nz-select>
+        <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
+          <div *ngIf="name.errors['required']">
+            <div translate>common.message.requiredError</div>
           </div>
         </div>
       </div>
+    </div>
+    <div *ngIf="nodes.length > 0" class="row">
       <div class="col-md-12">
         <nz-tree
           [nzData]="nodes"
@@ -270,9 +270,6 @@
           </div>
         </ng-template>
       </div>
-    </div>
-    <div *ngIf="nodes?.length === 0" class="m-t-md">
-      <app-empty-data></app-empty-data>
     </div>
     <div *ngIf="loading" [ngClass]="{'loading-on-text': nodes?.length>0}" class="text-center m-t-md">
       <nz-spin nzSimple></nz-spin>

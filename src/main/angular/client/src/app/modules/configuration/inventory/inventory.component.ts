@@ -2530,7 +2530,7 @@ export class DeployComponent {
 
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
-    if (obj.update && obj.update.length > 0 || obj.releasables.length > 0) {
+    if (obj.update && obj.update?.length > 0 || obj.releasables?.length > 0) {
       const releaseURL = recall ? 'inventory/releasables/recall' : 'inventory/release';
       this.coreService.post(releaseURL, obj).subscribe({
         next: () => {

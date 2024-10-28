@@ -77,7 +77,6 @@ export class AddChangesModalComponent{
   }
 
   onChange(selected: string): void {
-    console.log(selected);
     const slectedChange = this.changes.filter(change => change.name === selected);
     this.nodes = this.prepareChangesTree(slectedChange);
     const checkedNodes = this.collectObjects(this.nodes);
@@ -277,7 +276,7 @@ export class AddChangesModalComponent{
         path: '/',
         key: `/owner/${data.name || 'root'}`,
         isLeaf: false,
-        expanded: false,
+        expanded: true,
         checked: true,
         children: []
       };
