@@ -1861,7 +1861,7 @@
     "label.groups": "Gruppen",
     "label.groupName": "Gruppen-Name",
     "label.addGroups": "Gruppen hinzufügen",
-    "label.addTagToGroup": "Kennz. zu Gruppen hinzufügen",
+    "label.addTagToGroup": "Kennz. zu Gruppen zuweisen",
     "label.renameGroup": "Gruppe umbenennen",
     "button.modifyVariableSet": "Variablensatz ändern",
     "button.addOrderParameter": "Auftragsvorlage hinzufügen",

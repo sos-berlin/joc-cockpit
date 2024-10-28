@@ -1861,7 +1861,7 @@
     "label.groups": "Groups",
     "label.groupName": "Group Name",
     "label.addGroups": "Add Groups",
-    "label.addTagToGroup": "Add Tags to Group",
+    "label.addTagToGroup": "Assign Tags to Group",
     "label.renameGroup": "Rename Group",
     "button.modifyVariableSet": "Modify Variable Set",
     "button.addOrderParameter": "Add Order Template",

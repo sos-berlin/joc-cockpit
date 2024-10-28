@@ -1861,7 +1861,7 @@
     "label.groups": "Groupes",
     "label.groupName": "Nom de Groupe",
     "label.addGroups": "Ajouter Groupes",
-    "label.addTagToGroup": "Ajouter Balises au Groupe",
+    "label.addTagToGroup": "Assigner Balises au Groupe",
     "label.renameGroup": "Renommer Groupe",
     "button.modifyVariableSet": "Modifier le Jeu de Variable",
     "button.addOrderParameter": "Ajouter un Modèle d'Ordre",
