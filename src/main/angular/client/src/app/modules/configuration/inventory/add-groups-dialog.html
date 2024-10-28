@@ -1,0 +1,84 @@
+<div class="modal-header">
+  <h4 class="modal-title" *ngIf="!data && !isRename">
+    <span translate>inventory.label.addGroups</span>
+  </h4>
+  <h4 class="modal-title" *ngIf="isRename">
+    <span translate>inventory.label.renameGroup</span>
+  </h4>
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
+  <div class="modal-body p-a">
+    <div [ngClass]="{'show': display}" class="hide">
+      <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
+    </div>
+    <div class="form-group row" *ngIf="!isRename">
+      <label class="col-md-3 form-control-label" translate>inventory.label.groups
+        <!-- <sup class="text-danger text-sm">*</sup> -->
+      </label>
+      <div class="col-md-8">
+        <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
+          <nz-tag
+            *ngFor="let group of groups; let i = index"
+            [nzMode]="'closeable'"
+            (nzOnClose)="handleClose(group)"
+          >
+            {{ sliceTagName(group) }}
+          </nz-tag>
+          <nz-tag *ngIf="!inputVisible" class="editable-tag" nzNoAnimation (click)="showInput()">
+            <span nz-icon nzType="plus"></span>
+            {{'inventory.button.newGroup' | translate}}
+          </nz-tag>
+          <div class="d-inline-block" *ngIf="inputVisible" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+            <input
+              #name="ngModel"
+              #inputElement
+              tagValidation
+              [nzAutocomplete]="auto"
+              nz-input
+              name="tag"
+              type="text"
+              [(ngModel)]="inputValue"
+              (ngModelChange)="onChange($event)"
+              style="width: 128px;"
+              (blur)="handleInputConfirm()"
+              (keydown.enter)="handleInputConfirm()"
+            />
+            <nz-autocomplete [nzDataSource]="filteredOptions" #auto></nz-autocomplete>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="isRename">
+      <label class="col-md-3 form-control-label" translate>inventory.label.groupName
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique}" class="col-md-8">
+        <input #name="ngModel" identifierValidation (blur)="checkValidInput()" [(ngModel)]="group.name" [appAutofocus]="true" autocomplete="off" class="form-control"
+               name="name" required type="text" (ngModelChange)="isUnique = true">
+        <div *ngIf="name.invalid && (name.dirty || name.touched)"
+             class="text-danger help-block">
+          <div *ngIf="(name.errors && name.errors.required)">
+            <div translate>common.message.requiredError</div>
+          </div>
+          <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
+        </div>
+        <div *ngIf="!isUnique && !(name.errors && name.errors.required)" class="help-block text-danger">
+          <div translate>common.message.uniqueError</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button [disabled]="!myForm.form.valid || submitted || !isUnique" class="btn btn-primary btn-sm"
+            type="submit">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
+      common.button.cancel
+    </button>
+  </div>
+</form>

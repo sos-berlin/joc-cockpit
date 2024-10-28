@@ -3081,12 +3081,27 @@ private filterData(planItems: any[]): void {
       controllerId: this.schedulerIds.selected
     }).subscribe({
       next: (res: any) => {
-        this.coreService.selectedTags = res.results;
+        let allTags = res.results;
         this.coreService.allTagsSelected = true;
-        this.coreService.selectedTags.forEach(tag => {
-          this.coreService.checkedTags.add(tag.name)
-        });
-        this.loadOrderPlan();
+        // this.coreService.selectedTags.forEach(tag => {
+        //   this.coreService.checkedTags.add(tag.name)
+        // });
+        // this.loadOrderPlan();
+        let index = 0;
+        const chunkSize = 200;
+        const intervalId = setInterval(() => {
+          if (index < allTags.length) {
+            const chunk = allTags.slice(index, index + chunkSize);
+            this.coreService.selectedTags.push(...chunk);
+            chunk.forEach(tag => {
+              this.coreService.checkedTags.add(tag.name);
+            });
+            this.loadOrderPlan();
+            index += chunkSize;
+          } else {
+            clearInterval(intervalId);
+          }
+        }, 200);
       }
     });
   }
@@ -3286,12 +3301,27 @@ private filterData(planItems: any[]): void {
       controllerId: this.schedulerIds.selected
     }).subscribe({
       next: (res: any) => {
-        this.coreService.selectedOrderTags = res.results;
+        let allTags = res.results;
         this.coreService.allOrderTagsSelected = true;
-        this.coreService.selectedOrderTags.forEach(tag => {
-          this.coreService.checkedOrderTags.add(tag.name)
-        });
-        this.loadOrderPlan();
+        // this.coreService.selectedOrderTags.forEach(tag => {
+        //   this.coreService.checkedOrderTags.add(tag.name)
+        // });
+        // this.loadOrderPlan();
+        let index = 0;
+        const chunkSize = 200;
+        const intervalId = setInterval(() => {
+          if (index < allTags.length) {
+            const chunk = allTags.slice(index, index + chunkSize);
+            this.coreService.selectedOrderTags.push(...chunk);
+            chunk.forEach(tag => {
+              this.coreService.checkedOrderTags.add(tag.name);
+            });
+            this.loadOrderPlan();
+            index += chunkSize;
+          } else {
+            clearInterval(intervalId);
+          }
+        }, 200);
       }
     });
   }

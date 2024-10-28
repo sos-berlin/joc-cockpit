@@ -340,8 +340,8 @@
               <tbody>
               <tr *ngFor="let data of frequencyList; let i = index" class="cursor"
                   [ngClass]="{'light-bg' : (_temp.tab ==data.tab && _temp.day ==data.day && _temp.isUltimos ==data.isUltimos && _temp.dateEntity ==data.dateEntity && _temp.str ==data.str)}">
-                <td (click)="editFrequency(data)">{{i + 1}}</td>
-                <td (click)="editFrequency(data)">
+                <td (click)="editFrequency(data, i)">{{i + 1}}</td>
+                <td (click)="editFrequency(data, i)">
                   <i *ngIf="data.exclude" class="fa fa-minus"> </i>
                   <span>{{data.str}}</span>
                 </td>
@@ -361,7 +361,7 @@
                   <a class="text-hover-primary">
                     <i (click)="showCalendar(data)" class="fa fa-calendar m-r-sm"></i>
                   </a>
-                  <a><i (click)="editFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
+                  <a><i (click)="editFrequency(data, i)" class="fa fa-pencil m-r-sm"></i></a>
                   <a class="text-hover-color">
                     <i (click)="deleteFrequency(data)" class="fa fa-times "></i>
                   </a>

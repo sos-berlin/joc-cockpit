@@ -91,13 +91,13 @@
           <div class="col-md-12">
             <div class="form-group row">
               <div class="col-sm-12">
-                <a (click)="assignParameterizationFromSchedules()" class="text-u-l" translate>order.button.assignFromSchedule</a>
+                <a (click)="assignParameterizationFromSchedules(true)" class="text-u-l" translate>order.button.assignFromSchedule</a>
               </div>
             </div>
-            <div *ngIf="schedules && schedules.length > 0" class="form-group row">
+            <div *ngIf="schedules && schedules.length > 0 && isAssignedFromSchedule" class="form-group row">
               <div class="col-sm-4 form-control-label" translate>order.label.selectSchedule</div>
               <div class="col-sm-6">
-                <nz-select [(ngModel)]="actualListArr.name" name="schedule{{i}}" nzAllowClear
+                <nz-select [(ngModel)]="actualListArr.name" name="schedule_{{i}}" nzAllowClear
                            (ngModelChange)="selectVarFromSchedule($event, actualListArr, listVariables, i, selectedOrderIndex)" nzShowSearch>
                   <nz-option *ngFor="let option of schedules | orderBy: 'name'" [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
                 </nz-select>
@@ -446,7 +446,7 @@
             <a (click)="assignParameterizationFromSchedules()" class="text-u-l" translate>order.button.assignParameterizationFromSchedules</a>
           </div>
         </div>
-        <div *ngIf="schedules && schedules.length > 0" class="form-group row">
+        <div *ngIf="schedules && schedules.length > 0 && !isAssignedFromSchedule" class="form-group row">
         <div class="col-sm-4 form-control-label" translate>order.label.selectSchedule</div>
         <div class="col-sm-6">
             <nz-select [(ngModel)]="order.name" name="schedule{{orderIndex}}" nzAllowClear

@@ -125,6 +125,7 @@ export class AddOrderModalComponent {
   commonStartTime: string = 'now';
   commonStartTimeValue: any = '';
   commonStartDate: any = {fromDate: null, fromTime: null, timeZone: null};
+  isAssignedFromSchedule: boolean = false;
 
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
 
@@ -1201,7 +1202,6 @@ export class AddOrderModalComponent {
   }
 
   private selectVarForOrder(name, listVariables, data, index): void {
-
     for (let i in listVariables.orderParameterisations) {
       if (listVariables.orderParameterisations[i].orderName == name ||
         (listVariables.orderParameterisations[i].orderName == '' && name == '-') ||
@@ -1254,7 +1254,6 @@ export class AddOrderModalComponent {
 
     for (let i in order.selectedSchedule.orderParameterisations) {
       const param = order.selectedSchedule.orderParameterisations[i];
-
       if (param.orderName == name || (param.orderName === '' && name === '-') || order.selectedSchedule.orderParameterisations.length == 1) {
         this.updateVariablesFromSchedule(param, orderIndex);
 
@@ -1532,7 +1531,12 @@ export class AddOrderModalComponent {
     }
   }
 
-  assignParameterizationFromSchedules(): void {
+  assignParameterizationFromSchedules(isCheck = false): void {
+    if (isCheck) {
+      this.isAssignedFromSchedule = true;
+    } else {
+      this.isAssignedFromSchedule = false;
+    }
     if (!this.schedules) {
       this.coreService.post('workflow/order_templates', {
         controllerId: this.schedulerId,

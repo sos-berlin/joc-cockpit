@@ -31,10 +31,11 @@ import {CommentModalComponent} from '../../../../components/comment-modal/commen
 import {InventoryObject} from '../../../../models/enums';
 import {JobWizardComponent} from '../job-wizard/job-wizard.component';
 import {InventoryService} from '../inventory.service';
-import {CreateObjectModalComponent, EncryptArgumentModalComponent} from "../inventory.component";
+import {CreateObjectModalComponent, CreateTagModalComponent, EncryptArgumentModalComponent} from "../inventory.component";
 import {UpdateJobTemplatesComponent} from "../job-template/job-template.component";
 import {CalendarService} from "../../../../services/calendar.service";
 import {FileUploaderComponent} from "../../../../components/file-uploader/file-uploader.component";
+import { ConfirmModalComponent } from 'src/app/components/comfirm-modal/confirm.component';
 
 // Mx-Graph Objects
 declare const mxEditor: any;
@@ -2733,6 +2734,11 @@ export class JobComponent {
 
   handleClose(removedTag: {}): void {
     this.tags = this.tags.filter(tag => tag !== removedTag);
+    this.tagsData.forEach(jobTag => {
+      if(jobTag.jobName === this.selectedNode.job.jobName){
+        jobTag.jobTags.pop(removedTag);
+      }
+    })
   }
 
   sliceTagName(tag: string): string {
@@ -2751,8 +2757,20 @@ export class JobComponent {
   handleInputConfirm(): void {
     if (this.inputValue && this.tags.indexOf(this.inputValue) === -1 && this.workflowService.isValidTag(this.inputValue)) {
       this.tags = [...this.tags, this.inputValue];
+      if (this.tagsData.length > 0) {
+        this.tagsData.forEach(jobTag => {
+          if (jobTag.jobName === this.selectedNode.job.jobName) {
+            const finalTags = this.tags.filter(tag => !jobTag.jobTags.includes(tag));
+            jobTag.jobTags = [...jobTag.jobTags, ...finalTags];
+            this.jobTagsEvent.emit(jobTag.jobTags);
+          }
+        });
+      } else {
+        const newJobTag = { jobName: this.selectedNode.job.jobName, jobTags: this.tags };
+        this.tagsData.push(newJobTag);
+        this.jobTagsEvent.emit(newJobTag.jobTags);
+      }
     }
-    this.jobTagsEvent.emit(this.tags);
     this.inputValue = '';
     this.inputVisible = false;
   }
@@ -3094,6 +3112,104 @@ export class JobComponent {
     } else {
       this.checkboxObjects[field] = !!value;
     }
+  }
+
+  deleteTag(tagName): void {
+    const obj: any = {
+      tags: [tagName]
+    };
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Tag',
+        operation: 'Delete',
+        name: tagName
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzData: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          obj.auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          };
+          this._deleteTag(obj, tagName);
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzData: {
+          title: 'delete',
+          message: 'deleteTag',
+          type: 'Delete',
+          objectName: tagName
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this._deleteTag(obj, tagName);
+        }
+      });
+    }
+  }
+
+  private _deleteTag(obj, tagName): void {
+    const url = 'tags/job/delete';
+    this.coreService.post(url, obj).subscribe(() => {
+      this.tagsData.forEach(jobTag => {
+        if (jobTag.jobName === this.selectedNode.job.jobName) {
+          jobTag.jobTags = jobTag.jobTags.filter(tag => tag != tagName);
+          this.jobTagsEvent.emit(jobTag.jobTags);
+        }
+      });
+    });
+  }
+
+  renameTag(tagName): void {
+    let tagObj = { name: tagName };
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: CreateTagModalComponent,
+      nzAutofocus: null,
+      nzData: {
+        preferences: this.preferences,
+        tag: tagObj,
+        isRename: true,
+        isJobTag: true
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe((res) => {
+      if (res) {
+        this.tagsData.forEach(jobTag => {
+          if (jobTag.jobName === this.selectedNode.job.jobName) {
+            const index = jobTag.jobTags.findIndex(tag => tag === tagName);
+            console.log(index, res, 'ggggggggg')
+            if (index !== -1) {
+              jobTag.jobTags[index] = res;
+            }
+            this.jobTagsEvent.emit(jobTag.jobTags);
+          }
+        });
+        console.log(this.tagsData)
+      }
+    });
   }
 }
 
@@ -13441,15 +13557,16 @@ let data = this.storedArguments[this.storedArguments.length - 1];
 
 
     private fetchTags(): void {
-      this.coreService.post('orders/tag/search', {
+      this.coreService.post('tags/order', {
         search: '',
         controllerId: this.schedulerId
       }).subscribe({
         next: (res: any) => {
-          this.allTags = res.results;
-          this.allTags = this.allTags.map((item) => {
-            return item.name;
-          })
+          this.allTags = res.tags;
+          // this.allTags = res.results;
+          // this.allTags = this.allTags.map((item) => {
+          //   return item.name;
+          // })
         }
       });
     }

@@ -496,15 +496,16 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
     this.coreService.post('tags', {}).subscribe((res) => {
       this.allTags = res.tags;
     });
-    this.coreService.post('orders/tag/search', {
+    this.coreService.post('tags/order', {
       search: '',
       controllerId: this.schedulerId
     }).subscribe({
       next: (res: any) => {
-        this.allTags = res.results;
-        this.allTags = this.allTags.map((item) => {
-          return item.name;
-        })
+        this.allTags = res.tags;
+        // this.allTags = res.results;
+        // this.allTags = this.allTags.map((item) => {
+        //   return item.name;
+        // })
       }
     });
   }

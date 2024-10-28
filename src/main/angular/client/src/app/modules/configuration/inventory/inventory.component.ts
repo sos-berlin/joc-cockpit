@@ -7,7 +7,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {clone, extend, groupBy, isArray, isEmpty, isEqual, sortBy} from 'underscore';
 import {ClipboardService} from 'ngx-clipboard';
 import {saveAs} from 'file-saver';
-import {catchError, debounceTime} from 'rxjs/operators';
+import {audit, catchError, debounceTime} from 'rxjs/operators';
 import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd/tree';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
@@ -758,7 +758,7 @@ export class SingleDeployComponent {
         this.getReleaseObject(true);
       }
     }
-    const getJSObjectPromise = !this.releasable
+    const getJSObjectPromise = !this.releasable || this.shouldCallDeploy()
       ? (this.isRevoke ? this.getJSObject(true) : this.getJSObject())
       : Promise.resolve();
 
@@ -7551,6 +7551,520 @@ export class ShowDependenciesModalComponent {
 }
 
 @Component({
+  selector: 'app-group-tags',
+  templateUrl: './group-tags.html',
+})
+export class GroupTagsComponent {
+
+  preferences: any = {};
+  groups = [];
+  selectedGroupName: string;
+
+  constructor(private coreService: CoreService, private modal: NzModalService, private translate: TranslateService,) { }
+
+  ngOnInit(): void {
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+    this.getAllGroups();
+  }
+
+  getAllGroups(group: any = undefined){
+    let obj = {};
+    this.coreService.post('tags/groups', obj).subscribe(res =>{
+      this.groups = res.groups;
+      this.groups = this.groups.map(group =>{
+        return {name: group};
+      });
+    })
+    if(group){
+      console.log('ggg', group);
+      this.selectGroup(group);
+    }
+  }
+
+  selectGroup(group: any, isArray = false, cb?): void {
+    const url = 'tags/group/read';
+    if (this.preferences.expandOption === 'both' || isArray) {
+      group.isExpanded = !group.isExpanded;
+    }
+    if (group.isExpanded) {
+      group.loading = true;
+    }
+    this.selectedGroupName = group.name;
+    const obj: any = {
+      group: group.name
+    };
+
+    if (group.isExpanded) {
+      this.coreService.post(url, obj).subscribe({
+        next: (res: any) => {
+          group.loading = false;
+          group.children = res.tags;
+          if (cb) {
+            cb();
+          }
+        }, error: () => {
+          group.loading = false;
+        }
+      });
+    } else {
+      group.loading = false;
+    }
+  }
+
+  addGroup(): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: AddGropusModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        preferences: this.preferences,
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.getAllGroups();
+      }
+    });
+  }
+
+  deleteGroup(group): void {
+    const obj: any = {
+      groups: [group.name]
+    };
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Group',
+        operation: 'Delete',
+        name: group.name
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzData: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          obj.auditLog = {
+            comment: result.comment,
+            timeSpent: result.timeSpent,
+            ticketLink: result.ticketLink
+          };
+          this._deleteTag(obj, group.name);
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzData: {
+          title: 'delete',
+          message: 'deleteGroup',
+          type: 'Delete',
+          objectName: group.name
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this._deleteTag(obj, group.name);
+        }
+      });
+    }
+  }
+
+  private _deleteTag(obj, tagName): void {
+    const url = 'tags/groups/delete';
+    this.coreService.post(url, obj).subscribe(() => {
+      this.groups = this.groups.filter(tag => {
+        if (this.selectedGroupName == tagName) {
+          this.selectedGroupName = null;
+        }
+        return tag.name != tagName;
+      })
+    });
+  }
+
+  renameGroup(group): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: AddGropusModalComponent,
+      nzAutofocus: null,
+      nzData: {
+        preferences: this.preferences,
+        group: group,
+        isRename: true,
+        // isJobTag: this.isJobTag
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe((res) => {
+      if (res) {
+        group.name = res;
+      }
+    });
+  }
+
+  addTagsToGroup(group){
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: AddTagsToGropusModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        preferences: this.preferences,
+        group: group
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.getAllGroups(group);
+      }
+    });
+  }
+
+  private updateGroup(): void {
+    let comments = {};
+    const url = 'tags/groups/ordering';
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+      this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+        comments = {comment: translatedValue};
+      });
+    }
+    this.coreService.post(url, {
+      groups: this.groups.map(group => group.name),
+      auditLog: comments
+    }).subscribe();
+  }
+
+  drop(event: CdkDragDrop<string[]>): void {
+    moveItemInArray(this.groups, event.previousIndex, event.currentIndex);
+    this.updateGroup();
+  }
+
+}
+
+@Component({
+  selector: 'app-add-group',
+  templateUrl: './add-groups-dialog.html',
+})
+export class AddGropusModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+
+  preferences: any;
+  data: any;
+  group: any;
+  isRename = false;
+  submitted = false;
+  display: any;
+  required = false;
+  comments: any = {};
+  controllerId: string;
+  groups = [];
+  allGroups = [];
+  filteredOptions: string[] = [];
+  inputVisible = false;
+  isUnique = true;
+  inputValue = '';
+
+  @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
+  @ViewChild(NzSelectComponent) tagSelect;
+
+
+  constructor(private coreService: CoreService, public activeModal: NzModalRef, private workflowService: WorkflowService) {
+  }
+
+  ngOnInit(): void {
+    this.preferences = this.modalData.preferences;
+    if (this.modalData.isRename) {
+      this.isRename = this.modalData.isRename;
+      this.group = this.coreService.clone(this.modalData.group);
+    }
+    this.display = this.preferences.auditLog;
+    this.fetchTags();
+    this.comments.radio = 'predefined';
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+      this.required = true;
+      this.display = true;
+    }
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      this.tagSelect?.focus();
+    }, 100);
+  }
+
+  onChange(value: string): void {
+    this.filteredOptions = this.allGroups.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    this.filteredOptions = this.filteredOptions.filter((tag) => {
+      return this.groups.indexOf(tag) == -1;
+    })
+  }
+
+  private fetchTags(): void {
+    const url = 'tags/groups';
+    this.coreService.post(url, {}).subscribe((res) => {
+      this.allGroups = res.groups;
+    });
+  }
+
+  handleClose(removedTag: {}): void {
+    this.groups = this.groups.filter(tag => tag !== removedTag);
+  }
+
+  sliceTagName(tag: string): string {
+    const isLongTag = tag.length > 20;
+    return isLongTag ? `${tag.slice(0, 20)}...` : tag;
+  }
+
+  showInput(): void {
+    this.inputVisible = true;
+    this.filteredOptions = this.allGroups;
+    setTimeout(() => {
+      this.inputElement?.nativeElement.focus();
+    }, 10);
+  }
+
+  handleInputConfirm(): void {
+    if (this.inputValue && this.groups.indexOf(this.inputValue) === -1 && this.workflowService.isValidTag(this.inputValue)) {
+      this.groups = [...this.groups, this.inputValue];
+    }
+    this.inputValue = '';
+    this.inputVisible = false;
+  }
+
+  checkValidInput(): void {
+    this.isUnique = true;
+    for (let i = 0; i < this.allGroups.length; i++) {
+      if (this.group.name === this.allGroups[i] &&
+        this.group.name === this.allGroups[i] && this.group.name !== this.modalData.tag?.name) {
+        this.isUnique = false;
+      }
+    }
+  }
+
+  onSubmit(): void {
+    this.submitted = true;
+    const obj: any = {
+      auditLog: {}
+    };
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+
+    if (this.isRename) {
+      obj.name = this.modalData.group.name;
+      obj.newName = this.group.name;
+    } else {
+      obj.groups = this.groups;
+    }
+    const URL = this.isRename ? 'tags/group/rename' : 'tags/groups/add';
+
+    this.coreService.post(URL, obj).subscribe({
+      next: () => {
+        this.activeModal.close(this.isRename ? this.group.name : 'DONE');
+      }, error: () => {
+        this.submitted = false;
+      }
+    });
+  }
+}
+
+@Component({
+  selector: 'app-add-group',
+  templateUrl: './add-tags-to-group-dialog.html',
+})
+export class AddTagsToGropusModalComponent {
+  @ViewChild('treeCtrlGroup', {static: false}) treeCtrlGroup: any;
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+
+  display: any;
+  comments: any = {};
+  groupName: string;
+  submitted = false;
+  defaultAssignedTags: string[] = [];
+  assignedTags = [];
+  checkedAssignedTags: string[] = [];
+  workflowTags:any;
+  orderTags:any;
+  jobTags:any;
+  allTags = [];
+  checkedTags = [];
+
+  preferences: any;
+
+  constructor(private coreService: CoreService, public activeModal: NzModalRef) {
+  }
+
+  ngOnInit(): void {
+    this.preferences = this.modalData.preferences;
+    this.groupName = this.modalData.group.name;
+    this.getAssignedTags();
+    setTimeout(() => {
+      this.getWorkflowTags();
+      this.getOrderTags();
+      this.getJobTags();
+    }, 10);
+  }
+
+  getAssignedTags() {
+    const obj: any = {
+      group: this.groupName
+    };
+    this.coreService.post('tags/group/read', obj).subscribe(res => {
+      this.defaultAssignedTags = res.tags;
+      this.checkedAssignedTags = this.defaultAssignedTags;
+      this.assignedTags = this.defaultAssignedTags.map(tag =>{
+        return { title: tag, key: tag, isLeaf: true };
+      });
+      const assignedNode = new NzTreeNode({
+        title: 'Assigned Tags',
+        key: 'AssignedKeys',
+        expanded: true, // To load children immediately
+        disabled: this.assignedTags.length > 0 ? false : true,
+        isLeaf: this.assignedTags.length > 0 ? false : true,
+        children: this.assignedTags
+      });
+      this.allTags = [...this.allTags, assignedNode];
+    });
+  }
+
+  getWorkflowTags(){
+    this.coreService.post('tags', {}).subscribe(res => {
+      this.workflowTags = res.tags.map(tag =>{
+        return { title: tag, key: tag, isLeaf: true };
+      });
+      const workflowNode = new NzTreeNode({
+        title: 'Workflow Tags',
+        key: 'WorkflowKeys',
+        disabled: this.workflowTags.length > 0 ? false : true,
+        isLeaf: this.workflowTags.length > 0 ? false : true,
+        children: this.workflowTags
+      });
+      this.allTags = [...this.allTags, workflowNode];
+    })
+  }
+
+  getOrderTags(){
+    this.coreService.post('tags/order', {}).subscribe(res => {
+      this.orderTags = res.tags.map(tag =>{
+        return { title: tag, key: tag, isLeaf: true };
+      });
+      const orderNode = new NzTreeNode({
+        title: 'Order Tags',
+        key: 'OrderKeys',
+        disabled: this.orderTags.length > 0 ? false : true,
+        isLeaf: this.orderTags.length > 0 ? false : true,
+        children: this.orderTags
+      });
+      this.allTags = [...this.allTags, orderNode];
+    })
+  }
+
+  getJobTags(){
+    this.coreService.post('tags/job', {}).subscribe(res => {
+      this.jobTags = res.tags.map(tag =>{
+        return { title: tag, key: tag, isLeaf: true };
+      });
+      const jobNode = new NzTreeNode({
+        title: 'Job Tags',
+        key: 'JobKeys',
+        disabled: this.jobTags.length > 0 ? false : true,
+        isLeaf: this.jobTags.length > 0 ? false : true,
+        children: this.jobTags
+      });
+      this.allTags = [...this.allTags, jobNode];
+    })
+  }
+
+  onCheckBoxChange(event: any) {
+    const node = event.node;
+    // const keys = event.keys;
+    if (node.parentNode && node.parentNode.key !== 'AssignedKeys') {
+      if (node.origin.checked) {
+        this.checkedTags.push(node.key);
+      } else {
+        this.checkedTags = this.checkedTags.filter(tag => tag !== node.key);;
+      }
+    } else if (!node.parentNode && node.origin.key !== 'AssignedKeys') {
+      if (node.origin.checked) {
+        this.checkedTags.push(node.key);
+      } else {
+        this.checkedTags = this.checkedTags.filter(tag => tag !== node.key);;
+      }
+    }
+  }
+
+  onClick(event: any){
+    const node = event.node;
+    if (node.origin.checked && node.key === 'AssignedKeys') {
+      this.checkedAssignedTags = this.defaultAssignedTags;
+    } else if (!node.origin.checked && node.key === 'AssignedKeys') {
+      this.checkedAssignedTags = [];
+    } else if (node.origin.checked && node.parentNode && node.parentNode.key === 'AssignedKeys') {
+      this.checkedAssignedTags.push(node.key);
+    } else if (!node.origin.checked && node.parentNode && node.parentNode.key === 'AssignedKeys') {
+      this.checkedAssignedTags = this.checkedAssignedTags.filter(tag => tag !== node.key);
+    }
+  }
+
+  onSubmit(){
+    this.submitted = true;
+    const obj: any = {
+      auditLog: {},
+      group: this.groupName
+    };
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+    let selectedTags = [];
+    if(this.checkedAssignedTags.length > 0){
+      selectedTags = [...selectedTags, ...this.checkedAssignedTags];
+    }
+    this.checkedTags.forEach(tag => {
+      if (tag === 'WorkflowKeys') {
+        this.workflowTags.forEach(item => {
+          selectedTags.push(item.key);
+        });
+      } else if (tag === 'OrderKeys') {
+        this.orderTags.forEach(item => {
+          selectedTags.push(item.key);
+        });
+      } else if (tag === 'JobKeys') {
+        this.jobTags.forEach(item => {
+          selectedTags.push(item.key);
+        });
+      } else {
+        selectedTags.push(tag);
+      }
+    });
+    obj.tags = selectedTags;
+    console.log(obj)
+    this.coreService.post('tags/group/store', obj).subscribe({
+      next: () => {
+        this.activeModal.close('DONE');
+      }, error: () => {
+        this.submitted = false;
+      }
+    });
+  }
+
+}
+
+@Component({
   selector: 'app-inventory',
   templateUrl: './inventory.component.html',
   styleUrls: ['./inventory.component.scss']
@@ -7582,7 +8096,7 @@ export class InventoryComponent {
   isTag = false;
   isJobTag = false;
   isSearchVisible = false;
-  isTagVisible = false;
+  isGroupTagVisible = false;
   isNavigationComplete = true;
   revalidating = false;
   tempObjSelection: any = {};
@@ -11052,16 +11566,16 @@ export class InventoryComponent {
     });
   }
 
-  tagDrawer(): void {
-    this.isTagVisible = true;
+  openGroupTagDrawer(): void {
+    this.isGroupTagVisible = true;
   }
 
   closeSearch(): void {
     this.isSearchVisible = false;
   }
 
-  closeTagDrawer(): void {
-    this.isTagVisible = false;
+  closeGroupTagDrawer(): void {
+    this.isGroupTagVisible = false;
   }
 
   onNavigate(data): void {

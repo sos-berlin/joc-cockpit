@@ -27,7 +27,10 @@ import {
   EncryptArgumentModalComponent,
   ShowAgentsModalComponent,
   ChangeModalComponent,
-  PublishChangeModalComponent, ShowDependenciesModalComponent
+  PublishChangeModalComponent, ShowDependenciesModalComponent,
+  GroupTagsComponent,
+  AddGropusModalComponent,
+  AddTagsToGropusModalComponent
 } from './inventory.component';
 import {TableComponent} from './table-data/table.component';
 import {
@@ -74,7 +77,7 @@ const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, Calen
   NotificationComponent, RepositoryComponent, GitComponent, ScriptEditorComponent, UpdateJobTemplatesComponent, CreateTagModalComponent,
   UpdateObjectComponent, FindAndReplaceComponent, ShowObjectsComponent, CycleInstructionComponent, UpdateJobComponent, PeriodComponent,
   ShowReferenceComponent, AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, AddRestrictionComponent, TestMailComponent,
-  RunTimeComponent, TreeModalComponent, JobWizardComponent, FacetEditorComponent, FavoriteListComponent,ChangeModalComponent,PublishChangeModalComponent,ShowDependenciesModalComponent, NewDraftComponent, NoticeBoardEditorComponent, ReportComponent, ChangeImpactDialogComponent, EncryptArgumentModalComponent,ShowAgentsModalComponent ];
+  RunTimeComponent, TreeModalComponent, JobWizardComponent, FacetEditorComponent, FavoriteListComponent,ChangeModalComponent,PublishChangeModalComponent,ShowDependenciesModalComponent, NewDraftComponent, NoticeBoardEditorComponent, ReportComponent, ChangeImpactDialogComponent, EncryptArgumentModalComponent,ShowAgentsModalComponent, GroupTagsComponent, AddGropusModalComponent, AddTagsToGropusModalComponent ];
 
 @NgModule({
   imports: [

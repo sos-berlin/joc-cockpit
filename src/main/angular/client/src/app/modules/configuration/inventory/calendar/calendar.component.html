@@ -40,7 +40,7 @@
             <div [ngClass]="{'has-error' : ((cname.dirty || cname.touched) && cname.invalid)}"
                  class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.name' | translate) : ''"
-                     
+
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.name
                 <sup class="text-danger text-sm">*</sup>
               </label>
@@ -60,7 +60,7 @@
             </div>
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.title' | translate) : ''"
-                     
+
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <input (blur)="saveJSON()" [(ngModel)]="calendar.configuration.title" [readonly]="isTrash || !permission.joc.inventory.manage"
@@ -70,7 +70,7 @@
             </div>
             <div *ngIf="coreService.expertMode" class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.documentation' | translate) : ''"
-                     
+
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <app-select-document (funcCall)="saveJSON($event)" [data]="calendar.configuration"
@@ -79,7 +79,7 @@
             </div>
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.type' | translate) : ''"
-                     
+
                      class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.type</label>
               <div class="col-lg-9 col-xl-8 col-xxl-6">
                 <app-select-input (modelChange)="saveJSON()" [attributeName]="'type'"
@@ -90,7 +90,7 @@
             </div>
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.validFrom' | translate) : ''"
-                     
+
                      class="col-md-3 col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>runtime.label.validFrom</label>
               <div class="col-md-3 col-lg-3 col-xl-3 col-xxl-2">
                 <nz-date-picker [(ngModel)]="calendar.configuration.from" (ngModelChange)="saveJSON()"
@@ -99,7 +99,7 @@
                                 name="from"></nz-date-picker>
               </div>
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.validTo' | translate) : ''"
-                     
+
                      class="col-md-3 col-lg-3 col-xl-2 col-xxl-2 form-control-label date-center" translate>runtime.label.validTo</label>
               <div [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}"
                    class="col-md-3 col-lg-3 col-xl-3 col-xxl-2 date-right">
@@ -151,7 +151,7 @@
                 <tr *ngFor="let data of calendar.configuration.includesFrequency;let i = index;"
                     [ngClass]="{'hide':editor.frequencyType !=='INCLUDE'}">
                   <td class="cursor ver-top">
-                    <a (click)="updateFrequency(data);"
+                    <a (click)="updateFrequency(data, i);"
                        *ngIf="!isTrash && permission.joc.inventory.manage">{{data.str}}</a>
                     <a *ngIf="isTrash || !permission.joc.inventory.manage">{{data.str}}</a>
                   </td>
@@ -172,7 +172,7 @@
                       <i (click)="showCalendar(data)" class="fa fa-calendar m-r-sm"></i>
                     </a>
                     <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
-                      (click)="updateFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
+                      (click)="updateFrequency(data, i)" class="fa fa-pencil m-r-sm"></i></a>
                     <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"
                        class="text-hover-color">
                       <i (click)="removeFrequency(i)" class="fa fa-times "></i>
@@ -183,7 +183,7 @@
                     [ngClass]="{'hide':editor.frequencyType !=='EXCLUDE'}">
                   <td class="cursor ver-top">
                     <i *ngIf="data.exclude" class="fa fa-minus"> </i>
-                    <a (click)="updateFrequency(data);">{{data.str}}</a>
+                    <a (click)="updateFrequency(data, i);">{{data.str}}</a>
                   </td>
                   <td>
                     <span *ngIf="data.tab=='weekDays'">{{data.startingWithW | stringToDate1:true}}</span>
@@ -202,7 +202,7 @@
                       <i (click)="showCalendar(data)" class="fa fa-calendar m-r-sm"></i>
                     </a>
                     <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
-                      (click)="updateFrequency(data)" class="fa fa-pencil m-r-sm"></i></a>
+                      (click)="updateFrequency(data, i)" class="fa fa-pencil m-r-sm"></i></a>
                     <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"
                        class="text-hover-color">
                       <i (click)="removeFrequency(i)" class="fa fa-times "></i>

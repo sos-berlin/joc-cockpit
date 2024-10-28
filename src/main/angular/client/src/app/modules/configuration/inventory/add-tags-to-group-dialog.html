@@ -1,0 +1,44 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>inventory.label.addTagToGroup</span>&nbsp;<span>{{ groupName }}</span>
+  </h4>
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
+  <div class="modal-body p-a">
+    <div [ngClass]="{'show': display}" class="hide">
+      <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
+    </div>
+    <div>
+      <nz-tree
+      #treeCtrlGroup
+      nzCheckable
+      nzMultiple
+      [nzData]="allTags"
+      [nzAsyncData]="true"
+      [nzShowExpand]="true"
+      [nzTreeTemplate]="nzTreeTemplateGroup"
+      [nzCheckedKeys]="defaultAssignedTags"
+      [nzSelectedKeys]="defaultAssignedTags"
+      nzNoAnimation
+      (nzCheckBoxChange)="onCheckBoxChange($event)"
+      (nzCheckBoxChange)="onClick($event)"
+      ></nz-tree>
+      <ng-template #nzTreeTemplateGroup let-node>
+        <span>{{ node.title }}</span>
+      </ng-template>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button [disabled]="!checkedTags.length || submitted" class="btn btn-primary btn-sm"
+            type="submit">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
+      common.button.cancel
+    </button>
+  </div>
+</form>

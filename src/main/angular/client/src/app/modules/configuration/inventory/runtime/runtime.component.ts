@@ -54,6 +54,7 @@ export class AddRestrictionComponent {
   holidayDays: any = {checked: false};
   countryListArr: any = [];
   hd = new Holidays.default();
+  frequencyEditIndex: number = -1;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, public modal: NzModalService, public calendarService: CalendarService) {
   }
@@ -61,6 +62,7 @@ export class AddRestrictionComponent {
   ngOnInit(): void {
     this.schedulerId = this.modalData.schedulerId;
     this.preferences = this.modalData.preferences;
+    this.frequencyEditIndex = this.modalData.frequencyIndex;
     this.data = this.modalData.data || {};
     setTimeout(() => {
       this.isVisible = true;
@@ -470,7 +472,7 @@ export class AddRestrictionComponent {
       this.isRuntimeEdit = false;
       if (this.calendar.frequencyList.length > 0) {
         for (let i = 0; i < this.calendar.frequencyList.length; i++) {
-          if (this.calendar.frequencyList[i].tab == this._temp.tab && this.calendar.frequencyList[i].str == this._temp.str && this.calendar.frequencyList[i].type == this._temp.type) {
+          if (this.calendar.frequencyList[i].tab == this._temp.tab && this.calendar.frequencyList[i].str == this._temp.str && this.calendar.frequencyList[i].type == this._temp.type && i === this.frequencyEditIndex) {
             if (this.frequency.tab === 'specificDays') {
               this.frequency.dates = [];
               this.tempItems.forEach((date) => {
@@ -521,14 +523,14 @@ export class AddRestrictionComponent {
             if (this.frequency.months && this.frequency.months.length > 0) {
               if (this.frequency.months == this.calendar.frequencyList[i].months || isEqual(this.calendar.frequencyList[i].months, this.frequency.months)) {
                 if (isEqual(this.calendar.frequencyList[i].days, this.frequency.days)) {
-                  flag1 = true;
+                  // flag1 = true;
                   break;
                 }
-                this.calendar.frequencyList[i].days = this.coreService.clone(this.frequency.days);
-                this.calendar.frequencyList[i].startingWithW = clone(this.frequency.startingWithW);
-                this.calendar.frequencyList[i].endOnW = clone(this.frequency.endOnW);
-                this.calendar.frequencyList[i].str = clone(this.frequency.str);
-                flag1 = true;
+                // this.calendar.frequencyList[i].days = this.coreService.clone(this.frequency.days);
+                // this.calendar.frequencyList[i].startingWithW = clone(this.frequency.startingWithW);
+                // this.calendar.frequencyList[i].endOnW = clone(this.frequency.endOnW);
+                // this.calendar.frequencyList[i].str = clone(this.frequency.str);
+                // flag1 = true;
                 break;
               } else {
                 if (this.calendar.frequencyList[i].months) {
@@ -538,19 +540,19 @@ export class AddRestrictionComponent {
                         this.calendar.frequencyList[i].months.push(this.frequency.months[j]);
                       }
                     }
-                    this.calendar.frequencyList[i].str = clone(this.frequency.str);
-                    flag1 = true;
+                    // this.calendar.frequencyList[i].str = clone(this.frequency.str);
+                    // flag1 = true;
                     break;
                   }
                 }
               }
             } else {
               if (!this.calendar.frequencyList[i].months) {
-                this.calendar.frequencyList[i].days = this.coreService.clone(this.frequency.days);
-                this.calendar.frequencyList[i].startingWithW = this.frequency.startingWithW;
-                this.calendar.frequencyList[i].endOnW = this.frequency.endOnW;
-                this.calendar.frequencyList[i].str = clone(this.frequency.str);
-                flag1 = true;
+                // this.calendar.frequencyList[i].days = this.coreService.clone(this.frequency.days);
+                // this.calendar.frequencyList[i].startingWithW = this.frequency.startingWithW;
+                // this.calendar.frequencyList[i].endOnW = this.frequency.endOnW;
+                // this.calendar.frequencyList[i].str = clone(this.frequency.str);
+                // flag1 = true;
                 break;
               }
             }
@@ -558,11 +560,11 @@ export class AddRestrictionComponent {
           else if (this.frequency.tab == 'monthDays' && this.frequency.isUltimos == 'months' && this.calendar.frequencyList[i].isUltimos == 'months') {
             if (this.frequency.months && this.frequency.months.length > 0) {
               if (this.frequency.months == this.calendar.frequencyList[i].months || isEqual(this.calendar.frequencyList[i].months, this.frequency.months)) {
-                this.calendar.frequencyList[i].selectedMonths = this.coreService.clone(this.frequency.selectedMonths);
-                this.calendar.frequencyList[i].startingWithM = (this.frequency.startingWithM);
-                this.calendar.frequencyList[i].endOnM = (this.frequency.endOnM);
-                this.calendar.frequencyList[i].str = clone(this.frequency.str);
-                flag1 = true;
+                // this.calendar.frequencyList[i].selectedMonths = this.coreService.clone(this.frequency.selectedMonths);
+                // this.calendar.frequencyList[i].startingWithM = (this.frequency.startingWithM);
+                // this.calendar.frequencyList[i].endOnM = (this.frequency.endOnM);
+                // this.calendar.frequencyList[i].str = clone(this.frequency.str);
+                // flag1 = true;
                 break;
               } else {
                 if (this.calendar.frequencyList[i].months) {
@@ -572,19 +574,19 @@ export class AddRestrictionComponent {
                         this.calendar.frequencyList[i].months.push(this.frequency.months[j]);
                       }
                     }
-                    this.calendar.frequencyList[i].str = clone(this.frequency.str);
-                    flag1 = true;
+                    // this.calendar.frequencyList[i].str = clone(this.frequency.str);
+                    // flag1 = true;
                     break;
                   }
                 }
               }
             } else {
               if (!this.calendar.frequencyList[i].months) {
-                this.calendar.frequencyList[i].selectedMonths = this.coreService.clone(this.frequency.selectedMonths);
-                this.calendar.frequencyList[i].startingWithM = (this.frequency.startingWithM);
-                this.calendar.frequencyList[i].endOnM = (this.frequency.endOnM);
-                this.calendar.frequencyList[i].str = clone(this.frequency.str);
-                flag1 = true;
+                // this.calendar.frequencyList[i].selectedMonths = this.coreService.clone(this.frequency.selectedMonths);
+                // this.calendar.frequencyList[i].startingWithM = (this.frequency.startingWithM);
+                // this.calendar.frequencyList[i].endOnM = (this.frequency.endOnM);
+                // this.calendar.frequencyList[i].str = clone(this.frequency.str);
+                // flag1 = true;
                 break;
               }
             }
@@ -592,11 +594,11 @@ export class AddRestrictionComponent {
           else if (this.frequency.tab === 'monthDays' && this.frequency.isUltimos != 'months' && this.calendar.frequencyList[i].isUltimos !== 'months') {
             if (this.frequency.months && this.frequency.months.length > 0) {
               if (this.frequency.months == this.calendar.frequencyList[i].months || isEqual(this.calendar.frequencyList[i].months, this.frequency.months)) {
-                this.calendar.frequencyList[i].selectedMonthsU = this.coreService.clone(this.frequency.selectedMonthsU);
-                this.calendar.frequencyList[i].startingWithM = (this.frequency.startingWithM);
-                this.calendar.frequencyList[i].endOnM = (this.frequency.endOnM);
-                this.calendar.frequencyList[i].str = clone(this.frequency.str);
-                flag1 = true;
+                // this.calendar.frequencyList[i].selectedMonthsU = this.coreService.clone(this.frequency.selectedMonthsU);
+                // this.calendar.frequencyList[i].startingWithM = (this.frequency.startingWithM);
+                // this.calendar.frequencyList[i].endOnM = (this.frequency.endOnM);
+                // this.calendar.frequencyList[i].str = clone(this.frequency.str);
+                // flag1 = true;
                 break;
               } else {
                 if (this.calendar.frequencyList[i].months) {
@@ -606,20 +608,20 @@ export class AddRestrictionComponent {
                         this.calendar.frequencyList[i].months.push(this.frequency.months[j]);
                       }
                     }
-                    this.calendar.frequencyList[i].str = clone(this.frequency.str);
-                    flag1 = true;
+                    // this.calendar.frequencyList[i].str = clone(this.frequency.str);
+                    // flag1 = true;
                     break;
                   }
                 }
               }
             } else {
               if (!this.calendar.frequencyList[i].months) {
-                this.calendar.frequencyList[i].selectedMonthsU = this.coreService.clone(this.frequency.selectedMonthsU);
-                this.calendar.frequencyList[i].startingWithM = (this.frequency.startingWithM);
-                this.calendar.frequencyList[i].endOnM = (this.frequency.endOnM);
-                this.calendar.frequencyList[i].str = clone(this.frequency.str);
+                // this.calendar.frequencyList[i].selectedMonthsU = this.coreService.clone(this.frequency.selectedMonthsU);
+                // this.calendar.frequencyList[i].startingWithM = (this.frequency.startingWithM);
+                // this.calendar.frequencyList[i].endOnM = (this.frequency.endOnM);
+                // this.calendar.frequencyList[i].str = clone(this.frequency.str);
 
-                flag1 = true;
+                // flag1 = true;
                 break;
               }
             }
@@ -633,8 +635,8 @@ export class AddRestrictionComponent {
                       this.calendar.frequencyList[i].months.push(this.frequency.months[j]);
                     }
                   }
-                  this.calendar.frequencyList[i].str = this.calendarService.freqToStr(this.calendar.frequencyList[i], this.dateFormat);
-                  flag1 = true;
+                  // this.calendar.frequencyList[i].str = this.calendarService.freqToStr(this.calendar.frequencyList[i], this.dateFormat);
+                  // flag1 = true;
                   break;
                 }
               }
@@ -666,17 +668,17 @@ export class AddRestrictionComponent {
             for (let j = 0; j < this.tempItems.length; j++) {
               this.frequency.dates.push(this.coreService.getStringDate(this.tempItems[j].startDate));
             }
-            this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
-            this.calendar.frequencyList[i].dates = this.coreService.clone(this.frequency.dates);
-            this.calendar.frequencyList[i].str = clone(this.frequency.str);
-            flag1 = true;
+            // this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
+            // this.calendar.frequencyList[i].dates = this.coreService.clone(this.frequency.dates);
+            // this.calendar.frequencyList[i].str = clone(this.frequency.str);
+            // flag1 = true;
             break;
           } else if (this.frequency.tab === 'every') {
             if (isEqual(this.frequency.dateEntity, this.calendar.frequencyList[i].dateEntity) && isEqual(this.frequency.startingWith, this.calendar.frequencyList[i].startingWith)) {
-              this.calendar.frequencyList[i].str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
-              this.calendar.frequencyList[i].interval = clone(this.frequency.interval);
-              this.calendar.frequencyList[i].str = clone(this.frequency.str);
-              flag1 = true;
+              // this.calendar.frequencyList[i].str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
+              // this.calendar.frequencyList[i].interval = clone(this.frequency.interval);
+              // this.calendar.frequencyList[i].str = clone(this.frequency.str);
+              // flag1 = true;
               break;
             }
           }
@@ -732,9 +734,10 @@ export class AddRestrictionComponent {
     this.editor.isEnable = false;
   }
 
-  editFrequency(data): void {
+  editFrequency(data, frequencyIndex): void {
     this._temp = this.coreService.clone(data);
     this.frequency = this.coreService.clone(data);
+    this.frequencyEditIndex = frequencyIndex;
     this.isRuntimeEdit = true;
     if (this.frequency.tab == 'nationalHoliday') {
       this.frequency.year = new Date(data.nationalHoliday[0]).getFullYear();
@@ -1270,7 +1273,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     });
   }
 
-  editRestrictionInCalendar(data, frequency): void {
+  editRestrictionInCalendar(data, frequency, frequencyIndex): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: AddRestrictionComponent,
@@ -1280,7 +1283,8 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         preferences: this.preferences,
         data: {
           calendar: this.coreService.clone(data),
-          updateFrequency: this.coreService.clone(frequency)
+          updateFrequency: this.coreService.clone(frequency),
+          frequencyIndex: frequencyIndex
         }
       },
       nzFooter: null,

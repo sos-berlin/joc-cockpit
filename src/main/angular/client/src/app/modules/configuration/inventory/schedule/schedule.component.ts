@@ -1797,13 +1797,14 @@ export class ScheduleComponent {
   }
 
   private fetchTags(): void {
-    this.coreService.post('orders/tag/search', {
+    this.coreService.post('tags/order', {
       search: '',
       controllerId: this.schedulerIds.selected}).subscribe((res) => {
-      this.allTags = res.results;
-      this.allTags = this.allTags.map((item) => {
-        return item.name;
-      })
+        this.allTags = res.tags;
+        // this.allTags = res.results;
+        // this.allTags = this.allTags.map((item) => {
+        //   return item.name;
+        // })
     });
   }
 

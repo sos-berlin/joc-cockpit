@@ -65,8 +65,8 @@
                       </td>
                       <td>
                         <div *ngFor="let list of calendar.frequencyList; let i = index">
-                          <a (click)="editRestrictionInCalendar(calendar,list);">{{list.str}}</a>
-                          <a (click)="editRestrictionInCalendar(calendar,list)"
+                          <a (click)="editRestrictionInCalendar(calendar,list, i);">{{list.str}}</a>
+                          <a (click)="editRestrictionInCalendar(calendar,list, i)"
                              class="text-xs text-hover-primary m-l-sm"><i class="fa fa-pencil"></i></a>
                           <a (click)="deleteRestrictionInCalendar(calendar,list)"
                              class="text-xs text-hover-color m-l-sm"><i class="fa fa-times"></i></a>

@@ -1524,17 +1524,37 @@ export class WorkflowComponent {
       controllerId: this.schedulerIds.selected
     }).subscribe({
       next: (res: any) => {
-        this.coreService.selectedTags = res.results;
+        let allTags = res.results;
         this.coreService.allTagsSelected = true;
         const obj: any = {
           workflowTags: [],
           controllerId: this.schedulerIds.selected
         };
-        this.coreService.selectedTags.forEach(tag => {
-          obj.workflowTags.push(tag.name);
-          this.coreService.checkedTags.add(tag.name);
-        });
-        this.searchByTags(obj);
+        // this.coreService.selectedTags.forEach(tag => {
+        //   obj.workflowTags.push(tag.name);
+        //   this.coreService.checkedTags.add(tag.name);
+        // });
+        let index = 0;
+        const chunkSize = 200;
+        const intervalId = setInterval(() => {
+          if (index < allTags.length) {
+            const chunk = allTags.slice(index, index + chunkSize);
+            this.coreService.selectedTags.push(...chunk);
+            chunk.forEach(tag => {
+              obj.workflowTags.push(tag.name);
+              this.coreService.checkedTags.add(tag.name);
+            });
+            this.searchByTags(obj);
+            index += chunkSize;
+          } else {
+            clearInterval(intervalId);
+          }
+        }, 200);
+        // arrr.forEach(tag => {
+        //     obj.workflowTags.push(tag.name);
+        //     this.coreService.checkedTags.add(tag.name);
+        //   });
+        //   this.searchByTags(obj);
       }
     });
   }
@@ -2549,17 +2569,33 @@ export class WorkflowComponent {
         controllerId: this.schedulerIds.selected
       }).subscribe({
         next: (res: any) => {
-          this.coreService.selectedOrderTags = res.results;
+          let allTags = res.results;
           this.coreService.allOrderTagsSelected = true;
           const obj: any = {
             orderTags: [],
             controllerId: this.schedulerIds.selected
           };
-          this.coreService.selectedOrderTags.forEach(tag => {
-            obj.orderTags.push(tag.name);
-            this.coreService.checkedOrderTags.add(tag.name);
-          });
-          this.searchByOrderTags(obj);
+          // this.coreService.selectedOrderTags.forEach(tag => {
+          //   obj.orderTags.push(tag.name);
+          //   this.coreService.checkedOrderTags.add(tag.name);
+          // });
+          // this.searchByOrderTags(obj);
+          let index = 0;
+          const chunkSize = 200;
+          const intervalId = setInterval(() => {
+            if (index < allTags.length) {
+              const chunk = allTags.slice(index, index + chunkSize);
+              this.coreService.selectedOrderTags.push(...chunk);
+              chunk.forEach(tag => {
+                obj.orderTags.push(tag.name);
+                this.coreService.checkedOrderTags.add(tag.name);
+              });
+              this.searchByOrderTags(obj);
+              index += chunkSize;
+            } else {
+              clearInterval(intervalId);
+            }
+          }, 200);
         }
       });
     }

@@ -1462,11 +1462,25 @@ export class OrderOverviewComponent {
       controllerId: this.schedulerIds.selected
     }).subscribe({
       next: (res: any) => {
-        this.coreService.selectedOrderTags = res.results;
+        let allTags = res.results;
         this.coreService.allOrderTagsSelected = true;
-        this.coreService.selectedOrderTags.forEach(tag => {
-          this.coreService.checkedOrderTags.add(tag.name)
-        });
+        // this.coreService.selectedOrderTags.forEach(tag => {
+        //   this.coreService.checkedOrderTags.add(tag.name)
+        // });
+        let index = 0;
+        const chunkSize = 200;
+        const intervalId = setInterval(() => {
+          if (index < allTags.length) {
+            const chunk = allTags.slice(index, index + chunkSize);
+            this.coreService.selectedOrderTags.push(...chunk);
+            chunk.forEach(tag => {
+              this.coreService.checkedOrderTags.add(tag.name);
+            });
+            index += chunkSize;
+          } else {
+            clearInterval(intervalId);
+          }
+        }, 200);
         this.getOrders({
           controllerId: this.schedulerIds.selected,
           states: this.getState()
@@ -1499,11 +1513,25 @@ export class OrderOverviewComponent {
       controllerId: this.schedulerIds.selected
     }).subscribe({
       next: (res: any) => {
-        this.coreService.selectedTags = res.results;
+        let allTags = res.results;
         this.coreService.allTagsSelected = true;
-        this.coreService.selectedTags.forEach(tag => {
-          this.coreService.checkedTags.add(tag.name)
-        });
+        // this.coreService.selectedTags.forEach(tag => {
+        //   this.coreService.checkedTags.add(tag.name)
+        // });
+        let index = 0;
+        const chunkSize = 200;
+        const intervalId = setInterval(() => {
+          if (index < allTags.length) {
+            const chunk = allTags.slice(index, index + chunkSize);
+            this.coreService.selectedTags.push(...chunk);
+            chunk.forEach(tag => {
+              this.coreService.checkedTags.add(tag.name);
+            });
+            index += chunkSize;
+          } else {
+            clearInterval(intervalId);
+          }
+        }, 200);
         this.getOrders({
           controllerId: this.schedulerIds.selected,
           states: this.getState()

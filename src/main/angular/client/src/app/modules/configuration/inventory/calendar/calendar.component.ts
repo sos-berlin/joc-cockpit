@@ -58,6 +58,7 @@ export class FrequencyModalComponent {
   str: string;
   countArr = [0, 1, 2, 3, 4];
   countArrU = [1, 2, 3, 4];
+  frequencyEditIndex: number = -1;
 
   daysOptions = [
     {label: 'monday', value: '1', checked: false},
@@ -84,6 +85,7 @@ export class FrequencyModalComponent {
     this._temp = this.modalData._temp || {};
     this.data = this.modalData.data || {};
     this.isRuntimeEdit = this.modalData.isRuntimeEdit;
+    this.frequencyEditIndex = this.modalData.frequencyIndex;
     setTimeout(() => {
       this.isVisible = true;
     }, 0);
@@ -524,7 +526,7 @@ export class FrequencyModalComponent {
       if (this.frequencyList.length > 0) {
         for (let i = 0; i < this.frequencyList.length; i++) {
           if (this.frequencyList[i].tab === this._temp.tab && this.frequencyList[i].str === this._temp.str
-            && this.frequencyList[i].type === this._temp.type) {
+            && this.frequencyList[i].type === this._temp.type && i === this.frequencyEditIndex) {
             this.updateFrequencyData(null);
 
             this.frequencyList[i] = clone(this.frequency);
@@ -563,28 +565,28 @@ export class FrequencyModalComponent {
       for (let i = 0; i < this.frequencyList.length; i++) {
         if (this.frequency.tab === this.frequencyList[i].tab) {
           if (this.frequency.tab === 'weekDays') {
-            this.frequencyList[i].days = clone(this.frequency.days);
-            this.frequencyList[i].startingWithW = this.frequency.startingWithW;
-            this.frequencyList[i].endOnW = this.frequency.endOnW;
-            this.frequencyList[i].str = clone(this.frequency.str);
-            flag1 = true;
+            // this.frequencyList[i].days = clone(this.frequency.days);
+            // this.frequencyList[i].startingWithW = this.frequency.startingWithW;
+            // this.frequencyList[i].endOnW = this.frequency.endOnW;
+            // this.frequencyList[i].str = clone(this.frequency.str);
+            // flag1 = true;
             break;
           } else if (this.frequency.tab == 'monthDays' && this.frequency.isUltimos == 'months' && this.frequencyList[i].isUltimos == 'months') {
-            this.frequencyList[i].selectedMonths = clone(this.frequency.selectedMonths);
-            this.frequencyList[i].startingWithM = this.frequency.startingWithM;
-            this.frequencyList[i].endOnM = this.frequency.endOnM;
-            this.frequencyList[i].str = clone(this.frequency.str);
-            flag1 = true;
+            // this.frequencyList[i].selectedMonths = clone(this.frequency.selectedMonths);
+            // this.frequencyList[i].startingWithM = this.frequency.startingWithM;
+            // this.frequencyList[i].endOnM = this.frequency.endOnM;
+            // this.frequencyList[i].str = clone(this.frequency.str);
+            // flag1 = true;
             break;
           } else if (this.frequency.tab == 'monthDays' && this.frequency.isUltimos != 'months' && this.frequencyList[i].isUltimos !== 'months') {
-            this.frequencyList[i].selectedMonthsU = clone(this.frequency.selectedMonthsU);
-            this.frequencyList[i].startingWithM = this.frequency.startingWithM;
-            this.frequencyList[i].endOnM = this.frequency.endOnM;
-            this.frequencyList[i].str = clone(this.frequency.str);
-            flag1 = true;
+            // this.frequencyList[i].selectedMonthsU = clone(this.frequency.selectedMonthsU);
+            // this.frequencyList[i].startingWithM = this.frequency.startingWithM;
+            // this.frequencyList[i].endOnM = this.frequency.endOnM;
+            // this.frequencyList[i].str = clone(this.frequency.str);
+            // flag1 = true;
             break;
           } else if (this.frequency.tab == 'nationalHoliday') {
-            flag1 = true;
+            // flag1 = true;
             datesArr.forEach((dates) => {
               if (this.frequencyList[i].nationalHoliday && this.frequencyList[i].nationalHoliday.length > 0) {
                 if (new Date(this.frequencyList[i].nationalHoliday[0]).getFullYear() === new Date(dates[0]).getFullYear()) {
@@ -605,17 +607,17 @@ export class FrequencyModalComponent {
             });
 
           } else if (this.frequency.tab == 'specificDays') {
-            this.updateFrequencyData(null);
-            this.frequencyList[i].dates = clone(this.frequency.dates);
-            this.frequencyList[i].str = clone(this.frequency.str);
-            flag1 = true;
+            // this.updateFrequencyData(null);
+            // this.frequencyList[i].dates = clone(this.frequency.dates);
+            // this.frequencyList[i].str = clone(this.frequency.str);
+            // flag1 = true;
             break;
           } else if (this.frequency.tab == 'every') {
             if (isEqual(this.frequency.dateEntity, this.frequencyList[i].dateEntity) && isEqual(this.frequency.startingWith, this.frequencyList[i].startingWith)) {
-              this.frequencyList[i].str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
-              this.frequencyList[i].interval = clone(this.frequency.interval);
-              this.frequencyList[i].str = clone(this.frequency.str);
-              flag1 = true;
+              // this.frequencyList[i].str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
+              // this.frequencyList[i].interval = clone(this.frequency.interval);
+              // this.frequencyList[i].str = clone(this.frequency.str);
+              // flag1 = true;
               break;
             }
           }
@@ -669,9 +671,10 @@ export class FrequencyModalComponent {
     }
   }
 
-  editFrequency(data): void {
+  editFrequency(data, frequencyIndex): void {
     this._temp = this.coreService.clone(data);
     this.frequency = this.coreService.clone(data);
+    this.frequencyEditIndex = frequencyIndex;
 
     if (this.frequency.tab == 'nationalHoliday') {
       this.frequency.year = new Date(data.nationalHoliday[0]).getFullYear();
@@ -1336,11 +1339,11 @@ export class CalendarComponent {
       days: [],
       months: []
     };
-    this.openModel(frequency, null);
+    this.openModel(frequency, null, );
   }
 
-  updateFrequency(data): void {
-    this.openModel(null, data);
+  updateFrequency(data, frequencyIndex): void {
+    this.openModel(null, data, frequencyIndex);
   }
 
   removeFrequency(index): void {
@@ -1524,7 +1527,7 @@ export class CalendarComponent {
       }
     }, time);
   }
-  private openModel(frequency, data): void {
+  private openModel(frequency, data, frequencyIndex = -1): void {
     this.editor.hidePervious = !!data;
     this.editor.showYearView = false;
     this.editor.create = !data;
@@ -1543,7 +1546,8 @@ export class CalendarComponent {
         editor: this.editor,
         frequency: frequency || clone(data),
         isRuntimeEdit: !!data,
-        _temp: data ? clone(data) : {}
+        _temp: data ? clone(data) : {},
+        frequencyIndex: frequencyIndex
       },
       nzFooter: null,
       nzClosable: false,

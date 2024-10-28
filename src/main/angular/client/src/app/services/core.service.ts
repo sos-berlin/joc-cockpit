@@ -11,7 +11,7 @@ import {saveAs} from 'file-saver';
 import {AuthService} from '../components/guard';
 import {POPOUT_MODALS, PopoutData, PopupService} from "./popup.service";
 import {LogViewComponent} from "../components/log-view/log-view.component";
-import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 declare const $: any;
 
@@ -291,8 +291,8 @@ export class CoreService {
     this.tabs._reporting = {
 
       manageList: {
-        expandedKeys: ['/'],
-        selectedkeys: ['/'],
+        expandedKeys : ['/'],
+        selectedkeys : ['/'],
         filter: {
           sortBy: 'name',
           reverse: true,
@@ -765,7 +765,7 @@ export class CoreService {
 
   }
 
-  defaultColor(d: number, type: string): string {
+ defaultColor(d: number, type: string): string {
     if (d === 0) {
       return type === 'text' ? 'green' : type === 'border' ? 'green-box' : 'bg-green';
     } else if (d === 1) {
@@ -794,6 +794,8 @@ export class CoreService {
       return type === 'text' ? 'light-green' : type === 'border' ? 'light-green-box' : 'bg-light-green';
     }
   }
+
+
 
 
   getColorBySeverity(d: number, isHover: boolean, isDisabled: boolean = false): string {
@@ -1681,7 +1683,7 @@ export class CoreService {
     return moment(date).format(format);
   }
 
-  getPreferredDateByFormat(date: any, timeZone: string | null, format: string): string {
+   getPreferredDateByFormat(date: any, timeZone: string | null, format: string): string {
     if (!date) {
       return '-';
     }
