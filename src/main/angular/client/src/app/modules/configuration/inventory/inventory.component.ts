@@ -950,7 +950,7 @@ export class SingleDeployComponent {
   shouldCallRelease(): boolean {
     let shouldRelease = false;
 
-    const allowedTypes = ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'];
+    const allowedTypes = ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'];
 
     Object.keys(this.affectedObjectsByType).forEach(type => {
       this.affectedObjectsByType[type].forEach(obj => {
@@ -1185,7 +1185,11 @@ export class SingleDeployComponent {
             refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.change = refObj.deployed;
-
+            if(this.releasable){
+              refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
+              refObj.disabled = !refObj.valid
+              refObj.change = refObj.deployed;
+            }
             if (this.isRemoved) {
               refObj.disabled = false;
               refObj.selected = true;
@@ -1713,6 +1717,12 @@ export class DeployComponent {
             refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.change = refObj.deployed;
 
+            if(this.releasable){
+              refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
+              refObj.disabled = !refObj.valid
+              refObj.change = refObj.deployed;
+            }
+
             if (this.isRemove) {
               refObj.disabled = false;
             }
@@ -2116,7 +2126,7 @@ export class DeployComponent {
     let shouldRelease = false;
 
     const allowedDeployTypes = ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'];
-    const allowedReleaseTypes = ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'];
+    const allowedReleaseTypes = ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'];
 
     const checkNodeForDependencies = (node: any): void => {
       if (node.dependencies) {
@@ -2355,7 +2365,7 @@ export class DeployComponent {
       );
     };
     this.filteredAffectedItems.forEach(item => {
-      if (item.valid && item.selected && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType) && item.path !== '/' && item.name !== '/') {
+      if (item.valid && item.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType) && item.path !== '/' && item.name !== '/') {
         if (recall) {
           const config = {
             objectType: item.objectType,
@@ -2390,13 +2400,13 @@ export class DeployComponent {
           }
         };
 
-        if (!obj.store && !this.isRevoke) {
+        if (!obj.store) {
           obj.store = {draftConfigurations: [], deployConfigurations: []};
         }
-        if (!obj.store?.deployConfigurations && !this.isRevoke) {
+        if (!obj.store?.deployConfigurations) {
           obj.store.deployConfigurations = [];
         }
-        if (!obj.store?.draftConfigurations && !this.isRevoke) {
+        if (!obj.store?.draftConfigurations) {
           obj.store.draftConfigurations = [];
         }
 
@@ -2460,7 +2470,7 @@ export class DeployComponent {
     };
     if (node.dependencies) {
       node.dependencies.referencedBy.forEach(dep => {
-        if (dep.valid && dep.selected && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
+        if (dep.valid && dep.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
           if (recall) {
             const config = {
               objectType: dep.objectType,
@@ -2483,7 +2493,7 @@ export class DeployComponent {
       });
 
       node.dependencies.references.forEach(ref => {
-        if (ref.valid && ref.selected && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(ref.objectType) && ref.path !== '/' && ref.name !== '/') {
+        if (ref.valid && ref.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(ref.objectType) && ref.path !== '/' && ref.name !== '/') {
           if (recall) {
             const config = {
               objectType: ref.objectType,
@@ -2562,13 +2572,13 @@ export class DeployComponent {
             recursive: false
           }
         };
-        if (!obj.store && !this.isRevoke) {
+        if (!obj.store) {
           obj.store = {draftConfigurations: [], deployConfigurations: []};
         }
-        if (!obj.store?.deployConfigurations && !this.isRevoke) {
+        if (!obj.store?.deployConfigurations) {
           obj.store.deployConfigurations = [];
         }
-        if (!obj.store?.draftConfigurations && !this.isRevoke) {
+        if (!obj.store?.draftConfigurations) {
           obj.store.draftConfigurations = [];
         }
         if (this.isRevoke) {
@@ -2610,7 +2620,7 @@ export class DeployComponent {
         });
       };
 
-      if (node.dependencies && !this.isRevoke && this.operation !== 'recall') {
+      if (node.dependencies) {
         node.dependencies.referencedBy.forEach(dep => {
           if (dep.valid && dep.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
             if (!(this.releasable && dep.deployed)) {
@@ -3987,7 +3997,7 @@ export class ExportComponent {
             if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
               obj.shallowCopy.deployables.draftConfigurations.push(config);
             }
-          } else if (dep.selected && (!dep.valid || dep.valid) && (dep.released || !dep.released) && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType)) {
+          } else if (dep.selected && (!dep.valid || dep.valid) && (dep.released || !dep.released) && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType)) {
             if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
               obj.shallowCopy.releasables.draftConfigurations.push(config);
             }
@@ -4016,7 +4026,7 @@ export class ExportComponent {
             if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
               obj.shallowCopy.deployables.draftConfigurations.push(config);
             }
-          } else if (ref.selected && (!ref.valid || ref.valid) && (ref.released || !ref.released) && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(ref.objectType)) {
+          } else if (ref.selected && (!ref.valid || ref.valid) && (ref.released || !ref.released) && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(ref.objectType)) {
             if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
               obj.shallowCopy.releasables.draftConfigurations.push(config);
             }
@@ -4059,7 +4069,7 @@ export class ExportComponent {
           if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
             obj.shallowCopy.deployables.draftConfigurations.push(config);
           }
-        } else if (item.selected && (!item.valid || item.valid) && (item.released || !item.released) && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType)) {
+        } else if (item.selected && (!item.valid || item.valid) && (item.released || !item.released) && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType)) {
           if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
             obj.shallowCopy.releasables.draftConfigurations.push(config);
           }
@@ -7026,7 +7036,7 @@ export class PublishChangeModalComponent {
     let shouldRelease = false;
 
     const allowedDeployTypes = ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'];
-    const allowedReleaseTypes = ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'];
+    const allowedReleaseTypes = ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'];
 
     const checkNodeForDependencies = (node: any): void => {
       if (node.dependencies) {
@@ -7074,7 +7084,7 @@ export class PublishChangeModalComponent {
 
   private handleDependenciesForRelease(node: any, obj: any): void {
     if (node.dependencies) {
-      if (node.valid && node.selected && !node.released && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(node.objectType) && node.path !== '/' && node.name !== '/') {
+      if (node.valid && node.selected && !node.released && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(node.objectType) && node.path !== '/' && node.name !== '/') {
         if (!obj.store) {
           obj.store = {draftConfigurations: [], deployConfigurations: []};
         }
@@ -7089,7 +7099,7 @@ export class PublishChangeModalComponent {
       }
 
       node.dependencies.referencedBy.forEach(dep => {
-        if (dep.valid && dep.selected && !dep.released && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
+        if (dep.valid && dep.selected && !dep.released && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
           if (!obj.update) {
             obj.update = [];
           }
@@ -7101,7 +7111,7 @@ export class PublishChangeModalComponent {
       });
 
       node.dependencies.references.forEach(ref => {
-        if (ref.valid && ref.selected && !ref.released && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(ref.objectType) && ref.path !== '/' && ref.name !== '/') {
+        if (ref.valid && ref.selected && !ref.released && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(ref.objectType) && ref.path !== '/' && ref.name !== '/') {
           if (!obj.update) {
             obj.update = [];
           }
@@ -7113,7 +7123,7 @@ export class PublishChangeModalComponent {
       });
 
       this.filteredAffectedItems.forEach(item => {
-        if (item.valid && item.selected && !item.released && ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType) && item.path !== '/' && item.name !== '/') {
+        if (item.valid && item.selected && !item.released && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType) && item.path !== '/' && item.name !== '/') {
           if (!obj.update) {
             obj.update = [];
           }
@@ -7293,6 +7303,7 @@ export class ShowDependenciesModalComponent {
   loading = true;
   data: any;
   dependencies: any;
+  operation: any
   affectedObjectsByType: { [key: string]: any[] } = {};
   referencedObjectsByType: { [key: string]: any[] } = {};
   affectedObjectTypes: string[] = [];
@@ -7314,6 +7325,7 @@ export class ShowDependenciesModalComponent {
     this.display = this.modalData.display;
     this.data = this.modalData.data;
     this.title = this.modalData.title;
+    this.operation = this.modalData.operation;
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
@@ -7323,12 +7335,20 @@ export class ShowDependenciesModalComponent {
 
   private getDependencies(): void {
     this.loading = true;
+    let operationType = '';
     const configurations = [{
       name: this.data.name,
       type: this.data.objectType || this.data.type
     }];
+    if (this.operation === 'deploy') {
+      operationType = 'DEPLOY';
+    } else if (this.operation === 'release') {
+      operationType = 'RELEASE';
+    }
+
     const obj = {
-      configurations: configurations
+      configurations,
+      ...(operationType && { operationType })
     };
     const requestedKeys = new Set(configurations.map(config => `${config.name}-${config.type}`));
     this.coreService.post('inventory/dependencies', obj).subscribe({
@@ -11628,6 +11648,9 @@ export class InventoryComponent {
 
   showDependencies(node): void {
     const origin = this.coreService.clone(node.origin ? node.origin : node);
+    const deploy = ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(origin.type)
+    const release = ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(origin.type)
+    const operation = deploy ? 'deploy' : release ? 'release' : null;
     this.modal.create({
       nzTitle: undefined,
       nzContent: ShowDependenciesModalComponent,
@@ -11639,6 +11662,7 @@ export class InventoryComponent {
         title: 'showDependencies',
         path: origin.path,
         data: origin,
+        operation: operation,
         isChecked: this.inventoryService.checkDeploymentStatus.isChecked,
         show: true
       },

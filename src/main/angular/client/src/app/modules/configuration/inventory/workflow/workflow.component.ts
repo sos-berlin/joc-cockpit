@@ -2728,6 +2728,7 @@ export class JobComponent {
     this.coreService.post('inventory/workflow/tags/job', obj).subscribe({
       next: (res: any) => {
         this.tagsData = res.jobs;
+        this.tags = this.tagsData.find(jobTag => jobTag.jobName === this.selectedNode.job.jobName)?.jobTags ?? [];
       }
     });
   }

@@ -235,7 +235,7 @@
       </div>
       <!-- Filtered Affected Objects -->
       <div class="form-group row m-t-sm">
-       <div *ngIf="filteredAffectedItems?.length > 0 && !isRevoke" class="col-md-6">
+       <div *ngIf="filteredAffectedItems?.length > 0" class="col-md-6">
           <i class="cursor text-16 fa"
              [ngClass]="{'fa-caret-right': !filteredAffectedCollapsed, 'fa-caret-down': filteredAffectedCollapsed}"
              (click)="filteredAffectedCollapsed = !filteredAffectedCollapsed"></i>
