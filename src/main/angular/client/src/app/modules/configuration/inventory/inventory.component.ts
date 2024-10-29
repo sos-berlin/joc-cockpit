@@ -821,7 +821,6 @@ export class SingleDeployComponent {
       includeLate: this.includeLate,
       update: []
     };
-
     if (this.releasable) {
       if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
         obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
@@ -862,7 +861,22 @@ export class SingleDeployComponent {
       update: []
     };
 
+    const isNotSelected = (items) =>
+      !items.some(item => item.valid && item.selected &&
+        ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType));
 
+    const noItemsSelected =
+      isNotSelected(Object.values(this.affectedObjectsByType).flat()) &&
+      isNotSelected(Object.values(this.referencedObjectsByType).flat()) &&
+      isNotSelected(this.filteredAffectedItems);
+
+    if (this.releasable && noItemsSelected) {
+      if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
+        obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+      } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
+        obj.addOrdersDateFrom = 'now';
+      }
+    }
     if (this.data.deleted) {
       obj.delete = [{objectType: this.data.objectType, path: PATH}];
     } else if (recall) {
@@ -2533,11 +2547,25 @@ export class DeployComponent {
     } else {
       obj.update = [];
     }
+    if(this.releasable){
+      this.getReleaseObject()
+
+      if (this.object.update.length > 0) {
+        obj.update = this.object.update;
+      }
+    }
+
     this.nodes.forEach(node => {
       this.handleDependenciesForRelease(node, obj, recall);
     });
     this.handleAffectedItemsForRelease(obj, recall)
-
+    if (this.releasable && this.shouldAddOrdersDateFrom()) {
+      if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
+        obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+      } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
+        obj.addOrdersDateFrom = 'now';
+      }
+    }
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
     if (obj.update && obj.update?.length > 0 || obj.releasables?.length > 0) {
@@ -9690,6 +9718,7 @@ export class InventoryComponent {
     const origin = this.coreService.clone(node.origin ? node.origin : node);
     if (operation == 'recall') {
       this.getDependencies(origin)
+
     }
     if (this.selectedObj && this.selectedObj.id &&
       this.selectedObj.type === InventoryObject.WORKFLOW && skip) {
@@ -9701,9 +9730,8 @@ export class InventoryComponent {
     }
     let flag = false;
     if (releasable && origin.objectType) {
-      if ((!origin.objectType.match(/CALENDAR/) && origin.objectType !== InventoryObject.SCHEDULE) || operation == 'recall') {
-        if (this.dependencies && this.dependencies?.affectedItems.length > 0 && this.dependencies?.requestedItems.length > 0) {
 
+      if ((!origin.objectType.match(/CALENDAR/) && origin.objectType !== InventoryObject.SCHEDULE) || operation == 'recall') {
           this.modal.create({
             nzTitle: undefined,
             nzContent: SingleDeployComponent,
@@ -9721,11 +9749,10 @@ export class InventoryComponent {
             nzClosable: false,
             nzMaskClosable: false
           })
-        } else {
-          this.releaseSingleObject(origin, operation);
-        }
+
         return;
       } else {
+
         flag = true;
       }
     }
