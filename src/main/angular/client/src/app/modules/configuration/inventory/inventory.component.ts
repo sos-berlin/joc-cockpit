@@ -1199,6 +1199,7 @@ export class SingleDeployComponent {
             refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.change = refObj.deployed;
+
             if(this.releasable){
               refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
               refObj.disabled = !refObj.valid
@@ -1210,8 +1211,7 @@ export class SingleDeployComponent {
             }
 
             if (this.isRevoke || this.operation === 'recall') {
-              refObj.selected = refObj.valid && (refObj.released || refObj.deployed);
-              refObj.disabled = false;
+              refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
             }
 
             this.affectedObjectsByType[type].push(refObj);
@@ -1240,7 +1240,7 @@ export class SingleDeployComponent {
 
             if (this.isRemoved) {
               refObj.disabled = false;
-              refObj.selected = true;
+              refObj.selected = false;
             }
 
             if (this.isRevoke || this.operation === 'recall') {
@@ -1267,7 +1267,11 @@ export class SingleDeployComponent {
         item.disabled = !item.valid;
         item.selected = item.valid && (!item.deployed && !item.released);
         if (this.isRevoke || this.operation === 'recall') {
+          item.selected = false
           item.disabled = !item.valid || item.valid && (!item.deployed && !item.released);
+        }
+        if (this.isRemoved) {
+          item.selected = false;
         }
         filteredAffectedTypeSet.forEach(type => {
           this.updateParentCheckboxFilteredAffected(type);
@@ -1739,6 +1743,7 @@ export class DeployComponent {
 
             if (this.isRemove) {
               refObj.disabled = false;
+              refObj.selected = true
             }
 
             if (this.isRevoke || this.operation === 'recall') {
@@ -1765,7 +1770,7 @@ export class DeployComponent {
 
             if (this.isRemove) {
               refObj.disabled = false;
-              refObj.selected = true;
+              refObj.selected = false;
             }
 
             if (this.isRevoke || this.operation === 'recall') {
@@ -1787,7 +1792,11 @@ export class DeployComponent {
         item.disabled = !item.valid;
         item.selected = item.valid && (!item.deployed && !item.released);
         if (this.isRevoke || this.operation === 'recall') {
+          item.selected = false
           item.disabled = !item.valid || item.valid && (!item.deployed && !item.released);
+        }
+        if (this.isRemove) {
+          item.selected = false;
         }
         filteredAffectedTypeSet.forEach(type => {
           this.updateParentCheckboxFilteredAffected(type);
@@ -2264,10 +2273,7 @@ export class DeployComponent {
       includeLate: this.includeLate,
       controllerIds: this.selectedSchedulerIds
     };
-    const promises = [
-      ...this.nodes.map(node => this.handleDependenciesForDeploy(node, obj)),
-      this.handleAffectedItemsForDeploy(obj)
-    ];
+
     if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
       obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
     } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
@@ -2284,6 +2290,10 @@ export class DeployComponent {
       obj.store = this.object.store;
     }
 
+    const promises = [
+      ...this.nodes.map(node => this.handleDependenciesForDeploy(node, obj)),
+      this.handleAffectedItemsForDeploy(obj)
+    ];
     if (!this.isRevoke && this.object.deleteObj.deployConfigurations.length > 0) {
       obj.delete = this.object.deleteObj;
     }
@@ -2651,6 +2661,8 @@ export class DeployComponent {
       if (node.dependencies) {
         node.dependencies.referencedBy.forEach(dep => {
           if (dep.valid && dep.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
+
+
             if (!(this.releasable && dep.deployed)) {
               promises.push(handleSingleDeployable(dep, this.isRevoke));
             }
@@ -2659,7 +2671,10 @@ export class DeployComponent {
 
         node.dependencies.references.forEach(ref => {
           if (ref.valid && ref.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(ref.objectType) && ref.path !== '/' && ref.name !== '/') {
+
+
             if (!(this.releasable && ref.deployed)) {
+
               promises.push(handleSingleDeployable(ref, this.isRevoke));
             }
           }
@@ -10461,7 +10476,6 @@ export class InventoryComponent {
         });
       } else {
         this.getDependencies(object)
-
         const modal = this.modal.create({
           nzTitle: undefined,
           nzContent: ConfirmModalComponent,
@@ -10472,7 +10486,7 @@ export class InventoryComponent {
             objectName: path,
             countMessage: (obj.objects && !object.type) ? 'removeAllObject' : undefined,
             count: (obj.objects && !object.type) ? obj.objects.length : undefined,
-            dependencies: this.dependencies
+            object: object
           },
           nzFooter: null,
           nzClosable: false,
@@ -10483,6 +10497,27 @@ export class InventoryComponent {
             if (!object.type && !object.object && !object.controller && !object.dailyPlan) {
               this.deleteObject(path, object, node, undefined);
             } else {
+              const revokeRecallObjects = [];
+              const object = node.origin ? node.origin : node;
+              const obj = this.getObjectArr(object, false);
+              if (result.selectedObjects) {
+                result.selectedObjects.forEach((selectedObj) => {
+                  if (selectedObj.selected) {
+                    const objToPush = {
+                      objectType: selectedObj.objectType,
+                      path: selectedObj.path
+                    };
+                    obj.objects.push(objToPush);
+                  } else {
+                    const revokeRecallObj = {
+                      objectType: selectedObj.objectType,
+                      path: selectedObj.path
+                    };
+                    revokeRecallObjects.push(revokeRecallObj);
+                  }
+                });
+                this.revokeRecallDependencies(revokeRecallObjects);
+              }
               object.deleted = true;
               object.loading = true;
               this.coreService.post('inventory/remove', obj).subscribe({

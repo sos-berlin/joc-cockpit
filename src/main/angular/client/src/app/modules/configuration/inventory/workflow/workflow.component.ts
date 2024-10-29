@@ -2738,9 +2738,9 @@ export class JobComponent {
     this.tagsData.forEach(jobTag => {
       if(jobTag.jobName === this.selectedNode.job.jobName){
         jobTag.jobTags.pop(removedTag);
-        this.jobTagsEvent.emit(jobTag.jobTags)
       }
     })
+    this.jobTagsEvent.emit(this.tags)
   }
 
   sliceTagName(tag: string): string {
@@ -2759,18 +2759,17 @@ export class JobComponent {
   handleInputConfirm(): void {
     if (this.inputValue && this.tags.indexOf(this.inputValue) === -1 && this.workflowService.isValidTag(this.inputValue)) {
       this.tags = [...this.tags, this.inputValue];
+      this.jobTagsEvent.emit(this.tags);
       if (this.tagsData.length > 0) {
         this.tagsData.forEach(jobTag => {
           if (jobTag.jobName === this.selectedNode.job.jobName) {
             const finalTags = this.tags.filter(tag => !jobTag.jobTags.includes(tag));
-            jobTag.jobTags = [...jobTag.jobTags, ...finalTags];
-            this.jobTagsEvent.emit(jobTag.jobTags);
+            jobTag.jobTags = finalTags;
           }
         });
       } else {
         const newJobTag = { jobName: this.selectedNode.job.jobName, jobTags: this.tags };
         this.tagsData.push(newJobTag);
-        this.jobTagsEvent.emit(newJobTag.jobTags);
       }
     }
     this.inputValue = '';
@@ -13603,6 +13602,9 @@ let data = this.storedArguments[this.storedArguments.length - 1];
     }
 
     onJobTags(jobData: any) {
-      this.jobTags = jobData
+      this.jobTags = jobData;
+      if(this.jobTags.length === 0) {
+        this.storeJobTags();
+      }
     }
 }

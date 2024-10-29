@@ -761,11 +761,12 @@ export class WorkflowComponent {
       nzData: {
         paths: [...new Set(paths)],
         controllerId: this.schedulerIds.selected,
-        preferences: this.preferences
+        preferences: this.preferences,
+        flag: true
       },
       nzFooter: null,
       nzClosable: false,
-      nzMaskClosable: false
+      nzMaskClosable: false,
     }).afterClose.subscribe(result => {
       if (result) {
         this.clearCheckboxes = !this.clearCheckboxes;

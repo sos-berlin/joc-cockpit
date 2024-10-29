@@ -245,8 +245,8 @@ export class UpdateJobComponent {
     if (this.checkboxObjects.radio) {
       obj.withSubagentClusterIdExpr = this.selectedNode.radio == 'expression';
       if (job.agentName1) {
-        obj.subagentClusterId = job.agentName;
-        job.agentName = job.agentName1;
+        obj.subagentClusterId = job.subagentClusterId;
+        obj.agentName = job.agentName1;
       } else {
         obj.agentName = job.agentName;
         delete obj.subagentClusterId;
@@ -359,8 +359,8 @@ export class UpdateJobComponent {
     delete this.selectedNode.radio;
     if (job.agentName1) {
       job.subagentClusterId = job.agentName;
-      // job.agentName = job.agentName1;
-      delete job.agentName1
+      job.agentName = job.agentName1;
+      // delete job.agentName1
     } else {
       delete job.subagentClusterId
     }
