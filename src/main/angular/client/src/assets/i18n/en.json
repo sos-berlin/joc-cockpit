@@ -2535,7 +2535,7 @@
     "label.currentBlock": "Resume from current block",
     "label.resumeLabel": "Resume from label",
     "label.resumeLabelPosition": "Resume from position",
-    "label.force": "Force",
+    "label.force": "force",
     "button.allOrders": "All Orders",
     "button.cancel": "Cancel",
     "button.cancelSoftly": "Softly",
