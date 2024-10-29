@@ -1857,7 +1857,7 @@
     "label.changes": "Changes",
     "label.workflowTags": "Workflow Tags",
     "label.jobTags": "Job Tags",
-    "label.groupTags": "Group Tags",
+    "label.groupTags": "Tag Groups",
     "label.groups": "Groups",
     "label.groupName": "Group Name",
     "label.addGroups": "Add Groups",
