@@ -7596,7 +7596,6 @@ export class GroupTagsComponent {
       });
     })
     if(group){
-      console.log('ggg', group);
       this.selectGroup(group);
     }
   }
@@ -8072,7 +8071,6 @@ export class AddTagsToGropusModalComponent {
       }
     });
     obj.tags = selectedTags;
-    console.log(obj)
     this.coreService.post('tags/group/store', obj).subscribe({
       next: () => {
         this.activeModal.close('DONE');

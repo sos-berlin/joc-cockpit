@@ -1941,6 +1941,7 @@
     "button.deleteGroup": "Supprimer Groupe",
     "button.deleteGroups": "Supprimer les Groupes",
     "button.renameGroup": "Renommer Groupe",
+    "button.assignTags": "Assign Tags",
     "tooltip.setVersion": "Définir la version",
     "placeholder.enterUniqueName": "Entrer un nom d'objet unique",
     "placeholder.enterFileName": "Entrer le nom du fichier",

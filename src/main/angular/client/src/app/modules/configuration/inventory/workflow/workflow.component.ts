@@ -2738,6 +2738,7 @@ export class JobComponent {
     this.tagsData.forEach(jobTag => {
       if(jobTag.jobName === this.selectedNode.job.jobName){
         jobTag.jobTags.pop(removedTag);
+        this.jobTagsEvent.emit(jobTag.jobTags)
       }
     })
   }
@@ -3201,14 +3202,12 @@ export class JobComponent {
         this.tagsData.forEach(jobTag => {
           if (jobTag.jobName === this.selectedNode.job.jobName) {
             const index = jobTag.jobTags.findIndex(tag => tag === tagName);
-            console.log(index, res, 'ggggggggg')
             if (index !== -1) {
               jobTag.jobTags[index] = res;
             }
             this.jobTagsEvent.emit(jobTag.jobTags);
           }
         });
-        console.log(this.tagsData)
       }
     });
   }

@@ -1100,35 +1100,6 @@
           </div>
         </div>
       </div>
-      <div class="b-t p-t-sm font14 _500" translate>
-        inventory.label.jobTags
-        <i (click)="expandCollapseTags()" class="cursor fa fa-lg p-l-sm"
-           [ngClass]="isExpandTag ? 'fa-angle-up' : 'fa-angle-down' "></i>
-      </div>
-      <div *ngIf="isExpandTag">
-        <div *ngFor="let job of tagsData">
-          <div class="p-l-sm p-t-sm" *ngFor="let tag of job.jobTags">
-            <div class="btn-group dropdown">
-              <button [nzDropdownMenu]="jobTagMenu" class="btn-drop more-option-h" nz-dropdown
-                      nzTrigger="click" type="button">
-                <i class="fa fa-ellipsis-h"></i>
-              </button>
-              <nz-dropdown-menu #jobTagMenu="nzDropdownMenu" role="menu">
-                <ul nz-menu>
-                  <li (click)="renameTag(tag);" nz-menu-item>
-                    <a translate>inventory.button.rename</a></li>
-                  <li (click)="deleteTag(tag);" class="bg-hover-color"
-                      nz-menu-item>
-                    <a translate>inventory.button.delete</a></li>
-                </ul>
-              </nz-dropdown-menu>
-            </div>
-            <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
-            <span class="p-l-6">{{tag}}</span>
-          </div>
-        </div>
-
-      </div>
     </nz-tab>
     <nz-tab *ngIf="!isModal" [nzTitle]="'workflow.tab.nodeProperties' | translate">
       <div class="job-property-editor">

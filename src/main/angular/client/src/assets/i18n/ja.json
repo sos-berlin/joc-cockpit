@@ -1941,6 +1941,7 @@
     "button.deleteGroup": "Delete Group",
     "button.deleteGroups": "Delete Groups",
     "button.renameGroup": "Rename Group",
+    "button.assignTags": "Assign Tags",
     "tooltip.setVersion": "バージョン設定",
     "placeholder.enterUniqueName": "ユニークなオブジェクト名を入力",
     "placeholder.enterFileName": "ファイル名を入力",
