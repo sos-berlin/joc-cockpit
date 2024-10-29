@@ -2,6 +2,7 @@ import {
   Component,
   Directive,
   EventEmitter, forwardRef,
+  inject,
   Input,
   Output,
   SimpleChanges,
@@ -10,7 +11,7 @@ import {
 import {Subject, Subscription} from 'rxjs';
 import {ActivatedRoute} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
-import {NzModalService} from 'ng-zorro-antd/modal';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {isArray, isEmpty} from 'underscore';
 import {takeUntil} from 'rxjs/operators';
 import {SaveService} from '../../services/save.service';
@@ -193,6 +194,86 @@ export class OrderPieChartComponent {
       }
     }
     this.ordersData = ordersData;
+  }
+}
+
+@Component({
+  selector: 'app-all-order-resume',
+  templateUrl: './all-order-resume-dialog.html',
+})
+export class AllOrderResumeModelComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+
+  preferences: any;
+  submitted = false;
+  required = false;
+  display: any;
+  comments: any = {};
+  controllerId: string;
+  orderIds: any = [];
+  isFromWorkflow: boolean = false;
+  resumeOrderFrom: string = 'samePosition';
+  resumeObj: any = {
+    auditLog: {}
+  };
+  newPositions: any;
+  positions: any = [];
+
+  constructor(private coreService: CoreService, public activeModal: NzModalRef){}
+
+  ngOnInit(): void {
+    this.preferences = this.modalData.preferences;
+    this.display = this.preferences.auditLog;
+    this.controllerId = this.modalData.controllerId;
+    this.isFromWorkflow = this.modalData.isFromWorkflow;
+    this.comments.radio = 'predefined';
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+      this.required = true;
+      this.display = true;
+    }
+    this.orderIds = this.modalData.orderIds;
+    this.resumeObj.controllerId = this.controllerId;
+    this.resumeObj.orderIds = this.orderIds;
+  }
+
+  onTimeChange(e: any): void {
+    console.log(e)
+    if (e === 'currentBlock') {
+      this.resumeObj.fromCurrentBlock = true;
+      delete this.resumeObj.position;
+    } else if (e === 'label') {
+      delete this.resumeObj.fromCurrentBlock;
+      this.getPositions();
+    } else {
+      delete this.resumeObj.position;
+      delete this.resumeObj.fromCurrentBlock;
+
+    }
+  }
+
+  getPositions(){
+    const obj = {
+      controllerId: this.controllerId,
+      orderIds: this.orderIds
+    }
+    this.coreService.post('orders/resume/positions', obj).subscribe({
+      next: (res) => {
+      this.positions = res.positions;
+      }, error: () => {
+      }
+    });
+  }
+
+  onSubmit(){
+    this.submitted = true;
+    this.coreService.getAuditLogObj(this.comments, this.resumeObj.auditLog);
+    this.coreService.post('orders/resume', this.resumeObj).subscribe({
+          next: () => {
+            this.activeModal.close('DONE');
+          }, error: () => {
+           this.submitted = false;
+          }
+        });
   }
 }
 
@@ -1170,49 +1251,71 @@ export class OrderOverviewComponent {
         }
       });
     } else {
-      const obj: any = {
-        controllerId: this.schedulerIds.selected,
-        orderIds: []
-      };
+      // const obj: any = {
+      //   controllerId: this.schedulerIds.selected,
+      //   orderIds: []
+      // };
+      let orderIds = [];
       resumableOrders.forEach((order) => {
-        obj.orderIds.push(order.orderId);
+        orderIds.push(order.orderId);
       });
-      if (this.preferences.auditLog) {
-        let comments = {
-          radio: 'predefined',
-          type: 'Order',
-          operation: 'Resume',
-          name: ''
-        };
-        const modal = this.modal.create({
-          nzTitle: undefined,
-          nzContent: CommentModalComponent,
-          nzClassName: 'lg',
-          nzData: {
-            comments,
-            obj,
-            url: 'orders/resume'
-          },
-          nzFooter: null,
-          nzClosable: false,
-          nzMaskClosable: false
-        });
-        modal.afterClose.subscribe(result => {
-          if (result) {
-            this.isProcessing = true;
-            this.resetAction(5000);
-            this.resetCheckBox();
-          }
-        });
-      } else {
-        this.isProcessing = true;
-        this.coreService.post('orders/resume', obj).subscribe({
-          next: () => {
-            this.resetCheckBox();
-            this.resetAction(5000);
-          }, error: () => this.resetAction()
-        });
-      }
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: AllOrderResumeModelComponent,
+        nzClassName: 'lg',
+        nzData: {
+          preferences: this.preferences,
+          controllerId: this.schedulerIds.selected,
+          orderIds: orderIds,
+          isFromWorkflow: false
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this.isProcessing = true;
+          this.resetAction(5000);
+          this.resetCheckBox();
+        }
+      });
+      // if (this.preferences.auditLog) {
+      //   let comments = {
+      //     radio: 'predefined',
+      //     type: 'Order',
+      //     operation: 'Resume',
+      //     name: ''
+      //   };
+      //   const modal = this.modal.create({
+      //     nzTitle: undefined,
+      //     nzContent: CommentModalComponent,
+      //     nzClassName: 'lg',
+      //     nzData: {
+      //       comments,
+      //       obj,
+      //       url: 'orders/resume'
+      //     },
+      //     nzFooter: null,
+      //     nzClosable: false,
+      //     nzMaskClosable: false
+      //   });
+      //   modal.afterClose.subscribe(result => {
+      //     if (result) {
+      //       this.isProcessing = true;
+      //       this.resetAction(5000);
+      //       this.resetCheckBox();
+      //     }
+      //   });
+      // } else {
+      //   this.isProcessing = true;
+      //   this.coreService.post('orders/resume', obj).subscribe({
+      //     next: () => {
+      //       this.resetCheckBox();
+      //       this.resetAction(5000);
+      //     }, error: () => this.resetAction()
+      //   });
+      // }
     }
   }
 

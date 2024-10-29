@@ -34,7 +34,8 @@ export class PostModalComponent {
   display = false;
   required = false;
   comments: any = {};
-
+  flag = false;
+  workflowPaths: any;
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
@@ -43,7 +44,8 @@ export class PostModalComponent {
     this.preferences = this.modalData.preferences;
     this.board = this.modalData.board;
     this.notice = this.modalData.notice;
-
+    this.flag = this.modalData.flag;
+    this.workflowPaths = this.modalData.workflowPaths;
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.postObj.timeZone = this.coreService.getTimeZone();
@@ -69,36 +71,58 @@ export class PostModalComponent {
 
   onSubmit(): void {
     this.submitted = true;
+    const paths = Array.isArray(this.modalData.paths)
+      ? this.modalData.paths
+      : this.modalData.paths?.path
+        ? [this.modalData.paths.path]
+        : [];
+
+    const expectedNotices = this.workflowPaths.map((data: any) => {
+      const notice = { noticeBoardPath: data.noticePath };
+      if (this.flag) {
+        notice['workflowPaths'] = data.workflowPaths;
+      }
+      return notice;
+    });
+
     const obj: any = {
       controllerId: this.controllerId,
-      noticeBoardPaths: this.board ? [this.board.path] : this.modalData.paths,
-      noticeId: this.postObj.noticeId,
       timeZone: this.postObj.timeZone,
       auditLog: {}
     };
 
+
+    if (this.flag) {
+      obj.expectedNotices = expectedNotices;
+    } else {
+      obj.notices = expectedNotices;
+    }
+
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+
     if (this.postObj.at === 'date') {
       if (this.postObj.fromDate) {
         this.coreService.getDateAndTime(this.postObj);
-        obj.endOfLife = this.coreService.getDateByFormat(this.postObj.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
+        const endOfLifeDate = this.coreService.getDateByFormat(this.postObj.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
+        obj.endOfLife = endOfLifeDate;
       }
     } else if (this.postObj.at === 'later') {
       const atTime = this.postObj.atTime;
       const convertedTime = this.coreService.convertToSeconds(atTime);
-      if (convertedTime !== 'Invalid time format') {
-        obj.endOfLife = convertedTime;
-      } else {
-        obj.endOfLife = atTime;
-      }
+      obj.endOfLife = convertedTime !== 'Invalid time format' ? convertedTime : atTime;
     }
-    this.coreService.post('notices/post', obj).subscribe({
+
+    const endpoint = this.flag ? 'notices/post/expected' : 'notices/post';
+
+    this.coreService.post(endpoint, obj).subscribe({
       next: (res) => {
         this.submitted = false;
         this.activeModal.close(res);
-      }, error: () => this.submitted = false
+      },
+      error: () => this.submitted = false
     });
   }
+
 }
 
 @Component({

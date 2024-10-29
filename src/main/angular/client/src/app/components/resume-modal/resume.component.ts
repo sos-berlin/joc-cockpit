@@ -33,6 +33,10 @@ export class ResumeOrderModalComponent {
     indeterminate: false
   }
 
+  previousPositions: any;
+  isPositionChanged: boolean = true;
+  isForced: boolean = false;
+
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
               private modal: NzModalService, private workflowService: WorkflowService) {
   }
@@ -191,6 +195,7 @@ export class ResumeOrderModalComponent {
         }
       }
     }
+    obj.force = this.isForced;
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     if (this.withCyclePosition && this.order.cycleEndTime) {
@@ -237,6 +242,12 @@ export class ResumeOrderModalComponent {
   }
 
   onDrop(position): void {
+    if (this.previousPositions !== position) {
+      this.isPositionChanged = false;
+    } else {
+      this.isPositionChanged = true;
+    }
+    this.previousPositions = position;
     let index;
     if (position && position.match('$')) {
       const positionArr = position.split('$');

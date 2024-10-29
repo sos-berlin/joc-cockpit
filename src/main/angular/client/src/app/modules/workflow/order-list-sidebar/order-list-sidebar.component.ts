@@ -18,6 +18,7 @@ import {OrderActionComponent} from '../../order-overview/order-action/order-acti
 import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume.component';
 import {OrderPipe} from "../../../pipes/core.pipe";
 import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
+import { AllOrderResumeModelComponent } from '../../order-overview/order-overview.component';
 
 @Component({
   selector: 'app-order-list-sidebar',
@@ -322,28 +323,63 @@ export class OrderListSidebarComponent implements OnChanges {
       }
     });
   } else {
-    const obj: any = {
-      controllerId: this.schedulerId,
-      orderIds: []
-    };
-    map.forEach((order) => {
-      obj.orderIds.push(order.orderId);
-    });
-    if (this.preferences.auditLog) {
-      let comments = {
-        radio: 'predefined',
-        type: 'Order',
-        operation: 'Resume',
-        name: ''
-      };
+    // const obj: any = {
+    //   controllerId: this.schedulerId,
+    //   orderIds: []
+    // };
+    // map.forEach((order) => {
+    //   obj.orderIds.push(order.orderId);
+    // });
+    // if (this.preferences.auditLog) {
+    //   let comments = {
+    //     radio: 'predefined',
+    //     type: 'Order',
+    //     operation: 'Resume',
+    //     name: ''
+    //   };
+    //   const modal = this.modal.create({
+    //     nzTitle: undefined,
+    //     nzContent: CommentModalComponent,
+    //     nzClassName: 'lg',
+    //     nzData: {
+    //       comments,
+    //       obj,
+    //       url: 'orders/resume'
+    //     },
+    //     nzFooter: null,
+    //     nzClosable: false,
+    //     nzMaskClosable: false
+    //   });
+    //   modal.afterClose.subscribe(result => {
+    //     if (result) {
+    //       this.isProcessing = true;
+    //       this.resetAction(5000);
+    //       this.resetCheckBox();
+    //     }
+    //   });
+    // } else {
+    //   this.isProcessing = true;
+    //   this.coreService.post('orders/resume', obj).subscribe({
+    //     next: () => {
+    //       this.resetCheckBox();
+    //       this.resetAction(5000);
+    //     },
+    //     error: () => this.resetAction()
+    //   });
+    // }
+    let orderIds = [];
+      map.forEach((order) => {
+        orderIds.push(order.orderId);
+      });
       const modal = this.modal.create({
         nzTitle: undefined,
-        nzContent: CommentModalComponent,
+        nzContent: AllOrderResumeModelComponent,
         nzClassName: 'lg',
         nzData: {
-          comments,
-          obj,
-          url: 'orders/resume'
+          preferences: this.preferences,
+          controllerId: this.schedulerId,
+          orderIds: orderIds,
+          isFromWorkflow: true
         },
         nzFooter: null,
         nzClosable: false,
@@ -356,16 +392,6 @@ export class OrderListSidebarComponent implements OnChanges {
           this.resetCheckBox();
         }
       });
-    } else {
-      this.isProcessing = true;
-      this.coreService.post('orders/resume', obj).subscribe({
-        next: () => {
-          this.resetCheckBox();
-          this.resetAction(5000);
-        },
-        error: () => this.resetAction()
-      });
-    }
   }
 }
 

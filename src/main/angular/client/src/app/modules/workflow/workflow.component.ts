@@ -559,6 +559,7 @@ export class WorkflowComponent {
   sideBar: any = {};
   reloadState = 'no';
   broadNames = new Map();
+  broadPath: any = []
 
   objectType = 'WORKFLOW';
   clearCheckboxes = false;
@@ -742,10 +743,31 @@ export class WorkflowComponent {
   }
 
   bulkUpdate(data): void {
+    const noticePath = data.list[0];
+
+    const newEntry = {
+      noticePath: noticePath,
+      workflowPaths: [data.key]
+    };
+
+    const existingEntry = this.broadPath.find(item => item.noticePath === noticePath);
+
+    if (existingEntry) {
+
+      if (!existingEntry.workflowPaths.includes(data.key)) {
+        this.broadPath.push(newEntry);
+      }
+    } else {
+      this.broadPath.push(newEntry);
+    }
+
+    // Update broadNames map
     this.broadNames.set(data.key, data.list);
-    if (data.list.length == 0) {
+
+    if (data.list.length === 0) {
       this.broadNames.delete(data.key);
     }
+
   }
 
   postAllNotices(): void {
@@ -759,7 +781,7 @@ export class WorkflowComponent {
       nzClassName: 'lg',
       nzAutofocus: null,
       nzData: {
-        paths: [...new Set(paths)],
+        workflowPaths: this.broadPath,
         controllerId: this.schedulerIds.selected,
         preferences: this.preferences,
         flag: true
