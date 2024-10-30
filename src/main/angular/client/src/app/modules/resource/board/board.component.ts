@@ -35,6 +35,7 @@ export class PostModalComponent {
   required = false;
   comments: any = {};
   flag = false;
+  singleNotice = false;
   workflowPaths: any;
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
@@ -45,6 +46,7 @@ export class PostModalComponent {
     this.board = this.modalData.board;
     this.notice = this.modalData.notice;
     this.flag = this.modalData.flag;
+    this.singleNotice = this.modalData.singleNotice;
     this.workflowPaths = this.modalData.workflowPaths;
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
@@ -71,32 +73,48 @@ export class PostModalComponent {
 
   onSubmit(): void {
     this.submitted = true;
-    const paths = Array.isArray(this.modalData.paths)
-      ? this.modalData.paths
-      : this.modalData.paths?.path
-        ? [this.modalData.paths.path]
-        : [];
+    let expectedNotices;
+    const paths = this.modalData.paths || [];
 
-    const expectedNotices = this.workflowPaths.map((data: any) => {
-      const notice = { noticeBoardPath: data.noticePath };
-      if (this.flag) {
-        notice['workflowPaths'] = data.workflowPaths;
-      }
-      return notice;
-    });
-
-    const obj: any = {
+    if(this.flag){
+       expectedNotices = this.workflowPaths.map((data: any) => {
+        const notice = { noticeBoardPath: data.noticePath, workflowPaths: data.workflowPaths };
+        return notice;
+      });
+    }else if (this.singleNotice) {
+      expectedNotices = [{
+        noticeBoardPath: this.modalData.paths.path,
+        workflowPaths: [this.workflowPaths]
+      }];
+    }
+        const obj: any = {
       controllerId: this.controllerId,
       timeZone: this.postObj.timeZone,
       auditLog: {}
     };
 
 
-    if (this.flag) {
+    if (this.flag || this.singleNotice) {
       obj.expectedNotices = expectedNotices;
-    } else {
-      obj.notices = expectedNotices;
+    }else if (this.board) {
+      if (!obj.notices) {
+        obj.notices = [];
+      }
+
+      const noticeBoardPath = this.board.path;
+      obj.notices.push({ noticeBoardPath: noticeBoardPath });
     }
+    else {
+      if (!obj.notices) {
+        obj.notices = {};
+      }
+
+      // Create an array of noticeBoardPath objects from paths
+      obj.notices = paths.map((path: any) => {
+        return { noticeBoardPath: path };
+      });
+    }
+
 
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
@@ -112,7 +130,7 @@ export class PostModalComponent {
       obj.endOfLife = convertedTime !== 'Invalid time format' ? convertedTime : atTime;
     }
 
-    const endpoint = this.flag ? 'notices/post/expected' : 'notices/post';
+    const endpoint = this.flag || this.singleNotice ? 'notices/post/expected' : 'notices/post';
 
     this.coreService.post(endpoint, obj).subscribe({
       next: (res) => {

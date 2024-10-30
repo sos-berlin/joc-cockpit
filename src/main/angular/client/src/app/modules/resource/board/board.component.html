@@ -350,7 +350,6 @@
                             <th *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
                                 [nzShowCheckbox]="true"
                                 [(nzChecked)]="board.checked"
-                                [nzDisabled]="board.numOfNotices === board.numOfExpectingOrders"
                                 [nzIndeterminate]="board.indeterminate"
                                 (nzCheckedChange)="checkAll($event, board)"
                                 class="chk"
@@ -370,7 +369,7 @@
                             <tr>
                               <td
                                 *ngIf="permission.currentController && permission.currentController.noticeBoards.delete" [nzChecked]="object.mapOfCheckedId.has(notice.id +'__' + board.path)"
-                                [nzDisabled]="notice.state._text === 'EXPECTED'"  (nzCheckedChange)="onItemChecked(board, notice, $event)"
+                                  (nzCheckedChange)="onItemChecked(board, notice, $event)"
                                 [nzShowCheckbox]="true"></td>
                               <td
                                 *ngIf="permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)">

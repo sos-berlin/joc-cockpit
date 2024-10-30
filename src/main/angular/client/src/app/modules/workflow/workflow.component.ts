@@ -743,32 +743,28 @@ export class WorkflowComponent {
   }
 
   bulkUpdate(data): void {
-    const noticePath = data.list[0];
+    data.list.forEach((noticePath) => {
+      const newEntry = {
+        noticePath: noticePath,
+        workflowPaths: [data.key]
+      };
 
-    const newEntry = {
-      noticePath: noticePath,
-      workflowPaths: [data.key]
-    };
+      const isDuplicate = this.broadPath.some(item =>
+        item.noticePath === noticePath &&
+        item.workflowPaths.includes(data.key)
+      );
 
-    const existingEntry = this.broadPath.find(item => item.noticePath === noticePath);
-
-    if (existingEntry) {
-
-      if (!existingEntry.workflowPaths.includes(data.key)) {
+      if (!isDuplicate) {
         this.broadPath.push(newEntry);
       }
-    } else {
-      this.broadPath.push(newEntry);
-    }
+    });
 
-    // Update broadNames map
     this.broadNames.set(data.key, data.list);
-
     if (data.list.length === 0) {
       this.broadNames.delete(data.key);
     }
-
   }
+
 
   postAllNotices(): void {
     let paths = [];

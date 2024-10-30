@@ -34,7 +34,7 @@ export class ResumeOrderModalComponent {
   }
 
   previousPositions: any;
-  isPositionChanged: boolean = true;
+  isPositionChanged: boolean = false;
   isForced: boolean = false;
 
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
@@ -243,9 +243,9 @@ export class ResumeOrderModalComponent {
 
   onDrop(position): void {
     if (this.previousPositions !== position) {
-      this.isPositionChanged = false;
-    } else {
       this.isPositionChanged = true;
+    } else {
+      this.isPositionChanged = false;
     }
     this.previousPositions = position;
     let index;

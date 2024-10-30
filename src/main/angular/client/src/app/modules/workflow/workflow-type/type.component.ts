@@ -598,11 +598,11 @@ export class TypeComponent {
         nzAutofocus: null,
         nzData: {
           board: paths ? undefined : {path: this.broadName},
-          paths: paths,
+          paths: paths ? undefined : {path: this.broadName},
           controllerId: this.schedulerId,
           preferences: this.preferences,
-          flag: true,
-          workflowPaths: this.workflowObj.path
+          workflowPaths: this.workflowObj.path,
+          singleNotice: true
         },
         nzFooter: null,
         nzClosable: false,
