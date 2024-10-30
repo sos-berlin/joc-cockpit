@@ -746,7 +746,8 @@ export class WorkflowComponent {
     data.list.forEach((noticePath) => {
       const newEntry = {
         noticePath: noticePath,
-        workflowPaths: [data.key]
+        workflowPaths: [data.key],
+        isChecked: data.isChecked
       };
 
       const isDuplicate = this.broadPath.some(item =>

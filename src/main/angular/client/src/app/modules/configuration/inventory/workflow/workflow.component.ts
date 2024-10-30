@@ -1453,6 +1453,7 @@ export class JobComponent {
   state: any = {};
   isExpandTag = true;
   tagsData: any;
+  previousJobName: string;
   jobresources = {
     list: []
   }
@@ -2547,6 +2548,21 @@ export class JobComponent {
     if (!this.selectedNode.obj.jobName) {
       this.selectedNode.obj.jobName = 'job';
     }
+    console.log(this.selectedNode.obj.jobName,"++++")
+    console.log(this.previousJobName,"previousJobName")
+    if(this.previousJobName === undefined) {
+      this.previousJobName = this.selectedNode.obj.jobName
+    }
+    const obj = {
+      path: this.workflowPath,
+      jobName: this.previousJobName,
+      newJobName: this.selectedNode.obj.jobName
+    }
+    this.coreService.post('/inventory/workflow/tags/job/rename', obj).subscribe({
+      next: () => {
+      }, error: () => {
+      }
+    });
     this.selectedNode.obj.jobName = this.selectedNode.obj.jobName.trim();
     if (this.selectedNode.job.jobName !== this.selectedNode.obj.jobName) {
       this.selectedNode.job.jobName = this.selectedNode.obj.jobName;
@@ -2562,6 +2578,7 @@ export class JobComponent {
       this.selectedNode.obj.label = this.selectedNode.obj.jobName;
     }
     this.saveToHistory();
+    this.previousJobName = this.selectedNode.obj.jobName
   }
 
   addArgument(): void {
@@ -12953,9 +12970,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
   }
 
   private saveJSON(noValidate): void {
-    if (this.jobTags.length > 0) {
-      this.storeJobTags();
-    }
+
     if (this.selectedNode) {
       if (noValidate === 'false' || noValidate === false) {
         this.initEditorConf(this.editor, false, true);
@@ -13603,8 +13618,6 @@ let data = this.storedArguments[this.storedArguments.length - 1];
 
     onJobTags(jobData: any) {
       this.jobTags = jobData;
-      if(this.jobTags.length === 0) {
         this.storeJobTags();
-      }
     }
 }

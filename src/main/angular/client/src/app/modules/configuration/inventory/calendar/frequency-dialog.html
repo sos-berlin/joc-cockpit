@@ -114,7 +114,7 @@
                     ></app-date-input>
                   </div>
                   <div class="col-sm-1">
-                    <button type="button" class="btn btn-primary btn-sm m-t-xxs" (click)="addDates()">
+                    <button type="button" class="btn btn-primary btn-sm m-t-xxs" (click)="addDates()" [disabled]="!frequency.specificDate">
                       <span class="fa fa-plus"></span>
                     </button>
                   </div>

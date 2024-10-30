@@ -677,7 +677,7 @@ export class TypeComponent {
               }
             });
           }
-          this.bulkUpdate.emit({key: this.workflowObj.path, list: this.broadNames});
+          this.bulkUpdate.emit({key: this.workflowObj.path, list: this.broadNames, isChecked});
         }
       }
     }

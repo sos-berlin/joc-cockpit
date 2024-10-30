@@ -7,6 +7,7 @@ import {CalendarService} from '../../../../services/calendar.service';
 import {NZ_MODAL_DATA} from 'ng-zorro-antd/modal';
 import * as moment from "moment/moment";
 import {NgModel} from "@angular/forms";
+import { DatePipe } from '@angular/common';
 
 declare const Holidays;
 declare const $;
@@ -56,7 +57,7 @@ export class AddRestrictionComponent {
   hd = new Holidays.default();
   frequencyEditIndex: number = -1;
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, public modal: NzModalService, public calendarService: CalendarService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, public modal: NzModalService, public calendarService: CalendarService, private datePipe: DatePipe) {
   }
 
   ngOnInit(): void {
@@ -519,18 +520,23 @@ export class AddRestrictionComponent {
       let flag1 = false;
       for (let i = 0; i < this.calendar.frequencyList.length; i++) {
         if (this.frequency.tab == this.calendar.frequencyList[i].tab) {
-          if (this.frequency.tab === 'weekDays') {
+          if (this.frequency.tab === 'weekDays'
+            && this.calendar.frequencyList[i].str === this.frequency.str
+            && JSON.stringify(this.calendar.frequencyList[i].days) === JSON.stringify(this.frequency.days)
+            && this.datePipe.transform(this.calendar.frequencyList[i].startingWithW) === this.datePipe.transform(this.frequency.startingWithW)
+            && this.datePipe.transform(this.calendar.frequencyList[i].endOnW) === this.datePipe.transform(this.frequency.endOnW)
+          ) {
             if (this.frequency.months && this.frequency.months.length > 0) {
               if (this.frequency.months == this.calendar.frequencyList[i].months || isEqual(this.calendar.frequencyList[i].months, this.frequency.months)) {
                 if (isEqual(this.calendar.frequencyList[i].days, this.frequency.days)) {
-                  // flag1 = true;
+                  flag1 = true;
                   break;
                 }
-                // this.calendar.frequencyList[i].days = this.coreService.clone(this.frequency.days);
-                // this.calendar.frequencyList[i].startingWithW = clone(this.frequency.startingWithW);
-                // this.calendar.frequencyList[i].endOnW = clone(this.frequency.endOnW);
-                // this.calendar.frequencyList[i].str = clone(this.frequency.str);
-                // flag1 = true;
+                this.calendar.frequencyList[i].days = this.coreService.clone(this.frequency.days);
+                this.calendar.frequencyList[i].startingWithW = clone(this.frequency.startingWithW);
+                this.calendar.frequencyList[i].endOnW = clone(this.frequency.endOnW);
+                this.calendar.frequencyList[i].str = clone(this.frequency.str);
+                flag1 = true;
                 break;
               } else {
                 if (this.calendar.frequencyList[i].months) {
@@ -540,19 +546,19 @@ export class AddRestrictionComponent {
                         this.calendar.frequencyList[i].months.push(this.frequency.months[j]);
                       }
                     }
-                    // this.calendar.frequencyList[i].str = clone(this.frequency.str);
-                    // flag1 = true;
+                    this.calendar.frequencyList[i].str = clone(this.frequency.str);
+                    flag1 = true;
                     break;
                   }
                 }
               }
             } else {
               if (!this.calendar.frequencyList[i].months) {
-                // this.calendar.frequencyList[i].days = this.coreService.clone(this.frequency.days);
-                // this.calendar.frequencyList[i].startingWithW = this.frequency.startingWithW;
-                // this.calendar.frequencyList[i].endOnW = this.frequency.endOnW;
-                // this.calendar.frequencyList[i].str = clone(this.frequency.str);
-                // flag1 = true;
+                this.calendar.frequencyList[i].days = this.coreService.clone(this.frequency.days);
+                this.calendar.frequencyList[i].startingWithW = this.frequency.startingWithW;
+                this.calendar.frequencyList[i].endOnW = this.frequency.endOnW;
+                this.calendar.frequencyList[i].str = clone(this.frequency.str);
+                flag1 = true;
                 break;
               }
             }
@@ -626,21 +632,15 @@ export class AddRestrictionComponent {
               }
             }
           }
-          else if (this.frequency.tab === 'specificWeekDays') {
-            if (this.frequency.months && this.calendar.frequencyList[i].months) {
-              if (!isEqual(this.calendar.frequencyList[i].months, this.frequency.months)) {
-                if (isEqual(this.calendar.frequencyList[i].specificWeekDay, this.frequency.specificWeekDay) && isEqual(this.calendar.frequencyList[i].which, this.frequency.which)) {
-                  for (let j = 0; j < this.frequency.months.length; j++) {
-                    if (this.calendar.frequencyList[i].months.indexOf(this.frequency.months[j]) == -1) {
-                      this.calendar.frequencyList[i].months.push(this.frequency.months[j]);
-                    }
-                  }
-                  // this.calendar.frequencyList[i].str = this.calendarService.freqToStr(this.calendar.frequencyList[i], this.dateFormat);
-                  // flag1 = true;
-                  break;
-                }
-              }
-            }
+          else if (this.frequency.tab === 'specificWeekDays'
+            && this.calendar.frequencyList[i].str === this.frequency.str
+            && this.datePipe.transform(this.calendar.frequencyList[i].startingWithS) === this.datePipe.transform(this.frequency.startingWithS)
+            && this.datePipe.transform(this.calendar.frequencyList[i].endOnS) === this.datePipe.transform(this.frequency.endOnS)) {
+              this.calendar.frequencyList[i].startingWithS = clone(this.frequency.startingWithS);
+              this.calendar.frequencyList[i].endOnS = clone(this.frequency.endOnS);
+              this.calendar.frequencyList[i].str = clone(this.frequency.str);
+              flag1 = true;
+              break;
           }
           else if (this.frequency.tab == 'nationalHoliday') {
             flag1 = true;
@@ -663,22 +663,31 @@ export class AddRestrictionComponent {
               }
             });
 
-          } else if (this.frequency.tab === 'specificDays') {
+          } else if (this.frequency.tab === 'specificDays'
+            && this.areArraysEqual(this.calendar.frequencyList[i].dates, this.frequency.dates)) {
             this.frequency.dates = [];
             for (let j = 0; j < this.tempItems.length; j++) {
               this.frequency.dates.push(this.coreService.getStringDate(this.tempItems[j].startDate));
             }
-            // this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
-            // this.calendar.frequencyList[i].dates = this.coreService.clone(this.frequency.dates);
-            // this.calendar.frequencyList[i].str = clone(this.frequency.str);
-            // flag1 = true;
+            this.frequency.str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
+            this.calendar.frequencyList[i].dates = this.coreService.clone(this.frequency.dates);
+            this.calendar.frequencyList[i].str = clone(this.frequency.str);
+            flag1 = true;
             break;
-          } else if (this.frequency.tab === 'every') {
+          } else if (this.frequency.tab === 'every'
+            && this.calendar.frequencyList[i].str === this.frequency.str
+            && this.datePipe.transform(this.calendar.frequencyList[i].startingWith) === this.datePipe.transform(this.frequency.startingWith)
+            && this.datePipe.transform(this.calendar.frequencyList[i].endOn) === this.datePipe.transform(this.frequency.endOn)
+            && this.calendar.frequencyList[i].interval === this.frequency.interval
+            && this.calendar.frequencyList[i].year === this.frequency.year) {
             if (isEqual(this.frequency.dateEntity, this.calendar.frequencyList[i].dateEntity) && isEqual(this.frequency.startingWith, this.calendar.frequencyList[i].startingWith)) {
-              // this.calendar.frequencyList[i].str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
-              // this.calendar.frequencyList[i].interval = clone(this.frequency.interval);
-              // this.calendar.frequencyList[i].str = clone(this.frequency.str);
-              // flag1 = true;
+              this.calendar.frequencyList[i].str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
+              this.calendar.frequencyList[i].interval = clone(this.frequency.interval);
+              this.calendar.frequencyList[i].str = clone(this.frequency.str);
+              this.calendar.frequencyList[i].startingWith = clone(this.frequency.startingWith);
+              this.calendar.frequencyList[i].endOn = clone(this.frequency.endOn);
+              this.calendar.frequencyList[i].year = clone(this.frequency.year);
+              flag1 = true;
               break;
             }
           }
@@ -732,6 +741,17 @@ export class AddRestrictionComponent {
     this.frequency.nationalHoliday = [];
     this.holidayDays.checked = false;
     this.editor.isEnable = false;
+  }
+
+  areArraysEqual(arr1, arr2) {
+    // First, check if both arrays have the same length
+    if (arr1.length !== arr2.length) return false;
+
+    // Sort both arrays and check if every element is equal
+    const sortedArr1 = [...arr1].sort();
+    const sortedArr2 = [...arr2].sort();
+
+    return sortedArr1.every((value, index) => value === sortedArr2[index]);
   }
 
   editFrequency(data, frequencyIndex): void {

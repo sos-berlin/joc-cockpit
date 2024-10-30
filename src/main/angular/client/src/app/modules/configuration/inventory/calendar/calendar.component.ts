@@ -559,26 +559,31 @@ export class FrequencyModalComponent {
       datesArr = this.calendarService.groupByDates(this.frequency.nationalHoliday);
       _dates = clone(datesArr);
     }
-
     if (this.frequencyList.length > 0) {
       let flag1 = false;
       for (let i = 0; i < this.frequencyList.length; i++) {
         if (this.frequency.tab === this.frequencyList[i].tab) {
-          if (this.frequency.tab === 'weekDays') {
-            // this.frequencyList[i].days = clone(this.frequency.days);
-            // this.frequencyList[i].startingWithW = this.frequency.startingWithW;
-            // this.frequencyList[i].endOnW = this.frequency.endOnW;
-            // this.frequencyList[i].str = clone(this.frequency.str);
-            // flag1 = true;
+          if (this.frequency.tab === 'weekDays'
+            && this.frequencyList[i].str === this.frequency.str
+            && JSON.stringify(this.frequencyList[i].days) === JSON.stringify(this.frequency.days)
+            && this.datePipe.transform(this.frequencyList[i].startingWithW) === this.datePipe.transform(this.frequency.startingWithW)
+            && this.datePipe.transform(this.frequencyList[i].endOnW) === this.datePipe.transform(this.frequency.endOnW)) {
+            this.frequencyList[i].days = clone(this.frequency.days);
+            this.frequencyList[i].startingWithW = clone(this.frequency.startingWithW);
+            this.frequencyList[i].endOnW = clone(this.frequency.endOnW);
+            this.frequencyList[i].str = clone(this.frequency.str);
+            flag1 = true;
             break;
-          } else if (this.frequency.tab == 'monthDays' && this.frequency.isUltimos == 'months' && this.frequencyList[i].isUltimos == 'months') {
+          } else if (this.frequency.tab == 'monthDays' && this.frequency.isUltimos == 'months'
+            && this.frequencyList[i].isUltimos == 'months' ) {
             // this.frequencyList[i].selectedMonths = clone(this.frequency.selectedMonths);
             // this.frequencyList[i].startingWithM = this.frequency.startingWithM;
             // this.frequencyList[i].endOnM = this.frequency.endOnM;
             // this.frequencyList[i].str = clone(this.frequency.str);
             // flag1 = true;
             break;
-          } else if (this.frequency.tab == 'monthDays' && this.frequency.isUltimos != 'months' && this.frequencyList[i].isUltimos !== 'months') {
+          } else if (this.frequency.tab == 'monthDays' && this.frequency.isUltimos != 'months'
+            && this.frequencyList[i].isUltimos !== 'months' ) {
             // this.frequencyList[i].selectedMonthsU = clone(this.frequency.selectedMonthsU);
             // this.frequencyList[i].startingWithM = this.frequency.startingWithM;
             // this.frequencyList[i].endOnM = this.frequency.endOnM;
@@ -606,18 +611,37 @@ export class FrequencyModalComponent {
               }
             });
 
-          } else if (this.frequency.tab == 'specificDays') {
-            // this.updateFrequencyData(null);
-            // this.frequencyList[i].dates = clone(this.frequency.dates);
-            // this.frequencyList[i].str = clone(this.frequency.str);
-            // flag1 = true;
+          } else if (this.frequency.tab == 'specificWeekDays'
+            && this.frequencyList[i].str === this.frequency.str
+            && this.datePipe.transform(this.frequencyList[i].startingWithS) === this.datePipe.transform(this.frequency.startingWithS)
+            && this.datePipe.transform(this.frequencyList[i].endOnS) === this.datePipe.transform(this.frequency.endOnS)) {
+            this.updateFrequencyData(null);
+            this.frequencyList[i].startingWithS = clone(this.frequency.startingWithS);
+            this.frequencyList[i].endOnS = clone(this.frequency.endOnS);
+            this.frequencyList[i].str = clone(this.frequency.str);
+            flag1 = true;
             break;
-          } else if (this.frequency.tab == 'every') {
-            if (isEqual(this.frequency.dateEntity, this.frequencyList[i].dateEntity) && isEqual(this.frequency.startingWith, this.frequencyList[i].startingWith)) {
-              // this.frequencyList[i].str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
-              // this.frequencyList[i].interval = clone(this.frequency.interval);
-              // this.frequencyList[i].str = clone(this.frequency.str);
-              // flag1 = true;
+          } else if (this.frequency.tab == 'specificDays'
+            && this.areArraysEqual(this.frequencyList[i].dates, this.frequency.dates)) {
+            this.updateFrequencyData(null);
+            this.frequencyList[i].dates = clone(this.frequency.dates);
+            this.frequencyList[i].str = clone(this.frequency.str);
+            flag1 = true;
+            break;
+          } else if (this.frequency.tab == 'every'
+            && this.frequencyList[i].str === this.frequency.str
+            && this.datePipe.transform(this.frequencyList[i].startingWith) === this.datePipe.transform(this.frequency.startingWith)
+            && this.datePipe.transform(this.frequencyList[i].endOn) === this.datePipe.transform(this.frequency.endOn)
+            && this.frequencyList[i].interval === this.frequency.interval
+            && this.frequencyList[i].year === this.frequency.year) {
+            if (isEqual(this.frequency.dateEntity, this.frequencyList[i].dateEntity)) {
+              this.frequencyList[i].str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
+              this.frequencyList[i].interval = clone(this.frequency.interval);
+              this.frequencyList[i].str = clone(this.frequency.str);
+              this.frequencyList[i].startingWith = clone(this.frequency.startingWith);
+              this.frequencyList[i].endOn = clone(this.frequency.endOn);
+              this.frequencyList[i].year = clone(this.frequency.year);
+              flag1 = true;
               break;
             }
           }
@@ -661,6 +685,17 @@ export class FrequencyModalComponent {
     this.frequency.nationalHoliday = [];
     this.holidayDays.checked = false;
     this.editor.isEnable = false;
+  }
+
+  areArraysEqual(arr1, arr2) {
+    // First, check if both arrays have the same length
+    if (arr1.length !== arr2.length) return false;
+
+    // Sort both arrays and check if every element is equal
+    const sortedArr1 = [...arr1].sort();
+    const sortedArr2 = [...arr2].sort();
+
+    return sortedArr1.every((value, index) => value === sortedArr2[index]);
   }
 
   saveFrequency(): void {

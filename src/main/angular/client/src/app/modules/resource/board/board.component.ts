@@ -76,12 +76,15 @@ export class PostModalComponent {
     let expectedNotices;
     const paths = this.modalData.paths || [];
 
-    if(this.flag){
-       expectedNotices = this.workflowPaths.map((data: any) => {
-        const notice = { noticeBoardPath: data.noticePath, workflowPaths: data.workflowPaths };
-        return notice;
-      });
-    }else if (this.singleNotice) {
+    if (this.flag) {
+      expectedNotices = this.workflowPaths
+        .filter((data: any) => !data.isChecked) // Filter out items where isChecked is true
+        .map((data: any) => {
+          console.log(data, "data");
+          const notice = { noticeBoardPath: data.noticePath, workflowPaths: data.workflowPaths };
+          return notice;
+        });
+    } else if (this.singleNotice) {
       expectedNotices = [{
         noticeBoardPath: this.modalData.paths.path,
         workflowPaths: [this.workflowPaths]
