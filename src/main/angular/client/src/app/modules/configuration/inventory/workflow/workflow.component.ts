@@ -2548,17 +2548,15 @@ export class JobComponent {
     if (!this.selectedNode.obj.jobName) {
       this.selectedNode.obj.jobName = 'job';
     }
-    console.log(this.selectedNode.obj.jobName,"++++")
-    console.log(this.previousJobName,"previousJobName")
     if(this.previousJobName === undefined) {
-      this.previousJobName = this.selectedNode.obj.jobName
+      this.previousJobName = 'job'
     }
     const obj = {
       path: this.workflowPath,
       jobName: this.previousJobName,
       newJobName: this.selectedNode.obj.jobName
     }
-    this.coreService.post('/inventory/workflow/tags/job/rename', obj).subscribe({
+    this.coreService.post('inventory/workflow/tags/job/rename', obj).subscribe({
       next: () => {
       }, error: () => {
       }

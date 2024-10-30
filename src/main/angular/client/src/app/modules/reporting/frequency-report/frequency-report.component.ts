@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, NgZone , Input, Output, ViewChild} from '@angular/core';
 import {NzModalService} from "ng-zorro-antd/modal";
 import html2canvas from 'html2canvas';
 import {jsPDF} from "jspdf";
@@ -54,7 +54,7 @@ export class FrequencyReportComponent {
   /** Reporting */
   @ViewChild('content') content: ElementRef;
 
-  constructor(private modal: NzModalService, private coreService: CoreService,
+  constructor(private modal: NzModalService, private coreService: CoreService,private ngZone: NgZone,
               private authService: AuthService, private elementRef: ElementRef, private translate: TranslateService) {
 
   }
@@ -549,11 +549,13 @@ removeCard(cardId: any): void {
       }
     };
 
-    new Chart(canvas, {
-      type: 'doughnut',
-      data: chartData,
-      plugins: [innerLabelPlugin, htmlLegendPlugin],
-      options: chartOptions
+    this.ngZone.runOutsideAngular(() => {
+      new Chart(canvas, {
+        type: 'doughnut',
+        data: chartData,
+        plugins: [innerLabelPlugin, htmlLegendPlugin],
+        options: chartOptions
+      });
     });
   }
 
@@ -950,7 +952,7 @@ sort(type: string): void {
         pdfWidth = pdfHeight * aspectRatio;
       }
 
-    
+
       if (pdfWidth > contentWidth) {
         pdfWidth = contentWidth;
         pdfHeight = pdfWidth / aspectRatio;

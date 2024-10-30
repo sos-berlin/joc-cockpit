@@ -640,7 +640,6 @@ export class TypeComponent {
           const elements: any = document.querySelectorAll(`[data-id-n="${id}"]`);
           let isChecked = false;
 
-          // Check if any element has the checkbox checked
           elements.forEach(element => {
             if (element.getAttribute('data-id-a') == `chk_${this.workflowObj.path}`) {
               if (element.parentNode?.classList.contains('ant-checkbox-checked')) {
@@ -649,9 +648,7 @@ export class TypeComponent {
             }
           });
 
-          // Toggle checkbox and update broadNames
           if (isChecked) {
-            // If checked, remove from broadNames and uncheck elements
             this.broadNames = this.broadNames.filter(item => item != id);
             elements.forEach(element => {
               if (element.getAttribute('data-id-a') == `chk_${this.workflowObj.path}`) {
@@ -659,7 +656,6 @@ export class TypeComponent {
               }
             });
           } else {
-            // If unchecked, add to broadNames and check elements
             this.broadNames.push(id);
             this.broadNames = [...new Set(this.broadNames)];
             elements.forEach(element => {
