@@ -2535,7 +2535,7 @@
     "label.currentBlock": "Vom aktuellen Block wiederaufnehmen",
     "label.resumeLabel": "Von Kennung wiederaufnehmen",
     "label.resumeLabelPosition": "Von Position wiederaufnehmen",
-    "label.force": "erzwingen",
+    "label.force": "Wiederaufnahme erzwingen",
     "button.allOrders": "Alle Aufträge",
     "button.cancel": "Abbrechen",
     "button.cancelSoftly": "sachte",

@@ -2535,7 +2535,7 @@
     "label.currentBlock": "Reprendre du bloc actuel",
     "label.resumeLabel": "Reprendre du label",
     "label.resumeLabelPosition": "Reprendre de la position",
-    "label.force": "forcé",
+    "label.force": "Forcer la reprise",
     "button.allOrders": "Tous les Ordres",
     "button.cancel": "Annuler",
     "button.cancelSoftly": "doucement",
