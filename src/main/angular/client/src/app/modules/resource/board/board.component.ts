@@ -80,7 +80,6 @@ export class PostModalComponent {
       expectedNotices = this.workflowPaths
         .filter((data: any) => !data.isChecked) // Filter out items where isChecked is true
         .map((data: any) => {
-          console.log(data, "data");
           const notice = { noticeBoardPath: data.noticePath, workflowPaths: data.workflowPaths };
           return notice;
         });

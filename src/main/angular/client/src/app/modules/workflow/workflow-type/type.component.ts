@@ -634,25 +634,13 @@ export class TypeComponent {
   @HostListener('window:click', ['$event'])
   onClicked(event): void {
     if (event && this.isFirst) {
-      if (event.target.getAttribute('data-id-x')) {
-        this.coreService.navToInventoryTab(event.target.getAttribute('data-id-x'), 'NOTICEBOARD');
-      } else if (event.target.getAttribute('data-id-y')) {
-        this.coreService.showBoard(event.target.getAttribute('data-id-y'));
-      } else if (event.target.getAttribute('data-id-m')) {
-        this.broadName = event.target.getAttribute('data-id-m');
-        try {
-          if (this.menu) {
-            setTimeout(() => {
-              this.nzContextMenuService.create(event, this.menu);
-            }, 0);
-          }
-        } catch (e) {
-        }
-      } else if (event.target.getAttribute('data-id-n')) {
+      if (event.target.getAttribute('data-id-n')) {
         const id = event.target.getAttribute('data-id-n');
         if (id && event.target.getAttribute('data-id-a') == `chk_${this.workflowObj.path}`) {
           const elements: any = document.querySelectorAll(`[data-id-n="${id}"]`);
           let isChecked = false;
+
+          // Check if any element has the checkbox checked
           elements.forEach(element => {
             if (element.getAttribute('data-id-a') == `chk_${this.workflowObj.path}`) {
               if (element.parentNode?.classList.contains('ant-checkbox-checked')) {
@@ -660,24 +648,29 @@ export class TypeComponent {
               }
             }
           });
+
+          // Toggle checkbox and update broadNames
           if (isChecked) {
+            // If checked, remove from broadNames and uncheck elements
             this.broadNames = this.broadNames.filter(item => item != id);
             elements.forEach(element => {
               if (element.getAttribute('data-id-a') == `chk_${this.workflowObj.path}`) {
                 element.parentNode?.classList?.remove('ant-checkbox-checked');
               }
             });
-
           } else {
+            // If unchecked, add to broadNames and check elements
             this.broadNames.push(id);
-            this.broadNames = [...new Set(this.broadNames)]
+            this.broadNames = [...new Set(this.broadNames)];
             elements.forEach(element => {
               if (element.getAttribute('data-id-a') == `chk_${this.workflowObj.path}`) {
                 element.parentNode?.classList?.add('ant-checkbox-checked');
               }
             });
           }
-          this.bulkUpdate.emit({key: this.workflowObj.path, list: this.broadNames, isChecked});
+
+          this.bulkUpdate.emit({key: this.workflowObj.path, list: this.broadNames, isChecked: !isChecked});
+
         }
       }
     }
