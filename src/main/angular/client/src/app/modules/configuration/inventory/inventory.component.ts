@@ -1211,7 +1211,8 @@ export class SingleDeployComponent {
             }
 
             if (this.isRevoke || this.operation === 'recall') {
-              refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
+              refObj.selected = refObj.valid && (refObj.released || refObj.deployed);
+              refObj.disabled = !refObj.valid;
             }
 
             this.affectedObjectsByType[type].push(refObj);
@@ -1238,14 +1239,13 @@ export class SingleDeployComponent {
             refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.change = refObj.deployed;
 
+            if (this.isRevoke || this.operation === 'recall') {
+              refObj.selected = false;
+              refObj.disabled = !refObj.valid;
+            }
             if (this.isRemoved) {
               refObj.disabled = false;
               refObj.selected = false;
-            }
-
-            if (this.isRevoke || this.operation === 'recall') {
-              refObj.selected = refObj.valid && (refObj.released || refObj.deployed);
-              refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
             }
 
             this.referencedObjectsByType[type].push(refObj);
@@ -1748,7 +1748,7 @@ export class DeployComponent {
 
             if (this.isRevoke || this.operation === 'recall') {
               refObj.selected = refObj.valid && (refObj.released || refObj.deployed);
-              refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
+              refObj.disabled = !refObj.valid;
             }
             this.affectedObjectsByType[type].push(refObj);
           });
@@ -1774,8 +1774,8 @@ export class DeployComponent {
             }
 
             if (this.isRevoke || this.operation === 'recall') {
-              refObj.selected = refObj.valid && (refObj.released || refObj.deployed);
-              refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
+              refObj.selected = false;
+              refObj.disabled = !refObj.valid;
             }
             this.referencedObjectsByType[type].push(refObj);
 

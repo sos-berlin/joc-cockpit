@@ -87,12 +87,44 @@ export class ConfirmModalComponent {
     this.coreService.post('inventory/dependencies', requestObj).subscribe({
       next: (res: any) => {
         this.dependencies = res.dependencies;
+        this.updateNodeDependencies(this.dependencies);
+
         this.prepareObject(this.dependencies)
       },
       error: (err) => {
       }
     });
   }
+
+  private updateNodeDependencies(dependenciesResponse: any): void {
+    const requestedItems = dependenciesResponse.requestedItems;
+    const affectedItems = dependenciesResponse.affectedItems || [];
+
+    const referencedSet = new Set<string>();
+    requestedItems.forEach(item => {
+      item.references?.forEach(ref => {
+        referencedSet.add(`${ref.name}-${ref.objectType}`);
+      });
+      item.referencedBy?.forEach(refBy => {
+        referencedSet.add(`${refBy.name}-${refBy.objectType}`);
+      });
+    });
+
+    const requestedSet = new Set<string>();
+    requestedItems.forEach(item => {
+      requestedSet.add(`${item.name}-${item.objectType}`);
+    });
+
+    affectedItems.forEach(itemWrapper => {
+      const item = itemWrapper.item;
+      const uniqueKey = `${item.name}-${item.objectType}`;
+      if (!referencedSet.has(uniqueKey) && !requestedSet.has(uniqueKey) &&
+        !this.filteredAffectedItems.some(existing => `${existing.name}-${existing.objectType}` === uniqueKey)) {
+        this.filteredAffectedItems.push(item);
+      }
+    });
+  }
+
   private   prepareObject(dependencies: any): void {
     if (dependencies && dependencies?.requestedItems.length > 0) {
 

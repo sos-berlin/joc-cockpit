@@ -87,12 +87,12 @@
               <i class="fa fa-trash"></i>&nbsp;
               <span translate>common.button.delete</span>
             </button>
-            <button
-              (click)="manageSetting()"
-              *ngIf="(route === '/users' || route === '/users/identity_service') && !adminFilter.isBlocklist && !adminFilter.isSession" class="btn btn-grey btn-sm m-l-12">
-              <i class="fa fa-plus"></i>&nbsp;
-              <span translate>user.button.manageGeneralSetting</span>
-            </button>
+<!--            <button-->
+<!--              (click)="manageSetting()"-->
+<!--              *ngIf="(route === '/users' || route === '/users/identity_service') && !adminFilter.isBlocklist && !adminFilter.isSession" class="btn btn-grey btn-sm m-l-12">-->
+<!--              <i class="fa fa-plus"></i>&nbsp;-->
+<!--              <span translate>user.button.manageGeneralSetting</span>-->
+<!--            </button>-->
             <button
               (click)="addAccount()"
               *ngIf="(route === '/users' || route === '/users/identity_service') && !adminFilter.isBlocklist && !adminFilter.isSession" class="btn btn-grey btn-sm m-l-12">

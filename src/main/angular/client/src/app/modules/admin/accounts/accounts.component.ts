@@ -156,8 +156,9 @@ export class AccountModalComponent {
   required = false;
   comments: any = {};
   secondFactor = false;
+  schedulerIds: any = {};
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService, public authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -169,6 +170,7 @@ export class AccountModalComponent {
     this.identityServiceType = this.modalData.identityServiceType;
     this.identityServiceName = this.modalData.identityServiceName;
     this.comments.radio = 'predefined';
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.secondFactor = !!sessionStorage['secondFactor'];
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -217,10 +219,8 @@ export class AccountModalComponent {
 
   private getConfiguration(): void {
     const obj: any = {
-      id: 0,
-      objectType: 'GENERAL',
-      configurationType: 'IAM',
-      auditLog: {}
+      controllerId: this.schedulerIds.selected,
+      configurationType: 'GLOBALS',
     };
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     if (this.comments.isChecked) {

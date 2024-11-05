@@ -3,6 +3,7 @@ import {isEqual} from 'underscore';
 import {TranslateService} from '@ngx-translate/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
+import {AuthService} from "../guard";
 
 @Component({
   selector: 'app-change-password',
@@ -28,11 +29,12 @@ export class ChangePasswordComponent {
   showOldPassword = false;
   showNewPassword = false;
   showConfirmPassword = false;
-
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService) {}
+  schedulerIds: any = {};
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService,public authService: AuthService) {}
 
   ngOnInit(): void {
     this.username = this.modalData.username;
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.identityServiceName = this.modalData.identityServiceName;
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
@@ -45,9 +47,8 @@ export class ChangePasswordComponent {
 
   private getConfiguration(): void {
     this.coreService.post('configuration', {
-      id: 0,
-      objectType: 'GENERAL',
-      configurationType: 'IAM',
+      configurationType: 'GLOBALS',
+      controllerId: this.schedulerIds.selected,
     }).subscribe((res) => {
       if (res.configuration.configurationItem) {
         this.settings = JSON.parse(res.configuration.configurationItem);
