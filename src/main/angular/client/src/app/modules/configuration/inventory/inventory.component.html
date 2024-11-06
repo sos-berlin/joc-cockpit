@@ -684,7 +684,7 @@
         nz-menu-item>
       <a translate>inventory.button.updateDependencies</a>
     </li>
-    <li (click)="$event.preventDefault();$event.stopPropagation()" *ngIf="permission.joc.inventory.manage" [nzTitle]="'inventory.button.change' | translate"
+    <li (click)="$event.preventDefault();$event.stopPropagation()" *ngIf="permission.joc.inventory.manage" [nzDisabled]="(node.origin.object && node.origin.children?.length === 0)" [nzTitle]="'inventory.button.change' | translate"
         nz-submenu>
     <ul>
       <li (click)="addToChange(node);" *ngIf="permission.joc.inventory.manage" nz-menu-item>

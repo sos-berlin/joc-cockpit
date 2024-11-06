@@ -25,7 +25,6 @@ import {CommentModalComponent} from '../../../components/comment-modal/comment.c
 export class SettingModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   data: any = {};
-  schedulerIds: any = {};
   keyStoreTypes = ['JKS', 'PKCS12'];
   fileList: NzUploadFile[] = [];
 
@@ -154,7 +153,6 @@ export class SettingModalComponent {
 
   ngOnInit(): void {
     this.data = this.modalData.data;
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
 
     const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.display = preferences.auditLog;
@@ -179,21 +177,12 @@ export class SettingModalComponent {
       this.getImage();
     }
 
-    this.coreService.post(
-      this.data?.['identityServiceType'] == 'FIDO' ? 'iam/fido/configuration' : 'configuration',
-      this.data?.['identityServiceType'] == 'FIDO'
-        ? {
-          id: 0,
-          objectType: this.data ? this.data?.['identityServiceType'] : 'GENERAL',
-          configurationType: 'IAM',
-          name: this.data ? this.data?.['identityServiceName'] : undefined
-        }
-        : {
-          name: this.data ? this.data?.['identityServiceName'] : undefined,
-          configurationType: 'GLOBALS',
-          controllerId: this.schedulerIds.selected,
-        }
-    ).subscribe((res) => {
+    this.coreService.post(this.data?.['identityServiceType'] == 'FIDO' ? 'iam/fido/configuration' : 'configuration', {
+      id: 0,
+      objectType: this.data ? this.data?.['identityServiceType'] : 'GENERAL',
+      configurationType: 'IAM',
+      name: this.data ? this.data?.['identityServiceName'] : undefined
+    }).subscribe((res) => {
       if (res.configuration.objectType && this.data && (res.configuration.objectType.match('LDAP') || this.data['identityServiceType'] === 'OIDC')) {
         this.getUsersData();
       }
@@ -738,7 +727,7 @@ export class IdentityServiceModalComponent {
   identityServices?: any[] | undefined;
   identityService?: any;
   identityServiceTypes?: any[];
-  schedulerIds: any = {};
+
   submitted = false;
   isUnique = true;
   serviceAuthenticationSchemes = ['SINGLE-FACTOR', 'TWO-FACTOR'];
@@ -751,14 +740,13 @@ export class IdentityServiceModalComponent {
   fidoList = [];
   certList = [];
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService, public authService: AuthService) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
   }
 
   ngOnInit(): void {
     this.identityServices = this.modalData.identityServices;
     this.identityService = this.modalData.identityService;
     this.identityServiceTypes = this.modalData.identityServiceTypes;
-    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -869,8 +857,9 @@ export class IdentityServiceModalComponent {
       return;
     }
     this.coreService.post('configuration', {
-      configurationType: 'GLOBALS',
-      controllerId: this.schedulerIds.selected,
+      id: 0,
+      objectType: this.identityService.identityServiceType,
+      configurationType: 'IAM',
       name: this.identityService.identityServiceName
     }).subscribe((res) => {
       if (res.configuration.configurationItem) {
