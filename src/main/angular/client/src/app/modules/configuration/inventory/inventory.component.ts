@@ -2922,6 +2922,7 @@ export class ExportComponent {
   selectedChange: any;
   changesNodes: any = [];
   data: any;
+  flag = false;
   fileFormat = [{value: 'ZIP', name: 'ZIP'},
     {value: 'TAR_GZ', name: 'TAR_GZ'}
   ]
@@ -2935,6 +2936,7 @@ export class ExportComponent {
     this.preferences = this.modalData.preferences;
     this.origin = this.modalData.origin;
     this.display = this.modalData.display;
+    this.flag = this.modalData.flag;
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
@@ -3020,7 +3022,7 @@ export class ExportComponent {
       })
     }
 
-    if (this.exportObj.exportType !== 'folders') {
+    if (this.exportObj.exportType !== 'folders' && !this.flag) {
       deployObjectTypes.push(InventoryObject.WORKFLOW, InventoryObject.FILEORDERSOURCE, InventoryObject.JOBRESOURCE,
         InventoryObject.NOTICEBOARD, InventoryObject.LOCK);
       releaseObjectTypes.push(InventoryObject.REPORT, InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
@@ -3086,7 +3088,7 @@ export class ExportComponent {
             folders: [{
               name: mergeObj.name,
               path: mergeObj.path,
-              folders: mergeObj.folders,
+              folders:  (this.origin?.dailyPlan || this.origin?.object || this.origin?.controller) ? [] : mergeObj.folders,
               deployables: mergeObj.deployables,
               releasables: mergeObj.releasables
             }]
@@ -3958,7 +3960,15 @@ export class ExportComponent {
           }
         }
       }
-
+      if (
+        (obj.shallowCopy?.deployables?.deployConfigurations?.length > 0 ||
+          obj.shallowCopy?.deployables?.draftConfigurations?.length > 0) ||
+        (obj.shallowCopy?.releasables?.releasedConfigurations?.length > 0 ||
+          obj.shallowCopy?.releasables?.draftConfigurations?.length > 0) || (obj.forSigning?.deployables?.deployConfigurations?.length > 0 ||
+          obj.forSigning?.deployables?.draftConfigurations?.length > 0) ||
+        (obj.forSigning?.releasables?.releasedConfigurations?.length > 0 ||
+          obj.forSigning?.releasables?.draftConfigurations?.length > 0)
+      ) {
       if (this.object.folders && this.object.folders.length > 0) {
         this.exportFolder(obj);
       } else {
@@ -3975,6 +3985,9 @@ export class ExportComponent {
             this.submitted = false;
           }
         });
+      }
+      }else{
+        this.submitted = false;
       }
     } else {
       if (this.object.folders && this.object.folders.length > 0) {
@@ -4029,12 +4042,12 @@ export class ExportComponent {
             }
           };
           if (dep.selected && dep.deployed && dep.valid) {
-            if (!isDuplicate(obj.shallowCopy.deployables.deployConfigurations, config)) {
-              obj.shallowCopy.deployables.deployConfigurations.push(config);
+            if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
+              obj.shallowCopy.deployables.draftConfigurations.push(config);
             }
           } else if (dep.selected && dep.released && dep.valid) {
             if (!isDuplicate(obj.shallowCopy.releasables.releasedConfigurations, config)) {
-              obj.shallowCopy.releasables.releasedConfigurations.push(config);
+              obj.shallowCopy.releasables.draftConfigurations.push(config);
             }
           } else if (dep.selected && (!dep.valid || dep.valid) && (dep.deployed || !dep.deployed) && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType)) {
             if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
@@ -4058,12 +4071,12 @@ export class ExportComponent {
             }
           };
           if (ref.selected && ref.deployed && ref.valid) {
-            if (!isDuplicate(obj.shallowCopy.deployables.deployConfigurations, config)) {
-              obj.shallowCopy.deployables.deployConfigurations.push(config);
+            if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
+              obj.shallowCopy.deployables.draftConfigurations.push(config);
             }
           } else if (ref.selected && ref.released && ref.valid) {
-            if (!isDuplicate(obj.shallowCopy.releasables.releasedConfigurations, config)) {
-              obj.shallowCopy.releasables.releasedConfigurations.push(config);
+            if (!isDuplicate(obj.shallowCopy.releasables.draftConfigurations, config)) {
+              obj.shallowCopy.releasables.draftConfigurations.push(config);
             }
           } else if (ref.selected && (!ref.valid || ref.valid) && (ref.deployed || !ref.deployed) && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(ref.objectType)) {
             if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
@@ -4101,12 +4114,12 @@ export class ExportComponent {
           }
         };
         if (item.selected && item.deployed && item.valid) {
-          if (!isDuplicate(obj.shallowCopy.deployables.deployConfigurations, config)) {
-            obj.shallowCopy.deployables.deployConfigurations.push(config);
+          if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
+            obj.shallowCopy.deployables.draftConfigurations.push(config);
           }
         } else if (item.selected && item.released && item.valid) {
-          if (!isDuplicate(obj.shallowCopy.releasables.releasedConfigurations, config)) {
-            obj.shallowCopy.releasables.releasedConfigurations.push(config);
+          if (!isDuplicate(obj.shallowCopy.releasables.draftConfigurations, config)) {
+            obj.shallowCopy.releasables.draftConfigurations.push(config);
           }
         } else if (item.selected && (!item.valid || item.valid) && (item.deployed || !item.deployed) && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType)) {
           if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
@@ -6956,7 +6969,7 @@ export class ChangeModalComponent {
             folders: [{
               name: mergeObj.name,
               path: mergeObj.path,
-              folders:  (this.data.dailyPlan || this.data.object || this.data.controller) ? [] : mergeObj.folders,
+              folders:  (this.data?.dailyPlan || this.data?.object || this.data?.controller) ? [] : mergeObj.folders,
               deployables: mergeObj.deployables,
               releasables: mergeObj.releasables
             }]
@@ -10069,7 +10082,9 @@ export class InventoryComponent {
 
   exportObject(node: any): void {
     let origin = null;
+    let flag = false;
     if (node) {
+       flag = true;
       origin = node.origin ? node.origin : node;
     }
     this.modal.create({
@@ -10081,7 +10096,8 @@ export class InventoryComponent {
         schedulerIds: this.schedulerIds,
         preferences: this.preferences,
         display: this.preferences.auditLog,
-        origin
+        origin,
+        flag: flag
       },
       nzFooter: null,
       nzClosable: false,

@@ -3180,6 +3180,11 @@
       "log_server_active": "log_server_active.",
       "log_server_max_messages_per_second": "log_server_max_messages_per_second.",
       "log_server_port": "log_server_port."
+    },
+    "identityService": {
+      "idle_session_timeout": "idle_session_timeout.",
+      "initial_password": "initial_password.",
+      "minimum_password_length": ".minimum_password_length."
     }
   },
   "user": {

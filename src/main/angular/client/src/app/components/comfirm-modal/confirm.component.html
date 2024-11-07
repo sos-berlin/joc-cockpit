@@ -100,8 +100,7 @@
           <div class="m-t-sm" *ngIf="affectedObjectsByType[objectType]?.length">
             <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !affectedCollapsed[objectType], 'fa-caret-down': affectedCollapsed[objectType]}"
                (click)="toggleAffectedCollapse(objectType)"></i>
-            <label class="m-l-sm" nz-checkbox [(ngModel)]="selectAllAffected[objectType]" [name]="'checkbox_' + objectType"
-                   (ngModelChange)="toggleAllAffected(objectType, $event)">
+            <label class="m-l-sm" >
                         <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
                             <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
                         </span>
@@ -139,8 +138,7 @@
           <div class="m-t-sm" *ngIf="referencedObjectsByType[objectType]?.length">
             <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !referencedCollapsed[objectType], 'fa-caret-down': referencedCollapsed[objectType]}"
                (click)="toggleReferencedCollapse(objectType)"></i>
-            <label class="m-l-sm" nz-checkbox [(ngModel)]="selectAllReferenced[objectType]" [name]="'checkbox_' + objectType"
-                   (ngModelChange)="toggleAllReferenced(objectType, $event)">
+            <label class="m-l-sm" >
                         <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
                             <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
                         </span>

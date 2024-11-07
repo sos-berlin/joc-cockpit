@@ -3180,6 +3180,11 @@
       "log_server_active": "Aktiviert den Protokollbenachrichtigungsdienst, der über einen Syslog Server verfügbar ist. Der Dienst empfängt Warnungen und Fehler von Instanzen des Controller und der Agenten. Einzelheiten finden Sie unter https://kb.sos-berlin.com/x/_5Y0CQ",
       "log_server_max_messages_per_second": "Gibt die maximale Anzahl der vom Syslog-Server verarbeiteten Nachrichten pro Sekunde an.",
       "log_server_port": "Gibt den UDP Port an, den der Syslog Server überwacht, um Warnungen und Fehler von Controller und Agenten zu empfangen."
+    },
+    "identityService": {
+      "idle_session_timeout": "idle_session_timeout.",
+      "initial_password": "initial_password.",
+      "minimum_password_length": ".minimum_password_length."
     }
   },
   "user": {

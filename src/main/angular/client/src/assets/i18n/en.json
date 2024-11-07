@@ -3180,6 +3180,11 @@
       "log_server_active": "Activates the Log Notification Services that is available from a syslog server. The service will receive warnings and errors from Controller and Agent instances. For details see https://kb.sos-berlin.com/x/_5Y0CQ",
       "log_server_max_messages_per_second": "Specifies the max. number of messages per second processed by the syslog server.",
       "log_server_port": "Specifies the UDP port that the syslog server is listening to in order to receive warnings and errors from Controller and Agent instances."
+    },
+    "identityService": {
+      "idle_session_timeout": "idle_session_timeout.",
+      "initial_password": "initial_password.",
+      "minimum_password_length": ".minimum_password_length."
     }
   },
   "user": {

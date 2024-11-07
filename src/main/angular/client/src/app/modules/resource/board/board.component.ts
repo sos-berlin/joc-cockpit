@@ -37,6 +37,7 @@ export class PostModalComponent {
   flag = false;
   singleNotice = false;
   workflowPaths: any;
+  singular = false;
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
@@ -48,6 +49,7 @@ export class PostModalComponent {
     this.flag = this.modalData.flag;
     this.singleNotice = this.modalData.singleNotice;
     this.workflowPaths = this.modalData.workflowPaths;
+    this.singular = this.modalData.singular;
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.postObj.timeZone = this.coreService.getTimeZone();
@@ -89,25 +91,24 @@ export class PostModalComponent {
         workflowPaths: [this.workflowPaths]
       }];
     }
-        const obj: any = {
+
+    const obj: any = {
       controllerId: this.controllerId,
       timeZone: this.postObj.timeZone,
       auditLog: {}
     };
 
-
     if (this.flag || this.singleNotice) {
       obj.expectedNotices = expectedNotices;
-    }else if (this.board) {
+    } else if (this.board && !this.singular) {
       if (!obj.notices) {
         obj.notices = [];
       }
 
       const noticeBoardPath = this.board.path;
       obj.notices.push({ noticeBoardPath: noticeBoardPath });
-    }
-    else {
-      if (!obj.notices) {
+    } else if (!this.singular) {
+      if (!obj.notices ) {
         obj.notices = {};
       }
 
@@ -117,6 +118,10 @@ export class PostModalComponent {
       });
     }
 
+    if (this.singular) {
+      obj.noticeBoardPath = this.board.path;
+      obj.noticeId = this.postObj.noticeId;
+    }
 
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
@@ -132,7 +137,8 @@ export class PostModalComponent {
       obj.endOfLife = convertedTime !== 'Invalid time format' ? convertedTime : atTime;
     }
 
-    const endpoint = this.flag || this.singleNotice ? 'notices/post/expected' : 'notices/post';
+    // Set endpoint based on singular flag
+    const endpoint = this.singular ? 'notice/post' : (this.flag || this.singleNotice ? 'notices/post/expected' : 'notices/post');
 
     this.coreService.post(endpoint, obj).subscribe({
       next: (res) => {
@@ -198,6 +204,7 @@ export class SingleBoardComponent {
   }
 
   post(board: any, notice = null): void {
+    console.log('---')
     this.modal.create({
       nzTitle: undefined,
       nzContent: PostModalComponent,
@@ -882,6 +889,7 @@ export class BoardComponent {
   }
 
   post(board: any, notice = null): void {
+   
     this.modal.create({
       nzTitle: undefined,
       nzContent: PostModalComponent,
@@ -891,7 +899,8 @@ export class BoardComponent {
         board,
         notice,
         controllerId: this.schedulerIds.selected,
-        preferences: this.preferences
+        preferences: this.preferences,
+        singular: true
       },
       nzFooter: null,
       nzClosable: false,

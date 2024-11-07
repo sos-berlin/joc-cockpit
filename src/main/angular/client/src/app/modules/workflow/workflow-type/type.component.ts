@@ -634,7 +634,21 @@ export class TypeComponent {
   @HostListener('window:click', ['$event'])
   onClicked(event): void {
     if (event && this.isFirst) {
-      if (event.target.getAttribute('data-id-n')) {
+    if (event.target.getAttribute('data-id-x')) {
+        this.coreService.navToInventoryTab(event.target.getAttribute('data-id-x'), 'NOTICEBOARD');
+    } else if (event.target.getAttribute('data-id-y')) {
+        this.coreService.showBoard(event.target.getAttribute('data-id-y'));
+    } else if (event.target.getAttribute('data-id-m')) {
+        this.broadName = event.target.getAttribute('data-id-m');
+        try {
+            if (this.menu) {
+                setTimeout(() => {
+                    this.nzContextMenuService.create(event, this.menu);
+                }, 0);
+            }
+        } catch (e) {
+        }
+    } else if (event.target.getAttribute('data-id-n')) {
         const id = event.target.getAttribute('data-id-n');
         if (id && event.target.getAttribute('data-id-a') == `chk_${this.workflowObj.path}`) {
           const elements: any = document.querySelectorAll(`[data-id-n="${id}"]`);

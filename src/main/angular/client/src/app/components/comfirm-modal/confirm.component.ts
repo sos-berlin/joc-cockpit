@@ -83,11 +83,11 @@ export class ConfirmModalComponent {
     const requestObj = {
       configurations: configurations
     };
-
+    const requestedKeys = new Set(configurations.map(config => `${config.name}-${config.type}`));
     this.coreService.post('inventory/dependencies', requestObj).subscribe({
       next: (res: any) => {
         this.dependencies = res.dependencies;
-        this.updateNodeDependencies(this.dependencies);
+        this.updateNodeDependencies(this.dependencies, requestedKeys);
 
         this.prepareObject(this.dependencies)
       },
@@ -96,7 +96,7 @@ export class ConfirmModalComponent {
     });
   }
 
-  private updateNodeDependencies(dependenciesResponse: any): void {
+  private updateNodeDependencies(dependenciesResponse: any, requestedKeys: Set<string>): void {
     const requestedItems = dependenciesResponse.requestedItems;
     const affectedItems = dependenciesResponse.affectedItems || [];
 
@@ -119,6 +119,7 @@ export class ConfirmModalComponent {
       const item = itemWrapper.item;
       const uniqueKey = `${item.name}-${item.objectType}`;
       if (!referencedSet.has(uniqueKey) && !requestedSet.has(uniqueKey) &&
+        !requestedKeys.has(uniqueKey) &&
         !this.filteredAffectedItems.some(existing => `${existing.name}-${existing.objectType}` === uniqueKey)) {
         this.filteredAffectedItems.push(item);
       }
