@@ -770,7 +770,7 @@ export class SingleDeployComponent {
           includeLate: this.includeLate
         };
 
-        if ((this.data.objectType == 'WORKFLOW' ||this.data.objectType == 'SCHEDULE' || this.data.objectType == 'WORKINGDAYSCALENDAR' || this.data.objectType == 'NONWORKINGDAYSCALENDAR' || this.isRemoved) && this.deployablesObject.length > 0) {
+        if ((this.data.objectType == 'WORKFLOW' || this.data.objectType == 'SCHEDULE' || this.data.objectType == 'WORKINGDAYSCALENDAR' || this.data.objectType == 'NONWORKINGDAYSCALENDAR' || this.isRemoved) && this.deployablesObject.length > 0) {
           if (!this.isRevoke) {
             if (this.dependencies) {
               if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
@@ -1201,7 +1201,7 @@ export class SingleDeployComponent {
             refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.change = refObj.deployed;
 
-            if(this.releasable){
+            if (this.releasable) {
               refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
               refObj.disabled = !refObj.valid
               refObj.change = refObj.deployed;
@@ -1628,7 +1628,7 @@ export class DeployComponent {
       operationType = 'RECALL';
     } else if (this.releasable) {
       operationType = 'RELEASE';
-    }else if (this.isRemove) {
+    } else if (this.isRemove) {
       operationType = 'REMOVE';
     }
 
@@ -1637,22 +1637,22 @@ export class DeployComponent {
       operationType: operationType
     };
 
+    const requestedKeys = new Set(configurations.map(config => `${config.name}-${config.type}`));
+
     this.coreService.post('inventory/dependencies', requestBody).subscribe({
       next: (res: any) => {
-        if (res.dependencies && res.dependencies?.requestedItems.length > 0 && res.dependencies?.affectedItems.length > 0) {
-          this.updateNodeDependencies(res.dependencies, isChecked);
+        if (res.dependencies && res.dependencies.requestedItems.length > 0 && res.dependencies.affectedItems.length > 0) {
+          this.updateNodeDependencies(res.dependencies, requestedKeys, isChecked);
           this.prepareObject(res.dependencies);
           this.ref.detectChanges();
-        } else {
         }
-
       },
       error: (err) => {
       }
     });
   }
 
-  private updateNodeDependencies(dependenciesResponse: any, isChecked: boolean): void {
+  private updateNodeDependencies(dependenciesResponse: any, requestedKeys: Set<string>, isChecked: boolean): void {
     const requestedItems = dependenciesResponse.requestedItems;
     const affectedItems = dependenciesResponse.affectedItems || [];
 
@@ -1675,6 +1675,7 @@ export class DeployComponent {
       const item = itemWrapper.item;
       const uniqueKey = `${item.name}-${item.objectType}`;
       if (!referencedSet.has(uniqueKey) && !requestedSet.has(uniqueKey) &&
+        !requestedKeys.has(uniqueKey) &&
         !this.filteredAffectedItems.some(existing => `${existing.name}-${existing.objectType}` === uniqueKey)) {
         this.filteredAffectedItems.push(item);
       }
@@ -1684,6 +1685,7 @@ export class DeployComponent {
       requestedItems.forEach(dep => {
         const uniqueKey = `${dep.name}-${dep.objectType}`;
         if (!referencedSet.has(uniqueKey) && !requestedSet.has(uniqueKey) &&
+          !requestedKeys.has(uniqueKey) &&
           !this.filteredAffectedItems.some(existing => `${existing.name}-${existing.objectType}` === uniqueKey)) {
           this.filteredAffectedItems.push(dep);
         }
@@ -1736,7 +1738,7 @@ export class DeployComponent {
             refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.change = refObj.deployed;
 
-            if(this.releasable){
+            if (this.releasable) {
               refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
               refObj.disabled = !refObj.valid
               refObj.change = refObj.deployed;
@@ -2558,7 +2560,7 @@ export class DeployComponent {
     } else {
       obj.update = [];
     }
-    if(this.releasable){
+    if (this.releasable) {
       this.getReleaseObject()
 
       if (this.object.update.length > 0) {
@@ -3089,7 +3091,7 @@ export class ExportComponent {
             folders: [{
               name: mergeObj.name,
               path: mergeObj.path,
-              folders:  (this.origin?.dailyPlan || this.origin?.object || this.origin?.controller) ? [] : mergeObj.folders,
+              folders: (this.origin?.dailyPlan || this.origin?.object || this.origin?.controller) ? [] : mergeObj.folders,
               deployables: mergeObj.deployables,
               releasables: mergeObj.releasables
             }]
@@ -3970,24 +3972,24 @@ export class ExportComponent {
         (obj.forSigning?.releasables?.releasedConfigurations?.length > 0 ||
           obj.forSigning?.releasables?.draftConfigurations?.length > 0)
       ) {
-      if (this.object.folders && this.object.folders.length > 0) {
-        this.exportFolder(obj);
-      } else {
-        if (!this.exportObj.forSigning) {
-          this.nodes.forEach(node => {
-            this.handleDependenciesForExport(node, obj);
-          });
-          this.handleAffectedItemsForExport(obj)
-        }
-        this.coreService.download('inventory/export', obj, this.exportObj.filename, (res) => {
-          if (res) {
-            this.activeModal.close('ok');
-          } else {
-            this.submitted = false;
+        if (this.object.folders && this.object.folders.length > 0) {
+          this.exportFolder(obj);
+        } else {
+          if (!this.exportObj.forSigning) {
+            this.nodes.forEach(node => {
+              this.handleDependenciesForExport(node, obj);
+            });
+            this.handleAffectedItemsForExport(obj)
           }
-        });
-      }
-      }else{
+          this.coreService.download('inventory/export', obj, this.exportObj.filename, (res) => {
+            if (res) {
+              this.activeModal.close('ok');
+            } else {
+              this.submitted = false;
+            }
+          });
+        }
+      } else {
         this.submitted = false;
       }
     } else {
@@ -4378,7 +4380,8 @@ export class RepositoryComponent {
   filteredAffectedItems: any[] = [];
   filteredAffectedCollapsed: boolean = true;
   selectAllFilteredAffected: { [key: string]: boolean } = {};
-  constructor(public activeModal: NzModalRef, private coreService: CoreService,private ref: ChangeDetectorRef,
+
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef,
               private inventoryService: InventoryService) {
   }
 
@@ -4765,7 +4768,7 @@ export class RepositoryComponent {
     }
   }
 
- checkBoxChange(e: NzFormatEmitEvent): void {
+  checkBoxChange(e: NzFormatEmitEvent): void {
     const node: any = e.node;
     if (!this.object.isRecursive) {
       if (node.origin['type'] && node.parentNode) {
@@ -5216,7 +5219,6 @@ export class RepositoryComponent {
       }
     });
   }
-
 
 
   private getDependencies(checkedNodes: { name: string, type: string }[], node, isChecked = false): void {
@@ -5745,7 +5747,9 @@ export class CreateObjectModalComponent {
   settings: any = {};
   display: any;
   required = false;
+  bulk = false;
   comments: any = {};
+  bulkData: any
   object = {name: '', type: 'suffix', newName: '', onlyContains: false, originalName: '', suffix: '', prefix: ''};
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private ref: ChangeDetectorRef) {
@@ -5759,6 +5763,8 @@ export class CreateObjectModalComponent {
     this.restore = this.modalData.restore;
     this.allowPath = this.modalData.allowPath;
     this.type = this.modalData.type;
+    this.bulkData = this.modalData.bulkData;
+    this.bulk = this.modalData.bulk;
 
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
@@ -5783,7 +5789,7 @@ export class CreateObjectModalComponent {
 
   onSubmit(): void {
     this.submitted = true;
-    if (this.copy || this.restore) {
+    if (this.copy || (this.restore && !this.bulk)) {
       const data: any = {};
       if (this.object.type === 'suffix') {
         data.suffix = this.object.suffix;
@@ -5803,6 +5809,25 @@ export class CreateObjectModalComponent {
       } else {
         this.paste(this.obj, data);
       }
+    } else if (this.bulk) {
+      const data: any = {};
+      if (this.object.type === 'suffix') {
+        data.suffix = this.object.suffix;
+      } else if (this.object.type === 'prefix') {
+        data.prefix = this.object.prefix;
+      } else if (this.object.type !== 'existing') {
+        data.newName = this.object.newName;
+      }
+      if (this.object.originalName) {
+        data.originalName = this.object.originalName;
+      }
+      if (this.object.onlyContains) {
+        data.noFolder = true;
+      }
+      this.bulkData.forEach(item => {
+        this.obj = item
+        this.restoreFunc(item, data);
+      });
     } else {
       const PATH = this.object.name.match(/\//gm) ? this.object.name : this.obj.path + (this.obj.path === '/' ? '' : '/') + this.object.name;
       this.coreService.post('inventory/validate/path', {
@@ -5860,18 +5885,16 @@ export class CreateObjectModalComponent {
       suffix: data.suffix,
       prefix: data.prefix
     };
-
-    if (this.obj.objectType) {
-      request.newPath = this.type == 'DEPLOYMENTDESCRIPTOR' ? (obj.path.substring(0, obj.path.lastIndexOf('/') + 1) + (data.newName ? data.newName : obj.name)) : (obj.path + (obj.path === '/' ? '' : '/') + (data.newName ? data.newName : obj.name));
-      request.path = this.type == 'DEPLOYMENTDESCRIPTOR' ? obj.path : (obj.path + (obj.path === '/' ? '' : '/') + obj.name);
-      request.objectType = this.obj.objectType;
-    } else {
-      request.objectType = this.type == 'DEPLOYMENTDESCRIPTOR' ? 'DESCRIPTORFOLDER' : 'FOLDER';
-      const tempPath = obj.path.substring(0, obj.path.lastIndexOf('/'));
-      request.newPath = data.newName ? (tempPath + (tempPath === '/' ? '' : '/') + data.newName) : obj.path;
-      request.path = obj.path;
-    }
-
+      if (this.obj.objectType) {
+        request.newPath = this.type == 'DEPLOYMENTDESCRIPTOR' ? (obj.path.substring(0, obj.path.lastIndexOf('/') + 1) + (data.newName ? data.newName : obj.name)) : (obj.path + (obj.path === '/' ? '' : '/') + (data.newName ? data.newName : obj.name));
+        request.path = this.type == 'DEPLOYMENTDESCRIPTOR' ? obj.path : (obj.path + (obj.path === '/' ? '' : '/') + obj.name);
+        request.objectType = this.obj.objectType;
+      } else {
+        request.objectType = this.type == 'DEPLOYMENTDESCRIPTOR' ? 'DESCRIPTORFOLDER' : 'FOLDER';
+        const tempPath = obj.path.substring(0, obj.path.lastIndexOf('/'));
+        request.newPath = data.newName ? (tempPath + (tempPath === '/' ? '' : '/') + data.newName) : obj.path;
+        request.path = obj.path;
+      }
     request.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, request.auditLog);
     this.coreService.post(this.type ? 'descriptor/trash/restore' : 'inventory/trash/restore', request).subscribe({
@@ -6735,9 +6758,9 @@ export class ChangeModalComponent {
         }
       }
     }
-    if(!this.data.objectType){
+    if (!this.data.objectType) {
       this.buildTree(this.path);
-    }else{
+    } else {
       this.loading = false;
     }
     this.changes()
@@ -6761,7 +6784,7 @@ export class ChangeModalComponent {
   addChange(): void {
     const checkedNodes = this.getCheckedNodes(this.nodes);
     const nodes = []
-    if(this.data.objectType){
+    if (this.data.objectType) {
       nodes.push({
         objectType: this.data.objectType,
         name: this.data.name
@@ -6884,7 +6907,7 @@ export class ChangeModalComponent {
     let deployObjectTypes = [];
     let releaseObjectTypes = [];
     const deployableTypes = ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'];
-    const releasableTypes = ['SCHEDULE', 'JOBTEMPLATE','REPORT', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'];
+    const releasableTypes = ['SCHEDULE', 'JOBTEMPLATE', 'REPORT', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'];
 
     if (this.data && this.data.object) {
       deployObjectTypes = this.data.object === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.object];
@@ -6952,17 +6975,17 @@ export class ChangeModalComponent {
         let mergeObj: any = {};
         if (res.length > 1) {
           if (res[0].path && res[1].path) {
-            if(releasableTypes.includes(this.data.object)){
+            if (releasableTypes.includes(this.data.object)) {
               mergeObj = res[1];
-            }else if(deployableTypes.includes(this.data.object)){
+            } else if (deployableTypes.includes(this.data.object)) {
               mergeObj = res[0];
-            }else if (this.data.objectType) {
-              if(releasableTypes.includes(this.data.objectType)){
+            } else if (this.data.objectType) {
+              if (releasableTypes.includes(this.data.objectType)) {
                 mergeObj = res[1];
-              }else if(deployableTypes.includes(this.data.objectType)){
+              } else if (deployableTypes.includes(this.data.objectType)) {
                 mergeObj = res[0];
               }
-            }else{
+            } else {
               mergeObj = this.mergeDeep(res[0], res[1]);
             }
           } else if (res[0].path && !res[1].path) {
@@ -6982,7 +7005,7 @@ export class ChangeModalComponent {
             folders: [{
               name: mergeObj.name,
               path: mergeObj.path,
-              folders:  (this.data?.dailyPlan || this.data?.object || this.data?.controller) ? [] : mergeObj.folders,
+              folders: (this.data?.dailyPlan || this.data?.object || this.data?.controller) ? [] : mergeObj.folders,
               deployables: mergeObj.deployables,
               releasables: mergeObj.releasables
             }]
@@ -7844,6 +7867,7 @@ export class ShowDependenciesModalComponent {
   isReferencedCollapsed: boolean = true;
   filteredAffectedItems: any[] = [];
   filteredAffectedCollapsed: boolean = false;
+
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private inventoryService: InventoryService) {
   }
 
@@ -7876,7 +7900,7 @@ export class ShowDependenciesModalComponent {
 
     const obj = {
       configurations,
-      ...(operationType && { operationType })
+      ...(operationType && {operationType})
     };
     const requestedKeys = new Set(configurations.map(config => `${config.name}-${config.type}`));
     this.coreService.post('inventory/dependencies', obj).subscribe({
@@ -8108,22 +8132,23 @@ export class GroupTagsComponent {
   groups = [];
   selectedGroupName: string;
 
-  constructor(private coreService: CoreService, private modal: NzModalService, private translate: TranslateService,) { }
+  constructor(private coreService: CoreService, private modal: NzModalService, private translate: TranslateService,) {
+  }
 
   ngOnInit(): void {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.getAllGroups();
   }
 
-  getAllGroups(group: any = undefined){
+  getAllGroups(group: any = undefined) {
     let obj = {};
-    this.coreService.post('tags/groups', obj).subscribe(res =>{
+    this.coreService.post('tags/groups', obj).subscribe(res => {
       this.groups = res.groups;
-      this.groups = this.groups.map(group =>{
+      this.groups = this.groups.map(group => {
         return {name: group};
       });
     })
-    if(group){
+    if (group) {
       this.selectGroup(group);
     }
   }
@@ -8265,7 +8290,7 @@ export class GroupTagsComponent {
     });
   }
 
-  addTagsToGroup(group){
+  addTagsToGroup(group) {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: AddTagsToGropusModalComponent,
@@ -8447,9 +8472,9 @@ export class AddTagsToGropusModalComponent {
   defaultAssignedTags: string[] = [];
   assignedTags = [];
   checkedAssignedTags: string[] = [];
-  workflowTags:any;
-  orderTags:any;
-  jobTags:any;
+  workflowTags: any;
+  orderTags: any;
+  jobTags: any;
   allTags = [];
   checkedTags = [];
 
@@ -8476,8 +8501,8 @@ export class AddTagsToGropusModalComponent {
     this.coreService.post('tags/group/read', obj).subscribe(res => {
       this.defaultAssignedTags = res.tags;
       this.checkedAssignedTags = this.defaultAssignedTags;
-      this.assignedTags = this.defaultAssignedTags.map(tag =>{
-        return { title: tag, key: tag, isLeaf: true };
+      this.assignedTags = this.defaultAssignedTags.map(tag => {
+        return {title: tag, key: tag, isLeaf: true};
       });
       const assignedNode = new NzTreeNode({
         title: 'Assigned Tags',
@@ -8491,10 +8516,10 @@ export class AddTagsToGropusModalComponent {
     });
   }
 
-  getWorkflowTags(){
+  getWorkflowTags() {
     this.coreService.post('tags', {}).subscribe(res => {
-      this.workflowTags = res.tags.map(tag =>{
-        return { title: tag, key: tag, isLeaf: true };
+      this.workflowTags = res.tags.map(tag => {
+        return {title: tag, key: tag, isLeaf: true};
       });
       const workflowNode = new NzTreeNode({
         title: 'Workflow Tags',
@@ -8507,10 +8532,10 @@ export class AddTagsToGropusModalComponent {
     })
   }
 
-  getOrderTags(){
+  getOrderTags() {
     this.coreService.post('tags/order', {}).subscribe(res => {
-      this.orderTags = res.tags.map(tag =>{
-        return { title: tag, key: tag, isLeaf: true };
+      this.orderTags = res.tags.map(tag => {
+        return {title: tag, key: tag, isLeaf: true};
       });
       const orderNode = new NzTreeNode({
         title: 'Order Tags',
@@ -8523,10 +8548,10 @@ export class AddTagsToGropusModalComponent {
     })
   }
 
-  getJobTags(){
+  getJobTags() {
     this.coreService.post('tags/job', {}).subscribe(res => {
-      this.jobTags = res.tags.map(tag =>{
-        return { title: tag, key: tag, isLeaf: true };
+      this.jobTags = res.tags.map(tag => {
+        return {title: tag, key: tag, isLeaf: true};
       });
       const jobNode = new NzTreeNode({
         title: 'Job Tags',
@@ -8546,18 +8571,20 @@ export class AddTagsToGropusModalComponent {
       if (node.origin.checked) {
         this.checkedTags.push(node.key);
       } else {
-        this.checkedTags = this.checkedTags.filter(tag => tag !== node.key);;
+        this.checkedTags = this.checkedTags.filter(tag => tag !== node.key);
+        ;
       }
     } else if (!node.parentNode && node.origin.key !== 'AssignedKeys') {
       if (node.origin.checked) {
         this.checkedTags.push(node.key);
       } else {
-        this.checkedTags = this.checkedTags.filter(tag => tag !== node.key);;
+        this.checkedTags = this.checkedTags.filter(tag => tag !== node.key);
+        ;
       }
     }
   }
 
-  onClick(event: any){
+  onClick(event: any) {
     const node = event.node;
     if (node.origin.checked && node.key === 'AssignedKeys') {
       this.checkedAssignedTags = this.defaultAssignedTags;
@@ -8570,7 +8597,7 @@ export class AddTagsToGropusModalComponent {
     }
   }
 
-  onSubmit(){
+  onSubmit() {
     this.submitted = true;
     const obj: any = {
       auditLog: {},
@@ -8578,7 +8605,7 @@ export class AddTagsToGropusModalComponent {
     };
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     let selectedTags = [];
-    if(this.checkedAssignedTags.length > 0){
+    if (this.checkedAssignedTags.length > 0) {
       selectedTags = [...selectedTags, ...this.checkedAssignedTags];
     }
     this.checkedTags.forEach(tag => {
@@ -10097,7 +10124,7 @@ export class InventoryComponent {
     let origin = null;
     let flag = false;
     if (node) {
-       flag = true;
+      flag = true;
       origin = node.origin ? node.origin : node;
     }
     this.modal.create({
@@ -10235,23 +10262,23 @@ export class InventoryComponent {
     if (releasable && origin.objectType) {
 
       if ((!origin.objectType.match(/CALENDAR/) && origin.objectType !== InventoryObject.SCHEDULE) || operation == 'recall') {
-          this.modal.create({
-            nzTitle: undefined,
-            nzContent: SingleDeployComponent,
-            nzClassName: 'lg',
-            nzData: {
-              schedulerIds: this.getAllowedControllerOnly(),
-              display: this.preferences.auditLog,
-              data: origin,
-              releasable,
-              isRemoved,
-              operation,
-              isChecked: this.inventoryService.checkDeploymentStatus.isChecked
-            },
-            nzFooter: null,
-            nzClosable: false,
-            nzMaskClosable: false
-          })
+        this.modal.create({
+          nzTitle: undefined,
+          nzContent: SingleDeployComponent,
+          nzClassName: 'lg',
+          nzData: {
+            schedulerIds: this.getAllowedControllerOnly(),
+            display: this.preferences.auditLog,
+            data: origin,
+            releasable,
+            isRemoved,
+            operation,
+            isChecked: this.inventoryService.checkDeploymentStatus.isChecked
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        })
 
         return;
       } else {
@@ -10446,12 +10473,11 @@ export class InventoryComponent {
 
 
   revoke(node): void {
-    const origin = node.origin ? node.origin : node;
+    const origin = this.coreService.clone(node.origin ? node.origin : node);
     if (origin.type || this.inventoryService.isControllerObject(origin.objectType)) {
       if (!node.origin) {
-        origin.path = origin.path.substring(0, origin.path.lastIndexOf('/')) || '/';
+        // origin.path = origin.path.substring(0, origin.path.lastIndexOf('/')) || '/';
       }
-
       this.modal.create({
         nzTitle: undefined,
         nzContent: SingleDeployComponent,

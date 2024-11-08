@@ -16,9 +16,12 @@
     <span translate>inventory.label.copyOf</span>
     {{copy.name}}
   </h4>
-  <h4 *ngIf="restore" class="modal-title">
+  <h4 *ngIf="restore && !bulk" class="modal-title">
     <span translate>inventory.label.restore</span>:
     {{obj.path}}<i *ngIf="obj.type && obj.path !== '/'">/</i><span *ngIf="obj.type">{{obj.name}}</span>
+  </h4>
+  <h4 *ngIf="bulk" class="modal-title">
+    <span translate>inventory.label.restore</span>
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>

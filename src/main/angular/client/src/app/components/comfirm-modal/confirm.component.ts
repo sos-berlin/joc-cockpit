@@ -56,13 +56,14 @@ export class ConfirmModalComponent {
     this.updateFromJobTemplate = this.modalData.updateFromJobTemplate;
     this.lossNode = this.modalData.lossNode;
     this.object = this.modalData.object;
-
-    this.getDependencies(this.object)
+   if(this.type != 'Delete') {
+     this.getDependencies(this.object)
+   }
   }
 
   private getDependencies(object): void {
     const collectConfigurations = (obj, configurations) => {
-      const type = obj.objectType || obj.type;
+      const type = obj?.objectType || obj?.type;
 
       if (type) {
         configurations.push({
@@ -71,8 +72,8 @@ export class ConfirmModalComponent {
         });
       }
 
-      if (obj.children && obj.children.length) {
-        obj.children.forEach(child => collectConfigurations(child, configurations));
+      if (obj?.children && obj?.children.length) {
+        obj?.children.forEach(child => collectConfigurations(child, configurations));
       }
     };
 

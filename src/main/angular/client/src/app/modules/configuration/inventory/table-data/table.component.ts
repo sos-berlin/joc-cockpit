@@ -413,6 +413,58 @@ export class TableComponent implements OnChanges, OnDestroy {
     this.deleteDraft(null);
   }
 
+  deleteAllObject(): void {
+    const obj = {
+      objects: []
+    };
+    this.mapOfCheckedId.forEach(item => {
+      obj.objects.push({
+        objectType: item.objectType,
+        path: item.path
+      });
+    });
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ConfirmModalComponent,
+      nzData: {
+        title: 'delete',
+        message: 'deleteObject',
+        type: 'Delete',
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        const URL =  'inventory/trash/delete';
+        this.coreService.post(URL, obj).subscribe();
+        this.ref.detectChanges();
+      }
+    });
+  }
+
+
+  restoreAllObject(): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: CreateObjectModalComponent,
+      nzAutofocus: null,
+      nzClassName: 'lg',
+      nzData: {
+        schedulerId: this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {},
+        preferences: this.preferences,
+        bulkData: this.data,
+        bulk: true,
+        restore: true
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
+
   private removeApiCall(object: any, auditLog: any): void {
     this.deleteAPICall('remove', object, auditLog);
   }

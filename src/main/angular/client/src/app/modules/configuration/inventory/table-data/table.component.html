@@ -42,20 +42,28 @@
         <span *ngIf="objectType && objectType.match('CALENDAR')" translate>inventory.button.newCalendar</span>
         <span *ngIf="objectType === 'JOBTEMPLATE'" translate>inventory.button.newJobTemplate</span>
       </button>
-      <button (click)="deployAll()" *ngIf="mapOfCheckedId.size > 0" class="btn btn-sm btn-grey m-l-12">
+      <button (click)="deployAll()" *ngIf="mapOfCheckedId.size > 0 && !isTrash" class="btn btn-sm btn-grey m-l-12">
         <i class="fa fa-rocket p-r-xs"></i>
         <span *ngIf="!objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'JOBTEMPLATE'
         && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT' && securityLevel !== 'HIGH'" translate>inventory.button.deploy</span>
         <span *ngIf="(objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE'
         || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT')" translate>inventory.button.release</span>
       </button>
-      <button (click)="removeAll()" *ngIf="mapOfCheckedId.size > 0" class="btn btn-sm btn-grey m-l-12">
+      <button (click)="removeAll()" *ngIf="mapOfCheckedId.size > 0 && !isTrash" class="btn btn-sm btn-grey m-l-12">
         <i class="fa fa-trash p-r-xs"></i>
         <span translate>inventory.button.remove</span>
       </button>
-      <button (click)="deleteAll()" *ngIf="mapOfCheckedId.size > 0" class="btn btn-sm btn-grey m-l-12">
+      <button (click)="deleteAll()" *ngIf="mapOfCheckedId.size > 0 && !isTrash" class="btn btn-sm btn-grey m-l-12">
         <i class="fa fa-times p-r-xs"></i>
         <span translate>inventory.button.deleteDraft</span>
+      </button>
+      <button (click)="restoreAllObject()" *ngIf="mapOfCheckedId.size > 0 && isTrash" class="btn btn-sm btn-grey m-l-12">
+        <i class="fa fa-refresh p-r-xs"></i>
+        <span translate>inventory.button.restore</span>
+      </button>
+      <button (click)="deleteAllObject()" *ngIf="mapOfCheckedId.size > 0 && isTrash" class="btn btn-sm btn-grey m-l-12">
+        <i class="fa fa-trash p-r-xs"></i>
+        <span translate>inventory.button.delete</span>
       </button>
     </div>
   </div>
