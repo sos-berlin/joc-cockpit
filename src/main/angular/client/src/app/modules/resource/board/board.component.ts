@@ -204,7 +204,6 @@ export class SingleBoardComponent {
   }
 
   post(board: any, notice = null): void {
-    console.log('---')
     this.modal.create({
       nzTitle: undefined,
       nzContent: PostModalComponent,
@@ -889,7 +888,7 @@ export class BoardComponent {
   }
 
   post(board: any, notice = null): void {
-   
+
     this.modal.create({
       nzTitle: undefined,
       nzContent: PostModalComponent,

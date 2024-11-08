@@ -35,7 +35,7 @@
           </nz-select>
         </div>
       </div>
-      <div *ngIf="!isRevoke && operation != 'recall' && ((data.objectType == 'WORKFLOW' || releasable) && deployablesObject.length > 0) || isRemoved"
+      <div *ngIf="!isRevoke && operation != 'recall' && ((data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType == 'WORKINGDAYSCALENDAR' || data.objectType == 'NONWORKINGDAYSCALENDAR') && deployablesObject.length > 0) || isRemoved"
            class="form-group row">
         <div class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
         <div class="col-md-9">

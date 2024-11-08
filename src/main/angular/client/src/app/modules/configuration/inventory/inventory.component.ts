@@ -516,7 +516,7 @@ export class SingleDeployComponent {
     const obj: any = {
       onlyValidObjects: true,
       withVersions: true,
-      path: (this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name),
+      path: this.data.path1 ? ((this.data.path1 + (this.data.path1 === '/' ? '' : '/') + this.data.name)) : ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name)),
       objectType: this.data.objectType || this.data.type
     };
     if (this.isRevoke) {
@@ -770,7 +770,7 @@ export class SingleDeployComponent {
           includeLate: this.includeLate
         };
 
-        if ((this.data.objectType == 'WORKFLOW' || this.releasable || this.isRemoved) && this.deployablesObject.length > 0) {
+        if ((this.data.objectType == 'WORKFLOW' ||this.data.objectType == 'SCHEDULE' || this.data.objectType == 'WORKINGDAYSCALENDAR' || this.data.objectType == 'NONWORKINGDAYSCALENDAR' || this.isRemoved) && this.deployablesObject.length > 0) {
           if (!this.isRevoke) {
             if (this.dependencies) {
               if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
@@ -821,7 +821,7 @@ export class SingleDeployComponent {
       includeLate: this.includeLate,
       update: []
     };
-    if (this.releasable) {
+    if (this.releasable && (this.data.objectType == 'SCHEDULE' || this.data.objectType == 'WORKINGDAYSCALENDAR' || this.data.objectType == 'NONWORKINGDAYSCALENDAR')) {
       if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
         obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
       } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
@@ -855,6 +855,7 @@ export class SingleDeployComponent {
   getReleaseObject(recall?): void {
 
     const PATH = this.data.path1 ? ((this.data.path1 + (this.data.path1 === '/' ? '' : '/') + this.data.name)) : ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name));
+
     let obj: any = {
       auditLog: {},
       includeLate: this.includeLate,
@@ -870,7 +871,7 @@ export class SingleDeployComponent {
       isNotSelected(Object.values(this.referencedObjectsByType).flat()) &&
       isNotSelected(this.filteredAffectedItems);
 
-    if (this.releasable && noItemsSelected) {
+    if (this.releasable && noItemsSelected && (this.data.objectType == 'SCHEDULE' || this.data.objectType == 'WORKINGDAYSCALENDAR' || this.data.objectType == 'NONWORKINGDAYSCALENDAR')) {
       if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
         obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
       } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
@@ -5083,15 +5084,21 @@ export class RepositoryComponent {
     }
 
     const isDuplicate = (array: any[], config: any): boolean => {
-      return array.some(item => item.configuration.path === config.configuration.path && item.configuration.objectType === config.configuration.objectType);
+      return array?.some(item => item.configuration.path === config.configuration.path && item.configuration.objectType === config.configuration.objectType);
     };
 
     const targetGroup = (config, type) => {
       if (this.filter.envIndependent) {
+        if (!obj.rollout[type]) {
+          obj.rollout[type] = [];  // Initialize if undefined
+        }
         if (!isDuplicate(obj.rollout[type], config)) {
           obj.rollout[type].push(config);
         }
       } else if (this.filter.envRelated) {
+        if (!obj.local[type]) {
+          obj.local[type] = [];  // Initialize if undefined
+        }
         if (!isDuplicate(obj.local[type], config)) {
           obj.local[type].push(config);
         }
@@ -5109,9 +5116,9 @@ export class RepositoryComponent {
           };
 
           if (dep.selected && dep.deployed && dep.valid) {
-            targetGroup(config, 'deployConfigurations');
+            targetGroup(config, 'draftConfigurations');
           } else if (dep.selected && dep.released && dep.valid) {
-            targetGroup(config, 'releasedConfigurations');
+            targetGroup(config, 'draftConfigurations');
           } else if (dep.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType)) {
             targetGroup(config, 'draftConfigurations');
           } else if (dep.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType)) {
@@ -5130,9 +5137,9 @@ export class RepositoryComponent {
           };
 
           if (ref.selected && ref.deployed && ref.valid) {
-            targetGroup(config, 'deployConfigurations');
+            targetGroup(config, 'draftConfigurations');
           } else if (ref.selected && ref.released && ref.valid) {
-            targetGroup(config, 'releasedConfigurations');
+            targetGroup(config, 'draftConfigurations');
           } else if (ref.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(ref.objectType)) {
             targetGroup(config, 'draftConfigurations');
           } else if (ref.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(ref.objectType)) {
@@ -5172,10 +5179,16 @@ export class RepositoryComponent {
 
     const targetGroup = (config, type) => {
       if (this.filter.envIndependent) {
+        if (!obj.rollout[type]) {
+          obj.rollout[type] = [];  // Initialize if undefined
+        }
         if (!isDuplicate(obj.rollout[type], config)) {
           obj.rollout[type].push(config);
         }
       } else if (this.filter.envRelated) {
+        if (!obj.local[type]) {
+          obj.local[type] = [];  // Initialize if undefined
+        }
         if (!isDuplicate(obj.local[type], config)) {
           obj.local[type].push(config);
         }
@@ -5192,9 +5205,9 @@ export class RepositoryComponent {
         };
 
         if (item.selected && item.deployed && item.valid) {
-          targetGroup(config, 'deployConfigurations');
+          targetGroup(config, 'draftConfigurations');
         } else if (item.selected && item.released && item.valid) {
-          targetGroup(config, 'releasedConfigurations');
+          targetGroup(config, 'draftConfigurations');
         } else if (item.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType)) {
           targetGroup(config, 'draftConfigurations');
         } else if (item.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType)) {

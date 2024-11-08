@@ -569,26 +569,32 @@ export class FrequencyModalComponent {
             && this.datePipe.transform(this.frequencyList[i].startingWithW) === this.datePipe.transform(this.frequency.startingWithW)
             && this.datePipe.transform(this.frequencyList[i].endOnW) === this.datePipe.transform(this.frequency.endOnW)) {
             this.frequencyList[i].days = clone(this.frequency.days);
-            this.frequencyList[i].startingWithW = clone(this.frequency.startingWithW);
-            this.frequencyList[i].endOnW = clone(this.frequency.endOnW);
+            // this.frequencyList[i].startingWithW = clone(this.frequency.startingWithW);
+            // this.frequencyList[i].endOnW = clone(this.frequency.endOnW);
             this.frequencyList[i].str = clone(this.frequency.str);
             flag1 = true;
             break;
           } else if (this.frequency.tab == 'monthDays' && this.frequency.isUltimos == 'months'
-            && this.frequencyList[i].isUltimos == 'months' ) {
+            && this.frequencyList[i].isUltimos == 'months'
+            && this.datePipe.transform(this.frequencyList[i].startingWithM) === this.datePipe.transform(this.frequency.startingWithM)
+            && this.datePipe.transform(this.frequencyList[i].endOnM) === this.datePipe.transform(this.frequency.endOnM)
+            && this.areArraysEqual(this.frequencyList[i].selectedMonths, this.frequency.selectedMonths)) {
             // this.frequencyList[i].selectedMonths = clone(this.frequency.selectedMonths);
             // this.frequencyList[i].startingWithM = this.frequency.startingWithM;
             // this.frequencyList[i].endOnM = this.frequency.endOnM;
             // this.frequencyList[i].str = clone(this.frequency.str);
-            // flag1 = true;
+            flag1 = true;
             break;
           } else if (this.frequency.tab == 'monthDays' && this.frequency.isUltimos != 'months'
-            && this.frequencyList[i].isUltimos !== 'months' ) {
+            && this.frequencyList[i].isUltimos !== 'months'
+            && this.datePipe.transform(this.frequencyList[i].startingWithM) === this.datePipe.transform(this.frequency.startingWithM)
+            && this.datePipe.transform(this.frequencyList[i].endOnM) === this.datePipe.transform(this.frequency.endOnM)
+            && this.areArraysEqual(this.frequencyList[i].selectedMonthsU, this.frequency.selectedMonthsU)) {
             // this.frequencyList[i].selectedMonthsU = clone(this.frequency.selectedMonthsU);
             // this.frequencyList[i].startingWithM = this.frequency.startingWithM;
             // this.frequencyList[i].endOnM = this.frequency.endOnM;
             // this.frequencyList[i].str = clone(this.frequency.str);
-            // flag1 = true;
+            flag1 = true;
             break;
           } else if (this.frequency.tab == 'nationalHoliday') {
             // flag1 = true;
@@ -616,8 +622,8 @@ export class FrequencyModalComponent {
             && this.datePipe.transform(this.frequencyList[i].startingWithS) === this.datePipe.transform(this.frequency.startingWithS)
             && this.datePipe.transform(this.frequencyList[i].endOnS) === this.datePipe.transform(this.frequency.endOnS)) {
             this.updateFrequencyData(null);
-            this.frequencyList[i].startingWithS = clone(this.frequency.startingWithS);
-            this.frequencyList[i].endOnS = clone(this.frequency.endOnS);
+            // this.frequencyList[i].startingWithS = clone(this.frequency.startingWithS);
+            // this.frequencyList[i].endOnS = clone(this.frequency.endOnS);
             this.frequencyList[i].str = clone(this.frequency.str);
             flag1 = true;
             break;
@@ -638,8 +644,8 @@ export class FrequencyModalComponent {
               this.frequencyList[i].str = this.calendarService.freqToStr(this.frequency, this.dateFormat);
               this.frequencyList[i].interval = clone(this.frequency.interval);
               this.frequencyList[i].str = clone(this.frequency.str);
-              this.frequencyList[i].startingWith = clone(this.frequency.startingWith);
-              this.frequencyList[i].endOn = clone(this.frequency.endOn);
+              // this.frequencyList[i].startingWith = clone(this.frequency.startingWith);
+              // this.frequencyList[i].endOn = clone(this.frequency.endOn);
               this.frequencyList[i].year = clone(this.frequency.year);
               flag1 = true;
               break;
