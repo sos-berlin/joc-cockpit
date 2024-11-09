@@ -34,12 +34,14 @@ export class TypeComponent {
   @Input() orderPreparation: any;
   @Input() recursiveCals: any;
   @Input() workflowFilters: any;
+  @Input() searchTextChanged: any;
   @Input() expectedNoticeBoards: any;
   @Input() postNoticeBoards: any;
   @Input() addOrderToWorkflows: any;
   @Input() orderReload: boolean;
   @Input() multiSelect: boolean;
   @Input() clearCheckboxes: boolean;
+  @Input() searchText: string;
   @Output() isDropdownChangedHandler: EventEmitter<any> = new EventEmitter();
   @Output() update: EventEmitter<any> = new EventEmitter();
   @Output() bulkUpdate: EventEmitter<any> = new EventEmitter();
@@ -64,6 +66,9 @@ export class TypeComponent {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    if (changes['searchText']) {
+      this.workflowFilters.searchText = this.searchText
+    }
     if (changes['clearCheckboxes']) {
       this.clearCheckbox();
     }
@@ -88,6 +93,7 @@ export class TypeComponent {
 
       this.updateOrder();
     }
+
   }
 
   ngOnDestroy(): void {

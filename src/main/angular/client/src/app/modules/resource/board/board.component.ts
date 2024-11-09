@@ -38,6 +38,7 @@ export class PostModalComponent {
   singleNotice = false;
   workflowPaths: any;
   singular = false;
+
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
@@ -61,17 +62,59 @@ export class PostModalComponent {
     } else {
       this.display = this.preferences.auditLog;
     }
-    if (this.notice) {
-      this.postObj.noticeId = this.notice.id;
-    } else {
-      this.postObj.noticeId = this.coreService.getStringDate(null);
+    if(this.singular){
+      if (typeof this.board.postOrderToNoticeId === 'string' && !/[$()]/.test(this.board.postOrderToNoticeId)) {
+        this.postObj.noticeId = this.board.postOrderToNoticeId;
+      } else {
+        this.postObj.noticeId = '';
+      }
+      if (typeof this.board.endOfLife === 'string') {
+        const currentEpochMilli = Date.now();
+        const modifiedEndOfLife = this.board.endOfLife.replace('$js7EpochMilli', currentEpochMilli.toString());
+
+        let finalEpochMilli: number;
+        try {
+          finalEpochMilli = eval(modifiedEndOfLife);
+        } catch (error) {
+          console.error('Failed to evaluate endOfLife expression:', error);
+          this.postObj.atTime = null;
+          return;
+        }
+
+        const timeDifference = finalEpochMilli - currentEpochMilli;
+
+        const totalSeconds = Math.floor(timeDifference / 1000);
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+
+        let formattedTime = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+        const parts = formattedTime.split(':');
+        if (parts.length === 2) {
+          parts[0] = parts[0].padStart(2, '0');
+          parts[1] = parts[1].padEnd(2, '0');
+          formattedTime = parts.join(':') + ':00';
+        } else if (parts.length === 3) {
+          parts[0] = parts[0].padStart(2, '0');
+          parts[1] = parts[1].padStart(2, '0');
+          parts[2] = parts[2].padEnd(2, '0');
+          formattedTime = parts.join(':');
+        }
+
+        this.postObj.atTime = formattedTime;
+      } else {
+        this.postObj.atTime = this.board.endOfLife;
+      }
     }
+
   }
- onBlur(repeat: NgModel, propertyName: string) {
-  this.postObj[propertyName] = this.coreService.padTime(this.postObj[propertyName]);
-  repeat.control.setErrors({incorrect: false});
-  repeat.control.updateValueAndValidity();
-}
+
+  onBlur(repeat: NgModel, propertyName: string) {
+    this.postObj[propertyName] = this.coreService.padTime(this.postObj[propertyName]);
+    repeat.control.setErrors({incorrect: false});
+    repeat.control.updateValueAndValidity();
+  }
 
   onSubmit(): void {
     this.submitted = true;
@@ -82,7 +125,7 @@ export class PostModalComponent {
       expectedNotices = this.workflowPaths
         .filter((data: any) => !data.isChecked) // Filter out items where isChecked is true
         .map((data: any) => {
-          const notice = { noticeBoardPath: data.noticePath, workflowPaths: data.workflowPaths };
+          const notice = {noticeBoardPath: data.noticePath, workflowPaths: data.workflowPaths};
           return notice;
         });
     } else if (this.singleNotice) {
@@ -106,15 +149,15 @@ export class PostModalComponent {
       }
 
       const noticeBoardPath = this.board.path;
-      obj.notices.push({ noticeBoardPath: noticeBoardPath });
+      obj.notices.push({noticeBoardPath: noticeBoardPath});
     } else if (!this.singular) {
-      if (!obj.notices ) {
+      if (!obj.notices) {
         obj.notices = {};
       }
 
       // Create an array of noticeBoardPath objects from paths
       obj.notices = paths.map((path: any) => {
-        return { noticeBoardPath: path };
+        return {noticeBoardPath: path};
       });
     }
 

@@ -591,7 +591,7 @@ export class WorkflowComponent {
   private searchOrderTerm = new Subject<string>();
   private searchTerm = new Subject<string>();
 
-  searchableProperties = ['name', 'path', 'versionDate', 'state', '_text', 'tagsString'];
+  searchableProperties = ['name', 'path', 'versionDate', 'state', '_text', 'tagsString', 'ordertagsString'];
 
   filterState: any = [
     {state: 'IN_SYNC', text: 'synchronized'},
@@ -1626,6 +1626,7 @@ export class WorkflowComponent {
       this.workflowService.convertTryToRetry(workflow.configuration, null, workflow.jobs, {count: 0, setObj});
       this.updatePanelHeight();
     }, 0);
+
   }
 
   hidePanelFuc(workflow): void {
@@ -2325,6 +2326,23 @@ export class WorkflowComponent {
               this.sideBar.orders = this.workflows[i].orders;
             }
           }
+
+          this.workflows.forEach((workflow, index) => {
+            if (workflow?.orders) {
+              if (Array.isArray(workflow.orders)) {
+                workflow.orders.forEach((order) => {
+                  if (order && Array.isArray(order.tags) && order.tags.length > 0) {
+                    if(!workflow.ordertagsString){
+                      workflow.ordertagsString = []
+                    }
+                    workflow.ordertagsString.push(order.tags.join(', '));
+                  }
+                });
+              }
+            }
+          });
+
+
         }
         if (cb) {
           cb();

@@ -5219,7 +5219,7 @@ export class XmlEditorComponent {
   }
 
   downloadSchema(objType, schemaIdentifier): void {
-    let link = './api/xmleditor/schema/download?controllerId='
+    let link = '.joc/api/xmleditor/schema/download?controllerId='
       + this.schedulerIds.selected + '&objectType=' + objType +
       '&accessToken=' + this.authService.accessTokenId;
     if (objType !== 'NOTIFICATION') {
@@ -5230,7 +5230,7 @@ export class XmlEditorComponent {
 
   showXSD(objType, schemaIdentifier): void {
     let windowProperties = ',scrollbars=yes,resizable=yes,status=no,toolbar=no,menubar=no';
-    let link = './api/xmleditor/schema/download?show=true&controllerId='
+    let link = '.joc/api/xmleditor/schema/download?show=true&controllerId='
       + this.schedulerIds.selected + '&objectType=' + objType + '&accessToken='
       + this.authService.accessTokenId;
     if (objType !== 'NOTIFICATION') {

@@ -988,6 +988,8 @@
                                     [permission]="permission"
                                     [preferences]="preferences"
                                     [schedulerId]="schedulerIds.selected"
+                                    [workflowFilters] = "workflowFilters"
+                                    [searchText]="workflowFilters.searchText"
                                     [timezone]="workflow.configuration.timeZone" [workflowObj]="{path: workflow.configuration.path, versionId: workflow.configuration.versionId}"></app-type>
                         </div>
                       </td>

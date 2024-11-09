@@ -19,7 +19,7 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
-        <input #noticeId="ngModel" [(ngModel)]="postObj.noticeId" [readOnly]="notice" autocomplete="off"
+        <input #noticeId="ngModel" [(ngModel)]="postObj.noticeId" autocomplete="off"
                class="form-control"
                name="noticeId" placeholder="{{'resource.board.placeholder.enterNoticeId' | translate}}" required type="text"/>
         <div *ngIf="noticeId.invalid && (noticeId.dirty || noticeId.touched)" class="text-danger help-block">

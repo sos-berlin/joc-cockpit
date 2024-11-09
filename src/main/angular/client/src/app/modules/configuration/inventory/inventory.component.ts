@@ -1466,7 +1466,7 @@ export class DeployComponent {
 
     }
     if (this.isRemove) {
-      this.buildTree(this.path);
+      this.buildTreeForRemove(this.path);
     }
     this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
     this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
@@ -1814,8 +1814,14 @@ export class DeployComponent {
   private collectCheckedObjects(nodes: any[]): any[] {
     const checkedObjects = [];
     nodes.forEach(node => {
-      if (node.checked && node.type) {
-        checkedObjects.push({name: node.name, type: node.type});
+      if(this.isRemove){
+        if (node.type) {
+          checkedObjects.push({name: node.name, type: node.type});
+        }
+      }else{
+        if (node.checked && node.type) {
+          checkedObjects.push({name: node.name, type: node.type});
+        }
       }
       if (node.children && node.children.length > 0) {
         checkedObjects.push(...this.collectCheckedObjects(node.children));
@@ -1971,6 +1977,161 @@ export class DeployComponent {
         }
       }
     });
+  }
+
+  buildTreeForRemove(path: string, merge?: any, cb?: any, flag = false): void {
+    const obj: any = {
+      folder: path || '/',
+      recursive: !!cb,
+      onlyValidObjects: true,
+      withRemovedObjects: true
+    };
+    if (this.data && this.data.object) {
+      obj.objectTypes = this.data.object === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.object];
+    }
+    if (this.isRevoke) {
+      obj.withoutDeployed = false;
+      obj.withRemovedObjects = false;
+      obj.onlyValidObjects = false;
+      obj.withoutDrafts = true;
+      obj.latest = true;
+    } else {
+      if (this.releasable) {
+        obj.withoutReleased = this.operation !== 'recall';
+        obj.withRemovedObjects = this.operation !== 'recall';
+        obj.recursive = !(this.data.dailyPlan || this.data.object);
+      } else {
+        obj.withVersions = true;
+      }
+    }
+    if (this.isChecked && !this.releasable) {
+      obj.controllerId = this.schedulerIds.selected;
+    }
+    if (!this.isDeleted && !this.releasable) {
+      obj.withoutDrafts = !this.filter.draft;
+      obj.withoutDeployed = !this.filter.deploy;
+    }
+    if (this.isSelectedObjects) {
+      obj.objectTypes = this.data.objectType === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.objectType];
+    }
+
+    const APIs = [];
+    APIs.push(this.coreService.post('inventory/deployables', obj).pipe(
+      catchError(error => of(error))
+    ));
+    APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
+      catchError(error => of(error))
+    ));
+
+    forkJoin(APIs).subscribe({
+      next: (res: any[]) => {
+        let mergeObj: any = {};
+        if (res.length > 1) {
+          if (res[0]?.path && res[1]?.path) {
+            mergeObj = this.mergeDeep(res[0], res[1]);
+          } else if (res[0]?.path) {
+            mergeObj = res[0];
+          } else if (res[1]?.path) {
+            mergeObj = res[1];
+          }
+        } else if (res.length === 1 && res[0]?.path) {
+          // Use the single response if only one API call was successful
+          mergeObj = res[0];
+        }
+
+        let tree = [];
+        if (mergeObj.folders && mergeObj.folders.length > 0 ||
+          ((mergeObj.deployables && mergeObj.deployables.length > 0) || (mergeObj.releasables && mergeObj.releasables.length > 0))) {
+          tree = this.coreService.prepareTree({
+            folders: [{
+              name: mergeObj.name,
+              path: mergeObj.path,
+              folders: (this.data.dailyPlan || this.data.object || this.data.controller) ? [] : mergeObj.folders,
+              deployables: mergeObj.deployables,
+              releasables: mergeObj.releasables
+            }]
+          }, false);
+          this.inventoryService.updateTree(tree[0]);
+        }
+
+        if (merge) {
+          if (tree.length > 0) {
+            merge.children = tree[0].children;
+            this.inventoryService.checkAndUpdateVersionList(tree[0]);
+          }
+          delete merge.loading;
+          if (!flag) {
+            this.nodes = [...this.nodes];
+            this.ref.detectChanges();
+          }
+        } else {
+          this.nodes = tree;
+          if (this.checkedObject.size > 0) {
+            this.recursiveCheck(this.nodes, true);
+            this.checkedObject.clear();
+          }
+          if (!cb) {
+            setTimeout(() => {
+              this.loading = false;
+              if (this.path) {
+                if (this.nodes.length > 0) {
+                  this.nodes[0].expanded = true;
+                }
+              }
+              if (this.nodes.length > 0) {
+                this.inventoryService.preselected(this.nodes[0]);
+                this.inventoryService.checkAndUpdateVersionList(this.nodes[0]);
+              }
+              const checkedNodes = this.collectCheckedObjects(this.nodes);
+              if (checkedNodes.length > 0) {
+                this.getDependencies(checkedNodes, this.nodes[0]);
+              }
+              this.ref.detectChanges();
+            }, 0);
+          } else {
+            cb();
+          }
+        }
+      },
+      error: () => {
+        if (merge) {
+          delete merge.loading;
+        } else {
+          if (!cb) {
+            this.loading = false;
+            this.nodes = [];
+          } else {
+            cb();
+          }
+        }
+      }
+    });
+  }
+
+  private mergeDeep(deployables: any, releasables: any): any {
+    function recursive(sour: any, dest: any): void {
+      if (!sour.deployables) {
+        sour.deployables = [];
+      }
+      sour.deployables = sour.deployables.concat(dest.releasables || []);
+      if (dest.folders && dest.folders.length > 0) {
+        for (const i in sour.folders) {
+          for (const j in dest.folders) {
+            if (sour.folders[i].path === dest.folders[j].path) {
+              recursive(sour.folders[i], dest.folders[j]);
+              dest.folders.splice(j, 1);
+              break;
+            }
+          }
+        }
+      }
+      if (dest.folders && dest.folders.length > 0) {
+        sour.folders = sour.folders.concat(dest.folders);
+      }
+    }
+
+    recursive(deployables, releasables);
+    return deployables;
   }
 
   collectChildrenObjectsForDependency(): { name: string, type: string }[] {
@@ -2854,6 +3015,9 @@ export class DeployComponent {
       });
     });
 
+    this.filteredAffectedItems.forEach(item => {
+      selectedObjects.push(item);
+    });
     return selectedObjects;
   }
 
@@ -10367,14 +10531,15 @@ export class InventoryComponent {
       }).afterClose.subscribe(result => {
         if (result) {
           const revokeRecallObjects = [];
-          const object = node.origin;
-          const obj = this.getObjectArr(object, false);
+          const object = node.origin ? node.origin : node;
+          const obj: any = {objects: []};
           let path;
           if (object.type) {
             path = object.path + (object.path === '/' ? '' : '/') + object.name;
           } else {
             path = object.path;
           }
+
           if (result.selectedObjects) {
             result.selectedObjects.forEach((selectedObj) => {
               if (selectedObj.selected) {

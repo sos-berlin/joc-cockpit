@@ -89,9 +89,9 @@
       <span *ngIf="order.marked" [ngClass]="coreService.getColor(order.marked.severity, 'bg')"
             class="half-circle half-circle-right"></span>
       <a (click)="showLog(order)"
-         *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')" class="text-hover-primary p-l-xs p-r-sm"  [innerHTML]="coreService.getModifiedOrderId(order)"></a>
+         *ngIf="order.state && (order.state._text !== 'SCHEDULED' && order.state._text !== 'PENDING')" class="text-hover-primary p-l-xs p-r-sm"  [innerHTML]="coreService.getModifiedOrderId(order, searchText) | highlight : searchText"></a>
       <span *ngIf="!order.state || (order.state._text === 'SCHEDULED' || order.state._text === 'PENDING')"
-            class="p-l-xs p-r-sm"  [innerHTML]="coreService.getModifiedOrderId(order)"></span>
+            class="p-l-xs p-r-sm"  [innerHTML]="coreService.getModifiedOrderId(order, searchText) | highlight : searchText"></span>
       <i *ngIf="order.cyclicOrder" aria-hidden="true" class="fa fa-repeat p-l-xs p-r-xs"></i>
       <i *ngIf="order.scheduledFor && !order.scheduledNever"
          class="text-sm text-muted">{{order.scheduledFor | stringToDate}}</i>
