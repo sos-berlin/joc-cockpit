@@ -3182,9 +3182,9 @@
       "log_server_port": "Specifies the UDP port that the syslog server is listening to in order to receive warnings and errors from Controller and Agent instances."
     },
     "identityService": {
-      "idle_session_timeout": "idle_session_timeout.",
-      "initial_password": "initial_password.",
-      "minimum_password_length": ".minimum_password_length."
+      "idle_session_timeout": "The Idle Session Timeout specifies the duration in minutes for which a session remains active without user activity. If the Idle Session Timeout is exceeded, the user will be disconnected.",
+      "initial_password": "The Initial Password that is applied for example to new user accounts. Users have to change the password on next login.",
+      "minimum_password_length": "The minimum length of a password specified by users."
     }
   },
   "user": {

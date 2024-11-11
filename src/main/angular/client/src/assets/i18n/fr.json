@@ -3182,9 +3182,9 @@
       "log_server_port": "Spécifie le port UDP que le serveur syslog écoute afin de recevoir les avertissements et les erreurs des instances du Contrôleur et des Agents."
     },
     "identityService": {
-      "idle_session_timeout": "idle_session_timeout.",
-      "initial_password": "initial_password.",
-      "minimum_password_length": ".minimum_password_length."
+      "idle_session_timeout": "Le délai de session inactive spécifie la durée en minutes pendant laquelle une session reste active sans activité de la part de l'utilisateur. Si le délai de session inactive est dépassé, l'utilisateur est déconnecté.",
+      "initial_password": "Le mot de passe initial qui est appliqué, par exemple, aux nouveaux comptes d'utilisateurs. Les utilisateurs doivent changer le mot de passe lors de leur prochaine connexion.",
+      "minimum_password_length": "Longueur minimale d'un mot de passe spécifiée par les utilisateurs."
     }
   },
   "user": {
