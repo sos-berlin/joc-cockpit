@@ -5141,6 +5141,9 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           if (this.data.deployed !== res.deployed) {
             this.data.deployed = res.deployed;
           }
+          if (this.data.id !== res.id) {
+            this.data.id = res.id;
+          }
           if (this.data.valid !== res.valid) {
             this.data.valid = res.valid;
           }
@@ -6834,6 +6837,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                 } else {
                   json.instructions[x].instructions.push(obj);
                 }
+
               } else {
                 if (json.instructions[x].TYPE == 'If') {
                   if (edge.getAttribute('displayLabel') === 'then') {

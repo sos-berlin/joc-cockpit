@@ -1053,7 +1053,11 @@ export class AddOrderModalComponent {
         arg.type === 'String' && (!arg.value)
       );
 
-      if (anyListEmpty || anyMapEmpty || anyStringEmpty) {
+        let anyNumberEmpty = orderArgs.some(arg =>
+                arg.type === 'Number' && (!arg.value)
+              );
+
+      if (anyListEmpty || anyMapEmpty || anyStringEmpty ||anyNumberEmpty) {
         this.argumentsValid = false;
         return true;
       }

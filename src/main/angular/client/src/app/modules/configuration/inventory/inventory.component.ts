@@ -1801,9 +1801,6 @@ export class DeployComponent {
         if (this.isRemove) {
           item.selected = false;
         }
-        filteredAffectedTypeSet.forEach(type => {
-          this.updateParentCheckboxFilteredAffected(type);
-        });
       });
       this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
       this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
@@ -3452,9 +3449,6 @@ export class ExportComponent {
         const type = item.objectType;
         filteredAffectedTypeSet.add(type);
 
-        filteredAffectedTypeSet.forEach(type => {
-          this.updateParentCheckboxFilteredAffected(type);
-        });
         if (this.exportObj.forSigning) {
           item.selected = item.valid && (!item.deployed && !item.released);
           item.disabled = !item.valid || item.valid && (!item.deployed && !item.released);
@@ -4127,34 +4121,23 @@ export class ExportComponent {
           }
         }
       }
-      if (
-        (obj.shallowCopy?.deployables?.deployConfigurations?.length > 0 ||
-          obj.shallowCopy?.deployables?.draftConfigurations?.length > 0) ||
-        (obj.shallowCopy?.releasables?.releasedConfigurations?.length > 0 ||
-          obj.shallowCopy?.releasables?.draftConfigurations?.length > 0) || (obj.forSigning?.deployables?.deployConfigurations?.length > 0 ||
-          obj.forSigning?.deployables?.draftConfigurations?.length > 0) ||
-        (obj.forSigning?.releasables?.releasedConfigurations?.length > 0 ||
-          obj.forSigning?.releasables?.draftConfigurations?.length > 0)
-      ) {
-        if (this.object.folders && this.object.folders.length > 0) {
-          this.exportFolder(obj);
-        } else {
-          if (!this.exportObj.forSigning) {
-            this.nodes.forEach(node => {
-              this.handleDependenciesForExport(node, obj);
-            });
-            this.handleAffectedItemsForExport(obj)
-          }
-          this.coreService.download('inventory/export', obj, this.exportObj.filename, (res) => {
-            if (res) {
-              this.activeModal.close('ok');
-            } else {
-              this.submitted = false;
-            }
-          });
-        }
+
+      if (this.object.folders && this.object.folders.length > 0) {
+        this.exportFolder(obj);
       } else {
-        this.submitted = false;
+        if (!this.exportObj.forSigning) {
+          this.nodes.forEach(node => {
+            this.handleDependenciesForExport(node, obj);
+          });
+          this.handleAffectedItemsForExport(obj)
+        }
+        this.coreService.download('inventory/export', obj, this.exportObj.filename, (res) => {
+          if (res) {
+            this.activeModal.close('ok');
+          } else {
+            this.submitted = false;
+          }
+        });
       }
     } else {
       if (this.object.folders && this.object.folders.length > 0) {
@@ -4164,7 +4147,6 @@ export class ExportComponent {
       }
     }
   }
-
   private handleDependenciesForExport(node: any, obj: any): void {
     if (!obj.shallowCopy) {
       obj.shallowCopy = {};
@@ -5494,7 +5476,6 @@ export class RepositoryComponent {
             }
 
             refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
-            refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.change = refObj.deployed;
 
             this.affectedObjectsByType[type].push(refObj);
@@ -5512,7 +5493,6 @@ export class RepositoryComponent {
             }
 
             refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
-            refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.change = refObj.deployed;
 
             this.referencedObjectsByType[type].push(refObj);
@@ -5527,12 +5507,8 @@ export class RepositoryComponent {
         const type = item.objectType;
         filteredAffectedTypeSet.add(type);
 
-        item.disabled = !item.valid;
         item.selected = item.valid && (!item.deployed && !item.released);
 
-        filteredAffectedTypeSet.forEach(type => {
-          this.updateParentCheckboxFilteredAffected(type);
-        });
       });
       this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
       this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
@@ -7569,9 +7545,7 @@ export class PublishChangeModalComponent {
         item.disabled = !item.valid || item.valid && (!item.deployed && !item.released);
         item.change = item.deployed;
 
-        filteredAffectedTypeSet.forEach(type => {
-          this.updateParentCheckboxFilteredAffected(type);
-        });
+
       });
       this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
       this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
