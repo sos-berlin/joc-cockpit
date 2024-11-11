@@ -10454,18 +10454,20 @@ export class InventoryComponent {
 
           if (result.selectedObjects) {
             result.selectedObjects.forEach((selectedObj) => {
-              if (selectedObj.selected) {
-                const objToPush = {
-                  objectType: selectedObj.objectType,
-                  path: selectedObj.path
-                };
-                obj.objects.push(objToPush);
-              } else {
-                const revokeRecallObj = {
-                  objectType: selectedObj.objectType,
-                  path: selectedObj.path
-                };
-                revokeRecallObjects.push(revokeRecallObj);
+              if (selectedObj.released || selectedObj.deployed) {
+                if (selectedObj.selected) {
+                  const objToPush = {
+                    objectType: selectedObj.objectType,
+                    path: selectedObj.path
+                  };
+                  obj.objects.push(objToPush);
+                } else {
+                  const revokeRecallObj = {
+                    objectType: selectedObj.objectType,
+                    path: selectedObj.path
+                  };
+                  revokeRecallObjects.push(revokeRecallObj);
+                }
               }
             });
             this.revokeRecallDependencies(revokeRecallObjects);
@@ -10506,7 +10508,9 @@ export class InventoryComponent {
         if (result) {
           const revokeRecallObjects = [];
           const object = node.origin ? node.origin : node;
-          const obj: any = {objects: []};
+          const obj = this.getObjectArr1(object, false);
+
+
           let path;
           if (object.type) {
             path = object.path + (object.path === '/' ? '' : '/') + object.name;
@@ -10516,18 +10520,20 @@ export class InventoryComponent {
 
           if (result.selectedObjects) {
             result.selectedObjects.forEach((selectedObj) => {
-              if (selectedObj.selected) {
-                const objToPush = {
-                  objectType: selectedObj.objectType,
-                  path: selectedObj.path
-                };
-                obj.objects.push(objToPush);
-              } else {
-                const revokeRecallObj = {
-                  objectType: selectedObj.objectType,
-                  path: selectedObj.path
-                };
-                revokeRecallObjects.push(revokeRecallObj);
+                            if (selectedObj.released || selectedObj.deployed) {
+                if (selectedObj.selected) {
+                  const objToPush = {
+                    objectType: selectedObj.objectType,
+                    path: selectedObj.path
+                  };
+                  obj.objects.push(objToPush);
+                } else {
+                  const revokeRecallObj = {
+                    objectType: selectedObj.objectType,
+                    path: selectedObj.path
+                  };
+                  revokeRecallObjects.push(revokeRecallObj);
+                }
               }
             });
             this.revokeRecallDependencies(revokeRecallObjects);
@@ -10549,13 +10555,13 @@ export class InventoryComponent {
     }
   }
 
-  revokeRecallDependencies(objects): void {
-    const revokeObjectTypes = ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'];
+revokeRecallDependencies(objects): void {
+  const revokeObjectTypes = ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'];
 
-    const revokeObjects = [];
-    const recallObjects = [];
+  const revokeObjects = [];
+  const recallObjects = [];
 
-    objects.forEach(obj => {
+  objects.forEach(obj => {
       if (revokeObjectTypes.includes(obj.objectType)) {
         revokeObjects.push({
           objectType: obj.objectType,
@@ -10567,16 +10573,16 @@ export class InventoryComponent {
           path: obj.path
         });
       }
-    });
+  });
 
-    if (revokeObjects.length > 0) {
-      this.callRevokeAPI(revokeObjects);
-    }
-
-    if (recallObjects.length > 0) {
-      this.callRecallAPI(recallObjects);
-    }
+  if (revokeObjects.length > 0) {
+    this.callRevokeAPI(revokeObjects);
   }
+
+  if (recallObjects.length > 0) {
+    this.callRecallAPI(recallObjects);
+  }
+}
 
   callRevokeAPI(objects): void {
     const payload = {
@@ -12220,6 +12226,35 @@ export class InventoryComponent {
     return obj;
   }
 
+  private getObjectArr1(object: any, isDraft: boolean): any {
+    let obj: any = {objects: []};
+    if (!object.type) {
+        object.children.forEach((item: any) => {
+          if (item.children) {
+            item.children.forEach((data: any) => {
+              if (!isDraft || (!data.deployed && !data.released)) {
+                obj.objects.push({
+                  objectType: data.objectType,
+                  path: data.path + (data.path === '/' ? '' : '/') + data.name
+                });
+              }
+            });
+          } else if (!isDraft || (!item.deployed && !item.released)) {
+            obj.objects.push({
+              objectType: item.objectType,
+              path: item.path + (item.path === '/' ? '' : '/') + item.name
+            });
+          }
+        });
+
+    } else {
+      obj.objects.push({
+        objectType: object.objectType,
+        path: object.path + (object.path === '/' ? '' : '/') + object.name
+      });
+    }
+    return obj;
+  }
   private updateTree(isTrash: boolean): void {
     this.isNavigationComplete = true;
     if (isTrash) {
