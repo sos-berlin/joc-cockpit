@@ -3182,9 +3182,9 @@
       "log_server_port": "Gibt den UDP Port an, den der Syslog Server überwacht, um Warnungen und Fehler von Controller und Agenten zu empfangen."
     },
     "identityService": {
-      "idle_session_timeout": "idle_session_timeout.",
-      "initial_password": "initial_password.",
-      "minimum_password_length": ".minimum_password_length."
+      "idle_session_timeout": "Die Leerlaufzeit gibt die Dauer in Minuten an, für die eine Sitzung ohne Benutzeraktivität aktiv bleibt. Wird die Leerlaufzeit überschritten, dann wird die Sitzung des Benutzers getrennt.",
+      "initial_password": "Das Initialkennwort, das zum Beispiel für neue Benutzerkonten verwendet wird. Die Benutzer müssen das Kennwort bei der nächsten Anmeldung ändern.",
+      "minimum_password_length": "Die von den Benutzern angegebene Mindestlänge eines Kennworts."
     }
   },
   "user": {
