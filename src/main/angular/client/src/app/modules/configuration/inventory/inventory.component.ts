@@ -2167,6 +2167,29 @@ export class DeployComponent {
     }
   }
 
+  hasDependencies(): any {
+    const selectedObjects = [];
+    Object.keys(this.affectedObjectsByType).forEach(type => {
+      this.affectedObjectsByType[type].forEach(obj => {
+        selectedObjects.push(obj);
+      });
+    });
+
+    Object.keys(this.referencedObjectsByType).forEach(type => {
+      this.referencedObjectsByType[type].forEach(obj => {
+        selectedObjects.push(obj);
+      });
+    });
+
+    this.filteredAffectedItems.forEach(item => {
+      selectedObjects.push(item);
+    });
+   if(selectedObjects.length > 1){
+     return true
+   }
+   return false;
+  }
+
   getDeploymentVersion(e: NzFormatEmitEvent): void {
     const node = e.node;
     this.openFolder(node, false);

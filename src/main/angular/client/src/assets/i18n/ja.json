@@ -2003,6 +2003,9 @@
     "message.changeDeductInWorkflow": "ワークフローの変数を変更し、変数を調整して再度スケジュールをリリースしてください",
     "message.noTagFound": "タグはありません",
     "message.impactedSchedules": "以下のスケジュールはドラフトモードになっていますので、リリースには調整が必要です。",
+    "message.remove": "Selected items will be removed from the inventory, Unselected items will be removed from the controller only.",
+    "message.revoke": "Selected items will be removed from the controller, but remain in the inventory.",
+    "message.recall": "Selected items will be recalled, but remain in the inventory.",
     "tab": {
       "folders": "フォルダー",
       "trash": "ゴミ箱",

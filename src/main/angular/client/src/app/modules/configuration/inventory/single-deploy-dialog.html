@@ -69,6 +69,15 @@
         </div>
 
       </div>
+      <div *ngIf="isRemoved && (affectedObjectTypes.length > 0 || referencedObjectTypes.length > 0 || filteredAffectedItems.length > 0)" class="m-b-sm opacity-0_5">
+        <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.remove' | translate}}</label>
+      </div>
+      <div *ngIf="isRevoke && (affectedObjectTypes.length > 0 || referencedObjectTypes.length > 0 || filteredAffectedItems.length > 0)" class="m-b-sm opacity-0_5">
+        <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.revoke' | translate}}</label>
+      </div>
+      <div *ngIf="operation === 'recall' &&  (affectedObjectTypes.length > 0 || referencedObjectTypes.length > 0 || filteredAffectedItems.length > 0)" class="m-b-sm opacity-0_5">
+        <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.recall' | translate}}</label>
+      </div>
       <div *ngIf="deployablesObject.length > 0" class="row">
         <div class="col-md-12">
           <div class="m-b-sm">

@@ -2003,6 +2003,9 @@
     "message.changeDeductInWorkflow": "Modifications des variables du flux de travail détectées, veuillez ajuster les variables et libérer la Planification.",
     "message.noTagFound": "Aucune Balise trouvé",
     "message.impactedSchedules": "Les Planifications suivantes sont passéés en mode brouillon et nécessiteront des ajustements avant d'être publiés.",
+    "message.remove": "Selected items will be removed from the inventory, Unselected items will be removed from the controller only.",
+    "message.revoke": "Selected items will be removed from the controller, but remain in the inventory.",
+    "message.recall": "Selected items will be recalled, but remain in the inventory.",
     "tab": {
       "folders": "Dossiers",
       "trash": "Corbeille",

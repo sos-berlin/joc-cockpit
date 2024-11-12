@@ -88,6 +88,15 @@
                  nz-checkbox (ngModelChange)="handleRecursive()"></label>
         </div>
       </div>
+      <div *ngIf="isRemove && hasDependencies()" class="m-b-sm opacity-0_5">
+        <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.remove' | translate}}</label>
+      </div>
+      <div *ngIf="isRevoke && hasDependencies()" class="m-b-sm opacity-0_5">
+        <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.revoke' | translate}}</label>
+      </div>
+      <div *ngIf="operation === 'recall' && hasDependencies()" class="m-b-sm opacity-0_5">
+        <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.recall' | translate}}</label>
+      </div>
       <div *ngIf="!isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects" class="row m-b-sm">
         <div class="col-md-12">
           <a (click)="expandAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
@@ -199,6 +208,7 @@
             <div *ngFor="let dependency of [node.origin.dependencies]" class="dependencies-list m-l-20 m-t-xs">
 
               <div *ngIf="dependency?.referencedBy?.length > 0 || dependency?.references?.length > 0 " class="form-group row" style="justify-content: space-between">
+
            <!-- Affected Objects (referencedBy) -->
                 <div *ngIf="dependency?.referencedBy?.length > 0" class="col-md-6"  class="form-group">
                   <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !affectedCollapsed[node.key], 'fa-caret-down': affectedCollapsed[node.key]}"
