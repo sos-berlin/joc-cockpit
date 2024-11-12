@@ -237,7 +237,6 @@ export class AllOrderResumeModelComponent {
   }
 
   onTimeChange(e: any): void {
-    console.log(e)
     if (e === 'currentBlock') {
       this.resumeObj.fromCurrentBlock = true;
       delete this.resumeObj.position;
