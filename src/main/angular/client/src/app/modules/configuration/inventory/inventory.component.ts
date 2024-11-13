@@ -1429,7 +1429,7 @@ export class DeployComponent {
 
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private ref: ChangeDetectorRef,
-              private inventoryService: InventoryService, private toasterService: ToastrService, private translate: TranslateService, private cdRef: ChangeDetectorRef) {
+              private inventoryService: InventoryService, private toasterService: ToastrService, private translate: TranslateService, private cdRef: ChangeDetectorRef,private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -1471,7 +1471,6 @@ export class DeployComponent {
     this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
     this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
   }
-
 
   handleRecursive(): void {
     this.ref.detectChanges();
@@ -8941,6 +8940,14 @@ export class InventoryComponent {
           this.newDraft(res.newDraft);
         } else if (res.updateFromJobTemplate) {
           this.updateFromJobTemplates(res.updateFromJobTemplate);
+        }else if (res.addToChange) {
+          this.addToChange(res.addToChange);
+        }else if (res.removeFromChange) {
+          this.removeFromChange(res.removeFromChange);
+        }else if (res.publishChange) {
+          this.publishChange(res.publishChange);
+        }else if (res.showDependencies) {
+          this.showDependencies(res.showDependencies);
         }
       }
     });

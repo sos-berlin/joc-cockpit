@@ -63,7 +63,7 @@ export class AddRestrictionComponent {
   ngOnInit(): void {
     this.schedulerId = this.modalData.schedulerId;
     this.preferences = this.modalData.preferences;
-    this.frequencyEditIndex = this.modalData.frequencyIndex;
+    this.frequencyEditIndex = this.modalData.data.frequencyIndex;
     this.data = this.modalData.data || {};
     setTimeout(() => {
       this.isVisible = true;
@@ -671,8 +671,7 @@ export class AddRestrictionComponent {
               }
             });
 
-          } else if (this.frequency.tab === 'specificDays'
-            && this.areArraysEqual(this.calendar.frequencyList[i].dates, this.frequency.dates)) {
+          } else if (this.frequency.tab === 'specificDays') {
             this.frequency.dates = [];
             for (let j = 0; j < this.tempItems.length; j++) {
               this.frequency.dates.push(this.coreService.getStringDate(this.tempItems[j].startDate));

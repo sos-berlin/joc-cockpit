@@ -242,6 +242,22 @@ export class TableComponent implements OnChanges, OnDestroy {
     this.dataService.reloadTree.next({addTag: data});
   }
 
+  addToChange(data): void {
+    this.dataService.reloadTree.next({addToChange: data});
+  }
+
+  removeFromChange(data): void {
+    this.dataService.reloadTree.next({removeFromChange: data});
+  }
+
+  publishChange(data): void {
+    this.dataService.reloadTree.next({publishChange: data});
+  }
+
+  showDependencies(data): void {
+    this.dataService.reloadTree.next({showDependencies: data});
+  }
+
   newDraft(data): void {
     this.dataService.reloadTree.next({newDraft: data});
   }

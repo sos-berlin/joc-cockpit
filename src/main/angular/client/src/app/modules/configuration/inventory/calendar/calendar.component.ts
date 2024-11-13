@@ -627,8 +627,7 @@ export class FrequencyModalComponent {
             this.frequencyList[i].str = clone(this.frequency.str);
             flag1 = true;
             break;
-          } else if (this.frequency.tab == 'specificDays'
-            && this.areArraysEqual(this.frequencyList[i].dates, this.frequency.dates)) {
+          } else if (this.frequency.tab == 'specificDays') {
             this.updateFrequencyData(null);
             this.frequencyList[i].dates = clone(this.frequency.dates);
             this.frequencyList[i].str = clone(this.frequency.str);

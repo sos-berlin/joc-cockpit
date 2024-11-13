@@ -63,18 +63,22 @@ export class PostModalComponent {
       this.display = this.preferences.auditLog;
     }
     if(this.singular){
-      if (typeof this.board.postOrderToNoticeId === 'string' && !/[$()]/.test(this.board.postOrderToNoticeId)) {
+      if (typeof this.board.postOrderToNoticeId === 'string' && this.board.postOrderToNoticeId != 'replaceAll($js7OrderId, \'^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$\', \'$1\')'  && !/[$()]/.test(this.board.postOrderToNoticeId) ){
         this.postObj.noticeId = this.board.postOrderToNoticeId;
-      } else {
+      } else if (this.board.postOrderToNoticeId === 'replaceAll($js7OrderId, \'^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$\', \'$1\')'){
+        this.postObj.noticeId = this.coreService.getStringDate(null);
+      }else {
         this.postObj.noticeId = '';
       }
       if (typeof this.board.endOfLife === 'string') {
         const currentEpochMilli = Date.now();
-        const modifiedEndOfLife = this.board.endOfLife.replace('$js7EpochMilli', currentEpochMilli.toString());
+        const modifiedEndOfLife = this.board.endOfLife.replace(/\$js7EpochMilli/g, currentEpochMilli.toString());
 
         let finalEpochMilli: number;
+
         try {
-          finalEpochMilli = eval(modifiedEndOfLife);
+          const calculateExpression = new Function('return ' + modifiedEndOfLife);
+          finalEpochMilli = calculateExpression();
         } catch (error) {
           console.error('Failed to evaluate endOfLife expression:', error);
           this.postObj.atTime = null;
@@ -106,6 +110,7 @@ export class PostModalComponent {
       } else {
         this.postObj.atTime = this.board.endOfLife;
       }
+
     }
 
   }

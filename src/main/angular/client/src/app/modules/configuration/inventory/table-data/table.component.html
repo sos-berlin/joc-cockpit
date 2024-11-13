@@ -177,6 +177,24 @@
                       nz-menu-item>
                     <a translate>inventory.button.manageTags</a>
                   </li>
+                  <li (click)="$event.preventDefault();$event.stopPropagation()" *ngIf="permission.joc.inventory.manage"  [nzTitle]="'inventory.button.change' | translate"
+                      nz-submenu>
+                    <ul>
+                      <li (click)="addToChange(data);" *ngIf="permission.joc.inventory.manage" nz-menu-item>
+                        <a translate>changes.button.addToChange</a>
+                      </li>
+                      <li (click)="removeFromChange(data);" *ngIf="permission.joc.inventory.manage" nz-menu-item>
+                        <a translate>changes.button.removeFromChange</a>
+                      </li>
+                      <li (click)="publishChange(data);" *ngIf="securityLevel !== 'HIGH'" nz-menu-item>
+                        <a translate>changes.button.publishChange</a>
+                      </li>
+                    </ul>
+                  </li>
+                  <li (click)="showDependencies(data);" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)"
+                      nz-menu-item>
+                    <a translate>common.button.showDependencies</a>
+                  </li>
                   <li *ngIf="permission.joc.inventory.manage" nz-menu-divider>
                   <li (click)="deployObject(data)" *ngIf="permission.joc.inventory.deploy && securityLevel !== 'HIGH' && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && !objectType.match('CALENDAR') && objectType !== 'JOBTEMPLATE' && objectType !== 'SCHEDULE' && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT'"
                       [nzDisabled]="!data.hasDeployments && !data.valid"

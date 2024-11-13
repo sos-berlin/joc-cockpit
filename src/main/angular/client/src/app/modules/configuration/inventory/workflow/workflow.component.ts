@@ -6833,6 +6833,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
             if (json.instructions[x].id == nodeId) {
               if (json.instructions[x].instructions) {
                 if (!json.instructions[x].then) {
+
                   json.instructions.splice(x + 1, 0, obj);
                 } else {
                   json.instructions[x].instructions.push(obj);
@@ -6879,7 +6880,12 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                     json.instructions.splice(x + 1, 0, obj);
                   }
                 } else {
+                  if(self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE)) {
+                    json.instructions[x].instructions = [(obj)];
+                  }else{
                     json.instructions.splice(x + 1, 0, obj);
+                  }
+
 
                 }
               }
@@ -6923,6 +6929,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
     let lastCells = [];
 
     function checkRemainingNodes(node) {
+
       if(node.edges && node.edges.length > 0) {
         node.edges.forEach(edge => {
           if (edge.source && edge.source.id !== node.id) {
