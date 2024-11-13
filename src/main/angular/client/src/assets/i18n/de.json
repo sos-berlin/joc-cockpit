@@ -2003,9 +2003,9 @@
     "message.changeDeductInWorkflow": "Änderungen an Variablen des Arbeitsablaufs erkannt, bitte die Variablen anpassen und den Zeitplan freigeben.",
     "message.noTagFound": "Keine Kennzeichnung gefunden",
     "message.impactedSchedules": "Die folgenden Zeitpläne wurden in den Entwurfszustand versetzt und müssen angepasst und freigegeben werden.",
-    "message.remove": "Selected items will be removed from the inventory, Unselected items will be removed from the controller only.",
-    "message.revoke": "Selected items will be removed from the controller, but remain in the inventory.",
-    "message.recall": "Selected items will be recalled, but remain in the inventory.",
+    "message.remove": "Ausgewählte Objekte werden vom Controller und aus dem Inventar entfernt, nicht ausgewählte Objekte werden vom Controller entfernt.",
+    "message.revoke": "Ausgewählte Objekte werden vom Controller zurückgezogen, sie verbleiben im Inventar.",
+    "message.recall": "Ausgewählte Objekte werden zurückgenommen, sie verbleiben im Inventar.",
     "tab": {
       "folders": "Ordner",
       "trash": "Papierkorb",
