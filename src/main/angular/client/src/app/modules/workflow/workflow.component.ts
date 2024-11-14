@@ -743,7 +743,9 @@ export class WorkflowComponent {
   }
 
   bulkUpdate(data): void {
+
     data.list.forEach((noticePath) => {
+
       const newEntry = {
         noticePath: noticePath,
         workflowPaths: [data.key]
@@ -773,11 +775,16 @@ export class WorkflowComponent {
       this.broadNames.delete(data.key);
     }
 
-    this.broadPath = this.broadPath.filter(item =>
-      this.broadNames.get(data.key)?.includes(item.noticePath)
-    );
-
+    this.broadPath = this.broadPath.filter(item => {
+      for (const [key, list] of this.broadNames.entries()) {
+        if (item.workflowPaths.includes(key) && list.includes(item.noticePath)) {
+          return true;
+        }
+      }
+      return false;
+    });
   }
+
 
 
   postAllNotices(): void {
@@ -1572,10 +1579,15 @@ export class WorkflowComponent {
         const intervalId = setInterval(() => {
           if (index < allTags.length) {
             const chunk = allTags.slice(index, index + chunkSize);
-            this.coreService.selectedTags.push(...chunk);
+            // Ensure unique tags in selectedTags and workflowTags
             chunk.forEach(tag => {
-              obj.workflowTags.push(tag.name);
-              this.coreService.checkedTags.add(tag.name);
+              // Only add the tag if it's not already in selectedTags or workflowTags
+              if (!this.coreService.selectedTags.some(existingTag => existingTag.name === tag.name) &&
+              !obj.workflowTags.includes(tag.name)) {
+                this.coreService.selectedTags.push(tag);
+                obj.workflowTags.push(tag.name);
+                this.coreService.checkedTags.add(tag.name);
+              }
             });
             this.searchByTags(obj);
             index += chunkSize;
@@ -2636,10 +2648,15 @@ export class WorkflowComponent {
           const intervalId = setInterval(() => {
             if (index < allTags.length) {
               const chunk = allTags.slice(index, index + chunkSize);
-              this.coreService.selectedOrderTags.push(...chunk);
+              // Ensure unique tags in selectedOrderTags and orderTags
               chunk.forEach(tag => {
-                obj.orderTags.push(tag.name);
-                this.coreService.checkedOrderTags.add(tag.name);
+                // Only add the tag if it's not already in selectedOrderTags and orderTags
+                if (!this.coreService.selectedOrderTags.some(existingTag => existingTag.name === tag.name) &&
+                !obj.orderTags.includes(tag.name)) {
+                  this.coreService.selectedOrderTags.push(tag);
+                  obj.orderTags.push(tag.name);
+                  this.coreService.checkedOrderTags.add(tag.name);
+                }
               });
               this.searchByOrderTags(obj);
               index += chunkSize;

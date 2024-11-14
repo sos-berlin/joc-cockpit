@@ -1255,6 +1255,7 @@ export class SingleDeployComponent {
           referencedTypeSet.forEach(type => {
             this.updateParentCheckboxReferenced(type);
           });
+
         }
       });
 
@@ -10577,6 +10578,7 @@ export class InventoryComponent {
                 }
               }
             });
+
             this.revokeRecallDependencies(revokeRecallObjects);
           }
           obj.cancelOrdersDateFrom = result.cancelOrdersDateFrom;

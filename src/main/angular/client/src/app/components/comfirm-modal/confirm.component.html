@@ -87,6 +87,9 @@
     </div>
   </div>
   <div class="form-group row m-t-md">
+    <div *ngIf="affectedObjectTypes.length > 0 || referencedObjectTypes.length || filteredAffectedItems?.length > 0" class="m-b-sm opacity-0_5 p-sm-0">
+      <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.remove' | translate}}</label>
+    </div>
     <div *ngIf="affectedObjectTypes.length > 0" class="col-md-6" [class.col-md-12]="referencedObjectTypes.length === 0">
       <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isAffectedCollapsed, 'fa-caret-down': isAffectedCollapsed}"
          (click)="toggleAllAffectedCollapse()"></i>

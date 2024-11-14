@@ -1574,9 +1574,13 @@ export class OrderOverviewComponent {
         const intervalId = setInterval(() => {
           if (index < allTags.length) {
             const chunk = allTags.slice(index, index + chunkSize);
-            this.coreService.selectedOrderTags.push(...chunk);
+            // Ensure unique tags in selectedOrderTags
             chunk.forEach(tag => {
-              this.coreService.checkedOrderTags.add(tag.name);
+              // Only add the tag if it's not already in selectedOrderTags
+              if (!this.coreService.selectedOrderTags.some(existingTag => existingTag.name === tag.name)) {
+                this.coreService.selectedOrderTags.push(tag);
+                this.coreService.checkedOrderTags.add(tag.name);
+              }
             });
             index += chunkSize;
           } else {
@@ -1625,9 +1629,13 @@ export class OrderOverviewComponent {
         const intervalId = setInterval(() => {
           if (index < allTags.length) {
             const chunk = allTags.slice(index, index + chunkSize);
-            this.coreService.selectedTags.push(...chunk);
+            // Ensure unique tags in selectedTags and workflowTags
             chunk.forEach(tag => {
-              this.coreService.checkedTags.add(tag.name);
+              // Only add the tag if it's not already in selectedTags or workflowTags
+              if (!this.coreService.selectedTags.some(existingTag => existingTag.name === tag.name)) {
+                this.coreService.selectedTags.push(tag);
+                this.coreService.checkedTags.add(tag.name);
+              }
             });
             index += chunkSize;
           } else {

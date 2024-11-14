@@ -63,7 +63,7 @@ export class PostModalComponent {
       this.display = this.preferences.auditLog;
     }
     if(this.singular){
-      if (typeof this.board.postOrderToNoticeId === 'string' && this.board.postOrderToNoticeId != 'replaceAll($js7OrderId, \'^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$\', \'$1\')' && this.board.postOrderToNoticeId === 'replaceAll($js7OrderId, \'^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*-([^:]*)(?::[^|]*)?([|].*)?$\', \'$1$2$3\')' && !/[$()]/.test(this.board.postOrderToNoticeId) ){
+      if (typeof this.board.postOrderToNoticeId === 'string' && this.board.postOrderToNoticeId != 'replaceAll($js7OrderId, \'^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$\', \'$1\')' && this.board.postOrderToNoticeId != 'replaceAll($js7OrderId, \'^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*-([^:]*)(?::[^|]*)?([|].*)?$\', \'$1$2$3\')' && !/[$()]/.test(this.board.postOrderToNoticeId) ){
         this.postObj.noticeId = this.board.postOrderToNoticeId;
       } else if (this.board.postOrderToNoticeId === 'replaceAll($js7OrderId, \'^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$\', \'$1\')' || this.board.postOrderToNoticeId === 'replaceAll($js7OrderId, \'^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*-([^:]*)(?::[^|]*)?([|].*)?$\', \'$1$2$3\')'){
         this.postObj.noticeId = this.coreService.getStringDate(null);
