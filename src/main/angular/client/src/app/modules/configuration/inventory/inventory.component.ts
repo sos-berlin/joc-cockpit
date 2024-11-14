@@ -8955,7 +8955,6 @@ export class InventoryComponent {
       this.initConf(false);
     });
 
-    //200ms Delay in search
     this.searchTerm.pipe(debounceTime(200))
       .subscribe((searchValue: string) => {
         this.searchObjects(searchValue);

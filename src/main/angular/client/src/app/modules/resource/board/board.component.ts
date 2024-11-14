@@ -63,9 +63,9 @@ export class PostModalComponent {
       this.display = this.preferences.auditLog;
     }
     if(this.singular){
-      if (typeof this.board.postOrderToNoticeId === 'string' && this.board.postOrderToNoticeId != 'replaceAll($js7OrderId, \'^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$\', \'$1\')'  && !/[$()]/.test(this.board.postOrderToNoticeId) ){
+      if (typeof this.board.postOrderToNoticeId === 'string' && this.board.postOrderToNoticeId != 'replaceAll($js7OrderId, \'^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$\', \'$1\')' && this.board.postOrderToNoticeId === 'replaceAll($js7OrderId, \'^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*-([^:]*)(?::[^|]*)?([|].*)?$\', \'$1$2$3\')' && !/[$()]/.test(this.board.postOrderToNoticeId) ){
         this.postObj.noticeId = this.board.postOrderToNoticeId;
-      } else if (this.board.postOrderToNoticeId === 'replaceAll($js7OrderId, \'^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$\', \'$1\')'){
+      } else if (this.board.postOrderToNoticeId === 'replaceAll($js7OrderId, \'^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$\', \'$1\')' || this.board.postOrderToNoticeId === 'replaceAll($js7OrderId, \'^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*-([^:]*)(?::[^|]*)?([|].*)?$\', \'$1$2$3\')'){
         this.postObj.noticeId = this.coreService.getStringDate(null);
       }else {
         this.postObj.noticeId = '';
@@ -77,8 +77,7 @@ export class PostModalComponent {
         let finalEpochMilli: number;
 
         try {
-          const calculateExpression = new Function('return ' + modifiedEndOfLife);
-          finalEpochMilli = calculateExpression();
+          finalEpochMilli = parseMathExpression(modifiedEndOfLife);
         } catch (error) {
           console.error('Failed to evaluate endOfLife expression:', error);
           this.postObj.atTime = null;
@@ -92,24 +91,96 @@ export class PostModalComponent {
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = totalSeconds % 60;
 
-        let formattedTime = `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
-        const parts = formattedTime.split(':');
-        if (parts.length === 2) {
-          parts[0] = parts[0].padStart(2, '0');
-          parts[1] = parts[1].padEnd(2, '0');
-          formattedTime = parts.join(':') + ':00';
-        } else if (parts.length === 3) {
-          parts[0] = parts[0].padStart(2, '0');
-          parts[1] = parts[1].padStart(2, '0');
-          parts[2] = parts[2].padEnd(2, '0');
-          formattedTime = parts.join(':');
-        }
+        const formattedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
         this.postObj.atTime = formattedTime;
       } else {
         this.postObj.atTime = this.board.endOfLife;
       }
+
+      function parseMathExpression(expression: string): number {
+        const validChars = /^[0-9+\-*/().\s]+$/;
+        if (!validChars.test(expression)) {
+          throw new Error('Invalid characters in expression');
+        }
+
+        return calculate(expression);
+      }
+
+      function calculate(expression: string): number {
+        // Remove spaces to simplify parsing
+        expression = expression.replace(/\s+/g, '');
+
+        const operatorStack: string[] = [];
+        const valueStack: number[] = [];
+        let index = 0;
+
+        while (index < expression.length) {
+          let currentChar = expression[index];
+
+          if (isDigit(currentChar)) {
+            let numStr = '';
+
+            while (index < expression.length && isDigit(expression[index])) {
+              numStr += expression[index];
+              index++;
+            }
+            valueStack.push(parseInt(numStr, 10));
+            continue;
+          }
+
+          if (currentChar === '+' || currentChar === '-' || currentChar === '*' || currentChar === '/') {
+            while (operatorStack.length > 0 && precedence(operatorStack[operatorStack.length - 1]) >= precedence(currentChar)) {
+              const operator = operatorStack.pop();
+              const right = valueStack.pop();
+              const left = valueStack.pop();
+              valueStack.push(applyOperator(operator, left, right));
+            }
+
+            operatorStack.push(currentChar);
+            index++;
+          } else {
+            throw new Error('Unsupported character found in expression');
+          }
+        }
+
+        while (operatorStack.length > 0) {
+          const operator = operatorStack.pop();
+          const right = valueStack.pop();
+          const left = valueStack.pop();
+          valueStack.push(applyOperator(operator, left, right));
+        }
+
+        return valueStack[0];
+      }
+
+      function precedence(operator: string): number {
+        if (operator === '+' || operator === '-') return 1;
+        if (operator === '*' || operator === '/') return 2;
+        return 0;
+      }
+
+      function applyOperator(operator: string, left: number, right: number): number {
+        switch (operator) {
+          case '+':
+            return left + right;
+          case '-':
+            return left - right;
+          case '*':
+            return left * right;
+          case '/':
+            if (right === 0) throw new Error('Division by zero');
+            return left / right;
+          default:
+            throw new Error('Unsupported operator');
+        }
+      }
+
+      function isDigit(char: string): boolean {
+        return /^[0-9]$/.test(char);
+      }
+
+
 
     }
 

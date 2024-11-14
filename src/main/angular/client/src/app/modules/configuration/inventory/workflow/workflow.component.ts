@@ -6833,9 +6833,13 @@ let data = this.storedArguments[this.storedArguments.length - 1];
             if (json.instructions[x].id == nodeId) {
               if (json.instructions[x].instructions) {
                 if (!json.instructions[x].then) {
+                  if (json.instructions[x].TYPE === 'Try') {
+                    json.instructions[x].instructions.push(obj);
+                  } else {
+                    json.instructions.splice(x + 1, 0, obj);
 
-                  json.instructions.splice(x + 1, 0, obj);
-                } else {
+                  }
+                }else {
                   json.instructions[x].instructions.push(obj);
                 }
 
