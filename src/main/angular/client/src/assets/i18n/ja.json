@@ -2003,9 +2003,9 @@
     "message.changeDeductInWorkflow": "ワークフローの変数を変更し、変数を調整して再度スケジュールをリリースしてください",
     "message.noTagFound": "タグはありません",
     "message.impactedSchedules": "以下のスケジュールはドラフトモードになっていますので、リリースには調整が必要です。",
-    "message.remove": "Selected items will be removed from the inventory, Unselected items will be removed from the controller only.",
-    "message.revoke": "Selected items will be removed from the controller, but remain in the inventory.",
-    "message.recall": "Selected items will be recalled, but remain in the inventory.",
+    "message.remove": "選択項目はインベントリーから削除され、選択していない項目はコントローラーだけから削除されます。",
+    "message.revoke": "選択項目はコントローラーから削除されますが、インベントリーからは削除されません。",
+    "message.recall": "選択項目は戻りますが、インベントリーに残ります。",
     "tab": {
       "folders": "フォルダー",
       "trash": "ゴミ箱",
@@ -2534,11 +2534,11 @@
     "label.blockPosition": "ブロック位置",
     "label.stickToDailyPlanDate": "実行計画の日付を守る",
     "label.variableMap": "Map属性",
-    "label.samePosition": "Resume from same position",
-    "label.currentBlock": "Resume from current block",
-    "label.resumeLabel": "Resume from label",
-    "label.resumeLabelPosition": "Resume from position",
-    "label.force": "Force",
+    "label.samePosition": "同じポジションから回復",
+    "label.currentBlock": "今のブロックから回復",
+    "label.resumeLabel": "ラベルから回復",
+    "label.resumeLabelPosition": "ポジションから回復",
+    "label.force": "強制",
     "button.allOrders": "全オーダー",
     "button.cancel": "キャンセル",
     "button.cancelSoftly": "ソフトキャンセル",
@@ -2571,7 +2571,7 @@
     "placeholder.selectEndNode": "終了ノード選択",
     "placeholder.selectBlockPosition": "ブロック位置選択",
     "placeholder.enterCycleEndTime": "hh:mm:ssか、秒で入力",
-    "placeholder.enterPosition": "Enter position",
+    "placeholder.enterPosition": "ポジションを入力",
     "message.noVariableAvailable": "変数はありません",
     "message.orderModificationNotAllowed": "オーダーステート{{state}}は変更できません",
     "message.noLogHistoryFound": "このオーダーにはログがありません",
@@ -3185,9 +3185,9 @@
       "log_server_port": "log_server_port."
     },
     "identityService": {
-      "idle_session_timeout": "idle_session_timeout.",
-      "initial_password": "initial_password.",
-      "minimum_password_length": ".minimum_password_length."
+      "idle_session_timeout": "アイドルセッションタイムアウト",
+      "initial_password": "初期パスワード.",
+      "minimum_password_length": "最小パスワード長"
     }
   },
   "user": {
