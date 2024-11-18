@@ -57,11 +57,11 @@ export class SearchComponent {
     {label: 'notSynchronized', value: 'NOT_IN_SYNC', checked: false}
   ];
 
-  jobCriticality=[
-    {value: 'MINOR' , name:'common.label.minor'},
-    {value: 'NORMAL' , name:'common.label.normal'},
-    {value: 'MAJOR' , name:'common.label.major'},
-    {value: 'CRITICAL' , name:'common.label.critical'},
+  jobCriticality = [
+    {value: 'MINOR', name: 'common.label.minor'},
+    {value: 'NORMAL', name: 'common.label.normal'},
+    {value: 'MAJOR', name: 'common.label.major'},
+    {value: 'CRITICAL', name: 'common.label.critical'},
 
   ]
 

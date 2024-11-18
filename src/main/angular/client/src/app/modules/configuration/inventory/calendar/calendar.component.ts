@@ -1232,6 +1232,7 @@ export class CalendarComponent {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+
     if (this.data.objectType || this.data.type) {
       this.objectType = this.data.objectType || this.data.type;
     }
@@ -1242,6 +1243,7 @@ export class CalendarComponent {
       if (changes['reload'].previousValue === true && changes['reload'].currentValue === false) {
         return;
       }
+
       if (this.reload) {
         this.editor.frequencyType = 'INCLUDE';
         this.getObject();
@@ -1271,6 +1273,7 @@ export class CalendarComponent {
       this.saveJSON();
     }
   }
+
   private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
@@ -1379,7 +1382,7 @@ export class CalendarComponent {
       days: [],
       months: []
     };
-    this.openModel(frequency, null, );
+    this.openModel(frequency, null,);
   }
 
   updateFrequency(data, frequencyIndex): void {
@@ -1567,6 +1570,7 @@ export class CalendarComponent {
       }
     }, time);
   }
+
   private openModel(frequency, data, frequencyIndex = -1): void {
     this.editor.hidePervious = !!data;
     this.editor.showYearView = false;

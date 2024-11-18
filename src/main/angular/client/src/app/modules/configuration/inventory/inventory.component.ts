@@ -9653,6 +9653,7 @@ export class InventoryComponent {
           }
         }
         for (let i = 0; i < dailyPlanObj.dailyPlanArr.length; i++) {
+
           dailyPlanObj.dailyPlanArr[i].deleted = data.deleted;
           let resObject;
           if (dailyPlanObj.dailyPlanArr[i].object === InventoryObject.SCHEDULE) {

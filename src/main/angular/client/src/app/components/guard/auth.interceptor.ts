@@ -38,10 +38,15 @@ export class AuthInterceptor implements HttpInterceptor {
               const headers = new HttpHeaders(headerOptions);
               req = req.clone({headers, body: {}});
             } else if (!user.fido) {
-              req = req.clone({
-                headers: req.headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((user.userName || '') + ':' + (user.password || ''))))),
+              const credentials = (user.userName || '') + ':' + (user.password || '');
+              const utf8Credentials = new TextEncoder().encode(credentials);
+              const base64Credentials = btoa(String.fromCharCode(...utf8Credentials));
+
+                req = req.clone({
+                headers: req.headers.set('Authorization', 'Basic ' + base64Credentials),
                 body: {}
               });
+
             } else {
               delete user.fido;
             }

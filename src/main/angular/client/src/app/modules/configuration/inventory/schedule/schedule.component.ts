@@ -1,4 +1,12 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, Input, SimpleChanges, ViewChild} from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  Input,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import {clone, isArray, isEmpty, isEqual} from 'underscore';
 import {Subscription} from 'rxjs';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -10,11 +18,10 @@ import {DataService} from '../../../../services/data.service';
 import {CalendarService} from '../../../../services/calendar.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import {ValueEditorComponent} from "../../../../components/value-editor/value.component";
-import { WorkflowService } from 'src/app/services/workflow.service';
-import { EncryptArgumentModalComponent } from '../inventory.component';
-import { AuthService } from 'src/app/components/guard';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-
+import {WorkflowService} from 'src/app/services/workflow.service';
+import {EncryptArgumentModalComponent} from '../inventory.component';
+import {AuthService} from 'src/app/components/guard';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 
 
 @Component({
@@ -220,9 +227,9 @@ export class ScheduleComponent {
 
 
   handleIndlPaste(data: any, index1: number, index2: number): void {
-    if(this.storedIndlArguments[0].isFromVariableList){
-      this.pasteVariableToList([index1],[index2]);
-    }else{
+    if (this.storedIndlArguments[0].isFromVariableList) {
+      this.pasteVariableToList([index1], [index2]);
+    } else {
       if (!data || !data.type) {
         data = this.storedIndlArguments[0];
       }
@@ -237,20 +244,20 @@ export class ScheduleComponent {
 
           if (existingParameter) {
             existingParameter.actualList = existingParameter.actualList.concat(clipboardData.actualList);
-        }
+          }
 
-        if (existingParameter && existingParameter.actualMap && clipboardData.actualMap) {
-          existingParameter.actualMap = clipboardData.actualMap;
+          if (existingParameter && existingParameter.actualMap && clipboardData.actualMap) {
+            existingParameter.actualMap = clipboardData.actualMap;
+          }
         }
       }
     }
-  }
 
   }
 
   copyVariableFromList(index: number, list: any): void {
     const variableToCopy = list.actualList[index];
-    const markedVariable = { ...variableToCopy, isFromVariableList: true, text: list.name };
+    const markedVariable = {...variableToCopy, isFromVariableList: true, text: list.name};
     sessionStorage.setItem('$SOS$copiedIndlSheduledArgument', JSON.stringify(markedVariable));
     this.storedIndlArguments = [markedVariable];
   }
@@ -277,9 +284,6 @@ export class ScheduleComponent {
     }
 
   }
-
-
-
 
 
   getStoredIndlArgumentsName(): string | undefined {
@@ -759,7 +763,7 @@ export class ScheduleComponent {
                     actualMap: [actualMap]
                   }],
                   positions: {},
-                  tags:[]
+                  tags: []
                 });
             } else {
               let isExist = false;
@@ -802,7 +806,12 @@ export class ScheduleComponent {
           if (this.schedule.configuration.orderParameterisations.length === 0) {
             if (!val.default && val.default !== false && val.default !== 0) {
               if (!val.final) {
-                this.schedule.configuration.orderParameterisations.push({orderName: '', variables: [], positions: {}, tags: []});
+                this.schedule.configuration.orderParameterisations.push({
+                  orderName: '',
+                  variables: [],
+                  positions: {},
+                  tags: []
+                });
               }
             }
           }
@@ -974,25 +983,36 @@ export class ScheduleComponent {
       if (this.schedule.configuration.orderParameterisations?.length > 0) {
         let arr = [];
         for (let j in this.schedule.configuration.orderParameterisations[0].variables) {
-          if (isArray(this.schedule.configuration.orderParameterisations[0].variables[j].value)) {
+          const variable = this.schedule.configuration.orderParameterisations[0].variables[j];
 
+          if (isArray(variable.value) && variable.type === 'List') {
             let value = [];
-            for (let x in this.schedule.configuration.orderParameterisations[0].variables[j].actualList) {
+            for (let x in variable.actualList) {
               let obj = {};
-              for (let y in this.schedule.configuration.orderParameterisations[0].variables[j].actualList[x]) {
-                obj[this.schedule.configuration.orderParameterisations[0].variables[j].actualList[x][y].name] = this.schedule.configuration.orderParameterisations[0].variables[j].actualList[x][y].value;
+              for (let y in variable.actualList[x]) {
+                obj[variable.actualList[x][y].name] = variable.actualList[x][y].value;
               }
               value.push(obj);
             }
             arr.push({
-              name: this.schedule.configuration.orderParameterisations[0].variables[j].name,
+              name: variable.name,
               value: value
+            });
+
+          } else if (variable.type === 'Map') {
+            let mapValue = {};
+            for (let x in variable.actualMap[0]) {
+              mapValue[variable.actualMap[0][x].name] = variable.actualMap[0][x].value;
+            }
+            arr.push({
+              name: variable.name,
+              value: mapValue
             });
 
           } else {
             arr.push({
-              name: this.schedule.configuration.orderParameterisations[0].variables[j].name,
-              value: this.schedule.configuration.orderParameterisations[0].variables[j].value
+              name: variable.name,
+              value: variable.value
             });
           }
         }
@@ -1616,7 +1636,7 @@ export class ScheduleComponent {
 
       if (this.schedule.configuration.orderParameterisations) {
         this.schedule.configuration.orderParameterisations.map((item) => {
-          if(item?.tags && item.tags.length > 0){
+          if (item?.tags && item.tags.length > 0) {
             let arr: any = item;
             arr.inputVisible = false;
             arr.inputValue = '';
@@ -1799,12 +1819,13 @@ export class ScheduleComponent {
   private fetchTags(): void {
     this.coreService.post('tags/order', {
       search: '',
-      controllerId: this.schedulerIds.selected}).subscribe((res) => {
-        this.allTags = res.tags;
-        // this.allTags = res.results;
-        // this.allTags = this.allTags.map((item) => {
-        //   return item.name;
-        // })
+      controllerId: this.schedulerIds.selected
+    }).subscribe((res) => {
+      this.allTags = res.tags;
+      // this.allTags = res.results;
+      // this.allTags = this.allTags.map((item) => {
+      //   return item.name;
+      // })
     });
   }
 
@@ -1869,8 +1890,8 @@ export class ScheduleComponent {
     }
   }
 
-  encryptValue(currentVariable, typeArg){
-    let selectedAgent  = [];
+  encryptValue(currentVariable, typeArg) {
+    let selectedAgent = [];
     const argu = currentVariable;
     const type = typeArg;
     const modal = this.modal.create({
