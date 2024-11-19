@@ -58,7 +58,7 @@
                       {{val.value.default || '  -  '}}
                       <i
                         (click)="openEditField(val)"
-                        *ngIf="permission.joc.administration.settings.manage && !val.value.edit && (!val.value.value && val.value.value !== '' && val.value.value !== 0 && val.value.value !== false)"
+                        *ngIf="permission.joc.administration.settings.manage && !val.value.edit && ((!val.value.value) || !val.value.value && val.value.value !== '' && val.value.value !== 0 && val.value.value !== false)"
                         class="p-l-sm text-hover-primary fa fa-pencil"></i>
                       <a (click)="showHashValue(val)"
                          *ngIf="val.value.type === 'PASSWORD' && !val.value.edit && (!val.value.value && val.value.value !== '')" [nzPopoverContent]="contentTemplate" class="text-hover-primary m-l"
