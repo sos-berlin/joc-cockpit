@@ -1509,7 +1509,6 @@ export class HistoryComponent {
       this.convertRequestBody(obj);
     }
     obj.compact = true;
-
     this.coreService.post('yade/transfers', obj).pipe(takeUntil(this.pendingHTTPRequests$)).subscribe({
       next: (res: any) => {
         this.isLoading = true;

@@ -1512,6 +1512,8 @@
       "label.targetFilePaths": "Chemin d'accès cible",
       "label.sourceProtocol": "Protocole source",
       "label.targetProtocol": "Protocole cible",
+      "label.numOfFilesFrom": "Number of files from",
+      "label.numOfFilesTo": "Number of files to",
       "placeholder.sourceProtocol": "Sélectionnez le protocole source",
       "placeholder.targetProtocol": "Sélectionnez le protocole cible",
       "placeholder.sourceFilePath": "Entrez le chemin du fichier source, utilisez les caractères de remplacement * pour tout nombre de caractères, ? pour un seul caractère, préfixe */ pour un nom de fichier",
@@ -1519,7 +1521,9 @@
       "placeholder.sourceHost": "Entrez le hôte source",
       "placeholder.targetHost": "Entrez le hôte cible",
       "placeholder.protocol": "Protocole",
-      "placeholder.enterProfileName": "Entrez le nom du profil"
+      "placeholder.enterProfileName": "Entrez le nom du profil",
+      "placeholder.numOfFilesFrom": "Number of files from",
+      "placeholder.numOfFilesTo": "Number of files to"
     },
     "--------ADVANCE SEARCH END------------": ""
   },

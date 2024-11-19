@@ -1512,6 +1512,8 @@
       "label.targetFilePaths": "ターゲットファイルパス",
       "label.sourceProtocol": "ソースプロトコル",
       "label.targetProtocol": "ターゲットプロトコル",
+      "label.numOfFilesFrom": "Number of files from",
+      "label.numOfFilesTo": "Number of files to",
       "placeholder.sourceProtocol": "ソースプロトコル",
       "placeholder.targetProtocol": "ターゲットプロトコル",
       "placeholder.sourceFilePath": "ソースファイルパスを入力",
@@ -1519,7 +1521,9 @@
       "placeholder.sourceHost": "ソースホスト",
       "placeholder.targetHost": "ターゲットホスト",
       "placeholder.protocol": "プロトコル",
-      "placeholder.enterProfileName": "プロファイル名を入力"
+      "placeholder.enterProfileName": "プロファイル名を入力",
+      "placeholder.numOfFilesFrom": "Number of files from",
+      "placeholder.numOfFilesTo": "Number of files to"
     },
     "--------ADVANCE SEARCH END------------": ""
   },

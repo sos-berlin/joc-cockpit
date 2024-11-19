@@ -573,7 +573,7 @@
     </div>
   </div>
 </div>
-<div class="">
+<div [ngClass]="showSearchPanel && historyFilters.type !== 'ORDER' && historyFilters.type !== 'TASK' ? 'scroll-y max-ht2' : ''">
   <div class="padding p-b-0">
     <div class="row m-b-12 m-t-xs">
       <div class="col-md-6 col-sm-6">

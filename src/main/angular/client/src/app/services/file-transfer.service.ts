@@ -235,6 +235,14 @@ export class FileTransferService {
       filter.controllerId = data.controllerId;
     }
 
+    if (data.numOfFilesFrom) {
+      filter.numOfFilesFrom = data.numOfFilesFrom;
+    }
+
+    if (data.numOfFilesTo) {
+      filter.numOfFilesTo = data.numOfFilesTo;
+    }
+
     filter.timeZone = preferences.zone;
     if ((filter.dateFrom && typeof filter.dateFrom.getMonth === 'function')) {
       filter.dateFrom = this.coreService.convertTimeToLocalTZ(preferences, filter.dateFrom)._d;

@@ -1512,6 +1512,8 @@
       "label.targetFilePaths": "Pfade der Zieldateien",
       "label.sourceProtocol": "Protokoll des Quellsystems",
       "label.targetProtocol": "Protokoll des Zielsystems",
+      "label.numOfFilesFrom": "Number of files from",
+      "label.numOfFilesTo": "Number of files to",
       "placeholder.sourceProtocol": "Protokoll des Quellsystems auswählen",
       "placeholder.targetProtocol": "Protokoll des Zielsystems auswählen",
       "placeholder.sourceFilePath": "Pfad zur Quelldatei angeben, Platzhalter * für beliebige Anzahl von Zeichen, ? für ein einzelnes Zeichen, Präfix */ für einen Dateinamen verwenden",
@@ -1519,7 +1521,9 @@
       "placeholder.sourceHost": "Quellsystem angeben",
       "placeholder.targetHost": "Zielsystem angeben",
       "placeholder.protocol": "Protokoll",
-      "placeholder.enterProfileName": "Namen des Profils angeben, Platzhalter * für eine beliebige Anzahl von Zeichen, ? für ein einzelnes Zeichen verwenden"
+      "placeholder.enterProfileName": "Namen des Profils angeben, Platzhalter * für eine beliebige Anzahl von Zeichen, ? für ein einzelnes Zeichen verwenden",
+      "placeholder.numOfFilesFrom": "Number of files from",
+      "placeholder.numOfFilesTo": "Number of files to"
     },
     "--------ADVANCE SEARCH END------------": ""
   },

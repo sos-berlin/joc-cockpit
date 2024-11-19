@@ -111,6 +111,20 @@
         </nz-checkbox-wrapper>
       </div>
     </div>
+    <div class="form-group row">
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 " translate>fileTransfer.search.label.numOfFilesFrom</label>
+      <div class="col-sm-6">
+        <nz-input-number name="numOfFilesFrom" [nzPlaceHolder]="'fileTransfer.search.placeholder.numOfFilesFrom' | translate"
+                     [nzMin]="0" [nzStep]="1" [(ngModel)]="filter.numOfFilesFrom"></nz-input-number>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 " translate>fileTransfer.search.label.numOfFilesTo</label>
+      <div class="col-sm-6">
+        <nz-input-number name="numOfFilesTo" [nzPlaceHolder]="'fileTransfer.search.placeholder.numOfFilesTo' | translate"
+                     [nzMin]="0" [nzStep]="1" [(ngModel)]="filter.numOfFilesTo"></nz-input-number>
+      </div>
+    </div>
     <div class="form-group row b-t p-t-12">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>fileTransfer.search.label.sourceFilePaths</label>
       <div class=" col-sm-6">
