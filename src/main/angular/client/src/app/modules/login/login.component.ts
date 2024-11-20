@@ -49,7 +49,7 @@ export class LoginComponent {
   ngOnInit(): void {
     this.subscription = this.dataService.reloadAuthentication.subscribe({
       next: (res) => {
-        if(!isEmpty(res)){
+        if (!isEmpty(res)) {
           this.isLoading = true;
         }
         if (res.data) {
@@ -86,7 +86,7 @@ export class LoginComponent {
     }
   }
 
-  ngOnDestroy(): void{
+  ngOnDestroy(): void {
     this.subscription.unsubscribe();
     this.dataService.reloadAuthentication.next({});
   }
@@ -107,33 +107,33 @@ export class LoginComponent {
           document.title = 'JS7: ' + res.title;
         }
 
-      if (res.customLogo && res.customLogo.name) {
-        let imgUrl = '../ext/images/' + res.customLogo.name;
-        const imgContainer = this.renderer.createElement('img');
-        this.renderer.setProperty(imgContainer, 'src', imgUrl);
-        this.renderer.setProperty(imgContainer, 'style', 'height: ' + res.customLogo.height || '140px');
-        const elem: any = document.getElementsByClassName('login-box');
-        if (elem.length > 0) {
-          let logHt = (res.customLogo.height || '140px').replace(/^\D+/g, '');
-          setTimeout(() => {
-            let ht = (window.innerHeight - document.getElementById('center-block')?.clientHeight);
-            if (ht < parseInt(logHt)) {
-              elem[0].style.height = 'calc(100% + ' + (parseInt(logHt) + 64) + 'px)';
-            }
-          }, 200)
+        if (res.customLogo && res.customLogo.name) {
+          let imgUrl = '../ext/images/' + res.customLogo.name;
+          const imgContainer = this.renderer.createElement('img');
+          this.renderer.setProperty(imgContainer, 'src', imgUrl);
+          this.renderer.setProperty(imgContainer, 'style', 'height: ' + res.customLogo.height || '140px');
+          const elem: any = document.getElementsByClassName('login-box');
+          if (elem.length > 0) {
+            let logHt = (res.customLogo.height || '140px').replace(/^\D+/g, '');
+            setTimeout(() => {
+              let ht = (window.innerHeight - document.getElementById('center-block')?.clientHeight);
+              if (ht < parseInt(logHt)) {
+                elem[0].style.height = 'calc(100% + ' + (parseInt(logHt) + 64) + 'px)';
+              }
+            }, 200)
+          }
+          const position = res.customLogo.position ? res.customLogo.position.toLowerCase() : '';
+          const dom = document.getElementById(position === 'top' ? 'logo-top' : 'logo-bottom');
+          if (dom) {
+            this.renderer?.appendChild(dom, imgContainer);
+          }
         }
-        const position = res.customLogo.position ? res.customLogo.position.toLowerCase() : '';
-        const dom = document.getElementById(position === 'top' ? 'logo-top' : 'logo-bottom');
-        if (dom) {
-          this.renderer?.appendChild(dom, imgContainer);
-        }
+      },
+      error: () => {
+        this.isLoading = false;
       }
-    },
-    error: () => {
-      this.isLoading = false;
-    }
-  });
-}
+    });
+  }
 
 
   private loadProviders(): void {
@@ -205,6 +205,17 @@ export class LoginComponent {
       }
     });
   }
+
+  sanitize(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+
+    const sanitizedValue = inputElement.value.replace(/[^\u0000-\u1FBFF]/g, '');
+    if (inputElement.value !== sanitizedValue) {
+      inputElement.value = sanitizedValue;
+      this.user.password = sanitizedValue;
+    }
+  }
+
 
   loginWithPopup(config) {
     sessionStorage['authConfig'] = JSON.stringify(config);

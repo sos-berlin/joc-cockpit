@@ -57,7 +57,7 @@
               <label class="font14" for="account"> {{ 'login.label.account' | translate}}</label>
             </div>
             <div *ngIf="!showRegister && !showLogin && needAccountPassword" class="md-form-group">
-              <input [(ngModel)]="user.password" autocomplete="off" class="md-input" id="password" name="password"
+              <input [(ngModel)]="user.password" (input)="sanitize($event)"  autocomplete="off" class="md-input" id="password" name="password"
                      type="{{!passwordField ? 'password' : 'text'}}">
               <i (click)="passwordField = !passwordField"
                  [ngClass]="!passwordField ? 'fa-eye' : 'fa-eye-slash'"

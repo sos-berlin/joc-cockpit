@@ -255,7 +255,10 @@ export class HeaderComponent {
             this.eventId = res.eventId;
             this.dataService.announceEvent(res);
             for (let j = 0; j < res.eventSnapshots.length; j++) {
-              if (res.eventSnapshots[j].eventType === 'JOCStateChanged') {
+              if (res.eventSnapshots[j].eventType === 'ControllerStateChanged' ||
+                res.eventSnapshots[j].eventType === 'JOCStateChanged' ||
+                res.eventSnapshots[j].eventType === 'ProxyCoupled' ||
+                res.eventSnapshots[j].eventType === 'ProxyDecoupled') {
                 this.isJocActive();
               } else if (res.eventSnapshots[j].eventType === 'NodeLossProblemEvent') {
                 res.eventSnapshots[j].date = parseInt(this.eventId) * 1000;

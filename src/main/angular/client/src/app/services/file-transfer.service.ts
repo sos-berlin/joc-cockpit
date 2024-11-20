@@ -237,10 +237,14 @@ export class FileTransferService {
 
     if (data.numOfFilesFrom) {
       filter.numOfFilesFrom = data.numOfFilesFrom;
+    }else{
+      filter.numOfFilesFrom = 0
     }
 
     if (data.numOfFilesTo) {
       filter.numOfFilesTo = data.numOfFilesTo;
+    }else{
+      filter.numOfFilesTo = 0
     }
 
     filter.timeZone = preferences.zone;
