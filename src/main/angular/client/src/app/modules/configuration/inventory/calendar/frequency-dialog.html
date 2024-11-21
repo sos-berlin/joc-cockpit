@@ -43,6 +43,28 @@
                 </div>
               </div>
               <div class="form-group row">
+                <label class="col-sm-3" translate>runtime.label.monthRange
+                  <a class="cursor">
+                    <i class="cursor fa fa-caret-up m-l-xs" [hidden]="showMonthRange"
+                       (click)="showMonthRange=true"></i>
+                    <i class="cursor fa fa-caret-down m-l-xs" [hidden]="!showMonthRange"
+                       (click)="showMonthRange=false"></i>
+                </a>
+                </label>
+                <div class="col-sm-9" [hidden]="!showMonthRange">
+                  <label nz-checkbox class="w" [(ngModel)]="frequency.allMonth" name="month"
+                         (ngModelChange)="selectAllMonth()">
+                    <span translate>runtime.label.everyMonth</span>
+                  </label><br>
+                  <nz-checkbox-wrapper (nzOnChange)="monthChange($event)">
+                    <ng-container *ngFor="let option of monthsOptions">
+                      <label nz-checkbox [nzValue]="option.value" [(ngModel)]="option.checked"
+                             name="{{option.label}}"><span translate>runtime.label.{{option.label}}</span></label>
+                    </ng-container>
+                  </nz-checkbox-wrapper>
+                </div>
+              </div>
+              <div class="form-group row">
                 <label class="col-sm-3 form-control-label" translate>runtime.label.validFrom</label>
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'startingWithW'" [isPreviousDateDisabled]="calendar.configuration.from" [isNextDateDisabled]="calendar.configuration.to"
@@ -78,6 +100,28 @@
                   <app-select-input (modelChange)="onFrequencyChange()" [attributeName]="'specificWeekDay'"  [isSearchable]="true"
                                     [listArray]="calendarService.specificWeekDay" [name]="'specificWeekDay'" [optionLabel]="'label'" [optionValue]="'value'"
                                     [object]="frequency"></app-select-input>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-3" translate>runtime.label.monthRange
+                  <a class="cursor">
+                    <i class="cursor fa fa-caret-up m-l-xs" [hidden]="showMonthRange"
+                       (click)="showMonthRange=true"></i>
+                    <i class="cursor fa fa-caret-down m-l-xs" [hidden]="!showMonthRange"
+                       (click)="showMonthRange=false"></i>
+                </a>
+                </label>
+                <div class="col-sm-9" [hidden]="!showMonthRange">
+                  <label nz-checkbox class="w" [(ngModel)]="frequency.allMonth" name="month"
+                         (ngModelChange)="selectAllMonth()">
+                    <span translate>runtime.label.everyMonth</span>
+                  </label><br>
+                  <nz-checkbox-wrapper (nzOnChange)="monthChange($event)">
+                    <ng-container *ngFor="let option of monthsOptions">
+                      <label nz-checkbox [nzValue]="option.value" [(ngModel)]="option.checked"
+                             name="{{option.label}}"><span translate>runtime.label.{{option.label}}</span></label>
+                    </ng-container>
+                  </nz-checkbox-wrapper>
                 </div>
               </div>
               <div class="form-group row">
@@ -205,6 +249,28 @@
                 </div>
               </div>
               <div class="form-group row">
+                <label class="col-sm-3" translate>runtime.label.monthRange
+                  <a class="cursor">
+                    <i class="cursor fa fa-caret-up m-l-xs" [hidden]="showMonthRange"
+                       (click)="showMonthRange=true"></i>
+                    <i class="cursor fa fa-caret-down m-l-xs" [hidden]="!showMonthRange"
+                       (click)="showMonthRange=false"></i>
+                </a>
+                </label>
+                <div class="col-sm-9" [hidden]="!showMonthRange">
+                  <label nz-checkbox class="w" [(ngModel)]="frequency.allMonth" name="month"
+                         (ngModelChange)="selectAllMonth()">
+                    <span translate>runtime.label.everyMonth</span>
+                  </label><br>
+                  <nz-checkbox-wrapper (nzOnChange)="monthChange($event)">
+                    <ng-container *ngFor="let option of monthsOptions">
+                      <label nz-checkbox [nzValue]="option.value" [(ngModel)]="option.checked"
+                             name="{{option.label}}"><span translate>runtime.label.{{option.label}}</span></label>
+                    </ng-container>
+                  </nz-checkbox-wrapper>
+                </div>
+              </div>
+              <div class="form-group row">
                 <label class="col-sm-3 form-control-label" translate>runtime.label.validFrom</label>
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'startingWithM'"
@@ -241,6 +307,28 @@
                                     [object]="frequency"></app-select-input>
                 </div>
               </div>
+              <div class="form-group row" *ngIf="frequency.dateEntity !== 'YEARLY'">
+                <label class="col-sm-3" translate>runtime.label.monthRange
+                  <a class="cursor">
+                    <i class="cursor fa fa-caret-up m-l-xs" [hidden]="showMonthRange"
+                       (click)="showMonthRange=true"></i>
+                    <i class="cursor fa fa-caret-down m-l-xs" [hidden]="!showMonthRange"
+                       (click)="showMonthRange=false"></i>
+                </a>
+                </label>
+                <div class="col-sm-9" [hidden]="!showMonthRange">
+                  <label nz-checkbox class="w" [(ngModel)]="frequency.allMonth" name="month"
+                         (ngModelChange)="selectAllMonth()">
+                    <span translate>runtime.label.everyMonth</span>
+                  </label><br>
+                  <nz-checkbox-wrapper (nzOnChange)="monthChange($event)">
+                    <ng-container *ngFor="let option of monthsOptions">
+                      <label nz-checkbox [nzValue]="option.value" [(ngModel)]="option.checked"
+                             name="{{option.label}}"><span translate>runtime.label.{{option.label}}</span></label>
+                    </ng-container>
+                  </nz-checkbox-wrapper>
+                </div>
+              </div>
               <div class="form-group row">
                 <label class="col-sm-3 form-control-label" translate>runtime.label.validFrom
                   <sup class="text-danger text-sm">*</sup>
@@ -256,7 +344,7 @@
               <div class="form-group row">
                 <label class="col-sm-3 form-control-label" translate>
                   runtime.label.validTo
-                  <sup class="text-danger text-sm">*</sup>
+                  <!-- <sup class="text-danger text-sm">*</sup> -->
                 </label>
                 <div class="col-sm-5">
                   <app-date-input [object]="frequency" [attributeDate]="'endOn'"
@@ -403,7 +491,7 @@
       </div>
     </div>
     <button *ngIf="!editor.showYearView" type="button" class="btn btn-primary btn-sm b-85"
-            [disabled]="!editor.isEnable || (frequency.tab == 'every' && (!frequency.startingWith || !frequency.endOn))"
+            [disabled]="!editor.isEnable || (frequency.tab == 'every' && (!frequency.startingWith))"
             (click)="addFrequency()">
       <span *ngIf="editor.create" translate>runtime.button.addNewFrequency</span>
       <span *ngIf="!editor.create" translate>runtime.button.updateFrequency</span>

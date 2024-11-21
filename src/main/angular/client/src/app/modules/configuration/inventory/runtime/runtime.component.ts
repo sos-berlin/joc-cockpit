@@ -51,11 +51,27 @@ export class AddRestrictionComponent {
     {label: 'sunday', value: '0', checked: false}
   ];
 
+  monthsOptions = [
+    {label: 'january', value: '1', checked: false},
+    {label: 'february', value: '2', checked: false},
+    {label: 'march', value: '3', checked: false},
+    {label: 'april', value: '4', checked: false},
+    {label: 'may', value: '5', checked: false},
+    {label: 'june', value: '6', checked: false},
+    {label: 'july', value: '7', checked: false},
+    {label: 'august', value: '8', checked: false},
+    {label: 'september', value: '9', checked: false},
+    {label: 'october', value: '10', checked: false},
+    {label: 'november', value: '11', checked: false},
+    {label: 'december', value: '12', checked: false}
+  ];
+
   holidayList: any = [];
   holidayDays: any = {checked: false};
   countryListArr: any = [];
   hd = new Holidays.default();
   frequencyEditIndex: number = -1;
+  showMonthRange = true;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, public modal: NzModalService, public calendarService: CalendarService, private datePipe: DatePipe) {
   }
@@ -117,6 +133,9 @@ export class AddRestrictionComponent {
     this.setEditorEnable();
     if (this.frequency.days && this.frequency.days.length > 0) {
       this.checkDays();
+    }
+    if (this.frequency.months && this.frequency.months.length > 0) {
+      this.checkMonths();
     }
   }
 
@@ -279,10 +298,16 @@ export class AddRestrictionComponent {
           this.str = 'label.specificWeekDays';
         } else if (this.frequency.tab == 'specificDays') {
           this.str = 'label.specificDays';
+          delete this.frequency.months;
+          delete this.frequency.allMonth;
         } else if (this.frequency.tab == 'weekDays') {
           this.str = 'label.weekDays';
         } else if (this.frequency.tab == 'every') {
           this.str = 'label.every';
+          if (this.frequency.dateEntity === 'YEARLY') {
+            delete this.frequency.months;
+            delete this.frequency.allMonth;
+          }
         }
       }
       if (this.frequency.tab == 'specificWeekDays') {
@@ -428,6 +453,39 @@ export class AddRestrictionComponent {
       this.editor.isEnable = false;
     }
     this.checkDays();
+  }
+
+  selectAllMonth(): void {
+    if (this.frequency.allMonth) {
+      this.frequency.months = ['1', '2', '3', '4', '5', '6','7', '8', '9', '10', '11', '12'];
+      this.editor.isEnable = true;
+    } else {
+      this.frequency.months = [];
+      this.editor.isEnable = false;
+    }
+    this.checkMonths();
+  }
+
+  checkMonths(): void {
+    this.monthsOptions = this.monthsOptions.map(item => {
+      return {
+        ...item,
+        checked: (this.frequency.months ? this.frequency.months.indexOf(item.value) > -1 : false)
+      };
+    });
+  }
+
+  monthChange(value: string[]): void {
+    this.frequency.months = value;
+    this.onChangeMonths();
+  }
+
+  onChangeMonths(): void {
+    if (this.frequency.months) {
+      this.editor.isEnable = this.frequency.months.length > 0;
+      this.frequency.allMonth = this.frequency.months.length === 12;
+      this.frequency.months = this.frequency.months.sort();
+    }
   }
 
   getDateFormat(date): string {
@@ -811,6 +869,7 @@ export class AddRestrictionComponent {
       this.countryField = false;
     }
     this.checkDays();
+    this.checkMonths();
   }
 
   save(): void {

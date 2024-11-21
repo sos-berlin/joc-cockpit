@@ -234,17 +234,12 @@ export class FileTransferService {
     if (data.controllerId) {
       filter.controllerId = data.controllerId;
     }
-
-    if (data.numOfFilesFrom) {
+    if (data.numOfFilesFrom !== undefined && data.numOfFilesFrom !== null && data.numOfFilesFrom !== '') {
       filter.numOfFilesFrom = data.numOfFilesFrom;
-    }else{
-      filter.numOfFilesFrom = 0
     }
 
-    if (data.numOfFilesTo) {
+    if (data.numOfFilesTo !== undefined && data.numOfFilesTo !== null && data.numOfFilesTo !== '') {
       filter.numOfFilesTo = data.numOfFilesTo;
-    }else{
-      filter.numOfFilesTo = 0
     }
 
     filter.timeZone = preferences.zone;

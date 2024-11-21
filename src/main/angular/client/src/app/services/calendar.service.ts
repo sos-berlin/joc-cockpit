@@ -293,6 +293,123 @@ export class CalendarService {
       calendar.frequencyList = [];
     }
     if (calendar.includes && !isEmpty(calendar.includes)) {
+      if (calendar.includes.months && calendar.includes.months.length > 0) {
+        for (let m = 0; m < calendar.includes.months.length; m++) {
+          let months = [];
+          let allMonth = calendar.includes.months[m].months.length == 12;
+          for (let x = 0; x < calendar.includes.months[m].months.length; x++) {
+            months.push(calendar.includes.months[m].months[x].toString());
+          }
+          if (calendar.includes.months[m].weekdays && calendar.includes.months[m].weekdays.length > 0) {
+            calendar.includes.months[m].weekdays.forEach((weekday: any) => {
+              obj = {
+                tab: 'weekDays',
+                type: 'INCLUDE',
+                days: [],
+                startingWithW: weekday.from,
+                endOnW: weekday.to,
+                all: weekday.days.length == 7,
+                months: months,
+                allMonth: allMonth
+              };
+              weekday.days.forEach((day: any) => {
+                obj.days.push(day.toString());
+              });
+              obj.str = this.freqToStr(obj, dateFormat);
+              calendar.frequencyList.push(obj);
+            });
+          }
+          if (calendar.includes.months[m].monthdays && calendar.includes.months[m].monthdays.length > 0) {
+            calendar.includes.months[m].monthdays.forEach((monthday: any) => {
+              if (monthday.weeklyDays && monthday.weeklyDays.length > 0) {
+                monthday.weeklyDays.forEach((day: any) => {
+                  obj = {
+                    type: 'INCLUDE',
+                    tab: 'specificWeekDays',
+                    specificWeekDay: this.getStringDay(day.day),
+                    which: day.weekOfMonth.toString(),
+                    startingWithS: monthday.from,
+                    endOnS: monthday.to,
+                    months: months,
+                    allMonth: allMonth
+                  };
+                  obj.str = this.freqToStr(obj, dateFormat);
+                  calendar.frequencyList.push(obj);
+                });
+              } else {
+                obj = {
+                  type: 'INCLUDE',
+                  tab: 'monthDays',
+                  selectedMonths: [],
+                  isUltimos: 'months',
+                  startingWithM: monthday.from,
+                  endOnM: monthday.to,
+                  months: months,
+                  allMonth: allMonth
+                };
+                monthday.days.forEach((day: any) => {
+                  obj.selectedMonths.push(day.toString());
+                });
+                obj.str = this.freqToStr(obj, dateFormat);
+                calendar.frequencyList.push(obj);
+              }
+            });
+          }
+          if (calendar.includes.months[m].ultimos && calendar.includes.months[m].ultimos.length > 0) {
+            calendar.includes.months[m].ultimos.forEach((ultimos: any) => {
+              if (ultimos.weeklyDays && ultimos.weeklyDays.length > 0) {
+                ultimos.weeklyDays.forEach((day: any) => {
+                  obj = {
+                    type: 'INCLUDE',
+                    tab: 'specificWeekDays',
+                    specificWeekDay: this.getStringDay(day.day),
+                    which: -day.weekOfMonth,
+                    startingWithS: ultimos.from,
+                    endOnS: ultimos.to,
+                    months: months,
+                    allMonth: allMonth
+                  };
+                  obj.str = this.freqToStr(obj, dateFormat);
+                  calendar.frequencyList.push(obj);
+                });
+              } else {
+                obj = {
+                  type: 'INCLUDE',
+                  tab: 'monthDays',
+                  selectedMonthsU: [],
+                  isUltimos: 'ultimos',
+                  startingWithM: ultimos.from,
+                  endOnM: ultimos.to,
+                  months: months,
+                  allMonth: allMonth
+                };
+                ultimos.days.forEach((day: any) => {
+                  obj.selectedMonthsU.push(day.toString());
+                });
+                obj.str = this.freqToStr(obj, dateFormat);
+                calendar.frequencyList.push(obj);
+              }
+
+            });
+          }
+          if (calendar.includes.months[m].repetitions && calendar.includes.months[m].repetitions.length > 0) {
+            calendar.includes.months[m].repetitions.forEach((value: any) => {
+              obj = {
+                tab: 'every',
+                type: 'INCLUDE',
+                dateEntity: value.repetition,
+                interval: value.step,
+                startingWith: value.from,
+                endOn: value.to,
+                months: months,
+                allMonth: allMonth
+              };
+              obj.str = this.freqToStr(obj, dateFormat);
+              calendar.frequencyList.push(obj);
+            });
+          }
+        }
+      }
       if (calendar.includes.dates && calendar.includes.dates.length > 0) {
         obj = {
           tab: 'specificDays',
@@ -465,6 +582,18 @@ export class CalendarService {
         } else {
           obj[type].months.push({months: data.months.map(Number), ultimos: arrObj});
         }
+      } else if (data.tab === 'every') {
+        const obj1: any = {};
+        if (data.startingWith) {
+          obj1.from = moment(data.startingWith).format('YYYY-MM-DD');
+        }
+        if (data.endOn) {
+          obj1.to = moment(data.endOn).format('YYYY-MM-DD');
+        }
+        obj1.repetition = data.dateEntity;
+        obj1.step = data.interval || 1;
+        arr.push(obj1);
+        obj[type].months.push({months: data.months.map(Number), repetitions: arr});
       }
     } else {
       if (data.tab === 'specificDays') {
