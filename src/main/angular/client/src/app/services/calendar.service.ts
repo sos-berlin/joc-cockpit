@@ -268,7 +268,11 @@ export class CalendarService {
       const repetitions = data.dateEntity === 'DAILY' ? 'day' : data.dateEntity === 'WEEKLY' ? 'week' : data.dateEntity === 'MONTHLY' ? 'month' : 'year';
       if (data.startingWith) {
         // let formattedDate = moment(data.startingWith, 'DD-MM-YYYY');
-        return 'Every ' + str + repetitions + ' starting with day ' + this.datePipe.transform(new Date(data.startingWith), dataFormat);
+        let addMothString = '';
+        if (data.months && data.dateEntity !== 'year') {
+          addMothString = (data.months.length > 0) ? ' of ' + self.getMonths(data.months) : '';
+        };
+        return 'Every ' + str + repetitions + ' starting with day ' + this.datePipe.transform(new Date(data.startingWith), dataFormat) + addMothString;
       } else {
         return 'Every ' + str + repetitions;
       }

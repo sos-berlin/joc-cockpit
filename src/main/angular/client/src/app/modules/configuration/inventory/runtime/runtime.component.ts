@@ -71,7 +71,7 @@ export class AddRestrictionComponent {
   countryListArr: any = [];
   hd = new Holidays.default();
   frequencyEditIndex: number = -1;
-  showMonthRange = true;
+  showMonthRange = false;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, public modal: NzModalService, public calendarService: CalendarService, private datePipe: DatePipe) {
   }
@@ -458,10 +458,10 @@ export class AddRestrictionComponent {
   selectAllMonth(): void {
     if (this.frequency.allMonth) {
       this.frequency.months = ['1', '2', '3', '4', '5', '6','7', '8', '9', '10', '11', '12'];
-      this.editor.isEnable = true;
+      // this.editor.isEnable = true;
     } else {
       this.frequency.months = [];
-      this.editor.isEnable = false;
+      // this.editor.isEnable = false;
     }
     this.checkMonths();
   }
@@ -482,7 +482,7 @@ export class AddRestrictionComponent {
 
   onChangeMonths(): void {
     if (this.frequency.months) {
-      this.editor.isEnable = this.frequency.months.length > 0;
+      // this.editor.isEnable = this.frequency.months.length > 0;
       this.frequency.allMonth = this.frequency.months.length === 12;
       this.frequency.months = this.frequency.months.sort();
     }

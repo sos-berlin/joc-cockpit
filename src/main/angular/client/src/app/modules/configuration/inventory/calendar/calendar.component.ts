@@ -59,7 +59,7 @@ export class FrequencyModalComponent {
   countArr = [0, 1, 2, 3, 4];
   countArrU = [1, 2, 3, 4];
   frequencyEditIndex: number = -1;
-  showMonthRange = true;
+  showMonthRange = false;
 
   daysOptions = [
     {label: 'monday', value: '1', checked: false},
@@ -355,7 +355,7 @@ export class FrequencyModalComponent {
 
   onChangeMonths(): void {
     if (this.frequency.months) {
-      this.editor.isEnable = this.frequency.months.length > 0;
+      // this.editor.isEnable = this.frequency.months.length > 0;
       this.frequency.allMonth = this.frequency.months.length === 12;
       this.frequency.months = this.frequency.months.sort();
     }
@@ -523,10 +523,10 @@ export class FrequencyModalComponent {
   selectAllMonth(): void {
     if (this.frequency.allMonth) {
       this.frequency.months = ['1', '2', '3', '4', '5', '6','7', '8', '9', '10', '11', '12'];
-      this.editor.isEnable = true;
+      // this.editor.isEnable = true;
     } else {
       this.frequency.months = [];
-      this.editor.isEnable = false;
+      // this.editor.isEnable = false;
     }
     this.checkMonths();
   }
@@ -1449,7 +1449,8 @@ export class CalendarComponent {
   }
 
   updateFrequency(data, frequencyIndex): void {
-    this.openModel(null, data, frequencyIndex);
+    const isEditorEnable = true;
+    this.openModel(null, data, frequencyIndex, isEditorEnable);
   }
 
   removeFrequency(index): void {
@@ -1634,11 +1635,15 @@ export class CalendarComponent {
     }, time);
   }
 
-  private openModel(frequency, data, frequencyIndex = -1): void {
+  private openModel(frequency, data, frequencyIndex = -1, isEditorEnable = false): void {
     this.editor.hidePervious = !!data;
     this.editor.showYearView = false;
     this.editor.create = !data;
     this.editor.update = !!data;
+
+    if (isEditorEnable) {
+      this.editor.isEnable = true;
+    }
 
     const modal = this.modal.create({
       nzTitle: undefined,

@@ -1205,33 +1205,117 @@ export class AddOrderModalComponent {
     }
   }
 
-  private selectVarForOrder(name, listVariables, data, index): void {
+  private selectVarForOrder(name, listVariables, data, index, orderIndex): void {
     for (let i in listVariables.orderParameterisations) {
-      if (listVariables.orderParameterisations[i].orderName == name ||
-        (listVariables.orderParameterisations[i].orderName == '' && name == '-') ||
-        listVariables.orderParameterisations.length == 1) {
+      if (listVariables.orderParameterisations[i].orderName === name ||
+        (listVariables.orderParameterisations[i].orderName === '' && name === '-') ||
+        listVariables.orderParameterisations.length === 1) {
 
         let list = listVariables.orderParameterisations[i];
 
+        if (!list.variables) {
+          console.warn('Variables are not defined for the current parameterisation');
+          continue;
+        }
+
         for (let x in list.variables) {
-          // Handling List Type
-          if (isArray(list.variables[x]) && x === data.name && data.type === 'List') {
-            for (let z in data.actualList[index].list) {
-              for (let m in list.variables[x]) {
-                if (list.variables[x][m][data.actualList[index].list[z].name]) {
-                  data.actualList[index].list[z].value = list.variables[x][m][data.actualList[index].list[z].name];
+          if (Array.isArray(list.variables[x]) && x === data.name && data.type === 'List') {
+            if (this.workflow.orderPreparation && this.workflow.orderPreparation.parameters && !isEmpty(this.workflow.orderPreparation.parameters)) {
+              this.variableList = Object.entries(this.workflow.orderPreparation.parameters).map(([k, v]) => {
+                const val: any = v;
+
+                if (val.type === 'List' && this.orders.length > 0 && this.orders[orderIndex].arguments.length > 0) {
+                  this.orders[orderIndex].arguments = this.orders[orderIndex].arguments.map(argument => {
+                    if (argument.type === 'List' && argument.name === k) {
+                      const actualList = [];
+                      if (val.listParameters) {
+                        if (!Array.isArray(val.listParameters)) {
+                          val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
+                            const val1: any = v1;
+                            return { name: k1, value: val1 };
+                          });
+                        }
+
+                        for (let s in list.variables) {
+                          if (k === s) {
+                            if (Array.isArray(list.variables[s])) {
+                              list.variables[s].forEach((key) => {
+                                let arr = [];
+                                for (let y in val.listParameters) {
+                                  if (key[val.listParameters[y].name] !== undefined) {
+                                    arr.push({
+                                      name: val.listParameters[y].name,
+                                      type: val.listParameters[y].value.type,
+                                      value: key[val.listParameters[y].name]
+                                    });
+                                  }
+                                }
+                                if (arr.length > 0) {
+                                  actualList.push({ list: arr });
+                                }
+                              });
+                            }
+                          }
+                        }
+
+                        if (actualList.length === 0) {
+                          let arr = val.listParameters.map(item => ({
+                            name: item.name,
+                            type: item.value.type,
+                            value: ''
+                          }));
+                          if (arr.length > 0) {
+                            actualList.push({ list: arr });
+                          }
+                        }
+
+                        return {
+                          name: k,
+                          isRequired: true,
+                          type: val.type,
+                          actualList,
+                          list: val.listParameters
+                        };
+                      }
+                    }
+                    return argument;
+                  });
                 }
-              }
+
+                return { name: k, value: val };
+              });
             }
+            this.updateSelectItems(orderIndex);
           }
 
-          // Handling Map Type
-          if (typeof list.variables[x] === 'object' && x === data.name && data.type === 'Map') {
+          if (typeof list.variables[x] === 'object' && !Array.isArray(list.variables[x]) && x === data.name && data.type === 'Map') {
             const mapVariables = list.variables[x];
-            for (let mapIndex in data.actualMap[index].map) {
-              const mapItem = data.actualMap[index].map[mapIndex];
-              if (mapVariables.hasOwnProperty(mapItem.name)) {
-                mapItem.value = mapVariables[mapItem.name];
+            data.actualMap = [];
+
+            let mapEntry = [];
+            for (let param of data.map) {
+              if (mapVariables[param.name] !== undefined) {
+                mapEntry.push({
+                  name: param.name,
+                  type: param.type,
+                  value: mapVariables[param.name]
+                });
+              }
+            }
+
+            if (mapEntry.length > 0) {
+              data.actualMap.push({ map: mapEntry });
+            }
+
+
+            if (data.actualMap.length === 0) {
+              let arr = data.map.map(item => ({
+                name: item.name,
+                type: item.type,
+                value: ''
+              }));
+              if (arr.length > 0) {
+                data.actualMap.push({ map: arr });
               }
             }
           }
@@ -1244,7 +1328,7 @@ export class AddOrderModalComponent {
 
   selectOrder(name: string, listVariables?: any, data?: any, index?: number, orderIndex?: number): void {
     if (listVariables) {
-      this.selectVarForOrder(name, listVariables, data, index);
+      this.selectVarForOrder(name, listVariables, data, index, orderIndex);
       return;
     }
 
@@ -1310,11 +1394,8 @@ export class AddOrderModalComponent {
       }
     }
   }
-
-
   private updateVariablesFromSchedule(orderParameterisations: any, index: number): void {
-    // Initialize the arguments array for the specific order using the index
-    this.orders[index].arguments = []; // Set up arguments per order
+    this.orders[index].arguments = [];
 
     if (this.workflow.orderPreparation && this.workflow.orderPreparation.parameters && !isEmpty(this.workflow.orderPreparation.parameters)) {
       this.variableList = Object.entries(this.workflow.orderPreparation.parameters).map(([k, v]) => {
@@ -1477,17 +1558,15 @@ export class AddOrderModalComponent {
       }
     }
 
-    this.updateSelectItems(index); // Pass the order index
+    this.updateSelectItems(index);
   }
 
   private updateVariablesForOrderParameterisations(orderParameterisation: any, order: any): void {
-    // Initialize the arguments array for the specific order
     order.arguments = [];
 
     if (this.workflow.orderPreparation && this.workflow.orderPreparation.parameters) {
       Object.entries(this.workflow.orderPreparation.parameters).forEach(([key, val]: [string, any]) => {
         if (val.type !== 'List' && val.type !== 'Map') {
-          // Handle simple types (String, Number, Boolean)
           if (orderParameterisation.variables && orderParameterisation.variables[key]) {
             order.arguments.push({
               name: key,
@@ -1497,7 +1576,6 @@ export class AddOrderModalComponent {
             });
           }
         } else if (val.type === 'List') {
-          // Handle List type
           const actualList = [];
           if (orderParameterisation.variables && orderParameterisation.variables[key]) {
             orderParameterisation.variables[key].forEach(item => {
@@ -1515,7 +1593,6 @@ export class AddOrderModalComponent {
             list: val.listParameters
           });
         } else if (val.type === 'Map') {
-          // Handle Map type
           const actualMap = [];
           if (orderParameterisation.variables && typeof orderParameterisation.variables[key] === 'object') {
             const mapEntry = val.listParameters.map(param => ({
