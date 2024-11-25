@@ -31,6 +31,7 @@ export class HeaderComponent {
   problemEvent: any = {};
   subscription1: Subscription;
   subscription2: Subscription;
+  subscription3: Subscription;
 
   @Output() myLogout: EventEmitter<any> = new EventEmitter();
 
@@ -44,6 +45,13 @@ export class HeaderComponent {
     this.subscription2 = dataService.isThemeReload.subscribe(res => {
       if (res) {
         this.preferences = JSON.parse(sessionStorage['preferences']);
+      }
+    });
+    this.subscription3 = dataService.functionAnnounced$.subscribe(res => {
+      if (res) {
+        if(res){
+          this.isBackUp = res;
+        }
       }
     });
   }
@@ -63,6 +71,9 @@ export class HeaderComponent {
 
   private init(): void {
     this.reloadSettings();
+    if (!this.isBackUp) {
+      this.isJocActive();
+    }
     if (this.schedulerIds && this.schedulerIds.selected) {
       this.getEvents();
     }
@@ -91,6 +102,7 @@ export class HeaderComponent {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
     this.subscription2.unsubscribe();
+    this.subscription3.unsubscribe();
     this.modal.closeAll();
     if (this.timeout) {
       clearTimeout(this.timeout);

@@ -267,6 +267,23 @@ export class AccountModalComponent {
     }
   }
 
+  sanitizeInput(event: Event, field: 'password' | 'confirmPassword'): void {
+    const inputElement = event.target as HTMLInputElement;
+    const allowedCharacters = /^[\u0000-\u1FBFF]*$/;
+    const sanitizedValue = inputElement.value.split('').filter(char => allowedCharacters.test(char)).join('');
+
+    if (inputElement.value !== sanitizedValue) {
+      inputElement.value = sanitizedValue;
+
+      if (field === 'password') {
+        this.currentUser.fakePassword = sanitizedValue;
+      } else if (field === 'confirmPassword') {
+        this.currentUser.repeatedPassword = sanitizedValue;
+      }
+    }
+  }
+
+
   private rename(cb: any): void {
     if (this.oldUser.accountName !== this.currentUser.accountName) {
       const obj: any = {

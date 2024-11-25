@@ -136,6 +136,7 @@ export class AddRestrictionComponent {
     }
     if (this.frequency.months && this.frequency.months.length > 0) {
       this.checkMonths();
+      this.showMonthRange = true;
     }
   }
 

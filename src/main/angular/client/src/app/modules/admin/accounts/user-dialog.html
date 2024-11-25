@@ -42,9 +42,15 @@
     <div *ngIf="isPasswordVisible" class="form-group row">
       <label class="col-sm-4 form-control-label" translate>user.label.password</label>
       <div class="col-sm-6" [ngClass]="{'has-error' : !minimumPasswordLength}">
-        <input type="password" class="form-control" placeholder="{{'user.placeholder.password' | translate}}"
+        <input type="password"
+               class="form-control"
+               placeholder="{{'user.placeholder.password' | translate}}"
                [(ngModel)]="currentUser.fakePassword"
-               name="password" autocomplete="off" (focus)="minimumPasswordLength = true; isPasswordMatch = true" (blur)="checkPwdLength()"/>
+               name="password"
+               autocomplete="off"
+               (input)="sanitizeInput($event, 'password')"
+               (focus)="minimumPasswordLength = true; isPasswordMatch = true"
+               (blur)="checkPwdLength()"/>
         <div *ngIf="!minimumPasswordLength && currentUser.fakePassword" class="text-danger help-block">
           <div translate>profile.message.minimumPasswordLength</div>
         </div>
@@ -53,13 +59,20 @@
     <div *ngIf="isPasswordVisible && !copy" class="form-group row">
       <label class="col-sm-4 form-control-label" translate>profile.label.confirmPassword</label>
       <div class="col-sm-6" [ngClass]="{'has-error' : !isPasswordMatch}">
-        <input type="password" [required]="(currentUser.fakePassword && currentUser.fakePassword !== '********' && currentUser.fakePassword.length > 0) ? true : false" class="form-control" [(ngModel)]="currentUser.repeatedPassword"
-               name="repeatedPassword" autocomplete="off"  (blur)="checkPassword()"/>
+        <input type="password"
+               [required]="(currentUser.fakePassword && currentUser.fakePassword !== '********' && currentUser.fakePassword.length > 0) ? true : false"
+               class="form-control"
+               [(ngModel)]="currentUser.repeatedPassword"
+               name="repeatedPassword"
+               autocomplete="off"
+               (input)="sanitizeInput($event, 'confirmPassword')"
+               (blur)="checkPassword()"/>
         <div *ngIf="!isPasswordMatch && currentUser.repeatedPassword" class="text-danger help-block">
           <div translate>profile.message.passwordNotMatch</div>
         </div>
       </div>
     </div>
+
     <div *ngIf="!copy && !secondFactor" class="form-group row">
       <label class="col-sm-4 form-control-label" translate>user.label.roles</label>
       <div class="col-sm-6">

@@ -31,6 +31,7 @@ export class ControllerClusterComponent {
   @Input() permission: any;
   isLoaded = false;
   isDataLoaded = false;
+  switchActive = false;
   clusterStatusData: any;
   preferences: any = {};
   schedulerIds: any = {};
@@ -109,6 +110,21 @@ export class ControllerClusterComponent {
         this.clusterStatusData = res;
         if (this.clusterStatusData.controllers && this.clusterStatusData.controllers.length > 0) {
           this.selectedController.role = this.clusterStatusData.controllers[0].role;
+        }
+        if(this.clusterStatusData && this.clusterStatusData?.jocs ){
+          this.clusterStatusData?.jocs.forEach(data => {
+            if(data?.clusterNodeState?._text === 'active'){
+          let isBackUp
+                this.coreService.post('joc/is_active', {}).subscribe((res: any) => {
+                  isBackUp = res.ok ? 'NO' : 'YES';
+                  if(isBackUp){
+                    this.dataService.announceFunction(isBackUp);
+                  }
+                  sessionStorage['$SOS$ISJOCACTIVE'] = res.ok ? 'YES' : 'NO';
+                });
+
+            }
+          })
         }
         if (this.editor) {
           this.createWorkflowDiagram(this.editor.graph);
@@ -813,6 +829,7 @@ export class ControllerClusterComponent {
           args.eventSnapshots[j].eventType === 'JOCStateChanged' ||
           args.eventSnapshots[j].eventType === 'ProxyCoupled' ||
           args.eventSnapshots[j].eventType === 'ProxyDecoupled') {
+          this.switchActive = true;
           this.isDataLoaded = false;
           this.reloadGraph();
           break;
