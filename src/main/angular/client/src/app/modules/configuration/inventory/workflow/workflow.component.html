@@ -1588,7 +1588,7 @@
                         </div>
                         <div class="col-md-3 col-lg-3 m-b-sm p-r-0">
                           <nz-select [(ngModel)]="param.value.type" [nzDisabled]="isTrash"
-                                     name="type{{i}}{{j}}" (ngModelChange)="updateOtherProperties('variable');onInput(param.value.type)">
+                                     name="type{{i}}{{j}}" (ngModelChange)="changeSubDataType($event,param);onInput(param.value.type)">
                             <nz-option [nzLabel]="'String' | translate" [nzValue]="'String'"></nz-option>
                             <nz-option [nzLabel]="'Number' | translate" [nzValue]="'Number'"></nz-option>
                             <nz-option [nzLabel]="'Boolean' | translate" [nzValue]="'Boolean'"></nz-option>

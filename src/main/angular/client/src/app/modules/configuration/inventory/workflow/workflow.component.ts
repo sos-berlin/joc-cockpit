@@ -5061,15 +5061,106 @@ let data = this.storedArguments[this.storedArguments.length - 1];
       delete variable.value.final;
       delete variable.value.list;
       delete variable.value.map;
-      variable.value.listParameters = [];
+      // variable.value.listParameters = [];
       this.addVariableToList(variable.value);
     } else {
-      variable.value.default = '';
-      variable.value.final = '';
+      switch (type) {
+        case 'String':
+          variable.value.default = String(variable.value.default);
+          break;
+        case 'Number':
+          variable.value.default = this.convertToNumberIfValid(variable.value.default);
+          break;
+
+        case 'Boolean':
+          const booleanMapping: { [key: string]: boolean } = {
+            '1': true,
+            '0': false,
+            'true': true,
+            'false': false,
+            'yes': true,
+            'no': false,
+            'on': true,
+            'off': false,
+          };
+
+          const defaultValue = String(variable.value.default).toLowerCase();
+          if (defaultValue in booleanMapping) {
+            variable.value.default = booleanMapping[defaultValue];
+          } else {
+            variable.value.default = false; // Default fallback
+          }
+          break;
+
+        default:
+          variable.value.default = '';
+          variable.value.final = '';
+          break;
+      }
+
       delete variable.value.listParameters;
     }
     this.updateOtherProperties('variable');
   }
+
+    changeSubDataType(type, variable): void {
+      switch (type) {
+        case 'String':
+          variable.value.default = String(variable.value.default);
+          break;
+        case 'Number':
+          variable.value.default = this.convertToNumberIfValid(variable.value.default);
+          break;
+
+        case 'Boolean':
+          const booleanMapping: { [key: string]: boolean } = {
+            '1': true,
+            '0': false,
+            'true': true,
+            'false': false,
+            'yes': true,
+            'no': false,
+            'on': true,
+            'off': false,
+          };
+
+          const defaultValue = String(variable.value.default).toLowerCase();
+          if (defaultValue in booleanMapping) {
+            variable.value.default = booleanMapping[defaultValue];
+          } else {
+            console.warn(`Unexpected boolean value: ${variable.value.default}`);
+            variable.value.default = false;
+          }
+          break;
+
+        default:
+          variable.value.default = '';
+          variable.value.final = '';
+          break;
+      }
+
+      delete variable.value.listParameters;
+    this.updateOtherProperties('variable');
+  }
+
+   convertToNumberIfValid(value: string): string | number {
+     const stringValue = value != null ? String(value) : '';
+
+     const trimmedValue = stringValue.trim();
+
+     if (trimmedValue.toLowerCase() === 'true') {
+       return 1; // Convert "true" to 1
+     }
+     if (trimmedValue.toLowerCase() === 'false') {
+       return 0; // Convert "false" to 0
+     }
+
+     if (!isNaN(Number(trimmedValue)) && trimmedValue !== '') {
+       return Number(trimmedValue); // Convert and return the number
+     }
+
+     return '';
+    }
 
   private init(): void {
     this.fullScreen = false;
