@@ -310,22 +310,28 @@ export class ConfirmModalComponent {
 
   getSelectedObjects(): any[] {
     const selectedObjects = [];
+
     Object.keys(this.affectedObjectsByType).forEach(type => {
       this.affectedObjectsByType[type].forEach(obj => {
         selectedObjects.push(obj);
       });
     });
 
-    Object.keys(this.referencedObjectsByType).forEach(type => {
-      this.referencedObjectsByType[type].forEach(obj => {
-        selectedObjects.push(obj);
+      Object.keys(this.referencedObjectsByType).forEach(type => {
+        this.referencedObjectsByType[type].forEach(obj => {
+          selectedObjects.push({
+            ...obj,
+            noRevokeRecall: true
+          });
+        });
       });
-    });
 
-    this.filteredAffectedItems.forEach(item => {
-      selectedObjects.push(item);
-    });
-
+      this.filteredAffectedItems.forEach(item => {
+        selectedObjects.push({
+          ...item,
+          noRevokeRecall: true
+        });
+      });
     return selectedObjects;
   }
 }

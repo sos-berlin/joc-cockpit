@@ -1072,24 +1072,45 @@ export class SingleDeployComponent {
 
   getSelectedObjects(): any[] {
     const selectedObjects = [];
+
     Object.keys(this.affectedObjectsByType).forEach(type => {
       this.affectedObjectsByType[type].forEach(obj => {
         selectedObjects.push(obj);
       });
     });
 
-    Object.keys(this.referencedObjectsByType).forEach(type => {
-      this.referencedObjectsByType[type].forEach(obj => {
-        selectedObjects.push(obj);
+    if (!this.isRemoved) {
+      Object.keys(this.referencedObjectsByType).forEach(type => {
+        this.referencedObjectsByType[type].forEach(obj => {
+          selectedObjects.push(obj);
+        });
       });
-    });
 
-    this.filteredAffectedItems.forEach(item => {
-      selectedObjects.push(item);
-    });
+      this.filteredAffectedItems.forEach(item => {
+        selectedObjects.push(item);
+      });
+
+    } else {
+      Object.keys(this.referencedObjectsByType).forEach(type => {
+        this.referencedObjectsByType[type].forEach(obj => {
+          selectedObjects.push({
+            ...obj,
+            noRevokeRecall: true
+          });
+        });
+      });
+
+      this.filteredAffectedItems.forEach(item => {
+        selectedObjects.push({
+          ...item,
+          noRevokeRecall: true
+        });
+      });
+    }
 
     return selectedObjects;
   }
+
 
 
   private getSingleObject(obj): void {
@@ -1430,7 +1451,7 @@ export class DeployComponent {
 
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private ref: ChangeDetectorRef,
-              private inventoryService: InventoryService, private toasterService: ToastrService, private translate: TranslateService, private cdRef: ChangeDetectorRef,private cdr: ChangeDetectorRef) {
+              private inventoryService: InventoryService, private toasterService: ToastrService, private translate: TranslateService, private cdRef: ChangeDetectorRef, private cdr: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
@@ -2184,10 +2205,10 @@ export class DeployComponent {
     this.filteredAffectedItems.forEach(item => {
       selectedObjects.push(item);
     });
-   if(selectedObjects.length > 1){
-     return true
-   }
-   return false;
+    if (selectedObjects.length > 1) {
+      return true
+    }
+    return false;
   }
 
   getDeploymentVersion(e: NzFormatEmitEvent): void {
@@ -3033,21 +3054,42 @@ export class DeployComponent {
 
   getSelectedObjects(): any[] {
     const selectedObjects = [];
+
     Object.keys(this.affectedObjectsByType).forEach(type => {
       this.affectedObjectsByType[type].forEach(obj => {
         selectedObjects.push(obj);
       });
     });
 
-    Object.keys(this.referencedObjectsByType).forEach(type => {
-      this.referencedObjectsByType[type].forEach(obj => {
-        selectedObjects.push(obj);
+    if (!this.isRemove) {
+      Object.keys(this.referencedObjectsByType).forEach(type => {
+        this.referencedObjectsByType[type].forEach(obj => {
+          selectedObjects.push(obj);
+        });
       });
-    });
 
-    this.filteredAffectedItems.forEach(item => {
-      selectedObjects.push(item);
-    });
+      this.filteredAffectedItems.forEach(item => {
+        selectedObjects.push(item);
+      });
+
+    } else {
+      Object.keys(this.referencedObjectsByType).forEach(type => {
+        this.referencedObjectsByType[type].forEach(obj => {
+          selectedObjects.push({
+            ...obj,
+            noRevokeRecall: true
+          });
+        });
+      });
+
+      this.filteredAffectedItems.forEach(item => {
+        selectedObjects.push({
+          ...item,
+          noRevokeRecall: true
+        });
+      });
+    }
+
     return selectedObjects;
   }
 
@@ -8941,13 +8983,13 @@ export class InventoryComponent {
           this.newDraft(res.newDraft);
         } else if (res.updateFromJobTemplate) {
           this.updateFromJobTemplates(res.updateFromJobTemplate);
-        }else if (res.addToChange) {
+        } else if (res.addToChange) {
           this.addToChange(res.addToChange);
-        }else if (res.removeFromChange) {
+        } else if (res.removeFromChange) {
           this.removeFromChange(res.removeFromChange);
-        }else if (res.publishChange) {
+        } else if (res.publishChange) {
           this.publishChange(res.publishChange);
-        }else if (res.showDependencies) {
+        } else if (res.showDependencies) {
           this.showDependencies(res.showDependencies);
         }
       }
@@ -10509,7 +10551,9 @@ export class InventoryComponent {
                     objectType: selectedObj.objectType,
                     path: selectedObj.path
                   };
-                  revokeRecallObjects.push(revokeRecallObj);
+                  if(!selectedObj?.noRevokeRecall){
+                    revokeRecallObjects.push(revokeRecallObj);
+                  }
                 }
               }
             });
@@ -10575,7 +10619,9 @@ export class InventoryComponent {
                     objectType: selectedObj.objectType,
                     path: selectedObj.path
                   };
-                  revokeRecallObjects.push(revokeRecallObj);
+                  if(!selectedObj?.noRevokeRecall){
+                    revokeRecallObjects.push(revokeRecallObj);
+                  }
                 }
               }
             });
@@ -11216,7 +11262,10 @@ export class InventoryComponent {
                       objectType: selectedObj.objectType,
                       path: selectedObj.path
                     };
-                    revokeRecallObjects.push(revokeRecallObj);
+
+                    if(!selectedObj?.noRevokeRecall){
+                      revokeRecallObjects.push(revokeRecallObj);
+                    }
                   }
                 });
                 this.revokeRecallDependencies(revokeRecallObjects);
