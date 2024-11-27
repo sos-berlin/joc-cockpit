@@ -2007,9 +2007,9 @@
     "message.changeDeductInWorkflow": "Changes to Workflow variables detected, please adjust variables and release the Schedule",
     "message.noTagFound": "No tag found",
     "message.impactedSchedules": "The following schedules have been switched to draft mode and will require adjustments to be released.",
-    "message.remove": "Selected items will be removed from the Controller and from the inventory, unselected items will be revoked from the Controller.",
-    "message.revoke": "Selected items will be revoked from the Controller, they remain in the inventory.",
-    "message.recall": "Selected items will be recalled, they remain in the inventory.",
+    "message.remove": "Selected objects will be removed from the Controller and from the inventory, unselected referencing objects will be revoked from the Controller.",
+    "message.revoke": "Selected objects will be revoked from the Controller, they remain in the inventory.",
+    "message.recall": "Selected objects will be recalled, they remain in the inventory.",
     "tab": {
       "folders": "Folders",
       "trash": "Trash",
