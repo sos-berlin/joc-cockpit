@@ -87,8 +87,9 @@ export class SubagentModalComponent {
 
   onSubmit(): void {
     this.submitted = true;
-    const obj: any = {controllerId: this.controllerId, agentId: this.clusterAgent.agentId};
+    const obj: any = { controllerId: this.controllerId, agentId: this.clusterAgent.agentId };
     const subagent: any = this.coreService.clone(this.subagent);
+
     if (this.display) {
       obj.auditLog = {};
       this.coreService.getAuditLogObj(this.comments, obj.auditLog);
@@ -96,12 +97,16 @@ export class SubagentModalComponent {
 
     obj.subagents = [subagent];
 
-    this.coreService.post('agents/inventory/cluster/subagents/store', obj).subscribe({
+    const apiUrl = this.new ? 'agents/inventory/cluster/subagents/add' : 'agents/inventory/cluster/subagents/store';
+
+    this.coreService.post(apiUrl, obj).subscribe({
       next: () => {
         this.activeModal.close('close');
-      }, error: () => this.submitted = false
+      },
+      error: () => this.submitted = false
     });
   }
+
 }
 
 @Component({
@@ -384,12 +389,24 @@ export class AgentModalComponent {
   }
 
   private store(obj): void {
-    this.coreService.post(this.isCluster ? 'agents/inventory/cluster/store' : 'agents/inventory/store', obj).subscribe({
+
+
+    let apiUrl = '';
+
+    if (this.new === true) {
+      apiUrl = this.isCluster ? 'agents/inventory/cluster/add' : 'agents/inventory/add';
+    } else {
+      apiUrl = this.isCluster ? 'agents/inventory/cluster/store' : 'agents/inventory/store';
+    }
+
+    this.coreService.post(apiUrl, obj).subscribe({
       next: () => {
         this.activeModal.close('close');
-      }, error: () => this.submitted = false
+      },
+      error: () => this.submitted = false
     });
   }
+
 }
 
 @Component({
@@ -1166,6 +1183,7 @@ export class AgentComponent {
     if (event.previousIndex != event.currentIndex) {
       let index = (event.previousIndex < event.currentIndex) ? event.currentIndex : event.currentIndex - 1;
       this.coreService.post('agents/cluster/ordering', {
+        controllerId: this.controllerId,
         subagentClusterId: subagents[event.previousIndex].subagentClusterId,
         predecessorSubagentClusterId: index > -1 ? subagents[index].subagentClusterId : undefined
       }).subscribe();

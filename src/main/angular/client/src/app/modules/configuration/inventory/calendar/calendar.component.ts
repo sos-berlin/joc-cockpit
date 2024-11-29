@@ -140,7 +140,6 @@ export class FrequencyModalComponent {
         this.countryField = true;
       } else if (this._temp.tab === 'weekDays') {
         this.frequency.all = this._temp.days.length === 7;
-        this.frequency.allMonth = this._temp.months.length === 12;
       }
       for (let i = 0; i < this.frequencyList.length; i++) {
         if (this.frequencyList[i] == this._temp || isEqual(this._temp, this.frequencyList[i])) {
