@@ -5067,6 +5067,9 @@ let data = this.storedArguments[this.storedArguments.length - 1];
       switch (type) {
         case 'String':
           variable.value.default = String(variable.value.default);
+          if(variable.value.default == 'undefined'){
+            variable.value.default = ''
+          }
           break;
         case 'Number':
           variable.value.default = this.convertToNumberIfValid(variable.value.default);
@@ -5088,7 +5091,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           if (defaultValue in booleanMapping) {
             variable.value.default = booleanMapping[defaultValue];
           } else {
-            variable.value.default = false; // Default fallback
+            variable.value.default = ''; // Default fallback
           }
           break;
 
@@ -5097,7 +5100,9 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           variable.value.final = '';
           break;
       }
-
+      if(variable.value.default === 'undefined'){
+        variable.value.default = ''
+      }
       delete variable.value.listParameters;
     }
     this.updateOtherProperties('variable');
@@ -5129,7 +5134,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
             variable.value.default = booleanMapping[defaultValue];
           } else {
             console.warn(`Unexpected boolean value: ${variable.value.default}`);
-            variable.value.default = false;
+            variable.value.default = '';
           }
           break;
 

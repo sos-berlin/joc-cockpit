@@ -258,10 +258,19 @@ export class ChangeParameterModalComponent {
       });
 
       this.variables = this.variables.filter(item => {
-        if (isArray(item.value)) {
+        if (isArray(item.value) && typeof item.value === 'object') {
           this.setForkListVariables(item, this.forkListVariables);
           return false;
-        } else if (typeof item.value === 'object') {
+        } else if (!isArray(item.value) && typeof item.value === 'object') {
+          this.mapVariables.forEach(mapVariable => {
+            mapVariable.actualMap.forEach(actualMap => {
+              actualMap.forEach(argument => {
+                if (item.value.hasOwnProperty(argument.name)) {
+                  argument.value = item.value[argument.name];
+                }
+              });
+            });
+          })
           return false;
         } else {
           if (!item.type) {

@@ -3426,23 +3426,58 @@ export class CoreService {
           sour.value = sour.value == true ? 1 : 0;
         } else if (typeof sour.value == 'string') {
           if (sour.value) {
-            sour.value = (sour.value.toLowerCase() == 'true' || sour.value.toLowerCase() == 'yes' || sour.value.toLowerCase() == 'on') ? 1 : 0;
+            sour.value = this.convertToNumberIfValid(sour.value);
           } else {
-            sour.value = null;
+            sour.value = '';
           }
         }
       } else if (sour.type === 'Boolean') {
-        if (typeof sour.value == 'string') {
-          sour.value = sour.value.toLowerCase() == 'true' || sour.value.toLowerCase() == 'yes' || sour.value.toLowerCase() == 'on';
+        const booleanMapping: { [key: string]: boolean } = {
+          '1': true,
+          '0': false,
+          'true': true,
+          'false': false,
+          'yes': true,
+          'no': false,
+          'on': true,
+          'off': false,
+        };
+
+        const defaultValue = String(sour.value).toLowerCase();
+        if (defaultValue in booleanMapping) {
+          sour.value = booleanMapping[defaultValue];
         } else {
-          sour.value = sour.value == 1;
+          console.warn(`Unexpected boolean value: ${sour.value}`);
+          sour.value = '';
         }
       } else if (sour.type === 'String' && typeof sour.value !== 'string') {
         sour.value = sour.value.toString();
+      }else if(sour.type === undefined){
+        sour.value = ''
+        sour.name = ''
       }
     }
+
   }
 
+  convertToNumberIfValid(value: string): string | number {
+    const stringValue = value != null ? String(value) : '';
+
+    const trimmedValue = stringValue.trim();
+
+    if (trimmedValue.toLowerCase() === 'true') {
+      return 1; // Convert "true" to 1
+    }
+    if (trimmedValue.toLowerCase() === 'false') {
+      return 0; // Convert "false" to 0
+    }
+
+    if (!isNaN(Number(trimmedValue)) && trimmedValue !== '') {
+      return Number(trimmedValue); // Convert and return the number
+    }
+
+    return '';
+  }
   copyToClipboard(orderId, message) {
     this.clipboardService.copy(orderId);
     this.showCopyMessage(message);

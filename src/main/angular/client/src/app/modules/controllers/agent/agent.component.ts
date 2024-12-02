@@ -195,7 +195,8 @@ export class AddClusterModalComponent {
       subagentIds: this.cluster.subagentIds,
       title: this.cluster.title
     });
-    this.coreService.post('agents/cluster/store', obj).subscribe({
+    const url = this.new ? 'agents/cluster/add' : 'agents/cluster/store';
+    this.coreService.post(url, obj).subscribe({
       next: () => {
         this.activeModal.close(obj);
       }, error: () => {
@@ -389,7 +390,6 @@ export class AgentModalComponent {
   }
 
   private store(obj): void {
-
 
     let apiUrl = '';
 

@@ -555,6 +555,7 @@ export class ScheduleComponent {
 
                 const obj = {name: k1, value: v1, type, isRequired};
                 this.coreService.checkDataType(obj);
+
                 return obj;
               });
 
@@ -590,6 +591,7 @@ export class ScheduleComponent {
                     isRequired: item.value.isRequired || item.isRequired
                   };
                   this.coreService.checkDataType(obj);
+
                   sour.value[i].push(obj);
                 })
               }
@@ -669,6 +671,7 @@ export class ScheduleComponent {
                 }
                 if (val1.value) {
                   this.coreService.checkDataType(val1);
+
                 }
                 val1.isRequired = obj.isRequired;
                 actualList.push(obj);
@@ -921,6 +924,7 @@ export class ScheduleComponent {
 
                     const obj = {name: k1, value: v1, type, isRequired};
                     this.coreService.checkDataType(obj);
+
                     return obj;
                   });
                   for (const prop in mapVariables[x].map) {
@@ -954,6 +958,7 @@ export class ScheduleComponent {
                         isRequired: val.value.isRequired || val.isRequired
                       };
                       this.coreService.checkDataType(obj);
+
                       item.value.push(obj);
                     })
                   }
@@ -1029,6 +1034,7 @@ export class ScheduleComponent {
 
   checkVariableType(list, index: number): void {
     const obj = this.workflow.orderPreparation.parameters[list[index].name];
+
     if (obj) {
       let indexOfObject = -1, _index = 0;
       for (let i in this.workflow.orderPreparation.parameters) {
