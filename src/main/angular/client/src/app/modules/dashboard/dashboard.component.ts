@@ -416,6 +416,15 @@ export class DashboardComponent {
         'name': 'apiServerStatus',
         'visible': false,
         'message': 'message.apiServerStatus'
+      }, {
+        'cols': 4,
+        'rows': 2,
+        'y': 5,
+        'x': 0,
+        'id': 'workflows',
+        'name': 'workflows',
+        'visible': false,
+        'message': 'message.workflowsOverview'
       }];
     }
 
@@ -442,6 +451,8 @@ export class DashboardComponent {
         } else if (this.dashboardLayout[i].name === 'fileTransferSummary' && this.permission.joc.fileTransfer && this.permission.joc.fileTransfer.view) {
           this.widgets.push(this.dashboardLayout[i]);
         } else if (this.dashboardLayout[i].name === 'apiServerStatus' && this.permission.joc) {
+          this.widgets.push(this.dashboardLayout[i]);
+        } else if (this.dashboardLayout[i].name === 'workflows' && this.permission.joc.inventory.view && this.permission.currentController.orders.view) {
           this.widgets.push(this.dashboardLayout[i]);
         }
       }

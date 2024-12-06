@@ -1,0 +1,67 @@
+<div id="dailyPlanOverview1">
+  <div class="box-header b-b remove">
+    <h3 translate>dashboard.label.workflows</h3>
+  </div>
+  <div [ngClass]="{'p-t-sm': totalWorkflows == 0 && isLoaded}" class="box-body p-a">
+    <div [ngClass]="{'show': totalWorkflows > 0}" class="hide m-t-sm">
+      <div [ngClass]="{'show-block': synchronized > 0}" [ngStyle]="{'width': synchronized+'%'}"
+           class="plan-overview bg-finished hide">
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate1" class="w-full">
+          <a (click)="navigate(1)" class="nav-link w-full">
+            <div class="show-inline block-ellipsis-job" translate>dashboard.label.synchronized</div>
+            - {{synchronized | number : '1.1-1'}} %
+          </a>
+        </label>
+        <ng-template #tooltipTemplate1>
+          <div translate>dashboard.label.synchronized</div>
+          <div>{{(synchronized * totalWorkflows / 100 | number:'1.0') + ' out of ' + totalWorkflows}}</div>
+        </ng-template>
+      </div>
+      <div [ngClass]="{'show-block': outstanding > 0}" [ngStyle]="{width: outstanding+'%'}"
+           class="plan-overview bg-mangenta hide">
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate2" class="w-full">
+          <a (click)="navigate(2)" class="nav-link w-full">
+            <div class="show-inline block-ellipsis-job" translate>dashboard.label.outstanding</div>
+            - {{outstanding | number : '1.1-1' }} %
+          </a>
+        </label>
+        <ng-template #tooltipTemplate2>
+          <div translate>dashboard.label.outstanding</div>
+          <div>{{(outstanding * totalWorkflows / 100 | number:'1.0') + ' out of ' + totalWorkflows}}</div>
+        </ng-template>
+      </div>
+      <div [ngClass]="{'show-block': suspended > 0}" [ngStyle]="{width: suspended+'%'}"
+           class="plan-overview bg-orange hide">
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate3" class="w-full">
+          <a (click)="navigate(3)" class="nav-link w-full">
+            <div class="show-inline block-ellipsis-job" translate>dashboard.label.suspended</div>
+            - {{suspended | number : '1.1-1' }} %
+          </a>
+        </label>
+        <ng-template #tooltipTemplate3>
+          <div translate>dashboard.label.suspended</div>
+          <div>{{(suspended * totalWorkflows / 100 | number:'1.0') + ' out of ' + totalWorkflows}}</div>
+        </ng-template>
+      </div>
+      <div [ngClass]="{'show-block': notSynchronized > 0}" [ngStyle]="{width: notSynchronized+'%'}"
+           class="plan-overview bg-light-orange hide">
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate4" class="w-full">
+          <a (click)="navigate(4)" class="nav-link w-full">
+            <div class="show-inline block-ellipsis-job" translate>dashboard.label.notSynchronized</div>
+            - {{notSynchronized | number : '1.1-1' }} %
+          </a>
+        </label>
+        <ng-template #tooltipTemplate4>
+          <div translate>dashboard.label.notSynchronized</div>
+          <div>{{(notSynchronized * totalWorkflows / 100 | number:'1.0') + ' out of ' + totalWorkflows}}</div>
+        </ng-template>
+      </div>
+    </div>
+    <div [ngClass]="{'show': !isLoaded}" class="hide text-center text-primary text m-t-md m-b">
+      <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+    </div>
+    <div [ngClass]="{'show': totalWorkflows == 0 && isLoaded}" class="hide m-t-sm">
+      <app-empty-data></app-empty-data>
+    </div>
+  </div>
+</div>

@@ -18,6 +18,7 @@ import {
 } from './file-transfer-history-summary/file-transfer-history-summary.component';
 import {AgentClusterStatusComponent} from "./agent-cluster-status/agent-cluster-status.component";
 import {APIServerStatusComponent} from './api-server-status/api-server-status.component';
+import {WorkflowComponent} from './workflow/workflow.component';
 
 @NgModule({
   imports: [
@@ -42,7 +43,8 @@ import {APIServerStatusComponent} from './api-server-status/api-server-status.co
     ControllerClusterComponent,
     SchedulerInstanceComponent,
     ActionComponent,
-    APIServerStatusComponent
+    APIServerStatusComponent,
+    WorkflowComponent
   ]
 })
 export class DashboardModule {
