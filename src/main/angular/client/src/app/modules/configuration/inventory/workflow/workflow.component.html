@@ -227,6 +227,10 @@
             <app-expression-content [error]="error" [tabSize]="preferences.tabSize" [isTooltipVisible]="!preferences.showTooltipInfo"
                                     [selectedNode]="selectedNode"></app-expression-content>
           </div>
+          <div *ngIf="selectedNode.type === 'When'">
+            <app-expression-content [error]="error" [tabSize]="preferences.tabSize" [isTooltipVisible]="!preferences.showTooltipInfo"
+                                    [selectedNode]="selectedNode"></app-expression-content>
+          </div>
           <div *ngIf="selectedNode.type === 'Fork'">
             <div class="form-group row">
               <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.fork.joinIfFailed' | translate) : ''"

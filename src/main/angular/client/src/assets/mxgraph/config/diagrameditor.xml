@@ -25,6 +25,27 @@
         </mxCell>
       </If>
     </add>
+    <add as="CaseWhen">
+      <CaseWhen displayLabel="caseWhen">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="72" height="72"/>
+        </mxCell>
+      </CaseWhen>
+    </add>
+    <add as="When">
+      <When displayLabel="when" predicate="$returnCode > 0">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="72" height="72"/>
+        </mxCell>
+      </When>
+    </add>
+    <add as="ElseWhen">
+      <ElseWhen displayLabel="elseWhen">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="72" height="72"/>
+        </mxCell>
+      </ElseWhen>
+    </add>
     <add as="AddOrder">
       <AddOrder displayLabel="addOrder">
         <mxCell vertex="1">
@@ -220,6 +241,12 @@
     <add as="Try" template="Try" style="try" icon="./assets/mxgraph/images/try.png"/>
     <hr/>
     <add as="If" template="If" style="if" icon="./assets/mxgraph/images/if.png"/>
+    <hr/>
+    <add as="CaseWhen" template="CaseWhen" style="CaseWhen" icon="./assets/mxgraph/images/caseWhen.png"/>
+    <hr/>
+    <add as="When" template="When" style="When" icon="./assets/mxgraph/images/when.png"/>
+    <hr/>
+    <add as="ElseWhen" template="ElseWhen" style="ElseWhen" icon="./assets/mxgraph/images/elseWhen.png"/>
     <hr/>
     <add as="Cycle" template="Cycle" style="cycle" icon="./assets/mxgraph/images/cycle.png"/>
     <hr/>
