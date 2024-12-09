@@ -5133,7 +5133,6 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           if (defaultValue in booleanMapping) {
             variable.value.default = booleanMapping[defaultValue];
           } else {
-            console.warn(`Unexpected boolean value: ${variable.value.default}`);
             variable.value.default = '';
           }
           break;
@@ -7316,9 +7315,9 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                   if (state.cell.value.tagName !== 'Connection') {
                     if (state.cell.value.tagName !== 'Fork') {
                       const edges = graph.getOutgoingEdges(state.cell);
-                      if ((state.cell.value.tagName !== 'If' && edges.length === 1 && !self.workflowService.checkClosingCell(edges[0].target.value.tagName) &&
+                      if ((state.cell.value.tagName !== 'If' && state.cell.value.tagName !== 'When' && edges.length === 1 && !self.workflowService.checkClosingCell(edges[0].target.value.tagName) &&
                           !(state.cell.value.tagName === 'Try' && edges[0].target.value.tagName === 'Catch'))
-                        || (state.cell.value.tagName === 'If' && edges.length === 2)) {
+                        || (state.cell.value.tagName === 'If' && edges.length === 2) || (state.cell.value.tagName === 'When' && edges.length === 2)) {
                         this.setHighlightColor('#ff0000');
                       }
                     }
@@ -7415,7 +7414,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
             if (this.cells[0].value.tagName === 'Job') {
               shape = new mxLabel(originalShape.bounds, null, originalShape.stroke, originalShape.strokewidth + 1);
               shape.image = originalShape.image;
-            } else if (this.cells[0].value.tagName === 'If' || this.cells[0].value.tagName === 'Cycle' || this.cells[0].value.tagName === 'Try' || this.cells[0].value.tagName === 'Retry') {
+            } else if (this.cells[0].value.tagName === 'If' || this.cells[0].value.tagName === 'When' || this.cells[0].value.tagName === 'Cycle' || this.cells[0].value.tagName === 'ElseWhen' || this.cells[0].value.tagName === 'Try' || this.cells[0].value.tagName === 'Retry') {
               shape = new mxRhombus(originalShape.bounds, null, originalShape.stroke, originalShape.strokewidth + 1);
             } else {
               shape = new mxImageShape(originalShape.bounds, self.workflowService.getStyleOfSymbol(this.cells[0].value.tagName, originalShape.image), null, originalShape.stroke + 1);
@@ -8369,8 +8368,16 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                   return;
                 }
               }
+              if(drpTargt.value.tagName === 'Process' && (dragElement.match('when') || (dragElement.match('elseWhen')))){
+                self.translate.get('workflow.message.invalidwhenInstructionsSelected').subscribe(translatedValue => {
+                  msg = translatedValue;
+                });
+                self.toasterService.error(msg, title + '!!');
+                return;
+              }
               if (dragElement.match('fork') || dragElement.match('retry') || dragElement.match('cycle') || dragElement.match('lock') || dragElement.match('options') || dragElement.match('try') || dragElement.match('if')) {
                 const selectedCell = graph.getSelectionCell();
+
                 if (selectedCell) {
                   const cells = graph.getSelectionCells();
                   if (cells.length > 1) {
@@ -8386,6 +8393,14 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                   if (selectedCell.id === drpTargt.id || (selectedCellsObj && selectedCellsObj.ids && selectedCellsObj.ids.length > 0 && selectedCellsObj.ids.indexOf(drpTargt.id) > -1)) {
                     check = true;
                   }
+                  if (drpTargt.value.tagName === 'CaseWhen') {
+                    if (!(dragElement.includes('when') || dragElement.includes('elseWhen'))) {
+                      if (drpTargt.edges.length > 1) {
+                        check = false;
+                      }
+                    }
+                  }
+
                 }
               }
             }
@@ -8402,12 +8417,23 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                     }
                   }
                 } else if (drpTargt.value.tagName === 'If') {
+
                   if (drpTargt.edges.length > 2) {
                     self.translate.get('workflow.message.ifInstructionValidationError').subscribe(translatedValue => {
                       msg = translatedValue;
                     });
                     self.toasterService.error(msg, title + '!!');
                     return;
+                  }
+                } else if (drpTargt.value.tagName === 'CaseWhen') {
+                  if (!(dragElement.includes('when') || dragElement.includes('elseWhen'))) {
+                    if (drpTargt.edges.length > 1) {
+                      self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
+                        msg = translatedValue;
+                      });
+                      self.toasterService.error(msg, title + '!!');
+                      return;
+                    }
                   }
                 } else if (self.workflowService.checkClosingCell(drpTargt.value.tagName)) {
                   if (drpTargt.edges.length > 1) {
@@ -8744,7 +8770,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                   if (cell.source) {
                     if (cell.source.getParent() && cell.source.getParent().id !== '1') {
                       const _type = cell.getAttribute('type');
-                      if (!(_type === 'retry' || _type === 'lock' || _type === 'options' || _type === 'cycle' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
+                      if (!(_type === 'retry' || _type === 'lock' || _type === 'options' || _type === 'cycle' || _type === 'elseWhen' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
                         cell.setParent(cell.source.getParent());
                       }
                     }
@@ -8764,15 +8790,26 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                     }
                     if (cells[0].value.tagName === 'Fork') {
                       v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 68, 68, 'join');
-                    } else if (cells[0].value.tagName === 'ForkList' || cells[0].value.tagName === 'Lock' || cells[0].value.tagName === 'StickySubagent' ||
+                    }else if (cells[0].value.tagName === 'CaseWhen') {
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndCase', 'caseEnd', null), 0, 0, 72, 72, 'caseWhen');
+                      const v2 = graph.insertVertex(cells[0], null, getCellNode('When', 'when', cells[0].id), 0, 0, 72, 72, 'when');
+                      const v3 = graph.insertVertex(parent, null, getCellNode('WhenEnd', 'whenEnd', null), 0, 0, 72, 72, 'when');
+                      graph.insertEdge(parent, null, getConnectionNode(''), cells[0], v2);
+                      graph.insertEdge(parent, null, getConnectionNode('endWhen'), v2, v3);
+                      graph.insertEdge(parent, null, getConnectionNode('endCase'), v3, v1);
+                    }  else if (cells[0].value.tagName === 'ForkList' || cells[0].value.tagName === 'Lock' || cells[0].value.tagName === 'StickySubagent' ||
                       cells[0].value.tagName === 'Options' || cells[0].value.tagName === 'ConsumeNotices') {
                       v1 = createEndVertex(parent, cells[0].value.tagName);
                     } else if (cells[0].value.tagName === 'If') {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 72, 72, 'if');
+                    }else if (cells[0].value.tagName === 'When') {
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndWhen', 'whenEnd', null), 0, 0, 72, 72, 'when');
                     } else if (cells[0].value.tagName === 'Retry') {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 72, 72, 'retry');
                     } else if (cells[0].value.tagName === 'Cycle') {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', null), 0, 0, 72, 72, 'cycle');
+                    } else if (cells[0].value.tagName === 'ElseWhen') {
+                      v1 = graph.insertVertex(parent, null, getCellNode('EndElse', 'elseEnd', null), 0, 0, 72, 72, 'elseWhen');
                     } else {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 72, 72, 'try');
                       v2 = graph.insertVertex(cells[0], null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
@@ -9184,14 +9221,14 @@ let data = this.storedArguments[this.storedArguments.length - 1];
     function checkClosedCellWithSourceCell(sour, targ): boolean {
       const sourName = sour.value.tagName;
       const tarName = targ.value.tagName;
-      return (sourName === 'Fork' && tarName === 'Join') ||
-        (sourName === 'If' && tarName === 'EndIf') ||
+      return (sourName === 'Fork' && tarName === 'Join') || (sourName === 'CaseWhen' && tarName === 'EndCase') ||
+        (sourName === 'If' && tarName === 'EndIf') || (sourName === 'When' && tarName === 'EndWhen') ||
         (sourName === 'ConsumeNotices' && tarName === 'EndConsumeNotices') ||
         (sourName === 'Try' && tarName === 'EndTry') ||
         (sourName === 'Try' && tarName === 'Catch') ||
         (sourName === 'Catch' && tarName === 'EndTry') ||
         (sourName === 'Retry' && tarName === 'EndRetry') ||
-        (sourName === 'Cycle' && tarName === 'EndCycle') ||
+        (sourName === 'Cycle' && tarName === 'EndCycle') || (sourName === 'ElseWhen' && tarName === 'EndElse') ||
         (sourName === 'ForkList' && tarName === 'EndForkList') ||
         (sourName === 'Lock' && tarName === 'EndLock') ||
         (sourName === 'Options' && tarName === 'EndOptions') ||
@@ -9209,10 +9246,18 @@ let data = this.storedArguments[this.storedArguments.length - 1];
         label1 = 'then';
         label2 = 'endIf';
         v2 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', parentCell.id), 0, 0, 72, 72, 'if');
+      }else if (name === 'When') {
+        label1 = 'when';
+        label2 = 'endWhen';
+        v2 = graph.insertVertex(parent, null, getCellNode('EndWhen', 'whenEnd', parentCell.id), 0, 0, 72, 72, 'when');
       } else if (name === 'Fork') {
         label1 = 'branch';
         label2 = 'join';
         v2 = graph.insertVertex(parent, null, getCellNode('Join', 'join', parentCell.id), 0, 0, 68, 68, 'join');
+      }else if (name === 'CaseWhen') {
+        label1 = 'caseWhen';
+        label2 = 'endCase';
+        v2 = graph.insertVertex(parent, null, getCellNode('EndCase', 'caseEnd', parentCell.id), 0, 0, 68, 68, 'caseWhen');
       } else if (name === 'Retry') {
         label1 = 'retry';
         label2 = 'endRetry';
@@ -9237,6 +9282,10 @@ let data = this.storedArguments[this.storedArguments.length - 1];
         label1 = 'cycle';
         label2 = 'endCycle';
         v2 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', parentCell.id), 0, 0, 72, 72, 'cycle');
+      } else if (name === 'ElseWhen') {
+        label1 = 'elseWhen';
+        label2 = 'endElse';
+        v2 = graph.insertVertex(parent, null, getCellNode('EndElse', 'elseEnd', parentCell.id), 0, 0, 72, 72, 'elseWhen');
       } else if (name === 'ForkList') {
         label1 = 'forkList';
         label2 = 'endForkList';
@@ -9552,20 +9601,26 @@ let data = this.storedArguments[this.storedArguments.length - 1];
       }
       if (!isChange) {
         const _type = _dropTarget.getAttribute('type');
-        if (_type && (_type === 'join' || _type === 'branch' || _type === 'endIf' || _type === 'endRetry'
-          || _type === 'endCycle' || _type === 'endTry' || _type === 'endLock' || _type === 'endConsumeNotices')) {
+        if (_type && (_type === 'join' || _type === 'endCase' || _type === 'branch' || _type === 'endIf' || _type === 'endWhen' || _type === 'endRetry'
+          || _type === 'endCycle' || _type === 'endElse' || _type === 'endTry' || _type === 'endLock' || _type === 'endConsumeNotices')) {
           let _label1, _label2;
           if (_type === 'join') {
             _label1 = 'join';
             _label2 = 'branch';
+          }if (_type === 'endCase') {
+            _label1 = 'endCase';
           } else if (_type === 'branch') {
             _label1 = 'branch';
           } else if (_type === 'endIf') {
             _label1 = 'endIf';
+          }else if (_type === 'endWhen') {
+            _label1 = 'endWhen';
           } else if (_type === 'endRetry') {
             _label1 = 'endRetry';
           } else if (_type === 'endCycle') {
             _label1 = 'endCycle';
+          } else if (_type === 'endElse') {
+            _label1 = 'endElse';
           } else if (_type === 'endLock') {
             _label1 = 'endLock';
           } else if (_type === 'endConsumeNotices') {
@@ -9603,12 +9658,18 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                 if (cell.edges[i].target.value.tagName === 'Join') {
                   changeLabelOfConnection(_tempCell, 'branch');
                   changeLabelOfConnection(cell.edges[i], 'join');
+                }if (cell.edges[i].target.value.tagName === 'EndCase') {
+                  changeLabelOfConnection(cell.edges[i], 'endCase');
                 } else if (cell.edges[i].target.value.tagName === 'EndIf') {
                   changeLabelOfConnection(cell.edges[i], 'endIf');
+                } else if (cell.edges[i].target.value.tagName === 'EndWhen') {
+                  changeLabelOfConnection(cell.edges[i], 'endWhen');
                 } else if (cell.edges[i].target.value.tagName === 'EndRetry') {
                   changeLabelOfConnection(cell.edges[i], 'endRetry');
                 } else if (cell.edges[i].target.value.tagName === 'EndCycle') {
                   changeLabelOfConnection(cell.edges[i], 'endCycle');
+                }  else if (cell.edges[i].target.value.tagName === 'EndElse') {
+                  changeLabelOfConnection(cell.edges[i], 'endElse');
                 } else if (cell.edges[i].target.value.tagName === 'EndLock') {
                   changeLabelOfConnection(cell.edges[i], 'endLock');
                 } else if (cell.edges[i].target.value.tagName === 'EndStickySubagent') {
@@ -9632,7 +9693,9 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                 changeLabelOfConnection(cell.edges[i], 'branch');
               } else if (((typeAttr === 'endIf') && cell.edges[i].id !== _dropTarget.id)) {
                 changeLabelOfConnection(cell.edges[i], '');
-              } else if (((typeAttr === 'endConsumeNotices' || typeAttr === 'endCycle' || typeAttr === 'endLock' || typeAttr === 'endTry' || typeAttr === 'endTry') && cell.edges[i].id !== _dropTarget.id)) {
+              } else if (((typeAttr === 'endWhen') && cell.edges[i].id !== _dropTarget.id)) {
+                changeLabelOfConnection(cell.edges[i], '');
+              } else if (((typeAttr === 'endConsumeNotices' || typeAttr === 'endCycle' || typeAttr === 'endElse' || typeAttr === 'endLock' || typeAttr === 'endTry' || typeAttr === 'endTry') && cell.edges[i].id !== _dropTarget.id)) {
                 changeLabelOfConnection(cell.edges[i], '');
               }
             }
@@ -9656,6 +9719,18 @@ let data = this.storedArguments[this.storedArguments.length - 1];
               if (attrs && attrs.length > 0) {
                 if (attrs[0].value === 'If') {
                   if (cell.edges[i].target.value.tagName !== 'If' && cell.edges[i].source.value.tagName !== 'If' && cell.value.tagName !== 'If') {
+                    graph.getModel().beginUpdate();
+                    try {
+                      const type = new mxCellAttributeChange(
+                        cell.edges[i], 'type',
+                        '');
+                      graph.getModel().execute(type);
+                    } finally {
+                      graph.getModel().endUpdate();
+                    }
+                  }
+                }else if (attrs[0].value === 'When') {
+                  if (cell.edges[i].target.value.tagName !== 'When' && cell.edges[i].source.value.tagName !== 'When' && cell.value.tagName !== 'When') {
                     graph.getModel().beginUpdate();
                     try {
                       const type = new mxCellAttributeChange(
@@ -9815,6 +9890,12 @@ let data = this.storedArguments[this.storedArguments.length - 1];
             graph.getModel().execute(edit9);
 
           } else if (self.selectedNode.type === 'If') {
+            const predicate = self.selectedNode.newObj.predicate;
+            self.validatePredicate(predicate, null, false);
+            const edit = new mxCellAttributeChange(
+              obj.cell, 'predicate', predicate);
+            graph.getModel().execute(edit);
+          }else if (self.selectedNode.type === 'When') {
             const predicate = self.selectedNode.newObj.predicate;
             self.validatePredicate(predicate, null, false);
             const edit = new mxCellAttributeChange(
@@ -10152,6 +10233,10 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           self.selectedNode.newObj.predicate = self.selectedNode.newObj.predicate.replace(/<[^>]+>/gm, '').replace(/&amp;/g, '&').replace(/&gt;/g, '>').replace(/&lt;/g, '<')
             .replace(/&nbsp;/g, ' ').replace(/&#39;/g, '\'').replace('\n', '').replace('\r', '');
         }
+        if (self.selectedNode.type === 'When') {
+          self.selectedNode.newObj.predicate = self.selectedNode.newObj.predicate.replace(/<[^>]+>/gm, '').replace(/&amp;/g, '&').replace(/&gt;/g, '>').replace(/&lt;/g, '<')
+            .replace(/&nbsp;/g, ' ').replace(/&#39;/g, '\'').replace('\n', '').replace('\r', '');
+        }
 
         if (self.selectedNode?.job?.executable?.TYPE) {
           if (self.selectedNode.job.executable.TYPE === 'Java' || self.selectedNode.job.executable.TYPE === 'JavaScript') {
@@ -10321,6 +10406,8 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           const val2 = cell.getAttribute('forceJobAdmission');
           obj.forceJobAdmission = val2 == 'true';
         } else if (cell.value.tagName === 'If') {
+          obj.predicate = cell.getAttribute('predicate');
+        }  else if (cell.value.tagName === 'When') {
           obj.predicate = cell.getAttribute('predicate');
         } else if (cell.value.tagName === 'Retry') {
           obj.maxTries = cell.getAttribute('maxTries');
@@ -10749,6 +10836,10 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           } else if (!targetObj.else) {
             targetObj.else = {instructions: copyObject};
           }
+        }else if (target.value.tagName === 'When') {
+          if (!targetObj.instructions) {
+            targetObj.instructions = [];
+          }
         } else if (target.value.tagName === 'Fork') {
           let branchId;
           if (!targetObj.branches) {
@@ -11136,12 +11227,23 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           _node.setAttribute('displayLabel', 'fork');
           _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'fork');
+        }else if (title.match('caseWhen')) {
+          _node = doc.createElement('CaseWhen');
+          _node.setAttribute('displayLabel', 'caseWhen');
+          _node.setAttribute('uuid', self.coreService.create_UUID());
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'caseWhen');
         } else if (title.match('if')) {
           _node = doc.createElement('If');
           _node.setAttribute('displayLabel', 'if');
           _node.setAttribute('predicate', '$returnCode > 0');
           _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'if');
+        }else if (title.match('when')) {
+          _node = doc.createElement('When');
+          _node.setAttribute('displayLabel', 'when');
+          _node.setAttribute('predicate', '$returnCode > 0');
+          _node.setAttribute('uuid', self.coreService.create_UUID());
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'when');
         } else if (title.match('retry')) {
           _node = doc.createElement('Retry');
           _node.setAttribute('displayLabel', 'retry');
@@ -11154,6 +11256,11 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           _node.setAttribute('displayLabel', 'cycle');
           _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'cycle');
+        }else if (title.match('elseWhen')) {
+          _node = doc.createElement('ElseWhen');
+          _node.setAttribute('displayLabel', 'elseWhen');
+          _node.setAttribute('uuid', self.coreService.create_UUID());
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'elseWhen');
         } else if (title.match('lock')) {
           _node = doc.createElement('Lock');
           _node.setAttribute('displayLabel', 'lock');
@@ -11221,7 +11328,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           if (targetCell.source) {
             if (targetCell.source.getParent().id !== '1') {
               const _type = targetCell.getAttribute('type') || targetCell.getAttribute('displayLabel');
-              if (!(_type === 'retry' || _type === 'cycle' || _type === 'lock' || _type === 'options' || _type === 'consumeNotices' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
+              if (!(_type === 'retry' || _type === 'cycle' || _type === 'elseWhen' || _type === 'lock' || _type === 'options' || _type === 'consumeNotices' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
                 targetCell.setParent(targetCell.source.getParent());
                 clickedCell.setParent(targetCell.source.getParent());
               }
@@ -11232,8 +11339,17 @@ let data = this.storedArguments[this.storedArguments.length - 1];
             const parent = targetCell.getParent() || graph.getDefaultParent();
             if (clickedCell.value.tagName === 'Fork') {
               v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 68, 68, 'join');
-            } else if (clickedCell.value.tagName === 'If') {
+            }else if (clickedCell.value.tagName === 'CaseWhen') {
+              v1 = graph.insertVertex(parent, null, getCellNode('EndCase', 'caseEnd', null), 0, 0, 72, 72, 'caseWhen');
+              const v2 = graph.insertVertex(clickedCell, null, getCellNode('When', 'when', clickedCell.id), 0, 0, 72, 72, 'when');
+              const v3 = graph.insertVertex(parent, null, getCellNode('WhenEnd', 'whenEnd', null), 0, 0, 72, 72, 'when');
+              graph.insertEdge(parent, null, getConnectionNode(''), clickedCell, v2);
+              graph.insertEdge(parent, null, getConnectionNode('endWhen'), v2, v3);
+              graph.insertEdge(parent, null, getConnectionNode('endCase'), v3, v1);
+            }  else if (clickedCell.value.tagName === 'If') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 72, 72, 'if');
+            } else if (clickedCell.value.tagName === 'When') {
+              v1 = graph.insertVertex(parent, null, getCellNode('EndWhen', 'whenEnd', null), 0, 0, 72, 72, 'when');
             } else if (clickedCell.value.tagName === 'Retry') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 72, 72, 'retry');
             } else if (clickedCell.value.tagName === 'ForkList' || clickedCell.value.tagName === 'Lock' || clickedCell.value.tagName === 'StickySubagent' ||
@@ -11241,6 +11357,8 @@ let data = this.storedArguments[this.storedArguments.length - 1];
               v1 = createEndVertex(parent, clickedCell.value.tagName);
             } else if (clickedCell.value.tagName === 'Cycle') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', null), 0, 0, 72, 72, 'cycle');
+            }else if (clickedCell.value.tagName === 'ElseWhen') {
+              v1 = graph.insertVertex(parent, null, getCellNode('EndElse', 'elseEnd', null), 0, 0, 72, 72, 'elseWhen');
             } else {
               v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 72, 72, 'try');
               v2 = graph.insertVertex(clickedCell, null, getCellNode('Catch', 'catch', null), 0, 0, 100, 40, 'dashRectangle');
@@ -11252,7 +11370,6 @@ let data = this.storedArguments[this.storedArguments.length - 1];
             if (clickedCell.value.tagName !== 'Try') {
               graph.insertEdge(parent, null, getConnectionNode(''), clickedCell, v1);
             }
-
             graph.insertEdge(parent, null, getConnectionNode(''), v1, targetCell.target);
             for (let x = 0; x < targetCell.source.edges.length; x++) {
               if (targetCell.source.edges[x].id === targetCell.id) {
@@ -11331,7 +11448,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
         if ((tagName === 'ForkList' || tagName === 'StickySubagent') && title.match('fork.')) {
           return 'inValid';
         }
-        if (title.match('fork') || title.match('retry') || title.match('cycle') || title.match('consume') || title.match('lock') || title.match('options') || title.match('try') || title.match('if')) {
+        if (title.match('fork') || title.match('caseWhen') || title.match('retry') || title.match('cycle') || title.match('consume') || title.match('lock') || title.match('options') || title.match('try') || title.match('if') || title.match('when') || title.match('elseWhen')) {
           const selectedCell = graph.getSelectionCell();
           if (selectedCell) {
             const cells = graph.getSelectionCells();
@@ -11505,8 +11622,12 @@ let data = this.storedArguments[this.storedArguments.length - 1];
       }
      else if (dropTargetName === 'Retry') {
         displayLabel = 'retry';
+      }else if (dropTargetName === 'When') {
+        displayLabel = 'when';
       } else if (dropTargetName === 'Cycle') {
         displayLabel = 'cycle';
+      } else if (dropTargetName === 'ElseWhen') {
+        displayLabel = 'elseWhen';
       } else if (dropTargetName === 'Lock') {
         displayLabel = 'lock';
       } else if (dropTargetName === 'StickySubagent') {
@@ -11523,16 +11644,29 @@ let data = this.storedArguments[this.storedArguments.length - 1];
         displayLabel = 'catch';
       } else if (dropTargetName === 'Fork') {
         displayLabel = '$TYPE$' + 'branch' + (getBranchLabel(_dropTarget) + 1);
+      }else if (dropTargetName === 'CaseWhen') {
+        displayLabel = '';
       }
 
       let parent = cell.getParent() || graph.getDefaultParent();
       if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
-        let v1, v2, _label;
+        let v1, v2,v3, _label;
         if (cell.value.tagName === 'Fork') {
           v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', cell.id), 0, 0, 68, 68, 'join');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
+        }else if (cell.value.tagName === 'CaseWhen') {
+          v3 = graph.insertVertex(cell, null, getCellNode('EndWhen', 'whenEnd', cell.id), 0, 0, 72, 72, 'when');
+          v2 = graph.insertVertex(cell, null, getCellNode('EndWhen', 'when', cell.id), 0, 0, 72, 72, 'when');
+          v1 = graph.insertVertex(parent, null, getCellNode('EndCase', 'caseEnd', cell.id), 0, 0, 72, 72, 'caseWhen');
+         graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
+          graph.insertEdge(parent, null, getConnectionNode(''), cell, v2);
+          graph.insertEdge(parent, null, getConnectionNode('endWhen'), v2, v3);
+          graph.insertEdge(parent, null, getConnectionNode('endCase'), v3, v1);
         } else if (cell.value.tagName === 'If') {
           v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', cell.id), 0, 0, 72, 72, 'if');
+          graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
+        }else if (cell.value.tagName === 'When') {
+          v1 = graph.insertVertex(parent, null, getCellNode('EndWhen', 'whenEnd', cell.id), 0, 0, 72, 72, 'when');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'Retry') {
           v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', cell.id), 0, 0, 72, 72, 'retry');
@@ -11543,6 +11677,9 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'Cycle') {
           v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', cell.id), 0, 0, 72, 72, 'cycle');
+          graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
+        } else if (cell.value.tagName === 'ElseWhen') {
+          v1 = graph.insertVertex(parent, null, getCellNode('EndElse', 'elseEnd', cell.id), 0, 0, 72, 72, 'elseWhen');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'Try') {
           v2 = graph.insertVertex(cell, null, getCellNode('Catch', 'catch', cell.id), 0, 0, 100, 40, 'dashRectangle');
@@ -11624,8 +11761,12 @@ let data = this.storedArguments[this.storedArguments.length - 1];
         if (dropTargetName === 'Fork') {
           displayLabel = '$TYPE$' + 'branch' + (getBranchLabel(_dropTarget) + 1);
           checkLabel = 'Join';
+        }else if (dropTargetName === 'CaseWhen') {
+          checkLabel = 'EndCase';
         } else if (dropTargetName === 'If') {
           checkLabel = 'EndIf';
+        }else if (dropTargetName === 'When') {
+          checkLabel = 'EndWhen';
         } else if (dropTargetName === 'Retry') {
           checkLabel = 'EndRetry';
         } else if (dropTargetName === 'Lock') {
@@ -11638,6 +11779,8 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           checkLabel = 'EndConsumeNotices';
         } else if (dropTargetName === 'Cycle') {
           checkLabel = 'EndCycle';
+        }  else if (dropTargetName === 'ElseWhen') {
+          checkLabel = 'EndElse';
         } else if (dropTargetName === 'ForkList') {
           checkLabel = 'EndForkList';
         } else if (dropTargetName === 'Try') {
@@ -11648,7 +11791,6 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           checkLabel = 'EndTry';
           graph.getModel().setStyle(_dropTarget, 'catch');
         }
-
         if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
           let target1, target2;
           for (let i = 0; i < _dropTarget.edges.length; i++) {
@@ -11724,7 +11866,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           for (let i = 0; i < cell.edges.length; i++) {
             if (cell.edges[i].target.value.tagName === checkLabel) {
               const _label = checkLabel === 'Join' ? 'join' : checkLabel === 'EndForkList' ? 'endForkList' : checkLabel === 'EndIf' ? 'endIf' : checkLabel === 'EndRetry'
-                ? 'endRetry' : checkLabel === 'EndLock' ? 'endLock' : checkLabel === 'EndStickySubagent' ? 'endStickySubagent' : checkLabel === 'EndConsumeNotices' ? 'endConsumeNotices' : checkLabel === 'EndCycle' ? 'endCycle' : 'endTry';
+                ? 'endRetry' : checkLabel === 'EndLock' ? 'endLock' : checkLabel === 'EndStickySubagent' ? 'endStickySubagent' : checkLabel === 'EndConsumeNotices' ? 'endConsumeNotices' : checkLabel === 'EndCycle' ? 'endCycle' : checkLabel === 'EndTry' ? 'endTry' : checkLabel === 'EndCase' ? 'endCase': 'endWhen';
               if (!self.workflowService.isInstructionCollapsible(cell.value.tagName) && cell.value.tagName !== 'Catch') {
                 cell.edges[i].value.attributes[0].nodeValue = _label;
                 cell.edges[i].value.attributes[1].nodeValue = _label;
@@ -11765,10 +11907,10 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           }
         }
       }
-      if (cell.value.tagName === 'Try') {
+      if (cell.value.tagName === 'Try' || cell.value.tagName === 'CaseWhen' ) {
         for (let j = 0; j < cell.edges.length; j++) {
           if (cell.edges[j].target.id !== cell.id) {
-            if (cell.edges[j].source.value.tagName === 'Try' && cell.edges[j].target.value.tagName === 'EndTry') {
+            if ((cell.edges[j].source.value.tagName === 'Try' && cell.edges[j].target.value.tagName === 'EndTry') || (cell.edges[j].source.value.tagName === 'CaseWhen' && cell.edges[j].target.value.tagName === 'EndCase')) {
               graph.getModel().remove(cell.edges[j]);
               break;
             }
@@ -12582,6 +12724,17 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                 }
               }
             }
+          }else if (json.instructions[x].TYPE === 'ElseWhen') {
+            if (!(!json.instructions[x].id && !json.instructions[x].instructions)) {
+              if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0)) {
+                flag = false;
+                checkErr = true;
+                self.invalidMsg = 'workflow.message.invalidCycleInstruction';
+                if (isValidate) {
+                  return;
+                }
+              }
+            }
           } else if (json.instructions[x].TYPE === 'Lock') {
             if (!json.instructions[x].id && !json.instructions[x].instructions && !json.instructions[x].demands) {
 
@@ -12781,6 +12934,8 @@ let data = this.storedArguments[this.storedArguments.length - 1];
             }
           }
 
+
+
           json.instructions[x].id = undefined;
           json.instructions[x].uuid = undefined;
           json.instructions[x].isCollapsed = undefined;
@@ -12793,6 +12948,89 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           if (json.instructions[x].TYPE === 'Retry' && json.instructions[x].instructions && !json.instructions[x].try) {
             json.instructions[x].TYPE = 'Try';
             self.workflowService.convertRetryToTryCatch(json.instructions[x]);
+          }
+         if (json.instructions[x].TYPE === 'CaseWhen') {
+
+            flag = self.workflowService.validateFields(json.instructions[x], 'CaseWhen');
+            if (!flag) {
+              checkErr = true;
+              self.invalidMsg = (!json.instructions[x].cases || json.instructions[x].cases.length < 2)
+                ? 'workflow.message.invalidCaseInstruction'
+                : 'inventory.message.nameIsNotValid';
+            }
+            if (!flag && isValidate) {
+              if (isOpen) {
+                if (json.instructions[x].cases && json.instructions[x].cases.length > 0) {
+                  self.openSideBar(json.instructions[x].id);
+                } else {
+                  let msg = '';
+                  self.translate.get('workflow.message.invalidCaseInstruction').subscribe(translatedValue => {
+                    msg = translatedValue;
+                  });
+                  self.toasterService.error(msg);
+                }
+              }
+              return;
+            }
+
+            if (json.instructions[x].cases) {
+
+              const ids = [];
+              let maxNum = 0;
+
+              json.instructions[x].cases.forEach((caseItem) => {
+                if (caseItem.id) {
+                  const arr = caseItem.id.match(/[0-9]+$/);
+                  if (arr && arr.length > 0) {
+                    const num = parseInt(arr[0], 10);
+                    if (typeof num == 'number' && !isNaN(num)) {
+                      if (num > maxNum) {
+                        maxNum = num;
+                      }
+                    }
+                  }
+                }
+              });
+
+              json.instructions[x].cases = json.instructions[x].cases.filter((caseItem) => {
+                if (ids.indexOf(caseItem.id) == -1) {
+                  ids.push(caseItem.id);
+                } else {
+                  const arr = caseItem.id.match(/[0-9]+$/);
+                  if (arr && arr.length) {
+                    const num = parseInt(arr[0], 10);
+                    if (typeof num == 'number' && !isNaN(num)) {
+                      caseItem.id = caseItem.id.substring(0, caseItem.id.indexOf(num)) + (maxNum + 1);
+                    } else {
+                      caseItem.id = caseItem.id + (maxNum + 1);
+                    }
+                    ids.push(caseItem.id);
+                  }
+                }
+
+                caseItem.workflow = {
+                  instructions: caseItem.instructions,
+                  result: caseItem.result
+                };
+                delete caseItem.instructions;
+                delete caseItem.result;
+
+                const isValidCase = (caseItem.workflow.instructions && caseItem.workflow.instructions.length > 0);
+                return isValidCase;
+              });
+
+              for (let i = 0; i < json.instructions[x].cases.length; i++) {
+                if (json.instructions[x].cases[i].workflow) {
+                  recursive(json.instructions[x].cases[i].workflow);
+                }
+              }
+            } else {
+              json.instructions[x].cases = [];
+            }
+           delete json.instructions[x].instructions;
+           delete json.instructions[x].isCollapsed;
+           delete json.instructions[x].uuid;
+           delete json.instructions[x].id;
           }
           if (json.instructions[x].TYPE === 'AddOrder') {
             const workflowName = clone(json.instructions[x].workflowName);
