@@ -231,11 +231,11 @@
     <hr/>
     <add as="If" template="If" style="if" icon="./assets/mxgraph/images/white-if.png"/>
     <hr/>
-    <add as="CaseWhen" template="CaseWhen" style="CaseWhen" icon="./assets/mxgraph/images/white-caseWhen.png"/>
+    <add as="CaseWhen" template="CaseWhen" style="caseWhen" icon="./assets/mxgraph/images/white-caseWhen.png"/>
     <hr/>
-    <add as="When" template="When" style="When" icon="./assets/mxgraph/images/white-when.png"/>
+    <add as="When" template="When" style="when" icon="./assets/mxgraph/images/white-when.png"/>
     <hr/>
-    <add as="ElseWhen" template="ElseWhen" style="ElseWhen" icon="./assets/mxgraph/images/white-elseWhen.png"/>
+    <add as="ElseWhen" template="ElseWhen" style="elseWhen" icon="./assets/mxgraph/images/white-elseWhen.png"/>
     <hr/>
     <add as="Cycle" template="Cycle" style="cycle" icon="./assets/mxgraph/images/white-cycle.png"/>
     <hr/>

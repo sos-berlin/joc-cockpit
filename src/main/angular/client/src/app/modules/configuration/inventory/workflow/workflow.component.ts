@@ -31,11 +31,15 @@ import {CommentModalComponent} from '../../../../components/comment-modal/commen
 import {InventoryObject} from '../../../../models/enums';
 import {JobWizardComponent} from '../job-wizard/job-wizard.component';
 import {InventoryService} from '../inventory.service';
-import {CreateObjectModalComponent, CreateTagModalComponent, EncryptArgumentModalComponent} from "../inventory.component";
+import {
+  CreateObjectModalComponent,
+  CreateTagModalComponent,
+  EncryptArgumentModalComponent
+} from "../inventory.component";
 import {UpdateJobTemplatesComponent} from "../job-template/job-template.component";
 import {CalendarService} from "../../../../services/calendar.service";
 import {FileUploaderComponent} from "../../../../components/file-uploader/file-uploader.component";
-import { ConfirmModalComponent } from 'src/app/components/comfirm-modal/confirm.component';
+import {ConfirmModalComponent} from 'src/app/components/comfirm-modal/confirm.component';
 
 // Mx-Graph Objects
 declare const mxEditor: any;
@@ -97,7 +101,7 @@ export class DurationValidator implements Validator {
 
         // Check if the duration exceeds 24 hours (86400 seconds)
         if (totalSeconds > 86400) {
-          return { invalidDuration: true, message: 'Duration cannot exceed 24 hours.' };
+          return {invalidDuration: true, message: 'Duration cannot exceed 24 hours.'};
         }
 
         return null;
@@ -157,13 +161,11 @@ export class DurationValidatorChange implements Validator {
 
         if (lastChar.match(/[hmsdwyM]/i)) {
           target.value = target.value.replace(/:/g, '');
-          target.dispatchEvent(new Event('input', { bubbles: true }));
+          target.dispatchEvent(new Event('input', {bubbles: true}));
         }
       }
     }
   }
-
-
 
 
   validate(c: AbstractControl): { [key: string]: any } {
@@ -958,7 +960,6 @@ export class AdmissionTimeComponent {
   }
 
 
-
   checkDays(): void {
     this.frequency.all = this.frequency.days.length === 7;
     this.daysOptions = this.daysOptions.map(item => {
@@ -1671,7 +1672,7 @@ export class JobComponent {
   tabChange($event): void {
     if ($event.index === 0) {
       this.updateSelectItems();
-    }else if($event.index === 2){
+    } else if ($event.index === 2) {
       this.fetchAllJobTags()
       this.fetchJobTags()
     }
@@ -1697,7 +1698,7 @@ export class JobComponent {
               break;
             }
           }
-          if(flag && res.jobTemplate.arguments[key].required){
+          if (flag && res.jobTemplate.arguments[key].required) {
             res.jobTemplate.arguments[key].selected = true;
             this.selectedNode.job.executable.arguments.push({
               name: res.jobTemplate.arguments[key].name,
@@ -2279,7 +2280,7 @@ export class JobComponent {
     let list = this.getList(type);
 
     let itemsToCopy = list.filter(item => {
-      if(operation === 'CUT' && item.isRequired){
+      if (operation === 'CUT' && item.isRequired) {
         return false;
       }
       switch (type) {
@@ -2548,7 +2549,7 @@ export class JobComponent {
     if (!this.selectedNode.obj.jobName) {
       this.selectedNode.obj.jobName = 'job';
     }
-    if(this.previousJobName === undefined) {
+    if (this.previousJobName === undefined) {
       this.previousJobName = 'job'
     }
     const obj = {
@@ -2727,8 +2728,7 @@ export class JobComponent {
   }
 
   private fetchAllJobTags() {
-    this.coreService.post('tags/job', {
-    }).subscribe({
+    this.coreService.post('tags/job', {}).subscribe({
       next: (res: any) => {
         this.allTags = res.tags;
       }
@@ -2751,7 +2751,7 @@ export class JobComponent {
   handleClose(removedTag: {}): void {
     this.tags = this.tags.filter(tag => tag !== removedTag);
     this.tagsData.forEach(jobTag => {
-      if(jobTag.jobName === this.selectedNode.job.jobName){
+      if (jobTag.jobName === this.selectedNode.job.jobName) {
         jobTag.jobTags.pop(removedTag);
       }
     })
@@ -2783,7 +2783,7 @@ export class JobComponent {
           }
         });
       } else {
-        const newJobTag = { jobName: this.selectedNode.job.jobName, jobTags: this.tags };
+        const newJobTag = {jobName: this.selectedNode.job.jobName, jobTags: this.tags};
         this.tagsData.push(newJobTag);
       }
     }
@@ -3018,8 +3018,8 @@ export class JobComponent {
     this.updateFromJobTemplateFn.emit(this.selectedNode)
   }
 
-  encryptValue(argument, jobName, variableType){
-    let selectedAgent  = [];
+  encryptValue(argument, jobName, variableType) {
+    let selectedAgent = [];
     selectedAgent = this.getSelectedAgentIds(jobName);
     setTimeout(() => {
       const argu = argument;
@@ -3040,7 +3040,7 @@ export class JobComponent {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          if(variableType === 'arguments'){
+          if (variableType === 'arguments') {
             const originalArgIndex = this.selectedNode.job.executable.arguments.findIndex(arg => arg.name === argument.name);
             if (originalArgIndex !== -1) {
               if (typeof this.selectedNode.job.executable.arguments[originalArgIndex].value === 'object') {
@@ -3049,7 +3049,7 @@ export class JobComponent {
                 this.selectedNode.job.executable.arguments[originalArgIndex].value = result.value;
               }
             }
-          } else if(variableType === 'env'){
+          } else if (variableType === 'env') {
             const originalEnvIndex = this.selectedNode.job.executable.env.findIndex(env => env.name === argument.name);
             if (originalEnvIndex !== -1) {
               if (typeof this.selectedNode.job.executable.env[originalEnvIndex].value === 'object') {
@@ -3058,7 +3058,7 @@ export class JobComponent {
                 this.selectedNode.job.executable.env[originalEnvIndex].value = "'" + result.value + "'";
               }
             }
-          } else if(variableType === 'jobArguments'){
+          } else if (variableType === 'jobArguments') {
             const originalEnvIndex = this.selectedNode.job.executable.jobArguments.findIndex(env => env.name === argument.name);
             if (originalEnvIndex !== -1) {
               if (typeof this.selectedNode.job.executable.jobArguments[originalEnvIndex].value === 'object') {
@@ -3067,7 +3067,7 @@ export class JobComponent {
                 this.selectedNode.job.executable.jobArguments[originalEnvIndex].value = result.value;
               }
             }
-          } else if(variableType === 'nodeArguments'){
+          } else if (variableType === 'nodeArguments') {
             const originalEnvIndex = this.selectedNode.obj.defaultArguments.findIndex(env => env.name === argument.name);
             if (originalEnvIndex !== -1) {
               if (typeof this.selectedNode.obj.defaultArguments[originalEnvIndex].value === 'object') {
@@ -3095,8 +3095,8 @@ export class JobComponent {
       }
       this.coreService.post('agents/cluster', agentController).subscribe({
         next: (data: any) => {
-          const cluster = data.subagentClusters.filter( cluster => cluster.subagentClusterId === subagentClusterId);
-          if(cluster[0].subagentClusterId === subagentClusterId){
+          const cluster = data.subagentClusters.filter(cluster => cluster.subagentClusterId === subagentClusterId);
+          if (cluster[0].subagentClusterId === subagentClusterId) {
             cluster[0].subagentIds.forEach(subagentId => {
               selectedAgentIds.push(subagentId.subagentId);
             })
@@ -3197,7 +3197,7 @@ export class JobComponent {
   }
 
   renameTag(tagName): void {
-    let tagObj = { name: tagName };
+    let tagObj = {name: tagName};
     this.modal.create({
       nzTitle: undefined,
       nzContent: CreateTagModalComponent,
@@ -3559,6 +3559,7 @@ export class ExpressionComponent {
     doc.setCursor(cursor);
   }
 }
+
 @Component({
   selector: 'app-change-impact-dialog',
   templateUrl: './change-impact-dialog.html',
@@ -3583,7 +3584,7 @@ export class ChangeImpactDialogComponent {
       }
     });
     setTimeout(() => {
-      if(this.impactedSchedules){
+      if (this.impactedSchedules) {
         this.draft()
       }
     }, 300)
@@ -3627,7 +3628,8 @@ export class ChangeImpactDialogComponent {
     sendRequest(0);
   }
 }
-  @Component({
+
+@Component({
   selector: 'app-workflow',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './workflow.component.html',
@@ -3835,7 +3837,7 @@ export class WorkflowComponent {
       }
       if (this.reload) {
         this.selectedNode = null;
-        if(!this.data.children){
+        if (!this.data.children) {
           this.init();
         }
         this.reload = false;
@@ -4385,7 +4387,7 @@ export class WorkflowComponent {
 
   copyIndlArguments(index): void {
     let newData = JSON.stringify(this.variableDeclarations.parameters[index]);
-   this.storedArguments = sessionStorage.getItem('$SOS$copiedArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedArgument')) : [];
+    this.storedArguments = sessionStorage.getItem('$SOS$copiedArgument') ? JSON.parse(sessionStorage.getItem('$SOS$copiedArgument')) : [];
     this.storedArguments.push(newData);
     if (this.storedArguments.length > 20) {
       this.storedArguments.shift();
@@ -4396,7 +4398,6 @@ export class WorkflowComponent {
     this.coreService.showCopyMessage(this.message);
     this.fetchIndlClipboard();
   }
-
 
 
   handlePaste(data) {
@@ -4442,7 +4443,7 @@ export class WorkflowComponent {
 
 
   handleIndlPaste(): void {
-let data = this.storedArguments[this.storedArguments.length - 1];
+    let data = this.storedArguments[this.storedArguments.length - 1];
 
     if (data && typeof data === 'string') {
       const clipboardDataArray = JSON.parse(data);
@@ -4480,12 +4481,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
 
       this.updateOtherProperties('variable');
     }
- }
-
-
-
-
-
+  }
 
 
   removeClipboard(): void {
@@ -5067,7 +5063,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
       switch (type) {
         case 'String':
           variable.value.default = String(variable.value.default);
-          if(variable.value.default == 'undefined'){
+          if (variable.value.default == 'undefined') {
             variable.value.default = ''
           }
           break;
@@ -5100,7 +5096,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           variable.value.final = '';
           break;
       }
-      if(variable.value.default === 'undefined'){
+      if (variable.value.default === 'undefined') {
         variable.value.default = ''
       }
       delete variable.value.listParameters;
@@ -5108,63 +5104,63 @@ let data = this.storedArguments[this.storedArguments.length - 1];
     this.updateOtherProperties('variable');
   }
 
-    changeSubDataType(type, variable): void {
-      switch (type) {
-        case 'String':
-          variable.value.default = String(variable.value.default);
-          break;
-        case 'Number':
-          variable.value.default = this.convertToNumberIfValid(variable.value.default);
-          break;
+  changeSubDataType(type, variable): void {
+    switch (type) {
+      case 'String':
+        variable.value.default = String(variable.value.default);
+        break;
+      case 'Number':
+        variable.value.default = this.convertToNumberIfValid(variable.value.default);
+        break;
 
-        case 'Boolean':
-          const booleanMapping: { [key: string]: boolean } = {
-            '1': true,
-            '0': false,
-            'true': true,
-            'false': false,
-            'yes': true,
-            'no': false,
-            'on': true,
-            'off': false,
-          };
+      case 'Boolean':
+        const booleanMapping: { [key: string]: boolean } = {
+          '1': true,
+          '0': false,
+          'true': true,
+          'false': false,
+          'yes': true,
+          'no': false,
+          'on': true,
+          'off': false,
+        };
 
-          const defaultValue = String(variable.value.default).toLowerCase();
-          if (defaultValue in booleanMapping) {
-            variable.value.default = booleanMapping[defaultValue];
-          } else {
-            variable.value.default = '';
-          }
-          break;
-
-        default:
+        const defaultValue = String(variable.value.default).toLowerCase();
+        if (defaultValue in booleanMapping) {
+          variable.value.default = booleanMapping[defaultValue];
+        } else {
           variable.value.default = '';
-          variable.value.final = '';
-          break;
-      }
+        }
+        break;
 
-      delete variable.value.listParameters;
+      default:
+        variable.value.default = '';
+        variable.value.final = '';
+        break;
+    }
+
+    delete variable.value.listParameters;
     this.updateOtherProperties('variable');
   }
 
-   convertToNumberIfValid(value: string): string | number {
-     const stringValue = value != null ? String(value) : '';
+  convertToNumberIfValid(value: string): string | number {
+    const stringValue = value != null ? String(value) : '';
 
-     const trimmedValue = stringValue.trim();
+    const trimmedValue = stringValue.trim();
 
-     if (trimmedValue.toLowerCase() === 'true') {
-       return 1; // Convert "true" to 1
-     }
-     if (trimmedValue.toLowerCase() === 'false') {
-       return 0; // Convert "false" to 0
-     }
-
-     if (!isNaN(Number(trimmedValue)) && trimmedValue !== '') {
-       return Number(trimmedValue); // Convert and return the number
-     }
-
-     return '';
+    if (trimmedValue.toLowerCase() === 'true') {
+      return 1; // Convert "true" to 1
     }
+    if (trimmedValue.toLowerCase() === 'false') {
+      return 0; // Convert "false" to 0
+    }
+
+    if (!isNaN(Number(trimmedValue)) && trimmedValue !== '') {
+      return Number(trimmedValue); // Convert and return the number
+    }
+
+    return '';
+  }
 
   private init(): void {
     this.fullScreen = false;
@@ -5223,7 +5219,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
     const URL = this.isTrash ? 'inventory/trash/read/configuration' : 'inventory/read/configuration';
     this.coreService.post(URL, obj).subscribe({
       next: (res: any) => {
-        if(!this.isTrash){
+        if (!this.isTrash) {
           this.fetchWorkflowTags(res.path, () => {
             this.autoExpandVariable(res.path);
           });
@@ -5323,18 +5319,17 @@ let data = this.storedArguments[this.storedArguments.length - 1];
   }
 
 
-    onInput(inputValue: any): void {
-      if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules && inputValue !== null && inputValue !== undefined && inputValue !== '') {
-        this.changeImpact();
-      }
+  onInput(inputValue: any): void {
+    if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules && inputValue !== null && inputValue !== undefined && inputValue !== '') {
+      this.changeImpact();
     }
+  }
 
   handleClick(): void {
     if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules) {
       this.changeImpact();
     }
   }
-
 
 
   changeImpact(): void {
@@ -5361,6 +5356,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
       }
     });
   }
+
   private initObjects(res): void {
     if (res.configuration.orderPreparation) {
       this.orderPreparation = this.coreService.clone(res.configuration.orderPreparation);
@@ -5528,7 +5524,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
             }
             this.selectedNode.obj.forkListArguments.push({name: k, list: val.listParameters, actualList: [actualList]});
           }
-        }else if (val.type === 'Map') {
+        } else if (val.type === 'Map') {
           const actualMap = [];
           if (val.listParameters) {
             if (isArray(val.listParameters)) {
@@ -5595,7 +5591,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
         this.selectedNode.obj.arguments = this.selectedNode.obj.arguments.filter(item => {
           if (isArray(item.value)) {
             this.coreService.setForkListVariables(item, this.selectedNode.obj.forkListArguments);
-          }else if (typeof item.value === 'object'){
+          } else if (typeof item.value === 'object') {
             const notExistArr = [];
             for (let x in this.selectedNode.obj.mapArguments) {
               if (this.selectedNode.obj.mapArguments[x].name === item.name) {
@@ -5791,17 +5787,17 @@ let data = this.storedArguments[this.storedArguments.length - 1];
   }
 
   addVariable(): void {
-      const param = {
-        name: '',
-        value: {
-          type: 'String'
-        }
-      };
-      if (this.variableDeclarations.parameters) {
-        if (!this.coreService.isLastEntryEmpty(this.variableDeclarations.parameters, 'name', '')) {
-          this.variableDeclarations.parameters.push(param);
-        }
+    const param = {
+      name: '',
+      value: {
+        type: 'String'
       }
+    };
+    if (this.variableDeclarations.parameters) {
+      if (!this.coreService.isLastEntryEmpty(this.variableDeclarations.parameters, 'name', '')) {
+        this.variableDeclarations.parameters.push(param);
+      }
+    }
   }
 
   checkDuplicateEntries(variable, index, list): void {
@@ -5875,18 +5871,18 @@ let data = this.storedArguments[this.storedArguments.length - 1];
   }
 
   removeVariable(index): void {
-      this.variableDeclarations.parameters.splice(index, 1);
-      this.updateOtherProperties('variable');
+    this.variableDeclarations.parameters.splice(index, 1);
+    this.updateOtherProperties('variable');
     if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules) {
       this.changeImpact();
     }
   }
 
   removeVariableFromList(list, index, flag = true): void {
-      list.splice(index, 1);
-      if (flag) {
-        this.updateOtherProperties('variable');
-      }
+    list.splice(index, 1);
+    if (flag) {
+      this.updateOtherProperties('variable');
+    }
     if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules) {
       this.changeImpact();
     }
@@ -6364,7 +6360,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
   }
 
   private updateWorkflow(graph, jobMap): void {
-    this.selectedNode =  null;
+    this.selectedNode = null;
     const scrollValue: any = {};
     const element = document.getElementById('graph');
 
@@ -6934,7 +6930,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                     json.instructions.splice(x + 1, 0, obj);
 
                   }
-                }else {
+                } else {
                   json.instructions[x].instructions.push(obj);
                 }
 
@@ -6954,7 +6950,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                     }
 
                   } else if (edge.getAttribute('displayLabel') === 'endIf') {
-                      json.instructions.splice(x + 1, 0, obj);
+                    json.instructions.splice(x + 1, 0, obj);
                   }
                 } else if (json.instructions[x].TYPE == 'Fork') {
                   const result = edge.getAttribute('result');
@@ -6965,7 +6961,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                       instructions: [obj]
                     };
                     json.instructions[x].branches.push(branchObj);
-                  }else if(edge.target.value.tagName === 'Join' || edge.source.value.tagName === 'Fork'){
+                  } else if (edge.target.value.tagName === 'Join' || edge.source.value.tagName === 'Fork') {
                     if (!json.instructions[x].branches) {
                       json.instructions[x].branches = [];
                     }
@@ -6975,16 +6971,15 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                       instructions: [obj]
                     };
                     json.instructions[x].branches.push(newBranch);
-                  }else {
+                  } else {
                     json.instructions.splice(x + 1, 0, obj);
                   }
                 } else {
-                  if(self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE)) {
+                  if (self.workflowService.isInstructionCollapsible(json.instructions[x].TYPE)) {
                     json.instructions[x].instructions = [(obj)];
-                  }else{
+                  } else {
                     json.instructions.splice(x + 1, 0, obj);
                   }
-
 
                 }
               }
@@ -7012,9 +7007,17 @@ let data = this.storedArguments[this.storedArguments.length - 1];
             if (json.instructions[x].else) {
               getObject(json.instructions[x].else);
             }
+            if (json.instructions[x].elseCase) {
+              getObject(json.instructions[x].elseCase);
+            }
             if (json.instructions[x].branches) {
               for (let i = 0; i < json.instructions[x].branches.length; i++) {
                 getObject(json.instructions[x].branches[i]);
+              }
+            }
+            if (json.instructions[x].cases) {
+              for (let i = 0; i < json.instructions[x].cases.length; i++) {
+                getObject(json.instructions[x].cases[i].then);
               }
             }
           }
@@ -7029,7 +7032,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
 
     function checkRemainingNodes(node) {
 
-      if(node.edges && node.edges.length > 0) {
+      if (node.edges && node.edges.length > 0) {
         node.edges.forEach(edge => {
           if (edge.source && edge.source.id !== node.id) {
             let targetId = edge.source.id;
@@ -8314,7 +8317,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           if (drpTargt.edges && drpTargt.edges.length) {
             for (let i = 0; i < drpTargt.edges.length; i++) {
               let endTagName = 'End' + drpTargt.edges[i].source.value.tagName;
-              if (drpTargt.edges[i].target.value.tagName === endTagName) {
+              if (drpTargt.edges[i].target.value.tagName === endTagName || (drpTargt.edges[i].target.value.tagName === 'EndElse' && endTagName === 'EndElseWhen')) {
                 flag1 = true;
                 break;
               }
@@ -8368,7 +8371,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                   return;
                 }
               }
-              if(drpTargt.value.tagName === 'Process' && (dragElement.match('when') || (dragElement.match('elseWhen')))){
+              if (drpTargt.value.tagName === 'Process' && (dragElement.match('when') || (dragElement.match('elseWhen')))) {
                 self.translate.get('workflow.message.invalidwhenInstructionsSelected').subscribe(translatedValue => {
                   msg = translatedValue;
                 });
@@ -8394,7 +8397,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                     check = true;
                   }
                   if (drpTargt.value.tagName === 'CaseWhen') {
-                    if (!(dragElement.includes('when') || dragElement.includes('elseWhen'))) {
+                    if (!(dragElement.includes('when'))) {
                       if (drpTargt.edges.length > 1) {
                         check = false;
                       }
@@ -8406,6 +8409,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
             }
             if (!check) {
               if (drpTargt.value.tagName !== 'Connection') {
+                console.log('Start', drpTargt.value.tagName)
                 if (self.workflowService.isSingleInstruction(drpTargt.value.tagName)) {
                   for (let i = 0; i < drpTargt.edges.length; i++) {
                     if (drpTargt.edges[i].target.id !== drpTargt.id) {
@@ -8426,7 +8430,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                     return;
                   }
                 } else if (drpTargt.value.tagName === 'CaseWhen') {
-                  if (!(dragElement.includes('when') || dragElement.includes('elseWhen'))) {
+                  if (!(dragElement.includes('when'))) {
                     if (drpTargt.edges.length > 1) {
                       self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
                         msg = translatedValue;
@@ -8790,19 +8794,19 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                     }
                     if (cells[0].value.tagName === 'Fork') {
                       v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 68, 68, 'join');
-                    }else if (cells[0].value.tagName === 'CaseWhen') {
+                    } else if (cells[0].value.tagName === 'CaseWhen') {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndCase', 'caseEnd', null), 0, 0, 72, 72, 'caseWhen');
                       const v2 = graph.insertVertex(cells[0], null, getCellNode('When', 'when', cells[0].id), 0, 0, 72, 72, 'when');
                       const v3 = graph.insertVertex(parent, null, getCellNode('WhenEnd', 'whenEnd', null), 0, 0, 72, 72, 'when');
                       graph.insertEdge(parent, null, getConnectionNode(''), cells[0], v2);
                       graph.insertEdge(parent, null, getConnectionNode('endWhen'), v2, v3);
                       graph.insertEdge(parent, null, getConnectionNode('endCase'), v3, v1);
-                    }  else if (cells[0].value.tagName === 'ForkList' || cells[0].value.tagName === 'Lock' || cells[0].value.tagName === 'StickySubagent' ||
+                    } else if (cells[0].value.tagName === 'ForkList' || cells[0].value.tagName === 'Lock' || cells[0].value.tagName === 'StickySubagent' ||
                       cells[0].value.tagName === 'Options' || cells[0].value.tagName === 'ConsumeNotices') {
                       v1 = createEndVertex(parent, cells[0].value.tagName);
                     } else if (cells[0].value.tagName === 'If') {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 72, 72, 'if');
-                    }else if (cells[0].value.tagName === 'When') {
+                    } else if (cells[0].value.tagName === 'When') {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndWhen', 'whenEnd', null), 0, 0, 72, 72, 'when');
                     } else if (cells[0].value.tagName === 'Retry') {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 72, 72, 'retry');
@@ -8973,9 +8977,9 @@ let data = this.storedArguments[this.storedArguments.length - 1];
               for (let x in cell.cells) {
                 if (cell.cells[x].value) {
                   if (cell.cells[x].value.tagName === 'ForkList') {
-                    if(cell.isOutside){
+                    if (cell.isOutside) {
                       flag = true;
-                    }else{
+                    } else {
                       flag = false;
                     }
                     break;
@@ -9246,22 +9250,26 @@ let data = this.storedArguments[this.storedArguments.length - 1];
         label1 = 'then';
         label2 = 'endIf';
         v2 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', parentCell.id), 0, 0, 72, 72, 'if');
-      }else if (name === 'When') {
-        label1 = 'when';
-        label2 = 'endWhen';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndWhen', 'whenEnd', parentCell.id), 0, 0, 72, 72, 'when');
       } else if (name === 'Fork') {
         label1 = 'branch';
         label2 = 'join';
         v2 = graph.insertVertex(parent, null, getCellNode('Join', 'join', parentCell.id), 0, 0, 68, 68, 'join');
-      }else if (name === 'CaseWhen') {
-        label1 = 'caseWhen';
-        label2 = 'endCase';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndCase', 'caseEnd', parentCell.id), 0, 0, 68, 68, 'caseWhen');
       } else if (name === 'Retry') {
         label1 = 'retry';
         label2 = 'endRetry';
         v2 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', parentCell.id), 0, 0, 72, 72, 'retry');
+      } else if (name === 'CaseWhen') {
+        label1 = 'caseWhen';
+        label2 = 'endCase';
+        v2 = graph.insertVertex(parent, null, getCellNode('EndCase', 'caseEnd', parentCell.id), 0, 0, 68, 68, 'caseWhen');
+      } else if (name === 'When') {
+        label1 = 'when';
+        label2 = 'endWhen';
+        v2 = graph.insertVertex(parent, null, getCellNode('EndWhen', 'whenEnd', parentCell.id), 0, 0, 72, 72, 'when');
+      } else if (name === 'ElseWhen') {
+        label1 = 'elseWhen';
+        label2 = 'endElse';
+        v2 = graph.insertVertex(parent, null, getCellNode('EndElse', 'elseEnd', parentCell.id), 0, 0, 72, 72, 'elseWhen');
       } else if (name === 'Lock') {
         label1 = 'lock';
         label2 = 'endLock';
@@ -9282,10 +9290,6 @@ let data = this.storedArguments[this.storedArguments.length - 1];
         label1 = 'cycle';
         label2 = 'endCycle';
         v2 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', parentCell.id), 0, 0, 72, 72, 'cycle');
-      } else if (name === 'ElseWhen') {
-        label1 = 'elseWhen';
-        label2 = 'endElse';
-        v2 = graph.insertVertex(parent, null, getCellNode('EndElse', 'elseEnd', parentCell.id), 0, 0, 72, 72, 'elseWhen');
       } else if (name === 'ForkList') {
         label1 = 'forkList';
         label2 = 'endForkList';
@@ -9607,13 +9611,14 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           if (_type === 'join') {
             _label1 = 'join';
             _label2 = 'branch';
-          }if (_type === 'endCase') {
+          }
+          if (_type === 'endCase') {
             _label1 = 'endCase';
           } else if (_type === 'branch') {
             _label1 = 'branch';
           } else if (_type === 'endIf') {
             _label1 = 'endIf';
-          }else if (_type === 'endWhen') {
+          } else if (_type === 'endWhen') {
             _label1 = 'endWhen';
           } else if (_type === 'endRetry') {
             _label1 = 'endRetry';
@@ -9658,7 +9663,8 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                 if (cell.edges[i].target.value.tagName === 'Join') {
                   changeLabelOfConnection(_tempCell, 'branch');
                   changeLabelOfConnection(cell.edges[i], 'join');
-                }if (cell.edges[i].target.value.tagName === 'EndCase') {
+                }
+                if (cell.edges[i].target.value.tagName === 'EndCase') {
                   changeLabelOfConnection(cell.edges[i], 'endCase');
                 } else if (cell.edges[i].target.value.tagName === 'EndIf') {
                   changeLabelOfConnection(cell.edges[i], 'endIf');
@@ -9668,7 +9674,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                   changeLabelOfConnection(cell.edges[i], 'endRetry');
                 } else if (cell.edges[i].target.value.tagName === 'EndCycle') {
                   changeLabelOfConnection(cell.edges[i], 'endCycle');
-                }  else if (cell.edges[i].target.value.tagName === 'EndElse') {
+                } else if (cell.edges[i].target.value.tagName === 'EndElse') {
                   changeLabelOfConnection(cell.edges[i], 'endElse');
                 } else if (cell.edges[i].target.value.tagName === 'EndLock') {
                   changeLabelOfConnection(cell.edges[i], 'endLock');
@@ -9693,7 +9699,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                 changeLabelOfConnection(cell.edges[i], 'branch');
               } else if (((typeAttr === 'endIf') && cell.edges[i].id !== _dropTarget.id)) {
                 changeLabelOfConnection(cell.edges[i], '');
-              } else if (((typeAttr === 'endWhen') && cell.edges[i].id !== _dropTarget.id)) {
+              } else if (((typeAttr === 'endCaseWhen') && cell.edges[i].id !== _dropTarget.id) || ((typeAttr === 'endElse') && cell.edges[i].id !== _dropTarget.id) || ((typeAttr === 'endWhen') && cell.edges[i].id !== _dropTarget.id)) {
                 changeLabelOfConnection(cell.edges[i], '');
               } else if (((typeAttr === 'endConsumeNotices' || typeAttr === 'endCycle' || typeAttr === 'endElse' || typeAttr === 'endLock' || typeAttr === 'endTry' || typeAttr === 'endTry') && cell.edges[i].id !== _dropTarget.id)) {
                 changeLabelOfConnection(cell.edges[i], '');
@@ -9719,18 +9725,6 @@ let data = this.storedArguments[this.storedArguments.length - 1];
               if (attrs && attrs.length > 0) {
                 if (attrs[0].value === 'If') {
                   if (cell.edges[i].target.value.tagName !== 'If' && cell.edges[i].source.value.tagName !== 'If' && cell.value.tagName !== 'If') {
-                    graph.getModel().beginUpdate();
-                    try {
-                      const type = new mxCellAttributeChange(
-                        cell.edges[i], 'type',
-                        '');
-                      graph.getModel().execute(type);
-                    } finally {
-                      graph.getModel().endUpdate();
-                    }
-                  }
-                }else if (attrs[0].value === 'When') {
-                  if (cell.edges[i].target.value.tagName !== 'When' && cell.edges[i].source.value.tagName !== 'When' && cell.value.tagName !== 'When') {
                     graph.getModel().beginUpdate();
                     try {
                       const type = new mxCellAttributeChange(
@@ -9895,7 +9889,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
             const edit = new mxCellAttributeChange(
               obj.cell, 'predicate', predicate);
             graph.getModel().execute(edit);
-          }else if (self.selectedNode.type === 'When') {
+          } else if (self.selectedNode.type === 'When') {
             const predicate = self.selectedNode.newObj.predicate;
             self.validatePredicate(predicate, null, false);
             const edit = new mxCellAttributeChange(
@@ -10229,13 +10223,9 @@ let data = this.storedArguments[this.storedArguments.length - 1];
             }
           }
         }
-        if (self.selectedNode.type === 'If') {
-          self.selectedNode.newObj.predicate = self.selectedNode.newObj.predicate.replace(/<[^>]+>/gm, '').replace(/&amp;/g, '&').replace(/&gt;/g, '>').replace(/&lt;/g, '<')
-            .replace(/&nbsp;/g, ' ').replace(/&#39;/g, '\'').replace('\n', '').replace('\r', '');
-        }
-        if (self.selectedNode.type === 'When') {
-          self.selectedNode.newObj.predicate = self.selectedNode.newObj.predicate.replace(/<[^>]+>/gm, '').replace(/&amp;/g, '&').replace(/&gt;/g, '>').replace(/&lt;/g, '<')
-            .replace(/&nbsp;/g, ' ').replace(/&#39;/g, '\'').replace('\n', '').replace('\r', '');
+        if (self.selectedNode.type === 'If' || self.selectedNode.type === 'When') {
+          self.selectedNode.newObj.predicate = self.selectedNode.newObj.predicate?.replace(/<[^>]+>/gm, '').replace(/&amp;/g, '&').replace(/&gt;/g, '>').replace(/&lt;/g, '<')
+            .replace(/&nbsp;/g, ' ').replace(/&#39;/g, '\'').replace('\n', '').replace('\r', '') || '';
         }
 
         if (self.selectedNode?.job?.executable?.TYPE) {
@@ -10378,8 +10368,6 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           let tags = cell.getAttribute('tags');
           if (!tags) {
             tags = [];
-          } else {
-            tags = tags;
           }
           obj.arguments = argument;
           obj.tags = tags
@@ -10405,9 +10393,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           obj.remainWhenTerminated = val1 == 'true';
           const val2 = cell.getAttribute('forceJobAdmission');
           obj.forceJobAdmission = val2 == 'true';
-        } else if (cell.value.tagName === 'If') {
-          obj.predicate = cell.getAttribute('predicate');
-        }  else if (cell.value.tagName === 'When') {
+        } else if (cell.value.tagName === 'If' || cell.value.tagName === 'When') {
           obj.predicate = cell.getAttribute('predicate');
         } else if (cell.value.tagName === 'Retry') {
           obj.maxTries = cell.getAttribute('maxTries');
@@ -10836,7 +10822,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           } else if (!targetObj.else) {
             targetObj.else = {instructions: copyObject};
           }
-        }else if (target.value.tagName === 'When') {
+        } else if (target.value.tagName === 'When') {
           if (!targetObj.instructions) {
             targetObj.instructions = [];
           }
@@ -11227,18 +11213,18 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           _node.setAttribute('displayLabel', 'fork');
           _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'fork');
-        }else if (title.match('caseWhen')) {
+        } else if (title.match('caseWhen')) {
           _node = doc.createElement('CaseWhen');
           _node.setAttribute('displayLabel', 'caseWhen');
           _node.setAttribute('uuid', self.coreService.create_UUID());
-          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'caseWhen');
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'caseWhen');
         } else if (title.match('if')) {
           _node = doc.createElement('If');
           _node.setAttribute('displayLabel', 'if');
           _node.setAttribute('predicate', '$returnCode > 0');
           _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'if');
-        }else if (title.match('when')) {
+        } else if (title.match('when')) {
           _node = doc.createElement('When');
           _node.setAttribute('displayLabel', 'when');
           _node.setAttribute('predicate', '$returnCode > 0');
@@ -11256,7 +11242,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           _node.setAttribute('displayLabel', 'cycle');
           _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 72, 72, 'cycle');
-        }else if (title.match('elseWhen')) {
+        } else if (title.match('elseWhen')) {
           _node = doc.createElement('ElseWhen');
           _node.setAttribute('displayLabel', 'elseWhen');
           _node.setAttribute('uuid', self.coreService.create_UUID());
@@ -11339,14 +11325,14 @@ let data = this.storedArguments[this.storedArguments.length - 1];
             const parent = targetCell.getParent() || graph.getDefaultParent();
             if (clickedCell.value.tagName === 'Fork') {
               v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', null), 0, 0, 68, 68, 'join');
-            }else if (clickedCell.value.tagName === 'CaseWhen') {
+            } else if (clickedCell.value.tagName === 'CaseWhen') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndCase', 'caseEnd', null), 0, 0, 72, 72, 'caseWhen');
-              const v2 = graph.insertVertex(clickedCell, null, getCellNode('When', 'when', clickedCell.id), 0, 0, 72, 72, 'when');
+              const v2 = graph.insertVertex(clickedCell, null, getCellNode('When', 'when', null), 0, 0, 72, 72, 'when');
               const v3 = graph.insertVertex(parent, null, getCellNode('WhenEnd', 'whenEnd', null), 0, 0, 72, 72, 'when');
               graph.insertEdge(parent, null, getConnectionNode(''), clickedCell, v2);
               graph.insertEdge(parent, null, getConnectionNode('endWhen'), v2, v3);
               graph.insertEdge(parent, null, getConnectionNode('endCase'), v3, v1);
-            }  else if (clickedCell.value.tagName === 'If') {
+            } else if (clickedCell.value.tagName === 'If') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 72, 72, 'if');
             } else if (clickedCell.value.tagName === 'When') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndWhen', 'whenEnd', null), 0, 0, 72, 72, 'when');
@@ -11357,7 +11343,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
               v1 = createEndVertex(parent, clickedCell.value.tagName);
             } else if (clickedCell.value.tagName === 'Cycle') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', null), 0, 0, 72, 72, 'cycle');
-            }else if (clickedCell.value.tagName === 'ElseWhen') {
+            } else if (clickedCell.value.tagName === 'ElseWhen') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndElse', 'elseEnd', null), 0, 0, 72, 72, 'elseWhen');
             } else {
               v1 = graph.insertVertex(parent, null, getCellNode('EndTry', 'tryEnd', null), 0, 0, 72, 72, 'try');
@@ -11619,10 +11605,9 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           displayLabel = 'then';
         }
 
-      }
-     else if (dropTargetName === 'Retry') {
+      } else if (dropTargetName === 'Retry') {
         displayLabel = 'retry';
-      }else if (dropTargetName === 'When') {
+      } else if (dropTargetName === 'When') {
         displayLabel = 'when';
       } else if (dropTargetName === 'Cycle') {
         displayLabel = 'cycle';
@@ -11644,28 +11629,28 @@ let data = this.storedArguments[this.storedArguments.length - 1];
         displayLabel = 'catch';
       } else if (dropTargetName === 'Fork') {
         displayLabel = '$TYPE$' + 'branch' + (getBranchLabel(_dropTarget) + 1);
-      }else if (dropTargetName === 'CaseWhen') {
-        displayLabel = '';
+      } else if (dropTargetName === 'CaseWhen') {
+        displayLabel = 'caseWhen';
       }
 
       let parent = cell.getParent() || graph.getDefaultParent();
       if (self.workflowService.isInstructionCollapsible(cell.value.tagName)) {
-        let v1, v2,v3, _label;
+        let v1, v2, v3, _label;
         if (cell.value.tagName === 'Fork') {
           v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', cell.id), 0, 0, 68, 68, 'join');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
-        }else if (cell.value.tagName === 'CaseWhen') {
-          v3 = graph.insertVertex(cell, null, getCellNode('EndWhen', 'whenEnd', cell.id), 0, 0, 72, 72, 'when');
-          v2 = graph.insertVertex(cell, null, getCellNode('EndWhen', 'when', cell.id), 0, 0, 72, 72, 'when');
+        } else if (cell.value.tagName === 'CaseWhen') {
           v1 = graph.insertVertex(parent, null, getCellNode('EndCase', 'caseEnd', cell.id), 0, 0, 72, 72, 'caseWhen');
-         graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
+          v2 = graph.insertVertex(cell, null, getCellNode('When', 'when', cell.id), 0, 0, 72, 72, 'when');
+          v3 = graph.insertVertex(cell, null, getCellNode('EndWhen', 'whenEnd', cell.id), 0, 0, 72, 72, 'when');
+          graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v2);
           graph.insertEdge(parent, null, getConnectionNode('endWhen'), v2, v3);
           graph.insertEdge(parent, null, getConnectionNode('endCase'), v3, v1);
         } else if (cell.value.tagName === 'If') {
           v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', cell.id), 0, 0, 72, 72, 'if');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
-        }else if (cell.value.tagName === 'When') {
+        } else if (cell.value.tagName === 'When') {
           v1 = graph.insertVertex(parent, null, getCellNode('EndWhen', 'whenEnd', cell.id), 0, 0, 72, 72, 'when');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'Retry') {
@@ -11761,12 +11746,14 @@ let data = this.storedArguments[this.storedArguments.length - 1];
         if (dropTargetName === 'Fork') {
           displayLabel = '$TYPE$' + 'branch' + (getBranchLabel(_dropTarget) + 1);
           checkLabel = 'Join';
-        }else if (dropTargetName === 'CaseWhen') {
+        } else if (dropTargetName === 'CaseWhen') {
           checkLabel = 'EndCase';
+        } else if (dropTargetName === 'When') {
+          checkLabel = 'EndWhen';
+        } else if (dropTargetName === 'ElseWhen') {
+          checkLabel = 'EndElse';
         } else if (dropTargetName === 'If') {
           checkLabel = 'EndIf';
-        }else if (dropTargetName === 'When') {
-          checkLabel = 'EndWhen';
         } else if (dropTargetName === 'Retry') {
           checkLabel = 'EndRetry';
         } else if (dropTargetName === 'Lock') {
@@ -11779,8 +11766,6 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           checkLabel = 'EndConsumeNotices';
         } else if (dropTargetName === 'Cycle') {
           checkLabel = 'EndCycle';
-        }  else if (dropTargetName === 'ElseWhen') {
-          checkLabel = 'EndElse';
         } else if (dropTargetName === 'ForkList') {
           checkLabel = 'EndForkList';
         } else if (dropTargetName === 'Try') {
@@ -11866,7 +11851,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           for (let i = 0; i < cell.edges.length; i++) {
             if (cell.edges[i].target.value.tagName === checkLabel) {
               const _label = checkLabel === 'Join' ? 'join' : checkLabel === 'EndForkList' ? 'endForkList' : checkLabel === 'EndIf' ? 'endIf' : checkLabel === 'EndRetry'
-                ? 'endRetry' : checkLabel === 'EndLock' ? 'endLock' : checkLabel === 'EndStickySubagent' ? 'endStickySubagent' : checkLabel === 'EndConsumeNotices' ? 'endConsumeNotices' : checkLabel === 'EndCycle' ? 'endCycle' : checkLabel === 'EndTry' ? 'endTry' : checkLabel === 'EndCase' ? 'endCase': 'endWhen';
+                ? 'endRetry' : checkLabel === 'EndLock' ? 'endLock' : checkLabel === 'EndStickySubagent' ? 'endStickySubagent' : checkLabel === 'EndConsumeNotices' ? 'endConsumeNotices' : checkLabel === 'EndCycle' ? 'endCycle' : checkLabel === 'EndTry' ? 'endTry' : checkLabel === 'EndCase' ? 'endCase' : 'endWhen';
               if (!self.workflowService.isInstructionCollapsible(cell.value.tagName) && cell.value.tagName !== 'Catch') {
                 cell.edges[i].value.attributes[0].nodeValue = _label;
                 cell.edges[i].value.attributes[1].nodeValue = _label;
@@ -11907,7 +11892,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           }
         }
       }
-      if (cell.value.tagName === 'Try' || cell.value.tagName === 'CaseWhen' ) {
+      if (cell.value.tagName === 'Try' || cell.value.tagName === 'CaseWhen') {
         for (let j = 0; j < cell.edges.length; j++) {
           if (cell.edges[j].target.id !== cell.id) {
             if ((cell.edges[j].source.value.tagName === 'Try' && cell.edges[j].target.value.tagName === 'EndTry') || (cell.edges[j].source.value.tagName === 'CaseWhen' && cell.edges[j].target.value.tagName === 'EndCase')) {
@@ -11920,6 +11905,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
     }
 
     function dropOnObject(source, target, sourceIndex, targetIndex, isCatch) {
+
       if (source && source.instructions.length > 0) {
         const sourceObj = source.instructions[sourceIndex];
         const targetObj = target.instructions[targetIndex];
@@ -12219,9 +12205,9 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           }
         }
       }
-      setTimeout(()=>{
+      setTimeout(() => {
         self.updateXMLJSON(true);
-      },1)
+      }, 1)
     }
 
     if (callFun) {
@@ -12724,7 +12710,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                 }
               }
             }
-          }else if (json.instructions[x].TYPE === 'ElseWhen') {
+          } else if (json.instructions[x].TYPE === 'ElseWhen') {
             if (!(!json.instructions[x].id && !json.instructions[x].instructions)) {
               if ((!json.instructions[x].instructions || json.instructions[x].instructions.length === 0)) {
                 flag = false;
@@ -12935,7 +12921,6 @@ let data = this.storedArguments[this.storedArguments.length - 1];
           }
 
 
-
           json.instructions[x].id = undefined;
           json.instructions[x].uuid = undefined;
           json.instructions[x].isCollapsed = undefined;
@@ -12949,8 +12934,8 @@ let data = this.storedArguments[this.storedArguments.length - 1];
             json.instructions[x].TYPE = 'Try';
             self.workflowService.convertRetryToTryCatch(json.instructions[x]);
           }
-         if (json.instructions[x].TYPE === 'CaseWhen') {
-
+          if (json.instructions[x].TYPE === 'CaseWhen') {
+            self.workflowService.convertCases(json.instructions[x]);
             flag = self.workflowService.validateFields(json.instructions[x], 'CaseWhen');
             if (!flag) {
               checkErr = true;
@@ -12973,64 +12958,9 @@ let data = this.storedArguments[this.storedArguments.length - 1];
               return;
             }
 
-            if (json.instructions[x].cases) {
-
-              const ids = [];
-              let maxNum = 0;
-
-              json.instructions[x].cases.forEach((caseItem) => {
-                if (caseItem.id) {
-                  const arr = caseItem.id.match(/[0-9]+$/);
-                  if (arr && arr.length > 0) {
-                    const num = parseInt(arr[0], 10);
-                    if (typeof num == 'number' && !isNaN(num)) {
-                      if (num > maxNum) {
-                        maxNum = num;
-                      }
-                    }
-                  }
-                }
-              });
-
-              json.instructions[x].cases = json.instructions[x].cases.filter((caseItem) => {
-                if (ids.indexOf(caseItem.id) == -1) {
-                  ids.push(caseItem.id);
-                } else {
-                  const arr = caseItem.id.match(/[0-9]+$/);
-                  if (arr && arr.length) {
-                    const num = parseInt(arr[0], 10);
-                    if (typeof num == 'number' && !isNaN(num)) {
-                      caseItem.id = caseItem.id.substring(0, caseItem.id.indexOf(num)) + (maxNum + 1);
-                    } else {
-                      caseItem.id = caseItem.id + (maxNum + 1);
-                    }
-                    ids.push(caseItem.id);
-                  }
-                }
-
-                caseItem.workflow = {
-                  instructions: caseItem.instructions,
-                  result: caseItem.result
-                };
-                delete caseItem.instructions;
-                delete caseItem.result;
-
-                const isValidCase = (caseItem.workflow.instructions && caseItem.workflow.instructions.length > 0);
-                return isValidCase;
-              });
-
-              for (let i = 0; i < json.instructions[x].cases.length; i++) {
-                if (json.instructions[x].cases[i].workflow) {
-                  recursive(json.instructions[x].cases[i].workflow);
-                }
-              }
-            } else {
-              json.instructions[x].cases = [];
-            }
-           delete json.instructions[x].instructions;
-           delete json.instructions[x].isCollapsed;
-           delete json.instructions[x].uuid;
-           delete json.instructions[x].id;
+            delete json.instructions[x].isCollapsed;
+            delete json.instructions[x].uuid;
+            delete json.instructions[x].id;
           }
           if (json.instructions[x].TYPE === 'AddOrder') {
             const workflowName = clone(json.instructions[x].workflowName);
@@ -13078,7 +13008,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
             json.instructions[x].endPositions = endPositions;
             json.instructions[x].blockPosition = blockPosition;
             json.instructions[x].forceJobAdmission = forceJobAdmission == true || forceJobAdmission == 'true';
-            if(tags.length > 0){
+            if (tags.length > 0) {
               json.instructions[x].tags = tags;
             }
           } else if (json.instructions[x].TYPE === 'Lock') {
@@ -13454,30 +13384,30 @@ let data = this.storedArguments[this.storedArguments.length - 1];
   }
 
   private extendJsonObj(data): any {
-  let newObj: any = {};
-  newObj = extend(newObj, data);
+    let newObj: any = {};
+    newObj = extend(newObj, data);
 
-  if (newObj.instructions) {
-    this.processInstructions(newObj.instructions);
-  }
+    if (newObj.instructions) {
+      this.processInstructions(newObj.instructions);
+    }
 
-  if (this.orderPreparation) {
-    newObj.orderPreparation = this.orderPreparation;
+    if (this.orderPreparation) {
+      newObj.orderPreparation = this.orderPreparation;
+    }
+    if (this.jobResourceNames) {
+      newObj.jobResourceNames = this.jobResourceNames;
+    }
+    if (this.title) {
+      newObj.title = this.title;
+    }
+    if (this.timeZone) {
+      newObj.timeZone = this.timeZone;
+    }
+    if (this.documentationName) {
+      newObj.documentationName = this.documentationName;
+    }
+    return newObj;
   }
-  if (this.jobResourceNames) {
-    newObj.jobResourceNames = this.jobResourceNames;
-  }
-  if (this.title) {
-    newObj.title = this.title;
-  }
-  if (this.timeZone) {
-    newObj.timeZone = this.timeZone;
-  }
-  if (this.documentationName) {
-    newObj.documentationName = this.documentationName;
-  }
-  return newObj;
-}
 
   private processInstructions(instructions: any[]): void {
     instructions.forEach(instruction => {
@@ -13493,6 +13423,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
       }
     });
   }
+
   private isExpression(value: string): boolean {
     const expressionRegex = /^[\d\s+\-*/().]+$/;
     return expressionRegex.test(value.replace(/"/g, ''));
@@ -13547,11 +13478,11 @@ let data = this.storedArguments[this.storedArguments.length - 1];
     if (!this.workflow.path) {
       return;
     }
-    if(newObj.orderPreparation.parameters){
+    if (newObj.orderPreparation.parameters) {
       Object.entries(newObj.orderPreparation.parameters).map(([k, v]) => {
         const val: any = v;
         if (val.type === 'List' || val.type === 'Map') {
-          if(val.listParameters){
+          if (val.listParameters) {
             const result = Object.entries(val.listParameters).map(([k1, v1]) => {
               const val1: any = v1;
               if (k1) {
@@ -13560,7 +13491,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
                   value: {
                     type: val1.type,
                     default: val1.default
-                }
+                  }
                 };
                 return obj;
               } else {
@@ -13569,7 +13500,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
             }).filter(item => item !== null); // Filter out the null values
             val.listParameters = this.coreService.keyValuePair(result);
           }
-          if(!Object.keys(val.listParameters).length){
+          if (!Object.keys(val.listParameters).length) {
             delete newObj.orderPreparation.parameters[k]
           }
         }
@@ -13611,7 +13542,7 @@ let data = this.storedArguments[this.storedArguments.length - 1];
     });
   }
 
-  private storeJobTags(): void{
+  private storeJobTags(): void {
     const request: any = {
       path: this.workflow.path,
       jobs: [{
@@ -13775,196 +13706,191 @@ let data = this.storedArguments[this.storedArguments.length - 1];
     }
   }
 
-    encryptValue(currentVariable, actualVariable, typeArg){
-      let selectedAgent  = [];
-      const argu = currentVariable;
-      const type = typeArg;
-      const modal = this.modal.create({
-        nzTitle: undefined,
-        nzContent: EncryptArgumentModalComponent,
-        nzAutofocus: null,
-        nzData: {
-          argu,
-          selectedAgent,
-          type,
-          controllerId: this.schedulerId
-        },
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      });
-      modal.afterClose.subscribe(result => {
-        if (result) {
-          if(actualVariable.value.type !== 'List' && actualVariable.value.type !== 'Map'){
-            for (let val in this.orderPreparation.parameters) {
-              if(val === actualVariable.name) {
-                this.orderPreparation.parameters[val] = result.value;
-              }
+  encryptValue(currentVariable, actualVariable, typeArg) {
+    let selectedAgent = [];
+    const argu = currentVariable;
+    const type = typeArg;
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: EncryptArgumentModalComponent,
+      nzAutofocus: null,
+      nzData: {
+        argu,
+        selectedAgent,
+        type,
+        controllerId: this.schedulerId
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        if (actualVariable.value.type !== 'List' && actualVariable.value.type !== 'Map') {
+          for (let val in this.orderPreparation.parameters) {
+            if (val === actualVariable.name) {
+              this.orderPreparation.parameters[val] = result.value;
             }
-          }else{
-            actualVariable.value.listParameters.forEach(element => {
-              if(element.name === currentVariable.name){
-                for (let val in this.orderPreparation.parameters) {
-                  if(val === actualVariable.name) {
-                    for (let param in this.orderPreparation.parameters[val].listParameters) {
-                      if(param === currentVariable.name){
-                        this.orderPreparation.parameters[val].listParameters[param] = result.value
-                      }
-                    }
-                  }
-                }
-              }
-            });
           }
-          this.workflow.configuration.orderPreparation = this.orderPreparation;
-          this.updateOrderPreparation();
-          const data = this.coreService.clone(this.workflow.configuration);
-          const valid = this.modifyJSON(data, true, false);
-          this.saveJSON(valid ? data : 'false');
-        }
-      });
-    }
-
-
-    encryptAllArguments(): void {
-      const currentVariables = this.variableDeclarations.parameters;
-      const typeArg = 'jobTemplate';
-
-      let selectedAgent = [];
-
-      const variablesToEncrypt = currentVariables.filter(variable => {
-        if (variable.value) {
-          if (variable.value.type === 'List' || variable.value.type === 'Map') {
-            return variable.value.listParameters && variable.value.listParameters.some(param => param.value && param.value.default && param.value.default !== '');
-          }
-          return variable.value.default && variable.value.default !== '';
-        }
-        return false;
-      });
-
-      if (variablesToEncrypt.length === 0) {
-        return;
-      }
-
-      const modal = this.modal.create({
-        nzTitle: undefined,
-        nzContent: EncryptArgumentModalComponent,
-        nzAutofocus: null,
-        nzData: {
-          argu: variablesToEncrypt,
-          selectedAgent,
-          type: typeArg,
-          isBulkOperation: true,
-          controllerId: this.schedulerId
-        },
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      });
-
-      modal.afterClose.subscribe(result => {
-        if (result) {
-          result.forEach((encryptedArg, index) => {
-            let currentVariable = variablesToEncrypt[index];
-            let actualVariable = this.findActualVariable(currentVariable.name);
-
-            if (encryptedArg && encryptedArg.value) {
-              if (actualVariable.value.type === 'List' || actualVariable.value.type === 'Map') {
-                for (let val in this.orderPreparation.parameters) {
-                  if (val === actualVariable.name) {
-                    if (Array.isArray(this.orderPreparation.parameters[val].listParameters)) {
-                      this.orderPreparation.parameters[val].listParameters.forEach((param, paramIndex) => {
-                        let encryptedParam = encryptedArg.value.listParameters.find(p => p.name === param.name);
-                        if (encryptedParam) {
-                          this.orderPreparation.parameters[val].listParameters[paramIndex].default = encryptedParam.value.default;
-                        }
-                      });
-                    }
-                  }
-                }
-              } else {
-                // Update non-List/Map parameters
-                for (let val in this.orderPreparation.parameters) {
-                  if (val === actualVariable.name) {
-                    if (this.orderPreparation.parameters[val]?.default !== undefined) {
-                      this.orderPreparation.parameters[val].default = encryptedArg.value.default;
-                    } else {
-                      this.orderPreparation.parameters[val] = { type: 'String', default: encryptedArg.value.default };
+        } else {
+          actualVariable.value.listParameters.forEach(element => {
+            if (element.name === currentVariable.name) {
+              for (let val in this.orderPreparation.parameters) {
+                if (val === actualVariable.name) {
+                  for (let param in this.orderPreparation.parameters[val].listParameters) {
+                    if (param === currentVariable.name) {
+                      this.orderPreparation.parameters[val].listParameters[param] = result.value
                     }
                   }
                 }
               }
             }
           });
-
-          this.workflow.configuration.orderPreparation = this.orderPreparation;
-          this.updateOrderPreparation();
-          const data = this.coreService.clone(this.workflow.configuration);
-          const valid = this.modifyJSON(data, true, false);
-          this.saveJSON(valid ? data : 'false');
         }
-      });
-    }
-
-    findActualVariable(name: string) {
-      return this.variableDeclarations.parameters.find(variable => variable.name === name);
-    }
-
-
-
-
-
-
-
-
-    private fetchTags(): void {
-      this.coreService.post('tags/order', {
-        search: '',
-        controllerId: this.schedulerId
-      }).subscribe({
-        next: (res: any) => {
-          this.allTags = res.tags;
-          // this.allTags = res.results;
-          // this.allTags = this.allTags.map((item) => {
-          //   return item.name;
-          // })
-        }
-      });
-    }
-
-    onChange(value: string): void {
-      this.filteredOptions = this.allTags.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) !== -1);
-      this.filteredOptions = this.filteredOptions.filter((tag) => {
-        return this.selectedNode.obj.tags.indexOf(tag) == -1;
-      })
-    }
-    handleClose(removedTag: {}): void {
-      this.selectedNode.obj.tags = this.selectedNode.obj.tags.filter(tag => tag !== removedTag);
-    }
-
-    sliceTagName(tag: string): string {
-      const isLongTag = tag.length > 20;
-      return isLongTag ? `${tag.slice(0, 20)}...` : tag;
-    }
-
-    showInput(): void {
-      this.inputVisible = true;
-      this.filteredOptions = this.allTags;
-      setTimeout(() => {
-        this.inputElement?.nativeElement.focus();
-      }, 10);
-    }
-
-    handleInputConfirm(): void {
-      if (this.inputValue && this.orderTags.indexOf(this.inputValue) === -1 && this.workflowService.isValidTag(this.inputValue)) {
-        this.selectedNode.obj.tags = [...this.selectedNode.obj.tags, this.inputValue];
+        this.workflow.configuration.orderPreparation = this.orderPreparation;
+        this.updateOrderPreparation();
+        const data = this.coreService.clone(this.workflow.configuration);
+        const valid = this.modifyJSON(data, true, false);
+        this.saveJSON(valid ? data : 'false');
       }
-      this.inputValue = '';
-      this.inputVisible = false;
+    });
+  }
+
+
+  encryptAllArguments(): void {
+    const currentVariables = this.variableDeclarations.parameters;
+    const typeArg = 'jobTemplate';
+
+    let selectedAgent = [];
+
+    const variablesToEncrypt = currentVariables.filter(variable => {
+      if (variable.value) {
+        if (variable.value.type === 'List' || variable.value.type === 'Map') {
+          return variable.value.listParameters && variable.value.listParameters.some(param => param.value && param.value.default && param.value.default !== '');
+        }
+        return variable.value.default && variable.value.default !== '';
+      }
+      return false;
+    });
+
+    if (variablesToEncrypt.length === 0) {
+      return;
     }
 
-    onJobTags(jobData: any) {
-      this.jobTags = jobData;
-        this.storeJobTags();
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: EncryptArgumentModalComponent,
+      nzAutofocus: null,
+      nzData: {
+        argu: variablesToEncrypt,
+        selectedAgent,
+        type: typeArg,
+        isBulkOperation: true,
+        controllerId: this.schedulerId
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        result.forEach((encryptedArg, index) => {
+          let currentVariable = variablesToEncrypt[index];
+          let actualVariable = this.findActualVariable(currentVariable.name);
+
+          if (encryptedArg && encryptedArg.value) {
+            if (actualVariable.value.type === 'List' || actualVariable.value.type === 'Map') {
+              for (let val in this.orderPreparation.parameters) {
+                if (val === actualVariable.name) {
+                  if (Array.isArray(this.orderPreparation.parameters[val].listParameters)) {
+                    this.orderPreparation.parameters[val].listParameters.forEach((param, paramIndex) => {
+                      let encryptedParam = encryptedArg.value.listParameters.find(p => p.name === param.name);
+                      if (encryptedParam) {
+                        this.orderPreparation.parameters[val].listParameters[paramIndex].default = encryptedParam.value.default;
+                      }
+                    });
+                  }
+                }
+              }
+            } else {
+              // Update non-List/Map parameters
+              for (let val in this.orderPreparation.parameters) {
+                if (val === actualVariable.name) {
+                  if (this.orderPreparation.parameters[val]?.default !== undefined) {
+                    this.orderPreparation.parameters[val].default = encryptedArg.value.default;
+                  } else {
+                    this.orderPreparation.parameters[val] = {type: 'String', default: encryptedArg.value.default};
+                  }
+                }
+              }
+            }
+          }
+        });
+
+        this.workflow.configuration.orderPreparation = this.orderPreparation;
+        this.updateOrderPreparation();
+        const data = this.coreService.clone(this.workflow.configuration);
+        const valid = this.modifyJSON(data, true, false);
+        this.saveJSON(valid ? data : 'false');
+      }
+    });
+  }
+
+  findActualVariable(name: string) {
+    return this.variableDeclarations.parameters.find(variable => variable.name === name);
+  }
+
+
+  private fetchTags(): void {
+    this.coreService.post('tags/order', {
+      search: '',
+      controllerId: this.schedulerId
+    }).subscribe({
+      next: (res: any) => {
+        this.allTags = res.tags;
+        // this.allTags = res.results;
+        // this.allTags = this.allTags.map((item) => {
+        //   return item.name;
+        // })
+      }
+    });
+  }
+
+  onChange(value: string): void {
+    this.filteredOptions = this.allTags.filter(option => option.toLowerCase().indexOf(value.toLowerCase()) !== -1);
+    this.filteredOptions = this.filteredOptions.filter((tag) => {
+      return this.selectedNode.obj.tags.indexOf(tag) == -1;
+    })
+  }
+
+  handleClose(removedTag: {}): void {
+    this.selectedNode.obj.tags = this.selectedNode.obj.tags.filter(tag => tag !== removedTag);
+  }
+
+  sliceTagName(tag: string): string {
+    const isLongTag = tag.length > 20;
+    return isLongTag ? `${tag.slice(0, 20)}...` : tag;
+  }
+
+  showInput(): void {
+    this.inputVisible = true;
+    this.filteredOptions = this.allTags;
+    setTimeout(() => {
+      this.inputElement?.nativeElement.focus();
+    }, 10);
+  }
+
+  handleInputConfirm(): void {
+    if (this.inputValue && this.orderTags.indexOf(this.inputValue) === -1 && this.workflowService.isValidTag(this.inputValue)) {
+      this.selectedNode.obj.tags = [...this.selectedNode.obj.tags, this.inputValue];
     }
+    this.inputValue = '';
+    this.inputVisible = false;
+  }
+
+  onJobTags(jobData: any) {
+    this.jobTags = jobData;
+    this.storeJobTags();
+  }
 }

@@ -11,7 +11,7 @@ import {saveAs} from 'file-saver';
 import {AuthService} from '../components/guard';
 import {POPOUT_MODALS, PopoutData, PopupService} from "./popup.service";
 import {LogViewComponent} from "../components/log-view/log-view.component";
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 
 declare const $: any;
 
@@ -291,8 +291,8 @@ export class CoreService {
     this.tabs._reporting = {
 
       manageList: {
-        expandedKeys : ['/'],
-        selectedkeys : ['/'],
+        expandedKeys: ['/'],
+        selectedkeys: ['/'],
         filter: {
           sortBy: 'name',
           reverse: true,
@@ -765,7 +765,7 @@ export class CoreService {
 
   }
 
- defaultColor(d: number, type: string): string {
+  defaultColor(d: number, type: string): string {
     if (d === 0) {
       return type === 'text' ? 'green' : type === 'border' ? 'green-box' : 'bg-green';
     } else if (d === 1) {
@@ -794,8 +794,6 @@ export class CoreService {
       return type === 'text' ? 'light-green' : type === 'border' ? 'light-green-box' : 'bg-light-green';
     }
   }
-
-
 
 
   getColorBySeverity(d: number, isHover: boolean, isDisabled: boolean = false): string {
@@ -1683,7 +1681,7 @@ export class CoreService {
     return moment(date).format(format);
   }
 
-   getPreferredDateByFormat(date: any, timeZone: string | null, format: string): string {
+  getPreferredDateByFormat(date: any, timeZone: string | null, format: string): string {
     if (!date) {
       return '-';
     }
@@ -2916,6 +2914,30 @@ export class CoreService {
             }
             json.instructions[x].TYPE = 'Job';
           }
+          if (json.instructions[x].TYPE === 'CaseWhen') {
+            json.instructions[x].instructions = [];
+
+            if (json.instructions[x].cases) {
+              for (let i = 0; i < json.instructions[x].cases.length; i++) {
+                const obj = {
+                  TYPE: 'When',
+                  predicate: json.instructions[x].cases[i].predicate,
+                  instructions: json.instructions[x].cases[i].then.instructions
+                };
+                json.instructions[x].instructions.push(obj);
+                delete json.instructions[x].cases[i].then;
+              }
+            }
+            delete json.instructions[x].cases;
+            if (json.instructions[x].else) {
+              const obj = {
+                TYPE: 'ElseWhen',
+                instructions: json.instructions[x].else.instructions
+              };
+              json.instructions[x].instructions.push(obj);
+              delete json.instructions[x].else;
+            }
+          }
           if (order) {
 
             if (json.instructions[x].positionString) {
@@ -3452,7 +3474,7 @@ export class CoreService {
         }
       } else if (sour.type === 'String' && typeof sour.value !== 'string') {
         sour.value = sour.value.toString();
-      }else if(sour.type === undefined){
+      } else if (sour.type === undefined) {
         sour.value = ''
         sour.name = ''
       }
@@ -3478,6 +3500,7 @@ export class CoreService {
 
     return '';
   }
+
   copyToClipboard(orderId, message) {
     this.clipboardService.copy(orderId);
     this.showCopyMessage(message);

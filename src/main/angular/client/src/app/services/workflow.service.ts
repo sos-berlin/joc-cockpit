@@ -556,6 +556,18 @@ export class WorkflowService {
     }
   }
 
+  convertCases(instruction: any): void {
+    instruction.cases = [];
+    instruction.instructions?.forEach(inst => {
+      if (inst.TYPE === 'When') {
+        instruction.cases.push({predicate: inst.predicate, then: {instructions: inst.instructions || []}})
+      } else if (inst.TYPE === 'ElseWhen') {
+        instruction.else = {instructions: inst.instructions || []};
+      }
+    });
+    delete instruction.instructions;
+  }
+
   isValidObject(v: string): boolean {
     if (!v.match(/[!?~'"}\[\]{@:;#\/\\^$%\^\&*\)\(+=]/) && /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(v) && /^(?!-)(?!.*--)/.test(v)
       && !v.substring(0, 1).match(/[-]/) && !v.substring(v.length - 1).match(/[-]/) && !/\s/.test(v)) {
@@ -678,21 +690,6 @@ export class WorkflowService {
         }
       }
 
-      if (type === 'CaseWhen') {
-        if (!value.cases || value.cases.length < 2) {
-          return false;
-        }
-        for (let i = 0; i < value.cases.length; i++) {
-          if (!value.cases[i].id) {
-            return false;
-          } else {
-            if (!this.isValidObject(value.cases[i].id)) {
-              return false;
-            }
-          }
-        }
-      }
-
       this.checkReturnCodes(value);
       if (value.returnCode && value.returnCode != 'null' && value.returnCode != 'undefined' && typeof value.returnCode === 'string') {
         value.returnCode = parseInt(value.returnCode, 10);
@@ -795,6 +792,7 @@ export class WorkflowService {
               delete json.instructions[x].else;
             }
           }
+
           if (json.instructions[x].branches) {
             json.instructions[x].branches = json.instructions[x].branches.filter((branch: any) => {
               return (branch.instructions && branch.instructions.length > 0);
@@ -1129,50 +1127,42 @@ export class WorkflowService {
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
             }
-            const node = doc.createElement('When');
-            node.setAttribute('displayLabel', 'when');
-            node.setAttribute('targetId', v1.id);
-            node.setAttribute('uuid', json.instructions[x].uuid);
-            const cv1 = graph.insertVertex(v1, null, node, 0, 0, 72, 72, (json.instructions[x].when && json.instructions[x].when.instructions && json.instructions[x].when.instructions.length > 0) ?
-              (isGraphView ? WorkflowService.setStyleToVertex('when', colorCode, self.theme) : 'when') : (isGraphView ? WorkflowService.setStyleToVertex('when', colorCode, self.theme) : 'when'));
-            if (mapObj.vertixMap && json.instructions[x].when && json.instructions[x].when.position) {
-              mapObj.vertixMap.set(JSON.stringify(json.instructions[x].when.position), cv1);
-            }
-            let _id = v1;
-            if (json.instructions[x].when) {
-              json.instructions[x].when.id = cv1.id;
-              if (json.instructions[x].when.instructions && json.instructions[x].when.instructions.length > 0) {
-                recursive(json.instructions[x].when, 'endCase', v1, path, versionId);
-                connectInstruction(cv1, vertexMap.get(json.instructions[x].when.instructions[0].uuid), 'when', 'when', v1);
-                _id = endWhen(json.instructions[x].when, v1, parent);
-              } else {
-                json.instructions[x].when.instructions = [];
-                _id = cv1;
-              }
-            }
 
             if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
               recursive(json.instructions[x], '', v1, path, versionId);
               connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'caseWhen', 'caseWhen', v1);
-              const _lastNode = json.instructions[x].instructions[json.instructions[x].instructions.length - 1];
-              if (self.isInstructionCollapsible(_lastNode.TYPE)) {
-                const end = graph.getModel().getCell(mapObj.nodeMap.get(_lastNode.id));
-                connectInstruction(end, cv1, 'caseWhen', 'caseWhen', v1);
-              } else {
-                const end = graph.getModel().getCell(_lastNode.id);
-                if (json.instructions[x].when) {
-                  connectInstruction(end, cv1, 'caseWhen', 'caseWhen', v1);
-                } else {
-                  _id = end;
-                }
-              }
+              v2 = closingNode(json.instructions[x], v1.id, parent, 'CaseWhen');
             } else {
-              if (json.instructions[x].when) {
-                connectInstruction(v1, cv1, 'caseWhen', 'caseWhen', v1);
-              }
+              v2 = closingNode(v1, v1.id, parent, 'CaseWhen');
             }
-            v2 = caseFnc(_id, v1.id, parent);
 
+          } else if (json.instructions[x].TYPE === 'When') {
+            _node.setAttribute('displayLabel', 'when');
+            _node.setAttribute('predicate', json.instructions[x].predicate);
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('when', colorCode, self.theme) : 'when');
+            if (mapObj.vertixMap && json.instructions[x].position) {
+              mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
+            }
+            if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
+              recursive(json.instructions[x], '', v1, path, versionId);
+              connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'when', 'when', v1);
+              v2 = closingNode(json.instructions[x], v1.id, parent, 'When');
+            } else {
+              v2 = closingNode(v1, v1.id, parent, 'When');
+            }
+          } else if (json.instructions[x].TYPE === 'ElseWhen') {
+            _node.setAttribute('displayLabel', 'elseWhen');
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('elseWhen', colorCode, self.theme) : 'elseWhen');
+            if (mapObj.vertixMap && json.instructions[x].position) {
+              mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
+            }
+            if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
+              recursive(json.instructions[x], '', v1, path, versionId);
+              connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'elseWhen', 'elseWhen', v1);
+              v2 = closingNode(json.instructions[x], v1.id, parent, 'ElseWhen');
+            } else {
+              v2 = closingNode(v1, v1.id, parent, 'ElseWhen');
+            }
           } else if (json.instructions[x].TYPE === 'ForkList') {
             _node.setAttribute('displayLabel', 'forkList');
             if (json.instructions[x].childToId !== undefined) {
@@ -1226,22 +1216,6 @@ export class WorkflowService {
               connectInstruction(v1, vertexMap.get(json.instructions[x].else.instructions[0].uuid), 'else', 'else', v1);
             }
             v2 = endIf(json.instructions[x], v1, parent);
-          } else if (json.instructions[x].TYPE === 'When') {
-            _node.setAttribute('displayLabel', 'when');
-            _node.setAttribute('predicate', json.instructions[x].predicate);
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('when', colorCode, self.theme) : 'when');
-            if (mapObj.vertixMap && json.instructions[x].position) {
-              mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
-            }
-            v2 = endWhen(json.instructions[x], v1, parent);
-          } else if (json.instructions[x].TYPE === 'ElseWhen') {
-            _node.setAttribute('displayLabel', 'elseWhen');
-            _node.setAttribute('predicate', json.instructions[x].predicate);
-            v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('elseWhen', colorCode, self.theme) : 'elseWhen');
-            if (mapObj.vertixMap && json.instructions[x].position) {
-              mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
-            }
-            v2 = endElse(json.instructions[x], v1, parent);
           } else if (json.instructions[x].TYPE === 'Retry') {
             _node.setAttribute('displayLabel', 'retry');
             _node.setAttribute('maxTries', json.instructions[x].maxTries || (json.instructions[x].maxTries == 0 ? 0 : ''));
@@ -1592,18 +1566,6 @@ export class WorkflowService {
       return v1;
     }
 
-    function caseFnc(cases: any, target: any, parent: any): any {
-      const _node = doc.createElement('EndWhen');
-      _node.setAttribute('displayLabel', 'whenEnd');
-      if (target) {
-        _node.setAttribute('targetId', target);
-      }
-      const v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('try', colorCode, self.theme) : 'when');
-      mapObj.nodeMap.set(target.toString(), v1.id.toString());
-
-      connectInstruction(cases, v1, 'endWhen', 'endWhen', parent);
-      return v1;
-    }
 
     function endIf(branches: any, target: any, parent: any): any {
       const _node = doc.createElement('EndIf');
@@ -1688,8 +1650,8 @@ export class WorkflowService {
     }
 
     function closingNode(branches: any, targetId: any, parent: any, type: any): any {
-      const _node = doc.createElement(type === 'Lock' ? 'EndLock' : type === 'StickySubagent' ? 'EndStickySubagent' : type === 'Options' ? 'EndOptions' : type === 'Retry' ? 'EndRetry' : type === 'ConsumeNotices' ? 'EndConsumeNotices' : 'EndCycle');
-      _node.setAttribute('displayLabel', type === 'Lock' ? 'lockEnd' : type === 'StickySubagent' ? 'stickySubagentEnd' : type === 'Options' ? 'optionsEnd' : type === 'Retry' ? 'retryEnd' : type === 'ConsumeNotices' ? 'consumeNoticesEnd' : 'cycleEnd');
+      const _node = doc.createElement(type === 'When' ? 'EndWhen' : type === 'ElseWhen' ? 'EndElse' : type === 'CaseWhen' ? 'EndCase' : type === 'Lock' ? 'EndLock' : type === 'StickySubagent' ? 'EndStickySubagent' : type === 'Options' ? 'EndOptions' : type === 'Retry' ? 'EndRetry' : type === 'ConsumeNotices' ? 'EndConsumeNotices' : 'EndCycle');
+      _node.setAttribute('displayLabel', type === 'When' ? 'whenEnd' : type === 'ElseWhen' ? 'elseEnd' : type === 'CaseWhen' ? 'caseEnd' : type === 'Lock' ? 'lockEnd' : type === 'StickySubagent' ? 'stickySubagentEnd' : type === 'Options' ? 'optionsEnd' : type === 'Retry' ? 'retryEnd' : type === 'ConsumeNotices' ? 'consumeNoticesEnd' : 'cycleEnd');
       if (targetId) {
         _node.setAttribute('targetId', targetId);
       }
@@ -1704,6 +1666,12 @@ export class WorkflowService {
         v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('retry', colorCode, self.theme) : 'retry');
       } else if (type === 'ConsumeNotices') {
         v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToSymbol('closeConsumeNotices', colorCode, self.theme) : 'closeConsumeNotices');
+      } else if (type === 'CaseWhen') {
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('caseWhen', colorCode, self.theme) : 'caseWhen');
+      } else if (type === 'When') {
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('when', colorCode, self.theme) : 'when');
+      } else if (type === 'ElseWhen') {
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('elseWhen', colorCode, self.theme) : 'elseWhen');
       }
       mapObj.nodeMap.set(targetId.toString(), v1.id.toString());
 
@@ -1716,7 +1684,7 @@ export class WorkflowService {
           } else {
             endNode = vertexMap.get(x.uuid);
           }
-          const _label = type === 'Lock' ? 'endLock' : type === 'StickySubagent' ? 'endStickySubagent' : type === 'Options' ? 'endOptions' : type === 'Retry' ? 'endRetry' : type === 'ConsumeNotices' ? 'endConsumeNotices' : 'endCycle';
+          const _label = type === 'When' ? 'endWhen' : type === 'ElseWhen' ? 'endElse' : type === 'CaseWhen' ? 'endCase' : type === 'Lock' ? 'endLock' : type === 'StickySubagent' ? 'endStickySubagent' : type === 'Options' ? 'endOptions' : type === 'Retry' ? 'endRetry' : type === 'ConsumeNotices' ? 'endConsumeNotices' : 'endCycle';
           connectInstruction(endNode, v1, _label, _label, parent);
         }
       } else {
