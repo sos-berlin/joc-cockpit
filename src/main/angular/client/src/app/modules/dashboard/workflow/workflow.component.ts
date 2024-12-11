@@ -47,7 +47,6 @@ export class WorkflowComponent {
 
     this.coreService.post('workflows/overview/snapshot', obj).subscribe({
       next: (res) => {
-        console.log(res);
         this.filterData(res.workflows);
         this.isLoaded = true;
       }, error: () => this.isLoaded = true
@@ -103,7 +102,6 @@ export class WorkflowComponent {
         }
       }
     }
-    console.log(this.arrayWidth)
   }
 
   getPlanPercent(status): number {
@@ -121,7 +119,6 @@ export class WorkflowComponent {
     } else if (obj === 4) {
       filter.filter.states = ['NOT_IN_SYNC'];
     }
-    console.log(filter);
     this.router.navigate(['/workflows']).then();
   }
 

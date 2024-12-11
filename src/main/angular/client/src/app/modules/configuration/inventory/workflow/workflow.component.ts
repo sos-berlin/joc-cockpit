@@ -8409,7 +8409,6 @@ export class WorkflowComponent {
             }
             if (!check) {
               if (drpTargt.value.tagName !== 'Connection') {
-                console.log('Start', drpTargt.value.tagName)
                 if (self.workflowService.isSingleInstruction(drpTargt.value.tagName)) {
                   for (let i = 0; i < drpTargt.edges.length; i++) {
                     if (drpTargt.edges[i].target.id !== drpTargt.id) {

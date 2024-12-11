@@ -84,7 +84,7 @@
 <div *ngFor="let instruction of configuration.instructions; let i = index">
   <ul class="m-b-0">
     <li (dragend)="dragend($event)" (dragover)="drag($event);">
-      <div *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'ConsumeNotices' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle'
+      <div *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'ConsumeNotices' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'CaseWhen' || instruction.TYPE === 'When' || instruction.TYPE === 'ElseWhen' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle'
          || instruction.TYPE === 'Lock' || instruction.TYPE === 'Options' || instruction.TYPE === 'StickySubagent'"
            [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}"
            class="hover"
@@ -103,7 +103,7 @@
         </div>
         <i (click)="collapse(instruction)" [ngClass]="{'fa-minus' : (instruction.show)}" class="fa fa-plus pr-2"></i>
         <span class="_600">
-          {{instruction.TYPE}}
+          {{instruction.TYPE === 'ElseWhen' ? 'Else' : instruction.TYPE}}
           <i *ngIf="instruction.label" class="p-l-xs p-r-xs text-muted _400">({{instruction.label}})</i>
           <span *ngIf="instruction.TYPE === 'Lock'">: </span>
           <span *ngIf="(instruction.TYPE === 'Lock')">
@@ -311,7 +311,7 @@
           </div>
         </div>
       </div>
-      <div *ngIf="(instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'Lock' || instruction.TYPE === 'Options' || instruction.TYPE === 'StickySubagent' || instruction.TYPE === 'ForkList' ||  instruction.TYPE === 'ConsumeNotices') && (instruction.show)"
+      <div *ngIf="(instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle' || instruction.TYPE === 'CaseWhen' || instruction.TYPE === 'When' || instruction.TYPE === 'ElseWhen' || instruction.TYPE === 'Lock' || instruction.TYPE === 'Options' || instruction.TYPE === 'StickySubagent' || instruction.TYPE === 'ForkList' ||  instruction.TYPE === 'ConsumeNotices') && (instruction.show)"
            [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}"
            id="{{instruction.positionString}}">
         <div>
