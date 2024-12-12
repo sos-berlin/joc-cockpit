@@ -8378,6 +8378,9 @@ export class WorkflowComponent {
                 self.toasterService.error(msg, title + '!!');
                 return;
               }
+              if((drpTargt.value.tagName != 'CaseWhen' && drpTargt.value.tagName != 'Connection') && (dragElement.match('when') || dragElement.match('elseWhen'))){
+                return
+              }
               if (dragElement.match('fork') || dragElement.match('retry') || dragElement.match('cycle') || dragElement.match('lock') || dragElement.match('options') || dragElement.match('try') || dragElement.match('if')) {
                 const selectedCell = graph.getSelectionCell();
 
@@ -8429,9 +8432,19 @@ export class WorkflowComponent {
                     return;
                   }
                 } else if (drpTargt.value.tagName === 'CaseWhen') {
-                  if (!(dragElement.includes('when'))) {
+                  if (!(dragElement.includes('when')) || drpTargt.edges.length > 1) {
                     if (drpTargt.edges.length > 1) {
                       self.translate.get('workflow.message.otherInstructionValidationError').subscribe(translatedValue => {
+                        msg = translatedValue;
+                      });
+                      self.toasterService.error(msg, title + '!!');
+                      return;
+                    }
+                  }
+                }else if (drpTargt.value.tagName === 'When' || drpTargt.value.tagName === 'ElseWhen') {
+                  if ((dragElement.includes('when')) || (dragElement.includes('elseWhen')) ) {
+                    if (drpTargt.edges.length > 1) {
+                      self.translate.get('workflow.message.invalidTarget').subscribe(translatedValue => {
                         msg = translatedValue;
                       });
                       self.toasterService.error(msg, title + '!!');
@@ -8502,6 +8515,11 @@ export class WorkflowComponent {
                 dropTarget = drpTargt;
               } else {
                 if (drpTargt.value.tagName === 'Connection') {
+                  if((dragElement.match('when') || dragElement.match('elseWhen')) && (drpTargt?.source?.value?.tagName != 'When' && drpTargt?.target?.value?.tagName != 'EndCase')){
+                    return;
+                  }else if(!dragElement.match('when') && !dragElement.match('elseWhen') && ((drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'EndCase') || (drpTargt?.source?.value?.tagName === 'CaseWhen' && drpTargt?.target?.value?.tagName === 'When')) ){
+                    return;
+                  }
                   if (checkClosedCellWithSourceCell(drpTargt.source, drpTargt.target)) {
                     return;
                   }
@@ -9572,6 +9590,9 @@ export class WorkflowComponent {
       _node.setAttribute('displayLabel', displayLabel);
       if (id) {
         _node.setAttribute('targetId', id);
+      }
+      if(displayLabel === 'when'){
+        _node.setAttribute('predicate', '$returnCode > 0');
       }
       return _node;
     }

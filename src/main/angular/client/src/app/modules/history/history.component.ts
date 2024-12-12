@@ -1872,7 +1872,8 @@ export class HistoryComponent {
         filter.historyStates = obj.historyStates;
       }
       if (obj.criticality && obj.criticality.length > 0) {
-        filter.criticality = obj.criticality;
+        filter.criticalities = obj.criticality;
+
       }
       if (obj.radio == 'planned') {
         filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);

@@ -211,8 +211,8 @@ export class WorkflowService {
       vertexStyle.strokeColor = colorCode || '#C2b280';
       vertexStyle.fillColor = colorCode || '#C2b280';
     } else if (name === 'elseWhen') {
-      vertexStyle.strokeColor = colorCode || '#76daff';
-      vertexStyle.fillColor = colorCode || '#76daff';
+      vertexStyle.strokeColor = colorCode || '#dab2ff';
+      vertexStyle.fillColor = colorCode || '#dab2ff';
     } else if (name === 'retry') {
       vertexStyle.strokeColor = colorCode || '#FFC7C7';
       vertexStyle.fillColor = colorCode || '#FFC7C7';
@@ -225,8 +225,8 @@ export class WorkflowService {
       vertexStyle.strokeColor = colorCode || '#FFCF8c';
       vertexStyle.fillColor = colorCode || '#FFCF8c';
     } else if (name === 'caseWhen') {
-      vertexStyle.strokeColor = colorCode || '#ff8181';
-      vertexStyle.fillColor = colorCode || '#ff8181';
+      vertexStyle.strokeColor = colorCode || '#dab2ff';
+      vertexStyle.fillColor = colorCode || '#dab2ff';
     } else if (name === 'dashRectangle') {
       vertexStyle.shape = 'rectangle';
       vertexStyle.perimeter = 'rectanglePerimeter';
@@ -1130,13 +1130,14 @@ export class WorkflowService {
 
             if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
               recursive(json.instructions[x], '', v1, path, versionId);
-              connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'caseWhen', 'caseWhen', v1);
+              connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), '', 'caseWhen', v1);
               v2 = closingNode(json.instructions[x], v1.id, parent, 'CaseWhen');
             } else {
               v2 = closingNode(v1, v1.id, parent, 'CaseWhen');
             }
 
           } else if (json.instructions[x].TYPE === 'When') {
+            console.log(json.instructions[x].predicate,">>>>>>>>>>>>>>>")
             _node.setAttribute('displayLabel', 'when');
             _node.setAttribute('predicate', json.instructions[x].predicate);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('when', colorCode, self.theme) : 'when');
