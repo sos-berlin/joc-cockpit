@@ -4766,7 +4766,7 @@ export class WorkflowComponent {
 
   private updateToolbar(operation, cell, name = ''): void {
     $('#toolbar').find('img').each(function (index) {
-      if (index === 19) {
+      if (index === 22) {
         if (!cell && !name) {
           $(this).addClass('disable-link');
           $(this).attr('title', '');
@@ -7130,15 +7130,15 @@ export class WorkflowComponent {
     const doc = mxUtils.createXmlDocument();
     if (!callFun && !isNavigate) {
       $('#toolbar').find('img').each(function (index) {
-        if (index === 16 && !self.hasLicense) {
+        if (index === 19 && !self.hasLicense) {
           $('#toolbar').find('hr').each(function (index) {
-            if (index === 15) {
+            if (index === 18) {
               $(this).hide();
             }
           });
           $(this).hide();
         }
-        if (index === 19) {
+        if (index === 22) {
           $(this).addClass('disable-link');
         }
       });
@@ -7844,6 +7844,7 @@ export class WorkflowComponent {
             if (self.isTrash) {
               return;
             }
+            console.log(">>>>>>>>>>>>>>")
             if (self.isCellDragging) {
               self.isCellDragging = false;
               if (self.movedCells.length) {
@@ -8378,7 +8379,7 @@ export class WorkflowComponent {
                 self.toasterService.error(msg, title + '!!');
                 return;
               }
-              if((drpTargt.value.tagName != 'CaseWhen' && drpTargt.value.tagName != 'Connection') && (dragElement.match('when') || dragElement.match('elseWhen'))){
+              if ((drpTargt.value.tagName != 'CaseWhen' && drpTargt.value.tagName != 'Connection') && (dragElement.match('when') || dragElement.match('elseWhen'))) {
                 return
               }
               if (dragElement.match('fork') || dragElement.match('retry') || dragElement.match('cycle') || dragElement.match('lock') || dragElement.match('options') || dragElement.match('try') || dragElement.match('if')) {
@@ -8441,8 +8442,8 @@ export class WorkflowComponent {
                       return;
                     }
                   }
-                }else if (drpTargt.value.tagName === 'When' || drpTargt.value.tagName === 'ElseWhen') {
-                  if ((dragElement.includes('when')) || (dragElement.includes('elseWhen')) ) {
+                } else if (drpTargt.value.tagName === 'When' || drpTargt.value.tagName === 'ElseWhen') {
+                  if ((dragElement.includes('when')) || (dragElement.includes('elseWhen'))) {
                     if (drpTargt.edges.length > 1) {
                       self.translate.get('workflow.message.invalidTarget').subscribe(translatedValue => {
                         msg = translatedValue;
@@ -8515,9 +8516,13 @@ export class WorkflowComponent {
                 dropTarget = drpTargt;
               } else {
                 if (drpTargt.value.tagName === 'Connection') {
-                  if((dragElement.match('when') || dragElement.match('elseWhen')) && (drpTargt?.source?.value?.tagName != 'When' && drpTargt?.target?.value?.tagName != 'EndCase')){
+                  if ((dragElement.match('when') || dragElement.match('elseWhen')) && ((drpTargt?.source?.value?.tagName != 'When' && drpTargt?.target?.value?.tagName != 'EndCase') && (drpTargt?.source?.value?.tagName != 'EndWhen' && drpTargt?.target?.value?.tagName != 'ElseWhen'))) {
                     return;
-                  }else if(!dragElement.match('when') && !dragElement.match('elseWhen') && ((drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'EndCase') || (drpTargt?.source?.value?.tagName === 'CaseWhen' && drpTargt?.target?.value?.tagName === 'When')) ){
+                  } else if (dragElement.match('elseWhen') && (drpTargt?.source?.value?.tagName === 'EndWhen' && ((drpTargt?.target?.value?.tagName === 'ElseWhen') || drpTargt?.target?.value?.tagName === 'When'))) {
+                    return;
+                  } else if (!dragElement.match('when') && !dragElement.match('elseWhen') && ((drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'EndCase') || (drpTargt?.source?.value?.tagName === 'CaseWhen' && drpTargt?.target?.value?.tagName === 'When') || (drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'ElseWhen') || (drpTargt?.source?.value?.tagName === 'EndElse' && drpTargt?.target?.value?.tagName === 'EndCase'))) {
+                    return;
+                  } else if ((dragElement.match('when') || dragElement.match('elseWhen')) && (drpTargt?.source?.value?.tagName === 'EndElse' && drpTargt?.target?.value?.tagName === 'EndCase')) {
                     return;
                   }
                   if (checkClosedCellWithSourceCell(drpTargt.source, drpTargt.target)) {
@@ -8814,7 +8819,7 @@ export class WorkflowComponent {
                     } else if (cells[0].value.tagName === 'CaseWhen') {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndCase', 'caseEnd', null), 0, 0, 72, 72, 'caseWhen');
                       const v2 = graph.insertVertex(cells[0], null, getCellNode('When', 'when', cells[0].id), 0, 0, 72, 72, 'when');
-                      const v3 = graph.insertVertex(parent, null, getCellNode('WhenEnd', 'whenEnd', null), 0, 0, 72, 72, 'when');
+                      const v3 = graph.insertVertex(parent, null, getCellNode('EndWhen', 'whenEnd', null), 0, 0, 72, 72, 'when');
                       graph.insertEdge(parent, null, getConnectionNode(''), cells[0], v2);
                       graph.insertEdge(parent, null, getConnectionNode('endWhen'), v2, v3);
                       graph.insertEdge(parent, null, getConnectionNode('endCase'), v3, v1);
@@ -8838,7 +8843,7 @@ export class WorkflowComponent {
                       graph.insertEdge(parent, null, getConnectionNode('endTry'), v2, v1);
                     }
                     graph.insertEdge(parent, null, getConnectionNode(displayLabel), cell.source, cells[0]);
-                    if (cells[0].value.tagName !== 'Try') {
+                    if (cells[0].value.tagName !== 'Try' && cells[0].value.tagName !== 'CaseWhen') {
                       graph.insertEdge(parent, null, getConnectionNode(''), cells[0], v1);
                     }
                     graph.insertEdge(parent, null, getConnectionNode(''), v1, cell.target);
@@ -9591,7 +9596,7 @@ export class WorkflowComponent {
       if (id) {
         _node.setAttribute('targetId', id);
       }
-      if(displayLabel === 'when'){
+      if (displayLabel === 'when') {
         _node.setAttribute('predicate', '$returnCode > 0');
       }
       return _node;
@@ -11485,6 +11490,12 @@ export class WorkflowComponent {
             if (targetCell.edges.length > 2) {
               return 'inValid';
             }
+          } else if (tagName === 'CaseWhen') {
+            if (targetCell.edges.length > 1) {
+              return 'inValid';
+            }
+          } else if ((tagName === 'ElseWhen' || tagName === 'When') && (title.match('elseWhen') || title.match('when'))) {
+            return 'inValid';
           } else if (self.workflowService.checkClosingCell(targetCell.value.tagName)) {
             if (targetCell.edges.length > 1) {
               for (let i = 0; i < targetCell.edges.length; i++) {
@@ -11539,6 +11550,15 @@ export class WorkflowComponent {
           }
         } else {
           if (tagName === 'Connection') {
+              if ((title.match(/^when\.png$/) || title.match('elseWhen')) && ((targetCell?.source?.value?.tagName != 'When' && targetCell?.target?.value?.tagName != 'EndCase') && (targetCell?.source?.value?.tagName != 'EndWhen' && targetCell?.target?.value?.tagName != 'ElseWhen'))) {
+                return 'inValid';
+              } else if (title.match('elseWhen') && (targetCell?.source?.value?.tagName === 'EndWhen' && ((targetCell?.target?.value?.tagName === 'ElseWhen') || targetCell?.target?.value?.tagName === 'When'))) {
+                return 'inValid';
+              } else if (!title.match('when') && !title.match('elseWhen') && ((targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'EndCase') || (targetCell?.source?.value?.tagName === 'CaseWhen' && targetCell?.target?.value?.tagName === 'When') || (targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'ElseWhen') || (targetCell?.source?.value?.tagName === 'EndElse' && targetCell?.target?.value?.tagName === 'EndCase'))) {
+                return 'inValid';
+              } else if ((title.match('when') || title.match('elseWhen')) && (targetCell?.source?.value?.tagName === 'EndElse' && targetCell?.target?.value?.tagName === 'EndCase')) {
+                return 'inValid';
+              }
             if (checkClosedCellWithSourceCell(targetCell.source, targetCell.target)) {
               return 'return';
             }
@@ -11660,6 +11680,7 @@ export class WorkflowComponent {
           v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', cell.id), 0, 0, 68, 68, 'join');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'CaseWhen') {
+          console.log("aa")
           v1 = graph.insertVertex(parent, null, getCellNode('EndCase', 'caseEnd', cell.id), 0, 0, 72, 72, 'caseWhen');
           v2 = graph.insertVertex(cell, null, getCellNode('When', 'when', cell.id), 0, 0, 72, 72, 'when');
           v3 = graph.insertVertex(cell, null, getCellNode('EndWhen', 'whenEnd', cell.id), 0, 0, 72, 72, 'when');
@@ -13463,7 +13484,7 @@ export class WorkflowComponent {
     }
     this.cutCell = [];
     $('#toolbar').find('img').each(function (index) {
-      if (index === 19) {
+      if (index === 22) {
         $(this).addClass('disable-link');
       }
     });

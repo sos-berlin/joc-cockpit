@@ -1717,6 +1717,7 @@ export class HistoryComponent {
             if (sub.show === undefined) {
               sub.show = true;
             }
+            this.loadSubmissionOrders(history, controller, sub);
           });
         } else {
           this.loadSubmissions(history, controller);
@@ -1873,7 +1874,6 @@ export class HistoryComponent {
       }
       if (obj.criticality && obj.criticality.length > 0) {
         filter.criticalities = obj.criticality;
-
       }
       if (obj.radio == 'planned') {
         filter = this.coreService.parseProcessExecutedRegex(obj.planned, filter);

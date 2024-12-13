@@ -1329,7 +1329,10 @@ export class DailyPlanComponent {
           workflowId: {path: order.workflowPath}
         }).subscribe((res: any) => {
           order.requirements = res.workflow.orderPreparation;
-          openModal(order.requirements, res.workflow);
+          this.addDetailsOfOrder(order);
+          setTimeout(() => {
+            openModal(order.requirements, res.workflow, order);
+          }, 100);
         });
 
       } else {
@@ -1337,7 +1340,7 @@ export class DailyPlanComponent {
       }
     });
 
-    function openModal(requirements, workflow?) {
+    function openModal(requirements, workflow?, order?) {
       self.modal.create({
         nzTitle: undefined,
         nzContent: ChangeParameterModalComponent,
@@ -1346,7 +1349,8 @@ export class DailyPlanComponent {
           schedulerId: self.schedulerIds.selected,
           orders: self.object.mapOfCheckedId,
           orderPreparation: requirements,
-          workflow
+          workflow,
+          order
         },
         nzFooter: null,
         nzAutofocus: undefined,

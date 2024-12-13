@@ -29,7 +29,7 @@
         <tr *ngFor="let agent of agentsTable.data">
           <td *ngIf="flag" nzShowCheckbox [(nzChecked)]="agent.checked" (nzCheckedChange)="onAgentChecked(agent)" class="chk"></td>
           <td>{{ agent.agentName }}</td>
-          <td><a [href]="agent.agentUrl" target="_blank">{{ agent.agentUrl }}</a></td>
+          <td><span>{{ agent.agentUrl }}</span></td>
         </tr>
       </tbody>
     </nz-table>
@@ -71,7 +71,7 @@
                   <tr *ngFor="let subagent of clusterAgent.subagents">
                     <td *ngIf="flag" nzShowCheckbox [(nzChecked)]="subagent.checked" (nzCheckedChange)="onSubagentChecked(clusterAgent, subagent)" class="chk"></td>
                     <td>{{ subagent.agentName }}</td>
-                    <td><a [href]="subagent.agentUrl" target="_blank">{{ subagent.agentUrl }}</a></td>
+                    <td><span>{{ subagent.agentUrl }}</span></td>
                   </tr>
                 </tbody>
               </nz-table>
