@@ -21,7 +21,7 @@ export class NodePositionComponent {
   @Input() reload: boolean;
 
   nodes: any = [];
-  blockInstructions = ['Lock', 'Cycle', 'ConsumeNotices', 'Options', 'StickySubagent', 'ForkList'];
+  blockInstructions = ['Lock', 'Cycle', 'ConsumeNotices', 'Options', 'StickySubagent', 'ForkList','CaseWhen'];
 
   @Output() onBlur = new EventEmitter<string>();
 
@@ -212,7 +212,55 @@ export class NodePositionComponent {
                 }
                 recursive(json.instructions[x].else, obj1);
               }
-            } else if (json.instructions[x].TYPE === 'Cycle' || json.instructions[x].TYPE === 'Lock' ||
+            } else if (json.instructions[x].TYPE === 'CaseWhen') {
+
+              let _obj = {
+                title: json.instructions[x].TYPE,
+                disabled: !isEnable,
+                label: json.instructions[x].label,
+                key: json.instructions[x].positionString,
+                children: []
+              };
+
+              if (self.blockPositions) {
+                const pos = `${json.instructions[x].positionString}/casewhen`;
+                _obj.disabled = !self.blockPositions.has(pos);
+              } else {
+                _obj.disabled = false;
+              }
+
+              obj.children.push(_obj);
+
+              if (json.instructions[x].cases && Array.isArray(json.instructions[x].cases)) {
+                json.instructions[x].cases.forEach((caseObj, index) => {
+
+                  let caseChild = {
+                    title: 'When',
+                    disabled: true,
+                    label: 'When',
+                    key: `${json.instructions[x].positionString}/case${index + 1}`,
+                    children: []
+                  };
+
+                  if (self.blockPositions) {
+                    const pos = `${json.instructions[x].positionString}/then${index + 1}`;
+                    caseChild.disabled = !self.blockPositions.has(pos);
+                  } else {
+                    caseChild.disabled = false;
+                  }
+
+                  _obj.children.push(caseChild);
+
+                  // Traverse the 'then' block if it exists
+                  if (caseObj.then && caseObj.then.instructions) {
+                    recursive(caseObj.then, caseChild);
+                  } else {
+                  }
+                });
+              } else {
+              }
+            }
+            else if (json.instructions[x].TYPE === 'Cycle' || json.instructions[x].TYPE === 'Lock' ||
               json.instructions[x].TYPE === 'Options' || json.instructions[x].TYPE === 'ForkList' || json.instructions[x].TYPE === 'ConsumeNotices' || json.instructions[x].TYPE === 'StickySubagent') {
               let _obj = {
                 title: json.instructions[x].TYPE,
