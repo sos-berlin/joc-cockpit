@@ -1373,6 +1373,9 @@ export class HistoryComponent {
     if (this.selectedFiltered2.historyStates && this.selectedFiltered2.historyStates.length > 0) {
       obj.historyStates = this.selectedFiltered2.historyStates;
     }
+    if (this.selectedFiltered2.criticality && this.selectedFiltered2.criticality.length > 0) {
+      obj.criticalities = this.selectedFiltered2.criticality;
+    }
     if (this.selectedFiltered2.paths && this.selectedFiltered2.paths.length > 0) {
       obj.folders = [];
       this.selectedFiltered2.paths.forEach((value) => {

@@ -369,6 +369,7 @@ export class ScheduleComponent {
                 });
 
                 obj.variableList[i].isSelected = true;
+
                 obj.variables.push({
                   name: obj.variableList[i].name,
                   type: val.type,
@@ -393,6 +394,7 @@ export class ScheduleComponent {
                 });
 
                 obj.variableList[i].isSelected = true;
+
                 obj.variables.push({
                   name: obj.variableList[i].name,
                   type: val.type,
@@ -555,7 +557,6 @@ export class ScheduleComponent {
 
                 const obj = {name: k1, value: v1, type, isRequired};
                 this.coreService.checkDataType(obj);
-
                 return obj;
               });
 
@@ -624,7 +625,9 @@ export class ScheduleComponent {
     let forkListVariables = [];
     let mapVariables = [];
     let variablesBeforeUpdate = {};
+
     for (const prop in this.schedule.configuration.orderParameterisations) {
+
       if (this.schedule.configuration.orderParameterisations[prop].variables && !isArray(this.schedule.configuration.orderParameterisations[prop].variables)) {
         this.schedule.configuration.orderParameterisations[prop].variables = this.coreService.convertObjectToArray(this.schedule.configuration.orderParameterisations[prop], 'variables');
         if (!this.schedule.configuration.orderParameterisations[prop].variables.positions) {
@@ -636,8 +639,10 @@ export class ScheduleComponent {
         break;
       }
     }
+
     if (this.workflow.orderPreparation && this.workflow.orderPreparation.parameters && !isEmpty(this.workflow.orderPreparation.parameters)) {
       this.variableList = Object.entries(this.workflow.orderPreparation.parameters).map(([k, v]) => {
+
         const val: any = v;
         if (val.type === 'List') {
           this.isForkListVariable = true;
@@ -747,6 +752,7 @@ export class ScheduleComponent {
               }
               if (val1.value) {
                 this.coreService.checkDataType(val1);
+
               }
               val1.isRequired = obj.isRequired;
               actualMap.push(obj);
@@ -828,6 +834,7 @@ export class ScheduleComponent {
                 this.schedule.configuration.orderParameterisations[prop].variables[i].message = val.message;
                 if (this.schedule.configuration.orderParameterisations[prop].variables[i].value) {
                   this.coreService.checkDataType(this.schedule.configuration.orderParameterisations[prop].variables[i]);
+
                 }
                 let list;
                 if (val.list) {
@@ -958,7 +965,6 @@ export class ScheduleComponent {
                         isRequired: val.value.isRequired || val.isRequired
                       };
                       this.coreService.checkDataType(obj);
-
                       item.value.push(obj);
                     })
                   }
@@ -1504,6 +1510,7 @@ export class ScheduleComponent {
           this.translate.get(msg).subscribe(translatedValue => {
             this.toasterService.warning(translatedValue);
           });
+
           return;
         }
       } else {
@@ -1512,6 +1519,7 @@ export class ScheduleComponent {
           this.schedule.configuration.orderParameterisations = [];
         }
         this.getPositions(conf.path, () => {
+
           this.updateVariableList();
           this.saveJSON();
         });

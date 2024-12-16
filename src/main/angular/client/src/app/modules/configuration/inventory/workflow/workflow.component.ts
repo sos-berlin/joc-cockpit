@@ -7844,7 +7844,6 @@ export class WorkflowComponent {
             if (self.isTrash) {
               return;
             }
-            console.log(">>>>>>>>>>>>>>")
             if (self.isCellDragging) {
               self.isCellDragging = false;
               if (self.movedCells.length) {
@@ -8520,7 +8519,7 @@ export class WorkflowComponent {
                     return;
                   } else if (dragElement.match('elseWhen') && (drpTargt?.source?.value?.tagName === 'EndWhen' && ((drpTargt?.target?.value?.tagName === 'ElseWhen') || drpTargt?.target?.value?.tagName === 'When'))) {
                     return;
-                  } else if (!dragElement.match('when') && !dragElement.match('elseWhen') && ((drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'EndCase') || (drpTargt?.source?.value?.tagName === 'CaseWhen' && drpTargt?.target?.value?.tagName === 'When') || (drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'ElseWhen') || (drpTargt?.source?.value?.tagName === 'EndElse' && drpTargt?.target?.value?.tagName === 'EndCase'))) {
+                  } else if (!dragElement.match('when') && !dragElement.match('elseWhen') && ((drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'EndCase') || (drpTargt?.source?.value?.tagName === 'CaseWhen' && drpTargt?.target?.value?.tagName === 'When') || (drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'ElseWhen') || (drpTargt?.source?.value?.tagName === 'EndElse' && drpTargt?.target?.value?.tagName === 'EndCase') || (drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'When'))) {
                     return;
                   } else if ((dragElement.match('when') || dragElement.match('elseWhen')) && (drpTargt?.source?.value?.tagName === 'EndElse' && drpTargt?.target?.value?.tagName === 'EndCase')) {
                     return;
@@ -8582,7 +8581,6 @@ export class WorkflowComponent {
          * should be removed as well. Default is true.
          */
         mxGraph.prototype.removeCells = function (cells, flag) {
-
           if (cells == null) {
             cells = this.getDeletableCells(this.getSelectionCells());
           }
@@ -9122,7 +9120,7 @@ export class WorkflowComponent {
         if (json && json.instructions) {
           for (let x = 0; x < json.instructions.length; x++) {
             if (json.instructions[x].id == cell.id) {
-              if (self.node && self.node.isCloseable && !self.node.deleteAll) {
+              if (self.node && self.node.isCloseable && !self.node.deleteAll && json.instructions[x].TYPE != "CaseWhen") {
                 mergeInternalInstructions(json.instructions, x);
               }
               if (self.copyId && self.copyId.length > 0 && self.copyId.indexOf(json.instructions[x].uuid) > -1) {
@@ -10912,7 +10910,6 @@ export class WorkflowComponent {
               }
             }
           }
-
           if (index == copyObject.length - 1) {
             self.updateXMLJSON(true);
             if (copyObj.id) {
@@ -11554,9 +11551,9 @@ export class WorkflowComponent {
                 return 'inValid';
               } else if (title.match('elseWhen') && (targetCell?.source?.value?.tagName === 'EndWhen' && ((targetCell?.target?.value?.tagName === 'ElseWhen') || targetCell?.target?.value?.tagName === 'When'))) {
                 return 'inValid';
-              } else if (!title.match('when') && !title.match('elseWhen') && ((targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'EndCase') || (targetCell?.source?.value?.tagName === 'CaseWhen' && targetCell?.target?.value?.tagName === 'When') || (targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'ElseWhen') || (targetCell?.source?.value?.tagName === 'EndElse' && targetCell?.target?.value?.tagName === 'EndCase'))) {
+              } else if (!title.match('when') && !title.match('elseWhen') && ((targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'EndCase') || (targetCell?.source?.value?.tagName === 'CaseWhen' && targetCell?.target?.value?.tagName === 'When') || (targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'ElseWhen') || (targetCell?.source?.value?.tagName === 'EndElse' && targetCell?.target?.value?.tagName === 'EndCase') || (targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'When'))) {
                 return 'inValid';
-              } else if ((title.match('when') || title.match('elseWhen')) && (targetCell?.source?.value?.tagName === 'EndElse' && targetCell?.target?.value?.tagName === 'EndCase')) {
+              } else if ((title.match(/^when\.png$/) || title.match('elseWhen')) && (targetCell?.source?.value?.tagName === 'EndElse' && targetCell?.target?.value?.tagName === 'EndCase')) {
                 return 'inValid';
               }
             if (checkClosedCellWithSourceCell(targetCell.source, targetCell.target)) {
@@ -11680,7 +11677,6 @@ export class WorkflowComponent {
           v1 = graph.insertVertex(parent, null, getCellNode('Join', 'join', cell.id), 0, 0, 68, 68, 'join');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'CaseWhen') {
-          console.log("aa")
           v1 = graph.insertVertex(parent, null, getCellNode('EndCase', 'caseEnd', cell.id), 0, 0, 72, 72, 'caseWhen');
           v2 = graph.insertVertex(cell, null, getCellNode('When', 'when', cell.id), 0, 0, 72, 72, 'when');
           v3 = graph.insertVertex(cell, null, getCellNode('EndWhen', 'whenEnd', cell.id), 0, 0, 72, 72, 'when');
@@ -12089,7 +12085,7 @@ export class WorkflowComponent {
                 if (dropObject && targetObject) {
                   break;
                 }
-                if (json.instructions[x].id == cell.id) {
+                if (json.instructions[x].id == cell.id && cell.value.tagName != 'When' && cell.value.tagName != 'ElseWhen') {
                   dropObject = json;
                   index = x;
                 }

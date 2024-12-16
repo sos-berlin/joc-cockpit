@@ -1131,13 +1131,13 @@ export class WorkflowService {
             if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
               recursive(json.instructions[x], '', v1, path, versionId);
               connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), '', 'caseWhen', v1);
+
               v2 = closingNode(json.instructions[x], v1.id, parent, 'CaseWhen');
             } else {
               v2 = closingNode(v1, v1.id, parent, 'CaseWhen');
             }
 
           } else if (json.instructions[x].TYPE === 'When') {
-            console.log(json.instructions[x].predicate,">>>>>>>>>>>>>>>")
             _node.setAttribute('displayLabel', 'when');
             _node.setAttribute('predicate', json.instructions[x].predicate);
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('when', colorCode, self.theme) : 'when');

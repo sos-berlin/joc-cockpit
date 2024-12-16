@@ -347,17 +347,16 @@ export class TableComponent implements OnChanges, OnDestroy {
       } else {
         this.modal.create({
           nzTitle: undefined,
-          nzContent: SingleDeployComponent,
+          nzContent: DeployComponent,
+          nzClassName: 'lg',
           nzData: {
-            schedulerIds: [],
+            schedulerIds: this.getAllowedControllerOnly(),
+            preferences: this.preferences,
             display: this.preferences.auditLog,
-            data: {
-              path: this.dataObj.path,
-              list: Array.from(this.mapOfCheckedId.values())
-            },
-            releasable: false,
-            isRemoved: true,
-            isChecked: this.inventoryService.checkDeploymentStatus.isChecked
+            data: origin,
+            path: this.dataObj.path,
+            list: Array.from(this.mapOfCheckedId.values()),
+            isRemove: true,
           },
           nzFooter: null,
           nzClosable: false,
