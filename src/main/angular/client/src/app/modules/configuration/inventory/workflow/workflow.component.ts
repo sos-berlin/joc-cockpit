@@ -3086,17 +3086,14 @@ export class JobComponent {
 
   getSelectedAgentIds(jobName): any[] {
     let selectedAgentIds = [];
-    let job = this.jobs.filter(job => job.name === jobName);
-    const agentName = job[0]?.value?.agentName;
-    const subagentClusterId = job[0]?.value?.subagentClusterId;
-    if (subagentClusterId) {
+    if (this.selectedNode.job.agentName1) {
       const agentController = {
         controllerId: this.schedulerId
       }
       this.coreService.post('agents/cluster', agentController).subscribe({
         next: (data: any) => {
-          const cluster = data.subagentClusters.filter(cluster => cluster.subagentClusterId === subagentClusterId);
-          if (cluster[0].subagentClusterId === subagentClusterId) {
+          const cluster = data.subagentClusters.filter(cluster => cluster.subagentClusterId === this.selectedNode.job.agentName);
+          if (cluster[0].subagentClusterId === this.selectedNode.job.agentName) {
             cluster[0].subagentIds.forEach(subagentId => {
               selectedAgentIds.push(subagentId.subagentId);
             })
@@ -3110,7 +3107,7 @@ export class JobComponent {
       }
       this.coreService.post('agents', agentController).subscribe({
         next: (data: any) => {
-          const agent = data.agents.filter(agent => agent.agentName === agentName);
+          const agent = data.agents.filter(agent => agent.agentName === this.selectedNode.job.agentName);
           selectedAgentIds.push(agent[0].agentId);
           return selectedAgentIds;
         },
@@ -5054,6 +5051,7 @@ export class WorkflowComponent {
   changeDataType(type, variable): void {
     if (type === 'List' || type === 'Map') {
       delete variable.value.default;
+      delete variable.value.default1;
       delete variable.value.final;
       delete variable.value.list;
       delete variable.value.map;
@@ -5108,6 +5106,9 @@ export class WorkflowComponent {
     switch (type) {
       case 'String':
         variable.value.default = String(variable.value.default);
+        if (variable.value.default == 'undefined') {
+          variable.value.default = ''
+        }
         break;
       case 'Number':
         variable.value.default = this.convertToNumberIfValid(variable.value.default);

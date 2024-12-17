@@ -541,11 +541,10 @@ export class ScheduleComponent {
     for (let x in target) {
       if (target[x].name === sour.name) {
         if (sour.value) {
-
           if (sour.value.length > 0) {
             let notExistArr = [];
             for (const i in sour.value) {
-              sour.value[i] = Object.entries(sour.value[i]).map(([k1, v1]) => {
+              sour.value[i] = Object.entries(sour.value[i]).reduce((result, [k1, v1]) => {
                 let type, isRequired = true;
                 for (const prop in target[x].list) {
                   if (target[x].list[prop].name === k1) {
@@ -555,10 +554,15 @@ export class ScheduleComponent {
                   }
                 }
 
-                const obj = {name: k1, value: v1, type, isRequired};
+                const obj = { name: k1, value: v1, type, isRequired };
                 this.coreService.checkDataType(obj);
-                return obj;
-              });
+
+                // Only add valid objects to the result
+                if (!(obj.name === "" && obj.value === "" && obj.type === undefined)) {
+                  result.push(obj);
+                }
+                return result;
+              }, []);
 
               for (const prop in target[x].list) {
 
@@ -627,7 +631,6 @@ export class ScheduleComponent {
     let variablesBeforeUpdate = {};
 
     for (const prop in this.schedule.configuration.orderParameterisations) {
-
       if (this.schedule.configuration.orderParameterisations[prop].variables && !isArray(this.schedule.configuration.orderParameterisations[prop].variables)) {
         this.schedule.configuration.orderParameterisations[prop].variables = this.coreService.convertObjectToArray(this.schedule.configuration.orderParameterisations[prop], 'variables');
         if (!this.schedule.configuration.orderParameterisations[prop].variables.positions) {
@@ -832,6 +835,7 @@ export class ScheduleComponent {
                 this.schedule.configuration.orderParameterisations[prop].variables[i].type = val.type;
                 this.schedule.configuration.orderParameterisations[prop].variables[i].facet = val.facet;
                 this.schedule.configuration.orderParameterisations[prop].variables[i].message = val.message;
+
                 if (this.schedule.configuration.orderParameterisations[prop].variables[i].value) {
                   this.coreService.checkDataType(this.schedule.configuration.orderParameterisations[prop].variables[i]);
 
@@ -919,7 +923,7 @@ export class ScheduleComponent {
               for (let x in mapVariables) {
                 if (item.value && mapVariables[x].name === item.name) {
 
-                  item.value = Object.entries(item.value).map(([k1, v1]) => {
+                  item.value = Object.entries(item.value).reduce((result, [k1, v1]) => {
                     let type, isRequired = true;
                     for (const prop in mapVariables[x].map) {
                       if (mapVariables[x].map[prop].name === k1) {
@@ -929,11 +933,14 @@ export class ScheduleComponent {
                       }
                     }
 
-                    const obj = {name: k1, value: v1, type, isRequired};
+                    const obj = { name: k1, value: v1, type, isRequired };
                     this.coreService.checkDataType(obj);
+                    if (!(obj.name === "" && obj.value === "" && obj.type === undefined)) {
+                      result.push(obj); // Add only valid objects
+                    }
+                    return result;
+                  }, []);
 
-                    return obj;
-                  });
                   for (const prop in mapVariables[x].map) {
 
                     let flag = false;

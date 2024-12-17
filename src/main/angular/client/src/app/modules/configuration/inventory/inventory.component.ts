@@ -6715,6 +6715,7 @@ export class EncryptArgumentModalComponent {
   }
 
   getCertificates() {
+    this.certificateList = [];
     let certAliases = {
       agentIds: [],
     };

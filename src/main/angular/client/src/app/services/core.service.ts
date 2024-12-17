@@ -3469,12 +3469,13 @@ export class CoreService {
         if (defaultValue in booleanMapping) {
           sour.value = booleanMapping[defaultValue];
         } else {
-          console.warn(`Unexpected boolean value: ${sour.value}`);
           sour.value = '';
         }
       } else if (sour.type === 'String' && typeof sour.value !== 'string') {
         sour.value = sour.value.toString();
-      } else if (sour.type === undefined) {
+      } else if (sour.type === 'String' && sour.value === '[object Object]') {
+        sour.value = ''
+      }else if (sour.type === undefined) {
         sour.value = ''
         sour.name = ''
       }
