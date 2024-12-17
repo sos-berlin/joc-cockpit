@@ -838,7 +838,9 @@ export class ScheduleComponent {
 
                 if (this.schedule.configuration.orderParameterisations[prop].variables[i].value) {
                   this.coreService.checkDataType(this.schedule.configuration.orderParameterisations[prop].variables[i]);
-
+                }
+                if(this.schedule.configuration.orderParameterisations[prop].variables[i].type === undefined){
+                  this.getObject()
                 }
                 let list;
                 if (val.list) {
@@ -935,8 +937,9 @@ export class ScheduleComponent {
 
                     const obj = { name: k1, value: v1, type, isRequired };
                     this.coreService.checkDataType(obj);
+
                     if (!(obj.name === "" && obj.value === "" && obj.type === undefined)) {
-                      result.push(obj); // Add only valid objects
+                      result.push(obj);
                     }
                     return result;
                   }, []);

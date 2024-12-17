@@ -3095,7 +3095,7 @@ export class JobComponent {
           const cluster = data.subagentClusters.filter(cluster => cluster.subagentClusterId === this.selectedNode.job.agentName);
           if (cluster[0].subagentClusterId === this.selectedNode.job.agentName) {
             cluster[0].subagentIds.forEach(subagentId => {
-              selectedAgentIds.push(subagentId.subagentId);
+              selectedAgentIds.push(subagentId?.subagentId);
             })
           }
           return selectedAgentIds;
@@ -3108,7 +3108,7 @@ export class JobComponent {
       this.coreService.post('agents', agentController).subscribe({
         next: (data: any) => {
           const agent = data.agents.filter(agent => agent.agentName === this.selectedNode.job.agentName);
-          selectedAgentIds.push(agent[0].agentId);
+          selectedAgentIds.push(agent[0]?.agentId);
           return selectedAgentIds;
         },
         error: () => {
@@ -9104,7 +9104,17 @@ export class WorkflowComponent {
         if (instructions[index].catch && instructions[index].catch.instructions) {
           instructionsArr = instructionsArr.concat(instructions[index].catch.instructions)
         }
-      } else {
+      } else if (instructions[index].TYPE === 'CaseWhen') {
+        if (instructions[index].instructions && Array.isArray(instructions[index].instructions)) {
+          instructions[index].instructions.forEach((instr, instrIndex) => {
+            if (instr.TYPE === 'When' && instr.instructions) {
+              instructionsArr = instructionsArr.concat(instr.instructions);
+            } else if (instr.TYPE === 'ElseWhen' && instr.instructions) {
+              instructionsArr = instructionsArr.concat(instr.instructions);
+            }
+          });
+        }
+      }else {
         instructionsArr = instructionsArr.concat(instructions[index].instructions)
       }
       for (let i = 0; i < instructionsArr.length; i++) {
@@ -9121,7 +9131,7 @@ export class WorkflowComponent {
         if (json && json.instructions) {
           for (let x = 0; x < json.instructions.length; x++) {
             if (json.instructions[x].id == cell.id) {
-              if (self.node && self.node.isCloseable && !self.node.deleteAll && json.instructions[x].TYPE != "CaseWhen") {
+              if (self.node && self.node.isCloseable && !self.node.deleteAll) {
                 mergeInternalInstructions(json.instructions, x);
               }
               if (self.copyId && self.copyId.length > 0 && self.copyId.indexOf(json.instructions[x].uuid) > -1) {
@@ -10907,7 +10917,9 @@ export class WorkflowComponent {
               _dropOnObject();
             } else {
               if (targetObject && targetObject.instructions && copyObj) {
+
                 targetObject.instructions.splice(targetIndex + 1 + index, 0, copyObj);
+
               }
             }
           }
