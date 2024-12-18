@@ -3469,7 +3469,7 @@ export class CoreService {
         if (defaultValue in booleanMapping) {
           sour.value = booleanMapping[defaultValue];
         } else {
-          sour.value = '';
+          sour.value = false;
         }
       } else if (sour.type === 'String' && typeof sour.value !== 'string') {
         sour.value = sour.value.toString();

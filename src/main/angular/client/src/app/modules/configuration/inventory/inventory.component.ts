@@ -1647,7 +1647,7 @@ export class DeployComponent {
       operationType = 'REVOKE';
     } else if (this.operation === 'recall') {
       operationType = 'RECALL';
-    } else if (this.releasable) {
+    } else if (this.releasable && !this.isRemove) {
       operationType = 'RELEASE';
     } else if (this.isRemove) {
       operationType = 'REMOVE';

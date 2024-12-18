@@ -5089,7 +5089,7 @@ export class WorkflowComponent {
           if (defaultValue in booleanMapping) {
             variable.value.default = booleanMapping[defaultValue];
           } else {
-            variable.value.default = ''; // Default fallback
+            variable.value.default = false;
           }
           break;
 
@@ -5134,7 +5134,7 @@ export class WorkflowComponent {
         if (defaultValue in booleanMapping) {
           variable.value.default = booleanMapping[defaultValue];
         } else {
-          variable.value.default = '';
+          variable.value.default = false;
         }
         break;
 
@@ -6518,6 +6518,7 @@ export class WorkflowComponent {
   }
 
   private traversCells(node, graph): void {
+
     let startNode;
     const nodes = [];
     const connections = [];
@@ -6923,7 +6924,6 @@ export class WorkflowComponent {
       let isMatch = false;
 
       function getObject(json): void {
-
         if (json.instructions) {
           for (let x = 0; x < json.instructions.length; x++) {
             if (json.instructions[x].id == nodeId) {
@@ -13039,6 +13039,7 @@ export class WorkflowComponent {
           }
           if (json.instructions[x].TYPE === 'CaseWhen') {
             self.workflowService.convertCases(json.instructions[x]);
+
             flag = self.workflowService.validateFields(json.instructions[x], 'CaseWhen');
             if (!flag) {
               checkErr = true;

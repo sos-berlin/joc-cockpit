@@ -273,7 +273,9 @@ export class AllOrderResumeModelComponent {
     }, 100);
     this.resumeObj.controllerId = this.controllerId;
     this.resumeObj.orderIds = this.orderIds;
-    this.getPositions();
+    if(this.resumeObj?.orderIds.length > 0) {
+      this.getPositions();
+    }
   }
 
   private getWorkflow(): void {
