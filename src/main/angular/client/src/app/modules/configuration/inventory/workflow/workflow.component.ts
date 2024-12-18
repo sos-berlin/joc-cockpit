@@ -3095,7 +3095,9 @@ export class JobComponent {
           const cluster = data.subagentClusters.filter(cluster => cluster.subagentClusterId === this.selectedNode.job.agentName);
           if (cluster[0].subagentClusterId === this.selectedNode.job.agentName) {
             cluster[0].subagentIds.forEach(subagentId => {
-              selectedAgentIds.push(subagentId?.subagentId);
+              if (subagentId && subagentId.subagentId) {
+                selectedAgentIds.push(subagentId.subagentId);
+              }
             })
           }
           return selectedAgentIds;
@@ -3108,7 +3110,9 @@ export class JobComponent {
       this.coreService.post('agents', agentController).subscribe({
         next: (data: any) => {
           const agent = data.agents.filter(agent => agent.agentName === this.selectedNode.job.agentName);
-          selectedAgentIds.push(agent[0]?.agentId);
+          if (agent && agent[0] && agent[0].agentId) {
+            selectedAgentIds.push(agent[0].agentId);
+          }
           return selectedAgentIds;
         },
         error: () => {
@@ -7032,7 +7036,6 @@ export class WorkflowComponent {
     let lastCells = [];
 
     function checkRemainingNodes(node) {
-
       if (node.edges && node.edges.length > 0) {
         node.edges.forEach(edge => {
           if (edge.source && edge.source.id !== node.id) {
@@ -7955,13 +7958,45 @@ export class WorkflowComponent {
         function detachedInstruction(target, cells): void {
           if (target && target.getAttribute('class') === 'dropContainer' && cells && cells.length > 0) {
             self.droppedCell = null;
-            self.editor.graph.removeCells(cells, null);
+
+            if (cells[0].value.tagName === 'When') {
+
+              const targetId = cells[0].parent.id;
+              const matchedInstruction = findInstructionById(self.workflow.configuration.instructions, targetId);
+
+              if (matchedInstruction) {
+                const whenCount = matchedInstruction.instructions.filter(
+                  (instruction) => instruction.TYPE === 'When'
+                ).length;
+
+                if (whenCount > 1) {
+                  self.editor.graph.removeCells(cells, null);
+                }
+              }
+            } else{
+               self.editor.graph.removeCells(cells, null);
+            }
+
           }
+
+
           self.display = false;
           $('#dropContainer2').hide();
           $('#toolbar-icons').show();
         }
 
+        function findInstructionById(instructions, targetId) {
+          for (const instruction of instructions) {
+            if (instruction.id === targetId) {
+              return instruction;
+            }
+            if (instruction.instructions && instruction.instructions.length > 0) {
+              const found = findInstructionById(instruction.instructions, targetId);
+              if (found) return found;
+            }
+          }
+          return null;
+        }
         /**
          * Function: Select all parent nodes
          */
@@ -8516,13 +8551,18 @@ export class WorkflowComponent {
                 dropTarget = drpTargt;
               } else {
                 if (drpTargt.value.tagName === 'Connection') {
-                  if ((dragElement.match('when') || dragElement.match('elseWhen')) && ((drpTargt?.source?.value?.tagName != 'When' && drpTargt?.target?.value?.tagName != 'EndCase') && (drpTargt?.source?.value?.tagName != 'EndWhen' && drpTargt?.target?.value?.tagName != 'ElseWhen'))) {
+
+                  if ((dragElement.match('when')) && ((drpTargt?.source?.value?.tagName != 'When' && drpTargt?.target?.value?.tagName != 'EndCase') && (drpTargt?.source?.value?.tagName != 'EndWhen' && drpTargt?.target?.value?.tagName != 'ElseWhen')  && (drpTargt?.source?.value?.tagName != 'CaseWhen' && drpTargt?.target?.value?.tagName != 'When'))) {
                     return;
-                  } else if (dragElement.match('elseWhen') && (drpTargt?.source?.value?.tagName === 'EndWhen' && ((drpTargt?.target?.value?.tagName === 'ElseWhen') || drpTargt?.target?.value?.tagName === 'When'))) {
+                  }else if (( dragElement.match('elseWhen')) && ((drpTargt?.source?.value?.tagName != 'When' && drpTargt?.target?.value?.tagName != 'EndCase') && (drpTargt?.source?.value?.tagName != 'EndWhen' && drpTargt?.target?.value?.tagName != 'ElseWhen'))) {
+                    return;
+                  }else if (dragElement.match('elseWhen') && (drpTargt?.source?.value?.tagName === 'EndWhen' && ((drpTargt?.target?.value?.tagName === 'ElseWhen') || drpTargt?.target?.value?.tagName === 'When'))) {
                     return;
                   } else if (!dragElement.match('when') && !dragElement.match('elseWhen') && ((drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'EndCase') || (drpTargt?.source?.value?.tagName === 'CaseWhen' && drpTargt?.target?.value?.tagName === 'When') || (drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'ElseWhen') || (drpTargt?.source?.value?.tagName === 'EndElse' && drpTargt?.target?.value?.tagName === 'EndCase') || (drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'When'))) {
                     return;
                   } else if ((dragElement.match('when') || dragElement.match('elseWhen')) && (drpTargt?.source?.value?.tagName === 'EndElse' && drpTargt?.target?.value?.tagName === 'EndCase')) {
+                    return;
+                  }else if((dragElement.match('when') || dragElement.match('elseWhen')) &&  (drpTargt?.source?.value?.tagName != 'EndWhen' && drpTargt?.target?.value?.tagName != 'When')){
                     return;
                   }
                   if (checkClosedCellWithSourceCell(drpTargt.source, drpTargt.target)) {
@@ -10917,9 +10957,9 @@ export class WorkflowComponent {
               _dropOnObject();
             } else {
               if (targetObject && targetObject.instructions && copyObj) {
+                updateIdRecursively(copyObj, 20);
 
                 targetObject.instructions.splice(targetIndex + 1 + index, 0, copyObj);
-
               }
             }
           }
@@ -10933,6 +10973,17 @@ export class WorkflowComponent {
             }
           }
         });
+      }
+    }
+
+    function updateIdRecursively(obj, multiplier) {
+      if (obj && obj.id) {
+        obj.id = (parseInt(obj.id) * multiplier).toString();
+        obj.uuid = obj.uuid + 1;
+      }
+
+      if (obj && Array.isArray(obj.instructions)) {
+        obj.instructions.forEach(child => updateIdRecursively(child, multiplier));
       }
     }
 
@@ -11568,8 +11619,10 @@ export class WorkflowComponent {
                 return 'inValid';
               } else if ((title.match(/^when\.png$/) || title.match('elseWhen')) && (targetCell?.source?.value?.tagName === 'EndElse' && targetCell?.target?.value?.tagName === 'EndCase')) {
                 return 'inValid';
+              }else if((title.match(/^when\.png$/) || title.match('elseWhen')) &&  (targetCell?.source?.value?.tagName != 'EndWhen' && targetCell?.target?.value?.tagName != 'When')) {
+                return 'inValid';
               }
-            if (checkClosedCellWithSourceCell(targetCell.source, targetCell.target)) {
+                if (checkClosedCellWithSourceCell(targetCell.source, targetCell.target)) {
               return 'return';
             }
           }

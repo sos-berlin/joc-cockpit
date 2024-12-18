@@ -557,7 +557,6 @@ export class ScheduleComponent {
                 const obj = { name: k1, value: v1, type, isRequired };
                 this.coreService.checkDataType(obj);
 
-                // Only add valid objects to the result
                 if (!(obj.name === "" && obj.value === "" && obj.type === undefined)) {
                   result.push(obj);
                 }

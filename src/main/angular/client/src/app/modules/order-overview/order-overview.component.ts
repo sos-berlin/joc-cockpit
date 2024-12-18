@@ -31,6 +31,7 @@ import {AbstractControl, NG_VALIDATORS, Validator} from "@angular/forms";
 import {OrderActionComponent} from "./order-action/order-action.component";
 import {ConfirmModalComponent} from "../../components/comfirm-modal/confirm.component";
 import {CreateTagModalComponent} from "../configuration/inventory/inventory.component";
+import { ValueEditorComponent } from 'src/app/components/value-editor/value.component';
 
 declare const $;
 
@@ -210,16 +211,29 @@ export class AllOrderResumeModelComponent {
   display: any;
   comments: any = {};
   controllerId: string;
+  orders: any;
   orderIds: any = [];
   isFromWorkflow: boolean = false;
   resumeOrderFrom: string = 'samePosition';
+  workflow: any;
+  workflowId: any = null;
   resumeObj: any = {
     auditLog: {}
   };
   newPositions: any;
   positions: any = [];
+  variables: any = [];
+  constants = [];
+  allowVariable = true;
+  withCyclePosition = false;
 
-  constructor(private coreService: CoreService, public activeModal: NzModalRef){}
+  object = {
+    setOfCheckedValue: new Set(),
+    checked: false,
+    indeterminate: false
+  }
+
+  constructor(private coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService){}
 
   ngOnInit(): void {
     this.preferences = this.modalData.preferences;
@@ -231,9 +245,115 @@ export class AllOrderResumeModelComponent {
       this.required = true;
       this.display = true;
     }
-    this.orderIds = this.modalData.orderIds;
+    this.orders = this.modalData.orders;
+    setTimeout(() => {
+      let firstWorkflowPath = null; // Store the first workflowId path
+      let isMultipleWorkFlow = false;
+      let index = 0;
+      if (this.orders && this.orders.size > 0) {
+        this.orders.forEach((order) => {
+          if (index === 0) {
+            firstWorkflowPath = order.workflowId.path;
+            this.workflowId = order.workflowId;
+          } else {
+            if (firstWorkflowPath !== order.workflowId.path) {
+              isMultipleWorkFlow = true; // Set to true if any mismatch is found
+            }
+          }
+          this.orderIds.push(order.orderId);
+          index++;
+        });
+      }
+      if(isMultipleWorkFlow){
+        this.workflowId = null;
+      }
+      if(this.workflowId) {
+        this.getWorkflow();
+      }
+    }, 100);
     this.resumeObj.controllerId = this.controllerId;
     this.resumeObj.orderIds = this.orderIds;
+    this.getPositions();
+  }
+
+  private getWorkflow(): void {
+    this.coreService.post('workflow', {
+      controllerId: this.controllerId,
+      workflowId: this.workflowId
+    }).subscribe((res: any) => {
+      this.workflow = {};
+      this.workflow.jobs = res.workflow.jobs;
+      this.workflow.configuration = {instructions: res.workflow.instructions};
+    });
+  }
+
+  private getPositions(): void {
+    this.coreService.post('orders/resume/positions', {
+      controllerId: this.controllerId,
+      orderIds: [...this.orders.keys()]
+    }).subscribe({
+      next: (res: any) => {
+        if (res) {
+          this.withCyclePosition = res.withCyclePosition;
+          if (res.variablesNotSettable) {
+            this.allowVariable = false;
+          } else {
+            this.variables = this.coreService.convertObjectToArray(res, 'variables');
+            this.variables.forEach((val) => {
+              if (val.value && isArray(val.value)) {
+                val.isArray = true;
+                val.value = val.value.map(item => {
+                  return {value: item}
+                })
+              }
+            });
+          }
+          this.constants = this.coreService.convertObjectToArray(res, 'constants');
+          this.constants.forEach((item) => {
+            if(item.value) {
+              if (!(typeof item.value === 'object')) {
+                this.coreService.removeSlashToString(item, 'value');
+                if(typeof item.value == 'string') {
+                  const startChar = item.value.substring(0, 1);
+                  const endChar = item.value.substring(item.value.length - 1);
+                  if ((startChar === '"' && endChar === '"') || (startChar === "'" && endChar === "'")) {
+                    item.value = item.value.substring(1, item.value.length - 1);
+                  }
+                }
+              } else {
+                if(!Array.isArray(item.value)) {
+                  let v: any = [];
+                  Object.entries(item.value).map(([k1, v1]) => {
+                    v.push({k1: v1})
+                  });
+                  item.type = 'map';
+                  item.value = v;
+                  item.value.forEach((val, index) => {
+                    item.value[index] = Object.entries(item.value[index]).map(([k1, v1]) => {
+                      return {name: k1, value: v1};
+                    });
+                  });
+                  item.value.forEach((val) => {
+                    this.coreService.removeSlashToString(val, 'value');
+                  });
+                } else {
+                  item.type = 'list';
+                  item.value.forEach((val, index) => {
+                    item.value[index] = Object.entries(item.value[index]).map(([k1, v1]) => {
+                      return {name: k1, value: v1};
+                    });
+                  });
+                  item.value.forEach((val) => {
+                    this.coreService.removeSlashToString(val, 'value');
+                  });
+                }
+              }
+            }
+          });
+          this.positions = res.positions;
+        }
+      }, error: () => this.positions = []
+    });
   }
 
   onTimeChange(e: any): void {
@@ -250,29 +370,147 @@ export class AllOrderResumeModelComponent {
     }
   }
 
-  getPositions(){
-    const obj = {
-      controllerId: this.controllerId,
-      orderIds: this.orderIds
+  onAllChecked(isChecked: boolean): void {
+    if (!isChecked) {
+      this.object.indeterminate = false;
+      this.object.setOfCheckedValue.clear();
+    } else {
+      this.variables.forEach(item => this.updateCheckedSet(item, isChecked));
     }
-    this.coreService.post('orders/resume/positions', obj).subscribe({
-      next: (res) => {
-      this.positions = res.positions;
-      }, error: () => {
-      }
-    });
   }
 
+  onItemChecked(item: any, checked: boolean): void {
+    this.updateCheckedSet(item, checked);
+  }
+
+  updateCheckedSet(data: any, checked: boolean): void {
+    if (data.name && (data.value || data.value == 0 || data.value == false)) {
+      if (checked) {
+        this.object.setOfCheckedValue.add(data.name);
+      } else {
+        this.object.setOfCheckedValue.delete(data.name);
+      }
+    }
+    this.object.checked = this.variables.every(item => {
+      return this.object.setOfCheckedValue.has(item.name);
+    });
+    this.object.indeterminate = this.object.setOfCheckedValue.size > 0 && !this.object.checked;
+  }
+
+  addArgument(): void {
+    const param: any = {
+      name: '',
+      value: ''
+    };
+    if (this.variables) {
+      if (!this.coreService.isLastEntryEmpty(this.variables, 'name', '')) {
+        this.variables.push(param);
+      }
+    }
+  }
+
+  removeArgument(index): void {
+    this.variables.splice(index, 1);
+  }
+
+  addArgumentVal(list): void {
+    list.push({value: ''});
+  }
+
+  removeArgumentVal(list, index): void {
+    list.splice(index, 1);
+  }
+
+  onKeyPress($event, argument): void {
+    if (argument.name && argument.value) {
+      this.onItemChecked(argument, true);
+    }
+    if ($event.which === '13' || $event.which === 13) {
+      $event.preventDefault();
+      this.addArgument();
+    }
+  }
+
+  openEditor(data): void {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ValueEditorComponent,
+        nzClassName: 'lg',
+        nzData: {
+          data: data.value
+        },
+        nzFooter: null,
+        nzAutofocus: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          data.value = result;
+        }
+      });
+    }
+
+  // getPositions(){
+  //   const obj = {
+  //     controllerId: this.controllerId,
+  //     orderIds: this.orderIds
+  //   }
+  //   this.coreService.post('orders/resume/positions', obj).subscribe({
+  //     next: (res) => {
+  //     this.positions = res.positions;
+  //     }, error: () => {
+  //     }
+  //   });
+  // }
+
   onSubmit(){
+    // this.submitted = true;
+    // this.coreService.getAuditLogObj(this.comments, this.resumeObj.auditLog);
+    // this.coreService.post('orders/resume', this.resumeObj).subscribe({
+    //   next: () => {
+    //     this.activeModal.close('DONE');
+    //   }, error: () => {
+    //     this.submitted = false;
+    //   }
+    // });
+
     this.submitted = true;
-    this.coreService.getAuditLogObj(this.comments, this.resumeObj.auditLog);
-    this.coreService.post('orders/resume', this.resumeObj).subscribe({
-          next: () => {
-            this.activeModal.close('DONE');
-          }, error: () => {
-           this.submitted = false;
+    const obj: any = {
+      controllerId: this.controllerId, orderIds: []
+    };
+    if (this.orders) {
+      obj.orderIds = [...this.orders.keys()];
+    }
+    if (this.allowVariable && this.variables.length > 0) {
+      let argu = this.variables.filter((item) => {
+        return item.name && this.object.setOfCheckedValue.has(item.name);
+      });
+      if (argu.length > 0) {
+        obj.variables = this.coreService.keyValuePair(argu);
+        for (let i in obj.variables) {
+          if (isArray(obj.variables[i])) {
+            obj.variables[i] = obj.variables[i].map(val => val.value)
           }
-        });
+        }
+      }
+    }
+    obj.force = this.resumeObj.force;
+    if (this.resumeOrderFrom === 'currentBlock') {
+      obj.fromCurrentBlock = true;
+      delete obj.position;
+    }
+    if (this.resumeObj.position) {
+      obj.position = this.resumeObj.position;
+      delete obj.fromCurrentBlock;
+    }
+    obj.auditLog = {};
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+    this.coreService.post('orders/resume', obj).subscribe({
+      next: () => {
+        this.activeModal.close('Done');
+      }, error: () => this.submitted = false
+    });
   }
 }
 
@@ -1250,14 +1488,6 @@ export class OrderOverviewComponent {
         }
       });
     } else {
-      // const obj: any = {
-      //   controllerId: this.schedulerIds.selected,
-      //   orderIds: []
-      // };
-      let orderIds = [];
-      resumableOrders.forEach((order) => {
-        orderIds.push(order.orderId);
-      });
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: AllOrderResumeModelComponent,
@@ -1265,7 +1495,7 @@ export class OrderOverviewComponent {
         nzData: {
           preferences: this.preferences,
           controllerId: this.schedulerIds.selected,
-          orderIds: orderIds,
+          orders: resumableOrders,
           isFromWorkflow: false
         },
         nzFooter: null,
@@ -1279,42 +1509,6 @@ export class OrderOverviewComponent {
           this.resetCheckBox();
         }
       });
-      // if (this.preferences.auditLog) {
-      //   let comments = {
-      //     radio: 'predefined',
-      //     type: 'Order',
-      //     operation: 'Resume',
-      //     name: ''
-      //   };
-      //   const modal = this.modal.create({
-      //     nzTitle: undefined,
-      //     nzContent: CommentModalComponent,
-      //     nzClassName: 'lg',
-      //     nzData: {
-      //       comments,
-      //       obj,
-      //       url: 'orders/resume'
-      //     },
-      //     nzFooter: null,
-      //     nzClosable: false,
-      //     nzMaskClosable: false
-      //   });
-      //   modal.afterClose.subscribe(result => {
-      //     if (result) {
-      //       this.isProcessing = true;
-      //       this.resetAction(5000);
-      //       this.resetCheckBox();
-      //     }
-      //   });
-      // } else {
-      //   this.isProcessing = true;
-      //   this.coreService.post('orders/resume', obj).subscribe({
-      //     next: () => {
-      //       this.resetCheckBox();
-      //       this.resetAction(5000);
-      //     }, error: () => this.resetAction()
-      //   });
-      // }
     }
   }
 

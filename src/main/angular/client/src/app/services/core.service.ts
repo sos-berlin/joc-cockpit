@@ -2928,7 +2928,6 @@ export class CoreService {
                 delete json.instructions[x].cases[i].then;
               }
             }
-            console.log(":P:Pdd33333333333333333")
             delete json.instructions[x].cases;
             if (json.instructions[x].else) {
               const obj = {
@@ -3443,9 +3442,6 @@ export class CoreService {
   }
 
   checkDataType(sour) {
-    console.log(sour.value,"sour.value")
-    console.log(sour.type,"sour.type")
-    console.log(sour.name,"sour.name")
     if (sour.value || sour.value == 0 || sour.value == false) {
       if (sour.type === 'Number') {
         if (typeof sour.value == 'boolean') {

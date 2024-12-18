@@ -223,9 +223,6 @@
               class="cursor">
             <td>
                <span class="show-in-single-line">
-                  <i (click)="history.show=!history.show;$event.stopPropagation()"
-                     [ngClass]="history.show ? 'fa-caret-up' : 'fa-caret-down'"
-                     class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
                   <span [innerHtml]="history.job"></span>
                          <span *ngIf="history.label"> - </span>
                   <span class="text-muted">{{history.label}}</span>

@@ -195,7 +195,7 @@
         </div>
         <i (click)="collapse(instruction)" [ngClass]="{'fa-minus' : (instruction.show)}" class="fa fa-plus pr-2"></i>
         <span class="_600">
-          <span *ngIf="instruction['TYPE'] !== 'If' && instruction['TYPE'] !== 'Cycle' && instruction['TYPE'] !== 'Retry'" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="(instruction['TYPE'] === 'ConsumeNotices') ? instruction.noticeBoardNames : ''">{{instruction['TYPE'] === 'ElseWhen' ? 'Else' : instruction['TYPE']}}</span>
+          <span *ngIf="instruction['TYPE'] !== 'If' && instruction['TYPE'] !== 'Cycle' && instruction['TYPE'] !== 'Retry'" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="(instruction['TYPE'] === 'ConsumeNotices') ? instruction.noticeBoardNames : ''">{{instruction['TYPE'] === 'ElseWhen' ? 'Else' : instruction['TYPE'] === 'CaseWhen' ? 'Case' : instruction['TYPE'] }}</span>
           <span *ngIf="instruction['TYPE'] === 'Retry'" nz-popover nzPopoverTrigger="click" [nzPopoverContent]="contentTemplate" nzPopoverPlacement="right">{{instruction['TYPE']}}</span>
           <a (click)="showConfiguration(instruction);" *ngIf="instruction['TYPE'] === 'If' || instruction['TYPE'] === 'Cycle'"
              class="cursor">{{instruction['TYPE']}}</a><span

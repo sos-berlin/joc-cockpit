@@ -142,6 +142,9 @@ export class AgentMonitorComponent {
 
   setView(view): void {
     this.filters.filter.view = view;
+    if (view === 'Week') {
+      this.setWeekDatesToCurrentWeek();
+    }
     if (view !== 'Custom') {
       this.coreService.renderTimeSheetHeader(this.filters, this.weekStart, () => {
         this.getData();
@@ -149,6 +152,21 @@ export class AgentMonitorComponent {
     } else {
       this.filters.filter.dateRange = [this.filters.filter.startDate, this.filters.filter.endDate];
     }
+  }
+
+  setWeekDatesToCurrentWeek(): void {
+    const currentDate = new Date();
+    const currentDay = currentDate.getDay(); // 0 (Sunday) to 6 (Saturday)
+
+    const daysFromStartOfWeek = (currentDay + 7 - this.weekStart) % 7;
+    const startOfWeek = new Date(currentDate);
+    startOfWeek.setDate(currentDate.getDate() - daysFromStartOfWeek);
+
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+    this.filters.filter.startDate = startOfWeek;
+    this.filters.filter.endDate = endOfWeek;
   }
 
   onChangeDate(): void {
@@ -295,8 +313,9 @@ export class AgentMonitorComponent {
                   const readyTime = new Date(controller.agents[i].entries[j].readyTime).getTime();
                   const lastKonwnTime = new Date(controller.agents[i].entries[j].lastKnownTime).getTime();
                   const endDate = new Date(this.filters.filter.endDate).setHours(23, 59, 59, 59);
+                  const currentDate = new Date().getTime();
                   for (let k = startDate; k < endDate; k += 86400000) {
-                    if (k >= readyTime && k <= lastKonwnTime) {
+                    if (k >= readyTime && k <= lastKonwnTime && k <= currentDate) {
                       const shutdownEntry = {
                         controllerId: controller.controllerId,
                         agentId: controller.agents[i].agentId,
@@ -308,7 +327,7 @@ export class AgentMonitorComponent {
                         isShutdown: false,
                       };
                       this.groupByData.push(shutdownEntry);
-                    } else if (k > lastKonwnTime) {
+                    } else if (k > lastKonwnTime && k <= currentDate) {
                       const shutdownEntry = {
                         controllerId: controller.controllerId,
                         agentId: controller.agents[i].agentId,
@@ -328,18 +347,21 @@ export class AgentMonitorComponent {
                 const readyTime = new Date(controller.agents[i].entries[j].readyTime).getTime();
                 const lastKonwnTime = new Date(controller.agents[i].entries[j].lastKnownTime).getTime();
                 const endDate = new Date(this.filters.filter.endDate).setHours(23, 59, 59, 59);
+                const currentDate = new Date().getTime();
                 for (let k = startDate; k < endDate; k += 86400000) {
-                  const shutdownEntry = {
-                    controllerId: controller.controllerId,
-                    agentId: controller.agents[i].agentId,
-                    url: controller.agents[i].url,
-                    date: this.coreService.getDateByFormat(new Date(k), this.preferences.zone, 'YYYY-MM-DD'),
-                    totalRunningTime: controller.agents[i].entries[j].totalRunningTime,
-                    readyTime: new Date(new Date(k).setHours(0, 0, 0, 0)).toISOString(),
-                    lastKnownTime: null,
-                    isShutdown: false
-                  };
-                  this.groupByData.push(shutdownEntry);
+                  if (k <= currentDate) {
+                    const shutdownEntry = {
+                      controllerId: controller.controllerId,
+                      agentId: controller.agents[i].agentId,
+                      url: controller.agents[i].url,
+                      date: this.coreService.getDateByFormat(new Date(k), this.preferences.zone, 'YYYY-MM-DD'),
+                      totalRunningTime: controller.agents[i].entries[j].totalRunningTime,
+                      readyTime: new Date(k).toISOString(),
+                      lastKnownTime: null,
+                      isShutdown: false
+                    };
+                    this.groupByData.push(shutdownEntry);
+                  }
                 }
               }
             }
@@ -347,7 +369,6 @@ export class AgentMonitorComponent {
         }
       }
     });
-
     const groupByAgent = this.coreService.clone(this.groupByPipe.transform(this.groupByData, 'agentId'));
     this.groupByData = this.groupByPipe.transform(this.groupByData, 'date');
     this.getStatisticsData(map);
