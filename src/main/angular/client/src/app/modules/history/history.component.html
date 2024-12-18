@@ -1234,9 +1234,6 @@
                     </td>
                     <td (click)="coreService.showLogWindow(null,jobHistory, null, jobHistory.controllerId, null,viewContainerRef)">
                 <span class="show-in-single-line">
-                  <i (click)="jobHistory.show=!jobHistory.show;$event.stopPropagation()" *ngIf="historyFilters.current"
-                     [ngClass]="jobHistory.show ? 'fa-caret-up' : 'fa-caret-down'"
-                     class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
                   <i (click)="downloadLog(jobHistory,jobHistory.controllerId);$event.stopPropagation()" *ngIf="historyFilters.current"
                      class="cursor fa fa-download  text-hover-primary p-r-xs"></i>
                   <span [innerHtml]="jobHistory.job | highlight : task.searchText"></span>
