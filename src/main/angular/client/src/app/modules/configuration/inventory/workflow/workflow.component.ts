@@ -8585,7 +8585,7 @@ export class WorkflowComponent {
             if (dragElement) {
               if (dragElement.match('paste')) {
                 if (self.copyId.length > 0 || (self.inventoryConf.copiedInstuctionObject && self.inventoryConf.copiedInstuctionObject.length > 0)) {
-                  pasteInstruction(drpTargt);
+                    pasteInstruction(drpTargt);
                 } else if (self.cutCell.length > 0) {
                   createClickInstruction(dragElement, drpTargt);
                 }
@@ -10822,7 +10822,9 @@ export class WorkflowComponent {
 
       function getObject(json, id) {
         if (json.instructions) {
+
           for (let x = 0; x < json.instructions.length; x++) {
+
             if (isFound && targetObject) {
               break;
             }
@@ -10877,9 +10879,11 @@ export class WorkflowComponent {
               }
             }
             if (json.instructions[x].then) {
+
               getObject(json.instructions[x].then, id);
             }
             if (json.instructions[x].else) {
+
               getObject(json.instructions[x].else, id);
             }
             if (json.instructions[x].branches) {
@@ -10899,11 +10903,7 @@ export class WorkflowComponent {
           } else if (!targetObj.else) {
             targetObj.else = {instructions: copyObject};
           }
-        } else if (target.value.tagName === 'When') {
-          if (!targetObj.instructions) {
-            targetObj.instructions = [];
-          }
-        } else if (target.value.tagName === 'Fork') {
+        }  else if (target.value.tagName === 'Fork') {
           let branchId;
           if (!targetObj.branches) {
             targetObj.branches = [];
@@ -10946,6 +10946,10 @@ export class WorkflowComponent {
       if (!targetObject) {
         targetIndex = -1;
         targetObject = self.workflow.configuration;
+      }
+
+      if((copyObject[0].TYPE === 'When' || copyObject[0].TYPE === 'ElseWhen') && (targetObject.TYPE === 'When' || targetObject.TYPE === 'ElseWhen' ) ){
+        return
       }
       if (copyObject && copyObject.length > 0) {
         let ignore = false;
@@ -11616,12 +11620,16 @@ export class WorkflowComponent {
               if ((title.match(/^when\.png$/) || title.match('elseWhen')) && ((targetCell?.source?.value?.tagName != 'When' && targetCell?.target?.value?.tagName != 'EndCase') && (targetCell?.source?.value?.tagName != 'EndWhen' && targetCell?.target?.value?.tagName != 'ElseWhen'))) {
                 return 'inValid';
               } else if (title.match('elseWhen') && (targetCell?.source?.value?.tagName === 'EndWhen' && ((targetCell?.target?.value?.tagName === 'ElseWhen') || targetCell?.target?.value?.tagName === 'When'))) {
+
                 return 'inValid';
               } else if (!title.match('when') && !title.match('elseWhen') && ((targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'EndCase') || (targetCell?.source?.value?.tagName === 'CaseWhen' && targetCell?.target?.value?.tagName === 'When') || (targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'ElseWhen') || (targetCell?.source?.value?.tagName === 'EndElse' && targetCell?.target?.value?.tagName === 'EndCase') || (targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'When'))) {
+
                 return 'inValid';
               } else if ((title.match(/^when\.png$/) || title.match('elseWhen')) && (targetCell?.source?.value?.tagName === 'EndElse' && targetCell?.target?.value?.tagName === 'EndCase')) {
+
                 return 'inValid';
               }else if((title.match(/^when\.png$/) || title.match('elseWhen')) &&  (targetCell?.source?.value?.tagName != 'EndWhen' && targetCell?.target?.value?.tagName != 'When')) {
+
                 return 'inValid';
               }
                 if (checkClosedCellWithSourceCell(targetCell.source, targetCell.target)) {
