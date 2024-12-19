@@ -837,6 +837,8 @@ export class ScheduleComponent {
 
                 if (this.schedule.configuration.orderParameterisations[prop].variables[i].value) {
                   this.coreService.checkDataType(this.schedule.configuration.orderParameterisations[prop].variables[i]);
+                }else if (this.schedule.configuration.orderParameterisations[prop].variables[i].value === 0 || this.schedule.configuration.orderParameterisations[prop].variables[i].value === false) {
+                  this.coreService.checkDataType(this.schedule.configuration.orderParameterisations[prop].variables[i]);
                 }
                 if(this.schedule.configuration.orderParameterisations[prop].variables[i].type === undefined){
                   this.getObject()

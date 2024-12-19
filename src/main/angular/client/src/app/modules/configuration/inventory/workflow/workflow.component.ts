@@ -5116,6 +5116,9 @@ export class WorkflowComponent {
         break;
       case 'Number':
         variable.value.default = this.convertToNumberIfValid(variable.value.default);
+        if(variable.value.default === ''){
+          variable.value.default = undefined
+        }
         break;
 
       case 'Boolean':
@@ -10958,7 +10961,6 @@ export class WorkflowComponent {
             } else {
               if (targetObject && targetObject.instructions && copyObj) {
                 updateIdRecursively(copyObj, 20);
-
                 targetObject.instructions.splice(targetIndex + 1 + index, 0, copyObj);
               }
             }
@@ -12667,7 +12669,7 @@ export class WorkflowComponent {
     recursive(mainJson);
   }
 
-  private modifyJSON(mainJson, isValidate, isOpen): boolean {
+  private  modifyJSON(mainJson, isValidate, isOpen): boolean {
     if (isEmpty(mainJson)) {
       return false;
     }
@@ -13223,7 +13225,7 @@ export class WorkflowComponent {
           if (json.instructions[x].then && json.instructions[x].then.instructions) {
             recursive(json.instructions[x].then);
           }
-          if (json.instructions[x].else) {
+          if (json.instructions[x].else && json.instructions[x].TYPE != 'CaseWhen') {
             if (json.instructions[x].else.instructions) {
               recursive(json.instructions[x].else);
             } else {

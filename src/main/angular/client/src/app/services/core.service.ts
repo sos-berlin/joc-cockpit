@@ -3452,6 +3452,8 @@ export class CoreService {
           } else {
             sour.value = '';
           }
+        }else if ((sour.type === 'Number') && typeof sour.value === "object") {
+          sour.value = ''
         }
       } else if (sour.type === 'Boolean') {
         const booleanMapping: { [key: string]: boolean } = {
@@ -3463,6 +3465,7 @@ export class CoreService {
           'no': false,
           'on': true,
           'off': false,
+          '': false,
         };
 
         const defaultValue = String(sour.value).toLowerCase();
@@ -3473,9 +3476,10 @@ export class CoreService {
         }
       } else if (sour.type === 'String' && typeof sour.value !== 'string') {
         sour.value = sour.value.toString();
-      } else if (sour.type === 'String' && sour.value === '[object Object]') {
-        sour.value = ''
-      }else if (sour.type === undefined && sour.name != '') {
+        if (sour.type === 'String' && sour.value === '[object Object]') {
+          sour.value = ''
+        }
+      } else if (sour.type === undefined && sour.name != '') {
         sour.value = ''
         sour.name = ''
       }
