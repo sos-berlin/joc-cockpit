@@ -834,10 +834,9 @@ export class ScheduleComponent {
                 this.schedule.configuration.orderParameterisations[prop].variables[i].type = val.type;
                 this.schedule.configuration.orderParameterisations[prop].variables[i].facet = val.facet;
                 this.schedule.configuration.orderParameterisations[prop].variables[i].message = val.message;
-
                 if (this.schedule.configuration.orderParameterisations[prop].variables[i].value) {
                   this.coreService.checkDataType(this.schedule.configuration.orderParameterisations[prop].variables[i]);
-                }else if (this.schedule.configuration.orderParameterisations[prop].variables[i].value === 0 || this.schedule.configuration.orderParameterisations[prop].variables[i].value === false) {
+                }else if (this.schedule.configuration.orderParameterisations[prop].variables[i].value === 0 || this.schedule.configuration.orderParameterisations[prop].variables[i].value === false || (this.schedule.configuration.orderParameterisations[prop].variables[i].type === undefined && this.schedule.configuration.orderParameterisations[prop].variables[i].value === '')) {
                   this.coreService.checkDataType(this.schedule.configuration.orderParameterisations[prop].variables[i]);
                 }
                 if(this.schedule.configuration.orderParameterisations[prop].variables[i].type === undefined){

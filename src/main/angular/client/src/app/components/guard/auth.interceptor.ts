@@ -142,12 +142,23 @@ export class AuthInterceptor implements HttpInterceptor {
                   if (err.error.error) {
                     if (err.error.error.message && err.error.error.message.match('JocObjectAlreadyExistException')) {
                       this.toasterService.error('', err.error.error.message.replace(/JocObjectAlreadyExistException:/, ''));
+                    }else if(req.url.match('inventory/store') && req.body.objectType === 'WORKFLOW'){
+                      if(err.error.error.message.match('com.sos.inventory.model.instruction.CaseWhen') || err.error.error.message.match('java.util.ArrayList[0]->com.sos.inventory.model.instruction.When["then"]') || err.error.error.message.match('Could not resolve type id \'When\' as a subtyp')){
+                        let title = '';
+                        let msg = '';
+                        this.translate.get('workflow.message.invalidTarget').subscribe(translatedValue => {
+                          title = translatedValue;
+                        });
+                        this.toasterService.error(title, msg);
+                      }
                     } else if (err.error.error.message) {
                       this.toasterService.error('', err.error.error.message);
                     }
+
                   } else if (err.error.message) {
                     this.toasterService.error(err.error.message);
                   } else {
+
                     if (err.error.errors) {
                       for (let i = 0; i < err.error.errors.length; i++) {
                         this.toasterService.error(err.error.errors[i].message);

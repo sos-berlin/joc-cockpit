@@ -5065,7 +5065,7 @@ export class WorkflowComponent {
       switch (type) {
         case 'String':
           variable.value.default = String(variable.value.default);
-          if (variable.value.default == 'undefined') {
+          if (variable.value.default == 'undefined' || variable.value.default == 'null') {
             variable.value.default = ''
           }
           break;
@@ -5110,7 +5110,7 @@ export class WorkflowComponent {
     switch (type) {
       case 'String':
         variable.value.default = String(variable.value.default);
-        if (variable.value.default == 'undefined') {
+        if (variable.value.default == 'undefined' || variable.value.default == 'null') {
           variable.value.default = ''
         }
         break;
@@ -10959,12 +10959,12 @@ export class WorkflowComponent {
             delete copyObj.jobs;
           }
           if (!ignore) {
+            updateIdRecursively(copyObj, 20);
             if (target.value.tagName !== 'Connection' && copyObj && targetIndex > -1) {
               ignore = true;
               _dropOnObject();
             } else {
               if (targetObject && targetObject.instructions && copyObj) {
-                updateIdRecursively(copyObj, 20);
                 targetObject.instructions.splice(targetIndex + 1 + index, 0, copyObj);
               }
             }
@@ -10986,6 +10986,7 @@ export class WorkflowComponent {
       if (obj && obj.id) {
         obj.id = (parseInt(obj.id) * multiplier).toString();
         obj.uuid = obj.uuid + 1;
+
       }
 
       if (obj && Array.isArray(obj.instructions)) {
@@ -13436,6 +13437,13 @@ export class WorkflowComponent {
         }
         if (value.value.type === 'List' || value.value.type === 'Map') {
           delete value.value.final;
+          if (value.value.listParameters.length > 0) {
+            value.value.listParameters.forEach(val => {
+              if (val.value.type === 'Number' && val.value.default === '') {
+                delete val.value.default;
+              }
+            })
+          }
           value.value.listParameters = this.coreService.keyValuePair(value.value.listParameters);
         } else {
           if (value.value.type !== 'Final') {
@@ -13652,7 +13660,17 @@ export class WorkflowComponent {
           }
           this.ref.detectChanges();
         }
-      }, error: () => this.isStore = false
+      }, error: (err: any) => {
+        if(request.objectType === 'WORKFLOW'){
+          console.log(err)
+          if(err.error.error.message.match('com.sos.inventory.model.instruction.CaseWhen') || err.error.error.message.match('Could not resolve type id \'When\' as a subtyp') || err.error.error.message.match('java.util.ArrayList[0]->com.sos.inventory.model.instruction.When["then"]')){
+            this.workflow.configuration = JSON.parse(this.workflow.actual)
+            this.updateXMLJSON(false);
+
+          }
+        }
+        this.isStore = false
+      }
     });
   }
 

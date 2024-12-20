@@ -1448,6 +1448,7 @@ export class DeployComponent {
   filteredAffectedItems: any[] = [];
   filteredAffectedCollapsed: boolean = true;
   selectAllFilteredAffected: { [key: string]: boolean } = {};
+  sharedCheckboxState: { [key: string]: boolean } = {};
 
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private ref: ChangeDetectorRef,

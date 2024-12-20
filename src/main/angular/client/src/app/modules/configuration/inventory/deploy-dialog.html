@@ -229,8 +229,8 @@
 
                           <div *ngIf="affectedCollapsed[objectType]" class="m-t-sm m-l-md">
                             <div *ngFor="let obj of getObjectsByType(dependency?.referencedBy, objectType)">
-                              <ng-container>
-                                <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-' + obj.path"
+                              <ng-container *ngIf="isRemove; else normalCheckbox">
+                                <label nz-checkbox [(ngModel)]="sharedCheckboxState[obj.path]" [name]="'checkbox-' + obj.path"
                                        [disabled]="obj.disabled" (ngModelChange)="updateParentCheckboxAffected(objectType)">
                                   <span [ngClass]="{
                                       'fa-circle-o': !obj.valid,
@@ -239,6 +239,16 @@
                                   {{ obj.path }}
                                 </label>
                               </ng-container>
+                              <ng-template #normalCheckbox>
+                                <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-' + obj.path"
+                                       [disabled]="obj.disabled" (ngModelChange)="updateParentCheckboxAffected(objectType)">
+                                  <span [ngClass]="{
+                                      'fa-circle-o': !obj.valid,
+                                      'fa-circle dark-blue': obj.deployed || obj.released
+                                  }" class="fa fa-check-circle-o orange text-xs"></span>
+                                  {{ obj.path }}
+                                </label>
+                              </ng-template>
                             </div>
                           </div>
                         </div>

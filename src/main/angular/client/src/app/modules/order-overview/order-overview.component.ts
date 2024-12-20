@@ -246,7 +246,6 @@ export class AllOrderResumeModelComponent {
       this.display = true;
     }
     this.orders = this.modalData.orders;
-    setTimeout(() => {
       let firstWorkflowPath = null; // Store the first workflowId path
       let isMultipleWorkFlow = false;
       let index = 0;
@@ -270,10 +269,9 @@ export class AllOrderResumeModelComponent {
       if(this.workflowId) {
         this.getWorkflow();
       }
-    }, 100);
     this.resumeObj.controllerId = this.controllerId;
     this.resumeObj.orderIds = this.orderIds;
-    if(this.resumeObj?.orderIds.length > 0) {
+    if(this.orderIds.length > 0) {
       this.getPositions();
     }
   }
