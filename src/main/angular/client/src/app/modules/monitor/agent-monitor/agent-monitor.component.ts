@@ -40,11 +40,6 @@ export class AgentMonitorComponent {
   subscription1: Subscription;
   subscription2: Subscription;
 
-  dateRange = {
-    from: new Date(),
-    to: new Date()
-  }
-
   @ViewChild('chartArea', {static: true}) chartArea: ElementRef;
 
   constructor(private coreService: CoreService, private authService: AuthService, private translate: TranslateService,
@@ -108,8 +103,6 @@ export class AgentMonitorComponent {
 
   private getData(): void {
     const d = new Date(this.filters.filter.endDate).setDate(this.filters.filter.endDate.getDate() + 1);
-    this.dateRange.from = this.filters.filter.startDate;
-    this.dateRange.to = new Date(d);
     this.coreService.post('monitoring/agents', {
       controllerId: this.filters.current ? this.schedulerIds.selected : '',
       dateFrom: this.filters.filter.startDate,
@@ -297,8 +290,8 @@ export class AgentMonitorComponent {
                   url: controller.agents[i].url,
                   date: this.coreService.getDateByFormat(new Date(controller.agents[i].entries[j].readyTime), this.preferences.zone, 'YYYY-MM-DD'),
                   totalRunningTime: controller.agents[i].entries[j].totalRunningTime,
-                  readyTime:  controller.agents[i].entries[j].readyTime,
-                  lastKnownTime: controller.agents[i].entries[j].lastKnownTime,
+                  readyTime:  new Date(readyTime).toISOString(),
+                  lastKnownTime: new Date(lastKonwnTime).toISOString(),
                   isShutdown: false,
                 };
                 this.groupByData.push(shutdownEntry);
@@ -401,13 +394,13 @@ export class AgentMonitorComponent {
                   }
                 }
               } else {
-                const startDate = new Date(controller.agents[i].entries[j].readyTime).getTime();
+                const startDate = new Date(this.filters.filter.startDate).setHours(0, 0, 0, 0);
                 const readyTime = new Date(controller.agents[i].entries[j].readyTime).getTime();
                 const endDate = new Date(this.filters.filter.endDate).setHours(23, 59, 59, 59);
                 const currentDate = new Date().getTime();
                 for (let k = startDate; k < endDate; k += 86400000) {
                   if (k <= currentDate) {
-                    if (k < readyTime) {
+                    if (k < readyTime && new Date(readyTime).toLocaleDateString() !== new Date(k).toLocaleDateString()) {
                       const shutdownEntry = {
                         controllerId: controller.controllerId,
                         agentId: controller.agents[i].agentId,
