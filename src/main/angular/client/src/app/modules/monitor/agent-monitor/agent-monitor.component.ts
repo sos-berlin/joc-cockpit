@@ -40,6 +40,11 @@ export class AgentMonitorComponent {
   subscription1: Subscription;
   subscription2: Subscription;
 
+  dateRange = {
+    from: new Date(),
+    to: new Date()
+  }
+
   @ViewChild('chartArea', {static: true}) chartArea: ElementRef;
 
   constructor(private coreService: CoreService, private authService: AuthService, private translate: TranslateService,
@@ -103,6 +108,8 @@ export class AgentMonitorComponent {
 
   private getData(): void {
     const d = new Date(this.filters.filter.endDate).setDate(this.filters.filter.endDate.getDate() + 1);
+    this.dateRange.from = this.filters.filter.startDate;
+    this.dateRange.to = new Date(d);
     this.coreService.post('monitoring/agents', {
       controllerId: this.filters.current ? this.schedulerIds.selected : '',
       dateFrom: this.filters.filter.startDate,
@@ -135,6 +142,9 @@ export class AgentMonitorComponent {
 
   setView(view): void {
     this.filters.filter.view = view;
+    if (view === 'Week') {
+      this.setWeekDatesToCurrentWeek();
+    }
     if (view !== 'Custom') {
       this.coreService.renderTimeSheetHeader(this.filters, this.weekStart, () => {
         this.getData();
@@ -142,6 +152,21 @@ export class AgentMonitorComponent {
     } else {
       this.filters.filter.dateRange = [this.filters.filter.startDate, this.filters.filter.endDate];
     }
+  }
+
+  setWeekDatesToCurrentWeek(): void {
+    const currentDate = new Date();
+    const currentDay = currentDate.getDay(); // 0 (Sunday) to 6 (Saturday)
+
+    const daysFromStartOfWeek = (currentDay + 7 - this.weekStart) % 7;
+    const startOfWeek = new Date(currentDate);
+    startOfWeek.setDate(currentDate.getDate() - daysFromStartOfWeek);
+
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+    this.filters.filter.startDate = startOfWeek;
+    this.filters.filter.endDate = endOfWeek;
   }
 
   onChangeDate(): void {
@@ -256,53 +281,177 @@ export class AgentMonitorComponent {
     this.data.forEach((controller) => {
       for (const i in controller.agents) {
         if (controller.agents[i]) {
-          if (controller.agents[i].previousEntry) {
-            const startDate = new Date(this.filters.filter.startDate).setHours(0, 0, 0, 0);
-            if (startDate > new Date(controller.agents[i].previousEntry.readyTime).getTime()) {
-              const obj = {
-                controllerId: controller.controllerId,
-                agentId: controller.agents[i].agentId,
-                url: controller.agents[i].url,
-                date: this.coreService.getDateByFormat(startDate, this.preferences.zone, 'YYYY-MM-DD'),
-                readyTime: startDate,
-                lastKnownTime: null,
-                isShutdown: false
-              };
-              if (controller.agents[i].previousEntry.lastKnownTime) {
-                if (startDate < new Date(controller.agents[i].previousEntry.lastKnownTime).getTime()) {
-                  obj.lastKnownTime = controller.agents[i].previousEntry.lastKnownTime;
-                } else {
-                  obj.readyTime = new Date(this.filters.filter.startDate).setHours(23, 59, 59, 59);
-                  obj.isShutdown = true;
+          if (controller.agents[i].entries) {
+            for (const j in controller.agents[i].entries) {
+              if (controller.agents[i].entries[j].lastKnownTime) {
+                const startDate = new Date(this.filters.filter.startDate).setHours(0, 0, 0, 0);
+                const readyTime = new Date(controller.agents[i].entries[j].readyTime).getTime();
+                const lastKonwnTime = new Date(controller.agents[i].entries[j].lastKnownTime).getTime();
+                const endDate = new Date(this.filters.filter.endDate).setHours(23, 59, 59, 59);
+                const currentDate = new Date().getTime();
+                const nextIndex = Number(j) + 1;
+
+                const shutdownEntry = {
+                  controllerId: controller.controllerId,
+                  agentId: controller.agents[i].agentId,
+                  url: controller.agents[i].url,
+                  date: this.coreService.getDateByFormat(new Date(controller.agents[i].entries[j].readyTime), this.preferences.zone, 'YYYY-MM-DD'),
+                  totalRunningTime: controller.agents[i].entries[j].totalRunningTime,
+                  readyTime:  controller.agents[i].entries[j].readyTime,
+                  lastKnownTime: controller.agents[i].entries[j].lastKnownTime,
+                  isShutdown: false,
+                };
+                this.groupByData.push(shutdownEntry);
+                if (controller.agents[i].entries.length > 1 && new Date(controller.agents[i].entries[j].readyTime).toLocaleDateString() !== new Date(controller.agents[i].entries[j].lastKnownTime).toLocaleDateString()) {
+                  for (let k = readyTime + 86400000; k < lastKonwnTime; k += 86400000) {
+
+                    const shutdownEntry = {
+                      controllerId: controller.controllerId,
+                      agentId: controller.agents[i].agentId,
+                      url: controller.agents[i].url,
+                      date: this.coreService.getDateByFormat(new Date(k), this.preferences.zone, 'YYYY-MM-DD'),
+                      totalRunningTime: controller.agents[i].entries[j].totalRunningTime,
+                      readyTime:  new Date(new Date(k).setHours(0, 0, 0, 0)).toISOString(),
+                      lastKnownTime: new Date(new Date(k).setHours(23, 59, 59, 59)).toISOString(),
+                      isShutdown: false,
+                    };
+                    this.groupByData.push(shutdownEntry);
+                  }
+                }
+                if (controller.agents[i].entries.length > 1 && Number(j) === 0 && new Date(controller.agents[i].entries[0].readyTime).getTime() > startDate) {
+                  for (let k = startDate; k < readyTime - 86400000; k += 86400000) {
+                    if (k <= currentDate) {
+                      const shutdownEntry = {
+                        controllerId: controller.controllerId,
+                        agentId: controller.agents[i].agentId,
+                        url: controller.agents[i].url,
+                        date: this.coreService.getDateByFormat(new Date(k), this.preferences.zone, 'YYYY-MM-DD'),
+                        totalRunningTime: controller.agents[i].entries[j].totalRunningTime,
+                        readyTime: new Date(k).toISOString(),
+                        lastKnownTime: null,
+                        isShutdown: true,
+                      };
+                      this.groupByData.push(shutdownEntry);
+                    }
+                  }
+                }
+                if (controller.agents[i].entries.length > 1 && controller.agents[i].entries[nextIndex] && nextIndex === (controller.agents[i].entries.length - 1) && controller.agents[i].entries[nextIndex].lastKnownTime
+                && new Date(controller.agents[i].entries[nextIndex].readyTime).getTime() >= new Date(controller.agents[i].entries[j].lastKnownTime).getTime()) {
+                  const nextLastKonwnTime = new Date(controller.agents[i].entries[nextIndex].lastKnownTime).getTime();
+                  let l = 0;
+                  for (let k = nextLastKonwnTime; k < endDate; k += 86400000) {
+                    if (l > 0) {
+                      k = new Date(k).setHours(0, 0, 0, 0);
+                    }
+                    if (k <= currentDate) {
+                      const shutdownEntry = {
+                        controllerId: controller.controllerId,
+                        agentId: controller.agents[i].agentId,
+                        url: controller.agents[i].url,
+                        date: this.coreService.getDateByFormat(new Date(k), this.preferences.zone, 'YYYY-MM-DD'),
+                        totalRunningTime: controller.agents[i].entries[nextIndex].totalRunningTime,
+                        readyTime: new Date(k).toISOString(),
+                        lastKnownTime: null,
+                        isShutdown: true,
+                      };
+                      this.groupByData.push(shutdownEntry);
+                    }
+                    l++;
+                  }
+                }
+                if (controller.agents[i].entries.length === 1) {
+                  for (let k = startDate; k < endDate; k += 86400000) {
+                    if (k < readyTime) {
+                      const shutdownEntry = {
+                        controllerId: controller.controllerId,
+                        agentId: controller.agents[i].agentId,
+                        url: controller.agents[i].url,
+                        date: this.coreService.getDateByFormat(new Date(k), this.preferences.zone, 'YYYY-MM-DD'),
+                        totalRunningTime: controller.agents[i].entries[j].totalRunningTime,
+                        readyTime: new Date(new Date(k).setHours(0, 0, 0, 0)).toISOString(),
+                        lastKnownTime: null,
+                        isShutdown: true,
+                      };
+                      this.groupByData.push(shutdownEntry);
+                    } else if (k >= readyTime && k <= lastKonwnTime && k <= currentDate) {
+                      const shutdownEntry = {
+                        controllerId: controller.controllerId,
+                        agentId: controller.agents[i].agentId,
+                        url: controller.agents[i].url,
+                        date: this.coreService.getDateByFormat(new Date(k), this.preferences.zone, 'YYYY-MM-DD'),
+                        totalRunningTime: controller.agents[i].entries[j].totalRunningTime,
+                        readyTime: new Date(new Date(k).setHours(0, 0, 0, 0)).toISOString(),
+                        lastKnownTime: new Date(new Date(k).setHours(23, 59, 59, 59)).toISOString(),
+                        isShutdown: false,
+                      };
+                      this.groupByData.push(shutdownEntry);
+                    } else if (k > lastKonwnTime && k <= currentDate) {
+                      const shutdownEntry = {
+                        controllerId: controller.controllerId,
+                        agentId: controller.agents[i].agentId,
+                        url: controller.agents[i].url,
+                        date: this.coreService.getDateByFormat(new Date(k), this.preferences.zone, 'YYYY-MM-DD'),
+                        totalRunningTime: controller.agents[i].entries[j].totalRunningTime,
+                        readyTime: new Date(new Date(k).setHours(0, 0, 0, 0)).toISOString(),
+                        lastKnownTime: null,
+                        isShutdown: true,
+                      };
+                      this.groupByData.push(shutdownEntry);
+                    }
+                  }
+                }
+              } else {
+                const startDate = new Date(controller.agents[i].entries[j].readyTime).getTime();
+                const readyTime = new Date(controller.agents[i].entries[j].readyTime).getTime();
+                const endDate = new Date(this.filters.filter.endDate).setHours(23, 59, 59, 59);
+                const currentDate = new Date().getTime();
+                for (let k = startDate; k < endDate; k += 86400000) {
+                  if (k <= currentDate) {
+                    if (k < readyTime) {
+                      const shutdownEntry = {
+                        controllerId: controller.controllerId,
+                        agentId: controller.agents[i].agentId,
+                        url: controller.agents[i].url,
+                        date: this.coreService.getDateByFormat(new Date(k), this.preferences.zone, 'YYYY-MM-DD'),
+                        totalRunningTime: controller.agents[i].entries[j].totalRunningTime,
+                        readyTime: new Date(k).toISOString(),
+                        lastKnownTime: null,
+                        isShutdown: true
+                      };
+                      this.groupByData.push(shutdownEntry);
+                    } else if (new Date(readyTime).toLocaleDateString() === new Date(k).toLocaleDateString()) {
+                      const shutdownEntry = {
+                        controllerId: controller.controllerId,
+                        agentId: controller.agents[i].agentId,
+                        url: controller.agents[i].url,
+                        date: this.coreService.getDateByFormat(new Date(k), this.preferences.zone, 'YYYY-MM-DD'),
+                        totalRunningTime: controller.agents[i].entries[j].totalRunningTime,
+                        readyTime: new Date(readyTime).toISOString(),
+                        lastKnownTime: null,
+                        isShutdown: false
+                      };
+                      this.groupByData.push(shutdownEntry);
+                    } else {
+                      const shutdownEntry = {
+                        controllerId: controller.controllerId,
+                        agentId: controller.agents[i].agentId,
+                        url: controller.agents[i].url,
+                        date: this.coreService.getDateByFormat(new Date(k), this.preferences.zone, 'YYYY-MM-DD'),
+                        totalRunningTime: controller.agents[i].entries[j].totalRunningTime,
+                        readyTime: new Date(k).toISOString(),
+                        lastKnownTime: null,
+                        isShutdown: false
+                      };
+                      this.groupByData.push(shutdownEntry);
+                    }
+                  }
                 }
               }
-              let arr = [obj];
-              if (map.has(obj.date)) {
-                arr = arr.concat(JSON.parse(map.get(obj.date)));
-              }
-              map.set(obj.date, JSON.stringify(arr));
             }
-          }
-          for (const j in controller.agents[i].entries) {
-            if (controller.agents[i].entries[j].readyTime === controller.agents[i].entries[j].lastKnownTime) {
-              const d = new Date(controller.agents[i].entries[j].readyTime);
-              controller.agents[i].entries[j].lastKnownTime = d.setSeconds(d.getSeconds() + 1);
-            }
-            const obj = {
-              controllerId: controller.controllerId,
-              agentId: controller.agents[i].agentId,
-              url: controller.agents[i].url,
-              date: this.coreService.getDateByFormat(controller.agents[i].entries[j].readyTime, this.preferences.zone, 'YYYY-MM-DD'),
-              totalRunningTime: controller.agents[i].entries[j].totalRunningTime,
-              readyTime: controller.agents[i].entries[j].readyTime,
-              lastKnownTime: controller.agents[i].entries[j].lastKnownTime
-            };
-            this.groupByData.push(obj);
           }
         }
       }
     });
-
     const groupByAgent = this.coreService.clone(this.groupByPipe.transform(this.groupByData, 'agentId'));
     this.groupByData = this.groupByPipe.transform(this.groupByData, 'date');
     this.getStatisticsData(map);
