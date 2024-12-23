@@ -1241,6 +1241,8 @@ export class CalendarComponent {
                 this.isLocalChange = '';
               }
             }
+          }else if(args.eventSnapshots[j].eventType.match(/InventoryObjectUpdated/) && (args.eventSnapshots[j].objectType === 'WORKINGDAYSCALENDAR' || args.eventSnapshots[j].objectType === 'NONWORKINGDAYSCALENDAR')){
+            this.getObject();
           }
         }
       }
