@@ -36,7 +36,7 @@
         <div *ngIf="isFromWorkflow">
           <nz-select
             nzPlaceHolder="{{'order.placeholder.enterPosition' | translate}}" [(ngModel)]="resumeObj.position" name="position">
-            <nz-option *ngFor="let position of positions" [nzLabel]="position.type === 'ImplicitEnd' ? '--- end ---' : position.label" [nzValue]="+position.positionString"></nz-option>
+            <nz-option *ngFor="let position of positions" [nzLabel]="position.type === 'ImplicitEnd' ? '--- end ---' : position.label ? position.label: position.type" [nzValue]="position.position"></nz-option>
           </nz-select>
         </div>
       </div>

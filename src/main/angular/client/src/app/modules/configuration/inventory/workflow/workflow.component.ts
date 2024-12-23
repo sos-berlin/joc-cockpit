@@ -13664,7 +13664,7 @@ export class WorkflowComponent {
         }
       }, error: (err: any) => {
         if(request.objectType === 'WORKFLOW'){
-          if(err.error.error.message.match('com.sos.inventory.model.instruction.CaseWhen') || err.error.error.message.match('Could not resolve type id \'When\' as a subtyp') || err.error.error.message.match('java.util.ArrayList[0]->com.sos.inventory.model.instruction.When["then"]')){
+          if(err.error.error.message.match('com.sos.inventory.model.instruction.CaseWhen') || err.error.error.message.match('Could not resolve type id \'When\' as a subtyp') || err.error.error.message.match('Could not resolve type id \'ElseWhen\' as a subtype of') || err.error.error.message.match('java.util.ArrayList[0]->com.sos.inventory.model.instruction.When["then"]')){
             this.workflow.configuration = JSON.parse(this.workflow.actual)
             this.updateXMLJSON(false);
 

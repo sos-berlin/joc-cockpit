@@ -143,7 +143,7 @@ export class AuthInterceptor implements HttpInterceptor {
                     if (err.error.error.message && err.error.error.message.match('JocObjectAlreadyExistException')) {
                       this.toasterService.error('', err.error.error.message.replace(/JocObjectAlreadyExistException:/, ''));
                     }else if(req.url.match('inventory/store') && req.body.objectType === 'WORKFLOW'){
-                      if(err.error.error.message.match('com.sos.inventory.model.instruction.CaseWhen') || err.error.error.message.match('java.util.ArrayList[0]->com.sos.inventory.model.instruction.When["then"]') || err.error.error.message.match('Could not resolve type id \'When\' as a subtyp')){
+                      if(err.error.error.message.match('com.sos.inventory.model.instruction.CaseWhen') || err.error.error.message.match('java.util.ArrayList[0]->com.sos.inventory.model.instruction.When["then"]') || err.error.error.message.match('Could not resolve type id \'When\' as a subtyp') ||  err.error.error.message.match('could not resolve type id \'ElseWhen\' as a subtype of')){
                         let title = '';
                         let msg = '';
                         this.translate.get('workflow.message.invalidTarget').subscribe(translatedValue => {
