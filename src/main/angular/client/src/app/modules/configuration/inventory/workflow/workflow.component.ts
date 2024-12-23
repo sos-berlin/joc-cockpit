@@ -8561,7 +8561,7 @@ export class WorkflowComponent {
                     return;
                   }else if (dragElement.match('elseWhen') && (drpTargt?.source?.value?.tagName === 'EndWhen' && ((drpTargt?.target?.value?.tagName === 'ElseWhen') || drpTargt?.target?.value?.tagName === 'When'))) {
                     return;
-                  } else if (!dragElement.match('when') && !dragElement.match('elseWhen') && ((drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'EndCase') || (drpTargt?.source?.value?.tagName === 'CaseWhen' && drpTargt?.target?.value?.tagName === 'When') || (drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'ElseWhen') || (drpTargt?.source?.value?.tagName === 'EndElse' && drpTargt?.target?.value?.tagName === 'EndCase') || (drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'When'))) {
+                  } else if (!dragElement.match('paste') && !dragElement.match('when') && !dragElement.match('elseWhen') && ((drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'EndCase') || (drpTargt?.source?.value?.tagName === 'CaseWhen' && drpTargt?.target?.value?.tagName === 'When') || (drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'ElseWhen') || (drpTargt?.source?.value?.tagName === 'EndElse' && drpTargt?.target?.value?.tagName === 'EndCase') || (drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'When'))) {
                     return;
                   } else if ((dragElement.match('when') || dragElement.match('elseWhen')) && (drpTargt?.source?.value?.tagName === 'EndElse' && drpTargt?.target?.value?.tagName === 'EndCase')) {
                     return;
@@ -10985,14 +10985,20 @@ export class WorkflowComponent {
     function updateIdRecursively(obj, multiplier) {
       if (obj && obj.id) {
         obj.id = (parseInt(obj.id) * multiplier).toString();
-        obj.uuid = obj.uuid + 1;
 
+        if (obj.uuid) {
+          const randomSuffix = Math.random().toString(36).slice(-3);
+          obj.uuid = obj.uuid.slice(0, -3) + randomSuffix;
+        } else {
+        }
       }
 
       if (obj && Array.isArray(obj.instructions)) {
-        obj.instructions.forEach(child => updateIdRecursively(child, multiplier));
+        obj.instructions.forEach((child) => updateIdRecursively(child, multiplier));
       }
     }
+
+
 
     function checkCopyName(jobName): string {
       let str = jobName;
@@ -11621,16 +11627,12 @@ export class WorkflowComponent {
               if ((title.match(/^when\.png$/) || title.match('elseWhen')) && ((targetCell?.source?.value?.tagName != 'When' && targetCell?.target?.value?.tagName != 'EndCase') && (targetCell?.source?.value?.tagName != 'EndWhen' && targetCell?.target?.value?.tagName != 'ElseWhen'))) {
                 return 'inValid';
               } else if (title.match('elseWhen') && (targetCell?.source?.value?.tagName === 'EndWhen' && ((targetCell?.target?.value?.tagName === 'ElseWhen') || targetCell?.target?.value?.tagName === 'When'))) {
-
                 return 'inValid';
-              } else if (!title.match('when') && !title.match('elseWhen') && ((targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'EndCase') || (targetCell?.source?.value?.tagName === 'CaseWhen' && targetCell?.target?.value?.tagName === 'When') || (targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'ElseWhen') || (targetCell?.source?.value?.tagName === 'EndElse' && targetCell?.target?.value?.tagName === 'EndCase') || (targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'When'))) {
-
+              } else if (!title.match('paste') && !title.match('when') && !title.match('elseWhen') && ((targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'EndCase') || (targetCell?.source?.value?.tagName === 'CaseWhen' && targetCell?.target?.value?.tagName === 'When') || (targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'ElseWhen') || (targetCell?.source?.value?.tagName === 'EndElse' && targetCell?.target?.value?.tagName === 'EndCase') || (targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'When'))) {
                 return 'inValid';
               } else if ((title.match(/^when\.png$/) || title.match('elseWhen')) && (targetCell?.source?.value?.tagName === 'EndElse' && targetCell?.target?.value?.tagName === 'EndCase')) {
-
                 return 'inValid';
               }else if((title.match(/^when\.png$/) || title.match('elseWhen')) &&  (targetCell?.source?.value?.tagName != 'EndWhen' && targetCell?.target?.value?.tagName != 'When')) {
-
                 return 'inValid';
               }
                 if (checkClosedCellWithSourceCell(targetCell.source, targetCell.target)) {
@@ -13662,7 +13664,6 @@ export class WorkflowComponent {
         }
       }, error: (err: any) => {
         if(request.objectType === 'WORKFLOW'){
-          console.log(err)
           if(err.error.error.message.match('com.sos.inventory.model.instruction.CaseWhen') || err.error.error.message.match('Could not resolve type id \'When\' as a subtyp') || err.error.error.message.match('java.util.ArrayList[0]->com.sos.inventory.model.instruction.When["then"]')){
             this.workflow.configuration = JSON.parse(this.workflow.actual)
             this.updateXMLJSON(false);

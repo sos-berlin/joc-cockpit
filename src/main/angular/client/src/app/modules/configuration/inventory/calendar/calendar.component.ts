@@ -1318,6 +1318,7 @@ export class CalendarComponent {
       this.saveJSON();
     }
     if (changes['data']) {
+
       if (this.data.type) {
         this.editor.frequencyType = 'INCLUDE';
         this.getObject();
@@ -1350,6 +1351,8 @@ export class CalendarComponent {
                 this.isLocalChange = '';
               }
             }
+          }else if(args.eventSnapshots[j].eventType.match(/InventoryObjectUpdated/) && (args.eventSnapshots[j].objectType === 'WORKINGDAYSCALENDAR' || args.eventSnapshots[j].objectType === 'NONWORKINGDAYSCALENDAR')){
+            this.getObject();
           }
         }
       }

@@ -40,6 +40,9 @@ export class AgentMonitorComponent {
   subscription1: Subscription;
   subscription2: Subscription;
 
+  startWeekDate: any;
+  endWeekDate: any;
+
   @ViewChild('chartArea', {static: true}) chartArea: ElementRef;
 
   constructor(private coreService: CoreService, private authService: AuthService, private translate: TranslateService,
@@ -94,6 +97,10 @@ export class AgentMonitorComponent {
   init(): void {
     if (this.filters.filter.view !== 'Custom') {
       this.coreService.renderTimeSheetHeader(this.filters, this.weekStart, () => {
+        if (this.filters.filter.view === 'Week') {
+          this.startWeekDate = this.filters.filter.startDate;
+          this.endWeekDate = this.filters.filter.endDate;
+        }
         this.getData();
       });
     } else {
@@ -153,13 +160,21 @@ export class AgentMonitorComponent {
 
     const daysFromStartOfWeek = (currentDay + 7 - this.weekStart) % 7;
     const startOfWeek = new Date(currentDate);
-    startOfWeek.setDate(currentDate.getDate() - daysFromStartOfWeek);
+    startOfWeek.setDate(currentDate.getDate() - daysFromStartOfWeek - 1);
+    startOfWeek.setHours(0, 0, 0, 0); // Midnight local
 
     const endOfWeek = new Date(startOfWeek);
     endOfWeek.setDate(startOfWeek.getDate() + 6);
+    endOfWeek.setHours(23, 59, 59, 999); // End of day local
 
-    this.filters.filter.startDate = startOfWeek;
-    this.filters.filter.endDate = endOfWeek;
+    if (this.startWeekDate && this.endWeekDate) {
+      this.filters.filter.startDate = this.startWeekDate;
+      this.filters.filter.endDate = this.endWeekDate;
+    } else {
+      this.filters.filter.startDate = new Date(startOfWeek.getTime() - startOfWeek.getTimezoneOffset() * 60000).toISOString();
+      this.filters.filter.endDate = new Date(endOfWeek.getTime() - endOfWeek.getTimezoneOffset() * 60000).toISOString();
+    }
+
   }
 
   onChangeDate(): void {
