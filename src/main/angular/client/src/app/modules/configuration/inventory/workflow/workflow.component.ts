@@ -10992,7 +10992,13 @@ export class WorkflowComponent {
         } else {
         }
       }
-
+      if (obj.TYPE === 'Try') {
+        if (obj.catch) {
+          obj.catch.instructions.forEach((child) => {
+            updateIdRecursively(child, multiplier)
+          })
+        }
+      }
       if (obj && Array.isArray(obj.instructions)) {
         obj.instructions.forEach((child) => updateIdRecursively(child, multiplier));
       }
