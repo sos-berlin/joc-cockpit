@@ -790,7 +790,14 @@ export class LogComponent {
         div.className += ' p-l-21';
         div.innerHTML = `<span >` + col;
       }
-      window.document.getElementById('logs')?.appendChild(div);
+      const logsContainer = window.document.getElementById('logs');
+      const uniqueId = `${dt[i].orderId}-${dt[i].logEvent}-${dt[i].position}`;
+      const existingDiv = logsContainer.querySelector(`[data-log-id="${uniqueId}"]`);
+
+      if (!existingDiv) {
+        div.setAttribute('data-log-id', uniqueId);
+        logsContainer.appendChild(div);
+      }
     }
     if (this.taskCount > 1) {
       this.isExpandCollapse = true;

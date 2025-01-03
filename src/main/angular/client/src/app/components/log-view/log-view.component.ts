@@ -842,8 +842,17 @@ export class LogViewComponent {
       }
 
       if (POPOUT_MODALS['windowInstance']?.document.getElementById('logs')) {
-        POPOUT_MODALS['windowInstance']?.document.getElementById('logs').appendChild(div);
+        const logsContainer = POPOUT_MODALS['windowInstance']?.document.getElementById('logs');
+
+        const uniqueId = `${dt[i].orderId}-${dt[i].logEvent}-${dt[i].position}`;
+        const existingDiv = logsContainer.querySelector(`[data-log-id="${uniqueId}"]`);
+
+        if (!existingDiv) {
+          div.setAttribute('data-log-id', uniqueId);
+          logsContainer.appendChild(div);
+        }
       }
+
     }
 
     if (this.taskCount > 1) {

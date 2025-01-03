@@ -1286,7 +1286,7 @@ export class CoreService {
           let lastDiv = divs[divs.length - 1];
           if (lastDiv) {
             // Log the last <div> to the console
-            console.log('lastDiv', lastDiv.innerText, lastDiv.classList);
+            // console.log('lastDiv', lastDiv.innerText, lastDiv.classList);
             if (lastDiv.classList.contains('continue')) {
               let text = lastDiv.innerText;
               match = match.replace(/^\r?\n/, '');
