@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ElementRef} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {isArray} from "underscore";
 import {CoreService} from '../../services/core.service';
@@ -37,7 +37,7 @@ export class ResumeOrderModalComponent {
   isPositionChanged: boolean = false;
   isForced: boolean = false;
 
-  constructor(public coreService: CoreService, private activeModal: NzModalRef,
+  constructor(private elRef: ElementRef,public coreService: CoreService, private activeModal: NzModalRef,
               private modal: NzModalService, private workflowService: WorkflowService) {
   }
 
@@ -71,9 +71,19 @@ export class ResumeOrderModalComponent {
         }
       });
     }
+
     this.getPositions();
     this.getWorkflow();
   }
+
+  scrollToElementById(id: string): void {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+
 
   private getPositions(): void {
     this.coreService.post('orders/resume/positions', {
@@ -153,6 +163,10 @@ export class ResumeOrderModalComponent {
       this.workflow.jobs = res.workflow.jobs;
       this.workflow.configuration = {instructions: res.workflow.instructions};
       this.checkPositions();
+      const elementId = this.order?.positionString;
+      setTimeout(() => {
+        this.scrollToElementById(elementId);
+      }, 100);
     });
   }
 

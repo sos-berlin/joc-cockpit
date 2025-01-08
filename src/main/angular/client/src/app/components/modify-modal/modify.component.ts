@@ -23,6 +23,7 @@ export class ChangeParameterModalComponent {
   orderIds: any;
   orderPreparation: any;
   workflow: any;
+  bulkModification: boolean = false;
 
   permission: any = {};
   removeVariables = [];
@@ -61,6 +62,7 @@ export class ChangeParameterModalComponent {
     this.orderIds = this.modalData.orderIds;
     this.orderPreparation = this.modalData.orderPreparation;
     this.workflow = this.modalData.workflow;
+    this.bulkModification = this.modalData.bulkModification;
     const preferences = JSON.parse(sessionStorage['preferences']) || {};
     this.permission = JSON.parse(this.authService.permission) || {};
     this.allowUndeclaredVariables = sessionStorage['allowUndeclaredVariables'] == 'true';
@@ -541,7 +543,7 @@ export class ChangeParameterModalComponent {
         }));
       }
     }
-    if (this.order) {
+    if (this.order && !this.bulkModification) {
       obj.orderIds.push(this.order.orderId);
     } else if (this.orders) {
       this.orders.forEach((order) => {

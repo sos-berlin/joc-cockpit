@@ -1350,7 +1350,8 @@ export class DailyPlanComponent {
           orders: self.object.mapOfCheckedId,
           orderPreparation: requirements,
           workflow,
-          order
+          order,
+          bulkModification: true
         },
         nzFooter: null,
         nzAutofocus: undefined,
