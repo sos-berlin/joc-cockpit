@@ -335,7 +335,7 @@ export class LogComponent {
     const domId = 'tx_log_' + (i + 1);
     const jobs: any = {};
     jobs.controllerId = this.controllerId;
-    jobs.taskId = document.getElementById('tx_id_' + (i + 1)).innerText;
+    jobs.taskId = document.getElementById('tx_id_' + (i + 1))?.innerText;
     const a = document.getElementById(domId);
     if (a.classList.contains('hide')) {
       this.coreService.log('task/log', jobs, {
@@ -343,6 +343,9 @@ export class LogComponent {
         observe: 'response' as 'response'
       }).subscribe((res: any) => {
         if (res) {
+          while (a.firstChild) {
+            a.removeChild(a.firstChild);
+          }
           this.renderData(res.body, domId);
           document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-down');
           document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-up');

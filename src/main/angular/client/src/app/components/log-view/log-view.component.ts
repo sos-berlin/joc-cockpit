@@ -371,7 +371,7 @@ export class LogViewComponent {
     const domId = 'tx_log_' + (i + 1);
     const jobs: any = {};
     jobs.controllerId = this.controllerId;
-    jobs.taskId = this.dataBody.nativeElement.querySelector('#tx_id_' + (i + 1)).innerText;
+    jobs.taskId = this.dataBody.nativeElement.querySelector('#tx_id_' + (i + 1))?.innerText;
     const a = this.dataBody.nativeElement.querySelector('#' + domId);
     const classList = this.dataBody.nativeElement.querySelector('#ex_' + (i + 1)).classList;
     if (a.classList.contains('hide') || classList.contains('down')) {
@@ -380,6 +380,9 @@ export class LogViewComponent {
         observe: 'response' as 'response'
       }).subscribe((res: any) => {
         if (res) {
+          while (a.firstChild) {
+            a.removeChild(a.firstChild);
+          }
           this.renderData(res.body, domId);
           this.dataBody.nativeElement.querySelector('#ex_' + (i + 1)).classList.remove('down');
           this.dataBody.nativeElement.querySelector('#ex_' + (i + 1)).classList.add('up');
@@ -403,7 +406,7 @@ export class LogViewComponent {
         this.coreService.logViewDetails.expandedLogPanel.delete('#ex_' + (i + 1));
         a.classList.remove('show');
         a.classList.add('hide');
-        const z = this.dataBody.nativeElement.querySelector('#tx_id_' + (i + 1)).innerText;
+        const z = this.dataBody.nativeElement.querySelector('#tx_id_' + (i + 1))?.innerText;
         this.dataBody.nativeElement.querySelector('#' + domId).innerHTML = `<div id="tx_id_` + (i + 1) + `" class="hide">` + z + `</div>`;
       }
     }
