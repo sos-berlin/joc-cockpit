@@ -521,7 +521,12 @@ export class BoardComponent {
         this.history.push(JSON.stringify(this.board.configuration));
         this.indexOfNextAdd = this.history.length - 1;
       }
-
+      if(this.board.configuration.boardType === 'PLANNABLE'){
+        delete this.board.configuration.postOrderToNoticeId
+        delete this.board.configuration.expectOrderToNoticeId
+        delete this.board.configuration.endOfLife
+        delete this.boardObj.endOfLife
+      }
       const request: any = {
         configuration: this.board.configuration,
         valid: !!(this.board.configuration.postOrderToNoticeId && this.board.configuration.expectOrderToNoticeId && this.board.configuration.endOfLife),

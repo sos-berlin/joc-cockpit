@@ -1068,6 +1068,9 @@ export class WorkflowService {
             if (json.instructions[x].noticeBoardNames !== undefined) {
               _node.setAttribute('noticeBoardNames', json.instructions[x].noticeBoardNames);
             }
+            if (json.instructions[x].whenNotAnnounced !== undefined) {
+              _node.setAttribute('whenNotAnnounced', json.instructions[x].whenNotAnnounced);
+            }
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('expectNotices', colorCode, self.theme) : 'expectNotices');
             if (mapObj.vertixMap && json.instructions[x].position) {
               mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
@@ -1082,6 +1085,9 @@ export class WorkflowService {
             _node.setAttribute('displayLabel', 'consumeNotices');
             if (json.instructions[x].noticeBoardNames !== undefined) {
               _node.setAttribute('noticeBoardNames', json.instructions[x].noticeBoardNames);
+            }
+            if (json.instructions[x].whenNotAnnounced !== undefined) {
+              _node.setAttribute('whenNotAnnounced', json.instructions[x].whenNotAnnounced);
             }
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('consumeNotices', colorCode, self.theme) : 'consumeNotices');
             if (mapObj.vertixMap && json.instructions[x].position) {

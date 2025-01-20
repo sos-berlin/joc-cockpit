@@ -3736,6 +3736,7 @@ export class WorkflowComponent {
   workflowPath: any;
   subscription1: Subscription;
   subscription2: Subscription;
+  whenNotAnnouncedArr = ["Wait", "DontWait", "SkipWhenNoNotice"];
 
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
@@ -10168,6 +10169,9 @@ export class WorkflowComponent {
             const edit1 = new mxCellAttributeChange(
               obj.cell, 'noticeBoardNames', noticeBoardNames);
             graph.getModel().execute(edit1);
+            const edit2 = new mxCellAttributeChange(
+              obj.cell, 'whenNotAnnounced', self.selectedNode.newObj.whenNotAnnounced);
+            graph.getModel().execute(edit2);
           } else if (self.selectedNode.type === 'Fail') {
             const edit = new mxCellAttributeChange(
               obj.cell, 'outcome', JSON.stringify(self.selectedNode.newObj.outcome));
@@ -10193,6 +10197,9 @@ export class WorkflowComponent {
             let noticeBoardNames;
             if (self.selectedNode.type === 'ExpectNotices') {
               noticeBoardNames = self.selectedNode.newObj.noticeBoardNames;
+              const edit1 = new mxCellAttributeChange(
+                obj.cell, 'whenNotAnnounced', self.selectedNode.newObj.whenNotAnnounced);
+              graph.getModel().execute(edit1);
             } else {
               if (isArray(self.selectedNode.newObj.noticeBoardNames)) {
                 noticeBoardNames = self.selectedNode.newObj.noticeBoardNames.join(',');
@@ -10607,6 +10614,7 @@ export class WorkflowComponent {
             // Ensure single space around && and ||
             obj.noticeBoardNames = obj.noticeBoardNames.replace(/\s*(\|\||&&)\s*/g, ' $1 ');
           }
+            obj.whenNotAnnounced = cell.getAttribute('whenNotAnnounced');
           setTimeout(() => {
             self.isDisplay = true;
             self.ref.detectChanges();
@@ -13146,6 +13154,11 @@ export class WorkflowComponent {
             json.instructions[x].subworkflow = {
               instructions: json.instructions[x].instructions
             };
+            if(json.instructions[x].TYPE === 'ConsumeNotices'){
+              const whenNotAnnounced = clone(json.instructions[x].whenNotAnnounced);
+              delete json.instructions[x].whenNotAnnounced;
+              json.instructions[x].whenNotAnnounced = whenNotAnnounced;
+            }
             delete json.instructions[x].instructions;
           } else if (json.instructions[x].TYPE === 'Options') {
             json.instructions[x].block = {
