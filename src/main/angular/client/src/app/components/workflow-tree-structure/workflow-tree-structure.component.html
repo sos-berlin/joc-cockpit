@@ -142,7 +142,7 @@
           </div>
         </span>
       </div>
-      <div *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'AddOrder' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Finish' || instruction.TYPE === 'ImplicitEnd'
+      <div *ngIf="instruction.TYPE === 'Job' || instruction.TYPE === 'AddOrder' || instruction.TYPE === 'Fail' || instruction.TYPE === 'Sleep' || instruction.TYPE === 'Finish' || instruction.TYPE === 'ImplicitEnd'
        || instruction.TYPE === 'PostNotices' || instruction.TYPE === 'Prompt' || instruction.TYPE === 'Break' || instruction.TYPE === 'ExpectNotices'" [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction.TYPE === 'ImplicitEnd', 'drop-area': instruction.enabled}"
            id="{{instruction.positionString}}">
         <div *ngIf="instruction.TYPE === 'Job'" class="btn-group dropdown m-l-n-10">

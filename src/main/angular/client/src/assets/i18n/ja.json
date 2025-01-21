@@ -2083,7 +2083,8 @@
         "title": "ボードのタイトル",
         "toNotice": "通知入力",
         "endOfLife": "期限入力",
-        "readingOrderToNoticeId": "通知IDの読取順入力"
+        "readingOrderToNoticeId": "通知IDの読取順入力",
+        "boardType": "boardType."
       },
       "lock": {
         "name": "ロック名",
@@ -2146,11 +2147,13 @@
         "title": "ワークフローのタイトル",
         "timeZone": "許可時間タイムゾーン",
         "allowUndeclared": "未宣言を許可",
+        "duration": "Duration.",
         "board": {
           "expectBoardName": "通知ボード名",
           "boardNames": "通知ボード登録",
           "expectBoardExpression": "ExpectNotice条件式",
-          "consumeBoardExpression": "ConsumeNotice条件式"
+          "consumeBoardExpression": "ConsumeNotice条件式",
+          "whenNotAnnounced": "whenNotAnnounced."
         },
         "finish": {
           "message": "オーダーに添付され、オーダー履歴に表示される「メッセージ」を指定することができます",
@@ -3767,6 +3770,8 @@
     "label.boardType": "Board Type",
     "label.global": "GLOBAL",
     "label.plannable": "PLANNABLE",
+    "label.sleep": "Sleep",
+    "label.duration": "Duration",
     "button.addScheme": "サイクル追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",

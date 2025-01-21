@@ -735,6 +735,26 @@
               </div>
             </div>
           </div>
+          <div *ngIf="selectedNode.type === 'Sleep'">
+            <div class="form-group row">
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.duration' | translate) : ''"
+
+                   class="col-md-4 col-lg-3 form-control-label" translate>workflow.label.duration
+              <sup class="text-danger text-sm">*</sup>
+            </label>
+            <div class="col-md-8 col-lg-9">
+              <input #duration="ngModel"  [(ngModel)]="selectedNode.obj.duration"  autocomplete="off"
+                     class="form-control"  name="name" required
+                     type="text"/>
+              <div *ngIf="duration.invalid && duration.errors && (duration.dirty || duration.touched)" class="text-danger help-block">
+                <div *ngIf="duration.errors.required">
+                  <div translate>common.message.requiredError</div>
+                </div>
+                <div *ngIf="duration.errors.invalidIdentifier" translate>common.message.invalid</div>
+              </div>
+            </div>
+            </div>
+          </div>
           <div *ngIf="selectedNode.type === 'Retry'">
             <div class="form-group row">
               <div class="col-md-4 col-lg-3" translate>workflow.label.tries</div>
