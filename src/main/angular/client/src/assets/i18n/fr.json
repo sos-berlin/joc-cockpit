@@ -2084,7 +2084,7 @@
         "toNotice": "Entrer la Condition",
         "endOfLife": "Le délai d'expiration de la Condition détermine sa durée de vie au format hh:mm:ss, par exemple 01:30:00 pour une heure et demie.",
         "readingOrderToNoticeId": "Entrer la règle pour créer l'ID Annonce pour l'Ordre attendu.",
-        "boardType": "boardType."
+        "boardType": "Les Conditions sont de type 'global' si les dépendances fonctionnent indépendamment du Plan Quotidien. Les Conditions sont de type 'planifiable' si les dépendances sont prises en compte uniquement pour les jours pour lesquels il existe des ordres qui créeront des Annonces."
       },
       "lock": {
         "name": "Les verrous de ressources sont utilisés pour implémenter l'exclusion mutuelle pour une séquence de tâche. Ils peuvent être utilisés dans le même workflow et dans tous les workflows pour limiter le parallélisme des tâches. Le nom d'un Verrou est unique dans l'inventaire. Pour le nom du verrou de ressource, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
@@ -2147,19 +2147,19 @@
         "title": "Le Titre du workflow peut être spécifié à volonté. Le Titre est affiché dans la vue WORKFLOWS.",
         "timeZone": "Le fuseau horaire sert à calculer les heures d'admission et l'instruction Cycle. Par défaut, le fuseau horaire spécifié dans le profil de l'utilisateur est utilisé.",
         "allowUndeclared": "Autoriser les variables non déclarées des Ordres. Cela signifie qu'un ordre peut contenir des variables dont le type de données ou l'utilisation obligatoire n'ont pas été vérifiés. Les tâches échoueront s'ils font référence à des variables non déclarées qui ne sont pas disponibles dans un ordre.",
-        "duration": "Duration.",
+        "duration": "Durée.",
         "board": {
           "expectBoardName": "Le nom d'une Condition est unique dans l'inventaire. La plupart des caractères unicode peuvent être utilisés, les points et les traits d'union, mais pas de points ou de traits d'union au début ou à la fin.",
           "boardNames": "Il est possible de spécifier un certain nombre de Conditions pour lesquels des Annonces sont créés.",
           "expectBoardExpression": "L'expression ExpectNotices peut être utilisée pour spécifier un seul tableau de condition et pour spécifier une logique Booléenne : ('A-BOARD' || 'B-BOARD') && 'C-BOARD'. Les noms des tableaux de condition sont cités et les opérateurs && (et) et || (ou) peuvent être utilisés de manière optionnelle, y compris entre crochets.",
           "consumeBoardExpression": "L'expression ConsumeNotices peut être utilisée pour spécifier un seul tableau de condition et pour spécifier une logique Booléenne : ('A-BOARD' || 'B-BOARD') && 'C-BOARD'. Les noms des tableaux de condition sont cités et les opérateurs && (et) et || (ou) peuvent être utilisés de manière optionnelle, y compris entre crochets.",
-          "whenNotAnnounced": "whenNotAnnounced."
+          "whenNotAnnounced": "Par défaut, les Annonces sont attendues. L'utilisation de l'option 'process' permet de poursuivre immédiatement un ordre les jours où aucune Annonce n'est annoncéé. L'option 'skip' permet d'ignorer l'instruction en cours les jours pour lesquels aucune Annonce n'est annoncé."
         },
         "finish": {
           "message": "L'instruction permet de spécifier un Message qui est joint à l'ordre et qui devient visible avec l'historique des ordres.",
           "unsuccessful": "Par défaut, l'instruction permet aux orderes de quitter le workflow avec un résultat historique réussi. Cette case à cocher peut être utilisée pour qu'un ordre quitte le workflow avec un résultat historique non réussi.",
-          "successful": "Successful",
-          "unchanged": "Unchanged"
+          "successful": "Réussie",
+          "unchanged": "Inchangé"
         },
         "fail": {
           "message": "L'instruction permet de spécifier un Message qui est joint à l'ordre et qui devient visible avec l'historique des ordres.",
@@ -3768,10 +3768,10 @@
     "label.dontWait": "Exécuter",
     "label.skipWhenNoNotice": "Ignorer",
     "label.boardType": "Type de Conditions",
-    "label.global": "GLOBAL",
-    "label.plannable": "PLANNABLE",
-    "label.sleep": "Sleep",
-    "label.duration": "Duration",
+    "label.global": "global",
+    "label.plannable": "planifiable",
+    "label.sleep": "Sommeil",
+    "label.duration": "Durée",
     "button.addScheme": "Ajouter un Cycle",
     "button.zoomIn": "Agrandir",
     "button.zoomOut": "Dézoomer",

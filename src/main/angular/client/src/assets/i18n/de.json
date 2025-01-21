@@ -2084,7 +2084,7 @@
         "toNotice": "Die Notizkennung des ausstellenden Auftrags wird aus dessen Auftragskennung extrahiert, z.B. das Tagesplandatum passend zu dem die zu notifizierenden Aufträge identifiziert wereden.",
         "endOfLife": "Die Lebensdauer der Notiz wird im Format hh:mm:ss bestimmt, z.B. 01:30:00 für eineinhalb Stunden.",
         "readingOrderToNoticeId": "Die Notizkennung des notifizierten Auftrags wird aus dessen Auftragskennung extrahiert, z.B. das Tagesplandatum passend zu dem ausstellende Aufträge identifiziert werden.",
-        "boardType": "boardType."
+        "boardType": "Notizbretter sind vom Typ 'global', wenn die Abhängigkeiten unabhängig vom Tagesplan funktionieren. Notizbretter sind vom Typ 'planbar', wenn Abhängigkeiten nur für Tage berücksichtigt werden, für die Aufträge existieren, die Notizen erstellen."
       },
       "lock": {
         "name": "Ressourcen-Sperren werden zur Limitierung der Parallelität von Jobs verwendet. Sie verhindern oder beschränken die parallele Ausführung von Jobs im selben oder unterschiedlichen Arbeitsabläufen. Der Name einer Ressourcen-Sperre ist eindeutig im Inventar. Für den Namen der Ressourcen-Sperre können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
@@ -2147,19 +2147,19 @@
         "title": "Der Titel des Arbeitsablaufs kann nach Belieben angegeben werden. Der Titel wird in der Sicht ARBEITSABLÄUFE angezeigt.",
         "timeZone": "Die Zeitzone wird verwendet, um Zutrittszeiten und Zeiten der Cycle-Anweisung zu bestimmen. Per Voreinstellung wird die Zeitzone des Anwenderprofils eingesetzt.",
         "allowUndeclared": "Erlaubt die Verwending undeklarierter Variablen am Auftrag. Solche Variablen werden nicht auf ihren Datentyp oder obligatorische Verwendung geprüft. Jobs, die undeklarierte Variablen referenzieren, die nicht zu einem Auftrag erfasst wurden, werden fehlschlagen.",
-        "duration": "Duration.",
+        "duration": "Dauer.",
         "board": {
           "expectBoardName": "Der Name eines Notizbretts ist eindeutig im Inventar. Für den Namen des Notizbretts können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
           "boardNames": "Mehrere Notizbretter können ausgewählt werden, für die Notizen erzeugt werden.",
           "expectBoardExpression": "Der ExpectNotices-Ausdruck kann zur Angabe eines einzelnen Notizbretts und zur Angabe einer Booleschen Logik verwendet werden: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. Die Namen der NotizBretter werden in Anführungszeichen gesetzt, und die Operatoren && (und) und || (oder) können wahlweise einschließlich Klammern verwendet werden.",
           "consumeBoardExpression": "Der ConsumeNotices-Ausdruck kann zur Angabe eines einzelnen Notizbretts und zur Angabe einer Booleschen Logik verwendet werden: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. Die Namen der NotizBretter werden in Anführungszeichen gesetzt, und die Operatoren && (und) und || (oder) können wahlweise einschließlich Klammern verwendet werden.",
-          "whenNotAnnounced": "whenNotAnnounced."
+          "whenNotAnnounced": "Standardmäßig wird auf Notizen gewartet. Mit der Option 'warten' wird ein Auftrag an Tagen, für die keine Notizen angekündigt sind, sofort fortgesetzt. Mit der Option 'überspringen' wird der aktuelle Auftrag an Tagen, für die keine Notizen angekündigt sind, übersprungen."
         },
         "finish": {
           "message": "Mit dieser Anweisung kann eine Nachricht zurückgegeben werden, die im Auftragsprotokoll sichtbar wird.",
           "unsuccessful": "Standardmäßig führt die Anweisung dazu, dass Aufträge den Workflow mit einem erfolgreichen historischen Ergebnis verlassen. Mit diesem Kontrollkästchen können Sie festlegen, dass ein Auftrag den Workflow mit einem nicht erfolgreichen historischen Ergebnis verlässt.",
-          "successful": "Successful",
-          "unchanged": "Unchanged"
+          "successful": "Erfolgreich",
+          "unchanged": "Unverändert"
         },
         "fail": {
           "message": "Mit dieser Anweisung kann eine Nachricht zurückgegeben werden, die im Auftragsprotokoll sichtbar wird.",
@@ -3768,10 +3768,10 @@
     "label.dontWait": "Ausführen",
     "label.skipWhenNoNotice": "Überspringen",
     "label.boardType": "Notizbrett",
-    "label.global": "GLOBAL",
-    "label.plannable": "PLANNABLE",
-    "label.sleep": "Sleep",
-    "label.duration": "Duration",
+    "label.global": "global",
+    "label.plannable": "planbar",
+    "label.sleep": "Schlaf",
+    "label.duration": "Dauer",
     "button.addScheme": "Zyklus hinzufügen",
     "button.zoomIn": "Vergrößern",
     "button.zoomOut": "Verkleinern",
