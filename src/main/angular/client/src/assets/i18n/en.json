@@ -2083,7 +2083,8 @@
         "title": "The Title of the Notice Board can be specified as desired.",
         "toNotice": "The Notice ID for posting order is extracted from its Order ID to look up matching expecting orders.",
         "endOfLife": "The lifetime for the Notice determines its duration in the format hh:mm:ss, for example 01:30:00 for one and a half hours.",
-        "readingOrderToNoticeId": "The Notice ID for expecting order is extracted from its Order ID and is used to look up matching posting orders."
+        "readingOrderToNoticeId": "The Notice ID for expecting order is extracted from its Order ID and is used to look up matching posting orders.",
+        "boardType": "boardType."
       },
       "lock": {
         "name": "Resource Locks are used to implement mutual exclusion for a sequence of jobs. They can be used in the same workflow and across any workflows to limit parallellism of jobs. The name of a Resource Lock is unique in the inventory. For the name of the Resource Lock most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
@@ -2146,11 +2147,13 @@
         "title": "The Title of the Workflow can be specified as desired. The Title is displayed with the WORKFLOWS view.",
         "timeZone": "The time zone is used for calculation of Admission Times and for Cycle Instructions. By default the time zone specified from the user profile is used.",
         "allowUndeclared": "Allow undeclared variables from orders. This includes that an order can carry variables that are not checked for their data type or mandatory use. Jobs will fail when referencing undeclared variables that are not available from an order.",
+        "duration": "Duration.",
         "board": {
           "expectBoardName": "The name of a Notice Board is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
           "boardNames": "A number of Notice Board names can be specified for which Notices are created.",
           "expectBoardExpression": "The ExpectNotices Expression can be used to specify a single Notice Board and to specify Boolean logic: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. The Notice Board names are quoted and the && (and) operator and || (or) operator can be used optinally including bracketing",
-          "consumeBoardExpression": "The ConsumeNotices Expression can be used to specify a single Notice Board and to specify Boolean logic: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. The Notice Board names are quoted and the && (and) operator and || (or) operator can be used optinally including bracketing"
+          "consumeBoardExpression": "The ConsumeNotices Expression can be used to specify a single Notice Board and to specify Boolean logic: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. The Notice Board names are quoted and the && (and) operator and || (or) operator can be used optinally including bracketing",
+          "whenNotAnnounced": "whenNotAnnounced."
         },
         "fail": {
           "message": "The instruction allows to specify a Message that is attached the order and that becomes visible with the order history.",
@@ -3767,6 +3770,8 @@
     "label.boardType": "Notice Board Type",
     "label.global": "GLOBAL",
     "label.plannable": "PLANNABLE",
+    "label.sleep": "Sleep",
+    "label.duration": "Duration",
     "button.addScheme": "Add Cycle",
     "button.zoomIn": "Zoom In",
     "button.zoomOut": "Zoom Out",

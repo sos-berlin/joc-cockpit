@@ -4768,7 +4768,7 @@ export class WorkflowComponent {
 
   private updateToolbar(operation, cell, name = ''): void {
     $('#toolbar').find('img').each(function (index) {
-      if (index === 22) {
+      if (index === 23) {
         if (!cell && !name) {
           $(this).addClass('disable-link');
           $(this).attr('title', '');
@@ -7138,15 +7138,15 @@ export class WorkflowComponent {
     const doc = mxUtils.createXmlDocument();
     if (!callFun && !isNavigate) {
       $('#toolbar').find('img').each(function (index) {
-        if (index === 19 && !self.hasLicense) {
+        if (index === 20 && !self.hasLicense) {
           $('#toolbar').find('hr').each(function (index) {
-            if (index === 18) {
+            if (index === 19) {
               $(this).hide();
             }
           });
           $(this).hide();
         }
-        if (index === 22) {
+        if (index === 23) {
           $(this).addClass('disable-link');
         }
       });
@@ -10182,7 +10182,11 @@ export class WorkflowComponent {
             const edit3 = new mxCellAttributeChange(
               obj.cell, 'uncatchable', self.selectedNode.newObj.uncatchable);
             graph.getModel().execute(edit3);
-          } else if (self.selectedNode.type === 'Finish') {
+          } else if(self.selectedNode.type === 'Sleep'){
+            const edit1 = new mxCellAttributeChange(
+              obj.cell, 'duration', self.selectedNode.newObj.duration);
+            graph.getModel().execute(edit1);
+          }else if (self.selectedNode.type === 'Finish') {
             const edit2 = new mxCellAttributeChange(
               obj.cell, 'message', self.selectedNode.newObj.message);
             graph.getModel().execute(edit2);
@@ -10589,6 +10593,8 @@ export class WorkflowComponent {
           obj.message = cell.getAttribute('message');
           obj.uncatchable = cell.getAttribute('uncatchable');
           obj.uncatchable = obj.uncatchable == 'true';
+        } else if(cell.value.tagName === 'Sleep'){
+          obj.duration = cell.getAttribute('duration');
         } else if (cell.value.tagName === 'Finish') {
           obj.message = cell.getAttribute('message');
           obj.unsuccessful = cell.getAttribute('unsuccessful');
@@ -11311,6 +11317,11 @@ export class WorkflowComponent {
           _node.setAttribute('displayLabel', 'break');
           _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'break');
+        } else if (title.match('sleep')) {
+          _node = doc.createElement('Sleep');
+          _node.setAttribute('displayLabel', 'sleep');
+          _node.setAttribute('uuid', self.coreService.create_UUID());
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'sleep');
         } else if (title.match('addOrder')) {
           _node = doc.createElement('AddOrder');
           _node.setAttribute('displayLabel', 'addOrder');
@@ -13586,7 +13597,7 @@ export class WorkflowComponent {
     }
     this.cutCell = [];
     $('#toolbar').find('img').each(function (index) {
-      if (index === 22) {
+      if (index === 23) {
         $(this).addClass('disable-link');
       }
     });

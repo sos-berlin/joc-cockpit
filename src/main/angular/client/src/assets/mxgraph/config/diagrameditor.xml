@@ -116,6 +116,13 @@
         </mxCell>
       </Break>
     </add>
+    <add as="Sleep">
+      <Sleep displayLabel="sleep">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="68" height="68"/>
+        </mxCell>
+      </Sleep>
+    </add>
     <add as="ExpectNotices">
       <ExpectNotices displayLabel="expectNotices">
         <mxCell vertex="1">
@@ -255,6 +262,8 @@
     <add as="Fail" template="Fail" style="fail" icon="./assets/mxgraph/images/fail.png"/>
     <hr/>
     <add as="Break" template="Break" style="break" icon="./assets/mxgraph/images/break.png"/>
+    <hr/>
+    <add as="Sleep" template="Sleep" style="sleep" icon="./assets/mxgraph/images/sleep.png"/>
     <hr/>
     <add as="Prompt" template="Prompt" style="prompt" icon="./assets/mxgraph/images/prompt.png"/>
     <hr/>

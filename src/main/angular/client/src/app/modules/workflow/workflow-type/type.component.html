@@ -244,7 +244,7 @@
         <span (click)="showOrders(instruction)" *ngIf="instruction.orderCount > 0 && (!instruction.show && !expandAll)"
               class="order-count">{{instruction.orderCount}}</span>
       </a>
-      <div *ngIf="instruction['TYPE'] === 'Job' || instruction['TYPE'] === 'AddOrder' || instruction['TYPE'] === 'Fail' || instruction['TYPE'] === 'Break' || instruction['TYPE'] === 'Finish' || instruction['TYPE'] === 'ImplicitEnd'
+      <div *ngIf="instruction['TYPE'] === 'Job' || instruction['TYPE'] === 'AddOrder' || instruction['TYPE'] === 'Fail' || instruction['TYPE'] === 'Sleep' || instruction['TYPE'] === 'Break' || instruction['TYPE'] === 'Finish' || instruction['TYPE'] === 'ImplicitEnd'
        || instruction['TYPE'] === 'PostNotices' || instruction['TYPE'] === 'Prompt' || instruction['TYPE'] === 'ExpectNotices'"
            [ngClass]="{'m-t-xs m-l-n-40 text-primary': instruction['TYPE'] === 'ImplicitEnd'}">
         <div *ngIf="instruction['TYPE'] === 'Job'" class="btn-group dropdown" style="margin-left: -10px">
