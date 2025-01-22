@@ -993,6 +993,14 @@
                                 <span class="_600 p-l-sm" translate>order.retryState.label.attempt</span>:
                                 {{ order.retryState.attempt }}
                               </div>
+                              <div *ngIf="order.sleepState" class="m-a-sm m-t-0">
+                                <div class="_600 m-b-xs" translate>order.sleepState.label.sleepState</div>
+                                <span *ngIf="order.sleepState.until">
+                              <span class="_600 p-l-sm" translate>order.sleepState.label.until</span>:
+                                  {{ order.sleepState.until | stringToDate }}
+                            </span>
+
+                              </div>
                             </ng-template>
                           </td>
                           <td>

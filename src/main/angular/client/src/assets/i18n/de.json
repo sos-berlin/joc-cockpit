@@ -2614,6 +2614,12 @@
         "next": "Nächster",
         "attempt": "Versuch"
       }
+    },
+    "sleepState": {
+      "label": {
+        "sleepState": "Sleep State",
+        "until": "Until"
+      }
     }
   },
   "profile": {

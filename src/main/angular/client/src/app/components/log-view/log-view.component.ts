@@ -737,6 +737,9 @@ export class LogViewComponent {
           col += ', label=' + dt[i].retrying.label;
         }
         col += ')';
+      } else if (dt[i].logEvent === 'OrderSleeping' && dt[i].sleep) {
+        const until = (this.preferences.logTimezone && dt[i].sleep.until) ? this.coreService.getLogDateFormat(dt[i].sleep.until, this.preferences.zone) : dt[i].sleep.until;
+        col += ', until=' + until;
       } else if (dt[i].logEvent === 'OrderNoticesExpected' && dt[i].expectNotices) {
         col += ', Waiting for';
         for (let x in dt[i].expectNotices.waitingFor) {

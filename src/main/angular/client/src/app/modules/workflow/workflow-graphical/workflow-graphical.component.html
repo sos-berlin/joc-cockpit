@@ -171,7 +171,7 @@
                       nz-menu-item>
                     <a translate>order.button.reset</a>
                   </li>
-                  <li (click)="forceReset()" *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && (order.isSuspendible) && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')"
+                  <li (click)="forceReset()" *ngIf="permission && permission.currentController && permission.currentController.orders.suspendResume && (order.isSuspendible) && order.state && (order.state._text !== 'FINISHED' && order.state._text !== 'CANCELLED')  && !order.state._reason === 'SLEEPING'"
                       nz-menu-item>
                     <a translate>order.button.forceReset</a>
                   </li>

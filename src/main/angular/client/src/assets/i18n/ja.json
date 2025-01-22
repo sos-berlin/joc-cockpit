@@ -2614,6 +2614,12 @@
         "next": "次回",
         "attempt": "試行回数"
       }
+    },
+    "sleepState": {
+      "label": {
+        "sleepState": "Sleep State",
+        "until": "Until"
+      }
     }
   },
   "profile": {
