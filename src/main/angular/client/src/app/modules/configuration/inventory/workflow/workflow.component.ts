@@ -3736,7 +3736,7 @@ export class WorkflowComponent {
   workflowPath: any;
   subscription1: Subscription;
   subscription2: Subscription;
-  whenNotAnnouncedArr = ["Wait", "DontWait", "SkipWhenNoNotice"];
+  whenNotAnnouncedArr = ["wait", "dontWait", "skipWhenNoNotice"];
 
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;

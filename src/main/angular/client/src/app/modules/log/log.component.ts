@@ -797,7 +797,7 @@ export class LogComponent {
         div.innerHTML = `<span >` + col;
       }
       const logsContainer = window.document.getElementById('logs');
-      const uniqueId = `${dt[i].orderId}-${dt[i].logEvent}-${dt[i].position}`;
+      const uniqueId = `${dt[i].controllerDatetime}-${dt[i].orderId}-${dt[i].logEvent}-${dt[i].position}`;
       const existingDiv = logsContainer.querySelector(`[data-log-id="${uniqueId}"]`);
 
       if (!existingDiv) {
