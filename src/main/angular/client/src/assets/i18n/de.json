@@ -2617,8 +2617,8 @@
     },
     "sleepState": {
       "label": {
-        "sleepState": "Sleep State",
-        "until": "Until"
+        "sleepState": "Status Schlaf",
+        "until": "Bis"
       }
     }
   },

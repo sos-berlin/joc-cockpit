@@ -2601,7 +2601,7 @@
     },
     "cycleState": {
       "label": {
-        "cycleState": "État du Cycle",
+        "cycleState": "État du cycle",
         "end": "Fin",
         "since": "Depuis",
         "next": "Prochain",
@@ -2617,8 +2617,8 @@
     },
     "sleepState": {
       "label": {
-        "sleepState": "Sleep State",
-        "until": "Until"
+        "sleepState": "Ètat de sommeil",
+        "until": "jusqu'à"
       }
     }
   },
