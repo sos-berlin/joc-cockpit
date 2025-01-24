@@ -34,11 +34,11 @@
           <span class="p-l-sm">{{node.origin.name}}</span>
           <i
             (click)="addFolder(node.origin.path);$event.stopPropagation()"
-            *ngIf="addFolderPossible && !node.origin.type && !node.origin.objectType && folders[pathAttribute].indexOf(node.origin.path) === -1"
+            *ngIf="addFolderPossible && !node.origin.type && !node.origin.objectType && folders[pathAttribute]?.indexOf(node.origin.path) === -1"
             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.button.addFolder' | translate" [nzType]="'plus'" class="p-l-sm" nz-icon></i>
           <i
             (click)="remove(node.origin.path);$event.stopPropagation()"
-            *ngIf="addFolderPossible && !node.origin.type && !node.origin.objectType && folders[pathAttribute].indexOf(node.origin.path) > -1" [nzType]="'delete'" class="p-l-sm" nz-icon></i>
+            *ngIf="addFolderPossible && !node.origin.type && !node.origin.objectType && folders[pathAttribute]?.indexOf(node.origin.path) > -1" [nzType]="'delete'" class="p-l-sm" nz-icon></i>
         </div>
       </div>
     </ng-template>

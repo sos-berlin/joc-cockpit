@@ -4778,6 +4778,49 @@ export class WorkflowComponent {
         }
       }
     });
+
+    $('#toolbar').find('img').each(function (index) {
+      var texts = [
+        "", "job", "Try", "Retry", "Finish", "Fail",
+        "Fork", "Fork<br>List", "Cycle", "Break", "Lock",
+        "Sleep", "Prompt", "AddOrder", "Post<br>Notices",
+        "Expect<br>Notices", "Consume<br>Notices", "If",
+        "Case", "CaseWhen", "CaseElse", "Sticky<br>Subagent",
+        "Option", "Paste"
+      ];
+
+      var $img = $(this);
+      const hasLicense = sessionStorage.getItem('hasLicense')
+      if (index === 21 && hasLicense === 'false') {
+        $img.next('span').remove();
+        return;
+      }
+      if ($img.next('span').length === 0) {
+        var $text = $('<span></span>')
+          .html(texts[index] || "")
+          .css({
+            "display": "block",
+            "text-align": "center",
+            "font-size": "12px",
+          });
+
+        $img.after($text);
+      }
+      if ([5, 9, 13, 16, 20 ,22].includes(index)) {
+        var $dashedHr  = $('<hr>')
+          .css({
+            "border": "none",
+            "border-bottom": "2px dashed var(--text-color)",
+            "margin": "10px 0",
+          });
+
+        var $simpleHr = $('<hr>');
+        $img.next('span').next('hr').after($dashedHr);
+        $dashedHr.after($simpleHr);
+      }
+    });
+
+
   }
 
   navToWorkflowTab(): void {
@@ -6122,6 +6165,7 @@ export class WorkflowComponent {
     this.workflow.configuration = obj;
     this.copyId = [];
     this.updateToolbar('', null);
+
     let flag = false;
     if (this.workflow.configuration.jobs) {
       if (this.workflow.configuration.jobs && !isEmpty(this.workflow.configuration.jobs)) {
@@ -7138,9 +7182,9 @@ export class WorkflowComponent {
     const doc = mxUtils.createXmlDocument();
     if (!callFun && !isNavigate) {
       $('#toolbar').find('img').each(function (index) {
-        if (index === 20 && !self.hasLicense) {
+        if (index === 21 && !self.hasLicense) {
           $('#toolbar').find('hr').each(function (index) {
-            if (index === 19) {
+            if (index === 20) {
               $(this).hide();
             }
           });

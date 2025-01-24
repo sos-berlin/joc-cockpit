@@ -1,5 +1,5 @@
 .graph-container {
-  margin-left: 66px;
+  margin-left: 74px;
   overflow: auto;
 
   &:hover {
@@ -32,7 +32,7 @@
 }
 
 #toolbar-scrollbar {
-  width: 52px !important;
+  width: 60px !important;
   position: absolute;
   overflow: hidden;
   max-height: calc(100vh - 190px);

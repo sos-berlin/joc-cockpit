@@ -237,49 +237,49 @@
     <add as="connect" mode="connect" icon="./assets/mxgraph/images/symbols/connect.gif"/>
     <add as="Job" template="Job" style="job" icon="./assets/mxgraph/images/job.png"/>
     <hr/>
+    <add as="Try" template="Try" style="try" icon="./assets/mxgraph/images/try.png"/>
+    <hr/>
+    <add as="Retry" template="Retry" style="retry" icon="./assets/mxgraph/images/retry.png"/>
+    <hr/>
+    <add as="Finish" template="Finish" style="finish" icon="./assets/mxgraph/images/finish.png"/>
+    <hr/>
+    <add as="Fail" template="Fail" style="fail" icon="./assets/mxgraph/images/fail.png"/>
+    <hr/>
     <add as="Fork" template="Fork" style="fork"
          icon="./assets/mxgraph/images/fork.png"/>
     <hr/>
     <add as="ForkList" template="ForkList" style="forkList"
          icon="./assets/mxgraph/images/fork-list.png"/>
     <hr/>
-    <add as="Retry" template="Retry" style="retry" icon="./assets/mxgraph/images/retry.png"/>
-    <hr/>
-    <add as="Try" template="Try" style="try" icon="./assets/mxgraph/images/try.png"/>
-    <hr/>
-    <add as="If" template="If" style="if" icon="./assets/mxgraph/images/if.png"/>
-    <hr/>
-    <add as="CaseWhen" template="CaseWhen" style="caseWhen" icon="./assets/mxgraph/images/caseWhen.png"/>
-    <hr/>
-    <add as="When" template="When" style="when" icon="./assets/mxgraph/images/when.png"/>
-    <hr/>
-    <add as="ElseWhen" template="ElseWhen" style="elseWhen" icon="./assets/mxgraph/images/elseWhen.png"/>
-    <hr/>
     <add as="Cycle" template="Cycle" style="cycle" icon="./assets/mxgraph/images/cycle.png"/>
     <hr/>
-    <add as="Finish" template="Finish" style="finish" icon="./assets/mxgraph/images/finish.png"/>
-    <hr/>
-    <add as="Fail" template="Fail" style="fail" icon="./assets/mxgraph/images/fail.png"/>
-    <hr/>
     <add as="Break" template="Break" style="break" icon="./assets/mxgraph/images/break.png"/>
+    <hr/>
+    <add as="Lock" template="Lock" style="lock" icon="./assets/mxgraph/images/lock.png"/>
     <hr/>
     <add as="Sleep" template="Sleep" style="sleep" icon="./assets/mxgraph/images/sleep.png"/>
     <hr/>
     <add as="Prompt" template="Prompt" style="prompt" icon="./assets/mxgraph/images/prompt.png"/>
     <hr/>
-    <add as="PostNotices" template="PostNotices" style="postNotices" icon="./assets/mxgraph/images/publish.png"/>
+    <add as="AddOrder" template="AddOrder" style="addOrder" icon="./assets/mxgraph/images/addOrder.png"/>
     <hr/>
-    <add as="ConsumeNotices" template="ConsumeNotices" style="consumeNotices" icon="./assets/mxgraph/images/consume.png"/>
+    <add as="PostNotices" template="PostNotices" style="postNotices" icon="./assets/mxgraph/images/publish.png"/>
     <hr/>
     <add as="ExpectNotices" template="ExpectNotices" style="expectNotices" icon="./assets/mxgraph/images/await.png"/>
     <hr/>
-    <add as="Lock" template="Lock" style="lock" icon="./assets/mxgraph/images/lock.png"/>
+    <add as="ConsumeNotices" template="ConsumeNotices" style="consumeNotices" icon="./assets/mxgraph/images/consume.png"/>
+    <hr/>
+    <add as="If" template="If" style="if" icon="./assets/mxgraph/images/if.png"/>
+    <hr/>
+    <add as="Case" template="CaseWhen" style="caseWhen" icon="./assets/mxgraph/images/caseWhen.png"/>
+    <hr/>
+    <add as="CaseWhen" template="When" style="when" icon="./assets/mxgraph/images/when.png"/>
+    <hr/>
+    <add as="CaseElse" template="ElseWhen" style="elseWhen" icon="./assets/mxgraph/images/elseWhen.png"/>
     <hr/>
     <add as="StickySubagent" template="StickySubagent" style="stickySubagent" icon="./assets/mxgraph/images/sticky-subagent.png"/>
     <hr/>
     <add as="Options" template="Options" style="options" icon="./assets/mxgraph/images/options.png"/>
-    <hr/>
-    <add as="AddOrder" template="AddOrder" style="addOrder" icon="./assets/mxgraph/images/addOrder.png"/>
     <hr/>
     <add as="Paste" template="symbol" style="symbol" icon="./assets/mxgraph/images/paste.png"/>
   </mxDefaultToolbar>
