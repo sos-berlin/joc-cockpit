@@ -4777,11 +4777,9 @@ export class WorkflowComponent {
           $(this).attr('title', (operation === 'copy' ? 'Paste of ' : '') + (cell ? cell.value.tagName : name));
         }
       }
-    });
 
-    $('#toolbar').find('img').each(function (index) {
       var texts = [
-        "", "job", "Try", "Retry", "Finish", "Fail",
+        "", "Job", "Try", "Retry", "Finish", "Fail",
         "Fork", "Fork<br>List", "Cycle", "Break", "Lock",
         "Sleep", "Prompt", "AddOrder", "Post<br>Notices",
         "Expect<br>Notices", "Consume<br>Notices", "If",
@@ -4790,37 +4788,54 @@ export class WorkflowComponent {
       ];
 
       var $img = $(this);
-      const hasLicense = sessionStorage.getItem('hasLicense')
+      if ($img.parent('div.img-container').length === 0) {
+        $img.wrap('<div class="img-container" style="position: relative; text-align: center;"></div>');
+      }
+
+      const hasLicense = sessionStorage.getItem('hasLicense');
       if (index === 21 && hasLicense === 'false') {
         $img.next('span').remove();
         return;
       }
+
       if ($img.next('span').length === 0) {
+        var textContent = texts[index] || "";
+        var hasBrTag = textContent.includes('<br>');
+
         var $text = $('<span></span>')
-          .html(texts[index] || "")
+          .html(textContent)
           .css({
             "display": "block",
             "text-align": "center",
             "font-size": "12px",
+            "position": "absolute",
+            "width": "100%",
+            "left": "50%",
+            "transform": "translateX(-50%)",
+            "margin-top": hasBrTag ? "-38px" : "-22px",
+            "pointer-events": "none",
           });
 
         $img.after($text);
       }
+
+      if ($img.next('span').html().includes('<br>')) {
+        $img.css("padding-bottom", "40px");
+      }
+
       if ([5, 9, 13, 16, 20 ,22].includes(index)) {
-        var $dashedHr  = $('<hr>')
+        var $dashedHr = $('<hr>')
           .css({
             "border": "none",
-            "border-bottom": "2px dashed var(--text-color)",
+            "border-bottom": "2px dashed var(--border-color)",
             "margin": "10px 0",
           });
 
         var $simpleHr = $('<hr>');
-        $img.next('span').next('hr').after($dashedHr);
+        $img.parent('div.img-container').next('hr').after($dashedHr);
         $dashedHr.after($simpleHr);
       }
     });
-
-
   }
 
   navToWorkflowTab(): void {

@@ -1,5 +1,5 @@
 import {Component, HostListener, ViewChild} from '@angular/core';
-import {ActivatedRoute, NavigationEnd, Router} from '@angular/router';
+import {ActivatedRoute, Router, NavigationStart, NavigationEnd, NavigationError} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
 import {NzModalService} from 'ng-zorro-antd/modal';
@@ -50,7 +50,7 @@ export class LayoutComponent {
   licenseDate: Date;
   warningMessage: string;
   warningMessage2: string;
-
+  private routerSub: Subscription;
   @ViewChild(HeaderComponent, {static: false}) child: any;
   @ViewChild('customTpl', {static: true}) customTpl: any;
 
@@ -158,6 +158,16 @@ export class LayoutComponent {
       }
     } else {
       this.authenticate();
+    }
+    const permission = this.authService.permission ? JSON.parse(this.authService.permission) : {}
+    if(permission.roles[0] === 'kiosk'){
+      this.routerSub = this.router.events.subscribe(event => {
+        if (event instanceof NavigationStart || event instanceof NavigationEnd || event instanceof NavigationError) {
+          if (!this.isLogout) {
+            this.refreshSession();
+          }
+        }
+      });
     }
   }
 
@@ -274,6 +284,9 @@ export class LayoutComponent {
     this.subscription4.unsubscribe();
     this.subscription5.unsubscribe();
     this.subscription6.unsubscribe();
+    if (this.routerSub) {
+      this.routerSub.unsubscribe();
+    }
   }
 
   @HostListener('window:resize', ['$event'])

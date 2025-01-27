@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectorRef } from '@angular/core';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
@@ -16,9 +16,10 @@ export class MonitorComponent {
   loading = false;
   index: number;
   subscription: any;
+  tabChangeListener: any;
 
   constructor(private authService: AuthService, public coreService: CoreService,
-              private dataService: DataService) {
+              private dataService: DataService, private cdr: ChangeDetectorRef) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
       this.loading = false;
       this.init();
@@ -31,10 +32,16 @@ export class MonitorComponent {
   ngOnInit(): void {
     this.init();
     this.loading = true;
+    this.tabChangeListener = (event: CustomEvent) => {
+      this.index = event.detail;
+      this.cdr.detectChanges();
+    };
+    window.addEventListener('change-tab', this.tabChangeListener);
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    window.removeEventListener('change-tab', this.tabChangeListener);
   }
 
   private init(): void {

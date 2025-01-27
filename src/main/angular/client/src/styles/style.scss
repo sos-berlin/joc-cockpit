@@ -6411,13 +6411,9 @@ button[disabled], html input[disabled] {
 
   img {
     cursor: pointer;
-    padding: 6px 10px;
+    padding: 6px 15px 22px 15px;
     //width: 48px;
     //height: 39px;
-
-    &:first-child {
-      display: none;
-    }
   }
 
   img:hover {
@@ -6427,6 +6423,10 @@ button[disabled], html input[disabled] {
   hr {
     margin: 4px 0 !important;
   }
+}
+
+#toolbar > div:first-child {
+  display: none;
 }
 
 #graph {

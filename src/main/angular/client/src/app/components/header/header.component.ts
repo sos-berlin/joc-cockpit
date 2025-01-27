@@ -7,6 +7,7 @@ import {CoreService} from '../../services/core.service';
 import {AuthService} from '../guard';
 import {DataService} from '../../services/data.service';
 import {AboutModalComponent} from '../info-menu/info-menu.component';
+import { KioskService } from '../../services/kiosk.service';
 
 @Component({
   selector: 'app-header',
@@ -36,7 +37,7 @@ export class HeaderComponent {
   @Output() myLogout: EventEmitter<any> = new EventEmitter();
 
   constructor(public coreService: CoreService, private authService: AuthService,
-              private modal: NzModalService, private router: Router, private dataService: DataService) {
+              private modal: NzModalService, private router: Router, private dataService: DataService, private kioskService: KioskService) {
     this.subscription1 = dataService.isProfileReload.subscribe(res => {
       if (res) {
         this.init();
@@ -157,6 +158,9 @@ export class HeaderComponent {
   }
 
   logout(): void {
+    if (this.permission.roles[0] === 'kiosk') {
+      this.kioskService.stopKioskMode();
+    }
     this.isLogout = true;
     this.myLogout.emit();
   }
