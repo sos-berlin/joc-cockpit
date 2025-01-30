@@ -24,7 +24,7 @@
       </div>
     </div>
     <div class="modal-footer">
-        <button (click)="onSubmit()"
+        <button (click)="onSubmit()" [disabled]="!myForm.form.valid"
                 class="btn btn-danger btn-sm" type="button">
             <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
             {{'common.button.delete' | translate}}

@@ -656,3 +656,14 @@ export class SecondsToTimePipe implements PipeTransform {
     return (hours + minutes / 60).toFixed(2);
   }
 }
+
+
+@Pipe({ name: 'noRoundNumber' })
+export class NoRoundNumberPipe implements PipeTransform {
+  transform(value: number, decimals: number = 2): string {
+    if (value || value === 0) {
+      return value.toFixed(decimals);
+    }
+    return '0';
+  }
+}

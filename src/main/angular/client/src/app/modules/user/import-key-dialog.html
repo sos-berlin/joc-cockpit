@@ -60,7 +60,7 @@
     </nz-upload>
   </div>
   <div *ngIf="fileList.length > 0" class="modal-footer">
-    <button (click)="import()" [disabled]="submitted || uploading || (required && !comments.comment)"
+    <button (click)="import()" [disabled]="submitted || uploading || (required && !comments.comment) || !myForm.form.valid"
             class="btn btn-primary btn-sm" type="submit">
       <i *ngIf="uploading" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.import' | translate}}

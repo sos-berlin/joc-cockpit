@@ -292,7 +292,7 @@
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button *ngIf="isRemoved" [disabled]="submitted" class="btn btn-danger btn-sm" type="submit">
+    <button *ngIf="isRemoved" [disabled]="submitted || !myForm.form.valid" class="btn btn-danger btn-sm" type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       <span>{{'common.button.remove' | translate}}</span>
     </button>

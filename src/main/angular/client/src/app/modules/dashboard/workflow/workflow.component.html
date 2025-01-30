@@ -9,7 +9,7 @@
         <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate1" class="w-full">
           <a (click)="navigate(1)" class="nav-link w-full">
             <div class="show-inline block-ellipsis-job" translate>dashboard.label.synchronized</div>
-            - {{synchronized | number : '1.1-1'}} %
+            - {{ synchronized | noRoundNumber:2 }} %
           </a>
         </label>
         <ng-template #tooltipTemplate1>
@@ -22,7 +22,7 @@
         <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate2" class="w-full">
           <a (click)="navigate(2)" class="nav-link w-full">
             <div class="show-inline block-ellipsis-job" translate>dashboard.label.outstanding</div>
-            - {{outstanding | number : '1.1-1' }} %
+            - {{outstanding | noRoundNumber:2 }} %
           </a>
         </label>
         <ng-template #tooltipTemplate2>
@@ -35,7 +35,7 @@
         <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate3" class="w-full">
           <a (click)="navigate(3)" class="nav-link w-full">
             <div class="show-inline block-ellipsis-job" translate>dashboard.label.suspended</div>
-            - {{suspended | number : '1.1-1' }} %
+            - {{suspended | noRoundNumber:2 }} %
           </a>
         </label>
         <ng-template #tooltipTemplate3>
@@ -48,7 +48,7 @@
         <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="tooltipTemplate4" class="w-full">
           <a (click)="navigate(4)" class="nav-link w-full">
             <div class="show-inline block-ellipsis-job" translate>dashboard.label.notSynchronized</div>
-            - {{notSynchronized | number : '1.1-1' }} %
+            - {{notSynchronized | noRoundNumber:2 }} %
           </a>
         </label>
         <ng-template #tooltipTemplate4>

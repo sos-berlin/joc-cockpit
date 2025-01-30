@@ -160,7 +160,8 @@ export class LayoutComponent {
       this.authenticate();
     }
     const permission = this.authService.permission ? JSON.parse(this.authService.permission) : {}
-    if(permission.roles[0] === 'kiosk'){
+    
+    if(permission?.roles[0] === 'kiosk'){
       this.routerSub = this.router.events.subscribe(event => {
         if (event instanceof NavigationStart || event instanceof NavigationEnd || event instanceof NavigationError) {
           if (!this.isLogout) {
