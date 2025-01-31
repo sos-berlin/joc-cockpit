@@ -773,7 +773,7 @@ export class ControllerClusterComponent {
     } else if (action === 'switchover') {
       const obj1 = obj;
       delete obj1.withSwitchover;
-      this.postCall('controller/cluster/switchover', obj1);
+      this.coreService.post('controller/cluster/switchover', obj1).subscribe();
     } else if (action === 'download') {
       this.coreService.download('controller/log', {
         controllerId: obj.controllerId,

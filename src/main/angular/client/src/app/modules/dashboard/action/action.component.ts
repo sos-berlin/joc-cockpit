@@ -41,6 +41,7 @@ export class CommentModalComponent {
       ticketLink: result.ticketLink
     };
     this.performAction(this.action, obj);
+    this.activeModal.close()
   }
 
 }
