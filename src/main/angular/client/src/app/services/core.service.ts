@@ -3155,6 +3155,7 @@ export class CoreService {
     sessionStorage['displayFoldersInViews'] = result.displayFoldersInViews;
     sessionStorage['numOfTagsDisplayedAsOrderId'] = result.numOfTagsDisplayedAsOrderId;
     sessionStorage['numOfWorkflowTagsDisplayed'] = result.numOfWorkflowTagsDisplayed;
+    sessionStorage['kioskRole'] = result.kioskRole;
     if (result.licenseValidFrom) {
       sessionStorage['licenseValidFrom'] = result.licenseValidFrom;
     }

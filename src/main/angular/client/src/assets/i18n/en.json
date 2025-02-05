@@ -976,7 +976,8 @@
     "tooltip.invertProjection": "By default the Projection indicates the days for which orders are executed and the number of orders. When inverting the projection then days are highlighted for which schedules exist that will not create orders. When clicking the related day then schedules without orders will be displayed. This includes to limit the projection to certain folders holding workflows or schedules.",
     "tab": {
       "dailyPlan": "Daily Plan",
-      "projection": "Projection"
+      "projection": "Projection",
+      "dependencies": "Dependencies"
     }
   },
   "deploymentService": {

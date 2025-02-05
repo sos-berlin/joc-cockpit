@@ -159,17 +159,6 @@ export class LayoutComponent {
     } else {
       this.authenticate();
     }
-    const permission = this.authService.permission ? JSON.parse(this.authService.permission) : {}
-    
-    if(permission?.roles[0] === 'kiosk'){
-      this.routerSub = this.router.events.subscribe(event => {
-        if (event instanceof NavigationStart || event instanceof NavigationEnd || event instanceof NavigationError) {
-          if (!this.isLogout) {
-            this.refreshSession();
-          }
-        }
-      });
-    }
   }
 
   checkLicenseExpireDate() {
@@ -301,6 +290,15 @@ export class LayoutComponent {
       this.refreshSession();
     }
   }
+
+  @HostListener('window:refresh-session', ['$event'])
+  onSessionRefresh(): void {
+
+    if (!this.isLogout) {
+      this.refreshSession();
+    }
+  }
+
 
   @HostListener('window:beforeunload', ['$event'])
   onWindowClose() {

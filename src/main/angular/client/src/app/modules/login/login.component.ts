@@ -10,6 +10,7 @@ import {Subscription} from "rxjs";
 import {CoreService} from '../../services/core.service';
 import {AuthService, OIDCAuthService} from '../../components/guard';
 import {DataService} from "../../services/data.service";
+import {KioskService} from "../../services/kiosk.service";
 
 @Component({
   selector: 'app-login',
@@ -43,7 +44,7 @@ export class LoginComponent {
 
   constructor(private route: ActivatedRoute, private router: Router, public coreService: CoreService,
               private authService: AuthService, private oAuthService: OIDCAuthService, private renderer: Renderer2,
-              private translate: TranslateService, private toasterService: ToastrService, private dataService: DataService) {
+              private translate: TranslateService, private toasterService: ToastrService, private dataService: DataService,private kioskService: KioskService) {
   }
 
   ngOnInit(): void {
@@ -181,6 +182,11 @@ export class LoginComponent {
           localStorage.removeItem('$SOS$BOO');
           localStorage.removeItem('$SOS$REMEMBER');
         }
+        setTimeout(() => {
+          if(this.kioskService.checkKioskMode()){
+            this.kioskService.startKioskMode()
+          }
+        },3000)
 
         if (data.accessToken === '' && data.isAuthenticated && data.secondFactoridentityService) {
           this.userObject = {

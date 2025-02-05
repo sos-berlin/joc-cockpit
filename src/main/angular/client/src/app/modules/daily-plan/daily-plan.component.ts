@@ -2487,7 +2487,7 @@ export class DailyPlanComponent {
     this.dailyPlanFilters.tabIndex = $event.index;
     if (this.dailyPlanFilters.tabIndex === 1) {
       this.changeInCalendar();
-    } else {
+    } else if(this.dailyPlanFilters.tabIndex === 0) {
       this.reloadDailyPlan()
     }
   }
@@ -2509,7 +2509,7 @@ export class DailyPlanComponent {
     if (localStorage['views']) {
       this.pageView = JSON.parse(localStorage['views']).dailyPlan;
     }
-    if (this.dailyPlanFilters.tabIndex !== 0) {
+    if (this.dailyPlanFilters.tabIndex !== 0 && this.dailyPlanFilters.tabIndex !== 2) {
       this.changeInCalendar();
     } else {
       this.reloadDailyPlan();

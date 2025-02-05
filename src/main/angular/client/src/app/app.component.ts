@@ -6,6 +6,7 @@ import {registerLocaleData} from "@angular/common";
 import {AuthService, OIDCAuthService} from './components/guard';
 import {CoreService} from './services/core.service';
 import {DataService} from "./services/data.service";
+import {KioskService} from "./services/kiosk.service";
 
 declare const $: any;
 
@@ -17,7 +18,7 @@ export class AppComponent {
   locales: any = [];
 
   constructor(private translate: TranslateService, private i18n: NzI18nService, public coreService: CoreService, private dataService: DataService,
-              private authService: AuthService, private oAuthService: OIDCAuthService, private router: Router) {
+              private authService: AuthService, private oAuthService: OIDCAuthService, private router: Router, private kioskService: KioskService) {
     AppComponent.themeInit();
     /*    Object.getOwnPropertyNames(console).filter((property) => {
           return typeof console[property] === 'function';
@@ -69,6 +70,12 @@ export class AppComponent {
       this.coreService.setLocales(locales);
       this.getTranslate();
     });
+
+    setTimeout(() => {
+      if(this.kioskService.checkKioskMode()){
+        this.kioskService.startKioskMode()
+      }
+    },3000)
   }
 
   private getTranslate(): void {

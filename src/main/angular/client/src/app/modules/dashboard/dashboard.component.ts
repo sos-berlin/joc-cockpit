@@ -5,7 +5,6 @@ import {ConfirmModalComponent} from '../../components/comfirm-modal/confirm.comp
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
-import {KioskService} from "../../services/kiosk.service";
 
 declare const $: any;
 
@@ -85,7 +84,7 @@ export class DashboardComponent {
   isLoading = false;
 
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,
-              private dataService: DataService,  private kioskService: KioskService) {
+              private dataService: DataService) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
       this.init();
     });
@@ -108,9 +107,6 @@ export class DashboardComponent {
   ngOnInit(): void {
     this.init();
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
-    if (this.permission.roles[0] === 'kiosk') {
-      this.kioskService.startKioskMode();
-    }
   }
 
   ngOnDestroy(): void {

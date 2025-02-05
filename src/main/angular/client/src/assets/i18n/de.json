@@ -976,7 +976,8 @@
     "tooltip.invertProjection": "Standardmäßig zeigt die Projektion die Tage, an denen Aufträge ausgeführt werden, und die Anzahl der Aufträge. Wenn Sie die Projektion umkehren, werden die Tage hervorgehoben, für die Zeitpläne existieren, die keine Aufträge erzeugen. Wird der Tag angeklickt, dann werden die entsprechenden Zeitpläne angezeigt. Dies gilt auch für die Einschränkung der Projektion auf bestimmte Ordner mit Arbeitsabläufen oder Zeitplänen.",
     "tab": {
       "dailyPlan": "Tagesplan",
-      "projection": "Projektion"
+      "projection": "Projektion",
+      "dependencies": "Dependencies"
     }
   },
   "deploymentService": {

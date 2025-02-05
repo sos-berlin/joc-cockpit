@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import {AuthService} from "../components/guard";
 
 @Injectable({
   providedIn: 'root',
@@ -9,13 +10,13 @@ export class KioskService {
     { route: '/dashboard', duration: 20000 },
     { route: '/monitor', duration: 15000, tabIndex: 2 },
     { route: '/monitor', duration: 15000, tabIndex: 3 },
-    { route: '/history', duration: 10000 },
+    { route: '/history', duration: 30000 },
   ];
 
   private currentIndex = 0;
   private kioskInterval: any;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService,) {}
 
   startKioskMode() {
     this.navigateToNextView();
@@ -27,7 +28,19 @@ export class KioskService {
     }
   }
 
+  checkKioskMode(): boolean {
+    const permissions = this.authService.permission ? JSON.parse(this.authService.permission) : {};
+    const kioskRole = sessionStorage.getItem('kioskRole');
+    if (permissions.roles && Array.isArray(permissions.roles)) {
+      return permissions.roles?.includes(kioskRole);
+    }
+
+    return false;
+  }
+
   private navigateToNextView() {
+    window.dispatchEvent(new Event('refresh-session'));
+
     const view = this.views[this.currentIndex];
     this.router.navigate([view.route]).then(() => {
       if (view.route === '/monitor' && view.hasOwnProperty('tabIndex')) {

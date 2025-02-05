@@ -976,7 +976,8 @@
     "tooltip.invertProjection": "プロジェクション反転",
     "tab": {
       "dailyPlan": "実行計画",
-      "projection": "プロジェクション"
+      "projection": "プロジェクション",
+      "dependencies": "Dependencies"
     }
   },
   "deploymentService": {

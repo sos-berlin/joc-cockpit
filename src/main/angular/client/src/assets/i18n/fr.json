@@ -976,7 +976,8 @@
     "tooltip.invertProjection": "Par défaut, la projection indique les jours pour lesquels les ordres sont exécutés et le nombre d'ordres. Lorsque l'on inverse la projection, les jours pour lesquels il existe des Planifications qui ne créeront pas d'ordres sont mis en évidence. Lorsque l'on clique sur le jour concerné, les Planifications sans ordres sont affichés. Cela permet notamment de limiter la projection à certains dossiers contenant des workflows ou des Planifications.",
     "tab": {
       "dailyPlan": "Plan Quotidien",
-      "projection": "Projection"
+      "projection": "Projection",
+      "dependencies": "Dependencies"
     }
   },
   "deploymentService": {

@@ -158,11 +158,14 @@ export class HeaderComponent {
   }
 
   logout(): void {
-    if (this.permission.roles[0] === 'kiosk') {
-      this.kioskService.stopKioskMode();
-    }
+
     this.isLogout = true;
     this.myLogout.emit();
+    setTimeout(() => {
+      if (!this.kioskService.checkKioskMode()) {
+        this.kioskService.stopKioskMode();
+      }
+    },2000)
   }
 
   navigateToResource(): void {
