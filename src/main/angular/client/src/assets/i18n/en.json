@@ -3111,6 +3111,7 @@
     "placeholder.enterNonNegativeNumber": "Enter non-negative number",
     "placeholder.enterPositiveInteger": "Enter only positive integer",
     "placeholder.enterNonNegativeInteger": "Enter non-negative integer",
+    "placeholder.enterKioskInteger": "0 or >10 sec",
     "cleanup": {
       "time_zone": "Specifies the time zone that is applied to the start time and period of the Cleanup Service.",
       "period": "Specifies weekdays on which the Cleanup Service is performed. The first day of week is considered being Monday. When initially installing JS7 then the distribution specifies the full week. Without this setting the Cleanup Service will not start.",
@@ -3206,6 +3207,14 @@
       "idle_session_timeout": "The Idle Session Timeout specifies the duration in minutes for which a session remains active without user activity. If the Idle Session Timeout is exceeded, the user will be disconnected.",
       "initial_password": "The Initial Password that is applied for example to new user accounts. Users have to change the password on next login.",
       "minimum_password_length": "The minimum length of a password specified by users."
+    },
+    "kiosk": {
+      "kiosk_role": "kiosk_role",
+      "view_dashboard_duration": "view_dashboard_duration",
+      "view_monitor_order_notification_duration": "view_monitor_order_notification_duration",
+      "view_monitor_system_notification_duration": "view_monitor_system_notification_duration",
+      "view_history_tasks_duration": "view_history_tasks_duration",
+      "view_history_orders_duration": "view_history_orders_duration"
     }
   },
   "user": {

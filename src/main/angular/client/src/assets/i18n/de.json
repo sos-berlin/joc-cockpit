@@ -3111,6 +3111,7 @@
     "placeholder.enterNonNegativeNumber": "Nicht-negative Zahl angeben",
     "placeholder.enterPositiveInteger": "Positive Ganzzahl angeben",
     "placeholder.enterNonNegativeInteger": "Nicht-negative Ganzzahl angeben",
+    "placeholder.enterKioskInteger": "0 or >10 sec",
     "cleanup": {
       "time_zone": "Benennt die Zeitzone für Startzeiten und Perioden des Bereinigungsdienstes",
       "period": "Benennt Wochentage der Ausführung des Bereinigungsdienstes. Der erste Wochentag ist Montag. Bei Erstinstallation wird die gesamte Woche benannt. Ohne diese Einstellung startet der Bereinigungsdienst nicht.",
@@ -3206,6 +3207,14 @@
       "idle_session_timeout": "Die Leerlaufzeit gibt die Dauer in Minuten an, für die eine Sitzung ohne Benutzeraktivität aktiv bleibt. Wird die Leerlaufzeit überschritten, dann wird die Sitzung des Benutzers getrennt.",
       "initial_password": "Das Initialkennwort, das zum Beispiel für neue Benutzerkonten verwendet wird. Die Benutzer müssen das Kennwort bei der nächsten Anmeldung ändern.",
       "minimum_password_length": "Die von den Benutzern angegebene Mindestlänge eines Kennworts."
+    },
+    "kiosk": {
+      "kiosk_role": "kiosk_role",
+      "view_dashboard_duration": "view_dashboard_duration",
+      "view_monitor_order_notification_duration": "view_monitor_order_notification_duration",
+      "view_monitor_system_notification_duration": "view_monitor_system_notification_duration",
+      "view_history_tasks_duration": "view_history_tasks_duration",
+      "view_history_orders_duration": "view_history_orders_duration"
     }
   },
   "user": {

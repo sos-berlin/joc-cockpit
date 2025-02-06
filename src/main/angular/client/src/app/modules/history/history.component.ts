@@ -1,4 +1,13 @@
-import {Component, EventEmitter, HostListener, inject, Input, Output, ViewContainerRef} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  HostListener,
+  inject,
+  Input,
+  Output,
+  ViewContainerRef
+} from '@angular/core';
 import {Subject, Subscription} from 'rxjs';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {TranslateService} from '@ngx-translate/core';
@@ -16,7 +25,7 @@ import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component
 import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
 import {FileTransferService} from '../../services/file-transfer.service';
 import {InventoryForHistory} from '../../models/enums';
-import { CommentModalComponent } from 'src/app/components/comment-modal/comment.component';
+import {CommentModalComponent} from 'src/app/components/comment-modal/comment.component';
 
 import {CreateTagModalComponent} from "../configuration/inventory/inventory.component";
 
@@ -1148,12 +1157,12 @@ export class HistoryComponent {
   reloadState = 'no';
   object: any = {};
   ignoreListConfigId = 0;
+  tabChangeListener: any;
   subscription1: Subscription;
   subscription2: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
   private searchOrderTerm = new Subject<string>();
   private searchTerm = new Subject<string>();
-
 
 
   searchTag = {
@@ -1188,9 +1197,10 @@ export class HistoryComponent {
     {date: '7d', text: 'nextWeak'},
     {date: '30d', text: 'next30'}
   ];
+
   constructor(public viewContainerRef: ViewContainerRef, private authService: AuthService, public coreService: CoreService, private saveService: SaveService, private fileTransferService: FileTransferService,
               private dataService: DataService, private modal: NzModalService, private searchPipe: SearchPipe, private orderPipe: OrderPipe,
-              public message: NzMessageService, private router: Router, private translate: TranslateService, private excelService: ExcelService) {
+              public message: NzMessageService, private router: Router, private translate: TranslateService, private excelService: ExcelService, private cdr: ChangeDetectorRef) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -1203,6 +1213,11 @@ export class HistoryComponent {
     this.sideView = this.coreService.getSideView()
     this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'true';
     this.initConf();
+    this.tabChangeListener = (event: CustomEvent) => {
+      this.historyFilters.type = event.detail;
+      this.cdr.detectChanges();
+    };
+    window.addEventListener('change-history-type', this.tabChangeListener);
   }
 
   ngOnDestroy(): void {
@@ -1211,6 +1226,7 @@ export class HistoryComponent {
     this.pendingHTTPRequests$.next();
     this.pendingHTTPRequests$.complete();
     this.coreService.setSideView(this.sideView);
+    window.removeEventListener('change-history-type', this.tabChangeListener);
   }
 
   changeController(): void {
@@ -1314,7 +1330,7 @@ export class HistoryComponent {
         obj.historyStates.push(this.order.filter.historyStates);
       }
     }
-    let workflowTags  = Array.from(this.coreService.checkedTags) || [];
+    let workflowTags = Array.from(this.coreService.checkedTags) || [];
     let orderTags = Array.from(this.coreService.checkedOrderTags) || [];
     if (workflowTags.length > 0 || orderTags.length > 0) {
       if (workflowTags.length > 0 && this.historyFilters.tagType === 'workflowTags') {
@@ -1429,7 +1445,7 @@ export class HistoryComponent {
         obj.historyStates.push(this.task.filter.historyStates);
       }
     }
-    let workflowTags  = Array.from(this.coreService.checkedTags) || [];
+    let workflowTags = Array.from(this.coreService.checkedTags) || [];
     let orderTags = Array.from(this.coreService.checkedOrderTags) || [];
     if (workflowTags.length > 0 || orderTags.length > 0) {
       if (workflowTags.length > 0 && this.historyFilters.tagType === 'workflowTags') {
@@ -1848,10 +1864,10 @@ export class HistoryComponent {
       if (obj.workflowPath) {
         filter.workflowPath = obj.workflowPath;
       }
-      if(obj.workflowTags?.length > 0){
+      if (obj.workflowTags?.length > 0) {
         filter.workflowTags = obj.workflowTags;
       }
-      if(obj.orderTags?.length > 0){
+      if (obj.orderTags?.length > 0) {
         filter.orderTags = obj.orderTags;
       }
       this.convertRequestBody(filter);
@@ -1919,13 +1935,13 @@ export class HistoryComponent {
       if (obj.workflowPath) {
         filter.workflowPath = obj.workflowPath;
       }
-      if(obj.workflowTags?.length > 0){
+      if (obj.workflowTags?.length > 0) {
         filter.workflowTags = obj.workflowTags;
       }
-      if(obj.orderTags?.length > 0){
+      if (obj.orderTags?.length > 0) {
         filter.orderTags = obj.orderTags;
       }
-      if(obj.orderId?.length > 0){
+      if (obj.orderId?.length > 0) {
         filter.orderId = obj.orderId;
       }
       this.convertRequestBody(filter);
@@ -2059,7 +2075,7 @@ export class HistoryComponent {
       endToTime: '23:59:59'
     };
 
-    if(skip){
+    if (skip) {
       delete this.orderSearch.endFromDate;
       delete this.orderSearch.endFromTime;
       delete this.orderSearch.endToDate;
@@ -2493,7 +2509,7 @@ export class HistoryComponent {
           }
         }
       });
-    }else{
+    } else {
       if (this.savedIgnoreList.jobs.indexOf(obj) === -1) {
         this.savedIgnoreList.jobs.push(obj);
         this.saveIgnoreList((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true), '');
@@ -2535,7 +2551,7 @@ export class HistoryComponent {
           }
         }
       });
-    }else{
+    } else {
       if (this.savedIgnoreList.workflows.indexOf(name) === -1) {
         this.savedIgnoreList.workflows.push(name);
         this.saveIgnoreList((this.savedIgnoreList.isEnable == 'true' || this.savedIgnoreList.isEnable == true), '');
@@ -2574,7 +2590,7 @@ export class HistoryComponent {
           this.saveIgnoreList(true, auditLog);
         }
       });
-    }else{
+    } else {
       this.saveIgnoreList(true, '');
     }
   }
@@ -2639,7 +2655,7 @@ export class HistoryComponent {
             });
           }
         });
-      }else{
+      } else {
         this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
           this.ignoreListConfigId = res.id;
         });
@@ -2709,7 +2725,7 @@ export class HistoryComponent {
             });
           }
         });
-      }else{
+      } else {
         this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
           this.ignoreListConfigId = res.id;
         });
@@ -3057,7 +3073,7 @@ export class HistoryComponent {
         id: this.ignoreListConfigId,
         configurationItem: JSON.stringify(this.savedIgnoreList)
       };
-      if(this.preferences.auditLog){
+      if (this.preferences.auditLog) {
         configObj.auditLog = auditLog;
       }
       this.coreService.post('configuration/save', configObj).subscribe((res: any) => {
@@ -3374,40 +3390,39 @@ export class HistoryComponent {
           data.push(obj1);
         }
 
-            for (let k = 0; k < this.submissionHistorys[i].controllers[j].submissions?.length; k++) {
-                const submissionObj: any = {};
-                submissionObj[submission] = this.coreService.getDateByFormat(this.submissionHistorys[i].controllers[j].submissions[k].submissionTime, this.preferences.zone, df);
-                submissionObj[submissionCount] = this.submissionHistorys[i].controllers[j].submissions[k].countSubmitted;
-                data.push(submissionObj);
+        for (let k = 0; k < this.submissionHistorys[i].controllers[j].submissions?.length; k++) {
+          const submissionObj: any = {};
+          submissionObj[submission] = this.coreService.getDateByFormat(this.submissionHistorys[i].controllers[j].submissions[k].submissionTime, this.preferences.zone, df);
+          submissionObj[submissionCount] = this.submissionHistorys[i].controllers[j].submissions[k].countSubmitted;
+          data.push(submissionObj);
 
-                for (let m = 0; m < this.submissionHistorys[i].controllers[j].submissions[k].warnMessages?.length; m++) {
-                    const warnObj: any = {};
-                    warnObj[warnMessages] = this.submissionHistorys[i].controllers[j].submissions[k].warnMessages[m];
-                    data.push(warnObj);
-                }
+          for (let m = 0; m < this.submissionHistorys[i].controllers[j].submissions[k].warnMessages?.length; m++) {
+            const warnObj: any = {};
+            warnObj[warnMessages] = this.submissionHistorys[i].controllers[j].submissions[k].warnMessages[m];
+            data.push(warnObj);
+          }
 
-                for (let m = 0; m < this.submissionHistorys[i].controllers[j].submissions[k].errorMessages?.length; m++) {
-                    const errorObj: any = {};
-                    errorObj[errorMessages] = this.submissionHistorys[i].controllers[j].submissions[k].errorMessages[m];
-                    data.push(errorObj);
-                }
+          for (let m = 0; m < this.submissionHistorys[i].controllers[j].submissions[k].errorMessages?.length; m++) {
+            const errorObj: any = {};
+            errorObj[errorMessages] = this.submissionHistorys[i].controllers[j].submissions[k].errorMessages[m];
+            data.push(errorObj);
+          }
 
-                for (let m = 0; m < this.submissionHistorys[i].controllers[j].submissions[k].orderIds?.length; m++) {
-                    const orderObj: any = {};
-                    orderObj[orderId] = this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].orderId;
-                    orderObj[workflow] = this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].workflowPath;
-                    orderObj[scheduledFor] = this.coreService.stringToDate(this.preferences, this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].scheduledFor);
-                    this.translate.get(this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].submitted ? 'submitted' : 'notSubmitted').subscribe(translatedValue => {
-                        orderObj[status] = translatedValue;
-                        data.push(orderObj);
-                    });
-                }
-            }
+          for (let m = 0; m < this.submissionHistorys[i].controllers[j].submissions[k].orderIds?.length; m++) {
+            const orderObj: any = {};
+            orderObj[orderId] = this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].orderId;
+            orderObj[workflow] = this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].workflowPath;
+            orderObj[scheduledFor] = this.coreService.stringToDate(this.preferences, this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].scheduledFor);
+            this.translate.get(this.submissionHistorys[i].controllers[j].submissions[k].orderIds[m].submitted ? 'submitted' : 'notSubmitted').subscribe(translatedValue => {
+              orderObj[status] = translatedValue;
+              data.push(orderObj);
+            });
+          }
         }
+      }
     }
     return data;
   }
-
 
 
   private refresh(args: { eventSnapshots: any[] }): void {
@@ -3441,7 +3456,7 @@ export class HistoryComponent {
             this.init(true);
           }
           break;
-        }else if (args.eventSnapshots[j].eventType === 'FILETRANSFER') {
+        } else if (args.eventSnapshots[j].eventType === 'FILETRANSFER') {
           if (!isEmpty(this.submissionSearch)) {
             this.search(this.submissionSearch, false);
           } else {
@@ -3622,7 +3637,7 @@ export class HistoryComponent {
         this.submissionHistory(obj, flag);
       }
     }
-    if(!this.historyFilters.tagType){
+    if (!this.historyFilters.tagType) {
       this.historyFilters.tagType = 'workflowTags';
     }
     this.searchTerm.pipe(debounceTime(200))
@@ -4390,17 +4405,17 @@ export class HistoryComponent {
       controllerId: this.schedulerIds.selected
     };
     if (flag === 'workflowTags') {
-      if(Array.from(this.coreService.checkedTags).length > 0){
+      if (Array.from(this.coreService.checkedTags).length > 0) {
         obj.workflowTags = Array.from(this.coreService.checkedTags);
       }
     } else if (flag === 'orderTags') {
-      if(Array.from(this.coreService.checkedOrderTags).length > 0){
+      if (Array.from(this.coreService.checkedOrderTags).length > 0) {
         obj.orderTags = Array.from(this.coreService.checkedOrderTags);
       }
     }
-    if(this.historyFilters.type === 'ORDER'){
+    if (this.historyFilters.type === 'ORDER') {
       this.orderHistory(obj, true);
-    }else if(this.historyFilters.type === 'TASK'){
+    } else if (this.historyFilters.type === 'TASK') {
       this.taskHistory(obj, true);
     }
     if (obj.workflowTags?.length > 0 || obj.orderTags?.length > 0) {
@@ -4421,9 +4436,9 @@ export class HistoryComponent {
   }
 
   private searchByOrderTags(obj): void {
-    if(this.historyFilters.type === 'ORDER'){
+    if (this.historyFilters.type === 'ORDER') {
       this.orderHistory(obj, true);
-    }else if(this.historyFilters.type === 'TASK'){
+    } else if (this.historyFilters.type === 'TASK') {
       this.taskHistory(obj, true);
     }
     this.hidePanel();
@@ -4481,7 +4496,7 @@ export class HistoryComponent {
         const obj: any = {
           controllerId: this.schedulerIds.selected
         };
-        if(this.coreService.selectedOrderTags.length > 0){
+        if (this.coreService.selectedOrderTags.length > 0) {
           obj.orderTags = [];
           this.coreService.selectedOrderTags.forEach(tag => {
             obj.orderTags.push(tag.name);
@@ -4668,9 +4683,9 @@ export class HistoryComponent {
   }
 
   private searchByTags(obj): void {
-    if(this.historyFilters.type === 'ORDER'){
+    if (this.historyFilters.type === 'ORDER') {
       this.orderHistory(obj, true);
-    }else if(this.historyFilters.type === 'TASK'){
+    } else if (this.historyFilters.type === 'TASK') {
       this.taskHistory(obj, true);
     }
     this.hidePanel();
@@ -4680,6 +4695,7 @@ export class HistoryComponent {
   hidePanel(): void {
     this.showPanel = '';
   }
+
   private updateWorkflowsAndOrdersByOrderTags(): void {
     const orderTags = Array.from(this.coreService.checkedOrderTags);
     const obj: any = {
@@ -4753,7 +4769,7 @@ export class HistoryComponent {
         const obj: any = {
           controllerId: this.schedulerIds.selected
         };
-        if(this.coreService.selectedTags.length > 0) {
+        if (this.coreService.selectedTags.length > 0) {
           obj.workflowTags = [];
           this.coreService.selectedTags.forEach(tag => {
             obj.workflowTags.push(tag.name);

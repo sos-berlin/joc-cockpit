@@ -3156,6 +3156,14 @@ export class CoreService {
     sessionStorage['numOfTagsDisplayedAsOrderId'] = result.numOfTagsDisplayedAsOrderId;
     sessionStorage['numOfWorkflowTagsDisplayed'] = result.numOfWorkflowTagsDisplayed;
     sessionStorage['kioskRole'] = result.kioskRole;
+    const kioskValues = {
+      dashboard: result.kioskViews?.dashboard,
+      historyOrders: result.kioskViews?.historyOrders,
+      historyTasks: result.kioskViews?.historyTasks,
+      monitorOrderNotification: result.kioskViews?.monitorOrderNotification,
+      monitorSystemNotification: result.kioskViews?.monitorSystemNotification
+    };
+    sessionStorage.setItem('kioskValues', JSON.stringify(kioskValues));
     if (result.licenseValidFrom) {
       sessionStorage['licenseValidFrom'] = result.licenseValidFrom;
     }

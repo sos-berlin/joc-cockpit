@@ -3111,6 +3111,7 @@
     "placeholder.enterNonNegativeNumber": "Entrer un nombre non négatif",
     "placeholder.enterPositiveInteger": "Entrer uniquement un nombre entier positif",
     "placeholder.enterNonNegativeInteger": "Entrer un nombre entier non négatif",
+    "placeholder.enterKioskInteger": "0 or >10 sec",
     "cleanup": {
       "time_zone": "Spécifie le fuseau horaire appliqué à l'heure de début et à la période du Cleanup Service.",
       "period": "Spécifie les jours de la semaine pendant lesquels le Cleanup Service est effectué. Le premier jour de la semaine est considéré comme étant le Lundi. Lors de l'installation initiale de JS7, la distribution spécifie la semaine complète. Sans ce paramètre, le Cleanup Service ne démarrera pas.",
@@ -3206,6 +3207,14 @@
       "idle_session_timeout": "Le délai de session inactive spécifie la durée en minutes pendant laquelle une session reste active sans activité de la part de l'utilisateur. Si le délai de session inactive est dépassé, l'utilisateur est déconnecté.",
       "initial_password": "Le mot de passe initial qui est appliqué, par exemple, aux nouveaux comptes d'utilisateurs. Les utilisateurs doivent changer le mot de passe lors de leur prochaine connexion.",
       "minimum_password_length": "Longueur minimale d'un mot de passe spécifiée par les utilisateurs."
+    },
+    "kiosk": {
+      "kiosk_role": "kiosk_role",
+      "view_dashboard_duration": "view_dashboard_duration",
+      "view_monitor_order_notification_duration": "view_monitor_order_notification_duration",
+      "view_monitor_system_notification_duration": "view_monitor_system_notification_duration",
+      "view_history_tasks_duration": "view_history_tasks_duration",
+      "view_history_orders_duration": "view_history_orders_duration"
     }
   },
   "user": {

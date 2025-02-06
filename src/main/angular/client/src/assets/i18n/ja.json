@@ -3111,6 +3111,7 @@
     "placeholder.enterNonNegativeNumber": "負ではない数を入力",
     "placeholder.enterPositiveInteger": "正の整数を入力",
     "placeholder.enterNonNegativeInteger": "負ではない整数を入力",
+    "placeholder.enterKioskInteger": "0 or >10 sec",
     "cleanup": {
       "time_zone": "クリーンアップサービスの開始時間と期間に適用されるタイムゾーンの指定します",
       "period": "クリーンアップサービスを実行する曜日を指定します。週の最初の日は月曜日とみなされます。JS7を最初にインストールしたときは、1週間分が指定されています。この設定がないと、クリーンアップサービスは開始されません。",
@@ -3206,6 +3207,14 @@
       "idle_session_timeout": "アイドルセッションタイムアウト",
       "initial_password": "初期パスワード.",
       "minimum_password_length": "最小パスワード長"
+    },
+    "kiosk": {
+      "kiosk_role": "kiosk_role",
+      "view_dashboard_duration": "view_dashboard_duration",
+      "view_monitor_order_notification_duration": "view_monitor_order_notification_duration",
+      "view_monitor_system_notification_duration": "view_monitor_system_notification_duration",
+      "view_history_tasks_duration": "view_history_tasks_duration",
+      "view_history_orders_duration": "view_history_orders_duration"
     }
   },
   "user": {
