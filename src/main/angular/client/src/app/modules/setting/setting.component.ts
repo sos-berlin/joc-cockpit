@@ -13,6 +13,7 @@ import {DataService} from '../../services/data.service';
 import {OrderPipe} from "../../pipes/core.pipe";
 import {CommentModalComponent} from "../../components/comment-modal/comment.component";
 import {FileUploaderComponent} from "../../components/file-uploader/file-uploader.component";
+import {KioskService} from "../../services/kiosk.service";
 
 @Component({
   selector: 'app-setting',
@@ -42,7 +43,7 @@ export class SettingComponent {
   ];
 
   constructor(public coreService: CoreService, private authService: AuthService, private modal: NzModalService, private message: NzMessageService,
-              private translate: TranslateService, private toasterService: ToastrService, private dataService: DataService, private orderPipe: OrderPipe) {
+              private translate: TranslateService, private toasterService: ToastrService, private dataService: DataService, private orderPipe: OrderPipe, private kioskService: KioskService) {
   }
 
   static checkTime(time): string {
@@ -152,7 +153,7 @@ static generateChildStoreObject(children): any {
     return true;
   }
 
-  changeConfiguration(form, value, isJoc): void {
+  changeConfiguration(form, value, isJoc, isKiosk?): void {
     const tempSetting = this.coreService.clone(this.settings);
 
     if (form && form.invalid) {
@@ -179,7 +180,7 @@ static generateChildStoreObject(children): any {
     if (value?.children && value.children.length > 0) {
       this.updateChildValues(tempSetting, value);
     }
-    this.savePreferences(SettingComponent.generateStoreObject(tempSetting), isJoc);
+    this.savePreferences(SettingComponent.generateStoreObject(tempSetting), isJoc, isKiosk);
 
   }
 
@@ -507,7 +508,7 @@ static generateChildStoreObject(children): any {
     this.coreService.showCopyMessage(this.message)
   }
 
-  private savePreferences(tempSetting: any, isJoc: any): void {
+  private savePreferences(tempSetting: any, isJoc: any, isKiosk?): void {
     if (this.permission.joc.administration.settings.manage) {
       if ((this.preferences.auditLog || sessionStorage['$SOS$FORCELOGING'] == 'true') && !this.auditLog.comment) {
         let comments = {
@@ -539,12 +540,12 @@ static generateChildStoreObject(children): any {
           }
         });
       } else {
-        this._savePreferences(tempSetting, isJoc, this.auditLog);
+        this._savePreferences(tempSetting, isJoc, this.auditLog, isKiosk);
       }
     }
   }
 
-  private _savePreferences(tempSetting: any, isJoc: any, auditLog: any): void {
+  private _savePreferences(tempSetting: any, isJoc: any, auditLog: any, isKiosk?): void {
     if (this.schedulerIds.selected) {
       this.coreService.post('configuration/save', {
         controllerId: this.schedulerIds.selected,
@@ -555,16 +556,16 @@ static generateChildStoreObject(children): any {
         configurationItem: JSON.stringify(tempSetting)
       }).subscribe(() => {
         this.orignalSetting = tempSetting;
-        if (isJoc) {
-          this.getProperties();
+        if (isJoc || isKiosk) {
+          this.getProperties(isKiosk);
         }
       });
     }
   }
 
-  private getProperties(): void {
+  private getProperties(isKiosk): void {
     this.coreService.post('joc/properties', {}).subscribe((result: any) => {
-      this.coreService.setProperties(result);
+      this.coreService.setProperties(result, isKiosk);
       this.dataService.isProfileReload.next(true);
     });
   }

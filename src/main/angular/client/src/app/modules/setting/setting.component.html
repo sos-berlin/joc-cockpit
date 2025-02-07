@@ -196,7 +196,7 @@
                         <ng-container *ngSwitchCase="'NONNEGATIVEINTEGER'">
                           <div *ngIf="setting.name === 'kiosk'" [ngClass]="{ 'has-error' : (((nonNegNum.dirty || nonNegNum.touched) && nonNegNum.invalid))}"
                                class="col-sm-4 col-lg-3">
-                            <input #nonNegNum="ngModel"   (focus)="addEditToValue(val)" (blur)="changeConfiguration(nonNegNum, val, setting.name === 'joc')" [(ngModel)]="val.value.value"
+                            <input #nonNegNum="ngModel"   (focus)="addEditToValue(val)" (blur)="changeConfiguration(nonNegNum, val, setting.name === 'joc', setting.name === 'kiosk')" [(ngModel)]="val.value.value"
                                    autocomplete="off"
                                    class="form-control w-xxxl" name="{{val.name}}{{i}}"  pattern="^(?![1-9]$|10$)[0-9]+$"
                                    placeholder="{{'settings.placeholder.enterKioskInteger' | translate}}" required

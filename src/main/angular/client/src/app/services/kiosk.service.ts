@@ -18,7 +18,6 @@ export class KioskService {
 
    loadKioskValues() {
     this.kioskValues = JSON.parse(sessionStorage.getItem('kioskValues') || '{}');
-
     this.views = [
       {route: '/dashboard', duration: this.kioskValues.dashboard || 0},
       {route: '/monitor', duration: this.kioskValues.monitorOrderNotification || 0, tabIndex: 2},

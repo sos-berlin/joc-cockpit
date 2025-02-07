@@ -93,6 +93,7 @@
   "DELETE": "delete",
   "EXPECTED": "expected",
   "POSTED": "posted",
+  "ANNOUNCED": "announced",
   "minor": "minor",
   "major": "major",
   "normal": "normal",

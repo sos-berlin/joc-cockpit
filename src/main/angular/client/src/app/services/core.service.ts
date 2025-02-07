@@ -12,6 +12,7 @@ import {AuthService} from '../components/guard';
 import {POPOUT_MODALS, PopoutData, PopupService} from "./popup.service";
 import {LogViewComponent} from "../components/log-view/log-view.component";
 import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
+import {KioskService} from "./kiosk.service";
 
 declare const $: any;
 
@@ -64,7 +65,7 @@ export class CoreService {
   private sortedTags: string[] = [];
 
   constructor(private http: HttpClient, private authService: AuthService, private router: Router, private toasterService: ToastrService,
-              private clipboardService: ClipboardService, private translate: TranslateService, private popupService: PopupService, private sanitizer: DomSanitizer) {
+              private clipboardService: ClipboardService, private translate: TranslateService, private popupService: PopupService, private sanitizer: DomSanitizer, private kioskService: KioskService) {
     this.init();
     this.dashboard._dashboard = {};
     this.dashboard._dashboard.order = {};
@@ -3137,7 +3138,7 @@ export class CoreService {
     }
   }
 
-  setProperties(result: any): void {
+  setProperties(result: any, isKiosk?): void {
     sessionStorage['$SOS$FORCELOGING'] = result.forceCommentsForAuditLog;
     sessionStorage['comments'] = JSON.stringify(result.comments);
     sessionStorage['showViews'] = JSON.stringify(result.showViews);
@@ -3155,7 +3156,9 @@ export class CoreService {
     sessionStorage['displayFoldersInViews'] = result.displayFoldersInViews;
     sessionStorage['numOfTagsDisplayedAsOrderId'] = result.numOfTagsDisplayedAsOrderId;
     sessionStorage['numOfWorkflowTagsDisplayed'] = result.numOfWorkflowTagsDisplayed;
-    sessionStorage['kioskRole'] = result.kioskRole;
+    if(!isKiosk){
+      sessionStorage['kioskRole'] = result.kioskRole;
+    }
     const kioskValues = {
       dashboard: result.kioskViews?.dashboard,
       historyOrders: result.kioskViews?.historyOrders,
@@ -3164,6 +3167,9 @@ export class CoreService {
       monitorSystemNotification: result.kioskViews?.monitorSystemNotification
     };
     sessionStorage.setItem('kioskValues', JSON.stringify(kioskValues));
+    if(isKiosk){
+      this.kioskService.loadKioskValues()
+    }
     if (result.licenseValidFrom) {
       sessionStorage['licenseValidFrom'] = result.licenseValidFrom;
     }
