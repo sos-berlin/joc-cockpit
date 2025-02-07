@@ -758,6 +758,7 @@ export class DailyPlanComponent {
   weekStart = 1;
   dateFormat: string;
   workflowTagsPerWorkflow: any;
+  isParentLoaded = false;
   object = {
     mapOfCheckedId: new Map(),
     checked: false,
@@ -811,6 +812,9 @@ export class DailyPlanComponent {
 
   ngOnInit(): void {
     this.initConf();
+    setTimeout(() => {
+      this.isParentLoaded = true; // This will trigger ngOnChanges in the child component
+    }, 100);
     if (this.pageView === 'grid') {
       this.isToggle = true;
     }

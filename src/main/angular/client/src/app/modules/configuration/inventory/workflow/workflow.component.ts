@@ -4817,23 +4817,24 @@ export class WorkflowComponent {
           });
 
         $img.after($text);
-      }
 
-      if ($img.next('span').html().includes('<br>')) {
-        $img.css("padding-bottom", "40px");
-      }
 
-      if ([5, 9, 13, 16, 20 ,22].includes(index)) {
-        var $dashedHr = $('<hr>')
-          .css({
-            "border": "none",
-            "border-bottom": "2px dashed var(--border-color)",
-            "margin": "10px 0",
-          });
+        if ($img.next('span').html().includes('<br>')) {
+          $img.css("padding-bottom", "40px");
+        }
 
-        var $simpleHr = $('<hr>');
-        $img.parent('div.img-container').next('hr').after($dashedHr);
-        $dashedHr.after($simpleHr);
+        if ([5, 9, 13, 16, 20, 22].includes(index)) {
+          var $dashedHr = $('<hr>')
+            .css({
+              "border": "none",
+              "border-bottom": "2px dashed var(--border-color)",
+              "margin": "10px 0",
+            });
+
+          var $simpleHr = $('<hr>');
+          $img.parent('div.img-container').next('hr').after($dashedHr);
+          $dashedHr.after($simpleHr);
+        }
       }
     });
   }

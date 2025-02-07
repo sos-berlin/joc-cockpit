@@ -381,12 +381,12 @@
                                   <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                                     <ul nz-menu>
                                       <li (click)="post(board, notice)" *ngIf="permission.currentController.noticeBoards.post"
-                                          [nzDisabled]="notice.state._text !== 'EXPECTED'"
+                                          [nzDisabled]="(notice.state._text === 'POSTED')"
                                           nz-menu-item>
                                         <a translate>resource.board.button.post</a>
                                       </li>
                                       <li (click)="delete(board, notice)" *ngIf="permission.currentController.noticeBoards.delete"
-                                          [nzDisabled]="notice.state._text === 'EXPECTED'"
+                                          [nzDisabled]="notice.state._text !== 'POSTED'"
                                           nz-menu-item>
                                         <a translate>resource.board.button.delete</a>
                                       </li>

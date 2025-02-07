@@ -1055,7 +1055,9 @@
       </nz-tab>
       <nz-tab [nzTitle]="'dailyPlan.tab.dependencies' | translate">
         <div class="row m-t-n-xxs">
-
+          <div class="col-md-12 ">
+            <app-dependencies  [parentLoaded]="isParentLoaded"></app-dependencies>
+          </div>
         </div>
       </nz-tab>
     </nz-tabset>

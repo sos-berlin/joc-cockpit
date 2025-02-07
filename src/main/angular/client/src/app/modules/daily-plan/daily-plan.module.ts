@@ -13,6 +13,7 @@ import {DailyPlanRoutingModule} from './daily-plan-routing.module';
 import {DailyPlanRegexValidator} from '../../directives/core.directive';
 import {ExportComponent, ProjectionComponent, ShowProjectionModalComponent} from "./projection/projection.component";
 import {GroupByPipe} from '../../pipes/core.pipe';
+import {DependenciesComponent} from "./dependencies/dependencies.component";
 
 @NgModule({
   imports: [
@@ -20,7 +21,7 @@ import {GroupByPipe} from '../../pipes/core.pipe';
     DailyPlanRoutingModule,
     NzTabsModule
   ],
-  declarations: [DailyPlanComponent, GanttComponent, ProjectionComponent, RemovePlanModalComponent, FilterModalComponent,
+  declarations: [DailyPlanComponent, GanttComponent, ProjectionComponent, DependenciesComponent, RemovePlanModalComponent, FilterModalComponent,
     SearchComponent, DailyPlanRegexValidator, CreatePlanModalComponent, ShowProjectionModalComponent, ExportComponent],
   providers: [GroupByPipe]
 })

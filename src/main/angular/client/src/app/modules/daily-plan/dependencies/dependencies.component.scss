@@ -1,0 +1,24 @@
+
+
+#leftPanel2.dependencies {
+  left: auto;
+  top: auto !important;
+  width: 320px !important;
+  position: absolute !important;
+  height: 100%;
+  overflow: auto;
+}
+
+#rightPanel2 {
+  margin-left: 338px;
+}
+
+.r-t-8 {
+  right: 8px;
+  top: 6px
+}
+
+.l-t-8 {
+  left: 8px;
+  top: 6px
+}

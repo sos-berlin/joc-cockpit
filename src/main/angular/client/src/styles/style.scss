@@ -4425,6 +4425,15 @@ aside {
   max-width: 50%;
 }
 
+#leftPanel2.sticky {
+  float: none;
+  position: fixed;
+  top: 150px;
+  z-index: 6;
+  left: 0;
+  height: 100%;
+}
+
 #leftSidePanel.sticky, #xmlLeftSidePanel.sticky {
   float: none;
   position: fixed;
@@ -4440,7 +4449,7 @@ aside {
   overflow: auto;
 }
 
-#rightPanel, #rightPanel1, .m-l-290 {
+#rightPanel, #rightPanel1, #rightPanel2 .m-l-290 {
   margin-left: 290px;
 }
 
@@ -8868,6 +8877,10 @@ td .p-a-b-b-0 {
 
 .max-ht-n-252 {
   height: calc(100vh - 266px);
+}
+
+.max-ht-n-220 {
+  height: calc(100vh - 220px);
 }
 
 .max-ht-n-476 {
