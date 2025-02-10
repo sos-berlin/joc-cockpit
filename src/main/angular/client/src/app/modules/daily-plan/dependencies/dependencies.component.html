@@ -1,4 +1,18 @@
 <div class="row">
+  <div class="col-md-12 m-b">
+    <div class="inline btn-group">
+      <div (click)="setView('Global')"
+           [class.primary]="plansFilters.filter.calView === 'Global'"
+           class="btn btn-default btn-sm" translate>
+        dailyPlan.label.global
+      </div>
+      <div (click)="setView('Plannable')"
+           [class.primary]="plansFilters.filter.calView === 'Plannable'"
+           class="btn btn-default btn-sm" translate>
+        dailyPlan.label.plannable
+      </div>
+    </div>
+  </div>
   <div class="col-lg-12">
     <div class="sticky leftPanel dependencies" id="leftPanel2">
       <div class="box m-b-0 overflow-y" style="height: 97.4%">
@@ -22,9 +36,15 @@
       <div class="row">
         <div class="col-lg-12 col-sm-3 p-r-xs">
           <div class="box p-a max-ht-n-220" style="overflow: auto; ">
+            <pre>{{data | json}}</pre>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
+<div *ngIf="!isLoaded" class="spinner">
+  <div class="cssload-inner cssload-one"></div>
+  <div class="cssload-inner cssload-two"></div>
+  <div class="cssload-inner cssload-three"></div>
 </div>

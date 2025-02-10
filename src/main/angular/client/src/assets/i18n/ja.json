@@ -933,6 +933,8 @@
     "label.plannedAllAutomatically": "自動計画",
     "label.copyOrder": "オーダーコピー",
     "label.oneTimeOrders": "一回限りオーダー",
+    "label.global": "Global",
+    "label.plannable": "Plannable",
     "button.late": "遅延",
     "button.setStartTime": "開始時刻編集",
     "button.setParameter": "オーダー変数編集",

@@ -812,9 +812,6 @@ export class DailyPlanComponent {
 
   ngOnInit(): void {
     this.initConf();
-    setTimeout(() => {
-      this.isParentLoaded = true; // This will trigger ngOnChanges in the child component
-    }, 100);
     if (this.pageView === 'grid') {
       this.isToggle = true;
     }
@@ -2493,6 +2490,10 @@ export class DailyPlanComponent {
       this.changeInCalendar();
     } else if(this.dailyPlanFilters.tabIndex === 0) {
       this.reloadDailyPlan()
+    }else{
+      setTimeout(() => {
+        this.isParentLoaded = true;
+      }, 100);
     }
   }
 

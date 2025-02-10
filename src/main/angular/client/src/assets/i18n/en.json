@@ -933,6 +933,8 @@
     "label.plannedAllAutomatically": "Planned Automatically",
     "label.copyOrder": "Copy Order",
     "label.oneTimeOrders": "One-time Orders",
+    "label.global": "Global",
+    "label.plannable": "Plannable",
     "button.late": "Late",
     "button.setStartTime": "Modify Start Time",
     "button.setParameter": "Modify Variable",
