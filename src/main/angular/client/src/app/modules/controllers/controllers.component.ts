@@ -272,13 +272,15 @@ export class CreateTokenModalComponent {
       obj.agentIds = [this.agent.agentId];
     } else if ((this.agents && this.agents.size > 0) || (this.clusterAgents && this.clusterAgents.size > 0)) {
       if (this.agents && this.agents.size > 0) {
-        obj.agentIds = Array.from(this.agents);
+        // obj.agentIds = Array.from(this.agents);
+        obj.agentIds = Array.from(this.agents.keys());
       }
       if (this.clusterAgents && this.clusterAgents.size > 0) {
         if (!obj.agentIds) {
           obj.agentIds = [];
         }
-        obj.agentIds = obj.agentIds.concat(Array.from(this.agents));
+        // obj.agentIds = obj.agentIds.concat(Array.from(this.agents));
+        obj.agentIds = obj.agentIds.concat(Array.from(this.clusterAgents.keys()));
       }
     } else {
       obj.controllerId = this.controllerId;
@@ -939,12 +941,32 @@ export class ControllersComponent {
     this.resetCheckbox();
   }
 
-  disableAll(subagent = false): void {
+  showAll() {
+    let reqArr = [];
+    this.controllers.forEach((controller) => {
+      let obj = {
+        controllerId: controller.controllerId,
+        agents: [],
+        auditLog: {}
+      };
+      if (controller.agents) {
+        controller.agents.forEach((agent) => {
+          if (this.object.mapOfCheckedId.has(agent.agentId)) {
+            agent.hidden = false;
+            obj.agents.push(agent);
+          }
+        });
+        if (obj.agents.length > 0) {
+          reqArr.push(obj);
+        }
+      }
+    });
+
     if (this.preferences.auditLog) {
       let comments = {
         radio: 'predefined',
-        type: subagent ? 'Subagent' : 'Agent',
-        operation: 'Disable',
+        type: 'Agent',
+        operation: 'Show',
         name: ''
       };
 
@@ -962,22 +984,71 @@ export class ControllersComponent {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
+          reqArr.forEach((req) => {
+            req.auditLog = result;
+            this.coreService.post('agents/inventory/store', req).subscribe();
+          })
+        }
+      });
+    } else {
+      reqArr.forEach((req) => {
+        this.coreService.post('agents/inventory/store', req).subscribe();
+      })
+    }
+    this.resetCheckbox();
+  }
+
+  disableAll(subagent = false): void {
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined',
+        type: subagent ? 'Subagent' : 'Agent',
+        operation: 'Disable',
+        name: ''
+      };
+      const agentIds: string[] = [];
+      let controllerId: string;
+      if (subagent) {
+        this.object.mapOfCheckedId3.forEach((value, key) => {
+          agentIds.push(key);
+          controllerId = value;
+        });
+      } else {
+        this.object.mapOfCheckedId.forEach((value, key) => {
+          agentIds.push(key);
+          controllerId = value;
+        });
+      }
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzAutofocus: null,
+        nzData: {
+          comments
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
           if (subagent) {
-            this.object.mapOfCheckedId3.forEach((value, key) => {
+            if (agentIds.length > 0 && controllerId) {
               this.coreService.post('agents/inventory/cluster/subagents/disable', {
-                controllerId: value,
-                subagentIds: [key],
+                controllerId: controllerId,
+                subagentIds: agentIds,
                 auditLog: result || {}
               }).subscribe();
-            })
+            }
           } else {
-            this.object.mapOfCheckedId.forEach((k, v) => {
+            if (agentIds.length > 0 && controllerId) {
               this.coreService.post('agents/inventory/disable', {
-                controllerId: k,
-                agentIds: [v],
+                controllerId: controllerId,
+                agentIds: agentIds,
                 auditLog: result || {}
               }).subscribe();
-            })
+            }
           }
         }
       });
@@ -1010,6 +1081,20 @@ export class ControllersComponent {
         name: ''
       };
 
+      const agentIds: string[] = [];
+      let controllerId: string;
+      if (subagent) {
+        this.object.mapOfCheckedId3.forEach((value, key) => {
+          agentIds.push(key);
+          controllerId = value;
+        });
+      } else {
+        this.object.mapOfCheckedId.forEach((value, key) => {
+          agentIds.push(key);
+          controllerId = value;
+        });
+      }
+
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
@@ -1026,21 +1111,21 @@ export class ControllersComponent {
 
         if (result) {
           if (subagent) {
-            this.object.mapOfCheckedId3.forEach((value, key) => {
+            if (agentIds.length > 0 && controllerId) {
               this.coreService.post('agents/inventory/cluster/subagents/enable', {
-                controllerId: value,
-                subagentIds: [key],
+                controllerId: controllerId,
+                subagentIds: agentIds,
                 auditLog: result || {}
               }).subscribe();
-            })
+            }
           } else {
-            this.object.mapOfCheckedId.forEach((k, v) => {
+            if (agentIds.length > 0 && controllerId) {
               this.coreService.post('agents/inventory/enable', {
-                controllerId: k,
-                agentIds: [v],
+                controllerId: controllerId,
+                agentIds: agentIds,
                 auditLog: result || {}
               }).subscribe();
-            })
+            }
           }
         }
       });

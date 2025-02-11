@@ -1,7 +1,7 @@
 import {Component, SimpleChanges, Input} from '@angular/core';
 import {NzModalRef} from "ng-zorro-antd/modal";
 import {CoreService} from "../../../services/core.service";
-
+import { NzTreeNodeOptions } from 'ng-zorro-antd/tree';
 declare const $: any;
 
 @Component({
@@ -13,10 +13,17 @@ export class DependenciesComponent {
   @Input() parentLoaded: boolean = false;
   @Input() schedulerId: any;
   @Input() preferences: any;
+  @Input() permission: any;
+
   selectedDate: Date;
   isLoaded: boolean;
   data: any;
   plansFilters: any = {filter: {}};
+  expectedTreeData: NzTreeNodeOptions[] = [];
+  announcedTreeData: NzTreeNodeOptions[] = [];
+  postedTreeData: NzTreeNodeOptions[] = [];
+  searchValue = '';
+
   constructor(public coreService: CoreService) {
   }
 
@@ -85,6 +92,7 @@ export class DependenciesComponent {
       planSchemaIds: [planIds],
     }).subscribe((res) => {
       this.data = res
+      this.processData(res)
       this.isLoaded = true;
     });
   }
@@ -92,5 +100,70 @@ export class DependenciesComponent {
   setView(view): void {
     this.plansFilters.filter.calView = view;
     this.loadPlans();
+  }
+
+  processData(data) {
+    let expectedNodes: NzTreeNodeOptions[] = [];
+    let announcedNodes: NzTreeNodeOptions[] = [];
+    let postedNodes: NzTreeNodeOptions[] = [];
+
+    data.plans?.forEach(plan => {
+      plan.noticeBoards?.forEach(board => {
+        board.notices?.forEach(notice => {
+          const noticeState = notice.state?._text || "UNKNOWN";
+
+          let node: NzTreeNodeOptions = {
+            path: board.path,
+            title: ` ${board.path || "Unknown Board"}`,
+            icon: 'gateway',
+            type: 'NOTICEBOARD',
+            key: notice.id || Math.random().toString(),
+            expanded: true,
+            children: notice.expectingOrders?.map(order => ({
+              path: order.workflowId?.path,
+              versionId: order.workflowId?.versionId,
+              title: `${order.workflowId?.path || "Unknown Workflow"}`,
+              status:  `${order.state?._text || "UNKNOWN"}`,
+              severity:  `${order.state?.severity || "UNKNOWN"}`,
+              icon: 'apartment',
+              type: 'WORKFLOW',
+              key: order.orderId || Math.random().toString()
+            })) || []
+          };
+
+          if (noticeState === "EXPECTED") {
+            expectedNodes.push(node);
+          } else if (noticeState === "ANNOUNCED") {
+            announcedNodes.push(node);
+          } else if (noticeState === "POSTED") {
+            postedNodes.push(node);
+          }
+        });
+      });
+    });
+
+
+    this.expectedTreeData = expectedNodes;
+    this.announcedTreeData = announcedNodes;
+    this.postedTreeData = postedNodes;
+  }
+
+  getStatusClass(node: NzTreeNodeOptions): string {
+    if (node.title.includes("WAITING")) return "status-expected";
+    if (node.title.includes("ANNOUNCED")) return "status-announced";
+    if (node.title.includes("POSTED")) return "status-posted";
+    return "";
+  }
+
+  navToInventoryTab(data, type): void {
+    this.coreService.navToInventoryTab(data, type);
+  }
+
+  showBoard(board): void {
+    this.coreService.showBoard(board);
+  }
+
+  showWorkflow(workflow, version): void {
+    this.coreService.showWorkflow(workflow, version);
   }
 }

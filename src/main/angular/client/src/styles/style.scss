@@ -8880,7 +8880,7 @@ td .p-a-b-b-0 {
 }
 
 .max-ht-n-220 {
-  height: calc(100vh - 220px);
+  height: calc(100vh - 328px);
 }
 
 .max-ht-n-476 {
@@ -9781,6 +9781,12 @@ cdk-virtual-scroll-viewport {
 .ant-drawer .report-drawer {
   width: calc(100% - 48px) !important;
   margin-right: 24px;
+  height: calc(100% - 42px) !important;
+  margin-top: 28px;
+}
+
+.report-drawer {
+  width: calc(100% - 48px) !important;
   height: calc(100% - 42px) !important;
   margin-top: 28px;
 }
