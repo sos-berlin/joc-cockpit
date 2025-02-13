@@ -22,7 +22,7 @@
          [hidden]="!searchValue"
          class="fa fa-times search-close"></i>
     </div>
-    <br />
+    <br/>
   </div>
   <div class="col-lg-12">
     <div class="sticky leftPanel dependencies" id="leftPanel2">
@@ -35,10 +35,6 @@
               <i class="fa fa-circle circle daily-plan-step-icon"></i><span translate>dailyPlan.tooltip.dateRangeSelectStep3</span>
             </div>
           </ng-template>
-          <i [nzTooltipPlacement]="'left'" [nzTooltipTitle]="tooltipTemplate" class="fa fa-info-circle pos-abt r-t-8"
-             nz-tooltip></i>
-          <i
-            class="fa fa-calendar-plus-o pos-abt cursor l-t-8"></i>
           <div class="calendar-sm m-t-0" id="full-calendar2"></div>
         </div>
       </div>
@@ -51,24 +47,31 @@
               <span translate>dailyPlan.label.expected</span>
             </h3>
           </div>
-          <div class="box p-a max-ht-n-220" style="overflow: auto; ">
-            <nz-tree [nzData]="expectedTreeData" [nzSearchValue]="searchValue" nzShowLine nzBlockNode nzDefaultExpandAll>
+          <perfect-scrollbar class="box p-a max-ht-n-220" style="overflow: auto; ">
+            <nz-tree [nzData]="expectedTreeData" [nzSearchValue]="searchValue" [nzCheckable]="true"  (nzCheckBoxChange)="checkBoxChange($event)"  nzBlockNode
+                     nzDefaultExpandAll>
               <ng-template #nzTreeTemplate let-node>
                 <i [nzType]="node.origin.icon" class="icon-color ml-sm-1 mr-sm-1" nz-icon nzTheme="outline"></i>
                 <i (click)="navToInventoryTab(node.origin.path, node.origin.type);"
-                   *ngIf="permission.joc && permission.joc.inventory.view"
+                   *ngIf="permission.joc && permission.joc.inventory.view && node.origin.type !== 'ORDER'"
                    class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
                 <a *ngIf="node.origin.type === 'NOTICEBOARD'" (click)="showBoard(node.origin.path)"
                    class="text-hover-primary" [ngClass]="getStatusClass(node)">{{ node.origin.title }}</a>
                 <a *ngIf="node.origin.type === 'WORKFLOW'"
                    (click)="showWorkflow(node.origin.path, node.origin.versionId)" class="text-hover-primary"
                    [ngClass]="getStatusClass(node)">{{ node.origin.title }}</a>
-                </ng-template>
+                <span *ngIf="node.origin.type === 'ORDER'"
+                      [ngClass]="getStatusClass(node)">{{ node.origin.title }} - <span
+                  [innerHtml]="node.origin.status | translate"
+                  [ngClass]="coreService.getColor(node.origin.severity,'bg')"
+                  class="label"></span>
+                </span>
+              </ng-template>
             </nz-tree>
             <div *ngIf="expectedTreeData.length==0" class="text-center m-t">
               <app-empty-data></app-empty-data>
             </div>
-          </div>
+          </perfect-scrollbar>
         </div>
         <div class="col-lg-4 col-sm-3 p-r-xs">
           <div class="box box-header b-b">
@@ -76,24 +79,31 @@
               <span translate>dailyPlan.label.announced</span>
             </h3>
           </div>
-          <div class="box p-a max-ht-n-220" style="overflow: auto; ">
-            <nz-tree [nzData]="announcedTreeData" [nzSearchValue]="searchValue" nzShowLine nzBlockNode nzDefaultExpandAll>
+          <perfect-scrollbar class="box p-a max-ht-n-220" style="overflow: auto; ">
+            <nz-tree [nzData]="announcedTreeData" [nzSearchValue]="searchValue" [nzCheckable]="true"  (nzCheckBoxChange)="checkBoxChange($event)"   nzBlockNode
+                     nzDefaultExpandAll>
               <ng-template #nzTreeTemplate let-node>
                 <i [nzType]="node.origin.icon" class="icon-color ml-sm-1 mr-sm-1" nz-icon nzTheme="outline"></i>
                 <i (click)="navToInventoryTab(node.origin.path, node.origin.type);"
-                   *ngIf="permission.joc && permission.joc.inventory.view"
+                   *ngIf="permission.joc && permission.joc.inventory.view && node.origin.type !== 'ORDER'"
                    class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
                 <a *ngIf="node.origin.type === 'NOTICEBOARD'" (click)="showBoard(node.origin.path)"
                    class="text-hover-primary" [ngClass]="getStatusClass(node)">{{ node.origin.title }}</a>
                 <a *ngIf="node.origin.type === 'WORKFLOW'"
                    (click)="showWorkflow(node.origin.path, node.origin.versionId)" class="text-hover-primary"
                    [ngClass]="getStatusClass(node)">{{ node.origin.title }}</a>
-                </ng-template>
+                <span *ngIf="node.origin.type === 'ORDER'"
+                      [ngClass]="getStatusClass(node)">{{ node.origin.title }} - <span
+                  [innerHtml]="node.origin.status | translate"
+                  [ngClass]="coreService.getColor(node.origin.severity,'bg')"
+                  class="label"></span>
+                </span>
+              </ng-template>
             </nz-tree>
             <div *ngIf="announcedTreeData.length==0" class="text-center m-t">
               <app-empty-data></app-empty-data>
             </div>
-          </div>
+          </perfect-scrollbar>
         </div>
         <div class="col-lg-4 col-sm-3 p-r-xs">
           <div class="box box-header b-b">
@@ -101,24 +111,30 @@
               <span translate>dailyPlan.label.posted</span>
             </h3>
           </div>
-          <div class="box p-a max-ht-n-220" style="overflow: auto; ">
-            <nz-tree [nzData]="postedTreeData" [nzSearchValue]="searchValue" nzShowLine nzBlockNode nzDefaultExpandAll>
+          <perfect-scrollbar class="box p-a max-ht-n-220" style="overflow: auto; ">
+            <nz-tree [nzData]="postedTreeData" [nzSearchValue]="searchValue" [nzCheckable]="true"  (nzCheckBoxChange)="checkBoxChange($event)"  nzBlockNode nzDefaultExpandAll>
               <ng-template #nzTreeTemplate let-node>
                 <i [nzType]="node.origin.icon" class="icon-color ml-sm-1 mr-sm-1" nz-icon nzTheme="outline"></i>
                 <i (click)="navToInventoryTab(node.origin.path, node.origin.type);"
-                   *ngIf="permission.joc && permission.joc.inventory.view"
+                   *ngIf="permission.joc && permission.joc.inventory.view && node.origin.type !== 'ORDER'"
                    class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
                 <a *ngIf="node.origin.type === 'NOTICEBOARD'" (click)="showBoard(node.origin.path)"
                    class="text-hover-primary" [ngClass]="getStatusClass(node)">{{ node.origin.title }}</a>
                 <a *ngIf="node.origin.type === 'WORKFLOW'"
                    (click)="showWorkflow(node.origin.path, node.origin.versionId)" class="text-hover-primary"
                    [ngClass]="getStatusClass(node)">{{ node.origin.title }}</a>
-                </ng-template>
+                <span *ngIf="node.origin.type === 'ORDER'"
+                      [ngClass]="getStatusClass(node)">{{ node.origin.title }} - <span
+                  [innerHtml]="node.origin.status | translate"
+                  [ngClass]="coreService.getColor(node.origin.severity,'bg')"
+                  class="label"></span>
+                </span>
+              </ng-template>
             </nz-tree>
             <div *ngIf="postedTreeData.length==0" class="text-center m-t">
               <app-empty-data></app-empty-data>
             </div>
-          </div>
+          </perfect-scrollbar>
         </div>
       </div>
     </div>
