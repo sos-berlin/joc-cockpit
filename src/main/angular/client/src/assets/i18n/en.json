@@ -930,7 +930,7 @@
     "label.invertProjection": "Inverted Projection",
     "label.periodFound": "Period found",
     "label.periodsFound": "Periods found",
-    "label.plannedAllAutomatically": "Planned Automatically",
+    "label.plannedAllAutomatically": "Including orders not planned automatically",
     "label.copyOrder": "Copy Order",
     "label.oneTimeOrders": "One-time Orders",
     "label.global": "Global",
@@ -3117,7 +3117,7 @@
     "placeholder.enterNonNegativeNumber": "Enter non-negative number",
     "placeholder.enterPositiveInteger": "Enter only positive integer",
     "placeholder.enterNonNegativeInteger": "Enter non-negative integer",
-    "placeholder.enterKioskInteger": "0 or >10 sec",
+    "placeholder.enterKioskInteger": "Enter 0 or a number >10 seconds",
     "cleanup": {
       "time_zone": "Specifies the time zone that is applied to the start time and period of the Cleanup Service.",
       "period": "Specifies weekdays on which the Cleanup Service is performed. The first day of week is considered being Monday. When initially installing JS7 then the distribution specifies the full week. Without this setting the Cleanup Service will not start.",
@@ -3215,12 +3215,12 @@
       "minimum_password_length": "The minimum length of a password specified by users."
     },
     "kiosk": {
-      "kiosk_role": "kiosk_role",
-      "view_dashboard_duration": "view_dashboard_duration",
-      "view_monitor_order_notification_duration": "view_monitor_order_notification_duration",
-      "view_monitor_system_notification_duration": "view_monitor_system_notification_duration",
-      "view_history_tasks_duration": "view_history_tasks_duration",
-      "view_history_orders_duration": "view_history_orders_duration"
+      "kiosk_role": "Kiosk mode requires a specific role to be created. The kiosk role does not ship with JOC Cockpit. The role must be created by the user with read-only permissions for Controller and JOC Cockpit. By default the name of role is 'kiosk'. Users can modify the name of the role.",
+      "view_dashboard_duration": "The duration in seconds for which the DASHBOARD view will be displayed. A value 0 excludes the view from kiosk mode. A value >10 displays the view in kiosk mode.",
+      "view_monitor_order_notification_duration": "The duration in seconds for which the MONITOR -> Order Notifications view will be displayed. A value 0 excludes the view from kiosk mode. A value >10 displays the view in kiosk mode.",
+      "view_monitor_system_notification_duration": "The duration in seconds for which the MONITOR -> System Notifications view will be displayed. A value 0 excludes the view from kiosk mode. A value >10 displays the view in kiosk mode.",
+      "view_history_tasks_duration": "The duration in seconds for which the HISTORY -> Tasks view will be displayed. A value 0 excludes the view from kiosk mode. A value >10 displays the view in kiosk mode.",
+      "view_history_orders_duration": "The duration in seconds for which the HISTORY -> Orders view will be displayed. A value 0 excludes the view from kiosk mode. A value >10 displays the view in kiosk mode."
     }
   },
   "user": {
@@ -3696,12 +3696,12 @@
     "label.ifEnd": "If-End",
     "label.caseWhen": "Case",
     "label.caseEnd": "Case-End",
-    "label.elseEnd": "Else-End",
-    "label.when": "When",
-    "label.whenEnd": "when-End",
+    "label.elseEnd": "Case-Else-End",
+    "label.when": "Case-When",
+    "label.whenEnd": "Case-When-End",
     "label.then": "then",
     "label.else": "else",
-    "label.elseWhen": "Else",
+    "label.elseWhen": "Case-Else",
     "label.fileWatcher": "File Watcher",
     "label.expressionEditor": "Expression Editor",
     "label.scriptEditor": "Script Editor",

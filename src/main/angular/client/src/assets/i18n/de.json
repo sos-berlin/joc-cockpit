@@ -93,7 +93,7 @@
   "DELETE": "löschen",
   "EXPECTED": "erwartet",
   "POSTED": "erzeugt",
-  "ANNOUNCED": "announced",
+  "ANNOUNCED": "angekündigt",
   "minor": "gering",
   "major": "hoch",
   "normal": "normal",
@@ -930,14 +930,14 @@
     "label.invertProjection": "Umgekehrte Projektion",
     "label.periodFound": "Periode gefunden",
     "label.periodsFound": "Perioden gefunden",
-    "label.plannedAllAutomatically": "Automatisch geplant",
+    "label.plannedAllAutomatically": "Inkl. nicht automatisch geplanter Aufträge",
     "label.copyOrder": "Auftrag kopieren",
     "label.oneTimeOrders": "Einmalige Aufträge",
     "label.global": "Global",
-    "label.plannable": "Plannable",
-    "label.expected": "Expected",
-    "label.announced": "Announced",
-    "label.posted": "Posted",
+    "label.plannable": "Planbar",
+    "label.expected": "Erwartet",
+    "label.announced": "Angekündigt",
+    "label.posted": "Erstellt",
     "button.late": "Verspätet",
     "button.setStartTime": "Startzeit ändern",
     "button.setParameter": "Variable ändern",
@@ -983,7 +983,7 @@
     "tab": {
       "dailyPlan": "Tagesplan",
       "projection": "Projektion",
-      "dependencies": "Dependencies"
+      "dependencies": "Abhängigkeiten"
     }
   },
   "deploymentService": {
@@ -3117,7 +3117,7 @@
     "placeholder.enterNonNegativeNumber": "Nicht-negative Zahl angeben",
     "placeholder.enterPositiveInteger": "Positive Ganzzahl angeben",
     "placeholder.enterNonNegativeInteger": "Nicht-negative Ganzzahl angeben",
-    "placeholder.enterKioskInteger": "0 or >10 sec",
+    "placeholder.enterKioskInteger": "0 oder >10 Sekunden angeben",
     "cleanup": {
       "time_zone": "Benennt die Zeitzone für Startzeiten und Perioden des Bereinigungsdienstes",
       "period": "Benennt Wochentage der Ausführung des Bereinigungsdienstes. Der erste Wochentag ist Montag. Bei Erstinstallation wird die gesamte Woche benannt. Ohne diese Einstellung startet der Bereinigungsdienst nicht.",
@@ -3215,12 +3215,12 @@
       "minimum_password_length": "Die von den Benutzern angegebene Mindestlänge eines Kennworts."
     },
     "kiosk": {
-      "kiosk_role": "kiosk_role",
-      "view_dashboard_duration": "view_dashboard_duration",
-      "view_monitor_order_notification_duration": "view_monitor_order_notification_duration",
-      "view_monitor_system_notification_duration": "view_monitor_system_notification_duration",
-      "view_history_tasks_duration": "view_history_tasks_duration",
-      "view_history_orders_duration": "view_history_orders_duration"
+      "kiosk_role": "Für den Kiosk-Modus muss eine spezielle Rolle erstellt werden. Die Kiosk-Rolle wird nicht mit JOC Cockpit ausgeliefert. Die Rolle muss von einem Benutzer mit Leseberechtigung für Controller und JOC Cockpit erstellt werden. Standardmäßig lautet der Name der Rolle 'kiosk'. Benutzer können den Namen der Rolle ändern.",
+      "view_dashboard_duration": "Die Dauer in Sekunden, für die die Ansicht ÜBERSICHT angezeigt wird. Ein Wert von 0 schließt die Ansicht vom Kioskmodus aus. Bei einem Wert >10 wird die Ansicht im Kioskmodus angezeigt.",
+      "view_monitor_order_notification_duration": "Die Dauer in Sekunden, für die die Ansicht ÜBERWACHUNG -> Auftragsbenachrichtigungen angezeigt wird. Ein Wert von 0 schließt die Ansicht vom Kioskmodus aus. Bei einem Wert >10 wird die Ansicht im Kioskmodus angezeigt.",
+      "view_monitor_system_notification_duration": "Die Dauer in Sekunden, für die die Ansicht ÜBERWACHUNG -> Systembenachrichtigungen angezeigt wird. Ein Wert von 0 schließt die Ansicht vom Kioskmodus aus. Bei einem Wert >10 wird die Ansicht im Kioskmodus angezeigt.",
+      "view_history_tasks_duration": "Die Dauer in Sekunden, für die die  Ansicht HISTORIE -> Prozesse angezeigt wird. Ein Wert von 0 schließt die Ansicht vom Kioskmodus aus. Bei einem Wert >10 wird die Ansicht im Kioskmodus angezeigt.",
+      "view_history_orders_duration": "Die Dauer in Sekunden, für die die  Ansicht HISTORIE -> Aufträge angezeigt wird. Ein Wert von 0 schließt die Ansicht vom Kioskmodus aus. Bei einem Wert >10 wird die Ansicht im Kioskmodus angezeigt."
     }
   },
   "user": {
@@ -3696,12 +3696,12 @@
     "label.ifEnd": "If-End",
     "label.caseWhen": "Case",
     "label.caseEnd": "Case-End",
-    "label.elseEnd": "Else-End",
-    "label.when": "When",
-    "label.whenEnd": "when-End",
+    "label.elseEnd": "Case-Else-End",
+    "label.when": "Case-When",
+    "label.whenEnd": "Case-When-End",
     "label.then": "then",
     "label.else": "else",
-    "label.elseWhen": "Else",
+    "label.elseWhen": "Case-Else",
     "label.fileWatcher": "Dateiüberwachung",
     "label.expressionEditor": "Ausdrucks-Editor",
     "label.scriptEditor": "Skript-Editor",
