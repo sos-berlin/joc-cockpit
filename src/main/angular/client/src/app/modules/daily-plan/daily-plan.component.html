@@ -358,7 +358,7 @@
                 <span translate>dailyPlan.button.late</span>
               </button>
             </div>
-            <div class="inline valign" *ngIf="dailyPlanFilters.tabIndex !== 0">
+            <div class="inline valign" *ngIf="dailyPlanFilters.tabIndex === 1">
               <label [(ngModel)]="dailyPlanFilters.current"
                      name="current" nz-checkbox  (nzCheckedChange)="loadProjectionForCalendar()" >
                 {{'common.label.currentController' | translate}}
@@ -441,12 +441,12 @@
                 </ul>
               </nz-dropdown-menu>
             </div>
-            <button (click)="exportToExcel()" [disabled]="(dailyPlanFilters.tabIndex == 0 && planOrders?.length===0) || (dailyPlanFilters.tabIndex !== 0 && projectionData?.length===0)"
+            <button *ngIf="dailyPlanFilters.tabIndex !== 2" (click)="exportToExcel()" [disabled]="(dailyPlanFilters.tabIndex == 0 && planOrders?.length===0) || (dailyPlanFilters.tabIndex !== 0 && projectionData?.length===0)"
                     [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
                     class="btn btn-grey btn-sm m-l-12">
               <i class="fa fa-share-square-o"></i>
             </button>
-            <button (click)="exportObject(null)" *ngIf="dailyPlanFilters.tabIndex !== 0"
+            <button (click)="exportObject(null)" *ngIf="dailyPlanFilters.tabIndex === 1"
                     class="btn btn-sm btn-grey m-l-12">
               <i nz-icon nzTheme="outline" nzType="export"></i>&nbsp;
               <span translate>inventory.button.export</span>

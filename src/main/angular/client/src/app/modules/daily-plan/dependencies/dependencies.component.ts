@@ -112,23 +112,46 @@ export class DependenciesComponent {
         board.notices?.forEach(notice => {
           const noticeState = notice.state?._text || "UNKNOWN";
 
+          let workflowMap = new Map();
+
+          notice.expectingOrders?.forEach(order => {
+            if (!workflowMap.has(order.workflowId?.path)) {
+              workflowMap.set(order.workflowId?.path, {
+                path: order.workflowId?.path,
+                versionId: order.workflowId?.versionId,
+                title: `${order.workflowId?.path || "Unknown Workflow"}`,
+                status: `${order.state?._text || "UNKNOWN"}`,
+                severity: `${order.state?.severity || "UNKNOWN"}`,
+                icon: 'apartment',
+                type: 'WORKFLOW',
+                key: order.workflowId?.path,
+                disableCheckbox: true,
+                children: []
+              });
+            }
+
+
+            workflowMap.get(order.workflowId?.path).children.push({
+              path: order.orderId,
+              title: `${order.orderId || "Unknown Order"}`,
+              status: `${order.state?._text || "UNKNOWN"}`,
+              severity: `${order.state?.severity || "UNKNOWN"}`,
+              type: 'ORDER',
+              key: order.orderId || Math.random().toString(),
+              isLeaf: true,
+              disableCheckbox: true
+
+            });
+          });
+
           let node: NzTreeNodeOptions = {
             path: board.path,
-            title: ` ${board.path || "Unknown Board"}`,
+            title: `${board.path || "Unknown Board"}`,
             icon: 'gateway',
             type: 'NOTICEBOARD',
             key: notice.id || Math.random().toString(),
             expanded: true,
-            children: notice.expectingOrders?.map(order => ({
-              path: order.workflowId?.path,
-              versionId: order.workflowId?.versionId,
-              title: `${order.workflowId?.path || "Unknown Workflow"}`,
-              status:  `${order.state?._text || "UNKNOWN"}`,
-              severity:  `${order.state?.severity || "UNKNOWN"}`,
-              icon: 'apartment',
-              type: 'WORKFLOW',
-              key: order.orderId || Math.random().toString()
-            })) || []
+            children: Array.from(workflowMap.values()) // Convert Map to Array
           };
 
           if (noticeState === "EXPECTED") {
@@ -142,11 +165,11 @@ export class DependenciesComponent {
       });
     });
 
-
     this.expectedTreeData = expectedNodes;
     this.announcedTreeData = announcedNodes;
     this.postedTreeData = postedNodes;
   }
+
 
   getStatusClass(node: NzTreeNodeOptions): string {
     if (node.title.includes("WAITING")) return "status-expected";
@@ -165,5 +188,9 @@ export class DependenciesComponent {
 
   showWorkflow(workflow, version): void {
     this.coreService.showWorkflow(workflow, version);
+  }
+
+  checkBoxChange(data): void {
+    console.log(data,":")
   }
 }
