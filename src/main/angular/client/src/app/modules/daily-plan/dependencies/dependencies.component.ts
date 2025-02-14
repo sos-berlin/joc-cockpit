@@ -90,6 +90,7 @@ export class DependenciesComponent {
       controllerId: this.schedulerId,
       planKeys: [this.coreService.getDateByFormat(this.selectedDate, this.preferences.zone, 'YYYY-MM-DD')],
       planSchemaIds: [planIds],
+      compact: true
     }).subscribe((res) => {
       this.data = res
       this.processData(res)

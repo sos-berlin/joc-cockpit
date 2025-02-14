@@ -655,11 +655,9 @@
                   [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
                   name="whenNotAnnounced"
                 >
-                  <nz-option
-                    *ngFor="let whenNotAnnounced of whenNotAnnouncedArr"
-                    [nzLabel]="('workflow.label.' + whenNotAnnounced) | translate"
-                    [nzValue]="whenNotAnnounced"
-                  ></nz-option>
+                  <nz-option [nzLabel]="('workflow.label.wait') | translate" [nzValue]="'Wait'"></nz-option>
+                  <nz-option *ngIf="selectedNode.type === 'ConsumeNotices'" [nzLabel]="('workflow.label.dontWait') | translate" [nzValue]="'DontWait'"></nz-option>
+                  <nz-option [nzLabel]="('workflow.label.skipWhenNoNotice') | translate" [nzValue]="'SkipWhenNoNotice'"></nz-option>
                 </nz-select>
 
               </div>
