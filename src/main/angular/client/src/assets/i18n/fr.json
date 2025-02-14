@@ -93,7 +93,7 @@
   "DELETE": "supprimer",
   "EXPECTED": "attendu",
   "POSTED": "posté",
-  "ANNOUNCED": "announced",
+  "ANNOUNCED": "annoncé",
   "minor": "mineur",
   "major": "majeur",
   "normal": "normal",
@@ -930,14 +930,14 @@
     "label.invertProjection": "Projection inversée",
     "label.periodFound": "Période trouvé",
     "label.periodsFound": "Périodes trouvées",
-    "label.plannedAllAutomatically": "Planifié automatiquement",
+    "label.plannedAllAutomatically": "Inclut les ordres non planifiés automatiquement",
     "label.copyOrder": "Copier l'Ordre",
     "label.oneTimeOrders": "Ordres uniques",
-    "label.global": "Global",
-    "label.plannable": "Plannable",
-    "label.expected": "Expected",
-    "label.announced": "Announced",
-    "label.posted": "Posted",
+    "label.global": "Globale",
+    "label.plannable": "Planifiable",
+    "label.expected": "Attendu",
+    "label.announced": "Annoncé",
+    "label.posted": "Affiché",
     "button.late": "En retard",
     "button.setStartTime": "Modifier l'heure de démarrage",
     "button.setParameter": "Modifier la Variable",
@@ -983,7 +983,7 @@
     "tab": {
       "dailyPlan": "Plan Quotidien",
       "projection": "Projection",
-      "dependencies": "Dependencies"
+      "dependencies": "Dépendances"
     }
   },
   "deploymentService": {
@@ -3117,7 +3117,7 @@
     "placeholder.enterNonNegativeNumber": "Entrer un nombre non négatif",
     "placeholder.enterPositiveInteger": "Entrer uniquement un nombre entier positif",
     "placeholder.enterNonNegativeInteger": "Entrer un nombre entier non négatif",
-    "placeholder.enterKioskInteger": "0 or >10 sec",
+    "placeholder.enterKioskInteger": "Entrer 0 ou >10 secondes",
     "cleanup": {
       "time_zone": "Spécifie le fuseau horaire appliqué à l'heure de début et à la période du Cleanup Service.",
       "period": "Spécifie les jours de la semaine pendant lesquels le Cleanup Service est effectué. Le premier jour de la semaine est considéré comme étant le Lundi. Lors de l'installation initiale de JS7, la distribution spécifie la semaine complète. Sans ce paramètre, le Cleanup Service ne démarrera pas.",
@@ -3215,12 +3215,12 @@
       "minimum_password_length": "Longueur minimale d'un mot de passe spécifiée par les utilisateurs."
     },
     "kiosk": {
-      "kiosk_role": "kiosk_role",
-      "view_dashboard_duration": "view_dashboard_duration",
-      "view_monitor_order_notification_duration": "view_monitor_order_notification_duration",
-      "view_monitor_system_notification_duration": "view_monitor_system_notification_duration",
-      "view_history_tasks_duration": "view_history_tasks_duration",
-      "view_history_orders_duration": "view_history_orders_duration"
+      "kiosk_role": "Le mode kiosque nécessite la création d'un rôle spécifique. Le rôle kiosque n'est pas fourni avec JOC Cockpit. Le rôle doit être créé par l'utilisateur disposant d'autorisations de lecture seule pour le Contrôleur et JOC Cockpit. Par défaut, le nom du rôle est 'kiosque'. Les utilisateurs peuvent modifier le nom du rôle.",
+      "view_dashboard_duration": "Durée en secondes pendant laquelle la vue TABLEAU DE BORD sera affichée. La valeur 0 exclut la vue du mode kiosque. Une valeur >10 permet d'afficher la vue en mode kiosque.",
+      "view_monitor_order_notification_duration": "Durée en secondes pendant laquelle la vue MONITEUR -> Notifications Ordre sera affichée. La valeur 0 exclut la vue du mode kiosque. Une valeur >10 permet d'afficher la vue en mode kiosque.",
+      "view_monitor_system_notification_duration": "Durée en secondes pendant laquelle la vue MONITEUR -> Notifications Système sera affichée. La valeur 0 exclut la vue du mode kiosque. Une valeur >10 permet d'afficher la vue en mode kiosque.",
+      "view_history_tasks_duration": "Durée en secondes pendant laquelle la vue HISTORIQUE -> Tâches sera affichée. La valeur 0 exclut la vue du mode kiosque. Une valeur >10 permet d'afficher la vue en mode kiosque.",
+      "view_history_orders_duration": "Durée en secondes pendant laquelle la vue HISTORIQUE -> Ordres sera affichée. La valeur 0 exclut la vue du mode kiosque. Une valeur >10 permet d'afficher la vue en mode kiosque."
     }
   },
   "user": {
@@ -3696,12 +3696,12 @@
     "label.ifEnd": "If-End",
     "label.caseWhen": "Case",
     "label.caseEnd": "Case-End",
-    "label.elseEnd": "Else-End",
-    "label.when": "When",
-    "label.whenEnd": "when-End",
+    "label.elseEnd": "Case-Else-End",
+    "label.when": "Case-When",
+    "label.whenEnd": "Case-When-End",
     "label.then": "then",
     "label.else": "else",
-    "label.elseWhen": "Else",
+    "label.elseWhen": "Case-Else",
     "label.fileWatcher": "Moniteur du Système de Fichier",
     "label.expressionEditor": "Editeur d'Expression",
     "label.scriptEditor": "Éditeur de Script",
