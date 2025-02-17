@@ -41,107 +41,50 @@
     </div>
     <div id="rightPanel2">
       <div class="row">
-<!--        <div class="col-lg-4 col-sm-3 p-r-xs">-->
-<!--          <div class="box box-header b-b">-->
-<!--            <h3>-->
-<!--              <span translate>dailyPlan.label.expected</span>-->
-<!--            </h3>-->
-<!--          </div>-->
-<!--&lt;!&ndash;          <perfect-scrollbar class="box p-a max-ht-n-220" style="overflow: auto; ">&ndash;&gt;-->
-<!--&lt;!&ndash;            <nz-tree [nzData]="expectedTreeData" [nzSearchValue]="searchValue" [nzCheckable]="true"  (nzCheckBoxChange)="checkBoxChange($event)"  nzBlockNode&ndash;&gt;-->
-<!--&lt;!&ndash;                     nzDefaultExpandAll>&ndash;&gt;-->
-<!--&lt;!&ndash;              <ng-template #nzTreeTemplate let-node>&ndash;&gt;-->
-<!--&lt;!&ndash;                <i [nzType]="node.origin.icon" class="icon-color ml-sm-1 mr-sm-1" nz-icon nzTheme="outline"></i>&ndash;&gt;-->
-<!--&lt;!&ndash;                <i (click)="navToInventoryTab(node.origin.path, node.origin.type);"&ndash;&gt;-->
-<!--&lt;!&ndash;                   *ngIf="permission.joc && permission.joc.inventory.view && node.origin.type !== 'ORDER'"&ndash;&gt;-->
-<!--&lt;!&ndash;                   class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>&ndash;&gt;-->
-<!--&lt;!&ndash;                <a *ngIf="node.origin.type === 'NOTICEBOARD'" (click)="showBoard(node.origin.path)"&ndash;&gt;-->
-<!--&lt;!&ndash;                   class="text-hover-primary" [ngClass]="getStatusClass(node)">{{ node.origin.title }}</a>&ndash;&gt;-->
-<!--&lt;!&ndash;                <a *ngIf="node.origin.type === 'WORKFLOW'"&ndash;&gt;-->
-<!--&lt;!&ndash;                   (click)="showWorkflow(node.origin.path, node.origin.versionId)" class="text-hover-primary"&ndash;&gt;-->
-<!--&lt;!&ndash;                   [ngClass]="getStatusClass(node)">{{ node.origin.title }}</a>&ndash;&gt;-->
-<!--&lt;!&ndash;                <span *ngIf="node.origin.type === 'ORDER'"&ndash;&gt;-->
-<!--&lt;!&ndash;                      [ngClass]="getStatusClass(node)">{{ node.origin.title }} - <span&ndash;&gt;-->
-<!--&lt;!&ndash;                  [innerHtml]="node.origin.status | translate"&ndash;&gt;-->
-<!--&lt;!&ndash;                  [ngClass]="coreService.getColor(node.origin.severity,'bg')"&ndash;&gt;-->
-<!--&lt;!&ndash;                  class="label"></span>&ndash;&gt;-->
-<!--&lt;!&ndash;                </span>&ndash;&gt;-->
-<!--&lt;!&ndash;              </ng-template>&ndash;&gt;-->
-<!--&lt;!&ndash;            </nz-tree>&ndash;&gt;-->
-<!--&lt;!&ndash;            <div *ngIf="expectedTreeData.length==0" class="text-center m-t">&ndash;&gt;-->
-<!--&lt;!&ndash;              <app-empty-data></app-empty-data>&ndash;&gt;-->
-<!--&lt;!&ndash;            </div>&ndash;&gt;-->
-<!--&lt;!&ndash;          </perfect-scrollbar>&ndash;&gt;-->
-<!--&lt;!&ndash;        </div>&ndash;&gt;-->
-<!--&lt;!&ndash;        <div class="col-lg-4 col-sm-3 p-r-xs">&ndash;&gt;-->
-<!--&lt;!&ndash;          <div class="box box-header b-b">&ndash;&gt;-->
-<!--&lt;!&ndash;            <h3>&ndash;&gt;-->
-<!--&lt;!&ndash;              <span translate>dailyPlan.label.announced</span>&ndash;&gt;-->
-<!--&lt;!&ndash;            </h3>&ndash;&gt;-->
-<!--&lt;!&ndash;          </div>&ndash;&gt;-->
-<!--&lt;!&ndash;          <perfect-scrollbar class="box p-a max-ht-n-220" style="overflow: auto; ">&ndash;&gt;-->
-<!--&lt;!&ndash;            <nz-tree [nzData]="announcedTreeData" [nzSearchValue]="searchValue" [nzCheckable]="true"  (nzCheckBoxChange)="checkBoxChange($event)"   nzBlockNode&ndash;&gt;-->
-<!--&lt;!&ndash;                     nzDefaultExpandAll>&ndash;&gt;-->
-<!--&lt;!&ndash;              <ng-template #nzTreeTemplate let-node>&ndash;&gt;-->
-<!--&lt;!&ndash;                <i [nzType]="node.origin.icon" class="icon-color ml-sm-1 mr-sm-1" nz-icon nzTheme="outline"></i>&ndash;&gt;-->
-<!--&lt;!&ndash;                <i (click)="navToInventoryTab(node.origin.path, node.origin.type);"&ndash;&gt;-->
-<!--&lt;!&ndash;                   *ngIf="permission.joc && permission.joc.inventory.view && node.origin.type !== 'ORDER'"&ndash;&gt;-->
-<!--&lt;!&ndash;                   class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>&ndash;&gt;-->
-<!--&lt;!&ndash;                <a *ngIf="node.origin.type === 'NOTICEBOARD'" (click)="showBoard(node.origin.path)"&ndash;&gt;-->
-<!--&lt;!&ndash;                   class="text-hover-primary" [ngClass]="getStatusClass(node)">{{ node.origin.title }}</a>&ndash;&gt;-->
-<!--&lt;!&ndash;                <a *ngIf="node.origin.type === 'WORKFLOW'"&ndash;&gt;-->
-<!--&lt;!&ndash;                   (click)="showWorkflow(node.origin.path, node.origin.versionId)" class="text-hover-primary"&ndash;&gt;-->
-<!--&lt;!&ndash;                   [ngClass]="getStatusClass(node)">{{ node.origin.title }}</a>&ndash;&gt;-->
-<!--&lt;!&ndash;                <span *ngIf="node.origin.type === 'ORDER'"&ndash;&gt;-->
-<!--&lt;!&ndash;                      [ngClass]="getStatusClass(node)">{{ node.origin.title }} - <span&ndash;&gt;-->
-<!--&lt;!&ndash;                  [innerHtml]="node.origin.status | translate"&ndash;&gt;-->
-<!--&lt;!&ndash;                  [ngClass]="coreService.getColor(node.origin.severity,'bg')"&ndash;&gt;-->
-<!--&lt;!&ndash;                  class="label"></span>&ndash;&gt;-->
-<!--&lt;!&ndash;                </span>&ndash;&gt;-->
-<!--&lt;!&ndash;              </ng-template>&ndash;&gt;-->
-<!--&lt;!&ndash;            </nz-tree>&ndash;&gt;-->
-<!--&lt;!&ndash;            <div *ngIf="announcedTreeData.length==0" class="text-center m-t">&ndash;&gt;-->
-<!--&lt;!&ndash;              <app-empty-data></app-empty-data>&ndash;&gt;-->
-<!--&lt;!&ndash;            </div>&ndash;&gt;-->
-<!--&lt;!&ndash;          </perfect-scrollbar>&ndash;&gt;-->
-<!--&lt;!&ndash;        </div>&ndash;&gt;-->
-<!--&lt;!&ndash;        <div class="col-lg-4 col-sm-3 p-r-xs">&ndash;&gt;-->
-<!--&lt;!&ndash;          <div class="box box-header b-b">&ndash;&gt;-->
-<!--&lt;!&ndash;            <h3>&ndash;&gt;-->
-<!--&lt;!&ndash;              <span translate>dailyPlan.label.posted</span>&ndash;&gt;-->
-<!--&lt;!&ndash;            </h3>&ndash;&gt;-->
-<!--&lt;!&ndash;          </div>&ndash;&gt;-->
-<!--&lt;!&ndash;          <perfect-scrollbar class="box p-a max-ht-n-220" style="overflow: auto; ">&ndash;&gt;-->
-<!--&lt;!&ndash;            <nz-tree [nzData]="postedTreeData" [nzSearchValue]="searchValue" [nzCheckable]="true"  (nzCheckBoxChange)="checkBoxChange($event)"  nzBlockNode nzDefaultExpandAll>&ndash;&gt;-->
-<!--&lt;!&ndash;              <ng-template #nzTreeTemplate let-node>&ndash;&gt;-->
-<!--&lt;!&ndash;                <i [nzType]="node.origin.icon" class="icon-color ml-sm-1 mr-sm-1" nz-icon nzTheme="outline"></i>&ndash;&gt;-->
-<!--&lt;!&ndash;                <i (click)="navToInventoryTab(node.origin.path, node.origin.type);"&ndash;&gt;-->
-<!--&lt;!&ndash;                   *ngIf="permission.joc && permission.joc.inventory.view && node.origin.type !== 'ORDER'"&ndash;&gt;-->
-<!--&lt;!&ndash;                   class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>&ndash;&gt;-->
-<!--&lt;!&ndash;                <a *ngIf="node.origin.type === 'NOTICEBOARD'" (click)="showBoard(node.origin.path)"&ndash;&gt;-->
-<!--&lt;!&ndash;                   class="text-hover-primary" [ngClass]="getStatusClass(node)">{{ node.origin.title }}</a>&ndash;&gt;-->
-<!--&lt;!&ndash;                <a *ngIf="node.origin.type === 'WORKFLOW'"&ndash;&gt;-->
-<!--&lt;!&ndash;                   (click)="showWorkflow(node.origin.path, node.origin.versionId)" class="text-hover-primary"&ndash;&gt;-->
-<!--&lt;!&ndash;                   [ngClass]="getStatusClass(node)">{{ node.origin.title }}</a>&ndash;&gt;-->
-<!--&lt;!&ndash;                <span *ngIf="node.origin.type === 'ORDER'"&ndash;&gt;-->
-<!--&lt;!&ndash;                      [ngClass]="getStatusClass(node)">{{ node.origin.title }} - <span&ndash;&gt;-->
-<!--&lt;!&ndash;                  [innerHtml]="node.origin.status | translate"&ndash;&gt;-->
-<!--&lt;!&ndash;                  [ngClass]="coreService.getColor(node.origin.severity,'bg')"&ndash;&gt;-->
-<!--&lt;!&ndash;                  class="label"></span>&ndash;&gt;-->
-<!--&lt;!&ndash;                </span>&ndash;&gt;-->
-<!--&lt;!&ndash;              </ng-template>&ndash;&gt;-->
-<!--&lt;!&ndash;            </nz-tree>&ndash;&gt;-->
-<!--&lt;!&ndash;            <div *ngIf="postedTreeData.length==0" class="text-center m-t">&ndash;&gt;-->
-<!--&lt;!&ndash;              <app-empty-data></app-empty-data>&ndash;&gt;-->
-<!--&lt;!&ndash;            </div>&ndash;&gt;-->
-<!--&lt;!&ndash;          </perfect-scrollbar>&ndash;&gt;-->
-<!--        </div>-->
+        <div class="col-md-9 col-sm-8 p-r-xs">
+          <div class="box p-t-sm  max-ht-n-220 " style="overflow: auto; ">
+            <div #graphContainer class="graph-container "></div>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-4">
+          <div class="box p-t-sm max-ht-n-220 ">
+            <div class="text-center m-t-md m-b text"><i class="icon-color" nz-icon nzTheme="outline"
+                                                        nzType="pushpin"></i>&nbsp;
+              <span class="_600 b-b p-b-sm m-l-sm" translate>inventory.label.boards</span>
+            </div>
+            <div class="p-a-sm">
+              <perfect-scrollbar style="height: calc(100vh - 415px); overflow-y: auto">
+                <nz-table #basicTable [nzBordered]="true" [nzData]="noticeBoards" [nzSize]="'middle'"
+                          [nzShowPagination]="false">
+                  <thead>
+                  <tr>
+                    <th>
+                      <label nz-checkbox [(ngModel)]="allChecked" [nzIndeterminate]="indeterminate"
+                             (ngModelChange)="onCheckAll($event)"></label>
+                    </th>
+                    <th translate>common.label.path</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr *ngFor="let board of noticeBoards">
+                    <td>
+                      <label nz-checkbox [(ngModel)]="board.checked" (ngModelChange)="updateCheckedStatus()"></label>
+                    </td>
+                    <td>{{ board.path }}</td>
+                  </tr>
+                  </tbody>
+                </nz-table>
+              </perfect-scrollbar>
+
+            </div>
+
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<div *ngIf="!isLoaded" class="spinner">
-  <div class="cssload-inner cssload-one"></div>
-  <div class="cssload-inner cssload-two"></div>
-  <div class="cssload-inner cssload-three"></div>
-</div>
+  <div *ngIf="!isLoaded" class="spinner">
+    <div class="cssload-inner cssload-one"></div>
+    <div class="cssload-inner cssload-two"></div>
+    <div class="cssload-inner cssload-three"></div>
+  </div>
