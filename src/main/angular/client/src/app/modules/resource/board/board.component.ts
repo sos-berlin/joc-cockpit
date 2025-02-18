@@ -38,6 +38,7 @@ export class PostModalComponent {
   singleNotice = false;
   workflowPaths: any;
   singular = false;
+  showNoticeId = false;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
@@ -48,6 +49,7 @@ export class PostModalComponent {
     this.board = this.modalData.board;
     this.notice = this.modalData.notice;
     this.flag = this.modalData.flag;
+    this.showNoticeId = this.modalData.showNoticeId;
     this.singleNotice = this.modalData.singleNotice;
     this.workflowPaths = this.modalData.workflowPaths;
     this.singular = this.modalData.singular;
@@ -55,6 +57,9 @@ export class PostModalComponent {
     this.zones = this.coreService.getTimeZoneList();
     this.postObj.timeZone = this.coreService.getTimeZone();
     this.postObj.at = 'later';
+    if (this.showNoticeId) {
+      this.postObj.planKey = new Date();
+    }
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -237,20 +242,24 @@ export class PostModalComponent {
       });
     }
 
-    if (this.singular) {
+    if (this.singular && !this.showNoticeId) {
       obj.noticeBoardPath = this.board.path;
       obj.noticeId = this.postObj.noticeId;
+    } else if (this.singular && this.showNoticeId) {
+      obj.noticeBoardPath = this.board.path;
+      const planKey = this.coreService.getDateByFormat(this.postObj.planKey, null, 'YYYY-MM-DD');
+      obj.noticeId = 'DailyPlan/' + planKey + '/' + this.postObj.noticeKey;
     }
 
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
-    if (this.postObj.at === 'date') {
+    if (this.postObj.at === 'date' && !this.showNoticeId) {
       if (this.postObj.fromDate) {
         this.coreService.getDateAndTime(this.postObj);
         const endOfLifeDate = this.coreService.getDateByFormat(this.postObj.fromDate, null, 'YYYY-MM-DD HH:mm:ss');
         obj.endOfLife = endOfLifeDate;
       }
-    } else if (this.postObj.at === 'later') {
+    } else if (this.postObj.at === 'later' && !this.showNoticeId) {
       const atTime = this.postObj.atTime;
       const convertedTime = this.coreService.convertToSeconds(atTime);
       obj.endOfLife = convertedTime !== 'Invalid time format' ? convertedTime : atTime;
@@ -1007,23 +1016,54 @@ export class BoardComponent {
   }
 
   post(board: any, notice = null): void {
-
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: PostModalComponent,
-      nzClassName: 'lg',
-      nzAutofocus: null,
-      nzData: {
-        board,
-        notice,
-        controllerId: this.schedulerIds.selected,
-        preferences: this.preferences,
-        singular: true
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
+    if (board.boardType === "PLANNABLE" && notice === null) {
+      const endpoint = 'notices/post';
+      const obj: any = {
+        "controllerId": this.schedulerIds.selected,
+        "auditLog": {},
+      }
+      const noticeBoardPath = board.path;
+      const noticeIds = board.notices.map(item => item.id);
+      obj.notices = [];
+      obj.notices.push({noticeBoardPath: noticeBoardPath, noticeIds: noticeIds});
+      this.coreService.post(endpoint, obj).subscribe({
+        next: (res) => {}});
+    } else if (board.boardType === "PLANNABLE" && notice != null) {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: PostModalComponent,
+        nzClassName: 'lg',
+        nzAutofocus: null,
+        nzData: {
+          board,
+          notice,
+          controllerId: this.schedulerIds.selected,
+          preferences: this.preferences,
+          singular: true,
+          showNoticeId: true
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+    } else {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: PostModalComponent,
+        nzClassName: 'lg',
+        nzAutofocus: null,
+        nzData: {
+          board,
+          notice,
+          controllerId: this.schedulerIds.selected,
+          preferences: this.preferences,
+          singular: true
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+    }
   }
 
   deleteAllNotices(): void {

@@ -23,3 +23,12 @@
   top: 6px
 }
 
+.toolbar-icons {
+  position: absolute;
+  padding: 2px 16px 0;
+  margin-left: 8px;
+  text-align: center;
+  background-color: var(--bg-box);
+  z-index: 9;
+  box-shadow: 0 1px 6px 1px rgba(0, 0, 0, 0.12);
+}

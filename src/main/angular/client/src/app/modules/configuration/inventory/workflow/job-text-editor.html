@@ -52,7 +52,7 @@
           <div [ngClass]="{'has-error' : (invalidName || ((name.dirty || name.touched) && name.invalid))}"
                class="col-md-8 col-lg-9">
             <label class="w-full">
-              <input #name="ngModel" (blur)="checkJobInfo();invalidName = ''" [(ngModel)]="selectedNode.obj.jobName" [appAutofocus]="(!error || !!invalidName)"
+              <input #name="ngModel" (change)="checkJobInfo();invalidName = ''" [(ngModel)]="selectedNode.obj.jobName" [appAutofocus]="(!error || !!invalidName)"
                      autocomplete="off"
                      class="form-control"
                      identifierValidation name="name" placeholder="{{'common.placeholder.name' | translate}}"
@@ -1070,7 +1070,7 @@
         <div class="col-md-8">
           <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
             <nz-tag
-              *ngFor="let tag of tags; let i = index"
+              *ngFor="let tag of tags; let i = index;"
               [nzMode]="'closeable'"
               (nzOnClose)="handleClose(tag)"
             >

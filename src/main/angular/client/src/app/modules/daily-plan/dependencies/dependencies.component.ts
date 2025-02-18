@@ -1,10 +1,11 @@
-import {Component, SimpleChanges, Input, ViewChild, ElementRef} from '@angular/core';
+import {Component, SimpleChanges, Input, ViewChild, ElementRef, Output, EventEmitter} from '@angular/core';
 import {NzModalRef} from "ng-zorro-antd/modal";
 import {CoreService} from "../../../services/core.service";
 import {NzTreeNodeOptions} from 'ng-zorro-antd/tree';
 import {Subject, Subscription} from 'rxjs';
 import {DataService} from '../../../services/data.service';
-
+import {NzDrawerComponent} from "ng-zorro-antd/drawer"
+import {WorkflowService} from "../../../services/workflow.service";
 declare const mxEditor: any;
 declare const mxUtils: any;
 declare const mxEvent: any;
@@ -16,52 +17,40 @@ declare const mxConstants: any;
 declare const mxPoint: any;
 declare const $: any;
 
+
 @Component({
-  selector: 'app-dependencies',
-  templateUrl: './dependencies.component.html',
+  selector: 'app-show-dailyPlan-dependencies',
+  templateUrl: './show-dependencies.html',
   styleUrl: './dependencies.component.scss'
 })
-export class DependenciesComponent {
-  @Input() parentLoaded: boolean = false;
+export class ShowDailyPlanDependenciesComponent {
   @Input() schedulerId: any;
   @Input() preferences: any;
-  @Input() permission: any;
+  @Input() noticePath: any;
+  @Output() closePanel: EventEmitter<any> = new EventEmitter();
+  @ViewChild('graphContainer') graphContainer!: ElementRef;
 
-  selectedDate: Date;
-  isLoaded: boolean;
-  data: any;
-  plansFilters: any = {filter: {}};
-  noticeBoards = []
-  allChecked = false;
-  searchValue = '';
-  configXml = './assets/mxgraph/config/diagram.xml';
-  indeterminate = false;
   private graph!: any;
   private editor!: any;
   private pendingHTTPRequests$ = new Subject<void>();
   private subscription: Subscription;
   private workflowData: any
-  @ViewChild('graphContainer') graphContainer!: ElementRef;
-
-  constructor(public coreService: CoreService, private dataService: DataService) {
+  isLoaded: boolean = false;
+  configXml = './assets/mxgraph/config/diagram.xml';
+  destroyGraph(): void {
+    if (this.graph) {
+      this.graph.getModel().clear();
+    }
+    this.workflowData = null;
+  }
+  constructor(public coreService: CoreService, private dataService: DataService, public workflowService: WorkflowService,) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => this.refreshGraph(res));
   }
 
   ngOnInit(): void {
-    const d = new Date().setHours(0, 0, 0, 0);
-    this.selectedDate = new Date(d);
-
-    this.plansFilters = this.coreService.getPlansTab();
-    this.loadPlans()
-    this.initConf();
-
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['parentLoaded'] && changes['parentLoaded'].currentValue) {
-      setTimeout(() => {
-        this.initConf();
-      }, 300)
+    this.loadAdditionalData()
+      if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
+      this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
     }
   }
 
@@ -70,7 +59,6 @@ export class DependenciesComponent {
   }
 
   ngOnDestroy(): void {
-    this.plansFilters.selectedDate = this.selectedDate;
     this.subscription.unsubscribe();
     this.pendingHTTPRequests$.next();
     this.pendingHTTPRequests$.complete();
@@ -96,10 +84,9 @@ export class DependenciesComponent {
     this.graph.setConnectable(false);
     this.graph.setHtmlLabels(true);
     this.graph.setDisconnectOnMove(false);
-    this.graph.setCellsMovable(false); // ✅ Prevent dragging
-    this.graph.setCellsLocked(true); // ✅ Fully lock graph nodes
+    this.graph.setCellsMovable(false);
+    this.graph.setCellsLocked(true);
 
-    // Enable zooming & panning
     mxGraphHandler.prototype.guidesEnabled = true;
     mxGraph.prototype.cellsResizable = false;
     mxGraph.prototype.multigraph = false;
@@ -111,8 +98,58 @@ export class DependenciesComponent {
 
     mxEdgeHandler.prototype.snapToTerminals = true;
 
+    let style = this.graph.getStylesheet().getDefaultEdgeStyle();
+    style[mxConstants.STYLE_EDGE] = mxConstants.EDGESTYLE_ELBOW;
+    style[mxConstants.STYLE_ROUNDED] = true;
+    style[mxConstants.STYLE_ORTHOGONAL] = true;
+    style[mxConstants.STYLE_STROKEWIDTH] = 2;
+    style[mxConstants.STYLE_ENDARROW] = mxConstants.ARROW_BLOCK;
+
+    this.graph.getStylesheet().putDefaultEdgeStyle(style);
+
+    mxEvent.addMouseWheelListener((evt, up) => {
+      if (evt.ctrlKey) {
+        if (up) {
+          this.graph.zoomIn();
+        } else {
+          this.graph.zoomOut();
+        }
+        mxEvent.consume(evt);
+      }
+    });
+
+    mxEvent.addListener(document, 'keydown', (evt) => {
+      if (evt.ctrlKey && evt.key === '=') {
+        this.graph.zoomIn();
+      } else if (evt.ctrlKey && evt.key === '-') {
+        this.graph.zoomOut();
+      }
+    });
   }
 
+
+
+  zoomIn(): void {
+    this.graph.zoomIn();
+  }
+
+  zoomOut(): void {
+    this.graph.zoomOut();
+  }
+
+  actual(): void {
+    if (this.graph) {
+      this.graph.zoomActual();
+      this.workflowService.center(this.graph);
+    }
+  }
+
+  fit(): void {
+    if (this.graph) {
+      this.graph.fit();
+      this.graph.center(true, true, 0.5, 0.1);
+    }
+  }
 
   private loadGraphData(noticeBoardPath: string) {
     if (!this.workflowData) return;
@@ -124,24 +161,37 @@ export class DependenciesComponent {
       const noticeBoardNode = this.createNode(parent, noticeBoardPath, 300, 100, 'fillColor=yellow');
 
       const postingNodes = (this.workflowData.noticeBoard?.postingWorkflows || []).map((wf: any, index: number) => {
-        return this.createNode(parent, wf.path, 50, 50 + index * 70, 'fillColor=lightblue');
+        return this.createNode(parent, wf.path, 100, 200 + index * 70, 'fillColor=lightblue');
       });
 
       const expectingNodes = (this.workflowData.noticeBoard?.expectingWorkflows || []).map((wf: any, index: number) => {
-        return this.createNode(parent, wf.path, 550, 50 + index * 70, 'fillColor=lightgreen');
+        return this.createNode(parent, wf.path, 500, 200 + index * 70, 'fillColor=lightgreen');
       });
 
       postingNodes.forEach(node => {
-        this.graph.insertEdge(parent, null, "", node, noticeBoardNode);
+        this.graph.insertEdge(parent, null, "", node, noticeBoardNode, 'edgeStyle=elbowEdgeStyle;rounded=1;orthogonal=1;strokeWidth=2;');
       });
 
       expectingNodes.forEach(node => {
-        this.graph.insertEdge(parent, null, "", noticeBoardNode, node);
+        this.graph.insertEdge(parent, null, "", noticeBoardNode, node, 'edgeStyle=elbowEdgeStyle;rounded=1;orthogonal=1;strokeWidth=2;');
       });
 
     } finally {
       this.graph.getModel().endUpdate();
+      this.graph.center(true, true);
     }
+  }
+
+  loadAdditionalData() {
+    this.isLoaded = true;
+    this.coreService.post('notice/board/dependencies', {
+      controllerId: this.schedulerId,
+      noticeBoardPath: this.noticePath,
+    }).subscribe((res) => {
+      this.isLoaded = false;
+      this.workflowData = res
+      this.loadGraphData(this.noticePath);
+    });
   }
 
   private createNode(parent: any, label: string, x: number, y: number, style: string) {
@@ -151,6 +201,53 @@ export class DependenciesComponent {
   private refreshGraph(event: any) {
     this.graph.refresh();
   }
+}
+
+@Component({
+  selector: 'app-dependencies',
+  templateUrl: './dependencies.component.html',
+  styleUrl: './dependencies.component.scss'
+})
+export class DependenciesComponent {
+  @Input() parentLoaded: boolean = false;
+  @Input() schedulerId: any;
+  @Input() preferences: any;
+  @Input() permission: any;
+
+  selectedDate: Date;
+  isLoaded: boolean;
+  data: any;
+  plansFilters: any = {filter: {}};
+  noticeBoards = []
+  allChecked = false;
+  searchValue = '';
+  indeterminate = false;
+  isVisible = false;
+  noticePath: any
+  @ViewChild('graphContainer') graphContainer!: ElementRef;
+
+  constructor(public coreService: CoreService) {
+  }
+
+  ngOnInit(): void {
+    const d = new Date().setHours(0, 0, 0, 0);
+    this.selectedDate = new Date(d);
+
+    this.plansFilters = this.coreService.getPlansTab();
+    this.loadPlans()
+    this.initConf();
+
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['parentLoaded'] && changes['parentLoaded'].currentValue) {
+      setTimeout(() => {
+        this.initConf();
+      }, 300)
+    }
+  }
+
+
 
   private initConf(): void {
     if (this.plansFilters.selectedDate) {
@@ -193,7 +290,7 @@ export class DependenciesComponent {
       controllerId: this.schedulerId,
       planKeys: [this.coreService.getDateByFormat(this.selectedDate, this.preferences.zone, 'YYYY-MM-DD')],
       planSchemaIds: [planIds],
-      compact: true
+      compact: false
     }).subscribe((res) => {
       this.data = res
       this.processData(res)
@@ -213,6 +310,12 @@ export class DependenciesComponent {
       new Set(data.plans.flatMap(plan => plan.noticeBoards || []))
     ).map((board: any) => ({
       path: board?.path,
+      numOfNotices: board?.numOfNotices,
+      numOfExpectedNotices: board?.numOfExpectedNotices,
+      numOfExpectingOrders: board?.numOfExpectingOrders,
+      numOfPostedNotices: board?.numOfPostedNotices,
+      numOfAnnouncements: board?.numOfAnnouncements,
+      versionDate: board?.versionDate,
       checked: board?.checked ?? false
     }));
 
@@ -244,20 +347,11 @@ export class DependenciesComponent {
   onExpand(event: any): void {
     if (event.node && event.node.origin.type === 'NOTICEBOARD') {
       if (event.node.isExpanded) {
-        this.loadAdditionalData(event.node.origin.path);
+        // this.loadAdditionalData(event.node.origin.path);
       }
     }
   }
 
-  loadAdditionalData(noticeBoardPath: string) {
-    this.coreService.post('notice/board/dependencies', {
-      controllerId: this.schedulerId,
-      noticeBoardPath: noticeBoardPath,
-    }).subscribe((res) => {
-      this.workflowData = res
-      this.loadGraphData(noticeBoardPath);
-    });
-  }
 
   onCheckAll(checked: boolean): void {
     this.noticeBoards.forEach(board => board.checked = checked);
@@ -268,31 +362,22 @@ export class DependenciesComponent {
     const checkedBoards = this.noticeBoards.filter(board => board.checked);
     this.allChecked = checkedBoards.length === this.noticeBoards.length;
     this.indeterminate = checkedBoards.length > 0 && checkedBoards.length < this.noticeBoards.length;
+  }
 
-    if (checkedBoards.length > 0) {
-      this.recursivelyLoadData(checkedBoards.map(board => board.path), 0);
-    } else {
-      this.destroyGraph();
+  onSelect(path): void {
+    this.isVisible = true;
+    this.noticePath = path
+    const reportDrawer = document.querySelector('.report-drawer') as HTMLElement;
+    if (reportDrawer) {
+      reportDrawer.style.marginRight = '24px';
     }
   }
 
-  destroyGraph(): void {
-    if (this.graph) {
-      this.graph.getModel().clear();
+  closePanel(): void {
+    this.isVisible = false;
+    const reportDrawer = document.querySelector('.report-drawer') as HTMLElement;
+    if (reportDrawer) {
+      reportDrawer.style.marginRight = '0px';
     }
-    this.workflowData = null;
   }
-
-
-  recursivelyLoadData(paths: string[], index: number): void {
-    if (index >= paths.length) return;
-
-    this.loadAdditionalData(paths[index]);
-
-    setTimeout(() => {
-      this.recursivelyLoadData(paths, index + 1);
-    }, 100);
-  }
-
-
 }

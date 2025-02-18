@@ -41,50 +41,72 @@
     </div>
     <div id="rightPanel2">
       <div class="row">
-        <div class="col-md-9 col-sm-8 p-r-xs">
-          <div class="box p-t-sm  max-ht-n-220 " style="overflow: auto; ">
-            <div #graphContainer class="graph-container "></div>
-          </div>
-        </div>
-        <div class="col-md-3 col-sm-4">
-          <div class="box p-t-sm max-ht-n-220 ">
-            <div class="text-center m-t-md m-b text"><i class="icon-color" nz-icon nzTheme="outline"
-                                                        nzType="pushpin"></i>&nbsp;
-              <span class="_600 b-b p-b-sm m-l-sm" translate>inventory.label.boards</span>
-            </div>
-            <div class="p-a-sm">
-              <perfect-scrollbar style="height: calc(100vh - 415px); overflow-y: auto">
-                <nz-table #basicTable [nzBordered]="true" [nzData]="noticeBoards" [nzSize]="'middle'"
-                          [nzShowPagination]="false">
-                  <thead>
-                  <tr>
-                    <th>
-                      <label nz-checkbox [(ngModel)]="allChecked" [nzIndeterminate]="indeterminate"
-                             (ngModelChange)="onCheckAll($event)"></label>
-                    </th>
-                    <th translate>common.label.path</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr *ngFor="let board of noticeBoards">
-                    <td>
-                      <label nz-checkbox [(ngModel)]="board.checked" (ngModelChange)="updateCheckedStatus()"></label>
-                    </td>
-                    <td>{{ board.path }}</td>
-                  </tr>
-                  </tbody>
-                </nz-table>
-              </perfect-scrollbar>
+        <div class="col-md-12">
+          <div *ngFor="let board of noticeBoards"
+               class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
+            <div class="box card cur-point">
+              <div class="box-body" (click)="onSelect(board?.path)">
+                <div>
+                  <label class="pos-abt">
+                    <label nz-checkbox
+                    ></label>
+                  </label>
+                  <div class="text-left block-ellipsis m-l-md">
+                    <i (click)="navToInventoryTab(board.path, 'NOTICEBOARD');"
+                       *ngIf="permission.joc && permission.joc.inventory.view"
+                       class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+                    <a (click)="showBoard(board.path)"
+                       class="text-hover-primary">{{ board.path }}</a>
+                  </div>
+                </div>
+                <div class="text-sm text-left text-muted p-t-sm block-ellipsis w-99">
+                  <span translate>dailyPlan.label.numOfNotices </span>:
+                  <span [innerHtml]="board.numOfNotices || 0"
+                        class="text-black _600 m-l p-r-xs"></span>
+                </div>
+                <div class="text-sm text-left text-muted p-t-xs">
+                  <span translate>dailyPlan.label.numOfExpectedNotices </span>:
+                  <span [innerHtml]="board.numOfExpectedNotices || 0"
+                        class="text-black _600 m-l p-r-xs"></span>
+                </div>
+                <div class="text-sm text-left text-muted p-t-xs">
+                  <span translate>dailyPlan.label.numOfExpectingOrders </span>:
+                  <span [innerHtml]="board.numOfExpectingOrders || 0"
+                        class="text-black _600 m-l p-r-xs"></span>
+                </div>
+                <div class="text-sm text-left text-muted p-t-xs">
+                  <span translate>dailyPlan.label.numOfPostedNotices </span>:
+                  <span [innerHtml]="board.numOfPostedNotices || 0"
+                        class="text-black _600 m-l p-r-xs"></span>
+                </div>
+                <div class="text-sm text-left text-muted p-t-xs">
+                  <span translate>dailyPlan.label.numOfAnnouncements </span>:
+                  <span [innerHtml]="board.numOfAnnouncements || 0"
+                        class="text-black _600 m-l p-r-xs"></span>
+                </div>
+                <div class="text-sm text-left text-muted p-t-xs">
+                  <span translate>dailyPlan.label.versionDate </span>:
+                  <span [innerHtml]="board.versionDate | stringToDate"
+                        class="text-black _600 m-l p-r-xs"></span>
+                </div>
+              </div>
+              <div class="box-footer b-t">
 
+              </div>
             </div>
-
           </div>
         </div>
       </div>
     </div>
   </div>
-  <div *ngIf="!isLoaded" class="spinner">
-    <div class="cssload-inner cssload-one"></div>
-    <div class="cssload-inner cssload-two"></div>
-    <div class="cssload-inner cssload-three"></div>
-  </div>
+</div>
+<nz-drawer (nzOnClose)="closePanel()" [nzWrapClassName]="'report-drawer'" [nzVisible]="isVisible" nzPlacement="right">
+  <ng-container *nzDrawerContent>
+    <app-show-dailyPlan-dependencies *ngIf="isVisible" [preferences]='preferences' [schedulerId]="schedulerId" [noticePath]="noticePath" (closePanel)="closePanel()"></app-show-dailyPlan-dependencies>
+  </ng-container>
+</nz-drawer>
+<div *ngIf="!isLoaded" class="spinner">
+  <div class="cssload-inner cssload-one"></div>
+  <div class="cssload-inner cssload-two"></div>
+  <div class="cssload-inner cssload-three"></div>
+</div>

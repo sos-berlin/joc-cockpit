@@ -307,13 +307,21 @@ export class GenerateReportComponent {
   }
 
   onSelect(data, groupType?: string): void {
+    const reportDrawer = document.querySelector('.report-drawer') as HTMLElement;
+    if (reportDrawer) {
+      reportDrawer.style.marginRight = '24px';
+    }
     this.isVisible = true;
     this.selectedReport = data;
-    this.groupType = groupType; // Assign groupType
+    this.groupType = groupType;
   }
 
   closePanel(): void {
     this.isVisible = false;
+    const reportDrawer = document.querySelector('.report-drawer') as HTMLElement;
+    if (reportDrawer) {
+      reportDrawer.style.marginRight = '0px';
+    }
   }
 
   getDateRange(timePeriod): any {

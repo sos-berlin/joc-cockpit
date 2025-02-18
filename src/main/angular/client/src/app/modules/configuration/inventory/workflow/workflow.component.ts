@@ -1488,6 +1488,7 @@ export class JobComponent {
   inputValue = '';
   tags = [];
   subscription: Subscription;
+  tabIndex: number = 0;
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
   @ViewChild('codeMirror', {static: false}) cm: any;
 
@@ -1540,6 +1541,10 @@ export class JobComponent {
       this.init();
       this.presentObj.obj = JSON.stringify(this.selectedNode.obj);
       this.presentObj.job = JSON.stringify(this.selectedNode.job);
+      if (this.tabIndex === 2) {
+        this.fetchAllJobTags();
+        this.fetchJobTags();
+      }
     }
     if (changes['orderPreparation']) {
       this.updateVariableList();
@@ -1670,6 +1675,7 @@ export class JobComponent {
   }
 
   tabChange($event): void {
+    this.tabIndex = $event.index;
     if ($event.index === 0) {
       this.updateSelectItems();
     } else if ($event.index === 2) {
@@ -2744,6 +2750,7 @@ export class JobComponent {
       next: (res: any) => {
         this.tagsData = res.jobs;
         this.tags = this.tagsData.find(jobTag => jobTag.jobName === this.selectedNode.job.jobName)?.jobTags ?? [];
+        this.ref.detectChanges();
       }
     });
   }
@@ -2755,7 +2762,8 @@ export class JobComponent {
         jobTag.jobTags.pop(removedTag);
       }
     })
-    this.jobTagsEvent.emit(this.tags)
+    const jobTagData = {tags: this.tags, jobName: this.selectedNode.job.jobName};
+    this.jobTagsEvent.emit(jobTagData);
   }
 
   sliceTagName(tag: string): string {
@@ -2774,7 +2782,8 @@ export class JobComponent {
   handleInputConfirm(): void {
     if (this.inputValue && this.tags.indexOf(this.inputValue) === -1 && this.workflowService.isValidTag(this.inputValue)) {
       this.tags = [...this.tags, this.inputValue];
-      this.jobTagsEvent.emit(this.tags);
+      const jobTagData = {tags: this.tags, jobName: this.selectedNode.job.jobName};
+      this.jobTagsEvent.emit(jobTagData);
       if (this.tagsData.length > 0) {
         this.tagsData.forEach(jobTag => {
           if (jobTag.jobName === this.selectedNode.job.jobName) {
@@ -3191,7 +3200,8 @@ export class JobComponent {
       this.tagsData.forEach(jobTag => {
         if (jobTag.jobName === this.selectedNode.job.jobName) {
           jobTag.jobTags = jobTag.jobTags.filter(tag => tag != tagName);
-          this.jobTagsEvent.emit(jobTag.jobTags);
+          const jobTagData = {tags: this.tags, jobName: this.selectedNode.job.jobName};
+          this.jobTagsEvent.emit(jobTagData);
         }
       });
     });
@@ -3220,7 +3230,8 @@ export class JobComponent {
             if (index !== -1) {
               jobTag.jobTags[index] = res;
             }
-            this.jobTagsEvent.emit(jobTag.jobTags);
+            const jobTagData = {tags: this.tags, jobName: this.selectedNode.job.jobName};
+            this.jobTagsEvent.emit(jobTagData);
           }
         });
       }
@@ -14112,7 +14123,8 @@ export class WorkflowComponent {
   }
 
   onJobTags(jobData: any) {
-    this.jobTags = jobData;
+    this.jobTags = jobData.tags;
+    this.selectedJob = jobData.jobName;
     this.storeJobTags();
   }
 }

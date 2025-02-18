@@ -13,7 +13,7 @@
     <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
     </div>
-    <div *ngIf="singular" [ngClass]="{'has-error' : ((noticeId.dirty || noticeId.touched) && noticeId.invalid)}" class="form-group row">
+    <!-- <div *ngIf="singular" [ngClass]="{'has-error' : ((noticeId.dirty || noticeId.touched) && noticeId.invalid)}" class="form-group row">
       <label class="col-sm-4 form-control-label" translate>
         resource.board.label.noticeId
         <sup class="text-danger text-sm">*</sup>
@@ -28,8 +28,35 @@
           </div>
         </div>
       </div>
+    </div> -->
+    <div *ngIf="singular && showNoticeId" [ngClass]="{'has-error' : ((noticeKey.dirty || noticeKey.touched) && noticeKey.invalid)}" class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>
+        resource.board.label.noticeKey
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-6">
+        <input #noticeKey="ngModel" [(ngModel)]="postObj.noticeKey" autocomplete="off"
+               class="form-control"
+               name="noticeKey" placeholder="{{'resource.board.placeholder.enterNoticeKey' | translate}}" required type="text"/>
+        <div *ngIf="noticeKey.invalid && (noticeKey.dirty || noticeKey.touched)" class="text-danger help-block">
+          <div *ngIf="noticeKey.errors['required']" translate>
+            common.message.requiredError
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="form-group row">
+    <div class="form-group row" *ngIf="singular && showNoticeId">
+      <label class="col-sm-4 form-control-label" translate>
+        resource.board.label.planKey
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-6">
+        <nz-date-picker [(ngModel)]="postObj.planKey" [nzFormat]="dateFormat"
+        [nzPlaceHolder]="'resource.board.placeholder.enterPlanKey' | translate"
+        name="planKey"></nz-date-picker>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="!showNoticeId">
       <label class="col-sm-4 " translate>resource.board.label.endOfLife</label>
       <div class="col-md-8">
         <nz-radio-group [(ngModel)]="postObj.at" name="at">
@@ -38,7 +65,7 @@
         </nz-radio-group>
       </div>
     </div>
-    <div *ngIf="postObj.at == 'later'" class="form-group row">
+    <div *ngIf="postObj.at == 'later' && !showNoticeId" class="form-group row">
       <label class="col-sm-4 form-control-label" translate>
         common.label.time
         <sup class="text-danger text-sm">*</sup>
@@ -67,7 +94,7 @@
         ></app-date-input>
       </div>
     </div>
-    <div class="form-group row">
+    <div class="form-group row" *ngIf="!showNoticeId">
       <div class="col-sm-4 form-control-label" translate>common.label.timeZone</div>
       <div class="col-sm-6">
         <nz-select [(ngModel)]="postObj.timeZone" name="timeZone" nzAllowClear nzShowSearch>
