@@ -478,7 +478,7 @@
     "label.changeFound": "Changement",
     "label.addToChange": "Ajouter au Changement",
     "label.removeFromChange": "Supprimer du Changement",
-    "label.state": "Changement",
+    "label.state": "Status",
     "label.changes": "Changements",
     "placeholder.state": "Status",
     "button.addChange": "Ajouter Changement",
