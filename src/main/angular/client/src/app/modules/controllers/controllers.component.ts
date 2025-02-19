@@ -1614,6 +1614,7 @@ export class ControllersComponent {
       modal.afterClose.subscribe(result => {
         if (result) {
           agent.hidden = flag;
+          obj.auditLog = result;
           this.coreService.post('agents/inventory/store', obj).subscribe({
             error: () => {
               agent.hidden = !flag;

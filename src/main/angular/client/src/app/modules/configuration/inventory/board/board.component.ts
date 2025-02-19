@@ -62,6 +62,12 @@ export class BoardComponent {
       value: 'replaceAll($js7OrderId, \'^#[0-9]{4}-[0-9]{2}-[0-9]{2}#.*-([^:]*)(?::[^|]*)?([|].*)?$\', \'$1$2\')'
     }];
 
+  listOfNoticeMsgPlan = [
+    {
+      label: 'inventory.label.matchingOrderName',
+      value: 'replaceAll($js7OrderId, \'^#[0-9]{4}-[0-9]{2}-[0-9]{2}#.*-([^:]*)(?::[^|]*)?([|].*)?$\', \'$1$2\')'
+    }];
+
   constructor(public coreService: CoreService, private translate: TranslateService, public inventoryService: InventoryService,
               private dataService: DataService, private ref: ChangeDetectorRef, private router: Router, private modal: NzModalService) {
     this.subscription1 = dataService.reloadTree.subscribe(res => {
@@ -179,6 +185,7 @@ export class BoardComponent {
       }
 
       this.boardObj.toNoticeMsg = clone(this.board.configuration.postOrderToNoticeId);
+      this.boardObj.toNoticeMsgPlan = clone(this.board.configuration.postOrderToNoticeId);
       this.boardObj.readingOrderToNoticeIdMsg = clone(this.board.configuration.expectOrderToNoticeId);
 
       this.board.actual = JSON.stringify(res.configuration);
@@ -503,6 +510,13 @@ export class BoardComponent {
     }
   }
 
+  onChange(): void {
+    if (this.board.configuration.boardType === 'GLOBAL') {
+      delete this.board.configuration.postOrderToNoticeId
+    }
+    this.saveJSON()
+  }
+
   saveJSON(flag = false, skip = false): void {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
@@ -521,8 +535,7 @@ export class BoardComponent {
         this.history.push(JSON.stringify(this.board.configuration));
         this.indexOfNextAdd = this.history.length - 1;
       }
-      if(this.board.configuration.boardType === 'PLANNABLE'){
-        delete this.board.configuration.postOrderToNoticeId
+      if (this.board.configuration.boardType === 'PLANNABLE') {
         delete this.board.configuration.expectOrderToNoticeId
         delete this.board.configuration.endOfLife
         delete this.boardObj.endOfLife

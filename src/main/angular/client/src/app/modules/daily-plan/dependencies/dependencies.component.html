@@ -26,7 +26,7 @@
   </div>
   <div class="col-lg-12">
     <div class="sticky leftPanel dependencies" id="leftPanel2">
-      <div class="box m-b-0 overflow-y" style="height: 97.4%">
+      <div class="box m-b-0 overflow-y" style="height: calc(100vh - 280px)">
         <div class="p-b b-b icon-hover">
           <ng-template #tooltipTemplate>
             <div class="m-a-xs">
@@ -41,7 +41,7 @@
     </div>
     <div id="rightPanel2">
       <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12 overflow-y" style="height: calc(100vh - 280px)">
           <div *ngFor="let board of noticeBoards"
                class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
             <div class="box card cur-point">
@@ -59,7 +59,12 @@
                        class="text-hover-primary">{{ board.path }}</a>
                   </div>
                 </div>
-                <div class="text-sm text-left text-muted p-t-sm block-ellipsis w-99">
+                <div class="text-sm text-left text-muted p-t-sm">
+                  <span translate>dailyPlan.label.numOfAnnouncements </span>:
+                  <span [innerHtml]="board.numOfAnnouncements || 0"
+                        class="text-black _600 m-l p-r-xs"></span>
+                </div>
+                <div class="text-sm text-left text-muted p-t-xs">
                   <span translate>dailyPlan.label.numOfNotices </span>:
                   <span [innerHtml]="board.numOfNotices || 0"
                         class="text-black _600 m-l p-r-xs"></span>
@@ -70,23 +75,13 @@
                         class="text-black _600 m-l p-r-xs"></span>
                 </div>
                 <div class="text-sm text-left text-muted p-t-xs">
-                  <span translate>dailyPlan.label.numOfExpectingOrders </span>:
-                  <span [innerHtml]="board.numOfExpectingOrders || 0"
-                        class="text-black _600 m-l p-r-xs"></span>
-                </div>
-                <div class="text-sm text-left text-muted p-t-xs">
                   <span translate>dailyPlan.label.numOfPostedNotices </span>:
                   <span [innerHtml]="board.numOfPostedNotices || 0"
                         class="text-black _600 m-l p-r-xs"></span>
                 </div>
                 <div class="text-sm text-left text-muted p-t-xs">
-                  <span translate>dailyPlan.label.numOfAnnouncements </span>:
-                  <span [innerHtml]="board.numOfAnnouncements || 0"
-                        class="text-black _600 m-l p-r-xs"></span>
-                </div>
-                <div class="text-sm text-left text-muted p-t-xs">
-                  <span translate>dailyPlan.label.versionDate </span>:
-                  <span [innerHtml]="board.versionDate | stringToDate"
+                  <span translate>dailyPlan.label.numOfExpectingOrders </span>:
+                  <span [innerHtml]="board.numOfExpectingOrders || 0"
                         class="text-black _600 m-l p-r-xs"></span>
                 </div>
               </div>

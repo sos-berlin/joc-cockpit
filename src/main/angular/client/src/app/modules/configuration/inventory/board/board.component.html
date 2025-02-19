@@ -82,7 +82,7 @@
         <div class="form-group row">
           <div class="col-md-4 col-lg-3" translate [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.boardType' | translate) : ''">workflow.label.boardType</div>
           <div  class="col-md-6 col-lg-8">
-            <nz-radio-group [(ngModel)]="board.configuration.boardType" (ngModelChange)="saveJSON()" name="boardType">
+            <nz-radio-group [(ngModel)]="board.configuration.boardType" (ngModelChange)="onChange()" name="boardType">
               <label nz-radio nzValue="GLOBAL"><span
                 translate>workflow.label.global</span></label>
               <label nz-radio nzValue="PLANNABLE"><span
@@ -116,6 +116,29 @@
                 <div translate>common.message.requiredError</div>
               </div>
             </div>
+          </div>
+        </div>
+        <div *ngIf="board.configuration.boardType === 'PLANNABLE'"
+             class="form-group row">
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.board.toNotice' | translate) : ''"
+
+                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.toNotice
+          </label>
+          <div class="col-lg-9 col-xl-8 col-xxl-6">
+            <nz-input-group [nzAddOnAfter]="addOnAfterTemplate">
+              <input #toNotice="ngModel" (blur)="saveJSON()" [(ngModel)]="board.configuration.postOrderToNoticeId"
+                     [readonly]="isTrash || !permission.joc.inventory.manage" autocomplete="off" name="toNotice" nz-input
+                     placeholder="{{'inventory.placeholder.toNotice' | translate}}" required
+                     type="text">
+            </nz-input-group>
+            <ng-template #addOnAfterTemplate>
+             <app-select-input [classNames]="'w-220'" (modelChange)="changeExp($event, 'toNotice')"
+                                [placeholder]="'inventory.placeholder.selectPredefinedExpression'" [optionLabel]="'label'" [optionValue]="'value'"
+                                [attributeName]="'toNoticeMsgPlan'" [isAllowClear]="true"
+                               [listArray]="listOfNoticeMsgPlan"
+                               [name]="'toNoticeMsg'"
+                                [object]="boardObj"></app-select-input>
+            </ng-template>
           </div>
         </div>
         <div *ngIf="board.configuration.boardType === 'GLOBAL'" [ngClass]="{ 'has-error' : (((readingOrderToNoticeId.dirty || readingOrderToNoticeId.touched) && readingOrderToNoticeId.invalid))}"

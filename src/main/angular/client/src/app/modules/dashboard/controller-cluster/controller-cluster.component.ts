@@ -762,14 +762,19 @@ export class ControllerClusterComponent {
       obj.withSwitchover = isFailOver;
       obj.auditLog = {};
     }
+
     if (action === 'terminate') {
-      this.postCall('controller/terminate', obj);
+      // this.postCall('controller/terminate', obj);
+      this.coreService.post('controller/terminate', obj).subscribe();
     } else if (action === 'abort') {
-      this.postCall('controller/abort', obj);
+      // this.postCall('controller/abort', obj);
+      this.coreService.post('controller/abort', obj).subscribe();
     } else if (action === 'abortAndRestart') {
-      this.postCall('controller/abort_and_restart', obj);
+      // this.postCall('controller/abort_and_restart', obj);
+      this.coreService.post('controller/abort_and_restart', obj).subscribe();
     } else if (action === 'terminateAndRestart') {
-      this.postCall('controller/restart', obj);
+      // this.postCall('controller/restart', obj);
+      this.coreService.post('controller/restart', obj).subscribe();
     } else if (action === 'switchover') {
       const obj1 = obj;
       delete obj1.withSwitchover;

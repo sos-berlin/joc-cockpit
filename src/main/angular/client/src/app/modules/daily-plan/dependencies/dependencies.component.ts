@@ -35,6 +35,7 @@ export class ShowDailyPlanDependenciesComponent {
   private pendingHTTPRequests$ = new Subject<void>();
   private subscription: Subscription;
   private workflowData: any
+  isPathDisplay = true
   isLoaded: boolean = false;
   configXml = './assets/mxgraph/config/diagram.xml';
   destroyGraph(): void {
@@ -48,6 +49,7 @@ export class ShowDailyPlanDependenciesComponent {
   }
 
   ngOnInit(): void {
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'false';
     this.loadAdditionalData()
       if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
       this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
@@ -106,7 +108,11 @@ export class ShowDailyPlanDependenciesComponent {
     style[mxConstants.STYLE_ENDARROW] = mxConstants.ARROW_BLOCK;
 
     this.graph.getStylesheet().putDefaultEdgeStyle(style);
+    this.graph.setTooltips(true);
 
+    this.graph.getTooltipForCell = (cell) => {
+      return cell.getAttribute('fullLabel') || cell.value;
+    };
     mxEvent.addMouseWheelListener((evt, up) => {
       if (evt.ctrlKey) {
         if (up) {
@@ -125,9 +131,9 @@ export class ShowDailyPlanDependenciesComponent {
         this.graph.zoomOut();
       }
     });
+
+
   }
-
-
 
   zoomIn(): void {
     this.graph.zoomIn();
@@ -161,11 +167,12 @@ export class ShowDailyPlanDependenciesComponent {
       const noticeBoardNode = this.createNode(parent, noticeBoardPath, 300, 100, 'fillColor=yellow');
 
       const postingNodes = (this.workflowData.noticeBoard?.postingWorkflows || []).map((wf: any, index: number) => {
-        return this.createNode(parent, wf.path, 100, 200 + index * 70, 'fillColor=lightblue');
+        console.log(wf.path,">>")
+        return this.createNode(parent, this.isPathDisplay ? wf?.path?.split('/').pop() : wf?.path, 100, 200 + index * 70, 'fillColor=lightblue');
       });
 
       const expectingNodes = (this.workflowData.noticeBoard?.expectingWorkflows || []).map((wf: any, index: number) => {
-        return this.createNode(parent, wf.path, 500, 200 + index * 70, 'fillColor=lightgreen');
+        return this.createNode(parent, this.isPathDisplay ? wf?.path?.split('/').pop() : wf?.path, 500, 200 + index * 70, 'fillColor=lightgreen');
       });
 
       postingNodes.forEach(node => {
@@ -195,8 +202,16 @@ export class ShowDailyPlanDependenciesComponent {
   }
 
   private createNode(parent: any, label: string, x: number, y: number, style: string) {
-    return this.graph.insertVertex(parent, null, label, x, y, 150, 50, style);
+    const maxLength = 20;
+    const displayLabel = label.length > maxLength ? label.substring(0, maxLength) + '...' : label;
+
+    const vertex = this.graph.insertVertex(parent, null, displayLabel, x, y, 150, 50, style);
+
+    vertex.setAttribute('fullLabel', label);
+
+    return vertex;
   }
+
 
   private refreshGraph(event: any) {
     this.graph.refresh();
@@ -224,12 +239,14 @@ export class DependenciesComponent {
   indeterminate = false;
   isVisible = false;
   noticePath: any
+  isPathDisplay = true
   @ViewChild('graphContainer') graphContainer!: ElementRef;
 
   constructor(public coreService: CoreService) {
   }
 
   ngOnInit(): void {
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'false';
     const d = new Date().setHours(0, 0, 0, 0);
     this.selectedDate = new Date(d);
 
@@ -309,7 +326,7 @@ export class DependenciesComponent {
     this.noticeBoards = Array.from(
       new Set(data.plans.flatMap(plan => plan.noticeBoards || []))
     ).map((board: any) => ({
-      path: board?.path,
+      path: this.isPathDisplay ? board?.path?.split('/').pop() : board?.path,
       numOfNotices: board?.numOfNotices,
       numOfExpectedNotices: board?.numOfExpectedNotices,
       numOfExpectingOrders: board?.numOfExpectingOrders,
