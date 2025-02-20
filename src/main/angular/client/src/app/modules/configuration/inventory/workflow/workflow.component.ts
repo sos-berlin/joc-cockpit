@@ -2586,6 +2586,12 @@ export class JobComponent {
     this.previousJobName = this.selectedNode.obj.jobName
   }
 
+  checkJobLabel() {
+    if (!this.selectedNode.obj.label) {
+      this.selectedNode.obj.label = this.selectedNode.obj.jobName;
+    }
+  }
+
   addArgument(): void {
 
     const param = {

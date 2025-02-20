@@ -45,6 +45,9 @@
           <div *ngFor="let board of noticeBoards"
                class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
             <div class="box card cur-point">
+              <i *ngIf="board.numOfExpectedNotices === 0" class="fa fa-stop bg-postingWorkflow position-absolute m-b-xs"></i>
+              <i *ngIf="board.numOfExpectedNotices != 0" class="fa fa-stop bg-receivingWorkflow position-absolute m-b-xs"></i>
+
               <div class="box-body" (click)="onSelect(board?.path)">
                 <div>
                   <label class="pos-abt">

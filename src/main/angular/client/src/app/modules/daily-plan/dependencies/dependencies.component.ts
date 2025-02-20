@@ -6,6 +6,7 @@ import {Subject, Subscription} from 'rxjs';
 import {DataService} from '../../../services/data.service';
 import {NzDrawerComponent} from "ng-zorro-antd/drawer"
 import {WorkflowService} from "../../../services/workflow.service";
+
 declare const mxEditor: any;
 declare const mxUtils: any;
 declare const mxEvent: any;
@@ -38,12 +39,14 @@ export class ShowDailyPlanDependenciesComponent {
   isPathDisplay = true
   isLoaded: boolean = false;
   configXml = './assets/mxgraph/config/diagram.xml';
+
   destroyGraph(): void {
     if (this.graph) {
       this.graph.getModel().clear();
     }
     this.workflowData = null;
   }
+
   constructor(public coreService: CoreService, private dataService: DataService, public workflowService: WorkflowService,) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => this.refreshGraph(res));
   }
@@ -51,7 +54,7 @@ export class ShowDailyPlanDependenciesComponent {
   ngOnInit(): void {
     this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'false';
     this.loadAdditionalData()
-      if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
+    if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
       this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
     }
   }
@@ -106,13 +109,16 @@ export class ShowDailyPlanDependenciesComponent {
     style[mxConstants.STYLE_ORTHOGONAL] = true;
     style[mxConstants.STYLE_STROKEWIDTH] = 2;
     style[mxConstants.STYLE_ENDARROW] = mxConstants.ARROW_BLOCK;
-
     this.graph.getStylesheet().putDefaultEdgeStyle(style);
     this.graph.setTooltips(true);
 
     this.graph.getTooltipForCell = (cell) => {
-      return cell.getAttribute('fullLabel') || cell.value;
+      if (cell && typeof cell.value === 'object') {
+        return cell.value.fullLabel;
+      }
+      return cell.value;
     };
+
     mxEvent.addMouseWheelListener((evt, up) => {
       if (evt.ctrlKey) {
         if (up) {
@@ -132,6 +138,14 @@ export class ShowDailyPlanDependenciesComponent {
       }
     });
 
+    this.graph.convertValueToString = (cell) => {
+      if (cell && typeof cell.value === 'object') {
+        const fullLabel = cell.value.fullLabel;
+        const maxLength = 22;
+        return fullLabel.length > maxLength ? fullLabel.substring(0, maxLength) + '...' : fullLabel;
+      }
+      return cell.value;
+    };
 
   }
 
@@ -164,29 +178,52 @@ export class ShowDailyPlanDependenciesComponent {
     this.graph.getModel().beginUpdate();
 
     try {
-      const noticeBoardNode = this.createNode(parent, noticeBoardPath, 300, 100, 'fillColor=yellow');
+      const noticeBoardNode = this.createNode(parent, noticeBoardPath, 300, 100, 'fillColor=#d0d0d0', true);
+      const ySpacing = 70;
 
       const postingNodes = (this.workflowData.noticeBoard?.postingWorkflows || []).map((wf: any, index: number) => {
-        console.log(wf.path,">>")
-        return this.createNode(parent, this.isPathDisplay ? wf?.path?.split('/').pop() : wf?.path, 100, 200 + index * 70, 'fillColor=lightblue');
+        return this.createNode(
+          parent,
+          this.isPathDisplay ? wf?.path?.split('/').pop() : wf?.path,
+          100,
+          200 + index * ySpacing,
+          'fillColor=#1171a6',
+          false,
+          true
+        );
       });
-
       const expectingNodes = (this.workflowData.noticeBoard?.expectingWorkflows || []).map((wf: any, index: number) => {
-        return this.createNode(parent, this.isPathDisplay ? wf?.path?.split('/').pop() : wf?.path, 500, 200 + index * 70, 'fillColor=lightgreen');
+        return this.createNode(parent, this.isPathDisplay ? wf?.path?.split('/').pop() : wf?.path, 500, 200 + index * ySpacing, 'fillColor=#FFA640');
       });
 
       postingNodes.forEach(node => {
-        this.graph.insertEdge(parent, null, "", node, noticeBoardNode, 'edgeStyle=elbowEdgeStyle;rounded=1;orthogonal=1;strokeWidth=2;');
+        this.graph.insertEdge(parent, null, "", node, noticeBoardNode, 'edgeStyle=elbowEdgeStyle;rounded=1;orthogonal=1;strokeWidth=2;strokeColor=#1171a6;');
+
       });
 
       expectingNodes.forEach(node => {
-        this.graph.insertEdge(parent, null, "", noticeBoardNode, node, 'edgeStyle=elbowEdgeStyle;rounded=1;orthogonal=1;strokeWidth=2;');
+        this.graph.insertEdge(parent, null, "", noticeBoardNode, node, 'edgeStyle=elbowEdgeStyle;rounded=1;orthogonal=1;strokeWidth=2;strokeColor=#FFA640;');
+
       });
 
     } finally {
       this.graph.getModel().endUpdate();
       this.graph.center(true, true);
     }
+  }
+
+  private createNode(parent: any, label: string, x: number, y: number, style: string, isNoticeBoard = false, isPostingWorkflow = false) {
+    const maxLength = 22;
+    const isTruncated = label.length > maxLength;
+    const displayLabel = isTruncated ? label.substring(0, maxLength) + '...' : label;
+    const nodeStyle = isNoticeBoard
+      ? `${style};shape=ellipse;strokeWidth=2;strokeColor=#d0d0d0`
+      : isPostingWorkflow
+        ? `${style};rounded=1;arcSize=20;strokeWidth=2;strokeColor=#1171a6;fontColor=#FFFFFF;`
+        : `${style};rounded=1;arcSize=20;strokeWidth=2;strokeColor=#FFA640`;
+    const vertex = this.graph.insertVertex(parent, null, { fullLabel: label, displayLabel }, x, y, 150, 50, nodeStyle);
+
+    return vertex;
   }
 
   loadAdditionalData() {
@@ -200,18 +237,6 @@ export class ShowDailyPlanDependenciesComponent {
       this.loadGraphData(this.noticePath);
     });
   }
-
-  private createNode(parent: any, label: string, x: number, y: number, style: string) {
-    const maxLength = 20;
-    const displayLabel = label.length > maxLength ? label.substring(0, maxLength) + '...' : label;
-
-    const vertex = this.graph.insertVertex(parent, null, displayLabel, x, y, 150, 50, style);
-
-    vertex.setAttribute('fullLabel', label);
-
-    return vertex;
-  }
-
 
   private refreshGraph(event: any) {
     this.graph.refresh();
@@ -263,7 +288,6 @@ export class DependenciesComponent {
       }, 300)
     }
   }
-
 
 
   private initConf(): void {

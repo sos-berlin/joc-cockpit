@@ -1,4 +1,14 @@
 <div class="modal-header">
+  <div class="inline m-l-12 p-l-12" style="height: 26px">
+    <div class="pos-rel t-xxs">
+      <i class="fa fa-stop bg-postingWorkflow"></i>
+      {{'dailyPlan.label.postingWorkflow' | translate}}
+      <i class="fa fa-stop bg-receivingWorkflow p-l-sm"></i>
+      {{'dailyPlan.label.receivingWorkflow' | translate}}
+      <i class="fa fa-stop bg-notice p-l-sm"></i>
+      {{'dailyPlan.label.noticeBoard' | translate}}
+    </div>
+  </div>
   <button (click)="closePanel.emit()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
