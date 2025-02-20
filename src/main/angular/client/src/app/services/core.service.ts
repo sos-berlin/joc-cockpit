@@ -245,7 +245,11 @@ export class CoreService {
     this.tabs._daliyPlan.selectedView = true;
 
     this.tabs._plans = {};
-    this.tabs._plans.filter = {};
+    this.tabs._plans.filter = {
+      sortBy: 'path',
+      reverse: true,
+      currentPage: '1'
+    };
     this.tabs._plans.filter.calView ='Global';
 
     this.tabs._monitor = {};

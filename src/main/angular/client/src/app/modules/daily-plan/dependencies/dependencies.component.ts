@@ -6,6 +6,7 @@ import {Subject, Subscription} from 'rxjs';
 import {DataService} from '../../../services/data.service';
 import {NzDrawerComponent} from "ng-zorro-antd/drawer"
 import {WorkflowService} from "../../../services/workflow.service";
+import {OrderPipe} from "../../../pipes/core.pipe";
 
 declare const mxEditor: any;
 declare const mxUtils: any;
@@ -221,7 +222,7 @@ export class ShowDailyPlanDependenciesComponent {
       : isPostingWorkflow
         ? `${style};rounded=1;arcSize=20;strokeWidth=2;strokeColor=#1171a6;fontColor=#FFFFFF;`
         : `${style};rounded=1;arcSize=20;strokeWidth=2;strokeColor=#FFA640`;
-    const vertex = this.graph.insertVertex(parent, null, { fullLabel: label, displayLabel }, x, y, 150, 50, nodeStyle);
+    const vertex = this.graph.insertVertex(parent, null, {fullLabel: label, displayLabel}, x, y, 150, 50, nodeStyle);
 
     return vertex;
   }
@@ -253,12 +254,15 @@ export class DependenciesComponent {
   @Input() schedulerId: any;
   @Input() preferences: any;
   @Input() permission: any;
+  @Input() isToggle: any;
+  @Input() pageView: any;
 
   selectedDate: Date;
   isLoaded: boolean;
   data: any;
   plansFilters: any = {filter: {}};
   noticeBoards = []
+  loading: boolean;
   allChecked = false;
   searchValue = '';
   indeterminate = false;
@@ -267,7 +271,7 @@ export class DependenciesComponent {
   isPathDisplay = true
   @ViewChild('graphContainer') graphContainer!: ElementRef;
 
-  constructor(public coreService: CoreService) {
+  constructor(public coreService: CoreService, private orderPipe: OrderPipe,) {
   }
 
   ngOnInit(): void {
@@ -362,35 +366,12 @@ export class DependenciesComponent {
 
   }
 
-
-  getStatusClass(node: NzTreeNodeOptions): string {
-    if (node.title.includes("WAITING")) return "status-expected";
-    if (node.title.includes("ANNOUNCED")) return "status-announced";
-    if (node.title.includes("POSTED")) return "status-posted";
-    return "";
-  }
-
   navToInventoryTab(data, type): void {
     this.coreService.navToInventoryTab(data, type);
   }
 
   showBoard(board): void {
     this.coreService.showBoard(board);
-  }
-
-  showWorkflow(workflow, version): void {
-    this.coreService.showWorkflow(workflow, version);
-  }
-
-  checkBoxChange(data): void {
-  }
-
-  onExpand(event: any): void {
-    if (event.node && event.node.origin.type === 'NOTICEBOARD') {
-      if (event.node.isExpanded) {
-        // this.loadAdditionalData(event.node.origin.path);
-      }
-    }
   }
 
 
@@ -420,5 +401,19 @@ export class DependenciesComponent {
     if (reportDrawer) {
       reportDrawer.style.marginRight = '0px';
     }
+  }
+
+  sort(propertyName): void {
+    this.plansFilters.filter.reverse = !this.plansFilters.filter.reverse;
+    this.plansFilters.filter.sortBy = propertyName;
+    console.log(this.plansFilters.filter.sortBy, "::S:kd")
+    this.noticeBoards = this.orderPipe.transform(this.noticeBoards, this.plansFilters.filter.sortBy, this.plansFilters.filter.reverse);
+    this.reset()
+  }
+
+  reset(): void {
+    this.noticeBoards.forEach(board => board.checked = false);
+      this.allChecked = false,
+      this.indeterminate = false
   }
 }

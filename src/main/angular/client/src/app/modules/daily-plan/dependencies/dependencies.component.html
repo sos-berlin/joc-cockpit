@@ -26,7 +26,7 @@
   </div>
   <div class="col-lg-12">
     <div class="sticky leftPanel dependencies" id="leftPanel2">
-      <div class="box m-b-0 overflow-y" style="height: calc(100vh - 280px)">
+      <div class="box m-b-0 overflow-y max-ht-n-252">
         <div class="p-b b-b icon-hover">
           <ng-template #tooltipTemplate>
             <div class="m-a-xs">
@@ -40,59 +40,128 @@
       </div>
     </div>
     <div id="rightPanel2">
-      <div class="row">
-        <div class="col-md-12 overflow-y" style="height: calc(100vh - 280px)">
-          <div *ngFor="let board of noticeBoards"
-               class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
-            <div class="box card cur-point">
-              <i *ngIf="board.numOfExpectedNotices === 0" class="fa fa-stop bg-postingWorkflow position-absolute m-b-xs"></i>
-              <i *ngIf="board.numOfExpectedNotices != 0" class="fa fa-stop bg-receivingWorkflow position-absolute m-b-xs"></i>
+      <div class="row" >
+                <div *ngIf="pageView =='grid'" class="col-md-12 overflow-y" style="height: calc(100vh - 280px)">
+                  <div *ngFor="let board of noticeBoards"
+                       class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                    <div class="box card cur-point">
+                      <i *ngIf="board.numOfExpectedNotices === 0" class="fa fa-stop bg-postingWorkflow position-absolute m-b-xs"></i>
+                      <i *ngIf="board.numOfExpectedNotices != 0" class="fa fa-stop bg-receivingWorkflow position-absolute m-b-xs"></i>
 
-              <div class="box-body" (click)="onSelect(board?.path)">
-                <div>
-                  <label class="pos-abt">
-                    <label nz-checkbox
-                    ></label>
-                  </label>
-                  <div class="text-left block-ellipsis m-l-md">
-                    <i (click)="navToInventoryTab(board.path, 'NOTICEBOARD');"
-                       *ngIf="permission.joc && permission.joc.inventory.view"
-                       class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-                    <a (click)="showBoard(board.path)"
-                       class="text-hover-primary">{{ board.path }}</a>
+                      <div class="box-body" (click)="onSelect(board?.path)">
+                        <div>
+                          <label class="pos-abt">
+                            <label nz-checkbox
+                            ></label>
+                          </label>
+                          <div class="text-left block-ellipsis m-l-md">
+                            <i (click)="navToInventoryTab(board.path, 'NOTICEBOARD');"
+                               *ngIf="permission.joc && permission.joc.inventory.view"
+                               class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+                            <a (click)="showBoard(board.path)"
+                               class="text-hover-primary">{{ board.path }}</a>
+                          </div>
+                        </div>
+                        <div class="text-sm text-left text-muted p-t-sm">
+                          <span translate>dailyPlan.label.numOfAnnouncements </span>:
+                          <span [innerHtml]="board.numOfAnnouncements || 0"
+                                class="text-black _600 m-l p-r-xs"></span>
+                        </div>
+                        <div class="text-sm text-left text-muted p-t-xs">
+                          <span translate>dailyPlan.label.numOfNotices </span>:
+                          <span [innerHtml]="board.numOfNotices || 0"
+                                class="text-black _600 m-l p-r-xs"></span>
+                        </div>
+                        <div class="text-sm text-left text-muted p-t-xs">
+                          <span translate>dailyPlan.label.numOfExpectedNotices </span>:
+                          <span [innerHtml]="board.numOfExpectedNotices || 0"
+                                class="text-black _600 m-l p-r-xs"></span>
+                        </div>
+                        <div class="text-sm text-left text-muted p-t-xs">
+                          <span translate>dailyPlan.label.numOfPostedNotices </span>:
+                          <span [innerHtml]="board.numOfPostedNotices || 0"
+                                class="text-black _600 m-l p-r-xs"></span>
+                        </div>
+                        <div class="text-sm text-left text-muted p-t-xs">
+                          <span translate>dailyPlan.label.numOfExpectingOrders </span>:
+                          <span [innerHtml]="board.numOfExpectingOrders || 0"
+                                class="text-black _600 m-l p-r-xs"></span>
+                        </div>
+                      </div>
+                      <div class="box-footer b-t">
+
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <div class="text-sm text-left text-muted p-t-sm">
-                  <span translate>dailyPlan.label.numOfAnnouncements </span>:
-                  <span [innerHtml]="board.numOfAnnouncements || 0"
-                        class="text-black _600 m-l p-r-xs"></span>
-                </div>
-                <div class="text-sm text-left text-muted p-t-xs">
-                  <span translate>dailyPlan.label.numOfNotices </span>:
-                  <span [innerHtml]="board.numOfNotices || 0"
-                        class="text-black _600 m-l p-r-xs"></span>
-                </div>
-                <div class="text-sm text-left text-muted p-t-xs">
-                  <span translate>dailyPlan.label.numOfExpectedNotices </span>:
-                  <span [innerHtml]="board.numOfExpectedNotices || 0"
-                        class="text-black _600 m-l p-r-xs"></span>
-                </div>
-                <div class="text-sm text-left text-muted p-t-xs">
-                  <span translate>dailyPlan.label.numOfPostedNotices </span>:
-                  <span [innerHtml]="board.numOfPostedNotices || 0"
-                        class="text-black _600 m-l p-r-xs"></span>
-                </div>
-                <div class="text-sm text-left text-muted p-t-xs">
-                  <span translate>dailyPlan.label.numOfExpectingOrders </span>:
-                  <span [innerHtml]="board.numOfExpectingOrders || 0"
-                        class="text-black _600 m-l p-r-xs"></span>
-                </div>
-              </div>
-              <div class="box-footer b-t">
 
-              </div>
-            </div>
-          </div>
+      </div>
+      <div *ngIf="pageView !=='grid'"  class="box p-a max-ht-n-252" style="overflow: auto;">
+        <div class="table-responsive">
+          <nz-table #ajaxTable [nzBordered]="true" [nzData]="noticeBoards" [nzSize]="'small'"
+                    [nzShowPagination]="true">
+            <thead>
+            <tr>
+              <th class="chk">
+                <label nz-checkbox [(ngModel)]="allChecked" (ngModelChange)="onCheckAll($event)"></label>
+              </th>
+              <th (click)="sort('path')"><a><span class="p-r-xs" translate>inventory.label.boards</span>
+                <i *ngIf="plansFilters.filter.sortBy == 'path' && !plansFilters.filter.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="plansFilters.filter.sortBy == 'path' && plansFilters.filter.reverse"
+                   class="fa fa-caret-down "></i></a></th>
+              <th (click)="sort('numOfAnnouncements')"><a><span class="p-r-xs" translate>dailyPlan.label.numOfAnnouncements</span>
+                <i *ngIf="plansFilters.filter.sortBy == 'numOfAnnouncements' && !plansFilters.filter.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="plansFilters.filter.sortBy == 'announcements' && plansFilters.filter.reverse"
+                   class="fa fa-caret-down "></i></a></th>
+              <th (click)="sort('numOfNotices')"><a><span class="p-r-xs" translate>dailyPlan.label.numOfNotices</span>
+                <i *ngIf="plansFilters.filter.sortBy == 'numOfNotices' && !plansFilters.filter.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="plansFilters.filter.sortBy == 'numOfNotices' && plansFilters.filter.reverse"
+                   class="fa fa-caret-down "></i></a></th>
+              <th (click)="sort('numOfExpectedNotices')"><a><span class="p-r-xs" translate>dailyPlan.label.numOfExpectedNotices </span>
+                <i *ngIf="plansFilters.filter.sortBy == 'numOfExpectedNotices' && !plansFilters.filter.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="plansFilters.filter.sortBy == 'numOfExpectedNotices' && plansFilters.filter.reverse"
+                   class="fa fa-caret-down "></i></a></th>
+              <th (click)="sort('numOfPostedNotices')"><a><span class="p-r-xs" translate>dailyPlan.label.numOfPostedNotices</span>
+                <i *ngIf="plansFilters.filter.sortBy == 'numOfPostedNotices' && !plansFilters.filter.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="plansFilters.filter.sortBy == 'numOfPostedNotices' && plansFilters.filter.reverse"
+                   class="fa fa-caret-down "></i></a></th>
+              <th (click)="sort('numOfExpectingOrders')"><a><span class="p-r-xs" translate>dailyPlan.label.numOfExpectingOrders</span>
+                <i *ngIf="plansFilters.filter.sortBy == 'numOfExpectingOrders' && !plansFilters.filter.reverse"
+                   class="fa fa-caret-up "></i>
+                <i *ngIf="plansFilters.filter.sortBy == 'numOfExpectingOrders' && plansFilters.filter.reverse"
+                   class="fa fa-caret-down "></i></a></th>
+              <th translate>common.label.action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let board of noticeBoards">
+              <td>
+                <label nz-checkbox [(ngModel)]="board.checked"></label>
+              </td>
+              <td>
+                <i (click)="navToInventoryTab(board.path, 'NOTICEBOARD');"
+                   *ngIf="permission.joc && permission.joc.inventory.view"
+                   class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+                <a (click)="showBoard(board.path)" class="text-hover-primary">{{ board.path }}</a>
+
+              </td>
+              <td>{{ board.numOfAnnouncements || 0 }}</td>
+              <td>{{ board.numOfNotices || 0 }}</td>
+              <td>{{ board.numOfExpectedNotices || 0 }}</td>
+              <td>{{ board.numOfPostedNotices || 0 }}</td>
+              <td>{{ board.numOfExpectingOrders || 0 }}</td>
+              <td (click)="onSelect(board.path)"  class="text-center cur-point">
+                <i nz-icon  nzType="block" nzTheme="outline"></i>
+              </td>
+            </tr>
+            </tbody>
+          </nz-table>
+
         </div>
       </div>
     </div>
@@ -100,7 +169,9 @@
 </div>
 <nz-drawer (nzOnClose)="closePanel()" [nzWrapClassName]="'report-drawer'" [nzVisible]="isVisible" nzPlacement="right">
   <ng-container *nzDrawerContent>
-    <app-show-dailyPlan-dependencies *ngIf="isVisible" [preferences]='preferences' [schedulerId]="schedulerId" [noticePath]="noticePath" (closePanel)="closePanel()"></app-show-dailyPlan-dependencies>
+    <app-show-dailyPlan-dependencies *ngIf="isVisible" [preferences]='preferences' [schedulerId]="schedulerId"
+                                     [noticePath]="noticePath"
+                                     (closePanel)="closePanel()"></app-show-dailyPlan-dependencies>
   </ng-container>
 </nz-drawer>
 <div *ngIf="!isLoaded" class="spinner">

@@ -452,6 +452,7 @@
               <span translate>inventory.button.export</span>
             </button>
             <app-toggle *ngIf="dailyPlanFilters.tabIndex == 0" (messageEvent)="receiveMessage($event)"></app-toggle>
+            <app-toggle *ngIf="dailyPlanFilters.tabIndex == 2" (messageEvent)="receiveMessage2($event)"></app-toggle>
           </div>
           <div *ngIf="dailyPlanFilters.tabIndex == 0" [ngClass]="{'show-block':object.mapOfCheckedId.size>0}" class="hide">
             <button (click)="modifyOrderStartTime()"
@@ -1056,7 +1057,7 @@
       <nz-tab [nzTitle]="'dailyPlan.tab.dependencies' | translate">
         <div class="row m-t-n-xxs">
           <div class="col-md-12 ">
-            <app-dependencies  [parentLoaded]="isParentLoaded" [permission]="permission" [schedulerId]="schedulerIds.selected" [preferences]="preferences"></app-dependencies>
+            <app-dependencies  [parentLoaded]="isParentLoaded" [pageView] = pageView2 [isToggle]="isToggle2" [permission]="permission" [schedulerId]="schedulerIds.selected" [preferences]="preferences"></app-dependencies>
           </div>
         </div>
       </nz-tab>

@@ -726,6 +726,7 @@ export class DailyPlanComponent {
   isRefreshed = false;
   dailyPlanFilters: any = {filter: {}, index: 0};
   pageView = '';
+  pageView2 = '';
   savedFilter: any = {};
   selectedFiltered: any = {};
   searchFilter: any = {};
@@ -740,6 +741,7 @@ export class DailyPlanComponent {
   dateFormatM: any;
   isPastDate = false;
   isToggle = false;
+  isToggle2 = false;
   isCalendarClick = false;
   selectedDate: Date;
   submissionHistory: any = [];
@@ -2112,6 +2114,13 @@ export class DailyPlanComponent {
     }
     this.pageView = $event;
     this.resetCheckBox();
+  }
+
+  receiveMessage2($event): void {
+    if ($event === 'grid' || $event === 'list') {
+      this.isToggle2 = true;
+    }
+    this.pageView2 = $event;
   }
 
   sort(key): void {
