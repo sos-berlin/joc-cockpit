@@ -2999,16 +2999,16 @@
       "label.endOfLife": "Lifetime",
       "label.expectingOrders": "Expecting Orders",
       "label.expirationDate": "Expiration Date",
-      "label.postOrderToExpirationDate": "Notice lifetime",
+      "label.postOrderToExpirationDate": "Notice Lifetime",
       "label.noticeKey": "Notice Key",
-      "label.planKey": "Plan Key",
+      "label.planKey": "Notice Space Key",
       "button.post": "Post Notice",
       "button.postAll": "Post selected Notices",
       "button.delete": "Delete Notice",
       "button.deleteAll": "Delete All Notices",
       "placeholder.enterNoticeId": "Enter Notice ID",
       "placeholder.enterNoticeKey": "Enter Notice Key",
-      "placeholder.enterPlanKey": "Enter Plan Key"
+      "placeholder.enterPlanKey": "Enter Notice Space Key"
     },
     "calendar": {
       "label.validity": "Validity",
