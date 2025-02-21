@@ -934,7 +934,7 @@
     "label.copyOrder": "Copy Order",
     "label.oneTimeOrders": "One-time Orders",
     "label.global": "Global",
-    "label.plannable": "Plannable",
+    "label.plannable": "Schedulable",
     "label.expected": "Expected",
     "label.announced": "Announced",
     "label.posted": "Posted",
@@ -2103,7 +2103,7 @@
         "toNotice": "The Notice ID for posting order is extracted from its Order ID to look up matching expecting orders.",
         "endOfLife": "The lifetime for the Notice determines its duration in the format hh:mm:ss, for example 01:30:00 for one and a half hours.",
         "readingOrderToNoticeId": "The Notice ID for expecting order is extracted from its Order ID and is used to look up matching posting orders.",
-        "boardType": "Notice Boards are of 'global' type if dependencies work independently from the Daily Plan. Notice Boards are of 'plannable' type of dependencies are considered for days only for which orders exist that will create Notices."
+        "boardType": "Notice Boards of 'global' type enforce dependencies independently from the Daily Plan. Notice Boards of 'schedulable' type consider days only for which orders exist that will create Notices."
       },
       "lock": {
         "name": "Resource Locks are used to implement mutual exclusion for a sequence of jobs. They can be used in the same workflow and across any workflows to limit parallellism of jobs. The name of a Resource Lock is unique in the inventory. For the name of the Resource Lock most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
@@ -3003,16 +3003,16 @@
       "label.endOfLife": "Lifetime",
       "label.expectingOrders": "Expecting Orders",
       "label.expirationDate": "Expiration Date",
-      "label.postOrderToExpirationDate": "Notice lifetime",
+      "label.postOrderToExpirationDate": "Notice Lifetime",
       "label.noticeKey": "Notice Key",
-      "label.planKey": "Plan Key",
+      "label.planKey": "Notice Space Key",
       "button.post": "Post Notice",
       "button.postAll": "Post selected Notices",
       "button.delete": "Delete Notice",
       "button.deleteAll": "Delete All Notices",
       "placeholder.enterNoticeId": "Enter Notice ID",
       "placeholder.enterNoticeKey": "Enter Notice Key",
-      "placeholder.enterPlanKey": "Enter Plan Key"
+      "placeholder.enterPlanKey": "Enter Notice Space Key"
     },
     "calendar": {
       "label.validity": "Validity",
@@ -3807,7 +3807,7 @@
     "label.skipWhenNoNotice": "Skip",
     "label.boardType": "Notice Board Type",
     "label.global": "global",
-    "label.plannable": "plannable",
+    "label.plannable": "schedulable",
     "label.sleep": "Sleep",
     "label.duration": "Duration",
     "button.addScheme": "Add Cycle",
