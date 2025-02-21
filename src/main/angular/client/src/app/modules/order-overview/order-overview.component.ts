@@ -561,6 +561,9 @@ export class OrderOverviewComponent {
     isResume: false,
     isContinue: false,
     isPrompt: false,
+    isSuspendSoftly: false,
+    isSuspendReset: false,
+    isSuspendWithResetAndKill: false
   };
 
   filterBtn: any = [
@@ -1355,6 +1358,9 @@ export class OrderOverviewComponent {
     this.object.isTerminate = true;
     this.object.isContinue = true;
     this.object.isResume = true;
+    this.object.isSuspendSoftly = true;
+    this.object.isSuspendReset = true;
+    this.object.isSuspendWithResetAndKill = false;
     let workflow = null;
     let count = 0;
     this.object.mapOfCheckedId.forEach(order => {
@@ -1383,6 +1389,7 @@ export class OrderOverviewComponent {
         if (order.state._text === 'RUNNING') {
           this.object.isCancelWithKill = true;
           this.object.isSuspendWithKill = true;
+          this.object.isSuspendWithResetAndKill = true;
         }
         if (order.state._text === 'PROMPTING') {
           ++count;
@@ -1396,6 +1403,14 @@ export class OrderOverviewComponent {
         } else if (workflow !== order.workflowId.path) {
           this.object.isModify = false;
         }
+        if (order.state._text !== 'RUNNING' && order.state._text !== 'INPROGRESS' && order.state._text !== 'WAITING'
+          && order.state._text !== 'PENDING' && order.state._text !== 'SCHEDULED' && order.state._text !== 'PROMPTING' && order.state._text !== 'FAILED') {
+          this.object.isSuspendSoftly = false;
+        }
+        if (order.state._text !== 'INPROGRESS' && order.state._text !== 'WAITING' && order.state._text !== 'PROMPTING' && order.state._text !== 'RUNNING') {
+          this.object.isSuspendReset = false;
+        }
+
       }
     });
     if (count == this.object.mapOfCheckedId.size && this.object.mapOfCheckedId.size > 0) {
@@ -1454,8 +1469,8 @@ export class OrderOverviewComponent {
     this._bulkOperation('Terminate', 'remove_when_terminated');
   }
 
-  suspendAllOrder(isKill = false): void {
-    this._bulkOperation('Suspend', 'suspend', isKill);
+  suspendAllOrder(isKill = false, isReset = false): void {
+    this._bulkOperation('Suspend', 'suspend', isKill, isReset);
   }
 
   resumeAllOrder(): void {
@@ -1525,12 +1540,15 @@ export class OrderOverviewComponent {
     this._bulkOperation('Confirm', 'confirm', false);
   }
 
-  _bulkOperation(operation, url, isKill = false): void {
+  _bulkOperation(operation, url, isKill = false, isReset = false): void {
     const obj: any = {
       controllerId: this.schedulerIds.selected
     };
     if (isKill) {
       obj.kill = true;
+    }
+    if (isReset) {
+      obj.reset = true;
     }
     if (operation === 'add') {
       obj.orders = [];
@@ -1661,6 +1679,9 @@ export class OrderOverviewComponent {
       isContinue: false,
       isResume: false,
       isPrompt: false,
+      isSuspendSoftly: false,
+      isSuspendReset: false,
+      isSuspendWithResetAndKill: false
     };
   }
 

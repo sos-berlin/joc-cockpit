@@ -452,7 +452,7 @@
               <span translate>inventory.button.export</span>
             </button>
             <app-toggle *ngIf="dailyPlanFilters.tabIndex == 0" (messageEvent)="receiveMessage($event)"></app-toggle>
-            <app-toggle *ngIf="dailyPlanFilters.tabIndex == 2" (messageEvent)="receiveMessage2($event)"></app-toggle>
+            <app-toggle *ngIf="dailyPlanFilters.tabIndex == 2" [type] = "'DEPENDENCIES'" (messageEvent)="receiveMessage2($event)"></app-toggle>
           </div>
           <div *ngIf="dailyPlanFilters.tabIndex == 0" [ngClass]="{'show-block':object.mapOfCheckedId.size>0}" class="hide">
             <button (click)="modifyOrderStartTime()"

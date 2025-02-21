@@ -1,6 +1,6 @@
 <div class="row">
-  <div class="col-md-12 m-b">
-    <div class="inline btn-group">
+  <div *ngIf="!(checked && setOfCheckedId.size > 0 && noticeBoards.length > (plansFilters.entryPerPage || preferences.entryPerPage))" class="col-md-12 m-b">
+    <div class="inline btn-group" style="width: 326px">
       <div (click)="setView('Global')"
            [class.primary]="plansFilters.filter.calView === 'Global'"
            class="btn btn-default btn-sm" translate>
@@ -11,6 +11,38 @@
            class="btn btn-default btn-sm" translate>
         dailyPlan.label.plannable
       </div>
+    </div>
+    <button
+      [ngClass]="{'btn-primary': plansFilters.filter.filterBy===''}"
+      class="btn btn-grey btn-sm hidden-btn-text m-l-12 m-r-sm">
+      <i class="icon icon-orders-icon"></i>
+      <span translate>dailyPlan.label.all</span>
+    </button>
+    <div class="inline btn-group">
+      <button
+        [ngClass]="{'btn-primary': plansFilters.filter.filterBy==='expected'}"
+        class="btn btn-grey btn-sm hidden-btn-text">
+        <i class="icon icon-calendar-icon"></i>
+        <span translate>dailyPlan.button.expected</span>
+      </button>
+      <button
+        [ngClass]="{'btn-primary': plansFilters.filter.filterBy==='notExpected'}"
+        class="btn btn-grey btn-sm hidden-btn-text">
+        <i class="icon icon-workflows-icon"></i>
+        <span translate>dailyPlan.button.notExpected</span>
+      </button>
+      <button
+        [ngClass]="{'btn-primary': plansFilters.filter.filterBy==='announced'}"
+        class="btn btn-grey btn-sm hidden-btn-text m-l-12">
+        <i class="icon icon-calendar-icon"></i>
+        <span translate>dailyPlan.button.announced</span>
+      </button>
+      <button
+        [ngClass]="{'btn-primary': plansFilters.filter.filterBy==='notAnnounced'}"
+        class="btn btn-grey btn-sm hidden-btn-text">
+        <i class="icon icon-workflows-icon"></i>
+        <span translate>dailyPlan.button.notAnnounced</span>
+      </button>
     </div>
     <div class="search-box-field pull-right">
       <label>
@@ -41,27 +73,42 @@
     </div>
     <div id="rightPanel2">
       <div class="row" >
-                <div *ngIf="pageView =='grid'" class="col-md-12 overflow-y" style="height: calc(100vh - 280px)">
+                <div *ngIf="pageView =='dep'" class="col-md-12 overflow-y" style="height: calc(100vh - 280px); padding: 0">
                   <div *ngFor="let board of noticeBoards"
                        class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
                     <div class="box card cur-point">
                       <i *ngIf="board.numOfExpectedNotices === 0" class="fa fa-stop bg-postingWorkflow position-absolute m-b-xs"></i>
                       <i *ngIf="board.numOfExpectedNotices != 0" class="fa fa-stop bg-receivingWorkflow position-absolute m-b-xs"></i>
 
-                      <div class="box-body" (click)="onSelect(board?.path)">
-                        <div>
-                          <label class="pos-abt">
-                            <label nz-checkbox
-                            ></label>
-                          </label>
+                      <div class="box-body">
+                        <label class="pos-abt">
+                          <label nz-checkbox
+                          ></label>
+                        </label>
                           <div class="text-left block-ellipsis m-l-md">
                             <i (click)="navToInventoryTab(board.path, 'NOTICEBOARD');"
                                *ngIf="permission.joc && permission.joc.inventory.view"
                                class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
                             <a (click)="showBoard(board.path)"
                                class="text-hover-primary">{{ board.path }}</a>
-                          </div>
                         </div>
+                        <div class="btn-group dropdown pull-right abt-dropdown">
+                          <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
+                                  nz-dropdown nzTrigger="click" type="button">
+                            <i class="fa fa-ellipsis-h"></i>
+                          </button>
+                          <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                            <ul *ngIf="permission.currentController" nz-menu>
+                              <li (click)="post(board, null, plansFilters.filter.calView)" [nzDisabled]="!(board.numOfAnnouncements > 0 || board.numOfExpectingOrders > 0)" nz-menu-item>
+                                <a translate>resource.board.button.post</a>
+                              </li>
+                              <li (click)="delete(board, null)" [nzDisabled]="!(board.numOfPostedNotices > 0)" nz-menu-item>
+                                <a translate>resource.board.button.delete</a>
+                              </li>
+                            </ul>
+                          </nz-dropdown-menu>
+                        </div>
+
                         <div class="text-sm text-left text-muted p-t-sm">
                           <span translate>dailyPlan.label.numOfAnnouncements </span>:
                           <span [innerHtml]="board.numOfAnnouncements || 0"
@@ -88,23 +135,30 @@
                                 class="text-black _600 m-l p-r-xs"></span>
                         </div>
                       </div>
-                      <div class="box-footer b-t">
-
+                      <div  (click)="onSelect(board?.path)" class="box-footer b-t">
+                        <i class="fa fa-codepen"></i>
                       </div>
                     </div>
                   </div>
                 </div>
 
       </div>
-      <div *ngIf="pageView !=='grid'"  class="box p-a max-ht-n-252" style="overflow: auto;">
+      <div *ngIf="pageView !=='dep'"  class="box p-a max-ht-n-252" style="overflow: auto;">
         <div class="table-responsive">
-          <nz-table #ajaxTable [nzBordered]="true" [nzData]="noticeBoards" [nzSize]="'small'"
-                    [nzShowPagination]="true">
+          <nz-table  #ajaxTable nzShowPagination
+                    nzShowSizeChanger
+                     (nzPageSizeChange)="pageSizeChange($event)"
+                    [nzData]="noticeBoards"
+                    (nzCurrentPageDataChange)="onCurrentPageDataChange($event)" [nzSize]="'small'" [nzBordered]="true" [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
+                     [nzPageSize]="plansFilters.filter.entryPerPage || preferences.entryPerPage || 25">
             <thead>
             <tr>
-              <th class="chk">
-                <label nz-checkbox [(ngModel)]="allChecked" (ngModelChange)="onCheckAll($event)"></label>
-              </th>
+              <th class="chk"
+                [nzChecked]="checked"
+                [nzIndeterminate]="indeterminate"
+                (nzCheckedChange)="onAllChecked($event)"
+              ></th>
+              <th class="menu"><span translate>common.label.action</span></th>
               <th (click)="sort('path')"><a><span class="p-r-xs" translate>inventory.label.boards</span>
                 <i *ngIf="plansFilters.filter.sortBy == 'path' && !plansFilters.filter.reverse"
                    class="fa fa-caret-up "></i>
@@ -135,13 +189,36 @@
                    class="fa fa-caret-up "></i>
                 <i *ngIf="plansFilters.filter.sortBy == 'numOfExpectingOrders' && plansFilters.filter.reverse"
                    class="fa fa-caret-down "></i></a></th>
-              <th translate>common.label.action</th>
+              <th></th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let board of noticeBoards">
+            <ng-template [ngForOf]="ajaxTable.data" let-board
+                         ngFor>
+            <tr >
+              <td
+                [nzChecked]="setOfCheckedId.has(board.path)"
+                [nzDisabled]="board.disabled"
+                [nzLabel]="board.name"
+                (nzCheckedChange)="onItemChecked(board.path, $event)"
+              ></td>
               <td>
-                <label nz-checkbox [(ngModel)]="board.checked"></label>
+                <div class="btn-group dropdown">
+                  <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
+                          nz-dropdown nzTrigger="click" type="button">
+                    <i class="fa fa-ellipsis-h"></i>
+                  </button>
+                  <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                    <ul *ngIf="permission.currentController" nz-menu>
+                      <li (click)="post(board, null, plansFilters.filter.calView)" [nzDisabled]="!(board.numOfAnnouncements > 0 || board.numOfExpectingOrders > 0)" nz-menu-item>
+                        <a translate>resource.board.button.post</a>
+                      </li>
+                      <li (click)="delete(board, null)" [nzDisabled]="!(board.numOfPostedNotices > 0)" nz-menu-item>
+                        <a translate>resource.board.button.delete</a>
+                      </li>
+                    </ul>
+                  </nz-dropdown-menu>
+                </div>
               </td>
               <td>
                 <i (click)="navToInventoryTab(board.path, 'NOTICEBOARD');"
@@ -156,9 +233,10 @@
               <td>{{ board.numOfPostedNotices || 0 }}</td>
               <td>{{ board.numOfExpectingOrders || 0 }}</td>
               <td (click)="onSelect(board.path)"  class="text-center cur-point">
-                <i nz-icon  nzType="block" nzTheme="outline"></i>
+                <i class="fa fa-codepen"></i>
               </td>
             </tr>
+            </ng-template>
             </tbody>
           </nz-table>
 

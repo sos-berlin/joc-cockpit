@@ -113,10 +113,19 @@
             <button (click)="terminateAllOrder()" *ngIf="object.isTerminate && permission.currentController.orders"
                     class="btn btn-grey btn-sm m-l-12"><i class="fa fa-trash p-r-xs"></i>
               <span class="hidden-sm-down" translate>order.button.leaveWorkflow</span></button>
-            <button (click)="suspendAllOrder()" *ngIf="permission.currentController.orders.suspendResume"
+            <button (click)="suspendAllOrder(false, false)" *ngIf="permission.currentController.orders.suspendResume"
                     [disabled]="!object.isSuspend" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-stop p-r-xs"></i>
               <span class="hidden-sm-down" translate>order.button.suspend</span></button>
-            <button (click)="suspendAllOrder(true)" *ngIf="permission.currentController.orders.suspendResume"
+            <button (click)="suspendAllOrder(false, false)" *ngIf="permission.currentController.orders.suspendResume"
+                  [disabled]="!object.isSuspendSoftly" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-stop p-r-xs"></i>
+              <span class="hidden-sm-down" translate>order.button.suspend</span>&nbsp;<span class="hidden-sm-down" translate>order.button.normal</span></button>
+            <button (click)="suspendAllOrder(false, true)" *ngIf="permission.currentController.orders.suspendResume"
+              [disabled]="!object.isSuspendReset" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-stop p-r-xs"></i>
+              <span class="hidden-sm-down" translate>order.button.suspend</span>&nbsp;<span class="hidden-sm-down" translate>order.button.reset</span></button>
+            <button (click)="suspendAllOrder(true, true)" *ngIf="permission.currentController.orders.suspendResume"
+              [disabled]="!object.isSuspendWithResetAndKill" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-stop p-r-xs"></i>
+              <span class="hidden-sm-down" translate>order.button.suspend</span>&nbsp;<span class="hidden-sm-down" translate>order.button.forceReset</span></button>
+            <button (click)="suspendAllOrder(true, false)" *ngIf="permission.currentController.orders.suspendResume"
                     [disabled]="!object.isSuspendWithKill" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-stop"></i>&nbsp;
               <span class="hidden-sm-down" translate>order.button.suspendAndKillTask</span>
             </button>

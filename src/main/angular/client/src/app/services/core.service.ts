@@ -248,7 +248,8 @@ export class CoreService {
     this.tabs._plans.filter = {
       sortBy: 'path',
       reverse: true,
-      currentPage: '1'
+      currentPage: '1',
+      filterBy: ''
     };
     this.tabs._plans.filter.calView ='Global';
 

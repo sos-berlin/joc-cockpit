@@ -817,6 +817,9 @@ export class DailyPlanComponent {
     if (this.pageView === 'grid') {
       this.isToggle = true;
     }
+    if (this.pageView2 === 'dep') {
+      this.isToggle2 = true;
+    }
   }
 
   ngOnDestroy(): void {
@@ -2117,7 +2120,7 @@ export class DailyPlanComponent {
   }
 
   receiveMessage2($event): void {
-    if ($event === 'grid' || $event === 'list') {
+    if ($event === 'dep' || $event === 'list') {
       this.isToggle2 = true;
     }
     this.pageView2 = $event;
@@ -2522,6 +2525,9 @@ export class DailyPlanComponent {
     }
     if (localStorage['views']) {
       this.pageView = JSON.parse(localStorage['views']).dailyPlan;
+    }
+    if (localStorage['views']) {
+      this.pageView2 = JSON.parse(localStorage['views']).dailyPlanDep;
     }
     if (this.dailyPlanFilters.tabIndex !== 0 && this.dailyPlanFilters.tabIndex !== 2) {
       this.changeInCalendar();

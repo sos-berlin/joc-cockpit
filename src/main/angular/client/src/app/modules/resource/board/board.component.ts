@@ -248,7 +248,7 @@ export class PostModalComponent {
     } else if (this.singular && this.showNoticeId) {
       obj.noticeBoardPath = this.board.path;
       const planKey = this.coreService.getDateByFormat(this.postObj.planKey, null, 'YYYY-MM-DD');
-      obj.noticeId = 'DailyPlan/' + planKey + '/' + this.postObj.noticeKey;
+      obj.noticeId = 'DailyPlan/' + planKey + '/' + (this.postObj.noticeKey ? this.postObj.noticeKey : '-');
     }
 
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);

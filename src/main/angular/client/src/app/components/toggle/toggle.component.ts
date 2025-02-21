@@ -8,8 +8,8 @@ import {Router} from '@angular/router';
       <button *ngIf="type === 'ORDER'" class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='bulk'}" (click)="setView('bulk')"><i
         class="fa fa-sitemap"></i>
       </button>
-      <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='grid'}" (click)="setView('grid')"><i
-        class="fa fa-th-large" [ngClass]="{'fa-sitemap' : router.url.match('workflow_detail'), 'fa-sliders' : router.url.match('daily_plan') }"></i>
+      <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='grid' || pageView==='dep'}" (click)="setView(type === 'DEPENDENCIES' ? 'dep' : 'grid')"><i
+        class="fa fa-th-large" [ngClass]="{'fa-sitemap' : router.url.match('workflow_detail'), 'fa-sliders' : (router.url.match('daily_plan') && type != 'DEPENDENCIES') }"></i>
       </button>
       <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='list'}" (click)="setView('list')">
         <i class="fa fa-bars"></i>
@@ -40,6 +40,7 @@ export class ToggleComponent {
     }
     this.views = {
       dailyPlan: this.view,
+      dailyPlanDep: this.view,
       workflow: this.view,
       inventory: this.view,
       order: this.orderView,
@@ -60,8 +61,10 @@ export class ToggleComponent {
         this.views.order = this.orderView;
       }
     }
-    if (this.router.url === '/daily_plan') {
+    if (this.router.url === '/daily_plan' && this.type !== 'DEPENDENCIES') {
       this.pageView = this.views.dailyPlan || this.view;
+    }else if (this.router.url === '/daily_plan' && this.type === 'DEPENDENCIES') {
+      this.pageView = this.views.dailyPlanDep || this.view;
     } else if (this.router.url === '/configuration/inventory') {
       this.pageView = this.views.inventory || this.view;
     } else if (this.router.url === '/workflows') {
@@ -91,8 +94,10 @@ export class ToggleComponent {
 
   setView(view): void {
     this.pageView = view;
-    if (this.router.url === '/daily_plan') {
+    if (this.router.url === '/daily_plan' && this.type !== 'DEPENDENCIES') {
       this.views.dailyPlan = view;
+    } else if (this.router.url === '/daily_plan' && this.type === 'DEPENDENCIES') {
+      this.views.dailyPlanDep = view;
     } else if (this.router.url === '/inventory') {
       this.views.inventory = view;
     } else if (this.router.url === '/workflows') {
