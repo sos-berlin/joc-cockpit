@@ -2099,7 +2099,7 @@
         "toNotice": "Entrer la Condition",
         "endOfLife": "Le délai d'expiration de la Condition détermine sa durée de vie au format hh:mm:ss, par exemple 01:30:00 pour une heure et demie.",
         "readingOrderToNoticeId": "Entrer la règle pour créer l'ID Annonce pour l'Ordre attendu.",
-        "boardType": "Les Conditions sont de type 'global' si les dépendances fonctionnent indépendamment du Plan Quotidien. Les Conditions sont de type 'planifiable' si les dépendances sont prises en compte uniquement pour les jours pour lesquels il existe des ordres qui créeront des Annonces."
+        "boardType": "Les Conditions de type 'global' forcent les dépendances indépendamment du Plan Quotidien. Les Conditions de type 'planifiable' prennent en compte les dépendances uniquement pour les jours pour lesquels il existe des ordres qui créeront des Annonces."
       },
       "lock": {
         "name": "Les verrous de ressources sont utilisés pour implémenter l'exclusion mutuelle pour une séquence de tâche. Ils peuvent être utilisés dans le même workflow et dans tous les workflows pour limiter le parallélisme des tâches. Le nom d'un Verrou est unique dans l'inventaire. Pour le nom du verrou de ressource, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
