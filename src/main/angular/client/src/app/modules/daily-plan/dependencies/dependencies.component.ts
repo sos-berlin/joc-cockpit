@@ -366,8 +366,8 @@ export class DependenciesComponent {
       numOfExpectingOrders: board?.numOfExpectingOrders,
       numOfPostedNotices: board?.numOfPostedNotices,
       numOfAnnouncements: board?.numOfAnnouncements,
-      numOfConsumingWorkflow: board?.numOfConsumingWorkflow ?? 0,
-      numOfExpectingWorkflow: board?.numOfExpectingWorkflow ?? 0,
+      numOfConsumingWorkflow: board?.consumingWorkflow ?? 0,
+      numOfExpectingWorkflow: board?.ExpectingWorkflow ?? 0,
       versionDate: board?.versionDate,
       checked: board?.checked ?? false
     }));
