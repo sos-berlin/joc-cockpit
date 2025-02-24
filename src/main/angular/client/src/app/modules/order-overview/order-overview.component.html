@@ -111,9 +111,32 @@
               <span class="hidden-sm-down" translate>order.button.cancelAndKillTask</span>
             </button>
             <button (click)="terminateAllOrder()" *ngIf="object.isTerminate && permission.currentController.orders"
-                    class="btn btn-grey btn-sm m-l-12"><i class="fa fa-trash p-r-xs"></i>
-              <span class="hidden-sm-down" translate>order.button.leaveWorkflow</span></button>
-            <button (click)="suspendAllOrder(false, false)" *ngIf="permission.currentController.orders.suspendResume"
+                  class="btn btn-grey btn-sm m-l-12"><i class="fa fa-trash p-r-xs"></i>
+            <span class="hidden-sm-down" translate>order.button.leaveWorkflow</span></button>
+            <button nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" *ngIf="permission.currentController.orders.suspendResume" class="btn btn-grey btn-sm m-l-12">
+              <i class="fa fa-stop p-r-xs"></i>
+              <span class="hidden-sm-down" translate>order.button.suspend</span>
+            </button>
+            <nz-dropdown-menu #menu="nzDropdownMenu">
+              <ul nz-menu>
+                <li (click)="suspendAllOrder(false, false)" nz-menu-item [nzDisabled]="!object.isSuspendSoftly">
+                  <span class="hidden-sm-down" translate>order.button.suspend</span>&nbsp;
+                  <span class="hidden-sm-down" translate>order.button.normal</span>
+                </li>
+                <li (click)="suspendAllOrder(false, true)" nz-menu-item [nzDisabled]="!object.isSuspendReset">
+                  <span class="hidden-sm-down" translate>order.button.suspend</span>&nbsp;
+                  <span class="hidden-sm-down" translate>order.button.reset</span>
+                </li>
+                <li (click)="suspendAllOrder(true, true)" nz-menu-item [nzDisabled]="!object.isSuspendWithResetAndKill">
+                  <span class="hidden-sm-down" translate>order.button.suspend</span>&nbsp;
+                  <span class="hidden-sm-down" translate>order.button.forceReset</span>
+                </li>
+                <li (click)="suspendAllOrder(true, false)" nz-menu-item [nzDisabled]="!object.isSuspendWithKill">
+                  <span class="hidden-sm-down" translate>order.button.suspendAndKillTask</span>
+                </li>
+              </ul>
+            </nz-dropdown-menu>
+            <!-- <button (click)="suspendAllOrder(false, false)" *ngIf="permission.currentController.orders.suspendResume"
                     [disabled]="!object.isSuspend" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-stop p-r-xs"></i>
               <span class="hidden-sm-down" translate>order.button.suspend</span></button>
             <button (click)="suspendAllOrder(false, false)" *ngIf="permission.currentController.orders.suspendResume"
@@ -128,7 +151,7 @@
             <button (click)="suspendAllOrder(true, false)" *ngIf="permission.currentController.orders.suspendResume"
                     [disabled]="!object.isSuspendWithKill" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-stop"></i>&nbsp;
               <span class="hidden-sm-down" translate>order.button.suspendAndKillTask</span>
-            </button>
+            </button> -->
             <button (click)="resumeAllOrder()" *ngIf="permission.currentController.orders.suspendResume || permission.currentController.orders.resumeFailed"
                     [disabled]="!object.isResume" class="btn btn-grey btn-sm m-l-12"><i
               class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.resume</span>

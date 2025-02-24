@@ -451,6 +451,10 @@
               <i nz-icon nzTheme="outline" nzType="export"></i>&nbsp;
               <span translate>inventory.button.export</span>
             </button>
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="dailyPlanFilters.tabIndex == 2 && permission.currentController && permission.currentController.noticeBoards.post && checkedNoticeIds?.size > 0" [disabled]="(checkedNoticeIds && checkedNoticeIds?.size === 0)" (click)="postAllNotices()"><i
+              class="fa fa-sticky-note-o"></i>&nbsp; {{'resource.board.button.postAll' | translate}}</button>
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="dailyPlanFilters.tabIndex == 2 && permission.currentController && permission.currentController.noticeBoards.post && checkedNoticeIds?.size > 0" [disabled]="(checkedNoticeIds && checkedNoticeIds?.size === 0)" (click)="deleteAllNotices()"><i
+              class="fa fa-trash"></i>&nbsp; {{'resource.board.button.deleteAll' | translate}}</button>
             <app-toggle *ngIf="dailyPlanFilters.tabIndex == 0" (messageEvent)="receiveMessage($event)"></app-toggle>
             <app-toggle *ngIf="dailyPlanFilters.tabIndex == 2" [type] = "'DEPENDENCIES'" (messageEvent)="receiveMessage2($event)"></app-toggle>
           </div>
@@ -1057,7 +1061,7 @@
       <nz-tab [nzTitle]="'dailyPlan.tab.dependencies' | translate">
         <div class="row m-t-n-xxs">
           <div class="col-md-12 ">
-            <app-dependencies  [parentLoaded]="isParentLoaded" [pageView] = pageView2 [isToggle]="isToggle2" [permission]="permission" [schedulerId]="schedulerIds.selected" [preferences]="preferences"></app-dependencies>
+            <app-dependencies (checkedNotices)="checkedNotices($event)"  [parentLoaded]="isParentLoaded" [pageView] = pageView2 [isToggle]="isToggle2" [permission]="permission" [schedulerId]="schedulerIds.selected" [preferences]="preferences"></app-dependencies>
           </div>
         </div>
       </nz-tab>

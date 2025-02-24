@@ -8,9 +8,9 @@ import {NzDrawerComponent} from "ng-zorro-antd/drawer"
 import {WorkflowService} from "../../../services/workflow.service";
 import {OrderPipe} from "../../../pipes/core.pipe";
 import {Data} from "@angular/router";
-import { PostModalComponent } from '../../resource/board/board.component';
-import { CommentModalComponent } from 'src/app/components/comment-modal/comment.component';
-import { ConfirmModalComponent } from 'src/app/components/comfirm-modal/confirm.component';
+import {PostModalComponent} from '../../resource/board/board.component';
+import {CommentModalComponent} from 'src/app/components/comment-modal/comment.component';
+import {ConfirmModalComponent} from 'src/app/components/comfirm-modal/confirm.component';
 
 declare const mxEditor: any;
 declare const mxUtils: any;
@@ -260,12 +260,14 @@ export class DependenciesComponent {
   @Input() permission: any;
   @Input() isToggle: any;
   @Input() pageView: any;
+  @Output() checkedNotices = new EventEmitter<any>();
 
   selectedDate: Date;
   isLoaded: boolean;
   data: any;
   plansFilters: any = {filter: {}};
-  noticeBoards = []
+  noticeBoards: any[] = [];
+  originalNoticeBoards: any[] = [];
   loading: boolean;
   allChecked = false;
   searchValue = '';
@@ -357,20 +359,22 @@ export class DependenciesComponent {
   processData(data: { plans?: { noticeBoards?: any[] }[] }) {
     if (!data?.plans) return;
 
-    this.noticeBoards = Array.from(
-      new Set(data.plans.flatMap(plan => plan.noticeBoards || []))
-    ).map((board: any) => ({
+    this.originalNoticeBoards = data.plans.flatMap(plan => plan.noticeBoards || []).map((board: any) => ({
       path: this.isPathDisplay ? board?.path?.split('/').pop() : board?.path,
       numOfNotices: board?.numOfNotices,
       numOfExpectedNotices: board?.numOfExpectedNotices,
       numOfExpectingOrders: board?.numOfExpectingOrders,
       numOfPostedNotices: board?.numOfPostedNotices,
       numOfAnnouncements: board?.numOfAnnouncements,
+      numOfConsumingWorkflow: board?.numOfConsumingWorkflow ?? 0,
+      numOfExpectingWorkflow: board?.numOfExpectingWorkflow ?? 0,
       versionDate: board?.versionDate,
       checked: board?.checked ?? false
     }));
 
+    this.noticeBoards = [...this.originalNoticeBoards];
   }
+
 
   navToInventoryTab(data, type): void {
     this.coreService.navToInventoryTab(data, type);
@@ -418,7 +422,7 @@ export class DependenciesComponent {
 
   reset(): void {
     this.noticeBoards.forEach(board => board.checked = false);
-      this.allChecked = false,
+    this.allChecked = false,
       this.indeterminate = false
   }
 
@@ -429,17 +433,12 @@ export class DependenciesComponent {
 
   pageSizeChange($event: number): void {
     this.plansFilters.entryPerPage = $event;
-    // if (this.setOfCheckedId.size !== this.noticeBoards.length) {
-    //   if (this.checked) {
-    //     this.onAllChecked();
-    //   }
-    // }
   }
 
   refreshCheckedStatus(): void {
     const listOfEnabledData = this.listOfCurrentPageData
-    this.checked = listOfEnabledData.every(({ path }) => this.setOfCheckedId.has(path));
-    this.indeterminate = listOfEnabledData.some(({ path }) => this.setOfCheckedId.has(path)) && !this.checked;
+    this.checked = listOfEnabledData.every(({path}) => this.setOfCheckedId.has(path));
+    this.indeterminate = listOfEnabledData.some(({path}) => this.setOfCheckedId.has(path)) && !this.checked;
   }
 
   onItemChecked(path: number, checked: boolean): void {
@@ -449,7 +448,7 @@ export class DependenciesComponent {
 
   onAllChecked(checked: boolean): void {
     this.listOfCurrentPageData
-      .forEach(({ path }) => this.updateCheckedSet(path, checked));
+      .forEach(({path}) => this.updateCheckedSet(path, checked));
     this.refreshCheckedStatus();
   }
 
@@ -459,124 +458,145 @@ export class DependenciesComponent {
     } else {
       this.setOfCheckedId.delete(path);
     }
+    this.checkedNotices.emit(this.setOfCheckedId);
   }
 
   post(board: any, notice = null, boardType: string): void {
-      if (boardType === "Plannable" && notice !== null) {
-        const endpoint = 'notices/post';
-        const obj: any = {
-          "controllerId": this.schedulerId,
-          "auditLog": {},
-        }
-        const noticeBoardPath = board.path;
-        const noticeIds = board.notices.map(item => item.id);
-        obj.notices = [];
-        obj.notices.push({noticeBoardPath: noticeBoardPath, noticeIds: noticeIds});
-        this.coreService.post(endpoint, obj).subscribe({
-          next: (res) => {}});
-      } else if (boardType === "Plannable" && notice === null) {
-        this.modal.create({
-          nzTitle: undefined,
-          nzContent: PostModalComponent,
-          nzClassName: 'lg',
-          nzAutofocus: null,
-          nzData: {
-            board,
-            notice,
-            controllerId: this.schedulerId,
-            preferences: this.preferences,
-            singular: true,
-            showNoticeId: true
-          },
-          nzFooter: null,
-          nzClosable: false,
-          nzMaskClosable: false
-        });
-      } else {
-        this.modal.create({
-          nzTitle: undefined,
-          nzContent: PostModalComponent,
-          nzClassName: 'lg',
-          nzAutofocus: null,
-          nzData: {
-            board,
-            notice,
-            controllerId: this.schedulerId,
-            preferences: this.preferences,
-            singular: true
-          },
-          nzFooter: null,
-          nzClosable: false,
-          nzMaskClosable: false
-        });
+    if (boardType === "Plannable" && notice !== null) {
+      const endpoint = 'notices/post';
+      const obj: any = {
+        "controllerId": this.schedulerId,
+        "auditLog": {},
       }
+      const noticeBoardPath = board.path;
+      const noticeIds = board.notices.map(item => item.id);
+      obj.notices = [];
+      obj.notices.push({noticeBoardPath: noticeBoardPath, noticeIds: noticeIds});
+      this.coreService.post(endpoint, obj).subscribe({
+        next: (res) => {
+        }
+      });
+    } else if (boardType === "Plannable" && notice === null) {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: PostModalComponent,
+        nzClassName: 'lg',
+        nzAutofocus: null,
+        nzData: {
+          board,
+          notice,
+          controllerId: this.schedulerId,
+          preferences: this.preferences,
+          singular: true,
+          showNoticeId: true
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+    } else {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: PostModalComponent,
+        nzClassName: 'lg',
+        nzAutofocus: null,
+        nzData: {
+          board,
+          notice,
+          controllerId: this.schedulerId,
+          preferences: this.preferences,
+          singular: true
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
     }
+  }
 
-    delete(board, notice): void {
-        if (this.preferences.auditLog) {
-          const comments = {
-            radio: 'predefined',
-            type: 'Notice Board',
-            operation: 'Delete',
-            name: notice?.id
-          };
-          const modal = this.modal.create({
+  delete(board, notice): void {
+    if (this.preferences.auditLog) {
+      const comments = {
+        radio: 'predefined',
+        type: 'Notice Board',
+        operation: 'Delete',
+        name: notice?.id
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzData: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          this._delete(board, notice, result);
+        }
+      });
+    } else {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: ConfirmModalComponent,
+        nzData: {
+          type: 'Delete',
+          title: 'delete',
+          message: notice ? 'deleteNotice' : 'deleteSelectedNotice',
+          objectName: notice?.id
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe((result) => {
+        if (result) {
+          this._delete(board, notice, {});
+        }
+      });
+    }
+  }
+
+  private _delete(board, notice, comments): void {
+    if (notice) {
+      this.coreService.post('notice/delete', {
+        controllerId: this.schedulerId,
+        noticeBoardPath: board.path,
+        noticeId: notice.id,
+        auditLog: comments
+      }).subscribe(() => {
+        for (let i = 0; i < board.notices.length; i++) {
+          if (board.notices[i].id === notice.id) {
+            board.notices.splice(i, 1);
+            break;
+          }
+        }
+        board.notices = [...board.notices];
+      });
+    } else {
+      this.deleteAll(board, comments);
+    }
+  }
+
+      postAllNotices(): void {
+          const paths = Array.from(this.setOfCheckedId);
+          this.modal.create({
             nzTitle: undefined,
-            nzContent: CommentModalComponent,
+            nzContent: PostModalComponent,
+            nzClassName: 'lg',
+            nzAutofocus: null,
             nzData: {
-              comments,
+              paths,
+              controllerId: this.schedulerId,
+              preferences: this.preferences
             },
             nzFooter: null,
             nzClosable: false,
             nzMaskClosable: false
           });
-          modal.afterClose.subscribe(result => {
-            if (result) {
-              this._delete(board, notice, result);
-            }
-          });
-        } else {
-          const modal = this.modal.create({
-            nzTitle: undefined,
-            nzContent: ConfirmModalComponent,
-            nzData: {
-              type: 'Delete',
-              title: 'delete',
-              message: notice ? 'deleteNotice' : 'deleteSelectedNotice',
-              objectName: notice?.id
-            },
-            nzFooter: null,
-            nzClosable: false,
-            nzMaskClosable: false
-          });
-          modal.afterClose.subscribe((result) => {
-            if (result) {
-              this._delete(board, notice, {});
-            }
-          });
         }
-      }
-
-      private _delete(board, notice, comments): void {
-        if (notice) {
-          this.coreService.post('notice/delete', {
-            controllerId: this.schedulerId,
-            noticeBoardPath: board.path,
-            noticeId: notice.id,
-            auditLog: comments
-          }).subscribe(() => {
-            for (let i = 0; i < board.notices.length; i++) {
-              if (board.notices[i].id === notice.id) {
-                board.notices.splice(i, 1);
-                break;
-              }
-            }
-            board.notices = [...board.notices];
-          });
-        } else {
-          this.deleteAll(board, comments);
-        }
-      }
 
       private deleteAll(board, comments): void {
         if (board) {
@@ -596,38 +616,92 @@ export class DependenciesComponent {
         }
       }
 
-      private _deleteAll(board, comments): void {
-        let ids = [];
-        if (board.notices) {
-          board.notices.forEach(item => {
-            if (item.state && item.state._text !== 'EXPECTED') {
-              ids.push(item.id);
-            }
-          });
+  private _deleteAll(board, comments): void {
+    let ids = [];
+    if (board.notices) {
+      board.notices.forEach(item => {
+        if (item.state && item.state._text !== 'EXPECTED') {
+          ids.push(item.id);
         }
-        if (ids.length > 0) {
-          this.coreService.post('notices/delete', {
-            controllerId: this.schedulerId,
-            noticeBoardPath: board.path,
-            noticeIds: ids,
-            auditLog: comments
-          }).subscribe(() => {
-            board.notices = board.notices.filter(item => {
-              return (item.state && item.state._text === 'EXPECTED');
-            });
-            board.notices = [...board.notices];
-          });
-        }
-      }
-
-      private getNoticeBoards(obj, cb): void {
-        obj.limit = this.preferences.maxBoardRecords;
-        this.coreService.post('notice/boards', obj).subscribe({
-          next: (res: any) => {
-            cb(res.noticeBoards);
-          }, error: () => {
-            cb();
-          }
+      });
+    }
+    if (ids.length > 0) {
+      this.coreService.post('notices/delete', {
+        controllerId: this.schedulerId,
+        noticeBoardPath: board.path,
+        noticeIds: ids,
+        auditLog: comments
+      }).subscribe(() => {
+        board.notices = board.notices.filter(item => {
+          return (item.state && item.state._text === 'EXPECTED');
         });
+        board.notices = [...board.notices];
+      });
+    }
+  }
+
+  private getNoticeBoards(obj, cb): void {
+    obj.limit = this.preferences.maxBoardRecords;
+    this.coreService.post('notice/boards', obj).subscribe({
+      next: (res: any) => {
+        cb(res.noticeBoards);
+      }, error: () => {
+        cb();
       }
+    });
+  }
+
+  filterData(filterType: string): void {
+    this.plansFilters.filter.filterBy = filterType;
+
+    if (filterType === 'expected') {
+      this.noticeBoards = this.originalNoticeBoards.filter(board =>
+        board.numOfConsumingWorkflow > 0 || board.numOfExpectingWorkflow > 0
+      );
+    } else if (filterType === 'notExpected') {
+      console.log(this.originalNoticeBoards, "this.originalNoticeBoards")
+      this.noticeBoards = this.originalNoticeBoards.filter(board =>
+        board.numOfConsumingWorkflow === 0 && board.numOfExpectingWorkflow === 0
+      );
+    } else if (filterType === 'announced') {
+      this.noticeBoards = this.originalNoticeBoards.filter(board => board.numOfAnnouncements > 0);
+    } else if (filterType === 'notAnnounced') {
+      this.noticeBoards = this.originalNoticeBoards.filter(board => board.numOfAnnouncements === 0);
+    } else {
+      this.noticeBoards = [...this.originalNoticeBoards];
+    }
+  }
+
+  toggleCompactView(): void {
+    this.plansFilters.filter.isCompact = !this.plansFilters.filter.isCompact;
+  }
+
+  getMultiColorNotice(board: any): any {
+    let colors = {};
+
+
+    let announced = board.numOfAnnouncements || 0;
+    let expected = board.numOfConsumingWorkflow + board.numOfExpectingWorkflow || 0;
+
+    let notAnnounced = announced === 0 ? 1 : 0;
+    let notExpected = expected === 0 ? 1 : 0;
+
+    let total = announced + notAnnounced + expected + notExpected;
+
+    let announcedPercent = (announced / total) * 100;
+    let notAnnouncedPercent = (notAnnounced / total) * 100;
+    let expectedPercent = (expected / total) * 100;
+    let notExpectedPercent = (notExpected / total) * 100;
+
+    colors = {
+      '0%': '#C8A2C8',
+      [`${announcedPercent}%`]: '#bbb',
+      [`${announcedPercent + notAnnouncedPercent}%`]: '#1171a6',
+      [`${announcedPercent + notAnnouncedPercent + expectedPercent}%`]: '#FFA640'
+    };
+
+    return colors;
+  }
+
+
 }

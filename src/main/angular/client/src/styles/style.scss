@@ -9907,3 +9907,29 @@ cdk-virtual-scroll-viewport {
 .bg-postingWorkflow { color: #1171a6; }
 .bg-receivingWorkflow { color: #FFA640; }
 .bg-notice { color: #d0d0d0; }
+
+
+
+.announced {
+  background-color: #C8A2C8 !important;
+  color: #C8A2C8;
+  font-weight: bold;
+}
+
+.not-announced {
+  background-color: var(--bg-dimgrey) !important;
+  color: var(--bg-dimgrey);
+  font-weight: bold;
+}
+
+.expected {
+  background-color: #1171a6 !important;
+  color: #1171a6;
+  font-weight: bold;
+}
+
+.not-expected {
+  background-color: #FFA640 !important;
+  color: #FFA640;
+  font-weight: bold;
+}

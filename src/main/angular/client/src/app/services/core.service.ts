@@ -246,6 +246,7 @@ export class CoreService {
 
     this.tabs._plans = {};
     this.tabs._plans.filter = {
+      isCompact: true,
       sortBy: 'path',
       reverse: true,
       currentPage: '1',

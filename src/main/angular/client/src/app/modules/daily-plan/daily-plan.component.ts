@@ -21,6 +21,7 @@ import {DataService} from '../../services/data.service';
 import {ExcelService} from '../../services/excel.service';
 import {ExportComponent} from "./projection/projection.component";
 import {CreateTagModalComponent} from "../configuration/inventory/inventory.component";
+import { PostModalComponent } from '../resource/board/board.component';
 
 declare const JSGantt: any;
 declare let jsgantt: any;
@@ -798,6 +799,7 @@ export class DailyPlanComponent {
   subscription1: Subscription;
   subscription2: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
+  checkedNoticeIds = new Set<number>();
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private groupByPipe: GroupByPipe, private toasterService: ToastrService,
@@ -3489,5 +3491,80 @@ private filterData(planItems: any[]): void {
       return parts[parts.length - 1]; // Return the last part
     }
     return '';
+  }
+
+  checkedNotices($event) {
+    this.checkedNoticeIds = $event;
+  }
+
+  postAllNotices(): void {
+    const paths = Array.from(this.checkedNoticeIds);
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: PostModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        paths,
+        controllerId: this.schedulerIds.selected,
+        preferences: this.preferences
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
+  private deleteAll(board, comments): void {
+    if (board) {
+      if (!board.notices) {
+        this.getNoticeBoards({
+          noticeBoardPaths: [board.path],
+          controllerId: this.schedulerIds.selected
+        }, (data) => {
+          if (data && data.length > 0) {
+            board.notices = data[0].notices;
+            this._deleteAll(board, comments);
+          }
+        });
+      } else {
+        this._deleteAll(board, comments);
+      }
+    }
+  }
+
+  private _deleteAll(board, comments): void {
+    let ids = [];
+    if (board.notices) {
+      board.notices.forEach(item => {
+        if (item.state && item.state._text !== 'EXPECTED') {
+          ids.push(item.id);
+        }
+      });
+    }
+    if (ids.length > 0) {
+      this.coreService.post('notices/delete', {
+        controllerId: this.schedulerIds.selected,
+        noticeBoardPath: board.path,
+        noticeIds: ids,
+        auditLog: comments
+      }).subscribe(() => {
+        board.notices = board.notices.filter(item => {
+          return (item.state && item.state._text === 'EXPECTED');
+        });
+        board.notices = [...board.notices];
+      });
+    }
+  }
+
+  private getNoticeBoards(obj, cb): void {
+    obj.limit = this.preferences.maxBoardRecords;
+    this.coreService.post('notice/boards', obj).subscribe({
+      next: (res: any) => {
+        cb(res.noticeBoards);
+      }, error: () => {
+        cb();
+      }
+    });
   }
 }
