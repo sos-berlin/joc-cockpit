@@ -1663,7 +1663,7 @@ export class DeployComponent {
 
     this.coreService.post('inventory/dependencies', requestBody).subscribe({
       next: (res: any) => {
-        if (res.dependencies && res.dependencies.requestedItems.length > 0 && res.dependencies.affectedItems.length > 0) {
+        if (res.dependencies && res.dependencies.requestedItems.length > 0 || res.dependencies.affectedItems.length > 0) {
           this.updateNodeDependencies(res.dependencies, requestedKeys, isChecked);
           this.prepareObject(res.dependencies);
           this.ref.detectChanges();
@@ -1743,8 +1743,8 @@ export class DeployComponent {
   }
 
   private prepareObject(dependencies: any): void {
-    if (dependencies && dependencies?.requestedItems.length > 0) {
 
+    if (dependencies && dependencies?.requestedItems.length > 0) {
       dependencies?.requestedItems.forEach(dep => {
         if (dep.referencedBy) {
           const affectedTypeSet = new Set<string>();
@@ -1802,6 +1802,7 @@ export class DeployComponent {
               refObj.selected = false;
               refObj.disabled = !refObj.valid;
             }
+
             this.referencedObjectsByType[type].push(refObj);
 
 
@@ -3398,7 +3399,7 @@ export class ExportComponent {
     this.coreService.post('inventory/dependencies', requestBody).subscribe({
       next: (res: any) => {
 
-        if (res.dependencies && res.dependencies?.requestedItems.length > 0 && res.dependencies?.affectedItems.length > 0) {
+        if (res.dependencies && res.dependencies?.requestedItems.length > 0 || res.dependencies?.affectedItems.length > 0) {
           this.updateNodeDependencies(res.dependencies, isChecked);
           this.prepareObject(res.dependencies);
           this.ref.detectChanges();
@@ -5460,7 +5461,7 @@ export class RepositoryComponent {
 
     this.coreService.post('inventory/dependencies', requestBody).subscribe({
       next: (res: any) => {
-        if (res.dependencies && res.dependencies?.requestedItems.length > 0 && res.dependencies?.affectedItems.length > 0) {
+        if (res.dependencies && res.dependencies?.requestedItems.length > 0 || res.dependencies?.affectedItems.length > 0) {
           this.updateNodeDependencies(res.dependencies, isChecked);
           this.prepareObject(res.dependencies);
           this.ref.detectChanges();
@@ -7495,7 +7496,7 @@ export class PublishChangeModalComponent {
 
     this.coreService.post('inventory/dependencies', requestBody).subscribe({
       next: (res: any) => {
-        if (res.dependencies && res.dependencies?.requestedItems.length > 0 && res.dependencies?.affectedItems.length > 0) {
+        if (res.dependencies && res.dependencies?.requestedItems.length > 0 || res.dependencies?.affectedItems.length > 0) {
           this.updateNodeDependencies(res.dependencies, isChecked);
           this.prepareObject(res.dependencies);
         } else {

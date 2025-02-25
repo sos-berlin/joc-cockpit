@@ -127,33 +127,47 @@ export class AgentComponent {
   }
 
   private getAgentClassList(obj): void {
+
     this.coreService.post('agents', obj).subscribe({
       next: (result: any) => {
+
         this.getVesrions(result.agents);
+
         if (this.agentsFilters.expandedObjects && this.agentsFilters.expandedObjects.length > 0) {
-          result.agents.forEach((value) => {
-            const index = this.agentsFilters.expandedObjects.indexOf(value.agentId);
-            if (index > -1) {
-              this.agentsFilters.expandedObjects.slice(index, 1);
+
+          result.agents.forEach((value, index) => {
+
+            const agentIndex = this.agentsFilters.expandedObjects.indexOf(value.agentId);
+
+            if (agentIndex > -1) {
+              this.agentsFilters.expandedObjects.splice(agentIndex, 1);
+              value.show = true;
+
               if (value.subagents) {
                 value.showSubagent = true;
-                value.subagents.forEach((item) => {
-                  const index = this.agentsFilters.expandedObjects.indexOf(item.subagentId);
-                  if (index > -1) {
-                    value.show = true;
-                    this.agentsFilters.expandedObjects.slice(index, 1);
+
+                value.subagents.forEach((item, subIndex) => {
+                  const subAgentIndex = this.agentsFilters.expandedObjects.indexOf(item.subagentId);
+
+                  if (subAgentIndex > -1) {
+                    this.agentsFilters.expandedObjects.splice(subAgentIndex, 1);
+                    item.show = true;
                   }
-                })
-              } else {
-                value.show = true;
+                });
               }
             }
           });
+
         }
+
         this.loading = false;
         this.agentClusters = result.agents;
+
         this.searchInResult();
-      }, error: () => this.loading = false
+      },
+      error: (err) => {
+        this.loading = false;
+      }
     });
   }
 

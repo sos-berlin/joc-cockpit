@@ -9924,8 +9924,12 @@ cdk-virtual-scroll-viewport {
 
 .expected {
   background-color: #1171a6 !important;
-  color: #1171a6;
+  color: rgba(255, 255, 255, .87)!important;
   font-weight: bold;
+}
+
+.expected-stop {
+  color: #1171a6;
 }
 
 .not-expected {

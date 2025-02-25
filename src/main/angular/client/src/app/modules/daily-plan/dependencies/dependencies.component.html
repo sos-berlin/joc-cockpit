@@ -30,7 +30,7 @@
               [ngClass]="{'btn-primary': plansFilters.filter.filterBy==='expected'}"
               class="btn btn-grey btn-sm ">
         <span translate>dailyPlan.button.expected</span>
-        <i class="fa fa-stop m-l-xs expected"></i>
+        <i class="fa fa-stop m-l-xs expected-stop"></i>
       </button>
 
       <button (click)="filterData('notExpected')"
@@ -98,7 +98,7 @@
                      *ngIf="permission.joc && permission.joc.inventory.view"
                      class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
                   <a (click)="showBoard(board.path)"
-                     class="text-hover-primary">{{ board.path }}</a>
+                     class="text-hover-primary">{{ getFormattedPath(board.path) }}</a>
                 </div>
                 <div class="btn-group dropdown pull-right abt-dropdown">
                   <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
@@ -281,10 +281,16 @@
                   </div>
                 </td>
                 <td>
+<!--                  <i (click)="showDetail(board)"-->
+<!--                     *ngIf="!board.show"-->
+<!--                     class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>-->
+<!--                  <i (click)="board.show = false;"-->
+<!--                     *ngIf="board.show"-->
+<!--                     class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>-->
                   <i (click)="navToInventoryTab(board.path, 'NOTICEBOARD');"
                      *ngIf="permission.joc && permission.joc.inventory.view"
                      class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-                  <a (click)="showBoard(board.path)" class="text-hover-primary">{{ board.path }}</a>
+                  <a (click)="showBoard(board.path)" class="text-hover-primary">{{ getFormattedPath(board.path) }}</a>
                 </td>
                 <td *ngIf="!plansFilters.filter.isCompact"
                     [ngClass]="board.numOfAnnouncements > 0 ? 'announced' : 'not-announced'">

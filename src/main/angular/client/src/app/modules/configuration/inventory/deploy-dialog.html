@@ -206,7 +206,6 @@
 
             <div *ngIf="node.origin.dependencies" style="width: 400px" >
             <div *ngFor="let dependency of [node.origin.dependencies]" class="dependencies-list m-l-20 m-t-xs">
-
               <div *ngIf="dependency?.referencedBy?.length > 0 || dependency?.references?.length > 0 " class="form-group row" style="justify-content: space-between">
 
            <!-- Affected Objects (referencedBy) -->

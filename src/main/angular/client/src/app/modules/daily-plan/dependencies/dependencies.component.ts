@@ -331,7 +331,7 @@ export class DependenciesComponent {
     }, 100)
   }
 
-  loadPlans(): void {
+  loadPlans(noticeBoardPath?): void {
     this.isLoaded = false;
     let planIds
     if (this.plansFilters.filter.calView === 'Plannable') {
@@ -339,12 +339,19 @@ export class DependenciesComponent {
     } else {
       planIds = 'Global';
     }
-    this.coreService.post('plans', {
+    const requestPayload: any = {
       controllerId: this.schedulerId,
       planKeys: [this.coreService.getDateByFormat(this.selectedDate, this.preferences.zone, 'YYYY-MM-DD')],
       planSchemaIds: [planIds],
       compact: false
-    }).subscribe((res) => {
+    };
+
+    if (noticeBoardPath) {
+      requestPayload.noticeBoardPaths = [noticeBoardPath];
+    }
+
+    this.coreService.post('plans', requestPayload)
+      .subscribe((res) => {
       this.data = res
       this.processData(res)
       this.isLoaded = true;
@@ -360,14 +367,14 @@ export class DependenciesComponent {
     if (!data?.plans) return;
 
     this.originalNoticeBoards = data.plans.flatMap(plan => plan.noticeBoards || []).map((board: any) => ({
-      path: this.isPathDisplay ? board?.path?.split('/').pop() : board?.path,
+      path: board.path,
       numOfNotices: board?.numOfNotices,
       numOfExpectedNotices: board?.numOfExpectedNotices,
       numOfExpectingOrders: board?.numOfExpectingOrders,
       numOfPostedNotices: board?.numOfPostedNotices,
       numOfAnnouncements: board?.numOfAnnouncements,
-      numOfConsumingWorkflow: board?.consumingWorkflow ?? 0,
-      numOfExpectingWorkflow: board?.ExpectingWorkflow ?? 0,
+      numOfConsumingWorkflow: board?.consumingWorkflows?.length ?? 0,
+      numOfExpectingWorkflow: board?.expectingWorkflows?.length ?? 0,
       versionDate: board?.versionDate,
       checked: board?.checked ?? false
     }));
@@ -659,7 +666,6 @@ export class DependenciesComponent {
         board.numOfConsumingWorkflow > 0 || board.numOfExpectingWorkflow > 0
       );
     } else if (filterType === 'notExpected') {
-      console.log(this.originalNoticeBoards, "this.originalNoticeBoards")
       this.noticeBoards = this.originalNoticeBoards.filter(board =>
         board.numOfConsumingWorkflow === 0 && board.numOfExpectingWorkflow === 0
       );
@@ -702,6 +708,13 @@ export class DependenciesComponent {
 
     return colors;
   }
+  showDetail(board): void {
+    board.show = true;
+    this.loadPlans(board.path)
+  }
 
+  getFormattedPath(path: any): any {
+  return  this.isPathDisplay ? path?.split('/').pop() : path
+  }
 
-}
+  }
