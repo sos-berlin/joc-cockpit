@@ -278,6 +278,7 @@ export class DependenciesComponent {
   checked = false;
   listOfCurrentPageData: readonly Data[] = [];
   setOfCheckedId = new Set<number>();
+  mapOfCheckedId = new Set();
   @ViewChild('graphContainer') graphContainer!: ElementRef;
 
   constructor(public coreService: CoreService, private orderPipe: OrderPipe, private modal: NzModalService) {
@@ -331,7 +332,7 @@ export class DependenciesComponent {
     }, 100)
   }
 
-  loadPlans(noticeBoardPath?): void {
+  loadPlans(board?): void {
     this.isLoaded = false;
     let planIds
     if (this.plansFilters.filter.calView === 'Plannable') {
@@ -346,15 +347,26 @@ export class DependenciesComponent {
       compact: false
     };
 
-    if (noticeBoardPath) {
-      requestPayload.noticeBoardPaths = [noticeBoardPath];
+    if (board) {
+      requestPayload.noticeBoardPaths = [board.path];
     }
 
     this.coreService.post('plans', requestPayload)
       .subscribe((res) => {
-      this.data = res
-      this.processData(res)
-      this.isLoaded = true;
+        if(board){
+          res?.plans?.forEach(plan => {
+            plan?.noticeBoards?.forEach(noticeBoard => {
+              board.children = noticeBoard.notices;
+            });
+          });
+
+          this.isLoaded = true;
+          console.log(board,"::::")
+        }else{
+          this.processData(res)
+          this.isLoaded = true;
+        }
+
     });
   }
 
@@ -710,7 +722,7 @@ export class DependenciesComponent {
   }
   showDetail(board): void {
     board.show = true;
-    this.loadPlans(board.path)
+    this.loadPlans(board)
   }
 
   getFormattedPath(path: any): any {
