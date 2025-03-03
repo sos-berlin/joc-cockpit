@@ -76,7 +76,7 @@
           <nz-radio-group [(ngModel)]="exportObj.exportType" name="exportType" (ngModelChange)="filterList(false)">
             <label nz-radio nzValue="individual"><span translate>inventory.label.individualObjects</span></label>
             <label nz-radio nzValue="folders"><span translate>inventory.label.folders</span></label>
-            <label *ngIf="securityLevel === 'HIGH'" nz-radio nzValue="changes"><span translate>inventory.label.changes</span></label>
+            <label nz-radio nzValue="changes"><span translate>inventory.label.changes</span></label>
           </nz-radio-group>
         </div>
       </div>
@@ -150,6 +150,14 @@
         </div>
         <div class="col-md-6">
           <label [(ngModel)]="exportObj.isRecursive" name="isRecursive" nz-checkbox></label>
+        </div>
+      </div>
+      <div *ngIf="nodes.length > 0 && exportObj.exportType === 'changes'" class="form-group row">
+        <div class="col-md-3">
+          <label translate>inventory.label.includeDependencies</label>
+        </div>
+        <div class="col-md-6">
+          <label [(ngModel)]="exportObj.includeDependencies" (ngModelChange)="includeDependencies()" name="includeDependencies" nz-checkbox></label>
         </div>
       </div>
       <div *ngIf="nodes.length > 0" class="row m-b-sm">

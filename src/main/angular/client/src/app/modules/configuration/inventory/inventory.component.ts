@@ -1112,7 +1112,6 @@ export class SingleDeployComponent {
   }
 
 
-
   private getSingleObject(obj): void {
     if (this.isRemoved) {
       this.loading = false;
@@ -1414,8 +1413,11 @@ export class DeployComponent {
   dateFormat: any = '';
   dateObj: any = {};
   includeLate: boolean = false;
-
+  changeObj: any;
+  selectedChange: any;
+  changesNodes: any = [];
   object: any = {
+    deployType: 'individual',
     isRecursive: false,
     delete: [],
     update: [],
@@ -1564,6 +1566,13 @@ export class DeployComponent {
   }
 
   filterList(): void {
+    if (this.object.deployType === 'changes') {
+      this.changes()
+      this.filteredAffectedItems = []
+    }
+    if (this.object.deployType === 'individual') {
+      this.filteredAffectedItems = []
+    }
     this.checkedObject.clear();
     this.recursiveCheck(this.nodes);
     this.loading = true;
@@ -1634,6 +1643,52 @@ export class DeployComponent {
       });
     }
     return checkedNodes;
+  }
+
+  checkBoxChanges(e: NzFormatEmitEvent): void {
+    const node: any = e.node;
+
+    this.updateChildCheckboxes(node, node.isChecked);
+
+    this.updateParentCheckboxes(node);
+
+    const checkedNodes = this.collectCheckedNodes(node);
+
+    if (checkedNodes.length > 0) {
+      if (node.isChecked) {
+        this.getDependencies(checkedNodes, node, true);
+      } else {
+        this.getDependencies(checkedNodes, node, false);
+      }
+    } else {
+      this.clearDependenciesForNode(node);
+    }
+  }
+
+  updateChildCheckboxes(node: any, isChecked: boolean): void {
+    node.children.forEach((child: any) => {
+      child.isChecked = isChecked;
+
+      if (child.children && child.children.length > 0) {
+        this.updateChildCheckboxes(child, isChecked);
+      }
+
+      child.isHalfChecked = false;
+    });
+  }
+
+  updateParentCheckboxes(node: any): void {
+    if (node.parentNode) {
+      const siblings = node.parentNode.children;
+
+      const allChecked = siblings.every((sibling: any) => sibling.isChecked);
+      const someChecked = siblings.some((sibling: any) => sibling.isChecked || sibling.isHalfChecked);
+
+      node.parentNode.isChecked = allChecked;
+      node.parentNode.isHalfChecked = !allChecked && someChecked;
+
+      this.updateParentCheckboxes(node.parentNode);
+    }
   }
 
   private getDependencies(checkedNodes: { name: string, type: string }[], node, isChecked = false): void {
@@ -1848,6 +1903,124 @@ export class DeployComponent {
       }
     });
     return checkedObjects;
+  }
+
+
+  changes(): void {
+    this.coreService.post('inventory/changes', {}).subscribe({
+      next: (res) => {
+        this.changeObj = res.changes
+      },
+      error: () => {
+        this.loading = true;
+      }
+    });
+  }
+
+  onChange(selected: string): void {
+    const obj = {
+      names: [],
+      details: true
+    }
+    obj.names.push(selected);
+    this.coreService.post('inventory/changes', obj).subscribe({
+      next: (res) => {
+        if (res.changes) {
+          this.changesNodes = this.prepareGroupedTree(res.changes[0].configurations)
+          this.changesNodes = [...this.changesNodes]
+        }
+      },
+      error: () => {
+        this.loading = true;
+      }
+    });
+  }
+
+  prepareGroupedTree(data: any[]): any[] {
+    const root = {
+      name: '/',
+      path: '/',
+      key: '/',
+      isLeaf: false,
+      expanded: true,
+      checked: true,
+      children: []
+    };
+
+    const groupedObjects: { [key: string]: any[] } = {
+      "WORKFLOW": [],
+      "JOBRESOURCE": [],
+      "SCHEDULE": [],
+      "NOTICEBOARD": [],
+      "LOCK": [],
+      "JOBTEMPLATE": [],
+      "INCLUDESCRIPT": [],
+      "WORKINGDAYSCALENDAR": [],
+      "NONWORKINGDAYSCALENDAR": []
+    };
+
+    if (data) {
+      data?.forEach((item: any) => {
+        switch (item.objectType) {
+          case "WORKFLOW":
+            groupedObjects["WORKFLOW"].push(item);
+            break;
+          case "JOBRESOURCE":
+            groupedObjects["JOBRESOURCE"].push(item);
+            break;
+          case "SCHEDULE":
+            groupedObjects["SCHEDULE"].push(item);
+            break;
+          case "NOTICEBOARD":
+            groupedObjects["NOTICEBOARD"].push(item);
+            break;
+          case "LOCK":
+            groupedObjects["LOCK"].push(item);
+            break;
+          case "JOBTEMPLATE":
+            groupedObjects["JOBTEMPLATE"].push(item);
+            break;
+          case "INCLUDESCRIPT":
+            groupedObjects["INCLUDESCRIPT"].push(item);
+            break;
+          case "WORKINGDAYSCALENDAR":
+            groupedObjects["WORKINGDAYSCALENDAR"].push(item);
+            break;
+          case "NONWORKINGDAYSCALENDAR":
+            groupedObjects["NONWORKINGDAYSCALENDAR"].push(item);
+            break;
+          default:
+            break;
+        }
+      });
+    }
+
+    Object.keys(groupedObjects).forEach((type: string) => {
+      if (groupedObjects[type].length > 0) {
+        const groupNode = {
+          name: type,
+          object: type,
+          path: '/',
+          key: `/${type}`,
+          disableCheckbox: true,
+          expanded: true,
+          isLeaf: false,
+          children: groupedObjects[type].map((item: any) => ({
+            name: item.name,
+            path: item.path,
+            key: item.path,
+            type: item.objectType,
+            released: item.released,
+            deployed: item.deployed,
+            valid: item.valid,
+            isLeaf: true,
+            checked: true,
+          }))
+        };
+        root.children.push(groupNode);
+      }
+    });
+    return [root];
   }
 
 
@@ -3125,6 +3298,7 @@ export class ExportComponent {
   exportObj = {
     useShortPath: false,
     isRecursive: false,
+    includeDependencies: false,
     controllerId: '',
     forSigning: false,
     filename: '',
@@ -3389,7 +3563,11 @@ export class ExportComponent {
       type: node.type,
     }));
 
-    const operationType = 'EXPORT';
+    let operationType = 'EXPORT';
+
+    if (this.exportObj.exportType === 'changes') {
+      operationType = 'DEPLOY'
+    }
 
     const requestBody = {
       configurations: configurations,
@@ -3491,6 +3669,7 @@ export class ExportComponent {
               this.affectedObjectsByType[type] = [];
               this.affectedObjectTypes.push(type);
             }
+            refObj.selected = true
             if (this.exportObj.forSigning) {
               refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
               refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
@@ -3510,6 +3689,7 @@ export class ExportComponent {
               this.referencedObjectsByType[type] = [];
               this.referencedObjectTypes.push(type);
             }
+            refObj.selected = true
             if (this.exportObj.forSigning) {
               refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
               refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
@@ -3526,7 +3706,11 @@ export class ExportComponent {
       this.filteredAffectedItems.forEach(item => {
         const type = item.objectType;
         filteredAffectedTypeSet.add(type);
-
+        if (this.exportObj.exportType === 'changes' && this.exportObj.includeDependencies) {
+          item.selected = true
+        } else if (this.exportObj.exportType != 'changes') {
+          item.selected = true
+        }
         if (this.exportObj.forSigning) {
           item.selected = item.valid && (!item.deployed && !item.released);
           item.disabled = !item.valid || item.valid && (!item.deployed && !item.released);
@@ -3631,7 +3815,7 @@ export class ExportComponent {
 
     const checkedNodes = this.collectCheckedNodes(node);
 
-    if (checkedNodes.length > 0) {
+    if (checkedNodes.length > 0 && this.exportObj.includeDependencies) {
       if (node.isChecked) {
         this.getDependencies(checkedNodes, node, true);
       } else {
@@ -3640,6 +3824,20 @@ export class ExportComponent {
     } else {
       this.clearDependenciesForNode(node);
     }
+  }
+
+  includeDependencies(): void {
+    const checkedNodes = this.collectCheckedObjects(this.nodes);
+    if (checkedNodes.length > 0) {
+      if (!this.exportObj.includeDependencies) {
+        this.clearDependenciesForNode(this.nodes[0]);
+      } else {
+        this.getDependencies(checkedNodes, this.nodes[0]);
+      }
+    } else {
+      this.clearDependenciesForNode(this.nodes[0])
+    }
+    this.nodes = [...this.nodes];
   }
 
   updateChildCheckboxes(node: any, isChecked: boolean): void {
@@ -3692,40 +3890,42 @@ export class ExportComponent {
       "NONWORKINGDAYSCALENDAR": []
     };
 
-    data.forEach((item: any) => {
-      switch (item.objectType) {
-        case "WORKFLOW":
-          groupedObjects["WORKFLOW"].push(item);
-          break;
-        case "JOBRESOURCE":
-          groupedObjects["JOBRESOURCE"].push(item);
-          break;
-        case "SCHEDULE":
-          groupedObjects["SCHEDULE"].push(item);
-          break;
-        case "NOTICEBOARD":
-          groupedObjects["NOTICEBOARD"].push(item);
-          break;
-        case "LOCK":
-          groupedObjects["LOCK"].push(item);
-          break;
-        case "JOBTEMPLATE":
-          groupedObjects["JOBTEMPLATE"].push(item);
-          break;
-        case "INCLUDESCRIPT":
-          groupedObjects["INCLUDESCRIPT"].push(item);
-          break;
-        case "WORKINGDAYSCALENDAR":
-          groupedObjects["WORKINGDAYSCALENDAR"].push(item);
-          break;
-        case "NONWORKINGDAYSCALENDAR":
-          groupedObjects["NONWORKINGDAYSCALENDAR"].push(item);
-          break;
-        default:
-          break;
-      }
-    });
 
+    if (data) {
+      data.forEach((item: any) => {
+        switch (item.objectType) {
+          case "WORKFLOW":
+            groupedObjects["WORKFLOW"].push(item);
+            break;
+          case "JOBRESOURCE":
+            groupedObjects["JOBRESOURCE"].push(item);
+            break;
+          case "SCHEDULE":
+            groupedObjects["SCHEDULE"].push(item);
+            break;
+          case "NOTICEBOARD":
+            groupedObjects["NOTICEBOARD"].push(item);
+            break;
+          case "LOCK":
+            groupedObjects["LOCK"].push(item);
+            break;
+          case "JOBTEMPLATE":
+            groupedObjects["JOBTEMPLATE"].push(item);
+            break;
+          case "INCLUDESCRIPT":
+            groupedObjects["INCLUDESCRIPT"].push(item);
+            break;
+          case "WORKINGDAYSCALENDAR":
+            groupedObjects["WORKINGDAYSCALENDAR"].push(item);
+            break;
+          case "NONWORKINGDAYSCALENDAR":
+            groupedObjects["NONWORKINGDAYSCALENDAR"].push(item);
+            break;
+          default:
+            break;
+        }
+      });
+    }
     Object.keys(groupedObjects).forEach((type: string) => {
       if (groupedObjects[type].length > 0) {
         const groupNode = {
@@ -3757,6 +3957,13 @@ export class ExportComponent {
   filterList(isChecked = true): void {
     if (this.exportObj.exportType === 'changes') {
       this.changes()
+      this.filteredAffectedItems = []
+    }
+    if (this.exportObj.exportType === 'individual') {
+      this.filteredAffectedItems = []
+    }
+    if (this.exportObj.exportType === 'folders') {
+      this.filteredAffectedItems = []
     }
     this.checkedObject.clear();
     if (isChecked) {
@@ -3877,7 +4084,12 @@ export class ExportComponent {
 
   private clearDependenciesForNode(node: any): void {
     if (node) {
-      node.origin.dependencies = null;
+      if (node.origin && node.origin.dependencies) {
+        node.origin.dependencies = null;
+      }
+      if (node.dependencies) {
+        node.dependencies = null;
+      }
       if (node.children && node.children.length > 0) {
         node.children.forEach((child: any) => {
           this.clearDependenciesForNode(child);
@@ -10554,7 +10766,7 @@ export class InventoryComponent {
                     objectType: selectedObj.objectType,
                     path: selectedObj.path
                   };
-                  if(!selectedObj?.noRevokeRecall){
+                  if (!selectedObj?.noRevokeRecall) {
                     revokeRecallObjects.push(revokeRecallObj);
                   }
                 }
@@ -10622,7 +10834,7 @@ export class InventoryComponent {
                     objectType: selectedObj.objectType,
                     path: selectedObj.path
                   };
-                  if(!selectedObj?.noRevokeRecall){
+                  if (!selectedObj?.noRevokeRecall) {
                     revokeRecallObjects.push(revokeRecallObj);
                   }
                 }
@@ -11266,7 +11478,7 @@ export class InventoryComponent {
                       path: selectedObj.path
                     };
 
-                    if(!selectedObj?.noRevokeRecall){
+                    if (!selectedObj?.noRevokeRecall) {
                       revokeRecallObjects.push(revokeRecallObj);
                     }
                   }

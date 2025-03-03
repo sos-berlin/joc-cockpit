@@ -1890,6 +1890,8 @@
     "label.addGroups": "Gruppen hinzufügen",
     "label.addTagToGroup": "Kennz. zu Gruppen zuweisen",
     "label.renameGroup": "Gruppe umbenennen",
+    "label.includeDependencies": "Include Dependencies",
+    "label.deployType": "Deploy Type",
     "button.modifyVariableSet": "Variablensatz ändern",
     "button.addOrderParameter": "Auftragsvorlage hinzufügen",
     "button.setVersion": "Version setzen",

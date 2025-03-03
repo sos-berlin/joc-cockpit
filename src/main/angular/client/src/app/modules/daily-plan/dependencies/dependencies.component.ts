@@ -361,7 +361,6 @@ export class DependenciesComponent {
           });
 
           this.isLoaded = true;
-          console.log(board,"::::")
         }else{
           this.processData(res)
           this.isLoaded = true;
@@ -477,7 +476,8 @@ export class DependenciesComponent {
     } else {
       this.setOfCheckedId.delete(path);
     }
-    this.checkedNotices.emit(this.setOfCheckedId);
+    const mapOfCheckedId = {mapOfCheckedId: this.mapOfCheckedId, setOfCheckedId: this.setOfCheckedId };
+    this.checkedNotices.emit(mapOfCheckedId);
   }
 
   post(board: any, notice = null, boardType: string): void {
@@ -722,11 +722,92 @@ export class DependenciesComponent {
   }
   showDetail(board): void {
     board.show = true;
-    this.loadPlans(board)
+    // this.loadPlans(board)
+    this.isLoaded = false;
+    let planIds
+    if (this.plansFilters.filter.calView === 'Plannable') {
+      planIds = 'DailyPlan'
+    } else {
+      planIds = 'Global';
+    }
+    const requestPayload: any = {
+      controllerId: this.schedulerId,
+      limit: 5000
+    };
+
+    if (board) {
+      requestPayload.noticeBoardPaths = [board.path];
+    }
+
+    this.coreService.post('notice/boards', requestPayload)
+      .subscribe((res) => {
+        if(board){
+          res?.noticeBoards?.forEach(noticeBoard => {
+            board.children = noticeBoard.notices;
+          });
+          this.isLoaded = true;
+        }else{
+          this.processData(res)
+          this.isLoaded = true;
+        }
+
+    });
   }
 
   getFormattedPath(path: any): any {
-  return  this.isPathDisplay ? path?.split('/').pop() : path
+    return  this.isPathDisplay ? path?.split('/').pop() : path
   }
 
+  private checkChild(value: boolean, board): void {
+    if (value && board.notices && board.notices.length > 0) {
+      board.notices.forEach(item => {
+        if (item.state && item.state._text !== 'EXPECTED') {
+          this.mapOfCheckedId.add(item.id + '__' + board.path);
+        }
+      });
+    } else if (board.notices && board.notices.length > 0) {
+      board.notices.forEach(item => {
+        if (this.mapOfCheckedId.has(item.id + '__' + board.path)) {
+          this.mapOfCheckedId.delete(item.id + '__' + board.path);
+        }
+      });
+    }
+    board.indeterminate = false;
   }
+
+  onNoticeItemCheck(board: any, notice: any, checked: boolean) {
+    if (checked) {
+      if (notice) {
+        if (notice.state && notice.state._text !== 'EXPECTED') {
+          this.mapOfCheckedId.add(notice.id + '__' + board.path);
+        }
+      }
+    } else {
+      if (notice) {
+        this.mapOfCheckedId.delete(notice.id + '__' + board.path);
+      }
+    }
+    this.updateCheckedSet(board.path, checked);
+    this.refreshCheckedStatus();
+    const mapOfCheckedId = {mapOfCheckedId: this.mapOfCheckedId, setOfCheckedId: this.setOfCheckedId };
+    this.checkedNotices.emit(mapOfCheckedId);
+  }
+
+  checkAllNotice(checked: boolean, board?): void {
+    board.checked = checked;
+    if(checked){
+      board.children.forEach(notice => {
+        this.mapOfCheckedId.add(notice.id + '__' + board.path);
+      })
+    }else{
+      board.children.forEach(notice => {
+        this.mapOfCheckedId.delete(notice.id + '__' + board.path);
+      })
+    }
+    this.updateCheckedSet(board.path, checked);
+    this.refreshCheckedStatus();
+    const mapOfCheckedId = {mapOfCheckedId: this.mapOfCheckedId, setOfCheckedId: this.setOfCheckedId };
+    this.checkedNotices.emit(mapOfCheckedId);
+  }
+
+}

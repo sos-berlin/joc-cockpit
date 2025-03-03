@@ -1890,6 +1890,8 @@
     "label.addGroups": "Add Groups",
     "label.addTagToGroup": "Assign Tags to Group",
     "label.renameGroup": "Rename Group",
+    "label.includeDependencies": "Include Dependencies",
+    "label.deployType": "Deploy Type",
     "button.modifyVariableSet": "Modify Variable Set",
     "button.addOrderParameter": "Add Order Template",
     "button.setVersion": "Set Version",

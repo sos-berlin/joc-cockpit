@@ -799,7 +799,8 @@ export class DailyPlanComponent {
   subscription1: Subscription;
   subscription2: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
-  checkedNoticeIds = new Set<number>();
+  setOfCheckedId = new Set<number>();
+  mapOfCheckedId = new Set();
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private groupByPipe: GroupByPipe, private toasterService: ToastrService,
@@ -3494,11 +3495,12 @@ private filterData(planItems: any[]): void {
   }
 
   checkedNotices($event) {
-    this.checkedNoticeIds = $event;
+    this.setOfCheckedId = $event.setOfCheckedId;
+    this.mapOfCheckedId = $event.mapOfCheckedId;
   }
 
   postAllNotices(): void {
-    const paths = Array.from(this.checkedNoticeIds);
+    const paths = Array.from(this.setOfCheckedId);
     this.modal.create({
       nzTitle: undefined,
       nzContent: PostModalComponent,
