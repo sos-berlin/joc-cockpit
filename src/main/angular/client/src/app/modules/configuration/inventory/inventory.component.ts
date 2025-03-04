@@ -64,6 +64,7 @@ export class CreateTagModalComponent {
   isUnique = true;
   inputValue = '';
   tagType: string;
+  isPathDisplay = true;
 
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
   @ViewChild(NzSelectComponent) tagSelect;
@@ -73,6 +74,7 @@ export class CreateTagModalComponent {
   }
 
   ngOnInit(): void {
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'false';
     if (this.modalData.filters && this.modalData.filters.tagType === 'workflowTags') {
       this.filters = this.modalData.filters;
       this.controllerId = this.modalData.controllerId;
@@ -292,6 +294,10 @@ export class CreateTagModalComponent {
         this.allOrderTags = res.results;
       }
     });
+  }
+
+  getFormattedPath(path: any): any {
+    return  this.isPathDisplay ? path?.split('/').pop() : path
   }
 
 }
@@ -3797,7 +3803,7 @@ export class ExportComponent {
           // if (checkedNodes.length > 0) {
           //   this.getDependencies(checkedNodes, this.changesNodes);
           // }
-          this.changesNodes = [...this.changesNodes]
+          this.nodes = [...this.changesNodes]
         }
       },
       error: () => {
@@ -3956,8 +3962,12 @@ export class ExportComponent {
 
   filterList(isChecked = true): void {
     if (this.exportObj.exportType === 'changes') {
+      if(this.changesNodes.length){
+        this.nodes = [...this.changesNodes]
+      }
       this.changes()
       this.filteredAffectedItems = []
+      return
     }
     if (this.exportObj.exportType === 'individual') {
       this.filteredAffectedItems = []

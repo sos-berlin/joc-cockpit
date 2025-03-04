@@ -10,6 +10,7 @@ import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
 import {UpdateUrlModalComponent} from "../dashboard.component";
+import {CommentModalComponent as CommentModalComp} from '../../../components/comment-modal/comment.component';
 
 declare const mxEditor: any;
 declare const mxUtils: any;
@@ -789,23 +790,176 @@ export class ControllerClusterComponent {
   }
 
   restartService(type): void {
-    this.postCall('joc/cluster/restart', {type});
+    let obj: any = {
+      type: type
+    };
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined'
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComp,
+        nzClassName: 'lg',
+        nzData: {
+          comments
+        },
+        nzFooter: null,
+        nzAutofocus: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          const auditLog: any = {};
+          auditLog.comment = result.comment;
+          auditLog.timeSpent = result.timeSpent;
+          auditLog.ticketLink = result.ticketLink;
+          obj.auditLog = auditLog;
+          this.postCall('joc/cluster/restart', obj);
+        }
+      });
+    } else {
+      this.postCall('joc/cluster/restart', obj);
+    }
   }
 
   runService(type): void {
-    this.postCall('joc/cluster/run', {type});
+    let obj: any = {
+      type: type
+    };
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined'
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComp,
+        nzClassName: 'lg',
+        nzData: {
+          comments
+        },
+        nzFooter: null,
+        nzAutofocus: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          const auditLog: any = {};
+          auditLog.comment = result.comment;
+          auditLog.timeSpent = result.timeSpent;
+          auditLog.ticketLink = result.ticketLink;
+          obj.auditLog = auditLog;
+          this.postCall('joc/cluster/run', obj);
+        }
+      });
+    } else {
+      this.postCall('joc/cluster/run', obj);
+    }
   }
 
   proxyService(): void {
-    this.postCall('joc/proxies/restart', {});
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined'
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComp,
+        nzClassName: 'lg',
+        nzData: {
+          comments
+        },
+        nzFooter: null,
+        nzAutofocus: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          let obj: any;
+          const auditLog: any = {};
+          auditLog.comment = result.comment;
+          auditLog.timeSpent = result.timeSpent;
+          auditLog.ticketLink = result.ticketLink;
+          obj.auditLog = auditLog;
+          this.postCall('joc/proxies/restart', obj);
+        }
+      });
+    } else {
+      this.postCall('joc/proxies/restart', {});
+    }
   }
 
   switchOver(): void {
-    this.postCall('joc/cluster/switch_member', {memberId: this.joc.memberId});
+    let obj: any = {
+      memberId: this.joc.memberId
+    };
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined'
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComp,
+        nzClassName: 'lg',
+        nzData: {
+          comments
+        },
+        nzFooter: null,
+        nzAutofocus: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          const auditLog: any = {};
+          auditLog.comment = result.comment;
+          auditLog.timeSpent = result.timeSpent;
+          auditLog.ticketLink = result.ticketLink;
+          obj.auditLog = auditLog;
+          this.postCall('joc/cluster/switch_member', obj);
+        }
+      });
+    } else {
+      this.postCall('joc/cluster/switch_member', obj);
+    }
   }
 
   removeFromInventory(): void {
-    this.postCall('joc/cluster/delete_member', {memberId: this.joc.memberId});
+    let obj: any = {
+      memberId: this.joc.memberId
+    };
+    if (this.preferences.auditLog) {
+      let comments = {
+        radio: 'predefined'
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComp,
+        nzClassName: 'lg',
+        nzData: {
+          comments
+        },
+        nzFooter: null,
+        nzAutofocus: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        if (result) {
+          const auditLog: any = {};
+          auditLog.comment = result.comment;
+          auditLog.timeSpent = result.timeSpent;
+          auditLog.ticketLink = result.ticketLink;
+          obj.auditLog = auditLog;
+          this.postCall('joc/cluster/delete_member', obj);
+        }
+      });
+    } else {
+      this.postCall('joc/cluster/delete_member', obj);
+    }
   }
 
   updateURL(): void{

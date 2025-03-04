@@ -130,7 +130,7 @@
             <ng-container *ngIf="object.expanded.has(keyValuePair.key)">
               <div class="p-l" *ngFor="let workflow of keyValuePair.value">
                 <i class="icon-color" nz-icon nzTheme="outline" nzType="apartment"></i>
-                <span class="p-l-6">{{workflow}}</span>
+                <span class="p-l-6">{{getFormattedPath(workflow)}}</span>
               </div>
             </ng-container>
           </div>

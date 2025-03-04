@@ -97,23 +97,7 @@
                  nz-checkbox (ngModelChange)="handleRecursive()"></label>
         </div>
       </div>
-      <div *ngIf="object.deployType === 'changes' && !releasable && !isRemove && !isRevoke" [ngClass]="{'has-error' : ((changeName.dirty || changeName.touched) && changeName.invalid)}" class="form-group row">
-        <label class="col-sm-3 form-control-label" translate>common.label.name
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div class="col-sm-6">
-          <nz-select #changeName="ngModel" required [(ngModel)]="this.selectedChange" (ngModelChange)="onChange($event)"
-                     name="changeName"  nzPlaceHolder="{{'common.placeholder.name' | translate}}" nzShowSearch>
-            <nz-option *ngFor="let option of changeObj" [nzLabel]="option.name"
-                       [nzValue]="option.name"></nz-option>
-          </nz-select>
-          <div *ngIf="changeName.invalid && (changeName.dirty || changeName.touched)" class="text-danger help-block">
-            <div *ngIf="changeName.errors['required']">
-              <div translate>common.message.requiredError</div>
-            </div>
-          </div>
-        </div>
-      </div>
+
       <div *ngIf="isRemove && hasDependencies()" class="m-b-sm opacity-0_5">
         <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.remove' | translate}}</label>
       </div>
@@ -131,6 +115,23 @@
           <a (click)="collapseAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
             <i class="fa fa-angle-double-up fa-lg"></i>
           </a>
+        </div>
+      </div>
+      <div *ngIf="object.deployType === 'changes' && !releasable && !isRemove && !isRevoke" [ngClass]="{'has-error' : ((changeName.dirty || changeName.touched) && changeName.invalid)}" class="form-group row">
+        <label class="col-sm-3 form-control-label" translate>common.label.name
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-6">
+          <nz-select #changeName="ngModel" required [(ngModel)]="this.selectedChange" (ngModelChange)="onChange($event)"
+                     name="changeName"  nzPlaceHolder="{{'common.placeholder.name' | translate}}" nzShowSearch>
+            <nz-option *ngFor="let option of changeObj" [nzLabel]="option.name"
+                       [nzValue]="option.name"></nz-option>
+          </nz-select>
+          <div *ngIf="changeName.invalid && (changeName.dirty || changeName.touched)" class="text-danger help-block">
+            <div *ngIf="changeName.errors['required']">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
         </div>
       </div>
       <div *ngIf="object.deployType === 'individual'" class="row">
@@ -365,7 +366,7 @@
           <nz-tree
             [nzCheckable]="true"
             (nzCheckBoxChange)="checkBoxChanges($event)"
-            [nzData]="nodes"
+            [nzData]="changesNodes"
             [nzTreeTemplate]="nzTreeChnagesTemplate"
             [nzShowExpand]="false"
             nzNoAnimation

@@ -342,7 +342,7 @@ export class DependenciesComponent {
     }
     const requestPayload: any = {
       controllerId: this.schedulerId,
-      planKeys: [this.coreService.getDateByFormat(this.selectedDate, this.preferences.zone, 'YYYY-MM-DD')],
+      noticeSpaceKeys: [this.coreService.getDateByFormat(this.selectedDate, this.preferences.zone, 'YYYY-MM-DD')],
       planSchemaIds: [planIds],
       compact: false
     };
