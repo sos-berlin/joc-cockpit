@@ -364,6 +364,7 @@
                     </thead>
                     <tbody>
                       <ng-template [ngForOf]="nestedTable.data" let-child ngFor>
+                        {{board.boardType | json}}
                         <tr *ngIf="board?.children.length > 0">
                           <td
                                 *ngIf="permission.currentController && permission.currentController.noticeBoards.delete" [nzChecked]="mapOfCheckedId.has(child.id +'__' + board.path)"
@@ -377,7 +378,7 @@
                               </button>
                               <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                                 <ul nz-menu>
-                                  <li (click)="post(board, child)" *ngIf="permission.currentController.noticeBoards.post"
+                                  <li (click)="post(board, child, plansFilters.filter.calView)" *ngIf="permission.currentController.noticeBoards.post"
                                       [nzDisabled]="(child.state._text === 'POSTED')"
                                       nz-menu-item>
                                     <a translate>resource.board.button.post</a>

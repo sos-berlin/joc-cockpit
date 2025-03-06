@@ -1705,6 +1705,7 @@ export class DeployComponent {
 
     let operationType = 'DEPLOY';
 
+
     if (this.isRevoke) {
       operationType = 'REVOKE';
     } else if (this.operation === 'recall') {
@@ -1713,6 +1714,11 @@ export class DeployComponent {
       operationType = 'RELEASE';
     } else if (this.isRemove) {
       operationType = 'REMOVE';
+    }
+
+
+    if (this.object.deployType === 'changes') {
+      operationType = 'DEPLOY'
     }
 
     const requestBody = {
@@ -1932,8 +1938,13 @@ export class DeployComponent {
     this.coreService.post('inventory/changes', obj).subscribe({
       next: (res) => {
         if (res.changes) {
-          this.changesNodes = this.prepareGroupedTree(res.changes[0].configurations)
-          this.changesNodes = [...this.changesNodes]
+          this.changesNodes = this.prepareGroupedTree(res.changes[0].configurations);
+          this.nodes = [...this.changesNodes];
+          const checkedNodes = this.collectCheckedObjects(this.nodes);
+          if (checkedNodes.length > 0) {
+            this.getDependencies(checkedNodes, this.nodes);
+          }
+          this.cdr.detectChanges();
         }
       },
       error: () => {
@@ -4808,9 +4819,13 @@ export class RepositoryComponent {
     draftConfigurations: [],
     releaseDraftConfigurations: [],
     deployConfigurations: [],
-    releasedConfigurations: []
+    releasedConfigurations: [],
+    type: 'individual',
+    includeDependencies: false
   };
-
+  changeObj: any;
+  selectedChange: any;
+  changesNodes: any = [];
   listOfDeployables: any = [];
   listOfReleaseables: any = [];
   dependencies: any;
@@ -4829,7 +4844,7 @@ export class RepositoryComponent {
   selectAllFilteredAffected: { [key: string]: boolean } = {};
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef,
-              private inventoryService: InventoryService) {
+              private inventoryService: InventoryService, private cdr: ChangeDetectorRef,) {
   }
 
   ngOnInit(): void {
@@ -5132,6 +5147,14 @@ export class RepositoryComponent {
   }
 
   filterList(): void {
+    if (this.object.type === 'changes') {
+      this.changes()
+      this.filteredAffectedItems = []
+    }
+    if (this.object.type === 'individual') {
+      this.filteredAffectedItems = []
+      this.buildTree(this.path);
+    }
     this.showLabel = false;
     if (!this.filter.deploy && !this.filter.draft) {
       this.showLabel = false;
@@ -5152,6 +5175,183 @@ export class RepositoryComponent {
     }
   }
 
+  changes(): void {
+    this.coreService.post('inventory/changes', {}).subscribe({
+      next: (res) => {
+        this.changeObj = res.changes
+      },
+      error: () => {
+        this.loading = true;
+      }
+    });
+  }
+
+  onChange(selected: string): void {
+    const obj = {
+      names: [],
+      details: true
+    }
+    obj.names.push(selected);
+    this.coreService.post('inventory/changes', obj).subscribe({
+      next: (res) => {
+        if (res.changes) {
+          this.changesNodes = this.prepareGroupedTree(res.changes[0].configurations);
+          this.nodes = [...this.changesNodes]
+          this.cdr.detectChanges();
+        }
+      },
+      error: () => {
+        this.loading = true;
+      }
+    });
+  }
+
+  prepareGroupedTree(data: any[]): any[] {
+    const root = {
+      name: '/',
+      path: '/',
+      key: '/',
+      isLeaf: false,
+      expanded: true,
+      checked: true,
+      children: []
+    };
+
+    const groupedObjects: { [key: string]: any[] } = {
+      "WORKFLOW": [],
+      "JOBRESOURCE": [],
+      "SCHEDULE": [],
+      "NOTICEBOARD": [],
+      "LOCK": [],
+      "JOBTEMPLATE": [],
+      "INCLUDESCRIPT": [],
+      "WORKINGDAYSCALENDAR": [],
+      "NONWORKINGDAYSCALENDAR": []
+    };
+
+    if (data) {
+      data?.forEach((item: any) => {
+        switch (item.objectType) {
+          case "WORKFLOW":
+            groupedObjects["WORKFLOW"].push(item);
+            break;
+          case "JOBRESOURCE":
+            groupedObjects["JOBRESOURCE"].push(item);
+            break;
+          case "SCHEDULE":
+            groupedObjects["SCHEDULE"].push(item);
+            break;
+          case "NOTICEBOARD":
+            groupedObjects["NOTICEBOARD"].push(item);
+            break;
+          case "LOCK":
+            groupedObjects["LOCK"].push(item);
+            break;
+          case "JOBTEMPLATE":
+            groupedObjects["JOBTEMPLATE"].push(item);
+            break;
+          case "INCLUDESCRIPT":
+            groupedObjects["INCLUDESCRIPT"].push(item);
+            break;
+          case "WORKINGDAYSCALENDAR":
+            groupedObjects["WORKINGDAYSCALENDAR"].push(item);
+            break;
+          case "NONWORKINGDAYSCALENDAR":
+            groupedObjects["NONWORKINGDAYSCALENDAR"].push(item);
+            break;
+          default:
+            break;
+        }
+      });
+    }
+
+    Object.keys(groupedObjects).forEach((type: string) => {
+      if (groupedObjects[type].length > 0) {
+        const groupNode = {
+          name: type,
+          object: type,
+          path: '/',
+          key: `/${type}`,
+          disableCheckbox: true,
+          expanded: true,
+          isLeaf: false,
+          children: groupedObjects[type].map((item: any) => ({
+            name: item.name,
+            path: item.path,
+            key: item.path,
+            type: item.objectType,
+            released: item.released,
+            deployed: item.deployed,
+            valid: item.valid,
+            isLeaf: true,
+            checked: true,
+          }))
+        };
+        root.children.push(groupNode);
+      }
+    });
+    return [root];
+  }
+
+  checkBoxChanges(e: NzFormatEmitEvent): void {
+    const node: any = e.node;
+
+    this.updateChildCheckboxes(node, node.isChecked);
+
+    this.updateParentCheckboxes(node);
+
+    const checkedNodes = this.collectCheckedNodes(node);
+
+    if (checkedNodes.length > 0 && this.object.includeDependencies) {
+      if (node.isChecked) {
+        this.getDependencies(checkedNodes, node, true);
+      } else {
+        this.getDependencies(checkedNodes, node, false);
+      }
+    } else {
+      this.clearDependenciesForNode(node);
+    }
+  }
+
+  includeDependencies(): void {
+    const checkedNodes = this.collectCheckedObjects(this.nodes);
+    if (checkedNodes.length > 0) {
+      if (!this.object.includeDependencies) {
+        this.clearDependenciesForNode(this.nodes[0]);
+      } else {
+        this.getDependencies(checkedNodes, this.nodes[0]);
+      }
+    } else {
+      this.clearDependenciesForNode(this.nodes[0])
+    }
+    this.nodes = [...this.nodes];
+  }
+
+  updateChildCheckboxes(node: any, isChecked: boolean): void {
+    node.children.forEach((child: any) => {
+      child.isChecked = isChecked;
+
+      if (child.children && child.children.length > 0) {
+        this.updateChildCheckboxes(child, isChecked);
+      }
+
+      child.isHalfChecked = false;
+    });
+  }
+
+  updateParentCheckboxes(node: any): void {
+    if (node.parentNode) {
+      const siblings = node.parentNode.children;
+
+      const allChecked = siblings.every((sibling: any) => sibling.isChecked);
+      const someChecked = siblings.some((sibling: any) => sibling.isChecked || sibling.isHalfChecked);
+
+      node.parentNode.isChecked = allChecked;
+      node.parentNode.isHalfChecked = !allChecked && someChecked;
+
+      this.updateParentCheckboxes(node.parentNode);
+    }
+  }
   expandAll(): void {
     const self = this;
 
@@ -5256,13 +5456,19 @@ export class RepositoryComponent {
 
   private clearDependenciesForNode(node: any): void {
     if (node) {
-      node.origin.dependencies = null;
+      if (node.origin && node.origin.dependencies) {
+        node.origin.dependencies = null;
+      }
+      if (node.dependencies) {
+        node.dependencies = null;
+      }
       if (node.children && node.children.length > 0) {
         node.children.forEach((child: any) => {
           this.clearDependenciesForNode(child);
         });
       }
       this.ref.detectChanges();
+
     }
   }
 
@@ -5674,8 +5880,10 @@ export class RepositoryComponent {
       type: node.type,
     }));
 
-    const operationType = 'GIT';
-
+    let operationType = 'GIT';
+    if (this.object.type === 'changes') {
+      operationType = 'DEPLOY'
+    }
     const requestBody = {
       configurations: configurations,
       operationType: operationType

@@ -488,7 +488,7 @@ export class DependenciesComponent {
         "auditLog": {},
       }
       const noticeBoardPath = board.path;
-      const noticeIds = board.notices.map(item => item.id);
+      const noticeIds = board.children.map(item => item.id);
       obj.notices = [];
       obj.notices.push({noticeBoardPath: noticeBoardPath, noticeIds: noticeIds});
       this.coreService.post(endpoint, obj).subscribe({
