@@ -1956,7 +1956,7 @@ export class DeployComponent {
   prepareGroupedTree(data: any[]): any[] {
     const root = {
       name: '/',
-      path: '/',
+      path: this.path || '/',
       key: '/',
       isLeaf: false,
       expanded: true,
@@ -2017,7 +2017,7 @@ export class DeployComponent {
         const groupNode = {
           name: type,
           object: type,
-          path: '/',
+          path: this.path || '/',
           key: `/${type}`,
           disableCheckbox: true,
           expanded: true,
@@ -2025,7 +2025,7 @@ export class DeployComponent {
           children: groupedObjects[type].map((item: any) => ({
             name: item.name,
             path: item.path,
-            key: item.path,
+            key: this.path + item.path,
             type: item.objectType,
             released: item.released,
             deployed: item.deployed,
@@ -3887,7 +3887,7 @@ export class ExportComponent {
   prepareGroupedTree(data: any[]): any[] {
     const root = {
       name: '/',
-      path: '/',
+      path: this.path || '/',
       key: '/',
       isLeaf: false,
       expanded: true,
@@ -3948,14 +3948,14 @@ export class ExportComponent {
         const groupNode = {
           name: type,
           object: type,
-          path: '/',
+          path: this.path || '/',
           key: `/${type}`,
           disableCheckbox: true,
           expanded: true,
           isLeaf: false,
           children: groupedObjects[type].map((item: any) => ({
             name: item.name,
-            path: item.path,
+            path: this.path + item.path,
             key: item.path,
             type: item.objectType,
             released: item.released,
@@ -5209,7 +5209,7 @@ export class RepositoryComponent {
   prepareGroupedTree(data: any[]): any[] {
     const root = {
       name: '/',
-      path: '/',
+      path: this.path || '/',
       key: '/',
       isLeaf: false,
       expanded: true,
@@ -5270,14 +5270,14 @@ export class RepositoryComponent {
         const groupNode = {
           name: type,
           object: type,
-          path: '/',
+          path: this.path || '/',
           key: `/${type}`,
           disableCheckbox: true,
           expanded: true,
           isLeaf: false,
           children: groupedObjects[type].map((item: any) => ({
             name: item.name,
-            path: item.path,
+            path: this.path + item.path,
             key: item.path,
             type: item.objectType,
             released: item.released,
@@ -5984,7 +5984,7 @@ export class RepositoryComponent {
               this.affectedObjectTypes.push(type);
             }
 
-            refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
+            refObj.selected = true;
             refObj.change = refObj.deployed;
 
             this.affectedObjectsByType[type].push(refObj);
@@ -6001,7 +6001,7 @@ export class RepositoryComponent {
               this.referencedObjectTypes.push(type);
             }
 
-            refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
+            refObj.selected = true;
             refObj.change = refObj.deployed;
 
             this.referencedObjectsByType[type].push(refObj);
@@ -6016,7 +6016,7 @@ export class RepositoryComponent {
         const type = item.objectType;
         filteredAffectedTypeSet.add(type);
 
-        item.selected = item.valid && (!item.deployed && !item.released);
+        item.selected = true;
 
       });
       this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
@@ -7763,6 +7763,7 @@ export class PublishChangeModalComponent {
   filteredAffectedItems: any[] = [];
   filteredAffectedCollapsed: boolean = true;
   selectAllFilteredAffected: { [key: string]: boolean } = {};
+  path = '';
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private inventoryService: InventoryService) {
   }
@@ -7773,6 +7774,7 @@ export class PublishChangeModalComponent {
     this.display = this.modalData.display;
     this.title = this.modalData.title;
     this.show = this.modalData.show;
+    this.path = this.modalData.path;
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -7819,7 +7821,7 @@ export class PublishChangeModalComponent {
   prepareGroupedTree(data: any[]): any[] {
     const root = {
       name: '/',
-      path: '/',
+      path: this.path || '/',
       key: '/',
       isLeaf: false,
       expanded: true,
@@ -7880,14 +7882,14 @@ export class PublishChangeModalComponent {
         const groupNode = {
           name: type,
           object: type,
-          path: '/',
+          path: this.path || '/',
           key: `/${type}`,
           disableCheckbox: true,
           expanded: true,
           isLeaf: false,
           children: groupedObjects[type].map((item: any) => ({
             name: item.name,
-            path: item.path,
+            path: this.path + item.path,
             key: item.path,
             type: item.objectType,
             released: item.released,
@@ -12842,6 +12844,7 @@ export class InventoryComponent {
   }
 
   changes() {
+    console.log('ddddddddd')
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: AddChangesModalComponent,
@@ -12979,6 +12982,7 @@ export class InventoryComponent {
         preferences: this.preferences,
         display: this.preferences.auditLog,
         title: 'publishChange',
+        path: this.path
       },
       nzFooter: null,
       nzClosable: false,
