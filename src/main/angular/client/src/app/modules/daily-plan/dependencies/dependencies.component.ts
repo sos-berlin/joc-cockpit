@@ -890,7 +890,7 @@ export class DependenciesComponent {
 
   loadAdditionalData() {
     this.isLoaded = false;
-    this.coreService.post('/workflows/boards', {
+    this.coreService.post('workflows/boards', {
       controllerId: this.schedulerId,
     }).subscribe((res) => {
       this.isLoaded = true;
