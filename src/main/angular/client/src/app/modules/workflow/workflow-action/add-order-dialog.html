@@ -489,7 +489,7 @@
                 </div>
                 <div *ngIf="!argument.isTextField" class="col-sm-4 m-b-sm">
                   <nz-select [(ngModel)]="argument.name" [nzDisabled]="argument.isRequired"
-                             name="argu_name{{i}}{{orderIndex}}" (ngModelChange)="checkVariableType(argument, orderIndex)"
+                             name="argu_name{{i}}{{orderIndex}}" (ngModelChange)="checkVariableType(argument, orderIndex)" (nzOpenChange)="checkVariableType(argument, orderIndex)"
                              nzShowSearch>
                     <nz-option *ngFor="let list of variableList" [nzDisabled]="list.isSelected" [nzLabel]="list.name"
                                [nzValue]="list.name"></nz-option>

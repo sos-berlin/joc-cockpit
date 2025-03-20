@@ -1117,7 +1117,6 @@ export class AddOrderModalComponent {
 
   addArguments(orderIndex): void {
     this.orders[orderIndex].arguments = this.orders[orderIndex].arguments.filter(arg => arg.name.trim() !== '');
-
     this.variableList.forEach(variable => {
       if (!variable.isSelected) {
         const param: any = {
@@ -1126,6 +1125,15 @@ export class AddOrderModalComponent {
         };
         this.orders[orderIndex].arguments.push(param);
         this.checkVariableType(param, orderIndex);
+      } else {
+        if (this.orders[orderIndex].arguments.length < this.variableList.length) {
+          const param: any = {
+            name: variable.name,
+            value: ''
+          };
+          this.orders[orderIndex].arguments.push(param);
+          this.checkVariableType(param, orderIndex);
+        }
       }
     });
   }

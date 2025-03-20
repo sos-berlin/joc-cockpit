@@ -19,11 +19,13 @@
       </label>
       <div class="col-sm-9">
         <input #certAlias="ngModel" [(ngModel)]="certificateObj.certAlias" [appAutofocus]="true" autocomplete="off" class="form-control"
-               name="certAlias" placeholder="{{'encipherment.placeholder.certAlias' | translate}}" required type="text"/>
-        <div *ngIf="certAlias.invalid && (certAlias.dirty || certAlias.touched)" class="text-danger help-block">
-          <div *ngIf="certAlias.errors.required">
+               name="certAlias" placeholder="{{'encipherment.placeholder.certAlias' | translate}}" identifierValidation required type="text"/>
+        <div *ngIf="certAlias.invalid && (certAlias.dirty || certAlias.touched)"
+             class="text-danger help-block">
+          <div *ngIf="(certAlias.errors && certAlias.errors.required)">
             <div translate>common.message.requiredError</div>
           </div>
+          <div *ngIf="certAlias.errors.invalidIdentifier" translate>common.message.invalid</div>
         </div>
       </div>
     </div>

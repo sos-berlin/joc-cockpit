@@ -517,7 +517,7 @@
               <div *ngIf="filteredAffectedCollapsed" class="m-t-sm m-l-md">
                 <ng-container *ngFor="let objectType of getUniqueObjectTypes(filteredAffectedItems)">
                   <div *ngIf="getObjectsByType(filteredAffectedItems, objectType)?.length" class="m-t-sm">
-                    <label [(ngModel)]="selectAllFilteredAffected[objectType]" [name]="'checkbox_' + objectType">
+                    <label>
             <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
               <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
             </span>

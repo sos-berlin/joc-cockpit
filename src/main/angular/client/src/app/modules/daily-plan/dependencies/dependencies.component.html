@@ -14,45 +14,15 @@
         dailyPlan.label.plannable
       </div>
     </div>
-    <button (click)="toggleCompactView()"
-            [ngClass]="{'btn-primary':  plansFilters.filter.isCompact == true, 'show-block':noticeBoards.length>0}"
-            class="btn btn-grey btn-sm"
-            nz-tooltip="{{'common.button.compactView' | translate}}">
-      <i class="fa fa-th-list text"></i>
-    </button>
-    <button (click)="filterData('')"
-            [ngClass]="{'btn-primary': plansFilters.filter.filterBy === ''}"
-            class="btn btn-grey btn-sm  m-l-12 m-r-sm">
-      <span translate>dailyPlan.label.all</span>
-    </button>
-    <div class="inline btn-group">
-      <button (click)="filterData('expected')"
-              [ngClass]="{'btn-primary': plansFilters.filter.filterBy==='expected'}"
-              class="btn btn-grey btn-sm ">
-        <span translate>dailyPlan.button.expected</span>
-        <i class="fa fa-stop m-l-xs expected-stop"></i>
-      </button>
-
-      <button (click)="filterData('notExpected')"
-              [ngClass]="{'btn-primary': plansFilters.filter.filterBy==='notExpected'}"
-              class="btn btn-grey btn-sm ">
-        <span translate>dailyPlan.button.notExpected</span>
-        <i class="fa fa-stop m-l-xs not-expected"></i>
-      </button>
-
-      <button (click)="filterData('announced')"
-              [ngClass]="{'btn-primary': plansFilters.filter.filterBy==='announced'}"
-              class="btn btn-grey btn-sm  m-l-12">
-        <span translate>dailyPlan.button.announced</span>
-        <i class="fa fa-stop m-l-xs announced"></i>
-      </button>
-
-      <button (click)="filterData('notAnnounced')"
-              [ngClass]="{'btn-primary': plansFilters.filter.filterBy==='notAnnounced'}"
-              class="btn btn-grey btn-sm ">
-        <span translate>dailyPlan.button.notAnnounced</span>
-        <i class="fa fa-stop m-l-xs not-announced "></i>
-      </button>
+    <div class="inline" style="height: 26px">
+      <div class="pos-rel t-xxs">
+        <i class="fa fa-stop bg-postingWorkflow"></i>
+        {{'dailyPlan.label.postingWorkflow' | translate}}
+        <i class="fa fa-stop bg-expectingWorkflow p-l-sm"></i>
+        {{'dailyPlan.label.expectingWorkflow' | translate}}
+        <i class="fa fa-stop bg-consumingWorkflow p-l-sm"></i>
+        {{'dailyPlan.label.consumingWorkflow' | translate}}
+      </div>
     </div>
     <div class="search-box-field pull-right">
       <label>
@@ -82,348 +52,40 @@
       </div>
     </div>
     <div id="rightPanel2">
-      <div class="row">
-        <div *ngIf="pageView =='dep'" class="col-md-12 overflow-y" style="height: calc(100vh - 280px); padding: 0">
-          <div *ngFor="let board of noticeBoards"
-               class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
-            <div class="box card cur-point">
-
-              <div class="box-body">
-                <label class="pos-abt">
-                  <label nz-checkbox
-                  ></label>
-                </label>
-                <div class="text-left block-ellipsis m-l-md">
-                  <i (click)="navToInventoryTab(board.path, 'NOTICEBOARD');"
-                     *ngIf="permission.joc && permission.joc.inventory.view"
-                     class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-                  <a (click)="showBoard(board.path)"
-                     class="text-hover-primary">{{ getFormattedPath(board.path) }}</a>
-                </div>
-                <div class="btn-group dropdown pull-right abt-dropdown">
-                  <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
-                          nz-dropdown nzTrigger="click" type="button">
-                    <i class="fa fa-ellipsis-h"></i>
-                  </button>
-                  <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                    <ul *ngIf="permission.currentController" nz-menu>
-                      <li (click)="post(board, null, plansFilters.filter.calView)"
-                          [nzDisabled]="!(board.numOfAnnouncements > 0 || board.numOfExpectingOrders > 0)" nz-menu-item>
-                        <a translate>resource.board.button.post</a>
-                      </li>
-                      <li (click)="delete(board, null)" [nzDisabled]="!(board.numOfPostedNotices > 0)" nz-menu-item>
-                        <a translate>resource.board.button.delete</a>
-                      </li>
-                    </ul>
-                  </nz-dropdown-menu>
-                </div>
-
-                <div *ngIf="!plansFilters.filter.isCompact" class="text-sm text-left text-muted p-t-sm">
-                  <span translate>dailyPlan.label.numOfAnnouncements </span>:
-                  <span [innerHtml]="board.numOfAnnouncements || 0"
-                        class="text-black _600 m-l p-r-xs"></span>
-                </div>
-                <div class="text-sm text-left text-muted p-t-xs">
-                  <span translate>dailyPlan.label.numOfNotices </span>:
-                  <span [innerHtml]="board.numOfNotices || 0"
-                        class="text-black _600 m-l p-r-xs"></span>
-                </div>
-                <div *ngIf="!plansFilters.filter.isCompact" class="text-sm text-left text-muted p-t-xs">
-                  <span translate>dailyPlan.label.numOfExpectedNotices </span>:
-                  <span [innerHtml]="board.numOfExpectedNotices || 0"
-                        class="text-black _600 m-l p-r-xs"></span>
-                </div>
-                <div *ngIf="!plansFilters.filter.isCompact" class="text-sm text-left text-muted p-t-xs">
-                  <span translate>dailyPlan.label.numOfPostedNotices </span>:
-                  <span [innerHtml]="board.numOfPostedNotices || 0"
-                        class="text-black _600 m-l p-r-xs"></span>
-                </div>
-                <div *ngIf="!plansFilters.filter.isCompact" class="text-sm text-left text-muted p-t-xs">
-                  <span translate>dailyPlan.label.numOfExpectingOrders </span>:
-                  <span [innerHtml]="board.numOfExpectingOrders || 0"
-                        class="text-black _600 m-l p-r-xs"></span>
-                </div>
-              </div>
-              <div (click)="onSelect(board?.path)" class="box-footer b-t">
-                <div class="notice-progress">
-                  <i class="fa fa-codepen"></i>
-                  <nz-progress *ngIf="board.numOfAnnouncements > 0"
-                               [nzPercent]="100"
-                               [nzStrokeColor]="'#C8A2C8'" [nzStrokeWidth]="14"
-                               [nzSize]="'small'"
-                               [nzShowInfo]="false">
-                  </nz-progress>
-                  <nz-progress *ngIf="board.numOfAnnouncements === 0"
-                               [nzPercent]="100"
-                               [nzStrokeColor]="'#bbb'" [nzStrokeWidth]="14"
-                               [nzSize]="'small'"
-                               [nzShowInfo]="false">
-                  </nz-progress>
-                  <nz-progress *ngIf="board.numOfConsumingWorkflow > 0 || board.numOfExpectingWorkflow > 0"
-                               [nzPercent]="100"
-                               [nzStrokeColor]="'#1171a6'" [nzStrokeWidth]="14"
-                               [nzSize]="'small'"
-                               [nzShowInfo]="false">
-                  </nz-progress>
-                  <nz-progress *ngIf="board.numOfConsumingWorkflow === 0 && board.numOfExpectingWorkflow === 0"
-                               [nzPercent]="100"
-                               [nzStrokeColor]="'#FFA640'" [nzStrokeWidth]="14"
-                               [nzSize]="'small'"
-                               [nzShowInfo]="false">
-                  </nz-progress>
-                </div>
-              </div>
-            </div>
+        <div style="overflow: auto; width: 100%; height: calc(100vh - 280px)">
+          <div class="inline toolbar-icons">
+            <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
+              <li class="nav-item">
+                <a (click)="zoomIn()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.zoomIn' | translate" class="nav-link">
+                  <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="zoom-in"></i></span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a (click)="zoomOut()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.zoomOut' | translate" class="nav-link">
+                  <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="zoom-out"></i></span>
+                </a>
+              </li>
+              <li class="nav-item dropdown-separator">
+                <span class="separator"></span>
+              </li>
+              <li class="nav-item">
+                <a (click)="actual()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.actual' | translate" class="nav-link">
+                  <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="fullscreen-exit"></i></span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a (click)="fit()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.fit' | translate" class="nav-link">
+                  <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="column-width"></i></span>
+                </a>
+              </li>
+            </ul>
           </div>
-          <div *ngIf="pageView=='dep' && !loading  && this.noticeBoards.length==0 "
-               class="text-center m-t h6">
-            <app-empty-data></app-empty-data>
-          </div>
+          <div #graphContainer class="graph-container "></div>
         </div>
 
-      </div>
-      <div *ngIf="pageView !=='dep'" class="box p-a max-ht-n-252" style="overflow: auto;">
-        <div class="table-responsive">
-          <nz-table #ajaxTable nzShowPagination
-                    nzShowSizeChanger
-                    (nzPageSizeChange)="pageSizeChange($event)"
-                    [nzData]="noticeBoards"
-                    (nzCurrentPageDataChange)="onCurrentPageDataChange($event)"
-                    [nzSize]="'small'"
-                    [nzBordered]="true"
-                    [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
-                    [nzPageSize]="plansFilters.filter.entryPerPage || preferences.entryPerPage || 25">
-            <thead>
-            <tr>
-              <th class="chk"
-                  [nzChecked]="checked"
-                  [nzIndeterminate]="indeterminate"
-                  (nzCheckedChange)="onAllChecked($event)">
-              </th>
-              <th class="menu"><span translate>common.label.action</span></th>
-              <th (click)="sort('path')">
-                <a><span class="p-r-xs" translate>inventory.label.boards</span>
-                  <i *ngIf="plansFilters.filter.sortBy == 'path' && !plansFilters.filter.reverse"
-                     class="fa fa-caret-up"></i>
-                  <i *ngIf="plansFilters.filter.sortBy == 'path' && plansFilters.filter.reverse"
-                     class="fa fa-caret-down"></i>
-                </a>
-              </th>
-              <th *ngIf="!plansFilters.filter.isCompact" (click)="sort('numOfAnnouncements')">
-                <a><span class="p-r-xs" translate>dailyPlan.label.numOfAnnouncements</span>
-                  <i *ngIf="plansFilters.filter.sortBy == 'numOfAnnouncements' && !plansFilters.filter.reverse"
-                     class="fa fa-caret-up"></i>
-                  <i *ngIf="plansFilters.filter.sortBy == 'announcements' && plansFilters.filter.reverse"
-                     class="fa fa-caret-down"></i>
-                </a>
-              </th>
-              <th *ngIf="plansFilters.filter.isCompact" (click)="sort('numOfNotices')">
-                <a><span class="p-r-xs" translate>dailyPlan.label.numOfNotices</span>
-                  <i *ngIf="plansFilters.filter.sortBy == 'numOfNotices' && !plansFilters.filter.reverse"
-                     class="fa fa-caret-up"></i>
-                  <i *ngIf="plansFilters.filter.sortBy == 'numOfNotices' && plansFilters.filter.reverse"
-                     class="fa fa-caret-down"></i>
-                </a>
-              </th>
-              <th *ngIf="!plansFilters.filter.isCompact" (click)="sort('numOfExpectedNotices')">
-                <a><span class="p-r-xs" translate>dailyPlan.label.numOfExpectedNotices</span>
-                  <i *ngIf="plansFilters.filter.sortBy == 'numOfExpectedNotices' && !plansFilters.filter.reverse"
-                     class="fa fa-caret-up"></i>
-                  <i *ngIf="plansFilters.filter.sortBy == 'numOfExpectedNotices' && plansFilters.filter.reverse"
-                     class="fa fa-caret-down"></i>
-                </a>
-              </th>
-              <th *ngIf="!plansFilters.filter.isCompact" (click)="sort('numOfPostedNotices')">
-                <a><span class="p-r-xs" translate>dailyPlan.label.numOfPostedNotices</span>
-                  <i *ngIf="plansFilters.filter.sortBy == 'numOfPostedNotices' && !plansFilters.filter.reverse"
-                     class="fa fa-caret-up"></i>
-                  <i *ngIf="plansFilters.filter.sortBy == 'numOfPostedNotices' && plansFilters.filter.reverse"
-                     class="fa fa-caret-down"></i>
-                </a>
-              </th>
-              <th *ngIf="!plansFilters.filter.isCompact" (click)="sort('numOfExpectingOrders')">
-                <a><span class="p-r-xs" translate>dailyPlan.label.numOfExpectingOrders</span>
-                  <i *ngIf="plansFilters.filter.sortBy == 'numOfExpectingOrders' && !plansFilters.filter.reverse"
-                     class="fa fa-caret-up"></i>
-                  <i *ngIf="plansFilters.filter.sortBy == 'numOfExpectingOrders' && plansFilters.filter.reverse"
-                     class="fa fa-caret-down"></i>
-                </a>
-              </th>
-              <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <ng-template [ngForOf]="ajaxTable.data" let-board ngFor>
-              <tr>
-                <td [nzChecked]="setOfCheckedId.has(board.path)"
-                    [nzDisabled]="board.disabled"
-                    [nzLabel]="board.name"
-                    (nzCheckedChange)="onItemChecked(board.path, $event)">
-                </td>
-                <td>
-                  <div class="btn-group dropdown">
-                    <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
-                            type="button">
-                      <i class="fa fa-ellipsis-h"></i>
-                    </button>
-                    <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                      <ul *ngIf="permission.currentController" nz-menu>
-                        <li (click)="post(board, null, plansFilters.filter.calView)"
-                            [nzDisabled]="!(board.numOfAnnouncements > 0 || board.numOfExpectingOrders > 0)"
-                            nz-menu-item>
-                          <a translate>resource.board.button.post</a>
-                        </li>
-                        <li (click)="delete(board, null)" [nzDisabled]="!(board.numOfPostedNotices > 0)" nz-menu-item>
-                          <a translate>resource.board.button.delete</a>
-                        </li>
-                      </ul>
-                    </nz-dropdown-menu>
-                  </div>
-                </td>
-                <td>
-                 <i (click)="showDetail(board)"
-                    *ngIf="!board.show"
-                    class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
-                 <i (click)="board.show = false;"
-                    *ngIf="board.show"
-                    class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
-                  <i (click)="navToInventoryTab(board.path, 'NOTICEBOARD');"
-                     *ngIf="permission.joc && permission.joc.inventory.view"
-                     class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-                  <a (click)="showBoard(board.path)" class="text-hover-primary">{{ getFormattedPath(board.path) }}</a>
-                </td>
-                <td *ngIf="!plansFilters.filter.isCompact"
-                    [ngClass]="board.numOfAnnouncements > 0 ? 'announced' : 'not-announced'">
-                  {{ board.numOfAnnouncements || 0 }}
-                </td>
-                <td *ngIf="plansFilters.filter.isCompact">
-                  <div class="notice-progress">
-                    <span>
-                      {{ board.numOfNotices || 0 }}
-                    </span>
-                    <nz-progress *ngIf="board.numOfAnnouncements > 0"
-                                 [nzPercent]="100"
-                                 [nzStrokeColor]="'#C8A2C8'" [nzStrokeWidth]="14"
-                                 [nzSize]="'small'"
-                                 [nzShowInfo]="false">
-                    </nz-progress>
-                    <nz-progress *ngIf="board.numOfAnnouncements === 0"
-                                 [nzPercent]="100"
-                                 [nzStrokeColor]="'#bbb'" [nzStrokeWidth]="14"
-                                 [nzSize]="'small'"
-                                 [nzShowInfo]="false">
-                    </nz-progress>
-                    <nz-progress *ngIf="board.numOfConsumingWorkflow > 0 || board.numOfExpectingWorkflow > 0"
-                                 [nzPercent]="100"
-                                 [nzStrokeColor]="'#1171a6'" [nzStrokeWidth]="14"
-                                 [nzSize]="'small'"
-                                 [nzShowInfo]="false">
-                    </nz-progress>
-                    <nz-progress *ngIf="board.numOfConsumingWorkflow === 0 && board.numOfExpectingWorkflow === 0"
-                                 [nzPercent]="100"
-                                 [nzStrokeColor]="'#FFA640'" [nzStrokeWidth]="14"
-                                 [nzSize]="'small'"
-                                 [nzShowInfo]="false">
-                    </nz-progress>
-                  </div>
-                </td>
-
-                <td *ngIf="!plansFilters.filter.isCompact"
-                    [ngClass]="(board.numOfConsumingWorkflow > 0 || board.numOfExpectingWorkflow > 0) ? 'expected' : 'not-expected'">
-                  {{ board.numOfExpectedNotices || 0 }}
-                </td>
-                <td *ngIf="!plansFilters.filter.isCompact">{{ board.numOfPostedNotices || 0 }}</td>
-                <td *ngIf="!plansFilters.filter.isCompact">{{ board.numOfExpectingOrders || 0 }}</td>
-                <td (click)="onSelect(board.path)" class="text-center cur-point">
-                  <i class="fa fa-codepen"></i>
-                </td>
-              </tr>
-
-              <tr *ngIf="board.show && board?.children">
-                <td *ngIf="permission.currentController && permission.currentController.noticeBoards.delete" class="chk"></td>
-                <td class="menu"></td>
-                <td class="order-history-template0" colspan="8" style="padding:0 !important;">
-                  <nz-table #nestedTable [nzData]="board.children" [nzLoading]="board?.loading"
-                          [nzFrontPagination]="false" [nzShowPagination]="false" [nzSize]="'small'" class="m-a-0 inner-table">
-                  <thead>
-                  <tr>
-                    <th *ngIf="permission.currentController && permission.currentController.noticeBoards.delete"
-                                [nzShowCheckbox]="true"
-                                [(nzChecked)]="board.checked"
-                                [nzIndeterminate]="board.indeterminate"
-                                (nzCheckedChange)="checkAllNotice($event, board)"
-                                class="chk"
-                            ></th>
-                            <th
-                              *ngIf="permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)"
-                              nzWidth="55px"><span translate>common.label.action</span></th>
-                            <th><span translate>resource.board.label.id</span></th>
-                            <th><span translate>common.label.state</span></th>
-                            <th><span translate>resource.board.label.expectingOrders</span></th>
-                  </tr>
-                    </thead>
-                    <tbody>
-                      <ng-template [ngForOf]="nestedTable.data" let-child ngFor>
-                        {{board.boardType | json}}
-                        <tr *ngIf="board?.children.length > 0">
-                          <td
-                                *ngIf="permission.currentController && permission.currentController.noticeBoards.delete" [nzChecked]="mapOfCheckedId.has(child.id +'__' + board.path)"
-                                (nzCheckedChange)="onNoticeItemCheck(board, child, $event)"
-                                [nzShowCheckbox]="true"></td>
-                          <td>
-                            <div class="btn-group dropdown">
-                              <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown
-                                      nzTrigger="click" type="button">
-                                <i class="fa fa-ellipsis-h"></i>
-                              </button>
-                              <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                                <ul nz-menu>
-                                  <li (click)="post(board, child, plansFilters.filter.calView)" *ngIf="permission.currentController.noticeBoards.post"
-                                      [nzDisabled]="(child.state._text === 'POSTED')"
-                                      nz-menu-item>
-                                    <a translate>resource.board.button.post</a>
-                                  </li>
-                                  <li (click)="delete(board, child)" *ngIf="permission.currentController.noticeBoards.delete"
-                                      [nzDisabled]="child.state._text !== 'POSTED'"
-                                      nz-menu-item>
-                                    <a translate>resource.board.button.delete</a>
-                                  </li>
-                                </ul>
-                              </nz-dropdown-menu>
-                            </div>
-                          </td>
-                          <td>{{child.id}}</td>
-                          <td><span [innerHtml]="child.state._text | translate" [ngClass]="coreService.getColor(child.state.severity, 'bg')"
-                            class="label"></span></td>
-                          <td>{{child.expectingOrders?.length}}</td>
-                        </tr>
-                        <tr *ngIf="board?.children.length == 0">
-                          <td colspan="10">
-                            <div style="margin-top: 8px; margin-bottom: 5px">
-                              <app-empty-data></app-empty-data>
-                            </div>
-                          </td>
-                        </tr>
-                      </ng-template>
-                    </tbody>
-                  </nz-table>
-                </td>
-              </tr>
-            </ng-template>
-            </tbody>
-          </nz-table>
-        </div>
-      </div>
     </div>
   </div>
 </div>
-<nz-drawer (nzOnClose)="closePanel()" [nzWrapClassName]="'report-drawer'" [nzVisible]="isVisible" nzPlacement="right">
-  <ng-container *nzDrawerContent>
-    <app-show-dailyPlan-dependencies *ngIf="isVisible" [preferences]='preferences' [schedulerId]="schedulerId"
-                                     [noticePath]="noticePath"
-                                     (closePanel)="closePanel()"></app-show-dailyPlan-dependencies>
-  </ng-container>
-</nz-drawer>
 <div *ngIf="!isLoaded" class="spinner">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>

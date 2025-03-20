@@ -151,6 +151,16 @@
         </div>
       </div>
     </div>
+    <div class="row m-b-sm">
+      <div class="col-md-12">
+        <a (click)="expandAll(nodes);" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
+          <i class="fa fa-angle-double-down fa-lg"></i>
+        </a>
+        <a (click)="collapseAll(nodes);" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
+          <i class="fa fa-angle-double-up fa-lg"></i>
+        </a>
+      </div>
+    </div>
     <div *ngIf="nodes.length > 0" class="row">
       <div class="col-md-12">
         <nz-tree

@@ -16,237 +16,12 @@ declare const mxEditor: any;
 declare const mxUtils: any;
 declare const mxEvent: any;
 declare const mxClient: any;
-declare const mxEdgeHandler: any;
+declare const mxTooltipHandler: any;
 declare const mxGraphHandler: any;
 declare const mxGraph: any;
 declare const mxConstants: any;
 declare const mxPoint: any;
 declare const $: any;
-
-
-@Component({
-  selector: 'app-show-dailyPlan-dependencies',
-  templateUrl: './show-dependencies.html',
-  styleUrl: './dependencies.component.scss'
-})
-export class ShowDailyPlanDependenciesComponent {
-  @Input() schedulerId: any;
-  @Input() preferences: any;
-  @Input() noticePath: any;
-  @Output() closePanel: EventEmitter<any> = new EventEmitter();
-  @ViewChild('graphContainer') graphContainer!: ElementRef;
-
-  private graph!: any;
-  private editor!: any;
-  private pendingHTTPRequests$ = new Subject<void>();
-  private subscription: Subscription;
-  private workflowData: any
-  isPathDisplay = true
-  isLoaded: boolean = false;
-  configXml = './assets/mxgraph/config/diagram.xml';
-
-  destroyGraph(): void {
-    if (this.graph) {
-      this.graph.getModel().clear();
-    }
-    this.workflowData = null;
-  }
-
-  constructor(public coreService: CoreService, private dataService: DataService, public workflowService: WorkflowService,) {
-    this.subscription = dataService.eventAnnounced$.subscribe(res => this.refreshGraph(res));
-  }
-
-  ngOnInit(): void {
-    this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'false';
-    this.loadAdditionalData()
-    if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
-      this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
-    }
-  }
-
-  ngAfterViewInit() {
-    this.initGraph();
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-    this.pendingHTTPRequests$.next();
-    this.pendingHTTPRequests$.complete();
-    try {
-      if (this.editor) {
-        this.editor.destroy();
-        this.editor = undefined;
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  private initGraph() {
-    if (!mxClient.isBrowserSupported()) {
-      mxUtils.error('Browser not supported!', 200, false);
-      return;
-    }
-
-    this.graph = new mxGraph(this.graphContainer.nativeElement);
-    this.graph.setPanning(true);
-    this.graph.setCellsResizable(false);
-    this.graph.setConnectable(false);
-    this.graph.setHtmlLabels(true);
-    this.graph.setDisconnectOnMove(false);
-    this.graph.setCellsMovable(false);
-    this.graph.setCellsLocked(true);
-
-    mxGraphHandler.prototype.guidesEnabled = true;
-    mxGraph.prototype.cellsResizable = false;
-    mxGraph.prototype.multigraph = false;
-    mxGraph.prototype.allowDanglingEdges = false;
-    mxGraph.prototype.foldingEnabled = true;
-    mxConstants.VERTEX_SELECTION_COLOR = null;
-    mxConstants.EDGE_SELECTION_COLOR = null;
-    mxConstants.GUIDE_COLOR = null;
-
-    mxEdgeHandler.prototype.snapToTerminals = true;
-
-    let style = this.graph.getStylesheet().getDefaultEdgeStyle();
-    style[mxConstants.STYLE_EDGE] = mxConstants.EDGESTYLE_ELBOW;
-    style[mxConstants.STYLE_ROUNDED] = true;
-    style[mxConstants.STYLE_ORTHOGONAL] = true;
-    style[mxConstants.STYLE_STROKEWIDTH] = 2;
-    style[mxConstants.STYLE_ENDARROW] = mxConstants.ARROW_BLOCK;
-    this.graph.getStylesheet().putDefaultEdgeStyle(style);
-    this.graph.setTooltips(true);
-
-    this.graph.getTooltipForCell = (cell) => {
-      if (cell && typeof cell.value === 'object') {
-        return cell.value.fullLabel;
-      }
-      return cell.value;
-    };
-
-    mxEvent.addMouseWheelListener((evt, up) => {
-      if (evt.ctrlKey) {
-        if (up) {
-          this.graph.zoomIn();
-        } else {
-          this.graph.zoomOut();
-        }
-        mxEvent.consume(evt);
-      }
-    });
-
-    mxEvent.addListener(document, 'keydown', (evt) => {
-      if (evt.ctrlKey && evt.key === '=') {
-        this.graph.zoomIn();
-      } else if (evt.ctrlKey && evt.key === '-') {
-        this.graph.zoomOut();
-      }
-    });
-
-    this.graph.convertValueToString = (cell) => {
-      if (cell && typeof cell.value === 'object') {
-        const fullLabel = cell.value.fullLabel;
-        const maxLength = 22;
-        return fullLabel.length > maxLength ? fullLabel.substring(0, maxLength) + '...' : fullLabel;
-      }
-      return cell.value;
-    };
-
-  }
-
-  zoomIn(): void {
-    this.graph.zoomIn();
-  }
-
-  zoomOut(): void {
-    this.graph.zoomOut();
-  }
-
-  actual(): void {
-    if (this.graph) {
-      this.graph.zoomActual();
-      this.workflowService.center(this.graph);
-    }
-  }
-
-  fit(): void {
-    if (this.graph) {
-      this.graph.fit();
-      this.graph.center(true, true, 0.5, 0.1);
-    }
-  }
-
-  private loadGraphData(noticeBoardPath: string) {
-    if (!this.workflowData) return;
-
-    const parent = this.graph.getDefaultParent();
-    this.graph.getModel().beginUpdate();
-
-    try {
-      const noticeBoardNode = this.createNode(parent, noticeBoardPath, 300, 100, 'fillColor=#d0d0d0', true);
-      const ySpacing = 70;
-
-      const postingNodes = (this.workflowData.noticeBoard?.postingWorkflows || []).map((wf: any, index: number) => {
-        return this.createNode(
-          parent,
-          this.isPathDisplay ? wf?.path?.split('/').pop() : wf?.path,
-          100,
-          200 + index * ySpacing,
-          'fillColor=#1171a6',
-          false,
-          true
-        );
-      });
-      const expectingNodes = (this.workflowData.noticeBoard?.expectingWorkflows || []).map((wf: any, index: number) => {
-        return this.createNode(parent, this.isPathDisplay ? wf?.path?.split('/').pop() : wf?.path, 500, 200 + index * ySpacing, 'fillColor=#FFA640');
-      });
-
-      postingNodes.forEach(node => {
-        this.graph.insertEdge(parent, null, "", node, noticeBoardNode, 'edgeStyle=elbowEdgeStyle;rounded=1;orthogonal=1;strokeWidth=2;strokeColor=#1171a6;');
-
-      });
-
-      expectingNodes.forEach(node => {
-        this.graph.insertEdge(parent, null, "", noticeBoardNode, node, 'edgeStyle=elbowEdgeStyle;rounded=1;orthogonal=1;strokeWidth=2;strokeColor=#FFA640;');
-
-      });
-
-    } finally {
-      this.graph.getModel().endUpdate();
-      this.graph.center(true, true);
-    }
-  }
-
-  private createNode(parent: any, label: string, x: number, y: number, style: string, isNoticeBoard = false, isPostingWorkflow = false) {
-    const maxLength = 22;
-    const isTruncated = label.length > maxLength;
-    const displayLabel = isTruncated ? label.substring(0, maxLength) + '...' : label;
-    const nodeStyle = isNoticeBoard
-      ? `${style};shape=ellipse;strokeWidth=2;strokeColor=#d0d0d0`
-      : isPostingWorkflow
-        ? `${style};rounded=1;arcSize=20;strokeWidth=2;strokeColor=#1171a6;fontColor=#FFFFFF;`
-        : `${style};rounded=1;arcSize=20;strokeWidth=2;strokeColor=#FFA640`;
-    const vertex = this.graph.insertVertex(parent, null, {fullLabel: label, displayLabel}, x, y, 150, 50, nodeStyle);
-
-    return vertex;
-  }
-
-  loadAdditionalData() {
-    this.isLoaded = true;
-    this.coreService.post('notice/board/dependencies', {
-      controllerId: this.schedulerId,
-      noticeBoardPath: this.noticePath,
-    }).subscribe((res) => {
-      this.isLoaded = false;
-      this.workflowData = res
-      this.loadGraphData(this.noticePath);
-    });
-  }
-
-  private refreshGraph(event: any) {
-    this.graph.refresh();
-  }
-}
 
 @Component({
   selector: 'app-dependencies',
@@ -279,9 +54,19 @@ export class DependenciesComponent {
   listOfCurrentPageData: readonly Data[] = [];
   setOfCheckedId = new Set<number>();
   mapOfCheckedId = new Set();
+
   @ViewChild('graphContainer') graphContainer!: ElementRef;
 
-  constructor(public coreService: CoreService, private orderPipe: OrderPipe, private modal: NzModalService) {
+  private graph!: any;
+  private editor!: any;
+  private pendingHTTPRequests$ = new Subject<void>();
+  private subscription: Subscription;
+  private workflowData: any;
+
+  configXml = './assets/mxgraph/config/diagram.xml';
+
+  constructor(public coreService: CoreService, private orderPipe: OrderPipe, private dataService: DataService, public workflowService: WorkflowService, private modal: NzModalService) {
+    this.subscription = dataService.eventAnnounced$.subscribe(res => this.refreshGraph(res));
   }
 
   ngOnInit(): void {
@@ -289,10 +74,14 @@ export class DependenciesComponent {
     const d = new Date().setHours(0, 0, 0, 0);
     this.selectedDate = new Date(d);
     this.plansFilters = this.coreService.getPlansTab();
-    this.loadPlans()
+    // this.loadPlans()
     this.initConf();
-
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'false';
+    if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
+      this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
+    }
   }
+
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['parentLoaded'] && changes['parentLoaded'].currentValue) {
@@ -302,6 +91,28 @@ export class DependenciesComponent {
     }
   }
 
+  ngAfterViewInit() {
+    setTimeout(()=>{
+      this.loadAdditionalData();
+    },100)
+    this.initGraph();
+    this.graph.fit();
+  }
+
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+    this.pendingHTTPRequests$.next();
+    this.pendingHTTPRequests$.complete();
+    try {
+      if (this.editor) {
+        this.editor.destroy();
+        this.editor = undefined;
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   private initConf(): void {
     if (this.plansFilters.selectedDate) {
@@ -319,7 +130,7 @@ export class DependenciesComponent {
           selectedDate: this.selectedDate,
           clickDay: (e) => {
             this.selectedDate = e.date;
-            this.loadPlans()
+            // this.loadPlans()
           },
           renderEnd: (e) => {
 
@@ -353,7 +164,7 @@ export class DependenciesComponent {
 
     this.coreService.post('plans', requestPayload)
       .subscribe((res) => {
-        if(board){
+        if (board) {
           res?.plans?.forEach(plan => {
             plan?.noticeBoards?.forEach(noticeBoard => {
               board.children = noticeBoard.notices;
@@ -361,17 +172,18 @@ export class DependenciesComponent {
           });
 
           this.isLoaded = true;
-        }else{
+        } else {
           this.processData(res)
           this.isLoaded = true;
         }
 
-    });
+      });
+
   }
 
   setView(view): void {
     this.plansFilters.filter.calView = view;
-    this.loadPlans();
+    // this.loadPlans();
   }
 
   processData(data: { plans?: { noticeBoards?: any[] }[] }) {
@@ -476,7 +288,7 @@ export class DependenciesComponent {
     } else {
       this.setOfCheckedId.delete(path);
     }
-    const mapOfCheckedId = {mapOfCheckedId: this.mapOfCheckedId, setOfCheckedId: this.setOfCheckedId };
+    const mapOfCheckedId = {mapOfCheckedId: this.mapOfCheckedId, setOfCheckedId: this.setOfCheckedId};
     this.checkedNotices.emit(mapOfCheckedId);
   }
 
@@ -599,41 +411,41 @@ export class DependenciesComponent {
     }
   }
 
-      postAllNotices(): void {
-          const paths = Array.from(this.setOfCheckedId);
-          this.modal.create({
-            nzTitle: undefined,
-            nzContent: PostModalComponent,
-            nzClassName: 'lg',
-            nzAutofocus: null,
-            nzData: {
-              paths,
-              controllerId: this.schedulerId,
-              preferences: this.preferences
-            },
-            nzFooter: null,
-            nzClosable: false,
-            nzMaskClosable: false
-          });
-        }
+  postAllNotices(): void {
+    const paths = Array.from(this.setOfCheckedId);
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: PostModalComponent,
+      nzClassName: 'lg',
+      nzAutofocus: null,
+      nzData: {
+        paths,
+        controllerId: this.schedulerId,
+        preferences: this.preferences
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
 
-      private deleteAll(board, comments): void {
-        if (board) {
-          if (!board.notices) {
-            this.getNoticeBoards({
-              noticeBoardPaths: [board.path],
-              controllerId: this.schedulerId
-            }, (data) => {
-              if (data && data.length > 0) {
-                board.notices = data[0].notices;
-                this._deleteAll(board, comments);
-              }
-            });
-          } else {
+  private deleteAll(board, comments): void {
+    if (board) {
+      if (!board.notices) {
+        this.getNoticeBoards({
+          noticeBoardPaths: [board.path],
+          controllerId: this.schedulerId
+        }, (data) => {
+          if (data && data.length > 0) {
+            board.notices = data[0].notices;
             this._deleteAll(board, comments);
           }
-        }
+        });
+      } else {
+        this._deleteAll(board, comments);
       }
+    }
+  }
 
   private _deleteAll(board, comments): void {
     let ids = [];
@@ -720,6 +532,7 @@ export class DependenciesComponent {
 
     return colors;
   }
+
   showDetail(board): void {
     board.show = true;
     // this.loadPlans(board)
@@ -741,21 +554,21 @@ export class DependenciesComponent {
 
     this.coreService.post('notice/boards', requestPayload)
       .subscribe((res) => {
-        if(board){
+        if (board) {
           res?.noticeBoards?.forEach(noticeBoard => {
             board.children = noticeBoard.notices;
           });
           this.isLoaded = true;
-        }else{
+        } else {
           this.processData(res)
           this.isLoaded = true;
         }
 
-    });
+      });
   }
 
   getFormattedPath(path: any): any {
-    return  this.isPathDisplay ? path?.split('/').pop() : path
+    return this.isPathDisplay ? path?.split('/').pop() : path
   }
 
   private checkChild(value: boolean, board): void {
@@ -789,25 +602,307 @@ export class DependenciesComponent {
     }
     this.updateCheckedSet(board.path, checked);
     this.refreshCheckedStatus();
-    const mapOfCheckedId = {mapOfCheckedId: this.mapOfCheckedId, setOfCheckedId: this.setOfCheckedId };
+    const mapOfCheckedId = {mapOfCheckedId: this.mapOfCheckedId, setOfCheckedId: this.setOfCheckedId};
     this.checkedNotices.emit(mapOfCheckedId);
   }
 
   checkAllNotice(checked: boolean, board?): void {
     board.checked = checked;
-    if(checked){
+    if (checked) {
       board.children.forEach(notice => {
         this.mapOfCheckedId.add(notice.id + '__' + board.path);
       })
-    }else{
+    } else {
       board.children.forEach(notice => {
         this.mapOfCheckedId.delete(notice.id + '__' + board.path);
       })
     }
     this.updateCheckedSet(board.path, checked);
     this.refreshCheckedStatus();
-    const mapOfCheckedId = {mapOfCheckedId: this.mapOfCheckedId, setOfCheckedId: this.setOfCheckedId };
+    const mapOfCheckedId = {mapOfCheckedId: this.mapOfCheckedId, setOfCheckedId: this.setOfCheckedId};
     this.checkedNotices.emit(mapOfCheckedId);
   }
 
+  zoomIn(): void {
+    this.graph.zoomIn();
+  }
+
+  zoomOut(): void {
+    this.graph.zoomOut();
+  }
+
+  actual(): void {
+    if (this.graph) {
+      this.graph.zoomActual();
+      this.workflowService.center(this.graph);
+    }
+  }
+
+  fit(): void {
+    if (this.graph) {
+      this.graph.fit();
+      this.graph.center(true, true, 0.5, 0.1);
+    }
+  }
+
+  private initGraph(): void {
+    if (!mxClient.isBrowserSupported()) {
+      mxUtils.error('Browser not supported!', 200, false);
+      return;
+    }
+    this.graph = new mxGraph(this.graphContainer.nativeElement);
+
+    // Basic configuration
+    this.graph.setPanning(true);
+    this.graph.setCellsResizable(false);
+    this.graph.setConnectable(true);
+    this.graph.setHtmlLabels(true);
+    this.graph.setCellsMovable(false);
+    this.graph.setCellsLocked(false);
+
+    mxGraphHandler.prototype.guidesEnabled = true;
+    mxGraph.prototype.cellsResizable = false;
+    mxGraph.prototype.multigraph = true;
+    mxGraph.prototype.allowDanglingEdges = false;
+    mxGraph.prototype.foldingEnabled = true;
+
+    // Default edge style
+    const style = this.graph.getStylesheet().getDefaultEdgeStyle();
+    style[mxConstants.STYLE_EDGE] = mxConstants.EDGESTYLE_ORTHOGONAL;
+    style[mxConstants.STYLE_ROUNDED] = true;
+    style[mxConstants.STYLE_STROKEWIDTH] = 2;
+    style[mxConstants.STYLE_ENDARROW] = mxConstants.ARROW_CLASSIC;
+    this.graph.getStylesheet().putDefaultEdgeStyle(style);
+
+    // Keep edges on top.
+    this.graph.keepEdgesInBackground = false;
+    this.graph.keepEdgesOnTop = true;
+
+    // Enable tooltips.
+    this.graph.setTooltips(true);
+
+    this.graph.convertValueToString = function (cell) {
+      if (this.model.isEdge(cell)) {
+        return ''; // hide edge labels
+      }
+      // For vertices, we still show the truncated value.
+      return cell.value;
+    };
+
+    this.graph.getTooltipForCell = function (cell) {
+      // For edges, return the custom tooltip if set.
+      if (this.model.isEdge(cell)) {
+        return cell.tooltip || '';
+      }
+      // For vertices, if a custom tooltip is available, return it.
+      if (cell.tooltip) {
+        return cell.tooltip;
+      }
+      return cell.value ? cell.value.toString() : '';
+    };
+  }
+
+  /**
+   * Helper to create a node.
+   */
+  private createNode(
+    parent: any,
+    label: string,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    style: string
+  ) {
+    // Limit displayed label to 22 characters; if longer, append ellipsis.
+    let displayLabel = label;
+    if (label.length > 22) {
+      displayLabel = label.substring(0, 22) + '...';
+    }
+    // Insert the vertex using the truncated display label.
+    let vertex = this.graph.insertVertex(parent, null, displayLabel, x, y, width, height, style);
+    // Store the full label in a custom tooltip property.
+    vertex.tooltip = label;
+    return vertex;
+  }
+
+
+  // Helper function: returns the intersection of two string arrays.
+  private getIntersection(arr1: string[], arr2: string[]): string[] {
+    return arr1.filter(x => arr2.includes(x));
+  }
+
+  // Helper: Build rows dynamically from your JSON data.
+  // Each row object will include a posting workflow and arrays of expecting and consuming objects.
+  // Each expecting/consuming object contains the workflow path and the notice to show.
+  private buildRowsFromData(data: any): any[] {
+    const rows: any[] = [];
+    const postingWorkflows = data.postingWorkflows;
+    const expectingWorkflows = data.expectingWorkflows;
+    const consumingWorkflows = data.consumingWorkflows;
+
+    postingWorkflows.forEach((p: any) => {
+      const row: any = {
+        posting: p.path,
+        expecting: [] as { path: string, notice: string }[],
+        consuming: [] as { path: string, notice: string }[]
+      };
+
+      // For expecting: if posting already has expectNotices, use its own path.
+      if (p.expectNotices && p.expectNotices.length > 0) {
+        row.expecting.push({path: p.path, notice: p.expectNotices[0]});
+      } else {
+        expectingWorkflows.forEach((e: any) => {
+          if (e.expectNotices && p.postNotices) {
+            const common = this.getIntersection(p.postNotices, e.expectNotices);
+            if (common.length > 0) {
+              row.expecting.push({path: e.path, notice: common[0]});
+            }
+          }
+        });
+      }
+
+      // For consuming: find consuming workflows with matching notices.
+      consumingWorkflows.forEach((c: any) => {
+        if (c.consumeNotices && p.postNotices) {
+          const common = this.getIntersection(p.postNotices, c.consumeNotices);
+          if (common.length > 0) {
+            row.consuming.push({path: c.path, notice: common[0]});
+          }
+        }
+      });
+
+      rows.push(row);
+    });
+
+    return rows;
+  }
+
+  // Main function: dynamically creates rows and draws nodes and edges.
+  // Edges use the custom tooltip property (set on each edge) to show the notice name when hovered.
+  private loadGraphData(): void {
+    const parent = this.graph.getDefaultParent();
+    this.graph.getModel().beginUpdate();
+    try {
+      // Your dynamic JSON data:
+      const dynamicData = this.workflowData;
+
+      // Build rows dynamically using your helper function.
+      const rows = this.buildRowsFromData(dynamicData);
+
+      // Positioning variables.
+      const xPosting = 100;      // Left column for posting nodes.
+      const xRight = 400;        // Right column for expecting/consuming nodes.
+      let currentY = 100;        // Starting Y for the first row.
+      const rowSpacing = 20;     // Extra gap after each row.
+      const minRowHeight = 120;  // Minimal row height.
+      const nodeWidth = 150;
+      const nodeHeight = 50;
+      const nodeGap = 10;        // Gap between nodes within the same group.
+      const groupGap = 40;       // Gap between expecting and consuming blocks.
+
+      // Updated styles with light color shades, inner shadow effect simulation, and same border.
+      const stylePosting = 'fillColor=#d0e0e3;strokeColor=#d0e0e3;shadow=1;shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888888;rounded=1;arcSize=20;strokeWidth=1;fontColor=#000000;';
+      const styleExpecting = 'fillColor=#ffe6cc;strokeColor=#ffe6cc;shadow=1;shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888888;rounded=1;arcSize=20;strokeWidth=1;fontColor=#000000;';
+      const styleConsuming = 'fillColor=#c8e6c9;strokeColor=#c8e6c9;shadow=1;shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888888;rounded=1;arcSize=20;strokeWidth=1;fontColor=#000000;';
+
+
+      // For each row, create nodes and edges.
+      rows.forEach((row, i) => {
+        const E = row.expecting.length;
+        const C = row.consuming.length;
+
+        const expectingBlockHeight = E > 0 ? E * nodeHeight + (E - 1) * nodeGap : 0;
+        const consumingBlockHeight = C > 0 ? C * nodeHeight + (C - 1) * nodeGap : 0;
+        let totalBlockHeight = 0;
+        if (E > 0 && C > 0) {
+          totalBlockHeight = expectingBlockHeight + groupGap + consumingBlockHeight;
+        } else {
+          totalBlockHeight = expectingBlockHeight || consumingBlockHeight;
+        }
+        const rowHeightCalculated = Math.max(minRowHeight, totalBlockHeight);
+        const rowCenterY = currentY + rowHeightCalculated / 2;
+
+        // Create Posting node (left column).
+        let pCell: any = this.createNode(parent, row.posting, xPosting, rowCenterY, nodeWidth, nodeHeight, stylePosting);
+
+        // Right column: create expecting and consuming nodes within one vertical block.
+        let expectingNodes: any[] = [];
+        let consumingNodes: any[] = [];
+        if (totalBlockHeight > 0) {
+          let topY = rowCenterY - totalBlockHeight / 2;
+          if (E > 0) {
+            for (let j = 0; j < E; j++) {
+              const expectVal = row.expecting[j].path;
+              const nodeY = topY + j * (nodeHeight + nodeGap);
+              const node = this.createNode(parent, expectVal, xRight, nodeY, nodeWidth, nodeHeight, styleExpecting);
+              expectingNodes.push({cell: node, notice: row.expecting[j].notice});
+            }
+            if (C > 0) {
+              topY += expectingBlockHeight + groupGap;
+            }
+          }
+          if (C > 0) {
+            for (let j = 0; j < C; j++) {
+              const consumeVal = row.consuming[j].path;
+              const nodeY = topY + j * (nodeHeight + nodeGap);
+              const node = this.createNode(parent, consumeVal, xRight, nodeY, nodeWidth, nodeHeight, styleConsuming);
+              consumingNodes.push({cell: node, notice: row.consuming[j].notice});
+            }
+          }
+        }
+
+        // Draw edges from Posting node to each Expecting node.
+        expectingNodes.forEach((entry) => {
+          let edge = this.graph.insertEdge(
+            parent,
+            null,
+            "", // Hide the edge label.
+            pCell,
+            entry.cell,
+            'strokeColor=#1171a6;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=horizontal;orthogonal=1;jettySize=auto'
+          );
+          edge.tooltip = entry.notice;
+        });
+        // Draw edges from Posting node to each Consuming node.
+        consumingNodes.forEach((entry) => {
+          let edge = this.graph.insertEdge(
+            parent,
+            null,
+            "", // Hide the edge label.
+            pCell,
+            entry.cell,
+            'strokeColor=#5cb85c;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=horizontal;orthogonal=1;jettySize=auto'
+          );
+          edge.tooltip = entry.notice;
+        });
+
+        // Advance currentY for the next row.
+        currentY += rowHeightCalculated + rowSpacing;
+      });
+    } finally {
+      this.graph.getModel().endUpdate();
+      setTimeout(()=>{
+        this.graph.center(true, true);
+      },100)
+    }
+  }
+
+  loadAdditionalData() {
+    this.isLoaded = false;
+    this.coreService.post('/workflows/boards', {
+      controllerId: this.schedulerId,
+    }).subscribe((res) => {
+      this.isLoaded = true;
+      this.workflowData = res;
+      setTimeout(()=>{
+        this.loadGraphData();
+      },100)
+
+    });
+  }
+
+  private refreshGraph(event: any) {
+    this.graph.refresh();
+  }
 }

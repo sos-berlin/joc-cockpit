@@ -6521,6 +6521,9 @@ export class CreateObjectModalComponent {
     this.coreService.getAuditLogObj(this.comments, request.auditLog);
     this.coreService.post(this.type == 'DEPLOYMENTDESCRIPTOR' ? 'descriptor/copy' : 'inventory/copy', request).subscribe({
       next: (res) => {
+        if (this.type !== 'DEPLOYMENTDESCRIPTOR') {
+          res.copied = true;
+        }
         this.activeModal.close(res);
       }, error: () => {
         this.submitted = false;
@@ -12271,6 +12274,9 @@ export class InventoryComponent {
       this.type = obj.objectType;
       this.selectedData = obj;
       this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, '$ID');
+      if(res && res?.copied) {
+        this.selectedData.copied = true;
+      }
     }
   }
 
@@ -12844,7 +12850,6 @@ export class InventoryComponent {
   }
 
   changes() {
-    console.log('ddddddddd')
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: AddChangesModalComponent,

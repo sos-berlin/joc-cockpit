@@ -1,4 +1,4 @@
-import {Component, inject} from "@angular/core";
+import {Component, inject, ChangeDetectorRef} from "@angular/core";
 import {AuthService} from "../../components/guard";
 import {CoreService} from "../../services/core.service";
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
@@ -35,7 +35,7 @@ export class AddChangesModalComponent{
   referencedObjectTypes: string[] = [];
   affectedCollapsed: { [key: string]: boolean } = {};
   referencedCollapsed: { [key: string]: boolean } = {};
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService ){}
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService, private cdRef: ChangeDetectorRef ){}
 
   ngOnInit(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
@@ -593,7 +593,29 @@ export class AddChangesModalComponent{
     return result;
   }
 
+  expandAll(nodes): void {
+    nodes.forEach(node => {
+      node.expanded = true; // Expand the node
+      if (node.children && node.children.length > 0) {
 
+          this.expandAll(node.children); // Recursively expand children
+      }
+    });
+    this.nodes = [...nodes];
+    this.cdRef.detectChanges();
+  }
+
+  collapseAll(nodes): void {
+    nodes.forEach(node => {
+      node.expanded = false; // Expand the node
+      if (node.children && node.children.length > 0) {
+
+          this.expandAll(node.children); // Recursively expand children
+      }
+    });
+    this.nodes = [...nodes];
+    this.cdRef.detectChanges();
+  }
 
 }
 

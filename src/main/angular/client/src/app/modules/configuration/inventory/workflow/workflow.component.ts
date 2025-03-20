@@ -3753,6 +3753,8 @@ export class WorkflowComponent {
   workflowPath: any;
   subscription1: Subscription;
   subscription2: Subscription;
+  isCopiedWorkflow = false;
+  copiedWorkflowJobTags: any = {};
 
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
@@ -3868,6 +3870,15 @@ export class WorkflowComponent {
       this.selectedNode = null;
     }
     if (changes['data']) {
+      if (changes['data'].currentValue?.copied && changes['data'].previousValue?.children && changes['data'].previousValue?.children.length > 0) {
+        this.isCopiedWorkflow = true;
+        changes['data'].previousValue?.children.forEach(child => {
+          if(child?.selected){
+            this.copiedWorkflowJobTags.copiedWorkflowPath = child.path + child.name,
+            this.copiedWorkflowJobTags.newWorkflowPath = changes['data'].currentValue?.path + changes['data'].currentValue?.name
+          }
+        })
+      }
       if (this.data.type) {
         if (this.workflowTree.length > 0) {
           this.recursiveTreeUpdate(this.workflowTree);
@@ -4273,12 +4284,28 @@ export class WorkflowComponent {
           if (this.workflowService.isInstructionCollapsible(obj.TYPE)) {
             this.getJobsArray(obj);
           }
+          this.fetchJobTags(obj.jobName, [this.workflowPath], (copiedTagsData) => {
+            const copiedJobTags = copiedTagsData.find(jobTag => jobTag.jobName === this.workflowPath)?.jobTags ?? [];
+            obj.jobTags = copiedJobTags;
+          });
           this.inventoryConf.copiedInstuctionObject.push(obj);
         }
       });
       this.copyId = [];
     }
+  }
 
+  private fetchJobTags(jobName, path, callback: (jobTags: any[]) => void): void {
+    const obj = {
+      path: path,
+      jobNames: jobName
+    };
+    this.coreService.post('inventory/workflow/tags/job', obj).subscribe({
+      next: (res: any) => {
+        const copiedTagsData = res.jobs;
+        callback(copiedTagsData);
+      }
+    });
   }
 
   private getJobsArray(obj): void {
@@ -5367,6 +5394,14 @@ export class WorkflowComponent {
             if (this.workflowService.getJobValue()) {
               this.navToJob(this.workflow.configuration, this.workflowService.getJobValue());
               this.workflowService.setJobValue('')
+            }
+            if (this.isCopiedWorkflow) {
+              const keysArray = Object.keys(res.configuration.jobs);
+              this.fetchJobTags(keysArray, this.copiedWorkflowJobTags.copiedWorkflowPath, (copiedTagsData) => {
+                if(copiedTagsData && copiedTagsData.length > 0){
+                  this.storeJobTags(this.copiedWorkflowJobTags.newWorkflowPath, copiedTagsData, true);
+                }
+              });
             }
           } catch (e) {
             console.error(e);
@@ -11212,6 +11247,9 @@ export class WorkflowComponent {
                 }
               }
             }
+            if (json.instructions[x] && json.instructions[x].jobTags && json.instructions[x].jobTags.length > 0) {
+              self.storeJobTags(self.workflow.path, json.instructions[x]);
+            }
           }
         }
       }
@@ -11219,6 +11257,9 @@ export class WorkflowComponent {
       if (copyObject.TYPE === 'Job') {
         copyObject.jobName = getJob(copyObject.jobName);
         copyObject.label = copyObject.jobName;
+        if (copyObject && copyObject.jobTags && copyObject.jobTags.length > 0) {
+          self.storeJobTags(self.workflow.path, copyObject);
+        }
       } else if (copyObject.TYPE === 'Fork') {
         if (copyObject.branches) {
           for (let i = 0; i < copyObject.branches.length; i++) {
@@ -13781,13 +13822,24 @@ export class WorkflowComponent {
     });
   }
 
-  private storeJobTags(): void {
-    const request: any = {
-      path: this.workflow.path,
-      jobs: [{
+  private storeJobTags(path = null, copyObject = null, isWorkflow = false): void {
+    const request: any = {};
+    if (path && copyObject) {
+      request.path = path;
+      if (isWorkflow) {
+      request.jobs = copyObject;
+      } else {
+        request.jobs = [{
+          jobName: copyObject.jobName,
+          jobTags: copyObject.jobTags
+        }];
+      }
+    } else {
+      request.path = this.workflow.path;
+      request.jobs = [{
         jobName: this.selectedJob,
         jobTags: this.jobTags
-      }],
+      }];
     }
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
