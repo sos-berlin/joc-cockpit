@@ -2,18 +2,6 @@
   <div
     *ngIf="!(checked && setOfCheckedId.size > 0 && noticeBoards.length > (plansFilters.entryPerPage || preferences.entryPerPage))"
     class="col-md-12 m-b">
-    <div class="inline btn-group" style="width: 338px">
-      <div (click)="setView('Global')"
-           [class.primary]="plansFilters.filter.calView === 'Global'"
-           class="btn btn-default btn-sm" translate>
-        dailyPlan.label.global
-      </div>
-      <div (click)="setView('Plannable')"
-           [class.primary]="plansFilters.filter.calView === 'Plannable'"
-           class="btn btn-default btn-sm" translate>
-        dailyPlan.label.plannable
-      </div>
-    </div>
     <div class="inline" style="height: 26px">
       <div class="pos-rel t-xxs">
         <i class="fa fa-stop bg-postingWorkflow"></i>

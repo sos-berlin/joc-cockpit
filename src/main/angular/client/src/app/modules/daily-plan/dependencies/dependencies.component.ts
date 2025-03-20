@@ -42,7 +42,7 @@ export class DependenciesComponent {
   data: any;
   plansFilters: any = {filter: {}};
   noticeBoards: any[] = [];
-  originalNoticeBoards: any[] = [];
+  noticeSpaceKey: any[] = [];
   loading: boolean;
   allChecked = false;
   searchValue = '';
@@ -74,7 +74,7 @@ export class DependenciesComponent {
     const d = new Date().setHours(0, 0, 0, 0);
     this.selectedDate = new Date(d);
     this.plansFilters = this.coreService.getPlansTab();
-    // this.loadPlans()
+    this.loadPlans()
     this.initConf();
     this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'false';
     if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
@@ -87,14 +87,12 @@ export class DependenciesComponent {
     if (changes['parentLoaded'] && changes['parentLoaded'].currentValue) {
       setTimeout(() => {
         this.initConf();
+        this.loadAdditionalData();
       }, 300)
     }
   }
 
   ngAfterViewInit() {
-    setTimeout(()=>{
-      this.loadAdditionalData();
-    },100)
     this.initGraph();
     this.graph.fit();
   }
@@ -130,7 +128,6 @@ export class DependenciesComponent {
           selectedDate: this.selectedDate,
           clickDay: (e) => {
             this.selectedDate = e.date;
-            // this.loadPlans()
           },
           renderEnd: (e) => {
 
@@ -143,68 +140,50 @@ export class DependenciesComponent {
     }, 100)
   }
 
-  loadPlans(board?): void {
+  loadPlans(): void {
     this.isLoaded = false;
-    let planIds
-    if (this.plansFilters.filter.calView === 'Plannable') {
-      planIds = 'DailyPlan'
-    } else {
-      planIds = 'Global';
-    }
     const requestPayload: any = {
-      controllerId: this.schedulerId,
-      noticeSpaceKeys: [this.coreService.getDateByFormat(this.selectedDate, this.preferences.zone, 'YYYY-MM-DD')],
-      planSchemaIds: [planIds],
-      compact: false
+      controllerId: this.schedulerId
     };
 
-    if (board) {
-      requestPayload.noticeBoardPaths = [board.path];
-    }
-
-    this.coreService.post('plans', requestPayload)
+    this.coreService.post('plans/ids', requestPayload)
       .subscribe((res) => {
-        if (board) {
-          res?.plans?.forEach(plan => {
-            plan?.noticeBoards?.forEach(noticeBoard => {
-              board.children = noticeBoard.notices;
-            });
-          });
-
-          this.isLoaded = true;
-        } else {
-          this.processData(res)
-          this.isLoaded = true;
-        }
-
+        this.isLoaded = true;
+        this.processData(res)
       });
 
   }
 
   setView(view): void {
     this.plansFilters.filter.calView = view;
-    // this.loadPlans();
   }
 
-  processData(data: { plans?: { noticeBoards?: any[] }[] }) {
-    if (!data?.plans) return;
-
-    this.originalNoticeBoards = data.plans.flatMap(plan => plan.noticeBoards || []).map((board: any) => ({
-      path: board.path,
-      numOfNotices: board?.numOfNotices,
-      numOfExpectedNotices: board?.numOfExpectedNotices,
-      numOfExpectingOrders: board?.numOfExpectingOrders,
-      numOfPostedNotices: board?.numOfPostedNotices,
-      numOfAnnouncements: board?.numOfAnnouncements,
-      numOfConsumingWorkflow: board?.consumingWorkflows?.length ?? 0,
-      numOfExpectingWorkflow: board?.expectingWorkflows?.length ?? 0,
-      versionDate: board?.versionDate,
-      checked: board?.checked ?? false
-    }));
-
-    this.noticeBoards = [...this.originalNoticeBoards];
+  processData(data: any): void {
+    if (!data || !data.plans) {
+      return;
+    }
+    const planDates = data.plans.map((plan: any) => {
+      const noticeSpaceKey = plan.planId?.noticeSpaceKey || '';
+      return {
+        startDate: this.convertStringToDate(noticeSpaceKey),
+        endDate: this.convertStringToDate(noticeSpaceKey)
+      };
+    });
+    this.noticeSpaceKey = planDates;
+    const calendar = $('#full-calendar2').data('calendar');
+    if (calendar) {
+      calendar.setDataSource(planDates);
+    }
   }
 
+
+  private convertStringToDate(date): any {
+    if (typeof date === 'string') {
+      return this.coreService.getDate(date);
+    } else {
+      return date;
+    }
+  }
 
   navToInventoryTab(data, type): void {
     this.coreService.navToInventoryTab(data, type);
@@ -482,147 +461,6 @@ export class DependenciesComponent {
     });
   }
 
-  filterData(filterType: string): void {
-    this.plansFilters.filter.filterBy = filterType;
-
-    if (filterType === 'expected') {
-      this.noticeBoards = this.originalNoticeBoards.filter(board =>
-        board.numOfConsumingWorkflow > 0 || board.numOfExpectingWorkflow > 0
-      );
-    } else if (filterType === 'notExpected') {
-      this.noticeBoards = this.originalNoticeBoards.filter(board =>
-        board.numOfConsumingWorkflow === 0 && board.numOfExpectingWorkflow === 0
-      );
-    } else if (filterType === 'announced') {
-      this.noticeBoards = this.originalNoticeBoards.filter(board => board.numOfAnnouncements > 0);
-    } else if (filterType === 'notAnnounced') {
-      this.noticeBoards = this.originalNoticeBoards.filter(board => board.numOfAnnouncements === 0);
-    } else {
-      this.noticeBoards = [...this.originalNoticeBoards];
-    }
-  }
-
-  toggleCompactView(): void {
-    this.plansFilters.filter.isCompact = !this.plansFilters.filter.isCompact;
-  }
-
-  getMultiColorNotice(board: any): any {
-    let colors = {};
-
-
-    let announced = board.numOfAnnouncements || 0;
-    let expected = board.numOfConsumingWorkflow + board.numOfExpectingWorkflow || 0;
-
-    let notAnnounced = announced === 0 ? 1 : 0;
-    let notExpected = expected === 0 ? 1 : 0;
-
-    let total = announced + notAnnounced + expected + notExpected;
-
-    let announcedPercent = (announced / total) * 100;
-    let notAnnouncedPercent = (notAnnounced / total) * 100;
-    let expectedPercent = (expected / total) * 100;
-    let notExpectedPercent = (notExpected / total) * 100;
-
-    colors = {
-      '0%': '#C8A2C8',
-      [`${announcedPercent}%`]: '#bbb',
-      [`${announcedPercent + notAnnouncedPercent}%`]: '#1171a6',
-      [`${announcedPercent + notAnnouncedPercent + expectedPercent}%`]: '#FFA640'
-    };
-
-    return colors;
-  }
-
-  showDetail(board): void {
-    board.show = true;
-    // this.loadPlans(board)
-    this.isLoaded = false;
-    let planIds
-    if (this.plansFilters.filter.calView === 'Plannable') {
-      planIds = 'DailyPlan'
-    } else {
-      planIds = 'Global';
-    }
-    const requestPayload: any = {
-      controllerId: this.schedulerId,
-      limit: 5000
-    };
-
-    if (board) {
-      requestPayload.noticeBoardPaths = [board.path];
-    }
-
-    this.coreService.post('notice/boards', requestPayload)
-      .subscribe((res) => {
-        if (board) {
-          res?.noticeBoards?.forEach(noticeBoard => {
-            board.children = noticeBoard.notices;
-          });
-          this.isLoaded = true;
-        } else {
-          this.processData(res)
-          this.isLoaded = true;
-        }
-
-      });
-  }
-
-  getFormattedPath(path: any): any {
-    return this.isPathDisplay ? path?.split('/').pop() : path
-  }
-
-  private checkChild(value: boolean, board): void {
-    if (value && board.notices && board.notices.length > 0) {
-      board.notices.forEach(item => {
-        if (item.state && item.state._text !== 'EXPECTED') {
-          this.mapOfCheckedId.add(item.id + '__' + board.path);
-        }
-      });
-    } else if (board.notices && board.notices.length > 0) {
-      board.notices.forEach(item => {
-        if (this.mapOfCheckedId.has(item.id + '__' + board.path)) {
-          this.mapOfCheckedId.delete(item.id + '__' + board.path);
-        }
-      });
-    }
-    board.indeterminate = false;
-  }
-
-  onNoticeItemCheck(board: any, notice: any, checked: boolean) {
-    if (checked) {
-      if (notice) {
-        if (notice.state && notice.state._text !== 'EXPECTED') {
-          this.mapOfCheckedId.add(notice.id + '__' + board.path);
-        }
-      }
-    } else {
-      if (notice) {
-        this.mapOfCheckedId.delete(notice.id + '__' + board.path);
-      }
-    }
-    this.updateCheckedSet(board.path, checked);
-    this.refreshCheckedStatus();
-    const mapOfCheckedId = {mapOfCheckedId: this.mapOfCheckedId, setOfCheckedId: this.setOfCheckedId};
-    this.checkedNotices.emit(mapOfCheckedId);
-  }
-
-  checkAllNotice(checked: boolean, board?): void {
-    board.checked = checked;
-    if (checked) {
-      board.children.forEach(notice => {
-        this.mapOfCheckedId.add(notice.id + '__' + board.path);
-      })
-    } else {
-      board.children.forEach(notice => {
-        this.mapOfCheckedId.delete(notice.id + '__' + board.path);
-      })
-    }
-    this.updateCheckedSet(board.path, checked);
-    this.refreshCheckedStatus();
-    const mapOfCheckedId = {mapOfCheckedId: this.mapOfCheckedId, setOfCheckedId: this.setOfCheckedId};
-    this.checkedNotices.emit(mapOfCheckedId);
-  }
-
   zoomIn(): void {
     this.graph.zoomIn();
   }
@@ -659,6 +497,7 @@ export class DependenciesComponent {
     this.graph.setHtmlLabels(true);
     this.graph.setCellsMovable(false);
     this.graph.setCellsLocked(false);
+    this.graph.setCellsEditable(false);
 
     mxGraphHandler.prototype.guidesEnabled = true;
     mxGraph.prototype.cellsResizable = false;
@@ -714,27 +553,20 @@ export class DependenciesComponent {
     height: number,
     style: string
   ) {
-    // Limit displayed label to 22 characters; if longer, append ellipsis.
     let displayLabel = label;
     if (label.length > 22) {
       displayLabel = label.substring(0, 22) + '...';
     }
-    // Insert the vertex using the truncated display label.
     let vertex = this.graph.insertVertex(parent, null, displayLabel, x, y, width, height, style);
-    // Store the full label in a custom tooltip property.
     vertex.tooltip = label;
     return vertex;
   }
 
 
-  // Helper function: returns the intersection of two string arrays.
   private getIntersection(arr1: string[], arr2: string[]): string[] {
     return arr1.filter(x => arr2.includes(x));
   }
 
-  // Helper: Build rows dynamically from your JSON data.
-  // Each row object will include a posting workflow and arrays of expecting and consuming objects.
-  // Each expecting/consuming object contains the workflow path and the notice to show.
   private buildRowsFromData(data: any): any[] {
     const rows: any[] = [];
     const postingWorkflows = data.postingWorkflows;
@@ -778,36 +610,30 @@ export class DependenciesComponent {
     return rows;
   }
 
-  // Main function: dynamically creates rows and draws nodes and edges.
-  // Edges use the custom tooltip property (set on each edge) to show the notice name when hovered.
-  private loadGraphData(): void {
+  private loadGraphData(data): void {
     const parent = this.graph.getDefaultParent();
     this.graph.getModel().beginUpdate();
     try {
-      // Your dynamic JSON data:
-      const dynamicData = this.workflowData;
+      const dynamicData = data;
 
-      // Build rows dynamically using your helper function.
       const rows = this.buildRowsFromData(dynamicData);
 
       // Positioning variables.
-      const xPosting = 100;      // Left column for posting nodes.
-      const xRight = 400;        // Right column for expecting/consuming nodes.
-      let currentY = 100;        // Starting Y for the first row.
-      const rowSpacing = 20;     // Extra gap after each row.
-      const minRowHeight = 120;  // Minimal row height.
+      const xPosting = 100;
+      const xRight = 700;
+      let currentY = 100;
+      const rowSpacing = 20;
+      const minRowHeight = 120;
       const nodeWidth = 150;
       const nodeHeight = 50;
-      const nodeGap = 10;        // Gap between nodes within the same group.
-      const groupGap = 40;       // Gap between expecting and consuming blocks.
+      const nodeGap = 10;
+      const groupGap = 40;
 
-      // Updated styles with light color shades, inner shadow effect simulation, and same border.
       const stylePosting = 'fillColor=#d0e0e3;strokeColor=#d0e0e3;shadow=1;shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888888;rounded=1;arcSize=20;strokeWidth=1;fontColor=#000000;';
       const styleExpecting = 'fillColor=#ffe6cc;strokeColor=#ffe6cc;shadow=1;shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888888;rounded=1;arcSize=20;strokeWidth=1;fontColor=#000000;';
       const styleConsuming = 'fillColor=#c8e6c9;strokeColor=#c8e6c9;shadow=1;shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888888;rounded=1;arcSize=20;strokeWidth=1;fontColor=#000000;';
 
 
-      // For each row, create nodes and edges.
       rows.forEach((row, i) => {
         const E = row.expecting.length;
         const C = row.consuming.length;
@@ -823,10 +649,8 @@ export class DependenciesComponent {
         const rowHeightCalculated = Math.max(minRowHeight, totalBlockHeight);
         const rowCenterY = currentY + rowHeightCalculated / 2;
 
-        // Create Posting node (left column).
         let pCell: any = this.createNode(parent, row.posting, xPosting, rowCenterY, nodeWidth, nodeHeight, stylePosting);
 
-        // Right column: create expecting and consuming nodes within one vertical block.
         let expectingNodes: any[] = [];
         let consumingNodes: any[] = [];
         if (totalBlockHeight > 0) {
@@ -852,19 +676,17 @@ export class DependenciesComponent {
           }
         }
 
-        // Draw edges from Posting node to each Expecting node.
         expectingNodes.forEach((entry) => {
           let edge = this.graph.insertEdge(
             parent,
             null,
-            "", // Hide the edge label.
+            "",
             pCell,
             entry.cell,
             'strokeColor=#1171a6;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=horizontal;orthogonal=1;jettySize=auto'
           );
           edge.tooltip = entry.notice;
         });
-        // Draw edges from Posting node to each Consuming node.
         consumingNodes.forEach((entry) => {
           let edge = this.graph.insertEdge(
             parent,
@@ -877,14 +699,13 @@ export class DependenciesComponent {
           edge.tooltip = entry.notice;
         });
 
-        // Advance currentY for the next row.
         currentY += rowHeightCalculated + rowSpacing;
       });
     } finally {
       this.graph.getModel().endUpdate();
-      setTimeout(()=>{
+      setTimeout(() => {
         this.graph.center(true, true);
-      },100)
+      }, 100)
     }
   }
 
@@ -895,9 +716,7 @@ export class DependenciesComponent {
     }).subscribe((res) => {
       this.isLoaded = true;
       this.workflowData = res;
-      setTimeout(()=>{
-        this.loadGraphData();
-      },100)
+      this.loadGraphData(res);
 
     });
   }

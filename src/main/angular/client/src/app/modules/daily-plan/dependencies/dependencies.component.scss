@@ -50,7 +50,7 @@
 
 .notice-progress nz-progress {
   flex-grow: 1;
-  mix-width: 30px;
+  min-width: 30px;
   max-width: 60px;
 }
 
