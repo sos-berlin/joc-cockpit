@@ -54,3 +54,18 @@
   max-width: 60px;
 }
 
+.selected-blue, .cal-day-plan {
+  color: var(--date-selected);
+
+  &:hover {
+    color: var(--date-selected-hover) !important;
+  }
+}
+
+.selected-orange {
+  color: var(--date-selected-exclude);
+
+  &:hover {
+    color: var(--date-selected-exclude-hover);
+  }
+}

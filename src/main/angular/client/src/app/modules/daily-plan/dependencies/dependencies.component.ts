@@ -20,7 +20,9 @@ declare const mxTooltipHandler: any;
 declare const mxGraphHandler: any;
 declare const mxGraph: any;
 declare const mxConstants: any;
+declare const mxGeometry: any;
 declare const mxPoint: any;
+declare const mxCell: any;
 declare const $: any;
 
 @Component({
@@ -38,6 +40,9 @@ export class DependenciesComponent {
   @Output() checkedNotices = new EventEmitter<any>();
 
   selectedDate: Date;
+  planSchemaId: any;
+  isClosed: false;
+  isOpen: false;
   isLoaded: boolean;
   data: any;
   plansFilters: any = {filter: {}};
@@ -74,8 +79,8 @@ export class DependenciesComponent {
     const d = new Date().setHours(0, 0, 0, 0);
     this.selectedDate = new Date(d);
     this.plansFilters = this.coreService.getPlansTab();
-    this.loadPlans()
     this.initConf();
+    this.loadAdditionalData();
     this.isPathDisplay = sessionStorage['displayFoldersInViews'] == 'false';
     if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
       this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
@@ -87,14 +92,13 @@ export class DependenciesComponent {
     if (changes['parentLoaded'] && changes['parentLoaded'].currentValue) {
       setTimeout(() => {
         this.initConf();
-        this.loadAdditionalData();
+        this.fit();
       }, 300)
     }
   }
 
   ngAfterViewInit() {
     this.initGraph();
-    this.graph.fit();
   }
 
 
@@ -125,12 +129,14 @@ export class DependenciesComponent {
         dom.calendar({
           view: 'month',
           language: this.coreService.getLocale(),
-          selectedDate: this.selectedDate,
           clickDay: (e) => {
             this.selectedDate = e.date;
+            this.planSchemaId = e.events[0]?.planSchemaId;
+            this.isClosed = e.events[0]?.isClosed;
+            this.isOpen = e.events[0]?.isOpen;
           },
           renderEnd: (e) => {
-
+            this.loadPlans()
           },
           rangeEnd: (e) => {
 
@@ -166,7 +172,11 @@ export class DependenciesComponent {
       const noticeSpaceKey = plan.planId?.noticeSpaceKey || '';
       return {
         startDate: this.convertStringToDate(noticeSpaceKey),
-        endDate: this.convertStringToDate(noticeSpaceKey)
+        endDate: this.convertStringToDate(noticeSpaceKey),
+        color: plan.closed ? 'orange' : 'blue',
+        planSchemaId: plan.planId?.planSchemaId,
+        isClosed: plan.closed,
+        isOpen: !plan.closed
       };
     });
     this.noticeSpaceKey = planDates;
@@ -520,25 +530,30 @@ export class DependenciesComponent {
     // Enable tooltips.
     this.graph.setTooltips(true);
 
+    // Updated: Do not hide edge labels.
     this.graph.convertValueToString = function (cell) {
-      if (this.model.isEdge(cell)) {
-        return ''; // hide edge labels
-      }
-      // For vertices, we still show the truncated value.
       return cell.value;
     };
 
     this.graph.getTooltipForCell = function (cell) {
-      // For edges, return the custom tooltip if set.
       if (this.model.isEdge(cell)) {
         return cell.tooltip || '';
       }
-      // For vertices, if a custom tooltip is available, return it.
       if (cell.tooltip) {
         return cell.tooltip;
       }
       return cell.value ? cell.value.toString() : '';
     };
+
+    // Optionally, override the tooltip handler if needed.
+    if (this.graph.tooltipHandler) {
+      this.graph.tooltipHandler.getTooltipForCell = function (cell) {
+        if (this.graph.model.isEdge(cell)) {
+          return cell.tooltip || '';
+        }
+        return mxTooltipHandler.prototype.getTooltipForCell.apply(this, arguments);
+      }.bind(this);
+    }
   }
 
   /**
@@ -553,11 +568,14 @@ export class DependenciesComponent {
     height: number,
     style: string
   ) {
+    // Truncate label if longer than 22 characters.
     let displayLabel = label;
     if (label.length > 22) {
       displayLabel = label.substring(0, 22) + '...';
     }
+    // Insert vertex using the truncated label.
     let vertex = this.graph.insertVertex(parent, null, displayLabel, x, y, width, height, style);
+    // Store the full label in a custom property for the tooltip.
     vertex.tooltip = label;
     return vertex;
   }
@@ -610,17 +628,16 @@ export class DependenciesComponent {
     return rows;
   }
 
-  private loadGraphData(data): void {
+  private loadGraphData(): void {
     const parent = this.graph.getDefaultParent();
     this.graph.getModel().beginUpdate();
     try {
-      const dynamicData = data;
+      // 1) Build your rows from data
+      const rows = this.buildRowsFromData(this.workflowData);
 
-      const rows = this.buildRowsFromData(dynamicData);
-
-      // Positioning variables.
+      // Basic positioning
       const xPosting = 100;
-      const xRight = 700;
+      const xRight = 800;
       let currentY = 100;
       const rowSpacing = 20;
       const minRowHeight = 120;
@@ -629,15 +646,41 @@ export class DependenciesComponent {
       const nodeGap = 10;
       const groupGap = 40;
 
-      const stylePosting = 'fillColor=#d0e0e3;strokeColor=#d0e0e3;shadow=1;shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888888;rounded=1;arcSize=20;strokeWidth=1;fontColor=#000000;';
-      const styleExpecting = 'fillColor=#ffe6cc;strokeColor=#ffe6cc;shadow=1;shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888888;rounded=1;arcSize=20;strokeWidth=1;fontColor=#000000;';
-      const styleConsuming = 'fillColor=#c8e6c9;strokeColor=#c8e6c9;shadow=1;shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888888;rounded=1;arcSize=20;strokeWidth=1;fontColor=#000000;';
+      // Styles for Posting / Expecting / Consuming nodes
+      const stylePosting = 'fillColor=#d0e0e3;strokeColor=#d0e0e3;shadow=1;' +
+        'shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888;' +
+        'rounded=1;arcSize=20;strokeWidth=1;fontColor=#000000;';
+      const styleExpecting = 'fillColor=#ffe6cc;strokeColor=#ffe6cc;shadow=1;' +
+        'shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888;' +
+        'rounded=1;arcSize=20;strokeWidth=1;fontColor=#000000;';
+      const styleConsuming = 'fillColor=#c8e6c9;strokeColor=#c8e6c9;shadow=1;' +
+        'shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888;' +
+        'rounded=1;arcSize=20;strokeWidth=1;fontColor=#000000;';
 
+      // Minimal edge style for Expecting edges (blue arrow), no built-in label
+      const expectingEdgeStyle =
+        'strokeColor=#1171a6;' +
+        'endArrow=block;' +
+        'edgeStyle=elbowEdgeStyle;' +
+        'elbow=horizontal;' +
+        'orthogonal=1;' +
+        'html=1;'; // We can add more style if needed (rounded=1, etc.)
 
-      rows.forEach((row, i) => {
+      // Minimal edge style for Consuming edges (green arrow)
+      const consumingEdgeStyle =
+        'strokeColor=#5cb85c;' +
+        'endArrow=block;' +
+        'edgeStyle=elbowEdgeStyle;' +
+        'elbow=horizontal;' +
+        'orthogonal=1;' +
+        'html=1;';
+
+      // 2) For each row, create posting, expecting, consuming nodes
+      rows.forEach((row) => {
         const E = row.expecting.length;
         const C = row.consuming.length;
 
+        // Calculate how tall this row is
         const expectingBlockHeight = E > 0 ? E * nodeHeight + (E - 1) * nodeGap : 0;
         const consumingBlockHeight = C > 0 ? C * nodeHeight + (C - 1) * nodeGap : 0;
         let totalBlockHeight = 0;
@@ -649,8 +692,18 @@ export class DependenciesComponent {
         const rowHeightCalculated = Math.max(minRowHeight, totalBlockHeight);
         const rowCenterY = currentY + rowHeightCalculated / 2;
 
-        let pCell: any = this.createNode(parent, row.posting, xPosting, rowCenterY, nodeWidth, nodeHeight, stylePosting);
+        // Create the Posting node (left column)
+        let pCell = this.createNode(
+          parent,
+          row.posting,
+          xPosting,
+          rowCenterY,
+          nodeWidth,
+          nodeHeight,
+          stylePosting
+        );
 
+        // Build the Expecting/Consuming nodes (right column)
         let expectingNodes: any[] = [];
         let consumingNodes: any[] = [];
         if (totalBlockHeight > 0) {
@@ -676,27 +729,30 @@ export class DependenciesComponent {
           }
         }
 
+        // 3) Insert edges WITHOUT a built-in label, then attach block labels
         expectingNodes.forEach((entry) => {
           let edge = this.graph.insertEdge(
             parent,
             null,
-            "",
+            '', // No label
             pCell,
             entry.cell,
-            'strokeColor=#1171a6;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=horizontal;orthogonal=1;jettySize=auto'
+            expectingEdgeStyle
           );
-          edge.tooltip = entry.notice;
+          // Attach a block label near the arrow
+          this.addBlockLabelToEdge(edge, entry.notice);
         });
+
         consumingNodes.forEach((entry) => {
           let edge = this.graph.insertEdge(
             parent,
             null,
-            "", // Hide the edge label.
+            '',
             pCell,
             entry.cell,
-            'strokeColor=#5cb85c;endArrow=block;edgeStyle=elbowEdgeStyle;elbow=horizontal;orthogonal=1;jettySize=auto'
+            consumingEdgeStyle
           );
-          edge.tooltip = entry.notice;
+          this.addBlockLabelToEdge(edge, entry.notice);
         });
 
         currentY += rowHeightCalculated + rowSpacing;
@@ -705,7 +761,44 @@ export class DependenciesComponent {
       this.graph.getModel().endUpdate();
       setTimeout(() => {
         this.graph.center(true, true);
-      }, 100)
+      }, 100);
+    }
+  }
+
+  private addBlockLabelToEdge(edge: any, text: string): void {
+    // We wrap changes in a beginUpdate/endUpdate block to keep them atomic
+    this.graph.getModel().beginUpdate();
+    try {
+      let displayText = text;
+      if (text.length > 10) {
+        displayText = text.substring(0, 10) + '...';
+      }
+      // Create a small child vertex for the label
+      // x=1 => anchored at target side, y=0.5 => middle
+      // width=80, height=25 => size of the label block
+      let labelCell = new mxCell(
+        displayText,
+        new mxGeometry(1, 0.5, 80, 25),
+        'shape=rectangle;fillColor=#ffffff;strokeColor=#000000;' +
+        'rounded=1;fontColor=#000000;align=center;verticalAlign=middle;'
+      );
+
+      // Mark it as a vertex and set "relative" so it's anchored to the edge
+      labelCell.vertex = true;
+      labelCell.geometry.relative = true;
+
+      // offset => move the label block left 40 px, up 12 px from anchor
+      // so it appears near the arrow. Adjust as needed
+      labelCell.geometry.offset = new mxPoint(-200, -12);
+
+      // Make it non-connectable (optional)
+      labelCell.setConnectable(false);
+      labelCell.tooltip = text;
+
+      // Finally, add this labelCell as a child of the edge
+      this.graph.addCell(labelCell, edge);
+    } finally {
+      this.graph.getModel().endUpdate();
     }
   }
 
@@ -716,12 +809,43 @@ export class DependenciesComponent {
     }).subscribe((res) => {
       this.isLoaded = true;
       this.workflowData = res;
-      this.loadGraphData(res);
-
+      this.loadGraphData();
     });
   }
 
   private refreshGraph(event: any) {
     this.graph.refresh();
+  }
+
+  closePlan(): void {
+    this.coreService.post('plans/close', {
+      controllerId: this.schedulerId,
+      planIds: [
+        {
+          planSchemaId: this.planSchemaId,
+          noticeSpaceKey: this.coreService.getStringDate(this.selectedDate)
+        }
+      ]
+    }).subscribe((res) => {
+      this.initConf();
+      this.loadAdditionalData();
+      this.loadPlans()
+    });
+  }
+
+  openPlan(): void {
+    this.coreService.post('plans/open', {
+      controllerId: this.schedulerId,
+      planIds: [
+        {
+          planSchemaId: this.planSchemaId,
+          noticeSpaceKey: this.coreService.getStringDate(this.selectedDate)
+        }
+      ]
+    }).subscribe((res) => {
+      this.initConf();
+      this.loadAdditionalData();
+      this.loadPlans()
+    });
   }
 }

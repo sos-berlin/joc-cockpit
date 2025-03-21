@@ -973,6 +973,8 @@
     "button.notExpected": "Non attendu",
     "button.announced": "Annoncé",
     "button.notAnnounced": "Non annoncé",
+    "button.openPlan": "Open Plan",
+    "button.closePlan": "Close Plan",
     "placeholder.selectOrderTemplate": "Sélectionner les Planifications",
     "placeholder.selectSubmissionHistory": "Sélectionner Historique du Plan Quotidien",
     "placeholder.timeRange": "now, (+/-)(d), today",

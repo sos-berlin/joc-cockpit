@@ -37,6 +37,20 @@
           </ng-template>
           <div class="calendar-sm m-t-0" id="full-calendar2"></div>
         </div>
+        <div class="text-center m-t">
+          <button (click)="openPlan()" [disabled]="!isClosed" *ngIf="permission.joc && permission.joc.dailyPlan.manage"
+                  class="btn btn-grey btn-sm m-b-sm">
+            <i class="fa fa-stop selected-blue m-r-sm"></i>
+            <span translate>dailyPlan.button.openPlan</span>
+          </button>
+          <button (click)="closePlan()" [disabled]="!isOpen"
+            *ngIf="permission.joc && permission.joc.dailyPlan.manage"
+            class="btn btn-grey btn-sm m-l-xs m-b-sm">
+            <i class="fa fa-stop selected-orange m-r-sm"></i>
+            <span translate>dailyPlan.button.closePlan</span>
+          </button>
+        </div>
+
       </div>
     </div>
     <div id="rightPanel2">

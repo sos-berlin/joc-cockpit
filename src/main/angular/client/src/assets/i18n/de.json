@@ -973,6 +973,8 @@
     "button.notExpected": "Nicht erwartet",
     "button.announced": "Angekündigt",
     "button.notAnnounced": "Nicht angekündigt",
+    "button.openPlan": "Open Plan",
+    "button.closePlan": "Close Plan",
     "placeholder.selectOrderTemplate": "Zeitpläne auswählen",
     "placeholder.selectSubmissionHistory": "Tagesplan auswählen",
     "placeholder.timeRange": "now, (+/-)(d), today",

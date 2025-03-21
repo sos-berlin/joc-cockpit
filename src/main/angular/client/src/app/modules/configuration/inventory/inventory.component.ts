@@ -297,7 +297,7 @@ export class CreateTagModalComponent {
   }
 
   getFormattedPath(path: any): any {
-    return  this.isPathDisplay ? path?.split('/').pop() : path
+    return this.isPathDisplay ? path?.split('/').pop() : path
   }
 
 }
@@ -3973,7 +3973,7 @@ export class ExportComponent {
 
   filterList(isChecked = true): void {
     if (this.exportObj.exportType === 'changes') {
-      if(this.changesNodes.length){
+      if (this.changesNodes.length) {
         this.nodes = [...this.changesNodes]
       }
       this.changes()
@@ -4464,7 +4464,6 @@ export class ExportComponent {
       obj.shallowCopy = {};
     }
 
-
     if (!obj.shallowCopy.deployables) {
       obj.shallowCopy.deployables = {};
     }
@@ -4492,7 +4491,26 @@ export class ExportComponent {
     const isDuplicate = (array: any[], config: any): boolean => {
       return array.some(item => item.configuration.path === config.configuration.path && item.configuration.objectType === config.configuration.objectType);
     };
+    if (this.exportObj.exportType === 'changes') {
+      if (node.path !== '/' && node.name !== '/') {
+        const config = {
+          configuration: {
+            path: node.path,
+            objectType: node.type,
+          }
+        };
+         if (node.checked && (!node.valid || node.valid) && (node.deployed || !node.deployed) && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(node.type)) {
+          if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
+            obj.shallowCopy.deployables.draftConfigurations.push(config);
+          }
+        } else if (node.checked && (!node.valid || node.valid) && (node.released || !node.released) && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(node.type)) {
+          if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
+            obj.shallowCopy.releasables.draftConfigurations.push(config);
+          }
+        }
 
+      }
+    }
     if (node.dependencies) {
       node.dependencies.referencedBy.forEach(dep => {
         if (dep.path !== '/' && dep.name !== '/') {
@@ -5148,8 +5166,12 @@ export class RepositoryComponent {
 
   filterList(): void {
     if (this.object.type === 'changes') {
+      if (this.changesNodes.length) {
+        this.nodes = [...this.changesNodes]
+      }
       this.changes()
       this.filteredAffectedItems = []
+      return
     }
     if (this.object.type === 'individual') {
       this.filteredAffectedItems = []
@@ -5352,6 +5374,7 @@ export class RepositoryComponent {
       this.updateParentCheckboxes(node.parentNode);
     }
   }
+
   expandAll(): void {
     const self = this;
 
@@ -5660,13 +5683,12 @@ export class RepositoryComponent {
         }
       }
     }
-
     recursive(this.nodes);
     if ((this.object.deployConfigurations && this.object.deployConfigurations.length > 0) ||
       (this.object.draftConfigurations.length && this.object.draftConfigurations.length > 0) ||
       (this.object.deploy2Configurations && this.object.deploy2Configurations.length > 0) ||
       (this.object.releasedConfigurations && this.object.releasedConfigurations.length > 0) ||
-      (this.object.releaseDraftConfigurations.length && this.object.releaseDraftConfigurations.length > 0)) {
+      (this.object.releaseDraftConfigurations.length && this.object.releaseDraftConfigurations.length > 0) || this.object.type === "changes") {
       if (this.object.deployConfigurations && this.object.deployConfigurations.length === 0) {
         delete this.object.deployConfigurations;
       }
@@ -12274,7 +12296,7 @@ export class InventoryComponent {
       this.type = obj.objectType;
       this.selectedData = obj;
       this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, '$ID');
-      if(res && res?.copied) {
+      if (res && res?.copied) {
         this.selectedData.copied = true;
       }
     }
