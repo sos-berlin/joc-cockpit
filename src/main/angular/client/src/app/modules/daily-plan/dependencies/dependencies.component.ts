@@ -568,16 +568,61 @@ export class DependenciesComponent {
     height: number,
     style: string
   ) {
-    // Truncate label if longer than 22 characters.
+    // Truncate displayed label if longer than 22 characters.
     let displayLabel = label;
     if (label.length > 22) {
       displayLabel = label.substring(0, 22) + '...';
     }
-    // Insert vertex using the truncated label.
+    // Insert the vertex.
     let vertex = this.graph.insertVertex(parent, null, displayLabel, x, y, width, height, style);
-    // Store the full label in a custom property for the tooltip.
+    // Store the full label in a custom property for tooltip.
     vertex.tooltip = label;
+
+    // Save original style info to revert later.
+    // Check for known fill colors.
+    if (style.indexOf('#d0e0e3') !== -1) {
+      vertex.originalStyle = { strokeColor: '#d0e0e3', strokeWidth: '1' };
+    } else if (style.indexOf('#ffe6cc') !== -1) {
+      vertex.originalStyle = { strokeColor: '#ffe6cc', strokeWidth: '1' };
+    } else if (style.indexOf('#c8e6c9') !== -1 || style.indexOf('#7ab97a') !== -1) {
+      vertex.originalStyle = { strokeColor: style.indexOf('#7ab97a') !== -1 ? '#7ab97a' : '#c8e6c9', strokeWidth: '1' };
+    } else {
+      vertex.originalStyle = { strokeColor: '#000000', strokeWidth: '1' };
+    }
     return vertex;
+  }
+
+  highlightNodes(searchText: string): void {
+    if (!this.graph) {
+      return;
+    }
+    const model = this.graph.getModel();
+    model.beginUpdate();
+    try {
+      // Iterate over all cells in the graph model.
+      for (let cellId in model.cells) {
+        const cell = model.cells[cellId];
+        // Only consider vertices.
+        if (cell && model.isVertex(cell)) {
+          const fullText = cell.tooltip ? cell.tooltip.toLowerCase() : '';
+          const displayText = cell.value ? cell.value.toString().toLowerCase() : '';
+          if (searchText && (fullText.indexOf(searchText.toLowerCase()) !== -1 ||
+            displayText.indexOf(searchText.toLowerCase()) !== -1)) {
+            // Highlight the cell: for example, red border, stroke width 3.
+            this.graph.setCellStyles(mxConstants.STYLE_STROKECOLOR, 'yellow', [cell]);
+            this.graph.setCellStyles(mxConstants.STYLE_STROKEWIDTH, '3', [cell]);
+          } else {
+            // Revert to the original style if available.
+            if (cell.originalStyle) {
+              this.graph.setCellStyles(mxConstants.STYLE_STROKECOLOR, cell.originalStyle.strokeColor, [cell]);
+              this.graph.setCellStyles(mxConstants.STYLE_STROKEWIDTH, cell.originalStyle.strokeWidth, [cell]);
+            }
+          }
+        }
+      }
+    } finally {
+      model.endUpdate();
+    }
   }
 
 
@@ -593,31 +638,40 @@ export class DependenciesComponent {
 
     postingWorkflows.forEach((p: any) => {
       const row: any = {
-        posting: p.path,
+        posting: this.getFormattedPath(p.path),
         expecting: [] as { path: string, notice: string }[],
         consuming: [] as { path: string, notice: string }[]
       };
 
-      // For expecting: if posting already has expectNotices, use its own path.
+      // Expecting
       if (p.expectNotices && p.expectNotices.length > 0) {
-        row.expecting.push({path: p.path, notice: p.expectNotices[0]});
+        row.expecting.push({
+          path: this.getFormattedPath(p.path),
+          notice: this.getFormattedPath(p.expectNotices[0])
+        });
       } else {
         expectingWorkflows.forEach((e: any) => {
           if (e.expectNotices && p.postNotices) {
             const common = this.getIntersection(p.postNotices, e.expectNotices);
             if (common.length > 0) {
-              row.expecting.push({path: e.path, notice: common[0]});
+              row.expecting.push({
+                path: this.getFormattedPath(e.path),
+                notice: this.getFormattedPath(common[0])
+              });
             }
           }
         });
       }
 
-      // For consuming: find consuming workflows with matching notices.
+      // Consuming
       consumingWorkflows.forEach((c: any) => {
         if (c.consumeNotices && p.postNotices) {
           const common = this.getIntersection(p.postNotices, c.consumeNotices);
           if (common.length > 0) {
-            row.consuming.push({path: c.path, notice: common[0]});
+            row.consuming.push({
+              path: this.getFormattedPath(c.path),
+              notice: this.getFormattedPath(common[0])
+            });
           }
         }
       });
@@ -647,13 +701,13 @@ export class DependenciesComponent {
       const groupGap = 40;
 
       // Styles for Posting / Expecting / Consuming nodes
-      const stylePosting = 'fillColor=#d0e0e3;strokeColor=#d0e0e3;shadow=1;' +
+      const stylePosting = 'fillColor=#1171a6;strokeColor=#d0e0e3;shadow=1;' +
+        'shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888;' +
+        'rounded=1;arcSize=20;strokeWidth=1;fontColor=#ffffff;';
+      const styleExpecting = 'fillColor=#FFA640;strokeColor=#ffe6cc;shadow=1;' +
         'shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888;' +
         'rounded=1;arcSize=20;strokeWidth=1;fontColor=#000000;';
-      const styleExpecting = 'fillColor=#ffe6cc;strokeColor=#ffe6cc;shadow=1;' +
-        'shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888;' +
-        'rounded=1;arcSize=20;strokeWidth=1;fontColor=#000000;';
-      const styleConsuming = 'fillColor=#c8e6c9;strokeColor=#c8e6c9;shadow=1;' +
+      const styleConsuming = 'fillColor=#7ab97a;strokeColor=#c8e6c9;shadow=1;' +
         'shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888;' +
         'rounded=1;arcSize=20;strokeWidth=1;fontColor=#000000;';
 
@@ -794,7 +848,10 @@ export class DependenciesComponent {
       // Make it non-connectable (optional)
       labelCell.setConnectable(false);
       labelCell.tooltip = text;
-
+labelCell.originalStyle = {
+      strokeColor: '#000000',
+      strokeWidth: '1'
+    };
       // Finally, add this labelCell as a child of the edge
       this.graph.addCell(labelCell, edge);
     } finally {
@@ -847,5 +904,9 @@ export class DependenciesComponent {
       this.loadAdditionalData();
       this.loadPlans()
     });
+  }
+
+  getFormattedPath(path: any): any {
+    return  this.isPathDisplay ? path?.split('/').pop() : path
   }
 }

@@ -450,6 +450,7 @@ export class FrequencyModalComponent {
       data = 'all';
     }
     const obj = {};
+
     this.freqObj(data, obj);
   }
 
@@ -902,6 +903,7 @@ export class FrequencyModalComponent {
               });
             }
           }
+
           this.isCalendarLoading = false;
           $('#full-calendar').data('calendar').setDataSource(this.planItems);
         }, error: () => this.isCalendarLoading = false
@@ -1178,6 +1180,7 @@ export class FrequencyModalComponent {
             color
           });
         }
+
         if (result.withExcludes) {
           for (let m = 0; m < result.withExcludes.length; m++) {
             const x = result.withExcludes[m];
@@ -1210,7 +1213,6 @@ export class FrequencyModalComponent {
         setTimeout(() => {
           this.isCalendarDisplay = true;
         }, 100);
-
       }, error: () => this.isCalendarLoading = false
     });
   }

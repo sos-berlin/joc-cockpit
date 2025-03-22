@@ -3870,14 +3870,10 @@ export class WorkflowComponent {
       this.selectedNode = null;
     }
     if (changes['data']) {
-      if (changes['data'].currentValue?.copied && changes['data'].previousValue?.children && changes['data'].previousValue?.children.length > 0) {
+      if (changes['data'].currentValue?.copied) {
         this.isCopiedWorkflow = true;
-        changes['data'].previousValue?.children.forEach(child => {
-          if(child?.selected){
-            this.copiedWorkflowJobTags.copiedWorkflowPath = child.path + child.name,
-            this.copiedWorkflowJobTags.newWorkflowPath = changes['data'].currentValue?.path + changes['data'].currentValue?.name
-          }
-        })
+            this.copiedWorkflowJobTags.copiedWorkflowPath = changes['data'].currentValue?.copied.path + changes['data'].currentValue?.copied.name,
+            this.copiedWorkflowJobTags.newWorkflowPath = changes['data'].currentValue?.path + (changes['data'].currentValue?.path === '/' ? '' : '/') + changes['data'].currentValue?.name
       }
       if (this.data.type) {
         if (this.workflowTree.length > 0) {
@@ -4303,6 +4299,18 @@ export class WorkflowComponent {
     this.coreService.post('inventory/workflow/tags/job', obj).subscribe({
       next: (res: any) => {
         const copiedTagsData = res.jobs;
+        callback(copiedTagsData);
+      }
+    });
+  }
+
+  private fetchCopiedWorkflowTags(jobName, path, callback: (workflowTags: any[]) => void): void {
+    const obj = {
+      path: path,
+    };
+    this.coreService.post('inventory/workflow/tags', obj).subscribe({
+      next: (res: any) => {
+        const copiedTagsData = res.tags;
         callback(copiedTagsData);
       }
     });
@@ -5402,6 +5410,14 @@ export class WorkflowComponent {
                   this.storeJobTags(this.copiedWorkflowJobTags.newWorkflowPath, copiedTagsData, true);
                 }
               });
+
+              this.fetchCopiedWorkflowTags(keysArray, this.copiedWorkflowJobTags.copiedWorkflowPath, (copiedTagsData) => {
+                if(copiedTagsData && copiedTagsData.length > 0){
+                  this.storeCopiedWorkflowTags(this.copiedWorkflowJobTags.newWorkflowPath, copiedTagsData, true);
+                }
+              });
+              delete this.data?.copied
+              this.isCopiedWorkflow = false
             }
           } catch (e) {
             console.error(e);
@@ -13847,6 +13863,24 @@ export class WorkflowComponent {
       });
     }
     this.coreService.post('inventory/workflow/tags/job/store', request).subscribe({
+      next: (res: any) => {
+      },
+      error: (err: any) => {
+      }
+    });
+  }
+
+  private storeCopiedWorkflowTags(path = null, copyObject = null, isWorkflow = false): void {
+
+    const request: any = {};
+      request.path = path;
+      request.tags = copyObject;
+    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+      this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
+        request.auditLog = {comment: translatedValue};
+      });
+    }
+    this.coreService.post('inventory/workflow/tags/store', request).subscribe({
       next: (res: any) => {
       },
       error: (err: any) => {

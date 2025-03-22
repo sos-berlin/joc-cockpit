@@ -5594,7 +5594,8 @@ export class RepositoryComponent {
       releaseDraftConfigurations: [],
       deployConfigurations: [],
       deploy2Configurations: [],
-      releasedConfigurations: []
+      releasedConfigurations: [],
+      type: this.object.type
     };
 
     function recursive(nodes): void {
@@ -5684,6 +5685,7 @@ export class RepositoryComponent {
       }
     }
     recursive(this.nodes);
+
     if ((this.object.deployConfigurations && this.object.deployConfigurations.length > 0) ||
       (this.object.draftConfigurations.length && this.object.draftConfigurations.length > 0) ||
       (this.object.deploy2Configurations && this.object.deploy2Configurations.length > 0) ||
@@ -5782,7 +5784,28 @@ export class RepositoryComponent {
         }
       }
     };
+    if(this.object.type === 'changes'){
+      node.dependencies.referencedBy.forEach(dep => {
+        if (dep.path !== '/' && dep.name !== '/') {
+          const config = {
+            configuration: {
+              path: dep.path,
+              objectType: dep.objectType,
+            }
+          };
 
+          if (dep.selected && dep.deployed && dep.valid) {
+            targetGroup(config, 'draftConfigurations');
+          } else if (dep.selected && dep.released && dep.valid) {
+            targetGroup(config, 'draftConfigurations');
+          } else if (dep.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType)) {
+            targetGroup(config, 'draftConfigurations');
+          } else if (dep.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType)) {
+            targetGroup(config, 'draftConfigurations');
+          }
+        }
+      });
+    }
     if (node.dependencies) {
       node.dependencies.referencedBy.forEach(dep => {
         if (dep.path !== '/' && dep.name !== '/') {
@@ -12297,7 +12320,7 @@ export class InventoryComponent {
       this.selectedData = obj;
       this.setSelectedObj(this.selectedData.type, this.selectedData.name, this.selectedData.path, '$ID');
       if (res && res?.copied) {
-        this.selectedData.copied = true;
+        this.selectedData.copied = this.copyObj;
       }
     }
   }

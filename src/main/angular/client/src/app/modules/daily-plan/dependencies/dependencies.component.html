@@ -14,9 +14,12 @@
     </div>
     <div class="search-box-field pull-right">
       <label>
-        <input [(ngModel)]="searchValue"
-               placeholder="{{'common.placeholder.search' | translate}}"
-               type="search">
+        <input
+          [(ngModel)]="searchValue"
+          (ngModelChange)="highlightNodes(searchValue)"
+          placeholder="{{ 'common.placeholder.search' | translate }}"
+          type="search">
+
       </label>
       <i (click)="searchValue = ''"
          [hidden]="!searchValue"
