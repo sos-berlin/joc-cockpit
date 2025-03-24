@@ -5770,14 +5770,28 @@ export class RepositoryComponent {
     const targetGroup = (config, type) => {
       if (this.filter.envIndependent) {
         if (!obj.rollout[type]) {
-          obj.rollout[type] = [];  // Initialize if undefined
+          obj.rollout[type] = [];
         }
         if (!isDuplicate(obj.rollout[type], config)) {
           obj.rollout[type].push(config);
         }
       } else if (this.filter.envRelated) {
         if (!obj.local[type]) {
-          obj.local[type] = [];  // Initialize if undefined
+          obj.local[type] = [];
+        }
+        if (!isDuplicate(obj.local[type], config)) {
+          obj.local[type].push(config);
+        }
+      } else if(this.object.type === 'changes' && this.category === "ROLLOUT"){
+        if (!obj.rollout[type]) {
+          obj.rollout[type] = [];
+        }
+        if (!isDuplicate(obj.rollout[type], config)) {
+          obj.rollout[type].push(config);
+        }
+      }else if(this.object.type === 'changes' && this.category === "LOCAL"){
+        if (!obj.local[type]) {
+          obj.local[type] = [];
         }
         if (!isDuplicate(obj.local[type], config)) {
           obj.local[type].push(config);
@@ -5785,26 +5799,23 @@ export class RepositoryComponent {
       }
     };
     if(this.object.type === 'changes'){
-      node.dependencies.referencedBy.forEach(dep => {
-        if (dep.path !== '/' && dep.name !== '/') {
+        if (node.path !== '/' && node.name !== '/') {
           const config = {
             configuration: {
-              path: dep.path,
-              objectType: dep.objectType,
+              path: node.path,
+              objectType: node.type,
             }
           };
-
-          if (dep.selected && dep.deployed && dep.valid) {
+          if (node.checked && node.deployed && node.valid) {
             targetGroup(config, 'draftConfigurations');
-          } else if (dep.selected && dep.released && dep.valid) {
+          } else if (node.checked && node.released && node.valid) {
             targetGroup(config, 'draftConfigurations');
-          } else if (dep.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType)) {
+          } else if (node.checked && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(node.type)) {
             targetGroup(config, 'draftConfigurations');
-          } else if (dep.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType)) {
+          } else if (node.checked && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(node.type)) {
             targetGroup(config, 'draftConfigurations');
           }
         }
-      });
     }
     if (node.dependencies) {
       node.dependencies.referencedBy.forEach(dep => {

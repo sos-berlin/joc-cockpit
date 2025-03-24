@@ -167,7 +167,7 @@ export class FrequencyModalComponent {
     if (this.frequency.days && this.frequency.days.length > 0) {
       this.checkDays();
     }
-    if(this.frequency.months && this.frequency.months.length > 0) {
+    if (this.frequency.months && this.frequency.months.length > 0) {
       this.checkMonths();
       this.showMonthRange = true;
     }
@@ -523,7 +523,7 @@ export class FrequencyModalComponent {
 
   selectAllMonth(): void {
     if (this.frequency.allMonth) {
-      this.frequency.months = ['1', '2', '3', '4', '5', '6','7', '8', '9', '10', '11', '12'];
+      this.frequency.months = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
       // this.editor.isEnable = true;
     } else {
       this.frequency.months = [];
@@ -540,6 +540,7 @@ export class FrequencyModalComponent {
       };
     });
   }
+
   getDateFormat(date): string {
     return moment(date).format(this.dateFormatM);
   }
@@ -1208,7 +1209,12 @@ export class FrequencyModalComponent {
         this.tempList = [];
         this.tempList = clone(this.planItems);
         const a = Object.assign(this.tempList);
-        $('#full-calendar').data('calendar').setDataSource(a);
+        $('#full-calendar').data('calendar').setDataSource([]);
+        setTimeout(() => {
+          $('#full-calendar').data('calendar').setDataSource(a);
+
+        }, 100)
+
         this.isCalendarLoading = false;
         setTimeout(() => {
           this.isCalendarDisplay = true;
@@ -1353,7 +1359,7 @@ export class CalendarComponent {
                 this.isLocalChange = '';
               }
             }
-          }else if(args.eventSnapshots[j].eventType.match(/InventoryObjectUpdated/) && (args.eventSnapshots[j].objectType === 'WORKINGDAYSCALENDAR' || args.eventSnapshots[j].objectType === 'NONWORKINGDAYSCALENDAR')){
+          } else if (args.eventSnapshots[j].eventType.match(/InventoryObjectUpdated/) && (args.eventSnapshots[j].objectType === 'WORKINGDAYSCALENDAR' || args.eventSnapshots[j].objectType === 'NONWORKINGDAYSCALENDAR')) {
             this.getObject();
           }
         }
