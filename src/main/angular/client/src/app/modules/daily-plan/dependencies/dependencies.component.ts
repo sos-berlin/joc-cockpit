@@ -85,6 +85,7 @@ export class DependenciesComponent {
     if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
       this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
     }
+
   }
 
 
@@ -129,6 +130,7 @@ export class DependenciesComponent {
         dom.calendar({
           view: 'month',
           language: this.coreService.getLocale(),
+          selectedDate: this.selectedDate,
           clickDay: (e) => {
             this.selectedDate = e.date;
             this.planSchemaId = e.events[0]?.planSchemaId;
@@ -180,6 +182,20 @@ export class DependenciesComponent {
       };
     });
     this.noticeSpaceKey = planDates;
+    const formattedSelectedDate = this.coreService.getStringDate(this.selectedDate);
+    const matchingPlan = this.noticeSpaceKey.find(p =>
+      this.coreService.getStringDate(p.startDate) === formattedSelectedDate
+    );
+
+    if (matchingPlan) {
+      this.planSchemaId = matchingPlan.planSchemaId;
+      this.isClosed = matchingPlan.isClosed;
+      this.isOpen = matchingPlan.isOpen;
+    } else {
+      this.planSchemaId = null;
+      this.isClosed = false;
+      this.isOpen = false;
+    }
     const calendar = $('#full-calendar2').data('calendar');
     if (calendar) {
       calendar.setDataSource(planDates);
@@ -570,8 +586,8 @@ export class DependenciesComponent {
   ) {
     // Truncate displayed label if longer than 22 characters.
     let displayLabel = label;
-    if (label.length > 22) {
-      displayLabel = label.substring(0, 22) + '...';
+    if (label.length > 50) {
+      displayLabel = label.substring(0, 50) + '...';
     }
     // Insert the vertex.
     let vertex = this.graph.insertVertex(parent, null, displayLabel, x, y, width, height, style);
@@ -695,7 +711,7 @@ export class DependenciesComponent {
       let currentY = 100;
       const rowSpacing = 20;
       const minRowHeight = 120;
-      const nodeWidth = 150;
+      const nodeWidth = 300;
       const nodeHeight = 50;
       const nodeGap = 10;
       const groupGap = 40;
@@ -824,15 +840,15 @@ export class DependenciesComponent {
     this.graph.getModel().beginUpdate();
     try {
       let displayText = text;
-      if (text.length > 10) {
-        displayText = text.substring(0, 10) + '...';
+      if (text.length > 22) {
+        displayText = text.substring(0, 22) + '...';
       }
       // Create a small child vertex for the label
       // x=1 => anchored at target side, y=0.5 => middle
       // width=80, height=25 => size of the label block
       let labelCell = new mxCell(
         displayText,
-        new mxGeometry(1, 0.5, 80, 25),
+        new mxGeometry(1, 0.5, 150, 25),
         'shape=rectangle;fillColor=#ffffff;strokeColor=#000000;' +
         'rounded=1;fontColor=#000000;align=center;verticalAlign=middle;'
       );
@@ -843,7 +859,7 @@ export class DependenciesComponent {
 
       // offset => move the label block left 40 px, up 12 px from anchor
       // so it appears near the arrow. Adjust as needed
-      labelCell.geometry.offset = new mxPoint(-200, -12);
+      labelCell.geometry.offset = new mxPoint(-170, -12);
 
       // Make it non-connectable (optional)
       labelCell.setConnectable(false);

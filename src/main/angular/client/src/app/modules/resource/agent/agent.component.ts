@@ -127,45 +127,47 @@ export class AgentComponent {
   }
 
   private getAgentClassList(obj): void {
-
     this.coreService.post('agents', obj).subscribe({
       next: (result: any) => {
-
         this.getVesrions(result.agents);
 
-        if (this.agentsFilters.expandedObjects && this.agentsFilters.expandedObjects.length > 0) {
+        const expandedSet = new Set(this.agentsFilters.expandedObjects || []);
 
-          result.agents.forEach((value, index) => {
+        const updatedAgents = result.agents.map(agent => {
+          const agentExpanded = expandedSet.has(agent.agentId);
+          const agentRunning = agent.runningTasks > 0;
 
-            const agentIndex = this.agentsFilters.expandedObjects.indexOf(value.agentId);
+          // Always keep it open if running
+          if (agentExpanded || agentRunning) {
+            agent.show = true;
+            if (agent.subagents) {
+              agent.subagents.forEach(sub => {
+                const subExpanded = expandedSet.has(sub.subagentId);
+                const subRunning = sub.runningTasks > 0;
 
-            if (agentIndex > -1) {
-              this.agentsFilters.expandedObjects.splice(agentIndex, 1);
-              value.show = true;
+                // Keep subagent open if expanded or running
+                if (subExpanded || subRunning) {
+                  sub.show = true;
+                } else {
+                  sub.show = false;
+                }
+              });
 
-              if (value.subagents) {
-                value.showSubagent = true;
-
-                value.subagents.forEach((item, subIndex) => {
-                  const subAgentIndex = this.agentsFilters.expandedObjects.indexOf(item.subagentId);
-
-                  if (subAgentIndex > -1) {
-                    this.agentsFilters.expandedObjects.splice(subAgentIndex, 1);
-                    item.show = true;
-                  }
-                });
-              }
+              agent.showSubagent = agent.subagents.some(sub => sub.show);
             }
-          });
+          } else {
+            agent.show = false;
+            agent.showSubagent = false;
+          }
 
-        }
+          return agent;
+        });
 
+        this.agentClusters = [...updatedAgents];
+        this.searchInResult(); // updates `data`
         this.loading = false;
-        this.agentClusters = result.agents;
-
-        this.searchInResult();
       },
-      error: (err) => {
+      error: () => {
         this.loading = false;
       }
     });
