@@ -1573,11 +1573,14 @@ export class DeployComponent {
 
   filterList(): void {
     if (this.object.deployType === 'changes') {
+      if (this.changesNodes.length) {
+        this.nodes = [...this.changesNodes]
+      }
       this.changes()
-      this.filteredAffectedItems = []
+      return
     }
     if (this.object.deployType === 'individual') {
-      this.filteredAffectedItems = []
+      // this.filteredAffectedItems = []
     }
     this.checkedObject.clear();
     this.recursiveCheck(this.nodes);
@@ -2770,7 +2773,9 @@ export class DeployComponent {
     this.nodes.forEach(node => {
       this.handleDependenciesForRelease(node, obj, recall);
     });
-    this.handleAffectedItemsForRelease(obj, recall)
+    if(this.object.type !== 'changes') {
+      this.handleAffectedItemsForRelease(obj, recall)
+    }
     if (!isEmpty(obj.update) || !isEmpty(obj.delete) || !isEmpty(obj.releasables)) {
       const releaseURL = this.operation === 'recall' ? 'inventory/releasables/recall' : 'inventory/release';
       this.coreService.post(releaseURL, obj).subscribe({
@@ -2975,7 +2980,10 @@ export class DeployComponent {
     this.nodes.forEach(node => {
       this.handleDependenciesForRelease(node, obj, recall);
     });
-    this.handleAffectedItemsForRelease(obj, recall)
+
+    if(this.object.type !== 'changes') {
+      this.handleAffectedItemsForRelease(obj, recall)
+    }
     if (this.releasable && this.shouldAddOrdersDateFrom()) {
       if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
         obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
@@ -3113,8 +3121,9 @@ export class DeployComponent {
     this.nodes.forEach(node => {
       this.handleDependenciesForDeploy(node, obj);
     });
+    if(this.object.type !== 'changes') {
     this.handleAffectedItemsForDeploy(obj)
-
+}
     if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
       obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
     } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
@@ -3977,12 +3986,9 @@ export class ExportComponent {
         this.nodes = [...this.changesNodes]
       }
       this.changes()
-      this.filteredAffectedItems = []
       return
     }
-    if (this.exportObj.exportType === 'individual') {
-      this.filteredAffectedItems = []
-    }
+
     if (this.exportObj.exportType === 'folders') {
       this.filteredAffectedItems = []
     }
@@ -4375,7 +4381,9 @@ export class ExportComponent {
         this.nodes.forEach(node => {
           this.handleDependenciesForSigning(node, obj);
         });
-        this.handleAffectedItemsForSigning(obj)
+        if(this.exportObj.exportType !== 'changes'){
+          this.handleAffectedItemsForSigning(obj)
+        }
       } else {
         obj.shallowCopy = {
           withoutInvalid: this.filter.valid
@@ -4440,7 +4448,9 @@ export class ExportComponent {
           this.nodes.forEach(node => {
             this.handleDependenciesForExport(node, obj);
           });
-          this.handleAffectedItemsForExport(obj)
+          if(this.exportObj.exportType !== 'changes') {
+            this.handleAffectedItemsForExport(obj)
+          }
         }
         this.coreService.download('inventory/export', obj, this.exportObj.filename, (res) => {
           if (res) {
@@ -5170,11 +5180,9 @@ export class RepositoryComponent {
         this.nodes = [...this.changesNodes]
       }
       this.changes()
-      this.filteredAffectedItems = []
       return
     }
     if (this.object.type === 'individual') {
-      this.filteredAffectedItems = []
       this.buildTree(this.path);
     }
     this.showLabel = false;
@@ -5727,7 +5735,9 @@ export class RepositoryComponent {
       this.nodes.forEach(node => {
         this.handleDependenciesForGit(node, obj);
       });
-      this.handleAffectedItemsForGit(obj)
+      if(this.object.type !== 'changes') {
+        this.handleAffectedItemsForGit(obj)
+      }
       if (this.comments.comment) {
         obj.auditLog = {};
         this.coreService.getAuditLogObj(this.comments, obj.auditLog);

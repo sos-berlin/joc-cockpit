@@ -3872,8 +3872,15 @@ export class WorkflowComponent {
     if (changes['data']) {
       if (changes['data'].currentValue?.copied) {
         this.isCopiedWorkflow = true;
-            this.copiedWorkflowJobTags.copiedWorkflowPath = changes['data'].currentValue?.copied.path + changes['data'].currentValue?.copied.name,
-            this.copiedWorkflowJobTags.newWorkflowPath = changes['data'].currentValue?.path + (changes['data'].currentValue?.path === '/' ? '' : '/') + changes['data'].currentValue?.name
+        this.copiedWorkflowJobTags.copiedWorkflowPath = changes['data'].currentValue?.copied.path + '/' + changes['data'].currentValue?.copied.name
+        if (this.copiedWorkflowJobTags.copiedWorkflowPath.startsWith('//')) {
+          this.copiedWorkflowJobTags.copiedWorkflowPath = this.copiedWorkflowJobTags.copiedWorkflowPath.substring(1);
+        }
+        this.copiedWorkflowJobTags.newWorkflowPath = changes['data'].currentValue?.path + '/' + changes['data'].currentValue?.name
+        if (this.copiedWorkflowJobTags.newWorkflowPath.startsWith('//')) {
+          this.copiedWorkflowJobTags.newWorkflowPath = this.copiedWorkflowJobTags.newWorkflowPath.substring(1);
+        }
+
       }
       if (this.data.type) {
         if (this.workflowTree.length > 0) {
@@ -5227,7 +5234,7 @@ export class WorkflowComponent {
         break;
       case 'Number':
         variable.value.default = this.convertToNumberIfValid(variable.value.default);
-        if(variable.value.default === ''){
+        if (variable.value.default === '') {
           variable.value.default = undefined
         }
         break;
@@ -5406,13 +5413,13 @@ export class WorkflowComponent {
             if (this.isCopiedWorkflow) {
               const keysArray = Object.keys(res.configuration.jobs);
               this.fetchJobTags(keysArray, this.copiedWorkflowJobTags.copiedWorkflowPath, (copiedTagsData) => {
-                if(copiedTagsData && copiedTagsData.length > 0){
+                if (copiedTagsData && copiedTagsData.length > 0) {
                   this.storeJobTags(this.copiedWorkflowJobTags.newWorkflowPath, copiedTagsData, true);
                 }
               });
 
               this.fetchCopiedWorkflowTags(keysArray, this.copiedWorkflowJobTags.copiedWorkflowPath, (copiedTagsData) => {
-                if(copiedTagsData && copiedTagsData.length > 0){
+                if (copiedTagsData && copiedTagsData.length > 0) {
                   this.storeCopiedWorkflowTags(this.copiedWorkflowJobTags.newWorkflowPath, copiedTagsData, true);
                 }
               });
@@ -8104,8 +8111,8 @@ export class WorkflowComponent {
                   self.editor.graph.removeCells(cells, null);
                 }
               }
-            } else{
-               self.editor.graph.removeCells(cells, null);
+            } else {
+              self.editor.graph.removeCells(cells, null);
             }
 
           }
@@ -8128,6 +8135,7 @@ export class WorkflowComponent {
           }
           return null;
         }
+
         /**
          * Function: Select all parent nodes
          */
@@ -8683,17 +8691,17 @@ export class WorkflowComponent {
               } else {
                 if (drpTargt.value.tagName === 'Connection') {
 
-                  if ((dragElement.match('when')) && ((drpTargt?.source?.value?.tagName != 'When' && drpTargt?.target?.value?.tagName != 'EndCase') && (drpTargt?.source?.value?.tagName != 'EndWhen' && drpTargt?.target?.value?.tagName != 'ElseWhen')  && (drpTargt?.source?.value?.tagName != 'CaseWhen' && drpTargt?.target?.value?.tagName != 'When'))) {
+                  if ((dragElement.match('when')) && ((drpTargt?.source?.value?.tagName != 'When' && drpTargt?.target?.value?.tagName != 'EndCase') && (drpTargt?.source?.value?.tagName != 'EndWhen' && drpTargt?.target?.value?.tagName != 'ElseWhen') && (drpTargt?.source?.value?.tagName != 'CaseWhen' && drpTargt?.target?.value?.tagName != 'When'))) {
                     return;
-                  }else if (( dragElement.match('elseWhen')) && ((drpTargt?.source?.value?.tagName != 'When' && drpTargt?.target?.value?.tagName != 'EndCase') && (drpTargt?.source?.value?.tagName != 'EndWhen' && drpTargt?.target?.value?.tagName != 'ElseWhen'))) {
+                  } else if ((dragElement.match('elseWhen')) && ((drpTargt?.source?.value?.tagName != 'When' && drpTargt?.target?.value?.tagName != 'EndCase') && (drpTargt?.source?.value?.tagName != 'EndWhen' && drpTargt?.target?.value?.tagName != 'ElseWhen'))) {
                     return;
-                  }else if (dragElement.match('elseWhen') && (drpTargt?.source?.value?.tagName === 'EndWhen' && ((drpTargt?.target?.value?.tagName === 'ElseWhen') || drpTargt?.target?.value?.tagName === 'When'))) {
+                  } else if (dragElement.match('elseWhen') && (drpTargt?.source?.value?.tagName === 'EndWhen' && ((drpTargt?.target?.value?.tagName === 'ElseWhen') || drpTargt?.target?.value?.tagName === 'When'))) {
                     return;
                   } else if (!dragElement.match('paste') && !dragElement.match('when') && !dragElement.match('elseWhen') && ((drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'EndCase') || (drpTargt?.source?.value?.tagName === 'CaseWhen' && drpTargt?.target?.value?.tagName === 'When') || (drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'ElseWhen') || (drpTargt?.source?.value?.tagName === 'EndElse' && drpTargt?.target?.value?.tagName === 'EndCase') || (drpTargt?.source?.value?.tagName === 'EndWhen' && drpTargt?.target?.value?.tagName === 'When'))) {
                     return;
                   } else if ((dragElement.match('when') || dragElement.match('elseWhen')) && (drpTargt?.source?.value?.tagName === 'EndElse' && drpTargt?.target?.value?.tagName === 'EndCase')) {
                     return;
-                  }else if((dragElement.match('when') || dragElement.match('elseWhen')) &&  (drpTargt?.source?.value?.tagName != 'EndWhen' && drpTargt?.target?.value?.tagName != 'When')){
+                  } else if ((dragElement.match('when') || dragElement.match('elseWhen')) && (drpTargt?.source?.value?.tagName != 'EndWhen' && drpTargt?.target?.value?.tagName != 'When')) {
                     return;
                   }
                   if (checkClosedCellWithSourceCell(drpTargt.source, drpTargt.target)) {
@@ -8713,7 +8721,7 @@ export class WorkflowComponent {
             if (dragElement) {
               if (dragElement.match('paste')) {
                 if (self.copyId.length > 0 || (self.inventoryConf.copiedInstuctionObject && self.inventoryConf.copiedInstuctionObject.length > 0)) {
-                    pasteInstruction(drpTargt);
+                  pasteInstruction(drpTargt);
                 } else if (self.cutCell.length > 0) {
                   createClickInstruction(dragElement, drpTargt);
                 }
@@ -9285,7 +9293,7 @@ export class WorkflowComponent {
             }
           });
         }
-      }else {
+      } else {
         instructionsArr = instructionsArr.concat(instructions[index].instructions)
       }
       for (let i = 0; i < instructionsArr.length; i++) {
@@ -10309,11 +10317,11 @@ export class WorkflowComponent {
             const edit3 = new mxCellAttributeChange(
               obj.cell, 'uncatchable', self.selectedNode.newObj.uncatchable);
             graph.getModel().execute(edit3);
-          } else if(self.selectedNode.type === 'Sleep'){
+          } else if (self.selectedNode.type === 'Sleep') {
             const edit1 = new mxCellAttributeChange(
               obj.cell, 'duration', self.selectedNode.newObj.duration);
             graph.getModel().execute(edit1);
-          }else if (self.selectedNode.type === 'Finish') {
+          } else if (self.selectedNode.type === 'Finish') {
             const edit2 = new mxCellAttributeChange(
               obj.cell, 'message', self.selectedNode.newObj.message);
             graph.getModel().execute(edit2);
@@ -10720,7 +10728,7 @@ export class WorkflowComponent {
           obj.message = cell.getAttribute('message');
           obj.uncatchable = cell.getAttribute('uncatchable');
           obj.uncatchable = obj.uncatchable == 'true';
-        } else if(cell.value.tagName === 'Sleep'){
+        } else if (cell.value.tagName === 'Sleep') {
           obj.duration = cell.getAttribute('duration');
         } else if (cell.value.tagName === 'Finish') {
           obj.message = cell.getAttribute('message');
@@ -10747,7 +10755,7 @@ export class WorkflowComponent {
             // Ensure single space around && and ||
             obj.noticeBoardNames = obj.noticeBoardNames.replace(/\s*(\|\||&&)\s*/g, ' $1 ');
           }
-            obj.whenNotAnnounced = cell.getAttribute('whenNotAnnounced');
+          obj.whenNotAnnounced = cell.getAttribute('whenNotAnnounced');
           setTimeout(() => {
             self.isDisplay = true;
             self.ref.detectChanges();
@@ -11044,7 +11052,7 @@ export class WorkflowComponent {
           } else if (!targetObj.else) {
             targetObj.else = {instructions: copyObject};
           }
-        }  else if (target.value.tagName === 'Fork') {
+        } else if (target.value.tagName === 'Fork') {
           let branchId;
           if (!targetObj.branches) {
             targetObj.branches = [];
@@ -11089,7 +11097,7 @@ export class WorkflowComponent {
         targetObject = self.workflow.configuration;
       }
 
-      if((copyObject[0].TYPE === 'When' || copyObject[0].TYPE === 'ElseWhen') && (targetObject.TYPE === 'When' || targetObject.TYPE === 'ElseWhen' ) ){
+      if ((copyObject[0].TYPE === 'When' || copyObject[0].TYPE === 'ElseWhen') && (targetObject.TYPE === 'When' || targetObject.TYPE === 'ElseWhen')) {
         return
       }
       if (copyObject && copyObject.length > 0) {
@@ -11144,7 +11152,6 @@ export class WorkflowComponent {
         obj.instructions.forEach((child) => updateIdRecursively(child, multiplier));
       }
     }
-
 
 
     function checkCopyName(jobName): string {
@@ -11782,18 +11789,18 @@ export class WorkflowComponent {
           }
         } else {
           if (tagName === 'Connection') {
-              if ((title.match(/^when\.png$/) || title.match('elseWhen')) && ((targetCell?.source?.value?.tagName != 'When' && targetCell?.target?.value?.tagName != 'EndCase') && (targetCell?.source?.value?.tagName != 'EndWhen' && targetCell?.target?.value?.tagName != 'ElseWhen'))) {
-                return 'inValid';
-              } else if (title.match('elseWhen') && (targetCell?.source?.value?.tagName === 'EndWhen' && ((targetCell?.target?.value?.tagName === 'ElseWhen') || targetCell?.target?.value?.tagName === 'When'))) {
-                return 'inValid';
-              } else if (!title.match('paste') && !title.match('when') && !title.match('elseWhen') && ((targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'EndCase') || (targetCell?.source?.value?.tagName === 'CaseWhen' && targetCell?.target?.value?.tagName === 'When') || (targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'ElseWhen') || (targetCell?.source?.value?.tagName === 'EndElse' && targetCell?.target?.value?.tagName === 'EndCase') || (targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'When'))) {
-                return 'inValid';
-              } else if ((title.match(/^when\.png$/) || title.match('elseWhen')) && (targetCell?.source?.value?.tagName === 'EndElse' && targetCell?.target?.value?.tagName === 'EndCase')) {
-                return 'inValid';
-              }else if((title.match(/^when\.png$/) || title.match('elseWhen')) &&  (targetCell?.source?.value?.tagName != 'EndWhen' && targetCell?.target?.value?.tagName != 'When')) {
-                return 'inValid';
-              }
-                if (checkClosedCellWithSourceCell(targetCell.source, targetCell.target)) {
+            if ((title.match(/^when\.png$/) || title.match('elseWhen')) && ((targetCell?.source?.value?.tagName != 'When' && targetCell?.target?.value?.tagName != 'EndCase') && (targetCell?.source?.value?.tagName != 'EndWhen' && targetCell?.target?.value?.tagName != 'ElseWhen'))) {
+              return 'inValid';
+            } else if (title.match('elseWhen') && (targetCell?.source?.value?.tagName === 'EndWhen' && ((targetCell?.target?.value?.tagName === 'ElseWhen') || targetCell?.target?.value?.tagName === 'When'))) {
+              return 'inValid';
+            } else if (!title.match('paste') && !title.match('when') && !title.match('elseWhen') && ((targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'EndCase') || (targetCell?.source?.value?.tagName === 'CaseWhen' && targetCell?.target?.value?.tagName === 'When') || (targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'ElseWhen') || (targetCell?.source?.value?.tagName === 'EndElse' && targetCell?.target?.value?.tagName === 'EndCase') || (targetCell?.source?.value?.tagName === 'EndWhen' && targetCell?.target?.value?.tagName === 'When'))) {
+              return 'inValid';
+            } else if ((title.match(/^when\.png$/) || title.match('elseWhen')) && (targetCell?.source?.value?.tagName === 'EndElse' && targetCell?.target?.value?.tagName === 'EndCase')) {
+              return 'inValid';
+            } else if ((title.match(/^when\.png$/) || title.match('elseWhen')) && (targetCell?.source?.value?.tagName != 'EndWhen' && targetCell?.target?.value?.tagName != 'When')) {
+              return 'inValid';
+            }
+            if (checkClosedCellWithSourceCell(targetCell.source, targetCell.target)) {
               return 'return';
             }
           }
@@ -12838,7 +12845,7 @@ export class WorkflowComponent {
     recursive(mainJson);
   }
 
-  private  modifyJSON(mainJson, isValidate, isOpen): boolean {
+  private modifyJSON(mainJson, isValidate, isOpen): boolean {
     if (isEmpty(mainJson)) {
       return false;
     }
@@ -13298,7 +13305,7 @@ export class WorkflowComponent {
             json.instructions[x].subworkflow = {
               instructions: json.instructions[x].instructions
             };
-            if(json.instructions[x].TYPE === 'ConsumeNotices'){
+            if (json.instructions[x].TYPE === 'ConsumeNotices') {
               const whenNotAnnounced = clone(json.instructions[x].whenNotAnnounced);
               delete json.instructions[x].whenNotAnnounced;
               json.instructions[x].whenNotAnnounced = whenNotAnnounced;
@@ -13826,8 +13833,8 @@ export class WorkflowComponent {
           this.ref.detectChanges();
         }
       }, error: (err: any) => {
-        if(request.objectType === 'WORKFLOW'){
-          if(err.error.error.message.match('com.sos.inventory.model.instruction.CaseWhen') || err.error.error.message.match('Could not resolve type id \'When\' as a subtyp') || err.error.error.message.match('Could not resolve type id \'ElseWhen\' as a subtype of') || err.error.error.message.match('java.util.ArrayList[0]->com.sos.inventory.model.instruction.When["then"]')){
+        if (request.objectType === 'WORKFLOW') {
+          if (err.error.error.message.match('com.sos.inventory.model.instruction.CaseWhen') || err.error.error.message.match('Could not resolve type id \'When\' as a subtyp') || err.error.error.message.match('Could not resolve type id \'ElseWhen\' as a subtype of') || err.error.error.message.match('java.util.ArrayList[0]->com.sos.inventory.model.instruction.When["then"]')) {
             this.workflow.configuration = JSON.parse(this.workflow.actual)
             this.updateXMLJSON(false);
 
@@ -13843,7 +13850,7 @@ export class WorkflowComponent {
     if (path && copyObject) {
       request.path = path;
       if (isWorkflow) {
-      request.jobs = copyObject;
+        request.jobs = copyObject;
       } else {
         request.jobs = [{
           jobName: copyObject.jobName,
@@ -13873,8 +13880,8 @@ export class WorkflowComponent {
   private storeCopiedWorkflowTags(path = null, copyObject = null, isWorkflow = false): void {
 
     const request: any = {};
-      request.path = path;
-      request.tags = copyObject;
+    request.path = path;
+    request.tags = copyObject;
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.translate.get('auditLog.message.defaultAuditLog').subscribe(translatedValue => {
         request.auditLog = {comment: translatedValue};

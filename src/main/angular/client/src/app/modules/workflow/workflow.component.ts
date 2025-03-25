@@ -743,7 +743,6 @@ export class WorkflowComponent {
   }
 
   bulkUpdate(data): void {
-
     data.list.forEach((noticePath) => {
 
       const newEntry = {

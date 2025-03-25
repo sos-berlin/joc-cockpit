@@ -52,13 +52,16 @@ export class TypeComponent {
 
   sideBar: any = {};
   broadName = '';
-  broadNames = [];
+  broadNames: any = []
+  broadNamesGraphical = new Map();
   isFirst = false;
+  broadPath: any =[];
   isVisible: any;
+  isChecked: boolean;
   subscription1: any = Subscription;
 
   constructor(public coreService: CoreService, private modal: NzModalService,
-              public viewContainerRef: ViewContainerRef, private nzContextMenuService: NzContextMenuService,  private dataService: DataService
+              public viewContainerRef: ViewContainerRef, private nzContextMenuService: NzContextMenuService, private dataService: DataService
   ) {
     this.subscription1 = dataService.sidebarOrders$.subscribe(res => {
       this.isVisible = res
@@ -89,7 +92,7 @@ export class TypeComponent {
       }
     }
     if (changes['orders'] || changes['orderReload']) {
-        this.sideBar = this.isVisible;
+      this.sideBar = this.isVisible;
 
       this.updateOrder();
     }
@@ -99,6 +102,7 @@ export class TypeComponent {
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
   }
+
   changedHandler(flag: boolean): void {
     this.isChanged.emit(flag);
     setTimeout(() => {
@@ -206,7 +210,7 @@ export class TypeComponent {
     };
     if (data.orders) {
       this.sideBar.orders = data.orders || [];
-    }else{
+    } else {
       this.sideBar.orders = data || [];
     }
 
@@ -269,7 +273,7 @@ export class TypeComponent {
 
     recursive(data);
     this.isFirst = true;
-    if(!this.isVisible.isVisible){
+    if (!this.isVisible.isVisible) {
       this.dataService.sidebarOrdersSource.next(this.sideBar);
       this.sideBar.isVisible = true;
     }
@@ -634,27 +638,91 @@ export class TypeComponent {
   }
 
   postAllNotices(): void {
-    this.post(this.broadNames);
+    this.bulkUpdateGraphical()
+
+    if (this.permission.currentController && this.permission.currentController.noticeBoards.post) {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: PostModalComponent,
+        nzClassName: 'lg',
+        nzAutofocus: null,
+        nzData: {
+          controllerId: this.schedulerId,
+          preferences: this.preferences,
+          workflowPaths: this.broadPath,
+          flag: true
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          this.clearCheckbox();
+        }
+      });
+    }
+  }
+
+  bulkUpdateGraphical(): void {
+    const data: any = {key: this.workflowObj.path, list: this.broadNames, isChecked: this.isChecked}
+    data.list.forEach((noticePath) => {
+
+      const newEntry = {
+        noticePath: noticePath,
+        workflowPaths: [data.key]
+      };
+      const index = this.broadPath.findIndex(item =>
+        item.noticePath === noticePath &&
+        item.workflowPaths.includes(data.key)
+      );
+
+      if (data.isChecked) {
+        if (index === -1) {
+          this.broadPath.push(newEntry);
+        } else {
+        }
+      } else {
+        if (index !== -1) {
+          this.broadPath.splice(index, 1);
+        } else {
+        }
+      }
+    });
+
+    if (data.list.length > 0) {
+      this.broadNamesGraphical.set(data.key, data.list);
+    } else {
+      this.broadNamesGraphical.delete(data.key);
+    }
+
+    this.broadPath = this.broadPath.filter(item => {
+      for (const [key, list] of this.broadNamesGraphical.entries()) {
+        if (item.workflowPaths.includes(key) && list.includes(item.noticePath)) {
+          return true;
+        }
+      }
+      return false;
+    });
   }
 
   @HostListener('window:click', ['$event'])
   onClicked(event): void {
     if (event && this.isFirst) {
-    if (event.target.getAttribute('data-id-x')) {
+      if (event.target.getAttribute('data-id-x')) {
         this.coreService.navToInventoryTab(event.target.getAttribute('data-id-x'), 'NOTICEBOARD');
-    } else if (event.target.getAttribute('data-id-y')) {
+      } else if (event.target.getAttribute('data-id-y')) {
         this.coreService.showBoard(event.target.getAttribute('data-id-y'));
-    } else if (event.target.getAttribute('data-id-m')) {
+      } else if (event.target.getAttribute('data-id-m')) {
         this.broadName = event.target.getAttribute('data-id-m');
         try {
-            if (this.menu) {
-                setTimeout(() => {
-                    this.nzContextMenuService.create(event, this.menu);
-                }, 0);
-            }
+          if (this.menu) {
+            setTimeout(() => {
+              this.nzContextMenuService.create(event, this.menu);
+            }, 0);
+          }
         } catch (e) {
         }
-    } else if (event.target.getAttribute('data-id-n')) {
+      } else if (event.target.getAttribute('data-id-n')) {
         const id = event.target.getAttribute('data-id-n');
         if (id && event.target.getAttribute('data-id-a') == `chk_${this.workflowObj.path}`) {
           const elements: any = document.querySelectorAll(`[data-id-n="${id}"]`);
@@ -684,7 +752,7 @@ export class TypeComponent {
               }
             });
           }
-
+          this.isChecked = !isChecked
           this.bulkUpdate.emit({key: this.workflowObj.path, list: this.broadNames, isChecked: !isChecked});
 
         }
