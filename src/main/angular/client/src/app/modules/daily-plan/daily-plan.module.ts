@@ -16,6 +16,7 @@ import {GroupByPipe} from '../../pipes/core.pipe';
 import {DependenciesComponent} from "./dependencies/dependencies.component";
 import {NzDrawerComponent} from "ng-zorro-antd/drawer";
 import {NzDrawerModule} from "ng-zorro-antd/drawer";
+import {NzPaginationModule} from "ng-zorro-antd/pagination";
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import {NzDrawerModule} from "ng-zorro-antd/drawer";
     DailyPlanRoutingModule,
     NzTabsModule,
     NzDrawerComponent,
-    NzDrawerModule
+    NzDrawerModule,
+    NzPaginationModule
   ],
   declarations: [DailyPlanComponent, GanttComponent, ProjectionComponent, DependenciesComponent, RemovePlanModalComponent, FilterModalComponent,
     SearchComponent, DailyPlanRegexValidator, CreatePlanModalComponent, ShowProjectionModalComponent, ExportComponent],

@@ -974,7 +974,11 @@
     "button.announced": "Announced",
     "button.notAnnounced": "Not Announced",
     "button.openPlan": "Open Plan",
-    "button.closePlan": "Close Plan","placeholder.selectOrderTemplate": "Select Schedules",
+    "button.closePlan": "Close Plan",
+    "button.past": "Past",
+    "button.present": "Present",
+    "button.future": "Future",
+    "placeholder.selectOrderTemplate": "Select Schedules",
     "placeholder.selectSubmissionHistory": "Select Daily Plan History",
     "placeholder.timeRange": "now, (+/-)(d), today",
     "placeholder.workflowPath": "Select Workflows",
@@ -3166,7 +3170,9 @@
       "period_begin": "Specifies the begin of the 24 hours Daily Plan period with the indicated time zone.",
       "days_ahead_plan": "Specifies the number of days ahead for which orders are generated and are made available with the PLANNED state.",
       "days_ahead_submit": "Specifies the number of days ahead for which PLANNED orders are submitted to Controllers and are made available with the SUBMITTED state.",
-      "projections_month_ahead": "Specifies the number of months ahead for which projections are calculated that indicate future order execution."
+      "projections_month_ahead": "Specifies the number of months ahead for which projections are calculated that indicate future order execution.",
+      "submit_orders_individually": "submit_orders_individually.",
+      "age_of_plans_to_be_closed_automatically": "age_of_plans_to_be_closed_automatically."
     },
     "joc": {
       "force_comments_for_audit_log": "Specifies that for any changes applied to an object such as to add an order, to cancel an order etc. a reason has to be added for the Audit Log.",

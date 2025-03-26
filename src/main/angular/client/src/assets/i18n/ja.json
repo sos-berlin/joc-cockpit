@@ -975,6 +975,9 @@
     "button.notAnnounced": "Not Announced",
     "button.openPlan": "Open Plan",
     "button.closePlan": "Close Plan",
+    "button.past": "Past",
+    "button.present": "Present",
+    "button.future": "Future",
      "placeholder.selectOrderTemplate": "オーダーテンプレート選択",
     "placeholder.selectSubmissionHistory": "登録履歴選択",
     "placeholder.timeRange": "now, (+/-)(d), today",
@@ -3167,8 +3170,9 @@
       "period_begin": "24時間のデイリープランの開始時間を、指定されたタイムゾーンで指定します。",
       "days_ahead_plan": "オーダーを生成し計画済状態で利用可能にする日数を指定します。",
       "days_ahead_submit": "計画済オーダーがコントローラーに送信され、保留状態で利用可能になる日数を指定します。",
-      "projections_month_ahead": "翌月のプロジェクション"
-    },
+      "projections_month_ahead": "翌月のプロジェクション",
+      "submit_orders_individually": "submit_orders_individually.",
+      "age_of_plans_to_be_closed_automatically": "age_of_plans_to_be_closed_automatically."},
     "joc": {
       "force_comments_for_audit_log": "trueに設定すると、オーダーの追加、キャンセルなど、オブジェクトに適用される変更について、操作ログにコメントを強制できます。",
       "comments_for_audit_log": "操作ログにコメントを追加する際に利用できる、定義済コメントを設定します。",

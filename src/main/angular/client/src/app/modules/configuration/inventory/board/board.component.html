@@ -99,13 +99,13 @@
           </label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
             <nz-input-group [nzAddOnAfter]="addOnAfterTemplate">
-              <input #toNotice="ngModel" (blur)="saveJSON()" [(ngModel)]="board.configuration.postOrderToNoticeId"
+              <input #toNotice="ngModel" (blur)="saveJSON()" [(ngModel)]="globalPostOrderToNoticeId"
                      [readonly]="isTrash || !permission.joc.inventory.manage" autocomplete="off" name="toNotice" nz-input
                      placeholder="{{'inventory.placeholder.toNotice' | translate}}" required
                      type="text">
             </nz-input-group>
             <ng-template #addOnAfterTemplate>
-             <app-select-input [classNames]="'w-220'" (modelChange)="changeExp($event, 'toNotice')"
+             <app-select-input [classNames]="'w-220'" (modelChange)="changeExp($event, 'toNoticeGlobal')"
                                 [placeholder]="'inventory.placeholder.selectPredefinedExpression'" [optionLabel]="'label'" [optionValue]="'value'"
                                 [attributeName]="'toNoticeMsg'" [isAllowClear]="true"
                                 [listArray]="listOfNoticeMsg" [name]="'toNoticeMsg'"
@@ -126,13 +126,13 @@
           </label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
             <nz-input-group [nzAddOnAfter]="addOnAfterTemplate">
-              <input #toNotice="ngModel" (blur)="saveJSON()" [(ngModel)]="board.configuration.postOrderToNoticeId"
+              <input #toNotice="ngModel" (blur)="saveJSON(false, true)" [(ngModel)]="plannablePostOrderToNoticeId"
                      [readonly]="isTrash || !permission.joc.inventory.manage" autocomplete="off" name="toNotice" nz-input
                      placeholder="{{'inventory.placeholder.toNotice' | translate}}" required
                      type="text">
             </nz-input-group>
             <ng-template #addOnAfterTemplate>
-             <app-select-input [classNames]="'w-220'" (modelChange)="changeExp($event, 'toNotice')"
+             <app-select-input [classNames]="'w-220'" (modelChange)="changeExp($event, 'toNoticePlannable')"
                                 [placeholder]="'inventory.placeholder.selectPredefinedExpression'" [optionLabel]="'label'" [optionValue]="'value'"
                                 [attributeName]="'toNoticeMsgPlan'" [isAllowClear]="true"
                                [listArray]="listOfNoticeMsgPlan"

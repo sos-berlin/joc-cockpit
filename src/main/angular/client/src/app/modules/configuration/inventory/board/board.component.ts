@@ -37,6 +37,8 @@ export class BoardComponent {
   indexOfNextAdd = 0;
   lastModified: any = '';
   history = [];
+  globalPostOrderToNoticeId: string = '';
+  plannablePostOrderToNoticeId: string = '';
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
@@ -187,6 +189,8 @@ export class BoardComponent {
       this.boardObj.toNoticeMsg = clone(this.board.configuration.postOrderToNoticeId);
       this.boardObj.toNoticeMsgPlan = clone(this.board.configuration.postOrderToNoticeId);
       this.boardObj.readingOrderToNoticeIdMsg = clone(this.board.configuration.expectOrderToNoticeId);
+      this.globalPostOrderToNoticeId = this.board.configuration.boardType === 'GLOBAL' ? this.board.configuration.postOrderToNoticeId : '';
+      this.plannablePostOrderToNoticeId = this.board.configuration.boardType === 'PLANNABLE' ? this.board.configuration.postOrderToNoticeId : '';
 
       this.board.actual = JSON.stringify(res.configuration);
       this.history.push(this.board.actual);
@@ -413,8 +417,10 @@ export class BoardComponent {
   }
 
   changeExp($event, type: string): void {
-    if (type === 'toNotice') {
-      this.board.configuration.postOrderToNoticeId = $event;
+    if (type === 'toNoticeGlobal') {
+      this.globalPostOrderToNoticeId = $event;
+    } else if(type === 'toNoticePlannable') {
+      this.plannablePostOrderToNoticeId = $event;
     } else {
       this.board.configuration.expectOrderToNoticeId = $event;
     }
@@ -511,15 +517,21 @@ export class BoardComponent {
   }
 
   onChange(): void {
-    if (this.board.configuration.boardType === 'GLOBAL') {
-      delete this.board.configuration.postOrderToNoticeId
-    }
     this.saveJSON()
   }
 
   saveJSON(flag = false, skip = false): void {
     if (this.isTrash || !this.permission.joc.inventory.manage) {
       return;
+    }
+    if (this.board.configuration.boardType === 'GLOBAL') {
+      this.board.configuration.postOrderToNoticeId = this.globalPostOrderToNoticeId;
+    } else if (this.board.configuration.boardType === 'PLANNABLE') {
+      this.board.configuration.postOrderToNoticeId = this.plannablePostOrderToNoticeId;
+    }
+
+    if (!this.board.configuration.postOrderToNoticeId) {
+      delete this.board.configuration.postOrderToNoticeId;
     }
     if (this.boardObj.endOfLife) {
       this.chectTime();

@@ -250,6 +250,7 @@ export class CoreService {
       sortBy: 'path',
       reverse: true,
       currentPage: '1',
+      entryPerPage: 10,
       filterBy: ''
     };
     this.tabs._plans.filter.calView ='Global';
@@ -533,7 +534,6 @@ export class CoreService {
   getPlansTab(): any {
     return this.tabs._plans;
   }
-
   getMonitorTab(): any {
     return this.tabs._monitor;
   }

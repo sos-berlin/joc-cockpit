@@ -4,7 +4,31 @@
     class="col-md-12 m-b">
     <div class="inline" style="height: 26px">
       <div class="pos-rel t-xxs">
-        <i class="fa fa-stop bg-postingWorkflow"></i>
+        <button (click)="setNoticeStatus('')"
+                [ngClass]="{'btn-primary': plansFilters.filter.filterBy===''}"
+                class="btn btn-grey btn-sm hidden-btn-text">
+          <i class="icon icon-orders-icon"></i>
+          <span translate>dailyPlan.label.all</span>
+        </button>
+        <button (click)="setNoticeStatus('past')"
+                [ngClass]="{'btn-primary': plansFilters.filter.filterBy==='past'}"
+                class="btn btn-grey btn-sm hidden-btn-text">
+          <i class="icon icon-calendar-icon"></i>
+          <span translate>dailyPlan.button.past</span>
+        </button>
+        <button (click)="setNoticeStatus('present')"
+                [ngClass]="{'btn-primary': plansFilters.filter.filterBy==='present'}"
+                class="btn btn-grey btn-sm hidden-btn-text">
+          <i class="icon icon-workflows-icon"></i>
+          <span translate>dailyPlan.button.present</span>
+        </button>
+        <button (click)="setNoticeStatus('future')"
+                [ngClass]="{'btn-primary': plansFilters.filter.filterBy==='future'}"
+                class="btn btn-grey btn-sm hidden-btn-text">
+          <i class="icon icon-workflows-icon"></i>
+          <span translate>dailyPlan.button.future</span>
+        </button>
+        <i class="fa fa-stop bg-postingWorkflow" style="margin-left: 30px"></i>
         {{'dailyPlan.label.postingWorkflow' | translate}}
         <i class="fa fa-stop bg-expectingWorkflow p-l-sm"></i>
         {{'dailyPlan.label.expectingWorkflow' | translate}}
@@ -12,18 +36,21 @@
         {{'dailyPlan.label.consumingWorkflow' | translate}}
       </div>
     </div>
+
     <div class="search-box-field pull-right">
       <label>
         <input
           [(ngModel)]="searchValue"
-          (ngModelChange)="highlightNodes(searchValue)"
+          (ngModelChange)="reloadGraph()"
           placeholder="{{ 'common.placeholder.search' | translate }}"
           type="search">
 
+
       </label>
-      <i (click)="searchValue = ''"
+      <i (click)="clearSearch()"
          [hidden]="!searchValue"
          class="fa fa-times search-close"></i>
+
     </div>
     <br/>
   </div>
@@ -56,8 +83,8 @@
 
       </div>
     </div>
-    <div id="rightPanel2">
-        <div style="overflow: auto; width: 100%; height: calc(100vh - 280px)">
+    <div id="rightPanel2" class="box" style="height: calc(100vh - 266px)">
+        <div  style="overflow: auto; width: 100%; height: calc(100vh - 310px)">
           <div class="inline toolbar-icons">
             <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
               <li class="nav-item">
@@ -86,7 +113,19 @@
             </ul>
           </div>
           <div #graphContainer class="graph-container "></div>
+          <div *ngIf="buildRowsFromData(workflowData)?.length === 0" class="m-t-md">
+            <app-empty-data></app-empty-data>
+          </div>
         </div>
+        <nz-pagination *ngIf="workflowData?.consumingWorkflows || workflowData?.expectingWorkflows || workflowData?.postingWorkflows" class="pull-right" style="margin-top: 4px"
+                       [nzPageSize]="pageSize || preferences.entryPerPage || 25"
+                       [nzShowSizeChanger]="true"
+                       [nzPageSizeOptions]="[10, 25, 50, 100, +(preferences.maxEntryPerPage)]"
+                       [nzTotal]="workflowData ? buildRowsFromData(workflowData).length : 0"
+                       [(nzPageIndex)]="plansFilters.filter.currentPage"
+                       (nzPageIndexChange)="onPageIndexChange($event)"
+                       (nzPageSizeChange)="pageSizeChange($event)">
+        </nz-pagination>
 
     </div>
   </div>
