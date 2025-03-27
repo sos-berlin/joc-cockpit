@@ -856,6 +856,7 @@ export class DependenciesComponent {
     this.isLoaded = false;
     this.coreService.post('workflows/boards/snapshot', {
       controllerId: this.schedulerId,
+      noticeSpaceKeys: [this.coreService.getStringDate(this.selectedDate)]
     }).pipe(takeUntil(this.depPendingHTTPRequests$)).subscribe((res) => {
       this.isLoaded = true;
       this.workflowData = res;

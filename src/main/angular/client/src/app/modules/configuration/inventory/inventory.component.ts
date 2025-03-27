@@ -2773,7 +2773,7 @@ export class DeployComponent {
     this.nodes.forEach(node => {
       this.handleDependenciesForRelease(node, obj, recall);
     });
-    if(this.object.type !== 'changes') {
+    if (this.object.type !== 'changes') {
       this.handleAffectedItemsForRelease(obj, recall)
     }
     if (!isEmpty(obj.update) || !isEmpty(obj.delete) || !isEmpty(obj.releasables)) {
@@ -2981,7 +2981,7 @@ export class DeployComponent {
       this.handleDependenciesForRelease(node, obj, recall);
     });
 
-    if(this.object.type !== 'changes') {
+    if (this.object.type !== 'changes') {
       this.handleAffectedItemsForRelease(obj, recall)
     }
     if (this.releasable && this.shouldAddOrdersDateFrom()) {
@@ -3121,9 +3121,9 @@ export class DeployComponent {
     this.nodes.forEach(node => {
       this.handleDependenciesForDeploy(node, obj);
     });
-    if(this.object.type !== 'changes') {
-    this.handleAffectedItemsForDeploy(obj)
-}
+    if (this.object.type !== 'changes') {
+      this.handleAffectedItemsForDeploy(obj)
+    }
     if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
       obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
     } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
@@ -4381,7 +4381,7 @@ export class ExportComponent {
         this.nodes.forEach(node => {
           this.handleDependenciesForSigning(node, obj);
         });
-        if(this.exportObj.exportType !== 'changes'){
+        if (this.exportObj.exportType !== 'changes') {
           this.handleAffectedItemsForSigning(obj)
         }
       } else {
@@ -4448,7 +4448,7 @@ export class ExportComponent {
           this.nodes.forEach(node => {
             this.handleDependenciesForExport(node, obj);
           });
-          if(this.exportObj.exportType !== 'changes') {
+          if (this.exportObj.exportType !== 'changes') {
             this.handleAffectedItemsForExport(obj)
           }
         }
@@ -4509,7 +4509,7 @@ export class ExportComponent {
             objectType: node.type,
           }
         };
-         if (node.checked && (!node.valid || node.valid) && (node.deployed || !node.deployed) && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(node.type)) {
+        if (node.checked && (!node.valid || node.valid) && (node.deployed || !node.deployed) && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(node.type)) {
           if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
             obj.shallowCopy.deployables.draftConfigurations.push(config);
           }
@@ -4882,7 +4882,11 @@ export class RepositoryComponent {
     this.operation = this.modalData.operation;
     this.category = this.modalData.category;
     this.display = this.modalData.display;
-    this.loadSetting();
+    if (['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'CALENDAR', 'WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(this.origin?.object)) {
+      this.loadSettingPseudo()
+    } else {
+      this.loadSetting();
+    }
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
@@ -4970,6 +4974,119 @@ export class RepositoryComponent {
     });
   }
 
+
+  private initPseudo(flag?): void {
+    if (this.origin) {
+      this.path = this.origin.path;
+      if (this.origin.object) {
+        if (this.origin.object === InventoryObject.SCHEDULE || this.origin.object === InventoryObject.JOBTEMPLATE || this.origin.object === InventoryObject.INCLUDESCRIPT ||
+          this.origin.object === InventoryObject.REPORT || this.origin.object.match('CALENDAR')) {
+          this.type = this.origin.object;
+          this.filter.deploy = false;
+        } else {
+          this.type = this.origin.object;
+          this.filter.deploy = false;
+        }
+      }
+    }
+    if (this.operation === 'store') {
+      this.buildTree(this.path);
+    } else {
+      this.readFileSystem(this.path);
+    }
+  }
+
+  private loadSettingPseudo() {
+    this.coreService.post('configurations', {configurationType: 'GLOBALS'}).subscribe({
+      next: (res) => {
+        let configuration: any = {};
+        let flag = 'local';
+
+        if (res.configurations[0] && res.configurations[0].configurationItem) {
+          configuration = JSON.parse(res.configurations[0].configurationItem);
+        }
+        const category = this.category.toLowerCase();
+
+        if (this.origin.object === InventoryObject.JOBRESOURCE && ((configuration.git?.git_hold_job_resources && configuration.git?.git_hold_job_resources.value == category)
+          || (!configuration.git?.git_hold_job_resources && res.defaultGlobals.git?.git_hold_job_resources && res.defaultGlobals.git?.git_hold_job_resources.default == category))) {
+          flag = configuration.git?.git_hold_job_resources.value || res.defaultGlobals.git?.git_hold_job_resources.default
+          this.filter.envIndependent = configuration.git?.git_hold_job_resources.value === 'rollout'
+          this.filter.envRelated = configuration.git?.git_hold_job_resources.value === 'local'
+          this.listOfDeployables.push(InventoryObject.JOBRESOURCE);
+        }
+        if (this.origin.object === InventoryObject.WORKFLOW && ((configuration.git?.git_hold_workflows && configuration.git?.git_hold_workflows.value == category)
+          || (!configuration.git?.git_hold_workflows && res.defaultGlobals.git?.git_hold_workflows && res.defaultGlobals.git?.git_hold_workflows.default == category))) {
+          this.filter.envIndependent = configuration.git?.git_hold_workflows.value === 'rollout'
+          this.filter.envRelated = configuration.git?.git_hold_workflows.value === 'local'
+          this.listOfDeployables.push(InventoryObject.WORKFLOW);
+
+        }
+        if (this.origin.object === InventoryObject.NOTICEBOARD && ((configuration.git?.git_hold_notice_boards && configuration.git?.git_hold_notice_boards.value == category)
+          || (!configuration.git?.git_hold_notice_boards && res.defaultGlobals.git?.git_hold_notice_boards && res.defaultGlobals.git?.git_hold_notice_boards.default == category))) {
+          this.filter.envIndependent = configuration.git?.git_hold_notice_boards.value === 'rollout'
+          this.filter.envRelated = configuration.git?.git_hold_notice_boards.value === 'local'
+          this.listOfDeployables.push(InventoryObject.NOTICEBOARD);
+
+        }
+        if (this.origin.object === InventoryObject.LOCK && ((configuration.git?.git_hold_resource_locks && configuration.git?.git_hold_resource_locks.value == category)
+          || (!configuration.git?.git_hold_resource_locks && res.defaultGlobals.git?.git_hold_resource_locks && res.defaultGlobals.git?.git_hold_resource_locks.default == category))) {
+          this.filter.envIndependent = configuration.git?.git_hold_resource_locks.value === 'rollout'
+          this.filter.envRelated = configuration.git?.git_hold_resource_locks.value === 'local'
+          this.listOfDeployables.push(InventoryObject.LOCK);
+
+        }
+
+        if (this.origin.object === InventoryObject.FILEORDERSOURCE && ((configuration.git?.git_hold_file_order_sources && configuration.git?.git_hold_file_order_sources.value == category)
+          || (!configuration.git?.git_hold_file_order_sources && res.defaultGlobals.git?.git_hold_file_order_sources && res.defaultGlobals.git?.git_hold_file_order_sources.default == category))) {
+          this.filter.envIndependent = configuration.git?.git_hold_file_order_sources.value === 'rollout'
+          this.filter.envRelated = configuration.git?.git_hold_file_order_sources.value === 'local'
+          this.listOfDeployables.push(InventoryObject.FILEORDERSOURCE);
+
+        }
+        if (this.origin.object === InventoryObject.SCHEDULE && ((configuration.git?.git_hold_schedules && configuration.git?.git_hold_schedules.value == category)
+          || (!configuration.git?.git_hold_schedules && res.defaultGlobals.git?.git_hold_schedules && res.defaultGlobals.git?.git_hold_schedules.default == category))) {
+          this.filter.envIndependent = configuration.git?.git_hold_schedules.value === 'rollout'
+          this.filter.envRelated = configuration.git?.git_hold_schedules.value === 'local'
+          this.listOfReleaseables.push(InventoryObject.SCHEDULE);
+
+        }
+        if (this.origin.object?.match('CALENDAR') && ((configuration.git?.git_hold_calendars && configuration.git?.git_hold_calendars.value == category)
+          || (!configuration.git?.git_hold_calendars && res.defaultGlobals.git?.git_hold_calendars && res.defaultGlobals.git?.git_hold_calendars.default == category))) {
+          this.filter.envIndependent = configuration.git?.git_hold_calendars.value === 'rollout'
+          this.filter.envRelated = configuration.git?.git_hold_calendars.value === 'local'
+          this.listOfReleaseables.push(InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR);
+
+        }
+
+        if (this.origin.object === InventoryObject.JOBTEMPLATE && ((configuration.git?.git_hold_job_templates && configuration.git?.git_hold_job_templates.value == category)
+          || (!configuration.git?.git_hold_job_templates && res.defaultGlobals.git?.git_hold_job_templates && res.defaultGlobals.git?.git_hold_job_templates.default == category))) {
+          this.filter.envIndependent = configuration.git?.git_hold_job_templates.value === 'rollout'
+          this.filter.envRelated = configuration.git?.git_hold_job_templates.value === 'local'
+          this.listOfReleaseables.push(InventoryObject.JOBTEMPLATE);
+
+        }
+        if (this.origin.object === InventoryObject.INCLUDESCRIPT && ((configuration.git?.git_hold_script_includes && configuration.git?.git_hold_script_includes.value == category)
+          || (!configuration.git?.git_hold_script_includes && res.defaultGlobals.git?.git_hold_script_includes && res.defaultGlobals.git?.git_hold_script_includes.default == category))) {
+          this.filter.envIndependent = configuration.git?.git_hold_script_includes.value === 'rollout'
+          this.filter.envRelated = configuration.git?.git_hold_script_includes.value === 'local'
+
+          this.listOfReleaseables.push(InventoryObject.INCLUDESCRIPT);
+
+        }
+        if (this.origin.object === InventoryObject.REPORT && ((configuration.git?.git_hold_reports && configuration.git?.git_hold_reports.value == category)
+          || (!configuration.git?.git_hold_reports && res.defaultGlobals.git?.git_hold_reports && res.defaultGlobals.git?.git_hold_reports.default == category))) {
+          this.filter.envIndependent = configuration.git?.git_hold_reports.value === 'rollout'
+          this.filter.envRelated = configuration.git?.git_hold_reports.value === 'local'
+          this.listOfReleaseables.push(InventoryObject.REPORT);
+
+        }
+        this.initPseudo(flag);
+      }, error: () => {
+        this.initPseudo();
+      }
+    });
+  }
+
   private buildTree(path, merge = null, cb = null, flag = false): void {
     const obj: any = {
       folder: path || '/',
@@ -4980,42 +5097,64 @@ export class RepositoryComponent {
       withoutRemovedObjects: true
     };
     const APIs = [];
-    if (this.filter.envRelated) {
-      if (this.type !== 'ALL') {
-        obj.objectTypes = this.type === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.type];
+    if (!['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'CALENDAR', 'WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(this.origin?.object)) {
+      if (this.filter.envRelated) {
+        if (this.type !== 'ALL') {
+          obj.objectTypes = this.type === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.type];
+        } else {
+          const obj2 = clone(obj);
+          obj2.objectTypes = this.listOfDeployables;
+          if (obj2.objectTypes.length > 0) {
+            APIs.push(this.coreService.post('inventory/deployables', obj2).pipe(
+              catchError(error => of(error))
+            ));
+          }
+        }
+
+        obj.objectTypes = this.listOfReleaseables;
+        obj.withoutReleased = !this.filter.deploy;
+        if (obj.objectTypes.length > 0) {
+          APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
+            catchError(error => of(error))
+          ));
+        }
+      } else if (this.filter.envIndependent) {
+        obj.withVersions = !this.filter.deploy;
+        if (this.type !== 'ALL') {
+          obj.objectTypes = [this.type];
+        } else {
+          obj.objectTypes = this.listOfDeployables;
+        }
+        if (obj.objectTypes.length > 0) {
+          APIs.push(this.coreService.post('inventory/deployables', obj).pipe(
+            catchError(error => of(error))
+          ));
+        }
       } else {
-        const obj2 = clone(obj);
-        obj2.objectTypes = this.listOfDeployables;
-        if (obj2.objectTypes.length > 0) {
-          APIs.push(this.coreService.post('inventory/deployables', obj2).pipe(
+        this.loading = false;
+        return;
+      }
+    } else {
+      if (!['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'CALENDAR'].includes(this.origin?.object)) {
+          const obj2 = clone(obj);
+          obj2.objectTypes = this.listOfDeployables;
+          if (obj2.objectTypes.length > 0) {
+            APIs.push(this.coreService.post('inventory/deployables', obj2).pipe(
+              catchError(error => of(error))
+            ));
+          }
+      } else {
+        obj.objectTypes = this.listOfReleaseables;
+        obj.withoutReleased = !this.filter.deploy;
+        if (obj.objectTypes.length > 0) {
+          APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
             catchError(error => of(error))
           ));
         }
       }
 
-      obj.objectTypes = this.listOfReleaseables;
-      obj.withoutReleased = !this.filter.deploy;
-      if (obj.objectTypes.length > 0) {
-        APIs.push(this.coreService.post('inventory/releasables', obj).pipe(
-          catchError(error => of(error))
-        ));
-      }
-    } else if (this.filter.envIndependent) {
-      obj.withVersions = !this.filter.deploy;
-      if (this.type !== 'ALL') {
-        obj.objectTypes = [this.type];
-      } else {
-        obj.objectTypes = this.listOfDeployables;
-      }
-      if (obj.objectTypes.length > 0) {
-        APIs.push(this.coreService.post('inventory/deployables', obj).pipe(
-          catchError(error => of(error))
-        ));
-      }
-    } else {
-      this.loading = false;
-      return;
     }
+
     if (APIs.length > 0) {
       forkJoin(APIs).subscribe({
         next: (res: any) => {
@@ -5166,7 +5305,6 @@ export class RepositoryComponent {
             this.inventoryService.preselected(this.nodes[0]);
           }
           this.nodes = [...this.nodes];
-
         } else {
           cb();
         }
@@ -5692,6 +5830,7 @@ export class RepositoryComponent {
         }
       }
     }
+
     recursive(this.nodes);
 
     if ((this.object.deployConfigurations && this.object.deployConfigurations.length > 0) ||
@@ -5735,7 +5874,7 @@ export class RepositoryComponent {
       this.nodes.forEach(node => {
         this.handleDependenciesForGit(node, obj);
       });
-      if(this.object.type !== 'changes') {
+      if (this.object.type !== 'changes') {
         this.handleAffectedItemsForGit(obj)
       }
       if (this.comments.comment) {
@@ -5792,14 +5931,14 @@ export class RepositoryComponent {
         if (!isDuplicate(obj.local[type], config)) {
           obj.local[type].push(config);
         }
-      } else if(this.object.type === 'changes' && this.category === "ROLLOUT"){
+      } else if (this.object.type === 'changes' && this.category === "ROLLOUT") {
         if (!obj.rollout[type]) {
           obj.rollout[type] = [];
         }
         if (!isDuplicate(obj.rollout[type], config)) {
           obj.rollout[type].push(config);
         }
-      }else if(this.object.type === 'changes' && this.category === "LOCAL"){
+      } else if (this.object.type === 'changes' && this.category === "LOCAL") {
         if (!obj.local[type]) {
           obj.local[type] = [];
         }
@@ -5808,24 +5947,24 @@ export class RepositoryComponent {
         }
       }
     };
-    if(this.object.type === 'changes'){
-        if (node.path !== '/' && node.name !== '/') {
-          const config = {
-            configuration: {
-              path: node.path,
-              objectType: node.type,
-            }
-          };
-          if (node.checked && node.deployed && node.valid) {
-            targetGroup(config, 'draftConfigurations');
-          } else if (node.checked && node.released && node.valid) {
-            targetGroup(config, 'draftConfigurations');
-          } else if (node.checked && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(node.type)) {
-            targetGroup(config, 'draftConfigurations');
-          } else if (node.checked && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(node.type)) {
-            targetGroup(config, 'draftConfigurations');
+    if (this.object.type === 'changes') {
+      if (node.path !== '/' && node.name !== '/' && !['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(node.name) && !['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(node.type)) {
+        const config = {
+          configuration: {
+            path: node.path,
+            objectType: node.type,
           }
+        };
+        if (node.checked && node.deployed && node.valid) {
+          targetGroup(config, 'deployConfigurations');
+        } else if (node.checked && node.released && node.valid) {
+          targetGroup(config, 'releaseConfigurations');
+        } else if (node.checked && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(node.type)) {
+          targetGroup(config, 'draftConfigurations');
+        } else if (node.checked && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(node.type)) {
+          targetGroup(config, 'releaseDraftConfigurations');
         }
+      }
     }
     if (node.dependencies) {
       node.dependencies.referencedBy.forEach(dep => {
@@ -5838,13 +5977,13 @@ export class RepositoryComponent {
           };
 
           if (dep.selected && dep.deployed && dep.valid) {
-            targetGroup(config, 'draftConfigurations');
+            targetGroup(config, 'deployConfigurations');
           } else if (dep.selected && dep.released && dep.valid) {
-            targetGroup(config, 'draftConfigurations');
+            targetGroup(config, 'releaseConfigurations');
           } else if (dep.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType)) {
             targetGroup(config, 'draftConfigurations');
           } else if (dep.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType)) {
-            targetGroup(config, 'draftConfigurations');
+            targetGroup(config, 'releaseDraftConfigurations');
           }
         }
       });
@@ -5859,13 +5998,13 @@ export class RepositoryComponent {
           };
 
           if (ref.selected && ref.deployed && ref.valid) {
-            targetGroup(config, 'draftConfigurations');
+            targetGroup(config, 'deployConfigurations');
           } else if (ref.selected && ref.released && ref.valid) {
-            targetGroup(config, 'draftConfigurations');
+            targetGroup(config, 'releaseConfigurations');
           } else if (ref.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(ref.objectType)) {
             targetGroup(config, 'draftConfigurations');
           } else if (ref.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(ref.objectType)) {
-            targetGroup(config, 'draftConfigurations');
+            targetGroup(config, 'releaseDraftConfigurations');
           }
         }
       });
@@ -5883,7 +6022,9 @@ export class RepositoryComponent {
       obj.local = {
         deployConfigurations: [],
         draftConfigurations: [],
-        releasedConfigurations: []
+        releasedConfigurations: [],
+        releaseDraftConfigurations: []
+
       };
     }
 
@@ -5891,7 +6032,9 @@ export class RepositoryComponent {
       obj.rollout = {
         deployConfigurations: [],
         draftConfigurations: [],
-        releasedConfigurations: []
+        releasedConfigurations: [],
+        releaseDraftConfigurations: []
+
       };
     }
 
@@ -5933,7 +6076,7 @@ export class RepositoryComponent {
         } else if (item.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType)) {
           targetGroup(config, 'draftConfigurations');
         } else if (item.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType)) {
-          targetGroup(config, 'draftConfigurations');
+          targetGroup(config, 'releaseDraftConfigurations');
         }
       }
     });
