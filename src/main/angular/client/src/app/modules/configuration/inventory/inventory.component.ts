@@ -1029,11 +1029,11 @@ export class SingleDeployComponent {
   }
 
   shouldAddOrdersDateFrom(): boolean {
-    let shouldAdd = true;
+    let shouldAdd = false;
     Object.keys(this.affectedObjectsByType).forEach(type => {
       this.affectedObjectsByType[type].forEach(obj => {
         if (obj.selected) {
-          shouldAdd = false;
+          shouldAdd = true;
         }
       });
     });
@@ -1041,14 +1041,14 @@ export class SingleDeployComponent {
     Object.keys(this.referencedObjectsByType).forEach(type => {
       this.referencedObjectsByType[type].forEach(obj => {
         if (obj.selected) {
-          shouldAdd = false;
+          shouldAdd = true;
         }
       });
     });
 
     this.filteredAffectedItems.forEach(item => {
       if (item.selected) {
-        shouldAdd = false;
+        shouldAdd = true;
       }
     });
     return shouldAdd;
@@ -2606,19 +2606,19 @@ export class DeployComponent {
   }
 
   private shouldAddOrdersDateFrom(): boolean {
-    let shouldRelease = true;
+    let shouldRelease = false;
 
     const checkNodeForDependencies = (node: any): void => {
       if (node.dependencies) {
         node.dependencies.referencedBy.forEach(dep => {
           if (dep.selected) {
-            shouldRelease = false;
+            shouldRelease = true;
           }
         });
 
         node.dependencies.references.forEach(ref => {
           if (ref.selected) {
-            shouldRelease = false;
+            shouldRelease = true;
           }
         });
       }
@@ -2636,7 +2636,7 @@ export class DeployComponent {
 
     this.filteredAffectedItems.forEach(item => {
       if (item.selected) {
-        shouldRelease = false;
+        shouldRelease = true;
       }
     });
 
@@ -2683,11 +2683,12 @@ export class DeployComponent {
       includeLate: this.includeLate,
       controllerIds: this.selectedSchedulerIds
     };
-
-    if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
-      obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-    } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
-      obj.addOrdersDateFrom = 'now';
+    if (!this.isRevoke) {
+      if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
+        obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+      } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
+        obj.addOrdersDateFrom = 'now';
+      }
     }
 
     if (this.object.store.draftConfigurations.length > 0 || this.object.store.deployConfigurations.length > 0) {
@@ -2743,7 +2744,7 @@ export class DeployComponent {
       includeLate: this.includeLate,
     };
     const {shouldDeploy, shouldRelease} = this.shouldDeployOrRelease();
-    if (this.releasable && this.shouldAddOrdersDateFrom()) {
+    if (this.releasable || this.shouldAddOrdersDateFrom()) {
       if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
         obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
       } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
@@ -2984,7 +2985,7 @@ export class DeployComponent {
     if (this.object.type !== 'changes') {
       this.handleAffectedItemsForRelease(obj, recall)
     }
-    if (this.releasable && this.shouldAddOrdersDateFrom()) {
+    if ((this.releasable || this.shouldAddOrdersDateFrom()) && !recall) {
       if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
         obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
       } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
@@ -5136,13 +5137,13 @@ export class RepositoryComponent {
       }
     } else {
       if (!['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'CALENDAR'].includes(this.origin?.object)) {
-          const obj2 = clone(obj);
-          obj2.objectTypes = this.listOfDeployables;
-          if (obj2.objectTypes.length > 0) {
-            APIs.push(this.coreService.post('inventory/deployables', obj2).pipe(
-              catchError(error => of(error))
-            ));
-          }
+        const obj2 = clone(obj);
+        obj2.objectTypes = this.listOfDeployables;
+        if (obj2.objectTypes.length > 0) {
+          APIs.push(this.coreService.post('inventory/deployables', obj2).pipe(
+            catchError(error => of(error))
+          ));
+        }
       } else {
         obj.objectTypes = this.listOfReleaseables;
         obj.withoutReleased = !this.filter.deploy;
@@ -5154,7 +5155,6 @@ export class RepositoryComponent {
       }
 
     }
-
     if (APIs.length > 0) {
       forkJoin(APIs).subscribe({
         next: (res: any) => {
@@ -5173,8 +5173,10 @@ export class RepositoryComponent {
             }
           }
           let tree = [];
+
           if (mergeObj.folders && mergeObj.folders.length > 0 ||
             ((mergeObj.deployables && mergeObj.deployables.length > 0) || (mergeObj.releasables && mergeObj.releasables.length > 0))) {
+
             tree = this.coreService.prepareTree({
               folders: [{
                 name: mergeObj.name,
@@ -5212,6 +5214,7 @@ export class RepositoryComponent {
                 }
                 this.ref.detectChanges();
                 this.nodes = [...this.nodes];
+
               }, 0);
             } else {
               cb();
@@ -5271,7 +5274,13 @@ export class RepositoryComponent {
           }
           if (res.items && res.items.length > 0) {
             res.items = res.items.filter((item: any) => {
-              return item.objectType === this.type;
+              return (
+                item.objectType === this.type ||
+                (
+                  this.type === 'CALENDAR' &&
+                  (item.objectType === 'WORKINGDAYSCALENDAR' || item.objectType === 'NONWORKINGDAYSCALENDAR')
+                )
+              );
             })
           }
         }
