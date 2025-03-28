@@ -75,12 +75,18 @@ export class DependenciesComponent {
   private editor!: any;
   private depPendingHTTPRequests$ = new Subject<void>();
   private subscription: Subscription;
+  private subscription1: Subscription;
   workflowData: any;
 
   configXml = './assets/mxgraph/config/diagram.xml';
 
   constructor(public coreService: CoreService, private orderPipe: OrderPipe, private cd: ChangeDetectorRef, private dataService: DataService, public workflowService: WorkflowService, private modal: NzModalService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => this.refreshGraph(res));
+    this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
+      if (res) {
+        this.refresh(res);
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -117,6 +123,7 @@ export class DependenciesComponent {
   ngOnDestroy(): void {
     this.plansFilters.selectedDate = this.selectedDate;
     this.subscription.unsubscribe();
+    this.subscription1.unsubscribe();
     this.depPendingHTTPRequests$.next();
     this.depPendingHTTPRequests$.complete();
     try {
@@ -189,8 +196,8 @@ export class DependenciesComponent {
         endDate: this.convertStringToDate(noticeSpaceKey),
         color: plan.closed ? 'orange' : 'blue',
         planSchemaId: plan.planId?.planSchemaId,
-        isClosed: plan.closed,
-        isOpen: !plan.closed
+        isClosed: plan?.state?._text === 'CLOSED',
+        isOpen: plan?.state?._text === 'OPEN'
       };
     });
     this.noticeSpaceKey = planDates;
@@ -633,6 +640,9 @@ export class DependenciesComponent {
 
   setNoticeStatus(status: string): void {
     this.plansFilters.filter.filterBy = status;
+    if(status != ''){
+      this.loadAdditionaSnapshotlData()
+    }
     this.reloadGraph();
   }
 
@@ -854,9 +864,19 @@ export class DependenciesComponent {
 
   loadAdditionalData() {
     this.isLoaded = false;
+    this.coreService.post('workflows/boards', {
+      controllerId: this.schedulerId,
+    }).pipe(takeUntil(this.depPendingHTTPRequests$)).subscribe((res) => {
+      this.isLoaded = true;
+      this.workflowData = res;
+      this.loadGraphData();
+    });
+  }
+
+  loadAdditionaSnapshotlData() {
+    this.isLoaded = false;
     this.coreService.post('workflows/boards/snapshot', {
       controllerId: this.schedulerId,
-      noticeSpaceKeys: [this.coreService.getStringDate(this.selectedDate)]
     }).pipe(takeUntil(this.depPendingHTTPRequests$)).subscribe((res) => {
       this.isLoaded = true;
       this.workflowData = res;
@@ -904,7 +924,6 @@ export class DependenciesComponent {
     }).subscribe((res) => {
       this.initConf();
       this.loadAdditionalData();
-      this.loadPlans()
     });
   }
 
@@ -920,11 +939,22 @@ export class DependenciesComponent {
     }).subscribe((res) => {
       this.initConf();
       this.loadAdditionalData();
-      this.loadPlans()
     });
   }
 
   getFormattedPath(path: any): any {
     return this.isPathDisplay ? path?.split('/').pop() : path
+  }
+
+  refresh(args: { eventSnapshots: any[] }): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].eventType.match(/PlanUpdated/) && args.eventSnapshots[j].objectType === 'PLAN') {
+          this.loadPlans();
+        }else if(args.eventSnapshots[j].eventType.match(/WorkflowPlanChanged/) && args.eventSnapshots[j].objectType === 'PLAN'){
+          this.loadAdditionaSnapshotlData()
+        }
+      }
+    }
   }
 }

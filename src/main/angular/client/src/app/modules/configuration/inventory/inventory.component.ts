@@ -2028,7 +2028,7 @@ export class DeployComponent {
           children: groupedObjects[type].map((item: any) => ({
             name: item.name,
             path: item.path,
-            key: this.path + item.path,
+            key: item.path,
             type: item.objectType,
             released: item.released,
             deployed: item.deployed,
@@ -3965,7 +3965,7 @@ export class ExportComponent {
           isLeaf: false,
           children: groupedObjects[type].map((item: any) => ({
             name: item.name,
-            path: this.path + item.path,
+            path: item.path,
             key: item.path,
             type: item.objectType,
             released: item.released,
@@ -5447,14 +5447,14 @@ export class RepositoryComponent {
         const groupNode = {
           name: type,
           object: type,
-          path: this.path || '/',
+          path: '/',
           key: `/${type}`,
           disableCheckbox: true,
           expanded: true,
           isLeaf: false,
           children: groupedObjects[type].map((item: any) => ({
             name: item.name,
-            path: this.path + item.path,
+            path: item.path,
             key: item.path,
             type: item.objectType,
             released: item.released,
@@ -5758,7 +5758,7 @@ export class RepositoryComponent {
         if (!nodes[i].object && nodes[i].checked) {
           const objDep: any = {};
           if (!nodes[i].type) {
-            if (self.type === 'ALL') {
+            if (self.type === 'ALL' && self.object.type !== 'changes') {
               objDep.configuration = {
                 path: nodes[i].path || nodes[i].name,
                 objectType: 'FOLDER',
@@ -5880,6 +5880,7 @@ export class RepositoryComponent {
           releasedConfigurations: this.object.releasedConfigurations
         };
       }
+
       this.nodes.forEach(node => {
         this.handleDependenciesForGit(node, obj);
       });
@@ -5962,13 +5963,10 @@ export class RepositoryComponent {
           configuration: {
             path: node.path,
             objectType: node.type,
+            recursive: false
           }
         };
-        if (node.checked && node.deployed && node.valid) {
-          targetGroup(config, 'deployConfigurations');
-        } else if (node.checked && node.released && node.valid) {
-          targetGroup(config, 'releaseConfigurations');
-        } else if (node.checked && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(node.type)) {
+        if (node.checked && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(node.type)) {
           targetGroup(config, 'draftConfigurations');
         } else if (node.checked && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(node.type)) {
           targetGroup(config, 'releaseDraftConfigurations');
@@ -5985,11 +5983,7 @@ export class RepositoryComponent {
             }
           };
 
-          if (dep.selected && dep.deployed && dep.valid) {
-            targetGroup(config, 'deployConfigurations');
-          } else if (dep.selected && dep.released && dep.valid) {
-            targetGroup(config, 'releaseConfigurations');
-          } else if (dep.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType)) {
+          if (dep.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType)) {
             targetGroup(config, 'draftConfigurations');
           } else if (dep.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType)) {
             targetGroup(config, 'releaseDraftConfigurations');
@@ -6003,14 +5997,12 @@ export class RepositoryComponent {
             configuration: {
               path: ref.path,
               objectType: ref.objectType,
+              recursive: false
+
             }
           };
 
-          if (ref.selected && ref.deployed && ref.valid) {
-            targetGroup(config, 'deployConfigurations');
-          } else if (ref.selected && ref.released && ref.valid) {
-            targetGroup(config, 'releaseConfigurations');
-          } else if (ref.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(ref.objectType)) {
+          if (ref.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(ref.objectType)) {
             targetGroup(config, 'draftConfigurations');
           } else if (ref.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(ref.objectType)) {
             targetGroup(config, 'releaseDraftConfigurations');
@@ -6075,14 +6067,11 @@ export class RepositoryComponent {
           configuration: {
             path: item.path,
             objectType: item.objectType,
+            recursive: false
           }
         };
 
-        if (item.selected && item.deployed && item.valid) {
-          targetGroup(config, 'draftConfigurations');
-        } else if (item.selected && item.released && item.valid) {
-          targetGroup(config, 'draftConfigurations');
-        } else if (item.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType)) {
+        if (item.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType)) {
           targetGroup(config, 'draftConfigurations');
         } else if (item.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType)) {
           targetGroup(config, 'releaseDraftConfigurations');

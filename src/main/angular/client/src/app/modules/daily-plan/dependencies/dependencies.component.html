@@ -10,12 +10,12 @@
           <i class="icon icon-orders-icon"></i>
           <span translate>dailyPlan.label.all</span>
         </button>
-        <button (click)="setNoticeStatus('past')"
-                [ngClass]="{'btn-primary': plansFilters.filter.filterBy==='past'}"
-                class="btn btn-grey btn-sm hidden-btn-text">
-          <i class="icon icon-calendar-icon"></i>
-          <span translate>dailyPlan.button.past</span>
-        </button>
+<!--        <button (click)="setNoticeStatus('past')"-->
+<!--                [ngClass]="{'btn-primary': plansFilters.filter.filterBy==='past'}"-->
+<!--                class="btn btn-grey btn-sm hidden-btn-text">-->
+<!--          <i class="icon icon-calendar-icon"></i>-->
+<!--          <span translate>dailyPlan.button.past</span>-->
+<!--        </button>-->
         <button (click)="setNoticeStatus('present')"
                 [ngClass]="{'btn-primary': plansFilters.filter.filterBy==='present'}"
                 class="btn btn-grey btn-sm hidden-btn-text">
@@ -28,7 +28,7 @@
           <i class="icon icon-workflows-icon"></i>
           <span translate>dailyPlan.button.future</span>
         </button>
-        <i class="fa fa-stop bg-postingWorkflow" style="margin-left: 130px"></i>
+        <i class="fa fa-stop bg-postingWorkflow" style="margin-left: 176px"></i>
         {{'dailyPlan.label.postingWorkflow' | translate}}
         <i class="fa fa-stop bg-expectingWorkflow p-l-sm"></i>
         {{'dailyPlan.label.expectingWorkflow' | translate}}

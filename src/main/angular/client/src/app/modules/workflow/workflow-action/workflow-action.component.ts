@@ -1633,6 +1633,7 @@ export class AddOrderModalComponent {
       }).subscribe({
         next: (res) => {
           this.schedules = res.schedules;
+          this.schedules.sort((a, b) => a.name.localeCompare(b.name));
         }
       });
     }
@@ -1820,6 +1821,8 @@ export class AddSchedulesModalComponent {
           schedule.selected = false;
         });
         this.schedules = res.schedules;
+        this.schedules.sort((a, b) => a.name.localeCompare(b.name));
+
       },
       error: (err) => {
         console.error('Error fetching schedules:', err);

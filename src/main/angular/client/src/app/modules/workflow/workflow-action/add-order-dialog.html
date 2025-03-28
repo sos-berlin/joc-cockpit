@@ -309,9 +309,13 @@
       <div *ngFor="let  order of orders; let orderIndex = index" (click)="setSelectedOrderIndex(orderIndex)">
         <!-- Order Name -->
         <div class="mb-2 order-label" *ngIf="orders.length > 1">
-          <span class="_600 p-b-sm" translate>breadcrumb.label.order</span> #{{ orderIndex + 1 }}
+  <span class="_600 p-b-sm">
+    {{ 'breadcrumb.label.order' | translate }} #{{ orderIndex + 1 }}
+    <span *ngIf="order.selectedSchedule"> - {{ order.selectedSchedule.name }}</span>
+  </span>
           <i (click)="removeOrder(orderIndex)" class="fa fa-times fa-lg cursor float-right"></i>
         </div>
+
         <div class="form-group row">
           <label class="col-sm-4 form-control-label" translate>order.label.orderName</label>
           <div [ngClass]="{ 'has-error' : (((orderId.dirty || orderId.touched) && orderId.invalid))}" class="col-sm-6">
