@@ -998,7 +998,7 @@
     "tooltip.dateRangeSelectStep2": "Or press Ctrl key and select start date and end date using mouse click",
     "tooltip.dateRangeSelectStep3": "Or click calendar icon and then select start date and end date using mouse click",
     "tooltip.invertProjection": "By default the Projection indicates the days for which orders are executed and the number of orders. When inverting the projection then days are highlighted for which schedules exist that will not create orders. When clicking the related day then schedules without orders will be displayed. This includes to limit the projection to certain folders holding workflows or schedules.",
-    "tooltip.viewOrders": "Click to view orders.",
+    "tooltip.viewOrders": "Click to display orders.",
     "tab": {
       "dailyPlan": "Daily Plan",
       "projection": "Projection",
@@ -2228,7 +2228,7 @@
         },
         "job": {
           "name": "A job name is unique in a workflow. A job with the same name can occur with a number of Job Instructions in the same workflow if individual job labels are used. For a job name most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
-          "label": "A job Label is used to distinguish multiple occurrences of a job with the same name in a workflow.",
+          "label": "A Label is used to distinguish multiple occurrences of the same job or instruction in a workflow.",
           "title": "The Title of a job can be specified as desired. The Title becomes visible with the WORKFLOWS view.",
           "compatibleMode": "Compatibility with previous JobScheduler versions includes e.g. for shell jobs to automatically create environment variables prefixed with 'SCHEDULER_PARAM_' for any order variables as in JS1.",
           "credentialKey": "A Credential Key can be added to the Windows Credential Manager holding the credentials that are used to switch to a target user account for this job. Optionally a user profile can be loaded.",
@@ -3172,8 +3172,8 @@
       "days_ahead_plan": "Specifies the number of days ahead for which orders are generated and are made available with the PLANNED state.",
       "days_ahead_submit": "Specifies the number of days ahead for which PLANNED orders are submitted to Controllers and are made available with the SUBMITTED state.",
       "projections_month_ahead": "Specifies the number of months ahead for which projections are calculated that indicate future order execution.",
-      "submit_orders_individually": "The Daily Plan Service by default submits orders from a single transaction that is rolled back if submission of am order fails. With the setting in place orders are submitted individually and independently from failure to submit other orders. The Daily Plan Service will require more time to submit orders individually.",
-      "age_of_plans_to_be_closed_automatically": "Specifies the number of hours after end of day after which the Daily Plan will be closed and will not allow to add orders that resolve dependencies such as Notice Boards for the original date."
+      "submit_orders_individually": "The Daily Plan Service by default submits orders from a single transaction that is rolled back if submission of an order fails. With the setting in place orders are submitted individually and independently from failure to submit other orders. The Daily Plan Service will require more time to submit orders individually.",
+      "age_of_plans_to_be_closed_automatically": "Specifies the number of days after which the Daily Plan will be closed and will not allow to add orders that resolve dependencies such as Notice Boards for the original date."
     },
     "joc": {
       "force_comments_for_audit_log": "Specifies that for any changes applied to an object such as to add an order, to cancel an order etc. a reason has to be added for the Audit Log.",
