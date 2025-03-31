@@ -589,7 +589,7 @@ export class SingleDeployComponent {
 
       Object.keys(this.affectedObjectsByType).forEach(type => {
         this.affectedObjectsByType[type].forEach(obj => {
-          if (obj.valid && obj.selected && obj.objectType !== 'SCHEDULE' && obj.objectType !== 'JOBTEMPLATE' && obj.objectType !== 'WORKINGDAYSCALENDAR' && obj.objectType !== 'NONWORKINGDAYSCALENDAR') {
+          if (obj.valid && obj.selected && obj.objectType !== 'SCHEDULE' && obj.objectType !== 'INCLUDESCRIPT' && obj.objectType !== 'JOBTEMPLATE' && obj.objectType !== 'WORKINGDAYSCALENDAR' && obj.objectType !== 'NONWORKINGDAYSCALENDAR') {
             promises.push(handleSingleDeployable(obj, revoke));
           }
         });
@@ -597,14 +597,14 @@ export class SingleDeployComponent {
 
       Object.keys(this.referencedObjectsByType).forEach(type => {
         this.referencedObjectsByType[type].forEach(obj => {
-          if (obj.valid && obj.selected && obj.objectType !== 'SCHEDULE' && obj.objectType !== 'JOBTEMPLATE' && obj.objectType !== 'WORKINGDAYSCALENDAR' && obj.objectType !== 'NONWORKINGDAYSCALENDAR') {
+          if (obj.valid && obj.selected && obj.objectType !== 'SCHEDULE' && obj.objectType !== 'INCLUDESCRIPT' && obj.objectType !== 'JOBTEMPLATE' && obj.objectType !== 'WORKINGDAYSCALENDAR' && obj.objectType !== 'NONWORKINGDAYSCALENDAR') {
             promises.push(handleSingleDeployable(obj, revoke));
           }
         });
       });
 
       this.filteredAffectedItems.forEach(item => {
-        if (item.valid && item.selected && item.objectType !== 'SCHEDULE' && item.objectType !== 'JOBTEMPLATE' && item.objectType !== 'WORKINGDAYSCALENDAR' && item.objectType !== 'NONWORKINGDAYSCALENDAR') {
+        if (item.valid && item.selected && item.objectType !== 'SCHEDULE' && item.objectType !== 'INCLUDESCRIPT' && item.objectType !== 'JOBTEMPLATE' && item.objectType !== 'WORKINGDAYSCALENDAR' && item.objectType !== 'NONWORKINGDAYSCALENDAR') {
           promises.push(handleSingleDeployable(item, revoke));
         }
       });
@@ -868,16 +868,8 @@ export class SingleDeployComponent {
       update: []
     };
 
-    const isNotSelected = (items) =>
-      !items.some(item => item.valid && item.selected &&
-        ['SCHEDULE', 'JOBTEMPLATE', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType));
 
-    const noItemsSelected =
-      isNotSelected(Object.values(this.affectedObjectsByType).flat()) &&
-      isNotSelected(Object.values(this.referencedObjectsByType).flat()) &&
-      isNotSelected(this.filteredAffectedItems);
-
-    if (this.releasable && noItemsSelected && (this.data.objectType == 'SCHEDULE' || this.data.objectType == 'WORKINGDAYSCALENDAR' || this.data.objectType == 'NONWORKINGDAYSCALENDAR')) {
+    if ((this.releasable && (this.data.objectType == 'SCHEDULE' || this.data.objectType == 'WORKINGDAYSCALENDAR' || this.data.objectType == 'NONWORKINGDAYSCALENDAR')) || this.shouldAddOrdersDateFrom()) {
       if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
         obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
       } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
