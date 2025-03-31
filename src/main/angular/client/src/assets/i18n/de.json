@@ -2227,7 +2227,7 @@
         },
         "job": {
           "name": "Der Name eines Jobs ist eindeutig im Arbeitsablauf. Derselbe Job kann mehrfach als Anweisung im Arbeitsablauf vorkommen sofern er durch seine Kennzeichnung unterschieden ist. Für Job-Namen können Unicode Zeichen verwendet werden, Punkte und Bindestriche, jedoch nicht am Beginn oder Ende des Job-Namens sowie keine Leerzeichen.",
-          "label": "Eindeutige Kennzeichnung des Jobs im Arbeitsablauf. Ein Job kann im Arbeitsablauf wiederverwendet werden, sein Auftreten wird durch die Kennzeichnung unterschieden.",
+          "label": "Eindeutige Kennzeichnung des Jobs oder der Anweisung im Arbeitsablauf. Ein Job oder eine Anweisung können im Arbeitsablauf wiederverwendet werden, das Auftreten wird durch die Kennzeichnung unterschieden.",
           "title": "Der Titel eines Jobs kann nach Belieben angegeben werden. Der Titel wird in der Sicht ARBEITSABLÄUFE angezeigt.",
           "compatibleMode": "Kompatibilität mit zurückliegenden JobScheduler Versionen beinhaltet bspw. dass für alle Auftragsvariablen in Shell Jobs Umgebungsvariablen erzeugt werden, die mit 'SCHEDULER_PARAM_' präfiziert sind - analog zu JS1",
           "credentialKey": "In der Windows Anmeldeinformationsverwaltung kann ein Schlüssel mit Zugangsdaten hinterlegt werden, um den Job mit diesen Zugangsdaten für einen anderen Anwender zu starten. Optional kann das Anwenderprofil geladen werden.",
@@ -3172,7 +3172,7 @@
       "days_ahead_submit": "Benennt die Anzahl Tage im Voraus, für die Aufträge, die sich im Zustand GEPLANT befinden, an die Controller übermittelt werden und den Zustand ÜBERMITTELT erhalten.",
       "projections_month_ahead": "Gibt die Anzahl der Monate an, für die Projektionen berechnet werden, die die zukünftige Auftragsausführung anzeigen.",
       "submit_orders_individually": "Der Tagesplandienst übermittelt standardmäßig Aufträge in einer einzigen Transaktion, die zurückgesetzt wird, wenn die Übermittlung eines Auftrags fehlschlägt. Mit dieser Einstellung werden die Aufträge einzeln und unabhängig von der fehlgeschlagenen Übermittlung anderer Aufträge übermittelt. Der Tagesplandienst benötigt mehr Zeit, um Aufträge einzeln zu übermitteln.",
-      "age_of_plans_to_be_closed_automatically": "Gibt die Anzahl der Stunden nach Tagesende an, nach denen der Tagesplan geschlossen wird und keine Aufträge mehr zulässt, die Abhängigkeiten wie z.B. Notizen für das ursprüngliche Datum auflösen."},
+      "age_of_plans_to_be_closed_automatically": "Gibt die Anzahl der Tage an, nach denen der Tagesplan geschlossen wird und keine Aufträge mehr zulässt, die Abhängigkeiten wie z.B. Notizen für das ursprüngliche Datum auflösen."},
     "joc": {
       "force_comments_for_audit_log": "Vereinbart, dass für alle Änderungen an Objekten, z.B. das Hinzufügen oder Abbrechen eines Auftrags vom Anwender eine Begründung angegeben werden muss, die in das Prüfprotokoll aufgenommen wird.",
       "comments_for_audit_log": "Benennt eine Liste vordefinierter Begründungen für Änderungen an Objekten.",

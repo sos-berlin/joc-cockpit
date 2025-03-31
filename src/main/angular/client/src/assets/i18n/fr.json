@@ -2227,7 +2227,7 @@
         },
         "job": {
           "name": "Un Nom de Tâche est unique dans un workflow. Un travail portant le même nom peut être associé à un certain nombre d'instructions dans le même workflow si des labels de tâche individuelle sont utilisées. Le nom d'une tâche peut contenir la plupart des caractères unicode, des points et des traits d'union, mais pas de points ni de traits d'union au début ou à la fin.",
-          "label": "Un Label de Tâche est utilisé pour distinguer plusieurs occurrences d'une tâche portant le même nom dans un workflow.",
+          "label": "Un Label de Tâche our d'Instruction est utilisé pour distinguer plusieurs occurrences portant le même nom dans un workflow.",
           "title": "Le Titre d'une tâche peut être spécifié à volonté. Le Titre devient visible dans la vue WORKFLOWS",
           "compatibleMode": "La compatibilité avec les versions précédentes de JobScheduler inclut par ex. pour que les tâches shell créent automatiquement des variables d'environnement préfixées par 'SCHEDULER_PARAM_' pour toutes les variables d'ordre comme dans JS1.",
           "credentialKey": "Une Clé d'Identification peut être ajoutée au gestionnaire d'identification Windows, contenant les informations d'identification utilisées pour basculer vers un compte utilisateur cible pour cette tâche. En option, un profil utilisateur peut être chargé.",
@@ -3172,7 +3172,7 @@
       "days_ahead_submit": "Spécifie le nombre de jours à venir pour lesquels les ordres PLANIFIÉS sont soumis aux Contrôleurs et sont rendus disponibles avec l'état SOUMIS.",
       "projections_month_ahead": "Spécifie le nombre de mois à venir pour lesquels sont calculées les projections indiquant l'exécution future des ordres.",
       "submit_orders_individually": "Le Service du Plan Quotidien soumet par défaut des ordres à partir d'une transaction unique qui est annulée si la soumission d'un ordre échoue. Avec ce paramètre, les ordres sont soumis individuellement et indépendamment de l'échec de la soumission d'autres ordres. Le Service du Plan Quotidien nécessitera plus de temps pour soumettre les ordres individuellement.",
-      "age_of_plans_to_be_closed_automatically": "Spécifie le nombre d'heures après la fin de la journée après lequel le Plan Quotidien sera fermé et ne permettra pas d'ajouter des ordres qui résolvent des dépendances telles que les Conditions pour la date d'origine."},
+      "age_of_plans_to_be_closed_automatically": "Spécifie le nombre de jours après lequel le Plan Quotidien sera fermé et ne permettra pas d'ajouter des ordres qui résolvent des dépendances telles que les Conditions pour la date d'origine."},
     "joc": {
       "force_comments_for_audit_log": "Spécifie que pour tout changement appliqué à un objet tel que l'ajout d'un ordre, l'annulation d'un ordre, etc., une raison doit être ajoutée au Journal d'Audit.",
       "comments_for_audit_log": "Spécifie une liste de raisons prédéfinies qui est rendue disponible lorsque l'ajout de raisons au Journal d'Audit est appliqué.",
