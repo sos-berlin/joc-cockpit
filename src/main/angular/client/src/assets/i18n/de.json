@@ -998,6 +998,7 @@
     "tooltip.dateRangeSelectStep2": "oder CTRL Taste gedrückt halten und Startdatum & Enddatum per Mausklick auswählen",
     "tooltip.dateRangeSelectStep3": "oder Kalendersymbol anklicken und Startdatum & Enddatum per Mausklick auswählen",
     "tooltip.invertProjection": "Standardmäßig zeigt die Projektion die Tage, an denen Aufträge ausgeführt werden, und die Anzahl der Aufträge. Wenn Sie die Projektion umkehren, werden die Tage hervorgehoben, für die Zeitpläne existieren, die keine Aufträge erzeugen. Wird der Tag angeklickt, dann werden die entsprechenden Zeitpläne angezeigt. Dies gilt auch für die Einschränkung der Projektion auf bestimmte Ordner mit Arbeitsabläufen oder Zeitplänen.",
+    "tooltip.viewOrders": "Click to view orders.",
     "tab": {
       "dailyPlan": "Tagesplan",
       "projection": "Projektion",

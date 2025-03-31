@@ -998,6 +998,7 @@
     "tooltip.dateRangeSelectStep2": "Ou appuyez sur la touche CTRL et sélectionnez la date de début et la date de fin en cliquant avec la souris",
     "tooltip.dateRangeSelectStep3": "Ou cliquez sur l'icône du calendrier, puis sélectionnez la date de début et la date de fin à l'aide d'un clic de souris",
     "tooltip.invertProjection": "Par défaut, la projection indique les jours pour lesquels les ordres sont exécutés et le nombre d'ordres. Lorsque l'on inverse la projection, les jours pour lesquels il existe des Planifications qui ne créeront pas d'ordres sont mis en évidence. Lorsque l'on clique sur le jour concerné, les Planifications sans ordres sont affichés. Cela permet notamment de limiter la projection à certains dossiers contenant des workflows ou des Planifications.",
+    "tooltip.viewOrders": "Click to view orders.",
     "tab": {
       "dailyPlan": "Plan Quotidien",
       "projection": "Projection",

@@ -998,6 +998,7 @@
     "tooltip.dateRangeSelectStep2": "またはCTRLキーを押さえながら開始日と終了日をクリックするか",
     "tooltip.dateRangeSelectStep3": "カレンダーアイコンから開始日と終了日をクリックしてください",
     "tooltip.invertProjection": "プロジェクション反転",
+    "tooltip.viewOrders": "Click to view orders.",
     "tab": {
       "dailyPlan": "実行計画",
       "projection": "プロジェクション",
