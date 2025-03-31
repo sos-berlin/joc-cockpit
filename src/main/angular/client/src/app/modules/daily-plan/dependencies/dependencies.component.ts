@@ -72,6 +72,8 @@ export class DependenciesComponent {
   setOfCheckedId = new Set<number>();
   mapOfCheckedId = new Set();
   pageSize: number = 10;
+  private lastLoadedMonthYear: string = '';
+
   @ViewChild('graphContainer') graphContainer!: ElementRef;
 
   private graph!: any;
@@ -161,9 +163,20 @@ export class DependenciesComponent {
             this.planSchemaId = e.events[0]?.planSchemaId;
             this.isClosed = e.events[0]?.isClosed;
             this.isOpen = e.events[0]?.isOpen;
+            this.plansFilters.filter.currentPage = 1
+            if (this.graph) {
+              this.graph.getModel().clear(); // Clear previous graph data
+            }
+            this.loadAdditionaSnapshotlData()
           },
           renderEnd: (e) => {
-            this.loadPlans();
+            const visibleDate = e?.startDate || new Date(); // fallback to current if not provided
+            const currentMonthYear = `${visibleDate.getFullYear()}-${visibleDate.getMonth()}`;
+
+            if (this.lastLoadedMonthYear !== currentMonthYear) {
+              this.lastLoadedMonthYear = currentMonthYear;
+              this.loadPlans();
+            }
           },
           rangeEnd: (e) => { }
         });

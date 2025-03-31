@@ -4863,6 +4863,8 @@ export class RepositoryComponent {
   filteredAffectedItems: any[] = [];
   filteredAffectedCollapsed: boolean = true;
   selectAllFilteredAffected: { [key: string]: boolean } = {};
+  localObjects: string[] = [];
+  rolloutObjects: string[] = [];
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef,
               private inventoryService: InventoryService, private cdr: ChangeDetectorRef,) {
@@ -4960,33 +4962,12 @@ export class RepositoryComponent {
           || (!configuration.git?.git_hold_reports && res.defaultGlobals.git?.git_hold_reports && res.defaultGlobals.git?.git_hold_reports.default == category)) {
           this.listOfReleaseables.push(InventoryObject.REPORT);
         }
+        this.loadObjects(res)
         this.init();
       }, error: () => {
         this.init();
       }
     });
-  }
-
-
-  private initPseudo(flag?): void {
-    if (this.origin) {
-      this.path = this.origin.path;
-      if (this.origin.object) {
-        if (this.origin.object === InventoryObject.SCHEDULE || this.origin.object === InventoryObject.JOBTEMPLATE || this.origin.object === InventoryObject.INCLUDESCRIPT ||
-          this.origin.object === InventoryObject.REPORT || this.origin.object.match('CALENDAR')) {
-          this.type = this.origin.object;
-          this.filter.deploy = false;
-        } else {
-          this.type = this.origin.object;
-          this.filter.deploy = false;
-        }
-      }
-    }
-    if (this.operation === 'store') {
-      this.buildTree(this.path);
-    } else {
-      this.readFileSystem(this.path);
-    }
   }
 
   private loadSettingPseudo() {
@@ -5073,12 +5054,75 @@ export class RepositoryComponent {
           this.listOfReleaseables.push(InventoryObject.REPORT);
 
         }
+        this.loadObjects(res)
         this.initPseudo(flag);
       }, error: () => {
         this.initPseudo();
       }
     });
   }
+
+
+  private initPseudo(flag?): void {
+    if (this.origin) {
+      this.path = this.origin.path;
+      if (this.origin.object) {
+        if (this.origin.object === InventoryObject.SCHEDULE || this.origin.object === InventoryObject.JOBTEMPLATE || this.origin.object === InventoryObject.INCLUDESCRIPT ||
+          this.origin.object === InventoryObject.REPORT || this.origin.object.match('CALENDAR')) {
+          this.type = this.origin.object;
+          this.filter.deploy = false;
+        } else {
+          this.type = this.origin.object;
+          this.filter.deploy = false;
+        }
+      }
+    }
+    if (this.operation === 'store') {
+      this.buildTree(this.path);
+    } else {
+      this.readFileSystem(this.path);
+    }
+  }
+
+  private loadObjects(res) {
+        const configuration = res.configurations?.[0]?.configurationItem
+          ? JSON.parse(res.configurations[0].configurationItem)
+          : {};
+        const category = this.category.toLowerCase();
+        const configGit = configuration.git || {};
+        const defaultGit = res.defaultGlobals?.git || {};
+
+        const objectMap = [
+          { key: 'git_hold_job_resources', obj: InventoryObject.JOBRESOURCE, type: 'deployable' },
+          { key: 'git_hold_workflows', obj: InventoryObject.WORKFLOW, type: 'deployable' },
+          { key: 'git_hold_notice_boards', obj: InventoryObject.NOTICEBOARD, type: 'deployable' },
+          { key: 'git_hold_resource_locks', obj: InventoryObject.LOCK, type: 'deployable' },
+          { key: 'git_hold_file_order_sources', obj: InventoryObject.FILEORDERSOURCE, type: 'deployable' },
+          { key: 'git_hold_schedules', obj: InventoryObject.SCHEDULE, type: 'releaseable' },
+          { key: 'git_hold_calendars', obj: [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR], type: 'releaseable', match: 'CALENDAR' },
+          { key: 'git_hold_job_templates', obj: InventoryObject.JOBTEMPLATE, type: 'releaseable' },
+          { key: 'git_hold_script_includes', obj: InventoryObject.INCLUDESCRIPT, type: 'releaseable' },
+          { key: 'git_hold_reports', obj: InventoryObject.REPORT, type: 'releaseable' }
+        ];
+
+        let flag = 'local';
+
+        objectMap.forEach(({ key, obj, type, match }) => {
+          const configVal = configGit[key]?.value || defaultGit[key]?.default;
+
+            if (configVal === 'local') {
+              this.localObjects.push(...(Array.isArray(obj) ? obj : [obj]));
+              this.filter.envRelated = true;
+              flag = 'local';
+            } else if (configVal === 'rollout') {
+              this.rolloutObjects.push(...(Array.isArray(obj) ? obj : [obj]));
+              this.filter.envIndependent = true;
+              flag = 'rollout';
+            }
+
+    });
+  }
+
 
   private buildTree(path, merge = null, cb = null, flag = false): void {
     const obj: any = {
@@ -5376,6 +5420,8 @@ export class RepositoryComponent {
   }
 
   prepareGroupedTree(data: any[]): any[] {
+    const normalizedCategory = this.category?.toLowerCase();
+
     const root = {
       name: '/',
       path: this.path || '/',
@@ -5399,43 +5445,23 @@ export class RepositoryComponent {
     };
 
     if (data) {
-      data?.forEach((item: any) => {
-        switch (item.objectType) {
-          case "WORKFLOW":
-            groupedObjects["WORKFLOW"].push(item);
-            break;
-          case "JOBRESOURCE":
-            groupedObjects["JOBRESOURCE"].push(item);
-            break;
-          case "SCHEDULE":
-            groupedObjects["SCHEDULE"].push(item);
-            break;
-          case "NOTICEBOARD":
-            groupedObjects["NOTICEBOARD"].push(item);
-            break;
-          case "LOCK":
-            groupedObjects["LOCK"].push(item);
-            break;
-          case "JOBTEMPLATE":
-            groupedObjects["JOBTEMPLATE"].push(item);
-            break;
-          case "INCLUDESCRIPT":
-            groupedObjects["INCLUDESCRIPT"].push(item);
-            break;
-          case "WORKINGDAYSCALENDAR":
-            groupedObjects["WORKINGDAYSCALENDAR"].push(item);
-            break;
-          case "NONWORKINGDAYSCALENDAR":
-            groupedObjects["NONWORKINGDAYSCALENDAR"].push(item);
-            break;
-          default:
-            break;
+      data.forEach((item: any) => {
+        if (groupedObjects[item.objectType]) {
+          groupedObjects[item.objectType].push(item);
         }
       });
     }
 
     Object.keys(groupedObjects).forEach((type: string) => {
       if (groupedObjects[type].length > 0) {
+        const isInRollout = this.rolloutObjects.includes(type);
+        const isInLocal = this.localObjects.includes(type);
+
+        const shouldDisable =
+          (normalizedCategory === 'local' && isInRollout) ||
+          (normalizedCategory === 'rollout' && isInLocal);
+
+
         const groupNode = {
           name: type,
           object: type,
@@ -5444,21 +5470,27 @@ export class RepositoryComponent {
           disableCheckbox: true,
           expanded: true,
           isLeaf: false,
-          children: groupedObjects[type].map((item: any) => ({
-            name: item.name,
-            path: item.path,
-            key: item.path,
-            type: item.objectType,
-            released: item.released,
-            deployed: item.deployed,
-            valid: item.valid,
-            isLeaf: true,
-            checked: true,
-          }))
+          disabled: shouldDisable,
+          children: groupedObjects[type].map((item: any) => {
+            return {
+              name: item.name,
+              path: item.path,
+              key: item.path,
+              type: item.objectType,
+              released: item.released,
+              deployed: item.deployed,
+              valid: item.valid,
+              isLeaf: true,
+              checked: true,
+              disabled: shouldDisable
+            };
+          })
         };
+
         root.children.push(groupNode);
       }
     });
+
     return [root];
   }
 
@@ -5898,6 +5930,9 @@ export class RepositoryComponent {
   }
 
   private handleDependenciesForGit(node: any, obj: any): void {
+    if (node.disabled) {
+      return;
+    }
     if (!obj.local) {
       obj.local = {
         deployConfigurations: [],
