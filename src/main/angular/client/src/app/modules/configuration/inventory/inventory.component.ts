@@ -5085,40 +5085,45 @@ export class RepositoryComponent {
   }
 
   private loadObjects(res) {
-        const configuration = res.configurations?.[0]?.configurationItem
-          ? JSON.parse(res.configurations[0].configurationItem)
-          : {};
-        const category = this.category.toLowerCase();
-        const configGit = configuration.git || {};
-        const defaultGit = res.defaultGlobals?.git || {};
+    const configuration = res.configurations?.[0]?.configurationItem
+      ? JSON.parse(res.configurations[0].configurationItem)
+      : {};
+    const category = this.category.toLowerCase();
+    const configGit = configuration.git || {};
+    const defaultGit = res.defaultGlobals?.git || {};
 
-        const objectMap = [
-          { key: 'git_hold_job_resources', obj: InventoryObject.JOBRESOURCE, type: 'deployable' },
-          { key: 'git_hold_workflows', obj: InventoryObject.WORKFLOW, type: 'deployable' },
-          { key: 'git_hold_notice_boards', obj: InventoryObject.NOTICEBOARD, type: 'deployable' },
-          { key: 'git_hold_resource_locks', obj: InventoryObject.LOCK, type: 'deployable' },
-          { key: 'git_hold_file_order_sources', obj: InventoryObject.FILEORDERSOURCE, type: 'deployable' },
-          { key: 'git_hold_schedules', obj: InventoryObject.SCHEDULE, type: 'releaseable' },
-          { key: 'git_hold_calendars', obj: [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR], type: 'releaseable', match: 'CALENDAR' },
-          { key: 'git_hold_job_templates', obj: InventoryObject.JOBTEMPLATE, type: 'releaseable' },
-          { key: 'git_hold_script_includes', obj: InventoryObject.INCLUDESCRIPT, type: 'releaseable' },
-          { key: 'git_hold_reports', obj: InventoryObject.REPORT, type: 'releaseable' }
-        ];
+    const objectMap = [
+      {key: 'git_hold_job_resources', obj: InventoryObject.JOBRESOURCE, type: 'deployable'},
+      {key: 'git_hold_workflows', obj: InventoryObject.WORKFLOW, type: 'deployable'},
+      {key: 'git_hold_notice_boards', obj: InventoryObject.NOTICEBOARD, type: 'deployable'},
+      {key: 'git_hold_resource_locks', obj: InventoryObject.LOCK, type: 'deployable'},
+      {key: 'git_hold_file_order_sources', obj: InventoryObject.FILEORDERSOURCE, type: 'deployable'},
+      {key: 'git_hold_schedules', obj: InventoryObject.SCHEDULE, type: 'releaseable'},
+      {
+        key: 'git_hold_calendars',
+        obj: [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR],
+        type: 'releaseable',
+        match: 'CALENDAR'
+      },
+      {key: 'git_hold_job_templates', obj: InventoryObject.JOBTEMPLATE, type: 'releaseable'},
+      {key: 'git_hold_script_includes', obj: InventoryObject.INCLUDESCRIPT, type: 'releaseable'},
+      {key: 'git_hold_reports', obj: InventoryObject.REPORT, type: 'releaseable'}
+    ];
 
-        let flag = 'local';
+    let flag = 'local';
 
-        objectMap.forEach(({ key, obj, type, match }) => {
-          const configVal = configGit[key]?.value || defaultGit[key]?.default;
+    objectMap.forEach(({key, obj, type, match}) => {
+      const configVal = configGit[key]?.value || defaultGit[key]?.default;
 
-            if (configVal === 'local') {
-              this.localObjects.push(...(Array.isArray(obj) ? obj : [obj]));
-              this.filter.envRelated = true;
-              flag = 'local';
-            } else if (configVal === 'rollout') {
-              this.rolloutObjects.push(...(Array.isArray(obj) ? obj : [obj]));
-              this.filter.envIndependent = true;
-              flag = 'rollout';
-            }
+      if (configVal === 'local') {
+        this.localObjects.push(...(Array.isArray(obj) ? obj : [obj]));
+        this.filter.envRelated = true;
+        flag = 'local';
+      } else if (configVal === 'rollout') {
+        this.rolloutObjects.push(...(Array.isArray(obj) ? obj : [obj]));
+        this.filter.envIndependent = true;
+        flag = 'rollout';
+      }
 
     });
   }
@@ -5985,7 +5990,8 @@ export class RepositoryComponent {
       }
     };
     if (this.object.type === 'changes') {
-      if (node.path !== '/' && node.name !== '/' && !['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(node.name) && !['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(node.type)) {
+
+      if (node.path !== '/' && node.name !== '/') {
         const config = {
           configuration: {
             path: node.path,

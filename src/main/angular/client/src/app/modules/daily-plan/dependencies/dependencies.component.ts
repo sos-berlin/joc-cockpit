@@ -8,20 +8,20 @@ import {
   EventEmitter,
   ChangeDetectorRef
 } from '@angular/core';
-import { NzModalRef, NzModalService } from "ng-zorro-antd/modal";
-import { CoreService } from "../../../services/core.service";
-import { NzTreeNodeOptions } from 'ng-zorro-antd/tree';
-import { Subject, Subscription } from 'rxjs';
-import { DataService } from '../../../services/data.service';
-import { NzDrawerComponent } from "ng-zorro-antd/drawer";
-import { WorkflowService } from "../../../services/workflow.service";
-import { OrderPipe } from "../../../pipes/core.pipe";
-import { Data } from "@angular/router";
-import { PostModalComponent } from '../../resource/board/board.component';
-import { CommentModalComponent } from 'src/app/components/comment-modal/comment.component';
-import { ConfirmModalComponent } from 'src/app/components/comfirm-modal/confirm.component';
-import { takeUntil } from "rxjs/operators";
-import { TranslateService } from "@ngx-translate/core";
+import {NzModalRef, NzModalService} from "ng-zorro-antd/modal";
+import {CoreService} from "../../../services/core.service";
+import {NzTreeNodeOptions} from 'ng-zorro-antd/tree';
+import {Subject, Subscription} from 'rxjs';
+import {DataService} from '../../../services/data.service';
+import {NzDrawerComponent} from "ng-zorro-antd/drawer";
+import {WorkflowService} from "../../../services/workflow.service";
+import {OrderPipe} from "../../../pipes/core.pipe";
+import {Data} from "@angular/router";
+import {PostModalComponent} from '../../resource/board/board.component';
+import {CommentModalComponent} from 'src/app/components/comment-modal/comment.component';
+import {ConfirmModalComponent} from 'src/app/components/comfirm-modal/confirm.component';
+import {takeUntil} from "rxjs/operators";
+import {TranslateService} from "@ngx-translate/core";
 
 declare const mxEditor: any;
 declare const mxUtils: any;
@@ -72,6 +72,7 @@ export class DependenciesComponent {
   setOfCheckedId = new Set<number>();
   mapOfCheckedId = new Set();
   pageSize: number = 10;
+  sideBar: any = {orders: []};
   private lastLoadedMonthYear: string = '';
 
   @ViewChild('graphContainer') graphContainer!: ElementRef;
@@ -82,7 +83,8 @@ export class DependenciesComponent {
   private subscription: Subscription;
   private subscription1: Subscription;
   workflowData: any;
-
+  totalWorkflows: number = 0;
+  totalNotices: number = 0;
   configXml = './assets/mxgraph/config/diagram.xml';
 
   constructor(
@@ -109,7 +111,12 @@ export class DependenciesComponent {
     this.plansFilters = this.coreService.getPlansTab();
     this.pageSize = this.plansFilters.filter.entryPerPage || 10;
     this.initConf();
-    this.loadAdditionalData();
+    const dailyPlanFilters = this.coreService.getDailyPlanTab();
+    if (dailyPlanFilters.tabIndex === 2) {
+      this.loadAdditionaSnapshotlData();
+    } else {
+      this.loadAdditionalData();
+    }
     if (!(this.preferences.theme === 'light' || this.preferences.theme === 'lighter' || !this.preferences.theme)) {
       this.configXml = './assets/mxgraph/config/diagrameditor-dark.xml';
     }
@@ -119,6 +126,7 @@ export class DependenciesComponent {
     if (changes['parentLoaded'] && changes['parentLoaded'].currentValue) {
       setTimeout(() => {
         this.initConf();
+        this.loadAdditionaSnapshotlData();
         this.fit();
       }, 300);
     }
@@ -163,22 +171,22 @@ export class DependenciesComponent {
             this.planSchemaId = e.events[0]?.planSchemaId;
             this.isClosed = e.events[0]?.isClosed;
             this.isOpen = e.events[0]?.isOpen;
-            this.plansFilters.filter.currentPage = 1
+            this.plansFilters.filter.currentPage = 1;
             if (this.graph) {
-              this.graph.getModel().clear(); // Clear previous graph data
+              this.graph.getModel().clear();
             }
-            this.loadAdditionaSnapshotlData()
+            this.loadAdditionaSnapshotlData();
           },
           renderEnd: (e) => {
-            const visibleDate = e?.startDate || new Date(); // fallback to current if not provided
+            const visibleDate = e?.startDate || new Date();
             const currentMonthYear = `${visibleDate.getFullYear()}-${visibleDate.getMonth()}`;
-
             if (this.lastLoadedMonthYear !== currentMonthYear) {
               this.lastLoadedMonthYear = currentMonthYear;
               this.loadPlans();
             }
           },
-          rangeEnd: (e) => { }
+          rangeEnd: (e) => {
+          }
         });
       }
     }, 100);
@@ -300,8 +308,8 @@ export class DependenciesComponent {
 
   refreshCheckedStatus(): void {
     const listOfEnabledData = this.listOfCurrentPageData;
-    this.checked = listOfEnabledData.every(({ path }) => this.setOfCheckedId.has(path));
-    this.indeterminate = listOfEnabledData.some(({ path }) => this.setOfCheckedId.has(path)) && !this.checked;
+    this.checked = listOfEnabledData.every(({path}) => this.setOfCheckedId.has(path));
+    this.indeterminate = listOfEnabledData.some(({path}) => this.setOfCheckedId.has(path)) && !this.checked;
   }
 
   onItemChecked(path: number, checked: boolean): void {
@@ -310,7 +318,7 @@ export class DependenciesComponent {
   }
 
   onAllChecked(checked: boolean): void {
-    this.listOfCurrentPageData.forEach(({ path }) => this.updateCheckedSet(path, checked));
+    this.listOfCurrentPageData.forEach(({path}) => this.updateCheckedSet(path, checked));
     this.refreshCheckedStatus();
   }
 
@@ -320,23 +328,21 @@ export class DependenciesComponent {
     } else {
       this.setOfCheckedId.delete(path);
     }
-    const mapOfCheckedId = { mapOfCheckedId: this.mapOfCheckedId, setOfCheckedId: this.setOfCheckedId };
+    const mapOfCheckedId = {mapOfCheckedId: this.mapOfCheckedId, setOfCheckedId: this.setOfCheckedId};
     this.checkedNotices.emit(mapOfCheckedId);
   }
 
   post(board: any, notice = null, boardType: string): void {
     if (boardType === "Plannable" && notice !== null) {
       const endpoint = 'notices/post';
-      const obj: any = {
-        controllerId: this.schedulerId,
-        auditLog: {}
-      };
+      const obj: any = {controllerId: this.schedulerId, auditLog: {}};
       const noticeBoardPath = board.path;
       const noticeIds = board.children.map(item => item.id);
       obj.notices = [];
-      obj.notices.push({ noticeBoardPath: noticeBoardPath, noticeIds: noticeIds });
+      obj.notices.push({noticeBoardPath: noticeBoardPath, noticeIds: noticeIds});
       this.coreService.post(endpoint, obj).subscribe({
-        next: (res) => { }
+        next: (res) => {
+        }
       });
     } else if (boardType === "Plannable" && notice === null) {
       this.modal.create({
@@ -362,13 +368,7 @@ export class DependenciesComponent {
         nzContent: PostModalComponent,
         nzClassName: 'lg',
         nzAutofocus: null,
-        nzData: {
-          board,
-          notice,
-          controllerId: this.schedulerId,
-          preferences: this.preferences,
-          singular: true
-        },
+        nzData: {board, notice, controllerId: this.schedulerId, preferences: this.preferences, singular: true},
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
@@ -378,16 +378,11 @@ export class DependenciesComponent {
 
   delete(board, notice): void {
     if (this.preferences.auditLog) {
-      const comments = {
-        radio: 'predefined',
-        type: 'Notice Board',
-        operation: 'Delete',
-        name: notice?.id
-      };
+      const comments = {radio: 'predefined', type: 'Notice Board', operation: 'Delete', name: notice?.id};
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: CommentModalComponent,
-        nzData: { comments },
+        nzData: {comments},
         nzFooter: null,
         nzClosable: false,
         nzMaskClosable: false
@@ -447,7 +442,7 @@ export class DependenciesComponent {
       nzContent: PostModalComponent,
       nzClassName: 'lg',
       nzAutofocus: null,
-      nzData: { paths, controllerId: this.schedulerId, preferences: this.preferences },
+      nzData: {paths, controllerId: this.schedulerId, preferences: this.preferences},
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
@@ -457,7 +452,7 @@ export class DependenciesComponent {
   private deleteAll(board, comments): void {
     if (board) {
       if (!board.notices) {
-        this.getNoticeBoards({ noticeBoardPaths: [board.path], controllerId: this.schedulerId }, (data) => {
+        this.getNoticeBoards({noticeBoardPaths: [board.path], controllerId: this.schedulerId}, (data) => {
           if (data && data.length > 0) {
             board.notices = data[0].notices;
             this._deleteAll(board, comments);
@@ -494,8 +489,12 @@ export class DependenciesComponent {
   private getNoticeBoards(obj, cb): void {
     obj.limit = this.preferences.maxBoardRecords;
     this.coreService.post('notice/boards', obj).subscribe({
-      next: (res: any) => { cb(res.noticeBoards); },
-      error: () => { cb(); }
+      next: (res: any) => {
+        cb(res.noticeBoards);
+      },
+      error: () => {
+        cb();
+      }
     });
   }
 
@@ -543,6 +542,8 @@ export class DependenciesComponent {
     this.graph = new mxGraph(this.graphContainer.nativeElement);
     mxGraph.prototype.collapsedImage = new mxImage('./assets/mxgraph/images/collapsed.png', 12, 12);
     mxGraph.prototype.expandedImage = new mxImage('./assets/mxgraph/images/expanded.png', 12, 12);
+    mxGraph.prototype.expectImage = new mxImage('./assets/mxgraph/images/await.png', 20, 20);
+    mxGraph.prototype.consumeImage = new mxImage('./assets/mxgraph/images/consume.png', 20, 20);
     this.graph.setPanning(true);
     this.graph.setCellsResizable(false);
     this.graph.setConnectable(true);
@@ -604,78 +605,116 @@ export class DependenciesComponent {
     );
     overlay.cursor = 'pointer';
     overlay.addListener(mxEvent.CLICK, (sender, evt) => {
-      this.showOrdersPopup(orders, vertex);
+      this.buildOrdersHtml(orders);
       evt.consume();
     });
     this.graph.addCellOverlay(vertex, overlay);
   }
 
-  private showOrdersPopup(orders: string[], vertex: any): void {
-    this.removeExistingPopup();
-    const state = this.graph.getView().getState(vertex);
-    if (!state) { return; }
-    const scale = this.graph.view.getScale();
-    const containerRect = this.graph.container.getBoundingClientRect();
-    const xPos = containerRect.left + state.x * scale;
-    const yPos = containerRect.top + state.y * scale;
-    const popupDiv = document.createElement('div');
-    popupDiv.id = 'orders-popup';
-    popupDiv.className = 'box';
-    popupDiv.style.position = 'absolute';
-    popupDiv.style.left = (xPos + 20) + 'px';
-    popupDiv.style.top = (yPos + 20) + 'px';
-    popupDiv.style.zIndex = '9999';
-    popupDiv.style.border = '1px solid #ccc';
-    popupDiv.style.borderRadius = '4px';
-    popupDiv.style.padding = '8px';
-    popupDiv.style.boxShadow = '0 2px 5px rgba(0,0,0,0.3)';
-    popupDiv.innerHTML = this.buildOrdersHtml(orders);
-    document.body.appendChild(popupDiv);
-    setTimeout(() => {
-      document.addEventListener('mousedown', this.handleOutsideClick);
-    }, 0);
+  private addExpectingOverlay(vertex: any): void {
+    let overlayTooltip;
+    this.translate.get('dailyPlan.label.expectingWorkflow').subscribe(translatedValue => {
+      overlayTooltip = translatedValue;
+    });
+    const overlay = new mxCellOverlay(
+      mxGraph.prototype.expectImage,
+      overlayTooltip,
+      mxConstants.ALIGN_RIGHT,
+      mxConstants.ALIGN_TOP,
+      new mxPoint(20, 27)
+    );
+    overlay.cursor = 'pointer';
+    this.graph.addCellOverlay(vertex, overlay);
   }
 
-  private removeExistingPopup(): void {
-    const oldPopup = document.getElementById('orders-popup');
-    if (oldPopup) {
-      oldPopup.remove();
-    }
-    document.removeEventListener('mousedown', this.handleOutsideClick);
+  private addConsumingOverlay(vertex: any): void {
+    let overlayTooltip;
+    this.translate.get('dailyPlan.label.consumingWorkflow').subscribe(translatedValue => {
+      overlayTooltip = translatedValue;
+    });
+    const overlay = new mxCellOverlay(
+      mxGraph.prototype.consumeImage,
+      overlayTooltip,
+      mxConstants.ALIGN_RIGHT,
+      mxConstants.ALIGN_TOP,
+      new mxPoint(20, 26)
+    );
+    overlay.cursor = 'pointer';
+    this.graph.addCellOverlay(vertex, overlay);
   }
 
   private getFontColor(fillColor: string): string {
     const color = fillColor.toUpperCase();
-    if (color === '#FFA640' || color === '#7AB97A') {
+    if (color === '#FF8000' || color === '#90EE90') {
       return '#000000';
     }
     return '#ffffff';
   }
 
-  private buildOrdersHtml(orders: string[]): string {
-    let html = '';
-    orders.forEach(orderId => {
+  private blinkNode(vertex: any, blinkColor: string = '#FF0000', interval: number = 500): void {
+    if (!vertex) {
+      return;
+    }
+    const originalColor = mxUtils.getValue(vertex.style, mxConstants.STYLE_FILLCOLOR, '#1171a6');
+    let isBlinkOn = false;
+    const blinkInterval = setInterval(() => {
+      const newColor = isBlinkOn ? originalColor : blinkColor;
+      // Note: getCellStyles may not exist – use setCellStyles on the model instead.
+      this.graph.setCellStyles(mxConstants.STYLE_FILLCOLOR, newColor, [vertex]);
+      this.graph.refresh();
+      isBlinkOn = !isBlinkOn;
+    }, interval);
+    vertex.blinkInterval = blinkInterval;
+  }
+
+  private isWorkflowCritical(row: any): boolean {
+    const criticalStates = ['FAILED', 'SUSPENDED', 'BROKEN'];
+    const ordersToCheck = [...(row.leftOrders || []), ...(row.rightOrders || [])];
+    for (const orderId of ordersToCheck) {
       const orderDetails = this.getOrderDetails(orderId);
-      let stateTooltip;
-      let markedTooltip;
-      let orderHtml = '';
-      if (orderDetails) {
-        if (orderDetails?.marked) {
-          this.translate.get(orderDetails.marked._text).subscribe(translatedValue => {
-            stateTooltip = translatedValue;
-          });
-          orderHtml = `<span class="half-circle half-circle-left ${this.coreService.getColor(orderDetails.state.severity, 'bg')}" title="${stateTooltip}"></span>` +
-            `<span class="half-circle half-circle-right ${this.coreService.getColor(orderDetails.marked.severity, 'bg')}" title="${markedTooltip}"></span>`;
-        } else {
-          this.translate.get(orderDetails.state._text).subscribe(translatedValue => {
-            stateTooltip = translatedValue;
-          });
-          orderHtml = `<i class="fa fa-circle p-r-s ${this.coreService.getColor(orderDetails.state.severity, 'text')}" title="${stateTooltip}"></i>`;
-        }
+      if (orderDetails && criticalStates.includes(orderDetails.state?._text)) {
+        return true;
       }
-      html += `<div style="margin:2px 0;">${orderHtml} <span>${orderId}</span></div>`;
+    }
+    return false;
+  }
+
+  // New helper: get the corresponding notice board for a given workflow path.
+  private getNoticeBoardByWorkflow(workflow: any): any {
+    if (!this.workflowData || !this.workflowData.noticeBoards) {
+      return null;
+    }
+    const boards = Array.isArray(this.workflowData.noticeBoards)
+      ? this.workflowData.noticeBoards
+      : Object.values(this.workflowData.noticeBoards);
+    return boards.find(board => {
+      if (!board.notices || !Array.isArray(board.notices)) {
+        return false;
+      }
+      return board.notices.some((n: any) =>
+        (workflow.postNotices && workflow.postNotices.includes(n.id)) ||
+        (workflow.expectNotices && workflow.expectNotices.includes(n.id))
+      );
     });
-    return html;
+  }
+
+
+
+  private buildOrdersHtml(orders: any[]): any {
+    console.log(orders, orders);
+    let orderDetails = [];
+    this.sideBar.orders = [];
+    if (orders) {
+      orders.forEach(orderId => {
+        orderDetails = this.getOrderDetails(orderId);
+        if (orderDetails) {
+          this.sideBar.orders.push(orderDetails);
+        }
+      });
+    }
+    if (orderDetails) {
+      this.sideBar.isVisible = true;
+    }
   }
 
   private getOrderDetails(orderId: string): any {
@@ -693,14 +732,6 @@ export class DependenciesComponent {
     return null;
   }
 
-  private handleOutsideClick = (evt: MouseEvent) => {
-    const popup = document.getElementById('orders-popup');
-    if (popup && !popup.contains(evt.target as Node)) {
-      popup.remove();
-      document.removeEventListener('mousedown', this.handleOutsideClick);
-    }
-  };
-
   private createNode(
     parent: any,
     label: string,
@@ -717,13 +748,13 @@ export class DependenciesComponent {
     let vertex = this.graph.insertVertex(parent, null, displayLabel, x, y, width, height, style);
     vertex.tooltip = label;
     if (style.indexOf('#d0e0e3') !== -1) {
-      vertex.originalStyle = { strokeColor: '#d0e0e3', strokeWidth: '1' };
+      vertex.originalStyle = {strokeColor: '#d0e0e3', strokeWidth: '1'};
     } else if (style.indexOf('#ffe6cc') !== -1) {
-      vertex.originalStyle = { strokeColor: '#ffe6cc', strokeWidth: '1' };
-    } else if (style.indexOf('#c8e6c9') !== -1 || style.indexOf('#7ab97a') !== -1) {
-      vertex.originalStyle = { strokeColor: style.indexOf('#7ab97a') !== -1 ? '#7ab97a' : '#c8e6c9', strokeWidth: '1' };
+      vertex.originalStyle = {strokeColor: '#ffe6cc', strokeWidth: '1'};
+    } else if (style.indexOf('#c8e6c9') !== -1 || style.indexOf('#90EE90') !== -1) {
+      vertex.originalStyle = {strokeColor: style.indexOf('#90EE90') !== -1 ? '#90EE90' : '#c8e6c9', strokeWidth: '1'};
     } else {
-      vertex.originalStyle = { strokeColor: '#000000', strokeWidth: '1' };
+      vertex.originalStyle = {strokeColor: '#000000', strokeWidth: '1'};
     }
     return vertex;
   }
@@ -748,24 +779,35 @@ export class DependenciesComponent {
     const expectingWorkflows = data?.expectingWorkflows || [];
     const consumingWorkflows = data?.consumingWorkflows || [];
     postingWorkflows.forEach((p: any) => {
+      // Get the corresponding notice board info for this workflow
+      const boardInfo = this.getNoticeBoardByWorkflow(p);
+
       let postingColor = '#1171a6';
       if (p.futureDueOrderIds && p.futureDueOrderIds.length > 0) {
-        postingColor = '#FFA640';
+        postingColor = '#FF8000';
       }
+
       let leftEdgeColor = 'gray';
-      if (p.numOfExpectedNotices > 0) {
-        leftEdgeColor = '#7ab97a';
-      } else if (p.numOfPostedNotices > 0) {
-        leftEdgeColor = '#1171a6';
-      } else if (p.numOfAnnouncements > 0) {
-        leftEdgeColor = '#FFA640';
+      if (boardInfo) {
+        if (boardInfo.numOfExpectedNotices > 0) {
+          leftEdgeColor = '#90EE90';
+        } else if (boardInfo.numOfPostedNotices > 0) {
+          leftEdgeColor = '#1171a6';
+        } else if (boardInfo.numOfAnnouncements > 0) {
+          leftEdgeColor = '#FF8000';
+        }
       }
+
       let rightDefaultColor = '#1171a6';
-      if (p.presentDueOrderIds && p.presentDueOrderIds.length > 0) {
-        rightDefaultColor = '#FFA640';
-      } else if (p.expectingOrderIds && p.expectingOrderIds.length > 0) {
-        rightDefaultColor = '#7ab97a';
+      if (boardInfo) {
+        if (boardInfo.numOfExpectingOrders && boardInfo.numOfExpectingOrders > 0) {
+          rightDefaultColor = '#90EE90'; // green when expecting orders exist
+        } else if (boardInfo.numOfNotices && boardInfo.numOfNotices > 0) {
+          rightDefaultColor = '#FF8000'; // orange otherwise
+        }
       }
+
+
       const key = this.getFormattedPath(p.path);
       const row: any = {
         posting: key,
@@ -790,9 +832,9 @@ export class DependenciesComponent {
         if (this.getFormattedPath(e.path) === key && e.expectNotices && e.expectNotices.length > 0) {
           let rightNodeColor = '#1171a6';
           if (e.presentDueOrderIds && e.presentDueOrderIds.length > 0) {
-            rightNodeColor = '#FFA640';
+            rightNodeColor = '#FF8000';
           } else if (e.expectingOrderIds && e.expectingOrderIds.length > 0) {
-            rightNodeColor = '#7ab97a';
+            rightNodeColor = '#90EE90';
           }
           e.expectNotices.forEach((notice: string) => {
             if (!row.expecting.some((ex: any) => ex.notice === this.getFormattedPath(notice))) {
@@ -808,9 +850,9 @@ export class DependenciesComponent {
           if (common.length > 0) {
             let rightNodeColor = '#1171a6';
             if (e.presentDueOrderIds && e.presentDueOrderIds.length > 0) {
-              rightNodeColor = '#FFA640';
+              rightNodeColor = '#FF8000';
             } else if (e.expectingOrderIds && e.expectingOrderIds.length > 0) {
-              rightNodeColor = '#7ab97a';
+              rightNodeColor = '#90EE90';
             }
             if (!row.expecting.some((ex: any) => ex.notice === this.getFormattedPath(common[0]))) {
               row.expecting.push({
@@ -828,11 +870,11 @@ export class DependenciesComponent {
           if (common.length > 0) {
             let consumingEdgeColor = '#1171a6';
             if (c.numOfExpectedNotices > 0) {
-              consumingEdgeColor = '#7ab97a';
+              consumingEdgeColor = '#90EE90';
             } else if (c.numOfPostedNotices > 0) {
               consumingEdgeColor = '#1171a';
             } else if (c.numOfAnnouncements > 0) {
-              consumingEdgeColor = '#FFA640';
+              consumingEdgeColor = '#FF8000';
             }
             row.consuming.push({
               path: this.getFormattedPath(c.path),
@@ -842,12 +884,12 @@ export class DependenciesComponent {
           }
         }
       });
-      if (this.plansFilters.filter.filterBy === 'future' && postingColor !== '#FFA640') {
+      if (this.plansFilters.filter.filterBy === 'future' && postingColor !== '#FF8000') {
         return;
       }
       if (this.plansFilters.filter.filterBy === 'present') {
         const hasRightMarker = row.expecting.some(
-          (ex: any) => ex.rightNodeColor === '#FFA640' || ex.rightNodeColor === '#7ab97a'
+          (ex: any) => ex.rightNodeColor === '#FF8000' || ex.rightNodeColor === '#90EE90'
         );
         if (!hasRightMarker) {
           return;
@@ -876,7 +918,9 @@ export class DependenciesComponent {
   }
 
   highlightNodes(searchText: string): void {
-    if (!this.graph) { return; }
+    if (!this.graph) {
+      return;
+    }
     const model = this.graph.getModel();
     model.beginUpdate();
     try {
@@ -906,6 +950,7 @@ export class DependenciesComponent {
     try {
       const allRows = this.buildRowsFromData(this.workflowData);
       const filteredRows = this.filterRows(allRows, this.searchValue);
+      this.computeDistinctCounts(allRows);
       const startIndex = (this.plansFilters.filter.currentPage - 1) * this.pageSize;
       const paginatedRows = filteredRows.slice(startIndex, startIndex + this.pageSize);
       const xPosting = 100;
@@ -929,14 +974,28 @@ export class DependenciesComponent {
         const rowHeightCalculated = Math.max(minRowHeight, totalBlockHeight);
         const rowCenterY = currentY + rowHeightCalculated / 2;
         let postingFillColor = '#1171a6';
-        if (row.postingColor === '#FFA640') {
-          postingFillColor = '#FFA640';
+        if (row.postingColor === '#FF8000') {
+          postingFillColor = '#FF8000';
         }
         const fontColorPosting = this.getFontColor(postingFillColor);
         const dynamicStylePosting = `fillColor=${postingFillColor};${postingStyleBase}fontColor=${fontColorPosting};`;
         let pCell = this.createNode(parent, row.posting, xPosting, rowCenterY, nodeWidth, nodeHeight, dynamicStylePosting);
-        if (row.leftOrders && row.leftOrders.length > 0) {
-          this.addOrderOverlay(pCell, row.leftOrders);
+        // Only add the order overlay if either leftOrders or rightOrders exist
+        if ((row.leftOrders && row.leftOrders.length > 0) || (row.rightOrders && row.rightOrders.length > 0)) {
+          const combinedOrders: string[] = [];
+          if (row.leftOrders && row.leftOrders.length > 0) {
+            combinedOrders.push(...row.leftOrders);
+          }
+          if (row.rightOrders && row.rightOrders.length > 0) {
+            combinedOrders.push(...row.rightOrders);
+          }
+          this.addOrderOverlay(pCell, combinedOrders);
+        }
+
+
+
+        if (this.isWorkflowCritical(row)) {
+          this.blinkNode(pCell, '#FF0000', 500);
         }
         let expectingNodes: any[] = [];
         let consumingNodes: any[] = [];
@@ -950,7 +1009,9 @@ export class DependenciesComponent {
               const fontColorExpecting = this.getFontColor(fillColorExpecting);
               const dynamicStyleExpecting = `fillColor=${fillColorExpecting};strokeColor=#d0e0e3;shadow=1;shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888;rounded=1;arcSize=20;strokeWidth=1;fontColor=${fontColorExpecting};`;
               const node = this.createNode(parent, expectVal, xRight, nodeY, nodeWidth, nodeHeight, dynamicStyleExpecting);
-              expectingNodes.push({ cell: node, notice: row.expecting[j].notice, rightNodeColor: fillColorExpecting });
+              // Optionally add expecting overlay if desired:
+              // this.addExpectingOverlay(node);
+              expectingNodes.push({cell: node, notice: row.expecting[j].notice, rightNodeColor: fillColorExpecting});
             }
             if (C > 0) {
               topY += expectingBlockHeight + groupGap;
@@ -964,7 +1025,9 @@ export class DependenciesComponent {
               const fontColorConsuming = this.getFontColor(fillColorConsuming);
               const dynamicStyleConsuming = `fillColor=${fillColorConsuming};strokeColor=#d0e0e3;shadow=1;shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888;rounded=1;arcSize=20;strokeWidth=1;fontColor=${fontColorConsuming};`;
               const node = this.createNode(parent, consumeVal, xRight, nodeY, nodeWidth, nodeHeight, dynamicStyleConsuming);
-              consumingNodes.push({ cell: node, notice: row.consuming[j].notice, rightNodeColor: fillColorConsuming });
+              // Optionally add consuming overlay if desired:
+              // this.addConsumingOverlay(node);
+              consumingNodes.push({cell: node, notice: row.consuming[j].notice, rightNodeColor: fillColorConsuming});
             }
           }
         }
@@ -1009,7 +1072,7 @@ export class DependenciesComponent {
       labelCell.geometry.offset = new mxPoint(-170, -12);
       labelCell.setConnectable(false);
       labelCell.tooltip = text;
-      labelCell.originalStyle = { strokeColor: '#000000', strokeWidth: '1' };
+      labelCell.originalStyle = {strokeColor: '#000000', strokeWidth: '1'};
       this.graph.addCell(labelCell, edge);
     } finally {
       this.graph.getModel().endUpdate();
@@ -1023,6 +1086,10 @@ export class DependenciesComponent {
     }).pipe(takeUntil(this.depPendingHTTPRequests$)).subscribe((res) => {
       this.isLoaded = true;
       this.workflowData = res;
+      // If the response now contains notice boards, store them.
+      if (res.noticeBoards) {
+        this.noticeBoards = res.noticeBoards;
+      }
       this.loadGraphData();
     });
   }
@@ -1032,10 +1099,14 @@ export class DependenciesComponent {
     this.coreService.post('workflows/boards/snapshot', {
       controllerId: this.schedulerId,
       planSchemaIds: ["Global", "DailyPlan"],
-      noticeSpaceKey: [this.selectedDate]
+      noticeSpaceKey: [this.coreService.getStringDate(this.selectedDate)]
     }).pipe(takeUntil(this.depPendingHTTPRequests$)).subscribe((res) => {
       this.isLoaded = true;
       this.workflowData = res;
+
+      if (res.noticeBoards) {
+        this.noticeBoards = res.noticeBoards;
+      }
       this.loadGraphData();
     });
   }
@@ -1064,14 +1135,21 @@ export class DependenciesComponent {
     this.graph.refresh();
   }
 
+  private computeDistinctCounts(rows: any[]): void {
+    this.totalWorkflows = rows.length;
+    const noticeSet = new Set<string>();
+    rows.forEach(row => {
+      row.expecting.forEach((n: any) => noticeSet.add(n.notice));
+      row.consuming.forEach((n: any) => noticeSet.add(n.notice));
+    });
+    this.totalNotices = noticeSet.size;
+  }
+
   closePlan(): void {
     this.coreService.post('plans/close', {
       controllerId: this.schedulerId,
       planIds: [
-        {
-          planSchemaId: this.planSchemaId,
-          noticeSpaceKey: this.coreService.getStringDate(this.selectedDate)
-        }
+        {planSchemaId: this.planSchemaId, noticeSpaceKey: this.coreService.getStringDate(this.selectedDate)}
       ]
     }).subscribe((res) => {
       this.initConf();
@@ -1083,10 +1161,7 @@ export class DependenciesComponent {
     this.coreService.post('plans/open', {
       controllerId: this.schedulerId,
       planIds: [
-        {
-          planSchemaId: this.planSchemaId,
-          noticeSpaceKey: this.coreService.getStringDate(this.selectedDate)
-        }
+        {planSchemaId: this.planSchemaId, noticeSpaceKey: this.coreService.getStringDate(this.selectedDate)}
       ]
     }).subscribe((res) => {
       this.initConf();

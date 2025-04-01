@@ -22,6 +22,12 @@
           <i class="icon icon-workflows-icon"></i>
           <span translate>dailyPlan.button.future</span>
         </button>
+        <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.normal'|translate" class="fa fa-stop bg-postingWorkflow" style="margin-left: 176px"></i>
+        {{'dailyPlan.label.normal' | translate}}
+        <i  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.pending'|translate"class="fa fa-stop bg-expectingWorkflow p-l-sm"></i>
+        {{'dailyPlan.label.pending' | translate}}
+        <i  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.expecting'|translate"class="fa fa-stop bg-consumingWorkflow p-l-sm"></i>
+        {{'dailyPlan.label.expecting' | translate}}
       </div>
     </div>
 
@@ -105,19 +111,34 @@
             <app-empty-data></app-empty-data>
           </div>
         </div>
-        <nz-pagination *ngIf="workflowData?.consumingWorkflows || workflowData?.expectingWorkflows || workflowData?.postingWorkflows" class="pull-right" style="margin-top: 4px"
+      <div style="margin-top: 14px">
+      <span class="m-l-2 m-t-2"
+            [translateParams]="{total: totalWorkflows, noticeCount: totalNotices}"
+            translate>dailyPlan.label.totalWorkflowNoticeEntry</span>
+        <nz-pagination *ngIf="workflowData?.consumingWorkflows || workflowData?.expectingWorkflows || workflowData?.postingWorkflows" class="pull-right m-r-sm"
                        [nzPageSize]="pageSize || preferences.entryPerPage || 25"
                        [nzShowSizeChanger]="true"
                        [nzPageSizeOptions]="[10, 25, 50, 100, +(preferences.maxEntryPerPage)]"
                        [nzTotal]="workflowData ? buildRowsFromData(workflowData).length : 0"
                        [(nzPageIndex)]="plansFilters.filter.currentPage"
                        (nzPageIndexChange)="onPageIndexChange($event)"
-                       (nzPageSizeChange)="pageSizeChange($event)">
+                       (nzPageSizeChange)="pageSizeChange($event)"
+                       [nzSize]="'small'">
         </nz-pagination>
-
+      </div>
     </div>
   </div>
 </div>
+<nz-drawer (nzOnClose)="sideBar.isVisible = false" [nzVisible]="sideBar.isVisible" nzPlacement="right">
+  <ng-container *nzDrawerContent>
+    <div (click)="sideBar.isVisible = false" class="close-btn"></div>
+    <div class="p-l-sm p-r-sm">
+      <app-order-list-sidebar  [orders]="sideBar.orders"
+                              [permission]="permission" [preferences]="preferences"
+                              [schedulerId]="schedulerId"></app-order-list-sidebar>
+    </div>
+  </ng-container>
+</nz-drawer>
 <div *ngIf="!isLoaded" class="spinner">
   <div class="cssload-inner cssload-one"></div>
   <div class="cssload-inner cssload-two"></div>

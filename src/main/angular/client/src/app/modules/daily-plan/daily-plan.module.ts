@@ -17,6 +17,7 @@ import {DependenciesComponent} from "./dependencies/dependencies.component";
 import {NzDrawerComponent} from "ng-zorro-antd/drawer";
 import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {NzPaginationModule} from "ng-zorro-antd/pagination";
+import {WorkflowModule} from "../workflow/workflow.module";
 
 @NgModule({
   imports: [
@@ -25,7 +26,8 @@ import {NzPaginationModule} from "ng-zorro-antd/pagination";
     NzTabsModule,
     NzDrawerComponent,
     NzDrawerModule,
-    NzPaginationModule
+    NzPaginationModule,
+    WorkflowModule
   ],
   declarations: [DailyPlanComponent, GanttComponent, ProjectionComponent, DependenciesComponent, RemovePlanModalComponent, FilterModalComponent,
     SearchComponent, DailyPlanRegexValidator, CreatePlanModalComponent, ShowProjectionModalComponent, ExportComponent],

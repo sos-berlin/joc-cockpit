@@ -1043,7 +1043,6 @@ export class AddOrderModalComponent {
         arg.type === 'List' &&
         (!arg.actualList || arg.actualList.some(listItem => listItem.list.some(item => !item.value)))
       );
-
       let anyMapEmpty = orderArgs.some(arg =>
         arg.type === 'Map' &&
         (!arg.actualMap || arg.actualMap.some(mapItem => mapItem.map.some(item => !item.value)))
