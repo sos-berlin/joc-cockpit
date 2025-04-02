@@ -1007,6 +1007,7 @@
     "tooltip.normal": "Normal State.",
     "tooltip.pending": "indicating that there are pending orders.",
     "tooltip.expecting": "indicating that there are expecting orders.",
+    "tooltip.critical": "indicating that there are critical orders.",
     "tab": {
       "dailyPlan": "Daily Plan",
       "projection": "Projection",

@@ -1007,6 +1007,7 @@
     "tooltip.normal": "Normaler Zustand.",
     "tooltip.pending": "Anstehende Aufträge.",
     "tooltip.expecting": "Wartende Aufträge in Arbeitsabläufen.",
+    "tooltip.critical": "indicating that there are critical orders.",
     "tab": {
       "dailyPlan": "Tagesplan",
       "projection": "Projektion",
