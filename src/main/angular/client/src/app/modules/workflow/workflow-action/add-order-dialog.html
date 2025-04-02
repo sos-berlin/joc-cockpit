@@ -414,7 +414,14 @@
                               [object]="order"></app-select-input>
           </div>
         </div>
-
+        <div class="form-group row">
+          <label class="col-sm-4 form-control-label" translate>order.label.noticeSpaceKey</label>
+          <div class="col-sm-6">
+            <input #noticeSpaceKey="ngModel" [(ngModel)]="order.planId.noticeSpaceKey" [appAutofocus]="true" autocomplete="off"
+                   placeholder="{{'order.placeholder.noticeSpaceKey' | translate}}" class="form-control" identifierValidation maxlength="30" name="noticeSpaceKey{{orderIndex}}"
+                   type="text">
+          </div>
+        </div>
         <!-- Block Position -->
         <div *ngIf="permission.currentController && permission.currentController.orders.managePositions && blockPositions?.size > 0"
              class="form-group row">

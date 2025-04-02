@@ -559,6 +559,16 @@ export class DependenciesComponent {
     this.graph.convertValueToString = function (cell) {
       return cell.value;
     };
+    this.graph.addListener(mxEvent.CLICK, (sender, evt) => {
+      const cell = evt.getProperty('cell');
+      if (cell && cell.vertex && cell.value && cell.originalStyle.strokeColor != "#000000") {
+        this.navToInventoryTab(cell.value, 'WORKFLOW');
+        evt.consume();
+      }else if(cell && cell.vertex && cell.value && cell.originalStyle.strokeColor === "#000000"){
+        this.showBoard(cell.value);
+        evt.consume();
+      }
+    });
     this.graph.getTooltipForCell = function (cell) {
       if (this.model.isEdge(cell)) {
         return cell.tooltip || '';
@@ -890,15 +900,13 @@ export class DependenciesComponent {
   if (c.consumeNotices && p.postNotices) {
     const common = this.getIntersection(p.postNotices, c.consumeNotices);
     if (common.length > 0) {
-      let consumingEdgeColor = '#1171a6';
-      if (c.numOfExpectedNotices > 0) {
-        consumingEdgeColor = '#b3b300';
-      } else if (c.numOfPostedNotices > 0) {
-        consumingEdgeColor = '#1171a';
-      } else if (c.numOfAnnouncements > 0) {
-        consumingEdgeColor = '#FF8000';
+
+      let rightNodeColor = '#1171a6';
+      if (c.presentDueOrderIds && c.presentDueOrderIds.length > 0) {
+        rightNodeColor = '#FF8000';
+      } else if (c.expectingOrderIds && c.expectingOrderIds.length > 0) {
+        rightNodeColor = '#b3b300';
       }
-      // Merge all orders from expecting, present, and future
       const combinedOrders = [
         ...(c.expectingOrderIds || []),
         ...(c.presentDueOrderIds || []),
@@ -907,7 +915,7 @@ export class DependenciesComponent {
       row.consuming.push({
         path: this.getFormattedPath(c.path),
         notice: this.getFormattedPath(common[0]),
-        rightNodeColor: consumingEdgeColor,
+        rightNodeColor: rightNodeColor,
         orders: combinedOrders
       });
     }

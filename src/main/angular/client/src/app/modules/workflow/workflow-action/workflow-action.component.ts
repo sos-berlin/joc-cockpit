@@ -160,6 +160,10 @@ export class AddOrderModalComponent {
       endPositions: [],
       blockPosition: '',
       reload: false,
+      planId: {
+        planSchemaId:'DailyPlan',
+        noticeSpaceKey: this.coreService.getStringDate(new Date(new Date().setHours(0, 0, 0, 0)))
+      }
     }];
 
     this.orders[0].timeZone = this.preferences.zone;
@@ -743,7 +747,9 @@ export class AddOrderModalComponent {
         tags: order.tags || this.tags,
         arguments: {}
       };
-
+        if(order?.planId?.noticeSpaceKey){
+          orderObj.planId = order.planId
+        }
       if (this.orders.length > 1) {
         if (this.commonStartTime === 'now' || this.commonStartTime === 'never') {
           orderObj.scheduledFor = this.commonStartTime;
@@ -892,6 +898,10 @@ export class AddOrderModalComponent {
       endPositions: [],
       blockPosition: '',
       reload: false,
+      planId: {
+        planSchemaId:'DailyPlan',
+        noticeSpaceKey: this.coreService.getStringDate(new Date(new Date().setHours(0, 0, 0, 0)))
+      }
     };
 
     const newOrderIndex = this.orders.length;
@@ -953,6 +963,10 @@ export class AddOrderModalComponent {
                 endPositions: [],
                 blockPosition: '',
                 reload: false,
+                planId: {
+                  planSchemaId:'DailyPlan',
+                  noticeSpaceKey: this.coreService.getStringDate(new Date(new Date().setHours(0, 0, 0, 0)))
+                },
                 selectedSchedule: schedule,
                 orderName: parameterisation.orderName
               };
