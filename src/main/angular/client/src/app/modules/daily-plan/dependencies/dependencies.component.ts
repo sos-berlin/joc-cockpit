@@ -582,7 +582,7 @@ export class DependenciesComponent {
     if (!orders || orders.length === 0) {
       return;
     }
-    const overlayImage = new mxImage('./assets/mxgraph/images/fileWatcher.png', 12, 12);
+    const overlayImage = new mxImage('./assets/mxgraph/images/fileWatcher.png', 14, 14);
     let overlayTooltip;
     this.translate.get('dailyPlan.tooltip.viewOrders').subscribe(translatedValue => {
       overlayTooltip = translatedValue;
@@ -590,9 +590,9 @@ export class DependenciesComponent {
     const overlay = new mxCellOverlay(
       overlayImage,
       overlayTooltip,
-      mxConstants.ALIGN_LEFT,
+      mxConstants.ALIGN_RIGHT,
       mxConstants.ALIGN_TOP,
-      new mxPoint(10, 10)
+      new mxPoint(-20, 26)
     );
     overlay.cursor = 'pointer';
     overlay.addListener(mxEvent.CLICK, (sender, evt) => {
@@ -660,7 +660,7 @@ export class DependenciesComponent {
 
   private isWorkflowCritical(row: any): boolean {
     const criticalStates = ['FAILED', 'SUSPENDED', 'BROKEN'];
-    const ordersToCheck = [...(row.leftOrders || []), ...(row.rightOrders || [])];
+    const ordersToCheck = [...(row.orders || [])];
     for (const orderId of ordersToCheck) {
       const orderDetails = this.getOrderDetails(orderId);
       if (orderDetails && criticalStates.includes(orderDetails.state?._text)) {
@@ -691,14 +691,13 @@ export class DependenciesComponent {
   }
 
 
-
-
   private buildOrdersHtml(orders: any[]): any {
     let orderDetails = [];
     this.sideBar.orders = [];
     if (orders) {
       orders.forEach(orderId => {
         orderDetails = this.getOrderDetails(orderId);
+
         if (orderDetails) {
           this.sideBar.orders.push(orderDetails);
         }
@@ -717,8 +716,8 @@ export class DependenciesComponent {
       ? this.workflowData.orders
       : Object.values(this.workflowData.orders);
     for (const obj of orders) {
-      if (obj[orderId]) {
-        return obj[orderId];
+      if (obj.orderId === orderId) {
+        return obj;
       }
     }
     return null;
@@ -734,8 +733,8 @@ export class DependenciesComponent {
     style: string
   ) {
     let displayLabel = label;
-    if (label.length > 28) {
-      displayLabel = label.substring(0, 28) + '...';
+    if (label.length > 38) {
+      displayLabel = label.substring(0, 38) + '...';
     }
     let vertex = this.graph.insertVertex(parent, null, displayLabel, x, y, width, height, style);
     vertex.tooltip = label;
@@ -799,9 +798,11 @@ export class DependenciesComponent {
       }
 
       let rightDefaultColor = '#1171a6';
-      if (p.presentDueOrderIds && p.presentDueOrderIds.length > 0) { rightDefaultColor = '#FF8000'; }
-      else if (p.expectingOrderIds && p.expectingOrderIds.length > 0) { rightDefaultColor = '#b3b300'; }
-
+      if (p.presentDueOrderIds && p.presentDueOrderIds.length > 0) {
+        rightDefaultColor = '#FF8000';
+      } else if (p.expectingOrderIds && p.expectingOrderIds.length > 0) {
+        rightDefaultColor = '#b3b300';
+      }
 
 
       const key = this.getFormattedPath(p.path);
@@ -811,10 +812,22 @@ export class DependenciesComponent {
         leftEdgeColor: leftEdgeColor,
         expecting: [] as { path: string; notice: string; rightNodeColor: string }[],
         consuming: [] as { path: string; notice: string; rightNodeColor: string }[],
-        leftOrders: p.futureDueOrderIds || [],
-        rightOrders: p.presentDueOrderIds || [],
+        orders: p.expectingOrderIds || [],
         expanded: false
       };
+      if (p.expectingOrderIds || p.presentDueOrderIds || p.futureDueOrderIds) {
+        row.orders = [];
+        if (p.expectingOrderIds) {
+          row.orders.push(...p.expectingOrderIds);
+        }
+        if (p.presentDueOrderIds) {
+          row.orders.push(...p.presentDueOrderIds);
+        }
+        if (p.futureDueOrderIds) {
+          row.orders.push(...p.futureDueOrderIds);
+        }
+      }
+
       if (p.expectNotices && p.expectNotices.length > 0) {
         p.expectNotices.forEach((notice: string) => {
           row.expecting.push({
@@ -834,10 +847,16 @@ export class DependenciesComponent {
           }
           e.expectNotices.forEach((notice: string) => {
             if (!row.expecting.some((ex: any) => ex.notice === this.getFormattedPath(notice))) {
+              const combinedOrders = [
+                ...(e.expectingOrderIds || []),
+                ...(e.presentDueOrderIds || []),
+                ...(e.futureDueOrderIds || [])
+              ];
               row.expecting.push({
                 path: this.getFormattedPath(e.path),
                 notice: this.getFormattedPath(notice),
-                rightNodeColor: rightNodeColor
+                rightNodeColor: rightNodeColor,
+                orders: combinedOrders
               });
             }
           });
@@ -851,35 +870,50 @@ export class DependenciesComponent {
               rightNodeColor = '#b3b300';
             }
             if (!row.expecting.some((ex: any) => ex.notice === this.getFormattedPath(common[0]))) {
+              const combinedOrders = [
+                ...(e.expectingOrderIds || []),
+                ...(e.presentDueOrderIds || []),
+                ...(e.futureDueOrderIds || [])
+              ];
               row.expecting.push({
                 path: this.getFormattedPath(e.path),
                 notice: this.getFormattedPath(common[0]),
-                rightNodeColor: rightNodeColor
+                rightNodeColor: rightNodeColor,
+                orders: combinedOrders
               });
             }
           }
         }
+
       });
-      consumingWorkflows.forEach((c: any) => {
-        if (c.consumeNotices && p.postNotices) {
-          const common = this.getIntersection(p.postNotices, c.consumeNotices);
-          if (common.length > 0) {
-            let consumingEdgeColor = '#1171a6';
-            if (c.numOfExpectedNotices > 0) {
-              consumingEdgeColor = '#b3b300';
-            } else if (c.numOfPostedNotices > 0) {
-              consumingEdgeColor = '#1171a';
-            } else if (c.numOfAnnouncements > 0) {
-              consumingEdgeColor = '#FF8000';
-            }
-            row.consuming.push({
-              path: this.getFormattedPath(c.path),
-              notice: this.getFormattedPath(common[0]),
-              rightNodeColor: consumingEdgeColor
-            });
-          }
-        }
+     consumingWorkflows.forEach((c: any) => {
+  if (c.consumeNotices && p.postNotices) {
+    const common = this.getIntersection(p.postNotices, c.consumeNotices);
+    if (common.length > 0) {
+      let consumingEdgeColor = '#1171a6';
+      if (c.numOfExpectedNotices > 0) {
+        consumingEdgeColor = '#b3b300';
+      } else if (c.numOfPostedNotices > 0) {
+        consumingEdgeColor = '#1171a';
+      } else if (c.numOfAnnouncements > 0) {
+        consumingEdgeColor = '#FF8000';
+      }
+      // Merge all orders from expecting, present, and future
+      const combinedOrders = [
+        ...(c.expectingOrderIds || []),
+        ...(c.presentDueOrderIds || []),
+        ...(c.futureDueOrderIds || [])
+      ];
+      row.consuming.push({
+        path: this.getFormattedPath(c.path),
+        notice: this.getFormattedPath(common[0]),
+        rightNodeColor: consumingEdgeColor,
+        orders: combinedOrders
       });
+    }
+  }
+});
+
       const filterBy = this.plansFilters.filter.filterBy;
       if (filterBy && Array.isArray(filterBy) && filterBy.length > 0) {
         let includeRow = false;
@@ -983,18 +1017,10 @@ export class DependenciesComponent {
         const fontColorPosting = this.getFontColor(postingFillColor);
         const dynamicStylePosting = `fillColor=${postingFillColor};${postingStyleBase}fontColor=${fontColorPosting};`;
         let pCell = this.createNode(parent, row.posting, xPosting, rowCenterY, nodeWidth, nodeHeight, dynamicStylePosting);
-        // Only add the order overlay if either leftOrders or rightOrders exist
-        if ((row.leftOrders && row.leftOrders.length > 0) || (row.rightOrders && row.rightOrders.length > 0)) {
-          const combinedOrders: string[] = [];
-          if (row.leftOrders && row.leftOrders.length > 0) {
-            combinedOrders.push(...row.leftOrders);
-          }
-          if (row.rightOrders && row.rightOrders.length > 0) {
-            combinedOrders.push(...row.rightOrders);
-          }
-          this.addOrderOverlay(pCell, combinedOrders);
-        }
 
+        if (row.orders && row.orders.length > 0) {
+          this.addOrderOverlay(pCell, row.orders);
+        }
 
 
         // if (this.isWorkflowCritical(row)) {
@@ -1015,6 +1041,7 @@ export class DependenciesComponent {
               const node = this.createNode(parent, expectVal, xRight, nodeY, nodeWidth, nodeHeight, dynamicStyleExpecting);
               // Optionally add expecting overlay if desired:
               this.addExpectingOverlay(node);
+              this.addOrderOverlay(node, row.expecting[j].orders);
               expectingNodes.push({cell: node, notice: row.expecting[j].notice, rightNodeColor: fillColorExpecting});
             }
             if (C > 0) {
@@ -1031,14 +1058,12 @@ export class DependenciesComponent {
               const node = this.createNode(parent, consumeVal, xRight, nodeY, nodeWidth, nodeHeight, dynamicStyleConsuming);
               // Optionally add consuming overlay if desired:
               this.addConsumingOverlay(node);
-
+              this.addOrderOverlay(node, row.consuming[j].orders);
               consumingNodes.push({cell: node, notice: row.consuming[j].notice, rightNodeColor: fillColorConsuming});
             }
           }
         }
-        if (row.rightOrders && row.rightOrders.length > 0 && expectingNodes.length > 0) {
-          this.addOrderOverlay(expectingNodes[0].cell, row.rightOrders);
-        }
+
         expectingNodes.forEach((entry) => {
           const dynamicEdgeStyle = `strokeColor=${row.leftEdgeColor};gradientColor=${entry.rightNodeColor};endArrow=block;edgeStyle=elbowEdgeStyle;elbow=horizontal;orthogonal=1;html=1;`;
           let edge = this.graph.insertEdge(parent, null, '', pCell, entry.cell, dynamicEdgeStyle);
@@ -1169,7 +1194,6 @@ export class DependenciesComponent {
     });
     this.totalNotices = noticeSet.size;
   }
-
 
 
   closePlan(): void {

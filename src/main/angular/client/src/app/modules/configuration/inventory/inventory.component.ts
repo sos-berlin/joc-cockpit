@@ -5967,7 +5967,6 @@ export class RepositoryComponent {
     };
 
     const targetGroup = (config, type) => {
-      console.log(this.filter.envIndependent,"::")
       if (this.filter.envIndependent) {
         if (!obj.rollout[type]) {
           obj.rollout[type] = [];
