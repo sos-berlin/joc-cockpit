@@ -500,25 +500,16 @@ export class DependenciesComponent {
 
   zoomIn(): void {
     this.graph.zoomIn();
-    this.centerGraph();
+    this.graph.fit();
+    this.graph.center(true, true, 0.5, 0.1);
   }
 
   zoomOut(): void {
     this.graph.zoomOut();
-    this.centerGraph();
+    this.graph.fit();
+    this.graph.center(true, true, 0.5, 0.1);
   }
 
-  private centerGraph(): void {
-    if (!this.graph || !this.graph.container) {
-      return;
-    }
-    const container = this.graph.container;
-    const bounds = this.graph.getGraphBounds();
-    const tx = (container.clientWidth - bounds.width) / 2 - bounds.x;
-    const ty = (container.clientHeight - bounds.height) / 2 - bounds.y;
-    this.graph.view.setTranslate(tx, ty);
-    this.graph.refresh();
-  }
 
   actual(): void {
     if (this.graph) {
@@ -645,7 +636,7 @@ export class DependenciesComponent {
 
   private getFontColor(fillColor: string): string {
     const color = fillColor.toUpperCase();
-    if (color === '#FF8000' || color === '#90EE90') {
+    if (color === '#FF8000' || color === '#b3b300') {
       return '#000000';
     }
     return '#ffffff';
@@ -751,8 +742,8 @@ export class DependenciesComponent {
       vertex.originalStyle = {strokeColor: '#d0e0e3', strokeWidth: '1'};
     } else if (style.indexOf('#ffe6cc') !== -1) {
       vertex.originalStyle = {strokeColor: '#ffe6cc', strokeWidth: '1'};
-    } else if (style.indexOf('#c8e6c9') !== -1 || style.indexOf('#90EE90') !== -1) {
-      vertex.originalStyle = {strokeColor: style.indexOf('#90EE90') !== -1 ? '#90EE90' : '#c8e6c9', strokeWidth: '1'};
+    } else if (style.indexOf('#c8e6c9') !== -1 || style.indexOf('#b3b300') !== -1) {
+      vertex.originalStyle = {strokeColor: style.indexOf('#b3b300') !== -1 ? '#b3b300' : '#c8e6c9', strokeWidth: '1'};
     } else {
       vertex.originalStyle = {strokeColor: '#000000', strokeWidth: '1'};
     }
@@ -769,9 +760,18 @@ export class DependenciesComponent {
   }
 
   setNoticeStatus(status: string): void {
-    this.plansFilters.filter.filterBy = status;
+    if (!Array.isArray(this.plansFilters.filter.filterBy)) {
+      this.plansFilters.filter.filterBy = [];
+    }
+    const index = this.plansFilters.filter.filterBy.indexOf(status);
+    if (index === -1) {
+      this.plansFilters.filter.filterBy.push(status);
+    } else {
+      this.plansFilters.filter.filterBy.splice(index, 1);
+    }
     this.reloadGraph();
   }
+
 
   buildRowsFromData(data: any): any[] {
     const rows: any[] = [];
@@ -790,7 +790,7 @@ export class DependenciesComponent {
       let leftEdgeColor = 'gray';
       if (boardInfo) {
         if (boardInfo.numOfExpectedNotices > 0) {
-          leftEdgeColor = '#90EE90';
+          leftEdgeColor = '#b3b300';
         } else if (boardInfo.numOfPostedNotices > 0) {
           leftEdgeColor = '#1171a6';
         } else if (boardInfo.numOfAnnouncements > 0) {
@@ -801,11 +801,12 @@ export class DependenciesComponent {
       let rightDefaultColor = '#1171a6';
       if (boardInfo) {
         if (boardInfo.numOfExpectingOrders && boardInfo.numOfExpectingOrders > 0) {
-          rightDefaultColor = '#90EE90'; // green when expecting orders exist
+          rightDefaultColor = '#b3b300';
         } else if (boardInfo.numOfNotices && boardInfo.numOfNotices > 0) {
-          rightDefaultColor = '#FF8000'; // orange otherwise
+          rightDefaultColor = '#FF8000';
         }
       }
+
 
 
       const key = this.getFormattedPath(p.path);
@@ -834,7 +835,7 @@ export class DependenciesComponent {
           if (e.presentDueOrderIds && e.presentDueOrderIds.length > 0) {
             rightNodeColor = '#FF8000';
           } else if (e.expectingOrderIds && e.expectingOrderIds.length > 0) {
-            rightNodeColor = '#90EE90';
+            rightNodeColor = '#b3b300';
           }
           e.expectNotices.forEach((notice: string) => {
             if (!row.expecting.some((ex: any) => ex.notice === this.getFormattedPath(notice))) {
@@ -852,7 +853,7 @@ export class DependenciesComponent {
             if (e.presentDueOrderIds && e.presentDueOrderIds.length > 0) {
               rightNodeColor = '#FF8000';
             } else if (e.expectingOrderIds && e.expectingOrderIds.length > 0) {
-              rightNodeColor = '#90EE90';
+              rightNodeColor = '#b3b300';
             }
             if (!row.expecting.some((ex: any) => ex.notice === this.getFormattedPath(common[0]))) {
               row.expecting.push({
@@ -869,13 +870,16 @@ export class DependenciesComponent {
           const common = this.getIntersection(p.postNotices, c.consumeNotices);
           if (common.length > 0) {
             let consumingEdgeColor = '#1171a6';
-            if (c.numOfExpectedNotices > 0) {
-              consumingEdgeColor = '#90EE90';
-            } else if (c.numOfPostedNotices > 0) {
-              consumingEdgeColor = '#1171a';
-            } else if (c.numOfAnnouncements > 0) {
-              consumingEdgeColor = '#FF8000';
+            if(boardInfo){
+              if (boardInfo.numOfExpectedNotices > 0) {
+                consumingEdgeColor = '#b3b300';
+              } else if (boardInfo.numOfPostedNotices > 0) {
+                consumingEdgeColor = '#1171a';
+              } else if (boardInfo.numOfAnnouncements > 0) {
+                consumingEdgeColor = '#FF8000';
+              }
             }
+
             row.consuming.push({
               path: this.getFormattedPath(c.path),
               notice: this.getFormattedPath(common[0]),
@@ -884,14 +888,21 @@ export class DependenciesComponent {
           }
         }
       });
-      if (this.plansFilters.filter.filterBy === 'future' && postingColor !== '#FF8000') {
-        return;
-      }
-      if (this.plansFilters.filter.filterBy === 'present') {
-        const hasRightMarker = row.expecting.some(
-          (ex: any) => ex.rightNodeColor === '#FF8000' || ex.rightNodeColor === '#90EE90'
-        );
-        if (!hasRightMarker) {
+      const filterBy = this.plansFilters.filter.filterBy;
+      if (filterBy && Array.isArray(filterBy) && filterBy.length > 0) {
+        let includeRow = false;
+        if (filterBy.includes('future') && p.futureDueOrderIds && p.futureDueOrderIds.length > 0) {
+          includeRow = true;
+        }
+        if (filterBy.includes('present')) {
+          const hasRightMarker = row.expecting.some(
+            (ex: any) => ex.rightNodeColor === '#FF8000' || ex.rightNodeColor === '#b3b300'
+          );
+          if (hasRightMarker) {
+            includeRow = true;
+          }
+        }
+        if (!includeRow) {
           return;
         }
       }
@@ -950,7 +961,7 @@ export class DependenciesComponent {
     try {
       const allRows = this.buildRowsFromData(this.workflowData);
       const filteredRows = this.filterRows(allRows, this.searchValue);
-      this.computeDistinctCounts(allRows);
+      this.computeDistinctCountsFromWorkflowData();
       const startIndex = (this.plansFilters.filter.currentPage - 1) * this.pageSize;
       const paginatedRows = filteredRows.slice(startIndex, startIndex + this.pageSize);
       const xPosting = 100;
@@ -1099,7 +1110,7 @@ export class DependenciesComponent {
     this.coreService.post('workflows/boards/snapshot', {
       controllerId: this.schedulerId,
       planSchemaIds: ["Global", "DailyPlan"],
-      noticeSpaceKey: [this.coreService.getStringDate(this.selectedDate)]
+      noticeSpaceKeys: [this.coreService.getStringDate(this.selectedDate)]
     }).pipe(takeUntil(this.depPendingHTTPRequests$)).subscribe((res) => {
       this.isLoaded = true;
       this.workflowData = res;
@@ -1135,15 +1146,37 @@ export class DependenciesComponent {
     this.graph.refresh();
   }
 
-  private computeDistinctCounts(rows: any[]): void {
-    this.totalWorkflows = rows.length;
+  private computeDistinctCountsFromWorkflowData(): void {
+    // Total workflows is the sum of the lengths of posting, expecting, and consuming arrays.
+    const postingCount = this.workflowData?.postingWorkflows?.length || 0;
+    const expectingCount = this.workflowData?.expectingWorkflows?.length || 0;
+    const consumingCount = this.workflowData?.consumingWorkflows?.length || 0;
+    this.totalWorkflows = postingCount + expectingCount + consumingCount;
+
+    // For notices, create a Set and add all notices from each array.
     const noticeSet = new Set<string>();
-    rows.forEach(row => {
-      row.expecting.forEach((n: any) => noticeSet.add(n.notice));
-      row.consuming.forEach((n: any) => noticeSet.add(n.notice));
+    // Add notices from posting workflows (e.g. postNotices)
+    this.workflowData?.postingWorkflows?.forEach((workflow: any) => {
+      if (workflow.postNotices) {
+        workflow.postNotices.forEach((notice: string) => noticeSet.add(notice));
+      }
+    });
+    // Add notices from expecting workflows (e.g. expectNotices)
+    this.workflowData?.expectingWorkflows?.forEach((workflow: any) => {
+      if (workflow.expectNotices) {
+        workflow.expectNotices.forEach((notice: string) => noticeSet.add(notice));
+      }
+    });
+    // Add notices from consuming workflows (e.g. consumeNotices)
+    this.workflowData?.consumingWorkflows?.forEach((workflow: any) => {
+      if (workflow.consumeNotices) {
+        workflow.consumeNotices.forEach((notice: string) => noticeSet.add(notice));
+      }
     });
     this.totalNotices = noticeSet.size;
   }
+
+
 
   closePlan(): void {
     this.coreService.post('plans/close', {

@@ -950,6 +950,7 @@
     "label.normal": "Normal",
     "label.pending": "Pending",
     "label.expecting": "Expecting",
+    "label.critical": "Critical",
     "label.totalWorkflowNoticeEntry": "Total {{total}} Workflows and {{noticeCount}} Notices found",
     "button.late": "遅延",
     "button.setStartTime": "開始時刻編集",

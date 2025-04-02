@@ -950,6 +950,7 @@
     "label.normal": "normal",
     "label.pending": "à venir",
     "label.expecting": "en attente",
+    "label.critical": "Critical",
     "label.totalWorkflowNoticeEntry": "Total {{total}} Workflows et {{noticeCount}} Annonces found",
     "button.late": "En retard",
     "button.setStartTime": "Modifier l'heure de démarrage",

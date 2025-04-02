@@ -950,6 +950,7 @@
     "label.normal": "Normal",
     "label.pending": "Anstehend",
     "label.expecting": "Wartend",
+    "label.critical": "Critical",
     "label.totalWorkflowNoticeEntry": "Gesamt {{total}} Arbeitsabläufe und {{noticeCount}} Notizen gefunden",
     "button.late": "Verspätet",
     "button.setStartTime": "Startzeit ändern",

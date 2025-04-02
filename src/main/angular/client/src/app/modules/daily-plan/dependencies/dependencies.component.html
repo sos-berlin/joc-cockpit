@@ -4,28 +4,23 @@
     class="col-md-12 m-b">
     <div class="inline" style="height: 26px">
       <div class="pos-rel t-xxs">
-        <button (click)="setNoticeStatus('')"
-                [ngClass]="{'btn-primary': plansFilters.filter.filterBy===''}"
-                class="btn btn-grey btn-sm hidden-btn-text">
-          <i class="icon icon-orders-icon"></i>
-          <span translate>dailyPlan.label.all</span>
-        </button>
         <button (click)="setNoticeStatus('present')"
-                [ngClass]="{'btn-primary': plansFilters.filter.filterBy==='present'}"
+                [ngClass]="{'btn-primary': plansFilters.filter.filterBy && plansFilters.filter.filterBy.indexOf('present') !== -1}"
                 class="btn btn-grey btn-sm hidden-btn-text">
           <i class="icon icon-workflows-icon"></i>
           <span translate>dailyPlan.button.present</span>
         </button>
         <button (click)="setNoticeStatus('future')"
-                [ngClass]="{'btn-primary': plansFilters.filter.filterBy==='future'}"
+                [ngClass]="{'btn-primary': plansFilters.filter.filterBy && plansFilters.filter.filterBy.indexOf('future') !== -1}"
                 class="btn btn-grey btn-sm hidden-btn-text">
           <i class="icon icon-workflows-icon"></i>
           <span translate>dailyPlan.button.future</span>
         </button>
-        <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.normal'|translate" class="fa fa-stop bg-postingWorkflow" style="margin-left: 176px"></i>
+
+        <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.normal'|translate" class="fa fa-stop bg-postingWorkflow" style="margin-left: 213px"></i>
         {{'dailyPlan.label.normal' | translate}}
         <i  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.pending'|translate"class="fa fa-stop bg-expectingWorkflow p-l-sm"></i>
-        {{'dailyPlan.label.pending' | translate}}
+        {{'dailyPlan.label.critical' | translate}}
         <i  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.expecting'|translate"class="fa fa-stop bg-consumingWorkflow p-l-sm"></i>
         {{'dailyPlan.label.expecting' | translate}}
       </div>
