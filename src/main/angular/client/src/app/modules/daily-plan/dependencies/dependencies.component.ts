@@ -692,7 +692,6 @@ export class DependenciesComponent {
 
 
   private buildOrdersHtml(orders: any[]): any {
-    console.log(orders, orders);
     let orderDetails = [];
     this.sideBar.orders = [];
     if (orders) {
@@ -799,13 +798,8 @@ export class DependenciesComponent {
       }
 
       let rightDefaultColor = '#1171a6';
-      if (boardInfo) {
-        if (boardInfo.numOfExpectingOrders && boardInfo.numOfExpectingOrders > 0) {
-          rightDefaultColor = '#b3b300';
-        } else if (boardInfo.numOfNotices && boardInfo.numOfNotices > 0) {
-          rightDefaultColor = '#FF8000';
-        }
-      }
+      if (p.presentDueOrderIds && p.presentDueOrderIds.length > 0) { rightDefaultColor = '#FFA640'; }
+      else if (p.expectingOrderIds && p.expectingOrderIds.length > 0) { rightDefaultColor = '#b3b300'; }
 
 
 
@@ -865,26 +859,40 @@ export class DependenciesComponent {
           }
         }
       });
-      consumingWorkflows.forEach((c: any) => {
-        if (c.consumeNotices && p.postNotices) {
-          const common = this.getIntersection(p.postNotices, c.consumeNotices);
-          if (common.length > 0) {
-            let consumingEdgeColor = '#1171a6';
-            if(boardInfo){
-              if (boardInfo.numOfExpectedNotices > 0) {
-                consumingEdgeColor = '#b3b300';
-              } else if (boardInfo.numOfPostedNotices > 0) {
-                consumingEdgeColor = '#1171a';
-              } else if (boardInfo.numOfAnnouncements > 0) {
-                consumingEdgeColor = '#FF8000';
-              }
-            }
+      consumingWorkflows.forEach((e: any) => {
+        if (this.getFormattedPath(e.path) === key && e.expectNotices && e.expectNotices.length > 0) {
+          let rightNodeColor = '#1171a6';
+          if (e.presentDueOrderIds && e.presentDueOrderIds.length > 0) {
+            rightNodeColor = '#FF8000';
+          } else if (e.expectingOrderIds && e.expectingOrderIds.length > 0) {
 
-            row.consuming.push({
-              path: this.getFormattedPath(c.path),
-              notice: this.getFormattedPath(common[0]),
-              rightNodeColor: consumingEdgeColor
-            });
+            rightNodeColor = '#b3b300';
+          }
+          e.expectNotices.forEach((notice: string) => {
+            if (!row.consuming.some((ex: any) => ex.notice === this.getFormattedPath(notice))) {
+              row.consuming.push({
+                path: this.getFormattedPath(e.path),
+                notice: this.getFormattedPath(notice),
+                rightNodeColor: rightNodeColor
+              });
+            }
+          });
+        } else if ((!p.expectNotices || p.expectNotices.length === 0) && p.postNotices && e.expectNotices) {
+          const common = this.getIntersection(p.postNotices, e.expectNotices);
+          if (common.length > 0) {
+            let rightNodeColor = '#1171a6';
+            if (e.presentDueOrderIds && e.presentDueOrderIds.length > 0) {
+              rightNodeColor = '#FF8000';
+            } else if (e.expectingOrderIds && e.expectingOrderIds.length > 0) {
+              rightNodeColor = '#b3b300';
+            }
+            if (!row.consuming.some((ex: any) => ex.notice === this.getFormattedPath(common[0]))) {
+              row.consuming.push({
+                path: this.getFormattedPath(e.path),
+                notice: this.getFormattedPath(common[0]),
+                rightNodeColor: rightNodeColor
+              });
+            }
           }
         }
       });
@@ -1018,6 +1026,7 @@ export class DependenciesComponent {
               const nodeY = topY + j * (nodeHeight + nodeGap);
               const fillColorExpecting = row.expecting[j].rightNodeColor;
               const fontColorExpecting = this.getFontColor(fillColorExpecting);
+
               const dynamicStyleExpecting = `fillColor=${fillColorExpecting};strokeColor=#d0e0e3;shadow=1;shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888;rounded=1;arcSize=20;strokeWidth=1;fontColor=${fontColorExpecting};`;
               const node = this.createNode(parent, expectVal, xRight, nodeY, nodeWidth, nodeHeight, dynamicStyleExpecting);
               // Optionally add expecting overlay if desired:
@@ -1038,6 +1047,7 @@ export class DependenciesComponent {
               const node = this.createNode(parent, consumeVal, xRight, nodeY, nodeWidth, nodeHeight, dynamicStyleConsuming);
               // Optionally add consuming overlay if desired:
               // this.addConsumingOverlay(node);
+
               consumingNodes.push({cell: node, notice: row.consuming[j].notice, rightNodeColor: fillColorConsuming});
             }
           }

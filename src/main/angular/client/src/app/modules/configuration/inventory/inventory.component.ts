@@ -5117,11 +5117,19 @@ export class RepositoryComponent {
 
       if (configVal === 'local') {
         this.localObjects.push(...(Array.isArray(obj) ? obj : [obj]));
-        this.filter.envRelated = true;
+        if(this.object.type === 'changes'){
+          this.filter.envRelated = true;
+          this.filter.envIndependent = false;
+        }
+
+
         flag = 'local';
       } else if (configVal === 'rollout') {
         this.rolloutObjects.push(...(Array.isArray(obj) ? obj : [obj]));
-        this.filter.envIndependent = true;
+        if(this.object.type === 'changes') {
+          this.filter.envRelated = false;
+          this.filter.envIndependent = true;
+        }
         flag = 'rollout';
       }
 
@@ -5959,6 +5967,7 @@ export class RepositoryComponent {
     };
 
     const targetGroup = (config, type) => {
+      console.log(this.filter.envIndependent,"::")
       if (this.filter.envIndependent) {
         if (!obj.rollout[type]) {
           obj.rollout[type] = [];
@@ -6002,7 +6011,7 @@ export class RepositoryComponent {
         if (node.checked && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(node.type)) {
           targetGroup(config, 'draftConfigurations');
         } else if (node.checked && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(node.type)) {
-          targetGroup(config, 'releaseDraftConfigurations');
+          targetGroup(config, 'draftConfigurations');
         }
       }
     }
@@ -6019,7 +6028,7 @@ export class RepositoryComponent {
           if (dep.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType)) {
             targetGroup(config, 'draftConfigurations');
           } else if (dep.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType)) {
-            targetGroup(config, 'releaseDraftConfigurations');
+            targetGroup(config, 'draftConfigurations');
           }
         }
       });
@@ -6038,7 +6047,7 @@ export class RepositoryComponent {
           if (ref.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(ref.objectType)) {
             targetGroup(config, 'draftConfigurations');
           } else if (ref.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(ref.objectType)) {
-            targetGroup(config, 'releaseDraftConfigurations');
+            targetGroup(config, 'draftConfigurations');
           }
         }
       });
