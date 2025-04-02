@@ -1008,6 +1008,8 @@
     "tooltip.pending": "indicating that there are pending orders.",
     "tooltip.expecting": "indicating that there are expecting orders.",
     "tooltip.critical": "indicating that there are critical orders.",
+    "tooltip.present": "present.",
+    "tooltip.future": "future.",
     "tab": {
       "dailyPlan": "実行計画",
       "projection": "プロジェクション",
