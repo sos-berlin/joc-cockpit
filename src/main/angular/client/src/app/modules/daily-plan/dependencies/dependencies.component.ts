@@ -798,7 +798,7 @@ export class DependenciesComponent {
       }
 
       let rightDefaultColor = '#1171a6';
-      if (p.presentDueOrderIds && p.presentDueOrderIds.length > 0) { rightDefaultColor = '#FFA640'; }
+      if (p.presentDueOrderIds && p.presentDueOrderIds.length > 0) { rightDefaultColor = '#FF8000'; }
       else if (p.expectingOrderIds && p.expectingOrderIds.length > 0) { rightDefaultColor = '#b3b300'; }
 
 
@@ -1013,9 +1013,9 @@ export class DependenciesComponent {
 
 
 
-        if (this.isWorkflowCritical(row)) {
-          this.blinkNode(pCell, '#FF0000', 500);
-        }
+        // if (this.isWorkflowCritical(row)) {
+        //   this.blinkNode(pCell, '#FF0000', 500);
+        // }
         let expectingNodes: any[] = [];
         let consumingNodes: any[] = [];
         if (totalBlockHeight > 0) {
@@ -1124,7 +1124,7 @@ export class DependenciesComponent {
     }).pipe(takeUntil(this.depPendingHTTPRequests$)).subscribe((res) => {
       this.isLoaded = true;
       this.workflowData = res;
-
+      
       if (res.noticeBoards) {
         this.noticeBoards = res.noticeBoards;
       }
