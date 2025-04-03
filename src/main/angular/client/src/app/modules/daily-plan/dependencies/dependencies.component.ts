@@ -544,7 +544,7 @@ export class DependenciesComponent {
     mxGraph.prototype.cellsResizable = false;
     mxGraph.prototype.multigraph = true;
     mxGraph.prototype.allowDanglingEdges = false;
-    mxGraph.prototype.foldingEnabled = true;
+    mxGraph.prototype.foldingEnabled = false;
     const style = this.graph.getStylesheet().getDefaultEdgeStyle();
     style[mxConstants.STYLE_EDGE] = mxConstants.EDGESTYLE_ORTHOGONAL;
     style[mxConstants.STYLE_ROUNDED] = true;
@@ -566,9 +566,12 @@ export class DependenciesComponent {
 
       if (cell && cell.vertex && cell.value && cell.originalStyle?.strokeColor !== "#000000") {
         this.navToInventoryTab(cell.value, 'WORKFLOW');
+        this.graph.tooltipHandler.hide();
         evt.consume();
+
       } else if (cell && cell.vertex && cell.value && cell.originalStyle?.strokeColor === "#000000") {
         this.showBoard(cell.value);
+        this.graph.tooltipHandler.hide();
         evt.consume();
       }
     });
@@ -593,6 +596,7 @@ export class DependenciesComponent {
   }
 
   private addOrderOverlay(vertex: any, orders: string[]): void {
+  
     if (!orders || orders.length === 0) {
       return;
     }
