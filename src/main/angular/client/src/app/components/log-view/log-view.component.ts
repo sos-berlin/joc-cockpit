@@ -380,9 +380,6 @@ export class LogViewComponent {
         observe: 'response' as 'response'
       }).subscribe((res: any) => {
         if (res) {
-          while (a.firstChild) {
-            a.removeChild(a.firstChild);
-          }
           this.renderData(res.body, domId);
           this.dataBody.nativeElement.querySelector('#ex_' + (i + 1)).classList.remove('down');
           this.dataBody.nativeElement.querySelector('#ex_' + (i + 1)).classList.add('up');

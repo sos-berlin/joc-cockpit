@@ -343,9 +343,6 @@ export class LogComponent {
         observe: 'response' as 'response'
       }).subscribe((res: any) => {
         if (res) {
-          while (a.firstChild) {
-            a.removeChild(a.firstChild);
-          }
           this.renderData(res.body, domId);
           document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-down');
           document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-up');

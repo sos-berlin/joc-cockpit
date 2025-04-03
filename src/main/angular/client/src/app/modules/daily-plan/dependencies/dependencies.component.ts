@@ -531,10 +531,8 @@ export class DependenciesComponent {
       return;
     }
     this.graph = new mxGraph(this.graphContainer.nativeElement);
-    mxGraph.prototype.collapsedImage = new mxImage('./assets/mxgraph/images/collapsed.png', 12, 12);
-    mxGraph.prototype.expandedImage = new mxImage('./assets/mxgraph/images/expanded.png', 12, 12);
-    mxGraph.prototype.expectImage = new mxImage('./assets/mxgraph/images/await.png', 20, 20);
-    mxGraph.prototype.consumeImage = new mxImage('./assets/mxgraph/images/consume.png', 20, 20);
+    mxGraph.prototype.expectImage = new mxImage('./assets/mxgraph/images/white-await.png', 20, 20);
+    mxGraph.prototype.consumeImage = new mxImage('./assets/mxgraph/images/white-consume.png', 20, 20);
     this.graph.setPanning(true);
     this.graph.setCellsResizable(false);
     this.graph.setConnectable(true);
@@ -561,14 +559,20 @@ export class DependenciesComponent {
     };
     this.graph.addListener(mxEvent.CLICK, (sender, evt) => {
       const cell = evt.getProperty('cell');
-      if (cell && cell.vertex && cell.value && cell.originalStyle.strokeColor != "#000000") {
+
+      if (cell?.style?.includes('shape=ellipse') && cell.value && !cell.children?.length) {
+        return;
+      }
+
+      if (cell && cell.vertex && cell.value && cell.originalStyle?.strokeColor !== "#000000") {
         this.navToInventoryTab(cell.value, 'WORKFLOW');
         evt.consume();
-      }else if(cell && cell.vertex && cell.value && cell.originalStyle.strokeColor === "#000000"){
+      } else if (cell && cell.vertex && cell.value && cell.originalStyle?.strokeColor === "#000000") {
         this.showBoard(cell.value);
         evt.consume();
       }
     });
+
     this.graph.getTooltipForCell = function (cell) {
       if (this.model.isEdge(cell)) {
         return cell.tooltip || '';
@@ -592,24 +596,34 @@ export class DependenciesComponent {
     if (!orders || orders.length === 0) {
       return;
     }
-    const overlayImage = new mxImage('./assets/mxgraph/images/fileWatcher.png', 14, 14);
+
+    const orderCount = orders.length;
+
     let overlayTooltip;
     this.translate.get('dailyPlan.tooltip.viewOrders').subscribe(translatedValue => {
       overlayTooltip = translatedValue;
     });
-    const overlay = new mxCellOverlay(
-      overlayImage,
-      overlayTooltip,
-      mxConstants.ALIGN_RIGHT,
-      mxConstants.ALIGN_TOP,
-      new mxPoint(-20, 26)
+
+    const countLabel = new mxCell(
+      `${orderCount}`,
+      new mxGeometry(0, 0, 20, 20),
+      'shape=ellipse;fillColor=#ffffff;strokeColor=#ffffff;fontColor=#000000;fontSize=12;fontStyle=1;align=center;verticalAlign=middle;cursor=pointer;'
     );
-    overlay.cursor = 'pointer';
-    overlay.addListener(mxEvent.CLICK, (sender, evt) => {
-      this.buildOrdersHtml(orders);
-      evt.consume();
+    countLabel.vertex = true;
+    countLabel.geometry.relative = true;
+    countLabel.geometry.offset = new mxPoint(16, 15);
+    countLabel.tooltip = overlayTooltip;
+    countLabel.originalStyle = {strokeColor: '#ffffff', strokeWidth: '1'};
+
+    this.graph.addCell(countLabel, vertex);
+
+    this.graph.addListener(mxEvent.CLICK, (sender, evt) => {
+      const cell = evt.getProperty('cell');
+      if (cell === countLabel) {
+        this.buildOrdersHtml(orders);
+        evt.consume();
+      }
     });
-    this.graph.addCellOverlay(vertex, overlay);
   }
 
   private addExpectingOverlay(vertex: any): void {
@@ -620,9 +634,9 @@ export class DependenciesComponent {
     const overlay = new mxCellOverlay(
       mxGraph.prototype.expectImage,
       overlayTooltip,
-      mxConstants.ALIGN_LEFT,
+      mxConstants.ALIGN_RIGHT,
       mxConstants.ALIGN_TOP,
-      new mxPoint(20, 27)
+      new mxPoint(-20, 27)
     );
     overlay.cursor = 'pointer';
     this.graph.addCellOverlay(vertex, overlay);
@@ -636,9 +650,9 @@ export class DependenciesComponent {
     const overlay = new mxCellOverlay(
       mxGraph.prototype.consumeImage,
       overlayTooltip,
-      mxConstants.ALIGN_LEFT,
+      mxConstants.ALIGN_RIGHT,
       mxConstants.ALIGN_TOP,
-      new mxPoint(20, 26)
+      new mxPoint(-20, 26)
     );
     overlay.cursor = 'pointer';
     this.graph.addCellOverlay(vertex, overlay);
