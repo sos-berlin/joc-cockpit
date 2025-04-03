@@ -162,7 +162,7 @@ export class AddOrderModalComponent {
       reload: false,
       planId: {
         planSchemaId:'DailyPlan',
-        noticeSpaceKey: this.coreService.getStringDate(new Date(new Date().setHours(0, 0, 0, 0)))
+        noticeSpaceKey: ''
       }
     }];
 
@@ -900,7 +900,7 @@ export class AddOrderModalComponent {
       reload: false,
       planId: {
         planSchemaId:'DailyPlan',
-        noticeSpaceKey: this.coreService.getStringDate(new Date(new Date().setHours(0, 0, 0, 0)))
+        noticeSpaceKey: ''
       }
     };
 
@@ -965,7 +965,7 @@ export class AddOrderModalComponent {
                 reload: false,
                 planId: {
                   planSchemaId:'DailyPlan',
-                  noticeSpaceKey: this.coreService.getStringDate(new Date(new Date().setHours(0, 0, 0, 0)))
+                  noticeSpaceKey: ''
                 },
                 selectedSchedule: schedule,
                 orderName: parameterisation.orderName

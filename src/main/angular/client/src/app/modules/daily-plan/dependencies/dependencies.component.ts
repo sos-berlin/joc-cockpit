@@ -906,7 +906,7 @@ export class DependenciesComponent {
 
             common.forEach(notice => {
               const formattedNotice = this.getFormattedPath(notice);
-              if (!row.expecting.some((ex: any) => ex.notice === formattedNotice)) {
+              if (!row.expecting.some((ex: any) => ex.notice === formattedNotice && ex.path === this.getFormattedPath(e.path))) {
                 row.expecting.push({
                   path: this.getFormattedPath(e.path),
                   notice: formattedNotice,
@@ -938,7 +938,7 @@ export class DependenciesComponent {
 
            common.forEach(notice => {
              const formattedNotice = this.getFormattedPath(notice);
-             if (!row.consuming.some((con: any) => con.notice === formattedNotice)) {
+             if (!row.consuming.some((con: any) => con.notice === formattedNotice && con.path === this.getFormattedPath(c.path))) {
                row.consuming.push({
                  path: this.getFormattedPath(c.path),
                  notice: formattedNotice,
@@ -1178,8 +1178,6 @@ export class DependenciesComponent {
     }).pipe(takeUntil(this.depPendingHTTPRequests$)).subscribe((res) => {
       this.isLoaded = true;
       this.workflowData = res;
-
-      ;
 
       if (res.noticeBoards) {
         this.noticeBoards = res.noticeBoards;
