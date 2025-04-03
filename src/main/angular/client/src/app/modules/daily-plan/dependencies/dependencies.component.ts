@@ -596,7 +596,7 @@ export class DependenciesComponent {
   }
 
   private addOrderOverlay(vertex: any, orders: string[]): void {
-  
+
     if (!orders || orders.length === 0) {
       return;
     }
@@ -897,67 +897,86 @@ export class DependenciesComponent {
             } else if (e.expectingOrderIds && e.expectingOrderIds.length > 0) {
               rightNodeColor = '#b3b300';
             }
-            if (!row.expecting.some((ex: any) => ex.notice === this.getFormattedPath(common[0]))) {
-              const combinedOrders = [
-                ...(e.expectingOrderIds || []),
-                ...(e.presentDueOrderIds || []),
-                ...(e.futureDueOrderIds || [])
-              ];
-              row.expecting.push({
-                path: this.getFormattedPath(e.path),
-                notice: this.getFormattedPath(common[0]),
-                rightNodeColor: rightNodeColor,
-                orders: combinedOrders
-              });
-            }
+
+            const combinedOrders = [
+              ...(e.expectingOrderIds || []),
+              ...(e.presentDueOrderIds || []),
+              ...(e.futureDueOrderIds || [])
+            ];
+
+            common.forEach(notice => {
+              const formattedNotice = this.getFormattedPath(notice);
+              if (!row.expecting.some((ex: any) => ex.notice === formattedNotice)) {
+                row.expecting.push({
+                  path: this.getFormattedPath(e.path),
+                  notice: formattedNotice,
+                  rightNodeColor: rightNodeColor,
+                  orders: combinedOrders
+                });
+              }
+            });
           }
         }
 
       });
      consumingWorkflows.forEach((c: any) => {
-  if (c.consumeNotices && p.postNotices) {
-    const common = this.getIntersection(p.postNotices, c.consumeNotices);
-    if (common.length > 0) {
+       if (c.consumeNotices && p.postNotices) {
+         const common = this.getIntersection(p.postNotices, c.consumeNotices);
+         if (common.length > 0) {
+           let rightNodeColor = '#1171a6';
+           if (c.presentDueOrderIds && c.presentDueOrderIds.length > 0) {
+             rightNodeColor = '#FF8000';
+           } else if (c.expectingOrderIds && c.expectingOrderIds.length > 0) {
+             rightNodeColor = '#b3b300';
+           }
 
-      let rightNodeColor = '#1171a6';
-      if (c.presentDueOrderIds && c.presentDueOrderIds.length > 0) {
-        rightNodeColor = '#FF8000';
-      } else if (c.expectingOrderIds && c.expectingOrderIds.length > 0) {
-        rightNodeColor = '#b3b300';
-      }
-      const combinedOrders = [
-        ...(c.expectingOrderIds || []),
-        ...(c.presentDueOrderIds || []),
-        ...(c.futureDueOrderIds || [])
-      ];
-      row.consuming.push({
-        path: this.getFormattedPath(c.path),
-        notice: this.getFormattedPath(common[0]),
-        rightNodeColor: rightNodeColor,
-        orders: combinedOrders
-      });
-    }
-  }
-});
+           const combinedOrders = [
+             ...(c.expectingOrderIds || []),
+             ...(c.presentDueOrderIds || []),
+             ...(c.futureDueOrderIds || [])
+           ];
+
+           common.forEach(notice => {
+             const formattedNotice = this.getFormattedPath(notice);
+             if (!row.consuming.some((con: any) => con.notice === formattedNotice)) {
+               row.consuming.push({
+                 path: this.getFormattedPath(c.path),
+                 notice: formattedNotice,
+                 rightNodeColor: rightNodeColor,
+                 orders: combinedOrders
+               });
+             }
+           });
+         }
+       }
+
+     });
 
       const filterBy = this.plansFilters.filter.filterBy;
       if (filterBy && Array.isArray(filterBy) && filterBy.length > 0) {
         let includeRow = false;
-        if (filterBy.includes('future') && p.futureDueOrderIds && p.futureDueOrderIds.length > 0) {
-          includeRow = true;
+
+        if (filterBy.includes('future')) {
+          if (row.postingColor === '#FF8000') {
+            includeRow = true;
+          }
         }
+
         if (filterBy.includes('present')) {
-          const hasRightMarker = row.expecting.some(
+          const hasRightMarker = [...row.expecting, ...row.consuming].some(
             (ex: any) => ex.rightNodeColor === '#FF8000' || ex.rightNodeColor === '#b3b300'
           );
           if (hasRightMarker) {
             includeRow = true;
           }
         }
+
         if (!includeRow) {
           return;
         }
       }
+
+
       rows.push(row);
     });
     return rows;
@@ -1159,6 +1178,8 @@ export class DependenciesComponent {
     }).pipe(takeUntil(this.depPendingHTTPRequests$)).subscribe((res) => {
       this.isLoaded = true;
       this.workflowData = res;
+
+      ;
 
       if (res.noticeBoards) {
         this.noticeBoards = res.noticeBoards;
