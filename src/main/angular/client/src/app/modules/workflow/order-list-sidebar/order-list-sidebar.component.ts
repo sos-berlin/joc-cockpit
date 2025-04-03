@@ -173,6 +173,9 @@ export class OrderListSidebarComponent implements OnChanges {
     let count = 0;
     orders.forEach(item => {
       if (this.setOfCheckedId.has(item.orderId)) {
+        if (!item.isResumable) {
+          this.object.isResume = false;
+        }
         if (!item.isContinuable) {
           this.object.isContinue = false;
         }
