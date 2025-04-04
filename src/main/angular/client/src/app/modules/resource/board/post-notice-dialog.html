@@ -13,14 +13,19 @@
     <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
     </div>
-    <div *ngIf="singular && showNoticeId" [ngClass]="{'has-error' : ((noticeKey.dirty || noticeKey.touched) && noticeKey.invalid)}" class="form-group row">
+    <div *ngIf="(singular && showNoticeId) || (singular && !this.globalSingle && this.board?.boardType === 'GLOBAL')" [ngClass]="{'has-error' : ((noticeKey.dirty || noticeKey.touched) && noticeKey.invalid)}" class="form-group row">
       <label class="col-sm-4 form-control-label" translate>
         resource.board.label.noticeKey
+        <sup *ngIf="(singular && !this.globalSingle && this.board?.boardType === 'GLOBAL')" class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
         <input #noticeKey="ngModel" [(ngModel)]="postObj.noticeKey" autocomplete="off"
                class="form-control"
-               name="noticeKey" placeholder="{{'resource.board.placeholder.enterNoticeKey' | translate}}" type="text"/>
+               name="noticeKey"
+               placeholder="{{'resource.board.placeholder.enterNoticeKey' | translate}}"
+               type="text"
+               [required]="singular && !globalSingle && board?.boardType === 'GLOBAL'" />
+
       </div>
     </div>
 
@@ -50,7 +55,7 @@
         </div>
       </div>
     </div>
-    <div class="form-group row" *ngIf="(singular && showNoticeId) || (singular && !this.globalSingle && this.board?.boardType === 'GLOBAL')">
+    <div class="form-group row" *ngIf="(singular && showNoticeId)">
       <label class="col-sm-4 form-control-label" translate>
         resource.board.label.planKey
         <sup class="text-danger text-sm">*</sup>

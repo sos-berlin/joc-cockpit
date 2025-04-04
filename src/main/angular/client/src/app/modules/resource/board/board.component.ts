@@ -248,7 +248,7 @@ export class PostModalComponent {
       obj.noticeId = this.notice.id;
     }else if (this.singular && !this.showNoticeId && !this.globalSingle && this.board?.boardType === 'GLOBAL') {
       obj.noticeBoardPath = this.board.path;
-      obj.noticeId = this.coreService.getDateByFormat(this.postObj.planKey, null, 'YYYY-MM-DD');
+      obj.noticeId = this.postObj.noticeKey;
     } else if (this.singular && this.showNoticeId) {
       obj.noticeBoardPath = this.board.path;
       const planKey = this.coreService.getDateByFormat(this.postObj.planKey, null, 'YYYY-MM-DD');

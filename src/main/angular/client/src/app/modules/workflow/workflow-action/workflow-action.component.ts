@@ -1220,11 +1220,10 @@ export class AddOrderModalComponent {
 
 
   selectVarFromSchedule(name: string, variableContext: any, listVariables: any, index: number, orderIndex: number): void {
-    variableContext.orderName = ''; // Reset the order name for the specific context
+    variableContext.orderName = '';
     for (let schedule of this.schedules) {
       if (schedule.name === name) {
         variableContext.orderParameterisations = schedule.orderParameterisations;
-        // If there is only one order parameterization, auto-select it
         if (variableContext.orderParameterisations && variableContext.orderParameterisations.length === 1) {
           this.selectOrder(variableContext.orderParameterisations[0].orderName || '-', variableContext, listVariables, index, orderIndex);
         }
