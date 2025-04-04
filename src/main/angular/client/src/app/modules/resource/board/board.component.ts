@@ -249,7 +249,7 @@ export class PostModalComponent {
     }else if (this.singular && !this.showNoticeId && !this.globalSingle && this.board?.boardType === 'GLOBAL') {
       obj.noticeBoardPath = this.board.path;
       obj.noticeId = this.postObj.noticeKey;
-    } else if (this.singular && this.showNoticeId) {
+    } else if (this.singular && this.showNoticeId && !this.globalSingle) {
       obj.noticeBoardPath = this.board.path;
       const planKey = this.coreService.getDateByFormat(this.postObj.planKey, null, 'YYYY-MM-DD');
       obj.noticeId = 'DailyPlan/' + planKey + '/' + (this.postObj.noticeKey ? this.postObj.noticeKey : '-');
