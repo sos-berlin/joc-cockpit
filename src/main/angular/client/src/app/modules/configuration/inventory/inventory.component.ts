@@ -2713,6 +2713,7 @@ export class DeployComponent {
           this.submitted = false;
           return;
         }
+        this.submitted = true;
         const deployURL = this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy';
         this.coreService.post(deployURL, obj).subscribe({
           next: () => {

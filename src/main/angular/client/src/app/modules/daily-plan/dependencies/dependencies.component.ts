@@ -1110,15 +1110,19 @@ export class DependenciesComponent {
         }
 
         expectingNodes.forEach((entry) => {
-          const dynamicEdgeStyle = `strokeColor=${row.leftEdgeColor};gradientColor=${entry.rightNodeColor};endArrow=block;edgeStyle=elbowEdgeStyle;elbow=horizontal;orthogonal=1;html=1;`;
+          const arrowColor = this.getArrowColorForNotice(entry.notice);
+          const dynamicEdgeStyle = `strokeColor=${arrowColor};endArrow=block;edgeStyle=elbowEdgeStyle;elbow=horizontal;orthogonal=1;html=1;`;
           let edge = this.graph.insertEdge(parent, null, '', pCell, entry.cell, dynamicEdgeStyle);
           this.addBlockLabelToEdge(edge, entry.notice);
         });
+
         consumingNodes.forEach((entry) => {
-          const dynamicEdgeStyle = `strokeColor=${row.leftEdgeColor};gradientColor=${entry.rightNodeColor};endArrow=block;edgeStyle=elbowEdgeStyle;elbow=horizontal;orthogonal=1;html=1;`;
+          const arrowColor = this.getArrowColorForNotice(entry.notice);
+          const dynamicEdgeStyle = `strokeColor=${arrowColor};endArrow=block;edgeStyle=elbowEdgeStyle;elbow=horizontal;orthogonal=1;html=1;`;
           let edge = this.graph.insertEdge(parent, null, '', pCell, entry.cell, dynamicEdgeStyle);
           this.addBlockLabelToEdge(edge, entry.notice);
         });
+
         currentY += rowHeightCalculated + rowSpacing;
       });
     } finally {
@@ -1129,6 +1133,43 @@ export class DependenciesComponent {
       }, 100);
     }
   }
+
+  private getArrowColorForNotice(notice: string): string {
+    const boardsArray = Object.values(this.workflowData?.noticeBoards || {}) as any[];
+    const board = boardsArray.find((b: any) => b.name === notice);
+
+    if (!board) {
+      return 'gray';
+    }
+
+    const hasAnnouncements = board.numOfAnnouncements > 0;
+    const hasPosted = board.numOfPostedNotices > 0;
+    const hasExpected = board.numOfExpectedNotices > 0;
+
+    if (hasExpected) {
+      return '#b3b300';
+    }
+
+    if (hasAnnouncements && hasPosted && hasExpected) {
+      return '#b3b300';
+    }
+
+    if (hasAnnouncements && hasPosted) {
+      return '#1171a6';
+    }
+
+    if (hasAnnouncements) {
+      return '#FF8000';
+    }
+
+    if (hasPosted) {
+      return '#1171a6';
+    }
+
+    return 'gray';
+  }
+
+
 
   private addBlockLabelToEdge(edge: any, text: string): void {
     this.graph.getModel().beginUpdate();
