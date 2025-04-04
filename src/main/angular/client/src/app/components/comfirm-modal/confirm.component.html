@@ -18,8 +18,7 @@
         {{objectName}}
       </span>
     </span>
-    <span *ngIf="lossNode || title == 'confirm'">{{'common.label.confirm' | translate}}</span>
-  </h4>
+    <span *ngIf="lossNode || title == 'confirm'">{{'common.label.confirm' | translate}}</span></h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
@@ -32,11 +31,12 @@
               translate>dashboard.message.confirmNodeLoss</span>
       </span>
       <span *ngIf="updateFromJobTemplate" class="text" translate>inventory.message.updateFromJobTemplate</span>
+      <span *ngIf="message === 'closedPlanType'" class="text"  [translateParams]="{planId: planId}" translate>common.message.closedPlanType</span>
       <span *ngIf="question" class="text">{{question | translate}}</span>
       <span *ngIf="message2" class="text">
         {{'workflow.message.' + message2 | translate}}
       </span>
-      <span *ngIf="!countMessage && message" class="text">
+      <span *ngIf="!countMessage && message && !planId" class="text">
         {{(message === 'deleteGitCredentials' ? 'profile.gitManagement.message.' : 'common.message.') + message | translate}}
       </span>
       <span *ngIf="countMessage && count > 0" [translateParams]="{count: count}" class="text"

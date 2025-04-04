@@ -11,6 +11,7 @@ export class ConfirmModalComponent {
   title = '';
   title2 = '';
   message = '';
+  planId = '';
   message2 = '';
   countMessage = '';
   count: number | undefined;
@@ -56,6 +57,7 @@ export class ConfirmModalComponent {
     this.updateFromJobTemplate = this.modalData.updateFromJobTemplate;
     this.lossNode = this.modalData.lossNode;
     this.object = this.modalData.object;
+    this.planId = this.modalData.planId;
    if(this.type != 'Delete') {
      this.getDependencies(this.object)
    }

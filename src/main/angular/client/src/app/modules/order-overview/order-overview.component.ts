@@ -288,6 +288,7 @@ export class AllOrderResumeModelComponent {
   }
 
   private getPositions(): void {
+
     this.coreService.post('orders/resume/positions', {
       controllerId: this.controllerId,
       orderIds: [...this.orders.keys()]

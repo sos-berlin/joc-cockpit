@@ -126,7 +126,7 @@ export class AddOrderModalComponent {
   commonStartTimeValue: any = '';
   commonStartDate: any = {fromDate: null, fromTime: null, timeZone: null};
   isAssignedFromSchedule: boolean = false;
-
+  planIds: any;
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
 
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
@@ -161,9 +161,10 @@ export class AddOrderModalComponent {
       blockPosition: '',
       reload: false,
       planId: {
-        planSchemaId:'DailyPlan',
+        planSchemaId: 'DailyPlan',
         noticeSpaceKey: ''
-      }
+      },
+      openClosedPlan: false
     }];
 
     this.orders[0].timeZone = this.preferences.zone;
@@ -174,7 +175,7 @@ export class AddOrderModalComponent {
       this.workflow.configuration = this.coreService.clone(this.workflow);
       this.workflowService.convertTryToRetry(this.workflow.configuration, null, {}, {count: 0});
     }
-
+    this.loadPlanIds()
     this.fetchTags();
     this.getPositions();
     this.updateVariableList(0);
@@ -747,9 +748,12 @@ export class AddOrderModalComponent {
         tags: order.tags || this.tags,
         arguments: {}
       };
-        if(order?.planId?.noticeSpaceKey){
-          orderObj.planId = order.planId
-        }
+      if (order?.planId?.noticeSpaceKey) {
+        orderObj.planId = order.planId
+      }
+      if (order.openClosedPlan) {
+        orderObj.openClosedPlan = order.openClosedPlan
+      }
       if (this.orders.length > 1) {
         if (this.commonStartTime === 'now' || this.commonStartTime === 'never') {
           orderObj.scheduledFor = this.commonStartTime;
@@ -899,9 +903,10 @@ export class AddOrderModalComponent {
       blockPosition: '',
       reload: false,
       planId: {
-        planSchemaId:'DailyPlan',
+        planSchemaId: 'DailyPlan',
         noticeSpaceKey: ''
-      }
+      },
+      openClosedPlan: false
     };
 
     const newOrderIndex = this.orders.length;
@@ -913,7 +918,7 @@ export class AddOrderModalComponent {
     this.isCollapsed = this.orders.map(order => order.arguments.map(() => false));
   }
 
-  addSchedules(): void{
+  addSchedules(): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: AddSchedulesModalComponent,
@@ -964,9 +969,10 @@ export class AddOrderModalComponent {
                 blockPosition: '',
                 reload: false,
                 planId: {
-                  planSchemaId:'DailyPlan',
+                  planSchemaId: 'DailyPlan',
                   noticeSpaceKey: ''
                 },
+                openClosedPlan: false,
                 selectedSchedule: schedule,
                 orderName: parameterisation.orderName
               };
@@ -1044,7 +1050,6 @@ export class AddOrderModalComponent {
   }
 
 
-
   areArgumentsEmpty(): boolean {
     const allowEmptyArguments = this.allowEmptyArguments;
 
@@ -1066,11 +1071,11 @@ export class AddOrderModalComponent {
         arg.type === 'String' && (!arg.value)
       );
 
-        let anyNumberEmpty = orderArgs.some(arg =>
-                arg.type === 'Number' && (!arg.value)
-              );
+      let anyNumberEmpty = orderArgs.some(arg =>
+        arg.type === 'Number' && (!arg.value)
+      );
 
-      if (anyListEmpty || anyMapEmpty || anyStringEmpty ||anyNumberEmpty) {
+      if (anyListEmpty || anyMapEmpty || anyStringEmpty || anyNumberEmpty) {
         this.argumentsValid = false;
         return true;
       }
@@ -1253,7 +1258,7 @@ export class AddOrderModalComponent {
                         if (!Array.isArray(val.listParameters)) {
                           val.listParameters = Object.entries(val.listParameters).map(([k1, v1]) => {
                             const val1: any = v1;
-                            return { name: k1, value: val1 };
+                            return {name: k1, value: val1};
                           });
                         }
 
@@ -1272,7 +1277,7 @@ export class AddOrderModalComponent {
                                   }
                                 }
                                 if (arr.length > 0) {
-                                  actualList.push({ list: arr });
+                                  actualList.push({list: arr});
                                 }
                               });
                             }
@@ -1286,7 +1291,7 @@ export class AddOrderModalComponent {
                             value: ''
                           }));
                           if (arr.length > 0) {
-                            actualList.push({ list: arr });
+                            actualList.push({list: arr});
                           }
                         }
 
@@ -1303,7 +1308,7 @@ export class AddOrderModalComponent {
                   });
                 }
 
-                return { name: k, value: val };
+                return {name: k, value: val};
               });
             }
             this.updateSelectItems(orderIndex);
@@ -1325,7 +1330,7 @@ export class AddOrderModalComponent {
             }
 
             if (mapEntry.length > 0) {
-              data.actualMap.push({ map: mapEntry });
+              data.actualMap.push({map: mapEntry});
             }
 
 
@@ -1336,7 +1341,7 @@ export class AddOrderModalComponent {
                 value: ''
               }));
               if (arr.length > 0) {
-                data.actualMap.push({ map: arr });
+                data.actualMap.push({map: arr});
               }
             }
           }
@@ -1401,7 +1406,7 @@ export class AddOrderModalComponent {
 
           if (param.forceJobAdmission) {
             order.forceJobAdmission = param.forceJobAdmission;
-          }else{
+          } else {
             order.forceJobAdmission = false;
           }
 
@@ -1415,6 +1420,7 @@ export class AddOrderModalComponent {
       }
     }
   }
+
   private updateVariablesFromSchedule(orderParameterisations: any, index: number): void {
     this.orders[index].arguments = [];
 
@@ -1604,7 +1610,7 @@ export class AddOrderModalComponent {
                 name: param.name,
                 value: item[param.name] || ''
               }));
-              actualList.push({ list: listEntry });
+              actualList.push({list: listEntry});
             });
           }
           order.arguments.push({
@@ -1620,7 +1626,7 @@ export class AddOrderModalComponent {
               name: param.name,
               value: orderParameterisation.variables[key][param.name] || ''
             }));
-            actualMap.push({ map: mapEntry });
+            actualMap.push({map: mapEntry});
           }
           order.arguments.push({
             name: key,
@@ -1792,6 +1798,51 @@ export class AddOrderModalComponent {
       }
     }
   }
+
+  loadPlanIds(): void {
+    const requestPayload: any = {
+      controllerId: this.schedulerId,
+      onlyClosedPlans: true,
+      planSchemaIds: ['Global', 'DailyPlan']
+    };
+    this.coreService.post('plans/ids', requestPayload)
+      .subscribe((res) => {
+        this.planIds = res.plans
+      });
+  }
+
+  checkPlanIds(order: any): void {
+    const id = order.planId.noticeSpaceKey;
+    if (this.planIds && id) {
+      this.planIds.forEach(plan => {
+        if (plan.planId?.noticeSpaceKey?.includes(id) && plan.state?._text === "CLOSED") {
+          const modal = this.modal.create({
+            nzTitle: undefined,
+            nzContent: ConfirmModalComponent,
+            nzData: {
+              title: 'closedPlanType',
+              message: 'closedPlanType',
+              planId: id,
+              type: 'confirm',
+            },
+            nzFooter: null,
+            nzClosable: false,
+            nzMaskClosable: false
+          });
+          modal.afterClose.subscribe(result => {
+            if (result) {
+                order.openClosedPlan = true;
+            }else {
+            order.planId.noticeSpaceKey = '';
+          }
+          });
+        }
+      });
+    }
+  }
+
+
+
 }
 
 
@@ -1814,7 +1865,8 @@ export class AddSchedulesModalComponent {
     public coreService: CoreService,
     private activeModal: NzModalRef,
     private modal: NzModalService
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     this.schedulerId = this.modalData.schedulerId;
@@ -1865,8 +1917,8 @@ export class AddSchedulesModalComponent {
   cancel(): void {
     this.activeModal.destroy();
   }
-}
 
+}
 
 
 @Component({

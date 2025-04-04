@@ -1274,7 +1274,7 @@ export class DependenciesComponent {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/PlanUpdated/) && args.eventSnapshots[j].objectType === 'PLAN') {
           this.loadPlans();
-        } else if (args.eventSnapshots[j].eventType.match(/WorkflowPlanChanged/) && args.eventSnapshots[j].objectType === 'PLAN') {
+        } else if ((args.eventSnapshots[j].eventType.match(/WorkflowPlanChanged/) || args.eventSnapshots[j].eventType.match(/NoticeBoardStateChanged/)) && args.eventSnapshots[j].objectType === 'PLAN') {
           this.loadAdditionaSnapshotlData();
         }
       }
