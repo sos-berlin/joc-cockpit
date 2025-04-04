@@ -564,13 +564,13 @@ export class DependenciesComponent {
         return;
       }
 
-      if (cell && cell.vertex && cell.value && cell.originalStyle?.strokeColor !== "#000000") {
-        this.navToInventoryTab(cell.value, 'WORKFLOW');
+      if (cell && cell.vertex && cell.tooltip && cell.originalStyle?.strokeColor !== "#000000") {
+        this.navToInventoryTab(cell.tooltip, 'WORKFLOW');
         this.graph.tooltipHandler.hide();
         evt.consume();
 
-      } else if (cell && cell.vertex && cell.value && cell.originalStyle?.strokeColor === "#000000") {
-        this.showBoard(cell.value);
+      } else if (cell && cell.vertex && cell.tooltip && cell.originalStyle?.strokeColor === "#000000") {
+        this.showBoard(cell.tooltip);
         this.graph.tooltipHandler.hide();
         evt.consume();
       }
@@ -761,8 +761,8 @@ export class DependenciesComponent {
     style: string
   ) {
     let displayLabel = label;
-    if (label.length > 38) {
-      displayLabel = label.substring(0, 38) + '...';
+    if (label.length > 36) {
+      displayLabel = label.substring(0, 36) + '...';
     }
     let vertex = this.graph.insertVertex(parent, null, displayLabel, x, y, width, height, style);
     vertex.tooltip = label;
@@ -1274,7 +1274,7 @@ export class DependenciesComponent {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
         if (args.eventSnapshots[j].eventType.match(/PlanUpdated/) && args.eventSnapshots[j].objectType === 'PLAN') {
           this.loadPlans();
-        } else if ((args.eventSnapshots[j].eventType.match(/WorkflowPlanChanged/) || args.eventSnapshots[j].eventType.match(/NoticeBoardStateChanged/)) && args.eventSnapshots[j].objectType === 'PLAN') {
+        } else if ((args.eventSnapshots[j].eventType.match(/WorkflowPlanChanged/) && args.eventSnapshots[j].objectType === 'PLAN') || (args.eventSnapshots[j].eventType.match(/NoticeBoardStateChanged/) && args.eventSnapshots[j].objectType === 'NOTICEBOARD')) {
           this.loadAdditionaSnapshotlData();
         }
       }

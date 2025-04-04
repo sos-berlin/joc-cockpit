@@ -23,17 +23,7 @@
                name="noticeKey" placeholder="{{'resource.board.placeholder.enterNoticeKey' | translate}}" type="text"/>
       </div>
     </div>
-    <div class="form-group row" *ngIf="singular && showNoticeId">
-      <label class="col-sm-4 form-control-label" translate>
-        resource.board.label.planKey
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      <div class="col-sm-6">
-        <nz-date-picker [(ngModel)]="postObj.planKey" [nzFormat]="dateFormat"
-        [nzPlaceHolder]="'resource.board.placeholder.enterPlanKey' | translate"
-        name="planKey" required></nz-date-picker>
-      </div>
-    </div>
+
     <div class="form-group row" *ngIf="!showNoticeId">
       <label class="col-sm-4 " translate>resource.board.label.endOfLife</label>
       <div class="col-md-8">
@@ -58,6 +48,17 @@
             common.message.requiredError
           </div>
         </div>
+      </div>
+    </div>
+    <div class="form-group row" *ngIf="(singular && showNoticeId) || (singular && !this.globalSingle && this.board?.boardType === 'GLOBAL')">
+      <label class="col-sm-4 form-control-label" translate>
+        resource.board.label.planKey
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-6">
+        <nz-date-picker [(ngModel)]="postObj.planKey" [nzFormat]="dateFormat"
+                        [nzPlaceHolder]="'resource.board.placeholder.enterPlanKey' | translate"
+                        name="planKey" required></nz-date-picker>
       </div>
     </div>
     <div *ngIf="postObj.at == 'date'" class="form-group row">

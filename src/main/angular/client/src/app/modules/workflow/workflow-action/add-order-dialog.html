@@ -417,7 +417,7 @@
         <div class="form-group row">
           <label class="col-sm-4 form-control-label" translate>order.label.noticeSpaceKey</label>
           <div class="col-sm-6">
-            <input #noticeSpaceKey="ngModel" (blur)="checkPlanIds(order)" [(ngModel)]="order.planId.noticeSpaceKey" autocomplete="off"
+            <input #noticeSpaceKey="ngModel"  [(ngModel)]="order.planId.noticeSpaceKey" autocomplete="off"
                    placeholder="{{'order.placeholder.noticeSpaceKey' | translate}}" class="form-control" identifierValidation maxlength="30" name="noticeSpaceKey{{orderIndex}}"
                    type="text">
           </div>

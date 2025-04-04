@@ -801,6 +801,7 @@ export class DailyPlanComponent {
   private pendingHTTPRequests$ = new Subject<void>();
   setOfCheckedId = new Set<number>();
   mapOfCheckedId = new Set();
+  isTabSwitching = false;
 
   constructor(private authService: AuthService, public coreService: CoreService, private saveService: SaveService,
               private dataService: DataService, private groupByPipe: GroupByPipe, private toasterService: ToastrService,
@@ -2500,17 +2501,28 @@ export class DailyPlanComponent {
   }
 
   tabChange($event): void {
-    this.dailyPlanFilters.tabIndex = $event.index;
-    if (this.dailyPlanFilters.tabIndex === 1) {
+    if (this.isTabSwitching) return;
+
+    this.isTabSwitching = true;
+    const tabIndex = $event?.index ?? 0;
+
+    if (tabIndex === 0) {
+      this.reloadDailyPlan();
+    } else if (tabIndex === 1) {
       this.changeInCalendar();
-    } else if(this.dailyPlanFilters.tabIndex === 0) {
-      this.reloadDailyPlan()
-    }else{
-      setTimeout(() => {
+    } else if (tabIndex === 2) {
+      if (!this.isParentLoaded) {
         this.isParentLoaded = true;
-      }, 100);
+      }
     }
+
+    this.dailyPlanFilters.tabIndex = tabIndex;
+
+    setTimeout(() => {
+      this.isTabSwitching = false;
+    }, 500);
   }
+
 
   private initConf(): void {
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};

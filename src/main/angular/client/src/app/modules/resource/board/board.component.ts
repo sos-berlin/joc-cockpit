@@ -39,6 +39,7 @@ export class PostModalComponent {
   workflowPaths: any;
   singular = false;
   showNoticeId = false;
+  globalSingle = false;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
@@ -53,6 +54,7 @@ export class PostModalComponent {
     this.singleNotice = this.modalData.singleNotice;
     this.workflowPaths = this.modalData.workflowPaths;
     this.singular = this.modalData.singular;
+    this.globalSingle = this.modalData.globalSingle;
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.zones = this.coreService.getTimeZoneList();
     this.postObj.timeZone = this.coreService.getTimeZone();
@@ -241,10 +243,12 @@ export class PostModalComponent {
         return {noticeBoardPath: path};
       });
     }
-
-    if (this.singular && !this.showNoticeId) {
+    if (this.singular && !this.showNoticeId && this.globalSingle) {
       obj.noticeBoardPath = this.board.path;
-      obj.noticeId = this.postObj.noticeId;
+      obj.noticeId = this.notice.id;
+    }else if (this.singular && !this.showNoticeId && !this.globalSingle && this.board?.boardType === 'GLOBAL') {
+      obj.noticeBoardPath = this.board.path;
+      obj.noticeId = this.coreService.getDateByFormat(this.postObj.planKey, null, 'YYYY-MM-DD');
     } else if (this.singular && this.showNoticeId) {
       obj.noticeBoardPath = this.board.path;
       const planKey = this.coreService.getDateByFormat(this.postObj.planKey, null, 'YYYY-MM-DD');
@@ -1046,7 +1050,7 @@ export class BoardComponent {
         nzClosable: false,
         nzMaskClosable: false
       });
-    } else {
+    } else if(board.boardType === "GLOBAL" && notice === null) {
       this.modal.create({
         nzTitle: undefined,
         nzContent: PostModalComponent,
@@ -1057,7 +1061,25 @@ export class BoardComponent {
           notice,
           controllerId: this.schedulerIds.selected,
           preferences: this.preferences,
-          singular: true
+          singular: true,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+    }else {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: PostModalComponent,
+        nzClassName: 'lg',
+        nzAutofocus: null,
+        nzData: {
+          board,
+          notice,
+          controllerId: this.schedulerIds.selected,
+          preferences: this.preferences,
+          singular: true,
+          globalSingle: true
         },
         nzFooter: null,
         nzClosable: false,

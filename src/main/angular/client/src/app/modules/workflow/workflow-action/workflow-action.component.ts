@@ -737,8 +737,10 @@ export class AddOrderModalComponent {
     this.selectedOrderIndex = index;
   }
 
-  onSubmit(): void {
-    this.submitted = true;
+  async onSubmit(): Promise<void> {
+    await this.checkPlanIds(this.orders); // wait for modal to resolve
+
+    this.submitted = true;;
 
     const allRequests = this.orders.map((order, index) => {
       const orderObj: any = {
@@ -1811,37 +1813,55 @@ export class AddOrderModalComponent {
       });
   }
 
-  checkPlanIds(order: any): void {
-    const id = order.planId.noticeSpaceKey;
-    if (this.planIds && id) {
-      this.planIds.forEach(plan => {
-        if (plan.planId?.noticeSpaceKey?.includes(id) && plan.state?._text === "CLOSED") {
-          const modal = this.modal.create({
-            nzTitle: undefined,
-            nzContent: ConfirmModalComponent,
-            nzData: {
-              title: 'closedPlanType',
-              message: 'closedPlanType',
-              planId: id,
-              type: 'confirm',
-            },
-            nzFooter: null,
-            nzClosable: false,
-            nzMaskClosable: false
-          });
-          modal.afterClose.subscribe(result => {
-            if (result) {
-                order.openClosedPlan = true;
-            }else {
-            order.planId.noticeSpaceKey = '';
+
+  checkPlanIds(orders: any[]): Promise<void> {
+    return new Promise((resolve) => {
+      if (!Array.isArray(orders) || !orders.length) return resolve();
+
+      const affectedOrders = [];
+
+      orders.forEach(order => {
+        const id = order.planId?.noticeSpaceKey;
+        if (id && this.planIds) {
+          const matched = this.planIds.find(plan =>
+            plan.planId?.noticeSpaceKey?.includes(id) && plan.state?._text === 'CLOSED'
+          );
+          if (matched) {
+            affectedOrders.push({ order, id });
           }
-          });
         }
       });
-    }
+
+      if (affectedOrders.length > 0) {
+        const modal = this.modal.create({
+          nzTitle: undefined,
+          nzContent: ConfirmModalComponent,
+          nzData: {
+            title: 'closedPlanType',
+            message: 'closedPlanType',
+            planId: affectedOrders.map(item => item.id),
+            type: 'confirm',
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+
+        modal.afterClose.subscribe(result => {
+          affectedOrders.forEach(item => {
+            if (result) {
+              item.order.openClosedPlan = true;
+            } else {
+              item.order.planId.noticeSpaceKey = '';
+            }
+          });
+          resolve();
+        });
+      } else {
+        resolve();
+      }
+    });
   }
-
-
 
 }
 
