@@ -301,7 +301,7 @@ export class NodePositionComponent {
 
     if (this.workflow) {
       recursive({
-        instructions: this.workflow.actual || this.workflow.instructions
+        instructions: this.workflow.actual || this.workflow.instructions || this.workflow?.configuration?.instructions
       }, nodes);
     }
     self.nodes = nodes.children;

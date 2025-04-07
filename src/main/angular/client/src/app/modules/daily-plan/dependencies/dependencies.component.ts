@@ -115,6 +115,7 @@ export class DependenciesComponent {
     this.initConf();
     const dailyPlanFilters = this.coreService.getDailyPlanTab();
     if (dailyPlanFilters.tabIndex === 2) {
+      console.log("on dependencies tab", dailyPlanFilters.tabIndex )
       this.loadAdditionaSnapshotlData();
     } else {
       this.loadAdditionalData();
@@ -127,6 +128,7 @@ export class DependenciesComponent {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['parentLoaded'] && changes['parentLoaded'].currentValue) {
       setTimeout(() => {
+        console.log("parent component loaded")
         this.initConf();
         this.loadAdditionaSnapshotlData();
         this.fit();
@@ -170,14 +172,31 @@ export class DependenciesComponent {
           selectedDate: this.selectedDate,
           clickDay: (e) => {
             this.selectedDate = e.date;
-            this.planSchemaId = e.events[0]?.planSchemaId;
-            this.isClosed = e.events[0]?.isClosed;
-            this.isOpen = e.events[0]?.isOpen;
-            this.plansFilters.filter.currentPage = 1;
-            if (this.graph) {
-              this.graph.getModel().clear();
+            const formattedDate = this.coreService.getStringDate(this.selectedDate);
+            const matchingPlan = this.noticeSpaceKey.find(p =>
+              this.coreService.getStringDate(p.startDate) === formattedDate
+            );
+
+            if (matchingPlan) {
+              this.planSchemaId = matchingPlan.planSchemaId;
+              this.isClosed = matchingPlan.isClosed;
+              this.isOpen = matchingPlan.isOpen;
+              this.plansFilters.filter.currentPage = 1;
+              if (this.graph) {
+                this.graph.getModel().clear();
+              }
+              this.loadAdditionaSnapshotlData();
+              console.log("Valid calendar date selected, loading snapshot data.");
+            } else {
+              this.workflowData = []
+              this.loadGraphData()
+              this.planSchemaId = null;
+              this.isClosed = false;
+              this.isOpen = false;
+              this.graph?.getModel().clear();
+              this.totalWorkflows = 0;
+              this.totalNotices = 0;
             }
-            this.loadAdditionaSnapshotlData();
           },
           renderEnd: (e) => {
             const visibleDate = e?.startDate || new Date();
@@ -1255,27 +1274,22 @@ export class DependenciesComponent {
   }
 
   private computeDistinctCountsFromWorkflowData(): void {
-    // Total workflows is the sum of the lengths of posting, expecting, and consuming arrays.
     const postingCount = this.workflowData?.postingWorkflows?.length || 0;
     const expectingCount = this.workflowData?.expectingWorkflows?.length || 0;
     const consumingCount = this.workflowData?.consumingWorkflows?.length || 0;
     this.totalWorkflows = postingCount + expectingCount + consumingCount;
 
-    // For notices, create a Set and add all notices from each array.
     const noticeSet = new Set<string>();
-    // Add notices from posting workflows (e.g. postNotices)
     this.workflowData?.postingWorkflows?.forEach((workflow: any) => {
       if (workflow.postNotices) {
         workflow.postNotices.forEach((notice: string) => noticeSet.add(notice));
       }
     });
-    // Add notices from expecting workflows (e.g. expectNotices)
     this.workflowData?.expectingWorkflows?.forEach((workflow: any) => {
       if (workflow.expectNotices) {
         workflow.expectNotices.forEach((notice: string) => noticeSet.add(notice));
       }
     });
-    // Add notices from consuming workflows (e.g. consumeNotices)
     this.workflowData?.consumingWorkflows?.forEach((workflow: any) => {
       if (workflow.consumeNotices) {
         workflow.consumeNotices.forEach((notice: string) => noticeSet.add(notice));
@@ -1320,6 +1334,7 @@ export class DependenciesComponent {
           this.loadPlans();
         } else if ((args.eventSnapshots[j].eventType.match(/WorkflowPlanChanged/) && args.eventSnapshots[j].objectType === 'PLAN') || (args.eventSnapshots[j].eventType.match(/NoticeBoardStateChanged/) && args.eventSnapshots[j].objectType === 'NOTICEBOARD')) {
           this.loadAdditionaSnapshotlData();
+          console.log("events triggered", args.eventSnapshots)
         }
       }
     }

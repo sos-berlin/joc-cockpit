@@ -34,10 +34,8 @@
           class="form-control"  name="position" placeholder="{{'order.placeholder.enterPosition' | translate}}" type="text">
         </div>
         <div *ngIf="isFromWorkflow">
-          <nz-select
-            nzPlaceHolder="{{'order.placeholder.enterPosition' | translate}}" [(ngModel)]="resumeObj.position" name="position">
-            <nz-option *ngFor="let position of positions" [nzLabel]="position.type === 'ImplicitEnd' ? '--- end ---' : position.label ? position.label: position.type" [nzValue]="position.position"></nz-option>
-          </nz-select>
+          <app-node-position [obj]="object"  [newPositions]="newPositions"  [positions]="positions"
+                             [type]="'START'" [workflow]="workflow"></app-node-position>
         </div>
       </div>
     </div>

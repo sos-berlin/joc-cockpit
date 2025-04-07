@@ -4515,6 +4515,7 @@ export class ExportComponent {
 
       }
     }
+
     if (node.dependencies) {
       node.dependencies.referencedBy.forEach(dep => {
         if (dep.objectType !== 'FOLDER') {

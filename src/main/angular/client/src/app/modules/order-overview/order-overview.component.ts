@@ -221,7 +221,7 @@ export class AllOrderResumeModelComponent {
     auditLog: {}
   };
   newPositions: any;
-  positions: any = [];
+  positions: any;
   variables: any = [];
   constants = [];
   allowVariable = true;
@@ -230,7 +230,8 @@ export class AllOrderResumeModelComponent {
   object = {
     setOfCheckedValue: new Set(),
     checked: false,
-    indeterminate: false
+    indeterminate: false,
+    startPosition: ''
   }
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService){}
@@ -351,7 +352,10 @@ export class AllOrderResumeModelComponent {
               }
             }
           });
-          this.positions = res.positions;
+          this.positions = new Map();
+          res.positions.forEach((item) => {
+            this.positions.set(item.positionString, item.position);
+          });
         }
       }, error: () => this.positions = []
     });
@@ -503,6 +507,11 @@ export class AllOrderResumeModelComponent {
     }
     if (this.resumeObj.position) {
       obj.position = this.resumeObj.position;
+      delete obj.fromCurrentBlock;
+    }
+
+    if (this.object.startPosition) {
+      obj.position = this.positions.get(this.object.startPosition);
       delete obj.fromCurrentBlock;
     }
     obj.auditLog = {};
