@@ -1328,15 +1328,29 @@ export class DependenciesComponent {
   }
 
   refresh(args: { eventSnapshots: any[] }): void {
-    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
-      for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType.match(/PlanUpdated/) && args.eventSnapshots[j].objectType === 'PLAN') {
-          this.loadPlans();
-        } else if ((args.eventSnapshots[j].eventType.match(/WorkflowPlanChanged/) && args.eventSnapshots[j].objectType === 'PLAN') || (args.eventSnapshots[j].eventType.match(/NoticeBoardStateChanged/) && args.eventSnapshots[j].objectType === 'NOTICEBOARD')) {
-          this.loadAdditionaSnapshotlData();
-          console.log("events triggered", args.eventSnapshots)
-        }
+  let shouldLoadPlans = false;
+  let shouldLoadSnapshot = false;
+
+  if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+    for (let j = 0; j < args.eventSnapshots.length; j++) {
+      const event = args.eventSnapshots[j];
+      if (event.eventType.match(/PlanUpdated/) && event.objectType === 'PLAN') {
+        shouldLoadPlans = true;
+      } else if (
+        (event.eventType.match(/WorkflowPlanChanged/) && event.objectType === 'PLAN') ||
+        (event.eventType.match(/NoticeBoardStateChanged/) && event.objectType === 'NOTICEBOARD')
+      ) {
+        shouldLoadSnapshot = true;
       }
     }
+    if (shouldLoadPlans) {
+      this.loadPlans();
+    }
+    if (shouldLoadSnapshot) {
+      this.loadAdditionaSnapshotlData();
+    }
+
   }
+}
+
 }
