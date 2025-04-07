@@ -22,6 +22,7 @@ import {CommentModalComponent} from 'src/app/components/comment-modal/comment.co
 import {ConfirmModalComponent} from 'src/app/components/comfirm-modal/confirm.component';
 import {takeUntil} from "rxjs/operators";
 import {TranslateService} from "@ngx-translate/core";
+import {InventoryObject} from "../../../models/enums";
 
 declare const mxEditor: any;
 declare const mxUtils: any;
@@ -73,6 +74,7 @@ export class DependenciesComponent {
   mapOfCheckedId = new Set();
   pageSize: number = 10;
   sideBar: any = {orders: []};
+  cachedRows = []
   private lastLoadedMonthYear: string = '';
 
   @ViewChild('graphContainer') graphContainer!: ElementRef;
@@ -252,8 +254,8 @@ export class DependenciesComponent {
     }
   }
 
-  navToInventoryTab(data, type): void {
-    this.coreService.navToInventoryTab(data, type);
+  navToWorkflow(workflowName, type): void {
+    this.coreService.showWorkflow(workflowName)
   }
 
   showBoard(board): void {
@@ -565,7 +567,7 @@ export class DependenciesComponent {
       }
 
       if (cell && cell.vertex && cell.tooltip && cell.originalStyle?.strokeColor !== "#000000") {
-        this.navToInventoryTab(cell.tooltip, 'WORKFLOW');
+        this.navToWorkflow(cell.tooltip, 'WORKFLOW');
         this.graph.tooltipHandler.hide();
         evt.consume();
 
@@ -1031,6 +1033,7 @@ export class DependenciesComponent {
     this.graph.getModel().beginUpdate();
     try {
       const allRows = this.buildRowsFromData(this.workflowData);
+      this.cachedRows = allRows;
       const filteredRows = this.filterRows(allRows, this.searchValue);
       this.computeDistinctCountsFromWorkflowData();
       const startIndex = (this.plansFilters.filter.currentPage - 1) * this.pageSize;

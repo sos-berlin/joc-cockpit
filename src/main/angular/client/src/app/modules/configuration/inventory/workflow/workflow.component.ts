@@ -4287,10 +4287,12 @@ export class WorkflowComponent {
           if (this.workflowService.isInstructionCollapsible(obj.TYPE)) {
             this.getJobsArray(obj);
           }
-          this.fetchJobTags([obj.jobName], this.workflowPath, (copiedTagsData) => {
-            const copiedJobTags = copiedTagsData.find(jobTag => jobTag.jobName === obj.jobName)?.jobTags ?? [];
-            obj.jobTags = copiedJobTags;
-          });
+          if(obj.jobName){
+            this.fetchJobTags([obj.jobName], this.workflowPath, (copiedTagsData) => {
+              const copiedJobTags = copiedTagsData.find(jobTag => jobTag.jobName === obj.jobName)?.jobTags ?? [];
+              obj.jobTags = copiedJobTags;
+            });
+          }
           this.inventoryConf.copiedInstuctionObject.push(obj);
         }
       });

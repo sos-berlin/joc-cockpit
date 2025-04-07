@@ -4517,28 +4517,31 @@ export class ExportComponent {
     }
     if (node.dependencies) {
       node.dependencies.referencedBy.forEach(dep => {
-        if (dep.path !== '/' && dep.name !== '/') {
-          const config = {
-            configuration: {
-              path: dep.path,
-              objectType: dep.objectType,
-            }
-          };
-          if (dep.selected && dep.deployed && dep.valid) {
-            if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
-              obj.shallowCopy.deployables.draftConfigurations.push(config);
-            }
-          } else if (dep.selected && dep.released && dep.valid) {
-            if (!isDuplicate(obj.shallowCopy.releasables.releasedConfigurations, config)) {
-              obj.shallowCopy.releasables.draftConfigurations.push(config);
-            }
-          } else if (dep.selected && (!dep.valid || dep.valid) && (dep.deployed || !dep.deployed) && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType)) {
-            if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
-              obj.shallowCopy.deployables.draftConfigurations.push(config);
-            }
-          } else if (dep.selected && (!dep.valid || dep.valid) && (dep.released || !dep.released) && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType)) {
-            if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
-              obj.shallowCopy.releasables.draftConfigurations.push(config);
+        if (dep.objectType !== 'FOLDER') {
+
+          if (dep.path !== '/' && dep.name !== '/') {
+            const config = {
+              configuration: {
+                path: dep.path,
+                objectType: dep.objectType,
+              }
+            };
+            if (dep.selected && dep.deployed && dep.valid) {
+              if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
+                obj.shallowCopy.deployables.draftConfigurations.push(config);
+              }
+            } else if (dep.selected && dep.released && dep.valid) {
+              if (!isDuplicate(obj.shallowCopy.releasables.releasedConfigurations, config)) {
+                obj.shallowCopy.releasables.draftConfigurations.push(config);
+              }
+            } else if (dep.selected && (!dep.valid || dep.valid) && (dep.deployed || !dep.deployed) && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType)) {
+              if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
+                obj.shallowCopy.deployables.draftConfigurations.push(config);
+              }
+            } else if (dep.selected && (!dep.valid || dep.valid) && (dep.released || !dep.released) && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType)) {
+              if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
+                obj.shallowCopy.releasables.draftConfigurations.push(config);
+              }
             }
           }
         }
@@ -4546,31 +4549,34 @@ export class ExportComponent {
 
 
       node.dependencies.references.forEach(ref => {
-        if (ref.path !== '/' && ref.name !== '/') {
-          const config = {
-            configuration: {
-              path: ref.path,
-              objectType: ref.objectType,
-            }
-          };
-          if (ref.selected && ref.deployed && ref.valid) {
-            if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
-              obj.shallowCopy.deployables.draftConfigurations.push(config);
-            }
-          } else if (ref.selected && ref.released && ref.valid) {
-            if (!isDuplicate(obj.shallowCopy.releasables.draftConfigurations, config)) {
-              obj.shallowCopy.releasables.draftConfigurations.push(config);
-            }
-          } else if (ref.selected && (!ref.valid || ref.valid) && (ref.deployed || !ref.deployed) && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(ref.objectType)) {
-            if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
-              obj.shallowCopy.deployables.draftConfigurations.push(config);
-            }
-          } else if (ref.selected && (!ref.valid || ref.valid) && (ref.released || !ref.released) && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(ref.objectType)) {
-            if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
-              obj.shallowCopy.releasables.draftConfigurations.push(config);
-            }
-          }
+        if (ref.objectType !== 'FOLDER') {
 
+          if (ref.path !== '/' && ref.name !== '/') {
+            const config = {
+              configuration: {
+                path: ref.path,
+                objectType: ref.objectType,
+              }
+            };
+            if (ref.selected && ref.deployed && ref.valid) {
+              if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
+                obj.shallowCopy.deployables.draftConfigurations.push(config);
+              }
+            } else if (ref.selected && ref.released && ref.valid) {
+              if (!isDuplicate(obj.shallowCopy.releasables.draftConfigurations, config)) {
+                obj.shallowCopy.releasables.draftConfigurations.push(config);
+              }
+            } else if (ref.selected && (!ref.valid || ref.valid) && (ref.deployed || !ref.deployed) && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(ref.objectType)) {
+              if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
+                obj.shallowCopy.deployables.draftConfigurations.push(config);
+              }
+            } else if (ref.selected && (!ref.valid || ref.valid) && (ref.released || !ref.released) && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(ref.objectType)) {
+              if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
+                obj.shallowCopy.releasables.draftConfigurations.push(config);
+              }
+            }
+
+          }
         }
       });
     }
@@ -4589,31 +4595,34 @@ export class ExportComponent {
       return array.some(item => item.configuration.path === config.configuration.path && item.configuration.objectType === config.configuration.objectType);
     };
     this.filteredAffectedItems.forEach(item => {
-      if (item.path !== '/' && item.name !== '/') {
-        const config = {
-          configuration: {
-            path: item.path,
-            objectType: item.objectType,
-          }
-        };
-        if (item.selected && item.deployed && item.valid) {
-          if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
-            obj.shallowCopy.deployables.draftConfigurations.push(config);
-          }
-        } else if (item.selected && item.released && item.valid) {
-          if (!isDuplicate(obj.shallowCopy.releasables.draftConfigurations, config)) {
-            obj.shallowCopy.releasables.draftConfigurations.push(config);
-          }
-        } else if (item.selected && (!item.valid || item.valid) && (item.deployed || !item.deployed) && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType)) {
-          if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
-            obj.shallowCopy.deployables.draftConfigurations.push(config);
-          }
-        } else if (item.selected && (!item.valid || item.valid) && (item.released || !item.released) && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType)) {
-          if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
-            obj.shallowCopy.releasables.draftConfigurations.push(config);
-          }
-        }
+      if (item.objectType !== 'FOLDER') {
 
+        if (item.path !== '/' && item.name !== '/') {
+          const config = {
+            configuration: {
+              path: item.path,
+              objectType: item.objectType,
+            }
+          };
+          if (item.selected && item.deployed && item.valid) {
+            if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
+              obj.shallowCopy.deployables.draftConfigurations.push(config);
+            }
+          } else if (item.selected && item.released && item.valid) {
+            if (!isDuplicate(obj.shallowCopy.releasables.draftConfigurations, config)) {
+              obj.shallowCopy.releasables.draftConfigurations.push(config);
+            }
+          } else if (item.selected && (!item.valid || item.valid) && (item.deployed || !item.deployed) && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType)) {
+            if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
+              obj.shallowCopy.deployables.draftConfigurations.push(config);
+            }
+          } else if (item.selected && (!item.valid || item.valid) && (item.released || !item.released) && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType)) {
+            if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
+              obj.shallowCopy.releasables.draftConfigurations.push(config);
+            }
+          }
+
+        }
       }
     });
   }
@@ -4709,22 +4718,25 @@ export class ExportComponent {
       return array.some(item => item.configuration.path === config.configuration.path && item.configuration.objectType === config.configuration.objectType);
     };
     this.filteredAffectedItems.forEach(item => {
-      if (item.path !== '/' && item.name !== '/') {
-        const config = {
-          configuration: {
-            path: item.path,
-            objectType: item.objectType,
-          }
-        };
-        if (item.selected && item.deployed && item.valid) {
-          if (!isDuplicate(obj.forSigning.deployables.deployConfigurations, config)) {
-            obj.forSigning.deployables.deployConfigurations.push(config);
-          }
-        } else if (item.selected && (!item.valid || item.valid) && (item.deployed || !item.deployed) && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType)) {
-          if (!isDuplicate(obj.forSigning.deployables.draftConfigurations, config)) {
-            obj.forSigning.deployables.draftConfigurations.push(config);
+      if (item.objectType !== 'FOLDER') {
+        if (item.path !== '/' && item.name !== '/') {
+          const config = {
+            configuration: {
+              path: item.path,
+              objectType: item.objectType,
+            }
+          };
+          if (item.selected && item.deployed && item.valid) {
+            if (!isDuplicate(obj.forSigning.deployables.deployConfigurations, config)) {
+              obj.forSigning.deployables.deployConfigurations.push(config);
+            }
+          } else if (item.selected && (!item.valid || item.valid) && (item.deployed || !item.deployed) && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType)) {
+            if (!isDuplicate(obj.forSigning.deployables.draftConfigurations, config)) {
+              obj.forSigning.deployables.draftConfigurations.push(config);
+            }
           }
         }
+
       }
     });
   }
@@ -5118,7 +5130,7 @@ export class RepositoryComponent {
 
       if (configVal === 'local') {
         this.localObjects.push(...(Array.isArray(obj) ? obj : [obj]));
-        if(this.object.type === 'changes'){
+        if (this.object.type === 'changes') {
           this.filter.envRelated = true;
           this.filter.envIndependent = false;
         }
@@ -5127,7 +5139,7 @@ export class RepositoryComponent {
         flag = 'local';
       } else if (configVal === 'rollout') {
         this.rolloutObjects.push(...(Array.isArray(obj) ? obj : [obj]));
-        if(this.object.type === 'changes') {
+        if (this.object.type === 'changes') {
           this.filter.envRelated = false;
           this.filter.envIndependent = true;
         }

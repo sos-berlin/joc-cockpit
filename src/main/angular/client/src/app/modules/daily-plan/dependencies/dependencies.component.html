@@ -17,7 +17,7 @@
           <span translate>dailyPlan.button.present</span>
         </button>
 
-        <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.normal'|translate" class="fa fa-stop bg-postingWorkflow" style="margin-left: 213px"></i>
+        <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.normal'|translate" class="fa fa-stop bg-postingWorkflow" style="margin-left: 109px"></i>
         {{'dailyPlan.label.normal' | translate}}
         <i  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.critical'|translate"class="fa fa-stop bg-expectingWorkflow p-l-sm"></i>
         {{'dailyPlan.label.critical' | translate}}
@@ -102,7 +102,7 @@
             </ul>
           </div>
           <div #graphContainer class="graph-container mt-1 "></div>
-          <div *ngIf="buildRowsFromData(workflowData)?.length === 0" class="m-t-md">
+          <div *ngIf="cachedRows?.length === 0" class="m-t-md">
             <app-empty-data></app-empty-data>
           </div>
         </div>
@@ -114,7 +114,7 @@
                        [nzPageSize]="pageSize || preferences.entryPerPage || 25"
                        [nzShowSizeChanger]="true"
                        [nzPageSizeOptions]="[10, 25, 50, 100, +(preferences.maxEntryPerPage)]"
-                       [nzTotal]="workflowData ? buildRowsFromData(workflowData).length : 0"
+                       [nzTotal]="cachedRows.length"
                        [(nzPageIndex)]="plansFilters.filter.currentPage"
                        (nzPageIndexChange)="onPageIndexChange($event)"
                        (nzPageSizeChange)="pageSizeChange($event)"
