@@ -1062,12 +1062,19 @@ export class AddOrderModalComponent {
 
       let anyListEmpty = orderArgs.some(arg =>
         arg.type === 'List' &&
-        (!arg.actualList || arg.actualList.some(listItem => listItem.list.some(item => !item.value)))
+        (!arg.actualList || arg.actualList.some(listItem =>
+          listItem.list.some(item => item.value === null || item.value === undefined || item.value === '')
+        ))
       );
+
       let anyMapEmpty = orderArgs.some(arg =>
         arg.type === 'Map' &&
-        (!arg.actualMap || arg.actualMap.some(mapItem => mapItem.map.some(item => !item.value)))
+        (!arg.actualMap || arg.actualMap.some(mapItem =>
+          mapItem.map.some(item => item.value === null || item.value === undefined || item.value === '')
+        ))
       );
+
+
 
       let anyStringEmpty = orderArgs.some(arg =>
         arg.type === 'String' && (!arg.value)
@@ -1606,7 +1613,7 @@ export class AddOrderModalComponent {
         } else if (val.type === 'List') {
           const actualList = [];
           if (orderParameterisation.variables && orderParameterisation.variables[key]) {
-            orderParameterisation.variables[key].forEach(item => {
+            orderParameterisation.variables[key]?.forEach(item => {
               const listEntry = val.listParameters.map(param => ({
                 name: param.name,
                 value: item[param.name] || ''

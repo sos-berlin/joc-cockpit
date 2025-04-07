@@ -2411,7 +2411,6 @@ export class DeployComponent {
     if ((this.data && this.data.object) || this.isSelectedObjects) {
       selectFolder = false;
     }
-
     function recursive(nodes: any): void {
       for (let i = 0; i < nodes.length; i++) {
         if (!nodes[i].object && nodes[i].checked) {
@@ -2673,7 +2672,8 @@ export class DeployComponent {
   private prepareAndSendDeployObject(): void {
     const obj: any = {
       includeLate: this.includeLate,
-      controllerIds: this.selectedSchedulerIds
+      controllerIds: this.selectedSchedulerIds,
+      recursive: this.object.isRecursive
     };
     if (!this.isRevoke) {
       if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {

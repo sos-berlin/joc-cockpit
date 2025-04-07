@@ -115,7 +115,6 @@ export class DependenciesComponent {
     this.initConf();
     const dailyPlanFilters = this.coreService.getDailyPlanTab();
     if (dailyPlanFilters.tabIndex === 2) {
-      console.log("on dependencies tab", dailyPlanFilters.tabIndex )
       this.loadAdditionaSnapshotlData();
     } else {
       this.loadAdditionalData();
@@ -128,7 +127,6 @@ export class DependenciesComponent {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['parentLoaded'] && changes['parentLoaded'].currentValue) {
       setTimeout(() => {
-        console.log("parent component loaded")
         this.initConf();
         this.loadAdditionaSnapshotlData();
         this.fit();
@@ -186,7 +184,6 @@ export class DependenciesComponent {
                 this.graph.getModel().clear();
               }
               this.loadAdditionaSnapshotlData();
-              console.log("Valid calendar date selected, loading snapshot data.");
             } else {
               this.workflowData = []
               this.loadGraphData()
@@ -1343,13 +1340,30 @@ export class DependenciesComponent {
         shouldLoadSnapshot = true;
       }
     }
+
     if (shouldLoadPlans) {
       this.loadPlans();
     }
-    if (shouldLoadSnapshot) {
-      this.loadAdditionaSnapshotlData();
-    }
 
+    if (shouldLoadSnapshot) {
+      const formattedDate = this.coreService.getStringDate(this.selectedDate);
+      const matchingPlan = this.noticeSpaceKey.find(p =>
+        this.coreService.getStringDate(p.startDate) === formattedDate
+      );
+
+      if (matchingPlan) {
+        this.loadAdditionaSnapshotlData();
+      } else {
+        this.planSchemaId = null;
+        this.isClosed = false;
+        this.isOpen = false;
+        this.workflowData = [];
+        this.graph?.getModel().clear();
+        this.totalWorkflows = 0;
+        this.totalNotices = 0;
+        this.loadGraphData();
+      }
+    }
   }
 }
 
