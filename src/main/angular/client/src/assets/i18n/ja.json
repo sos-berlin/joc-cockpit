@@ -93,7 +93,7 @@
   "DELETE": "削除",
   "EXPECTED": "expected",
   "POSTED": "posted",
-  "ANNOUNCED": "announced",
+  "ANNOUNCED": "アナウンス済",
   "minor": "マイナー",
   "major": "メジャー",
   "normal": "ノーマル",
@@ -596,7 +596,7 @@
     "label.updateDependencies": "依存関係更新",
     "label.clipboard": "クリップボード",
     "label.stickToDailyPlanDate": "実行計画日付を守る",
-    "label.closedPlanType": "The plan is closed.",
+    "label.closedPlanType": "この実行計画はクローズされました",
     "button.all": "全て",
     "button.save": "保存",
     "button.apply": "適用",
@@ -741,7 +741,7 @@
     "message.updateDependencies": "本当に依存関係を更新しますか？",
     "message.deleteChanges": "本当にこの変更を削除しますか？",
     "message.deleteGroup": "本当にこのグループを削除しますか？",
-    "message.closedPlanType": "The plan {{planId}} is closed. Do you want to open it again?",
+    "message.closedPlanType": "実行計画{{planId}}はクローズ済です。再オープンしますか?",
     "--------POPUP WINDOW MESSAGES END------------": "確認ポップアップで使用",
     "tooltip.exportInXLS": "xlsx形式でエキスポート",
     "tooltip.expandDetails": "詳細表示",
@@ -935,25 +935,25 @@
     "label.plannedAllAutomatically": "自動計画",
     "label.copyOrder": "オーダーコピー",
     "label.oneTimeOrders": "一回限りオーダー",
-    "label.global": "Global",
-    "label.plannable": "Plannable",
-    "label.expected": "Expected",
-    "label.announced": "Announced",
-    "label.posted": "Posted",
-    "label.numOfNotices": "Notices",
-    "label.numOfExpectedNotices": "Expected Notices",
-    "label.numOfExpectingOrders": "Expecting Orders",
-    "label.numOfPostedNotices": "Posted Notices",
-    "label.numOfAnnouncements": "Announcements",
-    "label.postingWorkflow": "Posting Workflow",
-    "label.expectingWorkflow": "Expecting Workflow",
-    "label.consumingWorkflow": "Consuming Workflow",
-    "label.noticeBoard": "Notice Board",
-    "label.normal": "Normal",
-    "label.pending": "Pending",
+    "label.global": "グローバル",
+    "label.plannable": "スケジューラブル",
+    "label.expected": "Expect済",
+    "label.announced": "アナウンス済",
+    "label.posted": "ポスト済",
+    "label.numOfNotices": "通知",
+    "label.numOfExpectedNotices": "Expect Notice",
+    "label.numOfExpectingOrders": "Expectオーダー",
+    "label.numOfPostedNotices": "ポスト通知",
+    "label.numOfAnnouncements": "アナウンス",
+    "label.postingWorkflow": "ポスティンワークフロー",
+    "label.expectingWorkflow": "Expectingワークフロー",
+    "label.consumingWorkflow": "Consumingワークフロー",
+    "label.noticeBoard": "通知ボード",
+    "label.normal": "通常",
+    "label.pending": "保留",
     "label.expecting": "Expecting",
-    "label.critical": "Critical",
-    "label.totalWorkflowNoticeEntry": "Total {{total}} Workflows and {{noticeCount}} Notices found",
+    "label.critical": "クリティカル",
+    "label.totalWorkflowNoticeEntry": "合計{{total}}ワークフロー、および{{noticeCount}}通知があります",
     "button.late": "遅延",
     "button.setStartTime": "開始時刻編集",
     "button.setParameter": "オーダー変数編集",
@@ -978,13 +978,13 @@
     "button.continueOrder": "オーダー実行",
     "button.expected": "Expecting",
     "button.notExpected": "Not Expecting",
-    "button.announced": "Announced",
-    "button.notAnnounced": "Not Announced",
-    "button.openPlan": "Open Plan",
-    "button.closePlan": "Close Plan",
-    "button.past": "Past",
-    "button.present": "Present",
-    "button.future": "Future",
+    "button.announced": "アナウンス済",
+    "button.notAnnounced": "未アナウンス",
+    "button.openPlan": "実行計画オープン",
+    "button.closePlan": "実行計画クローズ",
+    "button.past": "過去",
+    "button.present": "現在",
+    "button.future": "未来",
      "placeholder.selectOrderTemplate": "オーダーテンプレート選択",
     "placeholder.selectSubmissionHistory": "登録履歴選択",
     "placeholder.timeRange": "now, (+/-)(d), today",
@@ -1004,18 +1004,19 @@
     "tooltip.dateRangeSelectStep1": "選択した期間をドラッグしてください",
     "tooltip.dateRangeSelectStep2": "またはCTRLキーを押さえながら開始日と終了日をクリックするか",
     "tooltip.dateRangeSelectStep3": "カレンダーアイコンから開始日と終了日をクリックしてください",
-    "tooltip.invertProjection": "プロジェクション反転",
-    "tooltip.viewOrders": "Click to view orders.",
-    "tooltip.normal": "Normal State.",
-    "tooltip.pending": "indicating that there are pending orders.",
-    "tooltip.expecting": "indicating that there are expecting orders.",
-    "tooltip.critical": "indicating that there are critical orders.",
-    "tooltip.present": "present.",
-    "tooltip.future": "future.",
+    "tooltip.invertProjection": "デフォルトでは、プロジェクションはオーダーが実行される日とオーダー数を表示します。プロジェクションを反転させると、オーダーが作成されないスケジュールが存在する日が強調表示されます。関連する日をクリックすると、注文のないスケジュールが表示されます。これには、ワークフローやスケジュールを保持する特定のフォルダにプロジェクションを制限することも含まれます、
+    「tooltip.viewOrders"： クリックするとオーダーが表示されます。",
+    "tooltip.viewOrders": "クリックでオーダー表示",
+    "tooltip.normal": "通常ステート",
+    "tooltip.pending": "保留オーダーがあることを示す",
+    "tooltip.expecting": "Expectingオーダーがあることを示す。",
+    "tooltip.critical": "一時停止、失敗、ブロックの状態にあるオーダーの存在を示す",
+    "tooltip.present": "通知が利用可能であることを示します。通知は、受信ワークフローのオーダーによって期待されるか、消費されます",
+    "tooltip.future": "通知が利用可能であることを示す",
     "tab": {
       "dailyPlan": "実行計画",
       "projection": "プロジェクション",
-      "dependencies": "Dependencies"
+      "dependencies": "依存関係"
     }
   },
   "deploymentService": {
@@ -1086,8 +1087,8 @@
         "licenseBinFile": "ライセンスバイナリーファイル名入力"
       },
       "tooltip": {
-        "licenseKeyFile": "ライセンスキーファイル名",
-        "licenseBinFile": "ライセンスバイナリーファイル名"
+        "licenseKeyFile": "ライセンス・キー・ファイルへのパスを指定します。このファイルは.pem形式の証明書を表し、ライセンスされたバイナリコードのロックを解除します",
+        "licenseBinFile": "ライセンス・バイナリ・ファイルへのパスを指定します。このファイルには、オープンソースライセンスの対象外であるバイナリコード（JOC CockpitやControllerのクラスタ機能など）が含まれています。バイナリコードは、ライセンスキーファイルによってアンロックされます"
       }
     },
     "certificate": {
@@ -1188,9 +1189,9 @@
         "serviceDir": "サービスディレクトリ入力"
       },
       "tooltip": {
-        "agentId": "エージェントID",
-        "host": "ホスト名",
-        "port": "ポート番号",
+        "agentId": "エージェントID は一意であり、エージェントを識別します。IDは、エージェントの存続期間中に変更することはできません。",
+        "host": "エージェントをインストールしたホスト名",
+        "port": "ホストへの接続を確立するポート。SSH接続の場合は22番ポートになることが多い。",
         "method": "認証方法",
         "user": "ユーザーアカウント",
         "keyFile": "認証キーファイル",
@@ -1910,8 +1911,8 @@
     "label.addGroups": "グループ追加",
     "label.addTagToGroup": "グループにタグ追加",
     "label.renameGroup": "グループ名変更",
-    "label.includeDependencies": "Include Dependencies",
-    "label.deployType": "Deploy Type",
+    "label.includeDependencies": "依存関係を含む",
+    "label.deployType": "配置タイプ",
     "button.modifyVariableSet": "変数設定変更",
     "button.addOrderParameter": "オーダー変数追加",
     "button.setVersion": "バージョン設定",
@@ -2094,63 +2095,63 @@
     },
     "tooltips": {
       "calendar": {
-        "name": "カレンダー名",
-        "documentation": "ドキュメント",
-        "title": "カレンダーのタイトル",
-        "type": "タイプ",
-        "validFrom": "有効期限開始",
-        "validTo": "有効期限終了"
+        "name": "カレンダーは、カレンダーによって指定された日のオーダーを作成するスケジュールと共に使用されます。カレンダー名には、ほとんどのユニコード文字、ドット、ハイフンが使用できますが、スペース、先頭または末尾のドット、ハイフンは使用できません。",
+        "documentation": "カレンダーと一緒に表示されるドキュメントへの参照を追加することができます。リソース画面で、ドキュメントを管理することができます。",
+        "title": "カレンダーのタイトルは自由に指定できます。",
+        "type": "カレンダーは営業日または休業日を作成できます。スケジュールにカレンダーを割り当てる場合、営業日のカレンダーに加えて、ワークフロー実行日を制限する休業日のカレンダーを割り当てることができます。",
+        "validFrom": "オプションで、カレンダーの有効期間の開始日を指定できます。この日付より前にスケジュールによってオーダーが作成されることはありません。",
+        "validTo": "オプションで、カレンダーの有効期間の終了日を指定することができます。この日を超えてスケジュールによってオーダーが作成されることはありません。"
       },
       "fileOrderSource": {
-        "name": "ファイルオーダーソース名",
-        "documentation": "ドキュメント",
-        "title": "ファイルオーダーソースのタイトル",
-        "workflowName": "ワークフロー名",
-        "agent": "エージェント",
-        "directory": "ディレクトリ",
-        "pattern": "パターン",
-        "timeZone": "タイムゾーン",
-        "delay": "遅延"
+        "name": "ファイルオーダーソースは、ディレクトリの受信ファイルを監視し、各ファイルのオーダーを個別に作成するために使用されます。これにより、ファイルの到着時に自動的にワークフローを開始することができます。ファイルオーダーソースの名前には、ほとんどのユニコード文字、ドット、ハイフンが使用できますが、スペース、先頭または末尾のドットやハイフンは使用できません。",
+        "documentation": "ファイルオーダーソースと一緒に表示されるドキュメントへの参照を追加することができます。リソース画面で、ドキュメントを管理することができます。",
+        "title": "ファイルオーダーソースのタイトルは自由に指定できます。",
+        "workflowName": "実行するワークフローの指定が必要です。受信ファイルを監視するディレクトリにファイルが到着すると、このワークフローに対してオーダーが作成されます。",
+        "agent": "インストールされているホスト上でファイル監視を行うエージェントを指定します。",
+        "directory": "受信ファイルを監視するディレクトリを指定します。ディレクトリは、エージェントのホストとインストールアカウントでアクセス可能であることが必要です。ディレクトリは、文字列 '/tmp/files' のような式で指定するか、env('HOME') ++ '/files' のように関数と組み合わせて指定します",
+        "pattern": "正規表現 パターンは、ディレクトリが監視するファイルへのパスを指定します。例えば、.*は全てのファイルを意味し、.*は拡張子が.txtの全てのファイルを意味します。",
+        "timeZone": "ファイルが到着すると、エージェントは現在の日付とオーダーIDを含むオーダーを作成します。この項目は、オーダーIDの日付に使用されるタイムゾーンを指定します。",
+        "delay": "遅延は、エージェントが受信ファイルに変更がないことを待機する秒数を指定します。変更は、ファイルサイズとファイルのタイムスタンプから検出されます。ファイルが変更された場合、例えば、ファイルが何らかのプロセスによって書き込まれた場合、再度遅延秒数が適用され、それ以上の変更が発生しなくなるまでチェックが繰り返されます。"
       },
       "jobResource": {
-        "name": "ジョブリソース名",
-        "documentation": "ドキュメント",
-        "title": "ジョブリソースのタイトル"
+        "name": "ジョブリソースは、複数のワークフローやジョブで使用できる変数のセットです。2つの種類があります： 引数はJITLジョブやJavaジョブに割り当てられ、環境変数はシェルジョブで自動的に利用可能になります。環境変数の値は$argumentのように引数を使用することができます。ジョブ・リソースの名前には、ほとんどのユニコード文字、ドット、ハイフンを使用することができます。",
+        "documentation": "ジョブリソースとともに表示されるドキュメントへの参照を追加することができます。リソース画面でドキュメントを管理することができます",
+        "title": "ジョブリソースのタイトルは自由に指定できます。"
       },
       "board": {
-        "name": "ボード名",
+        "name": "通知ボードは、ワークフロー間の依存関係を表します。ワークフロー内のそれぞれのPostNoticr命令とExpectNotice命令は通知ボードを参照します。通知ボードの名前はインベントリ内で一意です。通知ボードの名前には、ほとんどのユニコード文字、ドット、ハイフンが使用できますが、スペース、先頭または末尾のドットやハイフンは使用できません。",
         "expectBoardName": "通知ボードとは、ワークフロー間の依存関係を表すものです。ワークフローのPostNotice命令、ExpectNotice命令は、通知ボードを参照します。通知ボードの名前は、インベントリ内で一意です。 通知ボードの名前には、ほとんどのユニコード文字、ドット、ハイフンを使用できますが、先頭または末尾にドットやハイフンを使用することはできません。",
-        "documentation": "ドキュメント",
-        "title": "ボードのタイトル",
-        "toNotice": "通知入力",
-        "endOfLife": "期限入力",
-        "readingOrderToNoticeId": "通知IDの読取順入力",
-        "boardType": "boardType."
+        "documentation": "通知ボードと一緒に表示されるドキュメントへの参照を追加することができます。リソース画面で、ドキュメントを管理することができます。",
+        "title": "通知ボードのタイトルは自由に設定できます。",
+        "toNotice": "ポステイングオーダーの通知ID は、そのオーダーIDから一致するExpectingオーダーを検索する。",
+        "endOfLife": "通知の有効期限は、hh:mm:ssのフォーマットで、例えば01:30:00は1時間30分です。",
+        "readingOrderToNoticeId": "Expectingオーダーの通知ID は、オーダーIDから一致するポスティングオーダーを検索します。",
+        "boardType": "グローバルタイプの通知ボードは、実行計画とは無関係に依存関係を強制します。スケジューラブルタイプの通知ボードは、通知を作成するオーダーが存在する日のみを考慮します。"
       },
       "lock": {
-        "name": "ロック名",
-        "documentation": "ドキュメント",
-        "title": "ロックのタイトル",
-        "limit": "制限"
+        "name": "ロックは、一連のジョブの排他制御を実装するために使用されます。ロックは、ジョブの並行性を制限するために、同じワークフロー内およびワークフロー間で使用することができます。ロックの名前はインベントリ内で一意です。ロックの名前には、ほとんどのユニコード文字、ドット、ハイフンが使用できますが、スペース、先頭または末尾のドットやハイフンは使用できません。",
+        "documentation": "ロックと一緒に表示されるドキュメントへの参照を追加することができます。リソース画面で、ドキュメントを管理することができます。",
+        "title": "ロックのタイトルは自由に設定できます。",
+        "limit": "ロックが共有モードで取得された場合、各ロック取得側は、ロックの容量に向けて計算されるウェイトを指定します。容量を超えている場合、ジョブはそのウェイトがロックの利用可能な容量に達するまで待機しなければなりません。"
       },
       "schedule": {
-        "name": "スケジュール名",
-        "documentation": "ドキュメント",
-        "title": "スケジュールのタイトル",
-        "workflowName": "ワークフロー名",
-        "planOrderAutomatically": "実行計画自動作成",
-        "submitOrderToControllerWhenPlanned": "実行計画作成後オーダー登録",
-        "orderName": "オーダー名",
-        "startNode": "ワークフロー命令より前の開始位置",
-        "endNode": "ワークフロー命令より前の終了位置",
+        "name": "スケジュールは、割り当てられたカレンダーに基づいて、指定されたワークフローのオーダーを自動的に作成するために使用されます。スケジュール名はインベントリ内で一意です。スケジュール名には、ほとんどのユニコード文字、ドット、ハイフンが使用できますが、スペース、先頭または末尾のドットやハイフンは使用できません。",
+        "documentation": "スケジュールと一緒に表示されるドキュメントへの参照を追加することができます。リソース画面で、ドキュメントを管理することができます。",
+        "title": "スケジュールのタイトルは自由に設定できます。",
+        "workflowName": "オーダーが作成される1つ以上のワークフローの指定が必要です",
+        "planOrderAutomatically": "オーダーは、デイリープランサービスの設定に基づいて、数日先のオーダーが自動的に作成されます。",
+        "submitOrderToControllerWhenPlanned": "デイリープランサービスの設定に基づき、実行計画作成時に自動的にコントローラーにオーダー登録されます。",
+        "orderName": "オーダー名は、オーダーIDの非規定部分です。スケジュールを作成し、オンデマンドオーダーを追加する際、ユーザーは自由にジョブ名を指定することができます。",
+        "startNode": "ジョブの開始位置は、ワークフロー内の指定された命令の前にすることができます。ジョブは指定された位置から開始します。",
+        "endNode": "ジョブの終了位置は、ワークフロー内の指定された命令の前にすることができます。ジョブは指定された位置より前に終了します。",
         "blockPosition": "ブロック位置",
-        "ignoreAdmissionTimes": "許可時間を無視",
-        "tagName": "タグ名"
+        "ignoreAdmissionTimes": "ジョブの実行は、許可時間によって制限することができますが、このオプションは、許可時間を無視し、ジョブの開始を強制します。",
+        "tagName": "スケジュールから作成されたオーダーに割り当てられるタグはいくつでも追加できます。"
       },
       "script": {
         "name": "スクリプトインクルードは、定期的に発生するコードスニペットをジョブスクリプトに含めるために使用します。スクリプトインクルード名は、インベントリー内で一意です。スクリプトインクルード名には、ドットやハイフンなど、ほとんどのユニコード文字を使用できますが、先頭や末尾のドットやハイフンは使用できません。",
         "documentation": "スクリプトと一緒に表示されるドキュメントへの参照を追加することができます。リソース画面で、ドキュメントを管理することができます。",
-        "title": "スクリプトインクルードタイトル",
+        "title": "スクリプトインクルードは自由に設定できます。",
         "script": "スクリプトインクルードの内容には、ジョブスクリプトでの使用に応じて、シェルコマンドやPerl、PowerShellなどのスクリプト言語用のコードを含めることができます。",
         "autocompleteShortCut": "利用可能なスクリプトインクルードのリストを取得するには、Ctrl+Spaceを使用します"
       },
@@ -2167,7 +2168,7 @@
             "monthTo": "報告期間の終了日を指定します。yyyy-mm形式の絶対値または2mなどの相対値を指定できます。空の場合、最後の月が使用されます。"
           },
           "relative": {
-            "from": "T報告期間の開始は、過去の発生時点からFrom*単位で開始します： \n単位=月, From=12, Count=12 --> 過去12ヶ月」とする",
+            "from": "報告期間の開始は、過去の発生時点からFrom*単位で開始します： \n単位=月, From=12, Count=12 --> 過去12ヶ月」とする",
             "unit": "報告期間を発生時点から過去に延長する単位を決定します： \n単位=年, From=1, Count=1 --> 過去１年間",
             "count": "報告期間の終わりは、過去の発生時点から(From-Count+1)*単位。月は頻度で計算。年： 12, Quarter: 四半期の最終月など"
           },
@@ -2184,21 +2185,21 @@
       "workflow": {
         "name": "ワークフロー名は、インベントリー内で一意です。ほとんどのユニコード文字が使用可能で、ドットやハイフンも使用できますが、先頭または末尾のドットやハイフンは使用できません。",
         "jobResourceNames": "ジョブリソースは、複数のジョブやワークフローで使用できる共有変数を保持します。",
-        "documentation": "ドキュメント",
-        "title": "ワークフローのタイトル",
-        "timeZone": "許可時間タイムゾーン",
-        "allowUndeclared": "未宣言を許可",
-        "duration": "Duration.",
+        "documentation": "ワークフローと一緒に表示されるドキュメントへの参照を追加することができます。リソース画面で、ドキュメントを管理することができます。",
+        "title": "ワークフローのタイトルは自由に設定できます。",
+        "timeZone": "タイムゾーンは、許可時間の計算とサイクル命令に使用されます。デフォルトでは、ユーザープロファイルで指定されたタイムゾーンが使用されます。",
+        "allowUndeclared": "オーダーから宣言されていない変数を許可します。これには、データ型や必須使用かどうかがチェックされていない変数をオーダーが持つことができることを含みます。オーダーから利用できない宣言されていない変数を参照する場合、ジョブは失敗します。",
+        "duration": "期間",
         "board": {
-          "expectBoardName": "通知ボード名",
-          "boardNames": "通知ボード登録",
-          "expectBoardExpression": "ExpectNotice条件式",
-          "consumeBoardExpression": "ConsumeNotice条件式",
-          "whenNotAnnounced": "whenNotAnnounced."
+          "expectBoardName": "通知ボード名はインベントリーの中で一意である必要があります。ほとんどのユニコード文字、ドット、ハイフンが使用できますが、先頭または末尾のドットやハイフンは使用できません。",
+          "boardNames": "通知ボード名はいくつでも指定できます。",
+          "expectBoardExpression": "ExpectNotice条件式は、1つの通知ボードを指定し、ブール論理を指定するために使用することができます： ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. 通知ボード名は引用符で囲まれ、&& (および) 演算子と || (または) 演算子はブラケットを含めて任意で使用できます。",
+          "consumeBoardExpression": "ConsumeNotice条件式は、1つの通知ボードを指定し、ブール論理を指定するために使用することができます： ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD' 。通知ボード名は引用符で囲まれ、&&（および）演算子および ||（または）演算子は、ブラケットを含めて任意に使用することができます。",
+          "whenNotAnnounced": "デフォルトでは、通知は待機されます。続行オプションを使用すると、通知がない日でもオーダーをすぐに続行することができます。スキップオプションは、通知がない日に現在の命令をスキップします。"
         },
         "finish": {
           "message": "オーダーに添付され、オーダー履歴に表示される「メッセージ」を指定することができます",
-          "unsuccessful": "失敗",
+          "unsuccessful": "デフォルトでは、Finish命令はオーダー成功の履歴でワークフローから離脱させます。このチェックボックスを使用することで、オーダー失敗の履歴でワークフローから離脱させることができます。",
           "successful": "成功",
           "unchanged": "未変更"
         },
@@ -2208,33 +2209,33 @@
           "returnCode": "リターンコード"
         },
         "options": {
-          "stopOnFailure": "失敗時停止"
+          "stopOnFailure": "この設定は、Lock、ConsumeNotices、Cycle などの命令に影響します。これにより、エラーが発生した場合の命令は、それぞれのLock命令、ConsumeNotices命令、Cycle命令の最初に戻るのではなく、現在の命令で停止します。"
         },
         "fileWatch": {
           "directory": "監視する受信ファイルのディレクトリー",
-          "regex": "監視する受信ファイル名の正規表現"
+          "regex": "監視する受信ファイル名の正規表現、例えば、.*は全てのファイルを意味し、.*は拡張子が.txtのファイルを意味する。"
         },
         "fork": {
           "joinVariables": "Fork命令で分岐したオーダー変数は、Join命令に到達したときに親オーダーに追加されます。",
           "joinIfFailed": "失敗時Join"
         },
         "forkList": {
-          "children": "オーダー変数",
-          "childToId": "オーダーID",
-          "joinIfFailed": "失敗時Join",
-          "subagent": "サブエージェント",
+          "children": "ForkList命令のためのリスト変数： 要素のリストを保持するオーダー変数の名前を指定します。リスト変数の各要素に対して、割り当てられたForkList命令から動的に分岐が作成される。リスト変数の要素数は、子オーダーによって並列に実行されるForkList命令の並列分岐の数を決定します。",
+          "childToId": "オーダーID分岐設定用のリスト要素: 動的に作成されるべき分岐の一意なオーダーIDを保持する、選択されたリスト変数内の要素の名前",
+          "joinIfFailed": "失敗した場合、子オーダーは終了する。親オーダーはFAILED状態になる",
+          "subagent": "ForkList命令内でジョブを並列実行するために利用可能なすべてのエージェントが使用されるサブエージェントクラスターを選択できます。",
           "agentAssignment": "ForkList命令には、サブエージェントクラスターが割り当てられます。サブエージェント・クラスターの全てのサブエージェント上でジョブが並列実行されます。リストから実行するサブエージェントを選択指定する方法と、サブエージェントを指定する式を入力する方法があります。サブエージェントクラスターを指定する式の入力はワークフロー変数の名前を指定し、オプションでサブエージェントクラスターを指定する順序を持たせることができます。",
-          "agentCluster": "エージェントクラスター",
-          "subagentClusterIdExpr": "サブエージェントクラスターID 式",
-          "infoOfListVariable": "リスト変数 改行 \n リンク %paste link%",
-          "infoOfSubagentCluster": "サブエージェント変数 改行 \n リンク %paste link%"
+          "agentCluster": "エージェントクラスターは、別の入力フィールドの式で指定されたサブエージェントクラスターIDから選択されます。",
+          "subagentClusterIdExpr": "サブエージェントクラスターID式は変数からサブエージェントクラスターIDを指定します。式が指定されない場合、js7ForkListSubagentClusterId変数が使用されます。変数が指定された場合は、その変数にサブエージェントクラスターIDを格納する必要があります。",
+          "infoOfListVariable": "ForkList命令のリスト変数使用法については、%https://kb.sos-berlin.com/x/ZLrAAw% のドキュメントを参照してください。",
+          "infoOfSubagentCluster": "サブエージェントクラスターでの ForkList命令の使用については、%https://kb.sos-berlin.com/x/KQiwBQ% のドキュメントを参照してください。"
         },
         "stickySubagent": {
-          "agentAssignment": "エージェント指定",
-          "subagent": "サブエージェント",
-          "agentCluster": "エージェントクラスター",
-          "subagentClusterIdExpr": "サブエージェントクラスターID 式",
-          "infoMessage": "スティッキーサブエージェント 改行 \n リンク %paste link%"
+          "agentAssignment": "StickySubagent命令にはサブエージェントクラスターが割り当てられ、そこから1つのサブエージェントが選択されます。割り当てには2つのオプションがあります： \n*リストから選択できる サブエージェントクラスター の選択。\n*サブエージェントクラスターID を指定する式の入力。これには、ワークフロー変数を指定することが含まれ、オプションでサブエージェントクラスターを指定する順序によって運ばれます。",
+          "subagent": "StickySubagent命令内でジョブを実行するために使用される1つのサブエージェントのサブエージェントクラスターを選択できます",
+          "agentCluster": "エージェントクラスターは、別の入力フィールドの式によって指定されるサブエージェントクラスターから選択されます",
+          "subagentClusterIdExpr": "サブエージェントクラスターID 式は変数からサブエージェントクラスターIDを指定します。式が指定されない場合、指定されたエージェントクラスターの任意のサブエージェントが使用されます。変数が指定された場合、その変数にサブエージェントクラスターIDが格納されます",
+          "infoMessage": " 詳細は%https://kb.sos-berlin.com/x/GQ6wBQ%のドキュメントを参照してください。"
         },
         "if": {
           "predicate": "If命令の述部は、「true」または「false」と評価される条件式です。"
@@ -2590,8 +2591,8 @@
     "label.currentBlock": "今のブロックから回復",
     "label.resumeLabel": "ラベルから回復",
     "label.resumeLabelPosition": "ポジションから回復",
-    "label.force": "強制",
-    "label.noticeSpaceKey": "noticeSpaceKey",
+    "label.force": "強制再開",
+    "label.noticeSpaceKey": "通知予定日時",
     "button.allOrders": "全オーダー",
     "button.cancel": "キャンセル",
     "button.cancelSoftly": "ソフトキャンセル",
@@ -2625,7 +2626,7 @@
     "placeholder.selectBlockPosition": "ブロック位置選択",
     "placeholder.enterCycleEndTime": "hh:mm:ssか、秒で入力",
     "placeholder.enterPosition": "ポジションを入力",
-    "placeholder.noticeSpaceKey": "Plan key of the plan",
+    "placeholder.noticeSpaceKey": "通知予定日時",
     "message.noVariableAvailable": "変数はありません",
     "message.orderModificationNotAllowed": "オーダーステート{{state}}は変更できません",
     "message.noLogHistoryFound": "このオーダーにはログがありません",
@@ -2660,8 +2661,8 @@
     },
     "sleepState": {
       "label": {
-        "sleepState": "Sleep State",
-        "until": "Until"
+        "sleepState": "スリープステート",
+        "until": "まで"
       }
     }
   },
@@ -3028,15 +3029,15 @@
       "label.expectingOrders": "Expectオーダー",
       "label.expirationDate": "有効期限",
       "label.postOrderToExpirationDate": "通知ID有効期限",
-      "label.noticeKey": "Notice Key",
-      "label.planKey": "Plan Key",
+      "label.noticeKey": "実行計画ID",
+      "label.planKey": "通知予定日",
       "button.post": "PostNotice",
       "button.postAll": "全てPostNotice",
       "button.delete": "通知削除",
       "button.deleteAll": "全通知削除",
       "placeholder.enterNoticeId": "通知ID入力",
-      "placeholder.enterNoticeKey": "Enter Notice Key",
-      "placeholder.enterPlanKey": "Enter Plan Key"
+      "placeholder.enterNoticeKey": "実行計画ID入力",
+      "placeholder.enterPlanKey": "通知予定日入力"
     },
     "calendar": {
       "label.validity": "有効期間",
@@ -3157,7 +3158,7 @@
     "placeholder.enterNonNegativeNumber": "負ではない数を入力",
     "placeholder.enterPositiveInteger": "正の整数を入力",
     "placeholder.enterNonNegativeInteger": "負ではない整数を入力",
-    "placeholder.enterKioskInteger": "0 or >10 sec",
+    "placeholder.enterKioskInteger": "0 または >10秒",
     "cleanup": {
       "time_zone": "クリーンアップサービスの開始時間と期間に適用されるタイムゾーンの指定します",
       "period": "クリーンアップサービスを実行する曜日を指定します。週の最初の日は月曜日とみなされます。JS7を最初にインストールしたときは、1週間分が指定されています。この設定がないと、クリーンアップサービスは開始されません。",
@@ -3187,7 +3188,7 @@
       "days_ahead_plan": "オーダーを生成し計画済状態で利用可能にする日数を指定します。",
       "days_ahead_submit": "計画済オーダーがコントローラーに送信され、保留状態で利用可能になる日数を指定します。",
       "projections_month_ahead": "翌月のプロジェクション",
-      "submit_orders_individually": "submit_orders_individually.",
+      "submit_orders_individually": "デイリープランサービスでは、デフォルトで1つの取引からオーダーが登録され、オーダーが失敗するとロールバックされます。この設定により、オーダーは個別に登録され、他のオーダー登録の失敗とは独立して登録されます。デイリープランサービスでは、オーダーを個別に登録するため、より多くの時間を要します。",
       "age_of_plans_to_be_closed_automatically": "age_of_plans_to_be_closed_automatically."},
     "joc": {
       "force_comments_for_audit_log": "trueに設定すると、オーダーの追加、キャンセルなど、オブジェクトに適用される変更について、操作ログにコメントを強制できます。",
@@ -3256,12 +3257,12 @@
       "minimum_password_length": "最小パスワード長"
     },
     "kiosk": {
-      "kiosk_role": "kiosk_role",
-      "view_dashboard_duration": "view_dashboard_duration",
-      "view_monitor_order_notification_duration": "view_monitor_order_notification_duration",
-      "view_monitor_system_notification_duration": "view_monitor_system_notification_duration",
-      "view_history_tasks_duration": "view_history_tasks_duration",
-      "view_history_orders_duration": "view_history_orders_duration"
+      "kiosk_role": "キオスクモードには、特定のロールを作成する必要があります。キオスクロールは JOCコックピットには付属していません。ロールは、コントローラーと JOCコックピットの読み取り専用権限を持つユーザーが作成する必要があります。デフォルトのロール名は「kiosk」です。ユーザーはロール名を変更できます。",
+      "view_dashboard_duration": "ダッシュボード画面が再表示される時間を秒単位で指定します。値0はビューをキオスク・モードから除外します。値>10は、ビューをキオスクモードで表示します。",
+      "view_monitor_order_notification_duration": "モニター->オーダー通知画面を表示する時間を秒単位で指定します。値0はビューをキオスクモードから除外します。値>10は、ビューをキオスクモードで表示します。",
+      "view_monitor_system_notification_duration": "モニター->システム通知画面を表示する時間を秒単位で指定します。値0は、ビューをキオスクモードから除外します。値が10を超えると、ビューはキオスクモードで表示されます。",
+      "view_history_tasks_duration": "履歴->タスク画面が表示される時間を秒単位で指定します。値0は、ビューをキオスクモードから除外します。値>10は、ビューをキオスクモードで表示します。",
+      "view_history_orders_duration": "履歴->オーダー画面が表示される時間を秒単位で指定します。値0はビューをキオスクモードから除外します。値>10はキオスクモードでビューを表示します。"
     }
   },
   "user": {
@@ -3825,16 +3826,16 @@
     "label.filtersOrdersAsWell": "オーダーフィルタリング",
     "label.ascending": "昇順",
     "label.descending": "降順",
-    "label.jobNotRestartable": "再開始できないジョブ",
-    "label.whenNotAnnounced": "When not announced",
-    "label.wait": "Wait",
-    "label.dontWait": "Don't wait",
-    "label.skipWhenNoNotice": "Job not restartable",
-    "label.boardType": "Board Type",
-    "label.global": "GLOBAL",
-    "label.plannable": "PLANNABLE",
-    "label.sleep": "Sleep",
-    "label.duration": "Duration",
+    "label.jobNotRestartable": "再開できないジョブ",
+    "label.whenNotAnnounced": "アナウンスされていない場合",
+    "label.wait": "待機",
+    "label.dontWait": "待機しない",
+    "label.skipWhenNoNotice": "再開できないジョブ",
+    "label.boardType": "通知ボードタイプ",
+    "label.global": "グローバル",
+    "label.plannable": "スケジューラブル",
+    "label.sleep": "スリープ",
+    "label.duration": "期間",
     "button.addScheme": "サイクル追加",
     "button.zoomIn": "拡大",
     "button.zoomOut": "縮小",
