@@ -415,11 +415,12 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-sm-4 form-control-label" translate>order.label.noticeSpaceKey</label>
+          <label class="col-sm-4 form-control-label" translate>resource.board.label.planKey</label>
           <div class="col-sm-6">
-            <input #noticeSpaceKey="ngModel"  [(ngModel)]="order.planId.noticeSpaceKey" autocomplete="off"
-                   placeholder="{{'order.placeholder.noticeSpaceKey' | translate}}" class="form-control" identifierValidation maxlength="30" name="noticeSpaceKey{{orderIndex}}"
-                   type="text">
+            <app-date-input [object]="order.planId" [attributeDate]="'noticeSpaceKey'"
+                            [ignoreThirdParam]="true" [isAllowClear]="true" [isPreviousDateDisabled]="true"
+                            [name]="'noticeSpaceKey'" [dateFormat]="dateFormat"
+                            [placeholder]="( dateFormat | uppercase )"></app-date-input>
           </div>
         </div>
         <!-- Block Position -->

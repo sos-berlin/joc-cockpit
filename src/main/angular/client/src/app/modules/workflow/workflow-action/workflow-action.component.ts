@@ -738,7 +738,7 @@ export class AddOrderModalComponent {
   }
 
   async onSubmit(): Promise<void> {
-    await this.checkPlanIds(this.orders); // wait for modal to resolve
+    await this.checkPlanIds(this.orders);
 
     this.submitted = true;;
 
@@ -751,7 +751,10 @@ export class AddOrderModalComponent {
         arguments: {}
       };
       if (order?.planId?.noticeSpaceKey) {
-        orderObj.planId = order.planId
+        orderObj.planId = {
+          planSchemaId: 'DailyPlan',
+          noticeSpaceKey: this.coreService.getStringDate(order.planId.noticeSpaceKey),
+        };
       }
       if (order.openClosedPlan) {
         orderObj.openClosedPlan = order.openClosedPlan
@@ -1827,13 +1830,15 @@ export class AddOrderModalComponent {
       const affectedOrders = [];
 
       orders.forEach(order => {
-        const id = order.planId?.noticeSpaceKey;
-        if (id && this.planIds) {
-          const matched = this.planIds.find(plan =>
-            plan.planId?.noticeSpaceKey?.includes(id) && plan.state?._text === 'CLOSED'
-          );
-          if (matched) {
-            affectedOrders.push({ order, id });
+        if(order?.planId?.noticeSpaceKey) {
+          const id = this.coreService.getStringDate(order.planId?.noticeSpaceKey);
+          if (id && this.planIds) {
+            const matched = this.planIds.find(plan =>
+              plan.planId?.noticeSpaceKey?.includes(id) && plan.state?._text === 'CLOSED'
+            );
+            if (matched) {
+              affectedOrders.push({order, id});
+            }
           }
         }
       });
