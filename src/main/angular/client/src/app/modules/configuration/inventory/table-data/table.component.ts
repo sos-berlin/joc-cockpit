@@ -353,10 +353,13 @@ export class TableComponent implements OnChanges, OnDestroy {
             schedulerIds: this.getAllowedControllerOnly(),
             preferences: this.preferences,
             display: this.preferences.auditLog,
-            data: origin,
             path: this.dataObj.path,
-            list: Array.from(this.mapOfCheckedId.values()),
+            data: {
+              objectType: this.objectType,
+              list: Array.from(this.mapOfCheckedId.values())
+            },
             isRemove: true,
+            isSelectedObjects: true,
           },
           nzFooter: null,
           nzClosable: false,

@@ -2188,7 +2188,7 @@ export class DeployComponent {
     const obj: any = {
       folder: path || '/',
       recursive: !!cb,
-      onlyValidObjects: true,
+      onlyValidObjects: false,
       withRemovedObjects: true
     };
     if (this.data && this.data.object) {
@@ -2238,7 +2238,7 @@ export class DeployComponent {
     }
 
     forkJoin(APIs).subscribe({
-      next: (res: any[]) => {
+      next: (res: any) => {
         let mergeObj: any = {};
         if (res.length > 1) {
           if (res[0]?.path && res[1]?.path) {
@@ -2249,13 +2249,40 @@ export class DeployComponent {
             mergeObj = res[1];
           }
         } else if (res.length === 1 && res[0]?.path) {
-          // Use the single response if only one API call was successful
           mergeObj = res[0];
         }
 
         let tree = [];
         if (mergeObj.folders && mergeObj.folders.length > 0 ||
           ((mergeObj.deployables && mergeObj.deployables.length > 0) || (mergeObj.releasables && mergeObj.releasables.length > 0))) {
+          if (this.isSelectedObjects) {
+            mergeObj.folders = [];
+            if (mergeObj.deployables) {
+              mergeObj.deployables = mergeObj.deployables.filter((item: any) => {
+                let flag = false;
+                item.checked = true;
+                for (let i in this.data.list) {
+                  if (this.data.list[i].name == item.objectName) {
+                    flag = true;
+                    break;
+                  }
+                }
+                return flag;
+              });
+            }
+            if (mergeObj.releasables) {
+              mergeObj.releasables = res.releasables.filter((item: any) => {
+                let flag = false;
+                for (let i in this.data.list) {
+                  if (this.data.list[i].name == item.objectName) {
+                    flag = true;
+                    break;
+                  }
+                }
+                return flag;
+              });
+            }
+          }
 
           tree = this.coreService.prepareTree({
             folders: [{
