@@ -2449,7 +2449,7 @@ export class DeployComponent {
           if (objDep.configuration) {
             if (nodes[i].deleted || self.isRevoke) {
               if (objDep.configuration.objectType === 'FOLDER') {
-                objDep.configuration.recursive = true;
+                objDep.configuration.recursive = self.object.isRecursive;
               }
               self.object.deleteObj.deployConfigurations.push(objDep);
             } else {
@@ -2673,7 +2673,6 @@ export class DeployComponent {
     const obj: any = {
       includeLate: this.includeLate,
       controllerIds: this.selectedSchedulerIds,
-      recursive: this.object.isRecursive
     };
     if (!this.isRevoke) {
       if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
