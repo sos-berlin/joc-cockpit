@@ -4007,6 +4007,33 @@
       "label.limit": "Limite",
       "label.offsets": "Décalages",
       "label.period": "Période"
+    },
+    "apiRequest": {
+      "label.apiRequest": "API Request",
+      "label.params": "Params",
+      "label.authorization": "Authorization",
+      "label.headers": "Headers",
+      "label.body": "Body",
+      "label.scripts": "Scripts",
+      "label.key": "Key",
+      "label.value": "Value",
+      "label.keyName": "Key Name",
+      "label.in": "In",
+      "label.header": "Header",
+      "label.query": "Query",
+      "label.clientId": "Client ID",
+      "label.clientSecret": "Client Secret",
+      "label.tokenUrl": "Token URL",
+      "button.sendRequest": "Send Request",
+      "button.addParam": "Add Param",
+      "button.addHeader": "Add Header",
+      "placeholder.apiRequest": "https://api.example.com",
+      "placeholder.key": "Key",
+      "placeholder.value": "Value",
+      "placeholder.apiKeyName": "e.g. X-API-KEY",
+      "placeholder.apiKeyValue": "Enter API key value",
+      "placeholder.keyValue": "{\"key\":\"value\"}",
+      "placeholder.script": "// write script here"
     }
   },
   "xml": {

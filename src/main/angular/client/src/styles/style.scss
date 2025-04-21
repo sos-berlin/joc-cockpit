@@ -4411,6 +4411,20 @@ aside {
   max-width: 270px;
 }
 
+#leftPanel-50.sticky {
+  float: none;
+  position: fixed;
+  top: 150px;
+  z-index: 6;
+  left: 0;
+  height: 100%;
+}
+
+.leftPanel-50 {
+  width: 58%;
+  max-width: 80%;
+}
+
 #leftPanel.sticky {
   float: none;
   position: fixed;
@@ -4452,7 +4466,9 @@ aside {
 #rightPanel, #rightPanel1, #rightPanel2 .m-l-290 {
   margin-left: 290px;
 }
-
+#rightPanel-50{
+  margin-left: 59%;
+}
 li a > i.remove {
   right: 10px;
   font-size: 15px;
@@ -9936,4 +9952,11 @@ cdk-virtual-scroll-viewport {
   background-color: #FFA640 !important;
   color: #FFA640;
   font-weight: bold;
+}
+
+#leftPanel-50.api-request{
+  left: auto;
+  top: auto !important;
+  height: 100%;
+  overflow: auto;
 }

@@ -1,10 +1,239 @@
-import {Component, inject} from '@angular/core';
+import {ChangeDetectorRef, Component, inject, ViewChild} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {isArray, sortBy} from "underscore";
 import {debounceTime} from "rxjs/operators";
 import {Subject} from "rxjs";
 import {CoreService} from '../../../../services/core.service';
 import {InventoryObject} from "../../../../models/enums";
+import {JsonEditorComponent, JsonEditorOptions} from "ang-jsoneditor";
+import {NzMessageService} from "ng-zorro-antd/message";
+import {ClipboardService} from "ngx-clipboard";
+
+interface KeyValue {
+  key: string;
+  value: string;
+}
+
+@Component({
+  selector: 'app-api-request',
+  templateUrl: './api-request.component.html'
+})
+
+
+export class ApiRequestComponent {
+  model = {
+    url: '',
+    method: 'GET',
+    headers: [] as KeyValue[],
+    params: [] as KeyValue[],
+    body: ''
+  };
+  auth = {
+    type: 'None' as 'None' | 'API Key' | 'Bearer Token' | 'Basic Auth' | 'OAuth 2.0',
+    apiKey: {name: '', value: '', in: 'header' as 'header' | 'query'},
+    token: '',
+    basic: {username: '', password: ''},
+    oauth2: {clientId: '', clientSecret: '', tokenUrl: ''}
+  };
+
+  authTypes = [
+    'None',
+    'API Key',
+    'Bearer Token',
+    'Basic Auth',
+    'OAuth 2.0'
+  ];
+  methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'];
+  commonHeaders = [
+    'Accept',
+    'Content-Type',
+    'Authorization',
+    'Cache-Control',
+    'User-Agent',
+    'Cookie',
+    'X-Requested-With',
+    'Origin',
+    'Referer',
+    'Accept-Language',
+    'x-access-token'
+  ];
+  commonHeaderValues: Record<string, string[]> = {
+    'Accept': ['application/json', 'text/html', '*/*'],
+    'Content-Type': ['application/json', 'application/xml', 'text/plain'],
+    'Authorization': ['Bearer ', 'Basic '],
+    'Cache-Control': ['no-cache', 'no-store', 'max-age=0'],
+  };
+
+  filteredKeys: string[] = [];
+  filteredValues: string[] = [];
+
+  response: any = null;
+  status: number | null = null;
+  responseHeaders: Record<string, string> = {};
+  options: any = new JsonEditorOptions();
+  isError = false;
+  data: any;
+  errorMsg = '';
+  errorText = '';
+  edit = false;
+  preferences: any = {};
+
+  @ViewChild('editor', {static: false}) editor!: JsonEditorComponent;
+
+  constructor(
+    private coreService: CoreService,
+    private msg: NzMessageService,
+    private ref: ChangeDetectorRef,
+    private clipboardService: ClipboardService
+  ) {
+    this.options.mode = 'code';
+    this.options.onEditable = () => {
+      return this.edit;
+    };
+    this.options.onChange = () => {
+      try {
+        this.isError = false;
+        this.editor.get();
+      } catch (err) {
+        this.isError = true;
+        this.errorMsg = '';
+      }
+      this.ref.detectChanges();
+    };
+  }
+
+  ngOnInit(): void {
+    this.model.params = [{key: '', value: ''}];
+    this.model.headers = [{key: '', value: ''}];
+    this.filteredKeys = this.commonHeaders.slice();
+
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+
+    this.coreService.get('assets/i18n/json-editor-text_' + this.preferences.locale + '.json').subscribe((data) => {
+      this.options.languages = {};
+      this.options.languages[this.preferences.locale] = data;
+      this.options.language = this.preferences.locale;
+      this.editor.setOptions(this.options);
+    });
+    this.options.modes = ['code', 'tree'];
+  }
+
+
+  addHeader(): void {
+    this.model.headers.push({key: '', value: ''});
+  }
+
+  removeHeader(i: number): void {
+    this.model.headers.splice(i, 1);
+  }
+
+  addParam(): void {
+    this.model.params = [...this.model.params, {key: '', value: ''}];
+  }
+
+  removeParam(i: number): void {
+    this.model.params = this.model.params.filter((_, index) => index !== i);
+  }
+
+  filterHeaderKey(value: string): void {
+    const v = value.toLowerCase();
+    this.filteredKeys = this.commonHeaders
+      .filter(h => h.toLowerCase().includes(v));
+  }
+
+  filterHeaderValue(key: string, value: string): void {
+    const list = this.commonHeaderValues[key] || [];
+    const v = value.toLowerCase();
+    this.filteredValues = list
+      .filter(val => val.toLowerCase().includes(v));
+  }
+
+  send(): void {
+    const hdrs = this.arrayToMap(this.model.headers);
+
+    switch (this.auth.type) {
+      case 'API Key':
+        if (this.auth.apiKey.name) {
+          if (this.auth.apiKey.in === 'header') {
+            hdrs[this.auth.apiKey.name] = this.auth.apiKey.value;
+          } else {
+            this.model.params.push({
+              key: this.auth.apiKey.name,
+              value: this.auth.apiKey.value
+            });
+          }
+        }
+        break;
+
+      case 'Bearer Token':
+        if (this.auth.token) {
+          hdrs['Authorization'] = `Bearer ${this.auth.token}`;
+        }
+        break;
+
+      case 'Basic Auth':
+        const {username, password} = this.auth.basic;
+        if (username || password) {
+          const creds = btoa(`${username}:${password}`);
+          hdrs['Authorization'] = `Basic ${creds}`;
+        }
+        break;
+
+      case 'OAuth 2.0':
+        const token = (this.auth as any).oauth2?.accessToken;
+        if (token) {
+          hdrs['Authorization'] = `Bearer ${token}`;
+        }
+        break;
+
+    }
+
+    const {url, method, params, body} = this.model;
+    const paramMap = this.arrayToMap(params);
+
+    this.coreService
+      .requestTest(method, url, hdrs, paramMap, body)
+      .subscribe({
+        next: res => {
+          console.log(res, ":::")
+          this.status = res.status;
+          this.response = res.body;
+          this.responseHeaders = {};
+          this.data = this.response;
+          this.errorText = res.statusText
+
+          res.headers.keys().forEach(key => {
+            this.responseHeaders[key] = res.headers.get(key)!;
+          });
+        },
+        error: err => {
+          console.error('HTTP Error:', err);
+          const code = err.status ?? 'Unknown';
+          const text = err.statusText || err.message || 'Request failed';
+          this.status = code
+          this.errorText = text
+          this.msg.error(`Error ${code}: ${text}`);
+        },
+        complete: () => {
+        }
+      });
+  }
+
+
+  private arrayToMap(arr: KeyValue[]): Record<string, string> {
+    return arr
+      .filter(e => e.key.trim() !== '')
+      .reduce((m, e) => {
+        m[e.key] = e.value;
+        return m;
+      }, {} as Record<string, string>);
+  }
+
+  copyToClipboard(): void {
+    this.coreService.showCopyMessage(this.msg);
+    this.clipboardService.copyFromContent(this.editor.getText());
+  }
+}
 
 @Component({
   selector: 'app-job-wizard',
@@ -42,13 +271,16 @@ export class JobWizardComponent {
   ];
 
   allowEmptyArguments = false;
-
+  sideBar = {
+    isVisible: false
+  }
   private searchTerm = new Subject<string>();
 
   constructor(private coreService: CoreService, private activeModal: NzModalRef) {
   }
 
   ngOnInit(): void {
+    this.sideBar.isVisible = false
     this.existingJob = this.modalData.existingJob;
     this.allowEmptyArguments = sessionStorage['allowEmptyArguments'] == 'true';
     this.node = this.modalData.node;
@@ -62,10 +294,10 @@ export class JobWizardComponent {
 
   isAnyRequiredVariable() {
     this.job.params.forEach(param => {
-      if(!this.job.hasRequiredArguments) {
+      if (!this.job.hasRequiredArguments) {
         this.job.hasRequiredArguments = param.required;
       }
-      if(param.required) {
+      if (param.required) {
         this.wizard.setOfCheckedValue.add(param.name);
       }
     });
@@ -479,5 +711,9 @@ export class JobWizardComponent {
         });
       }
     }
+  }
+
+  openSideBar(): void {
+    this.sideBar.isVisible = true;
   }
 }

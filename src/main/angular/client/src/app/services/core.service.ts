@@ -1,5 +1,5 @@
 import {Injectable, ViewContainerRef} from '@angular/core';
-import {HttpClient, HttpRequest, HttpResponse} from '@angular/common/http';
+import {HttpClient, HttpRequest, HttpResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import {Router} from '@angular/router';
 import {ClipboardService} from 'ngx-clipboard';
 import {filter, Observable} from 'rxjs';
@@ -3715,6 +3715,24 @@ export class CoreService {
     }
 
     return value;
+  }
+
+  requestTest(
+    method: string,
+    url: string,
+    headers: Record<string, string>,
+    params: Record<string, string>,
+    body: any
+  ): Observable<any> {
+    const httpHeaders = new HttpHeaders(headers);
+    let httpParams = new HttpParams();
+    Object.keys(params).forEach(key => httpParams = httpParams.set(key, params[key]));
+    return this.http.request(method, url, {
+      headers: httpHeaders,
+      params: httpParams,
+      body: body ? JSON.parse(body) : null,
+      observe: 'response'
+    });
   }
 
 }

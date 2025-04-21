@@ -30,7 +30,7 @@ import {
   PublishChangeModalComponent, ShowDependenciesModalComponent,
   GroupTagsComponent,
   AddGropusModalComponent,
-  AddTagsToGropusModalComponent
+  AddTagsToGropusModalComponent,
 } from './inventory.component';
 import {TableComponent} from './table-data/table.component';
 import {
@@ -56,7 +56,7 @@ import {CalendarComponent, FrequencyModalComponent} from './calendar/calendar.co
 import {FileOrderComponent} from './file-order/file-order.component';
 import {JobResourceComponent, TestMailComponent} from './job-resource/job-resource.component';
 import {AddRestrictionComponent, PeriodComponent, RunTimeComponent} from './runtime/runtime.component';
-import {JobWizardComponent} from './job-wizard/job-wizard.component';
+import {ApiRequestComponent, JobWizardComponent} from './job-wizard/job-wizard.component';
 import {
   DurationWithPercentageRegexValidator,
   EnvVariableValidator,
@@ -70,6 +70,13 @@ import {FavoriteListComponent} from "./favorite-list/favorite-list.component";
 import {JobTemplateComponent, UpdateJobTemplatesComponent} from './job-template/job-template.component';
 import {TreeModalComponent} from "./runtime/tree-modal/tree.component";
 import {MonthValidator, RelativeMonthValidator, ReportComponent} from './report/report.component';
+import {ReactiveFormsModule} from "@angular/forms";
+import {NzDividerModule} from "ng-zorro-antd/divider";
+import {NzCardModule} from "ng-zorro-antd/card";
+import {NzFormModule} from "ng-zorro-antd/form";
+import {WorkflowModule} from "../../workflow/workflow.module";
+import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
+import {NzAlertModule} from "ng-zorro-antd/alert";
 
 const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, CalendarComponent, ScheduleComponent, ScriptComponent, LockComponent,
   WorkflowComponent, BoardComponent, JobResourceComponent, JobTemplateComponent, FileOrderComponent, TableComponent, FrequencyModalComponent,
@@ -77,7 +84,7 @@ const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, Calen
   NotificationComponent, RepositoryComponent, GitComponent, ScriptEditorComponent, UpdateJobTemplatesComponent, CreateTagModalComponent,
   UpdateObjectComponent, FindAndReplaceComponent, ShowObjectsComponent, CycleInstructionComponent, UpdateJobComponent, PeriodComponent,
   ShowReferenceComponent, AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, AddRestrictionComponent, TestMailComponent,
-  RunTimeComponent, TreeModalComponent, JobWizardComponent, FacetEditorComponent, FavoriteListComponent,ChangeModalComponent,PublishChangeModalComponent,ShowDependenciesModalComponent, NewDraftComponent, NoticeBoardEditorComponent, ReportComponent, ChangeImpactDialogComponent, EncryptArgumentModalComponent,ShowAgentsModalComponent, GroupTagsComponent, AddGropusModalComponent, AddTagsToGropusModalComponent ];
+  RunTimeComponent, TreeModalComponent, JobWizardComponent, FacetEditorComponent, FavoriteListComponent, ChangeModalComponent, PublishChangeModalComponent, ShowDependenciesModalComponent, NewDraftComponent, NoticeBoardEditorComponent, ReportComponent, ChangeImpactDialogComponent, EncryptArgumentModalComponent, ShowAgentsModalComponent, GroupTagsComponent, AddGropusModalComponent, AddTagsToGropusModalComponent, ApiRequestComponent];
 
 @NgModule({
   imports: [
@@ -88,9 +95,19 @@ const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, Calen
     NzTabsModule,
     NzDrawerModule,
     NzSwitchModule,
-    NgJsonEditorModule
+    NgJsonEditorModule,
+    ReactiveFormsModule,
+    NzDividerModule,
+    NzCardModule,
+    NzFormModule,
+    WorkflowModule,
+    NzAutocompleteModule,
+    NzAlertModule
   ],
   providers: [DatePipe, CalendarService, InventoryService],
+  exports: [
+    JsonEditorModalComponent
+  ],
   declarations: [
     LabelValidator,
     EnvVariableValidator,
