@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, inject, ViewChild} from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, inject, Output, ViewChild} from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {isArray, sortBy} from "underscore";
 import {debounceTime} from "rxjs/operators";
@@ -8,6 +8,7 @@ import {InventoryObject} from "../../../../models/enums";
 import {JsonEditorComponent, JsonEditorOptions} from "ang-jsoneditor";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {ClipboardService} from "ngx-clipboard";
+import { Editor as AceEditor } from 'ace-builds/src-noconflict/ace';
 
 interface KeyValue {
   key: string;
@@ -78,13 +79,15 @@ export class ApiRequestComponent {
   edit = false;
   preferences: any = {};
 
+  @Output() configSaved = new EventEmitter<any>();
   @ViewChild('editor', {static: false}) editor!: JsonEditorComponent;
 
   constructor(
     private coreService: CoreService,
     private msg: NzMessageService,
     private ref: ChangeDetectorRef,
-    private clipboardService: ClipboardService
+    private clipboardService: ClipboardService,
+    private activeModal: NzModalRef
   ) {
     this.options.mode = 'code';
     this.options.onEditable = () => {
@@ -117,7 +120,28 @@ export class ApiRequestComponent {
     });
     this.options.modes = ['code', 'tree'];
   }
+  ngAfterViewInit() {
+    this.waitForAceAndHook();
+  }
 
+  private waitForAceAndHook() {
+    const handle = setInterval(() => {
+      const jsonEditorInstance = (this.editor as any).editor as any;
+      if (jsonEditorInstance?.aceEditor) {
+        clearInterval(handle);
+        this.hookAceSelection(jsonEditorInstance.aceEditor as AceEditor);
+      }
+    }, 50);
+  }
+
+  private hookAceSelection(ace: AceEditor) {
+    ace.getSession().selection.on('changeSelection', () => {
+      const selectedText = ace.getSelectedText();
+      if (selectedText) {
+        console.log('User highlighted:', selectedText);
+      }
+    });
+  }
 
   addHeader(): void {
     this.model.headers.push({key: '', value: ''});
@@ -217,6 +241,7 @@ export class ApiRequestComponent {
         complete: () => {
         }
       });
+    this.waitForAceAndHook();
   }
 
 
@@ -233,6 +258,34 @@ export class ApiRequestComponent {
     this.coreService.showCopyMessage(this.msg);
     this.clipboardService.copyFromContent(this.editor.getText());
   }
+
+  storeConfig(): void {
+    let bodyText
+    try {
+      bodyText = JSON.parse(this.model.body);
+    } catch {
+      bodyText = this.model.body;
+    }
+    const config = {
+      url: this.model.url,
+      method: this.model.method,
+      headers: this.model.headers,
+      params: this.model.params,
+      auth: this.auth,
+      body: bodyText
+    };
+    const json = JSON.stringify(config, null, 2);
+
+    this.clipboardService.copyFromContent(json);
+    this.coreService.showCopyMessage(this.msg);
+    this.configSaved.emit(json);
+  }
+
+  close(): void{
+    this.activeModal.close();
+  }
+
+
 }
 
 @Component({
@@ -271,9 +324,11 @@ export class JobWizardComponent {
   ];
 
   allowEmptyArguments = false;
+  apiRequest = false;
   sideBar = {
     isVisible: false
   }
+  savedRequestConfig: any;
   private searchTerm = new Subject<string>();
 
   constructor(private coreService: CoreService, private activeModal: NzModalRef) {
@@ -558,41 +613,41 @@ export class JobWizardComponent {
   }
 
   private updateParam(obj): void {
-    this.job.params.forEach(item => {
-      if (this.wizard.setOfCheckedValue.has(item.name)) {
-        if (obj.executable.TYPE === 'InternalExecutable') {
-          if (!obj.executable.arguments) {
-            obj.executable.arguments = [];
-          }
-          obj.executable.arguments.push({name: item.name, value: item.newValue});
-        } else if (this.node) {
-          if (!this.node.defaultArguments) {
-            this.node.defaultArguments = []
-          }
-          if (!this.checkAlreadyExistArgu(item)) {
-            this.node.defaultArguments.push({name: item.name, value: item.newValue + ''});
+      this.job.params.forEach(item => {
+        if (this.wizard.setOfCheckedValue.has(item.name)) {
+          if (obj.executable.TYPE === 'InternalExecutable') {
+            if (!obj.executable.arguments) {
+              obj.executable.arguments = [];
+            }
+            obj.executable.arguments.push({name: item.name, value: item.newValue});
+          } else if (this.node) {
+            if (!this.node.defaultArguments) {
+              this.node.defaultArguments = []
+            }
+            if (!this.checkAlreadyExistArgu(item)) {
+              this.node.defaultArguments.push({name: item.name, value: item.newValue + ''});
+            }
           }
         }
-      }
-    });
-    if (this.job.paramList && this.job.paramList.length > 0) {
-      for (const i in this.job.paramList) {
-        if (this.job.paramList[i].name) {
-          if (obj.executable.TYPE === 'InternalExecutable') {
-            obj.executable.arguments.push({name: this.job.paramList[i].name, value: this.job.paramList[i].newValue});
-          } else if (this.node) {
-            if (!this.checkAlreadyExistArgu(this.job.paramList[i])) {
-              if (this.job.paramList[i].newValue) {
-                this.node.defaultArguments.push({
-                  name: this.job.paramList[i].name,
-                  value: this.job.paramList[i].newValue + ''
-                });
+      });
+      if (this.job.paramList && this.job.paramList.length > 0) {
+        for (const i in this.job.paramList) {
+          if (this.job.paramList[i].name) {
+            if (obj.executable.TYPE === 'InternalExecutable') {
+              obj.executable.arguments.push({name: this.job.paramList[i].name, value: this.job.paramList[i].newValue});
+            } else if (this.node) {
+              if (!this.checkAlreadyExistArgu(this.job.paramList[i])) {
+                if (this.job.paramList[i].newValue) {
+                  this.node.defaultArguments.push({
+                    name: this.job.paramList[i].name,
+                    value: this.job.paramList[i].newValue + ''
+                  });
+                }
               }
             }
           }
         }
       }
-    }
   }
 
   private checkAlreadyExistArgu(item): boolean {
@@ -716,4 +771,26 @@ export class JobWizardComponent {
   openSideBar(): void {
     this.sideBar.isVisible = true;
   }
+
+  onApiConfigSaved(config: any) {
+    this.apiRequest = true;
+    this.savedRequestConfig = config;
+    const obj = {
+      executable: {
+        TYPE: 'InternalExecutable',
+        className: this.job.javaClass,
+        arguments: []
+      },
+      documentationName: this.job.assignReference,
+    };
+    if (obj.executable.TYPE === 'InternalExecutable') {
+      if (!obj.executable.arguments) {
+        obj.executable.arguments = [];
+      }
+      obj.executable.arguments.push({name: 'request', value: config});
+    }
+    this.activeModal.close(obj);
+  }
+
+
 }

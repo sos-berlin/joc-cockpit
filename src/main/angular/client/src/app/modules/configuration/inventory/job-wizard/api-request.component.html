@@ -1,363 +1,383 @@
 <div class="row">
-  <div class="col-lg-12">
-    <div class="sticky leftPanel-50  sticky api-request" id="leftPanel-50">
-      <div class="padding p-b-0">
-        <div class="m-t-sm box border p-a scroll-y " style="height: calc(100vh - 137px);">
-          <form #apiForm="ngForm" (ngSubmit)="send()">
+    <div class="col-lg-12">
+        <div class="sticky leftPanel-50  sticky api-request" id="leftPanel-50">
+            <div class="padding p-b-0">
+                <div class="m-t-sm box border p-a">
+                    <div class="scroll-y " style="height: calc(100vh - 214px);">
+                        <form #apiForm="ngForm" (ngSubmit)="send()">
 
-            <div class="form-group row">
-              <div class="col-sm-2">
-                <nz-select
-                  id="method"
-                  name="method"
-                  required
-                  [(ngModel)]="model.method"
-                >
-                  <nz-option
-                    *ngFor="let m of methods"
-                    [nzValue]="m"
-                    [nzLabel]="m"
-                  ></nz-option>
-                </nz-select>
-              </div>
+                            <div class="form-group row">
+                                <div class="col-sm-2">
+                                    <nz-select
+                                            id="method"
+                                            name="method"
+                                            required
+                                            [(ngModel)]="model.method"
+                                    >
+                                        <nz-option
+                                                *ngFor="let m of methods"
+                                                [nzValue]="m"
+                                                [nzLabel]="m"
+                                        ></nz-option>
+                                    </nz-select>
+                                </div>
 
-              <div class="col-sm-8">
-                <input
-                  class="form-control"
-                  id="url"
-                  name="url"
-                  required
-                  [(ngModel)]="model.url"
-                  placeholder="{{'workflow.apiRequest.placeholder.apiRequest' | translate}}"
-                />
-              </div>
-              <button class="btn btn-primary btn-sm"
-                      type="submit" translate>
-                workflow.apiRequest.button.sendRequest
-              </button>
-            </div>
+                                <div class="col-sm-7">
+                                    <input
+                                            class="form-control"
+                                            id="url"
+                                            name="url"
+                                            required
+                                            [(ngModel)]="model.url"
+                                            placeholder="{{'workflow.apiRequest.placeholder.apiRequest' | translate}}"
+                                    />
+                                </div>
+                                <button class="btn btn-primary btn-sm"
+                                        type="submit" translate>
+                                    workflow.apiRequest.button.sendRequest
+                                </button>
+                            </div>
 
-            <nz-tabset>
-              <!-- Params Tab -->
-              <nz-tab nzTitle="{{'workflow.apiRequest.label.params' | translate}}">
-                <nz-table
-                  [nzData]="model.params"
-                  [nzNoResult]="noDataTpl"
-                  [nzBordered]="true"
-                  [nzShowPagination]="false"
-                  nzSize="small"
-                >
-                  <thead>
-                  <tr>
-                    <th translate>workflow.apiRequest.label.key</th>
-                    <th translate>workflow.apiRequest.label.value</th>
-                    <th style="width:40px"></th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr *ngFor="let p of model.params; let i = index">
-                    <td class="pr-2">
-                      <input
-                        nz-input
-                        class="no-border"
-                        placeholder="{{'workflow.apiRequest.placeholder.key'| translate}}"
-                        [(ngModel)]="p.key"
-                        name="paramKey{{ i }}"
-                      />
-                    </td>
-                    <td class="pr-2">
-                      <input
-                        nz-input
-                        class="no-border"
-                        placeholder="{{'workflow.apiRequest.placeholder.value'| translate}}"
-                        [(ngModel)]="p.value"
-                        name="paramVal{{ i }}"
-                      />
-                    </td>
-                    <td class="text-center cur-point" (click)="removeParam(i)">
-                      <i nz-icon nzType="close" nzTheme="outline"></i>
-                    </td>
-                  </tr>
-                  </tbody>
-                </nz-table>
+                            <nz-tabset>
+                                <!-- Params Tab -->
+                                <nz-tab nzTitle="{{'workflow.apiRequest.label.params' | translate}}">
+                                    <nz-table
+                                            [nzData]="model.params"
+                                            [nzNoResult]="noDataTpl"
+                                            [nzBordered]="true"
+                                            [nzShowPagination]="false"
+                                            nzSize="small"
+                                    >
+                                        <thead>
+                                        <tr>
+                                            <th translate>workflow.apiRequest.label.key</th>
+                                            <th translate>workflow.apiRequest.label.value</th>
+                                            <th style="width:40px"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr *ngFor="let p of model.params; let i = index">
+                                            <td class="pr-2">
+                                                <input
+                                                        nz-input
+                                                        class="no-border"
+                                                        placeholder="{{'workflow.apiRequest.placeholder.key'| translate}}"
+                                                        [(ngModel)]="p.key"
+                                                        name="paramKey{{ i }}"
+                                                />
+                                            </td>
+                                            <td class="pr-2">
+                                                <input
+                                                        nz-input
+                                                        class="no-border"
+                                                        placeholder="{{'workflow.apiRequest.placeholder.value'| translate}}"
+                                                        [(ngModel)]="p.value"
+                                                        name="paramVal{{ i }}"
+                                                />
+                                            </td>
+                                            <td class="text-center cur-point" (click)="removeParam(i)">
+                                                <i nz-icon nzType="close" nzTheme="outline"></i>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </nz-table>
 
-                <ng-template #noDataTpl>
-                </ng-template>
+                                    <ng-template #noDataTpl>
+                                    </ng-template>
 
-                <div class="mt-3">
-                  <button class="btn btn-grey btn-sm"
-                          type="button"
-                          (click)="addParam()"
-                  >
-                    + {{ 'workflow.apiRequest.button.addParam' | translate }}
-                  </button>
-                </div>
-              </nz-tab>
+                                    <div class="mt-3">
+                                        <button class="btn btn-grey btn-sm"
+                                                type="button"
+                                                (click)="addParam()"
+                                        >
+                                            + {{ 'workflow.apiRequest.button.addParam' | translate }}
+                                        </button>
+                                    </div>
+                                </nz-tab>
 
-              <!-- Authorization Tab -->
-              <nz-tab nzTitle="{{'workflow.apiRequest.label.authorization' | translate}}">
-                <div class="form-group row">
-                  <div class="col-sm-2">
-                    <label nzFor="authType" translate>common.label.type</label>
-                  </div>
-                  <div class="col-sm-5">
-                    <nz-select
-                      id="authType"
-                      name="authType"
-                      required
-                      [(ngModel)]="auth.type"
-                    >
-                      <nz-option
-                        *ngFor="let at of authTypes"
-                        [nzValue]="at"
-                        [nzLabel]="at"
-                      ></nz-option>
-                    </nz-select>
-                  </div>
-                </div>
+                                <!-- Authorization Tab -->
+                                <nz-tab nzTitle="{{'workflow.apiRequest.label.authorization' | translate}}">
+                                    <div class="form-group row">
+                                        <div class="col-sm-2">
+                                            <label nzFor="authType" translate>common.label.type</label>
+                                        </div>
+                                        <div class="col-sm-5">
+                                            <nz-select
+                                                    id="authType"
+                                                    name="authType"
+                                                    required
+                                                    [(ngModel)]="auth.type"
+                                            >
+                                                <nz-option
+                                                        *ngFor="let at of authTypes"
+                                                        [nzValue]="at"
+                                                        [nzLabel]="at"
+                                                ></nz-option>
+                                            </nz-select>
+                                        </div>
+                                    </div>
 
-                <!-- API Key -->
-                <div *ngIf="auth.type === 'API Key'" class="p-l-4">
-                  <div class="form-group row">
-                    <div class="col-sm-2">
-                      <label nzFor="apiKeyName" translate>workflow.apiRequest.label.keyName</label>
-                    </div>
-                    <div class="col-sm-5">
-                      <input nz-input id="apiKeyName" name="apiKeyName"
-                             [(ngModel)]="auth.apiKey.name"
-                             placeholder="{{'workflow.apiRequest.placeholder.apiKeyName' | translate}}"/>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <div class="col-sm-2">
-                      <label nzFor="apiKeyValue" translate>workflow.apiRequest.label.value</label>
-                    </div>
-                    <div class="col-sm-5">
-                      <input nz-input id="apiKeyValue" name="apiKeyValue"
-                             [(ngModel)]="auth.apiKey.value"
-                             placeholder="{{'workflow.apiRequest.placeholder.apiKeyValue' | translate}}"/>
-                    </div>
-                  </div>
-                  <div class="form-group row">
+                                    <!-- API Key -->
+                                    <div *ngIf="auth.type === 'API Key'" class="p-l-4">
+                                        <div class="form-group row">
+                                            <div class="col-sm-2">
+                                                <label nzFor="apiKeyName"
+                                                       translate>workflow.apiRequest.label.keyName</label>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <input nz-input id="apiKeyName" name="apiKeyName"
+                                                       [(ngModel)]="auth.apiKey.name"
+                                                       placeholder="{{'workflow.apiRequest.placeholder.apiKeyName' | translate}}"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-sm-2">
+                                                <label nzFor="apiKeyValue"
+                                                       translate>workflow.apiRequest.label.value</label>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <input nz-input id="apiKeyValue" name="apiKeyValue"
+                                                       [(ngModel)]="auth.apiKey.value"
+                                                       placeholder="{{'workflow.apiRequest.placeholder.apiKeyValue' | translate}}"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
 
-                    <div class="col-sm-2">
-                      <label translate>workflow.apiRequest.label.in</label>
-                    </div>
+                                            <div class="col-sm-2">
+                                                <label translate>workflow.apiRequest.label.in</label>
+                                            </div>
 
-                    <div class="col-sm-5">
-                      <nz-radio-group [(ngModel)]="auth.apiKey.in" name="apiKeyIn">
-                        <label nz-radio nzValue="header" translate>{{ 'workflow.apiRequest.label.header' | translate }}</label>
-                        <label nz-radio nzValue="query" translate>{{ 'workflow.apiRequest.label.query' | translate }}</label>
-                      </nz-radio-group>
-                    </div>
-                  </div>
-                </div>
+                                            <div class="col-sm-5">
+                                                <nz-radio-group [(ngModel)]="auth.apiKey.in" name="apiKeyIn">
+                                                    <label nz-radio nzValue="header"
+                                                           translate>{{ 'workflow.apiRequest.label.header' | translate }}</label>
+                                                    <label nz-radio nzValue="query"
+                                                           translate>{{ 'workflow.apiRequest.label.query' | translate }}</label>
+                                                </nz-radio-group>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                <!-- Bearer Token -->
-                <div *ngIf="auth.type === 'Bearer Token'" class="p-l-4">
-                  <div class="form-group row">
-                    <div class="col-sm-2">
-                      <label nzFor="bearerToken" translate>agent.label.token</label>
-                    </div>
-                    <div class="col-sm-5">
-                      <input nz-input id="bearerToken" name="bearerToken"
-                             [(ngModel)]="auth.token"/>
-                    </div>
-                  </div>
-                </div>
+                                    <!-- Bearer Token -->
+                                    <div *ngIf="auth.type === 'Bearer Token'" class="p-l-4">
+                                        <div class="form-group row">
+                                            <div class="col-sm-2">
+                                                <label nzFor="bearerToken" translate>agent.label.token</label>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <input nz-input id="bearerToken" name="bearerToken"
+                                                       [(ngModel)]="auth.token"/>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                <!-- Basic Auth -->
-                <div *ngIf="auth.type === 'Basic Auth'" class="p-l-4">
-                  <div class="form-group row">
-                    <div class="col-sm-2">
-                      <label nzFor="basicUser" translate>profile.label.userName</label>
-                    </div>
-                    <div class="col-sm-5">
-                      <input nz-input id="basicUser" name="basicUser"
-                             [(ngModel)]="auth.basic.username"/>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <div class="col-sm-2">
-                      <label nzFor="basicPass" translate>login.label.password</label>
-                    </div>
-                    <div class="col-sm-5">
-                      <input nz-input id="basicPass" name="basicPass" type="password"
-                             [(ngModel)]="auth.basic.password"/>
+                                    <!-- Basic Auth -->
+                                    <div *ngIf="auth.type === 'Basic Auth'" class="p-l-4">
+                                        <div class="form-group row">
+                                            <div class="col-sm-2">
+                                                <label nzFor="basicUser" translate>profile.label.userName</label>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <input nz-input id="basicUser" name="basicUser"
+                                                       [(ngModel)]="auth.basic.username"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-sm-2">
+                                                <label nzFor="basicPass" translate>login.label.password</label>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <input nz-input id="basicPass" name="basicPass" type="password"
+                                                       [(ngModel)]="auth.basic.password"/>
 
-                    </div>
-                  </div>
-                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                <!-- OAuth 2.0 (Client Credentials example) -->
-                <div *ngIf="auth.type === 'OAuth 2.0'" class="p-l-4">
-                  <div class="form-group row">
-                    <div class="col-sm-2">
-                      <label nzFor="clientId" translate>workflow.apiRequest.label.clientId</label>
-                    </div>
-                    <div class="col-sm-5">
-                      <input nz-input id="clientId" name="clientId"
-                             [(ngModel)]="auth.oauth2.clientId"/>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <div class="col-sm-2">
-                      <label nzFor="clientSecret" translate>workflow.apiRequest.label.clientSecret</label>
-                    </div>
-                    <div class="col-sm-5">
-                      <input nz-input id="clientSecret" name="clientSecret" type="password"
-                             [(ngModel)]="auth.oauth2.clientSecret"/>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <div class="col-sm-2">
-                      <label nzFor="tokenUrl" translate>workflow.apiRequest.label.tokenUrl</label>
-                    </div>
-                    <div class="col-sm-5">
-                      <input nz-input id="tokenUrl" name="tokenUrl"
-                             [(ngModel)]="auth.oauth2.tokenUrl"/>
-                    </div>
-                  </div>
-                </div>
-              </nz-tab>
+                                    <!-- OAuth 2.0 (Client Credentials example) -->
+                                    <div *ngIf="auth.type === 'OAuth 2.0'" class="p-l-4">
+                                        <div class="form-group row">
+                                            <div class="col-sm-2">
+                                                <label nzFor="clientId"
+                                                       translate>workflow.apiRequest.label.clientId</label>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <input nz-input id="clientId" name="clientId"
+                                                       [(ngModel)]="auth.oauth2.clientId"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-sm-2">
+                                                <label nzFor="clientSecret" translate>workflow.apiRequest.label.clientSecret</label>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <input nz-input id="clientSecret" name="clientSecret" type="password"
+                                                       [(ngModel)]="auth.oauth2.clientSecret"/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-sm-2">
+                                                <label nzFor="tokenUrl"
+                                                       translate>workflow.apiRequest.label.tokenUrl</label>
+                                            </div>
+                                            <div class="col-sm-5">
+                                                <input nz-input id="tokenUrl" name="tokenUrl"
+                                                       [(ngModel)]="auth.oauth2.tokenUrl"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </nz-tab>
 
-              <!-- Headers Tab -->
-              <nz-tab nzTitle="{{'workflow.apiRequest.label.headers' | translate}}">
-                <nz-table [nzData]="model.headers" [nzBordered]="true"
-                          [nzShowPagination]="false" nzSize="small">
-                  <thead>
-                  <tr>
-                    <th translate>workflow.apiRequest.label.key</th>
-                    <th translate>workflow.apiRequest.label.value</th>
-                    <th style="width: 40px;"></th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr *ngFor="let h of model.headers; let i = index">
-                    <td class="pr-2">
-                      <input
-                        nz-input class="no-border"
-                        [(ngModel)]="h.key"
-                        name="headerKey{{i}}"
-                        placeholder="{{'workflow.apiRequest.placeholder.key' | translate}}"
-                        [nzAutocomplete]="autoHeaderKey"
-                        (ngModelChange)="filterHeaderKey(h.key)"
-                      />
-                      <nz-autocomplete #autoHeaderKey>
-                        <nz-auto-option
-                          *ngFor="let opt of filteredKeys"
-                          [nzValue]="opt"
-                          (click)="h.key = opt; filterHeaderValue(opt, h.value)"
-                        >
-                          {{ opt }}
-                        </nz-auto-option>
-                      </nz-autocomplete>
-                    </td>
+                                <!-- Headers Tab -->
+                                <nz-tab nzTitle="{{'workflow.apiRequest.label.headers' | translate}}">
+                                    <nz-table [nzData]="model.headers" [nzBordered]="true"
+                                              [nzShowPagination]="false" nzSize="small">
+                                        <thead>
+                                        <tr>
+                                            <th translate>workflow.apiRequest.label.key</th>
+                                            <th translate>workflow.apiRequest.label.value</th>
+                                            <th style="width: 40px;"></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr *ngFor="let h of model.headers; let i = index">
+                                            <td class="pr-2">
+                                                <input
+                                                        nz-input class="no-border"
+                                                        [(ngModel)]="h.key"
+                                                        name="headerKey{{i}}"
+                                                        placeholder="{{'workflow.apiRequest.placeholder.key' | translate}}"
+                                                        [nzAutocomplete]="autoHeaderKey"
+                                                        (ngModelChange)="filterHeaderKey(h.key)"
+                                                />
+                                                <nz-autocomplete #autoHeaderKey>
+                                                    <nz-auto-option
+                                                            *ngFor="let opt of filteredKeys"
+                                                            [nzValue]="opt"
+                                                            (click)="h.key = opt; filterHeaderValue(opt, h.value)"
+                                                    >
+                                                        {{ opt }}
+                                                    </nz-auto-option>
+                                                </nz-autocomplete>
+                                            </td>
 
-                    <td class="pr-2">
-                      <input
-                        nz-input class="no-border"
-                        [(ngModel)]="h.value"
-                        name="headerVal{{i}}"
-                        placeholder="{{'workflow.apiRequest.placeholder.value' | translate}}"
-                        [nzAutocomplete]="autoHeaderVal"
-                        (ngModelChange)="filterHeaderValue(h.key, h.value)"
-                      />
-                      <nz-autocomplete #autoHeaderVal>
-                        <nz-auto-option
-                          *ngFor="let val of filteredValues"
-                          [nzValue]="val"
-                          (click)="h.value = val"
-                        >
-                          {{ val }}
-                        </nz-auto-option>
-                      </nz-autocomplete>
-                    </td>
+                                            <td class="pr-2">
+                                                <input
+                                                        nz-input class="no-border"
+                                                        [(ngModel)]="h.value"
+                                                        name="headerVal{{i}}"
+                                                        placeholder="{{'workflow.apiRequest.placeholder.value' | translate}}"
+                                                        [nzAutocomplete]="autoHeaderVal"
+                                                        (ngModelChange)="filterHeaderValue(h.key, h.value)"
+                                                />
+                                                <nz-autocomplete #autoHeaderVal>
+                                                    <nz-auto-option
+                                                            *ngFor="let val of filteredValues"
+                                                            [nzValue]="val"
+                                                            (click)="h.value = val"
+                                                    >
+                                                        {{ val }}
+                                                    </nz-auto-option>
+                                                </nz-autocomplete>
+                                            </td>
 
-                    <td class="text-center cur-point" (click)="removeHeader(i)">
-                      <i nz-icon nzType="close" nzTheme="outline"></i>
-                    </td>
-                  </tr>
-                  </tbody>
-                </nz-table>
+                                            <td class="text-center cur-point" (click)="removeHeader(i)">
+                                                <i nz-icon nzType="close" nzTheme="outline"></i>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </nz-table>
 
-                <div class="mt-3">
-                  <button class="btn btn-grey btn-sm"
-                          type="button"
-                          (click)="addHeader()"
-                  >
-                    + {{ 'workflow.apiRequest.button.addHeader' | translate }}
-                  </button>
-                </div>
-              </nz-tab>
+                                    <div class="mt-3">
+                                        <button class="btn btn-grey btn-sm"
+                                                type="button"
+                                                (click)="addHeader()"
+                                        >
+                                            + {{ 'workflow.apiRequest.button.addHeader' | translate }}
+                                        </button>
+                                    </div>
+                                </nz-tab>
 
-              <!-- Body Tab -->
-              <nz-tab nzTitle="{{'workflow.apiRequest.label.body' | translate}}">
+                                <!-- Body Tab -->
+                                <nz-tab nzTitle="{{'workflow.apiRequest.label.body' | translate}}">
             <textarea
-              nz-input
-              name="body"
-              [(ngModel)]="model.body"
-              rows="10"
-              placeholder="{{'workflow.apiRequest.placeholder.keyValue' | translate}}"
+                    nz-input
+                    name="body"
+                    [(ngModel)]="model.body"
+                    rows="10"
+                    placeholder="{{'workflow.apiRequest.placeholder.keyValue' | translate}}"
             ></textarea>
-              </nz-tab>
+                                </nz-tab>
 
-              <!-- Scripts Tab -->
-              <nz-tab nzTitle="{{'workflow.apiRequest.label.scripts' | translate}}">
+                                <!-- Scripts Tab -->
+                                <nz-tab nzTitle="{{'workflow.apiRequest.label.scripts' | translate}}">
                 <textarea nz-input rows="6"
                           placeholder="{{'workflow.apiRequest.placeholder.keyValue'  | translate}}"></textarea>
-              </nz-tab>
-            </nz-tabset>
+                                </nz-tab>
+                            </nz-tabset>
 
-          </form>
+                        </form>
 
-          <nz-divider></nz-divider>
-          <div *ngIf="status !== null">
-            <nz-alert *ngIf="status != 200"
-                      nzType="error"
-                      nzMessage="{{status}}"
-                      nzDescription="{{errorText}}"
-                      nzShowIcon
-            ></nz-alert>
-            <nz-alert *ngIf="status === 200"
-                      nzType="success"
-                      nzMessage="{{status}}"
-                      nzDescription="{{errorText}}"
-                      nzShowIcon
-            ></nz-alert>
-            <nz-divider></nz-divider>
-            <div *ngIf="(responseHeaders | keyvalue).length > 0">
-              <nz-table [nzData]="[responseHeaders]" [nzShowPagination]="false" [nzBordered]="true" nzSize="medium">
-                <thead>
-                <tr>
-                  <th translate>workflow.apiRequest.label.key</th>
-                  <th translate>workflow.apiRequest.label.value</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let entry of responseHeaders | keyvalue">
-                  <td>{{ entry.key }}</td>
-                  <td>{{ entry.value }}</td>
-                </tr>
-                </tbody>
-              </nz-table>
+                        <nz-divider></nz-divider>
+                        <div *ngIf="status !== null">
+                            <nz-alert *ngIf="status != 200"
+                                      nzType="error"
+                                      nzMessage="{{status}}"
+                                      nzDescription="{{errorText}}"
+                                      nzShowIcon
+                            ></nz-alert>
+                            <nz-alert *ngIf="status === 200"
+                                      nzType="success"
+                                      nzMessage="{{status}}"
+                                      nzDescription="{{errorText}}"
+                                      nzShowIcon
+                            ></nz-alert>
+                            <nz-divider></nz-divider>
+                            <div *ngIf="(responseHeaders | keyvalue).length > 0">
+                                <nz-table [nzData]="[responseHeaders]" [nzShowPagination]="false" [nzBordered]="true"
+                                          nzSize="medium">
+                                    <thead>
+                                    <tr>
+                                        <th translate>workflow.apiRequest.label.key</th>
+                                        <th translate>workflow.apiRequest.label.value</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr *ngFor="let entry of responseHeaders | keyvalue">
+                                        <td>{{ entry.key }}</td>
+                                        <td>{{ entry.value }}</td>
+                                    </tr>
+                                    </tbody>
+                                </nz-table>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer p-l-0 p-b-0">
+                        <button [disabled]="status != 200" (click)="storeConfig()"
+                                class="btn btn-primary btn-sm"
+                                translate
+                                type="submit">
+                            {{ 'common.button.submit' | translate }}
+                        </button>
+                        <button (click)="close()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel
+                        </button>
+
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-
-    </div>
-    <div id="rightPanel-50">
-      <div style="width: 100%;">
-        <div class="padding p-b-0">
-          <div class="m-t-sm box border p-a">
-            <json-editor #editor [data]="data" [options]="options"></json-editor>
-            <button (click)="copyToClipboard()" class="btn btn-default btn-sm m-t-1"
-                    translate type="button">log.button.copyToClipboard
-            </button>
-          </div>
+        <div id="rightPanel-50">
+            <div style="width: 100%;">
+                <div class="padding p-b-0">
+                    <div class="m-t-sm box border p-a">
+                        <json-editor #editor [data]="data" [options]="options"></json-editor>
+                        <button (click)="copyToClipboard()" class="btn btn-default btn-sm m-t-1"
+                                translate type="button">log.button.copyToClipboard
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
