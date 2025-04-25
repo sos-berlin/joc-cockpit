@@ -1115,6 +1115,36 @@ export class CoreService {
   }
 
   renderData(res, domId, object, obj, preferences, windowInstance?): void {
+    const doc = windowInstance ? windowInstance.document : document;
+    const styleId = 'log-indent-styles';
+    if (!doc.getElementById(styleId)) {
+      const styleEl = doc.createElement('style');
+      styleEl.id = styleId;
+      styleEl.innerHTML = `
+      .scheduler_stdout {
+        margin-left: 289px;
+      }
+      .scheduler_success {
+        margin-left: 289px;
+      }
+      .scheduler_error {
+        margin-left: 289px;
+      }
+      .scheduler_main {
+        margin-left: 289px;
+      }
+      .scheduler_detail {
+        margin-left: 289px;
+      }
+      .scheduler_debug {
+        margin-left: 289px;
+      }
+      .scheduler_stderr {
+        margin-left: 289px;
+      }
+    `;
+      doc.head.appendChild(styleEl);
+    }
     let argu = {
       lastLevel: '',
       lastClass: ''
