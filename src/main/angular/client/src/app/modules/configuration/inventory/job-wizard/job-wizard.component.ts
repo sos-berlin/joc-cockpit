@@ -1,6 +1,15 @@
-import {ChangeDetectorRef, Component, EventEmitter, inject, Output, ViewChild} from '@angular/core';
-import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
-import {isArray, sortBy} from "underscore";
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  EventEmitter,
+  HostListener,
+  inject,
+  Output,
+  ViewChild
+} from '@angular/core';
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
+import {isArray, isEqual, sortBy} from "underscore";
 import {debounceTime} from "rxjs/operators";
 import {Subject} from "rxjs";
 import {CoreService} from '../../../../services/core.service';
@@ -9,6 +18,7 @@ import {JsonEditorComponent, JsonEditorOptions} from "ang-jsoneditor";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {ClipboardService} from "ngx-clipboard";
 import { Editor as AceEditor } from 'ace-builds/src-noconflict/ace';
+import {FindAndReplaceComponent} from "../workflow/workflow.component";
 
 interface KeyValue {
   key: string;
@@ -81,13 +91,14 @@ export class ApiRequestComponent {
 
   @Output() configSaved = new EventEmitter<any>();
   @ViewChild('editor', {static: false}) editor!: JsonEditorComponent;
-
+  private lastSelection = '';
   constructor(
     private coreService: CoreService,
     private msg: NzMessageService,
     private ref: ChangeDetectorRef,
     private clipboardService: ClipboardService,
-    private activeModal: NzModalRef
+    private activeModal: NzModalRef,
+    private modal: NzModalService,
   ) {
     this.options.mode = 'code';
     this.options.onEditable = () => {
@@ -121,26 +132,60 @@ export class ApiRequestComponent {
     this.options.modes = ['code', 'tree'];
   }
   ngAfterViewInit() {
-    this.waitForAceAndHook();
   }
 
-  private waitForAceAndHook() {
-    const handle = setInterval(() => {
-      const jsonEditorInstance = (this.editor as any).editor as any;
-      if (jsonEditorInstance?.aceEditor) {
-        clearInterval(handle);
-        this.hookAceSelection(jsonEditorInstance.aceEditor as AceEditor);
-      }
-    }, 50);
-  }
+  @HostListener('document:dblclick', ['$event'])
+  onDoubleClick(event: MouseEvent) {
+    if (!this.editor.jsonEditorContainer.nativeElement.contains(event.target as Node)) {
+      return;
+    }
 
-  private hookAceSelection(ace: AceEditor) {
-    ace.getSession().selection.on('changeSelection', () => {
-      const selectedText = ace.getSelectedText();
-      if (selectedText) {
-        console.log('User highlighted:', selectedText);
-      }
+    const sel = window.getSelection();
+    if (!sel) {
+      return;
+    }
+    const raw = sel.toString().trim();
+    if (!raw) {
+      return;
+    }
+
+    let parsed: any;
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      parsed = raw.replace(/^['"]|['"]$/g, '');
+    }
+
+    const paths = this.findPaths(this.response, parsed);
+
+    const modal = this.modal.create({
+      nzContent: ApiRequestDialogComponent,
+      nzData: { selectedText: raw, paths },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
     });
+
+    modal.afterClose.subscribe(/* handle result */);
+
+    sel.removeAllRanges();
+  }
+
+  private findPaths(obj: any, target: any): string[] {
+    const results: string[] = [];
+    const helper = (curr: any, path: string) => {
+      if (curr === target) results.push(path);
+
+      if (Array.isArray(curr)) {
+        curr.forEach((item, i) => helper(item, `${path}[${i}]`));
+      } else if (curr && typeof curr === 'object') {
+        Object.keys(curr).forEach(k =>
+          helper(curr[k], `${path}.${k}`)
+        );
+      }
+    };
+    helper(obj, '$');
+    return results;
   }
 
   addHeader(): void {
@@ -219,7 +264,6 @@ export class ApiRequestComponent {
       .requestTest(method, url, hdrs, paramMap, body)
       .subscribe({
         next: res => {
-          console.log(res, ":::")
           this.status = res.status;
           this.response = res.body;
           this.responseHeaders = {};
@@ -231,7 +275,6 @@ export class ApiRequestComponent {
           });
         },
         error: err => {
-          console.error('HTTP Error:', err);
           const code = err.status ?? 'Unknown';
           const text = err.statusText || err.message || 'Request failed';
           this.status = code
@@ -241,7 +284,6 @@ export class ApiRequestComponent {
         complete: () => {
         }
       });
-    this.waitForAceAndHook();
   }
 
 
@@ -286,6 +328,42 @@ export class ApiRequestComponent {
   }
 
 
+}
+
+interface Mapping { name: string; path: string; }
+
+@Component({
+  selector: 'app-api-request-dialog',
+  templateUrl: './api-request-dialog.html'
+})
+export class ApiRequestDialogComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  selectedPath: string;
+  variableValue: string;
+  currentName = '';
+  mappings: Mapping[] = [];
+
+  constructor(private coreService: CoreService, public activeModal: NzModalRef) {
+  }
+
+  ngOnInit(): void {
+    this.variableValue = this.modalData.selectedText
+  }
+  addMapping(): void {
+    this.mappings.push({
+      name: this.currentName,
+      path: this.selectedPath
+    });
+    this.currentName = '';
+  }
+
+  removeMapping(index: number): void {
+    this.mappings.splice(index, 1);
+  }
+
+  onSubmit(): void {
+    this.activeModal.close(this.mappings);
+  }
 }
 
 @Component({

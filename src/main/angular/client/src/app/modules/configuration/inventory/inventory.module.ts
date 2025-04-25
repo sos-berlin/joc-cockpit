@@ -56,7 +56,7 @@ import {CalendarComponent, FrequencyModalComponent} from './calendar/calendar.co
 import {FileOrderComponent} from './file-order/file-order.component';
 import {JobResourceComponent, TestMailComponent} from './job-resource/job-resource.component';
 import {AddRestrictionComponent, PeriodComponent, RunTimeComponent} from './runtime/runtime.component';
-import {ApiRequestComponent, JobWizardComponent} from './job-wizard/job-wizard.component';
+import {ApiRequestComponent, ApiRequestDialogComponent, JobWizardComponent} from './job-wizard/job-wizard.component';
 import {
   DurationWithPercentageRegexValidator,
   EnvVariableValidator,
@@ -84,7 +84,7 @@ const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, Calen
   NotificationComponent, RepositoryComponent, GitComponent, ScriptEditorComponent, UpdateJobTemplatesComponent, CreateTagModalComponent,
   UpdateObjectComponent, FindAndReplaceComponent, ShowObjectsComponent, CycleInstructionComponent, UpdateJobComponent, PeriodComponent,
   ShowReferenceComponent, AdmissionTimeComponent, TimeEditorComponent, RepeatEditorComponent, AddRestrictionComponent, TestMailComponent,
-  RunTimeComponent, TreeModalComponent, JobWizardComponent, FacetEditorComponent, FavoriteListComponent, ChangeModalComponent, PublishChangeModalComponent, ShowDependenciesModalComponent, NewDraftComponent, NoticeBoardEditorComponent, ReportComponent, ChangeImpactDialogComponent, EncryptArgumentModalComponent, ShowAgentsModalComponent, GroupTagsComponent, AddGropusModalComponent, AddTagsToGropusModalComponent, ApiRequestComponent];
+  RunTimeComponent, TreeModalComponent, JobWizardComponent, FacetEditorComponent, FavoriteListComponent, ChangeModalComponent, PublishChangeModalComponent, ShowDependenciesModalComponent, NewDraftComponent, NoticeBoardEditorComponent, ReportComponent, ChangeImpactDialogComponent, EncryptArgumentModalComponent, ShowAgentsModalComponent, GroupTagsComponent, AddGropusModalComponent, AddTagsToGropusModalComponent, ApiRequestComponent, ApiRequestDialogComponent];
 
 @NgModule({
   imports: [

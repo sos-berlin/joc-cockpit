@@ -1,0 +1,42 @@
+<div class="modal-header">
+  <h4 class="modal-title">Define Return Variables</h4>
+  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #mappingForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
+  <div class="modal-body p-a">
+    <!-- Display selected JSON path -->
+    <div class="form-group">
+      <label>{{ variableValue }}</label>
+    </div>
+
+    <div [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}"
+         class="">
+      <label class="w-full">
+        <input #aname="ngModel"  [(ngModel)]="currentName"
+               required
+               autocomplete="off" class="form-control"
+               identifierValidation name="name"
+               placeholder="{{'common.placeholder.name' | translate}} "
+               type="text">
+      </label>
+      <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)"
+           class="text-danger help-block">
+        <div *ngIf="aname.errors.invalidIdentifier" translate>common.message.invalid</div>
+      </div>
+    </div>
+
+
+
+  </div>
+
+  <div class="modal-footer">
+    <button type="submit" class="btn btn-primary btn-sm" [disabled]="mappings.length === 0">
+      Submit
+    </button>
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()">
+      Cancel
+    </button>
+  </div>
+</form>
