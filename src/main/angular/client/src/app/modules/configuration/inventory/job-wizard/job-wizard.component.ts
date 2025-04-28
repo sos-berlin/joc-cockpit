@@ -88,7 +88,7 @@ export class ApiRequestComponent {
   errorText = '';
   edit = false;
   preferences: any = {};
-
+  mappings: Mapping[] = [];
   @Output() configSaved = new EventEmitter<any>();
   @ViewChild('editor', {static: false}) editor!: JsonEditorComponent;
   private lastSelection = '';
@@ -136,15 +136,22 @@ export class ApiRequestComponent {
 
   @HostListener('document:dblclick', ['$event'])
   onDoubleClick(event: MouseEvent) {
-    if (!this.editor.jsonEditorContainer.nativeElement.contains(event.target as Node)) {
+    const container = this.editor.jsonEditorContainer.nativeElement;
+    if (!container.contains(event.target as Node)) {
+      return;
+    }
+
+    const path = (event as any).composedPath?.() as HTMLElement[] || [];
+    const inEditorText = path.some(el =>
+      el.classList?.contains('ace_scroller') ||
+      el.classList?.contains('ace_content')
+    );
+    if (!inEditorText) {
       return;
     }
 
     const sel = window.getSelection();
-    if (!sel) {
-      return;
-    }
-    const raw = sel.toString().trim();
+    const raw = sel?.toString().trim();
     if (!raw) {
       return;
     }
@@ -160,34 +167,65 @@ export class ApiRequestComponent {
 
     const modal = this.modal.create({
       nzContent: ApiRequestDialogComponent,
-      nzData: { selectedText: raw, paths },
+      nzData: { selectedText: raw, paths, flag: false },
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
     });
-
-    modal.afterClose.subscribe(/* handle result */);
-
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.mappings.push(result)
+      }
+    });
     sel.removeAllRanges();
   }
 
   private findPaths(obj: any, target: any): string[] {
     const results: string[] = [];
-    const helper = (curr: any, path: string) => {
-      if (curr === target) results.push(path);
 
-      if (Array.isArray(curr)) {
-        curr.forEach((item, i) => helper(item, `${path}[${i}]`));
-      } else if (curr && typeof curr === 'object') {
-        Object.keys(curr).forEach(k =>
-          helper(curr[k], `${path}.${k}`)
-        );
+    function helper(curr: any, path: string) {
+      if (curr === target) {
+        results.push(path);
       }
-    };
-    helper(obj, '$');
+
+      if (curr && typeof curr === 'object' && !Array.isArray(curr)) {
+        Object.keys(curr).forEach(key => {
+          const newPath = path ? `${path}.${key}` : key;
+
+          if (key === target) {
+            results.push(newPath);
+          }
+
+          helper(curr[key], newPath);
+        });
+      }
+      else if (Array.isArray(curr)) {
+        curr.forEach((item, i) => {
+          const newPath = path ? `${path}[${i}]` : `[${i}]`;
+          helper(item, newPath);
+        });
+      }
+    }
+
+    helper(obj, "");
+
     return results;
   }
 
+  variableList(): void{
+    const modal = this.modal.create({
+      nzContent: ApiRequestDialogComponent,
+      nzData: { mapping: this.mappings, flag: true },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.mappings.push(result)
+      }
+    });
+  }
   addHeader(): void {
     this.model.headers.push({key: '', value: ''});
   }
@@ -316,11 +354,15 @@ export class ApiRequestComponent {
       auth: this.auth,
       body: bodyText
     };
-    const json = JSON.stringify(config, null, 2);
+    const json = JSON.stringify(config, null, 2);;
 
+    const obj = {
+      request: json,
+      return_variables: this.mappings
+    };
     this.clipboardService.copyFromContent(json);
     this.coreService.showCopyMessage(this.msg);
-    this.configSaved.emit(json);
+    this.configSaved.emit(obj);
   }
 
   close(): void{
@@ -342,27 +384,31 @@ export class ApiRequestDialogComponent {
   variableValue: string;
   currentName = '';
   mappings: Mapping[] = [];
-
+  flag = false
   constructor(private coreService: CoreService, public activeModal: NzModalRef) {
   }
 
   ngOnInit(): void {
     this.variableValue = this.modalData.selectedText
+    this.selectedPath = this.modalData.paths
+    this.flag = this.modalData.flag
+    if(this.modalData.mapping){
+      this.mappings = this.modalData.mapping
+    }
   }
-  addMapping(): void {
-    this.mappings.push({
-      name: this.currentName,
-      path: this.selectedPath
-    });
-    this.currentName = '';
-  }
+
 
   removeMapping(index: number): void {
     this.mappings.splice(index, 1);
+    this.mappings = [...this.mappings]
   }
 
   onSubmit(): void {
-    this.activeModal.close(this.mappings);
+    const obj = {
+      name: this.currentName,
+      path: this.selectedPath
+    }
+    this.activeModal.close(obj);
   }
 }
 
@@ -852,7 +898,7 @@ export class JobWizardComponent {
 
   onApiConfigSaved(config: any) {
     this.apiRequest = true;
-    this.savedRequestConfig = config;
+    this.savedRequestConfig = config.request;
     const obj = {
       executable: {
         TYPE: 'InternalExecutable',
@@ -865,7 +911,16 @@ export class JobWizardComponent {
       if (!obj.executable.arguments) {
         obj.executable.arguments = [];
       }
-      obj.executable.arguments.push({name: 'request', value: config});
+      obj.executable.arguments.push({name: 'request', value: config.request});
+      if(config.return_variables && config.return_variables.length > 0){
+        const flattened = config.return_variables.map(m => ({
+          name: m.name,
+          path: Array.isArray(m.path) ? m.path[0] : m.path
+        }));
+        const returnVariablesJson = JSON.stringify(flattened, null, 2);
+
+        obj.executable.arguments.push({name: 'return_variable', value: returnVariablesJson });
+      }
     }
     this.activeModal.close(obj);
   }

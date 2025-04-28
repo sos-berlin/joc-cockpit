@@ -3754,10 +3754,11 @@ export class CoreService {
     params: Record<string, string>,
     body: any
   ): Observable<any> {
+    const safeUrl = url.trim();
     const httpHeaders = new HttpHeaders(headers);
     let httpParams = new HttpParams();
     Object.keys(params).forEach(key => httpParams = httpParams.set(key, params[key]));
-    return this.http.request(method, url, {
+    return this.http.request(method, safeUrl, {
       headers: httpHeaders,
       params: httpParams,
       body: body ? JSON.parse(body) : null,

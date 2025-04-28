@@ -76,7 +76,7 @@
                                                 />
                                             </td>
                                             <td class="text-center cur-point" (click)="removeParam(i)">
-                                                <i nz-icon nzType="close" nzTheme="outline"></i>
+                                                <i class="fa fa-trash"></i>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -282,7 +282,7 @@
                                             </td>
 
                                             <td class="text-center cur-point" (click)="removeHeader(i)">
-                                                <i nz-icon nzType="close" nzTheme="outline"></i>
+                                                <i class="fa fa-trash"></i>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -374,6 +374,8 @@
                         <json-editor #editor [data]="data" [options]="options"></json-editor>
                         <button (click)="copyToClipboard()" class="btn btn-default btn-sm m-t-1"
                                 translate type="button">log.button.copyToClipboard
+                        </button>
+                        <button (click)="variableList()" class="btn btn-grey btn-sm m-t-1 m-l-sm pull-right" translate type="button">workflow.apiRequest.button.variableList
                         </button>
                     </div>
                 </div>

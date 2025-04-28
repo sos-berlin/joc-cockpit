@@ -4025,6 +4025,8 @@
       "label.clientId": "Client ID",
       "label.clientSecret": "Client Secret",
       "label.tokenUrl": "Token URL",
+      "label.defineVariable": "Define return variable",
+      "button.variableList": "Variable List",
       "button.sendRequest": "Send Request",
       "button.addParam": "Add Param",
       "button.addHeader": "Add Header",

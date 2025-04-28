@@ -1,42 +1,74 @@
 <div class="modal-header">
-  <h4 class="modal-title">Define Return Variables</h4>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
-    <span aria-hidden="true" class="fa fa-times-circle"></span>
-  </button>
+    <h4 *ngIf="!flag" class="modal-title" translate>workflow.apiRequest.label.defineVariable</h4>
+    <h4 *ngIf="flag" class="modal-title" translate>workflow.apiRequest.button.variableList</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+        <span aria-hidden="true" class="fa fa-times-circle"></span>
+    </button>
 </div>
-<form #mappingForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
-  <div class="modal-body p-a">
-    <!-- Display selected JSON path -->
-    <div class="form-group">
-      <label>{{ variableValue }}</label>
+<div class="modal-body p-a">
+    <form *ngIf="!flag" #mappingForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
+
+        <div class="form-group">
+            <label>{{ variableValue }}</label>
+        </div>
+
+        <div [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}"
+             class="">
+            <label class="w-full">
+                <input #aname="ngModel" [(ngModel)]="currentName"
+                       required
+                       autocomplete="off" class="form-control"
+                       identifierValidation name="name"
+                       placeholder="{{'common.placeholder.name' | translate}} "
+                       type="text">
+            </label>
+            <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)"
+                 class="text-danger help-block">
+                <div *ngIf="aname.errors.invalidIdentifier" translate>common.message.invalid</div>
+            </div>
+        </div>
+    </form>
+
+    <div *ngIf="flag">
+        <nz-table
+            #mappingTable
+            [nzData]="mappings"
+            nzSize="small"
+            [nzBordered]="true"
+            [nzShowPagination]="false"
+            [nzNoResult]="noMappingTpl"
+        >
+            <thead>
+            <tr>
+                <th translate>common.label.name</th>
+                <th translate>common.label.path</th>
+                <th style="width: 40px;"></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let m of mappingTable.data; let i = index">
+                <td>{{ m.name }}</td>
+                <td>{{ m.path }}</td>
+                <td class="text-center cur-point" (click)="removeMapping(i)">
+                        <i class="fa fa-trash"></i>
+                </td>
+            </tr>
+            </tbody>
+        </nz-table>
+
+        <ng-template #noMappingTpl>
+           <app-empty-data></app-empty-data>
+        </ng-template>
     </div>
-
-    <div [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}"
-         class="">
-      <label class="w-full">
-        <input #aname="ngModel"  [(ngModel)]="currentName"
-               required
-               autocomplete="off" class="form-control"
-               identifierValidation name="name"
-               placeholder="{{'common.placeholder.name' | translate}} "
-               type="text">
-      </label>
-      <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)"
-           class="text-danger help-block">
-        <div *ngIf="aname.errors.invalidIdentifier" translate>common.message.invalid</div>
-      </div>
-    </div>
-
-
-
-  </div>
-
-  <div class="modal-footer">
-    <button type="submit" class="btn btn-primary btn-sm" [disabled]="mappings.length === 0">
-      Submit
+</div>
+<div class="modal-footer">
+    <button *ngIf="!flag" (click)="onSubmit()" type="submit" class="btn btn-primary btn-sm" [disabled]="!currentName">
+        {{ 'common.button.submit' | translate }}
     </button>
-    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()">
-      Cancel
+    <button  *ngIf="!flag" type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+        common.button.cancel
     </button>
-  </div>
-</form>
+    <button *ngIf="flag" type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+        common.button.close
+    </button>
+</div>
