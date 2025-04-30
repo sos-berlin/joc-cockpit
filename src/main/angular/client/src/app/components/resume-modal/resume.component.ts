@@ -122,7 +122,7 @@ export class ResumeOrderModalComponent {
                 if(!Array.isArray(item.value)) {
                   let v: any = [];
                   Object.entries(item.value).map(([k1, v1]) => {
-                    v.push({k1: v1})
+                    v.push({[k1]: v1})
                   });
                   item.type = 'map';
                   item.value = v;
