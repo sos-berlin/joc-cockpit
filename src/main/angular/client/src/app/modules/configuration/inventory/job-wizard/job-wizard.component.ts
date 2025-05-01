@@ -141,11 +141,15 @@ export class ApiRequestComponent {
     }
   }
   private populateFromArgs() {
-    const execArgs = this.arguments?.executable?.arguments as {name:string, value:string}[]|undefined;
-    if (!Array.isArray(execArgs)) { return; }
+    const execArgs = this.arguments?.executable?.arguments as { name: string; value: string }[] | undefined;
+    if (!Array.isArray(execArgs)) {
+      return;
+    }
 
     const requestArg = execArgs.find(a => a.name === 'request');
-    if (!requestArg) { return; }
+    if (!requestArg) {
+      return;
+    }
 
     let req: any;
     try {
@@ -157,40 +161,45 @@ export class ApiRequestComponent {
 
     this.model.url    = req.url    || this.model.url;
     this.model.method = req.method || this.model.method;
-
     this.model.headers = Array.isArray(req.headers) ? req.headers : [];
     this.model.params  = Array.isArray(req.params)  ? req.params  : [];
 
-    this.model.body = req.body != null
-      ? JSON.stringify(req.body, null, 2)
+    let bodyValue = req.body;
+
+    if (typeof bodyValue === 'string') {
+      try {
+        bodyValue = JSON.parse(bodyValue);
+      } catch {
+      }
+    }
+
+    this.model.body = bodyValue != null
+      ? JSON.stringify(bodyValue, null, 2)
       : '';
 
     if (req.auth && typeof req.auth === 'object') {
       const a = req.auth as any;
       this.auth.type = a.type ?? 'None';
-
       if (this.auth.type === 'API Key' && a.apiKey) {
         this.auth.apiKey.name  = a.apiKey.name  || '';
         this.auth.apiKey.value = a.apiKey.value || '';
         this.auth.apiKey.in    = a.apiKey.in    || 'header';
       }
-
       if (this.auth.type === 'Bearer Token' && a.token) {
         this.auth.token = a.token;
       }
-
       if (this.auth.type === 'Basic Auth' && a.basic) {
         this.auth.basic.username = a.basic.username || '';
         this.auth.basic.password = a.basic.password || '';
       }
-
       if (this.auth.type === 'OAuth 2.0' && a.oauth2) {
         this.auth.oauth2.clientId     = a.oauth2.clientId     || '';
         this.auth.oauth2.clientSecret = a.oauth2.clientSecret || '';
         this.auth.oauth2.tokenUrl     = a.oauth2.tokenUrl     || '';
-        ;(this.auth as any).oauth2.accessToken = a.oauth2.accessToken;
+        (this.auth as any).oauth2.accessToken = a.oauth2.accessToken;
       }
     }
+
     const returnVarArg = execArgs.find(a => a.name === 'return_variables' || a.name === 'return_variable');
     if (returnVarArg) {
       try {
