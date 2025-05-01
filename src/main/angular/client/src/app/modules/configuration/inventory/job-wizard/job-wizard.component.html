@@ -328,7 +328,7 @@
   <ng-container *nzDrawerContent>
     <div (click)="sideBar.isVisible = false" class="close-btn"></div>
     <div #editorContainer class="p-l-sm p-r-sm">
-      <app-api-request (configSaved)="onApiConfigSaved($event)"></app-api-request>
+      <app-api-request (configSaved)="onApiConfigSaved($event)" [arguments]="existingJob" [parameters]="parameters"></app-api-request>
     </div>
   </ng-container>
 </nz-drawer>

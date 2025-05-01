@@ -4,8 +4,8 @@ import {
   ElementRef,
   EventEmitter,
   HostListener,
-  inject,
-  Output,
+  inject, Input, input,
+  Output, SimpleChanges,
   ViewChild
 } from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
@@ -89,6 +89,8 @@ export class ApiRequestComponent {
   edit = false;
   preferences: any = {};
   mappings: Mapping[] = [];
+  @Input() arguments: any;
+  @Input() parameters: any;
   @Output() configSaved = new EventEmitter<any>();
   @ViewChild('editor', {static: false}) editor!: JsonEditorComponent;
   private lastSelection = '';
@@ -130,56 +132,110 @@ export class ApiRequestComponent {
       this.editor.setOptions(this.options);
     });
     this.options.modes = ['code', 'tree'];
+    this.populateFromArgs();
+
   }
-  ngAfterViewInit() {
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['arguments'] && !changes['arguments'].isFirstChange()) {
+      this.populateFromArgs();
+    }
   }
+  private populateFromArgs() {
+    const execArgs = this.arguments?.executable?.arguments as {name:string, value:string}[]|undefined;
+    if (!Array.isArray(execArgs)) { return; }
+
+    const requestArg = execArgs.find(a => a.name === 'request');
+    if (!requestArg) { return; }
+
+    let req: any;
+    try {
+      req = JSON.parse(requestArg.value);
+    } catch (e) {
+      console.warn('Could not parse request JSON:', e);
+      return;
+    }
+
+    this.model.url    = req.url    || this.model.url;
+    this.model.method = req.method || this.model.method;
+
+    this.model.headers = Array.isArray(req.headers) ? req.headers : [];
+    this.model.params  = Array.isArray(req.params)  ? req.params  : [];
+
+    this.model.body = req.body != null
+      ? JSON.stringify(req.body, null, 2)
+      : '';
+
+    if (req.auth && typeof req.auth === 'object') {
+      const a = req.auth as any;
+      this.auth.type = a.type ?? 'None';
+
+      if (this.auth.type === 'API Key' && a.apiKey) {
+        this.auth.apiKey.name  = a.apiKey.name  || '';
+        this.auth.apiKey.value = a.apiKey.value || '';
+        this.auth.apiKey.in    = a.apiKey.in    || 'header';
+      }
+
+      if (this.auth.type === 'Bearer Token' && a.token) {
+        this.auth.token = a.token;
+      }
+
+      if (this.auth.type === 'Basic Auth' && a.basic) {
+        this.auth.basic.username = a.basic.username || '';
+        this.auth.basic.password = a.basic.password || '';
+      }
+
+      if (this.auth.type === 'OAuth 2.0' && a.oauth2) {
+        this.auth.oauth2.clientId     = a.oauth2.clientId     || '';
+        this.auth.oauth2.clientSecret = a.oauth2.clientSecret || '';
+        this.auth.oauth2.tokenUrl     = a.oauth2.tokenUrl     || '';
+        ;(this.auth as any).oauth2.accessToken = a.oauth2.accessToken;
+      }
+    }
+    const returnVarArg = execArgs.find(a => a.name === 'return_variables' || a.name === 'return_variable');
+    if (returnVarArg) {
+      try {
+        const arr = JSON.parse(returnVarArg.value);
+        if (Array.isArray(arr)) {
+          this.mappings = arr;
+        }
+      } catch {
+        console.warn('Could not parse return_variables JSON');
+      }
+    }
+  }
+
 
   @HostListener('document:dblclick', ['$event'])
   onDoubleClick(event: MouseEvent) {
-    const container = this.editor.jsonEditorContainer.nativeElement;
-    if (!container.contains(event.target as Node)) {
-      return;
-    }
+    const handle = setInterval(() => {
+      const json = (this.editor as any).editor;
+      const ace: AceEditor = json?.aceEditor;
+      if (ace) {
+        clearInterval(handle);
+        const raw = ace.getSelectedText().trim();
+        if (!raw) return;
 
-    const path = (event as any).composedPath?.() as HTMLElement[] || [];
-    const inEditorText = path.some(el =>
-      el.classList?.contains('ace_scroller') ||
-      el.classList?.contains('ace_content')
-    );
-    if (!inEditorText) {
-      return;
-    }
+        let parsed: any;
+        try {
+          parsed = JSON.parse(raw);
+        } catch {
+          parsed = raw.replace(/^['"]|['"]$/g, '');
+        }
 
-    const sel = window.getSelection();
-    const raw = sel?.toString().trim();
-    if (!raw) {
-      return;
-    }
-
-    let parsed: any;
-    try {
-      parsed = JSON.parse(raw);
-    } catch {
-      parsed = raw.replace(/^['"]|['"]$/g, '');
-    }
-
-    const paths = this.findPaths(this.response, parsed);
-
-    const modal = this.modal.create({
-      nzContent: ApiRequestDialogComponent,
-      nzData: { selectedText: raw, paths, flag: false },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.mappings.push(result)
+        const paths = this.findPaths(this.response, parsed);
+        const modal = this.modal.create({
+          nzContent: ApiRequestDialogComponent,
+          nzData: { selectedText: raw, paths, flag: false },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+        modal.afterClose.subscribe(result => {
+          if (result) this.mappings.push(result);
+        });
       }
-    });
-    sel.removeAllRanges();
+    }, 50);
   }
-
   private findPaths(obj: any, target: any): string[] {
     const results: string[] = [];
 
@@ -258,71 +314,61 @@ export class ApiRequestComponent {
   send(): void {
     const hdrs = this.arrayToMap(this.model.headers);
 
-    switch (this.auth.type) {
-      case 'API Key':
-        if (this.auth.apiKey.name) {
-          if (this.auth.apiKey.in === 'header') {
-            hdrs[this.auth.apiKey.name] = this.auth.apiKey.value;
-          } else {
-            this.model.params.push({
-              key: this.auth.apiKey.name,
-              value: this.auth.apiKey.value
-            });
-          }
-        }
-        break;
-
-      case 'Bearer Token':
-        if (this.auth.token) {
-          hdrs['Authorization'] = `Bearer ${this.auth.token}`;
-        }
-        break;
-
-      case 'Basic Auth':
-        const {username, password} = this.auth.basic;
-        if (username || password) {
-          const creds = btoa(`${username}:${password}`);
-          hdrs['Authorization'] = `Basic ${creds}`;
-        }
-        break;
-
-      case 'OAuth 2.0':
-        const token = (this.auth as any).oauth2?.accessToken;
-        if (token) {
-          hdrs['Authorization'] = `Bearer ${token}`;
-        }
-        break;
-
-    }
-
-    const {url, method, params, body} = this.model;
+    const { url, method, params, body } = this.model;
     const paramMap = this.arrayToMap(params);
 
+    const placeholderRegex = /\{(\w+)\}/g;
+    const replacePlaceholders = (input: string) =>
+      input.replace(placeholderRegex, (_m, name) => {
+        const def = this.parameters?.[name]?.default;
+        if (def != null) {
+          try { return JSON.parse(def); }
+          catch  { return def;        }
+        }
+        return `{${name}}`;
+      });
+
+    const resolvedUrl = replacePlaceholders(url);
+
+    const resolvedHdrs: Record<string,string> = {};
+    Object.entries(hdrs).forEach(([key, val]) => {
+      const k2 = replacePlaceholders(key);
+      const v2 = replacePlaceholders(val);
+      resolvedHdrs[k2] = v2;
+    });
+
+    Object.keys(paramMap).forEach(k => {
+      paramMap[k] = replacePlaceholders(paramMap[k]);
+    });
+
+    let resolvedBody: any = body;
+    if (typeof resolvedBody === 'string') {
+      resolvedBody = replacePlaceholders(resolvedBody);
+    }
+
     this.coreService
-      .requestTest(method, url, hdrs, paramMap, body)
+      .requestTest(method, resolvedUrl, resolvedHdrs, paramMap, resolvedBody)
       .subscribe({
         next: res => {
-          this.status = res.status;
-          this.response = res.body;
+          this.status          = res.status;
+          this.response        = res.body;
           this.responseHeaders = {};
-          this.data = this.response;
-          this.errorText = res.statusText
-
-          res.headers.keys().forEach(key => {
-            this.responseHeaders[key] = res.headers.get(key)!;
+          this.data            = this.response;
+          this.errorText       = res.statusText;
+          res.headers.keys().forEach(h => {
+            this.responseHeaders[h] = res.headers.get(h)!;
           });
         },
         error: err => {
           const code = err.status ?? 'Unknown';
           const text = err.statusText || err.message || 'Request failed';
-          this.status = code
-          this.errorText = text
+          this.status    = code;
+          this.errorText = text;
           this.msg.error(`Error ${code}: ${text}`);
-        },
-        complete: () => {
         }
       });
   }
+
 
 
   private arrayToMap(arr: KeyValue[]): Record<string, string> {
@@ -339,31 +385,88 @@ export class ApiRequestComponent {
     this.clipboardService.copyFromContent(this.editor.getText());
   }
 
+  private flattenParameters(defs: any): Record<string, any> {
+    const flat: Record<string, any> = {};
+    function walk(obj: any) {
+      for (const name of Object.keys(obj)) {
+        flat[name] = obj[name];
+        if (obj[name].listParameters) {
+          walk(obj[name].listParameters);
+        }
+      }
+    }
+    walk(defs);
+    return flat;
+  }
+
+  private resolvePlaceholders(obj: any, flat: Record<string, any>): any {
+    if (typeof obj === 'string') {
+      return obj.replace(/\{(\w+)\}/g, (_, varName) => {
+        const def = flat[varName];
+        if (!def) return `{${varName}}`;
+        switch (def.type) {
+          case 'String':
+            return JSON.parse(def.default);
+          case 'Map':
+          case 'Map':
+          case 'List':
+            const defaultsObj: Record<string, any> = {};
+            for (const key of Object.keys(def.listParameters || {})) {
+              const paramDef = (def.listParameters as Record<string, any>)[key];
+              defaultsObj[key] = paramDef.default;
+            }
+            return JSON.stringify(defaultsObj);
+          default:
+            return def.default;
+        }
+      });
+    }
+    if (Array.isArray(obj)) {
+      return obj.map(item => this.resolvePlaceholders(item, flat));
+    }
+    if (obj && typeof obj === 'object') {
+      return Object.fromEntries(
+        Object.entries(obj)
+          .map(([k,v]) => [k, this.resolvePlaceholders(v, flat)])
+      );
+    }
+    return obj;
+  }
+
   storeConfig(): void {
-    let bodyText
+    let bodyText: any;
     try {
       bodyText = JSON.parse(this.model.body);
     } catch {
       bodyText = this.model.body;
     }
-    const config = {
-      url: this.model.url,
-      method: this.model.method,
-      headers: this.model.headers,
-      params: this.model.params,
-      auth: this.auth,
-      body: bodyText
-    };
-    const json = JSON.stringify(config, null, 2);;
 
-    const obj = {
-      request: json,
-      return_variables: this.mappings
-    };
+    const flatDefs = this.flattenParameters(this.parameters);
+
+    const url    = this.resolvePlaceholders(this.model.url,    flatDefs);
+    const headers = this.model.headers
+      .filter(h => h.key.trim())
+      .map(h => ({ key: h.key, value: this.resolvePlaceholders(h.value, flatDefs) }));
+    const params  = this.model.params
+      .filter(p => p.key.trim())
+      .map(p => ({ key: p.key, value: this.resolvePlaceholders(p.value, flatDefs) }));
+    const body    = this.resolvePlaceholders(bodyText, flatDefs);
+
+    const config: any = { url, method: this.model.method };
+    if (headers.length) config.headers = headers;
+    if (params.length)  config.params  = params;
+    if (this.auth.type !== 'None') config.auth = this.auth;
+    if (body !== undefined && body !== '') config.body = body;
+
+    const json = JSON.stringify(config, null, 2);
+    const out: any = { request: json };
+    if (this.mappings.length) out.return_variables = this.mappings;
+
     this.clipboardService.copyFromContent(json);
     this.coreService.showCopyMessage(this.msg);
-    this.configSaved.emit(obj);
+    this.configSaved.emit(out);
   }
+
 
   close(): void{
     this.activeModal.close();
@@ -453,6 +556,7 @@ export class JobWizardComponent {
     isVisible: false
   }
   savedRequestConfig: any;
+  parameters: any;
   private searchTerm = new Subject<string>();
 
   constructor(private coreService: CoreService, private activeModal: NzModalRef) {
@@ -463,6 +567,7 @@ export class JobWizardComponent {
     this.existingJob = this.modalData.existingJob;
     this.allowEmptyArguments = sessionStorage['allowEmptyArguments'] == 'true';
     this.node = this.modalData.node;
+    this.parameters = this.modalData.parameters;
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.getJitlJobs();
     this.searchTerm.pipe(debounceTime(200))

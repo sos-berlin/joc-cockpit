@@ -1751,7 +1751,8 @@ export class JobComponent {
       nzAutofocus: null,
       nzData: {
         existingJob: this.selectedNode.job,
-        node: this.selectedNode.obj
+        node: this.selectedNode.obj,
+        parameters: this.orderPreparation.parameters
       },
       nzFooter: null,
       nzClosable: false,
