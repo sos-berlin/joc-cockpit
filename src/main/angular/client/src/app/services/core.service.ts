@@ -2235,67 +2235,107 @@ export class CoreService {
       string.slice(1);
   }
 
-  private checkParentNode(lastPos, data, item, nodes): any {
-    let parentNode: any;
-    if (lastPos == 'try+0:0') {
-      parentNode = {
-        title: 'Try',
-        key: 'try' + item.orderId + item.logEvent + item.position,
+private checkParentNode(lastPos, data, item, nodes): any {
+  let parentNode: any;
+
+  const [text, idx] = lastPos.split(':');
+
+  if (text === 'lock') {
+    const groupPosition = item.position.substring(0, item.position.indexOf(':'));
+
+    let lockNode = this.findNodeRecursive(nodes, 'Lock', groupPosition);
+
+    if (!lockNode) {
+      lockNode = {
+        title: 'Lock',
+        key: `lock-${item.orderId}-${groupPosition}`,
         name: '',
         logLevel: item.logLevel,
-        label: item.label,
-        position: item.position.substring(0, item.position.lastIndexOf(':')),
+        label: '',
+        position: groupPosition,
         isLeaf: false,
-        count: item.count,
-        logEvent: item.logEvent,
+        count: 0,
+        logEvent: 'orderLocksAcquired',
         orderId: item.orderId,
         children: []
       };
-      if (item.logEvent === 'OrderRetrying') {
-        data.title = 'Retry';
-      }
-      for (let x in nodes) {
-        if (nodes[x].title == parentNode.title && nodes[x].name == parentNode.name && nodes[x].position == parentNode.position && nodes[x].orderId == parentNode.orderId) {
-          parentNode = null;
-          break;
-        }
-      }
-    } else if (lastPos == 'catch+0:0' && item.logEvent == 'OrderCaught') {
-      data = {
-        title: 'Catch',
-        key: 'catch' + item.orderId + item.logEvent + item.position,
-        name: '',
-        logLevel: item.logLevel,
-        label: item.label,
-        position: item.position.substring(0, item.position.lastIndexOf(':')),
-        isLeaf: false,
-        count: item.count,
-        logEvent: item.logEvent,
-        orderId: item.orderId,
-        children: []
-      };
-    } else {
-      let text = lastPos.split(':')[0];
-      if (lastPos.split(':')[1] === '0') {
-        parentNode = {
-          title: this.upperFLetter(text),
-          key: text + item.orderId + item.logEvent + item.position,
-          name: '',
-          logLevel: item.logLevel,
-          position: item.position,
-          position1: item.position.substring(0, item.position.lastIndexOf(':')),
-          isLeaf: false,
-          count: item.count,
-          logEvent: item.logEvent,
-          orderId: item.orderId,
-          children: []
-        };
-      }
     }
 
-    return parentNode;
+    return lockNode;
   }
 
+  if (lastPos == 'try+0:0') {
+    parentNode = {
+      title: 'Try',
+      key: 'try' + item.orderId + item.logEvent + item.position,
+      name: '',
+      logLevel: item.logLevel,
+      label: item.label,
+      position: item.position.substring(0, item.position.lastIndexOf(':')),
+      isLeaf: false,
+      count: item.count,
+      logEvent: item.logEvent,
+      orderId: item.orderId,
+      children: []
+    };
+    if (item.logEvent === 'OrderRetrying') {
+      data.title = 'Retry';
+    }
+
+    for (let x in nodes) {
+      if (nodes[x].title == parentNode.title && nodes[x].name == parentNode.name && nodes[x].position == parentNode.position && nodes[x].orderId == parentNode.orderId) {
+        parentNode = null;
+        break;
+      }
+    }
+  } else if (lastPos == 'catch+0:0' && item.logEvent == 'OrderCaught') {
+    data = {
+      title: 'Catch',
+      key: 'catch' + item.orderId + item.logEvent + item.position,
+      name: '',
+      logLevel: item.logLevel,
+      label: item.label,
+      position: item.position.substring(0, item.position.lastIndexOf(':')),
+      isLeaf: false,
+      count: item.count,
+      logEvent: item.logEvent,
+      orderId: item.orderId,
+      children: []
+    };
+  } else {
+    let text = lastPos.split(':')[0];
+    if (lastPos.split(':')[1] === '0') {
+      parentNode = {
+        title: this.upperFLetter(text),
+        key: text + item.orderId + item.logEvent + item.position,
+        name: '',
+        logLevel: item.logLevel,
+        position: item.position,
+        position1: item.position.substring(0, item.position.lastIndexOf(':')),
+        isLeaf: false,
+        count: item.count,
+        logEvent: item.logEvent,
+        orderId: item.orderId,
+        children: []
+      };
+    }
+  }
+
+  return parentNode;
+}
+
+ findNodeRecursive(nodes: any[], title: string, position: string): any {
+  for (let node of nodes) {
+    if (node.title === title && node.position === position) {
+      return node;
+    }
+    if (node.children && node.children.length > 0) {
+      const found = this.findNodeRecursive(node.children, title, position);
+      if (found) return found;
+    }
+  }
+  return null;
+}
   createTreeStructure(mainObj: any): any {
     let nodes: any = [];
     mainObj.treeStructure.forEach((item: any) => {

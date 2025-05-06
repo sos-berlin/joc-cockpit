@@ -1114,7 +1114,7 @@ export class DailyPlanComponent {
   filterByOrders(type): void {
     if (this.dailyPlanFilters.filter.filterBy !== type) {
       this.dailyPlanFilters.filter.filterBy = type;
-      this.object.isLetRun = this.dailyPlanFilters.filter.filterBy === 'ONETIMEORDERS';
+      this.object.isLetRun = this.dailyPlanFilters.filter.filterBy === 'ONETIMEORDERS' || this.dailyPlanFilters.filter.filterBy === '';
       this.searchInResult();
     }
   }
@@ -1923,7 +1923,7 @@ export class DailyPlanComponent {
     }
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
     this.checkState(this.object, this.object.mapOfCheckedId);
-    this.object.isLetRun = this.dailyPlanFilters.filter.filterBy === 'ONETIMEORDERS';
+    this.object.isLetRun = this.dailyPlanFilters.filter.filterBy === 'ONETIMEORDERS' || this.dailyPlanFilters.filter.filterBy === '';
   }
 
   checkOrderTemplate(template): void {

@@ -1012,6 +1012,7 @@
     "tooltip.critical": "Indicates existance of orders in the SUSPENDED, FAILED, BLOCKED state that expect user intervention in order to continue.",
     "tooltip.present": "Indicates that a Notice is available. The Notice can be expected or consumed by a receiving workflow's order.",
     "tooltip.future": "Indicates that a Notice is announced, i.e. an orders exists for the posting Workflow. The Notice will become available in the future.",
+    "tooltip.letRun": "Only one-time orders will proceed further.",
     "tab": {
       "dailyPlan": "Daily Plan",
       "projection": "Projection",

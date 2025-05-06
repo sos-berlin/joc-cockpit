@@ -1012,6 +1012,7 @@
     "tooltip.critical": "Zeigt das Vorhandensein von Aufträgen im Zustand AUSGESETZT, FEHLGESCHLAGEN, BLOCKIERT an, die ein Eingreifen des Benutzers erfordern, um fortgesetzt werden zu können.",
     "tooltip.present": "Zeigt an, dass eine Notiz vorliegt. Die Notiz kann vom Auftrag eines empfangenden Arbeitsablaufs erwartet oder verbraucht werden.",
     "tooltip.future": "Zeigt an, dass eine Notiz angekündigt ist, d.h. ein Auftrag für den sendenden Arbeitsablauf vorhanden ist. Die Notiz wird in Zukunft verfügbar sein.",
+    "tooltip.letRun": "Only one-time orders will proceed further.",
     "tab": {
       "dailyPlan": "Tagesplan",
       "projection": "Projektion",

@@ -1100,7 +1100,7 @@
                               </thead>
                               <tbody>
                               <ng-template [ngForOf]="orderHistoryTable.data | orderBy: 'startTime':true" let-history ngFor>
-                                <tr (click)="coreService.showLogWindow(history,null, null, history.controllerId, null, viewContainerRef)"
+                                <tr (click)="coreService.showLogWindow(history,null, null, history.controllerId, null, null)"
                                     [ngClass]="{'light-bg':history.show}" class="cursor">
                                   <td>
                                 <span class="show-in-single-line">

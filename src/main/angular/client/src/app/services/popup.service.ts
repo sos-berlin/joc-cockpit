@@ -27,6 +27,7 @@ export let POPOUT_MODALS: any = {};
 })
 export class PopupService {
   styleSheetElement: any;
+  private globalViewContainerRef: ViewContainerRef;
 
   constructor(
     private applicationRef: ApplicationRef,
@@ -34,6 +35,14 @@ export class PopupService {
   }
 
   ngOnDestroy() {
+  }
+
+  setViewContainerRef(ref: ViewContainerRef) {
+    this.globalViewContainerRef = ref;
+  }
+
+  getViewContainerRef(): ViewContainerRef {
+    return this.globalViewContainerRef;
   }
 
   openPopoutModal(data: any, properties: any, viewContainerRef?: ViewContainerRef) {
@@ -74,20 +83,27 @@ export class PopupService {
   }
 
   createCDKPortal(data: any, windowInstance: any, component: Type<any>, viewContainerRef: ViewContainerRef) {
-    if (windowInstance && viewContainerRef) {
-      const componentRef = viewContainerRef.createComponent(component);
+    const containerRef = viewContainerRef || this.globalViewContainerRef;
+
+    if (windowInstance && containerRef) {
+      const componentRef = containerRef.createComponent(component);
 
       // Copy stylesheet link from parent window
       this.styleSheetElement = this.getStyleSheetElement();
       windowInstance.document.head?.appendChild(this.styleSheetElement);
 
-      // Clear popout modal content
+      // Append component to the popup window
       if (windowInstance.document.body) {
-       windowInstance.document.body.appendChild((componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement);
+        windowInstance.document.body.appendChild(
+          (componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement
+        );
       }
+
       POPOUT_MODALS['windowInstance'] = windowInstance;
       POPOUT_MODALS['data'] = data;
       POPOUT_MODALS['componentRef'] = componentRef;
+    } else {
+      console.warn('⚠️ No valid ViewContainerRef available for popup creation');
     }
   }
 

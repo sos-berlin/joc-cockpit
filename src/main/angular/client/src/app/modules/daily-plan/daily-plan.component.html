@@ -488,7 +488,7 @@
               class="fa fa-trash"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.removeOrder</span>
             </button>
-            <button (click)="continueOrder()"
+            <button (click)="continueOrder()" [nzTooltipPlacement]="'bottom'" nz-tooltip="{{'dailyPlan.tooltip.letRun' | translate}}"
                     *ngIf="permission && permission.currentController && permission.currentController.orders.modify"
                     [disabled]="!object.isLetRun" class="btn btn-grey btn-sm m-l-12"><i
               class="fa fa-refresh"></i>&nbsp;

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ViewContainerRef} from '@angular/core';
 import {TranslateService} from '@ngx-translate/core';
 import {NzI18nService} from 'ng-zorro-antd/i18n';
 import {Router} from '@angular/router';
@@ -7,6 +7,7 @@ import {AuthService, OIDCAuthService} from './components/guard';
 import {CoreService} from './services/core.service';
 import {DataService} from "./services/data.service";
 import {KioskService} from "./services/kiosk.service";
+import {PopupService} from "./services/popup.service";
 
 declare const $: any;
 
@@ -18,7 +19,8 @@ export class AppComponent {
   locales: any = [];
 
   constructor(private translate: TranslateService, private i18n: NzI18nService, public coreService: CoreService, private dataService: DataService,
-              private authService: AuthService, private oAuthService: OIDCAuthService, private router: Router, private kioskService: KioskService) {
+              private authService: AuthService, private oAuthService: OIDCAuthService, private router: Router, private kioskService: KioskService,  private popupService: PopupService,
+              public viewContainerRef: ViewContainerRef) {
     AppComponent.themeInit();
     /*    Object.getOwnPropertyNames(console).filter((property) => {
           return typeof console[property] === 'function';
@@ -50,6 +52,7 @@ export class AppComponent {
         });
       }
     }
+    this.popupService.setViewContainerRef(this.viewContainerRef);
 
   }
 
