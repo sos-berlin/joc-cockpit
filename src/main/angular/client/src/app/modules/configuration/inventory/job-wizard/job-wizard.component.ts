@@ -216,35 +216,46 @@ export class ApiRequestComponent {
 
   @HostListener('document:dblclick', ['$event'])
   onDoubleClick(event: MouseEvent) {
-    const handle = setInterval(() => {
-      const json = (this.editor as any).editor;
-      const ace: AceEditor = json?.aceEditor;
-      if (ace) {
-        clearInterval(handle);
-        const raw = ace.getSelectedText().trim();
-        if (!raw) return;
+    const path = (event as any).composedPath?.() as HTMLElement[] || [];
+    const inAceText = path.some(el =>
+      el.classList?.contains('ace_scroller') ||
+      el.classList?.contains('ace_content')
+    );
+    if (!inAceText) {
+      return;  // ignore clicks outside the JSON editor text
+    }
 
-        let parsed: any;
-        try {
-          parsed = JSON.parse(raw);
-        } catch {
-          parsed = raw.replace(/^['"]|['"]$/g, '');
-        }
+    const jsonEditor = (this.editor as any).editor;
+    const ace: AceEditor | undefined = jsonEditor?.aceEditor;
+    if (!ace) {
+      return;
+    }
 
-        const paths = this.findPaths(this.response, parsed);
-        const modal = this.modal.create({
-          nzContent: ApiRequestDialogComponent,
-          nzData: { selectedText: raw, paths, flag: false },
-          nzFooter: null,
-          nzClosable: false,
-          nzMaskClosable: false
-        });
-        modal.afterClose.subscribe(result => {
-          if (result) this.mappings.push(result);
-        });
+    const raw = ace.getSelectedText().trim();
+    if (!raw) { return; }
+
+    let parsed: any;
+    try {
+      parsed = JSON.parse(raw);
+    } catch {
+      parsed = raw.replace(/^['"]|['"]$/g, '');
+    }
+
+    const paths = this.findPaths(this.response, parsed);
+    const modal = this.modal.create({
+      nzContent: ApiRequestDialogComponent,
+      nzData: { selectedText: raw, paths, flag: false },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.mappings.push(result);
       }
-    }, 50);
+    });
   }
+
   private findPaths(obj: any, target: any): string[] {
     const results: string[] = [];
 
@@ -277,20 +288,22 @@ export class ApiRequestComponent {
     return results;
   }
 
-  variableList(): void{
+  variableList(): void {
     const modal = this.modal.create({
       nzContent: ApiRequestDialogComponent,
-      nzData: { mapping: this.mappings, flag: true },
+      nzData: { mapping: [...this.mappings], flag: true }, // pass a copy
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
     });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.mappings.push(result)
+
+    modal.afterClose.subscribe((result: Mapping[]) => {
+      if (Array.isArray(result)) {
+        this.mappings = [...result]; // replace the list with updated one
       }
     });
   }
+
   addHeader(): void {
     this.model.headers.push({key: '', value: ''});
   }
@@ -449,8 +462,7 @@ export class ApiRequestComponent {
     } catch {
       bodyText = this.model.body;
     }
-
-    const flatDefs = this.flattenParameters(this.parameters);
+    const flatDefs = this.flattenParameters(this.parameters || {});
 
     const url    = this.resolvePlaceholders(this.model.url,    flatDefs);
     const headers = this.model.headers
@@ -511,16 +523,23 @@ export class ApiRequestDialogComponent {
 
 
   removeMapping(index: number): void {
-    this.mappings.splice(index, 1);
-    this.mappings = [...this.mappings]
+    if (index >= 0 && index < this.mappings.length) {
+      this.mappings.splice(index, 1);
+      this.mappings = [...this.mappings];
+    }
   }
+
 
   onSubmit(): void {
     const obj = {
       name: this.currentName,
       path: this.selectedPath
-    }
+    };
     this.activeModal.close(obj);
+  }
+
+  closeWithMappings(): void {
+    this.activeModal.close(this.mappings);
   }
 }
 

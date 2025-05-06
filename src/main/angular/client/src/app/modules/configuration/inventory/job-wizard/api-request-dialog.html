@@ -1,7 +1,10 @@
 <div class="modal-header">
     <h4 *ngIf="!flag" class="modal-title" translate>workflow.apiRequest.label.defineVariable</h4>
     <h4 *ngIf="flag" class="modal-title" translate>workflow.apiRequest.button.variableList</h4>
-    <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+    <button *ngIf="!flag" type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+        <span aria-hidden="true" class="fa fa-times-circle"></span>
+    </button>
+    <button *ngIf="flag" type="button" class="close" aria-label="Close" (click)="closeWithMappings()">
         <span aria-hidden="true" class="fa fa-times-circle"></span>
     </button>
 </div>
@@ -46,11 +49,11 @@
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let m of mappingTable.data; let i = index">
+            <tr *ngFor="let m of mappings; let i = index">
                 <td>{{ m.name }}</td>
                 <td>{{ m.path }}</td>
                 <td class="text-center cur-point" (click)="removeMapping(i)">
-                        <i class="fa fa-trash"></i>
+                    <i class="fa fa-trash"></i>
                 </td>
             </tr>
             </tbody>
@@ -68,7 +71,8 @@
     <button  *ngIf="!flag" type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
         common.button.cancel
     </button>
-    <button *ngIf="flag" type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+    <button *ngIf="flag" type="button" class="btn btn-grey btn-sm" (click)="closeWithMappings()" translate>
         common.button.close
     </button>
+
 </div>
