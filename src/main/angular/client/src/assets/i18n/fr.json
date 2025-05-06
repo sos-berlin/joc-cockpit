@@ -1012,6 +1012,7 @@
     "tooltip.critical": "Indique l'existence d'ordres dans l'état SUSPENDU, ÉCHOUÉ, BLOQUÉ qui attendent l'intervention de l'utilisateur pour continuer.",
     "tooltip.present": "Indique qu'une Annonce est disponible. L'Annonce peut être attendu ou consommé par l'ordre d'un Workflow récepteur.",
     "tooltip.future": "Indique qu'une Annonce est prévu, c'est-à-dire qu'un ordre existe pour le Workflow de publication. L'Annonce sera disponible ultérieurement.",
+    "tooltip.letRun": "Only one-time orders will proceed further.",
     "tab": {
       "dailyPlan": "Plan Quotidien",
       "projection": "Projection",

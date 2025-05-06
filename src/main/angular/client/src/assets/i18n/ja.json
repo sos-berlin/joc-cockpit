@@ -1012,6 +1012,7 @@
     "tooltip.critical": "一時停止、失敗、ブロックの状態にあるオーダーの存在を示す",
     "tooltip.present": "通知が利用可能であることを示します。通知は、受信ワークフローのオーダーによって期待されるか、消費されます",
     "tooltip.future": "通知が利用可能であることを示す",
+    "tooltip.letRun": "Only one-time orders will proceed further.",
     "tab": {
       "dailyPlan": "実行計画",
       "projection": "プロジェクション",

@@ -48,27 +48,27 @@
         </thead>
         <tbody>
         <tr *ngFor="let ch of innerChildTaskTable.data">
-          <td (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,viewContainerRef)">
+          <td (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,null)">
             <span [ngStyle]="{'padding-left': 6 + (6 * (history.level > 10 ? 11 : history.level)) + 'px'}"
                   class="show-in-single-line w-full">{{ch.job}}</span>
           </td>
-          <td (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,viewContainerRef)"
+          <td (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,null)"
               class="show-in-single-line w-full">
             <span class="cur-point" *ngIf="ch.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="ch.position">{{ch.label}}</span>
             <span *ngIf="!ch.label">{{ch.position}}</span>
           </td>
-          <td (click)="coreService.showLogWindow(null,ch,null,ch.controllerId,null,viewContainerRef)">
+          <td (click)="coreService.showLogWindow(null,ch,null,ch.controllerId,null,null)">
               <span *ngIf="ch.state" [innerHtml]="ch.state._text | translate" [ngClass]="coreService.getColor(ch.state.severity,'bg')"
                     class="label"></span>
           <td
-            (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,viewContainerRef)">{{ch.startTime | stringToDate}}</td>
+            (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,null)">{{ch.startTime | stringToDate}}</td>
           <td
-            (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,viewContainerRef)">{{ch.endTime | stringToDate}}</td>
+            (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,null)">{{ch.endTime | stringToDate}}</td>
           <td
-            (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,viewContainerRef)">{{ch.startTime | duration:ch.endTime}}</td>
+            (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,null)">{{ch.startTime | duration:ch.endTime}}</td>
           <td
-            (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,viewContainerRef)">{{ch.criticality | translate}}</td>
-          <td (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,viewContainerRef)">{{ch.exitCode}}</td>
+            (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,null)">{{ch.criticality | translate}}</td>
+          <td (click)="coreService.showLogWindow(null,ch, null, ch.controllerId, null,null)">{{ch.exitCode}}</td>
         </tr>
         </tbody>
       </nz-table>
@@ -79,7 +79,7 @@
   <tr [ngClass]="{'light-bg':child.order.show}" class="tr-border cursor">
     <td class="menu"></td>
     <td *ngIf="!historyView.current">
-            <span (click)="coreService.showLogWindow(child.order,null,null,child.order.controllerId, null,viewContainerRef)"
+            <span (click)="coreService.showLogWindow(child.order,null,null,child.order.controllerId, null,null)"
                   [ngStyle]="{'padding-left': (6 * (history.level > 10 ? 11 : history.level)) + 'px'}"
                   class="show-in-single-line w-full">
               <i (click)="showPanelFuc(child.order, history.level);$event.stopPropagation()"
@@ -94,7 +94,7 @@
             </span>
     </td>
     <td>
-            <span (click)="coreService.showLogWindow(child.order,null,null,child.order.controllerId,null,viewContainerRef)"
+            <span (click)="coreService.showLogWindow(child.order,null,null,child.order.controllerId,null,null)"
                   [ngStyle]="{'padding-left': (6 * (history.level > 10 ? 11 : history.level)) + 'px'}"
                   class="show-in-single-line w-full">
               <i (click)="showPanelFuc(child.order, history.level);$event.stopPropagation()"
@@ -109,7 +109,7 @@
               <span [innerHtml]="child.order.orderId"></span>
             </span>
     </td>
-    <td (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null,viewContainerRef)">
+    <td (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null,null)">
             <span class="show-in-single-line w-full">
                 <span (click)="coreService.showWorkflow(child.order.workflow);$event.stopPropagation()"
                       [innerHtml]="child.order.workflow" class="text-hover-primary"></span>
@@ -119,33 +119,33 @@
               </span>
     </td>
     <td
-      (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null,viewContainerRef)">
+      (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null,null)">
       <span class="show-in-single-line w-full cur-point" *ngIf="child.order.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="child.order.position">{{child.order.label}}</span>
       <span class="show-in-single-line w-full" *ngIf="!child.order.label">{{child.order.position}}</span>
     </td>
     <td
-      (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null,viewContainerRef)">
+      (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null,null)">
             <span *ngIf="child.order.state" [innerHtml]="child.order.state._text | translate"
                   [ngClass]="coreService.getColor(child.order.state.severity,'bg')"
                   class="label"></span>
     </td>
     <td
-      (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null,viewContainerRef)">
+      (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null,null)">
             <span *ngIf="child.order.orderState" [innerHtml]="child.order.orderState._text | translate"
                   [ngClass]="coreService.getColor(child.order.orderState.severity,'bg')"
                   class="label"></span>
     </td>
     <td
-      (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null,viewContainerRef)"
+      (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null,null)"
       [innerHtml]="child.order.plannedTime | stringToDate"></td>
     <td
-      (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null,viewContainerRef)"
+      (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null,null)"
       [innerHtml]="child.order.startTime | stringToDate"></td>
     <td
-      (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null,viewContainerRef)"
+      (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null,null)"
       [innerHtml]="child.order.endTime | stringToDate"></td>
     <td
-      (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null,viewContainerRef)"
+      (click)="coreService.showLogWindow(child.order,null, null, child.order.controllerId, null,null)"
       [innerHtml]="child.order.startTime | duration:child.order.endTime"></td>
   </tr>
   <tr *ngIf="child.order.show">
