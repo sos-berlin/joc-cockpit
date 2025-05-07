@@ -320,13 +320,13 @@
 
                         <nz-divider></nz-divider>
                         <div *ngIf="status !== null">
-                            <nz-alert *ngIf="status != 200"
+                            <nz-alert *ngIf="status && status >= 400"
                                       nzType="error"
                                       nzMessage="{{status}}"
                                       nzDescription="{{errorText}}"
                                       nzShowIcon
                             ></nz-alert>
-                            <nz-alert *ngIf="status === 200"
+                            <nz-alert *ngIf="status && status < 400"
                                       nzType="success"
                                       nzMessage="{{status}}"
                                       nzDescription="{{errorText}}"
@@ -354,7 +354,7 @@
 
                     </div>
                     <div class="modal-footer p-l-0 p-b-0">
-                        <button [disabled]="status != 200" (click)="storeConfig()"
+                        <button (click)="storeConfig()"
                                 class="btn btn-primary btn-sm"
                                 translate
                                 type="submit">

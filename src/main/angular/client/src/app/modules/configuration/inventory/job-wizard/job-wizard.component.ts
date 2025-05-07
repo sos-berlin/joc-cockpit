@@ -476,7 +476,25 @@ export class ApiRequestComponent {
     const config: any = { url, method: this.model.method };
     if (headers.length) config.headers = headers;
     if (params.length)  config.params  = params;
-    if (this.auth.type !== 'None') config.auth = this.auth;
+    if (this.auth.type !== 'None') {
+      const auth = { type: this.auth.type };
+
+      if (this.auth.type === 'API Key' && this.auth.apiKey.name && this.auth.apiKey.value) {
+        auth['apiKey'] = this.auth.apiKey;
+      }
+      if (this.auth.type === 'Bearer Token' && this.auth.token) {
+        auth['token'] = this.auth.token;
+      }
+      if (this.auth.type === 'Basic Auth' && (this.auth.basic.username || this.auth.basic.password)) {
+        auth['basic'] = this.auth.basic;
+      }
+      if (this.auth.type === 'OAuth 2.0' && (this.auth.oauth2.clientId || this.auth.oauth2.clientSecret || this.auth.oauth2.tokenUrl)) {
+        auth['oauth2'] = this.auth.oauth2;
+      }
+
+      config.auth = auth;
+    }
+
     if (body !== undefined && body !== '') config.body = body;
 
     const json = JSON.stringify(config, null, 2);
