@@ -488,12 +488,26 @@
               class="fa fa-trash"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.removeOrder</span>
             </button>
-            <button (click)="continueOrder()" [nzTooltipPlacement]="'bottom'" nz-tooltip="{{'dailyPlan.tooltip.letRun' | translate}}"
-                    *ngIf="permission && permission.currentController && permission.currentController.orders.modify"
-                    [disabled]="!object.isLetRun" class="btn btn-grey btn-sm m-l-12"><i
-              class="fa fa-refresh"></i>&nbsp;
-              <span class="hidden-sm-down" translate>dailyPlan.button.continueOrder</span>
-            </button>
+            <ng-container *ngIf="object.isLetRun; else noTooltip">
+              <button (click)="continueOrder()"
+                      [nzTooltipPlacement]="'bottom'"
+                      nz-tooltip="{{'dailyPlan.tooltip.letRun' | translate}}"
+                      *ngIf="permission && permission.currentController && permission.currentController.orders.modify"
+                      class="btn btn-grey btn-sm m-l-12">
+                <i class="fa fa-refresh"></i>&nbsp;
+                <span class="hidden-sm-down" translate>dailyPlan.button.continueOrder</span>
+              </button>
+            </ng-container>
+            <ng-template #noTooltip>
+              <button (click)="continueOrder()"
+                      *ngIf="permission && permission.currentController && permission.currentController.orders.modify"
+                      [disabled]="true"
+                      class="btn btn-grey btn-sm m-l-12">
+                <i class="fa fa-refresh"></i>&nbsp;
+                <span class="hidden-sm-down" translate>dailyPlan.button.continueOrder</span>
+              </button>
+            </ng-template>
+
             <button (click)="cancelSelectedOrder()"
                     *ngIf="permission.currentController && permission.currentController.orders.cancel"
                     [disabled]="object.isCancel" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-times"></i>&nbsp;

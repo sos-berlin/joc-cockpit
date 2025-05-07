@@ -1139,6 +1139,9 @@ export class CoreService {
       .scheduler_debug {
         margin-left: 289px;
       }
+      .log_info {
+        margin-left: 289px;
+      }
       .scheduler_stderr {
         margin-left: 289px;
       }
@@ -2103,7 +2106,7 @@ export class CoreService {
       const h = time.getHours() + '';
       const m = time.getMinutes() + '';
       const s = time.getSeconds() + '';
-      data[val === 'from' ? 'fromTime' : val === 'start' ? 'startTime' : val.match('end') ? val : 'toTime'] = (h.length == 1 ? '0' + h : h) + ':' + (m.length == 1 ? '0' + m : m) + ':' + (s.length == 1 ? '0' + s : s);
+      data[val === 'from' || val === 'fromTime' ? 'fromTime' : val === 'start' ? 'startTime' : val.match('end') ? val : 'toTime'] = (h.length == 1 ? '0' + h : h) + ':' + (m.length == 1 ? '0' + m : m) + ':' + (s.length == 1 ? '0' + s : s);
     } else if (isEditor && time) {
       let d = new Date();
       const arr = time.split(':');

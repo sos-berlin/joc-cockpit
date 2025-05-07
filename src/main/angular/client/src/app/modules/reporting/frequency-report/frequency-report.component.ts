@@ -803,10 +803,17 @@ removeCard(cardId: any): void {
 
   toggleReportView(report?: any): void {
     this.filter.showReport = !this.filter.showReport;
+
+    if (!this.filter.showReport && this.barChart) {
+      this.barChart.destroy();
+      this.barChart = null;
+    }
+
     if (report) {
       this.initGraph(report);
     }
   }
+
 
   toggleCardView(reports: any) {
     reports.showTable = !reports.showTable;
