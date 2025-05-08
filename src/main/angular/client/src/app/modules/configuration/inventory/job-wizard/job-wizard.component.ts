@@ -336,6 +336,39 @@ export class ApiRequestComponent {
   send(): void {
     const hdrs = this.arrayToMap(this.model.headers);
 
+    switch (this.auth.type) {
+      case 'API Key':
+        if (this.auth.apiKey.name) {
+          if (this.auth.apiKey.in === 'header') {
+            hdrs[this.auth.apiKey.name] = this.auth.apiKey.value;
+          } else {
+            this.model.params.push({
+              key: this.auth.apiKey.name,
+              value: this.auth.apiKey.value
+            });
+          }
+        }
+        break;
+      case 'Bearer Token':
+        if (this.auth.token) {
+          hdrs['Authorization'] = `Bearer ${this.auth.token}`;
+        }
+        break;
+      case 'Basic Auth':
+        const { username, password } = this.auth.basic;
+        if (username || password) {
+          const creds = btoa(`${username}:${password}`);
+          hdrs['Authorization'] = `Basic ${creds}`;
+        }
+        break;
+      case 'OAuth 2.0':
+        const token = (this.auth as any).oauth2?.accessToken;
+        if (token) {
+          hdrs['Authorization'] = `Bearer ${token}`;
+        }
+        break;
+    }
+
     const { url, method, params, body } = this.model;
     const paramMap = this.arrayToMap(params);
 
@@ -353,14 +386,12 @@ export class ApiRequestComponent {
     const resolvedUrl = replacePlaceholders(url);
 
     const resolvedHdrs: Record<string,string> = {};
-    Object.entries(hdrs).forEach(([key, val]) => {
-      const k2 = replacePlaceholders(key);
-      const v2 = replacePlaceholders(val);
-      resolvedHdrs[k2] = v2;
+    Object.entries(hdrs).forEach(([k, v]) => {
+      resolvedHdrs[ replacePlaceholders(k) ] = replacePlaceholders(v);
     });
 
-    Object.keys(paramMap).forEach(k => {
-      paramMap[k] = replacePlaceholders(paramMap[k]);
+    Object.keys(paramMap).forEach(key => {
+      paramMap[key] = replacePlaceholders(paramMap[key]);
     });
 
     let resolvedBody: any = body;
@@ -372,11 +403,11 @@ export class ApiRequestComponent {
       .requestTest(method, resolvedUrl, resolvedHdrs, paramMap, resolvedBody)
       .subscribe({
         next: res => {
-          this.status          = res.status;
-          this.response        = res.body;
+          this.status = res.status;
+          this.response = res.body;
           this.responseHeaders = {};
-          this.data            = this.response;
-          this.errorText       = res.statusText;
+          this.data = res.body;
+          this.errorText = res.statusText;
           res.headers.keys().forEach(h => {
             this.responseHeaders[h] = res.headers.get(h)!;
           });
@@ -390,7 +421,6 @@ export class ApiRequestComponent {
         }
       });
   }
-
 
 
   private arrayToMap(arr: KeyValue[]): Record<string, string> {
