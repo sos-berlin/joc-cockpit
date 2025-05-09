@@ -91,7 +91,10 @@ export class ApiRequestComponent {
   mappings: Mapping[] = [];
   @Input() arguments: any;
   @Input() parameters: any;
+  @Input() isClose: any;
   @Output() configSaved = new EventEmitter<any>();
+  @Output() isStepBack = new EventEmitter<any>();
+  @Output() isVisible = new EventEmitter<any>();
   @ViewChild('editor', {static: false}) editor!: JsonEditorComponent;
   private lastSelection = '';
   constructor(
@@ -99,7 +102,6 @@ export class ApiRequestComponent {
     private msg: NzMessageService,
     private ref: ChangeDetectorRef,
     private clipboardService: ClipboardService,
-    private activeModal: NzModalRef,
     private modal: NzModalService,
   ) {
     this.options.mode = 'code';
@@ -534,11 +536,16 @@ export class ApiRequestComponent {
     this.clipboardService.copyFromContent(json);
     this.coreService.showCopyMessage(this.msg);
     this.configSaved.emit(out);
+    this.isVisible.emit(false);
   }
 
 
   close(): void{
-    this.activeModal.close();
+    if(this.isClose){
+      this.isStepBack.emit(2);
+    }else{
+      this.isVisible.emit(false);
+    }
   }
 
 
@@ -861,6 +868,9 @@ export class JobWizardComponent {
     if (!this.jobList) {
       this.getJitlJobs();
     }
+    if(this.wizard.step === 3){
+      this.sideBar.isVisible = true
+    }
   }
 
   back(): void {
@@ -1073,9 +1083,7 @@ export class JobWizardComponent {
     }
   }
 
-  openSideBar(): void {
-    this.sideBar.isVisible = true;
-  }
+
 
   onApiConfigSaved(config: any) {
     this.apiRequest = true;

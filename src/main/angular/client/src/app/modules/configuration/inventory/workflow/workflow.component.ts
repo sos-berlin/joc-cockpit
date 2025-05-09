@@ -1458,7 +1458,10 @@ export class JobComponent {
   jobresources = {
     list: []
   }
-
+  sideBar = {
+    isVisible: false
+  }
+  savedRequestConfig: any;
   object = {
     checked1: false,
     indeterminate1: false,
@@ -1530,6 +1533,7 @@ export class JobComponent {
       this.updateVariableList();
     }
     this.initAutoComplete(100);
+    this.sideBar.isVisible = false
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -1766,6 +1770,10 @@ export class JobComponent {
         }
       }
     });
+  }
+
+  openAPIRequest(): void {
+    this.sideBar.isVisible = true
   }
 
   private updateJobFromWizardJob(result): void {
@@ -3244,6 +3252,38 @@ export class JobComponent {
       }
     });
   }
+
+  onApiConfigSaved(config: any) {
+    this.savedRequestConfig = config.request;
+    const obj = {
+      executable: {
+        TYPE: 'InternalExecutable',
+        internalType: this.selectedNode.job.executable.internalType,
+        className: this.selectedNode.job.executable.className,
+        arguments: []
+      },
+    };
+    if (obj.executable.TYPE === 'InternalExecutable') {
+      if (!obj.executable.arguments) {
+        obj.executable.arguments = [];
+      }
+      obj.executable.arguments.push({name: 'request', value: config.request});
+      if(config.return_variables && config.return_variables.length > 0){
+        const flattened = config.return_variables.map(m => ({
+          name: m.name,
+          path: Array.isArray(m.path) ? m.path[0] : m.path
+        }));
+        const returnVariablesJson = JSON.stringify(flattened, null, 2);
+
+        obj.executable.arguments.push({name: 'return_variable', value: returnVariablesJson });
+      }
+    }
+    this.updateJobFromWizardJob(obj);
+  }
+
+  close(value): void{
+    this.sideBar.isVisible = value
+  }
 }
 
 @Component({
@@ -4288,7 +4328,7 @@ export class WorkflowComponent {
           if (this.workflowService.isInstructionCollapsible(obj.TYPE)) {
             this.getJobsArray(obj);
           }
-          if(obj.jobName){
+          if (obj.jobName) {
             this.fetchJobTags([obj.jobName], this.workflowPath, (copiedTagsData) => {
               const copiedJobTags = copiedTagsData.find(jobTag => jobTag.jobName === obj.jobName)?.jobTags ?? [];
               obj.jobTags = copiedJobTags;

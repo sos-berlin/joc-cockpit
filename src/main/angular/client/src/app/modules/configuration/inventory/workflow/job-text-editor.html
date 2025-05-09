@@ -1,6 +1,11 @@
 <div *ngIf="!isModal && !isRuntimeVisible" class="pos-abt" style="top: 8px; right: 22px">
-  <button (click)="openJobWizard()"
+  <button *ngIf="(selectedNode.job.executable.internalType === 'Java' && selectedNode.job.executable.TYPE === 'Java') || (selectedNode.job.executable.internalType === 'JITL' && selectedNode.job.executable.TYPE === 'InternalExecutable' && selectedNode.job.executable.className?.includes('com.sos.jitl.jobs.rest'))" (click)="openAPIRequest()"
           class="btn btn-default btn-sm">
+    <i nz-icon class="p-r-xs" nzType="cloud-server" nzTheme="outline"></i>
+    {{'workflow.apiRequest.label.apiRequest' | translate}}
+  </button>
+  <button (click)="openJobWizard()"
+          class="btn btn-default btn-sm m-l-12">
     <i class="fa fa-magic"></i>
     {{'workflow.button.wizard' | translate}}
   </button>
@@ -1280,7 +1285,14 @@
                       [job]="selectedNode.job"
                       [timeZone]="timeZone"></app-admission-time>
 </div>
-
+<nz-drawer [nzWrapClassName]="'report-drawer'"  (nzOnClose)="sideBar.isVisible = false" [nzVisible]="sideBar.isVisible" nzPlacement="right">
+  <ng-container *nzDrawerContent>
+    <div (click)="sideBar.isVisible = false" class="close-btn"></div>
+    <div #editorContainer class="p-l-sm p-r-sm">
+      <app-api-request (configSaved)="onApiConfigSaved($event)" [arguments]="this.selectedNode.job" [parameters]="this.orderPreparation.parameters" (isVisible)="close($event)"></app-api-request>
+    </div>
+  </ng-container>
+</nz-drawer>
 <!--<div class="position-fixed text-right floating-action-menu" style="bottom: 12px; right: 10px;" [hidden]="isModal">-->
 <!--  <div class="action-menu">-->
 <!--    <div class="floating-action" *ngIf="selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.hash">-->

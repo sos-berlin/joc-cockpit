@@ -294,7 +294,7 @@
             type="submit">
       {{ 'common.button.submit' | translate }}
     </button>
-    <button (click)="next()" *ngIf="wizard.step === 1 && node" [disabled]="!job.javaClass && !job.name"
+    <button (click)="next()" *ngIf="wizard.step >= 1 && node" [disabled]="(!job.javaClass && !job.name) || !myForm.form.valid"
             class="btn btn-secondary btn-sm" translate type="button">workflow.wizard.button.next
     </button>
     <button (click)="back()" *ngIf="wizard.step === 2" class="btn btn-secondary btn-sm" translate
@@ -308,12 +308,6 @@
       <i class="fa fa-book p-r-sm"></i>
       <span translate>workflow.wizard.button.showDocumentation</span>
     </button>
-    <button (click)="openSideBar()"
-            class="btn btn-grey btn-sm pull-right"
-            type="button">
-      <i nz-icon class="p-r-sm" nzType="cloud-server" nzTheme="outline"></i>
-      <span translate>workflow.apiRequest.label.apiRequest</span>
-    </button>
     <button *ngIf="wizard.step === 2 && job.description" [nzPopoverContent]="contentTemplate" class="btn btn-grey btn-sm pull-right" nz-popover
             nzPopoverTrigger="click" type="button">
       <i class="fa fa-file-text-o p-r-sm"></i>
@@ -324,11 +318,11 @@
     </ng-template>
   </div>
 </form>
-<nz-drawer [nzWrapClassName]="'report-drawer'"  (nzOnClose)="sideBar.isVisible = false" [nzVisible]="sideBar.isVisible" nzPlacement="right">
+<nz-drawer [nzWrapClassName]="'report-drawer'"  (nzOnClose)="wizard.step = 2" [nzVisible]="wizard.step === 3" nzPlacement="right">
   <ng-container *nzDrawerContent>
-    <div (click)="sideBar.isVisible = false" class="close-btn"></div>
+    <div (click)="wizard.step = 2" class="close-btn"></div>
     <div #editorContainer class="p-l-sm p-r-sm">
-      <app-api-request (configSaved)="onApiConfigSaved($event)" [arguments]="existingJob" [parameters]="parameters"></app-api-request>
+      <app-api-request (configSaved)="onApiConfigSaved($event)" (isStepBack)="this.wizard.step = $event" [arguments]="existingJob" [parameters]="parameters" [isClose]="true" ></app-api-request>
     </div>
   </ng-container>
 </nz-drawer>
