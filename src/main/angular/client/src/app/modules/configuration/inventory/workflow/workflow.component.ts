@@ -3281,8 +3281,8 @@ export class JobComponent {
     this.updateJobFromWizardJob(obj);
   }
 
-  close(value): void{
-    this.sideBar.isVisible = value
+  close() {
+    this.sideBar.isVisible = false;
   }
 }
 

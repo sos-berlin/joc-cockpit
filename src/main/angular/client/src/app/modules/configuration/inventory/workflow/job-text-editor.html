@@ -1285,12 +1285,18 @@
                       [job]="selectedNode.job"
                       [timeZone]="timeZone"></app-admission-time>
 </div>
-<nz-drawer [nzWrapClassName]="'report-drawer'"  (nzOnClose)="sideBar.isVisible = false" [nzVisible]="sideBar.isVisible" nzPlacement="right">
+<nz-drawer  [nzWrapClassName]="'report-drawer'"
+  [nzVisible]="sideBar.isVisible"
+  nzPlacement="right"
+  (nzOnClose)="close()"
+>
   <ng-container *nzDrawerContent>
-    <div (click)="sideBar.isVisible = false" class="close-btn"></div>
-    <div #editorContainer class="p-l-sm p-r-sm">
-      <app-api-request (configSaved)="onApiConfigSaved($event)" [arguments]="this.selectedNode.job" [parameters]="this.orderPreparation.parameters" (isVisible)="close($event)"></app-api-request>
-    </div>
+    <div (click)="close()" class="close-btn"></div>
+    <ng-container *ngIf="sideBar.isVisible">
+      <app-api-request
+        (configSaved)="onApiConfigSaved($event)" [arguments]="this.selectedNode.job" [parameters]="this.orderPreparation.parameters" (isVisible)="close()"
+      ></app-api-request>
+    </ng-container>
   </ng-container>
 </nz-drawer>
 <!--<div class="position-fixed text-right floating-action-menu" style="bottom: 12px; right: 10px;" [hidden]="isModal">-->

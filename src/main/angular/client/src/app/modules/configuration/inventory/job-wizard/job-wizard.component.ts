@@ -103,6 +103,7 @@ export class ApiRequestComponent {
     private ref: ChangeDetectorRef,
     private clipboardService: ClipboardService,
     private modal: NzModalService,
+    private cd: ChangeDetectorRef
   ) {
     this.options.mode = 'code';
     this.options.onEditable = () => {
@@ -413,6 +414,7 @@ export class ApiRequestComponent {
           res.headers.keys().forEach(h => {
             this.responseHeaders[h] = res.headers.get(h)!;
           });
+          this.cd.detectChanges();
         },
         error: err => {
           const code = err.status ?? 'Unknown';
@@ -420,6 +422,7 @@ export class ApiRequestComponent {
           this.status    = code;
           this.errorText = text;
           this.msg.error(`Error ${code}: ${text}`);
+          this.cd.detectChanges();
         }
       });
   }
