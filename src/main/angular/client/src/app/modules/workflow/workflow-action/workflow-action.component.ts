@@ -1033,13 +1033,6 @@ export class AddOrderModalComponent {
               this.isCollapsed.push(newOrder.arguments.map(() => false));
             });
 
-
-            if (schedule.orderParameterisations) {
-              const firstParam = schedule.orderParameterisations[0];
-              if (firstParam) {
-                this.updateVariablesFromSchedule(firstParam, this.orders.length - 1);
-              }
-            }
           });
 
           if (this.orders.length > 1) {
@@ -1334,7 +1327,7 @@ export class AddOrderModalComponent {
               if (mapVariables[param.name] !== undefined) {
                 mapEntry.push({
                   name: param.name,
-                  type: param.type,
+                  type: param?.value?.type,
                   value: mapVariables[param.name]
                 });
               }
@@ -1617,10 +1610,14 @@ export class AddOrderModalComponent {
           const actualList = [];
           if (orderParameterisation.variables && orderParameterisation.variables[key]) {
             orderParameterisation.variables[key]?.forEach(item => {
-              const listEntry = val.listParameters.map(param => ({
-                name: param.name,
-                value: item[param.name] || ''
-              }));
+            const listEntry = val.listParameters.map(param => {
+                const v = item[param.name];
+                return {
+                  name: param.name,
+                  type: param.value.type,
+                  value: v !== undefined ? v : ''
+                };
+              });
               actualList.push({list: listEntry});
             });
           }
@@ -1633,10 +1630,15 @@ export class AddOrderModalComponent {
         } else if (val.type === 'Map') {
           const actualMap = [];
           if (orderParameterisation.variables && typeof orderParameterisation.variables[key] === 'object') {
-            const mapEntry = val.listParameters.map(param => ({
-              name: param.name,
-              value: orderParameterisation.variables[key][param.name] || ''
-            }));
+            const mapEntry = val.listParameters.map(param => {
+              const v = orderParameterisation.variables[key][param.name];
+              return {
+                name: param.name,
+                type: param.value.type,
+                value: v !== undefined ? v : ''
+              };
+            });
+
             actualMap.push({map: mapEntry});
           }
           order.arguments.push({
@@ -1934,6 +1936,10 @@ export class AddSchedulesModalComponent {
 
   onScheduleChange(): void {
     this.allSelected = this.schedules.every(schedule => schedule.selected);
+  }
+
+  isAnySelected(): boolean {
+    return this.schedules?.some(schedule => schedule.selected);
   }
 
   submit(): void {
