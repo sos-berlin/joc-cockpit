@@ -37,7 +37,7 @@
     <div *ngIf="isList">
       <div class="form-group row" *ngFor="let param of variable.value.list; let j = index">
         <div class="col-md-11 col-lg-11 p-r-0" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-          <input identifierValidation #name="ngModel" autocomplete="off" type="text"
+          <input identifierWithQuotesValidation #name="ngModel" autocomplete="off" type="text"
                  class="form-control" name="list{{j}}" [(ngModel)]="param.name" placeholder="{{'common.placeholder.name' | translate}}">
           <div *ngIf="name.invalid && name.errors && (name.dirty || name.touched)" class="text-danger help-block">
             <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
