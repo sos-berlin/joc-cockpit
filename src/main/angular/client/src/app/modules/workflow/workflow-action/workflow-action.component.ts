@@ -1443,7 +1443,14 @@ export class AddOrderModalComponent {
                 list.push(obj);
               });
             }
+
             for (let x in orderParameterisations.variables) {
+              let obj = {name:  orderParameterisations.variables[x]}
+              if (!val.final) {
+                if (val.list) {
+                  list.push(obj)
+                }
+              }
               if (k == x) {
                 // Push into the specific order's arguments array
                 this.orders[index].arguments.push({
@@ -1598,11 +1605,29 @@ export class AddOrderModalComponent {
     if (this.workflow.orderPreparation && this.workflow.orderPreparation.parameters) {
       Object.entries(this.workflow.orderPreparation.parameters).forEach(([key, val]: [string, any]) => {
         if (val.type !== 'List' && val.type !== 'Map') {
+          let list;
+          if (!val.final) {
+            if (val.list) {
+              list = [];
+              val.list.forEach((item) => {
+                let obj = {name: item};
+                this.coreService.removeSlashToString(obj, 'name');
+                list.push(obj);
+              });
+            }
+          }
           if (orderParameterisation.variables && orderParameterisation.variables[key]) {
+            let obj = {name:  orderParameterisation.variables[key]}
+            if (!val.final) {
+              if (val.list) {
+                list.push(obj)
+              }
+            }
             order.arguments.push({
               name: key,
               type: val.type,
               value: orderParameterisation.variables[key],
+              list: list,
               isRequired: true
             });
           }

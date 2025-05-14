@@ -695,6 +695,47 @@ export class IdentifierValidator implements Validator {
 }
 
 @Directive({
+  selector: '[identifierWithQuotesValidation]',
+  providers: [
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => IdentifierWithQuotesValidator),
+      multi: true
+    }
+  ]
+})
+export class IdentifierWithQuotesValidator implements Validator {
+
+  validate(c: AbstractControl): { [key: string]: any } | null {
+    const v = c.value;
+    if (v != null) {
+      if (v === '') {
+        return null;
+      }
+
+      // Count single quotes
+      const singleQuoteCount = (v.match(/'/g) || []).length;
+
+      const isValidSpecialChars = !v.match(/[!?~"}\[\]{@:;#\/\\^$%\^\&*\)\(+=]/); // excludes all except `'`
+      const isValidDots = /^(?!\.)(?!.*\.$)(?!.*?\.\.)/.test(v);
+      const isValidDashes = /^(?!-)(?!.*--)/.test(v) && !v.startsWith('-') && !v.endsWith('-');
+      const isNoWhitespace = !/\s/.test(v);
+
+      const isJavaKeyword = /^(abstract|assert|boolean|break|byte|case|catch|char|class|const|continue|default|double|do|else|enum|extends|final|finally|float|for|goto|if|implements|import|instanceof|int|interface|long|native|new|package|private|protected|public|return|short|static|strictfp|super|switch|synchronized|this|throw|throws|transient|try|void|volatile|while)$/.test(v);
+
+      if (isValidSpecialChars && isValidDots && isValidDashes && isNoWhitespace && (singleQuoteCount === 0 || singleQuoteCount === 2)) {
+        return isJavaKeyword ? { invalidIdentifier: true } : null;
+      } else {
+        return { invalidIdentifier: true };
+      }
+    }
+
+    return null;
+  }
+}
+
+
+@Directive({
   selector: '[tagValidation]',
   providers: [
     { provide: NG_VALIDATORS, useExisting: forwardRef(() => TagValidator), multi: true }
