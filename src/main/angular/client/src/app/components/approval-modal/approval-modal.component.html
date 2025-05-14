@@ -1,0 +1,70 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span translate>common.label.requestApproval</span>
+  </h4>
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+  <div class="modal-body p-a">
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>common.label.title
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-8">
+        <div class="row">
+          <div class="col-12" [ngClass]="{'has-error' : ((titleField.dirty || titleField.touched) && titleField.invalid)}">
+            <input class="form-control" name="title" [(ngModel)]="approvalData.title" required   placeholder="{{'common.placeholder.title' | translate}}"
+                   #titleField="ngModel" autocomplete="off"/>
+          </div>
+        </div>
+        <div *ngIf="titleField.invalid && (titleField.dirty || titleField.touched)" class="text-danger help-block">
+          <div *ngIf="titleField.errors?.['required']">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>common.label.approver
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-8">
+        <div class="row">
+          <div class="col-12" [ngClass]="{'has-error' : ((approverField.dirty || approverField.touched) && approverField.invalid)}">
+            <input class="form-control" name="approver" [(ngModel)]="approvalData.approver" required  placeholder="{{'common.placeholder.approver' | translate}}"
+                   #approverField="ngModel" autocomplete="off"/>
+          </div>
+        </div>
+        <div *ngIf="approverField.invalid && (approverField.dirty || approverField.touched)" class="text-danger help-block">
+          <div *ngIf="approverField.errors?.['required']">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>auditLog.search.label.reason</label>
+      <div class="col-sm-8">
+        <div class="row">
+          <div class="col-12">
+        <textarea class="form-control" name="reason" [(ngModel)]="approvalData.reason"  placeholder="{{'common.label.writeComment' | translate}}"
+                  autocomplete="off" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" type="submit">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
+      common.button.cancel
+    </button>
+  </div>
+</form>

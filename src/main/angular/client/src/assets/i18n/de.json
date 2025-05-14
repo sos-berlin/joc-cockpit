@@ -510,6 +510,8 @@
     "label.sortBy": "Sortiert nach",
     "label.deleteAllDocument": "Alle Dokumentationen löschen",
     "label.deleteAllReport": "Alle Berichte löschen",
+    "label.requestApproval" : "Request Approval",
+    "label.approver" : "Approver",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "label.dateRange": "Datumsbereich",
     "label.to": "Bis",

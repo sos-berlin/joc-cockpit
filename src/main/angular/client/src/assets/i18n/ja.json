@@ -510,6 +510,8 @@
     "label.sortBy": "表示順",
     "label.deleteAllDocument": "全てのドキュメントを削除",
     "label.deleteAllReport": "全てのレポートを削除",
+    "label.requestApproval" : "Request Approval",
+    "label.approver" : "Approver",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "label.dateRange": "期間",
     "label.to": "至",

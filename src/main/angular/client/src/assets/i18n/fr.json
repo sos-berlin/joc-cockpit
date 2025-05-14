@@ -510,6 +510,8 @@
     "label.sortBy": "Trier par",
     "label.deleteAllDocument": "Supprimer toutes les Documentations",
     "label.deleteAllReport": "Supprimer tous les Rapports",
+    "label.requestApproval" : "Request Approval",
+    "label.approver" : "Approver",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "label.dateRange": "Plage de dates",
     "label.to": "au",

@@ -77,6 +77,7 @@ import {SelectInputComponent} from "../../components/select-input/select-input.c
 import {FileUploaderComponent} from '../../components/file-uploader/file-uploader.component';
 import {DateInputComponent} from "../../components/date-input/date-input.component";
 import {NzProgressModule} from "ng-zorro-antd/progress";
+import {ApprovalModalComponent} from "../../components/approval-modal/approval-modal.component";
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
   NzInputNumberModule, NzSpinModule, NzAutocompleteModule, NzTagModule, NzSelectModule,
@@ -84,7 +85,7 @@ const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
   NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, NzUploadModule, NzProgressModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, ResumeOrderModalComponent, GraphicalViewModalComponent, ChangeParameterModalComponent,
-  ModifyStartTimeModalComponent];
+  ModifyStartTimeModalComponent, ApprovalModalComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective,TimeDurationValidatorDirective,TimeValidatorReqexDirective,TimeValidatorRelativeReqexDirective, TimeValidatorRelativeStartReqexDirective, TimeRegexValidator, NegativeRelativeTimeRegexValidator,NegativeTimeRegexValidator, RegexValidator, RelativeDateValidator,
   RelativeDateRegexValidator, UrlValidator, ResizableDirective, MaximumDirective, NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator, TagValidator,

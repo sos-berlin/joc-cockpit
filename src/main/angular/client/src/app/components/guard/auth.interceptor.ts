@@ -8,12 +8,15 @@ import {ToastrService} from 'ngx-toastr';
 import {isEmpty} from 'underscore';
 import {AuthService} from './auth.service';
 import {LoggingService} from '../../services/logging.service';
+import { NzModalService } from 'ng-zorro-antd/modal';
+import {CommentModalComponent} from "../comment-modal/comment.component";
+import {ApprovalModalComponent} from "../approval-modal/approval-modal.component"; // adjust if you're using a custom modal
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
   constructor(private router: Router, private authService: AuthService,
-              private logService: LoggingService, private translate: TranslateService, private toasterService: ToastrService) {
+              private logService: LoggingService, private translate: TranslateService, private toasterService: ToastrService, private modal: NzModalService) {
   }
 
   intercept(req: any, next: HttpHandler): Observable<HttpEvent<any>> {
@@ -103,6 +106,20 @@ export class AuthInterceptor implements HttpInterceptor {
                   this.router.navigate(['login'], {queryParams: {returnUrl: url}}).then();
                   return;
                 }
+              }else if (err.status === 433) {
+                this.modal.create({
+                  nzContent: ApprovalModalComponent,
+                  nzClassName: 'lg',
+                  nzData: {
+                    requestBody: err?.error?.requestBody || '',
+                    requestUrl: err?.url || ''
+                  },
+                  nzFooter: null,
+                  nzAutofocus: null,
+                  nzClosable: false,
+                  nzMaskClosable: false
+                });
+                return;
               } else if (err.status && err.status !== 434 && err.status !== 502) {
                 // Convert Blob to text
                 if(err.error instanceof Blob) {
