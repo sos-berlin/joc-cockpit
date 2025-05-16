@@ -17,7 +17,7 @@ import {InventoryObject} from "../../../../models/enums";
 import {JsonEditorComponent, JsonEditorOptions} from "ang-jsoneditor";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {ClipboardService} from "ngx-clipboard";
-import { Editor as AceEditor } from 'ace-builds/src-noconflict/ace';
+import {Editor as AceEditor} from 'ace-builds/src-noconflict/ace';
 import {FindAndReplaceComponent} from "../workflow/workflow.component";
 
 interface KeyValue {
@@ -97,6 +97,7 @@ export class ApiRequestComponent {
   @Output() isVisible = new EventEmitter<any>();
   @ViewChild('editor', {static: false}) editor!: JsonEditorComponent;
   private lastSelection = '';
+
   constructor(
     private coreService: CoreService,
     private msg: NzMessageService,
@@ -138,11 +139,13 @@ export class ApiRequestComponent {
     this.populateFromArgs();
 
   }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['arguments'] && !changes['arguments'].isFirstChange()) {
       this.populateFromArgs();
     }
   }
+
   private populateFromArgs() {
     const execArgs = this.arguments?.executable?.arguments as { name: string; value: string }[] | undefined;
     if (!Array.isArray(execArgs)) {
@@ -162,10 +165,10 @@ export class ApiRequestComponent {
       return;
     }
 
-    this.model.url    = req.url    || this.model.url;
+    this.model.url = req.url || this.model.url;
     this.model.method = req.method || this.model.method;
     this.model.headers = Array.isArray(req.headers) ? req.headers : [];
-    this.model.params  = Array.isArray(req.params)  ? req.params  : [];
+    this.model.params = Array.isArray(req.params) ? req.params : [];
 
     let bodyValue = req.body;
 
@@ -184,9 +187,9 @@ export class ApiRequestComponent {
       const a = req.auth as any;
       this.auth.type = a.type ?? 'None';
       if (this.auth.type === 'API Key' && a.apiKey) {
-        this.auth.apiKey.name  = a.apiKey.name  || '';
+        this.auth.apiKey.name = a.apiKey.name || '';
         this.auth.apiKey.value = a.apiKey.value || '';
-        this.auth.apiKey.in    = a.apiKey.in    || 'header';
+        this.auth.apiKey.in = a.apiKey.in || 'header';
       }
       if (this.auth.type === 'Bearer Token' && a.token) {
         this.auth.token = a.token;
@@ -196,9 +199,9 @@ export class ApiRequestComponent {
         this.auth.basic.password = a.basic.password || '';
       }
       if (this.auth.type === 'OAuth 2.0' && a.oauth2) {
-        this.auth.oauth2.clientId     = a.oauth2.clientId     || '';
+        this.auth.oauth2.clientId = a.oauth2.clientId || '';
         this.auth.oauth2.clientSecret = a.oauth2.clientSecret || '';
-        this.auth.oauth2.tokenUrl     = a.oauth2.tokenUrl     || '';
+        this.auth.oauth2.tokenUrl = a.oauth2.tokenUrl || '';
         (this.auth as any).oauth2.accessToken = a.oauth2.accessToken;
       }
     }
@@ -235,7 +238,9 @@ export class ApiRequestComponent {
     }
 
     const raw = ace.getSelectedText().trim();
-    if (!raw) { return; }
+    if (!raw) {
+      return;
+    }
 
     let parsed: any;
     try {
@@ -247,7 +252,7 @@ export class ApiRequestComponent {
     const paths = this.findPaths(this.response, parsed);
     const modal = this.modal.create({
       nzContent: ApiRequestDialogComponent,
-      nzData: { selectedText: raw, paths, flag: false },
+      nzData: {selectedText: raw, paths, list: false},
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
@@ -277,8 +282,7 @@ export class ApiRequestComponent {
 
           helper(curr[key], newPath);
         });
-      }
-      else if (Array.isArray(curr)) {
+      } else if (Array.isArray(curr)) {
         curr.forEach((item, i) => {
           const newPath = path ? `${path}[${i}]` : `[${i}]`;
           helper(item, newPath);
@@ -294,7 +298,7 @@ export class ApiRequestComponent {
   variableList(): void {
     const modal = this.modal.create({
       nzContent: ApiRequestDialogComponent,
-      nzData: { mapping: [...this.mappings], flag: true }, // pass a copy
+      nzData: {mapping: [...this.mappings], list: true},
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
@@ -302,7 +306,7 @@ export class ApiRequestComponent {
 
     modal.afterClose.subscribe((result: Mapping[]) => {
       if (Array.isArray(result)) {
-        this.mappings = [...result]; // replace the list with updated one
+        this.mappings = [...result];
       }
     });
   }
@@ -358,7 +362,7 @@ export class ApiRequestComponent {
         }
         break;
       case 'Basic Auth':
-        const { username, password } = this.auth.basic;
+        const {username, password} = this.auth.basic;
         if (username || password) {
           const creds = btoa(`${username}:${password}`);
           hdrs['Authorization'] = `Basic ${creds}`;
@@ -372,7 +376,7 @@ export class ApiRequestComponent {
         break;
     }
 
-    const { url, method, params, body } = this.model;
+    const {url, method, params, body} = this.model;
     const paramMap = this.arrayToMap(params);
 
     const placeholderRegex = /\{(\w+)\}/g;
@@ -380,17 +384,20 @@ export class ApiRequestComponent {
       input.replace(placeholderRegex, (_m, name) => {
         const def = this.parameters?.[name]?.default;
         if (def != null) {
-          try { return JSON.parse(def); }
-          catch  { return def;        }
+          try {
+            return JSON.parse(def);
+          } catch {
+            return def;
+          }
         }
         return `{${name}}`;
       });
 
     const resolvedUrl = replacePlaceholders(url);
 
-    const resolvedHdrs: Record<string,string> = {};
+    const resolvedHdrs: Record<string, string> = {};
     Object.entries(hdrs).forEach(([k, v]) => {
-      resolvedHdrs[ replacePlaceholders(k) ] = replacePlaceholders(v);
+      resolvedHdrs[replacePlaceholders(k)] = replacePlaceholders(v);
     });
 
     Object.keys(paramMap).forEach(key => {
@@ -419,7 +426,7 @@ export class ApiRequestComponent {
         error: err => {
           const code = err.status ?? 'Unknown';
           const text = err.statusText || err.message || 'Request failed';
-          this.status    = code;
+          this.status = code;
           this.errorText = text;
           this.msg.error(`Error ${code}: ${text}`);
           this.cd.detectChanges();
@@ -444,6 +451,7 @@ export class ApiRequestComponent {
 
   private flattenParameters(defs: any): Record<string, any> {
     const flat: Record<string, any> = {};
+
     function walk(obj: any) {
       for (const name of Object.keys(obj)) {
         flat[name] = obj[name];
@@ -452,6 +460,7 @@ export class ApiRequestComponent {
         }
       }
     }
+
     walk(defs);
     return flat;
   }
@@ -484,7 +493,7 @@ export class ApiRequestComponent {
     if (obj && typeof obj === 'object') {
       return Object.fromEntries(
         Object.entries(obj)
-          .map(([k,v]) => [k, this.resolvePlaceholders(v, flat)])
+          .map(([k, v]) => [k, this.resolvePlaceholders(v, flat)])
       );
     }
     return obj;
@@ -499,20 +508,20 @@ export class ApiRequestComponent {
     }
     const flatDefs = this.flattenParameters(this.parameters || {});
 
-    const url    = this.resolvePlaceholders(this.model.url,    flatDefs);
+    const url = this.resolvePlaceholders(this.model.url, flatDefs);
     const headers = this.model.headers
       .filter(h => h.key.trim())
-      .map(h => ({ key: h.key, value: this.resolvePlaceholders(h.value, flatDefs) }));
-    const params  = this.model.params
+      .map(h => ({key: h.key, value: this.resolvePlaceholders(h.value, flatDefs)}));
+    const params = this.model.params
       .filter(p => p.key.trim())
-      .map(p => ({ key: p.key, value: this.resolvePlaceholders(p.value, flatDefs) }));
-    const body    = this.resolvePlaceholders(bodyText, flatDefs);
+      .map(p => ({key: p.key, value: this.resolvePlaceholders(p.value, flatDefs)}));
+    const body = this.resolvePlaceholders(bodyText, flatDefs);
 
-    const config: any = { url, method: this.model.method };
+    const config: any = {url, method: this.model.method};
     if (headers.length) config.headers = headers;
-    if (params.length)  config.params  = params;
+    if (params.length) config.params = params;
     if (this.auth.type !== 'None') {
-      const auth = { type: this.auth.type };
+      const auth = {type: this.auth.type};
 
       if (this.auth.type === 'API Key' && this.auth.apiKey.name && this.auth.apiKey.value) {
         auth['apiKey'] = this.auth.apiKey;
@@ -533,7 +542,7 @@ export class ApiRequestComponent {
     if (body !== undefined && body !== '') config.body = body;
 
     const json = JSON.stringify(config, null, 2);
-    const out: any = { request: json };
+    const out: any = {request: json};
     if (this.mappings.length) out.return_variables = this.mappings;
 
     this.clipboardService.copyFromContent(json);
@@ -543,18 +552,64 @@ export class ApiRequestComponent {
   }
 
 
-  close(): void{
-    if(this.isClose){
+  close(): void {
+    if (this.isClose) {
       this.isStepBack.emit(2);
-    }else{
+    } else {
       this.isVisible.emit(false);
     }
   }
 
 
+  docs(): void {
+    const modal = this.modal.create({
+      nzContent: ApiRequestDialogComponent,
+      nzData: {docs: true},
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+      }
+    });
+  }
 }
 
-interface Mapping { name: string; path: string; }
+@Component({
+  selector: 'app-api-text-editor',
+  templateUrl: './api-text-editor.html'
+})
+export class ApiFormDialogComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  Json: any
+
+  constructor(private coreService: CoreService, public activeModal: NzModalRef) {
+  }
+
+  ngOnInit(): void {
+    // this.fetchJson()
+  }
+
+  // fetchJson(): void {
+  //   this.coreService.get('https://www.sos-berlin.com/JOC/2.8.0/api/schemas/order/addOrders-schema.json').subscribe({
+  //     next: (res: any) => {
+  //       this.Json = res
+  //     },error: () => {
+  //     }
+  //   });
+  // }
+
+  onSubmit():void {
+
+  }
+
+}
+
+interface Mapping {
+  name: string;
+  path: string;
+}
 
 @Component({
   selector: 'app-api-request-dialog',
@@ -566,15 +621,18 @@ export class ApiRequestDialogComponent {
   variableValue: string;
   currentName = '';
   mappings: Mapping[] = [];
-  flag = false
-  constructor(private coreService: CoreService, public activeModal: NzModalRef) {
+  list = false;
+  docs = false;
+
+  constructor(private coreService: CoreService, public activeModal: NzModalRef,private modal: NzModalService, ) {
   }
 
   ngOnInit(): void {
     this.variableValue = this.modalData.selectedText
     this.selectedPath = this.modalData.paths
-    this.flag = this.modalData.flag
-    if(this.modalData.mapping){
+    this.list = this.modalData.list
+    this.docs = this.modalData.docs
+    if (this.modalData.mapping) {
       this.mappings = this.modalData.mapping
     }
   }
@@ -598,6 +656,19 @@ export class ApiRequestDialogComponent {
 
   closeWithMappings(): void {
     this.activeModal.close(this.mappings);
+  }
+
+  dynamicForm(): void {
+    const modal = this.modal.create({
+      nzContent: ApiFormDialogComponent,
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+      }
+    });
   }
 }
 
@@ -871,7 +942,7 @@ export class JobWizardComponent {
     if (!this.jobList) {
       this.getJitlJobs();
     }
-    if(this.wizard.step === 3){
+    if (this.wizard.step === 3) {
       this.sideBar.isVisible = true
     }
   }
@@ -931,45 +1002,45 @@ export class JobWizardComponent {
   }
 
   private updateParam(obj): void {
-      this.job.params.forEach(item => {
-        if (this.wizard.setOfCheckedValue.has(item.name)) {
-          if (obj.executable.TYPE === 'InternalExecutable') {
-            if (!obj.executable.arguments) {
-              obj.executable.arguments = [];
-            }
-            obj.executable.arguments.push({name: item.name, value: item.newValue});
-          } else if (this.node) {
-            if (!this.node.defaultArguments) {
-              this.node.defaultArguments = []
-            }
-            if (!this.checkAlreadyExistArgu(item)) {
-              this.node.defaultArguments.push({name: item.name, value: item.newValue + ''});
-            }
+    this.job.params.forEach(item => {
+      if (this.wizard.setOfCheckedValue.has(item.name)) {
+        if (obj.executable.TYPE === 'InternalExecutable') {
+          if (!obj.executable.arguments) {
+            obj.executable.arguments = [];
+          }
+          obj.executable.arguments.push({name: item.name, value: item.newValue});
+        } else if (this.node) {
+          if (!this.node.defaultArguments) {
+            this.node.defaultArguments = []
+          }
+          if (!this.checkAlreadyExistArgu(item)) {
+            this.node.defaultArguments.push({name: item.name, value: item.newValue + ''});
           }
         }
-      });
-      if (this.job.paramList && this.job.paramList.length > 0) {
-        for (const i in this.job.paramList) {
-          if (this.job.paramList[i].name) {
-            if (obj.executable.TYPE === 'InternalExecutable') {
-              obj.executable.arguments.push({name: this.job.paramList[i].name, value: this.job.paramList[i].newValue});
-            } else if (this.node) {
-              if (!this.checkAlreadyExistArgu(this.job.paramList[i])) {
-                if (this.job.paramList[i].newValue) {
-                  this.node.defaultArguments.push({
-                    name: this.job.paramList[i].name,
-                    value: this.job.paramList[i].newValue + ''
-                  });
-                }
+      }
+    });
+    if (this.job.paramList && this.job.paramList.length > 0) {
+      for (const i in this.job.paramList) {
+        if (this.job.paramList[i].name) {
+          if (obj.executable.TYPE === 'InternalExecutable') {
+            obj.executable.arguments.push({name: this.job.paramList[i].name, value: this.job.paramList[i].newValue});
+          } else if (this.node) {
+            if (!this.checkAlreadyExistArgu(this.job.paramList[i])) {
+              if (this.job.paramList[i].newValue) {
+                this.node.defaultArguments.push({
+                  name: this.job.paramList[i].name,
+                  value: this.job.paramList[i].newValue + ''
+                });
               }
             }
           }
         }
       }
+    }
   }
 
   private checkAlreadyExistArgu(item): boolean {
-    let flag = false;
+    let list = false;
     let index = -1;
     for (let i = 0; i < this.node.defaultArguments.length; i++) {
       if (!this.node.defaultArguments[i].name) {
@@ -981,14 +1052,14 @@ export class JobWizardComponent {
         } else if (this.node.defaultArguments[i].value == '') {
           this.node.defaultArguments[i].value = item.defaultValue + '';
         }
-        flag = true;
+        list = true;
         break;
       }
     }
     if (index > -1) {
       this.node.defaultArguments.splice(index, 1);
     }
-    return flag;
+    return list;
   }
 
   cancel(): void {
@@ -1087,7 +1158,6 @@ export class JobWizardComponent {
   }
 
 
-
   onApiConfigSaved(config: any) {
     this.apiRequest = true;
     this.savedRequestConfig = config.request;
@@ -1104,14 +1174,14 @@ export class JobWizardComponent {
         obj.executable.arguments = [];
       }
       obj.executable.arguments.push({name: 'request', value: config.request});
-      if(config.return_variables && config.return_variables.length > 0){
+      if (config.return_variables && config.return_variables.length > 0) {
         const flattened = config.return_variables.map(m => ({
           name: m.name,
           path: Array.isArray(m.path) ? m.path[0] : m.path
         }));
         const returnVariablesJson = JSON.stringify(flattened, null, 2);
 
-        obj.executable.arguments.push({name: 'return_variable', value: returnVariablesJson });
+        obj.executable.arguments.push({name: 'return_variable', value: returnVariablesJson});
       }
     }
     this.activeModal.close(obj);

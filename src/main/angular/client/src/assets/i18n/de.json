@@ -2511,7 +2511,8 @@
       "inHours": "In Stunden",
       "totalDays": "{{count}} Tage",
       "date": "Datum",
-      "shutdown": "außer Betrieb"
+      "shutdown": "außer Betrieb",
+      "approvalRequest": "Approval Request"
     },
     "button": {
       "week": "Woche",
@@ -2557,6 +2558,30 @@
       "menu": {
         "acknowledge": "Quittieren",
         "bulkAcknowledge": "Quittieren"
+      }
+    },
+    "approvalRequest": {
+      "label": {
+        "modified": "Modified",
+        "title": "Title",
+        "requestor": "Requestor",
+        "requestorState": "RequestorState",
+        "approver": "Approver",
+        "approverState": "ApproverState",
+        "requestUrl": "requestUrl",
+        "reason": "Reason",
+        "approvalsFound": "Approvals entries found",
+        "approvalFound": "Approval entry found"
+      },
+      "button": {
+        "approve": "Approve",
+        "reject": "Reject",
+        "withdraw": "Withdraw",
+        "requested": "Requested",
+        "withdrawn": "WithDrawn",
+        "inProgress": "In Progress",
+        "success": "Successful",
+        "failed": "Failed"
       }
     }
   },
@@ -4032,6 +4057,7 @@
       "button.sendRequest": "Anfrage senden",
       "button.addParam": "Parameter hinzufügen",
       "button.addHeader": "Kopfzeile hinzufügen",
+      "button.documentation": "Documentation",
       "placeholder.apiRequest": "https://api.example.com",
       "placeholder.key": "Schlüssel",
       "placeholder.value": "Wert",

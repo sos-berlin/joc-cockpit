@@ -1,5 +1,5 @@
 <div *ngIf="!isModal && !isRuntimeVisible" class="pos-abt" style="top: 8px; right: 22px">
-  <button *ngIf="(selectedNode.job.executable.internalType === 'Java' && selectedNode.job.executable.TYPE === 'Java') || (selectedNode.job.executable.internalType === 'JITL' && selectedNode.job.executable.TYPE === 'InternalExecutable' && selectedNode.job.executable.className?.includes('com.sos.jitl.jobs.rest'))" (click)="openAPIRequest()"
+  <button *ngIf="shouldShowAPIRequestButton()" (click)="openAPIRequest()"
           class="btn btn-default btn-sm">
     <i nz-icon class="p-r-xs" nzType="cloud-server" nzTheme="outline"></i>
     {{'workflow.apiRequest.label.apiRequest' | translate}}

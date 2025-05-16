@@ -2511,7 +2511,8 @@
       "inHours": "時間",
       "totalDays": "{{count}}日間",
       "date": "日付",
-      "shutdown": "シャットダウン"
+      "shutdown": "シャットダウン",
+      "approvalRequest": "Approval Request"
     },
     "button": {
       "week": "週",
@@ -2557,6 +2558,30 @@
       "menu": {
         "acknowledge": "確認",
         "bulkAcknowledge": "確認"
+      }
+    },
+    "approvalRequest": {
+      "label": {
+        "modified": "Modified",
+        "title": "Title",
+        "requestor": "Requestor",
+        "requestorState": "RequestorState",
+        "approver": "Approver",
+        "approverState": "ApproverState",
+        "requestUrl": "requestUrl",
+        "reason": "Reason",
+        "approvalsFound": "Approvals entries found",
+        "approvalFound": "Approval entry found"
+      },
+      "button": {
+        "approve": "Approve",
+        "reject": "Reject",
+        "withdraw": "Withdraw",
+        "requested": "Requested",
+        "withdrawn": "WithDrawn",
+        "inProgress": "In Progress",
+        "success": "Successful",
+        "failed": "Failed"
       }
     }
   },
@@ -4032,6 +4057,7 @@
       "button.sendRequest": "Send Request",
       "button.addParam": "Add Param",
       "button.addHeader": "Add Header",
+      "button.documentation": "Documentation",
       "placeholder.apiRequest": "https://api.example.com",
       "placeholder.key": "Key",
       "placeholder.value": "Value",

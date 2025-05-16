@@ -112,7 +112,9 @@ export class AuthInterceptor implements HttpInterceptor {
                   nzClassName: 'lg',
                   nzData: {
                     requestBody: err?.error?.requestBody || '',
-                    requestUrl: err?.url || ''
+                    requestUrl: err?.error?.requestUrl || '',
+                    approvers: err?.error?.approvers || {},
+                    category: err?.error?.category || ''
                   },
                   nzFooter: null,
                   nzAutofocus: null,

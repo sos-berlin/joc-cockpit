@@ -2446,6 +2446,20 @@ export class JobComponent {
     this.saveToHistory();
   }
 
+
+  shouldShowAPIRequestButton(): boolean {
+    const exec = this.selectedNode?.job?.executable;
+    const className = exec?.className?.trim().toLowerCase();
+
+    return (
+      (exec?.internalType === 'Java' && exec?.TYPE === 'Java') ||
+      (exec?.internalType === 'JITL' &&
+        exec?.TYPE === 'InternalExecutable' &&
+        className?.includes('com.sos.jitl.jobs.rest'))
+    );
+  }
+
+
   onBlurTree(value: string): void {
     $('.ant-select-tree-dropdown').hide();
     this.checkExpectNoticeExp(value);

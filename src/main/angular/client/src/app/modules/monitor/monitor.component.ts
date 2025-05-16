@@ -55,6 +55,9 @@ export class MonitorComponent {
     if (!this.monitorFilters.systemNotification.mapOfCheckedId) {
       this.monitorFilters.systemNotification.mapOfCheckedId = new Set();
     }
+    if (!this.monitorFilters.approvalRequests.mapOfCheckedId) {
+      this.monitorFilters.approvalRequests.mapOfCheckedId = new Set();
+    }
     if (!(this.monitorFilters.controller.current || this.monitorFilters.controller.current === false)) {
       this.monitorFilters.controller.current = this.preferences.currentController;
     }
@@ -98,6 +101,11 @@ export class MonitorComponent {
   changeCategories(category): void {
     this.monitorFilters.systemNotification.filter.categories = category;
     this.dataService.announceFunction(this.monitorFilters.systemNotification);
+  }
+
+  changeApprovals(category): void {
+    this.monitorFilters.approvalRequests.filter.categories = category;
+    this.dataService.announceFunction(this.monitorFilters.approvalRequests);
   }
 
   changeSystemType(type): void {

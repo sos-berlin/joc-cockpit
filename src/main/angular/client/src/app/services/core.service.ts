@@ -300,6 +300,14 @@ export class CoreService {
         currentPage: '1'
       }
     };
+    this.tabs._monitor.approvalRequests = {
+      filter: {
+        categories: ['ALL'],
+        sortBy: 'modified',
+        reverse: true,
+        currentPage: '1'
+      }
+    };
     this.tabs._reporting = {
 
       manageList: {

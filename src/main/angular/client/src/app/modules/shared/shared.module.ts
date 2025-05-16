@@ -79,6 +79,7 @@ import {FileUploaderComponent} from '../../components/file-uploader/file-uploade
 import {DateInputComponent} from "../../components/date-input/date-input.component";
 import {NzProgressModule} from "ng-zorro-antd/progress";
 import {ApprovalModalComponent} from "../../components/approval-modal/approval-modal.component";
+import {ApprovalRequestComponent} from "../monitor/approval-request/approval-request.component";
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
   NzInputNumberModule, NzSpinModule, NzAutocompleteModule, NzTagModule, NzSelectModule,
@@ -86,7 +87,7 @@ const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
   NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, NzUploadModule, NzProgressModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, ResumeOrderModalComponent, GraphicalViewModalComponent, ChangeParameterModalComponent,
-  ModifyStartTimeModalComponent, ApprovalModalComponent];
+  ModifyStartTimeModalComponent, ApprovalModalComponent, ApprovalRequestComponent];
 const PIPES = [DurationPipe, StringDateFormatePipe, DurationFromCurrentPipe, ConvertTimePipe, GroupByPipe];
 const DIRECTIVES = [TimeValidatorDirective,TimeDurationValidatorDirective,TimeValidatorReqexDirective,TimeValidatorRelativeReqexDirective, TimeValidatorRelativeStartReqexDirective, TimeRegexValidator, NegativeRelativeTimeRegexValidator,NegativeTimeRegexValidator, RegexValidator, RelativeDateValidator,
   RelativeDateRegexValidator, UrlValidator, ResizableDirective, MaximumDirective, NumberArrayRegexValidator, DurationRegexValidator, IdentifierValidator,IdentifierWithQuotesValidator, TagValidator,
@@ -103,7 +104,7 @@ const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponen
     ...COMPONENTS,
     ...EXPORTS
   ],
-  exports: [...MODULES, ...EXPORTS]
+  exports: [...MODULES, ...EXPORTS, ApprovalRequestComponent]
 })
 export class SharedModule {
 }
