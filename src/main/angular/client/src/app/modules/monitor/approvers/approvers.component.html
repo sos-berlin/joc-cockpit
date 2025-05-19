@@ -1,0 +1,138 @@
+<div *ngIf="!(object.checked && filters.mapOfCheckedId.size > 0 && data.length > (filters.filter.entryPerPage || preferences.entryPerPage))"
+     class="row m-b-sm m-t-n-xs">
+  <div class="col-lg-offset-6 col-lg-6 col-md-offset-0 col-md-12">
+    <div class="notify-tool">
+      <div class="search-box-field pull-right">
+        <label>
+          <input (keyup)="searchInResult()" [(ngModel)]="filters.filter.searchText" placeholder="{{'common.placeholder.search' | translate}}"
+                 type="search">
+        </label>
+        <i (click)="filters.filter.searchText = '';searchInResult()" [hidden]="!filters.filter.searchText"
+           class="fa fa-times search-close"></i>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="object.checked && filters.mapOfCheckedId.size > 0 && data.length > (filters.filter.entryPerPage || preferences.entryPerPage)"
+     class="text-center font14 box p-a-sm m-b-12">
+  <span *ngIf="filters.mapOfCheckedId.size !== totalApprovers" [translateParams]="{count: filters.mapOfCheckedId.size}"
+        translate>common.label.selectAllEntriesOfCurrentPage</span>
+  <span *ngIf="filters.mapOfCheckedId.size === totalApprovers" [translateParams]="{count: totalApprovers}"
+        translate>common.label.allEntriesSelected</span>
+  <a (click)="selectAll()" *ngIf="filters.mapOfCheckedId.size !== totalApprovers" [translateParams]="{count: totalApprovers}"
+     class="text-primary p-l-xs" translate>common.label.selectAllEntries</a>
+  <a (click)="resetCheckBox()" *ngIf="filters.mapOfCheckedId.size === totalApprovers" class="text-primary p-l-xs"
+     translate>common.label.clearSelection</a>
+</div>
+<div>
+  <div class="m-t-sm box p-a">
+    <div class="table-responsive">
+      <nz-table
+        #ajaxTable
+        (nzPageIndexChange)="pageIndexChange($event)"
+        (nzPageSizeChange)="pageSizeChange($event)"
+        [nzBordered]="true"
+        [nzData]="data"
+        [nzLoading]="!isLoaded"
+        [nzPageIndex]="filters.filter.currentPage"
+        [nzPageSizeOptions]="[10, 25, 50, 100, +(preferences.maxEntryPerPage)]"
+        [nzPageSize]="filters.filter.entryPerPage || preferences.entryPerPage || 25"
+        [nzShowPagination]="data?.length > 0"
+        [nzShowSizeChanger]="true"
+        [nzSize]="'small'"
+      >
+        <thead>
+        <tr>
+          <th *ngIf="permission.currentController && permission.currentController.orders.modify"
+              [(nzChecked)]="object.checked"
+              [nzIndeterminate]="object.indeterminate"
+              [nzShowCheckbox]="true"
+              (nzCheckedChange)="checkAll($event)"
+              class="chk"
+          ></th>
+          <th *ngIf="permission.currentController && permission.currentController.orders.modify" class="menu"><span
+            translate>common.label.action</span></th>
+          <th (click)="sort('accountName')">
+            <a><span class="p-r-xs" translate>profile.label.userName</span>
+              <i *ngIf="filters.filter.sortBy == 'accountName' && !filters.filter.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="filters.filter.sortBy == 'accountName' && filters.filter.reverse"
+                 class="fa fa-caret-down "></i></a>
+          </th><th (click)="sort('firstName')">
+          <a><span class="p-r-xs" translate>monitor.approvers.label.firstName</span>
+            <i *ngIf="filters.filter.sortBy == 'firstName' && !filters.filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filters.filter.sortBy == 'firstName' && filters.filter.reverse"
+               class="fa fa-caret-down "></i></a>
+        </th>
+          <th (click)="sort('lastName')">
+            <a><span class="p-r-xs" translate>monitor.approvers.label.lastName</span>
+              <i *ngIf="filters.filter.sortBy == 'lastName' && !filters.filter.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="filters.filter.sortBy == 'lastName' && filters.filter.reverse"
+                 class="fa fa-caret-down "></i></a>
+          </th>
+          <th (click)="sort('email')"><a><span class="p-r-xs" translate>monitor.approvers.label.email</span>
+            <i *ngIf="filters.filter.sortBy == 'email' && !filters.filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filters.filter.sortBy == 'email' && filters.filter.reverse"
+               class="fa fa-caret-down "></i></a>
+          </th>
+        </tr>
+        </thead>
+        <tbody (cdkDropListDropped)="sortByDrop($event, ajaxTable.data)" cdkDropList>
+        <ng-template [ngForOf]="ajaxTable.data" let-approval
+                     ngFor>
+          <tr cdkDrag class="cursor move-on-hover">
+            <td *ngIf="permission.currentController && permission.currentController.orders.modify" [nzChecked]="filters.mapOfCheckedId.has(approval.id)"
+                [nzShowCheckbox]="true"
+                (nzCheckedChange)="onItemChecked(approval, $event)"
+            ><div cdkDragHandle class="pos-abt move-icon text-16 cur-m t-1"
+                  style="left: -1px;overflow: hidden;max-width: 12px">
+              <i aria-hidden="true" class="fa fa-bars"></i>
+            </div></td>
+            <td *ngIf="permission.currentController && permission.currentController.orders.modify">
+              <div class="btn-group dropdown">
+                <button
+                  [nzDropdownMenu]="option" class="btn-drop more-option-h"
+                  nz-dropdown nzTrigger="click" type="button">
+                  <i class="fa fa-ellipsis-h"></i>
+                </button>
+                <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                  <ul nz-menu>
+                    <li (click)="edit(approval)" nz-menu-item>
+                      <a translate>common.button.edit</a>
+                    </li>
+                    <li (click)="delete(approval.accountName)" nz-menu-item>
+                      <a translate>common.label.delete</a>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+            </td>
+            <td (click)="$event.stopPropagation()">
+              <span [innerHtml]="approval['accountName'] | highlight : filters.filter.searchText"></span>
+            </td>
+            <td (click)="$event.stopPropagation()" nowrap>
+              <span [innerHtml]="approval['firstName'] | highlight : filters.filter.searchText"></span>
+            </td>
+            <td (click)="$event.stopPropagation()">
+              <span [innerHtml]="approval['lastName'] | highlight : filters.filter.searchText"></span>
+            </td>
+            <td (click)="$event.stopPropagation()">
+              <span [innerHtml]="approval.email | translate | highlight : filters.filter.searchText"></span>
+            </td>
+          </tr>
+        </ng-template>
+        </tbody>
+      </nz-table>
+    </div>
+    <div *ngIf="ajaxTable.data.length >0"
+         class="w-half label-top"><span
+      translate>common.label.total</span> {{data.length}}
+      <span *ngIf="ajaxTable.data.length >1" translate>monitor.approvers.label.approversFound</span>
+      <span *ngIf="ajaxTable.data.length ==1" translate>monitor.approvers.label.approverFound</span>
+    </div>
+  </div>
+</div>
+

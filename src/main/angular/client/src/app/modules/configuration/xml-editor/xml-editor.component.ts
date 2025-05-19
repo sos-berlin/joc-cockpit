@@ -1307,23 +1307,17 @@ export class XmlEditorComponent {
         request.auditLog = {comment: translatedValue};
       });
     }
-    this.coreService.post('inventory/store', request).subscribe(() => {
-      this.coreService.post('inventory/deployment/deploy', {
+      this.coreService.post('xmleditor/deploy', {
         controllerIds: [this.schedulerIds.selected],
         auditLog: request.auditLog,
-        store: {
-          draftConfigurations: [{
-            configuration: {
-              path: res.path,
-              objectType: res.objectType
-            }
-          }]
-        }
+        objectType: 'YADE',
+        id: res.id,
+        configuration: JSON.stringify(res.configuration),
+        configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
       }).subscribe(() => {
         this.extraInfo.deployed = true;
         this.extraInfo.sync = true;
       });
-    });
   }
 
   private compareJobResource(configuration, obj): void {
@@ -1463,21 +1457,21 @@ export class XmlEditorComponent {
           }
         } else {
           this.showSelectSchema = false;
-          if (!this.ok(res.configuration.configuration)) {
-            this.doc = new DOMParser().parseFromString(res.configuration.schema, 'application/xml');
-            this.path = res.configuration.schema;
-            this.schemaIdentifier = res.configuration.schemaIdentifier;
+          if (!this.ok(res.configuration)) {
+            this.doc = new DOMParser().parseFromString(res.schema, 'application/xml');
+            this.path = res.schema;
+            this.schemaIdentifier = res.schemaIdentifier;
             this.submitXsd = true;
-            this.prevXML = this.removeComment(res.configuration.configuration);
-            if (res.configuration.configurationJson) {
+            this.prevXML = this.removeComment(res.configuration);
+            if (res.configurationJson) {
               let _tempArrToExpand = [];
               let a;
               try {
-                a = JSON.parse(res.configuration.configurationJson);
+                a = JSON.parse(res.configurationJson);
               } catch (error) {
                 this.submitXsd = false;
               }
-              if (!res.configuration.recreateJson) {
+              if (!res.recreateJson) {
                 this.counting = clone(a.nodesCount);
                 this.nodes = a.node;
               } else {
@@ -1493,7 +1487,7 @@ export class XmlEditorComponent {
                 state: res.state,
                 hasReleases: res.hasReleases,
                 configurationDate: res.configurationDate,
-                modified: res.configuration ? res.configuration.modified : ''
+                modified: res.modified ? res.modified : ''
               };
               this.printArraya(false);
               if (_tempArrToExpand && _tempArrToExpand.length > 0) {
@@ -1507,7 +1501,7 @@ export class XmlEditorComponent {
               }
             } else {
               this.nodes = [];
-              this.loadTree(res.configuration.schema, true);
+              this.loadTree(res.schema, true);
             }
             if (this.nodes.length > 0 && this.nodes[0].children && this.nodes[0].children.length > 0) {
               for (const i in this.nodes[0].children) {

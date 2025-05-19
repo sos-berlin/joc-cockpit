@@ -87,13 +87,13 @@
               <i class="fa fa-rocket m-r-xs"></i>
               <span translate>xml.button.release</span>
             </button>
-            <button (click)="checkXML()"
-                    *ngIf="objectType === 'YADE' && nodes && nodes.length > 0"
-                    [disabled]="!extraInfo.isExist" [ngClass]="extraInfo.isExist ? extraInfo.sync ? 'btn-badge-success' : 'btn-badge-danger' : ''"
-                    class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-check m-r-xs"></i>
-              <span translate>xml.button.check</span>
-            </button>
+<!--            <button (click)="checkXML()"-->
+<!--                    *ngIf="objectType === 'YADE' && nodes && nodes.length > 0"-->
+<!--                    [disabled]="!extraInfo.isExist" [ngClass]="extraInfo.isExist ? extraInfo.sync ? 'btn-badge-success' : 'btn-badge-danger' : ''"-->
+<!--                    class="btn btn-sm btn-grey m-l-12">-->
+<!--              <i class="fa fa-check m-r-xs"></i>-->
+<!--              <span translate>xml.button.check</span>-->
+<!--            </button>-->
             <button (click)="deployXML()"
                     *ngIf="objectType === 'YADE' && nodes && nodes.length > 0
                 && permission.joc && permission.joc.fileTransfer.manage"

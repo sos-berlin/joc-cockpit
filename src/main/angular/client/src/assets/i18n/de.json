@@ -113,6 +113,10 @@
   "COMPATIBLE": "kompatibel",
   "PARTIALLY_COMPATIBLE": "aufwärtskompatibel",
   "NOT_COMPATIBLE": "nicht kompatibel",
+  "REQUESTED": "requested",
+  "WITHDRAWN": "withdrawn",
+  "APPROVED": "approved",
+  "REJECTED": "rejected",
   "--------SELECT BOX VALUE BEGIN------------": "",
   "True": "wahr",
   "False": "falsch",
@@ -2512,7 +2516,8 @@
       "totalDays": "{{count}} Tage",
       "date": "Datum",
       "shutdown": "außer Betrieb",
-      "approvalRequest": "Approval Request"
+      "approvalRequest": "Approval Request",
+      "approvers": "Approvers"
     },
     "button": {
       "week": "Woche",
@@ -2568,7 +2573,8 @@
         "requestorState": "RequestorState",
         "approver": "Approver",
         "approverState": "ApproverState",
-        "requestUrl": "requestUrl",
+        "requestUrl": "Request Url",
+        "category": "Category",
         "reason": "Reason",
         "approvalsFound": "Approvals entries found",
         "approvalFound": "Approval entry found"
@@ -2581,7 +2587,28 @@
         "withdrawn": "WithDrawn",
         "inProgress": "In Progress",
         "success": "Successful",
-        "failed": "Failed"
+        "failed": "Failed",
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      }
+    },
+    "approvers": {
+      "label": {
+        "addNewApprover": "Add New Approver",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "email": "Email",
+        "approversFound": "Approvers entries found",
+        "approverFound": "Approver entry found"
+      },
+      "button": {
+        "newApprover": "New Approver"
+      },
+      "placeholder": {
+        "firstName": "Enter First Name",
+        "lastName": "Enter Last Name",
+        "email": "Enter Email"
       }
     }
   },

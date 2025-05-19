@@ -1,7 +1,7 @@
 <div *ngIf="!(object.checked && filters.mapOfCheckedId.size > 0 && data.length > (filters.filter.entryPerPage || preferences.entryPerPage))"
      class="row m-b-sm m-t-n-xs">
   <div class="col-lg-offset-6 col-lg-6 col-md-offset-0 col-md-12">
-    <div class="approval-tool">
+    <div class="notify-tool">
       <button (click)="collapseDetails()"
               class="btn btn-sm btn-grey m-l-12 pull-right"
               nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}">
@@ -105,6 +105,13 @@
             <i *ngIf="filters.filter.sortBy == 'requestUrl' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
           </th>
+
+          <th (click)="sort('category')"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.category</span>
+            <i *ngIf="filters.filter.sortBy == 'category' && !filters.filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filters.filter.sortBy == 'category' && filters.filter.reverse"
+               class="fa fa-caret-down "></i></a>
+          </th>
           <th (click)="sort('reason')" nzWidth="20%"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.reason</span>
             <i *ngIf="filters.filter.sortBy == 'reason' && !filters.filter.reverse"
                class="fa fa-caret-up "></i>
@@ -136,10 +143,11 @@
                     <li *ngIf="isApprover" (click)="reject(approval.id)" nz-menu-item>
                       <a translate>monitor.approvalRequest.button.reject</a>
                     </li>
+                    <li *ngIf="isApprover && isRequestor" nz-menu-divider></li>
                     <li *ngIf="isRequestor" (click)="withdraw(approval.id)" nz-menu-item>
                       <a translate>monitor.approvalRequest.button.withdraw</a>
                     </li>
-                    <li *ngIf="isRequestor" nz-menu-item>
+                    <li *ngIf="isRequestor" (click)="edit(approval)" nz-menu-item>
                       <a translate>common.button.edit</a>
                     </li>
                   </ul>
@@ -160,16 +168,19 @@
               <span [innerHtml]="approval['requestor'] | highlight : filters.filter.searchText"></span>
             </td>
             <td (click)="$event.stopPropagation()">
-              <span [innerHtml]="approval.requestorState | highlight : filters.filter.searchText"></span>
+              <span [innerHtml]="approval.requestorState | translate | highlight : filters.filter.searchText"></span>
             </td>
             <td>
               <span [innerHtml]="approval.approver | highlight : filters.filter.searchText"></span>
             </td>
             <td>
-              <span [innerHtml]="approval.approverState | highlight : filters.filter.searchText"></span>
+              <span [innerHtml]="approval.approverState | translate | highlight : filters.filter.searchText"></span>
             </td>
             <td>
               <span [innerHtml]="approval.requestUrl | highlight : filters.filter.searchText"></span>
+            </td>
+            <td>
+              <span [innerHtml]="approval.category | highlight : filters.filter.searchText"></span>
             </td>
             <td><span [innerHtml]="approval.reason  | highlight : filters.filter.searchText"></span></td>
           </tr>
@@ -177,7 +188,7 @@
               <tr>
                 <td></td>
                 <td></td>
-                <td colspan="7">
+                <td colspan="9">
                   <div class="m-a-0">
                     <span class="_500" translate>auditLog.label.requestBody</span>
                     :

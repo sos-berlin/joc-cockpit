@@ -10,7 +10,8 @@ import {AuthService} from "../guard";
 export class ApprovalModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   submitted = false;
-  approvers: any
+  approvers: any;
+  edit: false;
   approvalData = {
     title: '',
     approver: '',
@@ -24,24 +25,40 @@ export class ApprovalModalComponent {
 
   ngOnInit(): void{
     this.approvers = this.modalData.approvers
+    this.edit = this.modalData.edit
+    if(this.edit){
+      console.log(this.modalData.approvalData,"this.modalData.approvalData")
+      this.approvalData = this.modalData.approvalData
+    }
   }
 
   onSubmit(): void {
-    this.submitted = true
-    const obj = {
-      title: this.approvalData.title,
-      reason: this.approvalData.reason || '',
-      approver: this.approvalData.approver,
-      requestor: this.authService.currentUserData || '',
-      requestUrl: this.modalData.requestUrl,
-      requestBody: this.modalData.requestBody,
-      category: this.modalData.category
-    };
-    this.coreService.post('approval/request', obj).subscribe({
-      next: () => {
-        this.submitted = false
-        this.activeModal.close()
-      }, error: () => this.submitted = false
-    });
+    if(this.edit){
+      this.submitted = true
+      const obj = this.approvalData
+      this.coreService.post('approval/edit', obj).subscribe({
+        next: () => {
+          this.submitted = false
+          this.activeModal.close(true)
+        }, error: () => this.submitted = false
+      });
+    }else {
+      this.submitted = true
+      const obj = {
+        title: this.approvalData.title,
+        reason: this.approvalData.reason || '',
+        approver: this.approvalData.approver,
+        requestor: this.authService.currentUserData || '',
+        requestUrl: this.modalData.requestUrl,
+        requestBody: this.modalData.requestBody,
+        category: this.modalData.category
+      };
+      this.coreService.post('approval/request', obj).subscribe({
+        next: () => {
+          this.submitted = false
+          this.activeModal.close()
+        }, error: () => this.submitted = false
+      });
+    }
   }
 }

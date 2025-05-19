@@ -1,0 +1,97 @@
+<div class="modal-header">
+  <h4 class="modal-title">
+    <span *ngIf="!edit" translate>common.label.addNewApprover</span>
+    <span *ngIf="edit" translate>common.button.edit</span>
+  </h4>
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+  <div class="modal-body p-a">
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>profile.label.userName
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-8">
+        <div class="row">
+          <div class="col-12" [ngClass]="{'has-error' : ((userName.dirty || userName.touched) && userName.invalid)}">
+            <input class="form-control" name="userName" [(ngModel)]="approversData.accountName" required   placeholder="{{'user.placeholder.user' | translate}}"
+                   #userName="ngModel" autocomplete="off"/>
+          </div>
+        </div>
+        <div *ngIf="userName.invalid && (userName.dirty || userName.touched)" class="text-danger help-block">
+          <div *ngIf="userName.errors?.['required']">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>monitor.approvers.label.firstName
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-8">
+        <div class="row">
+          <div class="col-12" [ngClass]="{'has-error' : ((firstName.dirty || firstName.touched) && firstName.invalid)}">
+            <input class="form-control" name="approver" [(ngModel)]="approversData.firstName" required   placeholder="{{'monitor.approvers.placeholder.firstName' | translate}}"
+                   #firstName="ngModel" autocomplete="off"/>
+          </div>
+        </div>
+        <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="text-danger help-block">
+          <div *ngIf="firstName.errors?.['required']">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>monitor.approvers.label.lastName
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-8">
+        <div class="row">
+          <div class="col-12" [ngClass]="{'has-error' : ((lastName.dirty || lastName.touched) && lastName.invalid)}">
+            <input class="form-control" name="approver" [(ngModel)]="approversData.lastName" required   placeholder="{{'monitor.approvers.placeholder.lastName' | translate}}"
+                   #lastName="ngModel" autocomplete="off"/>
+          </div>
+        </div>
+        <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="text-danger help-block">
+          <div *ngIf="lastName.errors?.['required']">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-4 form-control-label" translate>monitor.approvers.label.email
+        <sup class="text-danger text-sm">*</sup>
+      </label>
+      <div class="col-sm-8">
+        <div class="row">
+          <div class="col-12" [ngClass]="{'has-error' : ((email.dirty || email.touched) && email.invalid)}">
+            <input class="form-control" name="email" [(ngModel)]="approversData.email" required type="email"  placeholder="{{'monitor.approvers.placeholder.email' | translate}}"
+                   #email="ngModel" autocomplete="off"/>
+          </div>
+        </div>
+        <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-danger help-block">
+          <div *ngIf="email.errors?.['required']">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" type="submit">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
+      common.button.cancel
+    </button>
+  </div>
+</form>

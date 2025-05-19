@@ -1,46 +1,77 @@
-import {Component, Input} from '@angular/core';
+import {Component, inject, Input} from '@angular/core';
 import {CoreService} from "../../../services/core.service";
-import {NzModalService} from "ng-zorro-antd/modal";
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
+import {DataService} from "../../../services/data.service";
 import {AuthService} from "../../../components/guard";
 import {OrderPipe, SearchPipe} from "../../../pipes/core.pipe";
-import {Subscription} from "rxjs";
-import {DataService} from "../../../services/data.service";
 import {ApprovalModalComponent} from "../../../components/approval-modal/approval-modal.component";
+import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Component({
-  selector: 'app-approval-request',
-  templateUrl: './approval-request.component.html',
-  styleUrl: './approval-request.component.scss'
+  selector: 'app-add-approver-dialog',
+  templateUrl: './add-approver-dialog.html',
 })
-export class ApprovalRequestComponent {
+export class AddApproverModalComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+  submitted = false;
+  edit: false;
+  approversData = {
+    accountName: '',
+    firstName: '',
+    lastName: '',
+    email: ''
+  };
+  constructor(public activeModal: NzModalRef, public coreService: CoreService, public authService: AuthService) {
+  }
+
+
+  ngOnInit(): void {
+    this.edit = this.modalData.edit
+    if(this.edit){
+      console.log(this.modalData.approvalData,"this.modalData.approvalData")
+      this.approversData = this.modalData.approversData
+    }
+  }
+  onSubmit(): void {
+      this.submitted = true
+      const obj = {
+        approver:{
+          accountName: this.approversData.accountName,
+          firstName: this.approversData.firstName,
+          lastName: this.approversData.lastName,
+          email: this.approversData.email,
+        }
+      }
+      this.coreService.post('approval/approver/store', obj).subscribe({
+        next: () => {
+          this.submitted = false
+          this.activeModal.close(true)
+        }, error: () => this.submitted = false
+      });
+  }
+}
+@Component({
+  selector: 'app-approvers',
+  templateUrl: './approvers.component.html',
+  styleUrl: './approvers.component.scss'
+})
+export class ApproversComponent {
   @Input() preferences: any = {};
   @Input() filters: any = {};
   @Input() schedulerIds: any = {};
   @Input() permission: any = {};
-  data: any;
-  approvalData: any
   isLoaded = false;
-  totalApprovalRequests = 0;
-  isApprover: any = false
-  isRequestor: any = false
-  searchableProperties = ['modified', 'title', 'approver', 'approverState', 'requestor', 'requestorState', 'requestUrl', 'reason'];
+  approversData :any;
+  data: any;
+  totalApprovers = 0;
+  searchableProperties = ['accountName', 'firstName', 'LastName', 'email'];
   object = {
     checked: false,
     indeterminate: false
   };
-  subscription1: Subscription;
-
   constructor(public coreService: CoreService,
               private modal: NzModalService,private dataService: DataService,  public authService: AuthService, private orderPipe: OrderPipe, private searchPipe: SearchPipe,) {
-    this.subscription1 = dataService.functionAnnounced$.subscribe((res: any) => {
-      if (res) {
-        if(res?.filter?.requestorStates){
-          this.fetchRequests(res?.filter)
-        }else if(res?.filter?.approverStates){
-          this.fetchRequests(res?.filter)
-        }
-      }
-    });
+
   }
 
   ngOnInit(): void {
@@ -51,32 +82,18 @@ export class ApprovalRequestComponent {
         this.filters.mapOfCheckedId = new Set();
       }
     }
-    this.isApprover = JSON.parse(sessionStorage.getItem('isApprover'))
-    this.isRequestor = JSON.parse(sessionStorage.getItem('isApprovalRequestor'))
-    this.fetchRequests()
+    this.fetchApprovers()
   }
 
-  ngOnDestroy(): void {
-    this.subscription1.unsubscribe();
-  }
-
-  fetchRequests(category?): void{
+  fetchApprovers(category?): void{
     this.isLoaded = false;
     const obj: any = {};
-    if (category) {
-      if(category.approverStates){
-        obj.approverStates = category.approverStates;
-      }
-      if(category.requestorStates){
-        obj.requestorStates = category.requestorStates;
-      }
-    }
 
-    this.coreService.post('approval/requests', obj).subscribe({
+    this.coreService.post('approval/approvers', obj).subscribe({
       next: (res) => {
         this.isLoaded = true;
-        res.requests = this.orderPipe.transform(res.requests, this.filters.filter.sortBy, this.filters.filter.reverse);
-        this.approvalData = res.requests
+        res.approvers = this.orderPipe.transform(res.approvers, this.filters.filter.sortBy, this.filters.filter.reverse);
+        this.approversData = res.approvers
         this.searchInResult();
       }, error: () => {
         this.isLoaded = false;
@@ -86,14 +103,14 @@ export class ApprovalRequestComponent {
 
   pageIndexChange($event: number): void {
     this.filters.filter.currentPage = $event;
-    if (this.filters.mapOfCheckedId.size !== this.totalApprovalRequests) {
+    if (this.filters.mapOfCheckedId.size !== this.totalApprovers) {
       this.resetCheckBox();
     }
   }
 
   pageSizeChange($event: number): void {
     this.filters.filter.entryPerPage = $event;
-    if (this.filters.mapOfCheckedId.size !== this.totalApprovalRequests) {
+    if (this.filters.mapOfCheckedId.size !== this.totalApprovers) {
       if (this.object.checked) {
         this.checkAll(true);
       }
@@ -109,10 +126,10 @@ export class ApprovalRequestComponent {
   }
 
   checkAll(value: boolean): void {
-    if (value && this.approvalData.length > 0) {
+    if (value && this.approversData.length > 0) {
       const approvals = this.getCurrentData(this.data, this.filters);
       approvals.forEach(item => {
-          this.filters.mapOfCheckedId.add(item.id);
+        this.filters.mapOfCheckedId.add(item.id);
       });
     } else {
       this.filters.mapOfCheckedId.clear();
@@ -138,7 +155,7 @@ export class ApprovalRequestComponent {
 
   selectAll(): void {
     this.data.forEach(item => {
-        this.filters.mapOfCheckedId.add(item.id);
+      this.filters.mapOfCheckedId.add(item.id);
     });
   }
 
@@ -149,12 +166,12 @@ export class ApprovalRequestComponent {
       if (approvals.length < this.data.length) {
         this.filters.mapOfCheckedId.clear();
         approvals.forEach(approve => {
-            this.filters.mapOfCheckedId.add(approve.id);
+          this.filters.mapOfCheckedId.add(approve.id);
         });
       }
     }
     if (checked) {
-        this.filters.mapOfCheckedId.add(item.id);
+      this.filters.mapOfCheckedId.add(item.id);
     } else {
       this.filters.mapOfCheckedId.delete(item.id);
     }
@@ -165,56 +182,31 @@ export class ApprovalRequestComponent {
     this.refreshCheckedStatus();
   }
 
-  expandDetails(): void {
-    const approvals = this.getCurrentData(this.data, this.filters);
-    approvals.forEach((value) => {
-      value.show = true;
-    });
-  }
-
-  collapseDetails(): void {
-    const approvals = this.getCurrentData(this.data, this.filters);
-    approvals.forEach((value) => {
-      value.show = false;
-    });
-  }
 
   searchInResult(): void {
-    this.data = this.filters.filter.searchText ? this.searchPipe.transform(this.approvalData, this.filters.filter.searchText, this.searchableProperties) : this.approvalData;
+    this.data = this.filters.filter.searchText ? this.searchPipe.transform(this.approversData, this.filters.filter.searchText, this.searchableProperties) : this.approversData;
     this.data = [...this.data];
-    if (this.approvalData.length === 0) {
+    if (this.approversData.length === 0) {
       this.filters.filter.currentPage = 1;
     }
-    this.totalApprovalRequests = 0;
+    this.totalApprovers = 0;
     this.data.forEach((item) => {
-        ++this.totalApprovalRequests;
+      ++this.totalApprovers;
     });
-  }
-
-  approve(id: number): void {
-    this.updateApproval(id, 'approve');
-  }
-
-  reject(id: number): void {
-    this.updateApproval(id, 'reject');
-  }
-
-  withdraw(id: number): void {
-    this.updateApproval(id, 'withdraw');
   }
 
   edit(data: any): void {
     const obj = {
-      id: data.id,
-      title: data.title,
-      approver: data.approver,
-      reason: data.reason
+      accountName: data.accountName,
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email
     }
     const modal = this.modal.create({
-      nzContent: ApprovalModalComponent,
+      nzContent: AddApproverModalComponent,
       nzClassName: 'lg',
       nzData: {
-        approvalData: obj,
+        approversData: obj,
         edit: true
       },
       nzFooter: null,
@@ -224,23 +216,40 @@ export class ApprovalRequestComponent {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-       this.fetchRequests()
+        this.fetchApprovers()
       }
     });
   }
 
-  private updateApproval(id: number, action: 'approve' | 'reject' | 'withdraw'): void {
-    this.isLoaded = false;
-    const payload = { id };
-    this.coreService.post(`approval/${action}`, payload).subscribe({
-      next: () => {
-        this.fetchRequests()
+  delete(account):void {
+    const obj: any = {
+      accountName: account
+    };
+
+    this.coreService.post('approval/approver/delete', obj).subscribe({
+      next: (res) => {
         this.isLoaded = true;
-      },
-      error: () => {
+      this.fetchApprovers()
+      }, error: () => {
         this.isLoaded = false;
       }
     });
+  }
+
+  sortByDrop(event: CdkDragDrop<string[]>, subagents: any[]): void {
+    if (event.previousIndex !== event.currentIndex) {
+      moveItemInArray(subagents, event.previousIndex, event.currentIndex);
+
+      for (let i = 0; i < subagents.length; i++) {
+        subagents[i].ordering = i + 1;
+      }
+
+      const orderedAccountNames = subagents.map(agent => agent.accountName);
+
+      this.coreService.post('approval/approvers/ordering', {
+        accountNames: orderedAccountNames
+      }).subscribe();
+    }
   }
 
 }

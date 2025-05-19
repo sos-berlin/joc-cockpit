@@ -114,7 +114,8 @@ export class AuthInterceptor implements HttpInterceptor {
                     requestBody: err?.error?.requestBody || '',
                     requestUrl: err?.error?.requestUrl || '',
                     approvers: err?.error?.approvers || {},
-                    category: err?.error?.category || ''
+                    category: err?.error?.category || '',
+                    edit: false
                   },
                   nzFooter: null,
                   nzAutofocus: null,

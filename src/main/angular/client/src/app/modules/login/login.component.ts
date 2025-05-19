@@ -215,12 +215,8 @@
           } else {
             this.router.navigate([this.returnUrl]).then();
           }
-          if(data.isApprover){
-            sessionStorage.setItem('isApprover', data.isApprover);
-          }
-          if(data.isApprovalRequestor){
-            sessionStorage.setItem('isApprovalRequestor', data.isApprovalRequestor);
-          }
+            sessionStorage.setItem('isApprover', data?.isApprover);
+            sessionStorage.setItem('isApprovalRequestor', data?.isApprovalRequestor);
         }, error: () => {
           this.submitted = false;
           this.errorMsg = true;

@@ -127,29 +127,52 @@
           <div *ngIf="monitorFilters.tabIndex == 4 && monitorFilters.approvalRequests.mapOfCheckedId.size ===0"
                class="inline">
             <div class="btn-group m-l-12">
-              <button (click)="changeApprovals('ALL')" [ngClass]="{'btn-primary': monitorFilters.approvalRequests.filter.categories == 'ALL'}"
-                      class="btn btn-grey btn-sm"
-                      translate>monitor.notification.button.all
-              </button>
-              <button (click)="changeApprovals('REQUESTED')" [ngClass]="{'btn-primary': monitorFilters.approvalRequests.filter.categories == 'REQUESTED'}"
+              <button (click)="changeRequestors('REQUESTED')" [ngClass]="{'btn-primary': monitorFilters.approvalRequests.filter.requestorStates.includes('REQUESTED')}"
                       class="btn btn-grey btn-sm"
                       translate>monitor.approvalRequest.button.requested
               </button>
-              <button (click)="changeApprovals('WITHDRAWN')" [ngClass]="{'btn-primary': monitorFilters.approvalRequests.filter.categories == 'WITHDRAWN'}"
+              <button (click)="changeRequestors('WITHDRAWN')" [ngClass]="{'btn-primary': monitorFilters.approvalRequests.filter.requestorStates.includes('WITHDRAWN')}"
                       class="btn btn-grey btn-sm"
                       translate>monitor.approvalRequest.button.withdrawn
               </button>
-              <button (click)="changeApprovals('IN_PROGRESS')" [ngClass]="{'btn-primary': monitorFilters.approvalRequests.filter.categories == 'IN_PROGRESS'}"
+              <button (click)="changeRequestors('IN_PROGRESS')" [ngClass]="{'btn-primary': monitorFilters.approvalRequests.filter.requestorStates.includes('IN_PROGRESS')}"
                       class="btn btn-grey btn-sm"
                       translate>monitor.approvalRequest.button.inProgress
               </button>
-              <button (click)="changeApprovals('SUCCESFUL')" [ngClass]="{'btn-primary': monitorFilters.approvalRequests.filter.categories == 'SUCCESFUL'}"
+              <button (click)="changeRequestors('SUCCESFUL')" [ngClass]="{'btn-primary': monitorFilters.approvalRequests.filter.requestorStates.includes('SUCCESFUL')}"
                       class="btn btn-grey btn-sm"
                       translate>monitor.approvalRequest.button.success
               </button>
-              <button (click)="changeApprovals('FAILED')" [ngClass]="{'btn-primary': monitorFilters.approvalRequests.filter.categories == 'FAILED'}"
+              <button (click)="changeRequestors('FAILED')" [ngClass]="{'btn-primary': monitorFilters.approvalRequests.filter.requestorStates.includes('FAILED')}"
                       class="btn btn-grey btn-sm"
                       translate>monitor.approvalRequest.button.failed
+              </button>
+            </div>
+            <div class="btn-group m-l-12">
+              <button (click)="changeApprover('PENDING')" [ngClass]="{'btn-primary':monitorFilters.approvalRequests.filter.approverStates.includes('PENDING')}"
+                      class="btn btn-grey btn-sm"
+                      translate>monitor.approvalRequest.button.pending
+              </button>
+              <button (click)="changeApprover('APPROVED')" [ngClass]="{'btn-primary':monitorFilters.approvalRequests.filter.approverStates.includes('APPROVED')}"
+                      class="btn btn-grey btn-sm"
+                      translate>monitor.approvalRequest.button.approved
+              </button>
+              <button (click)="changeApprover('REJECTED')" [ngClass]="{'btn-primary': monitorFilters.approvalRequests.filter.approverStates.includes('REJECTED')}"
+                      class="btn btn-grey btn-sm"
+                      translate>monitor.approvalRequest.button.rejected
+              </button>
+            </div>
+          </div>
+          <div *ngIf="monitorFilters.tabIndex == 5 && monitorFilters.approvers.mapOfCheckedId.size ===0"
+               class="inline">
+            <div class="btn-group m-l-12">
+              <button (click)="newApprover()"
+                      class="btn btn-grey btn-sm"
+                      translate>
+                <i class="fa fa-plus"></i>&nbsp;
+                <span translate>
+                monitor.approvers.button.newApprover
+                </span>
               </button>
             </div>
           </div>
@@ -279,10 +302,17 @@
                                    [preferences]="preferences"></app-system-notification>
         </div>
       </nz-tab>
-      <nz-tab *ngIf="permission && permission.currentController && permission.currentController.view"
+      <nz-tab *ngIf="permission && permission.currentController && permission.currentController.view  && (isRequestor || isApprover)"
               [nzTitle]="'monitor.label.approvalRequest' | translate">
         <div *ngIf="index === 4">
-          <app-approval-request [preferences]="preferences" [permission]="permission" [filters]="monitorFilters.systemNotification" [schedulerIds]="schedulerIds"></app-approval-request>
+          <app-approval-request [preferences]="preferences" [permission]="permission" [filters]="monitorFilters.approvalRequests" [schedulerIds]="schedulerIds"></app-approval-request>
+        </div>
+      </nz-tab>
+
+      <nz-tab *ngIf="permission && permission.currentController && permission.currentController.view  && (isRequestor || isApprover)"
+              [nzTitle]="'monitor.label.approvers' | translate">
+        <div *ngIf="index === 5">
+          <app-approvers [preferences]="preferences" [permission]="permission" [filters]="monitorFilters.approvers" [schedulerIds]="schedulerIds"></app-approvers>
         </div>
       </nz-tab>
     </nz-tabset>

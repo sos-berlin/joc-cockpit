@@ -302,7 +302,16 @@ export class CoreService {
     };
     this.tabs._monitor.approvalRequests = {
       filter: {
-        categories: ['ALL'],
+        requestorStates: [],
+        approverStates: [],
+        sortBy: 'modified',
+        reverse: true,
+        currentPage: '1'
+      }
+    };
+
+    this.tabs._monitor.approvers = {
+      filter: {
         sortBy: 'modified',
         reverse: true,
         currentPage: '1'
