@@ -806,6 +806,7 @@ export class XmlEditorComponent {
   lastScrollId;
   mainXml;
   otherSchema: any = [];
+  data: any;
   activeTab: any = {};
   extraInfo: any = {};
   tabsArray = [];
@@ -1262,44 +1263,14 @@ export class XmlEditorComponent {
   }
 
   private getSingleObject(obj, isCheck = false): void {
-    this.coreService.post('inventory/read/configuration', {
-      path: obj.name,
-      objectType: 'JOBRESOURCE',
-    }).subscribe({
-      next: (res: any) => {
         if (!isCheck) {
-          this.storeAndDeployJobResource(res, obj);
-        } else if (res.configuration) {
-          this.compareJobResource(res.configuration, obj);
+          this.storeAndDeployJobResource(obj);
         }
-      }, error: () => {
-        this.translate.get('xml.message.jobResourceNotFound').subscribe(translatedValue => {
-          this.toasterService.info(obj.name + ' ' + translatedValue, '');
-        });
-      }
-    });
   }
 
-  private storeAndDeployJobResource(res, obj): void {
-    if (!res.configuration) {
-      res.configuration = {};
-    }
-    if (!res.configuration.arguments) {
-      res.configuration.arguments = {};
-    }
-    res.configuration.arguments[obj.variable] = "toFile( '" + this._showXml(this.nodes, true) + "', '*.xml' )";
-    if (!res.configuration.env) {
-      res.configuration.env = {};
-    }
-    if (res.configuration.env && !res.configuration.env[obj.env]) {
-      res.configuration.env[obj.env] = '$' + obj.variable;
-    }
-    res.configuration.title = 'Job Resource for File Transfer: ' + this.activeTab.name;
+  private storeAndDeployJobResource( obj): void {
+
     const request = {
-      configuration: res.configuration,
-      valid: true,
-      id: res.id,
-      objectType: res.objectType,
       auditLog: {}
     };
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
@@ -1311,12 +1282,22 @@ export class XmlEditorComponent {
         controllerIds: [this.schedulerIds.selected],
         auditLog: request.auditLog,
         objectType: 'YADE',
-        id: res.id,
-        configuration: JSON.stringify(res.configuration),
+        id: this.data.id,
+        configuration: this.data.configuration,
         configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
-      }).subscribe(() => {
-        this.extraInfo.deployed = true;
-        this.extraInfo.sync = true;
+      }).subscribe({
+        next: (res: any) => {
+          if (res.validationError) {
+            this.showError(res.validationError);
+          } else {
+            this.extraInfo.sync = true;
+            this.extraInfo.deployed = res.released
+          }
+        }, error: (error) => {
+          if (error && error.error) {
+            this.showErrorToast(error.error.message, '');
+          }
+        }
       });
   }
 
@@ -1380,6 +1361,7 @@ export class XmlEditorComponent {
       objectType: this.objectType
     }).subscribe({
       next: (res: any) => {
+        this.data = res
         if (res.schemas) {
           this.otherSchema = res.schemas;
           if (this.objectType === 'OTHER') {
@@ -1438,6 +1420,7 @@ export class XmlEditorComponent {
       id
     }).subscribe({
       next: (res: any) => {
+        this.data = res
         if (res.validation && res.validation.validated) {
           this.validConfig = true;
         } else {
@@ -1696,7 +1679,9 @@ export class XmlEditorComponent {
       }
       if (node.data) {
         if (typeof node.data == 'string') {
-          this.checkJobResource(node.data);
+          // this.checkJobResource(node.data);
+          this.extraInfo.isExist = true;
+          this.extraInfo.deployed = this.data.released;
         }
       }
     }
