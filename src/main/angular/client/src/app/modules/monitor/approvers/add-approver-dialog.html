@@ -35,7 +35,7 @@
       <div class="col-sm-8">
         <div class="row">
           <div class="col-12" [ngClass]="{'has-error' : ((firstName.dirty || firstName.touched) && firstName.invalid)}">
-            <input class="form-control" name="approver" [(ngModel)]="approversData.firstName" required   placeholder="{{'monitor.approvers.placeholder.firstName' | translate}}"
+            <input class="form-control" name="firstName" [(ngModel)]="approversData.firstName" required   placeholder="{{'monitor.approvers.placeholder.firstName' | translate}}"
                    #firstName="ngModel" autocomplete="off"/>
           </div>
         </div>
@@ -54,7 +54,7 @@
       <div class="col-sm-8">
         <div class="row">
           <div class="col-12" [ngClass]="{'has-error' : ((lastName.dirty || lastName.touched) && lastName.invalid)}">
-            <input class="form-control" name="approver" [(ngModel)]="approversData.lastName" required   placeholder="{{'monitor.approvers.placeholder.lastName' | translate}}"
+            <input class="form-control" name="lastName" [(ngModel)]="approversData.lastName" required   placeholder="{{'monitor.approvers.placeholder.lastName' | translate}}"
                    #lastName="ngModel" autocomplete="off"/>
           </div>
         </div>
@@ -68,18 +68,12 @@
 
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" translate>monitor.approvers.label.email
-        <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-8">
         <div class="row">
-          <div class="col-12" [ngClass]="{'has-error' : ((email.dirty || email.touched) && email.invalid)}">
-            <input class="form-control" name="email" [(ngModel)]="approversData.email" required type="email"  placeholder="{{'monitor.approvers.placeholder.email' | translate}}"
+          <div class="col-12">
+            <input class="form-control" name="email" [(ngModel)]="approversData.email" type="email"  placeholder="{{'monitor.approvers.placeholder.email' | translate}}"
                    #email="ngModel" autocomplete="off"/>
-          </div>
-        </div>
-        <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-danger help-block">
-          <div *ngIf="email.errors?.['required']">
-            <div translate>common.message.requiredError</div>
           </div>
         </div>
       </div>

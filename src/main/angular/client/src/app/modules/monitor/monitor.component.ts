@@ -1,10 +1,10 @@
-import {Component, ChangeDetectorRef } from '@angular/core';
+import {Component, ChangeDetectorRef, ViewChild} from '@angular/core';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 import {ApprovalModalComponent} from "../../components/approval-modal/approval-modal.component";
 import {NzModalService} from "ng-zorro-antd/modal";
-import {AddApproverModalComponent} from "./approvers/approvers.component";
+import {AddApproverModalComponent, ApproversComponent} from "./approvers/approvers.component";
 
 @Component({
   selector: 'app-monitor',
@@ -22,6 +22,7 @@ export class MonitorComponent {
   tabChangeListener: any;
   isApprover: any = false;
   isRequestor: any = false;
+  @ViewChild('approvers') approversComponent: ApproversComponent;
 
   constructor(private authService: AuthService, public coreService: CoreService,
               private dataService: DataService, private cdr: ChangeDetectorRef, private modal: NzModalService) {
@@ -98,6 +99,10 @@ export class MonitorComponent {
     this.dataService.announceFunction(this.monitorFilters[this.index === 0 ? 'controller' : this.index === 1 ? 'agent' : 'notification']);
   }
 
+  requestChange(): void {
+    this.dataService.announceFunction(this.monitorFilters['approvalRequests']);
+  }
+
   changeTypes(type): void {
     const index = this.monitorFilters.orderNotification.filter.types.indexOf(type);
     if (index === -1) {
@@ -168,6 +173,11 @@ export class MonitorComponent {
       nzAutofocus: null,
       nzClosable: false,
       nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result && this.approversComponent) {
+        this.approversComponent.fetchApprovers();
+      }
     });
   }
 }

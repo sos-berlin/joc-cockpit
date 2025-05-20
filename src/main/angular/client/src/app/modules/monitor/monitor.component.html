@@ -19,6 +19,10 @@
                    nz-checkbox (nzCheckedChange)="controllerChange()">
               {{'common.label.currentController' | translate}}
             </label>
+            <label *ngIf="monitorFilters.tabIndex == 4 && monitorFilters.approvalRequests.mapOfCheckedId.size ===0" [(ngModel)]="monitorFilters.approvalRequests.current" name="current"
+                   nz-checkbox (nzCheckedChange)="requestChange()">
+              {{'monitor.approvalRequest.label.allApproverRequests' | translate}}
+            </label>
 
           </div>
           <div *ngIf="monitorFilters.tabIndex == 2 && monitorFilters.orderNotification.mapOfCheckedId.size ===0"
@@ -312,7 +316,7 @@
       <nz-tab *ngIf="permission && permission.currentController && permission.currentController.view  && (isRequestor || isApprover)"
               [nzTitle]="'monitor.label.approvers' | translate">
         <div *ngIf="index === 5">
-          <app-approvers [preferences]="preferences" [permission]="permission" [filters]="monitorFilters.approvers" [schedulerIds]="schedulerIds"></app-approvers>
+          <app-approvers #approvers [preferences]="preferences" [permission]="permission" [filters]="monitorFilters.approvers" [schedulerIds]="schedulerIds"></app-approvers>
         </div>
       </nz-tab>
     </nz-tabset>

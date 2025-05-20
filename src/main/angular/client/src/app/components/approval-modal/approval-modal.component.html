@@ -28,26 +28,7 @@
       </div>
     </div>
 
-      <div *ngIf="edit" class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>common.label.approver
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      <div class="col-sm-8">
-        <div class="row">
-          <div class="col-12" [ngClass]="{'has-error' : ((approverField.dirty || approverField.touched) && approverField.invalid)}">
-            <input class="form-control" name="approver" [(ngModel)]="approvalData.approver" required   placeholder="{{'common.placeholder.title' | translate}}"
-                   #approverField="ngModel" autocomplete="off"/>
-          </div>
-        </div>
-        <div *ngIf="approverField.invalid && (approverField.dirty || approverField.touched)" class="text-danger help-block">
-          <div *ngIf="approverField.errors?.['required']">
-            <div translate>common.message.requiredError</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div *ngIf="!edit" class="form-group row">
+    <div  class="form-group row">
       <label class="col-sm-4 form-control-label" translate>common.label.approver
         <sup class="text-danger text-sm">*</sup>
       </label>

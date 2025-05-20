@@ -19,7 +19,7 @@ import {NzMessageService} from "ng-zorro-antd/message";
 import {ClipboardService} from "ngx-clipboard";
 import {Editor as AceEditor} from 'ace-builds/src-noconflict/ace';
 import {FindAndReplaceComponent} from "../workflow/workflow.component";
-
+import { FormGroup } from '@angular/forms';
 interface KeyValue {
   key: string;
   value: string;
@@ -581,27 +581,23 @@ export class ApiRequestComponent {
   templateUrl: './api-text-editor.html'
 })
 export class ApiFormDialogComponent {
-  readonly modalData: any = inject(NZ_MODAL_DATA);
-  Json: any
+  Json: any;
+  form: FormGroup;
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef) {
+
   }
 
   ngOnInit(): void {
-    // this.fetchJson()
+    // Demo only. Replace with your API fetch
+    this.Json = {}
+
+    this.form = this.coreService.createForm(this.Json);
   }
 
-  // fetchJson(): void {
-  //   this.coreService.get('https://www.sos-berlin.com/JOC/2.8.0/api/schemas/order/addOrders-schema.json').subscribe({
-  //     next: (res: any) => {
-  //       this.Json = res
-  //     },error: () => {
-  //     }
-  //   });
-  // }
-
-  onSubmit():void {
-
+  onSubmit(): void {
+    if (this.form.valid) {
+    }
   }
 
 }

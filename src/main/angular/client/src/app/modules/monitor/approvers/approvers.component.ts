@@ -28,19 +28,16 @@ export class AddApproverModalComponent {
   ngOnInit(): void {
     this.edit = this.modalData.edit
     if(this.edit){
-      console.log(this.modalData.approvalData,"this.modalData.approvalData")
       this.approversData = this.modalData.approversData
     }
   }
   onSubmit(): void {
       this.submitted = true
       const obj = {
-        approver:{
           accountName: this.approversData.accountName,
           firstName: this.approversData.firstName,
           lastName: this.approversData.lastName,
           email: this.approversData.email,
-        }
       }
       this.coreService.post('approval/approver/store', obj).subscribe({
         next: () => {
@@ -85,7 +82,7 @@ export class ApproversComponent {
     this.fetchApprovers()
   }
 
-  fetchApprovers(category?): void{
+  fetchApprovers(): void{
     this.isLoaded = false;
     const obj: any = {};
 
@@ -96,7 +93,7 @@ export class ApproversComponent {
         this.approversData = res.approvers
         this.searchInResult();
       }, error: () => {
-        this.isLoaded = false;
+        this.isLoaded = true;
       }
     });
   }
@@ -231,7 +228,7 @@ export class ApproversComponent {
         this.isLoaded = true;
       this.fetchApprovers()
       }, error: () => {
-        this.isLoaded = false;
+        this.isLoaded = true;
       }
     });
   }

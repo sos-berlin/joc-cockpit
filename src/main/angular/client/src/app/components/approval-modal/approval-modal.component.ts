@@ -23,14 +23,31 @@ export class ApprovalModalComponent {
   constructor(public activeModal: NzModalRef, public coreService: CoreService, public authService: AuthService) {
   }
 
-  ngOnInit(): void{
-    this.approvers = this.modalData.approvers
-    this.edit = this.modalData.edit
-    if(this.edit){
-      console.log(this.modalData.approvalData,"this.modalData.approvalData")
-      this.approvalData = this.modalData.approvalData
+  ngOnInit(): void {
+    this.edit = this.modalData.edit;
+    if (this.edit) {
+      this.approvalData = this.modalData.approvalData;
+      this.fetchApprovers();
+    } else {
+      this.approvers = this.modalData.approvers || [];
     }
   }
+
+  fetchApprovers(): void {
+    this.submitted = true;
+    const obj: any = {};
+    this.coreService.post('approval/approvers', obj).subscribe({
+      next: (res) => {
+        this.submitted = false;
+        this.approvers = res.approvers || [];
+      },
+      error: () => {
+        this.submitted = false;
+        this.approvers = [];
+      }
+    });
+  }
+
 
   onSubmit(): void {
     if(this.edit){

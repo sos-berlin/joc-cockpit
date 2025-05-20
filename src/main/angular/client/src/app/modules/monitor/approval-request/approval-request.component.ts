@@ -29,16 +29,23 @@ export class ApprovalRequestComponent {
     indeterminate: false
   };
   subscription1: Subscription;
+  subscription2: Subscription;
 
   constructor(public coreService: CoreService,
-              private modal: NzModalService,private dataService: DataService,  public authService: AuthService, private orderPipe: OrderPipe, private searchPipe: SearchPipe,) {
+              private modal: NzModalService, private dataService: DataService, public authService: AuthService, private orderPipe: OrderPipe, private searchPipe: SearchPipe,) {
     this.subscription1 = dataService.functionAnnounced$.subscribe((res: any) => {
+
       if (res) {
-        if(res?.filter?.requestorStates){
+        if (res?.filter?.requestorStates) {
           this.fetchRequests(res?.filter)
-        }else if(res?.filter?.approverStates){
+        } else if (res?.filter?.approverStates) {
           this.fetchRequests(res?.filter)
         }
+      }
+    });
+    this.subscription2 = dataService.eventAnnounced$.subscribe(res => {
+      if (res) {
+        this.refresh(res);
       }
     });
   }
@@ -58,30 +65,46 @@ export class ApprovalRequestComponent {
 
   ngOnDestroy(): void {
     this.subscription1.unsubscribe();
+    this.subscription2.unsubscribe();
   }
 
-  fetchRequests(category?): void{
+  fetchRequests(category?): void {
     this.isLoaded = false;
     const obj: any = {};
+
     if (category) {
-      if(category.approverStates){
-        obj.approverStates = category.approverStates;
-      }
-      if(category.requestorStates){
-        obj.requestorStates = category.requestorStates;
-      }
+      if (category.approverStates) obj.approverStates = category.approverStates;
+      if (category.requestorStates) obj.requestorStates = category.requestorStates;
     }
 
-    this.coreService.post('approval/requests', obj).subscribe({
-      next: (res) => {
-        this.isLoaded = true;
-        res.requests = this.orderPipe.transform(res.requests, this.filters.filter.sortBy, this.filters.filter.reverse);
-        this.approvalData = res.requests
-        this.searchInResult();
-      }, error: () => {
-        this.isLoaded = false;
-      }
-    });
+    if (this.filters.current) {
+      obj.requestors = [];
+      this.coreService.post('approval/approvers', {}).subscribe({
+        next: (res) => {
+          obj.requestors = res.approvers.map(item => item.accountName);
+          this.coreService.post('approval/requests', obj).subscribe({
+            next: (res) => {
+              this.isLoaded = true;
+              res.requests = this.orderPipe.transform(res.requests, this.filters.filter.sortBy, this.filters.filter.reverse);
+              this.approvalData = res.requests;
+              this.searchInResult();
+            },
+            error: () => { this.isLoaded = true; }
+          });
+        },
+        error: () => { this.isLoaded = true; }
+      });
+    } else {
+      this.coreService.post('approval/requests', obj).subscribe({
+        next: (res) => {
+          this.isLoaded = true;
+          res.requests = this.orderPipe.transform(res.requests, this.filters.filter.sortBy, this.filters.filter.reverse);
+          this.approvalData = res.requests;
+          this.searchInResult();
+        },
+        error: () => { this.isLoaded = true; }
+      });
+    }
   }
 
   pageIndexChange($event: number): void {
@@ -112,7 +135,7 @@ export class ApprovalRequestComponent {
     if (value && this.approvalData.length > 0) {
       const approvals = this.getCurrentData(this.data, this.filters);
       approvals.forEach(item => {
-          this.filters.mapOfCheckedId.add(item.id);
+        this.filters.mapOfCheckedId.add(item.id);
       });
     } else {
       this.filters.mapOfCheckedId.clear();
@@ -138,7 +161,7 @@ export class ApprovalRequestComponent {
 
   selectAll(): void {
     this.data.forEach(item => {
-        this.filters.mapOfCheckedId.add(item.id);
+      this.filters.mapOfCheckedId.add(item.id);
     });
   }
 
@@ -149,12 +172,12 @@ export class ApprovalRequestComponent {
       if (approvals.length < this.data.length) {
         this.filters.mapOfCheckedId.clear();
         approvals.forEach(approve => {
-            this.filters.mapOfCheckedId.add(approve.id);
+          this.filters.mapOfCheckedId.add(approve.id);
         });
       }
     }
     if (checked) {
-        this.filters.mapOfCheckedId.add(item.id);
+      this.filters.mapOfCheckedId.add(item.id);
     } else {
       this.filters.mapOfCheckedId.delete(item.id);
     }
@@ -187,7 +210,7 @@ export class ApprovalRequestComponent {
     }
     this.totalApprovalRequests = 0;
     this.data.forEach((item) => {
-        ++this.totalApprovalRequests;
+      ++this.totalApprovalRequests;
     });
   }
 
@@ -224,23 +247,33 @@ export class ApprovalRequestComponent {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-       this.fetchRequests()
+        this.fetchRequests()
       }
     });
   }
 
   private updateApproval(id: number, action: 'approve' | 'reject' | 'withdraw'): void {
     this.isLoaded = false;
-    const payload = { id };
+    const payload = {id};
     this.coreService.post(`approval/${action}`, payload).subscribe({
       next: () => {
         this.fetchRequests()
         this.isLoaded = true;
       },
       error: () => {
-        this.isLoaded = false;
+        this.isLoaded = true;
       }
     });
   }
 
+  refresh(args: { eventSnapshots: any[] }): void {
+    if (args.eventSnapshots && args.eventSnapshots.length > 0) {
+      for (let j = 0; j < args.eventSnapshots.length; j++) {
+        if (args.eventSnapshots[j].objectType === 'APPROVAL') {
+          this.fetchRequests();
+          break;
+        }
+      }
+    }
+  }
 }
