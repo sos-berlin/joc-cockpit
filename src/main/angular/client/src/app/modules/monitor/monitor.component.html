@@ -19,7 +19,7 @@
                    nz-checkbox (nzCheckedChange)="controllerChange()">
               {{'common.label.currentController' | translate}}
             </label>
-            <label *ngIf="monitorFilters.tabIndex == 4 && monitorFilters.approvalRequests.mapOfCheckedId.size ===0" [(ngModel)]="monitorFilters.approvalRequests.current" name="current"
+            <label *ngIf="monitorFilters.tabIndex == 4 && monitorFilters.approvalRequests.mapOfCheckedId.size ===0 && this.isApprover" [(ngModel)]="monitorFilters.approvalRequests.current" name="current"
                    nz-checkbox (nzCheckedChange)="requestChange()">
               {{'monitor.approvalRequest.label.allApproverRequests' | translate}}
             </label>
@@ -306,14 +306,14 @@
                                    [preferences]="preferences"></app-system-notification>
         </div>
       </nz-tab>
-      <nz-tab *ngIf="permission && permission.currentController && permission.currentController.view  && (isRequestor || isApprover)"
+      <nz-tab *ngIf="(isRequestor || isApprover)"
               [nzTitle]="'monitor.label.approvalRequest' | translate">
         <div *ngIf="index === 4">
           <app-approval-request [preferences]="preferences" [permission]="permission" [filters]="monitorFilters.approvalRequests" [schedulerIds]="schedulerIds"></app-approval-request>
         </div>
       </nz-tab>
 
-      <nz-tab *ngIf="permission && permission.currentController && permission.currentController.view  && (isRequestor || isApprover)"
+      <nz-tab *ngIf="permission.joc && permission.joc.administration.accounts.view && (isRequestor || isApprover)"
               [nzTitle]="'monitor.label.approvers' | translate">
         <div *ngIf="index === 5">
           <app-approvers #approvers [preferences]="preferences" [permission]="permission" [filters]="monitorFilters.approvers" [schedulerIds]="schedulerIds"></app-approvers>

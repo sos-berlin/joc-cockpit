@@ -77,34 +77,22 @@ export class ApprovalRequestComponent {
       if (category.requestorStates) obj.requestorStates = category.requestorStates;
     }
 
-    if (this.filters.current) {
-      obj.requestors = [];
-      this.coreService.post('approval/approvers', {}).subscribe({
-        next: (res) => {
-          obj.requestors = res.approvers.map(item => item.accountName);
-          this.coreService.post('approval/requests', obj).subscribe({
-            next: (res) => {
-              this.isLoaded = true;
-              res.requests = this.orderPipe.transform(res.requests, this.filters.filter.sortBy, this.filters.filter.reverse);
-              this.approvalData = res.requests;
-              this.searchInResult();
-            },
-            error: () => { this.isLoaded = true; }
-          });
-        },
-        error: () => { this.isLoaded = true; }
-      });
-    } else {
-      this.coreService.post('approval/requests', obj).subscribe({
-        next: (res) => {
-          this.isLoaded = true;
-          res.requests = this.orderPipe.transform(res.requests, this.filters.filter.sortBy, this.filters.filter.reverse);
-          this.approvalData = res.requests;
-          this.searchInResult();
-        },
-        error: () => { this.isLoaded = true; }
-      });
+    if (!this.filters.current && this.isApprover) {
+      obj.approvers = [this.authService.currentUserData];
     }
+
+    this.coreService.post('approval/requests', obj).subscribe({
+      next: (res) => {
+        this.isLoaded = true;
+        res.requests = this.orderPipe.transform(res.requests, this.filters.filter.sortBy, this.filters.filter.reverse);
+        this.approvalData = res.requests;
+        this.searchInResult();
+      },
+      error: () => {
+        this.isLoaded = true;
+      }
+    });
+
   }
 
   pageIndexChange($event: number): void {
@@ -245,11 +233,6 @@ export class ApprovalRequestComponent {
       nzClosable: false,
       nzMaskClosable: false
     });
-    modal.afterClose.subscribe(result => {
-      if (result) {
-        this.fetchRequests()
-      }
-    });
   }
 
   private updateApproval(id: number, action: 'approve' | 'reject' | 'withdraw'): void {
@@ -257,7 +240,6 @@ export class ApprovalRequestComponent {
     const payload = {id};
     this.coreService.post(`approval/${action}`, payload).subscribe({
       next: () => {
-        this.fetchRequests()
         this.isLoaded = true;
       },
       error: () => {

@@ -137,14 +137,14 @@
                 </button>
                 <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                   <ul nz-menu>
-                    <li *ngIf="isApprover" (click)="approve(approval.id)" nz-menu-item>
+                    <li *ngIf="isApprover" [nzDisabled]="approval.approverState != 'PENDING'" (click)="approve(approval.id)" nz-menu-item>
                       <a translate>monitor.approvalRequest.button.approve</a>
                     </li>
-                    <li *ngIf="isApprover" (click)="reject(approval.id)" nz-menu-item>
+                    <li *ngIf="isApprover" [nzDisabled]="approval.approverState != 'PENDING'" (click)="reject(approval.id)" nz-menu-item>
                       <a translate>monitor.approvalRequest.button.reject</a>
                     </li>
                     <li *ngIf="isApprover && isRequestor" nz-menu-divider></li>
-                    <li *ngIf="isRequestor" (click)="withdraw(approval.id)" nz-menu-item>
+                    <li *ngIf="isRequestor"  [nzDisabled]="approval.requestorState == 'WITHDRAWN'" (click)="withdraw(approval.id)" nz-menu-item>
                       <a translate>monitor.approvalRequest.button.withdraw</a>
                     </li>
                     <li *ngIf="isRequestor" (click)="edit(approval)" nz-menu-item>

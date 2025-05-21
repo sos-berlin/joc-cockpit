@@ -18,8 +18,31 @@
     <!-- / brand -->
     <!-- navbar right -->
     <ul class="nav navbar-nav pull-right ">
+      <ng-template #approvalEventTemp>
+        <div class="pos-abt" style="top:6px;right: 16px">
+          <a (click)="clearApprovalEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
+        </div>
+        <div class="notification">
+          <div class="cursor primary-text-hover-color" >
+            {{approvalEvent?.numOfPendingApprovals}} -
+              <span (click)="navToOrderNoti(4, 'PENDING')" *ngIf="approvalEvent?.numOfPendingApprovals" translate>monitor.approvalRequest.label.ApproverNotification</span>
+          </div>
+        </div>
+      </ng-template>
+
+      <ng-template #requestorEventTemp>
+        <div class="pos-abt" style="top:6px;right: 16px">
+          <a (click)="clearRequestorEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
+        </div>
+        <div class="notification">
+          <div class="cursor primary-text-hover-color" >
+              <span (click)="navToOrderNoti(4, 'PENDING')" *ngIf="requestorEvent?.approverState" translate>monitor.approvalRequest.label.RequestorNotification</span>
+           {{requestorEvent?.approverState}}
+          </div>
+        </div>
+      </ng-template>
       <ng-template #problemEventTemp>
-        <div class="pos-abt" style="top:16px;right: 16px">
+        <div class="pos-abt" style="top:6px;right: 16px">
           <a (click)="clearProblemEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
         </div>
         <div class="notification">
@@ -30,7 +53,7 @@
         </div>
       </ng-template>
       <ng-template #jocMonitorEvent>
-        <div *ngIf="jocMonitor.length > 0" class="pos-abt" style="top:16px;right: 16px">
+        <div *ngIf="jocMonitor.length > 0" class="pos-abt" style="top:6px;right: 16px">
           <a (click)="clearJocEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
         </div>
         <div class="notification">
@@ -47,7 +70,7 @@
         </div>
       </ng-template>
       <ng-template #systemMonitorEvent>
-        <div *ngIf="systemMonitor.length > 0" class="pos-abt" style="top:16px;right: 16px">
+        <div *ngIf="systemMonitor.length > 0" class="pos-abt" style="top:6px;right: 16px">
           <a (click)="clearSystemEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
         </div>
         <div class="notification">
@@ -64,6 +87,26 @@
           </div>
         </div>
       </ng-template>
+      <li class="nav-item">
+        <a *ngIf="approvalEvent.numOfPendingApprovals > 0 && (isApprover)" class="nav-link pointer text-warning" style="top: 3px">
+          <span [nzPopoverContent]="approvalEventTemp" class="p-l-xs cursor"
+                nz-popover nzPopoverPlacement="bottomRight"
+                nzPopoverTitle="{{'info.label.pendingRequests' | translate}}"
+                nzPopoverTrigger="click">
+            <i class="fa fa-clock-o text-18" style="line-height: 0"></i>
+          </span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a *ngIf="requestorEvent.approverState && (isRequestor)" class="nav-link pointer text-warning" style="top: 3px">
+          <span [nzPopoverContent]="requestorEventTemp" class="p-l-xs cursor"
+                nz-popover nzPopoverPlacement="bottomRight"
+                nzPopoverTitle="{{'info.label.pendingRequests' | translate}}"
+                nzPopoverTrigger="click">
+            <i class="fa fa-check text-18" style="line-height: 0"></i>
+          </span>
+        </a>
+      </li>
       <li class="nav-item">
         <a *ngIf="problemEvent?.message" class="nav-link pointer text-danger" style="top: 3px">
           <span [nzPopoverContent]="problemEventTemp" class="p-l-xs cursor"

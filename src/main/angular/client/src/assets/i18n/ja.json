@@ -1708,6 +1708,7 @@
     "label.jocMonitorEvent": "JOC Monitor Event",
     "label.systemMonitorEvent": "System Monitor Event",
     "label.notification": "Notification",
+    "label.pendingRequests": "Pending Approval Requests",
     "--------COMMENT BOX BEGIN------------": "Link and buttons for information question mark icon in header",
     "button.aboutJS7": "JS7について",
     "button.js7Download": "JS7ダウンロード",
@@ -2578,7 +2579,9 @@
         "reason": "Reason",
         "approvalsFound": "Approvals entries found",
         "approvalFound": "Approval entry found",
-        "allApproverRequests": "All Approver Requests"
+        "allApproverRequests": "All Approvers",
+        "ApproverNotification": "pending approval requests",
+        "RequestorNotification": "Approval request is"
       },
       "button": {
         "approve": "Approve",
@@ -3284,7 +3287,8 @@
       "node_command_line_options": "ノードコマンドラインオプション",
       "num_of_tags_displayed_as_order_id": "オーダーID表示タグ数",
       "num_of_workflow_tags_displayed": "ワークフロー表示タグ数",
-      "report_java_options": "Javaオプション表示"
+      "report_java_options": "Javaオプション表示",
+      "approval_requestor_role": "approval requestor role."
     },
     "user": {
       "welcome_got_it": "了解",

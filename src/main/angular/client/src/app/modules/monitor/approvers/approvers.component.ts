@@ -89,8 +89,7 @@ export class ApproversComponent {
     this.coreService.post('approval/approvers', obj).subscribe({
       next: (res) => {
         this.isLoaded = true;
-        res.approvers = this.orderPipe.transform(res.approvers, this.filters.filter.sortBy, this.filters.filter.reverse);
-        this.approversData = res.approvers
+               this.approversData = res.approvers
         this.searchInResult();
       }, error: () => {
         this.isLoaded = true;

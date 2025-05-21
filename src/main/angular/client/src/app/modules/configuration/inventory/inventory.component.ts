@@ -734,7 +734,10 @@ export class SingleDeployComponent {
     this.coreService.post(this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy', obj).subscribe({
       next: () => {
         this.activeModal.close();
-      }, error: () => this.submitted = false
+      }, error: () => {
+        this.submitted = false;
+        this.activeModal.close();
+      }
     });
   }
 
@@ -812,7 +815,10 @@ export class SingleDeployComponent {
           next: () => {
             this.activeModal.close();
           },
-          error: () => this.submitted = false
+          error: () => {
+            this.submitted = false;
+            this.activeModal.close();
+          }
         });
       }).catch(() => {
       this.submitted = false;
@@ -2747,6 +2753,7 @@ export class DeployComponent {
           },
           error: () => {
             this.submitted = false;
+            this.activeModal.close();
             this.ref.detectChanges();
           }
         });
@@ -3158,7 +3165,8 @@ export class DeployComponent {
         next: () => {
           this.activeModal.close();
         },
-        error: (err) => {
+        error: () => {
+          this.activeModal.close();
         }
       });
     } else {

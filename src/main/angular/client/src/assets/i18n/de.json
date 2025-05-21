@@ -1708,6 +1708,7 @@
     "label.jocMonitorEvent": "Warnungen und Fehler von Aufträgen",
     "label.systemMonitorEvent": "Warnungen und Fehler des Systems",
     "label.notification": "Alarme",
+    "label.pendingRequests": "Pending Approval Requests",
     "--------COMMENT BOX BEGIN------------": "Link and buttons for information question mark icon in header",
     "button.aboutJS7": "Über JS7",
     "button.js7Download": "JS7 Herunterladen",
@@ -2578,7 +2579,9 @@
         "reason": "Reason",
         "approvalsFound": "Approvals entries found",
         "approvalFound": "Approval entry found",
-        "allApproverRequests": "All Approver Requests"
+        "allApproverRequests": "All Approvers",
+        "ApproverNotification": "pending approval requests",
+        "RequestorNotification": "Approval request is"
       },
       "button": {
         "approve": "Approve",
@@ -3284,7 +3287,8 @@
       "node_command_line_options": "Node.js Kommandozeilenoptionen können angegeben werden. Beachten Sie, dass die Anwendbarkeit der Optionen von der verwendeten Version von Node.js abhängt.",
       "num_of_tags_displayed_as_order_id": "Gibt die Anzahl Kennzeichnungen an, die mit jedem Auftrag angezeigt werden. Ein Wert 0 unterdrückt die Anzeige der Kennzeichnung.",
       "num_of_workflow_tags_displayed": "Gibt die Anzahl Kennzeichnungen an, die mit jedem Arbeitsablauf angezeigt werden. Ein Wert 0 unterdrückt die Anzeige der Kennzeichnung.",
-      "report_java_options": "Berichte werden aus einer Java-Klasse erstellt, die für die Verwendung von Java Optionen konfiguriert werden kann. Es wird empfohlen, die Option -Xmx<number>m zu verwenden, um die Speichernutzung zu begrenzen."
+      "report_java_options": "Berichte werden aus einer Java-Klasse erstellt, die für die Verwendung von Java Optionen konfiguriert werden kann. Es wird empfohlen, die Option -Xmx<number>m zu verwenden, um die Speichernutzung zu begrenzen.",
+      "approval_requestor_role": "approval requestor role."
     },
     "user": {
       "welcome_got_it": "Vereinbart, dass das Willkommensfenster mit Informationen für das initiale Herunterladen von Einstellungen und Beispielen nicht länger angezeigt werden soll.",

@@ -30,6 +30,10 @@ export class HeaderComponent {
   jocMonitor = [];
   systemMonitor = [];
   problemEvent: any = {};
+  approvalEvent: any = {};
+  requestorEvent: any = {};
+  isApprover: any = false;
+  isRequestor: any = false;
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
@@ -67,6 +71,15 @@ export class HeaderComponent {
     if (sessionStorage['$SOS$NODELOSS']) {
       this.problemEvent = JSON.parse(sessionStorage['$SOS$NODELOSS']);
     }
+    if (sessionStorage['$SOS$APPROVALREQUESTS']) {
+      this.approvalEvent = JSON.parse(sessionStorage['$SOS$APPROVALREQUESTS']);
+    }
+    if (sessionStorage['$SOS$REQUESTORREQUESTS']) {
+      this.requestorEvent = JSON.parse(sessionStorage['$SOS$REQUESTORREQUESTS']);
+    }
+
+    this.isApprover = JSON.parse(sessionStorage.getItem('isApprover'))
+    this.isRequestor = JSON.parse(sessionStorage.getItem('isApprovalRequestor'))
     this.init();
   }
 
@@ -126,6 +139,18 @@ export class HeaderComponent {
       sessionStorage.removeItem('$SOS$NODELOSS');
     }, 250);
   }
+  clearApprovalEvent(): void {
+    setTimeout(() => {
+      this.approvalEvent = {};
+      sessionStorage.removeItem('$SOS$APPROVALREQUESTS');
+    }, 250);
+  }
+  clearRequestorEvent(): void {
+    setTimeout(() => {
+      this.requestorEvent = {};
+      sessionStorage.removeItem('$SOS$REQUESTORREQUESTS');
+    }, 250);
+  }
 
   clearJocEvent(): void {
     this.jocMonitor = [];
@@ -150,7 +175,11 @@ export class HeaderComponent {
     filter.tabIndex = index;
     if (index == 2) {
       filter.orderNotification.filter.types = [data.level];
-    } else {
+    }else if(index == 4){
+      filter.approvalRequests.filter.approverStates = [data];
+      filter.approvalRequests.filter.requestorStates = [];
+      filter.approvalRequests.current = false;
+    }else {
       filter.systemNotification.filter.categories = data.category;
       filter.systemNotification.filter.types = [data.level];
     }
@@ -283,6 +312,12 @@ export class HeaderComponent {
                 res.eventSnapshots[j].date = parseInt(this.eventId) * 1000;
                 this.problemEvent = res.eventSnapshots[j];
                 sessionStorage['$SOS$NODELOSS'] = JSON.stringify(res.eventSnapshots[j]);
+              }else if (res.eventsFromApprovalRequests[j]?.eventType === 'ApproverNotification') {
+                this.approvalEvent = res.eventsFromApprovalRequests[j];
+                sessionStorage['$SOS$APPROVALREQUESTS'] = JSON.stringify(res.eventsFromApprovalRequests[j]);
+              }else if (res.eventsFromApprovalRequests[j]?.eventType === 'RequestorNotification') {
+                this.requestorEvent = res.eventsFromApprovalRequests[j];
+                sessionStorage['$SOS$REQUESTORREQUESTS'] = JSON.stringify(res.eventsFromApprovalRequests[j]);
               }
             }
 

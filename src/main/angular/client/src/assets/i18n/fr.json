@@ -1708,6 +1708,7 @@
     "label.jocMonitorEvent": "Avertissements et Erreurs d'Ordre",
     "label.systemMonitorEvent": "Avertissements et Erreurs du Système",
     "label.notification": "Alertes",
+    "label.pendingRequests": "Pending Approval Requests",
     "--------COMMENT BOX BEGIN------------": "Link and buttons for information question mark icon in header",
     "button.aboutJS7": "À propos de JS7",
     "button.js7Download": "Télécharger JS7",
@@ -2578,7 +2579,9 @@
         "reason": "Reason",
         "approvalsFound": "Approvals entries found",
         "approvalFound": "Approval entry found",
-        "allApproverRequests": "All Approver Requests"
+        "allApproverRequests": "All Approvers",
+        "ApproverNotification": "pending approval requests",
+        "RequestorNotification": "Approval request is"
       },
       "button": {
         "approve": "Approve",
@@ -3284,7 +3287,8 @@
       "node_command_line_options": "Des options de ligne de commande Node.js peuvent être spécifiées. Notez que l'applicabilité des options dépend de la version de Node.js utilisée.",
       "num_of_tags_displayed_as_order_id": "Spécifie le nombre de Balises affichées lors de chaque ordre. La valeur 0 supprime l'affichage des Balises.",
       "num_of_workflow_tags_displayed": "Spécifie le nombre de Balises affichées lors de chaque workflow. La valeur 0 supprime l'affichage des Balises.",
-      "report_java_options": "Les rapports sont créés à partir d'une classe Java qui peut être configurée pour utiliser des options Java. Il est recommandé d'utiliser l'option -Xmx<nombre>m pour limiter l'utilisation de la mémoire."
+      "report_java_options": "Les rapports sont créés à partir d'une classe Java qui peut être configurée pour utiliser des options Java. Il est recommandé d'utiliser l'option -Xmx<nombre>m pour limiter l'utilisation de la mémoire.",
+      "approval_requestor_role": "approval requestor role."
     },
     "user": {
       "welcome_got_it": "Spécifie que la fenêtre d'accueil qui propose des valeurs par défaut et des exemples à télécharger ne doit plus être affichée.",

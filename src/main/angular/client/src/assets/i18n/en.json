@@ -1709,6 +1709,7 @@
     "label.jocMonitorEvent": "Order Warnings and Errors",
     "label.systemMonitorEvent": "System Warnings and Errors",
     "label.notification": "Alerts",
+    "label.pendingRequests": "Pending Approval Requests",
     "--------COMMENT BOX BEGIN------------": "Link and buttons for information question mark icon in header",
     "button.aboutJS7": "About JS7",
     "button.js7Download": "JS7 Download",
@@ -2579,7 +2580,9 @@
         "reason": "Reason",
         "approvalsFound": "Approvals entries found",
         "approvalFound": "Approval entry found",
-        "allApproverRequests": "All Approver Requests"
+        "allApproverRequests": "All Approvers",
+        "ApproverNotification": "pending approval requests",
+        "RequestorNotification": "Approval request is"
       },
       "button": {
         "approve": "Approve",
@@ -3286,7 +3289,8 @@
       "node_command_line_options": "Node.js command line options can be specified. Consider that applicability of options depends on the version of Node.js in use.",
       "num_of_tags_displayed_as_order_id": "Specifies the number of tags displayed with each order. A value 0 will suppress display of tags.",
       "num_of_workflow_tags_displayed": "Specifies the number of tags displayed with each workflow. A value 0 will suppress display of tags.",
-      "report_java_options": "Reports are created from a Java class that can be configured to use Java options. It is recommended to use the -Xmx<number>m option to limit memory usage."
+      "report_java_options": "Reports are created from a Java class that can be configured to use Java options. It is recommended to use the -Xmx<number>m option to limit memory usage.",
+      "approval_requestor_role": "approval requestor role."
     },
     "user": {
       "welcome_got_it": "Specifies that the welcome window that offers defaults and examples for download should no longer be displayed.",
