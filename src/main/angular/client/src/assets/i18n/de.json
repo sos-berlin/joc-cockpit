@@ -113,10 +113,10 @@
   "COMPATIBLE": "kompatibel",
   "PARTIALLY_COMPATIBLE": "aufwärtskompatibel",
   "NOT_COMPATIBLE": "nicht kompatibel",
-  "REQUESTED": "requested",
-  "WITHDRAWN": "withdrawn",
-  "APPROVED": "approved",
-  "REJECTED": "rejected",
+  "REQUESTED": "eingereicht",
+  "WITHDRAWN": "zurückgezogen",
+  "APPROVED": "autorisiert",
+  "REJECTED": "abgelehnt",
   "--------SELECT BOX VALUE BEGIN------------": "",
   "True": "wahr",
   "False": "falsch",
@@ -514,8 +514,8 @@
     "label.sortBy": "Sortiert nach",
     "label.deleteAllDocument": "Alle Dokumentationen löschen",
     "label.deleteAllReport": "Alle Berichte löschen",
-    "label.requestApproval" : "Request Approval",
-    "label.approver" : "Approver",
+    "label.requestApproval" : "Autorisierung anfragen",
+    "label.approver" : "Prüfer",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "label.dateRange": "Datumsbereich",
     "label.to": "Bis",
@@ -2517,8 +2517,8 @@
       "totalDays": "{{count}} Tage",
       "date": "Datum",
       "shutdown": "außer Betrieb",
-      "approvalRequest": "Approval Request",
-      "approvers": "Approvers"
+      "approvalRequest": "Autorisierungsanfrage",
+      "approvers": "Prüfer"
     },
     "button": {
       "week": "Woche",
@@ -2568,52 +2568,52 @@
     },
     "approvalRequest": {
       "label": {
-        "modified": "Modified",
-        "title": "Title",
-        "requestor": "Requestor",
-        "requestorState": "RequestorState",
-        "approver": "Approver",
-        "approverState": "ApproverState",
-        "requestUrl": "Request Url",
-        "category": "Category",
-        "reason": "Reason",
-        "execute": "Execute",
-        "approvalsFound": "Approvals entries found",
-        "approvalFound": "Approval entry found",
-        "allApproverRequests": "All Approvers",
-        "ApproverNotification": "pending approval requests",
-        "RequestorNotification": "Approval request is"
+        "modified": "Geändert",
+        "title": "Titel",
+        "requestor": "Anfrager",
+        "requestorState": "Anfrager Status",
+        "approver": "Prüfer",
+        "approverState": "Prüfer Status",
+        "requestUrl": "Anfrage URI",
+        "category": "Kategorie",
+        "reason": "Begründung",
+        "execute": "Ausführen",
+        "approvalsFound": "Autorisierungsanfragen gefunden",
+        "approvalFound": "Autorisierungsanfrage gefunden",
+        "allApproverRequests": "Alle Autorisierungsanfragen",
+        "ApproverNotification": "anstehende Autorisierungsanfragen",
+        "RequestorNotification": "Autorisierungsanfrage ist"
       },
       "button": {
-        "approve": "Approve",
-        "reject": "Reject",
-        "withdraw": "Withdraw",
-        "requested": "Requested",
-        "withdrawn": "WithDrawn",
-        "inProgress": "In Progress",
-        "success": "Successful",
-        "failed": "Failed",
-        "pending": "Pending",
-        "approved": "Approved",
-        "rejected": "Rejected"
+        "approve": "Prüfer",
+        "reject": "Ablehnen",
+        "withdraw": "Zurückziehen",
+        "requested": "eingereicht",
+        "withdrawn": "zurückgezogen",
+        "inProgress": "ausgeführt",
+        "success": "erfolgreich",
+        "failed": "fehlerhaft",
+        "pending": "anstehend",
+        "approved": "autorisiert",
+        "rejected": "abgelehnt"
       }
     },
     "approvers": {
       "label": {
-        "addNewApprover": "Add New Approver",
-        "firstName": "First Name",
-        "lastName": "Last Name",
-        "email": "Email",
-        "approversFound": "Approvers entries found",
-        "approverFound": "Approver entry found"
+        "addNewApprover": "Prüfer hinzufügen",
+        "firstName": "Vorname",
+        "lastName": "Nachname",
+        "email": "E-Mail",
+        "approversFound": "Einträge für Prüfer gefunden",
+        "approverFound": "Eintrag für Prüfer gefunden"
       },
       "button": {
-        "newApprover": "New Approver"
+        "newApprover": "Neuer Prüfer"
       },
       "placeholder": {
-        "firstName": "Enter First Name",
-        "lastName": "Enter Last Name",
-        "email": "Enter Email"
+        "firstName": "Vornamen angeben",
+        "lastName": "Nachnamen angeben",
+        "email": "E-Mail Adresse angeben"
       }
     }
   },
@@ -3289,7 +3289,7 @@
       "num_of_tags_displayed_as_order_id": "Gibt die Anzahl Kennzeichnungen an, die mit jedem Auftrag angezeigt werden. Ein Wert 0 unterdrückt die Anzeige der Kennzeichnung.",
       "num_of_workflow_tags_displayed": "Gibt die Anzahl Kennzeichnungen an, die mit jedem Arbeitsablauf angezeigt werden. Ein Wert 0 unterdrückt die Anzeige der Kennzeichnung.",
       "report_java_options": "Berichte werden aus einer Java-Klasse erstellt, die für die Verwendung von Java Optionen konfiguriert werden kann. Es wird empfohlen, die Option -Xmx<number>m zu verwenden, um die Speichernutzung zu begrenzen.",
-      "approval_requestor_role": "approval requestor role."
+      "approval_requestor_role": "Gibt den Namen der Rolle an, die Benutzerkonten zugewiesen ist, die eine Autoriserung für Operationen beantragen können, die die mit der Rolle festgelegten Berechtigungen benötigen."
     },
     "user": {
       "welcome_got_it": "Vereinbart, dass das Willkommensfenster mit Informationen für das initiale Herunterladen von Einstellungen und Beispielen nicht länger angezeigt werden soll.",
@@ -4090,7 +4090,7 @@
       "button.sendRequest": "Anfrage senden",
       "button.addParam": "Parameter hinzufügen",
       "button.addHeader": "Kopfzeile hinzufügen",
-      "button.documentation": "Documentation",
+      "button.documentation": "Dokumentation",
       "placeholder.apiRequest": "https://api.example.com",
       "placeholder.key": "Schlüssel",
       "placeholder.value": "Wert",
