@@ -6,6 +6,7 @@ import {OrderPipe, SearchPipe} from "../../../pipes/core.pipe";
 import {Subscription} from "rxjs";
 import {DataService} from "../../../services/data.service";
 import {ApprovalModalComponent} from "../../../components/approval-modal/approval-modal.component";
+import {HttpHeaders} from "@angular/common/http";
 
 @Component({
   selector: 'app-approval-request',
@@ -19,6 +20,7 @@ export class ApprovalRequestComponent {
   @Input() permission: any = {};
   data: any;
   approvalData: any
+  approversList: any
   isLoaded = false;
   totalApprovalRequests = 0;
   isApprover: any = false
@@ -34,14 +36,16 @@ export class ApprovalRequestComponent {
   constructor(public coreService: CoreService,
               private modal: NzModalService, private dataService: DataService, public authService: AuthService, private orderPipe: OrderPipe, private searchPipe: SearchPipe,) {
     this.subscription1 = dataService.functionAnnounced$.subscribe((res: any) => {
-
-      if (res) {
-        if (res?.filter?.requestorStates) {
-          this.fetchRequests(res?.filter)
-        } else if (res?.filter?.approverStates) {
-          this.fetchRequests(res?.filter)
+      setTimeout(() =>{
+        console.log(res?.filter?.approverStates,"res?.filter?.approverStates")
+        if (res) {
+          if (res?.filter?.requestorStates) {
+            this.fetchRequests(res?.filter)
+          } else if (res?.filter?.approverStates) {
+            this.fetchRequests(res?.filter)
+          }
         }
-      }
+      },100)
     });
     this.subscription2 = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
@@ -72,9 +76,9 @@ export class ApprovalRequestComponent {
     this.isLoaded = false;
     const obj: any = {};
 
-    if (category) {
-      if (category.approverStates) obj.approverStates = category.approverStates;
-      if (category.requestorStates) obj.requestorStates = category.requestorStates;
+    if (category || this.filters?.filter) {
+      if (category?.approverStates || this.filters?.filter.approverStates) obj.approverStates = category?.approverStates || this.filters?.filter.approverStates;
+      if (category?.requestorStates || this.filters?.filter.requestorStates) obj.requestorStates = category?.requestorStates || this.filters?.filter.requestorStates;
     }
 
     if (!this.filters.current && this.isApprover) {
@@ -86,6 +90,7 @@ export class ApprovalRequestComponent {
         this.isLoaded = true;
         res.requests = this.orderPipe.transform(res.requests, this.filters.filter.sortBy, this.filters.filter.reverse);
         this.approvalData = res.requests;
+        this.approversList = res.approvers
         this.searchInResult();
       },
       error: () => {
@@ -214,6 +219,25 @@ export class ApprovalRequestComponent {
     this.updateApproval(id, 'withdraw');
   }
 
+  execute(data): void {
+    this.isLoaded = false
+    const url = data.requestUrl.replace(/^\.\//, '');
+    const formData = {};
+    const headers = new HttpHeaders({
+      'X-Approval-Request-Id': data.id,
+      'Content-Type': 'application/json'
+    });
+    this.coreService.log(url, formData, {headers}).subscribe({
+      next: () => {
+       this.fetchRequests()
+        this.isLoaded = true;
+      },
+      error: () => {
+        this.isLoaded = true;
+      }
+    });
+  }
+
   edit(data: any): void {
     const obj = {
       id: data.id,
@@ -226,6 +250,7 @@ export class ApprovalRequestComponent {
       nzClassName: 'lg',
       nzData: {
         approvalData: obj,
+        approvers: this.approversList,
         edit: true
       },
       nzFooter: null,

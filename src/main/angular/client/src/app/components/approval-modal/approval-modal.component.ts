@@ -27,27 +27,11 @@ export class ApprovalModalComponent {
     this.edit = this.modalData.edit;
     if (this.edit) {
       this.approvalData = this.modalData.approvalData;
-      this.fetchApprovers();
+      this.approvers =  this.modalData.approvers || [];
     } else {
       this.approvers = this.modalData.approvers || [];
     }
   }
-
-  fetchApprovers(): void {
-    this.submitted = true;
-    const obj: any = {};
-    this.coreService.post('approval/approvers', obj).subscribe({
-      next: (res) => {
-        this.submitted = false;
-        this.approvers = res.approvers || [];
-      },
-      error: () => {
-        this.submitted = false;
-        this.approvers = [];
-      }
-    });
-  }
-
 
   onSubmit(): void {
     if(this.edit){

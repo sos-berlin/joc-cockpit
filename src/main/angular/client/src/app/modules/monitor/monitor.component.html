@@ -143,14 +143,6 @@
                       class="btn btn-grey btn-sm"
                       translate>monitor.approvalRequest.button.inProgress
               </button>
-              <button (click)="changeRequestors('SUCCESFUL')" [ngClass]="{'btn-primary': monitorFilters.approvalRequests.filter.requestorStates.includes('SUCCESFUL')}"
-                      class="btn btn-grey btn-sm"
-                      translate>monitor.approvalRequest.button.success
-              </button>
-              <button (click)="changeRequestors('FAILED')" [ngClass]="{'btn-primary': monitorFilters.approvalRequests.filter.requestorStates.includes('FAILED')}"
-                      class="btn btn-grey btn-sm"
-                      translate>monitor.approvalRequest.button.failed
-              </button>
             </div>
             <div class="btn-group m-l-12">
               <button (click)="changeApprover('PENDING')" [ngClass]="{'btn-primary':monitorFilters.approvalRequests.filter.approverStates.includes('PENDING')}"

@@ -15,8 +15,8 @@
       </label>
       <div class="col-sm-8">
         <div class="row">
-          <div class="col-12" [ngClass]="{'has-error' : ((userName.dirty || userName.touched) && userName.invalid)}">
-            <input class="form-control" name="userName" [(ngModel)]="approversData.accountName" required   placeholder="{{'user.placeholder.user' | translate}}"
+          <div class="col-12"  [ngClass]="{'has-error' : ((userName.dirty || userName.touched) && userName.invalid)}">
+            <input [disabled]="edit" class="form-control" name="userName" [(ngModel)]="approversData.accountName" required   placeholder="{{'user.placeholder.user' | translate}}"
                    #userName="ngModel" autocomplete="off"/>
           </div>
         </div>

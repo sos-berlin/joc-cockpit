@@ -2577,6 +2577,7 @@
         "requestUrl": "Request Url",
         "category": "Category",
         "reason": "Reason",
+        "execute": "Execute",
         "approvalsFound": "Approvals entries found",
         "approvalFound": "Approval entry found",
         "allApproverRequests": "All Approvers",

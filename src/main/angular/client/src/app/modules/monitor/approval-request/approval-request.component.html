@@ -144,11 +144,14 @@
                       <a translate>monitor.approvalRequest.button.reject</a>
                     </li>
                     <li *ngIf="isApprover && isRequestor" nz-menu-divider></li>
-                    <li *ngIf="isRequestor"  [nzDisabled]="approval.requestorState == 'WITHDRAWN'" (click)="withdraw(approval.id)" nz-menu-item>
+                    <li *ngIf="isRequestor"  [nzDisabled]="approval.requestorState !== 'REQUESTED'" (click)="withdraw(approval.id)" nz-menu-item>
                       <a translate>monitor.approvalRequest.button.withdraw</a>
                     </li>
-                    <li *ngIf="isRequestor" (click)="edit(approval)" nz-menu-item>
+                    <li *ngIf="isRequestor" [nzDisabled]="!(approval.requestorState === 'REQUESTED' && approval.approverState === 'PENDING')" (click)="edit(approval)" nz-menu-item>
                       <a translate>common.button.edit</a>
+                    </li>
+                    <li *ngIf="isRequestor" [nzDisabled]="!(approval.requestorState === 'REQUESTED' && approval.approverState === 'APPROVED')" (click)="execute(approval)" nz-menu-item>
+                      <a translate>monitor.approvalRequest.label.execute</a>
                     </li>
                   </ul>
                 </nz-dropdown-menu>
@@ -168,13 +171,27 @@
               <span [innerHtml]="approval['requestor'] | highlight : filters.filter.searchText"></span>
             </td>
             <td (click)="$event.stopPropagation()">
-              <span [innerHtml]="approval.requestorState | translate | highlight : filters.filter.searchText"></span>
+              <span class="label"
+                    [ngClass]="{
+                      'bg-scheduled': approval.requestorState === 'REQUESTED',
+                      'bg-orange': approval.requestorState === 'WITHDRAWN',
+                      'bg-inProgress': approval.requestorState === 'IN_PROGRESS'
+                    }"
+                    [innerHtml]="approval.requestorState | translate | highlight : filters.filter.searchText">
+              </span>
             </td>
             <td>
               <span [innerHtml]="approval.approver | highlight : filters.filter.searchText"></span>
             </td>
             <td>
-              <span [innerHtml]="approval.approverState | translate | highlight : filters.filter.searchText"></span>
+              <span class="label"
+                    [ngClass]="{
+                      'bg-scheduled': approval.approverState === 'PENDING',
+                      'bg-running': approval.approverState === 'APPROVED',
+                      'bg-failed': approval.approverState === 'REJECTED'
+                    }"
+                    [innerHtml]="approval.approverState | translate | highlight : filters.filter.searchText">
+              </span>
             </td>
             <td>
               <span [innerHtml]="approval.requestUrl | highlight : filters.filter.searchText"></span>
