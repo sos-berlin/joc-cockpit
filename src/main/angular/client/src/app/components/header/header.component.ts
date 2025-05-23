@@ -186,6 +186,17 @@ export class HeaderComponent {
     this.router.navigate(['/monitor']).then();
   }
 
+  navToApprovalNoti(index: number): void {
+    let filter = this.coreService.getMonitorTab();
+    filter.tabIndex = index;
+   if(index == 4){
+      filter.approvalRequests.filter.approverStates = ["APPROVED", "REJECTED"];
+      filter.approvalRequests.filter.requestorStates = ["REQUESTED"];
+      filter.approvalRequests.current = false;
+    }
+    this.router.navigate(['/monitor']).then();
+  }
+
   logout(): void {
 
     this.isLogout = true;

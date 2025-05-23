@@ -23,9 +23,9 @@
           <a (click)="clearApprovalEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
         </div>
         <div class="notification">
-          <div class="cursor primary-text-hover-color" >
+          <div  (click)="navToOrderNoti(4, 'PENDING')" class="cursor primary-text-hover-color" >
             {{approvalEvent?.numOfPendingApprovals}} -
-              <span (click)="navToOrderNoti(4, 'PENDING')" *ngIf="approvalEvent?.numOfPendingApprovals" translate>monitor.approvalRequest.label.ApproverNotification</span>
+              <span *ngIf="approvalEvent?.numOfPendingApprovals" translate>monitor.approvalRequest.label.ApproverNotification</span>
           </div>
         </div>
       </ng-template>
@@ -35,8 +35,8 @@
           <a (click)="clearRequestorEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
         </div>
         <div class="notification">
-          <div class="cursor primary-text-hover-color" >
-              <span (click)="navToOrderNoti(4, 'PENDING')" *ngIf="requestorEvent?.approverState" translate>monitor.approvalRequest.label.RequestorNotification</span>
+          <div (click)="navToApprovalNoti(4)" class="cursor primary-text-hover-color" >
+              <span *ngIf="requestorEvent?.approverState" translate>monitor.approvalRequest.label.RequestorNotification</span>
            {{requestorEvent?.approverState}}
           </div>
         </div>
@@ -103,7 +103,7 @@
                 nz-popover nzPopoverPlacement="bottomRight"
                 nzPopoverTitle="{{'info.label.pendingRequests' | translate}}"
                 nzPopoverTrigger="click">
-            <i class="fa fa-check text-18" style="line-height: 0"></i>
+            <i class="fa fa-check-circle text-18" style="line-height: 0"></i>
           </span>
         </a>
       </li>

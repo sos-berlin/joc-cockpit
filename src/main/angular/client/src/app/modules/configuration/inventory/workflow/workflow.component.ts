@@ -3810,6 +3810,7 @@ export class WorkflowComponent {
   subscription2: Subscription;
   isCopiedWorkflow = false;
   copiedWorkflowJobTags: any = {};
+  lastSavedOrderPreparation: any = null;
 
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
@@ -5483,6 +5484,7 @@ export class WorkflowComponent {
               delete this.data?.copied
               this.isCopiedWorkflow = false
             }
+
           } catch (e) {
             console.error(e);
           }
@@ -5587,6 +5589,8 @@ export class WorkflowComponent {
     }
     this.updateOrderPreparation();
     this.fetchClipboard();
+    this.lastSavedOrderPreparation = this.coreService.clone(this.orderPreparation || {});
+    console.log(this.lastSavedOrderPreparation,"++++++++++")
   }
 
   private updateOrderPreparation(): void {
@@ -12555,6 +12559,7 @@ export class WorkflowComponent {
     if (isNavigate) {
       customizedChangeEvent();
     }
+
   }
 
   private updateForkListOrStickySubagentJobs(data, isSticky, skip = false) {
@@ -13801,9 +13806,7 @@ export class WorkflowComponent {
   }
 
   private storeData(data, onlyStore = false): void {
-    if (this.data.deployed && !this.impactShown && this.isReferencedBy.schedules) {
-      this.changeImpact();
-    }
+
     if (this.isTrash || !this.workflow || !this.workflow.path || !this.permission.joc.inventory.manage) {
       return;
     }
@@ -13811,6 +13814,20 @@ export class WorkflowComponent {
       this.clearClipboard();
     }
     const newObj = this.extendJsonObj(data);
+    const hasOrderPrepChanged = !isEqual(
+      JSON.stringify(this.lastSavedOrderPreparation),
+      JSON.stringify(newObj.orderPreparation)
+    );
+    console.log(hasOrderPrepChanged,'hasOrderPrepChanged')
+
+    if (
+      this.data.deployed &&
+      !this.impactShown &&
+      this.isReferencedBy.schedules &&
+      hasOrderPrepChanged
+    ) {
+      this.changeImpact();
+    }
     if (!onlyStore) {
       if (this.history.past.length === 20) {
         this.history.past.shift();
@@ -13900,6 +13917,7 @@ export class WorkflowComponent {
         this.isStore = false
       }
     });
+    this.lastSavedOrderPreparation = this.coreService.clone(newObj.orderPreparation);
   }
 
   private storeJobTags(path = null, copyObject = null, isWorkflow = false): void {
