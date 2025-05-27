@@ -2574,9 +2574,9 @@
         "modified": "Modified",
         "title": "Title",
         "requestor": "Requestor",
-        "requestorState": "Requestor State",
+        "requestorState": "Request Status",
         "approver": "Approver",
-        "approverState": "Approver State",
+        "approverState": "Approval Status",
         "requestUrl": "Request URI",
         "category": "Category",
         "reason": "Reason",
@@ -2586,8 +2586,8 @@
         "allApproverRequests": "All Approvers",
         "ApproverNotification": "pending Requests",
         "RequestorNotification": "Request ID",
-        "requestorStateDate": "Request Date",
-        "approverStateDate": "Approval Date"
+        "requestorStateDate": "Request Status Date",
+        "approverStateDate": "Approval Status Date"
       },
       "button": {
         "approve": "Approve",
