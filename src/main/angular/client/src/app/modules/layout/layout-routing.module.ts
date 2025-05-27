@@ -98,6 +98,12 @@ const routes: Routes = [
         data: {breadcrumb: 'breadcrumb.label.manageChanges'}
       },
       {
+        path: 'approvals',
+        loadChildren: () => import('./../approvals/approvals.module').then(m => m.approvalsModule),
+        canActivate: [AuthGuard],
+        data: {breadcrumb: 'breadcrumb.label.manageApprovals'}
+      },
+      {
         path: 'user',
         loadChildren: () => import('./../user/user.module').then(m => m.UserModule),
         canActivate: [AuthGuard],

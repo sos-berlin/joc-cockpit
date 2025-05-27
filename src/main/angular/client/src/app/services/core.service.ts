@@ -301,7 +301,10 @@ export class CoreService {
         currentPage: '1'
       }
     };
-    this.tabs._monitor.approvalRequests = {
+
+    this.tabs._approvals = {};
+    this.tabs._approvals.tabIndex = 0;
+    this.tabs._approvals.approvalRequests = {
       filter: {
         requestorStates: [],
         approverStates: [],
@@ -311,7 +314,7 @@ export class CoreService {
       }
     };
 
-    this.tabs._monitor.approvers = {
+    this.tabs._approvals.approvers = {
       filter: {
         sortBy: 'modified',
         reverse: true,
@@ -554,6 +557,10 @@ export class CoreService {
   }
   getMonitorTab(): any {
     return this.tabs._monitor;
+  }
+
+  getApprovalsTab(): any {
+    return this.tabs._approvals;
   }
 
   getHistoryTab(): any {

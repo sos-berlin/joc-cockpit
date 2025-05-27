@@ -633,6 +633,7 @@ export class ChangesComponent {
     currentPage: 1,
     entryPerPage: 25,
   };
+
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,) {
     this.permission = JSON.parse(this.authService.permission) || {};
   }

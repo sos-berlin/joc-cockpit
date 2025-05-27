@@ -1,7 +1,7 @@
 <div *ngIf="!(object.checked && filters.mapOfCheckedId.size > 0 && data.length > (filters.filter.entryPerPage || preferences.entryPerPage))"
      class="row m-b-sm m-t-n-xs">
   <div class="col-lg-offset-6 col-lg-6 col-md-offset-0 col-md-12">
-    <div class="notify-tool">
+    <div class="notify-tool approval-tool">
       <div class="search-box-field pull-right">
         <label>
           <input (keyup)="searchInResult()" [(ngModel)]="filters.filter.searchText" placeholder="{{'common.placeholder.search' | translate}}"
@@ -43,14 +43,14 @@
       >
         <thead>
         <tr>
-          <th *ngIf="permission.currentController && permission.currentController.orders.modify"
+          <th
               [(nzChecked)]="object.checked"
               [nzIndeterminate]="object.indeterminate"
               [nzShowCheckbox]="true"
               (nzCheckedChange)="checkAll($event)"
               class="chk"
           ></th>
-          <th *ngIf="permission.currentController && permission.currentController.orders.modify" class="menu"><span
+          <th class="menu"><span
             translate>common.label.action</span></th>
           <th (click)="sort('accountName')">
             <a><span class="p-r-xs" translate>profile.label.userName</span>
@@ -84,14 +84,14 @@
         <ng-template [ngForOf]="ajaxTable.data" let-approval
                      ngFor>
           <tr cdkDrag class="cursor move-on-hover">
-            <td *ngIf="permission.currentController && permission.currentController.orders.modify" [nzChecked]="filters.mapOfCheckedId.has(approval.id)"
+            <td  [nzChecked]="filters.mapOfCheckedId.has(approval.id)"
                 [nzShowCheckbox]="true"
                 (nzCheckedChange)="onItemChecked(approval, $event)"
             ><div cdkDragHandle class="pos-abt move-icon text-16 cur-m t-1"
                   style="left: -1px;overflow: hidden;max-width: 12px">
               <i aria-hidden="true" class="fa fa-bars"></i>
             </div></td>
-            <td *ngIf="permission.currentController && permission.currentController.orders.modify">
+            <td>
               <div class="btn-group dropdown">
                 <button
                   [nzDropdownMenu]="option" class="btn-drop more-option-h"

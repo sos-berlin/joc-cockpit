@@ -1,7 +1,7 @@
 <div *ngIf="!(object.checked && filters.mapOfCheckedId.size > 0 && data.length > (filters.filter.entryPerPage || preferences.entryPerPage))"
      class="row m-b-sm m-t-n-xs">
   <div class="col-lg-offset-6 col-lg-6 col-md-offset-0 col-md-12">
-    <div class="notify-tool">
+    <div class="notify-tool approval-tool">
       <button (click)="collapseDetails()"
               class="btn btn-sm btn-grey m-l-12 pull-right"
               nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}">
@@ -33,7 +33,6 @@
   <a (click)="resetCheckBox()" *ngIf="filters.mapOfCheckedId.size === totalApprovalRequests" class="text-primary p-l-xs"
      translate>common.label.clearSelection</a>
 </div>
-<div>
   <div class="m-t-sm box p-a">
     <div class="table-responsive">
       <nz-table
@@ -52,22 +51,30 @@
       >
         <thead>
         <tr>
-          <th *ngIf="permission.currentController && permission.currentController.orders.modify"
+          <th
               [(nzChecked)]="object.checked"
               [nzIndeterminate]="object.indeterminate"
               [nzShowCheckbox]="true"
               (nzCheckedChange)="checkAll($event)"
               class="chk"
           ></th>
-          <th *ngIf="permission.currentController && permission.currentController.orders.modify" class="menu"><span
+          <th class="menu"><span
             translate>common.label.action</span></th>
-          <th (click)="sort('modified')">
-            <a><span class="p-r-xs" translate>monitor.approvalRequest.label.modified</span>
-              <i *ngIf="filters.filter.sortBy == 'modified' && !filters.filter.reverse"
+          <th (click)="sort('requestorStateDate')">
+            <a><span class="p-r-xs" translate>monitor.approvalRequest.label.requestorStateDate</span>
+              <i *ngIf="filters.filter.sortBy == 'requestorStateDate' && !filters.filter.reverse"
                  class="fa fa-caret-up "></i>
-              <i *ngIf="filters.filter.sortBy == 'modified' && filters.filter.reverse"
+              <i *ngIf="filters.filter.sortBy == 'requestorStateDate' && filters.filter.reverse"
                  class="fa fa-caret-down "></i></a>
-          </th><th (click)="sort('title')">
+          </th>
+          <th (click)="sort('approverStateDate')">
+            <a><span class="p-r-xs" translate>monitor.approvalRequest.label.approverStateDate</span>
+              <i *ngIf="filters.filter.sortBy == 'approverStateDate' && !filters.filter.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="filters.filter.sortBy == 'approverStateDate' && filters.filter.reverse"
+                 class="fa fa-caret-down "></i></a>
+          </th>
+          <th (click)="sort('title')">
             <a><span class="p-r-xs" translate>monitor.approvalRequest.label.title</span>
               <i *ngIf="filters.filter.sortBy == 'title' && !filters.filter.reverse"
                  class="fa fa-caret-up "></i>
@@ -124,11 +131,11 @@
         <ng-template [ngForOf]="ajaxTable.data" let-approval
                      ngFor>
           <tr>
-            <td *ngIf="permission.currentController && permission.currentController.orders.modify" [nzChecked]="filters.mapOfCheckedId.has(approval.id)"
+            <td [nzChecked]="filters.mapOfCheckedId.has(approval.id)"
                 [nzShowCheckbox]="true"
                 (nzCheckedChange)="onItemChecked(approval, $event)"
             ></td>
-            <td *ngIf="permission.currentController && permission.currentController.orders.modify">
+            <td>
               <div class="btn-group dropdown">
                 <button
                         [nzDropdownMenu]="option" class="btn-drop more-option-h"
@@ -162,7 +169,10 @@
                  class="cursor fa fa-caret-down fa-lg"></i>
               <i (click)="approval.show = false;$event.stopPropagation()" *ngIf="approval.show"
                  class="cursor fa fa-caret-up fa-lg"></i>&nbsp;
-              <span [innerHtml]="approval['modified'] | stringToDate | highlight : filters.filter.searchText"></span>
+              <span [innerHtml]="approval['requestorStateDate'] | stringToDate | highlight : filters.filter.searchText"></span>
+            </td>
+            <td (click)="$event.stopPropagation()">
+              <span [innerHtml]="approval['approverStateDate'] | stringToDate | highlight : filters.filter.searchText"></span>
             </td>
             <td (click)="$event.stopPropagation()" nowrap>
               <span [innerHtml]="approval['title'] | highlight : filters.filter.searchText"></span>
@@ -175,7 +185,7 @@
                     [ngClass]="{
                       'bg-scheduled': approval.requestorState === 'REQUESTED',
                       'bg-orange': approval.requestorState === 'WITHDRAWN',
-                      'bg-inProgress': approval.requestorState === 'IN_PROGRESS'
+                      'bg-inProgress': approval.requestorState === 'EXECUTED'
                     }"
                     [innerHtml]="approval.requestorState | translate | highlight : filters.filter.searchText">
               </span>
@@ -205,7 +215,7 @@
               <tr>
                 <td></td>
                 <td></td>
-                <td colspan="9">
+                <td colspan="10">
                   <div class="m-a-0">
                     <span class="_500" translate>auditLog.label.requestBody</span>
                     :
@@ -225,5 +235,4 @@
       <span *ngIf="ajaxTable.data.length ==1" translate>monitor.approvalRequest.label.approvalFound</span>
     </div>
   </div>
-</div>
 

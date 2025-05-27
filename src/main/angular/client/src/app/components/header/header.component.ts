@@ -177,7 +177,7 @@ export class HeaderComponent {
       filter.orderNotification.filter.types = [data.level];
     }else if(index == 4){
       filter.approvalRequests.filter.approverStates = [data];
-      filter.approvalRequests.filter.requestorStates = [];
+      filter.approvalRequests.filter.requestorStates = ['REQUESTED'];
       filter.approvalRequests.current = false;
     }else {
       filter.systemNotification.filter.categories = data.category;

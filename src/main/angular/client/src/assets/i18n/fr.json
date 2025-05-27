@@ -397,7 +397,8 @@
     "label.manageIdentityServices": "Gérer les Services d'Identité",
     "label.clusterAgents": "Agents Cluster",
     "label.manageEnciphermentKey": "Gérer les Clefs de Cryptage",
-    "label.manageChanges": "Gérer les Changements"
+    "label.manageChanges": "Gérer les Changements",
+    "label.manageApprovals": "Manage approvals"
   },
   "configuration": {
     "tab.inventory": "Inventaire",
@@ -1624,7 +1625,8 @@
     "button.manageDeployment": "Gérer le Deploiement",
     "button.logOut": "Se Déconnecter",
     "button.manageEnciphermentKey": "Gérer les Clefs de Cryptage",
-    "button.manageChanges": "Gérer les Changements"
+    "button.manageChanges": "Gérer les Changements",
+    "button.manageApprovals": "Manage Approvals"
   },
   "history": {
     "label.all": "Tous",
@@ -2582,8 +2584,9 @@
         "approvalFound": "Demande trouvé",
         "allApproverRequests": "Tous les Demandes d'Autorisation",
         "ApproverNotification": "Demandes d'Autorisation en attentes",
-        "RequestorNotification": "Identification Demande"
-      },
+        "RequestorNotification": "Identification Demande",
+        "requestorStateDate": "Requested Date",
+        "approverStateDate": "Approved Date"},
       "button": {
         "approve": "Approuver",
         "reject": "Rejeter",

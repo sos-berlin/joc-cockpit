@@ -397,7 +397,8 @@
     "label.manageIdentityServices": "IDサービス管理",
     "label.clusterAgents": "クラスターエージェント",
     "label.manageEnciphermentKey": "暗号化鍵管理",
-    "label.manageChanges": "変更管理"
+    "label.manageChanges": "変更管理",
+    "label.manageApprovals": "Manage approvals"
   },
   "configuration": {
     "tab.inventory": "インベントリー",
@@ -1624,7 +1625,8 @@
     "button.manageDeployment": "デプロイ管理",
     "button.logOut": "ログアウト",
     "button.manageEnciphermentKey": "暗号化鍵管理",
-    "button.manageChanges": "変更管理"
+    "button.manageChanges": "変更管理",
+    "button.manageApprovals": "Manage Approvals"
   },
   "history": {
     "label.all": "全て",
@@ -2582,8 +2584,9 @@
         "approvalFound": "Approval entry found",
         "allApproverRequests": "All Approvers",
         "ApproverNotification": "pending approval requests",
-        "RequestorNotification": "Approval request is"
-      },
+        "RequestorNotification": "Approval request is",
+        "requestorStateDate": "Requested Date",
+        "approverStateDate": "Approved Date" },
       "button": {
         "approve": "Approve",
         "reject": "Reject",

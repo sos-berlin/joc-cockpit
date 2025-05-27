@@ -397,7 +397,8 @@
     "label.manageIdentityServices": "Identitätsdienste verwalten",
     "label.clusterAgents": "Cluster Agenten",
     "label.manageEnciphermentKey": "Verschlüsselungsschlüssel verwalten",
-    "label.manageChanges": "Änderungen verwalten"
+    "label.manageChanges": "Änderungen verwalten",
+    "label.manageApprovals": "Manage approvals"
   },
   "configuration": {
     "tab.inventory": "Inventar",
@@ -1624,7 +1625,8 @@
     "button.manageDeployment": "Ausrollen verwalten",
     "button.logOut": "Abmelden",
     "button.manageEnciphermentKey": "Verschlüsselungsschlüssel verwalten",
-    "button.manageChanges": "Änderungen verwalten"
+    "button.manageChanges": "Änderungen verwalten",
+    "button.manageApprovals": "Manage Approvals"
   },
   "history": {
     "label.all": "Alle",
@@ -2582,8 +2584,9 @@
         "approvalFound": "Autorisierungsanfrage gefunden",
         "allApproverRequests": "Alle Autorisierungsanfragen",
         "ApproverNotification": "anstehende Autorisierungsanfragen",
-        "RequestorNotification": "Autorisierungsanfrage ist"
-      },
+        "RequestorNotification": "Autorisierungsanfrage ist",
+        "requestorStateDate": "Requested Date",
+        "approverStateDate": "Approved Date"},
       "button": {
         "approve": "Prüfer",
         "reject": "Ablehnen",

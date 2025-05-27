@@ -5590,7 +5590,6 @@ export class WorkflowComponent {
     this.updateOrderPreparation();
     this.fetchClipboard();
     this.lastSavedOrderPreparation = this.coreService.clone(this.orderPreparation || {});
-    console.log(this.lastSavedOrderPreparation,"++++++++++")
   }
 
   private updateOrderPreparation(): void {

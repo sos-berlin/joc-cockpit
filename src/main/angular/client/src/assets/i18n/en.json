@@ -397,7 +397,8 @@
     "label.manageIdentityServices": "Manage Identity Services",
     "label.clusterAgents": "Cluster Agents",
     "label.manageEnciphermentKey": "Manage Encryption Keys",
-    "label.manageChanges": "Manage Changes"
+    "label.manageChanges": "Manage Changes",
+    "label.manageApprovals": "Manage approvals"
   },
   "configuration": {
     "tab.inventory": "Inventory",
@@ -1625,7 +1626,8 @@
     "button.manageDeployment": "Manage Deployments",
     "button.logOut": "Log Out",
     "button.manageEnciphermentKey": "Manage Encryption Keys",
-    "button.manageChanges": "Manage Changes"
+    "button.manageChanges": "Manage Changes",
+    "button.manageApprovals": "Manage Approvals"
   },
   "history": {
     "label.all": "All",
@@ -2583,7 +2585,9 @@
         "approvalFound": "Request found",
         "allApproverRequests": "All Approvers",
         "ApproverNotification": "pending Requests",
-        "RequestorNotification": "Request ID"
+        "RequestorNotification": "Request ID",
+        "requestorStateDate": "Requested Date",
+        "approverStateDate": "Approved Date"
       },
       "button": {
         "approve": "Approve",

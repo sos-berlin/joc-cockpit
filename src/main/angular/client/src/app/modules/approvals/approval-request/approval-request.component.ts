@@ -7,6 +7,7 @@ import {Subscription} from "rxjs";
 import {DataService} from "../../../services/data.service";
 import {ApprovalModalComponent} from "../../../components/approval-modal/approval-modal.component";
 import {HttpHeaders} from "@angular/common/http";
+import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 
 @Component({
   selector: 'app-approval-request',
@@ -25,7 +26,7 @@ export class ApprovalRequestComponent {
   totalApprovalRequests = 0;
   isApprover: any = false
   isRequestor: any = false
-  searchableProperties = ['modified', 'title', 'approver', 'approverState', 'requestor', 'requestorState', 'requestUrl', 'reason'];
+  searchableProperties = ['requestorStateDate','approverStateDate', 'title', 'approver', 'approverState', 'requestor', 'requestorState', 'requestUrl', 'reason'];
   object = {
     checked: false,
     indeterminate: false
@@ -37,12 +38,18 @@ export class ApprovalRequestComponent {
               private modal: NzModalService, private dataService: DataService, public authService: AuthService, private orderPipe: OrderPipe, private searchPipe: SearchPipe,) {
     this.subscription1 = dataService.functionAnnounced$.subscribe((res: any) => {
       setTimeout(() =>{
-        console.log(res?.filter?.approverStates,"res?.filter?.approverStates")
         if (res) {
           if (res?.filter?.requestorStates) {
             this.fetchRequests(res?.filter)
           } else if (res?.filter?.approverStates) {
             this.fetchRequests(res?.filter)
+          }
+
+          const arrayOfCheckedId = Array.from(this.filters.mapOfCheckedId);
+          console.log(arrayOfCheckedId,">>")
+          if (res === 'approve' || res === 'reject' || res === 'withdraw') {
+            const filteredIds = this.getBulkActionableIds(res);
+            this.BulkUpdateApproval(filteredIds, res);
           }
         }
       },100)
@@ -262,16 +269,145 @@ export class ApprovalRequestComponent {
 
   private updateApproval(id: number, action: 'approve' | 'reject' | 'withdraw'): void {
     this.isLoaded = false;
-    const payload = {id};
-    this.coreService.post(`approval/${action}`, payload).subscribe({
-      next: () => {
-        this.isLoaded = true;
-      },
-      error: () => {
-        this.isLoaded = true;
+    let payload: any;
+    if (this.preferences.auditLog) {
+     let comments: any = {
+        radio: 'predefined',
+        type: 'Request',
+        operation: action,
+        name: action
+      };
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: CommentModalComponent,
+        nzClassName: 'lg',
+        nzAutofocus: null,
+        nzData: {
+          comments,
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal.afterClose.subscribe(result => {
+        payload = {
+          id: id,
+          auditLog: {}
+        }
+        if (result) {
+          payload.auditLog = {
+            comment: comments.comment,
+            ticketLink: comments.ticketLink,
+            timeSpent: comments.timeSpent,
+          };
+          this.coreService.post(`approval/${action}`, payload).subscribe({
+            next: () => {
+              this.isLoaded = true;
+            },
+            error: () => {
+              this.isLoaded = true;
+            }
+          });
+        }
+      });
+    }else{
+      payload = {id}
+      this.coreService.post(`approval/${action}`, payload).subscribe({
+        next: () => {
+          this.isLoaded = true;
+        },
+        error: () => {
+          this.isLoaded = true;
+        }
+      });
+    }
+  }
+
+
+  private BulkUpdateApproval(ids: any, action: 'approve' | 'reject' | 'withdraw'): void {
+    this.isLoaded = false;
+    let payload: any;
+    if(ids.length > 0){
+      if (this.preferences.auditLog) {
+        let comments: any = {
+          radio: 'predefined',
+          type: 'Request',
+          operation: action,
+          name: action
+        };
+        const modal = this.modal.create({
+          nzTitle: undefined,
+          nzContent: CommentModalComponent,
+          nzClassName: 'lg',
+          nzAutofocus: null,
+          nzData: {
+            comments,
+          },
+          nzFooter: null,
+          nzClosable: false,
+          nzMaskClosable: false
+        });
+        modal.afterClose.subscribe(result => {
+          payload = {
+            ids: ids,
+            auditLog: {}
+          }
+          if (result) {
+            payload.auditLog = {
+              comment: comments.comment,
+              ticketLink: comments.ticketLink,
+              timeSpent: comments.timeSpent,
+            };
+            this.coreService.post(`approvals/${action}`, payload).subscribe({
+              next: () => {
+                this.isLoaded = true;
+                this.filters.mapOfCheckedId.clear();
+                this.refreshCheckedStatus()
+              },
+              error: () => {
+                this.isLoaded = true;
+              }
+            });
+          }
+        });
+      }else{
+        payload = {ids:ids};
+        this.coreService.post(`approvals/${action}`, payload).subscribe({
+          next: () => {
+            this.isLoaded = true;
+            this.filters.mapOfCheckedId.clear();
+            this.refreshCheckedStatus()
+          },
+          error: () => {
+            this.isLoaded = true;
+          }
+        });
       }
+    }else{
+      this.isLoaded = true;
+      this.filters.mapOfCheckedId.clear();
+      this.refreshCheckedStatus()
+    }
+
+  }
+
+  private getBulkActionableIds(action: 'approve' | 'reject' | 'withdraw'): any[] {
+
+    const checkedIds = Array.from(this.filters.mapOfCheckedId);
+
+    return checkedIds.filter(id => {
+      const req = this.data.find(item => item.id === id);
+      if (!req) return false;
+      if (action === 'approve' || action === 'reject') {
+        return req.approverState === 'PENDING';
+      }
+      if (action === 'withdraw') {
+        return req.requestorState === 'REQUESTED';
+      }
+      return false;
     });
   }
+
 
   refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
