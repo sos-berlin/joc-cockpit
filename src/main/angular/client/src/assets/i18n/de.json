@@ -398,7 +398,7 @@
     "label.clusterAgents": "Cluster Agenten",
     "label.manageEnciphermentKey": "Verschlüsselungsschlüssel verwalten",
     "label.manageChanges": "Änderungen verwalten",
-    "label.manageApprovals": "Manage approvals"
+    "label.manageApprovals": "Autorisierungen verwalten"
   },
   "configuration": {
     "tab.inventory": "Inventar",
@@ -959,7 +959,7 @@
     "label.normal": "Normal",
     "label.pending": "Anstehend",
     "label.expecting": "Wartend",
-    "label.critical": "Kritisch",
+    "label.critical": "Aktion erforderlich",
     "label.totalWorkflowNoticeEntry": "Gesamt {{total}} Arbeitsabläufe und {{noticeCount}} Notizen gefunden",
     "button.late": "Verspätet",
     "button.setStartTime": "Startzeit ändern",
@@ -1626,7 +1626,7 @@
     "button.logOut": "Abmelden",
     "button.manageEnciphermentKey": "Verschlüsselungsschlüssel verwalten",
     "button.manageChanges": "Änderungen verwalten",
-    "button.manageApprovals": "Manage Approvals"
+    "button.manageApprovals": "Autorisierungen verwalten"
   },
   "history": {
     "label.all": "Alle",
@@ -1710,7 +1710,7 @@
     "label.jocMonitorEvent": "Warnungen und Fehler von Aufträgen",
     "label.systemMonitorEvent": "Warnungen und Fehler des Systems",
     "label.notification": "Alarme",
-    "label.pendingRequests": "Pending Approval Requests",
+    "label.pendingRequests": "Anstehende Autorisierungsanfragen",
     "--------COMMENT BOX BEGIN------------": "Link and buttons for information question mark icon in header",
     "button.aboutJS7": "Über JS7",
     "button.js7Download": "JS7 Herunterladen",
@@ -2585,20 +2585,20 @@
         "allApproverRequests": "Alle Autorisierungsanfragen",
         "ApproverNotification": "anstehende Autorisierungsanfragen",
         "RequestorNotification": "Autorisierungsanfrage ist",
-        "requestorStateDate": "Requested Date",
-        "approverStateDate": "Approved Date"},
+        "requestorStateDate": "Datum Anfrage",
+        "approverStateDate": "Datum Autorisierung"},
       "button": {
         "approve": "Prüfer",
         "reject": "Ablehnen",
         "withdraw": "Zurückziehen",
-        "requested": "eingereicht",
-        "withdrawn": "zurückgezogen",
-        "inProgress": "ausgeführt",
-        "success": "erfolgreich",
-        "failed": "fehlerhaft",
-        "pending": "anstehend",
-        "approved": "autorisiert",
-        "rejected": "abgelehnt"
+        "requested": "Eingereicht",
+        "withdrawn": "Zurückgezogen",
+        "inProgress": "Ausgeführt",
+        "success": "Erfolgreich",
+        "failed": "Fehlerhaft",
+        "pending": "Anstehend",
+        "approved": "Autorisiert",
+        "rejected": "Abgelehnt"
       }
     },
     "approvers": {

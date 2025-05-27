@@ -398,7 +398,7 @@
     "label.clusterAgents": "Cluster Agents",
     "label.manageEnciphermentKey": "Manage Encryption Keys",
     "label.manageChanges": "Manage Changes",
-    "label.manageApprovals": "Manage approvals"
+    "label.manageApprovals": "Manage Approvals"
   },
   "configuration": {
     "tab.inventory": "Inventory",
@@ -960,7 +960,7 @@
     "label.normal": "Normal",
     "label.pending": "Pending",
     "label.expecting": "Expecting",
-    "label.critical": "Critical",
+    "label.critical": "Action required",
     "label.totalWorkflowNoticeEntry": "Total {{total}} Workflows and {{noticeCount}} Notices found",
     "button.late": "Late",
     "button.setStartTime": "Modify Start Time",
@@ -2586,21 +2586,21 @@
         "allApproverRequests": "All Approvers",
         "ApproverNotification": "pending Requests",
         "RequestorNotification": "Request ID",
-        "requestorStateDate": "Requested Date",
-        "approverStateDate": "Approved Date"
+        "requestorStateDate": "Request Date",
+        "approverStateDate": "Approval Date"
       },
       "button": {
         "approve": "Approve",
         "reject": "Reject",
         "withdraw": "Withdraw",
-        "requested": "requested",
-        "withdrawn": "withdrawn",
-        "inProgress": "executed",
-        "success": "successful",
-        "failed": "failed",
-        "pending": "pending",
-        "approved": "approved",
-        "rejected": "rejected"
+        "requested": "Requested",
+        "withdrawn": "Withdrawn",
+        "inProgress": "Executed",
+        "success": "Successful",
+        "failed": "Failed",
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected"
       }
     },
     "approvers": {
