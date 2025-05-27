@@ -2520,7 +2520,7 @@
       "totalDays": "{{count}} days",
       "date": "Date",
       "shutdown": "out of service",
-      "approvalRequest": "Approval Request",
+      "approvalRequest": "Approval Requests",
       "approvers": "Approvers"
     },
     "button": {
@@ -2583,7 +2583,7 @@
         "execute": "Execute",
         "approvalsFound": "Requests found",
         "approvalFound": "Request found",
-        "allApproverRequests": "All Approvers",
+        "allApproverRequests": "All Approval Requests",
         "ApproverNotification": "pending Requests",
         "RequestorNotification": "Request ID",
         "requestorStateDate": "Request Status Date",
@@ -2733,7 +2733,7 @@
   "profile": {
     "label.userDetails": "User Details",
     "label.roles": "Roles",
-    "label.userName": "Account name",
+    "label.userName": "Account Name",
     "label.preferences": "Preferences",
     "label.permissions": "Permissions",
     "label.keyManagement": "Signature Key Management",
@@ -2928,7 +2928,7 @@
       "label.manageGitCredentials": "Manage Git Credentials",
       "label.gitAccount": "Git Account",
       "label.gitServer": "Git Server",
-      "label.userName": "User Name",
+      "label.userName": "Account Name",
       "label.emailAddress": "E-Mail Address",
       "label.gitPassword": "Git Password",
       "label.keyfilePath": "Path to Git Private Key",

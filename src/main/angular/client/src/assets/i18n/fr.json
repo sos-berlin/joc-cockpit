@@ -1626,7 +1626,7 @@
     "button.logOut": "Se Déconnecter",
     "button.manageEnciphermentKey": "Gérer les Clefs de Cryptage",
     "button.manageChanges": "Gérer les Changements",
-    "button.manageApprovals": "Manage Approvals"
+    "button.manageApprovals": "Gérer les Autorisations"
   },
   "history": {
     "label.all": "Tous",
@@ -2519,7 +2519,7 @@
       "totalDays": "{{count}} jours",
       "date": "Date",
       "shutdown": "arrêt",
-      "approvalRequest": "Demande d'Autorisation",
+      "approvalRequest": "Demandes d'Autorisation",
       "approvers": "Approbateurs"
     },
     "button": {
@@ -2926,7 +2926,7 @@
       "label.manageGitCredentials": "Gérer les Identifiants Git",
       "label.gitAccount": "Compte Git",
       "label.gitServer": "Serveur Git",
-      "label.userName": "Nom d'utilisateur",
+      "label.userName": "Nom du Compte",
       "label.emailAddress": "Adresse E-Mail",
       "label.gitPassword": "Mot de Passe Git",
       "label.keyfilePath": "Chemin d'accès à la clé privée",

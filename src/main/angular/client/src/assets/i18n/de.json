@@ -516,7 +516,7 @@
     "label.deleteAllDocument": "Alle Dokumentationen löschen",
     "label.deleteAllReport": "Alle Berichte löschen",
     "label.requestApproval" : "Autorisierung anfragen",
-    "label.approver" : "Prüfer",
+    "label.approver" : "Autorisierer",
     "--------ADVANCE SEARCH BEGIN------------": "",
     "label.dateRange": "Datumsbereich",
     "label.to": "Bis",
@@ -2519,8 +2519,8 @@
       "totalDays": "{{count}} Tage",
       "date": "Datum",
       "shutdown": "außer Betrieb",
-      "approvalRequest": "Autorisierungsanfrage",
-      "approvers": "Prüfer"
+      "approvalRequest": "Autorisierungsanfragen",
+      "approvers": "Autorisierer"
     },
     "button": {
       "week": "Woche",
@@ -2574,7 +2574,7 @@
         "title": "Titel",
         "requestor": "Anfrager",
         "requestorState": "Status Anfrage",
-        "approver": "Prüfer",
+        "approver": "Autorisierer",
         "approverState": "Status Autorisierung",
         "requestUrl": "Anfrage URI",
         "category": "Kategorie",
@@ -2588,7 +2588,7 @@
         "requestorStateDate": "Statusdatum Anfrage",
         "approverStateDate": "Statudatum Autorisierung"},
       "button": {
-        "approve": "Prüfer",
+        "approve": "Autorisierer",
         "reject": "Ablehnen",
         "withdraw": "Zurückziehen",
         "requested": "Eingereicht",
@@ -2603,15 +2603,15 @@
     },
     "approvers": {
       "label": {
-        "addNewApprover": "Prüfer hinzufügen",
+        "addNewApprover": "Autorisierer hinzufügen",
         "firstName": "Vorname",
         "lastName": "Nachname",
         "email": "E-Mail",
-        "approversFound": "Einträge für Prüfer gefunden",
-        "approverFound": "Eintrag für Prüfer gefunden"
+        "approversFound": "Einträge für Autorisierer gefunden",
+        "approverFound": "Eintrag für Autorisierer gefunden"
       },
       "button": {
-        "newApprover": "Neuer Prüfer"
+        "newApprover": "Neuer Autorisierer"
       },
       "placeholder": {
         "firstName": "Vornamen angeben",
@@ -2926,7 +2926,7 @@
       "label.manageGitCredentials": "Git Zugangsdaten verwalten",
       "label.gitAccount": "Git Konto",
       "label.gitServer": "Git Server",
-      "label.userName": "Anwendername",
+      "label.userName": "Name des Kontos",
       "label.emailAddress": "E-Mail Adresse",
       "label.gitPassword": "Git Kennwort",
       "label.keyfilePath": "Pfad zum privaten Schlüssel",
