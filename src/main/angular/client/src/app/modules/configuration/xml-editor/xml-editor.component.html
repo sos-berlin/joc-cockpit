@@ -23,7 +23,7 @@
               <span *ngIf="extraInfo.sync == false" translate>xml.label.notSync</span>
               <span *ngIf="extraInfo.sync === undefined" translate>xml.label.unknownSyncState</span>
             </span>
-            <span *ngIf="objectType === 'YADE' && nodes && nodes.length > 0 && extraInfo.isExist" [ngClass]="extraInfo.deployed ? 'badge-success' : 'badge-danger'"
+            <span *ngIf="objectType === 'YADE' && nodes && nodes.length > 0" [ngClass]="extraInfo.deployed ? 'badge-success' : 'badge-danger'"
                   class="custom-icon badge m-l-12">
               <span *ngIf="extraInfo.deployed" translate>xml.label.deployed</span>
               <span *ngIf="!extraInfo.deployed" translate>xml.label.notDeployed</span>
@@ -97,7 +97,7 @@
             <button (click)="deployXML()"
                     *ngIf="objectType === 'YADE' && nodes && nodes.length > 0
                 && permission.joc && permission.joc.fileTransfer.manage"
-                    [disabled]="!extraInfo.isExist || !validConfig" [ngClass]="extraInfo.isExist ? extraInfo.deployed ? 'btn-badge-success' : 'btn-badge-danger' : ''"
+                    [disabled]="extraInfo.deployed" [ngClass]="extraInfo.isExist ? extraInfo.deployed ? 'btn-badge-success' : 'btn-badge-danger' : ''"
                     class="btn btn-sm btn-grey m-l-12">
               <i class="fa fa-rocket m-r-xs"></i>
               <span translate>xml.button.deploy</span>
@@ -273,7 +273,7 @@
                           class="btn-drop more-option-h">
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
-                  <div [ngClass]="{'node-content-wrapper-active': selectedNode && selectedNode.ref === node.origin.ref && selectedNode.uuid === node.origin.uuid}"
+                  <div [ngClass]="{'node-content-wrapper-active': selectedNode && (selectedNode.ref === node.origin.ref || selectedNode.name === node.origin.name) && selectedNode.uuid === node.origin.uuid}"
                        class="node-content-wrapper">
                     <ng-template #htmlContent>
                       <table *ngIf="node.origin && node.origin.attributes" style="padding: 3px;">
@@ -297,7 +297,7 @@
                       (click)="selectNode(node);addContent(node.origin.values);"
                       [ngClass]="cutData && node.origin.uuid === copyItem.uuid? 'cut-row' : ''"
                       [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="((node.origin.attributes && node.origin.attributes.length>0) || (node.origin.values && node.origin.values.length>0)) ? (htmlContent) : ''" nzTooltipOverlayClassName="custom-tooltip"
-                      nzTooltipPlacement="right">{{node.origin.ref}}
+                      nzTooltipPlacement="right">{{node.origin.ref || node.origin.name }}
                       </span>
                     <span (click)="selectNode(node)"
                           [hidden]="!node.origin.attributes || (node.origin.attributes && node.origin.attributes.length==0)"
@@ -334,11 +334,11 @@
             <ol class="breadcrumb">
               <li *ngFor="let crumb of breadCrumbArray; let i = index" [ngClass]="i==breadCrumbArray.length-1? 'text-primary' : ''"
                   aria-current="page" class="breadcrumb-item"><a
-                (click)="getData(crumb)">{{crumb.ref}}</a></li>
+                (click)="getData(crumb)">{{crumb.ref || crumb.child}}</a></li>
             </ol>
           </nav>
-          <div *ngIf="selectedNode && selectedNode.ref" class="col-12">
-            <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref}}
+          <div *ngIf="selectedNode && (selectedNode.ref || selectedNode.name)" class="col-12">
+            <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref || selectedNode.name}}
               <span *ngIf="extraInfo.configurationDate" class="text-dark text-sm _400"> -
                   <b translate>xml.label.configurationDate</b>
                   <i class="text-muted p-l-xs">{{extraInfo.configurationDate | stringToDate}}</i>
@@ -350,7 +350,7 @@
             </div>
           </div>
           <div class="col-12">
-            <div *ngIf="selectedNode && selectedNode.ref && selectedNodeDoc && selectedNodeDoc.doc"
+            <div *ngIf="selectedNode && (selectedNode.ref || selectedNode.name) && selectedNodeDoc && selectedNodeDoc.doc"
                  class="p-a box documents">
               <div class="text _600">
                 <span translate>xml.label.documentation</span>
@@ -592,24 +592,24 @@
                          class="text-danger text-sm">*</sup>
                   </div>
                   <div class="col-md-12 m-t-xs">
-                    <input (blur)="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
-                           (change)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
-                           *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.values[0].base == 'password'"
+                    <input (blur)="validValue(selectedNode.values[0].data, (selectedNode.ref  || selectedNode.name), selectedNode.values[0])"
+                           (change)="submitValue(selectedNode.values[0].data, (selectedNode.ref  || selectedNode.name), selectedNode.values[0])"
+                           *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name ) && (selectedNode.ref !== 'Message' || selectedNode.name !== 'Message') && selectedNode.values[0].base == 'password'"
                            [(ngModel)]="selectedNode.values[0].data"
-                           [ngClass]="error && errorName == selectedNode.ref ? 'invalid': ''"
-                           class="form-control" id="{{selectedNode.ref}}"
+                           [ngClass]="error && errorName == (selectedNode.ref  || selectedNode.name) ? 'invalid': ''"
+                           class="form-control" id="{{(selectedNode.ref  || selectedNode.name)}}"
                            type="{{!selectedNode.values[0].pShow ? 'password' : 'text'}}"
                            value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}"
                            xmlAutofocus>
                     <i (click)="showPassword(selectedNode.values[0])"
-                       *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].parent === selectedNode.ref && selectedNode.ref !== 'Message' && selectedNode.values[0].base == 'password'"
+                       *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name) && (selectedNode.ref !== 'Message' || selectedNode.name !== 'Message') && selectedNode.values[0].base == 'password'"
                        [ngClass]="!selectedNode.values[0].pShow ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true"
                        class="fa password-hide-icon"></i>
-                    <textarea (blur)="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])" (change)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
+                    <textarea (blur)="validValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])" (change)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])"
                               (keydown)="checkForTab(selectedNode.values[0].uuid);"
-                              *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'password')  && selectedNode.values[0].parent === selectedNode.ref && selectedNode.values[0].base !== 'html'"
+                              *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'password')  && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name) && selectedNode.values[0].base !== 'html'"
                               [(ngModel)]="selectedNode.values[0].data"
-                              [ngClass]="error && errorName == selectedNode.ref ? 'invalid': ''"
+                              [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''"
                               [nzAutosize]="{ minRows: 3}"
                               class="form-control"
                               id="{{selectedNode.values[0].uuid}}"
@@ -625,11 +625,11 @@
                       <a (click)="selectedNode.preview = true;" [ngClass]="{'text-primary': selectedNode.preview === true}"
                          class="btn btn-xs btn-default b-l"
                          style="box-shadow: none !important;" translate>xml.button.preview</a>
-                      <textarea #myckeditor="ngModel" (blur)="validValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])" (change)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
+                      <textarea #myckeditor="ngModel" (blur)="validValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])" (change)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])"
                                 (keydown)="checkForTab(selectedNode.values[0].uuid);"
                                 [(ngModel)]="selectedNode.values[0].data"
                                 [hidden]="selectedNode.preview"
-                                [ngClass]="error && errorName == selectedNode.ref ? 'invalid': ''"
+                                [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''"
                                 [nzAutosize]="{ minRows: 5, maxRows:22}"
                                 class="form-control"
                                 id="{{selectedNode.values[0].uuid}}"
@@ -649,24 +649,24 @@
                     </div>
                     <nz-select *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base === 'xs:boolean'"
                                [(ngModel)]="selectedNode.values[0].data"
-                               (ngModelChange)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
-                               [ngClass]="error && errorName == selectedNode.ref ? 'invalid': ''" class="w-full"
-                               id="{{selectedNode.ref}}">
+                               (ngModelChange)="submitValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])"
+                               [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" class="w-full"
+                               id="{{(selectedNode.ref || selectedNode.name)}}">
                       <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                       <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                     </nz-select>
                     <nz-select *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].values"
                                [(ngModel)]="selectedNode.values[0].data"
-                               (ngModelChange)="submitValue(selectedNode.values[0].data, selectedNode.ref, selectedNode.values[0])"
-                               [ngClass]="error && errorName == selectedNode.ref ? 'invalid': ''"
+                               (ngModelChange)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])"
+                               [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''"
                                class="w-full"
-                               id="{{selectedNode.ref}}">
+                               id="{{(selectedNode.ref || selectedNode.name)}}">
                       <nz-option *ngFor="let value of selectedNode.values[0].values" [nzLabel]="value.value"
                                  [nzValue]="value.value"></nz-option>
                     </nz-select>
-                    <div *ngIf="error && errorName === selectedNode.ref" [innerText]="text"
+                    <div *ngIf="error && errorName === (selectedNode.ref || selectedNode.name)" [innerText]="text"
                          class="help-block text-danger"
-                         id="{{nodes.ref}}Alert"
+                         id="{{nodes.ref || nodes.ref}}Alert"
                          role="alert">
                     </div>
                   </div>
@@ -689,7 +689,7 @@
             nz-menu-item>
           <a>
             <i class="fa fa-angle-right"></i>&nbsp;
-            {{child.ref}}
+            {{child.ref || child.name}}
           </a>
         </li>
       </ul>

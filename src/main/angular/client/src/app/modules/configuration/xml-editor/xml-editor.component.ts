@@ -47,10 +47,10 @@ export class ShowChildModalComponent {
     this.getText(this.showAllChild[0]);
     this.updateTree();
     let obj: any = this.showAllChild[0];
-    obj.title = obj.ref;
+    obj.title = obj.ref || obj.name;
     for (let child in obj.children) {
       obj.children[child].children = [];
-      obj.children[child].title = obj.children[child].ref;
+      obj.children[child].title = obj.children[child].ref || obj.children[child].name;
       this.checkChildNode(obj.children[child], obj.children[child]);
       this.recursiveGetAllChilds(obj.children[child].children);
     }
@@ -78,7 +78,7 @@ export class ShowChildModalComponent {
 
   getText(data): void {
     this.selectedNode = data;
-    this.selectedNode.doc = this.checkText(data.ref);
+    this.selectedNode.doc = this.checkText(data.ref || data.name);
   }
 
   checkText(node): any {
@@ -194,7 +194,7 @@ export class ShowChildModalComponent {
   }
 
   checkChildNode(showAllChild, data) {
-    let node = showAllChild.ref;
+    let node = showAllChild.ref || showAllChild.name;
     let parentNode;
     let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     let complexTypePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType';
@@ -220,7 +220,7 @@ export class ShowChildModalComponent {
               let a = cElement[i].attributes[j].nodeName;
               let b = cElement[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, {[a]: b});
-              if (a === 'ref') {
+              if (a === 'ref' || a === 'name') {
                 nodes = Object.assign(nodes, {title: b});
               }
             }
@@ -240,7 +240,7 @@ export class ShowChildModalComponent {
               let a = dElement[i].attributes[j].nodeName;
               let b = dElement[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, {[a]: b});
-              if (a === 'ref') {
+              if (a === 'ref' || a === 'name') {
                 nodes = Object.assign(nodes, {title: b});
               }
             }
@@ -261,12 +261,12 @@ export class ShowChildModalComponent {
               let a = eElement[i].attributes[j].nodeName;
               let b = eElement[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, {[a]: b});
-              if (a === 'ref') {
+              if (a === 'ref' || a === 'name') {
                 nodes = Object.assign(nodes, {title: b});
               }
             }
             nodes.parent = node;
-            if (nodes.ref !== 'Minimum' && nodes.ref !== 'Maximum') {
+            if ((nodes.ref !== 'Minimum' && nodes.ref !== 'Maximum') || (nodes.name !== 'Minimum' && nodes.name !== 'Maximum')) {
               nodes.choice = node;
             }
             if (nodes.minOccurs && !nodes.maxOccurs) {
@@ -290,7 +290,7 @@ export class ShowChildModalComponent {
               let a = childs1[i].attributes[j].nodeName;
               let b = childs1[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, {[a]: b});
-              if (a === 'ref') {
+              if (a === 'ref' || a === 'name') {
                 nodes = Object.assign(nodes, {title: b});
               }
             }
@@ -310,7 +310,7 @@ export class ShowChildModalComponent {
                 let a = child12[i].attributes[j].nodeName;
                 let b = child12[i].attributes[j].nodeValue;
                 nodes = Object.assign(nodes, {[a]: b});
-                if (a === 'ref') {
+                if (a === 'ref' || a === 'name') {
                   nodes = Object.assign(nodes, {title: b});
                 }
               }
@@ -336,7 +336,7 @@ export class ShowChildModalComponent {
                 let a = sElement[i].attributes[j].nodeName;
                 let b = sElement[i].attributes[j].nodeValue;
                 nodes = Object.assign(nodes, {[a]: b});
-                if (a === 'ref') {
+                if (a === 'ref' || a === 'name') {
                   nodes = Object.assign(nodes, {title: b});
                 }
               }
@@ -356,7 +356,7 @@ export class ShowChildModalComponent {
                   let a = elementx[i].attributes[j].nodeName;
                   let b = elementx[i].attributes[j].nodeValue;
                   nodes = Object.assign(nodes, {[a]: b});
-                  if (a === 'ref') {
+                  if (a === 'ref' || a === 'name') {
                     nodes = Object.assign(nodes, {title: b});
                   }
                 }
@@ -374,7 +374,7 @@ export class ShowChildModalComponent {
                   let a = ele[i].attributes[j].nodeName;
                   let b = ele[i].attributes[j].nodeValue;
                   nodes = Object.assign(nodes, {[a]: b});
-                  if (a === 'ref') {
+                  if (a === 'ref' || a === 'name') {
                     nodes = Object.assign(nodes, {title: b});
                   }
                 }
@@ -440,7 +440,7 @@ export class ShowChildModalComponent {
               let a = childs[i].attributes[j].nodeName;
               let b = childs[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, {[a]: b});
-              if (a === 'ref') {
+              if (a === 'ref' || a === 'name') {
                 nodes = Object.assign(nodes, {title: b});
               }
             }
@@ -460,7 +460,7 @@ export class ShowChildModalComponent {
               let a = getChildChoice[i].attributes[j].nodeName;
               let b = getChildChoice[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, {[a]: b});
-              if (a === 'ref') {
+              if (a === 'ref' || a === 'name') {
                 nodes = Object.assign(nodes, {title: b});
               }
             }
@@ -481,7 +481,7 @@ export class ShowChildModalComponent {
               let a = getChildChoiceSeq[i].attributes[j].nodeName;
               let b = getChildChoiceSeq[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, {[a]: b});
-              if (a === 'ref') {
+              if (a === 'ref' || a === 'name') {
                 nodes = Object.assign(nodes, {title: b});
               }
             }
@@ -506,7 +506,7 @@ export class ShowChildModalComponent {
               let a = childs[i].attributes[j].nodeName;
               let b = childs[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, {[a]: b});
-              if (a === 'ref') {
+              if (a === 'ref' || a === 'name') {
                 nodes = Object.assign(nodes, {title: b});
               }
             }
@@ -1241,6 +1241,11 @@ export class XmlEditorComponent {
   }
 
   deployXML(isCheck = false): void {
+    this.autoValidate();
+    this.mainXml = this._showXml();
+    if (!this.mainXml) {
+      return;
+    }
     const obj: any = {};
     for (const i in this.nodes[0].children) {
       if (this.nodes[0].children[i].ref === 'JobResource') {
@@ -1283,7 +1288,7 @@ export class XmlEditorComponent {
         auditLog: request.auditLog,
         objectType: 'YADE',
         id: this.data.id,
-        configuration: this.data.configuration,
+        configuration: this.mainXml,
         configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
       }).subscribe({
         next: (res: any) => {
@@ -1689,7 +1694,7 @@ export class XmlEditorComponent {
 
   getIndividualData(node, scroll) {
     let flag = false;
-    let attrs = this.checkAttributes(node.ref);
+    let attrs = this.checkAttributes(node.ref || node.name);
     if (attrs && attrs.length > 0) {
       if (node.attributes && node.attributes.length > 0) {
         for (let i = 0; i < attrs.length; i++) {
@@ -1718,7 +1723,7 @@ export class XmlEditorComponent {
         }
       }
     }
-    let value = this.getValues(node.ref);
+    let value = this.getValues(node.ref || node.name);
     if (node.values && node.values.length > 0) {
       for (let i = 0; i < value.length; i++) {
         for (let j = 0; j < node.values.length; j++) {
@@ -1728,7 +1733,7 @@ export class XmlEditorComponent {
         }
       }
     }
-    let attrsType = this.getAttrFromType(node.ref, node.parent);
+    let attrsType = this.getAttrFromType(node.ref || node.name, node.parent);
     if (attrsType && attrsType.length > 0) {
       if (node.attributes && node.attributes.length > 0) {
         for (let i = 0; i < attrsType.length; i++) {
@@ -1740,7 +1745,7 @@ export class XmlEditorComponent {
         }
       }
     }
-    let valueType = this.getValueFromType(node.ref, node.parent);
+    let valueType = this.getValueFromType(node.ref || node.name, node.parent);
 
     if (valueType && valueType.length > 0) {
       if (node.values && node.values.length > 0) {
@@ -1936,7 +1941,7 @@ export class XmlEditorComponent {
     temp.key = this.counting;
     temp.expanded = true;
     this.counting++;
-    attrs = this.checkAttributes(temp.ref);
+    attrs = this.checkAttributes(temp.ref || temp.name);
     if (attrs.length > 0) {
       temp.attributes = [];
       for (let i = 0; i < attrs.length; i++) {
@@ -2022,7 +2027,7 @@ export class XmlEditorComponent {
   }
 
   checkChildNode(_nodes, data) {
-    let node = _nodes.ref;
+    let node = _nodes.ref || _nodes.name;
     let parentNode;
     if (!data) {
       this.childNode = [];
@@ -2088,6 +2093,7 @@ export class XmlEditorComponent {
         let ePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:sequence/xs:element';
         let eElement = select(ePath, this.doc);
         if (eElement.length > 0) {
+
           for (let i = 0; i < eElement.length; i++) {
             nodes = {};
             for (let j = 0; j < eElement[i].attributes.length; j++) {
@@ -2096,7 +2102,7 @@ export class XmlEditorComponent {
               nodes = Object.assign(nodes, this._defineProperty({}, a, b));
             }
             nodes.parent = node;
-            if (nodes.ref !== 'Minimum' && nodes.ref !== 'Maximum') {
+            if ((nodes.ref !== 'Minimum' && nodes.ref !== 'Maximum') || (nodes.name !== 'Minimum' && nodes.name !== 'Maximum')) {
               nodes.choice = node;
             }
             if (nodes.minOccurs && !nodes.maxOccurs) {
@@ -2123,6 +2129,7 @@ export class XmlEditorComponent {
               let b = childs1[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, this._defineProperty({}, a, b));
             }
+
             nodes.parent = node;
             nodes.choice = node;
             childArr.push(nodes);
@@ -2143,6 +2150,7 @@ export class XmlEditorComponent {
                 nodes = Object.assign(nodes, this._defineProperty({}, a, b));
               }
               nodes.parent = node;
+
               nodes.choice = node;
               childArr.push(nodes);
               if (data) {
@@ -2167,6 +2175,7 @@ export class XmlEditorComponent {
                 let b = sElement[i].attributes[j].nodeValue;
                 nodes = Object.assign(nodes, this._defineProperty({}, a, b));
               }
+
               nodes.parent = node;
               childArr.push(nodes);
               if (data) {
@@ -2203,6 +2212,7 @@ export class XmlEditorComponent {
                   let b = ele[i].attributes[j].nodeValue;
                   nodes = Object.assign(nodes, this._defineProperty({}, a, b));
                 }
+
                 nodes.parent = node;
                 childArr.push(nodes);
                 if (data) {
@@ -2313,7 +2323,7 @@ export class XmlEditorComponent {
 
   getValFromDefault(node): Array<any> {
     let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    let attrTypePath = '/xs:schema/xs:element[@name=\'' + node.ref + '\']/@default';
+    let attrTypePath = '/xs:schema/xs:element[@name=\'' + (node.ref || node.name) + '\']/@default';
     let ele = select(attrTypePath, this.doc);
     let valueArr: any = [];
     let value: any = {};
@@ -2331,7 +2341,7 @@ export class XmlEditorComponent {
 
   getVal(nodeValue): any {
     let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    let attrTypePath = '/xs:schema/xs:element[@name=\'' + nodeValue.ref + '\']/@type';
+    let attrTypePath = '/xs:schema/xs:element[@name=\'' + (nodeValue.ref || nodeValue.name) + '\']/@type';
     let ele = select(attrTypePath, this.doc);
     let valueArr: any = [];
     let value: any = {};
@@ -2569,7 +2579,7 @@ export class XmlEditorComponent {
             nodes.choice1 = parent;
             let flag = false;
             for (let k = 0; k < childArr.length; k++) {
-              if (childArr[k].ref === nodes.ref) {
+              if (childArr[k].ref === nodes.ref || childArr[k].name === nodes.name) {
                 flag = true;
                 childArr[k] = Object.assign(childArr[k], nodes);
                 break;
@@ -2626,10 +2636,10 @@ export class XmlEditorComponent {
 
   addChild(child, nodeArr, check, index) {
     this.menuNode = {};
-    let attrs = this.checkAttributes(child.ref);
-    let value = this.getValues(child.ref);
-    let attrsType: any = this.getAttrFromType(child.ref, child.parent);
-    let valueType = this.getValueFromType(child.ref, child.parent);
+    let attrs = this.checkAttributes(child.ref || child.name);
+    let value = this.getValues(child.ref || child.name);
+    let attrsType: any = this.getAttrFromType(child.ref || child.name, child.parent);
+    let valueType = this.getValueFromType(child.ref|| child.name, child.parent);
     let val = this.getVal(child);
     if ((isEmpty(val)) && (isEmpty(value)) && (isEmpty(valueType))) {
       val = this.getValFromDefault(child);
@@ -3019,55 +3029,45 @@ export class XmlEditorComponent {
     }
   }
 
-  getCustomCss(node, parentNode): string {
+  getCustomCss(node: any, parentNode: any): string {
+    // pick the element’s identity: either its ref or its name
+    const id = node.ref || node.name;
     let count = 0;
-    if (this.choice) {
-      if (node.maxOccurs === 'unbounded') {
-        return '';
-      } else if (node.maxOccurs !== 'unbounded' && node.maxOccurs !== undefined) {
-        if (parentNode.children && parentNode.children.length > 0) {
-          for (let i = 0; i < parentNode.children.length; i++) {
-            if (node.ref === parentNode.children[i].ref) {
-              count++;
-            }
-          }
-          if (node.maxOccurs === count) {
-            return 'disabled disable-link';
-          }
-        }
-      } else if (node.maxOccurs === undefined) {
-        if (parentNode.children && parentNode.children.length > 0) {
-          for (let i = 0; i < parentNode.children.length; i++) {
-            if (node.ref === parentNode.children[i].ref) {
-              return 'disabled disable-link';
-            }
-          }
+
+    // count how many times this element has already been instantiated
+    if (parentNode.children?.length) {
+      for (const child of parentNode.children) {
+        const childId = child.ref || child.name;
+        if (childId === id) {
+          count++;
         }
       }
-      return node.choice ? 'disabled disable-link' : '';
     }
+
+    // 1) if unbounded, always enabled
     if (node.maxOccurs === 'unbounded') {
       return '';
-    } else if (node.maxOccurs !== 'unbounded' && node.maxOccurs !== undefined) {
-      if (parentNode.children && parentNode.children.length > 0) {
-        for (let i = 0; i < parentNode.children.length; i++) {
-          if (node.ref === parentNode.children[i].ref) {
-            count++;
-          }
-        }
-        if (node.maxOccurs === count) {
-          return 'disabled disable-link';
-        }
+    }
+
+    // 2) if numeric maxOccurs, disable once we've hit the limit
+    if (node.maxOccurs != null) {
+      const max = Number(node.maxOccurs);
+      if (count >= max) {
+        return 'disabled disable-link';
       }
-    } else if (node.maxOccurs === undefined) {
-      if (parentNode.children && parentNode.children.length > 0) {
-        for (let i = 0; i < parentNode.children.length; i++) {
-          if (node.ref === parentNode.children[i].ref) {
-            return 'disabled disable-link';
-          }
-        }
+    } else {
+      // 3) if no maxOccurs specified, default is 1 occurrence
+      if (count >= 1) {
+        return 'disabled disable-link';
       }
     }
+
+    // 4) finally, if this is a choice‐only element, disable further adds
+    if (node.choice) {
+      return 'disabled disable-link';
+    }
+
+    // otherwise, it’s enabled
     return '';
   }
 
@@ -3256,29 +3256,64 @@ export class XmlEditorComponent {
   }
 
   checkText(node: any): any {
-    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
+    const select = xpath.useNamespaces({'xs':'http://www.w3.org/2001/XMLSchema'});
     let text: any = {};
-    const documentationPath = '/xs:schema/xs:element[@name=\'' + node.ref + '\']/xs:annotation/xs:documentation';
-    const element = select(documentationPath, this.doc);
-    if (element.length > 0) {
-      text.doc = element[0].innerHTML;
+    const nameOrRef = node.ref || node.name;
+
+    // 1) look for docs on the element itself
+    let docs = select(
+      `//xs:element[@name='${nameOrRef}']/xs:annotation/xs:documentation`,
+      this.doc
+    );
+
+    // 2) then on its complexType
+    if (!docs.length && node.type) {
+      docs = select(
+        `//xs:complexType[@name='${node.type}']/xs:annotation/xs:documentation`,
+        this.doc
+      );
     }
-    if (node.show == undefined || node.show == null) {
+
+    // 3) **new fallback**: if still empty, grab the first child's docs
+    if (!docs.length && node.type) {
+      // find the first <xs:element> inside this type
+      const refAttr = select(
+        `//xs:complexType[@name='${node.type}']//xs:sequence/xs:element[1]/@ref |
+       //xs:complexType[@name='${node.type}']//xs:sequence/xs:element[1]/@name`,
+        this.doc
+      );
+      if (refAttr.length) {
+        const childName = refAttr[0].nodeValue;
+        docs = select(
+          `//xs:element[@name='${childName}']/xs:annotation/xs:documentation`,
+          this.doc
+        );
+      }
+    }
+
+    if (docs.length) {
+      text.doc = docs[0].textContent.trim();
+    }
+
+    // …rest of your show/attrs logic…
+    if (node.show == null) {
       node.show = !node.attributes && !node.values;
     }
     setTimeout(() => {
-      if (node && node.attributes) {
-        for (const i in node.attributes) {
-          this.checkAttrsText(node.attributes[i], select);
+      if (node.attributes) {
+        for (const a of node.attributes) {
+          this.checkAttrsText(a, select);
         }
       }
     }, 0);
+
     return text;
   }
 
+
   // BreadCrumb
   createBreadCrumb(node): void {
-    if (this.nodes[0] && this.nodes[0].ref === node.parent && this.nodes[0].uuid == node.parentId) {
+    if ((this.nodes[0] && this.nodes[0].ref === node.parent && this.nodes[0].uuid == node.parentId) || (this.nodes[0] && this.nodes[0].name === node.parent && this.nodes[0].uuid == node.parentId)) {
       this.breadCrumbArray.push(this.nodes[0]);
     } else {
       if (this.nodes[0] && this.nodes[0].children && this.nodes[0].children.length > 0) {
@@ -3290,7 +3325,7 @@ export class XmlEditorComponent {
   }
 
   createBreadCrumbRecursion(node, nodes): void {
-    if (nodes && nodes.ref === node.parent && nodes.uuid == node.parentId) {
+    if ((nodes && nodes.ref === node.parent && nodes.uuid == node.parentId) || (nodes && nodes.name === node.parent && nodes.uuid == node.parentId)) {
       this.breadCrumbArray.push(nodes);
       this.createBreadCrumb(nodes);
     } else {
@@ -3331,7 +3366,7 @@ export class XmlEditorComponent {
         if (this.childNode[i] && this.childNode[i].choice) {
           if (node && node.children && node.children.length > 0) {
             for (let j = 0; j < node.children.length; j++) {
-              if (node.children[j].choice && node.children[j].ref === this.childNode[i].ref) {
+              if ((node.children[j].choice && node.children[j].ref === this.childNode[i].ref) || (node.children[j].choice && node.children[j].name === this.childNode[i].name)) {
                 this.choice = true;
                 flg = false;
                 break;
@@ -3379,7 +3414,7 @@ export class XmlEditorComponent {
         this.getParent(node, this.nodes[0]);
       }
     }
-    if ((node.origin && this.selectedNode.ref === node.origin.ref) || (this.selectedNode.ref === node.ref)) {
+    if (((node.origin && this.selectedNode.ref === node.origin.ref) || (this.selectedNode.ref === node.ref)) || ((node.origin && this.selectedNode.name === node.origin.name) || (this.selectedNode.name === node.name))) {
       this.selectedNode = this.nodes[0];
       this.selectedNodeDoc = this.checkText(this.nodes[0]);
       this.getIndividualData(this.selectedNode, undefined);
@@ -3408,7 +3443,7 @@ export class XmlEditorComponent {
   deleteData(parentNode, node, parent) {
     if (parentNode) {
       for (let i = 0; i < parentNode.length; i++) {
-        if (node.ref === parentNode[i].ref && node.uuid == parentNode[i].uuid) {
+        if ((node.ref === parentNode[i].ref && node.uuid == parentNode[i].uuid) || (node.name === parentNode[i].name && node.uuid == parentNode[i].uuid)) {
           this.validConfig = false;
           parentNode.splice(i, 1);
           this.updateTree();
@@ -3423,7 +3458,7 @@ export class XmlEditorComponent {
   }
 
   checkRefPresent(node, child) {
-    if (child.ref == node.ref) {
+    if (child.ref == node.ref || child.name == node.name) {
       if (child.attributes) {
         for (let i = 0; i < child.attributes.length; i++) {
           for (let j = 0; j < node.attributes.length; j++) {
@@ -3582,14 +3617,14 @@ export class XmlEditorComponent {
   private checkRules(pasteNode, copyNode): void {
     if (copyNode !== undefined) {
       this.checkRule = false;
-      if (pasteNode.ref === copyNode.parent) {
+      if ((pasteNode.ref === copyNode.parent) || (pasteNode.name === copyNode.parent)) {
         let count = 0;
         if (copyNode.maxOccurs === 'unbounded') {
           this.checkRule = true;
         } else if (copyNode.maxOccurs !== 'unbounded' && copyNode.maxOccurs !== undefined) {
           if (pasteNode.children.length > 0) {
             for (let i = 0; i < pasteNode.children.length; i++) {
-              if (copyNode.ref === pasteNode.children[i].ref) {
+              if ((copyNode.ref === pasteNode.children[i].ref) || (copyNode.name === pasteNode.children[i].name)) {
                 count++;
               }
             }
@@ -3601,7 +3636,7 @@ export class XmlEditorComponent {
           if (pasteNode.children.length > 0) {
             let flag = true;
             for (let i = 0; i < pasteNode.children.length; i++) {
-              if (copyNode.ref === pasteNode.children[i].ref) {
+              if ((copyNode.ref === pasteNode.children[i].ref) || (copyNode.name === pasteNode.children[i].name)) {
                 flag = false;
                 break;
               }
@@ -3631,7 +3666,7 @@ export class XmlEditorComponent {
       let a = this.checkChildNode(node, undefined);
       if (a && a.length > 0) {
         for (let i = 0; i < a.length; i++) {
-          if (a[i].ref === this.copyItem.ref) {
+          if ((a[i].ref === this.copyItem.ref) || (a[i].name === this.copyItem.name)) {
             this.copyItem.order = i;
             break;
           }
@@ -3767,7 +3802,7 @@ export class XmlEditorComponent {
 // Show all Child Nodes and search functionalities.
   showAllChildNode(node): void {
     this.showAllChild = [];
-    const obj = {ref: node.ref, parent: node.parent, children: [], expanded: true};
+    const obj = {ref: node.ref || node.name, parent: node.parent, children: [], expanded: true};
     this.checkChildNode(obj, obj);
     this.counter = 0;
     this.getAllChild(obj.children);
@@ -3792,7 +3827,7 @@ export class XmlEditorComponent {
     const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     let a;
     if (this.nodes[0]) {
-      a = this.nodes[0].ref;
+      a = this.nodes[0].ref || this.nodes[0].name;
     }
     const keyPath = '/xs:schema/xs:element[@name=\'' + a + '\']/xs:key/@name';
     const keyRefPath = '/xs:schema/xs:element[@name=\'' + a + '\']/xs:keyref';
@@ -3870,7 +3905,7 @@ export class XmlEditorComponent {
     }
     if (this.nodes[0] && this.nodes[0].children) {
       for (let i = 0; i < this.nodes[0].children.length; i++) {
-        if (this.nodes[0].children[i].ref === nodes.name) {
+        if ((this.nodes[0].children[i].ref === nodes.name) || (this.nodes[0].children[i].name === nodes.name)) {
           if (k) {
             this.nodes[0].children[i].keyReference = nodes.keyReference;
           } else if (keyre) {
@@ -3898,7 +3933,7 @@ export class XmlEditorComponent {
         }
       }
       for (let i = 0; i < child.length; i++) {
-        if (child[i].ref === showAllChild.name) {
+        if ((child[i].ref === showAllChild.name) || (child[i].name === showAllChild.name)) {
           if (ke) {
             child[i].keyReference = showAllChild.keyReference;
           } else if (keyref) {
@@ -3930,7 +3965,7 @@ export class XmlEditorComponent {
     if (this.nodes[0] && this.nodes[0].keyref) {
       for (let i = 0; i < this.nodes[0].attributes.length; i++) {
         if (this.nodes[0].attributes[i].refer) {
-          key = Object.assign(key, {refe: this.nodes[0].ref, name: this.nodes[0].attributes[i].refer});
+          key = Object.assign(key, {refe: this.nodes[0].ref || this.nodes[0].name, name: this.nodes[0].attributes[i].refer});
           this.attachKeyReferencing(key);
           break;
         }
@@ -3949,7 +3984,7 @@ export class XmlEditorComponent {
     if (child.keyref && child.attributes) {
       for (let i = 0; i < child.attributes.length; i++) {
         if (child.attributes[i].refer) {
-          key = Object.assign(key, {refe: child.ref, name: child.attributes[i].refer});
+          key = Object.assign(key, {refe: child.ref || child.name, name: child.attributes[i].refer});
           this.attachKeyReferencing(key);
           if (child.children) {
             for (let k = 0; k < child.children.length; k++) {
@@ -3970,7 +4005,7 @@ export class XmlEditorComponent {
 
   attachKeyReferencing(key): void {
     if (key.name) {
-      if (this.nodes[0].ref === key.name && this.nodes[0].keyReference) {
+      if ((this.nodes[0].ref === key.name && this.nodes[0].keyReference) || (this.nodes[0].name === key.name && this.nodes[0].keyReference)) {
         for (let i = 0; i < this.nodes[0].attributes.length; i++) {
           if (this.nodes[0].attributes[i].name === this.nodes[0].keyReference) {
             this.nodes[0].attributes[i].refElement = key.refe;
@@ -3987,7 +4022,7 @@ export class XmlEditorComponent {
 
   attachKeyReferencingRecursion(key, child): void {
     if (key.name) {
-      if (child.ref === key.name && child.keyReference && child.attributes) {
+      if ((child.ref === key.name && child.keyReference && child.attributes) || (child.name === key.name && child.keyReference && child.attributes)) {
         for (let i = 0; i < child.attributes.length; i++) {
           if (child.attributes[i].name === child.keyReference) {
             child.attributes[i].refElement = key.refe;
@@ -4495,6 +4530,7 @@ export class XmlEditorComponent {
       }
     }
     this.extraInfo.released = false;
+    this.extraInfo.deployed = false;
   }
 
 // validation for node value property
@@ -4549,7 +4585,7 @@ export class XmlEditorComponent {
   keyRecursion(refer, childNode): void {
     let temp;
     for (let i = 0; i < childNode.length; i++) {
-      if (childNode[i].ref === refer) {
+      if (childNode[i].ref === refer || childNode[i].name === refer) {
         if (childNode[i].keyReference) {
           temp = childNode[i].keyReference;
           if (childNode[i].attributes) {
@@ -4573,7 +4609,7 @@ export class XmlEditorComponent {
   // link gotokey
   gotoKey(node): void {
     if (node !== undefined) {
-      if (node.refer === this.nodes[0].ref) {
+      if (node.refer === this.nodes[0].ref|| node.refer === this.nodes[0].name) {
         if (this.nodes[0].keyReference) {
           for (let i = 0; i < this.nodes[0].attributes.length; i++) {
             if (this.nodes[0].attributes[i].name === this.nodes[0].keyReference) {
@@ -4599,7 +4635,7 @@ export class XmlEditorComponent {
 
   gotoKeyRecursion(node, child): void {
     if (node !== undefined) {
-      if (node.refer === child.ref) {
+      if (node.refer === child.ref|| node.refer === child.name) {
         if (child.keyReference) {
           for (let i = 0; i < child.attributes.length; i++) {
             if (child.attributes[i].name === child.keyReference) {
@@ -4624,7 +4660,7 @@ export class XmlEditorComponent {
 
   gotoKeyref(node): void {
     if (node !== undefined) {
-      if (node.refElement === this.nodes[0].ref) {
+      if ((node.refElement === this.nodes[0].ref) || (node.refElement === this.nodes[0].name)) {
         if (this.nodes[0].keyref) {
           for (let i = 0; i < this.nodes[0].attributes.length; i++) {
             if (this.nodes[0].attributes[i].name === this.nodes[0].keyref) {
@@ -4638,7 +4674,7 @@ export class XmlEditorComponent {
             this.gotoKeyRefRecursion(node, this.nodes[0].children[i]);
           }
         }
-      } else if (this.refElement && this.refElement.parent === this.nodes[0].ref) {
+      } else if ((this.refElement && this.refElement.parent === this.nodes[0].ref) || (this.refElement && this.refElement.parent === this.nodes[0].name)) {
         if (this.nodes[0].keyref) {
           for (let i = 0; i < this.nodes[0].attributes.length; i++) {
             if (this.nodes[0].attributes[i].name === this.nodes[0].keyref) {
@@ -4663,7 +4699,7 @@ export class XmlEditorComponent {
 
   gotoKeyRefRecursion(node, child): void {
     if (node !== undefined) {
-      if (node.refElement === child.ref) {
+      if (node.refElement === child.ref || node.refElement === child.name) {
         if (child.keyref) {
           if (child.attributes) {
             for (let i = 0; i < child.attributes.length; i++) {
@@ -4681,7 +4717,7 @@ export class XmlEditorComponent {
             }
           }
         }
-      } else if (this.refElement && this.refElement.parent === child.ref) {
+      } else if ((this.refElement && this.refElement.parent === child.ref) || (this.refElement && this.refElement.parent === child.name)) {
         if (child.keyref) {
           for (let i = 0; i < child.attributes.length; i++) {
             if (child.attributes[i].name === child.keyref) {
@@ -4713,7 +4749,7 @@ export class XmlEditorComponent {
     }
 
     function getRecursively(node, child): void {
-      if (node.refElement === child.ref) {
+      if ((node.refElement === child.ref) || (node.refElement === child.name)) {
         if (child.keyref) {
           if (child.attributes) {
             for (let i = 0; i < child.attributes.length; i++) {
@@ -5177,7 +5213,7 @@ export class XmlEditorComponent {
     }
     if (childrenNode.children && childrenNode.children.length > 0) {
       for (let i = 0; i < childrenNode.children.length; i++) {
-        this.createChildJson(curentNode, childrenNode.children[i], doc.createElement(childrenNode.children[i].ref), doc);
+        this.createChildJson(curentNode, childrenNode.children[i], doc.createElement(childrenNode.children[i].ref || childrenNode.children[i].name), doc);
       }
     }
     node.appendChild(curentNode);
@@ -5201,9 +5237,9 @@ export class XmlEditorComponent {
     let link = window.location.origin + '/joc/api/xmleditor/schema/download?controllerId='
       + this.schedulerIds.selected + '&objectType=' + objType +
       '&accessToken=' + this.authService.accessTokenId;
-    if (objType !== 'NOTIFICATION') {
-      link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
-    }
+    // if (objType !== 'NOTIFICATION') {
+    //   link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
+    // }
     $('#tmpFrame').attr('src', link);
   }
 
@@ -5212,9 +5248,7 @@ export class XmlEditorComponent {
     let link = window.location.origin + '/joc/api/xmleditor/schema/download?show=true&controllerId='
       + this.schedulerIds.selected + '&objectType=' + objType + '&accessToken='
       + this.authService.accessTokenId;
-    if (objType !== 'NOTIFICATION') {
-      link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
-    }
+   // /
 
     let newWindow;
     if (this.preferences.isDocNewWindow === 'newWindow') {
@@ -5301,7 +5335,7 @@ export class XmlEditorComponent {
     for (let key in json) {
       r_node = key;
     }
-    if (this.nodes[0] && this.nodes[0].ref === rootNode) {
+    if ((this.nodes[0] && this.nodes[0].ref === rootNode) || (this.nodes[0] && this.nodes[0].name === rootNode)) {
       this.createJsonAccToXsd(json, r_node, this.nodes[0]);
     } else {
       this.nodes = [{}];
@@ -5421,13 +5455,13 @@ export class XmlEditorComponent {
     }
     this.checkChildNode(mainjson, undefined);
     for (let i = 0; i < this.childNode.length; i++) {
-      if (a === this.childNode[i].ref) {
+      if (a === this.childNode[i].ref || a === this.childNode[i].name) {
         this.childNode[i].import = key;
         this.addChild(this.childNode[i], mainjson, false, i);
       }
     }
     for (let i = 0; i < mainjson.children.length; i++) {
-      if (mainjson.children[i].ref === a && mainjson.children[i].import === key) {
+      if ((mainjson.children[i].ref === a && mainjson.children[i].import === key) || (mainjson.children[i].name === a && mainjson.children[i].import === key)) {
         this.createJsonAccToXsd(xmljson[rootNode], key, mainjson.children[i]);
       }
     }
@@ -5480,7 +5514,7 @@ export class XmlEditorComponent {
     }
     mainjson.children.push(temp);
     for (let i = 0; i < mainjson.children.length; i++) {
-      if (mainjson.children[i].ref === a && mainjson.children[i].import === key) {
+      if ((mainjson.children[i].ref === a && mainjson.children[i].import === key) || (mainjson.children[i].name === a && mainjson.children[i].import === key)) {
         this.createNormalTreeJson(xmljson[rootNode], key, mainjson.children[i], rootNode);
       }
     }
@@ -5583,7 +5617,7 @@ export class XmlEditorComponent {
   private jsonToXml(nodes) {
     if (nodes.length > 0) {
       let doc = document.implementation.createDocument('', '', null);
-      let peopleElem = doc.createElement(nodes[0].ref);
+      let peopleElem = doc.createElement(nodes[0].ref || nodes[0].name);
       if (peopleElem) {
         if (nodes[0].attributes && nodes[0].attributes.length > 0) {
           for (let i = 0; i < nodes[0].attributes.length; i++) {
@@ -5601,7 +5635,7 @@ export class XmlEditorComponent {
         }
         if (nodes[0].children && nodes[0].children.length > 0) {
           for (let i = 0; i < nodes[0].children.length; i++) {
-            this.createChildJson(peopleElem, nodes[0].children[i], doc.createElement(nodes[0].children[i].ref), doc);
+            this.createChildJson(peopleElem, nodes[0].children[i], doc.createElement(nodes[0].children[i].ref || nodes[0].children[i].name), doc);
           }
         }
       }
