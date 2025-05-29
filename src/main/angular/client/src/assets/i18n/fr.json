@@ -398,7 +398,7 @@
     "label.clusterAgents": "Agents Cluster",
     "label.manageEnciphermentKey": "Gérer les Clefs de Cryptage",
     "label.manageChanges": "Gérer les Changements",
-    "label.manageApprovals": "Manage approvals"
+    "label.manageApprovals": "Gérer les Autorisations"
   },
   "configuration": {
     "tab.inventory": "Inventaire",
@@ -956,10 +956,10 @@
     "label.expectingWorkflow": "Workflow en attente",
     "label.consumingWorkflow": "Workflow de consommation",
     "label.noticeBoard": "Condition",
-    "label.normal": "normal",
-    "label.pending": "à venir",
-    "label.expecting": "en attente",
-    "label.critical": "Critique",
+    "label.normal": "Normal",
+    "label.pending": "À venir",
+    "label.expecting": "En attente",
+    "label.critical": "Action requise",
     "label.totalWorkflowNoticeEntry": "Total {{total}} Workflows et {{noticeCount}} Annonces found",
     "button.late": "En retard",
     "button.setStartTime": "Modifier l'heure de démarrage",
@@ -1626,7 +1626,7 @@
     "button.logOut": "Se Déconnecter",
     "button.manageEnciphermentKey": "Gérer les Clefs de Cryptage",
     "button.manageChanges": "Gérer les Changements",
-    "button.manageApprovals": "Manage Approvals"
+    "button.manageApprovals": "Gérer les Autorisations"
   },
   "history": {
     "label.all": "Tous",
@@ -2519,7 +2519,7 @@
       "totalDays": "{{count}} jours",
       "date": "Date",
       "shutdown": "arrêt",
-      "approvalRequest": "Demande d'Autorisation",
+      "approvalRequest": "Demandes d'Autorisation",
       "approvers": "Approbateurs"
     },
     "button": {
@@ -2573,9 +2573,9 @@
         "modified": "Modifié",
         "title": "Titre",
         "requestor": "Demandeur",
-        "requestorState": "Status Demandeur",
+        "requestorState": "Status Demande",
         "approver": "Approbateur",
-        "approverState": "Status Approbateur",
+        "approverState": "Status Autorisation",
         "requestUrl": "URI Demande",
         "category": "Catégorie",
         "reason": "Raison",
@@ -2585,20 +2585,20 @@
         "allApproverRequests": "Tous les Demandes d'Autorisation",
         "ApproverNotification": "Demandes d'Autorisation en attentes",
         "RequestorNotification": "Identification Demande",
-        "requestorStateDate": "Requested Date",
-        "approverStateDate": "Approved Date"},
+        "requestorStateDate": "Date Status Demande",
+        "approverStateDate": "Date Status Autorisation"},
       "button": {
-        "approve": "Approuver",
+        "approve": "Approbateur",
         "reject": "Rejeter",
         "withdraw": "Retirer",
-        "requested": "demandé",
-        "withdrawn": "retiré",
-        "inProgress": "exécuté",
-        "success": "avec succès",
-        "failed": "échoués",
-        "pending": "en attente",
-        "approved": "approuvé",
-        "rejected": "rejeté"
+        "requested": "Demandé",
+        "withdrawn": "Retiré",
+        "inProgress": "Exécuté",
+        "success": "Avec succès",
+        "failed": "Échoués",
+        "pending": "En attente",
+        "approved": "Approuvé",
+        "rejected": "Rejeté"
       }
     },
     "approvers": {
@@ -2926,7 +2926,7 @@
       "label.manageGitCredentials": "Gérer les Identifiants Git",
       "label.gitAccount": "Compte Git",
       "label.gitServer": "Serveur Git",
-      "label.userName": "Nom d'utilisateur",
+      "label.userName": "Nom du Compte",
       "label.emailAddress": "Adresse E-Mail",
       "label.gitPassword": "Mot de Passe Git",
       "label.keyfilePath": "Chemin d'accès à la clé privée",
