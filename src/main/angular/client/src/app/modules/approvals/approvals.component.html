@@ -113,7 +113,7 @@
         <div *ngIf="approvalsFilters.tabIndex === 0">
           <app-approval-request [preferences]="preferences" [permission]="permission" [filters]="approvalsFilters.approvalRequests"></app-approval-request>
         </div>
-        <div *ngIf="approvalsFilters.tabIndex === 1">
+        <div *ngIf="approvalsFilters.tabIndex === 1 && permission.joc && permission.joc.administration.accounts.view">
           <app-approvers #approvers [preferences]="preferences" [permission]="permission" [filters]="approvalsFilters.approvers"></app-approvers>
         </div>
       </div>

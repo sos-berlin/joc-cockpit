@@ -67,13 +67,6 @@
               <i *ngIf="filters.filter.sortBy == 'requestorStateDate' && filters.filter.reverse"
                  class="fa fa-caret-down "></i></a>
           </th>
-          <th (click)="sort('approverStateDate')">
-            <a><span class="p-r-xs" translate>monitor.approvalRequest.label.approverStateDate</span>
-              <i *ngIf="filters.filter.sortBy == 'approverStateDate' && !filters.filter.reverse"
-                 class="fa fa-caret-up "></i>
-              <i *ngIf="filters.filter.sortBy == 'approverStateDate' && filters.filter.reverse"
-                 class="fa fa-caret-down "></i></a>
-          </th>
           <th (click)="sort('title')">
             <a><span class="p-r-xs" translate>monitor.approvalRequest.label.title</span>
               <i *ngIf="filters.filter.sortBy == 'title' && !filters.filter.reverse"
@@ -105,6 +98,13 @@
                class="fa fa-caret-up "></i>
             <i *ngIf="filters.filter.sortBy == 'approverState' && filters.filter.reverse"
                class="fa fa-caret-down "></i></a>
+          </th>
+          <th (click)="sort('approverStateDate')">
+            <a><span class="p-r-xs" translate>monitor.approvalRequest.label.approverStateDate</span>
+              <i *ngIf="filters.filter.sortBy == 'approverStateDate' && !filters.filter.reverse"
+                 class="fa fa-caret-up "></i>
+              <i *ngIf="filters.filter.sortBy == 'approverStateDate' && filters.filter.reverse"
+                 class="fa fa-caret-down "></i></a>
           </th>
           <th (click)="sort('requestUrl')"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.requestUrl</span>
             <i *ngIf="filters.filter.sortBy == 'requestUrl' && !filters.filter.reverse"
@@ -171,9 +171,6 @@
                  class="cursor fa fa-caret-up fa-lg"></i>&nbsp;
               <span [innerHtml]="approval['requestorStateDate'] | stringToDate | highlight : filters.filter.searchText"></span>
             </td>
-            <td (click)="$event.stopPropagation()">
-              <span [innerHtml]="approval['approverStateDate'] | stringToDate | highlight : filters.filter.searchText"></span>
-            </td>
             <td (click)="$event.stopPropagation()" nowrap>
               <span [innerHtml]="approval['title'] | highlight : filters.filter.searchText"></span>
             </td>
@@ -191,8 +188,15 @@
               </span>
             </td>
             <td>
-              <span [innerHtml]="approval.approver | highlight : filters.filter.searchText"></span>
+              <span
+                [innerHtml]="
+                  (approval.approverFullName || approval.approver)
+                  | highlight : filters.filter.searchText
+                "
+              ></span>
+              <i *ngIf="approval.unknownApprover" class="fa fa-exclamation-triangle text-danger pull-right"></i>
             </td>
+
             <td>
               <span class="label"
                     [ngClass]="{
@@ -202,6 +206,9 @@
                     }"
                     [innerHtml]="approval.approverState | translate | highlight : filters.filter.searchText">
               </span>
+            </td>
+            <td (click)="$event.stopPropagation()">
+              <span [innerHtml]="approval['approverStateDate'] | stringToDate | highlight : filters.filter.searchText"></span>
             </td>
             <td>
               <span [innerHtml]="approval.requestUrl | highlight : filters.filter.searchText"></span>

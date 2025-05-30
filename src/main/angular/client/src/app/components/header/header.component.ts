@@ -173,28 +173,34 @@ export class HeaderComponent {
   navToOrderNoti(index: number, data: any): void {
     let filter = this.coreService.getMonitorTab();
     filter.tabIndex = index;
-    if (index == 2) {
+    if (index == 0) {
       filter.orderNotification.filter.types = [data.level];
-    }else if(index == 4){
-      filter.approvalRequests.filter.approverStates = [data];
-      filter.approvalRequests.filter.requestorStates = ['REQUESTED'];
-      filter.approvalRequests.current = false;
     }else {
       filter.systemNotification.filter.categories = data.category;
       filter.systemNotification.filter.types = [data.level];
     }
     this.router.navigate(['/monitor']).then();
   }
-
-  navToApprovalNoti(index: number): void {
-    let filter = this.coreService.getMonitorTab();
+  navToApprovalsApp(index: number, data: any): void {
+    let filter = this.coreService.getApprovalsTab();
     filter.tabIndex = index;
-   if(index == 4){
+    if(index == 0){
+      filter.approvalRequests.filter.approverStates = [data];
+      filter.approvalRequests.filter.requestorStates = ['REQUESTED'];
+      filter.approvalRequests.current = false;
+    }
+    this.router.navigate(['/approvals']).then();
+  }
+
+  navToApprovalsReq(index: number): void {
+    let filter = this.coreService.getApprovalsTab();
+    filter.tabIndex = index;
+   if(index == 0){
       filter.approvalRequests.filter.approverStates = ["APPROVED", "REJECTED"];
       filter.approvalRequests.filter.requestorStates = ["REQUESTED"];
       filter.approvalRequests.current = false;
     }
-    this.router.navigate(['/monitor']).then();
+    this.router.navigate(['/approvals']).then();
   }
 
   logout(): void {

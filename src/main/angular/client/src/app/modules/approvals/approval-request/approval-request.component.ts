@@ -71,6 +71,9 @@ export class ApprovalRequestComponent {
     }
     this.isApprover = JSON.parse(sessionStorage.getItem('isApprover'))
     this.isRequestor = JSON.parse(sessionStorage.getItem('isApprovalRequestor'))
+    this.filters.filter = this.filters.filter || {};
+    this.filters.filter.sortBy  = 'requestorStateDate';
+    this.filters.filter.reverse = true;
     this.fetchRequests()
   }
 
@@ -95,9 +98,23 @@ export class ApprovalRequestComponent {
     this.coreService.post('approval/requests', obj).subscribe({
       next: (res) => {
         this.isLoaded = true;
-        res.requests = this.orderPipe.transform(res.requests, this.filters.filter.sortBy, this.filters.filter.reverse);
-        this.approvalData = res.requests;
-        this.approversList = res.approvers
+        const requests = res.requests;
+        const approvers = res.approvers;
+
+        requests.forEach(r => {
+          const user = approvers.find(a => a.accountName === r.approver);
+          r.approverFullName = user
+            ? `${user.firstName} ${user.lastName}`
+            : r.approver;
+        });
+
+        // then sort & assign
+        this.approvalData = this.orderPipe.transform(
+          requests,
+          this.filters.filter.sortBy,
+          this.filters.filter.reverse
+        );
+        this.approversList = approvers;
         this.searchInResult();
       },
       error: () => {

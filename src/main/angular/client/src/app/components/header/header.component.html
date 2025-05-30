@@ -23,7 +23,7 @@
           <a (click)="clearApprovalEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
         </div>
         <div class="notification">
-          <div  (click)="navToOrderNoti(4, 'PENDING')" class="cursor primary-text-hover-color" >
+          <div  (click)="navToApprovalsApp(0, 'PENDING')" class="cursor primary-text-hover-color" >
             {{approvalEvent?.numOfPendingApprovals}} -
               <span *ngIf="approvalEvent?.numOfPendingApprovals" translate>monitor.approvalRequest.label.ApproverNotification</span>
           </div>
@@ -35,7 +35,7 @@
           <a (click)="clearRequestorEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
         </div>
         <div class="notification">
-          <div (click)="navToApprovalNoti(4)" class="cursor primary-text-hover-color" >
+          <div (click)="navToApprovalsReq(0)" class="cursor primary-text-hover-color" >
               <span *ngIf="requestorEvent?.approverState" translate>monitor.approvalRequest.label.RequestorNotification</span>
            {{requestorEvent?.approverState}}
           </div>
@@ -93,7 +93,8 @@
                 nz-popover nzPopoverPlacement="bottomRight"
                 nzPopoverTitle="{{'info.label.pendingRequests' | translate}}"
                 nzPopoverTrigger="click">
-            <i class="fa fa-clock-o text-18" style="line-height: 0"></i>
+            <i class="fa fa-clock-o text-18 t-1 pos-rel" style="line-height: 0"></i>
+            <i class="text-xs pos-abt" style="top:-15px;right: 0px">{{ approvalEvent.numOfPendingApprovals }}</i>
           </span>
         </a>
       </li>
@@ -103,7 +104,8 @@
                 nz-popover nzPopoverPlacement="bottomRight"
                 nzPopoverTitle="{{'info.label.pendingRequests' | translate}}"
                 nzPopoverTrigger="click">
-            <i class="fa fa-check-circle text-18" style="line-height: 0"></i>
+            <i class="fa fa-check-circle text-18 t-1 pos-rel" style="line-height: 0"></i>
+            <i class="text-xs pos-abt" style="top:-15px;right: 0px">{{ requestorEvent.numOfPendingApprovals }}</i>
           </span>
         </a>
       </li>
