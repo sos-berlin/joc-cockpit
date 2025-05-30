@@ -1,6 +1,6 @@
 <div class="pos-rel">
   <nz-input-group class="pos-abt" style="z-index: 1;">
-    <input #changeFocusInput (blur)="closeDropdown()" (input)="onSearchInput($event.target.value); handleSelectionChange($event)"
+    <input #changeFocusInput (blur)="closeDropdown($event)" (input)="onSearchInput($event.target.value); handleSelectionChange($event)"
            [ngClass]="{'b-t-0' : !isDisplay}" [value]="obj.name" class="form-control white"
            id="changeFocus" nz-input placeholder="{{'common.placeholder.search' | translate}}" type="text"/>
   </nz-input-group>

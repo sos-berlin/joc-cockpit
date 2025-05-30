@@ -391,7 +391,7 @@
                         <input (click)="isTreeShow = true;" [(ngModel)]="node.data" autocomplete="off" class="form-control"
                                name="jobResourceName" type="text">
                         <div *ngIf="isTreeShow" [ngStyle]="{'margin-top': '-29px'}" class="z-index-9999 w-full">
-                          <app-search-input (onBlur)="onBlur()" (onSelect)="onChangeJobResource($event, node)" [isDisplay]="true"
+                          <app-search-input (searchTermChange)="onTreeSearch($event, node)" (onBlur)="onBlur()" (onSelect)="onChangeJobResource($event, node)" [isDisplay]="true"
                                             [nodes]="jobResourcesTree"
                                             [type]="'JOBRESOURCE'"></app-search-input>
                         </div>
@@ -410,6 +410,24 @@
                              [(ngModel)]="node.data"
                              [ngClass]="error && errorName === node.name? 'invalid': ''"
                              [required]="node.use ==='required'"
+                             class="form-control w-full"
+                             id="{{node.name}}"
+                             type="text"
+                             xmlAutofocus
+                      >
+                      <input [disabled]="true"
+                             *ngIf="node.data && node.parent === 'Configurations' && node.name === 'xmlns:xsi'"
+                             [(ngModel)]="node.data"
+                             [ngClass]="error && errorName === node.name? 'invalid': ''"
+                             class="form-control w-full"
+                             id="{{node.name}}"
+                             type="text"
+                             xmlAutofocus
+                      >
+                      <input [disabled]="true"
+                             *ngIf="node.data && node.parent === 'Configurations' && node.name === 'xsi:noNamespaceSchemaLocation'"
+                             [(ngModel)]="node.data"
+                             [ngClass]="error && errorName === node.name? 'invalid': ''"
                              class="form-control w-full"
                              id="{{node.name}}"
                              type="text"

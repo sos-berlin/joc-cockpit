@@ -35,7 +35,7 @@ export class SearchInputComponent {
     name: '',
     token: ''
   };
-
+  @Output() searchTermChange = new EventEmitter<string>();
   @Output() onSelect = new EventEmitter<string>();
   @Output() onBlur = new EventEmitter<string>();
   @Output() onChange = new EventEmitter<boolean>();
@@ -204,8 +204,10 @@ export class SearchInputComponent {
     }, 0);
   }
 
-  closeDropdown(): void {
+  closeDropdown(value): void {
     this.onBlur.emit(this.obj.name);
+    this.searchTermChange.emit(value.target.value);
+
   }
 
   onDropdownOpenChange(isOpen: boolean): void {

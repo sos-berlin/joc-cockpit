@@ -922,6 +922,7 @@ export class XmlEditorComponent {
     } else {
       this.othersXSD();
     }
+
   }
 
   @HostListener('window:beforeunload', ['$event'])
@@ -978,6 +979,10 @@ export class XmlEditorComponent {
 
   onBlur(): void {
     this.isTreeShow = false;
+  }
+
+  onTreeSearch(term,node) {
+    node.data = term;
   }
 
   private checkJobResource(name): void {
@@ -5213,7 +5218,7 @@ export class XmlEditorComponent {
     }
     if (childrenNode.children && childrenNode.children.length > 0) {
       for (let i = 0; i < childrenNode.children.length; i++) {
-        this.createChildJson(curentNode, childrenNode.children[i], doc.createElement(childrenNode.children[i].ref || childrenNode.children[i].name), doc);
+        this.createChildJson(curentNode, childrenNode.children[i], doc.createElement(childrenNode.children[i].ref), doc);
       }
     }
     node.appendChild(curentNode);
@@ -5221,25 +5226,25 @@ export class XmlEditorComponent {
 
   // save xml
   save(): void {
-    const xml = this._showXml();
-    let name;
-    if (this.objectType !== 'NOTIFICATION') {
-      name = this.activeTab.name + '.xml';
-    } else {
-      name = 'Notification.xml';
-    }
-    const fileType = 'application/xml';
-    const blob = new Blob([xml], {type: fileType});
+    const xml = this._showXml(this.nodes, true);
+    if (!xml) { return; }
+
+    const name = this.objectType !== 'NOTIFICATION'
+      ? this.activeTab.name + '.xml'
+      : 'Notification.xml';
+
+    const blob = new Blob([xml], { type: 'application/xml' });
     saveAs(blob, name);
   }
+
 
   downloadSchema(objType, schemaIdentifier): void {
     let link = window.location.origin + '/joc/api/xmleditor/schema/download?controllerId='
       + this.schedulerIds.selected + '&objectType=' + objType +
       '&accessToken=' + this.authService.accessTokenId;
-    // if (objType !== 'NOTIFICATION') {
-    //   link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
-    // }
+    if (objType !== 'NOTIFICATION') {
+      link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
+    }
     $('#tmpFrame').attr('src', link);
   }
 
@@ -5248,7 +5253,9 @@ export class XmlEditorComponent {
     let link = window.location.origin + '/joc/api/xmleditor/schema/download?show=true&controllerId='
       + this.schedulerIds.selected + '&objectType=' + objType + '&accessToken='
       + this.authService.accessTokenId;
-   // /
+    if (objType !== 'NOTIFICATION') {
+      link = link + '&schemaIdentifier=' + encodeURIComponent(schemaIdentifier);
+    }
 
     let newWindow;
     if (this.preferences.isDocNewWindow === 'newWindow') {
@@ -5617,7 +5624,7 @@ export class XmlEditorComponent {
   private jsonToXml(nodes) {
     if (nodes.length > 0) {
       let doc = document.implementation.createDocument('', '', null);
-      let peopleElem = doc.createElement(nodes[0].ref || nodes[0].name);
+      let peopleElem = doc.createElement(nodes[0].ref);
       if (peopleElem) {
         if (nodes[0].attributes && nodes[0].attributes.length > 0) {
           for (let i = 0; i < nodes[0].attributes.length; i++) {
@@ -5635,7 +5642,7 @@ export class XmlEditorComponent {
         }
         if (nodes[0].children && nodes[0].children.length > 0) {
           for (let i = 0; i < nodes[0].children.length; i++) {
-            this.createChildJson(peopleElem, nodes[0].children[i], doc.createElement(nodes[0].children[i].ref || nodes[0].children[i].name), doc);
+            this.createChildJson(peopleElem, nodes[0].children[i], doc.createElement(nodes[0].children[i].ref),doc);
           }
         }
       }
