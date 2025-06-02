@@ -55,7 +55,13 @@ export class OrderListSidebarComponent implements OnChanges {
     isContinue: false,
     isTerminate: false
   };
-
+  priorities = [
+    {label: 'inventory.label.high', value: 20000},
+    {label: 'inventory.label.aboveNormal', value: 10000},
+    {label: 'inventory.label.normal', value: 0},
+    {label: 'inventory.label.belowNormal', value: -10000},
+    {label: 'inventory.label.Low', value: -20000},
+  ];
   @ViewChild(OrderActionComponent, {static: false}) actionChild;
 
   constructor(public coreService: CoreService, public modal: NzModalService, private orderPipe: OrderPipe, public viewContainerRef: ViewContainerRef) {
@@ -460,5 +466,10 @@ export class OrderListSidebarComponent implements OnChanges {
     this.checked = false;
     this.indeterminate = false;
     this.setOfCheckedId.clear();
+  }
+
+  getPriorityLabel(value: number): string {
+    const match = this.priorities.find(opt => opt.value === value);
+    return match ? match.label : '';
   }
 }

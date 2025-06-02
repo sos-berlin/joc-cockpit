@@ -111,6 +111,13 @@
             <i *ngIf="filter.sortBy == 'state._text' && filter.reverse"
                class="fa fa-caret-down "></i></a>
         </th>
+        <th (click)="sort('priority')">
+          <a><span class="p-r-xs" translate>order.label.priority</span>
+            <i *ngIf="filter.sortBy == 'priority' && !filter.reverse"
+               class="fa fa-caret-up "></i>
+            <i *ngIf="filter.sortBy == 'priority' && filter.reverse"
+               class="fa fa-caret-down "></i></a>
+        </th>
         <th (click)="sort('scheduledFor')">
           <a><span class="p-r-xs" translate>order.label.scheduledFor</span>
             <i *ngIf="filter.sortBy == 'scheduledFor' && !filter.reverse"
@@ -277,6 +284,15 @@
               </div>
             </ng-template>
           </td>
+          <td *ngIf="order.priority !== null">
+            <ng-container *ngIf="getPriorityLabel(order.priority) as key; else showRaw">
+              {{ key | translate }}
+            </ng-container>
+            <ng-template #showRaw>
+              {{ order.priority }}
+            </ng-template>
+          </td>
+
           <td>
             <span *ngIf="!order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>
             <span *ngIf="order.scheduledNever" translate>common.label.never</span>
@@ -288,8 +304,8 @@
           </td>
         </tr>
         <tr *ngIf="order.show">
-          <td colspan="2"></td>
-          <td colspan="7">
+          <td colspan="3"></td>
+          <td colspan="8">
             <app-order-variable [order]="order" [schedulerId]="schedulerId" [type]="'arguments'"></app-order-variable>
           </td>
         </tr>

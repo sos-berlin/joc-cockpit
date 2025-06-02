@@ -97,7 +97,7 @@
             <button (click)="deployXML()"
                     *ngIf="objectType === 'YADE' && nodes && nodes.length > 0
                 && permission.joc && permission.joc.fileTransfer.manage"
-                    [disabled]="extraInfo.deployed" [ngClass]="extraInfo.isExist ? extraInfo.deployed ? 'btn-badge-success' : 'btn-badge-danger' : ''"
+                   [ngClass]="extraInfo.isExist ? extraInfo.deployed ? 'btn-badge-success' : 'btn-badge-danger' : ''"
                     class="btn btn-sm btn-grey m-l-12">
               <i class="fa fa-rocket m-r-xs"></i>
               <span translate>xml.button.deploy</span>

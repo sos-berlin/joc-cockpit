@@ -2031,36 +2031,41 @@ export class XmlEditorComponent {
     }
   }
 
-  checkChildNode(_nodes, data) {
+  checkChildNode(_nodes: any, data: any): any[] {
     let node = _nodes.ref || _nodes.name;
-    let parentNode;
+    let parentNode: string;
     if (!data) {
       this.childNode = [];
     }
-    let select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
-    let complexTypePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType';
-    let TypePath = '/xs:schema/xs:element[@name=\'' + node + '\']';
+    const select = xpath.useNamespaces({ 'xs': 'http://www.w3.org/2001/XMLSchema' });
+    const complexTypePath = `/xs:schema/xs:element[@name='${node}']/xs:complexType`;
+
+    const TypePath = `//*[local-name()="element" and @name='${node}' and @type]`;
+
     let nodes: any = {};
-    let childArr: any = [];
-    let element = select(complexTypePath, this.doc);
+    let childArr: any[] = [];
+
+    const element = select(complexTypePath, this.doc);
     if (element.length > 0) {
-      let sequencePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence';
-      let choicePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice';
-      let childFromBasePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:complexContent/xs:extension/@base';
-      let complexContentWithElementPath = '/xs:schema/xs:element[@name=\'' + node
-        + '\']/xs:complexType/xs:complexContent/xs:extension/xs:sequence/xs:element';
-      let childs = select(childFromBasePath, this.doc);
-      let element1 = select(sequencePath, this.doc);
+      const sequencePath = `/xs:schema/xs:element[@name='${node}']/xs:complexType/xs:sequence`;
+      const choicePath = `/xs:schema/xs:element[@name='${node}']/xs:complexType/xs:choice`;
+      const childFromBasePath = `/xs:schema/xs:element[@name='${node}']/xs:complexType/xs:complexContent/xs:extension/@base`;
+      const complexContentWithElementPath =
+        `/xs:schema/xs:element[@name='${node}']/xs:complexType/xs:complexContent/xs:extension/xs:sequence/xs:element`;
+
+      const childs = select(childFromBasePath, this.doc);
+      const element1 = select(sequencePath, this.doc);
+
       if (element1.length > 0) {
-        let cPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:element';
-        let cElement = select(cPath, this.doc);
+        const cPath = `/xs:schema/xs:element[@name='${node}']/xs:complexType/xs:sequence/xs:element`;
+        const cElement = select(cPath, this.doc);
 
         if (cElement.length > 0) {
           for (let i = 0; i < cElement.length; i++) {
             nodes = {};
             for (let j = 0; j < cElement[i].attributes.length; j++) {
-              let a = cElement[i].attributes[j].nodeName;
-              let b = cElement[i].attributes[j].nodeValue;
+              const a = cElement[i].attributes[j].nodeName;
+              const b = cElement[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, this._defineProperty({}, a, b));
             }
             nodes.parent = node;
@@ -2073,17 +2078,17 @@ export class XmlEditorComponent {
           }
         }
 
-        let dPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:element';
-        let dElement = select(dPath, this.doc);
+        const dPath =
+          `/xs:schema/xs:element[@name='${node}']/xs:complexType/xs:sequence/xs:choice/xs:element`;
+        const dElement = select(dPath, this.doc);
         if (dElement.length > 0) {
           for (let i = 0; i < dElement.length; i++) {
             nodes = {};
             for (let j = 0; j < dElement[i].attributes.length; j++) {
-              let a = dElement[i].attributes[j].nodeName;
-              let b = dElement[i].attributes[j].nodeValue;
+              const a = dElement[i].attributes[j].nodeName;
+              const b = dElement[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, this._defineProperty({}, a, b));
             }
-
             nodes.parent = node;
             nodes.choice = node;
             childArr.push(nodes);
@@ -2095,22 +2100,26 @@ export class XmlEditorComponent {
           }
         }
 
-        let ePath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:sequence/xs:choice/xs:sequence/xs:element';
-        let eElement = select(ePath, this.doc);
+        const ePath =
+          `/xs:schema/xs:element[@name='${node}']/xs:complexType/xs:sequence/xs:choice/xs:sequence/xs:element`;
+        const eElement = select(ePath, this.doc);
         if (eElement.length > 0) {
-
           for (let i = 0; i < eElement.length; i++) {
             nodes = {};
             for (let j = 0; j < eElement[i].attributes.length; j++) {
-              let a = eElement[i].attributes[j].nodeName;
-              let b = eElement[i].attributes[j].nodeValue;
+              const a = eElement[i].attributes[j].nodeName;
+              const b = eElement[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, this._defineProperty({}, a, b));
             }
             nodes.parent = node;
-            if ((nodes.ref !== 'Minimum' && nodes.ref !== 'Maximum') || (nodes.name !== 'Minimum' && nodes.name !== 'Maximum')) {
+            if (
+              (nodes.ref !== 'Minimum' && nodes.ref !== 'Maximum') ||
+              (nodes.name !== 'Minimum' && nodes.name !== 'Maximum')
+            ) {
               nodes.choice = node;
             }
             if (nodes.minOccurs && !nodes.maxOccurs) {
+              // no-op
             } else {
               childArr.push(nodes);
             }
@@ -2123,18 +2132,18 @@ export class XmlEditorComponent {
         }
         return childArr;
       }
-      if ((select(choicePath, this.doc)).length > 0) {
-        let childPath = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice/xs:element';
-        let childs1 = select(childPath, this.doc);
+
+      if (select(choicePath, this.doc).length > 0) {
+        const childPath = `/xs:schema/xs:element[@name='${node}']/xs:complexType/xs:choice/xs:element`;
+        const childs1 = select(childPath, this.doc);
         if (childs1.length > 0) {
           for (let i = 0; i < childs1.length; i++) {
             nodes = {};
             for (let j = 0; j < childs1[i].attributes.length; j++) {
-              let a = childs1[i].attributes[j].nodeName;
-              let b = childs1[i].attributes[j].nodeValue;
+              const a = childs1[i].attributes[j].nodeName;
+              const b = childs1[i].attributes[j].nodeValue;
               nodes = Object.assign(nodes, this._defineProperty({}, a, b));
             }
-
             nodes.parent = node;
             nodes.choice = node;
             childArr.push(nodes);
@@ -2144,18 +2153,18 @@ export class XmlEditorComponent {
               this.childNode = childArr;
             }
           }
-          let childPath2 = '/xs:schema/xs:element[@name=\'' + node + '\']/xs:complexType/xs:choice/xs:sequence/xs:element';
-          let child12 = select(childPath2, this.doc);
+          const childPath2 =
+            `/xs:schema/xs:element[@name='${node}']/xs:complexType/xs:choice/xs:sequence/xs:element`;
+          const child12 = select(childPath2, this.doc);
           if (child12.length > 0) {
             for (let i = 0; i < child12.length; i++) {
               nodes = {};
               for (let j = 0; j < child12[i].attributes.length; j++) {
-                let a = child12[i].attributes[j].nodeName;
-                let b = child12[i].attributes[j].nodeValue;
+                const a = child12[i].attributes[j].nodeName;
+                const b = child12[i].attributes[j].nodeValue;
                 nodes = Object.assign(nodes, this._defineProperty({}, a, b));
               }
               nodes.parent = node;
-
               nodes.choice = node;
               childArr.push(nodes);
               if (data) {
@@ -2168,19 +2177,20 @@ export class XmlEditorComponent {
           return childArr;
         }
       }
+
       if (childs.length > 0) {
         if (childs[0].nodeValue !== 'NotEmptyType') {
-          let childrenPath = '/xs:schema/xs:complexType[@name=\'' + childs[0].nodeValue + '\']/xs:sequence/xs:element';
-          let sElement = select(childrenPath, this.doc);
+          const childrenPath =
+            `/xs:schema/xs:complexType[@name='${childs[0].nodeValue}']/xs:sequence/xs:element`;
+          const sElement = select(childrenPath, this.doc);
           if (sElement.length > 0) {
             for (let i = 0; i < sElement.length; i++) {
               nodes = {};
               for (let j = 0; j < sElement[i].attributes.length; j++) {
-                let a = sElement[i].attributes[j].nodeName;
-                let b = sElement[i].attributes[j].nodeValue;
+                const a = sElement[i].attributes[j].nodeName;
+                const b = sElement[i].attributes[j].nodeValue;
                 nodes = Object.assign(nodes, this._defineProperty({}, a, b));
               }
-
               nodes.parent = node;
               childArr.push(nodes);
               if (data) {
@@ -2189,15 +2199,16 @@ export class XmlEditorComponent {
                 this.childNode = childArr;
               }
             }
-          } else if ((select(complexContentWithElementPath, this.doc)).length > 0) {
-            let childrenPath1 = '/xs:schema/xs:complexType[@name=\'' + childs[0].nodeValue + '\']/xs:choice/xs:element';
-            let elementx = select(childrenPath1, this.doc);
+          } else if (select(complexContentWithElementPath, this.doc).length > 0) {
+            const childrenPath1 =
+              `/xs:schema/xs:complexType[@name='${childs[0].nodeValue}']/xs:choice/xs:element`;
+            const elementx = select(childrenPath1, this.doc);
             if (elementx.length > 0) {
               for (let i = 0; i < elementx.length; i++) {
                 nodes = {};
                 for (let j = 0; j < elementx[i].attributes.length; j++) {
-                  let a = elementx[i].attributes[j].nodeName;
-                  let b = elementx[i].attributes[j].nodeValue;
+                  const a = elementx[i].attributes[j].nodeName;
+                  const b = elementx[i].attributes[j].nodeValue;
                   nodes = Object.assign(nodes, this._defineProperty({}, a, b));
                 }
                 nodes.parent = node;
@@ -2209,15 +2220,14 @@ export class XmlEditorComponent {
                   this.childNode = childArr;
                 }
               }
-              let ele = select(complexContentWithElementPath, this.doc);
+              const ele = select(complexContentWithElementPath, this.doc);
               for (let i = 0; i < ele.length; i++) {
                 nodes = {};
                 for (let j = 0; j < ele[i].attributes.length; j++) {
-                  let a = ele[i].attributes[j].nodeName;
-                  let b = ele[i].attributes[j].nodeValue;
+                  const a = ele[i].attributes[j].nodeName;
+                  const b = ele[i].attributes[j].nodeValue;
                   nodes = Object.assign(nodes, this._defineProperty({}, a, b));
                 }
-
                 nodes.parent = node;
                 childArr.push(nodes);
                 if (data) {
@@ -2231,27 +2241,28 @@ export class XmlEditorComponent {
           }
         }
       }
-    } else if ((select(TypePath, this.doc).length > 0)) {
+    } else if (select(TypePath, this.doc).length > 0) {
       parentNode = node;
-      let typeElement = select(TypePath, this.doc);
+      const typeElement = select(TypePath, this.doc);
       if (typeElement.length > 0 && typeElement[0].attributes.length > 0) {
         for (let i = 0; i < typeElement[0].attributes.length; i++) {
-          if (typeElement[0].attributes[i].nodeName === 'type') {
-            this.addTypeChildNode(typeElement[0].attributes[i].nodeValue, parentNode, data);
+          const attrName = typeElement[0].attributes[i].nodeName;
+          const attrValue = typeElement[0].attributes[i].nodeValue;
+          if (attrName === 'type') {
+            this.addTypeChildNode(attrValue, parentNode, data);
           }
-          if (typeElement[0].attributes[i].nodeValue === 'xs:boolean') {
-            _nodes = Object.assign(_nodes, {values: []});
+          if (attrValue === 'xs:boolean') {
+            _nodes = Object.assign(_nodes, { values: [] });
             let temp: any = {};
             for (let j = 0; j < typeElement[0].attributes.length; j++) {
-              let a = typeElement[0].attributes[j].nodeName;
-              let b = typeElement[0].attributes[j].nodeValue;
+              const a = typeElement[0].attributes[j].nodeName;
+              const b = typeElement[0].attributes[j].nodeValue;
               if (a === 'type') {
-                a = 'base';
-              }
-              if (a === 'default') {
+                temp.base = b;
+              } else if (a === 'default') {
                 temp.data = b;
               }
-              temp = Object.assign(temp, this._defineProperty({}, a, b));
+              temp[a] = b;
             }
             temp.parent = node;
             _nodes.values.push(temp);
@@ -2259,6 +2270,8 @@ export class XmlEditorComponent {
         }
       }
     }
+
+    return this.childNode;
   }
 
   getAttrFromType(nodeValue, parentNode): any {
@@ -3035,46 +3048,56 @@ export class XmlEditorComponent {
   }
 
   getCustomCss(node: any, parentNode: any): string {
-    // pick the element’s identity: either its ref or its name
     const id = node.ref || node.name;
     let count = 0;
 
-    // count how many times this element has already been instantiated
-    if (parentNode.children?.length) {
-      for (const child of parentNode.children) {
-        const childId = child.ref || child.name;
-        if (childId === id) {
-          count++;
-        }
+    const children = parentNode.children || [];
+    for (const child of children) {
+      const childId = child.ref || child.name;
+      if (childId === id) {
+        count++;
       }
     }
 
-    // 1) if unbounded, always enabled
+    if (this.choice) {
+      if (node.maxOccurs === 'unbounded') {
+        return '';
+      }
+
+      if (node.maxOccurs !== 'unbounded' && node.maxOccurs !== undefined) {
+        const max = Number(node.maxOccurs);
+        if (count >= max) {
+          return 'disabled disable-link';
+        }
+      }
+      else if (node.maxOccurs === undefined) {
+        if (count >= 1) {
+          return 'disabled disable-link';
+        }
+      }
+
+      return node.choice ? 'disabled disable-link' : '';
+    }
+
     if (node.maxOccurs === 'unbounded') {
       return '';
     }
 
-    // 2) if numeric maxOccurs, disable once we've hit the limit
-    if (node.maxOccurs != null) {
+    if (node.maxOccurs !== 'unbounded' && node.maxOccurs !== undefined) {
       const max = Number(node.maxOccurs);
       if (count >= max) {
         return 'disabled disable-link';
       }
-    } else {
-      // 3) if no maxOccurs specified, default is 1 occurrence
+    }
+    else if (node.maxOccurs === undefined) {
       if (count >= 1) {
         return 'disabled disable-link';
       }
     }
 
-    // 4) finally, if this is a choice‐only element, disable further adds
-    if (node.choice) {
-      return 'disabled disable-link';
-    }
-
-    // otherwise, it’s enabled
     return '';
   }
+
 
   printArray(rootchildrensattrArr): void {
     this.nodes.push(rootchildrensattrArr);
@@ -4840,6 +4863,7 @@ export class XmlEditorComponent {
               this.getXsdSchema();
             } else {
               this.extraInfo.released = false;
+              this.extraInfo.deployed = false;
               this.xmlToJsonService(res.uploadData);
             }
           } else {
@@ -5218,7 +5242,7 @@ export class XmlEditorComponent {
     }
     if (childrenNode.children && childrenNode.children.length > 0) {
       for (let i = 0; i < childrenNode.children.length; i++) {
-        this.createChildJson(curentNode, childrenNode.children[i], doc.createElement(childrenNode.children[i].ref), doc);
+        this.createChildJson(curentNode, childrenNode.children[i], doc.createElement(childrenNode.children[i].ref || childrenNode.children[i].name), doc);
       }
     }
     node.appendChild(curentNode);
@@ -5622,6 +5646,7 @@ export class XmlEditorComponent {
   }
 
   private jsonToXml(nodes) {
+    console.log(nodes,">>>")
     if (nodes.length > 0) {
       let doc = document.implementation.createDocument('', '', null);
       let peopleElem = doc.createElement(nodes[0].ref);
@@ -5917,7 +5942,7 @@ export class XmlEditorComponent {
       let a = this.checkChildNode(nod, undefined);
       if (a && a.length > 0) {
         for (let i = 0; i < a.length; i++) {
-          if (a[i].ref === node.ref) {
+          if (a[i].ref === node.ref || a[i].ref === node.name) {
             node = Object.assign(node, a[i]);
           }
         }
@@ -5926,7 +5951,7 @@ export class XmlEditorComponent {
       if (a && a.length > 0) {
         for (let i = 0; i < a.length; i++) {
           for (let j = 0; j < node.children.length; j++) {
-            if (a[i].ref === node.children[j].ref) {
+            if (a[i].ref === node.children[j].ref || a[i].ref === node.children[j].name) {
               node.children[j] = Object.assign(node.children[j], a[i]);
             }
           }
@@ -6054,6 +6079,7 @@ export class XmlEditorComponent {
     this.coreService.post('xmleditor/xml2json', obj).subscribe({
       next: (res: any) => {
         this.validConfig = false;
+        this.extraInfo.deployed = false;
         let _tempArrToExpand = [];
         let arr = JSON.parse(res.configurationJson);
         let a = [arr];

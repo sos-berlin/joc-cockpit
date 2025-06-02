@@ -127,6 +127,13 @@ export class AddOrderModalComponent {
   commonStartDate: any = {fromDate: null, fromTime: null, timeZone: null};
   isAssignedFromSchedule: boolean = false;
   planIds: any;
+  priorities = [
+    {label: 'inventory.label.high', value: 20000},
+    {label: 'inventory.label.aboveNormal', value: 10000},
+    {label: 'inventory.label.normal', value: 0},
+    {label: 'inventory.label.belowNormal', value: -10000},
+    {label: 'inventory.label.Low', value: -20000},
+  ];
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
 
   constructor(public coreService: CoreService, private activeModal: NzModalRef,
@@ -154,6 +161,7 @@ export class AddOrderModalComponent {
       timeZone: this.preferences.zone,
       at: 'now',
       forceJobAdmission: false,
+      priority: 0,
       tags: [],
       arguments: [],
       startPosition: '',
@@ -747,6 +755,7 @@ export class AddOrderModalComponent {
         workflowPath: this.workflow.path,
         orderName: order.orderId,
         forceJobAdmission: order.forceJobAdmission,
+        priority: order.priority,
         tags: order.tags || this.tags,
         arguments: {}
       };
@@ -901,6 +910,7 @@ export class AddOrderModalComponent {
       timeZone: this.preferences.zone,
       at: 'now',
       forceJobAdmission: false,
+      priority: 0,
       tags: [],
       arguments: [],
       startPosition: '',
@@ -967,6 +977,7 @@ export class AddOrderModalComponent {
                 timeZone: this.preferences.zone,
                 at: 'now',
                 forceJobAdmission: parameterisation?.forceJobAdmission || false,
+                priority: parameterisation?.priority || 0,
                 tags: parameterisation?.tags || [],
                 arguments: [],
                 startPosition: '',
@@ -1018,6 +1029,10 @@ export class AddOrderModalComponent {
 
                 if (param.forceJobAdmission) {
                   newOrder.forceJobAdmission = param.forceJobAdmission;
+                }
+
+                if (param.priority) {
+                  newOrder.priority = param.priority;
                 }
 
                 if (param.tags && param.tags.length > 0) {
@@ -1412,6 +1427,12 @@ export class AddOrderModalComponent {
             order.forceJobAdmission = param.forceJobAdmission;
           } else {
             order.forceJobAdmission = false;
+          }
+
+          if (param.priority) {
+            order.priority = param.priority;
+          } else {
+            order.priority = 0;
           }
 
           if (param.tags && param.tags.length > 0) {
@@ -1900,6 +1921,7 @@ export class AddOrderModalComponent {
       }
     });
   }
+
 
 }
 

@@ -71,6 +71,13 @@ export class ScheduleComponent {
   inputVisible = false;
   inputValue = '';
   schedulerIds: any = {};
+  priorities = [
+    {label: 'inventory.label.high', value: 20000},
+    {label: 'inventory.label.aboveNormal', value: 10000},
+    {label: 'inventory.label.normal', value: 0},
+    {label: 'inventory.label.belowNormal', value: -10000},
+    {label: 'inventory.label.Low', value: -20000},
+  ];
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
 
   constructor(public coreService: CoreService, private translate: TranslateService, private toasterService: ToastrService,
@@ -1405,6 +1412,7 @@ export class ScheduleComponent {
         positions: item.positions,
         tags: item.tags,
         forceJobAdmission: item.forceJobAdmission,
+        priority: item.priority,
       };
     });
 
@@ -1937,5 +1945,9 @@ export class ScheduleComponent {
         this.saveJSON();
       }
     });
+  }
+
+  changePriority($event): void {
+    this.saveJSON();
   }
 }

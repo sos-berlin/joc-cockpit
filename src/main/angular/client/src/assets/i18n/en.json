@@ -1923,6 +1923,11 @@
     "label.renameGroup": "Rename Group",
     "label.includeDependencies": "Include Dependencies",
     "label.deployType": "Deploy Type",
+    "label.high": "High",
+    "label.aboveNormal": "Above Normal",
+    "label.normal": "Normal",
+    "label.belowNormal": "Below Normal",
+    "label.Low": "Low",
     "button.modifyVariableSet": "Modify Variable Set",
     "button.addOrderParameter": "Add Order Template",
     "button.setVersion": "Set Version",
@@ -2040,6 +2045,8 @@
     "placeholder.objectTypes": "Select object types",
     "placeholder.selectTags": "Select Tags",
     "placeholder.selectGroups": "Select Groups",
+    "placeholder.selectPredefinedPriorities": "Select Predefined Priorities",
+    "placeholder.priority": "Enter Priority",
     "message.workflowIsMissing": "Workflow is missing, but is required",
     "message.directoryIsMissing": "Directory is missing, but is required",
     "message.envOrArgumentIsMissing": "At least one variable or environment variable must be specified",
@@ -2156,7 +2163,8 @@
         "endNode": "The end position of a job can be before the specified instruction in the workflow. The job ends before the specified position.",
         "blockPosition": "Block Position",
         "ignoreAdmissionTimes": "The execution of jobs can be restricted by Admission Times of the jobs. This option ignores Admission Times and forces the start of jobs.",
-        "tagName": "Any number of Tags can be added that will be assigned the orders created from the Schedule."
+        "tagName": "Any number of Tags can be added that will be assigned the orders created from the Schedule.",
+        "priority": "Priority."
       },
       "script": {
         "name": "A Script Include is used to include recurring code snippets into a job script. The name of a Script Include is unique in the inventory. For the name of the Script Include most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
@@ -2657,6 +2665,7 @@
     "label.resumeLabelPosition": "Resume from position",
     "label.force": "Force resumption",
     "label.noticeSpaceKey": "Plan Key",
+    "label.priority": "Priority",
     "button.allOrders": "All Orders",
     "button.cancel": "Cancel",
     "button.cancelSoftly": "Softly",

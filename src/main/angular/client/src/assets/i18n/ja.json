@@ -1922,6 +1922,11 @@
     "label.renameGroup": "グループ名変更",
     "label.includeDependencies": "依存関係を含む",
     "label.deployType": "配置タイプ",
+    "label.high": "High",
+    "label.aboveNormal": "Above Normal",
+    "label.normal": "Normal",
+    "label.belowNormal": "Below Normal",
+    "label.Low": "Low",
     "button.modifyVariableSet": "変数設定変更",
     "button.addOrderParameter": "オーダー変数追加",
     "button.setVersion": "バージョン設定",
@@ -2039,6 +2044,8 @@
     "placeholder.objectTypes": "オブジェクトタイプ選択",
     "placeholder.selectTags": "タグ選択",
     "placeholder.selectGroups": "グループ選択",
+    "placeholder.selectPredefinedPriorities": "Select Predefined Priorities",
+    "placeholder.priority": "Enter Priority",
     "message.workflowIsMissing": "ワークフローが必要です",
     "message.directoryIsMissing": "必要なディレクトリがありません",
     "message.envOrArgumentIsMissing": "必要な環境変数または引数がありません",
@@ -2155,7 +2162,8 @@
         "endNode": "ジョブの終了位置は、ワークフロー内の指定された命令の前にすることができます。ジョブは指定された位置より前に終了します。",
         "blockPosition": "ブロック位置",
         "ignoreAdmissionTimes": "ジョブの実行は、許可時間によって制限することができますが、このオプションは、許可時間を無視し、ジョブの開始を強制します。",
-        "tagName": "スケジュールから作成されたオーダーに割り当てられるタグはいくつでも追加できます。"
+        "tagName": "スケジュールから作成されたオーダーに割り当てられるタグはいくつでも追加できます。",
+        "priority": "Priority."
       },
       "script": {
         "name": "スクリプトインクルードは、定期的に発生するコードスニペットをジョブスクリプトに含めるために使用します。スクリプトインクルード名は、インベントリー内で一意です。スクリプトインクルード名には、ドットやハイフンなど、ほとんどのユニコード文字を使用できますが、先頭や末尾のドットやハイフンは使用できません。",
@@ -2655,6 +2663,7 @@
     "label.resumeLabelPosition": "ポジションから回復",
     "label.force": "強制再開",
     "label.noticeSpaceKey": "通知予定日時",
+    "label.priority": "Priority",
     "button.allOrders": "全オーダー",
     "button.cancel": "キャンセル",
     "button.cancelSoftly": "ソフトキャンセル",

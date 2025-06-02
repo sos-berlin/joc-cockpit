@@ -1922,6 +1922,11 @@
     "label.renameGroup": "Renommer Groupe",
     "label.includeDependencies": "Inclut les Dépendances",
     "label.deployType": "Type de Déploiement",
+    "label.high": "High",
+    "label.aboveNormal": "Above Normal",
+    "label.normal": "Normal",
+    "label.belowNormal": "Below Normal",
+    "label.Low": "Low",
     "button.modifyVariableSet": "Modifier le Jeu de Variable",
     "button.addOrderParameter": "Ajouter un Modèle d'Ordre",
     "button.setVersion": "Définir la Version",
@@ -2039,6 +2044,8 @@
     "placeholder.objectTypes": "Sélectionnez les types d'objet",
     "placeholder.selectTags": "Sélectionnez les Balises",
     "placeholder.selectGroups": "Sélectionnez les Groupes",
+    "placeholder.selectPredefinedPriorities": "Select Predefined Priorities",
+    "placeholder.priority": "Enter Priority",
     "message.workflowIsMissing": "Le Workflow est absent, mais il est nécessaire",
     "message.directoryIsMissing": "Le répertoire est absent, mais il est nécessaire",
     "message.envOrArgumentIsMissing": "Les variables d'environnement ou les arguments sont manquantes, mais sont nécessaires",
@@ -2155,7 +2162,8 @@
         "endNode": "La position finale d'un ordre peut être antérieure à l'instruction indiquée dans le Workflow. L'ordre va se terminer avant la position indiquée.",
         "blockPosition": "Block Position",
         "ignoreAdmissionTimes": "L'exécution des tâches en cours peut être limitée par les heures d'admission des tâches. Cette option ignore les heures d'admission et force le lancement des tâches.",
-        "tagName": "Il est possible d'ajouter un nombre quelconque de Balises qui seront affectées aux ordres crées à partir de la Planification."
+        "tagName": "Il est possible d'ajouter un nombre quelconque de Balises qui seront affectées aux ordres crées à partir de la Planification.",
+        "priority": "Priority."
       },
       "script": {
         "name": "Un Script Élément est utilisé pour inclure des extraits de code récurrents dans un script job. Le nom d'un Script Élément est unique dans l'inventaire. Pour le nom du Script Élément, la plupart des caractères Unicode peuvent être utilisés, des points et des traits d'union, cependant, aucune espace, aucun point ni tiret au début ou en fin.",
@@ -2655,6 +2663,7 @@
     "label.resumeLabelPosition": "Reprendre de la position",
     "label.force": "Forcer la reprise",
     "label.noticeSpaceKey": "Clé du Plan",
+    "label.priority": "Priority",
     "button.allOrders": "Tous les Ordres",
     "button.cancel": "Annuler",
     "button.cancelSoftly": "doucement",

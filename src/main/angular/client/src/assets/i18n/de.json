@@ -1922,6 +1922,11 @@
     "label.renameGroup": "Gruppe umbenennen",
     "label.includeDependencies": "Inklusive Abhängigkeiten",
     "label.deployType": "Ausroll-Typ",
+    "label.high": "High",
+    "label.aboveNormal": "Above Normal",
+    "label.normal": "Normal",
+    "label.belowNormal": "Below Normal",
+    "label.Low": "Low",
     "button.modifyVariableSet": "Variablensatz ändern",
     "button.addOrderParameter": "Auftragsvorlage hinzufügen",
     "button.setVersion": "Version setzen",
@@ -2039,6 +2044,8 @@
     "placeholder.objectTypes": "Objekttypen auswählen",
     "placeholder.selectTags": "Kennzeichnung auswählen",
     "placeholder.selectGroups": "Gruppen auswählen",
+    "placeholder.selectPredefinedPriorities": "Select Predefined Priorities",
+    "placeholder.priority": "Enter Priority",
     "message.workflowIsMissing": "Arbeitsablauf ist erforderlich",
     "message.directoryIsMissing": "Verzeichnis ist erforderlich",
     "message.envOrArgumentIsMissing": "Mindestens eine Variable oder Umgebungsvariable muss angegeben werden",
@@ -2155,7 +2162,8 @@
         "endNode": "Die End-Position eines Auftrags kann vor der anggegebenen Anweisung im Arbeitsablauf liegen. Der Auftrag endet vor der angegebenen Position.",
         "blockPosition": "Block Position",
         "ignoreAdmissionTimes": "Die Ausführung von Jobs im Arbeitslauf kann durch Zutrittszeiten der Jobs eingeschränkt sein. Diese Option ignoriert Zutrittszeiten und forciert den Start der Jobs.",
-        "tagName": "Es kann eine beliebige Anzahl von Kennzeeichnungen hinzugefügt werden, die den aus dem Zeitplan erstellten Aufträgen zugewiesen werden"
+        "tagName": "Es kann eine beliebige Anzahl von Kennzeeichnungen hinzugefügt werden, die den aus dem Zeitplan erstellten Aufträgen zugewiesen werden",
+        "priority": "Priority."
       },
       "script": {
         "name": "Ein Skript Baustein wird verwendet, um wiederkehrend verwendeten Code in Job-Skripte einzufügen. Der Name eines Skript Bausteins ist eindeutig im Inventar. Für den Namen des Skript Bausteins können die meisten Unicode Zeichen verwendet werden inkl. Punkte und Bindestriche. Leerzeichen, führende und schließende Punkte und Bindestriche sind nicht zugelassen.",
@@ -2655,6 +2663,7 @@
     "label.resumeLabelPosition": "Von Position wiederaufnehmen",
     "label.force": "Wiederaufnahme erzwingen",
     "label.noticeSpaceKey": "Schlüssel des Plans",
+    "label.priority": "Priority",
     "button.allOrders": "Alle Aufträge",
     "button.cancel": "Abbrechen",
     "button.cancelSoftly": "sachte",
