@@ -1,0 +1,190 @@
+<div class="box p-a" style="margin-top: 16px">
+  <form #myForm="ngForm" (ngSubmit)="onSubmit()">
+    <div class="modal-body p-a">
+     <ng-container *ngIf="!fullScreen">
+       <div class="row">
+         <div class="col-md-12">
+           <h6>
+             <span translate>user.label.connection</span>
+           </h6>
+         </div>
+       </div>
+    <div class="form-group row">
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.jobResource' | translate"
+               class="col-sm-2 form-control-label"
+               title="{{'user.label.jobResourceName' | translate}}"
+               translate>user.label.jobResourceName
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div [ngClass]="{'has-error' : ((jobResource.dirty || jobResource.touched) && jobResource.invalid)}"
+             class="col-md-6">
+          <input #jobResource="ngModel" (click)="isTreeShow = true;" required
+                 [(ngModel)]="currentObj.jobResourceName" autocomplete="off"
+                 class="form-control" name="jobResource"
+                 type="text">
+          <div *ngIf="isTreeShow" [ngStyle]="{'margin-top': '-29px'}" class="z-index-9999 w-full">
+            <app-search-input (onBlur)="onBlur()" (onSelect)="onSelect($event)" [isDisplay]="true"
+                              [nodes]="jobResourcesTree" [type]="'JOBRESOURCE'"></app-search-input>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.contentType' | translate"
+               class="col-sm-2 form-control-label"
+               translate>user.label.contentType
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div [ngClass]="{'has-error' : ((contentType.dirty || contentType.touched) && contentType.invalid)}"
+             class="col-sm-6">
+          <input #contentType="ngModel" [(ngModel)]="currentObj.contentType" required
+                 [placeholder]="'user.placeholder.contentType' | translate" autocomplete="off"
+                 class="form-control"
+                 name="contentType" type="text">
+          <div *ngIf="contentType.invalid && (contentType.dirty || contentType.touched)"
+               class="text-danger help-block">
+            <div *ngIf="contentType.errors['required']">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.charset' | translate"
+               class="col-sm-2 form-control-label"
+               translate>user.label.charset
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div [ngClass]="{'has-error' : ((charset.dirty || charset.touched) && charset.invalid)}"
+             class="col-sm-6">
+          <input #charset="ngModel" [(ngModel)]="currentObj.charset" required
+                 [placeholder]="'user.placeholder.contentType' | translate" autocomplete="off"
+                 class="form-control"
+                 name="charset" type="text">
+          <div *ngIf="charset.invalid && (charset.dirty || charset.touched)"
+               class="text-danger help-block">
+            <div *ngIf="charset.errors['required']">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.encoding' | translate"
+               class="col-sm-2 form-control-label"
+               translate>user.label.encoding
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div [ngClass]="{'has-error' : ((encoding.dirty || encoding.touched) && encoding.invalid)}"
+             class="col-sm-6">
+          <input #encoding="ngModel" [(ngModel)]="currentObj.encoding" required
+                 [placeholder]="'user.placeholder.encoding' | translate" autocomplete="off"
+                 class="form-control"
+                 name="encoding" type="text">
+          <div *ngIf="encoding.invalid && (encoding.dirty || encoding.touched)"
+               class="text-danger help-block">
+            <div *ngIf="encoding.errors['required']">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+        </div>
+      </div>
+       <div class="row m-t b-t p-t">
+         <div class="col-md-12">
+           <h6>
+             <span translate>user.label.confirmationEmail</span>
+           </h6>
+         </div>
+       </div>
+      <div class="form-group row">
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.cc' | translate"
+               class="col-sm-2 form-control-label"
+               translate>user.label.cc
+        </label>
+        <div class="col-sm-6">
+          <input [(ngModel)]="currentObj.cc"
+                 [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
+                 class="form-control"
+                 name="ccRegistration" type="text">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.bcc' | translate"
+               class="col-sm-2 form-control-label"
+               translate>user.label.bcc
+        </label>
+        <div class="col-sm-6">
+          <input [(ngModel)]="currentObj.bcc"
+                 [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
+                 class="form-control"
+                 name="bccRegistration" type="text">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.subject' | translate"
+               class="col-sm-2 form-control-label"
+               translate>user.label.subject
+        </label>
+        <div class="col-sm-6">
+          <input [(ngModel)]="currentObj.subject"
+                 [placeholder]="'user.placeholder.subject' | translate" autocomplete="off"
+                 class="form-control"
+                 name="subject" type="text">
+        </div>
+      </div>
+      <div class="form-group row">
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.body' | translate"
+               class="col-sm-2 form-control-label"
+               translate>user.label.body
+          <sup class="text-danger text-sm">*</sup>
+
+        </label>
+        <div [ngClass]="{'has-error' : ((body.dirty || body.touched) && body.invalid)}" class="col-sm-6">
+          <a (click)="previewRegistration = false;" [ngClass]="{'text-primary': previewRegistration !== true}"
+             class="btn btn-xs btn-default" style="box-shadow: none !important;"
+             translate>xml.button.sourceCode</a>
+          <a (click)="previewRegistration = true;" [ngClass]="{'text-primary': previewRegistration === true}"
+             class="btn btn-xs btn-default b-l" style="box-shadow: none !important;"
+             translate>xml.button.preview</a>
+          <a (click)="fullScreen = true" class="pull-right">
+            <i class="fa fa-arrows-alt text-hover-primary"></i>
+          </a>
+          <textarea #body="ngModel" [(ngModel)]="currentObj.body" required
+                    [hidden]="previewRegistration" [nzAutosize]="{ minRows: 5, maxRows:10}"
+                    [placeholder]="'user.placeholder.body' | translate"
+                    class="form-control"
+                    name="body"
+                    nz-input
+          ></textarea>
+          <div *ngIf="body.invalid && (body.dirty || body.touched)"
+               class="text-danger help-block">
+            <div *ngIf="body.errors['required']">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
+          <div *ngIf="previewRegistration" class="b-a"
+               style="min-height: 104px;max-height: 450px;overflow: auto">
+            <iframe [srcdoc]="currentObj.body | safeHtml"
+                    class="mail-template"></iframe>
+          </div>
+        </div>
+      </div>
+  </ng-container>
+    </div>
+    <div class="modal-footer">
+      <button [disabled]="!myForm.form.valid "
+              class="btn btn-primary btn-sm"
+              type="submit">
+        <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+        {{'common.button.submit' | translate}}
+      </button>
+    </div>
+
+  </form>
+  <div class="center-align" *ngIf="fullScreen">
+    <a (click)="fullScreen = false;" class="pos-abt text-18 r-18"><i
+      class="fa fa-minus-square-o text-hover-primary"></i></a>
+    <iframe *ngIf="fullScreen" [srcdoc]="currentObj.body | safeHtml"
+            class="mail-template-full"></iframe>
+
+  </div>
+</div>
