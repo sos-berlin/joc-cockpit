@@ -19,7 +19,8 @@ import {NzMessageService} from "ng-zorro-antd/message";
 import {ClipboardService} from "ngx-clipboard";
 import {Editor as AceEditor} from 'ace-builds/src-noconflict/ace';
 import {FindAndReplaceComponent} from "../workflow/workflow.component";
-import { FormGroup } from '@angular/forms';
+import {FormGroup} from '@angular/forms';
+
 interface KeyValue {
   key: string;
   value: string;
@@ -540,7 +541,7 @@ export class ApiRequestComponent {
     }
 
     if (body !== undefined && body !== '') config.body = body;
-
+    delete config.url;
     const json = JSON.stringify(config, null, 2);
     const out: any = {request: json};
     if (this.mappings.length) out.return_variables = this.mappings;
@@ -620,7 +621,7 @@ export class ApiRequestDialogComponent {
   list = false;
   docs = false;
 
-  constructor(private coreService: CoreService, public activeModal: NzModalRef,private modal: NzModalService, ) {
+  constructor(private coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService,) {
   }
 
   ngOnInit(): void {

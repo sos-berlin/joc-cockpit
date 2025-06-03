@@ -687,6 +687,7 @@
     "placeholder.enterSecond": "HH:MM:[SS] or SECONDS",
     "placeholder.processExecuted": "now-SECONDS, today, yesterday, -1(h|d|w|M|y) or 08:00am to 08:00pm, -1(h|d|w|M|y) to -1(h|d|w|M|y)",
     "placeholder.processLimit": "プロセス上限入力",
+    "placeholder.approver": "Select Approver",
     "message.noDataAvailable": "データがありません",
     "message.requiredError": "必須入力項目",
     "message.invalid": "無効な入力です",
@@ -3264,7 +3265,8 @@
       "days_ahead_submit": "計画済オーダーがコントローラーに送信され、保留状態で利用可能になる日数を指定します。",
       "projections_month_ahead": "翌月のプロジェクション",
       "submit_orders_individually": "デイリープランサービスでは、デフォルトで1つの取引からオーダーが登録され、オーダーが失敗するとロールバックされます。この設定により、オーダーは個別に登録され、他のオーダー登録の失敗とは独立して登録されます。デイリープランサービスでは、オーダーを個別に登録するため、より多くの時間を要します。",
-      "age_of_plans_to_be_closed_automatically": "age_of_plans_to_be_closed_automatically."},
+      "age_of_plans_to_be_closed_automatically": "age_of_plans_to_be_closed_automatically."
+    },
     "joc": {
       "force_comments_for_audit_log": "trueに設定すると、オーダーの追加、キャンセルなど、オブジェクトに適用される変更について、操作ログにコメントを強制できます。",
       "comments_for_audit_log": "操作ログにコメントを追加する際に利用できる、定義済コメントを設定します。",

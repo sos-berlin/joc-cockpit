@@ -687,6 +687,7 @@
     "placeholder.enterSecond": "HH:MM:[SS] oder SEKUNDEN",
     "placeholder.processExecuted": "now-SEKUNDEN, today, yesterday, -1(h|d|w|M|y) oder 08:00am bis 08:00pm, -1(h|d|w|M|y) bis -1(h|d|w|M|y)",
     "placeholder.processLimit": "Prozesslimit angeben",
+    "placeholder.approver": "Select Approver",
     "message.noDataAvailable": "keine Daten verfügbar",
     "message.requiredError": "Diese Eingabe ist verpflichtend",
     "message.invalid": "Ungültige Eingabe",
@@ -3264,7 +3265,8 @@
       "days_ahead_submit": "Benennt die Anzahl Tage im Voraus, für die Aufträge, die sich im Zustand GEPLANT befinden, an die Controller übermittelt werden und den Zustand ÜBERMITTELT erhalten.",
       "projections_month_ahead": "Gibt die Anzahl der Monate an, für die Projektionen berechnet werden, die die zukünftige Auftragsausführung anzeigen.",
       "submit_orders_individually": "Der Tagesplandienst übermittelt standardmäßig Aufträge in einer einzigen Transaktion, die zurückgesetzt wird, wenn die Übermittlung eines Auftrags fehlschlägt. Mit dieser Einstellung werden die Aufträge einzeln und unabhängig von der fehlgeschlagenen Übermittlung anderer Aufträge übermittelt. Der Tagesplandienst benötigt mehr Zeit, um Aufträge einzeln zu übermitteln.",
-      "age_of_plans_to_be_closed_automatically": "Gibt die Anzahl der Tage an, nach denen der Tagesplan geschlossen wird und keine Aufträge mehr zulässt, die Abhängigkeiten wie z.B. Notizen für das ursprüngliche Datum auflösen."},
+      "age_of_plans_to_be_closed_automatically": "Gibt die Anzahl der Tage an, nach denen der Tagesplan geschlossen wird und keine Aufträge mehr zulässt, die Abhängigkeiten wie z.B. Notizen für das ursprüngliche Datum auflösen."
+    },
     "joc": {
       "force_comments_for_audit_log": "Vereinbart, dass für alle Änderungen an Objekten, z.B. das Hinzufügen oder Abbrechen eines Auftrags vom Anwender eine Begründung angegeben werden muss, die in das Prüfprotokoll aufgenommen wird.",
       "comments_for_audit_log": "Benennt eine Liste vordefinierter Begründungen für Änderungen an Objekten.",

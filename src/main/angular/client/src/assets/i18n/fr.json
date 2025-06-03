@@ -687,6 +687,7 @@
     "placeholder.enterSecond": "HH:MM:[SS] ou SECONDS",
     "placeholder.processExecuted": "now-SECONDS, today, yesterday, -1(h|d|w|M|y) ou 08:00am to 08:00pm, -1(h|d|w|M|y) to -1(h|d|w|M|y)",
     "placeholder.processLimit": "Entrer la Limite de Processus",
+    "placeholder.approver": "Select Approver",
     "message.noDataAvailable": "pas de données disponibles",
     "message.requiredError": "Une entrée dans ce champ est requise",
     "message.invalid": "Entrée non valide",
@@ -3264,7 +3265,8 @@
       "days_ahead_submit": "Spécifie le nombre de jours à venir pour lesquels les ordres PLANIFIÉS sont soumis aux Contrôleurs et sont rendus disponibles avec l'état SOUMIS.",
       "projections_month_ahead": "Spécifie le nombre de mois à venir pour lesquels sont calculées les projections indiquant l'exécution future des ordres.",
       "submit_orders_individually": "Le Service du Plan Quotidien soumet par défaut des ordres à partir d'une transaction unique qui est annulée si la soumission d'un ordre échoue. Avec ce paramètre, les ordres sont soumis individuellement et indépendamment de l'échec de la soumission d'autres ordres. Le Service du Plan Quotidien nécessitera plus de temps pour soumettre les ordres individuellement.",
-      "age_of_plans_to_be_closed_automatically": "Spécifie le nombre de jours après lequel le Plan Quotidien sera fermé et ne permettra pas d'ajouter des ordres qui résolvent des dépendances telles que les Conditions pour la date d'origine."},
+      "age_of_plans_to_be_closed_automatically": "Spécifie le nombre de jours après lequel le Plan Quotidien sera fermé et ne permettra pas d'ajouter des ordres qui résolvent des dépendances telles que les Conditions pour la date d'origine."
+    },
     "joc": {
       "force_comments_for_audit_log": "Spécifie que pour tout changement appliqué à un objet tel que l'ajout d'un ordre, l'annulation d'un ordre, etc., une raison doit être ajoutée au Journal d'Audit.",
       "comments_for_audit_log": "Spécifie une liste de raisons prédéfinies qui est rendue disponible lorsque l'ajout de raisons au Journal d'Audit est appliqué.",
