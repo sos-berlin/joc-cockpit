@@ -2529,7 +2529,8 @@
       "date": "日付",
       "shutdown": "シャットダウン",
       "approvalRequest": "Approval Request",
-      "approvers": "Approvers"
+      "approvers": "Approvers",
+      "emailSettings": "Email Settings"
     },
     "button": {
       "week": "週",
@@ -2595,7 +2596,8 @@
         "ApproverNotification": "pending approval requests",
         "RequestorNotification": "Approval request is",
         "requestorStateDate": "Requested Date",
-        "approverStateDate": "Approved Date" },
+        "approverStateDate": "Approved Date"
+      },
       "button": {
         "approve": "Approve",
         "reject": "Reject",

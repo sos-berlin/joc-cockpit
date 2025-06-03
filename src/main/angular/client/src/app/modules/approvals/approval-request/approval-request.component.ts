@@ -46,7 +46,6 @@ export class ApprovalRequestComponent {
           }
 
           const arrayOfCheckedId = Array.from(this.filters.mapOfCheckedId);
-          console.log(arrayOfCheckedId,">>")
           if (res === 'approve' || res === 'reject' || res === 'withdraw') {
             const filteredIds = this.getBulkActionableIds(res);
             this.BulkUpdateApproval(filteredIds, res);

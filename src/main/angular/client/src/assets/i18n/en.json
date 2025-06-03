@@ -2530,7 +2530,8 @@
       "date": "Date",
       "shutdown": "out of service",
       "approvalRequest": "Approval Requests",
-      "approvers": "Approvers"
+      "approvers": "Approvers",
+      "emailSettings": "Email Settings"
     },
     "button": {
       "week": "Week",

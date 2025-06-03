@@ -5646,7 +5646,6 @@ export class XmlEditorComponent {
   }
 
   private jsonToXml(nodes) {
-    console.log(nodes,">>>")
     if (nodes.length > 0) {
       let doc = document.implementation.createDocument('', '', null);
       let peopleElem = doc.createElement(nodes[0].ref);

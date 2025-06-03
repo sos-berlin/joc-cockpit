@@ -13817,7 +13817,6 @@ export class WorkflowComponent {
       JSON.stringify(this.lastSavedOrderPreparation),
       JSON.stringify(newObj.orderPreparation)
     );
-    console.log(hasOrderPrepChanged,'hasOrderPrepChanged')
 
     if (
       this.data.deployed &&

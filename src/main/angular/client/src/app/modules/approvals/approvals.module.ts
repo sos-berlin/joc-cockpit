@@ -4,6 +4,8 @@ import {SharedModule} from '../shared/shared.module';
 import { ApprovalsComponent } from './approvals.component';
 import {ApprovalRequestComponent} from "./approval-request/approval-request.component";
 import {AddApproverModalComponent, ApproversComponent} from "./approvers/approvers.component";
+import {EmailSettingComponent} from "./email-setting/email-setting.component";
+import {NzTabComponent} from "ng-zorro-antd/tabs";
 
 const routes: Routes = [
   {
@@ -14,11 +16,12 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    ApprovalsComponent, ApprovalRequestComponent, ApproversComponent, AddApproverModalComponent
+    ApprovalsComponent, ApprovalRequestComponent, ApproversComponent, AddApproverModalComponent, EmailSettingComponent
   ],
   imports: [
     RouterModule.forChild(routes),
     SharedModule,
+    NzTabComponent,
   ]
 })
 

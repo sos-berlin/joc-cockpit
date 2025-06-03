@@ -96,13 +96,22 @@
                                                           translate>monitor.label.approvalRequest</span></span>
                       </a>
                     </li>
-                    <li class="nav-item dropdown-separator">
+                    <li *ngIf="isApprover" class="nav-item dropdown-separator">
                       <span class="separator"></span>
                     </li>
                     <li class="nav-item">
                       <a (click)="onTabChange(1)" [ngClass]="{'active': approvalsFilters.tabIndex === 1}"
                          class="nav-link">
                         <span class="nav-text text-dark p-b-sm"><span class="text" translate>monitor.label.approvers</span></span>
+                      </a>
+                    </li>
+                    <li *ngIf="isApprover" class="nav-item dropdown-separator">
+                      <span class="separator"></span>
+                    </li>
+                    <li class="nav-item">
+                      <a (click)="onTabChange(2)" [ngClass]="{'active': approvalsFilters.tabIndex === 2}"
+                         class="nav-link">
+                        <span class="nav-text text-dark p-b-sm"><span class="text" translate>monitor.label.emailSettings</span></span>
                       </a>
                     </li>
                   </ul>
@@ -115,6 +124,9 @@
         </div>
         <div *ngIf="approvalsFilters.tabIndex === 1 && permission.joc && permission.joc.administration.accounts.view">
           <app-approvers #approvers [preferences]="preferences" [permission]="permission" [filters]="approvalsFilters.approvers"></app-approvers>
+        </div>
+        <div *ngIf="approvalsFilters.tabIndex === 2 && permission.joc && permission.joc.administration.accounts.view">
+          <app-email-setting  [preferences]="preferences" [permission]="permission" [filters]="approvalsFilters.approvers"></app-email-setting>
         </div>
       </div>
     </div>

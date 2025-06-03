@@ -2529,7 +2529,8 @@
       "date": "Datum",
       "shutdown": "außer Betrieb",
       "approvalRequest": "Autorisierungsanfragen",
-      "approvers": "Autorisierer"
+      "approvers": "Autorisierer",
+      "emailSettings": "Email Settings"
     },
     "button": {
       "week": "Woche",
@@ -2595,7 +2596,8 @@
         "ApproverNotification": "anstehende Autorisierungsanfragen",
         "RequestorNotification": "Autorisierungsanfrage ist",
         "requestorStateDate": "Statusdatum Anfrage",
-        "approverStateDate": "Statudatum Autorisierung"},
+        "approverStateDate": "Statudatum Autorisierung"
+      },
       "button": {
         "approve": "Autorisierer",
         "reject": "Ablehnen",
