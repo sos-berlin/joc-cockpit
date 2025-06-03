@@ -32,6 +32,7 @@ import {OrderActionComponent} from "./order-action/order-action.component";
 import {ConfirmModalComponent} from "../../components/comfirm-modal/confirm.component";
 import {CreateTagModalComponent} from "../configuration/inventory/inventory.component";
 import { ValueEditorComponent } from 'src/app/components/value-editor/value.component';
+import {PriorityModalComponent} from "../../components/priority-modal/priority-modal.component";
 
 declare const $;
 
@@ -555,7 +556,7 @@ export class OrderOverviewComponent {
   tags: string[] = [];
   searchTag = { text: '', loading: false, tags: [], token: '' };
   searchOrderTag = { text: '', loading: false, tags: [], token: '' }
-  searchableProperties = ['orderId', 'workflowId', 'path', 'state', '_text', 'scheduledFor', 'position', 'tags', 'filteredTags'];
+  searchableProperties = ['orderId', 'workflowId', 'path', 'state', '_text','priority', 'scheduledFor', 'position', 'tags', 'filteredTags'];
   workflowTagsPerWorkflow: any
   object = {
     mapOfCheckedId: new Map(),
@@ -573,7 +574,8 @@ export class OrderOverviewComponent {
     isPrompt: false,
     isSuspendSoftly: false,
     isSuspendReset: false,
-    isSuspendWithResetAndKill: false
+    isSuspendWithResetAndKill: false,
+    isPriority: false
   };
 
   filterBtn: any = [
@@ -627,7 +629,13 @@ export class OrderOverviewComponent {
   orderTreeStatusCompleted = [
     {label: 'order.button.leaveWorkflow', value: 'Terminate'}
   ];
-
+  priorities = [
+    {label: 'inventory.label.high', value: 20000},
+    {label: 'inventory.label.aboveNormal', value: 10000},
+    {label: 'inventory.label.normal', value: 0},
+    {label: 'inventory.label.belowNormal', value: -10000},
+    {label: 'inventory.label.Low', value: -20000},
+  ];
   subscription1: Subscription;
   subscription2: Subscription;
   private pendingHTTPRequests$ = new Subject<void>();
@@ -1371,6 +1379,7 @@ export class OrderOverviewComponent {
     this.object.isSuspendSoftly = true;
     this.object.isSuspendReset = true;
     this.object.isSuspendWithResetAndKill = false;
+    this.object.isPriority = false;
     let workflow = null;
     let count = 0;
     this.object.mapOfCheckedId.forEach(order => {
@@ -1691,7 +1700,8 @@ export class OrderOverviewComponent {
       isPrompt: false,
       isSuspendSoftly: false,
       isSuspendReset: false,
-      isSuspendWithResetAndKill: false
+      isSuspendWithResetAndKill: false,
+      isPriority: false
     };
   }
 
@@ -2141,5 +2151,32 @@ export class OrderOverviewComponent {
       return parts[parts.length - 1]; // Return the last part
     }
     return '';
+  }
+
+  modifyPriority(): void {
+      this.modal.create({
+        nzTitle: undefined,
+        nzContent: PriorityModalComponent,
+        nzClassName: 'lg',
+        nzData: {
+          schedulerId: this.schedulerIds.selected,
+          orders: this.object.mapOfCheckedId,
+          preferences: this.preferences
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          this.isProcessing = true;
+          this.resetAction(5000);
+          this.resetCheckBox();
+        }
+      });
+  }
+
+  getPriorityLabel(value: number): string {
+    const match = this.priorities.find(opt => opt.value === value);
+    return match ? match.label : '';
   }
 }

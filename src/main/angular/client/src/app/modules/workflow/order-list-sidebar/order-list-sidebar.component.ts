@@ -19,6 +19,7 @@ import {ResumeOrderModalComponent} from '../../../components/resume-modal/resume
 import {OrderPipe} from "../../../pipes/core.pipe";
 import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
 import { AllOrderResumeModelComponent } from '../../order-overview/order-overview.component';
+import {PriorityModalComponent} from "../../../components/priority-modal/priority-modal.component";
 
 @Component({
   selector: 'app-order-list-sidebar',
@@ -267,6 +268,28 @@ export class OrderListSidebarComponent implements OnChanges {
           this.resetCheckBox();
         }
       });
+    });
+  }
+
+  modifyPriority(): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: PriorityModalComponent,
+      nzClassName: 'lg',
+      nzData: {
+        schedulerId: this.schedulerId,
+        orders: this.setOfCheckedId,
+        preferences: this.preferences
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe(result => {
+      if (result) {
+        this.isProcessing = true;
+        this.resetAction(5000);
+        this.resetCheckBox();
+      }
     });
   }
 

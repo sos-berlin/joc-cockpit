@@ -58,6 +58,11 @@
                   nz-menu-item>
                 <a>{{'dailyPlan.button.setStartTime' | translate}} ..</a>
               </li>
+<!--              <li (click)="modifyPriority(order)"-->
+<!--                  *ngIf="permission && permission.currentController && permission.currentController.orders.modify"-->
+<!--                  nz-menu-item>-->
+<!--                <a>{{ 'inventory.button.modifyPriority' | translate }}</a>-->
+<!--              </li>-->
               <li (click)="changeParameter(null, value)" *ngIf="permission.currentController.orders.modify"
                   [nzDisabled]="value.state && value.state._text === 'FINISHED'"
                   nz-menu-item>

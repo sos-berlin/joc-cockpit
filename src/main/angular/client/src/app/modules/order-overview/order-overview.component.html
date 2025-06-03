@@ -103,6 +103,11 @@
               class="fa fa-edit"></i>&nbsp;
               <span class="hidden-sm-down" translate>dailyPlan.button.setParameters</span>
             </button>
+            <button (click)="modifyPriority()" *ngIf="permission.currentController.orders.modify"
+                     class="btn btn-grey btn-sm m-l-12"><i
+              class="fa fa-signal"></i>&nbsp;
+              <span class="hidden-sm-down" translate>inventory.button.modifyPriority</span>
+            </button>
             <button (click)="cancelAllOrder()" *ngIf="permission.currentController.orders.cancel"
                     [disabled]="object.isCancel" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-times p-r-xs"></i>
               <span class="hidden-sm-down" translate>order.button.cancel</span></button>
@@ -769,8 +774,25 @@
                                  class="text-hover-primary text-black-dk">
                                 <span [innerHtml]="order.workflowId.path | highlight : orderFilters.searchText"></span>
                               </a>
-                              <span *ngIf="workflowTagsPerWorkflow[getLastPartOfWorkflow(order.workflowId.path)]?.length > 0" [innerHtml]="coreService.getModifiedWorkflowTags(workflowTagsPerWorkflow[getLastPartOfWorkflow(order.workflowId.path)], orderFilters.searchText)" class="m-l-sm">
-           </span>
+                              <span
+                                *ngIf=" workflowTagsPerWorkflow
+                                          ?.[
+                                            getLastPartOfWorkflow(order?.workflowId?.path)
+                                          ]
+                                          ?.length > 0
+                                      "
+                                                                    [innerHTML]="
+                                        coreService.getModifiedWorkflowTags(
+                                          workflowTagsPerWorkflow?.[
+                                            getLastPartOfWorkflow(order?.workflowId?.path)
+                                          ] || [],
+                                          orderFilters?.searchText
+                                        )
+                                      "
+                                                                    class="m-l-sm"
+                                                                  >
+                                    </span>
+
                             </div>
                             <div class="text-sm text-left text-muted p-t-xs">
                               <span translate>order.label.scheduledFor </span>:
@@ -864,6 +886,13 @@
                             <i *ngIf="orderFilters.filter.sortBy == 'state._text' && !orderFilters.reverse"
                                class="fa fa-caret-up "></i>
                             <i *ngIf="orderFilters.filter.sortBy == 'state._text' && orderFilters.reverse"
+                               class="fa fa-caret-down "></i></a>
+                        </th>
+                        <th (click)="sort('priority')">
+                          <a><span class="p-r-xs" translate>order.label.priority</span>
+                            <i *ngIf="orderFilters.filter.sortBy == 'priority' && !orderFilters.reverse"
+                               class="fa fa-caret-up "></i>
+                            <i *ngIf="orderFilters.filter.sortBy == 'priority' && orderFilters.reverse"
                                class="fa fa-caret-down "></i></a>
                         </th>
                         <th (click)="sort('scheduledFor')">
@@ -1035,14 +1064,22 @@
                               </div>
                             </ng-template>
                           </td>
+                          <td *ngIf="order.priority !== null">
+                            <ng-container *ngIf="getPriorityLabel(order.priority) as key; else showRaw">
+                              {{ key | translate }}
+                            </ng-container>
+                            <ng-template #showRaw>
+                              {{ order.priority }}
+                            </ng-template>
+                          </td>
                           <td>
                             <span *ngIf="!order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>
                             <span *ngIf="order.scheduledNever" translate>common.label.never</span>
                           </td>
                         </tr>
                         <tr *ngIf="order.show">
-                          <td colspan="2"></td>
-                          <td colspan="5">
+                          <td colspan="3"></td>
+                          <td colspan="6">
                             <app-order-variable [order]="order" [schedulerId]="schedulerIds.selected"
                                                 [type]="'arguments'"></app-order-variable>
                           </td>

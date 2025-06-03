@@ -11,6 +11,7 @@ import {
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {NzMessageService} from "ng-zorro-antd/message";
 import {AddOrderModalComponent} from "../../workflow/workflow-action/workflow-action.component";
+import {PriorityModalComponent} from "../../../components/priority-modal/priority-modal.component";
 
 @Component({
   selector: 'app-order-action',
@@ -279,5 +280,21 @@ export class OrderActionComponent {
     setTimeout(() => {
       this.isChanged.emit(false);
     }, 5000);
+  }
+
+  modifyPriority(order): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: PriorityModalComponent,
+      nzClassName: 'lg',
+      nzData: {
+        schedulerId: this.schedulerId,
+        order: order,
+        preferences: this.preferences
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
   }
 }

@@ -22,6 +22,7 @@ import {ExcelService} from '../../services/excel.service';
 import {ExportComponent} from "./projection/projection.component";
 import {CreateTagModalComponent} from "../configuration/inventory/inventory.component";
 import { PostModalComponent } from '../resource/board/board.component';
+import {PriorityModalComponent} from "../../components/priority-modal/priority-modal.component";
 
 declare const JSGantt: any;
 declare let jsgantt: any;
@@ -3579,6 +3580,22 @@ private filterData(planItems: any[]): void {
       }, error: () => {
         cb();
       }
+    });
+  }
+
+  modifyPriority(order): void {
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: PriorityModalComponent,
+      nzClassName: 'lg',
+      nzData: {
+        schedulerId: this.schedulerIds.selected,
+        order: order,
+        preferences: this.preferences
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 }

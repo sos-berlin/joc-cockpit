@@ -115,6 +115,11 @@
           nz-menu-item>
         <a>{{ 'dailyPlan.button.setParameters' | translate }} ..</a>
       </li>
+      <li (click)="modifyPriority(order)"
+          *ngIf="permission && permission.currentController && permission.currentController.orders.modify"
+          nz-menu-item>
+        <a>{{ 'inventory.button.modifyPriority' | translate }}</a>
+      </li>
       <li (click)="removeWhenTerminated()" *ngIf="permission && permission.currentController && permission.currentController.orders.cancel
        && order.canLeave" nz-menu-item>
         <a translate>order.button.leaveWorkflow</a>
