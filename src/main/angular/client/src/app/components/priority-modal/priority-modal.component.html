@@ -1,0 +1,53 @@
+<div class="modal-header">
+  <h4 *ngIf="!orders" class="modal-title">
+    <span translate> inventory.button.modifyPriority</span>
+    :
+    <i class="text-muted p-l-xs text">{{order.orderId}}</i>
+  </h4>
+  <h4 *ngIf="orders" class="modal-title">
+    <span translate> order.label.modifyAllSelectedOrderPriority</span>
+  </h4>
+  <button (click)="cancel()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+
+<form #myForm="ngForm" (ngSubmit)="onSubmit()">
+  <div class="modal-body p-a">
+    <div [ngClass]="{'show': display}" class="hide">
+      <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
+    </div>
+    <div class="form-group row">
+      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.priority' | translate) : ''"
+
+             class="col-sm-3 form-control-label"
+             translate>order.label.priority</label>
+      <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}"
+           class="col-sm-7">
+        <nz-input-group [nzAddOnAfter]="priorityTemplate">
+          <nz-input-number #priority="ngModel"   [(ngModel)]="obj.priority" [appAutofocus]="true"
+                           name="priority" nzPlaceHolder="{{'inventory.placeholder.priority' | translate}}"
+          ></nz-input-number>
+        </nz-input-group>
+        <ng-template #priorityTemplate>
+          <app-select-input [classNames]="'w-220'" [attributeName]="'priority'"
+                            [listArray]="priorities" [name]="'priorities'" [optionLabel]="'label'" [optionValue]="'value'"  [placeholder]="'inventory.placeholder.selectPredefinedPriorities'"
+                            [object]="obj"></app-select-input>
+        </ng-template>
+        <div *ngIf="priority.invalid && (priority.dirty || priority.touched)" class="text-danger help-block">
+          <div *ngIf="priority.errors['required']">
+            <div translate>common.message.requiredError</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer text-left">
+    <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
+            type="submit">
+      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      {{'common.button.submit' | translate}}
+    </button>
+    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
+  </div>
+</form>
