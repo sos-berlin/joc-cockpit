@@ -2046,7 +2046,7 @@
     "placeholder.objectTypes": "Select object types",
     "placeholder.selectTags": "Select Tags",
     "placeholder.selectGroups": "Select Groups",
-    "placeholder.selectPredefinedPriorities": "Select Predefined Priorities",
+    "placeholder.selectPredefinedPriorities": "Select predefined Priorities",
     "placeholder.priority": "Enter Priority",
     "message.workflowIsMissing": "Workflow is missing, but is required",
     "message.directoryIsMissing": "Directory is missing, but is required",
@@ -2531,7 +2531,7 @@
       "shutdown": "out of service",
       "approvalRequest": "Approval Requests",
       "approvers": "Approvers",
-      "emailSettings": "Email Settings"
+      "emailSettings": "E-Mail Settings"
     },
     "button": {
       "week": "Week",
@@ -2668,7 +2668,7 @@
     "label.force": "Force resumption",
     "label.noticeSpaceKey": "Plan Key",
     "label.priority": "Priority",
-    "label.modifyAllSelectedOrderPriority": "Modify Priority of all selected orders.",
+    "label.modifyAllSelectedOrderPriority": "Modify Priority of selected orders",
     "button.allOrders": "All Orders",
     "button.cancel": "Cancel",
     "button.cancelSoftly": "Softly",
