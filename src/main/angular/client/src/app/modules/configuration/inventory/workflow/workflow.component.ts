@@ -3281,6 +3281,12 @@ export class JobComponent {
       if (!obj.executable.arguments) {
         obj.executable.arguments = [];
       }
+      if (config.baseUrl) {
+        obj.executable.arguments.push({
+          name: 'js7.api-server.url',
+          value: config.baseUrl
+        });
+      }
       obj.executable.arguments.push({name: 'request', value: config.request});
       if(config.return_variables && config.return_variables.length > 0){
         const flattened = config.return_variables.map(m => ({
