@@ -509,42 +509,80 @@ export class ApiRequestComponent {
     }
     const flatDefs = this.flattenParameters(this.parameters || {});
 
-    const url = this.resolvePlaceholders(this.model.url, flatDefs);
+    const fullUrl = this.resolvePlaceholders(this.model.url, flatDefs);
+
+    const urlObj = new URL(fullUrl);
+    const baseUrl = urlObj.origin;
+    const endPoint = urlObj.pathname + urlObj.search;
+
     const headers = this.model.headers
       .filter(h => h.key.trim())
-      .map(h => ({key: h.key, value: this.resolvePlaceholders(h.value, flatDefs)}));
+      .map(h => ({
+        key: h.key,
+        value: this.resolvePlaceholders(h.value, flatDefs)
+      }));
     const params = this.model.params
       .filter(p => p.key.trim())
-      .map(p => ({key: p.key, value: this.resolvePlaceholders(p.value, flatDefs)}));
+      .map(p => ({
+        key: p.key,
+        value: this.resolvePlaceholders(p.value, flatDefs)
+      }));
     const body = this.resolvePlaceholders(bodyText, flatDefs);
 
-    const config: any = {url, method: this.model.method};
-    if (headers.length) config.headers = headers;
-    if (params.length) config.params = params;
-    if (this.auth.type !== 'None') {
-      const auth = {type: this.auth.type};
+    const config: any = { url: fullUrl, method: this.model.method };
 
+    if (headers.length) {
+      config.headers = headers;
+    }
+    if (params.length) {
+      config.params = params;
+    }
+    if (this.auth.type !== 'None') {
+      const auth: any = { type: this.auth.type };
       if (this.auth.type === 'API Key' && this.auth.apiKey.name && this.auth.apiKey.value) {
-        auth['apiKey'] = this.auth.apiKey;
+        auth.apiKey = this.auth.apiKey;
       }
       if (this.auth.type === 'Bearer Token' && this.auth.token) {
-        auth['token'] = this.auth.token;
+        auth.token = this.auth.token;
       }
-      if (this.auth.type === 'Basic Auth' && (this.auth.basic.username || this.auth.basic.password)) {
-        auth['basic'] = this.auth.basic;
+      if (
+        this.auth.type === 'Basic Auth' &&
+        (this.auth.basic.username || this.auth.basic.password)
+      ) {
+        auth.basic = this.auth.basic;
       }
-      if (this.auth.type === 'OAuth 2.0' && (this.auth.oauth2.clientId || this.auth.oauth2.clientSecret || this.auth.oauth2.tokenUrl)) {
-        auth['oauth2'] = this.auth.oauth2;
+      if (
+        this.auth.type === 'OAuth 2.0' &&
+        (this.auth.oauth2.clientId ||
+          this.auth.oauth2.clientSecret ||
+          this.auth.oauth2.tokenUrl)
+      ) {
+        auth.oauth2 = this.auth.oauth2;
       }
-
       config.auth = auth;
     }
+    if (body !== undefined && body !== '') {
+      config.body = body;
+    }
 
-    if (body !== undefined && body !== '') config.body = body;
+    config.endpoint = endPoint;
+
     delete config.url;
+    delete config.auth;
+    delete config.method;
+    delete config.headers;
+    delete config.params;
+
     const json = JSON.stringify(config, null, 2);
-    const out: any = {request: json};
-    if (this.mappings.length) out.return_variables = this.mappings;
+    const out: any = { request: json };
+
+    if (this.mappings.length) {
+      out.return_variables = this.mappings;
+    }
+
+    if(baseUrl){
+      out.baseUrl = baseUrl
+    }
 
     this.clipboardService.copyFromContent(json);
     this.coreService.showCopyMessage(this.msg);
@@ -1169,6 +1207,12 @@ export class JobWizardComponent {
     if (obj.executable.TYPE === 'InternalExecutable') {
       if (!obj.executable.arguments) {
         obj.executable.arguments = [];
+      }
+      if (config.baseUrl) {
+        obj.executable.arguments.push({
+          name: 'js7.api-server.url',
+          value: config.baseUrl
+        });
       }
       obj.executable.arguments.push({name: 'request', value: config.request});
       if (config.return_variables && config.return_variables.length > 0) {

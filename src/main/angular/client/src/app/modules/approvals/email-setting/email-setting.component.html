@@ -123,12 +123,20 @@
         <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.subject' | translate"
                class="col-sm-2 form-control-label"
                translate>user.label.subject
+          <sup class="text-danger text-sm">*</sup>
+
         </label>
-        <div class="col-sm-6">
-          <input [(ngModel)]="currentObj.subject"
+        <div  [ngClass]="{'has-error' : ((subject.dirty || subject.touched) && subject.invalid)}" class="col-sm-6">
+          <input  #subject="ngModel" [(ngModel)]="currentObj.subject"
                  [placeholder]="'user.placeholder.subject' | translate" autocomplete="off"
-                 class="form-control"
+                 class="form-control" required
                  name="subject" type="text">
+          <div *ngIf="subject.invalid && (subject.dirty || subject.touched)"
+               class="text-danger help-block">
+            <div *ngIf="subject.errors['required']">
+              <div translate>common.message.requiredError</div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="form-group row">

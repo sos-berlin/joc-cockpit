@@ -11,7 +11,6 @@ import {AuthService} from "../../../components/guard";
 })
 export class EmailSettingComponent {
   @Input() preferences: any = {};
-  @Input() filters: any = {};
   @Input() schedulerIds: any = {};
   @Input() permission: any = {};
   isTreeShow = false

@@ -3047,54 +3047,55 @@ export class XmlEditorComponent {
     }
   }
 
-  getCustomCss(node: any, parentNode: any): string {
-    const id = node.ref || node.name;
+  getCustomCss(node, parentNode): string {
     let count = 0;
-
-    const children = parentNode.children || [];
-    for (const child of children) {
-      const childId = child.ref || child.name;
-      if (childId === id) {
-        count++;
-      }
-    }
-
     if (this.choice) {
       if (node.maxOccurs === 'unbounded') {
         return '';
-      }
-
-      if (node.maxOccurs !== 'unbounded' && node.maxOccurs !== undefined) {
-        const max = Number(node.maxOccurs);
-        if (count >= max) {
-          return 'disabled disable-link';
+      } else if (node.maxOccurs !== 'unbounded' && node.maxOccurs !== undefined) {
+        if (parentNode.children && parentNode.children.length > 0) {
+          for (let i = 0; i < parentNode.children.length; i++) {
+            if (node.ref === parentNode.children[i].ref) {
+              count++;
+            }
+          }
+          if (node.maxOccurs === count) {
+            return 'disabled disable-link';
+          }
+        }
+      } else if (node.maxOccurs === undefined) {
+        if (parentNode.children && parentNode.children.length > 0) {
+          for (let i = 0; i < parentNode.children.length; i++) {
+            if (node.ref === parentNode.children[i].ref) {
+              return 'disabled disable-link';
+            }
+          }
         }
       }
-      else if (node.maxOccurs === undefined) {
-        if (count >= 1) {
-          return 'disabled disable-link';
-        }
-      }
-
       return node.choice ? 'disabled disable-link' : '';
     }
-
     if (node.maxOccurs === 'unbounded') {
       return '';
-    }
-
-    if (node.maxOccurs !== 'unbounded' && node.maxOccurs !== undefined) {
-      const max = Number(node.maxOccurs);
-      if (count >= max) {
-        return 'disabled disable-link';
+    } else if (node.maxOccurs !== 'unbounded' && node.maxOccurs !== undefined) {
+      if (parentNode.children && parentNode.children.length > 0) {
+        for (let i = 0; i < parentNode.children.length; i++) {
+          if (node.ref === parentNode.children[i].ref) {
+            count++;
+          }
+        }
+        if (node.maxOccurs === count) {
+          return 'disabled disable-link';
+        }
+      }
+    } else if (node.maxOccurs === undefined) {
+      if (parentNode.children && parentNode.children.length > 0) {
+        for (let i = 0; i < parentNode.children.length; i++) {
+          if (node.ref === parentNode.children[i].ref) {
+            return 'disabled disable-link';
+          }
+        }
       }
     }
-    else if (node.maxOccurs === undefined) {
-      if (count >= 1) {
-        return 'disabled disable-link';
-      }
-    }
-
     return '';
   }
 
