@@ -1,25 +1,407 @@
 <div class="modal-header">
-  <h4 class="modal-title">
-<!--    <span class="drag-text" translate>workflow.label.</span>-->
-  </h4>
-  <button (click)="activeModal.destroy()" aria-label="Close" class="close"
-          type="button">
+  <h4 class="modal-title">{{ JsonSchema.title }}</h4>
+  <button
+    (click)="activeModal.destroy()"
+    aria-label="Close"
+    class="close"
+    type="button"
+  >
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
-<form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a p-t-sm">
     <div class="row">
+      <div
+        class="col-md-12"
+        *ngFor="let key of propertyKeys"
+        style="margin-bottom: 1rem;"
+      >
+        <label class="control-label">{{ key }}</label>
 
+        <ng-container [ngSwitch]="getFieldType(key)">
+
+          <!-- 1) type="string" -->
+          <ng-container *ngSwitchCase="'string'">
+            <input
+              type="text"
+              class="form-control"
+              [formControlName]="key"
+              [placeholder]="key"
+            />
+          </ng-container>
+
+          <!-- 2) type="integer" -->
+          <ng-container *ngSwitchCase="'integer'">
+            <input
+              type="number"
+              class="form-control"
+              [formControlName]="key"
+              [placeholder]="key"
+            />
+          </ng-container>
+
+          <!-- 3) type="number" -->
+          <ng-container *ngSwitchCase="'number'">
+            <input
+              type="number"
+              class="form-control"
+              [formControlName]="key"
+              [placeholder]="key"
+            />
+          </ng-container>
+
+          <!-- 4) type="boolean" -->
+          <ng-container *ngSwitchCase="'boolean'">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" [formControlName]="key" /> {{ key }}
+              </label>
+            </div>
+          </ng-container>
+
+          <!-- 5) type="object" -->
+          <ng-container *ngSwitchCase="'object'">
+            <div
+              class="well"
+              style="padding: 1rem; border: 1px solid #ccc; border-radius: 4px;"
+              [formGroupName]="key"
+            >
+              <fieldset>
+                <legend>{{ key }}:</legend>
+
+                <div
+                  *ngFor="let child of childKeys(key)"
+                  style="margin-bottom: 0.75rem;"
+                >
+                  <label>{{ child }}</label>
+
+                  <ng-container [ngSwitch]="getChildFieldType(key, child)">
+                    <!-- string child -->
+                    <ng-container *ngSwitchCase="'string'">
+                      <input
+                        type="text"
+                        class="form-control"
+                        [formControlName]="child"
+                        [placeholder]="child"
+                      />
+                    </ng-container>
+
+                    <!-- integer child -->
+                    <ng-container *ngSwitchCase="'integer'">
+                      <input
+                        type="number"
+                        class="form-control"
+                        [formControlName]="child"
+                        [placeholder]="child"
+                      />
+                    </ng-container>
+
+                    <!-- number child -->
+                    <ng-container *ngSwitchCase="'number'">
+                      <input
+                        type="number"
+                        class="form-control"
+                        [formControlName]="child"
+                        [placeholder]="child"
+                      />
+                    </ng-container>
+
+                    <!-- boolean child -->
+                    <ng-container *ngSwitchCase="'boolean'">
+                      <div class="checkbox">
+                        <label>
+                          <input type="checkbox" [formControlName]="child" />
+                          {{ child }}
+                        </label>
+                      </div>
+                    </ng-container>
+
+                    <!-- nested object inside object (if present) -->
+                    <ng-container *ngSwitchCase="'object'">
+                      <!-- You can recurse deeper here if needed -->
+                      <div>…nested object here…</div>
+                    </ng-container>
+
+                    <!-- array child inside object -->
+                    <ng-container *ngSwitchCase="'array'">
+                      <!-- Add a new primitive or object inside this nested array -->
+                      <button
+                        type="button"
+                        class="btn btn-xs btn-grey"
+                        (click)="addNestedItem(key, child)"
+                      >
+                        + Add {{ child }}
+                      </button>
+
+                      <div [formArrayName]="child" style="margin-top: 0.5rem;">
+                        <div
+                          *ngFor="
+                            let ctrl of getNestedFormArray(key, child).controls;
+                            let i = index
+                          "
+                          [formGroupName]="i"
+                          style="
+                            display: flex;
+                            align-items: center;
+                            margin-bottom: 0.25rem;
+                          "
+                        >
+                          <!-- Primitive array element -->
+                          <input
+                            type="text"
+                            class="form-control"
+                            formControlName="0"
+                          />
+                          <button
+                            type="button"
+                            class="btn btn-xs btn-danger"
+                            style="margin-left: 0.5rem;"
+                            (click)="removeNestedItem(key, child, i)"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </ng-container>
+
+                  <!-- Validation messages for nested child -->
+                  <div
+                    *ngIf="
+                      getNestedFormGroup(key).get(child).invalid &&
+                      (
+                        getNestedFormGroup(key).get(child).touched ||
+                        getNestedFormGroup(key).get(child).dirty
+                      )
+                    "
+                  >
+                    <small class="text-danger" *ngIf="
+                      getNestedFormGroup(key).get(child).hasError('required')
+                    ">
+                      {{ child }} is required
+                    </small>
+                    <small class="text-danger" *ngIf="
+                      getNestedFormGroup(key).get(child).hasError('maxlength')
+                    ">
+                      Max length exceeded
+                    </small>
+                    <small class="text-danger" *ngIf="
+                      getNestedFormGroup(key).get(child).hasError('pattern')
+                    ">
+                      Invalid format
+                    </small>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </ng-container>
+
+          <!-- 6) type="array" (top-level arrays) -->
+          <ng-container *ngSwitchCase="'array'">
+            <!-- Check if this is “array of objects” vs. “array of primitives” -->
+            <ng-container *ngIf="isArrayOfObjects(key); else primitiveArray">
+              <!-- ─── Array of Objects ─── -->
+              <button
+                type="button"
+                class="btn btn-sm btn-grey m-l-1"
+                (click)="addItem(key)"
+              >
+                + Add {{ key | titlecase }}
+              </button>
+
+              <div [formArrayName]="key" style="margin-top: 0.5rem;">
+                <div
+                  *ngFor="
+                    let group of getFormArray(key).controls;
+                    let i = index
+                  "
+                  [formGroupName]="i"
+                  style="margin-bottom: 1rem; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;"
+                >
+                  <!-- Each array element is an object. Render its fields now. -->
+                  <!--  a) noticeBoardPath (string) -->
+                  <div style="margin-bottom: 0.5rem;">
+                    <label>noticeBoardPath</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      [formControlName]="'noticeBoardPath'"
+                    />
+                    <div
+                      *ngIf="
+                        getArrayElementFormGroup(key, i)
+                          .get('noticeBoardPath')
+                          .invalid &&
+                        (
+                          getArrayElementFormGroup(key, i)
+                            .get('noticeBoardPath')
+                            .touched ||
+                          getArrayElementFormGroup(key, i)
+                            .get('noticeBoardPath')
+                            .dirty
+                        )
+                      "
+                    >
+                      <small class="text-danger" *ngIf="
+                        getArrayElementFormGroup(key, i)
+                          .get('noticeBoardPath')
+                          .hasError('required')
+                      ">
+                        noticeBoardPath is required
+                      </small>
+                      <small class="text-danger" *ngIf="
+                        getArrayElementFormGroup(key, i)
+                          .get('noticeBoardPath')
+                          .hasError('maxlength')
+                      ">
+                        Max length exceeded
+                      </small>
+                      <small class="text-danger" *ngIf="
+                        getArrayElementFormGroup(key, i)
+                          .get('noticeBoardPath')
+                          .hasError('pattern')
+                      ">
+                        Invalid format
+                      </small>
+                    </div>
+                  </div>
+
+                  <!--  b) workflowPaths (array of strings) -->
+                  <div>
+                    <label>workflowPaths</label>
+                    <button
+                      type="button"
+                      class="btn btn-xs btn-grey"
+                      (click)="addNestedItem(key, 'workflowPaths', i)"
+                    >
+                      + Add Path
+                    </button>
+                    <div
+                      [formArrayName]="'workflowPaths'"
+                      style="margin-top: 0.5rem;"
+                    >
+                      <div
+                        *ngFor="
+                          let pathCtrl of
+                            getNestedFormArrayForIndex(key, 'workflowPaths', i)
+                              .controls;
+                          let j = index
+                        "
+                        style="
+                          display: flex;
+                          align-items: center;
+                          margin-bottom: 0.25rem;
+                        "
+                      >
+                        <input
+                          type="text"
+                          class="form-control"
+                          [formControlName]="j"
+                        />
+                        <button
+                          type="button"
+                          class="btn btn-xs btn-danger"
+                          style="margin-left: 0.5rem;"
+                          (click)="removeNestedItem(key, 'workflowPaths', j, i)"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Remove the entire object from expectedNotices -->
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-danger"
+                    style="margin-top: 0.5rem;"
+                    (click)="removeItem(key, i)"
+                  >
+                    Remove Notice
+                  </button>
+                </div>
+              </div>
+            </ng-container>
+
+            <!-- ─── Array of Primitives (fallback) ─── -->
+            <ng-template #primitiveArray>
+              <button
+                type="button"
+                class="btn btn-sm btn-grey m-l-1"
+                (click)="addItem(key)"
+              >
+                + Add {{ key | titlecase }}
+              </button>
+              <div [formArrayName]="key" style="margin-top: 0.5rem;">
+                <div
+                  *ngFor="
+                    let ctrl of getFormArray(key).controls;
+                    let idx = index
+                  "
+                  [formGroupName]="idx"
+                  style="
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 0.25rem;
+                  "
+                >
+                  <!-- Primitive array element -->
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="0"
+                  />
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-danger"
+                    style="margin-left: 0.5rem;"
+                    (click)="removeItem(key, idx)"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </ng-template>
+          </ng-container>
+        </ng-container>
+
+        <!-- ─── Validation messages for top-level fields ─── -->
+        <div
+          *ngIf="
+            form.get(key).invalid &&
+            (form.get(key).touched || form.get(key).dirty)
+          "
+        >
+          <small class="text-danger" *ngIf="form.get(key).hasError('required')">
+            {{ key }} is required
+          </small>
+          <small class="text-danger" *ngIf="form.get(key).hasError('maxlength')">
+            Max length exceeded
+          </small>
+          <small class="text-danger" *ngIf="form.get(key).hasError('pattern')">
+            Invalid format
+          </small>
+        </div>
+      </div>
     </div>
   </div>
+
   <div class="modal-footer">
-    <button [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" translate type="submit">
-      common.button.submit
+    <button
+      [disabled]="form.invalid"
+      class="btn btn-primary btn-sm"
+      type="submit"
+    >
+      Submit
     </button>
-    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm"
-            translate type="button">
-      common.button.cancel
+    <button
+      (click)="activeModal.destroy()"
+      class="btn btn-grey btn-sm"
+      type="button"
+    >
+      Cancel
     </button>
   </div>
 </form>

@@ -3499,6 +3499,7 @@
     "label.sessions": "アクティブセッション",
     "label.sessionsFound": "セッションがあります",
     "label.sessionFound": "セッションがあります",
+    "label.approvalsConfirmationEmail": "confirmation Email",
     "button.addGroupRole": "グループロールを追加",
     "button.addIdentityService": "IDサービス作成",
     "button.addPermission": "パーミッション追加",

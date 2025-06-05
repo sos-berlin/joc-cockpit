@@ -3834,31 +3834,4 @@ private checkParentNode(lastPos, data, item, nodes): any {
     });
   }
 
-  createForm(schema: any): FormGroup {
-    return this.fb.group(this.createControls(schema));
-  }
-
-  createControls(schema: any): any {
-    const controls: any = {};
-    const required = schema.required || [];
-    for (const [key, propSchema] of Object.entries(schema.properties || {})) {
-      let s = propSchema as any;
-      if (s.anyOf) s = s.anyOf[0]; // Simplified handling
-      let validators = [];
-      if (required.includes(key)) validators.push(Validators.required);
-      if (s.maxLength) validators.push(Validators.maxLength(s.maxLength));
-      if (s.minLength) validators.push(Validators.minLength(s.minLength));
-      if (s.pattern) validators.push(Validators.pattern(s.pattern));
-      if (s.type === 'object') {
-        controls[key] = this.fb.group(this.createControls(s));
-      } else if (s.type === 'array') {
-        controls[key] = this.fb.array([]);
-      } else if (s.type === 'boolean') {
-        controls[key] = new FormControl(s.default ?? false);
-      } else {
-        controls[key] = new FormControl('', validators);
-      }
-    }
-    return controls;
-  }
 }

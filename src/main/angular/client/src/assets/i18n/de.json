@@ -3499,6 +3499,7 @@
     "label.sessions": "Aktive Sitzungen",
     "label.sessionsFound": "Sitzungen gefunden",
     "label.sessionFound": "Sitzung gefunden",
+    "label.approvalsConfirmationEmail": "confirmation Email",
     "button.addGroupRole": "Gruppen/Rollen hinzufügen",
     "button.addIdentityService": "Identitätsdienst hinzufügen",
     "button.addPermission": "Berechtigung hinzufügen",

@@ -6,7 +6,7 @@ import {
   HostListener,
   inject, Input, input,
   Output, SimpleChanges,
-  ViewChild
+  ViewChild,
 } from '@angular/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {isArray, isEqual, sortBy} from "underscore";
@@ -19,8 +19,14 @@ import {NzMessageService} from "ng-zorro-antd/message";
 import {ClipboardService} from "ngx-clipboard";
 import {Editor as AceEditor} from 'ace-builds/src-noconflict/ace';
 import {FindAndReplaceComponent} from "../workflow/workflow.component";
-import {FormGroup} from '@angular/forms';
-
+import {
+  FormBuilder,
+  FormGroup,
+  FormControl,
+  FormArray,
+  Validators,
+} from '@angular/forms';
+import {properties} from "ng-zorro-antd/core/util";
 interface KeyValue {
   key: string;
   value: string;
@@ -105,7 +111,7 @@ export class ApiRequestComponent {
     private ref: ChangeDetectorRef,
     private clipboardService: ClipboardService,
     private modal: NzModalService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
   ) {
     this.options.mode = 'code';
     this.options.onEditable = () => {
@@ -229,7 +235,7 @@ export class ApiRequestComponent {
       el.classList?.contains('ace_content')
     );
     if (!inAceText) {
-      return;  // ignore clicks outside the JSON editor text
+      return;
     }
 
     const jsonEditor = (this.editor as any).editor;
@@ -570,7 +576,6 @@ export class ApiRequestComponent {
     delete config.url;
     delete config.auth;
     delete config.method;
-    delete config.headers;
     delete config.params;
 
     const json = JSON.stringify(config, null, 2);
@@ -615,30 +620,194 @@ export class ApiRequestComponent {
   }
 }
 
+
 @Component({
   selector: 'app-api-text-editor',
   templateUrl: './api-text-editor.html'
 })
+
 export class ApiFormDialogComponent {
-  Json: any;
+  JsonSchema: any;
   form: FormGroup;
 
-  constructor(private coreService: CoreService, public activeModal: NzModalRef) {
-
-  }
+  constructor(
+    private fb: FormBuilder,
+    public activeModal: NzModalRef
+  ) {}
 
   ngOnInit(): void {
-    // Demo only. Replace with your API fetch
-    this.Json = {}
+    this.JsonSchema = {
+  }
 
-    this.form = this.coreService.createForm(this.Json);
+    this.form = this.createForm(this.JsonSchema);
+  }
+
+  createForm(schema: any): FormGroup {
+    return this.fb.group(this.createControls(schema));
+  }
+
+  private createControls(schema: any): { [key: string]: any } {
+    const controls: any = {};
+    const required = schema.required || [];
+
+    for (const [key, rawProp] of Object.entries(schema.properties || {})) {
+      const propSchema: any = (rawProp as any).anyOf
+        ? (rawProp as any).anyOf[0]
+        : (rawProp as any);
+
+      const validators = [];
+      if (required.includes(key)) {
+        validators.push(Validators.required);
+      }
+      if (propSchema.maxLength != null) {
+        validators.push(Validators.maxLength(propSchema.maxLength));
+      }
+      if (propSchema.minLength != null) {
+        validators.push(Validators.minLength(propSchema.minLength));
+      }
+      if (propSchema.pattern) {
+        validators.push(Validators.pattern(propSchema.pattern));
+      }
+
+      switch (propSchema.type) {
+        case 'object':
+          controls[key] = this.fb.group(this.createControls(propSchema));
+          break;
+
+        case 'array':
+          controls[key] = this.fb.array([]);
+          break;
+
+        case 'boolean':
+          controls[key] = new FormControl(propSchema.default ?? false);
+          break;
+
+        case 'integer':
+        case 'number':
+          controls[key] = new FormControl('', validators);
+          break;
+
+        default:
+          controls[key] = new FormControl('', validators);
+      }
+    }
+
+    return controls;
+  }
+
+
+  get propertyKeys(): string[] {
+    return Object.keys(this.JsonSchema.properties || {});
+  }
+
+  getFieldType(key: string): string {
+    const raw = (this.JsonSchema.properties as any)[key];
+    const first = raw.anyOf ? raw.anyOf[0] : raw;
+    return first.type;
+  }
+
+  isArrayOfObjects(key: string): boolean {
+    const raw = (this.JsonSchema.properties as any)[key];
+    const first = raw.anyOf ? raw.anyOf[0] : raw;
+    if (first.type === 'array' && (first.items as any).type === 'object') {
+      return true;
+    }
+    return false;
+  }
+
+  childKeys(parentKey: string): string[] {
+    const raw = (this.JsonSchema.properties as any)[parentKey];
+    const first = raw.anyOf ? raw.anyOf[0] : raw;
+    if (first.type === 'object' && first.properties) {
+      return Object.keys(first.properties);
+    }
+    return [];
+  }
+
+  getChildFieldType(parentKey: string, childKey: string): string {
+    const raw = (this.JsonSchema.properties as any)[parentKey];
+    const first = raw.anyOf ? raw.anyOf[0] : raw;
+    const childSchema = (first.properties as any)[childKey];
+    const childFirst = childSchema.anyOf ? childSchema.anyOf[0] : childSchema;
+    return childFirst.type;
+  }
+
+  getFormArray(key: string): FormArray {
+    return this.form.get(key) as FormArray;
+  }
+
+  getNestedFormGroup(parentKey: string): FormGroup {
+    return this.form.get(parentKey) as FormGroup;
+  }
+
+  getNestedFormArray(parentKey: string, childKey: string): FormArray {
+    return this.getNestedFormGroup(parentKey).get(childKey) as FormArray;
+  }
+
+  getArrayElementFormGroup(arrayKey: string, i: number): FormGroup {
+    return this.getFormArray(arrayKey).at(i) as FormGroup;
+  }
+
+
+  getNestedFormArrayForIndex(
+    parentArrayKey: string,
+    childKey: string,
+    index: number
+  ): FormArray {
+    return this.getArrayElementFormGroup(parentArrayKey, index).get(
+      childKey
+    ) as FormArray;
+  }
+
+
+  addItem(arrayKey: string): void {
+    const rawField = (this.JsonSchema.properties as any)[arrayKey];
+    const first = rawField.anyOf ? rawField.anyOf[0] : rawField;
+    if (first.type === 'array' && (first.items as any).type === 'object') {
+      const itemSchema = (first.items as any) as any;
+      const newGroupControls = this.createControls(itemSchema);
+      const newGroup = this.fb.group(newGroupControls);
+      this.getFormArray(arrayKey).push(newGroup);
+      return;
+    }
+
+    this.getFormArray(arrayKey).push(new FormControl(''));
+  }
+
+  removeItem(arrayKey: string, index: number): void {
+    this.getFormArray(arrayKey).removeAt(index);
+  }
+
+  addNestedItem(parentKey: string, childKey: string, indexOfParent?: number): void {
+    if (indexOfParent == null) {
+      this.getNestedFormArray(parentKey, childKey).push(new FormControl(''));
+    } else {
+      this.getNestedFormArrayForIndex(parentKey, childKey, indexOfParent).push(
+        new FormControl('')
+      );
+    }
+  }
+
+  removeNestedItem(
+    parentKey: string,
+    childKey: string,
+    indexOfChild: number,
+    indexOfParent?: number
+  ): void {
+    if (indexOfParent == null) {
+      this.getNestedFormArray(parentKey, childKey).removeAt(indexOfChild);
+    } else {
+      this.getNestedFormArrayForIndex(parentKey, childKey, indexOfParent).removeAt(
+        indexOfChild
+      );
+    }
   }
 
   onSubmit(): void {
     if (this.form.valid) {
+      console.log(this.form.value);
     }
   }
-
 }
 
 interface Mapping {
@@ -696,6 +865,7 @@ export class ApiRequestDialogComponent {
   dynamicForm(): void {
     const modal = this.modal.create({
       nzContent: ApiFormDialogComponent,
+      nzClassName: 'lg',
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
