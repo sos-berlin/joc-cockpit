@@ -3499,7 +3499,7 @@
     "label.sessions": "Sessions Actives",
     "label.sessionsFound": "Sessions trouvées",
     "label.sessionFound": "Session trouvé",
-    "label.approvalsConfirmationEmail": "confirmation Email",
+    "label.approvalsConfirmationEmail": "E-mail de Demande d'Autorisation",
     "button.addGroupRole": "Ajouter Groupes/Rôles",
     "button.addIdentityService": "Ajouter un Service d'Identité",
     "button.addPermission": "Ajouter une Permission",
