@@ -2597,7 +2597,9 @@
         "ApproverNotification": "anstehende Autorisierungsanfragen",
         "RequestorNotification": "Autorisierungsanfrage ist",
         "requestorStateDate": "Statusdatum Anfrage",
-        "approverStateDate": "Statudatum Autorisierung"
+        "approverStateDate": "Statudatum Autorisierung",
+        "numOfApprovedRequests": "Approved Requests",
+        "numOfRejectedRequests": "Rejected Requests"
       },
       "button": {
         "approve": "Autorisierer",

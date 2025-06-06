@@ -192,14 +192,12 @@ export class HeaderComponent {
     this.router.navigate(['/approvals']).then();
   }
 
-  navToApprovalsReq(index: number): void {
+  navToApprovalsReq(state): void {
     let filter = this.coreService.getApprovalsTab();
-    filter.tabIndex = index;
-   if(index == 0){
-      filter.approvalRequests.filter.approverStates = ["APPROVED", "REJECTED"];
+    filter.tabIndex = 0;
+      filter.approvalRequests.filter.approverStates = [state];
       filter.approvalRequests.filter.requestorStates = ["REQUESTED"];
       filter.approvalRequests.current = false;
-    }
     this.router.navigate(['/approvals']).then();
   }
 
@@ -319,6 +317,7 @@ export class HeaderComponent {
           if (!this.switchScheduler && !this.isLogout) {
             this.eventId = res.eventId;
             this.dataService.announceEvent(res);
+
             for (let j = 0; j < res.eventSnapshots.length; j++) {
               if (res.eventSnapshots[j].eventType === 'ControllerStateChanged' ||
                 res.eventSnapshots[j].eventType === 'JOCStateChanged' ||
@@ -329,14 +328,15 @@ export class HeaderComponent {
                 res.eventSnapshots[j].date = parseInt(this.eventId) * 1000;
                 this.problemEvent = res.eventSnapshots[j];
                 sessionStorage['$SOS$NODELOSS'] = JSON.stringify(res.eventSnapshots[j]);
-              }else if (res.eventsFromApprovalRequests[j]?.eventType === 'ApproverNotification') {
-                this.approvalEvent = res.eventsFromApprovalRequests[j];
-                sessionStorage['$SOS$APPROVALREQUESTS'] = JSON.stringify(res.eventsFromApprovalRequests[j]);
-              }else if (res.eventsFromApprovalRequests[j]?.eventType === 'RequestorNotification') {
-                this.requestorEvent = res.eventsFromApprovalRequests[j];
-                sessionStorage['$SOS$REQUESTORREQUESTS'] = JSON.stringify(res.eventsFromApprovalRequests[j]);
               }
             }
+
+            for (let j = 0; j < res.eventsFromApprovalRequests.length; j++) {
+              this.approvalEvent = res.eventsFromApprovalRequests[j];
+            }
+            for (let j = 0; j < res.eventsFromApprovalRequests.length; j++) {
+                          this.requestorEvent = res.eventsFromApprovalRequests[j];
+                        }
 
             for (let j = 0; j < res.eventsFromOrderMonitoring.length; j++) {
               this.colorOfJOCEvent = res.eventsFromOrderMonitoring[j].level === 'ERROR' ? 2 : this.colorOfJOCEvent == 2 ? 2 : 1;
@@ -345,6 +345,7 @@ export class HeaderComponent {
                 this.jocMonitor.shift();
               }
             }
+
             for (let j = 0; j < res.eventsFromSystemMonitoring.length; j++) {
               this.colorOfSystemEvent = res.eventsFromSystemMonitoring[j].level === 'ERROR' ? 2 : this.colorOfSystemEvent == 2 ? 2 : 1;
               this.systemMonitor.push(res.eventsFromSystemMonitoring[j]);

@@ -2597,7 +2597,9 @@
         "ApproverNotification": "Demandes d'Autorisation en attentes",
         "RequestorNotification": "Identification Demande",
         "requestorStateDate": "Date Status Demande",
-        "approverStateDate": "Date Status Autorisation"
+        "approverStateDate": "Date Status Autorisation",
+        "numOfApprovedRequests": "Approved Requests",
+        "numOfRejectedRequests": "Rejected Requests"
       },
       "button": {
         "approve": "Approbateur",

@@ -663,6 +663,10 @@ export class LogViewComponent {
       if (dt[i].position || dt[i].position == 0) {
         col += ', pos=' + dt[i].position;
       }
+
+      if (dt[i].priority !== undefined && dt[i].priority !== null) {
+        col += ', prio=' + this.getPriorityLabel(dt[i].priority);
+      }
       if (dt[i].agentDatetime) {
         col += ', Agent' + '(';
         if (dt[i].agentUrl) {
@@ -871,6 +875,16 @@ export class LogViewComponent {
     this.loading = false;
   }
 
+  private getPriorityLabel(prio: number): string {
+    switch (prio) {
+      case 20000:   return 'HIGH';
+      case 10000:    return 'ABOVE NORMAL';
+      case 0:       return 'NORMAL';
+      case -10000:   return 'BELOW NORMAL';
+      case -20000:  return 'LOW';
+      default:      return prio.toString();
+    }
+  }
   renderData(res: any, domId: string | null): void {
     this.loading = false;
     this.calculateHeight();

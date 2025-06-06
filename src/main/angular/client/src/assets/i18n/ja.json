@@ -2597,7 +2597,9 @@
         "ApproverNotification": "pending approval requests",
         "RequestorNotification": "Approval request is",
         "requestorStateDate": "Requested Date",
-        "approverStateDate": "Approved Date"
+        "approverStateDate": "Approved Date",
+        "numOfApprovedRequests": "Approved Requests",
+        "numOfRejectedRequests": "Rejected Requests"
       },
       "button": {
         "approve": "Approve",

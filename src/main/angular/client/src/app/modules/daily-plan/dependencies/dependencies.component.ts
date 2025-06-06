@@ -696,7 +696,6 @@ export class DependenciesComponent {
     let isBlinkOn = false;
     const blinkInterval = setInterval(() => {
       const newColor = isBlinkOn ? originalColor : blinkColor;
-      // Note: getCellStyles may not exist – use setCellStyles on the model instead.
       this.graph.setCellStyles(mxConstants.STYLE_FILLCOLOR, newColor, [vertex]);
       this.graph.refresh();
       isBlinkOn = !isBlinkOn;
@@ -716,7 +715,6 @@ export class DependenciesComponent {
     return false;
   }
 
-  // New helper: get the corresponding notice board for a given workflow path.
   private getNoticeBoardByWorkflow(workflow: any): any {
     if (!this.workflowData || !this.workflowData.noticeBoards) {
       return null;
@@ -825,7 +823,6 @@ export class DependenciesComponent {
     const expectingWorkflows = data?.expectingWorkflows || [];
     const consumingWorkflows = data?.consumingWorkflows || [];
     postingWorkflows.forEach((p: any) => {
-      // Get the corresponding notice board info for this workflow
       const boardInfo = this.getNoticeBoardByWorkflow(p);
       let postingColor = '#1171a6';
       if (p.futureDueOrderIds && p.futureDueOrderIds.length > 0) {
@@ -974,18 +971,20 @@ export class DependenciesComponent {
       if (filterBy && Array.isArray(filterBy) && filterBy.length > 0) {
         let includeRow = false;
 
-        if (filterBy.includes('future')) {
-          if (row.postingColor === '#FF8000') {
-            includeRow = true;
+        for (const boardName of p.postNotices || []) {
+          const board = this.workflowData.noticeBoards?.[boardName];
+          if (!board) {
+            continue;
           }
-        }
 
-        if (filterBy.includes('present')) {
-          const hasRightMarker = [...row.expecting, ...row.consuming].some(
-            (ex: any) => ex.rightNodeColor === '#FF8000' || ex.rightNodeColor === '#b3b300'
-          );
-          if (hasRightMarker) {
+          if (filterBy.includes('future') && board.numOfAnnouncements > 0) {
             includeRow = true;
+            break;
+          }
+
+          if (filterBy.includes('present') && board.numOfPostedNotices > 0) {
+            includeRow = true;
+            break;
           }
         }
 
@@ -993,6 +992,7 @@ export class DependenciesComponent {
           return;
         }
       }
+
 
 
       rows.push(row);
@@ -1087,9 +1087,6 @@ export class DependenciesComponent {
         }
 
 
-        // if (this.isWorkflowCritical(row)) {
-        //   this.blinkNode(pCell, '#FF0000', 500);
-        // }
         let expectingNodes: any[] = [];
         let consumingNodes: any[] = [];
         if (totalBlockHeight > 0) {
@@ -1103,7 +1100,6 @@ export class DependenciesComponent {
 
               const dynamicStyleExpecting = `fillColor=${fillColorExpecting};strokeColor=#d0e0e3;shadow=1;shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888;rounded=1;arcSize=20;strokeWidth=1;fontColor=${fontColorExpecting};`;
               const node = this.createNode(parent, expectVal, xRight, nodeY, nodeWidth, nodeHeight, dynamicStyleExpecting);
-              // Optionally add expecting overlay if desired:
               this.addExpectingOverlay(node);
               this.addOrderOverlay(node, row.expecting[j].orders);
               expectingNodes.push({cell: node, notice: row.expecting[j].notice, rightNodeColor: fillColorExpecting});
@@ -1120,7 +1116,6 @@ export class DependenciesComponent {
               const fontColorConsuming = this.getFontColor(fillColorConsuming);
               const dynamicStyleConsuming = `fillColor=${fillColorConsuming};strokeColor=#d0e0e3;shadow=1;shadowOffsetX=2;shadowOffsetY=2;shadowAlpha=0.3;shadowColor=#888;rounded=1;arcSize=20;strokeWidth=1;fontColor=${fontColorConsuming};`;
               const node = this.createNode(parent, consumeVal, xRight, nodeY, nodeWidth, nodeHeight, dynamicStyleConsuming);
-              // Optionally add consuming overlay if desired:
               this.addConsumingOverlay(node);
               this.addOrderOverlay(node, row.consuming[j].orders);
               consumingNodes.push({cell: node, notice: row.consuming[j].notice, rightNodeColor: fillColorConsuming});
@@ -1178,7 +1173,7 @@ export class DependenciesComponent {
     }
 
     if (hasAnnouncements) {
-      return '#FF8000';
+      return '#a3c6ea';
     }
 
     if (hasPosted) {
@@ -1221,7 +1216,6 @@ export class DependenciesComponent {
     }).pipe(takeUntil(this.depPendingHTTPRequests$)).subscribe((res) => {
       this.isLoaded = true;
       this.workflowData = res;
-      // If the response now contains notice boards, store them.
       if (res.noticeBoards) {
         this.noticeBoards = res.noticeBoards;
       }

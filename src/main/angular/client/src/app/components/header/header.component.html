@@ -35,9 +35,11 @@
           <a (click)="clearRequestorEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
         </div>
         <div class="notification">
-          <div (click)="navToApprovalsReq(0)" class="cursor primary-text-hover-color" >
-              <span *ngIf="requestorEvent?.approverState" translate>monitor.approvalRequest.label.RequestorNotification</span>
-           {{requestorEvent?.approverState}}
+          <div (click)="navToApprovalsReq('APPROVED')" class="cursor primary-text-hover-color" >
+            {{requestorEvent?.numOfApprovedRequests}} - <span *ngIf="requestorEvent?.numOfApprovedRequests" translate>monitor.approvalRequest.label.numOfApprovedRequests</span>
+          </div>
+          <div (click)="navToApprovalsReq('REJECTED')" class="cursor primary-text-hover-color" >
+            {{requestorEvent?.numOfRejectedRequests}} - <span *ngIf="requestorEvent?.numOfRejectedRequests" translate>monitor.approvalRequest.label.numOfRejectedRequests</span>
           </div>
         </div>
       </ng-template>
@@ -99,13 +101,14 @@
         </a>
       </li>
       <li class="nav-item">
-        <a *ngIf="requestorEvent.approverState && (isRequestor)" class="nav-link pointer text-warning" style="top: 3px">
+        <a *ngIf="(requestorEvent.numOfApprovedRequests || requestorEvent.numOfRejectedRequests)  && (isRequestor)" class="nav-link pointer text-warning" style="top: 3px">
           <span [nzPopoverContent]="requestorEventTemp" class="p-l-xs cursor"
                 nz-popover nzPopoverPlacement="bottomRight"
                 nzPopoverTitle="{{'info.label.pendingRequests' | translate}}"
                 nzPopoverTrigger="click">
             <i class="fa fa-check-circle text-18 t-1 pos-rel" style="line-height: 0"></i>
-            <i class="text-xs pos-abt" style="top:-15px;right: 0px">{{ requestorEvent.numOfPendingApprovals }}</i>
+            <i class="text-xs pos-abt" style="top:-15px;right: 0px">{{ requestorEvent.numOfRejectedRequests + requestorEvent.numOfApprovedRequests}}</i>
+
           </span>
         </a>
       </li>
