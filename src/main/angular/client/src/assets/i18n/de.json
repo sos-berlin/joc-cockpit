@@ -2530,7 +2530,7 @@
       "date": "Datum",
       "shutdown": "außer Betrieb",
       "approvalRequest": "Autorisierungsanfragen",
-      "approvers": "Autorisierer",
+      "approvers": "Autorisiererprofile",
       "emailSettings": "Einstellungen für Benachrichtigung"
     },
     "button": {
@@ -2617,15 +2617,15 @@
     },
     "approvers": {
       "label": {
-        "addNewApprover": "Autorisierer hinzufügen",
+        "addNewApprover": "Autorisiererprofil hinzufügen",
         "firstName": "Vorname",
         "lastName": "Nachname",
         "email": "E-Mail",
-        "approversFound": "Einträge für Autorisierer gefunden",
-        "approverFound": "Eintrag für Autorisierer gefunden"
+        "approversFound": "Einträge für Autorisiererprofile gefunden",
+        "approverFound": "Eintrag für Autorisiererprofile gefunden"
       },
       "button": {
-        "newApprover": "Neuer Autorisierer"
+        "newApprover": "Neues Autorisiererprofil"
       },
       "placeholder": {
         "firstName": "Vornamen angeben",

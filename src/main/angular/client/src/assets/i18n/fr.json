@@ -2530,7 +2530,7 @@
       "date": "Date",
       "shutdown": "arrêt",
       "approvalRequest": "Demandes d'Autorisation",
-      "approvers": "Approbateurs",
+      "approvers": "Profils d'Approbateurs",
       "emailSettings": "Paramètres de Notification"
     },
     "button": {
@@ -2617,15 +2617,15 @@
     },
     "approvers": {
       "label": {
-        "addNewApprover": "Ajouter Approbateur",
+        "addNewApprover": "Ajouter Profil d'Approbateur",
         "firstName": "Prénom",
         "lastName": "Nom",
         "email": "E-Mail",
-        "approversFound": "Approbateurs trouvés",
-        "approverFound": "Approbateur trouvé"
+        "approversFound": "Profils d'Approbateur trouvés",
+        "approverFound": "Profil d'Approbateur trouvé"
       },
       "button": {
-        "newApprover": "Ajouter Approbateur"
+        "newApprover": "Ajouter Profil d'Approbateur"
       },
       "placeholder": {
         "firstName": "Entrer Prénom",

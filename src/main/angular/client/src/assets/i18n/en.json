@@ -2530,7 +2530,7 @@
       "date": "Date",
       "shutdown": "out of service",
       "approvalRequest": "Approval Requests",
-      "approvers": "Approvers",
+      "approvers": "Approver Profiles",
       "emailSettings": "Notification Settings"
     },
     "button": {
@@ -2617,15 +2617,15 @@
     },
     "approvers": {
       "label": {
-       "addNewApprover": "Add New Approver",
+       "addNewApprover": "Add Approver Profile",
        "firstName": "First Name",
        "lastName": "Last Name",
        "email": "E-Mail",
-        "approversFound": "Approver entries found",
-        "approverFound": "Approver entry found"
+        "approversFound": "Approver Profile entries found",
+        "approverFound": "Approver Profile entry found"
       },
       "button": {
-        "newApprover": "New Approver"
+        "newApprover": "New Approver Profile"
       },
       "placeholder": {
         "firstName": "Enter First Name",
