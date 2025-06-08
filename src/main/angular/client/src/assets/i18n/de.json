@@ -2531,7 +2531,7 @@
       "shutdown": "außer Betrieb",
       "approvalRequest": "Autorisierungsanfragen",
       "approvers": "Autorisierer",
-      "emailSettings": "E-Mail Einstellungen"
+      "emailSettings": "Einstellungen für Benachrichtigung"
     },
     "button": {
       "week": "Woche",
@@ -2595,11 +2595,11 @@
         "approvalFound": "Autorisierungsanfrage gefunden",
         "allApproverRequests": "Alle Autorisierungsanfragen",
         "ApproverNotification": "anstehende Autorisierungsanfragen",
-        "RequestorNotification": "Autorisierungsanfrage ist",
+        "RequestorNotification": "Kennung Autorisierungsanfrage",
         "requestorStateDate": "Statusdatum Anfrage",
         "approverStateDate": "Statudatum Autorisierung",
-        "numOfApprovedRequests": "Approved Requests",
-        "numOfRejectedRequests": "Rejected Requests"
+        "numOfApprovedRequests": "Autorisierte Anfragen",
+        "numOfRejectedRequests": "Verworfene Anfragen"
       },
       "button": {
         "approve": "Autorisierer",

@@ -2531,7 +2531,7 @@
       "shutdown": "arrêt",
       "approvalRequest": "Demandes d'Autorisation",
       "approvers": "Approbateurs",
-      "emailSettings": "Paramètres de e-mail"
+      "emailSettings": "Paramètres de Notification"
     },
     "button": {
       "week": "Semaine",
@@ -2598,8 +2598,8 @@
         "RequestorNotification": "Identification Demande",
         "requestorStateDate": "Date Status Demande",
         "approverStateDate": "Date Status Autorisation",
-        "numOfApprovedRequests": "Approved Requests",
-        "numOfRejectedRequests": "Rejected Requests"
+        "numOfApprovedRequests": "Demandes approuvées",
+        "numOfRejectedRequests": "Demandes rejetées"
       },
       "button": {
         "approve": "Approbateur",
