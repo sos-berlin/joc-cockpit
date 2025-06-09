@@ -229,46 +229,99 @@ export class ApiRequestComponent {
 
   @HostListener('document:dblclick', ['$event'])
   onDoubleClick(event: MouseEvent) {
-    const path = (event as any).composedPath?.() as HTMLElement[] || [];
-    const inAceText = path.some(el =>
+    const pathEls = (event as any).composedPath?.() as HTMLElement[] || [];
+    if (!pathEls.some(el =>
       el.classList?.contains('ace_scroller') ||
-      el.classList?.contains('ace_content')
-    );
-    if (!inAceText) {
-      return;
-    }
+      el.classList?.contains('ace_content'))
+    ) return;
 
-    const jsonEditor = (this.editor as any).editor;
-    const ace: AceEditor | undefined = jsonEditor?.aceEditor;
-    if (!ace) {
-      return;
-    }
+    const aceEditor = (this.editor as any).editor.aceEditor as AceEditor;
+    const raw = aceEditor.getSelectedText();
+    if (!raw?.trim()) return;
 
-    const raw = ace.getSelectedText().trim();
-    if (!raw) {
-      return;
-    }
-
-    let parsed: any;
+    let parsedValue: any;
     try {
-      parsed = JSON.parse(raw);
+      parsedValue = JSON.parse(raw);
     } catch {
-      parsed = raw.replace(/^['"]|['"]$/g, '');
+      parsedValue = raw.replace(/^['"]|['"]$/g, '');
     }
 
-    const paths = this.findPaths(this.response, parsed);
+    const allPaths = this.findPaths(this.response, parsedValue);
+    if (!allPaths.length) return;
+
+    const cursor = aceEditor.getCursorPosition();
+    const line  = aceEditor.getSession().getLine(cursor.row);
+    const m     = line.match(/^\s*"([^"]+)"\s*:/);
+    let candidates = m
+      ? allPaths.filter(p => p.endsWith(`.${m[1]}`))
+      : allPaths;
+    if (!candidates.length) candidates = allPaths;
+
+    const snippet = raw;
+    const offsets: number[] = [];
+    let pos = JSON.stringify(this.response).indexOf(snippet);
+    while (pos !== -1) {
+      offsets.push(pos);
+      pos = JSON.stringify(this.response).indexOf(snippet, pos + snippet.length);
+    }
+    if (!offsets.length) {
+      this.openModal(candidates[0], raw);
+      return;
+    }
+    const doc     = aceEditor.getSession().getDocument();
+    const cursorIdx = (doc as any).positionToIndex(cursor);
+    let occurrence = 0;
+    for (let i = 0; i < offsets.length; i++) {
+      if (offsets[i] <= cursorIdx) occurrence = i;
+      else break;
+    }
+
+    const chosenPath = candidates[ occurrence ] || candidates[0];
+    this.openModal(chosenPath, raw);
+  }
+
+  private openModal(path: string, raw: any) {
+    const jq = this.toJqPath(path);
     const modal = this.modal.create({
       nzContent: ApiRequestDialogComponent,
-      nzData: {selectedText: raw, paths, list: false},
+      nzData: { selectedText: raw, paths: [ jq ], list: false },
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
     });
-    modal.afterClose.subscribe(result => {
+    modal.afterClose.subscribe((result: Mapping) => {
       if (result) {
         this.mappings.push(result);
       }
     });
+  }
+
+
+  /** in your ApiRequestComponent **/
+
+  /**
+   * Convert a raw findPaths path (e.g. "orders[2].orderId" or "[0].foo-bar")
+   * into a jq filter string (e.g. ".orders[2].orderId" or ".[0][\"foo-bar\"]").
+   */
+   toJqPath(path: string | Array<string|number>): string {
+    const segments: Array<string|number> =
+      Array.isArray(path)
+        ? path
+        :
+        Array.from(path.matchAll(/([A-Za-z_][A-Za-z0-9_]*)|\[(\d+)\]|"((?:\\.|[^"\\])*)"/g))
+          .map(m => m[1] ?? (m[2] !== undefined ? Number(m[2]) : m[3]));
+
+    let filter = segments.map(seg => {
+      if (typeof seg === 'number') {
+        return `[${seg}]`;
+      } else if (/^[A-Za-z_][A-Za-z0-9_]*$/.test(seg)) {
+        return `.${seg}`;
+      } else {
+        return `[${JSON.stringify(seg)}]`;
+      }
+    }).join('');
+
+    return filter.startsWith('.') ? filter : `.${filter}`;
   }
 
   private findPaths(obj: any, target: any): string[] {
