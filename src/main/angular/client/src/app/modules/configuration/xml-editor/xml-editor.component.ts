@@ -2711,14 +2711,12 @@ export class XmlEditorComponent {
   }
 
   autoAddChild(child) {
-    if (this.autoAddCount === 0) {
       let getCh = this.checkChildNode(child, undefined);
       if (getCh) {
         for (let i = 0; i < getCh.length; i++) {
           if (getCh[i].minOccurs === undefined || getCh[i].minOccurs === 1 || getCh[i].minOccurs === '1') {
             if (!getCh[i].choice) {
               getCh[i].children = [];
-              this.autoAddCount++;
               this.addChild(getCh[i], child, true, i);
             }
           }
@@ -2726,7 +2724,6 @@ export class XmlEditorComponent {
       }
       this.getData(child);
       this.printArraya(false);
-    }
   }
 
   attachTypeAttrs(attrs, child) {
@@ -2780,7 +2777,7 @@ export class XmlEditorComponent {
   attachValue(value, child) {
     if (value && value.length > 0 && value[0].grandFather) {
       for (let i = 0; i < child.length; i++) {
-        if (value[0] && value[0].parent === child[i].ref && value[0].grandFather === child[i].parent) {
+        if ((value[0] && value[0].parent === child[i].ref ||value[0] && value[0].parent === child[i].name) && value[0].grandFather === child[i].parent) {
           if (!child[i].values) {
             child[i].values = [];
             for (let j = 0; j < value.length; j++) {
@@ -2796,7 +2793,7 @@ export class XmlEditorComponent {
     } else {
       if (child.length > 0) {
         for (let i = 0; i < child.length; i++) {
-          if (value && value[0] && value[0].parent === child[i].ref) {
+          if (value && value[0] && (value[0].parent === child[i].ref || value[0].parent === child[i].name)) {
             if (!child[i].values) {
               child[i].values = [];
               for (let j = 0; j < value.length; j++) {
@@ -3284,57 +3281,23 @@ export class XmlEditorComponent {
   }
 
   checkText(node: any): any {
-    const select = xpath.useNamespaces({'xs':'http://www.w3.org/2001/XMLSchema'});
+    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     let text: any = {};
-    const nameOrRef = node.ref || node.name;
-
-    // 1) look for docs on the element itself
-    let docs = select(
-      `//xs:element[@name='${nameOrRef}']/xs:annotation/xs:documentation`,
-      this.doc
-    );
-
-    // 2) then on its complexType
-    if (!docs.length && node.type) {
-      docs = select(
-        `//xs:complexType[@name='${node.type}']/xs:annotation/xs:documentation`,
-        this.doc
-      );
+    const documentationPath = '/xs:schema/xs:element[@name=\'' + (node.ref || node.name) + '\']/xs:annotation/xs:documentation';
+    const element = select(documentationPath, this.doc);
+    if (element.length > 0) {
+      text.doc = element[0].innerHTML;
     }
-
-    // 3) **new fallback**: if still empty, grab the first child's docs
-    if (!docs.length && node.type) {
-      // find the first <xs:element> inside this type
-      const refAttr = select(
-        `//xs:complexType[@name='${node.type}']//xs:sequence/xs:element[1]/@ref |
-       //xs:complexType[@name='${node.type}']//xs:sequence/xs:element[1]/@name`,
-        this.doc
-      );
-      if (refAttr.length) {
-        const childName = refAttr[0].nodeValue;
-        docs = select(
-          `//xs:element[@name='${childName}']/xs:annotation/xs:documentation`,
-          this.doc
-        );
-      }
-    }
-
-    if (docs.length) {
-      text.doc = docs[0].textContent.trim();
-    }
-
-    // …rest of your show/attrs logic…
-    if (node.show == null) {
+    if (node.show == undefined || node.show == null) {
       node.show = !node.attributes && !node.values;
     }
     setTimeout(() => {
-      if (node.attributes) {
-        for (const a of node.attributes) {
-          this.checkAttrsText(a, select);
+      if (node && node.attributes) {
+        for (const i in node.attributes) {
+          this.checkAttrsText(node.attributes[i], select);
         }
       }
     }, 0);
-
     return text;
   }
 

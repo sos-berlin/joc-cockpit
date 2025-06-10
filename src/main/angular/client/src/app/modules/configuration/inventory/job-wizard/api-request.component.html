@@ -23,7 +23,7 @@
                                 </div>
 
 
-                                <div class="col-sm-7">
+                                <div class="col-sm-5">
                                     <input
                                             class="form-control"
                                             id="url"
@@ -31,6 +31,16 @@
                                             required
                                             [(ngModel)]="model.url"
                                             placeholder="{{'workflow.apiRequest.placeholder.apiRequest' | translate}}"
+                                    />
+                                </div>
+                              <div class="col-sm-3">
+                                    <input
+                                            class="form-control"
+                                            id="endPoint"
+                                            name="endPoint"
+                                            required
+                                            [(ngModel)]="model.endPoint"
+                                            placeholder="{{'workflow.apiRequest.placeholder.endPoint' | translate}}"
                                     />
                                 </div>
 <!--                              <button class="btn btn-grey btn-sm" style="margin-right: 12px"-->
@@ -332,6 +342,10 @@
                                       nzDescription="{{errorText}}"
                                       nzShowIcon
                             ></nz-alert>
+                          <nz-divider *ngIf="requestUrl"></nz-divider>
+                          <div *ngIf="requestUrl">
+                            <span translate>monitor.approvalRequest.label.requestUrl</span> - <span>{{requestUrl}}</span>
+                          </div>
                             <nz-divider></nz-divider>
                             <div *ngIf="(responseHeaders | keyvalue).length > 0">
                                 <nz-table [nzData]="[responseHeaders]" [nzShowPagination]="false" [nzBordered]="true"
@@ -351,7 +365,6 @@
                                 </nz-table>
                             </div>
                         </div>
-
                     </div>
                     <div class="modal-footer p-l-0 p-b-0">
                         <button (click)="storeConfig()"

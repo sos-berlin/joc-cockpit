@@ -4118,7 +4118,8 @@
       "placeholder.apiKeyName": "p.ex. X-API-KEY",
       "placeholder.apiKeyValue": "Entrer clé-valeur pour API",
       "placeholder.keyValue": "{\"key\":\"value\"}",
-      "placeholder.script": "// ajouter script ici"
+      "placeholder.script": "// ajouter script ici",
+      "placeholder.endPoint": "/add/order"
     }
   },
   "xml": {

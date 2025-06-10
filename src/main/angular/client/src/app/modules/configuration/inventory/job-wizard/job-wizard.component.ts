@@ -41,6 +41,7 @@ interface KeyValue {
 export class ApiRequestComponent {
   model = {
     url: '',
+    endPoint: '',
     method: 'GET',
     headers: [] as KeyValue[],
     params: [] as KeyValue[],
@@ -87,6 +88,7 @@ export class ApiRequestComponent {
 
   response: any = null;
   status: number | null = null;
+  requestUrl: '';
   responseHeaders: Record<string, string> = {};
   options: any = new JsonEditorOptions();
   isError = false;
@@ -172,7 +174,8 @@ export class ApiRequestComponent {
       return;
     }
 
-    this.model.url = req.url || this.model.url;
+    this.model.url      = req.editorUrl  || this.model.url;
+    this.model.endPoint = req.endpoint   || this.model.endPoint;
     this.model.method = req.method || this.model.method;
     this.model.headers = Array.isArray(req.headers) ? req.headers : [];
     this.model.params = Array.isArray(req.params) ? req.params : [];
@@ -436,62 +439,66 @@ export class ApiRequestComponent {
         break;
     }
 
-    const {url, method, params, body} = this.model;
-    const paramMap = this.arrayToMap(params);
+    const { url, endPoint, method, params, body } = this.model;
+  const paramMap = this.arrayToMap(params);
 
-    const placeholderRegex = /\{(\w+)\}/g;
-    const replacePlaceholders = (input: string) =>
-      input.replace(placeholderRegex, (_m, name) => {
-        const def = this.parameters?.[name]?.default;
-        if (def != null) {
-          try {
-            return JSON.parse(def);
-          } catch {
-            return def;
-          }
-        }
-        return `{${name}}`;
-      });
-
-    const resolvedUrl = replacePlaceholders(url);
-
-    const resolvedHdrs: Record<string, string> = {};
-    Object.entries(hdrs).forEach(([k, v]) => {
-      resolvedHdrs[replacePlaceholders(k)] = replacePlaceholders(v);
+  const placeholderRegex = /\{(\w+)\}/g;
+  const replacePlaceholders = (input: string) =>
+    input.replace(placeholderRegex, (_m, name) => {
+      const def = this.parameters?.[name]?.default;
+      if (def != null) {
+        try { return JSON.parse(def); }
+        catch { return def; }
+      }
+      return `{${name}}`;
     });
 
-    Object.keys(paramMap).forEach(key => {
-      paramMap[key] = replacePlaceholders(paramMap[key]);
+  const resolvedBase     = replacePlaceholders(url).replace(/\/$/, '');
+  const resolvedEndpoint = replacePlaceholders(endPoint);
+  const safeEndpoint     = resolvedEndpoint.startsWith('/')
+    ? resolvedEndpoint
+    : `/${resolvedEndpoint}`;
+
+  const fullUrl = `${resolvedBase}${safeEndpoint}`;
+
+  const resolvedHdrs: Record<string,string> = {};
+  Object.entries(hdrs).forEach(([k,v]) => {
+    resolvedHdrs[replacePlaceholders(k)] = replacePlaceholders(v);
+  });
+  Object.keys(paramMap).forEach(k => {
+    paramMap[k] = replacePlaceholders(paramMap[k]);
+  });
+
+  let resolvedBody: any = body;
+  if (typeof resolvedBody === 'string') {
+    resolvedBody = replacePlaceholders(resolvedBody);
+  }
+
+  this.coreService
+    .requestTest(method, fullUrl, resolvedHdrs, paramMap, resolvedBody)
+    .subscribe({
+      next: res => {
+        this.status = res.status;
+        this.response = res.body;
+        this.responseHeaders = {};
+        this.requestUrl = '';
+        this.data = res.body;
+        this.errorText = res.statusText;
+        res.headers.keys().forEach(h => {
+          this.responseHeaders[h] = res.headers.get(h)!;
+        });
+        this.cd.detectChanges();
+      },
+      error: err => {
+        const code = err.status ?? 'Unknown';
+        const text = err.statusText || err.message || 'Request failed';
+        this.status = code;
+        this.requestUrl = err?.url
+        this.errorText = text;
+        this.msg.error(`Error ${code}: ${text}`);
+        this.cd.detectChanges();
+      }
     });
-
-    let resolvedBody: any = body;
-    if (typeof resolvedBody === 'string') {
-      resolvedBody = replacePlaceholders(resolvedBody);
-    }
-
-    this.coreService
-      .requestTest(method, resolvedUrl, resolvedHdrs, paramMap, resolvedBody)
-      .subscribe({
-        next: res => {
-          this.status = res.status;
-          this.response = res.body;
-          this.responseHeaders = {};
-          this.data = res.body;
-          this.errorText = res.statusText;
-          res.headers.keys().forEach(h => {
-            this.responseHeaders[h] = res.headers.get(h)!;
-          });
-          this.cd.detectChanges();
-        },
-        error: err => {
-          const code = err.status ?? 'Unknown';
-          const text = err.statusText || err.message || 'Request failed';
-          this.status = code;
-          this.errorText = text;
-          this.msg.error(`Error ${code}: ${text}`);
-          this.cd.detectChanges();
-        }
-      });
   }
 
 
@@ -559,94 +566,75 @@ export class ApiRequestComponent {
     return obj;
   }
 
-  storeConfig(): void {
-    let bodyText: any;
-    try {
-      bodyText = JSON.parse(this.model.body);
-    } catch {
-      bodyText = this.model.body;
-    }
-    const flatDefs = this.flattenParameters(this.parameters || {});
-
-    const fullUrl = this.resolvePlaceholders(this.model.url, flatDefs);
-
-    const urlObj = new URL(fullUrl);
-    const baseUrl = urlObj.origin;
-    const endPoint = urlObj.pathname + urlObj.search;
-
-    const headers = this.model.headers
-      .filter(h => h.key.trim())
-      .map(h => ({
-        key: h.key,
-        value: this.resolvePlaceholders(h.value, flatDefs)
-      }));
-    const params = this.model.params
-      .filter(p => p.key.trim())
-      .map(p => ({
-        key: p.key,
-        value: this.resolvePlaceholders(p.value, flatDefs)
-      }));
-    const body = this.resolvePlaceholders(bodyText, flatDefs);
-
-    const config: any = { url: fullUrl, method: this.model.method };
-
-    if (headers.length) {
-      config.headers = headers;
-    }
-    if (params.length) {
-      config.params = params;
-    }
-    if (this.auth.type !== 'None') {
-      const auth: any = { type: this.auth.type };
-      if (this.auth.type === 'API Key' && this.auth.apiKey.name && this.auth.apiKey.value) {
-        auth.apiKey = this.auth.apiKey;
-      }
-      if (this.auth.type === 'Bearer Token' && this.auth.token) {
-        auth.token = this.auth.token;
-      }
-      if (
-        this.auth.type === 'Basic Auth' &&
-        (this.auth.basic.username || this.auth.basic.password)
-      ) {
-        auth.basic = this.auth.basic;
-      }
-      if (
-        this.auth.type === 'OAuth 2.0' &&
-        (this.auth.oauth2.clientId ||
-          this.auth.oauth2.clientSecret ||
-          this.auth.oauth2.tokenUrl)
-      ) {
-        auth.oauth2 = this.auth.oauth2;
-      }
-      config.auth = auth;
-    }
-    if (body !== undefined && body !== '') {
-      config.body = body;
-    }
-
-    config.endpoint = endPoint;
-
-    delete config.url;
-    delete config.auth;
-    delete config.method;
-    delete config.params;
-
-    const json = JSON.stringify(config, null, 2);
-    const out: any = { request: json };
-
-    if (this.mappings.length) {
-      out.return_variables = this.mappings;
-    }
-
-    if(baseUrl){
-      out.baseUrl = baseUrl
-    }
-
-    this.clipboardService.copyFromContent(json);
-    this.coreService.showCopyMessage(this.msg);
-    this.configSaved.emit(out);
-    this.isVisible.emit(false);
+storeConfig(): void {
+  let bodyText: any;
+  try {
+    bodyText = JSON.parse(this.model.body);
+  } catch {
+    bodyText = this.model.body;
   }
+
+  const flatDefs = this.flattenParameters(this.parameters || {});
+
+  const editorUrl = this.resolvePlaceholders(this.model.url, flatDefs);
+  const endpoint  = this.resolvePlaceholders(this.model.endPoint, flatDefs);
+
+  const headers = this.model.headers
+    .filter(h => h.key.trim())
+    .map(h => ({
+      key: h.key,
+      value: this.resolvePlaceholders(h.value, flatDefs)
+    }));
+  const params  = this.model.params
+    .filter(p => p.key.trim())
+    .map(p => ({
+      key: p.key,
+      value: this.resolvePlaceholders(p.value, flatDefs)
+    }));
+  const body    = bodyText !== '' ? this.resolvePlaceholders(bodyText, flatDefs) : undefined;
+
+  const cfg: any = {
+    editorUrl,
+    endpoint,
+    method: this.model.method
+  };
+  if (headers.length) cfg.headers = headers;
+  if (params.length)  cfg.params  = params;
+  if (this.auth.type !== 'None') {
+    const auth: any = { type: this.auth.type };
+    if (this.auth.type === 'API Key' && this.auth.apiKey.name && this.auth.apiKey.value) {
+      auth.apiKey = this.auth.apiKey;
+    }
+    if (this.auth.type === 'Bearer Token' && this.auth.token) {
+      auth.token = this.auth.token;
+    }
+    if (
+      this.auth.type === 'Basic Auth' &&
+      (this.auth.basic.username || this.auth.basic.password)
+    ) {
+      auth.basic = this.auth.basic;
+    }
+    if (
+      this.auth.type === 'OAuth 2.0' &&
+      (this.auth.oauth2.clientId ||
+        this.auth.oauth2.clientSecret ||
+        this.auth.oauth2.tokenUrl)
+    ) {
+      auth.oauth2 = this.auth.oauth2;
+    }
+    cfg.auth = auth;
+  }
+  if (body !== undefined) cfg.body = body;
+  if (this.mappings.length) cfg.return_variables = this.mappings;
+  delete cfg.auth;
+  delete cfg.method;
+  delete cfg.params;
+  const json = JSON.stringify(cfg, null, 2);
+  this.clipboardService.copyFromContent(json);
+  this.coreService.showCopyMessage(this.msg);
+  this.configSaved.emit({ request: json });
+  this.isVisible.emit(false);
+}
 
 
   close(): void {

@@ -2587,7 +2587,7 @@
         "requestorState": "Request Status",
         "approver": "Approver",
         "approverState": "Approval Status",
-        "requestUrl": "Request URI",
+        "requestUrl": "Request URL",
         "category": "Category",
         "reason": "Reason",
         "execute": "Execute",
@@ -4118,7 +4118,8 @@
       "placeholder.apiKeyName": "e.g. X-API-KEY",
       "placeholder.apiKeyValue": "Enter API key/value",
       "placeholder.keyValue": "{\"key\":\"value\"}",
-      "placeholder.script": "// add script here"
+      "placeholder.script": "// add script here",
+      "placeholder.endPoint": "/add/order"
     }
   },
   "xml": {
