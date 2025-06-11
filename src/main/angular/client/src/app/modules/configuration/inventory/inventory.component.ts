@@ -893,7 +893,7 @@ export class SingleDeployComponent {
     }
     Object.keys(this.affectedObjectsByType).forEach(type => {
       this.affectedObjectsByType[type].forEach(objItem => {
-        if (objItem.valid && objItem.selected && (objItem.objectType === 'SCHEDULE' || objItem.objectType === 'JOBTEMPLATE' || objItem.objectType === 'WORKINGDAYSCALENDAR' || objItem.objectType === 'NONWORKINGDAYSCALENDAR')) {
+        if (objItem.valid && objItem.selected && (objItem.objectType === 'SCHEDULE' || objItem.objectType === 'JOBTEMPLATE' || objItem.objectType === 'INCLUDESCRIPT' || objItem.objectType === 'WORKINGDAYSCALENDAR' || objItem.objectType === 'NONWORKINGDAYSCALENDAR')) {
           if (recall) {
             obj.releasables.push({
               objectType: objItem.objectType,
@@ -911,7 +911,7 @@ export class SingleDeployComponent {
 
     Object.keys(this.referencedObjectsByType).forEach(type => {
       this.referencedObjectsByType[type].forEach(objItem => {
-        if (objItem.valid && objItem.selected && (objItem.objectType === 'SCHEDULE' || objItem.objectType === 'JOBTEMPLATE' || objItem.objectType === 'WORKINGDAYSCALENDAR' || objItem.objectType === 'NONWORKINGDAYSCALENDAR')) {
+        if (objItem.valid && objItem.selected && (objItem.objectType === 'SCHEDULE' || objItem.objectType === 'JOBTEMPLATE' || objItem.objectType === 'INCLUDESCRIPT' || objItem.objectType === 'WORKINGDAYSCALENDAR' || objItem.objectType === 'NONWORKINGDAYSCALENDAR')) {
           if (recall) {
             obj.releasables.push({
               objectType: objItem.objectType,
@@ -928,7 +928,7 @@ export class SingleDeployComponent {
     });
 
     this.filteredAffectedItems.forEach(item => {
-      if (item.valid && item.selected && (item.objectType === 'SCHEDULE' || item.objectType === 'JOBTEMPLATE' || item.objectType === 'WORKINGDAYSCALENDAR' || item.objectType === 'NONWORKINGDAYSCALENDAR')) {
+      if (item.valid && item.selected && (item.objectType === 'SCHEDULE' || item.objectType === 'JOBTEMPLATE' || item.objectType === 'INCLUDESCRIPT' || item.objectType === 'WORKINGDAYSCALENDAR' || item.objectType === 'NONWORKINGDAYSCALENDAR')) {
         if (recall) {
           obj.releasables.push({
             objectType: item.objectType,
