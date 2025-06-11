@@ -404,7 +404,7 @@ export class ProjectionComponent {
         loading: true,
         list: []
       };
-      this.schedule.date = this.coreService.getDateByFormat(event.date, this.preferences.zone, 'YYYY-MM-DD');
+      this.schedule.date = this.coreService.getDateByFormat(event.date, null, 'YYYY-MM-DD');
       const obj: any = {
         withoutStartTime: this.filters.withoutStartTime,
         date: this.schedule.date
