@@ -3543,19 +3543,38 @@ private checkParentNode(lastPos, data, item, nodes): any {
   getPeriodStr(period, skip = false): string {
     let periodStr = null;
     if (period.begin) {
-      periodStr = this.getDateByFormat(period.begin, null, 'HH:mm:ss');
+      periodStr = this.stringToDate2(period.begin);
     }
     if (period.end) {
-      periodStr = periodStr + '-' + this.getDateByFormat(period.end, null, 'HH:mm:ss');
+      periodStr = periodStr + '-' + this.stringToDate2(period.end);
     }
     if (period.singleStart) {
-      periodStr = (skip ? '' : 'Single start: ') + this.getDateByFormat(period.singleStart, null, 'HH:mm:ss');
+      periodStr = (skip ? '' : 'Single start: ') + this.stringToDate2(period.singleStart);
     } else if (period.repeat) {
-      periodStr = periodStr + ' every ' + this.getTimeInString(period.repeat);
+      periodStr = periodStr + ' every ' + this.stringToDate2(period.repeat);
     }
     return periodStr;
   }
 
+  stringToDate2(date: string): string {
+    if (!date) {
+      return '-';
+    }
+    if (sessionStorage['preferences']) {
+      const n = JSON.parse(sessionStorage['preferences']);
+      if (!n.zone) {
+        return '';
+      }
+      const dateY = new Date(date);
+      if (dateY.getFullYear() === 10000) {
+        return 'common.label.never'
+      } else {
+        return moment(date).tz(n.zone).format(n.dateFormat);
+      }
+    } else {
+      return moment(date).format('DD.MM.YYYY HH:mm:ss');
+    }
+  }
   getTimeInString(time: any): string {
     if (time.toString().substring(0, 2) === '00' && time.toString().substring(3, 5) === '00') {
       return time.toString().substring(6, time.length) + ' seconds';
