@@ -2058,79 +2058,82 @@ export class XmlEditorComponent {
       const childs = select(childFromBasePath, this.doc);
       const element1 = select(sequencePath, this.doc);
 
-     if (element1.length > 0) {
-      const dPath    = `/xs:schema/xs:element[@name='${node}']/xs:complexType/xs:sequence/xs:choice/xs:element`;
-      const dElement = select(dPath, this.doc);
-      if (dElement.length > 0) {
-        for (let i = 0; i < dElement.length; i++) {
-          nodes = {};
-          for (let j = 0; j < dElement[i].attributes.length; j++) {
-            const a = dElement[i].attributes[j].nodeName;
-            const b = dElement[i].attributes[j].nodeValue;
-            nodes = Object.assign(nodes, this._defineProperty({}, a, b));
-          }
-          nodes.parent = node;
-          nodes.choice = node;
-          childArr.push(nodes);
-          if (data) {
-            data.children = childArr;
-          } else {
-            this.childNode = childArr;
-          }
-        }
-      }
+      if (element1.length > 0) {
 
-      const cPath    = `/xs:schema/xs:element[@name='${node}']/xs:complexType/xs:sequence/xs:element`;
-      const cElement = select(cPath, this.doc);
-      if (cElement.length > 0) {
-        for (let i = 0; i < cElement.length; i++) {
-          nodes = {};
-          for (let j = 0; j < cElement[i].attributes.length; j++) {
-            const a = cElement[i].attributes[j].nodeName;
-            const b = cElement[i].attributes[j].nodeValue;
-            nodes = Object.assign(nodes, this._defineProperty({}, a, b));
-          }
-          nodes.parent = node;
-          childArr.push(nodes);
-          if (data) {
-            data.children = childArr;
-          } else {
-            this.childNode = childArr;
-          }
-        }
-      }
-
-      const ePath    = `/xs:schema/xs:element[@name='${node}']/xs:complexType/xs:sequence/xs:choice/xs:sequence/xs:element`;
-      const eElement = select(ePath, this.doc);
-      if (eElement.length > 0) {
-        for (let i = 0; i < eElement.length; i++) {
-          nodes = {};
-          for (let j = 0; j < eElement[i].attributes.length; j++) {
-            const a = eElement[i].attributes[j].nodeName;
-            const b = eElement[i].attributes[j].nodeValue;
-            nodes = Object.assign(nodes, this._defineProperty({}, a, b));
-          }
-          nodes.parent = node;
-          if (
-            (nodes.ref !== 'Minimum' && nodes.ref !== 'Maximum') ||
-            (nodes.name !== 'Minimum' && nodes.name !== 'Maximum')
-          ) {
+        const dPath =
+          `//xs:element[@name='${node}']/xs:complexType/xs:sequence/xs:choice/xs:element`;
+        const dElement = select(dPath, this.doc);
+        if (dElement.length > 0) {
+          for (let i = 0; i < dElement.length; i++) {
+            nodes = {};
+            for (let j = 0; j < dElement[i].attributes.length; j++) {
+              const a = dElement[i].attributes[j].nodeName;
+              const b = dElement[i].attributes[j].nodeValue;
+              nodes = Object.assign(nodes, this._defineProperty({}, a, b));
+            }
+            nodes.parent = node;
             nodes.choice = node;
-          }
-          if (!(nodes.minOccurs && !nodes.maxOccurs)) {
             childArr.push(nodes);
-          }
-          if (data) {
-            data.children = childArr;
-          } else {
-            this.childNode = childArr;
+            if (data) {
+              data.children = childArr;
+            } else {
+              this.childNode = childArr;
+            }
           }
         }
+        const cPath = `//xs:element[@name='${node}']/xs:complexType/xs:sequence/xs:element`;
+        const cElement = select(cPath, this.doc);
+
+        if (cElement.length > 0) {
+          for (let i = 0; i < cElement.length; i++) {
+            nodes = {};
+            for (let j = 0; j < cElement[i].attributes.length; j++) {
+              const a = cElement[i].attributes[j].nodeName;
+              const b = cElement[i].attributes[j].nodeValue;
+              nodes = Object.assign(nodes, this._defineProperty({}, a, b));
+            }
+            nodes.parent = node;
+            childArr.push(nodes);
+            if (data) {
+              data.children = childArr;
+            } else {
+              this.childNode = childArr;
+            }
+          }
+        }
+
+        const ePath =
+          `//xs:element[@name='${node}']/xs:complexType/xs:sequence/xs:choice/xs:sequence/xs:element`;
+        const eElement = select(ePath, this.doc);
+        if (eElement.length > 0) {
+          for (let i = 0; i < eElement.length; i++) {
+            nodes = {};
+            for (let j = 0; j < eElement[i].attributes.length; j++) {
+              const a = eElement[i].attributes[j].nodeName;
+              const b = eElement[i].attributes[j].nodeValue;
+              nodes = Object.assign(nodes, this._defineProperty({}, a, b));
+            }
+            nodes.parent = node;
+            if (
+              (nodes.ref !== 'Minimum' && nodes.ref !== 'Maximum') ||
+              (nodes.name !== 'Minimum' && nodes.name !== 'Maximum')
+            ) {
+              nodes.choice = node;
+            }
+            if (nodes.minOccurs && !nodes.maxOccurs) {
+              // no-op
+            } else {
+              childArr.push(nodes);
+            }
+            if (data) {
+              data.children = childArr;
+            } else {
+              this.childNode = childArr;
+            }
+          }
+        }
+        return childArr;
       }
-
-      return childArr;
-    }
-
 
       if (select(choicePath, this.doc).length > 0) {
         const childPath = `//xs:element[@name='${node}']/xs:complexType/xs:choice/xs:element`;

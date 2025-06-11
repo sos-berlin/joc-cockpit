@@ -189,6 +189,7 @@ export class HeaderComponent {
       filter.approvalRequests.filter.requestorStates = ['REQUESTED'];
       filter.approvalRequests.current = false;
     }
+    this.dataService.announceFunction(filter.approvalRequests)
     this.router.navigate(['/approvals']).then();
   }
 
@@ -198,6 +199,7 @@ export class HeaderComponent {
       filter.approvalRequests.filter.approverStates = [state];
       filter.approvalRequests.filter.requestorStates = ["REQUESTED"];
       filter.approvalRequests.current = false;
+    this.dataService.announceFunction(filter.approvalRequests)
     this.router.navigate(['/approvals']).then();
   }
 
