@@ -347,6 +347,11 @@
                   <span translate>workflow.button.unstop</span>
                 </a>
               </li>
+              <li *ngIf="instruction['TYPE'] === 'Sleep'" (click)="showConfiguration(instruction);" nz-menu-item>
+                <a>
+                  <span translate>common.button.showConfiguration</span>
+                </a>
+              </li>
             </ul>
           </nz-dropdown-menu>
         </div>
@@ -359,6 +364,9 @@
         <span (click)="showConfiguration(instruction)" *ngIf="instruction['TYPE'] === 'Job'" class="cursor">
           {{instruction.jobName}}
         </span>
+        <span (click)="showConfiguration(instruction)" *ngIf="instruction['TYPE'] === 'Sleep'" class="cursor">
+           {{instruction['TYPE'] | translate}}
+        </span>
         <span *ngIf="instruction['TYPE'] === 'Job'">
           - <span [innerHTML]="jobs[instruction.jobName].title | stringToLink" class="text-muted"></span>
            <span *ngIf="instruction.label" class="p-l-xs  _400">(</span>
@@ -366,7 +374,7 @@
            <span *ngIf="instruction.label" class="p-r-xs _400">)</span>
         </span>
         <span (click)="openWorkflowDependency(instruction);"
-              *ngIf="instruction['TYPE'] !== 'Job'"
+              *ngIf="instruction['TYPE'] !== 'Job' && instruction['TYPE'] !== 'Sleep'"
               [ngClass]="{'cursor' : (instruction['TYPE'] === 'PostNotices' || instruction['TYPE'] === 'AddOrder')}" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="(instruction['TYPE'] === 'ExpectNotices') ? instruction.noticeBoardNames : (instruction.question || instruction.message)" >
           {{instruction['TYPE'] | translate}}
           <span *ngIf="instruction.label" class="p-l-xs  _400">(</span>
