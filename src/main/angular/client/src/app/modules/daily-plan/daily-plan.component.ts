@@ -3584,18 +3584,50 @@ private filterData(planItems: any[]): void {
   }
 
   modifyPriority(order): void {
-    const modal = this.modal.create({
-      nzTitle: undefined,
-      nzContent: PriorityModalComponent,
-      nzClassName: 'lg',
-      nzData: {
-        schedulerId: this.schedulerIds.selected,
-        order: order,
-        preferences: this.preferences
-      },
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
+    this.getOrder(order || null , (odr) => {
+      const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: PriorityModalComponent,
+        nzClassName: 'lg',
+        nzData: {
+          schedulerId: this.schedulerIds.selected,
+          order: odr[0],
+          preferences: this.preferences,
+          isDailyPlan: true
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+    });
+  }
+
+  modifyAllPriority(): void {
+    const orderIds = [];
+    this.object.mapOfCheckedId.forEach((value) => {
+      orderIds.push(value.orderId);
+    });
+    this.getOrder(orderIds, (orders) => {
+         const modal = this.modal.create({
+        nzTitle: undefined,
+        nzContent: PriorityModalComponent,
+        nzClassName: 'lg',
+        nzData: {
+          schedulerId: this.schedulerIds.selected,
+          orders: orders,
+          preferences: this.preferences,
+          isDailyPlan: true
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      }).afterClose.subscribe(result => {
+        if (result) {
+          this.resetCheckBox();
+          this.isProcessing = true;
+          this.resetAction(5000);
+        }
+      });
     });
   }
 }

@@ -3419,6 +3419,8 @@ export class ScriptEditorComponent {
         })
       }
     }, 0);
+
+
   }
 
   ngOnDestroy(): void {

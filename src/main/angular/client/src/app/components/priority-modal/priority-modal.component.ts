@@ -14,6 +14,7 @@ export class PriorityModalComponent {
   preferences: any;
   orders: any;
   order: any;
+  isDailyPlan: boolean = false;
   submitted = false;
   comments: any = {};
   display: any;
@@ -37,6 +38,7 @@ export class PriorityModalComponent {
     this.preferences = this.modalData.preferences;
     this.orders = this.modalData.orders;
     this.order = this.modalData.order;
+    this.isDailyPlan = this.modalData.isDailyPlan;
     this.comments.radio = 'predefined';
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.display = true;
@@ -52,13 +54,18 @@ export class PriorityModalComponent {
       controllerId: this.schedulerId, orderIds: [], priority: this.obj.priority
     };
     if (this.orders) {
-      obj.orderIds = [...this.orders.keys()];
+      if(this.isDailyPlan){
+        obj.orderIds = this.orders.map((val) => val.orderId)
+      }else{
+        obj.orderIds = [...this.orders.keys()];
+      }
     } else {
       obj.orderIds.push(this.order.orderId);
     }
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-    this.coreService.post('orders/change', obj).subscribe({
+    const url = this.isDailyPlan ? 'daily_plan/orders/modify/priority' : 'orders/change'
+    this.coreService.post(url, obj).subscribe({
       next: () => {
         this.activeModal.close('Done');
       }, error: () => this.submitted = false

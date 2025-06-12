@@ -2041,11 +2041,17 @@ export class XmlEditorComponent {
     const select = xpath.useNamespaces({ 'xs': 'http://www.w3.org/2001/XMLSchema' });
     const complexTypePath = `//xs:element[@name='${node}']/xs:complexType`;
 
+ 
     const TypePath =
-      `//xs:element[@name='${parentFragment}']/xs:complexType` +
-      `//xs:element[@name='${node}' and @type]`;
-    let nodes: any = {};
-    let childArr: any[] = [];
+      `/xs:schema/xs:element[@name='${node}' and @type]` +
+      ` | ` +
+
+      `//xs:element[@name='${parentFragment}']/xs:complexType//xs:element` +
+      `[@name='${node}' and @type]`;
+    ;
+
+  let nodes: any = {};
+  let childArr: any[] = [];
 
     const element = select(complexTypePath, this.doc);
     if (element.length > 0) {

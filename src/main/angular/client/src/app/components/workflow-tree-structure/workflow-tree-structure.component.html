@@ -64,6 +64,10 @@
                             </span>
 
     </div>
+    <div *ngIf="order.priority" class="p-l-sm">
+      <span translate> order.label.priority </span>:
+      <span class="_600">{{order.priority}}</span>
+    </div>
   </ng-template>
   <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="contentTemplate" nzTooltipPlacement="right">
     <i [ngClass]="coreService.getColor(order.state.severity, 'text')" class="fa fa-circle p-r-s"></i>

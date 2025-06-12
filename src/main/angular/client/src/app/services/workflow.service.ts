@@ -2088,6 +2088,7 @@ export class WorkflowService {
         let _reason = '';
         let _text = '';
         let _markedText = '';
+        let priority ;
         let scheduledFor = '', cyclicOrder = '', begin = '', end = '', orders = '';
         let cycleState = '', since = '', next = '', index = '';
         this.translate.get('workflow.label.orderId').subscribe(translatedValue => {
@@ -2100,6 +2101,9 @@ export class WorkflowService {
         }
         this.translate.get('order.label.state').subscribe(translatedValue => {
           state = translatedValue;
+        });
+        this.translate.get('order.label.priority').subscribe(translatedValue => {
+          priority = translatedValue;
         });
         this.translate.get('order.label.scheduledFor').subscribe(translatedValue => {
           scheduledFor = translatedValue;
@@ -2194,6 +2198,9 @@ export class WorkflowService {
               div = div + '<b>' + scheduledFor + '</b> : ' + never;
             }
           }
+        }
+        if(data.priority){
+          div = div + '<b>' + priority + '</b> : ' + data.priority + '</b></br>';
         }
         div = div + '</div>';
         return div;

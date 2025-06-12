@@ -84,6 +84,10 @@
                             </span>
 
     </div>
+    <div *ngIf="order.priority" class="p-l-sm">
+      <span translate> order.label.priority </span>:
+      <span class="_600">{{order.priority}}</span>
+    </div>
   </ng-template>
   <div class="d-inline-block m-r">
     <app-order-action (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)" [order]="order"

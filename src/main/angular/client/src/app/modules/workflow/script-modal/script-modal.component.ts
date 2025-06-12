@@ -22,6 +22,7 @@ export class ScriptModalComponent {
   data: any;
   schedule: any;
   predicate: any;
+  duration: any;
   admissionTime: any;
   agentName: string;
   subagentClusterId: string;
@@ -68,6 +69,7 @@ export class ScriptModalComponent {
     this.subagentClusterId = this.modalData.subagentClusterId;
     this.timezone = this.modalData.timezone;
     this.noticeBoardNames = this.modalData.noticeBoardNames;
+    this.duration = this.modalData.duration;
     this.cmOption.tabSize = this.preferences.tabSize;
     if (this.modalData.mode) {
       this.cmOption.mode = this.modalData.mode;

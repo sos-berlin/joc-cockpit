@@ -14,6 +14,17 @@
 </div>
 <form spellcheck="false">
   <div class="modal-body p-a" style="min-height: 112px">
+    <div class="col-lg-12"  *ngIf="this.duration">
+          <div class="form-group row">
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.duration' | translate) : ''"
+
+                   class="col-lg-3 form-control-label" translate>workflow.label.duration
+            </label>
+            <div class="col-lg-8">
+              <input nz-input [(ngModel)]="duration" name="name" readonly />
+            </div>
+        </div>
+    </div>
     <div class="row" *ngIf="noticeBoardNames">
       <div class="col-sm-12 text-center">
         <b class="b-b p-b-xs m-b-sm">{{type | translate}}</b>
