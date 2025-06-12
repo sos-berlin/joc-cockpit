@@ -39,7 +39,7 @@
           inventory.label.rename
         </label>
         <div class="col-md-9">
-          <nz-radio-group [(ngModel)]="folder.deepRename" name="radio">
+          <nz-radio-group [(ngModel)]="folder.deepRename" name="deepRename">
             <label nz-radio nzValue="rename"><span translate>inventory.label.renameFolder</span></label>
             <label nz-radio nzValue="replace"><span translate>inventory.label.renameObjectsRecursively</span></label>
           </nz-radio-group>
@@ -70,7 +70,7 @@
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div [ngClass]="{'has-error' :  ((name.dirty || name.touched) && name.invalid)}" class="col-md-6">
-          <input #name="ngModel" [(ngModel)]="folder.name" autocomplete="off"
+          <input #name="ngModel" [(ngModel)]="folder.name" autocomplete="off" [appAutofocus]="true"
                  class="form-control" name="name"
                  placeholder="{{'inventory.placeholder.enterNewPath' | translate}}" required type="text">
           <div *ngIf="name.invalid && (name.dirty || name.touched)"

@@ -718,10 +718,10 @@
           <div class="text-md">
             <span [translateParams]="{count: data.length}" class="_600" translate>inventory.updateObject.message.updateSuccessfully</span>
             <a (click)="step = 3;"
-               *ngIf="(type !== 'SCHEDULE' && type !== 'CALENDAR' && type !== 'INCLUDESCRIPT')" class="text-primary p-l-xs"
+               *ngIf="(type !== 'SCHEDULE' && type !== 'CALENDAR' && type !== 'INCLUDESCRIPT' && type !== 'JOBTEMPLATE')" class="text-primary p-l-xs"
                translate>inventory.updateObject.button.clickHereToDeploy</a>
             <a (click)="preferences.auditLog ? step = 3 : deploy(false)"
-               *ngIf="(type === 'SCHEDULE' || type === 'CALENDAR' || type === 'INCLUDESCRIPT')"
+               *ngIf="(type === 'SCHEDULE' || type === 'CALENDAR' || type === 'INCLUDESCRIPT' || type === 'JOBTEMPLATE')"
                class="text-primary p-l-xs" translate>inventory.updateObject.button.clickHereToRelease</a>
           </div>
         </div>
@@ -730,7 +730,7 @@
         <div *ngIf="preferences.auditLog">
           <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
         </div>
-        <div *ngIf="(type !== 'SCHEDULE' && type !== 'CALENDAR' && type !== 'INCLUDESCRIPT')" class="form-group row">
+        <div *ngIf="(type !== 'SCHEDULE' && type !== 'CALENDAR' && type !== 'INCLUDESCRIPT' && type !== 'JOBTEMPLATE')" class="form-group row">
           <label class="col-md-3 form-control-label">
             <label translate>inventory.label.controllers</label>
           </label>
@@ -759,13 +759,13 @@
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="deploy((type !== 'SCHEDULE' && type !== 'CALENDAR' && type !== 'INCLUDESCRIPT'))" *ngIf="step === 3"
+    <button (click)="deploy((type !== 'SCHEDULE' && type !== 'CALENDAR' && type !== 'INCLUDESCRIPT' && type !== 'JOBTEMPLATE'))" *ngIf="step === 3"
             [disabled]="!myForm.form.valid || submitted"
             class="btn btn-primary btn-sm" translate
             type="button">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      <span *ngIf="(type !== 'SCHEDULE' && type !== 'CALENDAR' && type !== 'INCLUDESCRIPT')" translate>inventory.button.deploy</span>
-      <span *ngIf="(type === 'SCHEDULE'|| type === 'CALENDAR' || type === 'INCLUDESCRIPT')" translate>inventory.button.release</span>
+      <span *ngIf="(type !== 'SCHEDULE' && type !== 'CALENDAR' && type !== 'INCLUDESCRIPT' && type !== 'JOBTEMPLATE')" translate>inventory.button.deploy</span>
+      <span *ngIf="(type === 'SCHEDULE'|| type === 'CALENDAR' || type === 'INCLUDESCRIPT' || type === 'JOBTEMPLATE')" translate>inventory.button.release</span>
     </button>
     <button (click)="activeModal.close('Close')" *ngIf="step === 2" class="btn btn-grey btn-sm" translate type="button">
       common.button.close

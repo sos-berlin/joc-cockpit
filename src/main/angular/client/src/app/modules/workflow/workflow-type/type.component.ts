@@ -510,6 +510,11 @@ export class TypeComponent {
         workflowPath: this.workflowObj.path,
         timezone: this.timezone
       };
+    } else if (instruction.TYPE === 'Sleep') {
+
+      nzData = {
+        duration: instruction.duration
+      };
     }
     if (nzData) {
       this.modal.create({
