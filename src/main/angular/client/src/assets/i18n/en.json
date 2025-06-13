@@ -4119,7 +4119,7 @@
       "placeholder.apiKeyValue": "Enter API key/value",
       "placeholder.keyValue": "{\"key\":\"value\"}",
       "placeholder.script": "// add script here",
-      "placeholder.endPoint": "/add/order"
+      "placeholder.endPoint": "/orders/add"
     }
   },
   "xml": {
