@@ -27,6 +27,8 @@ import {
   Validators,
 } from '@angular/forms';
 import {properties} from "ng-zorro-antd/core/util";
+import {TranslateService} from "@ngx-translate/core";
+
 interface KeyValue {
   key: string;
   value: string;
@@ -114,6 +116,7 @@ export class ApiRequestComponent {
     private clipboardService: ClipboardService,
     private modal: NzModalService,
     private cd: ChangeDetectorRef,
+    private translate: TranslateService,
   ) {
     this.options.mode = 'code';
     this.options.onEditable = () => {
@@ -174,8 +177,8 @@ export class ApiRequestComponent {
       return;
     }
 
-    this.model.url      = req.editorUrl  || this.model.url;
-    this.model.endPoint = req.endpoint   || this.model.endPoint;
+    this.model.url = req.editorUrl || this.model.url;
+    this.model.endPoint = req.endpoint || this.model.endPoint;
     this.model.method = req.method || this.model.method;
     this.model.headers = Array.isArray(req.headers) ? req.headers : [];
     this.model.params = Array.isArray(req.params) ? req.params : [];
@@ -253,8 +256,8 @@ export class ApiRequestComponent {
     if (!allPaths.length) return;
 
     const cursor = aceEditor.getCursorPosition();
-    const line  = aceEditor.getSession().getLine(cursor.row);
-    const m     = line.match(/^\s*"([^"]+)"\s*:/);
+    const line = aceEditor.getSession().getLine(cursor.row);
+    const m = line.match(/^\s*"([^"]+)"\s*:/);
     let candidates = m
       ? allPaths.filter(p => p.endsWith(`.${m[1]}`))
       : allPaths;
@@ -271,7 +274,7 @@ export class ApiRequestComponent {
       this.openModal(candidates[0], raw);
       return;
     }
-    const doc     = aceEditor.getSession().getDocument();
+    const doc = aceEditor.getSession().getDocument();
     const cursorIdx = (doc as any).positionToIndex(cursor);
     let occurrence = 0;
     for (let i = 0; i < offsets.length; i++) {
@@ -279,7 +282,7 @@ export class ApiRequestComponent {
       else break;
     }
 
-    const chosenPath = candidates[ occurrence ] || candidates[0];
+    const chosenPath = candidates[occurrence] || candidates[0];
     this.openModal(chosenPath, raw);
   }
 
@@ -287,7 +290,7 @@ export class ApiRequestComponent {
     const jq = this.toJqPath(path);
     const modal = this.modal.create({
       nzContent: ApiRequestDialogComponent,
-      nzData: { selectedText: raw, paths: [ jq ], list: false },
+      nzData: {selectedText: raw, paths: [jq], list: false},
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
@@ -306,8 +309,8 @@ export class ApiRequestComponent {
    * Convert a raw findPaths path (e.g. "orders[2].orderId" or "[0].foo-bar")
    * into a jq filter string (e.g. ".orders[2].orderId" or ".[0][\"foo-bar\"]").
    */
-   toJqPath(path: string | Array<string|number>): string {
-    const segments: Array<string|number> =
+  toJqPath(path: string | Array<string | number>): string {
+    const segments: Array<string | number> =
       Array.isArray(path)
         ? path
         :
@@ -403,7 +406,7 @@ export class ApiRequestComponent {
       .filter(val => val.toLowerCase().includes(v));
   }
 
-  send(): void {
+  sendRequest(accessToken?): void {
     const hdrs = this.arrayToMap(this.model.headers);
 
     switch (this.auth.type) {
@@ -439,68 +442,119 @@ export class ApiRequestComponent {
         break;
     }
 
-    const { url, endPoint, method, params, body } = this.model;
-  const paramMap = this.arrayToMap(params);
+    if (accessToken) {
+      hdrs['x-access-token'] = accessToken;
+    }
 
-  const placeholderRegex = /\{(\w+)\}/g;
-  const replacePlaceholders = (input: string) =>
-    input.replace(placeholderRegex, (_m, name) => {
-      const def = this.parameters?.[name]?.default;
-      if (def != null) {
-        try { return JSON.parse(def); }
-        catch { return def; }
-      }
-      return `{${name}}`;
+    const {url, endPoint, method, params, body} = this.model;
+    const paramMap = this.arrayToMap(params);
+
+    const placeholderRegex = /\{(\w+)\}/g;
+    const replacePlaceholders = (input: string) =>
+      input.replace(placeholderRegex, (_m, name) => {
+        const def = this.parameters?.[name]?.default;
+        if (def != null) {
+          try {
+            return JSON.parse(def);
+          } catch {
+            return def;
+          }
+        }
+        return `{${name}}`;
+      });
+
+    let resolvedBase = replacePlaceholders(url).replace(/\/$/, '');
+
+    if (!resolvedBase.endsWith('/api') && !resolvedBase.includes('/joc/api')) {
+      resolvedBase += '/joc/api';
+    }
+    const resolvedEndpoint = replacePlaceholders(endPoint);
+    const safeEndpoint = resolvedEndpoint.startsWith('/')
+      ? resolvedEndpoint
+      : `/${resolvedEndpoint}`;
+
+    const fullUrl = `${resolvedBase}${safeEndpoint}`;
+
+    const resolvedHdrs: Record<string, string> = {};
+    Object.entries(hdrs).forEach(([k, v]) => {
+      resolvedHdrs[replacePlaceholders(k)] = replacePlaceholders(v);
+    });
+    Object.keys(paramMap).forEach(k => {
+      paramMap[k] = replacePlaceholders(paramMap[k]);
     });
 
-  const resolvedBase     = replacePlaceholders(url).replace(/\/$/, '');
-  const resolvedEndpoint = replacePlaceholders(endPoint);
-  const safeEndpoint     = resolvedEndpoint.startsWith('/')
-    ? resolvedEndpoint
-    : `/${resolvedEndpoint}`;
+    let resolvedBody: any = body;
+    if (typeof resolvedBody === 'string') {
+      resolvedBody = replacePlaceholders(resolvedBody);
+    }
 
-  const fullUrl = `${resolvedBase}${safeEndpoint}`;
+    this.coreService
+      .requestTest(method, fullUrl, resolvedHdrs, paramMap, resolvedBody)
+      .subscribe({
+        next: res => {
+          this.status = res.status;
+          this.response = res.body;
+          this.responseHeaders = {};
+          this.requestUrl = '';
+          this.data = res.body;
+          this.errorText = res.statusText;
+          res.headers.keys().forEach(h => {
+            this.responseHeaders[h] = res.headers.get(h)!;
+          });
+          this.cd.detectChanges();
+          if (accessToken) {
+            const logoutHeaders: Record<string, string> = {
+              'x-access-token': accessToken
+            };
 
-  const resolvedHdrs: Record<string,string> = {};
-  Object.entries(hdrs).forEach(([k,v]) => {
-    resolvedHdrs[replacePlaceholders(k)] = replacePlaceholders(v);
-  });
-  Object.keys(paramMap).forEach(k => {
-    paramMap[k] = replacePlaceholders(paramMap[k]);
-  });
-
-  let resolvedBody: any = body;
-  if (typeof resolvedBody === 'string') {
-    resolvedBody = replacePlaceholders(resolvedBody);
+            this.coreService.requestTest(
+              'POST',
+              `${resolvedBase}/authentication/logout`,
+              logoutHeaders,
+              {},
+              null
+            ).subscribe({
+              next: () => console.log('Logout successful'),
+              error: err => console.error('Logout failed', err)
+            });
+          }
+        },
+        error: err => {
+          const code = err.status ?? 'Unknown';
+          const text = err.statusText || err.message || 'Request failed';
+          this.status = code;
+          this.requestUrl = err?.url
+          this.errorText = text;
+          this.msg.error(`Error ${code}: ${text}`);
+          this.cd.detectChanges();
+        }
+      });
   }
 
-  this.coreService
-    .requestTest(method, fullUrl, resolvedHdrs, paramMap, resolvedBody)
-    .subscribe({
-      next: res => {
-        this.status = res.status;
-        this.response = res.body;
-        this.responseHeaders = {};
-        this.requestUrl = '';
-        this.data = res.body;
-        this.errorText = res.statusText;
-        res.headers.keys().forEach(h => {
-          this.responseHeaders[h] = res.headers.get(h)!;
-        });
-        this.cd.detectChanges();
+  send(): any {
+    const {username, password} = this.auth.basic;
+
+    if (!username || !password) {
+      this.msg.error('Username and password are required for Basic Auth login.');
+      this.translate.instant('workflow.apiRequest.label.requiredBasicAuth')
+      return;
+    }
+
+    const obj = {
+      userName: username,
+      password: password
+    };
+
+    this.coreService.post('authentication/login', obj).subscribe({
+      next: (data) => {
+        this.sendRequest(data.accessToken);
       },
-      error: err => {
-        const code = err.status ?? 'Unknown';
-        const text = err.statusText || err.message || 'Request failed';
-        this.status = code;
-        this.requestUrl = err?.url
-        this.errorText = text;
-        this.msg.error(`Error ${code}: ${text}`);
-        this.cd.detectChanges();
+      error: (err) => {
+        this.msg.error('Login failed.');
+        console.error(err);
       }
     });
   }
-
 
   private arrayToMap(arr: KeyValue[]): Record<string, string> {
     return arr
@@ -566,75 +620,76 @@ export class ApiRequestComponent {
     return obj;
   }
 
-storeConfig(): void {
-  let bodyText: any;
-  try {
-    bodyText = JSON.parse(this.model.body);
-  } catch {
-    bodyText = this.model.body;
+  storeConfig(): void {
+    let bodyText: any;
+    try {
+      bodyText = JSON.parse(this.model.body);
+    } catch {
+      bodyText = this.model.body;
+    }
+
+    const flatDefs = this.flattenParameters(this.parameters || {});
+
+    const editorUrl = this.resolvePlaceholders(this.model.url, flatDefs);
+    const endpoint = this.resolvePlaceholders(this.model.endPoint, flatDefs);
+
+    const headers = this.model.headers
+      .filter(h => h.key.trim())
+      .map(h => ({
+        key: h.key,
+        value: this.resolvePlaceholders(h.value, flatDefs)
+      }));
+    const params = this.model.params
+      .filter(p => p.key.trim())
+      .map(p => ({
+        key: p.key,
+        value: this.resolvePlaceholders(p.value, flatDefs)
+      }));
+    const body = bodyText !== '' ? this.resolvePlaceholders(bodyText, flatDefs) : undefined;
+
+    const cfg: any = {
+      editorUrl,
+      endpoint,
+      method: this.model.method
+    };
+    if (headers.length) cfg.headers = headers;
+    if (params.length) cfg.params = params;
+    if (this.auth.type !== 'None') {
+      const auth: any = {type: this.auth.type};
+      if (this.auth.type === 'API Key' && this.auth.apiKey.name && this.auth.apiKey.value) {
+        auth.apiKey = this.auth.apiKey;
+      }
+      if (this.auth.type === 'Bearer Token' && this.auth.token) {
+        auth.token = this.auth.token;
+      }
+      if (
+        this.auth.type === 'Basic Auth' &&
+        (this.auth.basic.username || this.auth.basic.password)
+      ) {
+        auth.basic = this.auth.basic;
+      }
+      if (
+        this.auth.type === 'OAuth 2.0' &&
+        (this.auth.oauth2.clientId ||
+          this.auth.oauth2.clientSecret ||
+          this.auth.oauth2.tokenUrl)
+      ) {
+        auth.oauth2 = this.auth.oauth2;
+      }
+      cfg.auth = auth;
+    }
+    if (body !== undefined) cfg.body = body;
+    delete cfg.auth;
+    delete cfg.method;
+    delete cfg.params;
+    const json = JSON.stringify(cfg, null, 2);
+    const out: any = {request: json};
+    if (this.mappings.length) out.return_variables = this.mappings;
+    this.clipboardService.copyFromContent(json);
+    this.coreService.showCopyMessage(this.msg);
+    this.configSaved.emit(out);
+    this.isVisible.emit(false);
   }
-
-  const flatDefs = this.flattenParameters(this.parameters || {});
-
-  const editorUrl = this.resolvePlaceholders(this.model.url, flatDefs);
-  const endpoint  = this.resolvePlaceholders(this.model.endPoint, flatDefs);
-
-  const headers = this.model.headers
-    .filter(h => h.key.trim())
-    .map(h => ({
-      key: h.key,
-      value: this.resolvePlaceholders(h.value, flatDefs)
-    }));
-  const params  = this.model.params
-    .filter(p => p.key.trim())
-    .map(p => ({
-      key: p.key,
-      value: this.resolvePlaceholders(p.value, flatDefs)
-    }));
-  const body    = bodyText !== '' ? this.resolvePlaceholders(bodyText, flatDefs) : undefined;
-
-  const cfg: any = {
-    editorUrl,
-    endpoint,
-    method: this.model.method
-  };
-  if (headers.length) cfg.headers = headers;
-  if (params.length)  cfg.params  = params;
-  if (this.auth.type !== 'None') {
-    const auth: any = { type: this.auth.type };
-    if (this.auth.type === 'API Key' && this.auth.apiKey.name && this.auth.apiKey.value) {
-      auth.apiKey = this.auth.apiKey;
-    }
-    if (this.auth.type === 'Bearer Token' && this.auth.token) {
-      auth.token = this.auth.token;
-    }
-    if (
-      this.auth.type === 'Basic Auth' &&
-      (this.auth.basic.username || this.auth.basic.password)
-    ) {
-      auth.basic = this.auth.basic;
-    }
-    if (
-      this.auth.type === 'OAuth 2.0' &&
-      (this.auth.oauth2.clientId ||
-        this.auth.oauth2.clientSecret ||
-        this.auth.oauth2.tokenUrl)
-    ) {
-      auth.oauth2 = this.auth.oauth2;
-    }
-    cfg.auth = auth;
-  }
-  if (body !== undefined) cfg.body = body;
-  if (this.mappings.length) cfg.return_variables = this.mappings;
-  delete cfg.auth;
-  delete cfg.method;
-  delete cfg.params;
-  const json = JSON.stringify(cfg, null, 2);
-  this.clipboardService.copyFromContent(json);
-  this.coreService.showCopyMessage(this.msg);
-  this.configSaved.emit({ request: json });
-  this.isVisible.emit(false);
-}
 
 
   close(): void {
@@ -674,11 +729,11 @@ export class ApiFormDialogComponent {
   constructor(
     private fb: FormBuilder,
     public activeModal: NzModalRef
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
-    this.JsonSchema = {
-  }
+    this.JsonSchema = {}
 
     this.form = this.createForm(this.JsonSchema);
   }

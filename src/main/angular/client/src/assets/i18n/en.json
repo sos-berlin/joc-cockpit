@@ -4107,6 +4107,7 @@
       "label.clientSecret": "Client Secret",
       "label.tokenUrl": "Token URL",
       "label.defineVariable": "Define return variables",
+      "label.requiredBasicAuth": "Username and password are required for Basic Auth login.",
       "button.variableList": "Variable List",
       "button.sendRequest": "Send Request",
       "button.addParam": "Add Parameter",

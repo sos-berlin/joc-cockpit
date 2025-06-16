@@ -13788,14 +13788,17 @@ export class WorkflowComponent {
   }
 
   private isExpression(value: string): boolean {
+    if (typeof value !== 'string') {
+      return false;
+    }
     const expressionRegex = /^[\d\s+\-*/().]+$/;
     return expressionRegex.test(value.replace(/"/g, ''));
   }
 
-  private convertToExpression(value: string): string {
+  private convertToExpression(value: any): string {
+    if (typeof value !== 'string') return String(value);
     let expression = value.replace(/^"(.*)"$/, '$1');
-    expression = expression.trim();
-    return expression;
+    return expression.trim();
   }
 
   private clearClipboard(): void {

@@ -2041,7 +2041,7 @@ export class XmlEditorComponent {
     const select = xpath.useNamespaces({ 'xs': 'http://www.w3.org/2001/XMLSchema' });
     const complexTypePath = `//xs:element[@name='${node}']/xs:complexType`;
 
- 
+
     const TypePath =
       `/xs:schema/xs:element[@name='${node}' and @type]` +
       ` | ` +
