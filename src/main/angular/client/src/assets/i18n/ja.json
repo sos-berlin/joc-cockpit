@@ -954,6 +954,7 @@
     "label.expecting": "Expecting",
     "label.critical": "クリティカル",
     "label.totalWorkflowNoticeEntry": "合計{{total}}ワークフロー、および{{noticeCount}}通知があります",
+    "label.numOfOrders": "No. of Orders",
     "button.late": "遅延",
     "button.setStartTime": "開始時刻編集",
     "button.setParameter": "オーダー変数編集",

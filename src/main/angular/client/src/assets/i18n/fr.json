@@ -954,6 +954,7 @@
     "label.expecting": "en attente",
     "label.critical": "Critique",
     "label.totalWorkflowNoticeEntry": "Total {{total}} Workflows et {{noticeCount}} Annonces found",
+    "label.numOfOrders": "No. of Orders",
     "button.late": "En retard",
     "button.setStartTime": "Modifier l'heure de démarrage",
     "button.setParameter": "Modifier la Variable",
