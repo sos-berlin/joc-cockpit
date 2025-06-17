@@ -514,8 +514,16 @@ export class ApiRequestComponent {
               {},
               null
             ).subscribe({
-              next: () => console.log('Logout successful'),
-              error: err => console.error('Logout failed', err)
+              next: () => {},
+              error: (err) => {
+                const code = err.status ?? 'Unknown';
+                const text = err.statusText || err.message || 'Request failed';
+                this.status = code;
+                this.requestUrl = err?.url
+                this.errorText = text;
+                this.msg.error(`Error ${code}: ${text}`);
+                this.cd.detectChanges();
+              }
             });
           }
         },
@@ -532,26 +540,45 @@ export class ApiRequestComponent {
   }
 
   send(): any {
-    const {username, password} = this.auth.basic;
+    const { username, password } = this.auth.basic;
 
     if (!username || !password) {
       this.msg.error('Username and password are required for Basic Auth login.');
-      this.translate.instant('workflow.apiRequest.label.requiredBasicAuth')
       return;
     }
+    let resolvedBase = this.model.url.trim().replace(/\/$/, '');
 
-    const obj = {
-      userName: username,
-      password: password
+    if (!resolvedBase.endsWith('/api') && !resolvedBase.includes('/joc/api')) {
+      resolvedBase += '/joc/api';
+    }
+
+    const credentials = `${username}:${password}`;
+    const utf8Credentials = new TextEncoder().encode(credentials);
+    const base64Credentials = btoa(String.fromCharCode(...utf8Credentials));
+
+    const headers = {
+      'Authorization': 'Basic ' + base64Credentials
     };
 
-    this.coreService.post('authentication/login', obj).subscribe({
+    this.coreService.requestTest(
+      'POST',
+      `${resolvedBase}/authentication/login`,
+      headers,
+      {},
+      null
+    ).subscribe({
       next: (data) => {
-        this.sendRequest(data.accessToken);
+        this.sendRequest(data.body.accessToken);
+        this.cd.detectChanges();
       },
       error: (err) => {
-        this.msg.error('Login failed.');
-        console.error(err);
+        const code = err.status ?? 'Unknown';
+        const text = err.statusText || err.message || 'Request failed';
+        this.status = code;
+        this.requestUrl = err?.url
+        this.errorText = text;
+        this.msg.error(`Error ${code}: ${text}`);
+        this.cd.detectChanges();
       }
     });
   }
@@ -680,7 +707,6 @@ export class ApiRequestComponent {
     }
     if (body !== undefined) cfg.body = body;
     delete cfg.auth;
-    delete cfg.method;
     delete cfg.params;
     const json = JSON.stringify(cfg, null, 2);
     const out: any = {request: json};

@@ -83,7 +83,9 @@ export class AuthInterceptor implements HttpInterceptor {
 
             } else {
               if (re.test(req.url) && err.error && !isEmpty(err.error)) {
-                this.toasterService.error(err.error.error, err.error.error_description);
+                if(err.error.error || err.error.error_description){
+                  this.toasterService.error(err.error.error, err.error.error_description);
+                }
               }
               if ((err.status === 401 || err.status === 440 || (err.status === 420 && err.error.error && (err.error.error.message.match(/UnknownSessionException/)
                 || err.error.error.message.match(/user is null/))))) {
