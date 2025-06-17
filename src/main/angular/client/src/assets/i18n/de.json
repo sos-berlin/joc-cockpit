@@ -962,6 +962,7 @@
     "label.expecting": "Wartend",
     "label.critical": "Aktion erforderlich",
     "label.totalWorkflowNoticeEntry": "Gesamt {{total}} Arbeitsabläufe und {{noticeCount}} Notizen gefunden",
+    "label.numOfOrders": "No. of Orders",
     "button.late": "Verspätet",
     "button.setStartTime": "Startzeit ändern",
     "button.setParameter": "Variable ändern",

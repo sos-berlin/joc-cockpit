@@ -962,6 +962,7 @@
     "label.expecting": "Expecting",
     "label.critical": "Action required",
     "label.totalWorkflowNoticeEntry": "Total {{total}} Workflows and {{noticeCount}} Notices found",
+    "label.numOfOrders": "No. of Orders",
     "button.late": "Late",
     "button.setStartTime": "Modify Start Time",
     "button.setParameter": "Modify Variable",

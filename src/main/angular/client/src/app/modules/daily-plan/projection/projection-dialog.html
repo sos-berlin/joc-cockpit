@@ -22,7 +22,7 @@
     </div>
     <div class="inline pos-rel t-xxs b-l m-l-12 p-l-12 h-25">
       <span *ngIf="schedule.numOfPeriods >= 0">
-        <span class="text-muted">{{'dailyPlan.label.numOfPeriods' | translate}}</span>:
+        <span class="text-muted">{{'dailyPlan.label.numOfOrders' | translate}}</span>:
         {{schedule.numOfPeriods}}
       </span>
       <span *ngIf="schedule.numOfNonPeriods >= 0">
@@ -99,19 +99,25 @@
               </span>
             </td>
             <td>
-              <span class="show-in-single-line">
-                <a class="cursor text-hover-primary p-r-xxs" *ngIf="permission.joc && permission.joc.inventory.view"
-                   (click)="coreService.navToInventoryTab(sch['schedule'], 'SCHEDULE');"><i
-                  class="fa fa-pencil"></i>
-                </a>
-                {{sch['schedule']}}
-              </span>
+            <span class="show-in-single-line">
+              <a *ngIf="permission.joc?.inventory?.view"
+                 class="cursor text-hover-primary p-r-xxs"
+                 (click)="coreService.navToInventoryTab(sch.schedule, 'SCHEDULE')">
+                <i class="fa fa-pencil"></i>
+              </a>
+
+              {{ sch.schedule }}
+
+              <ng-container *ngIf="sch.orderNames?.length">
+                ({{ sch.orderNames.join(', ') }})
+              </ng-container>
+            </span>
             </td>
             <td *ngIf="schedule.numOfPeriods >= 0">
-              <div *ngFor="let p of sch['periods'];">
-                <span *ngIf="p['period']">
-                  {{coreService.getPeriodStr(p['period'])}}
-                </span>
+              <div *ngFor="let p of sch.periods">
+              <span *ngIf="p.period">
+                {{ coreService.getPeriodStr(p.period) }}
+              </span>
               </div>
             </td>
             <td *ngIf="!isCurrentController">

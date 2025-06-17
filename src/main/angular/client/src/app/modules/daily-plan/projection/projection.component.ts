@@ -195,7 +195,6 @@ export class ExportComponent {
       obj[_date] = periodStr;
       let flag = true;
       if (data.length > 0 && data[data.length - 1]) {
-        // Merge data for the same key
         for (let j = 0; j < data.length; j++) {
           if (data[j][_date] === obj[_date]) {
             break;
@@ -256,48 +255,86 @@ export class ShowProjectionModalComponent {
     this.loadData();
   }
 
-  private loadData(): void {
-    this.coreService.post('daily_plan/projections/date', this.modalData.obj).subscribe({
-      next: (res) => {
-        this.schedule.isPlanned = res.planned;
-        if (!this.modalData.obj.withoutStartTime) {
-          this.schedule.numOfPeriods = res.numOfPeriods;
-        } else {
-          this.schedule.numOfNonPeriods = res.numOfPeriods || res.numOfNonPeriods;
+private loadData(): void {
+  this.coreService.post('daily_plan/projections/date', this.modalData.obj).subscribe({
+    next: (res) => {
+      this.schedule.isPlanned = res.planned;
+      if (!this.modalData.obj.withoutStartTime) {
+        this.schedule.numOfPeriods = res.numOfOrders;
+      } else {
+        this.schedule.numOfNonPeriods = res.numOfOrders ?? res.numOfNonPeriods;
+      }
+
+  const periodsArray = res.periods || res.nonPeriods || [];
+      const list: Array<{
+        schedule: string;
+        workflow: string;
+        periods: any[];
+        orderNames: string[];
+      }> = [];
+
+      const isPlannedWithWf = res.planned && periodsArray.some(p => !!(p as any).workflow);
+
+      if (isPlannedWithWf) {
+        const byKey = groupBy(
+          periodsArray,
+          p => `${p.schedule}||${(p as any).workflow}||${(p as any).scheduleOrderName ?? ''}`
+        );
+
+        for (const key of Object.keys(byKey)) {
+          const [schedule, workflow, scheduleOrderName] = key.split('||');
+          const bucket = byKey[key];
+
+          const uniquePeriods = bucket.reduce((acc, cur) => {
+            if (!acc.find(x =>
+              x.period.singleStart === cur.period.singleStart &&
+              x.period.begin       === cur.period.begin &&
+              x.period.end         === cur.period.end
+            )) {
+              acc.push(cur);
+            }
+            return acc;
+          }, []);
+
+
+          const orderNames = scheduleOrderName ? [scheduleOrderName] : [];
+
+          list.push({ schedule, workflow, periods: uniquePeriods, orderNames });
         }
-        const data = groupBy(res.periods || res.nonPeriods, (res) => {
-          return res.schedule;
-        });
 
-        for (const key of Object.keys(data)) {
+      }  else {
+        const bySched = groupBy(periodsArray, p => p.schedule);
+        for (const schedule of Object.keys(bySched)) {
+          const bucket = bySched[schedule];
 
+          const uniquePeriods = bucket.reduce((acc, cur) => {
+            if (!acc.find(x =>
+              x.period.singleStart === cur.period.singleStart &&
+              x.period.begin       === cur.period.begin &&
+              x.period.end         === cur.period.end
+            )) {
+              acc.push(cur);
+            }
+            return acc;
+          }, []);
+          const controller = this.modalData.obj.controllerIds?.[0];
+          const metaForSched = res.meta?.[controller]?.[schedule] || {};
+          const workflows = metaForSched.workflowPaths || [];
+          const orderNames = metaForSched.orderNames    || [];
 
-          for (const controller of Object.keys(res.meta)) {
-            let workflows = res.meta[controller][key].workflowPaths || res.meta[controller][key].workflows;
-            const uniqueArray = workflows.length > 1 ? data[key].reduce((accumulator, current) => {
-              const existingObject = accumulator.find(obj => obj.schedule === current.schedule && obj.period.singleStart === current.period.singleStart);
-              if (!existingObject) {
-                accumulator.push(current);
-              }
-              return accumulator;
-            }, []) : data[key];
-
-            workflows.forEach(workflow => {
-              this.schedule.list.push(
-                {
-                  schedule: key,
-                  periods: uniqueArray,
-                  workflow: workflow
-                }
-              )
-            })
-          }
+          workflows.forEach(workflow => {
+            list.push({ schedule, workflow, periods: uniquePeriods, orderNames });
+          });
         }
-        this.loading = false;
-        this.searchInResult();
-      }, error: () => this.loading = false
-    });
-  }
+      }
+
+      this.schedule.list = list;
+      this.loading = false;
+      this.searchInResult();
+    },
+    error: () => this.loading = false
+  });
+}
 
   searchInResult(): void {
     this.data = this.filter.searchText ? this.searchPipe.transform(this.schedule.list, this.filter.searchText, this.searchableProperties) : this.schedule.list;
@@ -438,7 +475,6 @@ export class ProjectionComponent {
           })
         }
       }
-
       this.modal.create({
         nzTitle: undefined,
         nzContent: ShowProjectionModalComponent,
@@ -460,15 +496,24 @@ export class ProjectionComponent {
     }
   }
 
+  private getDate(date): string {
+    return this.coreService.getDateByFormat(date, this.preferences.zone, 'YYYY-MM-DD');
+  }
+
   private showCalendar(): void {
     this.isLoaded = false;
     const dom = $('#full-calendar-projection');
+    const dateStr   = this.getDate(this.filters.calStartDate);
+    const [year, month, day] = dateStr.split('-');
+    console.log(month);
+    const monthNum = parseInt(month, 10)-1;
+    console.log(monthNum);
     if (!dom.data('calendar')) {
       dom.calendar({
         language: this.coreService.getLocale(),
         view: this.filters.calView.toLowerCase(),
         startYear: this.filters.currentYear,
-        startMonth: this.filters.currentMonth,
+        startMonth: monthNum || this.filters.currentMonth,
         dataSource: this.projectionData,
         renderEnd: (e) => {
           let reload = false;

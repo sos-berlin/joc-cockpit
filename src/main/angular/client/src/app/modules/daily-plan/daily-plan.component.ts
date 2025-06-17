@@ -932,7 +932,7 @@ export class DailyPlanComponent {
                 if (this.dailyPlanFilters.projection.withoutStartTime) {
                   planData.numOfNonPeriods = dateData.numOfNonPeriods;
                 } else {
-                  planData.numOfPeriods = dateData.numOfPeriods;
+                  planData.numOfPeriods = dateData.numOfOrders;
                 }
                 this.projectionData.push(planData);
               }
