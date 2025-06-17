@@ -4108,7 +4108,7 @@
       "label.tokenUrl": "Token URL",
       "label.defineVariable": "Rückgabevariablen definieren",
       "button.variableList": "Variablenliste",
-      "label.requiredBasicAuth": "Username and password are required for Basic Auth login.",
+      "label.requiredBasicAuth": "Konto und Kennwort werden benötigt für Basic Authentication.",
       "button.sendRequest": "Anfrage senden",
       "button.addParam": "Parameter hinzufügen",
       "button.addHeader": "Kopfzeile hinzufügen",
