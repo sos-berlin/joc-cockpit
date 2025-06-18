@@ -4109,6 +4109,10 @@
       "label.tokenUrl": "Token URL",
       "label.defineVariable": "Define return variables",
       "label.requiredBasicAuth": "Username and password are required for Basic Authentication.",
+      "label.name": "Name",
+      "label.addVariable": "Add Variable",
+      "label.hideLogs": "Hide Logs",
+      "label.showLogs": "Show Logs",
       "button.variableList": "Variable List",
       "button.sendRequest": "Send Request",
       "button.addParam": "Add Parameter",
@@ -4121,7 +4125,7 @@
       "placeholder.apiKeyValue": "Enter API key/value",
       "placeholder.keyValue": "{\"key\":\"value\"}",
       "placeholder.script": "// add script here",
-      "placeholder.endPoint": "/orders/add"
+      "placeholder.endPoint": "Enter an endpoint, e.g. (/orders/add)"
     }
   },
   "xml": {

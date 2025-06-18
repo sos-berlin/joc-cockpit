@@ -91,6 +91,8 @@ export class ApiRequestComponent {
   response: any = null;
   status: number | null = null;
   requestUrl: '';
+  errorLogs: any;
+  showLogs = false;
   responseHeaders: Record<string, string> = {};
   options: any = new JsonEditorOptions();
   isError = false;
@@ -177,7 +179,6 @@ export class ApiRequestComponent {
       return;
     }
 
-    this.model.url = req.editorUrl || this.model.url;
     this.model.endPoint = req.endpoint || this.model.endPoint;
     this.model.method = req.method || this.model.method;
     this.model.headers = Array.isArray(req.headers) ? req.headers : [];
@@ -271,7 +272,7 @@ export class ApiRequestComponent {
       pos = JSON.stringify(this.response).indexOf(snippet, pos + snippet.length);
     }
     if (!offsets.length) {
-      this.openModal(candidates[0], raw);
+      this.openModal(candidates[0]);
       return;
     }
     const doc = aceEditor.getSession().getDocument();
@@ -283,14 +284,14 @@ export class ApiRequestComponent {
     }
 
     const chosenPath = candidates[occurrence] || candidates[0];
-    this.openModal(chosenPath, raw);
+    this.openModal(chosenPath);
   }
 
-  private openModal(path: string, raw: any) {
+  private openModal(path: string) {
     const jq = this.toJqPath(path);
     const modal = this.modal.create({
       nzContent: ApiRequestDialogComponent,
-      nzData: {selectedText: raw, paths: [jq], list: false},
+      nzData: {selectedText: jq, paths: [jq], list: false},
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
@@ -406,6 +407,22 @@ export class ApiRequestComponent {
       .filter(val => val.toLowerCase().includes(v));
   }
 
+  updateBasicAuthHeader(): void {
+    if (this.auth.type !== 'Basic Auth') return;
+
+    const {username, password} = this.auth.basic;
+    if (username && password) {
+      const token = btoa(`${username}:${password}`);
+      this.model.headers = this.model.headers.filter(
+        h => h.key.toLowerCase() !== 'authorization'
+      );
+      this.model.headers.unshift({
+        key: 'Authorization',
+        value: `Basic ${token}`
+      });
+    }
+  }
+
   sendRequest(accessToken?): void {
     const hdrs = this.arrayToMap(this.model.headers);
 
@@ -445,11 +462,10 @@ export class ApiRequestComponent {
     if (accessToken) {
       hdrs['x-access-token'] = accessToken;
     }
-
-    const {url, endPoint, method, params, body} = this.model;
+    const {endPoint, method, params, body} = this.model;
     const paramMap = this.arrayToMap(params);
 
-    const placeholderRegex = /\{(\w+)\}/g;
+    const placeholderRegex = /\$\{(\w+)\}/g;
     const replacePlaceholders = (input: string) =>
       input.replace(placeholderRegex, (_m, name) => {
         const def = this.parameters?.[name]?.default;
@@ -463,17 +479,10 @@ export class ApiRequestComponent {
         return `{${name}}`;
       });
 
-    let resolvedBase = replacePlaceholders(url).replace(/\/$/, '');
-
-    if (!resolvedBase.endsWith('/api') && !resolvedBase.includes('/joc/api')) {
-      resolvedBase += '/joc/api';
-    }
-    const resolvedEndpoint = replacePlaceholders(endPoint);
-    const safeEndpoint = resolvedEndpoint.startsWith('/')
-      ? resolvedEndpoint
-      : `/${resolvedEndpoint}`;
-
-    const fullUrl = `${resolvedBase}${safeEndpoint}`;
+    const base = this.getBaseUrl();
+    const resolvedEp = replacePlaceholders(this.model.endPoint || '');
+    const safeEp = resolvedEp.startsWith('/') ? resolvedEp : `/${resolvedEp}`;
+    const fullUrl = `${base}${safeEp}`;
 
     const resolvedHdrs: Record<string, string> = {};
     Object.entries(hdrs).forEach(([k, v]) => {
@@ -487,7 +496,6 @@ export class ApiRequestComponent {
     if (typeof resolvedBody === 'string') {
       resolvedBody = replacePlaceholders(resolvedBody);
     }
-
     this.coreService
       .requestTest(method, fullUrl, resolvedHdrs, paramMap, resolvedBody)
       .subscribe({
@@ -509,16 +517,18 @@ export class ApiRequestComponent {
 
             this.coreService.requestTest(
               'POST',
-              `${resolvedBase}/authentication/logout`,
+              `${base}/authentication/logout`,
               logoutHeaders,
               {},
               null
             ).subscribe({
-              next: () => {},
+              next: () => {
+              },
               error: (err) => {
                 const code = err.status ?? 'Unknown';
                 const text = err.statusText || err.message || 'Request failed';
                 this.status = code;
+                this.errorLogs = err;
                 this.requestUrl = err?.url
                 this.errorText = text;
                 this.msg.error(`Error ${code}: ${text}`);
@@ -532,6 +542,7 @@ export class ApiRequestComponent {
           const text = err.statusText || err.message || 'Request failed';
           this.status = code;
           this.requestUrl = err?.url
+          this.errorLogs = err;
           this.errorText = text;
           this.msg.error(`Error ${code}: ${text}`);
           this.cd.detectChanges();
@@ -540,48 +551,60 @@ export class ApiRequestComponent {
   }
 
   send(): any {
-    const { username, password } = this.auth.basic;
+    this.status = null;
+    this.response = '';
+    this.requestUrl = '';
+    this.data = '';
+    this.errorText = '';
+    const existing = this.model.headers
+      .find(h => h.key.trim().toLowerCase() === 'authorization' && h.value.trim());
 
-    if (!username || !password) {
-      this.msg.error('Username and password are required for Basic Auth login.');
-      return;
+    let authHeaderValue: string;
+
+    if (existing) {
+      authHeaderValue = existing.value.trim();
+    } else {
+      const {username, password} = this.auth.basic;
+      if (!username || !password) {
+        this.msg.error('Username and password are required for Basic Auth login.');
+        return;
+      }
+      const creds = btoa(`${username}:${password}`);
+      authHeaderValue = `Basic ${creds}`;
     }
-    let resolvedBase = this.model.url.trim().replace(/\/$/, '');
 
-    if (!resolvedBase.endsWith('/api') && !resolvedBase.includes('/joc/api')) {
-      resolvedBase += '/joc/api';
-    }
-
-    const credentials = `${username}:${password}`;
-    const utf8Credentials = new TextEncoder().encode(credentials);
-    const base64Credentials = btoa(String.fromCharCode(...utf8Credentials));
-
-    const headers = {
-      'Authorization': 'Basic ' + base64Credentials
-    };
+    const base = this.getBaseUrl();
 
     this.coreService.requestTest(
       'POST',
-      `${resolvedBase}/authentication/login`,
-      headers,
+      `${base}/authentication/login`,
+      {Authorization: authHeaderValue},
       {},
       null
     ).subscribe({
-      next: (data) => {
-        this.sendRequest(data.body.accessToken);
-        this.cd.detectChanges();
-      },
-      error: (err) => {
-        const code = err.status ?? 'Unknown';
-        const text = err.statusText || err.message || 'Request failed';
-        this.status = code;
-        this.requestUrl = err?.url
-        this.errorText = text;
-        this.msg.error(`Error ${code}: ${text}`);
-        this.cd.detectChanges();
-      }
+      next: data => this.sendRequest(data.body.accessToken),
+      error: () => this.msg.error('Login failed.')
     });
   }
+
+
+  private getBaseUrl(): string {
+    const {origin, port, pathname} = window.location;
+    let base = (origin + pathname).replace(/\/$/, '');
+    const lc = base.toLowerCase();
+
+    if (port === '4200') {
+      return base + '/api';
+    }
+    if (lc.includes('/joc/api')) {
+      return base;
+    }
+    if (lc.includes('/joc')) {
+      return base + '/api';
+    }
+    return base + '/joc/api';
+  }
+
 
   private arrayToMap(arr: KeyValue[]): Record<string, string> {
     return arr
@@ -597,56 +620,6 @@ export class ApiRequestComponent {
     this.clipboardService.copyFromContent(this.editor.getText());
   }
 
-  private flattenParameters(defs: any): Record<string, any> {
-    const flat: Record<string, any> = {};
-
-    function walk(obj: any) {
-      for (const name of Object.keys(obj)) {
-        flat[name] = obj[name];
-        if (obj[name].listParameters) {
-          walk(obj[name].listParameters);
-        }
-      }
-    }
-
-    walk(defs);
-    return flat;
-  }
-
-  private resolvePlaceholders(obj: any, flat: Record<string, any>): any {
-    if (typeof obj === 'string') {
-      return obj.replace(/\{(\w+)\}/g, (_, varName) => {
-        const def = flat[varName];
-        if (!def) return `{${varName}}`;
-        switch (def.type) {
-          case 'String':
-            return JSON.parse(def.default);
-          case 'Map':
-          case 'Map':
-          case 'List':
-            const defaultsObj: Record<string, any> = {};
-            for (const key of Object.keys(def.listParameters || {})) {
-              const paramDef = (def.listParameters as Record<string, any>)[key];
-              defaultsObj[key] = paramDef.default;
-            }
-            return JSON.stringify(defaultsObj);
-          default:
-            return def.default;
-        }
-      });
-    }
-    if (Array.isArray(obj)) {
-      return obj.map(item => this.resolvePlaceholders(item, flat));
-    }
-    if (obj && typeof obj === 'object') {
-      return Object.fromEntries(
-        Object.entries(obj)
-          .map(([k, v]) => [k, this.resolvePlaceholders(v, flat)])
-      );
-    }
-    return obj;
-  }
-
   storeConfig(): void {
     let bodyText: any;
     try {
@@ -655,24 +628,23 @@ export class ApiRequestComponent {
       bodyText = this.model.body;
     }
 
-    const flatDefs = this.flattenParameters(this.parameters || {});
 
-    const editorUrl = this.resolvePlaceholders(this.model.url, flatDefs);
-    const endpoint = this.resolvePlaceholders(this.model.endPoint, flatDefs);
+    const editorUrl = this.model.url
+    const endpoint = this.model.endPoint
 
     const headers = this.model.headers
       .filter(h => h.key.trim())
       .map(h => ({
         key: h.key,
-        value: this.resolvePlaceholders(h.value, flatDefs)
+        value: h.value
       }));
     const params = this.model.params
       .filter(p => p.key.trim())
       .map(p => ({
         key: p.key,
-        value: this.resolvePlaceholders(p.value, flatDefs)
+        value: p.value
       }));
-    const body = bodyText !== '' ? this.resolvePlaceholders(bodyText, flatDefs) : undefined;
+    const body = bodyText !== '' ? bodyText : undefined;
 
     const cfg: any = {
       editorUrl,
@@ -726,6 +698,9 @@ export class ApiRequestComponent {
     }
   }
 
+  toggleLogs() {
+    this.showLogs = !this.showLogs;
+  }
 
   docs(): void {
     const modal = this.modal.create({
@@ -949,6 +924,10 @@ export class ApiRequestDialogComponent {
   mappings: Mapping[] = [];
   list = false;
   docs = false;
+  newMapping: { name: string; path: string } = { name: '', path: '' };
+  isAdding = false;
+  selectedRows = new Set<number>();
+  editingIndex: number | null = null;
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService,) {
   }
@@ -964,10 +943,11 @@ export class ApiRequestDialogComponent {
   }
 
 
-  removeMapping(index: number): void {
-    if (index >= 0 && index < this.mappings.length) {
-      this.mappings.splice(index, 1);
-      this.mappings = [...this.mappings];
+  removeMapping(i: number): void {
+    this.mappings.splice(i, 1);
+    this.mappings = [...this.mappings];
+    if (this.editingIndex === i) {
+      this.cancelAdd();
     }
   }
 
@@ -980,8 +960,70 @@ export class ApiRequestDialogComponent {
     this.activeModal.close(obj);
   }
 
+  addVariable(): void {
+    this.isAdding = true;
+    this.editingIndex = null;
+    this.newMapping = { name: '', path: '' };
+  }
+
+  edit(i: number): void {
+    this.isAdding = true;
+    this.editingIndex = i;
+    this.newMapping = { ...this.mappings[i] };
+  }
+  saveMapping(): void {
+    const trimmed = {
+      name: this.newMapping.name.trim(),
+      path: this.newMapping.path.trim()
+    };
+    if (this.editingIndex !== null) {
+      this.mappings[this.editingIndex] = trimmed;
+    } else {
+      this.mappings.push(trimmed);
+    }
+    this.cancelAdd();
+  }
+
+  /** hide the form and clear state */
+  cancelAdd(): void {
+    this.isAdding = false;
+    this.editingIndex = null;
+    this.newMapping = { name: '', path: '' };
+  }
+
   closeWithMappings(): void {
     this.activeModal.close(this.mappings);
+  }
+
+  isAllChecked(): boolean {
+    return this.mappings.length > 0 && this.selectedRows.size === this.mappings.length;
+  }
+
+  isIndeterminate(): boolean {
+    return this.selectedRows.size > 0 && this.selectedRows.size < this.mappings.length;
+  }
+
+  onAllChecked(checked: boolean): void {
+    if (checked) {
+      this.mappings.forEach((_, i) => this.selectedRows.add(i));
+    } else {
+      this.selectedRows.clear();
+    }
+  }
+
+
+  onItemChecked(checked: boolean, index: number): void {
+    if (checked) {
+      this.selectedRows.add(index);
+    } else {
+      this.selectedRows.delete(index);
+    }
+  }
+
+  bulkDelete(): void {
+    const toRemove = Array.from(this.selectedRows).sort((a,b) => b - a);
+    toRemove.forEach(i => this.removeMapping(i));
+    this.selectedRows.clear();
   }
 
   dynamicForm(): void {

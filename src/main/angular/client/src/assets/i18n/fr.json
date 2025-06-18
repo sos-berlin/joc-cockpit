@@ -4108,8 +4108,12 @@
       "label.clientSecret": "Client Secret",
       "label.tokenUrl": "Token URL",
       "label.defineVariable": "Définir les variables de retour",
-      "button.variableList": "Liste des Variables",
       "label.requiredBasicAuth": "Compte et mot de passe sont requis pour Basic Authentication.",
+      "label.name": "Name",
+      "label.addVariable": "Add Variable",
+      "label.hideLogs": "Hide Logs",
+      "label.showLogs": "Show Logs",
+      "button.variableList": "Liste des Variables",
       "button.sendRequest": "Envoyer Requête",
       "button.addParam": "Ajouter Paramètre",
       "button.addHeader": "Ajouter En-tête",
@@ -4121,7 +4125,7 @@
       "placeholder.apiKeyValue": "Entrer clé-valeur pour API",
       "placeholder.keyValue": "{\"key\":\"value\"}",
       "placeholder.script": "// ajouter script ici",
-      "placeholder.endPoint": "/orders/add"
+      "placeholder.endPoint": "Enter an endpoint, e.g. (/orders/add)"
     }
   },
   "xml": {

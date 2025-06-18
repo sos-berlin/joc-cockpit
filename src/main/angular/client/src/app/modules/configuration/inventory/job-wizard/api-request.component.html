@@ -21,19 +21,7 @@
                                         ></nz-option>
                                     </nz-select>
                                 </div>
-
-
-                                <div class="col-sm-5">
-                                    <input
-                                            class="form-control"
-                                            id="url"
-                                            name="url"
-                                            required
-                                            [(ngModel)]="model.url"
-                                            placeholder="{{'workflow.apiRequest.placeholder.apiRequest' | translate}}"
-                                    />
-                                </div>
-                              <div class="col-sm-3">
+                              <div class="col-sm-5">
                                     <input
                                             class="form-control"
                                             id="endPoint"
@@ -194,8 +182,13 @@
                                                 <label nzFor="basicUser" translate>profile.label.userName</label>
                                             </div>
                                             <div class="col-sm-5">
-                                                <input nz-input id="basicUser" name="basicUser"
-                                                       [(ngModel)]="auth.basic.username"/>
+                                              <input
+                                                nz-input
+                                                id="basicUser"
+                                                name="basicUser"
+                                                [(ngModel)]="auth.basic.username"
+                                                (ngModelChange)="updateBasicAuthHeader()"
+                                              />
                                             </div>
                                         </div>
                                         <div class="form-group row">
@@ -203,8 +196,14 @@
                                                 <label nzFor="basicPass" translate>login.label.password</label>
                                             </div>
                                             <div class="col-sm-5">
-                                                <input nz-input id="basicPass" name="basicPass" type="password"
-                                                       [(ngModel)]="auth.basic.password"/>
+                                              <input
+                                                nz-input
+                                                id="basicPass"
+                                                name="basicPass"
+                                                type="password"
+                                                [(ngModel)]="auth.basic.password"
+                                                (ngModelChange)="updateBasicAuthHeader()"
+                                              />
 
                                             </div>
                                         </div>
@@ -342,6 +341,15 @@
                                       nzDescription="{{errorText}}"
                                       nzShowIcon
                             ></nz-alert>
+                          <a  *ngIf="status && status >= 400" class="text-u-l m-t-xs pull-right"
+                             (click)="toggleLogs()">
+                            {{ showLogs
+                            ? ('workflow.apiRequest.label.hideLogs' | translate)
+                            : ('workflow.apiRequest.label.showLogs' | translate)
+                            }}
+                          </a>
+                          <pre class="m-t-2" *ngIf="showLogs && errorLogs"
+                          >{{errorLogs | json}}</pre>
                           <nz-divider *ngIf="requestUrl"></nz-divider>
                           <div *ngIf="requestUrl">
                             <span translate>monitor.approvalRequest.label.requestUrl</span> - <span>{{requestUrl}}</span>

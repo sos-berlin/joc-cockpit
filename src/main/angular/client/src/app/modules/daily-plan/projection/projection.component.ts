@@ -505,9 +505,7 @@ export class ProjectionComponent {
     const dom = $('#full-calendar-projection');
     const dateStr   = this.getDate(this.filters.calStartDate);
     const [year, month, day] = dateStr.split('-');
-    console.log(month);
     const monthNum = parseInt(month, 10)-1;
-    console.log(monthNum);
     if (!dom.data('calendar')) {
       dom.calendar({
         language: this.coreService.getLocale(),

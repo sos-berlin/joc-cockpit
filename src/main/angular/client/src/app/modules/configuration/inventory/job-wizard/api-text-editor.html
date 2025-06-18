@@ -22,7 +22,6 @@
 
         <ng-container [ngSwitch]="getFieldType(key)">
 
-          <!-- 1) type="string" -->
           <ng-container *ngSwitchCase="'string'">
             <input
               type="text"
@@ -32,7 +31,6 @@
             />
           </ng-container>
 
-          <!-- 2) type="integer" -->
           <ng-container *ngSwitchCase="'integer'">
             <input
               type="number"
@@ -42,7 +40,6 @@
             />
           </ng-container>
 
-          <!-- 3) type="number" -->
           <ng-container *ngSwitchCase="'number'">
             <input
               type="number"
@@ -52,7 +49,6 @@
             />
           </ng-container>
 
-          <!-- 4) type="boolean" -->
           <ng-container *ngSwitchCase="'boolean'">
             <div class="checkbox">
               <label>
@@ -61,7 +57,6 @@
             </div>
           </ng-container>
 
-          <!-- 5) type="object" -->
           <ng-container *ngSwitchCase="'object'">
             <div
               class="well"
@@ -88,7 +83,6 @@
                       />
                     </ng-container>
 
-                    <!-- integer child -->
                     <ng-container *ngSwitchCase="'integer'">
                       <input
                         type="number"
@@ -98,7 +92,6 @@
                       />
                     </ng-container>
 
-                    <!-- number child -->
                     <ng-container *ngSwitchCase="'number'">
                       <input
                         type="number"
@@ -108,7 +101,6 @@
                       />
                     </ng-container>
 
-                    <!-- boolean child -->
                     <ng-container *ngSwitchCase="'boolean'">
                       <div class="checkbox">
                         <label>
@@ -118,15 +110,11 @@
                       </div>
                     </ng-container>
 
-                    <!-- nested object inside object (if present) -->
                     <ng-container *ngSwitchCase="'object'">
-                      <!-- You can recurse deeper here if needed -->
                       <div>…nested object here…</div>
                     </ng-container>
 
-                    <!-- array child inside object -->
                     <ng-container *ngSwitchCase="'array'">
-                      <!-- Add a new primitive or object inside this nested array -->
                       <button
                         type="button"
                         class="btn btn-xs btn-grey"
@@ -148,7 +136,6 @@
                             margin-bottom: 0.25rem;
                           "
                         >
-                          <!-- Primitive array element -->
                           <input
                             type="text"
                             class="form-control"
@@ -167,7 +154,6 @@
                     </ng-container>
                   </ng-container>
 
-                  <!-- Validation messages for nested child -->
                   <div
                     *ngIf="
                       getNestedFormGroup(key).get(child).invalid &&
