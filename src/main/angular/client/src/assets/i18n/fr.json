@@ -962,7 +962,7 @@
     "label.expecting": "En attente",
     "label.critical": "Action requise",
     "label.totalWorkflowNoticeEntry": "Total {{total}} Workflows et {{noticeCount}} Annonces found",
-    "label.numOfOrders": "No. of Orders",
+    "label.numOfOrders": "Nombre d'Ordres",
     "button.late": "En retard",
     "button.setStartTime": "Modifier l'heure de démarrage",
     "button.setParameter": "Modifier la Variable",
@@ -4110,9 +4110,9 @@
       "label.defineVariable": "Définir les variables de retour",
       "label.requiredBasicAuth": "Compte et mot de passe sont requis pour Basic Authentication.",
       "label.name": "Name",
-      "label.addVariable": "Add Variable",
-      "label.hideLogs": "Hide Logs",
-      "label.showLogs": "Show Logs",
+      "label.addVariable": "Ajouter Variable",
+      "label.hideLogs": "Cacher le Journal",
+      "label.showLogs": "Visualiser le Journal",
       "button.variableList": "Liste des Variables",
       "button.sendRequest": "Envoyer Requête",
       "button.addParam": "Ajouter Paramètre",
@@ -4125,7 +4125,7 @@
       "placeholder.apiKeyValue": "Entrer clé-valeur pour API",
       "placeholder.keyValue": "{\"key\":\"value\"}",
       "placeholder.script": "// ajouter script ici",
-      "placeholder.endPoint": "Enter an endpoint, e.g. (/orders/add)"
+      "placeholder.endPoint": "Entrer l'adresse de fin, par ex. /orders/add"
     }
   },
   "xml": {
