@@ -1153,28 +1153,34 @@ export class AddOrderModalComponent {
     }
   }
 
-  addArguments(orderIndex): void {
-    this.orders[orderIndex].arguments = this.orders[orderIndex].arguments.filter(arg => arg.name.trim() !== '');
-    this.variableList.forEach(variable => {
-      if (!variable.isSelected) {
+addArguments(orderIndex): void {
+  this.orders[orderIndex].arguments = this.orders[orderIndex].arguments.filter(arg => arg.name.trim() !== '');
+
+  this.variableList.forEach(variable => {
+    const alreadyExists = this.orders[orderIndex].arguments.some(arg => arg.name === variable.name);
+
+    if (!variable.isSelected) {
+      if (!alreadyExists) {
         const param: any = {
           name: variable.name,
           value: ''
         };
         this.orders[orderIndex].arguments.push(param);
         this.checkVariableType(param, orderIndex);
-      } else {
-        if (this.orders[orderIndex].arguments.length < this.variableList.length) {
-          const param: any = {
-            name: variable.name,
-            value: ''
-          };
-          this.orders[orderIndex].arguments.push(param);
-          this.checkVariableType(param, orderIndex);
-        }
       }
-    });
-  }
+    } else {
+      if (this.orders[orderIndex].arguments.length < this.variableList.length && !alreadyExists) {
+        const param: any = {
+          name: variable.name,
+          value: ''
+        };
+        this.orders[orderIndex].arguments.push(param);
+        this.checkVariableType(param, orderIndex);
+      }
+    }
+  });
+}
+
 
   removeArgument(index, orderIndex): void {
     this.orders[orderIndex].arguments.splice(index, 1);

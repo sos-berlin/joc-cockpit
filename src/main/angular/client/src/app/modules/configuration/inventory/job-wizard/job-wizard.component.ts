@@ -593,9 +593,9 @@ export class ApiRequestComponent {
     let base = (origin + pathname).replace(/\/$/, '');
     const lc = base.toLowerCase();
 
-    if (port === '4200') {
-      return base + '/api';
-    }
+    // if (port === '4200') {
+    //   return base + '/api';
+    // }
     if (lc.includes('/joc/api')) {
       return base;
     }

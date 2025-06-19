@@ -173,7 +173,7 @@
       <div [ngClass]="{'has-error' : ((addvalue.dirty || addvalue.touched) && addvalue.invalid)}"
            class="">
         <label class="w-full">
-      <input #addvalue="ngModel" [(ngModel)]="newMapping.path" class="form-control" required  placeholder="{{'common.placeholder.value' | translate}} ">
+          <textarea #addvalue="ngModel" [(ngModel)]="newMapping.path" class="form-control" required  placeholder="{{'common.placeholder.value' | translate}} "></textarea>
         </label>
         <div *ngIf="addvalue.invalid && (addvalue.dirty || addvalue.touched)"
              class="text-danger help-block">
