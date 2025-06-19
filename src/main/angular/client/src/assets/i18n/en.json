@@ -962,7 +962,7 @@
     "label.expecting": "Expecting",
     "label.critical": "Action required",
     "label.totalWorkflowNoticeEntry": "Total {{total}} Workflows and {{noticeCount}} Notices found",
-    "label.numOfOrders": "No. of Orders",
+    "label.numOfOrders": "Number of Orders",
     "button.late": "Late",
     "button.setStartTime": "Modify Start Time",
     "button.setParameter": "Modify Variable",
@@ -4111,8 +4111,8 @@
       "label.requiredBasicAuth": "Username and password are required for Basic Authentication.",
       "label.name": "Name",
       "label.addVariable": "Add Variable",
-      "label.hideLogs": "Hide Logs",
-      "label.showLogs": "Show Logs",
+      "label.hideLogs": "Hide Log",
+      "label.showLogs": "Show Log",
       "button.variableList": "Variable List",
       "button.sendRequest": "Send Request",
       "button.addParam": "Add Parameter",
@@ -4125,7 +4125,7 @@
       "placeholder.apiKeyValue": "Enter API key/value",
       "placeholder.keyValue": "{\"key\":\"value\"}",
       "placeholder.script": "// add script here",
-      "placeholder.endPoint": "Enter an endpoint, e.g. (/orders/add)"
+      "placeholder.endPoint": "Enter an endpoint, for example /orders/add"
     }
   },
   "xml": {
