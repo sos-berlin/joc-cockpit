@@ -3358,6 +3358,16 @@ export class ScriptEditorComponent {
         })
       }
     }, 0);
+
+    setTimeout(() => {
+      const interval = setInterval(() => {
+        const editorWrapper = document.querySelector('.CodeMirror');
+        if (editorWrapper && editorWrapper.clientHeight > 0) {
+          this.cm.codeMirror.refresh();
+          clearInterval(interval);
+        }
+      }, 100);
+    }, 200);
   }
 
   ngOnDestroy(): void {

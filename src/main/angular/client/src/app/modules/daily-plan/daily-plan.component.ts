@@ -836,8 +836,8 @@ export class DailyPlanComponent {
     $('.scroll-y').remove();
   }
 
-  private getDate(date): string {
-    return this.coreService.getDateByFormat(date, this.preferences.zone, 'YYYY-MM-DD');
+  private getDate(date, zone): string {
+    return this.coreService.getDateByFormat(date, zone, 'YYYY-MM-DD');
   }
 
   public changeInCalendar(e?): void {
@@ -875,8 +875,8 @@ export class DailyPlanComponent {
     let obj: any = {
       controllerIds: [],
       withoutStartTime: this.dailyPlanFilters.projection.withoutStartTime,
-      dateFrom: this.getDate(this.dailyPlanFilters.projection.calStartDate),
-      dateTo: this.getDate(this.dailyPlanFilters.projection.calEndDate)
+      dateFrom: this.getDate(this.dailyPlanFilters.projection.calStartDate, null),
+      dateTo: this.getDate(this.dailyPlanFilters.projection.calEndDate, null)
     };
 
     if (this.dailyPlanFilters.current) {
@@ -1768,7 +1768,7 @@ export class DailyPlanComponent {
       });
       for (let i = 0; i < this.projectionData.length; i++) {
         let obj: any = {};
-        obj[date] = this.getDate(this.projectionData[i].startDate);
+        obj[date] = this.getDate(this.projectionData[i].startDate,this.preferences.zone);
         obj[planned] = this.projectionData[i].color === 'blue' ? 'Yes' : 'No';
 
         if (this.dailyPlanFilters.projection.withoutStartTime) {

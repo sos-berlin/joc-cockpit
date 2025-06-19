@@ -3526,7 +3526,7 @@ private checkParentNode(lastPos, data, item, nodes): any {
     if (period.singleStart) {
       periodStr = (skip ? '' : 'Single start: ') + this.stringToDate2(period.singleStart);
     } else if (period.repeat) {
-      periodStr = periodStr + ' every ' + this.stringToDate2(period.repeat);
+      periodStr = periodStr + ' every ' + this.getTimeInString(period.repeat);
     }
     return periodStr;
   }

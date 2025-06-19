@@ -504,16 +504,12 @@ export class ProjectionComponent {
     this.isLoaded = false;
     const dom = $('#full-calendar-projection');
     const dateStr   = this.getDate(this.filters.calStartDate);
-    const [year, month, day] = dateStr.split('-');
-    console.log(month);
-    const monthNum = parseInt(month, 10)-1;
-    console.log(monthNum);
     if (!dom.data('calendar')) {
       dom.calendar({
         language: this.coreService.getLocale(),
         view: this.filters.calView.toLowerCase(),
         startYear: this.filters.currentYear,
-        startMonth: monthNum || this.filters.currentMonth,
+        startMonth: this.filters.currentMonth,
         dataSource: this.projectionData,
         renderEnd: (e) => {
           let reload = false;
