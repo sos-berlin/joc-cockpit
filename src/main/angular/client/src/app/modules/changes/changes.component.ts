@@ -58,6 +58,13 @@ export class AddChangesModalComponent{
 
     if(this.title === 'changesFound'){
       this.nodes = this.prepareGroupedTree(this.changes.configurations)
+      const checkedNodes = this.collectObjects(this.nodes);
+
+      if (checkedNodes.length > 0) {
+        setTimeout(() => {
+          this.getDependencies(checkedNodes);
+        }, 100)
+      }
     }
     if(this.INVchanges){
       this.changesData()
