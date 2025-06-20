@@ -58,6 +58,13 @@ export class AddChangesModalComponent{
 
     if(this.title === 'changesFound'){
       this.nodes = this.prepareGroupedTree(this.changes.configurations)
+      const checkedNodes = this.collectObjects(this.nodes);
+
+      if (checkedNodes.length > 0) {
+        setTimeout(() => {
+          this.getDependencies(checkedNodes);
+        }, 100)
+      }
     }
     if(this.INVchanges){
       this.changesData()
@@ -633,6 +640,7 @@ export class ChangesComponent {
     currentPage: 1,
     entryPerPage: 25,
   };
+
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,) {
     this.permission = JSON.parse(this.authService.permission) || {};
   }

@@ -106,6 +106,86 @@
             <span *ngIf="!node.origin.object" class="p-l-sm">{{node.origin.name}}</span>
           </div>
         </div>
+        <div *ngIf="node.origin.dependencies" style="width: 400px">
+          <div *ngFor="let dependency of [node.origin.dependencies]" class="dependencies-list m-l-20 m-t-xs">
+
+            <div *ngIf="dependency?.referencedBy?.length > 0 || dependency?.references?.length > 0 " class="form-group row" style="justify-content: space-between">
+              <!-- Affected Objects (referencedBy) -->
+              <div *ngIf="dependency?.referencedBy?.length > 0" class="col-md-6"  class="form-group">
+                <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !affectedCollapsed[node.key], 'fa-caret-down': affectedCollapsed[node.key]}"
+                   (click)="toggleAffectedCollapse(node.key)"></i>
+                <label class="m-l-sm">{{ 'inventory.label.affectedObjects' | translate }}</label>
+                <div *ngIf="affectedCollapsed[node.key]" class="m-t-sm m-l-md">
+                  <ng-container *ngFor="let objectType of getUniqueObjectTypes(dependency?.referencedBy)">
+                    <div *ngIf="getObjectsByType(dependency?.referencedBy, objectType)?.length" class="m-t-sm">
+                      <ng-container>
+                        <label>
+                            <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
+                              <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+                            </span>
+                          <span *ngIf="isCustomIcon(objectType)" class="icon-color" [ngClass]="getIcon(objectType)"></span>
+                          {{ getObjectTypeLabel(objectType) | translate }}
+                        </label>
+                      </ng-container>
+
+                      <div *ngIf="affectedCollapsed[objectType]" class="m-t-sm m-l-md">
+                        <div *ngFor="let obj of getObjectsByType(dependency?.referencedBy, objectType)">
+                          <ng-container>
+                            <label>
+                                  <span [ngClass]="{
+                                      'fa-circle-o': !obj.valid,
+                                      'fa-circle dark-blue': obj.deployed || obj.released
+                                  }" class="fa fa-check-circle-o orange text-xs"></span>
+                              {{ obj.path }}
+                            </label>
+                          </ng-container>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+
+              <!-- Referenced Objects (references) -->
+              <div *ngIf="dependency?.references?.length > 0" class="col-md-6"  class="form-group">
+                <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !referencedCollapsed[node.key], 'fa-caret-down': referencedCollapsed[node.key]}"
+                   (click)="toggleReferencedCollapse(node.key)"></i>
+                <label class="m-l-sm">{{ 'inventory.label.referencedObjects' | translate }}</label>
+                <div *ngIf="referencedCollapsed[node.key]" class="m-t-sm m-l-md">
+                  <ng-container *ngFor="let objectType of getUniqueObjectTypes(dependency?.references)">
+                    <div *ngIf="getObjectsByType(dependency?.references, objectType)?.length" class="m-t-sm">
+                      <ng-container >
+                        <label>
+                            <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
+                              <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+                            </span>
+                          <span *ngIf="isCustomIcon(objectType)" class="icon-color" [ngClass]="getIcon(objectType)"></span>
+                          {{ getObjectTypeLabel(objectType) | translate }}
+                        </label>
+                      </ng-container>
+
+                      <div *ngIf="referencedCollapsed[objectType]" class="m-t-sm m-l-md">
+                        <div *ngFor="let obj of getObjectsByType(dependency?.references, objectType)">
+                          <ng-container>
+                            <label>
+                                <span [ngClass]="{
+                                    'fa-circle-o': !obj.valid,
+                                    'fa-circle dark-blue': obj.deployed || obj.released
+                                }" class="fa fa-check-circle-o orange text-xs"></span>
+                              {{ obj.path }}
+                            </label>
+                          </ng-container>
+                        </div>
+                      </div>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
       </ng-template>
     </div>
   </div>

@@ -1428,7 +1428,7 @@ export class DeployComponent {
   };
   filter = {
     draft: true,
-    deploy: true
+    deploy: false
   };
   submitted = false;
   required = false;
