@@ -458,11 +458,9 @@ export class AddRestrictionComponent {
 
   selectAllMonth(): void {
     if (this.frequency.allMonth) {
-      this.frequency.months = ['1', '2', '3', '4', '5', '6','7', '8', '9', '10', '11', '12'];
-      // this.editor.isEnable = true;
+      this.frequency.months = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
     } else {
       this.frequency.months = [];
-      // this.editor.isEnable = false;
     }
     this.checkMonths();
   }
@@ -622,8 +620,7 @@ export class AddRestrictionComponent {
                 break;
               }
             }
-          }
-          else if (this.frequency.tab == 'monthDays' && this.frequency.isUltimos == 'months' && this.calendar.frequencyList[i].isUltimos == 'months'
+          } else if (this.frequency.tab == 'monthDays' && this.frequency.isUltimos == 'months' && this.calendar.frequencyList[i].isUltimos == 'months'
             && this.datePipe.transform(this.calendar.frequencyList[i].startingWithM) === this.datePipe.transform(this.frequency.startingWithM)
             && this.datePipe.transform(this.calendar.frequencyList[i].endOnM) === this.datePipe.transform(this.frequency.endOnM)
             && this.areArraysEqual(this.calendar.frequencyList[i].selectedMonths, this.frequency.selectedMonths)) {
@@ -659,8 +656,7 @@ export class AddRestrictionComponent {
                 break;
               }
             }
-          }
-          else if (this.frequency.tab === 'monthDays' && this.frequency.isUltimos != 'months' && this.calendar.frequencyList[i].isUltimos !== 'months'
+          } else if (this.frequency.tab === 'monthDays' && this.frequency.isUltimos != 'months' && this.calendar.frequencyList[i].isUltimos !== 'months'
             && this.datePipe.transform(this.calendar.frequencyList[i].startingWithM) === this.datePipe.transform(this.frequency.startingWithM)
             && this.datePipe.transform(this.calendar.frequencyList[i].endOnM) === this.datePipe.transform(this.frequency.endOnM)
             && this.areArraysEqual(this.calendar.frequencyList[i].selectedMonthsU, this.frequency.selectedMonthsU)
@@ -698,18 +694,16 @@ export class AddRestrictionComponent {
                 break;
               }
             }
-          }
-          else if (this.frequency.tab === 'specificWeekDays'
+          } else if (this.frequency.tab === 'specificWeekDays'
             && this.calendar.frequencyList[i].str === this.frequency.str
             && this.datePipe.transform(this.calendar.frequencyList[i].startingWithS) === this.datePipe.transform(this.frequency.startingWithS)
             && this.datePipe.transform(this.calendar.frequencyList[i].endOnS) === this.datePipe.transform(this.frequency.endOnS)) {
-              // this.calendar.frequencyList[i].startingWithS = clone(this.frequency.startingWithS);
-              // this.calendar.frequencyList[i].endOnS = clone(this.frequency.endOnS);
-              this.calendar.frequencyList[i].str = clone(this.frequency.str);
-              flag1 = true;
-              break;
-          }
-          else if (this.frequency.tab == 'nationalHoliday') {
+            // this.calendar.frequencyList[i].startingWithS = clone(this.frequency.startingWithS);
+            // this.calendar.frequencyList[i].endOnS = clone(this.frequency.endOnS);
+            this.calendar.frequencyList[i].str = clone(this.frequency.str);
+            flag1 = true;
+            break;
+          } else if (this.frequency.tab == 'nationalHoliday') {
             flag1 = true;
             datesArr.forEach((dates) => {
               if (this.calendar.frequencyList[i].nationalHoliday && this.calendar.frequencyList[i].nationalHoliday.length > 0) {
@@ -780,7 +774,7 @@ export class AddRestrictionComponent {
           this.frequency.type = this.editor.frequencyType;
           this.calendar.frequencyList.push(this.coreService.clone(this.frequency));
         }
-      }  else {
+      } else {
         this.frequency.nationHoliday = [];
       }
     } else {
@@ -928,7 +922,8 @@ export class PeriodComponent {
     {label: 'runtime.label.singleStart', value: 'singleStart'},
     {label: 'runtime.label.repeat', value: 'repeat'}
   ]
-  constructor( private coreService: CoreService,public activeModal: NzModalRef, private calendarService: CalendarService) {
+
+  constructor(private coreService: CoreService, public activeModal: NzModalRef, private calendarService: CalendarService) {
   }
 
   @HostListener('window:click', ['$event'])
@@ -1135,6 +1130,30 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     return periodStr;
   }
 
+  getPeriodStr2(period): string {
+    const fmt = (iso: string) =>
+      this.coreService.getTimeFromDate(
+        this.coreService.convertTimeToLocalTZ(this.preferences, iso),
+        this.preferences.dateFormat
+      );
+
+    if (period.singleStart) {
+      return `Single start: ${fmt(period.singleStart)}`;
+    }
+
+    let label = '';
+    if (period.begin) {
+      label = fmt(period.begin);
+    }
+    if (period.end) {
+      label += ` – ${fmt(period.end)}`;
+    }
+    if (period.repeat) {
+      label += ` every ${this.coreService.getTimeInString(period.repeat)}`;
+    }
+    return label;
+  }
+
   checkPeriod(value, period): boolean {
     if (!value || !period) {
       return false;
@@ -1262,13 +1281,14 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
 
   showCalendar(): void {
     setTimeout(() => {
-      $('#full-calendar').calendar({
+      const cal = $('#full-calendar').calendar({
         language: this.coreService.getLocale(),
         renderEnd: (e) => {
           this.calendarTitle = e.currentYear;
           if (this.toDate) {
             this.changeDate();
           }
+
         }
       });
       const obj: any = {
@@ -1286,6 +1306,26 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       this.getDates(obj, true);
     }, 10);
   }
+
+  private attachDayTooltips(cal: any) {
+    cal.element.find('.day .day-content').removeAttr('title');
+
+    cal.element.find('.day:not(.old, .new, .disabled)').each((_, td) => {
+      const $td      = $(td);
+      const date     = cal._getDate($td);
+      const events   = cal.getEvents(date);
+
+      const lines = events
+        .map(ev => ev._period)
+        .map(p  => this.getPeriodStr2(p))
+        .filter(l => !!l);
+
+      if (lines.length) {
+        $td.find('.day-content').attr('title', lines.join('\n'));
+      }
+    });
+  }
+
 
   changeDate(): void {
     const newDate = new Date();
@@ -1449,37 +1489,37 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     });
   }
 
-  private filterDates(result, flag): void {
-    if (result.periods) {
-      this.populatePlanItems(result);
-    } else {
-      if (result.dates) {
-        for (let i = 0; i < result.dates.length; i++) {
-          const x = result.dates[i];
-          const obj = {
-            startDate: this.coreService.getDate(x),
-            endDate: this.coreService.getDate(x),
-            color: 'blue'
-          };
+  private filterDates(result: any, flag: boolean): void {
+    let toPopulate: { periods: any[] };
 
-          this.planItems.push(obj);
+    if (result.periods) {
+      toPopulate = result;
+
+    } else if (result.dates) {
+      const allPeriods: any[] = [];
+      Object.values(result.dates).forEach((day: any) => {
+        if (Array.isArray(day.periods)) {
+          allPeriods.push(...day.periods);
         }
-      }
-      if (result.withExcludes) {
-        for (let i = 0; i < result.withExcludes.length; i++) {
-          const x = result.withExcludes[i];
-          this.planItems.push({
-            startDate: this.coreService.getDate(x),
-            endDate: this.coreService.getDate(x),
-            color: 'orange'
-          });
-        }
-      }
+      });
+      toPopulate = {periods: allPeriods};
+
+    } else {
+      toPopulate = {periods: []};
     }
+
+    this.populatePlanItems(toPopulate);
+
     if (flag) {
       this.tempList = clone(this.planItems);
     }
+
     $('#full-calendar').data('calendar').setDataSource(this.planItems);
+    const cal = $('#full-calendar').data('calendar') as any;
+    cal.setDataSource(this.planItems);
+
+    this.attachDayTooltips(cal);
+
     this.ref.detectChanges();
   }
 
@@ -1508,7 +1548,8 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       planData.startDate = date;
       planData.endDate = date;
       planData.color = 'blue';
-
+      planData._period = value;
+      planData.tooltip = this.getPeriodStr2(value);
       this.planItems.push(planData);
     });
   }
