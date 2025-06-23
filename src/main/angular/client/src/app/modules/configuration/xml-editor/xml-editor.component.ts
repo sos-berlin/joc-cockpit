@@ -567,7 +567,7 @@ export class ShowModalComponent {
     tabSize: 4,
     scrollbarStyle: 'simple',
     viewportMargin: Infinity,
-    highlightSelectionMatches: {showToken:/\w/, annotateScrollbar: true},
+    highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
     gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
     mode: 'xml',
   };
@@ -981,7 +981,7 @@ export class XmlEditorComponent {
     this.isTreeShow = false;
   }
 
-  onTreeSearch(term,node) {
+  onTreeSearch(term, node) {
     node.data = term;
   }
 
@@ -1273,12 +1273,12 @@ export class XmlEditorComponent {
   }
 
   private getSingleObject(obj, isCheck = false): void {
-        if (!isCheck) {
-          this.storeAndDeployJobResource(obj);
-        }
+    if (!isCheck) {
+      this.storeAndDeployJobResource(obj);
+    }
   }
 
-  private storeAndDeployJobResource( obj): void {
+  private storeAndDeployJobResource(obj): void {
 
     const request = {
       auditLog: {}
@@ -1288,27 +1288,27 @@ export class XmlEditorComponent {
         request.auditLog = {comment: translatedValue};
       });
     }
-      this.coreService.post('xmleditor/deploy', {
-        controllerIds: [this.schedulerIds.selected],
-        auditLog: request.auditLog,
-        objectType: 'YADE',
-        id: this.data.id,
-        configuration: this.mainXml,
-        configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
-      }).subscribe({
-        next: (res: any) => {
-          if (res.validationError) {
-            this.showError(res.validationError);
-          } else {
-            this.extraInfo.sync = true;
-            this.extraInfo.deployed = res.released
-          }
-        }, error: (error) => {
-          if (error && error.error) {
-            this.showErrorToast(error.error.message, '');
-          }
+    this.coreService.post('xmleditor/deploy', {
+      controllerIds: [this.schedulerIds.selected],
+      auditLog: request.auditLog,
+      objectType: 'YADE',
+      id: this.data.id,
+      configuration: this.mainXml,
+      configurationJson: JSON.stringify({nodesCount: this.counting, node: this.nodes}),
+    }).subscribe({
+      next: (res: any) => {
+        if (res.validationError) {
+          this.showError(res.validationError);
+        } else {
+          this.extraInfo.sync = true;
+          this.extraInfo.deployed = res.released
         }
-      });
+      }, error: (error) => {
+        if (error && error.error) {
+          this.showErrorToast(error.error.message, '');
+        }
+      }
+    });
   }
 
   private compareJobResource(configuration, obj): void {
@@ -2038,7 +2038,7 @@ export class XmlEditorComponent {
     if (!data) {
       this.childNode = [];
     }
-    const select = xpath.useNamespaces({ 'xs': 'http://www.w3.org/2001/XMLSchema' });
+    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     const complexTypePath = `//xs:element[@name='${node}']/xs:complexType`;
 
 
@@ -2050,8 +2050,8 @@ export class XmlEditorComponent {
       `[@name='${node}' and @type]`;
     ;
 
-  let nodes: any = {};
-  let childArr: any[] = [];
+    let nodes: any = {};
+    let childArr: any[] = [];
 
     const element = select(complexTypePath, this.doc);
     if (element.length > 0) {
@@ -2124,13 +2124,13 @@ export class XmlEditorComponent {
               (nodes.ref !== 'Minimum' && nodes.ref !== 'Maximum') ||
               (nodes.name !== 'Minimum' && nodes.name !== 'Maximum')
             ) {
+              nodes.fromChoiceSequence = true;
               nodes.choice = node;
             }
-            if (nodes.minOccurs && !nodes.maxOccurs) {
-              // no-op
-            } else {
-              childArr.push(nodes);
-            }
+            const key = nodes.ref || nodes.name;
+                  if (!childArr.some(n => (n.ref || n.name) === key)) {
+                      childArr.push(nodes);
+                   }
             if (data) {
               data.children = childArr;
             } else {
@@ -2260,7 +2260,7 @@ export class XmlEditorComponent {
             this.addTypeChildNode(attrValue, parentNode, data);
           }
           if (attrValue === 'xs:boolean') {
-            _nodes = Object.assign(_nodes, { values: [] });
+            _nodes = Object.assign(_nodes, {values: []});
             let temp: any = {};
             for (let j = 0; j < typeElement[0].attributes.length; j++) {
               const a = typeElement[0].attributes[j].nodeName;
@@ -2665,7 +2665,7 @@ export class XmlEditorComponent {
     let attrs = this.checkAttributes(child.ref || child.name);
     let value = this.getValues(child.ref || child.name);
     let attrsType: any = this.getAttrFromType(child.ref || child.name, child.parent);
-    let valueType = this.getValueFromType(child.ref|| child.name, child.parent);
+    let valueType = this.getValueFromType(child.ref || child.name, child.parent);
     let val = this.getVal(child);
     if ((isEmpty(val)) && (isEmpty(value)) && (isEmpty(valueType))) {
       val = this.getValFromDefault(child);
@@ -2714,24 +2714,25 @@ export class XmlEditorComponent {
       }
     }
     this.extraInfo.released = false;
+    this.extraInfo.deployed = false;
     this.isChange = true;
     this.validateSer(false)
   }
 
   autoAddChild(child) {
-      let getCh = this.checkChildNode(child, undefined);
-      if (getCh) {
-        for (let i = 0; i < getCh.length; i++) {
-          if (getCh[i].minOccurs === undefined || getCh[i].minOccurs === 1 || getCh[i].minOccurs === '1') {
-            if (!getCh[i].choice) {
-              getCh[i].children = [];
-              this.addChild(getCh[i], child, true, i);
-            }
+    let getCh = this.checkChildNode(child, undefined);
+    if (getCh) {
+      for (let i = 0; i < getCh.length; i++) {
+        if (getCh[i].minOccurs === undefined || getCh[i].minOccurs === 1 || getCh[i].minOccurs === '1') {
+          if (!getCh[i].choice) {
+            getCh[i].children = [];
+            this.addChild(getCh[i], child, true, i);
           }
         }
       }
-      this.getData(child);
-      this.printArraya(false);
+    }
+    this.getData(child);
+    this.printArraya(false);
   }
 
   attachTypeAttrs(attrs, child) {
@@ -2785,7 +2786,7 @@ export class XmlEditorComponent {
   attachValue(value, child) {
     if (value && value.length > 0 && value[0].grandFather) {
       for (let i = 0; i < child.length; i++) {
-        if ((value[0] && value[0].parent === child[i].ref ||value[0] && value[0].parent === child[i].name) && value[0].grandFather === child[i].parent) {
+        if ((value[0] && value[0].parent === child[i].ref || value[0] && value[0].parent === child[i].name) && value[0].grandFather === child[i].parent) {
           if (!child[i].values) {
             child[i].values = [];
             for (let j = 0; j < value.length; j++) {
@@ -3063,7 +3064,7 @@ export class XmlEditorComponent {
       }
     }
 
-    if (this.choice) {
+    if (this.choice && node.choice && !node.fromChoiceSequence) {
       if (node.maxOccurs === 'unbounded') {
         return '';
       }
@@ -3073,15 +3074,15 @@ export class XmlEditorComponent {
         if (count >= max) {
           return 'disabled disable-link';
         }
-      }
-      else if (node.maxOccurs === undefined) {
+      } else if (node.maxOccurs === undefined) {
         if (count >= 1) {
           return 'disabled disable-link';
         }
       }
 
-      return node.choice ? 'disabled disable-link' : '';
+      return 'disabled disable-link';
     }
+
 
     if (node.maxOccurs === 'unbounded') {
       return '';
@@ -3092,8 +3093,7 @@ export class XmlEditorComponent {
       if (count >= max) {
         return 'disabled disable-link';
       }
-    }
-    else if (node.maxOccurs === undefined) {
+    } else if (node.maxOccurs === undefined) {
       if (count >= 1) {
         return 'disabled disable-link';
       }
@@ -3288,7 +3288,7 @@ export class XmlEditorComponent {
   }
 
   checkText(node: any): any {
-    const select = xpath.useNamespaces({ 'xs': 'http://www.w3.org/2001/XMLSchema' });
+    const select = xpath.useNamespaces({'xs': 'http://www.w3.org/2001/XMLSchema'});
     let text: any = {};
     const nameOrRef = node.ref || node.name;
 
@@ -3454,6 +3454,8 @@ export class XmlEditorComponent {
       this.getIndividualData(this.selectedNode, undefined);
     }
     this.extraInfo.released = false;
+    this.extraInfo.deployed = false;
+
     this.isChange = true;
     this.validateSer(false);
   }
@@ -3999,7 +4001,10 @@ export class XmlEditorComponent {
     if (this.nodes[0] && this.nodes[0].keyref) {
       for (let i = 0; i < this.nodes[0].attributes.length; i++) {
         if (this.nodes[0].attributes[i].refer) {
-          key = Object.assign(key, {refe: this.nodes[0].ref || this.nodes[0].name, name: this.nodes[0].attributes[i].refer});
+          key = Object.assign(key, {
+            refe: this.nodes[0].ref || this.nodes[0].name,
+            name: this.nodes[0].attributes[i].refer
+          });
           this.attachKeyReferencing(key);
           break;
         }
@@ -4643,7 +4648,7 @@ export class XmlEditorComponent {
   // link gotokey
   gotoKey(node): void {
     if (node !== undefined) {
-      if (node.refer === this.nodes[0].ref|| node.refer === this.nodes[0].name) {
+      if (node.refer === this.nodes[0].ref || node.refer === this.nodes[0].name) {
         if (this.nodes[0].keyReference) {
           for (let i = 0; i < this.nodes[0].attributes.length; i++) {
             if (this.nodes[0].attributes[i].name === this.nodes[0].keyReference) {
@@ -4669,7 +4674,7 @@ export class XmlEditorComponent {
 
   gotoKeyRecursion(node, child): void {
     if (node !== undefined) {
-      if (node.refer === child.ref|| node.refer === child.name) {
+      if (node.refer === child.ref || node.refer === child.name) {
         if (child.keyReference) {
           for (let i = 0; i < child.attributes.length; i++) {
             if (child.attributes[i].name === child.keyReference) {
@@ -5257,13 +5262,15 @@ export class XmlEditorComponent {
   // save xml
   save(): void {
     const xml = this._showXml(this.nodes, true);
-    if (!xml) { return; }
+    if (!xml) {
+      return;
+    }
 
     const name = this.objectType !== 'NOTIFICATION'
       ? this.activeTab.name + '.xml'
       : 'Notification.xml';
 
-    const blob = new Blob([xml], { type: 'application/xml' });
+    const blob = new Blob([xml], {type: 'application/xml'});
     saveAs(blob, name);
   }
 
@@ -5672,7 +5679,7 @@ export class XmlEditorComponent {
         }
         if (nodes[0].children && nodes[0].children.length > 0) {
           for (let i = 0; i < nodes[0].children.length; i++) {
-            this.createChildJson(peopleElem, nodes[0].children[i], doc.createElement(nodes[0].children[i].ref),doc);
+            this.createChildJson(peopleElem, nodes[0].children[i], doc.createElement(nodes[0].children[i].ref), doc);
           }
         }
       }
@@ -6201,7 +6208,7 @@ export class XmlEditorComponent {
     this.coreService.post('xmleditor/validate', obj).subscribe({
       next: (res: any) => {
         if (res.validationError) {
-          if(flag) {
+          if (flag) {
             this.showError(res.validationError);
           }
           this.validConfig = false;
