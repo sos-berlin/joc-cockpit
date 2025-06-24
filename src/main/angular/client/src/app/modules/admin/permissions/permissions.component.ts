@@ -697,6 +697,7 @@ export class PermissionsComponent {
   }
 
   preparePermissionOptions(): void {
+    this.permissionOptions = [];
     let temp = this.permissions;
     temp.forEach((option, index) => {
       if (index > 0 && (option.split(':')[2] != temp[index - 1].split(':')[2] || option.split(':')[3] != temp[index - 1].split(':')[3])) {
