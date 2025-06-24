@@ -3114,6 +3114,7 @@
       "button.postAll": "Ausgewählte Notizen senden",
       "button.delete": "Notiz löschen",
       "button.deleteAll": "Alle Notizen löschen",
+      "button.deleteAllSelected": "Delete selected Notices",
       "placeholder.enterNoticeId": "Kennung der Notiz angeben",
       "placeholder.enterNoticeKey": "Kennung der Notiz angeben",
       "placeholder.enterPlanKey": "Kennung des Notizraums angeben"

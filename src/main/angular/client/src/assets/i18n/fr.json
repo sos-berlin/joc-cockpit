@@ -3114,6 +3114,7 @@
       "button.postAll": "Poster les Annonces sélectionnées",
       "button.delete": "Supprimer l'Annonce",
       "button.deleteAll": "Supprimer toutes les Annonces",
+      "button.deleteAllSelected": "Delete selected Notices",
       "placeholder.enterNoticeId": "Entrer l'ID Annonce",
       "placeholder.enterNoticeKey": "Entrer l'ID Annonce",
       "placeholder.enterPlanKey": "Entrer la Clé d'Espace Annonces"

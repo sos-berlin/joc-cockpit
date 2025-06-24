@@ -3114,6 +3114,7 @@
       "button.postAll": "Post selected Notices",
       "button.delete": "Delete Notice",
       "button.deleteAll": "Delete All Notices",
+      "button.deleteAllSelected": "Delete selected Notices",
       "placeholder.enterNoticeId": "Enter Notice ID",
       "placeholder.enterNoticeKey": "Enter Notice Key",
       "placeholder.enterPlanKey": "Enter Notice Space Key"

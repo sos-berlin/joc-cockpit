@@ -1021,15 +1021,17 @@ export class BoardComponent {
 
   post(board: any, notice = null): void {
     if (board.boardType === "PLANNABLE" && notice !== null) {
-      const endpoint = 'notices/post';
+      const endpoint = 'notice/post';
+
+      const noticeBoardPath = board.path;
+      const noticeId = notice.id;
       const obj: any = {
         "controllerId": this.schedulerIds.selected,
         "auditLog": {},
+        "noticeBoardPath": noticeBoardPath,
+        "noticeId": noticeId
       }
-      const noticeBoardPath = board.path;
-      const noticeIds = board.notices.map(item => item.id);
-      obj.notices = [];
-      obj.notices.push({noticeBoardPath: noticeBoardPath, noticeIds: noticeIds});
+
       this.coreService.post(endpoint, obj).subscribe({
         next: (res) => {}});
     } else if (board.boardType === "PLANNABLE" && notice === null) {

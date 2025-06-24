@@ -135,7 +135,7 @@
             <label class="col-md-4 form-control-label"
                    translate>workflow.label.jobResourceNames</label>
             <div class="col-md-6">
-              <app-multi-select [attribute]="'jobResourceNames'" [list]="object" (onChange)="toggleCheckbox('jobResourceNames', $event)">[nodes]="jobResourcesTree"
+              <app-multi-select [attribute]="'jobResourceNames'" [list]="object" (onChange)="toggleCheckbox('jobResourceNames', $event)"[nodes]="jobResourcesTree"
                                 [type]="'JOBRESOURCE'"></app-multi-select>
             </div>
             <div class="col-md-1">

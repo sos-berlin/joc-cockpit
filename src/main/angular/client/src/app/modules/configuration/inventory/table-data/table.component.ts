@@ -464,6 +464,19 @@ export class TableComponent implements OnChanges, OnDestroy {
 
 
   restoreAllObject(): void {
+    const obj = {
+      objects: []
+    };
+
+    this.mapOfCheckedId.forEach(item => {
+      const cleanedPath = item.path.replace(new RegExp(`/${item.name}$`), '');
+      obj.objects.push({
+        objectType: item.objectType,
+        path:        cleanedPath,
+        name:        item.name
+      });
+    });
+
     this.modal.create({
       nzTitle: undefined,
       nzContent: CreateObjectModalComponent,
@@ -472,7 +485,7 @@ export class TableComponent implements OnChanges, OnDestroy {
       nzData: {
         schedulerId: this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {},
         preferences: this.preferences,
-        bulkData: this.data,
+        bulkData: obj.objects,
         bulk: true,
         restore: true
       },

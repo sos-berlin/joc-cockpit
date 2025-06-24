@@ -15,7 +15,7 @@
             <button
               (click)="deleteAllNotices()"
               *ngIf="object.isDelete && (object.setOfCheckedId.size>0 || object.mapOfCheckedId.size>0) && permission.currentController.noticeBoards.delete" class="btn btn-grey btn-sm m-l-12"><i
-              class="fa fa-trash"></i>&nbsp; {{'resource.board.button.deleteAll' | translate}}
+              class="fa fa-trash"></i>&nbsp; {{'resource.board.button.deleteAllSelected' | translate}}
             </button>
             <div [ngClass]="{'hide': (object.setOfCheckedId.size>0 || object.mapOfCheckedId.size>0)}" class="inline">
               <div class="btn-group dropdown">

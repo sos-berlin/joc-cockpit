@@ -1317,7 +1317,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
 
       const lines = events
         .map(ev => ev._period)
-        .map(p  => this.getPeriodStr2(p))
+        .map(p  => this.coreService.getPeriodStr(p))
         .filter(l => !!l);
 
       if (lines.length) {
@@ -1362,6 +1362,10 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
 
   getPlan(): void {
     $('#full-calendar').data('calendar').setYearView({view: this.viewCalObj.calendarView, year: this.calendarTitle});
+    const cal = $('#full-calendar').data('calendar') as any;
+    cal.setDataSource(this.planItems);
+
+    this.attachDayTooltips(cal);
   }
 
   editWorkingCal(calendar): void {
@@ -1549,7 +1553,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       planData.endDate = date;
       planData.color = 'blue';
       planData._period = value;
-      planData.tooltip = this.getPeriodStr2(value);
+      planData.tooltip = this.coreService.getPeriodStr(value);
       this.planItems.push(planData);
     });
   }
