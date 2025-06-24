@@ -12465,6 +12465,23 @@ export class InventoryComponent {
   }
 
   private storeData(obj, result, reload): void {
+    if (result &&  result.calendars && reload) {
+      result.calendars.forEach(cal => {
+        if (cal && cal.periods) {
+          cal.periods.forEach(period => {
+            if (period && period.repeat) {
+              try {
+                const padded = this.coreService.padTime(period.repeat);
+                if (typeof padded === 'string' && padded.trim() !== '') {
+                  period.repeat = padded;
+                }
+              } catch (err) {
+              }
+            }
+          });
+        }
+      });
+    }
     if (!obj.path && !obj.name) {
       return;
     }

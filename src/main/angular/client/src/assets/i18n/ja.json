@@ -3036,6 +3036,7 @@
       "button.postAll": "全てPostNotice",
       "button.delete": "通知削除",
       "button.deleteAll": "全通知削除",
+      "button.deleteAllSelected": "Delete selected Notices",
       "placeholder.enterNoticeId": "通知ID入力",
       "placeholder.enterNoticeKey": "実行計画ID入力",
       "placeholder.enterPlanKey": "通知予定日入力"
