@@ -993,7 +993,7 @@ export class XmlEditorComponent {
     };
     this.coreService.post('inventory/read/configuration', obj).subscribe((res: any) => {
       this.extraInfo.isExist = true;
-      this.extraInfo.deployed = res.deployed;
+      this.extraInfo.deployed = false;
     });
   }
 
