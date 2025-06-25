@@ -1130,29 +1130,6 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     return periodStr;
   }
 
-  getPeriodStr2(period): string {
-    const fmt = (iso: string) =>
-      this.coreService.getTimeFromDate(
-        this.coreService.convertTimeToLocalTZ(this.preferences, iso),
-        this.preferences.dateFormat
-      );
-
-    if (period.singleStart) {
-      return `Single start: ${fmt(period.singleStart)}`;
-    }
-
-    let label = '';
-    if (period.begin) {
-      label = fmt(period.begin);
-    }
-    if (period.end) {
-      label += ` – ${fmt(period.end)}`;
-    }
-    if (period.repeat) {
-      label += ` every ${this.coreService.getTimeInString(period.repeat)}`;
-    }
-    return label;
-  }
 
   checkPeriod(value, period): boolean {
     if (!value || !period) {
@@ -1287,6 +1264,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
           this.calendarTitle = e.currentYear;
           if (this.toDate) {
             this.changeDate();
+            this.attachDayTooltips(cal);
           }
 
         }
@@ -1494,22 +1472,31 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   }
 
   private filterDates(result: any, flag: boolean): void {
-    let toPopulate: { periods: any[] };
+    let toPopulate: { dates: string[], periods: any[] };
 
     if (result.periods) {
       toPopulate = result;
-
-    } else if (result.dates) {
+    }
+    else if (result.dates) {
+      const dateKeys = Object.keys(result.dates);
       const allPeriods: any[] = [];
-      Object.values(result.dates).forEach((day: any) => {
+
+      dateKeys.forEach(dateKey => {
+        const day = result.dates[dateKey];
         if (Array.isArray(day.periods)) {
-          allPeriods.push(...day.periods);
+          day.periods.forEach(period => {
+            allPeriods.push({ dateKey, ...period });
+          });
         }
       });
-      toPopulate = {periods: allPeriods};
 
-    } else {
-      toPopulate = {periods: []};
+      toPopulate = {
+        dates:   dateKeys,
+        periods: allPeriods
+      };
+    }
+    else {
+      toPopulate = { dates: [], periods: [] };
     }
 
     this.populatePlanItems(toPopulate);
@@ -1527,33 +1514,43 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     this.ref.detectChanges();
   }
 
-  private populatePlanItems(res: any): void {
+  private populatePlanItems(res: { dates: string[], periods: any[] }): void {
+
     res.periods.forEach((value: any) => {
-      let planData: any = {};
+      const planData: any = {};
+
+      planData.plannedStartTime = value.dateKey;
+      planData.plannedShowTime  = "";
+
       if (value.begin) {
-        planData = {
-          plannedStartTime: this.coreService.getDateByFormat(value.begin, this.preferences.zone, 'YYYY-MM-DD'),
-          plannedShowTime: this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.begin), this.preferences.dateFormat)
-        };
-        if (value.end) {
-          planData.endTime = this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.end),
-            this.preferences.dateFormat);
-        }
+        planData.plannedShowTime = this.coreService.getTimeFromDate(
+          this.coreService.convertTimeToLocalTZ(this.preferences, value.begin),
+          this.preferences.dateFormat
+        );
         if (value.repeat) {
           planData.repeat = value.repeat;
         }
-      } else if (value.singleStart) {
-        planData = {
-          plannedStartTime: this.coreService.getDateByFormat(value.singleStart, this.preferences.zone, 'YYYY-MM-DD'),
-          plannedShowTime: this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.singleStart), this.preferences.dateFormat)
-        };
+        if (value.end) {
+          planData.endTime = this.coreService.getTimeFromDate(
+            this.coreService.convertTimeToLocalTZ(this.preferences, value.end),
+            this.preferences.dateFormat
+          );
+        }
       }
-      const date = this.coreService.getDate(planData.plannedStartTime);
-      planData.startDate = date;
-      planData.endDate = date;
-      planData.color = 'blue';
-      planData._period = value;
-      planData.tooltip = this.coreService.getPeriodStr(value);
+      else if (value.singleStart) {
+        planData.plannedShowTime = this.coreService.getTimeFromDate(
+          this.coreService.convertTimeToLocalTZ(this.preferences, value.singleStart),
+          this.preferences.dateFormat
+        );
+      }
+
+      const dateObj = this.coreService.getDate(value.dateKey);
+      planData.startDate = dateObj;
+      planData.endDate   = dateObj;
+      planData.color     = 'blue';
+      planData._period   = value;
+      planData.tooltip   = this.coreService.getPeriodStr(value);
+
       this.planItems.push(planData);
     });
   }
