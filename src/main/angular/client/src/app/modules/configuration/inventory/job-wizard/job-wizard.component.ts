@@ -175,7 +175,6 @@ export class ApiRequestComponent {
     try {
       req = JSON.parse(requestArg.value);
     } catch (e) {
-      console.warn('Could not parse request JSON:', e);
       return;
     }
 
@@ -228,7 +227,6 @@ export class ApiRequestComponent {
           this.mappings = arr;
         }
       } catch {
-        console.warn('Could not parse return_variables JSON');
       }
     }
   }
@@ -593,9 +591,9 @@ export class ApiRequestComponent {
     let base = (origin + pathname).replace(/\/$/, '');
     const lc = base.toLowerCase();
 
-    // if (port === '4200') {
-    //   return base + '/api';
-    // }
+    if (port === '4200') {
+      return base + '/api';
+    }
     if (lc.includes('/joc/api')) {
       return base;
     }
@@ -629,7 +627,6 @@ export class ApiRequestComponent {
     }
 
 
-    const editorUrl = this.model.url
     const endpoint = this.model.endPoint
 
     const headers = this.model.headers
@@ -647,7 +644,6 @@ export class ApiRequestComponent {
     const body = bodyText !== '' ? bodyText : undefined;
 
     const cfg: any = {
-      editorUrl,
       endpoint,
       method: this.model.method
     };
@@ -1337,7 +1333,7 @@ export class JobWizardComponent {
     this.coreService.showDocumentation(docName, this.preferences);
   }
 
-  ok(): void {
+  ok(clientObj?): void {
     let obj: any = {};
     if (!this.job.jobTemplate) {
       obj = {
@@ -1349,6 +1345,7 @@ export class JobWizardComponent {
         documentationName: this.job.assignReference,
       };
       this.updateParam(obj);
+
     } else {
       obj = this.coreService.clone(this.job);
       obj.jobTemplateName = this.job.name;
@@ -1364,6 +1361,18 @@ export class JobWizardComponent {
     obj.title = this.job.title;
 
     if (this.node) {
+      if (clientObj?.executable?.arguments?.length) {
+        const merged = [...obj.executable.arguments];
+        clientObj.executable.arguments.forEach((incoming: { name: string; value: any }) => {
+          const idx = merged.findIndex(a => a.name === incoming.name);
+          if (idx >= 0) {
+            merged[idx] = incoming;
+          } else {
+            merged.push(incoming);
+          }
+        });
+        obj.executable.arguments = merged;
+      }
       this.activeModal.close(obj);
     } else {
       this.activeModal.close(this.job);
@@ -1559,8 +1568,7 @@ export class JobWizardComponent {
         obj.executable.arguments.push({name: 'return_variable', value: returnVariablesJson});
       }
     }
-    this.activeModal.close(obj);
+    this.ok(obj)
   }
-
 
 }

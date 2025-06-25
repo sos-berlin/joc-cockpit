@@ -3268,38 +3268,53 @@ export class JobComponent {
   }
 
   onApiConfigSaved(config: any) {
-    this.savedRequestConfig = config.request;
-    const obj = {
-      executable: {
-        TYPE: 'InternalExecutable',
-        internalType: this.selectedNode.job.executable.internalType,
-        className: this.selectedNode.job.executable.className,
-        arguments: []
-      },
-    };
-    if (obj.executable.TYPE === 'InternalExecutable') {
-      if (!obj.executable.arguments) {
-        obj.executable.arguments = [];
-      }
-      if (config.baseUrl) {
-        obj.executable.arguments.push({
+  this.savedRequestConfig = config.request;
+
+  if (this.selectedNode.job.executable.TYPE === 'InternalExecutable') {
+    if (!this.selectedNode.job.executable.arguments) {
+      this.selectedNode.job.executable.arguments = [];
+    }
+
+    const args = this.selectedNode.job.executable.arguments;
+
+    if (config.baseUrl) {
+      const urlArg = args.find(a => a.name === 'js7.api-server.url');
+      if (urlArg) {
+        urlArg.value = config.baseUrl;
+      } else {
+        args.push({
           name: 'js7.api-server.url',
           value: config.baseUrl
         });
       }
-      obj.executable.arguments.push({name: 'request', value: config.request});
-      if(config.return_variables && config.return_variables.length > 0){
-        const flattened = config.return_variables.map(m => ({
-          name: m.name,
-          path: Array.isArray(m.path) ? m.path[0] : m.path
-        }));
-        const returnVariablesJson = JSON.stringify(flattened, null, 2);
+    }
 
-        obj.executable.arguments.push({name: 'return_variable', value: returnVariablesJson });
+    const requestArg = args.find(a => a.name === 'request');
+    if (requestArg) {
+      requestArg.value = config.request;
+    } else {
+      args.push({ name: 'request', value: config.request });
+    }
+
+    if (config.return_variables && config.return_variables.length > 0) {
+      const flattened = config.return_variables.map(m => ({
+        name: m.name,
+        path: Array.isArray(m.path) ? m.path[0] : m.path
+      }));
+      const returnVariablesJson = JSON.stringify(flattened, null, 2);
+
+      const returnVarArg = args.find(a => a.name === 'return_variable');
+      if (returnVarArg) {
+        returnVarArg.value = returnVariablesJson;
+      } else {
+        args.push({ name: 'return_variable', value: returnVariablesJson });
       }
     }
-    this.updateJobFromWizardJob(obj);
   }
+
+  this.updateJobFromWizardJob(this.selectedNode.job);
+}
+
 
   close() {
     this.sideBar.isVisible = false;
