@@ -122,9 +122,6 @@ export class AppComponent {
                   refreshToken,
                   document
                 }: { token: string, idToken: string, refreshToken?: string, document: any }): void {
-      idToken,
-      refreshToken,
-      document, '>>>')
     if (token && document) {
 
       const request = {
