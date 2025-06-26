@@ -36,7 +36,6 @@ export class OIDCAuthService {
   tokenEndpoint?: string;
   responseType?: string;
   showDebugInformation?: boolean;
-  clientSecret?: string;
   requireHttps?: boolean | 'remoteOnly';
   nonceStateSeparator: string = ';';
   state = '';
@@ -51,10 +50,7 @@ export class OIDCAuthService {
   constructor(private coreService: CoreService, private toasterService: ToastrService, private authService: AuthService,
               private router: Router) {
     if (sessionStorage['$SOS$KEY']) {
-      this.coreService.renewLocker(sessionStorage['$SOS$KEY']);
-      if (sessionStorage['$SOS$TOKENEXPIRETIME']) {
-        this.renewToken();
-      }
+
     }
   }
 
@@ -98,7 +94,7 @@ export class OIDCAuthService {
             this.responseTypesSupported = doc.response_types_supported || ['code'];
             this.tokenEndMethodsSupported = doc.token_endpoint_auth_methods_supported || ['client_secret_post'];
             this.discoveryDocumentLoaded = true;
-            resolve({ discoveryDocument: doc });
+            resolve({discoveryDocument: doc});
           },
           error: (err) => {
             reject(err);
@@ -112,6 +108,7 @@ export class OIDCAuthService {
     const jsonString = JSON.stringify(config);
     return btoa(jsonString);
   }
+
   private validateDiscoveryDocument(doc: any): boolean {
     let errors: any;
     errors = this.validateUrlFromDiscoveryDocument(doc.authorization_endpoint);
@@ -202,13 +199,12 @@ export class OIDCAuthService {
       if (!scope.match(/(^|\s)openid($|\s)/)) {
         scope = 'openid ' + scope;
       }
-      if (!this.clientSecret) {
-        this.responseTypesSupported.forEach((type: string) => {
-          if (type.includes('id_token')) {
-            this.responseType = type;
-          }
-        })
-      }
+
+      // this.responseTypesSupported.forEach((type: string) => {
+      //   if (type.includes('id_token')) {
+      //     this.responseType = type;
+      //   }
+      // })
 
       url = this.loginUrl +
         seperationChar +
@@ -233,7 +229,6 @@ export class OIDCAuthService {
     if (noPrompt) {
       url += '&prompt=none';
     }
-
     //   url += '&accessType=offline&approvalPrompt=force';
     return url;
   }
@@ -245,89 +240,6 @@ export class OIDCAuthService {
     let logoutUrl: string | undefined = sessionStorage.getItem('logoutUrl') || this.logoutUrl;
 
     sessionStorage.clear();
-
-    this.coreService.getValueFromLocker(key, (content: any) => {
-      if (!this.validateUrlForHttps(this.logoutUrl)) {
-        this.toasterService.error(
-          "logoutUrl  must use HTTPS (with TLS), or config value for property 'requireHttps' must be set to 'false' and allow HTTP (without TLS)."
-        );
-        return null;
-      } else {
-
-        let params = new HttpParams();
-        let headers = new HttpHeaders().set(
-          'Content-Type',
-          'application/x-www-form-urlencoded'
-        );
-
-        let flag = true;
-        let basicAuth = false;
-        if (this.tokenEndMethodsSupported.length > 0) {
-          if (this.tokenEndMethodsSupported.length > 1) {
-            this.tokenEndMethodsSupported.forEach((method) => {
-              if (method == 'none') {
-                flag = false;
-              } else if (method == 'client_secret_basic' && content.clientSecret) {
-                basicAuth = true;
-                flag = false;
-                headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent(content.clientId + ':' + content.clientSecret))));
-              }
-            })
-          }
-        }
-        if (flag && content.clientSecret) {
-          params = params.set('client_secret', content.clientSecret);
-        }
-        if (!basicAuth) {
-          params = params.set('client_id', content.clientId);
-        }
-        return new Promise((resolve, reject) => {
-          let revokeAccessToken: Observable<null>;
-          let revokeRefreshToken: Observable<null>;
-          if (logoutUrl && content.token && content.token != 'undefined' && content.token != 'null') {
-            let revokationParams = params
-              .set('token', content.token)
-              .set('token_type_hint', 'access_token');
-            if (logoutUrl.includes('login.windows.net') || logoutUrl.includes('login.microsoftonline.com')) {
-
-              // navigate to the logout URL
-              window.location.replace(logoutUrl + '?post_logout_redirect_uri=' + window.location.href);
-              return
-            }
-            revokeAccessToken = this.coreService.log(
-              logoutUrl,
-              revokationParams,
-              headers
-            );
-          } else {
-            revokeAccessToken = of(null);
-          }
-
-          if (logoutUrl && content.refreshToken && content.refreshToken != 'undefined' && content.refreshToken != 'null') {
-            let revokationParams = params
-              .set('token', content.refreshToken)
-              .set('token_type_hint', 'refresh_token');
-            revokeRefreshToken = this.coreService.log(
-              logoutUrl,
-              revokationParams,
-              {headers}
-            );
-          } else {
-            revokeRefreshToken = of(null);
-          }
-
-          combineLatest([revokeAccessToken, revokeRefreshToken]).subscribe({
-              next: (res: any) => {
-                resolve(res);
-              }, error: (err) => {
-                reject(err);
-              }
-            }
-          );
-        });
-      }
-    });
-
   }
 
   createAndSaveNonce() {
@@ -378,6 +290,7 @@ export class OIDCAuthService {
     const sessionState = parts['session_state'];
     const idToken = parts['id_token'];
     const accessToken = parts['access_token'];
+
     if (!options.preventClearHashAfterLogin) {
       const href = location.origin +
         location.pathname +
@@ -407,7 +320,7 @@ export class OIDCAuthService {
     } else if (idToken) {
       this.access_token = accessToken;
       this.id_token = idToken;
-      return Promise.resolve();
+     // return Promise.resolve();
     }
     if (!options.disableNonceCheck) {
       if (!nonceInState) {
@@ -422,10 +335,9 @@ export class OIDCAuthService {
       }
       sessionStorage.setItem('session_state', sessionState);
       if (code) {
-        await this.getTokenFromCode(code, options);
-
+        const obj = this.getTokenFromCode(code, options);
         this.restoreRequestedRoute();
-        return Promise.resolve();
+        return Promise.resolve(obj);
       } else {
         return Promise.resolve();
       }
@@ -444,6 +356,11 @@ export class OIDCAuthService {
    * Get token using an intermediate code. Works for the Authorization Code flow.
    */
   getTokenFromCode(code: any, options: any) {
+    let object = {
+      'grant_type': 'authorization_code',
+      'code': code,
+      'redirect_uri': options.customRedirectUri || this.redirectUri
+    }
     let params = new HttpParams()
       .set('grant_type', 'authorization_code')
       .set('code', code)
@@ -453,58 +370,12 @@ export class OIDCAuthService {
     if (!PKCEVerifier) {
       this.toasterService.warning('No PKCE verifier found in oauth storage!');
     } else {
-      params = params.set('code_verifier', PKCEVerifier);
+      object['code_verifier'] = PKCEVerifier;
     }
-    return this.fetchAndProcessToken(params);
+
+    return object;
   }
 
-  fetchAndProcessToken(params: any): any {
-    this.assertUrlNotNullAndCorrectProtocol(this.tokenEndpoint, 'tokenEndpoint');
-    let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
-    const clientId = sessionStorage.getItem('clientId');
-    const clientSecret = this.tokenEndpoint.match('/v2.0') ? '' : (sessionStorage.getItem('clientSecret') || this.clientSecret);
-    let flag = true;
-    let basicAuth = false;
-    if (this.tokenEndMethodsSupported.length > 0) {
-      if (this.tokenEndMethodsSupported.length > 1) {
-        this.tokenEndMethodsSupported.forEach((method) => {
-          if (method == 'none') {
-            flag = false;
-          } else if (method == 'client_secret_basic' && clientSecret) {
-            basicAuth = true;
-            flag = false;
-            headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((this.clientId || clientId) + ':' + clientSecret))));
-          }
-        })
-      }
-    }
-    if (flag && clientSecret) {
-      params = params.set('client_secret', clientSecret);
-    }
-    if (!basicAuth) {
-      params = params.set('client_id', this.clientId || clientId);
-    }
-    if (this.tokenEndpoint) {
-      return new Promise((resolve, reject) => {
-        this.coreService
-          .log(this.tokenEndpoint, params, {headers})
-          .subscribe({
-            next: (tokenResponse) => {
-              this.access_token = tokenResponse.access_token;
-              this.id_token = tokenResponse.id_token;
-              this.refresh_token = tokenResponse.refresh_token;
-
-              sessionStorage['$SOS$TOKENEXPIRETIME'] = (new Date().getTime() + (tokenResponse.expires_in * 1000)) - 20000;
-              this.renewToken();
-              resolve(tokenResponse);
-            }, error: (err) => {
-              this.toasterService.error('Error getting token', err);
-              reject(err);
-            }
-          });
-      });
-    }
-  }
 
   getCodePartsFromUrl(queryString: any) {
     if (!queryString || queryString.length === 0) {
@@ -593,93 +464,6 @@ export class OIDCAuthService {
       }).catch((error) => {
       this.toasterService.error('Error in initAuthorizationCodeFlow');
       console.error(error);
-    });
-  }
-
-  private renewToken(): void {
-    let miliseconds = (new Date().getTime() < parseInt(sessionStorage['$SOS$TOKENEXPIRETIME'])) ? (parseInt(sessionStorage["$SOS$TOKENEXPIRETIME"]) - new Date().getTime()) : (new Date().getTime() - parseInt(sessionStorage['$SOS$TOKENEXPIRETIME']));
-    setTimeout(() => {
-      const key = sessionStorage['$SOS$KEY'];
-      if (key) {
-        this.coreService.getValueFromLocker(key, (content: any) => {
-          this.refreshToken(content).then((res) => {
-            this.coreService.saveValueInLocker({
-              content: {
-                token: res.access_token,
-                refreshToken: res.refresh_token,
-                clientId: content.clientId,
-                clientSecret: content.clientSecret
-              }
-            }, () => {
-              this.renewToken();
-            });
-          }).catch(() => {
-            this._logout();
-          })
-
-        });
-      }
-    }, miliseconds);
-
-  }
-
-  /**
-   * Refreshes the token using a refresh_token.
-   * This does not work for implicit flow, b/c
-   * there is no refresh_token in this flow.
-   * A solution for this is provided by the
-   * method silentRefresh.
-   */
-  public refreshToken(data: any): Promise<any> {
-    this.assertUrlNotNullAndCorrectProtocol(
-      this.tokenEndpoint,
-      'tokenEndpoint'
-    );
-    return new Promise((resolve, reject) => {
-      let params = new HttpParams()
-        .set('grant_type', 'refresh_token')
-        .set('scope', this.scope)
-        .set('refresh_token', data.refreshToken);
-
-      let headers = new HttpHeaders().set(
-        'Content-Type',
-        'application/x-www-form-urlencoded'
-      );
-      const clientSecret = this.tokenEndpoint.match('v2.0/') ? '' : data.clientSecret;
-      let flag = true;
-      let basicAuth = false;
-      if (this.tokenEndMethodsSupported.length > 0) {
-        if (this.tokenEndMethodsSupported.length > 1) {
-          this.tokenEndMethodsSupported.forEach((method) => {
-            if (method == 'none') {
-              flag = false;
-            } else if (method == 'client_secret_basic' && clientSecret) {
-              basicAuth = true;
-              flag = false;
-              headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((data.clientId + ':' + clientSecret)))));
-            }
-          })
-        }
-      }
-      if (flag && clientSecret) {
-        params = params.set('client_secret', clientSecret);
-      }
-      if (!basicAuth) {
-        params = params.set('client_id', data.clientId);
-      }
-      this.coreService
-        .log(this.tokenEndpoint, params, {headers})
-        .subscribe({
-          next:
-            (tokenResponse) => {
-              sessionStorage['$SOS$TOKENEXPIRETIME'] = (new Date().getTime() + (tokenResponse.expires_in * 1000)) - 30000;
-              resolve(tokenResponse);
-            },
-          error: (err) => {
-            this._logout();
-            reject(err);
-          }
-        });
     });
   }
 

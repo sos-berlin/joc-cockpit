@@ -32,6 +32,7 @@ export class AuthInterceptor implements HttpInterceptor {
             const encodedConfig = sessionStorage.getItem('X-Openid-Configuration');
             const user = req.body;
 
+
             if (user.idToken) {
               const headerOptions: any = {
                 'X-ID-TOKEN': user.idToken,
@@ -40,7 +41,16 @@ export class AuthInterceptor implements HttpInterceptor {
               };
               const headers = new HttpHeaders(headerOptions);
               req = req.clone({headers, body: {}});
-            } else if (!user.fido) {
+            } else if (user.code) {
+              req = req.clone({
+                headers: req.headers.set('X-IDENTITY-SERVICE', user.identityServiceName),
+                body:{
+                  code: user.code,
+                  redirect_uri: user.redirect_uri,
+                  code_verifier: user.code_verifier,
+                }
+              });
+            }  else if (!user.fido) {
               const credentials = (user.userName || '') + ':' + (user.password || '');
               const utf8Credentials = new TextEncoder().encode(credentials);
               const base64Credentials = btoa(String.fromCharCode(...utf8Credentials));
@@ -68,6 +78,7 @@ export class AuthInterceptor implements HttpInterceptor {
           }
         }
       }
+
       return next.handle(req).pipe(
         tap({
           next: (event: any) => {

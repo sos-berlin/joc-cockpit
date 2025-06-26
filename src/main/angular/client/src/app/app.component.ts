@@ -8,6 +8,7 @@ import {CoreService} from './services/core.service';
 import {DataService} from "./services/data.service";
 import {KioskService} from "./services/kiosk.service";
 import {PopupService} from "./services/popup.service";
+import {HttpParams} from "@angular/common/http";
 
 declare const $: any;
 
@@ -19,7 +20,7 @@ export class AppComponent {
   locales: any = [];
 
   constructor(private translate: TranslateService, private i18n: NzI18nService, public coreService: CoreService, private dataService: DataService,
-              private authService: AuthService, private oAuthService: OIDCAuthService, private router: Router, private kioskService: KioskService,  private popupService: PopupService,
+              private authService: AuthService, private oAuthService: OIDCAuthService, private router: Router, private kioskService: KioskService, private popupService: PopupService,
               public viewContainerRef: ViewContainerRef) {
     AppComponent.themeInit();
     /*    Object.getOwnPropertyNames(console).filter((property) => {
@@ -35,7 +36,8 @@ export class AppComponent {
     if (!this.authService.accessTokenId) {
       if (sessionStorage['authConfig']) {
         this.oAuthService.loadDiscoveryDocument('').then((res: any) => {
-          this.oAuthService.tryLoginCodeFlow().then(() => {
+          this.oAuthService.tryLoginCodeFlow().then((result: any) => {
+
             if (this.oAuthService.id_token) {
               this.dataService.reloadAuthentication.next({loading: true});
               this.login({
@@ -44,6 +46,8 @@ export class AppComponent {
                 refreshToken: this.oAuthService.refresh_token,
                 document: res.discoveryDocument
               });
+            } else if (result) {
+              this.loginWithCode(result);
             }
           }).catch((err) => {
             console.log(err)
@@ -75,10 +79,10 @@ export class AppComponent {
     });
 
     setTimeout(() => {
-      if(this.kioskService.checkKioskMode()){
+      if (this.kioskService.checkKioskMode()) {
         this.kioskService.startKioskMode()
       }
-    },3000)
+    }, 3000)
   }
 
   private getTranslate(): void {
@@ -118,56 +122,95 @@ export class AppComponent {
                   refreshToken,
                   document
                 }: { token: string, idToken: string, refreshToken?: string, document: any }): void {
+      idToken,
+      refreshToken,
+      document, '>>>')
     if (token && document) {
-      this.coreService.saveValueInLocker({
-        content: {
-          token,
-          refreshToken,
-          clientId: sessionStorage['clientId'],
-          clientSecret: sessionStorage['clientSecret']
-        }
-      }, () => {
-        const request = {
-          identityServiceName: sessionStorage['providerName'],
-          idToken,
-          oidcDocument: btoa(JSON.stringify(document))
-        };
-        this.coreService.post('authentication/login', request).subscribe({
-          next: (data) => {
-            let returnUrl = sessionStorage.getItem('returnUrl');
-            let logoutUrl: string = sessionStorage.getItem('logoutUrl');
-            let providerName: string = sessionStorage.getItem('providerName');
-            let key: string = sessionStorage.getItem('$SOS$KEY');
-            let expireTime: string = sessionStorage.getItem('$SOS$TOKENEXPIRETIME');
-            if (data.accessToken === '' && data.isAuthenticated && data.secondFactoridentityService) {
-              this.dataService.reloadAuthentication.next({data : {request, ...{secondFactoridentityService: data.secondFactoridentityService}}});
-              return;
-            }
-            sessionStorage.clear();
-            this.authService.setUser(data);
-            this.authService.save();
-            if (returnUrl) {
-              if (returnUrl.indexOf('?') > -1) {
-                this.router.navigateByUrl(returnUrl).then();
-              } else {
-                this.router.navigate([returnUrl]).then();
-              }
-            } else {
-              this.router.navigate(['/']).then();
-            }
-            sessionStorage.setItem('logoutUrl', logoutUrl);
-            sessionStorage.setItem('providerName', providerName);
-            sessionStorage.setItem('$SOS$KEY', key);
-            sessionStorage.setItem('$SOS$TOKENEXPIRETIME', expireTime)
-            if (key) {
-              sessionStorage['$SOS$RENEW'] = (new Date().getTime() + 1800000) - 30000;
-              this.coreService.renewLocker(key);
-            }
-          }, error: () => {
-            this.oAuthService.logOut(sessionStorage['$SOS$KEY']);
-            sessionStorage.clear();
+
+      const request = {
+        identityServiceName: sessionStorage['providerName'],
+        idToken,
+        oidcDocument: btoa(JSON.stringify(document))
+      };
+      this.coreService.post('authentication/login', request).subscribe({
+        next: (data) => {
+          let returnUrl = sessionStorage.getItem('returnUrl');
+          let logoutUrl: string = sessionStorage.getItem('logoutUrl');
+          let providerName: string = sessionStorage.getItem('providerName');
+          let key: string = sessionStorage.getItem('$SOS$KEY');
+          let expireTime: string = sessionStorage.getItem('$SOS$TOKENEXPIRETIME');
+          if (data.accessToken === '' && data.isAuthenticated && data.secondFactoridentityService) {
+            this.dataService.reloadAuthentication.next({data: {request, ...{secondFactoridentityService: data.secondFactoridentityService}}});
+            return;
           }
-        });
+          sessionStorage.clear();
+          this.authService.setUser(data);
+          this.authService.save();
+          if (returnUrl) {
+            if (returnUrl.indexOf('?') > -1) {
+              this.router.navigateByUrl(returnUrl).then();
+            } else {
+              this.router.navigate([returnUrl]).then();
+            }
+          } else {
+            this.router.navigate(['/']).then();
+          }
+          sessionStorage.setItem('logoutUrl', logoutUrl);
+          sessionStorage.setItem('providerName', providerName);
+          sessionStorage.setItem('$SOS$KEY', key);
+          sessionStorage.setItem('$SOS$TOKENEXPIRETIME', expireTime)
+          if (key) {
+            sessionStorage['$SOS$RENEW'] = (new Date().getTime() + 1800000) - 30000;
+          }
+        }, error: () => {
+          this.oAuthService.logOut(sessionStorage['$SOS$KEY']);
+          sessionStorage.clear();
+        }
+      });
+
+    }
+  }
+
+  private loginWithCode({
+                          code,
+                          grant_type,
+                          redirect_uri,
+                          code_verifier
+                }: { code: string, grant_type: string, redirect_uri: string, code_verifier: string }): void {
+    if (code && code_verifier) {
+
+      const request = {
+        redirect_uri,
+        code,
+        code_verifier,
+        identityServiceName: sessionStorage['providerName']
+      };
+      this.coreService.post('authentication/login', request).subscribe({
+        next: (data) => {
+          let returnUrl = sessionStorage.getItem('returnUrl');
+          let providerName: string = sessionStorage.getItem('providerName');
+          if (data.accessToken === '' && data.isAuthenticated && data.secondFactoridentityService) {
+            this.dataService.reloadAuthentication.next({data: {request, ...{secondFactoridentityService: data.secondFactoridentityService}}});
+            return;
+          }
+          sessionStorage.clear();
+          this.authService.setUser(data);
+          this.authService.save();
+          if (returnUrl) {
+            if (returnUrl.indexOf('?') > -1) {
+              this.router.navigateByUrl(returnUrl).then();
+            } else {
+              this.router.navigate([returnUrl]).then();
+            }
+          } else {
+            this.router.navigate(['/']).then();
+          }
+          sessionStorage.setItem('providerName', providerName);
+
+        }, error: () => {
+          this.oAuthService.logOut(sessionStorage['$SOS$KEY']);
+          sessionStorage.clear();
+        }
       });
 
     }
