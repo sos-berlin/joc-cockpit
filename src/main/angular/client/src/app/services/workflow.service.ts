@@ -2276,18 +2276,44 @@ export class WorkflowService {
     return ((w != 0 ? w + 'w ' : '') + (d != 0 ? d + 'd ' : '') + (h != 0 ? h + 'h ' : '') + (m != 0 ? m + 'm ' : '') + (s != 0 ? s + 's' : '')).trim();
   }
 
-  convertStringToDuration(str: string, isDuration = false): number {
+convertStringToDuration(str: string, isDuration = false): number {
 
     function durationSeconds(timeExpr: string) {
-      const units: any = {h: 3600, m: 60, s: 1};
-      const regex = /(\d+)([hms])/g;
-      let seconds = 0;
-      let match: any[] | null;
-      while ((match = regex.exec(timeExpr))) {
-        seconds += parseInt(match[1], 10) * units[match[2]];
-      }
-      return seconds;
+        const units: any = { h: 3600, m: 60, s: 1 };
+        const regex = /(\d+)([hms])/g;
+        let seconds = 0;
+        let match: any[] | null;
+        while ((match = regex.exec(timeExpr))) {
+            seconds += parseInt(match[1], 10) * units[match[2]];
+        }
+        return seconds;
     }
+
+    if (/^(\d+\s*[ywdhms]\s*)+$/i.test(str)) {
+        const regex = /(\d+)\s*([ywdhms])/gi;
+        let seconds = 0;
+        let match: RegExpExecArray | null;
+
+        while ((match = regex.exec(str))) {
+            const val = parseInt(match[1], 10);
+            const unit = match[2].toLowerCase();
+            if (unit === 'y') {
+                seconds += val * 365 * 24 * 3600;
+            } else if (unit === 'w') {
+                seconds += val * 7 * 24 * 3600;
+            } else if (unit === 'd') {
+                seconds += val * 24 * 3600;
+            } else if (unit === 'h') {
+                seconds += val * 3600;
+            } else if (unit === 'm') {
+                seconds += val * 60;
+            } else if (unit === 's') {
+                seconds += val;
+            }
+        }
+        return seconds;
+    }
+
 
     if (isDuration && (/^\s*(?:(?:\d+)h\s*)?(?:\d+m\s*)?(?:\d+s)?\s*$/.test(str))) {
       return durationSeconds(str);

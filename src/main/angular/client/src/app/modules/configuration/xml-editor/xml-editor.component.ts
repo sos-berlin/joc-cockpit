@@ -5200,13 +5200,19 @@ export class XmlEditorComponent {
 
   private updateXML(res) {
     if (res && res.configurationJson) {
-      let a = [];
       let arr = JSON.parse(res.configurationJson);
-      a.push(arr);
-      this.counting = arr.lastUuid;
+
+      if (arr.node && Array.isArray(arr.node)) {
+        this.nodes = arr.node;
+        this.counting = arr.lastUuid || null;
+      } else {
+        this.nodes = [arr];
+        this.counting = arr.lastUuid || null;
+      }
+
       this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
-      this.nodes = a;
       this.submitXsd = true;
+
       this.extraInfo = {
         released: res.released,
         state: res.state,
@@ -5214,19 +5220,24 @@ export class XmlEditorComponent {
         configurationDate: res.configurationDate,
         modified: res.configuration ? res.configuration.modified : ''
       };
+
       this.prevXML = '';
-      this.getIndividualData(this.nodes[0], undefined);
-      this.getData(this.nodes[0]);
-      if (this.nodes.length > 0 && this.nodes[0].children && this.nodes[0].children.length > 0) {
-        for (const i in this.nodes[0].children) {
-          if (this.nodes[0].children[i].ref === 'JobResource') {
-            for (const j in this.nodes[0].children[i].attributes) {
-              if (this.nodes[0].children[i].attributes[j].name === 'name') {
-                this.getJobResourceTree(this.nodes[0].children[i].attributes[j]);
-                break;
+
+      if (this.nodes.length > 0) {
+        this.getIndividualData(this.nodes[0], undefined);
+        this.getData(this.nodes[0]);
+
+        if (this.nodes[0].children && this.nodes[0].children.length > 0) {
+          for (const i in this.nodes[0].children) {
+            if (this.nodes[0].children[i].ref === 'JobResource') {
+              for (const j in this.nodes[0].children[i].attributes) {
+                if (this.nodes[0].children[i].attributes[j].name === 'name') {
+                  this.getJobResourceTree(this.nodes[0].children[i].attributes[j]);
+                  break;
+                }
               }
+              break;
             }
-            break;
           }
         }
       }

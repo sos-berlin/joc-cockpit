@@ -167,36 +167,29 @@ export class DurationValidatorChange implements Validator {
     }
   }
 
-
-  validate(c: AbstractControl): { [key: string]: any } {
+  validate(c: AbstractControl): { [key: string]: any } | null {
     const v = c.value;
     if (v) {
       const matches = this.regex.exec(v);
       if (matches) {
-        const days = parseInt(matches[4] || '0', 10);
-        const hours = parseInt(matches[6] || '0', 10);
-
-        // Allow 1 day, but invalidate more than 1 day or more than 24 hours
-        if (days > 1 || (days === 1 && (hours > 0)) || hours > 24 || (hours === 24 && (matches[8] || matches[10]))) {
-          return {
-            invalidDuration: true,
-            message: 'Duration cannot exceed 24 hours or 1 day.'
-          };
-        }
+        return null;
       }
 
-      if (/^\s*$/i.test(v) ||
-        /^(?:[01]\d|2[0123]):(?:[012345]\d):(?:[012345]\d)\s*$/.test(v) ||
+      if (
+        /^\s*$/i.test(v) ||
+        /^(?:[01]\d|2[0-3]):(?:[0-5]\d):(?:[0-5]\d)\s*$/.test(v) ||
         /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]\s*$/i.test(v) ||
         v === '24:00' ||
         v === '24:00:00' ||
-        /^\s*\d+\s*$/i.test(v) || this.regex.test(v)
+        /^\s*\d+\s*$/i.test(v) ||
+        this.regex.test(v)
       ) {
         return null;
       }
     } else {
       return null;
     }
+
     return {
       invalidDuration: true,
       message: 'Invalid duration format.'
@@ -512,7 +505,7 @@ export class TimeEditorComponent {
   }
 
   onBlur2(repeat: NgModel, propertyName: string) {
-    this.object[propertyName] = this.coreService.padTime(this.object[propertyName]);
+    this.object[propertyName] = this.coreService.padAdmissionTime(this.object[propertyName]);
     repeat.control.setErrors({incorrect: false});
     repeat.control.updateValueAndValidity();
   }
@@ -1025,6 +1018,7 @@ export class AdmissionTimeComponent {
         p.startTime = 0;
       }
       p.duration = this.workflowService.convertStringToDuration(this.object.duration, true);
+
       p.text = this.workflowService.getText(p.startTime, p.duration);
     }
     const temp = this.coreService.clone(this.data.periodList);
@@ -1129,10 +1123,44 @@ export class AdmissionTimeComponent {
   }
 
   onBlur2(repeat: NgModel, propertyName: string) {
-    this.object[propertyName] = this.coreService.padTime(this.object[propertyName]);
-    repeat.control.setErrors({incorrect: false});
+    const val = this.object[propertyName];
+
+    if (this.isDurationFormat(val)) {
+    } else if (this.isTimeFormat(val)) {
+      this.object[propertyName] = this.coreService.padAdmissionTime(val);
+    } else {
+    }
+
+    repeat.control.setErrors({ incorrect: false });
     repeat.control.updateValueAndValidity();
   }
+
+
+
+
+  isDurationFormat(value: string): boolean {
+    if (!value) return false;
+    const trimmed = value.trim();
+    const result = /^(\d+\s*[wdhms](\s+|$))+$/i.test(trimmed);
+    return result;
+  }
+
+
+
+  isTimeFormat(value: string): boolean {
+    if (!value) return false;
+
+    const trimmed = value.trim();
+
+    // Colon format → time
+    if (trimmed.includes(':')) return true;
+
+    // Pure numbers of length 1-6 → treat as time
+    if (/^\d{1,6}$/.test(trimmed)) return true;
+
+    return false;
+  }
+
 
   private addSpecificWeekdayFrequency(frequency, temp, p, periods): any {
     const obj: any = {
@@ -3268,53 +3296,78 @@ export class JobComponent {
   }
 
   onApiConfigSaved(config: any) {
-  this.savedRequestConfig = config.request;
+    this.savedRequestConfig = config.request;
 
-  if (this.selectedNode.job.executable.TYPE === 'InternalExecutable') {
-    if (!this.selectedNode.job.executable.arguments) {
-      this.selectedNode.job.executable.arguments = [];
-    }
+    if (this.selectedNode.job.executable.TYPE === 'InternalExecutable') {
+      if (!this.selectedNode.job.executable.arguments) {
+        this.selectedNode.job.executable.arguments = [];
+      }
 
-    const args = this.selectedNode.job.executable.arguments;
+      const args = this.selectedNode.job.executable.arguments;
+      if (config.baseUrl) {
+        const urlArg = args.find(a => a.name === 'js7.api-server.url');
+        if (urlArg) {
+          urlArg.value = config.baseUrl;
+        } else {
+          args.push({
+            name: 'js7.api-server.url',
+            value: config.baseUrl
+          });
+        }
+      }
 
-    if (config.baseUrl) {
-      const urlArg = args.find(a => a.name === 'js7.api-server.url');
-      if (urlArg) {
-        urlArg.value = config.baseUrl;
+      const requestArg = args.find(a => a.name === 'request');
+      if (requestArg) {
+        requestArg.value = config.request;
       } else {
-        args.push({
-          name: 'js7.api-server.url',
-          value: config.baseUrl
-        });
+        args.push({name: 'request', value: config.request});
+      }
+
+      if (config.return_variables && config.return_variables.length > 0) {
+        const flattened = config.return_variables.map(m => ({
+          name: m.name,
+          path: Array.isArray(m.path) ? m.path[0] : m.path
+        }));
+        const returnVariablesJson = JSON.stringify(flattened, null, 2);
+
+        const returnVarArg = args.find(a => a.name === 'return_variable');
+        if (returnVarArg) {
+          returnVarArg.value = returnVariablesJson;
+        } else {
+          args.push({name: 'return_variable', value: returnVariablesJson});
+        }
       }
     }
-
-    const requestArg = args.find(a => a.name === 'request');
-    if (requestArg) {
-      requestArg.value = config.request;
-    } else {
-      args.push({ name: 'request', value: config.request });
-    }
-
-    if (config.return_variables && config.return_variables.length > 0) {
-      const flattened = config.return_variables.map(m => ({
-        name: m.name,
-        path: Array.isArray(m.path) ? m.path[0] : m.path
-      }));
-      const returnVariablesJson = JSON.stringify(flattened, null, 2);
-
-      const returnVarArg = args.find(a => a.name === 'return_variable');
-      if (returnVarArg) {
-        returnVarArg.value = returnVariablesJson;
-      } else {
-        args.push({ name: 'return_variable', value: returnVariablesJson });
-      }
-    }
+    this.cleanEmptyArguments(this.selectedNode.job.executable);
+    this.updateJobFromWizardJob(this.selectedNode.job);
   }
 
-  this.updateJobFromWizardJob(this.selectedNode.job);
-}
+  private cleanEmptyArguments(job: any): void {
+    if (Array.isArray(job.arguments)) {
+      job.arguments = job.arguments.filter(arg =>
+        arg.name?.trim() || arg.value?.trim()
+      );
+    }
 
+    if (Array.isArray(job.jobArguments)) {
+      job.jobArguments = job.jobArguments.filter(arg =>
+        arg.name?.trim() || arg.value?.trim()
+      );
+    }
+
+    if (Array.isArray(job.defaultArguments)) {
+      job.defaultArguments = job.defaultArguments
+        .filter(arg =>
+          arg.name?.trim() || arg.value?.trim()
+        );
+    }
+
+    if (Array.isArray(job.env)) {
+      job.env = job.env.filter(arg =>
+        arg.name?.trim() || arg.value?.trim()
+      );
+    }
+  }
 
   close() {
     this.sideBar.isVisible = false;

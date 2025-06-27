@@ -408,18 +408,22 @@ export class ApiRequestComponent {
   updateBasicAuthHeader(): void {
     if (this.auth.type !== 'Basic Auth') return;
 
-    const {username, password} = this.auth.basic;
+    const { username, password } = this.auth.basic;
+
+    this.model.headers = this.model.headers.filter(
+      h => h.key.toLowerCase() !== 'authorization'
+    );
+
     if (username && password) {
       const token = btoa(`${username}:${password}`);
-      this.model.headers = this.model.headers.filter(
-        h => h.key.toLowerCase() !== 'authorization'
-      );
-      this.model.headers.unshift({
+      this.model.headers.push({
         key: 'Authorization',
         value: `Basic ${token}`
       });
     }
   }
+
+
 
   sendRequest(accessToken?): void {
     const hdrs = this.arrayToMap(this.model.headers);
