@@ -1680,7 +1680,7 @@ export class CoreService {
   }
 
   getProtocols(): Array<string> {
-    return ['LOCAL', 'FTP', 'FTPS', 'SFTP', 'HTTP', 'HTTPS', 'WEBDAV', 'WEBDAVS', 'SMB'];
+    return ['LOCAL', 'FTP', 'FTPS', 'SFTP', 'HTTP', 'HTTPS', 'WEBDAV', 'WEBDAVS', 'SMB', 'AZURE_BLOB_STORAGE'];
   }
 
   xsdAnyURIValidation(value: string): boolean {

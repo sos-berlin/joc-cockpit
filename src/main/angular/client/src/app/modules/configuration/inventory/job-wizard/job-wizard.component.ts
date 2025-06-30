@@ -171,63 +171,120 @@ export class ApiRequestComponent {
       return;
     }
 
-    let req: any;
+    const raw = requestArg.value;
+
     try {
-      req = JSON.parse(requestArg.value);
-    } catch (e) {
-      return;
-    }
+      const req = JSON.parse(raw);
 
-    this.model.endPoint = req.endpoint || this.model.endPoint;
-    this.model.method = req.method || this.model.method;
-    this.model.headers = Array.isArray(req.headers) ? req.headers : [];
-    this.model.params = Array.isArray(req.params) ? req.params : [];
+      this.model.endPoint = req.endpoint || this.model.endPoint;
+      this.model.method  = req.method   || this.model.method;
+      this.model.headers = Array.isArray(req.headers) ? req.headers : [];
+      this.model.params  = Array.isArray(req.params)  ? req.params  : [];
 
-    let bodyValue = req.body;
-
-    if (typeof bodyValue === 'string') {
-      try {
-        bodyValue = JSON.parse(bodyValue);
-      } catch {
-      }
-    }
-
-    this.model.body = bodyValue != null
-      ? JSON.stringify(bodyValue, null, 2)
-      : '';
-
-    if (req.auth && typeof req.auth === 'object') {
-      const a = req.auth as any;
-      this.auth.type = a.type ?? 'None';
-      if (this.auth.type === 'API Key' && a.apiKey) {
-        this.auth.apiKey.name = a.apiKey.name || '';
-        this.auth.apiKey.value = a.apiKey.value || '';
-        this.auth.apiKey.in = a.apiKey.in || 'header';
-      }
-      if (this.auth.type === 'Bearer Token' && a.token) {
-        this.auth.token = a.token;
-      }
-      if (this.auth.type === 'Basic Auth' && a.basic) {
-        this.auth.basic.username = a.basic.username || '';
-        this.auth.basic.password = a.basic.password || '';
-      }
-      if (this.auth.type === 'OAuth 2.0' && a.oauth2) {
-        this.auth.oauth2.clientId = a.oauth2.clientId || '';
-        this.auth.oauth2.clientSecret = a.oauth2.clientSecret || '';
-        this.auth.oauth2.tokenUrl = a.oauth2.tokenUrl || '';
-        (this.auth as any).oauth2.accessToken = a.oauth2.accessToken;
-      }
-    }
-
-    const returnVarArg = execArgs.find(a => a.name === 'return_variables' || a.name === 'return_variable');
-    if (returnVarArg) {
-      try {
-        const arr = JSON.parse(returnVarArg.value);
-        if (Array.isArray(arr)) {
-          this.mappings = arr;
+      // pretty‑print body
+      if (req.body != null) {
+        if (typeof req.body === 'string') {
+          try {
+            const parsed = JSON.parse(req.body);
+            this.model.body = JSON.stringify(parsed, null, 2);
+          } catch {
+            this.model.body = req.body;
+          }
+        } else {
+          this.model.body = JSON.stringify(req.body, null, 2);
         }
-      } catch {
+      } else {
+        this.model.body = '';
       }
+
+      // — auth
+      if (req.auth && typeof req.auth === 'object') {
+        const a = req.auth as any;
+        this.auth.type = a.type ?? 'None';
+        if (this.auth.type === 'API Key' && a.apiKey) {
+          this.auth.apiKey = {
+            name:  a.apiKey.name  || '',
+            value: a.apiKey.value || '',
+            in:    a.apiKey.in    || 'header'
+          };
+        }
+        if (this.auth.type === 'Bearer Token' && a.token) {
+          this.auth.token = a.token;
+        }
+        if (this.auth.type === 'Basic Auth' && a.basic) {
+          this.auth.basic = {
+            username: a.basic.username || '',
+            password: a.basic.password || ''
+          };
+        }
+        if (this.auth.type === 'OAuth 2.0' && a.oauth2) {
+          this.auth.oauth2 = {
+            clientId:     a.oauth2.clientId     || '',
+            clientSecret: a.oauth2.clientSecret || '',
+            tokenUrl:     a.oauth2.tokenUrl     || ''
+          };
+          (this.auth as any).oauth2.accessToken = a.oauth2.accessToken;
+        }
+      }
+
+      // — return variables
+      const ret = execArgs.find(a => a.name === 'return_variables' || a.name === 'return_variable');
+      if (ret) {
+        try {
+          const arr = JSON.parse(ret.value);
+          if (Array.isArray(arr)) {
+            this.mappings = arr;
+          }
+        } catch { /* ignore */ }
+      }
+
+      return;
+    } catch {
+
+      // endpoint
+      const ep = raw.match(/"endpoint"\s*:\s*"([^"]*)"/);
+      if (ep) this.model.endPoint = ep[1];
+
+      // method
+      const m = raw.match(/"method"\s*:\s*"([^"]*)"/);
+      if (m) this.model.method = m[1];
+
+      // headers
+      const hdrBlock = raw.match(/"headers"\s*:\s*\[([\s\S]*?)\]/);
+      if (hdrBlock) {
+        const items: KeyValue[] = [];
+        for (const h of hdrBlock[1].matchAll(
+          /\{\s*"key"\s*:\s*"([^"]*)"\s*,\s*"value"\s*:\s*"([^"]*)"\s*\}/g
+        )) {
+          items.push({ key: h[1], value: h[2] });
+        }
+        this.model.headers = items;
+      }
+
+      const bodyKey = '"body"';
+      const keyIdx  = raw.indexOf(bodyKey);
+      if (keyIdx !== -1) {
+        const braceStart = raw.indexOf('{', keyIdx + bodyKey.length);
+        if (braceStart !== -1) {
+          let depth  = 0;
+          let endIdx = -1;
+          for (let i = braceStart; i < raw.length; i++) {
+            if (raw[i] === '{') depth++;
+            else if (raw[i] === '}') {
+              depth--;
+              if (depth === 0) {
+                endIdx = i;
+                break;
+              }
+            }
+          }
+          if (endIdx > braceStart) {
+            this.model.body = raw.substring(braceStart, endIdx + 1).trim();
+          }
+        }
+      }
+
+      return;
     }
   }
 
@@ -465,39 +522,60 @@ export class ApiRequestComponent {
       hdrs['x-access-token'] = accessToken;
     }
     const {endPoint, method, params, body} = this.model;
-    const paramMap = this.arrayToMap(params);
-
-    const placeholderRegex = /\$\{(\w+)\}/g;
+    const simplePlaceholder = /\$\{(\w+)\}/g;
     const replacePlaceholders = (input: string) =>
-      input.replace(placeholderRegex, (_m, name) => {
+      input.replace(simplePlaceholder, (_m, name) => {
         const def = this.parameters?.[name]?.default;
         if (def != null) {
-          try {
-            return JSON.parse(def);
-          } catch {
-            return def;
-          }
+          try { return JSON.parse(def) + ''; }
+          catch { return def; }
         }
         return `{${name}}`;
       });
+
+    const bodyPlaceholder = /\$\{(\w+)\}|\$(\w+)/g;
+    const replaceBodyPlaceholders = (input: string) =>
+      input.replace(bodyPlaceholder, (match, p1, p2, offset) => {
+        const name = p1 || p2!;
+        const def  = this.parameters?.[name]?.default;
+        if (def == null) return match;
+        const before = input[offset - 1], after = input[offset + match.length];
+        const inQuotes = before === '"' && after === '"';
+        try {
+          const parsed = JSON.parse(def);
+          if (typeof parsed === 'string') {
+            return inQuotes ? parsed : JSON.stringify(parsed);
+          } else {
+            return String(parsed);
+          }
+        } catch {
+          return inQuotes ? def : JSON.stringify(def);
+        }
+      });
+
 
     const base = this.getBaseUrl();
     const resolvedEp = replacePlaceholders(this.model.endPoint || '');
     const safeEp = resolvedEp.startsWith('/') ? resolvedEp : `/${resolvedEp}`;
     const fullUrl = `${base}${safeEp}`;
 
-    const resolvedHdrs: Record<string, string> = {};
-    Object.entries(hdrs).forEach(([k, v]) => {
-      resolvedHdrs[replacePlaceholders(k)] = replacePlaceholders(v);
+    const resolvedHdrs: Record<string,string> = {};
+    Object.entries(hdrs).forEach(([rawKey, rawValue]) => {
+      const key   = replacePlaceholders(rawKey);
+      const value = replacePlaceholders(rawValue);
+      resolvedHdrs[key] = value;
     });
+
+    const paramMap = this.arrayToMap(params);
     Object.keys(paramMap).forEach(k => {
       paramMap[k] = replacePlaceholders(paramMap[k]);
     });
 
     let resolvedBody: any = body;
     if (typeof resolvedBody === 'string') {
-      resolvedBody = replacePlaceholders(resolvedBody);
+      resolvedBody = replaceBodyPlaceholders(resolvedBody);
     }
+
     this.coreService
       .requestTest(method, fullUrl, resolvedHdrs, paramMap, resolvedBody)
       .subscribe({
@@ -680,8 +758,19 @@ export class ApiRequestComponent {
     if (body !== undefined) cfg.body = body;
     delete cfg.auth;
     delete cfg.params;
-    const json = JSON.stringify(cfg, null, 2);
-    const out: any = {request: json};
+if (bodyText !== '' && bodyText !== undefined) {
+    cfg.body = bodyText;
+  }
+
+  const rawBody = this.model.body;
+  let json: string;
+  if (typeof rawBody === 'string' && /\$\{.+\}/.test(rawBody)) {
+    delete cfg.body;
+    const prefix = JSON.stringify(cfg, null, 2).replace(/\}$/, '');
+    json = `${prefix},\n  "body": ${rawBody.trim()}\n}`;
+  } else {
+    json = JSON.stringify(cfg, null, 2);
+  }    const out: any = {request: json};
     if (this.mappings.length) out.return_variables = this.mappings;
     this.clipboardService.copyFromContent(json);
     this.coreService.showCopyMessage(this.msg);

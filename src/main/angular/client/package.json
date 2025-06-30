@@ -90,6 +90,7 @@
     "typescript": "^5.5.3"
   },
   "overrides": {
-    "canvg": "^4.0.3"
+    "canvg": "^4.0.3",
+    "@babel/runtime": "7.26.10"
   }
 }

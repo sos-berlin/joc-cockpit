@@ -1808,7 +1808,7 @@ export class JobComponent {
     this.selectedNode.job.executable.TYPE = result.executable.TYPE;
     this.selectedNode.job.executable.className = result.executable.className;
     this.selectedNode.job.executable.script = result.executable.script;
-    this.selectedNode.job.executable.internalType = result.executable.internalType;
+    this.selectedNode.job.executable.internalType = result.executable.internalType || 'JITL';
     this.selectedNode.job.executable.v1Compatible = result.executable.v1Compatible;
     if (result.executable.internalType === 'JavaScript_Graal') {
       this.selectedNode.job.executable.TYPE = "JavaScript";
@@ -1879,6 +1879,7 @@ export class JobComponent {
         this.selectedNode.job.notification.mail = {};
       }
     }
+    this.shouldShowAPIRequestButton()
     this.ref.detectChanges();
   }
 
