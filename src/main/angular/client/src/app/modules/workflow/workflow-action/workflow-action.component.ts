@@ -1622,7 +1622,10 @@ addArguments(orderIndex): void {
               });
             }
           }
-          if (orderParameterisation.variables && orderParameterisation.variables[key]) {
+          if (
+            orderParameterisation.variables &&
+            orderParameterisation.variables.hasOwnProperty(key)
+          ){
             let obj = {name:  orderParameterisation.variables[key]}
             if (!val.final) {
               if (val.list) {
@@ -1639,7 +1642,10 @@ addArguments(orderIndex): void {
           }
         } else if (val.type === 'List') {
           const actualList = [];
-          if (orderParameterisation.variables && orderParameterisation.variables[key]) {
+          if (
+            orderParameterisation.variables &&
+            orderParameterisation.variables.hasOwnProperty(key)
+          ) {
             orderParameterisation.variables[key]?.forEach(item => {
             const listEntry = val.listParameters.map(param => {
                 const v = item[param.name];

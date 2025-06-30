@@ -734,7 +734,10 @@ export class SingleDeployComponent {
     this.coreService.post(this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy', obj).subscribe({
       next: () => {
         this.activeModal.close();
-      }, error: () => this.submitted = false
+      }, error: () => {
+        this.submitted = false;
+        this.activeModal.close();
+      }
     });
   }
 
@@ -812,7 +815,10 @@ export class SingleDeployComponent {
           next: () => {
             this.activeModal.close();
           },
-          error: () => this.submitted = false
+          error: () => {
+            this.submitted = false;
+            this.activeModal.close();
+          }
         });
       }).catch(() => {
       this.submitted = false;
@@ -887,7 +893,7 @@ export class SingleDeployComponent {
     }
     Object.keys(this.affectedObjectsByType).forEach(type => {
       this.affectedObjectsByType[type].forEach(objItem => {
-        if (objItem.valid && objItem.selected && (objItem.objectType === 'SCHEDULE' || objItem.objectType === 'JOBTEMPLATE' || objItem.objectType === 'WORKINGDAYSCALENDAR' || objItem.objectType === 'NONWORKINGDAYSCALENDAR')) {
+        if (objItem.valid && objItem.selected && (objItem.objectType === 'SCHEDULE' || objItem.objectType === 'JOBTEMPLATE' || objItem.objectType === 'INCLUDESCRIPT' || objItem.objectType === 'WORKINGDAYSCALENDAR' || objItem.objectType === 'NONWORKINGDAYSCALENDAR')) {
           if (recall) {
             obj.releasables.push({
               objectType: objItem.objectType,
@@ -905,7 +911,7 @@ export class SingleDeployComponent {
 
     Object.keys(this.referencedObjectsByType).forEach(type => {
       this.referencedObjectsByType[type].forEach(objItem => {
-        if (objItem.valid && objItem.selected && (objItem.objectType === 'SCHEDULE' || objItem.objectType === 'JOBTEMPLATE' || objItem.objectType === 'WORKINGDAYSCALENDAR' || objItem.objectType === 'NONWORKINGDAYSCALENDAR')) {
+        if (objItem.valid && objItem.selected && (objItem.objectType === 'SCHEDULE' || objItem.objectType === 'JOBTEMPLATE' || objItem.objectType === 'INCLUDESCRIPT' || objItem.objectType === 'WORKINGDAYSCALENDAR' || objItem.objectType === 'NONWORKINGDAYSCALENDAR')) {
           if (recall) {
             obj.releasables.push({
               objectType: objItem.objectType,
@@ -922,7 +928,7 @@ export class SingleDeployComponent {
     });
 
     this.filteredAffectedItems.forEach(item => {
-      if (item.valid && item.selected && (item.objectType === 'SCHEDULE' || item.objectType === 'JOBTEMPLATE' || item.objectType === 'WORKINGDAYSCALENDAR' || item.objectType === 'NONWORKINGDAYSCALENDAR')) {
+      if (item.valid && item.selected && (item.objectType === 'SCHEDULE' || item.objectType === 'JOBTEMPLATE' || item.objectType === 'INCLUDESCRIPT' || item.objectType === 'WORKINGDAYSCALENDAR' || item.objectType === 'NONWORKINGDAYSCALENDAR')) {
         if (recall) {
           obj.releasables.push({
             objectType: item.objectType,
@@ -2072,7 +2078,9 @@ export class DeployComponent {
     }
     if (!this.isRemove && !this.isDeleted && !this.releasable) {
       obj.withoutDrafts = !this.filter.draft;
-      obj.withoutDeployed = !this.filter.deploy;
+      if (!this.isRevoke) {
+        obj.withoutDeployed = !this.filter.deploy;
+      }
     }
     if (this.isSelectedObjects) {
       obj.objectTypes = this.data.objectType === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.objectType];
@@ -2214,7 +2222,9 @@ export class DeployComponent {
     }
     if (!this.isDeleted && !this.releasable) {
       obj.withoutDrafts = !this.filter.draft;
+      if (!this.isRevoke) {
       obj.withoutDeployed = !this.filter.deploy;
+      }
     }
     if (this.isSelectedObjects) {
       obj.objectTypes = this.data.objectType === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.objectType];
@@ -2747,6 +2757,7 @@ export class DeployComponent {
           },
           error: () => {
             this.submitted = false;
+            this.activeModal.close();
             this.ref.detectChanges();
           }
         });
@@ -3158,7 +3169,8 @@ export class DeployComponent {
         next: () => {
           this.activeModal.close();
         },
-        error: (err) => {
+        error: () => {
+          this.activeModal.close();
         }
       });
     } else {
@@ -3469,7 +3481,6 @@ export class ExportComponent {
       withoutDeployed: !this.filter.deploy,
       withoutRemovedObjects: true
     };
-
     let deployObjectTypes = [];
     let releaseObjectTypes = [];
     if (this.exportObj.objectTypes.length > 0) {
