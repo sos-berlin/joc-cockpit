@@ -271,6 +271,7 @@ private loadData(): void {
         workflow: string;
         periods: any[];
         orderNames: string[];
+        period?: string;
       }> = [];
 
       const isPlannedWithWf = res.planned && periodsArray.some(p => !!(p as any).workflow);
@@ -294,8 +295,7 @@ private loadData(): void {
               acc.push(cur);
             }
             return acc;
-          }, []);
-
+          }, [] as any[]);
 
           const orderNames = scheduleOrderName ? [scheduleOrderName] : [];
 
@@ -316,7 +316,8 @@ private loadData(): void {
               acc.push(cur);
             }
             return acc;
-          }, []);
+          }, [] as any[]);
+
           const controller = this.modalData.obj.controllerIds?.[0];
           const metaForSched = res.meta?.[controller]?.[schedule] || {};
           const workflows = metaForSched.workflowPaths || [];
@@ -327,6 +328,12 @@ private loadData(): void {
           });
         }
       }
+
+
+      list.forEach(item => {
+        const first = item.periods?.[0]?.period;
+        item.period = first?.singleStart || first?.begin || '';
+      });
 
       this.schedule.list = list;
       this.loading = false;

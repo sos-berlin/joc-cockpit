@@ -2078,7 +2078,9 @@ export class DeployComponent {
     }
     if (!this.isRemove && !this.isDeleted && !this.releasable) {
       obj.withoutDrafts = !this.filter.draft;
-      obj.withoutDeployed = !this.filter.deploy;
+      if (!this.isRevoke) {
+        obj.withoutDeployed = !this.filter.deploy;
+      }
     }
     if (this.isSelectedObjects) {
       obj.objectTypes = this.data.objectType === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.objectType];
@@ -2220,7 +2222,9 @@ export class DeployComponent {
     }
     if (!this.isDeleted && !this.releasable) {
       obj.withoutDrafts = !this.filter.draft;
+      if (!this.isRevoke) {
       obj.withoutDeployed = !this.filter.deploy;
+      }
     }
     if (this.isSelectedObjects) {
       obj.objectTypes = this.data.objectType === 'CALENDAR' ? [InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR] : [this.data.objectType];
@@ -3477,7 +3481,6 @@ export class ExportComponent {
       withoutDeployed: !this.filter.deploy,
       withoutRemovedObjects: true
     };
-
     let deployObjectTypes = [];
     let releaseObjectTypes = [];
     if (this.exportObj.objectTypes.length > 0) {
