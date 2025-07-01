@@ -10002,8 +10002,7 @@ export class WorkflowComponent {
                       for (const i in item.actualList) {
                         const listObj = {};
                         item.actualList[i].forEach((data) => {
-                          if (!data.value) {
-                          } else {
+                          if (data.value !== undefined) {
                             self.coreService.addSlashToString(data, 'value');
                             listObj[data.name] = data.value;
                           }
@@ -10021,15 +10020,17 @@ export class WorkflowComponent {
               if (self.selectedNode.newObj.mapArguments) {
                 self.selectedNode.newObj.mapArguments.forEach((item) => {
                   argu.arguments[item.name] = [];
+
                   if (item.actualMap) {
                     for (const i in item.actualMap) {
                       const mapObj = {};
                       item.actualMap[i].forEach((data) => {
-                        if (!data.value) {
-                        } else {
+
+                        if (data.value !== undefined) {
                           self.coreService.addSlashToString(data, 'value');
                           mapObj[data.name] = data.value;
                         }
+
                       });
                       if (!isEmpty(mapObj)) {
                         // argu.arguments[item.name].push({mapObj});
@@ -12510,6 +12511,7 @@ export class WorkflowComponent {
     if (isNavigate) {
       customizedChangeEvent();
     }
+
   }
 
   private updateForkListOrStickySubagentJobs(data, isSticky, skip = false) {
