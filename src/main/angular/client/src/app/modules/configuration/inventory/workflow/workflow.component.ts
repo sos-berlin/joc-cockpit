@@ -8790,8 +8790,7 @@ export class WorkflowComponent {
                       for (const i in item.actualList) {
                         const listObj = {};
                         item.actualList[i].forEach((data) => {
-                          if (!data.value) {
-                          } else {
+                          if (data.value !== undefined) {
                             self.coreService.addSlashToString(data, 'value');
                             listObj[data.name] = data.value;
                           }
