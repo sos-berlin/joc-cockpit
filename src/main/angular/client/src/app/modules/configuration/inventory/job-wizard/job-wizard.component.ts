@@ -758,19 +758,38 @@ export class ApiRequestComponent {
     if (body !== undefined) cfg.body = body;
     delete cfg.auth;
     delete cfg.params;
-if (bodyText !== '' && bodyText !== undefined) {
-    cfg.body = bodyText;
-  }
 
-  const rawBody = this.model.body;
-  let json: string;
-  if (typeof rawBody === 'string' && /\$\{.+\}/.test(rawBody)) {
-    delete cfg.body;
-    const prefix = JSON.stringify(cfg, null, 2).replace(/\}$/, '');
-    json = `${prefix},\n  "body": ${rawBody.trim()}\n}`;
-  } else {
-    json = JSON.stringify(cfg, null, 2);
-  }    const out: any = {request: json};
+    const rawBody = this.model.body?.trim();
+    let json: string;
+
+    if (rawBody) {
+      let parsedBody;
+      let isJson = false;
+
+      try {
+        parsedBody = JSON.parse(rawBody);
+        isJson = true;
+      } catch {
+        isJson = false;
+      }
+
+      if (isJson) {
+        cfg.body = parsedBody;
+        json = JSON.stringify(cfg, null, 2);
+      } else if (/\$\w+/.test(rawBody)) {
+        delete cfg.body;
+        const prefix = JSON.stringify(cfg, null, 2).replace(/\}$/, '');
+        const bodyPart = rawBody.endsWith('}') ? rawBody : `${rawBody}\n`;
+        json = `${prefix},\n  "body": ${bodyPart}\n}`;
+      } else {
+        cfg.body = rawBody;
+        json = JSON.stringify(cfg, null, 2);
+      }
+    } else {
+      json = JSON.stringify(cfg, null, 2);
+    }
+
+    const out: any = {request: json};
     if (this.mappings.length) out.return_variables = this.mappings;
     this.clipboardService.copyFromContent(json);
     this.coreService.showCopyMessage(this.msg);
@@ -778,8 +797,7 @@ if (bodyText !== '' && bodyText !== undefined) {
     this.isVisible.emit(false);
   }
 
-
-  close(): void {
+    close(): void {
     if (this.isClose) {
       this.isStepBack.emit(2);
     } else {

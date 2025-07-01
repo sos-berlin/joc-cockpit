@@ -775,14 +775,7 @@ export class LogComponent {
       }else if (dt[i].orderAdded) {
         col += `, OrderAdded(id=${dt[i].orderAdded.orderId}, workflow=${dt[i].orderAdded.workflowPath}, arguments(`;
         if (dt[i].orderAdded.arguments) {
-          let arr: any = Object.entries(dt[i].orderAdded.arguments).map(([k1, v1]) => {
-            if (v1 && typeof v1 == 'object') {
-              v1 = Object.entries(v1).map(([k1, v1]) => {
-                return {name: k1, value: v1};
-              });
-            }
-            return {name: k1, value: v1};
-          });
+          const arr = this.flattenArgumentsToStrings(dt[i].orderAdded.arguments);
           col = this.coreService.createLogOutputString(arr, col);
         }
         col += '))';
@@ -818,6 +811,27 @@ export class LogComponent {
     this.isChildren = obj.isChildren;
     this.loading = false;
   }
+
+  flattenArgumentsToStrings(obj: any): any[] {
+    const result: any[] = [];
+
+    for (const [key, val] of Object.entries(obj)) {
+      if (typeof val === 'object' && val !== null) {
+        result.push({
+          name: key,
+          value: JSON.stringify(val)
+        });
+      } else {
+        result.push({
+          name: key,
+          value: val
+        });
+      }
+    }
+
+    return result;
+  }
+
 
   private getPriorityLabel(prio: number): string {
     switch (prio) {

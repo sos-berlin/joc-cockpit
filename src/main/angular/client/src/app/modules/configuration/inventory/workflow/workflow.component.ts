@@ -10102,7 +10102,9 @@ export class WorkflowComponent {
     }
 
     function updateProperties(obj): void {
+
       if (self.selectedNode && self.selectedNode.cell) {
+
         graph.getModel().beginUpdate();
         let flag = true;
         try {
@@ -10135,8 +10137,7 @@ export class WorkflowComponent {
                       for (const i in item.actualList) {
                         const listObj = {};
                         item.actualList[i].forEach((data) => {
-                          if (!data.value) {
-                          } else {
+                          if (data.value !== undefined) {
                             self.coreService.addSlashToString(data, 'value');
                             listObj[data.name] = data.value;
                           }
@@ -10154,15 +10155,17 @@ export class WorkflowComponent {
               if (self.selectedNode.newObj.mapArguments) {
                 self.selectedNode.newObj.mapArguments.forEach((item) => {
                   argu.arguments[item.name] = [];
+
                   if (item.actualMap) {
                     for (const i in item.actualMap) {
                       const mapObj = {};
                       item.actualMap[i].forEach((data) => {
-                        if (!data.value) {
-                        } else {
+
+                        if (data.value !== undefined) {
                           self.coreService.addSlashToString(data, 'value');
                           mapObj[data.name] = data.value;
                         }
+
                       });
                       if (!isEmpty(mapObj)) {
                         // argu.arguments[item.name].push({mapObj});

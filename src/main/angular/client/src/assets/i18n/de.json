@@ -4114,6 +4114,7 @@
       "label.addVariable": "Variable hinzufügen",
       "label.hideLogs": "Protokoll verbergen",
       "label.showLogs": "Protokoll anzeigen",
+      "label.invalidJson": "Invalid JSON",
       "button.variableList": "Variablenliste",
       "button.sendRequest": "Anfrage senden",
       "button.addParam": "Parameter hinzufügen",

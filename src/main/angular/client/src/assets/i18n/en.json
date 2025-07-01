@@ -4114,6 +4114,7 @@
       "label.addVariable": "Add Variable",
       "label.hideLogs": "Hide Log",
       "label.showLogs": "Show Log",
+      "label.invalidJson": "Invalid JSON",
       "button.variableList": "Variable List",
       "button.sendRequest": "Send Request",
       "button.addParam": "Add Parameter",
