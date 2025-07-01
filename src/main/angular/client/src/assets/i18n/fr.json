@@ -4114,7 +4114,7 @@
       "label.addVariable": "Ajouter Variable",
       "label.hideLogs": "Cacher le Journal",
       "label.showLogs": "Visualiser le Journal",
-      "label.invalidJson": "Invalid JSON",
+      "label.invalidJson": "JSON non valide",
       "button.variableList": "Liste des Variables",
       "button.sendRequest": "Envoyer Requête",
       "button.addParam": "Ajouter Paramètre",
