@@ -148,4 +148,26 @@ export class OrderVariableComponent {
       });
     }
   }
+  isMap(value: any): boolean {
+    return value !== null && typeof value === 'object' && !Array.isArray(value);
+  }
+
+  isList(value: any): boolean {
+    return Array.isArray(value)
+      && value[0] && Array.isArray(value[0])
+      && value[0][0] && typeof value[0][0] === 'object'
+      && 'name' in value[0][0];
+  }
+
+  toKeyValueArray(obj: any): { name: string, value: any }[] {
+    return Object.entries(obj || {}).map(([k, v]) => ({ name: k, value: v }));
+  }
+
+  isPrimitive(value: any): boolean {
+    return (
+      value !== null
+      && (typeof value !== 'object' || value instanceof Date)
+      && !Array.isArray(value)
+    );
+  }
 }
