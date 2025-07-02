@@ -123,46 +123,55 @@ export class AppComponent {
                   document
                 }: { token: string, idToken: string, refreshToken?: string, document: any }): void {
     if (token && document) {
-
-      const request = {
-        identityServiceName: sessionStorage['providerName'],
-        idToken,
-        oidcDocument: btoa(JSON.stringify(document))
-      };
-      this.coreService.post('authentication/login', request).subscribe({
-        next: (data) => {
-          let returnUrl = sessionStorage.getItem('returnUrl');
-          let logoutUrl: string = sessionStorage.getItem('logoutUrl');
-          let providerName: string = sessionStorage.getItem('providerName');
-          let key: string = sessionStorage.getItem('$SOS$KEY');
-          let expireTime: string = sessionStorage.getItem('$SOS$TOKENEXPIRETIME');
-          if (data.accessToken === '' && data.isAuthenticated && data.secondFactoridentityService) {
-            this.dataService.reloadAuthentication.next({data: {request, ...{secondFactoridentityService: data.secondFactoridentityService}}});
-            return;
-          }
-          sessionStorage.clear();
-          this.authService.setUser(data);
-          this.authService.save();
-          if (returnUrl) {
-            if (returnUrl.indexOf('?') > -1) {
-              this.router.navigateByUrl(returnUrl).then();
-            } else {
-              this.router.navigate([returnUrl]).then();
-            }
-          } else {
-            this.router.navigate(['/']).then();
-          }
-          sessionStorage.setItem('logoutUrl', logoutUrl);
-          sessionStorage.setItem('providerName', providerName);
-          sessionStorage.setItem('$SOS$KEY', key);
-          sessionStorage.setItem('$SOS$TOKENEXPIRETIME', expireTime)
-          if (key) {
-            sessionStorage['$SOS$RENEW'] = (new Date().getTime() + 1800000) - 30000;
-          }
-        }, error: () => {
-          this.oAuthService.logOut(sessionStorage['$SOS$KEY']);
-          sessionStorage.clear();
+      this.coreService.saveValueInLocker({
+        content: {
+          token,
+          refreshToken,
+          clientId: sessionStorage['clientId']
         }
+      }, () => {
+        const request = {
+          identityServiceName: sessionStorage['providerName'],
+          idToken,
+          oidcDocument: btoa(JSON.stringify(document))
+        };
+        this.coreService.post('authentication/login', request).subscribe({
+          next: (data) => {
+            let returnUrl = sessionStorage.getItem('returnUrl');
+            let logoutUrl: string = sessionStorage.getItem('logoutUrl');
+            let providerName: string = sessionStorage.getItem('providerName');
+            let key: string = sessionStorage.getItem('$SOS$KEY');
+            let expireTime: string = sessionStorage.getItem('$SOS$TOKENEXPIRETIME');
+            if (data.accessToken === '' && data.isAuthenticated && data.secondFactoridentityService) {
+              this.dataService.reloadAuthentication.next({data : {request, ...{secondFactoridentityService: data.secondFactoridentityService}}});
+              return;
+            }
+            sessionStorage.clear();
+            this.authService.setUser(data);
+            this.authService.save();
+            if (returnUrl) {
+              if (returnUrl.indexOf('?') > -1) {
+                this.router.navigateByUrl(returnUrl).then();
+              } else {
+                this.router.navigate([returnUrl]).then();
+              }
+            } else {
+              this.router.navigate(['/']).then();
+            }
+            sessionStorage.setItem('logoutUrl', logoutUrl);
+            sessionStorage.setItem('providerName', providerName);
+            sessionStorage.setItem('$SOS$KEY', key);
+            sessionStorage.setItem('$SOS$TOKENEXPIRETIME', expireTime)
+            if (key) {
+              sessionStorage['$SOS$RENEW'] = (new Date().getTime() + 1800000) - 30000;
+              this.coreService.renewLocker(key);
+            }
+          }, error: (err) => {
+            console.log(err,'> Error during login');
+            this.oAuthService.logOut(sessionStorage['$SOS$KEY']);
+            sessionStorage.clear();
+          }
+        });
       });
 
     }
@@ -186,6 +195,8 @@ export class AppComponent {
         next: (data) => {
           let returnUrl = sessionStorage.getItem('returnUrl');
           let providerName: string = sessionStorage.getItem('providerName');
+          let clientFlowType: string = sessionStorage.getItem('clientFlowType');
+          let logoutUrl: string = sessionStorage.getItem('logoutUrl');
           if (data.accessToken === '' && data.isAuthenticated && data.secondFactoridentityService) {
             this.dataService.reloadAuthentication.next({data: {request, ...{secondFactoridentityService: data.secondFactoridentityService}}});
             return;
@@ -203,7 +214,8 @@ export class AppComponent {
             this.router.navigate(['/']).then();
           }
           sessionStorage.setItem('providerName', providerName);
-
+          sessionStorage.setItem('logoutUrl', logoutUrl);
+          sessionStorage.setItem('clientFlowType', clientFlowType);
         }, error: () => {
           this.oAuthService.logOut(sessionStorage['$SOS$KEY']);
           sessionStorage.clear();

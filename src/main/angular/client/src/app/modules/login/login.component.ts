@@ -256,7 +256,9 @@
             this.oAuthService.clientId = res.iamOidcClientId;
             sessionStorage.setItem('clientId', res.iamOidcClientId);
           }
-
+          this.oAuthService.clientFlowType = res.iamOidcFlowType;
+          sessionStorage.setItem('clientFlowType', res.iamOidcFlowType);
+          
           if (res.iamOidcClientId || res.iamOidcClientSecret) {
             this.oAuthService.initLoginFlow();
           }

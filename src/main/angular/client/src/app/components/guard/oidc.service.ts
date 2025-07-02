@@ -28,6 +28,7 @@ function base64UrlEncode(str: string) {
 })
 export class OIDCAuthService {
   clientId?: string = '';
+  clientFlowType?: string = '';
   redirectUri?: string;
   loginUrl?: string = '';
   scope = 'openid profile email';
@@ -50,7 +51,10 @@ export class OIDCAuthService {
   constructor(private coreService: CoreService, private toasterService: ToastrService, private authService: AuthService,
               private router: Router) {
     if (sessionStorage['$SOS$KEY']) {
-
+      this.coreService.renewLocker(sessionStorage['$SOS$KEY']);
+      if (sessionStorage['$SOS$TOKENEXPIRETIME']) {
+        this.renewToken();
+      }
     }
   }
 
@@ -199,12 +203,13 @@ export class OIDCAuthService {
       if (!scope.match(/(^|\s)openid($|\s)/)) {
         scope = 'openid ' + scope;
       }
-
-      // this.responseTypesSupported.forEach((type: string) => {
-      //   if (type.includes('id_token')) {
-      //     this.responseType = type;
-      //   }
-      // })
+      if (this.clientFlowType != 'AUTHENTICATION') {
+        this.responseTypesSupported.forEach((type: string) => {
+          if (type.includes('id_token')) {
+            this.responseType = type;
+          }
+        })
+      }
 
       url = this.loginUrl +
         seperationChar +
@@ -234,18 +239,82 @@ export class OIDCAuthService {
   }
 
   logOut(key: string) {
-    if (!key) {
-      return;
-    }
+
+
     let logoutUrl: string | undefined = sessionStorage.getItem('logoutUrl') || this.logoutUrl;
     if (logoutUrl && (
       logoutUrl.includes('login.windows.net') ||
       logoutUrl.includes('login.microsoftonline.com'))
     ) {
       window.location.replace(logoutUrl + '?post_logout_redirect_uri=' + window.location.href);
+      sessionStorage.clear();
+      return;
+    }
+
+    if (sessionStorage.getItem('clientFlowType') === 'AUTHENTICATION') {
+      sessionStorage.clear();
+      return;
+    }
+    if (!key) {
       return;
     }
     sessionStorage.clear();
+    this.coreService.getValueFromLocker(key, (content: any) => {
+      if (!this.validateUrlForHttps(this.logoutUrl)) {
+        this.toasterService.error(
+          "logoutUrl  must use HTTPS (with TLS), or config value for property 'requireHttps' must be set to 'false' and allow HTTP (without TLS)."
+        );
+        return null;
+      } else {
+
+        let params = new HttpParams();
+        let headers = new HttpHeaders().set(
+          'Content-Type',
+          'application/x-www-form-urlencoded'
+        );
+
+        params = params.set('client_id', content.clientId);
+
+        return new Promise((resolve, reject) => {
+          let revokeAccessToken: Observable<null>;
+          let revokeRefreshToken: Observable<null>;
+          if (logoutUrl && content.token && content.token != 'undefined' && content.token != 'null') {
+            let revokationParams = params
+              .set('token', content.token)
+              .set('token_type_hint', 'access_token');
+            revokeAccessToken = this.coreService.log(
+              logoutUrl,
+              revokationParams,
+              headers
+            );
+          } else {
+            revokeAccessToken = of(null);
+          }
+
+          if (logoutUrl && content.refreshToken && content.refreshToken != 'undefined' && content.refreshToken != 'null') {
+            let revokationParams = params
+              .set('token', content.refreshToken)
+              .set('token_type_hint', 'refresh_token');
+            revokeRefreshToken = this.coreService.log(
+              logoutUrl,
+              revokationParams,
+              {headers}
+            );
+          } else {
+            revokeRefreshToken = of(null);
+          }
+
+          combineLatest([revokeAccessToken, revokeRefreshToken]).subscribe({
+              next: (res: any) => {
+                resolve(res);
+              }, error: (err) => {
+                reject(err);
+              }
+            }
+          );
+        });
+      }
+    });
   }
 
   createAndSaveNonce() {
@@ -326,7 +395,7 @@ export class OIDCAuthService {
     } else if (idToken) {
       this.access_token = accessToken;
       this.id_token = idToken;
-     // return Promise.resolve();
+      return Promise.resolve();
     }
     if (!options.disableNonceCheck) {
       if (!nonceInState) {
@@ -470,6 +539,74 @@ export class OIDCAuthService {
       }).catch((error) => {
       this.toasterService.error('Error in initAuthorizationCodeFlow');
       console.error(error);
+    });
+  }
+
+  private renewToken(): void {
+    let miliseconds = (new Date().getTime() < parseInt(sessionStorage['$SOS$TOKENEXPIRETIME'])) ? (parseInt(sessionStorage["$SOS$TOKENEXPIRETIME"]) - new Date().getTime()) : (new Date().getTime() - parseInt(sessionStorage['$SOS$TOKENEXPIRETIME']));
+    setTimeout(() => {
+      const key = sessionStorage['$SOS$KEY'];
+      if (key) {
+        this.coreService.getValueFromLocker(key, (content: any) => {
+          this.refreshToken(content).then((res) => {
+            this.coreService.saveValueInLocker({
+              content: {
+                token: res.access_token,
+                refreshToken: res.refresh_token,
+                clientId: content.clientId
+              }
+            }, () => {
+              this.renewToken();
+            });
+          }).catch(() => {
+            this._logout();
+          })
+
+        });
+      }
+    }, miliseconds);
+
+  }
+
+  /**
+   * Refreshes the token using a refresh_token.
+   * This does not work for implicit flow, b/c
+   * there is no refresh_token in this flow.
+   * A solution for this is provided by the
+   * method silentRefresh.
+   */
+  public refreshToken(data: any): Promise<any> {
+    console.log(this.tokenEndpoint, 'this.tokenEndpoint')
+    this.assertUrlNotNullAndCorrectProtocol(
+      this.tokenEndpoint,
+      'tokenEndpoint'
+    );
+    return new Promise((resolve, reject) => {
+      let params = new HttpParams()
+        .set('grant_type', 'refresh_token')
+        .set('scope', this.scope)
+        .set('refresh_token', data.refreshToken);
+
+      let headers = new HttpHeaders().set(
+        'Content-Type',
+        'application/x-www-form-urlencoded'
+      );
+
+      params = params.set('client_id', data.clientId);
+
+      this.coreService
+        .log(this.tokenEndpoint, params, {headers})
+        .subscribe({
+          next:
+            (tokenResponse) => {
+              sessionStorage['$SOS$TOKENEXPIRETIME'] = (new Date().getTime() + (tokenResponse.expires_in * 1000)) - 30000;
+              resolve(tokenResponse);
+            },
+          error: (err) => {
+            this._logout();
+            reject(err);
+          }
+        });
     });
   }
 

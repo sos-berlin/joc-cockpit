@@ -751,6 +751,9 @@ export class CoreService {
   }
 
   getColor(d: number, type: string): string {
+    if(!sessionStorage['preferences']){
+      return '';
+    }
     const preferenceObj = JSON.parse(sessionStorage['preferences']);
     const orderStateColors = preferenceObj.orderStateColors || [];
     this.applyThemeColors(orderStateColors)
@@ -2214,6 +2217,46 @@ export class CoreService {
       }
     })
     return str;
+  }
+
+  //Locker store and retrive
+
+  saveValueInLocker(body: any, cb: any): void {
+    this.post('iam/locker/put', body).subscribe({
+      next: (res) => {
+        sessionStorage['$SOS$KEY'] = res.key;
+        cb();
+      }, error: () => {
+        cb();
+      }
+    })
+  }
+
+  getValueFromLocker(key: string, cb: any) {
+    if (key) {
+      this.post('iam/locker/get', {key}).subscribe({
+        next: (res) => {
+          cb(res.content);
+        }, error: () => {
+          cb({});
+        }
+      })
+    }
+  }
+
+  renewLocker(key: string) {
+    let miliseconds = (new Date().getTime() < parseInt(sessionStorage['$SOS$RENEW'])) ? (parseInt(sessionStorage['$SOS$RENEW']) - new Date().getTime()) : (new Date().getTime() - parseInt(sessionStorage['$SOS$RENEW']));
+    setTimeout(() => {
+      if (key && sessionStorage['$SOS$KEY'] && (sessionStorage['$SOS$KEY'] == key)) {
+        this.post('iam/locker/renew', {key}).subscribe({
+          next: (res) => {
+            sessionStorage['$SOS$RENEW'] = (new Date().getTime() + 1800000) - 30000;
+            this.renewLocker(res.key);
+          }
+        })
+      }
+
+    }, miliseconds);
   }
 
   /** -------- Log View --------- */
