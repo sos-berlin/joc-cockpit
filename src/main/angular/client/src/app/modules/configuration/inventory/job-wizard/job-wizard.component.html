@@ -294,7 +294,7 @@
             type="submit">
       {{ 'common.button.submit' | translate }}
     </button>
-    <button (click)="next()" *ngIf="wizard.step >= 1 && node" [disabled]="(!job.javaClass && !job.name) || !myForm.form.valid"
+    <button (click)="next()" *ngIf="wizard.step >= 1 && node" [disabled]="(!job.javaClass && !job.name) || !myForm.form.valid || wizard.step >= 2"
             class="btn btn-secondary btn-sm" translate type="button">workflow.wizard.button.next
     </button>
     <button (click)="back()" *ngIf="wizard.step === 2" class="btn btn-secondary btn-sm" translate

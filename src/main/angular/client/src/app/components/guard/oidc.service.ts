@@ -238,7 +238,13 @@ export class OIDCAuthService {
       return;
     }
     let logoutUrl: string | undefined = sessionStorage.getItem('logoutUrl') || this.logoutUrl;
-
+    if (logoutUrl && (
+      logoutUrl.includes('login.windows.net') ||
+      logoutUrl.includes('login.microsoftonline.com'))
+    ) {
+      window.location.replace(logoutUrl + '?post_logout_redirect_uri=' + window.location.href);
+      return;
+    }
     sessionStorage.clear();
   }
 
