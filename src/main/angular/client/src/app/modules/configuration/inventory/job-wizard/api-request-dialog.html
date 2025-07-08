@@ -113,7 +113,7 @@
   <div *ngIf="docs">
     <nz-table
       #docsTable
-      [nzData]="mappings"
+      [nzData]="endpoints"
       nzSize="small"
       [nzBordered]="true"
       [nzShowPagination]="false"
@@ -122,13 +122,11 @@
       <thead>
       <tr>
         <th translate>common.label.name</th>
-        <th translate>common.label.title</th>
       </tr>
       </thead>
       <tbody>
-      <tr>
-        <td>orders</td>
-        <td>add a order</td>
+      <tr *ngFor="let ep of endpoints">
+        <td class="pointer" (click)="dynamicForm(ep)">{{ ep.title }}</td>
       </tr>
       </tbody>
     </nz-table>
@@ -195,11 +193,8 @@
           (click)="saveMapping()" type="submit" class="btn btn-primary btn-sm">
     {{ 'common.button.submit' | translate }}
   </button>
-  <button *ngIf="docs" (click)="dynamicForm()"
-          class="btn btn-secondary btn-sm" translate type="button">workflow.wizard.button.next
-  </button>
-  <button *ngIf="!list" type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
-    common.button.cancel
+  <button *ngIf="docs" type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+    common.button.close
   </button>
   <button *ngIf="isAdding" type="button" class="btn btn-grey btn-sm" (click)="cancelAdd()" translate>
     common.button.cancel

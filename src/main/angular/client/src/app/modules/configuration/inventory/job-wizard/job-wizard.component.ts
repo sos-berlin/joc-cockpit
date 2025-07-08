@@ -177,9 +177,9 @@ export class ApiRequestComponent {
       const req = JSON.parse(raw);
 
       this.model.endPoint = req.endpoint || this.model.endPoint;
-      this.model.method  = req.method   || this.model.method;
+      this.model.method = req.method || this.model.method;
       this.model.headers = Array.isArray(req.headers) ? req.headers : [];
-      this.model.params  = Array.isArray(req.params)  ? req.params  : [];
+      this.model.params = Array.isArray(req.params) ? req.params : [];
 
       // pretty‑print body
       if (req.body != null) {
@@ -203,9 +203,9 @@ export class ApiRequestComponent {
         this.auth.type = a.type ?? 'None';
         if (this.auth.type === 'API Key' && a.apiKey) {
           this.auth.apiKey = {
-            name:  a.apiKey.name  || '',
+            name: a.apiKey.name || '',
             value: a.apiKey.value || '',
-            in:    a.apiKey.in    || 'header'
+            in: a.apiKey.in || 'header'
           };
         }
         if (this.auth.type === 'Bearer Token' && a.token) {
@@ -219,9 +219,9 @@ export class ApiRequestComponent {
         }
         if (this.auth.type === 'OAuth 2.0' && a.oauth2) {
           this.auth.oauth2 = {
-            clientId:     a.oauth2.clientId     || '',
+            clientId: a.oauth2.clientId || '',
             clientSecret: a.oauth2.clientSecret || '',
-            tokenUrl:     a.oauth2.tokenUrl     || ''
+            tokenUrl: a.oauth2.tokenUrl || ''
           };
           (this.auth as any).oauth2.accessToken = a.oauth2.accessToken;
         }
@@ -235,7 +235,8 @@ export class ApiRequestComponent {
           if (Array.isArray(arr)) {
             this.mappings = arr;
           }
-        } catch { /* ignore */ }
+        } catch { /* ignore */
+        }
       }
 
       return;
@@ -256,17 +257,17 @@ export class ApiRequestComponent {
         for (const h of hdrBlock[1].matchAll(
           /\{\s*"key"\s*:\s*"([^"]*)"\s*,\s*"value"\s*:\s*"([^"]*)"\s*\}/g
         )) {
-          items.push({ key: h[1], value: h[2] });
+          items.push({key: h[1], value: h[2]});
         }
         this.model.headers = items;
       }
 
       const bodyKey = '"body"';
-      const keyIdx  = raw.indexOf(bodyKey);
+      const keyIdx = raw.indexOf(bodyKey);
       if (keyIdx !== -1) {
         const braceStart = raw.indexOf('{', keyIdx + bodyKey.length);
         if (braceStart !== -1) {
-          let depth  = 0;
+          let depth = 0;
           let endIdx = -1;
           for (let i = braceStart; i < raw.length; i++) {
             if (raw[i] === '{') depth++;
@@ -465,7 +466,7 @@ export class ApiRequestComponent {
   updateBasicAuthHeader(): void {
     if (this.auth.type !== 'Basic Auth') return;
 
-    const { username, password } = this.auth.basic;
+    const {username, password} = this.auth.basic;
 
     this.model.headers = this.model.headers.filter(
       h => h.key.toLowerCase() !== 'authorization'
@@ -479,7 +480,6 @@ export class ApiRequestComponent {
       });
     }
   }
-
 
 
   sendRequest(accessToken?): void {
@@ -527,8 +527,11 @@ export class ApiRequestComponent {
       input.replace(simplePlaceholder, (_m, name) => {
         const def = this.parameters?.[name]?.default;
         if (def != null) {
-          try { return JSON.parse(def) + ''; }
-          catch { return def; }
+          try {
+            return JSON.parse(def) + '';
+          } catch {
+            return def;
+          }
         }
         return `{${name}}`;
       });
@@ -537,7 +540,7 @@ export class ApiRequestComponent {
     const replaceBodyPlaceholders = (input: string) =>
       input.replace(bodyPlaceholder, (match, p1, p2, offset) => {
         const name = p1 || p2!;
-        const def  = this.parameters?.[name]?.default;
+        const def = this.parameters?.[name]?.default;
         if (def == null) return match;
         const before = input[offset - 1], after = input[offset + match.length];
         const inQuotes = before === '"' && after === '"';
@@ -559,9 +562,9 @@ export class ApiRequestComponent {
     const safeEp = resolvedEp.startsWith('/') ? resolvedEp : `/${resolvedEp}`;
     const fullUrl = `${base}${safeEp}`;
 
-    const resolvedHdrs: Record<string,string> = {};
+    const resolvedHdrs: Record<string, string> = {};
     Object.entries(hdrs).forEach(([rawKey, rawValue]) => {
-      const key   = replacePlaceholders(rawKey);
+      const key = replacePlaceholders(rawKey);
       const value = replacePlaceholders(rawValue);
       resolvedHdrs[key] = value;
     });
@@ -797,7 +800,7 @@ export class ApiRequestComponent {
     this.isVisible.emit(false);
   }
 
-    close(): void {
+  close(): void {
     if (this.isClose) {
       this.isStepBack.emit(2);
     } else {
@@ -831,20 +834,38 @@ export class ApiRequestComponent {
 })
 
 export class ApiFormDialogComponent {
+  readonly modalData: any = inject(NZ_MODAL_DATA);
+
   JsonSchema: any;
   form: FormGroup;
-
+  loading = false
   constructor(
     private fb: FormBuilder,
-    public activeModal: NzModalRef
+    public activeModal: NzModalRef,
+    private coreService: CoreService,
   ) {
   }
 
   ngOnInit(): void {
-    this.JsonSchema = {}
-
-    this.form = this.createForm(this.JsonSchema);
+    this.loadSchema(this.modalData.endPoint);
   }
+
+  private loadSchema(ep: string): void {
+    this.loading = true;
+    const origin = window.location.origin;
+    const schemaUrl = `http://localhost:2900/joc/schemas/api/schemas${ep}-schema.json`;
+    this.coreService.post(schemaUrl, {})
+      .subscribe({
+        next: (res: any) => {
+          this.loading = false;
+          this.form = this.createForm(res);
+        },
+        error: err => {
+          this.loading = false;
+        }
+      });
+  }
+
 
   createForm(schema: any): FormGroup {
     return this.fb.group(this.createControls(schema));
@@ -1018,7 +1039,10 @@ interface Mapping {
   name: string;
   path: string;
 }
-
+export interface endPoint {
+  title: string;
+  path: string;
+}
 @Component({
   selector: 'app-api-request-dialog',
   templateUrl: './api-request-dialog.html'
@@ -1031,11 +1055,41 @@ export class ApiRequestDialogComponent {
   mappings: Mapping[] = [];
   list = false;
   docs = false;
-  newMapping: { name: string; path: string } = { name: '', path: '' };
+  newMapping: { name: string; path: string } = {name: '', path: ''};
   isAdding = false;
   selectedRows = new Set<number>();
   editingIndex: number | null = null;
-
+  endpoints: endPoint[] = [
+    { title: '/agents',                         path: '/agent/readAgents-schema.json' },
+    { title: '/agents/cluster',                 path: '/agent/readSubagentClusters-schema.json' },
+    { title: '/agents/report',                  path: '/agentReportFilter-schema.json' },
+    { title: '/controller',                     path: 'controller/urlParam-schema.json' },
+    { title: '/controllers',                    path: '/controller/controllerId-optional-schema.json' },
+    { title: '/daily_plan/orders',              path: '/orderManagement/daily_plan/dailyPlanOrdersFilterDefRequired-schema.json' },
+    { title: '/daily_plan/orders/cancel',       path: '/orderManagement/daily_plan/dailyPlanOrdersFilterDef-schema.json' },
+    { title: '/daily_plan/orders/generate',     path: '/daily_plan/generate/generate-request-schema.json' },
+    { title: '/daily_plan/orders/submit',       path: '/orderManagement/daily_plan/dailyPlanOrdersFilterDef-schema.json' },
+    { title: '/daily_plan/orders/delete',       path: '/orderManagement/daily_plan/dailyPlanOrdersFilterDef-schema.json' },
+    { title: '/daily_plan/orders/summary',      path: '/orderManagement/daily_plan/dailyPlanOrdersFilterDef-schema.json' },
+    { title: '/daily_plan/projections/calendar',path: '/dailyplan/projections/projections-request-schema.json' },
+    { title: '/daily_plan/projections/dates',   path: '/daily_plan/projections/projections-request-schema.json' },
+    { title: '/daily_plan/projections/recreate',path: '/common/ok-schema.json' },
+    { title: '/joc/license',                    path: '/joc/js7LicenseInfo-schema.json' },
+    { title: '/joc/version',                    path: '/joc/version-schema.json' },
+    { title: '/joc/versions',                   path: '/joc/versionsFilter-schema.json' },
+    { title: '/jocs',                           path: '/controller/jocFilter-schema.json' },
+    { title: '/orders',                         path: '/order/ordersFilterV-schema.json' },
+    { title: '/orders/add',                     path: '/order/addOrders-schema.json' },
+    { title: '/orders/cancel',                  path: '/order/modifyOrders-schema.json' },
+    { title: '/orders/confirm',                 path: '/order/modifyOrders-schema.json' },
+    { title: '/orders/continue',                path: '/order/modifyOrders-schema.json' },
+    { title: '/orders/history',                 path: '/order/ordersFilter-schema.json' },
+    { title: '/orders/overview/snapshot',       path: '/order/ordersFilterV-schema.json' },
+    { title: '/orders/resume',                  path: '/order/modifyOrders-schema.json' },
+    { title: '/orders/suspend',                 path: '/order/modifyOrders-schema.json' },
+    { title: '/notices/delete',                 path: '/board/deleteNotices-schema.json' },
+    { title: '/notices/post',                   path: '/board/noticeIdsPerBoard-schema.json' }
+  ];
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService,) {
   }
 
@@ -1070,14 +1124,15 @@ export class ApiRequestDialogComponent {
   addVariable(): void {
     this.isAdding = true;
     this.editingIndex = null;
-    this.newMapping = { name: '', path: '' };
+    this.newMapping = {name: '', path: ''};
   }
 
   edit(i: number): void {
     this.isAdding = true;
     this.editingIndex = i;
-    this.newMapping = { ...this.mappings[i] };
+    this.newMapping = {...this.mappings[i]};
   }
+
   saveMapping(): void {
     const trimmed = {
       name: this.newMapping.name.trim(),
@@ -1095,7 +1150,7 @@ export class ApiRequestDialogComponent {
   cancelAdd(): void {
     this.isAdding = false;
     this.editingIndex = null;
-    this.newMapping = { name: '', path: '' };
+    this.newMapping = {name: '', path: ''};
   }
 
   closeWithMappings(): void {
@@ -1128,15 +1183,16 @@ export class ApiRequestDialogComponent {
   }
 
   bulkDelete(): void {
-    const toRemove = Array.from(this.selectedRows).sort((a,b) => b - a);
+    const toRemove = Array.from(this.selectedRows).sort((a, b) => b - a);
     toRemove.forEach(i => this.removeMapping(i));
     this.selectedRows.clear();
   }
 
-  dynamicForm(): void {
+  dynamicForm(ep): void {
     const modal = this.modal.create({
       nzContent: ApiFormDialogComponent,
       nzClassName: 'lg',
+      nzData: {endPoint: ep.path},
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
