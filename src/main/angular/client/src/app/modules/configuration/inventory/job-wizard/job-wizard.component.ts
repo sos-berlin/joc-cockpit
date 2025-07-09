@@ -28,6 +28,7 @@ import {
 } from '@angular/forms';
 import {properties} from "ng-zorro-antd/core/util";
 import {TranslateService} from "@ngx-translate/core";
+import { firstValueFrom } from 'rxjs';
 
 interface KeyValue {
   key: string;
@@ -181,7 +182,6 @@ export class ApiRequestComponent {
       this.model.headers = Array.isArray(req.headers) ? req.headers : [];
       this.model.params = Array.isArray(req.params) ? req.params : [];
 
-      // pretty‑print body
       if (req.body != null) {
         if (typeof req.body === 'string') {
           try {
@@ -837,6 +837,7 @@ export class ApiFormDialogComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
 
   JsonSchema: any;
+  title: any;
   form: FormGroup;
   loading = false
   constructor(
@@ -847,25 +848,48 @@ export class ApiFormDialogComponent {
   }
 
   ngOnInit(): void {
+    this.title = this.modalData.title
     this.loadSchema(this.modalData.endPoint);
   }
 
-  private loadSchema(ep: string): void {
+  private async loadSchema(ep: string) {
     this.loading = true;
-    const origin = window.location.origin;
-    const schemaUrl = `http://localhost:2900/joc/schemas/api/schemas${ep}-schema.json`;
-    this.coreService.post(schemaUrl, {})
-      .subscribe({
-        next: (res: any) => {
-          this.loading = false;
-          this.form = this.createForm(res);
-        },
-        error: err => {
-          this.loading = false;
-        }
-      });
+    try {
+      const rootUrl = `http://localhost:4200/joc/schemas/api/schemas${ep}-schema.json`;
+      const raw: any = await firstValueFrom(this.coreService.post(rootUrl, {}));
+
+      this.JsonSchema = await this.resolveAllRefs(raw);
+      this.form = this.createForm(this.JsonSchema);
+    } catch (e) {
+      console.error('Schema load error', e);
+    } finally {
+      this.loading = false;
+    }
   }
 
+
+  private async resolveAllRefs(schema: any): Promise<any> {
+    if (schema && typeof schema === 'object' && schema.$ref) {
+      const cleanPath = schema.$ref.replace(/^\.\.\//g, '');
+      const url = `http://localhost:4200/joc/schemas/api/schemas/${cleanPath}`;
+      const fetched: any = await firstValueFrom(this.coreService.post(url, {}));
+      return this.resolveAllRefs(fetched);
+    }
+
+    if (schema.properties && typeof schema.properties === 'object') {
+      for (const key of Object.keys(schema.properties)) {
+        schema.properties[key] = await this.resolveAllRefs(
+          schema.properties[key]
+        );
+      }
+    }
+
+    if (schema.items) {
+      schema.items = await this.resolveAllRefs(schema.items);
+    }
+
+    return schema;
+  }
 
   createForm(schema: any): FormGroup {
     return this.fb.group(this.createControls(schema));
@@ -1042,6 +1066,7 @@ interface Mapping {
 export interface endPoint {
   title: string;
   path: string;
+  des: string;
 }
 @Component({
   selector: 'app-api-request-dialog',
@@ -1060,35 +1085,35 @@ export class ApiRequestDialogComponent {
   selectedRows = new Set<number>();
   editingIndex: number | null = null;
   endpoints: endPoint[] = [
-    { title: '/agents',                         path: '/agent/readAgents-schema.json' },
-    { title: '/agents/cluster',                 path: '/agent/readSubagentClusters-schema.json' },
-    { title: '/agents/report',                  path: '/agentReportFilter-schema.json' },
-    { title: '/controller',                     path: 'controller/urlParam-schema.json' },
-    { title: '/controllers',                    path: '/controller/controllerId-optional-schema.json' },
-    { title: '/daily_plan/orders',              path: '/orderManagement/daily_plan/dailyPlanOrdersFilterDefRequired-schema.json' },
-    { title: '/daily_plan/orders/cancel',       path: '/orderManagement/daily_plan/dailyPlanOrdersFilterDef-schema.json' },
-    { title: '/daily_plan/orders/generate',     path: '/daily_plan/generate/generate-request-schema.json' },
-    { title: '/daily_plan/orders/submit',       path: '/orderManagement/daily_plan/dailyPlanOrdersFilterDef-schema.json' },
-    { title: '/daily_plan/orders/delete',       path: '/orderManagement/daily_plan/dailyPlanOrdersFilterDef-schema.json' },
-    { title: '/daily_plan/orders/summary',      path: '/orderManagement/daily_plan/dailyPlanOrdersFilterDef-schema.json' },
-    { title: '/daily_plan/projections/calendar',path: '/dailyplan/projections/projections-request-schema.json' },
-    { title: '/daily_plan/projections/dates',   path: '/daily_plan/projections/projections-request-schema.json' },
-    { title: '/daily_plan/projections/recreate',path: '/common/ok-schema.json' },
-    { title: '/joc/license',                    path: '/joc/js7LicenseInfo-schema.json' },
-    { title: '/joc/version',                    path: '/joc/version-schema.json' },
-    { title: '/joc/versions',                   path: '/joc/versionsFilter-schema.json' },
-    { title: '/jocs',                           path: '/controller/jocFilter-schema.json' },
-    { title: '/orders',                         path: '/order/ordersFilterV-schema.json' },
-    { title: '/orders/add',                     path: '/order/addOrders-schema.json' },
-    { title: '/orders/cancel',                  path: '/order/modifyOrders-schema.json' },
-    { title: '/orders/confirm',                 path: '/order/modifyOrders-schema.json' },
-    { title: '/orders/continue',                path: '/order/modifyOrders-schema.json' },
-    { title: '/orders/history',                 path: '/order/ordersFilter-schema.json' },
-    { title: '/orders/overview/snapshot',       path: '/order/ordersFilterV-schema.json' },
-    { title: '/orders/resume',                  path: '/order/modifyOrders-schema.json' },
-    { title: '/orders/suspend',                 path: '/order/modifyOrders-schema.json' },
-    { title: '/notices/delete',                 path: '/board/deleteNotices-schema.json' },
-    { title: '/notices/post',                   path: '/board/noticeIdsPerBoard-schema.json' }
+    { title: '/agents',                         path: '/agent/readAgents',                                     des: 'Gets Agents' },
+    { title: '/agents/cluster',                 path: '/agent/readSubagentClusters',                           des: 'Gets Subagent Clusters' },
+    { title: '/agents/report',                  path: '/agent/agentReportFilter',                              des: 'Gets report of Agent tasks' },
+    { title: '/controller',                     path: 'controller/urlParam',                                   des: 'Gets Controller status information' },
+    { title: '/controllers',                    path: '/controller/controllerId-optional',                     des: 'Gets Controllers' },
+    { title: '/daily_plan/orders',              path: '/orderManagement/daily_plan/dailyPlanOrdersFilterDefRequired', des: 'Gets orders from a daily plan interval' },
+    { title: '/daily_plan/orders/cancel',       path: '/orderManagement/daily_plan/dailyPlanOrdersFilterDef',  des: 'Cancels submitted orders for a daily plan interval' },
+    { title: '/daily_plan/orders/generate',     path: '/daily_plan/generate/generate-request',                 des: 'Generates orders for a given daily plan' },
+    { title: '/daily_plan/orders/submit',       path: '/orderManagement/daily_plan/dailyPlanOrdersFilterDef',  des: 'Submits planned orders for a daily plan interval' },
+    { title: '/daily_plan/orders/delete',       path: '/orderManagement/daily_plan/dailyPlanOrdersFilterDef',  des: 'Deletes planned orders for a daily plan interval' },
+    { title: '/daily_plan/orders/summary',      path: '/orderManagement/daily_plan/dailyPlanOrdersFilterDef',  des: 'Gets summary order counts from a daily plan interval' },
+    { title: '/daily_plan/projections/calendar',path: '/dailyplan/projections/projections-request',            des: 'Gets the days of the daily plan projections that have start times' },
+    { title: '/daily_plan/projections/dates',   path: '/daily_plan/projections/projections-request',           des: 'Gets the start times of date range of the daily plan projections' },
+    { title: '/daily_plan/projections/recreate',path: '/common/ok',                                            des: '(Re)creates daily plan projections' },
+    { title: '/joc/license',                    path: '/joc/js7LicenseInfo',                                   des: 'shows information about the currently used SOS JS7 License ' },
+    { title: '/joc/version',                    path: '/joc/version',                                          des: 'Get JOC\'s version' },
+    { title: '/joc/versions',                   path: '/joc/versionsFilter',                                   des: 'Reads the versions of the specified JS7 components.' },
+    { title: '/jocs',                           path: '/controller/jocFilter',                                 des: 'Gets JOC Cockpit instances' },
+    { title: '/orders',                         path: '/order/ordersFilterV',                                  des: 'Returns a collection of orders filtered by workflow or order state' },
+    { title: '/orders/add',                     path: '/order/addOrders',                                      des: 'Add orders' },
+    { title: '/orders/cancel',                  path: '/order/modifyOrders',                                   des: 'Cancels orders' },
+    { title: '/orders/confirm',                 path: '/order/modifyOrders',                                   des: 'Confirms prompting orders' },
+    { title: '/orders/continue',                path: '/order/modifyOrders',                                   des: 'Continues orders' },
+    { title: '/orders/history',                 path: '/order/ordersFilter',                                   des: 'Order history' },
+    { title: '/orders/overview/snapshot',       path: '/order/ordersFilterV',                                  des: 'Summary with number of orders' },
+    { title: '/orders/resume',                  path: '/order/modifyOrders',                                   des: 'Resumes orders when suspended or failed' },
+    { title: '/orders/suspend',                 path: '/order/modifyOrders',                                   des: 'Suspends orders' },
+    { title: '/notices/delete',                 path: '/board/deleteNotices',                                  des: 'Deletes notices' },
+    { title: '/notices/post',                   path: '/board/noticeIdsPerBoard',                              des: 'Posts notice for several boards' }
   ];
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService,) {
   }
@@ -1192,7 +1217,7 @@ export class ApiRequestDialogComponent {
     const modal = this.modal.create({
       nzContent: ApiFormDialogComponent,
       nzClassName: 'lg',
-      nzData: {endPoint: ep.path},
+      nzData: {endPoint: ep.path, title: ep.des},
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false

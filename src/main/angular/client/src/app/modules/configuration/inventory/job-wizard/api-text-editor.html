@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h4 class="modal-title">{{ JsonSchema.title }}</h4>
+  <h4 class="modal-title">{{ title }}</h4>
   <button
     (click)="activeModal.destroy()"
     aria-label="Close"
@@ -323,21 +323,20 @@
               <div [formArrayName]="key" style="margin-top: 0.5rem;">
                 <div
                   *ngFor="
-                    let ctrl of getFormArray(key).controls;
-                    let idx = index
-                  "
-                  [formGroupName]="idx"
+        let ctrl of getFormArray(key).controls;
+        let idx = index
+      "
                   style="
-                    display: flex;
-                    align-items: center;
-                    margin-bottom: 0.25rem;
-                  "
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.25rem;
+      "
                 >
-                  <!-- Primitive array element -->
+                  <!-- Bind each input directly to the FormControl at position idx -->
                   <input
                     type="text"
                     class="form-control"
-                    formControlName="0"
+                    [formControlName]="idx"
                   />
                   <button
                     type="button"

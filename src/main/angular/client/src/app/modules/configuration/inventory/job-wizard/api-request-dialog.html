@@ -122,11 +122,13 @@
       <thead>
       <tr>
         <th translate>common.label.name</th>
+        <th translate>common.label.title</th>
       </tr>
       </thead>
       <tbody>
       <tr *ngFor="let ep of endpoints">
-        <td class="pointer" (click)="dynamicForm(ep)">{{ ep.title }}</td>
+        <td class="cur-point" (click)="dynamicForm(ep)">{{ ep.title }}</td>
+        <td class="cur-point" (click)="dynamicForm(ep)">{{ ep.des }}</td>
       </tr>
       </tbody>
     </nz-table>
