@@ -895,58 +895,81 @@ export class ApiFormDialogComponent {
     return this.fb.group(this.createControls(schema));
   }
 
-  private createControls(schema: any): { [key: string]: any } {
-    const controls: any = {};
-    const required = schema.required || [];
+private createControls(schema: any): { [key: string]: any } {
+  const controls: any = {};
+  const required = schema.required || [];
 
-    for (const [key, rawProp] of Object.entries(schema.properties || {})) {
-      const propSchema: any = (rawProp as any).anyOf
-        ? (rawProp as any).anyOf[0]
-        : (rawProp as any);
+  for (const [key, rawProp] of Object.entries(schema.properties || {})) {
+    const propSchema: any = (rawProp as any).anyOf
+      ? (rawProp as any).anyOf[0]
+      : (rawProp as any);
 
-      const validators = [];
-      if (required.includes(key)) {
-        validators.push(Validators.required);
-      }
-      if (propSchema.maxLength != null) {
-        validators.push(Validators.maxLength(propSchema.maxLength));
-      }
-      if (propSchema.minLength != null) {
-        validators.push(Validators.minLength(propSchema.minLength));
-      }
-      if (propSchema.pattern) {
-        validators.push(Validators.pattern(propSchema.pattern));
-      }
+    const validators = [];
 
-      switch (propSchema.type) {
-        case 'object':
-          controls[key] = this.fb.group(this.createControls(propSchema));
-          break;
+    if (required.includes(key))          validators.push(Validators.required);
+    if (propSchema.maxLength != null)    validators.push(Validators.maxLength(propSchema.maxLength));
+    if (propSchema.minLength != null)    validators.push(Validators.minLength(propSchema.minLength));
+    if (propSchema.pattern)              validators.push(Validators.pattern(propSchema.pattern));
 
-        case 'array':
-          controls[key] = this.fb.array([]);
-          break;
-
-        case 'boolean':
-          controls[key] = new FormControl(propSchema.default ?? false);
-          break;
-
-        case 'integer':
-        case 'number':
-          controls[key] = new FormControl('', validators);
-          break;
-
-        default:
-          controls[key] = new FormControl('', validators);
-      }
+    // → special case: object with arbitrary keys
+    if (propSchema.type === 'object' && propSchema.additionalProperties) {
+      controls[key] = this.fb.array([]);                   // start empty; user will add pairs
     }
-
-    return controls;
+    else switch (propSchema.type) {
+      case 'object':
+        controls[key] = this.fb.group(this.createControls(propSchema));
+        break;
+      case 'array':
+        controls[key] = this.fb.array([]);
+        break;
+      case 'boolean':
+        controls[key] = new FormControl(propSchema.default ?? false);
+        break;
+      case 'integer':
+      case 'number':
+        controls[key] = new FormControl('', validators);
+        break;
+      default: // string or missing type
+        controls[key] = new FormControl('', validators);
+    }
   }
 
+  return controls;
+}
+
+  getPropSchema(key: string): any {
+    const raw = (this.JsonSchema.properties as any)[key];
+    return raw.anyOf ? raw.anyOf[0] : raw;
+  }
+
+  /** Is this property “object with additionalProperties:true”? */
+  isMap(key: string): boolean {
+    const schema = this.getPropSchema(key);
+    return schema.type === 'object' && !!schema.additionalProperties;
+  }
+
+  /** FormArray of {key,value} pairs for a map‑style object */
+  getMapArray(key: string): FormArray {
+    return this.form.get(key) as FormArray;
+  }
+
+  /** Add an empty name/value pair */
+  addMapEntry(key: string) {
+    this.getMapArray(key).push(
+      this.fb.group({
+        key:   ['', Validators.required],
+        value: ['']
+      })
+    );
+  }
+
+  /** Remove one map entry */
+  removeMapEntry(key: string, idx: number) {
+    this.getMapArray(key).removeAt(idx);
+  }
 
   get propertyKeys(): string[] {
-    return Object.keys(this.JsonSchema.properties || {});
+    return Object.keys(this.JsonSchema?.properties || {});
   }
 
   getFieldType(key: string): string {
