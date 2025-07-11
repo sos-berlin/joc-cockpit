@@ -1008,7 +1008,7 @@ export class ApiFormDialogComponent {
 
   private async loadSchema(ep: string) {
     this.loading = true;
-    const origin = window.location.origin
+    const origin = window.location.origin;
     try {
       const schemaUrl = `${origin}/joc/schemas/api/schemas${ep}-schema.json`;
       const rawSchema: any = await firstValueFrom(this.coreService.post(schemaUrl, {}));
@@ -1061,34 +1061,82 @@ export class ApiFormDialogComponent {
   }
 
   private resolveRefUrl(ref: string, basePath: string): string {
-    const origin = window.location.origin
-    const baseUrl = `${origin}/joc/schemas/api/schemas`;
+    const origin = window.location.origin;
+    const schemasRoot = `${origin}/joc/schemas`;
 
-    if (ref.startsWith('../')) {
-      const cleanRef = ref.replace(/^\.\.\//, '');
-      return `${baseUrl}/${cleanRef}`;
-    } else if (ref.startsWith('./')) {
-      const cleanRef = ref.replace(/^\.\//, '');
-      const baseDir = this.getDirectoryFromPath(basePath);
-      return `${baseUrl}/${baseDir}/${cleanRef}`;
-    } else if (!ref.startsWith('http')) {
-      const baseDir = this.getDirectoryFromPath(basePath);
-      if (baseDir) {
-        return `${baseUrl}/${baseDir}/${ref}`;
-      } else {
-        return `${baseUrl}/${ref}`;
+    if (ref.startsWith('http')) {
+      return ref;
+    }
+
+    if (ref.includes('../') || ref.includes('./')) {
+      return this.resolveRelativePath(schemasRoot, basePath, ref);
+    }
+
+    const baseDir = this.getDirectoryFromPath(basePath);
+    if (baseDir) {
+      return `${schemasRoot}/api/schemas/${baseDir}/${ref}`;
+    } else {
+      return `${schemasRoot}/api/schemas/${ref}`;
+    }
+  }
+
+  private resolveRelativePath(schemasRoot: string, currentPath: string, relativePath: string): string {
+
+    const currentDir = this.getDirectoryFromPath(currentPath);
+
+    let pathParts: string[] = [];
+
+    if (currentDir) {
+      pathParts = ['api', 'schemas', ...currentDir.split('/').filter(part => part)];
+    } else {
+
+      pathParts = ['api', 'schemas'];
+    }
+
+    const relativeParts = relativePath.split('/').filter(part => part);
+
+    for (const part of relativeParts) {
+      if (part === '..') {
+        if (pathParts.length > 0) {
+          pathParts.pop();
+
+          if (pathParts.length === 1 && pathParts[0] === 'api') {
+            pathParts.pop();
+          }
+        }
+      } else if (part === '.') {
+        continue;
+      } else if (part) {
+        pathParts.push(part);
       }
     }
 
-    return ref;
+    const resolvedPath = pathParts.join('/');
+    const finalUrl = resolvedPath ? `${schemasRoot}/${resolvedPath}` : schemasRoot;
+
+    console.log(`Resolving reference:
+      Current dir: ${currentDir || '(root)'}
+      Relative: ${relativePath}
+      Path parts after resolution: [${pathParts.join(', ')}]
+      Final URL: ${finalUrl}`);
+
+    return finalUrl;
   }
 
   private getBasePath(url: string): string {
-    const origin = window.location.origin
-    const baseUrl = `${origin}/joc/schemas/api/schemas/`;
-    if (url.startsWith(baseUrl)) {
-      return url.substring(baseUrl.length);
+    const origin = window.location.origin;
+    const schemasRoot = `${origin}/joc/schemas/`;
+
+    if (url.startsWith(schemasRoot)) {
+      const pathAfterRoot = url.substring(schemasRoot.length);
+
+      if (pathAfterRoot.startsWith('api/schemas/')) {
+        return pathAfterRoot.substring('api/schemas/'.length);
+      }
+
+      return `../${pathAfterRoot}`;
     }
+
     return '';
   }
 
