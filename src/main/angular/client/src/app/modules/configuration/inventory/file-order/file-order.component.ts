@@ -54,6 +54,13 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   filteredOptions: string[] = [];
   inputVisible = false;
   inputValue = '';
+  priorities = [
+    {label: 'inventory.label.high', value: 20000},
+    {label: 'inventory.label.aboveNormal', value: 10000},
+    {label: 'inventory.label.normal', value: 0},
+    {label: 'inventory.label.belowNormal', value: -10000},
+    {label: 'inventory.label.Low', value: -20000},
+  ];
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
@@ -549,5 +556,7 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
 
     this.saveJSON(true, true);
   }
-
+  changePriority($event): void {
+    this.saveJSON();
+  }
 }

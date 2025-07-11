@@ -24,7 +24,7 @@ import {
   FormGroup,
   FormControl,
   FormArray,
-  Validators,
+  Validators, AbstractControl,
 } from '@angular/forms';
 import {properties} from "ng-zorro-antd/core/util";
 import {TranslateService} from "@ngx-translate/core";
@@ -822,12 +822,165 @@ export class ApiRequestComponent {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
+        this.model.body = JSON.stringify(result, null, 2)
+        this.ref.detectChanges();
       }
     });
   }
 }
 
+@Component({
+  selector: 'json-schema-field',
+  templateUrl: './json-schema-field.component.html'
+})
+export class JsonSchemaFieldComponent {
+  @Input() propertyPath: string[] = [];
+  @Input() schema: any;
+  @Input() formControl: AbstractControl | null;
+  @Input() parent: any; // Reference to parent component
 
+  get fieldName(): string {
+    return this.propertyPath[this.propertyPath.length - 1];
+  }
+
+  get currentSchema(): any {
+    return this.parent.getSchemaForProperty(this.propertyPath);
+  }
+
+  // TYPE CHECKING METHODS
+  isStringField(): boolean {
+    const type = this.currentSchema?.type;
+    return type === 'string';
+  }
+
+  isNumberField(): boolean {
+    const type = this.currentSchema?.type;
+    return type === 'number' || type === 'integer';
+  }
+
+  isBooleanField(): boolean {
+    return this.currentSchema?.type === 'boolean';
+  }
+
+  isObjectField(): boolean {
+    return this.currentSchema?.type === 'object';
+  }
+
+  isArrayField(): boolean {
+    return this.currentSchema?.type === 'array';
+  }
+
+  isMapField(): boolean {
+    return this.isObjectField() && this.currentSchema?.additionalProperties === true;
+  }
+
+  // VALUE UPDATE METHODS
+  updateValue(event: any): void {
+    if (this.formControl) {
+      this.formControl.setValue(event.target.value);
+      this.formControl.markAsTouched();
+    }
+  }
+
+  updateBooleanValue(event: any): void {
+    if (this.formControl) {
+      this.formControl.setValue(event.target.checked);
+      this.formControl.markAsTouched();
+    }
+  }
+
+  // OBJECT FIELD METHODS
+  getObjectProperties(): string[] {
+    return Object.keys(this.currentSchema?.properties || {});
+  }
+
+  getChildPath(childKey: string): string[] {
+    return [...this.propertyPath, childKey];
+  }
+
+  getChildControl(childKey: string): AbstractControl | null {
+    return (this.formControl as FormGroup)?.get(childKey) || null;
+  }
+
+  // MAP FIELD METHODS
+  getMapEntries(): FormGroup[] {
+    if (!this.formControl) return [];
+    return (this.formControl as FormArray).controls as FormGroup[];
+  }
+
+  addMapEntry(): void {
+    this.parent.addMapEntry(this.propertyPath);
+  }
+
+  removeMapEntry(index: number): void {
+    this.parent.removeMapEntry(this.propertyPath, index);
+  }
+
+  updateMapKey(index: number, event: any): void {
+    if (!this.formControl) return;
+    const mapArray = this.formControl as FormArray;
+    const entryGroup = mapArray.at(index) as FormGroup;
+    entryGroup.get('key')?.setValue(event.target.value);
+  }
+
+  updateMapValue(index: number, event: any): void {
+    if (!this.formControl) return;
+    const mapArray = this.formControl as FormArray;
+    const entryGroup = mapArray.at(index) as FormGroup;
+    entryGroup.get('value')?.setValue(event.target.value);
+  }
+
+  // ARRAY FIELD METHODS
+  getArrayControls(): AbstractControl[] {
+    if (!this.formControl) return [];
+    return (this.formControl as FormArray).controls;
+  }
+
+  addArrayItem(): void {
+    this.parent.addArrayItem(this.propertyPath);
+  }
+
+  removeArrayItem(index: number): void {
+    this.parent.removeArrayItem(this.propertyPath, index);
+  }
+
+  isArrayOfPrimitives(): boolean {
+    const itemSchema = this.parent.resolveAnyOf(this.currentSchema?.items);
+    return itemSchema?.type !== 'object';
+  }
+
+  getArrayItemType(): string {
+    const itemSchema = this.parent.resolveAnyOf(this.currentSchema?.items);
+    return itemSchema?.type || 'string';
+  }
+
+  getArrayItemObjectProperties(): string[] {
+    const itemSchema = this.parent.resolveAnyOf(this.currentSchema?.items);
+    return Object.keys(itemSchema?.properties || {});
+  }
+
+  getArrayItemChildPath(itemIndex: number, childKey: string): string[] {
+    return [...this.propertyPath, itemIndex.toString(), childKey];
+  }
+
+  getArrayItemChildControl(itemIndex: number, childKey: string): AbstractControl | null {
+    const arrayControl = this.formControl as FormArray;
+    const itemControl = arrayControl?.at(itemIndex) as FormGroup;
+    return itemControl?.get(childKey) || null;
+  }
+
+  updateArrayItemValue(index: number, event: any): void {
+    if (!this.formControl) return;
+    const arrayControl = this.formControl as FormArray;
+    arrayControl.at(index)?.setValue(event.target.value);
+  }
+
+  updateArrayItemBooleanValue(index: number, event: any): void {
+    if (!this.formControl) return;
+    const arrayControl = this.formControl as FormArray;
+    arrayControl.at(index)?.setValue(event.target.checked);
+  }
+}
 @Component({
   selector: 'app-api-text-editor',
   templateUrl: './api-text-editor.html'
@@ -839,249 +992,310 @@ export class ApiFormDialogComponent {
   JsonSchema: any;
   title: any;
   form: FormGroup;
-  loading = false
+  loading = false;
+  private schemaCache = new Map<string, any>();
+
   constructor(
     private fb: FormBuilder,
     public activeModal: NzModalRef,
     private coreService: CoreService,
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
-    this.title = this.modalData.title
+    this.title = this.modalData.title;
     this.loadSchema(this.modalData.endPoint);
   }
 
   private async loadSchema(ep: string) {
     this.loading = true;
+    const origin = window.location.origin
     try {
-      const rootUrl = `http://localhost:4200/joc/schemas/api/schemas${ep}-schema.json`;
-      const raw: any = await firstValueFrom(this.coreService.post(rootUrl, {}));
-
-      this.JsonSchema = await this.resolveAllRefs(raw);
+      const schemaUrl = `${origin}/joc/schemas/api/schemas${ep}-schema.json`;
+      const rawSchema: any = await firstValueFrom(this.coreService.post(schemaUrl, {}));
+      this.JsonSchema = await this.resolveAllRefs(rawSchema, ep);
       this.form = this.createForm(this.JsonSchema);
     } catch (e) {
-      console.error('Schema load error', e);
+      console.error('Schema load error:', e);
     } finally {
       this.loading = false;
     }
   }
 
-
-  private async resolveAllRefs(schema: any): Promise<any> {
-    if (schema && typeof schema === 'object' && schema.$ref) {
-      const cleanPath = schema.$ref.replace(/^\.\.\//g, '');
-      const url = `http://localhost:4200/joc/schemas/api/schemas/${cleanPath}`;
-      const fetched: any = await firstValueFrom(this.coreService.post(url, {}));
-      return this.resolveAllRefs(fetched);
+  private async resolveAllRefs(schema: any, basePath: string = ''): Promise<any> {
+    if (!schema || typeof schema !== 'object') {
+      return schema;
     }
 
-    if (schema.properties && typeof schema.properties === 'object') {
-      for (const key of Object.keys(schema.properties)) {
-        schema.properties[key] = await this.resolveAllRefs(
-          schema.properties[key]
-        );
+    if (Array.isArray(schema)) {
+      const resolved = [];
+      for (const item of schema) {
+        resolved.push(await this.resolveAllRefs(item, basePath));
+      }
+      return resolved;
+    }
+
+    if (schema.$ref) {
+      const refUrl = this.resolveRefUrl(schema.$ref, basePath);
+
+      if (this.schemaCache.has(refUrl)) {
+        return this.schemaCache.get(refUrl);
+      }
+
+      try {
+        const referencedSchema = await firstValueFrom(this.coreService.post(refUrl, {}));
+        const resolvedRef = await this.resolveAllRefs(referencedSchema, this.getBasePath(refUrl));
+        this.schemaCache.set(refUrl, resolvedRef);
+        return resolvedRef;
+      } catch (error) {
+        console.error(`Failed to fetch referenced schema: ${refUrl}`, error);
+        return { type: 'string', description: `Failed to load reference: ${schema.$ref}` };
       }
     }
 
-    if (schema.items) {
-      schema.items = await this.resolveAllRefs(schema.items);
+    const resolved: any = {};
+    for (const [key, value] of Object.entries(schema)) {
+      resolved[key] = await this.resolveAllRefs(value, basePath);
+    }
+
+    return resolved;
+  }
+
+  private resolveRefUrl(ref: string, basePath: string): string {
+    const origin = window.location.origin
+    const baseUrl = `${origin}/joc/schemas/api/schemas`;
+
+    if (ref.startsWith('../')) {
+      const cleanRef = ref.replace(/^\.\.\//, '');
+      return `${baseUrl}/${cleanRef}`;
+    } else if (ref.startsWith('./')) {
+      const cleanRef = ref.replace(/^\.\//, '');
+      const baseDir = this.getDirectoryFromPath(basePath);
+      return `${baseUrl}/${baseDir}/${cleanRef}`;
+    } else if (!ref.startsWith('http')) {
+      const baseDir = this.getDirectoryFromPath(basePath);
+      if (baseDir) {
+        return `${baseUrl}/${baseDir}/${ref}`;
+      } else {
+        return `${baseUrl}/${ref}`;
+      }
+    }
+
+    return ref;
+  }
+
+  private getBasePath(url: string): string {
+    const origin = window.location.origin
+    const baseUrl = `${origin}/joc/schemas/api/schemas/`;
+    if (url.startsWith(baseUrl)) {
+      return url.substring(baseUrl.length);
+    }
+    return '';
+  }
+
+  private getDirectoryFromPath(path: string): string {
+    const lastSlash = path.lastIndexOf('/');
+    if (lastSlash > 0) {
+      return path.substring(0, lastSlash);
+    }
+    return '';
+  }
+
+  // RECURSIVE FORM CREATION
+  private createForm(schema: any): FormGroup {
+    return this.fb.group(this.createControlsRecursive(schema));
+  }
+
+  private createControlsRecursive(schema: any): { [key: string]: any } {
+    const controls: any = {};
+    const properties = schema.properties || {};
+    const required = schema.required || [];
+
+    for (const [key, rawProp] of Object.entries(properties)) {
+      const propSchema = this.resolveAnyOf(rawProp);
+      const validators = this.createValidators(propSchema, required.includes(key));
+
+      controls[key] = this.createControlForType(propSchema, validators);
+    }
+
+    return controls;
+  }
+
+  private createControlForType(schema: any, validators: any[] = []): AbstractControl {
+    const resolvedSchema = this.resolveAnyOf(schema);
+
+    switch (resolvedSchema.type) {
+      case 'object':
+        if (resolvedSchema.additionalProperties === true) {
+          // Map/Dictionary type
+          return this.fb.array([]);
+        } else {
+          // Regular object with defined properties
+          return this.fb.group(this.createControlsRecursive(resolvedSchema));
+        }
+
+      case 'array':
+        return this.fb.array([]);
+
+      case 'boolean':
+        return new FormControl(resolvedSchema.default ?? false, validators);
+
+      case 'integer':
+      case 'number':
+        return new FormControl('', validators);
+
+      default:
+        // String or unknown type
+        return new FormControl('', validators);
+    }
+  }
+
+  private resolveAnyOf(schema: any): any {
+    if (schema?.anyOf && Array.isArray(schema.anyOf)) {
+      return schema.anyOf[0];
+    }
+    return schema;
+  }
+
+  private createValidators(schema: any, isRequired: boolean): any[] {
+    const validators = [];
+
+    if (isRequired) validators.push(Validators.required);
+    if (schema.maxLength != null) validators.push(Validators.maxLength(schema.maxLength));
+    if (schema.minLength != null) validators.push(Validators.minLength(schema.minLength));
+    if (schema.pattern) validators.push(Validators.pattern(schema.pattern));
+    if (schema.minimum != null) validators.push(Validators.min(schema.minimum));
+    if (schema.maximum != null) validators.push(Validators.max(schema.maximum));
+
+    return validators;
+  }
+
+  // HELPER METHODS FOR TEMPLATE
+  get rootPropertyKeys(): string[] {
+    return Object.keys(this.JsonSchema?.properties || {});
+  }
+
+  getSchemaForProperty(propertyPath: string[]): any {
+    let schema = this.JsonSchema;
+
+    for (const key of propertyPath) {
+      if (schema.properties && schema.properties[key]) {
+        schema = this.resolveAnyOf(schema.properties[key]);
+      } else if (schema.items) {
+        schema = this.resolveAnyOf(schema.items);
+      } else {
+        return null;
+      }
     }
 
     return schema;
   }
 
-  createForm(schema: any): FormGroup {
-    return this.fb.group(this.createControls(schema));
+  getFieldType(propertyPath: string[]): string {
+    const schema = this.getSchemaForProperty(propertyPath);
+    return schema?.type || 'string';
   }
 
-private createControls(schema: any): { [key: string]: any } {
-  const controls: any = {};
-  const required = schema.required || [];
+  getFormControl(propertyPath: string[]): AbstractControl | null {
+    let control: AbstractControl | null = this.form;
 
-  for (const [key, rawProp] of Object.entries(schema.properties || {})) {
-    const propSchema: any = (rawProp as any).anyOf
-      ? (rawProp as any).anyOf[0]
-      : (rawProp as any);
+    for (const key of propertyPath) {
+      if (control instanceof FormGroup) {
+        control = control.get(key);
+      } else if (control instanceof FormArray) {
+        const index = parseInt(key, 10);
+        control = control.at(index);
+      } else {
+        control = null;
+      }
 
-    const validators = [];
-
-    if (required.includes(key))          validators.push(Validators.required);
-    if (propSchema.maxLength != null)    validators.push(Validators.maxLength(propSchema.maxLength));
-    if (propSchema.minLength != null)    validators.push(Validators.minLength(propSchema.minLength));
-    if (propSchema.pattern)              validators.push(Validators.pattern(propSchema.pattern));
-
-    // → special case: object with arbitrary keys
-    if (propSchema.type === 'object' && propSchema.additionalProperties) {
-      controls[key] = this.fb.array([]);                   // start empty; user will add pairs
-    }
-    else switch (propSchema.type) {
-      case 'object':
-        controls[key] = this.fb.group(this.createControls(propSchema));
-        break;
-      case 'array':
-        controls[key] = this.fb.array([]);
-        break;
-      case 'boolean':
-        controls[key] = new FormControl(propSchema.default ?? false);
-        break;
-      case 'integer':
-      case 'number':
-        controls[key] = new FormControl('', validators);
-        break;
-      default: // string or missing type
-        controls[key] = new FormControl('', validators);
-    }
-  }
-
-  return controls;
-}
-
-  getPropSchema(key: string): any {
-    const raw = (this.JsonSchema.properties as any)[key];
-    return raw.anyOf ? raw.anyOf[0] : raw;
-  }
-
-  /** Is this property “object with additionalProperties:true”? */
-  isMap(key: string): boolean {
-    const schema = this.getPropSchema(key);
-    return schema.type === 'object' && !!schema.additionalProperties;
-  }
-
-  /** FormArray of {key,value} pairs for a map‑style object */
-  getMapArray(key: string): FormArray {
-    return this.form.get(key) as FormArray;
-  }
-
-  /** Add an empty name/value pair */
-  addMapEntry(key: string) {
-    this.getMapArray(key).push(
-      this.fb.group({
-        key:   ['', Validators.required],
-        value: ['']
-      })
-    );
-  }
-
-  /** Remove one map entry */
-  removeMapEntry(key: string, idx: number) {
-    this.getMapArray(key).removeAt(idx);
-  }
-
-  get propertyKeys(): string[] {
-    return Object.keys(this.JsonSchema?.properties || {});
-  }
-
-  getFieldType(key: string): string {
-    const raw = (this.JsonSchema.properties as any)[key];
-    const first = raw.anyOf ? raw.anyOf[0] : raw;
-    return first.type;
-  }
-
-  isArrayOfObjects(key: string): boolean {
-    const raw = (this.JsonSchema.properties as any)[key];
-    const first = raw.anyOf ? raw.anyOf[0] : raw;
-    if (first.type === 'array' && (first.items as any).type === 'object') {
-      return true;
-    }
-    return false;
-  }
-
-  childKeys(parentKey: string): string[] {
-    const raw = (this.JsonSchema.properties as any)[parentKey];
-    const first = raw.anyOf ? raw.anyOf[0] : raw;
-    if (first.type === 'object' && first.properties) {
-      return Object.keys(first.properties);
-    }
-    return [];
-  }
-
-  getChildFieldType(parentKey: string, childKey: string): string {
-    const raw = (this.JsonSchema.properties as any)[parentKey];
-    const first = raw.anyOf ? raw.anyOf[0] : raw;
-    const childSchema = (first.properties as any)[childKey];
-    const childFirst = childSchema.anyOf ? childSchema.anyOf[0] : childSchema;
-    return childFirst.type;
-  }
-
-  getFormArray(key: string): FormArray {
-    return this.form.get(key) as FormArray;
-  }
-
-  getNestedFormGroup(parentKey: string): FormGroup {
-    return this.form.get(parentKey) as FormGroup;
-  }
-
-  getNestedFormArray(parentKey: string, childKey: string): FormArray {
-    return this.getNestedFormGroup(parentKey).get(childKey) as FormArray;
-  }
-
-  getArrayElementFormGroup(arrayKey: string, i: number): FormGroup {
-    return this.getFormArray(arrayKey).at(i) as FormGroup;
-  }
-
-
-  getNestedFormArrayForIndex(
-    parentArrayKey: string,
-    childKey: string,
-    index: number
-  ): FormArray {
-    return this.getArrayElementFormGroup(parentArrayKey, index).get(
-      childKey
-    ) as FormArray;
-  }
-
-
-  addItem(arrayKey: string): void {
-    const rawField = (this.JsonSchema.properties as any)[arrayKey];
-    const first = rawField.anyOf ? rawField.anyOf[0] : rawField;
-    if (first.type === 'array' && (first.items as any).type === 'object') {
-      const itemSchema = (first.items as any) as any;
-      const newGroupControls = this.createControls(itemSchema);
-      const newGroup = this.fb.group(newGroupControls);
-      this.getFormArray(arrayKey).push(newGroup);
-      return;
+      if (!control) break;
     }
 
-    this.getFormArray(arrayKey).push(new FormControl(''));
+    return control;
   }
 
-  removeItem(arrayKey: string, index: number): void {
-    this.getFormArray(arrayKey).removeAt(index);
+  // DYNAMIC ARRAY OPERATIONS
+  addArrayItem(propertyPath: string[]): void {
+    const arrayControl = this.getFormControl(propertyPath) as FormArray;
+    const schema = this.getSchemaForProperty(propertyPath);
+    const itemSchema = this.resolveAnyOf(schema.items);
+
+    const newControl = this.createControlForType(itemSchema);
+    arrayControl.push(newControl);
   }
 
-  addNestedItem(parentKey: string, childKey: string, indexOfParent?: number): void {
-    if (indexOfParent == null) {
-      this.getNestedFormArray(parentKey, childKey).push(new FormControl(''));
-    } else {
-      this.getNestedFormArrayForIndex(parentKey, childKey, indexOfParent).push(
-        new FormControl('')
-      );
-    }
+  removeArrayItem(propertyPath: string[], index: number): void {
+    const arrayControl = this.getFormControl(propertyPath) as FormArray;
+    arrayControl.removeAt(index);
   }
 
-  removeNestedItem(
-    parentKey: string,
-    childKey: string,
-    indexOfChild: number,
-    indexOfParent?: number
-  ): void {
-    if (indexOfParent == null) {
-      this.getNestedFormArray(parentKey, childKey).removeAt(indexOfChild);
-    } else {
-      this.getNestedFormArrayForIndex(parentKey, childKey, indexOfParent).removeAt(
-        indexOfChild
-      );
-    }
+  // MAP/DICTIONARY OPERATIONS
+  addMapEntry(propertyPath: string[]): void {
+    const mapArray = this.getFormControl(propertyPath) as FormArray;
+    const entryGroup = this.fb.group({
+      key: ['', Validators.required],
+      value: ['']
+    });
+    mapArray.push(entryGroup);
+  }
+
+  removeMapEntry(propertyPath: string[], index: number): void {
+    const mapArray = this.getFormControl(propertyPath) as FormArray;
+    mapArray.removeAt(index);
+  }
+
+  // UTILITY METHODS
+  isObjectType(propertyPath: string[]): boolean {
+    return this.getFieldType(propertyPath) === 'object';
+  }
+
+  isArrayType(propertyPath: string[]): boolean {
+    return this.getFieldType(propertyPath) === 'array';
+  }
+
+  isMapType(propertyPath: string[]): boolean {
+    const schema = this.getSchemaForProperty(propertyPath);
+    return schema?.type === 'object' && schema?.additionalProperties === true;
+  }
+
+  isBooleanType(propertyPath: string[]): boolean {
+    return this.getFieldType(propertyPath) === 'boolean';
+  }
+
+  isNumberType(propertyPath: string[]): boolean {
+    const type = this.getFieldType(propertyPath);
+    return type === 'number' || type === 'integer';
+  }
+
+  getObjectProperties(propertyPath: string[]): string[] {
+    const schema = this.getSchemaForProperty(propertyPath);
+    return Object.keys(schema?.properties || {});
+  }
+
+  getArrayLength(propertyPath: string[]): number {
+    const arrayControl = this.getFormControl(propertyPath) as FormArray;
+    return arrayControl ? arrayControl.length : 0;
   }
 
   onSubmit(): void {
     if (this.form.valid) {
-      console.log(this.form.value);
+      this.activeModal.close(this.form.value);
+    } else {
+      this.markFormGroupTouched(this.form);
     }
   }
-}
 
+  private markFormGroupTouched(formGroup: FormGroup | FormArray): void {
+    Object.keys(formGroup.controls).forEach(field => {
+      const control = formGroup.get(field);
+      control?.markAsTouched({ onlySelf: true });
+
+      if (control instanceof FormGroup || control instanceof FormArray) {
+        this.markFormGroupTouched(control);
+      }
+    });
+  }
+}
 interface Mapping {
   name: string;
   path: string;
@@ -1111,16 +1325,16 @@ export class ApiRequestDialogComponent {
     { title: '/agents',                         path: '/agent/readAgents',                                     des: 'Gets Agents' },
     { title: '/agents/cluster',                 path: '/agent/readSubagentClusters',                           des: 'Gets Subagent Clusters' },
     { title: '/agents/report',                  path: '/agent/agentReportFilter',                              des: 'Gets report of Agent tasks' },
-    { title: '/controller',                     path: 'controller/urlParam',                                   des: 'Gets Controller status information' },
+    { title: '/controller',                     path: '/controller/urlParam',                                   des: 'Gets Controller status information' },
     { title: '/controllers',                    path: '/controller/controllerId-optional',                     des: 'Gets Controllers' },
-    { title: '/daily_plan/orders',              path: '/orderManagement/daily_plan/dailyPlanOrdersFilterDefRequired', des: 'Gets orders from a daily plan interval' },
-    { title: '/daily_plan/orders/cancel',       path: '/orderManagement/daily_plan/dailyPlanOrdersFilterDef',  des: 'Cancels submitted orders for a daily plan interval' },
-    { title: '/daily_plan/orders/generate',     path: '/daily_plan/generate/generate-request',                 des: 'Generates orders for a given daily plan' },
-    { title: '/daily_plan/orders/submit',       path: '/orderManagement/daily_plan/dailyPlanOrdersFilterDef',  des: 'Submits planned orders for a daily plan interval' },
-    { title: '/daily_plan/orders/delete',       path: '/orderManagement/daily_plan/dailyPlanOrdersFilterDef',  des: 'Deletes planned orders for a daily plan interval' },
-    { title: '/daily_plan/orders/summary',      path: '/orderManagement/daily_plan/dailyPlanOrdersFilterDef',  des: 'Gets summary order counts from a daily plan interval' },
+    { title: '/daily_plan/orders',              path: '/orderManagement/dailyplan/dailyPlanOrdersFilterDefRequired', des: 'Gets orders from a daily plan interval' },
+    { title: '/daily_plan/orders/cancel',       path: '/orderManagement/dailyplan/dailyPlanOrdersFilterDef',  des: 'Cancels submitted orders for a daily plan interval' },
+    { title: '/daily_plan/orders/generate',     path: '/dailyplan/generate/generate-request',                 des: 'Generates orders for a given daily plan' },
+    { title: '/daily_plan/orders/submit',       path: '/orderManagement/dailyplan/dailyPlanOrdersFilterDef',  des: 'Submits planned orders for a daily plan interval' },
+    { title: '/daily_plan/orders/delete',       path: '/orderManagement/dailyplan/dailyPlanOrdersFilterDef',  des: 'Deletes planned orders for a daily plan interval' },
+    { title: '/daily_plan/orders/summary',      path: '/orderManagement/dailyplan/dailyPlanOrdersFilterDef',  des: 'Gets summary order counts from a daily plan interval' },
     { title: '/daily_plan/projections/calendar',path: '/dailyplan/projections/projections-request',            des: 'Gets the days of the daily plan projections that have start times' },
-    { title: '/daily_plan/projections/dates',   path: '/daily_plan/projections/projections-request',           des: 'Gets the start times of date range of the daily plan projections' },
+    { title: '/daily_plan/projections/dates',   path: '/dailyplan/projections/projections-request',           des: 'Gets the start times of date range of the daily plan projections' },
     { title: '/daily_plan/projections/recreate',path: '/common/ok',                                            des: '(Re)creates daily plan projections' },
     { title: '/joc/license',                    path: '/joc/js7LicenseInfo',                                   des: 'shows information about the currently used SOS JS7 License ' },
     { title: '/joc/version',                    path: '/joc/version',                                          des: 'Get JOC\'s version' },
@@ -1247,6 +1461,7 @@ export class ApiRequestDialogComponent {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
+        this.activeModal.close(result);
       }
     });
   }
