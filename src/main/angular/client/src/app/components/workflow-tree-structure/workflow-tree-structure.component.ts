@@ -198,4 +198,20 @@ export class WorkflowTreeStructureComponent {
       this.onDrop.emit(this.position);
     }
   }
+
+  trackByInstruction(index: number, instruction: any): string {
+    return instruction.positionString || index.toString();
+  }
+
+  trackByBranch(index: number, branch: any): string {
+    return branch.id || index.toString();
+  }
+
+  trackByDemand(index: number, demand: any): string {
+    return demand.lockName || index.toString();
+  }
+
+  trackByOrderKey(index: number, order: any): string {
+    return order.key || index.toString();
+  }
 }

@@ -419,4 +419,15 @@ export class ResumeOrderModalComponent {
     recursive(this.workflow.configuration);
   }
 
+  trackByIndex(index: number): number {
+    return index;
+  }
+
+  trackByName(index: number, item: any): string {
+    return item.name || index;
+  }
+
+  trackByArgument(index: number, item: any): string {
+    return item.name || item.id || index;
+  }
 }

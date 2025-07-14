@@ -26,7 +26,7 @@
         <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
         <div class="col-md-4 col-lg-7 m-b-sm" translate>common.label.value</div>
       </div>
-      <div *ngFor="let argument of constants; let i=index" class="row">
+      <div *ngFor="let argument of constants; let i=index; trackBy: trackByArgument"  class="row">
         <div [ngClass]="{'col-sm-10' : argument.type == 'list' || argument.type == 'map'}" class="col-sm-4 m-b-sm">
           <input [(ngModel)]="argument.name" class="form-control" name="wname_{{i}}"
                  readonly type="text">
@@ -35,8 +35,8 @@
           <input [(ngModel)]="argument.value" class="form-control" name="wvalue{{i}}" readonly type="text">
         </div>
         <ng-container *ngIf="argument.type == 'list' || argument.type == 'map'" class="m-b-sm">
-          <div *ngFor="let val of argument.value; let j = index" [ngClass]="{'b-t p-t-sm': j > 0}" class="col-md-12">
-            <div *ngFor="let item of val;let k = index" class="row">
+          <div *ngFor="let val of argument.value; let j = index; trackBy: trackByIndex" [ngClass]="{'b-t p-t-sm': j > 0}" class="col-md-12">
+            <div *ngFor="let item of val;let k = index; trackBy: trackByName" class="row">
               <div class="col-md-4 p-l-md m-b-sm">
                 <input [(ngModel)]="item.name" class="form-control" name="wlname{{i}}{{j}}{{k}}" readonly type="text">
               </div>
@@ -59,7 +59,7 @@
         <div class="col-md-4 col-lg-4 m-b-sm" style="padding-left: 36px" translate>common.label.name</div>
         <div class="col-md-4 col-lg-7 m-b-sm" translate>common.label.value</div>
       </div>
-      <div *ngFor="let argument of variables; let i=index" class="form-group row m-b-0">
+      <div *ngFor="let argument of variables; let i=index; trackBy: trackByArgument" class="form-group row m-b-0">
         <div class="pos-abt m-l-12">
           <label nz-checkbox style="position: relative;top:5px" [nzDisabled]="!argument.name"
                  [nzChecked]="object.setOfCheckedValue.has(argument.name)"

@@ -78,8 +78,12 @@ export class HeaderComponent {
       this.requestorEvent = JSON.parse(sessionStorage['$SOS$REQUESTORREQUESTS']);
     }
 
-    this.isApprover = JSON.parse(sessionStorage.getItem('isApprover'))
-    this.isRequestor = JSON.parse(sessionStorage.getItem('isApprovalRequestor'))
+    if (sessionStorage.getItem('isApprover')) {
+      this.isApprover = JSON.parse(sessionStorage.getItem('isApprover'));
+    }
+    if (sessionStorage.getItem('isApprovalRequestor')) {
+      this.isRequestor = JSON.parse(sessionStorage.getItem('isApprovalRequestor'));
+    }
     this.init();
   }
 

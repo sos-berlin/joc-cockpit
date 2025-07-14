@@ -837,7 +837,7 @@ export class JsonSchemaFieldComponent {
   @Input() propertyPath: string[] = [];
   @Input() schema: any;
   @Input() formControl: AbstractControl | null;
-  @Input() parent: any; // Reference to parent component
+  @Input() parent: any;
 
   get fieldName(): string {
     return this.propertyPath[this.propertyPath.length - 1];
@@ -847,7 +847,6 @@ export class JsonSchemaFieldComponent {
     return this.parent.getSchemaForProperty(this.propertyPath);
   }
 
-  // TYPE CHECKING METHODS
   isStringField(): boolean {
     const type = this.currentSchema?.type;
     return type === 'string';
@@ -874,7 +873,7 @@ export class JsonSchemaFieldComponent {
     return this.isObjectField() && this.currentSchema?.additionalProperties === true;
   }
 
-  // VALUE UPDATE METHODS
+
   updateValue(event: any): void {
     if (this.formControl) {
       this.formControl.setValue(event.target.value);
@@ -889,7 +888,7 @@ export class JsonSchemaFieldComponent {
     }
   }
 
-  // OBJECT FIELD METHODS
+
   getObjectProperties(): string[] {
     return Object.keys(this.currentSchema?.properties || {});
   }
@@ -902,7 +901,7 @@ export class JsonSchemaFieldComponent {
     return (this.formControl as FormGroup)?.get(childKey) || null;
   }
 
-  // MAP FIELD METHODS
+
   getMapEntries(): FormGroup[] {
     if (!this.formControl) return [];
     return (this.formControl as FormArray).controls as FormGroup[];
@@ -930,7 +929,6 @@ export class JsonSchemaFieldComponent {
     entryGroup.get('value')?.setValue(event.target.value);
   }
 
-  // ARRAY FIELD METHODS
   getArrayControls(): AbstractControl[] {
     if (!this.formControl) return [];
     return (this.formControl as FormArray).controls;
@@ -1005,7 +1003,6 @@ export class ApiFormDialogComponent {
     this.title = this.modalData.title;
     this.loadSchema(this.modalData.endPoint);
   }
-
   private async loadSchema(ep: string) {
     this.loading = true;
     const origin = window.location.origin;
@@ -1014,6 +1011,7 @@ export class ApiFormDialogComponent {
       const rawSchema: any = await firstValueFrom(this.coreService.post(schemaUrl, {}));
       this.JsonSchema = await this.resolveAllRefs(rawSchema, ep);
       this.form = this.createForm(this.JsonSchema);
+      console.log('Final resolved schema:', this.JsonSchema);
     } catch (e) {
       console.error('Schema load error:', e);
     } finally {
@@ -1064,6 +1062,7 @@ export class ApiFormDialogComponent {
     const origin = window.location.origin;
     const schemasRoot = `${origin}/joc/schemas`;
 
+
     if (ref.startsWith('http')) {
       return ref;
     }
@@ -1073,23 +1072,36 @@ export class ApiFormDialogComponent {
     }
 
     const baseDir = this.getDirectoryFromPath(basePath);
+
+    let fullPath: string;
     if (baseDir) {
-      return `${schemasRoot}/api/schemas/${baseDir}/${ref}`;
+      if (baseDir.startsWith('api/schemas/')) {
+        fullPath = `${schemasRoot}/${baseDir}/${ref}`;
+      } else {
+        fullPath = `${schemasRoot}/api/schemas/${baseDir}/${ref}`;
+      }
     } else {
-      return `${schemasRoot}/api/schemas/${ref}`;
+      fullPath = `${schemasRoot}/api/schemas/${ref}`;
     }
+
+    return this.cleanUrl(fullPath);
   }
 
   private resolveRelativePath(schemasRoot: string, currentPath: string, relativePath: string): string {
 
     const currentDir = this.getDirectoryFromPath(currentPath);
 
+
     let pathParts: string[] = [];
 
     if (currentDir) {
-      pathParts = ['api', 'schemas', ...currentDir.split('/').filter(part => part)];
+      if (currentDir.startsWith('api/schemas/')) {
+        const remainingPath = currentDir.substring('api/schemas/'.length);
+        pathParts = ['api', 'schemas', ...remainingPath.split('/').filter(part => part)];
+      } else {
+        pathParts = ['api', 'schemas', ...currentDir.split('/').filter(part => part)];
+      }
     } else {
-
       pathParts = ['api', 'schemas'];
     }
 
@@ -1114,13 +1126,19 @@ export class ApiFormDialogComponent {
     const resolvedPath = pathParts.join('/');
     const finalUrl = resolvedPath ? `${schemasRoot}/${resolvedPath}` : schemasRoot;
 
-    console.log(`Resolving reference:
-      Current dir: ${currentDir || '(root)'}
-      Relative: ${relativePath}
-      Path parts after resolution: [${pathParts.join(', ')}]
-      Final URL: ${finalUrl}`);
+    return this.cleanUrl(finalUrl);
+  }
 
-    return finalUrl;
+  private cleanUrl(url: string): string {
+    let cleanedUrl = url.replace(/\/api\/schemas\/api\/schemas/g, '/api/schemas');
+
+    cleanedUrl = cleanedUrl.replace(/([^:]\/)\/+/g, '$1');
+
+    while (cleanedUrl.includes('/api/schemas/api/schemas')) {
+      cleanedUrl = cleanedUrl.replace('/api/schemas/api/schemas', '/api/schemas');
+    }
+
+    return cleanedUrl;
   }
 
   private getBasePath(url: string): string {
@@ -1130,11 +1148,7 @@ export class ApiFormDialogComponent {
     if (url.startsWith(schemasRoot)) {
       const pathAfterRoot = url.substring(schemasRoot.length);
 
-      if (pathAfterRoot.startsWith('api/schemas/')) {
-        return pathAfterRoot.substring('api/schemas/'.length);
-      }
-
-      return `../${pathAfterRoot}`;
+      return pathAfterRoot;
     }
 
     return '';
@@ -1147,8 +1161,6 @@ export class ApiFormDialogComponent {
     }
     return '';
   }
-
-  // RECURSIVE FORM CREATION
   private createForm(schema: any): FormGroup {
     return this.fb.group(this.createControlsRecursive(schema));
   }
@@ -1174,10 +1186,8 @@ export class ApiFormDialogComponent {
     switch (resolvedSchema.type) {
       case 'object':
         if (resolvedSchema.additionalProperties === true) {
-          // Map/Dictionary type
           return this.fb.array([]);
         } else {
-          // Regular object with defined properties
           return this.fb.group(this.createControlsRecursive(resolvedSchema));
         }
 
@@ -1192,7 +1202,6 @@ export class ApiFormDialogComponent {
         return new FormControl('', validators);
 
       default:
-        // String or unknown type
         return new FormControl('', validators);
     }
   }
@@ -1217,7 +1226,6 @@ export class ApiFormDialogComponent {
     return validators;
   }
 
-  // HELPER METHODS FOR TEMPLATE
   get rootPropertyKeys(): string[] {
     return Object.keys(this.JsonSchema?.properties || {});
   }
@@ -1262,7 +1270,6 @@ export class ApiFormDialogComponent {
     return control;
   }
 
-  // DYNAMIC ARRAY OPERATIONS
   addArrayItem(propertyPath: string[]): void {
     const arrayControl = this.getFormControl(propertyPath) as FormArray;
     const schema = this.getSchemaForProperty(propertyPath);
@@ -1277,7 +1284,6 @@ export class ApiFormDialogComponent {
     arrayControl.removeAt(index);
   }
 
-  // MAP/DICTIONARY OPERATIONS
   addMapEntry(propertyPath: string[]): void {
     const mapArray = this.getFormControl(propertyPath) as FormArray;
     const entryGroup = this.fb.group({
@@ -1292,7 +1298,6 @@ export class ApiFormDialogComponent {
     mapArray.removeAt(index);
   }
 
-  // UTILITY METHODS
   isObjectType(propertyPath: string[]): boolean {
     return this.getFieldType(propertyPath) === 'object';
   }
