@@ -37,7 +37,16 @@ export class AuthInterceptor implements HttpInterceptor {
               };
               const headers = new HttpHeaders(headerOptions);
               req = req.clone({headers, body: {}});
-            } else if (!user.fido) {
+            } else if (user.code) {
+              req = req.clone({
+                headers: req.headers.set('X-IDENTITY-SERVICE', user.identityServiceName),
+                body:{
+                  code: user.code,
+                  redirect_uri: user.redirect_uri,
+                  code_verifier: user.code_verifier,
+                }
+              });
+            }  else if (!user.fido) {
               const credentials = (user.userName || '') + ':' + (user.password || '');
               const utf8Credentials = new TextEncoder().encode(credentials);
               const base64Credentials = btoa(String.fromCharCode(...utf8Credentials));
@@ -65,6 +74,7 @@ export class AuthInterceptor implements HttpInterceptor {
           }
         }
       }
+
       return next.handle(req).pipe(
         tap({
           next: (event: any) => {
@@ -80,7 +90,9 @@ export class AuthInterceptor implements HttpInterceptor {
 
             } else {
               if (re.test(req.url) && err.error && !isEmpty(err.error)) {
-                this.toasterService.error(err.error.error, err.error.error_description);
+                if(err.error.error || err.error.error_description){
+                  this.toasterService.error(err.error.error, err.error.error_description);
+                }
               }
               if ((err.status === 401 || err.status === 440 || (err.status === 420 && err.error.error && (err.error.error.message.match(/UnknownSessionException/)
                 || err.error.error.message.match(/user is null/))))) {
