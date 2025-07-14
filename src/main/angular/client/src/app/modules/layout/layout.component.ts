@@ -347,7 +347,7 @@ export class LayoutComponent {
 
   logout(timeout: any): void {
     this.popoutService.closePopoutModal();
-    if (sessionStorage['$SOS$KEY']) {
+    if (sessionStorage['$SOS$KEY'] || sessionStorage['clientFlowType'] === 'AUTHENTICATION') {
       this.oauthService.logOut(sessionStorage['$SOS$KEY']);
       delete sessionStorage['$SOS$KEY'];
     }

@@ -726,6 +726,9 @@ export class CoreService {
   }
 
   getColor(d: number, type: string): string {
+    if(!sessionStorage['preferences']){
+      return '';
+    }
     const preferenceObj = JSON.parse(sessionStorage['preferences']);
     const orderStateColors = preferenceObj.orderStateColors || [];
     this.applyThemeColors(orderStateColors)

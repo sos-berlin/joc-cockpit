@@ -254,10 +254,9 @@
             this.oAuthService.clientId = res.iamOidcClientId;
             sessionStorage.setItem('clientId', res.iamOidcClientId);
           }
-          if (res.iamOidcClientSecret) {
-            this.oAuthService.clientSecret = res.iamOidcClientSecret;
-            sessionStorage.setItem('clientSecret', res.iamOidcClientSecret);
-          }
+          this.oAuthService.clientFlowType = res.iamOidcFlowType;
+          sessionStorage.setItem('clientFlowType', res.iamOidcFlowType);
+          
           if (res.iamOidcClientId || res.iamOidcClientSecret) {
             this.oAuthService.initLoginFlow();
           }
@@ -448,7 +447,6 @@
         obj['X-ID-TOKEN'] = this.userObject.idToken;
         obj['X-OPENID-CONFIGURATION'] = this.userObject.openIdConfiguration;
       }
-
       let headers = new HttpHeaders(obj);
       this.coreService.log('authentication/login', this.userObject.userName ? this.userObject : {fido: true}, {headers}).subscribe({
         next: (data: any) => {

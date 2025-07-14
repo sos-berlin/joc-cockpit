@@ -28,6 +28,7 @@ function base64UrlEncode(str: string) {
 })
 export class OIDCAuthService {
   clientId?: string = '';
+  clientFlowType?: string = '';
   redirectUri?: string;
   loginUrl?: string = '';
   scope = 'openid profile email';
@@ -36,7 +37,6 @@ export class OIDCAuthService {
   tokenEndpoint?: string;
   responseType?: string;
   showDebugInformation?: boolean;
-  clientSecret?: string;
   requireHttps?: boolean | 'remoteOnly';
   nonceStateSeparator: string = ';';
   state = '';
@@ -98,7 +98,7 @@ export class OIDCAuthService {
             this.responseTypesSupported = doc.response_types_supported || ['code'];
             this.tokenEndMethodsSupported = doc.token_endpoint_auth_methods_supported || ['client_secret_post'];
             this.discoveryDocumentLoaded = true;
-            resolve({ discoveryDocument: doc });
+            resolve({discoveryDocument: doc});
           },
           error: (err) => {
             reject(err);
@@ -112,6 +112,7 @@ export class OIDCAuthService {
     const jsonString = JSON.stringify(config);
     return btoa(jsonString);
   }
+
   private validateDiscoveryDocument(doc: any): boolean {
     let errors: any;
     errors = this.validateUrlFromDiscoveryDocument(doc.authorization_endpoint);
@@ -202,7 +203,7 @@ export class OIDCAuthService {
       if (!scope.match(/(^|\s)openid($|\s)/)) {
         scope = 'openid ' + scope;
       }
-      if (!this.clientSecret) {
+      if (this.clientFlowType != 'AUTHENTICATION') {
         this.responseTypesSupported.forEach((type: string) => {
           if (type.includes('id_token')) {
             this.responseType = type;
@@ -233,19 +234,31 @@ export class OIDCAuthService {
     if (noPrompt) {
       url += '&prompt=none';
     }
-
     //   url += '&accessType=offline&approvalPrompt=force';
     return url;
   }
 
   logOut(key: string) {
+
+
+    let logoutUrl: string | undefined = sessionStorage.getItem('logoutUrl') || this.logoutUrl;
+    if (logoutUrl && (
+      logoutUrl.includes('login.windows.net') ||
+      logoutUrl.includes('login.microsoftonline.com'))
+    ) {
+      window.location.replace(logoutUrl + '?post_logout_redirect_uri=' + window.location.href);
+      sessionStorage.clear();
+      return;
+    }
+
+    if (sessionStorage.getItem('clientFlowType') === 'AUTHENTICATION') {
+      sessionStorage.clear();
+      return;
+    }
     if (!key) {
       return;
     }
-    let logoutUrl: string | undefined = sessionStorage.getItem('logoutUrl') || this.logoutUrl;
-
     sessionStorage.clear();
-
     this.coreService.getValueFromLocker(key, (content: any) => {
       if (!this.validateUrlForHttps(this.logoutUrl)) {
         this.toasterService.error(
@@ -260,27 +273,8 @@ export class OIDCAuthService {
           'application/x-www-form-urlencoded'
         );
 
-        let flag = true;
-        let basicAuth = false;
-        if (this.tokenEndMethodsSupported.length > 0) {
-          if (this.tokenEndMethodsSupported.length > 1) {
-            this.tokenEndMethodsSupported.forEach((method) => {
-              if (method == 'none') {
-                flag = false;
-              } else if (method == 'client_secret_basic' && content.clientSecret) {
-                basicAuth = true;
-                flag = false;
-                headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent(content.clientId + ':' + content.clientSecret))));
-              }
-            })
-          }
-        }
-        if (flag && content.clientSecret) {
-          params = params.set('client_secret', content.clientSecret);
-        }
-        if (!basicAuth) {
-          params = params.set('client_id', content.clientId);
-        }
+        params = params.set('client_id', content.clientId);
+
         return new Promise((resolve, reject) => {
           let revokeAccessToken: Observable<null>;
           let revokeRefreshToken: Observable<null>;
@@ -288,12 +282,6 @@ export class OIDCAuthService {
             let revokationParams = params
               .set('token', content.token)
               .set('token_type_hint', 'access_token');
-            if (logoutUrl.includes('login.windows.net') || logoutUrl.includes('login.microsoftonline.com')) {
-
-              // navigate to the logout URL
-              window.location.replace(logoutUrl + '?post_logout_redirect_uri=' + window.location.href);
-              return
-            }
             revokeAccessToken = this.coreService.log(
               logoutUrl,
               revokationParams,
@@ -327,7 +315,6 @@ export class OIDCAuthService {
         });
       }
     });
-
   }
 
   createAndSaveNonce() {
@@ -378,6 +365,7 @@ export class OIDCAuthService {
     const sessionState = parts['session_state'];
     const idToken = parts['id_token'];
     const accessToken = parts['access_token'];
+
     if (!options.preventClearHashAfterLogin) {
       const href = location.origin +
         location.pathname +
@@ -422,10 +410,9 @@ export class OIDCAuthService {
       }
       sessionStorage.setItem('session_state', sessionState);
       if (code) {
-        await this.getTokenFromCode(code, options);
-
+        const obj = this.getTokenFromCode(code, options);
         this.restoreRequestedRoute();
-        return Promise.resolve();
+        return Promise.resolve(obj);
       } else {
         return Promise.resolve();
       }
@@ -444,6 +431,11 @@ export class OIDCAuthService {
    * Get token using an intermediate code. Works for the Authorization Code flow.
    */
   getTokenFromCode(code: any, options: any) {
+    let object = {
+      'grant_type': 'authorization_code',
+      'code': code,
+      'redirect_uri': options.customRedirectUri || this.redirectUri
+    }
     let params = new HttpParams()
       .set('grant_type', 'authorization_code')
       .set('code', code)
@@ -453,58 +445,12 @@ export class OIDCAuthService {
     if (!PKCEVerifier) {
       this.toasterService.warning('No PKCE verifier found in oauth storage!');
     } else {
-      params = params.set('code_verifier', PKCEVerifier);
+      object['code_verifier'] = PKCEVerifier;
     }
-    return this.fetchAndProcessToken(params);
+
+    return object;
   }
 
-  fetchAndProcessToken(params: any): any {
-    this.assertUrlNotNullAndCorrectProtocol(this.tokenEndpoint, 'tokenEndpoint');
-    let headers = new HttpHeaders().set('Content-Type', 'application/x-www-form-urlencoded');
-    const clientId = sessionStorage.getItem('clientId');
-    const clientSecret = this.tokenEndpoint.match('/v2.0') ? '' : (sessionStorage.getItem('clientSecret') || this.clientSecret);
-    let flag = true;
-    let basicAuth = false;
-    if (this.tokenEndMethodsSupported.length > 0) {
-      if (this.tokenEndMethodsSupported.length > 1) {
-        this.tokenEndMethodsSupported.forEach((method) => {
-          if (method == 'none') {
-            flag = false;
-          } else if (method == 'client_secret_basic' && clientSecret) {
-            basicAuth = true;
-            flag = false;
-            headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((this.clientId || clientId) + ':' + clientSecret))));
-          }
-        })
-      }
-    }
-    if (flag && clientSecret) {
-      params = params.set('client_secret', clientSecret);
-    }
-    if (!basicAuth) {
-      params = params.set('client_id', this.clientId || clientId);
-    }
-    if (this.tokenEndpoint) {
-      return new Promise((resolve, reject) => {
-        this.coreService
-          .log(this.tokenEndpoint, params, {headers})
-          .subscribe({
-            next: (tokenResponse) => {
-              this.access_token = tokenResponse.access_token;
-              this.id_token = tokenResponse.id_token;
-              this.refresh_token = tokenResponse.refresh_token;
-
-              sessionStorage['$SOS$TOKENEXPIRETIME'] = (new Date().getTime() + (tokenResponse.expires_in * 1000)) - 20000;
-              this.renewToken();
-              resolve(tokenResponse);
-            }, error: (err) => {
-              this.toasterService.error('Error getting token', err);
-              reject(err);
-            }
-          });
-      });
-    }
-  }
 
   getCodePartsFromUrl(queryString: any) {
     if (!queryString || queryString.length === 0) {
@@ -607,8 +553,7 @@ export class OIDCAuthService {
               content: {
                 token: res.access_token,
                 refreshToken: res.refresh_token,
-                clientId: content.clientId,
-                clientSecret: content.clientSecret
+                clientId: content.clientId
               }
             }, () => {
               this.renewToken();
@@ -631,6 +576,7 @@ export class OIDCAuthService {
    * method silentRefresh.
    */
   public refreshToken(data: any): Promise<any> {
+    console.log(this.tokenEndpoint, 'this.tokenEndpoint')
     this.assertUrlNotNullAndCorrectProtocol(
       this.tokenEndpoint,
       'tokenEndpoint'
@@ -645,28 +591,9 @@ export class OIDCAuthService {
         'Content-Type',
         'application/x-www-form-urlencoded'
       );
-      const clientSecret = this.tokenEndpoint.match('v2.0/') ? '' : data.clientSecret;
-      let flag = true;
-      let basicAuth = false;
-      if (this.tokenEndMethodsSupported.length > 0) {
-        if (this.tokenEndMethodsSupported.length > 1) {
-          this.tokenEndMethodsSupported.forEach((method) => {
-            if (method == 'none') {
-              flag = false;
-            } else if (method == 'client_secret_basic' && clientSecret) {
-              basicAuth = true;
-              flag = false;
-              headers = headers.set('Authorization', 'Basic ' + window.btoa(decodeURIComponent(encodeURIComponent((data.clientId + ':' + clientSecret)))));
-            }
-          })
-        }
-      }
-      if (flag && clientSecret) {
-        params = params.set('client_secret', clientSecret);
-      }
-      if (!basicAuth) {
-        params = params.set('client_id', data.clientId);
-      }
+
+      params = params.set('client_id', data.clientId);
+
       this.coreService
         .log(this.tokenEndpoint, params, {headers})
         .subscribe({
