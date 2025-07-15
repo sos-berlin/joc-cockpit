@@ -815,6 +815,7 @@ export class ApiRequestComponent {
   docs(): void {
     const modal = this.modal.create({
       nzContent: ApiRequestDialogComponent,
+      nzClassName: 'lg',
       nzData: {docs: true},
       nzFooter: null,
       nzClosable: false,
@@ -986,22 +987,40 @@ export class JsonSchemaFieldComponent {
 
 export class ApiFormDialogComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
-
+  @ViewChild('editor', {static: false}) editor!: JsonEditorComponent;
   JsonSchema: any;
+  showSchema: boolean = false;
   title: any;
+  raml: any;
   form: FormGroup;
   loading = false;
+  preferences: any = {};
+  options: any = new JsonEditorOptions();
   private schemaCache = new Map<string, any>();
 
   constructor(
     private fb: FormBuilder,
     public activeModal: NzModalRef,
     private coreService: CoreService,
-  ) {}
+  ) {
+    this.options.mode = 'code';
+    this.options.onEditable = () => {
+      return false;
+    };
+  }
 
   ngOnInit(): void {
     this.title = this.modalData.title;
+    this.raml = this.modalData.raml;
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.loadSchema(this.modalData.endPoint);
+    this.coreService.get('assets/i18n/json-editor-text_' + this.preferences.locale + '.json').subscribe((data) => {
+      this.options.languages = {};
+      this.options.languages[this.preferences.locale] = data;
+      this.options.language = this.preferences.locale;
+      this.editor.setOptions(this.options);
+    });
+    this.options.modes = ['code', 'tree'];
   }
   private async loadSchema(ep: string) {
     this.loading = true;
@@ -1348,6 +1367,18 @@ export class ApiFormDialogComponent {
       }
     });
   }
+
+  openRamlDocs(ramlUrl: string): void {
+    if (ramlUrl) {
+      window.open(ramlUrl, '_blank');
+    }
+  }
+
+  showJsonSchema(): void {
+    if (this.JsonSchema) {
+      this.showSchema = !this.showSchema
+    }
+  }
 }
 interface Mapping {
   name: string;
@@ -1357,6 +1388,7 @@ export interface endPoint {
   title: string;
   path: string;
   des: string;
+  raml?: string;
 }
 @Component({
   selector: 'app-api-request-dialog',
@@ -1374,6 +1406,7 @@ export class ApiRequestDialogComponent {
   isAdding = false;
   selectedRows = new Set<number>();
   editingIndex: number | null = null;
+  version: any;
   endpoints: endPoint[] = [
     { title: '/agents',                         path: '/agent/readAgents',                                     des: 'Gets Agents' },
     { title: '/agents/cluster',                 path: '/agent/readSubagentClusters',                           des: 'Gets Subagent Clusters' },
@@ -1416,8 +1449,31 @@ export class ApiRequestDialogComponent {
     if (this.modalData.mapping) {
       this.mappings = this.modalData.mapping
     }
+    if(this.docs){
+      this.coreService.get('version.json').subscribe((data) => {
+        this.version = data?.version;
+        this.updateRamlLinks(data?.version);
+      });
+    }
   }
 
+  private updateRamlLinks(versionString: string): void {
+    if (!versionString) return;
+
+    const cleanVersion = versionString.replace('-SNAPSHOT', '');
+
+    this.endpoints = this.endpoints.map(endpoint => ({
+      ...endpoint,
+      raml: `https://www.sos-berlin.com/JOC/${cleanVersion}/raml-doc/JOC-API/resource${endpoint.title}.html`
+    }));
+  }
+
+
+  openRamlDocs(ramlUrl: string): void {
+    if (ramlUrl) {
+      window.open(ramlUrl, '_blank');
+    }
+  }
 
   removeMapping(i: number): void {
     this.mappings.splice(i, 1);
@@ -1507,7 +1563,7 @@ export class ApiRequestDialogComponent {
     const modal = this.modal.create({
       nzContent: ApiFormDialogComponent,
       nzClassName: 'lg',
-      nzData: {endPoint: ep.path, title: ep.des},
+      nzData: {endPoint: ep.path, title: ep.des, raml:ep.raml},
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false

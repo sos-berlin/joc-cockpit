@@ -4116,6 +4116,7 @@
       "label.showLogs": "Visualiser le Journal",
       "label.invalidJson": "JSON non valide",
       "button.variableList": "Liste des Variables",
+      "label.ramlDocs": "Raml Docs",
       "button.sendRequest": "Envoyer Requête",
       "button.addParam": "Ajouter Paramètre",
       "button.addHeader": "Ajouter En-tête",

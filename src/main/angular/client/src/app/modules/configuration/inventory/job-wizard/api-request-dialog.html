@@ -123,12 +123,24 @@
       <tr>
         <th translate>common.label.name</th>
         <th translate>common.label.title</th>
+        <th translate>workflow.apiRequest.label.ramlDocs</th>
       </tr>
       </thead>
       <tbody>
       <tr *ngFor="let ep of endpoints">
         <td class="cur-point" (click)="dynamicForm(ep)">{{ ep.title }}</td>
         <td class="cur-point" (click)="dynamicForm(ep)">{{ ep.des }}</td>
+        <td class="text-center">
+          <i
+            *ngIf="ep.raml"
+            nz-icon
+            nzType="file-text"
+            nzTheme="outline"
+            class="cur-point raml-icon"
+            (click)="openRamlDocs(ep.raml)"
+          ></i>
+          <span *ngIf="!ep.raml" class="text-muted">-</span>
+        </td>
       </tr>
       </tbody>
     </nz-table>

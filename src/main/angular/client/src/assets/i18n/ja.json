@@ -4116,6 +4116,7 @@
       "label.hideLogs": "Hide Logs",
       "label.showLogs": "Show Logs",
       "label.invalidJson": "Invalid JSON",
+      "label.ramlDocs": "Raml Docs",
       "button.variableList": "Variable List",
       "button.sendRequest": "Send Request",
       "button.addParam": "Add Param",

@@ -10,7 +10,7 @@
   </button>
 </div>
 
-<form [formGroup]="form" (ngSubmit)="onSubmit()" spellcheck="false">
+<form  *ngIf="!showSchema" [formGroup]="form" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a p-t-sm">
     <div class="row">
       <div
@@ -30,22 +30,55 @@
   </div>
   <div *ngIf="loading" class="text-center p-3"><nz-spin [nzSize]="'small'" nzSimple></nz-spin>
   </div>
-  <div class="modal-footer">
+
+  <div *ngIf="!showSchema" class="modal-footer">
     <button
       [disabled]="form?.invalid"
-      class="btn btn-primary btn-xs"
+      class="btn btn-primary btn-sm"
       type="submit"
     >
       Submit
     </button>
     <button
       (click)="activeModal.destroy()"
-      class="btn btn-grey btn-xs"
+      class="btn btn-grey btn-sm"
       type="button"
     >
       Cancel
     </button>
+
+    <button
+      (click)="showJsonSchema()"
+      class="btn btn-grey btn-sm"
+      type="button"
+    >
+      Show Schema
+    </button>
+    <button
+      class="btn btn-grey btn-sm"
+      type="button"
+    >
+      <i
+        *ngIf="raml"
+        nz-icon
+        nzType="file-text"
+        nzTheme="outline"
+        class="cur-point raml-icon"
+        (click)="openRamlDocs(raml)"
+        title="{{'workflow.apiRequest.label.ramlDocs' | translate}}"
+      ></i>
+    </button>
   </div>
 </form>
 
+<json-editor #editor *ngIf="showSchema" [data]="JsonSchema" [options]="options"></json-editor>
 
+<div *ngIf="showSchema" class="modal-footer">
+  <button
+    (click)="showJsonSchema()"
+    class="btn btn-grey btn-sm"
+    type="button"
+  >
+    close
+  </button>
+</div>
