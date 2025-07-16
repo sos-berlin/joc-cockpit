@@ -1,10 +1,10 @@
 import {Component, ElementRef, EventEmitter, inject, Input, Output, ViewChild, ViewEncapsulation} from '@angular/core';
-import {forkJoin, of, Subject, Subscription} from 'rxjs';
+import {forkJoin, map, Observable, of, Subject, Subscription} from 'rxjs';
 import {TranslateService} from '@ngx-translate/core';
 import {NZ_MODAL_DATA, NzModalRef, NzModalService} from 'ng-zorro-antd/modal';
 import {clone, isArray, isEmpty} from 'underscore';
 import {Router} from '@angular/router';
-import {catchError, debounceTime, takeUntil} from 'rxjs/operators';
+import {catchError, debounceTime, takeUntil, tap} from 'rxjs/operators';
 import {ToastrService} from 'ngx-toastr';
 import {NzMessageService} from "ng-zorro-antd/message";
 import {EditFilterModalComponent} from '../../components/filter-modal/filter.component';
@@ -762,6 +762,7 @@ export class DailyPlanComponent {
   dateFormat: string;
   workflowTagsPerWorkflow: any;
   isParentLoaded = false;
+  orderIdsForCancel: any;
   object = {
     mapOfCheckedId: new Map(),
     checked: false,
@@ -1492,22 +1493,49 @@ export class DailyPlanComponent {
 
   private cancelByDateRange(auditLog): void {
     this.isProcessing = true;
-    let obj = {
+    this.callOrderApi().subscribe({
+      next: () => {
+        const orderIds = this.orderIdsForCancel.map(i => i.orderId);
+        this.performCancel(auditLog, orderIds);
+      },
+      error: () => this.resetAction()
+    });
+  }
+
+  private callOrderApi(): Observable<any> {
+    const payload: any = {
+      dailyPlanDateFrom: this.coreService.getStringDate(this.dateRanges[0]),
+      dailyPlanDateTo: this.coreService.getStringDate(this.dateRanges[1]),
+    };
+
+    if (this.dailyPlanFilters.filter.status !== 'ALL') {
+      payload.states = [this.dailyPlanFilters.filter.status];
+    }
+
+    return this.coreService.post('daily_plan/orders', this.coreService.clone(payload))
+      .pipe(tap(result => this.orderIdsForCancel = result.plannedOrderItems || []));
+  }
+
+  private performCancel(auditLog, orderIds: string[]): void {
+    const obj = {
       controllerIds: [this.schedulerIds.selected],
       dailyPlanDateFrom: this.coreService.getStringDate(this.dateRanges[0]),
       dailyPlanDateTo: this.coreService.getStringDate(this.dateRanges[1]),
-      auditLog
+      auditLog,
+      orderIds
     };
+
     this.coreService.post('daily_plan/orders/cancel', obj).subscribe({
       next: () => {
         this.resetAction(5000);
-        if (this.dateRanges && this.dateRanges.length > 0) {
+        if (this.dateRanges?.length > 0) {
           const _date = new Date(this.selectedDate).setHours(0, 0, 0, 0);
           if (this.dateRanges[0] <= _date && this.dateRanges[1] >= _date) {
             this.refreshView();
           }
         }
-      }, error: () => this.resetAction()
+      },
+      error: () => this.resetAction()
     });
     this.resetCheckBox();
   }
