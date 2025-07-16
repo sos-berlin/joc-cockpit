@@ -4115,7 +4115,7 @@
       "label.hideLogs": "Protokoll verbergen",
       "label.showLogs": "Protokoll anzeigen",
       "label.invalidJson": "Ungültiges JSON",
-      "label.ramlDocs": "Raml Docs",
+      "label.ramlDocs": "RAML Dokumentation",
       "button.variableList": "Variablenliste",
       "button.sendRequest": "Anfrage senden",
       "button.addParam": "Parameter hinzufügen",
