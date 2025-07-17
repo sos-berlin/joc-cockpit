@@ -37,14 +37,14 @@
       class="btn btn-primary btn-sm"
       type="submit"
     >
-      Submit
+      {{ 'common.button.submit' | translate }}
     </button>
     <button
       (click)="activeModal.destroy()"
       class="btn btn-grey btn-sm"
       type="button"
     >
-      Cancel
+      {{ 'common.button.cancel' | translate }}
     </button>
 
     <button
@@ -52,7 +52,7 @@
       class="btn btn-grey btn-sm"
       type="button"
     >
-      Show Schema
+      {{ 'workflow.apiRequest.button.showSchema' | translate }}
     </button>
     <button
       class="btn btn-grey btn-sm"
@@ -79,6 +79,6 @@
     class="btn btn-grey btn-sm"
     type="button"
   >
-    close
+    {{ 'common.button.close' | translate }}
   </button>
 </div>

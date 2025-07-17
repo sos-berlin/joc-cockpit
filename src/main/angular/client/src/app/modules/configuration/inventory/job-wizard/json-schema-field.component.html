@@ -52,7 +52,7 @@
           type="button"
           class="btn btn-grey btn-xs"
           (click)="addMapEntry()">
-          <i class="fa fa-plus"></i> Add Entry
+          <i class="fa fa-plus"></i> {{ 'workflow.apiRequest.label.addEntry' | translate }}
         </button>
         <div style="margin-top:0.5rem">
           <div *ngFor="let entry of getMapEntries(); let i = index"
@@ -69,12 +69,8 @@
               [value]="entry.get('value').value"
               (input)="updateMapValue(i, $event)"
               style="width:45%" />
-            <button
-              type="button"
-              class="btn btn-grey btn-sm m-l-sm"
-              (click)="removeMapEntry(i)">
-              ✕
-            </button>
+            <i (click)="removeMapEntry(i)"
+               class="fa fa-times m-l-sm"></i>
           </div>
         </div>
       </ng-container>
@@ -103,7 +99,7 @@
           type="button"
           class="btn btn-grey btn-xs"
           (click)="addArrayItem()">
-          <i class="fa fa-plus"></i> Add Item
+          <i class="fa fa-plus"></i> {{ 'workflow.apiRequest.label.addItem' | translate }}
         </button>
 
         <div style="margin-top: 0.5rem;">
@@ -111,14 +107,10 @@
                style="margin-bottom: 1rem; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;">
 
             <!-- Array item header -->
-            <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 0.5rem;">
-              <strong>Item {{ i + 1 }}</strong>
-              <button
-                type="button"
-                class="btn btn-grey btn-sm m-l-sm"
-                (click)="removeArrayItem(i)">
-                Remove
-              </button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <strong>{{ 'workflow.apiRequest.label.item' | translate }} {{ i + 1 }}</strong>
+              <i (click)="removeArrayItem(i)"
+                 class="fa fa-times m-l-sm"></i>
             </div>
 
             <!-- Render array item content recursively -->
@@ -184,25 +176,24 @@
   </div>
 
   <!-- Validation Messages -->
-  <div *ngIf="formControl && formControl.invalid && (formControl.touched || formControl.dirty)"
-       class="col-md-offset-3 col-md-6">
+  <div *ngIf="formControl && formControl.invalid && (formControl.touched || formControl.dirty)" style="margin-top: -16px">
     <small class="text-danger" *ngIf="formControl.hasError('required')">
-      {{ fieldName }} is required
+      {{ fieldName }} {{ 'workflow.apiRequest.label.isRequired' | translate }}
     </small>
     <small class="text-danger" *ngIf="formControl.hasError('maxlength')">
-      Max length exceeded ({{ formControl.getError('maxlength').actualLength }}/{{ formControl.getError('maxlength').requiredLength }})
+      {{ 'workflow.apiRequest.label.maxLength' | translate }} ({{ formControl.getError('maxlength').actualLength }}/{{ formControl.getError('maxlength').requiredLength }})
     </small>
     <small class="text-danger" *ngIf="formControl.hasError('minlength')">
-      Min length required ({{ formControl.getError('minlength').actualLength }}/{{ formControl.getError('minlength').requiredLength }})
+      {{ 'workflow.apiRequest.label.minLength' | translate }}  ({{ formControl.getError('minlength').actualLength }}/{{ formControl.getError('minlength').requiredLength }})
     </small>
     <small class="text-danger" *ngIf="formControl.hasError('pattern')">
-      Invalid format
+      {{ 'workflow.apiRequest.label.invalidFormat' | translate }}
     </small>
     <small class="text-danger" *ngIf="formControl.hasError('min')">
-      Value must be at least {{ formControl.getError('min').min }}
+      {{ 'workflow.apiRequest.label.leastValue' | translate }} {{ formControl.getError('min').min }}
     </small>
     <small class="text-danger" *ngIf="formControl.hasError('max')">
-      Value must be at most {{ formControl.getError('max').max }}
+      {{ 'workflow.apiRequest.label.mostValue' | translate }} {{ formControl.getError('max').max }}
     </small>
   </div>
 </div>
