@@ -1509,8 +1509,11 @@ export class DailyPlanComponent {
       dailyPlanDateTo: this.coreService.getStringDate(this.dateRanges[1]),
     };
 
-    if (this.dailyPlanFilters.filter.status !== 'ALL') {
+    if (this.dailyPlanFilters.filter.status === 'ALL') {
+      payload.states = ['SUBMITTED']
+    }else{
       payload.states = [this.dailyPlanFilters.filter.status];
+
     }
 
     return this.coreService.post('daily_plan/orders', this.coreService.clone(payload))

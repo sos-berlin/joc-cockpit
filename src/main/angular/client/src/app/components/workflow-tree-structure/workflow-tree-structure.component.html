@@ -96,7 +96,7 @@
 
 <div *ngFor="let instruction of configuration.instructions; let i = index; trackBy: trackByInstruction">
   <ul class="m-b-0">
-    <li (dragend)="dragend($event)" (dragover)="drag($event);">
+    <li (dragend)="dragend($event)" (dragenter)="drag($event);">
       <div *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'ConsumeNotices' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'CaseWhen' || instruction.TYPE === 'When' || instruction.TYPE === 'ElseWhen' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle'
          || instruction.TYPE === 'Lock' || instruction.TYPE === 'Options' || instruction.TYPE === 'StickySubagent'"
            [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}"
