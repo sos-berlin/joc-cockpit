@@ -4115,7 +4115,7 @@
       "label.hideLogs": "Protokoll verbergen",
       "label.showLogs": "Protokoll anzeigen",
       "label.invalidJson": "Ungültiges JSON",
-      "label.ramlDocs": "Raml Docs",
+      "label.ramlDocs": "RAML Dokumentation",
       "label.addItem": "Add Item",
       "label.addEntry": "Add Entry",
       "label.item": "Item",

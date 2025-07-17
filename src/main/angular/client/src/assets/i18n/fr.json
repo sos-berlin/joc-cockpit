@@ -4116,7 +4116,7 @@
       "label.showLogs": "Visualiser le Journal",
       "label.invalidJson": "JSON non valide",
       "button.variableList": "Liste des Variables",
-      "label.ramlDocs": "Raml Docs",
+     "label.ramlDocs": "Documentation RAML",
       "label.addItem": "Add Item",
       "label.addEntry": "Add Entry",
       "label.item": "Item",
