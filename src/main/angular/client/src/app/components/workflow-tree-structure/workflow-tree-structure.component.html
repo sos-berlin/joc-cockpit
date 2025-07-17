@@ -75,7 +75,7 @@
 </ng-template>
 <ng-template #itemTemplate2 let-currentOrder="currentOrder" let-orders>
   <ng-template #contentTemplate2>
-    <div *ngFor="let order of orders | keyvalue;" class="p-l-sm">
+    <div *ngFor="let order of orders | keyvalue; trackBy: trackByOrderKey" class="p-l-sm">
       <ng-container *ngIf="order.value['orderId'] !== currentOrder.orderId">
         <i [ngClass]="coreService.getColor(order.value['state'].severity, 'text')" class="fa fa-circle p-r-s"></i>
         {{order.value['orderId']}} <i *ngIf="order.value['cyclicOrder']" aria-hidden="true"
@@ -89,9 +89,10 @@
   </ng-template>
   <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="contentTemplate2" class="_600"> {{orders.size - 1}} others</span>
 </ng-template>
-<div *ngFor="let instruction of configuration.instructions; let i = index">
+
+<div *ngFor="let instruction of configuration.instructions; let i = index; trackBy: trackByInstruction">
   <ul class="m-b-0">
-    <li (dragend)="dragend($event)" (dragover)="drag($event);">
+    <li (dragend)="dragend($event)" (dragenter)="drag($event);">
       <div *ngIf="instruction.TYPE === 'Fork' || instruction.TYPE === 'ForkList' || instruction.TYPE === 'ConsumeNotices' || instruction.TYPE === 'If' || instruction.TYPE === 'Try' || instruction.TYPE === 'CaseWhen' || instruction.TYPE === 'When' || instruction.TYPE === 'ElseWhen' || instruction.TYPE === 'Retry' || instruction.TYPE === 'Cycle'
          || instruction.TYPE === 'Lock' || instruction.TYPE === 'Options' || instruction.TYPE === 'StickySubagent'"
            [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}"
@@ -115,7 +116,7 @@
           <i *ngIf="instruction.label" class="p-l-xs p-r-xs text-muted _400">({{instruction.label}})</i>
           <span *ngIf="instruction.TYPE === 'Lock'">: </span>
           <span *ngIf="(instruction.TYPE === 'Lock')">
-            <span *ngFor="let item of instruction.demands" class="text-muted">
+            <span *ngFor="let item of instruction.demands; trackBy: trackByDemand" class="text-muted">
               <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="lockItemTemplate" class="text-muted">
                 {{item.lockName}}
               </span>
@@ -224,7 +225,7 @@
       </div>
       <div *ngIf="instruction.TYPE === 'Fork' && (instruction.show)"
            [ngClass]="{'drop-area' : instruction.enabled, 'drop-highlight' : instruction.enabled && disabledDrag}" id="{{instruction.positionString}}">
-        <div *ngFor="let branch of instruction.branches">
+        <div *ngFor="let branch of instruction.branches; trackBy: trackByBranch">
           <div class="p-l-md">
             <a (click)="collapse(branch)" class="m-l">
               <i [ngClass]="{'fa-minus' : (branch.show)}" class="fa fa-plus pr-2"></i>
