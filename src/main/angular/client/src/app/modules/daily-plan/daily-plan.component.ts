@@ -1074,6 +1074,12 @@ export class DailyPlanComponent {
     this.loadOrderPlan();
   }
 
+  getPlansCalRange(status): void {
+    if (status) {
+      this.dailyPlanFilters.filter.status = status;
+    }
+  }
+
   changeLate(): void {
     this.dailyPlanFilters.filter.late = !this.dailyPlanFilters.filter.late;
     if (this.dailyPlanFilters.filter.late) {
@@ -1953,8 +1959,9 @@ export class DailyPlanComponent {
       this.object.checked = false;
     }
     this.object.indeterminate = this.object.mapOfCheckedId.size > 0 && !this.object.checked;
-    this.checkState(this.object, this.object.mapOfCheckedId);
     this.object.isLetRun = this.dailyPlanFilters.filter.filterBy === 'ONETIMEORDERS' || this.dailyPlanFilters.filter.filterBy === '';
+    this.checkState(this.object, this.object.mapOfCheckedId);
+
   }
 
   checkOrderTemplate(template): void {
@@ -2371,12 +2378,18 @@ export class DailyPlanComponent {
       if (order.state._text !== 'PLANNED') {
         object.isPlanned = false;
       }
-      if (order.state._text === 'PLANNED' || order.state._text === 'FINISHED') {
+      if (order.state._text === 'PLANNED') {
         object.isCancel = true;
+        object.isLetRun = false;
+      }
+
+      if (order.state._text === 'SUBMITTED') {
+        object.isLetRun = true;
       }
       if (order.state._text === 'FINISHED') {
         ++finishedCount;
         object.isModify = false;
+        object.isLetRun = false;
         object.isModifyStartTime = false;
       }
 
@@ -3248,9 +3261,11 @@ private filterData(planItems: any[]): void {
         });
       }
     } else {
-      const orderIdsToContinue = this.planOrders
-        .filter(value => value.state._text === 'SUBMITTED' && !value.cyclicOrder)
-        .map(order => order.orderId);
+      const selectedOrders = Array.from(this.object.mapOfCheckedId.values());
+
+      const orderIdsToContinue = selectedOrders
+        .filter(o => o.state?._text === 'SUBMITTED' && !o.cyclicOrder)
+        .map(o => o.orderId);
       if (orderIdsToContinue.length > 0) {
         if (this.preferences.auditLog) {
           let comments = {

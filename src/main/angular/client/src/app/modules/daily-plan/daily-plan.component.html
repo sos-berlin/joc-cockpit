@@ -324,6 +324,16 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
+          <div *ngIf="dailyPlanFilters.tabIndex == 0 && dateRanges.length > 0" [ngClass]="{'hide':object.mapOfCheckedId.size>0}" class="inline m-b-xs">
+            <div class="btn-group m-l-12 hidden-btn-group">
+              <ng-container *ngFor="let btn of filterBtn">
+                <button (click)="getPlansCalRange(btn.status)" [disabled]="savedFilter.selected"
+                        [ngClass]="{'btn-primary': dailyPlanFilters.filter.status===btn.status}"
+                        class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.{{btn.text}}
+                </button>
+              </ng-container>
+            </div>
+          </div>
           <div *ngIf="dailyPlanFilters.tabIndex == 0" [ngClass]="{'hide':object.mapOfCheckedId.size>0 || dateRanges.length > 0}" class="inline m-b-xs">
             <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterBtn">
