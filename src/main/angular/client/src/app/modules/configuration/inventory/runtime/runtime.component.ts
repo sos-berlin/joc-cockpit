@@ -1264,7 +1264,11 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
           this.calendarTitle = e.currentYear;
           if (this.toDate) {
             this.changeDate();
-            this.attachDayTooltips(cal);
+            if(!this.calendar){
+              setTimeout(()=>{
+                this.attachDayTooltips(cal);
+              },100)
+            }
           }
 
         }
@@ -1343,7 +1347,9 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     const cal = $('#full-calendar').data('calendar') as any;
     cal.setDataSource(this.planItems);
 
-    this.attachDayTooltips(cal);
+    if(!this.calendar){
+      this.attachDayTooltips(cal);
+    }
   }
 
   editWorkingCal(calendar): void {
@@ -1467,9 +1473,78 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   private callDates(obj, flag): void {
     this.coreService.post(!this.calendar ? 'schedule/runtime' : 'inventory/calendar/dates',
       obj).subscribe((result: any) => {
-      this.filterDates(result, flag);
+        if(this.calendar){
+          this.filterCalDates(result, flag);
+        }else{
+          this.filterDates(result, flag);
+        }
     });
   }
+
+  private filterCalDates(result, flag): void {
+    if (result.periods) {
+      this.populateCalPlanItems(result);
+    } else {
+      if (result.dates) {
+        for (let i = 0; i < result.dates.length; i++) {
+          const x = result.dates[i];
+          const obj = {
+            startDate: this.coreService.getDate(x),
+            endDate: this.coreService.getDate(x),
+            color: 'blue'
+          };
+
+          this.planItems.push(obj);
+        }
+      }
+      if (result.withExcludes) {
+        for (let i = 0; i < result.withExcludes.length; i++) {
+          const x = result.withExcludes[i];
+          this.planItems.push({
+            startDate: this.coreService.getDate(x),
+            endDate: this.coreService.getDate(x),
+            color: 'orange'
+          });
+        }
+      }
+    }
+    if (flag) {
+      this.tempList = clone(this.planItems);
+    }
+    $('#full-calendar').data('calendar').setDataSource(this.planItems);
+    this.ref.detectChanges();
+  }
+
+  private populateCalPlanItems(res: any): void {
+    res.periods.forEach((value: any) => {
+      let planData: any = {};
+      if (value.begin) {
+        planData = {
+          plannedStartTime: this.coreService.getDateByFormat(value.begin, this.preferences.zone, 'YYYY-MM-DD'),
+          plannedShowTime: this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.begin), this.preferences.dateFormat)
+        };
+        if (value.end) {
+          planData.endTime = this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.end),
+            this.preferences.dateFormat);
+        }
+        if (value.repeat) {
+          planData.repeat = value.repeat;
+        }
+      } else if (value.singleStart) {
+        planData = {
+          plannedStartTime: this.coreService.getDateByFormat(value.singleStart, this.preferences.zone, 'YYYY-MM-DD'),
+          plannedShowTime: this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, value.singleStart), this.preferences.dateFormat)
+        };
+      }
+      const date = this.coreService.getDate(planData.plannedStartTime);
+      planData.startDate = date;
+      planData.endDate = date;
+      planData.color = 'blue';
+
+      this.planItems.push(planData);
+    });
+  }
+
 
   private filterDates(result: any, flag: boolean): void {
     let toPopulate: { dates: string[], periods: any[] };
