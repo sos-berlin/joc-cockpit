@@ -816,7 +816,7 @@ export class ApiRequestComponent {
     const modal = this.modal.create({
       nzContent: ApiRequestDialogComponent,
       nzClassName: 'lg',
-      nzData: {docs: true},
+      nzData: {docs: true, request: this.model.body},
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
@@ -837,15 +837,27 @@ export class ApiRequestComponent {
 export class JsonSchemaFieldComponent {
   @Input() propertyPath: string[] = [];
   @Input() schema: any;
-  @Input() formControl: AbstractControl | null;
+  @Input() request: any;
+  @Input() formControl: AbstractControl | null = null;
   @Input() parent: any;
 
+  ngOnInit(): void {
+  }
+
   get fieldName(): string {
-    return this.propertyPath[this.propertyPath.length - 1];
+    return this.propertyPath[this.propertyPath.length - 1] || 'field';
+  }
+
+  get uniqueFieldName(): string {
+    return this.propertyPath.join('_') || 'field';
   }
 
   get currentSchema(): any {
-    return this.parent.getSchemaForProperty(this.propertyPath);
+    return this.parent?.getSchemaForProperty(this.propertyPath) || {};
+  }
+
+  get hasValidFormControl(): boolean {
+    return this.formControl !== null && this.formControl !== undefined;
   }
 
   isStringField(): boolean {
@@ -874,21 +886,19 @@ export class JsonSchemaFieldComponent {
     return this.isObjectField() && this.currentSchema?.additionalProperties === true;
   }
 
-
   updateValue(event: any): void {
-    if (this.formControl) {
-      this.formControl.setValue(event.target.value);
-      this.formControl.markAsTouched();
+    if (this.hasValidFormControl) {
+      this.formControl!.setValue(event.target.value);
+      this.formControl!.markAsTouched();
     }
   }
 
   updateBooleanValue(event: any): void {
-    if (this.formControl) {
-      this.formControl.setValue(event.target.checked);
-      this.formControl.markAsTouched();
+    if (this.hasValidFormControl) {
+      this.formControl!.setValue(event.target.checked);
+      this.formControl!.markAsTouched();
     }
   }
-
 
   getObjectProperties(): string[] {
     return Object.keys(this.currentSchema?.properties || {});
@@ -899,62 +909,73 @@ export class JsonSchemaFieldComponent {
   }
 
   getChildControl(childKey: string): AbstractControl | null {
-    return (this.formControl as FormGroup)?.get(childKey) || null;
+    if (!this.hasValidFormControl) return null;
+    const formGroup = this.formControl as FormGroup;
+    return formGroup?.get(childKey) || null;
   }
 
-
   getMapEntries(): FormGroup[] {
-    if (!this.formControl) return [];
-    return (this.formControl as FormArray).controls as FormGroup[];
+    if (!this.hasValidFormControl) return [];
+    const formArray = this.formControl as FormArray;
+    return (formArray?.controls || []) as FormGroup[];
   }
 
   addMapEntry(): void {
-    this.parent.addMapEntry(this.propertyPath);
+    if (this.parent?.addMapEntry) {
+      this.parent.addMapEntry(this.propertyPath);
+    }
   }
 
   removeMapEntry(index: number): void {
-    this.parent.removeMapEntry(this.propertyPath, index);
+    if (this.parent?.removeMapEntry) {
+      this.parent.removeMapEntry(this.propertyPath, index);
+    }
   }
 
   updateMapKey(index: number, event: any): void {
-    if (!this.formControl) return;
+    if (!this.hasValidFormControl) return;
     const mapArray = this.formControl as FormArray;
-    const entryGroup = mapArray.at(index) as FormGroup;
-    entryGroup.get('key')?.setValue(event.target.value);
+    const entryGroup = mapArray?.at(index) as FormGroup;
+    entryGroup?.get('key')?.setValue(event.target.value);
   }
 
   updateMapValue(index: number, event: any): void {
-    if (!this.formControl) return;
+    if (!this.hasValidFormControl) return;
     const mapArray = this.formControl as FormArray;
-    const entryGroup = mapArray.at(index) as FormGroup;
-    entryGroup.get('value')?.setValue(event.target.value);
+    const entryGroup = mapArray?.at(index) as FormGroup;
+    entryGroup?.get('value')?.setValue(event.target.value);
   }
 
   getArrayControls(): AbstractControl[] {
-    if (!this.formControl) return [];
-    return (this.formControl as FormArray).controls;
+    if (!this.hasValidFormControl) return [];
+    const formArray = this.formControl as FormArray;
+    return formArray?.controls || [];
   }
 
   addArrayItem(): void {
-    this.parent.addArrayItem(this.propertyPath);
+    if (this.parent?.addArrayItem) {
+      this.parent.addArrayItem(this.propertyPath);
+    }
   }
 
   removeArrayItem(index: number): void {
-    this.parent.removeArrayItem(this.propertyPath, index);
+    if (this.parent?.removeArrayItem) {
+      this.parent.removeArrayItem(this.propertyPath, index);
+    }
   }
 
   isArrayOfPrimitives(): boolean {
-    const itemSchema = this.parent.resolveAnyOf(this.currentSchema?.items);
+    const itemSchema = this.parent?.resolveAnyOf?.(this.currentSchema?.items);
     return itemSchema?.type !== 'object';
   }
 
   getArrayItemType(): string {
-    const itemSchema = this.parent.resolveAnyOf(this.currentSchema?.items);
+    const itemSchema = this.parent?.resolveAnyOf?.(this.currentSchema?.items);
     return itemSchema?.type || 'string';
   }
 
   getArrayItemObjectProperties(): string[] {
-    const itemSchema = this.parent.resolveAnyOf(this.currentSchema?.items);
+    const itemSchema = this.parent?.resolveAnyOf?.(this.currentSchema?.items);
     return Object.keys(itemSchema?.properties || {});
   }
 
@@ -963,21 +984,46 @@ export class JsonSchemaFieldComponent {
   }
 
   getArrayItemChildControl(itemIndex: number, childKey: string): AbstractControl | null {
+    if (!this.hasValidFormControl) return null;
     const arrayControl = this.formControl as FormArray;
     const itemControl = arrayControl?.at(itemIndex) as FormGroup;
     return itemControl?.get(childKey) || null;
   }
 
   updateArrayItemValue(index: number, event: any): void {
-    if (!this.formControl) return;
+    if (!this.hasValidFormControl) return;
     const arrayControl = this.formControl as FormArray;
-    arrayControl.at(index)?.setValue(event.target.value);
+    const control = arrayControl?.at(index);
+    if (control) {
+      control.setValue(event.target.value);
+      control.markAsTouched();
+    }
   }
 
   updateArrayItemBooleanValue(index: number, event: any): void {
-    if (!this.formControl) return;
+    if (!this.hasValidFormControl) return;
     const arrayControl = this.formControl as FormArray;
-    arrayControl.at(index)?.setValue(event.target.checked);
+    const control = arrayControl?.at(index);
+    if (control) {
+      control.setValue(event.target.checked);
+      control.markAsTouched();
+    }
+  }
+
+  getFormControlValue(): any {
+    return this.hasValidFormControl ? this.formControl!.value : '';
+  }
+
+  isFormControlChecked(): boolean {
+    return this.hasValidFormControl ? !!this.formControl!.value : false;
+  }
+
+  generateItemName(type: string, index: number, subType?: string): string {
+    const base = this.uniqueFieldName;
+    if (subType) {
+      return `${base}_${type}_${index}_${subType}`;
+    }
+    return `${base}_${type}_${index}`;
   }
 }
 @Component({
@@ -988,54 +1034,113 @@ export class JsonSchemaFieldComponent {
 export class ApiFormDialogComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   @ViewChild('editor', {static: false}) editor!: JsonEditorComponent;
+
   JsonSchema: any;
+  jsonData: any;
   showSchema: boolean = false;
   title: any;
   raml: any;
+  request: any;
   form: FormGroup;
   loading = false;
   preferences: any = {};
   options: any = new JsonEditorOptions();
+  isError = false;
+
   private schemaCache = new Map<string, any>();
+  private formControlCache = new Map<string, AbstractControl>();
+  private _rootPropertyKeys: string[] = [];
 
   constructor(
     private fb: FormBuilder,
     public activeModal: NzModalRef,
     private coreService: CoreService,
+    private cdr: ChangeDetectorRef,
+    private ref: ChangeDetectorRef
   ) {
     this.options.mode = 'code';
     this.options.onEditable = () => {
       return false;
+    };
+    this.options.onChange = () => {
+      try {
+        this.isError = false;
+        this.editor.get();
+      } catch (err) {
+        this.isError = true;
+      }
+      this.ref.detectChanges();
     };
   }
 
   ngOnInit(): void {
     this.title = this.modalData.title;
     this.raml = this.modalData.raml;
+    this.request = this.modalData.request;
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.loadSchema(this.modalData.endPoint);
-    this.coreService.get('assets/i18n/json-editor-text_' + this.preferences.locale + '.json').subscribe((data) => {
+    this.loadEditorLanguage();
+    this.options.modes = ['code', 'tree'];
+  }
+
+  getFormControlCached(key: string): AbstractControl | null {
+    if (!this.formControlCache.has(key)) {
+      const control = this.form?.get(key) || null;
+      if (control) {
+        this.formControlCache.set(key, control);
+      }
+    }
+    return this.formControlCache.get(key) || null;
+  }
+
+
+  trackByPropertyKey(index: number, key: string): string {
+    return key;
+  }
+
+  get rootPropertyKeys(): string[] {
+    if (this._rootPropertyKeys.length === 0 && this.JsonSchema?.properties) {
+      this._rootPropertyKeys = Object.keys(this.JsonSchema.properties);
+    }
+    return this._rootPropertyKeys;
+  }
+
+
+  private loadEditorLanguage(): void {
+    const localeFile = `assets/i18n/json-editor-text_${this.preferences.locale}.json`;
+    this.coreService.get(localeFile).subscribe((data) => {
       this.options.languages = {};
       this.options.languages[this.preferences.locale] = data;
       this.options.language = this.preferences.locale;
-      this.editor.setOptions(this.options);
+      if (this.editor) {
+        this.editor.setOptions(this.options);
+      }
     });
-    this.options.modes = ['code', 'tree'];
   }
-  private async loadSchema(ep: string) {
+
+  private async loadSchema(ep: string): Promise<void> {
     this.loading = true;
+    this.cdr.detectChanges();
+
     const origin = window.location.origin;
     try {
       const schemaUrl = `${origin}/joc/schemas/api/schemas${ep}-schema.json`;
       const rawSchema: any = await firstValueFrom(this.coreService.post(schemaUrl, {}));
       this.JsonSchema = await this.resolveAllRefs(rawSchema, ep);
+
+      this.clearCaches();
+
       this.form = this.createForm(this.JsonSchema);
-      console.log('Final resolved schema:', this.JsonSchema);
     } catch (e) {
-      console.error('Schema load error:', e);
     } finally {
       this.loading = false;
+      this.cdr.detectChanges();
     }
+  }
+
+  private clearCaches(): void {
+    this.formControlCache.clear();
+    this._rootPropertyKeys = [];
   }
 
   private async resolveAllRefs(schema: any, basePath: string = ''): Promise<any> {
@@ -1044,11 +1149,7 @@ export class ApiFormDialogComponent {
     }
 
     if (Array.isArray(schema)) {
-      const resolved = [];
-      for (const item of schema) {
-        resolved.push(await this.resolveAllRefs(item, basePath));
-      }
-      return resolved;
+      return Promise.all(schema.map(item => this.resolveAllRefs(item, basePath)));
     }
 
     if (schema.$ref) {
@@ -1064,23 +1165,22 @@ export class ApiFormDialogComponent {
         this.schemaCache.set(refUrl, resolvedRef);
         return resolvedRef;
       } catch (error) {
-        console.error(`Failed to fetch referenced schema: ${refUrl}`, error);
         return { type: 'string', description: `Failed to load reference: ${schema.$ref}` };
       }
     }
 
     const resolved: any = {};
-    for (const [key, value] of Object.entries(schema)) {
+    const promises = Object.entries(schema).map(async ([key, value]) => {
       resolved[key] = await this.resolveAllRefs(value, basePath);
-    }
+    });
 
+    await Promise.all(promises);
     return resolved;
   }
 
   private resolveRefUrl(ref: string, basePath: string): string {
     const origin = window.location.origin;
     const schemasRoot = `${origin}/joc/schemas`;
-
 
     if (ref.startsWith('http')) {
       return ref;
@@ -1091,14 +1191,12 @@ export class ApiFormDialogComponent {
     }
 
     const baseDir = this.getDirectoryFromPath(basePath);
-
     let fullPath: string;
+
     if (baseDir) {
-      if (baseDir.startsWith('api/schemas/')) {
-        fullPath = `${schemasRoot}/${baseDir}/${ref}`;
-      } else {
-        fullPath = `${schemasRoot}/api/schemas/${baseDir}/${ref}`;
-      }
+      fullPath = baseDir.startsWith('api/schemas/')
+        ? `${schemasRoot}/${baseDir}/${ref}`
+        : `${schemasRoot}/api/schemas/${baseDir}/${ref}`;
     } else {
       fullPath = `${schemasRoot}/api/schemas/${ref}`;
     }
@@ -1107,19 +1205,13 @@ export class ApiFormDialogComponent {
   }
 
   private resolveRelativePath(schemasRoot: string, currentPath: string, relativePath: string): string {
-
     const currentDir = this.getDirectoryFromPath(currentPath);
-
-
     let pathParts: string[] = [];
 
     if (currentDir) {
-      if (currentDir.startsWith('api/schemas/')) {
-        const remainingPath = currentDir.substring('api/schemas/'.length);
-        pathParts = ['api', 'schemas', ...remainingPath.split('/').filter(part => part)];
-      } else {
-        pathParts = ['api', 'schemas', ...currentDir.split('/').filter(part => part)];
-      }
+      pathParts = currentDir.startsWith('api/schemas/')
+        ? ['api', 'schemas', ...currentDir.substring('api/schemas/'.length).split('/').filter(part => part)]
+        : ['api', 'schemas', ...currentDir.split('/').filter(part => part)];
     } else {
       pathParts = ['api', 'schemas'];
     }
@@ -1130,14 +1222,11 @@ export class ApiFormDialogComponent {
       if (part === '..') {
         if (pathParts.length > 0) {
           pathParts.pop();
-
           if (pathParts.length === 1 && pathParts[0] === 'api') {
             pathParts.pop();
           }
         }
-      } else if (part === '.') {
-        continue;
-      } else if (part) {
+      } else if (part !== '.') {
         pathParts.push(part);
       }
     }
@@ -1150,7 +1239,6 @@ export class ApiFormDialogComponent {
 
   private cleanUrl(url: string): string {
     let cleanedUrl = url.replace(/\/api\/schemas\/api\/schemas/g, '/api/schemas');
-
     cleanedUrl = cleanedUrl.replace(/([^:]\/)\/+/g, '$1');
 
     while (cleanedUrl.includes('/api/schemas/api/schemas')) {
@@ -1164,24 +1252,18 @@ export class ApiFormDialogComponent {
     const origin = window.location.origin;
     const schemasRoot = `${origin}/joc/schemas/`;
 
-    if (url.startsWith(schemasRoot)) {
-      const pathAfterRoot = url.substring(schemasRoot.length);
-
-      return pathAfterRoot;
-    }
-
-    return '';
+    return url.startsWith(schemasRoot) ? url.substring(schemasRoot.length) : '';
   }
 
   private getDirectoryFromPath(path: string): string {
     const lastSlash = path.lastIndexOf('/');
-    if (lastSlash > 0) {
-      return path.substring(0, lastSlash);
-    }
-    return '';
+    return lastSlash > 0 ? path.substring(0, lastSlash) : '';
   }
+
   private createForm(schema: any): FormGroup {
-    return this.fb.group(this.createControlsRecursive(schema));
+    const form = this.fb.group(this.createControlsRecursive(schema));
+    this.clearCaches();
+    return form;
   }
 
   private createControlsRecursive(schema: any): { [key: string]: any } {
@@ -1192,7 +1274,6 @@ export class ApiFormDialogComponent {
     for (const [key, rawProp] of Object.entries(properties)) {
       const propSchema = this.resolveAnyOf(rawProp);
       const validators = this.createValidators(propSchema, required.includes(key));
-
       controls[key] = this.createControlForType(propSchema, validators);
     }
 
@@ -1243,10 +1324,6 @@ export class ApiFormDialogComponent {
     if (schema.maximum != null) validators.push(Validators.max(schema.maximum));
 
     return validators;
-  }
-
-  get rootPropertyKeys(): string[] {
-    return Object.keys(this.JsonSchema?.properties || {});
   }
 
   getSchemaForProperty(propertyPath: string[]): any {
@@ -1374,12 +1451,152 @@ export class ApiFormDialogComponent {
     }
   }
 
-  showJsonSchema(): void {
-    if (this.JsonSchema) {
-      this.showSchema = !this.showSchema
+  editJson(): void {
+    if (this.form && this.form.value) {
+      this.options.onEditable = () => {
+        return true;
+      };
+
+      this.jsonData = JSON.parse(JSON.stringify(this.form.value));
+      this.toggleSchemaView();
+
+
+      setTimeout(() => {
+        if (this.editor && this.editor.set) {
+          this.editor.set(this.jsonData);
+        }
+      }, 100);
     }
   }
+
+  showJsonSchema(): void {
+    this.options.onEditable = () => {
+      return false;
+    };
+    if (this.JsonSchema) {
+      this.jsonData = JSON.parse(JSON.stringify(this.JsonSchema));
+      this.toggleSchemaView();
+
+      setTimeout(() => {
+        if (this.editor && this.editor.set) {
+          this.editor.set(this.jsonData);
+        }
+      }, 100);
+    }
+  }
+
+  resetJsonEditor(): void {
+    if (this.form && this.form.value) {
+      this.jsonData = JSON.parse(JSON.stringify(this.form.value));
+      setTimeout(() => {
+        if (this.editor && this.editor.set) {
+          this.editor.set(this.jsonData);
+        }
+      }, 100);
+    }
+  }
+
+  syncEditorData(): void {
+    if (this.editor) {
+      try {
+        if (this.editor.get) {
+          const currentData = this.editor.get();
+          if (currentData && !currentData.hasOwnProperty('isTrusted')) {
+            this.jsonData = currentData;
+          }
+        }
+      } catch (error) {
+        this.resetJsonEditor();
+      }
+    }
+  }
+
+
+
+
+  updateJson(): void {
+    try {
+      let editorData = this.jsonData;
+
+      if (this.editor) {
+        try {
+          if (this.editor.get) {
+            editorData = this.editor.get();
+          }
+          else if (this.editor.getText) {
+            const textData = this.editor.getText();
+            editorData = textData ? JSON.parse(textData) : this.jsonData;
+          }
+        } catch (editorError) {
+          editorData = this.jsonData;
+        }
+      }
+
+      if (editorData && typeof editorData === 'object' && editorData.hasOwnProperty('isTrusted')) {
+        editorData = this.jsonData;
+      }
+
+      let parsedData = editorData;
+      if (typeof editorData === 'string') {
+        parsedData = JSON.parse(editorData);
+      }
+
+      if (!this.isValidFormData(parsedData)) {
+        console.warn('JSON data structure may not match form schema');
+      }
+
+
+      if (this.shouldUseSetValue(parsedData)) {
+        this.form.setValue(parsedData);
+      } else {
+        this.form.patchValue(parsedData);
+      }
+
+
+      this.markFormGroupTouched(this.form);
+
+      this.formControlCache.clear();
+
+      this.toggleSchemaView();
+
+    } catch (error) {
+    }
+  }
+
+  private shouldUseSetValue(data: any): boolean {
+    const formKeys = this.rootPropertyKeys;
+    const dataKeys = Object.keys(data || {});
+
+    const hasAllRequiredKeys = formKeys.every(key =>
+      this.JsonSchema?.properties?.[key]?.required === false || dataKeys.includes(key)
+    );
+
+    return hasAllRequiredKeys && dataKeys.length === formKeys.length;
+  }
+
+  private isValidFormData(data: any): boolean {
+    if (!data || typeof data !== 'object') {
+      return false;
+    }
+
+    const formKeys = this.rootPropertyKeys;
+    const dataKeys = Object.keys(data);
+
+    const unknownKeys = dataKeys.filter(key => !formKeys.includes(key));
+    if (unknownKeys.length > 0) {
+      console.warn('Unknown keys in JSON data:', unknownKeys);
+    }
+
+    return true;
+  }
+
+  toggleSchemaView(): void {
+    this.showSchema = !this.showSchema;
+    this.cdr.detectChanges();
+  }
 }
+
+
 interface Mapping {
   name: string;
   path: string;
@@ -1563,7 +1780,7 @@ export class ApiRequestDialogComponent {
     const modal = this.modal.create({
       nzContent: ApiFormDialogComponent,
       nzClassName: 'lg',
-      nzData: {endPoint: ep.path, title: ep.des, raml:ep.raml},
+      nzData: {endPoint: ep.path, title: ep.des, raml:ep.raml, request: this.modalData.request },
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false

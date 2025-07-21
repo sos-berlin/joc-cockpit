@@ -10,75 +10,104 @@
   </button>
 </div>
 
-<form  *ngIf="!showSchema" [formGroup]="form" (ngSubmit)="onSubmit()" spellcheck="false">
-  <div class="modal-body p-a p-t-sm">
-    <div class="row">
-      <div
-        class="col-md-12">
-      <!-- Recursive field renderer -->
-      <ng-container *ngFor="let key of rootPropertyKeys">
-        <json-schema-field
-          *ngIf="getFormControl([key])"
-          [propertyPath]="[key]"
-          [schema]="JsonSchema"
-          [formControl]="getFormControl([key])"
-          [parent]="this">
-        </json-schema-field>
-      </ng-container>
-    </div>
-    </div>
-  </div>
-  <div *ngIf="loading" class="text-center p-3"><nz-spin [nzSize]="'small'" nzSimple></nz-spin>
-  </div>
-
-  <div *ngIf="!showSchema" class="modal-footer">
-    <button
-      [disabled]="form?.invalid"
-      class="btn btn-primary btn-sm"
-      type="submit"
-    >
-      {{ 'common.button.submit' | translate }}
-    </button>
-    <button
-      (click)="activeModal.destroy()"
-      class="btn btn-grey btn-sm"
-      type="button"
-    >
-      {{ 'common.button.cancel' | translate }}
-    </button>
-
-    <button
-      (click)="showJsonSchema()"
-      class="btn btn-grey btn-sm"
-      type="button"
-    >
-      {{ 'workflow.apiRequest.button.showSchema' | translate }}
-    </button>
-    <button
-      class="btn btn-grey btn-sm"
-      type="button"
-    >
-      <i
-        *ngIf="raml"
-        nz-icon
-        nzType="file-text"
-        nzTheme="outline"
-        class="cur-point raml-icon"
-        (click)="openRamlDocs(raml)"
-        title="{{'workflow.apiRequest.label.ramlDocs' | translate}}"
-      ></i>
-    </button>
-  </div>
-</form>
-
-<json-editor #editor *ngIf="showSchema" [data]="JsonSchema" [options]="options"></json-editor>
-
-<div *ngIf="showSchema" class="modal-footer">
-  <button
-    (click)="showJsonSchema()"
-    class="btn btn-grey btn-sm"
-    type="button"
-  >
-    {{ 'common.button.close' | translate }}
-  </button>
+<div *ngIf="loading" class="text-center p-3">
+  <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
 </div>
+
+<ng-container *ngIf="!loading">
+
+  <form *ngIf="!showSchema && form" [formGroup]="form" (ngSubmit)="onSubmit()" spellcheck="false">
+    <div class="modal-body p-a p-t-sm">
+      <div class="row">
+        <div class="col-md-12">
+          <ng-container *ngFor="let key of rootPropertyKeys; trackBy: trackByPropertyKey">
+            <json-schema-field
+              [propertyPath]="[key]"
+              [schema]="JsonSchema"
+              [request]="request"
+              [formControl]="getFormControlCached(key)"
+              [parent]="this">
+            </json-schema-field>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form footer -->
+    <div class="modal-footer">
+      <button
+        [disabled]="form?.invalid"
+        class="btn btn-primary btn-sm"
+        type="submit"
+      >
+        {{ 'common.button.submit' | translate }}
+      </button>
+      <button
+        (click)="activeModal.destroy()"
+        class="btn btn-grey btn-sm"
+        type="button"
+      >
+        {{ 'common.button.cancel' | translate }}
+      </button>
+      <button
+        (click)="editJson()"
+        class="btn btn-grey btn-sm"
+        type="button"
+      >
+        {{ 'workflow.apiRequest.button.editJson' | translate }}
+      </button>
+      <button
+        (click)="showJsonSchema()"
+        class="btn btn-grey btn-sm"
+        type="button"
+      >
+        {{ 'workflow.apiRequest.button.showSchema' | translate }}
+      </button>
+      <button
+        *ngIf="raml"
+        class="btn btn-grey btn-sm"
+        type="button"
+        (click)="openRamlDocs(raml)"
+        title="{{ 'workflow.apiRequest.label.ramlDocs' | translate }}"
+      >
+        <i nz-icon nzType="file-text" nzTheme="outline" class="cur-point raml-icon"></i>
+      </button>
+    </div>
+  </form>
+
+  <!-- JSON Editor view -->
+  <ng-container *ngIf="showSchema">
+    <json-editor
+      #editor
+      [data]="jsonData"
+      [options]="options">
+    </json-editor>
+
+    <div class="modal-footer">
+      <button *ngIf="options.onEditable()"
+        (click)="updateJson()"
+        class="btn btn-primary btn-sm"
+        type="button"
+        [disabled]="!jsonData || isError"
+      >
+        {{ 'common.button.submit' | translate }}
+      </button>
+      <button *ngIf="options.onEditable()"
+        (click)="resetJsonEditor()"
+        class="btn btn-secondary btn-sm"
+        type="button"
+        title="{{ 'workflow.apiRequest.label.reset' | translate }}"
+      >
+        {{ 'agent.button.reset' | translate }}
+      </button>
+      <button
+        (click)="toggleSchemaView()"
+        class="btn btn-grey btn-sm"
+        type="button"
+      >
+        {{ 'common.button.close' | translate }}
+      </button>
+    </div>
+  </ng-container>
+
+</ng-container>

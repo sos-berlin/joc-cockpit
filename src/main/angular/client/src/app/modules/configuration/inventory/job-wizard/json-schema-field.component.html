@@ -1,200 +1,218 @@
-
-  <div class="row">
-    <div
-      class="col-md-12">
-  <div class="form-group row">
-    <div class="col-md-3 form-control-label">
-      <label class="control-label">{{ fieldName }}</label>
-    </div>
+<div class="row" *ngIf="hasValidFormControl">
     <div class="col-md-12">
-
-      <!-- STRING INPUT -->
-      <ng-container *ngIf="isStringField()">
-        <input
-          type="text"
-          class="form-control"
-          [value]="formControl.value"
-          (input)="updateValue($event)"
-          [placeholder]="fieldName"
-        />
-      </ng-container>
-    </div>
-    <div class="col-md-12">
-      <!-- NUMBER INPUT -->
-      <ng-container *ngIf="isNumberField()">
-        <input
-          type="number"
-          class="form-control"
-          [value]="formControl.value"
-          (input)="updateValue($event)"
-          [placeholder]="fieldName"
-        />
-      </ng-container>
-    </div>
-    <div class="col-md-12">
-      <!-- BOOLEAN INPUT -->
-      <ng-container *ngIf="isBooleanField()">
-        <div class="checkbox">
-          <label>
-            <input
-              type="checkbox"
-              [checked]="formControl.value"
-              (change)="updateBooleanValue($event)"
-            />
-          </label>
-        </div>
-      </ng-container>
-    </div>
-    <div class="col-md-12">
-      <!-- MAP/DICTIONARY (object with additionalProperties) -->
-      <ng-container *ngIf="isMapField()">
-        <button
-          type="button"
-          class="btn btn-grey btn-xs"
-          (click)="addMapEntry()">
-          <i class="fa fa-plus"></i> {{ 'workflow.apiRequest.label.addEntry' | translate }}
-        </button>
-        <div style="margin-top:0.5rem">
-          <div *ngFor="let entry of getMapEntries(); let i = index"
-               style="display:flex; gap:0.5rem; margin-bottom:0.25rem">
-            <input
-              class="form-control"
-              placeholder="Key"
-              [value]="entry.get('key').value"
-              (input)="updateMapKey(i, $event)"
-              style="width:45%" />
-            <input
-              class="form-control"
-              placeholder="Value"
-              [value]="entry.get('value').value"
-              (input)="updateMapValue(i, $event)"
-              style="width:45%" />
-            <i (click)="removeMapEntry(i)"
-               class="fa fa-times m-l-sm"></i>
-          </div>
-        </div>
-      </ng-container>
-    </div>
-    <div class="col-md-12">
-      <ng-container *ngIf="isObjectField() && !isMapField()">
-        <div class="well">
-          <fieldset>
-            <ng-container *ngFor="let childKey of getObjectProperties()">
-              <json-schema-field
-                *ngIf="getChildControl(childKey)"
-                [propertyPath]="getChildPath(childKey)"
-                [schema]="schema"
-                [formControl]="getChildControl(childKey)"
-                [parent]="parent">
-              </json-schema-field>
-            </ng-container>
-          </fieldset>
-        </div>
-      </ng-container>
-    </div>
-    <div class="col-md-12">
-      <!-- ARRAY -->
-      <ng-container *ngIf="isArrayField()">
-        <button
-          type="button"
-          class="btn btn-grey btn-xs"
-          (click)="addArrayItem()">
-          <i class="fa fa-plus"></i> {{ 'workflow.apiRequest.label.addItem' | translate }}
-        </button>
-
-        <div style="margin-top: 0.5rem;">
-          <div *ngFor="let item of getArrayControls(); let i = index"
-               style="margin-bottom: 1rem; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;">
-
-            <!-- Array item header -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-              <strong>{{ 'workflow.apiRequest.label.item' | translate }} {{ i + 1 }}</strong>
-              <i (click)="removeArrayItem(i)"
-                 class="fa fa-times m-l-sm"></i>
+        <div class="form-group row">
+            <div class="col-md-3 form-control-label">
+                <label class="control-label" [for]="uniqueFieldName">{{ fieldName }}</label>
             </div>
+            <div class="col-md-9">
 
-            <!-- Render array item content recursively -->
-            <ng-container *ngIf="isArrayOfPrimitives(); else arrayOfObjects">
-              <!-- Primitive array item -->
-              <ng-container [ngSwitch]="getArrayItemType()">
-                <input
-                  *ngSwitchCase="'string'"
-                  type="text"
-                  class="form-control"
-                  [value]="item.value"
-                  (input)="updateArrayItemValue(i, $event)" />
-
-                <input
-                  *ngSwitchCase="'number'"
-                  type="number"
-                  class="form-control"
-                  [value]="item.value"
-                  (input)="updateArrayItemValue(i, $event)" />
-
-                <input
-                  *ngSwitchCase="'integer'"
-                  type="number"
-                  class="form-control"
-                  [value]="item.value"
-                  (input)="updateArrayItemValue(i, $event)" />
-
-                <div *ngSwitchCase="'boolean'" class="checkbox">
-                  <label>
+                <!-- STRING INPUT -->
+                <ng-container *ngIf="isStringField()">
                     <input
-                      type="checkbox"
-                      [checked]="item.value"
-                      (change)="updateArrayItemBooleanValue(i, $event)" />
-                  </label>
-                </div>
+                            type="text"
+                            class="form-control"
+                            [id]="uniqueFieldName"
+                            [formControl]="formControl"
+                            [name]="uniqueFieldName"
+                            [placeholder]="fieldName"
+                    />
+                </ng-container>
 
-                <input
-                  *ngSwitchDefault
-                  type="text"
-                  class="form-control"
-                  [value]="item.value"
-                  (input)="updateArrayItemValue(i, $event)" />
-              </ng-container>
-            </ng-container>
+                <!-- NUMBER INPUT -->
+                <ng-container *ngIf="isNumberField()">
+                    <input
+                            type="number"
+                            class="form-control"
+                            [id]="uniqueFieldName"
+                            [formControl]="formControl"
+                            [name]="uniqueFieldName"
+                            [placeholder]="fieldName"
+                    />
+                </ng-container>
 
-            <!-- Array of objects template -->
-            <ng-template #arrayOfObjects>
-              <ng-container *ngFor="let objKey of getArrayItemObjectProperties()">
-                <json-schema-field
-                  *ngIf="getArrayItemChildControl(i, objKey)"
-                  [propertyPath]="getArrayItemChildPath(i, objKey)"
-                  [schema]="schema"
-                  [formControl]="getArrayItemChildControl(i, objKey)"
-                  [parent]="parent">
-                </json-schema-field>
-              </ng-container>
-            </ng-template>
-          </div>
+                <!-- BOOLEAN INPUT -->
+                <ng-container *ngIf="isBooleanField()">
+                    <div class="checkbox">
+                        <label>
+                            <input
+                                    type="checkbox"
+                                    [id]="uniqueFieldName"
+                                    [formControl]="formControl"
+                                    [name]="uniqueFieldName"
+                            />
+                        </label>
+                    </div>
+                </ng-container>
+
+                <!-- MAP/DICTIONARY (object with additionalProperties) -->
+                <ng-container *ngIf="isMapField()">
+                    <button
+                            type="button"
+                            class="btn btn-grey btn-xs"
+                            (click)="addMapEntry()">
+                        <i class="fa fa-plus"></i> {{ 'workflow.apiRequest.label.addEntry' | translate }}
+                    </button>
+                    <div style="margin-top:0.5rem">
+                        <div *ngFor="let entry of getMapEntries(); let i = index"
+                             style="display:flex; gap:0.5rem; margin-bottom:0.25rem">
+                            <input
+                                    class="form-control"
+                                    placeholder="Key"
+                                    [id]="generateItemName('map', i, 'key')"
+                                    [name]="generateItemName('map', i, 'key')"
+                                    [value]="entry.get('key')?.value || ''"
+                                    (input)="updateMapKey(i, $event)"
+                                    style="width:45%" />
+                            <input
+                                    class="form-control"
+                                    placeholder="Value"
+                                    [id]="generateItemName('map', i, 'value')"
+                                    [name]="generateItemName('map', i, 'value')"
+                                    [value]="entry.get('value')?.value || ''"
+                                    (input)="updateMapValue(i, $event)"
+                                    style="width:45%" />
+                            <i (click)="removeMapEntry(i)"
+                               class="fa fa-times m-l-sm cursor-pointer"></i>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <!-- OBJECT (not map) -->
+                <ng-container *ngIf="isObjectField() && !isMapField()">
+                    <div class="well">
+                        <fieldset>
+                            <ng-container *ngFor="let childKey of getObjectProperties()">
+                                <json-schema-field
+                                        *ngIf="getChildControl(childKey)"
+                                        [propertyPath]="getChildPath(childKey)"
+                                        [schema]="schema"
+                                        [request]="request"
+                                        [formControl]="getChildControl(childKey)"
+                                        [parent]="parent">
+                                </json-schema-field>
+                            </ng-container>
+                        </fieldset>
+                    </div>
+                </ng-container>
+
+                <!-- ARRAY -->
+                <ng-container *ngIf="isArrayField()">
+                    <button
+                            type="button"
+                            class="btn btn-grey btn-xs"
+                            (click)="addArrayItem()">
+                        <i class="fa fa-plus"></i> {{ 'workflow.apiRequest.label.addItem' | translate }}
+                    </button>
+
+                    <div style="margin-top: 0.5rem;">
+                        <div *ngFor="let item of getArrayControls(); let i = index"
+                             style="margin-bottom: 1rem; padding: 0.75rem; border: 1px solid #ddd; border-radius: 4px;">
+
+                            <!-- Array item header -->
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                                <strong>{{ 'workflow.apiRequest.label.item' | translate }} {{ i + 1 }}</strong>
+                                <i (click)="removeArrayItem(i)"
+                                   class="fa fa-times m-l-sm cursor-pointer"></i>
+                            </div>
+
+                            <!-- Render array item content recursively -->
+                            <ng-container *ngIf="isArrayOfPrimitives(); else arrayOfObjects">
+                                <!-- Primitive array item -->
+                                <ng-container [ngSwitch]="getArrayItemType()">
+                                    <input
+                                            *ngSwitchCase="'string'"
+                                            type="text"
+                                            class="form-control"
+                                            [id]="generateItemName('array', i)"
+                                            [name]="generateItemName('array', i)"
+                                            [value]="item.value || ''"
+                                            (input)="updateArrayItemValue(i, $event)" />
+
+                                    <input
+                                            *ngSwitchCase="'number'"
+                                            type="number"
+                                            class="form-control"
+                                            [id]="generateItemName('array', i)"
+                                            [name]="generateItemName('array', i)"
+                                            [value]="item.value || ''"
+                                            (input)="updateArrayItemValue(i, $event)" />
+
+                                    <input
+                                            *ngSwitchCase="'integer'"
+                                            type="number"
+                                            class="form-control"
+                                            [id]="generateItemName('array', i)"
+                                            [name]="generateItemName('array', i)"
+                                            [value]="item.value || ''"
+                                            (input)="updateArrayItemValue(i, $event)" />
+
+                                    <div *ngSwitchCase="'boolean'" class="checkbox">
+                                        <label>
+                                            <input
+                                                    type="checkbox"
+                                                    [id]="generateItemName('array', i)"
+                                                    [name]="generateItemName('array', i)"
+                                                    [checked]="!!item.value"
+                                                    (change)="updateArrayItemBooleanValue(i, $event)" />
+                                        </label>
+                                    </div>
+
+                                    <input
+                                            *ngSwitchDefault
+                                            type="text"
+                                            class="form-control"
+                                            [id]="generateItemName('array', i)"
+                                            [name]="generateItemName('array', i)"
+                                            [value]="item.value || ''"
+                                            (input)="updateArrayItemValue(i, $event)" />
+                                </ng-container>
+                            </ng-container>
+
+                            <!-- Array of objects template -->
+                            <ng-template #arrayOfObjects>
+                                <ng-container *ngFor="let objKey of getArrayItemObjectProperties()">
+                                    <json-schema-field
+                                            *ngIf="getArrayItemChildControl(i, objKey)"
+                                            [propertyPath]="getArrayItemChildPath(i, objKey)"
+                                            [schema]="schema"
+                                            [request]="request"
+                                            [formControl]="getArrayItemChildControl(i, objKey)"
+                                            [parent]="parent">
+                                    </json-schema-field>
+                                </ng-container>
+                            </ng-template>
+                        </div>
+                    </div>
+                </ng-container>
+
+            </div>
         </div>
-      </ng-container>
 
+        <!-- Validation Messages -->
+        <div *ngIf="formControl && formControl.invalid && (formControl.touched || formControl.dirty)" style="margin-top: -16px"
+             class="row">
+            <div class="col-md-12">
+                <small class="text-danger" *ngIf="formControl.hasError('required')">
+                    {{ fieldName }} {{ 'workflow.apiRequest.label.isRequired' | translate }}
+                </small>
+                <small class="text-danger" *ngIf="formControl.hasError('maxlength')">
+                    {{ 'workflow.apiRequest.label.maxLength' | translate }}
+                    ({{ formControl.getError('maxlength')?.actualLength }}/{{ formControl.getError('maxlength')?.requiredLength }})
+                </small>
+                <small class="text-danger" *ngIf="formControl.hasError('minlength')">
+                    {{ 'workflow.apiRequest.label.minLength' | translate }}
+                    ({{ formControl.getError('minlength')?.actualLength }}/{{ formControl.getError('minlength')?.requiredLength }})
+                </small>
+                <small class="text-danger" *ngIf="formControl.hasError('pattern')">
+                    {{ 'workflow.apiRequest.label.invalidFormat' | translate }}
+                </small>
+                <small class="text-danger" *ngIf="formControl.hasError('min')">
+                    {{ 'workflow.apiRequest.label.leastValue' | translate }} {{ formControl.getError('min')?.min }}
+                </small>
+                <small class="text-danger" *ngIf="formControl.hasError('max')">
+                    {{ 'workflow.apiRequest.label.mostValue' | translate }} {{ formControl.getError('max')?.max }}
+                </small>
+            </div>
+        </div>
     </div>
-  </div>
-
-  <!-- Validation Messages -->
-  <div *ngIf="formControl && formControl.invalid && (formControl.touched || formControl.dirty)" style="margin-top: -16px">
-    <small class="text-danger" *ngIf="formControl.hasError('required')">
-      {{ fieldName }} {{ 'workflow.apiRequest.label.isRequired' | translate }}
-    </small>
-    <small class="text-danger" *ngIf="formControl.hasError('maxlength')">
-      {{ 'workflow.apiRequest.label.maxLength' | translate }} ({{ formControl.getError('maxlength').actualLength }}/{{ formControl.getError('maxlength').requiredLength }})
-    </small>
-    <small class="text-danger" *ngIf="formControl.hasError('minlength')">
-      {{ 'workflow.apiRequest.label.minLength' | translate }}  ({{ formControl.getError('minlength').actualLength }}/{{ formControl.getError('minlength').requiredLength }})
-    </small>
-    <small class="text-danger" *ngIf="formControl.hasError('pattern')">
-      {{ 'workflow.apiRequest.label.invalidFormat' | translate }}
-    </small>
-    <small class="text-danger" *ngIf="formControl.hasError('min')">
-      {{ 'workflow.apiRequest.label.leastValue' | translate }} {{ formControl.getError('min').min }}
-    </small>
-    <small class="text-danger" *ngIf="formControl.hasError('max')">
-      {{ 'workflow.apiRequest.label.mostValue' | translate }} {{ formControl.getError('max').max }}
-    </small>
-  </div>
-</div>
 </div>
