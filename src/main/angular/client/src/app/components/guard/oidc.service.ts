@@ -576,7 +576,6 @@ export class OIDCAuthService {
    * method silentRefresh.
    */
   public refreshToken(data: any): Promise<any> {
-    console.log(this.tokenEndpoint, 'this.tokenEndpoint')
     this.assertUrlNotNullAndCorrectProtocol(
       this.tokenEndpoint,
       'tokenEndpoint'

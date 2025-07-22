@@ -28,7 +28,7 @@ import {
 } from '@angular/forms';
 import {properties} from "ng-zorro-antd/core/util";
 import {TranslateService} from "@ngx-translate/core";
-import { firstValueFrom } from 'rxjs';
+import {firstValueFrom} from 'rxjs';
 
 interface KeyValue {
   key: string;
@@ -823,7 +823,8 @@ export class ApiRequestComponent {
     });
     modal.afterClose.subscribe(result => {
       if (result) {
-        this.model.body = JSON.stringify(result, null, 2)
+        this.model.body = JSON.stringify(result.data, null, 2)
+        this.model.endPoint = result.endpoint
         this.ref.detectChanges();
       }
     });
@@ -838,7 +839,7 @@ export class JsonSchemaFieldComponent {
   @Input() propertyPath: string[] = [];
   @Input() schema: any;
   @Input() request: any;
-  @Input() formControl: AbstractControl | null = null;
+  @Input() control: AbstractControl | null = null;
   @Input() parent: any;
 
   ngOnInit(): void {
@@ -857,7 +858,19 @@ export class JsonSchemaFieldComponent {
   }
 
   get hasValidFormControl(): boolean {
-    return this.formControl !== null && this.formControl !== undefined;
+    return this.control !== null && this.control !== undefined;
+  }
+
+  isFieldRequired(): boolean {
+    if (this.propertyPath.length === 1) {
+      const parentSchema = this.schema;
+      return parentSchema?.required?.includes(this.fieldName) || false;
+    }
+
+    const parentPath = this.propertyPath.slice(0, -1);
+    const parentSchema = this.parent?.getSchemaForProperty(parentPath);
+
+    return parentSchema?.required?.includes(this.fieldName) || false;
   }
 
   isStringField(): boolean {
@@ -888,15 +901,15 @@ export class JsonSchemaFieldComponent {
 
   updateValue(event: any): void {
     if (this.hasValidFormControl) {
-      this.formControl!.setValue(event.target.value);
-      this.formControl!.markAsTouched();
+      this.control!.setValue(event.target.value);
+      this.control!.markAsTouched();
     }
   }
 
   updateBooleanValue(event: any): void {
     if (this.hasValidFormControl) {
-      this.formControl!.setValue(event.target.checked);
-      this.formControl!.markAsTouched();
+      this.control!.setValue(event.target.checked);
+      this.control!.markAsTouched();
     }
   }
 
@@ -910,13 +923,13 @@ export class JsonSchemaFieldComponent {
 
   getChildControl(childKey: string): AbstractControl | null {
     if (!this.hasValidFormControl) return null;
-    const formGroup = this.formControl as FormGroup;
+    const formGroup = this.control as FormGroup;
     return formGroup?.get(childKey) || null;
   }
 
   getMapEntries(): FormGroup[] {
     if (!this.hasValidFormControl) return [];
-    const formArray = this.formControl as FormArray;
+    const formArray = this.control as FormArray;
     return (formArray?.controls || []) as FormGroup[];
   }
 
@@ -934,21 +947,21 @@ export class JsonSchemaFieldComponent {
 
   updateMapKey(index: number, event: any): void {
     if (!this.hasValidFormControl) return;
-    const mapArray = this.formControl as FormArray;
+    const mapArray = this.control as FormArray;
     const entryGroup = mapArray?.at(index) as FormGroup;
     entryGroup?.get('key')?.setValue(event.target.value);
   }
 
   updateMapValue(index: number, event: any): void {
     if (!this.hasValidFormControl) return;
-    const mapArray = this.formControl as FormArray;
+    const mapArray = this.control as FormArray;
     const entryGroup = mapArray?.at(index) as FormGroup;
     entryGroup?.get('value')?.setValue(event.target.value);
   }
 
   getArrayControls(): AbstractControl[] {
     if (!this.hasValidFormControl) return [];
-    const formArray = this.formControl as FormArray;
+    const formArray = this.control as FormArray;
     return formArray?.controls || [];
   }
 
@@ -985,14 +998,14 @@ export class JsonSchemaFieldComponent {
 
   getArrayItemChildControl(itemIndex: number, childKey: string): AbstractControl | null {
     if (!this.hasValidFormControl) return null;
-    const arrayControl = this.formControl as FormArray;
+    const arrayControl = this.control as FormArray;
     const itemControl = arrayControl?.at(itemIndex) as FormGroup;
     return itemControl?.get(childKey) || null;
   }
 
   updateArrayItemValue(index: number, event: any): void {
     if (!this.hasValidFormControl) return;
-    const arrayControl = this.formControl as FormArray;
+    const arrayControl = this.control as FormArray;
     const control = arrayControl?.at(index);
     if (control) {
       control.setValue(event.target.value);
@@ -1002,7 +1015,7 @@ export class JsonSchemaFieldComponent {
 
   updateArrayItemBooleanValue(index: number, event: any): void {
     if (!this.hasValidFormControl) return;
-    const arrayControl = this.formControl as FormArray;
+    const arrayControl = this.control as FormArray;
     const control = arrayControl?.at(index);
     if (control) {
       control.setValue(event.target.checked);
@@ -1011,11 +1024,11 @@ export class JsonSchemaFieldComponent {
   }
 
   getFormControlValue(): any {
-    return this.hasValidFormControl ? this.formControl!.value : '';
+    return this.hasValidFormControl ? this.control!.value : '';
   }
 
   isFormControlChecked(): boolean {
-    return this.hasValidFormControl ? !!this.formControl!.value : false;
+    return this.hasValidFormControl ? !!this.control!.value : false;
   }
 
   generateItemName(type: string, index: number, subType?: string): string {
@@ -1026,6 +1039,7 @@ export class JsonSchemaFieldComponent {
     return `${base}_${type}_${index}`;
   }
 }
+
 @Component({
   selector: 'app-api-text-editor',
   templateUrl: './api-text-editor.html'
@@ -1165,7 +1179,7 @@ export class ApiFormDialogComponent {
         this.schemaCache.set(refUrl, resolvedRef);
         return resolvedRef;
       } catch (error) {
-        return { type: 'string', description: `Failed to load reference: ${schema.$ref}` };
+        return {type: 'string', description: `Failed to load reference: ${schema.$ref}`};
       }
     }
 
@@ -1428,16 +1442,28 @@ export class ApiFormDialogComponent {
 
   onSubmit(): void {
     if (this.form.valid) {
-      this.activeModal.close(this.form.value);
+      let endpoint = '';
+      if (this.raml) {
+        const match = this.raml.match(/\/resource(\/[^.]+)\.html/);
+        if (match && match[1]) {
+          endpoint = match[1];
+        }
+      }
+      const obj = {
+        data: this.form.value,
+        endpoint: endpoint
+      }
+      this.activeModal.close(obj);
     } else {
       this.markFormGroupTouched(this.form);
     }
   }
 
+
   private markFormGroupTouched(formGroup: FormGroup | FormArray): void {
     Object.keys(formGroup.controls).forEach(field => {
       const control = formGroup.get(field);
-      control?.markAsTouched({ onlySelf: true });
+      control?.markAsTouched({onlySelf: true});
 
       if (control instanceof FormGroup || control instanceof FormArray) {
         this.markFormGroupTouched(control);
@@ -1512,8 +1538,6 @@ export class ApiFormDialogComponent {
   }
 
 
-
-
   updateJson(): void {
     try {
       let editorData = this.jsonData;
@@ -1522,8 +1546,7 @@ export class ApiFormDialogComponent {
         try {
           if (this.editor.get) {
             editorData = this.editor.get();
-          }
-          else if (this.editor.getText) {
+          } else if (this.editor.getText) {
             const textData = this.editor.getText();
             editorData = textData ? JSON.parse(textData) : this.jsonData;
           }
@@ -1601,12 +1624,14 @@ interface Mapping {
   name: string;
   path: string;
 }
+
 export interface endPoint {
   title: string;
   path: string;
   des: string;
   raml?: string;
 }
+
 @Component({
   selector: 'app-api-request-dialog',
   templateUrl: './api-request-dialog.html'
@@ -1625,36 +1650,77 @@ export class ApiRequestDialogComponent {
   editingIndex: number | null = null;
   version: any;
   endpoints: endPoint[] = [
-    { title: '/agents',                         path: '/agent/readAgents',                                     des: 'Gets Agents' },
-    { title: '/agents/cluster',                 path: '/agent/readSubagentClusters',                           des: 'Gets Subagent Clusters' },
-    { title: '/agents/report',                  path: '/agent/agentReportFilter',                              des: 'Gets report of Agent tasks' },
-    { title: '/controller',                     path: '/controller/urlParam',                                   des: 'Gets Controller status information' },
-    { title: '/controllers',                    path: '/controller/controllerId-optional',                     des: 'Gets Controllers' },
-    { title: '/daily_plan/orders',              path: '/orderManagement/dailyplan/dailyPlanOrdersFilterDefRequired', des: 'Gets orders from a daily plan interval' },
-    { title: '/daily_plan/orders/cancel',       path: '/orderManagement/dailyplan/dailyPlanOrdersFilterDef',  des: 'Cancels submitted orders for a daily plan interval' },
-    { title: '/daily_plan/orders/generate',     path: '/dailyplan/generate/generate-request',                 des: 'Generates orders for a given daily plan' },
-    { title: '/daily_plan/orders/submit',       path: '/orderManagement/dailyplan/dailyPlanOrdersFilterDef',  des: 'Submits planned orders for a daily plan interval' },
-    { title: '/daily_plan/orders/delete',       path: '/orderManagement/dailyplan/dailyPlanOrdersFilterDef',  des: 'Deletes planned orders for a daily plan interval' },
-    { title: '/daily_plan/orders/summary',      path: '/orderManagement/dailyplan/dailyPlanOrdersFilterDef',  des: 'Gets summary order counts from a daily plan interval' },
-    { title: '/daily_plan/projections/calendar',path: '/dailyplan/projections/projections-request',            des: 'Gets the days of the daily plan projections that have start times' },
-    { title: '/daily_plan/projections/dates',   path: '/dailyplan/projections/projections-request',           des: 'Gets the start times of date range of the daily plan projections' },
-    { title: '/daily_plan/projections/recreate',path: '/common/ok',                                            des: '(Re)creates daily plan projections' },
-    { title: '/joc/license',                    path: '/joc/js7LicenseInfo',                                   des: 'shows information about the currently used SOS JS7 License ' },
-    { title: '/joc/version',                    path: '/joc/version',                                          des: 'Get JOC\'s version' },
-    { title: '/joc/versions',                   path: '/joc/versionsFilter',                                   des: 'Reads the versions of the specified JS7 components.' },
-    { title: '/jocs',                           path: '/controller/jocFilter',                                 des: 'Gets JOC Cockpit instances' },
-    { title: '/orders',                         path: '/order/ordersFilterV',                                  des: 'Returns a collection of orders filtered by workflow or order state' },
-    { title: '/orders/add',                     path: '/order/addOrders',                                      des: 'Add orders' },
-    { title: '/orders/cancel',                  path: '/order/modifyOrders',                                   des: 'Cancels orders' },
-    { title: '/orders/confirm',                 path: '/order/modifyOrders',                                   des: 'Confirms prompting orders' },
-    { title: '/orders/continue',                path: '/order/modifyOrders',                                   des: 'Continues orders' },
-    { title: '/orders/history',                 path: '/order/ordersFilter',                                   des: 'Order history' },
-    { title: '/orders/overview/snapshot',       path: '/order/ordersFilterV',                                  des: 'Summary with number of orders' },
-    { title: '/orders/resume',                  path: '/order/modifyOrders',                                   des: 'Resumes orders when suspended or failed' },
-    { title: '/orders/suspend',                 path: '/order/modifyOrders',                                   des: 'Suspends orders' },
-    { title: '/notices/delete',                 path: '/board/deleteNotices',                                  des: 'Deletes notices' },
-    { title: '/notices/post',                   path: '/board/noticeIdsPerBoard',                              des: 'Posts notice for several boards' }
+    {title: '/agents', path: '/agent/readAgents', des: 'Gets Agents'},
+    {title: '/agents/cluster', path: '/agent/readSubagentClusters', des: 'Gets Subagent Clusters'},
+    {title: '/agents/report', path: '/agent/agentReportFilter', des: 'Gets report of Agent tasks'},
+    {title: '/controller', path: '/controller/urlParam', des: 'Gets Controller status information'},
+    {title: '/controllers', path: '/controller/controllerId-optional', des: 'Gets Controllers'},
+    {
+      title: '/daily_plan/orders',
+      path: '/orderManagement/dailyplan/dailyPlanOrdersFilterDefRequired',
+      des: 'Gets orders from a daily plan interval'
+    },
+    {
+      title: '/daily_plan/orders/cancel',
+      path: '/orderManagement/dailyplan/dailyPlanOrdersFilterDef',
+      des: 'Cancels submitted orders for a daily plan interval'
+    },
+    {
+      title: '/daily_plan/orders/generate',
+      path: '/dailyplan/generate/generate-request',
+      des: 'Generates orders for a given daily plan'
+    },
+    {
+      title: '/daily_plan/orders/submit',
+      path: '/orderManagement/dailyplan/dailyPlanOrdersFilterDef',
+      des: 'Submits planned orders for a daily plan interval'
+    },
+    {
+      title: '/daily_plan/orders/delete',
+      path: '/orderManagement/dailyplan/dailyPlanOrdersFilterDef',
+      des: 'Deletes planned orders for a daily plan interval'
+    },
+    {
+      title: '/daily_plan/orders/summary',
+      path: '/orderManagement/dailyplan/dailyPlanOrdersFilterDef',
+      des: 'Gets summary order counts from a daily plan interval'
+    },
+    {
+      title: '/daily_plan/projections/calendar',
+      path: '/dailyplan/projections/projections-request',
+      des: 'Gets the days of the daily plan projections that have start times'
+    },
+    {
+      title: '/daily_plan/projections/dates',
+      path: '/dailyplan/projections/projections-request',
+      des: 'Gets the start times of date range of the daily plan projections'
+    },
+    {title: '/daily_plan/projections/recreate', path: '/common/ok', des: '(Re)creates daily plan projections'},
+    {
+      title: '/joc/license',
+      path: '/joc/js7LicenseInfo',
+      des: 'shows information about the currently used SOS JS7 License '
+    },
+    {title: '/joc/version', path: '/joc/version', des: 'Get JOC\'s version'},
+    {title: '/joc/versions', path: '/joc/versionsFilter', des: 'Reads the versions of the specified JS7 components.'},
+    {title: '/jocs', path: '/controller/jocFilter', des: 'Gets JOC Cockpit instances'},
+    {
+      title: '/orders',
+      path: '/order/ordersFilterV',
+      des: 'Returns a collection of orders filtered by workflow or order state'
+    },
+    {title: '/orders/add', path: '/order/addOrders', des: 'Add orders'},
+    {title: '/orders/cancel', path: '/order/modifyOrders', des: 'Cancels orders'},
+    {title: '/orders/confirm', path: '/order/modifyOrders', des: 'Confirms prompting orders'},
+    {title: '/orders/continue', path: '/order/modifyOrders', des: 'Continues orders'},
+    {title: '/orders/history', path: '/order/ordersFilter', des: 'Order history'},
+    {title: '/orders/overview/snapshot', path: '/order/ordersFilterV', des: 'Summary with number of orders'},
+    {title: '/orders/resume', path: '/order/modifyOrders', des: 'Resumes orders when suspended or failed'},
+    {title: '/orders/suspend', path: '/order/modifyOrders', des: 'Suspends orders'},
+    {title: '/notices/delete', path: '/board/deleteNotices', des: 'Deletes notices'},
+    {title: '/notices/post', path: '/board/noticeIdsPerBoard', des: 'Posts notice for several boards'}
   ];
+
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService,) {
   }
 
@@ -1666,7 +1732,7 @@ export class ApiRequestDialogComponent {
     if (this.modalData.mapping) {
       this.mappings = this.modalData.mapping
     }
-    if(this.docs){
+    if (this.docs) {
       this.coreService.get('version.json').subscribe((data) => {
         this.version = data?.version;
         this.updateRamlLinks(data?.version);
@@ -1780,7 +1846,7 @@ export class ApiRequestDialogComponent {
     const modal = this.modal.create({
       nzContent: ApiFormDialogComponent,
       nzClassName: 'lg',
-      nzData: {endPoint: ep.path, title: ep.des, raml:ep.raml, request: this.modalData.request },
+      nzData: {endPoint: ep.path, title: ep.des, raml: ep.raml, request: this.modalData.request},
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false

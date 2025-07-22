@@ -2,7 +2,10 @@
     <div class="col-md-12">
         <div class="form-group row">
             <div class="col-md-3 form-control-label">
-                <label class="control-label" [for]="uniqueFieldName">{{ fieldName }}</label>
+                <label class="control-label" [for]="uniqueFieldName">
+                    {{ fieldName }}
+                    <sup *ngIf="isFieldRequired()" class="text-danger text-sm">*</sup>
+                </label>
             </div>
             <div class="col-md-9">
 
@@ -12,7 +15,7 @@
                             type="text"
                             class="form-control"
                             [id]="uniqueFieldName"
-                            [formControl]="formControl"
+                            [formControl]="control"
                             [name]="uniqueFieldName"
                             [placeholder]="fieldName"
                     />
@@ -24,7 +27,7 @@
                             type="number"
                             class="form-control"
                             [id]="uniqueFieldName"
-                            [formControl]="formControl"
+                            [formControl]="control"
                             [name]="uniqueFieldName"
                             [placeholder]="fieldName"
                     />
@@ -37,7 +40,7 @@
                             <input
                                     type="checkbox"
                                     [id]="uniqueFieldName"
-                                    [formControl]="formControl"
+                                    [formControl]="control"
                                     [name]="uniqueFieldName"
                             />
                         </label>
@@ -87,7 +90,7 @@
                                         [propertyPath]="getChildPath(childKey)"
                                         [schema]="schema"
                                         [request]="request"
-                                        [formControl]="getChildControl(childKey)"
+                                        [control]="getChildControl(childKey)"
                                         [parent]="parent">
                                 </json-schema-field>
                             </ng-container>
@@ -176,7 +179,7 @@
                                             [propertyPath]="getArrayItemChildPath(i, objKey)"
                                             [schema]="schema"
                                             [request]="request"
-                                            [formControl]="getArrayItemChildControl(i, objKey)"
+                                            [control]="getArrayItemChildControl(i, objKey)"
                                             [parent]="parent">
                                     </json-schema-field>
                                 </ng-container>
@@ -189,28 +192,28 @@
         </div>
 
         <!-- Validation Messages -->
-        <div *ngIf="formControl && formControl.invalid && (formControl.touched || formControl.dirty)" style="margin-top: -16px"
+        <div *ngIf="control && control.invalid && (control.touched || control.dirty)" style="margin-top: -16px"
              class="row">
             <div class="col-md-12">
-                <small class="text-danger" *ngIf="formControl.hasError('required')">
+                <small class="text-danger" *ngIf="control.hasError('required')">
                     {{ fieldName }} {{ 'workflow.apiRequest.label.isRequired' | translate }}
                 </small>
-                <small class="text-danger" *ngIf="formControl.hasError('maxlength')">
+                <small class="text-danger" *ngIf="control.hasError('maxlength')">
                     {{ 'workflow.apiRequest.label.maxLength' | translate }}
-                    ({{ formControl.getError('maxlength')?.actualLength }}/{{ formControl.getError('maxlength')?.requiredLength }})
+                    ({{ control.getError('maxlength')?.actualLength }}/{{ control.getError('maxlength')?.requiredLength }})
                 </small>
-                <small class="text-danger" *ngIf="formControl.hasError('minlength')">
+                <small class="text-danger" *ngIf="control.hasError('minlength')">
                     {{ 'workflow.apiRequest.label.minLength' | translate }}
-                    ({{ formControl.getError('minlength')?.actualLength }}/{{ formControl.getError('minlength')?.requiredLength }})
+                    ({{ control.getError('minlength')?.actualLength }}/{{ control.getError('minlength')?.requiredLength }})
                 </small>
-                <small class="text-danger" *ngIf="formControl.hasError('pattern')">
+                <small class="text-danger" *ngIf="control.hasError('pattern')">
                     {{ 'workflow.apiRequest.label.invalidFormat' | translate }}
                 </small>
-                <small class="text-danger" *ngIf="formControl.hasError('min')">
-                    {{ 'workflow.apiRequest.label.leastValue' | translate }} {{ formControl.getError('min')?.min }}
+                <small class="text-danger" *ngIf="control.hasError('min')">
+                    {{ 'workflow.apiRequest.label.leastValue' | translate }} {{ control.getError('min')?.min }}
                 </small>
-                <small class="text-danger" *ngIf="formControl.hasError('max')">
-                    {{ 'workflow.apiRequest.label.mostValue' | translate }} {{ formControl.getError('max')?.max }}
+                <small class="text-danger" *ngIf="control.hasError('max')">
+                    {{ 'workflow.apiRequest.label.mostValue' | translate }} {{ control.getError('max')?.max }}
                 </small>
             </div>
         </div>
