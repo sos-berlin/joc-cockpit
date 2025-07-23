@@ -2632,6 +2632,7 @@
     "message.orderModificationNotAllowed": "オーダーステート{{state}}は変更できません",
     "message.noLogHistoryFound": "このオーダーにはログがありません",
     "message.confirmAllSelectedOrders": "本当に選択した全オーダーを確認しますか?",
+    "message.remove": "Drag and drop an order to update its position",
     "tooltip.cycleEndTime": "秒でのサイクル終了時間",
     "treeView": {
       "label": {

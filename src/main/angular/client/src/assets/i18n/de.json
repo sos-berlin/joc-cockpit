@@ -2632,6 +2632,7 @@
     "message.orderModificationNotAllowed": "Der Auftagszustand {{state}} erlaubt keine Änderung",
     "message.noLogHistoryFound": "Kein Protokoll für diesen Auftrag gefunden",
     "message.confirmAllSelectedOrders": "Sind Sie sicher, dass Sie alle ausgewählten Aufträge bestätigen wollen?",
+    "message.remove": "Drag and drop an order to update its position",
     "tooltip.cycleEndTime": "Gibt optional die Endzeit des Zyklus an. Der Anwender kann eine kürzere als die vordefinierte Zeitspanne für das Ende des Zyklus angeben. Der Auftrag wird an der vom Anwender gewählten Position fortgesetzt, und die angegebene Endzeit wird überprüft, wenn der Auftrag zum Beginn des Zyklus zurückkehrt. Zyklusendzeiten, die die vordefinierte Zyklusdauer überschreiten, werden ignoriert.",
     "treeView": {
       "label": {
