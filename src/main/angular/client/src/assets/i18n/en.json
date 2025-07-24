@@ -4141,7 +4141,9 @@
       "placeholder.apiKeyValue": "Enter API key/value",
       "placeholder.keyValue": "{\"key\":\"value\"}",
       "placeholder.script": "// add script here",
-      "placeholder.endPoint": "Enter an endpoint, for example /orders/add"
+      "placeholder.endPoint": "Enter an endpoint, for example /orders/add",
+      "message.invalidBody": "Invalid JSON in Request body",
+      "message.invalidAuth": "Username and password are required for Basic Auth login."
     }
   },
   "xml": {

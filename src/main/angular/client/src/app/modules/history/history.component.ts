@@ -1862,7 +1862,7 @@ export class HistoryComponent {
         });
       }
       if (obj.workflowPath) {
-        filter.workflowPath = obj.workflowPath;
+        filter.workflowName = obj.workflowPath;
       }
       if (obj.workflowTags?.length > 0) {
         filter.workflowTags = obj.workflowTags;
@@ -1933,7 +1933,7 @@ export class HistoryComponent {
         });
       }
       if (obj.workflowPath) {
-        filter.workflowPath = obj.workflowPath;
+        filter.workflowName = obj.workflowPath;
       }
       if (obj.workflowTags?.length > 0) {
         filter.workflowTags = obj.workflowTags;

@@ -4141,8 +4141,9 @@
       "placeholder.apiKeyValue": "API Schlüssel/Wert hinzufügen",
       "placeholder.keyValue": "{\"key\":\"value\"}",
       "placeholder.script": "// Skript hier einfügen",
-      "placeholder.endPoint": "Endpunkt angeben, z.B. /orders/add"
-    }
+      "placeholder.endPoint": "Endpunkt angeben, z.B. /orders/add",
+      "message.invalidBody": "Invalid JSON in Request body",
+      "message.invalidAuth": "Username and password are required for Basic Auth login."}
   },
   "xml": {
     "label.assignedSchema": "Zugewiesenes Schema",

@@ -8259,7 +8259,9 @@ tr.tr-border td:first-child {
   background-color: var(--primary);
   border-color: var(--primary);
 }
-
+.chk-json {
+  accent-color: var(--primary);
+}
 .ant-radio-inner::after {
   background-color: var(--primary);
 }

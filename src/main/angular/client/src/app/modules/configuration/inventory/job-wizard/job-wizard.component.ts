@@ -29,6 +29,7 @@ import {
 import {properties} from "ng-zorro-antd/core/util";
 import {TranslateService} from "@ngx-translate/core";
 import {firstValueFrom} from 'rxjs';
+import {ToastrService} from "ngx-toastr";
 
 interface KeyValue {
   key: string;
@@ -120,6 +121,7 @@ export class ApiRequestComponent {
     private modal: NzModalService,
     private cd: ChangeDetectorRef,
     private translate: TranslateService,
+    private toasterService: ToastrService,
   ) {
     this.options.mode = 'code';
     this.options.onEditable = () => {
@@ -649,7 +651,12 @@ export class ApiRequestComponent {
     } else {
       const {username, password} = this.auth.basic;
       if (!username || !password) {
-        this.msg.error('Username and password are required for Basic Auth login.');
+        let title = '';
+        let msg = '';
+        this.translate.get('workflow.apiRequest.message.invalidAuth').subscribe(translatedValue => {
+          title = translatedValue;
+        });
+        this.toasterService.warning(title, msg);
         return;
       }
       const creds = btoa(`${username}:${password}`);
@@ -843,6 +850,13 @@ export class JsonSchemaFieldComponent {
   @Input() parent: any;
 
   ngOnInit(): void {
+    if (this.isArrayField() && this.getArrayControls().length === 0) {
+      this.addArrayItem();
+    }
+
+    if (this.isMapField() && this.getMapEntries().length === 0) {
+      this.addMapEntry();
+    }
   }
 
   get fieldName(): string {
@@ -1070,7 +1084,9 @@ export class ApiFormDialogComponent {
     public activeModal: NzModalRef,
     private coreService: CoreService,
     private cdr: ChangeDetectorRef,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    private translate: TranslateService,
+    private toasterService: ToastrService,
   ) {
     this.options.mode = 'code';
     this.options.onEditable = () => {
@@ -1090,7 +1106,17 @@ export class ApiFormDialogComponent {
   ngOnInit(): void {
     this.title = this.modalData.title;
     this.raml = this.modalData.raml;
-    this.request = this.modalData.request;
+    try {
+      this.request = JSON.parse(this.modalData.request);
+    } catch (e) {
+      this.request = null;
+      let title = '';
+      let msg = '';
+      this.translate.get('workflow.apiRequest.message.invalidBody').subscribe(translatedValue => {
+        title = translatedValue;
+      });
+      this.toasterService.warning(title, msg);
+    }
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.loadSchema(this.modalData.endPoint);
     this.loadEditorLanguage();
@@ -1145,6 +1171,19 @@ export class ApiFormDialogComponent {
       this.clearCaches();
 
       this.form = this.createForm(this.JsonSchema);
+      setTimeout(()=>{
+        if (this.request && typeof this.request === 'object') {
+          try {
+            if (this.shouldUseSetValue(this.request)) {
+              this.form.setValue(this.request);
+            } else {
+              this.form.patchValue(this.request);
+            }
+          } catch (e) {
+            console.warn('Failed to populate request data into form', e);
+          }
+        }
+      },500)
     } catch (e) {
     } finally {
       this.loading = false;

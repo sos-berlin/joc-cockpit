@@ -37,7 +37,7 @@
                 <ng-container *ngIf="isBooleanField()">
                     <div class="checkbox">
                         <label>
-                            <input
+                            <input class="chk-json "
                                     type="checkbox"
                                     [id]="uniqueFieldName"
                                     [formControl]="control"
@@ -151,7 +151,7 @@
 
                                     <div *ngSwitchCase="'boolean'" class="checkbox">
                                         <label>
-                                            <input
+                                            <input class="chk-json "
                                                     type="checkbox"
                                                     [id]="generateItemName('array', i)"
                                                     [name]="generateItemName('array', i)"
