@@ -3620,6 +3620,7 @@
     "message.rejectForSelectedPendingRequests": "Are you sure that you want to defer the selected pending requests?",
     "message.deleteForSelectedPendingRequests": "Are you sure that you want to delete the selected pending requests?",
     "message.deleteDevices": "Are you sure that you want to remove the security keys for this account?",
+    "message.invalidRole": "Cannot assign only the {{approvalRequestorRole}} role. Please assign at least one additional role.",
     "tab.simpleMode": "Fewer Options",
     "tab.expertMode": "More Options",
     "tooltip.toAddNonExistFolders": "Folders can be selected. For manual input of a folder path use the keyboard and press the space key or enter key.",

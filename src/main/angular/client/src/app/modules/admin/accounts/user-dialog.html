@@ -73,13 +73,20 @@
       </div>
     </div>
 
-    <div *ngIf="!copy && !secondFactor" class="form-group row">
+    <div *ngIf="!copy && !secondFactor" class="form-group row" [ngClass]="{'has-error': !isApprovalRoleValid}">
       <label class="col-sm-4 form-control-label" translate>user.label.roles</label>
       <div class="col-sm-6">
         <app-select-input [isSearchable]="true" [isMultiple]="true" [placeholder]="'user.placeholder.selectRoles'" [name]="'roles'"
-              [object]="currentUser" [attributeName]="'roles'" [listArray]="allRoles" ></app-select-input>
+              [object]="currentUser" [attributeName]="'roles'" [listArray]="allRoles" (modelChange)="onRolesChange()"></app-select-input>
+
+        <div *ngIf="!isApprovalRoleValid && approvalRequestorRole" class="text-danger help-block">
+          <div [translateParams]="{approvalRequestorRole: approvalRequestorRole}" translate>
+            user.message.invalidRole
+          </div>
+        </div>
       </div>
     </div>
+
     <div *ngIf="(identityServiceType === 'JOC')" class="form-group row">
       <label class="col-sm-4" translate>user.label.forcePasswordChange</label>
       <div class="col-sm-6">
@@ -103,7 +110,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button [disabled]="!myForm.form.valid || !isUnique || submitted || !minimumPasswordLength || !isPasswordMatch"
+    <button [disabled]="!myForm.form.valid || !isUnique || submitted || !minimumPasswordLength || !isPasswordMatch || !isApprovalRoleValid"
             class="btn btn-primary btn-sm"
             type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>

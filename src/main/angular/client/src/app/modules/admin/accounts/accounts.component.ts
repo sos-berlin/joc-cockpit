@@ -157,6 +157,9 @@ export class AccountModalComponent {
   comments: any = {};
   secondFactor = false;
 
+  isApprovalRoleValid = true;
+  approvalRequestorRole = '';
+
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
   }
 
@@ -170,6 +173,9 @@ export class AccountModalComponent {
     this.identityServiceName = this.modalData.identityServiceName;
     this.comments.radio = 'predefined';
     this.secondFactor = !!sessionStorage['secondFactor'];
+
+    this.approvalRequestorRole = sessionStorage.getItem('$SOS$APPROVALREQUESTORROLE') || '';
+
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
@@ -205,6 +211,9 @@ export class AccountModalComponent {
     if (this.newUser && (this.identityServiceType === 'JOC')) {
       this.currentUser.forcePasswordChange = true;
     }
+
+    this.checkApprovalRoleValidation();
+    
   }
 
   private getRoles(): void {
@@ -267,6 +276,24 @@ export class AccountModalComponent {
     }
   }
 
+  checkApprovalRoleValidation(): void {
+    this.isApprovalRoleValid = true;
+
+    if (!this.approvalRequestorRole) {
+      return;
+    }
+
+    if (this.currentUser.roles && this.currentUser.roles.length > 0) {
+      if (this.currentUser.roles.length === 1 && this.currentUser.roles.includes(this.approvalRequestorRole)) {
+        this.isApprovalRoleValid = false;
+      }
+    }
+  }
+
+  onRolesChange(): void {
+    this.checkApprovalRoleValidation();
+  }
+
   sanitizeInput(event: Event, field: 'password' | 'confirmPassword'): void {
     const inputElement = event.target as HTMLInputElement;
     const allowedCharacters = /^[\u0000-\u1FBFF]*$/;
@@ -282,7 +309,6 @@ export class AccountModalComponent {
       }
     }
   }
-
 
   private rename(cb: any): void {
     if (this.oldUser.accountName !== this.currentUser.accountName) {
@@ -311,6 +337,13 @@ export class AccountModalComponent {
   onSubmit(obj: any): void {
     this.submitted = true;
     this.isUnique = true;
+
+    this.checkApprovalRoleValidation();
+    if (!this.isApprovalRoleValid) {
+      this.submitted = false;
+      return;
+    }
+
     if (obj.fakePassword !== '********') {
       obj.password = obj.fakePassword || '';
     }
@@ -351,7 +384,6 @@ export class AccountModalComponent {
     });
   }
 }
-
 // Main Component
 @Component({
   selector: 'app-accounts-all',

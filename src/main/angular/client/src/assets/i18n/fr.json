@@ -3620,6 +3620,7 @@
     "message.rejectForSelectedPendingRequests": "Êtes-vous sûr de vouloir rejeter les demandes en attente sélectionnées ?",
     "message.deleteForSelectedPendingRequests": "Êtes-vous sûr de vouloir supprimer les demandes en attente sélectionnées ?",
     "message.deleteDevices": "Êtes-vous sûr de vouloir supprimer les clés de sécurité de ce compte ?",
+    "message.invalidRole": "Cannot assign only the {{approvalRequestorRole}} role. Please assign at least one additional role.",
     "tab.simpleMode": "Moins d'Options",
     "tab.expertMode": "Plus d'Options",
     "tooltip.toAddNonExistFolders": "Les dossiers peuvent être sélectionnés. Pour saisir manuellement le chemin d'accès à un dossier, utilisez le clavier et appuyez sur la touche d'espacement ou la touche Entrée.",

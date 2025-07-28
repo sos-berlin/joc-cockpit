@@ -1479,8 +1479,62 @@ export class ApiFormDialogComponent {
     return arrayControl ? arrayControl.length : 0;
   }
 
+
+  private cleanFormData(data: any): any {
+    if (data === null || data === undefined) {
+      return undefined;
+    }
+
+    if (Array.isArray(data)) {
+      const cleanedArray = data
+        .map(item => this.cleanFormData(item))
+        .filter(item => !this.isEmpty(item));
+
+      return cleanedArray.length > 0 ? cleanedArray : undefined;
+    }
+
+    if (typeof data === 'object') {
+      const cleanedObject: any = {};
+      let hasAnyValue = false;
+
+      for (const [key, value] of Object.entries(data)) {
+        const cleanedValue = this.cleanFormData(value);
+        if (cleanedValue !== undefined) {
+          cleanedObject[key] = cleanedValue;
+          hasAnyValue = true;
+        }
+      }
+
+      return hasAnyValue ? cleanedObject : undefined;
+    }
+
+    if (this.isEmpty(data)) {
+      return undefined;
+    }
+
+    return data;
+  }
+
+
+  private isEmpty(value: any): boolean {
+    if (value === null || value === undefined || value === '') {
+      return true;
+    }
+
+    if (Array.isArray(value)) {
+      return value.length === 0;
+    }
+
+    if (typeof value === 'object') {
+      return Object.keys(value).length === 0;
+    }
+
+    return false;
+  }
+
+
   onSubmit(): void {
-    if (this.form.valid) {
+    if (this.isFormSubmittable()) {
       let endpoint = '';
       if (this.raml) {
         const match = this.raml.match(/\/resource(\/[^.]+)\.html/);
@@ -1488,14 +1542,31 @@ export class ApiFormDialogComponent {
           endpoint = match[1];
         }
       }
+
+      const cleanedData = this.cleanFormData(this.form.value);
+
       const obj = {
-        data: this.form.value,
+        data: cleanedData,
         endpoint: endpoint
-      }
+      };
+
       this.activeModal.close(obj);
     } else {
       this.markFormGroupTouched(this.form);
     }
+  }
+
+
+  private hasMeaningfulValue(value: any): boolean {
+    if (value === null || value === undefined || value === '') {
+      return false;
+    }
+
+    if (typeof value === 'boolean' || typeof value === 'number') {
+      return true;
+    }
+
+    return !this.isEmpty(value);
   }
 
 
@@ -1655,6 +1726,170 @@ export class ApiFormDialogComponent {
   toggleSchemaView(): void {
     this.showSchema = !this.showSchema;
     this.cdr.detectChanges();
+  }
+
+  isFormSubmittable(): boolean {
+    if (!this.form || !this.JsonSchema) {
+      return false;
+    }
+
+    const required = this.JsonSchema.required || [];
+
+    for (const fieldName of required) {
+      const control = this.form.get(fieldName);
+      if (!control) {
+        return false;
+      }
+
+      const value = control.value;
+
+      if (typeof value === 'string' || typeof value === 'number') {
+        if (!value && value !== 0) {
+          return false;
+        }
+      } else if (typeof value === 'boolean') {
+        continue;
+      } else if (Array.isArray(value)) {
+        if (value.length === 0) {
+          return false;
+        }
+      } else if (value && typeof value === 'object') {
+        const hasValue = Object.values(value).some(val =>
+          val !== null && val !== undefined && val !== ''
+        );
+        if (!hasValue) {
+          return false;
+        }
+      } else if (!value) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+
+  isFormSubmittableIgnoreOptional(): boolean {
+    if (!this.form) {
+      return false;
+    }
+
+    const formErrors = this.getFormValidationErrors(this.form);
+
+    const significantErrors = formErrors.filter(error => {
+      if (error.path.includes('planId')) {
+        const planIdControl = this.form.get('planId');
+        const planIdValue = planIdControl?.value;
+
+        if (!planIdValue || (typeof planIdValue === 'object' && Object.keys(planIdValue).length === 0)) {
+          return false;
+        }
+
+        const hasAnyValue = Object.values(planIdValue || {}).some(val =>
+          val !== null && val !== undefined && val !== ''
+        );
+        return hasAnyValue;
+      }
+
+      if (error.path.includes('[') && error.path.includes(']')) {
+        return this.shouldValidateArrayItem(error.path);
+      }
+
+      if (error.path.includes('_map_') || (error.path.includes('key') || error.path.includes('value'))) {
+        return this.shouldValidateMapEntry(error.path);
+      }
+
+      return true;
+    });
+
+    return significantErrors.length === 0;
+  }
+
+
+  private shouldValidateArrayItem(errorPath: string): boolean {
+    const arrayMatch = errorPath.match(/^([^[]+)\[(\d+)\]/);
+    if (!arrayMatch) return true;
+
+    const [, arrayPath, indexStr] = arrayMatch;
+    const index = parseInt(indexStr, 10);
+
+    const arrayControl = this.form.get(arrayPath) as FormArray;
+    if (!arrayControl || index >= arrayControl.length) return true;
+
+    const itemControl = arrayControl.at(index);
+    const itemValue = itemControl.value;
+
+    if (!itemValue || itemValue === '' ||
+      (typeof itemValue === 'object' && this.isEmptyObject(itemValue))) {
+      return false;
+    }
+
+    return true;
+  }
+
+
+  private shouldValidateMapEntry(errorPath: string): boolean {
+    const mapMatch = errorPath.match(/^([^_]+)_map_(\d+)_(key|value)$/);
+    if (!mapMatch) return true;
+
+    const [, mapPath, indexStr] = mapMatch;
+    const index = parseInt(indexStr, 10);
+
+    const mapArrayControl = this.form.get(mapPath) as FormArray;
+    if (!mapArrayControl || index >= mapArrayControl.length) return true;
+
+    const entryGroup = mapArrayControl.at(index) as FormGroup;
+    const keyValue = entryGroup?.get('key')?.value;
+    const valueValue = entryGroup?.get('value')?.value;
+
+    if ((!keyValue || keyValue === '') && (!valueValue || valueValue === '')) {
+      return false;
+    }
+
+    return true;
+  }
+
+
+  private isEmptyObject(obj: any): boolean {
+    if (!obj || typeof obj !== 'object') return true;
+    if (Array.isArray(obj)) return obj.length === 0;
+
+    return Object.values(obj).every(value =>
+      value === null || value === undefined || value === '' ||
+      (typeof value === 'object' && this.isEmptyObject(value))
+    );
+  }
+
+
+  private getFormValidationErrors(formGroup: FormGroup): any[] {
+    let formErrors: any[] = [];
+
+    Object.keys(formGroup.controls).forEach(key => {
+      const control = formGroup.get(key);
+      if (control && !control.valid) {
+        if (control instanceof FormGroup) {
+          formErrors = formErrors.concat(this.getFormValidationErrors(control));
+        } else if (control instanceof FormArray) {
+          control.controls.forEach((arrayControl, index) => {
+            if (arrayControl instanceof FormGroup) {
+              formErrors = formErrors.concat(this.getFormValidationErrors(arrayControl));
+            } else if (!arrayControl.valid) {
+              formErrors.push({
+                path: `${key}[${index}]`,
+                errors: arrayControl.errors
+              });
+            }
+          });
+        } else {
+          formErrors.push({
+            path: key,
+            errors: control.errors
+          });
+        }
+      }
+    });
+
+    return formErrors;
   }
 }
 

@@ -36,7 +36,7 @@
     <!-- Form footer -->
     <div class="modal-footer">
       <button
-        [disabled]="form?.invalid"
+        [disabled]="!isFormSubmittable()"
         class="btn btn-primary btn-sm"
         type="submit"
       >

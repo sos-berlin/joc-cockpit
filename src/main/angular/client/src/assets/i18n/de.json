@@ -3620,6 +3620,7 @@
     "message.rejectForSelectedPendingRequests": "Sind Sie sicher, dass Sie die ausgewählten anstehenden Anfragen aufschieben wollen?",
     "message.deleteForSelectedPendingRequests": "Sind Sie sicher, dass Sie alle anstehenden Anfragen löschen wollen?",
     "message.deleteDevices": "Sind Sie sicher, dass Sie die Sicherheitsschlüssel für dieses Konto entfernen wollen?",
+    "message.invalidRole": "Cannot assign only the {{approvalRequestorRole}} role. Please assign at least one additional role.",
     "tab.simpleMode": "Weniger Optionen",
     "tab.expertMode": "Mehr Optionen",
     "tooltip.toAddNonExistFolders": "Ordner können ausgewählt werden. Zur Eingabe eines Ordnerpfads per Tastatur den Pfad angeben und Leertaste oder Eingabetaste drücken.",

@@ -3621,6 +3621,7 @@
     "message.rejectForSelectedPendingRequests": "選択した保留リクエストを本当に否認してよろしいですか？",
     "message.deleteForSelectedPendingRequests": "選択した保留リクエストを本当に削除してよろしいですか？",
     "message.deleteDevices": "このアカウントの全デバイスを本当に削除してよろしいですか？",
+    "message.invalidRole": "Cannot assign only the {{approvalRequestorRole}} role. Please assign at least one additional role.",
     "tab.simpleMode": "シンプルモード",
     "tab.expertMode": "エキスパートモード",
     "tooltip.toAddNonExistFolders": "スペースまたはエンターキーで新しいフォルダーパスを追加できます",

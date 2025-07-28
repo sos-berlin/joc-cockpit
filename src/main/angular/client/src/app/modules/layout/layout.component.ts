@@ -175,6 +175,10 @@ export class LayoutComponent {
               timeZone = configuration?.dailyplan?.time_zone?.value;
               if (configuration?.joc) {
                 flag = configuration.joc.disable_warning_on_license_expiration;
+                if(configuration?.joc?.approval_requestor_role && configuration?.joc?.approval_requestor_role.value){
+                  const role = configuration?.joc?.approval_requestor_role.value
+                  sessionStorage.setItem('$SOS$APPROVALREQUESTORROLE', role);
+                }
               }
             }
             if (!timeZone) {
