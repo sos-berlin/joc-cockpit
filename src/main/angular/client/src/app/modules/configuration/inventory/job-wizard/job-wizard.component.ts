@@ -1480,28 +1480,73 @@ export class ApiFormDialogComponent {
   }
 
 
-  private cleanFormData(data: any): any {
+  private cleanFormData(data: any, schema?: any, propertyPath: string[] = []): any {
     if (data === null || data === undefined) {
       return undefined;
     }
 
     if (Array.isArray(data)) {
+      const itemSchema = schema?.items ? this.resolveAnyOf(schema.items) : null;
       const cleanedArray = data
-        .map(item => this.cleanFormData(item))
-        .filter(item => !this.isEmpty(item));
+        .map((item, index) => {
+          const itemPath = [...propertyPath, index.toString()];
+          return this.cleanFormData(item, itemSchema, itemPath);
+        })
+        .filter(item => item !== undefined);
+
+      const isTopLevelRequired = this.isTopLevelRequired(propertyPath);
+      if (isTopLevelRequired && cleanedArray.length === 0) {
+        return [];
+      }
 
       return cleanedArray.length > 0 ? cleanedArray : undefined;
     }
 
     if (typeof data === 'object') {
+      const currentSchema = schema || this.getSchemaForProperty(propertyPath);
+      const required = currentSchema?.required || [];
+
+      const isTopLevel = propertyPath.length <= 1;
+      if (!isTopLevel && required.length > 0) {
+        const hasAllRequiredFields = required.every(fieldName => {
+          const value = data[fieldName];
+          return !this.isEmpty(value);
+        });
+
+        if (!hasAllRequiredFields) {
+          return undefined;
+        }
+      }
+
       const cleanedObject: any = {};
       let hasAnyValue = false;
 
       for (const [key, value] of Object.entries(data)) {
-        const cleanedValue = this.cleanFormData(value);
-        if (cleanedValue !== undefined) {
-          cleanedObject[key] = cleanedValue;
-          hasAnyValue = true;
+        const childPath = [...propertyPath, key];
+        const childSchema = currentSchema?.properties?.[key] ?
+          this.resolveAnyOf(currentSchema.properties[key]) : null;
+
+        const isFieldRequired = required.includes(key);
+        const isBoolean = childSchema?.type === 'boolean';
+
+        if (isBoolean) {
+          if (value === true) {
+            cleanedObject[key] = true;
+            hasAnyValue = true;
+          } else if (value === false) {
+            if (isFieldRequired) {
+              cleanedObject[key] = false;
+              hasAnyValue = true;
+            }
+          }
+        } else {
+          const cleanedValue = this.cleanFormData(value, childSchema, childPath);
+
+          const isChildRequired = isTopLevel && isFieldRequired;
+          if (cleanedValue !== undefined || isChildRequired) {
+            cleanedObject[key] = cleanedValue !== undefined ? cleanedValue : this.getDefaultForType(childSchema);
+            hasAnyValue = true;
+          }
         }
       }
 
@@ -1513,6 +1558,37 @@ export class ApiFormDialogComponent {
     }
 
     return data;
+  }
+
+
+  private isTopLevelRequired(propertyPath: string[]): boolean {
+    if (propertyPath.length !== 1) return false;
+
+    const fieldName = propertyPath[0];
+    const required = this.JsonSchema?.required || [];
+    return required.includes(fieldName);
+  }
+
+
+  private getDefaultForType(schema: any): any {
+    if (!schema) return null;
+
+    const resolvedSchema = this.resolveAnyOf(schema);
+
+    switch (resolvedSchema.type) {
+      case 'array':
+        return [];
+      case 'object':
+        return {};
+      case 'boolean':
+        return false;
+      case 'number':
+      case 'integer':
+        return 0;
+      case 'string':
+      default:
+        return '';
+    }
   }
 
 
@@ -1543,7 +1619,7 @@ export class ApiFormDialogComponent {
         }
       }
 
-      const cleanedData = this.cleanFormData(this.form.value);
+      const cleanedData = this.cleanFormData(this.form.value, this.JsonSchema, []);
 
       const obj = {
         data: cleanedData,
@@ -1555,20 +1631,6 @@ export class ApiFormDialogComponent {
       this.markFormGroupTouched(this.form);
     }
   }
-
-
-  private hasMeaningfulValue(value: any): boolean {
-    if (value === null || value === undefined || value === '') {
-      return false;
-    }
-
-    if (typeof value === 'boolean' || typeof value === 'number') {
-      return true;
-    }
-
-    return !this.isEmpty(value);
-  }
-
 
   private markFormGroupTouched(formGroup: FormGroup | FormArray): void {
     Object.keys(formGroup.controls).forEach(field => {
