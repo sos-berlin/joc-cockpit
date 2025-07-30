@@ -1592,22 +1592,6 @@ export class ApiFormDialogComponent {
   }
 
 
-  private isEmpty(value: any): boolean {
-    if (value === null || value === undefined || value === '') {
-      return true;
-    }
-
-    if (Array.isArray(value)) {
-      return value.length === 0;
-    }
-
-    if (typeof value === 'object') {
-      return Object.keys(value).length === 0;
-    }
-
-    return false;
-  }
-
 
   onSubmit(): void {
     if (this.isFormSubmittable()) {
@@ -1790,6 +1774,7 @@ export class ApiFormDialogComponent {
     this.cdr.detectChanges();
   }
 
+
   isFormSubmittable(): boolean {
     if (!this.form || !this.JsonSchema) {
       return false;
@@ -1827,88 +1812,107 @@ export class ApiFormDialogComponent {
       }
     }
 
+    if (!this.validateConditionalDependencies()) {
+      return false;
+    }
+
     return true;
   }
 
 
-  isFormSubmittableIgnoreOptional(): boolean {
-    if (!this.form) {
-      return false;
+  private validateConditionalDependencies(): boolean {
+    return this.validateObjectConditionalDependencies(this.form, this.JsonSchema, []);
+  }
+
+
+  private validateObjectConditionalDependencies(formGroup: FormGroup, schema: any, currentPath: string[]): boolean {
+    if (!schema?.properties) {
+      return true;
     }
 
-    const formErrors = this.getFormValidationErrors(this.form);
+    const properties = schema.properties;
 
-    const significantErrors = formErrors.filter(error => {
-      if (error.path.includes('planId')) {
-        const planIdControl = this.form.get('planId');
-        const planIdValue = planIdControl?.value;
+    for (const [key, propSchema] of Object.entries(properties)) {
+      const control = formGroup.get(key);
+      const fieldPath = [...currentPath, key];
+      const resolvedSchema = this.resolveAnyOf(propSchema);
 
-        if (!planIdValue || (typeof planIdValue === 'object' && Object.keys(planIdValue).length === 0)) {
+      if (!control) continue;
+
+      if (resolvedSchema.type === 'object' && !this.isMapType(fieldPath)) {
+        const nestedFormGroup = control as FormGroup;
+
+        if (!this.validateConditionalRequiredFields(nestedFormGroup, resolvedSchema)) {
           return false;
         }
 
-        const hasAnyValue = Object.values(planIdValue || {}).some(val =>
-          val !== null && val !== undefined && val !== ''
-        );
-        return hasAnyValue;
-      }
+        if (!this.validateObjectConditionalDependencies(nestedFormGroup, resolvedSchema, fieldPath)) {
+          return false;
+        }
+      } else if (resolvedSchema.type === 'array') {
+        const arrayControl = control as FormArray;
+        const itemSchema = this.resolveAnyOf(resolvedSchema.items);
 
-      if (error.path.includes('[') && error.path.includes(']')) {
-        return this.shouldValidateArrayItem(error.path);
-      }
+        if (itemSchema?.type === 'object') {
+          for (let i = 0; i < arrayControl.length; i++) {
+            const itemControl = arrayControl.at(i) as FormGroup;
+            const itemPath = [...fieldPath, i.toString()];
 
-      if (error.path.includes('_map_') || (error.path.includes('key') || error.path.includes('value'))) {
-        return this.shouldValidateMapEntry(error.path);
-      }
+            if (!this.validateConditionalRequiredFields(itemControl, itemSchema)) {
+              return false;
+            }
 
+            if (!this.validateObjectConditionalDependencies(itemControl, itemSchema, itemPath)) {
+              return false;
+            }
+          }
+        }
+      }
+    }
+
+    return true;
+  }
+
+
+  private validateConditionalRequiredFields(formGroup: FormGroup, schema: any): boolean {
+    const required = schema.required || [];
+
+    if (required.length === 0) {
       return true;
+    }
+
+    const hasAnyRequiredValue = required.some(fieldName => {
+      const control = formGroup.get(fieldName);
+      const value = control?.value;
+      return !this.isEmpty(value);
     });
 
-    return significantErrors.length === 0;
+    if (!hasAnyRequiredValue) {
+      return true;
+    }
+
+    return required.every(fieldName => {
+      const control = formGroup.get(fieldName);
+      const value = control?.value;
+      return !this.isEmpty(value);
+    });
   }
 
 
-  private shouldValidateArrayItem(errorPath: string): boolean {
-    const arrayMatch = errorPath.match(/^([^[]+)\[(\d+)\]/);
-    if (!arrayMatch) return true;
-
-    const [, arrayPath, indexStr] = arrayMatch;
-    const index = parseInt(indexStr, 10);
-
-    const arrayControl = this.form.get(arrayPath) as FormArray;
-    if (!arrayControl || index >= arrayControl.length) return true;
-
-    const itemControl = arrayControl.at(index);
-    const itemValue = itemControl.value;
-
-    if (!itemValue || itemValue === '' ||
-      (typeof itemValue === 'object' && this.isEmptyObject(itemValue))) {
-      return false;
+  private isEmpty(value: any): boolean {
+    if (value === null || value === undefined || value === '') {
+      return true;
     }
 
-    return true;
-  }
-
-
-  private shouldValidateMapEntry(errorPath: string): boolean {
-    const mapMatch = errorPath.match(/^([^_]+)_map_(\d+)_(key|value)$/);
-    if (!mapMatch) return true;
-
-    const [, mapPath, indexStr] = mapMatch;
-    const index = parseInt(indexStr, 10);
-
-    const mapArrayControl = this.form.get(mapPath) as FormArray;
-    if (!mapArrayControl || index >= mapArrayControl.length) return true;
-
-    const entryGroup = mapArrayControl.at(index) as FormGroup;
-    const keyValue = entryGroup?.get('key')?.value;
-    const valueValue = entryGroup?.get('value')?.value;
-
-    if ((!keyValue || keyValue === '') && (!valueValue || valueValue === '')) {
-      return false;
+    if (Array.isArray(value)) {
+      return value.length === 0;
     }
 
-    return true;
+    if (typeof value === 'object') {
+      return Object.keys(value).length === 0;
+    }
+
+    return false;
   }
 
 

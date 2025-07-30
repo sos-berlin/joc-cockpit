@@ -3502,7 +3502,7 @@ export class ScriptEditorComponent {
       if (this.cm && this.cm.codeMirror) {
         setTimeout(() => {
           const doc = this.cm.codeMirror.getDoc();
-          const cursor = doc.getCursor();  // gets the line number in the cursor position
+          const cursor = doc.getCursor();
           doc.replaceRange(this.script, cursor);
           this.cm.codeMirror.focus();
           doc.setCursor(cursor);
@@ -3548,13 +3548,11 @@ export class ScriptEditorComponent {
   }
 
   ngOnDestroy(): void {
-    // Remove the keydown event listener when the component is destroyed
     document.removeEventListener('keydown', this.handleKeyDown);
   }
 
   handleKeyDown = (event: KeyboardEvent): void => {
     if (event.shiftKey && event.altKey && event.code == 'F') {
-      // Call the autoFormatCode function to format the selected range
       this.autoFormatCode(event);
     }
   }
