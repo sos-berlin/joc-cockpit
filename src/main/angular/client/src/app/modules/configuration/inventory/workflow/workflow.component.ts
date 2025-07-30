@@ -2835,6 +2835,53 @@ export class JobComponent {
     }
   }
 
+  onInputChange(event: Event, argument: any): void {
+    const input = event.target as HTMLInputElement;
+    const cursorPosition = input.selectionStart;
+
+    if (input.value.includes('$')) {
+      setTimeout(() => {
+        this.ref.detectChanges();
+        this.focusMentionInput(cursorPosition);
+      }, 100);
+    }
+  }
+
+  private focusMentionInput(cursorPosition: number): void {
+    setTimeout(() => {
+      const mentionInputs = document.querySelectorAll('input[nzMentionTrigger]');
+      if (mentionInputs.length > 0) {
+        const lastInput = mentionInputs[mentionInputs.length - 1] as HTMLInputElement;
+        lastInput.focus();
+        if (cursorPosition !== null) {
+          lastInput.setSelectionRange(cursorPosition, cursorPosition);
+        }
+
+        setTimeout(() => {
+          const keydownEvent = new KeyboardEvent('keydown', {
+            key: '$',
+            bubbles: true,
+            cancelable: true
+          });
+          lastInput.dispatchEvent(keydownEvent);
+
+          const inputEvent = new InputEvent('input', {
+            bubbles: true,
+            cancelable: true
+          });
+          lastInput.dispatchEvent(inputEvent);
+
+          const keyupEvent = new KeyboardEvent('keyup', {
+            key: '$',
+            bubbles: true,
+            cancelable: true
+          });
+          lastInput.dispatchEvent(keyupEvent);
+        }, 10);
+      }
+    }, 0);
+  }
+
   private init(): void {
     this.hasLicense = sessionStorage['hasLicense'] == 'true';
     this.copiedParamObjects = this.coreService.getConfigurationTab().copiedParamObjects;
@@ -3292,7 +3339,7 @@ export class ScriptEditorComponent {
     }
     this.cmOption.tabSize = this.modalData.tabSize;
     if (this.disabled) {
-      this.cmOption.reladOnly = true;
+      this.cmOption.readOnly = true;
     }
   }
 
@@ -13733,14 +13780,17 @@ export class WorkflowComponent {
   }
 
   private isExpression(value: string): boolean {
+    if (typeof value !== 'string') {
+      return false;
+    }
     const expressionRegex = /^[\d\s+\-*/().]+$/;
     return expressionRegex.test(value.replace(/"/g, ''));
   }
 
-  private convertToExpression(value: string): string {
+  private convertToExpression(value: any): string {
+    if (typeof value !== 'string') return String(value);
     let expression = value.replace(/^"(.*)"$/, '$1');
-    expression = expression.trim();
-    return expression;
+    return expression.trim();
   }
 
   private clearClipboard(): void {

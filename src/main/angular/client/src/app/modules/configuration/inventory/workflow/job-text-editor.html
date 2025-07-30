@@ -1161,23 +1161,48 @@
                   </div>
                 </div>
                 <div class="col-md-5 col-lg-5 m-b-sm">
-                  <nz-mention [nzNotFoundContent]="'common.message.noDataAvailable' | translate"
-                              [nzPrefix]="['$']"
-                              [nzSuggestions]="variableList" [nzValueWith]="valueWith">
+                  <div *ngIf="argument.value && argument.value.toString().includes('$'); else normalInput">
+                    <nz-mention [nzNotFoundContent]="'common.message.noDataAvailable' | translate"
+                                [nzPrefix]="['$']"
+                                [nzSuggestions]="variableList"
+                                [nzValueWith]="valueWith">
+                      <label class="w-full">
+                        <input #mentionInput
+                               (keydown)="onKeyPress($event, 'node')"
+                               [(ngModel)]="argument.value"
+                               [required]="argument.name && argument.name.length > 0"
+                               autocomplete="off"
+                               class="form-control"
+                               name="value{{i}}"
+                               nz-input
+                               nzMentionTrigger
+                               (ngModelChange)="checkValue(argument)"
+                               placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
+                      </label>
+                      <ng-container *nzMentionSuggestion="let argu">
+                        <span>{{ argu.name }}</span>
+                      </ng-container>
+                    </nz-mention>
+                  </div>
+
+                  <ng-template #normalInput>
                     <label class="w-full">
-                      <input (keydown)="onKeyPress($event, 'node')" [(ngModel)]="argument.value"
-                             [required]="argument.name && argument.name.length > 0" autocomplete="off"
-                             class="form-control" name="value{{i}}"
-                             nz-input nzMentionTrigger
+                      <input #regularInput
+                             (keydown)="onKeyPress($event, 'node')"
+                             [(ngModel)]="argument.value"
+                             [required]="argument.name && argument.name.length > 0"
+                             autocomplete="off"
+                             class="form-control"
+                             name="value{{i}}"
+                             nz-input
                              (ngModelChange)="checkValue(argument)"
+                             (input)="onInputChange($event, argument)"
                              placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
                     </label>
-                    <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
-                       style="right: 1px;top:1px;"></i>
-                    <ng-container *nzMentionSuggestion="let argu">
-                      <span>{{ argu.name }}</span>
-                    </ng-container>
-                  </nz-mention>
+                  </ng-template>
+
+                  <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
+                     style="right: 13px;top:1px;"></i>
                 </div>
                 <div class="col-md-2 col-lg-2 p-l-0 d-flex justify-content-around">
                   <i
