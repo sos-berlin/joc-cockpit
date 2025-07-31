@@ -2710,7 +2710,7 @@
     "message.orderModificationNotAllowed": "The order state {{state}} does not allow modification",
     "message.noLogHistoryFound": "No log found for this order",
     "message.confirmAllSelectedOrders": "Are you sure that you want to confirm all selected orders?",
-    "message.remove": "Drag and drop an order to update its position",
+    "message.remove": "Drag and drop order to move its position",
     "tooltip.cycleEndTime": "Optionally specifies the cycle end time. Users can specify a shorter period than predefined for the cycle to terminate. The order will be resumed from the position choosen by the user and the specified end time will be checked when the order returns to the begin of the cycle. Cycle end times exceeding the predefined cycle period will be ignored.",
     "treeView": {
       "label": {
@@ -3620,7 +3620,7 @@
     "message.rejectForSelectedPendingRequests": "Are you sure that you want to defer the selected pending requests?",
     "message.deleteForSelectedPendingRequests": "Are you sure that you want to delete the selected pending requests?",
     "message.deleteDevices": "Are you sure that you want to remove the security keys for this account?",
-    "message.invalidRole": "Cannot assign only the {{approvalRequestorRole}} role. Please assign at least one additional role.",
+    "message.invalidRole": "Cannot assign {{approvalRequestorRole}} role only. Please assign at least one additional role.",
     "tab.simpleMode": "Fewer Options",
     "tab.expertMode": "More Options",
     "tooltip.toAddNonExistFolders": "Folders can be selected. For manual input of a folder path use the keyboard and press the space key or enter key.",
@@ -4119,7 +4119,7 @@
       "label.invalidJson": "Invalid JSON",
       "label.ramlDocs": "RAML Documentation",
       "label.addItem": "Add Item",
-      "label.addEntry": "Add Entry",
+      "label.addEntry": "Add Object",
       "label.item": "Item",
       "label.isRequired": "is required",
       "label.maxLength": "Max. length exceeded",
@@ -4127,14 +4127,14 @@
       "label.invalidFormat": "Invalid format",
       "label.leastValue": "Value must be at least",
       "label.mostValue": "Value can be at most",
-      "label.reset": "Reset to current form values",
+      "label.reset": "Reset form values",
       "button.variableList": "Variable List",
       "button.sendRequest": "Send Request",
       "button.addParam": "Add Parameter",
       "button.addHeader": "Add Header",
       "button.documentation": "Documentation",
       "button.showSchema": "Show Schema",
-      "button.editJson": "Preview and Edit Json",
+      "button.editJson": "Edit JSON",
       "placeholder.apiRequest": "https://api.example.com",
       "placeholder.key": "Key",
       "placeholder.value": "Value",
@@ -4144,7 +4144,7 @@
       "placeholder.script": "// add script here",
       "placeholder.endPoint": "Enter an endpoint, for example /orders/add",
       "message.invalidBody": "Invalid JSON in Request body",
-      "message.invalidAuth": "Username and password are required for Basic Auth login."
+      "message.invalidAuth": "Username and password required for login with Basic Authentication."
     }
   },
   "xml": {

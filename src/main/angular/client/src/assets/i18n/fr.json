@@ -2710,7 +2710,7 @@
     "message.orderModificationNotAllowed": "L'état de l'ordre {{state}} ne permet pas de modification",
     "message.noLogHistoryFound": "Aucun journal n'a été trouvé pour cet ordre",
     "message.confirmAllSelectedOrders": "Êtes-vous sûr de vouloir confirmer tous les ordres sélectionnés ?",
-    "message.remove": "Drag and drop an order to update its position",
+    "message.remove": "Glisser-déposer l'ordre pour déplacer sa position",
     "tooltip.cycleEndTime": "Cette option permet de spécifier l'heure de fin du cycle. Les utilisateurs peuvent spécifier une période plus courte que celle prédéfinie pour la fin du cycle. L'ordre reprendra à partir de la position choisie par l'utilisateur et l'heure de fin spécifiée sera vérifiée lorsque l'ordre reviendra au début du cycle. Les heures de fin de cycle dépassant la période prédéfinie seront ignorées.",
     "treeView": {
       "label": {
@@ -3620,7 +3620,7 @@
     "message.rejectForSelectedPendingRequests": "Êtes-vous sûr de vouloir rejeter les demandes en attente sélectionnées ?",
     "message.deleteForSelectedPendingRequests": "Êtes-vous sûr de vouloir supprimer les demandes en attente sélectionnées ?",
     "message.deleteDevices": "Êtes-vous sûr de vouloir supprimer les clés de sécurité de ce compte ?",
-    "message.invalidRole": "Cannot assign only the {{approvalRequestorRole}} role. Please assign at least one additional role.",
+    "message.invalidRole": "Impossible d'attribuer uniquement le rôle {{approvalRequestorRole}}. Veuillez attribuer au moins un rôle supplémentaire.",
     "tab.simpleMode": "Moins d'Options",
     "tab.expertMode": "Plus d'Options",
     "tooltip.toAddNonExistFolders": "Les dossiers peuvent être sélectionnés. Pour saisir manuellement le chemin d'accès à un dossier, utilisez le clavier et appuyez sur la touche d'espacement ou la touche Entrée.",
@@ -4118,8 +4118,8 @@
       "label.showLogs": "Visualiser le Journal",
       "label.invalidJson": "JSON non valide",
      "label.ramlDocs": "Documentation RAML",
-      "label.addItem": "Add Item",
-      "label.addEntry": "Add Entry",
+      "label.addItem": "Ajouter Èlement",
+      "label.addEntry": "Ajouter Objet",
       "label.item": "Item",
       "label.isRequired": "est requis",
       "label.maxLength": "Longueur maximale dépassée",
@@ -4127,7 +4127,7 @@
       "label.invalidFormat": "Format non valide",
       "label.leastValue": "La valeur doit être d'au moins",
       "label.mostValue": "La valeur peut être au maximum de",
-      "label.reset": "Reset to current form values",
+      "label.reset": "Réinitialiser les données dans le formulaire",
       "button.variableList": "Liste des Variables",
       "button.sendRequest": "Envoyer Requête",
       "button.addParam": "Ajouter Paramètre",
@@ -4143,8 +4143,8 @@
       "placeholder.keyValue": "{\"key\":\"value\"}",
       "placeholder.script": "// ajouter script ici",
       "placeholder.endPoint": "Entrer l'adresse de fin, par ex. /orders/add",
-      "message.invalidBody": "Invalid JSON in Request body",
-      "message.invalidAuth": "Username and password are required for Basic Auth login."}
+      "message.invalidBody": "JSON invalide dans Request body",
+      "message.invalidAuth": "Nom d'utilisateur et mot de passe requis pour se connecter avec Basic Authentication."}
   },
   "xml": {
     "label.assignedSchema": "Schéma Assigné",
