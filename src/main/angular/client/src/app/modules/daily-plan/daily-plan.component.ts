@@ -754,6 +754,7 @@ export class DailyPlanComponent {
   isProcessing = false;
   isVisible = false;
   isAllSelected = false;
+  isAllOrderSelected = false;
   isPathDisplay = false;
   totalOrders: number;
   totalFinishedOrders: number;
@@ -1908,6 +1909,7 @@ export class DailyPlanComponent {
 
   selectAll(): void {
     this.isAllSelected = true;
+    this.isAllOrderSelected = true;
     if (this.dailyPlanFilters.filter.groupBy) {
       for (let i = 0; i < this.planOrders.length; i++) {
         this.planOrders[i].value.forEach(item => {
@@ -1924,6 +1926,7 @@ export class DailyPlanComponent {
 
   checkAll(): void {
     this.isAllSelected = false;
+    this.isAllOrderSelected = false;
     let flag = false;
     if (this.planOrders.length > 0) {
       this.object.mapOfCheckedId.clear();
@@ -1975,6 +1978,7 @@ export class DailyPlanComponent {
       }
     }
     this.isAllSelected = false;
+    this.isAllOrderSelected = false;
     template.indeterminate = false;
     if (isChecked) {
       for (let i = 0; i < template.value.length; i++) {
@@ -2021,6 +2025,7 @@ export class DailyPlanComponent {
       }
     }
     this.isAllSelected = false;
+    this.isAllOrderSelected = false;
     if (checked) {
       this.object.mapOfCheckedId.set(order.orderId, order);
     } else {
