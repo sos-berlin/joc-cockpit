@@ -860,18 +860,26 @@
                     <div
                       *ngIf="object.checked && object.mapOfCheckedId.size > 0 && planOrders.length > (dailyPlanFilters.entryPerPage || preferences.entryPerPage)"
                       class="text-center font14 box p-a-sm m-b-12">
-                      <span *ngIf="object.mapOfCheckedId.size !== (totalOrders - totalFinishedOrders)"
+                      <span *ngIf="object.mapOfCheckedId.size !== (totalOrders - totalFinishedOrders) && !isAllOrderSelected"
                             [translateParams]="{count: object.mapOfCheckedId.size}"
                             translate>common.label.selectAllEntriesOfCurrentPage</span>
-                      <span *ngIf="object.mapOfCheckedId.size === (totalOrders - totalFinishedOrders)"
+                      <span *ngIf="object.mapOfCheckedId.size === (totalOrders - totalFinishedOrders) && !isAllOrderSelected"
                             [translateParams]="{count: (totalOrders - totalFinishedOrders)}"
                             translate>common.label.allEntriesSelected</span>
                       <a (click)="selectAll()"
-                         *ngIf="object.mapOfCheckedId.size !== (totalOrders - totalFinishedOrders)"
+                         *ngIf="object.mapOfCheckedId.size !== (totalOrders - totalFinishedOrders) && dailyPlanFilters.filter.status === 'ALL' && !isAllOrderSelected"
+                         [translateParams]="{count: (totalOrders)}" class="text-primary p-l-xs"
+                         translate>common.label.selectAllEntries</a>
+                      <a (click)="selectAll()"
+                         *ngIf="object.mapOfCheckedId.size !== (totalOrders - totalFinishedOrders) && dailyPlanFilters.filter.status != 'FINISHED' && dailyPlanFilters.filter.status != 'ALL' && !isAllOrderSelected"
                          [translateParams]="{count: (totalOrders - totalFinishedOrders)}" class="text-primary p-l-xs"
                          translate>common.label.selectAllEntries</a>
-                      <a (click)="isAllSelected = false;resetCheckBox()"
-                         *ngIf="object.mapOfCheckedId.size === (totalOrders - totalFinishedOrders)"
+                      <a (click)="selectAll()"
+                         *ngIf="object.mapOfCheckedId.size !== (totalOrders - totalFinishedOrders) && dailyPlanFilters.filter.status === 'FINISHED' && !isAllOrderSelected"
+                         [translateParams]="{count: (totalFinishedOrders)}" class="text-primary p-l-xs"
+                         translate>common.label.selectAllEntries</a>
+                      <a (click)="isAllSelected = false;resetCheckBox();isAllOrderSelected = false"
+                         *ngIf="isAllOrderSelected"
                          class="text-primary p-l-xs" translate>common.label.clearSelection</a>
                     </div>
                     <div *ngIf="pageView !=='grid'" class="box p-a max-ht-n-252" style="overflow: auto;">
