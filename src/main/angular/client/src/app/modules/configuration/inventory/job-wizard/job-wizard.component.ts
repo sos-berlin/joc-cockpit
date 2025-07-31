@@ -1174,6 +1174,8 @@ export class ApiFormDialogComponent {
       setTimeout(()=>{
         if (this.request && typeof this.request === 'object') {
           try {
+            this.prepareFormStructure(this.request, this.JsonSchema, this.form);
+
             if (this.shouldUseSetValue(this.request)) {
               this.form.setValue(this.request);
             } else {
@@ -1183,7 +1185,7 @@ export class ApiFormDialogComponent {
             console.warn('Failed to populate request data into form', e);
           }
         }
-      },500)
+      }, 500)
     } catch (e) {
     } finally {
       this.loading = false;
@@ -1191,6 +1193,54 @@ export class ApiFormDialogComponent {
     }
   }
 
+  private prepareFormStructure(data: any, schema: any, formGroup: FormGroup, propertyPath: string[] = []): void {
+    if (!data || !schema?.properties) {
+      return;
+    }
+
+    for (const [key, value] of Object.entries(data)) {
+      const fieldSchema = schema.properties[key];
+      if (!fieldSchema) continue;
+
+      const resolvedSchema = this.resolveAnyOf(fieldSchema);
+      const control = formGroup.get(key);
+      const currentPath = [...propertyPath, key];
+
+      if (resolvedSchema.type === 'array' && Array.isArray(value) && control instanceof FormArray) {
+        while (control.length > 0) {
+          control.removeAt(0);
+        }
+
+        const itemSchema = this.resolveAnyOf(resolvedSchema.items);
+        for (let i = 0; i < value.length; i++) {
+          const newControl = this.createControlForType(itemSchema);
+          control.push(newControl);
+
+          if (itemSchema.type === 'object' && typeof value[i] === 'object') {
+            this.prepareFormStructure(value[i], itemSchema, newControl as FormGroup, [...currentPath, i.toString()]);
+          }
+        }
+      } else if (resolvedSchema.type === 'object' && resolvedSchema.additionalProperties === true && Array.isArray(value)) {
+        const mapArray = control as FormArray;
+
+        while (mapArray.length > 0) {
+          mapArray.removeAt(0);
+        }
+
+        for (const entry of value) {
+          if (entry && typeof entry === 'object' && entry.key !== undefined) {
+            const entryGroup = this.fb.group({
+              key: [entry.key || '', Validators.required],
+              value: [entry.value || '']
+            });
+            mapArray.push(entryGroup);
+          }
+        }
+      } else if (resolvedSchema.type === 'object' && typeof value === 'object' && control instanceof FormGroup) {
+        this.prepareFormStructure(value, resolvedSchema, control, currentPath);
+      }
+    }
+  }
   private clearCaches(): void {
     this.formControlCache.clear();
     this._rootPropertyKeys = [];
