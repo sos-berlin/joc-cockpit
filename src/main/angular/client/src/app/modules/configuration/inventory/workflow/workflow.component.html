@@ -1095,7 +1095,6 @@
                               <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                                    class="col-md-6 col-lg-6 m-b-sm">
                                 <nz-input-number #value="ngModel" [(ngModel)]="argument.value"
-                                                 [nzMin]="0"
                                                  [nzStep]="1"
                                                  [required]="argument.isRequired"
                                                  name="_value{{i}}{{k}}{{x}}" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" style="margin-left: -23px;width: 103%">
@@ -1189,7 +1188,6 @@
                               <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                                     class="col-md-6 col-lg-6 m-b-sm">
                                 <nz-input-number #value="ngModel" [(ngModel)]="argument.value"
-                                                  [nzMin]="0"
                                                   [nzStep]="1"
                                                   [required]="argument.isRequired"
                                                   name="_value{{i}}{{k}}{{x}}" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" style="margin-left: -23px;width: 103%">
@@ -1288,7 +1286,7 @@
                            class="col-md-6 col-lg-6 m-b-sm">
                         <nz-input-number #value="ngModel"
                                          (keydown)="onKeyPress($event, true)" [(ngModel)]="variable.value"
-                                         [nzDisabled]="isTrash || !permission.joc.inventory.manage" [nzMin]="0"
+                                         [nzDisabled]="isTrash || !permission.joc.inventory.manage"
                                          [nzStep]="1"
                                          [required]="variable.isRequired" name="value{{i}}"
                                          nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}">
@@ -1537,7 +1535,6 @@
                   <div *ngIf="variable.value.type !== 'Final'" [ngSwitch]="variable.value.type"
                        class="col-md-4 col-lg-4 m-b-sm p-r-0">
                     <nz-input-number (input)="onInput(variable.value.default)" (nzBlur)="updateOtherProperties('variable')" *ngSwitchCase="'Number'" [(ngModel)]="variable.value.default" [nzDisabled]="isTrash"
-                                     [nzMin]="0"
                                      [nzStep]="1" name="value{{i}}"
                                      nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
                     <nz-select *ngSwitchCase="'Boolean'"
@@ -1642,7 +1639,6 @@
                         </div>
                         <div [ngSwitch]="param.value.type" class="col-md-4 col-lg-4 m-b-sm p-r-0">
                           <nz-input-number (input)="onInput(param.value.default)" (nzBlur)="updateOtherProperties('variable')" *ngSwitchCase="'Number'" [(ngModel)]="param.value.default" [nzDisabled]="isTrash"
-                                           [nzMin]="0"
                                            [nzStep]="1" name="value{{i}}{{j}}"
                                            nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
                           <nz-select *ngSwitchCase="'Boolean'" [(ngModel)]="param.value.default" [nzDisabled]="isTrash" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"

@@ -32,7 +32,6 @@
                   <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                        class="col-md-6 col-lg-6 m-b-sm">
                     <nz-input-number #value="ngModel" [(ngModel)]="argument.value"
-                                     [nzMin]="0"
                                      [nzStep]="1" [required]="argument.isRequired || argument.value" name="_value{{i}}{{j}}{{k}}"
                                      nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
                     <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
@@ -153,7 +152,6 @@
                 <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                      class="col-md-6 col-lg-6 m-b-sm">
                   <nz-input-number #value="ngModel" [(ngModel)]="argument.value"
-                                   [nzMin]="0"
                                    [nzStep]="1" [required]="argument.isRequired" name="_value{{i}}{{j}}{{k}}"
                                    nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
                   <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
@@ -418,7 +416,7 @@
           <label class="col-sm-4 form-control-label" translate>resource.board.label.planKey</label>
           <div class="col-sm-6">
             <app-date-input [object]="order.planId" [attributeDate]="'noticeSpaceKey'"
-                            [ignoreThirdParam]="true" [isAllowClear]="true" 
+                            [ignoreThirdParam]="true" [isAllowClear]="true"
                             [name]="'noticeSpaceKey'" [dateFormat]="dateFormat"
                             [placeholder]="( dateFormat | uppercase )"></app-date-input>
           </div>
@@ -514,7 +512,7 @@
                            class="col-md-6 col-lg-6 m-b-sm">
                         <nz-input-number #value="ngModel" (keydown)="onKeyPress($event, orderIndex)"
                                          [(ngModel)]="argument.value"
-                                         [nzMin]="0" [nzStep]="1" [required]="argument.isRequired"
+                                         [nzStep]="1" [required]="argument.isRequired"
                                          name="value{{i}}{{orderIndex}}"
                                          nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
                         <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"

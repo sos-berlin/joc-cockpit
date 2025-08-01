@@ -62,7 +62,7 @@
                              [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                           <nz-input-number [required]="argument.isRequired" #value="ngModel"
                                            nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"
-                                           [nzMin]="0" [nzStep]="1" name="_value{{i}}{{j}}{{k}}" [(ngModel)]="argument.value"></nz-input-number>
+                                            [nzStep]="1" name="_value{{i}}{{j}}{{k}}" [(ngModel)]="argument.value"></nz-input-number>
                           <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                                class="text-danger help-block">
                             <div *ngIf="value.errors.required">
@@ -129,7 +129,7 @@
                              [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
                           <nz-input-number [required]="argument.isRequired" #value="ngModel"
                                            nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"
-                                           [nzMin]="0" [nzStep]="1" name="_valuee{{i}}{{j}}{{k}}" [(ngModel)]="argument.value"></nz-input-number>
+                                            [nzStep]="1" name="_valuee{{i}}{{j}}{{k}}" [(ngModel)]="argument.value"></nz-input-number>
                           <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                                class="text-danger help-block">
                             <div *ngIf="value.errors.required">
@@ -196,7 +196,7 @@
               <ng-container [ngSwitch]="item.type">
                 <ng-container *ngSwitchCase="'Number'">
                   <div class="col-md-6 col-sm-6 m-b-sm" [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}">
-                    <nz-input-number [required]="item.isRequired" #value="ngModel" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}" [nzMin]="0" [nzStep]="1" name="value{{i}}{{item.name}}"
+                    <nz-input-number [required]="item.isRequired" #value="ngModel" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"  [nzStep]="1" name="value{{i}}{{item.name}}"
                                      [(ngModel)]="item.value"></nz-input-number>
                     <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                          class="text-danger help-block">

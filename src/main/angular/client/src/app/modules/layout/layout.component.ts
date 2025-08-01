@@ -773,11 +773,11 @@ export class LayoutComponent {
       },
       {
         "state": "finished",
-        "color": "#1171a6"
+        "color": "#1591d4"
       },
       {
         "state": "prompting",
-        "color": "#f37891"
+        "color": "#90EE90"
       },
       {
         "state": "waiting",

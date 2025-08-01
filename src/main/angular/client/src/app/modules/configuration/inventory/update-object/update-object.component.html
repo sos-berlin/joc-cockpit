@@ -353,7 +353,7 @@
                           <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                                class="col-md-6 m-b-sm">
                             <nz-input-number #value="ngModel" [(ngModel)]="argument.value"
-                                             [nzMin]="0" [nzStep]="1" [required]="argument.isRequired" class="m-l-n-23 w-103"
+                                              [nzStep]="1" [required]="argument.isRequired" class="m-l-n-23 w-103"
                                              name="_value{{i}}{{j}}{{k}}{{x}}"
                                              nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
                             <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
@@ -550,7 +550,7 @@
                              class="col-md-6 m-b-sm">
                           <nz-input-number #value="ngModel"
                                            (keydown)="onKeyPress($event, variableSet)"
-                                           [(ngModel)]="variable.value" [nzMin]="0" [nzStep]="1"
+                                           [(ngModel)]="variable.value"  [nzStep]="1"
                                            [required]="variable.isRequired" name="value{{i}}{{j}}"
                                            nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
                           <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
