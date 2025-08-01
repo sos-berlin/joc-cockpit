@@ -45,7 +45,7 @@
                 <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                      class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
                   <nz-input-number #value="ngModel" (nzBlur)="saveJSON()" [(ngModel)]="argument.value"
-                                   [nzMin]="0" [nzStep]="1" [required]="argument.isRequired" class="m-l-n-23 w-103"
+                                    [nzStep]="1" [required]="argument.isRequired" class="m-l-n-23 w-103"
                                    name="_value{{i}}{{j}}{{k}}{{x}}"
                                    nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
                   <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
@@ -171,7 +171,7 @@
                 <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                      class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
                   <nz-input-number #value="ngModel" (nzBlur)="saveJSON()" [(ngModel)]="argument.value"
-                                   [nzMin]="0" [nzStep]="1" [required]="argument.isRequired" class="m-l-n-23 w-103"
+                                    [nzStep]="1" [required]="argument.isRequired" class="m-l-n-23 w-103"
                                    name="_value{{i}}{{j}}{{k}}{{x}}"
                                    nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
                   <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
@@ -580,7 +580,7 @@
                             <nz-input-number #value="ngModel"
                                              (keydown)="onKeyPress($event, variableSet)" (nzBlur)="saveJSON()"
                                              [(ngModel)]="variable.value" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
-                                             [nzMin]="0" [nzStep]="1" [required]="variable.isRequired" name="value{{i}}{{j}}{{variable.value}}"
+                                              [nzStep]="1" [required]="variable.isRequired" name="value{{i}}{{j}}{{variable.value}}"
                                              nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
                             <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
                                  class="text-danger help-block">
