@@ -13780,17 +13780,34 @@ export class WorkflowComponent {
   }
 
   private isExpression(value: string): boolean {
+
     if (typeof value !== 'string') {
       return false;
     }
-    const expressionRegex = /^[\d\s+\-*/().]+$/;
-    return expressionRegex.test(value.replace(/"/g, ''));
+
+    const cleanValue = value.replace(/^"(.*)"$/, '$1').trim();
+
+    if (/^\d+(\.\d+)?$/.test(cleanValue)) {
+      return false;
+    }
+
+    if (!/[+\-*/()]/.test(cleanValue)) {
+      return false;
+    }
+
+    const expressionRegex = /^[\d\s+\-*/().\w]+$/;
+    return expressionRegex.test(cleanValue);
   }
 
   private convertToExpression(value: any): string {
     if (typeof value !== 'string') return String(value);
-    let expression = value.replace(/^"(.*)"$/, '$1');
-    return expression.trim();
+
+    if (this.isExpression(value)) {
+      let expression = value.replace(/^"(.*)"$/, '$1');
+      return expression.trim();
+    }
+
+    return value;
   }
 
   private clearClipboard(): void {
