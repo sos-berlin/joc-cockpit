@@ -10497,7 +10497,9 @@ export class WorkflowComponent {
           if (self.selectedNode.newObj.defaultArguments) {
             if (isArray(self.selectedNode.newObj.defaultArguments)) {
               self.selectedNode.newObj.defaultArguments = self.selectedNode.newObj.defaultArguments.filter((argu) => {
-                self.coreService.addSlashToString(argu, 'value');
+                if (!self.isExpression(argu.value)) {
+                  self.coreService.addSlashToString(argu, 'value');
+                }
                 return !argu.invalid;
               });
             }

@@ -859,6 +859,16 @@ export class LayoutComponent {
       if (!data.orderOverviewPageView) {
         data.orderOverviewPageView = 'list';
       }
+      if(data.orderStateColors) {
+        data.orderStateColors.forEach(item => {
+          if (item.state === 'finished' && item.color === '#1171a6') {
+            item.color = '#1591d4';
+          }
+          if (item.state === 'prompting' && item.color === '#f37891') {
+            item.color = '#90EE90';
+          }
+        });
+      }
       sessionStorage['preferences'] = JSON.stringify(data);
       this.reloadThemeAndLang(preferences);
     } else {
