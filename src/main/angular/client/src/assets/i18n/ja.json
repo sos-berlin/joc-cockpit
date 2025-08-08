@@ -4129,6 +4129,7 @@
       "label.leastValue": "Value must be at least",
       "label.mostValue": "Value must be at most",
       "label.reset": "Reset to current form values",
+      "label.emptyBody": "This endpoint does not require a request body.",
       "button.variableList": "Variable List",
       "button.sendRequest": "Send Request",
       "button.addParam": "Add Param",

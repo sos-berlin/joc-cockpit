@@ -4128,6 +4128,7 @@
       "label.leastValue": "La valeur doit être d'au moins",
       "label.mostValue": "La valeur peut être au maximum de",
       "label.reset": "Réinitialiser les données dans le formulaire",
+      "label.emptyBody": "This endpoint does not require a request body.",
       "button.variableList": "Liste des Variables",
       "button.sendRequest": "Envoyer Requête",
       "button.addParam": "Ajouter Paramètre",
