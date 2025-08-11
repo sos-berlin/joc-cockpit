@@ -400,9 +400,36 @@ export class TableComponent implements OnChanges, OnDestroy {
       nzClosable: false,
       nzMaskClosable: false
     }).afterClose.subscribe((result) => {
-      if (result) {
         this.reset();
-      }
+    });
+  }
+
+ revokeAll(revoke?: boolean): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: DeployComponent,
+      nzClassName: 'lg',
+      nzData: {
+        schedulerIds: this.getAllowedControllerOnly(),
+        display: this.preferences.auditLog,
+        path: this.dataObj.path,
+        data: {
+          objectType: this.objectType,
+          list: Array.from(this.mapOfCheckedId.values())
+        },
+        releasable: (this.objectType.match(/CALENDAR/) || this.objectType === InventoryObject.SCHEDULE || this.objectType === InventoryObject.JOBTEMPLATE
+          || this.objectType === InventoryObject.INCLUDESCRIPT || this.objectType === InventoryObject.REPORT),
+        isSelectedObjects: true,
+        isChecked: this.inventoryService.checkDeploymentStatus.isChecked,
+        isRevoke: revoke,
+        operation: revoke? '': 'recall'
+
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    }).afterClose.subscribe((result) => {
+        this.reset();
     });
   }
 
