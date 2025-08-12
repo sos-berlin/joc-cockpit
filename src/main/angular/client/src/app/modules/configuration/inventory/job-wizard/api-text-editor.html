@@ -17,7 +17,7 @@
 <ng-container *ngIf="!loading">
 
   <form *ngIf="!showSchema && form" [formGroup]="form" (ngSubmit)="onSubmit()" spellcheck="false">
-    <div class="modal-body p-a p-t-sm">
+    <div *ngIf="!emptyBody" class="modal-body p-a p-t-sm">
       <div class="row">
         <div class="col-md-12">
           <ng-container *ngFor="let key of rootPropertyKeys; trackBy: trackByPropertyKey">
@@ -32,11 +32,20 @@
         </div>
       </div>
     </div>
+    <div *ngIf="emptyBody" class="modal-body p-a">
+      <div class="row text-center">
+        <div class="col-sm-12 m-t m-b">
+      <span>
+        {{'workflow.apiRequest.label.emptyBody' | translate}}
+      </span>
+      </div>
+      </div>
+    </div>
 
     <!-- Form footer -->
     <div class="modal-footer">
       <button
-        [disabled]="!isFormSubmittable()"
+        [disabled]="!isFormSubmittable() && !emptyBody"
         class="btn btn-primary btn-sm"
         type="submit"
       >
@@ -49,7 +58,7 @@
       >
         {{ 'common.button.cancel' | translate }}
       </button>
-      <button
+      <button [disabled]="emptyBody"
         (click)="editJson()"
         class="btn btn-grey btn-sm"
         type="button"

@@ -49,6 +49,16 @@
         <span *ngIf="(objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE'
         || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT')" translate>inventory.button.release</span>
       </button>
+      <button (click)="revokeAll(true)" *ngIf="mapOfCheckedId.size > 0 && !isTrash && (!objectType.match('CALENDAR') && objectType !== 'SCHEDULE' && objectType !== 'JOBTEMPLATE'
+        && objectType !== 'INCLUDESCRIPT' && objectType !== 'REPORT')" class="btn btn-sm btn-grey m-l-12">
+        <i class="fa fa-undo p-r-xs"></i>
+        <span  translate>inventory.button.revoke</span>
+      </button>
+      <button (click)="revokeAll(false)" *ngIf="mapOfCheckedId.size > 0 && !isTrash && ((objectType.match('CALENDAR') || objectType === 'SCHEDULE' || objectType === 'JOBTEMPLATE'
+        || objectType === 'INCLUDESCRIPT' || objectType === 'REPORT'))" class="btn btn-sm btn-grey m-l-12">
+        <i class="fa fa-undo p-r-xs"></i>
+        <span  translate>inventory.button.recall</span>
+      </button>
       <button (click)="removeAll()" *ngIf="mapOfCheckedId.size > 0 && !isTrash" class="btn btn-sm btn-grey m-l-12">
         <i class="fa fa-trash p-r-xs"></i>
         <span translate>inventory.button.remove</span>

@@ -1867,6 +1867,7 @@ export class JobComponent {
       this.selectedNode.job.failOnErrWritten = result.failOnErrWritten;
       this.selectedNode.job.warnOnErrWritten = result.warnOnErrWritten;
       this.selectedNode.job.skipIfNoAdmissionForOrderDay = result.skipIfNoAdmissionForOrderDay;
+      this.selectedNode.job.killAtEndOfAdmissionPeriod = result.killAtEndOfAdmissionPeriod;
       this.selectedNode.job.parallelism = result.parallelism;
       this.selectedNode.job.jobResourceNames = result.jobResourceNames || [];
     }
@@ -4016,6 +4017,7 @@ export class WorkflowComponent {
           documentationName: v.documentationName,
           admissionTimeScheme: v.admissionTimeScheme,
           skipIfNoAdmissionForOrderDay: v.skipIfNoAdmissionForOrderDay,
+          killAtEndOfAdmissionPeriod: v.killAtEndOfAdmissionPeriod,
           returnCodeMeaning: v.returnCodeMeaning,
           logLevel: v.logLevel,
           criticality: v.criticality,
@@ -10630,7 +10632,9 @@ export class WorkflowComponent {
           if (self.selectedNode.newObj.defaultArguments) {
             if (isArray(self.selectedNode.newObj.defaultArguments)) {
               self.selectedNode.newObj.defaultArguments = self.selectedNode.newObj.defaultArguments.filter((argu) => {
-                self.coreService.addSlashToString(argu, 'value');
+                if (!self.isExpression(argu.value)) {
+                  self.coreService.addSlashToString(argu, 'value');
+                }
                 return !argu.invalid;
               });
             }

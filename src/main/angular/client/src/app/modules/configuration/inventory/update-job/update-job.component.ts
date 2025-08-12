@@ -338,6 +338,9 @@ export class UpdateJobComponent {
     if (this.checkboxObjects.skipIfNoAdmissionForOrderDay) {
       obj.skipIfNoAdmissionForOrderDay = job.skipIfNoAdmissionForOrderDay;
     }
+    if (this.checkboxObjects.killAtEndOfAdmissionPeriod) {
+      obj.killAtEndOfAdmissionPeriod = job.killAtEndOfAdmissionPeriod;
+    }
     return obj;
   }
 

@@ -1074,7 +1074,7 @@ export class ApiFormDialogComponent {
   preferences: any = {};
   options: any = new JsonEditorOptions();
   isError = false;
-
+  emptyBody = false;
   private schemaCache = new Map<string, any>();
   private formControlCache = new Map<string, AbstractControl>();
   private _rootPropertyKeys: string[] = [];
@@ -1106,6 +1106,7 @@ export class ApiFormDialogComponent {
   ngOnInit(): void {
     this.title = this.modalData.title;
     this.raml = this.modalData.raml;
+    this.emptyBody = this.modalData.emptyBody;
     try {
       this.request = JSON.parse(this.modalData.request);
     } catch (e) {
@@ -1171,7 +1172,7 @@ export class ApiFormDialogComponent {
       this.clearCaches();
 
       this.form = this.createForm(this.JsonSchema);
-      setTimeout(()=>{
+      setTimeout(() => {
         if (this.request && typeof this.request === 'object') {
           try {
             this.prepareFormStructure(this.request, this.JsonSchema, this.form);
@@ -1241,6 +1242,7 @@ export class ApiFormDialogComponent {
       }
     }
   }
+
   private clearCaches(): void {
     this.formControlCache.clear();
     this._rootPropertyKeys = [];
@@ -1642,7 +1644,6 @@ export class ApiFormDialogComponent {
   }
 
 
-
   onSubmit(): void {
     if (this.isFormSubmittable()) {
       let endpoint = '';
@@ -2039,20 +2040,25 @@ export class ApiRequestDialogComponent {
   selectedRows = new Set<number>();
   editingIndex: number | null = null;
   version: any;
+  private emptyBodyEndpoints = [
+    '/daily_plan/projections/recreate',
+    '/joc/license',
+    '/joc/version'
+  ];
   endpoints: endPoint[] = [
-    {title: '/agents', path: '/agent/readAgents', des: 'Gets Agents'},
+    {title: '/agents', path: '/agent/readAgents_v', des: 'Gets Agents'},
     {title: '/agents/cluster', path: '/agent/readSubagentClusters', des: 'Gets Subagent Clusters'},
     {title: '/agents/report', path: '/agent/agentReportFilter', des: 'Gets report of Agent tasks'},
     {title: '/controller', path: '/controller/urlParam', des: 'Gets Controller status information'},
     {title: '/controllers', path: '/controller/controllerId-optional', des: 'Gets Controllers'},
     {
       title: '/daily_plan/orders',
-      path: '/orderManagement/dailyplan/dailyPlanOrdersFilterDefRequired',
+      path: '/orderManagement/dailyplan/dailyPlanOrdersFilter',
       des: 'Gets orders from a daily plan interval'
     },
     {
       title: '/daily_plan/orders/cancel',
-      path: '/orderManagement/dailyplan/dailyPlanOrdersFilterDef',
+      path: '/orderManagement/modify/dailyPlanCancelOrders',
       des: 'Cancels submitted orders for a daily plan interval'
     },
     {
@@ -2062,17 +2068,17 @@ export class ApiRequestDialogComponent {
     },
     {
       title: '/daily_plan/orders/submit',
-      path: '/orderManagement/dailyplan/dailyPlanOrdersFilterDef',
+      path: '/orderManagement/modify/dailyPlanSubmitOrders',
       des: 'Submits planned orders for a daily plan interval'
     },
     {
       title: '/daily_plan/orders/delete',
-      path: '/orderManagement/dailyplan/dailyPlanOrdersFilterDef',
+      path: '/orderManagement/modify/dailyPlanDeleteOrders',
       des: 'Deletes planned orders for a daily plan interval'
     },
     {
       title: '/daily_plan/orders/summary',
-      path: '/orderManagement/dailyplan/dailyPlanOrdersFilterDef',
+      path: '/orderManagement/dailyplan/dailyPlanOrderSummary',
       des: 'Gets summary order counts from a daily plan interval'
     },
     {
@@ -2100,15 +2106,15 @@ export class ApiRequestDialogComponent {
       des: 'Returns a collection of orders filtered by workflow or order state'
     },
     {title: '/orders/add', path: '/order/addOrders', des: 'Add orders'},
-    {title: '/orders/cancel', path: '/order/modifyOrders', des: 'Cancels orders'},
-    {title: '/orders/confirm', path: '/order/modifyOrders', des: 'Confirms prompting orders'},
-    {title: '/orders/continue', path: '/order/modifyOrders', des: 'Continues orders'},
+    {title: '/orders/cancel', path: '/order/modify/cancelOrders', des: 'Cancels orders'},
+    {title: '/orders/confirm', path: '/order/modifyOrdersBase', des: 'Confirms prompting orders'},
+    {title: '/orders/continue', path: '/order/modifyOrdersBase', des: 'Continues orders'},
     {title: '/orders/history', path: '/order/ordersFilter', des: 'Order history'},
-    {title: '/orders/overview/snapshot', path: '/order/ordersFilterV', des: 'Summary with number of orders'},
-    {title: '/orders/resume', path: '/order/modifyOrders', des: 'Resumes orders when suspended or failed'},
-    {title: '/orders/suspend', path: '/order/modifyOrders', des: 'Suspends orders'},
+    {title: '/orders/overview/snapshot', path: '/order/ordersFilterVBase', des: 'Summary with number of orders'},
+    {title: '/orders/resume', path: '/order/modify/resumeOrders', des: 'Resumes orders when suspended or failed'},
+    {title: '/orders/suspend', path: '/order/modify/suspendOrders', des: 'Suspends orders'},
     {title: '/notices/delete', path: '/board/deleteNotices', des: 'Deletes notices'},
-    {title: '/notices/post', path: '/board/noticeIdsPerBoard', des: 'Posts notice for several boards'}
+    {title: '/notices/post', path: '/board/postNotices', des: 'Posts notice for several boards'}
   ];
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService,) {
@@ -2232,16 +2238,43 @@ export class ApiRequestDialogComponent {
     this.selectedRows.clear();
   }
 
-  dynamicForm(ep): void {
-    const modal = this.modal.create({
+  dynamicForm(ep: endPoint): void {
+    if (this.emptyBodyEndpoints.includes(ep.title)) {
+      const modal1 = this.modal.create({
+        nzContent: ApiFormDialogComponent,
+        nzClassName: 'lg',
+        nzData: {
+          endPoint: ep.path,
+          title: ep.des,
+          raml: ep.raml,
+          request: this.modalData.request,
+          emptyBody: true
+        },
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false
+      });
+      modal1.afterClose.subscribe(result => {
+        if (result) {
+          this.activeModal.close(result);
+        }
+      });
+      return;
+    }
+    const modal2 = this.modal.create({
       nzContent: ApiFormDialogComponent,
       nzClassName: 'lg',
-      nzData: {endPoint: ep.path, title: ep.des, raml: ep.raml, request: this.modalData.request},
+      nzData: {
+        endPoint: ep.path,
+        title: ep.des,
+        raml: ep.raml,
+        request: this.modalData.request
+      },
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
     });
-    modal.afterClose.subscribe(result => {
+    modal2.afterClose.subscribe(result => {
       if (result) {
         this.activeModal.close(result);
       }
