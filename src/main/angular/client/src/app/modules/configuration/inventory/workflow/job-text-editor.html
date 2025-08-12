@@ -1058,6 +1058,21 @@
           </div>
         </div>
         <div class="form-group row">
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.killAtEndOfAdmissionPeriod' | translate) : ''"
+
+                 class="col-md-4 col-lg-3 block-ellipsis-job"
+                 title="{{'workflow.label.killAtEndOfAdmissionPeriod' | translate}}"
+                 translate>workflow.label.killAtEndOfAdmissionPeriod</label>
+          <div [ngClass]="{'col-md-8 col-lg-9': !isModal}" class="col-md-6 col-lg-8">
+            <label [(ngModel)]="selectedNode.job.killAtEndOfAdmissionPeriod" (ngModelChange)="toggleCheckbox('killAtEndOfAdmissionPeriod', $event)" name="killAtEndOfAdmissionPeriod"
+                   nz-checkbox></label>
+          </div>
+          <div *ngIf="isModal" class="col-md-1">
+            <label [(ngModel)]="checkboxObjects.killAtEndOfAdmissionPeriod" name="ckillAtEndOfAdmissionPeriod"
+                   nz-checkbox></label>
+          </div>
+        </div>
+        <div class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.admissionTime' | translate) : ''"
                  class="col-md-4 col-lg-3 block-ellipsis-job"
                  title="{{'workflow.label.admissionTime' | translate}}"

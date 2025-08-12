@@ -777,6 +777,18 @@
                     </div>
                   </div>
                   <div class="form-group row">
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.killAtEndOfAdmissionPeriod' | translate) : ''"
+
+                           class="col-md-4 col-lg-3 block-ellipsis-job"
+                           title="{{'workflow.label.killAtEndOfAdmissionPeriod' | translate}}"
+                           translate>workflow.label.killAtEndOfAdmissionPeriod</label>
+                    <div class="col-lg-9 col-xl-8 col-xxl-6">
+                      <label [(ngModel)]="job.configuration.killAtEndOfAdmissionPeriod" (ngModelChange)="saveJSON()"
+                             [nzDisabled]="isTrash || !permission.joc.inventory.manage"
+                             name="killAtEndOfAdmissionPeriod" nz-checkbox></label>
+                    </div>
+                  </div>
+                  <div class="form-group row">
                     <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.admissionTime' | translate) : ''"
 
                            class="col-md-4 col-lg-3 block-ellipsis-job"
