@@ -1396,6 +1396,7 @@ export class CoreService {
   }
 
   showDocumentation(path: string, preferences: any): void {
+    console.log(path, preferences,"::::")
     const link = window.location.origin + '/joc/api/documentation/show?documentation=' + encodeURIComponent(path) + '&accessToken=' + this.authService.accessTokenId;
     let win;
     if (preferences.isDocNewWindow === 'newWindow') {
@@ -1403,6 +1404,7 @@ export class CoreService {
     } else {
       win = window.open(link, '_blank');
     }
+    console.log(link,"link")
     //  const iframe = document.createElement('iframe');
     //  iframe.src = link;
     //  this.addFrame(win, iframe);

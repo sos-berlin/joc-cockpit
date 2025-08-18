@@ -1183,8 +1183,9 @@ export class ApiFormDialogComponent {
               this.form.patchValue(this.request);
             }
           } catch (e) {
-            console.warn('Failed to populate request data into form', e);
-          }
+            try {
+              this.form.patchValue(this.request);
+            } catch {}          }
         }
       }, 500)
     } catch (e) {
@@ -1776,10 +1777,16 @@ export class ApiFormDialogComponent {
       }
 
 
-      if (this.shouldUseSetValue(parsedData)) {
-        this.form.setValue(parsedData);
-      } else {
-        this.form.patchValue(parsedData);
+      try {
+        if (this.shouldUseSetValue(parsedData)) {
+          this.form.setValue(parsedData);
+        } else {
+          this.form.patchValue(parsedData);
+        }
+      } catch {
+        try {
+          this.form.patchValue(parsedData);
+        } catch {}
       }
 
 
@@ -1793,16 +1800,25 @@ export class ApiFormDialogComponent {
     }
   }
 
+
+
   private shouldUseSetValue(data: any): boolean {
-    const formKeys = this.rootPropertyKeys;
-    const dataKeys = Object.keys(data || {});
+    if (!data || !this.form) return false;
 
-    const hasAllRequiredKeys = formKeys.every(key =>
-      this.JsonSchema?.properties?.[key]?.required === false || dataKeys.includes(key)
-    );
+    const formControls = (this.form as FormGroup).controls;
+    const formKeys = Object.keys(formControls);
+    const dataKeys = Object.keys(data);
 
-    return hasAllRequiredKeys && dataKeys.length === formKeys.length;
+
+    const noExtraKeys = dataKeys.every(k => formKeys.includes(k));
+
+
+    const requiredTopLevel: string[] = Array.isArray(this.JsonSchema?.required) ? this.JsonSchema.required : [];
+    const coversAllRequired = requiredTopLevel.every(k => dataKeys.includes(k));
+
+     return noExtraKeys && coversAllRequired;
   }
+
 
   private isValidFormData(data: any): boolean {
     if (!data || typeof data !== 'object') {
