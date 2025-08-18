@@ -1440,38 +1440,37 @@ addArguments(orderIndex): void {
 
         if (val.type !== 'List' && val.type !== 'Map') {
           if (!val.final) {
-            let list;
+            let list: any[] | undefined;
             if (val.list) {
-              list = [];
-              val.list.forEach((item) => {
-                let obj = {name: item};
-                this.coreService.removeSlashToString(obj, 'name');
-                list.push(obj);
+              list = val.list.map((item: string) => {
+                const opt = { name: item };
+                this.coreService.removeSlashToString(opt, 'name');
+                return opt;
               });
             }
 
-            for (let x in orderParameterisations.variables) {
-              let obj = {name:  orderParameterisations.variables[x]}
-              if (!val.final) {
-                if (val.list) {
-                  list.push(obj)
-                }
-              }
-              if (k == x) {
-                // Push into the specific order's arguments array
-                this.orders[index].arguments.push({
-                  name: k,
-                  type: val.type,
-                  isRequired: true,
-                  facet: val.facet,
-                  message: val.message,
-                  value: orderParameterisations.variables[x],
-                  list: list
-                });
-                break;
+            const scheduleValue = orderParameterisations.variables?.[k];
+
+            if (list && (scheduleValue !== undefined && scheduleValue !== null)) {
+              const exists = list.some(o => o.name === String(scheduleValue));
+              if (!exists) {
+                list.push({ name: String(scheduleValue), default: true });
               }
             }
+
+            if (scheduleValue !== undefined) {
+              this.orders[index].arguments.push({
+                name: k,
+                type: val.type,
+                isRequired: true,
+                facet: val.facet,
+                message: val.message,
+                value: scheduleValue,
+                list
+              });
+            }
           }
+          return { name: k, value: val };
         } else if (val.type === 'List') {
           const actualList = [];
           if (val.listParameters) {
@@ -1611,35 +1610,34 @@ addArguments(orderIndex): void {
     if (this.workflow.orderPreparation && this.workflow.orderPreparation.parameters) {
       Object.entries(this.workflow.orderPreparation.parameters).forEach(([key, val]: [string, any]) => {
         if (val.type !== 'List' && val.type !== 'Map') {
-          let list;
-          if (!val.final) {
-            if (val.list) {
-              list = [];
-              val.list.forEach((item) => {
-                let obj = {name: item};
-                this.coreService.removeSlashToString(obj, 'name');
-                list.push(obj);
-              });
-            }
+          let list: any[] | undefined;
+          if (!val.final && val.list) {
+            list = val.list.map((item: string) => {
+              const opt = { name: item };
+              this.coreService.removeSlashToString(opt, 'name');
+              return opt;
+            });
           }
-          if (
-            orderParameterisation.variables &&
-            orderParameterisation.variables.hasOwnProperty(key)
-          ){
-            let obj = {name:  orderParameterisation.variables[key]}
-            if (!val.final) {
-              if (val.list) {
-                list.push(obj)
+
+          if (orderParameterisation.variables?.hasOwnProperty(key)) {
+            const scheduleValue = orderParameterisation.variables[key];
+
+            if (list && (scheduleValue !== undefined && scheduleValue !== null)) {
+              const exists = list.some(o => o.name === String(scheduleValue));
+              if (!exists) {
+                list.push({ name: String(scheduleValue), default: true });
               }
             }
+
             order.arguments.push({
               name: key,
               type: val.type,
-              value: orderParameterisation.variables[key],
-              list: list,
+              value: scheduleValue,
+              list,
               isRequired: true
             });
           }
+          return;
         } else if (val.type === 'List') {
           const actualList = [];
           if (
@@ -1912,6 +1910,7 @@ addArguments(orderIndex): void {
       }
     });
   }
+
 
 }
 

@@ -615,7 +615,7 @@
                               <a *ngIf="variable.name && variable.type === 'String'"><i (click)="encryptValue(variable, 'job')"
                                 class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
                               <a *ngIf="!variable.isRequired" [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
-                                (click)="removeVariable(i, variableSet)" class="fa fa-trash m-t-sm text-hover-color"></i></a>
+                                (click)="removeVariable(i, variableSet)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                             </div>
                           </div>
                         </ng-container>
@@ -644,7 +644,7 @@
                       </div>
                       <div *ngIf="!variable.isRequired" class="pos-abt r-t-n-28">
                         <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
-                          (click)="removeVariable(i, variableSet)" class="fa fa-trash m-t-sm text-hover-color"></i></a>
+                          (click)="removeVariable(i, variableSet)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                       </div>
                     </div>
                   </ng-container>
