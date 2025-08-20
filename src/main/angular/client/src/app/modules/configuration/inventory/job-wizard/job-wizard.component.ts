@@ -485,6 +485,10 @@ export class ApiRequestComponent {
 
 
   sendRequest(accessToken?): void {
+    this.status = null;
+    this.errorLogs = '';
+    this.requestUrl = ''
+    this.errorText = '';
     const hdrs = this.arrayToMap(this.model.headers);
 
     switch (this.auth.type) {
@@ -1108,7 +1112,11 @@ export class ApiFormDialogComponent {
     this.raml = this.modalData.raml;
     this.emptyBody = this.modalData.emptyBody;
     try {
-      this.request = JSON.parse(this.modalData.request);
+      if (this.modalData.request && this.modalData.request.trim() !== '') {
+        this.request = JSON.parse(this.modalData.request);
+      } else {
+        this.request = null;
+      }
     } catch (e) {
       this.request = null;
       let title = '';
@@ -1118,6 +1126,7 @@ export class ApiFormDialogComponent {
       });
       this.toasterService.warning(title, msg);
     }
+
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.loadSchema(this.modalData.endPoint);
     this.loadEditorLanguage();
