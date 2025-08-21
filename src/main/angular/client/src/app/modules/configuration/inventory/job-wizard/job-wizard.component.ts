@@ -1259,39 +1259,67 @@ export class ApiFormDialogComponent {
   }
 
   private async resolveAllRefs(schema: any, basePath: string = ''): Promise<any> {
-    if (!schema || typeof schema !== 'object') {
-      return schema;
-    }
-
-    if (Array.isArray(schema)) {
-      return Promise.all(schema.map(item => this.resolveAllRefs(item, basePath)));
-    }
+    if (!schema || typeof schema !== 'object') return schema;
+    if (Array.isArray(schema)) return Promise.all(schema.map(it => this.resolveAllRefs(it, basePath)));
 
     if (schema.$ref) {
       const refUrl = this.resolveRefUrl(schema.$ref, basePath);
-
-      if (this.schemaCache.has(refUrl)) {
-        return this.schemaCache.get(refUrl);
-      }
-
+      if (this.schemaCache.has(refUrl)) return this.schemaCache.get(refUrl);
       try {
         const referencedSchema = await firstValueFrom(this.coreService.post(refUrl, {}));
         const resolvedRef = await this.resolveAllRefs(referencedSchema, this.getBasePath(refUrl));
         this.schemaCache.set(refUrl, resolvedRef);
         return resolvedRef;
-      } catch (error) {
-        return {type: 'string', description: `Failed to load reference: ${schema.$ref}`};
+      } catch {
+        return { type: 'string', description: `Failed to load reference: ${schema.$ref}` };
       }
     }
 
     const resolved: any = {};
-    const promises = Object.entries(schema).map(async ([key, value]) => {
-      resolved[key] = await this.resolveAllRefs(value, basePath);
-    });
+    await Promise.all(Object.entries(schema).map(async ([k, v]) => {
+      resolved[k] = await this.resolveAllRefs(v, basePath);
+    }));
 
-    await Promise.all(promises);
+    if (resolved.extends) {
+      const bases = Array.isArray(resolved.extends) ? resolved.extends : [resolved.extends];
+      let mergedBase: any = {};
+      for (const b of bases) mergedBase = this.mergeSchemas(mergedBase, b);
+      return this.mergeSchemas(resolved, mergedBase);
+    }
+
+    if (resolved.allOf && Array.isArray(resolved.allOf)) {
+      let merged: any = {};
+      for (const part of resolved.allOf) merged = this.mergeSchemas(merged, part);
+      merged = this.mergeSchemas({ ...resolved, allOf: undefined }, merged);
+      return merged;
+    }
+
     return resolved;
   }
+
+  private mergeSchemas(target: any = {}, source: any = {}): any {
+    const out: any = { ...source, ...target }; // target overrides source
+
+    out.properties = { ...(source?.properties || {}), ...(target?.properties || {}) };
+
+    const req = new Set<string>([
+      ...((source && source.required) || []),
+      ...((target && target.required) || [])
+    ]);
+    if (req.size) out.required = Array.from(req);
+
+    if (source?.additionalProperties === false || target?.additionalProperties === false) {
+      out.additionalProperties = false;
+    }
+
+    out.type ??= source?.type ?? target?.type;
+
+    delete out.extends;
+    delete out.allOf;
+
+    return out;
+  }
+
 
   private resolveRefUrl(ref: string, basePath: string): string {
     const origin = window.location.origin;
@@ -1655,7 +1683,7 @@ export class ApiFormDialogComponent {
 
 
   onSubmit(): void {
-    if (this.isFormSubmittable()) {
+    if (this.isFormSubmittable() || this.emptyBody) {
       let endpoint = '';
       if (this.raml) {
         const match = this.raml.match(/\/resource(\/[^.]+)\.html/);
@@ -1674,6 +1702,7 @@ export class ApiFormDialogComponent {
       this.activeModal.close(obj);
     } else {
       this.markFormGroupTouched(this.form);
+      this.activeModal.close();
     }
   }
 
@@ -1729,6 +1758,7 @@ export class ApiFormDialogComponent {
   }
 
   resetJsonEditor(): void {
+    this.isError = false;
     if (this.form && this.form.value) {
       this.jsonData = JSON.parse(JSON.stringify(this.form.value));
       setTimeout(() => {

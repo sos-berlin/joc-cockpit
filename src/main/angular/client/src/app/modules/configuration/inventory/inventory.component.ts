@@ -25,6 +25,7 @@ import {FileUploaderComponent} from "../../../components/file-uploader/file-uplo
 import {WorkflowService} from "../../../services/workflow.service";
 import {NzSelectComponent} from 'ng-zorro-antd/select';
 import {AddChangesModalComponent} from "../../changes/changes.component";
+import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 
 declare const $: any;
 
@@ -13311,6 +13312,22 @@ export class InventoryComponent {
     })
   }
 
+  helpPage(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        title: 'searching-inventory',
+        slug: 'searching-inventory',
+        helpKey: 'searching-inventory'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
 }
 
 

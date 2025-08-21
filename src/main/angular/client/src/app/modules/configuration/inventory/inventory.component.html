@@ -812,6 +812,7 @@
 <nz-drawer (nzOnClose)="closeSearch()" [nzVisible]="isSearchVisible" nzPlacement="right">
   <ng-container *nzDrawerContent>
     <div (click)="closeSearch()" class="close-btn"></div>
+    <i (click)="helpPage()" nz-icon nzType="info-circle" class="help-info cur-point"  nzTheme="fill"></i>
     <div *ngIf="isSearchVisible">
       <div class="text-center m-b-sm text"><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span>
       </div>
