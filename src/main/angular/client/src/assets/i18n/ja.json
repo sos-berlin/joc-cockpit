@@ -4379,5 +4379,9 @@
     }
   },
   "help": {
+    "searchingInventory": {
+      "title": "Inventory Search",
+      "slug": "searching-inventory"
+    }
   }
 }
