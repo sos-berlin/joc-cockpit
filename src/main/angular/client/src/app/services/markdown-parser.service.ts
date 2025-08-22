@@ -19,19 +19,19 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
  */
 
 export interface MarkdownOptions {
-  gfm: boolean;           // GitHub‑style features
-  tables: boolean;        // Enable GFM tables
-  breaks: boolean;        // Soft line breaks become <br>
-  smartLists: boolean;    // Smarter list handling
-  smartypants: boolean;   // Typography transforms
-  headerIds: boolean;     // Add id anchors to headings
-  headerPrefix: string;   // Prefix for heading ids
-  sanitize: boolean;      // Run sanitizer on final HTML
-  xhtml: boolean;         // Use <br/> and <hr/>
-  highlight?: (code: string, lang?: string) => string; // optional syntax highlighter
+  gfm: boolean;
+  tables: boolean;
+  breaks: boolean;
+  smartLists: boolean;
+  smartypants: boolean;
+  headerIds: boolean;
+  headerPrefix: string;
+  sanitize: boolean;
+  xhtml: boolean;
+  highlight?: (code: string, lang?: string) => string;
 }
 
-// Minimal Token types
+
 interface TokenBase { type: string; raw: string; }
 interface HeadingToken extends TokenBase { depth: number; text: string; }
 interface ParagraphToken extends TokenBase { text: string; }
@@ -71,7 +71,6 @@ export class MarkdownParserService {
     if (options.smartypants) html = this.smartypants(html);
     if (options.sanitize) html = this.sanitize(html);
 
-    // If you prefer Angular to trust the HTML for binding via [innerHTML]
     return options.sanitize ? html : this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
@@ -93,10 +92,8 @@ export class MarkdownParserService {
     const isBlank = (s: string) => /^\s*$/.test(s);
 
     while (lines.length) {
-      // trim leading blank lines, but emit paragraphs correctly
       if (isBlank(lines[0])) { tokens.push({ type: 'space', raw: lines[0] } as any); eat(1); continue; }
 
-      // Fenced code block ``` or ~~~
       let m = lines[0].match(/^\s*(```|~~~)\s*([^`]*)\s*$/);
       if (m) {
         const fence = m[1];
@@ -110,7 +107,6 @@ export class MarkdownParserService {
         continue;
       }
 
-      // Setext heading (underlined)
       if (lines.length >= 2 && /^(=+|-+)\s*$/.test(lines[1])) {
         const depth = /^=+\s*$/.test(lines[1]) ? 1 : 2;
         const text = lines[0].trim();
@@ -120,7 +116,6 @@ export class MarkdownParserService {
         continue;
       }
 
-      // ATX heading #
       m = lines[0].match(/^(#{1,6})\s+(.+?)\s*#*\s*$/);
       if (m) {
         const depth = m[1].length;
@@ -130,14 +125,13 @@ export class MarkdownParserService {
         continue;
       }
 
-      // Thematic break
       if (/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(lines[0])) {
         tokens.push({ type: 'hr', raw: lines[0] } as HrToken);
         eat(1);
         continue;
       }
 
-      // Blockquote
+
       if (/^\s*>\s?/.test(lines[0])) {
         let i = 0; const chunk: string[] = [];
         while (i < lines.length && /^\s*>\s?/.test(lines[i])) { chunk.push(lines[i].replace(/^\s*>\s?/, '')); i++; }
@@ -148,7 +142,6 @@ export class MarkdownParserService {
         continue;
       }
 
-      // List (ordered or bullet)
       m = lines[0].match(/^\s*([*+-]|\d+\.)\s+/);
       if (m) {
         const bullet = m[1];
@@ -163,18 +156,16 @@ export class MarkdownParserService {
         const flush = () => {
           if (!buf.length) return;
           const rawItem = buf.join('\n');
-          // task list?
           let task = false, checked = false;
-          let text = rawItem.replace(/^\s*([*+-]|\d+\.)\s+/, (m) => m.replace(/./g, ' ')); // keep indentation for nested
+          let text = rawItem.replace(/^\s*([*+-]|\d+\.)\s+/, (m) => m.replace(/./g, ' '));
           const firstLine = rawItem.replace(/\n[\s\S]*$/, '');
           const taskMatch = firstLine.match(/^(?:\s*[*+-]|\s*\d+\.)\s+\[( |x|X)\]\s+/);
           if (taskMatch) {
             task = true; checked = /x/i.test(taskMatch[1]);
             text = rawItem.replace(/^(\s*(?:[*+-]|\d+\.)\s+)\[(?: |x|X)\]\s+/, '$1');
           }
-          // strip bullet on first line only
           text = text.replace(/^(\s*)(?:[*+-]|\d+\.)\s+/, '$1');
-          const tokens = this.lex(text, options); // recursive to allow nested blocks
+          const tokens = this.lex(text, options);
           items.push({ type: 'list_item', raw: rawItem, task, checked, tokens } as ListItemToken);
           buf.length = 0;
         };
@@ -185,12 +176,10 @@ export class MarkdownParserService {
             flush();
             buf.push(s);
           } else if (!buf.length && isBlank(s)) {
-            // skip initial blank before first item
           } else if (buf.length && /^\s{0,3}\S/.test(s) && /^\s*([*+-]|\d+\.)\s+/.test(s)) {
             flush();
             buf.push(s);
           } else if (buf.length && isBlank(s)) {
-            // allow single blank line inside item
             buf.push(s);
           } else if (buf.length) {
             buf.push(s);
@@ -205,7 +194,6 @@ export class MarkdownParserService {
         continue;
       }
 
-      // Table (GFM): header | header\n|---|:--:|---:|\nrows
       if (options.gfm && options.tables && lines.length >= 2 && /\|/.test(lines[0]) && /^(\s*\|)?\s*(:?-{3,}:?)(\s*\|\s*:?-{3,}:?)*\s*(\|\s*)?$/.test(lines[1])) {
         const headerLine = this.splitTableRow(lines[0]);
         const alignLine = this.splitTableRow(lines[1]);
@@ -230,7 +218,6 @@ export class MarkdownParserService {
         continue;
       }
 
-      // Paragraph (collect until blank line or next block)
       let i = 0; const buf: string[] = [];
       while (i < lines.length && !/^\s*$/.test(lines[i]) &&
         !/^(#{1,6})\s+/.test(lines[i]) &&
@@ -247,17 +234,14 @@ export class MarkdownParserService {
         continue;
       }
 
-      // fallback (shouldn't happen)
       tokens.push({ type: 'paragraph', raw: lines[0], text: lines[0] } as ParagraphToken);
       eat(1);
     }
 
-    // filter spaces (kept for tighter list detection)
     return tokens.filter(t => t.type !== 'space');
   }
 
   private splitTableRow(row: string): string[] {
-    // Split respecting escaped pipes and code spans
     const out: string[] = [];
     let cur = ''; let inCode = false; let backticks = 0;
     for (let i = 0; i < row.length; i++) {
@@ -268,7 +252,6 @@ export class MarkdownParserService {
       cur += ch;
     }
     out.push(cur);
-    // Trim empty first/last if row begins/ends with |
     if (row.trim().startsWith('|')) out.shift();
     if (row.trim().endsWith('|')) out.pop();
     return out;
@@ -302,23 +285,18 @@ export class MarkdownParserService {
     const renderInline = (text: string): string => {
       if (!text) return '';
 
-      // escapes first
       text = text.replace(/\\([*_`\[\]()#!>|~-])/g, '$1');
 
-      // code spans
       text = text.replace(/(`+)([^`\n]+?)\1/g, (_, bt: string, code: string) => `<code>${escapeHtml(code)}</code>`);
 
-      // strong & em (handle *** and ___ combos)
       text = text
         .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
         .replace(/__([^_]+)__/g, '<strong>$1</strong>')
         .replace(/\*([^*]+)\*/g, '<em>$1</em>')
         .replace(/_([^_]+)_/g, '<em>$1</em>');
 
-      // strikethrough
       text = text.replace(/~~([^~]+)~~/g, '<del>$1</del>');
 
-      // images ![alt](src "title")
       text = text.replace(/!\[([^\]]*)\]\(([^\s)]+)(?:\s+\"([^\"]*)\")?\)/g, (_, alt: string, src: string, title?: string) => {
         src = this.safeUrl(src);
         if (!src) return '';
@@ -326,7 +304,6 @@ export class MarkdownParserService {
         return `<img src="${src}" alt="${escapeHtml(alt)}"${t}>`;
       });
 
-      // links [text](href "title")
       text = text.replace(/\[([^\]]+)\]\(([^\s)]+)(?:\s+\"([^\"]*)\")?\)/g, (_, label: string, href: string, title?: string) => {
         href = this.safeUrl(href);
         if (!href) return escapeHtml(label);
@@ -334,21 +311,18 @@ export class MarkdownParserService {
         return `<a href="${href}" rel="nofollow ugc" target="_blank"${t}>${label}</a>`;
       });
 
-      // autolinks <http://...> and emails <user@host>
       text = text.replace(/<((?:https?:\/\/|mailto:|tel:)[^>]+)>/gi, (_, url: string) => {
         const u = this.safeUrl(url);
         if (!u) return escapeHtml(url);
         return `<a href="${u}" rel="nofollow ugc" target="_blank">${escapeHtml(url)}</a>`;
       });
 
-      // plain URL linkify (http/https only)
       text = text.replace(/(^|\s)(https?:\/\/[\w\-._~:\/?#\[\]@!$&'()*+,;=%]+)(?=$|\s)/gi, (_, pre: string, url: string) => {
         const u = this.safeUrl(url);
         if (!u) return pre + escapeHtml(url);
         return `${pre}<a href="${u}" rel="nofollow ugc" target="_blank">${escapeHtml(url)}</a>`;
       });
 
-      // line breaks
       if (options.breaks) text = text.replace(/\n/g, br);
       else text = text.replace(/ {2,}\n/g, br);
 
@@ -428,12 +402,12 @@ export class MarkdownParserService {
   // =====================
   private smartypants(html: string): string {
     return html
-      .replace(/(^|\W)"(\S)/g, '$1“$2')   // opening double quote
-      .replace(/(\S)"(\W|$)/g, '$1”$2')  // closing double quote
-      .replace(/(^|\W)'(\S)/g, '$1‘$2')   // opening single quote
-      .replace(/(\S)'(\W|$)/g, '$1’$2')   // closing single quote
-      .replace(/\.{3}/g, '…')             // ellipsis
-      .replace(/--/g, '—');                // em dash
+      .replace(/(^|\W)"(\S)/g, '$1“$2')
+      .replace(/(\S)"(\W|$)/g, '$1”$2')
+      .replace(/(^|\W)'(\S)/g, '$1‘$2')
+      .replace(/(\S)'(\W|$)/g, '$1’$2')
+      .replace(/\.{3}/g, '…')
+      .replace(/--/g, '—');
   }
 
   /**
@@ -497,13 +471,12 @@ export class MarkdownParserService {
   private safeUrl(url: string): string | null {
     const trimmed = (url || '').trim();
     if (!trimmed) return null;
-    // decode once for checking
     let decoded = trimmed;
     try { decoded = decodeURI(trimmed); } catch { /* ignore */ }
     const lower = decoded.toLowerCase();
     if (lower.startsWith('javascript:') || lower.startsWith('data:') || lower.startsWith('vbscript:')) return null;
     if (/^(https?:|mailto:|tel:)/i.test(trimmed)) return trimmed;
-    if (/^\//.test(trimmed)) return trimmed; // allow root‑relative
-    return null; // disallow other schemes
+    if (/^\//.test(trimmed)) return trimmed;
+    return null;
   }
 }
