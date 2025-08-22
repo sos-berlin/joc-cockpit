@@ -13319,8 +13319,7 @@ export class InventoryComponent {
       nzClassName: 'lg',
       nzData: {
         preferences: this.preferences,
-        title: 'searching-inventory',
-        slug: 'searching-inventory',
+        title: 'searchingInventory',
         helpKey: 'searching-inventory'
       },
       nzFooter: null,

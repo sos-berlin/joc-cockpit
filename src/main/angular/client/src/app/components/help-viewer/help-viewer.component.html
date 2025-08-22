@@ -1,6 +1,6 @@
 <div class="modal-header">
     <h4 class="modal-title">
-        <span>{{ title | translate }}</span>
+        <span>{{ 'help.' + title + '.title' | translate }}</span>
     </h4>
     <button type="button" class="close" aria-label="Close" (click)="cancel()">
         <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -8,15 +8,11 @@
 </div>
 
 <div class="modal-body p-a">
-    <div class="help-header" *ngIf="title">
-        <h2>{{ title | translate }}</h2>
-    </div>
-
     <div class="help-content-wrapper">
         <div *ngIf="isLoading" class="loading-spinner">
             <nz-spin nzTip="Loading help content..."></nz-spin>
         </div>
-        <div *ngIf="!isLoading" [innerHTML]="helpContent" class="help-content"></div>
+        <div *ngIf="!isLoading" [innerHTML]="html" class="help-md"></div>
     </div>
 </div>
 <div class="modal-footer">

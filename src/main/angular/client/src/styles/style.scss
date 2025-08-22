@@ -9979,3 +9979,112 @@ cdk-virtual-scroll-viewport {
   margin-top: -6px;
   font-size: 16px;
 }
+
+
+/* help- files */
+.help-md {
+  font-size: 14px !important;
+  line-height: 1.65 !important;
+  color: #111827 !important;
+}
+
+.help-md h1 {
+  font-size: 28px !important;
+  margin: 0 0 .6rem !important;
+  font-weight: 700 !important;
+  padding-bottom: .6rem !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.help-md h2 {
+  font-size: 22px !important;
+  margin: 2rem 0 .5rem !important;
+  font-weight: 700 !important;
+  padding-bottom: .4rem !important;
+  border-bottom: 1px solid #eef0f3 !important;
+}
+
+.help-md h3 {
+  font-size: 18px !important;
+  margin: 1.25rem 0 .4rem !important;
+  font-weight: 700 !important;
+}
+
+.help-md h1 + p,
+.help-md h2 + p,
+.help-md h3 + p {
+  margin-top: .3rem !important;
+}
+
+.help-md p {
+  margin: .5rem 0 1rem !important;
+  color: #374151;
+}
+
+.help-md ul,
+.help-md ol {
+  margin: .6rem 0 1rem !important;
+  padding-left: 1.4rem !important;
+  list-style-position: outside !important;
+}
+
+.help-md ul { list-style-type: disc !important; }
+.help-md ul ul { list-style-type: circle !important; }
+.help-md ul ul ul { list-style-type: square !important; }
+
+.help-md ol { list-style-type: decimal !important; }
+.help-md ol ol { list-style-type: lower-alpha !important; }
+.help-md ol ol ol { list-style-type: lower-roman !important; }
+
+.help-md li { margin: .25rem 0 !important; }
+.help-md li p { margin: .25rem 0 !important; }
+
+.help-md blockquote {
+  margin: 1rem 0 !important;
+  padding: .6rem 1rem !important;
+  border-left: 4px solid #e5e7eb !important;
+  background: #f9fafb !important;
+}
+
+.help-md hr {
+  border: 0 !important;
+  border-top: 1px solid #e5e7eb !important;
+  margin: 1.25rem 0 !important;
+}
+
+.help-md table {
+  border-collapse: collapse !important;
+  width: 100% !important;
+  margin: 1rem 0 !important;
+  font-size: 13px !important;
+}
+
+.help-md th,
+.help-md td {
+  border: 1px solid #e5e7eb !important;
+  padding: 8px !important;
+  vertical-align: top !important;
+}
+
+.help-md thead th {
+  background: #f3f4f6 !important;
+  font-weight: 600 !important;
+}
+
+.help-md pre {
+  padding: 12px !important;
+  overflow: auto !important;
+  border-radius: 6px !important;
+  background: #0f172a0d !important;
+}
+
+.help-md code {
+  padding: 0 .25em !important;
+  background: #0000000f !important;
+  border-radius: 4px !important;
+}
+
+.help-md input[type="checkbox"] {
+  margin-right: .5em !important;
+  transform: translateY(.1em) !important;
+}

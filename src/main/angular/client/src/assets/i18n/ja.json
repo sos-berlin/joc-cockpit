@@ -4379,5 +4379,26 @@
     }
   },
   "help": {
+    "searchingInventory": {
+      "title": "Inventory Search"
+    },
+    "advancedSearch": {
+      "title": "Advanced Search"
+    },
+    "addingOrders": {
+      "title": "Add Order"
+    },
+    "operatingDailyPlanCalendar": {
+      "title": "Daily Plan Calendar"
+    },
+    "operatingDailyPlan": {
+      "title": "Daily Plan"
+    },
+    "operatingDailyPlanProjections": {
+      "title": "Daily Plan Projections"
+    },
+    "operatingDailyPlanDependencies": {
+      "title": "Daily Plan Dependencies"
+    }
   }
 }
