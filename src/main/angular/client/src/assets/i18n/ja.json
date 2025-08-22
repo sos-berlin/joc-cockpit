@@ -4399,6 +4399,7 @@
     },
     "operatingDailyPlanDependencies": {
       "title": "Daily Plan Dependencies"
-    }
+    },
+    "tooltip.help": "Help page"
   }
 }
