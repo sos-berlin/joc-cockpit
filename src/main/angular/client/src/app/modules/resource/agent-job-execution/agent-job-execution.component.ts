@@ -10,6 +10,7 @@ import {SearchPipe} from '../../../pipes/core.pipe';
 import {ExcelService} from '../../../services/excel.service';
 import {EditFilterModalComponent} from '../../../components/filter-modal/filter.component';
 import {SaveService} from '../../../services/save.service';
+import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 
 @Component({
   selector: 'app-filter-agent-content',
@@ -85,7 +86,7 @@ export class SearchComponent {
   isUnique = true;
   agentIds = [];
 
-  constructor(public coreService: CoreService, private authService: AuthService) {
+  constructor(public coreService: CoreService, private authService: AuthService, private modal: NzModalService) {
   }
 
   ngOnInit(): void {
@@ -187,6 +188,21 @@ export class SearchComponent {
 
   cancel(): void {
     this.onCancel.emit();
+  }
+
+  helpPage(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: 'advanced-filter'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }
 

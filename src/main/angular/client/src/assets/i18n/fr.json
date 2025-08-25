@@ -755,7 +755,8 @@
     "tooltip.expandDetails": "Développer les Détails",
     "tooltip.collapseDetails": "Réduire les Détails",
     "tooltip.collapseAll": "Réduire tout",
-    "tooltip.expandAll": "Tout afficher"
+    "tooltip.expandAll": "Tout afficher",
+    "tooltip.help": "Help page"
   },
   "customization": {
     "label.createCustomization": "Créer une personnalisation",
@@ -1929,6 +1930,7 @@
     "label.normal": "Normal",
     "label.belowNormal": "Inférieure à la normale",
     "label.Low": "Inférieure",
+    "label.deleteRepository": "Delete Repository",
     "button.modifyVariableSet": "Modifier le Jeu de Variable",
     "button.addOrderParameter": "Ajouter un Modèle d'Ordre",
     "button.setVersion": "Définir la Version",
@@ -2009,6 +2011,8 @@
     "button.renameGroup": "Renommer Groupe",
     "button.assignTags": "Assigner les Balises",
     "button.modifyPriority": "Modifier la Priorité",
+    "button.link": "Link",
+    "button.unlink": "Unlink",
     "tooltip.setVersion": "Définir la version",
     "placeholder.enterUniqueName": "Entrer un nom d'objet unique",
     "placeholder.enterFileName": "Entrer le nom du fichier",
@@ -2075,6 +2079,8 @@
     "message.remove": "Les objets sélectionnés seront supprimés du Contrôleur et de l'inventaire. Les objets référents, non sélectionnés seront retirés du Contrôleur.",
     "message.revoke": "Les objets sélectionnés seront retirés du Contrôleur, ils resteront dans l'inventaire.",
     "message.recall": "Les objets sélectionnés seront rappelés, ils resteront dans l'inventaire.",
+    "message.link": "links an existing local clone from an git controlled JOC folder.",
+    "message.unlink": "Unlinks an existing local clone from an git controlled JOC folder.",
     "tab": {
       "folders": "Dossiers",
       "trash": "Corbeille",
@@ -4376,29 +4382,5 @@
     "Empty": {
       "description": "Aucune donnée"
     }
-  },
-  "help": {
-    "searchingInventory": {
-      "title": "Inventory Search"
-    },
-    "advancedSearch": {
-      "title": "Advanced Search"
-    },
-    "addingOrders": {
-      "title": "Add Order"
-    },
-    "operatingDailyPlanCalendar": {
-      "title": "Daily Plan Calendar"
-    },
-    "operatingDailyPlan": {
-      "title": "Daily Plan"
-    },
-    "operatingDailyPlanProjections": {
-      "title": "Daily Plan Projections"
-    },
-    "operatingDailyPlanDependencies": {
-      "title": "Daily Plan Dependencies"
-    },
-    "tooltip.help": "Help page"
   }
 }

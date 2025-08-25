@@ -4917,7 +4917,8 @@ export class RepositoryComponent {
   selectAllFilteredAffected: { [key: string]: boolean } = {};
   localObjects: string[] = [];
   rolloutObjects: string[] = [];
-
+  link: any;
+  deleteRepository = false;
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef,
               private inventoryService: InventoryService, private cdr: ChangeDetectorRef,) {
   }
@@ -4929,16 +4930,20 @@ export class RepositoryComponent {
     this.operation = this.modalData.operation;
     this.category = this.modalData.category;
     this.display = this.modalData.display;
-    if (['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'CALENDAR', 'WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(this.origin?.object)) {
-      this.loadSettingPseudo()
-    } else {
-      this.loadSetting();
+    this.link = this.modalData.link;
+    console.log(this.link,"link")
+    if(!this.link){
+      if (['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'CALENDAR', 'WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(this.origin?.object)) {
+        this.loadSettingPseudo()
+      } else {
+        this.loadSetting();
+      }
+      if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
+        this.required = true;
+        this.display = true;
+      }
+      this.filter.envIndependent = this.category !== 'LOCAL';
     }
-    if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
-      this.required = true;
-      this.display = true;
-    }
-    this.filter.envIndependent = this.category !== 'LOCAL';
   }
 
   private init(): void {
@@ -5756,11 +5761,43 @@ export class RepositoryComponent {
 
   onSubmit(): void {
     this.submitted = true;
+    if(this.link){
+      this.storeLinking()
+      return;
+    }
     if (this.operation === 'store') {
       this.store();
     } else {
       this.updateOrDelete();
     }
+  }
+
+  storeLinking(): void {
+    const isUnlink = this.link === 'unlink';
+
+    const payload: any = {
+      folder: this.origin.path
+    };
+    if (this.comments?.comment) {
+      payload.auditLog = {};
+      this.coreService.getAuditLogObj(this.comments, payload.auditLog);
+    }
+    if (isUnlink) {
+      payload.deleteRepository = true;
+    }
+
+    const url = isUnlink
+      ? 'inventory/repository/unlink'
+      : 'inventory/repository/link';
+
+    this.coreService.post(url, payload).subscribe({
+      next: () => {
+        this.activeModal.close();
+      },
+      error: () => {
+        this.submitted = false;
+      }
+    });
   }
 
   private updateOrDelete(): void {
@@ -11040,6 +11077,37 @@ export class InventoryComponent {
     });
   }
 
+   linking(unlink = false, node): void {
+     const origin = node.origin ? node.origin : node;
+     this.modal.create({
+       nzTitle: undefined,
+       nzContent: RepositoryComponent,
+       nzClassName: 'lg',
+       nzAutofocus: null,
+       nzData: {
+         controllerId: this.schedulerIds.selected,
+         preferences: this.preferences,
+         display: this.preferences.auditLog,
+         origin,
+         link: unlink ? 'unlink' : 'link'
+       },
+       nzFooter: null,
+       nzClosable: false,
+       nzMaskClosable: false
+     }).afterClose.subscribe((res) => {
+       if (res) {
+         setTimeout(() => {
+           if (this.tree && this.tree.length > 0) {
+             if (this.selectedData.path && (origin.path.indexOf(this.selectedData.path) > -1 || origin.path === this.selectedData.path)) {
+               this.selectedData.reload = true;
+             }
+             this.initTree(origin.path, '', false, true);
+           }
+         }, 750);
+       }
+     });
+  }
+
   private showResult(result: any): void {
     this.modal.create({
       nzTitle: undefined,
@@ -13319,7 +13387,6 @@ export class InventoryComponent {
       nzClassName: 'lg',
       nzData: {
         preferences: this.preferences,
-        title: 'searchingInventory',
         helpKey: 'searching-inventory'
       },
       nzFooter: null,

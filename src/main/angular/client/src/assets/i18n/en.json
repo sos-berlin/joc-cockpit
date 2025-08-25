@@ -755,7 +755,8 @@
     "tooltip.expandDetails": "Expand Details",
     "tooltip.collapseDetails": "Collapse Details",
     "tooltip.collapseAll": "Collapse All",
-    "tooltip.expandAll": "Expand All"
+    "tooltip.expandAll": "Expand All",
+    "tooltip.help": "Help page"
   },
   "customization": {
     "label.createCustomization": "Create Customization",
@@ -1929,6 +1930,7 @@
     "label.normal": "Normal",
     "label.belowNormal": "Below Normal",
     "label.Low": "Low",
+    "label.deleteRepository": "Delete Repository",
     "button.modifyVariableSet": "Modify Variable Set",
     "button.addOrderParameter": "Add Order Template",
     "button.setVersion": "Set Version",
@@ -2009,6 +2011,8 @@
     "button.renameGroup": "Rename Group",
     "button.assignTags": "Assign Tags",
     "button.modifyPriority": "Modify Priority",
+    "button.link": "Link",
+    "button.unlink": "Unlink",
     "tooltip.setVersion": "Set Version",
     "placeholder.enterUniqueName": "Enter unique object name",
     "placeholder.enterFileName": "Enter file name",
@@ -2075,6 +2079,8 @@
     "message.remove": "Selected objects will be removed from the Controller and from the inventory, unselected referencing objects will be revoked from the Controller.",
     "message.revoke": "Selected objects will be revoked from the Controller, they remain in the inventory.",
     "message.recall": "Selected objects will be recalled, they remain in the inventory.",
+    "message.link": "links an existing local clone from an git controlled JOC folder.",
+    "message.unlink": "Unlinks an existing local clone from an git controlled JOC folder.",
     "tab": {
       "folders": "Folders",
       "trash": "Trash",
@@ -4377,29 +4383,5 @@
     "Empty": {
       "description": "No Data"
     }
-  },
-  "help": {
-    "searchingInventory": {
-      "title": "Inventory Search"
-    },
-    "advancedSearch": {
-      "title": "Advanced Search"
-    },
-    "addingOrders": {
-      "title": "Add Order"
-    },
-    "operatingDailyPlanCalendar": {
-      "title": "Daily Plan Calendar"
-    },
-    "operatingDailyPlan": {
-      "title": "Daily Plan"
-    },
-    "operatingDailyPlanProjections": {
-      "title": "Daily Plan Projections"
-    },
-    "operatingDailyPlanDependencies": {
-      "title": "Daily Plan Dependencies"
-    },
-    "tooltip.help": "Help page"
   }
 }

@@ -657,7 +657,7 @@
         {{'common.button.submit' | translate}}
       </button>
       <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
-      <div *ngIf="storedArguments?.length > 0" class="w-full" style="display: flex; justify-content: end;">
+      <div *ngIf="storedArguments?.length > 0" class="w-full" style="display: flex; justify-content: end; margin-right: 25px">
         <ng-template #contentTemplate>
           <div class="p-a-sm b-a m-b-sm cursor" (click)="handlePaste(item, selectedOrderIndex)"
                *ngFor="let item of storedArguments; let i = index">
@@ -678,6 +678,7 @@
           <i class="fa fa-list"></i>
         </button>
       </div>
+      <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-order cur-point fa fa-question-circle text-20"></i>
     </div>
 
   </form>

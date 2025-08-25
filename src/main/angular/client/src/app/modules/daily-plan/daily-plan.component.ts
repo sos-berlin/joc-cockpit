@@ -21,8 +21,9 @@ import {DataService} from '../../services/data.service';
 import {ExcelService} from '../../services/excel.service';
 import {ExportComponent} from "./projection/projection.component";
 import {CreateTagModalComponent} from "../configuration/inventory/inventory.component";
-import { PostModalComponent } from '../resource/board/board.component';
+import {PostModalComponent} from '../resource/board/board.component';
 import {PriorityModalComponent} from "../../components/priority-modal/priority-modal.component";
+import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 
 declare const JSGantt: any;
 declare let jsgantt: any;
@@ -583,7 +584,7 @@ export class SearchComponent {
     {status: 'FINISHED', text: 'finished'}
   ];
 
-  constructor(private authService: AuthService, public coreService: CoreService) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,) {
   }
 
   ngOnInit(): void {
@@ -708,6 +709,21 @@ export class SearchComponent {
 
   cancel(): void {
     this.onCancel.emit();
+  }
+
+  helpPage(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: 'advanced-filter'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }
 
@@ -1007,11 +1023,11 @@ export class DailyPlanComponent {
       if (this.dailyPlanFilters.filter.late) {
         obj.late = true;
       }
-      if(this.dailyPlanFilters.tagType === 'workflowTags'){
+      if (this.dailyPlanFilters.tagType === 'workflowTags') {
         if (this.coreService.checkedTags.size) {
           obj.workflowTags = Array.from(this.coreService.checkedTags);
         }
-      }else if(this.dailyPlanFilters.tagType === 'orderTags'){
+      } else if (this.dailyPlanFilters.tagType === 'orderTags') {
         if (this.coreService.checkedOrderTags.size) {
           obj.orderTags = Array.from(this.coreService.checkedOrderTags);
         }
@@ -1518,7 +1534,7 @@ export class DailyPlanComponent {
 
     if (this.dailyPlanFilters.filter.status === 'ALL') {
       payload.states = ['SUBMITTED']
-    }else{
+    } else {
       payload.states = [this.dailyPlanFilters.filter.status];
 
     }
@@ -1807,7 +1823,7 @@ export class DailyPlanComponent {
       });
       for (let i = 0; i < this.projectionData.length; i++) {
         let obj: any = {};
-        obj[date] = this.getDate(this.projectionData[i].startDate,this.preferences.zone);
+        obj[date] = this.getDate(this.projectionData[i].startDate, this.preferences.zone);
         obj[planned] = this.projectionData[i].color === 'blue' ? 'Yes' : 'No';
 
         if (this.dailyPlanFilters.projection.withoutStartTime) {
@@ -2056,7 +2072,7 @@ export class DailyPlanComponent {
     }
   }
 
-  copyOrder(order, plan): void{
+  copyOrder(order, plan): void {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: ModifyStartTimeModalComponent,
@@ -2298,7 +2314,7 @@ export class DailyPlanComponent {
         }
       }
       this.setStateToParentObject();
-    }else if (this.dailyPlanFilters.filter.filterBy) {
+    } else if (this.dailyPlanFilters.filter.filterBy) {
       if (this.dailyPlanFilters.filter.filterBy === 'CYCLICORDER') {
 
         this.planOrders = filterData.filter(order => order.cyclicOrder);
@@ -2308,7 +2324,7 @@ export class DailyPlanComponent {
         this.planOrders = filterData.filter(order => !order.cyclicOrder);
       }
     } else {
-        this.planOrders = filterData;
+      this.planOrders = filterData;
     }
     this.totalOrders = 0;
     this.totalFinishedOrders = 0;
@@ -2579,7 +2595,7 @@ export class DailyPlanComponent {
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.dailyPlanFilters = this.coreService.getDailyPlanTab();
-    if(!this.dailyPlanFilters.tagType){
+    if (!this.dailyPlanFilters.tagType) {
       this.dailyPlanFilters.tagType = 'workflowTags';
     }
     this.savedFilter = JSON.parse(this.saveService.dailyPlanFilters) || {};
@@ -2618,11 +2634,11 @@ export class DailyPlanComponent {
     this.searchTerm.pipe(debounceTime(200))
       .subscribe((searchValue: string) => {
         this.searchObjects(searchValue);
-    });
+      });
     this.searchOrderTerm.pipe(debounceTime(200))
-    .subscribe((searchValue: string) => {
-      this.searchOrderObjects(searchValue);
-    });
+      .subscribe((searchValue: string) => {
+        this.searchOrderObjects(searchValue);
+      });
   }
 
   private reloadDailyPlan(): void {
@@ -2845,70 +2861,69 @@ export class DailyPlanComponent {
     }
   }
 
-private filterData(planItems: any[]): void {
+  private filterData(planItems: any[]): void {
     if (!planItems || planItems.length === 0) {
-        this.dailyPlanFilters.currentPage = 1;
+      this.dailyPlanFilters.currentPage = 1;
     }
     if (planItems && planItems.length) {
-        for (let i = 0; i < planItems.length; i++) {
-            planItems[i].plannedDate = planItems[i].plannedStartTime;
-            planItems[i].expectedDuration = this.coreService.calDuration(planItems[i].plannedStartTime, planItems[i].expectedEndTime);
-            planItems[i].expectedDuration1 = new Date(planItems[i].plannedStartTime).getTime() - new Date(planItems[i].expectedEndTime).getTime();
-            planItems[i].duration = this.coreService.calDuration(planItems[i].startTime, planItems[i].endTime);
-            planItems[i].plannedStartTime = this.coreService.stringToDate(this.preferences, planItems[i].plannedStartTime);
-            planItems[i].expectedEndTime = this.coreService.stringToDate(this.preferences, planItems[i].expectedEndTime);
-            planItems[i].startTime = this.coreService.stringToDate(this.preferences, planItems[i].startTime);
-            planItems[i].endTime = this.coreService.stringToDate(this.preferences, planItems[i].endTime);
+      for (let i = 0; i < planItems.length; i++) {
+        planItems[i].plannedDate = planItems[i].plannedStartTime;
+        planItems[i].expectedDuration = this.coreService.calDuration(planItems[i].plannedStartTime, planItems[i].expectedEndTime);
+        planItems[i].expectedDuration1 = new Date(planItems[i].plannedStartTime).getTime() - new Date(planItems[i].expectedEndTime).getTime();
+        planItems[i].duration = this.coreService.calDuration(planItems[i].startTime, planItems[i].endTime);
+        planItems[i].plannedStartTime = this.coreService.stringToDate(this.preferences, planItems[i].plannedStartTime);
+        planItems[i].expectedEndTime = this.coreService.stringToDate(this.preferences, planItems[i].expectedEndTime);
+        planItems[i].startTime = this.coreService.stringToDate(this.preferences, planItems[i].startTime);
+        planItems[i].endTime = this.coreService.stringToDate(this.preferences, planItems[i].endTime);
 
-            if (planItems[i].state && planItems[i].state._text) {
-                this.translate.get(planItems[i].state._text).subscribe(translatedValue => {
-                    planItems[i].status = translatedValue;
-                });
-            }
-
-            // Add tags to the searchable properties
-            if (planItems[i].tags && planItems[i].tags.length > 0) {
-                planItems[i].tagsString = planItems[i].tags.join(', ');
-            } else {
-                planItems[i].tagsString = '';
-            }
-          const workflowLastPart = planItems[i].workflowPath ? this.getLastPartOfWorkflow(planItems[i].workflowPath) : null;
-          if (workflowLastPart && this.workflowTagsPerWorkflow && this.workflowTagsPerWorkflow[workflowLastPart]) {
-            planItems[i].workflowTagsString = this.workflowTagsPerWorkflow[workflowLastPart].join(', ');
-          } else {
-            planItems[i].workflowTagsString = '';
-          }
-
-            for (let j = 0; j < this.plans.length; j++) {
-                if (this.plans[j].show && this.plans[j].orderId === planItems[i].orderId) {
-                    planItems[i].show = true;
-                    planItems[i].variables = this.plans[j].variables;
-                    break;
-                }
-            }
+        if (planItems[i].state && planItems[i].state._text) {
+          this.translate.get(planItems[i].state._text).subscribe(translatedValue => {
+            planItems[i].status = translatedValue;
+          });
         }
-        this.plans = planItems;
-        this.sortBy();
-        this.updateTable(this.dailyPlanFilters.searchText ? this.searchPipe.transform(this.plans, this.dailyPlanFilters.searchText, this.searchableProperties) : this.plans);
+
+        // Add tags to the searchable properties
+        if (planItems[i].tags && planItems[i].tags.length > 0) {
+          planItems[i].tagsString = planItems[i].tags.join(', ');
+        } else {
+          planItems[i].tagsString = '';
+        }
+        const workflowLastPart = planItems[i].workflowPath ? this.getLastPartOfWorkflow(planItems[i].workflowPath) : null;
+        if (workflowLastPart && this.workflowTagsPerWorkflow && this.workflowTagsPerWorkflow[workflowLastPart]) {
+          planItems[i].workflowTagsString = this.workflowTagsPerWorkflow[workflowLastPart].join(', ');
+        } else {
+          planItems[i].workflowTagsString = '';
+        }
+
+        for (let j = 0; j < this.plans.length; j++) {
+          if (this.plans[j].show && this.plans[j].orderId === planItems[i].orderId) {
+            planItems[i].show = true;
+            planItems[i].variables = this.plans[j].variables;
+            break;
+          }
+        }
+      }
+      this.plans = planItems;
+      this.sortBy();
+      this.updateTable(this.dailyPlanFilters.searchText ? this.searchPipe.transform(this.plans, this.dailyPlanFilters.searchText, this.searchableProperties) : this.plans);
     } else {
-        this.plans = [];
-        this.planOrders = [];
-        this.resetCheckBox();
+      this.plans = [];
+      this.planOrders = [];
+      this.resetCheckBox();
     }
     if (this.object.mapOfCheckedId.size > 0) {
-        const tempObject = new Map();
-        this.plans.forEach((order) => {
-            if (this.object.mapOfCheckedId.has(order.orderId)) {
-                tempObject.set(order.orderId, order);
-            }
-        });
-        this.object.mapOfCheckedId = tempObject;
-        this.object.mapOfCheckedId.size > 0 ? this.updateMainCheckbox() : this.resetCheckBox();
+      const tempObject = new Map();
+      this.plans.forEach((order) => {
+        if (this.object.mapOfCheckedId.has(order.orderId)) {
+          tempObject.set(order.orderId, order);
+        }
+      });
+      this.object.mapOfCheckedId = tempObject;
+      this.object.mapOfCheckedId.size > 0 ? this.updateMainCheckbox() : this.resetCheckBox();
     } else {
-        this.resetCheckBox();
+      this.resetCheckBox();
     }
-}
-
+  }
 
 
   onTagChecked(tag, checked: boolean): void {
@@ -3455,6 +3470,7 @@ private filterData(planItems: any[]): void {
   updateSelectAllOrderTags(): void {
     this.coreService.allOrderTagsSelected = this.coreService.selectedOrderTags.length === this.coreService.checkedOrderTags.size;
   }
+
   private searchOrderObjects(value: string) {
     if (value !== '') {
       const searchValueWithoutSpecialChars = value.replace(/[^\w\s]/gi, '');
@@ -3538,7 +3554,8 @@ private filterData(planItems: any[]): void {
       workflowTags,
       controllerId: this.schedulerIds.selected
     };
-    this.loadOrderPlan();;
+    this.loadOrderPlan();
+    ;
   }
 
   private updateWorkflowsAndOrdersByOrderTags(): void {
@@ -3547,7 +3564,8 @@ private filterData(planItems: any[]): void {
       orderTags,
       controllerId: this.schedulerIds.selected
     };
-    this.loadOrderPlan();;
+    this.loadOrderPlan();
+    ;
   }
 
   getLastPartOfWorkflow(workflow: string): string {
@@ -3635,7 +3653,7 @@ private filterData(planItems: any[]): void {
   }
 
   modifyPriority(order): void {
-    this.getOrder(order || null , (odr) => {
+    this.getOrder(order || null, (odr) => {
       const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: PriorityModalComponent,
@@ -3659,7 +3677,7 @@ private filterData(planItems: any[]): void {
       orderIds.push(value.orderId);
     });
     this.getOrder(orderIds, (orders) => {
-         const modal = this.modal.create({
+      const modal = this.modal.create({
         nzTitle: undefined,
         nzContent: PriorityModalComponent,
         nzClassName: 'lg',
@@ -3679,6 +3697,33 @@ private filterData(planItems: any[]): void {
           this.resetAction(5000);
         }
       });
+    });
+  }
+
+  helpPage(cal?: boolean): void {
+    let helpKey: string;
+
+    switch (this.dailyPlanFilters?.tabIndex) {
+      case 0:
+        helpKey = 'operating-daily-plan';
+        break;
+      case 1:
+        helpKey = 'operating-daily-plan-projections';
+        break;
+      default:
+        helpKey = 'operating-daily-plan-dependencies';
+    }
+    if (cal) {
+      helpKey = 'operating-daily-plan-calendar';
+    }
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {preferences: this.preferences, helpKey},
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 }

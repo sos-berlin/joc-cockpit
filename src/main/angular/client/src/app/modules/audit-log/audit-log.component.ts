@@ -14,6 +14,7 @@ import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
 import {AddBlocklistModalComponent} from '../admin/blocklist/blocklist.component';
+import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 
 @Component({
   selector: 'app-filter-log-content',
@@ -106,7 +107,7 @@ export class SearchComponent {
     "SETTINGS",
     "MONITORING"];
 
-  constructor(public coreService: CoreService, private authService: AuthService) {
+  constructor(public coreService: CoreService, private authService: AuthService, private modal: NzModalService) {
   }
 
   ngOnInit(): void {
@@ -196,6 +197,21 @@ export class SearchComponent {
 
   cancel(): void {
     this.onCancel.emit();
+  }
+
+  helpPage(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: 'advanced-filter'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }
 

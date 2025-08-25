@@ -1,7 +1,4 @@
 <div class="modal-header">
-    <h4 class="modal-title">
-        <span>{{ 'help.' + title + '.title' | translate }}</span>
-    </h4>
     <button type="button" class="close" aria-label="Close" (click)="cancel()">
         <span aria-hidden="true" class="fa fa-times-circle"></span>
     </button>
@@ -9,14 +6,19 @@
 
 <div class="modal-body p-a">
     <div class="help-content-wrapper">
-        <div *ngIf="isLoading" class="loading-spinner">
-            <nz-spin nzTip="Loading help content..."></nz-spin>
+        <div *ngIf="isLoading" class="col-md-12 text-center">
+            <div class="loading-center text-primary text ht-260">
+                <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+            </div>
         </div>
         <div *ngIf="!isLoading" [innerHTML]="html" class="help-md"></div>
     </div>
 </div>
 <div class="modal-footer">
-    <button type="button" class="btn btn-grey btn-sm" (click)="cancel()">
+    <button *ngIf="history.length > 0" type="button" class="btn btn-grey btn-sm" (click)="goBack()">
+        <span translate>common.button.back</span>
+    </button>
+  <button type="button" class="btn btn-grey btn-sm" (click)="cancel()">
         <span translate>common.button.close</span>
     </button>
 </div>

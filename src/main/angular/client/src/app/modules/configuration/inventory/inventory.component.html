@@ -628,6 +628,12 @@
             <li (click)="repositoryOperation(node, 'delete', 'LOCAL');" *ngIf="node.origin.path !== '/'" nz-menu-item>
               <a translate>inventory.button.deleteFrom</a>
             </li>
+            <li (click)="linking(false, node);" *ngIf="node.origin.path !== '/'" nz-menu-item>
+              <a translate>inventory.button.link</a>
+            </li>
+            <li (click)="linking(true, node);" *ngIf="node.origin.path !== '/'" nz-menu-item>
+              <a translate>inventory.button.unlink</a>
+            </li>
             <li (click)="$event.preventDefault();$event.stopPropagation()" *ngIf="!node.origin.object && ((node.parentNode && node.parentNode.key === '/') || node.origin.path === '/')"
                 [nzTitle]="'inventory.button.git' | translate"
                 nz-submenu>
@@ -658,6 +664,12 @@
             </li>
             <li (click)="repositoryOperation(node, 'delete', 'ROLLOUT');" *ngIf="node.origin.path !== '/'" nz-menu-item>
               <a translate>inventory.button.deleteFrom</a>
+            </li>
+            <li (click)="linking(false, node);" *ngIf="node.origin.path !== '/'" nz-menu-item>
+              <a translate>inventory.button.link</a>
+            </li>
+            <li (click)="linking(true, node);" *ngIf="node.origin.path !== '/'" nz-menu-item>
+              <a translate>inventory.button.unlink</a>
             </li>
             <li (click)="$event.preventDefault();$event.stopPropagation()" *ngIf="!node.origin.object && ((node.parentNode && node.parentNode.key === '/') || node.origin.path === '/')"
                 [nzTitle]="'inventory.button.git' | translate"
@@ -812,7 +824,7 @@
 <nz-drawer (nzOnClose)="closeSearch()" [nzVisible]="isSearchVisible" nzPlacement="right">
   <ng-container *nzDrawerContent>
     <div (click)="closeSearch()" class="close-btn"></div>
-    <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'help.tooltip.help' | translate" class="help-info cur-point fa fa-question-circle text-20"></i>
+    <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-question-circle text-20"></i>
     <div *ngIf="isSearchVisible">
       <div class="text-center m-b-sm text"><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span>
       </div>

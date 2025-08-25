@@ -30,8 +30,9 @@ export class HelpService {
                     breaks: false,
                     smartypants: true,
                     headerIds: true,
-                    headerPrefix: `${key}-`,
-                    sanitize: true
+                    headerPrefix: '',
+                  rawHtml: true,
+                  sanitize: true,
                 })
             ),
             catchError(() => of('<p>Help not available.</p>'))

@@ -19,6 +19,7 @@ import {WorkflowService} from '../../services/workflow.service';
 import {ExcelService} from '../../services/excel.service';
 import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
 import {PostModalComponent} from "../resource/board/board.component";
+import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 
 
 declare const $: any;
@@ -115,7 +116,7 @@ export class SearchComponent {
   ];
 
 
-  constructor(private authService: AuthService, public coreService: CoreService) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService) {
   }
 
   ngOnInit(): void {
@@ -294,6 +295,21 @@ export class SearchComponent {
 
   cancel(): void {
     this.onCancel.emit();
+  }
+
+  helpPage(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: 'advanced-filter'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }
 
@@ -2808,5 +2824,20 @@ export class WorkflowComponent {
       controllerId: this.schedulerIds.selected
     };
     this.searchByOrderTags(obj);
+  }
+
+  helpPage(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: 'searching-workflows'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }

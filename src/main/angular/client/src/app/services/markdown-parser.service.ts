@@ -29,11 +29,12 @@ export interface MarkdownOptions {
   sanitize: boolean;
   xhtml: boolean;
   highlight?: (code: string, lang?: string) => string;
+  rawHtml?: boolean;
 }
 
 
 interface TokenBase { type: string; raw: string; }
-interface HeadingToken extends TokenBase { depth: number; text: string; }
+interface HeadingToken extends TokenBase { depth: number; text: string; id?: string; }
 interface ParagraphToken extends TokenBase { text: string; }
 interface HrToken extends TokenBase {}
 interface CodeToken extends TokenBase { code: string; lang?: string; }
@@ -41,8 +42,10 @@ interface BlockquoteToken extends TokenBase { tokens: Token[]; }
 interface ListToken extends TokenBase { ordered: boolean; start: number; items: ListItemToken[]; tight: boolean; }
 interface ListItemToken extends TokenBase { task?: boolean; checked?: boolean; tokens: Token[]; }
 interface TableToken extends TokenBase { header: string[]; align: ("left"|"center"|"right"|null)[]; rows: string[][]; }
-
-type Token = HeadingToken | ParagraphToken | HrToken | CodeToken | BlockquoteToken | ListToken | ListItemToken | TableToken;
+interface HtmlBlockToken extends TokenBase { html: string; block: boolean; }
+type Token =
+  | HeadingToken | ParagraphToken | HrToken | CodeToken | BlockquoteToken
+  | ListToken | ListItemToken | TableToken | HtmlBlockToken;
 
 @Injectable({ providedIn: 'root' })
 export class MarkdownParserService {
@@ -56,6 +59,7 @@ export class MarkdownParserService {
     headerPrefix: 'md-'
     ,sanitize: true,
     xhtml: false,
+    rawHtml: false
   };
 
   constructor(private readonly sanitizer: DomSanitizer) {}
@@ -74,15 +78,11 @@ export class MarkdownParserService {
     return options.sanitize ? html : this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
-  /** Convenience alias to mimic `marked(md)` like API */
   parseMarkdown(markdown: string, opts: Partial<MarkdownOptions> = {}): string {
     const result = this.render(markdown, { ...opts, sanitize: true });
     return typeof result === 'string' ? result : '' + result;
   }
 
-  // =====================
-  // Lexer (block level)
-  // =====================
   private lex(src: string, options: MarkdownOptions): Token[] {
     const tokens: Token[] = [];
     let lines = src.split('\n');
@@ -93,7 +93,35 @@ export class MarkdownParserService {
 
     while (lines.length) {
       if (isBlank(lines[0])) { tokens.push({ type: 'space', raw: lines[0] } as any); eat(1); continue; }
+      if (options.rawHtml) {
+        if (/^<!--/.test(lines[0])) {
+          let i = 0;
+          while (i < lines.length && !/-->/.test(lines[i])) i++;
+          const raw = lines.slice(0, Math.min(i + 1, lines.length)).join('\n');
+          tokens.push({type: 'html', raw, html: raw, block: true} as HtmlBlockToken);
+          eat(Math.min(i + 1, lines.length));
+          continue;
+        }
 
+        const open = lines[0].match(/^<([A-Za-z][\w:-]*)(\s[^>]*)?>\s*$/);
+        if (open) {
+          const tag = open[1].toLowerCase();
+          const voidTags = new Set(['br', 'hr', 'img', 'input', 'source', 'track', 'wbr', 'meta', 'link', 'area', 'col', 'embed', 'param']);
+          if (voidTags.has(tag) || /\/>\s*$/.test(lines[0])) {
+            const raw = lines[0];
+            tokens.push({type: 'html', raw, html: raw, block: true} as HtmlBlockToken);
+            eat(1);
+            continue;
+          }
+          let i = 1;
+          const closeRe = new RegExp(`^</${tag}>\\s*$`, 'i');
+          while (i < lines.length && !closeRe.test(lines[i])) i++;
+          const raw = lines.slice(0, Math.min(i + 1, lines.length)).join('\n');
+          tokens.push({type: 'html', raw, html: raw, block: true} as HtmlBlockToken);
+          eat(Math.min(i + 1, lines.length));
+          continue;
+        }
+      }
       let m = lines[0].match(/^\s*(```|~~~)\s*([^`]*)\s*$/);
       if (m) {
         const fence = m[1];
@@ -109,18 +137,19 @@ export class MarkdownParserService {
 
       if (lines.length >= 2 && /^(=+|-+)\s*$/.test(lines[1])) {
         const depth = /^=+\s*$/.test(lines[1]) ? 1 : 2;
-        const text = lines[0].trim();
+        const { text, id } = this.extractHeadingId(lines[0]);
         const raw = lines[0] + '\n' + lines[1];
-        tokens.push({ type: 'heading', raw, depth, text } as HeadingToken);
+        tokens.push({ type: 'heading', raw, depth, text, /* @ts-ignore */ id } as HeadingToken);
         eat(2);
         continue;
       }
 
+
       m = lines[0].match(/^(#{1,6})\s+(.+?)\s*#*\s*$/);
       if (m) {
         const depth = m[1].length;
-        const text = m[2].trim();
-        tokens.push({ type: 'heading', raw: lines[0], depth, text } as HeadingToken);
+        const { text, id } = this.extractHeadingId(m[2]);
+        tokens.push({ type: 'heading', raw: lines[0], depth, text, /* @ts-ignore */ id } as HeadingToken);
         eat(1);
         continue;
       }
@@ -170,6 +199,16 @@ export class MarkdownParserService {
           buf.length = 0;
         };
 
+  const isBlockStart = (s: string): boolean => {
+    return (
+      /^(#{1,6})\s+/.test(s) ||
+      /^\s*([-*_])(?:\s*\1){2,}\s*$/.test(s) ||
+      /^\s*>\s?/.test(s) ||
+      /^\s*(```|~~~)\s*[^`]*$/.test(s) ||
+      (options.gfm && options.tables && /\|/.test(s))
+    );
+  };
+
         while (i < lines.length) {
           const s = lines[i];
           if (/^\s*([*+-]|\d+\.)\s+/.test(s) && getIndent(s) <= baseIndent) {
@@ -179,7 +218,9 @@ export class MarkdownParserService {
           } else if (buf.length && /^\s{0,3}\S/.test(s) && /^\s*([*+-]|\d+\.)\s+/.test(s)) {
             flush();
             buf.push(s);
-          } else if (buf.length && isBlank(s)) {
+          }  else if (buf.length && getIndent(s) <= baseIndent && isBlockStart(s)) {
+      break;
+    }else if (buf.length && isBlank(s)) {
             buf.push(s);
           } else if (buf.length) {
             buf.push(s);
@@ -188,7 +229,7 @@ export class MarkdownParserService {
         }
         flush();
         const raw = lines.slice(0, i).join('\n');
-        const tight = !raw.match(/\n\s*\n/); // if no empty lines, render tight
+        const tight = !raw.match(/\n\s*\n/);
         tokens.push({ type: 'list', raw, ordered, start, items, tight } as ListToken);
         eat(i);
         continue;
@@ -257,9 +298,6 @@ export class MarkdownParserService {
     return out;
   }
 
-  // =====================
-  // Parser (render tokens)
-  // =====================
   private parse(tokens: Token[], options: MarkdownOptions): string {
     const out: string[] = [];
 
@@ -282,61 +320,122 @@ export class MarkdownParserService {
     const br = options.xhtml ? '<br/>' : '<br>';
     const hr = options.xhtml ? '<hr/>' : '<hr>';
 
-    const renderInline = (text: string): string => {
-      if (!text) return '';
+      const renderInline = (text: string): string => {
+        if (!text) return '';
 
-      text = text.replace(/\\([*_`\[\]()#!>|~-])/g, '$1');
+        const transformPlain = (chunk: string): string => {
+          chunk = chunk.replace(/\\([\\`*_{}\[\]()#+\-.!>|~])/g, (_m, ch: string) => {
+            const map: Record<string, string> = {
+              '\\': '&#92;',  '`': '&#96;',  '*': '&#42;',  '_': '&#95;',
+              '{': '&#123;',  '}': '&#125;','[': '&#91;',  ']': '&#93;',
+              '(': '&#40;',   ')': '&#41;',  '#': '&#35;',  '+': '&#43;',
+              '-': '&#45;',   '.': '&#46;',  '!': '&#33;',  '>': '&gt;',
+              '|': '&#124;',  '~': '&#126;'
+            };
+            return map[ch] || ch;
+          });
 
-      text = text.replace(/(`+)([^`\n]+?)\1/g, (_, bt: string, code: string) => `<code>${escapeHtml(code)}</code>`);
+          chunk = chunk.replace(/(`+)([^`\n]+?)\1/g, (_m, _bt: string, code: string) => `<code>${escapeHtml(code)}</code>`);
 
-      text = text
-        .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-        .replace(/__([^_]+)__/g, '<strong>$1</strong>')
-        .replace(/\*([^*]+)\*/g, '<em>$1</em>')
-        .replace(/_([^_]+)_/g, '<em>$1</em>');
+          chunk = chunk
+            .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+            .replace(/__([^_]+)__/g, '<strong>$1</strong>')
+            .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+            .replace(/_([^_]+)_/g, '<em>$1</em>')
+            .replace(/~~([^~]+)~~/g, '<del>$1</del>');
 
-      text = text.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+          chunk = chunk.replace(/!\[([^\]]*)\]\(([^\s)]+)(?:\s+"([^"]*)")?\)/g,
+            (_m, alt: string, src: string, title?: string) => {
+              const safeSrc = this.safeUrl(src);
+              if (!safeSrc) return '';
+              const titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
+              return `<img src="${safeSrc}" alt="${escapeHtml(alt)}"${titleAttr}>`;
+            });
 
-      text = text.replace(/!\[([^\]]*)\]\(([^\s)]+)(?:\s+\"([^\"]*)\")?\)/g, (_, alt: string, src: string, title?: string) => {
-        src = this.safeUrl(src);
-        if (!src) return '';
-        const t = title ? ` title="${escapeHtml(title)}"` : '';
-        return `<img src="${src}" alt="${escapeHtml(alt)}"${t}>`;
-      });
+          // links
+          chunk = chunk.replace(/\[([^\]]+)\]\(([^\s)]+)(?:\s+"([^"]*)")?\)/g,
+            (_m, label: string, href: string, title?: string) => {
+              const safeHref = this.safeUrl(href);
+              if (!safeHref) return escapeHtml(label);
+              const titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
+              if (safeHref.startsWith('#')) {
+                return `<a href="${safeHref}"${titleAttr}>${escapeHtml(label)}</a>`;
+              } else if (/^https?:/i.test(safeHref)) {
+                return `<a href="${safeHref}" rel="nofollow ugc" target="_blank"${titleAttr}>${escapeHtml(label)}</a>`;
+              } else {
+                return `<a href="${safeHref}"${titleAttr}>${escapeHtml(label)}</a>`;
+              }
+            });
 
-      text = text.replace(/\[([^\]]+)\]\(([^\s)]+)(?:\s+\"([^\"]*)\")?\)/g, (_, label: string, href: string, title?: string) => {
-        href = this.safeUrl(href);
-        if (!href) return escapeHtml(label);
-        const t = title ? ` title="${escapeHtml(title)}"` : '';
-        return `<a href="${href}" rel="nofollow ugc" target="_blank"${t}>${label}</a>`;
-      });
+          // autolinks
+          chunk = chunk.replace(/<((?:https?:\/\/|mailto:|tel:)[^>]+)>/gi, (_m, url: string) => {
+            const safeUrl = this.safeUrl(url);
+            if (!safeUrl) return escapeHtml(url);
+            const isExternal = /^https?:/i.test(safeUrl);
+            const target = isExternal ? ' target="_blank" rel="nofollow ugc"' : '';
+            return `<a href="${safeUrl}"${target}>${escapeHtml(url)}</a>`;
+          });
 
-      text = text.replace(/<((?:https?:\/\/|mailto:|tel:)[^>]+)>/gi, (_, url: string) => {
-        const u = this.safeUrl(url);
-        if (!u) return escapeHtml(url);
-        return `<a href="${u}" rel="nofollow ugc" target="_blank">${escapeHtml(url)}</a>`;
-      });
+          // bare URLs
+          chunk = chunk.replace(/(^|\s)(https?:\/\/[\w\-._~:\/?#\[\]@!$&'()*+,;=%]+)(?=$|\s)/gi,
+            (_m, pre: string, url: string) => {
+              const safeUrl = this.safeUrl(url);
+              if (!safeUrl) return pre + escapeHtml(url);
+              return `${pre}<a href="${safeUrl}" rel="nofollow ugc" target="_blank">${escapeHtml(url)}</a>`;
+            });
 
-      text = text.replace(/(^|\s)(https?:\/\/[\w\-._~:\/?#\[\]@!$&'()*+,;=%]+)(?=$|\s)/gi, (_, pre: string, url: string) => {
-        const u = this.safeUrl(url);
-        if (!u) return pre + escapeHtml(url);
-        return `${pre}<a href="${u}" rel="nofollow ugc" target="_blank">${escapeHtml(url)}</a>`;
-      });
+          // line breaks
+          if (options.breaks) chunk = chunk.replace(/\n/g, br);
+          else chunk = chunk.replace(/ {2,}\n/g, br);
 
-      if (options.breaks) text = text.replace(/\n/g, br);
-      else text = text.replace(/ {2,}\n/g, br);
+          return chunk;
+        };
 
-      return text;
-    };
+        if (!options.rawHtml) return transformPlain(text);
+
+        const parts = text.split(/(<!--[\s\S]*?-->|<\/?[A-Za-z][^>]*>)/g);
+
+        let preDepth = 0;
+        let codeDepth = 0;
+        const out: string[] = [];
+
+        for (const part of parts) {
+          if (!part) continue;
+
+          if (part.startsWith('<')) {
+            if (/^<\s*pre\b/i.test(part)) preDepth++;
+            else if (/^<\s*\/\s*pre\b/i.test(part)) preDepth = Math.max(0, preDepth - 1);
+            else if (/^<\s*code\b/i.test(part)) codeDepth++;
+            else if (/^<\s*\/\s*code\b/i.test(part)) codeDepth = Math.max(0, codeDepth - 1);
+
+            out.push(part);
+          } else {
+            out.push(preDepth || codeDepth ? part : transformPlain(part));
+          }
+        }
+
+        return out.join('');
+      };
 
     for (const t of tokens) {
       switch (t.type) {
         case 'heading': {
           const h = t as HeadingToken;
-          const id = options.headerIds ? ` id="${slugify(renderInline(h.text).replace(/<[^>]+>/g, ''))}"` : '';
-          out.push(`<h${h.depth}${id}>${renderInline(h.text)}</h${h.depth}>`);
+
+          const baseId = h.id ?? this.slugifyPlain(h.text, '');
+          const finalId = options.headerPrefix + baseId;
+          const idAttr = ` id="${finalId}"`;
+
+          out.push(`<h${h.depth}${idAttr}>${renderInline(h.text)}</h${h.depth}>`);
           break;
         }
+
+        case 'html': {
+          const h = t as HtmlBlockToken;
+          out.push(h.html);
+          break;
+        }
+
         case 'paragraph': {
           const p = t as ParagraphToken;
           out.push(`<p>${renderInline(p.text)}</p>`);
@@ -397,65 +496,93 @@ export class MarkdownParserService {
   private alignAttr(a: "left"|"center"|"right"|null): string { return a ? ` align="${a}"` : ''; }
   private escapeClass(s: string): string { return s.replace(/[^a-zA-Z0-9_-]/g, ''); }
 
-  // =====================
-  // Utilities
-  // =====================
+
   private smartypants(html: string): string {
     return html
-      .replace(/(^|\W)"(\S)/g, '$1“$2')
-      .replace(/(\S)"(\W|$)/g, '$1”$2')
-      .replace(/(^|\W)'(\S)/g, '$1‘$2')
-      .replace(/(\S)'(\W|$)/g, '$1’$2')
-      .replace(/\.{3}/g, '…')
-      .replace(/--/g, '—');
+      .split(/(<[^>]+>)/g)
+      .map(part => {
+        if (part.startsWith('<')) return part;
+        return part
+          .replace(/(^|\W)"(\S)/g, '$1“$2')
+          .replace(/(\S)"(\W|$)/g, '$1”$2')
+          .replace(/(^|\W)'(\S)/g, '$1‘$2')
+          .replace(/(\S)'(\W|$)/g, '$1’$2')
+          .replace(/\.{3}/g, '…')
+          .replace(/--/g, '—');
+      })
+      .join('');
   }
 
-  /**
-   * Very small sanitizer to complement our controlled renderer:
-   *  - Only allow tags we produce
-   *  - Strip dangerous attributes and protocols
-   */
+
+
+
   private sanitize(html: string): string {
-    const allowedTags = new Set([
-      'h1','h2','h3','h4','h5','h6','p','br','hr','em','strong','del','code','pre',
-      'a','img','ul','ol','li','blockquote','table','thead','tbody','tr','th','td','input'
-    ]);
+    console.log('HTML before sanitization:', html);
 
-    const allowedAttrs: Record<string, Set<string>> = {
-      'a': new Set(['href','title','rel','target']),
-      'img': new Set(['src','alt','title']),
-      'input': new Set(['type','checked','disabled']),
-      'th': new Set(['align']), 'td': new Set(['align']),
-      'ol': new Set(['start'])
-    };
+      const allowedTags = new Set([
+        'h1','h2','h3','h4','h5','h6','p','br','hr','em','strong','del','code','pre',
+        'a','img','ul','ol','li','blockquote','table','thead','tbody','tr','th','td',
+        'input','details','summary','figure','figcaption','span','div','kbd','mark'
+      ]);
 
-    const doc = this.stringToDoc(`<div>${html}</div>`);
+      const allowedAttrs: Record<string, Set<string>> = {
+        'a': new Set(['href','title','rel','target','class','id']),
+        'img': new Set(['src','alt','title','class','id']),
+        'th': new Set(['align','colspan','rowspan','class','id']),
+        'td': new Set(['align','colspan','rowspan','class','id']),
+        'ol': new Set(['start','class','id']),
+        'pre': new Set(['class','id']),
+        'code': new Set(['class','id']),
+        'details': new Set(['open','class','id']),
+        'summary': new Set(['class','id']),
+        'span': new Set(['class','id']),
+        'div': new Set(['class','id']),
+        'input': new Set(['type','checked','disabled','class','id']),
+      };
+
+
+
+      const doc = this.stringToDoc(`<div>${html}</div>`);
 
     const walk: any = (node: Element | ChildNode) => {
       if (node.nodeType === Node.ELEMENT_NODE) {
         const el = node as Element;
         const tag = el.tagName.toLowerCase();
-        if (!allowedTags.has(tag)) { el.replaceWith(...Array.from(el.childNodes)); return; }
-        const keep = allowedAttrs[tag] || new Set<string>();
+        if (!allowedTags.has(tag)) {
+          el.replaceWith(...Array.from(el.childNodes));
+          return;
+        }
+
+        const baseKeep = new Set<string>(['id']);
+        const keep = new Set<string>([...baseKeep, ...Array.from(allowedAttrs[tag] || new Set<string>())]);
         const toRemove: string[] = [];
+
         for (const attr of Array.from(el.attributes)) {
           const name = attr.name.toLowerCase();
           if (!keep.has(name)) { toRemove.push(attr.name); continue; }
+
           if ((tag === 'a' && name === 'href') || (tag === 'img' && name === 'src')) {
             const safe = this.safeUrl(attr.value);
             if (!safe) { toRemove.push(attr.name); continue; }
             el.setAttribute(name, safe);
           }
+
           if (/^on/i.test(name)) toRemove.push(attr.name);
         }
+
+
         toRemove.forEach(n => el.removeAttribute(n));
       }
-      for (const child of Array.from((node as any).childNodes || [])) walk(child);
+
+      for (const child of Array.from((node as any).childNodes || [])) {
+        walk(child);
+      }
     };
 
     for (const child of Array.from(doc.body.firstElementChild?.children || [])) {
       walk(child);
     }
+    console.log('HTML after sanitization:', doc.body.firstElementChild?.innerHTML);
 
     return (doc.body.firstElementChild?.innerHTML) || '';
   }
@@ -465,18 +592,64 @@ export class MarkdownParserService {
     return parser.parseFromString(html, 'text/html');
   }
 
-  /**
-   * Allow only safe URL protocols.
-   */
+  private extractHeadingId(text: string): { text: string; id?: string } {
+    const m = text.match(/\s*\{#([A-Za-z0-9._:-]+)\}\s*$/);
+    if (!m) return { text: text.trim() };
+    return { text: text.replace(/\s*\{#[A-Za-z0-9._:-]+\}\s*$/, '').trim(), id: m[1] };
+  }
+
+
+
+  private slugifyPlain(str: string, prefix: string): string {
+    return (prefix + str)
+      .toLowerCase()
+      .trim()
+      .replace(/<[^>]+>/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
+  }
+
+
+
   private safeUrl(url: string): string | null {
     const trimmed = (url || '').trim();
+    console.log('Testing URL:', trimmed);
+
     if (!trimmed) return null;
-    let decoded = trimmed;
-    try { decoded = decodeURI(trimmed); } catch { /* ignore */ }
-    const lower = decoded.toLowerCase();
-    if (lower.startsWith('javascript:') || lower.startsWith('data:') || lower.startsWith('vbscript:')) return null;
-    if (/^(https?:|mailto:|tel:)/i.test(trimmed)) return trimmed;
-    if (/^\//.test(trimmed)) return trimmed;
+
+    if (trimmed.toLowerCase().startsWith('javascript:') ||
+      trimmed.toLowerCase().startsWith('data:') ||
+      trimmed.toLowerCase().startsWith('vbscript:')) {
+      return null;
+    }
+
+    if (trimmed.startsWith('#')) {
+      console.log('Allowing hash link:', trimmed);
+      return trimmed;
+    }
+
+    if (/^https?:/i.test(trimmed)) {
+      console.log('Allowing external URL:', trimmed);
+      return trimmed;
+    }
+
+    if (/^(mailto:|tel:)/i.test(trimmed)) {
+      return trimmed;
+    }
+
+    if (/^\//.test(trimmed)) {
+      return trimmed;
+    }
+
+    if (/^\/[a-z0-9._\-]+(\.md)?$/i.test(trimmed)) {
+      return trimmed;
+    }
+    console.log('Blocking URL:', trimmed);
     return null;
   }
+
+
+
+
 }

@@ -11,6 +11,7 @@ import {DataService} from '../../services/data.service';
 import {SaveService} from '../../services/save.service';
 import {SearchPipe, OrderPipe} from '../../pipes/core.pipe';
 import {FileTransferService} from '../../services/file-transfer.service';
+import { HelpViewerComponent } from 'src/app/components/help-viewer/help-viewer.component';
 
 declare const $;
 
@@ -100,7 +101,7 @@ export class FileTransferSearchComponent {
     {status: 'RENAME', text: 'rename', checked: false}
   ];
 
-  constructor(private authService: AuthService, public coreService: CoreService) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,) {
   }
 
   ngOnInit(): void {
@@ -319,6 +320,21 @@ export class FileTransferSearchComponent {
 
   cancel(): void {
     this.onCancel.emit();
+  }
+
+  helpPage(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: 'advanced-filter'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }
 

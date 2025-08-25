@@ -755,7 +755,8 @@
     "tooltip.expandDetails": "詳細表示",
     "tooltip.collapseDetails": "詳細非表示",
     "tooltip.collapseAll": "全て閉じる",
-    "tooltip.expandAll": "全て開く"
+    "tooltip.expandAll": "全て開く",
+    "tooltip.help": "Help page"
   },
   "customization": {
     "label.createCustomization": "カスタマイズ作成",
@@ -1929,6 +1930,7 @@
     "label.normal": "中",
     "label.belowNormal": "中低",
     "label.Low": "低",
+    "label.deleteRepository": "Delete Repository",
     "button.modifyVariableSet": "変数設定変更",
     "button.addOrderParameter": "オーダー変数追加",
     "button.setVersion": "バージョン設定",
@@ -2009,6 +2011,8 @@
     "button.renameGroup": "グループ名変更",
     "button.assignTags": "タグ割り当て",
     "button.modifyPriority": "優先度変更",
+    "button.link": "Link",
+    "button.unlink": "Unlink",
     "tooltip.setVersion": "バージョン設定",
     "placeholder.enterUniqueName": "ユニークなオブジェクト名を入力",
     "placeholder.enterFileName": "ファイル名を入力",
@@ -2075,6 +2079,8 @@
     "message.remove": "選択項目はインベントリーから削除され、選択していない項目はコントローラーだけから削除されます。",
     "message.revoke": "選択項目はコントローラーから削除されますが、インベントリーからは削除されません。",
     "message.recall": "選択項目は戻りますが、インベントリーに残ります。",
+    "message.link": "links an existing local clone from an git controlled JOC folder.",
+    "message.unlink": "Unlinks an existing local clone from an git controlled JOC folder.",
     "tab": {
       "folders": "フォルダー",
       "trash": "ゴミ箱",
@@ -4377,29 +4383,5 @@
     "Empty": {
       "description": "データがありません"
     }
-  },
-  "help": {
-    "searchingInventory": {
-      "title": "Inventory Search"
-    },
-    "advancedSearch": {
-      "title": "Advanced Search"
-    },
-    "addingOrders": {
-      "title": "Add Order"
-    },
-    "operatingDailyPlanCalendar": {
-      "title": "Daily Plan Calendar"
-    },
-    "operatingDailyPlan": {
-      "title": "Daily Plan"
-    },
-    "operatingDailyPlanProjections": {
-      "title": "Daily Plan Projections"
-    },
-    "operatingDailyPlanDependencies": {
-      "title": "Daily Plan Dependencies"
-    },
-    "tooltip.help": "Help page"
   }
 }

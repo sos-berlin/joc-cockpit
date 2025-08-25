@@ -111,5 +111,5 @@ A position can be specified if orders should not start from the first node in th
 
 ## References
 
-- [Operating Daily Plan Calendar](/operating-daily-plan-calendar.md)
+- [Operating Daily Plan Calendar](/operating-daily-plan-calendar)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)

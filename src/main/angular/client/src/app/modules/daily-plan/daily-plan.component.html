@@ -468,7 +468,7 @@
             </button>
             <button class="btn btn-grey btn-sm m-l-12" *ngIf="dailyPlanFilters.tabIndex == 2 && permission.currentController && permission.currentController.noticeBoards.post && setOfCheckedId?.size > 0" (click)="postAllNotices()"><i
               class="fa fa-sticky-note-o"></i>&nbsp; {{'resource.board.button.postAll' | translate}}</button>
-            <button class="btn btn-grey btn-sm m-l-12" *ngIf="dailyPlanFilters.tabIndex == 2 && permission.currentController && permission.currentController.noticeBoards.post && (setOfCheckedId.size > 0 || mapOfCheckedId.size > 0)" (click)="deleteAllNotices()"><i
+            <button class="btn btn-grey btn-sm m-l-12" *ngIf="dailyPlanFilters.tabIndex == 2 && permission.currentController && permission.currentController.noticeBoards.post && (setOfCheckedId.size > 0 || mapOfCheckedId.size > 0)"><i
               class="fa fa-trash"></i>&nbsp; {{'resource.board.button.deleteAll' | translate}}</button>
             <app-toggle *ngIf="dailyPlanFilters.tabIndex == 0" (messageEvent)="receiveMessage($event)"></app-toggle>
 <!--            <app-toggle *ngIf="dailyPlanFilters.tabIndex == 2" [type] = "'DEPENDENCIES'" (messageEvent)="receiveMessage2($event)"></app-toggle>-->
@@ -554,6 +554,7 @@
 </div>
 <div class='scroll-y max-ht'>
   <div class="padding p-t-sm p-b-0">
+    <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dailyplan cur-point fa fa-question-circle text-20"></i>
     <nz-tabset (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="dailyPlanFilters.tabIndex" >
       <nz-tab [nzTitle]="'dailyPlan.tab.dailyPlan' | translate">
         <div class="row">
@@ -628,6 +629,7 @@
                     </ul>
                   </div>
                 </div>
+                <i (click)="helpPage(true)" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'help.tooltip.help' | translate" class="help-info-dailyplan-cal cur-point fa fa-question-circle text-20"></i>
               </div>
             </div>
             <div id="rightPanel">
@@ -1108,6 +1110,7 @@
         </div>
       </nz-tab>
     </nz-tabset>
+
   </div>
 </div>
 <div *ngIf="!isLoaded && pageView ==='grid'" class="spinner">

@@ -28,6 +28,7 @@ import {InventoryForHistory} from '../../models/enums';
 import {CommentModalComponent} from 'src/app/components/comment-modal/comment.component';
 
 import {CreateTagModalComponent} from "../configuration/inventory/inventory.component";
+import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 
 declare const $: any;
 
@@ -168,7 +169,7 @@ export class OrderSearchComponent {
     {label: 'incomplete', value: 'INCOMPLETE', checked: false}
   ];
 
-  constructor(private authService: AuthService, public coreService: CoreService) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,) {
   }
 
   ngOnInit(): void {
@@ -356,6 +357,20 @@ export class OrderSearchComponent {
     this.onCancel.emit();
   }
 
+  helpPage(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: 'advanced-filter'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
 }
 
 @Component({
@@ -391,7 +406,7 @@ export class TaskSearchComponent {
     {label: 'major', value: 'MAJOR', checked: false}
   ];
 
-  constructor(private authService: AuthService, public coreService: CoreService) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService) {
   }
 
   ngOnInit(): void {
@@ -590,6 +605,20 @@ export class TaskSearchComponent {
     this.onCancel.emit();
   }
 
+  helpPage(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: 'advanced-filter'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
 }
 
 @Component({
@@ -614,7 +643,7 @@ export class DeploymentSearchComponent {
   isUnique = true;
   deployTypes = [];
 
-  constructor(private authService: AuthService, public coreService: CoreService) {
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService) {
   }
 
   ngOnInit(): void {
@@ -705,6 +734,21 @@ export class DeploymentSearchComponent {
   cancel(): void {
     this.onCancel.emit();
   }
+
+  helpPage(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: 'advanced-filter'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
 }
 
 @Component({
@@ -732,7 +776,7 @@ export class SubmissionSearchComponent {
     {label: 'notSubmitted', value: 'NOT_SUBMITTED', checked: false}
   ];
 
-  constructor(public coreService: CoreService, private authService: AuthService) {
+  constructor(public coreService: CoreService, private authService: AuthService, private modal: NzModalService,) {
   }
 
   ngOnInit(): void {
@@ -834,6 +878,21 @@ export class SubmissionSearchComponent {
 
   cancel(): void {
     this.onCancel.emit();
+  }
+
+  helpPage(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: 'advanced-filter'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }
 

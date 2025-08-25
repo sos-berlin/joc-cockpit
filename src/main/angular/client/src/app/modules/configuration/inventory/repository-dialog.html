@@ -15,7 +15,7 @@
   </button>
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
-  <div class="modal-body p-a min-ht-150">
+  <div *ngIf="!link" class="modal-body p-a min-ht-150">
     <div>
       <div *ngIf="operation === 'update' && category !== 'LOCAL' && nodes.length > 0" class="font14">
         {{'inventory.message.localChangesWillBeOverwritten' | translate}}
@@ -455,8 +455,29 @@
       <nz-spin nzSimple></nz-spin>
     </div>
   </div>
+  <div *ngIf="link" class="modal-body p-a min-ht-150">
+    <div>
+      <div *ngIf="link === 'link'" class="font14 center-align">
+        {{'inventory.message.link' | translate}}
+      </div>
+      <div *ngIf="link === 'unlink'" class="font14 center-align">
+        {{'inventory.message.unlink' | translate}}
+      </div>
+      <div [ngClass]="{'show': display && nodes.length > 0}" class="hide">
+        <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
+      </div>
+      <div *ngIf="link === 'unlink'" class="form-group row">
+        <div class="col-md-3">
+          <label translate>inventory.label.deleteRepository</label>
+        </div>
+        <div class="col-md-6">
+          <label [(ngModel)]="deleteRepository" (ngModelChange)="includeDependencies()" name="deleteRepository" nz-checkbox></label>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="modal-footer text-left">
-    <button *ngIf="nodes.length > 0 || (operation === 'delete' && !origin.object)" [disabled]="!myForm.form.valid || submitted || loading"
+    <button *ngIf="nodes.length > 0 || (operation === 'delete' && !origin.object) || link" [disabled]="(!myForm.form.valid || submitted || loading) && !link"
             class="btn btn-primary btn-sm"
             type="submit">
       <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
