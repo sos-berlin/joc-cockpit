@@ -457,16 +457,16 @@
   </div>
   <div *ngIf="link" class="modal-body p-a min-ht-150">
     <div>
-      <div *ngIf="link === 'link'" class="font14 center-align">
+      <div *ngIf="link === 'link'" class="font14 text-center">
         {{'inventory.message.link' | translate}}
       </div>
-      <div *ngIf="link === 'unlink'" class="font14 center-align">
+      <div *ngIf="link === 'unlink'" class="font14 text-center">
         {{'inventory.message.unlink' | translate}}
       </div>
       <div [ngClass]="{'show': display && nodes.length > 0}" class="hide">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
       </div>
-      <div *ngIf="link === 'unlink'" class="form-group row">
+      <div *ngIf="link === 'unlink'" class="form-group row mt-4">
         <div class="col-md-3">
           <label translate>inventory.label.deleteRepository</label>
         </div>
