@@ -756,7 +756,7 @@
     "tooltip.collapseDetails": "Details einklappen",
     "tooltip.collapseAll": "Ansicht einklappen",
     "tooltip.expandAll": "Ansicht ausklappen",
-    "tooltip.help": "Help page"
+    "tooltip.help": "Kontexthilfe"
   },
   "customization": {
     "label.createCustomization": "Personalisierung anlegen",
@@ -1930,7 +1930,7 @@
     "label.normal": "Normal",
     "label.belowNormal": "Niedriger als Normal",
     "label.Low": "Niedrig",
-    "label.deleteRepository": "Delete Repository",
+    "label.deleteRepository": "Git Repository löschen",
     "button.modifyVariableSet": "Variablensatz ändern",
     "button.addOrderParameter": "Auftragsvorlage hinzufügen",
     "button.setVersion": "Version setzen",
@@ -2011,8 +2011,8 @@
     "button.renameGroup": "Gruppe umbenennen",
     "button.assignTags": "Kennz. zuweisen",
     "button.modifyPriority": "Priorität ändern",
-    "button.link": "Link",
-    "button.unlink": "Unlink",
+    "button.link": "Verknüpfung herstellen",
+    "button.unlink": "Verknüpfung aufheben",
     "tooltip.setVersion": "Version setzen",
     "placeholder.enterUniqueName": "Eindeutigen Objektnamen angeben",
     "placeholder.enterFileName": "Dateinamen angeben",
@@ -2079,8 +2079,8 @@
     "message.remove": "Ausgewählte Objekte werden vom Controller und aus dem Inventar entfernt. Nicht ausgewählte, referenzierende Objekte werden vom Controller entfernt.",
     "message.revoke": "Ausgewählte Objekte werden vom Controller zurückgezogen, sie verbleiben im Inventar.",
     "message.recall": "Ausgewählte Objekte werden zurückgenommen, sie verbleiben im Inventar.",
-    "message.link": "links an existing local clone from an git controlled JOC folder.",
-    "message.unlink": "Unlinks an existing local clone from an git controlled JOC folder.",
+    "message.link": "Verbindet den Inventarordner mit einem vorhandenen lokalen Klon eines Git Repository.",
+    "message.unlink": "Trennt den Inventarordner vom lokalen Klon eines Git Repository.",
     "tab": {
       "folders": "Ordner",
       "trash": "Papierkorb",
