@@ -13,9 +13,9 @@ Search criteria are additive and will add entries to results that match all crit
 
 Search from input fields is performed case-insensitive and partially qualified, for example
 
-- searching **rest** will find objects with the name "pdfNon**Rest**artable" and "**REST**-RunningTaskLog"
-- searching **re?t** will find objects with the name "ActivePassiveDi**rect**or" and "JITL-JS7**REST**ClientJob"
-- searching **re\*t** will find objects with the name "pdSQLExecuto**rExt**ractJSON" and "pdu**Reset**Subagent"
+- **rest** will find objects with the name "pdfNon**Rest**artable" and "**REST**-RunningTaskLog"
+- **re?t** will find objects with the name "ActivePassiveDi**rect**or" and "JITL-JS7**REST**ClientJob"
+- **re\*t** will find objects with the name "pdSQLExecuto**rExt**ractJSON" and "pdu**Reset**Subagent"
 
 ### Search Results
 

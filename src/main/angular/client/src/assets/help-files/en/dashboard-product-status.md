@@ -3,8 +3,8 @@
 The Product Status panel provides information about the following JS7 products:
 
 - **JOC Cockpit** is used to monitor and control the scheduling environment and to manage the job inventory.
-- **Controller** orchestrates Agents and manages deployment of orders, workflows and jobs.
-- **Agents** execute jobs. 
+- **Controller** orchestrates Agents and manages deployment of Orders, Workflows and Jobs.
+- **Agents** execute Jobs. 
 
 JS7 products can be operated standalone and from active-passive clustering.
 

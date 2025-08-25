@@ -39,11 +39,11 @@ The feature is available when clicking the link: **> Advanced**
 
 Advanced Search allows searching by object attributes:
 
-- Searching for **Agent Name** will return results that include jobs executed with the specified Agent.
-- Searching for **Count Jobs** will limit search results to Workflows that use the minimum number of jobs specified with the **From** term. If used with the **To** term, then workflows will be returned that include a number of jobs in the range between *From* and *To*. If the *To* term is used only, then Workflows will be returned that do not include a number of jobs exceeding the *To* term.
-- Searching for **Job Name** returns Workflows that include jobs matching the given name
+- Searching for **Agent Name** will return results that include Jobs executed with the specified Agent.
+- Searching for **Count Jobs** will limit search results to Workflows that use the minimum number of Jobs specified with the **From** term. If used with the **To** term, then workflows will be returned that include a number of Jobs in the range between *From* and *To*. If the *To* term is used only, then Workflows will be returned that do not include a number of Jobs exceeding the *To* term.
+- Searching for **Job Name** returns Workflows that include Jobs matching the given name
 
-When using the *Exact Match* checkbox for **Job Name**, then the search term entered has to fully match a job name including case-sensitive spelling. Searching for job names offers bulk operations on jobs for resulting Workflows.
+When using the *Exact Match* checkbox for **Job Name**, then the search term entered has to fully match a job name including case-sensitive spelling. Searching for job names offers bulk operations on Jobs for resulting Workflows.
 
 ### Dependency Search
 
