@@ -756,7 +756,7 @@
     "tooltip.collapseDetails": "Réduire les Détails",
     "tooltip.collapseAll": "Réduire tout",
     "tooltip.expandAll": "Tout afficher",
-    "tooltip.help": "Help page"
+    "tooltip.help": "Aide contextuelle"
   },
   "customization": {
     "label.createCustomization": "Créer une personnalisation",
@@ -1930,7 +1930,7 @@
     "label.normal": "Normal",
     "label.belowNormal": "Inférieure à la normale",
     "label.Low": "Inférieure",
-    "label.deleteRepository": "Delete Repository",
+    "label.deleteRepository": "Supprimer le Dépôt Git",
     "button.modifyVariableSet": "Modifier le Jeu de Variable",
     "button.addOrderParameter": "Ajouter un Modèle d'Ordre",
     "button.setVersion": "Définir la Version",
@@ -2011,8 +2011,8 @@
     "button.renameGroup": "Renommer Groupe",
     "button.assignTags": "Assigner les Balises",
     "button.modifyPriority": "Modifier la Priorité",
-    "button.link": "Link",
-    "button.unlink": "Unlink",
+    "button.link": "Activer le Lien",
+    "button.unlink": "Désactiver le Lien",
     "tooltip.setVersion": "Définir la version",
     "placeholder.enterUniqueName": "Entrer un nom d'objet unique",
     "placeholder.enterFileName": "Entrer le nom du fichier",
@@ -2079,8 +2079,8 @@
     "message.remove": "Les objets sélectionnés seront supprimés du Contrôleur et de l'inventaire. Les objets référents, non sélectionnés seront retirés du Contrôleur.",
     "message.revoke": "Les objets sélectionnés seront retirés du Contrôleur, ils resteront dans l'inventaire.",
     "message.recall": "Les objets sélectionnés seront rappelés, ils resteront dans l'inventaire.",
-    "message.link": "links an existing local clone from an git controlled JOC folder.",
-    "message.unlink": "Unlinks an existing local clone from an git controlled JOC folder.",
+    "message.link": "Lie le dossier d'inventaire à un clone local existant d'un dépôt Git.",
+    "message.unlink": "Désassocie le dossier d'inventaire d'un clone local d'un dépôt Git.",
     "tab": {
       "folders": "Dossiers",
       "trash": "Corbeille",

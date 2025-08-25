@@ -756,7 +756,7 @@
     "tooltip.collapseDetails": "Collapse Details",
     "tooltip.collapseAll": "Collapse All",
     "tooltip.expandAll": "Expand All",
-    "tooltip.help": "Help page"
+    "tooltip.help": "Context Help"
   },
   "customization": {
     "label.createCustomization": "Create Customization",
@@ -1930,7 +1930,7 @@
     "label.normal": "Normal",
     "label.belowNormal": "Below Normal",
     "label.Low": "Low",
-    "label.deleteRepository": "Delete Repository",
+    "label.deleteRepository": "Delete Git Repository",
     "button.modifyVariableSet": "Modify Variable Set",
     "button.addOrderParameter": "Add Order Template",
     "button.setVersion": "Set Version",
@@ -2079,8 +2079,8 @@
     "message.remove": "Selected objects will be removed from the Controller and from the inventory, unselected referencing objects will be revoked from the Controller.",
     "message.revoke": "Selected objects will be revoked from the Controller, they remain in the inventory.",
     "message.recall": "Selected objects will be recalled, they remain in the inventory.",
-    "message.link": "links an existing local clone from an git controlled JOC folder.",
-    "message.unlink": "Unlinks an existing local clone from an git controlled JOC folder.",
+    "message.link": "links the inventory folder to an existing local clone of a Git Repository.",
+    "message.unlink": "Unlinks the inventory folder from a local clone of a Git Repository.",
     "tab": {
       "folders": "Folders",
       "trash": "Trash",
