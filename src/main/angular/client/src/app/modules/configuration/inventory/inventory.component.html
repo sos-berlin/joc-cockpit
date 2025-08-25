@@ -628,10 +628,10 @@
             <li (click)="repositoryOperation(node, 'delete', 'LOCAL');" *ngIf="node.origin.path !== '/'" nz-menu-item>
               <a translate>inventory.button.deleteFrom</a>
             </li>
-            <li (click)="linking(false, node);" *ngIf="node.origin.path !== '/'" nz-menu-item>
+            <li (click)="linking(false, node);" *ngIf="node.origin.path !== '/' && node.origin.repoControlled" nz-menu-item>
               <a translate>inventory.button.link</a>
             </li>
-            <li (click)="linking(true, node);" *ngIf="node.origin.path !== '/'" nz-menu-item>
+            <li (click)="linking(true, node);" *ngIf="node.origin.path !== '/' && node.origin.repoControlled" nz-menu-item>
               <a translate>inventory.button.unlink</a>
             </li>
             <li (click)="$event.preventDefault();$event.stopPropagation()" *ngIf="!node.origin.object && ((node.parentNode && node.parentNode.key === '/') || node.origin.path === '/')"
