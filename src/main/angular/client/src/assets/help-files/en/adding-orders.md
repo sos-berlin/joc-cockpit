@@ -39,7 +39,12 @@ A position can be specified if the Order should not start from the first node in
   - More than one End Position can be specified.
 - **Priority**; 
   - If the Order will meet a Resource Lock instruction in the wowrkflow that limits parallelism, then its prority determines the position in the queue of waiting Orders.
-  - Priorities are specified from negative and positive integers or from the shortcuts offered. A higher priority has precedence.
+  - Priorities are specified from negative, zero and positive integers or from the shortcuts offered. A higher priority has precedence. Shortcuts offer the following priority values:
+    - **Low**: -20000
+    - **Below Normal**: -10000
+    - **Normal**: 0
+    - **Above Normal**: 10000
+    - **High**: 20000
 
 ### Order Parameterization
 

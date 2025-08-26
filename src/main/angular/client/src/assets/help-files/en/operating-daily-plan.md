@@ -2,7 +2,7 @@
 
 A number of operations are available from the Daily Plan view.
 
-For operations related to the calendar widget see [Operating Daily Plan Calendar](/operating-daily-plan-calendar.md).
+For operations related to the calendar widget see [Operating Daily Plan Calendar](/operating-daily-plan-calendar).
 
 ## Order States
 
@@ -94,7 +94,7 @@ For related workflows specifying variables, the values can be modified. When use
 
 A position can be specified if Orders should not start from the first node in the Workflow.
 
-- **Block Position**: For Workflows holding block instructions such as Try/Catch, ResourceLock, Fork/Join the related instruction can be selected.
+- **Block Position**: For Workflows holding block instructions such as *Try/Catch*, *ResourceLock*, *Fork/Join* the related instruction can be selected.
 - **Start Position**: If no Start Position is specified, then the Order will start from the first node.
   - If no Block Position is specified, then any top-level instruction in the Workflow can be selected from which the Order will start.
   - If a Block Position is specified, then the Start Position is a same-level node inside the block.
@@ -106,8 +106,13 @@ A position can be specified if Orders should not start from the first node in th
 ### Modify Priority
 
 - **Priority**; 
-  - If an Order will meet a Resource Lock instruction in the wowrkflow that limits parallelism, then its prority determines the position in the queue of waiting Orders.
-  - Priorities are specified from negative and positive integers or from the shortcuts offered. A higher priority has precedence.
+  - If an Order will meet a *Resource Lock* instruction in the Workflow that limits parallelism, then its priority determines the position in the queue of waiting Orders.
+  - Priorities are specified from negative, zero and positive integers or from the shortcuts offered. A higher priority has precedence. Shortcuts offer the following priority values:
+    - **Low**: -20000
+    - **Below Normal**: -10000
+    - **Normal**: 0
+    - **Above Normal**: 10000
+    - **High**: 20000
 
 ## References
 

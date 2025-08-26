@@ -2,7 +2,7 @@
 
 A number of operations are available from the Daily Plan Calendar. 
 
-For general operations available from the Daily Plan page see [Operating Daily Plan](/operating-daily-plan.md).
+For general operations available from the Daily Plan page see [Operating Daily Plan](/operating-daily-plan).
 
 ## Selecting single Date
 
