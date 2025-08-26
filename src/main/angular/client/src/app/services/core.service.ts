@@ -350,6 +350,7 @@ export class CoreService {
         }
       }
     };
+    this.tabs._help = {language: localStorage['$SOS$LANG']};
     this.tabs._orderOverview = {};
     this.tabs._orderOverview.overview = true;
     this.tabs._orderOverview.filter = {};
@@ -557,6 +558,10 @@ export class CoreService {
   }
   getMonitorTab(): any {
     return this.tabs._monitor;
+  }
+
+  getHelpTab(): any {
+    return this.tabs._help;
   }
 
   getApprovalsTab(): any {
@@ -1396,7 +1401,6 @@ export class CoreService {
   }
 
   showDocumentation(path: string, preferences: any): void {
-    console.log(path, preferences,"::::")
     const link = window.location.origin + '/joc/api/documentation/show?documentation=' + encodeURIComponent(path) + '&accessToken=' + this.authService.accessTokenId;
     let win;
     if (preferences.isDocNewWindow === 'newWindow') {
@@ -1404,7 +1408,6 @@ export class CoreService {
     } else {
       win = window.open(link, '_blank');
     }
-    console.log(link,"link")
     //  const iframe = document.createElement('iframe');
     //  iframe.src = link;
     //  this.addFrame(win, iframe);

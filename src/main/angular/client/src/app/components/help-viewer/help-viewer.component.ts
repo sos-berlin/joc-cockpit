@@ -2,8 +2,8 @@ import { Component, ElementRef, HostListener, OnDestroy, OnInit, inject } from '
 import { finalize, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
-
-import { HelpService } from '../../services/help.service';
+import { HelpService, HelpRenderResult } from '../../services/help.service';
+import { CoreService } from '../../services/core.service';
 
 @Component({
   selector: 'app-help-viewer',
@@ -14,23 +14,29 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
 
   isLoading = false;
   title!: string;
-  language!: string;
   helpKey!: string;
   html = '';
   history: string[] = [];
+  hasError = false;
+  preferences: any = {};
+  helpFilters: any;
+
+  fallbackNotice = '';
+
   private readonly destroy$ = new Subject<void>();
 
   constructor(
     private readonly modalRef: NzModalRef,
     private readonly help: HelpService,
-    private readonly host: ElementRef<HTMLElement>
+    private readonly host: ElementRef<HTMLElement>,
+    public coreService: CoreService
   ) {}
 
   ngOnInit(): void {
     this.helpKey = this.modalData.helpKey;
     this.title = this.modalData.title;
-    this.language = this.modalData.preferences?.language ?? 'en';
-
+    this.helpFilters = this.coreService.getHelpTab();
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.loadHelp(this.helpKey, true);
   }
 
@@ -39,14 +45,18 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  cancel(): void {
-    this.modalRef.destroy();
-  }
+  cancel(): void { this.modalRef.destroy(); }
 
   goBack(): void {
     const prev = this.history.pop();
     if (!prev) return;
     this.loadHelp(prev);
+  }
+
+  setLocale(): void {
+    this.fallbackNotice = '';
+    this.help.setLanguage(this.helpFilters.language);
+    this.loadHelp(this.helpKey, true);
   }
 
   @HostListener('click', ['$event'])
@@ -78,16 +88,20 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
   private loadHelp(key: string, restoreAnchor = false): void {
     this.isLoading = true;
 
-    this.help
-      .getHelpHtml(key)
-      .pipe(
-        takeUntil(this.destroy$),
-        finalize(() => (this.isLoading = false))
-      )
+    this.help.getHelpHtml(key)
+      .pipe(takeUntil(this.destroy$), finalize(() => (this.isLoading = false)))
       .subscribe({
-        next: (html) => {
+        next: (res: HelpRenderResult | null) => {
           this.helpKey = key;
-          this.html = html || '<p>Help not available.</p>';
+          this.hasError = (res === null);
+          this.html = res?.html ?? '';
+
+          if (res?.fellBack) {
+            this.fallbackNotice =
+              `Showing ${res.usedLang.toUpperCase()} (no ${res.requestedLang.toUpperCase()} file).`;
+          } else {
+            this.fallbackNotice = '';
+          }
 
           setTimeout(() => {
             const root = this.host.nativeElement.querySelector('.help-md') as HTMLElement | null;
@@ -95,14 +109,17 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
             if (restoreAnchor) this.scrollToInPageAnchorFromUrl();
           }, 0);
         },
-        error: () => (this.html = '<p>Help not available.</p>'),
+        error: () => {
+          this.hasError = true;
+          this.html = '';
+          this.fallbackNotice = '';
+        }
       });
   }
 
   private openHelpFile(key: string): void {
-    if (this.helpKey) {
-      this.history.push(this.helpKey);
-    }
+    if (this.helpKey) this.history.push(this.helpKey);
+    this.fallbackNotice = '';
     this.loadHelp(key);
   }
 

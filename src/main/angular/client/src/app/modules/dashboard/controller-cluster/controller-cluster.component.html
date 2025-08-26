@@ -1,9 +1,10 @@
 <div id="controllerClusterStatus1">
   <div class="box-header b-b remove">
     <h3>
-      <span *ngIf="selectedController.role && selectedController.role !== 'STANDALONE'" translate>dashboard.label.clusterStatus</span>
+      <span *ngIf="selectedController.role && selectedController.role !== 'STANDALONE'" translate>dashboard.label.productStatus</span>
       <span *ngIf="selectedController.role === 'STANDALONE' || !selectedController.role" translate>dashboard.label.componentStatus</span>
     </h3>
+    <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-question-circle text-20"></i>
   </div>
   <div [hidden]="!isLoaded || !clusterStatusData" [ngStyle]="{'height': (clusterStatusData ? (ybody * 55 + ((ybody -1) *20 -50)) : 0)+'px'}"
        class="box-body overflow-y">

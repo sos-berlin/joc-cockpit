@@ -9986,6 +9986,7 @@ cdk-virtual-scroll-viewport {
   position: absolute;
   right: 14px;
   font-size: 18px;
+  z-index: 10;
 }
 
 .help-info-filter{
@@ -9993,6 +9994,15 @@ cdk-virtual-scroll-viewport {
   right: 14px;
   font-size: 18px;
   top: 20px;
+  z-index: 10;
+}
+
+.help-info-dashboard{
+  position: absolute;
+  right: 14px;
+  font-size: 18px;
+  top: 16px;
+  z-index: 10;
 }
 
 .help-info-dailyplan {
@@ -10148,7 +10158,6 @@ cdk-virtual-scroll-viewport {
 
 /* External link indicator */
 .help-md a[href^="http"]:not([href*="//localhost"]):not([href*="//127.0.0.1"])::after {
-  content: "↗" !important;
   margin-left: 0.25em !important;
   font-size: 0.85em !important;
   opacity: 0.7 !important;
@@ -10164,26 +10173,21 @@ cdk-virtual-scroll-viewport {
   text-decoration: underline !important;
 }
 
-/* Dark mode tweak */
 @media (prefers-color-scheme: dark) {
   .help-md a { color: var(--primary) !important; }
   .help-md a:visited { color: var(--primary) !important; }
   .help-md a:focus-visible { outline-color: var(--primary) !important; }
 }
 
-/* highlight the target briefly */
 .help-md-target { background: #fde68a66; transition: background 0.8s ease; }
 
-/* if you have a fixed toolbar, ensure anchors aren't hidden behind it */
 .help-md :is(h1,h2,h3,h4,h5,h6) { scroll-margin-top: 64px; }
 
-/* highlight target after internal link scroll */
 .help-md-target {
-  background-color: var(--primary);   /* soft yellow highlight */
+  background-color: var(--primary);
   transition: background-color 0.6s ease;
 }
 
-/* optional: make it fade back to normal */
 .help-md-target {
   animation: highlight-fade 1.2s forwards;
 }
@@ -10195,7 +10199,7 @@ cdk-virtual-scroll-viewport {
 
 .help-md pre,
 .help-md code {
-  font-family: "Courier New";
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace !important;
   white-space: pre !important;
   overflow: auto !important;
 }

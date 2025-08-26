@@ -3,6 +3,8 @@ import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
+import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
+import {NzModalService} from "ng-zorro-antd/modal";
 
 @Component({
   selector: 'app-inventory-statistics',
@@ -16,8 +18,9 @@ export class InventoryStatisticsComponent {
   isLoaded = false;
   notAuthenticate = false;
   subscription: Subscription;
+  preferences: any = {};
 
-  constructor(private authService: AuthService, private coreService: CoreService, private dataService: DataService) {
+  constructor(private authService: AuthService, private coreService: CoreService, private dataService: DataService, private modal: NzModalService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -28,6 +31,8 @@ export class InventoryStatisticsComponent {
   ngOnInit(): void {
     this.statistics = {};
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+
     if (this.schedulerIds.selected) {
       this.getStatistics();
     } else {
@@ -63,5 +68,20 @@ export class InventoryStatisticsComponent {
         this.isLoaded = true;
       }
     });
+  }
+
+  helpPage(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: 'dashboard-inventory'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }

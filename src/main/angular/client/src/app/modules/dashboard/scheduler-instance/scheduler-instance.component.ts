@@ -3,6 +3,8 @@ import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
+import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
+import {NzModalService} from "ng-zorro-antd/modal";
 
 @Component({
   selector: 'app-scheduler-instance',
@@ -16,8 +18,9 @@ export class SchedulerInstanceComponent {
   schedulerIds: any;
   isLoaded = false;
   subscription: Subscription;
+  preferences: any = {};
 
-  constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService) {
+  constructor(private authService: AuthService, public coreService: CoreService, private dataService: DataService, private modal: NzModalService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -27,6 +30,7 @@ export class SchedulerInstanceComponent {
 
   ngOnInit(): void {
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : null;
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     if (this.schedulerIds) {
       this.getInstances();
     } else {
@@ -83,5 +87,20 @@ export class SchedulerInstanceComponent {
 
   changeScheduler(id): void {
     this.dataService.switchScheduler(id);
+  }
+
+  helpPage(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: 'dashboard-controller-status'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }

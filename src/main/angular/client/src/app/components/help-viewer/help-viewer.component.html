@@ -11,7 +11,12 @@
                 <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
             </div>
         </div>
-        <div *ngIf="!isLoading" [innerHTML]="html" class="help-md"></div>
+      <ng-container *ngIf="!hasError; else empty">
+      <div *ngIf="!isLoading" [innerHTML]="html" class="help-md"></div>
+      </ng-container>
+      <ng-template #empty>
+        <app-empty-data></app-empty-data>
+      </ng-template>
     </div>
 </div>
 <div class="modal-footer">
@@ -21,4 +26,12 @@
   <button type="button" class="btn btn-grey btn-sm" (click)="cancel()">
         <span translate>common.button.close</span>
     </button>
+  <small *ngIf="fallbackNotice" class="text-warning" style="white-space: nowrap;">
+    {{ 'common.message.fallbackNotice' | translate }}
+  </small>
+  <div style="position: absolute; right: 10px;">
+    <app-select-input (modelChange)="setLocale()" [attributeName]="'language'" [classNames]="'w-xl'"
+                      [listArray]="coreService.locales" [name]="'language'" [object]="helpFilters"
+                      [optionLabel]="'name'" [optionValue]="'lang'"></app-select-input>
+  </div>
 </div>

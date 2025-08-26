@@ -4,6 +4,8 @@ import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
+import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
+import {NzModalService} from "ng-zorro-antd/modal";
 
 @Component({
   selector: 'app-daily-plan',
@@ -24,7 +26,7 @@ export class DailyPlanComponent {
   subscription: Subscription;
 
   constructor(private coreService: CoreService, private authService: AuthService,
-              private router: Router, private dataService: DataService) {
+              private router: Router, private dataService: DataService,private modal: NzModalService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -156,5 +158,19 @@ export class DailyPlanComponent {
         }
       }
     }
+  }
+  helpPage(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: 'dashboard-daily-plan'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }

@@ -11,6 +11,7 @@ import {DataService} from '../../../services/data.service';
 import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
 import {UpdateUrlModalComponent} from "../dashboard.component";
 import {CommentModalComponent as CommentModalComp} from '../../../components/comment-modal/comment.component';
+import { HelpViewerComponent } from 'src/app/components/help-viewer/help-viewer.component';
 
 declare const mxEditor: any;
 declare const mxUtils: any;
@@ -1019,5 +1020,20 @@ export class ControllerClusterComponent {
         }).subscribe();
       }
     });
+  }
+
+  helpPage(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: 'dashboard-product-status'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }

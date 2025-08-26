@@ -1,6 +1,8 @@
 <div id="tasksOverview1">
   <div class="box-header b-b remove">
     <h3 translate>dashboard.label.inventory</h3>
+    <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-question-circle text-20"></i>
+
   </div>
   <div [ngStyle]="{'max-height':(ybody * 55 +((ybody -1) *20 -50)) +'px'}" class="box-body text-overflow">
     <table *ngIf="!notAuthenticate && isLoaded" class="w-full">

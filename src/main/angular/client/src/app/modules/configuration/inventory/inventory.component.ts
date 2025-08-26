@@ -4931,7 +4931,6 @@ export class RepositoryComponent {
     this.category = this.modalData.category;
     this.display = this.modalData.display;
     this.link = this.modalData.link;
-    console.log(this.link,"link")
     if(!this.link){
       if (['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'CALENDAR', 'WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(this.origin?.object)) {
         this.loadSettingPseudo()

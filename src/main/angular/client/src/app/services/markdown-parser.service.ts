@@ -86,7 +86,8 @@ export class MarkdownParserService {
   private lex(src: string, options: MarkdownOptions): Token[] {
     const tokens: Token[] = [];
     let lines = src.split('\n');
-
+    const outdent = (s: string, n: number) =>
+      s.split('\n').map(line => line.replace(new RegExp(`^ {0,${n}}`), '')).join('\n');
     const eat = (n: number) => { lines.splice(0, n); };
 
     const isBlank = (s: string) => /^\s*$/.test(s);
@@ -184,47 +185,55 @@ export class MarkdownParserService {
 
         const flush = () => {
           if (!buf.length) return;
+
           const rawItem = buf.join('\n');
+
           let task = false, checked = false;
-          let text = rawItem.replace(/^\s*([*+-]|\d+\.)\s+/, (m) => m.replace(/./g, ' '));
           const firstLine = rawItem.replace(/\n[\s\S]*$/, '');
           const taskMatch = firstLine.match(/^(?:\s*[*+-]|\s*\d+\.)\s+\[( |x|X)\]\s+/);
+          let body = rawItem;
+
           if (taskMatch) {
             task = true; checked = /x/i.test(taskMatch[1]);
-            text = rawItem.replace(/^(\s*(?:[*+-]|\d+\.)\s+)\[(?: |x|X)\]\s+/, '$1');
+            body = body.replace(/^(\s*(?:[*+-]|\d+\.)\s+)\[(?: |x|X)\]\s+/, '$1');
           }
-          text = text.replace(/^(\s*)(?:[*+-]|\d+\.)\s+/, '$1');
-          const tokens = this.lex(text, options);
+
+          body = body.replace(/^(\s*)(?:[*+-]|\d+\.)\s+/, '$1');
+
+          const firstIndent = (firstLine.match(/^\s*/)?.[0].length ?? 0);
+          body = outdent(body, firstIndent + 2);
+
+          const tokens = this.lex(body, options);
           items.push({ type: 'list_item', raw: rawItem, task, checked, tokens } as ListItemToken);
           buf.length = 0;
         };
 
-  const isBlockStart = (s: string): boolean => {
-    return (
-      /^(#{1,6})\s+/.test(s) ||
-      /^\s*([-*_])(?:\s*\1){2,}\s*$/.test(s) ||
-      /^\s*>\s?/.test(s) ||
-      /^\s*(```|~~~)\s*[^`]*$/.test(s) ||
-      (options.gfm && options.tables && /\|/.test(s))
-    );
-  };
+        const isBlockStart = (s: string): boolean => (
+          /^(#{1,6})\s+/.test(s) ||
+          /^\s*([-*_])(?:\s*\1){2,}\s*$/.test(s) ||
+          /^\s*>\s?/.test(s) ||
+          /^\s*(```|~~~)\s*[^`]*$/.test(s) ||
+          (options.gfm && options.tables && /\|/.test(s))
+        );
 
         while (i < lines.length) {
           const s = lines[i];
+
           if (/^\s*([*+-]|\d+\.)\s+/.test(s) && getIndent(s) <= baseIndent) {
             flush();
             buf.push(s);
-          } else if (!buf.length && isBlank(s)) {
-          } else if (buf.length && /^\s{0,3}\S/.test(s) && /^\s*([*+-]|\d+\.)\s+/.test(s)) {
-            flush();
+          }
+          else if (buf.length && isBlank(s)) {
             buf.push(s);
-          }  else if (buf.length && getIndent(s) <= baseIndent && isBlockStart(s)) {
-      break;
-    }else if (buf.length && isBlank(s)) {
+          }
+          else if (buf.length && getIndent(s) <= baseIndent && isBlockStart(s)) {
+            break;
+          }
+          else if (buf.length) {
             buf.push(s);
-          } else if (buf.length) {
-            buf.push(s);
-          } else break;
+          }
+          else break;
+
           i++;
         }
         flush();
@@ -517,8 +526,6 @@ export class MarkdownParserService {
 
 
   private sanitize(html: string): string {
-    console.log('HTML before sanitization:', html);
-
       const allowedTags = new Set([
         'h1','h2','h3','h4','h5','h6','p','br','hr','em','strong','del','code','pre',
         'a','img','ul','ol','li','blockquote','table','thead','tbody','tr','th','td',
@@ -582,7 +589,6 @@ export class MarkdownParserService {
     for (const child of Array.from(doc.body.firstElementChild?.children || [])) {
       walk(child);
     }
-    console.log('HTML after sanitization:', doc.body.firstElementChild?.innerHTML);
 
     return (doc.body.firstElementChild?.innerHTML) || '';
   }
@@ -614,7 +620,6 @@ export class MarkdownParserService {
 
   private safeUrl(url: string): string | null {
     const trimmed = (url || '').trim();
-    console.log('Testing URL:', trimmed);
 
     if (!trimmed) return null;
 
@@ -625,12 +630,10 @@ export class MarkdownParserService {
     }
 
     if (trimmed.startsWith('#')) {
-      console.log('Allowing hash link:', trimmed);
       return trimmed;
     }
 
     if (/^https?:/i.test(trimmed)) {
-      console.log('Allowing external URL:', trimmed);
       return trimmed;
     }
 
@@ -645,7 +648,6 @@ export class MarkdownParserService {
     if (/^\/[a-z0-9._\-]+(\.md)?$/i.test(trimmed)) {
       return trimmed;
     }
-    console.log('Blocking URL:', trimmed);
     return null;
   }
 

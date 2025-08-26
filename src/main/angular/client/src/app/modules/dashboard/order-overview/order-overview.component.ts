@@ -4,6 +4,8 @@ import {Router} from '@angular/router';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
+import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
+import {NzModalService} from "ng-zorro-antd/modal";
 
 @Component({
   selector: 'app-order-overview',
@@ -31,7 +33,7 @@ export class OrderOverviewComponent {
   ];
 
   constructor(public authService: AuthService, public coreService: CoreService,
-              private router: Router, private dataService: DataService) {
+              private router: Router, private dataService: DataService,private modal: NzModalService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -101,5 +103,20 @@ export class OrderOverviewComponent {
     filter.filter.date = this.filters.date;
     filter.filter.dateLabel = this.filters.label;
     this.router.navigate(['/orders_overview', state]).then();
+  }
+
+  helpPage(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: 'dashboard-orders'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }
