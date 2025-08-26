@@ -5791,8 +5791,8 @@ export class RepositoryComponent {
       : 'inventory/repository/link';
 
     this.coreService.post(url, payload).subscribe({
-      next: () => {
-        this.activeModal.close();
+      next: (res) => {
+        this.activeModal.close(res);
       },
       error: () => {
         this.submitted = false;
