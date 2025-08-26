@@ -51,12 +51,12 @@ Operations on JOC Cockpit are offered for the instance to which the browser is c
 
 ### Controller Operations
 
-Active and Standby Controller instances in a Cluster offer the following operations from the 3-dots action menu in each Controller rectangle:
+Controller instances offer the following operations from the 3-dots action menu in each instance's rectangle:
 
-- **Terminate**, **Terminate and Restart** will shutdown the instance. For the active instance in a cluster the menu is expanded to
+- **Terminate**, **Terminate and Restart** will shutdown the instance. For the active instance in a cluster the menu is expanded:
   - **with switch-over** to pass the active role to the standby instance.
   - **without switch-over**: to have the active role remain with the active instance.
-- **Cancel**, **Cancel and Restart** will forcibly terminate the instance. If applied to the active instance in a cluster, this will force fail-over.
+- **Cancel**, **Cancel and Restart** will forcibly terminate the instance. If applied to the active instance in a cluster, this will force fail-over:
   - **with fail-over** will pass the active role to the standby instance.
 - **Download Log** offers the Controller's controller.log file for download from a .gz file in gzipped format.
 

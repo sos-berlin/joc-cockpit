@@ -22,12 +22,12 @@ Orders can be added on demand and will be executed independently from the Daily 
 ### Order Dependenceies
 
 - **Notice Space Key**: If the Workflow holds dependencies based on Notices, then a daily plan date can be specified to which dependencies will be resolved. By default the current day is used.
-  - It is possible to specify past dates for wich a plan is not yet closed.
-  - It is possible to specify future dates.
+  - past dates are accepted for wich a plan is opened.
+  - future dates are accepted.
 
 ### Order Position
 
-A position can be specified if the Order should not start from the first node in the Workflow.
+If an Order should not start from the first node in the Workflow, then a position can be specified.
 
 - **Block Position**: For Workflows holding block instructions such as Try/Catch, ResourceLock, Fork/Join the related instruction can be selected.
 - **Start Position**: If no Start Position is specified, then the Order will start from the first node.
@@ -56,5 +56,5 @@ A position can be specified if the Order should not start from the first node in
 
 ### Additional Orders
 
-- **Add Order**: If more than one Order should be added to the same Workflow, then the link will add a set of Order parameterizations for the additional Order.
+- **Add Order**: If more than one Order should be added to the Workflow, then the link will add the parameterization for the additional Order.
 - **Add Orders from Schedules**: if the Workflow is assigned one or more Schedules, then for each Schedule an Order parameterized from a Schedule will be added.
