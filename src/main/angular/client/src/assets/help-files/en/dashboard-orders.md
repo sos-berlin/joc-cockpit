@@ -39,11 +39,11 @@ The dropdown button in the right upper corner of the panel offers selecting Orde
   - **Waiting** Orders from any past date,
   - **Blocked** Orders from any past date,
   - **Failed** Orders from any past date.
-- **Next Hour** includes Orders from **Today** and Orders *Scheduled* for the next hour.
-- **Next 12 Hours** includes Orders from **Today** and Orders *Scheduled* for the next 12 hours.
-- **Next 24 Hours** includes Orders from **Today** and Orders *Scheduled* for the next 24 hours.
-- **Next Day** includes Orders from **Today** and Orders *Scheduled* until end of the next day.
-- **Next 7 Days** includes Orders from **Today** and Orders *Scheduled* until end of the next 7 days.
+- **Next Hour** includes Orders *Scheduled* for the next hour.
+- **Next 12 Hours** includes Orders *Scheduled* for the next 12 hours.
+- **Next 24 Hours** includes Orders *Scheduled* for the next 24 hours.
+- **Next Day** includes Orders *Scheduled* until end of the next day.
+- **Next 7 Days** includes Orders *Scheduled* until end of the next 7 days.
 
 ## References
 
