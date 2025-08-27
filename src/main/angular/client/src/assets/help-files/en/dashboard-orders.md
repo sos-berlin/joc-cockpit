@@ -27,7 +27,7 @@ Clicking the indicated number of Orders navigates to the *Orders Overview* that 
 
 The dropdown button in the right upper corner of the panel offers selecting Orders from a date range:
 
-- **All** specifies displaying all Orders available with Controller and Agents.
+- **All** displays all Orders available with Controller and Agents.
 - **Today** Orders are related to the current day which is calculated from the time zone in the user's profile.
   - **Pending** Orders without start time,
   - **Scheduled** Orders holding a start time for the current day,

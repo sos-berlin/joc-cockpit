@@ -1,10 +1,10 @@
 # Inventory
 
-The *Inventory* panel provides information about frequently used objects.
+The *Inventory* panel provides information about the number of objects in use.
 
 ## Inventory Objects
 
-The inventory summary counts deployed and released objects.
+The inventory summary counts deployed and released objects. It does not count draft objects that have not been deployed or released.
 
 - **Workflows**
 - **Jobs**.

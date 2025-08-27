@@ -7,8 +7,8 @@ The *Workflows* panel provides information about the status of Workflows.
 Workflows are displayed from the following status:
 
 - **Synchronized** Workflows are deployed and are available with the Controller and Agents.
-- **Not Synchronized** Workflows are not deployed to Controller and Agents but are available from the inventory.
-- **Suspended** Workflows are frozen, they accept Orders but will not allow Orders to start until Workflows are resumed.
+- **Not Synchronized** Workflows are not deployed to Controller and Agents but are available from the inventory only.
+- **Suspended** Workflows are frozen, they accept Orders but will not allow Orders starting until Workflows will be resumed.
 - **Outstanding** Workflows wait for confirmation by one or more Agents that the Workflow is suspended.
 
 Clicking the indicated number of Workflows navigates to the *Workflows* view that displays Workflows using the related filter.

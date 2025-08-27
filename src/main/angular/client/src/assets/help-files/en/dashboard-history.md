@@ -21,7 +21,7 @@ The dropdown button in the right upper corner of the panel offers selecting past
 - **Last Hour** includes Orders and Jobs that completed during the last hour.
 - **Last 12 Hours** includes Orders and Jobs that completed during the last 12 hours.
 - **Last 24 Hours** includes Orders and Jobs that completed during the last 24 hours.
-- **Next 7 Days** includes Orders and Jobs that completed during the last 7 days.
+- **Last 7 Days** includes Orders and Jobs that completed during the last 7 days.
 
 ## References
 

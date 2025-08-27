@@ -38,7 +38,7 @@ The Daily Plan view offers the following state transitions:
       ▼          Cancel  ▲
       ├──────────────────┘
       │                  ▲
-   Execute               │
+   Execute / Let Run     │
       │                  │
       ▼                  │
   ┌───├───────┐          │
@@ -68,7 +68,7 @@ The following filter buttons limit the scope of operations:
 - **Submit Orders**
   - When applied to *planned* Orders, then they will be set to the *submitted* status and will be forwarded to Controller and Agents.
 - **Cancel Orders**
-  - When applied to *submitted* Orders, then Orders will be recalled from the Controller and Agents and will be set to the *planned* status.
+  - When applied to *submitted* Orders, then Orders will be recalled from the Controller & Agents and will be set to the *planned* status.
 - **Remove Orders**
   - When applied to *planned* Orders, then Orders will be removed from the Daily Plan. A later run of the Daily Plan Service will not try to add Orders to the given date.
 - **Copy Orders**
@@ -86,22 +86,22 @@ minutes, seconds, for example *-04:00:00* to start 4 hours earlier or *+12:00:00
 
 ### Modify Parameterization
 
-For related workflows specifying variables, the values can be modified. When used with bulk operations all Orders will carry the same values for variables.
+For related Workflows specifying variables, the values can be modified. When used with bulk operations, all Orders will carry the same values for variables.
 
 - **Modify Variable**: 
   - If the Workflow specifies variables without default values, then the Order has to specify related values.
   - If the Workflow specifies variables with default values, then their specification from an Order is optional.
 
-A position can be specified if Orders should not start from the first node in the Workflow.
+A position can be specified if Orders should not start from the first node in the Workflow but from a later node.
 
-- **Block Position**: For Workflows holding block instructions such as *Try/Catch*, *ResourceLock*, *Fork/Join* the related instruction can be selected.
-- **Start Position**: If no Start Position is specified, then the Order will start from the first node.
-  - If no Block Position is specified, then any top-level instruction in the Workflow can be selected from which the Order will start.
-  - If a Block Position is specified, then the Start Position is a same-level node inside the block.
+- **Block Position**: For Workflows holding block instructions such as *Try/Catch*, *Resource Lock*, *Fork/Join*, the related instruction can be selected.
+- **Start Position**: If no *Start Position* is specified, then the Order will start from the first node in the Workflow or *Block Position*
+  - If no *Block Position* is specified, then any top-level instruction in the Workflow can be selected from which the Order will start.
+  - If a *Block Position* is specified, then the Start Position is a same-level node inside the block.
 - **End Positions**
-  - If no Block Position is specified, then any top-level instruction in the Workflow can be selected before which the Order will terminate.
-  - If a Block Position is specified, then any same-level node inside the block can be specified before which the Order will terminate.
-  - More than one End Position can be specified.
+  - If no *Block Position* is specified, then any top-level instruction in the Workflow can be selected before which the Order will terminate.
+  - If a *Block Position* is specified, then any same-level node inside the block can be specified before which the Order will terminate.
+  - More than one *End Position* can be specified.
 
 ### Modify Priority
 

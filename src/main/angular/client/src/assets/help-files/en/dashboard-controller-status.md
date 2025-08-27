@@ -21,7 +21,7 @@ Controller instances offer the following operations from the 3-dots action menu 
 
 - **Terminate**, **Terminate and Restart** will shutdown the instance. For the active instance in a cluster the menu is expanded:
   - **with switch-over** to pass the active role to the standby instance.
-  - **without switch-over**: to have the active role remain with the active instance.
+  - **without switch-over**: to have the active role remain with the shutdown instance. Users should be aware that no fail-over will take place and that no instance will be active.
 - **Cancel**, **Cancel and Restart** will forcibly terminate the instance. If applied to the active instance in a cluster, this will force fail-over:
   - **with fail-over** will pass the active role to the standby instance.
 - **Download Log** offers the Controller's controller.log file for download from a .gz file in gzipped format.
