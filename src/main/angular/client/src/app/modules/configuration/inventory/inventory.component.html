@@ -734,9 +734,17 @@
         nz-menu-item>
       <a translate>inventory.button.revalidate</a>
     </li>
-    <li (click)="synchronize(node);" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && (node.origin.controller || (!node.origin.object && !node.origin.type && !node.origin.dailyPlan))"
-        nz-menu-item>
-      <a translate>inventory.button.synchronize</a>
+    <li *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy) && (node.origin.controller || (!node.origin.object && !node.origin.type && !node.origin.dailyPlan))"
+        [nzTitle]="'inventory.button.synchronize' | translate"
+        nz-submenu>
+      <ul>
+        <li (click)="synchronize(node,'controller');" *ngIf="permission.joc.inventory.manage" nz-menu-item>
+          <a translate>inventory.button.syncToController</a>
+        </li>
+        <li (click)="synchronize(node,'inventory');" *ngIf="permission.joc.inventory.manage" nz-menu-item>
+          <a translate>inventory.button.syncToInventory</a>
+        </li>
+      </ul>
     </li>
     <li *ngIf="permission.joc.inventory.manage && (!node.origin.type && !node.origin.controller && !node.origin.object)"
         nz-menu-divider></li>

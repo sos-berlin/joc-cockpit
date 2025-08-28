@@ -2015,6 +2015,8 @@
     "button.modifyPriority": "Priorität ändern",
     "button.link": "Verknüpfung herstellen",
     "button.unlink": "Verknüpfung aufheben",
+    "button.syncToController": "Synchronize to Controller",
+    "button.syncToInventory": "Synchronize to Inventory",
     "tooltip.setVersion": "Version setzen",
     "placeholder.enterUniqueName": "Eindeutigen Objektnamen angeben",
     "placeholder.enterFileName": "Dateinamen angeben",

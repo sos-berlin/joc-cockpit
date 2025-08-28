@@ -106,6 +106,14 @@ export class LogComponent {
     }
   }
 
+  ngOnDestroy(): void {
+    this.isCancel = true;
+    if (this.canceller) {
+      this.canceller.unsubscribe();
+    }
+    this.unsubscribeLogs();
+  }
+
   scrollBottom(): void {
     if (!this.scrolled) {
       $(window).scrollTop(this.dataBody.nativeElement.scrollHeight);
@@ -1080,5 +1088,51 @@ export class LogComponent {
     window.sessionStorage['preferences'] = configObj.profileItem;
     sessionStorage.setItem('controllerId', this.controllerId);
     this.coreService.post('profile/prefs/store', configObj).subscribe();
+  }
+
+  private tryBeacon(url: string, data: any): void {
+    try {
+      const payload = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      const nav: any = (window?.navigator as any);
+
+      if (nav && typeof nav.sendBeacon === 'function') {
+        nav.sendBeacon(url, payload);
+      } else {
+        fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+          keepalive: true
+        }).catch(() => {  });
+      }
+    } catch {
+    }
+  }
+
+  private unsubscribeLogs(): void {
+    if (!this.controllerId) return;
+
+    if (this.historyId) {
+      this.tryBeacon('joc/api/order/log/unsubscribe', {
+        controllerId: this.controllerId,
+        historyId: this.historyId
+      });
+    }
+    if (this.taskId) {
+      this.tryBeacon('joc/api/task/log/unsubscribe', {
+        controllerId: this.controllerId,
+        taskId: this.taskId
+      });
+    }
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  onBeforeUnload(_e: Event): void {
+    this.unsubscribeLogs();
+  }
+
+  @HostListener('window:pagehide', ['$event'])
+  onPageHide(_e: PageTransitionEvent): void {
+    this.unsubscribeLogs();
   }
 }

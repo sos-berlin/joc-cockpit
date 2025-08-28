@@ -33,7 +33,7 @@
     "angular-gridster2": "^18.0.1",
     "chart.js": "^3.7.0",
     "chartjs-plugin-datalabels": "^2.0.0",
-    "codemirror": "^5.65.13",
+    "codemirror": "^5.65.20",
     "cross-env": "^7.0.3",
     "crypto-js": "^4.2.0",
     "date-fns": "^2.30.0",

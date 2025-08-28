@@ -11574,7 +11574,7 @@ export class InventoryComponent {
       });
       modal.afterClose.subscribe(result => {
         if (result) {
-          this.checkAuditLog(node, false, {
+          this.checkAuditLog(node,null, false, {
             comment: result.comment,
             timeSpent: result.timeSpent,
             ticketLink: result.ticketLink
@@ -11582,85 +11582,88 @@ export class InventoryComponent {
         }
       });
     } else {
-      this.checkAuditLog(node, false);
+      this.checkAuditLog(node, null, false);
     }
   }
 
-  synchronize(node): void {
-    if (this.preferences.auditLog) {
-      const object = node.origin;
-      let comments = {
-        radio: 'predefined',
-        type: object.type || object.object || 'Folder',
-        operation: 'Synchronize',
-        name: object.name || object.path
-      };
-      const modal = this.modal.create({
-        nzTitle: undefined,
-        nzContent: CommentModalComponent,
-        nzClassName: 'lg',
-        nzData: {
-          comments,
-        },
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      });
-      modal.afterClose.subscribe(result => {
-        if (result) {
-          this.checkAuditLog(node, true, {
-            comment: result.comment,
-            timeSpent: result.timeSpent,
-            ticketLink: result.ticketLink
-          });
-        }
-      });
-    } else {
-      this.checkAuditLog(node, true);
-    }
-  }
-
-  private checkAuditLog(node, sync, auditLog = {}): void {
-    const origin = node.origin ? node.origin : node;
-    if (origin.controller) {
-      this.coreService.post(sync ? 'inventory/deployment/synchronize' : 'inventory/deployment/redeploy', {
-        controllerId: this.schedulerIds.selected,
-        folder: origin.path,
-        recursive: false,
-        auditLog
-      }).subscribe();
-    } else {
-      const obj = {
-        title: 'redeploy',
-        message: 'redeployFolderRecursively',
-        type: 'Redeploy',
-        objectName: origin.path
-      };
-      if (sync) {
-        obj.title = 'synchronize';
-        obj.message = 'synchronizeFolderRecursively';
-        obj.type = 'Synchronize';
+  synchronize(node, type): void {
+  if (this.preferences.auditLog) {
+    const object = node.origin;
+    let comments = {
+      radio: 'predefined',
+      type: object.type || object.object || 'Folder',
+      operation: 'Synchronize',
+      name: object.name || object.path
+    };
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: CommentModalComponent,
+      nzClassName: 'lg',
+      nzData: { comments },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.checkAuditLog(node, type, true, {
+          comment: result.comment,
+          timeSpent: result.timeSpent,
+          ticketLink: result.ticketLink
+        });
       }
-      const modal = this.modal.create({
-        nzTitle: undefined,
-        nzContent: ConfirmModalComponent,
-        nzData: obj,
-        nzFooter: null,
-        nzClosable: false,
-        nzMaskClosable: false
-      });
-      modal.afterClose.subscribe(result => {
-        if (result) {
-          this.coreService.post(sync ? 'inventory/deployment/synchronize' : 'inventory/deployment/redeploy', {
-            controllerId: this.schedulerIds.selected,
-            folder: origin.path,
-            auditLog,
-            recursive: true
-          }).subscribe();
-        }
-      });
-    }
+    });
+  } else {
+    this.checkAuditLog(node, type, true);
   }
+}
+
+  private checkAuditLog(node, type, sync, auditLog = {}): void {
+  const origin = node.origin ? node.origin : node;
+
+  let apiPath = '';
+  if (type === 'inventory' && sync) {
+    apiPath = 'inventory/synchronize';
+  } else if (type === 'controller' && sync) {
+    apiPath = 'inventory/deployment/synchronize';
+  }else{
+    apiPath = 'inventory/deployment/redeploy'
+  }
+
+  if (origin.controller) {
+    this.coreService.post(apiPath, {
+      controllerId: this.schedulerIds.selected,
+      folder: origin.path,
+      recursive: false,
+      auditLog
+    }).subscribe();
+  } else {
+    const obj = {
+      title: sync ? 'synchronize' : 'redeploy',
+      message: sync ? 'synchronizeFolderRecursively' : 'redeployFolderRecursively',
+      type: sync ? 'Synchronize' : 'Redeploy',
+      objectName: origin.path
+    };
+    const modal = this.modal.create({
+      nzTitle: undefined,
+      nzContent: ConfirmModalComponent,
+      nzData: obj,
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+    modal.afterClose.subscribe(result => {
+      if (result) {
+        this.coreService.post(apiPath, {
+          controllerId: this.schedulerIds.selected,
+          folder: origin.path,
+          recursive: true,
+          auditLog
+        }).subscribe();
+      }
+    });
+  }
+}
 
   releaseObject(data): void {
     this.deployObject(data, true, 'release');

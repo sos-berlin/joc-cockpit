@@ -2015,6 +2015,8 @@
     "button.modifyPriority": "優先度変更",
     "button.link": "Link",
     "button.unlink": "Unlink",
+    "button.syncToController": "Synchronize to Controller",
+    "button.syncToInventory": "Synchronize to Inventory",
     "tooltip.setVersion": "バージョン設定",
     "placeholder.enterUniqueName": "ユニークなオブジェクト名を入力",
     "placeholder.enterFileName": "ファイル名を入力",

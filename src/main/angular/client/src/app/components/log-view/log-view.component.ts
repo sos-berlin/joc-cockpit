@@ -112,6 +112,7 @@ export class LogViewComponent {
 
   ngOnDestroy() {
     this.cancelApiCalls();
+    this.unsubscribeLogs();
     if (POPOUT_MODALS['windowInstance']) {
       try {
         POPOUT_MODALS['windowInstance'].removeEventListener('beforeunload', this.onUnload);
@@ -155,6 +156,7 @@ export class LogViewComponent {
 
   private onUnload(event: any) {
     that.cancelApiCalls();
+    that.unsubscribeLogs();
     if (POPOUT_MODALS['windowInstance'].screenX != window.localStorage['log_window_x']) {
       window.localStorage['log_window_x'] = POPOUT_MODALS['windowInstance'].screenX;
       window.localStorage['log_window_y'] = POPOUT_MODALS['windowInstance'].screenY;
@@ -225,7 +227,6 @@ export class LogViewComponent {
       this.loadJobLog();
     }
 
-    // slight update to account for browsers not supporting e.which
     function disableF5(e: any) {
       if ((e.which || e.keyCode) == 116) {
         that.reloadLog();
@@ -1074,11 +1075,9 @@ export class LogViewComponent {
 
   copy(): void {
     try {
-      // Copy the text inside the text field
       POPOUT_MODALS['windowInstance'].navigator.clipboard.writeText(this.dataBody.nativeElement.innerText);
     } catch (err) {
       console.error('Failed to copy: ', err);
-      /* Rejected - text failed to copy to the clipboard */
     }
   }
 
@@ -1217,5 +1216,43 @@ export class LogViewComponent {
     this.coreService.post('profile/prefs/store', configObj).subscribe(() => {
       sessionStorage['preferences'] = JSON.stringify(this.preferences);
     });
+  }
+
+  private tryBeacon(url: string, data: any): void {
+    try {
+      const payload = new Blob([JSON.stringify(data)], { type: 'application/json' });
+      const nav: any = (POPOUT_MODALS?.['windowInstance']?.navigator) || (navigator as any);
+
+      if (nav && typeof nav.sendBeacon === 'function') {
+        nav.sendBeacon(url, payload);
+      } else {
+        fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+          keepalive: true
+        }).catch(() => { });
+      }
+    } catch {
+
+    }
+  }
+
+  /** Fire unsubscribe for order/task logs when the window/tab is closing */
+  private unsubscribeLogs(): void {
+    if (this.controllerId) {
+      if (this.historyId) {
+        this.tryBeacon('joc/api/order/log/unsubscribe', {
+          controllerId: this.controllerId,
+          historyId: this.historyId
+        });
+      }
+      if (this.taskId) {
+        this.tryBeacon('joc/api/task/log/unsubscribe', {
+          controllerId: this.controllerId,
+          taskId: this.taskId
+        });
+      }
+    }
   }
 }
