@@ -1933,7 +1933,7 @@
     "label.belowNormal": "Below Normal",
     "label.Low": "Low",
     "label.deleteRepository": "Delete Git Repository",
-    "label.useDependencies": "Use Dependencies",
+    "label.useDependencies": "Include Dependencies",
     "button.modifyVariableSet": "Modify Variable Set",
     "button.addOrderParameter": "Add Order Template",
     "button.setVersion": "Set Version",
