@@ -3,6 +3,8 @@ import {Subscription} from 'rxjs';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
 import {AuthService} from '../../../components/guard';
+import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
+import {NzModalService} from "ng-zorro-antd/modal";
 
 @Component({
   selector: 'app-agent-running-task',
@@ -22,8 +24,9 @@ export class AgentRunningTaskComponent {
   colorScheme = {
     domain: ['rgb(122,185,122)']
   };
+  preferences: any = {};
 
-  constructor(private coreService: CoreService, private authService: AuthService, private dataService: DataService) {
+  constructor(private coreService: CoreService, private authService: AuthService, private dataService: DataService,public modal: NzModalService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -56,6 +59,7 @@ export class AgentRunningTaskComponent {
 
   ngOnInit(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     if (this.schedulerIds.selected) {
       this.getRunningTask();
     } else {
@@ -104,5 +108,20 @@ export class AgentRunningTaskComponent {
         this.isLoaded = true;
       }, error: () => this.isLoaded = true
     });
+  }
+
+  helpPage(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: 'dashboard-agent-running-jobs'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }

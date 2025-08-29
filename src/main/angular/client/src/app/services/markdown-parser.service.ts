@@ -223,6 +223,10 @@ export class MarkdownParserService {
             flush();
             buf.push(s);
           }
+          else if (buf.length && !isBlank(s) && getIndent(s) <= baseIndent &&
+            !/^\s*([*+-]|\d+\.)\s+/.test(s)) {
+            break;
+          }
           else if (buf.length && isBlank(s)) {
             buf.push(s);
           }

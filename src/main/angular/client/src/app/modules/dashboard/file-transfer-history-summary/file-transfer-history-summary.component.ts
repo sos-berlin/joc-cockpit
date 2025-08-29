@@ -4,6 +4,8 @@ import {Router} from '@angular/router';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
+import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
+import {NzModalService} from "ng-zorro-antd/modal";
 
 @Component({
   selector: 'app-file-transfer-history-summary',
@@ -19,7 +21,7 @@ export class FileTransferHistorySummaryComponent {
   subscription: Subscription;
 
   constructor(private authService: AuthService, private coreService: CoreService,
-              private router: Router, private dataService: DataService) {
+              private router: Router, private dataService: DataService, public modal: NzModalService) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       if (res) {
         this.refresh(res);
@@ -95,4 +97,18 @@ export class FileTransferHistorySummaryComponent {
     this.router.navigate(['/history']).then();
   }
 
+  helpPage(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: 'dashboard-file-transfer'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
 }
