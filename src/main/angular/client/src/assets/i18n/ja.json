@@ -1933,6 +1933,7 @@
     "label.belowNormal": "中低",
     "label.Low": "低",
     "label.deleteRepository": "Delete Repository",
+    "label.useDependencies": "Use Dependencies",
     "button.modifyVariableSet": "変数設定変更",
     "button.addOrderParameter": "オーダー変数追加",
     "button.setVersion": "バージョン設定",

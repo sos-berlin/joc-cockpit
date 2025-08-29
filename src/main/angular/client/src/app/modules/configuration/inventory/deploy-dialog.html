@@ -107,6 +107,15 @@
       <div *ngIf="operation === 'recall' && hasDependencies()" class="m-b-sm opacity-0_5">
         <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.recall' | translate}}</label>
       </div>
+      <div *ngIf="!releasable && !isRemove && !isRevoke && nodes.length > 0 && dependenciesToggleAvailable && object.deployType != 'changes'"
+           class="form-group row">
+        <div class="col-md-3">
+        <label translate>inventory.label.useDependencies</label>
+        </div>
+        <div class="col-md-6">
+          <label nz-checkbox [(ngModel)]="useDependencies" name="useDependencies"></label>
+        </div>
+      </div>
       <div *ngIf="!isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects && object.deployType === 'individual'" class="row m-b-sm">
         <div class="col-md-12">
           <a (click)="expandAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">

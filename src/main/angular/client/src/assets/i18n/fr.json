@@ -1933,6 +1933,7 @@
     "label.belowNormal": "Inférieure à la normale",
     "label.Low": "Inférieure",
     "label.deleteRepository": "Supprimer le Dépôt Git",
+    "label.useDependencies": "Use Dependencies",
     "button.modifyVariableSet": "Modifier le Jeu de Variable",
     "button.addOrderParameter": "Ajouter un Modèle d'Ordre",
     "button.setVersion": "Définir la Version",

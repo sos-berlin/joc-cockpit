@@ -492,7 +492,8 @@ export class SingleDeployComponent {
   filteredAffectedItems: any[] = [];
   filteredAffectedCollapsed: boolean = false;
   selectAllFilteredAffected: { [key: string]: boolean } = {};
-
+  dependenciesToggleAvailable = false;
+  useDependencies = false;
   constructor(public activeModal: NzModalRef, private coreService: CoreService) {
   }
 
@@ -587,29 +588,30 @@ export class SingleDeployComponent {
           }
         });
       };
+      const depsEnabled = !this.dependenciesToggleAvailable || this.useDependencies;
+      if (depsEnabled) {
+        Object.keys(this.affectedObjectsByType).forEach(type => {
+          this.affectedObjectsByType[type].forEach(obj => {
+            if (obj.valid && obj.selected && obj.objectType !== 'SCHEDULE' && obj.objectType !== 'INCLUDESCRIPT' && obj.objectType !== 'JOBTEMPLATE' && obj.objectType !== 'WORKINGDAYSCALENDAR' && obj.objectType !== 'NONWORKINGDAYSCALENDAR') {
+              promises.push(handleSingleDeployable(obj, revoke));
+            }
+          });
+        });
 
-      Object.keys(this.affectedObjectsByType).forEach(type => {
-        this.affectedObjectsByType[type].forEach(obj => {
-          if (obj.valid && obj.selected && obj.objectType !== 'SCHEDULE' && obj.objectType !== 'INCLUDESCRIPT' && obj.objectType !== 'JOBTEMPLATE' && obj.objectType !== 'WORKINGDAYSCALENDAR' && obj.objectType !== 'NONWORKINGDAYSCALENDAR') {
-            promises.push(handleSingleDeployable(obj, revoke));
+        Object.keys(this.referencedObjectsByType).forEach(type => {
+          this.referencedObjectsByType[type].forEach(obj => {
+            if (obj.valid && obj.selected && obj.objectType !== 'SCHEDULE' && obj.objectType !== 'INCLUDESCRIPT' && obj.objectType !== 'JOBTEMPLATE' && obj.objectType !== 'WORKINGDAYSCALENDAR' && obj.objectType !== 'NONWORKINGDAYSCALENDAR') {
+              promises.push(handleSingleDeployable(obj, revoke));
+            }
+          });
+        });
+
+        this.filteredAffectedItems.forEach(item => {
+          if (item.valid && item.selected && item.objectType !== 'SCHEDULE' && item.objectType !== 'INCLUDESCRIPT' && item.objectType !== 'JOBTEMPLATE' && item.objectType !== 'WORKINGDAYSCALENDAR' && item.objectType !== 'NONWORKINGDAYSCALENDAR') {
+            promises.push(handleSingleDeployable(item, revoke));
           }
         });
-      });
-
-      Object.keys(this.referencedObjectsByType).forEach(type => {
-        this.referencedObjectsByType[type].forEach(obj => {
-          if (obj.valid && obj.selected && obj.objectType !== 'SCHEDULE' && obj.objectType !== 'INCLUDESCRIPT' && obj.objectType !== 'JOBTEMPLATE' && obj.objectType !== 'WORKINGDAYSCALENDAR' && obj.objectType !== 'NONWORKINGDAYSCALENDAR') {
-            promises.push(handleSingleDeployable(obj, revoke));
-          }
-        });
-      });
-
-      this.filteredAffectedItems.forEach(item => {
-        if (item.valid && item.selected && item.objectType !== 'SCHEDULE' && item.objectType !== 'INCLUDESCRIPT' && item.objectType !== 'JOBTEMPLATE' && item.objectType !== 'WORKINGDAYSCALENDAR' && item.objectType !== 'NONWORKINGDAYSCALENDAR') {
-          promises.push(handleSingleDeployable(item, revoke));
-        }
-      });
-
+      }
       Promise.all(promises)
         .then(() => {
           const self = this;
@@ -681,52 +683,54 @@ export class SingleDeployComponent {
         obj.addOrdersDateFrom = 'now';
       }
     }
-    Object.keys(this.affectedObjectsByType).forEach(type => {
-      this.affectedObjectsByType[type].forEach(obj => {
-        if (obj.valid && obj.selected && allowedTypes.includes(obj.objectType)) {
-          if (!(this.releasable && obj.deployed)) {
-            const config = {
-              configuration: {
-                objectType: obj.objectType,
-                path: obj.path
-              }
-            };
-            this.object.store.draftConfigurations.push(config);
-          }
-        }
-      });
-    });
-
-    Object.keys(this.referencedObjectsByType).forEach(type => {
-      this.referencedObjectsByType[type].forEach(obj => {
-        if (obj.valid && obj.selected && allowedTypes.includes(obj.objectType)) {
-          if (!(this.releasable && obj.deployed)) {
-            const config = {
-              configuration: {
-                objectType: obj.objectType,
-                path: obj.path
-              }
-            };
-            this.object.store.draftConfigurations.push(config);
-          }
-        }
-      });
-    });
-
-    this.filteredAffectedItems.forEach(item => {
-      if (item.valid && item.selected && allowedTypes.includes(item.objectType)) {
-        if (!(this.releasable && item.deployed)) {
-          const config = {
-            configuration: {
-              objectType: item.objectType,
-              path: item.path
+    const depsEnabled = !this.dependenciesToggleAvailable || this.useDependencies;
+    if (depsEnabled) {
+      Object.keys(this.affectedObjectsByType).forEach(type => {
+        this.affectedObjectsByType[type].forEach(obj => {
+          if (obj.valid && obj.selected && allowedTypes.includes(obj.objectType)) {
+            if (!(this.releasable && obj.deployed)) {
+              const config = {
+                configuration: {
+                  objectType: obj.objectType,
+                  path: obj.path
+                }
+              };
+              this.object.store.draftConfigurations.push(config);
             }
-          };
-          this.object.store.draftConfigurations.push(config);
-        }
-      }
-    });
+          }
+        });
+      });
 
+      Object.keys(this.referencedObjectsByType).forEach(type => {
+        this.referencedObjectsByType[type].forEach(obj => {
+          if (obj.valid && obj.selected && allowedTypes.includes(obj.objectType)) {
+            if (!(this.releasable && obj.deployed)) {
+              const config = {
+                configuration: {
+                  objectType: obj.objectType,
+                  path: obj.path
+                }
+              };
+              this.object.store.draftConfigurations.push(config);
+            }
+          }
+        });
+      });
+
+      this.filteredAffectedItems.forEach(item => {
+        if (item.valid && item.selected && allowedTypes.includes(item.objectType)) {
+          if (!(this.releasable && item.deployed)) {
+            const config = {
+              configuration: {
+                objectType: item.objectType,
+                path: item.path
+              }
+            };
+            this.object.store.draftConfigurations.push(config);
+          }
+        }
+      });
+    }
     obj.store = this.object.store;
     if ((obj.store.deployConfigurations.length === 0 && obj.store.draftConfigurations.length === 0) && !obj.delete) {
       this.submitted = false;
@@ -1134,6 +1138,13 @@ export class SingleDeployComponent {
           } else {
             result.deployablesVersions = [];
           }
+          this.dependenciesToggleAvailable = !this.releasable && !this.isRemoved && !this.isRevoke
+            ? this.computeDependenciesToggleAvailable(result)
+            : false;
+
+          if (this.dependenciesToggleAvailable) {
+            this.useDependencies = true;
+          }
           this.loading = false;
           this.deployablesObject = [result];
         }, error: () => this.loading = false
@@ -1240,7 +1251,9 @@ export class SingleDeployComponent {
               refObj.selected = refObj.valid && (refObj.released || refObj.deployed);
               refObj.disabled = !refObj.valid;
             }
-
+            if (this.dependenciesToggleAvailable) {
+              if (!this.useDependencies) refObj.selected = false;
+            }
             this.affectedObjectsByType[type].push(refObj);
           });
 
@@ -1273,7 +1286,9 @@ export class SingleDeployComponent {
               refObj.disabled = false;
               refObj.selected = false;
             }
-
+            if (this.dependenciesToggleAvailable) {
+              if (!this.useDependencies) refObj.selected = false;
+            }
             this.referencedObjectsByType[type].push(refObj);
           });
 
@@ -1293,6 +1308,9 @@ export class SingleDeployComponent {
 
         item.disabled = !item.valid;
         item.selected = item.valid && (!item.deployed && !item.released);
+        if (this.dependenciesToggleAvailable) {
+          if (!this.useDependencies) item.selected = false;
+        }
         if (this.isRevoke || this.operation === 'recall') {
           item.selected = false
           item.disabled = !item.valid || item.valid && (!item.deployed && !item.released);
@@ -1388,8 +1406,29 @@ export class SingleDeployComponent {
     };
     return labelMapping[objectType] || objectType;
   }
+  onToggleUseDependencies(): void {
+    const to = this.useDependencies;
 
+    Object.values(this.affectedObjectsByType).forEach(arr =>
+      arr.forEach(o => { if (!o.disabled) o.selected = to && (o.valid && (!o.deployed && !o.released)); })
+    );
 
+    Object.values(this.referencedObjectsByType).forEach(arr =>
+      arr.forEach(o => { if (!o.disabled) o.selected = to && (o.valid && (!o.deployed && !o.released)); })
+    );
+
+    this.filteredAffectedItems.forEach(o => {
+      if (!o.disabled) o.selected = to && (o.valid && (!o.deployed && !o.released));
+    });
+
+    this.affectedObjectTypes.forEach(t => this.updateParentCheckboxAffected(t));
+    this.referencedObjectTypes.forEach(t => this.updateParentCheckboxReferenced(t));
+    this.getUniqueObjectTypes(this.filteredAffectedItems).forEach(t => this.updateParentCheckboxFilteredAffected(t));
+  }
+
+  private computeDependenciesToggleAvailable(item: any): boolean {
+    return !(item?.forceDependencies === true);
+  }
 }
 
 @Component({
@@ -1450,13 +1489,12 @@ export class DeployComponent {
   selectAllReferenced: { [key: string]: boolean } = {};
   affectedCollapsed: { [key: string]: boolean } = {};
   referencedCollapsed: { [key: string]: boolean } = {};
-  isAffectedCollapsed: boolean = true;
-  isReferencedCollapsed: boolean = true;
   filteredAffectedItems: any[] = [];
   filteredAffectedCollapsed: boolean = true;
   selectAllFilteredAffected: { [key: string]: boolean } = {};
   sharedCheckboxState: { [key: string]: boolean } = {};
-
+  dependenciesToggleAvailable = false;
+  useDependencies = false;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private ref: ChangeDetectorRef,
               private inventoryService: InventoryService, private toasterService: ToastrService, private translate: TranslateService, private cdRef: ChangeDetectorRef, private cdr: ChangeDetectorRef) {
@@ -1828,7 +1866,9 @@ export class DeployComponent {
             refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.change = refObj.deployed;
-
+            if (this.dependenciesToggleAvailable) {
+              if (!this.useDependencies) refObj.selected = false;
+            }
             if (this.releasable) {
               refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
               refObj.disabled = !refObj.valid
@@ -1861,7 +1901,10 @@ export class DeployComponent {
             refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.change = refObj.deployed;
-
+            if (this.dependenciesToggleAvailable) {
+              refObj.disabled = false;
+              if (!this.useDependencies) refObj.selected = false;
+            }
             if (this.isRemove) {
               refObj.disabled = false;
               refObj.selected = false;
@@ -1886,6 +1929,11 @@ export class DeployComponent {
 
         item.disabled = !item.valid;
         item.selected = item.valid && (!item.deployed && !item.released);
+
+        if (this.dependenciesToggleAvailable) {
+          if (!this.useDependencies) item.selected = false;
+        }
+
         if (this.isRevoke || this.operation === 'recall') {
           item.selected = false
           item.disabled = !item.valid || item.valid && (!item.deployed && !item.released);
@@ -2091,6 +2139,10 @@ export class DeployComponent {
 
     this.coreService.post(URL, obj).subscribe({
       next: (res: any) => {
+        this.dependenciesToggleAvailable = !this.releasable && !this.isRemove && !this.isRevoke
+          ? this.computeDependenciesToggleAvailable(res)
+          : false;
+        if (this.dependenciesToggleAvailable) { this.useDependencies = true; }
         let tree = [];
         if (this.isSelectedObjects) {
           res.folders = [];
@@ -2731,8 +2783,13 @@ export class DeployComponent {
     }
 
     const promises = [
-      ...this.nodes.map(node => this.handleDependenciesForDeploy(node, obj)),
-      this.handleAffectedItemsForDeploy(obj)
+      ...((!this.dependenciesToggleAvailable || this.useDependencies)
+        ? this.nodes.map(node => this.handleDependenciesForDeploy(node, obj))
+        : []),
+
+      ((!this.dependenciesToggleAvailable || this.useDependencies)
+        ? this.handleAffectedItemsForDeploy(obj)
+        : Promise.resolve())
     ];
     if (!this.isRevoke && this.object.deleteObj.deployConfigurations.length > 0) {
       obj.delete = this.object.deleteObj;
@@ -3150,11 +3207,11 @@ export class DeployComponent {
       controllerIds: this.selectedSchedulerIds
     };
 
-    this.nodes.forEach(node => {
-      this.handleDependenciesForDeploy(node, obj);
-    });
-    if (this.object.type !== 'changes') {
-      this.handleAffectedItemsForDeploy(obj)
+    if (!this.dependenciesToggleAvailable || this.useDependencies) {
+      this.nodes.forEach(node => this.handleDependenciesForDeploy(node, obj));
+      if (this.object.type !== 'changes') {
+        this.handleAffectedItemsForDeploy(obj);
+      }
     }
     if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
       obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
@@ -3330,6 +3387,22 @@ export class DeployComponent {
   cancel(): void {
     this.activeModal.destroy();
   }
+
+  private computeDependenciesToggleAvailable(payload: any): boolean {
+
+    let anyTrue = false;
+
+    const items = [
+      ...(payload?.deployables ?? [])
+    ];
+    if (items.some(d => d?.forceDependencies === true)) {
+      anyTrue = true;
+    }
+
+
+    return !anyTrue;
+  }
+
 
 }
 

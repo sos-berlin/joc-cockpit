@@ -69,6 +69,13 @@
         </div>
 
       </div>
+      <div *ngIf="dependenciesToggleAvailable && !isRemoved && !isRevoke && operation !== 'recall'" class="form-group row">
+        <div class="col-md-6">
+          <label nz-checkbox [(ngModel)]="useDependencies" name="useDependencies" (ngModelChange)="onToggleUseDependencies()">
+            <span>{{ 'inventory.label.useDependencies' | translate }}</span>
+          </label>
+        </div>
+      </div>
       <div *ngIf="isRemoved && (affectedObjectTypes.length > 0 || referencedObjectTypes.length > 0 || filteredAffectedItems.length > 0)" class="m-b-sm opacity-0_5">
         <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.remove' | translate}}</label>
       </div>
@@ -149,6 +156,7 @@
           <span class="p-l-sm">{{item.name }}</span>
         </div>
       </div>
+
       <div class="form-group row m-t-md">
        <!-- Affected Objects (referencedBy) -->
         <div *ngIf="affectedObjectTypes.length > 0" class="col-md-6" [class.col-md-12]="referencedObjectTypes.length === 0">
