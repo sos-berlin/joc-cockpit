@@ -111,6 +111,7 @@ export class LogViewComponent {
   }
 
   ngOnDestroy() {
+    this.isCancel = true;
     this.cancelApiCalls();
     this.unsubscribeLogs();
     if (POPOUT_MODALS['windowInstance']) {
@@ -155,6 +156,7 @@ export class LogViewComponent {
   }
 
   private onUnload(event: any) {
+    that.isCancel = true;
     that.cancelApiCalls();
     that.unsubscribeLogs();
     if (POPOUT_MODALS['windowInstance'].screenX != window.localStorage['log_window_x']) {
@@ -1218,41 +1220,34 @@ export class LogViewComponent {
     });
   }
 
-  private tryBeacon(url: string, data: any): void {
-    try {
-      const payload = new Blob([JSON.stringify(data)], { type: 'application/json' });
-      const nav: any = (POPOUT_MODALS?.['windowInstance']?.navigator) || (navigator as any);
 
-      if (nav && typeof nav.sendBeacon === 'function') {
-        nav.sendBeacon(url, payload);
-      } else {
-        fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
-          keepalive: true
-        }).catch(() => { });
-      }
-    } catch {
-
-    }
-  }
-
-  /** Fire unsubscribe for order/task logs when the window/tab is closing */
   private unsubscribeLogs(): void {
-    if (this.controllerId) {
-      if (this.historyId) {
-        this.tryBeacon('joc/api/order/log/unsubscribe', {
-          controllerId: this.controllerId,
-          historyId: this.historyId
-        });
-      }
-      if (this.taskId) {
-        this.tryBeacon('joc/api/task/log/unsubscribe', {
-          controllerId: this.controllerId,
-          taskId: this.taskId
-        });
-      }
+    if (!this.controllerId) { return; }
+
+    const reqs: Array<{url: string, body: any}> = [];
+
+    if (this.historyId) {
+      reqs.push({
+        url: 'order/log/unsubscribe',
+        body: { controllerId: this.controllerId, historyId: this.historyId }
+      });
     }
+    if (this.taskId) {
+      reqs.push({
+        url: 'task/log/unsubscribe',
+        body: { controllerId: this.controllerId, taskId: this.taskId }
+      });
+    }
+
+    reqs.forEach(({url, body}) => {
+      this.coreService.post(url, body).subscribe({
+        next: (res) => {
+
+        },
+        error: (err) => {
+        }
+      });
+    });
   }
+
 }

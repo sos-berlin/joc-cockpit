@@ -5782,7 +5782,7 @@ export class RepositoryComponent {
       this.coreService.getAuditLogObj(this.comments, payload.auditLog);
     }
     if (isUnlink) {
-      payload.deleteRepository = true;
+      payload.deleteRepository = this.deleteRepository;
     }
 
     const url = isUnlink
