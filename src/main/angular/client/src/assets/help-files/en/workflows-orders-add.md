@@ -1,11 +1,13 @@
-# Adding Orders
+# Adding Orders to Workflows
 
 Orders can be added on demand and will be executed independently from the Daily Plan.
+
+Users who are happy with default values and wish to submit an Order for immediate execution will not have to add any further input. 
 
 ### Order Attributes
 
 - **Order Name**: An optional name that can be used to filter Orders in a number of views.
-- **Tag Name**: Any number of tags can be added that will be displayed and that can be searched for if specified from the Settings page.
+- **Tag Name**: Any number of Tags can be added that will be displayed and that can be looked up if specified from the Settings page.
 - **Ignore Job Admission Times**: Jobs can be limited to run on certain days and/or in certain timeslots. Orders arriving have to wait for the next available timeslot. The option forces Jobs to start independently from such limitations.
 
 ### Start Time
@@ -19,7 +21,7 @@ Orders can be added on demand and will be executed independently from the Daily 
   - **1h 15m 30s** or **01:15:30**: 1 hour, 15 minutes and 30 seconds later
 - **No Start Time**: The Order will not start but will be available from the *pending* state and can be assigned a start time later on.
 
-### Order Dependenceies
+### Order Dependencies
 
 - **Notice Space Key**: If the Workflow holds dependencies based on Notices, then a daily plan date can be specified to which dependencies will be resolved. By default the current day is used.
   - past dates are accepted for wich a plan is opened.
@@ -58,3 +60,8 @@ If an Order should not start from the first node in the Workflow, then a positio
 
 - **Add Order**: If more than one Order should be added to the Workflow, then the link will add the parameterization for the additional Order.
 - **Add Orders from Schedules**: if the Workflow is assigned one or more Schedules, then for each Schedule an Order parameterized from a Schedule will be added.
+
+## References
+
+- [Workflows](/workflows)
+- [JS7 - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows)

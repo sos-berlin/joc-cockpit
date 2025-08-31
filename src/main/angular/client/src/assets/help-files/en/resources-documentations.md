@@ -4,7 +4,7 @@ The *Documentations* view displays information about use of Documentations and a
 
 Documentations are referenced by Workflows and Jobs, and are displayed with the [Workflows](/workflows) view.
 
-## Navigation
+## Navigation Panel
 
 The left panel displays the tree of inventory folders that hold Documentations.
 
@@ -16,7 +16,7 @@ The Quick Search icon offers looking up Documentations based on user input:
 - Typing **Test** will display Documentations with names such as *test-documentation-1* and *TEST-documentation-2*. 
 - Typing **\*Test** will display Documentations with names such as *test-documentation-1* and *my-TEST-documentation-2*
 
-## Display
+## Documentation Panel
 
 ### Display of Documentations
 

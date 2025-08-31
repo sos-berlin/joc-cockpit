@@ -7,7 +7,7 @@ The *Calendars* view displays information about use of Calendars.
 
 Calendars are referenced by Schedules that are used by the Daily Plan to create Orders.
 
-## Navigation
+## Navigation Panel
 
 The left panel displays the tree of inventory folders that hold Calendars.
 
@@ -19,7 +19,7 @@ The Quick Search icon offers looking up Calendars based on user input:
 - Typing **Test** will display Calendars with names such as *test-calendar-1* and *TEST-calendar-2*. 
 - Typing **\*Test** will display Calendars with names such as *test-calendar-1* and *my-TEST-calendar-2*
 
-## Display
+## Calendar Panel
 
 ### Display of Calendars
 
@@ -42,5 +42,5 @@ The [Resources - Calendars - Search](/resources-calendars-search) offers criteri
 ## References
 
 - [Resources - Calendars - Search](/resources-calendars-search)
-- [Daily Plan](/operating-daily-plan)
+- [Daily Plan](/daily-plan)
 - [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars)

@@ -37,4 +37,4 @@ The search meta character **\*** is used to specify that dependencies are looked
 
 ## References
 
-- [Resources - Calendars](/resources-notice-boards)
+- [Resources - Calendars](/resources-calendars)

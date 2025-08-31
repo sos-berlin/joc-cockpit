@@ -18,7 +18,7 @@ Notice Boards implement dependencies across Workflows, they are available from t
   - can span a number of Jobs and Workflow Instructions in the same Workflow,
   - waits for one or more *Notices* being present and deletes *Notices* on completion of the block.
 
-## Navigation
+## Navigation Panel
 
 The left panel displays the tree of inventory folders that hold Notice Boards.
 
@@ -30,11 +30,11 @@ The Quick Search icon offers looking up Notice Boards based on user input:
 - Typing **Test** will display Notice Boards with names such as *test-board-1* and *TEST-board-2*. 
 - Typing **\*Test** will display Notice Boards with names such as *test-board-1* and *my-TEST-board-2*
 
-## Display
+## Notice Board Panel
 
 Display is focused on *Notice Boards*, related *Notices* and Orders.
 
-The [Daily Plan - Dependencies](/operating-daily-plan-dependencies) view is focused on display of *Notice Boards*, *Notices* and Orders related to a specific Daily Plan date.
+The [Daily Plan - Dependencies](/daily-plan-dependencies) view is focused on display of *Notice Boards*, *Notices* and Orders related to a specific Daily Plan date.
 
 ### Display of Notice Boards
 
@@ -66,5 +66,5 @@ The [Resources - Notice Boards - Search](/resources-notice-boards-search offers 
 ## References
 
 - [Resources - Notice Boards - Search](/resources-notice-boards-search)
-- [Daily Plan - Dependencies](/operating-daily-plan-dependencies)
+- [Daily Plan - Dependencies](/daily-plan-dependencies)
 - [JS7 - Notice Baords](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards)

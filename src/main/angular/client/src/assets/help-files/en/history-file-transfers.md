@@ -4,7 +4,7 @@ The *File Transfer History* view summarizes the execution history of Orders for 
 
 For log output created from File Transfer Jobs see [Task History](/history-tasks). For the history of orders see [Order History](/history-orders).
 
-## Display
+## History Panel
 
 ### History of Transfers
 

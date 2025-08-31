@@ -1,8 +1,8 @@
-# Operating Daily Plan from Calendar
+# Daily Plan Calendar
 
 A number of operations are available from the Daily Plan Calendar. 
 
-For general operations available from the Daily Plan see [Operating Daily Plan](/operating-daily-plan).
+For general operations available from the Daily Plan see [Daily Plan](/daily-plan).
 
 ## Selecting single Date
 
@@ -58,5 +58,5 @@ The operation is available from a button below the calendar widget for an indivi
 
 ## References
 
-- [Operating Daily Plan](/operating-daily-plan)
+- [Daily Plan](/daily-plan)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)

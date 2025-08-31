@@ -8,7 +8,7 @@ When using the *deploy* operation in the *Configuration* view, then confirmation
 
 The *Deployment History* is updated asynchronously to reflect the deployment status of inventory objects.
 
-## Display
+## History Panel
 
 ### History of Deployments
 

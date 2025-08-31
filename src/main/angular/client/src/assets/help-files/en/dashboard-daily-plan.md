@@ -22,7 +22,7 @@ The dropdown button in the right upper corner of the panel offers selecting Orde
 ## References
 
 - [Dashboard Orders](/dashboard-orders)
-- [Daily Plan](/operating-daily-plan)
+- [Daily Plan](/daily-plan)
 - [Order History](/order-history)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)
 - [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)

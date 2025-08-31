@@ -1,10 +1,10 @@
-# Operating Daily Plan
+# Daily Plan
 
 The *Daily Plan* view provides an overview of Orders scheduled for future execution and allows to manage the *Daily Plan*.
 
 The *Daily Plan* is subject to purge of the database performed by the [Cleanup Service](/service-cleanup).
 
-For operations related to the calendar widget see [Operating Daily Plan Calendar](/operating-daily-plan-calendar).
+For operations related to the calendar widget see [Daily Plan Calendar](/daily-plan-calendar).
 
 ## Order States
 
@@ -52,7 +52,13 @@ The Daily Plan offers the following state transitions:
       ┖──────────────────┘
 </pre>
 
-## Order Status Operations
+## Navigation Panel
+
+
+
+## Daily Plan Panel
+
+### Order Status Operations
 
 Operations are available individually from an Order's action menu and from bulk operations.
 
@@ -64,7 +70,7 @@ The following filter buttons limit the scope of operations:
 - **Finished**: The *cancel* operation can be applied to Orders that completed.
 - **Late** is an additional filter on top of Order states that indicates that Orders were started later than expected.
 
-### Life Cycle Operations
+#### Life Cycle Operations
 
 - **Let Run Orders**
   - When applied to *submitted* Orders, then they will start immediately. Orders in scope of a bulk operation will start simultaneously.
@@ -79,7 +85,7 @@ The following filter buttons limit the scope of operations:
   - **Keep Daily Plan Assignment**: Calendar-based dependencies from Notice Boards will be resolved to the original daily plan date.
   - **Ignore Job Admission Times**: Jobs can be limited to run on certain days and/or in certain timeslots. Orders arriving have to wait for the next available timeslot. The option forces Jobs to start independently from such limitations.
 
-### Modify Start Time
+#### Modify Start Time
 
 - **Now**: Orders will start immediately.
 - **Specific Date**: Orders will start on the given date and time. Orders will be assigned the related daily plan date when it comes to resolving calendar-based dependencies.
@@ -87,7 +93,7 @@ The following filter buttons limit the scope of operations:
 - **Relative to Start Time**: Orders will start with a positive or negative offset to their original start time in seconds or in hours, 
 minutes, seconds, for example *-04:00:00* to start 4 hours earlier or *+12:00:00* to start 12 hours later. The Orders' assignment to the original daily plan date remains in place when it comes to resolving calendar-based dependencies.
 
-### Modify Parameterization
+#### Modify Parameterization
 
 For related Workflows specifying variables, the values can be modified. When used with bulk operations, all Orders will carry the same values for variables.
 
@@ -106,7 +112,7 @@ A position can be specified if Orders should not start from the first node in th
   - If a *Block Position* is specified, then any same-level node inside the block can be specified before which the Order will terminate.
   - More than one *End Position* can be specified.
 
-### Modify Priority
+#### Modify Priority
 
 - **Priority**; 
   - If an Order will meet a *Resource Lock* instruction in the Workflow that limits parallelism, then its priority determines the position in the queue of waiting Orders.
@@ -119,7 +125,7 @@ A position can be specified if Orders should not start from the first node in th
 
 ## References
 
+- [Daily Plan - Calendar](/daily-plan-calendar)
 - [Order History](/history-orders)
-- [Operating Daily Plan Calendar](/operating-daily-plan-calendar)
 - [Cleanup Service](/service-cleanup)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)

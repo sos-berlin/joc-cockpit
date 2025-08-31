@@ -9,7 +9,7 @@ Agents come in the following flavors:
   - **Director Agents** orchestrate *Subagents* in an Agent Cluster. In addition they can be used to execute Jobs.
   - **Subagents** execute Jobs on remote machines on-premises and from containers. They can be considered worker nodes in an Agent Cluster and are managed by *Director Agents*.
 
-## Display
+## Agent Job Executions Panel
 
 The following information is displayed:
 

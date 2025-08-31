@@ -6,16 +6,16 @@ The *Order History* is subject to purge of the database performed by the [Cleanu
 
 For the history of tasks see [Task History](/history-tasks).
 
-## Navigation
+## Navigation Panel
 
 The left panel allows filtering by Tags from Workflows and Orders.
 
 - **Workflow Tags** are assigned from the [Configuration - Workflows](/configuration-workflows) view.
 - **Order Tags** are assigned from the [Configuration - Schedules](/configuration-schedules) view.
 
-Tags are selected fron + and - icons and can be looked up using the search icon. Display of Tags must be activated from the *joc* section in the [Settings](/settings) page.
+Tags are selected fron + and - icons and can be looked up using the Quick Search icon. Display of Tags must be activated from the *joc* section in the [Settings](/settings).
 
-## Display
+## History Panel
 
 Display is limited to a maximum of 5000 entries if not otherwise specifed from [User Profile - Preferences](/profile-preferences).
 
@@ -72,5 +72,5 @@ User's can apply filters available on top of the window to limit display of Orde
 - [Cleanup Service](/service-cleanup)
 - [Configuration - Workflows](/configuration-workflows)
 - [Configuration - Schedules](/configuration-schedules)
-- [Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
-- [Task History](https://kb.sos-berlin.com/display/JS7/JS7+-+Task+History)
+- [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
+- [JS7 - Task History](https://kb.sos-berlin.com/display/JS7/JS7+-+Task+History)

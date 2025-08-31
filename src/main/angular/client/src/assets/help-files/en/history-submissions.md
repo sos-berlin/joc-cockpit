@@ -1,18 +1,18 @@
 # Submission History
 
-The *Submission History* keeps track of Orders submitted from the [Daily Plan](/operating-daily-plan).
+The *Submission History* keeps track of Orders submitted from the [Daily Plan](/daily-plan).
 
 Orders are created by the Daily Plan in two steps: first they are *planned*, next they are *submitted* to Controller and Agents. Submission includes that Orders will start autonomously with Agents.
 
 The *Submission History* is subject to purge of the database performed by the [Cleanup Service](/service-cleanup).
 
-## Display
+## History Panel
 
 Display is grouped in blocks per Daily Plan date, per Submission and Orders included.
 
 Display is limited to a maximum of 5000 entries if not otherwise specifed from [User Profile - Preferences](/profile-preferences).
 
-### History of Daily Plan Dates
+### History of Daily Plan
 
 The following information is displayed per Daily Plan date.
 
@@ -62,7 +62,7 @@ User's can apply filters available on top of the window to limit display of Dail
 
 ## References
 
-- [Daily Plan](/operating-daily-plan)
+- [Daily Plan](/daily-plan)
 - [Workflows](/workflows)
 - [Configuration - Workflows](/configuration-workflows)
 - [Settings](/settings)

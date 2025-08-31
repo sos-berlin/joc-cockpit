@@ -10,7 +10,7 @@ Resource Locks are block instructions that can span a number of Jobs and Workflo
   - The Resource Lock is assigned a *capacity*, for example 6.
   - Each use of the Resource Lock by a set of Jobs is assigned a *weight*, for example 3 and 4 for use in Workflows A and B. This allows 2 Orders for Workflow A to be executed in parallel and it denies parallel execution of Orders for Workflows A and B.
 
-## Navigation
+## Navigation Panel
 
 The left panel displays the tree of inventory folders that hold Resource Locks.
 
@@ -22,7 +22,7 @@ The Quick Search icon offers looking up Resource Locks based on user input:
 - Typing **Test** will display Resource Locks with names such as *test-lock-1* and *TEST-lock-2*. 
 - Typing **\*Test** will display Resource Locks with names such as *test-lock-1* and *my-TEST-lock-2*
 
-## Display
+## Resource Lock Panel
 
 ### Display of Resource Locks
 

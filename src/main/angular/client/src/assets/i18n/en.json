@@ -2686,7 +2686,7 @@
     "label.modifyAllSelectedOrderPriority": "Modify Priority of selected orders",
     "button.allOrders": "All Orders",
     "button.cancel": "Cancel",
-    "button.cancelSoftly": "Softly",
+    "button.cancelSoftly": "softly",
     "button.startNow": "Start Now",
     "button.cancelAndKillTask": "Cancel/terminate task",
     "button.suspend": "Suspend",
