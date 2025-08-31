@@ -2,7 +2,7 @@
 
 A number of operations are available from the Daily Plan Calendar. 
 
-For general operations available from the Daily Plan page see [Operating Daily Plan](/operating-daily-plan).
+For general operations available from the Daily Plan see [Operating Daily Plan](/operating-daily-plan).
 
 ## Selecting single Date
 
@@ -24,6 +24,7 @@ The following filter buttons limit the scope of operations:
 - **Planned**: The *submit* and *remove* operations can be applied to *planned* Orders that are not *submitted* to the Controller.
 - **Submitted**: The *cancel* operation can be applied to Orders *submitted* to the Controller and Agents.
 - **Finished**: The *cancel* operation can be applied to Orders that completed.
+- **Late** is an additional filter on top of Order states that indicates that Orders were started later than expected.
 
 ### Cancel Orders
 

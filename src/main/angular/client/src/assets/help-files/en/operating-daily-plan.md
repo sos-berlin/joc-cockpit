@@ -1,20 +1,22 @@
 # Operating Daily Plan
 
-A number of operations are available from the Daily Plan view.
+The *Daily Plan* view provides an overview of Orders scheduled for future execution and allows to manage the *Daily Plan*.
+
+The *Daily Plan* is subject to purge of the database performed by the [Cleanup Service](/service-cleanup).
 
 For operations related to the calendar widget see [Operating Daily Plan Calendar](/operating-daily-plan-calendar).
 
 ## Order States
 
-The Daily Plan is a view for future execution of Orders:
+The *Daily Plan* includes Orders holding one of the states:
 
 - **Planned**: Orders have been created but have not been *submitted* to the Controller and Agents.
-- **Submitted**: Orders have been forwarded to the Controller and Agents that will start Orders autonomously. The status applies to Orders scheduled for future execution and to running Orders in execution.
-- **Finished**: Orders have completed. The History view explains if execution was successful or failed.
+- **Submitted**: Orders have been forwarded to the Controller and Agents that will start Orders autonomously. The status applies to Orders scheduled for future execution and to Orders in execution.
+- **Finished**: Orders have completed. The [Order History](/history-orders) view explains if execution was successful or failed.
 
 ## Order State Transitions
 
-The Daily Plan view offers the following state transitions:
+The Daily Plan offers the following state transitions:
 
 <pre>
       ┌──────────────────┐
@@ -60,6 +62,7 @@ The following filter buttons limit the scope of operations:
 - **Planned**: The *submit* and *remove* operations can be applied to *planned* Orders that are not *submitted* to the Controller.
 - **Submitted**: The *let run* and *cancel* operations can be applied to Orders *submitted* to the Controller and Agents.
 - **Finished**: The *cancel* operation can be applied to Orders that completed.
+- **Late** is an additional filter on top of Order states that indicates that Orders were started later than expected.
 
 ### Life Cycle Operations
 
@@ -116,5 +119,7 @@ A position can be specified if Orders should not start from the first node in th
 
 ## References
 
+- [Order History](/history-orders)
 - [Operating Daily Plan Calendar](/operating-daily-plan-calendar)
+- [Cleanup Service](/service-cleanup)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)

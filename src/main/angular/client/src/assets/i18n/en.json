@@ -3154,7 +3154,7 @@
       "label.documentationsFound": "Documents found",
       "label.documentationUsedIn": "This Documentation is used by",
       "label.deleteAllDocument": "Delete all Documentations",
-      "label.lastUpdateTime": "Last Update Time",
+      "label.lastUpdateTime": "Modified",
       "label.importDocument": "Import Documentation",
       "label.showDocumentations": "Show Documentation",
       "label.reference": "Reference",
