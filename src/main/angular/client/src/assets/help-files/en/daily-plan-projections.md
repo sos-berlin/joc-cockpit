@@ -4,8 +4,6 @@ The Daily Plan holds Orders that are submitted to Controller and Agents a few da
 
 Users who wish a longer projection period can modify the related setting in the *Settings* page, section *Daily Plan*.
 
-## Display of Projections
-
 ### Dates, Periods and Time Zones
 
 Projections are related to daily plan dates, not calendar dates. 
@@ -21,7 +19,7 @@ Any dates and times are displayed in the time zone specified by the user's profi
 
 ### Display Options
 
-Users can switch tabs between *Monthly* and *Yearly* view of projected Orders.
+Users can switch tabs between *Monthly* and *Yearly* view of projected Orders using the related links in the left upper corner of the screen.
 
 For each day the number of the day in month and the number of projected Orders are displayed:
 
@@ -57,5 +55,5 @@ Projections can be exported to a file in .xlsx format with the daily plan date i
 
 ## References
 
-- [Operating Daily Plan](/operating-daily-plan)
+- [Daily Plan](/daily-plan)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)

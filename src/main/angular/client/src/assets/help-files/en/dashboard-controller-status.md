@@ -28,4 +28,4 @@ Controller instances offer the following operations from the 3-dots action menu 
 
 ## References
 
-- [Dashboard Product Status](/dashboard-product-status)
+- [Dashboard - Product Status](/dashboard-product-status)

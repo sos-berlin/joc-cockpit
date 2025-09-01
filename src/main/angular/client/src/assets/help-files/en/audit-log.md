@@ -1,0 +1,27 @@
+# Audit Log
+
+The *Audit Log* keeps track of changes to scheduling objects.
+
+## Request
+
+In JOC Cockpit all user operations are performed from REST API requests.
+
+The request identifies the endpoint used and offers displaying the request body when clicking the arrow-down icon.
+
+## Categories
+
+- **CONTROLLER** indicates Controller operations such as adding orders on demand.
+- **DAILYPLAN** indicates changes to the daily plan.
+- **IDENTITY** indicates changes to Identity Services.
+- **INVENTORY** indicates inventory changes such as storing workflows.
+
+# Audit Trail
+
+The JOC Cockpit holds an *Audit Trail* that keeps track of any REST API requests. The *Audit Trail* includes information about user sessions and is not available from the JOC Cockpit GUI.
+
+The *Audit Trail* can be activated by administrators and is available from log files on disk.
+
+# Reference
+
+- [JS7 - Audit Log](https://kb.sos-berlin.com/display/JS7/JS7+-+Audit+Log)
+- [JS7 - Audit Trail](https://kb.sos-berlin.com/display/JS7/JS7+-+Audit+Trail)

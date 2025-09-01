@@ -25,7 +25,7 @@ The dropdown button in the right upper corner of the panel offers selecting past
 
 ## References
 
-- [Order History](/order-history)
-- [Task History](/task-history)
+- [Order History](/history-orders)
+- [Task History](/history-tasks)
 - [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
 - [JS7 - Task History](https://kb.sos-berlin.com/display/JS7/JS7+-+Task+History)

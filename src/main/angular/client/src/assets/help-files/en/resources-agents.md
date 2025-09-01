@@ -1,6 +1,6 @@
 # Agent Status
 
-The *Agent Status* panel summarizes the connection status of registered Agents.
+The *Agent* view summarizes the connection status of registered Agents.
 
 ## Architecture
 
@@ -22,7 +22,7 @@ Agent status display makes use of the following color indicators:
 
 - **Green Color** indicates healthy Agent connections.
 - **Yellow Color** indicates Agents that are currently resetting, this means they are initializing their journal and are restarting.
-- **Red Color** indicates failed connections to Agent's if the Agent cannot be reached.
+- **Red Color** indicates failed connections to Agent's, for example if the Agent cannot be reached.
 - **Grey Color** indicates an *unknown* connection status, for example if a Director Agent cannot be reached, then for Subagents the status is *unknown*.
 
 Users should consider the following implications:

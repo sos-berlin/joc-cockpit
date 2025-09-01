@@ -1,8 +1,8 @@
-# Operating Daily Plan from Calendar
+# Daily Plan Calendar
 
 A number of operations are available from the Daily Plan Calendar. 
 
-For general operations available from the Daily Plan page see [Operating Daily Plan](/operating-daily-plan).
+For general operations available from the Daily Plan see [Daily Plan](/daily-plan).
 
 ## Selecting single Date
 
@@ -24,6 +24,7 @@ The following filter buttons limit the scope of operations:
 - **Planned**: The *submit* and *remove* operations can be applied to *planned* Orders that are not *submitted* to the Controller.
 - **Submitted**: The *cancel* operation can be applied to Orders *submitted* to the Controller and Agents.
 - **Finished**: The *cancel* operation can be applied to Orders that completed.
+- **Late** is an additional filter on top of Order states that indicates that Orders were started later than expected.
 
 ### Cancel Orders
 
@@ -57,5 +58,5 @@ The operation is available from a button below the calendar widget for an indivi
 
 ## References
 
-- [Operating Daily Plan](/operating-daily-plan)
+- [Daily Plan](/daily-plan)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)
