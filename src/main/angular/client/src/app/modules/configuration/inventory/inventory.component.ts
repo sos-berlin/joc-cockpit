@@ -1427,7 +1427,7 @@ export class SingleDeployComponent {
   }
 
   private computeDependenciesToggleAvailable(item: any): boolean {
-    return !(item?.forceDependencies === true);
+      return !(item?.forceDependencies === true);
   }
 }
 

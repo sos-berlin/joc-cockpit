@@ -27,6 +27,8 @@ export class FrequencyModalComponent {
   calendar: any;
   editor: any;
   frequency: any;
+  frequencyType: any;
+  calendarData: any;
   flag: boolean;
   _temp: any = {};
   data: any = {};
@@ -60,6 +62,7 @@ export class FrequencyModalComponent {
   countArrU = [1, 2, 3, 4];
   frequencyEditIndex: number = -1;
   showMonthRange = false;
+  availableNonWorkingDayCalendars: any = [];
 
   daysOptions = [
     {label: 'monday', value: '1', checked: false},
@@ -97,6 +100,8 @@ export class FrequencyModalComponent {
     this.calendar = this.modalData.calendar;
     this.editor = this.modalData.editor;
     this.frequency = this.coreService.clone(this.modalData.frequency);
+    this.frequencyType = this.modalData.frequencyType;
+    this.calendarData = this.modalData.calendarData;
     this.flag = this.modalData.flag;
     this._temp = this.modalData._temp || {};
     this.data = this.modalData.data || {};
@@ -171,8 +176,21 @@ export class FrequencyModalComponent {
       this.checkMonths();
       this.showMonthRange = true;
     }
+
+    if (this.frequencyType === 'EXCLUDE' && this.calendarData.type === 'WORKINGDAYSCALENDAR') {
+      this.loadAvailableNonWorkingDayCalendars();
+    }
   }
 
+  get filteredFrequencyTab() {
+    if (this.frequencyType === 'EXCLUDE' && this.calendarData.type === 'WORKINGDAYSCALENDAR') {
+      return this.calendarService.frequencyTab;
+    } else {
+      return this.calendarService.frequencyTab.filter(
+        item => item.value !== 'nonWorkingDayCalendars'
+      );
+    }
+  }
   dayChange(value: string[]): void {
     this.frequency.days = value;
     this.onChangeDays();
@@ -228,6 +246,9 @@ export class FrequencyModalComponent {
           this.holidayList.push({date});
         });
       }
+    }
+    if (this.frequencyList[i].tab === 'nonWorkingDayCalendars') {
+      this.frequency.nonWorkingDayCalendars = clone(this.frequencyList[i].nonWorkingDayCalendars);
     }
     if (this.frequencyList[i].tab === 'weekDays') {
       this.frequency.days = clone(this.frequencyList[i].days);
@@ -341,7 +362,16 @@ export class FrequencyModalComponent {
           }).setDataSource(this.tempItems);
         }
       }
-
+      if (this.frequency.tab == 'nonWorkingDayCalendars') {
+        if (this.frequencyType === 'EXCLUDE' && this.calendarData.type === 'WORKINGDAYSCALENDAR') {
+          this.str = 'label.nonWorkingDayCalendars';
+          this.editor.isEnable = !!(this.frequency.nonWorkingDayCalendars &&
+            this.frequency.nonWorkingDayCalendars.length > 0);
+        } else {
+          this.frequency.tab = 'weekDays';
+          this.str = 'label.weekDays';
+        }
+      }
     }
   }
 
@@ -1173,7 +1203,7 @@ export class FrequencyModalComponent {
           color = 'orange';
         }
         this.planItems = [];
-        for (let m = 0; m < result.dates.length; m++) {
+        for (let m = 0; m < result?.dates?.length; m++) {
           const x = result.dates[m];
           this.planItems.push({
             startDate: moment(x),
@@ -1237,6 +1267,13 @@ export class FrequencyModalComponent {
     }
     return obj;
   }
+
+  loadAvailableNonWorkingDayCalendars(): void {
+
+    this.availableNonWorkingDayCalendars = []
+  }
+
+
 }
 
 @Component({
@@ -1651,11 +1688,9 @@ export class CalendarComponent {
     this.editor.showYearView = false;
     this.editor.create = !data;
     this.editor.update = !!data;
-
     if (isEditorEnable) {
       this.editor.isEnable = true;
     }
-
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: FrequencyModalComponent,
@@ -1670,7 +1705,9 @@ export class CalendarComponent {
         frequency: frequency || clone(data),
         isRuntimeEdit: !!data,
         _temp: data ? clone(data) : {},
-        frequencyIndex: frequencyIndex
+        frequencyIndex: frequencyIndex,
+        frequencyType: this.editor.frequencyType,
+        calendarData: this.calendar.configuration
       },
       nzFooter: null,
       nzClosable: false,
@@ -1877,6 +1914,19 @@ export class CalendarComponent {
       for (let x = 0; x < data[type].repetitions.length; x++) {
         obj = {};
         this.iterateData(obj, data[type].repetitions[x], null, 'every', TYPE, null, null);
+      }
+    }
+    if (data[type].nonWorkingDayCalendars && data[type].nonWorkingDayCalendars.length > 0) {
+      obj = {};
+      obj.tab = 'nonWorkingDayCalendars';
+      obj.type = TYPE;
+      obj.nonWorkingDayCalendars = data[type].nonWorkingDayCalendars;
+      obj.str = this.calendarService.freqToStr(obj, this.dateFormat);
+
+      if (TYPE === 'INCLUDE') {
+        this.calendar.configuration.includesFrequency.push(obj);
+      } else {
+        this.calendar.configuration.excludesFrequency.push(obj);
       }
     }
   }

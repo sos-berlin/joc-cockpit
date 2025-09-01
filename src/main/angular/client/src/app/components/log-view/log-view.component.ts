@@ -113,7 +113,6 @@ export class LogViewComponent {
   ngOnDestroy() {
     this.isCancel = true;
     this.cancelApiCalls();
-    this.unsubscribeLogs();
     if (POPOUT_MODALS['windowInstance']) {
       try {
         POPOUT_MODALS['windowInstance'].removeEventListener('beforeunload', this.onUnload);

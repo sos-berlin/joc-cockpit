@@ -15,13 +15,14 @@
         <div>
           <div class="m-b">
             <div class="form-group row" *ngIf="isVisible">
-              <label class="col-sm-3 form-control-label" translate>runtime.label.frequencyType</label>
-              <div class="col-sm-6">
-                <app-select-input [attributeName]="'tab'" [isSearchable]="true"
-                                  [listArray]="calendarService.frequencyTab" [name]="'frequencyTab'" [optionLabel]="'label'" [optionValue]="'value'"
-                                  [object]="frequency" (modelChange)="changeFrequency()"></app-select-input>
-              </div>
-            </div>
+  <label class="col-sm-3 form-control-label" translate>runtime.label.frequencyType</label>
+  <div class="col-sm-6">
+    <app-select-input [attributeName]="'tab'" [isSearchable]="true"
+                      [listArray]="filteredFrequencyTab" [name]="'frequencyTab'" [optionLabel]="'label'" [optionValue]="'value'"
+                      [object]="frequency" (modelChange)="changeFrequency()"></app-select-input>
+  </div>
+</div>
+
           </div>
           <div class="tab-content b-l b-r b-b p-a p-b-0 m-b b-t"
                [ngClass]="{'specific-day-ht':frequency.tab == 'specificDays' }">
@@ -321,8 +322,26 @@
                 </div>
               </div>
             </div>
+            <div class="tab-pane animated fadeIn" id="tab7"
+                 [ngClass]="{'active':frequency.tab == 'nonWorkingDayCalendars'}">
+              <div class="form-group row">
+                <label class="col-sm-3" translate>runtime.label.nonWorkingDayCalendars</label>
+                <div class="col-sm-9">
+                  <nz-select [(ngModel)]="frequency.nonWorkingDayCalendars"
+                             name="nonWorkingDayCalendars"
+                             nzMode="multiple"
+                             nzPlaceHolder="{{'runtime.placeholder.nonWorkingDayCalendars' | translate}}"
+                             (ngModelChange)="onFrequencyChange()">
+                    <nz-option *ngFor="let calendar of availableNonWorkingDayCalendars"
+                               [nzValue]="calendar.name"
+                               [nzLabel]="calendar.name">
+                    </nz-option>
+                  </nz-select>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="form-group row" [hidden]="frequency.tab =='nationalHoliday' || frequency.tab =='specificDays' || (frequency.tab =='every' && frequency.dateEntity == 'YEARLY')">
+          <div class="form-group row" [hidden]="frequency.tab =='nationalHoliday' || frequency.tab =='specificDays' || frequency.tab =='nonWorkingDayCalendars'  || (frequency.tab =='every' && frequency.dateEntity == 'YEARLY')">
             <label class="col-sm-3" translate>runtime.label.monthRange
               <a class="cursor">
                 <i class="cursor fa fa-caret-up m-l-xs" [hidden]="showMonthRange"

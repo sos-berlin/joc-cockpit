@@ -32,7 +32,8 @@ export class CalendarService {
     {label: 'runtime.label.specificDays', value: 'specificDays'},
     {label: 'runtime.label.monthDays', value: 'monthDays'},
     {label: 'runtime.label.every', value: 'every'},
-    {label: 'runtime.label.nationalHoliday', value: 'nationalHoliday'}
+    {label: 'runtime.label.nationalHoliday', value: 'nationalHoliday'},
+    {label: 'runtime.label.nonWorkingDayCalendars', value: 'nonWorkingDayCalendars'}
   ];
   dateEntity = [
     {label: 'runtime.label.days', value: 'DAILY'},
@@ -215,6 +216,11 @@ export class CalendarService {
   freqToStr(data: any, dataFormat: string): string {
     const self = this;
     let str = '';
+    if (data.tab === 'nonWorkingDayCalendars') {
+      if (data.nonWorkingDayCalendars && data.nonWorkingDayCalendars.length > 0) {
+        return 'Non-working day calendars: ' + data.nonWorkingDayCalendars.join(', ');
+      }
+    }
     if (data.months && isArray(data.months)) {
       str = self.getMonths(data.months);
     }
@@ -696,6 +702,17 @@ export class CalendarService {
         obj1.step = data.interval || 1;
         obj[type].repetitions.push(obj1);
 
+      }
+      if (data.tab === 'nonWorkingDayCalendars') {
+        const type = (!data.type || data.type === 'INCLUDE') ? 'includes' : 'excludes';
+        if (!obj[type].nonWorkingDayCalendars) {
+          obj[type].nonWorkingDayCalendars = [];
+        }
+        data.nonWorkingDayCalendars.forEach((calendar: string) => {
+          if (obj[type].nonWorkingDayCalendars.indexOf(calendar) === -1) {
+            obj[type].nonWorkingDayCalendars.push(calendar);
+          }
+        });
       }
     }
     return obj;
