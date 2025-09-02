@@ -47,6 +47,7 @@ export class OIDCAuthService {
   access_token: string | undefined;
   id_token: string | undefined;
   refresh_token: string | undefined;
+  iamOidcGroupClaims: string[] = [];
 
   constructor(private coreService: CoreService, private toasterService: ToastrService, private authService: AuthService,
               private router: Router) {
@@ -62,6 +63,9 @@ export class OIDCAuthService {
     this.issuer = config.iamOidcAuthenticationUrl;
     this.redirectUri = window.location.origin + '/joc';
     this.showDebugInformation = true;
+    if (config.iamOidcGroupClaims && Array.isArray(config.iamOidcGroupClaims)) {
+      this.iamOidcGroupClaims = config.iamOidcGroupClaims;
+    }
   }
 
   loadDiscoveryDocument(fullUrl: string | null) {
@@ -202,8 +206,14 @@ export class OIDCAuthService {
       let scope = this.scope;
       if (!scope.match(/(^|\s)openid($|\s)/)) {
         scope = 'openid ' + scope;
-      }
-      if (this.clientFlowType != 'AUTHENTICATION') {
+    }
+
+    if (this.iamOidcGroupClaims.length > 0) {
+        const groupClaimsScope = this.iamOidcGroupClaims.join(' ');
+        scope += ' ' + groupClaimsScope;
+    }
+
+    if (this.clientFlowType != 'AUTHENTICATION') {
         this.responseTypesSupported.forEach((type: string) => {
           if (type.includes('id_token')) {
             this.responseType = type;
@@ -576,7 +586,6 @@ export class OIDCAuthService {
    * method silentRefresh.
    */
   public refreshToken(data: any): Promise<any> {
-    console.log(this.tokenEndpoint, 'this.tokenEndpoint')
     this.assertUrlNotNullAndCorrectProtocol(
       this.tokenEndpoint,
       'tokenEndpoint'
