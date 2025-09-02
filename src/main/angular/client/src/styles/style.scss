@@ -9979,48 +9979,59 @@ cdk-virtual-scroll-viewport {
   margin-right: 15px;
   margin-bottom: -6px;
   margin-top: -6px;
-  font-size: 18px;
+  font-size: 20px;
+  color: var(--primary);
+  opacity: 0.7;
 }
 
 .help-info-order{
   position: absolute;
   right: 14px;
-  font-size: 18px;
+  font-size: 20px;
   z-index: 10;
+  color: var(--primary);
+  opacity: 0.7;
 }
 
 .help-info-filter{
   position: absolute;
   right: 14px;
-  font-size: 18px;
+  font-size: 20px;
   top: 20px;
   z-index: 10;
+  color: var(--primary);
+  opacity: 0.7;
 }
 
 .help-info-dashboard{
   position: absolute;
   right: 14px;
-  font-size: 18px;
+  font-size: 16px;
   top: 16px;
   z-index: 10;
+  color: var(--primary);
+  opacity: 0.7;
 }
 
 .help-info-dailyplan {
-  position: absolute;
-  right: 33px;
+  float: right;
   margin-top: 14px;
-  font-size: 18px;
+  font-size: 20px;
   cursor: pointer;
   z-index: 10;
+  color: var(--primary);
+  opacity: 0.7;
 }
 
 .help-info-dailyplan-cal {
   position: absolute;
   right: 10px;
-  font-size: 18px;
+  font-size: 20px;
   cursor: pointer;
   z-index: 10;
   bottom: 6px;
+  color: var(--primary);
+  opacity: 0.7;
 }
 
 
@@ -10158,6 +10169,7 @@ cdk-virtual-scroll-viewport {
 
 /* External link indicator */
 .help-md a[href^="http"]:not([href*="//localhost"]):not([href*="//127.0.0.1"])::after {
+  content: " ⬈" !important;
   margin-left: 0.25em !important;
   font-size: 0.85em !important;
   opacity: 0.7 !important;

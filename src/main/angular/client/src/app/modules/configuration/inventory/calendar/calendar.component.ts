@@ -13,7 +13,13 @@ import {CommentModalComponent} from '../../../../components/comment-modal/commen
 
 declare const Holidays;
 declare const $;
-
+interface CalendarItem {
+  id: number;
+  name: string;
+  path: string;
+  objectType: 'WORKINGDAYSCALENDAR' | 'NONWORKINGDAYSCALENDAR' | string;
+  [k: string]: any;
+}
 @Component({
   selector: 'app-frequency-modal-content',
   templateUrl: './frequency-dialog.html'
@@ -1269,10 +1275,23 @@ export class FrequencyModalComponent {
   }
 
   loadAvailableNonWorkingDayCalendars(): void {
-
-    this.availableNonWorkingDayCalendars = []
+    this.coreService.post('inventory/search', {
+      deployedOrReleased: true,
+      returnType: 'CALENDAR' // (If your API supports it, you can try 'NONWORKINGDAYSCALENDAR' directly)
+    }).subscribe({
+      next: (res: any) => {
+        const items: CalendarItem[] = res?.results ?? [];
+        this.availableNonWorkingDayCalendars = items
+          .filter(i => i.objectType === 'NONWORKINGDAYSCALENDAR')
+          .filter((v, idx, arr) => arr.findIndex(a => a.name === v.name) === idx)
+          .sort((a, b) => a.name.localeCompare(b.name));
+      },
+      error: (err) => {
+        console.error('Failed to load calendars', err);
+        this.availableNonWorkingDayCalendars = [];
+      }
+    });
   }
-
 
 }
 

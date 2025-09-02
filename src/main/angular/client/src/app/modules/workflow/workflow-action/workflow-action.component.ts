@@ -1940,7 +1940,7 @@ addArguments(orderIndex): void {
       nzClassName: 'lg',
       nzData: {
         preferences: this.preferences,
-        helpKey: 'adding-orders'
+        helpKey: 'workflows-orders-add'
       },
       nzFooter: null,
       nzClosable: false,

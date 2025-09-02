@@ -2833,7 +2833,7 @@ export class WorkflowComponent {
       nzClassName: 'lg',
       nzData: {
         preferences: this.preferences,
-        helpKey: 'searching-workflows'
+        helpKey: 'workflows-search'
       },
       nzFooter: null,
       nzClosable: false,

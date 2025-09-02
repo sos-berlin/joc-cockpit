@@ -3705,16 +3705,16 @@ export class DailyPlanComponent {
 
     switch (this.dailyPlanFilters?.tabIndex) {
       case 0:
-        helpKey = 'operating-daily-plan';
+        helpKey = 'daily-plan';
         break;
       case 1:
-        helpKey = 'operating-daily-plan-projections';
+        helpKey = 'daily-plan-projections';
         break;
       default:
-        helpKey = 'operating-daily-plan-dependencies';
+        helpKey = 'daily-plan-dependencies';
     }
     if (cal) {
-      helpKey = 'operating-daily-plan-calendar';
+      helpKey = 'daily-plan-calendar';
     }
     this.modal.create({
       nzTitle: undefined,
