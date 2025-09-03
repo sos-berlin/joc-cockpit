@@ -166,6 +166,7 @@
                 class="btn btn-sm btn-grey m-l-12" nz-tooltip="{{'common.button.collapseDetails' | translate}}">
           <i class="fa fa-compress text"></i>
         </button>
+        <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-workflows cur-point fa fa-info-circle text-20"></i>
         <button (click)="advancedSearch()" *ngIf="!showSearchPanel" class="btn btn-sm inline pull-right m-l btn-grey">
           <span translate>common.button.advancedSearch</span>
           <i class="fa fa-caret-down p-l-xs"></i>

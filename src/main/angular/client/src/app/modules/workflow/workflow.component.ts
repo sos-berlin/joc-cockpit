@@ -2826,14 +2826,14 @@ export class WorkflowComponent {
     this.searchByOrderTags(obj);
   }
 
-  helpPage(): void{
+  helpPage(key): void{
     this.modal.create({
       nzTitle: undefined,
       nzContent: HelpViewerComponent,
       nzClassName: 'lg',
       nzData: {
         preferences: this.preferences,
-        helpKey: 'workflows-search'
+        helpKey: key
       },
       nzFooter: null,
       nzClosable: false,

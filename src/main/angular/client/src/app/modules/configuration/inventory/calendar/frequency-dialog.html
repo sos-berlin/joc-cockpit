@@ -429,8 +429,10 @@
           <nz-select [(ngModel)]="calObj.frequency" name="freq"
                      (ngModelChange)="changeFrequencyObj(calObj.frequency)">
             <nz-option nzValue="all" [nzLabel]="'runtime.label.allFrequency' | translate"></nz-option>
-            <nz-option *ngFor="let data of frequencyList1" [nzValue]="data"
-                       [nzLabel]="data.str + '-' + data.type"></nz-option>
+            <nz-option *ngFor="let data of filteredFrequencyList1"
+                       [nzValue]="data"
+                       [nzLabel]="data.str + '-' + data.type">
+            </nz-option>
           </nz-select>
         </div>
       </div>

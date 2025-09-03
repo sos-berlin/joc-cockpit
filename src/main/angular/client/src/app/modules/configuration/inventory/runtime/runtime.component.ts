@@ -7,10 +7,19 @@ import {CalendarService} from '../../../../services/calendar.service';
 import {NZ_MODAL_DATA} from 'ng-zorro-antd/modal';
 import * as moment from "moment/moment";
 import {NgModel} from "@angular/forms";
-import { DatePipe } from '@angular/common';
+import {DatePipe} from '@angular/common';
 
 declare const Holidays;
 declare const $;
+
+interface CalendarItem {
+  id: number;
+  name: string;
+  path: string;
+  objectType: 'WORKINGDAYSCALENDAR' | 'NONWORKINGDAYSCALENDAR' | string;
+
+  [k: string]: any;
+}
 
 @Component({
   selector: 'app-restriction',
@@ -41,6 +50,8 @@ export class AddRestrictionComponent {
   isVisible = false;
   countArr = [0, 1, 2, 3, 4];
   countArrU = [1, 2, 3, 4];
+  availableNonWorkingDayCalendars: any = [];
+
   daysOptions = [
     {label: 'monday', value: '1', checked: false},
     {label: 'tuesday', value: '2', checked: false},
@@ -138,6 +149,7 @@ export class AddRestrictionComponent {
       this.checkMonths();
       this.showMonthRange = true;
     }
+    this.loadAvailableNonWorkingDayCalendars();
   }
 
   checkDays(): void {
@@ -309,6 +321,11 @@ export class AddRestrictionComponent {
             delete this.frequency.months;
             delete this.frequency.allMonth;
           }
+        }else if (this.frequency.tab == 'nonWorkingDayCalendars') {
+          this.str = 'label.nonWorkingDayCalendars';
+          this.editor.frequencyType = 'EXCLUDE';
+          this.editor.isEnable = !!(this.frequency.nonWorkingDayCalendars &&
+            this.frequency.nonWorkingDayCalendars.length > 0);
         }
       }
       if (this.frequency.tab == 'specificWeekDays') {
@@ -339,6 +356,7 @@ export class AddRestrictionComponent {
           }).setDataSource(this.tempItems);
         }
       }
+
     }
   }
 
@@ -750,6 +768,15 @@ export class AddRestrictionComponent {
               flag1 = true;
               break;
             }
+          }else if (this.frequency.tab == 'nonWorkingDayCalendars') {
+            const existingCalendars = this.calendar.frequencyList[i].nonWorkingDayCalendars || [];
+            const newCalendars = this.frequency.nonWorkingDayCalendars || [];
+
+            const combined = [...existingCalendars, ...newCalendars];
+            this.calendar.frequencyList[i].nonWorkingDayCalendars = [...new Set(combined)];
+            this.calendar.frequencyList[i].str = this.calendarService.freqToStr(this.calendar.frequencyList[i], this.dateFormat);
+            flag1 = true;
+            break;
           }
         }
       }
@@ -772,6 +799,14 @@ export class AddRestrictionComponent {
         }
         if (this.frequency.tab != 'nationalHoliday') {
           this.frequency.type = this.editor.frequencyType;
+          if (this.frequency.tab === 'nonWorkingDayCalendars') {
+            this.frequency = {
+              tab: this.frequency.tab,
+              type: this.frequency.type,
+              nonWorkingDayCalendars: this.frequency.nonWorkingDayCalendars || [],
+              str: this.frequency.str
+            };
+          }
           this.calendar.frequencyList.push(this.coreService.clone(this.frequency));
         }
       } else {
@@ -798,6 +833,7 @@ export class AddRestrictionComponent {
         this.calendar.frequencyList.push(this.coreService.clone(this.frequency));
       }
     }
+    this.calendar.frequencyList = [...this.calendar.frequencyList];
     this.frequency.nationalHoliday = [];
     this.holidayDays.checked = false;
     this.editor.isEnable = false;
@@ -862,6 +898,8 @@ export class AddRestrictionComponent {
       this.holidayList = [];
       this.frequency.year = new Date().getFullYear();
       this.countryField = false;
+    }else if (data.tab === 'nonWorkingDayCalendars') {
+      this.frequency.nonWorkingDayCalendars = [];
     }
     this.checkDays();
     this.checkMonths();
@@ -897,6 +935,29 @@ export class AddRestrictionComponent {
     }
     this.editor.isEnable = this.tempItems.length > 0;
     $('#calendar').data('calendar').setDataSource(this.tempItems);
+  }
+
+  get filteredFrequencyTab() {
+    return this.calendarService.frequencyTab;
+  }
+
+  loadAvailableNonWorkingDayCalendars(): void {
+    this.coreService.post('inventory/search', {
+      deployedOrReleased: true,
+      returnType: 'CALENDAR'
+    }).subscribe({
+      next: (res: any) => {
+        const items: CalendarItem[] = res?.results ?? [];
+        this.availableNonWorkingDayCalendars = items
+          .filter(i => i.objectType === 'NONWORKINGDAYSCALENDAR')
+          .filter((v, idx, arr) => arr.findIndex(a => a.name === v.name) === idx)
+          .sort((a, b) => a.name.localeCompare(b.name));
+      },
+      error: (err) => {
+        console.error('Failed to load calendars', err);
+        this.availableNonWorkingDayCalendars = [];
+      }
+    });
   }
 
 }
@@ -1264,10 +1325,10 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
           this.calendarTitle = e.currentYear;
           if (this.toDate) {
             this.changeDate();
-            if(!this.calendar){
-              setTimeout(()=>{
+            if (!this.calendar) {
+              setTimeout(() => {
                 this.attachDayTooltips(cal);
-              },100)
+              }, 100)
             }
           }
 
@@ -1293,13 +1354,13 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     cal.element.find('.day .day-content').removeAttr('title');
 
     cal.element.find('.day:not(.old, .new, .disabled)').each((_, td) => {
-      const $td      = $(td);
-      const date     = cal._getDate($td);
-      const events   = cal.getEvents(date);
+      const $td = $(td);
+      const date = cal._getDate($td);
+      const events = cal.getEvents(date);
 
       const lines = events
         .map(ev => ev._period)
-        .map(p  => this.coreService.getPeriodStr(p))
+        .map(p => this.coreService.getPeriodStr(p))
         .filter(l => !!l);
 
       if (lines.length) {
@@ -1347,7 +1408,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     const cal = $('#full-calendar').data('calendar') as any;
     cal.setDataSource(this.planItems);
 
-    if(!this.calendar){
+    if (!this.calendar) {
       this.attachDayTooltips(cal);
     }
   }
@@ -1473,11 +1534,11 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   private callDates(obj, flag): void {
     this.coreService.post(!this.calendar ? 'schedule/runtime' : 'inventory/calendar/dates',
       obj).subscribe((result: any) => {
-        if(this.calendar){
-          this.filterCalDates(result, flag);
-        }else{
-          this.filterDates(result, flag);
-        }
+      if (this.calendar) {
+        this.filterCalDates(result, flag);
+      } else {
+        this.filterDates(result, flag);
+      }
     });
   }
 
@@ -1551,8 +1612,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
 
     if (result.periods) {
       toPopulate = result;
-    }
-    else if (result.dates) {
+    } else if (result.dates) {
       const dateKeys = Object.keys(result.dates);
       const allPeriods: any[] = [];
 
@@ -1560,18 +1620,17 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         const day = result.dates[dateKey];
         if (Array.isArray(day.periods)) {
           day.periods.forEach(period => {
-            allPeriods.push({ dateKey, ...period });
+            allPeriods.push({dateKey, ...period});
           });
         }
       });
 
       toPopulate = {
-        dates:   dateKeys,
+        dates: dateKeys,
         periods: allPeriods
       };
-    }
-    else {
-      toPopulate = { dates: [], periods: [] };
+    } else {
+      toPopulate = {dates: [], periods: []};
     }
 
     this.populatePlanItems(toPopulate);
@@ -1595,7 +1654,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       const planData: any = {};
 
       planData.plannedStartTime = value.dateKey;
-      planData.plannedShowTime  = "";
+      planData.plannedShowTime = "";
 
       if (value.begin) {
         planData.plannedShowTime = this.coreService.getTimeFromDate(
@@ -1611,8 +1670,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
             this.preferences.dateFormat
           );
         }
-      }
-      else if (value.singleStart) {
+      } else if (value.singleStart) {
         planData.plannedShowTime = this.coreService.getTimeFromDate(
           this.coreService.convertTimeToLocalTZ(this.preferences, value.singleStart),
           this.preferences.dateFormat
@@ -1621,10 +1679,10 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
 
       const dateObj = this.coreService.getDate(value.dateKey);
       planData.startDate = dateObj;
-      planData.endDate   = dateObj;
-      planData.color     = 'blue';
-      planData._period   = value;
-      planData.tooltip   = this.coreService.getPeriodStr(value);
+      planData.endDate = dateObj;
+      planData.color = 'blue';
+      planData._period = value;
+      planData.tooltip = this.coreService.getPeriodStr(value);
 
       this.planItems.push(planData);
     });
@@ -1636,6 +1694,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       const obj: any = {calendarName: list[i].calendarName, periods: list[i].periods};
       if (list[i].frequencyList && list[i].frequencyList.length > 0) {
         obj.includes = {};
+        obj.excludes = {};
         list[i].frequencyList.forEach((val) => {
           this.calendarService.generateCalendarObj(val, obj);
         });

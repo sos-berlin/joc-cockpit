@@ -13,13 +13,16 @@ import {CommentModalComponent} from '../../../../components/comment-modal/commen
 
 declare const Holidays;
 declare const $;
+
 interface CalendarItem {
   id: number;
   name: string;
   path: string;
   objectType: 'WORKINGDAYSCALENDAR' | 'NONWORKINGDAYSCALENDAR' | string;
+
   [k: string]: any;
 }
+
 @Component({
   selector: 'app-frequency-modal-content',
   templateUrl: './frequency-dialog.html'
@@ -182,7 +185,9 @@ export class FrequencyModalComponent {
       this.checkMonths();
       this.showMonthRange = true;
     }
-
+    if (!this.editor.update) {
+      this.frequency.nonWorkingDayCalendars = []
+    }
     if (this.frequencyType === 'EXCLUDE' && this.calendarData.type === 'WORKINGDAYSCALENDAR') {
       this.loadAvailableNonWorkingDayCalendars();
     }
@@ -197,6 +202,11 @@ export class FrequencyModalComponent {
       );
     }
   }
+
+  get filteredFrequencyList1() {
+    return this.frequencyList1.filter(data => data.tab !== 'nonWorkingDayCalendars');
+  }
+
   dayChange(value: string[]): void {
     this.frequency.days = value;
     this.onChangeDays();
@@ -746,7 +756,17 @@ export class FrequencyModalComponent {
               flag1 = true;
               break;
             }
+          } else if (this.frequency.tab == 'nonWorkingDayCalendars') {
+            const existingCalendars = this.frequencyList[i].nonWorkingDayCalendars || [];
+            const newCalendars = this.frequency.nonWorkingDayCalendars || [];
+
+            const combined = [...existingCalendars, ...newCalendars];
+            this.frequencyList[i].nonWorkingDayCalendars = [...new Set(combined)];
+            this.frequencyList[i].str = this.calendarService.freqToStr(this.frequencyList[i], this.dateFormat);
+            flag1 = true;
+            break;
           }
+
         }
       }
       if (_dates && _dates.length > 0) {
@@ -761,8 +781,19 @@ export class FrequencyModalComponent {
       if (!flag1) {
         this.updateFrequencyData(null);
         if (this.frequency.tab != 'nationalHoliday') {
-          this.frequency.type = this.editor.frequencyType;
-          this.frequencyList.push(clone(this.frequency));
+          let freqToAdd = clone(this.frequency);
+          freqToAdd.type = this.editor.frequencyType;
+
+          if (freqToAdd.tab === 'nonWorkingDayCalendars') {
+            freqToAdd = {
+              tab: freqToAdd.tab,
+              type: freqToAdd.type,
+              nonWorkingDayCalendars: freqToAdd.nonWorkingDayCalendars || [],
+              str: freqToAdd.str
+            };
+          }
+
+          this.frequencyList.push(freqToAdd);
         }
       } else {
         this.frequency.nationHoliday = [];
@@ -1277,7 +1308,7 @@ export class FrequencyModalComponent {
   loadAvailableNonWorkingDayCalendars(): void {
     this.coreService.post('inventory/search', {
       deployedOrReleased: true,
-      returnType: 'CALENDAR' // (If your API supports it, you can try 'NONWORKINGDAYSCALENDAR' directly)
+      returnType: 'CALENDAR'
     }).subscribe({
       next: (res: any) => {
         const items: CalendarItem[] = res?.results ?? [];

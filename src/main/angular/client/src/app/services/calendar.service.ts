@@ -538,12 +538,25 @@ export class CalendarService {
         });
       }
     }
+    if (calendar.excludes && !isEmpty(calendar.excludes)) {
+      if (calendar.excludes.nonWorkingDayCalendars && calendar.excludes.nonWorkingDayCalendars.length > 0) {
+        obj = {
+          tab: 'nonWorkingDayCalendars',
+          type: 'EXCLUDE',
+          nonWorkingDayCalendars: calendar.excludes.nonWorkingDayCalendars
+        };
+        obj.str = this.freqToStr(obj, dateFormat);
+        calendar.frequencyList.push(obj);
+      }
+    }
   }
 
-
-  generateCalendarObj(data: any, obj: any): any {
+  generateCalendarObj(data: any, obj: any, fromRuntime?): any {
     const self = this;
     const arr = [];
+    if(fromRuntime){
+      obj.excludes = obj.excludes || {};
+    }
     let from, to;
     const type = (!data.type || data.type === 'INCLUDE') ? 'includes' : 'excludes';
     if (data.months && isArray(data.months) && data.months.length > 0) {
@@ -704,7 +717,8 @@ export class CalendarService {
 
       }
       if (data.tab === 'nonWorkingDayCalendars') {
-        const type = (!data.type || data.type === 'INCLUDE') ? 'includes' : 'excludes';
+        const type = (!fromRuntime && (!data.type || data.type === 'INCLUDE')) ? 'includes' :
+          (data.type === 'INCLUDE') ? 'includes' : 'excludes';
         if (!obj[type].nonWorkingDayCalendars) {
           obj[type].nonWorkingDayCalendars = [];
         }

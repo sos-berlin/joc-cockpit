@@ -1428,10 +1428,11 @@ export class ScheduleComponent {
             if (obj.calendars[i].frequencyList.length > 0) {
               obj.calendars[i].includes = {};
               obj.calendars[i].frequencyList.forEach((val) => {
-                this.calendarService.generateCalendarObj(val, obj.calendars[i]);
+                this.calendarService.generateCalendarObj(val, obj.calendars[i], true);
               });
             } else {
               delete obj.calendars[i].includes;
+              delete obj.calendars[i].excludes;
             }
             delete obj.calendars[i].frequencyList;
           }

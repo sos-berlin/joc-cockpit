@@ -10013,6 +10013,15 @@ cdk-virtual-scroll-viewport {
   opacity: 0.7;
 }
 
+.help-info-workflows {
+  float: right;
+  margin-top: 4px;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 10;
+  color: var(--primary);
+  opacity: 0.7;
+}
 .help-info-dailyplan {
   float: right;
   margin-top: 14px;
@@ -10171,6 +10180,7 @@ cdk-virtual-scroll-viewport {
 .help-md a[href^="http"]:not([href*="//localhost"]):not([href*="//127.0.0.1"])::after {
   content: " ⬈" !important;
   margin-left: 0.25em !important;
+
   font-size: 0.85em !important;
   opacity: 0.7 !important;
 }
