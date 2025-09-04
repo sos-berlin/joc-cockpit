@@ -324,21 +324,21 @@
             </div>
             <div class="tab-pane animated fadeIn" id="tab7"
                  [ngClass]="{'active':frequency.tab == 'nonWorkingDayCalendars'}">
-              <div class="form-group row">
-                <label class="col-sm-3" translate>runtime.label.nonWorkingDayCalendars</label>
-                <div class="col-sm-9">
-                  <nz-select [(ngModel)]="frequency.nonWorkingDayCalendars"
-                             name="nonWorkingDayCalendars"
-                             nzMode="multiple"
-                             nzPlaceHolder="{{'runtime.placeholder.nonWorkingDayCalendars' | translate}}"
-                             (ngModelChange)="onFrequencyChange()">
-                    <nz-option *ngFor="let calendar of availableNonWorkingDayCalendars"
-                               [nzValue]="calendar.name"
-                               [nzLabel]="calendar.name">
-                    </nz-option>
-                  </nz-select>
-                </div>
+                <div class="form-group row" *ngIf="frequencyType === 'EXCLUDE' && calendarData.type === 'WORKINGDAYSCALENDAR'">
+                  <label class="col-sm-3" translate>runtime.label.nonWorkingDayCalendars</label>
+                  <div class="col-sm-9">
+                <app-multi-select
+                  [isDisabled]="false"
+                  (onSelectCall)="onChangeNonWorkingDayCalendar()"
+                  (onChange)="onNonWorkingDayCalendarChange($event)"
+                  [attribute]="'list'"
+                  [list]="nonWorkingDayCalendarResources"
+                  [nodes]="nonWorkingDayCalendarTree"
+                  [type]="'NONWORKINGDAYSCALENDAR'">
+                </app-multi-select>
               </div>
+              </div>
+
             </div>
           </div>
           <div class="form-group row" [hidden]="frequency.tab =='nationalHoliday' || frequency.tab =='specificDays' || frequency.tab =='nonWorkingDayCalendars'  || (frequency.tab =='every' && frequency.dateEntity == 'YEARLY')">

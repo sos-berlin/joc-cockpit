@@ -51,6 +51,11 @@ export class AddRestrictionComponent {
   countArr = [0, 1, 2, 3, 4];
   countArrU = [1, 2, 3, 4];
   availableNonWorkingDayCalendars: any = [];
+  nonWorkingDayCalendarTree: any = [];
+  nonWorkingDayCalendarResources = {
+    list: []
+  };
+  nonWorkingDayCalendarsSelected = false;
 
   daysOptions = [
     {label: 'monday', value: '1', checked: false},
@@ -840,10 +845,8 @@ export class AddRestrictionComponent {
   }
 
   areArraysEqual(arr1, arr2) {
-    // First, check if both arrays have the same length
     if (arr1.length !== arr2.length) return false;
 
-    // Sort both arrays and check if every element is equal
     const sortedArr1 = [...arr1].sort();
     const sortedArr2 = [...arr2].sort();
 
@@ -943,21 +946,137 @@ export class AddRestrictionComponent {
 
   loadAvailableNonWorkingDayCalendars(): void {
     this.coreService.post('inventory/search', {
-      deployedOrReleased: true,
+      valid: true,
       returnType: 'CALENDAR'
     }).subscribe({
       next: (res: any) => {
-        const items: CalendarItem[] = res?.results ?? [];
-        this.availableNonWorkingDayCalendars = items
-          .filter(i => i.objectType === 'NONWORKINGDAYSCALENDAR')
+        const nonWorkingCalendars = res?.results?.filter(item =>
+          item.objectType === 'NONWORKINGDAYSCALENDAR'
+        ) || [];
+
+        this.availableNonWorkingDayCalendars = nonWorkingCalendars
           .filter((v, idx, arr) => arr.findIndex(a => a.name === v.name) === idx)
           .sort((a, b) => a.name.localeCompare(b.name));
+
+        this.buildNonWorkingDayCalendarTree();
+        this.initializeNonWorkingDayCalendarResources();
       },
       error: (err) => {
         console.error('Failed to load calendars', err);
         this.availableNonWorkingDayCalendars = [];
+        this.nonWorkingDayCalendarTree = [];
       }
     });
+  }
+  private buildNonWorkingDayCalendarTree(): void {
+    if (!this.availableNonWorkingDayCalendars || this.availableNonWorkingDayCalendars.length === 0) {
+      this.nonWorkingDayCalendarTree = [];
+      return;
+    }
+
+    const treeData = this.availableNonWorkingDayCalendars.map(calendar => {
+      return {
+        id: calendar.id,
+        name: calendar.name,
+        path: calendar.path,
+        objectType: calendar.objectType,
+        type: 'CALENDAR',
+        title: calendar.title || calendar.name,
+        key: calendar.path,
+        isLeaf: true,
+        valid: calendar.valid,
+        deployed: calendar.deployed,
+        released: calendar.released
+      };
+    });
+
+    this.nonWorkingDayCalendarTree = this.createTreeStructure(treeData);
+  }
+
+  private createTreeStructure(calendars: any[]): any[] {
+    const tree = [];
+    const pathMap = new Map();
+
+    calendars.forEach(calendar => {
+      const pathParts = calendar.path.split('/').filter(part => part !== '');
+      let currentLevel = tree;
+      let currentPath = '';
+
+      pathParts.forEach((part, index) => {
+        currentPath += '/' + part;
+
+        if (index === pathParts.length - 1) {
+          currentLevel.push({
+            ...calendar,
+            key: calendar.path,
+            title: calendar.name,
+            isLeaf: true,
+            selectable: true
+          });
+        } else {
+          let folderNode = currentLevel.find(node => node.key === currentPath);
+
+          if (!folderNode) {
+            folderNode = {
+              key: currentPath,
+              title: part,
+              name: part,
+              children: [],
+              isLeaf: false,
+              selectable: false,
+              expanded: false
+            };
+            currentLevel.push(folderNode);
+          }
+
+          currentLevel = folderNode.children;
+        }
+      });
+    });
+
+    return tree;
+  }
+
+  private initializeNonWorkingDayCalendarResources(): void {
+    if (this.frequency.nonWorkingDayCalendars && this.frequency.nonWorkingDayCalendars.length > 0) {
+      this.nonWorkingDayCalendarResources.list = this.coreService.clone(this.frequency.nonWorkingDayCalendars);
+      this.nonWorkingDayCalendarsSelected = true;
+    } else {
+      this.nonWorkingDayCalendarResources.list = [];
+      this.nonWorkingDayCalendarsSelected = false;
+    }
+  }
+
+  onChangeNonWorkingDayCalendar(): void {
+    if (!isEqual(
+      JSON.stringify(this.frequency.nonWorkingDayCalendars),
+      JSON.stringify(this.nonWorkingDayCalendarResources.list)
+    )) {
+      this.frequency.nonWorkingDayCalendars = this.coreService.clone(this.nonWorkingDayCalendarResources.list);
+      this.nonWorkingDayCalendarsSelected = this.nonWorkingDayCalendarResources.list.length > 0;
+
+    }
+  }
+
+
+  onNonWorkingDayCalendarChange(selectedCalendars: any): void {
+    let actualSelectedCalendars = [];
+
+    if (Array.isArray(selectedCalendars)) {
+      actualSelectedCalendars = selectedCalendars;
+    } else if (selectedCalendars === true || selectedCalendars === false) {
+      actualSelectedCalendars = this.nonWorkingDayCalendarResources.list || [];
+    } else if (selectedCalendars && typeof selectedCalendars === 'object') {
+      actualSelectedCalendars = selectedCalendars.list || selectedCalendars.selected || [];
+    } else {
+      actualSelectedCalendars = [];
+    }
+
+
+    this.nonWorkingDayCalendarsSelected = actualSelectedCalendars.length > 0;
+    this.frequency.nonWorkingDayCalendars = actualSelectedCalendars;
+
+    this.onFrequencyChange();
   }
 
 }
