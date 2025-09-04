@@ -1427,9 +1427,16 @@ export class ScheduleComponent {
           if (obj.calendars[i].frequencyList) {
             if (obj.calendars[i].frequencyList.length > 0) {
               obj.calendars[i].includes = {};
+              obj.calendars[i].excludes = {};
               obj.calendars[i].frequencyList.forEach((val) => {
                 this.calendarService.generateCalendarObj(val, obj.calendars[i], true);
               });
+              if (Object.keys(obj.calendars[i].includes).length === 0) {
+                delete obj.calendars[i].includes;
+              }
+              if (Object.keys(obj.calendars[i].excludes).length === 0) {
+                delete obj.calendars[i].excludes;
+              }
             } else {
               delete obj.calendars[i].includes;
               delete obj.calendars[i].excludes;

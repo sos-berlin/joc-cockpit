@@ -48,6 +48,7 @@
       <app-links></app-links>
     </div>
     <div class="col-md-4 text-right">
+      <i (click)="helpPage('resources-resource-locks')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-workflows cur-point fa fa-info-circle m-l-12 text-20"></i>
       <button (click)="collapseDetails()"
               [ngClass]="{'show-block':locks.length>0 && pageView!='grid'}"
               class="hide btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}">
@@ -393,6 +394,7 @@
 <nz-drawer (nzOnClose)="closeSearch()" [nzVisible]="isSearchVisible" nzPlacement="right">
   <ng-container *nzDrawerContent>
     <div (click)="closeSearch()" class="close-btn"></div>
+    <i (click)="helpPage('resources-resource-locks-search')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
     <div *ngIf="isSearchVisible">
       <div class="text-center m-b-sm text"><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span>
       </div>

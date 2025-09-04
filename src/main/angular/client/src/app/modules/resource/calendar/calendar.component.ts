@@ -9,6 +9,7 @@ import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 import {CalendarModalComponent} from '../../../components/calendar-modal/calendar.component';
 import {SearchPipe} from '../../../pipes/core.pipe';
+import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 
 declare const $: any;
 
@@ -370,5 +371,20 @@ export class CalendarComponent {
       this.loading = true;
       this.loadCalendar(null);
     }
+  }
+
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }

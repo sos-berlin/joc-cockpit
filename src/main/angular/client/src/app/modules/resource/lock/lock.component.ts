@@ -7,6 +7,8 @@ import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
+import { HelpViewerComponent } from 'src/app/components/help-viewer/help-viewer.component';
+import {NzModalService} from "ng-zorro-antd/modal";
 
 declare const $: any;
 
@@ -122,7 +124,7 @@ export class LockComponent {
   @ViewChild(TreeComponent, {static: false}) child;
 
   constructor(private authService: AuthService, public coreService: CoreService, private searchPipe: SearchPipe,
-              private dataService: DataService, private orderPipe: OrderPipe) {
+              private dataService: DataService, private orderPipe: OrderPipe, private modal: NzModalService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -526,6 +528,21 @@ export class LockComponent {
       return parts[parts.length - 1];
     }
     return '';
+  }
+
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }
 

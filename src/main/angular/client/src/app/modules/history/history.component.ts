@@ -357,7 +357,7 @@ export class OrderSearchComponent {
     this.onCancel.emit();
   }
 
-  helpPage(): void{
+  helpPage(): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: HelpViewerComponent,
@@ -605,7 +605,7 @@ export class TaskSearchComponent {
     this.onCancel.emit();
   }
 
-  helpPage(): void{
+  helpPage(): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: HelpViewerComponent,
@@ -735,7 +735,7 @@ export class DeploymentSearchComponent {
     this.onCancel.emit();
   }
 
-  helpPage(): void{
+  helpPage(): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: HelpViewerComponent,
@@ -880,7 +880,7 @@ export class SubmissionSearchComponent {
     this.onCancel.emit();
   }
 
-  helpPage(): void{
+  helpPage(): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: HelpViewerComponent,
@@ -4867,4 +4867,37 @@ export class HistoryComponent {
     return '';
   }
 
+  helpPage(): void {
+    let helpKey: string;
+
+    switch (this.historyFilters.type) {
+      case 'ORDER':
+        helpKey = 'history-orders';
+        break;
+      case 'TASK':
+        helpKey = 'history-tasks';
+        break;
+      case 'YADE':
+        helpKey = 'history-file-transfers';
+        break;
+      case 'DEPLOYMENT':
+        helpKey = 'history-deployments';
+        break;
+      case 'SUBMISSION':
+        helpKey = 'history-submissions';
+        break;
+      default:
+        helpKey = 'history-orders';
+    }
+
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {preferences: this.preferences, helpKey},
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
 }

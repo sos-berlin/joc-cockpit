@@ -11,6 +11,7 @@ import {OrderPipe, SearchPipe} from '../../../pipes/core.pipe';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 import {NgModel} from "@angular/forms";
+import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 
 declare const $: any;
 
@@ -1259,6 +1260,21 @@ export class BoardComponent {
       return parts[parts.length - 1];
     }
     return '';
+  }
+
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }
 

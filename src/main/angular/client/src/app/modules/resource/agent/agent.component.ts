@@ -7,6 +7,7 @@ import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {SearchPipe} from '../../../pipes/core.pipe';
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
+import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 
 @Component({
   selector: 'app-confirm-node-modal',
@@ -412,5 +413,20 @@ export class AgentComponent {
         this.router.navigate(['/controllers']).then();
       }
     }
+  }
+
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }

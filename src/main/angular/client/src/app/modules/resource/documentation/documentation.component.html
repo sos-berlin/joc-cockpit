@@ -100,6 +100,7 @@
       <app-links></app-links>
     </div>
     <div class="col-md-4 text-right">
+      <i (click)="helpPage('resources-documentations')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-workflows cur-point fa fa-info-circle m-l-12 text-20"></i>
       <div class="search-box-field pull-right">
         <label>
           <input (keyup)="searchInResult()" [(ngModel)]="documentFilters.searchText" placeholder="{{'common.placeholder.search' | translate}}"
