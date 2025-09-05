@@ -909,8 +909,52 @@ export class AddRestrictionComponent {
   }
 
   save(): void {
-    this.activeModal.close(this.calendar);
+    const cleanedCalendar = this.cleanEmptyObjects(this.calendar);
+    this.activeModal.close(cleanedCalendar);
   }
+
+  private cleanEmptyObjects(obj: any): any {
+    if (obj === null || obj === undefined) {
+      return obj;
+    }
+
+    if (Array.isArray(obj)) {
+      return obj.map(item => this.cleanEmptyObjects(item));
+    }
+
+    if (typeof obj === 'object') {
+      const cleaned: any = {};
+
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          const value = obj[key];
+
+          if (this.isEmptyObject(value)) {
+            continue;
+          }
+
+          cleaned[key] = this.cleanEmptyObjects(value);
+        }
+      }
+
+      return cleaned;
+    }
+
+    return obj;
+  }
+
+  private isEmptyObject(obj: any): boolean {
+    if (obj === null || obj === undefined) {
+      return false;
+    }
+
+    if (typeof obj !== 'object' || Array.isArray(obj)) {
+      return false;
+    }
+
+    return Object.keys(obj).length === 0;
+  }
+
 
   cancel(): void {
     this.activeModal.destroy();
@@ -1034,8 +1078,26 @@ export class AddRestrictionComponent {
       });
     });
 
-    return tree;
-  }
+  this.sortTreeAlphabetically(tree);
+  return tree;
+}
+
+private sortTreeAlphabetically(nodes: any[]): void {
+  nodes.sort((a, b) => {
+    if (!a.isLeaf && b.isLeaf) return -1;
+    if (a.isLeaf && !b.isLeaf) return 1;
+
+    const titleA = (a.title || a.name || '').toLowerCase();
+    const titleB = (b.title || b.name || '').toLowerCase();
+    return titleA.localeCompare(titleB);
+  });
+
+  nodes.forEach(node => {
+    if (node.children && node.children.length > 0) {
+      this.sortTreeAlphabetically(node.children);
+    }
+  });
+}
 
   private initializeNonWorkingDayCalendarResources(): void {
     if (this.frequency.nonWorkingDayCalendars && this.frequency.nonWorkingDayCalendars.length > 0) {

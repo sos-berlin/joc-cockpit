@@ -610,7 +610,9 @@ export class WorkflowService {
         delete value['defaultArguments'];
       }
       if (type === 'Job') {
-        if (isEmpty(value.admissionTimeScheme) || value.admissionTimeScheme.periods.length === 0) {
+        if (isEmpty(value.admissionTimeScheme) ||
+          ((!value.admissionTimeScheme.periods || value.admissionTimeScheme.periods.length === 0) &&
+            (!value.admissionTimeScheme.restrictedSchemes || value.admissionTimeScheme.restrictedSchemes.length === 0))) {
           delete value['admissionTimeScheme'];
         }
         if (!value.executable || (!value.executable.className && ((value.executable.TYPE === 'InternalExecutable' || value.executable.TYPE === 'Java') && value.executable.internalType !== 'JavaScript_Graal'))
@@ -2793,6 +2795,141 @@ convertStringToDuration(str: string, isDuration = false): number {
     });
 
     return arr;
+  }
+
+  convertAdmissionTimeToList(admissionPeriods: any[], days: any[], frequency: any): any[] {
+    const periodList = [];
+
+    if (!admissionPeriods || admissionPeriods.length === 0) {
+      return periodList;
+    }
+
+    admissionPeriods.forEach(admissionPeriod => {
+      let periodItem: any = {};
+
+      switch (admissionPeriod.TYPE) {
+        case 'WeekdayPeriod':
+          const dayIndex = Math.floor(admissionPeriod.secondOfWeek / (24 * 3600)) + 1;
+          periodItem = {
+            day: dayIndex.toString(),
+            secondOfWeek: Math.floor(admissionPeriod.secondOfWeek / (24 * 3600)) * (24 * 3600),
+            frequency: days[dayIndex] || 'Unknown',
+            periods: []
+          };
+
+          const relativeStartTime = admissionPeriod.secondOfWeek - periodItem.secondOfWeek;
+          periodItem.periods.push({
+            startTime: relativeStartTime,
+            duration: admissionPeriod.duration,
+            text: this.getText(relativeStartTime, admissionPeriod.duration)
+          });
+          break;
+
+        case 'DailyPeriod':
+          periodItem = {
+            day: '1',
+            secondOfWeek: 0,
+            frequency: '',
+            periods: []
+          };
+
+          periodItem.periods.push({
+            startTime: admissionPeriod.secondOfDay || 0,
+            duration: admissionPeriod.duration,
+            text: this.getText(admissionPeriod.secondOfDay || 0, admissionPeriod.duration)
+          });
+          break;
+
+        case 'MonthlyDatePeriod':
+          const monthDay = Math.floor(admissionPeriod.secondOfMonth / (24 * 3600)) + 1;
+          periodItem = {
+            day: monthDay.toString(),
+            secondOfMonth: Math.floor(admissionPeriod.secondOfMonth / (24 * 3600)) * (24 * 3600),
+            frequency: this.getMonthDays(monthDay, false),
+            periods: []
+          };
+
+          const monthRelativeStartTime = admissionPeriod.secondOfMonth - periodItem.secondOfMonth;
+          periodItem.periods.push({
+            startTime: monthRelativeStartTime,
+            duration: admissionPeriod.duration,
+            text: this.getText(monthRelativeStartTime, admissionPeriod.duration)
+          });
+          break;
+
+        case 'MonthlyLastDatePeriod':
+          const lastDay = Math.floor(Math.abs(admissionPeriod.lastSecondOfMonth) / (24 * 3600));
+          periodItem = {
+            day: lastDay.toString(),
+            lastSecondOfMonth: admissionPeriod.lastSecondOfMonth,
+            frequency: this.getMonthDays(-lastDay, true),
+            periods: []
+          };
+
+          const lastMonthRelativeStartTime = Math.abs(admissionPeriod.lastSecondOfMonth) - (lastDay * 24 * 3600);
+          periodItem.periods.push({
+            startTime: lastMonthRelativeStartTime,
+            duration: admissionPeriod.duration,
+            text: this.getText(lastMonthRelativeStartTime, admissionPeriod.duration)
+          });
+          break;
+
+        case 'MonthlyWeekdayPeriod':
+        case 'MonthlyLastWeekdayPeriod':
+          const isLast = admissionPeriod.TYPE === 'MonthlyLastWeekdayPeriod';
+          const weekdayIndex = Math.floor(Math.abs(admissionPeriod.secondOfWeeks) / (24 * 3600)) % 7 + 1;
+          const weekNumber = Math.floor(Math.abs(admissionPeriod.secondOfWeeks) / (7 * 24 * 3600)) + 1;
+
+          periodItem = {
+            specificWeekDay: weekdayIndex,
+            specificWeek: isLast ? -weekNumber : weekNumber,
+            secondOfWeeks: admissionPeriod.secondOfWeeks,
+            frequency: this.getSpecificDay(isLast ? -weekNumber : weekNumber) + ' ' + this.getStringDay(weekdayIndex),
+            periods: []
+          };
+
+          const weekdayRelativeStartTime = Math.abs(admissionPeriod.secondOfWeeks) -
+            (Math.floor(Math.abs(admissionPeriod.secondOfWeeks) / (24 * 3600)) * 24 * 3600);
+          periodItem.periods.push({
+            startTime: weekdayRelativeStartTime,
+            duration: admissionPeriod.duration,
+            text: this.getText(weekdayRelativeStartTime, admissionPeriod.duration)
+          });
+          break;
+
+        case 'SpecificDatePeriod':
+          const specificDate = new Date(admissionPeriod.secondsSinceLocalEpoch * 1000);
+          periodItem = {
+            date: admissionPeriod.secondsSinceLocalEpoch,
+            frequency: this.coreService.getStringDate(specificDate.getTime()),
+            periods: []
+          };
+
+          const specificRelativeStartTime = admissionPeriod.secondsSinceLocalEpoch % (24 * 3600);
+          periodItem.periods.push({
+            startTime: specificRelativeStartTime,
+            duration: admissionPeriod.duration,
+            text: this.getText(specificRelativeStartTime, admissionPeriod.duration)
+          });
+          break;
+
+        default:
+          return;
+      }
+
+      const existingIndex = periodList.findIndex(item =>
+        item.frequency === periodItem.frequency &&
+        item.day === periodItem.day
+      );
+
+      if (existingIndex > -1) {
+        periodList[existingIndex].periods.push(...periodItem.periods);
+      } else {
+        periodList.push(periodItem);
+      }
+    });
+
+    return periodList;
   }
 
   updatePeriod(temp: any, obj: any, period: any): void {

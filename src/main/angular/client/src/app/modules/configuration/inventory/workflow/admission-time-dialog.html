@@ -119,6 +119,27 @@
       </div>
     </div>
   </div>
+  <!-- Month Range Selection -->
+  <div class="b-t b-l b-r b-b p-a p-b-0 m-b">
+    <div class="form-group row">
+      <label class="col-sm-3" translate>runtime.label.monthRange
+      </label>
+      <div class="col-sm-9">
+        <label class="w m-b-xxs" nz-checkbox [(ngModel)]="allMonthsSelected" name="month"
+               (ngModelChange)="selectAllMonth()">
+          <span translate>runtime.label.everyMonth</span>
+        </label><br>
+        <nz-checkbox-wrapper (nzOnChange)="monthChange($event)">
+          <ng-container *ngFor="let option of monthsOptions">
+            <label  nz-checkbox [nzValue]="option.value" [(ngModel)]="option.checked"
+                    name="{{option.label}}">
+              <span translate>runtime.label.{{option.label}}</span>
+            </label>
+          </ng-container>
+        </nz-checkbox-wrapper>
+      </div>
+    </div>
+  </div>
   <div class="tab-content b-t b-l b-r b-b p-a p-b-0 m-b" [ngClass]="{'p-a':frequency.tab !== 'specificDays' }">
     <div class="tab-pane animated fadeIn" id="tab1" [ngClass]="{'active':frequency.tab == 'weekDays'}">
       <div class="form-group row">
@@ -314,7 +335,7 @@
   <div class="row m-t">
     <div class="col-sm-12 max-ht-n528 text-overflow">
       <div class="table-responsive">
-        <table class="table table-hover table-bordered ">
+        <table class="table table-hover table-bordered">
           <thead>
           <tr>
             <th><span translate>workflow.admissionTime.label.frequency</span></th>
@@ -322,32 +343,77 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let item of data.periodList; let i = index" [ngClass]="{'light-bg': _temp && _temp.frequency == item.frequency}">
+          <!-- Regular Periods -->
+          <tr *ngFor="let item of data.periodList; let i = index"
+              [ngClass]="{'light-bg': _temp && _temp.frequency == item.frequency}">
             <td>
-              <span class="cursor" (click)="editFrequency(item)" *ngIf="item.frequency"><span *ngIf="item.day" translate>workflow.admissionTime.label.on</span> {{item.frequency}}</span>
-              <span class="cursor" (click)="editFrequency(item)" *ngIf="!item.frequency" translate>workflow.admissionTime.label.everyDay</span>
-              <a class="text-xs primary-text-hover-color m-l-sm"
-                 (click)="editFrequency(item)"><i class="fa fa-pencil"></i></a>
-              <a class="text-xs text-hover-color m-l-sm"
-                 (click)="removeFrequency(item, i)"><i class="fa fa-times"></i></a>
+      <span class="cursor" (click)="editFrequency(item)" *ngIf="item.frequency">
+        <span *ngIf="item.day" translate>workflow.admissionTime.label.on</span> {{item.frequency}}
+      </span>
+              <span class="cursor" (click)="editFrequency(item)" *ngIf="!item.frequency" translate>
+        workflow.admissionTime.label.everyDay
+      </span>
+              <a class="text-xs primary-text-hover-color m-l-sm" (click)="editFrequency(item)">
+                <i class="fa fa-pencil"></i>
+              </a>
+              <a class="text-xs text-hover-color m-l-sm" (click)="removeFrequency(item, i)">
+                <i class="fa fa-times"></i>
+              </a>
             </td>
             <td>
               <div *ngFor="let p of item.periods;">
                 <a (click)="editPeriod(p, item)">{{p.text}}</a>
                 <a (click)="editPeriod(p, item)" class="text-xs text-hover-primary m-l-sm">
-                  <i class="fa fa-pencil"></i></a>
+                  <i class="fa fa-pencil"></i>
+                </a>
                 <a (click)="removePeriod(item, p)" class="text-xs text-hover-color m-l-sm">
-                  <i class="fa fa-times text-hover-color"></i></a>
+                  <i class="fa fa-times text-hover-color"></i>
+                </a>
               </div>
               <div class="text-xs cursor text-hover-primary">
                 <i (click)="addPeriod(item)" class="fa fa-plus"></i>
               </div>
             </td>
           </tr>
+
+          <!-- Restricted Scheme Periods -->
+          <tr *ngFor="let restrictedItem of getRestrictedPeriods(); let ri = index"
+              [ngClass]="{'restriction-bg': true, 'light-bg': _temp && _temp.frequency == restrictedItem.originalFrequency}">
+            <td>
+      <span class="cursor" (click)="editRestrictedFrequency(restrictedItem)" *ngIf="restrictedItem.frequency">
+        <span *ngIf="restrictedItem.day" translate>workflow.admissionTime.label.on</span>
+        {{restrictedItem.frequency}}
+      </span>
+              <span class="cursor" (click)="editRestrictedFrequency(restrictedItem)" *ngIf="!restrictedItem.frequency" translate>
+        workflow.admissionTime.label.everyDay
+        <span class="badge badge-info m-l-xs">{{restrictedItem.restrictionText}}</span>
+      </span>
+              <a class="text-xs primary-text-hover-color m-l-sm" (click)="editRestrictedFrequency(restrictedItem)">
+                <i class="fa fa-pencil"></i>
+              </a>
+              <a class="text-xs text-hover-color m-l-sm" (click)="removeRestrictedFrequency(restrictedItem)">
+                <i class="fa fa-times"></i>
+              </a>
+            </td>
+            <td>
+              <div *ngFor="let p of restrictedItem.periods;">
+                <a (click)="editRestrictedPeriod(p, restrictedItem)">{{p.text}}</a>
+                <a (click)="editRestrictedPeriod(p, restrictedItem)" class="text-xs text-hover-primary m-l-sm">
+                  <i class="fa fa-pencil"></i>
+                </a>
+                <a (click)="removeRestrictedPeriodItem(restrictedItem, p)" class="text-xs text-hover-color m-l-sm">
+                  <i class="fa fa-times text-hover-color"></i>
+                </a>
+              </div>
+              <div class="text-xs cursor text-hover-primary">
+                <i (click)="addRestrictedPeriod(restrictedItem)" class="fa fa-plus"></i>
+              </div>
+            </td>
+          </tr>
           </tbody>
         </table>
       </div>
-      <div *ngIf="data.periodList.length==0" class="text-center m-b-sm">
+      <div *ngIf="(!data.periodList || data.periodList.length === 0) && getRestrictedPeriods().length === 0" class="text-center m-b-sm">
         <app-empty-data></app-empty-data>
       </div>
     </div>
