@@ -8542,13 +8542,20 @@ export class WorkflowComponent {
         });
 
         // Handle Cut: Ctrl + v
-        self.keyHandler.bindControlKey(86, function () {
-          if (dropTargetForPaste) {
-            createClickInstruction('paste', dropTargetForPaste);
-          }
-        });
+          self.keyHandler.bindControlKey(86, function (evt?: KeyboardEvent) {
+            const target =
+              dropTargetForPaste ||
+              graph.getSelectionCell() ||
+              graph.getDefaultParent();
 
-        // Handle Cut: Ctrl + a
+            if (target) {
+              createClickInstruction('paste', target);
+              if (evt && evt.preventDefault) evt.preventDefault(); // stop browser default
+            }
+          });
+
+
+          // Handle Cut: Ctrl + a
         self.keyHandler.bindControlKey(65, function () {
           selectAll()
         });
