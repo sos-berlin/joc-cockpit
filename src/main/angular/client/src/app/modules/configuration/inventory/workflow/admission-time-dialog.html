@@ -120,7 +120,7 @@
     </div>
   </div>
   <!-- Month Range Selection -->
-  <div class="b-t b-l b-r b-b p-a p-b-0 m-b">
+  <div *ngIf="frequency.tab != 'specificDays'" class="b-t b-l b-r b-b p-a p-b-0 m-b">
     <div class="form-group row">
       <label class="col-sm-3" translate>runtime.label.monthRange
       </label>
@@ -343,17 +343,17 @@
           </tr>
           </thead>
           <tbody>
-          <!-- Regular Periods -->
           <tr *ngFor="let item of data.periodList; let i = index"
-              [ngClass]="{'light-bg': _temp && _temp.frequency == item.frequency}">
+              [ngClass]="{'light-bg': selectedRegularRowIndex === i}"
+              (click)="selectRegularRow(i)">
             <td>
-      <span class="cursor" (click)="editFrequency(item)" *ngIf="item.frequency">
-        <span *ngIf="item.day" translate>workflow.admissionTime.label.on</span> {{item.frequency}}
-      </span>
-              <span class="cursor" (click)="editFrequency(item)" *ngIf="!item.frequency" translate>
-        workflow.admissionTime.label.everyDay
-      </span>
-              <a class="text-xs primary-text-hover-color m-l-sm" (click)="editFrequency(item)">
+    <span class="cursor" (click)="editFrequency(item); selectRegularRow(i)" *ngIf="item.frequency">
+      <span *ngIf="item.day" translate>workflow.admissionTime.label.on</span> {{item.frequency}}
+    </span>
+              <span class="cursor" (click)="editFrequency(item); selectRegularRow(i)" *ngIf="!item.frequency" translate>
+      workflow.admissionTime.label.everyDay
+    </span>
+              <a class="text-xs primary-text-hover-color m-l-sm" (click)="editFrequency(item); selectRegularRow(i)">
                 <i class="fa fa-pencil"></i>
               </a>
               <a class="text-xs text-hover-color m-l-sm" (click)="removeFrequency(item, i)">
@@ -376,19 +376,19 @@
             </td>
           </tr>
 
-          <!-- Restricted Scheme Periods -->
           <tr *ngFor="let restrictedItem of getRestrictedPeriods(); let ri = index"
-              [ngClass]="{'restriction-bg': true, 'light-bg': _temp && _temp.frequency == restrictedItem.originalFrequency}">
+              [ngClass]="{'restriction-bg': true, 'light-bg': selectedRestrictedRowIndex === ri}"
+              (click)="selectRestrictedRow(ri)">
             <td>
-      <span class="cursor" (click)="editRestrictedFrequency(restrictedItem)" *ngIf="restrictedItem.frequency">
-        <span *ngIf="restrictedItem.day" translate>workflow.admissionTime.label.on</span>
-        {{restrictedItem.frequency}}
-      </span>
-              <span class="cursor" (click)="editRestrictedFrequency(restrictedItem)" *ngIf="!restrictedItem.frequency" translate>
-        workflow.admissionTime.label.everyDay
-        <span class="badge badge-info m-l-xs">{{restrictedItem.restrictionText}}</span>
-      </span>
-              <a class="text-xs primary-text-hover-color m-l-sm" (click)="editRestrictedFrequency(restrictedItem)">
+    <span class="cursor" (click)="editRestrictedFrequency(restrictedItem); selectRestrictedRow(ri)" *ngIf="restrictedItem.frequency">
+      <span *ngIf="restrictedItem.day" translate>workflow.admissionTime.label.on</span>
+      {{restrictedItem.frequency}}
+    </span>
+              <span class="cursor" (click)="editRestrictedFrequency(restrictedItem); selectRestrictedRow(ri)" *ngIf="!restrictedItem.frequency" translate>
+      workflow.admissionTime.label.everyDay
+      <span class="badge badge-info m-l-xs">{{restrictedItem.restrictionText}}</span>
+    </span>
+              <a class="text-xs primary-text-hover-color m-l-sm" (click)="editRestrictedFrequency(restrictedItem); selectRestrictedRow(ri)">
                 <i class="fa fa-pencil"></i>
               </a>
               <a class="text-xs text-hover-color m-l-sm" (click)="removeRestrictedFrequency(restrictedItem)">
@@ -410,6 +410,7 @@
               </div>
             </td>
           </tr>
+
           </tbody>
         </table>
       </div>

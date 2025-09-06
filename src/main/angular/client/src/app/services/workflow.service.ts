@@ -2717,6 +2717,10 @@ convertStringToDuration(str: string, isDuration = false): number {
     return (day == 0 ? 'Monday' : day == 1 ? 'Tuesday' : day == 2 ? 'Wednesday' : day == 3 ? 'Thursday' : day == 4 ? 'Friday' : day == 5 ? 'Saturday' : 'Sunday') + ' of a month';
   }
 
+  getStringDayRes(day: any): string {
+    return (day == 0 ? 'Monday' : day == 1 ? 'Tuesday' : day == 2 ? 'Wednesday' : day == 3 ? 'Thursday' : day == 4 ? 'Friday' : day == 5 ? 'Saturday' : 'Sunday');
+  }
+
   getSpecificDay(day: any): string {
     if (!day) {
       return '';
@@ -2884,7 +2888,7 @@ convertStringToDuration(str: string, isDuration = false): number {
             specificWeekDay: weekdayIndex,
             specificWeek: isLast ? -weekNumber : weekNumber,
             secondOfWeeks: admissionPeriod.secondOfWeeks,
-            frequency: this.getSpecificDay(isLast ? -weekNumber : weekNumber) + ' ' + this.getStringDay(weekdayIndex),
+            frequency: this.getSpecificDay(isLast ? -weekNumber : weekNumber) + ' ' + this.getStringDayRes(weekdayIndex),
             periods: []
           };
 
@@ -2932,6 +2936,113 @@ convertStringToDuration(str: string, isDuration = false): number {
     return periodList;
   }
 
+  compareNumbers(a: any, b: any): any {
+    return a - b;
+  }
+  getMonths(month: any): string {
+    let str = '';
+    if (!month) {
+      return '';
+    }
+
+    let months: any = month;
+    if (!isArray(month)) {
+      months = month.toString().split(' ');
+    }
+    if (months.length == 12) {
+      return 'every month';
+    }
+
+    months.sort(this.compareNumbers).forEach((value: number) => {
+      if (value == 1) {
+        str = str + 'Jan,';
+      } else if (value == 2) {
+        str = str + 'Feb,';
+      } else if (value == 3) {
+        str = str + 'Mar,';
+      } else if (value == 4) {
+        str = str + 'Apr,';
+      } else if (value == 5) {
+        str = str + 'May,';
+      } else if (value == 6) {
+        str = str + 'Jun,';
+      } else if (value == 7) {
+        str = str + 'Jul,';
+      } else if (value == 8) {
+        str = str + 'Aug,';
+      } else if (value == 9) {
+        str = str + 'Sep,';
+      } else if (value == 10) {
+        str = str + 'Oct,';
+      } else if (value == 11) {
+        str = str + 'Nov,';
+      } else if (value == 12) {
+        str = str + 'Dec';
+      }
+    });
+
+    if (str.length === 1) {
+      return '';
+    } else {
+      if (str.substring(str.length - 1) == ',') {
+        str = str.substring(0, str.length - 1);
+      }
+    }
+    return str;
+  }
+
+  private formatDayText(dayNumber: number, isLast: boolean): string {
+    if (isLast) {
+      return this.getOrdinalNumber(dayNumber) + " last day";
+    } else {
+      return this.getOrdinalNumber(dayNumber) + " day";
+    }
+  }
+
+
+  private getOrdinalNumber(n: number): string {
+    const suffixes = ["th", "st", "nd", "rd"];
+    const value = n % 100;
+
+    // Special cases for 11, 12, 13
+    if (value >= 11 && value <= 13) {
+      return n + "th";
+    }
+
+    // Regular cases
+    const remainder = value % 10;
+    const suffix = suffixes[remainder] || suffixes[0];
+    return n + suffix;
+  }
+
+
+  getAdmissionFrequencyText(period: any, monthNumbers: number[]): string {
+    const monthText = this.getMonths(monthNumbers);
+
+    if (period.specificWeekDay !== undefined && period.specificWeek !== undefined) {
+      const weekDay = this.getStringDay(period.specificWeekDay);
+      const weekPosition = this.getSpecificDay(period.specificWeek);
+      return `${weekPosition} ${weekDay} in ${monthText}`;
+
+    } else if (period.secondOfMonth !== undefined || period.lastSecondOfMonth !== undefined) {
+      const isLast = period.lastSecondOfMonth !== undefined;
+      const dayNumber = Math.abs(parseInt(period.day, 10));
+      const dayText = this.formatDayText(dayNumber, isLast);
+
+      return `${dayText} on ${monthText}`;
+
+    } else if (period.date !== undefined) {
+      const dateText = this.coreService.getStringDate(period.date * 1000);
+      return `On ${dateText} in ${monthText}`;
+
+    } else {
+      if (period.frequency) {
+        return `${period.frequency} in ${monthText}`;
+      } else {
+        return `Every day in ${monthText}`;
+      }
+    }
+  }
   updatePeriod(temp: any, obj: any, period: any): void {
     if (temp.length > 0) {
       for (const i in temp) {
