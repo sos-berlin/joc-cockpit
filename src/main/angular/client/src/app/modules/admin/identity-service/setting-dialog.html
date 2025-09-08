@@ -786,6 +786,22 @@
                class="fa fa-times pos-abt t-10 text-hover-color cursor" style="right: -28px;"></i>
           </div>
         </div>
+        <div *ngFor="let groupScope of currentObj.iamOidcGroupScopes; let i = index" class="form-group row">
+          <div class="col-sm-4 form-control-label">
+            <label *ngIf="i == 0" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcGroupScopes' | translate"
+                   translate>user.label.iamOidcGroupScopes</label>
+          </div>
+          <div class="col-sm-6">
+            <input [(ngModel)]="groupScope.name" [placeholder]="'user.placeholder.iamOidcGroupScopes' | translate"
+                   autocomplete="off"
+                   class="form-control"
+                   name="iamOidcGroupScopes{{i}}" type="text">
+            <i (click)="addGroup(currentObj.iamOidcGroupScopes)"
+               class="fa fa-plus pos-abt t-10 text-hover-primary" style="right: -10px;"></i>
+            <i (click)="removeGroup(currentObj.iamOidcGroupScopes, i)" *ngIf="i != 0"
+               class="fa fa-times pos-abt t-10 text-hover-color cursor" style="right: -28px;"></i>
+          </div>
+        </div>
         <div class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcGroupRolesMap' | translate" 
                  class="col-sm-12 _600" translate>user.label.iamOidcGroupRolesMap</label>

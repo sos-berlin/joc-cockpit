@@ -215,6 +215,13 @@ export class SettingModalComponent {
                   return {name: item};
                 })
               }
+              if (!this.currentObj.iamOidcGroupScopes || this.currentObj.iamOidcGroupScopes.length === 0) {
+                this.currentObj.iamOidcGroupScopes = [{name: ''}];
+              } else {
+                this.currentObj.iamOidcGroupScopes = this.currentObj.iamOidcGroupScopes.map((item: string) => {
+                  return {name: item};
+                })
+              }
             }
             if (data.ldap || (res.configuration.objectType && res.configuration.objectType.match(/LDAP/))) {
               if (data.ldap && data.ldap.simple) {
@@ -265,6 +272,16 @@ export class SettingModalComponent {
         }
       }
     });
+  }
+
+  addOidcGroupScopes(): void {
+    const param = {
+      name: ''
+    };
+    if (!this.currentObj.iamOidcGroupScopes) {
+      this.currentObj.iamOidcGroupScopes = [];
+    }
+    this.currentObj.iamOidcGroupScopes.push(param);
   }
 
   beforeUpload = (file: NzUploadFile): boolean => {
@@ -572,6 +589,11 @@ export class SettingModalComponent {
         if (this.data['identityServiceType'] == 'OIDC') {
           if (obj.oidc.iamOidcGroupClaims && obj.oidc.iamOidcGroupClaims.length > 0) {
             obj.oidc.iamOidcGroupClaims = obj.oidc.iamOidcGroupClaims.map((item: any) => {
+              return item.name;
+            });
+          }
+          if (obj.oidc.iamOidcGroupScopes && obj.oidc.iamOidcGroupScopes.length > 0) {
+            obj.oidc.iamOidcGroupScopes = obj.oidc.iamOidcGroupScopes.map((item: any) => {
               return item.name;
             });
           }
