@@ -3464,6 +3464,7 @@
     "label.iamOidcImage": "OIDCイメージ",
     "label.iamOidcUserAttribute": "OIDCユーザー属性",
     "label.iamOidcGroupClaims": "OIDCグループクレーム",
+    "label.iamOidcGroupScopes": "OIDC Group Scopes",
     "label.iamOidcGroupRolesMap": "OIDCグループロールマップ",
     "label.iamOidcAuthenticationCodeFlow": "Authorization Code Flow",
     "label.iamOidcImplicitFlow": "Implicit Flow",
@@ -3600,6 +3601,7 @@
     "placeholder.iamOidcTruststorePassword": "OIDCトラストストアパスワード入力",
     "placeholder.iamOidcUserAttribute": "OIDCユーザー属性入力",
     "placeholder.iamOidcGroupClaims": "OIDCグループクレーム入力",
+    "placeholder.iamOidcGroupScopes": "Enter OIDC Scopes Claims",
     "placeholder.iamFidoTimeout": "ミリ秒でタイムアウト入力",
     "placeholder.iamFidoTransports": "トランスポート選択",
     "placeholder.iamFidoUserVerification": "ユーザー確認選択",
@@ -3705,6 +3707,7 @@
         "iamOidcUserAttribute": "OIDCユーザー属性",
         "iamOidcImage": "OIDCイメージ",
         "iamOidcGroupClaims": "OIDCグループクレーム",
+        "iamOidcGroupScopes": "iamOidcGroupScopes.",
         "iamOidcGroupRolesMap": "OIDCグループロールマップ"
       },
       "webauthn": {

@@ -31,7 +31,7 @@ export class OIDCAuthService {
   clientFlowType?: string = '';
   redirectUri?: string;
   loginUrl?: string = '';
-  scope = 'openid profile email';
+  scope = 'openid email';
   issuer?: string;
   logoutUrl?: string;
   tokenEndpoint?: string;
@@ -47,7 +47,7 @@ export class OIDCAuthService {
   access_token: string | undefined;
   id_token: string | undefined;
   refresh_token: string | undefined;
-  iamOidcGroupClaims: string[] = [];
+  private iamOidcGroupScopes: string[] = [];
 
   constructor(private coreService: CoreService, private toasterService: ToastrService, private authService: AuthService,
               private router: Router) {
@@ -63,8 +63,8 @@ export class OIDCAuthService {
     this.issuer = config.iamOidcAuthenticationUrl;
     this.redirectUri = window.location.origin + '/joc';
     this.showDebugInformation = true;
-    if (config.iamOidcGroupClaims && Array.isArray(config.iamOidcGroupClaims)) {
-      this.iamOidcGroupClaims = config.iamOidcGroupClaims;
+    if (config.iamOidcGroupScopes && Array.isArray(config.iamOidcGroupScopes)) {
+      this.iamOidcGroupScopes = config.iamOidcGroupScopes;
     }
   }
 
@@ -206,12 +206,13 @@ export class OIDCAuthService {
       let scope = this.scope;
       if (!scope.match(/(^|\s)openid($|\s)/)) {
         scope = 'openid ' + scope;
-    }
+      }
 
-    if (this.iamOidcGroupClaims.length > 0) {
-        const groupClaimsScope = this.iamOidcGroupClaims.join(' ');
-        scope += ' ' + groupClaimsScope;
-    }
+     
+      if (this.iamOidcGroupScopes.length > 0) {
+        const groupScopesScope = this.iamOidcGroupScopes.join(' ');
+        scope += ' ' + groupScopesScope;
+      }
 
     if (this.clientFlowType != 'AUTHENTICATION') {
         this.responseTypesSupported.forEach((type: string) => {

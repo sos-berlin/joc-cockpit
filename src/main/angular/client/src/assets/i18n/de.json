@@ -3463,6 +3463,7 @@
     "label.iamOidcImage": "OIDC Bild",
     "label.iamOidcUserAttribute": "OIDC User Name Attribute",
     "label.iamOidcGroupClaims": "OIDC Group Claims",
+    "label.iamOidcGroupScopes": "OIDC Group Scopes",
     "label.iamOidcGroupRolesMap": "OIDC Group Roles Mapping",
     "label.iamOidcAuthenticationCodeFlow": "Authorization Code Flow",
     "label.iamOidcImplicitFlow": "Implicit Flow",
@@ -3599,6 +3600,7 @@
     "placeholder.iamOidcTruststorePassword": "OIDC Truststore Password angeben",
     "placeholder.iamOidcUserAttribute": "OIDC User Name Attribute angeben",
     "placeholder.iamOidcGroupClaims": "OIDC Group Claims angeben",
+    "placeholder.iamOidcGroupScopes": "Enter OIDC Scopes Claims",
     "placeholder.iamFidoTimeout": "Timeout in Sekunden angeben",
     "placeholder.iamFidoTransports": "Transport angeben",
     "placeholder.iamFidoUserVerification": "User Verification angeben",
@@ -3704,6 +3706,7 @@
         "iamOidcUserAttribute": "Das OIDC User Attribute ist spezifisch für einen Identity Provider und gibt den Namen des Attributs an, das die eindeutige Kennung eines Anwenders enthält, die zur Anmeldung verwendet wird, z.B. vereinbart das Attribut 'email' die E-Mail Adresse des Anwenders zur Anmeldung.",
         "iamOidcImage": "Wenn ein OIDC Bild angegeben ist, wird es im Anmeldefenster angezeigt. Bilddateien des Typs .png mit einer maximalen Größe von 1 MB können verwendet werden. Bilder werden am besten mit einer Breite und Höhe von 64 Pixel dargestellt.",
         "iamOidcGroupClaims": "OIDC Group Claims geben die Gruppen an, in denen das betreffende Benutzerkonto Mitglied ist. Jede Gruppe kann einer oder mehreren Rollen in JS7 zugewiesen werden.",
+        "iamOidcGroupScopes": "iamOidcGroupScopes.",
         "iamOidcGroupRolesMap": "OIDC Gruppenmitgliedschaften werden jeweils auf eine oder mehrere JS7 Rollen abgebildet."
       },
       "webauthn": {
