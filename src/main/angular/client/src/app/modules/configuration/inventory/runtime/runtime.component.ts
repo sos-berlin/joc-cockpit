@@ -1713,6 +1713,12 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   }
 
   private callDates(obj, flag): void {
+    
+    if (Array.isArray(obj.nonWorkingDayCalendars) && obj.nonWorkingDayCalendars.length === 0) {
+      delete obj.nonWorkingDayCalendars;
+    }
+
+    obj = this.cleanEmptyObjects(obj);
     this.coreService.post(!this.calendar ? 'schedule/runtime' : 'inventory/calendar/dates',
       obj).subscribe((result: any) => {
       if (this.calendar) {
@@ -1722,7 +1728,47 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
       }
     });
   }
+  private cleanEmptyObjects(obj: any): any {
+    if (obj === null || obj === undefined) {
+      return obj;
+    }
 
+    if (Array.isArray(obj)) {
+      return obj.map(item => this.cleanEmptyObjects(item));
+    }
+
+    if (typeof obj === 'object') {
+      const cleaned: any = {};
+
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          const value = obj[key];
+
+          if (this.isEmptyObject(value)) {
+            continue;
+          }
+
+          cleaned[key] = this.cleanEmptyObjects(value);
+        }
+      }
+
+      return cleaned;
+    }
+
+    return obj;
+  }
+
+  private isEmptyObject(obj: any): boolean {
+    if (obj === null || obj === undefined) {
+      return false;
+    }
+
+    if (typeof obj !== 'object' || Array.isArray(obj)) {
+      return false;
+    }
+
+    return Object.keys(obj).length === 0;
+  }
   private filterCalDates(result, flag): void {
     if (result.periods) {
       this.populateCalPlanItems(result);

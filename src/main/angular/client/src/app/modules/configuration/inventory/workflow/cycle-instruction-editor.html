@@ -2,7 +2,7 @@
   <div class="form-group row">
     <label class="col-md-4 col-lg-3 form-control-label"
            [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.job.label' | translate) : ''"
-           
+
            translate>workflow.label.label
     </label>
     <div class="col-md-8 col-lg-9">
@@ -20,7 +20,7 @@
   <div class="form-group row">
     <label class="col-md-4 col-lg-3"
            [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.cycle.onlyOnePeriod' | translate) : ''"
-           
+
            translate>workflow.label.onlyOnePeriod
     </label>
     <div class="col-md-8 col-lg-9">
@@ -60,59 +60,97 @@
             </div>
           </td>
           <td colspan="2">
-            <div *ngFor="let item of list.periodList; let j = index">
+            <div *ngFor="let item of list.periodList; let j = index" class="period-row">
               <div class="row">
                 <div class="col-sm-5">
-                  <span class="cursor" (click)="editFrequency(list, i, j);" *ngIf="item.frequency"><span translate>workflow.admissionTime.label.on</span> {{item.frequency}}</span>
-                  <span class="cursor" (click)="editFrequency(list, i, j);" *ngIf="!item.frequency" translate>workflow.admissionTime.label.everyDay</span>
-                  <a class="text-xs text-primary m-l-sm"
-                     (click)="editFrequency(list, i, j)"><i class="fa fa-pencil"></i></a>
-                  <a class="text-xs text-hover-color m-l-sm"
-                     (click)="removeFrequency(j , list, i)"><i class="fa fa-times"></i></a>
+                  <div *ngIf="!item.isRestricted">
+    <span class="cursor" (click)="editFrequency(list, i, j);" *ngIf="item.frequency">
+      <span>{{ 'on' }}</span> {{ getFrequencyText(item) }}
+    </span>
+                    <span class="cursor" (click)="editFrequency(list, i, j);" *ngIf="!item.frequency">
+      {{ 'everyDay' }}
+    </span>
+                    <a (click)="editFrequency(list, i, j)" style="margin-left: 5px; cursor: pointer;">
+                      <i class="fa fa-pencil"></i>
+                    </a>
+                    <a (click)="removeFrequency(j, list, i)" style="margin-left: 5px; cursor: pointer;">
+                      <i class="fa fa-times"></i>
+                    </a>
+                  </div>
+
+                  <div *ngIf="item.isRestricted" style="word-break: break-all">
+                    <span class="cursor" (click)="editFrequency(list, i, j);">
+                      <span>{{ 'on' }}</span> {{ getFrequencyText(item) }}
+                    </span>
+                    <a (click)="editFrequency(list, i, j)" style="margin-left: 5px; cursor: pointer;">
+                      <i class="fa fa-pencil"></i>
+                    </a>
+                    <a (click)="removeFrequency(j, list, i)" style="margin-left: 5px; cursor: pointer;">
+                      <i class="fa fa-times"></i>
+                    </a>
+                  </div>
                 </div>
+
+
                 <div class="col-sm-7">
                   <div *ngFor="let p of item.periods | orderBy: 'startTime';">
                     <a (click)="editPeriod(p, item, i)">{{p.text}}</a>
-                    <a (click)="editPeriod(p, item, i)" class="text-xs text-hover-primary m-l-sm">
-                      <i class="fa fa-pencil"></i></a>
-                    <a (click)="removePeriod(item, p, i)" class="text-xs text-hover-color m-l-sm">
-                      <i class="fa fa-times text-hover-color"></i></a>
+                    <a (click)="editPeriod(p, item, i)" style="margin-left: 5px; cursor: pointer;">
+                      <i class="fa fa-pencil"></i>
+                    </a>
+                    <a (click)="removePeriod(item, p, i)" style="margin-left: 5px; cursor: pointer;">
+                      <i class="fa fa-times"></i>
+                    </a>
                   </div>
-                  <div class="text-xs cursor text-hover-primary">
-                    <i (click)="addPeriod(item, i)" class="fa fa-plus"></i>
+                  <div style="margin-top: 5px;">
+                    <i (click)="addPeriod(item, i)" class="fa fa-plus" style="cursor: pointer;"></i>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="text-xs cursor text-hover-primary">
-              <i (click)="editFrequency(list, i);" class="fa fa-plus"></i>
+
+            <div style="margin-top: 10px;">
+              <i (click)="editFrequency(list, i);" class="fa fa-plus" style="cursor: pointer;"></i>
             </div>
           </td>
           <td>
-            <div *ngIf="list.repeat.TYPE">
+            <div *ngIf="list.repeat && list.repeat.TYPE">
               <a (click)="editRepeat(list, i)">{{list.repeat.text}}</a>
-              <a (click)="editRepeat(list, i)" class="text-xs text-hover-primary m-l-sm">
-                <i class="fa fa-pencil"></i></a>
+              <a (click)="editRepeat(list, i)" style="margin-left: 5px; cursor: pointer;">
+                <i class="fa fa-pencil"></i>
+              </a>
             </div>
-            <div *ngIf="!list.repeat.TYPE" class="text-xs cursor text-hover-primary">
-              <i (click)="addRepeat(list, i)" class="fa fa-plus"></i>
+            <div *ngIf="!list.repeat || !list.repeat.TYPE" style="margin-top: 5px;">
+              <i (click)="addRepeat(list, i)" class="fa fa-plus" style="cursor: pointer;"></i>
             </div>
           </td>
         </tr>
         </tbody>
       </table>
     </div>
-    <div *ngIf="schemeList.length==0" class="text-center m-b-sm">
+
+    <div *ngIf="schemeList.length == 0" class="text-center m-b-sm">
       <app-empty-data></app-empty-data>
     </div>
-    <div class="form-group row ">
+
+    <div class="form-group row">
       <div class="col-sm-12 p-t-xs">
         <button class="btn btn-sm btn-primary"
-                (click)="addScheme(selectedNode.obj)" translate>workflow.button.addScheme
+                (click)="addScheme(selectedNode.obj)" translate>
+          workflow.button.addScheme
         </button>
       </div>
     </div>
   </div>
 </div>
-<app-admission-time *ngIf="selectedNode.obj.show" [index]="selectedNode.obj.listIndex" [isEdit]="selectedNode.isEdit" [timeZone]="timeZone" [repeatObject]="selectedNode.repeatObject" [isTooltipVisible]="isTooltipVisible" [job]="selectedNode.data.schedule" [data]="selectedNode.data"
-                    (close)="closeScheme(selectedNode.obj)"></app-admission-time>
+
+<app-admission-time *ngIf="selectedNode.obj.show"
+                    [index]="selectedNode.obj.listIndex"
+                    [isEdit]="selectedNode.isEdit"
+                    [timeZone]="timeZone"
+                    [repeatObject]="selectedNode.repeatObject"
+                    [isTooltipVisible]="isTooltipVisible"
+                    [job]="selectedNode.data.schedule"
+                    [data]="selectedNode.data"
+                    (close)="closeScheme(selectedNode.obj)">
+</app-admission-time>

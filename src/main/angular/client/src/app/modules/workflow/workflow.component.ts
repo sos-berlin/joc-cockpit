@@ -2308,80 +2308,82 @@ export class WorkflowComponent {
     }
     obj.compact = true;
     obj.limit = this.preferences.maxWorkflowRecords;
-    this.coreService.post('orders', obj).subscribe({
-      next: (res: any) => {
-        if (res.orders) {
-          for (let i in this.workflows) {
-            if (obj.workflowIds && obj.workflowIds.length > 0 && !isEmpty(this.workflows[i].ordersSummary)) {
-              for (let j = 0; j < obj.workflowIds.length; j++) {
-                if (this.workflows[i].path === obj.workflowIds[j].path && this.workflows[i].versionId === obj.workflowIds[j].versionId) {
-                  this.workflows[i].numOfOrders = 0;
-                  this.workflows[i].orders = [];
-                  this.workflows[i].orderReload = false;
-                  this.workflows[i].ordersSummary = {};
-                  obj.workflowIds.splice(j, 1);
-                  break;
-                }
-              }
-            }
-            for (let j in res.orders) {
-              if (this.workflows[i].path === res.orders[j].workflowId.path && this.workflows[i].versionId === res.orders[j].workflowId.versionId) {
-                this.workflows[i].numOfOrders = (this.workflows[i].numOfOrders || 0) + 1;
-                if (!this.workflows[i].orders) {
-                  this.workflows[i].orders = [];
-                }
-                for (const o in res.orders[j].position) {
-                  if (/^(try\+)/.test(res.orders[j].position[o])) {
-                    res.orders[j].position[o] = 'try+0';
-                  }
-                  if (/^(cycle\+)/.test(res.orders[j].position[o])) {
-                    res.orders[j].position[o] = 'cycle';
+    setTimeout(() => {
+      this.coreService.post('orders', obj).subscribe({
+        next: (res: any) => {
+          if (res.orders) {
+            for (let i in this.workflows) {
+              if (obj.workflowIds && obj.workflowIds.length > 0 && !isEmpty(this.workflows[i].ordersSummary)) {
+                for (let j = 0; j < obj.workflowIds.length; j++) {
+                  if (this.workflows[i].path === obj.workflowIds[j].path && this.workflows[i].versionId === obj.workflowIds[j].versionId) {
+                    this.workflows[i].numOfOrders = 0;
+                    this.workflows[i].orders = [];
+                    this.workflows[i].orderReload = false;
+                    this.workflows[i].ordersSummary = {};
+                    obj.workflowIds.splice(j, 1);
+                    break;
                   }
                 }
-                this.workflows[i].orders.push(res.orders[j]);
-                const state = res.orders[j].state._text.toLowerCase();
-                if (this.workflows[i].ordersSummary[state]) {
-                  this.workflows[i].ordersSummary[state] = this.workflows[i].ordersSummary[state] + 1;
-                } else {
-                  this.workflows[i].ordersSummary[state] = 1;
-                }
-                this.workflows[i].orderReload = true;
               }
-            }
-            if (this.sideBar.isVisible && this.workflows[i].path === this.sideBar.workflow &&
-              this.sideBar.isVisible && this.workflows[i].versionId === this.sideBar.versionId) {
-              this.sideBar.orders = this.workflows[i].orders;
-            }
-          }
-
-          this.workflows.forEach((workflow, index) => {
-            if (workflow?.orders) {
-              if (Array.isArray(workflow.orders)) {
-                workflow.orders.forEach((order) => {
-                  if (order && Array.isArray(order.tags) && order.tags.length > 0) {
-                    if(!workflow.ordertagsString){
-                      workflow.ordertagsString = []
+              for (let j in res.orders) {
+                if (this.workflows[i].path === res.orders[j].workflowId.path && this.workflows[i].versionId === res.orders[j].workflowId.versionId) {
+                  this.workflows[i].numOfOrders = (this.workflows[i].numOfOrders || 0) + 1;
+                  if (!this.workflows[i].orders) {
+                    this.workflows[i].orders = [];
+                  }
+                  for (const o in res.orders[j].position) {
+                    if (/^(try\+)/.test(res.orders[j].position[o])) {
+                      res.orders[j].position[o] = 'try+0';
                     }
-                    workflow.ordertagsString.push(order.tags.join(', '));
+                    if (/^(cycle\+)/.test(res.orders[j].position[o])) {
+                      res.orders[j].position[o] = 'cycle';
+                    }
                   }
-                });
+                  this.workflows[i].orders.push(res.orders[j]);
+                  const state = res.orders[j].state._text.toLowerCase();
+                  if (this.workflows[i].ordersSummary[state]) {
+                    this.workflows[i].ordersSummary[state] = this.workflows[i].ordersSummary[state] + 1;
+                  } else {
+                    this.workflows[i].ordersSummary[state] = 1;
+                  }
+                  this.workflows[i].orderReload = true;
+                }
+              }
+              if (this.sideBar.isVisible && this.workflows[i].path === this.sideBar.workflow &&
+                this.sideBar.isVisible && this.workflows[i].versionId === this.sideBar.versionId) {
+                this.sideBar.orders = this.workflows[i].orders;
               }
             }
-          });
+
+            this.workflows.forEach((workflow, index) => {
+              if (workflow?.orders) {
+                if (Array.isArray(workflow.orders)) {
+                  workflow.orders.forEach((order) => {
+                    if (order && Array.isArray(order.tags) && order.tags.length > 0) {
+                      if (!workflow.ordertagsString) {
+                        workflow.ordertagsString = []
+                      }
+                      workflow.ordertagsString.push(order.tags.join(', '));
+                    }
+                  });
+                }
+              }
+            });
 
 
+          }
+          if (cb) {
+            cb();
+          }
+          this.resetAction();
+        }, error: () => {
+          if (cb) {
+            cb();
+          }
+          this.resetAction();
         }
-        if (cb) {
-          cb();
-        }
-        this.resetAction();
-      }, error: () => {
-        if (cb) {
-          cb();
-        }
-        this.resetAction();
-      }
-    });
+      });
+    },10)
   }
 
   private getMatchPath(path): boolean {
