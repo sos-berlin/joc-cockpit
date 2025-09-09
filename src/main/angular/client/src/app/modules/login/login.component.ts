@@ -235,14 +235,27 @@
 
     loginWithPopup(config) {
       sessionStorage['authConfig'] = JSON.stringify(config);
-      // Tweak config for code flow
-      this.oAuthService.configure(config);
+
+      const oidcServiceItem = this.oidcIdentityServiceItems.find(
+        item => item.identityServiceName === config.identityServiceName
+      );
+
+      const enhancedConfig = {
+        ...config,
+        iamOidcGroupClaims: oidcServiceItem?.iamOidcGroupClaims || [],
+        iamOidcGroupScopes: oidcServiceItem?.iamOidcGroupScopes || []
+      };
+
+      this.oAuthService.configure(enhancedConfig);
+
       this.oAuthService.loadDiscoveryDocument('').then((_) => {
-        sessionStorage.setItem('authConfig', JSON.stringify(config));
+        sessionStorage.setItem('authConfig', JSON.stringify(enhancedConfig));
         sessionStorage.setItem('providerName', config.identityServiceName);
+
         if (this.returnUrl) {
           sessionStorage.setItem('returnUrl', this.returnUrl);
         }
+
         this.getIdAndSecret(config.identityServiceName);
       });
     }
