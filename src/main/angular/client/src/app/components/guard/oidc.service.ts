@@ -48,6 +48,7 @@ export class OIDCAuthService {
   id_token: string | undefined;
   refresh_token: string | undefined;
   private iamOidcGroupScopes: string[] = [];
+  private iamOidcGroupClaims: string[] = [];
 
   constructor(private coreService: CoreService, private toasterService: ToastrService, private authService: AuthService,
               private router: Router) {
@@ -66,6 +67,27 @@ export class OIDCAuthService {
     if (config.iamOidcGroupScopes && Array.isArray(config.iamOidcGroupScopes)) {
       this.iamOidcGroupScopes = config.iamOidcGroupScopes;
     }
+    if (config.iamOidcGroupClaims && Array.isArray(config.iamOidcGroupClaims)) {
+      this.iamOidcGroupClaims = config.iamOidcGroupClaims;
+    }
+  }
+
+  private buildClaimsParameter(): string {
+    if (this.iamOidcGroupClaims.length === 0) {
+      return '';
+    }
+
+    const idTokenClaims: any = {};
+    this.iamOidcGroupClaims.forEach(claim => {
+      idTokenClaims[claim] = null;
+    });
+    const claimsObject = {
+      id_token: idTokenClaims
+    };
+
+    const claimsJson = JSON.stringify(claimsObject);
+
+    return encodeURIComponent(claimsJson);
   }
 
   loadDiscoveryDocument(fullUrl: string | null) {
@@ -208,7 +230,6 @@ export class OIDCAuthService {
         scope = 'openid ' + scope;
       }
 
-     
       if (this.iamOidcGroupScopes.length > 0) {
         const groupScopesScope = this.iamOidcGroupScopes.join(' ');
         scope += ' ' + groupScopesScope;
@@ -240,7 +261,13 @@ export class OIDCAuthService {
         url += '&code_challenge=' + challenge;
         url += '&code_challenge_method=S256';
       }
+
       url += '&nonce=' + encodeURIComponent(nonce);
+
+      const claimsParameter = this.buildClaimsParameter();
+      if (claimsParameter) {
+        url += '&claims=' + claimsParameter;
+      }
     }
     if (noPrompt) {
       url += '&prompt=none';
