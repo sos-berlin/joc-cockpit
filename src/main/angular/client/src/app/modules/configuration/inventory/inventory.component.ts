@@ -1252,6 +1252,7 @@ export class SingleDeployComponent {
               refObj.disabled = !refObj.valid;
             }
             if (this.dependenciesToggleAvailable) {
+              refObj.disabled = false;
               if (!this.useDependencies) refObj.selected = false;
             }
             this.affectedObjectsByType[type].push(refObj);
@@ -1287,6 +1288,7 @@ export class SingleDeployComponent {
               refObj.selected = false;
             }
             if (this.dependenciesToggleAvailable) {
+              refObj.disabled = false;
               if (!this.useDependencies) refObj.selected = false;
             }
             this.referencedObjectsByType[type].push(refObj);
@@ -1309,6 +1311,7 @@ export class SingleDeployComponent {
         item.disabled = !item.valid;
         item.selected = item.valid && (!item.deployed && !item.released);
         if (this.dependenciesToggleAvailable) {
+          item.disabled = false;
           if (!this.useDependencies) item.selected = false;
         }
         if (this.isRevoke || this.operation === 'recall') {
@@ -1867,6 +1870,7 @@ export class DeployComponent {
             refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
             refObj.change = refObj.deployed;
             if (this.dependenciesToggleAvailable) {
+              refObj.disabled = false;
               if (!this.useDependencies) refObj.selected = false;
             }
             if (this.releasable) {
@@ -1931,6 +1935,7 @@ export class DeployComponent {
         item.selected = item.valid && (!item.deployed && !item.released);
 
         if (this.dependenciesToggleAvailable) {
+          item.disabled = false;
           if (!this.useDependencies) item.selected = false;
         }
 
@@ -2143,6 +2148,24 @@ export class DeployComponent {
           ? this.computeDependenciesToggleAvailable(res)
           : false;
         if (this.dependenciesToggleAvailable) { this.useDependencies = true; }
+        if (this.isRevoke && res.deployables) {
+          res.deployables = res.deployables.filter((deployable: any) => {
+            const versions = deployable.deployablesVersions || [];
+            if (versions.length > 1) {
+              return true;
+            }
+
+            if (versions.length === 1 && !versions[0].hasOwnProperty('commitId')) {
+              return false;
+            }
+
+            if (versions.length === 1 && versions[0].hasOwnProperty('commitId')) {
+              return true;
+            }
+
+            return false;
+          });
+        }
         let tree = [];
         if (this.isSelectedObjects) {
           res.folders = [];
