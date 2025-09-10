@@ -184,11 +184,13 @@ Specifies the name of the Requestor role that is assigned accounts which are sub
 
 Specifies the Java options used when creating Reports. The default value considers the minimum Java heap space required to create Reports. Users who find a larger number of job executions per day might have to increase this value to match memory needs.
 
-# References
+## References
 
 - [Audit Log](/audit-log)
 - [Identity Services](/identity-services)
 - [Profile - Preferences](/profile-preferences)
 - [REST Web Service API](/rest-api)
+- [Settings](/settings)
 - [JS7 - Audit Log](https://kb.sos-berlin.com/display/JS7/JS7+-+Audit+Log)
 - [JS7 - Audit Trail](https://kb.sos-berlin.com/display/JS7/JS7+-+Audit+Trail)
+- [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)
