@@ -127,52 +127,45 @@ export class AgentComponent {
     this.data = [...this.data];
   }
 
-  private getAgentClassList(obj): void {
-    this.coreService.post('agents', obj).subscribe({
-      next: (result: any) => {
-        this.getVesrions(result.agents);
+private getAgentClassList(obj): void {
+  this.coreService.post('agents', obj).subscribe({
+    next: (result: any) => {
+      this.getVesrions(result.agents);
+      const expandedSet = new Set(this.agentsFilters.expandedObjects || []);
 
-        const expandedSet = new Set(this.agentsFilters.expandedObjects || []);
+      const updatedAgents = result.agents.map(agent => {
+        const agentExpanded = expandedSet.has(agent.agentId);
 
-        const updatedAgents = result.agents.map(agent => {
-          const agentExpanded = expandedSet.has(agent.agentId);
-          const agentRunning = agent.runningTasks > 0;
-
-          // Always keep it open if running
-          if (agentExpanded || agentRunning) {
-            agent.show = true;
-            if (agent.subagents) {
-              agent.subagents.forEach(sub => {
-                const subExpanded = expandedSet.has(sub.subagentId);
-                const subRunning = sub.runningTasks > 0;
-
-                // Keep subagent open if expanded or running
-                if (subExpanded || subRunning) {
-                  sub.show = true;
-                } else {
-                  sub.show = false;
-                }
-              });
-
-              agent.showSubagent = agent.subagents.some(sub => sub.show);
-            }
-          } else {
-            agent.show = false;
-            agent.showSubagent = false;
+        if (agentExpanded) {
+          agent.show = true;
+          if (agent.subagents) {
+            agent.subagents.forEach(sub => {
+              const subExpanded = expandedSet.has(sub.subagentId);
+              if (subExpanded) {
+                sub.show = true;
+              } else {
+                sub.show = false;
+              }
+            });
+            agent.showSubagent = agent.subagents.some(sub => sub.show);
           }
+        } else {
+          agent.show = false;
+          agent.showSubagent = false;
+        }
 
-          return agent;
-        });
+        return agent;
+      });
 
-        this.agentClusters = [...updatedAgents];
-        this.searchInResult(); // updates `data`
-        this.loading = false;
-      },
-      error: () => {
-        this.loading = false;
-      }
-    });
-  }
+      this.agentClusters = [...updatedAgents];
+      this.searchInResult();
+      this.loading = false;
+    },
+    error: () => {
+      this.loading = false;
+    }
+  });
+}
 
   loadAgents(status, flag = false): void {
     if (status) {
