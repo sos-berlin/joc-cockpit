@@ -1498,7 +1498,7 @@ export class DeployComponent {
   sharedCheckboxState: { [key: string]: boolean } = {};
   dependenciesToggleAvailable = false;
   useDependencies = false;
-
+  private recursiveDependenciesCache: any = null;
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private ref: ChangeDetectorRef,
               private inventoryService: InventoryService, private toasterService: ToastrService, private translate: TranslateService, private cdRef: ChangeDetectorRef, private cdr: ChangeDetectorRef) {
   }
@@ -1546,14 +1546,65 @@ export class DeployComponent {
   handleRecursive(): void {
     this.ref.detectChanges();
 
-    const checkedNodes = this.collectCheckedObjects(this.nodes);
+    if (this.object.isRecursive){
+      if (this.recursiveDependenciesCache) {
+        this.updateNodeDependencies(this.recursiveDependenciesCache, new Set(), true);
+        this.prepareObject(this.recursiveDependenciesCache);
+        this.ref.detectChanges();
+        return;
+      }else{
+        this.checkedObject.clear();
+        this.recursiveCheck(this.nodes, false);
+        this.expandAllWithStateRestore();
 
-    if (checkedNodes.length > 0) {
-      setTimeout(() => {
-        this.getDependencies(checkedNodes, this.nodes[0]);
-      }, 100)
+      }
+
     }
   }
+
+
+
+  expandAllWithStateRestore(): void {
+    const savedCheckedState = new Set(this.checkedObject);
+    this.buildTree(this.path, null, () => {
+      const self = this;
+      if (this.nodes && this.nodes.length > 0) {
+        this.nodes.forEach(rootNode => {
+          if (!rootNode.isLeaf) {
+            rootNode.expanded = true;
+          }
+        });
+      }
+      function recursive(node: any): void {
+        for (const i in node) {
+          if (node[i].children && node[i].children.length > 0) {
+            if (!node[i].isCall) {
+              self.inventoryService.checkAndUpdateVersionList(node[i]);
+            }
+            recursive(node[i].children);
+          }
+        }
+      }
+
+      recursive(this.nodes);
+
+      this.checkedObject = savedCheckedState;
+      this.recursiveCheck(this.nodes, true);
+
+      this.nodes = [...this.nodes];
+      this.ref.detectChanges();
+
+      const checkedNodes = this.collectCheckedObjects(this.nodes);
+      if (checkedNodes.length > 0) {
+        this.loading = true
+        this.getDependencies(checkedNodes, this.nodes[0]);
+        this.ref.detectChanges();
+
+      }
+
+    }, true);
+  }
+
 
   expandAll(): void {
     this.buildTree(this.path, null, () => {
@@ -1741,6 +1792,7 @@ export class DeployComponent {
   }
 
   private getDependencies(checkedNodes: { name: string, type: string }[], node, isChecked = false): void {
+    this.loading = true
     const configurations = checkedNodes.map(node => ({
       name: node.name,
       type: node.type,
@@ -1773,11 +1825,17 @@ export class DeployComponent {
 
     this.coreService.post('inventory/dependencies', requestBody).subscribe({
       next: (res: any) => {
+        if (this.object.isRecursive) {
+          this.recursiveDependenciesCache = res.dependencies;
+        }
         if (res.dependencies && res.dependencies.requestedItems.length > 0 || res.dependencies.affectedItems.length > 0) {
           this.updateNodeDependencies(res.dependencies, requestedKeys, isChecked);
           this.prepareObject(res.dependencies);
           this.ref.detectChanges();
         }
+        this.loading = false
+        this.ref.detectChanges();
+
       },
       error: (err) => {
       }
@@ -2524,6 +2582,9 @@ export class DeployComponent {
     if ((this.data && this.data.object) || this.isSelectedObjects) {
       selectFolder = false;
     }
+    if(self.hasDependencies()){
+      selectFolder = false
+    }
     function recursive(nodes: any): void {
       for (let i = 0; i < nodes.length; i++) {
         if (!nodes[i].object && nodes[i].checked) {
@@ -2531,11 +2592,11 @@ export class DeployComponent {
           if (nodes[i].deployId || nodes[i].deploymentId || (!nodes[i].type && !nodes[i].object)) {
             if ((!nodes[i].type && !nodes[i].object)) {
               if (selectFolder) {
-                objDep.configuration = {
-                  path: nodes[i].path,
-                  objectType: 'FOLDER',
-                  recursive: self.object.isRecursive
-                };
+                  objDep.configuration = {
+                    path: nodes[i].path,
+                    objectType: 'FOLDER',
+                    recursive: self.object.isRecursive
+                  };
               }
             } else {
               objDep.configuration = {
@@ -2824,30 +2885,32 @@ export class DeployComponent {
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
-    Promise.all(promises)
-      .then(() => {
-        if ((isEmpty(obj.store) && isEmpty(obj.delete)) && !this.isRevoke) {
-          this.submitted = false;
-          return;
-        }
-        this.submitted = true;
-        const deployURL = this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy';
-        this.coreService.post(deployURL, obj).subscribe({
-          next: () => {
-            this.activeModal.close();
-          },
-          error: () => {
-            this.submitted = false;
-            this.activeModal.close();
-            this.ref.detectChanges();
-          }
-        });
-      })
-      .catch(() => {
+  Promise.all(promises)
+    .then(() => {
+      this.removeDuplicateConfigurations(obj);
+
+      if ((isEmpty(obj.store) && isEmpty(obj.delete)) && !this.isRevoke) {
         this.submitted = false;
-        this.ref.detectChanges();
+        return;
+      }
+      this.submitted = true;
+      const deployURL = this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy';
+      this.coreService.post(deployURL, obj).subscribe({
+        next: () => {
+          this.activeModal.close();
+        },
+        error: () => {
+          this.submitted = false;
+          this.activeModal.close();
+          this.ref.detectChanges();
+        }
       });
-  }
+    })
+    .catch(() => {
+      this.submitted = false;
+      this.ref.detectChanges();
+    });
+}
 
   private handleRelease(recall?): void {
     this.getReleaseObject();
@@ -2902,6 +2965,57 @@ export class DeployComponent {
     } else {
       this.submitted = false;
       this.ref.detectChanges();
+    }
+  }
+
+  private removeDuplicateConfigurations(obj: any): void {
+    if (!obj.store || (!obj.store.deployConfigurations && !obj.store.draftConfigurations)) {
+      return;
+    }
+
+    const deployConfigs = obj.store.deployConfigurations || [];
+    const draftConfigs = obj.store.draftConfigurations || [];
+    const combined = [...deployConfigs, ...draftConfigs];
+
+    const uniqueConfigs = new Map<string, any>();
+
+    combined.forEach(item => {
+      const config = item.configuration;
+      const key = `${config.path.toLowerCase()}-${config.objectType.toLowerCase()}`;
+
+      if (!uniqueConfigs.has(key)) {
+        uniqueConfigs.set(key, item);
+      } else {
+        const existingConfig = uniqueConfigs.get(key);
+        const existingCommitId = existingConfig.configuration.commitId || '';
+        const newCommitId = config.commitId || '';
+
+        if (!existingCommitId && newCommitId) {
+          uniqueConfigs.set(key, item);
+        }
+      }
+    });
+
+    const newDeployConfigs: any[] = [];
+    const newDraftConfigs: any[] = [];
+
+    uniqueConfigs.forEach(item => {
+      const config = item.configuration;
+      if (config.commitId && config.commitId.trim() !== '') {
+        newDeployConfigs.push(item);
+      } else {
+        newDraftConfigs.push(item);
+      }
+    });
+
+    obj.store.deployConfigurations = newDeployConfigs.length > 0 ? newDeployConfigs : [];
+    obj.store.draftConfigurations = newDraftConfigs.length > 0 ? newDraftConfigs : [];
+
+    if (obj.store.deployConfigurations.length === 0) {
+      delete obj.store.deployConfigurations;
+    }
+    if (obj.store.draftConfigurations.length === 0) {
+      delete obj.store.draftConfigurations;
     }
   }
 
@@ -6271,14 +6385,14 @@ export class RepositoryComponent {
     const targetGroup = (config, type) => {
       if (this.filter.envIndependent) {
         if (!obj.rollout[type]) {
-          obj.rollout[type] = [];  // Initialize if undefined
+          obj.rollout[type] = [];
         }
         if (!isDuplicate(obj.rollout[type], config)) {
           obj.rollout[type].push(config);
         }
       } else if (this.filter.envRelated) {
         if (!obj.local[type]) {
-          obj.local[type] = [];  // Initialize if undefined
+          obj.local[type] = [];
         }
         if (!isDuplicate(obj.local[type], config)) {
           obj.local[type].push(config);
