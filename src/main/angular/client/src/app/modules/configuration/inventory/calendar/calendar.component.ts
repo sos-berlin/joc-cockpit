@@ -1406,8 +1406,8 @@ export class FrequencyModalComponent {
 
   private sortTreeAlphabetically(nodes: any[]): void {
     nodes.sort((a, b) => {
-      if (!a.isLeaf && b.isLeaf) return -1;
-      if (a.isLeaf && !b.isLeaf) return 1;
+      if (a.isLeaf && !b.isLeaf) return -1;
+      if (!a.isLeaf && b.isLeaf) return 1;
 
       const titleA = (a.title || a.name || '').toLowerCase();
       const titleB = (b.title || b.name || '').toLowerCase();
@@ -1420,7 +1420,6 @@ export class FrequencyModalComponent {
       }
     });
   }
-
   private initializeNonWorkingDayCalendarResources(): void {
     if (this.frequency.nonWorkingDayCalendars && this.frequency.nonWorkingDayCalendars.length > 0) {
       this.nonWorkingDayCalendarResources.list = this.coreService.clone(this.frequency.nonWorkingDayCalendars);

@@ -1082,23 +1082,22 @@ export class AddRestrictionComponent {
   return tree;
 }
 
-private sortTreeAlphabetically(nodes: any[]): void {
-  nodes.sort((a, b) => {
-    if (!a.isLeaf && b.isLeaf) return -1;
-    if (a.isLeaf && !b.isLeaf) return 1;
+  private sortTreeAlphabetically(nodes: any[]): void {
+    nodes.sort((a, b) => {
+      if (a.isLeaf && !b.isLeaf) return -1;
+      if (!a.isLeaf && b.isLeaf) return 1;
 
-    const titleA = (a.title || a.name || '').toLowerCase();
-    const titleB = (b.title || b.name || '').toLowerCase();
-    return titleA.localeCompare(titleB);
-  });
+      const titleA = (a.title || a.name || '').toLowerCase();
+      const titleB = (b.title || b.name || '').toLowerCase();
+      return titleA.localeCompare(titleB);
+    });
 
-  nodes.forEach(node => {
-    if (node.children && node.children.length > 0) {
-      this.sortTreeAlphabetically(node.children);
-    }
-  });
-}
-
+    nodes.forEach(node => {
+      if (node.children && node.children.length > 0) {
+        this.sortTreeAlphabetically(node.children);
+      }
+    });
+  }
   private initializeNonWorkingDayCalendarResources(): void {
     if (this.frequency.nonWorkingDayCalendars && this.frequency.nonWorkingDayCalendars.length > 0) {
       this.nonWorkingDayCalendarResources.list = this.coreService.clone(this.frequency.nonWorkingDayCalendars);
@@ -1713,7 +1712,7 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   }
 
   private callDates(obj, flag): void {
-    
+
     if (Array.isArray(obj.nonWorkingDayCalendars) && obj.nonWorkingDayCalendars.length === 0) {
       delete obj.nonWorkingDayCalendars;
     }

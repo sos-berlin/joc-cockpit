@@ -22,7 +22,7 @@ export class AgentStatusComponent {
   subscription1: Subscription;
   mapObj = new Map();
   preferences: any = {};
-
+  fullLabels: string[] = [];
   pieChartOptions: ChartConfiguration['options'] = {
     responsive: true,
     maintainAspectRatio: false,
@@ -38,7 +38,7 @@ export class AgentStatusComponent {
         onLeave: function (e: any) {
           e.native.target.style.cursor = 'default';
         },
-        onClick: ($event, item) => {
+        onClick: (event, item, legend) => {
           this.navToAgentView(item.text);
         }
       },
@@ -46,7 +46,8 @@ export class AgentStatusComponent {
         formatter: (value) => {
           return Math.round((value * 100) / this.agentClusters.length) + '%';
         }
-      }, tooltip: {
+      },
+      tooltip: {
         callbacks: {
           label: function (tooltipItem): string {
             return tooltipItem.label;
@@ -112,9 +113,13 @@ export class AgentStatusComponent {
         if (value.state) {
           const label = value.state._text;
           const isDisabled = value.disabled;
+          const severity = value.state.severity;
           const color = this.coreService.getColorBySeverity(value.state.severity, false, isDisabled);
           const hoverColor = this.coreService.getColorBySeverity(value.state.severity, true, isDisabled);
-          const key = `${label}_${isDisabled ? 'disabled' : 'enabled'}`;
+
+          const filterValue = this.getFilterValue(severity, label);
+
+          const key = `${label}_${severity}_${isDisabled ? 'disabled' : 'enabled'}`;
 
           this.translate.get(label).subscribe(translatedValue => {
             let result;
@@ -125,19 +130,22 @@ export class AgentStatusComponent {
               result = {
                 count: 1,
                 _text: translatedValue,
+                originalText: label,
+                severity: severity,
+                filterValue: filterValue,
                 color: color,
                 hoverColor: hoverColor,
                 isDisabled: isDisabled
               };
               results.set(key, result);
             }
-            this.mapObj.set(`${result.count} ${isDisabled ? 'Disabled' : 'Enabled'} ${translatedValue}`, value.state._text);
-            resolve(result); // Resolve after updating the results map and mapObj
+
+            resolve(result);
           }, () => {
-            resolve(null); // Resolve even if the translation fails
+            resolve(null);
           });
         } else {
-          resolve(null); // Resolve if there is no state
+          resolve(null);
         }
       });
     });
@@ -148,22 +156,51 @@ export class AgentStatusComponent {
     });
   }
 
+
+  getFilterValue(severity: number, text: string): string {
+    if (text === 'COUPLED') {
+      switch (severity) {
+        case 0:
+        case 8:
+          return 'COUPLED';
+        case 2:
+        case 5:
+          return 'COUPLINGFAILED';
+        default:
+          return text;
+      }
+    }
+    return text;
+  }
+
+
   prepareAgentClusterData(result): void {
     this.agentClusters = result.agents;
     this.mapObj.clear();
     this.pieChartData.labels = [];
     this.pieChartData.datasets = [{ data: [], borderWidth: 0, backgroundColor: [], hoverBackgroundColor: [] }];
 
+    this.fullLabels = [];
+
     this.groupBy(result.agents).then(groupedData => {
-        groupedData.forEach((value) => {
-            this.pieChartData.datasets[0].data.push(value.count);
-            this.pieChartData.datasets[0].backgroundColor.push(value.color);
-            this.pieChartData.datasets[0].hoverBackgroundColor.push(value.hoverColor);
-            const labelPrefix = value.isDisabled ? 'Disabled' : 'Enabled';
-            this.pieChartData.labels.push(`${value.count} ${labelPrefix} ${value._text}`);
-        });
+      groupedData.forEach((value) => {
+        this.pieChartData.datasets[0].data.push(value.count);
+        this.pieChartData.datasets[0].backgroundColor.push(value.color);
+        this.pieChartData.datasets[0].hoverBackgroundColor.push(value.hoverColor);
+
+        const labelPrefix = value.isDisabled ? 'Disabled' : 'Enabled';
+        const fullLabel = `${value.count} ${labelPrefix} ${value.originalText} (S${value.severity})`;
+        const displayLabel = `${value.count} ${labelPrefix} ${value.originalText}`;
+
+        this.fullLabels.push(fullLabel);
+        this.mapObj.set(fullLabel, value.filterValue);
+
+        this.pieChartData.labels.push(displayLabel);
+      });
     });
   }
+
+
 
   getStatus(): void {
     this.pieChartData.labels = [];
@@ -181,18 +218,25 @@ export class AgentStatusComponent {
     });
   }
 
-  // events
+
   onChartClick({ active }: { active: any }): void {
-    if (this.pieChartData.labels && active[0]) {
-      this.navToAgentView(this.pieChartData.labels[active[0].index]);
+    if (this.fullLabels && active[0]) {
+      const originalLabel = this.fullLabels[active[0].index];
+      this.navToAgentView(originalLabel);
     }
   }
 
+
   navToAgentView(text: string): void {
     const state = this.mapObj.get(text);
-    this.coreService.getResourceTab().agents.filter.state = state;
-    this.router.navigate(['/resources/agents']).then();
+    if (state) {
+      this.coreService.getResourceTab().agents.filter.state = state;
+      this.router.navigate(['/resources/agents']).then();
+    } else {
+    }
   }
+
+
 
   helpPage(): void{
     this.modal.create({
