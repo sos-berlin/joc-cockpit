@@ -14,7 +14,7 @@ The left panel is organized in tabs that allow navigation from folders and filte
   - **Workflow Tags** are assigned from the [Configuration - Workflows](/configuration-workflows) view.
   - **Order Tags** are assigned from the [Configuration - Schedules](/configuration-schedules) view.
 
-Tags are selected fron + and - icons and can be looked up using the Quick Search icon. Display of Tags must be activated from the *joc* section in the [Settings](/settings).
+Tags are selected fron + and - icons and can be looked up using the Quick Search icon. Display of Tags must be activated from the [Settings - JOC Cockpit](/settings-joc) page.
 
 ## Workflow Panel
 
@@ -43,7 +43,7 @@ The Order summary is indicated for Orders related to the Workflows displayed for
   - **Outstanding** Workflows wait for confirmation by one or more Agents that the Workflow is suspended or resumed.
 - **No. of Orders** indicates the number of Orders assigned the Workflow. 
   - Up to three Orders are displayed directly with the Workflow. They offer an action menu for Order operations.
-    - Users can click the indicated Order ID to display the Order's log output from the [Order Log Viewer](/order-log). The log includes output created by any jobs executed with the Workflow.
+    - Users can click the indicated Order ID to display the Order's log output from the [Order Log View](/order-log). The log includes output created by any jobs executed with the Workflow.
   - Clicking the *No. of Orders* brings up a popup window that displays all related Orders and that offers operations on individual Orders and bulk operations on selected Orders.
 
 ### Display of Jobs and Workflow Instructions
@@ -67,10 +67,10 @@ The panel is displayed at the lower part of the screen when users click the name
 
 ### Access to Log Output
 
-- **Order ID**: Clicking the *Order ID* will display the Order's log output from the [Order Log Viewer](/order-log). The log includes output created by any jobs executed with the Workflow.
+- **Order ID**: Clicking the *Order ID* will display the Order's log output from the [Order Log View](/order-log). The log includes output created by any jobs executed with the Workflow.
 - **Download Icon**: clicking the icon will download the Order's log to a file.
 
-By default display of Order logs is limited to 10MB log size and otherwise logs are downloaded to files. Users can adjust the limit from the [Settings](/settings) page.
+By default display of Order logs is limited to 10MB log size and otherwise logs are downloaded to files. Users can adjust the limit from the [Settings - JOC Cockpit](/settings-joc) page.
 
 ## Operations
 
@@ -122,10 +122,10 @@ The [Workflows - Search](/workflows-search) offers criteria for looking up Workf
 
 - [Workflows - Add Orders](/workflows-orders-add)
 - [Workflows - Search](/workflows-search)
-- [Order Log Viewer](/order-log)
+- [Order Log View](/order-log)
 - [Order States](/dashboard-orders)
-- [Settings](/settings)
-- [User Profile - Preferences](/profile-preferences)
+- [Settings - JOC Cockpit](/settings-joc)
+- [Profile - Preferences](/profile-preferences)
 - [Configuration - Workflows](/configuration-workflows)
 - [Configuration - Schedules](/configuration-schedules)
 - [JS7 - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows)

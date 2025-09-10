@@ -13,11 +13,11 @@ The left panel allows filtering by Tags from Workflows and Orders that triggered
 - **Workflow Tags** are assigned from the [Configuration - Workflows](/configuration-workflows) view.
 - **Order Tags** are assigned from the [Configuration - Schedules](/configuration-schedules) view.
 
-Tags are selected fron + and - icons and can be looked up using the search icon. Display of Tags must be activated from the *joc* section in the [Settings](/settings) page.
+Tags are selected fron + and - icons and can be looked up using the search icon. Display of Tags must be activated from the [Settings - JOC Cockpit](/settings-joc) page.
 
 ## History Panel
 
-Display is limited to a maximum of 5000 entries if not otherwise specifed from [User Profile - Preferences](/profile-preferences).
+Display is limited to a maximum of 5000 entries if not otherwise specifed from [Profile - Preferences](/profile-preferences).
 
 ### History of Jobs
 
@@ -32,10 +32,10 @@ Display is limited to a maximum of 5000 entries if not otherwise specifed from [
 
 ### Access to Log Output
 
-- **Job Name**: Clicking the *Job Name* will display the Job's log output from the [Task Log Viewer](/task-log).
+- **Job Name**: Clicking the *Job Name* will display the Job's log output from the [Task Log View](/task-log).
 - **Download Icon**: clicking the icon will download the Job's log to a file.
 
-By default display of task logs is limited to 10MB log size and otherwise logs are downloaded to files. Users can adjust the limit from the [Settings](/settings) page.
+By default display of task logs is limited to 10MB log size and otherwise logs are downloaded to files. Users can adjust the limit from the [Settings - JOC Cockpit](/settings-joc) page.
 
 ### Operations on the Task History
 
@@ -61,10 +61,10 @@ User's can apply filters available on top of the window to limit display of Jobs
 
 ## References
 
-- [Task Log Viewer](/task-log)
+- [Task Log View](/task-log)
 - [Order History](/history-orders)
-- [Settings](/settings)
-- [User Profile - Preferences](/profile-preferences)
+- [Settings - JOC Cockpit](/settings-joc)
+- [Profile - Preferences](/profile-preferences)
 - [Cleanup Service](/service-cleanup)
 - [Configuration - Workflows](/configuration-workflows)
 - [Configuration - Schedules](/configuration-schedules)

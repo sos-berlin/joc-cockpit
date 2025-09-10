@@ -13,11 +13,11 @@ The left panel allows filtering by Tags from Workflows and Orders.
 - **Workflow Tags** are assigned from the [Configuration - Workflows](/configuration-workflows) view.
 - **Order Tags** are assigned from the [Configuration - Schedules](/configuration-schedules) view.
 
-Tags are selected fron + and - icons and can be looked up using the Quick Search icon. Display of Tags must be activated from the *joc* section in the [Settings](/settings).
+Tags are selected fron + and - icons and can be looked up using the Quick Search icon. Display of Tags must be activated from the [Settings - JOC Cockpit](/settings-joc) page.
 
 ## History Panel
 
-Display is limited to a maximum of 5000 entries if not otherwise specifed from [User Profile - Preferences](/profile-preferences).
+Display is limited to a maximum of 5000 entries if not otherwise specifed from [Profile - Preferences](/profile-preferences).
 
 ### History of Orders
 
@@ -35,10 +35,10 @@ Display is limited to a maximum of 5000 entries if not otherwise specifed from [
 
 ### Access to Log Output
 
-- **Order ID**: Clicking the *Order ID* will display the Order's log output from the [Order Log Viewer](/order-log). The log includes output created by any jobs executed with the Workflow.
+- **Order ID**: Clicking the *Order ID* will display the Order's log output from the [Order Log View](/order-log). The log includes output created by any jobs executed with the Workflow.
 - **Download Icon**: clicking the icon will download the Order's log to a file.
 
-By default display of Order logs is limited to 10MB log size and otherwise logs are downloaded to files. Users can adjust the limit from the [Settings](/settings) page.
+By default display of Order logs is limited to 10MB log size and otherwise logs are downloaded to files. Users can adjust the limit from the [Settings - JOC Cockpit](/settings-joc) page.
 
 ### Operations on the Task History
 
@@ -63,12 +63,12 @@ User's can apply filters available on top of the window to limit display of Orde
 
 ## References
 
-- [Order Log Viewer](/order-log)
+- [Order Log View](/order-log)
 - [Order States](/dashboard-orders)
 - [Task History](/history-tasks)
 - [Workflows](/workflows)
-- [Settings](/settings)
-- [User Profile - Preferences](/profile-preferences)
+- [Settings - JOC Cockpit](/settings-joc)
+- [Profile - Preferences](/profile-preferences)
 - [Cleanup Service](/service-cleanup)
 - [Configuration - Workflows](/configuration-workflows)
 - [Configuration - Schedules](/configuration-schedules)
