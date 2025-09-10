@@ -161,6 +161,10 @@
     }
 
     onSubmit(values: any): void {
+      sessionStorage.removeItem('logoutUrl');
+      sessionStorage.removeItem('authConfig');
+      sessionStorage.removeItem('returnUrl');
+
       this.errorMsg = false;
       this.errorMsgText = '';
       if (this.showRegister) {
