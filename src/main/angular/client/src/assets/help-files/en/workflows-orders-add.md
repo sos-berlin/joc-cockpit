@@ -7,7 +7,7 @@ Users who are happy with default values and wish to submit an Order for immediat
 ### Order Attributes
 
 - **Order Name**: An optional name that can be used to filter Orders in a number of views.
-- **Tag Name**: Any number of Tags can be added that will be displayed and that can be looked up if specified from the Settings page.
+- **Tag Name**: Any number of Tags can be added that will be displayed and that can be looked up if specified from the [Settings - JOC Cockpit](/settings-joc) page.
 - **Ignore Job Admission Times**: Jobs can be limited to run on certain days and/or in certain timeslots. Orders arriving have to wait for the next available timeslot. The option forces Jobs to start independently from such limitations.
 
 ### Start Time
@@ -64,4 +64,5 @@ If an Order should not start from the first node in the Workflow, then a positio
 ## References
 
 - [Workflows](/workflows)
+- [Settings - JOC Cockpit](/settings-joc)
 - [JS7 - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows)

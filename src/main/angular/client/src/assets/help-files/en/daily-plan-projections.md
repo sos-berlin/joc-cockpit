@@ -2,7 +2,7 @@
 
 The Daily Plan holds Orders that are submitted to Controller and Agents a few days ahead for resilience purposes. In addition it offers projections of future Order start times that are calculated for the next 6 months.
 
-Users who wish a longer projection period can modify the related setting in the *Settings* page, section *Daily Plan*.
+Users who wish a longer projection period can modify the related setting in the [Settings - Daily Plan](/settings-daily-plan) page.
 
 ### Dates, Periods and Time Zones
 
@@ -56,4 +56,5 @@ Projections can be exported to a file in .xlsx format with the daily plan date i
 ## References
 
 - [Daily Plan](/daily-plan)
+- [Settings - Daily Plan](/settings-daily-plan)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)

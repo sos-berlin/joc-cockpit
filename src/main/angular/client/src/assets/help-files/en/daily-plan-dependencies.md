@@ -16,7 +16,7 @@ The calendar widget offers to select a daily plan date for which dependencies wi
 Operations on plan dates include:
 
 - **Open Plan**: This happens automatically if new Orders are added for a plan date. Users can re-open a closed plan.
-- **Close Plan**: An open plan is closed and will not allow adding Orders. This happens automatically for past plan dates with a delay of 1 day. Users can adjust the related setting from the *Settings* page, section *Daily Plan*. Users can close an open plan earlier to prevent futher Orders from being added.
+- **Close Plan**: An open plan is closed and will not allow adding Orders. This happens automatically for past plan dates with a delay of 1 day. Users can adjust the related setting from the [Settings - Daily Plan](/settings-daily-plan) page. Users can close an open plan earlier to prevent futher Orders from being added.
 
 ## Display of Dependencies
 
@@ -53,6 +53,7 @@ If both filter buttons are inactive then all Workflows and dependencies will be 
 ## References
 
 - [Daily Plan](/daily-plan)
+- [Settings - Daily Plan](/settings-daily-plan)
 - [Resources - Notice Boards](/resources-notice-boards)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)
 - [JS7 - Notice Baords](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards)

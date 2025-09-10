@@ -47,16 +47,17 @@ The operation is available from a button below the calendar widget for an indivi
   - Users have a choice to create all Orders or Orders from selected Schedules and Workflows, optionally limited by folders.
   - Users can specify to replace existing Orders from the same Schedules and to immediately submit Orders to the Controller.
   - Users can include Orders from Schedules that are not configured for consideration by the Daily Plan Service.
-- If the Daily Plan for a given date is created, then the next run of the Daily Plan Service will not plan additional Orders for the same date. However, the service will submit *planned* Orders in scope of the days ahead for which Orders should be submitted, see *Settings* page, section *Daily Plan*.
+- If the Daily Plan for a given date is created, then the next run of the Daily Plan Service will not plan additional Orders for the same date. However, the service will submit *planned* Orders in scope of the days ahead for which Orders should be submitted, see [Settings - Daily Plan](/settings-daily-plan) page.
 
 ### Delete Daily Plan
 
 The operation is available from a button below the calendar widget for an individual date and for a date range.
 
 - For selected days the Daily Plan will be deleted, provided that no *submitted* or *finished* Orders are available. If *planned* Orders are available, then they will be dropped with the Daily Plan.
-- If the Daily Plan for a given date is deleted, then the next run of the Daily Plan Service will plan Orders for that date, provided that the date is in scope of the days ahead for which Orders are planned, see *Settings* page, section *Daily Plan*.
+- If the Daily Plan for a given date is deleted, then the next run of the Daily Plan Service will plan Orders for that date, provided that the date is in scope of the days ahead for which Orders are planned, see [Settings - Daily Plan](/settings-daily-plan).
 
 ## References
 
 - [Daily Plan](/daily-plan)
+- [Settings - Daily Plan](/settings-daily-plan)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)

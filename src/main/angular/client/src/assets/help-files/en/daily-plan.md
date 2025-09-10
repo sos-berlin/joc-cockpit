@@ -1,8 +1,6 @@
 # Daily Plan
 
-The *Daily Plan* view provides an overview of Orders scheduled for future execution and allows to manage the *Daily Plan*.
-
-The *Daily Plan* is subject to purge of the database performed by the [Cleanup Service](/service-cleanup).
+The *Daily Plan* view provides an overview of Orders scheduled for future execution and allows to manage the *Daily Plan*. The *Daily Plan* is subject to purge of the database performed by the [Cleanup Service](/service-cleanup).
 
 For operations related to the calendar widget see [Daily Plan Calendar](/daily-plan-calendar).
 
@@ -51,10 +49,6 @@ The Daily Plan offers the following state transitions:
       ▼          Cancel  ▲
       ┖──────────────────┘
 </pre>
-
-## Navigation Panel
-
-
 
 ## Daily Plan Panel
 

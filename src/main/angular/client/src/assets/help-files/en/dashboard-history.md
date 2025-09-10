@@ -18,10 +18,10 @@ Clicking the indicated number of Orders or Jobs navigates to the *Order History*
 The dropdown button in the right upper corner of the panel offers selecting past Orders and Jobs from a date range:
 
 - **Today** Orders and Jobs are related to the current day which is calculated from the time zone in the user's profile.
-- **Last Hour** includes Orders and Jobs that completed during the last hour.
-- **Last 12 Hours** includes Orders and Jobs that completed during the last 12 hours.
-- **Last 24 Hours** includes Orders and Jobs that completed during the last 24 hours.
-- **Last 7 Days** includes Orders and Jobs that completed during the last 7 days.
+- **Last hour** includes Orders and Jobs that completed during the last hour.
+- **Last 12 hours** includes Orders and Jobs that completed during the last 12 hours.
+- **Last 24 hours** includes Orders and Jobs that completed during the last 24 hours.
+- **Last 7 days** includes Orders and Jobs that completed during the last 7 days.
 
 ## References
 
