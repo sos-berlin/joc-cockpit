@@ -4866,21 +4866,24 @@ export class WorkflowComponent {
         cells = graph.getSelectionCells();
       }
       if (cells && cells.length > 0) {
-        this.copyId = [];
+        this.inventoryConf.copiedInstuctionObject = [];
         if (this.cutCell.length > 0) {
           this.cutCell.forEach(cell => {
             this.workflowService.changeCellStyle(graph, cell, false);
           });
         }
         this.cutCell = [];
+        this.copyId = [];
         cells.forEach(cell => {
           this.workflowService.changeCellStyle(graph, cell, true);
           this.cutCell.push(cell);
+          this.copyId.push(cell.getAttribute('uuid'));
         });
         this.updateToolbar('cut', node ? node.cell : null, 'multiple instructions');
         this.coreService.showCopyMessage(this.message, 'cut');
       }
     }
+    this.saveCopyInstruction();
   }
 
   private updateToolbar(operation, cell, name = ''): void {
@@ -7704,13 +7707,20 @@ export class WorkflowComponent {
         });
 
         // Handle Cut: Ctrl + v
-        self.keyHandler.bindControlKey(86, function () {
-          if (dropTargetForPaste) {
-            createClickInstruction('paste', dropTargetForPaste);
-          }
-        });
+          self.keyHandler.bindControlKey(86, function (evt?: KeyboardEvent) {
+            const target =
+              dropTargetForPaste ||
+              graph.getSelectionCell() ||
+              graph.getDefaultParent();
 
-        // Handle Cut: Ctrl + a
+            if (target) {
+              createClickInstruction('paste', target);
+              if (evt && evt.preventDefault) evt.preventDefault(); // stop browser default
+            }
+          });
+
+
+          // Handle Cut: Ctrl + a
         self.keyHandler.bindControlKey(65, function () {
           selectAll()
         });
