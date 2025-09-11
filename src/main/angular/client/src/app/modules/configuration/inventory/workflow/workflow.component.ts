@@ -6009,25 +6009,29 @@ export class WorkflowComponent {
         cells = graph.getSelectionCells();
       }
       if (cells && cells.length > 0) {
+
         this.inventoryConf.copiedInstuctionObject = [];
+        this.copyId = [];
+
         if (this.cutCell.length > 0) {
           this.cutCell.forEach(cell => {
             this.workflowService.changeCellStyle(graph, cell, false);
           });
         }
         this.cutCell = [];
-        this.copyId = [];
         cells.forEach(cell => {
           this.workflowService.changeCellStyle(graph, cell, true);
           this.cutCell.push(cell);
-          this.copyId.push(cell.getAttribute('uuid'));
         });
+
+
         this.updateToolbar('cut', node ? node.cell : null, 'multiple instructions');
         this.coreService.showCopyMessage(this.message, 'cut');
       }
     }
-    this.saveCopyInstruction();
+
   }
+
 
   private updateToolbar(operation, cell, name = ''): void {
     $('#toolbar').find('img').each(function (index) {
