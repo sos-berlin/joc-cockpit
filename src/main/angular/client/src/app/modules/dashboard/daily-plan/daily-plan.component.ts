@@ -50,21 +50,25 @@ export class DailyPlanComponent {
   }
 
   getPlans(): void {
+    let offset = parseInt(this.filters.date.replace('d', ''), 10);
     let d = new Date();
-    d.setDate(new Date().getDate() + 1);
+    d.setDate(new Date().getDate() + offset);
+
     const obj = {
       controllerIds: [this.schedulerIds.selected],
-      dailyPlanDateFrom: this.coreService.getStringDate(this.filters.date === '0d' ? null : d),
-      dailyPlanDateTo: this.coreService.getStringDate(this.filters.date === '0d' ? null : d)
+      dailyPlanDateFrom: this.coreService.getStringDate(d),
+      dailyPlanDateTo: this.coreService.getStringDate(d)
     };
 
     this.coreService.post('daily_plan/orders/summary', obj).subscribe({
       next: (res) => {
         this.filterData(res);
         this.isLoaded = true;
-      }, error: () => this.isLoaded = true
+      },
+      error: () => this.isLoaded = true
     });
   }
+
 
   getDailyPlans(date): void {
     if (this.schedulerIds.selected) {

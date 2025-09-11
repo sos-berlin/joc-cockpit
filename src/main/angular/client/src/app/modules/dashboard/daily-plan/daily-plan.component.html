@@ -22,6 +22,30 @@
                     nz-menu-item>
                   <a translate>filters.button.nextDay</a>
                 </li>
+                <li (click)="getDailyPlans('2d');filters.label='filters.button.next2Day'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='2d'}"
+                    nz-menu-item>
+                  <a translate>filters.button.next2Day</a>
+                </li>
+                <li (click)="getDailyPlans('3d');filters.label='filters.button.next3Day'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='3d'}"
+                    nz-menu-item>
+                  <a translate>filters.button.next3Day</a>
+                </li>
+                <li (click)="getDailyPlans('4d');filters.label='filters.button.next4Day'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='4d'}"
+                    nz-menu-item>
+                  <a translate>filters.button.next4Day</a>
+                </li>
+                <li (click)="getDailyPlans('5d');filters.label='filters.button.next5Day'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='5d'}"
+                    nz-menu-item>
+                  <a translate>filters.button.next5Day</a>
+                </li>
+                <li (click)="getDailyPlans('6d');filters.label='filters.button.next6Day'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='6d'}"
+                    nz-menu-item>
+                  <a translate>filters.button.next6Day</a>
+                </li>
+                <li (click)="getDailyPlans('7d');filters.label='filters.button.next7Day'" [ngClass]="{'ant-select-dropdown-menu-item-active': filters.date=='7d'}"
+                    nz-menu-item>
+                  <a translate>filters.button.next7Day</a>
+                </li>
               </ul>
             </nz-dropdown-menu>
           </div>
