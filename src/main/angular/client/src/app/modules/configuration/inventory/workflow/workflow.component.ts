@@ -550,7 +550,7 @@ export class CycleInstructionComponent {
   days = [];
 
   constructor(private coreService: CoreService, private modal: NzModalService,
-              private workflowService: WorkflowService, private ref: ChangeDetectorRef,  private calendarService?: CalendarService ) {
+              private workflowService: WorkflowService, private ref: ChangeDetectorRef, private calendarService?: CalendarService) {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -600,7 +600,8 @@ export class CycleInstructionComponent {
         if (typeof this.selectedNode.obj.schedule === 'string') {
           this.selectedNode.obj.schedule = JSON.parse(this.selectedNode.obj.schedule);
         }
-      } catch (e) {}
+      } catch (e) {
+      }
     }
 
     if (!this.selectedNode.obj.schedule) {
@@ -651,56 +652,38 @@ export class CycleInstructionComponent {
     this.ref.detectChanges();
   }
 
+
   getRestrictedPeriodsForScheme(restrictedSchemes: any[], schemeIndex: number): any[] {
     const restrictedPeriods = [];
 
     restrictedSchemes.forEach((scheme, restrictedSchemeIndex) => {
+      if (scheme.restriction?.TYPE === 'MonthRestriction' && scheme.periods && scheme.periods.length > 0) {
+        const convertedPeriods = this.workflowService.convertAdmissionTimeToList(
+          scheme.periods,
+          this.days,
+          {}
+        );
 
-      if (scheme.restriction?.TYPE === 'MonthRestriction') {
-        if (scheme.periods && scheme.periods.length > 0) {
-          const convertedPeriods = this.workflowService.convertAdmissionTimeToList(
-            scheme.periods,
-            this.days,
-            {}
-          );
-
-          convertedPeriods.forEach(period => {
-            const restrictedPeriod = {
-              ...period,
-              originalFrequency: period.frequency,
-              restriction: {
-                TYPE: scheme.restriction.TYPE,
-                months: [...scheme.restriction.months]
-              },
-              schemeIndex: schemeIndex,
-              restrictedSchemeIndex: restrictedSchemeIndex,
-              isRestricted: true
-            };
-            restrictedPeriods.push(restrictedPeriod);
-          });
-        } else {
+        convertedPeriods.forEach(period => {
           const restrictedPeriod = {
-            day: '',
-            secondOfWeek: 0,
-            frequency: '',
-            periods: [],
-            originalFrequency: 'Empty Frequency',
+            ...period,
+            originalFrequency: period.frequency,
             restriction: {
               TYPE: scheme.restriction.TYPE,
               months: [...scheme.restriction.months]
             },
             schemeIndex: schemeIndex,
             restrictedSchemeIndex: restrictedSchemeIndex,
-            isRestricted: true,
-            isEmpty: true
+            isRestricted: true
           };
           restrictedPeriods.push(restrictedPeriod);
-        }
+        });
       }
     });
 
     return restrictedPeriods;
   }
+
 
   getMonthNames(monthNumbers: number[]): string {
     if (this.calendarService && this.calendarService.getMonths) {
@@ -728,15 +711,29 @@ export class CycleInstructionComponent {
     this.selectedNode.data.periodList = [];
   }
 
+
   editFrequency(data, index, listIndex?): void {
-    this.selectedNode.isEdit = listIndex > -1;
-    this.selectedNode.obj.show = true;
-    this.selectedNode.repeatObject = data.repeat;
-    this.selectedNode.repeatObject.index = index;
-    this.selectedNode.obj.listIndex = listIndex;
-    this.selectedNode.obj.addNewFreq = true;
     this.selectedNode.data.schedule = this.selectedNode.obj.schedule.schemes[index];
-    this.selectedNode.data.periodList = [];
+    const isRestricted = data.isRestricted;
+    if (isRestricted) {
+      this.selectedNode.isEdit = true;
+      this.selectedNode.obj.show = true;
+      this.selectedNode.repeatObject = this.schemeList[index].repeat || {};
+      this.selectedNode.repeatObject.index = index;
+      this.selectedNode.data.restrictedSchemeIndex = data.restrictedSchemeIndex;
+      this.selectedNode.obj.listIndex = listIndex;
+      this.selectedNode.data.isRestrictedEdit = true;
+      this.selectedNode.data.periodList = [];
+    }else{
+      this.selectedNode.isEdit = listIndex > -1;
+      this.selectedNode.obj.show = true;
+      this.selectedNode.repeatObject = data.repeat;
+      this.selectedNode.repeatObject.index = index;
+      this.selectedNode.obj.listIndex = listIndex;
+      this.selectedNode.obj.addNewFreq = true;
+      this.selectedNode.data.periodList = [];
+    }
+
   }
 
   removeFrequency(index, list, mainIndex): void {
@@ -857,11 +854,10 @@ export class CycleInstructionComponent {
     });
   }
 
-   findRestrictedSchemeIndex(schemeIndex: number, restrictedItem: any): number {
+  findRestrictedSchemeIndex(schemeIndex: number, restrictedItem: any): number {
     const scheme = this.selectedNode.obj.schedule.schemes[schemeIndex];
 
     if (!scheme?.admissionTimeScheme?.restrictedSchemes) {
-      console.error('❌ No restrictedSchemes to search in');
       return -1;
     }
 
@@ -874,6 +870,7 @@ export class CycleInstructionComponent {
     });
     return foundIndex;
   }
+
   private updateRestrictedSchemeAfterPeriodEdit(restrictedItem: any, oldPeriod: any, newPeriod: any): void {
     const scheme = this.selectedNode.obj.schedule.schemes[restrictedItem.schemeIndex];
     const restrictedScheme = scheme.admissionTimeScheme.restrictedSchemes[restrictedItem.restrictedSchemeIndex];
@@ -1001,8 +998,8 @@ export class CycleInstructionComponent {
   }
 
 
-  removeRestrictedPeriodItem(restrictedItem: any, period: any): void {
 
+  removeRestrictedPeriodItem(restrictedItem: any, period: any): void {
     const schemeIndex = restrictedItem.schemeIndex;
     const restrictedSchemeIndex = restrictedItem.restrictedSchemeIndex;
     const scheme = this.selectedNode.obj.schedule.schemes[schemeIndex];
@@ -1012,26 +1009,28 @@ export class CycleInstructionComponent {
       return;
     }
 
-
     const obj = CycleInstructionComponent.createObj(restrictedItem, period);
-
-    const periodIndex = restrictedScheme.periods.findIndex(p => {
-      const match = JSON.stringify(p) === JSON.stringify(obj);
-      return match;
-    });
+    const periodIndex = restrictedScheme.periods.findIndex(p => JSON.stringify(p) === JSON.stringify(obj));
 
     if (periodIndex === -1) {
       return;
     }
 
-
     restrictedScheme.periods.splice(periodIndex, 1);
+
+    if (restrictedScheme.periods.length === 0) {
+      scheme.admissionTimeScheme.restrictedSchemes.splice(restrictedSchemeIndex, 1);
+
+      if (scheme.admissionTimeScheme.restrictedSchemes.length === 0) {
+        delete scheme.admissionTimeScheme.restrictedSchemes;
+      }
+    }
 
     restrictedItem.periods = restrictedItem.periods.filter(item => item !== period);
 
-
     this.convertSchemeList();
   }
+
   closeScheme(scheme): void {
     scheme.show = false;
     setTimeout(() => {
@@ -1071,20 +1070,21 @@ export class CycleInstructionComponent {
       this.convertSchemeList();
     }, 100);
   }
+
   getFrequencyText(item: any): string {
     if (item.isRestricted) {
       if (this.workflowService.getAdmissionFrequencyText) {
         return this.workflowService.getAdmissionFrequencyText(item, item.restriction.months);
       } else {
-        const monthText = this.calendarService ?
-          this.calendarService.getMonths(item.restriction.months) :
-          this.getMonthNames(item.restriction.months);
-        return `${item.originalFrequency} 'in' ${monthText}`;
+        const monthText = this.calendarService
+          ? this.calendarService.getMonths(item.restriction.months)
+          : this.getMonthNames(item.restriction.months);
+        return `${item.originalFrequency} in ${monthText}`;
       }
     }
-
-    return item.frequency || '';
+    return item.frequency || 'Every Day';
   }
+
 }
 
 @Component({
@@ -1155,6 +1155,7 @@ export class AdmissionTimeComponent {
   }
 
   ngOnInit(): void {
+
     if (!this.job.admissionTimeScheme) {
       this.job.admissionTimeScheme = {};
     }
@@ -1170,6 +1171,28 @@ export class AdmissionTimeComponent {
     }
     this.days = this.coreService.getLocale().days;
     this.days.push(this.days[0]);
+    if (this.isEdit && this.data.isRestrictedEdit) {
+      const restrictedSchemeIndex = this.data.restrictedSchemeIndex;
+
+      const restrictedScheme = this.job.admissionTimeScheme.restrictedSchemes[restrictedSchemeIndex];
+
+      if (restrictedScheme) {
+        this.isEditingRestrictedFrequency = true;
+        this.selectedMonthsForRestriction = restrictedScheme.restriction.months.map(m => m.toString());
+        this.checkMonths();
+        this.onChangeMonths();
+
+        const periodListForRestricted = this.workflowService.convertAdmissionTimeToList(
+          restrictedScheme.periods || [],
+          this.days,
+          {}
+        );
+
+        if (this.index > -1 && periodListForRestricted[this.index]) {
+          this.editFrequency(periodListForRestricted[this.index]);
+        }
+      }
+    }
     if (this.job.admissionTimeScheme.periods && this.job.admissionTimeScheme.periods.length > 0) {
       this.workflowService.convertSecondIntoWeek(this.job.admissionTimeScheme, this.data.periodList, this.days, this.frequency);
       if (this.isEdit && this.data.periodList && this.data.periodList.length > 0) {
@@ -2019,21 +2042,21 @@ export class AdmissionTimeComponent {
       periodList.splice(originalIndex, 1);
     }
 
-  if (newPeriods && Array.isArray(newPeriods)) {
-    newPeriods.forEach(newPeriod => {
-      if (!newPeriod) return;
+    if (newPeriods && Array.isArray(newPeriods)) {
+      newPeriods.forEach(newPeriod => {
+        if (!newPeriod) return;
 
-      const exists = periodList.some(existing =>
-        existing && existing.frequency === newPeriod.frequency &&
-        existing.day === newPeriod.day &&
-        existing.secondOfWeek === newPeriod.secondOfWeek
-      );
+        const exists = periodList.some(existing =>
+          existing && existing.frequency === newPeriod.frequency &&
+          existing.day === newPeriod.day &&
+          existing.secondOfWeek === newPeriod.secondOfWeek
+        );
 
-      if (!exists) {
-        periodList.push(newPeriod);
-      }
-    });
-  }
+        if (!exists) {
+          periodList.push(newPeriod);
+        }
+      });
+    }
 
     scheme.periods = this.workflowService.convertListToAdmissionTime(periodList);
 

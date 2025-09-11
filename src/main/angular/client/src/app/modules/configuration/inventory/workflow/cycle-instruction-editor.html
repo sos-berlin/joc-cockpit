@@ -64,12 +64,12 @@
               <div class="row">
                 <div class="col-sm-5">
                   <div *ngIf="!item.isRestricted">
-    <span class="cursor" (click)="editFrequency(list, i, j);" *ngIf="item.frequency">
-      <span>{{ 'on' }}</span> {{ getFrequencyText(item) }}
-    </span>
+                    <span class="cursor" (click)="editFrequency(list, i, j);" *ngIf="item.frequency">
+                      <span>{{ 'workflow.admissionTime.label.on' | translate }}</span> {{ getFrequencyText(item) }}
+                    </span>
                     <span class="cursor" (click)="editFrequency(list, i, j);" *ngIf="!item.frequency">
-      {{ 'everyDay' }}
-    </span>
+                      {{ 'workflow.admissionTime.label.everyDay' | translate }}
+                    </span>
                     <a (click)="editFrequency(list, i, j)" style="margin-left: 5px; cursor: pointer;">
                       <i class="fa fa-pencil"></i>
                     </a>
@@ -79,10 +79,10 @@
                   </div>
 
                   <div *ngIf="item.isRestricted" style="word-break: break-all">
-                    <span class="cursor" (click)="editFrequency(list, i, j);">
-                      <span>{{ 'on' }}</span> {{ getFrequencyText(item) }}
+                    <span class="cursor" (click)="editFrequency(item, i, j);">
+                      <span>{{ 'workflow.admissionTime.label.on' | translate }}</span> {{ getFrequencyText(item) }}
                     </span>
-                    <a (click)="editFrequency(list, i, j)" style="margin-left: 5px; cursor: pointer;">
+                    <a (click)="editFrequency(item, i, j)" style="margin-left: 5px; cursor: pointer;">
                       <i class="fa fa-pencil"></i>
                     </a>
                     <a (click)="removeFrequency(j, list, i)" style="margin-left: 5px; cursor: pointer;">
