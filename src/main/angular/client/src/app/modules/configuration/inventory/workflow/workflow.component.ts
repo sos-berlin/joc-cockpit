@@ -8352,8 +8352,9 @@ export class WorkflowComponent {
                 createClickInstruction(sourceCell.attr('src'), cell);
                 mxToolbar.prototype.resetMode(true);
               }
-            } else if (self.copyId.length > 0 || self.cutCell.length > 0) {
-              if (result == 'valid') {
+            } else if ((self.inventoryConf.copiedInstuctionObject && self.inventoryConf.copiedInstuctionObject.length > 0) || self.cutCell.length > 0) {
+
+              if (result == 'valid' || (self.inventoryConf.copiedInstuctionObject && self.inventoryConf.copiedInstuctionObject.length > 0) || self.cutCell.length > 0) {
                 if (cell.value.tagName === 'Connection') {
                   let state = graph.getView().getState(cell);
                   if (state) {

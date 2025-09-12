@@ -2743,30 +2743,32 @@ export class DeployComponent {
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
-    Promise.all(promises)
-      .then(() => {
-        if ((isEmpty(obj.store) && isEmpty(obj.delete)) && !this.isRevoke) {
-          this.submitted = false;
-          return;
-        }
-        this.submitted = true;
-        const deployURL = this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy';
-        this.coreService.post(deployURL, obj).subscribe({
-          next: () => {
-            this.activeModal.close();
-          },
-          error: () => {
-            this.submitted = false;
-            this.activeModal.close();
-            this.ref.detectChanges();
-          }
-        });
-      })
-      .catch(() => {
+  Promise.all(promises)
+    .then(() => {
+      this.removeDuplicateConfigurations(obj);
+
+      if ((isEmpty(obj.store) && isEmpty(obj.delete)) && !this.isRevoke) {
         this.submitted = false;
-        this.ref.detectChanges();
+        return;
+      }
+      this.submitted = true;
+      const deployURL = this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy';
+      this.coreService.post(deployURL, obj).subscribe({
+        next: () => {
+          this.activeModal.close();
+        },
+        error: () => {
+          this.submitted = false;
+          this.activeModal.close();
+          this.ref.detectChanges();
+        }
       });
-  }
+    })
+    .catch(() => {
+      this.submitted = false;
+      this.ref.detectChanges();
+    });
+}
 
   private handleRelease(recall?): void {
     this.getReleaseObject();
@@ -2821,6 +2823,57 @@ export class DeployComponent {
     } else {
       this.submitted = false;
       this.ref.detectChanges();
+    }
+  }
+
+  private removeDuplicateConfigurations(obj: any): void {
+    if (!obj.store || (!obj.store.deployConfigurations && !obj.store.draftConfigurations)) {
+      return;
+    }
+
+    const deployConfigs = obj.store.deployConfigurations || [];
+    const draftConfigs = obj.store.draftConfigurations || [];
+    const combined = [...deployConfigs, ...draftConfigs];
+
+    const uniqueConfigs = new Map<string, any>();
+
+    combined.forEach(item => {
+      const config = item.configuration;
+      const key = `${config.path.toLowerCase()}-${config.objectType.toLowerCase()}`;
+
+      if (!uniqueConfigs.has(key)) {
+        uniqueConfigs.set(key, item);
+      } else {
+        const existingConfig = uniqueConfigs.get(key);
+        const existingCommitId = existingConfig.configuration.commitId || '';
+        const newCommitId = config.commitId || '';
+
+        if (!existingCommitId && newCommitId) {
+          uniqueConfigs.set(key, item);
+        }
+      }
+    });
+
+    const newDeployConfigs: any[] = [];
+    const newDraftConfigs: any[] = [];
+
+    uniqueConfigs.forEach(item => {
+      const config = item.configuration;
+      if (config.commitId && config.commitId.trim() !== '') {
+        newDeployConfigs.push(item);
+      } else {
+        newDraftConfigs.push(item);
+      }
+    });
+
+    obj.store.deployConfigurations = newDeployConfigs.length > 0 ? newDeployConfigs : [];
+    obj.store.draftConfigurations = newDraftConfigs.length > 0 ? newDraftConfigs : [];
+
+    if (obj.store.deployConfigurations.length === 0) {
+      delete obj.store.deployConfigurations;
+    }
+    if (obj.store.draftConfigurations.length === 0) {
+      delete obj.store.draftConfigurations;
     }
   }
 
@@ -3023,7 +3076,7 @@ export class DeployComponent {
       }
     }
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-
+    this.removeDuplicateConfigurationsForRelease(obj);
     if (obj.update && obj.update?.length > 0 || obj.releasables?.length > 0) {
       const releaseURL = recall ? 'inventory/releasables/recall' : 'inventory/release';
       this.coreService.post(releaseURL, obj).subscribe({
@@ -3034,6 +3087,26 @@ export class DeployComponent {
         }
       });
     } else {
+    }
+  }
+
+  private removeDuplicateConfigurationsForRelease(obj: any): void {
+    if (!obj.update || obj.update.length === 0) {
+      return;
+    }
+
+    const uniqueUpdates = new Map<string, any>();
+
+    obj.update.forEach(item => {
+      const key = `${item.path.toLowerCase()}-${item.objectType.toLowerCase()}`;
+      if (!uniqueUpdates.has(key)) {
+        uniqueUpdates.set(key, item);
+      }
+    });
+
+    obj.update = Array.from(uniqueUpdates.values());
+    if (obj.update.length === 0) {
+      delete obj.update;
     }
   }
 
@@ -8076,7 +8149,6 @@ export class PublishChangeModalComponent {
     this.display = this.modalData.display;
     this.title = this.modalData.title;
     this.show = this.modalData.show;
-    this.path = this.modalData.path;
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -8123,7 +8195,7 @@ export class PublishChangeModalComponent {
   prepareGroupedTree(data: any[]): any[] {
     const root = {
       name: '/',
-      path: this.path || '/',
+      path: '/',
       key: '/',
       isLeaf: false,
       expanded: true,
@@ -8184,14 +8256,14 @@ export class PublishChangeModalComponent {
         const groupNode = {
           name: type,
           object: type,
-          path: this.path || '/',
+          path: '/',
           key: `/${type}`,
           disableCheckbox: true,
           expanded: true,
           isLeaf: false,
           children: groupedObjects[type].map((item: any) => ({
             name: item.name,
-            path: this.path + item.path,
+            path: item.path,
             key: item.path,
             type: item.objectType,
             released: item.released,
@@ -8662,6 +8734,8 @@ export class PublishChangeModalComponent {
 
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
+    this.removeDuplicateConfigurationsForRelease(obj);
+
     if (obj.update && obj.update.length > 0) {
       const URL = 'inventory/release';
       this.coreService.post(URL, obj).subscribe({
@@ -8768,7 +8842,7 @@ export class PublishChangeModalComponent {
 
 
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-
+    this.removeDuplicateConfigurations(obj)
     if (obj.store) {
       const URL = 'inventory/deployment/deploy';
       this.coreService.post(URL, obj).subscribe({
@@ -8786,6 +8860,77 @@ export class PublishChangeModalComponent {
 
   cancel(): void {
     this.activeModal.destroy();
+  }
+
+  private removeDuplicateConfigurationsForRelease(obj: any): void {
+    if (!obj.update || obj.update.length === 0) {
+      return;
+    }
+
+    const uniqueUpdates = new Map<string, any>();
+
+    obj.update.forEach(item => {
+      const key = `${item.path.toLowerCase()}-${item.objectType.toLowerCase()}`;
+      if (!uniqueUpdates.has(key)) {
+        uniqueUpdates.set(key, item);
+      }
+    });
+
+    obj.update = Array.from(uniqueUpdates.values());
+    if (obj.update.length === 0) {
+      delete obj.update;
+    }
+  }
+
+  private removeDuplicateConfigurations(obj: any): void {
+    if (!obj.store || (!obj.store.deployConfigurations && !obj.store.draftConfigurations)) {
+      return;
+    }
+
+    const deployConfigs = obj.store.deployConfigurations || [];
+    const draftConfigs = obj.store.draftConfigurations || [];
+    const combined = [...deployConfigs, ...draftConfigs];
+
+    const uniqueConfigs = new Map<string, any>();
+
+    combined.forEach(item => {
+      const config = item.configuration;
+      const key = `${config.path.toLowerCase()}-${config.objectType.toLowerCase()}`;
+
+      if (!uniqueConfigs.has(key)) {
+        uniqueConfigs.set(key, item);
+      } else {
+        const existingConfig = uniqueConfigs.get(key);
+        const existingCommitId = existingConfig.configuration.commitId || '';
+        const newCommitId = config.commitId || '';
+
+        if (!existingCommitId && newCommitId) {
+          uniqueConfigs.set(key, item);
+        }
+      }
+    });
+
+    const newDeployConfigs: any[] = [];
+    const newDraftConfigs: any[] = [];
+
+    uniqueConfigs.forEach(item => {
+      const config = item.configuration;
+      if (config.commitId && config.commitId.trim() !== '') {
+        newDeployConfigs.push(item);
+      } else {
+        newDraftConfigs.push(item);
+      }
+    });
+
+    obj.store.deployConfigurations = newDeployConfigs.length > 0 ? newDeployConfigs : [];
+    obj.store.draftConfigurations = newDraftConfigs.length > 0 ? newDraftConfigs : [];
+
+    if (obj.store.deployConfigurations.length === 0) {
+      delete obj.store.deployConfigurations;
+    }
+    if (obj.store.draftConfigurations.length === 0) {
+      delete obj.store.draftConfigurations;
+    }
   }
 
 }
@@ -13302,8 +13447,7 @@ export class InventoryComponent {
         schedulerIds: this.getAllowedControllerOnly(),
         preferences: this.preferences,
         display: this.preferences.auditLog,
-        title: 'publishChange',
-        path: this.path
+        title: 'publishChange'
       },
       nzFooter: null,
       nzClosable: false,
