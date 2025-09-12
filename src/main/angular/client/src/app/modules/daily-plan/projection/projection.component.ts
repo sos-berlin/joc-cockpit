@@ -87,133 +87,118 @@ export class ExportComponent {
       obj.workflowPaths = this.filter.workflowPaths;
     }
     if (this.filter.workflowFolders?.length > 0) {
-      obj.workflowFolders = [];
-      this.filter.workflowFolders.forEach((path) => {
-        obj.scheduleFolders.push({
-          folder: path,
-          recursive: true
-        })
-      })
+      obj.workflowFolders = this.filter.workflowFolders.map(path => ({ folder: path, recursive: true }));
     }
     if (this.filter.schedulePaths?.length > 0) {
       obj.schedulePaths = this.filter.schedulePaths;
     }
     if (this.filter.scheduleFolders?.length > 0) {
-      obj.scheduleFolders = [];
-      this.filter.scheduleFolders.forEach((path) => {
-        obj.scheduleFolders.push({
-          folder: path,
-          recursive: true
-        })
-      })
+      obj.scheduleFolders = this.filter.scheduleFolders.map(path => ({ folder: path, recursive: true }));
     }
 
     this.coreService.post('daily_plan/projections/dates', obj).subscribe({
       next: (res) => {
         const rows = [];
-        for (const yearKey of Object.keys(res.years)) {
-          const yearData = res.years[yearKey];
-          for (const monthKey of Object.keys(yearData)) {
-            const monthData = yearData[monthKey];
-            for (const dateKey of Object.keys(monthData)) {
-              const dateData = monthData[dateKey];
-              const group = groupBy(dateData.periods || dateData.nonPeriods, (res) => {
-                return res.schedule;
-              });
-              for (const key of Object.keys(group)) {
-                for (const controller of Object.keys(res.meta)) {
-                  let workflows = res.meta[controller][key].workflowPaths || res.meta[controller][key].workflows;
-                  workflows.forEach(workflow => {
-                    rows.push(
-                      {
-                        date: dateKey,
-                        schedule: key,
-                        controller: controller,
-                        periods: group[key],
-                        workflow: workflow
+        const allDates = new Set<string>();
+
+        for (const yearKey in res.years) {
+          for (const monthKey in res.years[yearKey]) {
+            for (const dateKey in res.years[yearKey][monthKey]) {
+              allDates.add(dateKey);
+
+              const dateData = res.years[yearKey][monthKey][dateKey];
+              const periods = dateData.periods || dateData.nonPeriods;
+
+              if (periods && periods.length > 0) {
+                periods.forEach(periodData => {
+                  for (const controller in res.meta) {
+                    if (res.meta[controller][periodData.schedule]) {
+                      const workflows = res.meta[controller][periodData.schedule].workflowPaths || res.meta[controller][periodData.schedule].workflows;
+                      const workflow = periodData.workflow || workflows[0];
+
+                      if(workflows.includes(workflow)){
+                        rows.push({
+                          date: dateKey,
+                          schedule: periodData.schedule,
+                          controller: controller,
+                          period: periodData.period,
+                          isNonPeriod: !periodData.period,
+                          workflow: workflow
+                        });
                       }
-                    )
-                  })
-                }
+                    }
+                  }
+                });
               }
             }
           }
         }
 
         this.submitted = false;
-        this.exportXsl(rows);
+        const sortedDates = Array.from(allDates).sort();
+        this.exportXsl(rows, sortedDates);
       }, error: () => this.submitted = false
     });
-
-
   }
 
-  private exportXsl(rows): void {
-    const data = [];
-    let date = '', workflow = '', schedule = '', period = '', controllerId = '', yes = '';
-    this.translate.get('user.label.date').subscribe(translatedValue => {
-      date = translatedValue;
-    });
-    this.translate.get('dailyPlan.label.workflow').subscribe(translatedValue => {
-      workflow = translatedValue;
-    });
-    this.translate.get('dailyPlan.label.schedule').subscribe(translatedValue => {
-      schedule = translatedValue;
-    });
-    this.translate.get('runtime.label.period').subscribe(translatedValue => {
-      period = translatedValue;
-    });
-    this.translate.get('common.label.controllerId').subscribe(translatedValue => {
-      controllerId = translatedValue;
-    });
-    this.translate.get('common.label.yes').subscribe(translatedValue => {
-      yes = translatedValue;
-    });
-    for (let i = 0; i < rows.length; i++) {
-      let obj: any = {};
-      let periodStr = '';
-      obj[workflow] = rows[i].workflow;
-      obj[schedule] = rows[i].schedule;
-      if (!this.modalData.isCurrentController) {
-        obj[controllerId] = rows[i].controller;
-      }
-      const _date = this.coreService.getDateByFormat(rows[i].date, this.preferences.zone, 'YYYY-MM-DD');
-      if (rows[i].periods) {
-        rows[i].periods.forEach((p, index) => {
-          if (p['period']) {
-            if (index == 0) {
-              periodStr = this.coreService.getPeriodStr(p['period'], true);
-            } else {
-              periodStr += ', ' + this.coreService.getPeriodStr(p['period'], true);
-            }
-          } else {
-            periodStr = yes;
-          }
-        })
-      }
 
-      obj[_date] = periodStr;
-      let flag = true;
-      if (data.length > 0 && data[data.length - 1]) {
-        for (let j = 0; j < data.length; j++) {
-          if (data[j][_date] === obj[_date]) {
-            break;
-          } else {
-            if (data[j][workflow] === obj[workflow] && data[j][schedule] === obj[schedule] && data[j][controllerId] === obj[controllerId]) {
-              data[j][_date] = periodStr;
-              flag = false;
-              break;
-            }
-          }
+  private async exportXsl(rows: any[], sortedDates: string[]): Promise<void> {
+    const t = await this.translate.get([
+      'dailyPlan.label.workflow', 'dailyPlan.label.schedule',
+      'common.label.controllerId', 'common.label.yes'
+    ]).toPromise();
+
+    const workflowHeader = t['dailyPlan.label.workflow'];
+    const scheduleHeader = t['dailyPlan.label.schedule'];
+    const controllerIdHeader = t['common.label.controllerId'];
+    const yesLabel = t['common.label.yes'];
+
+    const pivotedData = new Map<string, any>();
+
+    for (const row of rows) {
+      const key = `${row.workflow}|${row.schedule}|${row.controller}`;
+      if (!pivotedData.has(key)) {
+        const newEntry = {
+          [workflowHeader]: row.workflow,
+          [scheduleHeader]: row.schedule,
+        };
+        if (!this.modalData.isCurrentController) {
+          newEntry[controllerIdHeader] = row.controller;
         }
+        pivotedData.set(key, newEntry);
       }
 
-      if (flag) {
-        data.push(obj);
+      const entry = pivotedData.get(key);
+      const dateKey = row.date;
+
+      let periodStr = '';
+      if (this.filter.withoutStartTime && row.isNonPeriod) {
+        periodStr = yesLabel;
+      } else if (row.period) {
+        periodStr = this.coreService.getPeriodStr(row.period, true);
       }
+
+      entry[dateKey] = (entry[dateKey] ? entry[dateKey] + ', ' : '') + periodStr;
     }
 
-    this.excelService.exportAsExcelFile(data, this.filter.withoutStartTime ? 'JS7-dailyplan-projection-inverted-periods' : 'JS7-dailyplan-projection-periods');
+    const finalData = [];
+    const staticHeaders = [workflowHeader, scheduleHeader];
+    if (!this.modalData.isCurrentController) {
+      staticHeaders.push(controllerIdHeader);
+    }
+
+    for (const pivotedRow of pivotedData.values()) {
+      const newRow = {};
+      for(const header of staticHeaders){
+        newRow[header] = pivotedRow[header];
+      }
+      for (const dateKey of sortedDates) {
+        newRow[dateKey] = pivotedRow[dateKey] || '';
+      }
+      finalData.push(newRow);
+    }
+
+    this.excelService.exportAsExcelFile(finalData, this.filter.withoutStartTime ? 'JS7-dailyplan-projection-inverted-periods' : 'JS7-dailyplan-projection-periods');
     this.cancel();
   }
 
@@ -255,93 +240,94 @@ export class ShowProjectionModalComponent {
     this.loadData();
   }
 
-private loadData(): void {
-  this.coreService.post('daily_plan/projections/date', this.modalData.obj).subscribe({
-    next: (res) => {
-      this.schedule.isPlanned = res.planned;
-      if (!this.modalData.obj.withoutStartTime) {
-        this.schedule.numOfPeriods = res.numOfOrders;
-      } else {
-        this.schedule.numOfNonPeriods = res.numOfOrders ?? res.numOfNonPeriods;
-      }
 
-  const periodsArray = res.periods || res.nonPeriods || [];
-      const list: Array<{
-        schedule: string;
-        workflow: string;
-        periods: any[];
-        orderNames: string[];
-        period?: string;
-      }> = [];
-
-      const isPlannedWithWf = res.planned && periodsArray.some(p => !!(p as any).workflow);
-
-      if (isPlannedWithWf) {
-        const byKey = groupBy(
-          periodsArray,
-          p => `${p.schedule}||${(p as any).workflow}||${(p as any).scheduleOrderName ?? ''}`
-        );
-
-        for (const key of Object.keys(byKey)) {
-          const [schedule, workflow, scheduleOrderName] = key.split('||');
-          const bucket = byKey[key];
-
-          const uniquePeriods = bucket.reduce((acc, cur) => {
-            if (!acc.find(x =>
-              x.period.singleStart === cur.period.singleStart &&
-              x.period.begin       === cur.period.begin &&
-              x.period.end         === cur.period.end
-            )) {
-              acc.push(cur);
-            }
-            return acc;
-          }, [] as any[]);
-
-          const orderNames = scheduleOrderName ? [scheduleOrderName] : [];
-
-          list.push({ schedule, workflow, periods: uniquePeriods, orderNames });
+  private loadData(): void {
+    this.coreService.post('daily_plan/projections/date', this.modalData.obj).subscribe({
+      next: (res) => {
+        this.schedule.isPlanned = res.planned;
+        if (!this.modalData.obj.withoutStartTime) {
+          this.schedule.numOfPeriods = res.numOfOrders ?? 0;
+        } else {
+          this.schedule.numOfNonPeriods = res.numOfOrders ?? res.numOfNonPeriods ?? 0;
         }
 
-      }  else {
-        const bySched = groupBy(periodsArray, p => p.schedule);
-        for (const schedule of Object.keys(bySched)) {
-          const bucket = bySched[schedule];
+        const periodsArray = res.periods || res.nonPeriods || [];
+        const list: Array<{
+          schedule: string;
+          workflow: string;
+          periods: any[];
+          orderNames: string[];
+          period?: string;
+          controller?: string;
+        }> = [];
 
-          const uniquePeriods = bucket.reduce((acc, cur) => {
-            if (!acc.find(x =>
-              x.period.singleStart === cur.period.singleStart &&
-              x.period.begin       === cur.period.begin &&
-              x.period.end         === cur.period.end
-            )) {
-              acc.push(cur);
+        const isPlannedWithWf = res.planned && periodsArray.some(p => !!(p as any).workflow);
+
+        for (const controllerId in res.meta) {
+          if (isPlannedWithWf) {
+            const byKey = groupBy(
+              periodsArray,
+              p => `${p.schedule}||${(p as any).workflow}||${(p as any).scheduleOrderName ?? ''}`
+            );
+            for (const key of Object.keys(byKey)) {
+              const [schedule, workflow, scheduleOrderName] = key.split('||');
+              if (res.meta[controllerId][schedule]) {
+                const bucket = byKey[key];
+                const uniquePeriods = bucket.reduce((acc, cur) => {
+                  if (!acc.find(x =>
+                    x.period.singleStart === cur.period.singleStart &&
+                    x.period.begin === cur.period.begin &&
+                    x.period.end === cur.period.end
+                  )) {
+                    acc.push(cur);
+                  }
+                  return acc;
+                }, [] as any[]);
+                const orderNames = scheduleOrderName ? [scheduleOrderName] : [];
+                list.push({ schedule, workflow, periods: uniquePeriods, orderNames, controller: controllerId });
+              }
             }
-            return acc;
-          }, [] as any[]);
+          } else {
+            const bySched = groupBy(periodsArray, p => p.schedule);
+            for (const schedule of Object.keys(bySched)) {
+              if (res.meta[controllerId][schedule]) {
+                const bucket = bySched[schedule];
+                const uniquePeriods = bucket.reduce((acc, cur) => {
+                  if (!acc.find(x =>
+                    x.period.singleStart === cur.period.singleStart &&
+                    x.period.begin === cur.period.begin &&
+                    x.period.end === cur.period.end
+                  )) {
+                    acc.push(cur);
+                  }
+                  return acc;
+                }, [] as any[]);
 
-          const controller = this.modalData.obj.controllerIds?.[0];
-          const metaForSched = res.meta?.[controller]?.[schedule] || {};
-          const workflows = metaForSched.workflowPaths || [];
-          const orderNames = metaForSched.orderNames    || [];
-
-          workflows.forEach(workflow => {
-            list.push({ schedule, workflow, periods: uniquePeriods, orderNames });
-          });
+                const metaForSched = res.meta[controllerId][schedule] || {};
+                const workflows = metaForSched.workflowPaths || [];
+                const orderNames = metaForSched.orderNames || [];
+                workflows.forEach(workflow => {
+                  list.push({ schedule, workflow, periods: uniquePeriods, orderNames, controller: controllerId });
+                });
+              }
+            }
+          }
         }
-      }
 
+        const uniqueList = Array.from(new Map(list.map(item => [`${item.controller}|${item.schedule}|${item.workflow}`, item])).values());
 
-      list.forEach(item => {
-        const first = item.periods?.[0]?.period;
-        item.period = first?.singleStart || first?.begin || '';
-      });
+        uniqueList.forEach(item => {
+          const first = item.periods?.[0]?.period;
+          item.period = first?.singleStart || first?.begin || '';
+        });
 
-      this.schedule.list = list;
-      this.loading = false;
-      this.searchInResult();
-    },
-    error: () => this.loading = false
-  });
-}
+        this.schedule.list = uniqueList;
+        this.loading = false;
+        this.searchInResult();
+      },
+      error: () => this.loading = false
+    });
+  }
 
   searchInResult(): void {
     this.data = this.filter.searchText ? this.searchPipe.transform(this.schedule.list, this.filter.searchText, this.searchableProperties) : this.schedule.list;

@@ -505,58 +505,59 @@
         });
       }
     },
-    _renderDataSourceDay: function (elt, currentDate, events) {
-      elt.children('.plan-time').remove();
-      elt.removeClass('selected-blue selected-orange');
-      if (events.length > 0) {
-        if (this.options.view !== 'year') {
-          let cellContent = $(document.createElement('div'));
-          cellContent.addClass('plan-time');
-          for (let i in events) {
-            let div1 = $(document.createElement('div'));
-            if (events[i].endTime) {
-              let repeatIcon = $(document.createElement('i'));
-              let domType;
-              if (events[i].repeat) {
-                let span = $(document.createElement('span'));
-                repeatIcon.addClass('fa fa-repeat');
-                div1.append(repeatIcon);
-                span.text(events[i].repeat);
-                div1.append(span);
-                domType = 'div';
-              } else {
-                repeatIcon.addClass('fa fa-clock-o');
-                div1.append(repeatIcon);
-                domType = 'span';
-              }
-              let span2 = $(document.createElement(domType));
-              span2.text(events[i].plannedShowTime + ' - ' + events[i].endTime);
-              div1.append(span2);
-            } else if(events[i].numOfPeriods || events[i].numOfPeriods == 0 || events[i].numOfNonPeriods || events[i].numOfNonPeriods == 0) {
-              let span2 = $(document.createElement('span'));
-              span2.text(events[i].numOfPeriods || events[i].numOfNonPeriods);
-              div1.addClass('periods-count');
-              div1.append(span2);
-            } else {
-              div1.text(events[i].plannedShowTime);
-            }
-
-            cellContent.append(div1);
+_renderDataSourceDay: function (elt, currentDate, events) {
+  elt.children('.plan-time').remove();
+  elt.removeClass('selected-blue selected-orange');
+  if (events.length > 0) {
+    if (this.options.view !== 'year') {
+      let cellContent = $(document.createElement('div'));
+      cellContent.addClass('plan-time');
+      for (let i in events) {
+        let div1 = $(document.createElement('div'));
+        if (events[i].endTime) {
+          let repeatIcon = $(document.createElement('i'));
+          let domType;
+          if (events[i].repeat) {
+            let span = $(document.createElement('span'));
+            repeatIcon.addClass('fa fa-repeat');
+            div1.append(repeatIcon);
+            span.text(events[i].repeat);
+            div1.append(span);
+            domType = 'div';
+          } else {
+            repeatIcon.addClass('fa fa-clock-o');
+            div1.append(repeatIcon);
+            domType = 'span';
           }
-          elt.append(cellContent);
+          let span2 = $(document.createElement(domType));
+          span2.text(events[i].plannedShowTime + ' - ' + events[i].endTime);
+          div1.append(span2);
+        } else if(typeof events[i].numOfPeriods !== 'undefined' || typeof events[i].numOfNonPeriods !== 'undefined') {
+          let span2 = $(document.createElement('span'));
+          span2.text(events[i].numOfPeriods ?? events[i].numOfNonPeriods ?? 0);
+          div1.addClass('periods-count');
+          div1.append(span2);
         } else {
-          if (events[0].numOfPeriods) {
-            let cellContent = $(document.createElement('div'));
-            let span2 = $(document.createElement('span'));
-            span2.text( events[0].numOfPeriods);
-            cellContent.addClass('plan-time year-periods-count');
-            cellContent.append(span2);
+          div1.text(events[i].plannedShowTime);
+        }
+
+                cellContent.append(div1);
+            }
             elt.append(cellContent);
-          }
+        } else {
+
+            if ((typeof events[0].numOfPeriods !== 'undefined' && events[0].numOfPeriods !== null) || (typeof events[0].numOfNonPeriods !== 'undefined' && events[0].numOfNonPeriods !== null)) {
+                let cellContent = $(document.createElement('div'));
+                let span2 = $(document.createElement('span'));
+                span2.text(events[0].numOfPeriods ?? events[0].numOfNonPeriods ?? 0);
+                cellContent.addClass('plan-time year-periods-count');
+                cellContent.append(span2);
+                elt.append(cellContent);
+            }
         }
         elt.addClass(events[0].color === 'orange' ? 'selected-orange' : 'selected-blue');
-      }
-    },
+    }
+},
     _applyEvents: function () {
       let _this = this;
 
