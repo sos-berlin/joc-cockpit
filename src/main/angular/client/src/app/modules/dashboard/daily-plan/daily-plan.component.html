@@ -1,14 +1,13 @@
 <div id="dailyPlanOverview1">
   <div class="box-header b-b remove">
-    <h3 translate>dashboard.label.dailyPlan</h3>
-    <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i>
+    <h3 translate>dashboard.label.dailyPlan<span><i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span></h3>
   </div>
   <div class="row m-b-sm box-tool t-10">
     <div class="col-md-12 container-fluid">
       <div class="pull-right">
         <div class="btn-group">
           <div class="btn-group dropdown ">
-            <button [nzDropdownMenu]="menu" class="btn btn-grey btn-sm m-l-sm mr-4" nz-dropdown nzPlacement="bottomRight"
+            <button [nzDropdownMenu]="menu" class="btn btn-grey btn-sm m-l-sm" nz-dropdown nzPlacement="bottomRight"
                     nzTrigger="click">
               <span> {{filters.label | translate}} </span>
               <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>

@@ -1,7 +1,6 @@
 <div id="agentClusterRunningTasks1">
   <div class="box-header b-b remove">
-    <h3 translate>dashboard.label.agentRunningJobs</h3>
-    <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i>
+    <h3 translate>dashboard.label.agentRunningJobs<span><i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span></h3>
   </div>
   <div [hidden]="!isLoaded" [ngStyle]="{'max-height':(layout.rows * 55 +((layout.rows -1) * 20 -50)) + 4 +'px'}"
        class="row overflow-y">

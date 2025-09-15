@@ -17,6 +17,7 @@
               <i class="fa fa-upload"></i>
               {{'settings.button.importSetting' | translate}}
             </button>
+            <i (click)="helpPage('settings')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-workflows cur-point fa fa-info-circle m-l-12 text-20"></i>
           </div>
         </div>
       </div>
@@ -31,9 +32,10 @@
           <form #myForm="ngForm" (cdkDropListDropped)="drop($event)" cdkDropList class="example-list">
             <div *ngFor="let setting of settingArr;let i = index" cdkDrag class="p-b-sm p-l-sm">
               <div cdkDragHandle class="pos-abt drag-handler m-t-n-xxs">
+                <i (click)="helpPage(setting.name)" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-settings cur-point fa fa-info-circle m-l-12 text-20"></i>
                 <i aria-hidden="true" class="fa fa-bars"></i>
               </div>
-              <h5 class="m-l p-l-sm">
+              <h5 class="m-l-48 p-l-sm">
                 {{setting.name}}
                 <i (click)="setting.show = true;" *ngIf="!setting.show" class="cursor fa fa-caret-down m-l-xs"></i>
                 <i (click)="setting.show = false" *ngIf="setting.show"

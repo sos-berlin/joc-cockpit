@@ -6,6 +6,7 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
+          <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           <div class="inline valign">
             <label [(ngModel)]="historyFilters.current" nz-checkbox (ngModelChange)="changeController()" >
               {{'common.label.currentController' | translate}}
@@ -625,7 +626,6 @@
         </ul>
       </div>
       <div class="col-md-6 col-sm-6">
-        <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-workflows cur-point fa fa-info-circle m-l-12 text-20"></i>
         <button (click)="collapseDetails()" *ngIf="historyFilters.type !== 'ORDER'"
                 class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}">
           <i class="fa fa-compress text"></i>

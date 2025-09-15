@@ -1,8 +1,6 @@
 <div id="dailyPlanOverview1">
   <div class="box-header b-b remove">
-    <h3 translate>dashboard.label.workflows</h3>
-    <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i>
-
+    <h3 translate>dashboard.label.workflows<span><i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span></h3>
   </div>
   <div [ngClass]="{'p-t-sm': totalWorkflows == 0 && isLoaded}" class="box-body p-a">
     <div [ngClass]="{'show': totalWorkflows > 0}" class="hide m-t-sm">
