@@ -186,9 +186,6 @@
                       <li (click)="removeFromChange(data);" *ngIf="permission.joc.inventory.manage" nz-menu-item>
                         <a translate>changes.button.removeFromChange</a>
                       </li>
-                      <li (click)="publishChange(data);" *ngIf="securityLevel !== 'HIGH'" nz-menu-item>
-                        <a translate>changes.button.publishChange</a>
-                      </li>
                     </ul>
                   </li>
                   <li (click)="showDependencies(data);" *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)"
