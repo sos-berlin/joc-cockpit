@@ -8852,21 +8852,16 @@ export class PublishChangeModalComponent {
   }
 
   private handleDependenciesForRelease(node: any, obj: any): void {
-    if (node.dependencies) {
-      if (node.valid && node.selected && !node.released && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(node.objectType) && node.path !== '/' && node.name !== '/') {
-        if (!obj.store) {
-          obj.store = {draftConfigurations: [], deployConfigurations: []};
+      if (node.valid && node.checked && !node.released && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(node.type) && node.path !== '/' && node.name !== '/') {
+        if (!obj.update) {
+          obj.update = [];
         }
-        const config = {
-          configuration: {
-            path: node.path,
-            objectType: node.type,
-            recursive: false
-          }
-        };
-        obj.store.draftConfigurations.push(config);
+        obj.update.push({
+          path: node.path,
+          objectType: node.objectType || node.type,
+        });
       }
-
+    if (node.dependencies) {
       node.dependencies.referencedBy.forEach(dep => {
         if (dep.valid && dep.selected && !dep.released && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
           if (!obj.update) {
@@ -8946,7 +8941,6 @@ export class PublishChangeModalComponent {
   }
 
   private handleDependenciesForDeploy(node: any, obj: any): void {
-    if (node.dependencies) {
       if (node.valid && node.checked && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(node.type) && node.path !== '/' && node.name !== '/') {
         if (!obj.store) {
           obj.store = {draftConfigurations: [], deployConfigurations: []};
@@ -8960,7 +8954,7 @@ export class PublishChangeModalComponent {
         };
         obj.store.draftConfigurations.push(config);
       }
-
+    if (node.dependencies) {
       node.dependencies.referencedBy.forEach(dep => {
         if (dep.valid && dep.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
           if (!obj.store) {
