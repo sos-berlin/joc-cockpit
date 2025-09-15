@@ -8206,6 +8206,7 @@ export class PublishChangeModalComponent {
     const groupedObjects: { [key: string]: any[] } = {
       "WORKFLOW": [],
       "JOBRESOURCE": [],
+      "FILEORDERSOURCE": [],
       "SCHEDULE": [],
       "NOTICEBOARD": [],
       "LOCK": [],
@@ -8223,6 +8224,9 @@ export class PublishChangeModalComponent {
             break;
           case "JOBRESOURCE":
             groupedObjects["JOBRESOURCE"].push(item);
+            break;
+            case "FILEORDERSOURCE":
+            groupedObjects["FILEORDERSOURCE"].push(item);
             break;
           case "SCHEDULE":
             groupedObjects["SCHEDULE"].push(item);
