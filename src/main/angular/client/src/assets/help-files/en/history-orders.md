@@ -10,8 +10,8 @@ For the history of tasks see [Task History](/history-tasks).
 
 The left panel allows filtering by Tags from Workflows and Orders.
 
-- **Workflow Tags** are assigned from the [Configuration - Workflows](/configuration-workflows) view.
-- **Order Tags** are assigned from the [Configuration - Schedules](/configuration-schedules) view.
+- **Workflow Tags** are assigned from the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
+- **Order Tags** are assigned from the [Configuration - Inventory - Schedules](/configuration-inventory-schedules) view.
 
 Tags are selected fron + and - icons and can be looked up using the Quick Search icon. Display of Tags must be activated from the [Settings - JOC Cockpit](/settings-joc) page.
 
@@ -24,12 +24,12 @@ Display is limited to a maximum of 5000 entries if not otherwise specifed from [
 - **Order ID** is the unique identifier assigned an Order. Clicking the arrow-down icon will display the Order variables and the Jobs passed by the Order. 
 - **Workflow** indicates the Workflow passed by the Order.
   - Clicking the Workflow name navigates to the [Workflows](/workflows) view.
-  - Clicking the pencil icon navigates to the [Configuration - Workflows](/configuration-workflows) view.
+  - Clicking the pencil icon navigates to the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
 - **Label** indicates the latest position of an Order in the Workflow. Users can assign labels to Workflow Instructions that will be displayed and otherwise the technical position will be indicated.
 - **History Status** indicates the *History Status* which is the latest outcome in the Order's life.
   - If Orders are completed, then the *History Status* will be *successful* or *failed*.
   - If Orders are not completed, the *History Status* will be *in progress*.
-- **Order State** indicates the Order's latest state, see [Order States](/dashboard-orders).
+- **Order State** indicates the Order's latest state, see [Order States](/order-states).
   - If Orders are completed, then the *Order State* will be *successful* or *failed*.
   - If Orders are not completed, the *Order State* will be *processing*.
 
@@ -63,14 +63,14 @@ User's can apply filters available on top of the window to limit display of Orde
 
 ## References
 
+- [Cleanup Service](/service-cleanup)
+- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
 - [Order Log View](/order-log)
-- [Order States](/dashboard-orders)
+- [Order States](/order-states)
+- [Profile - Preferences](/profile-preferences)
+- [Settings - JOC Cockpit](/settings-joc)
 - [Task History](/history-tasks)
 - [Workflows](/workflows)
-- [Settings - JOC Cockpit](/settings-joc)
-- [Profile - Preferences](/profile-preferences)
-- [Cleanup Service](/service-cleanup)
-- [Configuration - Workflows](/configuration-workflows)
-- [Configuration - Schedules](/configuration-schedules)
 - [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
 - [JS7 - Task History](https://kb.sos-berlin.com/display/JS7/JS7+-+Task+History)

@@ -18,11 +18,17 @@ The dropdown button in the right upper corner of the panel offers selecting Orde
 
 - **Today** Orders are related to the current day which is calculated from the time zone in the user's profile.
 - **Next Day** Orders are targeted for execution on the next day. This excludes *Today*`s Orders.
+- **Next 2nd Day** Orders are targeted for execution on the next 2nd day.
+- **Next 3rd Day** Orders are targeted for execution on the next 3rd day.
+- **Next 4th Day** Orders are targeted for execution on the next 4th day.
+- **Next 5th Day** Orders are targeted for execution on the next 5th day.
+- **Next 6th Day** Orders are targeted for execution on the next 6th day.
+- **Next 7th Day** Orders are targeted for execution on the next 7th day.
 
 ## References
 
-- [Dashboard - Orders](/dashboard-orders)
 - [Daily Plan](/daily-plan)
+- [Dashboard - Orders](/dashboard-orders)
 - [Order History](/history-orders)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)
 - [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
