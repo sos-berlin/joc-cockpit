@@ -8076,7 +8076,6 @@ export class PublishChangeModalComponent {
     this.display = this.modalData.display;
     this.title = this.modalData.title;
     this.show = this.modalData.show;
-    this.path = this.modalData.path;
     this.selectedSchedulerIds.push(this.schedulerIds.selected);
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
@@ -8123,7 +8122,7 @@ export class PublishChangeModalComponent {
   prepareGroupedTree(data: any[]): any[] {
     const root = {
       name: '/',
-      path: this.path || '/',
+      path: '/',
       key: '/',
       isLeaf: false,
       expanded: true,
@@ -8184,14 +8183,14 @@ export class PublishChangeModalComponent {
         const groupNode = {
           name: type,
           object: type,
-          path: this.path || '/',
+          path: '/',
           key: `/${type}`,
           disableCheckbox: true,
           expanded: true,
           isLeaf: false,
           children: groupedObjects[type].map((item: any) => ({
             name: item.name,
-            path: this.path + item.path,
+            path: item.path,
             key: item.path,
             type: item.objectType,
             released: item.released,
@@ -8586,21 +8585,16 @@ export class PublishChangeModalComponent {
   }
 
   private handleDependenciesForRelease(node: any, obj: any): void {
-    if (node.dependencies) {
-      if (node.valid && node.selected && !node.released && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(node.objectType) && node.path !== '/' && node.name !== '/') {
-        if (!obj.store) {
-          obj.store = {draftConfigurations: [], deployConfigurations: []};
+      if (node.valid && node.checked && !node.released && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(node.type) && node.path !== '/' && node.name !== '/') {
+        if (!obj.update) {
+          obj.update = [];
         }
-        const config = {
-          configuration: {
-            path: node.path,
-            objectType: node.type,
-            recursive: false
-          }
-        };
-        obj.store.draftConfigurations.push(config);
+        obj.update.push({
+          path: node.path,
+          objectType: node.objectType || node.type,
+        });
       }
-
+    if (node.dependencies) {
       node.dependencies.referencedBy.forEach(dep => {
         if (dep.valid && dep.selected && !dep.released && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
           if (!obj.update) {
@@ -8662,6 +8656,8 @@ export class PublishChangeModalComponent {
 
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
+    this.removeDuplicateConfigurationsForRelease(obj);
+
     if (obj.update && obj.update.length > 0) {
       const URL = 'inventory/release';
       this.coreService.post(URL, obj).subscribe({
@@ -8678,7 +8674,6 @@ export class PublishChangeModalComponent {
   }
 
   private handleDependenciesForDeploy(node: any, obj: any): void {
-    if (node.dependencies) {
       if (node.valid && node.checked && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(node.type) && node.path !== '/' && node.name !== '/') {
         if (!obj.store) {
           obj.store = {draftConfigurations: [], deployConfigurations: []};
@@ -8692,7 +8687,7 @@ export class PublishChangeModalComponent {
         };
         obj.store.draftConfigurations.push(config);
       }
-
+    if (node.dependencies) {
       node.dependencies.referencedBy.forEach(dep => {
         if (dep.valid && dep.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
           if (!obj.store) {
@@ -8768,7 +8763,7 @@ export class PublishChangeModalComponent {
 
 
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-
+    this.removeDuplicateConfigurations(obj)
     if (obj.store) {
       const URL = 'inventory/deployment/deploy';
       this.coreService.post(URL, obj).subscribe({
@@ -8786,6 +8781,77 @@ export class PublishChangeModalComponent {
 
   cancel(): void {
     this.activeModal.destroy();
+  }
+
+  private removeDuplicateConfigurationsForRelease(obj: any): void {
+    if (!obj.update || obj.update.length === 0) {
+      return;
+    }
+
+    const uniqueUpdates = new Map<string, any>();
+
+    obj.update.forEach(item => {
+      const key = `${item.path.toLowerCase()}-${item.objectType.toLowerCase()}`;
+      if (!uniqueUpdates.has(key)) {
+        uniqueUpdates.set(key, item);
+      }
+    });
+
+    obj.update = Array.from(uniqueUpdates.values());
+    if (obj.update.length === 0) {
+      delete obj.update;
+    }
+  }
+
+  private removeDuplicateConfigurations(obj: any): void {
+    if (!obj.store || (!obj.store.deployConfigurations && !obj.store.draftConfigurations)) {
+      return;
+    }
+
+    const deployConfigs = obj.store.deployConfigurations || [];
+    const draftConfigs = obj.store.draftConfigurations || [];
+    const combined = [...deployConfigs, ...draftConfigs];
+
+    const uniqueConfigs = new Map<string, any>();
+
+    combined.forEach(item => {
+      const config = item.configuration;
+      const key = `${config.path.toLowerCase()}-${config.objectType.toLowerCase()}`;
+
+      if (!uniqueConfigs.has(key)) {
+        uniqueConfigs.set(key, item);
+      } else {
+        const existingConfig = uniqueConfigs.get(key);
+        const existingCommitId = existingConfig.configuration.commitId || '';
+        const newCommitId = config.commitId || '';
+
+        if (!existingCommitId && newCommitId) {
+          uniqueConfigs.set(key, item);
+        }
+      }
+    });
+
+    const newDeployConfigs: any[] = [];
+    const newDraftConfigs: any[] = [];
+
+    uniqueConfigs.forEach(item => {
+      const config = item.configuration;
+      if (config.commitId && config.commitId.trim() !== '') {
+        newDeployConfigs.push(item);
+      } else {
+        newDraftConfigs.push(item);
+      }
+    });
+
+    obj.store.deployConfigurations = newDeployConfigs.length > 0 ? newDeployConfigs : [];
+    obj.store.draftConfigurations = newDraftConfigs.length > 0 ? newDraftConfigs : [];
+
+    if (obj.store.deployConfigurations.length === 0) {
+      delete obj.store.deployConfigurations;
+    }
+    if (obj.store.draftConfigurations.length === 0) {
+      delete obj.store.draftConfigurations;
+    }
   }
 
 }
