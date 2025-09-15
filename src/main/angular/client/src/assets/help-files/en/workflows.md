@@ -61,7 +61,7 @@ The panel is displayed at the lower part of the screen when users click the name
 - **History Status** indicates the *History Status* which is the latest outcome in the Order's life.
   - If Orders are completed, then the *History Status* will be *successful* or *failed*.
   - If Orders are not completed, the *History Status* will be *in progress*.
-- **Order State** indicates the Order's latest state, see [Order States](/dashboard-orders).
+- **Order State** indicates the Order's latest state, see [Order States](/order-states).
   - If Orders are completed, then the *Order State* will be *successful* or *failed*.
   - If Orders are not completed, the *Order State* will be *processing*.
 
@@ -120,12 +120,12 @@ The [Workflows - Search](/workflows-search) offers criteria for looking up Workf
 
 ## References
 
+- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
+- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Order Log View](/order-log)
+- [Order States](/order-states)
+- [Profile - Preferences](/profile-preferences)
+- [Settings - JOC Cockpit](/settings-joc)
 - [Workflows - Add Orders](/workflows-orders-add)
 - [Workflows - Search](/workflows-search)
-- [Order Log View](/order-log)
-- [Order States](/dashboard-orders)
-- [Settings - JOC Cockpit](/settings-joc)
-- [Profile - Preferences](/profile-preferences)
-- [Configuration - Workflows](/configuration-workflows)
-- [Configuration - Schedules](/configuration-schedules)
 - [JS7 - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows)

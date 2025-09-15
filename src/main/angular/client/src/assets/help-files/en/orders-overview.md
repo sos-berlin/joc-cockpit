@@ -2,7 +2,7 @@
 
 The *Orders Overview* view offers monitoring and control of Orders for Workflows.
 
-- Users can identify Orders being processed per [Order State](/dashboard-orders).
+- Users can identify Orders being processed per [Order State](/order-states).
 - Users can transition Orders, for example, cancel *running* Orders.
 - The view holds Orders that are added by the [Daily Plan](/daily-plan) and Orders that have been added on demand.
 
@@ -14,8 +14,8 @@ The left panel indicates the number of Orders available per state. Clicking the 
 
 The middle panel is organized in tabs that allow filtering of Orders by Tags.
 
-- **Workflow Tags** are assigned from the [Configuration - Workflows](/configuration-workflows) view.
-- **Order Tags** are assigned from the [Configuration - Schedules](/configuration-schedules) view.
+- **Workflow Tags** are assigned from the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
+- **Order Tags** are assigned from the [Configuration - Inventory - Schedules](/configuration-inventory-schedules) view.
 
 Tags are selected fron + and - icons and can be looked up using the Quick Search icon. Display of Tags must be activated from the [Settings - JOC Cockpit](/settings-joc) page.
 
@@ -27,9 +27,9 @@ The panel offers the list of Orders for the given state:
   - Clicking the arrow-down icon will display variables carried by the Order.
 - **Workflow Name** is the unique name assigned a Workflow.
   - Clicking the *Workflow Name* navigates to the [Workflows](/workflows) view.
-  - Clicking the pencil icon navigates to the [Configuration - Workflows](/configuration-workflows) view.
+  - Clicking the pencil icon navigates to the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
 - **Label** indicates the Order's position from the label of the Workflow instruction. In absence of labels the technical position is indicated.  
-- **State** indicates the [Order State](/dashboard-orders).
+- **State** indicates the [Order State](/order-states).
   - Hovering the mouse on the state indicator displays state details if available. For example, *waiting* Orders indicate reasons such as *waiting for process*, *waiting for Notice Board* etc.
 - **Scheduled For** indicates the start date of the Order.
 
@@ -137,12 +137,12 @@ The filter limits display to matching *Order IDs* and *Workflow Names*. The filt
 
 ## References
 
-- [Order State](/dashboard-orders)
+- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
+- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
 - [Daily Plan](/daily-plan)
-- [Workflows - Add Orders](/workflows-orders-add)
 - [Order Log View](/order-log)
-- [Settings - JOC Cockpit](/settings-joc)
+- [Order State](/order-states)
 - [Profile - Preferences](/profile-preferences)
-- [Configuration - Workflows](/configuration-workflows)
-- [Configuration - Schedules](/configuration-schedules)
+- [Settings - JOC Cockpit](/settings-joc)
+- [Workflows - Add Orders](/workflows-orders-add)
 - [JS7 - Orders](https://kb.sos-berlin.com/display/JS7/JS7+-+Orders)
