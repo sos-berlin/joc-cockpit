@@ -329,6 +329,7 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
+          <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           <div *ngIf="dailyPlanFilters.tabIndex == 0 && dateRanges.length > 0" [ngClass]="{'hide':object.mapOfCheckedId.size>0}" class="inline m-b-xs">
             <div class="btn-group m-l-12 hidden-btn-group">
               <ng-container *ngFor="let btn of filterBtn">
@@ -554,7 +555,6 @@
 </div>
 <div class='scroll-y max-ht'>
   <div class="padding p-t-sm p-b-0">
-    <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dailyplan cur-point fa fa-info-circle text-20"></i>
     <nz-tabset (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="dailyPlanFilters.tabIndex" >
       <nz-tab [nzTitle]="'dailyPlan.tab.dailyPlan' | translate">
         <div class="row">

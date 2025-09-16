@@ -33,7 +33,13 @@
              nz-checkbox (ngModelChange)="checkLogLevel('TRACE')" ><span translate>log.label.trace</span></label>
       <label *ngIf="isDetailLevel" [(ngModel)]="object.checkBoxs.detail" class="m-r"
              nz-checkbox (ngModelChange)="checkLogLevel('DETAIL')" ><span translate>log.label.detail</span></label>
-
+      <a (click)="helpPage()" class="m-r pull-right">
+      <i
+        [nzTooltipMouseEnterDelay]="0.5"
+        [nz-tooltip]="'common.tooltip.help' | translate"
+         nz-icon nzTheme="fill" nzType="info-circle"
+      ></i>
+      </a>
       <a (click)="cancel()" *ngIf="!isCancel && !finished" class="m-r m-l pull-right">
         <i class="icon" nz-icon nzTheme="outline" nzType="close"></i>
         <span translate>common.button.cancel</span>
@@ -61,6 +67,7 @@
       <i nz-icon nzTheme="outline" nzType="caret-right"></i>
     </div>
     <div #treeBody class="resizable sidebar sidebar-log-panel bg-white" id="property-panel">
+      <div id="tree-wrapper">
       <div style="margin-top: 26px">
         <div style="padding: 12px">
           <div *ngIf="isChildren" class="m-l m-b-sm">
@@ -114,6 +121,7 @@
         </div>
       </div>
       <div class="rg-right"><span></span></div>
+      </div>
     </div>
   </div>
   <pre #dataBody *ngIf="!error" class="log p-t-sm p-r-sm p-b-sm" id="logs"></pre>

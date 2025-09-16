@@ -6,6 +6,7 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
+          <i (click)="helpPage('resources-agent-job-executions')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           <div class="inline">
             <div class="show-block">
               <label nz-checkbox [(ngModel)]="agentFilters.current" (ngModelChange)="changeController()" >
@@ -116,7 +117,6 @@
       <app-links></app-links>
     </div>
     <div class="col-md-4 text-right">
-      <i (click)="helpPage('resources-agent-job-executions')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-workflows cur-point fa fa-info-circle m-l-12 text-20"></i>
       <button (click)="advancedSearch()" *ngIf="!showSearchPanel" class="btn btn-sm btn-grey pull-right m-l-12">
         <span translate>common.button.advancedSearch</span>&nbsp;
         <i class="fa fa-caret-down p-l-xs"></i>

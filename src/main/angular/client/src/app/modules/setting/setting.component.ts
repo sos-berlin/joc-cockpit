@@ -14,6 +14,7 @@ import {OrderPipe} from "../../pipes/core.pipe";
 import {CommentModalComponent} from "../../components/comment-modal/comment.component";
 import {FileUploaderComponent} from "../../components/file-uploader/file-uploader.component";
 import {KioskService} from "../../services/kiosk.service";
+import { HelpViewerComponent } from 'src/app/components/help-viewer/help-viewer.component';
 
 @Component({
   selector: 'app-setting',
@@ -568,6 +569,50 @@ static generateChildStoreObject(children): any {
       this.coreService.setProperties(result, isKiosk);
       this.dataService.isProfileReload.next(true);
     });
+  }
+
+  helpPage(key): void{
+    let param: string;
+    switch (key) {
+      case 'dailyplan':
+        param = 'settings-daily-plan';
+        break;
+      case 'cleanup':
+        param = 'settings-cleanup';
+        break;
+        case 'identityService':
+        param = 'settings-identity-service';
+        break;
+        case 'joc':
+        param = 'settings-joc';
+        break;
+        case 'user':
+        param = 'settings-user';
+        break;
+        case 'lognotification':
+        param = 'settings-log-notification';
+        break;
+        case 'git':
+        param = 'settings-git';
+        break;
+        case 'kiosk':
+        param = 'settings-kiosk';
+        break;
+      default:
+        param = 'settings';
+    }
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: param
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }
 

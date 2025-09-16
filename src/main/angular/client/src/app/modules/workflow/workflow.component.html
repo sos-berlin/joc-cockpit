@@ -14,6 +14,7 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
+          <i (click)="helpPage('workflows')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           <div [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0) || broadNames.size > 0}" class="inline m-b-xs">
             <div class="btn-group dropdown">
               <button (click)="openSelectbox()" [disabled]="savedFilter.selected"
@@ -386,9 +387,8 @@
                       nz-tooltip="{{'common.button.compactView' | translate}}">
                 <i class="fa fa-th-list text"></i>
               </button>
-              <i (click)="helpPage('workflows')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-workflows cur-point fa fa-info-circle text-20"></i>
 
-              <button (click)="inventorySearch()" class="btn btn-sm inline pull-right m-l-12 m-r-12 btn-grey">
+              <button (click)="inventorySearch()" class="btn btn-sm inline pull-right m-l-12 btn-grey">
                 <i class="fa fa-search"></i>&nbsp;
                 <span translate>common.button.search</span>
               </button>

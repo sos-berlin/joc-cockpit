@@ -4,6 +4,9 @@ import {NzFormatEmitEvent, NzTreeNode} from "ng-zorro-antd/tree";
 import {AuthService} from "../guard";
 import {CoreService} from '../../services/core.service';
 import {POPOUT_MODAL_DATA, POPOUT_MODALS, PopoutData} from "../../services/popup.service";
+import {HelpViewerComponent} from "../help-viewer/help-viewer.component";
+import {NzModalService} from "ng-zorro-antd/modal";
+import {HelpRenderResult, HelpService} from "../../services/help.service";
 
 declare const $: any;
 export let that: any;
@@ -56,7 +59,7 @@ export class LogViewComponent {
 
   @ViewChild('dataBody', {static: false}) dataBody!: ElementRef;
 
-  constructor(private authService: AuthService, public coreService: CoreService,
+  constructor(private authService: AuthService,private helpService: HelpService, public coreService: CoreService,private modal: NzModalService,
               @Inject(POPOUT_MODAL_DATA) public data: PopoutData) {
 
   }
@@ -191,6 +194,8 @@ export class LogViewComponent {
   init(): void {
     this.loaded = true;
     this.calWindowSize();
+    this.addStylesToPopupWindow();
+
     if (!this.preferences.logFilter || this.preferences.logFilter.length === 0) {
       this.preferences.logFilter = {
         scheduler: true,
@@ -269,6 +274,10 @@ export class LogViewComponent {
       });
 
       $(close).click(() => {
+        const panelEl = POPOUT_MODALS['windowInstance'].document.getElementById('property-panel');
+        if (panelEl && panelEl.getAttribute('data-mode') === 'help') {
+            this.restoreTreeView(POPOUT_MODALS['windowInstance']);
+        }
         this.dataBody.nativeElement.setAttribute('style', 'margin-right: 10px');
         $(panel).css(transitionCSS).hide();
         $(open).css({...transitionCSS, right: '0'});
@@ -1247,6 +1256,218 @@ export class LogViewComponent {
         }
       });
     });
+  }
+
+
+  private addStylesToPopupWindow(): void {
+    const popupWindow = POPOUT_MODALS['windowInstance'];
+    if (!popupWindow || popupWindow.document.getElementById('log-view-styles')) {
+      return;
+    }
+
+    const styleElement = popupWindow.document.createElement('style');
+    styleElement.id = 'log-view-styles';
+    styleElement.textContent = `
+      .help-sidebar-content{height:100%;display:flex;flex-direction:column}.help-header{padding:12px 16px;border-bottom:1px solid #e8e8e8;background:#fafafa;display:flex;justify-content:space-between;align-items:center;flex-shrink:0}.help-header .help-title{margin:0;font-size:14px;font-weight:500;color:#262626}.help-header .help-title .help-icon{margin-right:8px;color:#1890ff}.help-header .help-actions{display:flex;align-items:center;gap:8px}.help-header .help-actions .btn-back-to-tree{font-size:12px;padding:4px 8px;border-radius:3px}.help-header .help-actions .btn-help-close{background:0 0;border:none;cursor:pointer;color:#999;font-size:16px;padding:4px;border-radius:3px;transition:color .2s ease}.help-header .help-actions .btn-help-close:hover{color:#666;background-color:rgba(0,0,0,.04)}.help-body{flex:1;overflow-y:auto;padding:16px;background:#fff;margin-top:16px}.help-body .help-loading{text-align:center;padding:50px 20px;color:#1890ff}.help-body .help-loading .loading-text{margin-top:10px;font-size:14px}.help-body .help-error{text-align:center;padding:50px 20px;color:#999;font-size:14px}.help-body .help-content.help-md{margin:0;padding:0;max-width:100%;overflow-wrap:break-word}.help-body .help-content.help-md h1{font-size:24px!important}.help-body .help-content.help-md h2{font-size:20px!important}.help-body .help-content.help-md h3{font-size:16px!important}.help-body .help-content.help-md table{font-size:12px!important}.help-body .help-content.help-md table th,.help-body .help-content.help-md table td{padding:6px!important}.help-body .help-content.help-md pre{font-size:12px!important;overflow-x:auto;max-width:100%}.help-body .help-content.help-md code{font-size:11px!important}#property-panel.help-mode .rg-right{display:none}.help-content .help-target-highlight{background-color:#fff2b8!important;transition:background-color .3s ease;padding:4px 8px;border-radius:4px;margin:-4px -8px}@media (max-width:1200px){.help-body .help-content.help-md h1{font-size:20px!important}.help-body .help-content.help-md h2{font-size:18px!important}.help-body .help-content.help-md h3{font-size:16px!important}.help-body .help-content.help-md table{font-size:11px!important}}
+      .help-md{font-size:14px!important;line-height:1.65!important;color:#111827!important}.help-md h1{font-size:28px!important;margin:0 0 .6rem!important;font-weight:700!important;padding-bottom:.6rem!important;border-bottom:1px solid #e5e7eb!important}.help-md h2{font-size:22px!important;margin:2rem 0 .5rem!important;font-weight:700!important;padding-bottom:.4rem!important;border-bottom:1px solid #eef0f3!important}.help-md h3{font-size:18px!important;margin:1.25rem 0 .4rem!important;font-weight:700!important}.help-md h1+p,.help-md h2+p,.help-md h3+p{margin-top:.3rem!important}.help-md p{margin:.5rem 0 1rem!important;color:#374151}.help-md ul,.help-md ol{margin:.6rem 0 1rem!important;padding-left:1.4rem!important;list-style-position:outside!important}.help-md ul{list-style-type:disc!important}.help-md ul ul{list-style-type:circle!important}.help-md ul ul ul{list-style-type:square!important}.help-md ol{list-style-type:decimal!important}.help-md ol ol{list-style-type:lower-alpha!important}.help-md ol ol ol{list-style-type:lower-roman!important}.help-md li{margin:.25rem 0!important}.help-md li p{margin:.25rem 0!important}.help-md blockquote{margin:1rem 0!important;padding:.6rem 1rem!important;border-left:4px solid #e5e7eb!important;background:#f9fafb!important}.help-md hr{border:0!important;border-top:1px solid #e5e7eb!important;margin:1.25rem 0!important}.help-md table{border-collapse:collapse!important;width:100%!important;margin:1rem 0!important;font-size:13px!important}.help-md th,.help-md td{border:1px solid #e5e7eb!important;padding:8px!important;vertical-align:top!important}.help-md thead th{background:#f3f4f6!important;font-weight:600!important}.help-md pre{padding:12px!important;overflow:auto!important;border-radius:6px!important;background:#0f172a0d!important}.help-md code{padding:0 .25em!important;background:#0000000f!important;border-radius:4px!important}.help-md input[type=checkbox]{margin-right:.5em!important;transform:translateY(.1em)!important}.help-md a{color:var(--primary)!important;text-decoration:underline!important;text-underline-offset:2px!important;cursor:pointer!important}.help-md a:hover{text-decoration-thickness:2px!important}.help-md a:focus-visible{outline:2px solid var(--primary)!important;outline-offset:2px!important}.help-md a:visited{color:var(--primary)!important}.help-md a[href^="#"]{color:var(--primary)!important}.help-md a[href^=http]:not([href*="//localhost"]):not([href*="//127.0.0.1"])::after{content:" ⬈"!important;margin-left:.25em!important;font-size:.85em!important;opacity:.7!important}.help-md a[href^=mailto:]::before{content:"✉ "}.help-md a[href^=tel:]::before{content:"☎ "}.help-md h1 a,.help-md h2 a,.help-md h3 a,.help-md h4 a,.help-md h5 a,.help-md h6 a{color:inherit!important;text-decoration:underline!important}@media (prefers-color-scheme:dark){.help-md a{color:var(--primary)!important}.help-md a:visited{color:var(--primary)!important}.help-md a:focus-visible{outline-color:var(--primary)!important}}.help-md-target{background:#fde68a66;transition:background .8s ease}.help-md :is(h1,h2,h3,h4,h5,h6){scroll-margin-top:64px}.help-md-target{animation:highlight-fade 1.2s forwards}@keyframes highlight-fade{0%{background-color:var(--primary)}100%{background-color:transparent}}.help-md pre,.help-md code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace!important;white-space:pre!important;overflow:auto!important}
+    `;
+    popupWindow.document.head.appendChild(styleElement);
+  }
+
+  helpPage(): void {
+    let key = this.taskId ? 'task-log' : 'order-log';
+
+    const popupWindow = POPOUT_MODALS['windowInstance'];
+    if (!popupWindow) return;
+
+    const panel = popupWindow.document.getElementById('property-panel');
+    const isHelpOpen = panel && panel.getAttribute('data-mode') === 'help';
+
+    if (isHelpOpen) {
+      this.restoreTreeView(popupWindow);
+    } else {
+      this.showHelpInSidebar(key);
+    }
+  }
+
+  private showHelpInSidebar(key: string): void {
+    const popupWindow = POPOUT_MODALS['windowInstance'];
+    if (!popupWindow) return;
+
+    this.addStylesToPopupWindow();
+
+    const panel = popupWindow.document.getElementById('property-panel') as HTMLElement;
+    const treeWrapper = popupWindow.document.getElementById('tree-wrapper') as HTMLElement;
+    const open = popupWindow.document.getElementsByClassName('sidebar-open')[0] as HTMLElement;
+
+    if (!panel || !treeWrapper) return;
+
+    if (panel.style.display === 'none') {
+        open.click();
+    }
+
+    treeWrapper.style.display = 'none';
+
+    let helpContainer = popupWindow.document.getElementById('help-container');
+    if (!helpContainer) {
+      helpContainer = popupWindow.document.createElement('div');
+      helpContainer.id = 'help-container';
+      panel.appendChild(helpContainer);
+    }
+
+    const helpWidth = Math.floor(popupWindow.innerWidth * 0.8);
+    panel.style.width = helpWidth + 'px';
+    this.dataBody.nativeElement.setAttribute('style', 'margin-right: ' + (helpWidth + 8) + 'px');
+
+    const close = popupWindow.document.getElementsByClassName('sidebar-close')[0] as HTMLElement;
+    close.style.right = (helpWidth - 2) + 'px';
+
+    this.loadHelpContentIntoSidebar(popupWindow, key);
+    panel.setAttribute('data-mode', 'help');
+  }
+
+  private loadHelpContentIntoSidebar(popupWindow: Window, key: string): void {
+    const helpContainer = popupWindow.document.getElementById('help-container');
+    if (!helpContainer) return;
+
+    const helpHtml = `
+      <div class="help-sidebar-content">
+
+        <div class="help-body">
+          <div class="help-content help-md" style="display: none;"></div>
+        </div>
+      </div>`;
+
+    helpContainer.innerHTML = helpHtml;
+    helpContainer.style.display = 'block';
+
+    this.setupHelpSidebarEvents(popupWindow);
+    this.fetchHelpContent(popupWindow, key);
+  }
+
+  private setupHelpSidebarEvents(popupWindow: Window): void {
+    const panel = popupWindow.document.getElementById('property-panel');
+    if (!panel) return;
+    const backBtn = panel.querySelector('.btn-back-to-tree');
+    const closeBtn = panel.querySelector('.btn-help-close');
+    const sidebarClose = popupWindow.document.getElementsByClassName('sidebar-close')[0] as HTMLElement;
+
+    if (backBtn) {
+      backBtn.addEventListener('click', () => this.restoreTreeView(popupWindow));
+    }
+    if (closeBtn && sidebarClose) {
+      closeBtn.addEventListener('click', () => sidebarClose.click());
+    }
+  }
+
+  private restoreTreeView(popupWindow: Window): void {
+    const panel = popupWindow.document.getElementById('property-panel') as HTMLElement;
+    const treeWrapper = popupWindow.document.getElementById('tree-wrapper') as HTMLElement;
+    const helpContainer = popupWindow.document.getElementById('help-container');
+
+    if (!panel || !treeWrapper) return;
+
+    if (helpContainer) {
+      helpContainer.style.display = 'none';
+    }
+    treeWrapper.style.display = 'block';
+
+    panel.removeAttribute('data-mode');
+
+    const normalWidth = localStorage['logPanelWidth'] ? parseInt(localStorage['logPanelWidth'], 10) : 300;
+    panel.style.width = normalWidth + 'px';
+    this.dataBody.nativeElement.setAttribute('style', 'margin-right: ' + (normalWidth + 8) + 'px');
+
+    const close = popupWindow.document.getElementsByClassName('sidebar-close')[0] as HTMLElement;
+    close.style.right = (normalWidth - 2) + 'px';
+  }
+
+  private fetchHelpContent(popupWindow: Window, key: string): void {
+    const panel = popupWindow.document.getElementById('property-panel');
+    if (!panel) return;
+
+    const loadingEl = panel.querySelector('.help-loading') as HTMLElement;
+    const contentEl = panel.querySelector('.help-content') as HTMLElement;
+    const errorEl = panel.querySelector('.help-error') as HTMLElement;
+
+    this.helpService.getHelpHtml(key).subscribe({
+      next: (result: HelpRenderResult | null) => {
+        if (loadingEl) loadingEl.style.display = 'none';
+        if (result?.html) {
+          if (contentEl) {
+            contentEl.innerHTML = result.html;
+            contentEl.style.display = 'block';
+            this.processHelpContent(contentEl);
+          }
+          if (result.fellBack) {
+            this.showFallbackNotice(panel, result);
+          }
+        } else {
+          if (errorEl) errorEl.style.display = 'block';
+        }
+      },
+      error: (err) => {
+        console.error('Error loading help content:', err);
+        if (loadingEl) loadingEl.style.display = 'none';
+        if (errorEl) errorEl.style.display = 'block';
+      }
+    });
+  }
+
+  private processHelpContent(contentEl: HTMLElement): void {
+    this.applyHeadingIds(contentEl);
+    this.setupHelpContentLinks(contentEl);
+  }
+
+  private applyHeadingIds(container: HTMLElement): void {
+    container.querySelectorAll<HTMLElement>('h1,h2,h3,h4,h5,h6').forEach(h => {
+      if (h.id?.trim()) return;
+      const raw = h.textContent || '';
+      const custom = raw.match(/\s*\{#([A-Za-z0-9._:-]+)\}\s*$/);
+      if (custom) {
+        h.id = custom[1];
+        h.textContent = raw.replace(/\s*\{#([A-Za-z0-9._:-]+)\}\s*$/, '').trim();
+      } else {
+        h.id = this.slug(raw);
+      }
+    });
+  }
+
+  private setupHelpContentLinks(contentEl: HTMLElement): void {
+    contentEl.querySelectorAll('a[href^="#"], a[href^="/"]').forEach((link: HTMLAnchorElement) => {
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        if (!href) return;
+        e.preventDefault();
+        if (href.startsWith('#')) {
+          const targetId = href.slice(1);
+          const target = contentEl.querySelector(`#${CSS.escape(targetId)}`);
+          if (target) {
+            target.scrollIntoView({behavior: 'smooth', block: 'start'});
+            target.classList.add('help-md-target');
+            setTimeout(() => target.classList.remove('help-md-target'), 1200);
+          }
+        } else if (href.startsWith('/')) {
+          const mdMatch = href.match(/^\/([a-z0-9._-]+)(?:\.md)?$/i);
+          if (mdMatch) {
+            this.showHelpInSidebar(mdMatch[1]);
+          }
+        }
+      });
+    });
+  }
+
+  private slug(s: string): string {
+    return s.toLowerCase().trim().replace(/<[^>]+>/g, '').replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
+  }
+
+  private showFallbackNotice(panel: HTMLElement, result: HelpRenderResult): void {
+    const headerEl = panel.querySelector('.help-header .help-actions');
+    if (headerEl?.querySelector('.fallback-notice')) return;
+    if (headerEl && result.fellBack) {
+      const noticeHtml = `<small class="fallback-notice text-warning" style="font-size:11px;">Showing ${result.usedLang.toUpperCase()}</small>`;
+      headerEl.insertAdjacentHTML('afterbegin', noticeHtml);
+    }
   }
 
 }
