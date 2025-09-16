@@ -1,6 +1,7 @@
 <div *ngIf="!isModal && !isRuntimeVisible" class="pos-abt" style="top: 8px; right: 22px">
+  <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
   <button *ngIf="shouldShowAPIRequestButton()" (click)="openAPIRequest()"
-          class="btn btn-default btn-sm">
+          class="btn btn-default btn-sm m-l-12">
     <i nz-icon class="p-r-xs" nzType="cloud-server" nzTheme="outline"></i>
     {{'workflow.apiRequest.label.apiRequest' | translate}}
   </button>

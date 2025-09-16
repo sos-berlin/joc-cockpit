@@ -40,6 +40,7 @@ import {UpdateJobTemplatesComponent} from "../job-template/job-template.componen
 import {CalendarService} from "../../../../services/calendar.service";
 import {FileUploaderComponent} from "../../../../components/file-uploader/file-uploader.component";
 import {ConfirmModalComponent} from 'src/app/components/comfirm-modal/confirm.component';
+import {HelpViewerComponent} from "../../../../components/help-viewer/help-viewer.component";
 
 // Mx-Graph Objects
 declare const mxEditor: any;
@@ -2295,7 +2296,7 @@ export class AdmissionTimeComponent {
 
     if (this.frequency.tab === 'weekDays') {
       if (this.frequency.days.length > 0) {
-        if (this.frequency.days.length === 7 && this.repeatObject) {
+        if (this.frequency.days.length === 7) {
           periodData.push(this.addWeekdayFrequency('1', temp, p, true, finalPeriods));
         } else {
           this.frequency.days.forEach((day) => {
@@ -4455,6 +4456,42 @@ export class JobComponent {
 
   close() {
     this.sideBar.isVisible = false;
+  }
+
+  helpPage(): void{
+    let param: string;
+    switch (this.tabIndex) {
+      case 0:
+        param = 'configuration-inventory-workflow-job-properties';
+        break;
+      case 1:
+        param = 'configuration-inventory-workflow-job-options';
+        break;
+      case 2:
+        param = 'configuration-inventory-workflow-job-node-properties';
+        break;
+      case 3:
+        param = 'configuration-inventory-workflow-job-tags';
+        break;
+      case 4:
+        param = 'configuration-inventory-workflow-job-notifications';
+        break;
+
+      default:
+        param = 'configuration-inventory-workflow-job-properties';
+    }
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: param
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }
 
@@ -15505,5 +15542,20 @@ export class WorkflowComponent {
     this.jobTags = jobData.tags;
     this.selectedJob = jobData.jobName;
     this.storeJobTags();
+  }
+
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }
