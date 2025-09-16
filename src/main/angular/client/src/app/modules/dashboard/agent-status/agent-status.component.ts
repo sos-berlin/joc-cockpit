@@ -165,6 +165,24 @@ export class AgentStatusComponent {
         default:
           return text;
       }
+    }else if (text === 'INITIALISED') {
+      switch (severity) {
+        case 2:
+          return 'INITIALISED';
+        case 1:
+          return 'INITIALISED';
+        default:
+          return text;
+      }
+    }else if (text === 'RESETTING') {
+      switch (severity) {
+        case 2:
+          return 'RESETTING';
+        case 1:
+          return 'RESETTING';
+        default:
+          return text;
+      }
     }
     return text;
   }
