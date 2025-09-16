@@ -4468,10 +4468,10 @@ export class JobComponent {
         param = 'configuration-inventory-workflow-job-options';
         break;
       case 2:
-        param = 'configuration-inventory-workflow-job-node-properties';
+        param = 'configuration-inventory-workflow-job-tags';
         break;
       case 3:
-        param = 'configuration-inventory-workflow-job-tags';
+        param = 'configuration-inventory-workflow-job-node-properties';
         break;
       case 4:
         param = 'configuration-inventory-workflow-job-notifications';
