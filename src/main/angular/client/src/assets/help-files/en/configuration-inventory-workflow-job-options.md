@@ -7,19 +7,19 @@ The GUI offers a number of tabs for specifying Job details. The second tab is of
 ## Frequently used Job Options
 
 - **Parallelism** specifies the number of parallel instances for which the Job can be executed. If more than one Order is processing the Workflow, then they can execute the Job in parallel. In addition to *Parallelism* the process limit applies that is enforced by Standalone Agents and Agent Clusters.
-- **Criticality** specifies the relevance of failures of the Job. The *Criticality* is available with Notifications about job failures.
+- **Criticality** specifies the relevance of failures of the Job. The *Criticality* is available with Notifications about Job failures.
 
 ### Job Execution Periods
 
-- **Timeout** specifies the maximum execution period the Job is allowed to consume. If the Job exceeds the *Timeout* it will be cancelled by the Agent considering the Job's *Grace Timeout*. Input can be specified in the following formats:
+- **Timeout** specifies the maximum execution period the Job is allowed to consume. If the Job exceeds the *Timeout*, it will be cancelled by the Agent considering the Job's *Grace Timeout*. Input can be specified in the following formats:
   - *1* or *1s*: either a number or a number followed by *s* specifies the *Timeout* in seconds.
   - *1m 2d 3h*: specifies 1 month, 2 days and 3 hours as the max. execution period.
   - *01:02:03*: specifies 1 hour, 2 minutes and 3 seconds for the max. execution period.
-- **Warn on shorter execution period** raises a warning and related notification if the Job will terminate earlier than the period specified. Input formats include:
+- **Warn on shorter execution period** raises a warning and related Notification, if the Job will terminate earlier than the period specified. Input formats include:
   - *1* or *1s*: either a number or a number followed by *s* specifies the execution period in seconds.
   - *01:02:03*: specifies 1 hour, 2 minutes and 3 seconds for the execution period.
   - *30%*: specifies a 30% shorter execution period than the average of previous executions of the job. The calculation makes use of the [Task History](/history-tasks) that is subject to purge by the [Cleanup Service](/service-cleanup).
-- **Warn on longer execution period** raises a warning and related notification if the Job will exceed the period specified. Input formats include:
+- **Warn on longer execution period** raises a warning and related Notification, if the Job will exceed the period specified. Input formats include:
   - *1* or *1s*: either a number or a number followed by *s* specifies the execution period in seconds.
   - *01:02:03*: specifies 1 hour, 2 minutes and 3 seconds for the execution period.
   - *30%*: specifies a 30% longer execution period than the average of previous executions of the job. The calculation makes use of the [Task History](/history-tasks) that is subject to purge by the [Cleanup Service](/service-cleanup).
@@ -33,9 +33,9 @@ The GUI offers a number of tabs for specifying Job details. The second tab is of
 
 *Admission Times* rule when a Job can be started or should be skipped, and the absolute period for which a Job can be executed. For details see [JS7 - Admission Times for Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Admission+Times+for+Jobs).
 
-- **Skip Job if no admission for Order's date** specifies that the Job will be skipped if its *Admission Time* does not match the Order's date. For example, the Job's *Admission Time* can exclude weekends which results in the fact that the Job will be executed Mon-Fri and will be skipped by Orders scheduled for Sat-Sun. Users should consider that the date for which the Order is scheduled is relevant, not the Order's arrival date at the Job. If the Order's scheduled date matches the *Admission Time* but the Order arrives a later point in time outside of the *Admission Time*, then the Job will not be skipped but the Order will wait for the next *Admission Time*.
+- **Skip Job if no admission for Order's date** specifies that the Job will be skipped if its *Admission Time* does not match the Order's date. For example, the Job's *Admission Time* can exclude weekends which results in the fact that the Job will be executed Mon-Fri and will be skipped by Orders scheduled for Sat-Sun. Users should consider that the date for which the Order is scheduled is relevant, not the Order's arrival date at the Job. If the Order's scheduled date matches the *Admission Time* but the Order arrives at a later point in time outside of the *Admission Time*, then the Job will not be skipped and the Order will wait for the next *Admission Time*.
 - **Terminate Job at end of period** specifies that the Agent will cancel the Job if it exceeds the point in time specified with the *Admission Time* period.
-- **Admission Time** are offered from the *Show Periods* link.
+- **Admission Time** offers to specify days and hours when Jobs can run from the *Show Periods* link.
 
 #### Admission Types
 
@@ -60,17 +60,21 @@ The *Execution Period* is specified from its *begin* and *duration*:
 
 The *Configuration - Inventory* view offers the *More Options* slider on top of the screen which is inactive by default. Use of the slider makes additional options available.
 
-- **Grace Timeout** is applied to Jobs with Unix that receive a SIGTERM signal when exceeding their *Timeout*. If the Job does not terminate then after the *Grace Timeout* a SIGKILL signal will forcibly terminate the Job.
-- **Compatibility**
+- **Grace Timeout** is applied to Jobs with Unix that are sent a SIGTERM signal when exceeding their *Timeout* or when forcibly terminated by user intervention. If the Job does not terminate in response to SIGTERM, then after the *Grace Timeout* the Agent will send a SIGKILL signal to forcibly terminate the Job. For details see [JS7 - FAQ - How does JobScheduler terminate Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+FAQ+-+How+does+JobScheduler+terminate+Jobs) and [JS7 - Agent Operation](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Operation).
+- **Compatibility** offers the *v1* compatibility level for users of branch 1.x of JobScheduler. In compatibility mode the following behavior is changed:
+  - *Environment Variables* do not have to be specified but are automatically created for all Workflow Variables. The names of Environment Variables are prefixed from *SCHEDULER_PARAM_* using uppercase letters only.
+  - For use of Job arguments the compatibility mode offers a corresponding tab.
 
 ### Restarting Jobs
 
-- **Job not restartable**
+- **Job not restartable** applies to Jobs that have been forcibly terminated by the Agent or by its watchdog when stopping or cancelling the Agent. By default Jobs are considered restartable and will be restarted when the Agent is restarted. Users can prevent this behavior by activating the checkbox.
 
 ### Running Jobs for Windows using different User Accounts
 
-- **Credential Key**
-- **Load User Profile**
+The following options specify for Jobs executed with Agents for Windows that the Job should switch user context, see [JS7 - Running Jobs as a different User](https://kb.sos-berlin.com/display/JS7/JS7+-+Running+Jobs+as+a+different+User).
+
+- **Credential Key** specifies the key of the entry in the Windows Credential Manager that holds the target user account's credentials.
+- **Load User Profile** specifies if the target user account's profile including registry entries should be loaded on Job start.
 
 ## References
 
@@ -78,4 +82,7 @@ The *Configuration - Inventory* view offers the *More Options* slider on top of 
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
 - [Task History](/history-tasks)
 - [JS7 - Admission Times for Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Admission+Times+for+Jobs).
+- [JS7 - Agent Operation](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Operation)
+- [JS7 - FAQ - How does JobScheduler terminate Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+FAQ+-+How+does+JobScheduler+terminate+Jobs)
 - [JS7 - Job Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Instruction)
+- [JS7 - Running Jobs as a different User](https://kb.sos-berlin.com/display/JS7/JS7+-+Running+Jobs+as+a+different+User)

@@ -119,7 +119,7 @@ A position can be specified if Orders should not start from the first node in th
 
 ## References
 
+- [Cleanup Service](/service-cleanup)
 - [Daily Plan - Calendar](/daily-plan-calendar)
 - [Order History](/history-orders)
-- [Cleanup Service](/service-cleanup)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)

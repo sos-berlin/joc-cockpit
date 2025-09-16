@@ -6,15 +6,15 @@ The following settings are applied to the Log Notification Service. Changes beco
 
 ## Log Notification Service Settings
 
-### Setting: *log_server_active*, Default: *false*
+### Setting: *log\_server\_active*, Default: *false*
 
 Specifies that the Log Notification Service is started with JOC Cockpit.
 
-### Setting: *log_server_port*, Default: *4245*
+### Setting: *log\_server\_port*, Default: *4245*
 
 Specifies the UDP port to which the Log Notification Service will listen.
 
-### Setting: *log_server_max_messages_per_second*, Default: *1000*
+### Setting: *log\_server\_max\_messages\_per\_second*, Default: *1000*
 
 Specifies the max. number of messages per second that the Log Notification Service will process.
 
