@@ -6,11 +6,11 @@ The welcome popup window provides links for downloading defaults for Job Resourc
 
 ## User Settings
 
-### Setting: *welcome_got_it*, Default: *false*
+### Setting: *welcome\_got\_it*, Default: *false*
 
 Specifies if the welcome message is acceptance and prevents further reminders from occurring.
 
-### Setting: *welcome_do_not_remind_me*, Default: *false*
+### Setting: *welcome\_do\_not\_remind\_me*, Default: *false*
 
 Specifies if further reminders should occur.
 

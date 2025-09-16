@@ -17,7 +17,7 @@ The request identifies the endpoint used and offers displaying the request body 
 
 # Audit Trail
 
-The JOC Cockpit holds an *Audit Trail* that keeps track of any REST API requests. The *Audit Trail* includes information about user sessions and is not available from the JOC Cockpit GUI.
+The JOC Cockpit can be configured to write an *Audit Trail* that keeps track of any REST API requests. The *Audit Trail* includes information about user sessions and is not available from the JOC Cockpit GUI.
 
 The *Audit Trail* can be activated by administrators and is available from log files on disk.
 

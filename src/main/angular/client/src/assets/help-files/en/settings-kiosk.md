@@ -8,7 +8,7 @@ JOC Cockpit can be operated in [JS7 - Kiosk Mode](https://kb.sos-berlin.com/disp
 
 ## Kiosk Settings
 
-### Setting: *kiosk_role*, Default: *kiosk*
+### Setting: *kiosk\_role*, Default: *kiosk*
 
 Specifies the name of the role that is assigned an account used for operation in kiosk mode:
 
@@ -16,7 +16,7 @@ Specifies the name of the role that is assigned an account used for operation in
 - The role should include read permissions only.
 - The role is the only one assigned the account.
 
-### Setting: *view_dashboard_duration*, Default: *20*
+### Setting: *view\_dashboard\_duration*, Default: *20*
 
 Specifies the duration in seconds for which the Dashboard will be displayed.
 
@@ -25,28 +25,28 @@ Users are free to modify the dashboard layout for the account used for kiosk mod
 - A value 0 specifies that the view will not be displayed.
 - A value >10 specifies the desired duration.
 
-### Setting: *view_monitor_order_notification_duration*, Default: *15*
+### Setting: *view\_monitor\_order\_notification\_duration*, Default: *15*
 
 Specifies the duration in seconds for which the [Monitor - Order Notifications](/monitor-order-notifications) view will be displayed.
 
 - A value 0 specifies that the view will not be displayed.
 - A value >10 specifies the desired duration.
 
-### Setting: *view_monitor_system_notification_duration*, Default: *15*
+### Setting: *view\_monitor\_system\_notification\_duration*, Default: *15*
 
 Specifies the duration in seconds for which the [Monitor - System Notifications](/monitor-system-notifications) view will be displayed.
 
 - A value 0 specifies that the view will not be displayed.
 - A value >10 specifies the desired duration.
 
-### Setting: *view_history_tasks_duration*, Default: *30*
+### Setting: *view\_history\_tasks\_duration*, Default: *30*
 
 Specifies the duration in seconds for which the [Task History](/history-tasks) view will be displayed.
 
 - A value 0 specifies that the view will not be displayed.
 - A value >10 specifies the desired duration.
 
-### Setting: *view_history_orders_duration*, Default: *0*
+### Setting: *view\_history\_orders\_duration*, Default: *0*
 
 Specifies the duration in seconds for which the [Order History](/history-orders) view will be displayed.
 

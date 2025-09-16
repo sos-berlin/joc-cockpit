@@ -53,7 +53,7 @@ If both filter buttons are inactive then all Workflows and dependencies will be 
 ## References
 
 - [Daily Plan](/daily-plan)
-- [Settings - Daily Plan](/settings-daily-plan)
 - [Resources - Notice Boards](/resources-notice-boards)
+- [Settings - Daily Plan](/settings-daily-plan)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)
 - [JS7 - Notice Baords](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards)

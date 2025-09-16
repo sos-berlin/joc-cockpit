@@ -5,7 +5,7 @@ JOC Cockpit offers run-time [JS7 - Settings](https://kb.sos-berlin.com/display/J
 ## References
 
 - [Settings - Daily Plan](/settings-daily-plan)
-- [Settings - Daily Plan](/settings-cleanup)
+- [Settings - Cleanup Service](/settings-cleanup)
 - [Settings - Identity Service](/settings-identity-service)
 - [Settings - JOC Cockpit](/settings-joc)
 - [Settings - User](/settings-user)

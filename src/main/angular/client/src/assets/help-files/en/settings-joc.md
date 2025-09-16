@@ -4,22 +4,22 @@ The following settings are applied to JOC Cockpit. Changes become effective imme
 
 ## Audit Log Settings
 
-### Setting: *force_comments_for_audit_log*, Default: *false*
+### Setting: *force\_comments\_for\_audit\_log*, Default: *false*
 
 Specifies that a reason has to be added for the [Audit Log](/audit-log) for any changes applied to objects such as adding an Order, cancelling an Order etc.
 
 This applies to operations from the GUI and to operations from the [REST Web Service API](/rest-api)
 Specifying the value *true* for this setting forces any API requests that modify objects to provide  arguments for the Audit Log.
 
-Note that the [Profile - Preferences](/profile-preferences) include a related setting to Enable Reasons for Audit Log that has the same effect. However, its use is voluntary and is restricted to the profile's account. The force_comments_for_audit_log setting enforces this behavior for any user accounts regardless of the profile settings of individual user accounts.
+Note that the [Profile - Preferences](/profile-preferences) include a related setting to Enable Reasons for Audit Log that has the same effect. However, its use is voluntary and is restricted to the profile's account. The force\_comments\_for\_audit\_log setting enforces this behavior for any user accounts regardless of the profile settings of individual user accounts.
 
-### Setting: *comments_for_audit_log*
+### Setting: *comments\_for\_audit\_log*
 
 Specifies a list of possible comments for selection by a user when performing a GUI operation that modifies an object. In addition to using list entries, users are free to use individual comments when performing such operations.
 
 The list is populated from some well known reasons for object modifications. Users are free to modify list entries and add their own entries for possible comments.
 
-### Setting: *default_profile_account*, Default: *root*
+### Setting: *default\_profile\_account*, Default: *root*
 
 When user accounts are added to the JOC Cockpit using the [Identity Services](/identity-services) then [Profile - Preferences](/profile-preferences) will be created with individual settings for each user account.
 
@@ -28,7 +28,7 @@ When user accounts are added to the JOC Cockpit using the [Identity Services](/i
 
 ## Login Settings
 
-### Setting: *enable_remember_me*, Default: *true*
+### Setting: *enable\_remember\_me*, Default: *true*
 
 This setting enables the *Remember me* checkbox that is available from the login window and which stores user's credentials such as account and password in a site cookie. As a result the user account and password are populated with the next login.
 
@@ -37,21 +37,21 @@ This setting enables the *Remember me* checkbox that is available from the login
 
 ## Inventory Settings
 
-### Setting: *copy_paste_suffix*, *copy_paste_prefix*, Default: *copy*
+### Setting: *copy\_paste\_suffix*, *copy\_paste\_prefix*, Default: *copy*
 
 Specifies the prefix/suffix to be used for object names when performing copy & paste operations in the JOC Cockpit GUI.
 
 - In JS7 inventory object names are unique for each object type: for example, Workflows use unique names, however, a Job Resource can use the same name as a Workflow.
 - Therefore a new object name has to be created when performing copy & paste operations. This is achieved by adding a prefix or suffix which can be chosen by users.
 
-### Setting: *restore_suffix*, *restore_prefix*, Default: *restored*
+### Setting: *restore\_suffix*, *restore\_prefix*, Default: *restored*
 
 When inventory objects are removed, they will be added to the inventory trash.
 
 - When removed objects are restored from the inventory trash, then the original object name might be used by some newer object. 
 - This setting allows the user to specify the prefix and suffix values to be used when restoring objects from the trash.
 
-### Setting: *import_suffix*, *import_prefix*, Default: *imported*
+### Setting: *import\_suffix*, *import\_prefix*, Default: *imported*
 
 The JS7 inventory export and import operations allow objects to be imported from an archive file.
 
@@ -60,24 +60,24 @@ The JS7 inventory export and import operations allow objects to be imported from
 
 ## View Settings
 
-### Setting: *show_view_\**
+### Setting: *show\_view\_\**
 
 These settings can be used to disable individual views that are available from the JOC Cockpit GUI by main menu items such as Daily Plan, Monitor, Workflows etc.
 
 - This setting works independently of default roles and permissions.
 - As a result a user account might have permissions to view data from the Monitor view, although the view is not offered from the GUI. At the same time, data from the Monitor view will be available for this account when using the [REST Web Service API](/rest-api).
 
-### Setting: *display_folders_in_views*, Default: *true*
+### Setting: *display\_folders\_in\_views*, Default: *true*
 
 Specifies that in views such as *Workflows*, *Daily Plan*, *Resources - Calendars*, *Resources - Resource Locks*, *Resources - Notice Boards* scheduling object names and paths are displayed. If the *false* value is used for this setting, then the path is omitted from display of objects. In JS7 any objects names are unique.
 
 ## Controller Settings
 
-### Setting: *controller_connection_joc_password*, *controller_connection_history_password*
+### Setting: *controller\_connection\_joc\_password*, *controller\_connection\_history\_password*
 
 JS7 offers consistent configuration without use of passwords. This includes the connection from JOC Cockpit to Controllers which can be secured by mutual HTTPS Server Authentication and Client Authentication. If users do not wish to configure mutual authentication for Controller connections, then a password has to be used to identify the JOC Cockpit with the Controller.
 
-This applies to two connections established from JOC Cockpit to Controllers that are reflected by separate settings for the *controller_connection_joc_password* and the *controller_connection_history_password*:
+This applies to two connections established from JOC Cockpit to Controllers that are reflected by separate settings for the *controller\_connection\_joc\_password* and the *controller\_connection\_history\_password*:
 
 - The JOC Cockpit GUI makes use of a connection to receive events, for example about Order state transitions.
 - The History Service is connected to a Controller to receive history information such as the execution status of jobs and any log output of jobs.
@@ -98,17 +98,17 @@ The encoding is applied if JOC Cockpit is operated for Windows environments. Win
 
 ## License Settings
 
-### Setting: *disable_warning_on_license_expiration*, Default: *false*
+### Setting: *disable\_warning\_on\_license\_expiration*, Default: *false*
 
 JS7 offers to display warnings in case of upcoming license expiration. The feature to display license expiration warnings can be disabled by assigning this setting the *true* value.
 
 ## Log Settings
 
-### Setting: *log_ext_directory*
+### Setting: *log\_ext\_directory*
 
 Specifies a directory that is accessible for JOC Cockpit and to which copies of order log files and task log files will be written.
 
-### Setting: *log_ext_order_history*
+### Setting: *log\_ext\_order\_history*
 
 Specifies that a JSON file holding information about the Order History is created in case of successful Orders, failed Orders or both. Possible values include:
 
@@ -116,7 +116,7 @@ Specifies that a JSON file holding information about the Order History is create
 - **failed**: create history file for failed Orders.
 - **successful**: create history file for successful Orders.
 
-### Setting: *log_ext_order*
+### Setting: *log\_ext\_order*
 
 Specifies that an Order log file is created in case of successful Orders, failed Orders or both. Possible values include:
 
@@ -124,7 +124,7 @@ Specifies that an Order log file is created in case of successful Orders, failed
 - **failed**: create Order log file for failed Orders.
 - **successful**: create Order log file for successful Orders.
 
-### Setting: *log_ext_task*
+### Setting: *log\_ext\_task*
 
 Specifies that a task log file is created in case of successful task, failed tasks or both. Possible values include:
 
@@ -132,55 +132,55 @@ Specifies that a task log file is created in case of successful task, failed tas
 - **failed**: create task log file for failed tasks.
 - **successful**: create task log file for successful tasks.
 
-### Setting: *log_maximum_display_size*, Default: *10* MB
+### Setting: *log\_maximum\_display\_size*, Default: *10* MB
 
 JOC Cockpit offers log output for display with the Log View window if the size of uncompressed log output does not exceed this value. Otherwise the log is offered for download only. The size is assumed in MB.
 
-### Setting: *log_applicable_size*, Default: *500* MB
+### Setting: *log\_applicable\_size*, Default: *500* MB
 
 If the value for the size of a job's log output is exceeded, then the History Service will truncate the log output and will use the first and last 100 KB for the task log. The original log file will be removed. The size is assumed in MB.
 
-### Setting: *log_maximum_size*, Default: *1000* MB
+### Setting: *log\_maximum\_size*, Default: *1000* MB
 
 If this value for the size of a job's log output is exceeded, then the History Service will truncate the log output and will use the first 100 KB for the task log. The original log file will be removed. The size is assumed in MB.
 
 ## Link Settings
 
-### Setting: *joc_reverse_proxy_url*
+### Setting: *joc\_reverse\_proxy\_url*
 
 If JOC Cockpit is not accessible from its original URL but from a reverse proxy service only, then this value specifies the URL to be used, for example with e-mail notifications,
 
 ## Job Settings
 
-### Setting: *allow_empty_arguments*, Default: *false*
+### Setting: *allow\_empty\_arguments*, Default: *false*
 
 By default arguments that are specified for jobs have to hold values as otherwise the Workflow is considered invalid. This setting overrides the default behavior and allows empty values to be specified.
 
 ## Order Settings
 
-### Setting: *allow_undeclared_variables*, Default: *false*
+### Setting: *allow\_undeclared\_variables*, Default: *false*
 
 By default any Order variables have to be declared with the Workflow. This setting changes the default behavior and allows Orders to specify arbitrary variables. Users should be aware that jobs and related instructions will fail if they reference variables that are not specified by incoming orders.
 
 ## Tag Settings
 
-### Setting: *num_of_tags_displayed_as_order_id*, Default: *0*
+### Setting: *num\_of\_tags\_displayed\_as\_order\_id*, Default: *0*
 
 Specifies the number of Tags displayed with each Order. A value 0 will suppress display of Tags. Consider that display of a larger number of Tags per Order can cause performance penalties.
 
-### Setting: *num_of_workflow_tags_displayed*, Default: *0*
+### Setting: *num\_of\_workflow\_tags\_displayed*, Default: *0*
 
 Specifies the number of Tags displayed with each Workflow. A value 0 will suppress display of Tags.
 
 ## Approval Settings
 
-### Setting: *approval_requestor_role*
+### Setting: *approval\_requestor\_role*
 
 Specifies the name of the Requestor role that is assigned accounts which are subject to the Approval Process.
 
 ## Report Settings
 
-### Setting: *report_java_options*, Default: *-Xmx54M*
+### Setting: *report\_java\_options*, Default: *-Xmx54M*
 
 Specifies the Java options used when creating Reports. The default value considers the minimum Java heap space required to create Reports. Users who find a larger number of job executions per day might have to increase this value to match memory needs.
 
