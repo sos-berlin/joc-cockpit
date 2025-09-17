@@ -47,7 +47,7 @@
     "ng-zorro-antd": "^18.0.0",
     "ng2-charts": "^3.0.5",
     "ngx-clipboard": "^16.0.0",
-    "ngx-toastr": "^17.0.2",
+    "ngx-toastr": "19.1.0",
     "perfect-scrollbar": "^1.5.5",
     "replace-in-file": "^7.0.1",
     "rxjs": "^7.8.1",
