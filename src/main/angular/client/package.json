@@ -91,6 +91,7 @@
   },
   "overrides": {
     "canvg": "^4.0.3",
-    "@babel/runtime": "7.26.10"
+    "@babel/runtime": "7.26.10",
+    "dompurify": "3.2.6"
   }
 }
