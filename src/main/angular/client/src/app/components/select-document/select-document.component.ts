@@ -12,6 +12,7 @@ import {CoreService} from "../../services/core.service";
   selector: 'app-select-document',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-document.component.html',
+  styleUrls: ['./select-document.component.scss']
 })
 export class SelectDocumentComponent {
   @ViewChild('docInput') docInputField;

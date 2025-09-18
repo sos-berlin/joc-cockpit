@@ -36,7 +36,10 @@ export class UpdateJobComponent {
   };
 
   checkboxObjects: any = {};
-
+  dailyPlanDate: any = {
+    addOrdersDateFrom: 'now',
+  };
+  dateObj: any = {};
   required = false;
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private translate: TranslateService,
@@ -131,6 +134,12 @@ export class UpdateJobComponent {
       };
       obj.store.draftConfigurations.push({configuration});
     });
+      if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
+        obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+      } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
+        obj.addOrdersDateFrom = 'now';
+      }
+
     this.coreService.post('inventory/deployment/deploy', obj).subscribe({
       next: () => {
         this.activeModal.close('ok');
