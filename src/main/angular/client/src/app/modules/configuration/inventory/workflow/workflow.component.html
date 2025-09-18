@@ -19,6 +19,7 @@
           <div id="workflowHeader">
             <div *ngIf="workflow.path" class="inline m-b-sm m-l-sm">
               <div style="position: relative; top: 3px">
+                <i (click)="helpPage('configuration-inventory-workflows')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
                 <a (click)="backToListView()"><i class="fa fa-arrow-circle-left config-back-btn"
                                                  nz-tooltip="{{'inventory.button.backToList' | translate}}"></i></a>
                 <span (click)="navToWorkflowTab()" [ngClass]="{'cursor text-hover-primary': workflow.hasDeployments || data.deployed}"
@@ -37,6 +38,7 @@
               </div>
             </div>
             <div *ngIf="!isTrash" class="inline pull-right">
+
               <span (click)="recursiveUpdate()" *ngIf="!isLoading" class="btn-search"><i nz-icon nzTheme="outline"
                                                                                          nzType="search"></i></span>
               <span *ngIf="!isLoading">

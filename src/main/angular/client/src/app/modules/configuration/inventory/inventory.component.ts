@@ -13681,14 +13681,14 @@ export class InventoryComponent {
     })
   }
 
-  helpPage(): void{
+  helpPage(key): void{
     this.modal.create({
       nzTitle: undefined,
       nzContent: HelpViewerComponent,
       nzClassName: 'lg',
       nzData: {
         preferences: this.preferences,
-        helpKey: 'searching-inventory'
+        helpKey: key
       },
       nzFooter: null,
       nzClosable: false,

@@ -333,102 +333,110 @@ export class MarkdownParserService {
     const br = options.xhtml ? '<br/>' : '<br>';
     const hr = options.xhtml ? '<hr/>' : '<hr>';
 
-      const renderInline = (text: string): string => {
-        if (!text) return '';
+    const renderInline = (text: string): string => {
+      if (!text) return '';
 
-        const transformPlain = (chunk: string): string => {
-          chunk = chunk.replace(/\\([\\`*_{}\[\]()#+\-.!>|~])/g, (_m, ch: string) => {
-            const map: Record<string, string> = {
-              '\\': '&#92;',  '`': '&#96;',  '*': '&#42;',  '_': '&#95;',
-              '{': '&#123;',  '}': '&#125;','[': '&#91;',  ']': '&#93;',
-              '(': '&#40;',   ')': '&#41;',  '#': '&#35;',  '+': '&#43;',
-              '-': '&#45;',   '.': '&#46;',  '!': '&#33;',  '>': '&gt;',
-              '|': '&#124;',  '~': '&#126;'
-            };
-            return map[ch] || ch;
+      const transformPlain = (chunk: string): string => {
+        chunk = chunk.replace(/\\([\\`*_{}\[\]()#+\-.!>|~])/g, (_m, ch: string) => {
+          const map: Record<string, string> = {
+            '\\': '&#92;', '`': '&#96;', '*': '&#42;', '_': '&#95;',
+            '{': '&#123;', '}': '&#125;', '[': '&#91;', ']': '&#93;',
+            '(': '&#40;', ')': '&#41;', '#': '&#35;', '+': '&#43;',
+            '-': '&#45;', '.': '&#46;', '!': '&#33;', '>': '&gt;',
+            '|': '&#124;', '~': '&#126;'
+          };
+          return map[ch] || ch;
+        });
+
+        chunk = chunk.replace(/(`+)([^`\n]+?)\1/g, (_m, _bt: string, code: string) =>
+          `<code>${escapeHtml(code)}</code>`);
+
+        chunk = chunk.replace(/!\[([^\]]*)\]\(([^\s)]+)(?:\s+"([^"]*)")?\)/g,
+          (_m, alt: string, src: string, title?: string) => {
+            const safeSrc = this.safeUrl(src);
+            if (!safeSrc) return '';
+            const titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
+            return `<img src="${safeSrc}" alt="${escapeHtml(alt)}"${titleAttr}>`;
           });
 
-          chunk = chunk.replace(/(`+)([^`\n]+?)\1/g, (_m, _bt: string, code: string) => `<code>${escapeHtml(code)}</code>`);
+        chunk = chunk.replace(/\[([^\[\]]+)\]\(([^\s()]+)(?:\s+"([^"]*)")?\)/g,
+          (_m, label: string, href: string, title?: string) => {
+            const safeHref = this.safeUrl(href);
+            if (!safeHref) return escapeHtml(label);
 
-          chunk = chunk
-            .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-            .replace(/__([^_]+)__/g, '<strong>$1</strong>')
-            .replace(/\*([^*]+)\*/g, '<em>$1</em>')
-            .replace(/_([^_]+)_/g, '<em>$1</em>')
-            .replace(/~~([^~]+)~~/g, '<del>$1</del>');
+            const titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
 
-          chunk = chunk.replace(/!\[([^\]]*)\]\(([^\s)]+)(?:\s+"([^"]*)")?\)/g,
-            (_m, alt: string, src: string, title?: string) => {
-              const safeSrc = this.safeUrl(src);
-              if (!safeSrc) return '';
-              const titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
-              return `<img src="${safeSrc}" alt="${escapeHtml(alt)}"${titleAttr}>`;
-            });
+            let processedLabel = label;
+            processedLabel = processedLabel
+              .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+              .replace(/__([^_]+)__/g, '<strong>$1</strong>')
+              .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+              .replace(/_([^_]+)_/g, '<em>$1</em>')
+              .replace(/`([^`]+)`/g, '<code>$1</code>');
 
-          // links
-          chunk = chunk.replace(/\[([^\]]+)\]\(([^\s)]+)(?:\s+"([^"]*)")?\)/g,
-            (_m, label: string, href: string, title?: string) => {
-              const safeHref = this.safeUrl(href);
-              if (!safeHref) return escapeHtml(label);
-              const titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
-              if (safeHref.startsWith('#')) {
-                return `<a href="${safeHref}"${titleAttr}>${escapeHtml(label)}</a>`;
-              } else if (/^https?:/i.test(safeHref)) {
-                return `<a href="${safeHref}" rel="nofollow ugc" target="_blank"${titleAttr}>${escapeHtml(label)}</a>`;
-              } else {
-                return `<a href="${safeHref}"${titleAttr}>${escapeHtml(label)}</a>`;
-              }
-            });
+            if (safeHref.startsWith('#')) {
+              return `<a href="${safeHref}"${titleAttr}>${processedLabel}</a>`;
+            } else if (/^https?:/i.test(safeHref)) {
+              return `<a href="${safeHref}" rel="nofollow ugc" target="_blank"${titleAttr}>${processedLabel}</a>`;
+            } else {
+              return `<a href="${safeHref}"${titleAttr}>${processedLabel}</a>`;
+            }
+          });
 
-          // autolinks
-          chunk = chunk.replace(/<((?:https?:\/\/|mailto:|tel:)[^>]+)>/gi, (_m, url: string) => {
+        chunk = chunk
+          .replace(/( |^|\()(\*\*([^*<>]+)\*\*)/g, '$1<strong>$3</strong>')
+          .replace(/( |^|\()(__([^_<>]+)__)/g, '$1<strong>$3</strong>')
+          .replace(/( |^|\()(\*([^*<>]+)\*)/g, '$1<em>$3</em>')
+          .replace(/( |^|\()(_([^_<>]+)_)/g, '$1<em>$3</em>') // This regex is now safer
+          .replace(/~~([^~<>]+)~~/g, '<del>$1</del>');
+
+        chunk = chunk.replace(/<((?:https?:\/\/|mailto:|tel:)[^>]+)>/gi, (_m, url: string) => {
+          const safeUrl = this.safeUrl(url);
+          if (!safeUrl) return escapeHtml(url);
+          const isExternal = /^https?:/i.test(safeUrl);
+          const target = isExternal ? ' target="_blank" rel="nofollow ugc"' : '';
+          return `<a href="${safeUrl}"${target}>${escapeHtml(url)}</a>`;
+        });
+
+        chunk = chunk.replace(/(^|\s)(https?:\/\/[\w\-._~:\/?#\[\]@!$&'()*+,;=%]+)(?=$|\s)/gi,
+          (_m, pre: string, url: string) => {
             const safeUrl = this.safeUrl(url);
-            if (!safeUrl) return escapeHtml(url);
-            const isExternal = /^https?:/i.test(safeUrl);
-            const target = isExternal ? ' target="_blank" rel="nofollow ugc"' : '';
-            return `<a href="${safeUrl}"${target}>${escapeHtml(url)}</a>`;
+            if (!safeUrl) return pre + escapeHtml(url);
+            return `${pre}<a href="${safeUrl}" rel="nofollow ugc" target="_blank">${escapeHtml(url)}</a>`;
           });
 
-          // bare URLs
-          chunk = chunk.replace(/(^|\s)(https?:\/\/[\w\-._~:\/?#\[\]@!$&'()*+,;=%]+)(?=$|\s)/gi,
-            (_m, pre: string, url: string) => {
-              const safeUrl = this.safeUrl(url);
-              if (!safeUrl) return pre + escapeHtml(url);
-              return `${pre}<a href="${safeUrl}" rel="nofollow ugc" target="_blank">${escapeHtml(url)}</a>`;
-            });
+        if (options.breaks) chunk = chunk.replace(/\n/g, br);
+        else chunk = chunk.replace(/ {2,}\n/g, br);
 
-          // line breaks
-          if (options.breaks) chunk = chunk.replace(/\n/g, br);
-          else chunk = chunk.replace(/ {2,}\n/g, br);
-
-          return chunk;
-        };
-
-        if (!options.rawHtml) return transformPlain(text);
-
-        const parts = text.split(/(<!--[\s\S]*?-->|<\/?[A-Za-z][^>]*>)/g);
-
-        let preDepth = 0;
-        let codeDepth = 0;
-        const out: string[] = [];
-
-        for (const part of parts) {
-          if (!part) continue;
-
-          if (part.startsWith('<')) {
-            if (/^<\s*pre\b/i.test(part)) preDepth++;
-            else if (/^<\s*\/\s*pre\b/i.test(part)) preDepth = Math.max(0, preDepth - 1);
-            else if (/^<\s*code\b/i.test(part)) codeDepth++;
-            else if (/^<\s*\/\s*code\b/i.test(part)) codeDepth = Math.max(0, codeDepth - 1);
-
-            out.push(part);
-          } else {
-            out.push(preDepth || codeDepth ? part : transformPlain(part));
-          }
-        }
-
-        return out.join('');
+        return chunk;
       };
+
+
+      if (!options.rawHtml) return transformPlain(text);
+
+      const parts = text.split(/(<!--[\s\S]*?-->|<\/?[A-Za-z][^>]*>)/g);
+
+      let preDepth = 0;
+      let codeDepth = 0;
+      const out: string[] = [];
+
+      for (const part of parts) {
+        if (!part) continue;
+
+        if (part.startsWith('<')) {
+          if (/^<\s*pre\b/i.test(part)) preDepth++;
+          else if (/^<\s*\/\s*pre\b/i.test(part)) preDepth = Math.max(0, preDepth - 1);
+          else if (/^<\s*code\b/i.test(part)) codeDepth++;
+          else if (/^<\s*\/\s*code\b/i.test(part)) codeDepth = Math.max(0, codeDepth - 1);
+
+          out.push(part);
+        } else {
+          out.push(preDepth || codeDepth ? part : transformPlain(part));
+        }
+      }
+
+      return out.join('');
+    };
 
     for (const t of tokens) {
       switch (t.type) {

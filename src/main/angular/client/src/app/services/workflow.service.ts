@@ -3018,11 +3018,11 @@ convertStringToDuration(str: string, isDuration = false): number {
 
   getAdmissionFrequencyText(period: any, monthNumbers: number[]): string {
     const monthText = this.getMonths(monthNumbers);
+  if (period.specificWeekDay !== undefined && period.specificWeek !== undefined) {
+    const weekDay = this.getStringDayRes(period.specificWeekDay - 1);
 
-    if (period.specificWeekDay !== undefined && period.specificWeek !== undefined) {
-      const weekDay = this.getStringDay(period.specificWeekDay);
-      const weekPosition = this.getSpecificDay(period.specificWeek);
-      return `${weekPosition} ${weekDay} in ${monthText}`;
+    const weekPosition = this.getSpecificDay(period.specificWeek);
+    return `${weekPosition} ${weekDay} of ${monthText}`;
 
     } else if (period.secondOfMonth !== undefined || period.lastSecondOfMonth !== undefined) {
       const isLast = period.lastSecondOfMonth !== undefined;
