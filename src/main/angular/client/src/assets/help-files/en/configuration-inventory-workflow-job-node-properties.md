@@ -11,9 +11,9 @@ A Node is the position of a Job in the Workflow. If the same Job occurs a number
 Should the same Job be used with different parameter sets per occurrence in the Workflow, then *Node Properties* can be used. They offer key/value pairs that create Node Variables.
 
 - **Name** specifies the name of the Node Variable that can be used
-  - in Shell Jobs by assigning an Environment Variable the *Name* of the Node Variable using the syntax *\$myNodeVariable*.
-  - in JVM Jobs by assigning a Job Variable the *Name* of the Node Variable using the syntax *\$myNodeVariable*.
-- **Value** accepts input from strings, numbers and references to Workflow Variables as in *\$myWorkflowVariable*.
+  - in Shell Jobs by assigning an Environment Variable the *Name* of the Node Variable using the syntax *$myNodeVariable*.
+  - in JVM Jobs by assigning a Job Variable the *Name* of the Node Variable using the syntax *$myNodeVariable*.
+- **Value** accepts input from strings, numbers and references to Workflow Variables as in *$myWorkflowVariable*.
 
 Node Variable names are case-sensitive.
 

@@ -14,7 +14,7 @@ A Job can be added any number of Tags. They are displayed with the [Workflows](/
 
 Tag Groups can be used to organize Tags that should share a common group. For example, a Job should be assigned one of the ticket priorities P1, P2, P3, P4 depending on the Job's criticality. Users can enter the Tag Group and Tag separated by colon as in *TicketPriority:P1*, *TicketPriority:P2* etc. The ticket priority of a Job becomes available when Notifications are created in case of failure and can be used to feed a ticket system.
 
-- **\<*tag-group*\>:\<*tag*\>** allows to add or delete the related Tag in the Tag Group specified. The Tag Group will be created if it does not exist.
+- **Tag-Group:Tag** allows to add or delete the related Tag in the Tag Group specified. The Tag Group will be created if it does not exist.
 
 ## References
 
