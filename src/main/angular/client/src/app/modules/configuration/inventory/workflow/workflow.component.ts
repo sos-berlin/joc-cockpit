@@ -1166,7 +1166,6 @@ export class AdmissionTimeComponent {
     if (!this.job.admissionTimeScheme.restrictedSchemes) {
       this.job.admissionTimeScheme.restrictedSchemes = [];
     }
-
     if (this.isEdit && this.data.restrictedSchemeIndex !== undefined) {
       this.loadRestrictedScheme(this.data.restrictedSchemeIndex);
     }
@@ -2284,9 +2283,13 @@ export class AdmissionTimeComponent {
     }
   }
 
-  private loadPeriodsFromRestrictedScheme(periods): void {
-    this.data.periodList = this.workflowService.convertAdmissionTimeToList(periods, this.days, this.frequency);
+
+  private loadPeriodsFromRestrictedScheme(periods: any[]): void {
+    let periodList = this.workflowService.convertAdmissionTimeToList(periods, this.days, this.frequency);
+    periodList = periodList.filter(period => period.frequency !== 'Unknown');
+    this.data.periodList = periodList;
   }
+
 
   private createAndProcessPeriods(p, periods): any[] {
     const periodData = [];
