@@ -275,17 +275,27 @@ export class LogViewComponent {
 
       $(close).click(() => {
         const panelEl = POPOUT_MODALS['windowInstance'].document.getElementById('property-panel');
-        if (panelEl && panelEl.getAttribute('data-mode') === 'help') {
-            this.restoreTreeView(POPOUT_MODALS['windowInstance']);
-        }
-        this.dataBody.nativeElement.setAttribute('style', 'margin-right: 10px');
-        $(panel).css(transitionCSS).hide();
-        $(open).css({...transitionCSS, right: '0'});
-        $(close).css({...transitionCSS, right: '-20px'});
-        sessionStorage['isLogTreeOpen'] = false;
-      });
+        const open = POPOUT_MODALS['windowInstance'].document.getElementsByClassName('sidebar-open');
+        const transitionCSS = {transition: 'none'};
 
-      if (!this.taskId) {
+        if (panelEl && panelEl.getAttribute('data-mode') === 'help') {
+          if (this.taskId) {
+            panelEl.style.display = 'none';
+            this.dataBody.nativeElement.setAttribute('style', 'margin-right: 10px');
+            (close[0] as HTMLElement).style.display = 'none';
+          } else {
+            this.restoreTreeView(POPOUT_MODALS['windowInstance']);
+          }
+          panelEl.removeAttribute('data-mode');
+
+        } else {
+          this.dataBody.nativeElement.setAttribute('style', 'margin-right: 10px');
+          $(panelEl).css(transitionCSS).hide();
+          $(open).css({...transitionCSS, right: '0'});
+          $(close).css({...transitionCSS, right: '-20px'});
+          sessionStorage['isLogTreeOpen'] = false;
+        }
+      });      if (!this.taskId) {
         setTimeout(() => {
           if (sessionStorage['isLogTreeOpen'] == 'true' || sessionStorage['isLogTreeOpen'] == true) {
             $(open).click();
@@ -1212,9 +1222,6 @@ export class LogViewComponent {
     this.saveUserPreference();
   }
 
-  /**
-   * Save the user preference of log filter
-   */
   saveUserPreference(): void {
     this.preferences.logFilter = this.object.checkBoxs;
     const configObj: any = {
@@ -1275,16 +1282,18 @@ export class LogViewComponent {
   }
 
   helpPage(): void {
-    let key = this.taskId ? 'task-log' : 'order-log';
-
+    const key = this.taskId ? 'task-log' : 'order-log';
     const popupWindow = POPOUT_MODALS['windowInstance'];
     if (!popupWindow) return;
 
-    const panel = popupWindow.document.getElementById('property-panel');
+    const panel = popupWindow.document.getElementById('property-panel') as HTMLElement;
     const isHelpOpen = panel && panel.getAttribute('data-mode') === 'help';
 
     if (isHelpOpen) {
-      this.restoreTreeView(popupWindow);
+      const sidebarClose = popupWindow.document.getElementsByClassName('sidebar-close')[0] as HTMLElement;
+      if (sidebarClose) {
+        sidebarClose.click();
+      }
     } else {
       this.showHelpInSidebar(key);
     }
@@ -1298,56 +1307,56 @@ export class LogViewComponent {
 
     const panel = popupWindow.document.getElementById('property-panel') as HTMLElement;
     const treeWrapper = popupWindow.document.getElementById('tree-wrapper') as HTMLElement;
+    const helpWrapper = popupWindow.document.getElementById('help-wrapper') as HTMLElement;
+    const close = popupWindow.document.getElementsByClassName('sidebar-close')[0] as HTMLElement;
     const open = popupWindow.document.getElementsByClassName('sidebar-open')[0] as HTMLElement;
 
-    if (!panel || !treeWrapper) return;
-
-    if (panel.style.display === 'none') {
-        open.click();
-    }
-
-    treeWrapper.style.display = 'none';
-
-    let helpContainer = popupWindow.document.getElementById('help-container');
-    if (!helpContainer) {
-      helpContainer = popupWindow.document.createElement('div');
-      helpContainer.id = 'help-container';
-      panel.appendChild(helpContainer);
-    }
+    if (!panel || !treeWrapper || !helpWrapper) return;
 
     const helpWidth = Math.floor(popupWindow.innerWidth * 0.8);
+
+    panel.style.display = 'block';
     panel.style.width = helpWidth + 'px';
     this.dataBody.nativeElement.setAttribute('style', 'margin-right: ' + (helpWidth + 8) + 'px');
 
-    const close = popupWindow.document.getElementsByClassName('sidebar-close')[0] as HTMLElement;
-    close.style.right = (helpWidth - 2) + 'px';
+    if (close) {
+      close.style.display = 'block';
+      close.style.right = (helpWidth - 2) + 'px';
+    }
+    if (open) {
+      open.style.right = '-20px';
+    }
+
+    treeWrapper.style.display = 'none';
+    helpWrapper.style.display = 'block';
 
     this.loadHelpContentIntoSidebar(popupWindow, key);
     panel.setAttribute('data-mode', 'help');
   }
 
+
   private loadHelpContentIntoSidebar(popupWindow: Window, key: string): void {
-    const helpContainer = popupWindow.document.getElementById('help-container');
-    if (!helpContainer) return;
+    const helpWrapper = popupWindow.document.getElementById('help-wrapper');
+    if (!helpWrapper) return;
 
     const helpHtml = `
-      <div class="help-sidebar-content">
+    <div class="help-sidebar-content">
 
-        <div class="help-body">
-          <div class="help-content help-md" style="display: none;"></div>
-        </div>
-      </div>`;
+      <div class="help-body">
+        <div class="help-content help-md" style="display: none;"></div>
+      </div>
+    </div>`;
 
-    helpContainer.innerHTML = helpHtml;
-    helpContainer.style.display = 'block';
-
+    helpWrapper.innerHTML = helpHtml;
     this.setupHelpSidebarEvents(popupWindow);
     this.fetchHelpContent(popupWindow, key);
   }
 
+
   private setupHelpSidebarEvents(popupWindow: Window): void {
     const panel = popupWindow.document.getElementById('property-panel');
     if (!panel) return;
+
     const backBtn = panel.querySelector('.btn-back-to-tree');
     const closeBtn = panel.querySelector('.btn-help-close');
     const sidebarClose = popupWindow.document.getElementsByClassName('sidebar-close')[0] as HTMLElement;
@@ -1355,33 +1364,34 @@ export class LogViewComponent {
     if (backBtn) {
       backBtn.addEventListener('click', () => this.restoreTreeView(popupWindow));
     }
+
     if (closeBtn && sidebarClose) {
       closeBtn.addEventListener('click', () => sidebarClose.click());
     }
   }
 
+
   private restoreTreeView(popupWindow: Window): void {
     const panel = popupWindow.document.getElementById('property-panel') as HTMLElement;
     const treeWrapper = popupWindow.document.getElementById('tree-wrapper') as HTMLElement;
-    const helpContainer = popupWindow.document.getElementById('help-container');
+    const helpWrapper = popupWindow.document.getElementById('help-wrapper') as HTMLElement;
+    const close = popupWindow.document.getElementsByClassName('sidebar-close')[0] as HTMLElement;
 
-    if (!panel || !treeWrapper) return;
+    if (!panel || !treeWrapper || !helpWrapper) return;
 
-    if (helpContainer) {
-      helpContainer.style.display = 'none';
-    }
+    helpWrapper.style.display = 'none';
     treeWrapper.style.display = 'block';
-
     panel.removeAttribute('data-mode');
 
     const normalWidth = localStorage['logPanelWidth'] ? parseInt(localStorage['logPanelWidth'], 10) : 300;
     panel.style.width = normalWidth + 'px';
     this.dataBody.nativeElement.setAttribute('style', 'margin-right: ' + (normalWidth + 8) + 'px');
 
-    const close = popupWindow.document.getElementsByClassName('sidebar-close')[0] as HTMLElement;
-    close.style.right = (normalWidth - 2) + 'px';
+    if (close) {
+      close.style.right = (normalWidth - 2) + 'px';
+      close.style.display = 'block';
+    }
   }
-
   private fetchHelpContent(popupWindow: Window, key: string): void {
     const panel = popupWindow.document.getElementById('property-panel');
     if (!panel) return;
