@@ -41,7 +41,10 @@ export class UpdateObjectComponent {
   submitted = false;
   isVisible = false;
   dateFormat: any;
-
+  dailyPlanDate: any = {
+    addOrdersDateFrom: 'now',
+  };
+  dateObj: any = {};
   variableList = [];
   object: any = {};
   checkboxObjects: any = {};
@@ -725,6 +728,7 @@ export class UpdateObjectComponent {
     const obj: any = {};
     if (isDeploy) {
       obj.controllerIds = this.selectedSchedulerIds;
+
       obj.store = {
         draftConfigurations: []
       };
@@ -747,6 +751,13 @@ export class UpdateObjectComponent {
         obj.update.push(configuration);
       }
     });
+    if ((this.type == 'WORKFLOW' || this.type == 'SCHEDULE' || this.type == 'CALENDAR')) {
+          if (this.dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
+            obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
+          } else if (this.dailyPlanDate.addOrdersDateFrom == 'now') {
+            obj.addOrdersDateFrom = 'now';
+          }
+    }
     const URL = !isDeploy ? 'inventory/release' : 'inventory/deployment/deploy';
     this.coreService.post(URL, obj).subscribe({
       next: () => {

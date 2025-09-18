@@ -73,6 +73,31 @@
             </nz-select>
           </div>
         </div>
+        <div class="form-group row">
+          <div class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
+          <div class="col-md-9">
+            <nz-radio-group [(ngModel)]="dailyPlanDate.addOrdersDateFrom" name="addOrdersDateFrom">
+              <label nz-radio nzValue="now"><span translate>inventory.addOrdersDateFrom.now</span></label>
+              <label nz-radio nzValue="startingFrom"><span
+                translate>inventory.addOrdersDateFrom.startingFrom</span></label>
+              <label nz-radio nzValue=""><span translate>inventory.addOrdersDateFrom.no</span></label>
+            </nz-radio-group>
+          </div>
+        </div>
+        <div *ngIf="dailyPlanDate.addOrdersDateFrom == 'startingFrom'" class="form-group row">
+          <div class="col-md-3" translate>common.label.specificDate
+            <sup class="text-danger text-sm">*</sup>
+          </div>
+          <div [ngClass]="{ 'has-error' : (((date.dirty || date.touched) && date.invalid))}" class="col-md-9">
+            <nz-date-picker #date="ngModel" [(ngModel)]="dateObj.fromDate"
+                            [nzFormat]="dateFormat" name="date" required></nz-date-picker>
+            <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger help-block">
+              <div *ngIf="date.errors.required">
+                <div translate>common.message.requiredError</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
