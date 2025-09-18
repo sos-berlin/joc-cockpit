@@ -26,7 +26,7 @@ Specific Notifications per Job override Global Notifications from the follwoing 
   - *SUCCESS* triggers the Notification in case of successful Jobs with or without warnings.
 - **Mail To** specifies the list of e-mail recipieints. More than one recipient can be specified by using a comma or semicolon. If no recipient is specified, then no Notification will be sent by e-mail overriding the Global Notification setting.
 - **Mail Cc** specifies the list of e-mail recipients that will receive carbon copies. More than one recipient can be specified by using a comma or semicolon.
-- **Mail Bcc** specifies the list of e-mai recipients that will receive blind copies. More than one recipient can be specified by using a comma or semicolon.
+- **Mail Bcc** specifies the list of e-mail recipients that will receive blind copies. More than one recipient can be specified by using a comma or semicolon.
 
 ## References
 

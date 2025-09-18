@@ -9,15 +9,15 @@ The *Order Log View* offers filtering from a number of criteria available from t
 - **Main** specifies that details about Order starts, Job starts and the parameterization on Job starts will be displayed. Such output is indicated from the [MAIN] qualifier.
 - **Success** events are indicated from the [SUCCESS] qualifier and specify details such as resulting parameterization when Jobs completed.
 - **stdout** specifies if output written by Jobs to the stdout channel will be displayed using the [STDOUT] qualifier.
-- **Debug** applies to Java Jobs that make use of the [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API). Such Jobs can be added the *log_level* argument holding the *debug*  or *trace* value. If debug output is available from a Job, then it will be displayed using the [DEBUG] qualifier.
+- **Debug** applies to JVM Jobs that make use of the [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API). Such Jobs can be added the *log_level* argument holding the *debug*  or *trace* value. If debug output is available from a Job, then it will be displayed using the [DEBUG] qualifier.
 
-Log output written by Jobs to the stderr channel is not subject to filtering and wil be displayed from the [STDERR] qualifier.
+Log output written by Jobs to the stderr channel is not subject to filtering and will be displayed from the [STDERR] qualifier.
 
 ## Display of Log Output
 
 Log output is displayed in historic ordering of arrival. If a Workflow forks execution to parallel Jobs, then output of each Job will be displayed coherently.
 
-The top of the window offers the chevron-down and chevron-up icons that will expland or collapse log output of any Jobs.
+The top of the window offers the chevron-down and chevron-up icons that will expand or collapse log output of any Jobs.
 
 ### Timestamps
 

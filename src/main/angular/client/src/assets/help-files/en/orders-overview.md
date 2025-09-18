@@ -3,7 +3,7 @@
 The *Orders Overview* view offers monitoring and control of Orders for Workflows.
 
 - Users can identify Orders being processed per [Order State](/order-states).
-- Users can transition Orders, for example, cancel *running* Orders.
+- Users can transition Orders, for example, by cancelling *running* Orders.
 - The view holds Orders that are added by the [Daily Plan](/daily-plan) and Orders that have been added on demand.
 
 ## Order State Selection Panel
@@ -39,8 +39,8 @@ The panel is displayed in the lower part of the screen when users click the Orde
 
 ### Order History
 
-- **Order ID** is the unique identifier assigned an Order. Clicking the arrow-down icon will display the Order variables.
-- **Label** indicates the latest position of an Order in the Workflow. Users can assign labels to Workflow Instructions that will be displayed and otherwise the technical position will be indicated.
+- **Order ID** is the unique identifier assigned an Order. Clicking the arrow-down icon will display the Order Variables.
+- **Label** indicates the latest position of an Order in the Workflow. Users can assign *Labels* to Workflow Instructions that will be displayed and otherwise the technical position will be indicated.
 - **History Status** indicates the latest outcome in the Order's life.
   - If Orders are completed, then the *History Status* will be *successful* or *failed*.
   - If Orders are not completed, the *History Status* will be *in progress*.
@@ -50,7 +50,7 @@ The panel is displayed in the lower part of the screen when users click the Orde
 
 #### Access to Log Output
 
-- **Order ID**: Clicking the *Order ID* in the *History* panel will display the Order's log output from the [Order Log View](/order-log). The log includes output created by any jobs executed with the Workflow.
+- **Order ID**: Clicking the *Order ID* in the *History* panel will display the Order's log output from the [Order Log View](/order-log). The log includes output created by any Jobs executed with the Workflow.
 - **Download Icon**: clicking the icon will download the Order's log to a file.
 
 By default display of Order logs is limited to 10MB log size and otherwise logs are downloaded to files. Users can adjust the limit from the [Settings - JOC Cockpit](/settings-joc) page.
@@ -63,11 +63,11 @@ The *Audit Log* indicates modifying operations performed on the Order.
 - **Account** indicates the user account that performed the operation.
 - **Request** indicates the REST API endpoint that was called.
 - **Category** specifies the classification of the operation such as CONTROLLER when cancelling Orders or DAILYPLAN when creating Orders from the [Daily Plan](/daily-plan).
-- **Reason** explains why an orders was modified. The JOC Cockpit can be configured to enforce specifying reasons when modifying objects.
+- **Reason** explains why an Order was modified. The JOC Cockpit can be configured to enforce specifying reasons when modifying objects.
   - The setting is available from [Profile - Preferences](/profile-preferences).
   - The setting can be enforced from the [Settings - JOC Cockpit](/settings-joc) page.
-- **Time Spent** similar to specifying *Resons* the time spent on an operation can be added when modifying orders.
-- **Ticket Link** similar to specifying *Resons* a reference to a ticket system can be added when modifying orders.
+- **Time Spent** similar to specifying *Reasons* the time spent on an operation can be added when modifying orders.
+- **Ticket Link** similar to specifying *Reasons* a reference to a ticket system can be added when modifying orders.
 
 ## Operations
 
@@ -78,8 +78,8 @@ Users find an action menu per Order that offers operations available for the giv
 For Orders in the *pending*, *scheduled*, *in progress*, *running*, *suspended*, *prompting*, *waiting*, *failed* state the following operations are offered:
 
 - **Modify Priority** 
-  - If an Order will meet a *Resource Lock* instruction in the Workflow that limits parallelism, then its priority determines the position in the queue of waiting Orders.
-  - Priorities are specified from negative, zero and positive integers or from the shortcuts offered. A higher priority has precedence. Shortcuts offer the following priority values:
+  - If an Order will meet a *Resource Lock* instruction in the Workflow that limits parallelism, then its *Priority* determines the position in the queue of *waiting* Orders.
+  - *Priorities* are specified from negative, zero and positive integers or from the shortcuts offered. A higher *Priority* has precedence. Shortcuts offer the following values:
     - **Low**: -20000
     - **Below Normal**: -10000
     - **Normal**: 0
@@ -87,8 +87,10 @@ For Orders in the *pending*, *scheduled*, *in progress*, *running*, *suspended*,
     - **High**: 20000
 - **Cancel** will terminate the Order. Running Orders will complete the current Job or Workflow Instruction and will leave the Workflow with a failed history status.
 - **Cancel/terminate task** will forcibly terminate Orders running a Job. Orders will leave the Workflow with a failed history status.
+- **Cancel/reset** will forcibly terminate Orders running a Job. Orders will leave the Workflow with a failed history status.
 - **Suspend** will suspend the Order. Running Orders will be suspended after they completed the current Job or Workflow Instruction.
 - **Suspend/terminate task** will forcibly terminate running Orders and will suspend the Orders.
+- **Suspend/reset** will immediately reset the current Workflow Instruction and will put the Order to the *suspended* state. The option can be combined with forcibly terminating tasks for *running* Orders.
 - **Resume** will continue a *suspended* or *failed* resumable Order.
 
 For Orders holding the *completed* state and for disrupted Orders in the *failed* state the following operations are offered:

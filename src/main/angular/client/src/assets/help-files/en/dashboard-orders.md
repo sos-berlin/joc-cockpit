@@ -2,9 +2,9 @@
 
 The *Orders* panel provides information about Orders from the following sources:
 
-- Orders added by the Daily Plan,
-- Orders added on demand by user intervention,
-- Orders added from File Order Sources that watch directories for incoming files.
+- Orders added by the [Daily Plan](/daily-plan)
+- Orders added on demand by users from the [Workflows](/workflows) view
+- Orders added from File Order Sources that watch directories for incoming files
 
 ## Order States
 
@@ -19,16 +19,16 @@ The *Orders* panel provides information about the current state of Orders. The p
 - **Prompting** Orders are put on hold by the *Prompt Instruction* in a Workflow and require user confirmation to continue execution of the Workflow.
 - **Waiting** Orders wait for a resource such as a *Resource Lock*, *Notice*, *Retry* or *Cycle* interval or for a process should the Agent in use specify a process limit that is exceeded.
 - **Blocked** Orders cannot start, for example if the Agent is not reachable since the Order was added.
-- **Failed** Orders indicate that a Job failed or that a *Fail Instruction* prevents the Order from procdeding. 
+- **Failed** Orders indicate that a Job failed or that a *Fail Instruction* prevents the Order from proceeding. 
 
-Clicking the indicated number of Orders navigates to the *Orders Overview* that displays Orders in detail.
+Clicking the indicated number of Orders navigates to the [Orders Overview](/orders-overview) that displays Orders in detail.
 
 ## Filters
 
 The dropdown button in the right upper corner of the panel offers selecting Orders from a date range:
 
 - **All** displays all Orders available with Controller and Agents.
-- **Today** Orders are related to the current day which is calculated from the time zone in the user's profile.
+- **Today** Orders are related to the current day which is calculated from the time zone in the user's [Profile - Preferences](/profile-preferences).
   - **Pending** Orders without start time,
   - **Scheduled** Orders holding a start time for the current day,
   - **In Progress** Orders from any past date,
@@ -47,6 +47,9 @@ The dropdown button in the right upper corner of the panel offers selecting Orde
 
 ## References
 
+- [Daily Plan](/daily-plan)
 - [Orders Overview](/orders-overview)
+- [Profile - Preferences](/profile-preferences)
+- [Workflows](/workflows)
 - [JS7 - Orders](https://kb.sos-berlin.com/display/JS7/JS7+-+Orders)
 - [JS7 - Order State Transitions](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+State+Transitions)

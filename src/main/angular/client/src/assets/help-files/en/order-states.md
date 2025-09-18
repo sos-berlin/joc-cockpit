@@ -19,13 +19,14 @@ The follwoing *Order States* are available:
 - **Prompting** Orders are put on hold by the *Prompt Instruction* in a Workflow and require user confirmation to continue execution of the Workflow.
 - **Waiting** Orders wait for a resource such as a *Resource Lock*, *Notice*, *Retry* or *Cycle* interval or for a process should the Agent in use specify a process limit that is exceeded.
 - **Blocked** Orders cannot start, for example if the Agent is not reachable since the Order was added.
-- **Failed** Orders indicate that a Job failed or that a *Fail Instruction* prevents the Order from procdeding. 
+- **Failed** Orders indicate that a Job failed or that a *Fail Instruction* prevents the Order from proceeding. 
 
-Clicking the indicated number of Orders navigates to the *Orders Overview* that displays Orders in detail.
+Clicking the indicated number of Orders navigates to the [Orders Overview](/orders-overview) that displays Orders in detail.
 
 ## References
 
 - [Daily Plan](/daily-plan)
 - [Orders Overview](/orders-overview)
+- [Workflows](/workflows)
 - [JS7 - Orders](https://kb.sos-berlin.com/display/JS7/JS7+-+Orders)
 - [JS7 - Order State Transitions](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+State+Transitions)
