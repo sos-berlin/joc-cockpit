@@ -1155,8 +1155,8 @@ export class AdmissionTimeComponent {
               private workflowService: WorkflowService, private ref: ChangeDetectorRef, public calendarService: CalendarService) {
   }
 
-  ngOnInit(): void {
 
+  ngOnInit(): void {
     if (!this.job.admissionTimeScheme) {
       this.job.admissionTimeScheme = {};
     }
@@ -1166,14 +1166,12 @@ export class AdmissionTimeComponent {
     if (!this.job.admissionTimeScheme.restrictedSchemes) {
       this.job.admissionTimeScheme.restrictedSchemes = [];
     }
-    if (this.isEdit && this.data.restrictedSchemeIndex !== undefined) {
-      this.loadRestrictedScheme(this.data.restrictedSchemeIndex);
-    }
     this.days = this.coreService.getLocale().days;
     this.days.push(this.days[0]);
-    if (this.isEdit && this.data.isRestrictedEdit) {
-      const restrictedSchemeIndex = this.data.restrictedSchemeIndex;
 
+    if (this.isEdit && this.data.isRestrictedEdit) {
+
+      const restrictedSchemeIndex = this.data.restrictedSchemeIndex;
       const restrictedScheme = this.job.admissionTimeScheme.restrictedSchemes[restrictedSchemeIndex];
 
       if (restrictedScheme) {
@@ -1182,29 +1180,31 @@ export class AdmissionTimeComponent {
         this.checkMonths();
         this.onChangeMonths();
 
-        const periodListForRestricted = this.workflowService.convertAdmissionTimeToList(
-          restrictedScheme.periods || [],
-          this.days,
-          {}
-        );
+        const periodListForForm = this.workflowService.convertAdmissionTimeToList(restrictedScheme.periods || [], this.days, {});
 
-        if (this.index > -1 && periodListForRestricted[this.index]) {
-          this.editFrequency(periodListForRestricted[this.index]);
+        if (this.index > -1 && periodListForForm[this.index]) {
+          this.editFrequency(periodListForForm[this.index]);
+        }
+      }
+
+    } else {
+
+      if (this.job.admissionTimeScheme.periods && this.job.admissionTimeScheme.periods.length > 0) {
+        this.workflowService.convertSecondIntoWeek(this.job.admissionTimeScheme, this.data.periodList, this.days, this.frequency);
+
+        if (this.isEdit && this.data.periodList && this.data.periodList.length > 0) {
+          this.editFrequency(this.data.periodList[this.index > -1 ? this.index : 0]);
+        }
+
+        if (this.data.periodList.length > 0) {
+          if (this.repeatObject && !this.data.periodList[0].frequency) {
+            this.frequency.days = ['1', '2', '3', '4', '5', '6', '7'];
+            this.frequency.all = true;
+          }
         }
       }
     }
-    if (this.job.admissionTimeScheme.periods && this.job.admissionTimeScheme.periods.length > 0) {
-      this.workflowService.convertSecondIntoWeek(this.job.admissionTimeScheme, this.data.periodList, this.days, this.frequency);
-      if (this.isEdit && this.data.periodList && this.data.periodList.length > 0) {
-        this.editFrequency(this.data.periodList[this.index > -1 ? this.index : 0]);
-      }
-      if (this.data.periodList.length > 0) {
-        if (this.repeatObject && !this.data.periodList[0].frequency) {
-          this.frequency.days = ['1', '2', '3', '4', '5', '6', '7'];
-          this.frequency.all = true;
-        }
-      }
-    }
+
     if (this.repeatObject) {
       this.checkDays();
       this.checkFrequency();
@@ -1487,7 +1487,7 @@ export class AdmissionTimeComponent {
       this.allMonthsSelected = false;
     }
 
-    if (data.lastSecondOfMonth || data.secondOfMonth > -1) {
+    if (data?.lastSecondOfMonth || data?.secondOfMonth > -1) {
       this.frequency.tab = 'monthDays';
       this.frequency.isUltimos = data.secondOfMonth > -1 ? 'months' : 'ultimos';
       if (this.frequency.isUltimos == 'months') {
@@ -1498,11 +1498,11 @@ export class AdmissionTimeComponent {
         }
         this.selectedMonthsU.push('' + Math.abs(data.day));
       }
-    } else if (data.secondOfWeeks || data.secondOfWeeks == 0) {
+    } else if (data?.secondOfWeeks || data?.secondOfWeeks == 0) {
       this.frequency.tab = 'specificWeekDays';
       this.frequency.specificWeekDay = data.specificWeekDay.toString();
       this.frequency.specificWeek = data.specificWeek.toString();
-    } else if (data.date) {
+    } else if (data?.date) {
       this.frequency.tab = 'specificDays';
       this.tempDates = [{
         startDate: new Date(data.date * 1000),
@@ -1517,7 +1517,7 @@ export class AdmissionTimeComponent {
       }).setDataSource(this.tempDates);
     } else {
       this.frequency.tab = 'weekDays';
-      this.frequency.days = (!data.frequency && data.day == '1') ? ['1', '2', '3', '4', '5', '6', '7'] : [data.day.toString()];
+      this.frequency.days = (!data?.frequency && data?.day == '1') ? ['1', '2', '3', '4', '5', '6', '7'] : [data?.day.toString()];
       this.checkDays();
     }
 
@@ -2287,6 +2287,7 @@ export class AdmissionTimeComponent {
   private loadPeriodsFromRestrictedScheme(periods: any[]): void {
     let periodList = this.workflowService.convertAdmissionTimeToList(periods, this.days, this.frequency);
     periodList = periodList.filter(period => period.frequency !== 'Unknown');
+
     this.data.periodList = periodList;
   }
 
@@ -6001,6 +6002,12 @@ export class WorkflowComponent {
           }
           delete job.parameters;
           delete job.jobName;
+          if (
+            request.objectType === "JOBTEMPLATE" &&
+            job?.executable?.arguments
+          ) {
+            delete job?.executable.arguments;
+          }
           request.configuration = job;
           this.coreService.post('inventory/store', request).subscribe(() => {
             const obj = {
