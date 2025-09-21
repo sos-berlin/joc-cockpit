@@ -40,8 +40,8 @@ If an Order should not start from the first node in the Workflow, then a positio
   - If a Block Position is specified, then any same-level node inside the block can be specified before which the Order will terminate.
   - More than one End Position can be specified.
 - **Priority**; 
-  - If the Order will meet a Resource Lock instruction in the wowrkflow that limits parallelism, then its prority determines the position in the queue of waiting Orders.
-  - Priorities are specified from negative, zero and positive integers or from the shortcuts offered. A higher priority has precedence. Shortcuts offer the following priority values:
+  - If the Order will meet a Resource Lock instruction in the wowrkflow that limits parallelism, then its *Priority* determines the position in the queue of *waiting* Orders.
+  - *Priorities* are specified from negative, zero and positive integers or from the shortcuts offered. A higher *Priority* has precedence. Shortcuts offer the following values:
     - **Low**: -20000
     - **Below Normal**: -10000
     - **Normal**: 0

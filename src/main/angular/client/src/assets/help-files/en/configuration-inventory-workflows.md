@@ -1,8 +1,9 @@
-# Configuration Inventory - Workflows
+# Configuration - Inventory - Workflows
 
 The *Workflow* panel offers designing Workflows from a sequence of instructions that shape the Workflow for a [Directed acyclic graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph). 
 
-Users can drag & drop instructions from the *Toolbar* to create Workflow patterns such as a sequence of Jobs, forking and joining Jobs, conditional execution etc.
+- Users can drag & drop instructions from the *Toolbar* to create Workflow patterns such as a sequence of Jobs, forking and joining Jobs, conditional execution etc.
+- The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) offers navigation by Tags and folders. In addition, the panel offers operations on Workflows.
 
 ## Toolbar Panel
 
@@ -27,8 +28,8 @@ The *Toolbar* holds the following instructions:
 - **Prompt Instruction** halts execution of an Order in a Workflow until the prompt is confirmed. The Order is assigned the *prompting* state. Users can confirm or cancel *prompting* orders, see [Order States](/order-states). For details see [JS7 - Prompt Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Prompt+Instruction).
 - **AddOrder Instruction** is used in a Workflow to create an Order for a different Workflow. By default added Orders run asynchronously in a separate Workflow and in parallel to the current Order, i.e. their execution result is not synchronized and does not have an impact on the current Order. Should the execution of the added Order be synchronized, then the *ExpectNotices Instruction* and *ConsumeNotices Instruction* can be used. For details see [JS7 - AddOrder Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+AddOrder+Instruction).
 - **PostNotices Instruction** is used to create one or more Notices for Notice Boards. The Notices are waited for by the corresponding *ExpectNotices Instruction* and *ConsumeNotices Instruction* from the same or from different Workflows. A Workflow can include any number of *PostNotices Instructions* to post Notices to the same or to different Notice Boards. Posting a Notice will not block further execution of an Order in a Workflow. The Order continues immediately having posted the Notice. For details see [JS7 - PostNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+PostNotices+Instruction).
-- **ExpectNotices Instruction** is used to check if one or more Notices are available from Notice Boards that are expected to add Notices by a *PostNotices Instruction* or by the user. If the Notice does not exist, then the Order will remain in the *waiting* state with the instruction. A Workflow can include any number of *ExpectNotices Instructions* to wait for Notices from the same or from different Notice Boards. For details see [JS7 - ExpectNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ExpectNotices+Instruction).
-- **ConsumeNotices Instruction** is used to make orders wait for one or more Notices from Notice Boards that are added by a *PostNotices Instruction*. The *ConsumeNotices Instruction* is a block instruction that can include any other instructions and that will delete the Notices that have been waited for when an Order reaches the end of the instruction block. For details see [JS7 - ConsumeNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ConsumeNotices+Instruction).
+- **ExpectNotices Instruction** is used to check if Notices are available from one or more Notice Boards that are added by a *PostNotices Instruction* or by the user. If the Notice does not exist, then the Order will remain in the *waiting* state with the instruction. A Workflow can include any number of *ExpectNotices Instructions* to expect Notices from the same or from different Notice Boards. For details see [JS7 - ExpectNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ExpectNotices+Instruction).
+- **ConsumeNotices Instruction** is used to make Orders wait for one or more Notices from Notice Boards that are added by a *PostNotices Instruction*. The *ConsumeNotices Instruction* is a block instruction that can include any other instructions and that will delete the Notices that have been waited for when an Order reaches the end of the instruction block. For details see [JS7 - ConsumeNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ConsumeNotices+Instruction).
 - **If Instruction** is a block instruction used for conditional processing in a Workflow. It allows to check return codes and return values of previous Jobs and to evaluate Order Variables. For details see [JS7 - If Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+If+Instruction).
 - **Case Instruction** is used for conditrional processing of Jobs and other instructions in a Workflow. The instruction extends the *If Instruction*. The *Case Instruction* is be used with repeated *Case-When Instructions* and optionally a single *Case-Else Instruction*. For details see [JS7 - Case Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Case+Instruction).
 - **CaseWhen Instruction** is used to check a predicate similar to the *If Instruction*. The instruction can occur any number of times in a *Case Instruction*.
@@ -47,18 +48,37 @@ The panel holds the graphical representation of a Workflow.
 - For the *Fork Instruction* users can drag & drop a *Job Instruction* directly on the *Fork* node to create a new branch.
 - For the *If Instruction* users can drag & drop a *Job Instruction* directly on the *If* block: the first instruction represents the *true* branch, the second instruction dragged & dropped creates the *false* branch.
 
+Workflows are automatically stored to the inventory. This happens every 30s and when leaving the *Workflow Panel*.
+
+### Search in Workflows
+
+On top of the *Workflow Panel* a Search Icon is available. Clicking the icon offers specifying a string that matches the name of a Job or Workflow Instruction.
+
+- When typing the first character, a list box is opened that displays matching Workflow Instructions and indicates hits from red color.
+- When clicking a hit, then the window scrolls to the related Job or Workflow Instruction.
+- Instruction Search is case-insensitive and is left-truncated and right-truncated. For example, typing the character **O** (uppercase o) will find *J**o**b*.
+
 ### Operations on Workflows
+
+#### Deployment Operations
+
+On top of the *Workflow Panel* users find the following status indicators:
+
+- **valid** / **not valid** indicates from blue / orange color if the Workflow is consistent and ready for deployment. *Invalid* Workflows cannot be deployed, however, changes are stored to the inventory. For example, a missing Agent assignment to a Job will make the Workflow *invalid*. Inside the *not valid* status indicator the (i) information icon is available that displays the reason why the Workflow is +not valid*
+- **deployed** / **not deployed** indicates of the current version of the Workflow has been *deployed* or is a draft that was *not deployed*.
+
+The *Deploy* button offers deployment to a Controller from a single click operation. Other than that, deployment operations are available at folder level, see [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
 
 #### Operations on Instructions
 
-When hovering the mouse on an instruction then the 3-dots action menu is offered for the following operations:
+When hovering the mouse on an instruction, then the 3-dots action menu is offered for the following operations:
 
-- **All Instructions** offer the *Copy*, *Cut* and *Remove* operation. Block instructions such as the *Fork Instruction* offer in addition the *Remove All* operation: whiie *Remove* will remove the instruction only, the *Remove All* operation will remove the instruction and any included instructions such as Jobs.
+- **All Instructions** offer the *Copy*, *Cut* and *Remove* operations. Block instructions such as the *Fork Instruction* in addition offer the *Remove All* operation: whiie *Remove* will remove the instruction only, the *Remove All* operation will remove the instruction and any instructions included such as Jobs.
 - **Job Instruction** offers the *Make Job Template* operation that creates a Job Template from the current Job. The Job Template can be used by other Jobs in the same or in different Workflows.
 
 #### Copy, Cut, Paste Operations
 
-**Copy** and **Cut** operations are available from an instruction's 3-dots action menu. The *copy* and *cut* operations on a block instruction act on any instructions included with the block instruction. To copy or cut more than one instruction that doesn't hold a block, users can keep the mouse key pressed and mark the instructions similar to use of a lasso. 
+**Copy** and **Cut** operations are available from an instruction's 3-dots action menu. The *copy* and *cut* operations on a block instruction act on any instructions included with the block instruction. To copy or cut more than one instruction from the same level, users keep the mouse key pressed and mark the instructions similar to use of a lasso. 
 
 - **Ctrl+C** keyboard shortcut will copy the highlighted instructions.
 - **Ctrl+X** keyboard shortcut will cut the highlighted instructions.
@@ -67,11 +87,35 @@ When hovering the mouse on an instruction then the 3-dots action menu is offered
 
 - **Ctrl+V** keyboard shortcut will paste the copied or cut instructions when the user clicks a connector line between Workflow instructions.
 
+#### Operations Panel
+
+When clicking the canvas of the *Workflow Panel* an *Operations Panel* will become visible that offers the following operations:
+
+- Zoom Operations
+  - **Zoom In** will increase the size of Workflow Instructions.
+  - **Zoom Out** will decrease the size of Workflow Instructions.
+  - **Zoom to Default** will establish the default size of Workflow Instructions.
+  - **Fit to Panel** will choose a size for Workflow Instructions that allows the Workflow to fit to the panel size.
+- Undo, Redo Operations
+  - **Undo** will revert the latest change. Up to 20 operations can be reverted.
+  - **Redo** will replay the latest change that was undone.
+- Download, Upload Operations
+  - **Download JSON** will download the Workflow in JSON storage format to a .json file.
+  - **Upload JSON** offers to upload a .json file that will replace the Workflow.
+- Export Operations
+  - **Export Image** offers download of a .png image file of the Workflow.
+
 ## References
 
+### Context Help
+
+- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
 - [Daily Plan](/daily-plan)
 - [Order History](/history-orders)
 - [Order States](/order-states)
+
+### Product Knowledge Base
+
 - [Directed acyclic graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph)
 - [JS7 - Workflow Instructions - Processing](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflow+Instructions+-+Processing)
   - [JS7 - Job Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Instruction)

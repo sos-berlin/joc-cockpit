@@ -1,11 +1,11 @@
-# Notice Boards
+# Resources - Notice Boards
 
 The *Notice Boards* view displays live information about use of Notice Boards.
 
-Notice Boards implement dependencies across Workflows, they are available from the following flavors:
+Notice Boards implement dependencies across Workflows by use of Notices. A Notice is a flag that is attached a Notice Board or does not exist. Notice Boards are available from the following flavors:
 
-- **Global Notice Boards** hold *Notices* of global scope. A global *Notice* exists or does not exist in JS7.
-- **Schedulable Notice Boards** hold *Notices* in scope of the *Daily Plan*. The *Notice* exists or does not exist per *Daily Plan* date, for example
+- **Global Notice Boards** implement Notices* at global scope which makes the same Notice available for any Workflow at any time. 
+- **Schedulable Notice Boards** implement Notices in scope of the [Daily Plan](/daily-plan). The Notice exists or does not exist per *Daily Plan* date, for example
   - Workflow 1 runs Mon-Fri.
   - Workflow 2 runs Mon-Sun and depends on previous execution of Workflow 1.
   - During weekends Workflow 1 will not start. To allow Workflow 2 starting on weekends, the dependency is mapped to the Daily Plan by use of *Schedulable Notice Boards*: if no Order is announced for Workflow 1, then the dependency can be ignored.
@@ -61,10 +61,23 @@ The following operations are available:
 
 ## Search
 
-The [Resources - Notice Boards - Search](/resources-notice-boards-search offers criteria for looking up Notice Boards from dependencies, for example by searching for Workflows including a specific Job name, the Notice Boards used by the Workflow will be returned.
+The [Resources - Notice Boards - Search](/resources-notice-boards-search) offers criteria for looking up Notice Boards from dependencies, for example by searching for Workflows including a specific Job name, the Notice Boards used by the Workflow will be returned.
 
 ## References
 
-- [Resources - Notice Boards - Search](/resources-notice-boards-search)
+### Context Help
+
+- [Configuration - Inventory - Notice Boards](/configuration-inventory-notice-boards)
+- [Daily Plan](/daily-plan)
 - [Daily Plan - Dependencies](/daily-plan-dependencies)
-- [JS7 - Notice Baords](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards)
+- [Resources - Notice Boards - Search](/resources-notice-boards-search)
+
+### Product Knowledge Base
+
+- [JS7 - Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards)
+  - [JS7 - Global Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Global+Notice+Boards)
+  - [JS7 - Schedulable Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedulable+Notice+Boards)
+- [JS7 - Workflow Instructions - Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflow+Instructions+-+Dependencies)  
+  - [JS7 - PostNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+PostNotices+Instruction)
+  - [JS7 - ExpectNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ExpectNotices+Instruction)
+  - [JS7 - ConsumeNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ConsumeNotices+Instruction)

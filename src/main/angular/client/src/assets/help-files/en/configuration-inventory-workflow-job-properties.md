@@ -18,7 +18,7 @@ The minimum properties for a Job are as follows:
 ## Optional Job Properties
 
 - **Title** describes the job's purpose. Users can add links by using markdown syntax, for example \[Example\]\(https://example.com\). The *Title* is considered when filtering results, for example in the [Workflows](/workflows) view.
-- **Job Resources** are inventory objects that hold key/value pairs that can be made available from Workflow Variables and from Environment Variables. *Job Resources* can be assigned at Job level scope and they can be assigned at Workflow level scope which makes them available to all Jobs in a Workflow.
+- **Job Resources** are inventory objects that hold variables from key/value pairs that can be made available from Workflow Variables and from Environment Variables. *Job Resources* can be assigned at Job level and they can be assigned at Workflow level which makes them available to all Jobs in a Workflow.
 - **Return Code** specifies if a Job is considered successful or failed. By default the 0 value indicates success, other values indicate failure. A number of successful return codes can be separated by comma, for example *0,2,4,8*. A range of return codes can be specified by two dots, for example *0..8* or *0,2,4,8,16..64*. separated by comma. Negative return codes are undefined.
   - **On Success** specifies successful return codes.
   - **On Failure** specifies unsuccessful return codes that indicate failure.

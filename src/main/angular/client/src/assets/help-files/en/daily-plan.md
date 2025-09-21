@@ -109,8 +109,8 @@ A position can be specified if Orders should not start from the first node in th
 #### Modify Priority
 
 - **Priority**; 
-  - If an Order will meet a *Resource Lock* instruction in the Workflow that limits parallelism, then its priority determines the position in the queue of waiting Orders.
-  - Priorities are specified from negative, zero and positive integers or from the shortcuts offered. A higher priority has precedence. Shortcuts offer the following priority values:
+  - If an Order will meet a *Resource Lock* instruction in the Workflow that limits parallelism, then its *Priority* determines the position in the queue of *waiting* Orders.
+  - *Priorities* are specified from negative, zero and positive integers or from the shortcuts offered. A higher *Priority* has precedence. Shortcuts offer the following values:
     - **Low**: -20000
     - **Below Normal**: -10000
     - **Normal**: 0
