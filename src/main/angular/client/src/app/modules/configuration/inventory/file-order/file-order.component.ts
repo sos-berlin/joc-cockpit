@@ -18,6 +18,7 @@ import {InventoryObject} from '../../../../models/enums';
 import {InventoryService} from '../inventory.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import {WorkflowService} from "../../../../services/workflow.service";
+import {HelpViewerComponent} from "../../../../components/help-viewer/help-viewer.component";
 
 @Component({
   selector: 'app-file-order',
@@ -558,5 +559,20 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   }
   changePriority($event): void {
     this.saveJSON();
+  }
+
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }

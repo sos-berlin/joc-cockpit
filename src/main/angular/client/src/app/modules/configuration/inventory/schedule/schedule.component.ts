@@ -22,6 +22,7 @@ import {WorkflowService} from 'src/app/services/workflow.service';
 import {EncryptArgumentModalComponent} from '../inventory.component';
 import {AuthService} from 'src/app/components/guard';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import {HelpViewerComponent} from "../../../../components/help-viewer/help-viewer.component";
 
 
 @Component({
@@ -1957,5 +1958,20 @@ export class ScheduleComponent {
 
   changePriority($event): void {
     this.saveJSON();
+  }
+
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }

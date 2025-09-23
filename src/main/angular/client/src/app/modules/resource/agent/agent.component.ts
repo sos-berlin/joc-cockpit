@@ -134,28 +134,20 @@ private getAgentClassList(obj): void {
       const expandedSet = new Set(this.agentsFilters.expandedObjects || []);
 
       const updatedAgents = result.agents.map(agent => {
-        const agentExpanded = expandedSet.has(agent.agentId);
+        agent.show = expandedSet.has(agent.agentId);
 
-        if (agentExpanded) {
-          agent.show = true;
-          if (agent.subagents) {
-            agent.subagents.forEach(sub => {
-              const subExpanded = expandedSet.has(sub.subagentId);
-              if (subExpanded) {
-                sub.show = true;
-              } else {
-                sub.show = false;
-              }
-            });
-            agent.showSubagent = agent.subagents.some(sub => sub.show);
-          }
+        if (agent.subagents) {
+          agent.subagents.forEach(sub => {
+            sub.show = expandedSet.has(sub.subagentId);
+          });
+          agent.showSubagent = agent.subagents.some(sub => sub.show);
         } else {
-          agent.show = false;
           agent.showSubagent = false;
         }
 
         return agent;
       });
+
 
       this.agentClusters = [...updatedAgents];
       this.searchInResult();

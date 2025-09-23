@@ -6009,6 +6009,9 @@ export class WorkflowComponent {
             delete job?.executable.arguments;
           }
           request.configuration = job;
+          if(!request?.configuration?.arguments){
+            request.configuration.arguments = {}
+          }
           this.coreService.post('inventory/store', request).subscribe(() => {
             const obj = {
               update: [{objectType: InventoryObject.JOBTEMPLATE, path: result.path}],

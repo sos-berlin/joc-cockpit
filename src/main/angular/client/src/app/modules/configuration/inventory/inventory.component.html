@@ -161,6 +161,7 @@
               <nz-tab (nzClick)="switchToJobTagging()"[nzTitle]="'inventory.tab.jobTagging' | translate"></nz-tab>
             </nz-tabset>
           </div>
+
           <a *ngIf="!isTrash" class="text resize-cursor a-1 pos-abt r-28 z-index-99">
             <i (click)="hidePanel()" class="fa fa-angle-double-left fa-lg"></i>
           </a>
@@ -464,6 +465,8 @@
           </perfect-scrollbar>
           <div [ngClass]="{'bg-white' : isTrash}" class="rg-right"><span></span></div>
         </div>
+        <i *ngIf="sideView.inventory.width > 315" (click)="helpPage('configuration-inventory-navigation')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-nav-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
+
       </div>
       <div [ngStyle]="{'margin-left': sideView.inventory ? (sideView.inventory.width) + 'px' : 'auto'}" id="rightPanel">
         <div *ngIf="isTag && tags && tags.length === 0 && isTagLoaded" class="m-t-lg w-full d-inline-flex justify-content-center" >

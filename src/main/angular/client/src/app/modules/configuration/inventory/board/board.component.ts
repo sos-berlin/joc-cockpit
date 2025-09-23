@@ -9,6 +9,7 @@ import {DataService} from '../../../../services/data.service';
 import {InventoryObject} from '../../../../models/enums';
 import {InventoryService} from '../inventory.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
+import { HelpViewerComponent } from 'src/app/components/help-viewer/help-viewer.component';
 
 @Component({
   selector: 'app-board',
@@ -580,5 +581,20 @@ export class BoardComponent {
         }, error: () => this.ref.detectChanges()
       });
     }
+  }
+
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }

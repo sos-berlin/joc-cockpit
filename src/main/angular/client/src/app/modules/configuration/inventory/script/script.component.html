@@ -10,6 +10,7 @@
             <b translate>inventory.label.lastModified</b>
             <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
           </span>
+          <i (click)="helpPage('configuration-inventory-script-includes')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
         </span>
         <div *ngIf="!isTrash" class="inline pull-right">
           <span *ngIf="script.configuration" [ngClass]="!script.valid ? 'badge-danger':'badge-success'"
@@ -36,7 +37,7 @@
         <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
              class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.name' | translate) : ''"
-                 
+
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.name
             <sup class="text-danger text-sm">*</sup>
           </label>
@@ -54,7 +55,7 @@
         </div>
         <div class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.title' | translate) : ''"
-                 
+
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
             <input (blur)="saveJSON()" [(ngModel)]="script.configuration.title" [readOnly]="isTrash || !permission.joc.inventory.manage"
@@ -64,7 +65,7 @@
         </div>
         <div *ngIf="coreService.expertMode" class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.documentation' | translate) : ''"
-                 
+
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
           <div class="col-lg-9 col-xl-8 col-xxl-6">
             <app-select-document (funcCall)="saveJSON($event)" [data]="script.configuration"
@@ -73,7 +74,7 @@
         </div>
         <div class="form-group row">
           <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.script' | translate) : ''"
-                 
+
                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.script
             <sup class="text-danger text-sm">*</sup>
           </label>
