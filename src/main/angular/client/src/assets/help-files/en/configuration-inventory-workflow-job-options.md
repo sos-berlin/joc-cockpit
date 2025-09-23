@@ -41,10 +41,10 @@ The GUI offers a number of tabs for specifying Job details. The second tab is of
 
 *Admission Types* allow specifying days on which the Job can start. In addition, month ranges can be specified limiting the *Admission Type* to certain months.
 
-- **Weekdays** specifies the days of week on which the Job can start.
-- **Specific Weekdays** specifies relative weekdays such as the first or last Monday in a month..
-- **Specific Days** specifies days of year.
-- **Month Days** specifies relative days in a month, for example the first or last of month.
+- **Weekdays** specify the days of week on which the Job can start.
+- **Specific Weekdays** specify relative weekdays such as the first or last Monday of a month.
+- **Specific Days** specify days of year.
+- **Month Days** specify relative days in a month, for example the first or last day of month.
 
 ### Execution Period
 

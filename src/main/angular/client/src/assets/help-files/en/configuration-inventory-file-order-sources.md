@@ -1,18 +1,19 @@
 # Configuration - Inventory - File Order Sources
 
-The *File Order Sources* panel offers specifying File Order Sources for use with Workflows.
-
-File Order Sources configure a sources for [JS7 - File Watching](https://kb.sos-berlin.com/display/JS7/JS7+-+File+Watching): 
+The *File Order Sources* panel offers specifying sources for [JS7 - File Watching](https://kb.sos-berlin.com/display/JS7/JS7+-+File+Watching) with Workflows:
 
 - A directory is monitord by an Agent for incoming files.
 - For each incoming file an Order is created that represents the file. 
   - If the file is moved or removed by a Job before completion of the Workflow, then the Order will leave the Workflow.
   - If the file remains in place on completion of the Workfow, then the Order will remain available with the *completed* state. To make the Order leave the Workflow, the incoming file has to be moved or removed.
+- Orders hold the *file* variable that carries the path to the incoming file. The *file* variable must be declared by the Workflow and can be used by Jobs.
 
 File Order Sources are assigned a Workflow to which they will add an Order.
 
+File Order Sources are managed from the following panels:
+
 - The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding File Order Sources. In addition, the panel offers operations on File Order Sources.
-- The *File Order Source* panel on the right side of the window holds details for File Order Source configuration.
+- The *File Order Source Panel* on the right side of the window holds details for File Order Source configuration.
 
 ## File Order Sources Panel
 

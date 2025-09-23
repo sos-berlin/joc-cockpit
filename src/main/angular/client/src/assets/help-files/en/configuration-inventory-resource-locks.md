@@ -10,8 +10,8 @@ Resource Locks limit parallelism of Jobs and other Workflow Instructions. They c
 
 The following flavors are available for Resource Locks:
 
-- **Exlucisve Locks** allow single use of a lock by a [JS7 - Lock Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Lock+Instruction).
-- **Shared Locks** allow parallel use of a lock by a number of *Lock Instructions* from the same or different Workflows.
+- **Exclusive Locks** allow single use of a lock by a [JS7 - Lock Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Lock+Instruction).
+- **Shared Locks** allow parallel use of a lock by a number of *Lock Instructions* from the same or from different Workflows.
   - The underlying use case is a resource such as a database table that can be accessed by a limited number of Jobs at the same time. To prevent database deadlocks, the number of Jobs accessing the table is limited.
   - Each *Lock Instruction* specifies a *Weight* that is counted towards the Resource Lock's *Capacity*. If the *Weight* matches the available *Capacity*, then the Order can proceed and otherwise the Order will wait until the required share in *Capacity* becomes available.
 
@@ -24,7 +24,7 @@ The following applies to use of Resource Locks by *Lock Instructions*:
 Resource Locks are managed from the following panels:
 
 - The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding Resource Locks. In addition, the panel offers operations on Resource Locks.
-- The *Resource Lock* panel on the right side of the window holds details for Resource Lock configuration.
+- The *Resource Lock Panel* on the right side of the window holds details for Resource Lock configuration.
 
 ## Resource Locks Panel
 

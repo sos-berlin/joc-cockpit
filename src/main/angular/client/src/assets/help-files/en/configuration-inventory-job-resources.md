@@ -4,13 +4,15 @@ The *Job Resources* panel offers specifying Job Resources for use with Workflows
 
 Job Resources hold variables from key/value pairs that are used for the following purposes:
 
-- For JVM Jobs variables are specified from *Arguments*. When a Job Resource is assigned a Job, then Job arguments will be populated automatically.
+- For JVM Jobs running in the Agent's Java Virtual Machine variables are specified from *Arguments*. When a Job Resource is assigned a Job, then matching Job arguments will be populated.
 - For Shell Jobs variables are specified from *Environment Variables*. When a Job Resource is assigned a Job, then Environment Variables will be created automatically.
 
 Job Resources are assigned a Workflow or Job from the related object property, see [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options). When assigned at Workflow level, then Job Resource variables are available to all Jobs in the Workflow.
 
+Job Resources are managed from the following panels:
+
 - The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding Job Resources. In addition, the panel offers operations on Job Resources.
-- The *Job Resource* panel on the right side of the window holds details for Job Resource configuration.
+- The *Job Resource Panel* on the right side of the window holds details for Job Resource configuration.
 
 ## Job Resources Panel
 
