@@ -2,11 +2,11 @@
 
 The *Resource Locks* panel offers specifying Resource Locks for use with Workflows.
 
-Resource Locks limit parallelism of Jobs and other Workflow Instructions. They can be considered a traffic light, more precisely a [Semaphore](https://en.wikipedia.org/wiki/Semaphore_(programming)) with the implication that 
+Resource Locks limit parallelism of Jobs and other Workflow Instructions. They can be considered a traffic light, more precisely a [Semaphore](https://en.wikipedia.org/wiki/Semaphore_%28programming%29) with the implication that 
 
 - Orders have to acquire the lock to proceed in the Workflow and otherwise will remain in the *waiting* state until the lock becomes available.
 - Orders waiting for a lock will not consume computing resources such as CPU,
-- Orders' attempts to aquire a lock will be considered for any Jobs and other Workflow Instructions across Workflows and Agents.
+- Orders' attempts to acquire a lock will be considered for any Jobs and other Workflow Instructions across Workflows and Agents.
 
 The following flavors are available for Resource Locks:
 
@@ -26,7 +26,7 @@ Resource Locks are managed from the following panels:
 - The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding Resource Locks. In addition, the panel offers operations on Resource Locks.
 - The *Resource Lock Panel* on the right side of the window holds details for Resource Lock configuration.
 
-## Resource Locks Panel
+## Resource Lock Panel
 
 For a Resource Lock the following inputs are available:
 
@@ -34,8 +34,8 @@ For a Resource Lock the following inputs are available:
 - **Title** holds an optional explanation of the Resource Lock's purpose.
 - **Capacity** is a number that represents the maximum acceptance of *Weights* from parallel *Lock Instructions*:
   - a *Capacity* of 1 limits the Resource Lock to single use independently from *Exclusive* or *Shared* *Lock Instructions*.
-  - a larger *Capacitiy* allows parallel use of the Resource Lock by *Shared Locks*. Related *Lock Instructions* can specify use of the Lock's *Capacity* :
-    - *Exclusive* use will try to aquire the lock exclusively independently from its *Capacity*. 
+  - a larger *Capacity* allows parallel use of the Resource Lock by *Shared Locks*. Related *Lock Instructions* can specify use of the Lock's *Capacity* :
+    - *Exclusive* use will try to acquire the lock exclusively independently from its *Capacity*. 
     - *Shared* use will check if the *Lock Instruction*s *Weight* matches the remaining *Capacity*.
 
 ### Operations on Resource Locks
@@ -47,6 +47,6 @@ For available operations see [Configuration - Inventory - Navigation Panel](/con
 - [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
 - [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
 - [Object Naming Rules](/object-naming-rules)
-- [Semaphore](https://en.wikipedia.org/wiki/Semaphore_(programming))
+- [Semaphore](https://en.wikipedia.org/wiki/Semaphore_%28programming%29)
 - [JS7 - Lock Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Lock+Instruction)
 - [JS7 - Options Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Options+Instruction)

@@ -18,7 +18,7 @@ The minimum properties for a Job are as follows:
 ## Optional Job Properties
 
 - **Title** describes the job's purpose. Users can add links by using markdown syntax, for example \[Example\]\(https://example.com\). The *Title* is considered when filtering results, for example in the [Workflows](/workflows) view.
-- **Job Resources** are inventory objects that hold variables from key/value pairs that can be made available from Workflow Variables and from Environment Variables. *Job Resources* can be assigned at Job level and they can be assigned at Workflow level which makes them available to all Jobs in a Workflow.
+- **Job Resources** are inventory objects that hold variables from key/value pairs that can be made available from Workflow Variables and from Environment Variables. *Job Resources* can be assigned at Job level and they can be assigned at Workflow level which makes them available to all Jobs in a Workflow. For details see [Configuration - Inventory - Job Resources](/configuration-inventory-job-resources).
 - **Return Code** specifies if a Job is considered successful or failed. By default the 0 value indicates success, other values indicate failure. A number of successful return codes can be separated by comma, for example *0,2,4,8*. A range of return codes can be specified by two dots, for example *0..8* or *0,2,4,8,16..64*. separated by comma. Negative return codes are undefined.
   - **On Success** specifies successful return codes.
   - **On Failure** specifies unsuccessful return codes that indicate failure.
@@ -47,12 +47,18 @@ For *Shell Jobs* the parameterization is made available from Environment Variabl
 
 The *Configuration - Inventory* view offers the *More Options* slider on top of the screen which is inactive by default. Use of the slider makes additional options available.
 
-- **Documentation** holds a reference to [Resources - Doocumentations](/resources-documentations) that can be used to explain the job. The reference to the documentation is visible with the [Workflows](/workflows) view.
+- **Documentation** holds a reference to [Resources - Documentations](/resources-documentations) that can be used to explain the job. The reference to the documentation is visible with the [Workflows](/workflows) view.
 
 ## References
 
+### Context Help
+
+- [Configuration - Inventory - Job Resources](/configuration-inventory-job-resources)
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Resources - Doocumentations](/resources-documentations)
+- [Resources - Documentations](/resources-documentations)
+
+### Product Knowledge Base
+
 - [JS7 - Integration Job Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+Integration+Job+Templates)
 - [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API)
 - [JS7 - Job Classes](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Classes)

@@ -2,7 +2,7 @@
 
 Object Names are specified in a number of places for:
 
-- Workflows, Jobs, Variables, Notide Boards, Resource Locks, File Order Sources, Job Resources, Folders,
+- Workflows, Jobs, Variables, Notice Boards, Resource Locks, File Order Sources, Job Resources, Folders,
 - Calendars, Schedules, Script Includes, Job Templates, Reports.
 
 JS7 does not enforce naming conventions for objects: users are free to choose naming conventions at their will, for example for Job names using:
@@ -27,7 +27,7 @@ A number of restrictions apply to Object Names:
   - Dot: is not allowed as a leading or trailing character and two dots in sequence are not allowed.
   - Dash: is not allowed as a leading or trailing character and two dashes in sequence are not allowed.
   - Brackets are not allowed \[({})\]
-- Half-width characters are not allowed, see [Halfwidth and Fullwidth Forms (Unicode block)](https://en.wikipedia.org/wiki/Halfwidth_and_Fullwidth_Forms_(Unicode_block)).
+- Half-width characters are not allowed, see [Halfwidth and Fullwidth Forms](https://en.wikipedia.org/wiki/Halfwidth_and_Fullwidth_Forms_(Unicode_block)).
 - Spaces are not allowed.
 - Object Names may start with a digit.
 - Use of Java reserved keywords is not allowed:
@@ -45,7 +45,7 @@ A number of restrictions apply to Object Names:
 
 ### Labels
 
-More relaxed rules apply to labels that are used to indicate the position of a Job or other Workflow Instruction:
+More relaxed rules apply to *Labels* that are used to indicate the position of a Job or other Workflow Instruction:
 
 - Labels can start with digits, characters, _
 - Labels can include $, _, -, #, :, !
@@ -53,11 +53,11 @@ More relaxed rules apply to labels that are used to indicate the position of a J
 
 ### Uniqueness of Object Names
 
-Object Names in JS7 are unique per object type, i.e per Workflow, Job in a Workflow, Resource Lock etc.
+Object Names in JS7 are unique per object type, i.e per Workflow, per Job in a Workflow, per Resource Lock etc.
 
 - Users can add Object Names with uppercase/lowercase spelling.
 - The object name is preserved by the JOC Cockpit GUI exactly as typed by the user.
-- Users cannot add the same Object Name with a different spelling if this is not supported by the underlying DBMS for the *nvarchar* data type: assume an existing Object Name *myLock*, then a new object with the name *mylock* cannot be created when using the MySQL DBMS.
+- Users cannot add the same Object Name with a different spelling if this is not supported by the underlying DBMS for the *nvarchar* data type. For example, assume an existing Object Name *myLock*, then a new object with the name *mylock* cannot be created when using the MySQL DBMS.
 
 ### Length of Object Names
 
@@ -71,7 +71,7 @@ The maximum length of Object Names is as follows:
 
 ## References
 
+- [Halfwidth and Fullwidth Forms](https://en.wikipedia.org/wiki/Halfwidth_and_Fullwidth_Forms_(Unicode_block))
 - [Java Identifiers](https://docs.oracle.com/javase/specs/jls/se7/html/jls-3.html#jls-3.8)
-- [Halfwidth and Fullwidth Forms (Unicode block)](https://en.wikipedia.org/wiki/Halfwidth_and_Fullwidth_Forms_(Unicode_block))
-- [JS7 - Object Naming Rules](/object-naming-rules)
 - [JS7 - Fork-Join Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Fork-Join+Instruction)
+- [JS7 - Object Naming Rules](https://kb.sos-berlin.com/display/JS7/JS7+-+Object+Naming+Rules)

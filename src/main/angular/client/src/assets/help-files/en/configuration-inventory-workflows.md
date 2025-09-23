@@ -31,7 +31,7 @@ The *Toolbar* holds the following instructions:
 - **ExpectNotices Instruction** is used to check if Notices are available from one or more Notice Boards that are added by a *PostNotices Instruction* or by the user. If the Notice does not exist, then the Order will remain in the *waiting* state with the instruction. A Workflow can include any number of *ExpectNotices Instructions* to expect Notices from the same or from different Notice Boards. For details see [JS7 - ExpectNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ExpectNotices+Instruction).
 - **ConsumeNotices Instruction** is used to make Orders expect Notices from one or more Notice Boards that are added by a *PostNotices Instruction* or by the user. The *ConsumeNotices Instruction* is a block instruction that can include any other instructions and that will delete the Notices that have been expected when an Order reaches the end of the instruction block. For details see [JS7 - ConsumeNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ConsumeNotices+Instruction).
 - **If Instruction** is a block instruction used for conditional processing in a Workflow. It allows to check return codes and return values of previous Jobs and to evaluate Order Variables. For details see [JS7 - If Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+If+Instruction).
-- **Case Instruction** is used for conditrional processing of Jobs and other instructions in a Workflow. The instruction extends the *If Instruction*. The *Case Instruction* is be used with repeated *Case-When Instructions* and optionally a single *Case-Else Instruction*. For details see [JS7 - Case Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Case+Instruction).
+- **Case Instruction** is used for conditional processing of Jobs and other instructions in a Workflow. The instruction extends the *If Instruction*. The *Case Instruction* is be used with repeated *Case-When Instructions* and optionally a single *Case-Else Instruction*. For details see [JS7 - Case Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Case+Instruction).
 - **CaseWhen Instruction** is used to check a predicate similar to the *If Instruction*. The instruction can occur any number of times in a *Case Instruction*.
 - **CaseElse Instruction** is used if all checks from *CaseWhen Instructions* fail.
 - **StickySubagent Instruction** can be used to execute a number of Jobs with the same Subagent of an Agent Cluster. The block instruction checks the first available Subagent of a Subagent Cluster. This Subagent will be used for subsequent jobs within the block instruction. Use of Agent Clusters is subject to the terms for clustering with the [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License). For details see [JS7 - StickySubagent Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+StickySubagent+Instruction+for+Agent+Clusters).
@@ -49,6 +49,23 @@ The panel holds the graphical representation of a Workflow.
 - For the *If Instruction* users can drag & drop a *Job Instruction* directly on the *If* block: the first instruction represents the *true* branch, the second instruction dragged & dropped creates the *false* branch.
 
 Workflows are automatically stored to the inventory. This happens every 30s and when leaving the *Workflow Panel*.
+
+For a Workflow the following inputs are available:
+
+- **Name** is the unique identifier of a Workflow, see [Object Naming Rules](/object-naming-rules).
+- **Title** holds an optional explanation of the Workflow's purpose.
+- **Job Resources** are inventory objects that hold variables from key/value pairs that can be made available from Workflow Variables and from Environment Variables. *Job Resources* can be assigned at Job level and they can be assigned at Workflow level which makes them available to all Jobs in a Workflow. For details see [Configuration - Inventory - Job Resources](/configuration-inventory-job-resources).
+- **Time Zone** that is populated from the user's [Profile - Preferences](/profile-preferences). For input, time zone identifiers are accepted such as *UTC*, *Europe/London* etc. For a full list of time zone identifiers see [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+  - The *Time Zone* is applied to periods in Job Admission Times and in *Cycle Instructions*.
+  - It is possible using a *Time Zone* different from the [Settings - Daily Plan](/settings-daily-plan). However, it might cause confusing results.
+- **Allow undeclared variables** offers use of Order Variables that are not declared with the Workflow. This includes that Orders can carry variables that are not checked for data type or mandatory use. Jobs will fail when referencing undeclared variables that are not available from an Order.
+
+### Workflow Variables
+
+Workflow Variables are declared from the Workflow and are used to parameterize execution of Jobs:
+
+- Required variables are declared by the Workflow without default value. Orders added to the Workflow have to specify values for required variables.
+- Optional variables are declared by the Workflow with a default value. Orders added to the Workflow can specify values and otherwise the default value is used.
 
 ### Search in Workflows
 
@@ -73,7 +90,7 @@ The *Deploy* button offers deployment to a Controller from a single click operat
 
 When hovering the mouse on an instruction, then the 3-dots action menu is offered for the following operations:
 
-- **All Instructions** offer the *Copy*, *Cut* and *Remove* operations. Block instructions such as the *Fork Instruction* in addition offer the *Remove All* operation: whiie *Remove* will remove the instruction only, the *Remove All* operation will remove the instruction and any instructions included such as Jobs.
+- **All Instructions** offer the *Copy*, *Cut* and *Remove* operations. Block instructions such as the *Fork Instruction* in addition offer the *Remove All* operation: while *Remove* will remove the instruction only, the *Remove All* operation will remove the instruction and any instructions included such as Jobs.
 - **Job Instruction** offers the *Make Job Template* operation that creates a Job Template from the current Job. The Job Template can be used by other Jobs in the same or in different Workflows.
 
 #### Copy, Cut, Paste Operations
@@ -109,6 +126,7 @@ When clicking the canvas of the *Workflow Panel* an *Operations Panel* will beco
 
 ### Context Help
 
+- [Configuration - Inventory - Job Resources](/configuration-inventory-job-resources)
 - [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
 - [Daily Plan](/daily-plan)
 - [Order History](/history-orders)

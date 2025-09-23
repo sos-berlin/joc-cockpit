@@ -13,7 +13,7 @@ Script Includes are managed from the following panels:
 - The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding Script Includes. In addition, the panel offers operations on Script Includes.
 - The *Script Include Panel* on the right side of the window holds details for Script Include configuration.
 
-## Script Includes Panel
+## Script Include Panel
 
 For a Script Include the following inputs are available:
 
@@ -41,7 +41,7 @@ Hitting the CTRL+Space keyboard shortcut while the cursor is in the *Job Script*
 
 - Quick Search offers 
   - navigation from inventory folders,
-  - selecting Script Includes by typing one or more characters.
+  - selecting Script Includes by name when typing one or more characters.
 - Quick Search is case-insensitive and is right-truncated. For left-truncated input users can apply the \* meta character that is a placeholder for any number of characters.
 - After selecting a Script Include, the related input is added to the line that holds the cursor.
 

@@ -14,7 +14,7 @@ Job Resources are managed from the following panels:
 - The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding Job Resources. In addition, the panel offers operations on Job Resources.
 - The *Job Resource Panel* on the right side of the window holds details for Job Resource configuration.
 
-## Job Resources Panel
+## Job Resource Panel
 
 For a Job Resource the following inputs are available:
 
@@ -33,7 +33,7 @@ Job Resource variables are configured for each tab from the following inputs:
   - For *Environment Variables* operating system limits apply, for example excluding dashes and spaces. A frequent naming convention includes uppercase spelling. On Unix the names of Environment Variables are considered case-sensitive, on Windows they are considered case-insensitive.
 - **Value** can be direct input from strings, numbers or expressions, see [JS7 - Expressions for Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Expressions+for+Variables).
 
-Should the same variable be made available for both *Arguments* and *Environment Variables*, then the value of the Environment Variable can reference the *Argument* name like this: $*argument-name*
+Should the same variable be made available for both *Arguments* and *Environment Variables*, then the value of the Environment Variable can reference the *Argument* name like this: *$argument-name*
 
 ### Operations on Job Resources
 

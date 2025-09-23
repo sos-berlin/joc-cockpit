@@ -13,8 +13,8 @@ Notice Boards implement dependencies between Workflows:
 
 The following flavors are available for Notice Boards:
 
-- **Global Notice Boards** implement Notces at global scope which makes the same Notice available for any Workflow at any time.
-- **Schedulable Notice Boards** implement Notices in scope of the [Daily Plan](/daily-plan). A Notice exists in scope of the *Daily Plan* date, for example
+- **Global Notice Boards** implement Notices at global scope which makes the same Notice available for any Workflow at any time.
+- **Schedulable Notice Boards** implement Notices in scope of the [Daily Plan](/daily-plan). A Notice exists in scope of a *Daily Plan* date, for example
   - Workflow 1 runs Mon-Fri.
   - Workflow 2 runs Mon-Sun and depends on previous execution of Workflow 1.
   - During weekends Workflow 1 will not start. To allow Workflow 2 starting on weekends, the dependency is mapped to the Daily Plan by use of *Schedulable Notice Boards*: for days on which no Order is announced for Workflow 1, the dependency is ignored.
@@ -24,7 +24,7 @@ Notice Boards are managed from the following panels:
 - The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding Notice Boards. In addition, the panel offers operations on Notice Boards.
 - The *Notice Board Panel* on the right side of the window holds details for Notice Board configuration.
 
-## Notice Boards Panel
+## Notice Board Panel
 
 For a Notice Board the following inputs are available:
 

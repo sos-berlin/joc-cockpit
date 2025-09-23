@@ -46,7 +46,7 @@ The GUI offers a number of tabs for specifying Job details. The second tab is of
 - **Specific Days** specify days of year.
 - **Month Days** specify relative days in a month, for example the first or last day of month.
 
-### Execution Period
+#### Execution Period
 
 The *Execution Period* is specified from its *begin* and *duration*:
 
@@ -78,9 +78,14 @@ The following options specify for Jobs executed with Agents for Windows that the
 
 ## References
 
+### Context Help
+
 - [Cleanup Service](/service-cleanup)
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
 - [Task History](/history-tasks)
+
+### Product Knowledge Base
+
 - [JS7 - Admission Times for Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Admission+Times+for+Jobs).
 - [JS7 - Agent Operation](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Operation)
 - [JS7 - Assignment of Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Assignment+of+Variables)

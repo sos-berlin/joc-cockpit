@@ -1,10 +1,10 @@
 # Configuration - Inventory - Schedules
 
-The *Schedules Panel* offers specifying rules for creating Orders from the [Daily Plan](/daily-plan). For details see [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules).
+The *Schedule Panel* offers specifying rules for creating Orders from the [Daily Plan](/daily-plan). For details see [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules).
 
-- Schedules determine the point in time when Orders for Workflow execution will start. They assign one or more Workflows and optionally variables that are used by Jobs in the given Workflows.
+- Schedules determine the point in time when Orders for Workflow execution will start. They are assigned one or more Workflows and optionally variables that are used by Jobs in the given Workflows.
   - **Start dates** are specified by [Configuration - Inventory - Calendars](/configuration-inventory-calendars) and limit the days for execution of Workflows.
-  - **Start times** are specified by Schedules that can further limit the days for Workflow execution.
+  - **Start times** are specified by Schedules indicating one or more times during a day. They can further limit the days for Workflow execution.
 - Schedules create Orders on a daily basis
   - for one-time execution of Workflows. This includes Workflows starting at a number of points in time per day.
   - for cyclic execution of Workflows. This specifies repeated execution of Workflows based on configurable intervals.
@@ -17,7 +17,7 @@ Schedules are managed from the following panels:
 - The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding Schedules. In addition, the panel offers operations on Schedules.
 - The *Schedule Panel* on the right side of the window holds details for Schedule configuration.
 
-## Schedules Panel
+## Schedule Panel
 
 For a Schedule the following inputs are available:
 
@@ -25,12 +25,12 @@ For a Schedule the following inputs are available:
 - **Title** holds an optional explanation of the Schedule's purpose.
 - **Workflow Names** holds the list of Workflows that should be started.
 - **Plan Order automatically** specifies that the Schedule will be considered by the [Daily Plan Service](/daily-plan-service).
-- **Submit Order to Controller when planned** specifies that Orders will be submitted immediately to a Controller when being planned. Without this option, the Daily Plan Service will submit planned Orders based on [Settings - Daily Plan](/settings-daily-plan).
+- **Submit Order to Controller when planned** specifies that Orders will be submitted immediately to a Controller when being planned. Without this option, the Daily Plan Service will submit *planned* Orders based on [Settings - Daily Plan](/settings-daily-plan).
 
 ### Order Parameterization
 
 - **Order Name**: An optional name that can be used to filter Orders in a number of views.
-- **Tag Name**: Any number of Tags can be specified that will be added to the Order. Order Tags are displayed in a number ov views if specified from the [Settings - JOC Cockpit](/settings-joc) page.
+- **Tag Name**: Any number of Tags can be specified that will be added the Order. Order Tags are displayed in a number ov views if specified from the [Settings - JOC Cockpit](/settings-joc) page.
 - **Ignore Job Admission Times**: Jobs can be limited to run on certain days and/or in certain timeslots. Orders arriving outside of a timeslot have to wait for the next available timeslot. The option forces Jobs to start independently from such limitations.
 
 ### Order Position
@@ -58,7 +58,7 @@ If an Order should not start from the first node in the Workflow, then a positio
 
 Order Variables are specified if a Workflow declares variables to parameterize execution of Jobs:
 
-- Required variables are declared by a Workflow without default value. They are made available automatically for the Schedule and must be assigned related values.
+- Required variables are declared by a Workflow without default value. They are made available automatically to the Schedule and must be assigned related values.
 - Optional variables are declared by a Workflow with a default value. They can be called up using the following links:
   - **Modify Variable** allows selecting specific variables from the list of Workflow Variables. The variables are populated from their default value.
   - **Modify Variables** adds inputs for all Workflow Variables. The variables are populated from their default value.
