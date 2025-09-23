@@ -134,20 +134,24 @@ private getAgentClassList(obj): void {
       const expandedSet = new Set(this.agentsFilters.expandedObjects || []);
 
       const updatedAgents = result.agents.map(agent => {
+        const expandedSet = new Set(this.agentsFilters.expandedObjects || []);
+
         const agentExpanded = expandedSet.has(agent.agentId);
 
-        if (agentExpanded) {
+        if (agentExpanded && !agent.userCollapsed) {
           agent.show = true;
+
           if (agent.subagents) {
             agent.subagents.forEach(sub => {
               const subExpanded = expandedSet.has(sub.subagentId);
-              if (subExpanded) {
+              if (subExpanded && !sub.userCollapsed) {
                 sub.show = true;
               } else {
                 sub.show = false;
               }
             });
-            agent.showSubagent = agent.subagents.some(sub => sub.show);
+
+            agent.showSubagent = true;
           }
         } else {
           agent.show = false;
@@ -156,6 +160,7 @@ private getAgentClassList(obj): void {
 
         return agent;
       });
+
 
       this.agentClusters = [...updatedAgents];
       this.searchInResult();

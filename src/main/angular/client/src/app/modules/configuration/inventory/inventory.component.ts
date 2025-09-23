@@ -130,7 +130,7 @@ export class CreateTagModalComponent {
   private fetchTags(): void {
     const url = this.isJobTag ? 'tags/job' : 'tags';
     this.coreService.post(url, {}).subscribe((res) => {
-      this.allTags = res.tags;
+      this.allTags = res.tags.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
     });
   }
 

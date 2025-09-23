@@ -6009,6 +6009,9 @@ export class WorkflowComponent {
             delete job?.executable.arguments;
           }
           request.configuration = job;
+          if(!request?.configuration?.arguments){
+            request.configuration.arguments = {}
+          }
           this.coreService.post('inventory/store', request).subscribe(() => {
             const obj = {
               update: [{objectType: InventoryObject.JOBTEMPLATE, path: result.path}],
@@ -15507,7 +15510,7 @@ export class WorkflowComponent {
       controllerId: this.schedulerId
     }).subscribe({
       next: (res: any) => {
-        this.allTags = res.tags;
+        this.allTags = res.tags.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
         // this.allTags = res.results;
         // this.allTags = this.allTags.map((item) => {
         //   return item.name;

@@ -258,6 +258,7 @@
             <b translate>inventory.label.lastModified</b>
             <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
           </span>
+        <i (click)="helpPage('configuration-inventory-schedules')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
         </span>
         <div class="inline pull-right">
           <ng-container *ngIf="!isTrash">
@@ -708,6 +709,7 @@
 <nz-drawer (nzOnClose)="closeCalendarView()" [nzVisible]="isVisible" nzPlacement="right">
   <ng-container *nzDrawerContent>
     <div (click)="closeCalendarView()" class="close-btn"></div>
+    <i (click)="helpPage('configuration-inventory-schedules-run-time')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
     <div *ngIf="isVisible && permission.joc">
       <div class="text-center m-b text"><i class="fa fa-clock-o"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm"
                                                                                  translate>runtime.label.runTime</span>

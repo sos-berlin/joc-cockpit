@@ -10003,6 +10003,16 @@ cdk-virtual-scroll-viewport {
   opacity: 0.7;
 }
 
+.help-info-nav-inv{
+  position: absolute;
+  right: 14px;
+  font-size: 16px;
+  top: 6px;
+  z-index: 10;
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
 .help-info-dashboard{
   font-size: 14px;
   color: var(--text-color);
@@ -10040,12 +10050,11 @@ cdk-virtual-scroll-viewport {
 }
 
 .help-info-inv {
-  float: left;
   font-size: 16px;
   cursor: pointer;
   color: var(--text-color);
   opacity: 0.7;
-  margin-top: 1px;
+  margin-left: 10px;
 }
 
 .help-info-dailyplan {
