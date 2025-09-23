@@ -134,14 +134,27 @@ private getAgentClassList(obj): void {
       const expandedSet = new Set(this.agentsFilters.expandedObjects || []);
 
       const updatedAgents = result.agents.map(agent => {
-        agent.show = expandedSet.has(agent.agentId);
+        const expandedSet = new Set(this.agentsFilters.expandedObjects || []);
 
-        if (agent.subagents) {
-          agent.subagents.forEach(sub => {
-            sub.show = expandedSet.has(sub.subagentId);
-          });
-          agent.showSubagent = agent.subagents.some(sub => sub.show);
+        const agentExpanded = expandedSet.has(agent.agentId);
+
+        if (agentExpanded && !agent.userCollapsed) {
+          agent.show = true;
+
+          if (agent.subagents) {
+            agent.subagents.forEach(sub => {
+              const subExpanded = expandedSet.has(sub.subagentId);
+              if (subExpanded && !sub.userCollapsed) {
+                sub.show = true;
+              } else {
+                sub.show = false;
+              }
+            });
+
+            agent.showSubagent = true;
+          }
         } else {
+          agent.show = false;
           agent.showSubagent = false;
         }
 
