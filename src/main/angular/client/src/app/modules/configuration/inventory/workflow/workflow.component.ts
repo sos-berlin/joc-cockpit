@@ -15510,7 +15510,7 @@ export class WorkflowComponent {
       controllerId: this.schedulerId
     }).subscribe({
       next: (res: any) => {
-        this.allTags = res.tags;
+        this.allTags = res.tags.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
         // this.allTags = res.results;
         // this.allTags = this.allTags.map((item) => {
         //   return item.name;
