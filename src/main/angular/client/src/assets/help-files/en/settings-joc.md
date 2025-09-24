@@ -186,11 +186,16 @@ Specifies the Java options used when creating Reports. The default value conside
 
 ## References
 
+### Context Help
+
 - [Audit Log](/audit-log)
 - [Identity Services](/identity-services)
 - [Profile - Preferences](/profile-preferences)
 - [REST Web Service API](/rest-api)
 - [Settings](/settings)
+
+### Product Knowledge Base
+
 - [JS7 - Audit Log](https://kb.sos-berlin.com/display/JS7/JS7+-+Audit+Log)
 - [JS7 - Audit Trail](https://kb.sos-berlin.com/display/JS7/JS7+-+Audit+Trail)
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)

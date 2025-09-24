@@ -97,6 +97,8 @@ Specifies the number of versions per deployed object that should be retained. Ve
 
 ## References
 
+### Context Help
+
 - [Audit Log](/audit-log)
 - [Daily Plan](/daily-plan)
 - [Daily Plan - Projections](/daily-plan-projections)
@@ -104,4 +106,7 @@ Specifies the number of versions per deployed object that should be retained. Ve
 - [Reports](/reports)
 - [Resources - Notice Boards](/resources-notice-boards)
 - [Settings](/settings)
+
+### Product Knowledge Base
+
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)

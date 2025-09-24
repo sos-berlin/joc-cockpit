@@ -1,6 +1,6 @@
 # Deployment History
 
-The *Deployment History* view summarizes deployments of inventory objects performed from the [Configuration](/configuration) view.
+The *Deployment History* view summarizes deployments of inventory objects.
 
 JS7 implements a distributed architecture that allows running Jobs of the same Workflow on different Agents and platforms. Successful deployment includes each Agent's confirmation of new and updated objects which arrives asynchronously.
 
@@ -18,7 +18,7 @@ Display is groupd in one block per deployment and in blocks per inventory object
 - **Account** indicates the JOC Cockpit user account that performed the deployment operation.
 - **Status** indicates if deployment was successful or failed.
   - *Deployed* indicates that all inventory objects were successfully deployed.
-  - *Not Deployed* indicates that one or more inventory objects could not be desployed.
+  - *Not Deployed* indicates that one or more inventory objects could not be deployed.
 - **Number of Items** indicates the number of inventory objects such as Workflows, Job Resources etc. in scope of deployment.
 
 ### History of Deployments per Inventory Object
@@ -35,6 +35,6 @@ When clicking the arrow-down icon from the *Deployment Date* then details per in
 
 ## References
 
+- [Configuration - Inventory- Workflows](/configuration-inventory-workflows)
 - [Workflows](/workflows)
-- [Configuration - Workflows](/configuration-workflows)
 - [JS7 - Deployment of Scheduling Objects](https://kb.sos-berlin.com/display/JS7/JS7+-+Deployment+of+Scheduling+Objects)

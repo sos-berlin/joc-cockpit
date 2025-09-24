@@ -34,7 +34,7 @@ The following information is displayed:
 - **Acquired Weight** indicates the cumulative *weight* by parallel Orders that acquired the lock.
 - **Holding Orders** indicates the number of Orders that acquired the lock.
 - **Waiting Orders** indicates the number of Orders that are waiting to acquire the lock.
-- **Capacity** indicate the *capacity* available from the lock. *Exclusive Locks* hold a *capacity* of 1, *Shared Locks* hold an individual *capactiy*.
+- **Capacity** indicate the *capacity* available from the lock. *Exclusive Locks* hold a *capacity* of 1, *Shared Locks* hold an individual *capacity*.
 
 ### Display of Orders
 

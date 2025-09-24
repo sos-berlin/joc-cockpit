@@ -55,10 +55,15 @@ A value >10 specifies the desired duration.
 
 ## References
 
+### Context Help
+
 - [Monitor - Order Notifications](/monitor-order-notifications)
 - [Monitor - System Notifications](/monitor-system-notifications)
 - [Order History](/history-orders)
 - [Task History](/history-tasks)
 - [Settings](/settings)
+
+### Product Knowledge Base
+
 - [JS7 - Kiosk Mode](https://kb.sos-berlin.com/display/JS7/JS7+-+Kiosk+Mode)
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)

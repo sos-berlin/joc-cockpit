@@ -4,7 +4,7 @@ The *Agent Job Executions* view summarizes job executions for Agents in a given 
 
 Agents come in the following flavors:
 
-- **Standalone Agents** execute Jobs on remote machines on-premises and from containers. They are opeerated individually and are managed by the Controller.
+- **Standalone Agents** execute Jobs on remote machines on-premises and from containers. They are operated individually and are managed by the Controller.
 - **Agent Cluster**
   - **Director Agents** orchestrate *Subagents* in an Agent Cluster. In addition they can be used to execute Jobs.
   - **Subagents** execute Jobs on remote machines on-premises and from containers. They can be considered worker nodes in an Agent Cluster and are managed by *Director Agents*.

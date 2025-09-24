@@ -10,7 +10,7 @@ The *Submission History* is subject to purge of the database performed by the [C
 
 Display is grouped in blocks per Daily Plan date, per Submission and Orders included.
 
-Display is limited to a maximum of 5000 entries if not otherwise specifed from [Profile - Preferences](/profile-preferences).
+Display is limited to a maximum of 5000 entries if not otherwise specified from [Profile - Preferences](/profile-preferences).
 
 ### History of Daily Plan
 
@@ -21,10 +21,10 @@ The following information is displayed per Daily Plan date.
 - **Submission Count** indicates the number of successfully submitted Orders.
   - If the number corresponds to the *Total Count*, then all orders are successfully submitted.
   - If the number is above zero but below the *Total Count* then
-    - the setting to submit orders indivdidually is in place, see [Settings - Daily Plan](/settings-daily-plan) and
+    - the setting to submit orders individually is in place, see [Settings - Daily Plan](/settings-daily-plan) and
     - a number of orders could not be submitted.
   - If the number is zero, then this indicates
-    - the setting to submit orders indivdidually not being in place, see [Settings - Daily Plan](/settings-daily-plan), and/or
+    - the setting to submit orders individually not being in place, see [Settings - Daily Plan](/settings-daily-plan), and/or
     - failure to submit all orders.
 
 ### History of Submissions
@@ -56,16 +56,21 @@ When clicking the arrow-down icon from the *Submission Date*, details per Order 
 
 User's can apply filters available on top of the window to limit display of Daily Plan dates and of Submissions.
 
-- **Submitted**, **Not Submitted** filter buttons limit display to Submisisons holding the related status.
+- **Submitted**, **Not Submitted** filter buttons limit display to Submissions holding the related status.
 - **Date Range** filter buttons offer choosing the date range for display of Submissions.
 - **Current Controller** checkbox limits Submissions to the currently selected Controller.
 
 ## References
 
-- [Daily Plan](/daily-plan)
-- [Workflows](/workflows)
-- [Configuration - Workflows](/configuration-workflows)
-- [Settings - Daily Plan](/settings-daily-plan)
+### Context Help
+
 - [Cleanup Service](/service-cleanup)
+- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Daily Plan](/daily-plan)
 - [Profile - Preferences](/profile-preferences)
+- [Settings - Daily Plan](/settings-daily-plan)
+- [Workflows](/workflows)
+
+### Product Knowledge Base
+
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)

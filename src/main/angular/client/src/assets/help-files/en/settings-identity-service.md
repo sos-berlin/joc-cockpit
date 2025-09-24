@@ -1,6 +1,6 @@
 # Settings - Identity Service
 
-The following settings are applied to any [Identtiy Service](/identity-service). Changes become effective immediately.
+The following settings are applied to any [Identity Service](/identity-service). Changes become effective immediately.
 
 ## Identity Service Settings
 
@@ -29,8 +29,13 @@ Note that the number of characters and arbitrariness of character selection are 
 
 ## References
 
-- [Identtiy Service](/identity-service)
+### Context Help
+
+- [Identity Service](/identity-service)
 - [Identity Service - JOC Cockpit](/identity-service-joc)
 - [Settings](/settings)
+
+### Product Knowledge Base
+
 - [JS7 - Log Notification Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Notification+Service)
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)

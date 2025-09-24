@@ -51,7 +51,7 @@ For *Source* and *Target* the following details are displayed:
 
 ## References
 
-- [Task History](/history-tasks)
 - [Order History](/history-orders)
-- [Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
-- [Task History](https://kb.sos-berlin.com/display/JS7/JS7+-+Task+History)
+- [Task History](/history-tasks)
+- [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
+- [JS7 - Task History](https://kb.sos-berlin.com/display/JS7/JS7+-+Task+History)

@@ -38,8 +38,13 @@ Specifies the number of months ahead for which [Daily Plan - Projections](/daily
 
 ## References
 
+### Context Help
+
 - [Daily Plan](/daily-plan)
 - [Daily Plan - Projections](/daily-plan-projections)
 - [Resources - Notice Boards](/resources-notice-boards)
 - [Settings](/settings)
+
+### Product Knowledge Base
+
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)

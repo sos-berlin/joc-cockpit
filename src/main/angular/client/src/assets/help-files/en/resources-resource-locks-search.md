@@ -25,8 +25,7 @@ Advanced Search allows searching by object attributes:
 
 - **Agent Name** will return Resource Locks for Workflows that include Jobs executed with the specified Agent.
 - **Count Jobs** will return Resource Locks for Workflows that use the minimum number of Jobs specified with the **From** term. If used with the **To** term, then Workflows will be returned that include a number of Jobs in the range between *From* and *To*. If the *To* term is used only, then Workflows will be returned that do not include a number of Jobs exceeding the *To* term.
-- **Job Name** will return Resource Locks for Workflows that include Jobs matching the given name<br/><br/>
-When using the *Exact Match* checkbox for **Job Name**, then the search term entered has to fully match a job name including case-sensitive spelling.
+- **Job Name** will return Resource Locks for Workflows that include Jobs matching the given name. When using the *Exact Match* checkbox for **Job Name**, then the search term entered has to fully match a job name including case-sensitive spelling.
 
 ### Dependency Search
 

@@ -6,7 +6,7 @@ The *Agent* view summarizes the connection status of registered Agents.
 
 ### Agents
 
-- **Standalone Agents** execute Jobs on remote machines on-premises and from containers. They are opeerated individually and are managed by the Controller.
+- **Standalone Agents** execute Jobs on remote machines on-premises and from containers. They are operated individually and are managed by the Controller.
 - **Agent Cluster**
   - **Director Agents** orchestrate *Subagents* in an Agent Cluster. They are operated from two instances in active-passive clustering and are managed by the Controller.
   - **Subagents** execute Jobs on remote machines on-premises and from containers. They can be considered worker nodes in an Agent Cluster and are managed by *Director Agents*.

@@ -31,17 +31,18 @@ The following information is displayed:
 
 The following operations are available from a Documentation's action menu:
 
-- **Edit Documentation** offers modificatio of the referenced file.
+- **Edit Documentation** offers modification of the referenced file.
 - **Preview Documentation** will open the application assigned the related mime-type for display of the Documentation.
 - **Export** will export the Documentation to a .zip archive file.
 - **Delete** will delete the Documentation.
 - **Show Usage** will display Workflows that hold references to the Documentation.
 
-On top of the screen the *Add Documentation* button is offered:
+On top of the window the *Add Documentation* button is offered:
 
 - **upload of Documentation** allows to select a file that will be uploaded.
-- **path** specfies the folder and name of the Documentation in the inventory.
+- **path** specifies the folder and name of the Documentation in the inventory.
 
 ## References
 
+[Workflows](/workflows)
 - [JS7 - User Documentation](https://kb.sos-berlin.com/display/JS7/JS7+-+User+Documentation)

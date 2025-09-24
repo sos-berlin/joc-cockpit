@@ -1,6 +1,6 @@
 # Settings - Git
 
-The JOC Cockpit offers [JS7 - Inventory Git Integration](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Git+Integration) for versioning and rollout of scheduling objects by use of Git reposistories.
+The JOC Cockpit offers [JS7 - Inventory Git Integration](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Git+Integration) for versioning and rollout of scheduling objects by use of Git repositories.
 
 The following settings are applied for use with Git repositories. Changes become effective immediately.
 
@@ -44,9 +44,14 @@ Specifies if Schedules should be considered local to an environment or are inten
 
 ## References
 
+### Context Help
+
 - [Profiles - Git](/profiles-git)
 - [Resources - Notice Boards](/resources-notice-boards)
 - [Resources - Resource Locks](/resources-resource-locks)
 - [Settings](/settings)
+
+### Product Knowledge Base
+
 - [JS7 - Inventory Git Integration](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Git+Integration)
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)

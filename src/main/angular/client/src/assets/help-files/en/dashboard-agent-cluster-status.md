@@ -1,6 +1,6 @@
-# Agent Status
+# Agent Cluster Status
 
-The *Agent Status* panel summarizes the connection status of registered Agents.
+The *Agent Cluster Status* panel summarizes the connection status of registered Cluster Agents.
 
 ## Architecture
 

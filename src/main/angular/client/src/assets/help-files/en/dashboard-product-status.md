@@ -6,7 +6,7 @@ The Product Status panel provides information about the following JS7 products:
 - **Controller** orchestrates Agents and manages deployment of Orders, Workflows and Jobs.
 - **Agents** execute Jobs. 
 
-JS7 products can be operated standalone and from active-passive clustering.
+JS7 products can be operated stand alone and from active-passive clustering.
 
 ## Component Status and Connection Status
 
@@ -43,10 +43,10 @@ The Controller connects to Agent instances. In a Controller Cluster its members 
 
 ### JOC Cockpit Operations
 
-Operations offered for all visible, helathy JOC Cockpit instance:
+Operations offered for all visible, healthy JOC Cockpit instance:
 
 - **Switch-over** in a cluster will pass the active role to the standby instance which can take 20s to ca. 60s. The operation is offered for standby instances.
-- **Update URL** allows to modify the display URL. JOC Cockpit might be accessbile from a number of URLs and the first used is displayed. If this is not what users want, they can specify the URL that should be displayed. The operation does not change JOC Cockpit's URL but its display.
+- **Update URL** allows to modify the display URL. JOC Cockpit might be accessible from a number of URLs and the first used is displayed. If this is not what users want, they can specify the URL that should be displayed. The operation does not change JOC Cockpit's URL but its display.
 
 Operations on JOC Cockpit offered for the instance to which the browser is connected:
 
@@ -77,4 +77,4 @@ Controller instances offer the following operations from the 3-dots action menu 
 The Cluster Status rectangle offers the following operations from its 3-dots action menu:
 
 - **Switch-over** will pass the active role to the standby instance. The operation is available if the cluster is coupled.
-- **Confirm loss of Controller Instance** is applicable if no JOC Cockpit instance was available when a Controller instance in a cluster crashed. JOC Cockpit is required as a witness in the cluster. In this siutation users have to check which Controller instance was standby at the time of crash and have to confirm that the standby instance is shutdown to allow the active instance to resume.
+- **Confirm loss of Controller Instance** is applicable if no JOC Cockpit instance was available when a Controller instance in a cluster crashed. JOC Cockpit is required as a witness in the cluster. In this situation users have to check which Controller instance was standby at the time of crash and have to confirm that the standby instance is shutdown to allow the active instance to resume.
