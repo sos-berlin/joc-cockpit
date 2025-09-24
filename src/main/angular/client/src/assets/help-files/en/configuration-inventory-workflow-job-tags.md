@@ -1,4 +1,4 @@
-# Configuration Inventory - Workflow - Job Tags
+# Configuration - Inventory - Workflow - Job Tags
 
 The *Workflow* panel offers designing Workflows from a sequence of instructions. Users can drag & drop the *Job Instruction* from the *Toolbar* to a position in the Workflow.
 

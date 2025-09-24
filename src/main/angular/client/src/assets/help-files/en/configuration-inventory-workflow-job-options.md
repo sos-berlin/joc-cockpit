@@ -1,4 +1,4 @@
-# Configuration Inventory - Workflow - Job Options
+# Configuration - Inventory - Workflow - Job Options
 
 The *Workflow* panel offers designing Workflows from a sequence of instructions. Users can drag & drop the *Job Instruction* from the *Toolbar* to a position in the Workflow.
 
@@ -58,7 +58,7 @@ The *Execution Period* is specified from its *begin* and *duration*:
 
 ## Job Options available from *More Options*
 
-The *Configuration - Inventory* view offers the *More Options* slider on top of the screen which is inactive by default. Use of the slider makes additional options available.
+The *Configuration - Inventory* view offers the *More Options* slider on top of the window which is inactive by default. Use of the slider makes additional options available.
 
 - **Grace Timeout** is applied to Jobs with Unix that are sent a SIGTERM signal when exceeding their *Timeout* or when forcibly terminated by user intervention. If the Job does not terminate in response to SIGTERM, then after the *Grace Timeout* the Agent will send a SIGKILL signal to forcibly terminate the Job. For details see [JS7 - FAQ - How does JobScheduler terminate Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+FAQ+-+How+does+JobScheduler+terminate+Jobs) and [JS7 - Agent Operation](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Operation).
 - **Compatibility** offers the *v1* compatibility level for users of branch 1.x of JobScheduler. In compatibility mode the following behavior is changed:

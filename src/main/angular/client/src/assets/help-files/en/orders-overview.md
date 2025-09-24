@@ -35,7 +35,7 @@ The panel offers the list of Orders for the given state:
 
 ## History Panel
 
-The panel is displayed in the lower part of the screen when users click the Order ID. The panel holds sub-tabs for the *Order History* and *Audit Log*.
+The panel is displayed in the lower part of the window when users click the Order ID. The panel holds sub-tabs for the *Order History* and *Audit Log*.
 
 ### Order History
 
@@ -105,7 +105,7 @@ Additional operations can be available that are specific for the Order state.
 
 Bulk operations are available when selecting Orders from related checkboxes. They offer the same operations as for individual Orders.
 
-When selecting Orders, then related buttons for bulk operations become visible in the upper part of the screen holding captions similar to the above explained operations.
+When selecting Orders, then related buttons for bulk operations become visible in the upper part of the window holding captions similar to the above explained operations.
 
 ## Filters
 
@@ -139,12 +139,17 @@ The filter limits display to matching *Order IDs* and *Workflow Names*. The filt
 
 ## References
 
+### Context Help
+
 - [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
+- [Daily Plan](/daily-plan)n
 - [Order Log View](/order-log)
 - [Order State](/order-states)
 - [Profile - Preferences](/profile-preferences)
 - [Settings - JOC Cockpit](/settings-joc)
 - [Workflows - Add Orders](/workflows-orders-add)
+
+### Product Knowledge Base
+
 - [JS7 - Orders](https://kb.sos-berlin.com/display/JS7/JS7+-+Orders)

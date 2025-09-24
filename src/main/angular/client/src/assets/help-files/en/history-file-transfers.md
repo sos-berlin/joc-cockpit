@@ -17,7 +17,7 @@ Display is grouped in a block for the transfer operation and blocks for transfer
 - **Operation** specifies one of *COPY*, *MOVE*, *REMOVE*, *GETLIST*.
 - **Workflow** indicates the Workflow executed by the Order.
   - Clicking the Workflow name navigates to the [Workflows](/workflows) view.
-  - Clicking the pencil icon navigates to the [Configuration - Workflows](/configuration-workflows) view.
+  - Clicking the pencil icon navigates to the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
 - **Order ID** is the unique identifier assigned an Order.
 - **Total** indicates the number of files included with the transfer.
 
@@ -51,7 +51,13 @@ For *Source* and *Target* the following details are displayed:
 
 ## References
 
+### Context Help
+
+- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
 - [Order History](/history-orders)
 - [Task History](/history-tasks)
+
+### Product Knowledge Base
+
 - [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
 - [JS7 - Task History](https://kb.sos-berlin.com/display/JS7/JS7+-+Task+History)

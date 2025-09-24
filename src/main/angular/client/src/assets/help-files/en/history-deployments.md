@@ -12,7 +12,7 @@ The *Deployment History* is updated asynchronously to reflect the deployment sta
 
 ### History of Deployments
 
-Display is groupd in one block per deployment and in blocks per inventory object.
+Display is grouped in one block per deployment and in blocks per inventory object.
 
 - **Deployment Date** indicates the point in time of deployment.
 - **Account** indicates the JOC Cockpit user account that performed the deployment operation.
@@ -27,9 +27,9 @@ When clicking the arrow-down icon from the *Deployment Date* then details per in
 
 - **Message** indicates an error message in case of failed deployment.
 - **Object Type** indicates the inventory object type such as *Workflow*, *Job Resource* etc.
-- **Path** indicates the inventory object name and folder. For Workflow objects
+- **Path** indicates the inventory folder and object name. For Workflow objects
   - clicking the Workflow name navigates to the [Workflows](/workflows) view,
-  - clicking the pencil icon navigates to the [Configuration - Workflows](/configuration-workflows) view.
+  - clicking the pencil icon navigates to the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
 - **Operation** is one of *store* or *delete*. Updated objects occur with both operations.
 - **Date** indicates the point in time of the deployment operation.
 

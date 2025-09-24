@@ -46,7 +46,7 @@ Users find an action menu per Task that offers the following operation:
 
 - **Add Workflow to Ignore List** will permanently hide the Workflow's Orders from display. This can be useful for cyclic Workflows that populate the *Order History*.
 
-The *Ignore List* is managed from the related button in the right upper corner of the screen:
+The *Ignore List* is managed from the related button in the right upper corner of the window:
 
 - **Edit Ignore List** will display the Jobs and Workflows in the *Ignore List* and offers to individually remove entries from the *Ignore List*. 
 - **Enable Ignore List** will activate the filtering to hide Jobs that have been individually added to the *Ignore List* or that are included with a Workflow that was added. An active *Ignore List* is indicated from the related button.
@@ -57,7 +57,7 @@ The *Ignore List* is managed from the related button in the right upper corner o
 
 User's can apply filters available on top of the window to limit display of Orders.
 
-- **Successful**, **Failed**, **In Progress** filter buttons limit display to Orders holding the related status.
+- **Successful**, **Failed**, **In Progress** filter buttons limit display to Orders holding the related *History Status*.
 - **Date Range** filter buttons offer choosing the date range for display of Orders.
 - **Current Controller** checkbox limits Orders to the currently selected Controller.
 

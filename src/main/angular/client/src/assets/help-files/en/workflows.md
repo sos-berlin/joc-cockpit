@@ -20,20 +20,20 @@ Tags are selected from + and - icons and can be looked up using the Quick Search
 
 ### Order Summary
 
-The top of the screen holds the Order summary similar to [Dashboard - Orders](/dashboard-orders). Users can click the indicated number of Orders for a given state to bring up a po-pup window that will display the list of Orders.
+The top of the window holds the Order summary similar to [Dashboard - Orders](/dashboard-orders). Users can click the indicated number of Orders for a given state to bring up a po-pup window that will display the list of Orders.
 
 The Order summary is indicated for Orders related to the Workflows displayed for selected folders or Tags.
 
 ### Display of Workflows
 
 - **Workflow Name** is the unique name assigned a Workflow.
-  - Clicking the *Workflow Name* will bring up the *History* panel in the lower part of the screen that displays the recent execution history of the Workflow.
+  - Clicking the *Workflow Name* will bring up the *History* panel in the lower part of the window that displays the recent execution history of the Workflow.
   - Clicking the large arrow-down icon will display all Jobs and Workflow Instructions.
   - Clicking the small arrow-down icon will display top-level Jobs and Workflow Instructions.
   - Clicking the pencil icon navigates to the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
   - Clicking the + icon brings up a pop-up window to [Add Orders](/workflows-orders-add).
 - **Tabular View**, **Graphical View** icons are available to display Workflows
-  - in tabular format that is focused on concise structure and saves space on the screen.
+  - in tabular format that is focused on concise structure and saves space on the window.
   - in graphical format that is more speaking to a number of users.
 - **Deployment Date** indicates the date the Workflow was deployed.
 - **Deployment Status** indicates if the Workflow is deployed to the Controller and Agents.
@@ -52,7 +52,7 @@ When a Workflow is expanded using the arrow-down icon available for a Workflow, 
 
 ## History Panel
 
-The panel is displayed at the lower part of the screen when users click the name of the Workflow or add an Order.
+The panel is displayed at the lower part of the window when users click the name of the Workflow or add an Order.
 
 ### History of Orders
 
@@ -76,7 +76,7 @@ By default display of Order logs is limited to 10MB log size and otherwise logs 
 
 ### Operations on Workflows
 
-At the top of the screen the following buttons are offered for Workflow operations:
+At the top of the window the following buttons are offered for Workflow operations:
 
 - **Suspend All** acts as an *Emergency Stop* and will suspend all Workflows independently from the currently displayed selection of Workflows. Suspended Workflows are frozen, they accept Orders but will not start Orders unless the Workflow is resumed. Running Orders continue the current Job or other instruction before being suspended.
 - **Resume All** resumes all suspended Workflows independently from the currently displayed selection of Workflows.
@@ -122,6 +122,8 @@ The [Workflows - Search](/workflows-search) offers criteria for looking up Workf
 
 ## References
 
+### Context Help
+
 - [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
 - [Daily Plan](/daily-plan)
@@ -131,4 +133,8 @@ The [Workflows - Search](/workflows-search) offers criteria for looking up Workf
 - [Settings - JOC Cockpit](/settings-joc)
 - [Workflows - Add Orders](/workflows-orders-add)
 - [Workflows - Search](/workflows-search)
+
+### Product Knowledge Base
+
+- [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules)
 - [JS7 - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows)

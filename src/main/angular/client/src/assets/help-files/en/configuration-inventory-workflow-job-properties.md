@@ -1,4 +1,4 @@
-# Configuration Inventory - Workflow - Job Properties
+# Configuration - Inventory - Workflow - Job Properties
 
 The *Workflow* panel offers designing Workflows from a sequence of instructions. Users can drag & drop the *Job Instruction* from the *Toolbar* to a position in the Workflow.
 
@@ -45,7 +45,7 @@ For *Shell Jobs* the parameterization is made available from Environment Variabl
 
 ## Job Properties available from *More Options*
 
-The *Configuration - Inventory* view offers the *More Options* slider on top of the screen which is inactive by default. Use of the slider makes additional options available.
+The *Configuration - Inventory* view offers the *More Options* slider on top of the window which is inactive by default. Use of the slider makes additional options available.
 
 - **Documentation** holds a reference to [Resources - Documentations](/resources-documentations) that can be used to explain the job. The reference to the documentation is visible with the [Workflows](/workflows) view.
 

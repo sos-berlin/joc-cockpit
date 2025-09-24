@@ -46,7 +46,7 @@ When clicking the arrow-down icon from the *Submission Date*, details per Order 
 - **Order ID** is the unique identifier assigned an Order.
 - **Workflow** indicates the Workflow passed by the Order.
   - Clicking the Workflow name navigates to the [Workflows](/workflows) view.
-  - Clicking the pencil icon navigates to the [Configuration - Workflows](/configuration-workflows) view.
+  - Clicking the pencil icon navigates to the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
 - **Scheduled For** indicates the date and time for which the Order is expected to start.
 - **Status** is one of *Submitted* or *Not Submitted*.
   - *Submitted* indicates that the Order is available with an Agent.
