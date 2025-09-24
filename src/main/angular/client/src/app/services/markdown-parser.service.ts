@@ -351,23 +351,24 @@ export class MarkdownParserService {
         chunk = chunk.replace(/(`+)([^`\n]+?)\1/g, (_m, _bt: string, code: string) =>
           `<code>${escapeHtml(code)}</code>`);
 
-        chunk = chunk.replace(/!\[([^\]]*)\]\(([^\s)]+)(?:\s+"([^"]*)")?\)/g,
-          (_m, alt: string, src: string, title?: string) => {
-            const safeSrc = this.safeUrl(src);
+        chunk = chunk.replace(/!\[([^\]]*)\]\((?:<([^<>]+)>|([^\s)]+))(?:\s+"([^"]*)")?\)/g,
+          (_m, alt: string, hrefInBrackets: string, hrefRegular: string, title?: string) => {
+            const href = hrefInBrackets || hrefRegular;
+            const safeSrc = this.safeUrl(href);
             if (!safeSrc) return '';
             const titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
             return `<img src="${safeSrc}" alt="${escapeHtml(alt)}"${titleAttr}>`;
           });
 
-        chunk = chunk.replace(/\[([^\[\]]+)\]\(([^\s()]+)(?:\s+"([^"]*)")?\)/g,
-          (_m, label: string, href: string, title?: string) => {
+        chunk = chunk.replace(/\[([^\[\]]+)\]\((?:<([^<>]+)>|([^\s)]+))(?:\s+"([^"]*)")?\)/g,
+          (_m, label: string, hrefInBrackets: string, hrefRegular: string, title?: string) => {
+            const href = hrefInBrackets || hrefRegular;
             const safeHref = this.safeUrl(href);
             if (!safeHref) return escapeHtml(label);
 
             const titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
 
-            let processedLabel = label;
-            processedLabel = processedLabel
+            let processedLabel = label
               .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
               .replace(/__([^_]+)__/g, '<strong>$1</strong>')
               .replace(/\*([^*]+)\*/g, '<em>$1</em>')
@@ -383,12 +384,16 @@ export class MarkdownParserService {
             }
           });
 
-        chunk = chunk
-          .replace(/( |^|\()(\*\*([^*<>]+)\*\*)/g, '$1<strong>$3</strong>')
-          .replace(/( |^|\()(__([^_<>]+)__)/g, '$1<strong>$3</strong>')
-          .replace(/( |^|\()(\*([^*<>]+)\*)/g, '$1<em>$3</em>')
-          .replace(/( |^|\()(_([^_<>]+)_)/g, '$1<em>$3</em>') // This regex is now safer
-          .replace(/~~([^~<>]+)~~/g, '<del>$1</del>');
+        chunk = chunk.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        chunk = chunk.replace(/__(.*?)__/g, '<strong>$1</strong>');
+
+        chunk = chunk.replace(/( |^|\()(_([^_]+?)_)/g, '$1<em>$3</em>');
+
+
+        chunk = chunk.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+        chunk = chunk.replace(/~~(.*?)~~/g, '<del>$1</del>');
+
 
         chunk = chunk.replace(/<((?:https?:\/\/|mailto:|tel:)[^>]+)>/gi, (_m, url: string) => {
           const safeUrl = this.safeUrl(url);
