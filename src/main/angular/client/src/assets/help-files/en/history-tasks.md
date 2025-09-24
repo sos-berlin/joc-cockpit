@@ -13,11 +13,11 @@ The left panel allows filtering by Tags from Workflows and Orders that triggered
 - **Workflow Tags** are assigned from the [Configuration - Workflows](/configuration-workflows) view.
 - **Order Tags** are assigned from the [Configuration - Schedules](/configuration-schedules) view.
 
-Tags are selected fron + and - icons and can be looked up using the search icon. Display of Tags must be activated from the [Settings - JOC Cockpit](/settings-joc) page.
+Tags are selected from + and - icons and can be looked up using the search icon. Display of Tags must be activated from the [Settings - JOC Cockpit](/settings-joc) page.
 
 ## History Panel
 
-Display is limited to a maximum of 5000 entries if not otherwise specifed from [Profile - Preferences](/profile-preferences).
+Display is limited to a maximum of 5000 entries if not otherwise specified from [Profile - Preferences](/profile-preferences).
 
 ### History of Jobs
 
@@ -25,7 +25,7 @@ Display is limited to a maximum of 5000 entries if not otherwise specifed from [
 - **Workflow** indicates the Workflow for which the Job was executed.
   - Clicking the Workflow name navigates to the [Workflows](/workflows) view.
   - Clicking the pencil icon navigates to the [Configuration - Workflows](/configuration-workflows) view.
-- **Label** indicates the position of the Job in the Workflow. Users assign labels to Jobs that will be displayed. If the same Job occurs more than once in a Workflow, it will be indicated from different *Labels*.
+- **Label** indicates the position of the Job in the Workflow. Users assign *Labels* to Jobs that will be displayed. If the same Job occurs more than once in a Workflow, it will be indicated from different *Labels*.
 - **History Status** indicates the outcome of the Job.
   - If Jobs are completed, then the *History Status* will be *successful* or *failed*.
   - If Jobs are not completed, the *History Status* will be *in progress*.

@@ -16,7 +16,7 @@ The left panel is organized in tabs that allow navigation from folders and from 
 
 ### Folders
 
-By default *Inventory Folders* are displayed per scheduling object type. Users can create their own folders at any depth of hierarchy. The same *User Folder* name can occur any times in different folder hierarchy levels.
+By default *Inventory Folders* are displayed per scheduling object type. Users can create their own folders at any depth of hierarchy. The same *User Folder* name can occur any number of times in different folder hierarchy levels.
 
 The folder hierarchy knows the following folder types:
 
@@ -25,7 +25,7 @@ The folder hierarchy knows the following folder types:
     - [Workflows](/configuration-inventory-workflows) include Jobs and other Workflow Instruction. For details see [JS7 - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows).
     - [File Order Sources](/configuration-inventory-file-order-sources) are used for File Watching to automatically start Workflows in the event of arrival of a file in a directory. For details see [JS7 - File Watching](https://kb.sos-berlin.com/display/JS7/JS7+-+File+Watching).
     - [Job Resources](/configuration-inventory-job-resources) are used to centralize configuration of variables that are re-used in a number of Jobs. For details see [JS7 - Job Resources](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Resources).
-    - [Notice Boards](/configuration-inventory-notice-boards) specify dependencies betweek Workflows. For details see [JS7 - Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards).
+    - [Notice Boards](/configuration-inventory-notice-boards) specify dependencies between Workflows. For details see [JS7 - Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards).
     - [Resource Locks](/configuration-inventory-resource-locks) limit parallel execution of Jobs and other instructions. For details see [JS7 - Resource Locks](https://kb.sos-berlin.com/display/JS7/JS7+-+Resource+Locks).
   - **Automation** objects are used for automation in JOC Cockpit:
     - [Script Includes](/configuration-inventory-script-includes) are code snippets that can be re-used in a number of Shell Jobs. For details see [JS7 - Script Includes](https://kb.sos-berlin.com/display/JS7/JS7+-+Script+Includes).
@@ -50,11 +50,11 @@ Right to the top-level folder in the *Navigation Panel* users find a Search Icon
 
 When inventory objects are removed, then they will be put to the Trash. The Trash allows to restore objects and to permanently delete objects.
 
-The Trash is opened from the Trash Icon rigth to the top-level folder in the *Navigation Panel*.
+The Trash is opened from the Trash Icon right to the top-level folder in the *Navigation Panel*.
 
 - Clicking the Trash Icon will switch display to objects in the Trash. The Return Icon is offered to return from Trash view to inventory view.
 - The Trash's folder structure is the same as for inventory objects.
-- The Trash offers action menues per object and per folder to restore objects and to permanently delete objects.
+- The Trash offers action menus per object and per folder to restore objects and to permanently delete objects.
 
 ### Tags
 
@@ -93,18 +93,18 @@ The following operations are available for *Inventory Folders*:
     - **Git Repository** offers integration with a Git Server. Workflows can be committed to Git repositories and can be pulled and pushed.
     - **Change** offers operations for change management of Workflows. Users can add a Workflow under construction to a *Change* that allows common deployment and export of changed objects.
     - **Deploy** will make Workflows available to the Controller and Agents. The Workflows will be put to the *deployed* status.
-    - **Revoke** reverts a previous *Deploy* operation. Workflows will be put to *draft* status. This implies that Orders for Workflows will be removed from the [Daily Plan](/daily-plan). Object depencendies are considered and referencing objects such as *Schedules* and *File Order Sources* will be revoked/recalled too.
-    - **Remove** will move Workflows to the Trash. Removed Workflows can be restored or can be permantenly deleted from the Trash.
+    - **Revoke** reverts a previous *Deploy* operation. Workflows will be put to *draft* status. This implies that Orders for Workflows will be removed from the [Daily Plan](/daily-plan). Object dependencies are considered and referencing objects such as *Schedules* and *File Order Sources* will be revoked/recalled too.
+    - **Remove** will move Workflows to the Trash. Removed Workflows can be restored or can be permanently deleted from the Trash.
     - **Revert Draft** will delete the current draft version of Workflows. If a previously *deployed* version exists, then it will be made the current version of the related Workflow.
-    - **Update Jobs from Templates** will update Jobs from Workflows in the selected *Inventory Folder* from *Job Templates* located in any folders.
+    - **Update Jobs from Templates** will update Jobs from Workflows in the selected *Inventory Folder* from *Job Templates* located in any folder.
   - *File Order Sources*, *Job Resources*, *Notice Boards*, *Resource Locks* offer similar operations as *Workflows*.
 - Operations on Automation Objects
   - **Release** makes *draft* objects available
     - for use with other objects, for example *Script Includes* will be considered for next deployment of Workflows, *Job Templates* can be updated in referencing Workflows.
     - for use with the [Daily Plan](/daily-plan), for example *Schedules* will be considered for creation of Orders.
   - **Recall** reverts a previous *Release* operation. The inventory objects will be put to *draft* status. This implies that draft *Schedules* and *Calendars* will not be considered by the [Daily Plan](/daily-plan). The operation considers object dependencies and will recall/revoke referencing objects too.
-  - **Apply Template to Jobs** will update Jobs from any Workflows located in any folders that hold references to *Job Templates* included with the selected *Inventory Folder* or any sub-folders.
-  - Other operations are available simlar to *Operations on Controller Objects*
+  - **Apply Template to Jobs** will update Jobs in Workflows located in any folder that hold references to *Job Templates* included with the selected *Inventory Folder* or any sub-folder.
+  - Other operations are available similar to *Operations on Controller Objects*
 
 #### User Folder Operations
 
@@ -133,11 +133,11 @@ The following operations are available for *Inventory Folders*:
     - for use with the [Daily Plan](/daily-plan), for example *Schedules* will be considered for creation of Orders.
   - **Recall** reverts a previous *Release* operation. The inventory objects will be put to *draft* status. This implies that draft *Schedules* and *Calendars* will not be considered by the [Daily Plan](/daily-plan).
 - Removal Operations
-  - **Remove** will move the folder, any sub-folders and included objects to the Trash. Removed inventory objects can be restored or can be permantenly deleted from the Trash.
+  - **Remove** will move the folder, any sub-folders and included objects to the Trash. Removed inventory objects can be restored or can be permanently deleted from the Trash.
   - **Revert Draft** will delete the current draft version of objects in the folder and any sub-folders. If a previously *deployed* or *released* version exists, then it will be made the current version of the related object.
 - Job Template Operations
-  - **Update Jobs from Templates** will update Jobs from any Workflows located in any folders that hold references to *Job Templates* included with the selected *User Folder* or any sub-folders.
-  - **Apply Template to Jobs** will update Jobs from Workflows in the selected *User Folder* from *Job Templates* located in any folders.
+  - **Update Jobs from Templates** will update Jobs in Workflows located in any folder that hold references to *Job Templates* included with the selected *User Folder* or any sub-folder.
+  - **Apply Template to Jobs** will update Jobs in Workflows located in the selected *User Folder* from *Job Templates* located in any folder.
 
 ### Object Level Operations
 
@@ -156,7 +156,7 @@ The following operations are offered for individual inventory objects:
     - **Download JSON** will download the object in JSON storage format to a .json file.
     - **Upload JSON** offers to upload a .json file that will replace the object.
   - Removal Operations
-    - **Remove** will move the object to the Trash. Removed inventory objects can be restored or can be permantenly deleted from the Trash.
+    - **Remove** will move the object to the Trash. Removed inventory objects can be restored or can be permanently deleted from the Trash.
     - **Revert Draft** will delete the current draft version of the object. If a previously *deployed* or *released* version exists, then it will be made the current version of the object.
 - Controller Objects
   - **Manage Tags** is available for Workflows and offers adding and deleting Tags to/from the Workflow.

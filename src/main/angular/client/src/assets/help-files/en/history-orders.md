@@ -13,11 +13,11 @@ The left panel allows filtering by Tags from Workflows and Orders.
 - **Workflow Tags** are assigned from the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
 - **Order Tags** are assigned from the [Configuration - Inventory - Schedules](/configuration-inventory-schedules) view.
 
-Tags are selected fron + and - icons and can be looked up using the Quick Search icon. Display of Tags must be activated from the [Settings - JOC Cockpit](/settings-joc) page.
+Tags are selected from + and - icons and can be looked up using the Quick Search icon. Display of Tags must be activated from the [Settings - JOC Cockpit](/settings-joc) page.
 
 ## History Panel
 
-Display is limited to a maximum of 5000 entries if not otherwise specifed from [Profile - Preferences](/profile-preferences).
+Display is limited to a maximum of 5000 entries if not otherwise specified from [Profile - Preferences](/profile-preferences).
 
 ### History of Orders
 

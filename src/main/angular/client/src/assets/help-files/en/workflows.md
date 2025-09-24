@@ -14,13 +14,13 @@ The left panel is organized in tabs that allow navigation from folders and filte
   - **Workflow Tags** are assigned from the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
   - **Order Tags** are assigned from the [Configuration - Inventory - Schedules](/configuration-inventory-schedules) view.
 
-Tags are selected fron + and - icons and can be looked up using the Quick Search icon. Display of Tags must be activated from the [Settings - JOC Cockpit](/settings-joc) page.
+Tags are selected from + and - icons and can be looked up using the Quick Search icon. Display of Tags must be activated from the [Settings - JOC Cockpit](/settings-joc) page.
 
 ## Workflow Panel
 
 ### Order Summary
 
-The top of the screen holds the Order summary similar to [Dashboard - Orders](/dashboard-orders). Users can click the indicated number of Orders for a given state to bring up a popup window that will display the list of Orders.
+The top of the screen holds the Order summary similar to [Dashboard - Orders](/dashboard-orders). Users can click the indicated number of Orders for a given state to bring up a po-pup window that will display the list of Orders.
 
 The Order summary is indicated for Orders related to the Workflows displayed for selected folders or Tags.
 
@@ -31,7 +31,7 @@ The Order summary is indicated for Orders related to the Workflows displayed for
   - Clicking the large arrow-down icon will display all Jobs and Workflow Instructions.
   - Clicking the small arrow-down icon will display top-level Jobs and Workflow Instructions.
   - Clicking the pencil icon navigates to the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
-  - Clicking the + icon brings up a popup window to [Add Orders](/workflows-orders-add).
+  - Clicking the + icon brings up a pop-up window to [Add Orders](/workflows-orders-add).
 - **Tabular View**, **Graphical View** icons are available to display Workflows
   - in tabular format that is focused on concise structure and saves space on the screen.
   - in graphical format that is more speaking to a number of users.
@@ -44,7 +44,7 @@ The Order summary is indicated for Orders related to the Workflows displayed for
 - **No. of Orders** indicates the number of Orders assigned the Workflow. 
   - Up to three Orders are displayed directly with the Workflow. They offer an action menu for Order operations.
     - Users can click the indicated Order ID to display the Order's log output from the [Order Log View](/order-log). The log includes output created by any Jobs executed with the Workflow.
-  - Clicking the *No. of Orders* brings up a popup window that displays all related Orders and that offers operations on individual Orders and bulk operations on selected Orders.
+  - Clicking the *No. of Orders* brings up a pop-up window that displays all related Orders and that offers operations on individual Orders and bulk operations on selected Orders.
 
 ### Display of Jobs and Workflow Instructions
 
@@ -78,7 +78,7 @@ By default display of Order logs is limited to 10MB log size and otherwise logs 
 
 At the top of the screen the following buttons are offered for Workflow operations:
 
-- **Suspend All** acts as an *Emergency Stop* and will suspend all Workflows independently from the currently displayed selection of Workflows. Suspended Workflows are frozen, they accept Orders but will not start Orders unlesse the Workflow is resumed. Running Orders continue the current Job or other instruction before being suspended.
+- **Suspend All** acts as an *Emergency Stop* and will suspend all Workflows independently from the currently displayed selection of Workflows. Suspended Workflows are frozen, they accept Orders but will not start Orders unless the Workflow is resumed. Running Orders continue the current Job or other instruction before being suspended.
 - **Resume All** resumes all suspended Workflows independently from the currently displayed selection of Workflows.
 
 ### Operations on Jobs and Workflow Instructions
@@ -107,7 +107,7 @@ Additional operations can be available that are specific for the Order state.
 
 User's can apply filters to limit display of Workflows. Filter buttons are available at top of the window:
 
-- **Agents** offers filtering Workflows hodling Jobs that are assigned one or more selected Agents.
+- **Agents** offers filtering Workflows holding Jobs that are assigned one or more selected Agents.
 - **Synchronized** Workflows are deployed and are available with the Controller and Agents.
 - **Not Synchronized** Workflows are not deployed to Controller and Agents but are available from the inventory only.
 - **Suspended** Workflows are frozen, they accept Orders but will not allow Orders starting until Workflows will be resumed.

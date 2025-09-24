@@ -1,8 +1,8 @@
 # Settings - User
 
-Users receive a welcome popup window when connecting to JOC Cockpit for the first time.
+Users receive a welcome pop-up window when connecting to JOC Cockpit for the first time.
 
-The welcome popup window provides links for downloading defaults for Job Resources and examples for Workflows and related objects.
+The welcome pop-up window provides links for downloading defaults for Job Resources and examples for Workflows and related objects.
 
 ## User Settings
 

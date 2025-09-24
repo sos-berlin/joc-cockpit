@@ -17,7 +17,7 @@ The middle panel is organized in tabs that allow filtering of Orders by Tags.
 - **Workflow Tags** are assigned from the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
 - **Order Tags** are assigned from the [Configuration - Inventory - Schedules](/configuration-inventory-schedules) view.
 
-Tags are selected fron + and - icons and can be looked up using the Quick Search icon. Display of Tags must be activated from the [Settings - JOC Cockpit](/settings-joc) page.
+Tags are selected from + and - icons and can be looked up using the Quick Search icon. Display of Tags must be activated from the [Settings - JOC Cockpit](/settings-joc) page.
 
 ## Order Panel
 
@@ -35,7 +35,7 @@ The panel offers the list of Orders for the given state:
 
 ## History Panel
 
-The panel is displayed in the lower part of the screen when users click the Order ID. The panel holds sub-tabs for the *Order History* and *Audit Log*
+The panel is displayed in the lower part of the screen when users click the Order ID. The panel holds sub-tabs for the *Order History* and *Audit Log*.
 
 ### Order History
 
@@ -113,7 +113,7 @@ User's can apply filters to limit display of Orders. Filter buttons are availabl
 
 ### Date Range Filter Button
 
-The dropdown button offers selecting Orders from a date range:
+The drop-down button offers selecting Orders from a date range:
 
 - **All** specifies Orders scheduled for any past and future date being displayed.
 - **Today** Orders are related to the current day which is calculated from the time zone in the [Profile - Preferences](/profile-preferences).

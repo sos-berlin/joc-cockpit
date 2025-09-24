@@ -13,7 +13,7 @@ Clicking the indicated number navigates to the *File Transfer History* view that
 
 ## Filters
 
-The dropdown button in the right upper corner of the panel offers selecting past transfer jobs from a date range:
+The drop-down button in the right upper corner of the panel offers selecting past transfer jobs from a date range:
 
 - **Today** Jobs are related to the current day which is calculated from the time zone in the user's profile.
 - **Last Hour** includes Jobs that completed during the last hour.

@@ -15,7 +15,7 @@ Clicking the indicated number of Orders or Jobs navigates to the *Order History*
 
 ## Filters
 
-The dropdown button in the right upper corner of the panel offers selecting past Orders and Jobs from a date range:
+The drop-down button in the right upper corner of the panel offers selecting past Orders and Jobs from a date range:
 
 - **Today** Orders and Jobs are related to the current day which is calculated from the time zone in the user's profile.
 - **Last hour** includes Orders and Jobs that completed during the last hour.

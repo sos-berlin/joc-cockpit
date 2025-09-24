@@ -30,7 +30,21 @@ For a Job Template the following inputs are available:
 
 For general operations see [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
 
-Job Templates offer the operation *Apply Template to Jobs*.
+Job Templates offer the following operations to update Jobs:
+
+- **Apply Template to Jobs** button is available when a Job Template is released.
+  - A pop-up window is displayed that indicates the Workflows and Jobs that use the Job Template.
+  - Users can select Workflows and Jobs that should be updated.
+  - **Filter** allows limiting updates to Workflows in *Draft* status and/or in *Deployed* status.
+  - **Update Notification** specifies that Job Notification settings should be updated from the Job Template.
+  - **Update Admission Times** specifies that Job Admission Times should be updated from the Job Template.
+  - **Update from required arguments** specifies that Job Template arguments that are qualified being required should be updated in selected Jobs.
+  - **Update from optional arguments** specifies that Job Template arguments that are qualified being optional should be updated in selected Jobs.
+- The 
+- **Update Jobs from Templates** is available from the *Navigation Panel* and will update Jobs in Workflows located in the selected *Inventory Folder* from *Job Templates* located in any folder.
+- **Apply Template to Jobs** is available from the *Navigation Panel* and will update Jobs in Workflows located in any folder that hold references to *Job Templates* included with the selected *Inventory Folder* or any sub-folder.
+
+After updating Jobs from Job Templates, the related Workflows will be set to *Draft* status and should be deployed to make changes effective.
 
 ## References
 
