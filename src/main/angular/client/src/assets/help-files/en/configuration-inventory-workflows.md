@@ -67,6 +67,21 @@ Workflow Variables are declared from the Workflow and are used to parameterize e
 - Required variables are declared by the Workflow without default value. Orders added to the Workflow have to specify values for required variables.
 - Optional variables are declared by the Workflow with a default value. Orders added to the Workflow can specify values and otherwise the default value is used.
 
+For Workflow Variables the following data types are offered:
+
+- **String** holds any characters. Optionally values can be enclosed with single quotes.
+  - Constant values: *hello world*
+  - Functions: *now( format='yyyy-MM-dd hh:mm:ss', timezone='Europe/London' )*, *env('HOSTNAME')*
+- **Number** holds integers and floating numbers such as 3.14.
+- **Boolean** values are *true* or *false*.
+- **Final** values are evaluated by the Controller when an Order is added. Other data types are evaluated by the Agent when an Order is started.
+  - Primary use is about functions such as: *jobResourceVariable( 'myJobResource', 'myVariable' )*
+  - For details see [JS7 - Expressions for Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Expressions+for+Variables).
+- **List** is an array data type that offers adding any number of variables each using its individual data type and default value.
+  - References to array variables use the syntax: *$colors(0).lightblue*, *$colors(0).blue*, *$colors(1).lightgreen*, *$colors(1).green*
+- **Map** is a list of variables each using its individual data type and default value.
+  - References to map variables use the syntax: *$colors.blue*, *$colors.green*
+
 ### Search in Workflows
 
 On top of the *Workflow Panel* a Search Icon is available. Clicking the icon offers specifying a string that matches the name of a Job or Workflow Instruction.
@@ -82,7 +97,7 @@ On top of the *Workflow Panel* a Search Icon is available. Clicking the icon off
 On top of the *Workflow Panel* users find the following status indicators:
 
 - **valid** / **not valid** indicates from blue / orange color if the Workflow is consistent and ready for deployment. *Invalid* Workflows cannot be deployed, however, changes are stored to the inventory. For example, a missing Agent assignment to a Job will make the Workflow *invalid*. Inside the *not valid* status indicator the (i) information icon is available that displays the reason why the Workflow is +not valid*
-- **deployed** / **not deployed** indicates of the current version of the Workflow has been *deployed* or is a draft that was *not deployed*.
+- **deployed** / **not deployed** indicates if the current version of the Workflow has been *deployed* or is a draft that was *not deployed*.
 
 The *Deploy* button offers deployment to a Controller from a single click operation. Other than that, deployment operations are available at folder level, see [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
 
@@ -135,6 +150,11 @@ When clicking the canvas of the *Workflow Panel* an *Operations Panel* will beco
 ### Product Knowledge Base
 
 - [Directed acyclic graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph)
+- [JS7 - Assignment of Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Assignment+of+Variables)
+- [JS7 - Expressions for Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Expressions+for+Variables)
+- [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License)
+- [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
+- [JS7 - Order Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+Variables)
 - [JS7 - Workflow Instructions - Processing](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflow+Instructions+-+Processing)
   - [JS7 - Job Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Instruction)
   - [JS7 - Lock Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Lock+Instruction)
@@ -163,5 +183,3 @@ When clicking the canvas of the *Workflow Panel* an *Operations Panel* will beco
 - [JS7 - Workflow Instructions - Forking](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflow+Instructions+-+Forking)
   - [JS7 - Fork-Join Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Fork-Join+Instruction)
   - [JS7 - ForkList-Join Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ForkList-Join+Instruction)
-- [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License)
-- [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)

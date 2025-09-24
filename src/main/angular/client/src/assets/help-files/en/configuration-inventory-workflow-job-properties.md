@@ -41,7 +41,7 @@ The minimum properties for a Job are as follows:
 For *Shell Jobs* the parameterization is made available from Environment Variables.
 
 - **Name** can be freely chosen within operating system limits, for example excluding dashes and spaces. A frequent naming convention includes uppercase spelling. On Unix *Names* are considered case-sensitive, on Windows they are considered case-insensitive.
-- **Value** can be direct input from strings or numbers. In addition, Workflow Variables can be specified that are declared with the Workflow and that are preceeded with a $ character as in *$variable*. Spelling of Workflow Variables is case-sensitive.
+- **Value** can be direct input from strings or numbers. In addition, Workflow Variables can be specified that are declared with the Workflow and that are preceded with a $ character as in *$variable*. Spelling of Workflow Variables is case-sensitive.
 
 ## Job Properties available from *More Options*
 

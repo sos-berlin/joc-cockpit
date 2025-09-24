@@ -40,7 +40,7 @@ The folder hierarchy knows the following folder types:
 Right to the top-level folder in the *Navigation Panel* users find a Search Icon that can be used to lookup inventory objects.
 
 - A minimum of two characters must be entered to have Quick Search look up objects that start with the given characters.
-- Quick Search is case-insentive and right-truncated.
+- Quick Search is case-insensitive and right-truncated.
 - Quick Search returns objects with matching names per category such as Workflows, Schedules.
 - The \* meta character can be used as a placeholder for zero or more characters:
   - **\*test** will find the objects ***test**Initial*, *my**Test***

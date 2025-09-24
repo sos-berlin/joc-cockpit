@@ -24,7 +24,7 @@ Users who are happy with default values and wish to submit an Order for immediat
 ### Order Dependencies
 
 - **Notice Space Key**: If the Workflow holds dependencies based on Notices, then a daily plan date can be specified to which dependencies will be resolved. By default the current day is used.
-  - past dates are accepted for wich a plan is opened.
+  - past dates are accepted for which a plan is opened.
   - future dates are accepted.
 
 ### Order Position

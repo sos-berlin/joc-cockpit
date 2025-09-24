@@ -55,13 +55,13 @@ Next, one or more periods for start times are specified. The *Repeat Interval* i
 
 - Assigned Working Day Calendars and Non-working Day Calendars are merged to resulting days for Workflow execution by Orders.
 - Restrictions further apply and hold rules similar to [Configuration - Inventory - Calendars](/configuration-inventory-calendars):
-  - **Weekdays** specify they day of week.
+  - **Weekdays** specify the day of week.
   - **Specific Weekdays** specify relative weekdays such as the first or last Monday of a month.
   - **Specific Days** specify days of year.
   - **Month Days** specify relative days in a month, for example the first or last day of month.
-  - **Every** specifies recurring days, for example every 2nd day, every 3rd week.
-  - **National Holidays** specify known public holidays that exclude Workflow execution.
-  - **Non-working Day Calendars** offer excluding further days from Non-working Day Calendars.
+  - **Every** specifies recurring periods, for example every 2nd day, every 1st week, every 3rd month. This requires specifying the *Valid From* date starting from which days will be counted.
+  - **National Holidays** specify known public holidays. Resulting days are not authoritative and might differ from local legislation.
+  - **Non-working Day Calendars** exclude related days from Non-working Day Calendars for the current Calendar.
 
 *Restrictions* allow limiting the number of Calendars in use. Instead, of creating individual Calendars for specific rules such as the first day of month, users can apply a standard Calendar covering all days of year and can apply the desired *Restriction*.
 
