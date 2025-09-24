@@ -30,8 +30,8 @@ For available operations see [Configuration - Inventory - Navigation Panel](/con
 Jobs reference Script Includes from the *Job Script* property using one of the following syntax flavors:
 
 - **\#\#!include *script-include-name***
-- **\:\:!include *script-include-name***
-- **\/\/!include *script-include-name***
+- **::!include *script-include-name***
+- **//!include *script-include-name***
 
 The *script-include-name* specifies the identifier of the Script Include. Users can type the above input into the *Job Script* and they can invoke Quick Search.
 
@@ -50,8 +50,8 @@ Hitting the CTRL+Space keyboard shortcut while the cursor is in the *Job Script*
 Script Includes can be parameterized like this:
 
 - **\#\#!include *script-include-name* --replace="search-literal","replacement-literal"**
-- **\:\:!include *script-include-name* --replace="search-literal","replacement-literal"**
-- **\/\/!include *script-include-name* --replace="search-literal","replacement-literal"**
+- **::!include *script-include-name* --replace="search-literal","replacement-literal"**
+- **//!include *script-include-name* --replace="search-literal","replacement-literal"**
 
 The *search-literal* will be looked up in the Script Include and will be replaced by the *replacement-literal* when the Workflow holding the related Job will be deployed.
 

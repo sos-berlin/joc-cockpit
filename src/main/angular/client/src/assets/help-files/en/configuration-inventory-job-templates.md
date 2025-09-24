@@ -40,11 +40,44 @@ Job Templates offer the following operations to update Jobs:
   - **Update Admission Times** specifies that Job Admission Times should be updated from the Job Template.
   - **Update from required arguments** specifies that Job Template arguments that are qualified being required should be updated in selected Jobs.
   - **Update from optional arguments** specifies that Job Template arguments that are qualified being optional should be updated in selected Jobs.
-- The 
-- **Update Jobs from Templates** is available from the *Navigation Panel* and will update Jobs in Workflows located in the selected *Inventory Folder* from *Job Templates* located in any folder.
-- **Apply Template to Jobs** is available from the *Navigation Panel* and will update Jobs in Workflows located in any folder that hold references to *Job Templates* included with the selected *Inventory Folder* or any sub-folder.
+- **Update Jobs from Templates** is available from the *Navigation Panel* and will update Jobs in Workflows located in the selected *Inventory Folder* from Job Templates located in any folder.
+- **Apply Template to Jobs** is available from the *Navigation Panel* and will update Jobs in Workflows located in any folder that holds references to Job Templates included with the selected *Inventory Folder* or any sub-folder.
 
 After updating Jobs from Job Templates, the related Workflows will be set to *Draft* status and should be deployed to make changes effective.
+
+## Use with Jobs
+
+Job Templates can be created from existing Jobs. In the *Configuration-Inventory* view for a given Workflow users can click the related Job to find its action menu offering the *Make Job Template* operation.
+
+To assign a Job a Job Template users can proceed as follows:
+
+- In the right upper corner of the window invoke the Wizard.
+- This brings up a pop-up window that allows choosing the *User Job Templates* tab.
+  - Navigate to the desired Job Template or type parts of its name.
+  - Select the Job Template and optionally add arguments if provided by the Job Template.
+  
+When a Job Template is assigned a Job, this is indicated in the right upper corner of the window:
+
+- Users find the *Job Template Reference*,
+- followed by an icon for the *Synchronization Status Indicator*: 
+  - green color indicates that the Job and Job Template are in sync. 
+  - orange color indicates that the Job Template was changed and that the Job is not in sync.
+- Clicking the orange *Synchronization Status Indicator* will update the Job from its Job Template.
+
+To remove a Job Template reference from a Job, users can click the trash icon in the right upper corner following the Job Template name. The operation will leave Job properties untouched and will release the link to the Job Template. 
+
+Jobs that reference Job Templates do not allow major parts of the Job being changed. Instead, changes have to be applied to the Job Template. This does not apply to the following inputs that can be freely chosen:
+
+- **Job Name**
+- **Label**
+- **Agent**
+- **Job Admission Times**
+- **Job Notification**
+
+To dynamically assign values to **Arguments for JVM Jobs** or **Environment Variables for Shell Jobs** users can proceed as follows:
+
+- The Job Template makes use of a Workflow Variable for the value assigned the *Argument* or *Environment Variable*.
+- The Workflow holding the Job that references the Job Template declares the Workflow Variable that can be populated from a default value and from incoming Orders.
 
 ## References
 
