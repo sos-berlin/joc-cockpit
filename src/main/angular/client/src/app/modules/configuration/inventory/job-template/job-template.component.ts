@@ -24,6 +24,7 @@ import {WorkflowService} from "../../../../services/workflow.service";
 import {InventoryObject} from '../../../../models/enums';
 import { EncryptArgumentModalComponent } from '../inventory.component';
 import { InventoryService } from '../inventory.service';
+import {HelpViewerComponent} from "../../../../components/help-viewer/help-viewer.component";
 
 declare const $;
 
@@ -1599,7 +1600,19 @@ export class JobTemplateComponent {
     }
   }
 
-
-
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
 
 }

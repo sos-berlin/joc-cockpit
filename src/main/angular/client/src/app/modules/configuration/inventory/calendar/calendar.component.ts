@@ -10,6 +10,7 @@ import {CalendarService} from '../../../../services/calendar.service';
 import {DataService} from '../../../../services/data.service';
 import {CoreService} from '../../../../services/core.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
+import {HelpViewerComponent} from "../../../../components/help-viewer/help-viewer.component";
 
 declare const Holidays;
 declare const $;
@@ -2200,5 +2201,20 @@ export class CalendarComponent {
       }
     }
     return obj;
+  }
+
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }

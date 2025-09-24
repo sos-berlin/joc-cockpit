@@ -11,6 +11,7 @@
             <b translate>inventory.label.lastModified</b>
             <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
           </span>
+         <i (click)="helpPage('configuration-inventory-calendars')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
         </span>
         <div *ngIf="!isTrash" class="inline pull-right">
           <span *ngIf="calendar.configuration" [ngClass]="!calendar.valid ? 'badge-danger':'badge-success'"
