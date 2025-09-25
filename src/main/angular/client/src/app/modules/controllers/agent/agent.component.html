@@ -6,7 +6,7 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <i (click)="helpPage('initial-operation-register-subagent-cluster')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+          <i (click)="helpPage('initial-operation-register-agent-subagent-cluster')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           <div class="inline">
             <button (click)="createCluster()"
                     *ngIf="object.mapOfCheckedId.size === 0 && permission.joc && permission.joc.administration.controllers.manage"
