@@ -15,7 +15,8 @@
       <div *ngIf="!isLoading" [innerHTML]="html" class="help-md"></div>
       </ng-container>
       <ng-template #empty>
-        <app-empty-data></app-empty-data>
+        <nz-result nzStatus="404" nzTitle="404" nzSubTitle="{{ 'common.message.noHelpData' | translate}}">
+        </nz-result>
       </ng-template>
     </div>
 </div>

@@ -1,6 +1,6 @@
 <div id="agentClusterStatus1">
   <div class="box-header b-b remove">
-    <h3 translate>dashboard.label.agentClusterStatus</h3>
+    <h3 translate>dashboard.label.agentClusterStatus<span><i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span></h3>
   </div>
   <div [hidden]="!isLoaded" class="row">
     <div class="col-md-12">

@@ -751,6 +751,7 @@
     "message.deleteGroup": "Êtes-vous sûr de vouloir supprimer le groupe ?",
     "message.closedPlanType": "The plan {{planId}} is closed. Do you want to open it again?",
     "message.fallbackNotice": "Le fichier de langue sélectionné n'est pas présent, retour à la langue par défaut",
+    "message.noHelpData": "Sorry, Context Help page will become available with next JS7 releases.",
     "--------POPUP WINDOW MESSAGES END------------": "Used in popup for confirmation",
     "tooltip.exportInXLS": "Exporter au format xlsx",
     "tooltip.expandDetails": "Développer les Détails",

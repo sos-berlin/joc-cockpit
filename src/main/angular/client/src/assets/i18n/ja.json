@@ -751,6 +751,7 @@
     "message.deleteGroup": "本当にこのグループを削除しますか？",
     "message.closedPlanType": "実行計画{{planId}}はクローズ済です。再オープンしますか?",
     "message.fallbackNotice": "選択した言語ファイルが存在しません。デフォルト言語で表示されます。",
+    "message.noHelpData": "Sorry, Context Help page will become available with next JS7 releases.",
     "--------POPUP WINDOW MESSAGES END------------": "確認ポップアップで使用",
     "tooltip.exportInXLS": "xlsx形式でエキスポート",
     "tooltip.expandDetails": "詳細表示",
@@ -1939,7 +1940,7 @@
     "label.belowNormal": "中低",
     "label.Low": "低",
     "label.deleteRepository": "リポジトリ削除",
-                        
+
     "button.modifyVariableSet": "変数設定変更",
     "button.addOrderParameter": "オーダー変数追加",
     "button.setVersion": "バージョン設定",

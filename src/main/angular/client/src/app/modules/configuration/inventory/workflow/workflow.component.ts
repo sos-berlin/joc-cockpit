@@ -21,7 +21,7 @@ import {clone, extend, isArray, isEmpty, isEqual, isNaN, sortBy} from 'underscor
 import {saveAs} from 'file-saver';
 import {ToastrService} from 'ngx-toastr';
 import {Router} from '@angular/router';
-import {AbstractControl, NG_VALIDATORS, NgModel, Validator} from '@angular/forms';
+import {AbstractControl, NG_VALIDATORS, NgForm, NgModel, Validator} from '@angular/forms';
 import {CdkDragDrop, DragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import {WorkflowService} from '../../../../services/workflow.service';
 import {DataService} from '../../../../services/data.service';
@@ -671,7 +671,7 @@ export class CycleInstructionComponent {
             originalFrequency: period.frequency,
             restriction: {
               TYPE: scheme.restriction.TYPE,
-              months: [...scheme.restriction.months]
+              months: Array.isArray(scheme.restriction.months) ? [...scheme.restriction.months] : []
             },
             schemeIndex: schemeIndex,
             restrictedSchemeIndex: restrictedSchemeIndex,
@@ -715,6 +715,7 @@ export class CycleInstructionComponent {
 
   editFrequency(data, index, listIndex?): void {
     this.selectedNode.data.schedule = this.selectedNode.obj.schedule.schemes[index];
+    this.selectedNode.data.isFromCycle = true;
     const isRestricted = data.isRestricted;
     if (isRestricted) {
       this.selectedNode.isEdit = true;
@@ -1170,32 +1171,57 @@ export class AdmissionTimeComponent {
     this.days.push(this.days[0]);
 
     if (this.isEdit && this.data.isRestrictedEdit) {
+      let actualSchemeIndex = -1;
+      let localPeriodIndex = -1;
+      let periodCounter = 0;
 
-      const restrictedSchemeIndex = this.data.restrictedSchemeIndex;
-      const restrictedScheme = this.job.admissionTimeScheme.restrictedSchemes[restrictedSchemeIndex];
+      const regularPeriods = this.workflowService.convertAdmissionTimeToList(this.job.admissionTimeScheme.periods || [], this.days, {});
+      periodCounter += regularPeriods.length;
 
-      if (restrictedScheme) {
-        this.isEditingRestrictedFrequency = true;
-        this.selectedMonthsForRestriction = restrictedScheme.restriction.months.map(m => m.toString());
-        this.checkMonths();
-        this.onChangeMonths();
+      const schemes = this.job.admissionTimeScheme.restrictedSchemes || [];
+      for (let i = 0; i < schemes.length; i++) {
+        const scheme = schemes[i];
+        const convertedPeriods = this.workflowService.convertAdmissionTimeToList(scheme.periods || [], this.days, {});
+        const numPeriodsInScheme = convertedPeriods.length;
 
-        const periodListForForm = this.workflowService.convertAdmissionTimeToList(restrictedScheme.periods || [], this.days, {});
-
-        if (this.index > -1 && periodListForForm[this.index]) {
-          this.editFrequency(periodListForForm[this.index]);
+        if (this.index >= periodCounter && this.index < periodCounter + numPeriodsInScheme) {
+          actualSchemeIndex = i;
+          localPeriodIndex = this.index - periodCounter;
+          break;
         }
+        periodCounter += numPeriodsInScheme;
       }
 
-    } else {
+      if (actualSchemeIndex > -1) {
+        const restrictedScheme = this.job.admissionTimeScheme.restrictedSchemes[actualSchemeIndex];
+        const periodListForForm = this.workflowService.convertAdmissionTimeToList(restrictedScheme.periods || [], this.days, {});
+        const targetPeriod = periodListForForm[localPeriodIndex];
 
+        if (restrictedScheme && targetPeriod) {
+          this.isEditingRestrictedFrequency = true;
+          this.restrictedSchemeIndex = actualSchemeIndex;
+          this.selectedMonthsForRestriction = restrictedScheme.restriction.months.map(m => m.toString());
+          this.checkMonths();
+          this.onChangeMonths();
+          this.editFrequency(targetPeriod);
+        } else {
+          console.error('Could not find a valid scheme or target period for the calculated indices.');
+        }
+      } else {
+        const targetPeriod = regularPeriods[this.index];
+        if (targetPeriod) {
+          this.isEditingRestrictedFrequency = false;
+          this.editFrequency(targetPeriod);
+        } else {
+          console.error('Could not find a period for the given global index:', this.index);
+        }
+      }
+    } else {
       if (this.job.admissionTimeScheme.periods && this.job.admissionTimeScheme.periods.length > 0) {
         this.workflowService.convertSecondIntoWeek(this.job.admissionTimeScheme, this.data.periodList, this.days, this.frequency);
-
         if (this.isEdit && this.data.periodList && this.data.periodList.length > 0) {
           this.editFrequency(this.data.periodList[this.index > -1 ? this.index : 0]);
         }
-
         if (this.data.periodList.length > 0) {
           if (this.repeatObject && !this.data.periodList[0].frequency) {
             this.frequency.days = ['1', '2', '3', '4', '5', '6', '7'];
@@ -1380,7 +1406,15 @@ export class AdmissionTimeComponent {
     }
   }
 
-  addFrequency(myForm): void {
+  addFrequency(myForm: NgForm): void {
+    if (this.data.isFromCycle) {
+      this.saveFromCycleInstruction(myForm);
+    } else {
+      this.saveFromAdmissionTime(myForm);
+    }
+  }
+
+  private saveFromAdmissionTime(myForm): void {
     this.isValid = true;
     let p: any;
     let periods = [];
@@ -1464,6 +1498,123 @@ export class AdmissionTimeComponent {
 
     this.resetForm();
 
+    if (this.isEdit) {
+      this.closeRuntime();
+    } else {
+      Object.keys(myForm.controls).forEach((key) => {
+        const control = myForm.controls[key];
+        control.markAsPristine();
+        control.markAsUntouched();
+      });
+    }
+    this.clearRowSelections();
+  }
+  private saveFromCycleInstruction(myForm: NgForm): void {
+    this.isValid = true;
+    let p: any;
+    let periods = [];
+    if (this._temp) {
+      periods = this._temp.periods || [];
+    }
+    if (this.object.startTime || this.object.duration) {
+      p = {};
+      if (this.object.startTime) {
+        const h = this.object.startTime1.getHours();
+        const m = this.object.startTime1.getMinutes();
+        const s = this.object.startTime1.getSeconds();
+        p.startTime = (h * 60 * 60) + (m * 60) + s;
+      } else {
+        p.startTime = 0;
+      }
+      p.duration = this.workflowService.convertStringToDuration(this.object.duration, true);
+      p.text = this.workflowService.getText(p.startTime, p.duration);
+    } else if (this._temp && periods.length > 0) {
+      p = null;
+    }
+    let periodData;
+    if (this._temp && !p && periods.length > 0) {
+      periodData = this.createAndProcessPeriods(null, periods);
+      if (!periodData || periodData.length === 0) {
+        periodData = this.createPeriodDataForAdmissionType(periods);
+      }
+      if (!periodData || periodData.length === 0) {
+        this.validateFormStateForRestriction();
+        return;
+      }
+    } else {
+      periodData = this.createAndProcessPeriods(p, periods);
+    }
+
+    if (periodData && periodData.length > 0) {
+      if (this.isEdit && this.data.isRestrictedEdit) {
+        const originalPeriodObject = CycleInstructionComponent.createObj(this._temp, this._temp.periods[0]);
+        const indexToUpdate = this.job.admissionTimeScheme.restrictedSchemes.findIndex(scheme =>
+          scheme.periods.some(period => JSON.stringify(period) === JSON.stringify(originalPeriodObject))
+        );
+
+        if (indexToUpdate > -1) {
+          const oldScheme = this.job.admissionTimeScheme.restrictedSchemes[indexToUpdate];
+
+          if (this.selectedMonthsForRestriction.length === 0) {
+            this.removeFromRestrictedScheme(indexToUpdate, [this._temp]);
+            this.addToRegularPeriods(periodData);
+            this.forceChangeDetection();
+            this.resetAndClose(myForm);
+            return;
+          }
+
+          const oldMonths = oldScheme.restriction.months.sort().join(',');
+          const newMonths = this.selectedMonthsForRestriction.map(m => +m).sort().join(',');
+
+          if (oldMonths === newMonths) {
+            this.replacePeriodsInRestrictedScheme(indexToUpdate, this._temp, periodData);
+          } else {
+            this.removeFromRestrictedScheme(indexToUpdate, [this._temp]);
+            this.addToRestrictedScheme(periodData);
+          }
+        } else {
+          this.addToRestrictedScheme(periodData);
+        }
+      } else {
+
+        if (this.isEdit && this.index > -1 && !this.isEditingRestrictedFrequency && this.selectedMonthsForRestriction.length > 0) {
+
+          if (this.data.periodList && this.data.periodList[this.index]) {
+            this.data.periodList.splice(this.index, 1);
+          }
+
+          this.addToRestrictedScheme(periodData);
+
+        } else if (this.isEdit && this.index > -1 && this.data.periodList[this.index]) {
+          this.data.periodList[this.index] = periodData[0];
+
+        } else if (this.restrictedSchemeIndex > -1) {
+          const oldScheme = this.job.admissionTimeScheme.restrictedSchemes[this.restrictedSchemeIndex];
+          const oldMonths = oldScheme.restriction.months.sort().join(',');
+          const newMonths = this.selectedMonthsForRestriction.map(m => parseInt(m)).sort().join(',');
+          if (oldMonths === newMonths) {
+            this.replacePeriodsInRestrictedScheme(this.restrictedSchemeIndex, this._temp, periodData);
+          } else {
+            this.removeFromRestrictedScheme(this.restrictedSchemeIndex, [this._temp]);
+            this.addToRestrictedScheme(periodData);
+          }
+          this.restrictedSchemeIndex = -1;
+        } else if (this.selectedMonthsForRestriction.length > 0) {
+          this.addToRestrictedScheme(periodData);
+        } else {
+          this.addToRegularPeriods(periodData);
+        }
+      }
+    } else {
+      this.isValid = false;
+      return;
+    }
+    this.forceChangeDetection();
+    this.resetAndClose(myForm);
+  }
+
+  private resetAndClose(myForm): void {
+    this.resetForm();
     if (this.isEdit) {
       this.closeRuntime();
     } else {
@@ -2215,8 +2366,7 @@ export class AdmissionTimeComponent {
       return;
     }
 
-    const monthNumbers = this.selectedMonthsForRestriction.map(m => parseInt(m, 10));
-
+    const monthNumbers = this.selectedMonthsForRestriction.map(m => parseInt(m, 10)).sort((a, b) => a - b);
     const convertedPeriods = this.workflowService.convertListToAdmissionTime(periodData);
 
     if (!convertedPeriods || convertedPeriods.length === 0) {
@@ -2227,25 +2377,58 @@ export class AdmissionTimeComponent {
       this.job.admissionTimeScheme.restrictedSchemes = [];
     }
 
+    convertedPeriods.forEach(newPeriod => {
+      let added = false;
+      for (const scheme of this.job.admissionTimeScheme.restrictedSchemes) {
+        const periodExists = scheme.periods.some(p => JSON.stringify(p) === JSON.stringify(newPeriod));
+        if (periodExists) {
+          const newMonths = [...scheme.restriction.months, ...monthNumbers];
+          scheme.restriction.months = Array.from(new Set(newMonths)).sort((a, b) => a - b);
+          added = true;
+          break;
+        }
+      }
 
-    let existingScheme = this.job.admissionTimeScheme.restrictedSchemes.find(scheme =>
-      scheme.restriction.TYPE === 'MonthRestriction' &&
-      this.arraysEqual(scheme.restriction.months.sort(), monthNumbers.sort())
-    );
+      if (added) {
+        return;
+      }
 
+      const targetScheme = this.job.admissionTimeScheme.restrictedSchemes.find(scheme =>
+        this.arraysEqual(scheme.restriction.months.sort((a, b) => a - b), monthNumbers)
+      );
 
-    if (existingScheme) {
-      existingScheme.periods.push(...convertedPeriods);
-    } else {
-      const newScheme = {
-        restriction: {
-          TYPE: 'MonthRestriction',
-          months: monthNumbers
-        },
-        periods: convertedPeriods
-      };
-      this.job.admissionTimeScheme.restrictedSchemes.push(newScheme);
+      if (targetScheme) {
+        targetScheme.periods.push(newPeriod);
+      } else {
+        const newScheme = {
+          restriction: {
+            TYPE: 'MonthRestriction',
+            months: monthNumbers
+          },
+          periods: [newPeriod]
+        };
+        this.job.admissionTimeScheme.restrictedSchemes.push(newScheme);
+      }
+    });
+
+    const mergedSchemes = [];
+    this.job.admissionTimeScheme.restrictedSchemes.forEach(scheme => {
+      const existing = mergedSchemes.find(s => this.arraysEqual(s.restriction.months, scheme.restriction.months));
+      if (existing) {
+        existing.periods.push(...scheme.periods);
+      } else {
+        mergedSchemes.push(scheme);
+      }
+    });
+    this.job.admissionTimeScheme.restrictedSchemes = mergedSchemes;
+  }
+
+  private arraysEqual(arr1, arr2): boolean {
+    if (arr1.length !== arr2.length) return false;
+    for (let i = 0; i < arr1.length; i++) {
+      if (arr1[i] !== arr2[i]) return false;
     }
+    return true;
   }
 
   private addToRegularPeriods(periodData): void {
@@ -2268,9 +2451,7 @@ export class AdmissionTimeComponent {
     });
   }
 
-  private arraysEqual(arr1, arr2): boolean {
-    return arr1.length === arr2.length && arr1.every((val, idx) => val === arr2[idx]);
-  }
+
 
   private loadRestrictedScheme(index: number): void {
     const scheme = this.job.admissionTimeScheme.restrictedSchemes[index];

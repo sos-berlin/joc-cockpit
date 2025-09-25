@@ -7,6 +7,8 @@ import DatalabelsPlugin from 'chartjs-plugin-datalabels';
 import {DataService} from '../../../services/data.service';
 import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
+import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
+import {NzModalService} from "ng-zorro-antd/modal";
 
 @Component({
   selector: 'app-agent-cluster-status',
@@ -19,7 +21,7 @@ export class AgentClusterStatusComponent {
   isLoaded = false;
   subscription1: Subscription;
   mapObj = new Map();
-
+  preferences: any = {};
   pieChartOptions: ChartConfiguration['options'] = {
     responsive: true,
     maintainAspectRatio: false,
@@ -60,7 +62,7 @@ export class AgentClusterStatusComponent {
   public pieChartPlugins = [DatalabelsPlugin];
 
   constructor(private coreService: CoreService, private authService: AuthService, public translate: TranslateService,
-              private router: Router, private dataService: DataService) {
+              private router: Router, public modal: NzModalService, private dataService: DataService) {
     this.subscription1 = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
     });
@@ -68,6 +70,8 @@ export class AgentClusterStatusComponent {
 
   ngOnInit(): void {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+
     if (this.schedulerIds.selected) {
       this.getStatus();
     } else {
@@ -169,5 +173,20 @@ export class AgentClusterStatusComponent {
   navToAgentView(): void {
     this.coreService.getResourceTab().agents.filter.state = 'ALL';
     this.router.navigate(['/resources/agents']).then();
+  }
+
+  helpPage(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: 'dashboard-agent-status'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }

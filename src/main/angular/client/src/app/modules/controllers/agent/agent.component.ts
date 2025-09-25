@@ -12,6 +12,7 @@ import {CommentModalComponent} from "../../../components/comment-modal/comment.c
 import {ConfirmModalComponent} from "../../../components/comfirm-modal/confirm.component";
 import {OrderPipe, SearchPipe} from "../../../pipes/core.pipe";
 import {DataService} from "../../../services/data.service";
+import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 
 declare const $;
 declare const mxEditor;
@@ -54,7 +55,7 @@ export class SubagentModalComponent {
   display: any;
   required = false;
 
-  constructor(public coreService: CoreService, public activeModal: NzModalRef) {
+  constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService) {
   }
 
   ngOnInit(): void {
@@ -107,6 +108,20 @@ export class SubagentModalComponent {
     });
   }
 
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
 }
 
 @Component({
@@ -226,7 +241,7 @@ export class AgentModalComponent {
   secondaryDirector: any = {};
   processLimitTry: string = 'unlimited';
 
-  constructor(public coreService: CoreService, public activeModal: NzModalRef) {
+  constructor(public coreService: CoreService, public activeModal: NzModalRef, private modal: NzModalService) {
   }
 
   ngOnInit(): void {
@@ -407,6 +422,20 @@ export class AgentModalComponent {
     });
   }
 
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
 }
 
 @Component({
@@ -2209,5 +2238,19 @@ private createClusterWorkflow(): void {
     this.isVisible = false;
   }
 
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
 }
 

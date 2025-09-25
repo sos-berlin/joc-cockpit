@@ -55,7 +55,16 @@
           </div>
           <hr>
           <nz-tabset (nzSelectChange)="tabChange($event)">
-            <nz-tab [nzTitle]="'profile.label.preferences' | translate">
+            <nz-tab [nzTitle]="tabTitle1">
+              <ng-template #tabTitle1>
+                {{ 'profile.label.preferences' | translate }}
+                <i
+                  (click)="helpPage('profile-preferences')"
+                  [nzTooltipMouseEnterDelay]="0.5"
+                  [nz-tooltip]="'common.tooltip.help' | translate"
+                  class="help-info-dashboard cur-point fa fa-info-circle text-20">
+                </i>
+              </ng-template>
               <div class="m-l-12 p-b-xs">
                 <div class="row">
                   <div class="col-md-4 col-lg-3 text-dark form-control-label" translate>profile.label.language</div>
@@ -618,7 +627,16 @@
               </div>
             </nz-tab>
             <nz-tab *ngIf="permission.joc"
-                    [nzTitle]="'profile.label.permissions' | translate">
+                    [nzTitle]="tabTitle2">
+              <ng-template #tabTitle2>
+                {{ 'profile.label.permissions' | translate }}
+                <i
+                  (click)="helpPage('profile-permissions')"
+                  [nzTooltipMouseEnterDelay]="0.5"
+                  [nz-tooltip]="'common.tooltip.help' | translate"
+                  class="help-info-dashboard cur-point fa fa-info-circle text-20">
+                </i>
+              </ng-template>
               <div class="m-l-12">
                 <app-permission-view [permission]="permission" [schedulerIds]="schedulerIds"></app-permission-view>
               </div>

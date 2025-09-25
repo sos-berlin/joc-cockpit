@@ -81,6 +81,7 @@ import {NzProgressModule} from "ng-zorro-antd/progress";
 import {ApprovalModalComponent} from "../../components/approval-modal/approval-modal.component";
 import {PriorityModalComponent} from "../../components/priority-modal/priority-modal.component";
 import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
+import {NzResultComponent} from "ng-zorro-antd/result";
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
   NzInputNumberModule, NzSpinModule, NzAutocompleteModule, NzTagModule, NzSelectModule,
@@ -98,9 +99,10 @@ const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponen
   SelectDocumentComponent, PermissionViewComponent, MultiSelectComponent, SearchInputComponent, SelectInputComponent, FileUploaderComponent, DateInputComponent];
 
 @NgModule({
-  imports: [
-    ...MODULES
-  ],
+    imports: [
+        ...MODULES,
+        NzResultComponent
+    ],
   declarations: [
     ...COMPONENTS,
     ...EXPORTS

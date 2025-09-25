@@ -2,10 +2,11 @@ import {Component, inject} from '@angular/core';
 import {Router} from '@angular/router';
 import {TranslateService} from '@ngx-translate/core';
 import {ToastrService} from 'ngx-toastr';
-import {NZ_MODAL_DATA, NzModalRef} from "ng-zorro-antd/modal";
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
+import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 
 declare const $;
 
@@ -29,12 +30,14 @@ export class StartUpModalComponent {
   error: any;
   controllerId = '';
   hasLicense = false;
+  preferences: any = {};
 
-  constructor(public coreService: CoreService, private router: Router, private activeModal: NzModalRef,
+  constructor(public coreService: CoreService, private router: Router, private activeModal: NzModalRef,private modal: NzModalService,
               public translate: TranslateService, private toasterService: ToastrService) {
   }
 
   ngOnInit(): void {
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.controllerInfo = this.modalData.controllerInfo;
     this.new = this.modalData.new;
 
@@ -178,6 +181,20 @@ export class StartUpModalComponent {
     this.activeModal.destroy();
   }
 
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
 }
 
 @Component({
