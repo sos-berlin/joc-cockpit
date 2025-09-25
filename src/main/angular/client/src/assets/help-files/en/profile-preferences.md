@@ -1,6 +1,6 @@
 # Profile - Preferences
 
-The *Profile - Preferences* page holds settings per user account.
+The *Profile - Preferences* page holds settings for a user account.
 
 When a user connects to JOC Cockpit for the first time, then the *Default User Account's* preferences are copied to the user's preferences. The *Default User Account* is specified from the [Settings - JOC Cockpit](/settings-joc) page.
 
