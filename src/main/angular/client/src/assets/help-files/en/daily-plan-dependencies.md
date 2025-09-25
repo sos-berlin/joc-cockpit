@@ -1,6 +1,6 @@
 # Daily Plan Dependencies
 
-Workflow dependencies can be enforced for all days and for specific daily plan dates, for example:
+Workflow dependencies can be enforced for all days and for specific Daily Plan dates, for example:
 
 - Workflow 1 runs Mon-Fri.
 - Workflow 2 runs Mon-Sun and depends on previous execution of Workflow 1.
@@ -8,7 +8,7 @@ Workflow dependencies can be enforced for all days and for specific daily plan d
 
 ## Calendar
 
-The calendar widget offers to select a daily plan date for which dependencies will be displayed.
+The calendar widget offers to select a Daily Plan date for which dependencies will be displayed.
 
 - **Light Red Color**: Past plan dates that are closed and that will not allow adding Orders.
 - **Green Color**: Past and future plan dates that are open and that will allow adding Orders.

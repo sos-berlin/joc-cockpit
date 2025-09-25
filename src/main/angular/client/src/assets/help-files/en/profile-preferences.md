@@ -12,7 +12,7 @@ If the user account is logged in from an Identity Service that makes use of pass
 
 ## Roles
 
-The roles assigned the user are displayed. Resulting permissions are merged from role assignments and are available from the [Profile - Permissions](/profile-permissions) tab.
+The roles assigned the user account are displayed. Resulting permissions are merged from role assignments and are available from the [Profile - Permissions](/profile-permissions) tab.
 
 ## Preferences
 
@@ -117,7 +117,6 @@ Preferences apply to display of Workflow Instructions with the [Configuration - 
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
 - [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
 - [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-job-properties)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
 - [Daily Plan](/daily-plan)
 - [History - File Transfers](/history-file-transfers)
 - [History - Orders](/history-orders)

@@ -41,11 +41,11 @@ If an Order should not start from the first node in the Workflow, then a positio
 - **Start Position**: If no *Start Position* is specified, then the Order will start from the first node.
   - If no *Block Position* is specified, then any top-level instruction in the Workflow can be selected from which the Order will start.
   - If a *Block Position* is specified, then the *Start Position* is a same-level node inside the block.
-- **End Positions**
+- **End Positions**:
   - If no *Block Position* is specified, then any top-level instruction in the Workflow can be selected before which the Order will terminate.
   - If a *Block Position* is specified, then any same-level node inside the block can be specified before which the Order will terminate.
   - More than one *End Position* can be specified.
-- **Priority**; 
+- **Priority**:
   - If the Order will meet a Resource Lock instruction in the Workflow that limits parallelism, then its *Priority* determines the position in the queue of *waiting* Orders.
   - *Priorities* are specified from negative, zero and positive integers or from the shortcuts offered. A higher *Priority* has precedence. Shortcuts offer the following values:
     - **Low**: -20000

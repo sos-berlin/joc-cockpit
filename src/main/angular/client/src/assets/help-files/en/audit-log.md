@@ -10,10 +10,10 @@ The request identifies the endpoint used and offers displaying the request body 
 
 ## Categories
 
-- **CONTROLLER** indicates Controller operations such as adding orders on demand.
-- **DAILYPLAN** indicates changes to the daily plan.
+- **CONTROLLER** indicates Controller operations such as adding Orders on demand.
+- **DAILYPLAN** indicates changes to the Daily Plan.
 - **IDENTITY** indicates changes to Identity Services.
-- **INVENTORY** indicates inventory changes such as storing workflows.
+- **INVENTORY** indicates inventory changes such as storing Workflows.
 
 # Audit Trail
 

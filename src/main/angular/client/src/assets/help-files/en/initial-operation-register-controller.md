@@ -13,12 +13,12 @@ Operation of a Controller Cluster is subject to the agreements of the [JS7 - Lic
 For a Standalone Controller initial operation includes
 
 - registering a Standalone Controller,
-- registering Standalone Agents, see [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone).
+- registering Agents, see [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone) and [Initial Operation - Register Cluster Agent](/initial-operation-register-agent-cluster).
 
 For a Controller Cluster initial operation includes
 
 - registering a Controller Cluster,
-- registering Standalone Agents or Cluster Agents, see [Initial Operation - Register Cluster Agent](/initial-operation-register-agent-cluster).
+- registering Standalone Agents or Cluster Agents.
 
 ## Register Controller
 
@@ -32,7 +32,7 @@ After successful registration Controller instances will be displayed from the *D
 
 ### Register Standalone Controller
 
-Users must provide the following inputs:
+Users provide the following inputs:
 
 - **Caption** is the title of the Controller that will be displayed with the Controller's rectangle in the [Dashboard - Product Status](/dashboard-product-status) panel.
 - **JOC Cockpit Connection to Controller** expects the URL from protocol, host and port used by JOC Cockpit to connect to the Controller, for example http://localhost:4444.

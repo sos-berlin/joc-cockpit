@@ -66,8 +66,8 @@ The *Audit Log* indicates modifying operations performed on the Order.
 - **Reason** explains why an Order was modified. The JOC Cockpit can be configured to enforce specifying reasons when modifying objects.
   - The setting is available from [Profile - Preferences](/profile-preferences).
   - The setting can be enforced from the [Settings - JOC Cockpit](/settings-joc) page.
-- **Time Spent** similar to specifying *Reasons* the time spent on an operation can be added when modifying orders.
-- **Ticket Link** similar to specifying *Reasons* a reference to a ticket system can be added when modifying orders.
+- **Time Spent** similar to specifying *Reasons* the time spent on an operation can be added when modifying Orders.
+- **Ticket Link** similar to specifying *Reasons* a reference to a ticket system can be added when modifying Orders.
 
 ## Operations
 

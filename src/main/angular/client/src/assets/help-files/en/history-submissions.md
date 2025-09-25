@@ -19,13 +19,13 @@ The following information is displayed per Daily Plan date.
 - **Daily Plan Date** indicates the day for which Orders are scheduled.
 - **Total Count** indicates the number of Orders subject to all Submissions for the given date.
 - **Submission Count** indicates the number of successfully submitted Orders.
-  - If the number corresponds to the *Total Count*, then all orders are successfully submitted.
+  - If the number corresponds to the *Total Count*, then all Orders are successfully submitted.
   - If the number is above zero but below the *Total Count* then
-    - the setting to submit orders individually is in place, see [Settings - Daily Plan](/settings-daily-plan) and
-    - a number of orders could not be submitted.
+    - the setting to submit Orders individually is in place, see [Settings - Daily Plan](/settings-daily-plan) and
+    - a number of Orders could not be submitted.
   - If the number is zero, then this indicates
-    - the setting to submit orders individually not being in place, see [Settings - Daily Plan](/settings-daily-plan), and/or
-    - failure to submit all orders.
+    - the setting to submit Orders individually not being in place, see [Settings - Daily Plan](/settings-daily-plan), and/or
+    - failure to submit all Orders.
 
 ### History of Submissions
 
@@ -35,7 +35,7 @@ When clicking the arrow-down icon from the *Daily Plan Date*, details per Submis
 
 - **Total Submission Count** indicates the number of Orders subject to the given Submission.
 - **Submission Count** indicates the number of Orders successfully submitted in scope of the given Submission.
-  - If the number corresponds to the *Total Submission Count*, then all orders are successfully submitted.
+  - If the number corresponds to the *Total Submission Count*, then all Orders are successfully submitted.
   - If the number is zero or above zero, then previous explanations about Submissions per Daily Plan date apply.
 
 ### History of Submissions per Order
