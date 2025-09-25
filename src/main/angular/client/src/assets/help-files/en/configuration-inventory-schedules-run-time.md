@@ -21,28 +21,28 @@ Most surprisingly for some users, a day is not 24 hours long, but can span up to
 
 ## Calendar Assignment
 
-First, a Calendar is assigned:
+First, a Calendar should be assigned:
 
 - **Working Day Calendar** is available from a button with the same name and specifies the days for which Orders should be created. When repeatedly used, it will add run-time entries with periods per Working Day Calendar.
 - **Non-working Day Calendar** is available from a button with the same name and offers specifying the days for which no Orders should be created. Any number of Non-working Day Calendars can be added and will be merged.
 
 ## Periods
 
-Next, one or more periods for start times are specified. The *Repeat Interval* input offers the following options:
+Next, one or more periods for start times should be specified. The *Repeat Interval* input offers the following options:
 
 - **Single Start** is a single point in time.
   - **Start Time** is specified using the syntax *HH:MM:SS*.
   - **On Non-working Day** specifies what should happen if a period meets a day indicated by a Non-working Day Calendar.
     - **suppress execution** is the default behavior not to create an Order.
     - **ignore non-working day** overrules the Non-working Day Calendar and creates an Order.
-    - **before non-working day** adds an Order for the next working day prior to the non-working day. For example:
+    - **before non-working day** adds an Order to the next working day prior to the non-working day. For example:
       - A Working Day Calendar specifies Mon-Thu for working days. 
       - A Non-working Day Calendar indicates a specific Monday in the year a non-working day.
-      - The next day prior to the non-working day will be previous Sunday. If weekends should be excluded and are added to the Non-working Day Calendar, then the resulting day will be previous Friday.
-    - **after non-working day** adds an Order for the next working day after the non-working day. For example:
+      - The next day prior to the non-working day will be previous Sunday. Should weekends be excluded and are added to the Non-working Day Calendar, then the resulting day will be previous Friday.
+    - **after non-working day** adds an Order to the next working day after the non-working day. For example:
       - A Working Day Calendar specifies Tue-Fri for working days. 
       - A Non-working Day Calendar indicates a specific Friday in the year a non-working day.
-      - The next day after to the non-working day will be next Saturday. If weekends should be excluded and are added to the Non-working Day Calendar, then the resulting day will be next Monday.        
+      - The next day after to the non-working day will be next Saturday. Should weekends be excluded and are added to the Non-working Day Calendar, then the resulting day will be next Monday.        
 - **Repeat** specifies a repeated period for Cyclic Orders. For input the following syntax is used: *HH:MM:SS*.
   - **Repeat Time** is the interval between cycles, for example *02:00* for 2-hourly cycles.
   - **Begin** is the start time of the first cycle, for example *06:00* for 6am.
@@ -90,7 +90,7 @@ Users should consider implications of Cyclic Orders: they create individual Orde
   - Processing of Cyclic Workflows is by far more efficient than processing of Cyclic Orders.
 - Error Handling
   - Failure
-    - If a job in a Workflow fails, then this will occur for each Order instance of a Cyclic Order individually.
+    - If a job in a Workflow fails, then this will occur individually for each Order instance of a Cyclic Order.
     - If a job within a *Cycle Instruction* fails, then depending on the error handling in place, any cycles that would occur while an Order is in a *failed* state will be skipped.
   - Notification
     - For each failing Order instance of a Cyclic Order a Notification is created.
