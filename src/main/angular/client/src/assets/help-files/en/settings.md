@@ -2,6 +2,8 @@
 
 JOC Cockpit offers run-time [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings) that can be modified using the GUI and which are applied immediately without restarting JOC Cockpit.
 
+The *Settings* page is accessible from the ![wheel icon](assets/images/wheel.png) in the menu bar.
+
 ## References
 
 ### Context Help
