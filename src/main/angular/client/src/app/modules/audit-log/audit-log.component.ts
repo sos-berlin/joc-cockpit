@@ -17,6 +17,7 @@ import {AddBlocklistModalComponent} from '../admin/blocklist/blocklist.component
 import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 
 @Component({
+  standalone: false,
   selector: 'app-filter-log-content',
   templateUrl: './filter-dialog.html'
 })
@@ -68,6 +69,7 @@ export class FilterModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-form-template',
   templateUrl: './form-template.html',
 })
@@ -216,6 +218,7 @@ export class SearchComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-audit-log',
   templateUrl: './audit-log.component.html'
 })

@@ -16,12 +16,13 @@
         <input #recipient="ngModel" [(ngModel)]="object.recipient" [appAutofocus]="true" autocomplete="off"
                class="form-control"
                name="recipient" placeholder="{{'user.placeholder.enterEmail' | translate}}" required type="text">
-        <div *ngIf="recipient.invalid && (recipient.dirty || recipient.touched)"
-             class="text-danger help-block">
-          <div *ngIf="(recipient.errors && recipient.errors['required'])">
-            <div translate>common.message.requiredError</div>
+        @if (recipient.invalid && (recipient.dirty || recipient.touched)) {
+          <div class="text-danger help-block">
+            @if (recipient.errors && recipient.errors['required']) {
+              <div translate>common.message.requiredError</div>
+            }
           </div>
-        </div>
+        }
       </div>
     </div>
     <div class="form-group row">
@@ -31,19 +32,22 @@
       <div [ngClass]="{'has-error' : ((subject.dirty || subject.touched) && subject.invalid)}" class="col-md-8">
         <input #subject="ngModel" [(ngModel)]="object.subject" class="form-control"
                name="subject" placeholder="{{'user.placeholder.subject' | translate}}" required type="text">
-        <div *ngIf="subject.invalid && (subject.dirty || subject.touched)"
-             class="text-danger help-block">
-          <div *ngIf="(subject.errors && subject.errors['required'])">
-            <div translate>common.message.requiredError</div>
+        @if (subject.invalid && (subject.dirty || subject.touched)) {
+          <div class="text-danger help-block">
+            @if (subject.errors && subject.errors['required']) {
+              <div translate>common.message.requiredError</div>
+            }
           </div>
-        </div>
+        }
       </div>
     </div>
   </div>
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
             type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'inventory.button.sendMail' | translate}}
     </button>
     <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">

@@ -21,6 +21,7 @@ import {WorkflowService} from "../../../../services/workflow.service";
 import {HelpViewerComponent} from "../../../../components/help-viewer/help-viewer.component";
 
 @Component({
+  standalone: false,
   selector: 'app-file-order',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './file-order.component.html'

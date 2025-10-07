@@ -1,9 +1,18 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="operation === 'clone' && category === 'LOCAL'" translate>inventory.label.cloneToLocal</span>
-    <span *ngIf="operation === 'push' && category === 'LOCAL'" translate>inventory.label.pushToLocal</span>
-    <span *ngIf="operation === 'clone' && category !== 'LOCAL'" translate>inventory.label.cloneToRollout</span>
-    <span *ngIf="operation === 'push' && category !== 'LOCAL'" translate>inventory.label.pushToRollout</span>:
+    @if (operation === 'clone' && category === 'LOCAL') {
+      <span translate>inventory.label.cloneToLocal</span>
+    }
+    @if (operation === 'push' && category === 'LOCAL') {
+      <span translate>inventory.label.pushToLocal</span>
+    }
+    @if (operation === 'clone' && category !== 'LOCAL') {
+      <span translate>inventory.label.cloneToRollout</span>
+    }
+    @if (operation === 'push' && category !== 'LOCAL') {
+      <span translate>inventory.label.pushToRollout</span>
+    }
+    :
     {{data.path}}
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -15,53 +24,65 @@
     <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
     </div>
-    <div *ngIf="operation === 'clone'" class="form-group row">
-      <label class="col-md-3 form-control-label" translate>inventory.label.gitUri
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      <div [ngClass]="{'has-error' : ((remoteUrl.dirty || remoteUrl.touched) && remoteUrl.invalid)}" class="col-md-8">
-        <input #remoteUrl="ngModel" [(ngModel)]="object.remoteUrl" [appAutofocus]="true" autocomplete="off"
-               class="form-control"
-               name="remoteUrl" placeholder="{{'inventory.placeholder.enterRemoteUri' | translate}}" required type="text">
-        <div *ngIf="remoteUrl.invalid && (remoteUrl.dirty || remoteUrl.touched)"
-             class="text-danger help-block">
-          <div *ngIf="(remoteUrl.errors && remoteUrl.errors['required'])">
-            <div translate>common.message.requiredError</div>
-          </div>
+    @if (operation === 'clone') {
+      <div class="form-group row">
+        <label class="col-md-3 form-control-label" translate>inventory.label.gitUri
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div [ngClass]="{'has-error' : ((remoteUrl.dirty || remoteUrl.touched) && remoteUrl.invalid)}" class="col-md-8">
+          <input #remoteUrl="ngModel" [(ngModel)]="object.remoteUrl" [appAutofocus]="true" autocomplete="off"
+                 class="form-control"
+                 name="remoteUrl" placeholder="{{'inventory.placeholder.enterRemoteUri' | translate}}" required type="text">
+          @if (remoteUrl.invalid && (remoteUrl.dirty || remoteUrl.touched)) {
+            <div class="text-danger help-block">
+              @if (remoteUrl.errors && remoteUrl.errors['required']) {
+                <div translate>common.message.requiredError</div>
+              }
+            </div>
+          }
         </div>
       </div>
-    </div>
-    <div *ngIf="operation === 'clone' && data.path === '/'" class="form-group row">
-      <label class="col-md-3 form-control-label" translate>inventory.label.folderName
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      <div [ngClass]="{'has-error' : ((folderName.dirty || folderName.touched) && folderName.invalid)}"
-           class="col-md-8">
-        <input #folderName="ngModel" [(ngModel)]="object.folderName" autocomplete="off" class="form-control" identifierValidation
-               name="folderName" required type="text">
-        <div *ngIf="folderName.invalid && folderName.errors && (folderName.dirty || folderName.touched)"
-             class="text-danger help-block">
-          <div *ngIf="(folderName.errors['required'])">
-            <div translate>common.message.requiredError</div>
-          </div>
-          <div *ngIf="folderName.errors['invalidIdentifier']" translate>common.message.invalid</div>
+    }
+    @if (operation === 'clone' && data.path === '/') {
+      <div class="form-group row">
+        <label class="col-md-3 form-control-label" translate>inventory.label.folderName
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div [ngClass]="{'has-error' : ((folderName.dirty || folderName.touched) && folderName.invalid)}"
+             class="col-md-8">
+          <input #folderName="ngModel" [(ngModel)]="object.folderName" autocomplete="off" class="form-control" identifierValidation
+                 name="folderName" required type="text">
+          @if (folderName.invalid && folderName.errors && (folderName.dirty || folderName.touched)) {
+            <div class="text-danger help-block">
+              @if (folderName.errors['required']) {
+                <div translate>common.message.requiredError</div>
+              }
+              @if (folderName.errors['invalidIdentifier']) {
+                <div translate>common.message.invalid</div>
+              }
+            </div>
+          }
         </div>
       </div>
-    </div>
-    <div *ngIf="operation === 'push'" class="form-group row">
-      <label class="col-sm-3 form-control-label" translate>inventory.label.gitMessage</label>
-      <div class="col-sm-8">
-        <textarea [(ngModel)]="message" class="form-control" maxlength="255" name="message"
-                  placeholder="{{'inventory.placeholder.enterGitMessage' | translate}}"
-                  rows="5"
-        ></textarea>
+    }
+    @if (operation === 'push') {
+      <div class="form-group row">
+        <label class="col-sm-3 form-control-label" translate>inventory.label.gitMessage</label>
+        <div class="col-sm-8">
+          <textarea [(ngModel)]="message" class="form-control" maxlength="255" name="message"
+                    placeholder="{{'inventory.placeholder.enterGitMessage' | translate}}"
+                    rows="5"
+          ></textarea>
+        </div>
       </div>
-    </div>
+    }
   </div>
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
             type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">

@@ -12,6 +12,7 @@ import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 import {ExcelService} from "../../../services/excel.service";
 
 @Component({
+  standalone: false,
   selector: 'app-order-notification',
   templateUrl: './order-notification.component.html'
 })

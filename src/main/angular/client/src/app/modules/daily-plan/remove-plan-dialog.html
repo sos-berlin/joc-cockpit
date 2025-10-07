@@ -1,38 +1,72 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="!order && !submissionsDelete" translate>
-      <span *ngIf="isSubmit" translate>dailyPlan.label.submitOrders</span>
-      <span *ngIf="!isSubmit" translate>dailyPlan.label.removeOrders</span>
-    </span>
-    <span *ngIf="submissionsDelete">
-       {{'dailyPlan.label.submissionsDelete' | translate}}
-      <i *ngIf="!(dateRange && dateRange.length > 0)"
-         class="text-muted p-l-xs text"> : {{selectedDate | stringToDate1}}</i>
-    </span>
-    <span *ngIf="dateRange && dateRange.length > 0">
-      :
-      <i class="text-muted">{{dateRange[0] | stringToDate1:true}}</i> -
-      <i class="text-muted">{{dateRange[1] | stringToDate1:true}}</i>
-    </span>
-    <span *ngIf="order">
-      <span *ngIf="!order.value">
-        <span *ngIf="isSubmit" translate>dailyPlan.label.submitOrder</span>
-        <span *ngIf="!isSubmit" translate>dailyPlan.label.removeOrder</span>
+    @if (!order && !submissionsDelete) {
+      <span translate>
+        @if (isSubmit) {
+          <span translate>dailyPlan.label.submitOrders</span>
+        }
+        @if (!isSubmit) {
+          <span translate>dailyPlan.label.removeOrders</span>
+        }
       </span>
-      <span *ngIf="order.value">
-        <span *ngIf="isSubmit" translate>
-          <span *ngIf="workflow" translate>dailyPlan.label.submitOrderByWorkflow</span>
-          <span *ngIf="!workflow" translate>dailyPlan.label.submitOrderBySchedule</span>
-        </span>
-        <span *ngIf="!isSubmit" translate>
-          <span *ngIf="workflow" translate>dailyPlan.label.removeOrderByWorkflow</span>
-          <span *ngIf="!workflow" translate>dailyPlan.label.removeOrderBySchedule</span>
-        </span>
+    }
+    @if (submissionsDelete) {
+      <span>
+         {{'dailyPlan.label.submissionsDelete' | translate}}
+        @if (!(dateRange && dateRange.length > 0)) {
+          <i class="text-muted p-l-xs text"> : {{selectedDate | stringToDate1}}</i>
+        }
       </span>
-      :
-    </span>
-    <i *ngIf="order"
-       class="text-muted p-l-xs text">{{order.orderTemplatePath ? order.orderTemplatePath : order.key ? order.key : order.orderId}}</i>
+    }
+    @if (dateRange && dateRange.length > 0) {
+      <span>
+        :
+        <i class="text-muted">{{dateRange[0] | stringToDate1:true}}</i> -
+        <i class="text-muted">{{dateRange[1] | stringToDate1:true}}</i>
+      </span>
+    }
+    @if (order) {
+      <span>
+        @if (!order.value) {
+          <span>
+            @if (isSubmit) {
+              <span translate>dailyPlan.label.submitOrder</span>
+            }
+            @if (!isSubmit) {
+              <span translate>dailyPlan.label.removeOrder</span>
+            }
+          </span>
+        }
+        @if (order.value) {
+          <span>
+            @if (isSubmit) {
+              <span translate>
+                @if (workflow) {
+                  <span translate>dailyPlan.label.submitOrderByWorkflow</span>
+                }
+                @if (!workflow) {
+                  <span translate>dailyPlan.label.submitOrderBySchedule</span>
+                }
+              </span>
+            }
+            @if (!isSubmit) {
+              <span translate>
+                @if (workflow) {
+                  <span translate>dailyPlan.label.removeOrderByWorkflow</span>
+                }
+                @if (!workflow) {
+                  <span translate>dailyPlan.label.removeOrderBySchedule</span>
+                }
+              </span>
+            }
+          </span>
+        }
+        :
+      </span>
+    }
+    @if (order) {
+      <i class="text-muted p-l-xs text">{{order.orderTemplatePath ? order.orderTemplatePath : order.key ? order.key : order.orderId}}</i>
+    }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -43,44 +77,75 @@
     <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
     </div>
-    <div *ngIf="!display" class="text-center">
-      <div *ngIf="!submissionsDelete">
-        <div *ngIf="count === 0" class="m-t text">
-          <p class="m-t">
-            <span *ngIf="isSubmit" translate>dailyPlan.popup.submitSelectedOrder</span>
-            <span *ngIf="!isSubmit && !(dateRange && dateRange.length > 0)" translate>dailyPlan.popup.removeSelectedOrder</span>
-            <span *ngIf="dateRange && dateRange.length > 0"
-                  translate>dailyPlan.popup.removeSelectedOrderForDateRange</span>
-          </p>
-        </div>
-        <div *ngIf="count" class="m-t text">
-          <p class="m-t">
-            <span *ngIf="isSubmit" [translateParams]="{count: count}" translate>dailyPlan.popup.submitOrderCount</span>
-            <span *ngIf="!isSubmit" [translateParams]="{count: count}" translate>dailyPlan.popup.removeOrderCount</span>
-          </p>
-        </div>
+    @if (!display) {
+      <div class="text-center">
+        @if (!submissionsDelete) {
+          <div>
+            @if (count === 0) {
+              <div class="m-t text">
+                <p class="m-t">
+                  @if (isSubmit) {
+                    <span translate>dailyPlan.popup.submitSelectedOrder</span>
+                  }
+                  @if (!isSubmit && !(dateRange && dateRange.length > 0)) {
+                    <span translate>dailyPlan.popup.removeSelectedOrder</span>
+                  }
+                  @if (dateRange && dateRange.length > 0) {
+                    <span translate>dailyPlan.popup.removeSelectedOrderForDateRange</span>
+                  }
+                </p>
+              </div>
+            }
+            @if (count) {
+              <div class="m-t text">
+                <p class="m-t">
+                  @if (isSubmit) {
+                    <span [translateParams]="{count: count}" translate>dailyPlan.popup.submitOrderCount</span>
+                  }
+                  @if (!isSubmit) {
+                    <span [translateParams]="{count: count}" translate>dailyPlan.popup.removeOrderCount</span>
+                  }
+                </p>
+              </div>
+            }
+          </div>
+        }
+        @if (submissionsDelete) {
+          <div class="m-t text">
+            <p class="m-t">
+              @if (!(dateRange && dateRange.length > 0)) {
+                <span translate>dailyPlan.popup.deleteSubmissions</span>
+              }
+              @if (dateRange && dateRange.length > 0) {
+                <span translate>dailyPlan.popup.deleteSubmissionsForDateRange</span>
+              }
+            </p>
+          </div>
+        }
       </div>
-      <div *ngIf="submissionsDelete" class="m-t text">
-        <p class="m-t">
-          <span *ngIf="!(dateRange && dateRange.length > 0)" translate>dailyPlan.popup.deleteSubmissions</span>
-          <span *ngIf="dateRange && dateRange.length > 0" translate>dailyPlan.popup.deleteSubmissionsForDateRange</span>
-        </p>
-      </div>
-    </div>
+    }
   </div>
   <div class="modal-footer">
-    <button (click)="onRemove()" *ngIf="!isSubmit"
-            [disabled]="!myForm.form.valid || submitted"
-            class="btn btn-danger btn-sm" type="button">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      {{'common.button.remove' | translate}}
-    </button>
-    <button (click)="onSubmit()" *ngIf="isSubmit"
-            [disabled]="!myForm.form.valid || submitted"
-            class="btn btn-primary btn-sm" type="button">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      {{'common.button.submit' | translate}}
-    </button>
+    @if (!isSubmit) {
+      <button (click)="onRemove()"
+              [disabled]="!myForm.form.valid || submitted"
+              class="btn btn-danger btn-sm" type="button">
+        @if (submitted) {
+          <i class="fa fa-spin fa-spinner p-r-xs"></i>
+        }
+        {{'common.button.remove' | translate}}
+      </button>
+    }
+    @if (isSubmit) {
+      <button (click)="onSubmit()"
+              [disabled]="!myForm.form.valid || submitted"
+              class="btn btn-primary btn-sm" type="button">
+        @if (submitted) {
+          <i class="fa fa-spin fa-spinner p-r-xs"></i>
+        }
+        {{'common.button.submit' | translate}}
+      </button>
+    }
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>

@@ -10,7 +10,6 @@ import {
   PLATFORM_ID,
   Inject
 } from '@angular/core';
-import {trigger, style, animate, transition} from '@angular/animations';
 import {formatLabel, escapeLabel} from './label.helper';
 import {id} from '../utils/id';
 import {ColorHelper} from './color.helper';
@@ -46,6 +45,7 @@ export interface Circle {
 }
 
 @Component({
+  standalone: false,
   selector: 'g[ngx-charts-circle-series]',
   template: `
     <svg:g *ngIf="circle">
@@ -59,7 +59,6 @@ export interface Circle {
       </defs>
       <svg:rect
         *ngIf="!isSSR && barVisible && type === 'standard'"
-        [@animationState]="'active'"
         [attr.x]="circle.cx - circle.radius"
         [attr.y]="circle.cy"
         [attr.width]="circle.radius * 2"
@@ -101,16 +100,6 @@ export interface Circle {
     </svg:g>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('animationState', [
-      transition(':enter', [
-        style({
-          opacity: 0
-        }),
-        animate(250, style({opacity: 1}))
-      ])
-    ])
-  ]
 })
 export class CircleSeriesComponent implements OnChanges, OnInit {
   @Input() data: Series;

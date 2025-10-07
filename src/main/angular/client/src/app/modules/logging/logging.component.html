@@ -29,12 +29,17 @@
           <div class="form-group row">
             <label class="col-lg-2 col-sm-3 " translate>log.label.logLevel</label>
             <div class=" col-sm-9">
-              <nz-checkbox-wrapper (nzOnChange)="statusChange($event)">
-                <ng-container *ngFor="let option of checkOptions">
-                  <label [(ngModel)]="option.checked" [nzValue]="option.value" name="{{option.value}}" nz-checkbox>
-                    <span translate>log.label.{{option.label}}</span></label>
-                </ng-container>
-              </nz-checkbox-wrapper>
+              <nz-checkbox-group
+                name="logStatus"
+                [(ngModel)]="selectedLogStatuses"
+                (ngModelChange)="statusChange($event)">
+                @for (option of checkOptions; track option) {
+                  <label [nzValue]="option.value" nz-checkbox>
+                    <span translate>log.label.{{option.label}}</span>
+                  </label>
+                }
+              </nz-checkbox-group>
+
             </div>
           </div>
           <div class="form-group row">
@@ -49,27 +54,33 @@
         </div>
       </div>
     </div>
-    <div *ngIf="clientLogs" class="row">
-      <div class="col-sm-12">
-        <h5 translate>log.label.logs</h5>
-      </div>
-      <div class="col-md-12">
-        <div class="box p-a" id="logDiv">
-          <span *ngFor="let log of clientLogs" style="font-size: 12px">
-            <ng-container *ngIf="logFilter(log)">
-            <span [ngClass]="log.level=='Error' ? 'log_error': log.level=='Warn' ? ' log_warn' : log.level=='Debug' ? ' log_detail' : ''"
-                  style="color: #009933;white-space:nowrap;">{{log.entryDate | stringToDate}}
-              [<span style="width: 47px;display: inline-block">{{log.level}}</span>]</span>
-            <span style="margin-left: 5px">
-              <span
-                style='background: transparent; font-family:"Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,serif;'>{{log.message}}</span>
-            </span>
-            <br>
-            </ng-container>
-          </span>
-          <div *ngIf="clientLogs.length==0" class="text-center m-t h6" translate>log.message.noLogsToViewEnableIt</div>
+    @if (clientLogs) {
+      <div class="row">
+        <div class="col-sm-12">
+          <h5 translate>log.label.logs</h5>
+        </div>
+        <div class="col-md-12">
+          <div class="box p-a" id="logDiv">
+            @for (log of clientLogs; track log) {
+              <span style="font-size: 12px">
+                @if (logFilter(log)) {
+                  <span [ngClass]="log.level=='Error' ? 'log_error': log.level=='Warn' ? ' log_warn' : log.level=='Debug' ? ' log_detail' : ''"
+                        style="color: #009933;white-space:nowrap;">{{log.entryDate | stringToDate}}
+                    [<span style="width: 47px;display: inline-block">{{log.level}}</span>]</span>
+                  <span style="margin-left: 5px">
+                    <span
+                      style='background: transparent; font-family:"Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,serif;'>{{log.message}}</span>
+                  </span>
+                  <br>
+                }
+              </span>
+            }
+            @if (clientLogs.length==0) {
+              <div class="text-center m-t h6" translate>log.message.noLogsToViewEnableIt</div>
+            }
+          </div>
         </div>
       </div>
-    </div>
+    }
   </div>
 </div>

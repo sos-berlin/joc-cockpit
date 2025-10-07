@@ -18,29 +18,35 @@
           monitor.button.custom
         </div>
       </div>
-      <nz-range-picker *ngIf="filters.filter.view === 'Custom'" [(ngModel)]="filters.filter.dateRange"
-                       [nzAllowClear]="false" [nzDisabledDate]="disabledDate" (ngModelChange)="onChangeDate()"
-                       class="pull-right m-r-12"></nz-range-picker>
-      <div *ngIf="filters.filter.view !== 'Custom'" class="timeline-header pull-right inline m-l-12">
-        <div class="btn-group">
-          <div (click)="prev()" class="btn btn-default btn-sm">
-            <i class="fa fa-angle-left text-md"></i>
-          </div>
-          <div class="btn btn-default btn-sm no-cursor">
-            <nz-week-picker *ngIf="filters.filter.view === 'Week'"
-                            [nzFormat]="dateFormat"
-                            [(ngModel)]="filters.filter.endDate" [nzAllowClear]="false"
-                            [nzDisabledDate]="disabledDate" (ngModelChange)="onChange($event )" ></nz-week-picker>
-            <nz-month-picker *ngIf="filters.filter.view === 'Month'"
-                             [(ngModel)]="filters.filter.endDate" [nzAllowClear]="false"
-                             [nzDisabledDate]="disabledDate" (ngModelChange)="onChange($event)" ></nz-month-picker>
-            {{filters.filter.startDate | date : dateFormat }} - {{filters.filter.endDate | date : dateFormat}}
-          </div>
-          <div (click)="next()" class="btn btn-default btn-sm">
-            <i class="fa fa-angle-right text-md"></i>
+      @if (filters.filter.view === 'Custom') {
+        <nz-range-picker [(ngModel)]="filters.filter.dateRange"
+                         [nzAllowClear]="false" [nzDisabledDate]="disabledDate" (ngModelChange)="onChangeDate()"
+                         class="pull-right m-r-12"></nz-range-picker>
+      }
+      @if (filters.filter.view !== 'Custom') {
+        <div class="timeline-header pull-right inline m-l-12">
+          <div class="btn-group">
+            <div (click)="prev()" class="btn btn-default btn-sm">
+              <i class="fa fa-angle-left text-md"></i>
+            </div>
+            <div class="btn btn-default btn-sm no-cursor">
+              @if (filters.filter.view === 'Week') {
+                <nz-week-picker [nzFormat]="dateFormat"
+                                [(ngModel)]="filters.filter.endDate" [nzAllowClear]="false"
+                                [nzDisabledDate]="disabledDate" (ngModelChange)="onChange($event )" ></nz-week-picker>
+              }
+              @if (filters.filter.view === 'Month') {
+                <nz-month-picker [(ngModel)]="filters.filter.endDate" [nzAllowClear]="false"
+                                 [nzDisabledDate]="disabledDate" (ngModelChange)="onChange($event)" ></nz-month-picker>
+              }
+              {{filters.filter.startDate | date : dateFormat }} - {{filters.filter.endDate | date : dateFormat}}
+            </div>
+            <div (click)="next()" class="btn btn-default btn-sm">
+              <i class="fa fa-angle-right text-md"></i>
+            </div>
           </div>
         </div>
-      </div>
+      }
     </div>
   </div>
   <div class="col-lg-4 col-xl-3">
@@ -52,34 +58,40 @@
       </div>
       <div class="box-body p-a ht-292 text-overflow">
         <div class="row">
-          <div *ngFor="let item of runningTime" [ngClass]="{'col-md-12' : runningTime.length === 1}"
-               class="col-sm-12 col-md-6 text-center">
-            <div class="text-dark _600 m-t">{{item.agentId}}</div>
-            <div class="flex-center">
-              <app-gauge
-                [animated]="true"
-                [animationDuration]="1"
-                [color]="getColor"
-                [dialEndAngle]="-90.001"
-                [dialStartAngle]="-90"
-                [label]="getValue"
-                [value]="item.value"
-              >
-              </app-gauge>
+          @for (item of runningTime; track item) {
+            <div [ngClass]="{'col-md-12' : runningTime.length === 1}"
+                 class="col-sm-12 col-md-6 text-center">
+              <div class="text-dark _600 m-t">{{item.agentId}}</div>
+              <div class="flex-center">
+                <app-gauge
+                  [animated]="true"
+                  [animationDuration]="1"
+                  [color]="getColor"
+                  [dialEndAngle]="-90.001"
+                  [dialStartAngle]="-90"
+                  [label]="getValue"
+                  [value]="item.value"
+                >
+                </app-gauge>
+              </div>
+              <i class="text-muted pos-rel t-n-12">{{'common.label.total' | translate}} <i [translateParams]="{count: item.hours}"
+                                                                                           translate>monitor.label.totalDays</i></i>
             </div>
-            <i class="text-muted pos-rel t-n-12">{{'common.label.total' | translate}} <i [translateParams]="{count: item.hours}"
-                                                                                         translate>monitor.label.totalDays</i></i>
-          </div>
-          <div *ngIf="!isLoaded" class="col-md-12 text-center">
-            <div class="loading-center text-primary text ht-260">
-              <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+          }
+          @if (!isLoaded) {
+            <div class="col-md-12 text-center">
+              <div class="loading-center text-primary text ht-260">
+                <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+              </div>
             </div>
-          </div>
-          <div *ngIf="isLoaded && runningTime.length ===0" class="col-md-12 vert-middle">
-            <div class="p-t-96">
-              <app-empty-data></app-empty-data>
+          }
+          @if (isLoaded && runningTime.length ===0) {
+            <div class="col-md-12 vert-middle">
+              <div class="p-t-96">
+                <app-empty-data></app-empty-data>
+              </div>
             </div>
-          </div>
+          }
         </div>
       </div>
     </div>
@@ -114,14 +126,18 @@
           </ngx-charts-bar-vertical-2d>
         </div>
       </div>
-      <div *ngIf="!isLoaded" class="loading-center text-primary text ht-291">
-        <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
-      </div>
-      <div *ngIf="isLoaded && statisticsData.length ===0" class="vert-middle ht-291">
-        <div>
-          <app-empty-data></app-empty-data>
+      @if (!isLoaded) {
+        <div class="loading-center text-primary text ht-291">
+          <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
         </div>
-      </div>
+      }
+      @if (isLoaded && statisticsData.length ===0) {
+        <div class="vert-middle ht-291">
+          <div>
+            <app-empty-data></app-empty-data>
+          </div>
+        </div>
+      }
     </div>
   </div>
   <div class="col-md-12">
@@ -153,14 +169,18 @@
             ></app-gantt-chart>
           </div>
         </div>
-        <div *ngIf="!isLoaded && agents.length === 0" class="loading-center text-primary text min-ht-150">
-          <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
-        </div>
-        <div *ngIf="agents.length==0 && isLoaded" class="p-t-lg">
-          <div>
-            <app-empty-data></app-empty-data>
+        @if (!isLoaded && agents.length === 0) {
+          <div class="loading-center text-primary text min-ht-150">
+            <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
           </div>
-        </div>
+        }
+        @if (agents.length==0 && isLoaded) {
+          <div class="p-t-lg">
+            <div>
+              <app-empty-data></app-empty-data>
+            </div>
+          </div>
+        }
       </div>
     </div>
   </div>

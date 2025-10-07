@@ -14,6 +14,7 @@ import {AddOrderModalComponent} from "../../workflow/workflow-action/workflow-ac
 import {PriorityModalComponent} from "../../../components/priority-modal/priority-modal.component";
 
 @Component({
+  standalone: false,
   selector: 'app-order-action',
   templateUrl: './order-action.component.html'
 })

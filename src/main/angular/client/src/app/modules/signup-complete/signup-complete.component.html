@@ -22,16 +22,23 @@
           <div class="m-t-72"></div>
         </div>
         <div class="p-t-sm p-b-sm p-l-xs p-r-xs text-center" style="margin-top: 108px">
-          <div *ngIf="!isVerified"
-               class="text-danger text-18 _500">{{'register.message.tokenExpired' | translate}}</div>
-          <div *ngIf="!isVerified"
-               class="text-danger text-16 _400 m-t-sm">{{'register.message.newFIDOAccountRegistration' | translate}}</div>
-          <div *ngIf="isVerified" class="text-18 _500">{{'register.message.successfullyVerified' | translate}}</div>
-          <div *ngIf="isVerified"
-               class="text-md text-16 _400 m-t-sm">{{'register.message.mailVerifiedMessage' | translate}}</div>
-          <button (click)="navToLogin()" *ngIf="isVerified" class="btn btn-primary m-t p-x-md" type="button">
-            {{'login.button.logIn' | translate}}
-          </button>
+          @if (!isVerified) {
+            <div class="text-danger text-18 _500">{{'register.message.tokenExpired' | translate}}</div>
+          }
+          @if (!isVerified) {
+            <div class="text-danger text-16 _400 m-t-sm">{{'register.message.newFIDOAccountRegistration' | translate}}</div>
+          }
+          @if (isVerified) {
+            <div class="text-18 _500">{{'register.message.successfullyVerified' | translate}}</div>
+          }
+          @if (isVerified) {
+            <div class="text-md text-16 _400 m-t-sm">{{'register.message.mailVerifiedMessage' | translate}}</div>
+          }
+          @if (isVerified) {
+            <button (click)="navToLogin()" class="btn btn-primary m-t p-x-md" type="button">
+              {{'login.button.logIn' | translate}}
+            </button>
+          }
         </div>
       </div>
     </div>

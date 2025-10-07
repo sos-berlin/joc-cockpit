@@ -10,7 +10,6 @@ import {
   TrackByFunction
 } from '@angular/core';
 import {isPlatformServer} from '@angular/common';
-import {trigger, style, animate, transition} from '@angular/animations';
 
 import {scaleBand, scaleLinear} from 'd3-scale';
 
@@ -25,6 +24,7 @@ import {ViewDimensions} from '../common/types/view-dimension.interface';
 import {BarOrientation} from '../common/types/bar-orientation.enum';
 
 @Component({
+  standalone: false,
   selector: 'ngx-charts-bar-horizontal-2d',
   template: `
     <ngx-charts-chart
@@ -79,7 +79,7 @@ import {BarOrientation} from '../common/types/bar-orientation.enum';
         <svg:g *ngIf="!isSSR">
           <svg:g
             *ngFor="let group of results; let index = index; trackBy: trackBy"
-            [@animationState]="'active'"
+            class="chart-group-active"
             [attr.transform]="groupTransform(group)"
           >
             <svg:g
@@ -141,17 +141,43 @@ import {BarOrientation} from '../common/types/bar-orientation.enum';
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['../common/base-chart.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  animations: [
-    trigger('animationState', [
-      transition(':leave', [
-        style({
-          opacity: 1,
-          transform: '*'
-        }),
-        animate(500, style({opacity: 0, transform: 'scale(0)'}))
-      ])
-    ])
-  ]
+  styles: [`
+    .chart-group-active {
+      opacity: 1;
+      transform: scale(1);
+      transition: opacity 500ms ease-in-out, transform 500ms ease-in-out;
+    }
+
+    .chart-group-leaving {
+      animation: chartLeaveAnimation 500ms ease-in-out forwards;
+    }
+
+    @keyframes chartLeaveAnimation {
+      from {
+        opacity: 1;
+        transform: scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: scale(0);
+      }
+    }
+
+    .chart-group-entering {
+      animation: chartEnterAnimation 500ms ease-in-out forwards;
+    }
+
+    @keyframes chartEnterAnimation {
+      from {
+        opacity: 0;
+        transform: scale(0);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+  `]
 })
 export class BarHorizontal2DComponent extends BaseChartComponent {
   @Input() legend: boolean = false;

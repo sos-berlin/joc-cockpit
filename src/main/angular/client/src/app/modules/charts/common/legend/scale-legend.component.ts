@@ -1,6 +1,7 @@
 import {Component, Input, OnChanges, ChangeDetectionStrategy, SimpleChanges, ViewEncapsulation} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'ngx-charts-scale-legend',
   template: `
     <div

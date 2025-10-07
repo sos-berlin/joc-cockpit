@@ -7,6 +7,7 @@ import {ChangeParameterModalComponent} from '../modify-modal/modify.component';
 import {CoreService} from '../../services/core.service';
 
 @Component({
+  standalone: false,
   selector: 'app-order-variable',
   templateUrl: './order-variable.component.html'
 })

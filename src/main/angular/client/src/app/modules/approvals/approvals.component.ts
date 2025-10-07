@@ -6,6 +6,7 @@ import {DataService} from "../../services/data.service";
 import {AddApproverModalComponent, ApproversComponent} from "./approvers/approvers.component";
 
 @Component({
+  standalone: false,
   selector: 'app-approvals',
   templateUrl: './approvals.component.html'
 })

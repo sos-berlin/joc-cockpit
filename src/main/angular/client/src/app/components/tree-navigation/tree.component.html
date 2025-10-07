@@ -12,17 +12,19 @@
 
   <i [nzType]="searchNode.loading ? 'loading' : 'search'" class="tree-search-icon" nz-icon nzTheme="outline"></i>
   <nz-autocomplete #auto>
-    <nz-auto-option (click)="selectObject(option)" *ngFor="let option of allObjects | orderBy: 'name'"
-                    [nzValue]="option.path" class="min-ht-opt">
-      <div class="node-wrapper p-l-xs">
-        <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
-             class="node-content-wrapper2"
-             nzTooltipPlacement="right">
-          <i class="fa fa-circle-o text-xs"></i>
-          <span class="p-l-sm">{{option.name}}</span>
+    @for (option of allObjects | orderBy: 'name'; track option.path || option.name) {
+      <nz-auto-option (click)="selectObject(option)"
+                      [nzValue]="option.path" class="min-ht-opt">
+        <div class="node-wrapper p-l-xs">
+          <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
+               class="node-content-wrapper2"
+               nzTooltipPlacement="right">
+            <i class="fa fa-circle-o text-xs"></i>
+            <span class="p-l-sm">{{option.name}}</span>
+          </div>
         </div>
-      </div>
-    </nz-auto-option>
+      </nz-auto-option>
+    }
   </nz-autocomplete>
 </div>
 <div class="pl-20">
@@ -48,10 +50,12 @@
       ></nz-tree>
       <ng-template #nzTreeTemplate let-node>
         <div class="node-wrapper">
-          <button *ngIf="isAction" [nzDropdownMenu]="menu"
-                  class="btn-drop more-option-h p-l-0" nz-dropdown nzTrigger="click" type="button">
-            <i class="fa fa-ellipsis-h"></i>
-          </button>
+          @if (isAction) {
+            <button [nzDropdownMenu]="menu"
+                    class="btn-drop more-option-h p-l-0" nz-dropdown nzTrigger="click" type="button">
+              <i class="fa fa-ellipsis-h"></i>
+            </button>
+          }
           <nz-dropdown-menu #menu="nzDropdownMenu">
             <ul nz-menu>
               <li (click)="deleteFolder(node.origin)" nz-menu-item>
@@ -65,10 +69,14 @@
             <i [nzType]="node.isExpanded && !node.origin.isLeaf ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
             {{node.origin.name || node.origin.path}}
           </div>
-          <span (click)="expandNode(node.origin);" *ngIf="node.children && node.children.length>0"> <i
-            class="expand-collapse fa fa-angle-double-down"></i> </span>
-          <span (click)="collapseNode(node.origin);" *ngIf="node.children && node.children.length>0"> <i
-            class="expand-collapse fa fa-angle-double-up"></i></span>
+          @if (node.children && node.children.length>0) {
+            <span (click)="expandNode(node.origin);"> <i
+              class="expand-collapse fa fa-angle-double-down"></i> </span>
+          }
+          @if (node.children && node.children.length>0) {
+            <span (click)="collapseNode(node.origin);"> <i
+              class="expand-collapse fa fa-angle-double-up"></i></span>
+          }
         </div>
       </ng-template>
     </div>

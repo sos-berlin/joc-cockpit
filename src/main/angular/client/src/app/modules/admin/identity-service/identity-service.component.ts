@@ -19,6 +19,7 @@ import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.c
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
 
 @Component({
+  standalone: false,
   selector: 'app-setting-modal-content',
   templateUrl: './setting-dialog.html'
 })
@@ -741,6 +742,7 @@ export class SettingModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-identity-service-modal-content',
   templateUrl: './identity-service-dialog.html'
 })
@@ -948,6 +950,7 @@ export class IdentityServiceModalComponent {
 
 // Main Component
 @Component({
+  standalone: false,
   selector: 'app-identity-service-all',
   templateUrl: 'identity-service.component.html'
 })

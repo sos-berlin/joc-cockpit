@@ -19,6 +19,7 @@ import {ScaleType} from '../common/types/scale-type.enum';
 import {ViewDimensions} from '../common/types/view-dimension.interface';
 
 @Component({
+  standalone: false,
   selector: 'ngx-charts-bar-vertical',
   template: `
     <ngx-charts-chart

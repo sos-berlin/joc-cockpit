@@ -24,6 +24,7 @@ const xpath = require('xpath');
 const convert = require('xml-js');
 
 @Component({
+  standalone: false,
   selector: 'app-show-child-modal',
   templateUrl: './show-child-dialog.html'
 })
@@ -545,6 +546,7 @@ export class ShowChildModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-show-modal',
   templateUrl: './show-dialog.html'
 })
@@ -702,6 +704,7 @@ export class ShowModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-confirmation-modal',
   templateUrl: './confirmation-dialog.html'
 })
@@ -754,6 +757,7 @@ export class ConfirmationModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-xml',
   templateUrl: './xml-editor.component.html',
   styleUrls: ['./xml-editor.component.scss']

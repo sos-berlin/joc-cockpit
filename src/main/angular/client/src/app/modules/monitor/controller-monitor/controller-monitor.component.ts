@@ -10,6 +10,7 @@ import {DataService} from '../../../services/data.service';
 import {GroupByPipe} from '../../../pipes/core.pipe';
 
 @Component({
+  standalone: false,
   selector: 'app-controller-monitor',
   templateUrl: './controller-monitor.component.html',
   styleUrls: ['./controller-monitor.component.scss']

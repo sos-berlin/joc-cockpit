@@ -4,6 +4,7 @@ import {filter} from 'rxjs/operators';
 import {Subscription} from 'rxjs';
 
 @Component({
+  standalone: false,
   selector: 'app-breadcrumbs',
   templateUrl: './breadcrumbs.component.html',
   styleUrls: ['./breadcrumbs.component.scss']

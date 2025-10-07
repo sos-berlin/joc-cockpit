@@ -1,81 +1,97 @@
 <div class="box p-a">
-  <div *ngIf="controllerRoles && controllerRoles.length > 1" class="m-l b-b p-b-sm">
-    <span class="_600 text-16">#</span>
-    <label *ngIf="permission.joc && permission.joc.administration.accounts.manage"
-           nz-checkbox [(nzChecked)]="object.checked"
-           [nzIndeterminate]="object.indeterminate"
-           (nzCheckedChange)="checkAll($event)"
-           style="margin-left: 13px"></label>
-    <a (click)="expandAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text"
-       style="padding-left: 12px;">
-      <i class="fa fa-angle-double-down fa-lg"></i>
-    </a>
-    <a (click)="collapseAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
-      <i class="fa fa-angle-double-up fa-lg"></i>
-    </a>
-  </div>
-  <div (cdkDropListDropped)="drop($event)" cdkDropList class="role-list">
-    <div *ngFor="let role of controllerRoles" cdkDrag class="box-body role-box p-b-0">
-      <div class="row">
-        <div class="col-sm-12">
-          <div *ngIf="permission.joc && permission.joc.administration.accounts.manage" cdkDragHandle
-               class="pos-abt drag-handler">
-            <i aria-hidden="true" class="fa fa-bars"></i>
-          </div>
-          <div *ngIf="permission.joc && permission.joc.administration.accounts.manage"
-               class="pull-left m-l p-l-sm m-r-xs">
-            <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(role.roleName)"
-                   (nzCheckedChange)="checkMappedObject($event, role)"></label>
-          </div>
-          <div *ngIf="permission.joc && permission.joc.administration.accounts.manage"
-               class="btn-group dropdown pull-left m-r-xs">
-            <button nz-dropdown [nzDropdownMenu]="option" class="btn-drop more-option-h" nzTrigger="click"
-                    type="button"><i
-              class="fa fa-ellipsis-h"></i></button>
-            <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-              <ul nz-menu>
-                <li (click)="editRole(role)" nz-menu-item>
-                  <a translate>common.button.edit</a>
-                </li>
-                <li (click)="copyRole(role)" nz-menu-item>
-                  <a translate>common.button.duplicate</a>
-                </li>
-                <li (click)="deleteRole(role)" class="bg-hover-color" nz-menu-item>
-                  <a translate>common.button.delete</a>
-                </li>
-              </ul>
-            </nz-dropdown-menu>
-          </div>
-          <h5 class="text-dark">{{role.roleName}}
-            <i (click)="collapseRole(role.roleName)" *ngIf="dataService.preferences.roles.has(role.roleName)"
-               class="cursor fa fa-caret-up m-l-xs"></i>
-            <i (click)="expandRole(role.roleName)" *ngIf="!dataService.preferences.roles.has(role.roleName)"
-               class="cursor fa fa-caret-down m-l-xs"></i>
-          </h5>
-        </div>
-      </div>
-      <div *ngIf="dataService.preferences.roles.has(role.roleName)" class="row">
-        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-4 col-sm-4"><span class="p-l-lg m-l"
-                                                                         translate>user.label.controllers</span></div>
-        <div class="col-xxl-11 col-xl-10 col-lg-3 col-md-4 col-sm-8">
-          <div *ngFor="let controller of role.controllers" class="role">
-            <span class="fa fa-circle p-r-xs font9"></span>
-            <a [routerLink]="['/users/identity_service/permissions',controller || 'default', role.roleName]"
-               class="text-primary">
-              {{controller || 'default'}}
-            </a>
-            <i (click)="copyController(role, controller)" class="fa fa-copy m-l-xs p-l-xs"></i>
-            <i (click)="deleteController(role,controller)" *ngIf="controller"
-               class="fa fa-times m-l-xs p-l-xs"></i>
-          </div>
-        </div>
-      </div>
-      <hr>
+  @if (controllerRoles && controllerRoles.length > 1) {
+    <div class="m-l b-b p-b-sm">
+      <span class="_600 text-16">#</span>
+      @if (permission.joc && permission.joc.administration.accounts.manage) {
+        <label nz-checkbox [(nzChecked)]="object.checked"
+               [nzIndeterminate]="object.indeterminate"
+               (nzCheckedChange)="checkAll($event)"
+               style="margin-left: 13px"></label>
+      }
+      <a (click)="expandAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text"
+         style="padding-left: 12px;">
+        <i class="fa fa-angle-double-down fa-lg"></i>
+      </a>
+      <a (click)="collapseAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
+        <i class="fa fa-angle-double-up fa-lg"></i>
+      </a>
     </div>
+  }
+  <div (cdkDropListDropped)="drop($event)" cdkDropList class="role-list">
+    @for (role of controllerRoles; track role.roleName) {
+      <div cdkDrag class="box-body role-box p-b-0">
+        <div class="row">
+          <div class="col-sm-12">
+            @if (permission.joc && permission.joc.administration.accounts.manage) {
+              <div cdkDragHandle class="pos-abt drag-handler">
+                <i aria-hidden="true" class="fa fa-bars"></i>
+              </div>
+            }
+            @if (permission.joc && permission.joc.administration.accounts.manage) {
+              <div class="pull-left m-l p-l-sm m-r-xs">
+                <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(role.roleName)"
+                       (nzCheckedChange)="checkMappedObject($event, role)"></label>
+              </div>
+            }
+            @if (permission.joc && permission.joc.administration.accounts.manage) {
+              <div class="btn-group dropdown pull-left m-r-xs">
+                <button nz-dropdown [nzDropdownMenu]="option" class="btn-drop more-option-h" nzTrigger="click"
+                        type="button"><i class="fa fa-ellipsis-h"></i></button>
+                <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                  <ul nz-menu>
+                    <li (click)="editRole(role)" nz-menu-item>
+                      <a translate>common.button.edit</a>
+                    </li>
+                    <li (click)="copyRole(role)" nz-menu-item>
+                      <a translate>common.button.duplicate</a>
+                    </li>
+                    <li (click)="deleteRole(role)" class="bg-hover-color" nz-menu-item>
+                      <a translate>common.button.delete</a>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+            }
+            <h5 class="text-dark">{{role.roleName}}
+              @if (dataService.preferences.roles.has(role.roleName)) {
+                <i (click)="collapseRole(role.roleName)" class="cursor fa fa-caret-up m-l-xs"></i>
+              }
+              @if (!dataService.preferences.roles.has(role.roleName)) {
+                <i (click)="expandRole(role.roleName)" class="cursor fa fa-caret-down m-l-xs"></i>
+              }
+            </h5>
+          </div>
+        </div>
+        @if (dataService.preferences.roles.has(role.roleName)) {
+          <div class="row">
+            <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-4 col-sm-4"><span class="p-l-lg m-l"
+                                                                             translate>user.label.controllers</span></div>
+            <div class="col-xxl-11 col-xl-10 col-lg-3 col-md-4 col-sm-8">
+              @for (controller of role.controllers; track controller || 'default') {
+                <div class="role">
+                  <span class="fa fa-circle p-r-xs font9"></span>
+                  <a [routerLink]="['/users/identity_service/permissions',controller || 'default', role.roleName]"
+                     class="text-primary">
+                    {{controller || 'default'}}
+                  </a>
+                  <i (click)="copyController(role, controller)" class="fa fa-copy m-l-xs p-l-xs"></i>
+                  @if (controller) {
+                    <i (click)="deleteController(role,controller)" class="fa fa-times m-l-xs p-l-xs"></i>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+        <hr>
+      </div>
+    }
   </div>
-  <div *ngIf="controllerRoles.length === 0 && !showMsg">
-    <app-empty-data></app-empty-data>
-  </div>
+  @if (controllerRoles.length === 0 && !showMsg) {
+    <div>
+      <app-empty-data></app-empty-data>
+    </div>
+  }
   <div [ngClass]="{show : showMsg}" class="box-body p-b-0 hide">
     <div class="row">
       <div class="col-md-12 text-center">

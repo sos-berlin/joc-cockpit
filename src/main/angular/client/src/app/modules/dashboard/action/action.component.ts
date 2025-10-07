@@ -4,6 +4,7 @@ import {CoreService} from '../../../services/core.service';
 import {AuthService} from '../../../components/guard';
 
 @Component({
+  standalone: false,
   selector: 'app-comment-modal',
   templateUrl: './dialog.html',
 })
@@ -47,6 +48,7 @@ export class CommentModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-action',
   templateUrl: './action.component.html'
 })

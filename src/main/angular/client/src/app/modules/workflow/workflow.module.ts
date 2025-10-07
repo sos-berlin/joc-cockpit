@@ -21,6 +21,7 @@ import {OrderListSidebarComponent} from './order-list-sidebar/order-list-sidebar
 import {TypeComponent} from './workflow-type/type.component';
 import {ScriptModalComponent} from './script-modal/script-modal.component';
 import {TooltipInfoComponent} from "./tooltip-info/tooltip-info.component";
+import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 
 @NgModule({
   imports: [
@@ -28,7 +29,8 @@ import {TooltipInfoComponent} from "./tooltip-info/tooltip-info.component";
     CodemirrorModule,
     NzTabsModule,
     NzDrawerModule,
-    WorkflowRoutingModule
+    WorkflowRoutingModule,
+    NzTooltipDirective
   ],
   declarations: [
     WorkflowComponent,

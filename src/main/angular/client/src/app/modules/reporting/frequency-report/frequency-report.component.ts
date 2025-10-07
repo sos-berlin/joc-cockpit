@@ -8,6 +8,7 @@ import {CoreService} from "../../../services/core.service";
 import {AuthService} from "../../../components/guard";
 import {TranslateService} from '@ngx-translate/core';
 @Component({
+  standalone: false,
   selector: 'app-frequency-report',
   templateUrl: './frequency-report.component.html',
   styleUrls: ['./frequency-report.component.scss']

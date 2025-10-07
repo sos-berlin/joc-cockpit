@@ -1,48 +1,70 @@
-<div *ngFor="let variable of order[type]"
-     class="plan-variables">
-  <span class="btn-group dropdown" *ngIf="order.state && !history">
-    <button class="btn-drop more-option-h" nz-dropdown [nzDisabled]="!(order.state._text === 'PLANNED' || order.state._text === 'SCHEDULED' || order.state._text === 'SUBMITTED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')"
-            nzTrigger="click" [nzDropdownMenu]="export3"
-            type="button">
-      <i class="fa fa-ellipsis-h"></i>
-    </button>
-    <nz-dropdown-menu #export3="nzDropdownMenu" role="menu">
-      <ul nz-menu>
-        <li (click)="changeParameter(order, variable)" nz-menu-item>
-          <a translate>dailyPlan.button.setParameter</a>
-        </li>
-        <li (click)="removeParameter(order, variable)" nz-menu-item>
-          <a translate>dailyPlan.button.removeParameter</a>
-        </li>
-      </ul>
-    </nz-dropdown-menu>
-  </span>
-      <span *ngIf="isPrimitive(variable.value)">
-      {{ variable.name }} : {{ variable.value }}
-    </span>
+@for (variable of order[type]; track variable.name || $index) {
+  <div class="plan-variables">
+    @if (order.state && !history) {
+      <span class="btn-group dropdown">
+        <button class="btn-drop more-option-h" nz-dropdown [nzDisabled]="!(order.state._text === 'PLANNED' || order.state._text === 'SCHEDULED' || order.state._text === 'SUBMITTED' || order.state._text === 'PENDING' || order.state._text === 'BLOCKED')"
+                nzTrigger="click" [nzDropdownMenu]="export3"
+                type="button">
+          <i class="fa fa-ellipsis-h"></i>
+        </button>
+        <nz-dropdown-menu #export3="nzDropdownMenu" role="menu">
+          <ul nz-menu>
+            <li (click)="changeParameter(order, variable)" nz-menu-item>
+              <a translate>dailyPlan.button.setParameter</a>
+            </li>
+            <li (click)="removeParameter(order, variable)" nz-menu-item>
+              <a translate>dailyPlan.button.removeParameter</a>
+            </li>
+          </ul>
+        </nz-dropdown-menu>
+      </span>
+    }
+    @if (isPrimitive(variable.value)) {
+      <span>
+        {{ variable.name }} : {{ variable.value }}
+      </span>
+    }
 
-      <span *ngIf="isMap(variable.value)">
-      <b *ngIf="variable.name">{{ variable.name.trimStart() }}</b>
-      <div *ngFor="let item of toKeyValueArray(variable.value)" class="plan-variables">
-        <span>{{ item.name }} : {{ item.value }}</span>
-      </div>
-    </span>
+    @if (isMap(variable.value)) {
+      <span>
+        @if (variable.name) {
+          <b>{{ variable.name.trimStart() }}</b>
+        }
+        @for (item of toKeyValueArray(variable.value); track item.name || $index) {
+          <div class="plan-variables">
+            <span>{{ item.name }} : {{ item.value }}</span>
+          </div>
+        }
+      </span>
+    }
 
-      <span *ngIf="isList(variable.value)">
-      <b *ngIf="variable.name">{{variable.name.trimStart()}}</b>
-      <div *ngFor="let list of variable.value; let i = index"
-           [ngClass]="{'b-b': i !== variable.value.length - 1}"
-           class="m-l-20">
-        <div *ngFor="let item of list" class="plan-variables">
-          <span>{{ item.name }} : {{ item.value }}</span>
-        </div>
-      </div>
-    </span>
-</div>
-<div *ngIf="(order[type] && order[type].length === 0) || (!order[type] && type !== 'variables')" class="p-l">
-  <span translate>order.message.noVariableAvailable</span>
-</div>
-<div *ngIf="!order[type] && type === 'variables'" class="p-l p-t-xs">
-  <i class="fa fa-spin fa-spinner"></i>
-  <span class="p-l-xs" translate>common.label.loading</span>
-</div>
+    @if (isList(variable.value)) {
+      <span>
+        @if (variable.name) {
+          <b>{{variable.name.trimStart()}}</b>
+        }
+        @for (list of variable.value; track $index; let i = $index) {
+          <div [ngClass]="{'b-b': i !== variable.value.length - 1}"
+               class="m-l-20">
+            @for (item of list; track item.name || $index) {
+              <div class="plan-variables">
+                <span>{{ item.name }} : {{ item.value }}</span>
+              </div>
+            }
+          </div>
+        }
+      </span>
+    }
+  </div>
+}
+@if ((order[type] && order[type].length === 0) || (!order[type] && type !== 'variables')) {
+  <div class="p-l">
+    <span translate>order.message.noVariableAvailable</span>
+  </div>
+}
+@if (!order[type] && type === 'variables') {
+  <div class="p-l p-t-xs">
+    <i class="fa fa-spin fa-spinner"></i>
+    <span class="p-l-xs" translate>common.label.loading</span>
+  </div>
+}

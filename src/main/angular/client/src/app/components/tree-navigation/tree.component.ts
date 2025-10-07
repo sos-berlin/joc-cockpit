@@ -9,6 +9,7 @@ import {debounceTime} from "rxjs/operators";
 declare const $: any;
 
 @Component({
+  standalone: false,
   selector: 'app-tree-navigation',
   templateUrl: './tree.component.html'
 })

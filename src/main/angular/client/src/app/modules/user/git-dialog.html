@@ -1,8 +1,12 @@
 <div class="modal-header">
   <h4 class="modal-title">
     <span translate>profile.gitManagement.label.manageGitCredentials</span>
-    <span *ngIf="data">:</span>
-    <span *ngIf="data" class="p-l-xs">{{data.gitAccount}}</span>
+    @if (data) {
+      <span>:</span>
+    }
+    @if (data) {
+      <span class="p-l-xs">{{data.gitAccount}}</span>
+    }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -21,11 +25,13 @@
       <div class="col-sm-6">
         <input #server="ngModel" [(ngModel)]="gitObject.gitServer" [appAutofocus]="true" autocomplete="off" class="form-control"
                name="name" required type="text"/>
-        <div *ngIf="server.invalid && (server.dirty || server.touched)" class="text-danger help-block">
-          <div *ngIf="server.errors.required">
-            <div translate>common.message.requiredError</div>
+        @if (server.invalid && (server.dirty || server.touched)) {
+          <div class="text-danger help-block">
+            @if (server.errors.required) {
+              <div translate>common.message.requiredError</div>
+            }
           </div>
-        </div>
+        }
       </div>
     </div>
     <div [ngClass]="{'has-error' : ((accountName.dirty || accountName.touched) && accountName.invalid)}"
@@ -36,11 +42,13 @@
       <div class="col-sm-6">
         <input #accountName="ngModel" [(ngModel)]="gitObject.gitAccount" autocomplete="off" class="form-control" name="accountName"
                required type="text"/>
-        <div *ngIf="accountName.invalid && (accountName.dirty || accountName.touched)" class="text-danger help-block">
-          <div *ngIf="accountName.errors.required">
-            <div translate>common.message.requiredError</div>
+        @if (accountName.invalid && (accountName.dirty || accountName.touched)) {
+          <div class="text-danger help-block">
+            @if (accountName.errors.required) {
+              <div translate>common.message.requiredError</div>
+            }
           </div>
-        </div>
+        }
       </div>
     </div>
     <div [ngClass]="{'has-error' : ((username.dirty || username.touched) && username.invalid)}"
@@ -51,11 +59,13 @@
       <div class="col-sm-6">
         <input #username="ngModel" [(ngModel)]="gitObject.username" autocomplete="off" class="form-control" name="username"
                required type="text"/>
-        <div *ngIf="username.invalid && (username.dirty || username.touched)" class="text-danger help-block">
-          <div *ngIf="username.errors.required">
-            <div translate>common.message.requiredError</div>
+        @if (username.invalid && (username.dirty || username.touched)) {
+          <div class="text-danger help-block">
+            @if (username.errors.required) {
+              <div translate>common.message.requiredError</div>
+            }
           </div>
-        </div>
+        }
       </div>
     </div>
     <div [ngClass]="{'has-error' : ((email.dirty || email.touched) && email.invalid)}"
@@ -66,11 +76,13 @@
       <div class="col-sm-6">
         <input #email="ngModel" [(ngModel)]="gitObject.email" autocomplete="off" class="form-control" name="email"
                required type="email"/>
-        <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-danger help-block">
-          <div *ngIf="email.errors.required">
-            <div translate>common.message.requiredError</div>
+        @if (email.invalid && (email.dirty || email.touched)) {
+          <div class="text-danger help-block">
+            @if (email.errors.required) {
+              <div translate>common.message.requiredError</div>
+            }
           </div>
-        </div>
+        }
       </div>
     </div>
     <div class="form-group row">
@@ -83,51 +95,63 @@
         </nz-radio-group>
       </div>
     </div>
-    <div *ngIf="object.type === 'password'" class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>
-        profile.gitManagement.label.gitPassword
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      <div [ngClass]="{'has-error' : ((gitPswd.dirty || gitPswd.touched) && gitPswd.invalid)}" class="col-sm-6">
-        <input #gitPswd="ngModel" [(ngModel)]="gitObject.password" autocomplete="off" class="form-control"
-               name="gitPswd" required type="{{isShow ? 'text' : 'password'}}"/>
-        <i (click)="isShow = !isShow" [ngClass]="!isShow ? 'fa-eye' : 'fa-eye-slash'" class="fa pos-abt cursor"
-           style="top:8px;right: 24px"></i>
-        <div *ngIf="gitPswd.invalid && (gitPswd.dirty || gitPswd.touched)" class="text-danger help-block">
-          <div *ngIf="gitPswd.errors.required">
-            <div translate>common.message.requiredError</div>
-          </div>
+    @if (object.type === 'password') {
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label" translate>
+          profile.gitManagement.label.gitPassword
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div [ngClass]="{'has-error' : ((gitPswd.dirty || gitPswd.touched) && gitPswd.invalid)}" class="col-sm-6">
+          <input #gitPswd="ngModel" [(ngModel)]="gitObject.password" autocomplete="off" class="form-control"
+                 name="gitPswd" required type="{{isShow ? 'text' : 'password'}}"/>
+          <i (click)="isShow = !isShow" [ngClass]="!isShow ? 'fa-eye' : 'fa-eye-slash'" class="fa pos-abt cursor"
+             style="top:8px;right: 24px"></i>
+          @if (gitPswd.invalid && (gitPswd.dirty || gitPswd.touched)) {
+            <div class="text-danger help-block">
+              @if (gitPswd.errors.required) {
+                <div translate>common.message.requiredError</div>
+              }
+            </div>
+          }
         </div>
       </div>
-    </div>
-    <div *ngIf="object.type === 'key'" class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>profile.gitManagement.label.keyfilePath</label>
-      <div class="col-sm-6">
-        <input [(ngModel)]="gitObject.keyfilePath" autocomplete="off" class="form-control" name="keyfilePath"
-               type="text"/>
-      </div>
-    </div>
-    <div *ngIf="object.type === 'accessToken'" class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>
-        profile.gitManagement.label.gitAccessToken
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      <div [ngClass]="{'has-error' : ((accessToken.dirty || accessToken.touched) && accessToken.invalid)}"
-           class="col-sm-6">
-        <input #accessToken="ngModel" [(ngModel)]="gitObject.personalAccessToken" autocomplete="off" class="form-control"
-               name="personalAccessToken" required type="text"/>
-        <div *ngIf="accessToken.invalid && (accessToken.dirty || accessToken.touched)" class="text-danger help-block">
-          <div *ngIf="accessToken.errors.required">
-            <div translate>common.message.requiredError</div>
-          </div>
+    }
+    @if (object.type === 'key') {
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label" translate>profile.gitManagement.label.keyfilePath</label>
+        <div class="col-sm-6">
+          <input [(ngModel)]="gitObject.keyfilePath" autocomplete="off" class="form-control" name="keyfilePath"
+                 type="text"/>
         </div>
       </div>
-    </div>
+    }
+    @if (object.type === 'accessToken') {
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label" translate>
+          profile.gitManagement.label.gitAccessToken
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div [ngClass]="{'has-error' : ((accessToken.dirty || accessToken.touched) && accessToken.invalid)}"
+             class="col-sm-6">
+          <input #accessToken="ngModel" [(ngModel)]="gitObject.personalAccessToken" autocomplete="off" class="form-control"
+                 name="personalAccessToken" required type="text"/>
+          @if (accessToken.invalid && (accessToken.dirty || accessToken.touched)) {
+            <div class="text-danger help-block">
+              @if (accessToken.errors.required) {
+                <div translate>common.message.requiredError</div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
   </div>
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
             type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">

@@ -12,6 +12,7 @@ import {LegendOptions, LegendType, LegendPosition} from '../types/legend.model';
 import {ScaleType} from '../types/scale-type.enum';
 
 @Component({
+  standalone: false,
   providers: [TooltipService],
   selector: 'ngx-charts-chart',
   template: `

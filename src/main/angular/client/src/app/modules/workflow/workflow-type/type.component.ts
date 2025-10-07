@@ -18,6 +18,7 @@ import {DataService} from "../../../services/data.service";
 import {Subscription} from "rxjs";
 
 @Component({
+  standalone: false,
   selector: 'app-type',
   templateUrl: './type.component.html'
 })

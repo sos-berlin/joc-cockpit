@@ -4,6 +4,7 @@ import {Output, EventEmitter, NgZone, Directive, ElementRef} from '@angular/core
  * Visibility Observer
  */
 @Directive({
+  standalone: false,
   selector: 'visibility-observer'
 })
 export class VisibilityObserver {

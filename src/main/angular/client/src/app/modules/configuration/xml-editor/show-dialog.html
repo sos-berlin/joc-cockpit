@@ -73,12 +73,13 @@
                           required>
           </ngx-codemirror>
         </div>
-        <div *ngIf="(cm.invalid && (cm.dirty || cm.touched))"
-             class="text-danger help-block">
-          <div *ngIf="(cm.errors && cm.errors.required)">
-            <div translate>common.message.requiredError</div>
+        @if (cm.invalid && (cm.dirty || cm.touched)) {
+          <div class="text-danger help-block">
+            @if (cm.errors && cm.errors.required) {
+              <div translate>common.message.requiredError</div>
+            }
           </div>
-        </div>
+        }
       </div>
     </div>
   </div>

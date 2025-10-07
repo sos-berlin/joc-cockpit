@@ -15,6 +15,7 @@ import {AddBlocklistModalComponent} from '../blocklist/blocklist.component';
 import {FileUploaderComponent} from "../../../components/file-uploader/file-uploader.component";
 
 @Component({
+  standalone: false,
   selector: 'app-confirmation-modal',
   templateUrl: './confirmation-dialog.html'
 })
@@ -131,6 +132,7 @@ export class ConfirmationModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-user-modal-content',
   templateUrl: './user-dialog.html'
 })
@@ -213,7 +215,7 @@ export class AccountModalComponent {
     }
 
     this.checkApprovalRoleValidation();
-    
+
   }
 
   private getRoles(): void {
@@ -386,6 +388,7 @@ export class AccountModalComponent {
 }
 // Main Component
 @Component({
+  standalone: false,
   selector: 'app-accounts-all',
   templateUrl: 'accounts.component.html'
 })

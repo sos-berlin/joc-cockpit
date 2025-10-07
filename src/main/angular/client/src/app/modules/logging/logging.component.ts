@@ -8,16 +8,22 @@ import {AuthService} from '../../components/guard';
 declare const $;
 
 @Component({
+  standalone: false,
   selector: 'app-logging2',
-  template: '<div class="p-a">\n' +
-    '  <span *ngFor="let log of clientLogs">\n' +
-    '  <ng-container *ngIf="logFilter(log)">\n' +
-    '    <span class="log-state" [ngClass]="log.level==\'Error\' ? \'log_error\': log.level==\'Warn\' ? \' log_warn\' : log.level==\'Debug\' ? \' log_detail\' : \'\'" >{{log.entryDate | stringToDate}} [<span class="log-level">{{log.level}}</span>]</span>\n' +
-    '    <span>\n' +
-    '      <span class="log-msg">{{log.message}}</span>\n' +
-    '    </span><br></ng-container>\n' +
-    '  </span>\n' +
-    '</div>',
+  template: `
+  <div class="p-a">
+    @for (log of clientLogs; track log) {
+      @if (logFilter(log)) {
+        <span>
+          <span class="log-state" [ngClass]="log.level=='Error' ? 'log_error': log.level=='Warn' ? ' log_warn' : log.level=='Debug' ? ' log_detail' : ''" >{{log.entryDate | stringToDate}} [<span class="log-level">{{log.level}}</span>]</span>
+          <span>
+            <span class="log-msg">{{log.message}}</span>
+          </span><br>
+        </span>
+      }
+    }
+  </div>
+`,
   styles: ['::ng-deep body { overflow: auto !important;}.log-state {font-family:\'Courier New\';color: #009933;white-space:nowrap;} .log-msg {display:inline;background: transparent;font-family:"Open Sans","lucida grande","Segoe UI",arial,verdana,"lucida sans unicode",tahoma,serif;} .log-level {width: 47px;display: inline-block}']
 })
 export class Logging2Component {
@@ -48,6 +54,7 @@ export class Logging2Component {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-logging',
   templateUrl: './logging.component.html'
 })
@@ -57,6 +64,7 @@ export class LoggingComponent {
   schedulerIds: any = {};
   permission: any = {};
   subscription: Subscription;
+  selectedLogStatuses: string[] = [];
   checkOptions = [
     {label: 'info', value: 'info', checked: false},
     {label: 'error', value: 'error', checked: false},
@@ -73,37 +81,41 @@ export class LoggingComponent {
     }
   }
 
-  ngOnInit(): void {
-    if (this.authService.scheduleIds) {
-      this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+ngOnInit(): void {
+  if (this.authService.scheduleIds) {
+    this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
+  }
+  if (this.authService.permission) {
+    this.permission = JSON.parse(this.authService.permission) || {};
+  }
+  if (this.clientLogFilter.isEnable) {
+    try {
+      this.clientLogs = localStorage['logging'] ? JSON.parse(localStorage['logging']) : [];
+    } catch (e) {
     }
-    if (this.authService.permission) {
-      this.permission = JSON.parse(this.authService.permission) || {};
-    }
+  }
+  this.subscription = interval(2500).subscribe(() => {
     if (this.clientLogFilter.isEnable) {
       try {
         this.clientLogs = localStorage['logging'] ? JSON.parse(localStorage['logging']) : [];
       } catch (e) {
       }
     }
-    // Create an Observable that will publish a value on an interval
-    this.subscription = interval(2500).subscribe(() => {
-      if (this.clientLogFilter.isEnable) {
-        try {
-          this.clientLogs = localStorage['logging'] ? JSON.parse(localStorage['logging']) : [];
-        } catch (e) {
-        }
-      }
+  });
+
+  if (this.clientLogFilter.status && this.clientLogFilter.status.length > 0) {
+    this.selectedLogStatuses = [...this.clientLogFilter.status];
+
+    this.checkOptions = this.checkOptions.map(item => {
+      return {
+        ...item,
+        checked: this.clientLogFilter.status.indexOf(item.value) > -1
+      };
     });
-    if (this.clientLogFilter.status && this.clientLogFilter.status.length > 0) {
-      this.checkOptions = this.checkOptions.map(item => {
-        return {
-          ...item,
-          checked: this.clientLogFilter.status.indexOf(item.value) > -1
-        };
-      });
-    }
+  } else {
+    this.selectedLogStatuses = [];
   }
+}
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
@@ -111,6 +123,7 @@ export class LoggingComponent {
 
   statusChange(value: string[]): void {
     this.clientLogFilter.status = value;
+    this.selectedLogStatuses = value; // Keep in sync
     this.saveSettingConf();
   }
 

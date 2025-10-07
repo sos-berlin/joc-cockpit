@@ -16,6 +16,7 @@ import { HelpViewerComponent } from 'src/app/components/help-viewer/help-viewer.
 declare const $;
 
 @Component({
+  standalone: false,
   selector: 'app-modal-content',
   templateUrl: './filter-dialog.html',
 })
@@ -64,6 +65,7 @@ export class FilterModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-file-transfer-form-template',
   templateUrl: './form-template.html',
 })
@@ -93,7 +95,8 @@ export class FileTransferSearchComponent {
     {status: 'FAILED', text: 'failed', checked: false},
     {status: 'INCOMPLETE', text: 'incomplete', checked: false}
   ];
-
+  selectedStates: string[] = [];
+  selectedOperations: string[] = [];
   operationOptions = [
     {status: 'COPY', text: 'copy', checked: false},
     {status: 'MOVE', text: 'move', checked: false},
@@ -150,23 +153,32 @@ export class FileTransferSearchComponent {
       this.addTargetPath();
     }
 
-    if (this.filter.states && this.filter.states.length > 0) {
-      this.stateOptions = this.stateOptions.map(item => {
-        return {
-          ...item,
-          checked: this.filter.states.indexOf(item.status) > -1
-        };
-      });
-    }
-    if (this.filter.operations && this.filter.operations.length > 0) {
-      this.operationOptions = this.operationOptions.map(item => {
-        return {
-          ...item,
-          checked: this.filter.operations.indexOf(item.status) > -1
-        };
-      });
-    }
+  if (this.filter.states && this.filter.states.length > 0) {
+    this.selectedStates = [...this.filter.states];
+
+    this.stateOptions = this.stateOptions.map(item => {
+      return {
+        ...item,
+        checked: this.filter.states.indexOf(item.status) > -1
+      };
+    });
+  } else {
+    this.selectedStates = [];
   }
+
+  if (this.filter.operations && this.filter.operations.length > 0) {
+    this.selectedOperations = [...this.filter.operations];
+
+    this.operationOptions = this.operationOptions.map(item => {
+      return {
+        ...item,
+        checked: this.filter.operations.indexOf(item.status) > -1
+      };
+    });
+  } else {
+    this.selectedOperations = [];
+  }
+}
 
   getFolderTree(): void {
     this.coreService.post('tree', {
@@ -224,11 +236,14 @@ export class FileTransferSearchComponent {
 
   stateChange(value: string[]): void {
     this.filter.states = value;
+    this.selectedStates = value; // Keep in sync
   }
 
   operationChange(value: string[]): void {
     this.filter.operations = value;
+    this.selectedOperations = value; // Keep in sync
   }
+
 
   onSubmit(result): void {
     this.submitted = true;
@@ -339,6 +354,7 @@ export class FileTransferSearchComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-single-file-transfer',
   templateUrl: './single-file-transfer.component.html'
 })
@@ -446,6 +462,7 @@ export class SingleFileTransferComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-file-transfer',
   templateUrl: './file-transfer.component.html'
 })

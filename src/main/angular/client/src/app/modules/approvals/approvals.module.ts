@@ -6,6 +6,7 @@ import {ApprovalRequestComponent} from "./approval-request/approval-request.comp
 import {AddApproverModalComponent, ApproversComponent} from "./approvers/approvers.component";
 import {EmailSettingComponent} from "./email-setting/email-setting.component";
 import {NzTabComponent} from "ng-zorro-antd/tabs";
+import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 
 const routes: Routes = [
   {
@@ -18,11 +19,12 @@ const routes: Routes = [
   declarations: [
     ApprovalsComponent, ApprovalRequestComponent, ApproversComponent, AddApproverModalComponent, EmailSettingComponent
   ],
-  imports: [
-    RouterModule.forChild(routes),
-    SharedModule,
-    NzTabComponent,
-  ]
+    imports: [
+        RouterModule.forChild(routes),
+        SharedModule,
+        NzTabComponent,
+        NzTooltipDirective,
+    ]
 })
 
 export class approvalsModule {

@@ -1,6 +1,6 @@
 # Daily Plan Dependencies
 
-Workflow dependencies can be enforced for all days and for specific daily plan dates, for example:
+Workflow dependencies can be enforced for all days and for specific Daily Plan dates, for example:
 
 - Workflow 1 runs Mon-Fri.
 - Workflow 2 runs Mon-Sun and depends on previous execution of Workflow 1.
@@ -8,7 +8,7 @@ Workflow dependencies can be enforced for all days and for specific daily plan d
 
 ## Calendar
 
-The calendar widget offers to select a daily plan date for which dependencies will be displayed.
+The calendar widget offers to select a Daily Plan date for which dependencies will be displayed.
 
 - **Light Red Color**: Past plan dates that are closed and that will not allow adding Orders.
 - **Green Color**: Past and future plan dates that are open and that will allow adding Orders.
@@ -43,8 +43,8 @@ The fulfillment status of dependencies is indicated by lines:
 
 Filters offer limiting display of Workflows and dependencies:
 
-- **Notice Announced**: Displays Workflows for which a Notice is announced, i.e. an Order is scheduled but did not yet start and did not yet post the Notice.  When a Notice is posted, its announcement is dropped.
-- **Notice Present**: Displays Workflows for which a Notice has been posted and can be processed. If a Notice is consumed by a Workflow, then it will be dropped and will no longer be present.
+- **Notices Announced**: Displays Workflows for which Notices are announced, i.e. Orders are scheduled but did not yet start and did not yet post the Notice. When a Notice is posted, its announcement is dropped.
+- **Notices Present**: Displays Workflows for which Notices have been posted and can be processed. If a Notice is consumed by a Workflow, then it will be dropped and will no longer be present.
 
 If both filter buttons are active, then this includes announced and posted Notices but excludes dependencies that have been resolved and for which Notices have been consumed and are no longer present.
 

@@ -17,6 +17,7 @@ import {ClipboardService} from "ngx-clipboard";
 declare const $: any;
 
 @Component({
+  standalone: false,
   selector: 'app-encipherment-modal',
   templateUrl: './add-encipherment-dialog.html'
 })
@@ -161,6 +162,7 @@ export class AddEnciphermentModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-import-encipherment-modal',
   templateUrl: './import-encipherment-dialog.html'
 })
@@ -347,6 +349,7 @@ export class ImportEnciphermentModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-encipherment-update-modal',
   templateUrl: './update-dialog.html',
 })
@@ -364,6 +367,7 @@ export class EnciphermentUpdateKeyComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-encipherment',
   templateUrl: './encipherment.component.html',
 })

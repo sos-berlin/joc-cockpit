@@ -1,10 +1,20 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="!isCopy" translate>dailyPlan.label.setStartTime</span>
-    <span *ngIf="isCopy" translate>dailyPlan.label.copyOrder</span>
-    <span *ngIf="(order || plan) && !orders">:</span>
-    <i *ngIf="order" class="text-muted p-l-xs text">{{order.orderId}}</i>
-    <i *ngIf="plan" class="text-muted p-l-xs text">{{plan.key}}</i>
+    @if (!isCopy) {
+      <span translate>dailyPlan.label.setStartTime</span>
+    }
+    @if (isCopy) {
+      <span translate>dailyPlan.label.copyOrder</span>
+    }
+    @if ((order || plan) && !orders) {
+      <span>:</span>
+    }
+    @if (order) {
+      <i class="text-muted p-l-xs text">{{order.orderId}}</i>
+    }
+    @if (plan) {
+      <i class="text-muted p-l-xs text">{{plan.key}}</i>
+    }
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -17,29 +27,48 @@
     </div>
     <div class="row">
       <div class="col-sm-12">
-        <div *ngIf="plan || orders" class="form-group row">
-          <div class="col-md-12 font14">
-            <span *ngIf="n2 === 0" [translateParams]="{n1}" translate>dailyPlan.popup.modifyOrdersCount</span>
-            <span *ngIf="n2>0 && s1 == 0" [translateParams]="{n1, n2}" translate>dailyPlan.popup.modifyCyclicOrdersCount</span>
-            <span *ngIf="n2>0 && s1 > 0" [translateParams]="{s1, n1, n2}" translate>dailyPlan.popup.modifySingleAndCyclicOrdersCount</span>
+        @if (plan || orders) {
+          <div class="form-group row">
+            <div class="col-md-12 font14">
+              @if (n2 === 0) {
+                <span [translateParams]="{n1}" translate>dailyPlan.popup.modifyOrdersCount</span>
+              }
+              @if (n2>0 && s1 == 0) {
+                <span [translateParams]="{n1, n2}" translate>dailyPlan.popup.modifyCyclicOrdersCount</span>
+              }
+              @if (n2>0 && s1 > 0) {
+                <span [translateParams]="{s1, n1, n2}" translate>dailyPlan.popup.modifySingleAndCyclicOrdersCount</span>
+              }
+            </div>
           </div>
-        </div>
-        <div *ngIf="order && order.orderId" class="form-group row">
-          <label class="col-md-3" translate>dailyPlan.label.plannedStart</label>
-          <div class="col-md-9">
-            <span *ngIf="order.plannedStartTime">{{order.plannedStartTime}}</span>
-            <span *ngIf="!order.plannedStartTime && !order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>
+        }
+        @if (order && order.orderId) {
+          <div class="form-group row">
+            <label class="col-md-3" translate>dailyPlan.label.plannedStart</label>
+            <div class="col-md-9">
+              @if (order.plannedStartTime) {
+                <span>{{order.plannedStartTime}}</span>
+              }
+              @if (!order.plannedStartTime && !order.scheduledNever) {
+                <span>{{order.scheduledFor | stringToDate}}</span>
+              }
+            </div>
           </div>
-        </div>
-        <div *ngIf="plan" class="form-group row">
-          <label class="col-md-3" translate>dailyPlan.label.plannedStart</label>
-          <div class="col-md-9">
-            <span
-              *ngIf="plan.value.length ==1 && plan.value[0].plannedStartTime">{{plan.value[0].plannedStartTime}}</span>
-            <span *ngIf="plan.value.length > 1" [translateParams]="{n1}" translate>dailyPlan.popup.differentModifyStartTime</span>
+        }
+        @if (plan) {
+          <div class="form-group row">
+            <label class="col-md-3" translate>dailyPlan.label.plannedStart</label>
+            <div class="col-md-9">
+              @if (plan.value.length ==1 && plan.value[0].plannedStartTime) {
+                <span>{{plan.value[0].plannedStartTime}}</span>
+              }
+              @if (plan.value.length > 1) {
+                <span [translateParams]="{n1}" translate>dailyPlan.popup.differentModifyStartTime</span>
+              }
+            </div>
           </div>
-        </div>
-        <ng-container *ngIf="order && !order.cyclicOrder">
+        }
+        @if (order && !order.cyclicOrder) {
           <div class="form-group row">
             <label class="col-md-3 " translate>order.label.ignoreAdmissionTimes</label>
             <div class="col-md-8">
@@ -55,7 +84,9 @@
                 <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
                 <label nz-radio nzValue="later"><span translate>common.label.relativeTime</span></label>
                 <label nz-radio nzValue="cur"><span translate>common.label.relativeTimeFromCurrentTime</span></label>
-                <label *ngIf="!isDailyPlan" nz-radio nzValue="never"><span translate>common.label.never</span></label>
+                @if (!isDailyPlan) {
+                  <label nz-radio nzValue="never"><span translate>common.label.never</span></label>
+                }
               </nz-radio-group>
             </div>
           </div>
@@ -66,43 +97,57 @@
               </label>
             </div>
           </div>
-          <div *ngIf="dateType.at == 'later'" class="form-group row">
-            <label class="col-md-3 form-control-label" translate>common.label.time
-              <sup class="text-danger text-sm">*</sup>
-            </label>
-            <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
-              <input nRValidTimeRegex (blur)="onBlur(time,'atTime')" type="text" #time="ngModel" class="form-control" required
-                     name="atTime" [(ngModel)]="order.atTime" placeholder="{{'common.placeholder.enterSecond' | translate}}">
-              <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
-                <div *ngIf="!time.valid" translate>common.message.invalid</div>
+          @if (dateType.at == 'later') {
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label" translate>common.label.time
+                <sup class="text-danger text-sm">*</sup>
+              </label>
+              <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
+                <input nRValidTimeRegex (blur)="onBlur(time,'atTime')" type="text" #time="ngModel" class="form-control" required
+                       name="atTime" [(ngModel)]="order.atTime" placeholder="{{'common.placeholder.enterSecond' | translate}}">
+                @if (time.errors && (time.dirty || time.touched)) {
+                  <div class="help-block text-danger">
+                    @if (!time.valid) {
+                      <div translate>common.message.invalid</div>
+                    }
+                  </div>
+                }
               </div>
             </div>
-          </div>
-          <div *ngIf="dateType.at == 'cur'" class="form-group row">
-            <label class="col-md-3 form-control-label" translate>common.label.time
-              <sup class="text-danger text-sm">*</sup>
-            </label>
-            <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
-              <input nValidTimeRegex (blur)="onBlur(time,'atTimeFromCur')" type="text" #time="ngModel" class="form-control" required
-                     name="atTime" [(ngModel)]="order.atTimeFromCur" placeholder="±HH:MM:[SS] or ±SECONDS">
-              <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
-                <div *ngIf="!time.valid" translate>common.message.invalid</div>
+          }
+          @if (dateType.at == 'cur') {
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label" translate>common.label.time
+                <sup class="text-danger text-sm">*</sup>
+              </label>
+              <div class="col-sm-6" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}">
+                <input nValidTimeRegex (blur)="onBlur(time,'atTimeFromCur')" type="text" #time="ngModel" class="form-control" required
+                       name="atTime" [(ngModel)]="order.atTimeFromCur" placeholder="±HH:MM:[SS] or ±SECONDS">
+                @if (time.errors && (time.dirty || time.touched)) {
+                  <div class="help-block text-danger">
+                    @if (!time.valid) {
+                      <div translate>common.message.invalid</div>
+                    }
+                  </div>
+                }
               </div>
             </div>
-          </div>
-          <div *ngIf="dateType.at == 'date'" class="form-group row">
-            <label class="col-md-3 form-control-label" translate>workflow.label.enterDateAndTime
-              <sup class="text-danger text-sm">*</sup>
-            </label>
-            <div class="col-sm-6">
-              <app-date-input [object]="order" [ignoreThirdParam]="true" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'" [isRequired]="true" [isTimeRequired]="false"
-                              [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat" [isPreviousDateDisabled]="true"
-                              [placeholder]="( dateFormat | uppercase )"
-              ></app-date-input>
+          }
+          @if (dateType.at == 'date') {
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label" translate>workflow.label.enterDateAndTime
+                <sup class="text-danger text-sm">*</sup>
+              </label>
+              <div class="col-sm-6">
+                <app-date-input [object]="order" [ignoreThirdParam]="true" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'" [isRequired]="true" [isTimeRequired]="false"
+                                [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat" [isPreviousDateDisabled]="true"
+                                [placeholder]="( dateFormat | uppercase )"
+                ></app-date-input>
+              </div>
             </div>
-          </div>
-        </ng-container>
-        <ng-container *ngIf="order && order.cyclicOrder">
+          }
+        }
+        @if (order && order.cyclicOrder) {
           <div class="form-group row">
             <label class="col-md-3 " translate>order.label.ignoreAdmissionTimes</label>
             <div class="col-md-8">
@@ -120,15 +165,17 @@
                      placeholder="HH:MM:SS" type="text">
             </div>
           </div>
-          <div *ngIf="dateType.at == 'date'" class="form-group row">
-            <label class="col-md-3 form-control-label" translate>common.label.specificDate</label>
-            <div class="col-md-2">
-              <app-date-input [object]="order" [ignoreThirdParam]="true" [attributeDate]="'scheduleDate'" [isRequired]="false"
-                              [isTime]="false" [isAllowClear]="true" [name]="'scheduleDate'" [dateFormat]="dateFormat"
-                              [placeholder]="( dateFormat | uppercase )"
-              ></app-date-input>
+          @if (dateType.at == 'date') {
+            <div class="form-group row">
+              <label class="col-md-3 form-control-label" translate>common.label.specificDate</label>
+              <div class="col-md-2">
+                <app-date-input [object]="order" [ignoreThirdParam]="true" [attributeDate]="'scheduleDate'" [isRequired]="false"
+                                [isTime]="false" [isAllowClear]="true" [name]="'scheduleDate'" [dateFormat]="dateFormat"
+                                [placeholder]="( dateFormat | uppercase )"
+                ></app-date-input>
+              </div>
             </div>
-          </div>
+          }
           <div class="form-group row">
             <label class="col-md-3 form-control-label" translate>runtime.label.begin
               <sup class="text-danger text-sm">*</sup>
@@ -147,7 +194,7 @@
                      placeholder="HH:MM:SS" type="text">
             </div>
           </div>
-        </ng-container>
+        }
 
         <div class="form-group row" [hidden]="!(dateType.at =='date')">
           <div class="col-md-3 form-control-label" translate>common.label.timeZone</div>
@@ -161,11 +208,15 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button *ngIf="order" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
-            type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      {{'common.button.submit' | translate}}
-    </button>
+    @if (order) {
+      <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
+              type="submit">
+        @if (submitted) {
+          <i class="fa fa-spin fa-spinner p-r-xs"></i>
+        }
+        {{'common.button.submit' | translate}}
+      </button>
+    }
     <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>

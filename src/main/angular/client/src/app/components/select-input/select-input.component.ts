@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, Optional, Output} from '@angular/core';
 import {ControlContainer, NgForm} from "@angular/forms";
 
 @Component({
+  standalone: false,
   selector: 'app-select-input',
   templateUrl: './select-input.component.html',
   viewProviders: [{

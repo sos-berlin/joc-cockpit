@@ -9,7 +9,6 @@ import {
   TemplateRef,
   TrackByFunction
 } from '@angular/core';
-import {trigger, style, animate, transition} from '@angular/animations';
 
 import {scaleBand, scaleLinear} from 'd3-scale';
 
@@ -25,6 +24,7 @@ import {ViewDimensions} from '../common/types/view-dimension.interface';
 import {isPlatformServer} from '@angular/common';
 
 @Component({
+  standalone: false,
   selector: 'ngx-charts-bar-horizontal-normalized',
   template: `
     <ngx-charts-chart
@@ -69,7 +69,6 @@ import {isPlatformServer} from '@angular/common';
         <svg:g *ngIf="!isSSR">
           <svg:g
             *ngFor="let group of results; trackBy: trackBy"
-            [@animationState]="'active'"
             [attr.transform]="groupTransform(group)"
           >
             <svg:g
@@ -122,17 +121,11 @@ import {isPlatformServer} from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['../common/base-chart.component.scss'],
   encapsulation: ViewEncapsulation.None,
-  animations: [
-    trigger('animationState', [
-      transition(':leave', [
-        style({
-          opacity: 1,
-          transform: '*'
-        }),
-        animate(500, style({opacity: 0, transform: 'scale(0)'}))
-      ])
-    ])
-  ]
+styles: [`
+  .chart-group {
+    transition: opacity 300ms ease-out;
+  }
+`]
 })
 export class BarHorizontalNormalizedComponent extends BaseChartComponent {
   @Input() legend: boolean = false;

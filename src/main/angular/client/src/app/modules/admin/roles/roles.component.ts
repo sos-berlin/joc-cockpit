@@ -19,6 +19,7 @@ import {FileUploaderComponent} from "../../../components/file-uploader/file-uplo
 
 // Role Actions
 @Component({
+  standalone: false,
   selector: 'app-role-modal-content',
   templateUrl: './role-dialog.html'
 })
@@ -202,6 +203,7 @@ export class RoleModalComponent {
 
 // Controller Actions
 @Component({
+  standalone: false,
   selector: 'app-controller-modal-content',
   templateUrl: 'controller-dialog.html'
 })
@@ -325,6 +327,7 @@ export class ControllerModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-roles',
   templateUrl: 'roles.component.html',
   styleUrls: ['./roles.component.css']

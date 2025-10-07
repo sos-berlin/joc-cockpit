@@ -9,7 +9,6 @@ import {
   PLATFORM_ID,
   Inject
 } from '@angular/core';
-import {trigger, style, animate, transition} from '@angular/animations';
 import {formatLabel, escapeLabel} from '../common/label.helper';
 import {DataItem, StringOrNumberOrDate} from '../models/chart-data.model';
 import {PlacementTypes} from '../common/tooltip/position';
@@ -24,13 +23,13 @@ import {ScaleType} from '../common/types/scale-type.enum';
 import {isPlatformServer} from '@angular/common';
 
 @Component({
+  standalone: false,
   selector: 'g[ngx-charts-series-vertical]',
   template: `
     <svg:g *ngIf="!isSSR">
       <svg:g
         ngx-charts-bar
         *ngFor="let bar of bars; trackBy: trackBy"
-        [@animationState]="'active'"
         [@.disabled]="!animations"
         [width]="bar.width"
         [height]="bar.height"
@@ -104,16 +103,6 @@ import {isPlatformServer} from '@angular/common';
     </svg:g>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('animationState', [
-      transition(':leave', [
-        style({
-          opacity: 1
-        }),
-        animate(500, style({opacity: 0}))
-      ])
-    ])
-  ]
 })
 export class SeriesVerticalComponent implements OnChanges {
   @Input() dims: ViewDimensions;

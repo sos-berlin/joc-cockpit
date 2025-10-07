@@ -25,7 +25,9 @@
         <div class="notification">
           <div  (click)="navToApprovalsApp(0, 'PENDING')" class="cursor primary-text-hover-color" >
             {{approvalEvent?.numOfPendingApprovals}} -
-              <span *ngIf="approvalEvent?.numOfPendingApprovals" translate>monitor.approvalRequest.label.ApproverNotification</span>
+            @if (approvalEvent?.numOfPendingApprovals) {
+              <span translate>monitor.approvalRequest.label.ApproverNotification</span>
+            }
           </div>
         </div>
       </ng-template>
@@ -36,10 +38,10 @@
         </div>
         <div class="notification">
           <div (click)="navToApprovalsReq('APPROVED')" class="cursor primary-text-hover-color" >
-            {{requestorEvent?.numOfApprovedRequests}} - <span *ngIf="requestorEvent?.numOfApprovedRequests" translate>monitor.approvalRequest.label.numOfApprovedRequests</span>
+            {{requestorEvent?.numOfApprovedRequests}} - @if (requestorEvent?.numOfApprovedRequests) {<span translate>monitor.approvalRequest.label.numOfApprovedRequests</span>}
           </div>
           <div (click)="navToApprovalsReq('REJECTED')" class="cursor primary-text-hover-color" >
-            {{requestorEvent?.numOfRejectedRequests}} - <span *ngIf="requestorEvent?.numOfRejectedRequests" translate>monitor.approvalRequest.label.numOfRejectedRequests</span>
+            {{requestorEvent?.numOfRejectedRequests}} - @if (requestorEvent?.numOfRejectedRequests) {<span translate>monitor.approvalRequest.label.numOfRejectedRequests</span>}
           </div>
         </div>
       </ng-template>
@@ -49,78 +51,97 @@
         </div>
         <div class="notification">
           <div>
-            <span *ngIf="problemEvent?.date">{{coreService.getLogDateFormat(problemEvent.date, preferences.zone)}} </span>
+            @if (problemEvent?.date) {
+              <span>{{coreService.getLogDateFormat(problemEvent.date, preferences.zone)}} </span>
+            }
             {{problemEvent?.path}} - {{problemEvent?.message}}
           </div>
         </div>
       </ng-template>
       <ng-template #jocMonitorEvent>
-        <div *ngIf="jocMonitor.length > 0" class="pos-abt" style="top:6px;right: 16px">
-          <a (click)="clearJocEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
-        </div>
+        @if (jocMonitor.length > 0) {
+          <div class="pos-abt" style="top:6px;right: 16px">
+            <a (click)="clearJocEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
+          </div>
+        }
         <div class="notification">
-          <div *ngFor="let log of jocMonitor | orderBy: 'timestamp' : true">
-            <span (click)="navToOrderNoti(2, log)" class="cursor primary-text-hover-color">
-              <span class="inline w-216">{{coreService.getLogDateFormat(log.timestamp, preferences.zone)}}</span>
-              <span class="inline w-64">[{{log.level}}]</span>
-              {{log.workflowName}} {{log.orderId}} {{log.jobName}} {{log.message}}
-             </span>
-          </div>
-          <div *ngIf="jocMonitor.length === 0">
-            <app-empty-data></app-empty-data>
-          </div>
+          @for (log of jocMonitor | orderBy: 'timestamp' : true; track log.timestamp || log.orderId) {
+            <div>
+              <span (click)="navToOrderNoti(2, log)" class="cursor primary-text-hover-color">
+                <span class="inline w-216">{{coreService.getLogDateFormat(log.timestamp, preferences.zone)}}</span>
+                <span class="inline w-64">[{{log.level}}]</span>
+                {{log.workflowName}} {{log.orderId}} {{log.jobName}} {{log.message}}
+               </span>
+            </div>
+          }
+          @if (jocMonitor.length === 0) {
+            <div>
+              <app-empty-data></app-empty-data>
+            </div>
+          }
         </div>
       </ng-template>
       <ng-template #systemMonitorEvent>
-        <div *ngIf="systemMonitor.length > 0" class="pos-abt" style="top:6px;right: 16px">
-          <a (click)="clearSystemEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
-        </div>
+        @if (systemMonitor.length > 0) {
+          <div class="pos-abt" style="top:6px;right: 16px">
+            <a (click)="clearSystemEvent()" class="primary-text-hover-color cursor" translate>common.button.clear</a>
+          </div>
+        }
         <div class="notification">
-          <div *ngFor="let log of systemMonitor | orderBy: 'timestamp' : true">
-            <span (click)="navToOrderNoti(3,log)" class="cursor primary-text-hover-color">
-              <span class="inline w-216">{{coreService.getLogDateFormat(log.timestamp, preferences.zone)}}</span>
-              <span class="inline w-64">[{{log.level}}]</span>
-              {{log['category']}}
-              {{log.source}} {{log.message}}
-            </span>
-          </div>
-          <div *ngIf="systemMonitor.length === 0">
-            <app-empty-data></app-empty-data>
-          </div>
+          @for (log of systemMonitor | orderBy: 'timestamp' : true; track log.timestamp || log.source) {
+            <div>
+              <span (click)="navToOrderNoti(3,log)" class="cursor primary-text-hover-color">
+                <span class="inline w-216">{{coreService.getLogDateFormat(log.timestamp, preferences.zone)}}</span>
+                <span class="inline w-64">[{{log.level}}]</span>
+                {{log['category']}}
+                {{log.source}} {{log.message}}
+              </span>
+            </div>
+          }
+          @if (systemMonitor.length === 0) {
+            <div>
+              <app-empty-data></app-empty-data>
+            </div>
+          }
         </div>
       </ng-template>
       <li class="nav-item">
-        <a *ngIf="approvalEvent.numOfPendingApprovals > 0 && (isApprover)" class="nav-link pointer text-warning" style="top: 3px">
-          <span [nzPopoverContent]="approvalEventTemp" class="p-l-xs cursor"
-                nz-popover nzPopoverPlacement="bottomRight"
-                nzPopoverTitle="{{'info.label.pendingRequests' | translate}}"
-                nzPopoverTrigger="click">
-            <i class="fa fa-clock-o text-18 t-1 pos-rel" style="line-height: 0"></i>
-            <i class="text-xs pos-abt" style="top:-15px;right: 0px">{{ approvalEvent.numOfPendingApprovals }}</i>
-          </span>
-        </a>
+        @if (approvalEvent.numOfPendingApprovals > 0 && (isApprover)) {
+          <a class="nav-link pointer text-warning" style="top: 3px">
+            <span [nzPopoverContent]="approvalEventTemp" class="p-l-xs cursor"
+                  nz-popover nzPopoverPlacement="bottomRight"
+                  nzPopoverTitle="{{'info.label.pendingRequests' | translate}}"
+                  nzPopoverTrigger="click">
+              <i class="fa fa-clock-o text-18 t-1 pos-rel" style="line-height: 0"></i>
+              <i class="text-xs pos-abt" style="top:-15px;right: 0px">{{ approvalEvent.numOfPendingApprovals }}</i>
+            </span>
+          </a>
+        }
       </li>
       <li class="nav-item">
-        <a *ngIf="(requestorEvent.numOfApprovedRequests || requestorEvent.numOfRejectedRequests)  && (isRequestor)" class="nav-link pointer text-warning" style="top: 3px">
-          <span [nzPopoverContent]="requestorEventTemp" class="p-l-xs cursor"
-                nz-popover nzPopoverPlacement="bottomRight"
-                nzPopoverTitle="{{'info.label.pendingRequests' | translate}}"
-                nzPopoverTrigger="click">
-            <i class="fa fa-check-circle text-18 t-1 pos-rel" style="line-height: 0"></i>
-            <i class="text-xs pos-abt" style="top:-15px;right: 0px">{{ requestorEvent.numOfRejectedRequests + requestorEvent.numOfApprovedRequests}}</i>
-
-          </span>
-        </a>
+        @if ((requestorEvent.numOfApprovedRequests || requestorEvent.numOfRejectedRequests) && (isRequestor)) {
+          <a class="nav-link pointer text-warning" style="top: 3px">
+            <span [nzPopoverContent]="requestorEventTemp" class="p-l-xs cursor"
+                  nz-popover nzPopoverPlacement="bottomRight"
+                  nzPopoverTitle="{{'info.label.pendingRequests' | translate}}"
+                  nzPopoverTrigger="click">
+              <i class="fa fa-check-circle text-18 t-1 pos-rel" style="line-height: 0"></i>
+              <i class="text-xs pos-abt" style="top:-15px;right: 0px">{{ requestorEvent.numOfRejectedRequests + requestorEvent.numOfApprovedRequests}}</i>
+            </span>
+          </a>
+        }
       </li>
       <li class="nav-item">
-        <a *ngIf="problemEvent?.message" class="nav-link pointer text-danger" style="top: 3px">
-          <span [nzPopoverContent]="problemEventTemp" class="p-l-xs cursor"
-                nz-popover nzPopoverPlacement="bottomRight"
-                nzPopoverTitle="{{'info.label.notification' | translate}}"
-                nzPopoverTrigger="click">
-            <i class="fa fa-bell bell text-18" style="line-height: 0"></i>
-          </span>
-        </a>
+        @if (problemEvent?.message) {
+          <a class="nav-link pointer text-danger" style="top: 3px">
+            <span [nzPopoverContent]="problemEventTemp" class="p-l-xs cursor"
+                  nz-popover nzPopoverPlacement="bottomRight"
+                  nzPopoverTitle="{{'info.label.notification' | translate}}"
+                  nzPopoverTrigger="click">
+              <i class="fa fa-bell bell text-18" style="line-height: 0"></i>
+            </span>
+          </a>
+        }
       </li>
       <li class="nav-item">
         <a [ngClass]="{'text-white': colorOfJOCEvent == 0, 'text-warning': colorOfJOCEvent == 1, 'text-danger': colorOfJOCEvent == 2}" class="nav-link pointer"
@@ -151,67 +172,75 @@
       <li class="nav-item dropdown">
         <app-info-menu [isHeader]="true"></app-info-menu>
       </li>
-      <li *ngIf="permission.joc && (permission.joc.administration.accounts.view || permission.joc.inventory.view || permission.joc.administration.controllers.view || permission.joc.administration.settings.view || permission.joc.encipherment.encrypt)"
-          class="nav-item dropdown">
-        <a class="nav-link text-white pointer" style="top: 6px">
-          <span [nzDropdownMenu]="submenu" class="p-l-xs cursor" nz-dropdown nzTrigger="click">
-            <i class="icon3-administration-icon text-20" style="line-height: 0"></i>
-          </span>
-          <nz-dropdown-menu #submenu="nzDropdownMenu">
-            <ul nz-menu>
-              <li *ngIf="permission && permission.joc && permission.joc.administration.controllers.view" [routerLinkActive]="['active']" nz-menu-item
-                  routerLink="/controllers">
-                <a>
-                  <i class="wd-14 fa fa-id-card-o"></i>
-                  {{'header.button.manageControllersAndAgents' | translate}}
-                </a>
-              </li>
-              <li *ngIf="permission && permission.joc && permission.joc.administration.accounts.view" [routerLinkActive]="['active']" nz-menu-item
-                  routerLink="/users/identity_service">
-                <a>
-                  <i class="wd-14 fa fa-users"></i>
-                  {{'header.button.manageAccount' | translate}}
-                </a>
-              </li>
-              <li *ngIf="permission && permission.joc && permission.joc.encipherment.encrypt" [routerLinkActive]="['active']" nz-menu-item
-              routerLink="/encipherment">
-                <a>
-                  <i class="wd-14 fa fa-shield"></i>
-                  {{'header.button.manageEnciphermentKey' | translate}}
-                </a>
-              </li>
-              <li *ngIf="(showViews && showViews.configuration != undefined) ? showViews.configuration : (permission.joc && permission.joc.inventory.view)" [routerLinkActive]="['active']" nz-menu-item
-                  routerLink="/deployment_service">
-                <a>
-                  <i class="wd-14 fa fa-rocket"></i>
-                  {{'header.button.manageDeployment' | translate}}
-                </a>
-              </li>
-              <li *ngIf="permission && permission.joc" [routerLinkActive]="['active']" nz-menu-item
-                  routerLink="/changes">
-                <a>
-                  <i class="wd-14 fa fa-refresh" style="transform: rotate(90deg)"></i>
-                  {{'header.button.manageChanges' | translate}}
-                </a>
-              </li>
-              <li *ngIf="permission && permission.joc" [routerLinkActive]="['active']" nz-menu-item
-                  routerLink="/approvals">
-                <a>
-                  <i class="wd-14 fa fa-gavel" style="transform: rotate(90deg)"></i>
-                  {{'header.button.manageApprovals' | translate}}
-                </a>
-              </li>
-              <li *ngIf="permission && permission.joc && permission.joc.administration.settings.view" [routerLinkActive]="['active']" nz-menu-item
-                  routerLink="/settings">
-                <a>
-                  <i class="wd-14 fa fa-cog font14"></i>
-                  {{'header.button.settings' | translate}}
-                </a>
-              </li>
-            </ul>
-          </nz-dropdown-menu>
-        </a>
-      </li>
+      @if (permission.joc && (permission.joc.administration.accounts.view || permission.joc.inventory.view || permission.joc.administration.controllers.view || permission.joc.administration.settings.view || permission.joc.encipherment.encrypt)) {
+        <li class="nav-item dropdown">
+          <a class="nav-link text-white pointer" style="top: 6px">
+            <span [nzDropdownMenu]="submenu" class="p-l-xs cursor" nz-dropdown nzTrigger="click">
+              <i class="icon3-administration-icon text-20" style="line-height: 0"></i>
+            </span>
+            <nz-dropdown-menu #submenu="nzDropdownMenu">
+              <ul nz-menu>
+                @if (permission && permission.joc && permission.joc.administration.controllers.view) {
+                  <li [routerLinkActive]="['active']" nz-menu-item routerLink="/controllers">
+                    <a>
+                      <i class="wd-14 fa fa-id-card-o"></i>
+                      {{'header.button.manageControllersAndAgents' | translate}}
+                    </a>
+                  </li>
+                }
+                @if (permission && permission.joc && permission.joc.administration.accounts.view) {
+                  <li [routerLinkActive]="['active']" nz-menu-item routerLink="/users/identity_service">
+                    <a>
+                      <i class="wd-14 fa fa-users"></i>
+                      {{'header.button.manageAccount' | translate}}
+                    </a>
+                  </li>
+                }
+                @if (permission && permission.joc && permission.joc.encipherment.encrypt) {
+                  <li [routerLinkActive]="['active']" nz-menu-item routerLink="/encipherment">
+                    <a>
+                      <i class="wd-14 fa fa-shield"></i>
+                      {{'header.button.manageEnciphermentKey' | translate}}
+                    </a>
+                  </li>
+                }
+                @if ((showViews && showViews.configuration != undefined) ? showViews.configuration : (permission.joc && permission.joc.inventory.view)) {
+                  <li [routerLinkActive]="['active']" nz-menu-item routerLink="/deployment_service">
+                    <a>
+                      <i class="wd-14 fa fa-rocket"></i>
+                      {{'header.button.manageDeployment' | translate}}
+                    </a>
+                  </li>
+                }
+                @if (permission && permission.joc) {
+                  <li [routerLinkActive]="['active']" nz-menu-item routerLink="/changes">
+                    <a>
+                      <i class="wd-14 fa fa-refresh" style="transform: rotate(90deg)"></i>
+                      {{'header.button.manageChanges' | translate}}
+                    </a>
+                  </li>
+                }
+                @if (permission && permission.joc) {
+                  <li [routerLinkActive]="['active']" nz-menu-item routerLink="/approvals">
+                    <a>
+                      <i class="wd-14 fa fa-gavel" style="transform: rotate(90deg)"></i>
+                      {{'header.button.manageApprovals' | translate}}
+                    </a>
+                  </li>
+                }
+                @if (permission && permission.joc && permission.joc.administration.settings.view) {
+                  <li [routerLinkActive]="['active']" nz-menu-item routerLink="/settings">
+                    <a>
+                      <i class="wd-14 fa fa-cog font14"></i>
+                      {{'header.button.settings' | translate}}
+                    </a>
+                  </li>
+                }
+              </ul>
+            </nz-dropdown-menu>
+          </a>
+        </li>
+      }
       <li class="nav-item dropdown">
         <a class="nav-link text-white pointer">
           <span [innerHtml]="username | slice:0:1" [nzDropdownMenu]="user" class="cursor avatar" nz-dropdown
@@ -249,98 +278,108 @@
     <div class="navbar-toggleable-custom collapse" id="navbarId">
       <!-- link -->
       <ul class="nav navbar-nav navbar-nav-inline text-center pull-left nav-active-border b-orange">
-        <li *ngIf="(showViews && showViews.dashboard != undefined) ? showViews.dashboard : true" class="nav-item">
-          <a [routerLinkActive]="['active']" class="nav-link" routerLink="/dashboard">
-            <span class="nav-text">
-              <i class="icon2-dashboard text-white"></i>
-              <span class="ico text-white _600" translate>header.label.dashboard</span>
-            </span>
-          </a>
-        </li>
-        <li *ngIf="(showViews && showViews.monitor != undefined) ? showViews.monitor : (permission.currentController && (permission.currentController.view ||
-        permission.currentController.agents.view || permission.currentController.orders.view))" class="nav-item">
-          <a [routerLinkActive]="['active']" class="nav-link" routerLink="/monitor">
-            <span class="nav-text">
-              <i class="icon-dashboard-icon text-white"></i>
-              <span class="ico text-white _600" translate>header.label.monitor</span>
-            </span>
-          </a>
-        </li>
-        <li *ngIf="((showViews && showViews.dailyPlan != undefined) ? showViews.dailyPlan : (permission.joc && permission.joc.dailyPlan.view && permission.currentController.orders.view))"
-            class="nav-item">
-          <a [routerLinkActive]="['active']" class="nav-link" routerLink="/daily_plan">
-            <span class="nav-text">
-              <i class="icon-daily-plan-icon text-white"></i>
-              <span class="ico text-white _600" translate>header.label.dailyPlan</span>
-            </span>
-          </a>
-        </li>
-        <li *ngIf="((showViews && showViews.workflows != undefined) ? showViews.workflows : (permission.currentController && permission.currentController.workflows.view))"
-            class="nav-item">
-          <a [routerLinkActive]="['active']" class="nav-link" routerLink="/workflows">
-            <span class="nav-text">
-              <i class="icon-workflows-icon text-white"></i>
-              <span class="ico text-white _600" translate>header.label.workflows</span>
-            </span>
-          </a>
-        </li>
-        <li *ngIf="((showViews && showViews.fileTransfers != undefined) ? showViews.fileTransfers : (permission.joc && permission.joc.fileTransfer.view))"
-            class="nav-item">
-          <a [routerLinkActive]="['active']" class="nav-link" routerLink="/file_transfer">
-            <span class="nav-text">
-              <i class="icon-file-transfers-icon text-white"></i>
-              <span class="ico text-white _600" translate>header.label.fileTransfers</span>
-            </span>
-          </a>
-        </li>
-        <li *ngIf="((showViews && showViews.resources != undefined) ? showViews.resources :
-        (permission.currentController && (permission.currentController.agents.view || permission.currentController.locks.view || permission.currentController.noticeBoards.view ||
-                    permission.joc.documentations.view  || permission.joc.calendars.view)))" class="nav-item">
-          <a (click)="navigateToResource()" [routerLinkActive]="['active']" class="nav-link" routerLink="/resources">
-            <span class="nav-text">
-              <i class="icon-resources-icon text-white"></i>
-              <span class="ico text-white _600" translate>header.label.resources</span>
-            </span>
-          </a>
-        </li>
-        <li *ngIf="((showViews && showViews.report != undefined) ? showViews.report : (permission.joc && permission.joc.reports.view))"
-            class="nav-item">
-          <a [routerLinkActive]="['active']" class="nav-link" routerLink="/reports">
-            <span class="nav-text">
-              <i class="text-white pos-abt" nz-icon nzType="fund" nzTheme="outline"></i>
-              <i class="text-white " nz-icon nzType="fund" nzTheme="outline"></i>
-              <span class="ico text-white _600" translate>header.label.reports</span>
-            </span>
-          </a>
-        </li>
-        <li *ngIf="((showViews && showViews.history != undefined) ? showViews.history : (permission.currentController && (permission.currentController.orders.view || permission.joc.fileTransfer.view || permission.currentController.deployments.view || permission.joc.dailyPlan.view)))"
-            class="nav-item">
-          <a [routerLinkActive]="['active']" class="nav-link" routerLink="/history">
-            <span class="nav-text">
-              <i class="icon-alarm-icon text-white"></i>
-              <span class="ico text-white _600" translate>header.label.history</span>
-            </span>
-          </a>
-        </li>
-        <li *ngIf="((showViews && showViews.auditLog != undefined) ? showViews.auditLog : (permission.joc && permission.joc.auditLog.view))"
-            class="nav-item">
-          <a [routerLinkActive]="['active']" class="nav-link" routerLink="/audit_log">
-            <span class="nav-text">
-              <i class="icon-audit-log-icon text-white"></i>
-              <span class="ico text-white _600" translate>header.label.auditLog</span>
-            </span>
-          </a>
-        </li>
-        <li *ngIf="((showViews && showViews.configuration != undefined) ? showViews.configuration : (permission.joc && (permission.joc.inventory.view || permission.joc.fileTransfer.view || permission.joc.notification.view || permission.joc.others.view)))"
-            class="nav-item">
-          <a (click)="navigateToConfiguration()" [routerLinkActive]="['active']" class="nav-link"
-             routerLink="/configuration">
-            <span class="nav-text">
-              <i class="icon-configuration-icon text-white"></i>
-              <span class="ico text-white _600" translate>header.label.configuration</span>
-            </span>
-          </a>
-        </li>
+        @if ((showViews && showViews.dashboard != undefined) ? showViews.dashboard : true) {
+          <li class="nav-item">
+            <a [routerLinkActive]="['active']" class="nav-link" routerLink="/dashboard">
+              <span class="nav-text">
+                <i class="icon2-dashboard text-white"></i>
+                <span class="ico text-white _600" translate>header.label.dashboard</span>
+              </span>
+            </a>
+          </li>
+        }
+        @if ((showViews && showViews.monitor != undefined) ? showViews.monitor : (permission.currentController && (permission.currentController.view || permission.currentController.agents.view || permission.currentController.orders.view))) {
+          <li class="nav-item">
+            <a [routerLinkActive]="['active']" class="nav-link" routerLink="/monitor">
+              <span class="nav-text">
+                <i class="icon-dashboard-icon text-white"></i>
+                <span class="ico text-white _600" translate>header.label.monitor</span>
+              </span>
+            </a>
+          </li>
+        }
+        @if (((showViews && showViews.dailyPlan != undefined) ? showViews.dailyPlan : (permission.joc && permission.joc.dailyPlan.view && permission.currentController.orders.view))) {
+          <li class="nav-item">
+            <a [routerLinkActive]="['active']" class="nav-link" routerLink="/daily_plan">
+              <span class="nav-text">
+                <i class="icon-daily-plan-icon text-white"></i>
+                <span class="ico text-white _600" translate>header.label.dailyPlan</span>
+              </span>
+            </a>
+          </li>
+        }
+        @if (((showViews && showViews.workflows != undefined) ? showViews.workflows : (permission.currentController && permission.currentController.workflows.view))) {
+          <li class="nav-item">
+            <a [routerLinkActive]="['active']" class="nav-link" routerLink="/workflows">
+              <span class="nav-text">
+                <i class="icon-workflows-icon text-white"></i>
+                <span class="ico text-white _600" translate>header.label.workflows</span>
+              </span>
+            </a>
+          </li>
+        }
+        @if (((showViews && showViews.fileTransfers != undefined) ? showViews.fileTransfers : (permission.joc && permission.joc.fileTransfer.view))) {
+          <li class="nav-item">
+            <a [routerLinkActive]="['active']" class="nav-link" routerLink="/file_transfer">
+              <span class="nav-text">
+                <i class="icon-file-transfers-icon text-white"></i>
+                <span class="ico text-white _600" translate>header.label.fileTransfers</span>
+              </span>
+            </a>
+          </li>
+        }
+        @if (((showViews && showViews.resources != undefined) ? showViews.resources : (permission.currentController && (permission.currentController.agents.view || permission.currentController.locks.view || permission.currentController.noticeBoards.view || permission.joc.documentations.view || permission.joc.calendars.view)))) {
+          <li class="nav-item">
+            <a (click)="navigateToResource()" [routerLinkActive]="['active']" class="nav-link" routerLink="/resources">
+              <span class="nav-text">
+                <i class="icon-resources-icon text-white"></i>
+                <span class="ico text-white _600" translate>header.label.resources</span>
+              </span>
+            </a>
+          </li>
+        }
+        @if (((showViews && showViews.report != undefined) ? showViews.report : (permission.joc && permission.joc.reports.view))) {
+          <li class="nav-item">
+            <a [routerLinkActive]="['active']" class="nav-link" routerLink="/reports">
+              <span class="nav-text">
+                <i class="text-white pos-abt" nz-icon nzType="fund" nzTheme="outline"></i>
+                <i class="text-white " nz-icon nzType="fund" nzTheme="outline"></i>
+                <span class="ico text-white _600" translate>header.label.reports</span>
+              </span>
+            </a>
+          </li>
+        }
+        @if (((showViews && showViews.history != undefined) ? showViews.history : (permission.currentController && (permission.currentController.orders.view || permission.joc.fileTransfer.view || permission.currentController.deployments.view || permission.joc.dailyPlan.view)))) {
+          <li class="nav-item">
+            <a [routerLinkActive]="['active']" class="nav-link" routerLink="/history">
+              <span class="nav-text">
+                <i class="icon-alarm-icon text-white"></i>
+                <span class="ico text-white _600" translate>header.label.history</span>
+              </span>
+            </a>
+          </li>
+        }
+        @if (((showViews && showViews.auditLog != undefined) ? showViews.auditLog : (permission.joc && permission.joc.auditLog.view))) {
+          <li class="nav-item">
+            <a [routerLinkActive]="['active']" class="nav-link" routerLink="/audit_log">
+              <span class="nav-text">
+                <i class="icon-audit-log-icon text-white"></i>
+                <span class="ico text-white _600" translate>header.label.auditLog</span>
+              </span>
+            </a>
+          </li>
+        }
+        @if (((showViews && showViews.configuration != undefined) ? showViews.configuration : (permission.joc && (permission.joc.inventory.view || permission.joc.fileTransfer.view || permission.joc.notification.view || permission.joc.others.view)))) {
+          <li class="nav-item">
+            <a (click)="navigateToConfiguration()" [routerLinkActive]="['active']" class="nav-link"
+               routerLink="/configuration">
+              <span class="nav-text">
+                <i class="icon-configuration-icon text-white"></i>
+                <span class="ico text-white _600" translate>header.label.configuration</span>
+              </span>
+            </a>
+          </li>
+        }
       </ul>
       <!-- end link -->
     </div>

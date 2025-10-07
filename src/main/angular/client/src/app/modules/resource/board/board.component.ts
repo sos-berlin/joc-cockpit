@@ -17,6 +17,7 @@ declare const $: any;
 
 // Role Actions
 @Component({
+  standalone: false,
   selector: 'app-post-notice-modal',
   templateUrl: './post-notice-dialog.html'
 })
@@ -285,6 +286,7 @@ export class PostModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-single-board',
   templateUrl: './single-board.component.html'
 })
@@ -439,6 +441,7 @@ export class SingleBoardComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-board',
   templateUrl: 'board.component.html'
 })

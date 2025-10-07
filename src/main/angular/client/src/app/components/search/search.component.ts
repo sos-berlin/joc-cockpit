@@ -8,6 +8,7 @@ import {UpdateJobComponent} from '../../modules/configuration/inventory/update-j
 import {UpdateObjectComponent} from '../../modules/configuration/inventory/update-object/update-object.component';
 
 @Component({
+  standalone: false,
   selector: 'app-inventory-search',
   templateUrl: './search.component.html'
 })
@@ -74,7 +75,9 @@ export class SearchComponent {
     {label: 'skipped', value: 'SKIPPED', checked: false},
     {label: 'stopped', value: 'STOPPED', checked: false}
   ];
-
+  selectedSynchronizationStatuses: string[] = [];
+  selectedAvailabilityStatuses: string[] = [];
+  selectedJobAvailabilityStatuses: string[] = [];
   constructor(public coreService: CoreService, public modal: NzModalService, private authService: AuthService) {
   }
 
@@ -172,6 +175,24 @@ export class SearchComponent {
         this.searchObj.validOrInvalid = 'all';
       }
     }
+
+    if (this.isWorkflow) {
+      this.selectedJobAvailabilityStatuses = this.searchObj.instructionStates || [];
+
+      this.selectedSynchronizationStatuses = [];
+      this.selectedAvailabilityStatuses = [];
+
+      if (this.searchObj.states) {
+        this.searchObj.states.forEach((state: string) => {
+          if (this.synchronizationStatusOptions.find(opt => opt.value === state)) {
+            this.selectedSynchronizationStatuses.push(state);
+          }
+          if (this.availabilityStatusOptions.find(opt => opt.value === state)) {
+            this.selectedAvailabilityStatuses.push(state);
+          }
+        });
+      }
+    }
   }
 
   ngOnDestroy(): void {
@@ -195,14 +216,17 @@ export class SearchComponent {
 
   synchronizationStatusChange(value: string[]): void {
     this.statusObj.syncStatus = value;
+    this.selectedSynchronizationStatuses = value;
   }
 
   availabilityStatusChange(value: string[]): void {
     this.statusObj.availabilityStatus = value;
+    this.selectedAvailabilityStatuses = value;
   }
 
   jobAvailabilityStatusChange(value: string[]): void {
     this.searchObj.instructionStates = value;
+    this.selectedJobAvailabilityStatuses = value;
   }
 
   displayWith(data: any): string {

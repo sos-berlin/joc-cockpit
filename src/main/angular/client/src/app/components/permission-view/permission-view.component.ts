@@ -1,6 +1,7 @@
 import {Component, Input} from '@angular/core';
 
 @Component({
+  standalone: false,
   selector: 'app-permission-view',
   templateUrl: './permission-view.component.html'
 })

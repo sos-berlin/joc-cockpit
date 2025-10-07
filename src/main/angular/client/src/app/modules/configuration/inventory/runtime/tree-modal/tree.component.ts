@@ -5,6 +5,7 @@ import {debounceTime, Subject} from 'rxjs';
 import {CoreService} from '../../../../../services/core.service';
 
 @Component({
+  standalone: false,
   selector: 'app-tree-modal-content',
   templateUrl: './tree.component.html'
 })

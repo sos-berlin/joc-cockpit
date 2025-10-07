@@ -222,10 +222,12 @@
               nz-menu-item>
             <a>default</a>
           </li>
-          <li (click)="changeController(controller);" *ngFor="let controller of schedulerIds.controllerIds"
-              [ngClass]="{'ant-select-dropdown-menu-item-active':selectedController == controller}" nz-menu-item>
-            <a>{{controller}}</a>
-          </li>
+          @for (controller of schedulerIds.controllerIds; track controller) {
+            <li (click)="changeController(controller);"
+                [ngClass]="{'ant-select-dropdown-menu-item-active':selectedController == controller}" nz-menu-item>
+              <a>{{controller}}</a>
+            </li>
+          }
         </ul>
       </nz-dropdown-menu>
     </h5>

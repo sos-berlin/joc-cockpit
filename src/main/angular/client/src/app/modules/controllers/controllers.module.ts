@@ -18,6 +18,7 @@ import {
   ShowCertificateListModalComponent, AddPriorityModalComponent
 } from './agent/agent.component';
 import {SharedModule} from '../shared/shared.module';
+import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 
 const routes: Routes = [
   {
@@ -45,13 +46,14 @@ const routes: Routes = [
     AddPriorityModalComponent,
     ExportBulkComponent
   ],
-  imports: [
-    RouterModule.forChild(routes),
-    SharedModule,
-    ClipboardModule,
-    NzDrawerModule,
-    NzPopoverModule
-  ]
+    imports: [
+        RouterModule.forChild(routes),
+        SharedModule,
+        ClipboardModule,
+        NzDrawerModule,
+        NzPopoverModule,
+        NzTooltipDirective
+    ]
 })
 export class ControllersModule {
 }

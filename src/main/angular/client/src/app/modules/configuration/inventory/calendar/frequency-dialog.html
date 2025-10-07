@@ -14,15 +14,16 @@
         </div>
         <div>
           <div class="m-b">
-            <div class="form-group row" *ngIf="isVisible">
-  <label class="col-sm-3 form-control-label" translate>runtime.label.frequencyType</label>
-  <div class="col-sm-6">
-    <app-select-input [attributeName]="'tab'" [isSearchable]="true"
-                      [listArray]="filteredFrequencyTab" [name]="'frequencyTab'" [optionLabel]="'label'" [optionValue]="'value'"
-                      [object]="frequency" (modelChange)="changeFrequency()"></app-select-input>
-  </div>
-</div>
-
+            @if (isVisible) {
+              <div class="form-group row">
+                <label class="col-sm-3 form-control-label" translate>runtime.label.frequencyType</label>
+                <div class="col-sm-6">
+                  <app-select-input [attributeName]="'tab'" [isSearchable]="true"
+                                    [listArray]="filteredFrequencyTab" [name]="'frequencyTab'" [optionLabel]="'label'" [optionValue]="'value'"
+                                    [object]="frequency" (modelChange)="changeFrequency()"></app-select-input>
+                </div>
+              </div>
+            }
           </div>
           <div class="tab-content b-l b-r b-b p-a p-b-0 m-b b-t"
                [ngClass]="{'specific-day-ht':frequency.tab == 'specificDays' }">
@@ -35,13 +36,16 @@
                          (ngModelChange)="selectAllWeek()">
                     <span translate>runtime.label.everyDay</span>
                   </label><br>
-                  <nz-checkbox-wrapper (nzOnChange)="dayChange($event)">
-                    <ng-container *ngFor="let option of daysOptions">
-                      <label nz-checkbox [nzValue]="option.value" [(ngModel)]="option.checked"
-                             name="{{option.label}}"><span translate>runtime.label.{{option.label}}</span></label>
-                    </ng-container>
-                  </nz-checkbox-wrapper>
-                </div>
+                  <nz-checkbox-group
+                    name="calendarDays"
+                    [(ngModel)]="selectedDays"
+                    (ngModelChange)="dayChange($event)">
+                    @for (option of daysOptions; track option.value) {
+                      <label nz-checkbox [nzValue]="option.value">
+                        <span translate>runtime.label.{{option.label}}</span>
+                      </label>
+                    }
+                  </nz-checkbox-group>                </div>
               </div>
               <div class="form-group row">
                 <label class="col-sm-3 form-control-label" translate>runtime.label.validFrom</label>
@@ -137,22 +141,32 @@
                   <table class="table table-bordered table-striped text-center m-b-xs w "
                          [hidden]="frequency.isUltimos!=='months'">
                     <tbody>
-                    <tr *ngFor="let count of countArr;">
-                      <td (click)="selectMonthDaysFunc(((7 * count) + 1) +'')" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 1) +'')}"><a
-                        >{{(7 * count) + 1 }}</a></td>
-                      <td (click)="selectMonthDaysFunc(((7 * count) + 2) +'')" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 2) +'')}"><a
-                        >{{(7 * count) + 2 }}</a></td>
-                      <td (click)="selectMonthDaysFunc(((7 * count) + 3) +'')" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 3) +'')}"><a
-                        >{{(7 * count) + 3 }}</a></td>
-                      <td (click)="selectMonthDaysFunc(((7 * count) + 4) +'')" *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 4) +'')}"><a
-                        >{{(7 * count) + 4 }}</a></td>
-                      <td (click)="selectMonthDaysFunc(((7 * count) + 5) +'')" *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 5) +'')}"><a
-                        >{{(7 * count) + 5 }}</a></td>
-                      <td (click)="selectMonthDaysFunc(((7 * count) + 6) +'')" *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 6) +'')}"><a
-                        >{{(7 * count) + 6 }}</a></td>
-                      <td (click)="selectMonthDaysFunc(((7 * count) + 7) +'')" *ngIf="count !== 4" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 7) +'')}"><a
-                        >{{(7 * count) + 7 }}</a></td>
-                    </tr>
+                      @for (count of countArr; track count) {
+                        <tr>
+                          <td (click)="selectMonthDaysFunc(((7 * count) + 1) +'')" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 1) +'')}"><a
+                          >{{(7 * count) + 1 }}</a></td>
+                          <td (click)="selectMonthDaysFunc(((7 * count) + 2) +'')" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 2) +'')}"><a
+                          >{{(7 * count) + 2 }}</a></td>
+                          <td (click)="selectMonthDaysFunc(((7 * count) + 3) +'')" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 3) +'')}"><a
+                          >{{(7 * count) + 3 }}</a></td>
+                          @if (count !== 4) {
+                            <td (click)="selectMonthDaysFunc(((7 * count) + 4) +'')" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 4) +'')}"><a
+                            >{{(7 * count) + 4 }}</a></td>
+                          }
+                          @if (count !== 4) {
+                            <td (click)="selectMonthDaysFunc(((7 * count) + 5) +'')" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 5) +'')}"><a
+                            >{{(7 * count) + 5 }}</a></td>
+                          }
+                          @if (count !== 4) {
+                            <td (click)="selectMonthDaysFunc(((7 * count) + 6) +'')" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 6) +'')}"><a
+                            >{{(7 * count) + 6 }}</a></td>
+                          }
+                          @if (count !== 4) {
+                            <td (click)="selectMonthDaysFunc(((7 * count) + 7) +'')" [ngClass]="{'primary': getSelectedMonthDays(((7 * count) + 7) +'')}"><a
+                            >{{(7 * count) + 7 }}</a></td>
+                          }
+                        </tr>
+                      }
                     </tbody>
                   </table>
                   <table class="table table-bordered table-striped text-center m-b-xs w "
@@ -160,47 +174,55 @@
                     <tbody>
                     <tr>
                       <td colspan="2" (click)="selectMonthDaysUFunc('1')" [ngClass]="{'primary': getSelectedMonthDaysU('1')}"><a
-                         translate>runtime.label.lastDay</a></td>
+                        translate>runtime.label.lastDay</a></td>
                       <td (click)="selectMonthDaysUFunc('2')" [ngClass]="{'primary': getSelectedMonthDaysU('2')}"><a
-                        >-1</a></td>
+                      >-1</a></td>
                       <td (click)="selectMonthDaysUFunc('3')" [ngClass]="{'primary': getSelectedMonthDaysU('3')}"><a
-                        >-2</a></td>
+                      >-2</a></td>
                       <td (click)="selectMonthDaysUFunc('4')" [ngClass]="{'primary': getSelectedMonthDaysU('4')}"><a
-                        >-3</a></td>
+                      >-3</a></td>
                       <td (click)="selectMonthDaysUFunc('5')" [ngClass]="{'primary': getSelectedMonthDaysU('5')}"><a
-                        >-4</a></td>
+                      >-4</a></td>
                       <td (click)="selectMonthDaysUFunc('6')" [ngClass]="{'primary': getSelectedMonthDaysU('6')}"><a
-                        >-5</a></td>
+                      >-5</a></td>
                     </tr>
-                    <tr *ngFor="let count of countArrU;">
-                      <td (click)="selectMonthDaysUFunc(((7 * count)) +'')"
-                          [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count)) +'')}">
-                        <a>-{{(7 * count) - 1 }}</a></td>
-                      <td (click)="selectMonthDaysUFunc(((7 * count) + 1) + '')"
-                          [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 1) + '')}">
-                        <a>-{{(7 * count) }}</a>
-                      </td>
-                      <td (click)="selectMonthDaysUFunc(((7 * count) + 2) +'')"
-                          [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 2) +'')}">
-                        <a>-{{(7 * count) + 1 }}</a>
-                      </td>
-                      <td (click)="selectMonthDaysUFunc(((7 * count) + 3) +'')"
-                          [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 3) +'')}">
-                        <a>-{{(7 * count) + 2 }}</a>
-                      </td>
-                      <td (click)="selectMonthDaysUFunc(((7 * count) + 4) +'')" *ngIf="count !== 4"
-                          [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) +4) +'')}">
-                        <a>-{{(7 * count) + 3 }}</a>
-                      </td>
-                      <td (click)="selectMonthDaysUFunc(((7 * count) + 5) +'')" *ngIf="count !== 4"
-                          [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 5) +'')}">
-                        <a>-{{(7 * count) + 4 }}</a>
-                      </td>
-                      <td (click)="selectMonthDaysUFunc(((7 * count) + 6) +'')" *ngIf="count !== 4"
-                          [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 6) +'')}">
-                        <a>-{{(7 * count) + 5 }}</a>
-                      </td>
-                    </tr>
+                      @for (count of countArrU; track count) {
+                        <tr>
+                          <td (click)="selectMonthDaysUFunc(((7 * count)) +'')"
+                              [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count)) +'')}">
+                            <a>-{{(7 * count) - 1 }}</a></td>
+                          <td (click)="selectMonthDaysUFunc(((7 * count) + 1) + '')"
+                              [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 1) + '')}">
+                            <a>-{{(7 * count) }}</a>
+                          </td>
+                          <td (click)="selectMonthDaysUFunc(((7 * count) + 2) +'')"
+                              [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 2) +'')}">
+                            <a>-{{(7 * count) + 1 }}</a>
+                          </td>
+                          <td (click)="selectMonthDaysUFunc(((7 * count) + 3) +'')"
+                              [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 3) +'')}">
+                            <a>-{{(7 * count) + 2 }}</a>
+                          </td>
+                          @if (count !== 4) {
+                            <td (click)="selectMonthDaysUFunc(((7 * count) + 4) +'')"
+                                [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) +4) +'')}">
+                              <a>-{{(7 * count) + 3 }}</a>
+                            </td>
+                          }
+                          @if (count !== 4) {
+                            <td (click)="selectMonthDaysUFunc(((7 * count) + 5) +'')"
+                                [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 5) +'')}">
+                              <a>-{{(7 * count) + 4 }}</a>
+                            </td>
+                          }
+                          @if (count !== 4) {
+                            <td (click)="selectMonthDaysUFunc(((7 * count) + 6) +'')"
+                                [ngClass]="{'primary': getSelectedMonthDaysU(((7 * count) + 6) +'')}">
+                              <a>-{{(7 * count) + 5 }}</a>
+                            </td>
+                          }
+                        </tr>
+                      }
                     </tbody>
                   </table>
                 </div>
@@ -270,75 +292,86 @@
             </div>
             <div class="tab-pane animated fadeIn" id="tab6"
                  [ngClass]="{'active':frequency.tab == 'nationalHoliday'}">
-              <div class="form-group row" *ngIf="countryField">
-                <label class="col-sm-12">
-                  <span translate>runtime.label.updateNationalHoliday</span>&nbsp;{{frequency.year}}
-                </label>
-              </div>
-              <div class="form-group row" *ngIf="!countryField">
-                <label class="col-sm-3" translate>runtime.label.country</label>
-                <div class="col-sm-6">
-                  <app-select-input [attributeName]="'country'"  [isSearchable]="true"
-                                    [listArray]="countryListArr" [name]="'country'" [optionLabel]="'name'" [optionValue]="'code'"
-                                    [object]="frequency" (modelChange)="loadHolidayList()"></app-select-input>
+              @if (countryField) {
+                <div class="form-group row">
+                  <label class="col-sm-12">
+                    <span translate>runtime.label.updateNationalHoliday</span>&nbsp;{{frequency.year}}
+                  </label>
                 </div>
-              </div>
-              <div class="form-group row" *ngIf="!countryField">
-                <label class="col-sm-3 form-control-label" translate>runtime.label.year</label>
-                <div class="col-sm-6">
-                  <nz-input-number [nzMin]="calendarTitle" [nzStep]="1" name="year"
-                                   [(ngModel)]="frequency.year" (ngModelChange)="loadHolidayList()"></nz-input-number>
+              }
+              @if (!countryField) {
+                <div class="form-group row">
+                  <label class="col-sm-3" translate>runtime.label.country</label>
+                  <div class="col-sm-6">
+                    <app-select-input [attributeName]="'country'"  [isSearchable]="true"
+                                      [listArray]="countryListArr" [name]="'country'" [optionLabel]="'name'" [optionValue]="'code'"
+                                      [object]="frequency" (modelChange)="loadHolidayList()"></app-select-input>
+                  </div>
                 </div>
-              </div>
-              <div class="row m-b-sm" *ngIf="holidayList.length">
-                <label class="col-sm-3" translate>runtime.label.selectAll</label>
-                <div class="col-sm-6">
-                  <label nz-checkbox [(ngModel)]="holidayDays.checked" name="holiday"
-                         (ngModelChange)="selectAllHolidays()"></label>
+              }
+              @if (!countryField) {
+                <div class="form-group row">
+                  <label class="col-sm-3 form-control-label" translate>runtime.label.year</label>
+                  <div class="col-sm-6">
+                    <nz-input-number [nzMin]="calendarTitle" [nzStep]="1" name="year"
+                                     [(ngModel)]="frequency.year" (ngModelChange)="loadHolidayList()"></nz-input-number>
+                  </div>
                 </div>
-              </div>
+              }
+              @if (holidayList.length) {
+                <div class="row m-b-sm">
+                  <label class="col-sm-3" translate>runtime.label.selectAll</label>
+                  <div class="col-sm-6">
+                    <label nz-checkbox [(ngModel)]="holidayDays.checked" name="holiday"
+                           (ngModelChange)="selectAllHolidays()"></label>
+                  </div>
+                </div>
+              }
               <div class="form-group row">
                 <div class="col-sm-12">
                   <div class="col-sm-6 p-l-0">
-                    <div class="col-sm-12 p-l-0"
-                         *ngFor="let holiday of holidayList.slice(0,Math.floor(holidayList.length/2));let i=index">
-                      <label nz-checkbox [nzChecked]="frequency.nationalHoliday?.indexOf(holiday.date) > -1" (nzCheckedChange)="onItemChecked(holiday.date, $event)">
-                        {{getDateFormat(holiday.date)}} <b *ngIf="holiday.name">-</b>
-                        {{holiday.name}}
-                        <i class="text-muted text-sm p-l-sm" *ngIf="holiday.type">{{holiday.type}}</i>
-                      </label>
-                    </div>
+                    @for (holiday of holidayList.slice(0,Math.floor(holidayList.length/2)); track holiday.date; let i = $index) {
+                      <div class="col-sm-12 p-l-0">
+                        <label nz-checkbox [nzChecked]="frequency.nationalHoliday?.indexOf(holiday.date) > -1" (nzCheckedChange)="onItemChecked(holiday.date, $event)">
+                          {{getDateFormat(holiday.date)}} @if (holiday.name) {<b>-</b>}
+                          {{holiday.name}}
+                          @if (holiday.type) {<i class="text-muted text-sm p-l-sm">{{holiday.type}}</i>}
+                        </label>
+                      </div>
+                    }
                   </div>
                   <div class="col-sm-6 p-l-0">
-                    <div class="col-sm-12 p-l-0"
-                         *ngFor="let holiday of holidayList.slice(Math.floor(holidayList.length/2),holidayList.length);let i=index">
-                      <label nz-checkbox [nzChecked]="frequency.nationalHoliday?.indexOf(holiday.date) > -1" (nzCheckedChange)="onItemChecked(holiday.date, $event)">
-                         {{getDateFormat(holiday.date)}} <b *ngIf="holiday.name">-</b>
-                         {{holiday.name}}
-                        <i class="text-muted text-sm p-l-sm" *ngIf="holiday.type">{{holiday.type}}</i>
-                       </label>
-                    </div>
+                    @for (holiday of holidayList.slice(Math.floor(holidayList.length/2),holidayList.length); track holiday.date; let i = $index) {
+                      <div class="col-sm-12 p-l-0">
+                        <label nz-checkbox [nzChecked]="frequency.nationalHoliday?.indexOf(holiday.date) > -1" (nzCheckedChange)="onItemChecked(holiday.date, $event)">
+                          {{getDateFormat(holiday.date)}} @if (holiday.name) {<b>-</b>}
+                          {{holiday.name}}
+                          @if (holiday.type) {<i class="text-muted text-sm p-l-sm">{{holiday.type}}</i>}
+                        </label>
+                      </div>
+                    }
                   </div>
                 </div>
               </div>
             </div>
             <div class="tab-pane animated fadeIn" id="tab7"
                  [ngClass]="{'active':frequency.tab == 'nonWorkingDayCalendars'}">
-                <div class="form-group row" *ngIf="frequencyType === 'EXCLUDE' && calendarData.type === 'WORKINGDAYSCALENDAR'">
+              @if (frequencyType === 'EXCLUDE' && calendarData.type === 'WORKINGDAYSCALENDAR') {
+                <div class="form-group row">
                   <label class="col-sm-3" translate>runtime.label.nonWorkingDayCalendars</label>
                   <div class="col-sm-9">
-                <app-multi-select
-                  [isDisabled]="false"
-                  (onSelectCall)="onChangeNonWorkingDayCalendar()"
-                  (onChange)="onNonWorkingDayCalendarChange($event)"
-                  [attribute]="'list'"
-                  [list]="nonWorkingDayCalendarResources"
-                  [nodes]="nonWorkingDayCalendarTree"
-                  [type]="'NONWORKINGDAYSCALENDAR'">
-                </app-multi-select>
-              </div>
-              </div>
-
+                    <app-multi-select
+                      [isDisabled]="false"
+                      (onSelectCall)="onChangeNonWorkingDayCalendar()"
+                      (onChange)="onNonWorkingDayCalendarChange($event)"
+                      [attribute]="'list'"
+                      [list]="nonWorkingDayCalendarResources"
+                      [nodes]="nonWorkingDayCalendarTree"
+                      [type]="'NONWORKINGDAYSCALENDAR'">
+                    </app-multi-select>
+                  </div>
+                </div>
+              }
             </div>
           </div>
           <div class="form-group row" [hidden]="frequency.tab =='nationalHoliday' || frequency.tab =='specificDays' || frequency.tab =='nonWorkingDayCalendars'  || (frequency.tab =='every' && frequency.dateEntity == 'YEARLY')">
@@ -348,20 +381,23 @@
                    (click)="showMonthRange=true"></i>
                 <i class="cursor fa fa-caret-down m-l-xs" [hidden]="!showMonthRange"
                    (click)="showMonthRange=false"></i>
-            </a>
+              </a>
             </label>
             <div class="col-sm-9" [hidden]="!showMonthRange">
               <label nz-checkbox class="w" [(ngModel)]="frequency.allMonth" name="month"
                      (ngModelChange)="selectAllMonth()">
                 <span translate>runtime.label.everyMonth</span>
               </label><br>
-              <nz-checkbox-wrapper (nzOnChange)="monthChange($event)">
-                <ng-container *ngFor="let option of monthsOptions">
-                  <label nz-checkbox [nzValue]="option.value" [(ngModel)]="option.checked"
-                         name="{{option.label}}"><span translate>runtime.label.{{option.label}}</span></label>
-                </ng-container>
-              </nz-checkbox-wrapper>
-            </div>
+              <nz-checkbox-group
+                name="calendarMonths"
+                [(ngModel)]="selectedMonths"
+                (ngModelChange)="monthChange($event)">
+                @for (option of monthsOptions; track option.value) {
+                  <label nz-checkbox [nzValue]="option.value">
+                    <span translate>runtime.label.{{option.label}}</span>
+                  </label>
+                }
+              </nz-checkbox-group>            </div>
           </div>
         </div>
       </div>
@@ -379,43 +415,65 @@
               </tr>
               </thead>
               <tbody>
-              <tr *ngFor="let data of frequencyList; let i = index" class="cursor"
-                  [ngClass]="{'light-bg' : (_temp.tab ==data.tab && _temp.day ==data.day && _temp.isUltimos ==data.isUltimos && _temp.dateEntity ==data.dateEntity && _temp.str ==data.str)}">
-                <td (click)="editFrequency(data, i)">{{i + 1}}</td>
-                <td (click)="editFrequency(data, i)">
-                  <i *ngIf="data.exclude" class="fa fa-minus"> </i>
-                  <span>{{data.str}}</span>
-                </td>
-                <td>
-                  <span *ngIf="data.tab=='weekDays'">{{data.startingWithW | stringToDate1:true}}</span>
-                  <span *ngIf="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate1:true}}</span>
-                  <span *ngIf="data.tab=='monthDays'">{{data.startingWithM | stringToDate1:true}}</span>
-                  <span *ngIf="data.tab=='every'">{{data.startingWith | stringToDate1:true}}</span>
-                </td>
-                <td>
-                  <span *ngIf="data.tab=='weekDays'">{{data.endOnW | stringToDate1:true}}</span>
-                  <span *ngIf="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate1:true}}</span>
-                  <span *ngIf="data.tab=='monthDays'">{{data.endOnM | stringToDate1:true}}</span>
-                  <span *ngIf="data.tab=='every'">{{data.endOn | stringToDate1:true}}</span>
-                </td>
-                <td>
-                  <a class="text-hover-primary">
-                    <i (click)="showCalendar(data)" class="fa fa-calendar m-r-sm"></i>
-                  </a>
-                  <a><i (click)="editFrequency(data, i)" class="fa fa-pencil m-r-sm"></i></a>
-                  <a class="text-hover-color">
-                    <i (click)="deleteFrequency(data)" class="fa fa-times "></i>
-                  </a>
-                </td>
-              </tr>
+                @for (data of frequencyList; track $index; let i = $index) {
+                  <tr class="cursor"
+                      [ngClass]="{'light-bg' : (_temp.tab ==data.tab && _temp.day ==data.day && _temp.isUltimos ==data.isUltimos && _temp.dateEntity ==data.dateEntity && _temp.str ==data.str)}">
+                    <td (click)="editFrequency(data, i)">{{i + 1}}</td>
+                    <td (click)="editFrequency(data, i)">
+                      @if (data.exclude) {
+                        <i class="fa fa-minus"> </i>
+                      }
+                      <span>{{data.str}}</span>
+                    </td>
+                    <td>
+                      @if (data.tab=='weekDays') {
+                        <span>{{data.startingWithW | stringToDate1:true}}</span>
+                      }
+                      @if (data.tab=='specificWeekDays') {
+                        <span>{{data.startingWithS | stringToDate1:true}}</span>
+                      }
+                      @if (data.tab=='monthDays') {
+                        <span>{{data.startingWithM | stringToDate1:true}}</span>
+                      }
+                      @if (data.tab=='every') {
+                        <span>{{data.startingWith | stringToDate1:true}}</span>
+                      }
+                    </td>
+                    <td>
+                      @if (data.tab=='weekDays') {
+                        <span>{{data.endOnW | stringToDate1:true}}</span>
+                      }
+                      @if (data.tab=='specificWeekDays') {
+                        <span>{{data.endOnS | stringToDate1:true}}</span>
+                      }
+                      @if (data.tab=='monthDays') {
+                        <span>{{data.endOnM | stringToDate1:true}}</span>
+                      }
+                      @if (data.tab=='every') {
+                        <span>{{data.endOn | stringToDate1:true}}</span>
+                      }
+                    </td>
+                    <td>
+                      <a class="text-hover-primary">
+                        <i (click)="showCalendar(data)" class="fa fa-calendar m-r-sm"></i>
+                      </a>
+                      <a><i (click)="editFrequency(data, i)" class="fa fa-pencil m-r-sm"></i></a>
+                      <a class="text-hover-color">
+                        <i (click)="deleteFrequency(data)" class="fa fa-times "></i>
+                      </a>
+                    </td>
+                  </tr>
+                }
               </tbody>
             </table>
           </div>
 
         </div>
-        <div class="col-md-12 text-center" *ngIf="frequencyList.length==0">
-          <app-empty-data title="runtime.message.noFrequencyFound"></app-empty-data>
-        </div>
+        @if (frequencyList.length==0) {
+          <div class="col-md-12 text-center">
+            <app-empty-data title="runtime.message.noFrequencyFound"></app-empty-data>
+          </div>
+        }
       </div>
     </div>
     <div class="hide" [ngClass]="{'show':editor.showYearView}">
@@ -429,10 +487,11 @@
           <nz-select [(ngModel)]="calObj.frequency" name="freq"
                      (ngModelChange)="changeFrequencyObj(calObj.frequency)">
             <nz-option nzValue="all" [nzLabel]="'runtime.label.allFrequency' | translate"></nz-option>
-            <nz-option *ngFor="let data of filteredFrequencyList1"
-                       [nzValue]="data"
-                       [nzLabel]="data.str + '-' + data.type">
-            </nz-option>
+            @for (data of filteredFrequencyList1; track data) {
+              <nz-option [nzValue]="data"
+                         [nzLabel]="data.str + '-' + data.type">
+              </nz-option>
+            }
           </nz-select>
         </div>
       </div>
@@ -445,25 +504,39 @@
         <div class="loading-img1 m-t-lg"></div>
       </div>
     </div>
-    <button *ngIf="!editor.showYearView" type="button" class="btn btn-primary btn-sm b-85"
-            [disabled]="!editor.isEnable || (frequency.tab == 'every' && (!frequency.startingWith))"
-            (click)="addFrequency()">
-      <span *ngIf="editor.create" translate>runtime.button.addNewFrequency</span>
-      <span *ngIf="!editor.create" translate>runtime.button.updateFrequency</span>
-    </button>
+    @if (!editor.showYearView) {
+      <button type="button" class="btn btn-primary btn-sm b-85"
+              [disabled]="!editor.isEnable || (frequency.tab == 'every' && (!frequency.startingWith))"
+              (click)="addFrequency()">
+        @if (editor.create) {
+          <span translate>runtime.button.addNewFrequency</span>
+        }
+        @if (!editor.create) {
+          <span translate>runtime.button.updateFrequency</span>
+        }
+      </button>
+    }
   </div>
   <div class="modal-footer">
-    <button *ngIf="!editor.showYearView" type="submit" class="btn btn-default btn-secondary btn-sm">
-      <span translate>common.button.close</span>
-    </button>
-    <button *ngIf="!editor.showYearView" type="button" class="btn btn-grey btn-sm" (click)="cancel()"
-            translate>common.button.cancel
-    </button>
-<!--    <button *ngIf="editor.showYearView" type="button" class="btn btn-default btn-secondary btn-sm" (click)="addCalendarDates()">-->
-<!--      <span translate>common.button.close</span>-->
-<!--    </button>-->
-    <button *ngIf="editor.showYearView" type="button" class="btn btn-grey btn-sm" (click)="back()"
-            translate>common.button.close
-    </button>
+    @if (!editor.showYearView) {
+      <button type="submit" class="btn btn-default btn-secondary btn-sm">
+        <span translate>common.button.close</span>
+      </button>
+    }
+    @if (!editor.showYearView) {
+      <button type="button" class="btn btn-grey btn-sm" (click)="cancel()"
+              translate>common.button.cancel
+      </button>
+    }
+    <!--    @if (editor.showYearView) {-->
+    <!--      <button type="button" class="btn btn-default btn-secondary btn-sm" (click)="addCalendarDates()">-->
+    <!--        <span translate>common.button.close</span>-->
+    <!--      </button>-->
+    <!--    }-->
+    @if (editor.showYearView) {
+      <button type="button" class="btn btn-grey btn-sm" (click)="back()"
+              translate>common.button.close
+      </button>
+    }
   </div>
 </form>

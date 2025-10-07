@@ -1,12 +1,16 @@
 <div class="modal-header">
-  <h4 *ngIf="!orders" class="modal-title">
-    <span translate> inventory.button.modifyPriority</span>
-    :
-    <i class="text-muted p-l-xs text">{{order.orderId}}</i>
-  </h4>
-  <h4 *ngIf="orders" class="modal-title">
-    <span translate> order.label.modifyAllSelectedOrderPriority</span>
-  </h4>
+  @if (!orders) {
+    <h4 class="modal-title">
+      <span translate> inventory.button.modifyPriority</span>
+      :
+      <i class="text-muted p-l-xs text">{{order.orderId}}</i>
+    </h4>
+  }
+  @if (orders) {
+    <h4 class="modal-title">
+      <span translate> order.label.modifyAllSelectedOrderPriority</span>
+    </h4>
+  }
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
@@ -34,18 +38,22 @@
                             [listArray]="priorities" [name]="'priorities'" [optionLabel]="'label'" [optionValue]="'value'"  [placeholder]="'inventory.placeholder.selectPredefinedPriorities'"
                             [object]="obj"></app-select-input>
         </ng-template>
-        <div *ngIf="priority.invalid && (priority.dirty || priority.touched)" class="text-danger help-block">
-          <div *ngIf="priority.errors['required']">
-            <div translate>common.message.requiredError</div>
+        @if (priority.invalid && (priority.dirty || priority.touched)) {
+          <div class="text-danger help-block">
+            @if (priority.errors['required']) {
+              <div translate>common.message.requiredError</div>
+            }
           </div>
-        </div>
+        }
       </div>
     </div>
   </div>
   <div class="modal-footer text-left">
     <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
             type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>

@@ -1,23 +1,45 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="type === 'DOCUMENTATION'" translate>resource.documentation.label.importDocument</span>
-    <span *ngIf="type === 'DEPLOYMENT' || type === 'USER' || (type == 'INVENTORY' && !isDeploy)" translate>inventory.label.import</span>
-    <span *ngIf="isDeploy" translate>inventory.label.importAndDeploy</span>
-    <span *ngIf="type === 'XML_EDITOR'">
-      <span *ngIf="!importXsd" translate>xml.label.importXML</span>
-      <span *ngIf="importXsd" translate>xml.label.importXSD</span>
-    </span>
-    <span *ngIf="type === 'INVENTORY_OBJECT'">
-      <span translate>inventory.label.uploadJSON</span>
-      <span class="text-muted">{{name}}</span>
-    </span>
-    <span *ngIf="type === 'CONTROLLER'">
-       <span translate>agent.label.importAgentConfiguration</span>:
-       {{controller.controllerId}}
-    </span>
-    <span *ngIf="type === 'CRON'" translate>inventory.cronTab.label.convertCron</span>
-    <span *ngIf="type === 'SETTING'" translate>settings.label.importSetting</span>
-    <span *ngIf="type === 'WORKFLOW'" translate>workflow.label.importWorkflow</span>
+    @if (type === 'DOCUMENTATION') {
+      <span translate>resource.documentation.label.importDocument</span>
+    }
+    @if (type === 'DEPLOYMENT' || type === 'USER' || (type == 'INVENTORY' && !isDeploy)) {
+      <span translate>inventory.label.import</span>
+    }
+    @if (isDeploy) {
+      <span translate>inventory.label.importAndDeploy</span>
+    }
+    @if (type === 'XML_EDITOR') {
+      <span>
+        @if (!importXsd) {
+          <span translate>xml.label.importXML</span>
+        }
+        @if (importXsd) {
+          <span translate>xml.label.importXSD</span>
+        }
+      </span>
+    }
+    @if (type === 'INVENTORY_OBJECT') {
+      <span>
+        <span translate>inventory.label.uploadJSON</span>
+        <span class="text-muted">{{name}}</span>
+      </span>
+    }
+    @if (type === 'CONTROLLER') {
+      <span>
+        <span translate>agent.label.importAgentConfiguration</span>:
+        {{controller.controllerId}}
+      </span>
+    }
+    @if (type === 'CRON') {
+      <span translate>inventory.cronTab.label.convertCron</span>
+    }
+    @if (type === 'SETTING') {
+      <span translate>settings.label.importSetting</span>
+    }
+    @if (type === 'WORKFLOW') {
+      <span translate>workflow.label.importWorkflow</span>
+    }
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -29,145 +51,99 @@
       <div [ngClass]="{'show': display}" class="col-md-12 hide">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
       </div>
-      <div *ngIf="type === 'CRON'" class="col-md-12">
-        <div class="form-group row">
-          <label class="col-md-3 form-control-label">
-            <label translate>inventory.cronTab.label.folder</label>
-          </label>
-          <div class="col-md-9">
-            <input autocomplete="off" type="text" name="folder" class="form-control pos-abt input-path-with-select"
-                   [(ngModel)]="requestObj.folder"
-                   placeholder="{{'inventory.placeholder.enterFolderPath' | translate}}">
-            <nz-tree-select
-              name="path1"
-              class="custom-select-box"
-              [nzAllowClear]="false"
-              [nzNodes]="nodes"
-              [nzDisplayWith]="displayWith"
-              [nzDropdownStyle]="{ 'max-height': '260px' }"
-              [(ngModel)]="requestObj.folder1"
-            >
-              <ng-template #nzTreeTemplate let-node>
-                <div class="node-wrapper" (click)="selectPath(node);">
-                  <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
-                    <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
-                    {{node.title}}
-                  </div>
-                </div>
-              </ng-template>
-            </nz-tree-select>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-md-3 form-control-label">
-            <label translate>inventory.cronTab.label.calendarName
-              <sup class="text-danger text-sm">*</sup>
-            </label>
-          </label>
-          <div class="col-md-9" [ngClass]="{'has-error' : ((calendarName.dirty || calendarName.touched) && calendarName.invalid)}">
-            <input #calendarName="ngModel" (click)="isTreeShow = true;"
-                   [(ngModel)]="requestObj.calendarName" autocomplete="off"
-                   class="form-control" name="workflowName" type="text">
-            <div *ngIf="isTreeShow" [ngStyle]="{'margin-top': '-29px'}" class="z-index-9999 w-full">
-              <app-search-input (onBlur)="onBlur()" (onSelect)="onSelect($event)" [changeDetect]="true" [isDisplay]="true"
-                                [nodes]="calendarTree" [type]="'WORKINGDAYSCALENDAR'"></app-search-input>
-            </div>
-            <div *ngIf="calendarName.invalid && calendarName.errors && (calendarName.dirty || calendarName.touched)" class="text-danger help-block">
-              <div *ngIf="calendarName.errors.required">
-                <div translate>common.message.requiredError</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-md-3 form-control-label">
-            <label translate>inventory.cronTab.label.agentName
-              <sup class="text-danger text-sm">*</sup>
-            </label>
-          </label>
-          <div class="col-md-9">
-            <app-agent-selection [preferences]="preferences" [agents]="agents"
-                                 (selectSubagentCluster)="selectSubagentCluster($event)"
-                                 [data]="requestObj"></app-agent-selection>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-md-3">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.cronTab.tooltip.systemCrontab' | translate" translate>inventory.cronTab.label.systemCrontab</label>
-          </label>
-          <div class="col-md-9">
-            <label nz-checkbox name="overwrite" [(ngModel)]="requestObj.systemCrontab"></label>
-          </div>
-        </div>
-      </div>
-      <div *ngIf="type === 'DOCUMENTATION'" class="col-md-12">
-        <div class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>common.label.path</label>
-          <div class="col-sm-9">
-            <input [(ngModel)]="document.path" autocomplete="off" class="form-control pos-abt input-path-with-select"
-                   name="path"
-                   placeholder="{{'common.placeholder.selectFromTree' | translate}}" type="text">
-            <nz-tree-select
-              [(ngModel)]="document.path1"
-              [nzAllowClear]="false"
-              [nzDisplayWith]="displayWith"
-              [nzDropdownStyle]="{ 'max-height': '260px' }"
-              [nzNodes]="nodes"
-              class="custom-select-box"
-              name="path1">
-              <ng-template #nzTreeTemplate let-node>
-                <div (click)="selectPath(node);" class="node-wrapper">
-                  <div [class.node-content-wrapper-active]="node.isSelected" class="node-content-wrapper">
-                    <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
-                    {{node.title}}
-                  </div>
-                </div>
-              </ng-template>
-            </nz-tree-select>
-          </div>
-        </div>
-      </div>
-      <ng-container *ngIf="type === 'INVENTORY'">
-        <div *ngIf="isDeploy" class="col-md-12">
+      @if (type === 'CRON') {
+        <div class="col-md-12">
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
-              <label translate>inventory.label.signatureAlgorithm
+              <label translate>inventory.cronTab.label.folder</label>
+            </label>
+            <div class="col-md-9">
+              <input autocomplete="off" type="text" name="folder" class="form-control pos-abt input-path-with-select"
+                     [(ngModel)]="requestObj.folder"
+                     placeholder="{{'inventory.placeholder.enterFolderPath' | translate}}">
+              <nz-tree-select
+                name="path1"
+                class="custom-select-box"
+                [nzAllowClear]="false"
+                [nzNodes]="nodes"
+                [nzDisplayWith]="displayWith"
+                [nzDropdownStyle]="{ 'max-height': '260px' }"
+                [(ngModel)]="requestObj.folder1"
+              >
+                <ng-template #nzTreeTemplate let-node>
+                  <div class="node-wrapper" (click)="selectPath(node);">
+                    <div class="node-content-wrapper" [class.node-content-wrapper-active]="node.isSelected">
+                      <i nz-icon [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14"></i>
+                      {{node.title}}
+                    </div>
+                  </div>
+                </ng-template>
+              </nz-tree-select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">
+              <label translate>inventory.cronTab.label.calendarName
+                <sup class="text-danger text-sm">*</sup>
+              </label>
+            </label>
+            <div class="col-md-9" [ngClass]="{'has-error' : ((calendarName.dirty || calendarName.touched) && calendarName.invalid)}">
+              <input #calendarName="ngModel" (click)="isTreeShow = true;"
+                     [(ngModel)]="requestObj.calendarName" autocomplete="off"
+                     class="form-control" name="workflowName" type="text">
+              @if (isTreeShow) {
+                <div [ngStyle]="{'margin-top': '-29px'}" class="z-index-9999 w-full">
+                  <app-search-input (onBlur)="onBlur()" (onSelect)="onSelect($event)" [changeDetect]="true" [isDisplay]="true"
+                                    [nodes]="calendarTree" [type]="'WORKINGDAYSCALENDAR'"></app-search-input>
+                </div>
+              }
+              @if (calendarName.invalid && calendarName.errors && (calendarName.dirty || calendarName.touched)) {
+                <div class="text-danger help-block">
+                  @if (calendarName.errors.required) {
+                    <div translate>common.message.requiredError</div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">
+              <label translate>inventory.cronTab.label.agentName
                 <sup class="text-danger text-sm">*</sup>
               </label>
             </label>
             <div class="col-md-9">
-              <input [(ngModel)]="signatureAlgorithm" class="form-control" name="signature" placeholder="{{'inventory.placeholder.signatureAlgorithm' | translate}}" required
-                     type="text">
+              <app-agent-selection [preferences]="preferences" [agents]="agents"
+                                   (selectSubagentCluster)="selectSubagentCluster($event)"
+                                   [data]="requestObj"></app-agent-selection>
             </div>
           </div>
           <div class="form-group row">
-            <label class="col-md-3 form-control-label">
-              <label translate>inventory.label.fileFormat</label>
+            <label class="col-md-3">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.cronTab.tooltip.systemCrontab' | translate" translate>inventory.cronTab.label.systemCrontab</label>
             </label>
             <div class="col-md-9">
-              <app-select-input [attributeName]="'format'" [name]="'format'" [optionValue]="'value'" [optionLabel]="'name'"
-                                [listArray]="fileFormat" [object]="requestObj"></app-select-input>
+              <label nz-checkbox name="overwrite" [(ngModel)]="requestObj.systemCrontab"></label>
             </div>
           </div>
         </div>
-        <div *ngIf="!isDeploy" class="col-md-12">
+      }
+      @if (type === 'DOCUMENTATION') {
+        <div class="col-md-12">
           <div class="form-group row">
-            <label class="col-md-3 form-control-label">
-              <label translate>inventory.label.folder</label>
-            </label>
-            <div class="col-md-9">
-              <input [(ngModel)]="requestObj.targetFolder" [appAutofocus]="true" autocomplete="off" class="form-control pos-abt input-path-with-select"
-                     name="folder" placeholder="{{'inventory.placeholder.enterFolderPath' | translate}}"
-                     type="text">
+            <label class="col-sm-3 form-control-label" translate>common.label.path</label>
+            <div class="col-sm-9">
+              <input [(ngModel)]="document.path" autocomplete="off" class="form-control pos-abt input-path-with-select"
+                     name="path"
+                     placeholder="{{'common.placeholder.selectFromTree' | translate}}" type="text">
               <nz-tree-select
-                [(ngModel)]="requestObj.targetFolder1"
+                [(ngModel)]="document.path1"
                 [nzAllowClear]="false"
                 [nzDisplayWith]="displayWith"
                 [nzDropdownStyle]="{ 'max-height': '260px' }"
                 [nzNodes]="nodes"
                 class="custom-select-box"
-                name="path1"
-              >
+                name="path1">
                 <ng-template #nzTreeTemplate let-node>
                   <div (click)="selectPath(node);" class="node-wrapper">
                     <div [class.node-content-wrapper-active]="node.isSelected" class="node-content-wrapper">
@@ -179,6 +155,141 @@
               </nz-tree-select>
             </div>
           </div>
+        </div>
+      }
+      @if (type === 'INVENTORY') {
+        <ng-container>
+          @if (isDeploy) {
+            <div class="col-md-12">
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">
+                  <label translate>inventory.label.signatureAlgorithm
+                    <sup class="text-danger text-sm">*</sup>
+                  </label>
+                </label>
+                <div class="col-md-9">
+                  <input [(ngModel)]="signatureAlgorithm" class="form-control" name="signature" placeholder="{{'inventory.placeholder.signatureAlgorithm' | translate}}" required
+                         type="text">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">
+                  <label translate>inventory.label.fileFormat</label>
+                </label>
+                <div class="col-md-9">
+                  <app-select-input [attributeName]="'format'" [name]="'format'" [optionValue]="'value'" [optionLabel]="'name'"
+                                    [listArray]="fileFormat" [object]="requestObj"></app-select-input>
+                </div>
+              </div>
+            </div>
+          }
+          @if (!isDeploy) {
+            <div class="col-md-12">
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">
+                  <label translate>inventory.label.folder</label>
+                </label>
+                <div class="col-md-9">
+                  <input [(ngModel)]="requestObj.targetFolder" [appAutofocus]="true" autocomplete="off" class="form-control pos-abt input-path-with-select"
+                         name="folder" placeholder="{{'inventory.placeholder.enterFolderPath' | translate}}"
+                         type="text">
+                  <nz-tree-select
+                    [(ngModel)]="requestObj.targetFolder1"
+                    [nzAllowClear]="false"
+                    [nzDisplayWith]="displayWith"
+                    [nzDropdownStyle]="{ 'max-height': '260px' }"
+                    [nzNodes]="nodes"
+                    class="custom-select-box"
+                    name="path1"
+                  >
+                    <ng-template #nzTreeTemplate let-node>
+                      <div (click)="selectPath(node);" class="node-wrapper">
+                        <div [class.node-content-wrapper-active]="node.isSelected" class="node-content-wrapper">
+                          <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
+                          {{node.title}}
+                        </div>
+                      </div>
+                    </ng-template>
+                  </nz-tree-select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3 form-control-label">
+                  <label translate>inventory.label.fileFormat</label>
+                </label>
+                <div class="col-md-9">
+                  <app-select-input [attributeName]="'format'" [name]="'format'" [optionValue]="'value'" [optionLabel]="'name'"
+                                    [listArray]="fileFormat" [object]="requestObj"></app-select-input>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-md-3">
+                  <label translate>inventory.label.overwrite</label>
+                </label>
+                <div class="col-md-9">
+                  <label [(ngModel)]="requestObj.overwrite" name="overwrite" nz-checkbox></label>
+                </div>
+              </div>
+              @if (!requestObj.overwrite) {
+                <div class="form-group row">
+                  <label class="col-md-3" translate>inventory.label.objectName</label>
+                  <div class="col-md-9">
+                    <nz-radio-group [(ngModel)]="requestObj.type" name="type">
+                      <label nz-radio nzValue="ignore"><span translate>inventory.label.ignoreIfExist</span></label>
+                      <label nz-radio nzValue="prefix"><span translate>inventory.label.prefix</span></label>
+                      <label nz-radio nzValue="suffix"><span translate>inventory.label.suffix</span></label>
+                    </nz-radio-group>
+                  </div>
+                </div>
+              }
+              @if (!requestObj.overwrite && requestObj.type === 'suffix') {
+                <div class="form-group row">
+                  <label class="col-md-3"></label>
+                  <div [ngClass]="{'has-error' : ((suffix.dirty || suffix.touched) && suffix.invalid)}" class="col-md-9">
+                    <input #suffix="ngModel" [(ngModel)]="requestObj.suffix" [appAutofocus]="requestObj.type === 'suffix'" autocomplete="off" class="form-control"
+                           identifierValidation
+                           name="suffix" placeholder="{{'inventory.placeholder.suffix' | translate}}" required
+                           type="text">
+                    @if (suffix.invalid && (suffix.dirty || suffix.touched)) {
+                      <div class="text-danger help-block">
+                        @if ((suffix.errors && suffix.errors['required'])) {
+                          <div translate>common.message.requiredError</div>
+                        }
+                        @if (suffix.errors['invalidIdentifier']) {
+                          <div translate>common.message.invalid</div>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+              @if (!requestObj.overwrite && requestObj.type === 'prefix') {
+                <div class="form-group row">
+                  <label class="col-md-3"></label>
+                  <div [ngClass]="{'has-error' : ((prefix.dirty || prefix.touched) && prefix.invalid)}" class="col-md-9">
+                    <input #prefix="ngModel" [(ngModel)]="requestObj.prefix" [appAutofocus]="requestObj.type === 'prefix'" autocomplete="off" class="form-control"
+                           identifierValidation
+                           name="prefix" placeholder="{{'inventory.placeholder.prefix' | translate}}" required
+                           type="text">
+                    @if (prefix.invalid && (prefix.dirty || prefix.touched)) {
+                      <div class="text-danger help-block">
+                        @if ((prefix.errors && prefix.errors['required'])) {
+                          <div translate>common.message.requiredError</div>
+                        }
+                        @if (prefix.errors['invalidIdentifier']) {
+                          <div translate>common.message.invalid</div>
+                        }
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </ng-container>
+      }
+      @if (type === 'CONTROLLER') {
+        <div class="col-md-12">
           <div class="form-group row">
             <label class="col-md-3 form-control-label">
               <label translate>inventory.label.fileFormat</label>
@@ -193,72 +304,11 @@
               <label translate>inventory.label.overwrite</label>
             </label>
             <div class="col-md-9">
-              <label [(ngModel)]="requestObj.overwrite" name="overwrite" nz-checkbox></label>
-            </div>
-          </div>
-          <div *ngIf="!requestObj.overwrite" class="form-group row">
-            <label class="col-md-3" translate>inventory.label.objectName</label>
-            <div class="col-md-9">
-              <nz-radio-group [(ngModel)]="requestObj.type" name="type">
-                <label nz-radio nzValue="ignore"><span translate>inventory.label.ignoreIfExist</span></label>
-                <label nz-radio nzValue="prefix"><span translate>inventory.label.prefix</span></label>
-                <label nz-radio nzValue="suffix"><span translate>inventory.label.suffix</span></label>
-              </nz-radio-group>
-            </div>
-          </div>
-          <div *ngIf="!requestObj.overwrite && requestObj.type === 'suffix'" class="form-group row">
-            <label class="col-md-3"></label>
-            <div [ngClass]="{'has-error' : ((suffix.dirty || suffix.touched) && suffix.invalid)}" class="col-md-9">
-              <input #suffix="ngModel" [(ngModel)]="requestObj.suffix" [appAutofocus]="requestObj.type === 'suffix'" autocomplete="off" class="form-control"
-                     identifierValidation
-                     name="suffix" placeholder="{{'inventory.placeholder.suffix' | translate}}" required
-                     type="text">
-              <div *ngIf="suffix.invalid && (suffix.dirty || suffix.touched)"
-                   class="text-danger help-block">
-                <div *ngIf="(suffix.errors && suffix.errors['required'])">
-                  <div translate>common.message.requiredError</div>
-                </div>
-                <div *ngIf="suffix.errors['invalidIdentifier']" translate>common.message.invalid</div>
-              </div>
-            </div>
-          </div>
-          <div *ngIf="!requestObj.overwrite && requestObj.type === 'prefix'" class="form-group row">
-            <label class="col-md-3"></label>
-            <div [ngClass]="{'has-error' : ((prefix.dirty || prefix.touched) && prefix.invalid)}" class="col-md-9">
-              <input #prefix="ngModel" [(ngModel)]="requestObj.prefix" [appAutofocus]="requestObj.type === 'prefix'" autocomplete="off" class="form-control"
-                     identifierValidation
-                     name="prefix" placeholder="{{'inventory.placeholder.prefix' | translate}}" required
-                     type="text">
-              <div *ngIf="prefix.invalid && (prefix.dirty || prefix.touched)"
-                   class="text-danger help-block">
-                <div *ngIf="(prefix.errors && prefix.errors['required'])">
-                  <div translate>common.message.requiredError</div>
-                </div>
-                <div *ngIf="prefix.errors['invalidIdentifier']" translate>common.message.invalid</div>
-              </div>
+              <label nz-checkbox name="overwrite" [(ngModel)]="requestObj.overwrite"></label>
             </div>
           </div>
         </div>
-      </ng-container>
-      <div *ngIf="type === 'CONTROLLER'" class="col-md-12">
-        <div class="form-group row">
-          <label class="col-md-3 form-control-label">
-            <label translate>inventory.label.fileFormat</label>
-          </label>
-          <div class="col-md-9">
-            <app-select-input [attributeName]="'format'" [name]="'format'" [optionValue]="'value'" [optionLabel]="'name'"
-                              [listArray]="fileFormat" [object]="requestObj"></app-select-input>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-md-3">
-            <label translate>inventory.label.overwrite</label>
-          </label>
-          <div class="col-md-9">
-            <label nz-checkbox name="overwrite" [(ngModel)]="requestObj.overwrite"></label>
-          </div>
-        </div>
-      </div>
+      }
     </div>
     <nz-upload
       [(nzFileList)]="fileList"
@@ -269,36 +319,48 @@
       nzListType="picture"
       [ngClass]="{'upload-error': uploadError}"
     >
-      <div *ngIf="fileList.length === 0">
-        <i class="icon-upload-icon"></i>
-        <div class="upload-text" translate>common.button.dragAndDropFileToUpload</div>
-      </div>
+      @if (fileList.length === 0) {
+        <div>
+          <i class="icon-upload-icon"></i>
+          <div class="upload-text" translate>common.button.dragAndDropFileToUpload</div>
+        </div>
+      }
     </nz-upload>
-    <div class="process-container" *ngIf="showProgressBar">
-      <div class="upload-progress-bar">
-        <div class="progress-bar-value" [ngClass]="{'success': !uploading}"></div>
+    @if (showProgressBar) {
+      <div class="process-container">
+        <div class="upload-progress-bar">
+          <div class="progress-bar-value" [ngClass]="{'success': !uploading}"></div>
+        </div>
       </div>
+    }
+    @if (fileList.length === 0) {
+      <nz-upload [nzAccept]="fileType" [nzBeforeUpload]="beforeUpload">
+        <div class="p-t-sm">
+          <button class="btn btn-default btn-sm" type="button">
+            <i nz-icon nzTheme="outline" nzType="upload"></i>&nbsp;
+            <span translate>common.button.chooseFileToUpload</span>
+          </button>
+        </div>
+      </nz-upload>
+    }
+  </div>
+  @if (fileList.length > 0) {
+    <div class="modal-footer">
+      <button (click)="handleUpload();" [disabled]="!myForm.form.valid || uploading"
+              class="btn btn-primary btn-sm" type="submit">
+        @if (uploading) {
+          <i class="fa fa-spin fa-spinner p-r-xs"></i>
+        }
+        @if (type !== 'CRON') {
+          <span translate>common.button.import</span>
+        }
+        @if (type === 'CRON') {
+          <span translate>inventory.cronTab.button.convert</span>
+        }
+      </button>
+      <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
+        common.button.cancel
+      </button>
     </div>
-    <nz-upload *ngIf="fileList.length === 0" [nzAccept]="fileType" [nzBeforeUpload]="beforeUpload">
-      <div class="p-t-sm">
-        <button class="btn btn-default btn-sm" type="button">
-          <i nz-icon nzTheme="outline" nzType="upload"></i>&nbsp;
-          <span translate>common.button.chooseFileToUpload</span>
-        </button>
-      </div>
-    </nz-upload>
-  </div>
-  <div *ngIf="fileList.length > 0" class="modal-footer">
-    <button (click)="handleUpload();" [disabled]="!myForm.form.valid || uploading"
-            class="btn btn-primary btn-sm" type="submit">
-      <i *ngIf="uploading" class="fa fa-spin fa-spinner p-r-xs"></i>
-      <span *ngIf="type !== 'CRON'" translate>common.button.import</span>
-      <span *ngIf="type === 'CRON'" translate>inventory.cronTab.button.convert</span>
-    </button>
-    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
-    </button>
-  </div>
+  }
 </form>
-
-

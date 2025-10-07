@@ -20,6 +20,7 @@ import {StyleTypes} from './style.type';
 import {isPlatformBrowser} from '@angular/common';
 
 @Component({
+  standalone: false,
   selector: 'ngx-tooltip-content',
   template: `
     <div>

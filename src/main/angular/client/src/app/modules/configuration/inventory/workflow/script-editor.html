@@ -65,21 +65,27 @@
                 <span class="nav-text" translate>workflow.button.redo</span>
               </a>
             </li>
-            <li class="nav-item dropdown-separator" *ngIf="cmOption.mode === 'javascript'">
-              <span class="separator"></span>
-            </li>
-            <li class="nav-item" *ngIf="cmOption.mode === 'javascript'">
-              <a class="nav-link" nz-tooltip="shft+Alt-F">
-                <span class="nav-text" (click)="autoFormatCode($event)" translate>workflow.button.format</span>
-              </a>
-            </li>
+            @if (cmOption.mode === 'javascript') {
+              <li class="nav-item dropdown-separator">
+                <span class="separator"></span>
+              </li>
+            }
+            @if (cmOption.mode === 'javascript') {
+              <li class="nav-item">
+                <a class="nav-link" nz-tooltip="shft+Alt-F">
+                  <span class="nav-text" (click)="autoFormatCode($event)" translate>workflow.button.format</span>
+                </a>
+              </li>
+            }
           </ul>
         </div>
       </div>
       <div class="col-md-12">
-        <div id="show-tree-editor" *ngIf="isTreeShow" class="z-index-9999 pos-abt opacity0" style="min-width: 150px;">
-          <app-search-input [nodes]="scriptTree" [type]="'INCLUDESCRIPT'" (onSelect)="checkExpectNoticeExp($event)" (onBlur)="onBlur($event)"></app-search-input>
-        </div>
+        @if (isTreeShow) {
+          <div id="show-tree-editor" class="z-index-9999 pos-abt opacity0" style="min-width: 150px;">
+            <app-search-input [nodes]="scriptTree" [type]="'INCLUDESCRIPT'" (onSelect)="checkExpectNoticeExp($event)" (onBlur)="onBlur($event)"></app-search-input>
+          </div>
+        }
         <div id="resizable" class="b-a" [ngClass]="{'invalid': (cm.invalid && (cm.dirty || cm.touched))}">
           <ngx-codemirror [appAutofocus]="true" required #codeMirror
                           #cm="ngModel" name="cm" [(ngModel)]="scriptObj.data" [options]="cmOption" (keydown)="handleKeyDown($event)"
@@ -87,20 +93,25 @@
           <div class="rg-right" style="background: transparent; margin-right: -16px"><span style="top:48%"></span></div>
           <div class="rg-bottom" style="bottom: -16px;background: transparent"><span></span></div>
         </div>
-        <div *ngIf="!isSkip" class="text-sm text-muted" translate>inventory.tooltips.script.autocompleteShortCut</div>
-        <div *ngIf="(cm.invalid && (cm.dirty || cm.touched))"
-             class="text-danger help-block">
-          <div *ngIf="(cm.errors && cm.errors.required)">
-            <div translate>common.message.requiredError</div>
+        @if (!isSkip) {
+          <div class="text-sm text-muted" translate>inventory.tooltips.script.autocompleteShortCut</div>
+        }
+        @if ((cm.invalid && (cm.dirty || cm.touched))) {
+          <div class="text-danger help-block">
+            @if ((cm.errors && cm.errors.required)) {
+              <div translate>common.message.requiredError</div>
+            }
           </div>
-        </div>
+        }
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button *ngIf="!disabled" [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" translate type="submit">
-      common.button.submit
-    </button>
+    @if (!disabled) {
+      <button [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" translate type="submit">
+        common.button.submit
+      </button>
+    }
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm"
             translate type="button">
       common.button.cancel

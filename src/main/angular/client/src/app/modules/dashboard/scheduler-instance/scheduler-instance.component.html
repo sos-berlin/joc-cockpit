@@ -4,64 +4,77 @@
   </div>
   <div [ngClass]="{'p-t-0' : controllersList && controllersList.length==0}" [ngStyle]="{'max-height':(ybody * 55 + ((ybody -1) *20 -50)) +'px'}"
        class="box-body overflow-y">
-    <div *ngIf="controllersList && controllersList.length>0" class="table-responsive status-table">
-      <table class="w-full">
-        <thead>
-        <tr>
-          <th>{{'common.label.action' | translate}}</th>
-          <th>{{'dashboard.label.JS7ControllerId' | translate}}</th>
-          <th>{{'dashboard.label.url' | translate}}</th>
-          <th>{{'dashboard.label.componentState' | translate}}</th>
-          <th>{{'dashboard.label.clusterNodeState' | translate}}</th>
-          <th>{{'dashboard.label.title' | translate}}</th>
-          <th>{{'dashboard.label.architecture' | translate}}</th>
-          <th>{{'dashboard.label.version' | translate}}</th>
-          <th>{{'dashboard.label.startedAt' | translate}}</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let controller of controllersList">
-          <td>
-            <app-action [controller]="controller" [permission]="permission"></app-action>
-          </td>
-          <td><a (click)="changeScheduler(controller.controllerId)"
-                 class="text-hover-primary">{{controller.controllerId}}</a></td>
-          <td><a class="text-hover-primary" href="{{controller.url}}" target="_blank">{{controller.url}}</a></td>
-          <td><span *ngIf="controller.componentState"
-                    [ngClass]="coreService.getColor(controller.componentState.severity, 'bg')"
-                    class="label">{{controller.componentState._text | translate}}</span>
-          </td>
-          <td><span *ngIf="controller.clusterNodeState" [ngClass]="coreService.getColor(controller.clusterNodeState.severity, 'bg')"
-                    class="label">
-                  {{controller.clusterNodeState._text | translate}}</span>
-          </td>
-          <td><span class="label label-default">{{controller.title | translate}}</span></td>
-          <td>
-            <i class="fa fa-{{controller.os.name | lowercase}}"></i>&nbsp;
-            <span>{{controller.os.architecture}}</span> -
-            <span>{{controller.os.distribution}}</span>
-          </td>
-          <td>
-            <i *ngIf="controller.compatibility" [ngClass]="controller.compatibility === 'COMPATIBLE' ? 'text-success' : controller.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="controller.compatibility | translate"
-               class="fa fa-check"></i>&nbsp;
-            <span>{{controller.version}}</span>
-          </td>
-          <td>
-            <span *ngIf="controller.startedAt"
-                  class="text-primary text-sm">{{controller.startedAt | stringToDate}}</span>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
+    @if (controllersList && controllersList.length>0) {
+      <div class="table-responsive status-table">
+        <table class="w-full">
+          <thead>
+          <tr>
+            <th>{{'common.label.action' | translate}}</th>
+            <th>{{'dashboard.label.JS7ControllerId' | translate}}</th>
+            <th>{{'dashboard.label.url' | translate}}</th>
+            <th>{{'dashboard.label.componentState' | translate}}</th>
+            <th>{{'dashboard.label.clusterNodeState' | translate}}</th>
+            <th>{{'dashboard.label.title' | translate}}</th>
+            <th>{{'dashboard.label.architecture' | translate}}</th>
+            <th>{{'dashboard.label.version' | translate}}</th>
+            <th>{{'dashboard.label.startedAt' | translate}}</th>
+          </tr>
+          </thead>
+          <tbody>
+            @for (controller of controllersList; track controller.controllerId) {
+              <tr>
+                <td>
+                  <app-action [controller]="controller" [permission]="permission"></app-action>
+                </td>
+                <td><a (click)="changeScheduler(controller.controllerId)"
+                       class="text-hover-primary">{{controller.controllerId}}</a></td>
+                <td><a class="text-hover-primary" href="{{controller.url}}" target="_blank">{{controller.url}}</a></td>
+                <td>
+                  @if (controller.componentState) {
+                    <span [ngClass]="coreService.getColor(controller.componentState.severity, 'bg')"
+                          class="label">{{controller.componentState._text | translate}}</span>
+                  }
+                </td>
+                <td>
+                  @if (controller.clusterNodeState) {
+                    <span [ngClass]="coreService.getColor(controller.clusterNodeState.severity, 'bg')"
+                          class="label">
+                      {{controller.clusterNodeState._text | translate}}</span>
+                  }
+                </td>
+                <td><span class="label label-default">{{controller.title | translate}}</span></td>
+                <td>
+                  <i class="fa fa-{{controller.os.name | lowercase}}"></i>&nbsp;
+                  <span>{{controller.os.architecture}}</span> -
+                  <span>{{controller.os.distribution}}</span>
+                </td>
+                <td>
+                  @if (controller.compatibility) {
+                    <i [ngClass]="controller.compatibility === 'COMPATIBLE' ? 'text-success' : controller.compatibility === 'NOT_COMPATIBLE' ? 'fa-exclamation-triangle text-danger' : 'fa-exclamation-triangle text-warn'" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="controller.compatibility | translate"
+                       class="fa fa-check"></i>&nbsp;
+                  }
+                  <span>{{controller.version}}</span>
+                </td>
+                <td>
+                  @if (controller.startedAt) {
+                    <span class="text-primary text-sm">{{controller.startedAt | stringToDate}}</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
     <div [ngClass]="{'show': !isLoaded}" class="hide text-center m-t-lg p-b-lg text-primary text">
       <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
     </div>
   </div>
-  <div *ngIf="controllersList && controllersList.length==0 && isLoaded" [ngStyle]="{'height':(ybody * 55 + ((ybody -1) *20 -50) - 12) +'px'}"
-       class="vert-middle">
-    <div>
-      <app-empty-data></app-empty-data>
+  @if (controllersList && controllersList.length==0 && isLoaded) {
+    <div [ngStyle]="{'height':(ybody * 55 + ((ybody -1) *20 -50) - 12) +'px'}" class="vert-middle">
+      <div>
+        <app-empty-data></app-empty-data>
+      </div>
     </div>
-  </div>
+  }
 </div>

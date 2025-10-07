@@ -3,20 +3,28 @@
     <li>
       <a (click)="backClicked()"><i class="fa fa-arrow-circle-left text-18" title="back"></i></a>
     </li>
-    <li *ngFor="let item of breadcrumbs; let last = last;">
-      <ng-container>
-      <span *ngIf="!last">
-        <a [routerLink]="item.url">
-          {{ item.label | translate }}
-          <span *ngIf="identityServiceName && item.label === 'breadcrumb.label.manageIdentityServices'" class="p-l-xs">
-            ({{identityServiceName}})
-          </span>
-        </a>
-      </span>
-      <span *ngIf="last" class="active">
-        {{ item.label | translate }}
-      </span>
-    </ng-container>
-    </li>
+    @for (item of breadcrumbs; track item.url || item.label; let last = $last) {
+      <li>
+        <ng-container>
+          @if (!last) {
+            <span>
+              <a [routerLink]="item.url">
+                {{ item.label | translate }}
+                @if (identityServiceName && item.label === 'breadcrumb.label.manageIdentityServices') {
+                  <span class="p-l-xs">
+                    ({{identityServiceName}})
+                  </span>
+                }
+              </a>
+            </span>
+          }
+          @if (last) {
+            <span class="active">
+              {{ item.label | translate }}
+            </span>
+          }
+        </ng-container>
+      </li>
+    }
   </ol>
 </span>

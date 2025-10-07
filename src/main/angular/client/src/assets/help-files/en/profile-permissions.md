@@ -10,7 +10,7 @@ If the user account is logged in from an Identity Service that makes use of pass
 
 ## Roles
 
-The roles assigned the user are displayed. Resulting permissions are merged from role assignments.
+The roles assigned the user account are displayed. Resulting permissions are merged from role assignments.
 
 ## Permissions
 

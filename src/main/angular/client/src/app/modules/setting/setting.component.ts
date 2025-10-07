@@ -17,6 +17,7 @@ import {KioskService} from "../../services/kiosk.service";
 import { HelpViewerComponent } from 'src/app/components/help-viewer/help-viewer.component';
 
 @Component({
+  standalone: false,
   selector: 'app-setting',
   templateUrl: './setting.component.html'
 })

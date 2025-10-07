@@ -1,9 +1,11 @@
 <div class="search-box-field pull-right pos-rel" style="top:-39px">
   <label>
     <input type="search" (keyup)="searchInResult()" [(ngModel)]="blocklistFilter.filter.searchText" placeholder="{{'common.placeholder.search' | translate}}"
-           >
-    <i  *ngIf="blocklistFilter.filter.searchKey" (click)="blocklistFilter.filter.searchKey = '';"
-       class="fa fa-times search-close"></i>
+    >
+    @if (blocklistFilter.filter.searchKey) {
+      <i (click)="blocklistFilter.filter.searchKey = '';"
+         class="fa fa-times search-close"></i>
+    }
   </label>
 </div>
 
@@ -17,77 +19,94 @@
               [nzSize]="'small'">
       <thead>
       <tr>
-        <th *ngIf="permission.joc && permission.joc.administration.accounts.manage"
-            [nzShowCheckbox]="true" [nzIndeterminate]="object.indeterminate"
-            [(nzChecked)]="object.checked" (nzCheckedChange)="checkAll($event)"
-            class="chk">
-        </th>
-        <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span
-          translate>common.label.action</span></th>
+        @if (permission.joc && permission.joc.administration.accounts.manage) {
+          <th [nzShowCheckbox]="true" [nzIndeterminate]="object.indeterminate"
+              [(nzChecked)]="object.checked" (nzCheckedChange)="checkAll($event)"
+              class="chk">
+          </th>
+        }
+        @if (permission.joc && permission.joc.administration.accounts.manage) {
+          <th class="menu"><span translate>common.label.action</span></th>
+        }
         <th (click)="sort('accountName')"><a>
           <span class="p-r-xs" translate>user.label.account</span>
-          <i *ngIf="blocklistFilter.filter.sortBy == 'accountName' && !blocklistFilter.filter.reverse"
-             class="fa fa-caret-up "></i>
-          <i *ngIf="blocklistFilter.filter.sortBy == 'accountName' && blocklistFilter.filter.reverse"
-             class="fa fa-caret-down "></i>
+          @if (blocklistFilter.filter.sortBy == 'accountName' && !blocklistFilter.filter.reverse) {
+            <i class="fa fa-caret-up "></i>
+          }
+          @if (blocklistFilter.filter.sortBy == 'accountName' && blocklistFilter.filter.reverse) {
+            <i class="fa fa-caret-down "></i>
+          }
         </a>
         </th>
         <th (click)="sort('since')"><a>
           <span class="p-r-xs" translate>user.label.date</span>
-          <i *ngIf="blocklistFilter.filter.sortBy == 'since' && !blocklistFilter.filter.reverse"
-             class="fa fa-caret-up "></i>
-          <i *ngIf="blocklistFilter.filter.sortBy == 'since' && blocklistFilter.filter.reverse"
-             class="fa fa-caret-down "></i>
+          @if (blocklistFilter.filter.sortBy == 'since' && !blocklistFilter.filter.reverse) {
+            <i class="fa fa-caret-up "></i>
+          }
+          @if (blocklistFilter.filter.sortBy == 'since' && blocklistFilter.filter.reverse) {
+            <i class="fa fa-caret-down "></i>
+          }
         </a>
         </th>
         <th (click)="sort('comment')"><a>
           <span class="p-r-xs" translate>common.label.comment</span>
-          <i *ngIf="blocklistFilter.filter.sortBy == 'comment' && blocklistFilter.filter.reverse"
-             class="fa fa-caret-up "></i>
-          <i *ngIf="blocklistFilter.filter.sortBy == 'comment' && !blocklistFilter.filter.reverse"
-             class="fa fa-caret-down "></i>
+          @if (blocklistFilter.filter.sortBy == 'comment' && blocklistFilter.filter.reverse) {
+            <i class="fa fa-caret-up "></i>
+          }
+          @if (blocklistFilter.filter.sortBy == 'comment' && !blocklistFilter.filter.reverse) {
+            <i class="fa fa-caret-down "></i>
+          }
         </a>
         </th>
       </tr>
       </thead>
       <tbody>
-      <ng-template [ngForOf]="ajaxTable.data" let-account ngFor>
-        <tr>
-          <td *ngIf="permission.joc && permission.joc.administration.accounts.manage"
-              [nzShowCheckbox]="true"
-              [nzChecked]="object.mapOfCheckedId.has(account.accountName)"
-              (nzCheckedChange)="onItemChecked(account, $event)">
-          </td>
-          <td *ngIf="permission.joc && permission.joc.administration.accounts.manage">
-            <div class="btn-group dropdown pull-left m-r-sm">
-              <button nz-dropdown [nzDropdownMenu]="option" class="btn-drop more-option-h" nzTrigger="click"
-                      type="button"><i class="fa fa-ellipsis-h"></i></button>
-              <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                <ul nz-menu>
-                  <li (click)="removeBlocks(account)" nz-menu-item>
-                    <a translate>user.button.removeFromBlocklist</a>
-                  </li>
-                </ul>
-              </nz-dropdown-menu>
-            </div>
-          </td>
-          <td>
-            <span [innerHtml]="account.accountName | highlight : blocklistFilter.filter.searchText"></span>
-          </td>
-          <td>
-            <span [innerHtml]="account.since | stringToDate | highlight : blocklistFilter.filter.searchText"></span>
-          </td>
-          <td>
-            <span [innerHtml]="account.comment | highlight : blocklistFilter.filter.searchText"></span>
-          </td>
-        </tr>
-      </ng-template>
+        @for (account of ajaxTable.data; track account.accountName) {
+          <tr>
+            @if (permission.joc && permission.joc.administration.accounts.manage) {
+              <td [nzShowCheckbox]="true"
+                  [nzChecked]="object.mapOfCheckedId.has(account.accountName)"
+                  (nzCheckedChange)="onItemChecked(account, $event)">
+              </td>
+            }
+            @if (permission.joc && permission.joc.administration.accounts.manage) {
+              <td>
+                <div class="btn-group dropdown pull-left m-r-sm">
+                  <button nz-dropdown [nzDropdownMenu]="option" class="btn-drop more-option-h" nzTrigger="click"
+                          type="button"><i class="fa fa-ellipsis-h"></i></button>
+                  <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                    <ul nz-menu>
+                      <li (click)="removeBlocks(account)" nz-menu-item>
+                        <a translate>user.button.removeFromBlocklist</a>
+                      </li>
+                    </ul>
+                  </nz-dropdown-menu>
+                </div>
+              </td>
+            }
+            <td>
+              <span [innerHtml]="account.accountName | highlight : blocklistFilter.filter.searchText"></span>
+            </td>
+            <td>
+              <span [innerHtml]="account.since | stringToDate | highlight : blocklistFilter.filter.searchText"></span>
+            </td>
+            <td>
+              <span [innerHtml]="account.comment | highlight : blocklistFilter.filter.searchText"></span>
+            </td>
+          </tr>
+        }
       </tbody>
     </nz-table>
   </div>
-  <div *ngIf="ajaxTable.data.length >0" class="w-half label-top"><span translate>common.label.total</span>
-    {{data.length}}
-    <span *ngIf="ajaxTable.data.length >1" translate>user.label.blockedAccountsFound</span>
-    <span *ngIf="ajaxTable.data.length ==1" translate>user.label.blockedAccountFound</span>
-  </div>
+  @if (ajaxTable.data.length >0) {
+    <div class="w-half label-top"><span translate>common.label.total</span>
+      {{data.length}}
+      @if (ajaxTable.data.length >1) {
+        <span translate>user.label.blockedAccountsFound</span>
+      }
+      @if (ajaxTable.data.length ==1) {
+        <span translate>user.label.blockedAccountFound</span>
+      }
+    </div>
+  }
 </div>

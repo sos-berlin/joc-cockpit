@@ -25,6 +25,7 @@ import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.comp
 declare const $: any;
 
 @Component({
+  standalone: false,
   selector: 'app-filter-workflow-content',
   templateUrl: './filter-dialog.html',
 })
@@ -73,6 +74,7 @@ export class FilterModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-form-template',
   templateUrl: './form-template.html',
 })
@@ -114,47 +116,56 @@ export class SearchComponent {
     {label: 'skipped', value: 'SKIPPED', checked: false},
     {label: 'stopped', value: 'STOPPED', checked: false}
   ];
-
+  selectedSynchronizationStatuses: string[] = [];
+  selectedAvailabilityStatuses: string[] = [];
+  selectedJobAvailabilityStatuses: string[] = [];
 
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService) {
   }
 
-  ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    if (this.filter.name) {
-      this.existingName = this.coreService.clone(this.filter.name);
-    }
-    this.getFolderTree();
-    this.fetchTags();
-    this.fetchOrderTags();
-    this.filter.instructionStates = this.filter.instructionStates ? this.filter.instructionStates : [];
-    this.filter.states = this.filter.states ? this.filter.states : [];
-
-    this.filter.instructionStates.forEach((item: any) => {
-      for (let i in this.jobAvailabilityStatusOptions) {
-        if (this.jobAvailabilityStatusOptions[i].value == item) {
-          this.jobAvailabilityStatusOptions[i].checked = true;
-          break;
-        }
-      }
-    });
-    this.filter.states.forEach((item: any) => {
-      for (let i in this.synchronizationStatusOptions) {
-        if (this.synchronizationStatusOptions[i].value == item) {
-          this.synchronizationStatusOptions[i].checked = true;
-          this.statusObj.syncStatus.push(item)
-          break;
-        }
-      }
-      for (let i in this.availabilityStatusOptions) {
-        if (this.availabilityStatusOptions[i].value == item) {
-          this.availabilityStatusOptions[i].checked = true;
-          this.statusObj.availabilityStatus.push(item)
-          break;
-        }
-      }
-    });
+ngOnInit(): void {
+  this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+  if (this.filter.name) {
+    this.existingName = this.coreService.clone(this.filter.name);
   }
+  this.getFolderTree();
+  this.fetchTags();
+  this.fetchOrderTags();
+  this.filter.instructionStates = this.filter.instructionStates ? this.filter.instructionStates : [];
+  this.filter.states = this.filter.states ? this.filter.states : [];
+
+  this.selectedJobAvailabilityStatuses = [...this.filter.instructionStates];
+  this.filter.instructionStates.forEach((item: any) => {
+    for (let i in this.jobAvailabilityStatusOptions) {
+      if (this.jobAvailabilityStatusOptions[i].value == item) {
+        this.jobAvailabilityStatusOptions[i].checked = true;
+        break;
+      }
+    }
+  });
+
+  this.selectedSynchronizationStatuses = [];
+  this.selectedAvailabilityStatuses = [];
+
+  this.filter.states.forEach((item: any) => {
+    for (let i in this.synchronizationStatusOptions) {
+      if (this.synchronizationStatusOptions[i].value == item) {
+        this.synchronizationStatusOptions[i].checked = true;
+        this.statusObj.syncStatus.push(item);
+        this.selectedSynchronizationStatuses.push(item);
+        break;
+      }
+    }
+    for (let i in this.availabilityStatusOptions) {
+      if (this.availabilityStatusOptions[i].value == item) {
+        this.availabilityStatusOptions[i].checked = true;
+        this.statusObj.availabilityStatus.push(item);
+        this.selectedAvailabilityStatuses.push(item);
+        break;
+      }
+    }
+  });
+}
 
   private getFolderTree(): void {
     this.filter.paths = [];
@@ -196,15 +207,19 @@ export class SearchComponent {
 
   synchronizationStatusChange(value: string[]): void {
     this.statusObj.syncStatus = value;
+    this.selectedSynchronizationStatuses = value; // Keep in sync
   }
 
   availabilityStatusChange(value: string[]): void {
     this.statusObj.availabilityStatus = value;
+    this.selectedAvailabilityStatuses = value; // Keep in sync
   }
 
   jobAvailabilityStatusChange(value: string[]): void {
     this.filter.instructionStates = value;
+    this.selectedJobAvailabilityStatuses = value; // Keep in sync
   }
+
 
   selectFolder(node: any, $event: any): void {
     if (!node.origin.isLeaf) {
@@ -314,6 +329,7 @@ export class SearchComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-single-workflow',
   templateUrl: './single-workflow.component.html'
 })
@@ -544,6 +560,7 @@ export class SingleWorkflowComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-workflow',
   templateUrl: './workflow.component.html'
 })

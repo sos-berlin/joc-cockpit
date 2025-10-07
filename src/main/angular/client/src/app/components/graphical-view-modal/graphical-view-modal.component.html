@@ -1,8 +1,14 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="operation === 'START'" translate> order.label.startNode</span>
-    <span *ngIf="operation === 'END'" translate> order.label.endNode</span>
-    <span *ngIf="operation === 'BLOCK_POSITION'" translate> order.label.blockPosition</span>
+    @if (operation === 'START') {
+      <span translate> order.label.startNode</span>
+    }
+    @if (operation === 'END') {
+      <span translate> order.label.endNode</span>
+    }
+    @if (operation === 'BLOCK_POSITION') {
+      <span translate> order.label.blockPosition</span>
+    }
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -47,11 +53,13 @@
         </div>
       </div>
 
-      <div *ngIf="isLoading" class="spinner">
-        <div class="cssload-inner cssload-one"></div>
-        <div class="cssload-inner cssload-two"></div>
-        <div class="cssload-inner cssload-three"></div>
-      </div>
+      @if (isLoading) {
+        <div class="spinner">
+          <div class="cssload-inner cssload-one"></div>
+          <div class="cssload-inner cssload-two"></div>
+          <div class="cssload-inner cssload-three"></div>
+        </div>
+      }
     </div>
   </div>
   <div class="modal-footer text-left">

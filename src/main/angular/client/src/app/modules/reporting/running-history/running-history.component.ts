@@ -11,6 +11,7 @@ import {SharingDataService} from "../sharing-data.service";
 import {TranslateService} from "@ngx-translate/core";
 
 @Component({
+  standalone: false,
   selector: 'app-running-history',
   templateUrl: './running-history.component.html'
 })

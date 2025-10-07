@@ -11,6 +11,7 @@ import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.comp
 declare const $;
 
 @Component({
+  standalone: false,
   selector: 'app-start-up-modal',
   templateUrl: './start-up.dialog.html'
 })
@@ -198,6 +199,7 @@ export class StartUpModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-start-up-component',
   templateUrl: './start-up.component.html'
 })

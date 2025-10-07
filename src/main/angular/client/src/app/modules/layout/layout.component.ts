@@ -17,6 +17,7 @@ import {ChangePasswordComponent} from "../../components/change-password/change-p
 declare const $: any;
 
 @Component({
+  standalone: false,
   selector: 'app-layout',
   templateUrl: './layout.component.html',
 })

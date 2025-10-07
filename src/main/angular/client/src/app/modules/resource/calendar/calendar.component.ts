@@ -15,6 +15,7 @@ declare const $: any;
 
 // Main Component
 @Component({
+  standalone: false,
   selector: 'app-single-calendar',
   templateUrl: 'single-calendar.component.html'
 })
@@ -86,6 +87,7 @@ export class SingleCalendarComponent {
 
 // Main Component
 @Component({
+  standalone: false,
   selector: 'app-calendar',
   templateUrl: 'calendar.component.html'
 })

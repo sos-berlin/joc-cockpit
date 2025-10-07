@@ -15,23 +15,35 @@
           <tr>
             <th>
               <span translate>history.label.workflow</span>
-              <span *ngIf="historyFilters.type == 'TASK'">/</span>
-              <span *ngIf="historyFilters.type == 'TASK'" translate>history.label.job</span>
+              @if (historyFilters.type == 'TASK') {
+                <span>/</span>
+              }
+              @if (historyFilters.type == 'TASK') {
+                <span translate>history.label.job</span>
+              }
             </th>
             <th><span translate>common.label.action</span></th>
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let workflow of savedIgnoreList.workflows" [hidden]="historyFilters.type !== 'ORDER'">
-            <td>{{workflow}}</td>
-            <td><a (click)="removeWorkflowIgnoreList(workflow)" class="text-u-l text-danger" translate>common.button.remove</a>
-            </td>
-          </tr>
-          <tr *ngFor="let job of savedIgnoreList.jobs" [hidden]="historyFilters.type !== 'TASK'">
-            <td>{{job.workflowPath}}<i *ngIf="job.job">,</i> {{job.job}}</td>
-            <td><a (click)="removeJobIgnoreList(job)" class="text-u-l text-danger" translate>common.button.remove</a>
-            </td>
-          </tr>
+            @for (workflow of savedIgnoreList.workflows; track workflow) {
+              <tr [hidden]="historyFilters.type !== 'ORDER'">
+                <td>{{workflow}}</td>
+                <td><a (click)="removeWorkflowIgnoreList(workflow)" class="text-u-l text-danger" translate>common.button.remove</a>
+                </td>
+              </tr>
+            }
+            @for (job of savedIgnoreList.jobs; track job) {
+              <tr [hidden]="historyFilters.type !== 'TASK'">
+                <td>{{job.workflowPath}}
+                  @if (job.job) {
+                    <i>,</i>
+                  } {{job.job}}
+                </td>
+                <td><a (click)="removeJobIgnoreList(job)" class="text-u-l text-danger" translate>common.button.remove</a>
+                </td>
+              </tr>
+            }
           </tbody>
         </table>
       </div>

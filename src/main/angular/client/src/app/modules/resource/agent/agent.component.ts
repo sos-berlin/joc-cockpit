@@ -10,6 +10,7 @@ import {CommentModalComponent} from "../../../components/comment-modal/comment.c
 import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 
 @Component({
+  standalone: false,
   selector: 'app-confirm-node-modal',
   templateUrl: './confirm-node-dialog.html'
 })
@@ -60,6 +61,7 @@ export class ConfirmNodeModalComponent {
 
 // Main Component
 @Component({
+  standalone: false,
   selector: 'app-agent-cluster',
   templateUrl: 'agent.component.html'
 })

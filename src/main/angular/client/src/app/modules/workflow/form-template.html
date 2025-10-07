@@ -3,21 +3,27 @@
     <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
          class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>customization.label.customizationName
-        <sup *ngIf="!isSearch" class="text-danger text-sm">*</sup>
+        @if (!isSearch) {
+          <sup class="text-danger text-sm">*</sup>
+        }
       </label>
       <div class="col-sm-6">
         <input #name="ngModel" (blur)="checkFilterName()" [(ngModel)]="filter.name" [appAutofocus]="!isSearch" autocomplete="off"
                class="form-control"
                maxlength="30" name="name" placeholder="{{'customization.placeholder.enterName' | translate}}" required
                type="text">
-        <div *ngIf="!isSearch && name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-          <div *ngIf="name.errors['required']">
-            <div translate>common.message.requiredError</div>
+        @if (!isSearch && name.invalid && (name.dirty || name.touched)) {
+          <div class="text-danger help-block">
+            @if (name.errors['required']) {
+              <div translate>common.message.requiredError</div>
+            }
           </div>
-        </div>
-        <div *ngIf="!isUnique" class="help-block text-danger">
-          <div translate>common.message.uniqueError</div>
-        </div>
+        }
+        @if (!isUnique) {
+          <div class="help-block text-danger">
+            <div translate>common.message.uniqueError</div>
+          </div>
+        }
       </div>
     </div>
     <div class="form-group row">
@@ -51,55 +57,66 @@
                    class="node-content-wrapper">
                 <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
                 {{node.origin.name}}
-                <i (click)="addFolder(node.origin.path);$event.stopPropagation()"
-                   *ngIf="filter.paths && filter.paths.indexOf(node.origin.path) === -1"
-                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.button.addFolder' | translate" [nzType]="'plus'" class="p-l-sm" nz-icon></i>
-                <i (click)="remove(node.origin.path);$event.stopPropagation()"
-                   *ngIf="filter.paths && filter.paths.indexOf(node.origin.path) > -1" [nzType]="'delete'" class="p-l-sm"
-                   nz-icon></i>
+                @if (filter.paths && filter.paths.indexOf(node.origin.path) === -1) {
+                  <i (click)="addFolder(node.origin.path);$event.stopPropagation()"
+                     [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.button.addFolder' | translate" [nzType]="'plus'" class="p-l-sm" nz-icon></i>
+                }
+                @if (filter.paths && filter.paths.indexOf(node.origin.path) > -1) {
+                  <i (click)="remove(node.origin.path);$event.stopPropagation()"
+                     [nzType]="'delete'" class="p-l-sm" nz-icon></i>
+                }
               </div>
             </div>
           </ng-template>
         </nz-tree-select>
       </div>
     </div>
-    <div class="m-b-xs row" *ngIf="filter.paths?.length > 0">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
+    @if (filter.paths?.length > 0) {
+      <div class="m-b-xs row">
+        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
                translate>inventory.label.handleRecursively</label>
-      <div class="col-sm-2">
-        <label [(ngModel)]="filter.handleRecursively" name="handleRecursively" nz-checkbox></label>
+        <div class="col-sm-2">
+          <label [(ngModel)]="filter.handleRecursively" name="handleRecursively" nz-checkbox></label>
+        </div>
       </div>
-    </div>
+    }
     <div class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>deploymentService.label.agents</label>
       <div class=" col-sm-6">
         <nz-select [(ngModel)]="filter.agentNames" [nzDropdownClassName]="'group-list'" name="find" nzAllowClear nzMode="multiple"
                    nzPlaceHolder="{{'workflow.findAndReplace.placeholder.selectFind' | translate}}"
                    nzShowSearch>
-          <ng-container *ngFor="let item of listOfAgents">
-            <ng-container *ngIf="item.title == 'agents'">
-              <nz-option-group *ngFor="let group of [item]" [nzLabel]="groupTitle">
-                <ng-template #groupTitle>
-                  <span class="_600">
-                    {{ 'agent.label.' + group.title | translate }}
-                  </span>
-                </ng-template>
-                <nz-option *ngFor="let agent of group.children" [nzLabel]="agent"
-                           [nzValue]="agent"></nz-option>
-              </nz-option-group>
-            </ng-container>
-            <ng-container *ngIf="item.title == 'agentGroups'">
-              <nz-option-group *ngFor="let group of [item]" [nzLabel]="groupTitle">
-                <ng-template #groupTitle>
-                        <span class="_600">
-                          {{ 'agent.label.' + group?.title | translate }}
-                        </span>
-                </ng-template>
-                <nz-option *ngFor="let agent of group?.children" [nzLabel]="agent.title" [nzValue]="agent.title">
-                </nz-option>
-              </nz-option-group>
-            </ng-container>
-          </ng-container>
+          @for (item of listOfAgents; track item) {
+            @if (item.title == 'agents') {
+              @for (group of [item]; track group) {
+                <nz-option-group [nzLabel]="groupTitle">
+                  <ng-template #groupTitle>
+                    <span class="_600">
+                      {{ 'agent.label.' + group.title | translate }}
+                    </span>
+                  </ng-template>
+                  @for (agent of group.children; track agent) {
+                    <nz-option [nzLabel]="agent" [nzValue]="agent"></nz-option>
+                  }
+                </nz-option-group>
+              }
+            }
+            @if (item.title == 'agentGroups') {
+              @for (group of [item]; track group) {
+                <nz-option-group [nzLabel]="groupTitle">
+                  <ng-template #groupTitle>
+                          <span class="_600">
+                            {{ 'agent.label.' + group?.title | translate }}
+                          </span>
+                  </ng-template>
+                  @for (agent of group?.children; track agent) {
+                    <nz-option [nzLabel]="agent.title" [nzValue]="agent.title">
+                    </nz-option>
+                  }
+                </nz-option-group>
+              }
+            }
+          }
         </nz-select>
       </div>
     </div>
@@ -109,8 +126,9 @@
         <nz-select [(ngModel)]="filter.workflowTags" name="workflowTag" nzAllowClear nzMode="multiple"
                    nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
                    nzShowSearch>
-          <nz-option *ngFor="let tag of tags" [nzLabel]="tag.name"
-                     [nzValue]="tag.name"></nz-option>
+          @for (tag of tags; track tag) {
+            <nz-option [nzLabel]="tag.name" [nzValue]="tag.name"></nz-option>
+          }
         </nz-select>
       </div>
     </div>
@@ -120,73 +138,98 @@
         <nz-select [(ngModel)]="filter.orderTags" name="orderTag" nzAllowClear nzMode="multiple"
                    nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
                    nzShowSearch>
-          <nz-option *ngFor="let tag of orderTags" [nzLabel]="tag.name"
-                     [nzValue]="tag.name"></nz-option>
+          @for (tag of orderTags; track tag) {
+            <nz-option [nzLabel]="tag.name" [nzValue]="tag.name"></nz-option>
+          }
         </nz-select>
       </div>
     </div>
     <div class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis" translate>inventory.search.label.workflowAvailabilityStatus</label>
       <div class="col-sm-8">
-        <nz-checkbox-wrapper (nzOnChange)="synchronizationStatusChange($event)">
-          <ng-container *ngFor="let option of synchronizationStatusOptions">
-            <label [name]="option.label" [ngModel]="option.checked" [nzValue]="option.value" nz-checkbox><span
-              translate>filters.button.{{option.label}}</span></label>
-          </ng-container>
-        </nz-checkbox-wrapper>
+        <nz-checkbox-group
+          name="synchronizationStatus"
+          [(ngModel)]="selectedSynchronizationStatuses"
+          (ngModelChange)="synchronizationStatusChange($event)">
+          @for (option of synchronizationStatusOptions; track option) {
+            <label [nzValue]="option.value" nz-checkbox>
+              <span translate>filters.button.{{option.label}}</span>
+            </label>
+          }
+        </nz-checkbox-group>
       </div>
     </div>
+
     <div class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis"></label>
       <div class="col-sm-8">
-        <nz-checkbox-wrapper (nzOnChange)="availabilityStatusChange($event)">
-          <ng-container *ngFor="let option of availabilityStatusOptions">
-            <label [name]="option.label" [ngModel]="option.checked" [nzValue]="option.value" nz-checkbox><span
-              translate>filters.button.{{option.label}}</span></label>
-          </ng-container>
-        </nz-checkbox-wrapper>
+        <nz-checkbox-group
+          name="availabilityStatus"
+          [(ngModel)]="selectedAvailabilityStatuses"
+          (ngModelChange)="availabilityStatusChange($event)">
+          @for (option of availabilityStatusOptions; track option) {
+            <label [nzValue]="option.value" nz-checkbox>
+              <span translate>filters.button.{{option.label}}</span>
+            </label>
+          }
+        </nz-checkbox-group>
       </div>
     </div>
+
     <div class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 block-ellipsis" translate>inventory.search.label.jobAvailabilityStatus</label>
       <div class="col-sm-8">
-        <nz-checkbox-wrapper (nzOnChange)="jobAvailabilityStatusChange($event)">
-          <ng-container *ngFor="let option of jobAvailabilityStatusOptions">
-            <label [name]="option.label" [ngModel]="option.checked" [nzValue]="option.value" nz-checkbox><span
-              translate>filters.button.{{option.label}}</span></label>
-          </ng-container>
-        </nz-checkbox-wrapper>
+        <nz-checkbox-group
+          name="jobAvailabilityStatus"
+          [(ngModel)]="selectedJobAvailabilityStatuses"
+          (ngModelChange)="jobAvailabilityStatusChange($event)">
+          @for (option of jobAvailabilityStatusOptions; track option) {
+            <label [nzValue]="option.value" nz-checkbox>
+              <span translate>filters.button.{{option.label}}</span>
+            </label>
+          }
+        </nz-checkbox-group>
       </div>
     </div>
-    <div *ngIf="permission && permission.joc && permission.joc.administration.customization.share && !isSearch"
-         class="form-group row">
-      <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
-      <div class="col-sm-8">
-        <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
+
+    @if (permission && permission.joc && permission.joc.administration.customization.share && !isSearch) {
+      <div class="form-group row">
+        <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
+        <div class="col-sm-8">
+          <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
+        </div>
       </div>
-    </div>
-    <div *ngIf="isSearch" class="form-group m-t m-b-xs">
-      <button (click)="search()" class="btn btn-primary btn-sm" translate type="button">
-        common.button.search
+    }
+    @if (isSearch) {
+      <div class="form-group m-t m-b-xs">
+        <button (click)="search()" class="btn btn-primary btn-sm" translate type="button">
+          common.button.search
+        </button>
+        <button [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted" class="btn btn-default btn-sm m-l-sm"
+                type="submit">
+          @if (submitted) {
+            <i class="fa fa-spin fa-spinner"></i>
+          }
+          {{'customization.button.saveAsCustomization' | translate}}
+        </button>
+        <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
+          common.button.cancel
+        </button>
+      </div>
+    }
+  </div>
+  @if (!isSearch) {
+    <div class="modal-footer">
+      <button [disabled]="!myForm.form.valid || !isUnique || submitted" class="btn btn-primary btn-sm" type="submit">
+        @if (submitted) {
+          <i class="fa fa-spin fa-spinner p-r-xs"></i>
+        }
+        {{'common.button.submit' | translate}}
       </button>
-      <button [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted" class="btn btn-default btn-sm m-l-sm"
-              type="submit">
-        <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
-        {{'customization.button.saveAsCustomization' | translate}}
-      </button>
-      <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
+      <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
         common.button.cancel
       </button>
     </div>
-  </div>
-  <div *ngIf="!isSearch" class="modal-footer">
-    <button [disabled]="!myForm.form.valid || !isUnique || submitted" class="btn btn-primary btn-sm" type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      {{'common.button.submit' | translate}}
-    </button>
-    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
-    </button>
-  </div>
+  }
   <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-filter cur-point fa fa-info-circle text-20"></i>
 </form>

@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {CoreService} from '../../services/core.service';
 
 @Component({
+  standalone: false,
   selector: 'app-multi-select',
   templateUrl: './multi-select.component.html'
 })

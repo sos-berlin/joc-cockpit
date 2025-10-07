@@ -15,7 +15,7 @@
       </label>
       <div class="col-sm-8">
         <textarea [(ngModel)]="priority" [appAutofocus]="true" [maxLength]="255" class="form-control"
-               name="priority" placeholder="{{'agent.placeholder.enterPriority' | translate}}">
+                  name="priority" placeholder="{{'agent.placeholder.enterPriority' | translate}}">
         </textarea>
       </div>
     </div>
@@ -25,14 +25,15 @@
       </div>
       <nz-dropdown-menu #menu="nzDropdownMenu">
         <ul nz-menu nzSelectable>
-          <li
-            *ngFor="let item of indicatorItems"
-            nz-menu-item
-            nz-tooltip
-            [nzTooltipTitle]="'agent.tooltip.' + item.value | translate"
-            (click)="onDropdownSelect(item.value)">
-            {{ item.value }}
-          </li>
+          @for (item of indicatorItems; track item) {
+            <li
+              nz-menu-item
+              nz-tooltip
+              [nzTooltipTitle]="'agent.tooltip.' + item.value | translate"
+              (click)="onDropdownSelect(item.value)">
+              {{ item.value }}
+            </li>
+          }
         </ul>
       </nz-dropdown-menu>
     </div>
@@ -41,21 +42,25 @@
         agent.label.examples
       </a>
 
-      <nz-table *ngIf="isTableVisible" class="m-t-sm" [nzData]="dataSource" [nzBordered]="true" [nzShowPagination]="false">
-        <thead>
-        <tr>
-          <th translate>agent.label.expression</th>
-          <th translate>agent.label.description</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr *ngFor="let item of dataSource">
-          <td>{{ item.variable }}
-            <span nz-icon nzType="copy" class="cursor p-l-xs float-right" (click)="onCopyExpression(item.variable)"></span></td>
-          <td>{{'agent.examples.' + item.expression | translate}}</td>
-        </tr>
-        </tbody>
-      </nz-table>
+      @if (isTableVisible) {
+        <nz-table class="m-t-sm" [nzData]="dataSource" [nzBordered]="true" [nzShowPagination]="false">
+          <thead>
+          <tr>
+            <th translate>agent.label.expression</th>
+            <th translate>agent.label.description</th>
+          </tr>
+          </thead>
+          <tbody>
+            @for (item of dataSource; track item) {
+              <tr>
+                <td>{{ item.variable }}
+                  <span nz-icon nzType="copy" class="cursor p-l-xs float-right" (click)="onCopyExpression(item.variable)"></span></td>
+                <td>{{'agent.examples.' + item.expression | translate}}</td>
+              </tr>
+            }
+          </tbody>
+        </nz-table>
+      }
     </div>
 
   </div>
@@ -64,7 +69,9 @@
       [disabled]="!myForm.form.valid || !priority || submitted"
       class="btn btn-primary btn-sm"
       type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button
@@ -72,7 +79,9 @@
       [disabled]="!myForm.form.valid || !priority || submitted"
       class="btn btn-primary btn-sm"
       type="button">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'agent.button.SubmitAllSubagents' | translate}}
     </button>
     <button
@@ -85,4 +94,3 @@
   </div>
 
 </form>
-

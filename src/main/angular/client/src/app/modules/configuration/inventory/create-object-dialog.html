@@ -1,28 +1,64 @@
 <div class="modal-header">
-  <h4 *ngIf="!copy && !restore" class="modal-title">
-    <span *ngIf="obj.type === 'WORKFLOW'" translate>inventory.label.createWorkflow</span>
-    <span *ngIf="obj.type === 'FILEORDERSOURCE'" translate>inventory.label.createFileOrderSource</span>
-    <span *ngIf="obj.type === 'DEPLOYMENTDESCRIPTOR'" translate>deploymentService.label.createDescriptor</span>
-    <span *ngIf="obj.type === 'JOBRESOURCE'" translate>inventory.label.createJobResource</span>
-    <span *ngIf="obj.type === 'JOBTEMPLATE'" translate>inventory.label.createJobTemplate</span>
-    <span *ngIf="obj.type === 'NOTICEBOARD'" translate>inventory.label.createBoard</span>
-    <span *ngIf="obj.type === 'LOCK'" translate>inventory.label.createLock</span>
-    <span *ngIf="obj.type === 'SCHEDULE'" translate>inventory.label.createOrder</span>
-    <span *ngIf="obj.type === 'INCLUDESCRIPT'" translate>inventory.label.createScript</span>
-    <span *ngIf="obj.type === 'REPORT'" translate>inventory.label.createReport</span>
-    <span *ngIf="obj.type.match('CALENDAR')" translate>inventory.label.createCalendar</span>
-  </h4>
-  <h4 *ngIf="copy" class="modal-title">
-    <span translate>inventory.label.copyOf</span>
-    {{copy.name}}
-  </h4>
-  <h4 *ngIf="restore && !bulk" class="modal-title">
-    <span translate>inventory.label.restore</span>:
-    {{obj.path}}<i *ngIf="obj.type && obj.path !== '/'">/</i><span *ngIf="obj.type">{{obj.name}}</span>
-  </h4>
-  <h4 *ngIf="bulk" class="modal-title">
-    <span translate>inventory.label.restore</span>
-  </h4>
+  @if (!copy && !restore) {
+    <h4 class="modal-title">
+      @if (obj.type === 'WORKFLOW') {
+        <span translate>inventory.label.createWorkflow</span>
+      }
+      @if (obj.type === 'FILEORDERSOURCE') {
+        <span translate>inventory.label.createFileOrderSource</span>
+      }
+      @if (obj.type === 'DEPLOYMENTDESCRIPTOR') {
+        <span translate>deploymentService.label.createDescriptor</span>
+      }
+      @if (obj.type === 'JOBRESOURCE') {
+        <span translate>inventory.label.createJobResource</span>
+      }
+      @if (obj.type === 'JOBTEMPLATE') {
+        <span translate>inventory.label.createJobTemplate</span>
+      }
+      @if (obj.type === 'NOTICEBOARD') {
+        <span translate>inventory.label.createBoard</span>
+      }
+      @if (obj.type === 'LOCK') {
+        <span translate>inventory.label.createLock</span>
+      }
+      @if (obj.type === 'SCHEDULE') {
+        <span translate>inventory.label.createOrder</span>
+      }
+      @if (obj.type === 'INCLUDESCRIPT') {
+        <span translate>inventory.label.createScript</span>
+      }
+      @if (obj.type === 'REPORT') {
+        <span translate>inventory.label.createReport</span>
+      }
+      @if (obj.type.match('CALENDAR')) {
+        <span translate>inventory.label.createCalendar</span>
+      }
+    </h4>
+  }
+  @if (copy) {
+    <h4 class="modal-title">
+      <span translate>inventory.label.copyOf</span>
+      {{copy.name}}
+    </h4>
+  }
+  @if (restore && !bulk) {
+    <h4 class="modal-title">
+      <span translate>inventory.label.restore</span>:
+      {{obj.path}}
+      @if (obj.type && obj.path !== '/') {
+        <i>/</i>
+      }
+      @if (obj.type) {
+        <span>{{obj.name}}</span>
+      }
+    </h4>
+  }
+  @if (bulk) {
+    <h4 class="modal-title">
+      <span translate>inventory.label.restore</span>
+    </h4>
+  }
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
@@ -32,173 +68,222 @@
     <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
     </div>
-    <div *ngIf="!copy && !restore && !allowPath" class="form-group row">
-      <label class="col-md-3 form-control-label" translate>inventory.label.objectName
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="col-md-6">
-        <input #name="ngModel" [(ngModel)]="object.name" [appAutofocus]="true" autocomplete="off" class="form-control"
-               identifierValidation
-               name="name" placeholder="{{'inventory.placeholder.enterUniqueName' | translate}}" required type="text">
-        <div *ngIf="name.invalid && (name.dirty || name.touched)"
-             class="text-danger help-block">
-          <div *ngIf="(name.errors && name.errors.required)">
-            <div translate>common.message.requiredError</div>
-          </div>
-          <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
-        </div>
-      </div>
-    </div>
-    <div *ngIf="allowPath" class="form-group row">
-      <label class="col-md-3 form-control-label" translate>inventory.label.objectName
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      <div [ngClass]="{'has-error' :  !isValid || ((name.dirty || name.touched) && name.invalid)}" class="col-md-6">
-        <input #name="ngModel" (blur)="isValidObject(object.name)" [(ngModel)]="object.name"
-               [appAutofocus]="true" autocomplete="off"
-               class="form-control" name="name" placeholder="{{'inventory.placeholder.enterNewName' | translate}}" required
-               type="text">
-        <div *ngIf="name.invalid && (name.dirty || name.touched)"
-             class="text-danger help-block">
-          <div *ngIf="(name.errors && name.errors.required)">
-            <div translate>common.message.requiredError</div>
-          </div>
-        </div>
-        <div *ngIf="!isValid" class="help-block text-danger">
-          <div translate>common.message.invalid</div>
-        </div>
-      </div>
-    </div>
-    <div *ngIf="copy">
+    @if (!copy && !restore && !allowPath) {
       <div class="form-group row">
-        <label class="col-md-3" translate>inventory.label.newName</label>
-        <div class="col-md-9">
-          <nz-radio-group [(ngModel)]="object.type" name="type">
-            <label *ngIf="copy && copy.objectType" nz-radio nzValue="name"><span
-              translate>inventory.label.specifyName</span></label>
-            <label nz-radio nzValue="prefix"><span translate>inventory.label.prefix</span></label>
-            <label nz-radio nzValue="suffix"><span translate>inventory.label.suffix</span></label>
-          </nz-radio-group>
-        </div>
-      </div>
-      <div *ngIf="object.type === 'suffix'" class="form-group row">
-        <label class="col-md-3"></label>
-        <div [ngClass]="{'has-error' : ((suffix.dirty || suffix.touched) && suffix.invalid), 'col-md-9' : copy && copy.objectType}"
-             class="col-md-6">
-          <input #suffix="ngModel" [(ngModel)]="object.suffix" [appAutofocus]="true" autocomplete="off" class="form-control"
-                 identifierValidation
-                 name="suffix" placeholder="{{'inventory.placeholder.suffix' | translate}}" required type="text">
-          <div *ngIf="suffix.invalid && (suffix.dirty || suffix.touched)"
-               class="text-danger help-block">
-            <div *ngIf="(suffix.errors && suffix.errors.required)">
-              <div translate>common.message.requiredError</div>
-            </div>
-            <div *ngIf="suffix.errors.invalidIdentifier" translate>common.message.invalid</div>
-          </div>
-        </div>
-      </div>
-      <div *ngIf="object.type === 'prefix'" class="form-group row">
-        <label class="col-md-3"></label>
-        <div [ngClass]="{'has-error' : ((prefix.dirty || prefix.touched) && prefix.invalid), 'col-md-9' : copy.objectType}"
-             class="col-md-6">
-          <input #prefix="ngModel" [(ngModel)]="object.prefix" [appAutofocus]="true" autocomplete="off" class="form-control"
-                 identifierValidation
-                 name="prefix" placeholder="{{'inventory.placeholder.prefix' | translate}}" required type="text">
-          <div *ngIf="prefix.invalid && (prefix.dirty || prefix.touched)"
-               class="text-danger help-block">
-            <div *ngIf="(prefix.errors && prefix.errors.required)">
-              <div translate>common.message.requiredError</div>
-            </div>
-            <div *ngIf="prefix.errors.invalidIdentifier" translate>common.message.invalid</div>
-          </div>
-        </div>
-      </div>
-      <div *ngIf="object.type === 'name' && copy.objectType" class="form-group row">
-        <label class="col-md-3"></label>
-        <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="col-md-9">
-          <input #name="ngModel" [(ngModel)]="object.originalName" [appAutofocus]="true" autocomplete="off" class="form-control"
-                 identifierValidation name="originalName" required type="text">
-          <div *ngIf="name.invalid && (name.dirty || name.touched)"
-               class="text-danger help-block">
-            <div *ngIf="(name.errors && name.errors.required)">
-              <div translate>common.message.requiredError</div>
-            </div>
-            <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
-          </div>
-        </div>
-      </div>
-      <div *ngIf="!copy.objectType" class="form-group row">
-        <div class="col-md-3">
-          <label translate>inventory.label.withoutFolder</label>
-        </div>
-        <div class="col-md-6">
-          <label [(ngModel)]="object.onlyContains" name="onlyContains" nz-checkbox></label>
-        </div>
-      </div>
-    </div>
-    <div *ngIf="restore">
-      <div class="form-group row">
-        <label class="col-md-3" translate>inventory.label.objectName</label>
-        <div class="col-md-9">
-          <nz-radio-group [(ngModel)]="object.type" name="type">
-            <label nz-radio nzValue="existing"><span translate>inventory.label.existingName</span></label>
-            <label nz-radio nzValue="new"><span translate>inventory.label.newName</span></label>
-            <label class="m-t-xs" nz-radio nzValue="prefix"><span translate>inventory.label.prefix</span></label>
-            <label class="m-t-xs" nz-radio nzValue="suffix"><span translate>inventory.label.suffix</span></label>
-          </nz-radio-group>
-        </div>
-      </div>
-      <div *ngIf="object.type === 'new'" class="form-group row">
-        <label class="col-md-3"></label>
+        <label class="col-md-3 form-control-label" translate>inventory.label.objectName
+          <sup class="text-danger text-sm">*</sup>
+        </label>
         <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="col-md-6">
-          <input #name="ngModel" [(ngModel)]="object.newName" [appAutofocus]="true" autocomplete="off" class="form-control"
+          <input #name="ngModel" [(ngModel)]="object.name" [appAutofocus]="true" autocomplete="off" class="form-control"
                  identifierValidation
-                 name="newName" placeholder="{{'inventory.placeholder.enterUniqueName' | translate}}" required type="text">
-          <div *ngIf="name.invalid && (name.dirty || name.touched)"
-               class="text-danger help-block">
-            <div *ngIf="(name.errors && name.errors.required)">
-              <div translate>common.message.requiredError</div>
+                 name="name" placeholder="{{'inventory.placeholder.enterUniqueName' | translate}}" required type="text">
+          @if (name.invalid && (name.dirty || name.touched)) {
+            <div class="text-danger help-block">
+              @if (name.errors && name.errors.required) {
+                <div translate>common.message.requiredError</div>
+              }
+              @if (name.errors.invalidIdentifier) {
+                <div translate>common.message.invalid</div>
+              }
             </div>
-            <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
-          </div>
+          }
         </div>
       </div>
-      <div *ngIf="object.type === 'suffix'" class="form-group row">
-        <label class="col-md-3"></label>
-        <div [ngClass]="{'has-error' : ((suffix.dirty || suffix.touched) && suffix.invalid)}" class="col-md-6">
-          <input #suffix="ngModel" [(ngModel)]="object.suffix" [appAutofocus]="true" autocomplete="off" class="form-control"
-                 identifierValidation
-                 name="suffix" placeholder="{{'inventory.placeholder.suffix' | translate}}" required type="text">
-          <div *ngIf="suffix.invalid && (suffix.dirty || suffix.touched)"
-               class="text-danger help-block">
-            <div *ngIf="(suffix.errors && suffix.errors.required)">
-              <div translate>common.message.requiredError</div>
+    }
+    @if (allowPath) {
+      <div class="form-group row">
+        <label class="col-md-3 form-control-label" translate>inventory.label.objectName
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div [ngClass]="{'has-error' :  !isValid || ((name.dirty || name.touched) && name.invalid)}" class="col-md-6">
+          <input #name="ngModel" (blur)="isValidObject(object.name)" [(ngModel)]="object.name"
+                 [appAutofocus]="true" autocomplete="off"
+                 class="form-control" name="name" placeholder="{{'inventory.placeholder.enterNewName' | translate}}" required
+                 type="text">
+          @if (name.invalid && (name.dirty || name.touched)) {
+            <div class="text-danger help-block">
+              @if (name.errors && name.errors.required) {
+                <div translate>common.message.requiredError</div>
+              }
             </div>
-            <div *ngIf="suffix.errors.invalidIdentifier" translate>common.message.invalid</div>
-          </div>
+          }
+          @if (!isValid) {
+            <div class="help-block text-danger">
+              <div translate>common.message.invalid</div>
+            </div>
+          }
         </div>
       </div>
-      <div *ngIf="object.type === 'prefix'" class="form-group row">
-        <label class="col-md-3"></label>
-        <div [ngClass]="{'has-error' : ((prefix.dirty || prefix.touched) && prefix.invalid)}" class="col-md-6">
-          <input #prefix="ngModel" [(ngModel)]="object.prefix" [appAutofocus]="true" autocomplete="off" class="form-control"
-                 identifierValidation
-                 name="prefix" placeholder="{{'inventory.placeholder.prefix' | translate}}" required type="text">
-          <div *ngIf="prefix.invalid && (prefix.dirty || prefix.touched)"
-               class="text-danger help-block">
-            <div *ngIf="(prefix.errors && prefix.errors.required)">
-              <div translate>common.message.requiredError</div>
-            </div>
-            <div *ngIf="prefix.errors.invalidIdentifier" translate>common.message.invalid</div>
+    }
+    @if (copy) {
+      <div>
+        <div class="form-group row">
+          <label class="col-md-3" translate>inventory.label.newName</label>
+          <div class="col-md-9">
+            <nz-radio-group [(ngModel)]="object.type" name="type">
+              @if (copy && copy.objectType) {
+                <label nz-radio nzValue="name"><span translate>inventory.label.specifyName</span></label>
+              }
+              <label nz-radio nzValue="prefix"><span translate>inventory.label.prefix</span></label>
+              <label nz-radio nzValue="suffix"><span translate>inventory.label.suffix</span></label>
+            </nz-radio-group>
           </div>
         </div>
+        @if (object.type === 'suffix') {
+          <div class="form-group row">
+            <label class="col-md-3"></label>
+            <div [ngClass]="{'has-error' : ((suffix.dirty || suffix.touched) && suffix.invalid), 'col-md-9' : copy && copy.objectType}"
+                 class="col-md-6">
+              <input #suffix="ngModel" [(ngModel)]="object.suffix" [appAutofocus]="true" autocomplete="off" class="form-control"
+                     identifierValidation
+                     name="suffix" placeholder="{{'inventory.placeholder.suffix' | translate}}" required type="text">
+              @if (suffix.invalid && (suffix.dirty || suffix.touched)) {
+                <div class="text-danger help-block">
+                  @if (suffix.errors && suffix.errors.required) {
+                    <div translate>common.message.requiredError</div>
+                  }
+                  @if (suffix.errors.invalidIdentifier) {
+                    <div translate>common.message.invalid</div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+        @if (object.type === 'prefix') {
+          <div class="form-group row">
+            <label class="col-md-3"></label>
+            <div [ngClass]="{'has-error' : ((prefix.dirty || prefix.touched) && prefix.invalid), 'col-md-9' : copy.objectType}"
+                 class="col-md-6">
+              <input #prefix="ngModel" [(ngModel)]="object.prefix" [appAutofocus]="true" autocomplete="off" class="form-control"
+                     identifierValidation
+                     name="prefix" placeholder="{{'inventory.placeholder.prefix' | translate}}" required type="text">
+              @if (prefix.invalid && (prefix.dirty || prefix.touched)) {
+                <div class="text-danger help-block">
+                  @if (prefix.errors && prefix.errors.required) {
+                    <div translate>common.message.requiredError</div>
+                  }
+                  @if (prefix.errors.invalidIdentifier) {
+                    <div translate>common.message.invalid</div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+        @if (object.type === 'name' && copy.objectType) {
+          <div class="form-group row">
+            <label class="col-md-3"></label>
+            <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="col-md-9">
+              <input #name="ngModel" [(ngModel)]="object.originalName" [appAutofocus]="true" autocomplete="off" class="form-control"
+                     identifierValidation name="originalName" required type="text">
+              @if (name.invalid && (name.dirty || name.touched)) {
+                <div class="text-danger help-block">
+                  @if (name.errors && name.errors.required) {
+                    <div translate>common.message.requiredError</div>
+                  }
+                  @if (name.errors.invalidIdentifier) {
+                    <div translate>common.message.invalid</div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+        @if (!copy.objectType) {
+          <div class="form-group row">
+            <div class="col-md-3">
+              <label translate>inventory.label.withoutFolder</label>
+            </div>
+            <div class="col-md-6">
+              <label [(ngModel)]="object.onlyContains" name="onlyContains" nz-checkbox></label>
+            </div>
+          </div>
+        }
       </div>
-    </div>
+    }
+    @if (restore) {
+      <div>
+        <div class="form-group row">
+          <label class="col-md-3" translate>inventory.label.objectName</label>
+          <div class="col-md-9">
+            <nz-radio-group [(ngModel)]="object.type" name="type">
+              <label nz-radio nzValue="existing"><span translate>inventory.label.existingName</span></label>
+              <label nz-radio nzValue="new"><span translate>inventory.label.newName</span></label>
+              <label class="m-t-xs" nz-radio nzValue="prefix"><span translate>inventory.label.prefix</span></label>
+              <label class="m-t-xs" nz-radio nzValue="suffix"><span translate>inventory.label.suffix</span></label>
+            </nz-radio-group>
+          </div>
+        </div>
+        @if (object.type === 'new') {
+          <div class="form-group row">
+            <label class="col-md-3"></label>
+            <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}" class="col-md-6">
+              <input #name="ngModel" [(ngModel)]="object.newName" [appAutofocus]="true" autocomplete="off" class="form-control"
+                     identifierValidation
+                     name="newName" placeholder="{{'inventory.placeholder.enterUniqueName' | translate}}" required type="text">
+              @if (name.invalid && (name.dirty || name.touched)) {
+                <div class="text-danger help-block">
+                  @if (name.errors && name.errors.required) {
+                    <div translate>common.message.requiredError</div>
+                  }
+                  @if (name.errors.invalidIdentifier) {
+                    <div translate>common.message.invalid</div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+        @if (object.type === 'suffix') {
+          <div class="form-group row">
+            <label class="col-md-3"></label>
+            <div [ngClass]="{'has-error' : ((suffix.dirty || suffix.touched) && suffix.invalid)}" class="col-md-6">
+              <input #suffix="ngModel" [(ngModel)]="object.suffix" [appAutofocus]="true" autocomplete="off" class="form-control"
+                     identifierValidation
+                     name="suffix" placeholder="{{'inventory.placeholder.suffix' | translate}}" required type="text">
+              @if (suffix.invalid && (suffix.dirty || suffix.touched)) {
+                <div class="text-danger help-block">
+                  @if (suffix.errors && suffix.errors.required) {
+                    <div translate>common.message.requiredError</div>
+                  }
+                  @if (suffix.errors.invalidIdentifier) {
+                    <div translate>common.message.invalid</div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+        @if (object.type === 'prefix') {
+          <div class="form-group row">
+            <label class="col-md-3"></label>
+            <div [ngClass]="{'has-error' : ((prefix.dirty || prefix.touched) && prefix.invalid)}" class="col-md-6">
+              <input #prefix="ngModel" [(ngModel)]="object.prefix" [appAutofocus]="true" autocomplete="off" class="form-control"
+                     identifierValidation
+                     name="prefix" placeholder="{{'inventory.placeholder.prefix' | translate}}" required type="text">
+              @if (prefix.invalid && (prefix.dirty || prefix.touched)) {
+                <div class="text-danger help-block">
+                  @if (prefix.errors && prefix.errors.required) {
+                    <div translate>common.message.requiredError</div>
+                  }
+                  @if (prefix.errors.invalidIdentifier) {
+                    <div translate>common.message.invalid</div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
   </div>
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
             type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">

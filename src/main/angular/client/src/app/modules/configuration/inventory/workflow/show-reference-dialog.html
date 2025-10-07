@@ -9,114 +9,141 @@
 </div>
 
 <div class="modal-body p-a">
-  <div *ngIf="type==='FILEORDERSOURCE'" class="form-group row">
-    <label class="col-md-12 _600">{{'inventory.label.fileOrderSources' | translate}}:</label>
-    <div class="col-md-12 m-t-sm">
-      <div class="table-responsive">
-        <table class="table table-hover">
-          <thead>
-          <tr>
-            <th>
-              <span translate>common.label.path</span>
-            </th>
-            <th>
-              <span translate>workflow.label.agent</span>
-            </th>
-            <th>
-              <span translate>inventory.label.directory</span>
-            </th>
-            <th>
-              <span translate>inventory.label.pattern</span>
-            </th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let item of data.fileOrderSources">
-            <td>
-              <i (click)="navToObj(item.path)" class="fa fa-pencil cursor"></i>
-              &nbsp;{{item.path}}
-            </td>
-            <td>
-              <span>{{item.agentName}}</span>
-            </td>
-            <td>
-              <span>{{item.directoryExpr}}</span>
-            </td>
-            <td>
-              <span>{{item.pattern}}</span>
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-  <div *ngIf="type==='SCHEDULE'" class="form-group row">
-    <label class="col-md-12 _600">{{'inventory.label.orders' | translate}}:</label>
-    <div class="col-md-12 m-t-sm">
-      <div *ngFor="let item of data.schedules" class="p-l">
-        <div>
-          <i (click)="navToObj(item.path)" class="fa fa-pencil cursor"></i>
-          &nbsp;{{item.path}}
-        </div>
-        <div *ngIf="item.calendars" class="table-responsive m-t-sm">
-          <table class="table table-hover ">
+  @if (type==='FILEORDERSOURCE') {
+    <div class="form-group row">
+      <label class="col-md-12 _600">{{'inventory.label.fileOrderSources' | translate}}:</label>
+      <div class="col-md-12 m-t-sm">
+        <div class="table-responsive">
+          <table class="table table-hover">
             <thead>
             <tr>
-              <th><span translate>runtime.label.listOfCalendars</span></th>
-              <th><span translate>runtime.label.period</span></th>
-              <th><span translate>runtime.label.restrictions</span></th>
+              <th>
+                <span translate>common.label.path</span>
+              </th>
+              <th>
+                <span translate>workflow.label.agent</span>
+              </th>
+              <th>
+                <span translate>inventory.label.directory</span>
+              </th>
+              <th>
+                <span translate>inventory.label.pattern</span>
+              </th>
             </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let calendar of item.calendars; let i =index">
-              <td>
-                <i (click)="navToObj(calendar.calendarName, 'WORKINGDAYSCALENDAR');" class="fa fa-pencil cursor"></i>
-                <i class="fa fa-calendar p-l-xs text-success"></i>&nbsp;
-                {{calendar.calendarName}} <i *ngIf="calendar.title">-</i> {{calendar.title}}
-              </td>
-              <td>
-                <div *ngFor="let p of calendar.periods; let x = index">
-                  {{getPeriodStr(p)}}
-                </div>
-              </td>
-              <td>
-                <div *ngFor="let list of calendar.frequencyList; let i = index">
-                  {{list.str}}
-                </div>
-              </td>
-            </tr>
-            <tr *ngFor="let holiday of item.nonWorkingDayCalendars; let i =index">
-              <td>
-                <i (click)="navToObj(holiday.calendarName, 'NONWORKINGDAYSCALENDAR');" class="fa fa-pencil cursor"></i>
-                <i class="fa fa-calendar p-l-xs text-danger"></i>&nbsp;
-                {{holiday.calendarName}}
-              </td>
-              <td></td>
-              <td></td>
-            </tr>
+              @for (item of data.fileOrderSources; track item) {
+                <tr>
+                  <td>
+                    <i (click)="navToObj(item.path)" class="fa fa-pencil cursor"></i>
+                    &nbsp;{{item.path}}
+                  </td>
+                  <td>
+                    <span>{{item.agentName}}</span>
+                  </td>
+                  <td>
+                    <span>{{item.directoryExpr}}</span>
+                  </td>
+                  <td>
+                    <span>{{item.pattern}}</span>
+                  </td>
+                </tr>
+              }
             </tbody>
           </table>
         </div>
       </div>
     </div>
-  </div>
-  <div *ngIf="type==='WORKFLOW'" class="form-group row">
-    <label class="col-md-12 _600">{{'inventory.label.workflows' | translate}}:</label>
-    <div class="col-md-12 m-t-sm">
-      <div *ngFor="let item of data.workflows" class="p-l">
-        <i (click)="navToObj(item.path)" class="fa fa-pencil cursor"></i>
-        &nbsp;{{item.path}}
+  }
+  @if (type==='SCHEDULE') {
+    <div class="form-group row">
+      <label class="col-md-12 _600">{{'inventory.label.orders' | translate}}:</label>
+      <div class="col-md-12 m-t-sm">
+        @for (item of data.schedules; track item) {
+          <div class="p-l">
+            <div>
+              <i (click)="navToObj(item.path)" class="fa fa-pencil cursor"></i>
+              &nbsp;{{item.path}}
+            </div>
+            @if (item.calendars) {
+              <div class="table-responsive m-t-sm">
+                <table class="table table-hover ">
+                  <thead>
+                  <tr>
+                    <th><span translate>runtime.label.listOfCalendars</span></th>
+                    <th><span translate>runtime.label.period</span></th>
+                    <th><span translate>runtime.label.restrictions</span></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    @for (calendar of item.calendars; track $index; let i = $index) {
+                      <tr>
+                        <td>
+                          <i (click)="navToObj(calendar.calendarName, 'WORKINGDAYSCALENDAR');" class="fa fa-pencil cursor"></i>
+                          <i class="fa fa-calendar p-l-xs text-success"></i>&nbsp;
+                          {{calendar.calendarName}}
+                          @if (calendar.title) {
+                            <i>-</i> {{calendar.title}}
+                          }
+                        </td>
+                        <td>
+                          @for (p of calendar.periods; track $index; let x = $index) {
+                            <div>
+                              {{getPeriodStr(p)}}
+                            </div>
+                          }
+                        </td>
+                        <td>
+                          @for (list of calendar.frequencyList; track $index; let i = $index) {
+                            <div>
+                              {{list.str}}
+                            </div>
+                          }
+                        </td>
+                      </tr>
+                    }
+                    @for (holiday of item.nonWorkingDayCalendars; track $index; let i = $index) {
+                      <tr>
+                        <td>
+                          <i (click)="navToObj(holiday.calendarName, 'NONWORKINGDAYSCALENDAR');" class="fa fa-pencil cursor"></i>
+                          <i class="fa fa-calendar p-l-xs text-danger"></i>&nbsp;
+                          {{holiday.calendarName}}
+                        </td>
+                        <td></td>
+                        <td></td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            }
+          </div>
+        }
       </div>
     </div>
-  </div>
-  <div *ngIf="!data.fileOrderSources && !data.schedules && !data.workflows" class="form-group row">
-    <div class="col-md-12 m-t-xs text-center">
-      <i>
-        <nz-spin nzSimple></nz-spin>
-      </i>
+  }
+  @if (type==='WORKFLOW') {
+    <div class="form-group row">
+      <label class="col-md-12 _600">{{'inventory.label.workflows' | translate}}:</label>
+      <div class="col-md-12 m-t-sm">
+        @for (item of data.workflows; track item) {
+          <div class="p-l">
+            <i (click)="navToObj(item.path)" class="fa fa-pencil cursor"></i>
+            &nbsp;{{item.path}}
+          </div>
+        }
+      </div>
     </div>
-  </div>
+  }
+  @if (!data.fileOrderSources && !data.schedules && !data.workflows) {
+    <div class="form-group row">
+      <div class="col-md-12 m-t-xs text-center">
+        <i>
+          <nz-spin nzSimple></nz-spin>
+        </i>
+      </div>
+    </div>
+  }
 </div>
 <div class="modal-footer">
   <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm"
@@ -124,4 +151,3 @@
     common.button.close
   </button>
 </div>
-

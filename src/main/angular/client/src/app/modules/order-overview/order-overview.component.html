@@ -1,1260 +1,1480 @@
-<div *ngIf="isProcessing" class="operation-status-info">
-  <div id='prog-bar-cont'>
-    <div id="prog-bar">
-      <div id="background"></div>
+@if (isProcessing) {
+  <div class="operation-status-info">
+    <div id='prog-bar-cont'>
+      <div id="prog-bar">
+        <div id="background"></div>
+      </div>
     </div>
   </div>
-</div>
-<div *ngIf="permission.currentController" class="white box-shadow sub-header">
-  <div class="row">
-    <div class="col-md-12">
-      <div class="padding p-b-sm">
-        <div class="text-right ">
-          <div class="pull-left">
-            <app-breadcrumbs></app-breadcrumbs>
-          </div>
-          <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
-          <div [ngClass]="{'hide': object.mapOfCheckedId && object.mapOfCheckedId.size>0}" class="inline m-b-xs">
-            <div class="btn-group dropdown">
-              <button [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
-                      nzTrigger="click" translate type="button">
-                <span>  {{ 'filters.button.' + orderFilters.filter.dateLabel | translate}} </span>
-                <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
-              </button>
-              <nz-dropdown-menu #anyDate="nzDropdownMenu">
-                <ul nz-menu>
-                  <ng-container *ngFor="let btn of dateFilterBtn">
-                    <li (click)="changeDate(btn.date);orderFilters.filter.dateLabel = btn.text;" [ngClass]="{'ant-select-dropdown-menu-item-active': orderFilters.filter.date=== btn.date}"
-                        nz-menu-item>
-                      <a translate>filters.button.{{btn.text}}</a>
-                    </li>
-                  </ng-container>
-                </ul>
-              </nz-dropdown-menu>
+}
+@if (permission.currentController) {
+  <div class="white box-shadow sub-header">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="padding p-b-sm">
+          <div class="text-right ">
+            <div class="pull-left">
+              <app-breadcrumbs></app-breadcrumbs>
             </div>
-            <div [ngClass]="{'hide': (pageView === 'bulk')}" class="btn-group m-l-12 hidden-btn-group">
-              <ng-container *ngFor="let btn of filterBtn">
-                <button (click)="changeStatus(btn.status)"
-                        [ngClass]="{'btn-primary': orderFilters.filter.state===btn.status}"
-                        class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.{{btn.text}}
+            <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+            <div [ngClass]="{'hide': object.mapOfCheckedId && object.mapOfCheckedId.size>0}" class="inline m-b-xs">
+              <div class="btn-group dropdown">
+                <button [nzDropdownMenu]="anyDate" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
+                        nzTrigger="click" translate type="button">
+                  <span>  {{ 'filters.button.' + orderFilters.filter.dateLabel | translate}} </span>
+                  <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                 </button>
-              </ng-container>
+                <nz-dropdown-menu #anyDate="nzDropdownMenu">
+                  <ul nz-menu>
+                    @for (btn of dateFilterBtn; track btn) {
+                      <li (click)="changeDate(btn.date);orderFilters.filter.dateLabel = btn.text;" [ngClass]="{'ant-select-dropdown-menu-item-active': orderFilters.filter.date=== btn.date}"
+                          nz-menu-item>
+                        <a translate>filters.button.{{btn.text}}</a>
+                      </li>
+                    }
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+              <div [ngClass]="{'hide': (pageView === 'bulk')}" class="btn-group m-l-12 hidden-btn-group">
+                @for (btn of filterBtn; track btn) {
+                  <button (click)="changeStatus(btn.status)"
+                          [ngClass]="{'btn-primary': orderFilters.filter.state===btn.status}"
+                          class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.{{btn.text}}
+                  </button>
+                }
+              </div>
+              <div class="btn-group m-l-12 dropdown hidden-dropdown">
+                <button [nzDropdownMenu]="anyState" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm" nz-dropdown
+                        nzTrigger="click" translate type="button">
+                  common.label.state
+                  <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
+                </button>
+                <nz-dropdown-menu #anyState="nzDropdownMenu" [ngClass]="{'hide': (pageView === 'bulk')}">
+                  <ul nz-menu>
+                    @for (btn of filterBtn; track btn) {
+                      <li (click)="changeStatus(btn.status)" [ngClass]="{'ant-select-dropdown-menu-item-active': orderFilters.filter.state=== btn.status}"
+                          nz-menu-item>
+                        <a translate>common.button.{{btn.text}}</a>
+                      </li>
+                    }
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
             </div>
-            <div class="btn-group m-l-12 dropdown hidden-dropdown">
-              <button [nzDropdownMenu]="anyState" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm" nz-dropdown
-                      nzTrigger="click" translate type="button">
-                common.label.state
-                <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
-              </button>
-              <nz-dropdown-menu #anyState="nzDropdownMenu" [ngClass]="{'hide': (pageView === 'bulk')}">
-                <ul nz-menu>
-                  <ng-container *ngFor="let btn of filterBtn">
-                    <li (click)="changeStatus(btn.status)" [ngClass]="{'ant-select-dropdown-menu-item-active': orderFilters.filter.state=== btn.status}"
-                        nz-menu-item>
-                      <a translate>common.button.{{btn.text}}</a>
+            <div [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0)}" class="inline">
+              <div [ngClass]="{'hide': (pageView === 'bulk')}" class="btn-group dropdown">
+                <button [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
+                        nzTrigger="click">
+                  <span translate>common.label.sortBy</span>
+                  <span class="text-primary">
+                    @if (orderFilters.filter.sortBy ==='orderId') {
+                      <span>
+                        {{'order.label.orderId' | translate}}
+                        @if (!orderFilters.reverse) {
+                          <i class="fa fa-caret-up"></i>
+                        }
+                        @if (orderFilters.reverse) {
+                          <i class="fa fa-caret-down"></i>
+                        }
+                      </span>
+                    }
+                    @if (orderFilters.filter.sortBy ==='path') {
+                      <span>
+                        {{'common.label.path' | translate}}
+                        @if (!orderFilters.reverse) {
+                          <i class="fa fa-caret-up"></i>
+                        }
+                        @if (orderFilters.reverse) {
+                          <i class="fa fa-caret-down"></i>
+                        }
+                      </span>
+                    }
+                  </span>
+                </button>
+                <nz-dropdown-menu #sortBy="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li (click)="sort('orderId')" nz-menu-item>
+                      <a translate>order.label.orderId</a>
                     </li>
-                  </ng-container>
-                </ul>
-              </nz-dropdown-menu>
+                    <li (click)="sort('path')" nz-menu-item>
+                      <a translate>common.label.path</a>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+              <button (click)="exportToExcel()" [disabled]="pageView=='grid' || data.length===0"
+                      [ngClass]="{'hide': (pageView === 'bulk')}"
+                      [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
+                      class="btn btn-grey btn-sm m-l-12"><i class="fa fa-share-square-o"></i></button>
+              <app-toggle (messageEvent)="receiveMessage($event)" [type]="'ORDER'"></app-toggle>
             </div>
-          </div>
-          <div [ngClass]="{'hide': (object.mapOfCheckedId && object.mapOfCheckedId.size>0)}" class="inline">
-            <div [ngClass]="{'hide': (pageView === 'bulk')}" class="btn-group dropdown">
-              <button [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
-                      nzTrigger="click">
-                <span translate>common.label.sortBy</span>
-                <span class="text-primary">
-                  <span *ngIf="orderFilters.filter.sortBy ==='orderId'">
-                    {{'order.label.orderId' | translate}}
-                    <i *ngIf="!orderFilters.reverse" class="fa fa-caret-up"></i>
-                    <i *ngIf="orderFilters.reverse" class="fa fa-caret-down"></i>
-                  </span>
-                  <span *ngIf="orderFilters.filter.sortBy ==='path'">
-                    {{'common.label.path' | translate}}
-                    <i *ngIf="!orderFilters.reverse" class="fa fa-caret-up"></i>
-                    <i *ngIf="orderFilters.reverse" class="fa fa-caret-down"></i>
-                  </span>
-                </span>
-              </button>
-              <nz-dropdown-menu #sortBy="nzDropdownMenu">
+            <div [ngClass]="{'show-block':object.mapOfCheckedId.size>0}" class="hide">
+              @if (permission.currentController.orders.modify) {
+                <button (click)="modifyAllStartTime()"
+                        [disabled]="!object.isModifyStartTime" class="btn btn-grey btn-sm m-l-12"><i
+                  class="fa fa-calendar"></i>&nbsp;
+                  <span class="hidden-sm-down" translate>dailyPlan.button.setStartTime</span>
+                </button>
+              }
+              @if (permission.currentController.orders.modify) {
+                <button (click)="modifyAllOrder()"
+                        [disabled]="!object.isModify" class="btn btn-grey btn-sm m-l-12"><i
+                  class="fa fa-edit"></i>&nbsp;
+                  <span class="hidden-sm-down" translate>dailyPlan.button.setParameters</span>
+                </button>
+              }
+              @if (permission.currentController.orders.modify) {
+                <button (click)="modifyPriority()"
+                        class="btn btn-grey btn-sm m-l-12"><i
+                  class="fa fa-signal"></i>&nbsp;
+                  <span class="hidden-sm-down" translate>inventory.button.modifyPriority</span>
+                </button>
+              }
+              @if (permission.currentController.orders.cancel) {
+                <button (click)="cancelAllOrder()"
+                        [disabled]="object.isCancel" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-times p-r-xs"></i>
+                  <span class="hidden-sm-down" translate>order.button.cancel</span></button>
+              }
+              @if (permission.currentController.orders.cancel) {
+                <button (click)="cancelAllOrder(true)"
+                        [disabled]="!object.isCancelWithKill" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-times"></i>&nbsp;
+                  <span class="hidden-sm-down" translate>order.button.cancelAndKillTask</span>
+                </button>
+              }
+              @if (object.isTerminate && permission.currentController.orders) {
+                <button (click)="terminateAllOrder()"
+                        class="btn btn-grey btn-sm m-l-12"><i class="fa fa-trash p-r-xs"></i>
+                  <span class="hidden-sm-down" translate>order.button.leaveWorkflow</span></button>
+              }
+              @if (permission.currentController.orders.suspendResume) {
+                <button nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" class="btn btn-grey btn-sm m-l-12">
+                  <i class="fa fa-stop p-r-xs"></i>
+                  <span class="hidden-sm-down" translate>order.button.suspend</span>
+                </button>
+              }
+              <nz-dropdown-menu #menu="nzDropdownMenu">
                 <ul nz-menu>
-                  <li (click)="sort('orderId')" nz-menu-item>
-                    <a translate>order.label.orderId</a>
+                  <li (click)="suspendAllOrder(false, false)" nz-menu-item [nzDisabled]="!object.isSuspendSoftly">
+                    <span class="hidden-sm-down" translate>order.button.suspend</span>&nbsp;
+                    <span class="hidden-sm-down" translate>order.button.normal</span>
                   </li>
-                  <li (click)="sort('path')" nz-menu-item>
-                    <a translate>common.label.path</a>
+                  <li (click)="suspendAllOrder(false, true)" nz-menu-item [nzDisabled]="!object.isSuspendReset">
+                    <span class="hidden-sm-down" translate>order.button.suspend</span>&nbsp;
+                    <span class="hidden-sm-down" translate>order.button.reset</span>
+                  </li>
+                  <li (click)="suspendAllOrder(true, true)" nz-menu-item [nzDisabled]="!object.isSuspendWithResetAndKill">
+                    <span class="hidden-sm-down" translate>order.button.suspend</span>&nbsp;
+                    <span class="hidden-sm-down" translate>order.button.forceReset</span>
+                  </li>
+                  <li (click)="suspendAllOrder(true, false)" nz-menu-item [nzDisabled]="!object.isSuspendWithKill">
+                    <span class="hidden-sm-down" translate>order.button.suspendAndKillTask</span>
                   </li>
                 </ul>
               </nz-dropdown-menu>
+              @if (permission.currentController.orders.suspendResume || permission.currentController.orders.resumeFailed) {
+                <button (click)="resumeAllOrder()"
+                        [disabled]="!object.isResume" class="btn btn-grey btn-sm m-l-12"><i
+                  class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.resume</span>
+                </button>
+              }
+              @if (permission.currentController.orders.modify && object.isContinue) {
+                <button (click)="continueAllOrder()"
+                        class="btn btn-grey btn-sm m-l-12"><i
+                  class="fa fa-refresh p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.continue</span>
+                </button>
+              }
+              @if (permission.currentController.orders.confirm && object.isPrompt) {
+                <button (click)="confirmAllOrder()"
+                        class="btn btn-grey btn-sm m-l-12"><i
+                  class="fa fa fa-check-circle-o p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.confirm</span>
+                </button>
+              }
             </div>
-            <button (click)="exportToExcel()" [disabled]="pageView=='grid' || data.length===0"
-                    [ngClass]="{'hide': (pageView === 'bulk')}"
-                    [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
-                    class="btn btn-grey btn-sm m-l-12"><i class="fa fa-share-square-o"></i></button>
-            <app-toggle (messageEvent)="receiveMessage($event)" [type]="'ORDER'"></app-toggle>
-          </div>
-          <div [ngClass]="{'show-block':object.mapOfCheckedId.size>0}" class="hide">
-            <button (click)="modifyAllStartTime()" *ngIf="permission.currentController.orders.modify"
-                    [disabled]="!object.isModifyStartTime" class="btn btn-grey btn-sm m-l-12"><i
-              class="fa fa-calendar"></i>&nbsp;
-              <span class="hidden-sm-down" translate>dailyPlan.button.setStartTime</span>
-            </button>
-            <button (click)="modifyAllOrder()" *ngIf="permission.currentController.orders.modify"
-                    [disabled]="!object.isModify" class="btn btn-grey btn-sm m-l-12"><i
-              class="fa fa-edit"></i>&nbsp;
-              <span class="hidden-sm-down" translate>dailyPlan.button.setParameters</span>
-            </button>
-            <button (click)="modifyPriority()" *ngIf="permission.currentController.orders.modify"
-                     class="btn btn-grey btn-sm m-l-12"><i
-              class="fa fa-signal"></i>&nbsp;
-              <span class="hidden-sm-down" translate>inventory.button.modifyPriority</span>
-            </button>
-            <button (click)="cancelAllOrder()" *ngIf="permission.currentController.orders.cancel"
-                    [disabled]="object.isCancel" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-times p-r-xs"></i>
-              <span class="hidden-sm-down" translate>order.button.cancel</span></button>
-            <button (click)="cancelAllOrder(true)" *ngIf="permission.currentController.orders.cancel"
-                    [disabled]="!object.isCancelWithKill" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-times"></i>&nbsp;
-              <span class="hidden-sm-down" translate>order.button.cancelAndKillTask</span>
-            </button>
-            <button (click)="terminateAllOrder()" *ngIf="object.isTerminate && permission.currentController.orders"
-                  class="btn btn-grey btn-sm m-l-12"><i class="fa fa-trash p-r-xs"></i>
-            <span class="hidden-sm-down" translate>order.button.leaveWorkflow</span></button>
-            <button nz-dropdown nzTrigger="click" [nzDropdownMenu]="menu" *ngIf="permission.currentController.orders.suspendResume" class="btn btn-grey btn-sm m-l-12">
-              <i class="fa fa-stop p-r-xs"></i>
-              <span class="hidden-sm-down" translate>order.button.suspend</span>
-            </button>
-            <nz-dropdown-menu #menu="nzDropdownMenu">
-              <ul nz-menu>
-                <li (click)="suspendAllOrder(false, false)" nz-menu-item [nzDisabled]="!object.isSuspendSoftly">
-                  <span class="hidden-sm-down" translate>order.button.suspend</span>&nbsp;
-                  <span class="hidden-sm-down" translate>order.button.normal</span>
-                </li>
-                <li (click)="suspendAllOrder(false, true)" nz-menu-item [nzDisabled]="!object.isSuspendReset">
-                  <span class="hidden-sm-down" translate>order.button.suspend</span>&nbsp;
-                  <span class="hidden-sm-down" translate>order.button.reset</span>
-                </li>
-                <li (click)="suspendAllOrder(true, true)" nz-menu-item [nzDisabled]="!object.isSuspendWithResetAndKill">
-                  <span class="hidden-sm-down" translate>order.button.suspend</span>&nbsp;
-                  <span class="hidden-sm-down" translate>order.button.forceReset</span>
-                </li>
-                <li (click)="suspendAllOrder(true, false)" nz-menu-item [nzDisabled]="!object.isSuspendWithKill">
-                  <span class="hidden-sm-down" translate>order.button.suspendAndKillTask</span>
-                </li>
-              </ul>
-            </nz-dropdown-menu>
-            <!-- <button (click)="suspendAllOrder(false, false)" *ngIf="permission.currentController.orders.suspendResume"
-                    [disabled]="!object.isSuspend" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-stop p-r-xs"></i>
-              <span class="hidden-sm-down" translate>order.button.suspend</span></button>
-            <button (click)="suspendAllOrder(false, false)" *ngIf="permission.currentController.orders.suspendResume"
-                  [disabled]="!object.isSuspendSoftly" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-stop p-r-xs"></i>
-              <span class="hidden-sm-down" translate>order.button.suspend</span>&nbsp;<span class="hidden-sm-down" translate>order.button.normal</span></button>
-            <button (click)="suspendAllOrder(false, true)" *ngIf="permission.currentController.orders.suspendResume"
-              [disabled]="!object.isSuspendReset" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-stop p-r-xs"></i>
-              <span class="hidden-sm-down" translate>order.button.suspend</span>&nbsp;<span class="hidden-sm-down" translate>order.button.reset</span></button>
-            <button (click)="suspendAllOrder(true, true)" *ngIf="permission.currentController.orders.suspendResume"
-              [disabled]="!object.isSuspendWithResetAndKill" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-stop p-r-xs"></i>
-              <span class="hidden-sm-down" translate>order.button.suspend</span>&nbsp;<span class="hidden-sm-down" translate>order.button.forceReset</span></button>
-            <button (click)="suspendAllOrder(true, false)" *ngIf="permission.currentController.orders.suspendResume"
-                    [disabled]="!object.isSuspendWithKill" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-stop"></i>&nbsp;
-              <span class="hidden-sm-down" translate>order.button.suspendAndKillTask</span>
-            </button> -->
-            <button (click)="resumeAllOrder()" *ngIf="permission.currentController.orders.suspendResume || permission.currentController.orders.resumeFailed"
-                    [disabled]="!object.isResume" class="btn btn-grey btn-sm m-l-12"><i
-              class="fa fa-step-forward p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.resume</span>
-            </button>
-            <button (click)="continueAllOrder()" *ngIf="permission.currentController.orders.modify && object.isContinue"
-                     class="btn btn-grey btn-sm m-l-12"><i
-              class="fa fa-refresh p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.continue</span>
-            </button>
-            <button (click)="confirmAllOrder()" *ngIf="permission.currentController.orders.confirm && object.isPrompt"
-                    class="btn btn-grey btn-sm m-l-12"><i
-              class="fa fa fa-check-circle-o p-r-xs"></i> <span class="hidden-sm-down" translate>order.button.confirm</span>
-            </button>
-
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+}
 <div class="scroll-y max-ht">
   <div class="padding p-b-sm">
     <div class="row m-t-sm">
       <div class="col-lg-12">
-        <div *ngIf="sideView.orderOverview.show && pageView !== 'bulk'" class="pos-abt p-a-0 resize-cursor"
-             style="left: 270px"><i (click)="hidePanel()" class="fa fa-angle-double-left"
-                                    style="font-size: 18px"></i></div>
-        <aside *ngIf="pageView !== 'bulk'" class="w-full" id="leftPanel1">
-          <a class="text resize-cursor a-2" style="position: absolute; right: 5px !important; top: 22px">
-            <i (click)="showPanel()" class="fa fa-angle-double-right fa-lg"></i>
-          </a>
-          <div>
-            <app-pie-chart (setState)="changeStatus($event)" [date]="orderFilters.filter.date"
-                           [schedulerId]="schedulerIds.selected"
-                           [state]="orderFilters.filter.state"
-                           [timeZone]="preferences.zone"></app-pie-chart>
-          </div>
-        </aside>
-        <div *ngIf="pageView === 'bulk'" [sideView]="sideView.orderOverview" appResizable class="sticky leftPanel"
-             id="leftPanel">
-          <app-tree-navigation (messageEvent)="receiveAction($event)" [defaultExpandedKeys]="orderFilters.expandedKeys"
-                               [defaultSelectedKeys]="orderFilters.selectedkeys"
-                               [sideView]="sideView.workflow"
-                               [tree]="tree"></app-tree-navigation>
-        </div>
-        <div *ngIf="pageView === 'bulk'" id="rightPanel">
-          <div *ngIf="orderOverview" class="box p-a">
-            <div class="table-responsive status-table">
-              <table class="w-full order-table-panel table-hover">
-                <thead>
-                <tr>
-                  <th style="width: 20%"><span translate>order.treeView.label.state</span></th>
-                  <th></th>
-                  <th style="width: 20%"><span translate>order.treeView.label.numberOfOrders</span></th>
-                  <th></th>
-                  <th style="width: 20%"><span translate>order.treeView.label.allowedTransaction</span></th>
-                  <th style="width: 10%"><span translate>order.treeView.label.action</span></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr class="all">
-                  <td><span class="_400" translate>order.label.allOrders</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td><span
-                    class="_600">{{(orderOverview.pending || 0) + (orderOverview.inProgress || 0) + (orderOverview.running || 0) + (orderOverview.suspended || 0) + (orderOverview.calling || 0)
-                  + (orderOverview.waiting || 0) + (orderOverview.scheduled || 0) + (orderOverview.prompting || 0) + (orderOverview.blocked || 0) + (orderOverview.failed || 0)
-                  + (orderOverview.terminated || 0)}}</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td>
-                    <app-select-input [attributeName]="'all'" [isSelectDisabled]="true" [isSearchable]="true"
-                                      [name]="'all'"></app-select-input>
-                  </td>
-                  <td></td>
-                </tr>
-                <tr class="pending">
-                  <td><span class="_400" translate>common.label.pending</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td class="count"><span class="_600">{{orderOverview.pending}}</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td>
-                    <app-select-input [attributeName]="'pending'" [isAllowClear]="true"
-                                      [placeholder]="'order.treeView.placeholder.selectTransaction'"
-                                      [listArray]="orderTreeStatus" [name]="'pending'" [optionLabel]="'label'" [optionValue]="'value'"
-                                      [isSelectDisabled]="orderOverview.pending == 0"
-                                      [object]="orderOverviewAction"></app-select-input>
-                  </td>
-                  <td>
-                    <button (click)="submitTransaction('pending', 'PENDING')" [disabled]="!orderOverviewAction.pending"
-                            class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
-                            type="button">common.button.submit
-                    </button>
-                  </td>
-                </tr>
-                <tr class="scheduled">
-                  <td><span class="_400" translate>common.label.scheduled</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td class="count"><span class="_600">{{orderOverview.scheduled}}</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td>
-                    <app-select-input [attributeName]="'scheduled'" [isAllowClear]="true"
-                                      [placeholder]="'order.treeView.placeholder.selectTransaction'"
-                                      [listArray]="orderTreeStatus" [name]="'scheduled'" [optionLabel]="'label'" [optionValue]="'value'"
-                                      [isSelectDisabled]="orderOverview.scheduled == 0"
-                                      [object]="orderOverviewAction"></app-select-input>
-
-                  </td>
-                  <td>
-                    <button (click)="submitTransaction('scheduled', 'SCHEDULED')" [disabled]="!orderOverviewAction.scheduled"
-                            class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
-                            type="button">common.button.submit
-                    </button>
-                  </td>
-                </tr>
-                <tr class="in-progress">
-                  <td><span class="_400" translate>common.label.incomplete</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td class="count"><span class="_600">{{orderOverview.inProgress}}</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td>
-                    <app-select-input [attributeName]="'inProgress'" [isAllowClear]="true"
-                                      [placeholder]="'order.treeView.placeholder.selectTransaction'"
-                                      [listArray]="orderTreeStatus" [name]="'inProgress'" [optionLabel]="'label'" [optionValue]="'value'"
-                                      [isSelectDisabled]="orderOverview.inProgress == 0"
-                                      [object]="orderOverviewAction"></app-select-input>
-                  </td>
-                  <td>
-                    <button (click)="submitTransaction('inProgress', 'INPROGRESS')" [disabled]="!orderOverviewAction.inProgress"
-                            class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
-                            type="button">common.button.submit
-                    </button>
-                  </td>
-                </tr>
-                <tr class="running">
-                  <td><span class="_400" translate>common.label.running</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td class="count"><span class="_600">{{orderOverview.running}}</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td>
-                    <app-select-input [attributeName]="'running'" [isAllowClear]="true"
-                                      [placeholder]="'order.treeView.placeholder.selectTransaction'"
-                                      [listArray]="orderTreeStatus" [name]="'running'" [optionLabel]="'label'" [optionValue]="'value'"
-                                      [isSelectDisabled]="orderOverview.running == 0"
-                                      [object]="orderOverviewAction"></app-select-input>
-                  </td>
-                  <td>
-                    <button (click)="submitTransaction('running', 'RUNNING')" [disabled]="!orderOverviewAction.running"
-                            class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
-                            type="button">common.button.submit
-                    </button>
-                  </td>
-                </tr>
-                <tr class="suspend">
-                  <td><span class="_400" translate>common.label.suspended</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td class="count"><span class="_600">{{orderOverview.suspended}}</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td>
-                    <app-select-input [attributeName]="'suspended'" [isAllowClear]="true" [optionLabel]="'label'" [optionValue]="'value'"
-                                      [placeholder]="'order.treeView.placeholder.selectTransaction'"
-                                      [listArray]="orderTreeStatusSuspended" [name]="'suspended'"
-                                      [isSelectDisabled]="orderOverview.suspended == 0"
-                                      [object]="orderOverviewAction"></app-select-input>
-                  </td>
-                  <td>
-                    <button (click)="submitTransaction('suspended', 'SUSPENDED')" [disabled]="!orderOverviewAction.suspended"
-                            class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
-                            type="button">common.button.submit
-                    </button>
-                  </td>
-                </tr>
-                <tr class="prompting">
-                  <td><span class="_400" translate>common.label.prompting</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td class="count"><span class="_600">{{orderOverview.prompting}}</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td>
-                    <app-select-input  [attributeName]="'prompting'" [isAllowClear]="true" [placeholder]="'order.treeView.placeholder.selectTransaction'"
-                                      [optionLabel]="'label'" [optionValue]="'value'" [listArray]="orderTreeStatusPrompting" [name]="'prompting'"
-                                       [isSelectDisabled]="orderOverview.prompting == 0"
-                                       [object]="orderOverviewAction"></app-select-input>
-                  </td>
-                  <td>
-                    <button (click)="submitTransaction('prompting', 'PROMPTING')" [disabled]="!orderOverviewAction.prompting"
-                            class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
-                            type="button">common.button.submit
-                    </button>
-                  </td>
-                </tr>
-                <tr class="waiting">
-                  <td><span class="_400" translate>common.label.waiting</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td class="count"><span class="_600">{{orderOverview.waiting}}</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td>
-                    <app-select-input  [attributeName]="'waiting'" [isAllowClear]="true" [placeholder]="'order.treeView.placeholder.selectTransaction'"
-                                       [listArray]="orderTreeStatus" [name]="'waiting'" [optionLabel]="'label'" [optionValue]="'value'"
-                                       [isSelectDisabled]="orderOverview.waiting == 0"
-                                       [object]="orderOverviewAction"></app-select-input>
-                  </td>
-                  <td>
-                    <button (click)="submitTransaction('waiting', 'WAITING')" [disabled]="!orderOverviewAction.waiting"
-                            class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
-                            type="button">common.button.submit
-                    </button>
-                  </td>
-                </tr>
-                <tr class="blocked">
-                  <td><span class="_400" translate>common.label.blocked</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td><span class="_600">{{orderOverview.blocked}}</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td>
-                    <app-select-input  [attributeName]="'blocked'" [isAllowClear]="true" [placeholder]="'order.treeView.placeholder.selectTransaction'"
-                                       [listArray]="orderTreeStatus" [name]="'blocked'" [optionLabel]="'label'" [optionValue]="'value'"
-                                       [isSelectDisabled]="orderOverview.blocked == 0"
-                                       [object]="orderOverviewAction"></app-select-input>
-                  </td>
-                  <td>
-                    <button (click)="submitTransaction('blocked', 'BLOCKED')" [disabled]="!orderOverviewAction.blocked"
-                            class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
-                            type="button">common.button.submit
-                    </button>
-                  </td>
-                </tr>
-                <tr class="failed">
-                  <td><span class="_400" translate>common.label.failed</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td class="count"><span class="_600">{{orderOverview.failed}}</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td>
-                    <app-select-input  [attributeName]="'failed'" [isAllowClear]="true" [placeholder]="'order.treeView.placeholder.selectTransaction'"
-                                       [listArray]="orderTreeStatusFailed" [name]="'failed'" [optionLabel]="'label'" [optionValue]="'value'"
-                                       [isSelectDisabled]="orderOverview.failed == 0"
-                                       [object]="orderOverviewAction"></app-select-input>
-                  </td>
-                  <td>
-                    <button (click)="submitTransaction('failed', 'FAILED')" [disabled]="!orderOverviewAction.failed"
-                            class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
-                            type="button">common.button.submit
-                    </button>
-                  </td>
-                </tr>
-                <tr class="terminate">
-                  <td><span class="_400" translate>common.label.completed</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td class="count"><span class="_600">{{orderOverview.terminated}}</span></td>
-                  <td><span class="fa fa-long-arrow-right"></span></td>
-                  <td>
-                    <app-select-input  [attributeName]="'completed'" [isAllowClear]="true" [optionLabel]="'label'" [optionValue]="'value'" [placeholder]="'order.treeView.placeholder.selectTransaction'"
-                                       [name]="'completed'" [isSelectDisabled]="orderOverview.terminated == 0" [listArray]="orderTreeStatusCompleted"
-                                       [object]="orderOverviewAction"></app-select-input>
-                  </td>
-                  <td>
-                    <button (click)="submitTransaction('completed', 'COMPLETED')" [disabled]="!orderOverviewAction.completed"
-                            class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
-                            type="button">common.button.submit
-                    </button>
-                  </td>
-                </tr>
-              </table>
+        @if (sideView.orderOverview.show && pageView !== 'bulk') {
+          <div class="pos-abt p-a-0 resize-cursor"
+               style="left: 270px"><i (click)="hidePanel()" class="fa fa-angle-double-left"
+                                      style="font-size: 18px"></i></div>
+        }
+        @if (pageView !== 'bulk') {
+          <aside class="w-full" id="leftPanel1">
+            <a class="text resize-cursor a-2" style="position: absolute; right: 5px !important; top: 22px">
+              <i (click)="showPanel()" class="fa fa-angle-double-right fa-lg"></i>
+            </a>
+            <div>
+              <app-pie-chart (setState)="changeStatus($event)" [date]="orderFilters.filter.date"
+                             [schedulerId]="schedulerIds.selected"
+                             [state]="orderFilters.filter.state"
+                             [timeZone]="preferences.zone"></app-pie-chart>
             </div>
+          </aside>
+        }
+        @if (pageView === 'bulk') {
+          <div [sideView]="sideView.orderOverview" appResizable class="sticky leftPanel"
+               id="leftPanel">
+            <app-tree-navigation (messageEvent)="receiveAction($event)" [defaultExpandedKeys]="orderFilters.expandedKeys"
+                                 [defaultSelectedKeys]="orderFilters.selectedkeys"
+                                 [sideView]="sideView.workflow"
+                                 [tree]="tree"></app-tree-navigation>
           </div>
-        </div>
-        <div *ngIf="pageView !== 'bulk'" id="rightPanel1">
-          <div class="row">
-            <div class="col-lg-2 col-sm-3 p-r-xs">
-              <div class="box m-b-0" [style.height]="pageView === 'grid' ? 'calc(100% - 2px)' : 'calc(100% - 20px)'">
-                <nz-tabset class="custom-tab p-t-sm p-l-sm p-r-sm" [nzAnimated]="false"  [nzType]="'line'" [(nzSelectedIndex)]="orderFilters.selectedIndex">
-                  <nz-tab (nzClick)="switchToTagging('workflowTags');orderFilters.selectedIndex = 0;" [nzTitle]="workflowTagsTitle">
-                    <ng-template #workflowTagsTitle>
-                      <span>{{ 'inventory.tab.workflowTagging' | translate }}</span>
-                    </ng-template>
-                  </nz-tab>
-                  <nz-tab (nzClick)="switchToTagging('orderTags');orderFilters.selectedIndex = 1;" [nzTitle]="orderTagsTitle">
-                    <ng-template #orderTagsTitle>
-                      <span>{{ 'inventory.tab.orderTagging' | translate }}</span>
-                    </ng-template>
-                  </nz-tab>
-                </nz-tabset>
-                <div *ngIf="orderFilters.tagType === 'workflowTags'">
-                  <perfect-scrollbar class="p-b-sm p-t-xs p-l-sm p-r-sm order-overview-tag" [style.height]="pageView === 'grid' ? 'calc(100% - 0)' : 'calc(100% - 20px)'">
-                    <div class="fade-in">
-                      <div class="p-l-xs m-b-sm">
-                        <a (click)="selectTags()" nz-tooltip="{{'workflow.label.selectTags' | translate}}">
-                          <i class="font14" [nzType]="'plus'" nz-icon nzTheme="outline"></i>
-                        </a>
-                        <a (click)="selectAllTags();" class="p-l-12" nz-tooltip="{{'workflow.label.selectAllTags' | translate}}">
-                          <i class="font14" nz-icon nzTheme="outline" nzType="plus-square"></i>
-                        </a>
-                        <a (click)="removeAllTags();" class="p-l-12" nz-tooltip="{{'workflow.label.removeAllTags' | translate}}">
-                          <i class="font14" nz-icon nzTheme="outline" nzType="minus-square"></i>
-                        </a>
-                        <a (click)="objectTreeSearch()" class="tree-search workflow-tree-search" style="right: 16px">
-                          <i [nzType]="'search'" nz-icon nzTheme="outline"></i>
-                        </a>
-                        <div class="dailyTagSearch">
-                          <input (blur)="clearSearchInput()" (ngModelChange)="onSearchInput($event)"
-                                 [(ngModel)]="searchTag.text"
-                                 [nzAutocomplete]="auto" [placeholder]="'workflow.placeholder.findNode' | translate"
-                                 class="input-tree-search"
-                                 id="overViewTagSearch"
-                                 nz-input
-                          />
-                          <label *ngIf="coreService.selectedTags && coreService.selectedTags.length > 0" nz-checkbox [(ngModel)]="coreService.allTagsSelected" (ngModelChange)="toggleSelectAllTags($event)" class="m-l-xs m-b-15 m-t-sm1">
-                            {{ 'profile.label.selectAll' | translate }}
-                          </label>
-                          <i [nzType]="searchTag.loading ? 'loading' : 'search'" class="tree-search-icon" nz-icon nzTheme="outline"></i>
-                          <nz-autocomplete #auto>
-                            <nz-auto-option (click)="selectTagOnSearch(tag)" *ngFor="let tag of searchTag.tags | orderBy: 'ordering'"
-                                            [nzValue]="tag.name" class="min-ht-opt">
-                              <div class="node-wrapper p-l-xs">
-                                <div class="node-content-wrapper2"
-                                     nzTooltipPlacement="right">
-                                  <span class="icon-color text-xs" nz-icon nzType="tag" nzTheme="outline"></span>
-                                  <span class="p-l-sm">{{tag.name}}</span>
-                                </div>
-                              </div>
-                            </nz-auto-option>
-                          </nz-autocomplete>
-                        </div>
-                      </div>
-                      <div class="w-full" *ngFor="let tag of coreService.selectedTags | orderBy: 'ordering'">
-                        <div class="node-wrapper p-l-xxs p-b-xxs">
-                              <span class="w-14 m-l-xs m-r-12">
-                                <label nz-checkbox [nzChecked]="coreService.checkedTags.has(tag.name)"
-                                       (nzCheckedChange)="onTagChecked(tag.name, $event)"></label>
-                              </span>
-                          <div class="node-content-wrapper"
-                               [ngClass]="{'node-content-wrapper-active': coreService.checkedTags.has(tag.name)}"
-                               (click)="selectTag(tag.name)">
-                            <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
-                            <span class="p-l-xs">{{tag.name}}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div *ngIf="coreService.selectedTags && coreService.selectedTags.length === 0"
-                         class="m-top-50" style="margin-bottom: 60px">
-                      <app-empty-data></app-empty-data>
-                    </div>
-                  </perfect-scrollbar>
-                </div>
-                <div *ngIf="orderFilters.tagType === 'orderTags'">
-                  <perfect-scrollbar class="p-b-sm p-t-xs p-l-sm p-r-sm order-overview-tag" [style.height]="pageView === 'grid' ? 'calc(100% - 0)' : 'calc(100% - 20px)'">
-                    <div class="fade-in">
-                      <div class="p-l-xs m-b-sm">
-                        <a (click)="selectOrderTags()" nz-tooltip="{{'workflow.label.selectTags' | translate}}">
-                          <i class="font14" [nzType]="'plus'" nz-icon nzTheme="outline"></i>
-                        </a>
-                        <a (click)="selectAllOrderTags();" class="p-l-12" nz-tooltip="{{'workflow.label.selectAllTags' | translate}}">
-                          <i class="font14" nz-icon nzTheme="outline" nzType="plus-square"></i>
-                        </a>
-                        <a (click)="removeAllOrderTags();" class="p-l-12" nz-tooltip="{{'workflow.label.removeAllTags' | translate}}">
-                          <i class="font14" nz-icon nzTheme="outline" nzType="minus-square"></i>
-                        </a>
-                        <a (click)="objectOrderTreeSearch()" class="tree-search workflow-tree-search" style="right: 16px">
-                          <i [nzType]="'search'" nz-icon nzTheme="outline"></i>
-                        </a>
-                        <div class="dailyTagSearch">
-                          <input (blur)="clearOrderSearchInput()" (ngModelChange)="onOrderSearchInput($event)"
-                                 [(ngModel)]="searchOrderTag.text"
-                                 [nzAutocomplete]="auto" [placeholder]="'workflow.placeholder.findNode' | translate"
-                                 class="input-tree-search"
-                                 id="overViewOrderTagSearch"
-                                 nz-input
-                          />
-                          <label *ngIf="coreService.selectedOrderTags && coreService.selectedOrderTags.length > 0" nz-checkbox [(ngModel)]="coreService.allOrderTagsSelected" (ngModelChange)="toggleSelectAllOrderTags($event)" class="m-l-xs m-b-15 m-t-sm1">
-                            {{ 'profile.label.selectAll' | translate }}
-                          </label>
-
-                          <i [nzType]="searchOrderTag.loading ? 'loading' : 'search'" class="tree-search-icon" nz-icon nzTheme="outline"></i>
-                          <nz-autocomplete #auto>
-                            <nz-auto-option (click)="selectOrderTagOnSearch(tag)" *ngFor="let tag of searchOrderTag.tags | orderBy: 'ordering'"
-                                            [nzValue]="tag.name" class="min-ht-opt">
-                              <div class="node-wrapper p-l-xs">
-                                <div class="node-content-wrapper2"
-                                     nzTooltipPlacement="right">
-                                  <span class="icon-color text-xs" nz-icon nzType="tag" nzTheme="outline"></span>
-                                  <span class="p-l-sm">{{tag.name}}</span>
-                                </div>
-                              </div>
-                            </nz-auto-option>
-                          </nz-autocomplete>
-                        </div>
-                      </div>
-                      <div class="w-full" *ngFor="let tag of coreService.selectedOrderTags | orderBy: 'ordering'">
-                        <div class="node-wrapper p-l-xxs p-b-xxs">
-                              <span class="w-14 m-l-xs m-r-12">
-                                <label nz-checkbox [nzChecked]="coreService.checkedOrderTags.has(tag.name)"
-                                       (nzCheckedChange)="onOrderTagChecked(tag.name, $event)"></label>
-                              </span>
-                          <div class="node-content-wrapper"
-                               [ngClass]="{'node-content-wrapper-active': coreService.checkedOrderTags.has(tag.name)}"
-                               (click)="selectOrderTag(tag.name)">
-                            <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
-                            <span class="p-l-xs">{{tag.name}}</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div *ngIf="coreService.selectedOrderTags && coreService.selectedOrderTags.length === 0"
-                         class="m-top-50" style="margin-bottom: 60px">
-                      <app-empty-data></app-empty-data>
-                    </div>
-                  </perfect-scrollbar>
+        }
+        @if (pageView === 'bulk') {
+          <div id="rightPanel">
+            @if (orderOverview) {
+              <div class="box p-a">
+                <div class="table-responsive status-table">
+                  <table class="w-full order-table-panel table-hover">
+                    <thead>
+                    <tr>
+                      <th style="width: 20%"><span translate>order.treeView.label.state</span></th>
+                      <th></th>
+                      <th style="width: 20%"><span translate>order.treeView.label.numberOfOrders</span></th>
+                      <th></th>
+                      <th style="width: 20%"><span translate>order.treeView.label.allowedTransaction</span></th>
+                      <th style="width: 10%"><span translate>order.treeView.label.action</span></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="all">
+                      <td><span class="_400" translate>order.label.allOrders</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td><span
+                        class="_600">{{(orderOverview.pending || 0) + (orderOverview.inProgress || 0) + (orderOverview.running || 0) + (orderOverview.suspended || 0) + (orderOverview.calling || 0)
+                      + (orderOverview.waiting || 0) + (orderOverview.scheduled || 0) + (orderOverview.prompting || 0) + (orderOverview.blocked || 0) + (orderOverview.failed || 0)
+                      + (orderOverview.terminated || 0)}}</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td>
+                        <app-select-input [attributeName]="'all'" [isSelectDisabled]="true" [isSearchable]="true"
+                                          [name]="'all'"></app-select-input>
+                      </td>
+                      <td></td>
+                    </tr>
+                    <tr class="pending">
+                      <td><span class="_400" translate>common.label.pending</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td class="count"><span class="_600">{{orderOverview.pending}}</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td>
+                        <app-select-input [attributeName]="'pending'" [isAllowClear]="true"
+                                          [placeholder]="'order.treeView.placeholder.selectTransaction'"
+                                          [listArray]="orderTreeStatus" [name]="'pending'" [optionLabel]="'label'" [optionValue]="'value'"
+                                          [isSelectDisabled]="orderOverview.pending == 0"
+                                          [object]="orderOverviewAction"></app-select-input>
+                      </td>
+                      <td>
+                        <button (click)="submitTransaction('pending', 'PENDING')" [disabled]="!orderOverviewAction.pending"
+                                class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
+                                type="button">common.button.submit
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="scheduled">
+                      <td><span class="_400" translate>common.label.scheduled</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td class="count"><span class="_600">{{orderOverview.scheduled}}</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td>
+                        <app-select-input [attributeName]="'scheduled'" [isAllowClear]="true"
+                                          [placeholder]="'order.treeView.placeholder.selectTransaction'"
+                                          [listArray]="orderTreeStatus" [name]="'scheduled'" [optionLabel]="'label'" [optionValue]="'value'"
+                                          [isSelectDisabled]="orderOverview.scheduled == 0"
+                                          [object]="orderOverviewAction"></app-select-input>
+                      </td>
+                      <td>
+                        <button (click)="submitTransaction('scheduled', 'SCHEDULED')" [disabled]="!orderOverviewAction.scheduled"
+                                class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
+                                type="button">common.button.submit
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="in-progress">
+                      <td><span class="_400" translate>common.label.incomplete</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td class="count"><span class="_600">{{orderOverview.inProgress}}</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td>
+                        <app-select-input [attributeName]="'inProgress'" [isAllowClear]="true"
+                                          [placeholder]="'order.treeView.placeholder.selectTransaction'"
+                                          [listArray]="orderTreeStatus" [name]="'inProgress'" [optionLabel]="'label'" [optionValue]="'value'"
+                                          [isSelectDisabled]="orderOverview.inProgress == 0"
+                                          [object]="orderOverviewAction"></app-select-input>
+                      </td>
+                      <td>
+                        <button (click)="submitTransaction('inProgress', 'INPROGRESS')" [disabled]="!orderOverviewAction.inProgress"
+                                class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
+                                type="button">common.button.submit
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="running">
+                      <td><span class="_400" translate>common.label.running</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td class="count"><span class="_600">{{orderOverview.running}}</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td>
+                        <app-select-input [attributeName]="'running'" [isAllowClear]="true"
+                                          [placeholder]="'order.treeView.placeholder.selectTransaction'"
+                                          [listArray]="orderTreeStatus" [name]="'running'" [optionLabel]="'label'" [optionValue]="'value'"
+                                          [isSelectDisabled]="orderOverview.running == 0"
+                                          [object]="orderOverviewAction"></app-select-input>
+                      </td>
+                      <td>
+                        <button (click)="submitTransaction('running', 'RUNNING')" [disabled]="!orderOverviewAction.running"
+                                class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
+                                type="button">common.button.submit
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="suspend">
+                      <td><span class="_400" translate>common.label.suspended</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td class="count"><span class="_600">{{orderOverview.suspended}}</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td>
+                        <app-select-input [attributeName]="'suspended'" [isAllowClear]="true" [optionLabel]="'label'" [optionValue]="'value'"
+                                          [placeholder]="'order.treeView.placeholder.selectTransaction'"
+                                          [listArray]="orderTreeStatusSuspended" [name]="'suspended'"
+                                          [isSelectDisabled]="orderOverview.suspended == 0"
+                                          [object]="orderOverviewAction"></app-select-input>
+                      </td>
+                      <td>
+                        <button (click)="submitTransaction('suspended', 'SUSPENDED')" [disabled]="!orderOverviewAction.suspended"
+                                class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
+                                type="button">common.button.submit
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="prompting">
+                      <td><span class="_400" translate>common.label.prompting</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td class="count"><span class="_600">{{orderOverview.prompting}}</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td>
+                        <app-select-input  [attributeName]="'prompting'" [isAllowClear]="true" [placeholder]="'order.treeView.placeholder.selectTransaction'"
+                                           [optionLabel]="'label'" [optionValue]="'value'" [listArray]="orderTreeStatusPrompting" [name]="'prompting'"
+                                           [isSelectDisabled]="orderOverview.prompting == 0"
+                                           [object]="orderOverviewAction"></app-select-input>
+                      </td>
+                      <td>
+                        <button (click)="submitTransaction('prompting', 'PROMPTING')" [disabled]="!orderOverviewAction.prompting"
+                                class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
+                                type="button">common.button.submit
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="waiting">
+                      <td><span class="_400" translate>common.label.waiting</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td class="count"><span class="_600">{{orderOverview.waiting}}</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td>
+                        <app-select-input  [attributeName]="'waiting'" [isAllowClear]="true" [placeholder]="'order.treeView.placeholder.selectTransaction'"
+                                           [listArray]="orderTreeStatus" [name]="'waiting'" [optionLabel]="'label'" [optionValue]="'value'"
+                                           [isSelectDisabled]="orderOverview.waiting == 0"
+                                           [object]="orderOverviewAction"></app-select-input>
+                      </td>
+                      <td>
+                        <button (click)="submitTransaction('waiting', 'WAITING')" [disabled]="!orderOverviewAction.waiting"
+                                class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
+                                type="button">common.button.submit
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="blocked">
+                      <td><span class="_400" translate>common.label.blocked</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td><span class="_600">{{orderOverview.blocked}}</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td>
+                        <app-select-input  [attributeName]="'blocked'" [isAllowClear]="true" [placeholder]="'order.treeView.placeholder.selectTransaction'"
+                                           [listArray]="orderTreeStatus" [name]="'blocked'" [optionLabel]="'label'" [optionValue]="'value'"
+                                           [isSelectDisabled]="orderOverview.blocked == 0"
+                                           [object]="orderOverviewAction"></app-select-input>
+                      </td>
+                      <td>
+                        <button (click)="submitTransaction('blocked', 'BLOCKED')" [disabled]="!orderOverviewAction.blocked"
+                                class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
+                                type="button">common.button.submit
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="failed">
+                      <td><span class="_400" translate>common.label.failed</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td class="count"><span class="_600">{{orderOverview.failed}}</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td>
+                        <app-select-input  [attributeName]="'failed'" [isAllowClear]="true" [placeholder]="'order.treeView.placeholder.selectTransaction'"
+                                           [listArray]="orderTreeStatusFailed" [name]="'failed'" [optionLabel]="'label'" [optionValue]="'value'"
+                                           [isSelectDisabled]="orderOverview.failed == 0"
+                                           [object]="orderOverviewAction"></app-select-input>
+                      </td>
+                      <td>
+                        <button (click)="submitTransaction('failed', 'FAILED')" [disabled]="!orderOverviewAction.failed"
+                                class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
+                                type="button">common.button.submit
+                        </button>
+                      </td>
+                    </tr>
+                    <tr class="terminate">
+                      <td><span class="_400" translate>common.label.completed</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td class="count"><span class="_600">{{orderOverview.terminated}}</span></td>
+                      <td><span class="fa fa-long-arrow-right"></span></td>
+                      <td>
+                        <app-select-input  [attributeName]="'completed'" [isAllowClear]="true" [optionLabel]="'label'" [optionValue]="'value'" [placeholder]="'order.treeView.placeholder.selectTransaction'"
+                                           [name]="'completed'" [isSelectDisabled]="orderOverview.terminated == 0" [listArray]="orderTreeStatusCompleted"
+                                           [object]="orderOverviewAction"></app-select-input>
+                      </td>
+                      <td>
+                        <button (click)="submitTransaction('completed', 'COMPLETED')" [disabled]="!orderOverviewAction.completed"
+                                class="btn btn-sm btn-primary m-t-xs m-b-xs" translate
+                                type="button">common.button.submit
+                        </button>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
-            </div>
-            <div class="col-lg-10 col-sm-9">
-              <div *ngIf="!(object.checked && object.mapOfCheckedId.size > 0 && data.length > (orderFilters.entryPerPage || preferences.entryPerPage))"
-                   class="row m-b">
-                <div class="col-lg-12">
-                  <div style="display: flex;align-items: baseline;justify-content: space-between">
-                    <div style="display: flex;">
-                      <button (click)="expandDetails()" [disabled]="data.length==0"
-                              [ngClass]="{'show-block': pageView=='list'}"
-                              class="hide btn btn-sm btn-grey" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}">
-                        <i class="fa fa-expand text"></i>
-                      </button>
-                      <button (click)="collapseDetails()" [disabled]="data.length==0"
-                              [ngClass]="{'show-block': pageView==='list'}"
-                              class="hide btn btn-sm btn-grey m-l-12" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}">
-                        <i class="fa fa-compress text"></i>
-                      </button>
-                      <button (click)="resetPanel()" [disabled]="data.length==0"
-                              [ngClass]="{'show-block': pageView==='list'}"
-                              class="hide btn btn-sm btn-grey m-l-12 m-r-12" nz-tooltip="{{'common.button.resetPanel' | translate}}">
-                        <i class="fa fa-repeat text"></i>
-                      </button>
-                      <ng-container *ngIf="orderFilters.filter.state === 'INPROGRESS' || orderFilters.filter.state === 'FAILED'
-                   || orderFilters.filter.state === 'RUNNING' || orderFilters.filter.state === 'COMPLETED'">
-                        <label class="pos-rel m-r-12 t-6 hidden-btn-group1" translate>inventory.search.label.from</label>
-                        <ng-container *ngIf="orderFilters.isRelative">
-                          <div [ngClass]="{ 'error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}"
-                               class="pos-rel t-1">
-                            <input #startTime="ngModel" (blur)="changeDateFilter(!(((startTime.dirty || startTime.touched) && startTime.invalid)),'FROM')" [(ngModel)]="orderFilters.filter.stateDateFrom"
-                                   [appValidateRelativeDate]="preferences.dateFormat"
-                                   class="form-control input-overlay"
-                                   name="startTime"
-                                   placeholder="(+/-)(s|m|h|d|w|M|y)"
-                                   type="text"/>
-                          </div>
-                        </ng-container>
-                        <ng-container *ngIf="!orderFilters.isRelative">
-                          <div class="pos-rel t-1">
-                            <nz-date-picker [(ngModel)]="orderFilters.filter.stateDateFrom1" (ngModelChange)="changeDateFilter(true, 'FROM')" [nzPlaceHolder]="preferences.dateFormat"
-                                            class="pos-rel bottom-border cursor" style="height: 29px"
-                                            nzShowTime></nz-date-picker>
-                          </div>
-                        </ng-container>
-                        <label class="pos-rel t-6 p-l hidden-btn-group1" translate>inventory.search.label.to</label>
-                        <ng-container *ngIf="orderFilters.isRelative">
-                          <div [ngClass]="{ 'error' : (((endTime.dirty || endTime.touched) && endTime.invalid))}"
-                               class="pos-rel t-xxs">
-                            <input #endTime="ngModel" (blur)="changeDateFilter(!(((endTime.dirty || endTime.touched) && endTime.invalid)),'TO')" [(ngModel)]="orderFilters.filter.stateDateTo"
-                                   [appValidateRelativeDate]="preferences.dateFormat"
-                                   class="form-control input-overlay m-l-12"
-                                   name="endTime"
-                                   placeholder="(+/-)(s|m|h|d|w|M|y)"
-                                   type="text"/>
-                          </div>
-                        </ng-container>
-                        <ng-container *ngIf="!orderFilters.isRelative">
-                          <div class="pos-rel t-xxs">
-                            <nz-date-picker [(ngModel)]="orderFilters.filter.stateDateTo1" (ngModelChange)="changeDateFilter(true, 'TO')" [nzPlaceHolder]="preferences.dateFormat"
-                                            class="m-l-12 bottom-border cursor" style="height: 29px"
-                                            nzShowTime></nz-date-picker>
-                          </div>
-                        </ng-container>
-                        <a *ngIf="orderFilters.isRelative" (click)="switchToSpecificDate()" class="text-hover-primary cursor m-l pos-rel t-sm hidden-btn-text" >
-                          <span translate>common.button.switchToSpecificDate</span>
-                          <i nz-icon nzType="swap" nzTheme="outline"></i>
-                        </a>
-                        <a *ngIf="!orderFilters.isRelative" (click)="switchToRelativeDate()" class="text-hover-primary cursor m-l pos-rel t-sm hidden-btn-text">
-                          <span translate>common.button.switchToRelativeDate</span>
-                          <i nz-icon nzType="swap" nzTheme="outline"></i>
-                        </a>
-                      </ng-container>
-                    </div>
-
-                    <div class="search-box-field pull-right m-b-0">
-                      <label>
-                        <input (keyup)="searchInResult()" [(ngModel)]="orderFilters.searchText"
-                               placeholder="{{'common.placeholder.search' | translate}}"
-                               type="search">
-                      </label>
-                      <i (click)="orderFilters.searchText = '';searchInResult()" [hidden]="!orderFilters.searchText"
-                         class="fa fa-times search-close"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <div *ngIf="pageView=='grid' && data.length>0" [hidden]="!loading" class="row">
-                  <div class="w-full">
-                    <div *ngFor="let order of data"
-                         class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                      <div class="box card">
-                        <div class="box-body">
-                          <div>
-                            <label class="pos-abt">
-                              <label [nzChecked]="object.mapOfCheckedId.has(order.orderId)"
-                                     [nzDisabled]="order.positionIsImplicitEnd"
-                                     nz-checkbox
-                                     (nzCheckedChange)="onItemChecked(order, $event)" ></label>
-                            </label>
-                            <div class="text-left block-ellipsis m-l-md">
-                              <i class="p-r-xs" nz-icon nzTheme="outline" nzType="unordered-list"></i>
-                              <span [innerHtml]="coreService.getModifiedOrderId(order, orderFilters.searchText)"
-                                    [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.title"></span>
-                            </div>
-                            <div class="btn-group dropdown pull-right abt-dropdown ">
-                              <app-order-action (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)"
-                                                [order]="order"
-                                                [viewContainerRef]="viewContainerRef"
-                                                [permission]="permission"
-                                                [preferences]="preferences" [schedulerId]="schedulerIds.selected"></app-order-action>
-                            </div>
-                            <div (mouseover)="getObstacles(order)" class="text-sm text-left text-muted p-t-sm">
-                              <span translate>order.label.state </span>:
-                              <span
-                                [innerHtml]="order.state._text | translate | highlight : orderFilters.searchText"
-                                [ngClass]="coreService.getColor(order.state.severity, 'text')"
-                                [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="((order.obstacles && order.obstacles.length > 0) || order.state._reason || order.cycleState) ? tooltipTemplate1 : ''"></span>
-                              <span *ngIf="order.marked"
-                                    [ngClass]="coreService.getColor(order.marked.severity, 'text')">/{{order.marked._text | translate}}</span>
-                              <span *ngIf="order.state._text === 'PROMPTING' && order.question" class="p-l-xs"><i
-                                [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.question" class="fa fa-info-circle"></i></span>
-                            </div>
-                            <ng-template #tooltipTemplate1>
-                              <div class="p-l-sm">
-                                <span translate> order.label.state </span>:
-                                <span [ngClass]="coreService.getColor(order.state.severity, 'text')"
-                                      class="_600"> {{order.state._text |  translate}}</span>
-                                <span *ngIf="order.marked" [ngClass]="coreService.getColor(order.marked.severity, 'text')"
-                                      class="_600">/{{order.marked._text | translate}}</span>
-                              </div>
-                              <div *ngIf="order.state._reason" class="p-l-sm">
-                                <span translate> common.label.comment </span>:
-                                <span class="_600"> {{order.state._reason}}</span>
-                              </div>
-                              <div *ngIf="order.question" class="p-l-sm">
-                                <span translate> workflow.label.prompt </span>:
-                                <span class="_600"> {{order.question}}</span>
-                              </div>
-                              <div *ngIf="order.obstacles && order.obstacles.length > 0" class="p-l-sm">
-                                <div *ngFor="let obstacle of order.obstacles">
-                                  <span translate> {{obstacle.type | translate}} </span>
-                                  <span *ngIf="obstacle.until" class="_600">:&nbsp;{{obstacle.until | stringToDate}}</span>
-                                </div>
-                              </div>
-                              <div *ngIf="order.lastOutcome" class="p-l-sm">
-                                <span translate> order.label.lastOutcome </span>:
-                                <span class="_600">{{order.lastOutcome.TYPE}}</span>
-                              </div>
-                              <div *ngIf="!order.cyclicOrder" class="p-l-sm">
-                                <span translate> order.label.scheduledFor </span>:
-                                <span *ngIf="!order.scheduledNever"
-                                      class="_600">{{order.scheduledFor | stringToDate}}</span>
-                                <span *ngIf="order.scheduledNever" class="_600" translate>common.label.never</span>
-                              </div>
-                              <div *ngIf="order.expectedNotices" class="p-l-sm">
-                                <div class="_600 m-b-xxs">{{'order.label.expectedNotices' | translate}} :</div>
-                                <div *ngFor="let notice of order.expectedNotices" class="p-l-sm">
-                                  {{notice.boardName}}
-                                </div>
-                              </div>
-
-                              <div *ngIf="order.cyclicOrder" class="m-a-sm m-t-0">
-                                <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
-                                <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
-                                {{order.cyclicOrder.firstStart | stringToDate}}
-                                <br>
-                                <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
-                                {{order.cyclicOrder.lastStart | stringToDate}}
-                                <br>
-                                <span class="_600 p-l-sm" translate>order.label.orders</span>:
-                                {{order.cyclicOrder.count}}
-                              </div>
-                              <div *ngIf="order.cycleState" class="m-a-sm m-t-0">
-                                <div class="_600 m-b-xs" translate>order.cycleState.label.cycleState</div>
-                                <span *ngIf="order.cycleState.since">
-                              <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
-                                  {{order.cycleState.since | stringToDate}}
-                            </span>
-                                <span *ngIf="order.cycleState.next">
-                              <span class="_600 p-l-sm" translate>order.cycleState.label.next</span>:
-                                  {{order.cycleState.next | stringToDate}}
-                            </span>
-                                <br>
-                                <span class="_600 p-l-sm" translate>order.cycleState.label.index</span>:
-                                {{order.cycleState.index}}
-                              </div>
-                              <div *ngIf="order.retryState" class="m-a-sm m-t-0">
-                                <div class="_600 m-b-xs" translate>order.retryState.label.retryState</div>
-                                <span *ngIf="order.retryState.next">
-                              <span class="_600 p-l-sm" translate>order.retryState.label.next</span>:
-                                  {{ order.retryState.next | stringToDate }}
-                            </span>
-                                <br>
-                                <span class="_600 p-l-sm" translate>order.retryState.label.attempt</span>:
-                                {{ order.retryState.attempt }}
-                              </div>
-                            </ng-template>
-                            <div class="text-sm text-left text-muted p-t-xs block-ellipsis" style="width: 100%">
-                              <span translate>workflow.label.label </span>:
-                              <span class="text-black-dk cur-point" *ngIf="order.label" [innerHtml]="order.label | highlight : orderFilters.searchText" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.positionString"></span>
-                              <span class="text-black-dk" *ngIf="!order.label" [innerHtml]="order.positionString | highlight : orderFilters.searchText"></span>
-                            </div>
-                            <div class="text-sm text-left text-muted p-t-xs block-ellipsis" style="width: 100%">
-                              <span translate>order.label.workflow </span>:
-                              <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');"
-                                 *ngIf="permission.joc && permission.joc.inventory.view"
-                                 class="cursor fa fa-pencil text-hover-primary text-black-dk p-l-xs p-r-xs"></i>
-                              <a (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);"
-                                 class="text-hover-primary text-black-dk">
-                                <span [innerHtml]="order.workflowId.path | highlight : orderFilters.searchText"></span>
-                              </a>
-                              <span
-                                *ngIf=" workflowTagsPerWorkflow
-                                          ?.[
-                                            getLastPartOfWorkflow(order?.workflowId?.path)
-                                          ]
-                                          ?.length > 0
-                                      "
-                                                                    [innerHTML]="
-                                        coreService.getModifiedWorkflowTags(
-                                          workflowTagsPerWorkflow?.[
-                                            getLastPartOfWorkflow(order?.workflowId?.path)
-                                          ] || [],
-                                          orderFilters?.searchText
-                                        )
-                                      "
-                                                                    class="m-l-sm"
-                                                                  >
-                                    </span>
-
-                            </div>
-                            <div class="text-sm text-left text-muted p-t-xs">
-                              <span translate>order.label.scheduledFor </span>:
-                              <span *ngIf="!order.scheduledNever"
-                                    class="text-black-dk">{{order.scheduledFor | stringToDate}}</span>
-                              <span *ngIf="order.scheduledNever" class="text-black-dk" translate>common.label.never</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="box-footer b-t">
-                          <div>
-                            <a (click)="actionChild.modifyOrder(order);"
-                               [ngClass]="{'show-block':permission.currentController && permission.currentController.orders.modify, 'disable-link' : (order.state._text !== 'PENDING' && order.state._text !== 'SCHEDULED') || order.positionIsImplicitEnd}"
-                               class="hide text-left primary-text-hover-color">
-                              <i class="fa fa-edit p-r-xs text-black-lt"></i>
-                              <span class="text-black-lt" translate>dailyPlan.button.setStartTime</span>
-                            </a>
-                            <a (click)="actionChild.cancelOrder(order);"
-                               *ngIf="permission.currentController && permission.currentController.orders.cancel"
-                               [ngClass]="{'pull-right':permission.currentController.orders.modify, 'disable-link' : order.positionIsImplicitEnd}"
-                               class="text-right primary-text-hover-color">
-                              <i class="fa fa-times p-r-xs text-black-lt"></i>
-                              <span class="text-black-lt" translate>order.button.cancel</span>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div *ngIf="object.checked && object.mapOfCheckedId.size > 0 && data.length > (orderFilters.entryPerPage || preferences.entryPerPage)"
-                     class="text-center font14 box p-a-10 m-b-12">
-              <span *ngIf="object.mapOfCheckedId.size !== data.length" [translateParams]="{count: object.mapOfCheckedId.size}"
-                    translate>common.label.selectAllEntriesOfCurrentPage</span>
-                  <span *ngIf="object.mapOfCheckedId.size === data.length" [translateParams]="{count: data.length}"
-                        translate>common.label.allEntriesSelected</span>
-                  <a (click)="selectAll()" *ngIf="object.mapOfCheckedId.size !== data.length" [translateParams]="{count: data.length}"
-                     class="text-primary p-l-xs" translate>common.label.selectAllEntries</a>
-                  <a (click)="resetCheckBox()" *ngIf="object.mapOfCheckedId.size === data.length"
-                     class="text-primary p-l-xs" translate>common.label.clearSelection</a>
-                </div>
-                <div *ngIf="pageView === 'list'" class="box p-a m-b-0">
-                  <perfect-scrollbar [height]="resizerHeight" [type]="'orderOverview'" appResizable
-                                     class="pos-init resizable" id="orderTableId">
-                    <nz-table
-                      #ajaxTable
-                      (nzPageIndexChange)="pageIndexChange($event)"
-                      (nzPageSizeChange)="pageSizeChange($event)"
-                      [nzBordered]="true"
-                      [nzData]="data"
-                      [nzLoading]="!loading"
-                      [nzPageIndex]="orderFilters.currentPage"
-                      [nzPageSizeOptions]="[10, 25, 50, 100, +(preferences.maxEntryPerPage)]"
-                      [nzPageSize]="orderFilters.entryPerPage || preferences.entryPerPage || 25"
-                      [nzShowPagination]="data.length > 0"
-                      [nzShowSizeChanger]="true"
-                      [nzSize]="'small'"
-                    >
-                      <thead>
-                      <tr>
-                        <th [(nzChecked)]="object.checked"
-                            [nzIndeterminate]="object.indeterminate"
-                            [nzShowCheckbox]="true"
-                            (nzCheckedChange)="checkAll($event)"
-                            class="chk"
-                        ></th>
-                        <th class="menu" rowspan="2"><span translate>common.label.action</span></th>
-                        <th (click)="sort('orderId')">
-                          <a><span class="p-r-xs" translate>order.label.orderId</span>
-                            <i *ngIf="orderFilters.filter.sortBy == 'orderId' && !orderFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i *ngIf="orderFilters.filter.sortBy == 'orderId' && orderFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th (click)="sort('workflowId.path')">
-                          <a><span class="p-r-xs" translate>order.label.workflow</span>
-                            <i *ngIf="orderFilters.filter.sortBy == 'workflowId.path' && !orderFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i *ngIf="orderFilters.filter.sortBy == 'workflowId.path' && orderFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th (click)="sort('label')">
-                          <a><span class="p-r-xs" translate>workflow.label.label</span>
-                            <i *ngIf="orderFilters.filter.sortBy == 'label' && !orderFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i *ngIf="orderFilters.filter.sortBy == 'label' && orderFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th (click)="sort('state._text')">
-                          <a><span class="p-r-xs" translate>order.label.state</span>
-                            <i *ngIf="orderFilters.filter.sortBy == 'state._text' && !orderFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i *ngIf="orderFilters.filter.sortBy == 'state._text' && orderFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th (click)="sort('priority')">
-                          <a><span class="p-r-xs" translate>order.label.priority</span>
-                            <i *ngIf="orderFilters.filter.sortBy == 'priority' && !orderFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i *ngIf="orderFilters.filter.sortBy == 'priority' && orderFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                        <th (click)="sort('scheduledFor')">
-                          <a><span class="p-r-xs" translate>order.label.scheduledFor</span>
-                            <i *ngIf="orderFilters.filter.sortBy == 'scheduledFor' && !orderFilters.reverse"
-                               class="fa fa-caret-up "></i>
-                            <i *ngIf="orderFilters.filter.sortBy == 'scheduledFor' && orderFilters.reverse"
-                               class="fa fa-caret-down "></i></a>
-                        </th>
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <ng-template [ngForOf]="ajaxTable.data" let-order
-                                   ngFor>
-                        <tr [ngClass]="{'light-bg': (showPanelObj && showPanelObj.orderId == order.orderId)}">
-                          <td [nzChecked]="object.mapOfCheckedId.has(order.orderId)"
-                              [nzDisabled]="order.positionIsImplicitEnd"
-                              (nzCheckedChange)="onItemChecked(order, $event)"
-                              [nzShowCheckbox]="true"></td>
-                          <td>
-                            <app-order-action (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)"
-                                              [isDisabled]="object.checked || object.indeterminate" [order]="order"
-                                              [permission]="permission"
-                                              [viewContainerRef]="viewContainerRef"
-                                              [preferences]="preferences" [schedulerId]="schedulerIds.selected"></app-order-action>
-                          </td>
-                          <td>
-                        <span class="show-in-single-line">
-                          <i (click)="showPanelFuc(order)" *ngIf="!order.show"
-                             class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
-                          <i (click)="hidePanelFuc(order)" *ngIf="order.show"
-                             class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
-                          <a (click)="showPanelFunc(order)" class="text-dark"> <span
-                            [innerHtml]="coreService.getModifiedOrderId(order, orderFilters.searchText)"></span></a>
-                          <span *ngIf="order.title">-</span>
-                          <i class="text-muted">{{order.title}}</i>
-                          <i *ngIf="order.cyclicOrder" [nzTooltipPlacement]="'left'" [nzTooltipTitle]="tooltipTemplate"
-                             aria-hidden="true"
-                             class="fa fa-repeat p-l-xs" nz-tooltip></i>
-                        </span>
-                            <ng-template #tooltipTemplate>
-                              <div *ngIf="order.cyclicOrder" class="m-a-sm">
-                                <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
-                                <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
-                                {{order.cyclicOrder.firstStart | stringToDate}}
-                                <br>
-                                <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
-                                {{order.cyclicOrder.lastStart | stringToDate}}
-                                <br>
-                                <span class="_600 p-l-sm" translate>order.label.orders</span>:
-                                {{order.cyclicOrder.count}}
-                              </div>
-                            </ng-template>
-                          </td>
-                          <td>
-                        <span class="show-in-single-line">
-                          <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');"
-                             *ngIf="permission.joc && permission.joc.inventory.view"
-                             class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-                          <a (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);"
-                             class="text-hover-primary">
-                            <span [innerHtml]="order.workflowId.path | highlight : orderFilters.searchText"></span>
-                          </a>
-                                <div *ngIf="workflowTagsPerWorkflow && order.workflowId">
-                                <span *ngIf="workflowTagsPerWorkflow[getLastPartOfWorkflow(order.workflowId.path)]?.length > 0"
-                                      [innerHtml]="coreService.getModifiedWorkflowTags(workflowTagsPerWorkflow[getLastPartOfWorkflow(order.workflowId.path)], orderFilters.searchText)"
-                                      class="m-l-sm">
-                                </span>
-                              </div>
-
-                        </span>
-                          </td>
-                          <td>
-                            <span class="cur-point" *ngIf="order.label" [innerHtml]="order.label | highlight : orderFilters.searchText" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.positionString"></span>
-                            <span *ngIf="!order.label" [innerHtml]="order.positionString | highlight : orderFilters.searchText"></span>
-                          </td>
-                          <td (mouseover)="getObstacles(order)" class="combine-two-label" nowrap>
-                        <span
-                          *ngIf="order.state"
-                          [innerHtml]="order.state._text | translate  | highlight : orderFilters.searchText" [ngClass]="[coreService.getColor(order.state.severity, 'bg'),order.marked ? 'label1' : '']"
-                          [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="((order.obstacles && order.obstacles.length > 0) || order.state._reason || order.cycleState) ? tooltipTemplate1 : ''"
-                          class="label"></span>
-                            <span *ngIf="order.marked" [innerHtml]="order.marked._text | translate"
-                                  [ngClass]="coreService.getColor(order.marked.severity, 'bg')"
-                                  class="label label2"></span>
-                            <span *ngIf="order.state._text === 'PROMPTING' && order.question" class="p-l-xs"><i
-                              [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.question" class="fa fa-info-circle"></i></span>
-                            <ng-template #tooltipTemplate1>
-                              <div class="p-l-sm">
-                                <span translate> order.label.state </span>:
-                                <span [ngClass]="coreService.getColor(order.state.severity, 'text')"
-                                      class="_600"> {{order.state._text |  translate}}</span>
-                                <span *ngIf="order.marked" [ngClass]="coreService.getColor(order.marked.severity, 'text')"
-                                      class="_600">/{{order.marked._text | translate}}</span>
-                              </div>
-                              <div *ngIf="order.state._reason" class="p-l-sm">
-                                <span translate> common.label.comment </span>:
-                                <span class="_600"> {{order.state._reason}}</span>
-                              </div>
-                              <div *ngIf="order.question" class="p-l-sm">
-                                <span translate> workflow.label.prompt </span>:
-                                <span class="_600"> {{order.question}}</span>
-                              </div>
-                              <div *ngIf="order.obstacles && order.obstacles.length > 0" class="p-l-sm">
-                                <div *ngFor="let obstacle of order.obstacles">
-                                  <span translate> {{obstacle.type | translate}} </span>
-                                  <span *ngIf="obstacle.until" class="_600">:&nbsp;{{obstacle.until | stringToDate}}</span>
-                                </div>
-                              </div>
-                              <div *ngIf="order.lastOutcome" class="p-l-sm">
-                                <span translate> order.label.lastOutcome </span>:
-                                <span class="_600">{{order.lastOutcome.TYPE}}</span>
-                              </div>
-                              <div *ngIf="!order.cyclicOrder" class="p-l-sm">
-                                <span translate> order.label.scheduledFor </span>:
-                                <span *ngIf="!order.scheduledNever"
-                                      class="_600">{{order.scheduledFor | stringToDate}}</span>
-                                <span *ngIf="order.scheduledNever" class="_600" translate>common.label.never</span>
-                              </div>
-                              <div *ngIf="order.expectedNotices" class="p-l-sm">
-                                <div class="_600 m-b-xxs">{{'order.label.expectedNotices' | translate}} :</div>
-                                <div *ngFor="let notice of order.expectedNotices" class="p-l-sm">
-                                  {{notice.boardName}}
-                                </div>
-                              </div>
-                              <div *ngIf="order.cyclicOrder" class="m-a-sm m-t-0">
-                                <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
-                                <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
-                                {{order.cyclicOrder.firstStart | stringToDate}}
-                                <br>
-                                <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
-                                {{order.cyclicOrder.lastStart | stringToDate}}
-                                <br>
-                                <span class="_600 p-l-sm" translate>order.label.orders</span>:
-                                {{order.cyclicOrder.count}}
-                              </div>
-                              <div *ngIf="order.cycleState" class="m-a-sm m-t-0">
-                                <div class="_600 m-b-xs" translate>order.cycleState.label.cycleState</div>
-                                <span *ngIf="order.cycleState.since">
-                              <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
-                                  {{ order.cycleState.since | stringToDate }}
-                            </span>
-                                <span *ngIf="order.cycleState.next">
-                              <span class="_600 p-l-sm" translate>order.cycleState.label.next</span>:
-                                  {{ order.cycleState.next | stringToDate }}
-                            </span>
-                                <br>
-                                <span class="_600 p-l-sm" translate>order.cycleState.label.index</span>:
-                                {{ order.cycleState.index }}
-                              </div>
-
-                              <div *ngIf="order.retryState" class="m-a-sm m-t-0">
-                                <div class="_600 m-b-xs" translate>order.retryState.label.retryState</div>
-                                <span *ngIf="order.retryState.next">
-                              <span class="_600 p-l-sm" translate>order.retryState.label.next</span>:
-                                  {{ order.retryState.next | stringToDate }}
-                            </span>
-                                <br>
-                                <span class="_600 p-l-sm" translate>order.retryState.label.attempt</span>:
-                                {{ order.retryState.attempt }}
-                              </div>
-                              <div *ngIf="order.sleepState" class="m-a-sm m-t-0">
-                                <div class="_600 m-b-xs" translate>order.sleepState.label.sleepState</div>
-                                <span *ngIf="order.sleepState.until">
-                              <span class="_600 p-l-sm" translate>order.sleepState.label.until</span>:
-                                  {{ order.sleepState.until | stringToDate }}
-                            </span>
-
-                              </div>
-                            </ng-template>
-                          </td>
-                          <td *ngIf="order.priority !== null">
-                            <ng-container *ngIf="getPriorityLabel(order.priority) as key; else showRaw">
-                              {{ key | translate }}
-                            </ng-container>
-                            <ng-template #showRaw>
-                              {{ order.priority }}
-                            </ng-template>
-                          </td>
-                          <td>
-                            <span *ngIf="!order.scheduledNever">{{order.scheduledFor | stringToDate}}</span>
-                            <span *ngIf="order.scheduledNever" translate>common.label.never</span>
-                          </td>
-                        </tr>
-                        <tr *ngIf="order.show">
-                          <td colspan="3"></td>
-                          <td colspan="6">
-                            <app-order-variable [order]="order" [schedulerId]="schedulerIds.selected"
-                                                [type]="'arguments'"></app-order-variable>
-                          </td>
-                        </tr>
+                }
+          </div>
+        }
+        @if (pageView !== 'bulk') {
+          <div id="rightPanel1">
+            <div class="row">
+              <div class="col-lg-2 col-sm-3 p-r-xs">
+                <div class="box m-b-0" [style.height]="pageView === 'grid' ? 'calc(100% - 2px)' : 'calc(100% - 20px)'">
+                  <nz-tabset class="custom-tab p-t-sm p-l-sm p-r-sm" [nzAnimated]="false"  [nzType]="'line'" [(nzSelectedIndex)]="orderFilters.selectedIndex">
+                    <nz-tab (nzClick)="switchToTagging('workflowTags');orderFilters.selectedIndex = 0;" [nzTitle]="workflowTagsTitle">
+                      <ng-template #workflowTagsTitle>
+                        <span>{{ 'inventory.tab.workflowTagging' | translate }}</span>
                       </ng-template>
-                      </tbody>
-                    </nz-table>
-                    <div *ngIf="ajaxTable.data.length >0"
-                         class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
-                      <span *ngIf="ajaxTable.data.length >1" translate>order.label.ordersFound</span>
-                      <span *ngIf="ajaxTable.data.length ==1" translate>order.label.orderFound</span>
+                    </nz-tab>
+                    <nz-tab (nzClick)="switchToTagging('orderTags');orderFilters.selectedIndex = 1;" [nzTitle]="orderTagsTitle">
+                      <ng-template #orderTagsTitle>
+                        <span>{{ 'inventory.tab.orderTagging' | translate }}</span>
+                      </ng-template>
+                    </nz-tab>
+                  </nz-tabset>
+                  @if (orderFilters.tagType === 'workflowTags') {
+                    <div>
+                      <perfect-scrollbar class="p-b-sm p-t-xs p-l-sm p-r-sm order-overview-tag" [style.height]="pageView === 'grid' ? 'calc(100% - 0)' : 'calc(100% - 20px)'">
+                        <div class="fade-in">
+                          <div class="p-l-xs m-b-sm">
+                            <a (click)="selectTags()" nz-tooltip="{{'workflow.label.selectTags' | translate}}">
+                              <i class="font14" [nzType]="'plus'" nz-icon nzTheme="outline"></i>
+                            </a>
+                            <a (click)="selectAllTags();" class="p-l-12" nz-tooltip="{{'workflow.label.selectAllTags' | translate}}">
+                              <i class="font14" nz-icon nzTheme="outline" nzType="plus-square"></i>
+                            </a>
+                            <a (click)="removeAllTags();" class="p-l-12" nz-tooltip="{{'workflow.label.removeAllTags' | translate}}">
+                              <i class="font14" nz-icon nzTheme="outline" nzType="minus-square"></i>
+                            </a>
+                            <a (click)="objectTreeSearch()" class="tree-search workflow-tree-search" style="right: 16px">
+                              <i [nzType]="'search'" nz-icon nzTheme="outline"></i>
+                            </a>
+                            <div class="dailyTagSearch">
+                              <input (blur)="clearSearchInput()" (ngModelChange)="onSearchInput($event)"
+                                     [(ngModel)]="searchTag.text"
+                                     [nzAutocomplete]="auto" [placeholder]="'workflow.placeholder.findNode' | translate"
+                                     class="input-tree-search"
+                                     id="overViewTagSearch"
+                                     nz-input
+                              />
+                              @if (coreService.selectedTags && coreService.selectedTags.length > 0) {
+                                <label nz-checkbox [(ngModel)]="coreService.allTagsSelected" (ngModelChange)="toggleSelectAllTags($event)" class="m-l-xs m-b-15 m-t-sm1">
+                                  {{ 'profile.label.selectAll' | translate }}
+                                </label>
+                              }
+                              <i [nzType]="searchTag.loading ? 'loading' : 'search'" class="tree-search-icon" nz-icon nzTheme="outline"></i>
+                              <nz-autocomplete #auto>
+                                @for (tag of searchTag.tags | orderBy: 'ordering'; track tag) {
+                                  <nz-auto-option (click)="selectTagOnSearch(tag)"
+                                                  [nzValue]="tag.name" class="min-ht-opt">
+                                    <div class="node-wrapper p-l-xs">
+                                      <div class="node-content-wrapper2"
+                                           nzTooltipPlacement="right">
+                                        <span class="icon-color text-xs" nz-icon nzType="tag" nzTheme="outline"></span>
+                                        <span class="p-l-sm">{{tag.name}}</span>
+                                      </div>
+                                    </div>
+                                  </nz-auto-option>
+                                }
+                              </nz-autocomplete>
+                            </div>
+                          </div>
+                          @for (tag of coreService.selectedTags | orderBy: 'ordering'; track tag) {
+                            <div class="w-full">
+                              <div class="node-wrapper p-l-xxs p-b-xxs">
+                                    <span class="w-14 m-l-xs m-r-12">
+                                      <label nz-checkbox [nzChecked]="coreService.checkedTags.has(tag.name)"
+                                             (nzCheckedChange)="onTagChecked(tag.name, $event)"></label>
+                                    </span>
+                                <div class="node-content-wrapper"
+                                     [ngClass]="{'node-content-wrapper-active': coreService.checkedTags.has(tag.name)}"
+                                     (click)="selectTag(tag.name)">
+                                  <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
+                                  <span class="p-l-xs">{{tag.name}}</span>
+                                </div>
+                              </div>
+                            </div>
+                          }
+                        </div>
+                        @if (coreService.selectedTags && coreService.selectedTags.length === 0) {
+                          <div class="m-top-50" style="margin-bottom: 60px">
+                            <app-empty-data></app-empty-data>
+                          </div>
+                        }
+                      </perfect-scrollbar>
                     </div>
-                  </perfect-scrollbar>
-                  <div class="rg-bottom"><span></span></div>
+                  }
+                  @if (orderFilters.tagType === 'orderTags') {
+                    <div>
+                      <perfect-scrollbar class="p-b-sm p-t-xs p-l-sm p-r-sm order-overview-tag" [style.height]="pageView === 'grid' ? 'calc(100% - 0)' : 'calc(100% - 20px)'">
+                        <div class="fade-in">
+                          <div class="p-l-xs m-b-sm">
+                            <a (click)="selectOrderTags()" nz-tooltip="{{'workflow.label.selectTags' | translate}}">
+                              <i class="font14" [nzType]="'plus'" nz-icon nzTheme="outline"></i>
+                            </a>
+                            <a (click)="selectAllOrderTags();" class="p-l-12" nz-tooltip="{{'workflow.label.selectAllTags' | translate}}">
+                              <i class="font14" nz-icon nzTheme="outline" nzType="plus-square"></i>
+                            </a>
+                            <a (click)="removeAllOrderTags();" class="p-l-12" nz-tooltip="{{'workflow.label.removeAllTags' | translate}}">
+                              <i class="font14" nz-icon nzTheme="outline" nzType="minus-square"></i>
+                            </a>
+                            <a (click)="objectOrderTreeSearch()" class="tree-search workflow-tree-search" style="right: 16px">
+                              <i [nzType]="'search'" nz-icon nzTheme="outline"></i>
+                            </a>
+                            <div class="dailyTagSearch">
+                              <input (blur)="clearOrderSearchInput()" (ngModelChange)="onOrderSearchInput($event)"
+                                     [(ngModel)]="searchOrderTag.text"
+                                     [nzAutocomplete]="auto" [placeholder]="'workflow.placeholder.findNode' | translate"
+                                     class="input-tree-search"
+                                     id="overViewOrderTagSearch"
+                                     nz-input
+                              />
+                              @if (coreService.selectedOrderTags && coreService.selectedOrderTags.length > 0) {
+                                <label nz-checkbox [(ngModel)]="coreService.allOrderTagsSelected" (ngModelChange)="toggleSelectAllOrderTags($event)" class="m-l-xs m-b-15 m-t-sm1">
+                                  {{ 'profile.label.selectAll' | translate }}
+                                </label>
+                              }
+                              <i [nzType]="searchOrderTag.loading ? 'loading' : 'search'" class="tree-search-icon" nz-icon nzTheme="outline"></i>
+                              <nz-autocomplete #auto>
+                                @for (tag of searchOrderTag.tags | orderBy: 'ordering'; track tag) {
+                                  <nz-auto-option (click)="selectOrderTagOnSearch(tag)"
+                                                  [nzValue]="tag.name" class="min-ht-opt">
+                                    <div class="node-wrapper p-l-xs">
+                                      <div class="node-content-wrapper2"
+                                           nzTooltipPlacement="right">
+                                        <span class="icon-color text-xs" nz-icon nzType="tag" nzTheme="outline"></span>
+                                        <span class="p-l-sm">{{tag.name}}</span>
+                                      </div>
+                                    </div>
+                                  </nz-auto-option>
+                                }
+                              </nz-autocomplete>
+                            </div>
+                          </div>
+                          @for (tag of coreService.selectedOrderTags | orderBy: 'ordering'; track tag) {
+                            <div class="w-full">
+                              <div class="node-wrapper p-l-xxs p-b-xxs">
+                                    <span class="w-14 m-l-xs m-r-12">
+                                      <label nz-checkbox [nzChecked]="coreService.checkedOrderTags.has(tag.name)"
+                                             (nzCheckedChange)="onOrderTagChecked(tag.name, $event)"></label>
+                                    </span>
+                                <div class="node-content-wrapper"
+                                     [ngClass]="{'node-content-wrapper-active': coreService.checkedOrderTags.has(tag.name)}"
+                                     (click)="selectOrderTag(tag.name)">
+                                  <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
+                                  <span class="p-l-xs">{{tag.name}}</span>
+                                </div>
+                              </div>
+                            </div>
+                          }
+                        </div>
+                        @if (coreService.selectedOrderTags && coreService.selectedOrderTags.length === 0) {
+                          <div class="m-top-50" style="margin-bottom: 60px">
+                            <app-empty-data></app-empty-data>
+                          </div>
+                        }
+                      </perfect-scrollbar>
+                    </div>
+                  }
                 </div>
-                <div *ngIf="pageView=='grid' && loading && data.length==0" class="text-center m-t h6">
-                  <app-empty-data></app-empty-data>
-                </div>
-                <div *ngIf="showPanelObj" [ngClass]="{'show': pageView==='list'}" class="row m-t hide">
-                  <div class="col-md-12">
-                    <div class="box white">
-                      <div class="box-header">
-                    <span class="text">{{showPanelObj.workflowId.path}}: {{showPanelObj.orderId}} <i
-                      *ngIf="showPanelObj.title">-</i> <i
-                      class="text-sm text-muted">{{showPanelObj.title}}</i></span>
+              </div>
+              <div class="col-lg-10 col-sm-9">
+                @if (!(object.checked && object.mapOfCheckedId.size > 0 && data.length > (orderFilters.entryPerPage || preferences.entryPerPage))) {
+                  <div class="row m-b">
+                    <div class="col-lg-12">
+                      <div style="display: flex;align-items: baseline;justify-content: space-between">
+                        <div style="display: flex;">
+                          <button (click)="expandDetails()" [disabled]="data.length==0"
+                                  [ngClass]="{'show-block': pageView=='list'}"
+                                  class="hide btn btn-sm btn-grey" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}">
+                            <i class="fa fa-expand text"></i>
+                          </button>
+                          <button (click)="collapseDetails()" [disabled]="data.length==0"
+                                  [ngClass]="{'show-block': pageView==='list'}"
+                                  class="hide btn btn-sm btn-grey m-l-12" nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}">
+                            <i class="fa fa-compress text"></i>
+                          </button>
+                          <button (click)="resetPanel()" [disabled]="data.length==0"
+                                  [ngClass]="{'show-block': pageView==='list'}"
+                                  class="hide btn btn-sm btn-grey m-l-12 m-r-12" nz-tooltip="{{'common.button.resetPanel' | translate}}">
+                            <i class="fa fa-repeat text"></i>
+                          </button>
+                          @if (orderFilters.filter.state === 'INPROGRESS' || orderFilters.filter.state === 'FAILED'
+                          || orderFilters.filter.state === 'RUNNING' || orderFilters.filter.state === 'COMPLETED') {
+                            <label class="pos-rel m-r-12 t-6 hidden-btn-group1" translate>inventory.search.label.from</label>
+                            @if (orderFilters.isRelative) {
+                              <div [ngClass]="{ 'error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}"
+                                   class="pos-rel t-1">
+                                <input #startTime="ngModel" (blur)="changeDateFilter(!(((startTime.dirty || startTime.touched) && startTime.invalid)),'FROM')" [(ngModel)]="orderFilters.filter.stateDateFrom"
+                                       [appValidateRelativeDate]="preferences.dateFormat"
+                                       class="form-control input-overlay"
+                                       name="startTime"
+                                       placeholder="(+/-)(s|m|h|d|w|M|y)"
+                                       type="text"/>
+                              </div>
+                            }
+                            @if (!orderFilters.isRelative) {
+                              <div class="pos-rel t-1">
+                                <nz-date-picker [(ngModel)]="orderFilters.filter.stateDateFrom1" (ngModelChange)="changeDateFilter(true, 'FROM')" [nzPlaceHolder]="preferences.dateFormat"
+                                                class="pos-rel bottom-border cursor" style="height: 29px"
+                                                nzShowTime></nz-date-picker>
+                              </div>
+                            }
+                            <label class="pos-rel t-6 p-l hidden-btn-group1" translate>inventory.search.label.to</label>
+                            @if (orderFilters.isRelative) {
+                              <div [ngClass]="{ 'error' : (((endTime.dirty || endTime.touched) && endTime.invalid))}"
+                                   class="pos-rel t-xxs">
+                                <input #endTime="ngModel" (blur)="changeDateFilter(!(((endTime.dirty || endTime.touched) && endTime.invalid)),'TO')" [(ngModel)]="orderFilters.filter.stateDateTo"
+                                       [appValidateRelativeDate]="preferences.dateFormat"
+                                       class="form-control input-overlay m-l-12"
+                                       name="endTime"
+                                       placeholder="(+/-)(s|m|h|d|w|M|y)"
+                                       type="text"/>
+                              </div>
+                            }
+                            @if (!orderFilters.isRelative) {
+                              <div class="pos-rel t-xxs">
+                                <nz-date-picker [(ngModel)]="orderFilters.filter.stateDateTo1" (ngModelChange)="changeDateFilter(true, 'TO')" [nzPlaceHolder]="preferences.dateFormat"
+                                                class="m-l-12 bottom-border cursor" style="height: 29px"
+                                                nzShowTime></nz-date-picker>
+                              </div>
+                            }
+                            @if (orderFilters.isRelative) {
+                              <a (click)="switchToSpecificDate()" class="text-hover-primary cursor m-l pos-rel t-sm hidden-btn-text" >
+                                <span translate>common.button.switchToSpecificDate</span>
+                                <i nz-icon nzType="swap" nzTheme="outline"></i>
+                              </a>
+                            }
+                            @if (!orderFilters.isRelative) {
+                              <a (click)="switchToRelativeDate()" class="text-hover-primary cursor m-l pos-rel t-sm hidden-btn-text">
+                                <span translate>common.button.switchToRelativeDate</span>
+                                <i nz-icon nzType="swap" nzTheme="outline"></i>
+                              </a>
+                            }
+                          }
+                        </div>
+                        <div class="search-box-field pull-right m-b-0">
+                          <label>
+                            <input (keyup)="searchInResult()" [(ngModel)]="orderFilters.searchText"
+                                   placeholder="{{'common.placeholder.search' | translate}}"
+                                   type="search">
+                          </label>
+                          <i (click)="orderFilters.searchText = '';searchInResult()" [hidden]="!orderFilters.searchText"
+                             class="fa fa-times search-close"></i>
+                        </div>
                       </div>
-                      <div class="box-tool">
-                        <ul class="nav text-muted text-md">
-                          <li class="nav-item inline m-l-sm">
-                            <a (click)="hideAuditPanel()"><i class="fa fa-times"></i></a>
-                          </li>
-                        </ul>
+                    </div>
+                  </div>
+                }
+                <div>
+                  @if (pageView=='grid' && data.length>0) {
+                    <div [hidden]="!loading" class="row">
+                      <div class="w-full">
+                        @for (order of data; track order) {
+                          <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                            <div class="box card">
+                              <div class="box-body">
+                                <div>
+                                  <label class="pos-abt">
+                                    <label [nzChecked]="object.mapOfCheckedId.has(order.orderId)"
+                                           [nzDisabled]="order.positionIsImplicitEnd"
+                                           nz-checkbox
+                                           (nzCheckedChange)="onItemChecked(order, $event)" ></label>
+                                  </label>
+                                  <div class="text-left block-ellipsis m-l-md">
+                                    <i class="p-r-xs" nz-icon nzTheme="outline" nzType="unordered-list"></i>
+                                    <span [innerHtml]="coreService.getModifiedOrderId(order, orderFilters.searchText)"
+                                          [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.title"></span>
+                                  </div>
+                                  <div class="btn-group dropdown pull-right abt-dropdown ">
+                                    <app-order-action (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)"
+                                                      [order]="order"
+                                                      [viewContainerRef]="viewContainerRef"
+                                                      [permission]="permission"
+                                                      [preferences]="preferences" [schedulerId]="schedulerIds.selected"></app-order-action>
+                                  </div>
+                                  <div (mouseover)="getObstacles(order)" class="text-sm text-left text-muted p-t-sm">
+                                    <span translate>order.label.state </span>:
+                                    <span
+                                      [innerHtml]="order.state._text | translate | highlight : orderFilters.searchText"
+                                      [ngClass]="coreService.getColor(order.state.severity, 'text')"
+                                      [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="((order.obstacles && order.obstacles.length > 0) || order.state._reason || order.cycleState) ? tooltipTemplate1 : ''"></span>
+                                    @if (order.marked) {
+                                      <span [ngClass]="coreService.getColor(order.marked.severity, 'text')">/{{order.marked._text | translate}}</span>
+                                    }
+                                    @if (order.state._text === 'PROMPTING' && order.question) {
+                                      <span class="p-l-xs"><i
+                                        [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.question" class="fa fa-info-circle"></i></span>
+                                    }
+                                  </div>
+                                  <ng-template #tooltipTemplate1>
+                                    <div class="p-l-sm">
+                                      <span translate> order.label.state </span>:
+                                      <span [ngClass]="coreService.getColor(order.state.severity, 'text')"
+                                            class="_600"> {{order.state._text |  translate}}</span>
+                                      @if (order.marked) {
+                                        <span [ngClass]="coreService.getColor(order.marked.severity, 'text')"
+                                              class="_600">/{{order.marked._text | translate}}</span>
+                                      }
+                                    </div>
+                                    @if (order.state._reason) {
+                                      <div class="p-l-sm">
+                                        <span translate> common.label.comment </span>:
+                                        <span class="_600"> {{order.state._reason}}</span>
+                                      </div>
+                                    }
+                                    @if (order.question) {
+                                      <div class="p-l-sm">
+                                        <span translate> workflow.label.prompt </span>:
+                                        <span class="_600"> {{order.question}}</span>
+                                      </div>
+                                    }
+                                    @if (order.obstacles && order.obstacles.length > 0) {
+                                      <div class="p-l-sm">
+                                        @for (obstacle of order.obstacles; track obstacle) {
+                                          <div>
+                                            <span translate> {{obstacle.type | translate}} </span>
+                                            @if (obstacle.until) {
+                                              <span class="_600">:&nbsp;{{obstacle.until | stringToDate}}</span>
+                                            }
+                                          </div>
+                                        }
+                                      </div>
+                                    }
+                                    @if (order.lastOutcome) {
+                                      <div class="p-l-sm">
+                                        <span translate> order.label.lastOutcome </span>:
+                                        <span class="_600">{{order.lastOutcome.TYPE}}</span>
+                                      </div>
+                                    }
+                                    @if (!order.cyclicOrder) {
+                                      <div class="p-l-sm">
+                                        <span translate> order.label.scheduledFor </span>:
+                                        @if (!order.scheduledNever) {
+                                          <span class="_600">{{order.scheduledFor | stringToDate}}</span>
+                                        }
+                                        @if (order.scheduledNever) {
+                                          <span class="_600" translate>common.label.never</span>
+                                        }
+                                      </div>
+                                    }
+                                    @if (order.expectedNotices) {
+                                      <div class="p-l-sm">
+                                        <div class="_600 m-b-xxs">{{'order.label.expectedNotices' | translate}} :</div>
+                                        @for (notice of order.expectedNotices; track notice) {
+                                          <div class="p-l-sm">
+                                            {{notice.boardName}}
+                                          </div>
+                                        }
+                                      </div>
+                                    }
+                                    @if (order.cyclicOrder) {
+                                      <div class="m-a-sm m-t-0">
+                                        <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
+                                        <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
+                                        {{order.cyclicOrder.firstStart | stringToDate}}
+                                        <br>
+                                        <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
+                                        {{order.cyclicOrder.lastStart | stringToDate}}
+                                        <br>
+                                        <span class="_600 p-l-sm" translate>order.label.orders</span>:
+                                        {{order.cyclicOrder.count}}
+                                      </div>
+                                    }
+                                    @if (order.cycleState) {
+                                      <div class="m-a-sm m-t-0">
+                                        <div class="_600 m-b-xs" translate>order.cycleState.label.cycleState</div>
+                                        @if (order.cycleState.since) {
+                                          <span>
+                                        <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
+                                            {{order.cycleState.since | stringToDate}}
+                                      </span>
+                                        }
+                                        @if (order.cycleState.next) {
+                                          <span>
+                                        <span class="_600 p-l-sm" translate>order.cycleState.label.next</span>:
+                                            {{order.cycleState.next | stringToDate}}
+                                      </span>
+                                        }
+                                        <br>
+                                        <span class="_600 p-l-sm" translate>order.cycleState.label.index</span>:
+                                        {{order.cycleState.index}}
+                                      </div>
+                                    }
+                                    @if (order.retryState) {
+                                      <div class="m-a-sm m-t-0">
+                                        <div class="_600 m-b-xs" translate>order.retryState.label.retryState</div>
+                                        @if (order.retryState.next) {
+                                          <span>
+                                        <span class="_600 p-l-sm" translate>order.retryState.label.next</span>:
+                                            {{ order.retryState.next | stringToDate }}
+                                      </span>
+                                        }
+                                        <br>
+                                        <span class="_600 p-l-sm" translate>order.retryState.label.attempt</span>:
+                                        {{ order.retryState.attempt }}
+                                      </div>
+                                    }
+                                  </ng-template>
+                                  <div class="text-sm text-left text-muted p-t-xs block-ellipsis" style="width: 100%">
+                                    <span translate>workflow.label.label </span>:
+                                    @if (order.label) {
+                                      <span class="text-black-dk cur-point" [innerHtml]="order.label | highlight : orderFilters.searchText" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.positionString"></span>
+                                    }
+                                    @if (!order.label) {
+                                      <span class="text-black-dk" [innerHtml]="order.positionString | highlight : orderFilters.searchText"></span>
+                                    }
+                                  </div>
+                                  <div class="text-sm text-left text-muted p-t-xs block-ellipsis" style="width: 100%">
+                                    <span translate>order.label.workflow </span>:
+                                    @if (permission.joc && permission.joc.inventory.view) {
+                                      <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');"
+                                         class="cursor fa fa-pencil text-hover-primary text-black-dk p-l-xs p-r-xs"></i>
+                                    }
+                                    <a (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);"
+                                       class="text-hover-primary text-black-dk">
+                                      <span [innerHtml]="order.workflowId.path | highlight : orderFilters.searchText"></span>
+                                    </a>
+                                    @if (workflowTagsPerWorkflow
+                                      ?.[
+                                      getLastPartOfWorkflow(order?.workflowId?.path)
+                                      ]
+                                      ?.length > 0) {
+                                      <span [innerHTML]="
+                                          coreService.getModifiedWorkflowTags(
+                                            workflowTagsPerWorkflow?.[
+                                              getLastPartOfWorkflow(order?.workflowId?.path)
+                                            ] || [],
+                                            orderFilters?.searchText
+                                          )
+                                        "
+                                            class="m-l-sm"
+                                      >
+                                          </span>
+                                    }
+                                  </div>
+                                  <div class="text-sm text-left text-muted p-t-xs">
+                                    <span translate>order.label.scheduledFor </span>:
+                                    @if (!order.scheduledNever) {
+                                      <span class="text-black-dk">{{order.scheduledFor | stringToDate}}</span>
+                                    }
+                                    @if (order.scheduledNever) {
+                                      <span class="text-black-dk" translate>common.label.never</span>
+                                    }
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="box-footer b-t">
+                                <div>
+                                  <a (click)="actionChild.modifyOrder(order);"
+                                     [ngClass]="{'show-block':permission.currentController && permission.currentController.orders.modify, 'disable-link' : (order.state._text !== 'PENDING' && order.state._text !== 'SCHEDULED') || order.positionIsImplicitEnd}"
+                                     class="hide text-left primary-text-hover-color">
+                                    <i class="fa fa-edit p-r-xs text-black-lt"></i>
+                                    <span class="text-black-lt" translate>dailyPlan.button.setStartTime</span>
+                                  </a>
+                                  @if (permission.currentController && permission.currentController.orders.cancel) {
+                                    <a (click)="actionChild.cancelOrder(order);"
+                                       [ngClass]="{'pull-right':permission.currentController.orders.modify, 'disable-link' : order.positionIsImplicitEnd}"
+                                       class="text-right primary-text-hover-color">
+                                      <i class="fa fa-times p-r-xs text-black-lt"></i>
+                                      <span class="text-black-lt" translate>order.button.cancel</span>
+                                    </a>
+                                  }
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        }
                       </div>
-                      <div class="box-body p-t-0 b-t">
-                        <nz-tabset (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="selectedIndex">
-                          <nz-tab [nzTitle]="'history.label.orderHistory' | translate">
-                            <nz-table
-                              #orderHistoryTable
-                              [nzBordered]="true"
-                              [nzData]="history"
-                              [nzFrontPagination]="false"
-                              [nzShowPagination]="false"
-                              [nzSize]="'small'"
-                            >
-                              <thead>
-                              <tr>
-                                <th><span translate>history.label.orderId</span></th>
-                                <th><span translate>workflow.label.label</span></th>
-                                <th><span translate>history.label.status</span></th>
-                                <th><span translate>history.label.plannedTime</span></th>
-                                <th><span translate>history.label.startTime</span></th>
-                                <th><span translate>history.label.endTime</span></th>
-                                <th><span translate>history.label.duration</span></th>
-                              </tr>
-                              </thead>
-                              <tbody>
-                              <ng-template [ngForOf]="orderHistoryTable.data | orderBy: 'startTime':true" let-history ngFor>
-                                <tr (click)="coreService.showLogWindow(history,null, null, history.controllerId, null, null)"
-                                    [ngClass]="{'light-bg':history.show}" class="cursor">
-                                  <td>
-                                <span class="show-in-single-line">
-                                  <i (click)="history.show=!history.show;;$event.stopPropagation()"
-                                     [ngClass]="history.show ? 'fa-caret-up' : 'fa-caret-down'"
-                                     class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
-                                  <span [innerHtml]="coreService.getModifiedOrderId(history)"></span>
-                                </span>
-                                  </td>
-                                  <td>
-                                    <span class="cur-point" *ngIf="history.label" [innerHtml]="history.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="history.position"></span>
-                                    <span *ngIf="!history.label" [innerHtml]="history.position"></span>
-                                  </td>
-                                  <td>
-                                <span [innerHtml]="history.state._text | translate" [ngClass]="coreService.getColor(history.state.severity,'bg')"
+                    </div>
+                  }
+                  @if (object.checked && object.mapOfCheckedId.size > 0 && data.length > (orderFilters.entryPerPage || preferences.entryPerPage)) {
+                    <div class="text-center font14 box p-a-10 m-b-12">
+                      @if (object.mapOfCheckedId.size !== data.length) {
+                        <span [translateParams]="{count: object.mapOfCheckedId.size}"
+                              translate>common.label.selectAllEntriesOfCurrentPage</span>
+                      }
+                      @if (object.mapOfCheckedId.size === data.length) {
+                        <span [translateParams]="{count: data.length}"
+                              translate>common.label.allEntriesSelected</span>
+                      }
+                      @if (object.mapOfCheckedId.size !== data.length) {
+                        <a (click)="selectAll()" [translateParams]="{count: data.length}"
+                           class="text-primary p-l-xs" translate>common.label.selectAllEntries</a>
+                      }
+                      @if (object.mapOfCheckedId.size === data.length) {
+                        <a (click)="resetCheckBox()"
+                           class="text-primary p-l-xs" translate>common.label.clearSelection</a>
+                      }
+                    </div>
+                  }
+                  @if (pageView === 'list') {
+                    <div class="box p-a m-b-0">
+                      <perfect-scrollbar [height]="resizerHeight" [type]="'orderOverview'" appResizable
+                                         class="pos-init resizable" id="orderTableId">
+                        <nz-table
+                          #ajaxTable
+                          (nzPageIndexChange)="pageIndexChange($event)"
+                          (nzPageSizeChange)="pageSizeChange($event)"
+                          [nzBordered]="true"
+                          [nzData]="data"
+                          [nzLoading]="!loading"
+                          [nzPageIndex]="orderFilters.currentPage"
+                          [nzPageSizeOptions]="[10, 25, 50, 100, +(preferences.maxEntryPerPage)]"
+                          [nzPageSize]="orderFilters.entryPerPage || preferences.entryPerPage || 25"
+                          [nzShowPagination]="data.length > 0"
+                          [nzShowSizeChanger]="true"
+                          [nzSize]="'small'"
+                        >
+                          <thead>
+                          <tr>
+                            <th [(nzChecked)]="object.checked"
+                                [nzIndeterminate]="object.indeterminate"
+                                [nzShowCheckbox]="true"
+                                (nzCheckedChange)="checkAll($event)"
+                                class="chk"
+                            ></th>
+                            <th class="menu" rowspan="2"><span translate>common.label.action</span></th>
+                            <th (click)="sort('orderId')">
+                              <a><span class="p-r-xs" translate>order.label.orderId</span>
+                                @if (orderFilters.filter.sortBy == 'orderId' && !orderFilters.reverse) {
+                                  <i class="fa fa-caret-up "></i>
+                                }
+                                @if (orderFilters.filter.sortBy == 'orderId' && orderFilters.reverse) {
+                                  <i class="fa fa-caret-down "></i>
+                                }</a>
+                            </th>
+                            <th (click)="sort('workflowId.path')">
+                              <a><span class="p-r-xs" translate>order.label.workflow</span>
+                                @if (orderFilters.filter.sortBy == 'workflowId.path' && !orderFilters.reverse) {
+                                  <i class="fa fa-caret-up "></i>
+                                }
+                                @if (orderFilters.filter.sortBy == 'workflowId.path' && orderFilters.reverse) {
+                                  <i class="fa fa-caret-down "></i>
+                                }</a>
+                            </th>
+                            <th (click)="sort('label')">
+                              <a><span class="p-r-xs" translate>workflow.label.label</span>
+                                @if (orderFilters.filter.sortBy == 'label' && !orderFilters.reverse) {
+                                  <i class="fa fa-caret-up "></i>
+                                }
+                                @if (orderFilters.filter.sortBy == 'label' && orderFilters.reverse) {
+                                  <i class="fa fa-caret-down "></i>
+                                }</a>
+                            </th>
+                            <th (click)="sort('state._text')">
+                              <a><span class="p-r-xs" translate>order.label.state</span>
+                                @if (orderFilters.filter.sortBy == 'state._text' && !orderFilters.reverse) {
+                                  <i class="fa fa-caret-up "></i>
+                                }
+                                @if (orderFilters.filter.sortBy == 'state._text' && orderFilters.reverse) {
+                                  <i class="fa fa-caret-down "></i>
+                                }</a>
+                            </th>
+                            <th (click)="sort('priority')">
+                              <a><span class="p-r-xs" translate>order.label.priority</span>
+                                @if (orderFilters.filter.sortBy == 'priority' && !orderFilters.reverse) {
+                                  <i class="fa fa-caret-up "></i>
+                                }
+                                @if (orderFilters.filter.sortBy == 'priority' && orderFilters.reverse) {
+                                  <i class="fa fa-caret-down "></i>
+                                }</a>
+                            </th>
+                            <th (click)="sort('scheduledFor')">
+                              <a><span class="p-r-xs" translate>order.label.scheduledFor</span>
+                                @if (orderFilters.filter.sortBy == 'scheduledFor' && !orderFilters.reverse) {
+                                  <i class="fa fa-caret-up "></i>
+                                }
+                                @if (orderFilters.filter.sortBy == 'scheduledFor' && orderFilters.reverse) {
+                                  <i class="fa fa-caret-down "></i>
+                                }</a>
+                            </th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                            @for (order of ajaxTable.data; track order) {
+                              <tr [ngClass]="{'light-bg': (showPanelObj && showPanelObj.orderId == order.orderId)}">
+                                <td [nzChecked]="object.mapOfCheckedId.has(order.orderId)"
+                                    [nzDisabled]="order.positionIsImplicitEnd"
+                                    (nzCheckedChange)="onItemChecked(order, $event)"
+                                    [nzShowCheckbox]="true"></td>
+                                <td>
+                                  <app-order-action (isChanged)="changedHandler($event)" (isDropdownOpen)="dropdownChangedHandler($event)"
+                                                    [isDisabled]="object.checked || object.indeterminate" [order]="order"
+                                                    [permission]="permission"
+                                                    [viewContainerRef]="viewContainerRef"
+                                                    [preferences]="preferences" [schedulerId]="schedulerIds.selected"></app-order-action>
+                                </td>
+                                <td>
+                          <span class="show-in-single-line">
+                            @if (!order.show) {
+                              <i (click)="showPanelFuc(order)"
+                                 class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
+                            }
+                            @if (order.show) {
+                              <i (click)="hidePanelFuc(order)"
+                                 class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
+                            }
+                            <a (click)="showPanelFunc(order)" class="text-dark"> <span
+                              [innerHtml]="coreService.getModifiedOrderId(order, orderFilters.searchText)"></span></a>
+                            @if (order.title) {
+                              <span>-</span>
+                            }
+                            <i class="text-muted">{{order.title}}</i>
+                            @if (order.cyclicOrder) {
+                              <i [nzTooltipPlacement]="'left'" [nzTooltipTitle]="tooltipTemplate"
+                                 aria-hidden="true"
+                                 class="fa fa-repeat p-l-xs" nz-tooltip></i>
+                            }
+                          </span>
+                                  <ng-template #tooltipTemplate>
+                                    @if (order.cyclicOrder) {
+                                      <div class="m-a-sm">
+                                        <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
+                                        <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
+                                        {{order.cyclicOrder.firstStart | stringToDate}}
+                                        <br>
+                                        <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
+                                        {{order.cyclicOrder.lastStart | stringToDate}}
+                                        <br>
+                                        <span class="_600 p-l-sm" translate>order.label.orders</span>:
+                                        {{order.cyclicOrder.count}}
+                                      </div>
+                                    }
+                                  </ng-template>
+                                </td>
+                                <td>
+                          <span class="show-in-single-line">
+                            @if (permission.joc && permission.joc.inventory.view) {
+                              <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');"
+                                 class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+                            }
+                            <a (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);"
+                               class="text-hover-primary">
+                              <span [innerHtml]="order.workflowId.path | highlight : orderFilters.searchText"></span>
+                            </a>
+                            @if (workflowTagsPerWorkflow && order.workflowId) {
+                              <div>
+                                  @if (workflowTagsPerWorkflow[getLastPartOfWorkflow(order.workflowId.path)]?.length > 0) {
+                                    <span [innerHtml]="coreService.getModifiedWorkflowTags(workflowTagsPerWorkflow[getLastPartOfWorkflow(order.workflowId.path)], orderFilters.searchText)"
+                                          class="m-l-sm">
+                                    </span>
+                                  }
+                                </div>
+                            }
+                          </span>
+                                </td>
+                                <td>
+                                  @if (order.label) {
+                                    <span class="cur-point" [innerHtml]="order.label | highlight : orderFilters.searchText" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.positionString"></span>
+                                  }
+                                  @if (!order.label) {
+                                    <span [innerHtml]="order.positionString | highlight : orderFilters.searchText"></span>
+                                  }
+                                </td>
+                                <td (mouseover)="getObstacles(order)" class="combine-two-label" nowrap>
+                                  @if (order.state) {
+                                    <span
+                                      [innerHtml]="order.state._text | translate  | highlight : orderFilters.searchText" [ngClass]="[coreService.getColor(order.state.severity, 'bg'),order.marked ? 'label1' : '']"
+                                      [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="((order.obstacles && order.obstacles.length > 0) || order.state._reason || order.cycleState) ? tooltipTemplate1 : ''"
                                       class="label"></span>
+                                  }
+                                  @if (order.marked) {
+                                    <span [innerHtml]="order.marked._text | translate"
+                                          [ngClass]="coreService.getColor(order.marked.severity, 'bg')"
+                                          class="label label2"></span>
+                                  }
+                                  @if (order.state._text === 'PROMPTING' && order.question) {
+                                    <span class="p-l-xs"><i
+                                      [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.question" class="fa fa-info-circle"></i></span>
+                                  }
+                                  <ng-template #tooltipTemplate1>
+                                    <div class="p-l-sm">
+                                      <span translate> order.label.state </span>:
+                                      <span [ngClass]="coreService.getColor(order.state.severity, 'text')"
+                                            class="_600"> {{order.state._text |  translate}}</span>
+                                      @if (order.marked) {
+                                        <span [ngClass]="coreService.getColor(order.marked.severity, 'text')"
+                                              class="_600">/{{order.marked._text | translate}}</span>
+                                      }
+                                    </div>
+                                    @if (order.state._reason) {
+                                      <div class="p-l-sm">
+                                        <span translate> common.label.comment </span>:
+                                        <span class="_600"> {{order.state._reason}}</span>
+                                      </div>
+                                    }
+                                    @if (order.question) {
+                                      <div class="p-l-sm">
+                                        <span translate> workflow.label.prompt </span>:
+                                        <span class="_600"> {{order.question}}</span>
+                                      </div>
+                                    }
+                                    @if (order.obstacles && order.obstacles.length > 0) {
+                                      <div class="p-l-sm">
+                                        @for (obstacle of order.obstacles; track obstacle) {
+                                          <div>
+                                            <span translate> {{obstacle.type | translate}} </span>
+                                            @if (obstacle.until) {
+                                              <span class="_600">:&nbsp;{{obstacle.until | stringToDate}}</span>
+                                            }
+                                          </div>
+                                        }
+                                      </div>
+                                    }
+                                    @if (order.lastOutcome) {
+                                      <div class="p-l-sm">
+                                        <span translate> order.label.lastOutcome </span>:
+                                        <span class="_600">{{order.lastOutcome.TYPE}}</span>
+                                      </div>
+                                    }
+                                    @if (!order.cyclicOrder) {
+                                      <div class="p-l-sm">
+                                        <span translate> order.label.scheduledFor </span>:
+                                        @if (!order.scheduledNever) {
+                                          <span class="_600">{{order.scheduledFor | stringToDate}}</span>
+                                        }
+                                        @if (order.scheduledNever) {
+                                          <span class="_600" translate>common.label.never</span>
+                                        }
+                                      </div>
+                                    }
+                                    @if (order.expectedNotices) {
+                                      <div class="p-l-sm">
+                                        <div class="_600 m-b-xxs">{{'order.label.expectedNotices' | translate}} :</div>
+                                        @for (notice of order.expectedNotices; track notice) {
+                                          <div class="p-l-sm">
+                                            {{notice.boardName}}
+                                          </div>
+                                        }
+                                      </div>
+                                    }
+                                    @if (order.cyclicOrder) {
+                                      <div class="m-a-sm m-t-0">
+                                        <div class="_600 m-b-xs" translate>dailyPlan.label.cyclicOrder</div>
+                                        <span class="_600 p-l-sm" translate>dailyPlan.label.begin</span>:
+                                        {{order.cyclicOrder.firstStart | stringToDate}}
+                                        <br>
+                                        <span class="_600 p-l-sm" translate>dailyPlan.label.end</span>:
+                                        {{order.cyclicOrder.lastStart | stringToDate}}
+                                        <br>
+                                        <span class="_600 p-l-sm" translate>order.label.orders</span>:
+                                        {{order.cyclicOrder.count}}
+                                      </div>
+                                    }
+                                    @if (order.cycleState) {
+                                      <div class="m-a-sm m-t-0">
+                                        <div class="_600 m-b-xs" translate>order.cycleState.label.cycleState</div>
+                                        @if (order.cycleState.since) {
+                                          <span>
+                                    <span class="_600 p-l-sm" translate>order.cycleState.label.since</span>:
+                                            {{ order.cycleState.since | stringToDate }}
+                                  </span>
+                                        }
+                                        @if (order.cycleState.next) {
+                                          <span>
+                                    <span class="_600 p-l-sm" translate>order.cycleState.label.next</span>:
+                                            {{ order.cycleState.next | stringToDate }}
+                                  </span>
+                                        }
+                                        <br>
+                                        <span class="_600 p-l-sm" translate>order.cycleState.label.index</span>:
+                                        {{ order.cycleState.index }}
+                                      </div>
+                                    }
+                                    @if (order.retryState) {
+                                      <div class="m-a-sm m-t-0">
+                                        <div class="_600 m-b-xs" translate>order.retryState.label.retryState</div>
+                                        @if (order.retryState.next) {
+                                          <span>
+                                    <span class="_600 p-l-sm" translate>order.retryState.label.next</span>:
+                                            {{ order.retryState.next | stringToDate }}
+                                  </span>
+                                        }
+                                        <br>
+                                        <span class="_600 p-l-sm" translate>order.retryState.label.attempt</span>:
+                                        {{ order.retryState.attempt }}
+                                      </div>
+                                    }
+                                    @if (order.sleepState) {
+                                      <div class="m-a-sm m-t-0">
+                                        <div class="_600 m-b-xs" translate>order.sleepState.label.sleepState</div>
+                                        @if (order.sleepState.until) {
+                                          <span>
+                                    <span class="_600 p-l-sm" translate>order.sleepState.label.until</span>:
+                                            {{ order.sleepState.until | stringToDate }}
+                                  </span>
+                                        }
+                                      </div>
+                                    }
+                                  </ng-template>
+                                </td>
+                                @if (order.priority !== null) {
+                                  <td>
+                                    @if (getPriorityLabel(order.priority); as key) {
+                                      {{ key | translate }}
+                                    } @else {
+                                      <ng-template #showRaw></ng-template>
+                                    }
+                                    <ng-template #showRaw>
+                                      {{ order.priority }}
+                                    </ng-template>
                                   </td>
-                                  <td [innerHtml]="history.plannedTime | stringToDate"></td>
-                                  <td [innerHtml]="history.startTime | stringToDate"></td>
-                                  <td [innerHtml]="history.endTime | stringToDate"></td>
-                                  <td [innerHtml]="history.startTime | duration:history.endTime"></td>
-                                </tr>
-                                <tr *ngIf="history.show">
-                                  <td colspan="7">
-                                    <app-order-variable [order]="history" [schedulerId]="schedulerIds.selected"
+                                }
+                                <td>
+                                  @if (!order.scheduledNever) {
+                                    <span>{{order.scheduledFor | stringToDate}}</span>
+                                  }
+                                  @if (order.scheduledNever) {
+                                    <span translate>common.label.never</span>
+                                  }
+                                </td>
+                              </tr>
+                              @if (order.show) {
+                                <tr>
+                                  <td colspan="3"></td>
+                                  <td colspan="6">
+                                    <app-order-variable [order]="order" [schedulerId]="schedulerIds.selected"
                                                         [type]="'arguments'"></app-order-variable>
                                   </td>
                                 </tr>
-                              </ng-template>
-                              </tbody>
-                            </nz-table>
-                          </nz-tab>
-                          <nz-tab *ngIf="(permission.joc && permission.joc.auditLog.view)"
-                                  [nzTitle]="'auditLog.label.auditLog' | translate">
-                            <nz-table
-                              #auditTable
-                              [nzBordered]="true"
-                              [nzData]="auditLogs"
-                              [nzFrontPagination]="false"
-                              [nzLoading]="showPanelObj.loading"
-                              [nzShowPagination]="false"
-                              [nzSize]="'small'"
-                            >
-                              <thead>
-                              <tr>
-                                <th><span translate>auditLog.label.created</span></th>
-                                <th><span translate>auditLog.label.account</span></th>
-                                <th><span translate>auditLog.label.request</span></th>
-                                <th><span translate>auditLog.label.category</span></th>
-                                <th><span translate>auditLog.label.comment</span></th>
-                                <th><span translate>auditLog.label.timeSpend</span></th>
-                                <th><span translate>auditLog.label.ticketLink</span></th>
-                              </tr>
-                              </thead>
-                              <tbody>
-                              <ng-template [ngForOf]="auditTable.data | orderBy: 'created':true" let-auditLog ngFor>
-                                <tr>
-                                  <td>
-                                    <i (click)="auditLog.show =true" *ngIf="!auditLog.show"
-                                       class="cursor fa fa-caret-down fa-lg"></i>
-                                    <i (click)="auditLog.show =false"
-                                       *ngIf="auditLog.show" class="cursor fa fa-caret-up fa-lg"></i>
-                                    &nbsp;
-                                    <span [innerHtml]="auditLog.created | stringToDate"></span>
-                                  </td>
-                                  <td><span [innerHtml]="auditLog.account"></span></td>
-                                  <td><span [innerHtml]="auditLog.request"></span></td>
-                                  <td><span [innerHtml]="auditLog.category"></span></td>
-                                  <td><span [innerHtml]="auditLog.comment"></span></td>
-                                  <td>
-                                <span *ngIf="auditLog.timeSpent">
-                                  <span [innerHtml]="auditLog.timeSpent"></span><span>m</span>
-                                </span>
-                                  </td>
-                                  <td>
-                                    <a [innerHtml]="auditLog.ticketLink" class="text-hover-primary" href="{{auditLog.ticketLink}}"
-                                       target="_blank"></a>
-                                  </td>
-                                </tr>
-                                <tr *ngIf="auditLog.show">
-                                  <td></td>
-                                  <td colspan="6">
-                                    <div class="m-a-0">
-                                      <span translate>auditLog.label.requestBody</span>
-                                      :
-                                      <span [innerHtml]="auditLog.parameters"></span>
-                                    </div>
-                                  </td>
-                                </tr>
-                              </ng-template>
-                              </tbody>
-                            </nz-table>
-                          </nz-tab>
-                        </nz-tabset>
+                              }
+                            }
+                          </tbody>
+                        </nz-table>
+                        @if (ajaxTable.data.length >0) {
+                          <div class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
+                            @if (ajaxTable.data.length >1) {
+                              <span translate>order.label.ordersFound</span>
+                            }
+                            @if (ajaxTable.data.length ==1) {
+                              <span translate>order.label.orderFound</span>
+                            }
+                          </div>
+                        }
+                      </perfect-scrollbar>
+                      <div class="rg-bottom"><span></span></div>
+                    </div>
+                  }
+                  @if (pageView=='grid' && loading && data.length==0) {
+                    <div class="text-center m-t h6">
+                      <app-empty-data></app-empty-data>
+                    </div>
+                  }
+                  @if (showPanelObj) {
+                    <div [ngClass]="{'show': pageView==='list'}" class="row m-t hide">
+                      <div class="col-md-12">
+                        <div class="box white">
+                          <div class="box-header">
+                      <span class="text">{{showPanelObj.workflowId.path}}: {{showPanelObj.orderId}} @if (showPanelObj.title) {
+                        <i>-</i>
+                      } <i
+                        class="text-sm text-muted">{{showPanelObj.title}}</i></span>
+                          </div>
+                          <div class="box-tool">
+                            <ul class="nav text-muted text-md">
+                              <li class="nav-item inline m-l-sm">
+                                <a (click)="hideAuditPanel()"><i class="fa fa-times"></i></a>
+                              </li>
+                            </ul>
+                          </div>
+                          <div class="box-body p-t-0 b-t">
+                            <nz-tabset (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="selectedIndex">
+                              <nz-tab [nzTitle]="'history.label.orderHistory' | translate">
+                                <nz-table
+                                  #orderHistoryTable
+                                  [nzBordered]="true"
+                                  [nzData]="history"
+                                  [nzFrontPagination]="false"
+                                  [nzShowPagination]="false"
+                                  [nzSize]="'small'"
+                                >
+                                  <thead>
+                                  <tr>
+                                    <th><span translate>history.label.orderId</span></th>
+                                    <th><span translate>workflow.label.label</span></th>
+                                    <th><span translate>history.label.status</span></th>
+                                    <th><span translate>history.label.plannedTime</span></th>
+                                    <th><span translate>history.label.startTime</span></th>
+                                    <th><span translate>history.label.endTime</span></th>
+                                    <th><span translate>history.label.duration</span></th>
+                                  </tr>
+                                  </thead>
+                                  <tbody>
+                                    @for (history of orderHistoryTable.data | orderBy: 'startTime':true; track history) {
+                                      <tr (click)="coreService.showLogWindow(history,null, null, history.controllerId, null, null)"
+                                          [ngClass]="{'light-bg':history.show}" class="cursor">
+                                        <td>
+                                    <span class="show-in-single-line">
+                                      <i (click)="history.show=!history.show;;$event.stopPropagation()"
+                                         [ngClass]="history.show ? 'fa-caret-up' : 'fa-caret-down'"
+                                         class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
+                                      <span [innerHtml]="coreService.getModifiedOrderId(history)"></span>
+                                    </span>
+                                        </td>
+                                        <td>
+                                          @if (history.label) {
+                                            <span class="cur-point" [innerHtml]="history.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="history.position"></span>
+                                          }
+                                          @if (!history.label) {
+                                            <span [innerHtml]="history.position"></span>
+                                          }
+                                        </td>
+                                        <td>
+                                    <span [innerHtml]="history.state._text | translate" [ngClass]="coreService.getColor(history.state.severity,'bg')"
+                                          class="label"></span>
+                                        </td>
+                                        <td [innerHtml]="history.plannedTime | stringToDate"></td>
+                                        <td [innerHtml]="history.startTime | stringToDate"></td>
+                                        <td [innerHtml]="history.endTime | stringToDate"></td>
+                                        <td [innerHtml]="history.startTime | duration:history.endTime"></td>
+                                      </tr>
+                                      @if (history.show) {
+                                        <tr>
+                                          <td colspan="7">
+                                            <app-order-variable [order]="history" [schedulerId]="schedulerIds.selected"
+                                                                [type]="'arguments'"></app-order-variable>
+                                          </td>
+                                        </tr>
+                                      }
+                                    }
+                                  </tbody>
+                                </nz-table>
+                              </nz-tab>
+                              @if ((permission.joc && permission.joc.auditLog.view)) {
+                                <nz-tab [nzTitle]="'auditLog.label.auditLog' | translate">
+                                  <nz-table
+                                    #auditTable
+                                    [nzBordered]="true"
+                                    [nzData]="auditLogs"
+                                    [nzFrontPagination]="false"
+                                    [nzLoading]="showPanelObj.loading"
+                                    [nzShowPagination]="false"
+                                    [nzSize]="'small'"
+                                  >
+                                    <thead>
+                                    <tr>
+                                      <th><span translate>auditLog.label.created</span></th>
+                                      <th><span translate>auditLog.label.account</span></th>
+                                      <th><span translate>auditLog.label.request</span></th>
+                                      <th><span translate>auditLog.label.category</span></th>
+                                      <th><span translate>auditLog.label.comment</span></th>
+                                      <th><span translate>auditLog.label.timeSpend</span></th>
+                                      <th><span translate>auditLog.label.ticketLink</span></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                      @for (auditLog of auditTable.data | orderBy: 'created':true; track auditLog) {
+                                        <tr>
+                                          <td>
+                                            @if (!auditLog.show) {
+                                              <i (click)="auditLog.show =true"
+                                                 class="cursor fa fa-caret-down fa-lg"></i>
+                                            }
+                                            @if (auditLog.show) {
+                                              <i (click)="auditLog.show =false"
+                                                 class="cursor fa fa-caret-up fa-lg"></i>
+                                            }
+                                            &nbsp;
+                                            <span [innerHtml]="auditLog.created | stringToDate"></span>
+                                          </td>
+                                          <td><span [innerHtml]="auditLog.account"></span></td>
+                                          <td><span [innerHtml]="auditLog.request"></span></td>
+                                          <td><span [innerHtml]="auditLog.category"></span></td>
+                                          <td><span [innerHtml]="auditLog.comment"></span></td>
+                                          <td>
+                                            @if (auditLog.timeSpent) {
+                                              <span>
+                                        <span [innerHtml]="auditLog.timeSpent"></span><span>m</span>
+                                      </span>
+                                            }
+                                          </td>
+                                          <td>
+                                            <a [innerHtml]="auditLog.ticketLink" class="text-hover-primary" href="{{auditLog.ticketLink}}"
+                                               target="_blank"></a>
+                                          </td>
+                                        </tr>
+                                        @if (auditLog.show) {
+                                          <tr>
+                                            <td></td>
+                                            <td colspan="6">
+                                              <div class="m-a-0">
+                                                <span translate>auditLog.label.requestBody</span>
+                                                :
+                                                <span [innerHtml]="auditLog.parameters"></span>
+                                              </div>
+                                            </td>
+                                          </tr>
+                                        }
+                                      }
+                                    </tbody>
+                                  </nz-table>
+                                </nz-tab>
+                              }
+                            </nz-tabset>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  }
                 </div>
               </div>
             </div>
           </div>
-
-        </div>
+        }
       </div>
     </div>
   </div>
 </div>
 
-<div *ngIf="!loading && pageView !== 'list'" class="spinner">
-  <div class="cssload-inner cssload-one"></div>
-  <div class="cssload-inner cssload-two"></div>
-  <div class="cssload-inner cssload-three"></div>
-</div>
-<div *ngIf="!loading || reloadState == 'yes'">
-  <div (click)="reload()" class="bottom-btn">
-    <i *ngIf="reloadState == 'no'" class="fa fa-times"></i>
-    <i *ngIf="reloadState == 'yes'" class="fa fa-refresh"></i>
+@if (!loading && pageView !== 'list') {
+  <div class="spinner">
+    <div class="cssload-inner cssload-one"></div>
+    <div class="cssload-inner cssload-two"></div>
+    <div class="cssload-inner cssload-three"></div>
   </div>
-</div>
+}
+@if (!loading || reloadState == 'yes') {
+  <div (click)="reload()" class="bottom-btn">
+    @if (reloadState == 'no') {
+      <i class="fa fa-times"></i>
+    }
+    @if (reloadState == 'yes') {
+      <i class="fa fa-refresh"></i>
+    }
+  </div>
+}

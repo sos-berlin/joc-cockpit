@@ -1,8 +1,12 @@
 <div class="box-shadow-on-modal">
   <div class="modal-header">
     <h4 class="modal-title">
-      <span *ngIf="isNew" translate>workflow.repeat.label.addRepeat</span>
-      <span *ngIf="!isNew" translate>workflow.repeat.label.editRepeat</span>
+      @if (isNew) {
+        <span translate>workflow.repeat.label.addRepeat</span>
+      }
+      @if (!isNew) {
+        <span translate>workflow.repeat.label.editRepeat</span>
+      }
     </h4>
     <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
       <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -26,89 +30,115 @@
                 </nz-select>
               </div>
             </div>
-            <div *ngIf="object.TYPE === 'Periodic'" class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.period' | translate) : ''"
-                     class="col-sm-3 form-control-label"
-                     translate>workflow.repeat.label.period
-                <sup class="text-danger text-sm">*</sup>
-              </label>
-              <div [ngClass]="{ 'has-error' : (((period.dirty || period.touched) && period.invalid))}" class="col-sm-6">
-                <input #period="ngModel" [(ngModel)]="object.period" [appAutofocus]="true" appValidateDurationChange (blur)="onBlur(period,'period')" class="form-control"
-                       name="period" placeholder="{{'workflow.placeholder.durationPeriod' | translate}}"
-                       required type="text">
-                <div *ngIf="period.invalid && (period.dirty || period.touched)" class="text-danger help-block">
-                  <div *ngIf="period.errors.required">
-                    <div translate>common.message.requiredError</div>
-                  </div>
-                  <div *ngIf="period.errors.invalidDuration" translate>common.message.invalid</div>
+            @if (object.TYPE === 'Periodic') {
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.period' | translate) : ''"
+                       class="col-sm-3 form-control-label"
+                       translate>workflow.repeat.label.period
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
+                <div [ngClass]="{ 'has-error' : (((period.dirty || period.touched) && period.invalid))}" class="col-sm-6">
+                  <input #period="ngModel" [(ngModel)]="object.period" [appAutofocus]="true" appValidateDurationChange (blur)="onBlur(period,'period')" class="form-control"
+                         name="period" placeholder="{{'workflow.placeholder.durationPeriod' | translate}}"
+                         required type="text">
+                  @if (period.invalid && (period.dirty || period.touched)) {
+                    <div class="text-danger help-block">
+                      @if (period.errors.required) {
+                        <div translate>common.message.requiredError</div>
+                      }
+                      @if (period.errors.invalidDuration) {
+                        <div translate>common.message.invalid</div>
+                      }
+                    </div>
+                  }
                 </div>
               </div>
-            </div>
-            <div *ngIf="object.TYPE === 'Periodic'" class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.offsets' | translate) : ''"
-                     class="col-sm-3 form-control-label"
-                     translate>workflow.repeat.label.offsets
-                <sup class="text-danger text-sm">*</sup>
-              </label>
-              <div [ngClass]="{ 'has-error' : (((offsets.dirty || offsets.touched) && offsets.invalid))}"
-                   class="col-sm-6">
-                <input #offsets="ngModel" [(ngModel)]="object.offsets" appValidateOffset class="form-control"
-                       name="offsets" placeholder="{{'workflow.placeholder.offset' | translate}}"
-                       required type="text">
-                <div *ngIf="offsets.invalid && (offsets.dirty || offsets.touched)" class="text-danger help-block">
-                  <div *ngIf="offsets.errors.required">
-                    <div translate>common.message.requiredError</div>
-                  </div>
-                  <div *ngIf="offsets.errors.invalidOffset" translate>common.message.invalid</div>
+            }
+            @if (object.TYPE === 'Periodic') {
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.offsets' | translate) : ''"
+                       class="col-sm-3 form-control-label"
+                       translate>workflow.repeat.label.offsets
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
+                <div [ngClass]="{ 'has-error' : (((offsets.dirty || offsets.touched) && offsets.invalid))}"
+                     class="col-sm-6">
+                  <input #offsets="ngModel" [(ngModel)]="object.offsets" appValidateOffset class="form-control"
+                         name="offsets" placeholder="{{'workflow.placeholder.offset' | translate}}"
+                         required type="text">
+                  @if (offsets.invalid && (offsets.dirty || offsets.touched)) {
+                    <div class="text-danger help-block">
+                      @if (offsets.errors.required) {
+                        <div translate>common.message.requiredError</div>
+                      }
+                      @if (offsets.errors.invalidOffset) {
+                        <div translate>common.message.invalid</div>
+                      }
+                    </div>
+                  }
                 </div>
               </div>
-            </div>
-            <div *ngIf="object.TYPE === 'Continuous'" class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.pause' | translate) : ''"
-                     class="col-sm-3 form-control-label"
-                     translate>workflow.repeat.label.pause
-                <sup class="text-danger text-sm">*</sup>
-              </label>
-              <div [ngClass]="{ 'has-error' : (((pause.dirty || pause.touched) && pause.invalid))}" class="col-sm-6">
-                <input #pause="ngModel" [(ngModel)]="object.pause" appValidateDurationChange (blur)="onBlur(pause,'pause')" class="form-control"
-                       name="pause" placeholder="{{'workflow.placeholder.durationPeriod' | translate}}"
-                       required type="text">
-                <div *ngIf="pause.invalid && (pause.dirty || pause.touched)" class="text-danger help-block">
-                  <div *ngIf="pause.errors.required">
-                    <div translate>common.message.requiredError</div>
-                  </div>
-                  <div *ngIf="pause.errors.invalidDuration" translate>common.message.invalid</div>
+            }
+            @if (object.TYPE === 'Continuous') {
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.pause' | translate) : ''"
+                       class="col-sm-3 form-control-label"
+                       translate>workflow.repeat.label.pause
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
+                <div [ngClass]="{ 'has-error' : (((pause.dirty || pause.touched) && pause.invalid))}" class="col-sm-6">
+                  <input #pause="ngModel" [(ngModel)]="object.pause" appValidateDurationChange (blur)="onBlur(pause,'pause')" class="form-control"
+                         name="pause" placeholder="{{'workflow.placeholder.durationPeriod' | translate}}"
+                         required type="text">
+                  @if (pause.invalid && (pause.dirty || pause.touched)) {
+                    <div class="text-danger help-block">
+                      @if (pause.errors.required) {
+                        <div translate>common.message.requiredError</div>
+                      }
+                      @if (pause.errors.invalidDuration) {
+                        <div translate>common.message.invalid</div>
+                      }
+                    </div>
+                  }
                 </div>
               </div>
-            </div>
-            <div *ngIf="object.TYPE === 'Continuous'" class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.limit' | translate) : ''"
-                     class="col-sm-3 form-control-label"
-                     translate>workflow.repeat.label.limit</label>
-              <div class="col-sm-6">
-                <nz-input-number [(ngModel)]="object.limit" [nzMin]="1" [nzStep]="1"
-                                 name="limit"></nz-input-number>
-              </div>
-            </div>
-            <div *ngIf="object.TYPE === 'Ticking'" class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.interval' | translate) : ''"
-                     class="col-sm-3 form-control-label"
-                     translate>workflow.repeat.label.interval
-                <sup class="text-danger text-sm">*</sup>
-              </label>
-              <div [ngClass]="{ 'has-error' : (((interval.dirty || interval.touched) && interval.invalid))}"
-                   class="col-sm-6">
-                <input #interval="ngModel" [(ngModel)]="object.interval" appValidateDurationChange (blur)="onBlur(interval,'interval')" class="form-control"
-                       name="interval" placeholder="{{'workflow.placeholder.durationPeriod' | translate}}"
-                       required type="text">
-                <div *ngIf="interval.invalid && (interval.dirty || interval.touched)" class="text-danger help-block">
-                  <div *ngIf="interval.errors.required">
-                    <div translate>common.message.requiredError</div>
-                  </div>
-                  <div *ngIf="interval.errors.invalidDuration" translate>common.message.invalid</div>
+            }
+            @if (object.TYPE === 'Continuous') {
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.limit' | translate) : ''"
+                       class="col-sm-3 form-control-label"
+                       translate>workflow.repeat.label.limit</label>
+                <div class="col-sm-6">
+                  <nz-input-number [(ngModel)]="object.limit" [nzMin]="1" [nzStep]="1"
+                                   name="limit"></nz-input-number>
                 </div>
               </div>
-            </div>
+            }
+            @if (object.TYPE === 'Ticking') {
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.admissionTime.interval' | translate) : ''"
+                       class="col-sm-3 form-control-label"
+                       translate>workflow.repeat.label.interval
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
+                <div [ngClass]="{ 'has-error' : (((interval.dirty || interval.touched) && interval.invalid))}"
+                     class="col-sm-6">
+                  <input #interval="ngModel" [(ngModel)]="object.interval" appValidateDurationChange (blur)="onBlur(interval,'interval')" class="form-control"
+                         name="interval" placeholder="{{'workflow.placeholder.durationPeriod' | translate}}"
+                         required type="text">
+                  @if (interval.invalid && (interval.dirty || interval.touched)) {
+                    <div class="text-danger help-block">
+                      @if (interval.errors.required) {
+                        <div translate>common.message.requiredError</div>
+                      }
+                      @if (interval.errors.invalidDuration) {
+                        <div translate>common.message.invalid</div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            }
           </div>
           <div>
             <button [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" type="submit">

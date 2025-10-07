@@ -1,8 +1,12 @@
 <ng-template #contentTemplate>
   <div class="row">
     <div class="col-md-12 m-b-12 text-md">
-      <b *ngIf="!isFavorite" class="text" translate>favorite.button.addFavorite</b>
-      <b *ngIf="isFavorite" class="text" translate>favorite.button.editFavorite</b>
+      @if (!isFavorite) {
+        <b class="text" translate>favorite.button.addFavorite</b>
+      }
+      @if (isFavorite) {
+        <b class="text" translate>favorite.button.editFavorite</b>
+      }
       <i (click)="isVisible = false" aria-hidden="true"
          class="fa fa-times-circle pos-abt cursor r-12 m-t-n-1 text-20"></i>
     </div>
@@ -11,29 +15,39 @@
       <input #favorite="ngModel" (blur)="checkName()" [(ngModel)]="obj.name" [appAutofocus]="true" class="form-control"
              maxlength="255" name="favorite" placeholder="{{'common.placeholder.name' | translate}}" required
              type="text">
-      <div *ngIf="!unique" class="help-block text-danger">
-        <div translate>common.message.uniqueError</div>
-      </div>
+      @if (!unique) {
+        <div class="help-block text-danger">
+          <div translate>common.message.uniqueError</div>
+        </div>
+      }
     </div>
     <div class="col-md-12">
       <button (click)="addFavorite()" [disabled]="!obj.name || !unique" class="btn btn-primary btn-sm" translate
               type="button">common.button.done
       </button>
-      <button (click)="removeFavorite()" *ngIf="isFavorite" class="btn btn-danger btn-sm m-l-12" translate
-              type="button">common.button.remove
-      </button>
+      @if (isFavorite) {
+        <button (click)="removeFavorite()" class="btn btn-danger btn-sm m-l-12" translate
+                type="button">common.button.remove
+        </button>
+      }
     </div>
   </div>
 </ng-template>
-<i (click)="isVisible = true" *ngIf="data[type] && data[type].length > 1" [ngClass]="{'text-primary': isFavorite}"
-   [nzPopoverBackdrop]="true" [nzPopoverContent]="contentTemplate" [nzPopoverTrigger]="null"
-   [nzPopoverVisible]="isVisible"
-   [nzTheme]="isFavorite ? 'fill' : 'outline'" class="pos-abt r-18 t-sm cursor text-16 primary-text-hover-color z-index"
-   nz-icon nz-popover nzPopoverPlacement="topRight" nzType="star"></i>
-<div *ngIf="list.length > 0" class="text-right">
-  <a (click)="showList()" class="primary-text-hover-color text-u-l p-t-xxs cursor" translate>favorite.button.addFromFavorite</a>
-</div>
+@if (data[type] && data[type].length > 1) {
+  <i (click)="isVisible = true" [ngClass]="{'text-primary': isFavorite}"
+     [nzPopoverBackdrop]="true" [nzPopoverContent]="contentTemplate" [nzPopoverTrigger]="null"
+     [nzPopoverVisible]="isVisible"
+     [nzTheme]="isFavorite ? 'fill' : 'outline'" class="pos-abt r-18 t-sm cursor text-16 primary-text-hover-color z-index"
+     nz-icon nz-popover nzPopoverPlacement="topRight" nzType="star"></i>
+}
+@if (list.length > 0) {
+  <div class="text-right">
+    <a (click)="showList()" class="primary-text-hover-color text-u-l p-t-xxs cursor" translate>favorite.button.addFromFavorite</a>
+  </div>
+}
 <nz-select #myinput nzShowSearch class="fav-list-search-box" [(ngModel)]="obj.selected" (ngModelChange)="onChangeValue($event)"
            [nzPlaceHolder]="'common.placeholder.search' | translate">
-  <nz-option *ngFor="let item of list | orderBy: 'ordering'" [nzValue]="item.name" [nzLabel]="item.name"></nz-option>
+  @for (item of list | orderBy: 'ordering'; track item.name) {
+    <nz-option [nzValue]="item.name" [nzLabel]="item.name"></nz-option>
+  }
 </nz-select>

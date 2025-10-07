@@ -1,122 +1,141 @@
 <ng-template #listVariableTemplate let-listVariables let-k="k">
-    <div>
-      <!-- Toggle -->
-      <div class="m-b-sm cursor" (click)="toggleCollapse(k, selectedOrderIndex)">
-        <i nz-icon [nzType]="isCollapsed[selectedOrderIndex][k] ? 'right' : 'down'"
-           nzTheme="outline"></i>
-        {{'order.label.variableList' | translate}}: <b>{{listVariables.name}}</b>
-      </div>
+  <div>
+    <!-- Toggle -->
+    <div class="m-b-sm cursor" (click)="toggleCollapse(k, selectedOrderIndex)">
+      <i nz-icon [nzType]="isCollapsed[selectedOrderIndex][k] ? 'right' : 'down'"
+         nzTheme="outline"></i>
+      {{'order.label.variableList' | translate}}: <b>{{listVariables.name}}</b>
+    </div>
 
-      <!-- Conditional Content based on Toggle State -->
-      <div *ngIf="!isCollapsed[selectedOrderIndex][k]" class="p-a-sm b-a m-b">
+    <!-- Conditional Content based on Toggle State -->
+    @if (!isCollapsed[selectedOrderIndex][k]) {
+      <div class="p-a-sm b-a m-b">
         <div class="form-group row m-b-0 m-l-12">
           <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
           <div class="col-md-4 col-lg-8 m-b-sm" translate>common.label.value</div>
         </div>
-        <div *ngFor="let actualListArr of listVariables.actualList; let i=index"
-             [ngClass]="{'b-b-dark m-b-sm': i !== listVariables.actualList.length - 1}"
-             class="form-group row m-b-0 m-l-12">
-          <div (click)="addVariableToList(listVariables)"
-               *ngIf="listVariables.actualList && (i === listVariables.actualList.length - 1)"
-               class="pos-abt" style="margin-left: -13px;font-size: 16px;margin-top: 4px;cursor: pointer">
-            <i aria-hidden="true" class="fa fa-plus"></i>
-          </div>
-          <div *ngFor="let argument of actualListArr.list; let j=index" class="col-md-12">
-            <div class="form-group row m-b-0">
-              <div class="col-sm-4 m-b-sm">
-                <input [(ngModel)]="argument.name" class="form-control" name="_name{{i}}{{j}}{{k}}" readonly
-                       type="text">
+        @for (actualListArr of listVariables.actualList; track actualListArr; let i = $index) {
+          <div [ngClass]="{'b-b-dark m-b-sm': i !== listVariables.actualList.length - 1}"
+               class="form-group row m-b-0 m-l-12">
+            @if (listVariables.actualList && (i === listVariables.actualList.length - 1)) {
+              <div (click)="addVariableToList(listVariables)"
+                   class="pos-abt" style="margin-left: -13px;font-size: 16px;margin-top: 4px;cursor: pointer">
+                <i aria-hidden="true" class="fa fa-plus"></i>
               </div>
-              <ng-container [ngSwitch]="argument.type">
-                <ng-container *ngSwitchCase="'Number'">
-                  <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-                       class="col-md-6 col-lg-6 m-b-sm">
-                    <nz-input-number #value="ngModel" [(ngModel)]="argument.value"
-                                     [nzStep]="1" [required]="argument.isRequired || argument.value" name="_value{{i}}{{j}}{{k}}"
-                                     nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
-                    <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                         class="text-danger help-block">
-                      <div *ngIf="value.errors['required']">
-                        <div translate>common.message.requiredError</div>
-                      </div>
-                    </div>
-                  </div>
-                </ng-container>
-                <ng-container *ngSwitchCase="'Boolean'">
-                  <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-                       class="col-md-6 col-lg-6 m-b-sm">
-                    <nz-select #value="ngModel" [(ngModel)]="argument.value"
-                               [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [required]="argument.isRequired || argument.value" name="_value{{i}}{{j}}{{k}}"
-                               nzAllowClear>
-                      <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-                      <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-                    </nz-select>
-                    <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                         class="text-danger help-block">
-                      <div *ngIf="value.errors['required']">
-                        <div translate>common.message.requiredError</div>
-                      </div>
-                    </div>
-                  </div>
-                </ng-container>
-                <ng-container *ngSwitchDefault>
-                  <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-                       class="col-md-6 col-lg-6 m-b-sm">
-                    <input #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired || argument.value" autocomplete="off" class="form-control"
-                           name="_value{{i}}{{j}}{{k}}" placeholder="{{'common.placeholder.value' | translate}}"
+            }
+            @for (argument of actualListArr.list; track argument; let j = $index) {
+              <div class="col-md-12">
+                <div class="form-group row m-b-0">
+                  <div class="col-sm-4 m-b-sm">
+                    <input [(ngModel)]="argument.name" class="form-control" name="_name{{i}}{{j}}{{k}}" readonly
                            type="text">
-                    <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
-                       style="right: 13px;top:1px;" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
-                    <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                         class="text-danger help-block">
-                      <div *ngIf="value.errors['required']">
-                        <div translate>common.message.requiredError</div>
-                      </div>
-                    </div>
-                    <div class="pos-abt r-t-n-28 add-order-encrypt">
-                      <a *ngIf="argument.name && argument.type === 'String'"><i (click)="encryptValue(argument, 'job')" class="m-t-sm text-hover-color"
-                        nz-icon nzType="property-safety" nzTheme="outline"></i></a>
-                    </div>
                   </div>
-                </ng-container>
-              </ng-container>
-              <div *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && j === actualListArr.list.length - 1"
-                   class="col-md-1 p-l-0">
-                <a><i (click)="removeVariableFromList(i, listVariables.actualList)"
-                      class="fa fa-times m-t-sm text-muted"></i></a>
+                  @switch (argument.type) {
+                    @case ('Number') {
+                      <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                           class="col-md-6 col-lg-6 m-b-sm">
+                        <nz-input-number #value="ngModel" [(ngModel)]="argument.value"
+                                         [nzStep]="1" [required]="argument.isRequired || argument.value" name="_value{{i}}{{j}}{{k}}"
+                                         nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
+                        @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                          <div class="text-danger help-block">
+                            @if (value.errors['required']) {
+                              <div translate>common.message.requiredError</div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    }
+                    @case ('Boolean') {
+                      <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                           class="col-md-6 col-lg-6 m-b-sm">
+                        <nz-select #value="ngModel" [(ngModel)]="argument.value"
+                                   [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [required]="argument.isRequired || argument.value" name="_value{{i}}{{j}}{{k}}"
+                                   nzAllowClear>
+                          <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                          <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+                        </nz-select>
+                        @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                          <div class="text-danger help-block">
+                            @if (value.errors['required']) {
+                              <div translate>common.message.requiredError</div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    }
+                    @default {
+                      <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                           class="col-md-6 col-lg-6 m-b-sm">
+                        <input #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired || argument.value" autocomplete="off" class="form-control"
+                               name="_value{{i}}{{j}}{{k}}" placeholder="{{'common.placeholder.value' | translate}}"
+                               type="text">
+                        <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
+                           style="right: 13px;top:1px;" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
+                        @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                          <div class="text-danger help-block">
+                            @if (value.errors['required']) {
+                              <div translate>common.message.requiredError</div>
+                            }
+                          </div>
+                        }
+                        <div class="pos-abt r-t-n-28 add-order-encrypt">
+                          @if (argument.name && argument.type === 'String') {
+                            <a><i (click)="encryptValue(argument, 'job')" class="m-t-sm text-hover-color"
+                                  nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                          }
+                        </div>
+                      </div>
+                    }
+                  }
+                  @if (listVariables.actualList && listVariables.actualList.length > 1 && j === actualListArr.list.length - 1) {
+                    <div class="col-md-1 p-l-0">
+                      <a><i (click)="removeVariableFromList(i, listVariables.actualList)"
+                            class="fa fa-times m-t-sm text-muted"></i></a>
+                    </div>
+                  }
+                </div>
               </div>
+            }
+            <div class="col-md-12">
+              <div class="form-group row">
+                <div class="col-sm-12">
+                  <a (click)="assignParameterizationFromSchedules(true)" class="text-u-l" translate>order.button.assignFromSchedule</a>
+                </div>
+              </div>
+              @if (schedules && schedules.length > 0 && isAssignedFromSchedule) {
+                <div class="form-group row">
+                  <div class="col-sm-4 form-control-label" translate>order.label.selectSchedule</div>
+                  <div class="col-sm-6">
+                    <nz-select [(ngModel)]="actualListArr.name" name="schedule_{{i}}" nzAllowClear
+                               (ngModelChange)="selectVarFromSchedule($event, actualListArr, listVariables, i, selectedOrderIndex)" nzShowSearch>
+                      @for (option of schedules | orderBy: 'name'; track option) {
+                        <nz-option [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
+                      }
+                    </nz-select>
+                  </div>
+                </div>
+              }
+              @if (actualListArr.orderParameterisations && actualListArr.orderParameterisations.length > 1) {
+                <div class="form-group row">
+                  <div class="col-sm-4 form-control-label" translate>order.label.selectOrder</div>
+                  <div class="col-sm-6">
+                    <nz-select [(ngModel)]="actualListArr.orderName" name="order{{i}}" nzAllowClear
+                               nzShowSearch (ngModelChange)="selectOrder($event, actualListArr, listVariables, i, selectedOrderIndex)" >
+                      @for (option of actualListArr.orderParameterisations; track option) {
+                        <nz-option [nzLabel]="option.orderName || '-'"
+                                   [nzValue]="option.orderName || '-'"></nz-option>
+                      }
+                    </nz-select>
+                  </div>
+                </div>
+              }
             </div>
           </div>
-          <div class="col-md-12">
-            <div class="form-group row">
-              <div class="col-sm-12">
-                <a (click)="assignParameterizationFromSchedules(true)" class="text-u-l" translate>order.button.assignFromSchedule</a>
-              </div>
-            </div>
-            <div *ngIf="schedules && schedules.length > 0 && isAssignedFromSchedule" class="form-group row">
-              <div class="col-sm-4 form-control-label" translate>order.label.selectSchedule</div>
-              <div class="col-sm-6">
-                <nz-select [(ngModel)]="actualListArr.name" name="schedule_{{i}}" nzAllowClear
-                           (ngModelChange)="selectVarFromSchedule($event, actualListArr, listVariables, i, selectedOrderIndex)" nzShowSearch>
-                  <nz-option *ngFor="let option of schedules | orderBy: 'name'" [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
-                </nz-select>
-              </div>
-            </div>
-            <div *ngIf="actualListArr.orderParameterisations && actualListArr.orderParameterisations.length > 1"
-                 class="form-group row">
-              <div class="col-sm-4 form-control-label" translate>order.label.selectOrder</div>
-              <div class="col-sm-6">
-                <nz-select [(ngModel)]="actualListArr.orderName" name="order{{i}}" nzAllowClear
-                           nzShowSearch (ngModelChange)="selectOrder($event, actualListArr, listVariables, i, selectedOrderIndex)" >
-                  <nz-option *ngFor="let option of actualListArr.orderParameterisations" [nzLabel]="option.orderName || '-'"
-                             [nzValue]="option.orderName || '-'"></nz-option>
-                </nz-select>
-              </div>
-            </div>
-          </div>
-        </div>
+        }
       </div>
-    </div>
+    }
+  </div>
 </ng-template>
 
 <ng-template #mapVariableTemplate let-listVariables let-k="k">
@@ -128,559 +147,670 @@
       {{'order.label.variableMap' | translate}}: <b>{{listVariables.name}}</b>
     </div>
 
-    <div *ngIf="!isCollapsed[selectedOrderIndex][k]" class="p-a-sm b-a m-b">
-      <div class="form-group row m-b-0 m-l-12">
-        <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
-        <div class="col-md-4 col-lg-8 m-b-sm" translate>common.label.value</div>
-      </div>
-      <div *ngFor="let actualMapArr of listVariables.actualMap; let i=index"
-           [ngClass]="{'b-b-dark m-b-sm': i !== listVariables.actualMap.length - 1}"
-           class="form-group row m-b-0 m-l-12">
-        <!-- <div (click)="addVariableToList(listVariables)"
-             *ngIf="listVariables.actualMap && (i === listVariables.actualMap.length - 1)"
-             class="pos-abt" style="margin-left: -13px;font-size: 16px;margin-top: 4px;cursor: pointer">
-          <i aria-hidden="true" class="fa fa-plus"></i>
-        </div> -->
-        <div *ngFor="let argument of actualMapArr.map; let j=index" class="col-md-12">
-          <div class="form-group row m-b-0">
-            <div class="col-sm-4 m-b-sm">
-              <input [(ngModel)]="argument.name" class="form-control" name="_name{{i}}{{j}}{{k}}" readonly
-                     type="text">
-            </div>
-            <ng-container [ngSwitch]="argument.type">
-              <ng-container *ngSwitchCase="'Number'">
-                <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-                     class="col-md-6 col-lg-6 m-b-sm">
-                  <nz-input-number #value="ngModel" [(ngModel)]="argument.value"
-                                   [nzStep]="1" [required]="argument.isRequired" name="_value{{i}}{{j}}{{k}}"
-                                   nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
-                  <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                       class="text-danger help-block">
-                    <div *ngIf="value.errors['required']">
-                      <div translate>common.message.requiredError</div>
-                    </div>
+    <!-- Conditional Content based on Toggle State -->
+    @if (!isCollapsed[selectedOrderIndex][k]) {
+      <div class="p-a-sm b-a m-b">
+        <div class="form-group row m-b-0 m-l-12">
+          <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
+          <div class="col-md-4 col-lg-8 m-b-sm" translate>common.label.value</div>
+        </div>
+        @for (actualMapArr of listVariables.actualMap; track actualMapArr; let i = $index) {
+          <div [ngClass]="{'b-b-dark m-b-sm': i !== listVariables.actualMap.length - 1}"
+               class="form-group row m-b-0 m-l-12">
+            @for (argument of actualMapArr.map; track argument; let j = $index) {
+              <div class="col-md-12">
+                <div class="form-group row m-b-0">
+                  <div class="col-sm-4 m-b-sm">
+                    <input [(ngModel)]="argument.name" class="form-control" name="_name{{i}}{{j}}{{k}}" readonly
+                           type="text">
                   </div>
-                </div>
-              </ng-container>
-              <ng-container *ngSwitchCase="'Boolean'">
-                <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-                     class="col-md-6 col-lg-6 m-b-sm">
-                  <nz-select #value="ngModel" [(ngModel)]="argument.value"
-                             [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [required]="argument.isRequired" name="_value{{i}}{{j}}{{k}}"
-                             nzAllowClear>
-                    <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-                    <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-                  </nz-select>
-                  <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                       class="text-danger help-block">
-                    <div *ngIf="value.errors['required']">
-                      <div translate>common.message.requiredError</div>
-                    </div>
-                  </div>
-                </div>
-              </ng-container>
-              <ng-container *ngSwitchDefault>
-                <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-                     class="col-md-6 col-lg-6 m-b-sm">
-                  <input #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired" autocomplete="off" class="form-control"
-                         name="_value{{i}}{{j}}{{k}}" placeholder="{{'common.placeholder.value' | translate}}"
-                         type="text">
-                  <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
-                     style="right: 13px;top:1px;" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
-                  <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                       class="text-danger help-block">
-                    <div *ngIf="value.errors['required']">
-                      <div translate>common.message.requiredError</div>
-                    </div>
-                  </div>
-                  <div class="pos-abt r-t-n-28 add-order-encrypt">
-                    <a *ngIf="argument.name && argument.type === 'String'"><i (click)="encryptValue(argument, 'job')" class="m-t-sm text-hover-color"
-                      nz-icon nzType="property-safety" nzTheme="outline"></i></a>
-                  </div>
-                </div>
-              </ng-container>
-            </ng-container>
-            <div *ngIf="listVariables.actualMap && listVariables.actualMap.length > 1 && j === actualMapArr.length - 1"
-                 class="col-md-1 p-l-0">
-              <a><i (click)="removeVariableFromList(i, listVariables.actualMap)"
-                    class="fa fa-times m-t-sm text-muted"></i></a>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-12">
-          <div class="form-group row">
-            <div class="col-sm-12">
-              <a (click)="assignParameterizationFromSchedules()" class="text-u-l" translate>order.button.assignFromSchedule</a>
-            </div>
-          </div>
-          <div *ngIf="schedules && schedules.length > 0" class="form-group row">
-            <div class="col-sm-4 form-control-label" translate>order.label.selectSchedule</div>
-            <div class="col-sm-6">
-              <nz-select [(ngModel)]="actualMapArr.name" name="schedule{{i}}" nzAllowClear
-                         (ngModelChange)="selectVarFromSchedule($event, actualMapArr, listVariables, i, selectedOrderIndex)" nzShowSearch>
-                <nz-option *ngFor="let option of schedules | orderBy: 'name'" [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
-              </nz-select>
-            </div>
-          </div>
-          <div *ngIf="actualMapArr.orderParameterisations && actualMapArr.orderParameterisations.length > 1"
-               class="form-group row">
-            <div class="col-sm-4 form-control-label" translate>order.label.selectOrder</div>
-            <div class="col-sm-6">
-              <nz-select [(ngModel)]="actualMapArr.orderName" name="order{{i}}" nzAllowClear
-                         nzShowSearch (ngModelChange)="selectOrder($event, actualMapArr, listVariables, i, selectedOrderIndex)" >
-                <nz-option *ngFor="let option of actualMapArr.orderParameterisations" [nzLabel]="option.orderName || '-'"
-                           [nzValue]="option.orderName || '-'"></nz-option>
-              </nz-select>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</ng-template>
-
-<ng-container *ngIf="displayModal">
-  <div class="modal-header">
-    <h4 class="modal-title">
-      <span translate>workflow.label.addNewOrderTo</span> {{workflow.path}}
-    </h4>
-    <button (click)="cancel()" aria-label="Close" class="close" type="button">
-      <span aria-hidden="true" class="fa fa-times-circle"></span>
-    </button>
-  </div>
-
-  <form #myForm="ngForm" (ngSubmit)="onSubmit()">
-    <div class="modal-body p-a">
-      <div [ngClass]="{'show': display}" class="hide">
-        <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
-      </div>
-      <div class="form-group row" *ngIf="orders.length > 1">
-        <label class="col-sm-4 form-control-label" translate>common.label.startTime</label>
-        <div class="col-md-8">
-          <nz-radio-group [(ngModel)]="commonStartTime" name="commonStartTime" (ngModelChange)="onCommonTimeChange($event)">
-            <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
-            <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
-            <label nz-radio nzValue="later"><span translate>common.label.relativeTime</span></label>
-            <label nz-radio nzValue="never"><span translate>common.label.never</span></label>
-          </nz-radio-group>
-        </div>
-      </div>
-
-      <!-- Time for 'later' option -->
-      <div *ngIf="commonStartTime == 'later' && orders.length > 1" class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>common.label.time
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-6">
-          <input #time="ngModel" [(ngModel)]="commonStartTimeValue" [required]="commonStartTime == 'later'" class="form-control"
-                 name="commonStartTimeValue" placeholder="{{'HH:MM:[SS] or 1(s|m|h)'}}" type="text"
-                 timeRelativeStartValidatorReqex (blur)="onCommonBlur(time, 'commonStartTimeValue',commonStartTimeValue)">
-          <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
-            <div *ngIf="!time.valid" translate>common.message.invalid</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Date for 'date' option -->
-      <div *ngIf="commonStartTime == 'date' && orders.length > 1" class="form-group row">
-        <label class="col-sm-4 form-control-label" translate>workflow.label.enterDateAndTime
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div class="col-sm-6">
-          <app-date-input [object]="commonStartDate" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
-                          [isRequired]="true" [isTime]="true" [ignoreThirdParam]="true" [isAllowClear]="true"
-                          [name]="'from'" [dateFormat]="dateFormat" [isPreviousDateDisabled]="true"
-                          [placeholder]="( dateFormat | uppercase )"></app-date-input>
-        </div>
-      </div>
-
-      <!-- Time Zone for 'date' option -->
-      <div [hidden]="!(commonStartTime =='date')" *ngIf="orders.length > 1" class="form-group row">
-        <div class="col-sm-4 form-control-label" translate>common.label.timeZone</div>
-        <div class="col-sm-6">
-          <app-select-input [attributeName]="'timeZone'" [isAllowClear]="true" [isSearchable]="true"
-                            [listArray]="zones" [name]="'timeZoneCommon'" [ignoreTranslate]="true"
-                            [object]="commonStartDate"></app-select-input>
-        </div>
-      </div>
-      <hr *ngIf="orders.length > 1">
-      <div *ngFor="let  order of orders; let orderIndex = index" (click)="setSelectedOrderIndex(orderIndex)">
-        <!-- Order Name -->
-        <div class="mb-2 order-label" *ngIf="orders.length > 1">
-  <span class="_600 p-b-sm">
-    {{ 'breadcrumb.label.order' | translate }} #{{ orderIndex + 1 }}
-    <span *ngIf="order.selectedSchedule"> - {{ order.selectedSchedule.name }}</span>
-  </span>
-          <i (click)="removeOrder(orderIndex)" class="fa fa-times fa-lg cursor float-right"></i>
-        </div>
-
-        <div class="form-group row">
-          <label class="col-sm-4 form-control-label" translate>order.label.orderName</label>
-          <div [ngClass]="{ 'has-error' : (((orderId.dirty || orderId.touched) && orderId.invalid))}" class="col-sm-6">
-            <input #orderId="ngModel" [(ngModel)]="order.orderId" [appAutofocus]="true" autocomplete="off"
-                   class="form-control" identifierValidation maxlength="30" name="orderId{{orderIndex}}"
-                   placeholder="{{'workflow.placeholder.orderId' | translate}}" type="text">
-            <div *ngIf="orderId.invalid && (orderId.dirty || orderId.touched)" class="text-danger help-block">
-              <div *ngIf="orderId.errors['invalidIdentifier']" translate>common.message.invalid</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tags -->
-<div class="form-group row">
-        <label class="col-md-4 form-control-label" translate>inventory.label.tagName</label>
-        <div class="col-sm-6">
-            <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
-                <div cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropTag($event, orderIndex)"
-                    class="d-inline-block">
-                    <nz-tag class="cursor" style="transition: none !important;"
-                            *ngFor="let tag of order.tags; let i = index; trackBy: trackByFn"
-                            cdkDrag [nzMode]="'closeable'" (nzOnClose)="handleClose(tag, orderIndex)">
-                        {{ sliceTagName(tag) }}
-                    </nz-tag>
-                </div>
-                <nz-tag *ngIf="!order.inputVisible" class="editable-tag" nzNoAnimation (click)="showInput(orderIndex)">
-                    <span nz-icon nzType="plus"></span>
-                    {{'inventory.button.newTag' | translate}}
-                </nz-tag>
-                <div class="d-inline-block" *ngIf="order.inputVisible" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-                    <input #name="ngModel" #inputElement tagValidation [nzAutocomplete]="auto" nz-input name="tag"
-                        type="text" [(ngModel)]="order.inputValue" (ngModelChange)="onChange($event, orderIndex)"
-                        style="width: 128px;" (blur)="handleInputConfirm(orderIndex)"
-                        (keydown.enter)="handleInputConfirm(orderIndex)">
-                    <nz-autocomplete [nzDataSource]="order.filteredOptions" #auto></nz-autocomplete>
-                </div>
-            </div>
-        </div>
-    </div>
-        <!-- Force Job Admission -->
-        <div class="form-group row">
-          <label class="col-sm-4 " translate>order.label.ignoreAdmissionTimes</label>
-          <div class="col-md-8">
-            <label [(ngModel)]="order.forceJobAdmission" name="ignoreAdmissionTimes{{orderIndex}}" nz-checkbox>
-            </label>
-          </div>
-        </div>
-
-        <!-- Start Time -->
-        <div class="form-group row" *ngIf="orders.length < 2">
-        <label class="col-sm-4 " translate>common.label.startTime</label>
-          <div class="col-md-8">
-            <nz-radio-group [(ngModel)]="order.at" name="at{{orderIndex}}" (ngModelChange)="onTimeChange($event, orderIndex)">
-              <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
-              <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
-              <label nz-radio nzValue="later"><span translate>common.label.relativeTime</span></label>
-              <label nz-radio nzValue="never"><span translate>common.label.never</span></label>
-            </nz-radio-group>
-          </div>
-        </div>
-
-        <!-- Time for 'later' option -->
-        <div *ngIf="order.at == 'later' && orders.length < 2" class="form-group row">
-          <label class="col-sm-4 form-control-label" translate>common.label.time
-            <sup class="text-danger text-sm">*</sup>
-          </label>
-          <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-6">
-            <input #time="ngModel" [(ngModel)]="order.atTime" [required]="order.at == 'later'" class="form-control"
-                   name="atTime{{orderIndex}}" placeholder="{{'HH:MM:[SS] or 1(s|m|h)'}}" type="text"
-                   timeRelativeStartValidatorReqex (blur)="onBlur(time, 'atTime', orderIndex)">
-            <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
-              <div *ngIf="!time.valid" translate>common.message.invalid</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Date for 'date' option -->
-        <div *ngIf="order.at == 'date' && orders.length < 2" class="form-group row">
-          <label class="col-sm-4 form-control-label" translate>workflow.label.enterDateAndTime
-            <sup class="text-danger text-sm">*</sup>
-          </label>
-          <div class="col-sm-6">
-            <app-date-input [object]="order" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
-                            [isRequired]="true" [isTime]="true" [ignoreThirdParam]="true" [isAllowClear]="true"
-                            [name]="'from'" [dateFormat]="dateFormat" [isPreviousDateDisabled]="true"
-                            [placeholder]="( dateFormat | uppercase )"></app-date-input>
-          </div>
-        </div>
-
-        <!-- Time Zone for 'date' option -->
-        <div [hidden]="!(order.at =='date')" *ngIf="orders.length < 2" class="form-group row">
-          <div class="col-sm-4 form-control-label" translate>common.label.timeZone</div>
-          <div class="col-sm-6">
-            <app-select-input [attributeName]="'timeZone'" [isAllowClear]="true" [isSearchable]="true"
-                              [listArray]="zones" [name]="'timeZone{{orderIndex}}'" [ignoreTranslate]="true"
-                              [object]="order"></app-select-input>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-4 form-control-label" translate>resource.board.label.planKey</label>
-          <div class="col-sm-6">
-            <app-date-input [object]="order.planId" [attributeDate]="'noticeSpaceKey'"
-                            [ignoreThirdParam]="true" [isAllowClear]="true"
-                            [name]="'noticeSpaceKey'" [dateFormat]="dateFormat"
-                            [placeholder]="( dateFormat | uppercase )"></app-date-input>
-          </div>
-        </div>
-        <!-- Block Position -->
-        <div *ngIf="permission.currentController && permission.currentController.orders.managePositions && blockPositions?.size > 0"
-             class="form-group row">
-          <label class="col-sm-4 form-control-label" translate>order.label.blockPosition</label>
-          <div class="col-sm-6">
-            <app-node-position [obj]="order" [blockPositions]="blockPositions" [blockPositionList]="blockPositionList" [reload]="order.reload"
-                               [type]="'BLOCK_POSITION'" [workflow]="workflow" (onBlur)="getNewPositions($event, orderIndex)"></app-node-position>
-          </div>
-        </div>
-
-        <!-- Start Node -->
-        <div *ngIf="permission.currentController && permission.currentController.orders.managePositions"
-             class="form-group row">
-          <label class="col-sm-4 form-control-label" translate>order.label.startNode</label>
-          <div class="col-sm-6">
-            <app-node-position [obj]="order" [newPositions]="newPositions" [positions]="positions" [reload]="order.reload"
-                               [type]="'START'" [workflow]="workflow"></app-node-position>
-          </div>
-        </div>
-
-        <!-- End Node -->
-        <div *ngIf="permission.currentController && permission.currentController.orders.managePositions"
-             class="form-group row">
-          <label class="col-sm-4 form-control-label" translate>order.label.endNode</label>
-          <div class="col-sm-6">
-            <app-node-position [obj]="order" [newPositions]="newPositions" [position]="order.startPosition" [positions]="positions"
-                               [reload]="order.reload" [type]="'END'" [workflow]="workflow"></app-node-position>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.priority' | translate) : ''"
-
-                 class="col-sm-4 form-control-label"
-                 translate>order.label.priority</label>
-          <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}"
-               class="col-sm-6">
-            <nz-input-group [nzAddOnAfter]="priorityTemplate">
-              <nz-input-number #priority="ngModel"   [(ngModel)]="order.priority"
-                               name="priority{{orderIndex}}" nzPlaceHolder="{{'inventory.placeholder.priority' | translate}}"
-              ></nz-input-number>
-            </nz-input-group>
-            <ng-template #priorityTemplate>
-              <app-select-input [classNames]="'w-220'" [attributeName]="'priority'"
-                                [listArray]="priorities" [name]="'priorities'" [optionLabel]="'label'" [optionValue]="'value'"  [placeholder]="'inventory.placeholder.selectPredefinedPriorities'"
-                                [object]="order"></app-select-input>
-            </ng-template>
-            <div *ngIf="priority.invalid && (priority.dirty || priority.touched)" class="text-danger help-block">
-              <div *ngIf="priority.errors['required']">
-                <div translate>common.message.requiredError</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-sm-12">
-            <a (click)="assignParameterizationFromSchedules()" class="text-u-l" translate>order.button.assignParameterizationFromSchedules</a>
-          </div>
-        </div>
-        <div *ngIf="schedules && schedules.length > 0 && !isAssignedFromSchedule" class="form-group row">
-        <div class="col-sm-4 form-control-label" translate>order.label.selectSchedule</div>
-        <div class="col-sm-6">
-            <nz-select [(ngModel)]="order.name" name="schedule{{orderIndex}}" nzAllowClear
-                       (ngModelChange)="selectSchedule($event, orderIndex)" nzShowSearch>
-                <nz-option *ngFor="let option of schedules | orderBy: 'name'" [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
-            </nz-select>
-        </div>
-    </div>
-         <div *ngIf="order.selectedSchedule && order.selectedSchedule.orderParameterisations && order.selectedSchedule.orderParameterisations.length > 1"
-         class="form-group row">
-        <div class="col-sm-4 form-control-label" translate>order.label.selectOrder</div>
-        <div class="col-sm-6">
-            <nz-select [(ngModel)]="order.orderName" name="order{{orderIndex}}" nzAllowClear
-                       nzShowSearch (ngModelChange)="selectOrder($event, null, null, null, orderIndex)">
-                <nz-option *ngFor="let option of order.selectedSchedule.orderParameterisations" [nzLabel]="option.orderName || '-'"
-                           [nzValue]="option.orderName || '-'"></nz-option>
-            </nz-select>
-        </div>
-    </div>
-        <div>
-          <div class="row" *ngIf="isForkList">
-            <div class="col-sm-12">
-              <i class="fa fa-angle-double-down fa-lg cursor" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate"
-                 (click)="expandAll(orderIndex);"></i>
-              <i class="fa fa-angle-double-up fa-lg cursor" style="margin-left: 4px"
-                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="collapseAll(orderIndex);"></i>
-            </div>
-          </div>
-          <div *ngIf="order.arguments.length > 0" class="form-group row m-b-0">
-            <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
-            <div class="col-md-4 col-lg-8 m-b-sm" translate>common.label.value</div>
-          </div>
-          <div>
-            <div *ngFor="let argument of order.arguments; let i=index" class="form-group row m-b-0">
-              <ng-container *ngIf="argument.type !== 'List' && argument.type !== 'Map'">
-                <div *ngIf="argument.isTextField" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
-                     class="col-sm-4 m-b-sm">
-                  <input #name="ngModel" [(ngModel)]="argument.name" autocomplete="off" class="form-control" name="name_{{i}}{{orderIndex}}"
-                         placeholder="{{'common.placeholder.name' | translate}}" required type="text">
-                </div>
-                <div *ngIf="!argument.isTextField" class="col-sm-4 m-b-sm">
-                  <nz-select [(ngModel)]="argument.name" [nzDisabled]="argument.isRequired"
-                             name="argu_name{{i}}{{orderIndex}}" (ngModelChange)="checkVariableType(argument, orderIndex)" (nzOpenChange)="checkVariableType(argument, orderIndex)"
-                             nzShowSearch>
-                    <nz-option *ngFor="let list of variableList" [nzDisabled]="list.isSelected" [nzLabel]="list.name"
-                               [nzValue]="list.name"></nz-option>
-                  </nz-select>
-                </div>
-                <ng-container *ngIf="!argument.list">
-                  <ng-container [ngSwitch]="argument.type">
-                    <ng-container *ngSwitchCase="'Number'">
+                  @switch (argument.type) {
+                    @case ('Number') {
                       <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                            class="col-md-6 col-lg-6 m-b-sm">
-                        <nz-input-number #value="ngModel" (keydown)="onKeyPress($event, orderIndex)"
-                                         [(ngModel)]="argument.value"
-                                         [nzStep]="1" [required]="argument.isRequired"
-                                         name="value{{i}}{{orderIndex}}"
+                        <nz-input-number #value="ngModel" [(ngModel)]="argument.value"
+                                         [nzStep]="1" [required]="argument.isRequired" name="_value{{i}}{{j}}{{k}}"
                                          nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
-                        <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                             class="text-danger help-block">
-                          <div *ngIf="value.errors['required']">
-                            <div translate>common.message.requiredError</div>
+                        @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                          <div class="text-danger help-block">
+                            @if (value.errors['required']) {
+                              <div translate>common.message.requiredError</div>
+                            }
                           </div>
-                        </div>
+                        }
                       </div>
-                    </ng-container>
-                    <ng-container *ngSwitchCase="'Boolean'">
+                    }
+                    @case ('Boolean') {
                       <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                            class="col-md-6 col-lg-6 m-b-sm">
                         <nz-select #value="ngModel" [(ngModel)]="argument.value"
-                                   [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [required]="argument.isRequired" name="value{{i}}{{orderIndex}}"
+                                   [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [required]="argument.isRequired" name="_value{{i}}{{j}}{{k}}"
                                    nzAllowClear>
                           <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
                           <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
                         </nz-select>
-                        <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                             class="text-danger help-block">
-                          <div *ngIf="value.errors['required']">
-                            <div translate>common.message.requiredError</div>
+                        @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                          <div class="text-danger help-block">
+                            @if (value.errors['required']) {
+                              <div translate>common.message.requiredError</div>
+                            }
                           </div>
-                        </div>
+                        }
                       </div>
-                    </ng-container>
-                    <ng-container *ngSwitchDefault>
+                    }
+                    @default {
                       <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
                            class="col-md-6 col-lg-6 m-b-sm">
-                        <input #value="ngModel" (keydown)="onKeyPress($event, orderIndex)"
-                               [(ngModel)]="argument.value" [facetValidation]="argument.facet" [required]="argument.isRequired || argument.facet"
-                               autocomplete="off"
-                               class="form-control" name="value{{i}}{{orderIndex}}"
-                               placeholder="{{'common.placeholder.value' | translate}}" type="text">
+                        <input #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired" autocomplete="off" class="form-control"
+                               name="_value{{i}}{{j}}{{k}}" placeholder="{{'common.placeholder.value' | translate}}"
+                               type="text">
                         <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
                            style="right: 13px;top:1px;" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
-                        <i *ngIf="argument.message" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="argument.message" class="pos-abt cursor fa fa-info-circle"
-                           style="right: 32px;top:1px;"></i>
-                        <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                             class="text-danger help-block">
-                          <div *ngIf="value.errors['required']">
-                            <div translate>common.message.requiredError</div>
+                        @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                          <div class="text-danger help-block">
+                            @if (value.errors['required']) {
+                              <div translate>common.message.requiredError</div>
+                            }
                           </div>
-                          <div *ngIf="value.errors['invalidFacet'] && !value.errors['required']" translate>
-                            common.message.invalid
-                          </div>
+                        }
+                        <div class="pos-abt r-t-n-28 add-order-encrypt">
+                          @if (argument.name && argument.type === 'String') {
+                            <a><i (click)="encryptValue(argument, 'job')" class="m-t-sm text-hover-color"
+                                  nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                          }
                         </div>
                       </div>
-                    </ng-container>
-                  </ng-container>
-                </ng-container>
-
-              <div *ngIf="argument.list" [ngClass]="{'has-error' : ((list.dirty || list.touched) && list.invalid)}"
-                 class="col-md-6 col-lg-6 m-b-sm">
-              <nz-select #list="ngModel" [(ngModel)]="argument.value"
-                         [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [required]="argument.isRequired" name="list{{i}}{{orderIndex}}"
-                         nzShowSearch nzAllowClear>
-                <ng-container *ngFor="let option of argument.list">
-                  <nz-option [nzLabel]="option.name" [nzValue]="option.name" nzCustomContent>
-                    <div>
-                      {{option.name}} <i *ngIf="option.default">- </i> <span *ngIf="option.default"
-                                                                             class="label label-default"
-                                                                             translate>default</span>
+                    }
+                  }
+                  @if (listVariables.actualMap && listVariables.actualMap.length > 1 && j === actualMapArr.length - 1) {
+                    <div class="col-md-1 p-l-0">
+                      <a><i (click)="removeVariableFromList(i, listVariables.actualMap)"
+                            class="fa fa-times m-t-sm text-muted"></i></a>
                     </div>
-                  </nz-option>
-                </ng-container>
-              </nz-select>
-              <div *ngIf="list.invalid && list.errors && (list.dirty || list.touched)"
-                   class="text-danger help-block">
-                <div *ngIf="list.errors['required']">
-                  <div translate>common.message.requiredError</div>
+                  }
                 </div>
               </div>
-            </div>
-              <div class="col-sm-1 p-l-0 d-flex justify-content-around align-items-center" [ngClass]="{'right-16px': !argument.isRequired}">
-                <a *ngIf="argument.name && argument.type === 'String'"><i (click)="encryptValue(argument, 'job')" class="m-t-sm text-hover-color"
-                                                                          nz-icon nzType="property-safety" nzTheme="outline"></i></a>
-                <a *ngIf="!argument.isRequired"><i (click)="removeArgument(i, orderIndex)" class="fa fa-times m-t-sm text-muted"></i></a>
+            }
+            <div class="col-md-12">
+              <div class="form-group row">
+                <div class="col-sm-12">
+                  <a (click)="assignParameterizationFromSchedules()" class="text-u-l" translate>order.button.assignFromSchedule</a>
+                </div>
               </div>
-              </ng-container>
-              <ng-container *ngIf="argument.type === 'List'">
-                <div class="col-sm-12">
-                  <ng-container [ngTemplateOutletContext]="{ $implicit: argument, k: i}"
-                                [ngTemplateOutlet]="listVariableTemplate"></ng-container>
+              @if (schedules && schedules.length > 0) {
+                <div class="form-group row">
+                  <div class="col-sm-4 form-control-label" translate>order.label.selectSchedule</div>
+                  <div class="col-sm-6">
+                    <nz-select [(ngModel)]="actualMapArr.name" name="schedule{{i}}" nzAllowClear
+                               (ngModelChange)="selectVarFromSchedule($event, actualMapArr, listVariables, i, selectedOrderIndex)" nzShowSearch>
+                      @for (option of schedules | orderBy: 'name'; track option) {
+                        <nz-option [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
+                      }
+                    </nz-select>
+                  </div>
                 </div>
-              </ng-container>
-              <ng-container *ngIf="argument.type === 'Map'">
-                <div class="col-sm-12">
-                  <ng-container [ngTemplateOutletContext]="{ $implicit: argument, k: i}"
-                                [ngTemplateOutlet]="mapVariableTemplate"></ng-container>
+              }
+              @if (actualMapArr.orderParameterisations && actualMapArr.orderParameterisations.length > 1) {
+                <div class="form-group row">
+                  <div class="col-sm-4 form-control-label" translate>order.label.selectOrder</div>
+                  <div class="col-sm-6">
+                    <nz-select [(ngModel)]="actualMapArr.orderName" name="order{{i}}" nzAllowClear
+                               nzShowSearch (ngModelChange)="selectOrder($event, actualMapArr, listVariables, i, selectedOrderIndex)" >
+                      @for (option of actualMapArr.orderParameterisations; track option) {
+                        <nz-option [nzLabel]="option.orderName || '-'"
+                                   [nzValue]="option.orderName || '-'"></nz-option>
+                      }
+                    </nz-select>
+                  </div>
                 </div>
-              </ng-container>
+              }
             </div>
           </div>
-        </div>
-        <div class="form-group row">
-          <div *ngIf="variableList.length > this.orders[orderIndex].arguments.length || (workflow.orderPreparation?.allowUndeclared && variableList.length > 0)" class="col-sm-12"
-               [ngClass]="{'m-b-sm': workflow.orderPreparation?.allowUndeclared}">
-            <a (click)="addArgument(orderIndex)" class="text-u-l" translate>order.button.modifyVariable</a>
-            <a (click)="addArguments(orderIndex)" class="text-u-l m-l" translate>order.button.modifyVariables</a>
-          </div>
-          <div class="col-sm-12" *ngIf="workflow.orderPreparation?.allowUndeclared">
-            <a class="text-u-l" (click)="addArgument(orderIndex,true)" translate>order.button.addVariable</a>
-          </div>
-        </div>
-        <hr class="b-2b" *ngIf="orderIndex < orders.length - 1">
+        }
       </div>
+    }
+  </div>
+</ng-template>
+
+@if (displayModal) {
+  <ng-container>
+    <div class="modal-header">
+      <h4 class="modal-title">
+        <span translate>workflow.label.addNewOrderTo</span> {{workflow.path}}
+      </h4>
+      <button (click)="cancel()" aria-label="Close" class="close" type="button">
+        <span aria-hidden="true" class="fa fa-times-circle"></span>
+      </button>
+    </div>
+
+    <form #myForm="ngForm" (ngSubmit)="onSubmit()">
+      <div class="modal-body p-a">
+        <div [ngClass]="{'show': display}" class="hide">
+          <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
+        </div>
+        @if (orders.length > 1) {
+          <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>common.label.startTime</label>
+            <div class="col-md-8">
+              <nz-radio-group [(ngModel)]="commonStartTime" name="commonStartTime" (ngModelChange)="onCommonTimeChange($event)">
+                <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
+                <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
+                <label nz-radio nzValue="later"><span translate>common.label.relativeTime</span></label>
+                <label nz-radio nzValue="never"><span translate>common.label.never</span></label>
+              </nz-radio-group>
+            </div>
+          </div>
+        }
+
+        <!-- Time for 'later' option -->
+        @if (commonStartTime == 'later' && orders.length > 1) {
+          <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>common.label.time
+              <sup class="text-danger text-sm">*</sup>
+            </label>
+            <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-6">
+              <input #time="ngModel" [(ngModel)]="commonStartTimeValue" [required]="commonStartTime == 'later'" class="form-control"
+                     name="commonStartTimeValue" placeholder="{{'HH:MM:[SS] or 1(s|m|h)'}}" type="text"
+                     timeRelativeStartValidatorReqex (blur)="onCommonBlur(time, 'commonStartTimeValue',commonStartTimeValue)">
+              @if (time.errors && (time.dirty || time.touched)) {
+                <div class="help-block text-danger">
+                  @if (!time.valid) {
+                    <div translate>common.message.invalid</div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Date for 'date' option -->
+        @if (commonStartTime == 'date' && orders.length > 1) {
+          <div class="form-group row">
+            <label class="col-sm-4 form-control-label" translate>workflow.label.enterDateAndTime
+              <sup class="text-danger text-sm">*</sup>
+            </label>
+            <div class="col-sm-6">
+              <app-date-input [object]="commonStartDate" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
+                              [isRequired]="true" [isTime]="true" [ignoreThirdParam]="true" [isAllowClear]="true"
+                              [name]="'from'" [dateFormat]="dateFormat" [isPreviousDateDisabled]="true"
+                              [placeholder]="( dateFormat | uppercase )"></app-date-input>
+            </div>
+          </div>
+        }
+
+        <!-- Time Zone for 'date' option -->
+        @if (orders.length > 1) {
+          <div [hidden]="!(commonStartTime =='date')" class="form-group row">
+            <div class="col-sm-4 form-control-label" translate>common.label.timeZone</div>
+            <div class="col-sm-6">
+              <app-select-input [attributeName]="'timeZone'" [isAllowClear]="true" [isSearchable]="true"
+                                [listArray]="zones" [name]="'timeZoneCommon'" [ignoreTranslate]="true"
+                                [object]="commonStartDate"></app-select-input>
+            </div>
+          </div>
+        }
+        @if (orders.length > 1) {
+          <hr>
+        }
+        @for (order of orders; track order; let orderIndex = $index) {
+          <div (click)="setSelectedOrderIndex(orderIndex)">
+            <!-- Order Name -->
+            @if (orders.length > 1) {
+              <div class="mb-2 order-label">
+                <span class="_600 p-b-sm">
+                  {{ 'breadcrumb.label.order' | translate }} #{{ orderIndex + 1 }}
+                  @if (order.selectedSchedule) {
+                    <span> - {{ order.selectedSchedule.name }}</span>
+                  }
+                </span>
+                <i (click)="removeOrder(orderIndex)" class="fa fa-times fa-lg cursor float-right"></i>
+              </div>
+            }
+
+            <div class="form-group row">
+              <label class="col-sm-4 form-control-label" translate>order.label.orderName</label>
+              <div [ngClass]="{ 'has-error' : (((orderId.dirty || orderId.touched) && orderId.invalid))}" class="col-sm-6">
+                <input #orderId="ngModel" [(ngModel)]="order.orderId" [appAutofocus]="true" autocomplete="off"
+                       class="form-control" identifierValidation maxlength="30" name="orderId{{orderIndex}}"
+                       placeholder="{{'workflow.placeholder.orderId' | translate}}" type="text">
+                @if (orderId.invalid && (orderId.dirty || orderId.touched)) {
+                  <div class="text-danger help-block">
+                    @if (orderId.errors['invalidIdentifier']) {
+                      <div translate>common.message.invalid</div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Tags -->
+            <div class="form-group row">
+              <label class="col-md-4 form-control-label" translate>inventory.label.tagName</label>
+              <div class="col-sm-6">
+                <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
+                  <div cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="dropTag($event, orderIndex)"
+                       class="d-inline-block">
+                    @for (tag of order.tags; track tag; let i = $index) {
+                      <nz-tag class="cursor" style="transition: none !important;"
+                              cdkDrag [nzMode]="'closeable'" (nzOnClose)="handleClose(tag, orderIndex)">
+                        {{ sliceTagName(tag) }}
+                      </nz-tag>
+                    }
+                  </div>
+                  @if (!order.inputVisible) {
+                    <nz-tag class="editable-tag" nzNoAnimation (click)="showInput(orderIndex)">
+                      <span nz-icon nzType="plus"></span>
+                      {{'inventory.button.newTag' | translate}}
+                    </nz-tag>
+                  }
+                  @if (order.inputVisible) {
+                    <div class="d-inline-block" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+                      <input #name="ngModel" #inputElement tagValidation [nzAutocomplete]="auto" nz-input name="tag"
+                             type="text" [(ngModel)]="order.inputValue" (ngModelChange)="onChange($event, orderIndex)"
+                             style="width: 128px;" (blur)="handleInputConfirm(orderIndex)"
+                             (keydown.enter)="handleInputConfirm(orderIndex)">
+                      <nz-autocomplete [nzDataSource]="order.filteredOptions" #auto></nz-autocomplete>
+                    </div>
+                  }
+                </div>
+              </div>
+            </div>
+            <!-- Force Job Admission -->
+            <div class="form-group row">
+              <label class="col-sm-4 " translate>order.label.ignoreAdmissionTimes</label>
+              <div class="col-md-8">
+                <label [(ngModel)]="order.forceJobAdmission" name="ignoreAdmissionTimes{{orderIndex}}" nz-checkbox>
+                </label>
+              </div>
+            </div>
+
+            <!-- Start Time -->
+            @if (orders.length < 2) {
+              <div class="form-group row">
+                <label class="col-sm-4 " translate>common.label.startTime</label>
+                <div class="col-md-8">
+                  <nz-radio-group [(ngModel)]="order.at" name="at{{orderIndex}}" (ngModelChange)="onTimeChange($event, orderIndex)">
+                    <label nz-radio nzValue="now"><span translate>common.label.now</span></label>
+                    <label nz-radio nzValue="date"><span translate>common.label.specificDate</span></label>
+                    <label nz-radio nzValue="later"><span translate>common.label.relativeTime</span></label>
+                    <label nz-radio nzValue="never"><span translate>common.label.never</span></label>
+                  </nz-radio-group>
+                </div>
+              </div>
+            }
+
+            <!-- Time for 'later' option -->
+            @if (order.at == 'later' && orders.length < 2) {
+              <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>common.label.time
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
+                <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-6">
+                  <input #time="ngModel" [(ngModel)]="order.atTime" [required]="order.at == 'later'" class="form-control"
+                         name="atTime{{orderIndex}}" placeholder="{{'HH:MM:[SS] or 1(s|m|h)'}}" type="text"
+                         timeRelativeStartValidatorReqex (blur)="onBlur(time, 'atTime', orderIndex)">
+                  @if (time.errors && (time.dirty || time.touched)) {
+                    <div class="help-block text-danger">
+                      @if (!time.valid) {
+                        <div translate>common.message.invalid</div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            <!-- Date for 'date' option -->
+            @if (order.at == 'date' && orders.length < 2) {
+              <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>workflow.label.enterDateAndTime
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
+                <div class="col-sm-6">
+                  <app-date-input [object]="order" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
+                                  [isRequired]="true" [isTime]="true" [ignoreThirdParam]="true" [isAllowClear]="true"
+                                  [name]="'from'" [dateFormat]="dateFormat" [isPreviousDateDisabled]="true"
+                                  [placeholder]="( dateFormat | uppercase )"></app-date-input>
+                </div>
+              </div>
+            }
+
+            <!-- Time Zone for 'date' option -->
+            @if (orders.length < 2) {
+              <div [hidden]="!(order.at =='date')" class="form-group row">
+                <div class="col-sm-4 form-control-label" translate>common.label.timeZone</div>
+                <div class="col-sm-6">
+                  <app-select-input [attributeName]="'timeZone'" [isAllowClear]="true" [isSearchable]="true"
+                                    [listArray]="zones" [name]="'timeZone{{orderIndex}}'" [ignoreTranslate]="true"
+                                    [object]="order"></app-select-input>
+                </div>
+              </div>
+            }
+            <div class="form-group row">
+              <label class="col-sm-4 form-control-label" translate>resource.board.label.planKey</label>
+              <div class="col-sm-6">
+                <app-date-input [object]="order.planId" [attributeDate]="'noticeSpaceKey'"
+                                [ignoreThirdParam]="true" [isAllowClear]="true"
+                                [name]="'noticeSpaceKey'" [dateFormat]="dateFormat"
+                                [placeholder]="( dateFormat | uppercase )"></app-date-input>
+              </div>
+            </div>
+            <!-- Block Position -->
+            @if (permission.currentController && permission.currentController.orders.managePositions && blockPositions?.size > 0) {
+              <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>order.label.blockPosition</label>
+                <div class="col-sm-6">
+                  <app-node-position [obj]="order" [blockPositions]="blockPositions" [blockPositionList]="blockPositionList" [reload]="order.reload"
+                                     [type]="'BLOCK_POSITION'" [workflow]="workflow" (onBlur)="getNewPositions($event, orderIndex)"></app-node-position>
+                </div>
+              </div>
+            }
+
+            <!-- Start Node -->
+            @if (permission.currentController && permission.currentController.orders.managePositions) {
+              <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>order.label.startNode</label>
+                <div class="col-sm-6">
+                  <app-node-position [obj]="order" [newPositions]="newPositions" [positions]="positions" [reload]="order.reload"
+                                     [type]="'START'" [workflow]="workflow"></app-node-position>
+                </div>
+              </div>
+            }
+
+            <!-- End Node -->
+            @if (permission.currentController && permission.currentController.orders.managePositions) {
+              <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>order.label.endNode</label>
+                <div class="col-sm-6">
+                  <app-node-position [obj]="order" [newPositions]="newPositions" [position]="order.startPosition" [positions]="positions"
+                                     [reload]="order.reload" [type]="'END'" [workflow]="workflow"></app-node-position>
+                </div>
+              </div>
+            }
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.priority' | translate) : ''"
+                     class="col-sm-4 form-control-label"
+                     translate>order.label.priority</label>
+              <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}"
+                   class="col-sm-6">
+                <nz-input-group [nzAddOnAfter]="priorityTemplate">
+                  <nz-input-number #priority="ngModel"   [(ngModel)]="order.priority"
+                                   name="priority{{orderIndex}}" nzPlaceHolder="{{'inventory.placeholder.priority' | translate}}"
+                  ></nz-input-number>
+                </nz-input-group>
+                <ng-template #priorityTemplate>
+                  <app-select-input [classNames]="'w-220'" [attributeName]="'priority'"
+                                    [listArray]="priorities" [name]="'priorities'" [optionLabel]="'label'" [optionValue]="'value'"  [placeholder]="'inventory.placeholder.selectPredefinedPriorities'"
+                                    [object]="order"></app-select-input>
+                </ng-template>
+                @if (priority.invalid && (priority.dirty || priority.touched)) {
+                  <div class="text-danger help-block">
+                    @if (priority.errors['required']) {
+                      <div translate>common.message.requiredError</div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <a (click)="assignParameterizationFromSchedules()" class="text-u-l" translate>order.button.assignParameterizationFromSchedules</a>
+              </div>
+            </div>
+            @if (schedules && schedules.length > 0 && !isAssignedFromSchedule) {
+              <div class="form-group row">
+                <div class="col-sm-4 form-control-label" translate>order.label.selectSchedule</div>
+                <div class="col-sm-6">
+                  <nz-select [(ngModel)]="order.name" name="schedule{{orderIndex}}" nzAllowClear
+                             (ngModelChange)="selectSchedule($event, orderIndex)" nzShowSearch>
+                    @for (option of schedules | orderBy: 'name'; track option) {
+                      <nz-option [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
+                    }
+                  </nz-select>
+                </div>
+              </div>
+            }
+            @if (order.selectedSchedule && order.selectedSchedule.orderParameterisations && order.selectedSchedule.orderParameterisations.length > 1) {
+              <div class="form-group row">
+                <div class="col-sm-4 form-control-label" translate>order.label.selectOrder</div>
+                <div class="col-sm-6">
+                  <nz-select [(ngModel)]="order.orderName" name="order{{orderIndex}}" nzAllowClear
+                             nzShowSearch (ngModelChange)="selectOrder($event, null, null, null, orderIndex)">
+                    @for (option of order.selectedSchedule.orderParameterisations; track option) {
+                      <nz-option [nzLabel]="option.orderName || '-'"
+                                 [nzValue]="option.orderName || '-'"></nz-option>
+                    }
+                  </nz-select>
+                </div>
+              </div>
+            }
+            <div>
+              @if (isForkList) {
+                <div class="row">
+                  <div class="col-sm-12">
+                    <i class="fa fa-angle-double-down fa-lg cursor" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate"
+                       (click)="expandAll(orderIndex);"></i>
+                    <i class="fa fa-angle-double-up fa-lg cursor" style="margin-left: 4px"
+                       [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="collapseAll(orderIndex);"></i>
+                  </div>
+                </div>
+              }
+              @if (order.arguments.length > 0) {
+                <div class="form-group row m-b-0">
+                  <div class="col-md-4 col-lg-4 m-b-sm" translate>common.label.name</div>
+                  <div class="col-md-4 col-lg-8 m-b-sm" translate>common.label.value</div>
+                </div>
+              }
+              <div>
+                @for (argument of order.arguments; track argument; let i = $index) {
+                  <div class="form-group row m-b-0">
+                    @if (argument.type !== 'List' && argument.type !== 'Map') {
+                      @if (argument.isTextField) {
+                        <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
+                             class="col-sm-4 m-b-sm">
+                          <input #name="ngModel" [(ngModel)]="argument.name" autocomplete="off" class="form-control" name="name_{{i}}{{orderIndex}}"
+                                 placeholder="{{'common.placeholder.name' | translate}}" required type="text">
+                          @if (name.invalid && (name.dirty || name.touched)) {
+                            <div class="text-danger help-block">
+                              @if (name.errors['required']) {
+                                <div translate>common.message.requiredError</div>
+                              }
+                            </div>
+                          }
+                        </div>
+                      }
+                      @if (!argument.isTextField) {
+                        <div class="col-sm-4 m-b-sm">
+                          <nz-select [(ngModel)]="argument.name" [nzDisabled]="argument.isRequired"
+                                     name="argu_name{{i}}{{orderIndex}}" (ngModelChange)="checkVariableType(argument, orderIndex)" (nzOpenChange)="checkVariableType(argument, orderIndex)"
+                                     nzShowSearch>
+                            @for (list of variableList; track list) {
+                              <nz-option [nzDisabled]="list.isSelected" [nzLabel]="list.name"
+                                         [nzValue]="list.name"></nz-option>
+                            }
+                          </nz-select>
+                        </div>
+                      }
+                      @if (!argument.list) {
+                        @switch (argument.type) {
+                          @case ('Number') {
+                            <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                                 class="col-md-6 col-lg-6 m-b-sm">
+                              <nz-input-number #value="ngModel" (keydown)="onKeyPress($event, orderIndex)"
+                                               [(ngModel)]="argument.value"
+                                               [nzStep]="1" [required]="argument.isRequired"
+                                               name="value{{i}}{{orderIndex}}"
+                                               nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
+                              @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                                <div class="text-danger help-block">
+                                  @if (value.errors['required']) {
+                                    <div translate>common.message.requiredError</div>
+                                  }
+                                </div>
+                              }
+                            </div>
+                          }
+                          @case ('Boolean') {
+                            <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                                 class="col-md-6 col-lg-6 m-b-sm">
+                              <nz-select #value="ngModel" [(ngModel)]="argument.value"
+                                         [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [required]="argument.isRequired" name="value{{i}}{{orderIndex}}"
+                                         nzAllowClear>
+                                <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                                <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+                              </nz-select>
+                              @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                                <div class="text-danger help-block">
+                                  @if (value.errors['required']) {
+                                    <div translate>common.message.requiredError</div>
+                                  }
+                                </div>
+                              }
+                            </div>
+                          }
+                          @default {
+                            <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                                 class="col-md-6 col-lg-6 m-b-sm">
+                              <input #value="ngModel" (keydown)="onKeyPress($event, orderIndex)"
+                                     [(ngModel)]="argument.value" [facetValidation]="argument.facet" [required]="argument.isRequired || argument.facet"
+                                     autocomplete="off"
+                                     class="form-control" name="value{{i}}{{orderIndex}}"
+                                     placeholder="{{'common.placeholder.value' | translate}}" type="text">
+                              <i (click)="openEditor(argument)" class="pos-abt cursor" nz-icon nzTheme="outline" nzType="form"
+                                 style="right: 13px;top:1px;" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate"></i>
+                              @if (argument.message) {
+                                <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="argument.message" class="pos-abt cursor fa fa-info-circle"
+                                   style="right: 32px;top:1px;"></i>
+                              }
+                              @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                                <div class="text-danger help-block">
+                                  @if (value.errors['required']) {
+                                    <div translate>common.message.requiredError</div>
+                                  }
+                                  @if (value.errors['invalidFacet'] && !value.errors['required']) {
+                                    <div translate>
+                                      common.message.invalid
+                                    </div>
+                                  }
+                                </div>
+                              }
+                            </div>
+                          }
+                        }
+                      }
+
+                      @if (argument.list) {
+                        <div [ngClass]="{'has-error' : ((list.dirty || list.touched) && list.invalid)}"
+                             class="col-md-6 col-lg-6 m-b-sm">
+                          <nz-select #list="ngModel" [(ngModel)]="argument.value"
+                                     [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [required]="argument.isRequired" name="list{{i}}{{orderIndex}}"
+                                     nzShowSearch nzAllowClear>
+                            @for (option of argument.list; track option) {
+                              <nz-option [nzLabel]="option.name" [nzValue]="option.name" nzCustomContent>
+                                <div>
+                                  {{option.name}} @if (option.default) {<i>- </i> <span class="label label-default"
+                                                                                        translate>default</span>}
+                                </div>
+                              </nz-option>
+                            }
+                          </nz-select>
+                          @if (list.invalid && list.errors && (list.dirty || list.touched)) {
+                            <div class="text-danger help-block">
+                              @if (list.errors['required']) {
+                                <div translate>common.message.requiredError</div>
+                              }
+                            </div>
+                          }
+                        </div>
+                      }
+                      <div class="col-sm-1 p-l-0 d-flex justify-content-around align-items-center" [ngClass]="{'right-16px': !argument.isRequired}">
+                        @if (argument.name && argument.type === 'String') {
+                          <a><i (click)="encryptValue(argument, 'job')" class="m-t-sm text-hover-color"
+                                nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                        }
+                        @if (!argument.isRequired) {
+                          <a><i (click)="removeArgument(i, orderIndex)" class="fa fa-times m-t-sm text-muted"></i></a>
+                        }
+                      </div>
+                    }
+                    @if (argument.type === 'List') {
+                      <div class="col-sm-12">
+                        <ng-container [ngTemplateOutletContext]="{ $implicit: argument, k: i}"
+                                      [ngTemplateOutlet]="listVariableTemplate"></ng-container>
+                      </div>
+                    }
+                    @if (argument.type === 'Map') {
+                      <div class="col-sm-12">
+                        <ng-container [ngTemplateOutletContext]="{ $implicit: argument, k: i}"
+                                      [ngTemplateOutlet]="mapVariableTemplate"></ng-container>
+                      </div>
+                    }
+
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="form-group row">
+              @if (variableList.length > this.orders[orderIndex].arguments.length || (workflow.orderPreparation?.allowUndeclared && variableList.length > 0)) {
+                <div class="col-sm-12"
+                     [ngClass]="{'m-b-sm': workflow.orderPreparation?.allowUndeclared}">
+                  <a (click)="addArgument(orderIndex)" class="text-u-l" translate>order.button.modifyVariable</a>
+                  <a (click)="addArguments(orderIndex)" class="text-u-l m-l" translate>order.button.modifyVariables</a>
+                </div>
+              }
+              @if (workflow.orderPreparation?.allowUndeclared) {
+                <div class="col-sm-12">
+                  <a class="text-u-l" (click)="addArgument(orderIndex,true)" translate>order.button.addVariable</a>
+                </div>
+              }
+            </div>
+            @if (orderIndex < orders.length - 1) {
+              <hr class="b-2b">
+            }
+          </div>
+        }
         <div class="form-group row">
           <div class="col-sm-12">
             <a (click)="addOrder()" class="text-u-l" translate>order.button.addOrderParameterization</a>
             <a (click)="addSchedules()" class="text-u-l m-l" translate>order.button.addOrdersFromAllSchedules</a>
           </div>
         </div>
-    </div>
-    <div class="modal-footer text-left">
-      <button [disabled]="areArgumentsEmpty() || submitted || !myForm.form.valid" class="btn btn-primary btn-sm" type="submit">
-        <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-        {{'common.button.submit' | translate}}
-      </button>
-      <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
-      <div *ngIf="storedArguments?.length > 0" class="w-full" style="display: flex; justify-content: end; margin-right: 25px">
-        <ng-template #contentTemplate>
-          <div class="p-a-sm b-a m-b-sm cursor" (click)="handlePaste(item, selectedOrderIndex)"
-               *ngFor="let item of storedArguments; let i = index">
-            <span class="serial-number">{{i + 1}}</span>
-            <div class="truncate">{{item}}</div>
-          </div>
-          <div class="pull-right">
-            <a class="text-hover-primary" (click)="clearClipboard()" translate>common.button.clear</a>
-          </div>
-        </ng-template>
-        <button (click)="handlePaste(storedArguments[0], selectedOrderIndex)"
-                class="btn btn-grey btn-sm m-r-12" type="button" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.button.paste' | translate">
-          <i class="fa fa-paste"></i>
-        </button>
-        <button nz-button nz-popover [nzPopoverTitle]="'common.label.clipboard' | translate" [nzPopoverContent]="contentTemplate"
-                nzPopoverTrigger="click" [nzPopoverOverlayClassName]="'clipboard-list'"
-                class="btn btn-grey btn-sm" type="button" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.button.showClipboard' | translate">
-          <i class="fa fa-list"></i>
-        </button>
       </div>
-      <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-order cur-point fa fa-info-circle text-20"></i>
-    </div>
+      <div class="modal-footer text-left">
+        <button [disabled]="areArgumentsEmpty() || submitted || !myForm.form.valid" class="btn btn-primary btn-sm" type="submit">
+          @if (submitted) {
+            <i class="fa fa-spin fa-spinner p-r-xs"></i>
+          }
+          {{'common.button.submit' | translate}}
+        </button>
+        <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
+        @if (storedArguments?.length > 0) {
+          <div class="w-full" style="display: flex; justify-content: end; margin-right: 25px">
+            <ng-template #contentTemplate>
+              @for (item of storedArguments; track item; let i = $index) {
+                <div class="p-a-sm b-a m-b-sm cursor" (click)="handlePaste(item, selectedOrderIndex)">
+                  <span class="serial-number">{{i + 1}}</span>
+                  <div class="truncate">{{item}}</div>
+                </div>
+              }
+              <div class="pull-right">
+                <a class="text-hover-primary" (click)="clearClipboard()" translate>common.button.clear</a>
+              </div>
+            </ng-template>
+            <button (click)="handlePaste(storedArguments[0], selectedOrderIndex)"
+                    class="btn btn-grey btn-sm m-r-12" type="button" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.button.paste' | translate">
+              <i class="fa fa-paste"></i>
+            </button>
+            <button nz-button nz-popover [nzPopoverTitle]="'common.label.clipboard' | translate" [nzPopoverContent]="contentTemplate"
+                    nzPopoverTrigger="click" [nzPopoverOverlayClassName]="'clipboard-list'"
+                    class="btn btn-grey btn-sm" type="button" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.button.showClipboard' | translate">
+              <i class="fa fa-list"></i>
+            </button>
+          </div>
+        }
+        <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-order cur-point fa fa-info-circle text-20"></i>
+      </div>
 
-  </form>
-</ng-container>
-
+    </form>
+  </ng-container>
+}

@@ -8,30 +8,33 @@
           </div>
           <i (click)="helpPage('initial-operation-register-agent-subagent-cluster')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           <div class="inline">
-            <button (click)="createCluster()"
-                    *ngIf="object.mapOfCheckedId.size === 0 && permission.joc && permission.joc.administration.controllers.manage"
-                    class="btn btn-grey btn-sm"
-                    translate>
-              <i class="fa fa-plus"></i>&nbsp;
-              agent.button.createCluster
-            </button>
-            <button (click)="deployAll()" *ngIf="object.mapOfCheckedId.size > 0" class="btn btn-grey btn-sm m-l-12"
-                    translate>
-              <i class="fa fa-rocket"></i>&nbsp;
-              inventory.button.deploy
-            </button>
-            <button (click)="revokeAll()" *ngIf="object.mapOfCheckedId.size > 0" class="btn btn-grey btn-sm m-l-12"
-                    translate>
-              <i class="fa fa-refresh m-r-xs"></i>
-              agent.button.revoke
-            </button>
-            <button (click)="deleteAll()" *ngIf="object.mapOfCheckedId.size > 0" class="btn btn-grey btn-sm m-l-12"
-                    translate>
-              <i class="fa fa-trash"></i>&nbsp;
-              common.button.delete
-            </button>
-            <app-toggle (messageEvent)="receiveMessage($event)"
-                        *ngIf="object.mapOfCheckedId.size === 0 && !selectedCluster.subagentClusterId"></app-toggle>
+            @if (object.mapOfCheckedId.size === 0 && permission.joc && permission.joc.administration.controllers.manage) {
+              <button (click)="createCluster()" class="btn btn-grey btn-sm" translate>
+                <i class="fa fa-plus"></i>&nbsp;
+                agent.button.createCluster
+              </button>
+            }
+            @if (object.mapOfCheckedId.size > 0) {
+              <button (click)="deployAll()" class="btn btn-grey btn-sm m-l-12" translate>
+                <i class="fa fa-rocket"></i>&nbsp;
+                inventory.button.deploy
+              </button>
+            }
+            @if (object.mapOfCheckedId.size > 0) {
+              <button (click)="revokeAll()" class="btn btn-grey btn-sm m-l-12" translate>
+                <i class="fa fa-refresh m-r-xs"></i>
+                agent.button.revoke
+              </button>
+            }
+            @if (object.mapOfCheckedId.size > 0) {
+              <button (click)="deleteAll()" class="btn btn-grey btn-sm m-l-12" translate>
+                <i class="fa fa-trash"></i>&nbsp;
+                common.button.delete
+              </button>
+            }
+            @if (object.mapOfCheckedId.size === 0 && !selectedCluster.subagentClusterId) {
+              <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
+            }
           </div>
         </div>
       </div>
@@ -40,405 +43,473 @@
 </div>
 <div class="scroll-y max-ht">
   <div class="padding p-b-0">
-    <div *ngIf="!selectedCluster || !selectedCluster.subagentClusterId">
-      <div class="row m-b-12 m-t-xs">
-        <div class="col-lg-12">
-          <div class="search-box-field pull-right">
-            <label>
-              <input (keyup)="searchInResult()" [(ngModel)]="clusterFilter.searchText" placeholder="{{'common.placeholder.search' | translate}}"
-                     type="search">
-            </label>
-            <i (click)="clusterFilter.searchText = '';searchInResult()" [hidden]="!clusterFilter.searchText"
-               class="fa fa-times search-close"></i>
-          </div>
-        </div>
-      </div>
-      <div *ngIf="pageView=='grid'" class="row m-t-xs">
-        <div *ngFor="let cluster of data"
-             class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-          <div [ngClass]="cluster.syncState ? coreService.getColor(cluster.syncState.severity,'border') :''"
-               class="box card">
-            <div class="box-body">
-              <label *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="pos-abt"
-                     style="margin-top: -2px">
-                <label [nzChecked]="object.mapOfCheckedId.has(cluster.subagentClusterId)"
-                       nz-checkbox (nzCheckedChange)="onItemChecked(cluster, $event);" ></label>
+    @if (!selectedCluster || !selectedCluster.subagentClusterId) {
+      <div>
+        <div class="row m-b-12 m-t-xs">
+          <div class="col-lg-12">
+            <div class="search-box-field pull-right">
+              <label>
+                <input (keyup)="searchInResult()" [(ngModel)]="clusterFilter.searchText" placeholder="{{'common.placeholder.search' | translate}}"
+                       type="search">
               </label>
-              <div [ngClass]="{'m-l-md': permission.joc && permission.joc.administration.controllers.manage}"
-                   class="text-left block-ellipsis">
-                 <span (click)="selectedClusterFn(cluster)" class="text-left cursor">
-                   <i class="fa fa-server text-sm p-r-xs"></i>
-                   <span [innerHtml]="cluster.subagentClusterId | highlight : clusterFilter.searchText"></span>
-                 </span>
-              </div>
-              <div *ngIf="permission.joc && permission.joc.administration.controllers.manage"
-                   class="btn-group dropdown pull-right abt-dropdown">
-                <button (nzVisibleChange)="onVisible($event)" [nzDisabled]="object.mapOfCheckedId.size > 0"
-                        [nzDropdownMenu]="option" class="btn-drop more-option-h"
-                        nz-dropdown nzTrigger="click"
-                        type="button">
-                  <i class="fa fa-ellipsis-h"></i>
-                </button>
-                <nz-dropdown-menu #option="nzDropdownMenu">
-                  <ul nz-menu>
-                    <li (click)="edit(cluster);$event.stopPropagation();" nz-menu-item>
-                      <a translate>common.button.edit</a>
-                    </li>
-                    <li (click)="duplicate(cluster);$event.stopPropagation();" nz-menu-item>
-                      <a translate>common.button.duplicate</a>
-                    </li>
-                    <li nz-menu-divider></li>
-                    <li (click)="deploy(cluster);$event.stopPropagation();" nz-menu-item>
-                      <a translate>inventory.button.deploy</a>
-                    </li>
-                    <li (click)="revoke(cluster);$event.stopPropagation();" nz-menu-item>
-                      <a translate>agent.button.revoke</a>
-                    </li>
-                    <li nz-menu-divider></li>
-                    <li (click)="delete(cluster);$event.stopPropagation();" class="bg-hover-color" nz-menu-item>
-                      <a translate>common.button.delete</a>
-                    </li>
-                  </ul>
-                </nz-dropdown-menu>
-              </div>
-              <div class="text-sm text-left text-muted p-t-xs">
-                <span translate>agent.label.syncStatus </span>:
-                <span *ngIf="cluster.syncState" [innerHtml]="cluster.syncState._text | translate | highlight : clusterFilter.searchText"
-                      [ngClass]="coreService.getColor(cluster.syncState.severity, 'text')"></span>
-              </div>
-            </div>
-            <div *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="box-footer b-t">
-              <a (click)="deploy(cluster)" class="text-left primary-text-hover-color">
-                <i class="fa fa-rocket text-black-lt p-r-xs"></i>
-                <span class="text-black-lt" translate>inventory.button.deploy</span>
-              </a>
-              <a (click)="delete(cluster)" class="pull-right text-hover-color">
-                <i class="fa fa-trash text-black-lt p-r-xs"></i>
-                <span class="text-black-lt" translate>common.button.delete</span>
-              </a>
+              <i (click)="clusterFilter.searchText = '';searchInResult()" [hidden]="!clusterFilter.searchText"
+                 class="fa fa-times search-close"></i>
             </div>
           </div>
         </div>
-      </div>
-      <div *ngIf="pageView !== 'grid' && object.checked && object.mapOfCheckedId.size > 0 && data.length > (clusterFilter.entryPerPage || preferences.entryPerPage)"
-           class="text-center font14 box p-a-10 m-b-12">
-        <span *ngIf="object.mapOfCheckedId.size !== data.length" [translateParams]="{count: object.mapOfCheckedId.size}"
-              translate>common.label.selectAllEntriesOfCurrentPage</span>
-        <span *ngIf="object.mapOfCheckedId.size === data.length" [translateParams]="{count: data.length}" translate>common.label.allEntriesSelected</span>
-        <a (click)="selectAll()" *ngIf="object.mapOfCheckedId.size !== data.length" [translateParams]="{count: data.length}"
-           class="text-primary p-l-xs" translate>common.label.selectAllEntries</a>
-        <a (click)="reset()" *ngIf="object.mapOfCheckedId.size === data.length" class="text-primary p-l-xs" translate>common.label.clearSelection</a>
-      </div>
-      <div *ngIf="pageView!=='grid'" class="box p-a m-t-sm">
-        <div class="table-responsive">
-          <nz-table
-            #ajaxTable
-            (nzPageIndexChange)="pageIndexChange($event)"
-            (nzPageSizeChange)="pageSizeChange($event)"
-            [nzBordered]="true"
-            [nzData]="data"
-            [nzLoading]="isLoading"
-            [nzPageIndex]="clusterFilter.currentPage"
-            [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
-            [nzPageSize]="clusterFilter.entryPerPage || preferences.entryPerPage || 25"
-            [nzShowPagination]="data.length > 0"
-            [nzShowSizeChanger]="true"
-            [nzSize]="'small'"
-          >
-            <thead>
-            <tr>
-              <th *ngIf="permission.joc && permission.joc.administration.controllers.manage"
-                  [(nzChecked)]="object.checked"
-                  [nzIndeterminate]="object.indeterminate"
-                  [nzShowCheckbox]="true"
-                  (nzCheckedChange)="onAllChecked($event)"
-                  nzWidth="46px"
-              ></th>
-              <th *ngIf="permission.joc && permission.joc.administration.controllers.manage" class="menu"><span
-                translate>common.label.action</span></th>
-              <th (click)="sort('subagentClusterId')"><a><span class="p-r-xs" translate>agent.label.clusterName</span>
-                <i *ngIf="clusterFilter.filter.sortBy == 'subagentClusterId' && !clusterFilter.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="clusterFilter.filter.sortBy == 'subagentClusterId' && clusterFilter.reverse"
-                   class="fa fa-caret-down "></i></a>
-              </th>
-              <th (click)="sort('syncState._text')"><a><span class="p-r-xs" translate>common.label.status</span>
-                <i *ngIf="clusterFilter.filter.sortBy == 'syncState._text' && !clusterFilter.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="clusterFilter.filter.sortBy == 'syncState._text' && clusterFilter.reverse"
-                   class="fa fa-caret-down "></i></a>
-              </th>
-            </tr>
-            </thead>
-            <tbody (cdkDropListDropped)="sortByDrop($event, ajaxTable.data)" cdkDropList>
-            <tr (click)="selectedClusterFn(cluster);$event.preventDefault()" *ngFor="let cluster of ajaxTable.data"
-                cdkDrag class="cursor move-on-hover">
-              <td *ngIf="permission.joc && permission.joc.administration.controllers.manage"
-                  [nzChecked]="object.mapOfCheckedId.has(cluster.subagentClusterId)"
-                  [nzShowCheckbox]="true" (nzCheckedChange)="onItemChecked(cluster, $event)" >
-                <div cdkDragHandle class="pos-abt move-icon text-16 cur-m t-1"
-                     style="left: -1px;overflow: hidden;max-width: 12px">
-                  <i aria-hidden="true" class="fa fa-bars"></i>
+        @if (pageView=='grid') {
+          <div class="row m-t-xs">
+            @for (cluster of data; track cluster.subagentClusterId) {
+              <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                <div [ngClass]="cluster.syncState ? coreService.getColor(cluster.syncState.severity,'border') :''" class="box card">
+                  <div class="box-body">
+                    @if (permission.joc && permission.joc.administration.controllers.manage) {
+                      <label class="pos-abt" style="margin-top: -2px">
+                        <label [nzChecked]="object.mapOfCheckedId.has(cluster.subagentClusterId)"
+                               nz-checkbox (nzCheckedChange)="onItemChecked(cluster, $event);" ></label>
+                      </label>
+                    }
+                    <div [ngClass]="{'m-l-md': permission.joc && permission.joc.administration.controllers.manage}"
+                         class="text-left block-ellipsis">
+                       <span (click)="selectedClusterFn(cluster)" class="text-left cursor">
+                         <i class="fa fa-server text-sm p-r-xs"></i>
+                         <span [innerHtml]="cluster.subagentClusterId | highlight : clusterFilter.searchText"></span>
+                       </span>
+                    </div>
+                    @if (permission.joc && permission.joc.administration.controllers.manage) {
+                      <div class="btn-group dropdown pull-right abt-dropdown">
+                        <button (nzVisibleChange)="onVisible($event)" [nzDisabled]="object.mapOfCheckedId.size > 0"
+                                [nzDropdownMenu]="option" class="btn-drop more-option-h"
+                                nz-dropdown nzTrigger="click"
+                                type="button">
+                          <i class="fa fa-ellipsis-h"></i>
+                        </button>
+                        <nz-dropdown-menu #option="nzDropdownMenu">
+                          <ul nz-menu>
+                            <li (click)="edit(cluster);$event.stopPropagation();" nz-menu-item>
+                              <a translate>common.button.edit</a>
+                            </li>
+                            <li (click)="duplicate(cluster);$event.stopPropagation();" nz-menu-item>
+                              <a translate>common.button.duplicate</a>
+                            </li>
+                            <li nz-menu-divider></li>
+                            <li (click)="deploy(cluster);$event.stopPropagation();" nz-menu-item>
+                              <a translate>inventory.button.deploy</a>
+                            </li>
+                            <li (click)="revoke(cluster);$event.stopPropagation();" nz-menu-item>
+                              <a translate>agent.button.revoke</a>
+                            </li>
+                            <li nz-menu-divider></li>
+                            <li (click)="delete(cluster);$event.stopPropagation();" class="bg-hover-color" nz-menu-item>
+                              <a translate>common.button.delete</a>
+                            </li>
+                          </ul>
+                        </nz-dropdown-menu>
+                      </div>
+                    }
+                    <div class="text-sm text-left text-muted p-t-xs">
+                      <span translate>agent.label.syncStatus </span>:
+                      @if (cluster.syncState) {
+                        <span [innerHtml]="cluster.syncState._text | translate | highlight : clusterFilter.searchText"
+                              [ngClass]="coreService.getColor(cluster.syncState.severity, 'text')"></span>
+                      }
+                    </div>
+                  </div>
+                  @if (permission.joc && permission.joc.administration.controllers.manage) {
+                    <div class="box-footer b-t">
+                      <a (click)="deploy(cluster)" class="text-left primary-text-hover-color">
+                        <i class="fa fa-rocket text-black-lt p-r-xs"></i>
+                        <span class="text-black-lt" translate>inventory.button.deploy</span>
+                      </a>
+                      <a (click)="delete(cluster)" class="pull-right text-hover-color">
+                        <i class="fa fa-trash text-black-lt p-r-xs"></i>
+                        <span class="text-black-lt" translate>common.button.delete</span>
+                      </a>
+                    </div>
+                  }
                 </div>
-              </td>
-              <td *ngIf="permission.joc && permission.joc.administration.controllers.manage">
-                <button (click)="$event.stopPropagation();" (nzVisibleChange)="onVisible($event)" [nzDisabled]="object.mapOfCheckedId.size > 0"
-                        [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown
-                        nzTrigger="click" type="button">
-                  <i class="fa fa-ellipsis-h"></i>
-                </button>
-                <nz-dropdown-menu #option="nzDropdownMenu">
-                  <ul nz-menu>
-                    <li (click)="edit(cluster);$event.stopPropagation();" nz-menu-item>
-                      <a translate>common.button.edit</a>
-                    </li>
-                    <li (click)="duplicate(cluster);$event.stopPropagation();" nz-menu-item>
-                      <a translate>common.button.duplicate</a>
-                    </li>
-                    <li nz-menu-divider></li>
-                    <li (click)="deploy(cluster);$event.stopPropagation();" nz-menu-item>
-                      <a translate>inventory.button.deploy</a>
-                    </li>
-                    <li (click)="revoke(cluster);$event.stopPropagation();" nz-menu-item>
-                      <a translate>agent.button.revoke</a>
-                    </li>
-                    <li nz-menu-divider></li>
-                    <li (click)="delete(cluster);$event.stopPropagation();" class="bg-hover-color" nz-menu-item>
-                      <a translate>common.button.delete</a>
-                    </li>
-                  </ul>
-                </nz-dropdown-menu>
-              </td>
-              <td>
-                <span [innerHtml]="cluster.subagentClusterId | highlight : clusterFilter.searchText"></span>
-                <i *ngIf="cluster.title"> - </i>
-                <i class="text-muted">{{cluster.title}}</i>
-              </td>
-              <td>
-                <label *ngIf="cluster.syncState" [innerHtml]="cluster.syncState._text | translate | highlight : clusterFilter.searchText"
-                       [ngClass]="coreService.getColor(cluster.syncState.severity, 'bg')"
-                       class="label"></label>
-              </td>
-            </tr>
-            </tbody>
-          </nz-table>
-          <div *ngIf="ajaxTable.data.length >0"
-               class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
-            <span *ngIf="ajaxTable.data.length >1" translate>agent.label.noClusterFound</span>
-            <span *ngIf="ajaxTable.data.length ==1" translate>agent.label.noClustersFound</span>
+              </div>
+            }
+          </div>
+        }
+        @if (pageView !== 'grid' && object.checked && object.mapOfCheckedId.size > 0 && data.length > (clusterFilter.entryPerPage || preferences.entryPerPage)) {
+          <div class="text-center font14 box p-a-10 m-b-12">
+            @if (object.mapOfCheckedId.size !== data.length) {
+              <span [translateParams]="{count: object.mapOfCheckedId.size}" translate>common.label.selectAllEntriesOfCurrentPage</span>
+            }
+            @if (object.mapOfCheckedId.size === data.length) {
+              <span [translateParams]="{count: data.length}" translate>common.label.allEntriesSelected</span>
+            }
+            @if (object.mapOfCheckedId.size !== data.length) {
+              <a (click)="selectAll()" [translateParams]="{count: data.length}" class="text-primary p-l-xs" translate>common.label.selectAllEntries</a>
+            }
+            @if (object.mapOfCheckedId.size === data.length) {
+              <a (click)="reset()" class="text-primary p-l-xs" translate>common.label.clearSelection</a>
+            }
+          </div>
+        }
+        @if (pageView!=='grid') {
+          <div class="box p-a m-t-sm">
+            <div class="table-responsive">
+              <nz-table
+                #ajaxTable
+                (nzPageIndexChange)="pageIndexChange($event)"
+                (nzPageSizeChange)="pageSizeChange($event)"
+                [nzBordered]="true"
+                [nzData]="data"
+                [nzLoading]="isLoading"
+                [nzPageIndex]="clusterFilter.currentPage"
+                [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
+                [nzPageSize]="clusterFilter.entryPerPage || preferences.entryPerPage || 25"
+                [nzShowPagination]="data.length > 0"
+                [nzShowSizeChanger]="true"
+                [nzSize]="'small'"
+              >
+                <thead>
+                <tr>
+                  @if (permission.joc && permission.joc.administration.controllers.manage) {
+                    <th [(nzChecked)]="object.checked"
+                        [nzIndeterminate]="object.indeterminate"
+                        [nzShowCheckbox]="true"
+                        (nzCheckedChange)="onAllChecked($event)"
+                        nzWidth="46px"
+                    ></th>
+                  }
+                  @if (permission.joc && permission.joc.administration.controllers.manage) {
+                    <th class="menu"><span translate>common.label.action</span></th>
+                  }
+                  <th (click)="sort('subagentClusterId')"><a><span class="p-r-xs" translate>agent.label.clusterName</span>
+                    @if (clusterFilter.filter.sortBy == 'subagentClusterId' && !clusterFilter.reverse) {
+                      <i class="fa fa-caret-up "></i>
+                    }
+                    @if (clusterFilter.filter.sortBy == 'subagentClusterId' && clusterFilter.reverse) {
+                      <i class="fa fa-caret-down "></i>
+                    }</a>
+                  </th>
+                  <th (click)="sort('syncState._text')"><a><span class="p-r-xs" translate>common.label.status</span>
+                    @if (clusterFilter.filter.sortBy == 'syncState._text' && !clusterFilter.reverse) {
+                      <i class="fa fa-caret-up "></i>
+                    }
+                    @if (clusterFilter.filter.sortBy == 'syncState._text' && clusterFilter.reverse) {
+                      <i class="fa fa-caret-down "></i>
+                    }</a>
+                  </th>
+                </tr>
+                </thead>
+                <tbody (cdkDropListDropped)="sortByDrop($event, ajaxTable.data)" cdkDropList>
+                  @for (cluster of ajaxTable.data; track cluster.subagentClusterId) {
+                    <tr (click)="selectedClusterFn(cluster);$event.preventDefault()" cdkDrag class="cursor move-on-hover">
+                      @if (permission.joc && permission.joc.administration.controllers.manage) {
+                        <td [nzChecked]="object.mapOfCheckedId.has(cluster.subagentClusterId)"
+                            [nzShowCheckbox]="true" (nzCheckedChange)="onItemChecked(cluster, $event)" >
+                          <div cdkDragHandle class="pos-abt move-icon text-16 cur-m t-1"
+                               style="left: -1px;overflow: hidden;max-width: 12px">
+                            <i aria-hidden="true" class="fa fa-bars"></i>
+                          </div>
+                        </td>
+                      }
+                      @if (permission.joc && permission.joc.administration.controllers.manage) {
+                        <td>
+                          <button (click)="$event.stopPropagation();" (nzVisibleChange)="onVisible($event)" [nzDisabled]="object.mapOfCheckedId.size > 0"
+                                  [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown
+                                  nzTrigger="click" type="button">
+                            <i class="fa fa-ellipsis-h"></i>
+                          </button>
+                          <nz-dropdown-menu #option="nzDropdownMenu">
+                            <ul nz-menu>
+                              <li (click)="edit(cluster);$event.stopPropagation();" nz-menu-item>
+                                <a translate>common.button.edit</a>
+                              </li>
+                              <li (click)="duplicate(cluster);$event.stopPropagation();" nz-menu-item>
+                                <a translate>common.button.duplicate</a>
+                              </li>
+                              <li nz-menu-divider></li>
+                              <li (click)="deploy(cluster);$event.stopPropagation();" nz-menu-item>
+                                <a translate>inventory.button.deploy</a>
+                              </li>
+                              <li (click)="revoke(cluster);$event.stopPropagation();" nz-menu-item>
+                                <a translate>agent.button.revoke</a>
+                              </li>
+                              <li nz-menu-divider></li>
+                              <li (click)="delete(cluster);$event.stopPropagation();" class="bg-hover-color" nz-menu-item>
+                                <a translate>common.button.delete</a>
+                              </li>
+                            </ul>
+                          </nz-dropdown-menu>
+                        </td>
+                      }
+                      <td>
+                        <span [innerHtml]="cluster.subagentClusterId | highlight : clusterFilter.searchText"></span>
+                        @if (cluster.title) {
+                          <i> - </i>
+                        }
+                        <i class="text-muted">{{cluster.title}}</i>
+                      </td>
+                      <td>
+                        @if (cluster.syncState) {
+                          <label [innerHtml]="cluster.syncState._text | translate | highlight : clusterFilter.searchText"
+                                 [ngClass]="coreService.getColor(cluster.syncState.severity, 'bg')"
+                                 class="label"></label>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </nz-table>
+              @if (ajaxTable.data.length >0) {
+                <div class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
+                  @if (ajaxTable.data.length >1) {
+                    <span translate>agent.label.noClusterFound</span>
+                  }
+                  @if (ajaxTable.data.length ==1) {
+                    <span translate>agent.label.noClustersFound</span>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+    @if (clusters.length === 0 && pageView =='grid' && !isLoading) {
+      <div class="row m-t-xs">
+        <div class="col-sm-12">
+          <div class="text-center m-t-md text-md">
+            <span translate>agent.message.noClusterFound</span>.
+            <a (click)="createCluster()" class="text-hover-primary text-u-l" translate>agent.message.clickHereToAdd</a>
           </div>
         </div>
       </div>
-    </div>
-    <div *ngIf="clusters.length === 0 && pageView =='grid' && !isLoading" class="row m-t-xs">
-      <div class="col-sm-12">
-        <div class="text-center m-t-md text-md">
-          <span translate>agent.message.noClusterFound</span>.
-          <a (click)="createCluster()" class="text-hover-primary text-u-l" translate>agent.message.clickHereToAdd</a>
-        </div>
-      </div>
-    </div>
-    <div *ngIf="selectedCluster && selectedCluster.subagentClusterId" class="row">
-      <div class="col-md-2 col-sm-3">
-        <div #listOne="cdkDropList" [cdkDropListConnectedTo]="[listTwo]" cdkDropList class="agent-list box-shadow"
-             id="toolbarContainer">
-          <ul *ngFor="let agent of agentList" cdkDrag class="p-a-0 m-0 agent-box">
-            <li>
-              <ng-template #contentTemplate>
-                <div>{{agent.url}}</div>
-                <div *ngIf="agent.title" class="text-muted">{{agent.title}}</div>
-              </ng-template>
-              <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="contentTemplate" cdkDragHandle class="draggable">
-                <span>{{agent.subagentId}}</span>
+    }
+    @if (selectedCluster && selectedCluster.subagentClusterId) {
+      <div class="row">
+        <div class="col-md-2 col-sm-3">
+          <div #listOne="cdkDropList" [cdkDropListConnectedTo]="[listTwo]" cdkDropList class="agent-list box-shadow"
+               id="toolbarContainer">
+            @for (agent of agentList; track agent.subagentId) {
+              <ul cdkDrag class="p-a-0 m-0 agent-box">
+                <li>
+                  <ng-template #contentTemplate>
+                    <div>{{agent.url}}</div>
+                    @if (agent.title) {
+                      <div class="text-muted">{{agent.title}}</div>
+                    }
+                  </ng-template>
+                  <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="contentTemplate" cdkDragHandle class="draggable">
+                    <span>{{agent.subagentId}}</span>
+                  </div>
+                </li>
+              </ul>
+            }
+            @if (agentList.length === 0) {
+              <div>
+                <div class="vert-middle">
+                  <app-empty-data></app-empty-data>
+                </div>
               </div>
-            </li>
-          </ul>
-          <div *ngIf="agentList.length === 0">
-            <div class="vert-middle">
-              <app-empty-data></app-empty-data>
-            </div>
+            }
           </div>
         </div>
-      </div>
-      <div class="col-md-10 col-sm-9">
-        <div class="hide" id="toolbar"></div>
-        <div class="graph-container">
-          <div class="m-b-12 b-b">
-            <div class="inline m-b">
-              <div style="position: relative; top: 4px">
-                <a (click)="backToListView()"><i class="fa fa-arrow-circle-left config-back-btn"
-                                                 nz-tooltip="{{'inventory.button.backToList' | translate}}"></i></a>
-                <span class="_600">{{selectedCluster.subagentClusterId}}</span>
-                <span *ngIf="selectedCluster.title" class="text-muted _400"> - {{selectedCluster.title}}</span>
+        <div class="col-md-10 col-sm-9">
+          <div class="hide" id="toolbar"></div>
+          <div class="graph-container">
+            <div class="m-b-12 b-b">
+              <div class="inline m-b">
+                <div style="position: relative; top: 4px">
+                  <a (click)="backToListView()"><i class="fa fa-arrow-circle-left config-back-btn"
+                                                   nz-tooltip="{{'inventory.button.backToList' | translate}}"></i></a>
+                  <span class="_600">{{selectedCluster.subagentClusterId}}</span>
+                  @if (selectedCluster.title) {
+                    <span class="text-muted _400"> - {{selectedCluster.title}}</span>
+                  }
+                </div>
               </div>
-            </div>
-            <div class="inline pull-right">
-              <span>
-                <span *ngIf="selectedCluster.syncState" [ngClass]="coreService.getColor(selectedCluster.syncState.severity, 'bg')"
-                      class="badge badge-sync m-l-12">
-                  {{selectedCluster.syncState._text | translate}}
+              <div class="inline pull-right">
+                <span>
+                  @if (selectedCluster.syncState) {
+                    <span [ngClass]="coreService.getColor(selectedCluster.syncState.severity, 'bg')"
+                          class="badge badge-sync m-l-12">
+                      {{selectedCluster.syncState._text | translate}}
+                    </span>
+                  }
                 </span>
-              </span>
-              <button (click)="deploy(selectedCluster)"
-                      class="btn btn-sm btn-grey m-l-12" type="button">
-                <i class="fa fa-rocket p-r-xs"></i>
-                <span translate>inventory.button.deploy</span>
-              </button>
+                <button (click)="deploy(selectedCluster)" class="btn btn-sm btn-grey m-l-12" type="button">
+                  <i class="fa fa-rocket p-r-xs"></i>
+                  <span translate>inventory.button.deploy</span>
+                </button>
+              </div>
             </div>
+            <div class="inline" id="toolbar-icons">
+              <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
+                <li class="nav-item">
+                  <a (click)="zoomIn()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.zoomIn' | translate"
+                     class="nav-link">
+                    <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="zoom-in"></i></span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a (click)="zoomOut()"
+                     [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.zoomOut' | translate" class="nav-link">
+                    <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="zoom-out"></i></span>
+                  </a>
+                </li>
+                <li class="nav-item dropdown-separator">
+                  <span class="separator"></span>
+                </li>
+                <li class="nav-item">
+                  <a (click)="actual()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.actual' | translate"
+                     class="nav-link">
+                    <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="fullscreen-exit"></i></span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a (click)="fit()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.fit' | translate"
+                     class="nav-link">
+                    <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="column-width"></i></span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div #listTwo="cdkDropList" (cdkDropListDropped)="drop($event)" [cdkDropListConnectedTo]="[listOne]" cdkDropList class="box-shadow-z1"
+                 id="graph">
+            </div>
+            <div class="dropContainer" id="dropContainer">
+              <div class="dropContainer" translate>agent.message.dropHereToDetach</div>
+            </div>
+            <div id="outlineContainer"></div>
           </div>
-          <div class="inline" id="toolbar-icons">
-            <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
-              <li class="nav-item">
-                <a (click)="zoomIn()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.zoomIn' | translate"
-                   class="nav-link">
-                  <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="zoom-in"></i></span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a (click)="zoomOut()"
-                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.zoomOut' | translate" class="nav-link">
-                  <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="zoom-out"></i></span>
-                </a>
-              </li>
-              <li class="nav-item dropdown-separator">
-                <span class="separator"></span>
-              </li>
-              <li class="nav-item">
-                <a (click)="actual()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.actual' | translate"
-                   class="nav-link">
-                  <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="fullscreen-exit"></i></span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a (click)="fit()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.fit' | translate"
-                   class="nav-link">
-                  <span class="nav-text"> <i nz-icon nzTheme="outline" nzType="column-width"></i></span>
-                </a>
-              </li>
-            </ul>
-          </div>
-          <div #listTwo="cdkDropList" (cdkDropListDropped)="drop($event)" [cdkDropListConnectedTo]="[listOne]" cdkDropList class="box-shadow-z1"
-               id="graph">
-          </div>
-          <div class="dropContainer" id="dropContainer">
-            <div class="dropContainer" translate>agent.message.dropHereToDetach</div>
-          </div>
-          <div id="outlineContainer"></div>
         </div>
+        @if (!isVisible) {
+          <div (click)="isVisible = true" class="bottom-btn primary">
+            <i nz-icon nzTheme="outline" nzType="menu-unfold"></i>
+          </div>
+        }
       </div>
-      <div (click)="isVisible = true" *ngIf="!isVisible" class="bottom-btn primary">
-        <i nz-icon nzTheme="outline" nzType="menu-unfold"></i>
-      </div>
-    </div>
+    }
   </div>
 </div>
-<div *ngIf="isLoading && pageView=='grid'" class="spinner">
-  <div class="cssload-inner cssload-one"></div>
-  <div class="cssload-inner cssload-two"></div>
-  <div class="cssload-inner cssload-three"></div>
-</div>
+@if (isLoading && pageView=='grid') {
+  <div class="spinner">
+    <div class="cssload-inner cssload-one"></div>
+    <div class="cssload-inner cssload-two"></div>
+    <div class="cssload-inner cssload-three"></div>
+  </div>
+}
 <nz-drawer (nzOnClose)="close()" [nzVisible]="isVisible" nzPlacement="right" nzWidth="500px !important">
   <ng-container *nzDrawerContent>
     <div (click)="close()" class="close-btn"></div>
-    <div *ngIf="isVisible">
-      <div *ngIf="object.mapOfCheckedId.size > 0" class="pos-abt" style="top:12px;right:8px">
-        <button (click)="deployAll()" class="btn btn-grey btn-sm m-l-12" translate>
-          <i class="fa fa-rocket m-r-xs"></i>
-          inventory.button.deploy
-        </button>
-        <button (click)="revokeAll()" class="btn btn-grey btn-sm m-l-12" translate>
-          <i class="fa fa-refresh m-r-xs"></i>
-          agent.button.revoke
-        </button>
-        <button (click)="deleteAll()" class="btn btn-grey btn-sm m-l-12" translate>
-          <i class="fa fa-trash m-r-xs"></i>
-          common.button.delete
-        </button>
+    @if (isVisible) {
+      <div>
+        @if (object.mapOfCheckedId.size > 0) {
+          <div class="pos-abt" style="top:12px;right:8px">
+            <button (click)="deployAll()" class="btn btn-grey btn-sm m-l-12" translate>
+              <i class="fa fa-rocket m-r-xs"></i>
+              inventory.button.deploy
+            </button>
+            <button (click)="revokeAll()" class="btn btn-grey btn-sm m-l-12" translate>
+              <i class="fa fa-refresh m-r-xs"></i>
+              agent.button.revoke
+            </button>
+            <button (click)="deleteAll()" class="btn btn-grey btn-sm m-l-12" translate>
+              <i class="fa fa-trash m-r-xs"></i>
+              common.button.delete
+            </button>
+          </div>
+        }
+        <div class="text-center m-t-md m-b-sm text"><span class="_600 b-b p-b-sm m-l-sm"
+                                                          translate>agent.label.clusterAgents</span></div>
+        <div class="p-a">
+          <perfect-scrollbar style="max-height: calc(100vh - 109px); overflow: auto">
+            <nz-table
+              #ajaxTable
+              [nzBordered]="true"
+              [nzData]="data"
+              [nzPageSize]="data.length"
+              [nzFrontPagination]="false"
+              [nzShowPagination]="false"
+              [nzSize]="'small'"
+            >
+              <thead>
+              <tr>
+                <th [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
+                    [nzShowCheckbox]="true" (nzCheckedChange)="onAllChecked($event)"
+                    class="chk"
+                ></th>
+                <th class="menu"><span translate>common.label.action</span></th>
+                <th (click)="sort('subagentClusterId')"><a><span class="p-r-xs" translate>agent.label.clusterName</span>
+                  @if (clusterFilter.filter.sortBy == 'subagentClusterId' && !clusterFilter.reverse) {
+                    <i class="fa fa-caret-up "></i>
+                  }
+                  @if (clusterFilter.filter.sortBy == 'subagentClusterId' && clusterFilter.reverse) {
+                    <i class="fa fa-caret-down "></i>
+                  }</a>
+                </th>
+                <th (click)="sort('syncState._text')"><a><span class="p-r-xs" translate>common.label.status</span>
+                  @if (clusterFilter.filter.sortBy == 'syncState._text' && !clusterFilter.reverse) {
+                    <i class="fa fa-caret-up "></i>
+                  }
+                  @if (clusterFilter.filter.sortBy == 'syncState._text' && clusterFilter.reverse) {
+                    <i class="fa fa-caret-down "></i>
+                  }</a>
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+                @for (cluster of ajaxTable.data; track cluster.subagentClusterId) {
+                  <tr (click)="selectedClusterFn(cluster);$event.preventDefault()" class="cursor">
+                    <td [nzChecked]="object.mapOfCheckedId.has(cluster.subagentClusterId)"
+                        [nzShowCheckbox]="true" (nzCheckedChange)="onItemChecked(cluster, $event)" >
+                    </td>
+                    <td>
+                      <button (click)="$event.stopPropagation();" (nzVisibleChange)="onVisible($event)" [nzDisabled]="object.mapOfCheckedId.size > 0"
+                              [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown
+                              nzTrigger="click" type="button">
+                        <i class="fa fa-ellipsis-h"></i>
+                      </button>
+                      <nz-dropdown-menu #option="nzDropdownMenu">
+                        <ul nz-menu>
+                          <li (click)="edit(cluster);$event.stopPropagation();" nz-menu-item>
+                            <a translate>common.button.edit</a>
+                          </li>
+                          <li (click)="duplicate(cluster);$event.stopPropagation();" nz-menu-item>
+                            <a translate>common.button.duplicate</a>
+                          </li>
+                          <li nz-menu-divider></li>
+                          <li (click)="deploy(cluster);$event.stopPropagation();" nz-menu-item>
+                            <a translate>inventory.button.deploy</a>
+                          </li>
+                          <li (click)="revoke(cluster);$event.stopPropagation();" nz-menu-item>
+                            <a translate>agent.button.revoke</a>
+                          </li>
+                          <li nz-menu-divider></li>
+                          <li (click)="delete(cluster);$event.stopPropagation();" class="bg-hover-color" nz-menu-item>
+                            <a translate>common.button.delete</a>
+                          </li>
+                        </ul>
+                      </nz-dropdown-menu>
+                    </td>
+                    <td>
+                      <span [innerHtml]="cluster.subagentClusterId"></span>
+                      @if (cluster.title) {
+                        <i> - </i>
+                      }
+                      <i class="text-muted">{{cluster.title}}</i>
+                    </td>
+                    <td>
+                      @if (cluster.syncState) {
+                        <label [innerHtml]="cluster.syncState._text | translate"
+                               [ngClass]="coreService.getColor(cluster.syncState.severity, 'bg')"
+                               class="label"></label>
+                      }
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </nz-table>
+          </perfect-scrollbar>
+        </div>
       </div>
-      <div class="text-center m-t-md m-b-sm text"><span class="_600 b-b p-b-sm m-l-sm"
-                                                        translate>agent.label.clusterAgents</span></div>
-      <div class="p-a">
-        <perfect-scrollbar style="max-height: calc(100vh - 109px); overflow: auto">
-          <nz-table
-            #ajaxTable
-            [nzBordered]="true"
-            [nzData]="data"
-            [nzPageSize]="data.length"
-            [nzFrontPagination]="false"
-            [nzShowPagination]="false"
-            [nzSize]="'small'"
-          >
-            <thead>
-            <tr>
-              <th [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
-                [nzShowCheckbox]="true" (nzCheckedChange)="onAllChecked($event)"
-                class="chk"
-              ></th>
-              <th class="menu"><span translate>common.label.action</span></th>
-              <th (click)="sort('subagentClusterId')"><a><span class="p-r-xs" translate>agent.label.clusterName</span>
-                <i *ngIf="clusterFilter.filter.sortBy == 'subagentClusterId' && !clusterFilter.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="clusterFilter.filter.sortBy == 'subagentClusterId' && clusterFilter.reverse"
-                   class="fa fa-caret-down "></i></a>
-              </th>
-              <th (click)="sort('syncState._text')"><a><span class="p-r-xs" translate>common.label.status</span>
-                <i *ngIf="clusterFilter.filter.sortBy == 'syncState._text' && !clusterFilter.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="clusterFilter.filter.sortBy == 'syncState._text' && clusterFilter.reverse"
-                   class="fa fa-caret-down "></i></a>
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr (click)="selectedClusterFn(cluster);$event.preventDefault()" *ngFor="let cluster of ajaxTable.data"
-                class="cursor">
-              <td [nzChecked]="object.mapOfCheckedId.has(cluster.subagentClusterId)"
-                  [nzShowCheckbox]="true" (nzCheckedChange)="onItemChecked(cluster, $event)" >
-              </td>
-              <td>
-                <button (click)="$event.stopPropagation();" (nzVisibleChange)="onVisible($event)" [nzDisabled]="object.mapOfCheckedId.size > 0"
-                        [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown
-                        nzTrigger="click" type="button">
-                  <i class="fa fa-ellipsis-h"></i>
-                </button>
-                <nz-dropdown-menu #option="nzDropdownMenu">
-                  <ul nz-menu>
-                    <li (click)="edit(cluster);$event.stopPropagation();" nz-menu-item>
-                      <a translate>common.button.edit</a>
-                    </li>
-                    <li (click)="duplicate(cluster);$event.stopPropagation();" nz-menu-item>
-                      <a translate>common.button.duplicate</a>
-                    </li>
-                    <li nz-menu-divider></li>
-                    <li (click)="deploy(cluster);$event.stopPropagation();" nz-menu-item>
-                      <a translate>inventory.button.deploy</a>
-                    </li>
-                    <li (click)="revoke(cluster);$event.stopPropagation();" nz-menu-item>
-                      <a translate>agent.button.revoke</a>
-                    </li>
-                    <li nz-menu-divider></li>
-                    <li (click)="delete(cluster);$event.stopPropagation();" class="bg-hover-color" nz-menu-item>
-                      <a translate>common.button.delete</a>
-                    </li>
-                  </ul>
-                </nz-dropdown-menu>
-              </td>
-              <td>
-                <span [innerHtml]="cluster.subagentClusterId"></span>
-                <i *ngIf="cluster.title"> - </i>
-                <i class="text-muted">{{cluster.title}}</i>
-              </td>
-              <td>
-                <label *ngIf="cluster.syncState" [innerHtml]="cluster.syncState._text | translate"
-                       [ngClass]="coreService.getColor(cluster.syncState.severity, 'bg')"
-                       class="label"></label>
-              </td>
-            </tr>
-            </tbody>
-          </nz-table>
-        </perfect-scrollbar>
-      </div>
-    </div>
+    }
   </ng-container>
 </nz-drawer>
 <nz-dropdown-menu #menu="nzDropdownMenu">

@@ -9,6 +9,7 @@ import {
 import {CoreService} from "../../services/core.service";
 
 @Component({
+  standalone: false,
   selector: 'app-select-document',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './select-document.component.html',

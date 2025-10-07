@@ -1,13 +1,23 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="!releasable && !isRemove && !isRevoke" translate>inventory.label.deploy</span>
-    <span *ngIf="isRevoke" translate>inventory.label.revoke</span>
-    <span *ngIf="releasable && !isRemove && operation !== 'recall'" translate>inventory.label.release</span>
-    <span *ngIf="operation === 'recall'" translate>inventory.label.recall</span>
-    <span *ngIf="isRemove" translate>inventory.label.remove</span>
-    <span *ngIf="path">:
-      {{path}}
-    </span>
+    @if (!releasable && !isRemove && !isRevoke) {
+      <span translate>inventory.label.deploy</span>
+    }
+    @if (isRevoke) {
+      <span translate>inventory.label.revoke</span>
+    }
+    @if (releasable && !isRemove && operation !== 'recall') {
+      <span translate>inventory.label.release</span>
+    }
+    @if (operation === 'recall') {
+      <span translate>inventory.label.recall</span>
+    }
+    @if (isRemove) {
+      <span translate>inventory.label.remove</span>
+    }
+    @if (path) {
+      <span>: {{path}}</span>
+    }
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -19,495 +29,701 @@
       <div [ngClass]="{'show': display && nodes.length > 0}" class="hide">
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="6"></app-audit-log-input>
       </div>
-      <div *ngIf="!releasable && !isRemove && nodes.length > 0" class="form-group row">
-        <label class="col-md-3 form-control-label">
-          <label translate>inventory.label.controllers</label>
-        </label>
-        <div class="col-md-6">
-          <nz-select
-            [(ngModel)]="selectedSchedulerIds"
-            name="schedulerIds"
-            nzMode="multiple"
-            nzShowSearch>
-            <ng-container *ngFor="let id of schedulerIds.controllerIds">
-              <nz-option [nzLabel]="id" [nzValue]="id"></nz-option>
-            </ng-container>
-          </nz-select>
-        </div>
-      </div>
-
-      <div *ngIf="!isRevoke && nodes.length > 0 && ((!data.controller && !data.dailyPlan && !data.object && !data.objectType) || ((data.object && (data.object == 'WORKFLOW' || data.object == 'SCHEDULE' || data.object.match('CALENDAR'))) || (data.objectType && (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType.match('CALENDAR'))) || data.controller || data.dailyPlan))"
-           class="form-group row">
-        <div class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
-        <div class="col-md-9">
-          <nz-radio-group [(ngModel)]="dailyPlanDate.addOrdersDateFrom" name="addOrdersDateFrom">
-            <label nz-radio nzValue="now"><span translate>inventory.addOrdersDateFrom.now</span></label>
-            <label nz-radio nzValue="startingFrom"><span
-              translate>inventory.addOrdersDateFrom.startingFrom</span></label>
-            <label nz-radio nzValue=""><span translate>inventory.addOrdersDateFrom.no</span></label>
-          </nz-radio-group>
-        </div>
-      </div>
-      <div *ngIf="dailyPlanDate.addOrdersDateFrom == 'startingFrom'" class="form-group row">
-        <label class="col-md-3 form-control-label" translate>common.label.specificDate
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div class="col-md-6">
-          <app-date-input [object]="dateObj" [attributeDate]="'fromDate'" [isRequired]="true"
-                          [name]="'from'" [dateFormat]="dateFormat" [isAllowClear]="true"
-                          [placeholder]="( dateFormat | uppercase )"
-          ></app-date-input>
-        </div>
-      </div>
-      <div *ngIf="!data || !data.object && !releasable && !isRemove && !isRevoke" class="row m-b-12">
-        <div class="col-md-3" translate>inventory.label.deployType</div>
-        <div class="col-md-6">
-          <nz-radio-group [(ngModel)]="object.deployType" name="deployType" (ngModelChange)="filterList()">
-            <label nz-radio nzValue="individual"><span translate>inventory.label.individualObjects</span></label>
-            <label nz-radio nzValue="changes"><span translate>inventory.label.changes</span></label>
-          </nz-radio-group>
-        </div>
-      </div>
-      <div *ngIf="!isRevoke && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects"  class="form-group row">
-        <label class="col-md-3 " translate>inventory.label.includeTodaysLateOrders</label>
-        <div class="col-md-6">
-          <label nz-checkbox [(ngModel)]="includeLate" name="includeLate"></label>
-        </div>
-      </div>
-      <div *ngIf="!isRevoke && !isDeleted && !releasable && !isRemove && !isSelectedObjects && object.deployType === 'individual'" class="form-group row">
-        <div class="col-md-3">
-          <label translate>inventory.export.label.filter</label>
-        </div>
-        <div class="col-md-9">
-          <label [(ngModel)]="filter.draft" name="draft" nz-checkbox (ngModelChange)="filterList()">
-            {{'inventory.export.label.draft'| translate}}
+      @if (!releasable && !isRemove && nodes.length > 0) {
+        <div class="form-group row">
+          <label class="col-md-3 form-control-label">
+            <label translate>inventory.label.controllers</label>
           </label>
-          <label [(ngModel)]="filter.deploy" class="m-l-md" name="deploy" nz-checkbox (ngModelChange)="filterList()">
-            {{'inventory.export.label.deployed'| translate}}
-          </label>
-        </div>
-      </div>
-      <div *ngIf="(!data || !data.object) && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects && object.deployType === 'individual'"
-           class="form-group row">
-        <div class="col-md-3">
-          <label translate>inventory.label.handleRecursively</label>
-        </div>
-        <div class="col-md-6">
-          <label [(ngModel)]="object.isRecursive" name="isRecursive"
-                 nz-checkbox (ngModelChange)="handleRecursive()"></label>
-        </div>
-      </div>
-
-      <div *ngIf="isRemove && hasDependencies()" class="m-b-sm opacity-0_5">
-        <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.remove' | translate}}</label>
-      </div>
-      <div *ngIf="isRevoke && hasDependencies()" class="m-b-sm opacity-0_5">
-        <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.revoke' | translate}}</label>
-      </div>
-      <div *ngIf="operation === 'recall' && hasDependencies()" class="m-b-sm opacity-0_5">
-        <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.recall' | translate}}</label>
-      </div>
-      <div *ngIf="!releasable && !isRemove && !isRevoke && nodes.length > 0 && dependenciesToggleAvailable && object.deployType != 'changes'"
-           class="form-group row">
-        <div class="col-md-3">
-        <label translate>inventory.label.useDependencies</label>
-        </div>
-        <div class="col-md-6">
-          <label nz-checkbox [(ngModel)]="useDependencies" name="useDependencies"></label>
-        </div>
-      </div>
-      <div *ngIf="!isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects && object.deployType === 'individual'" class="row m-b-sm">
-        <div class="col-md-12">
-          <a (click)="expandAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
-            <i class="fa fa-angle-double-down fa-lg"></i>
-          </a>
-          <a (click)="collapseAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
-            <i class="fa fa-angle-double-up fa-lg"></i>
-          </a>
-        </div>
-      </div>
-      <div *ngIf="object.deployType === 'changes' && !releasable && !isRemove && !isRevoke" [ngClass]="{'has-error' : ((changeName.dirty || changeName.touched) && changeName.invalid)}" class="form-group row">
-        <label class="col-sm-3 form-control-label" translate>common.label.name
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div class="col-sm-6">
-          <nz-select #changeName="ngModel" required [(ngModel)]="this.selectedChange" (ngModelChange)="onChange($event)"
-                     name="changeName"  nzPlaceHolder="{{'common.placeholder.name' | translate}}" nzShowSearch>
-            <nz-option *ngFor="let option of changeObj" [nzLabel]="option.name"
-                       [nzValue]="option.name"></nz-option>
-          </nz-select>
-          <div *ngIf="changeName.invalid && (changeName.dirty || changeName.touched)" class="text-danger help-block">
-            <div *ngIf="changeName.errors['required']">
-              <div translate>common.message.requiredError</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div *ngIf="object.deployType === 'individual'" class="row">
-        <div class="col-md-12">
-          <nz-tree
-            #treeCtrl
-            (nzCheckBoxChange)="checkBoxChange($event)"
-            (nzExpandChange)="getDeploymentVersion($event)"
-            [nzCheckStrictly]="!object.isRecursive"
-            [nzCheckable]="!isRemove && !isSelectedObjects"
-            [nzData]="nodes"
-            [nzTreeTemplate]="nzTreeTemplate"
-            nzNoAnimation
-          ></nz-tree>
-
-
-          <ng-template #nzTreeTemplate let-node>
-            <div class="node-wrapper">
-              <i *ngIf="node.origin.loading" class="pos-abt" style="margin-left: -42px">
-                <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
-              </i>
-              <div (click)="openFolder(node)" [ngClass]="{'m-t-xs' :node.origin.object}" class="node-content-wrapper2">
-                <i *ngIf="!node.origin.object && !node.origin.type" [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
-                   class="w-14" nz-icon></i>
-                <i *ngIf="node.origin.object == 'WORKFLOW'" class="icon-color" nz-icon nzTheme="outline"
-                   nzType="apartment"></i>
-                <i *ngIf="node.origin.object == 'FILEORDERSOURCE'" class="icon-orders-icon icon-color tree-icon"></i>
-                <i *ngIf="node.origin.object == 'JOBRESOURCE'" class="icon-resources-icon icon-color tree-icon"></i>
-                <i *ngIf="node.origin.object == 'JOBTEMPLATE'" class="icon-jobs-icon icon-color tree-icon"></i>
-                <i *ngIf="node.origin.object == 'NOTICEBOARD'" class="icon-color" nz-icon nzTheme="outline"
-                   nzType="pushpin"></i>
-                <i *ngIf="node.origin.object == 'LOCK'" class="icon-color" nz-icon nzTheme="outline" nzType="lock"></i>
-                <i *ngIf="node.origin.object == 'SCHEDULE'" class="icon-color" nz-icon nzTheme="outline"
-                   nzType="schedule"></i>
-                <i *ngIf="node.origin.object == 'INCLUDESCRIPT'" class="fa fa-terminal w-13"></i>
-                <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" class="icon-color" nz-icon
-                   nzTheme="outline" nzType="calendar"></i>
-                <span *ngIf="node.origin.type" [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' :(node.origin.deployed || node.origin.released) || node.origin.deployId || node.origin.releaseId,
-                    'opacity7': node.origin.syncState && (node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING')}" class="fa fa-check-circle-o orange text-xs m-t-xs"></span>
-                <span *ngIf="node.origin.type && node.origin.syncState" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="node.origin.syncState._text | translate"
-                      class="p-l-xxs">
-                      <i
-                        *ngIf="node.origin.syncState._text === 'IN_SYNC' || node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING'"
-                        class="fa fa-refresh font11 p-l-xxs"></i>
-                      <i *ngIf="node.origin.syncState._text === 'UNKNOWN'"
-                         class="fa fa-exclamation-triangle font11 p-l-xxs"></i>
-                      <i *ngIf="node.origin.syncState._text === 'NOT_IN_SYNC'"
-                         class="icon3-reload-error font11 pos-rel t-1 p-l-xxs"></i>
-                    </span>
-                <span *ngIf="node.origin.object" class="p-l-sm text-capitalize">{{node.origin.name | translate}}</span>
-                <span *ngIf="!node.origin.object && !isRemove" class="p-l-sm">{{node.origin.name}}</span>
-                <span *ngIf="!node.origin.object && isRemove" class="p-l-sm">{{node.origin.name}}</span>
-              </div>
-              <div *ngIf="!isRemove && node.origin.type && node.origin.deployablesVersions && node.origin.deployablesVersions.length >0"
-                   class="m-l">
-                <nz-select [(ngModel)]="node.origin.deployId"
-                           [nzSize]="'small'"
-                           name="'version-' + {{node.key}}">
-                  <ng-container *ngIf="!node.origin.valid">
-                    <nz-option [nzLabel]="'workflow.label.draft' | translate" nzCustomContent nzValue="">
-                      <div>
-                        <span
-                          class="fa fa-circle-o text-xs text-danger p-r-xs"></span>{{'workflow.label.draft' | translate}}
-                        - <span class="label bg-orange" translate>inventory.label.notValid</span>
-                      </div>
-                    </nz-option>
-                  </ng-container>
-                  <ng-container *ngFor="let version of node.origin.deployablesVersions">
-                    <nz-option [nzLabel]="(!version.versions || version.versions.length === 0) ? ('workflow.label.draft' | translate) : (version.versionDate | stringToDate)" [nzValue]="version.deploymentId"
-                               nzCustomContent>
-                      <div *ngIf="version.versions && version.versions.length>0">
-                        <span [ngClass]="version.deploymentId ? ' dark-blue': ''"
-                              class="fa fa-circle-o text-xs p-r-xs"></span>
-                        {{version.versionDate | stringToDate}} <span [ngClass]="version.deploymentOperation === 'delete' ? ' text-danger': ''"
-                                                                     class="p-l-sm">{{version.deploymentOperation}}</span>
-                        <i *ngIf="version.deploymentPath" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="version.deploymentPath"
-                           class="text-muted p-l-sm">{{version.deploymentPath}}</i></div>
-                      <div *ngFor="let ver of version.versions" class="version-inner-list">
-                        {{ver.controllerId}} <i *ngIf="ver.version">,</i> {{ver.version}}
-                      </div>
-                      <div *ngIf="!version.versions || version.versions.length === 0">
-                        <span class="fa fa-circle-o text-xs p-r-xs"></span>{{'workflow.label.draft' | translate}}
-                      </div>
-                    </nz-option>
-                  </ng-container>
-                </nz-select>
-              </div>
-              <div *ngIf="!isRemove && node.origin.type && operation !== 'recall' && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)"
-                   class="m-l">
-                <i *ngIf="!node.origin.deleted" class="text-muted" translate>workflow.label.draft</i>
-                <i *ngIf="node.origin.deleted && node.origin.deploymentId" class="text-danger" translate>inventory.label.deployMarkDelete</i>
-                <i *ngIf="node.origin.deleted && !node.origin.deploymentId" class="text-danger" translate>inventory.label.markForDelete</i>
-              </div>
-              <div *ngIf="!isRemove && !node.origin.type && !node.origin.object" class="m-l">
-                <i *ngIf="node.origin.deleted && node.origin.deploymentId" class="text-danger" translate>inventory.label.deployMarkDelete</i>
-                <i *ngIf="node.origin.deleted && !node.origin.deploymentId" class="text-danger" translate>inventory.label.markForDelete</i>
-              </div>
-            </div>
-
-            <div *ngIf="node.origin.dependencies" style="width: 400px" >
-            <div *ngFor="let dependency of [node.origin.dependencies]" class="dependencies-list m-l-20 m-t-xs">
-              <div *ngIf="dependency?.referencedBy?.length > 0 || dependency?.references?.length > 0 " class="form-group row" style="justify-content: space-between">
-
-           <!-- Affected Objects (referencedBy) -->
-                <div *ngIf="dependency?.referencedBy?.length > 0" class="col-md-6"  class="form-group">
-                  <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !affectedCollapsed[node.key], 'fa-caret-down': affectedCollapsed[node.key]}"
-                     (click)="toggleAffectedCollapse(node.key)"></i>
-                  <label class="m-l-sm">{{ 'inventory.label.affectedObjects' | translate }}</label>
-                  <div *ngIf="affectedCollapsed[node.key]" class="m-t-sm m-l-md">
-                    <ng-container *ngFor="let objectType of getUniqueObjectTypes(dependency?.referencedBy)">
-                      <div *ngIf="getObjectsByType(dependency?.referencedBy, objectType)?.length" class="m-t-sm">
-                         <ng-container>
-                          <label>
-                            <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
-                              <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
-                            </span>
-                            <span *ngIf="isCustomIcon(objectType)" class="icon-color" [ngClass]="getIcon(objectType)"></span>
-                            {{ getObjectTypeLabel(objectType) | translate }}
-                          </label>
-                        </ng-container>
-
-                          <div *ngIf="affectedCollapsed[objectType]" class="m-t-sm m-l-md">
-                            <div *ngFor="let obj of getObjectsByType(dependency?.referencedBy, objectType)">
-                              <ng-container *ngIf="isRemove; else normalCheckbox">
-                                <label nz-checkbox [(ngModel)]="sharedCheckboxState[obj.path]" [name]="'checkbox-' + obj.path"
-                                       [disabled]="obj.disabled" (ngModelChange)="updateParentCheckboxAffected(objectType)">
-                                  <span [ngClass]="{
-                                      'fa-circle-o': !obj.valid,
-                                      'fa-circle dark-blue': obj.deployed || obj.released
-                                  }" class="fa fa-check-circle-o orange text-xs"></span>
-                                  {{ obj.path }}
-                                </label>
-                              </ng-container>
-                              <ng-template #normalCheckbox>
-                                <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-' + obj.path"
-                                       [disabled]="obj.disabled" (ngModelChange)="updateParentCheckboxAffected(objectType)">
-                                  <span [ngClass]="{
-                                      'fa-circle-o': !obj.valid,
-                                      'fa-circle dark-blue': obj.deployed || obj.released
-                                  }" class="fa fa-check-circle-o orange text-xs"></span>
-                                  {{ obj.path }}
-                                </label>
-                              </ng-template>
-                            </div>
-                          </div>
-                        </div>
-                      </ng-container>
-                    </div>
-                  </div>
-
-                <!-- Referenced Objects (references) -->
-                <div *ngIf="dependency?.references?.length > 0" class="col-md-6"  class="form-group">
-                  <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !referencedCollapsed[node.key], 'fa-caret-down': referencedCollapsed[node.key]}"
-                     (click)="toggleReferencedCollapse(node.key)"></i>
-                  <label class="m-l-sm">{{ 'inventory.label.referencedObjects' | translate }}</label>
-                  <div *ngIf="referencedCollapsed[node.key]" class="m-t-sm m-l-md">
-                    <ng-container *ngFor="let objectType of getUniqueObjectTypes(dependency?.references)">
-                      <div *ngIf="getObjectsByType(dependency?.references, objectType)?.length" class="m-t-sm">
-                        <ng-container >
-                          <label>
-                            <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
-                              <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
-                            </span>
-                            <span *ngIf="isCustomIcon(objectType)" class="icon-color" [ngClass]="getIcon(objectType)"></span>
-                            {{ getObjectTypeLabel(objectType) | translate }}
-                          </label>
-                        </ng-container>
-
-                        <div *ngIf="referencedCollapsed[objectType]" class="m-t-sm m-l-md">
-                          <div *ngFor="let obj of getObjectsByType(dependency?.references, objectType)">
-                            <ng-container>
-                              <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox_' + obj.path"
-                                     [disabled]="obj.disabled" (ngModelChange)="updateParentCheckboxReferenced(objectType)">
-                                <span [ngClass]="{
-                                    'fa-circle-o': !obj.valid,
-                                    'fa-circle dark-blue': obj.deployed || obj.released
-                                }" class="fa fa-check-circle-o orange text-xs"></span>
-                                {{ obj.path }}
-                              </label>
-                            </ng-container>
-                          </div>
-                        </div>
-                      </div>
-                    </ng-container>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-            </div>
-          </ng-template>
-          <div *ngIf="filteredAffectedItems?.length > 0" class="form-group row m-t-sm m-l-sm" style="justify-content: space-between">
-            <!-- Filtered Affected Objects -->
-            <div class="form-group">
-              <i class="cursor text-16 fa"
-                 [ngClass]="{'fa-caret-right': !filteredAffectedCollapsed, 'fa-caret-down': filteredAffectedCollapsed}"
-                 (click)="filteredAffectedCollapsed = !filteredAffectedCollapsed"></i>
-              <label class="m-l-sm">{{ 'inventory.label.filteredAffectedItems' | translate }}</label>
-              <div *ngIf="filteredAffectedCollapsed" class="m-t-sm m-l-md">
-                <ng-container *ngFor="let objectType of getUniqueObjectTypes(filteredAffectedItems)">
-                  <div *ngIf="getObjectsByType(filteredAffectedItems, objectType)?.length" class="m-t-sm">
-                    <label nz-checkbox [(ngModel)]="selectAllFilteredAffected[objectType]" [name]="'checkbox--' + objectType"
-                           (ngModelChange)="toggleAllFilteredAffected(objectType, $event)">
-            <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
-              <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
-            </span>
-                      <span *ngIf="isCustomIcon(objectType)" class="icon-color" [ngClass]="getIcon(objectType)"></span>
-                      {{ getObjectTypeLabel(objectType) | translate }}
-                    </label>
-                    <div *ngIf="filteredAffectedCollapsed" class="m-t-sm m-l-md">
-                      <div *ngFor="let obj of getObjectsByType(filteredAffectedItems, objectType)">
-                        <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox--'+ objectType + obj.path" [disabled]="obj.disabled"
-                               (ngModelChange)="updateParentCheckboxFilteredAffected(objectType)">
-                <span [ngClass]="{
-                    'fa-circle-o': !obj.valid,
-                    'fa-circle dark-blue': obj.deployed || obj.released
-                }" class="fa fa-check-circle-o orange text-xs m-t-xs m-l-xs"></span>
-                          {{ obj.path }}
-                        </label>
-                      </div>
-                    </div>
-                  </div>
+          <div class="col-md-6">
+            <nz-select
+              [(ngModel)]="selectedSchedulerIds"
+              name="schedulerIds"
+              nzMode="multiple"
+              nzShowSearch>
+              @for (id of schedulerIds.controllerIds; track id) {
+                <ng-container>
+                  <nz-option [nzLabel]="id" [nzValue]="id"></nz-option>
                 </ng-container>
-              </div>
-            </div>
+              }
+            </nz-select>
           </div>
-
         </div>
-      </div>
-      <div *ngIf="changesNodes.length > 0 && object.deployType === 'changes'" class="row">
-        <div class="col-md-12">
-          <nz-tree
-            [nzCheckable]="false"
-            (nzCheckBoxChange)="checkBoxChanges($event)"
-            [nzData]="nodes"
-            [nzTreeTemplate]="nzTreeChnagesTemplate"
-            [nzShowExpand]="false"
-            nzNoAnimation
-          ></nz-tree>
+      }
 
+      @if (!isRevoke && nodes.length > 0 && ((!data.controller && !data.dailyPlan && !data.object && !data.objectType) || ((data.object && (data.object == 'WORKFLOW' || data.object == 'SCHEDULE' || data.object.match('CALENDAR'))) || (data.objectType && (data.objectType == 'WORKFLOW' || data.objectType == 'SCHEDULE' || data.objectType.match('CALENDAR'))) || data.controller || data.dailyPlan))) {
+        <div class="form-group row">
+          <div class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
+          <div class="col-md-9">
+            <nz-radio-group [(ngModel)]="dailyPlanDate.addOrdersDateFrom" name="addOrdersDateFrom">
+              <label nz-radio nzValue="now"><span translate>inventory.addOrdersDateFrom.now</span></label>
+              <label nz-radio nzValue="startingFrom"><span translate>inventory.addOrdersDateFrom.startingFrom</span></label>
+              <label nz-radio nzValue=""><span translate>inventory.addOrdersDateFrom.no</span></label>
+            </nz-radio-group>
+          </div>
+        </div>
+      }
+      @if (dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
+        <div class="form-group row">
+          <label class="col-md-3 form-control-label" translate>common.label.specificDate
+            <sup class="text-danger text-sm">*</sup>
+          </label>
+          <div class="col-md-6">
+            <app-date-input [object]="dateObj" [attributeDate]="'fromDate'" [isRequired]="true"
+                            [name]="'from'" [dateFormat]="dateFormat" [isAllowClear]="true"
+                            [placeholder]="( dateFormat | uppercase )"
+            ></app-date-input>
+          </div>
+        </div>
+      }
+      @if (!data || !data.object && !releasable && !isRemove && !isRevoke) {
+        <div class="row m-b-12">
+          <div class="col-md-3" translate>inventory.label.deployType</div>
+          <div class="col-md-6">
+            <nz-radio-group [(ngModel)]="object.deployType" name="deployType" (ngModelChange)="filterList()">
+              <label nz-radio nzValue="individual"><span translate>inventory.label.individualObjects</span></label>
+              <label nz-radio nzValue="changes"><span translate>inventory.label.changes</span></label>
+            </nz-radio-group>
+          </div>
+        </div>
+      }
+      @if (!isRevoke && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects) {
+        <div class="form-group row">
+          <label class="col-md-3 " translate>inventory.label.includeTodaysLateOrders</label>
+          <div class="col-md-6">
+            <label nz-checkbox [(ngModel)]="includeLate" name="includeLate"></label>
+          </div>
+        </div>
+      }
+      @if (!isRevoke && !isDeleted && !releasable && !isRemove && !isSelectedObjects && object.deployType === 'individual') {
+        <div class="form-group row">
+          <div class="col-md-3">
+            <label translate>inventory.export.label.filter</label>
+          </div>
+          <div class="col-md-9">
+            <label [(ngModel)]="filter.draft" name="draft" nz-checkbox (ngModelChange)="filterList()">
+              {{'inventory.export.label.draft'| translate}}
+            </label>
+            <label [(ngModel)]="filter.deploy" class="m-l-md" name="deploy" nz-checkbox (ngModelChange)="filterList()">
+              {{'inventory.export.label.deployed'| translate}}
+            </label>
+          </div>
+        </div>
+      }
+      @if ((!data || !data.object) && !isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects && object.deployType === 'individual') {
+        <div class="form-group row">
+          <div class="col-md-3">
+            <label translate>inventory.label.handleRecursively</label>
+          </div>
+          <div class="col-md-6">
+            <label [(ngModel)]="object.isRecursive" name="isRecursive"
+                   nz-checkbox (ngModelChange)="handleRecursive()"></label>
+          </div>
+        </div>
+      }
 
-          <ng-template #nzTreeChnagesTemplate let-node>
-            <div class="node-wrapper">
-              <i *ngIf="node.origin.loading" class="pos-abt" style="margin-left: -42px">
-                <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
-              </i>
-              <div  [ngClass]="{'m-t-xs' :node.origin.object}" class="node-content-wrapper2">
-                <i *ngIf="!node.origin.object && !node.origin.type" [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
-                   class="w-14" nz-icon></i>
-                <i *ngIf="node.origin.object == 'WORKFLOW'" class="icon-color" nz-icon nzTheme="outline"
-                   nzType="apartment"></i>
-                <i *ngIf="node.origin.object == 'FILEORDERSOURCE'" class="icon-orders-icon icon-color tree-icon"></i>
-                <i *ngIf="node.origin.object == 'JOBRESOURCE'" class="icon-resources-icon icon-color tree-icon"></i>
-                <i *ngIf="node.origin.object == 'JOBTEMPLATE'" class="icon-jobs-icon icon-color tree-icon"></i>
-                <i *ngIf="node.origin.object == 'NOTICEBOARD'" class="icon-color" nz-icon nzTheme="outline"
-                   nzType="pushpin"></i>
-                <i *ngIf="node.origin.object == 'LOCK'" class="icon-color" nz-icon nzTheme="outline" nzType="lock"></i>
-                <i *ngIf="node.origin.object == 'SCHEDULE'" class="icon-color" nz-icon nzTheme="outline"
-                   nzType="schedule"></i>
-                <i *ngIf="node.origin.object == 'INCLUDESCRIPT'" class="fa fa-terminal w-13"></i>
-                <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" class="icon-color" nz-icon
-                   nzTheme="outline" nzType="calendar"></i>
-                <span *ngIf="node.origin.type" [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' :(node.origin.deployed || node.origin.released) || node.origin.deployId || node.origin.releaseId,
-                    'opacity7': node.origin.syncState && (node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING')}" class="fa fa-check-circle-o orange text-xs m-t-xs"></span>
-                <span *ngIf="node.origin.object" class="p-l-sm text-capitalize">{{node.origin.name | translate}}</span>
-                <span *ngIf="!node.origin.object" class="p-l-sm">{{node.origin.name}}</span>
+      @if (isRemove && hasDependencies()) {
+        <div class="m-b-sm opacity-0_5">
+          <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.remove' | translate}}</label>
+        </div>
+      }
+      @if (isRevoke && hasDependencies()) {
+        <div class="m-b-sm opacity-0_5">
+          <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.revoke' | translate}}</label>
+        </div>
+      }
+      @if (operation === 'recall' && hasDependencies()) {
+        <div class="m-b-sm opacity-0_5">
+          <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.recall' | translate}}</label>
+        </div>
+      }
+      @if (!releasable && !isRemove && !isRevoke && nodes.length > 0 && dependenciesToggleAvailable && object.deployType != 'changes') {
+        <div class="form-group row">
+          <div class="col-md-3">
+          <label translate>inventory.label.useDependencies</label>
+          </div>
+          <div class="col-md-6">
+            <label nz-checkbox [(ngModel)]="useDependencies" name="useDependencies"></label>
+          </div>
+        </div>
+      }
+      @if (!isDeleted && !isRemove && nodes.length > 0 && !isSelectedObjects && object.deployType === 'individual') {
+        <div class="row m-b-sm">
+          <div class="col-md-12">
+            <a (click)="expandAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
+              <i class="fa fa-angle-double-down fa-lg"></i>
+            </a>
+            <a (click)="collapseAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
+              <i class="fa fa-angle-double-up fa-lg"></i>
+            </a>
+          </div>
+        </div>
+      }
+      @if (object.deployType === 'changes' && !releasable && !isRemove && !isRevoke) {
+        <div [ngClass]="{'has-error' : ((changeName.dirty || changeName.touched) && changeName.invalid)}" class="form-group row">
+          <label class="col-sm-3 form-control-label" translate>common.label.name
+            <sup class="text-danger text-sm">*</sup>
+          </label>
+          <div class="col-sm-6">
+            <nz-select #changeName="ngModel" required [(ngModel)]="this.selectedChange" (ngModelChange)="onChange($event)"
+                       name="changeName"  nzPlaceHolder="{{'common.placeholder.name' | translate}}" nzShowSearch>
+              @for (option of changeObj; track option) {
+                <nz-option [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
+              }
+            </nz-select>
+            @if (changeName.invalid && (changeName.dirty || changeName.touched)) {
+              <div class="text-danger help-block">
+                @if (changeName.errors['required']) {
+                  <div translate>common.message.requiredError</div>
+                }
               </div>
-            </div>
-
-            <div *ngIf="node.origin.dependencies" style="width: 400px">
-              <div *ngFor="let dependency of [node.origin.dependencies]" class="dependencies-list m-l-20 m-t-xs">
-
-                <!-- Affected Objects (referencedBy) -->
-                <div *ngIf="dependency?.referencedBy?.length > 0" class="col-md-6"  class="form-group">
-                  <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !affectedCollapsed[node.key], 'fa-caret-down': affectedCollapsed[node.key]}"
-                     (click)="toggleAffectedCollapse(node.key)"></i>
-                  <label class="m-l-sm">{{ 'inventory.label.affectedObjects' | translate }}</label>
-                  <div *ngIf="affectedCollapsed[node.key]" class="m-t-sm m-l-md">
-                    <ng-container *ngFor="let objectType of getUniqueObjectTypes(dependency?.referencedBy)">
-                      <div *ngIf="getObjectsByType(dependency?.referencedBy, objectType)?.length" class="m-t-sm">
-                        <ng-container>
-                          <label>
-                            <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
-                              <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
-                            </span>
-                            <span *ngIf="isCustomIcon(objectType)" class="icon-color" [ngClass]="getIcon(objectType)"></span>
-                            {{ getObjectTypeLabel(objectType) | translate }}
-                          </label>
-                        </ng-container>
-
-                        <div *ngIf="affectedCollapsed[objectType]" class="m-t-sm m-l-md">
-                          <div *ngFor="let obj of getObjectsByType(dependency?.referencedBy, objectType)">
-                            <ng-container>
-                              <label>
-                                  <span [ngClass]="{
-                                      'fa-circle-o': !obj.valid,
-                                      'fa-circle dark-blue': obj.deployed || obj.released
-                                  }" class="fa fa-check-circle-o orange text-xs"></span>
-                                {{ obj.path }}
-                              </label>
-                            </ng-container>
-                          </div>
-                        </div>
-                      </div>
-                    </ng-container>
-                  </div>
-                </div>
-
-                <!-- Referenced Objects (references) -->
-                <div *ngIf="dependency?.references?.length > 0" class="col-md-6"  class="form-group">
-                  <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !referencedCollapsed[node.key], 'fa-caret-down': referencedCollapsed[node.key]}"
-                     (click)="toggleReferencedCollapse(node.key)"></i>
-                  <label class="m-l-sm">{{ 'inventory.label.referencedObjects' | translate }}</label>
-                  <div *ngIf="referencedCollapsed[node.key]" class="m-t-sm m-l-md">
-                    <ng-container *ngFor="let objectType of getUniqueObjectTypes(dependency?.references)">
-                      <div *ngIf="getObjectsByType(dependency?.references, objectType)?.length" class="m-t-sm">
-                        <ng-container >
-                          <label>
-                            <span *ngIf="!isCustomIcon(objectType)" class="icon-color">
-                              <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
-                            </span>
-                            <span *ngIf="isCustomIcon(objectType)" class="icon-color" [ngClass]="getIcon(objectType)"></span>
-                            {{ getObjectTypeLabel(objectType) | translate }}
-                          </label>
-                        </ng-container>
-
-                        <div *ngIf="referencedCollapsed[objectType]" class="m-t-sm m-l-md">
-                          <div *ngFor="let obj of getObjectsByType(dependency?.references, objectType)">
-                            <ng-container>
-                              <label>
-                                <span [ngClass]="{
-                                    'fa-circle-o': !obj.valid,
-                                    'fa-circle dark-blue': obj.deployed || obj.released
-                                }" class="fa fa-check-circle-o orange text-xs"></span>
-                                {{ obj.path }}
-                              </label>
-                            </ng-container>
-                          </div>
-                        </div>
-                      </div>
-                    </ng-container>
-                  </div>
-                </div>
-
-              </div>            </div>
-          </ng-template>
+            }
+          </div>
         </div>
-      </div>
+      }
+      @if (object.deployType === 'individual') {
+        <div class="row">
+          <div class="col-md-12">
+            <nz-tree
+              #treeCtrl
+              (nzCheckBoxChange)="checkBoxChange($event)"
+              (nzExpandChange)="getDeploymentVersion($event)"
+              [nzCheckStrictly]="!object.isRecursive"
+              [nzCheckable]="!isRemove && !isSelectedObjects"
+              [nzData]="nodes"
+              [nzTreeTemplate]="nzTreeTemplate"
+              nzNoAnimation
+            ></nz-tree>
 
+            <ng-template #nzTreeTemplate let-node>
+              <div class="node-wrapper">
+                @if (node.origin.loading) {
+                  <i class="pos-abt" style="margin-left: -42px">
+                    <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
+                  </i>
+                }
+                <div (click)="openFolder(node)" [ngClass]="{'m-t-xs' :node.origin.object}" class="node-content-wrapper2">
+                  @if (!node.origin.object && !node.origin.type) {
+                    <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
+                  }
+                  @if (node.origin.object == 'WORKFLOW') {
+                    <i class="icon-color" nz-icon nzTheme="outline" nzType="apartment"></i>
+                  }
+                  @if (node.origin.object == 'FILEORDERSOURCE') {
+                    <i class="icon-orders-icon icon-color tree-icon"></i>
+                  }
+                  @if (node.origin.object == 'JOBRESOURCE') {
+                    <i class="icon-resources-icon icon-color tree-icon"></i>
+                  }
+                  @if (node.origin.object == 'JOBTEMPLATE') {
+                    <i class="icon-jobs-icon icon-color tree-icon"></i>
+                  }
+                  @if (node.origin.object == 'NOTICEBOARD') {
+                    <i class="icon-color" nz-icon nzTheme="outline" nzType="pushpin"></i>
+                  }
+                  @if (node.origin.object == 'LOCK') {
+                    <i class="icon-color" nz-icon nzTheme="outline" nzType="lock"></i>
+                  }
+                  @if (node.origin.object == 'SCHEDULE') {
+                    <i class="icon-color" nz-icon nzTheme="outline" nzType="schedule"></i>
+                  }
+                  @if (node.origin.object == 'INCLUDESCRIPT') {
+                    <i class="fa fa-terminal w-13"></i>
+                  }
+                  @if (node.origin.object && node.origin.object.match('CALENDAR')) {
+                    <i class="icon-color" nz-icon nzTheme="outline" nzType="calendar"></i>
+                  }
+                  @if (node.origin.type) {
+                    <span [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' :(node.origin.deployed || node.origin.released) || node.origin.deployId || node.origin.releaseId,
+                        'opacity7': node.origin.syncState && (node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING')}" class="fa fa-check-circle-o orange text-xs m-t-xs"></span>
+                  }
+                  @if (node.origin.type && node.origin.syncState) {
+                    <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="node.origin.syncState._text | translate" class="p-l-xxs">
+                      @if (node.origin.syncState._text === 'IN_SYNC' || node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING') {
+                        <i class="fa fa-refresh font11 p-l-xxs"></i>
+                      }
+                      @if (node.origin.syncState._text === 'UNKNOWN') {
+                        <i class="fa fa-exclamation-triangle font11 p-l-xxs"></i>
+                      }
+                      @if (node.origin.syncState._text === 'NOT_IN_SYNC') {
+                        <i class="icon3-reload-error font11 pos-rel t-1 p-l-xxs"></i>
+                      }
+                    </span>
+                  }
+                  @if (node.origin.object) {
+                    <span class="p-l-sm text-capitalize">{{node.origin.name | translate}}</span>
+                  }
+                  @if (!node.origin.object && !isRemove) {
+                    <span class="p-l-sm">{{node.origin.name}}</span>
+                  }
+                  @if (!node.origin.object && isRemove) {
+                    <span class="p-l-sm">{{node.origin.name}}</span>
+                  }
+                </div>
+                @if (!isRemove && node.origin.type && node.origin.deployablesVersions && node.origin.deployablesVersions.length >0) {
+                  <div class="m-l">
+                    <nz-select [(ngModel)]="node.origin.deployId"
+                               [nzSize]="'small'"
+                               name="'version-' + {{node.key}}">
+                      @if (!node.origin.valid) {
+                        <ng-container>
+                          <nz-option [nzLabel]="'workflow.label.draft' | translate" nzCustomContent nzValue="">
+                            <div>
+                              <span class="fa fa-circle-o text-xs text-danger p-r-xs"></span>{{'workflow.label.draft' | translate}}
+                              - <span class="label bg-orange" translate>inventory.label.notValid</span>
+                            </div>
+                          </nz-option>
+                        </ng-container>
+                      }
+                      @for (version of node.origin.deployablesVersions; track version) {
+                        <ng-container>
+                          <nz-option [nzLabel]="(!version.versions || version.versions.length === 0) ? ('workflow.label.draft' | translate) : (version.versionDate | stringToDate)" [nzValue]="version.deploymentId"
+                                     nzCustomContent>
+                            @if (version.versions && version.versions.length>0) {
+                              <div>
+                                <span [ngClass]="version.deploymentId ? ' dark-blue': ''"
+                                      class="fa fa-circle-o text-xs p-r-xs"></span>
+                                {{version.versionDate | stringToDate}} <span [ngClass]="version.deploymentOperation === 'delete' ? ' text-danger': ''"
+                                                                             class="p-l-sm">{{version.deploymentOperation}}</span>
+                                @if (version.deploymentPath) {
+                                  <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="version.deploymentPath"
+                                     class="text-muted p-l-sm">{{version.deploymentPath}}</i>
+                                }
+                              </div>
+                            }
+                            @for (ver of version.versions; track ver) {
+                              <div class="version-inner-list">
+                                {{ver.controllerId}}
+                                @if (ver.version) {
+                                  <i>,</i>
+                                }
+                                {{ver.version}}
+                              </div>
+                            }
+                            @if (!version.versions || version.versions.length === 0) {
+                              <div>
+                                <span class="fa fa-circle-o text-xs p-r-xs"></span>{{'workflow.label.draft' | translate}}
+                              </div>
+                            }
+                          </nz-option>
+                        </ng-container>
+                      }
+                    </nz-select>
+                  </div>
+                }
+                @if (!isRemove && node.origin.type && operation !== 'recall' && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)) {
+                  <div class="m-l">
+                    @if (!node.origin.deleted) {
+                      <i class="text-muted" translate>workflow.label.draft</i>
+                    }
+                    @if (node.origin.deleted && node.origin.deploymentId) {
+                      <i class="text-danger" translate>inventory.label.deployMarkDelete</i>
+                    }
+                    @if (node.origin.deleted && !node.origin.deploymentId) {
+                      <i class="text-danger" translate>inventory.label.markForDelete</i>
+                    }
+                  </div>
+                }
+                @if (!isRemove && !node.origin.type && !node.origin.object) {
+                  <div class="m-l">
+                    @if (node.origin.deleted && node.origin.deploymentId) {
+                      <i class="text-danger" translate>inventory.label.deployMarkDelete</i>
+                    }
+                    @if (node.origin.deleted && !node.origin.deploymentId) {
+                      <i class="text-danger" translate>inventory.label.markForDelete</i>
+                    }
+                  </div>
+                }
+              </div>
+
+              @if (node.origin.dependencies) {
+                <div style="width: 400px">
+                  @for (dependency of [node.origin.dependencies]; track dependency) {
+                    <div class="dependencies-list m-l-20 m-t-xs">
+                      @if (dependency?.referencedBy?.length > 0 || dependency?.references?.length > 0) {
+                        <div class="form-group row" style="justify-content: space-between">
+                          <!-- Affected Objects (referencedBy) -->
+                          @if (dependency?.referencedBy?.length > 0) {
+                            <div class="col-md-6"  class="form-group">
+                              <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !affectedCollapsed[node.key], 'fa-caret-down': affectedCollapsed[node.key]}"
+                                 (click)="toggleAffectedCollapse(node.key)"></i>
+                              <label class="m-l-sm">{{ 'inventory.label.affectedObjects' | translate }}</label>
+                              @if (affectedCollapsed[node.key]) {
+                                <div class="m-t-sm m-l-md">
+                                  @for (objectType of getUniqueObjectTypes(dependency?.referencedBy); track objectType) {
+                                    <ng-container>
+                                      @if (getObjectsByType(dependency?.referencedBy, objectType)?.length) {
+                                        <div class="m-t-sm">
+                                          <ng-container>
+                                            <label>
+                                              @if (!isCustomIcon(objectType)) {
+                                                <span class="icon-color">
+                                                  <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+                                                </span>
+                                              }
+                                              @if (isCustomIcon(objectType)) {
+                                                <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
+                                              }
+                                              {{ getObjectTypeLabel(objectType) | translate }}
+                                            </label>
+                                          </ng-container>
+                                          @if (affectedCollapsed[objectType]) {
+                                            <div class="m-t-sm m-l-md">
+                                              @for (obj of getObjectsByType(dependency?.referencedBy, objectType); track obj) {
+                                                <div>
+                                                  @if (isRemove) {
+                                                    <ng-container>
+                                                      <label nz-checkbox [(ngModel)]="sharedCheckboxState[obj.path]" [name]="'checkbox-' + obj.path"
+                                                             [disabled]="obj.disabled" (ngModelChange)="updateParentCheckboxAffected(objectType)">
+                                                        <span [ngClass]="{
+                                                            'fa-circle-o': !obj.valid,
+                                                            'fa-circle dark-blue': obj.deployed || obj.released
+                                                        }" class="fa fa-check-circle-o orange text-xs"></span>
+                                                        {{ obj.path }}
+                                                      </label>
+                                                    </ng-container>
+                                                  } @else {
+                                                    <ng-template>
+                                                      <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-' + obj.path"
+                                                             [disabled]="obj.disabled" (ngModelChange)="updateParentCheckboxAffected(objectType)">
+                                                        <span [ngClass]="{
+                                                            'fa-circle-o': !obj.valid,
+                                                            'fa-circle dark-blue': obj.deployed || obj.released
+                                                        }" class="fa fa-check-circle-o orange text-xs"></span>
+                                                        {{ obj.path }}
+                                                      </label>
+                                                    </ng-template>
+                                                  }
+                                                </div>
+                                              }
+                                            </div>
+                                          }
+                                        </div>
+                                      }
+                                    </ng-container>
+                                  }
+                                </div>
+                              }
+                            </div>
+                          }
+                          <!-- Referenced Objects (references) -->
+                          @if (dependency?.references?.length > 0) {
+                            <div class="col-md-6"  class="form-group">
+                              <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !referencedCollapsed[node.key], 'fa-caret-down': referencedCollapsed[node.key]}"
+                                 (click)="toggleReferencedCollapse(node.key)"></i>
+                              <label class="m-l-sm">{{ 'inventory.label.referencedObjects' | translate }}</label>
+                              @if (referencedCollapsed[node.key]) {
+                                <div class="m-t-sm m-l-md">
+                                  @for (objectType of getUniqueObjectTypes(dependency?.references); track objectType) {
+                                    <ng-container>
+                                      @if (getObjectsByType(dependency?.references, objectType)?.length) {
+                                        <div class="m-t-sm">
+                                          <ng-container>
+                                            <label>
+                                              @if (!isCustomIcon(objectType)) {
+                                                <span class="icon-color">
+                                                  <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+                                                </span>
+                                              }
+                                              @if (isCustomIcon(objectType)) {
+                                                <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
+                                              }
+                                              {{ getObjectTypeLabel(objectType) | translate }}
+                                            </label>
+                                          </ng-container>
+                                          @if (referencedCollapsed[objectType]) {
+                                            <div class="m-t-sm m-l-md">
+                                              @for (obj of getObjectsByType(dependency?.references, objectType); track obj) {
+                                                <div>
+                                                  <ng-container>
+                                                    <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox_' + obj.path"
+                                                           [disabled]="obj.disabled" (ngModelChange)="updateParentCheckboxReferenced(objectType)">
+                                                      <span [ngClass]="{
+                                                          'fa-circle-o': !obj.valid,
+                                                          'fa-circle dark-blue': obj.deployed || obj.released
+                                                      }" class="fa fa-check-circle-o orange text-xs"></span>
+                                                      {{ obj.path }}
+                                                    </label>
+                                                  </ng-container>
+                                                </div>
+                                              }
+                                            </div>
+                                          }
+                                        </div>
+                                      }
+                                    </ng-container>
+                                  }
+                                </div>
+                              }
+                            </div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </ng-template>
+
+            @if (filteredAffectedItems?.length > 0) {
+              <div class="form-group row m-t-sm m-l-sm" style="justify-content: space-between">
+                <!-- Filtered Affected Objects -->
+                <div class="form-group">
+                  <i class="cursor text-16 fa"
+                     [ngClass]="{'fa-caret-right': !filteredAffectedCollapsed, 'fa-caret-down': filteredAffectedCollapsed}"
+                     (click)="filteredAffectedCollapsed = !filteredAffectedCollapsed"></i>
+                  <label class="m-l-sm">{{ 'inventory.label.filteredAffectedItems' | translate }}</label>
+                  @if (filteredAffectedCollapsed) {
+                    <div class="m-t-sm m-l-md">
+                      @for (objectType of getUniqueObjectTypes(filteredAffectedItems); track objectType) {
+                        <ng-container>
+                          @if (getObjectsByType(filteredAffectedItems, objectType)?.length) {
+                            <div class="m-t-sm">
+                              <label nz-checkbox [(ngModel)]="selectAllFilteredAffected[objectType]" [name]="'checkbox--' + objectType"
+                                     (ngModelChange)="toggleAllFilteredAffected(objectType, $event)">
+                                @if (!isCustomIcon(objectType)) {
+                                  <span class="icon-color">
+                                    <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+                                  </span>
+                                }
+                                @if (isCustomIcon(objectType)) {
+                                  <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
+                                }
+                                {{ getObjectTypeLabel(objectType) | translate }}
+                              </label>
+                              @if (filteredAffectedCollapsed) {
+                                <div class="m-t-sm m-l-md">
+                                  @for (obj of getObjectsByType(filteredAffectedItems, objectType); track obj) {
+                                    <div>
+                                      <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox--'+ objectType + obj.path" [disabled]="obj.disabled"
+                                             (ngModelChange)="updateParentCheckboxFilteredAffected(objectType)">
+                                        <span [ngClass]="{
+                                            'fa-circle-o': !obj.valid,
+                                            'fa-circle dark-blue': obj.deployed || obj.released
+                                        }" class="fa fa-check-circle-o orange text-xs m-t-xs m-l-xs"></span>
+                                        {{ obj.path }}
+                                      </label>
+                                    </div>
+                                  }
+                                </div>
+                              }
+                            </div>
+                          }
+                        </ng-container>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      @if (changesNodes.length > 0 && object.deployType === 'changes') {
+        <div class="row">
+          <div class="col-md-12">
+            <nz-tree
+              [nzCheckable]="false"
+              (nzCheckBoxChange)="checkBoxChanges($event)"
+              [nzData]="nodes"
+              [nzTreeTemplate]="nzTreeChnagesTemplate"
+              [nzShowExpand]="false"
+              nzNoAnimation
+            ></nz-tree>
+
+            <ng-template #nzTreeChnagesTemplate let-node>
+              <div class="node-wrapper">
+                @if (node.origin.loading) {
+                  <i class="pos-abt" style="margin-left: -42px">
+                    <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
+                  </i>
+                }
+                <div  [ngClass]="{'m-t-xs' :node.origin.object}" class="node-content-wrapper2">
+                  @if (!node.origin.object && !node.origin.type) {
+                    <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
+                  }
+                  @if (node.origin.object == 'WORKFLOW') {
+                    <i class="icon-color" nz-icon nzTheme="outline" nzType="apartment"></i>
+                  }
+                  @if (node.origin.object == 'FILEORDERSOURCE') {
+                    <i class="icon-orders-icon icon-color tree-icon"></i>
+                  }
+                  @if (node.origin.object == 'JOBRESOURCE') {
+                    <i class="icon-resources-icon icon-color tree-icon"></i>
+                  }
+                  @if (node.origin.object == 'JOBTEMPLATE') {
+                    <i class="icon-jobs-icon icon-color tree-icon"></i>
+                  }
+                  @if (node.origin.object == 'NOTICEBOARD') {
+                    <i class="icon-color" nz-icon nzTheme="outline" nzType="pushpin"></i>
+                  }
+                  @if (node.origin.object == 'LOCK') {
+                    <i class="icon-color" nz-icon nzTheme="outline" nzType="lock"></i>
+                  }
+                  @if (node.origin.object == 'SCHEDULE') {
+                    <i class="icon-color" nz-icon nzTheme="outline" nzType="schedule"></i>
+                  }
+                  @if (node.origin.object == 'INCLUDESCRIPT') {
+                    <i class="fa fa-terminal w-13"></i>
+                  }
+                  @if (node.origin.object && node.origin.object.match('CALENDAR')) {
+                    <i class="icon-color" nz-icon nzTheme="outline" nzType="calendar"></i>
+                  }
+                  @if (node.origin.type) {
+                    <span [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' :(node.origin.deployed || node.origin.released) || node.origin.deployId || node.origin.releaseId,
+                        'opacity7': node.origin.syncState && (node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING')}" class="fa fa-check-circle-o orange text-xs m-t-xs"></span>
+                  }
+                  @if (node.origin.object) {
+                    <span class="p-l-sm text-capitalize">{{node.origin.name | translate}}</span>
+                  }
+                  @if (!node.origin.object) {
+                    <span class="p-l-sm">{{node.origin.name}}</span>
+                  }
+                </div>
+              </div>
+
+              @if (node.origin.dependencies) {
+                <div style="width: 400px">
+                  @for (dependency of [node.origin.dependencies]; track dependency) {
+                    <div class="dependencies-list m-l-20 m-t-xs">
+                      <!-- Affected Objects (referencedBy) -->
+                      @if (dependency?.referencedBy?.length > 0) {
+                        <div class="col-md-6"  class="form-group">
+                          <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !affectedCollapsed[node.key], 'fa-caret-down': affectedCollapsed[node.key]}"
+                             (click)="toggleAffectedCollapse(node.key)"></i>
+                          <label class="m-l-sm">{{ 'inventory.label.affectedObjects' | translate }}</label>
+                          @if (affectedCollapsed[node.key]) {
+                            <div class="m-t-sm m-l-md">
+                              @for (objectType of getUniqueObjectTypes(dependency?.referencedBy); track objectType) {
+                                <ng-container>
+                                  @if (getObjectsByType(dependency?.referencedBy, objectType)?.length) {
+                                    <div class="m-t-sm">
+                                      <ng-container>
+                                        <label>
+                                          @if (!isCustomIcon(objectType)) {
+                                            <span class="icon-color">
+                                              <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+                                            </span>
+                                          }
+                                          @if (isCustomIcon(objectType)) {
+                                            <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
+                                          }
+                                          {{ getObjectTypeLabel(objectType) | translate }}
+                                        </label>
+                                      </ng-container>
+                                      @if (affectedCollapsed[objectType]) {
+                                        <div class="m-t-sm m-l-md">
+                                          @for (obj of getObjectsByType(dependency?.referencedBy, objectType); track obj) {
+                                            <div>
+                                              <ng-container>
+                                                <label>
+                                                    <span [ngClass]="{
+                                                        'fa-circle-o': !obj.valid,
+                                                        'fa-circle dark-blue': obj.deployed || obj.released
+                                                    }" class="fa fa-check-circle-o orange text-xs"></span>
+                                                  {{ obj.path }}
+                                                </label>
+                                              </ng-container>
+                                            </div>
+                                          }
+                                        </div>
+                                      }
+                                    </div>
+                                  }
+                                </ng-container>
+                              }
+                            </div>
+                          }
+                        </div>
+                      }
+                      <!-- Referenced Objects (references) -->
+                      @if (dependency?.references?.length > 0) {
+                        <div class="col-md-6"  class="form-group">
+                          <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !referencedCollapsed[node.key], 'fa-caret-down': referencedCollapsed[node.key]}"
+                             (click)="toggleReferencedCollapse(node.key)"></i>
+                          <label class="m-l-sm">{{ 'inventory.label.referencedObjects' | translate }}</label>
+                          @if (referencedCollapsed[node.key]) {
+                            <div class="m-t-sm m-l-md">
+                              @for (objectType of getUniqueObjectTypes(dependency?.references); track objectType) {
+                                <ng-container>
+                                  @if (getObjectsByType(dependency?.references, objectType)?.length) {
+                                    <div class="m-t-sm">
+                                      <ng-container >
+                                        <label>
+                                          @if (!isCustomIcon(objectType)) {
+                                            <span class="icon-color">
+                                              <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+                                            </span>
+                                          }
+                                          @if (isCustomIcon(objectType)) {
+                                            <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
+                                          }
+                                          {{ getObjectTypeLabel(objectType) | translate }}
+                                        </label>
+                                      </ng-container>
+                                      @if (referencedCollapsed[objectType]) {
+                                        <div class="m-t-sm m-l-md">
+                                          @for (obj of getObjectsByType(dependency?.references, objectType); track obj) {
+                                            <div>
+                                              <ng-container>
+                                                <label>
+                                                  <span [ngClass]="{
+                                                      'fa-circle-o': !obj.valid,
+                                                      'fa-circle dark-blue': obj.deployed || obj.released
+                                                  }" class="fa fa-check-circle-o orange text-xs"></span>
+                                                  {{ obj.path }}
+                                                </label>
+                                              </ng-container>
+                                            </div>
+                                          }
+                                        </div>
+                                      }
+                                    </div>
+                                  }
+                                </ng-container>
+                              }
+                            </div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            </ng-template>
+          </div>
+        </div>
+      }
     </div>
-    <div *ngIf="nodes.length===0 && !loading" class="m-t-md">
-      <app-empty-data></app-empty-data>
-    </div>
-    <div *ngIf="loading" [ngClass]="{'loading-on-text': nodes.length>0}" class="text-center m-t-md">
-      <nz-spin nzSimple></nz-spin>
-    </div>
+    @if (nodes.length===0 && !loading) {
+      <div class="m-t-md">
+        <app-empty-data></app-empty-data>
+      </div>
+    }
+    @if (loading) {
+      <div [ngClass]="{'loading-on-text': nodes.length>0}" class="text-center m-t-md">
+        <nz-spin nzSimple></nz-spin>
+      </div>
+    }
   </div>
   <div class="modal-footer">
-    <button *ngIf="nodes.length > 0 && !isRemove" [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || submitted || loading" class="btn btn-primary btn-sm"
-            type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      {{'common.button.submit' | translate}}
-    </button>
-    <button (click)="remove()" *ngIf="isRemove" [disabled]="submitted" class="btn btn-danger btn-sm" type="button">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      <span>{{'common.button.remove' | translate}}</span>
-    </button>
+    @if (nodes.length > 0 && !isRemove) {
+      <button [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || submitted || loading" class="btn btn-primary btn-sm"
+              type="submit">
+        @if (submitted) {
+          <i class="fa fa-spin fa-spinner p-r-xs"></i>
+        }
+        {{'common.button.submit' | translate}}
+      </button>
+    }
+    @if (isRemove) {
+      <button (click)="remove()" [disabled]="submitted" class="btn btn-danger btn-sm" type="button">
+        @if (submitted) {
+          <i class="fa fa-spin fa-spinner p-r-xs"></i>
+        }
+        <span>{{'common.button.remove' | translate}}</span>
+      </button>
+    }
     <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>

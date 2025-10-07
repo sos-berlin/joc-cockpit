@@ -12,65 +12,82 @@
   >
     <thead>
     <tr>
-      <th *ngIf="permission.joc && permission.joc.administration.accounts.manage"
-          [(nzChecked)]="checked"
-          [nzIndeterminate]="indeterminate"
-          [nzShowCheckbox]="true"
-          (nzCheckedChange)="onAllChecked($event)"
-          class="chk"
-      ></th>
-      <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span translate>common.label.action</span>
-      </th>
+      @if (permission.joc && permission.joc.administration.accounts.manage) {
+        <th [(nzChecked)]="checked"
+            [nzIndeterminate]="indeterminate"
+            [nzShowCheckbox]="true"
+            (nzCheckedChange)="onAllChecked($event)"
+            class="chk"
+        ></th>
+      }
+      @if (permission.joc && permission.joc.administration.accounts.manage) {
+        <th class="menu"><span translate>common.label.action</span></th>
+      }
       <th (click)="sort('account')">
         <a><span class="p-r-xs" translate>user.label.user</span>
-          <i *ngIf="order == 'account' && !reverse"
-             class="fa fa-caret-up "></i>
-          <i *ngIf="order == 'account' && reverse"
-             class="fa fa-caret-down "></i></a>
+          @if (order == 'account' && !reverse) {
+            <i class="fa fa-caret-up "></i>
+          }
+          @if (order == 'account' && reverse) {
+            <i class="fa fa-caret-down "></i>
+          }</a>
       </th>
       <th (click)="sort('lastLogin')">
         <a><span class="p-r-xs" translate>user.label.lastLogin</span>
-          <i *ngIf="order == 'lastLogin' && !reverse"
-             class="fa fa-caret-up "></i>
-          <i *ngIf="order == 'lastLogin' && reverse"
-             class="fa fa-caret-down "></i></a>
+          @if (order == 'lastLogin' && !reverse) {
+            <i class="fa fa-caret-up "></i>
+          }
+          @if (order == 'lastLogin' && reverse) {
+            <i class="fa fa-caret-down "></i>
+          }</a>
       </th>
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let profile of ajaxTable.data  | orderBy: order:reverse:false; let i = index">
-      <td *ngIf="permission.joc && permission.joc.administration.accounts.manage"
-          [nzChecked]="setOfCheckedId.has(profile.account)"
-          [nzShowCheckbox]="true"
-          (nzCheckedChange)="onItemChecked(profile.account, $event)"
-      ></td>
-      <td *ngIf="permission.joc && permission.joc.administration.accounts.manage">
-        <div class="btn-group dropdown">
-          <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" type="button">
-            <i class="fa fa-ellipsis-h"></i></button>
-          <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-            <ul nz-menu>
-              <li (click)="deleteProfile(profile, false)" nz-menu-item>
-                <a translate>user.button.deleteProfile</a>
-              </li>
-              <li (click)="deleteProfile(profile, true)" nz-menu-item>
-                <a translate>user.button.deleteProfileAndCustomization</a>
-              </li>
-            </ul>
-          </nz-dropdown-menu>
-        </div>
-      </td>
-      <td><a (click)="showMaster(profile.account)" [innerHTML]="profile.account | decodeSpace"
-             class="text-hover-primary"></a></td>
-      <td>
-        <span [innerHTML]="profile.lastLogin | stringToDate"></span>
-      </td>
-    </tr>
+      @for (profile of ajaxTable.data | orderBy: order:reverse:false; track profile.account; let i = $index) {
+        <tr>
+          @if (permission.joc && permission.joc.administration.accounts.manage) {
+            <td [nzChecked]="setOfCheckedId.has(profile.account)"
+                [nzShowCheckbox]="true"
+                (nzCheckedChange)="onItemChecked(profile.account, $event)"
+            ></td>
+          }
+          @if (permission.joc && permission.joc.administration.accounts.manage) {
+            <td>
+              <div class="btn-group dropdown">
+                <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click" type="button">
+                  <i class="fa fa-ellipsis-h"></i></button>
+                <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                  <ul nz-menu>
+                    <li (click)="deleteProfile(profile, false)" nz-menu-item>
+                      <a translate>user.button.deleteProfile</a>
+                    </li>
+                    <li (click)="deleteProfile(profile, true)" nz-menu-item>
+                      <a translate>user.button.deleteProfileAndCustomization</a>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+            </td>
+          }
+          <td><a (click)="showMaster(profile.account)" [innerHTML]="profile.account | decodeSpace"
+                 class="text-hover-primary"></a></td>
+          <td>
+            <span [innerHTML]="profile.lastLogin | stringToDate"></span>
+          </td>
+        </tr>
+      }
     </tbody>
   </nz-table>
-  <div *ngIf="profiles.length >0" class="w-half label-top">
-    <span translate>common.label.total</span><span> {{profiles.length}} </span>
-    <span *ngIf="profiles.length >1" translate>user.label.usersFound</span>
-    <span *ngIf="profiles.length ==1" translate>user.label.usersFound</span>
-  </div>
+  @if (profiles.length >0) {
+    <div class="w-half label-top">
+      <span translate>common.label.total</span><span> {{profiles.length}} </span>
+      @if (profiles.length >1) {
+        <span translate>user.label.usersFound</span>
+      }
+      @if (profiles.length ==1) {
+        <span translate>user.label.usersFound</span>
+      }
+    </div>
+  }
 </div>

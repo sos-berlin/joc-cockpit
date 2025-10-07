@@ -9,6 +9,7 @@ import {OrderPipe, SearchPipe} from "../../../pipes/core.pipe";
 import {AddBlocklistModalComponent} from '../blocklist/blocklist.component';
 
 @Component({
+  standalone: false,
   selector: 'app-session-management',
   templateUrl: './session-management.component.html'
 })

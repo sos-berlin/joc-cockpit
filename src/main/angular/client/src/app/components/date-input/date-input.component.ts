@@ -4,6 +4,7 @@ import {ControlContainer, NgForm, NgModel} from "@angular/forms";
 import {CoreService} from "../../services/core.service";
 
 @Component({
+  standalone: false,
   selector: 'app-date-input',
   templateUrl: './date-input.component.html',
   viewProviders: [

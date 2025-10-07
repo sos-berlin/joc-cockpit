@@ -8,21 +8,26 @@
   </button>
 </div>
 <div class="modal-body p-a">
-  <div *ngIf="permission.joc">
-    <app-permission-view [permission]="permission" [schedulerIds]="schedulerIds"></app-permission-view>
-  </div>
-  <div *ngIf="!isLoaded" class="loading-center text-primary text ht-260">
-    <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
-  </div>
-  <div *ngIf="!permission.joc && isLoaded" class="vert-middle ht-260">
+  @if (permission.joc) {
     <div>
-      <app-empty-data></app-empty-data>
+      <app-permission-view [permission]="permission" [schedulerIds]="schedulerIds"></app-permission-view>
     </div>
-  </div>
+  }
+  @if (!isLoaded) {
+    <div class="loading-center text-primary text ht-260">
+      <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
+    </div>
+  }
+  @if (!permission.joc && isLoaded) {
+    <div class="vert-middle ht-260">
+      <div>
+        <app-empty-data></app-empty-data>
+      </div>
+    </div>
+  }
 </div>
 <div class="modal-footer">
   <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
     common.button.close
   </button>
 </div>
-

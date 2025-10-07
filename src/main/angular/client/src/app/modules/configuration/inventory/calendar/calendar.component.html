@@ -1,241 +1,316 @@
 <div class="row">
-  <div *ngIf="data.type" class="col-md-12">
-    <div class="box p-a p-r-md m-t-n-xs">
-      <div class="b-b p-b m-b">
-        <span class="text-left">
-          <a (click)="backToListView()"><i class="fa fa-arrow-circle-left config-back-btn"
-                                           nz-tooltip="{{'inventory.button.backToList' | translate}}"></i></a>
-          <span (click)="navToCalendarTab()" [ngClass]="{'cursor text-hover-primary': data.released}"
-                class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
-          <span *ngIf="lastModified" class="text-dark text-sm _400"> -
-            <b translate>inventory.label.lastModified</b>
-            <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
-          </span>
-         <i (click)="helpPage('configuration-inventory-calendars')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
-        </span>
-        <div *ngIf="!isTrash" class="inline pull-right">
-          <span *ngIf="calendar.configuration" [ngClass]="!calendar.valid ? 'badge-danger':'badge-success'"
-                class="badge m-r-12">
-              <span *ngIf="calendar.valid" translate>inventory.label.valid</span>
-              <span *ngIf="!calendar.valid">
-                <span translate>inventory.label.notValid</span>
-                <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
+  @if (data.type) {
+    <div class="col-md-12">
+      <div class="box p-a p-r-md m-t-n-xs">
+        <div class="b-b p-b m-b">
+          <span class="text-left">
+            <a (click)="backToListView()"><i class="fa fa-arrow-circle-left config-back-btn"
+                                             nz-tooltip="{{'inventory.button.backToList' | translate}}"></i></a>
+            <span (click)="navToCalendarTab()" [ngClass]="{'cursor text-hover-primary': data.released}"
+                  class="_600">{{data.path}}@if (data.path !== '/') {<span>/</span>}{{data.name}}</span>
+            @if (lastModified) {
+              <span class="text-dark text-sm _400"> -
+                <b translate>inventory.label.lastModified</b>
+                <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
               </span>
+            }
+            <i (click)="helpPage('configuration-inventory-calendars')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
           </span>
-          <span *ngIf="calendar.configuration" [ngClass]="!data.released ? 'badge-danger':'badge-success'"
-                class="badge">
-              <span *ngIf="!data.released" translate>inventory.label.notReleased</span>
-              <span *ngIf="data.released" translate>inventory.label.released</span>
-            </span>
-          <button
-            (click)="release()"
-            *ngIf="permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" [disabled]="!calendar.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
-            <i class="fa fa-rocket p-r-xs"></i>
-            <span translate>inventory.button.release</span>
-          </button>
+          @if (!isTrash) {
+            <div class="inline pull-right">
+              @if (calendar.configuration) {
+                <span [ngClass]="!calendar.valid ? 'badge-danger':'badge-success'"
+                      class="badge m-r-12">
+                    @if (calendar.valid) {
+                      <span translate>inventory.label.valid</span>
+                    }
+                  @if (!calendar.valid) {
+                    <span>
+                        <span translate>inventory.label.notValid</span>
+                        <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
+                      </span>
+                  }
+                </span>
+              }
+              @if (calendar.configuration) {
+                <span [ngClass]="!data.released ? 'badge-danger':'badge-success'"
+                      class="badge">
+                    @if (!data.released) {
+                      <span translate>inventory.label.notReleased</span>
+                    }
+                  @if (data.released) {
+                    <span translate>inventory.label.released</span>
+                  }
+                  </span>
+              }
+              @if (permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)) {
+                <button
+                  (click)="release()"
+                  [disabled]="!calendar.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
+                  <i class="fa fa-rocket p-r-xs"></i>
+                  <span translate>inventory.button.release</span>
+                </button>
+              }
+            </div>
+          }
         </div>
-      </div>
-      <form *ngIf="calendar.configuration">
-        <div class="row">
-          <div class="col-md-12">
-            <div [ngClass]="{'has-error' : ((cname.dirty || cname.touched) && cname.invalid)}"
-                 class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.name' | translate) : ''"
+        @if (calendar.configuration) {
+          <form>
+            <div class="row">
+              <div class="col-md-12">
+                <div [ngClass]="{'has-error' : ((cname.dirty || cname.touched) && cname.invalid)}"
+                     class="form-group row">
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.name' | translate) : ''"
 
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.name
-                <sup class="text-danger text-sm">*</sup>
-              </label>
-              <div class="col-lg-9 col-xl-8 col-xxl-6">
-                <input #cname="ngModel" (blur)="rename(cname.invalid)" [(ngModel)]="calendar.name"
-                       [appAutofocus]="!isTrash" [readonly]="isTrash || !permission.joc.inventory.manage" autocomplete="off" class="form-control" identifierValidation
-                       name="name"
-                       placeholder="{{'inventory.placeholder.enterCalendarName' | translate}}"
-                       required type="text">
-                <div *ngIf="cname.invalid && (cname.dirty || cname.touched)" class="text-danger help-block">
-                  <div *ngIf="cname.errors['required']">
-                    <div translate>common.message.requiredError</div>
+                         class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.name
+                    <sup class="text-danger text-sm">*</sup>
+                  </label>
+                  <div class="col-lg-9 col-xl-8 col-xxl-6">
+                    <input #cname="ngModel" (blur)="rename(cname.invalid)" [(ngModel)]="calendar.name"
+                           [appAutofocus]="!isTrash" [readonly]="isTrash || !permission.joc.inventory.manage" autocomplete="off" class="form-control" identifierValidation
+                           name="name"
+                           placeholder="{{'inventory.placeholder.enterCalendarName' | translate}}"
+                           required type="text">
+                    @if (cname.invalid && (cname.dirty || cname.touched)) {
+                      <div class="text-danger help-block">
+                        @if (cname.errors['required']) {
+                          <div translate>common.message.requiredError</div>
+                        }
+                        @if (cname.errors['invalidIdentifier']) {
+                          <div translate>common.message.invalid</div>
+                        }
+                      </div>
+                    }
                   </div>
-                  <div *ngIf="cname.errors['invalidIdentifier']" translate>common.message.invalid</div>
+                </div>
+                <div class="form-group row">
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.title' | translate) : ''"
+
+                         class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
+                  <div class="col-lg-9 col-xl-8 col-xxl-6">
+                    <input (blur)="saveJSON()" [(ngModel)]="calendar.configuration.title" [readonly]="isTrash || !permission.joc.inventory.manage"
+                           autocomplete="off" class="form-control"
+                           name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text">
+                  </div>
+                </div>
+                @if (coreService.expertMode) {
+                  <div class="form-group row">
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.documentation' | translate) : ''"
+
+                           class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
+                    <div class="col-lg-9 col-xl-8 col-xxl-6">
+                      <app-select-document (funcCall)="saveJSON($event)" [data]="calendar.configuration"
+                                           [documentationTree]="documentationTree"></app-select-document>
+                    </div>
+                  </div>
+                }
+                <div class="form-group row">
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.type' | translate) : ''"
+
+                         class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.type</label>
+                  <div class="col-lg-9 col-xl-8 col-xxl-6">
+                    <app-select-input (modelChange)="saveJSON()" [attributeName]="'type'"
+                                      [isSelectDisabled]="isTrash || !permission.joc.inventory.manage"
+                                      [listArray]="cType" [name]="'cType'" [optionLabel]="'label'" [optionValue]="'value'"
+                                      [object]="calendar.configuration"></app-select-input>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.validFrom' | translate) : ''"
+
+                         class="col-md-3 col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>runtime.label.validFrom</label>
+                  <div class="col-md-3 col-lg-3 col-xl-3 col-xxl-2">
+                    <nz-date-picker [(ngModel)]="calendar.configuration.from" (ngModelChange)="saveJSON()"
+                                    [nzDisabled]="isTrash || !permission.joc.inventory.manage" [nzFormat]="dateFormat"
+                                    [nzPlaceHolder]="'common.placeholder.setStartDate' | translate"
+                                    name="from"></nz-date-picker>
+                  </div>
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.validTo' | translate) : ''"
+
+                         class="col-md-3 col-lg-3 col-xl-2 col-xxl-2 form-control-label date-center" translate>runtime.label.validTo</label>
+                  <div [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}"
+                       class="col-md-3 col-lg-3 col-xl-3 col-xxl-2 date-right">
+                    <nz-date-picker #to="ngModel" [(ngModel)]="calendar.configuration.to" (ngModelChange)="saveJSON()"
+                                    [nzDisabled]="isTrash || !permission.joc.inventory.manage"
+                                    [nzFormat]="dateFormat" [nzPlaceHolder]="'common.placeholder.setEndDate' | translate"
+                                    id="to"
+                                    name="to"></nz-date-picker>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.title' | translate) : ''"
-
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
-              <div class="col-lg-9 col-xl-8 col-xxl-6">
-                <input (blur)="saveJSON()" [(ngModel)]="calendar.configuration.title" [readonly]="isTrash || !permission.joc.inventory.manage"
-                       autocomplete="off" class="form-control"
-                       name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text">
+              <div class="col-lg-12 col-xl-11 col-xxl-9">
+                <div class="btn-group">
+                  <button (click)="changeFrequencyType('INCLUDE')" [ngClass]="{'btn-primary': editor.frequencyType=='INCLUDE'}"
+                          class="btn btn-grey btn-sm button-group-ellipsis"
+                          translate type="button">
+                    runtime.button.includedFrequencies
+                  </button>
+                  <button (click)="changeFrequencyType('EXCLUDE')" [ngClass]="{'btn-primary': editor.frequencyType=='EXCLUDE'}"
+                          class="btn btn-grey btn-sm button-group-ellipsis"
+                          translate type="button">
+                    runtime.button.excludedFrequencies
+                  </button>
+                </div>
+                <button (click)="createNewFrequency()" [disabled]="isTrash || !permission.joc.inventory.manage"
+                        class="btn btn-sm pull-right btn-grey" translate type="button">
+                  <i class="fa fa-plus"></i>&nbsp;
+                  <span translate>runtime.button.addNewFrequency</span>
+                </button>
+                <button (click)="showYearView()" [disabled]="calendar.configuration.includesFrequency.length==0 && calendar.configuration.excludesFrequency.length==0"
+                        class="btn btn-sm pull-right btn-grey m-r-12 m-b"
+                        translate type="button">
+                  <i class="fa fa-television"></i>&nbsp;
+                  <span translate>runtime.button.showYearView</span>
+                </button>
+              </div>
+              <div class="col-lg-12 col-xl-11 col-xxl-9 max-ht-n-554">
+                <div class="table-responsive">
+                  <table class="table table-hover table-bordered ">
+                    <thead>
+                    <tr>
+                      <th><span translate>runtime.label.listOfFrequencies</span></th>
+                      <th><span translate>runtime.label.validFrom</span></th>
+                      <th><span translate>runtime.label.validTo</span></th>
+                      <th style="width: 80px"><span translate>runtime.label.action</span></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      @for (data of calendar.configuration.includesFrequency; track $index; let i = $index) {
+                        <tr [ngClass]="{'hide':editor.frequencyType !=='INCLUDE'}">
+                          <td class="cursor ver-top">
+                            @if (!isTrash && permission.joc.inventory.manage) {
+                              <a (click)="updateFrequency(data, i);">{{data.str}}</a>
+                            }
+                            @if (isTrash || !permission.joc.inventory.manage) {
+                              <a>{{data.str}}</a>
+                            }
+                          </td>
+                          <td>
+                            @if (data.tab=='weekDays') {
+                              <span>{{data.startingWithW | stringToDate1:true}}</span>
+                            }
+                            @if (data.tab=='specificWeekDays') {
+                              <span>{{data.startingWithS | stringToDate1:true}}</span>
+                            }
+                            @if (data.tab=='monthDays') {
+                              <span>{{data.startingWithM | stringToDate1:true}}</span>
+                            }
+                            @if (data.tab=='every') {
+                              <span>{{data.startingWith | stringToDate1:true}}</span>
+                            }
+                          </td>
+                          <td>
+                            @if (data.tab=='weekDays') {
+                              <span>{{data.endOnW | stringToDate1:true}}</span>
+                            }
+                            @if (data.tab=='specificWeekDays') {
+                              <span>{{data.endOnS | stringToDate1:true}}</span>
+                            }
+                            @if (data.tab=='monthDays') {
+                              <span>{{data.endOnM | stringToDate1:true}}</span>
+                            }
+                            @if (data.tab=='every') {
+                              <span>{{data.endOn | stringToDate1:true}}</span>
+                            }
+                          </td>
+                          <td>
+                            <a class="text-hover-primary">
+                              <i (click)="showCalendar(data)" class="fa fa-calendar m-r-sm"></i>
+                            </a>
+                            <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
+                              (click)="updateFrequency(data, i)" class="fa fa-pencil m-r-sm"></i></a>
+                            <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"
+                               class="text-hover-color">
+                              <i (click)="removeFrequency(i)" class="fa fa-times "></i>
+                            </a>
+                          </td>
+                        </tr>
+                      }
+                      @for (data of calendar.configuration.excludesFrequency; track $index; let i = $index) {
+                        <tr [ngClass]="{'hide':editor.frequencyType !=='EXCLUDE'}">
+                          <td class="cursor ver-top">
+                            @if (data.exclude) {
+                              <i class="fa fa-minus"> </i>
+                            }
+                            <a (click)="updateFrequency(data, i);">{{data.str}}</a>
+                          </td>
+                          <td>
+                            @if (data.tab=='weekDays') {
+                              <span>{{data.startingWithW | stringToDate1:true}}</span>
+                            }
+                            @if (data.tab=='specificWeekDays') {
+                              <span>{{data.startingWithS | stringToDate1:true}}</span>
+                            }
+                            @if (data.tab=='monthDays') {
+                              <span>{{data.startingWithM | stringToDate1:true}}</span>
+                            }
+                            @if (data.tab=='every') {
+                              <span>{{data.startingWith | stringToDate1:true}}</span>
+                            }
+                            @if (data.tab=='others') {
+                              <span>{{data.startingWith | stringToDate1:true}}</span>
+                            }
+                          </td>
+                          <td>
+                            @if (data.tab=='weekDays') {
+                              <span>{{data.endOnW | stringToDate1:true}}</span>
+                            }
+                            @if (data.tab=='specificWeekDays') {
+                              <span>{{data.endOnS | stringToDate1:true}}</span>
+                            }
+                            @if (data.tab=='monthDays') {
+                              <span>{{data.endOnM | stringToDate1:true}}</span>
+                            }
+                            @if (data.tab=='every') {
+                              <span>{{data.endOn | stringToDate1:true}}</span>
+                            }
+                            @if (data.tab=='others') {
+                              <span>{{data.endOn | stringToDate1:true}}</span>
+                            }
+                          </td>
+                          <td>
+                            <a class="text-hover-primary ">
+                              <i (click)="showCalendar(data)" class="fa fa-calendar m-r-sm"></i>
+                            </a>
+                            <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
+                              (click)="updateFrequency(data, i)" class="fa fa-pencil m-r-sm"></i></a>
+                            <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"
+                               class="text-hover-color">
+                              <i (click)="removeFrequency(i)" class="fa fa-times "></i>
+                            </a>
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+                @if ((!calendar.configuration.includesFrequency || calendar.configuration.includesFrequency.length==0) && editor.frequencyType=='INCLUDE') {
+                  <div class="text-center">
+                    <app-empty-data title="runtime.message.noFrequencyFound"></app-empty-data>
+                  </div>
+                }
+                @if ((!calendar.configuration.excludesFrequency || calendar.configuration.excludesFrequency.length==0) && editor.frequencyType=='EXCLUDE') {
+                  <div class="text-center">
+                    <app-empty-data title="runtime.message.noFrequencyFound"></app-empty-data>
+                  </div>
+                }
               </div>
             </div>
-            <div *ngIf="coreService.expertMode" class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.documentation' | translate) : ''"
-
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
-              <div class="col-lg-9 col-xl-8 col-xxl-6">
-                <app-select-document (funcCall)="saveJSON($event)" [data]="calendar.configuration"
-                                     [documentationTree]="documentationTree"></app-select-document>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.type' | translate) : ''"
-
-                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.type</label>
-              <div class="col-lg-9 col-xl-8 col-xxl-6">
-                <app-select-input (modelChange)="saveJSON()" [attributeName]="'type'"
-                                  [isSelectDisabled]="isTrash || !permission.joc.inventory.manage"
-                                  [listArray]="cType" [name]="'cType'" [optionLabel]="'label'" [optionValue]="'value'"
-                                  [object]="calendar.configuration"></app-select-input>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.validFrom' | translate) : ''"
-
-                     class="col-md-3 col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>runtime.label.validFrom</label>
-              <div class="col-md-3 col-lg-3 col-xl-3 col-xxl-2">
-                <nz-date-picker [(ngModel)]="calendar.configuration.from" (ngModelChange)="saveJSON()"
-                                [nzDisabled]="isTrash || !permission.joc.inventory.manage" [nzFormat]="dateFormat"
-                                [nzPlaceHolder]="'common.placeholder.setStartDate' | translate"
-                                name="from"></nz-date-picker>
-              </div>
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.calendar.validTo' | translate) : ''"
-
-                     class="col-md-3 col-lg-3 col-xl-2 col-xxl-2 form-control-label date-center" translate>runtime.label.validTo</label>
-              <div [ngClass]="{'has-error' : ((to.dirty || to.touched) && to.invalid)}"
-                   class="col-md-3 col-lg-3 col-xl-3 col-xxl-2 date-right">
-                <nz-date-picker #to="ngModel" [(ngModel)]="calendar.configuration.to" (ngModelChange)="saveJSON()"
-                                [nzDisabled]="isTrash || !permission.joc.inventory.manage"
-                                [nzFormat]="dateFormat" [nzPlaceHolder]="'common.placeholder.setEndDate' | translate"
-                                id="to"
-                                name="to"></nz-date-picker>
-              </div>
-            </div>
-          </div>
-          <div class="col-lg-12 col-xl-11 col-xxl-9">
-            <div class="btn-group">
-              <button (click)="changeFrequencyType('INCLUDE')" [ngClass]="{'btn-primary': editor.frequencyType=='INCLUDE'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis"
-                      translate type="button">
-                runtime.button.includedFrequencies
-              </button>
-              <button (click)="changeFrequencyType('EXCLUDE')" [ngClass]="{'btn-primary': editor.frequencyType=='EXCLUDE'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis"
-                      translate type="button">
-                runtime.button.excludedFrequencies
-              </button>
-            </div>
-            <button (click)="createNewFrequency()" [disabled]="isTrash || !permission.joc.inventory.manage"
-                    class="btn btn-sm pull-right btn-grey" translate type="button">
-              <i class="fa fa-plus"></i>&nbsp;
-              <span translate>runtime.button.addNewFrequency</span>
-            </button>
-            <button (click)="showYearView()" [disabled]="calendar.configuration.includesFrequency.length==0 && calendar.configuration.excludesFrequency.length==0"
-                    class="btn btn-sm pull-right btn-grey m-r-12 m-b"
-                    translate type="button">
-              <i class="fa fa-television"></i>&nbsp;
-              <span translate>runtime.button.showYearView</span>
-            </button>
-          </div>
-          <div class="col-lg-12 col-xl-11 col-xxl-9 max-ht-n-554">
-            <div class="table-responsive">
-              <table class="table table-hover table-bordered ">
-                <thead>
-                <tr>
-                  <th><span translate>runtime.label.listOfFrequencies</span></th>
-                  <th><span translate>runtime.label.validFrom</span></th>
-                  <th><span translate>runtime.label.validTo</span></th>
-                  <th style="width: 80px"><span translate>runtime.label.action</span></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngFor="let data of calendar.configuration.includesFrequency;let i = index;"
-                    [ngClass]="{'hide':editor.frequencyType !=='INCLUDE'}">
-                  <td class="cursor ver-top">
-                    <a (click)="updateFrequency(data, i);"
-                       *ngIf="!isTrash && permission.joc.inventory.manage">{{data.str}}</a>
-                    <a *ngIf="isTrash || !permission.joc.inventory.manage">{{data.str}}</a>
-                  </td>
-                  <td>
-                    <span *ngIf="data.tab=='weekDays'">{{data.startingWithW | stringToDate1:true}}</span>
-                    <span *ngIf="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate1:true}}</span>
-                    <span *ngIf="data.tab=='monthDays'">{{data.startingWithM | stringToDate1:true}}</span>
-                    <span *ngIf="data.tab=='every'">{{data.startingWith | stringToDate1:true}}</span>
-                  </td>
-                  <td>
-                    <span *ngIf="data.tab=='weekDays'">{{data.endOnW | stringToDate1:true}}</span>
-                    <span *ngIf="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate1:true}}</span>
-                    <span *ngIf="data.tab=='monthDays'">{{data.endOnM | stringToDate1:true}}</span>
-                    <span *ngIf="data.tab=='every'">{{data.endOn | stringToDate1:true}}</span>
-                  </td>
-                  <td>
-                    <a class="text-hover-primary">
-                      <i (click)="showCalendar(data)" class="fa fa-calendar m-r-sm"></i>
-                    </a>
-                    <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
-                      (click)="updateFrequency(data, i)" class="fa fa-pencil m-r-sm"></i></a>
-                    <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"
-                       class="text-hover-color">
-                      <i (click)="removeFrequency(i)" class="fa fa-times "></i>
-                    </a>
-                  </td>
-                </tr>
-                <tr *ngFor="let data of calendar.configuration.excludesFrequency;let i = index;"
-                    [ngClass]="{'hide':editor.frequencyType !=='EXCLUDE'}">
-                  <td class="cursor ver-top">
-                    <i *ngIf="data.exclude" class="fa fa-minus"> </i>
-                    <a (click)="updateFrequency(data, i);">{{data.str}}</a>
-                  </td>
-                  <td>
-                    <span *ngIf="data.tab=='weekDays'">{{data.startingWithW | stringToDate1:true}}</span>
-                    <span *ngIf="data.tab=='specificWeekDays'">{{data.startingWithS | stringToDate1:true}}</span>
-                    <span *ngIf="data.tab=='monthDays'">{{data.startingWithM | stringToDate1:true}}</span>
-                    <span *ngIf="data.tab=='every'">{{data.startingWith | stringToDate1:true}}</span>
-                    <span *ngIf="data.tab=='others'">{{data.startingWith | stringToDate1:true}}</span>
-                  </td>
-                  <td>
-                    <span *ngIf="data.tab=='weekDays'">{{data.endOnW | stringToDate1:true}}</span>
-                    <span *ngIf="data.tab=='specificWeekDays'">{{data.endOnS | stringToDate1:true}}</span>
-                    <span *ngIf="data.tab=='monthDays'">{{data.endOnM | stringToDate1:true}}</span>
-                    <span *ngIf="data.tab=='every'">{{data.endOn | stringToDate1:true}}</span>
-                    <span *ngIf="data.tab=='others'">{{data.endOn | stringToDate1:true}}</span>
-                  </td>
-                  <td>
-                    <a class="text-hover-primary ">
-                      <i (click)="showCalendar(data)" class="fa fa-calendar m-r-sm"></i>
-                    </a>
-                    <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
-                      (click)="updateFrequency(data, i)" class="fa fa-pencil m-r-sm"></i></a>
-                    <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"
-                       class="text-hover-color">
-                      <i (click)="removeFrequency(i)" class="fa fa-times "></i>
-                    </a>
-                  </td>
-                </tr>
-                </tbody>
-              </table>
-            </div>
-            <div *ngIf="(!calendar.configuration.includesFrequency || calendar.configuration.includesFrequency.length==0) && editor.frequencyType=='INCLUDE'"
-                 class="text-center">
-              <app-empty-data title="runtime.message.noFrequencyFound"></app-empty-data>
-            </div>
-            <div *ngIf="(!calendar.configuration.excludesFrequency || calendar.configuration.excludesFrequency.length==0) && editor.frequencyType=='EXCLUDE'"
-                 class="text-center">
-              <app-empty-data title="runtime.message.noFrequencyFound"></app-empty-data>
-            </div>
-          </div>
-        </div>
-      </form>
+          </form>
+        }
+      </div>
     </div>
-  </div>
-  <div *ngIf="data.object" class="col-md-12">
-    <app-table
-      [copyObj]="copyObj"
-      [dataObj]="data"
-      [isTrash]="isTrash"
-      [objectType]="objectType"
-      [permission]="permission"
-      [preferences]="preferences"
-      [schedulerId]="schedulerId"></app-table>
-  </div>
+  }
+  @if (data.object) {
+    <div class="col-md-12">
+      <app-table
+        [copyObj]="copyObj"
+        [dataObj]="data"
+        [isTrash]="isTrash"
+        [objectType]="objectType"
+        [permission]="permission"
+        [preferences]="preferences"
+        [schedulerId]="schedulerId"></app-table>
+    </div>
+  }
 </div>

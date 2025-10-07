@@ -7,6 +7,7 @@ import {
   DeploymentComponent,
   ShowJsonModalComponent
 } from './deployment.component';
+import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 
 @NgModule({
   declarations: [
@@ -14,11 +15,12 @@ import {
     ShowJsonModalComponent,
     BulkUpdateModalComponent
   ],
-  imports: [
-    DeploymentRoutingModule,
-    NgJsonEditorModule,
-    SharedModule
-  ]
+    imports: [
+        DeploymentRoutingModule,
+        NgJsonEditorModule,
+        SharedModule,
+        NzTooltipDirective
+    ]
 })
 export class DeploymentModule {
 }

@@ -15,6 +15,7 @@ import {CommentModalComponent} from "../../../components/comment-modal/comment.c
 declare const $;
 
 @Component({
+  standalone: false,
   selector: 'app-workflow-detail',
   templateUrl: './workflow-detail.component.html',
   styles: [`.left-sidebar {

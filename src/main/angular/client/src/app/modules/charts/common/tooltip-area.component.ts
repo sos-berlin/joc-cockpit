@@ -9,7 +9,6 @@ import {
   PLATFORM_ID,
   Inject
 } from '@angular/core';
-import {trigger, style, animate, transition} from '@angular/animations';
 import {createMouseEvent} from '../events';
 import {isPlatformBrowser} from '@angular/common';
 import {ColorHelper} from './color.helper';
@@ -30,6 +29,7 @@ export interface Tooltip {
 }
 
 @Component({
+  standalone: false,
   selector: 'g[ngx-charts-tooltip-area]',
   template: `
     <svg:g>
@@ -53,7 +53,6 @@ export interface Tooltip {
       </ng-template>
       <svg:rect
         #tooltipAnchor
-        [@animationState]="anchorOpacity !== 0 ? 'active' : 'inactive'"
         class="tooltip-anchor"
         [attr.x]="anchorPos"
         y="0"
@@ -73,22 +72,6 @@ export interface Tooltip {
     </svg:g>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('animationState', [
-      transition('inactive => active', [
-        style({
-          opacity: 0
-        }),
-        animate(250, style({opacity: 0.7}))
-      ]),
-      transition('active => inactive', [
-        style({
-          opacity: 0.7
-        }),
-        animate(250, style({opacity: 0}))
-      ])
-    ])
-  ]
 })
 export class TooltipArea {
   anchorOpacity: number = 0;

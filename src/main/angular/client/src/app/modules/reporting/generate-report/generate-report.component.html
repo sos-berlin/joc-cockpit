@@ -15,342 +15,473 @@
       >
         <thead>
         <tr>
-          <th *ngIf="permission.joc && permission.joc.reports.manage" [(nzChecked)]="object.checked"
-              [nzIndeterminate]="object.indeterminate"
-              [nzShowCheckbox]="true"
-              (nzCheckedChange)="checkAll($event)"
-              class="chk"
-          ></th>
+          @if (permission.joc && permission.joc.reports.manage) {
+            <th [(nzChecked)]="object.checked"
+                [nzIndeterminate]="object.indeterminate"
+                [nzShowCheckbox]="true"
+                (nzCheckedChange)="checkAll($event)"
+                class="chk"
+            ></th>
+          }
           <th class="menu"><span translate>common.label.action</span></th>
-          <th *ngIf="filters.groupBy == 'path'" (click)="sort('path')"><a><span class="p-r-xs">
-              {{'common.label.name' | translate}} / {{'reporting.label.template' | translate}}</span>
-            <i *ngIf="filters.filter.sortBy == 'path' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'path' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-          </th>
-          <th *ngIf="filters.groupBy == 'hits'"  (click)="sort('hits')"><a><span class="p-r-xs">
-              {{'reporting.label.template' | translate}} / {{'common.label.name' | translate}}
-            </span>
-            <i *ngIf="filters.filter.sortBy == 'hits' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'hits' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-          </th>
-          <th *ngIf="filters.groupBy !== 'hits'"  nzWidth="450px" (click)="sort('template')"><a><span class="p-r-xs" translate>reporting.label.templateType</span>
-            <i *ngIf="filters.filter.sortBy == 'template' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'template' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-          </th>
+          @if (filters.groupBy == 'path') {
+            <th (click)="sort('path')"><a><span class="p-r-xs">
+                {{'common.label.name' | translate}} / {{'reporting.label.template' | translate}}</span>
+              @if (filters.filter.sortBy == 'path' && !filters.filter.reverse) {
+                <i class="fa fa-caret-up "></i>
+              }
+              @if (filters.filter.sortBy == 'path' && filters.filter.reverse) {
+                <i class="fa fa-caret-down "></i>
+              }</a>
+            </th>
+          }
+          @if (filters.groupBy == 'hits') {
+            <th (click)="sort('hits')"><a><span class="p-r-xs">
+                {{'reporting.label.template' | translate}} / {{'common.label.name' | translate}}
+              </span>
+              @if (filters.filter.sortBy == 'hits' && !filters.filter.reverse) {
+                <i class="fa fa-caret-up "></i>
+              }
+              @if (filters.filter.sortBy == 'hits' && filters.filter.reverse) {
+                <i class="fa fa-caret-down "></i>
+              }</a>
+            </th>
+          }
+          @if (filters.groupBy !== 'hits') {
+            <th nzWidth="450px" (click)="sort('template')"><a><span class="p-r-xs" translate>reporting.label.templateType</span>
+              @if (filters.filter.sortBy == 'template' && !filters.filter.reverse) {
+                <i class="fa fa-caret-up "></i>
+              }
+              @if (filters.filter.sortBy == 'template' && filters.filter.reverse) {
+                <i class="fa fa-caret-down "></i>
+              }</a>
+            </th>
+          }
           <th (click)="sort('controllerId')"><a><span class="p-r-xs" translate>common.label.controllerId</span>
-            <i *ngIf="filters.filter.sortBy == 'controllerId' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'controllerId' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
+            @if (filters.filter.sortBy == 'controllerId' && !filters.filter.reverse) {
+              <i class="fa fa-caret-up "></i>
+            }
+            @if (filters.filter.sortBy == 'controllerId' && filters.filter.reverse) {
+              <i class="fa fa-caret-down "></i>
+            }</a>
           </th>
           <th (click)="sort('frequency')" nzWidth="150px"><a><span class="p-r-xs"
                                                                    translate>reporting.label.frequency</span>
-            <i *ngIf="filters.filter.sortBy == 'frequency' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'frequency' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
+            @if (filters.filter.sortBy == 'frequency' && !filters.filter.reverse) {
+              <i class="fa fa-caret-up "></i>
+            }
+            @if (filters.filter.sortBy == 'frequency' && filters.filter.reverse) {
+              <i class="fa fa-caret-down "></i>
+            }</a>
           </th>
           <th (click)="sort('dateFrom')" nzWidth="110px"><a><span class="p-r-xs" translate>reporting.label.dateFrom</span>
-            <i *ngIf="filters.filter.sortBy == 'dateFrom' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'dateFrom' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
+            @if (filters.filter.sortBy == 'dateFrom' && !filters.filter.reverse) {
+              <i class="fa fa-caret-up "></i>
+            }
+            @if (filters.filter.sortBy == 'dateFrom' && filters.filter.reverse) {
+              <i class="fa fa-caret-down "></i>
+            }</a>
           </th>
           <th (click)="sort('dateTo')" nzWidth="110px"><a><span class="p-r-xs" translate>reporting.label.dateTo</span>
-            <i *ngIf="filters.filter.sortBy == 'dateTo' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'dateTo' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
+            @if (filters.filter.sortBy == 'dateTo' && !filters.filter.reverse) {
+              <i class="fa fa-caret-up "></i>
+            }
+            @if (filters.filter.sortBy == 'dateTo' && filters.filter.reverse) {
+              <i class="fa fa-caret-down "></i>
+            }</a>
           </th>
           <th (click)="sort('created')" nzWidth="150px"><a><span class="p-r-xs" translate>reporting.label.created</span>
-            <i *ngIf="filters.filter.sortBy == 'created' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'created' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
+            @if (filters.filter.sortBy == 'created' && !filters.filter.reverse) {
+              <i class="fa fa-caret-up "></i>
+            }
+            @if (filters.filter.sortBy == 'created' && filters.filter.reverse) {
+              <i class="fa fa-caret-down "></i>
+            }</a>
           </th>
         </tr>
         </thead>
         <tbody>
-        <ng-container *ngFor="let item of filteredData; trackBy: trackByFn">
-          <tr class="cursor">
-            <td *ngIf="permission.joc && permission.joc.reports.manage" [nzIndeterminate]="item.indeterminate"
-                [nzChecked]="item.checked"
-                (nzCheckedChange)="checkAllChild(item, $event)"
-                [nzShowCheckbox]="true">
-            </td>
-            <td>
-              <div class="btn-group dropdown">
-                <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
-                        nz-dropdown nzTrigger="click" type="button">
-                  <i class="fa fa-ellipsis-h"></i>
-                </button>
-                <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                  <ul nz-menu>
-                    <li nz-menu-item (click)="onSelect(item)">
-                      <a translate>reporting.button.showReport</a>
-                    </li>
-                    <li *ngIf="permission.joc && permission.joc.reports.manage" nz-menu-item (click)="deleteReport(item, true)">
-                      <a translate>common.button.delete</a>
-                    </li>
-                  </ul>
-                </nz-dropdown-menu>
-              </div>
-            </td>
-
-            <td colspan="6" *ngIf="filters.groupBy == 'hits'">
-                <span class="w-full" *ngIf="filters.groupBy !== 'hits'">
-                  <i class="fa fa-angle-right cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="!item.expanded" (click)="toggleRowExpansion(item)"></i>
-                  <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="item.expanded" (click)="toggleRowExpansion(item)"></i>
-                  <i (click)="coreService.navToInventoryTab(item.path, 'REPORT');"
-                     *ngIf="permission.joc && permission.joc.inventory.view"
-                     class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                  <span (click)="onSelect(item)" [innerHtml]="item.path | highlight : filters.searchText"></span>
-                  <i *ngIf="item.title"> - </i>
-                  <i [innerHtml]="item.title" class="text-muted"></i>
-                </span>
-                <span class="w-full" *ngIf="filters.groupBy == 'hits'">
-                  <i class="fa fa-angle-right cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="!item.expanded" (click)="toggleRowExpansion(item)"></i>
-                  <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="item.expanded" (click)="toggleRowExpansion(item)"></i>
-                  <span (click)="onSelect(item)" [innerHtml]="getTranslatedText(item) | highlight : filters.searchText"></span>
-                </span>
-            </td>
-            <td *ngIf="filters.groupBy !== 'hits'">
-                <span class="w-full" *ngIf="filters.groupBy !== 'hits'">
-                  <i class="fa fa-angle-right cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="!item.expanded" (click)="toggleRowExpansion(item)"></i>
-                  <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="item.expanded" (click)="toggleRowExpansion(item)"></i>
-                  <i (click)="coreService.navToInventoryTab(item.path, 'REPORT');"
-                     *ngIf="permission.joc && permission.joc.inventory.view"
-                     class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                  <span (click)="onSelect(item)" [innerHtml]="item.path | highlight : filters.searchText"></span>
-                  <i *ngIf="item.title"> - </i>
-                  <i [innerHtml]="item.title" class="text-muted"></i>
-                </span>
-              <span class="w-full" *ngIf="filters.groupBy == 'hits'">
-                  <i class="fa fa-angle-right cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="!item.expanded" (click)="toggleRowExpansion(item)"></i>
-                  <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="item.expanded" (click)="toggleRowExpansion(item)"></i>
-                  <span (click)="onSelect(item)" [innerHtml]="getTranslatedText(item) | highlight : filters.searchText"></span>
-                </span>
-            </td>
-            <td [attr.colspan]="filters.groupby !== 'hits' ? '7' : '0'" *ngIf="filters.groupBy !== 'hits'" (click)="onSelect(item)"><span [innerHtml]="'reporting.templates.' + item.template | translate | highlight : filters.searchText"></span></td>
-          </tr>
-          <ng-container *ngIf="item.expanded">
-            <ng-container *ngIf="filters.groupBy !== 'hits'; else temp">
-              <!-- Nested rows for Highest and Lowest -->
-              <tr *ngIf="item.highestGroup.length > 0">
-                <td *ngIf="permission.joc && permission.joc.reports.manage" [nzIndeterminate]="item.indeterminate"
-                    [nzChecked]="item.highestGroupChecked"
+          @for (item of filteredData; track trackByFn) {
+            <tr class="cursor">
+              @if (permission.joc && permission.joc.reports.manage) {
+                <td [nzIndeterminate]="item.indeterminate"
+                    [nzChecked]="item.checked"
                     (nzCheckedChange)="checkAllChild(item, $event)"
                     [nzShowCheckbox]="true">
                 </td>
-                <td>
-                  <div class="btn-group dropdown">
-                    <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
-                            nz-dropdown nzTrigger="click" type="button">
-                      <i class="fa fa-ellipsis-h"></i>
-                    </button>
-                    <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                      <ul nz-menu>
-                        <li nz-menu-item (click)="onSelect(item, 'highest')">
-                          <a translate>reporting.button.showReport</a>
-                        </li>
-                        <li *ngIf="permission.joc && permission.joc.reports.manage" nz-menu-item (click)="deleteReport(item, true, 'highest')">
+              }
+              <td>
+                <div class="btn-group dropdown">
+                  <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
+                          nz-dropdown nzTrigger="click" type="button">
+                    <i class="fa fa-ellipsis-h"></i>
+                  </button>
+                  <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                    <ul nz-menu>
+                      <li nz-menu-item (click)="onSelect(item)">
+                        <a translate>reporting.button.showReport</a>
+                      </li>
+                      @if (permission.joc && permission.joc.reports.manage) {
+                        <li nz-menu-item (click)="deleteReport(item, true)">
                           <a translate>common.button.delete</a>
                         </li>
-                      </ul>
-                    </nz-dropdown-menu>
-                  </div>
-                </td>
-                <td  [attr.colspan]="filters.groupby === 'hits' ? '6' : '7'" class="nested-row cursor">
-                  <i class="fa fa-angle-right cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="!item.expandedHighest" (click)="toggleHighest(item)"></i>
-                  <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="item.expandedHighest" (click)="toggleHighest(item)"></i>
-                  <span class="cursor" (click)="onSelect(item, 'highest')"> {{ 'reporting.label.HIGHEST' | translate}}</span>
-                </td>
-              </tr>
-              <ng-container *ngIf="item.expandedHighest">
-                <tr *ngFor="let highestItem of item.highestGroup; trackBy: trackByFn" class="cursor nested-row">
-                  <td *ngIf="permission.joc && permission.joc.reports.manage" [nzChecked]="object.mapOfCheckedId.has(highestItem.id)" (nzCheckedChange)="onItemChecked(item, highestItem, $event, 'highest')"
-                      [nzShowCheckbox]="true"></td>
-                  <td>
-                    <div class="btn-group dropdown">
-                      <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
-                              nz-dropdown nzTrigger="click" type="button">
-                        <i class="fa fa-ellipsis-h"></i>
-                      </button>
-                      <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                        <ul nz-menu>
-                          <li nz-menu-item (click)="onSelect(highestItem)">
-                            <a translate>reporting.button.showReport</a>
-                          </li>
-                          <li *ngIf="permission.joc && permission.joc.reports.manage" nz-menu-item (click)="deleteReport(highestItem)">
-                            <a translate>common.button.delete</a>
-                          </li>
-                        </ul>
-                      </nz-dropdown-menu>
-                    </div>
-                  </td>
-                  <td *ngIf="filters.groupBy == 'hits'">
-                      <span class="w-full p-l-12">
-                        <i (click)="coreService.navToInventoryTab(highestItem.path, 'REPORT');"
-                           *ngIf="permission.joc && permission.joc.inventory.view"
-                           class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                        <span (click)="onSelect(highestItem)" [innerHtml]="highestItem.path | highlight : filters.searchText"></span>
-                        <i *ngIf="highestItem.title"> - </i>
-                        <i [innerHtml]="highestItem.title" class="text-muted"></i>
-                      </span>
-                  </td>
-                  <td (click)="onSelect(highestItem)" *ngIf="filters.groupBy !== 'hits'">
-                    <span class="p-l-12" [innerHtml]="getTranslatedText(highestItem) | highlight : filters.searchText"></span>
-                  </td>
-                  <td *ngIf="filters.groupBy !== 'hits'" (click)="onSelect(highestItem)"></td>
-                  <td (click)="onSelect(highestItem)"><span [innerHtml]="highestItem.controllerId | highlight : filters.searchText"></span></td>
-                  <td (click)="onSelect(highestItem)"><span [innerHtml]="highestItem.frequency | translate | highlight : filters.searchText"></span></td>
-                  <td (click)="onSelect(highestItem)"><span [innerHtml]="highestItem.dateFrom | highlight : filters.searchText"></span></td>
-                  <td (click)="onSelect(highestItem)"><span [innerHtml]="highestItem.dateTo | highlight : filters.searchText"></span></td>
-                  <td (click)="onSelect(highestItem)"><span [innerHtml]="highestItem.created | stringToDate | highlight : filters.searchText"></span></td>
-                </tr>
-              </ng-container>
-              <tr *ngIf="item.lowestGroup.length > 0">
-                <td *ngIf="permission.joc && permission.joc.reports.manage" [nzIndeterminate]="item.indeterminate"
-                    [nzChecked]="item.lowestGroupChecked"
-                    (nzCheckedChange)="checkAllChild(item, $event)"
-                    [nzShowCheckbox]="true">
-                </td>
-                <td>
-                  <div class="btn-group dropdown">
-                    <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
-                            nz-dropdown nzTrigger="click" type="button">
-                      <i class="fa fa-ellipsis-h"></i>
-                    </button>
-                    <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                      <ul nz-menu>
-                        <li nz-menu-item (click)="onSelect(item, 'lowest')">
-                          <a translate>reporting.button.showReport</a>
-                        </li>
-                        <li *ngIf="permission.joc && permission.joc.reports.manage" nz-menu-item (click)="deleteReport(item, true, 'lowest')">
-                          <a translate>common.button.delete</a>
-                        </li>
-                      </ul>
-                    </nz-dropdown-menu>
-                  </div>
-                </td>
-                <td [attr.colspan]="filters.groupby === 'hits' ? '6' : '7'" class="nested-row cursor">
-                  <i class="fa fa-angle-right cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="!item.expandedLowest" (click)="toggleLowest(item)"></i>
-                  <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" *ngIf="item.expandedLowest" (click)="toggleLowest(item)"></i>
-                  <span class="cursor" (click)="onSelect(item, 'lowest')"> {{ 'reporting.label.LOWEST' | translate}}</span>
+                      }
+                    </ul>
+                  </nz-dropdown-menu>
+                </div>
+              </td>
 
-                </td>
-              </tr>
-              <ng-container *ngIf="item.expandedLowest">
-                <tr *ngFor="let lowestItem of item.lowestGroup; trackBy: trackByFn" class="cursor nested-row">
-                  <td *ngIf="permission.joc && permission.joc.reports.manage" [nzChecked]="object.mapOfCheckedId.has(lowestItem.id)" (nzCheckedChange)="onItemChecked(item, lowestItem, $event, 'lowest')"
-                      [nzShowCheckbox]="true"></td>
-                  <td>
-                    <div class="btn-group dropdown">
-                      <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
-                              nz-dropdown nzTrigger="click" type="button">
-                        <i class="fa fa-ellipsis-h"></i>
-                      </button>
-                      <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                        <ul nz-menu>
-                          <li nz-menu-item (click)="onSelect(lowestItem)">
-                            <a translate>reporting.button.showReport</a>
-                          </li>
-                          <li *ngIf="permission.joc && permission.joc.reports.manage" nz-menu-item (click)="deleteReport(lowestItem, true)">
-                            <a translate>common.button.delete</a>
-                          </li>
-                        </ul>
-                      </nz-dropdown-menu>
-                    </div>
-                  </td>
-                  <td *ngIf="filters.groupBy == 'hits'">
-                      <span class="w-full p-l-12">
-                        <i (click)="coreService.navToInventoryTab(lowestItem.path, 'REPORT');"
-                           *ngIf="permission.joc && permission.joc.inventory.view"
+              @if (filters.groupBy == 'hits') {
+                <td colspan="6">
+                  @if (filters.groupBy !== 'hits') {
+                    <span class="w-full">
+                      @if (!item.expanded) {
+                        <i class="fa fa-angle-right cursor fa-lg p-r-sm" aria-hidden="true" (click)="toggleRowExpansion(item)"></i>
+                      }
+                      @if (item.expanded) {
+                        <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" (click)="toggleRowExpansion(item)"></i>
+                      }
+                      @if (permission.joc && permission.joc.inventory.view) {
+                        <i (click)="coreService.navToInventoryTab(item.path, 'REPORT');"
                            class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                        <span (click)="onSelect(lowestItem)" [innerHtml]="lowestItem.path | highlight : filters.searchText"></span>
-                        <i *ngIf="lowestItem.title"> - </i>
-                        <i [innerHtml]="lowestItem.title" class="text-muted"></i>
+                      }
+                      <span (click)="onSelect(item)" [innerHtml]="item.path | highlight : filters.searchText"></span>
+                      @if (item.title) {
+                        <i> - </i>
+                      }
+                      <i [innerHtml]="item.title" class="text-muted"></i>
+                    </span>
+                  }
+                  @if (filters.groupBy == 'hits') {
+                    <span class="w-full">
+                      @if (!item.expanded) {
+                        <i class="fa fa-angle-right cursor fa-lg p-r-sm" aria-hidden="true" (click)="toggleRowExpansion(item)"></i>
+                      }
+                      @if (item.expanded) {
+                        <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" (click)="toggleRowExpansion(item)"></i>
+                      }
+                      <span (click)="onSelect(item)" [innerHtml]="getTranslatedText(item) | highlight : filters.searchText"></span>
+                    </span>
+                  }
+                </td>
+              }
+              @if (filters.groupBy !== 'hits') {
+                <td>
+                  @if (filters.groupBy !== 'hits') {
+                    <span class="w-full">
+                      @if (!item.expanded) {
+                        <i class="fa fa-angle-right cursor fa-lg p-r-sm" aria-hidden="true" (click)="toggleRowExpansion(item)"></i>
+                      }
+                      @if (item.expanded) {
+                        <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" (click)="toggleRowExpansion(item)"></i>
+                      }
+                      @if (permission.joc && permission.joc.inventory.view) {
+                        <i (click)="coreService.navToInventoryTab(item.path, 'REPORT');"
+                           class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                      }
+                      <span (click)="onSelect(item)" [innerHtml]="item.path | highlight : filters.searchText"></span>
+                      @if (item.title) {
+                        <i> - </i>
+                      }
+                      <i [innerHtml]="item.title" class="text-muted"></i>
+                    </span>
+                  }
+                  @if (filters.groupBy == 'hits') {
+                    <span class="w-full">
+                      @if (!item.expanded) {
+                        <i class="fa fa-angle-right cursor fa-lg p-r-sm" aria-hidden="true" (click)="toggleRowExpansion(item)"></i>
+                      }
+                      @if (item.expanded) {
+                        <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" (click)="toggleRowExpansion(item)"></i>
+                      }
+                      <span (click)="onSelect(item)" [innerHtml]="getTranslatedText(item) | highlight : filters.searchText"></span>
+                    </span>
+                  }
+                </td>
+                <td [attr.colspan]="filters.groupby !== 'hits' ? '7' : '0'" (click)="onSelect(item)"><span [innerHtml]="'reporting.templates.' + item.template | translate | highlight : filters.searchText"></span></td>
+              }
+            </tr>
+            @if (item.expanded) {
+              @if (filters.groupBy !== 'hits') {
+                <!-- Nested rows for Highest and Lowest -->
+                @if (item.highestGroup.length > 0) {
+                  <tr>
+                    @if (permission.joc && permission.joc.reports.manage) {
+                      <td [nzIndeterminate]="item.indeterminate"
+                          [nzChecked]="item.highestGroupChecked"
+                          (nzCheckedChange)="checkAllChild(item, $event)"
+                          [nzShowCheckbox]="true">
+                      </td>
+                    }
+                    <td>
+                      <div class="btn-group dropdown">
+                        <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
+                                nz-dropdown nzTrigger="click" type="button">
+                          <i class="fa fa-ellipsis-h"></i>
+                        </button>
+                        <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                          <ul nz-menu>
+                            <li nz-menu-item (click)="onSelect(item, 'highest')">
+                              <a translate>reporting.button.showReport</a>
+                            </li>
+                            @if (permission.joc && permission.joc.reports.manage) {
+                              <li nz-menu-item (click)="deleteReport(item, true, 'highest')">
+                                <a translate>common.button.delete</a>
+                              </li>
+                            }
+                          </ul>
+                        </nz-dropdown-menu>
+                      </div>
+                    </td>
+                    <td [attr.colspan]="filters.groupby === 'hits' ? '6' : '7'" class="nested-row cursor">
+                      @if (!item.expandedHighest) {
+                        <i class="fa fa-angle-right cursor fa-lg p-r-sm" aria-hidden="true" (click)="toggleHighest(item)"></i>
+                      }
+                      @if (item.expandedHighest) {
+                        <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" (click)="toggleHighest(item)"></i>
+                      }
+                      <span class="cursor" (click)="onSelect(item, 'highest')"> {{ 'reporting.label.HIGHEST' | translate}}</span>
+                    </td>
+                  </tr>
+                }
+                @if (item.expandedHighest) {
+                  @for (highestItem of item.highestGroup; track trackByFn) {
+                    <tr class="cursor nested-row">
+                      @if (permission.joc && permission.joc.reports.manage) {
+                        <td [nzChecked]="object.mapOfCheckedId.has(highestItem.id)" (nzCheckedChange)="onItemChecked(item, highestItem, $event, 'highest')"
+                            [nzShowCheckbox]="true"></td>
+                      }
+                      <td>
+                        <div class="btn-group dropdown">
+                          <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
+                                  nz-dropdown nzTrigger="click" type="button">
+                            <i class="fa fa-ellipsis-h"></i>
+                          </button>
+                          <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                            <ul nz-menu>
+                              <li nz-menu-item (click)="onSelect(highestItem)">
+                                <a translate>reporting.button.showReport</a>
+                              </li>
+                              @if (permission.joc && permission.joc.reports.manage) {
+                                <li nz-menu-item (click)="deleteReport(highestItem)">
+                                  <a translate>common.button.delete</a>
+                                </li>
+                              }
+                            </ul>
+                          </nz-dropdown-menu>
+                        </div>
+                      </td>
+                      @if (filters.groupBy == 'hits') {
+                        <td>
+                          <span class="w-full p-l-12">
+                            @if (permission.joc && permission.joc.inventory.view) {
+                              <i (click)="coreService.navToInventoryTab(highestItem.path, 'REPORT');"
+                                 class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                            }
+                            <span (click)="onSelect(highestItem)" [innerHtml]="highestItem.path | highlight : filters.searchText"></span>
+                            @if (highestItem.title) {
+                              <i> - </i>
+                            }
+                            <i [innerHtml]="highestItem.title" class="text-muted"></i>
+                          </span>
+                        </td>
+                      }
+                      @if (filters.groupBy !== 'hits') {
+                        <td (click)="onSelect(highestItem)">
+                          <span class="p-l-12" [innerHtml]="getTranslatedText(highestItem) | highlight : filters.searchText"></span>
+                        </td>
+                      }
+                      @if (filters.groupBy !== 'hits') {
+                        <td (click)="onSelect(highestItem)"></td>
+                      }
+                      <td (click)="onSelect(highestItem)"><span [innerHtml]="highestItem.controllerId | highlight : filters.searchText"></span></td>
+                      <td (click)="onSelect(highestItem)"><span [innerHtml]="highestItem.frequency | translate | highlight : filters.searchText"></span></td>
+                      <td (click)="onSelect(highestItem)"><span [innerHtml]="highestItem.dateFrom | highlight : filters.searchText"></span></td>
+                      <td (click)="onSelect(highestItem)"><span [innerHtml]="highestItem.dateTo | highlight : filters.searchText"></span></td>
+                      <td (click)="onSelect(highestItem)"><span [innerHtml]="highestItem.created | stringToDate | highlight : filters.searchText"></span></td>
+                    </tr>
+                  }
+                }
+                @if (item.lowestGroup.length > 0) {
+                  <tr>
+                    @if (permission.joc && permission.joc.reports.manage) {
+                      <td [nzIndeterminate]="item.indeterminate"
+                          [nzChecked]="item.lowestGroupChecked"
+                          (nzCheckedChange)="checkAllChild(item, $event)"
+                          [nzShowCheckbox]="true">
+                      </td>
+                    }
+                    <td>
+                      <div class="btn-group dropdown">
+                        <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
+                                nz-dropdown nzTrigger="click" type="button">
+                          <i class="fa fa-ellipsis-h"></i>
+                        </button>
+                        <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                          <ul nz-menu>
+                            <li nz-menu-item (click)="onSelect(item, 'lowest')">
+                              <a translate>reporting.button.showReport</a>
+                            </li>
+                            @if (permission.joc && permission.joc.reports.manage) {
+                              <li nz-menu-item (click)="deleteReport(item, true, 'lowest')">
+                                <a translate>common.button.delete</a>
+                              </li>
+                            }
+                          </ul>
+                        </nz-dropdown-menu>
+                      </div>
+                    </td>
+                    <td [attr.colspan]="filters.groupby === 'hits' ? '6' : '7'" class="nested-row cursor">
+                      @if (!item.expandedLowest) {
+                        <i class="fa fa-angle-right cursor fa-lg p-r-sm" aria-hidden="true" (click)="toggleLowest(item)"></i>
+                      }
+                      @if (item.expandedLowest) {
+                        <i class="fa fa-angle-down cursor fa-lg p-r-sm" aria-hidden="true" (click)="toggleLowest(item)"></i>
+                      }
+                      <span class="cursor" (click)="onSelect(item, 'lowest')"> {{ 'reporting.label.LOWEST' | translate}}</span>
+
+                    </td>
+                  </tr>
+                }
+                @if (item.expandedLowest) {
+                  @for (lowestItem of item.lowestGroup; track trackByFn) {
+                    <tr class="cursor nested-row">
+                      @if (permission.joc && permission.joc.reports.manage) {
+                        <td [nzChecked]="object.mapOfCheckedId.has(lowestItem.id)" (nzCheckedChange)="onItemChecked(item, lowestItem, $event, 'lowest')"
+                            [nzShowCheckbox]="true"></td>
+                      }
+                      <td>
+                        <div class="btn-group dropdown">
+                          <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
+                                  nz-dropdown nzTrigger="click" type="button">
+                            <i class="fa fa-ellipsis-h"></i>
+                          </button>
+                          <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                            <ul nz-menu>
+                              <li nz-menu-item (click)="onSelect(lowestItem)">
+                                <a translate>reporting.button.showReport</a>
+                              </li>
+                              @if (permission.joc && permission.joc.reports.manage) {
+                                <li nz-menu-item (click)="deleteReport(lowestItem, true)">
+                                  <a translate>common.button.delete</a>
+                                </li>
+                              }
+                            </ul>
+                          </nz-dropdown-menu>
+                        </div>
+                      </td>
+                      @if (filters.groupBy == 'hits') {
+                        <td>
+                          <span class="w-full p-l-12">
+                            @if (permission.joc && permission.joc.inventory.view) {
+                              <i (click)="coreService.navToInventoryTab(lowestItem.path, 'REPORT');"
+                                 class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                            }
+                            <span (click)="onSelect(lowestItem)" [innerHtml]="lowestItem.path | highlight : filters.searchText"></span>
+                            @if (lowestItem.title) {
+                              <i> - </i>
+                            }
+                            <i [innerHtml]="lowestItem.title" class="text-muted"></i>
+                          </span>
+                        </td>
+                      }
+                      @if (filters.groupBy !== 'hits') {
+                        <td (click)="onSelect(lowestItem)">
+                          <span class="p-l-12" [innerHtml]="getTranslatedText(lowestItem) | highlight : filters.searchText"></span>
+                        </td>
+                      }
+                      @if (filters.groupBy !== 'hits') {
+                        <td (click)="onSelect(lowestItem)"></td>
+                      }
+                      <td (click)="onSelect(lowestItem)"><span [innerHtml]="lowestItem.controllerId | highlight : filters.searchText"></span></td>
+                      <td (click)="onSelect(lowestItem)"><span [innerHtml]="lowestItem.frequency | translate | highlight : filters.searchText"></span></td>
+                      <td (click)="onSelect(lowestItem)"><span [innerHtml]="lowestItem.dateFrom | highlight : filters.searchText"></span></td>
+                      <td (click)="onSelect(lowestItem)"><span [innerHtml]="lowestItem.dateTo | highlight : filters.searchText"></span></td>
+                      <td (click)="onSelect(lowestItem)"><span [innerHtml]="lowestItem.created | stringToDate | highlight : filters.searchText"></span></td>
+                    </tr>
+                  }
+                }
+              } @else {
+                @for (child of item.value; track child) {
+                  <tr class="cursor">
+                    @if (permission.joc && permission.joc.reports.manage) {
+                      <td [nzChecked]="object.mapOfCheckedId.has(child.id)" (nzCheckedChange)="onItemChecked(item, child, $event)"
+                          [nzShowCheckbox]="true"></td>
+                    }
+                    <td>
+                      <div class="btn-group dropdown">
+                        <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
+                                nz-dropdown nzTrigger="click" type="button">
+                          <i class="fa fa-ellipsis-h"></i>
+                        </button>
+                        <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                          <ul nz-menu>
+                            <li nz-menu-item (click)="onSelect(child)">
+                              <a translate>reporting.button.showReport</a>
+                            </li>
+                            @if (permission.joc && permission.joc.reports.manage) {
+                              <li nz-menu-item (click)="deleteReport(child)">
+                                <a translate>common.button.delete</a>
+                              </li>
+                            }
+                          </ul>
+                        </nz-dropdown-menu>
+                      </div>
+                    </td>
+                    @if (filters.groupBy == 'hits') {
+                      <td>
+                      <span class="w-full p-l-12">
+                        @if (permission.joc && permission.joc.inventory.view) {
+                          <i (click)="coreService.navToInventoryTab(child.path, 'REPORT');"
+                             class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                        }
+                        <span (click)="onSelect(child)" [innerHtml]="child.path | highlight : filters.searchText"></span>
+                        @if (child.title) {
+                          <i> - </i>
+                        }
+                        <i [innerHtml]="child.title" class="text-muted"></i>
                       </span>
-                  </td>
-                  <td (click)="onSelect(lowestItem)" *ngIf="filters.groupBy !== 'hits'">
-                    <span class="p-l-12" [innerHtml]="getTranslatedText(lowestItem) | highlight : filters.searchText"></span>
-                  </td>
-                  <td *ngIf="filters.groupBy !== 'hits'" (click)="onSelect(lowestItem)"></td>
-                  <td (click)="onSelect(lowestItem)"><span [innerHtml]="lowestItem.controllerId | highlight : filters.searchText"></span></td>
-                  <td (click)="onSelect(lowestItem)"><span [innerHtml]="lowestItem.frequency | translate | highlight : filters.searchText"></span></td>
-                  <td (click)="onSelect(lowestItem)"><span [innerHtml]="lowestItem.dateFrom | highlight : filters.searchText"></span></td>
-                  <td (click)="onSelect(lowestItem)"><span [innerHtml]="lowestItem.dateTo | highlight : filters.searchText"></span></td>
-                  <td (click)="onSelect(lowestItem)"><span [innerHtml]="lowestItem.created | stringToDate | highlight : filters.searchText"></span></td>
-                </tr>
-              </ng-container>
-            </ng-container>
-            <ng-template #temp>
-              <tr *ngFor="let child of item.value" class="cursor">
-                <td *ngIf="permission.joc && permission.joc.reports.manage" [nzChecked]="object.mapOfCheckedId.has(child.id)" (nzCheckedChange)="onItemChecked(item, child, $event)"
-                    [nzShowCheckbox]="true"></td>
-                <td >
-                  <div class="btn-group dropdown">
-                    <button [nzDropdownMenu]="option" class="btn-drop more-option-h"
-                            nz-dropdown nzTrigger="click" type="button">
-                      <i class="fa fa-ellipsis-h"></i>
-                    </button>
-                    <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                      <ul nz-menu>
-                        <li nz-menu-item (click)="onSelect(child)">
-                          <a translate>reporting.button.showReport</a>
-                        </li>
-                        <li *ngIf="permission.joc && permission.joc.reports.manage" nz-menu-item (click)="deleteReport(child)">
-                          <a translate>common.button.delete</a>
-                        </li>
-                      </ul>
-                    </nz-dropdown-menu>
-                  </div>
-                </td>
-                <td *ngIf="filters.groupBy == 'hits'" >
-                  <span class="w-full p-l-12">
-                    <i (click)="coreService.navToInventoryTab(child.path, 'REPORT');"
-                       *ngIf="permission.joc && permission.joc.inventory.view"
-                       class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                    <span (click)="onSelect(child)" [innerHtml]="child.path | highlight : filters.searchText"></span>
-                    <i *ngIf="child.title"> - </i>
-                    <i [innerHtml]="child.title" class="text-muted"></i>
-                  </span>
-                </td>
-                <td (click)="onSelect(child)" *ngIf="filters.groupBy !== 'hits'" >
-                  <span class="p-l-12" [innerHtml]="getTranslatedText(child) | highlight : filters.searchText"></span>
-                </td>
-                <td (click)="onSelect(child)"><span [innerHtml]="child.controllerId | highlight : filters.searchText"></span></td>
-                <td (click)="onSelect(child)"><span
-                  [innerHtml]="child.frequency | translate | highlight : filters.searchText"></span></td>
-                <td (click)="onSelect(child)"><span
-                  [innerHtml]="child.dateFrom | highlight : filters.searchText"></span></td>
-                <td (click)="onSelect(child)"><span
-                  [innerHtml]="child.dateTo | highlight : filters.searchText"></span></td>
-                <td (click)="onSelect(child)"><span [innerHtml]="child.created | stringToDate | highlight : filters.searchText"></span></td>
-              </tr>
-            </ng-template>
-          </ng-container>
-        </ng-container>
+                      </td>
+                    }
+                    @if (filters.groupBy !== 'hits') {
+                      <td (click)="onSelect(child)">
+                        <span class="p-l-12" [innerHtml]="getTranslatedText(child) | highlight : filters.searchText"></span>
+                      </td>
+                    }
+                    <td (click)="onSelect(child)"><span [innerHtml]="child.controllerId | highlight : filters.searchText"></span></td>
+                    <td (click)="onSelect(child)"><span
+                      [innerHtml]="child.frequency | translate | highlight : filters.searchText"></span></td>
+                    <td (click)="onSelect(child)"><span
+                      [innerHtml]="child.dateFrom | highlight : filters.searchText"></span></td>
+                    <td (click)="onSelect(child)"><span
+                      [innerHtml]="child.dateTo | highlight : filters.searchText"></span></td>
+                    <td (click)="onSelect(child)"><span [innerHtml]="child.created | stringToDate | highlight : filters.searchText"></span></td>
+                  </tr>
+                }
+              }
+            }
+          }
         </tbody>
       </nz-table>
     </div>
-    <div *ngIf="ajaxTable.data.length >0"
-         class="w-half label-top"><span translate>common.label.total</span> {{filteredData.length}}
-      <span *ngIf="ajaxTable.data.length >1" translate>inventory.label.entriesFound</span>
-      <span *ngIf="ajaxTable.data.length ==1" translate>inventory.label.entryFound</span>
-    </div>
+    @if (ajaxTable.data.length >0) {
+      <div class="w-half label-top"><span translate>common.label.total</span> {{filteredData.length}}
+        @if (ajaxTable.data.length >1) {
+          <span translate>inventory.label.entriesFound</span>
+        }
+        @if (ajaxTable.data.length ==1) {
+          <span translate>inventory.label.entryFound</span>
+        }
+      </div>
+    }
   </div>
 </div>
 
 <nz-drawer (nzOnClose)="closePanel()" [nzWrapClassName]="'report-drawer'" [nzVisible]="isVisible" nzPlacement="right">
   <ng-container *nzDrawerContent>
-    <app-frequency-report *ngIf="isVisible" (closePanel)="closePanel()" [templates]="templates" [groupBy]="filters.groupBy"
-                          [selectedReport]="selectedReport" [groupType]="groupType"></app-frequency-report>
+    @if (isVisible) {
+      <app-frequency-report (closePanel)="closePanel()" [templates]="templates" [groupBy]="filters.groupBy"
+                            [selectedReport]="selectedReport" [groupType]="groupType"></app-frequency-report>
+    }
   </ng-container>
 </nz-drawer>

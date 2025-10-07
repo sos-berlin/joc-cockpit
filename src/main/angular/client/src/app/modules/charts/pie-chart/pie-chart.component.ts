@@ -17,6 +17,7 @@ import {ViewDimensions} from '../common/types/view-dimension.interface';
 import {ScaleType} from '../common/types/scale-type.enum';
 
 @Component({
+  standalone: false,
   selector: 'ngx-charts-pie-chart',
   template: `
     <ngx-charts-chart

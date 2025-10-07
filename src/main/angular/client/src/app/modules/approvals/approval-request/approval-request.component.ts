@@ -10,6 +10,7 @@ import {HttpHeaders} from "@angular/common/http";
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 
 @Component({
+  standalone: false,
   selector: 'app-approval-request',
   templateUrl: './approval-request.component.html',
   styleUrl: './approval-request.component.scss'

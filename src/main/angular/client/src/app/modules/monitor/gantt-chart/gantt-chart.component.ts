@@ -2,6 +2,7 @@ import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {differenceInHours, set, differenceInMinutes} from 'date-fns';
 
 @Component({
+  standalone: false,
   selector: 'app-gantt-chart',
   templateUrl: 'gantt-chart.component.html',
   styleUrls: ['gantt-chart.component.scss']

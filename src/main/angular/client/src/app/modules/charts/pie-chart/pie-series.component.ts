@@ -20,6 +20,7 @@ import {StyleTypes} from '../common/tooltip/style.type';
 import {ViewDimensions} from '../common/types/view-dimension.interface';
 
 @Component({
+  standalone: false,
   selector: 'g[ngx-charts-pie-series]',
   template: `
     <svg:g *ngFor="let arc of data; trackBy: trackBy">

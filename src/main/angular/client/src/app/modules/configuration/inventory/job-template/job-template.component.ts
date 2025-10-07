@@ -29,6 +29,7 @@ import {HelpViewerComponent} from "../../../../components/help-viewer/help-viewe
 declare const $;
 
 @Component({
+  standalone: false,
   selector: 'app-update-modal',
   templateUrl: './update-dialog.html'
 })
@@ -336,6 +337,7 @@ export class UpdateJobTemplatesComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-job-template',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './job-template.component.html'

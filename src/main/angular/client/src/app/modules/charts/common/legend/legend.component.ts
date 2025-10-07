@@ -19,6 +19,7 @@ export interface LegendEntry {
 }
 
 @Component({
+  standalone: false,
   selector: 'ngx-charts-legend',
   template: `
     <div [style.width.px]="width">

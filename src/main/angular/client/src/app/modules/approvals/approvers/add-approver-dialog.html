@@ -1,7 +1,11 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="!edit" translate>monitor.approvers.label.addNewApprover</span>
-    <span *ngIf="edit" translate>common.button.edit</span>
+    @if (!edit) {
+      <span translate>monitor.approvers.label.addNewApprover</span>
+    }
+    @if (edit) {
+      <span translate>common.button.edit</span>
+    }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -20,11 +24,13 @@
                    #userName="ngModel" autocomplete="off"/>
           </div>
         </div>
-        <div *ngIf="userName.invalid && (userName.dirty || userName.touched)" class="text-danger help-block">
-          <div *ngIf="userName.errors?.['required']">
-            <div translate>common.message.requiredError</div>
+        @if (userName.invalid && (userName.dirty || userName.touched)) {
+          <div class="text-danger help-block">
+            @if (userName.errors?.['required']) {
+              <div translate>common.message.requiredError</div>
+            }
           </div>
-        </div>
+        }
       </div>
     </div>
 
@@ -39,11 +45,13 @@
                    #firstName="ngModel" autocomplete="off"/>
           </div>
         </div>
-        <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="text-danger help-block">
-          <div *ngIf="firstName.errors?.['required']">
-            <div translate>common.message.requiredError</div>
+        @if (firstName.invalid && (firstName.dirty || firstName.touched)) {
+          <div class="text-danger help-block">
+            @if (firstName.errors?.['required']) {
+              <div translate>common.message.requiredError</div>
+            }
           </div>
-        </div>
+        }
       </div>
     </div>
 
@@ -58,11 +66,13 @@
                    #lastName="ngModel" autocomplete="off"/>
           </div>
         </div>
-        <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="text-danger help-block">
-          <div *ngIf="lastName.errors?.['required']">
-            <div translate>common.message.requiredError</div>
+        @if (lastName.invalid && (lastName.dirty || lastName.touched)) {
+          <div class="text-danger help-block">
+            @if (lastName.errors?.['required']) {
+              <div translate>common.message.requiredError</div>
+            }
           </div>
-        </div>
+        }
       </div>
     </div>
 
@@ -81,7 +91,9 @@
   </div>
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">

@@ -12,6 +12,7 @@ import {ManageReportComponent} from "./manage-report/manage-report.component";
 import {FrequencyReportComponent} from "./frequency-report/frequency-report.component";
 import {SharingDataService} from "./sharing-data.service";
 import {GenerateReportComponent} from "./generate-report/generate-report.component";
+import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 
 
 @NgModule({
@@ -25,14 +26,15 @@ import {GenerateReportComponent} from "./generate-report/generate-report.compone
     GenerateReportComponent,
     FrequencyReportComponent
   ],
-  imports: [
-    ReportingRoutingModule,
-    NgChartsModule,
-    SharedModule,
-    NzDrawerModule,
-    NzTabsModule,
-    GaugeModule.forRoot(),
-  ],
+    imports: [
+        ReportingRoutingModule,
+        NgChartsModule,
+        SharedModule,
+        NzDrawerModule,
+        NzTabsModule,
+        GaugeModule.forRoot(),
+        NzTooltipDirective,
+    ],
   providers: [GroupByPipe, SharingDataService]
 })
 export class ReportingModule {

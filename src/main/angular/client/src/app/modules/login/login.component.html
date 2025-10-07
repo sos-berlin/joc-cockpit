@@ -23,125 +23,177 @@
           </div>
           <div class="m-t-72"></div>
           <div [ngClass]="{'show':errorMsg}" class="hide b-a p-a-sm m-t-sm error-input">
-            <span *ngIf="!errorMsgText" translate>login.message.loginError</span>
-            <span *ngIf="errorMsgText" class="m-b-sm">{{errorMsgText}}</span>
+            @if (!errorMsgText) {
+              <span translate>login.message.loginError</span>
+            }
+            @if (errorMsgText) {
+              <span class="m-b-sm">{{errorMsgText}}</span>
+            }
           </div>
           <form #myForm="ngForm" (ngSubmit)="onSubmit(user)" class="p-t-sm p-b-sm p-l-xs p-r-xs">
-            <div *ngIf="showRegister || showLogin" class="md-form-group">
-              <input #userName="ngModel" [(ngModel)]="user.userName" class="md-input" id="display-name"
-                     name="userName" required type="text">
-              <label class="font14" for="display-name"> {{ 'register.label.displayName' | translate}}
-                <sup class="text-danger text-sm">*</sup>
-              </label>
-              <div *ngIf="userName.invalid && (userName.dirty || userName.touched)" class="text-danger help-block">
-                <div *ngIf="userName.errors.required">
-                  <div translate>common.message.requiredError</div>
-                </div>
+            @if (showRegister || showLogin) {
+              <div class="md-form-group">
+                <input #userName="ngModel" [(ngModel)]="user.userName" class="md-input" id="display-name"
+                       name="userName" required type="text">
+                <label class="font14" for="display-name"> {{ 'register.label.displayName' | translate}}
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
+                @if (userName.invalid && (userName.dirty || userName.touched)) {
+                  <div class="text-danger help-block">
+                    @if (userName.errors.required) {
+                      <div translate>common.message.requiredError</div>
+                    }
+                  </div>
+                }
               </div>
-            </div>
-            <div *ngIf="showRegister && !showLogin" class="md-form-group">
-              <input #email="ngModel" [(ngModel)]="user.email" class="md-input" id="email" name="email" required
-                     type="email">
-              <label class="font14" for="email"> {{ 'register.label.email' | translate}}
-                <sup class="text-danger text-sm">*</sup>
-              </label>
-              <div *ngIf="email.invalid && (email.dirty || email.touched)" class="text-danger help-block">
-                <div *ngIf="email.errors.required">
-                  <div translate>common.message.requiredError</div>
-                </div>
+            }
+            @if (showRegister && !showLogin) {
+              <div class="md-form-group">
+                <input #email="ngModel" [(ngModel)]="user.email" class="md-input" id="email" name="email" required
+                       type="email">
+                <label class="font14" for="email"> {{ 'register.label.email' | translate}}
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
+                @if (email.invalid && (email.dirty || email.touched)) {
+                  <div class="text-danger help-block">
+                    @if (email.errors.required) {
+                      <div translate>common.message.requiredError</div>
+                    }
+                  </div>
+                }
               </div>
-            </div>
-            <div *ngIf="!showRegister && !showLogin && needAccountPassword" class="md-form-group">
-              <input [(ngModel)]="user.userName" class="md-input" id="account" name="userName"
-                     type="text">
-              <label class="font14" for="account"> {{ 'login.label.account' | translate}}</label>
-            </div>
-            <div *ngIf="!showRegister && !showLogin && needAccountPassword" class="md-form-group">
-              <input [(ngModel)]="user.password" (input)="sanitize($event)"  autocomplete="off" class="md-input" id="password" name="password"
-                     type="{{!passwordField ? 'password' : 'text'}}">
-              <i (click)="passwordField = !passwordField"
-                 [ngClass]="!passwordField ? 'fa-eye' : 'fa-eye-slash'"
-                 class="fa login-pswd-hide-icon"></i>
-              <label class="font14" for="password"> {{'login.label.password' | translate}}</label>
-            </div>
-            <div *ngIf="defaultSetting.enableRememberMe && !showRegister && !showLogin && needAccountPassword" class="m-b-md">
-              <label [(ngModel)]="rememberMe" name="rememberMe" nz-checkbox>
-                {{'login.label.rememberMe' | translate}}
-              </label>
-            </div>
-            <button #loginButton *ngIf="(!showRegister || showLogin) && needAccountPassword || needLoginButton" [disabled]="submitted" class="btn btn-primary btn-block p-x-md"
-                    type="submit">
-              <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
-              <i *ngIf="!submitted" class="fa fa-sign-in p-r-xs"></i>
-              {{'login.button.logIn' | translate}}
-            </button>
-            <button *ngIf="showRegister" [disabled]="submitted1 || !myForm.form.valid" class="btn btn-primary btn-block p-x-md m-t-12"
-                    type="submit">
-              <i *ngIf="submitted1" class="fa fa-spin fa-spinner"></i>
-              <i *ngIf="!submitted1" class="fa fa-user-plus p-r-xs"></i>
-              {{'register.button.register' | translate}}
-            </button>
+            }
+            @if (!showRegister && !showLogin && needAccountPassword) {
+              <div class="md-form-group">
+                <input [(ngModel)]="user.userName" class="md-input" id="account" name="userName"
+                       type="text">
+                <label class="font14" for="account"> {{ 'login.label.account' | translate}}</label>
+              </div>
+            }
+            @if (!showRegister && !showLogin && needAccountPassword) {
+              <div class="md-form-group">
+                <input [(ngModel)]="user.password" (input)="sanitize($event)"  autocomplete="off" class="md-input" id="password" name="password"
+                       type="{{!passwordField ? 'password' : 'text'}}">
+                <i (click)="passwordField = !passwordField"
+                   [ngClass]="!passwordField ? 'fa-eye' : 'fa-eye-slash'"
+                   class="fa login-pswd-hide-icon"></i>
+                <label class="font14" for="password"> {{'login.label.password' | translate}}</label>
+              </div>
+            }
+            @if (defaultSetting.enableRememberMe && !showRegister && !showLogin && needAccountPassword) {
+              <div class="m-b-md">
+                <label [(ngModel)]="rememberMe" name="rememberMe" nz-checkbox>
+                  {{'login.label.rememberMe' | translate}}
+                </label>
+              </div>
+            }
+            @if ((!showRegister || showLogin) && needAccountPassword || needLoginButton) {
+              <button #loginButton [disabled]="submitted" class="btn btn-primary btn-block p-x-md"
+                      type="submit">
+                @if (submitted) {
+                  <i class="fa fa-spin fa-spinner"></i>
+                }
+                @if (!submitted) {
+                  <i class="fa fa-sign-in p-r-xs"></i>
+                }
+                {{'login.button.logIn' | translate}}
+              </button>
+            }
+            @if (showRegister) {
+              <button [disabled]="submitted1 || !myForm.form.valid" class="btn btn-primary btn-block p-x-md m-t-12"
+                      type="submit">
+                @if (submitted1) {
+                  <i class="fa fa-spin fa-spinner"></i>
+                }
+                @if (!submitted1) {
+                  <i class="fa fa-user-plus p-r-xs"></i>
+                }
+                {{'register.button.register' | translate}}
+              </button>
+            }
           </form>
-          <a (click)="back();" *ngIf="showRegister || showLogin" class="font14 text-primary m-t p-l-xs"><i
-            aria-hidden="true" class="fa fa-arrow-left p-r-xs"></i> {{'register.button.back' | translate}}</a>
+          @if (showRegister || showLogin) {
+            <a (click)="back();" class="font14 text-primary m-t p-l-xs"><i
+              aria-hidden="true" class="fa fa-arrow-left p-r-xs"></i> {{'register.button.back' | translate}}</a>
+          }
 
-          <ng-container *ngIf="!showRegister && !showLogin">
-            <div *ngIf="(oidcIdentityServiceItems?.length > 0 || fidoIdentityServiceItems?.length > 0) && needAccountPassword"
-                 class="horz-line-text text-u-c" translate>common.label.or
-            </div>
+          @if (!showRegister && !showLogin) {
+            @if ((oidcIdentityServiceItems?.length > 0 || fidoIdentityServiceItems?.length > 0) && needAccountPassword) {
+              <div class="horz-line-text text-u-c" translate>common.label.or
+              </div>
+            }
 
-            <div *ngIf="oidcIdentityServiceItems?.length > 0" class="row">
-              <div *ngFor="let item of oidcIdentityServiceItems" class="col-md-12">
-                <ng-container *ngIf="item.iamOidcName">
-                  <button (click)="loginWithPopup(item)" [ngStyle]="{'padding-bottom': (item.iamIconUrl ? '4px' : '7px'), 'padding-top': (item.iamIconUrl ? '4px' : '7px')}"
-                          class="btn btn-default btn-block btn-sm m-b-12">
-                    <img *ngIf=" item.iamIconUrl" class="m-r-sm" height="24px" src="./api/iam/icon/{{item.identityServiceName}}"
-                         width="24px"/>
-                    <span [translateParams]="{identityServiceName: item.iamOidcName}"
-                          translate>login.button.loginWith</span>
-                  </button>
-                </ng-container>
+            @if (oidcIdentityServiceItems?.length > 0) {
+              <div class="row">
+                @for (item of oidcIdentityServiceItems; track item) {
+                  <div class="col-md-12">
+                    @if (item.iamOidcName) {
+                      <button (click)="loginWithPopup(item)" [ngStyle]="{'padding-bottom': (item.iamIconUrl ? '4px' : '7px'), 'padding-top': (item.iamIconUrl ? '4px' : '7px')}"
+                              class="btn btn-default btn-block btn-sm m-b-12">
+                        @if (item.iamIconUrl) {
+                          <img class="m-r-sm" height="24px" src="./api/iam/icon/{{item.identityServiceName}}"
+                               width="24px"/>
+                        }
+                        <span [translateParams]="{identityServiceName: item.iamOidcName}"
+                              translate>login.button.loginWith</span>
+                      </button>
+                    }
+                  </div>
+                }
               </div>
-            </div>
-            <div *ngIf="fidoIdentityServiceItems?.length > 0 && oidcIdentityServiceItems?.length > 0"
-                 class="horz-line-text text-u-c" translate>common.label.or
-            </div>
-            <div *ngIf="fidoIdentityServiceItems?.length > 0" class="row">
-              <div *ngFor="let item of fidoIdentityServiceItems" class="col-md-12">
-                <ng-container *ngIf="item.identityServiceName">
-                  <button (click)="onSign(item.identityServiceName)" class="btn btn-default btn-block btn-sm m-b-sm">
-                    <img class="m-r-sm" height="24px" src="./assets/images/fido2.png" width="24px"/>
-                    <span [translateParams]="{identityServiceName: item.identityServiceName}" translate>login.button.loginWith</span>
-                  </button>
-                  <a (click)="registerDevice(item.identityServiceName)"
-                     class="float-right font-14 text-primary m-b-12 m-t-xxs">{{'login.button.registerDevice' | translate}}</a>
-                </ng-container>
+            }
+            @if (fidoIdentityServiceItems?.length > 0 && oidcIdentityServiceItems?.length > 0) {
+              <div class="horz-line-text text-u-c" translate>common.label.or
               </div>
-            </div>
-            <div *ngIf="fido2ndFactorServiceItems?.length > 0" class="horz-line-text text-u-c" translate>
-              register.button.register
-            </div>
-            <div *ngIf="fido2ndFactorServiceItems?.length > 0" class="row">
-              <div *ngFor="let item of fido2ndFactorServiceItems" class="col-md-12">
-                <ng-container *ngIf="item.identityServiceName">
-                  <button (click)="registerDevice(item.identityServiceName)"
-                          class="btn btn-default btn-block btn-sm m-b-sm">
-                    <i aria-hidden="true" class="fa fa-usb p-a-xs font14"></i>
-                    <span [translateParams]="{identityServiceName: item.identityServiceName}"
-                          translate>register.button.registerKeyFor</span>
-                  </button>
-                </ng-container>
+            }
+            @if (fidoIdentityServiceItems?.length > 0) {
+              <div class="row">
+                @for (item of fidoIdentityServiceItems; track item) {
+                  <div class="col-md-12">
+                    @if (item.identityServiceName) {
+                      <button (click)="onSign(item.identityServiceName)" class="btn btn-default btn-block btn-sm m-b-sm">
+                        <img class="m-r-sm" height="24px" src="./assets/images/fido2.png" width="24px"/>
+                        <span [translateParams]="{identityServiceName: item.identityServiceName}" translate>login.button.loginWith</span>
+                      </button>
+                      <a (click)="registerDevice(item.identityServiceName)"
+                         class="float-right font-14 text-primary m-b-12 m-t-xxs">{{'login.button.registerDevice' | translate}}</a>
+                    }
+                  </div>
+                }
               </div>
-            </div>
-          </ng-container>
+            }
+            @if (fido2ndFactorServiceItems?.length > 0) {
+              <div class="horz-line-text text-u-c" translate>
+                register.button.register
+              </div>
+            }
+            @if (fido2ndFactorServiceItems?.length > 0) {
+              <div class="row">
+                @for (item of fido2ndFactorServiceItems; track item) {
+                  <div class="col-md-12">
+                    @if (item.identityServiceName) {
+                      <button (click)="registerDevice(item.identityServiceName)"
+                              class="btn btn-default btn-block btn-sm m-b-sm">
+                        <i aria-hidden="true" class="fa fa-usb p-a-xs font14"></i>
+                        <span [translateParams]="{identityServiceName: item.identityServiceName}"
+                              translate>register.button.registerKeyFor</span>
+                      </button>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          }
         </div>
       </div>
       <div id="logo-bottom"></div>
     </div>
   </div>
 </div>
-<div *ngIf="isLoading" class="spinner">
-  <div class="cssload-inner cssload-one"></div>
-  <div class="cssload-inner cssload-two"></div>
-  <div class="cssload-inner cssload-three"></div>
-</div>
+@if (isLoading) {
+  <div class="spinner">
+    <div class="cssload-inner cssload-one"></div>
+    <div class="cssload-inner cssload-two"></div>
+    <div class="cssload-inner cssload-three"></div>
+  </div>
+}

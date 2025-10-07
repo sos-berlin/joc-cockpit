@@ -20,6 +20,7 @@ import {CommentModalComponent} from '../../../../components/comment-modal/commen
 import * as moment from 'moment';
 
 @Directive({
+  standalone: false,
   selector: '[appMonthValidate]',
   providers: [
     { provide: NG_VALIDATORS, useExisting: forwardRef(() => MonthValidator), multi: true }
@@ -102,6 +103,7 @@ export class MonthValidator implements Validator {
 }
 
 @Directive({
+  standalone: false,
   selector: '[appRelativeMonthValidate]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => RelativeMonthValidator), multi: true}
@@ -127,6 +129,7 @@ export class RelativeMonthValidator implements Validator {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-report',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './report.component.html'

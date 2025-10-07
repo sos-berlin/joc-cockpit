@@ -8,7 +8,6 @@ import {
   ChangeDetectionStrategy,
   TemplateRef
 } from '@angular/core';
-import {trigger, style, animate, transition} from '@angular/animations';
 import {formatLabel, escapeLabel} from '../common/label.helper';
 import {DataItem, StringOrNumberOrDate} from '../models/chart-data.model';
 import {ColorHelper} from '../common/color.helper';
@@ -22,12 +21,12 @@ import {BarOrientation} from '../common/types/bar-orientation.enum';
 import {ScaleType} from '../common/types/scale-type.enum';
 
 @Component({
+  standalone: false,
   selector: 'g[ngx-charts-series-horizontal]',
   template: `
     <svg:g
       ngx-charts-bar
       *ngFor="let bar of bars; trackBy: trackBy"
-      [@animationState]="'active'"
       [width]="bar.width"
       [height]="bar.height"
       [x]="bar.x"
@@ -69,16 +68,6 @@ import {ScaleType} from '../common/types/scale-type.enum';
     </svg:g>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('animationState', [
-      transition(':leave', [
-        style({
-          opacity: 1
-        }),
-        animate(500, style({opacity: 0}))
-      ])
-    ])
-  ]
 })
 export class SeriesHorizontal implements OnChanges {
   @Input() dims: ViewDimensions;

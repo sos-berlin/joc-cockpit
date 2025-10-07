@@ -1,8 +1,12 @@
 <div class="box-shadow-on-modal">
   <div class="modal-header">
     <h4 class="modal-title">
-      <span *ngIf="!period" translate>runtime.label.addPeriod</span>
-      <span *ngIf="period" translate>runtime.label.editPeriod</span>
+      @if (!period) {
+        <span translate>runtime.label.addPeriod</span>
+      }
+      @if (period) {
+        <span translate>runtime.label.editPeriod</span>
+      }
     </h4>
     <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
       <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -31,11 +35,13 @@
                                   [nzAllowEmpty]="false" (ngModelChange)="selectTime($event)"
                                   name="startTimeIcon"></nz-time-picker>
                 </div>
-                <div *ngIf="startTime.invalid && (startTime.dirty || startTime.touched)" class="text-danger help-block">
-                  <div *ngIf="startTime.errors.required">
-                    <div translate>common.message.requiredError</div>
+                @if (startTime.invalid && (startTime.dirty || startTime.touched)) {
+                  <div class="text-danger help-block">
+                    @if (startTime.errors.required) {
+                      <div translate>common.message.requiredError</div>
+                    }
                   </div>
-                </div>
+                }
               </div>
             </div>
             <div class="form-group row">
@@ -49,15 +55,21 @@
                 <input #duration="ngModel" [(ngModel)]="object.duration" appValidateDurationChange (blur)="onBlur2(duration,'duration')" class="form-control" name="duration"
                        placeholder="{{'workflow.placeholder.durationPeriod' | translate}}"
                        required type="text">
-                <div *ngIf="duration.invalid && (duration.dirty || duration.touched)" class="text-danger help-block">
-                  <div *ngIf="duration.errors.required">
-                    <div translate>common.message.requiredError</div>
+                @if (duration.invalid && (duration.dirty || duration.touched)) {
+                  <div class="text-danger help-block">
+                    @if (duration.errors.required) {
+                      <div translate>common.message.requiredError</div>
+                    }
+                    @if (duration.errors.invalidDuration) {
+                      <div translate>common.message.invalid</div>
+                    }
                   </div>
-                  <div *ngIf="duration.errors.invalidDuration" translate>common.message.invalid</div>
-                </div>
-                <div *ngIf="isExist" class="text-danger help-block">
-                  <div translate>workflow.admissionTime.message.duplicatePeriod</div>
-                </div>
+                }
+                @if (isExist) {
+                  <div class="text-danger help-block">
+                    <div translate>workflow.admissionTime.message.duplicatePeriod</div>
+                  </div>
+                }
               </div>
             </div>
           </div>

@@ -9,6 +9,7 @@ import {CommentModalComponent} from "../../components/comment-modal/comment.comp
 import {ConfirmModalComponent} from "../../components/comfirm-modal/confirm.component";
 
 @Component({
+  standalone: false,
   selector: 'app-run-modal-content',
   templateUrl: './run-dialog.html'
 })
@@ -54,6 +55,7 @@ export class RunModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-share-modal-content',
   templateUrl: './share-dialog.html',
   styleUrls: ['./reporting.component.scss']
@@ -113,6 +115,7 @@ export class ShareModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-reporting',
   templateUrl: './reporting.component.html',
   styleUrls: ['./reporting.component.scss']

@@ -8,6 +8,7 @@ import {OrderPipe, SearchPipe} from '../../../pipes/core.pipe';
 import {DataService} from '../data.service';
 
 @Component({
+  standalone: false,
   selector: 'app-add-to-blocklist',
   templateUrl: './add-to-blocklist-dialog.html'
 })
@@ -69,6 +70,7 @@ export class AddBlocklistModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-blocklist',
   templateUrl: './blocklist.component.html'
 })

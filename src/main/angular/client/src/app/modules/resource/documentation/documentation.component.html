@@ -1,10 +1,12 @@
-<div *ngIf="isProcessing" class="operation-status-info">
-  <div id='prog-bar-cont'>
-    <div id="prog-bar">
-      <div id="background"></div>
+@if (isProcessing) {
+  <div class="operation-status-info">
+    <div id='prog-bar-cont'>
+      <div id="prog-bar">
+        <div id="background"></div>
+      </div>
     </div>
   </div>
-</div>
+}
 <div class="white box-shadow sub-header">
   <div class="row">
     <div class="col-md-12">
@@ -15,21 +17,27 @@
           </div>
           <i (click)="helpPage('resources-documentations')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           <div class="inline">
-            <button (click)="exportDocument(null)"
-                    *ngIf="object.mapOfCheckedId.size>0 && permission.joc && permission.joc.documentations.manage" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-download"></i>&nbsp; {{'resource.documentation.button.exportDocument' | translate}}
-            </button>
-            <button (click)="deleteDocumentations(null)"
-                    *ngIf="object.mapOfCheckedId.size>0 && permission.joc && permission.joc.documentations.manage" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-trash"></i>&nbsp; {{'resource.documentation.button.deleteDocument' | translate}}
-            </button>
+            @if (object.mapOfCheckedId.size>0 && permission.joc && permission.joc.documentations.manage) {
+              <button (click)="exportDocument(null)" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-download"></i>&nbsp; {{'resource.documentation.button.exportDocument' | translate}}
+              </button>
+            }
+            @if (object.mapOfCheckedId.size>0 && permission.joc && permission.joc.documentations.manage) {
+              <button (click)="deleteDocumentations(null)" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-trash"></i>&nbsp; {{'resource.documentation.button.deleteDocument' | translate}}
+              </button>
+            }
             <div [ngClass]="{'hide':object.mapOfCheckedId.size>0}" class="inline">
               <div class="btn-group dropdown m-l-12">
                 <button [nzDropdownMenu]="type" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm" nz-dropdown
                         nzTrigger="click">
                   <span translate>common.label.type</span>&nbsp;
-                  <span *ngIf="documentFilters.filter.type === 'ALL'" class="text-primary"
-                        translate>common.label.all</span>
-                  <span *ngIf="documentFilters.filter.type !== 'ALL'" [innerHTML]="documentFilters.filter.type"
-                        class="text-primary"></span>&nbsp;
+                  @if (documentFilters.filter.type === 'ALL') {
+                    <span class="text-primary"
+                          translate>common.label.all</span>
+                  }
+                  @if (documentFilters.filter.type !== 'ALL') {
+                    <span [innerHTML]="documentFilters.filter.type"
+                          class="text-primary"></span>
+                  }&nbsp;
                   <span>
                     <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
                   </span>
@@ -40,11 +48,13 @@
                         nz-menu-item>
                       <a translate>common.label.all</a>
                     </li>
-                    <li (click)="documentFilters.filter.type = type;loadDocument();" *ngFor="let type of documentTypes"
-                        [ngClass]="{'ant-select-dropdown-menu-item-active': documentFilters.filter.type == type}"
-                        nz-menu-item>
-                      <a>{{type}}</a>
-                    </li>
+                    @for (type of documentTypes; track type) {
+                      <li (click)="documentFilters.filter.type = type;loadDocument();"
+                          [ngClass]="{'ant-select-dropdown-menu-item-active': documentFilters.filter.type == type}"
+                          nz-menu-item>
+                        <a>{{type}}</a>
+                      </li>
+                    }
                   </ul>
                 </nz-dropdown-menu>
               </div>
@@ -53,21 +63,39 @@
                    nzTrigger="click">
                   <span translate>common.label.sortBy</span>
                   <span class="text-primary">
-                      <span *ngIf="documentFilters.filter.sortBy =='name'">
-                      {{'common.label.name' | translate}}&nbsp;
-                      <i *ngIf="!documentFilters.reverse" class="fa fa-caret-up"></i>
-                      <i *ngIf="documentFilters.reverse" class="fa fa-caret-down"></i>
-                    </span>
-                    <span *ngIf="documentFilters.filter.sortBy =='path1'">
-                      {{'common.label.path' | translate}}&nbsp;
-                      <i *ngIf="!documentFilters.reverse" class="fa fa-caret-up"></i>
-                      <i *ngIf="documentFilters.reverse" class="fa fa-caret-down"></i>
-                    </span>
-                    <span *ngIf="documentFilters.filter.sortBy =='type'">
-                      {{'common.label.type' | translate}}&nbsp;
-                      <i *ngIf="!documentFilters.reverse" class="fa fa-caret-up"></i>
-                      <i *ngIf="documentFilters.reverse" class="fa fa-caret-down"></i>
-                    </span>
+                      @if (documentFilters.filter.sortBy =='name') {
+                        <span>
+                        {{'common.label.name' | translate}}&nbsp;
+                          @if (!documentFilters.reverse) {
+                            <i class="fa fa-caret-up"></i>
+                          }
+                          @if (documentFilters.reverse) {
+                            <i class="fa fa-caret-down"></i>
+                          }
+                      </span>
+                      }
+                    @if (documentFilters.filter.sortBy =='path1') {
+                      <span>
+                        {{'common.label.path' | translate}}&nbsp;
+                        @if (!documentFilters.reverse) {
+                          <i class="fa fa-caret-up"></i>
+                        }
+                        @if (documentFilters.reverse) {
+                          <i class="fa fa-caret-down"></i>
+                        }
+                      </span>
+                    }
+                    @if (documentFilters.filter.sortBy =='type') {
+                      <span>
+                        {{'common.label.type' | translate}}&nbsp;
+                        @if (!documentFilters.reverse) {
+                          <i class="fa fa-caret-up"></i>
+                        }
+                        @if (documentFilters.reverse) {
+                          <i class="fa fa-caret-down"></i>
+                        }
+                      </span>
+                    }
                   </span>
                 </a>
                 <nz-dropdown-menu #sortBy="nzDropdownMenu">
@@ -84,9 +112,10 @@
                   </ul>
                 </nz-dropdown-menu>
               </div>
-              <button (click)="importDocument()" *ngIf="permission.joc && permission.joc.documentations.manage"
-                      class="btn btn-grey btn-sm m-l-12"><i
-                class="fa fa-upload"></i>&nbsp; {{'resource.documentation.button.importDocument' | translate}}</button>
+              @if (permission.joc && permission.joc.documentations.manage) {
+                <button (click)="importDocument()" class="btn btn-grey btn-sm m-l-12"><i
+                  class="fa fa-upload"></i>&nbsp; {{'resource.documentation.button.importDocument' | translate}}</button>
+              }
               <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
             </div>
           </div>
@@ -117,241 +146,297 @@
     <div class="row">
       <div class="col-sm-12">
         <div [sideView]="sideView.documentation" appResizable class="sticky leftPanel resource" id="leftPanel">
-          <div *ngIf="tree.length>0">
-            <app-tree-navigation (actionEvent)="deleteFolder($event)"
-                                 (messageEvent)="receiveAction($event)" (selectObjectEvent)="selectObject($event)" [defaultExpandedKeys]="documentFilters.expandedKeys"
-                                 [defaultSelectedKeys]="documentFilters.selectedkeys"
-                                 [isAction]="!!(permission.joc && permission.joc.documentations.manage)"
-                                 [sideView]="sideView.documentation" [tree]="tree"
-                                 [type]="'DOCUMENTATION'"></app-tree-navigation>
-          </div>
+          @if (tree.length>0) {
+            <div>
+              <app-tree-navigation (actionEvent)="deleteFolder($event)"
+                                   (messageEvent)="receiveAction($event)" (selectObjectEvent)="selectObject($event)" [defaultExpandedKeys]="documentFilters.expandedKeys"
+                                   [defaultSelectedKeys]="documentFilters.selectedkeys"
+                                   [isAction]="!!(permission.joc && permission.joc.documentations.manage)"
+                                   [sideView]="sideView.documentation" [tree]="tree"
+                                   [type]="'DOCUMENTATION'"></app-tree-navigation>
+            </div>
+          }
         </div>
         <div id="rightPanel">
           <div [ngClass]="{'show': isLoading}" class="hide">
-            <div *ngIf="pageView=='grid' && data.length>0" [hidden]="loading" class="row">
-              <div *ngFor="let item of data  | groupBy: 'path1'" class="w-full">
-                <div class="col-sm-12" style="margin-bottom: 10px">
-                  <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
-                </div>
-                <div *ngFor="let document of item.value"
-                     class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                  <div class="box card">
-                    <div class="box-body">
-                      <label class="pos-abt" style="margin-top: -2px">
-                        <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(document.path)"
-                               (nzCheckedChange)="onItemChecked(document, $event)"></label>
-                      </label>
-                      <div class="text-left block-ellipsis m-l-md">
-                        <span class="text-left">
-                          <i class="fa fa-document text-sm "></i>
-                          <span [innerHtml]="document.name | highlight : documentFilters.searchText"></span>
-                        </span>
-                      </div>
-                      <div class="btn-group dropdown pull-right abt-dropdown">
-                        <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
-                                type="button">
-                          <i class="fa fa-ellipsis-h"></i>
-                        </button>
-                        <nz-dropdown-menu #option="nzDropdownMenu">
-                          <ul nz-menu>
-                            <li (click)="editDocument(document)" *ngIf="permission.joc && permission.joc.documentations.manage"
-                                nz-menu-item>
-                              <a translate>resource.documentation.button.editDocument</a>
-                            </li>
-                            <li (click)="previewDocument(document)" nz-menu-item>
-                              <a translate>resource.documentation.button.previewDocument</a>
-                            </li>
-                            <li (click)="exportDocument(document)" *ngIf="permission.joc && permission.joc.documentations.manage"
-                                nz-menu-item>
-                              <a translate>common.button.export</a>
-                            </li>
-                            <li (click)="deleteDocumentations(document)" *ngIf="permission.joc && permission.joc.documentations.manage" class="bg-hover-color"
-                                nz-menu-item>
-                              <a translate>common.button.delete</a>
-                            </li>
-                            <li (click)="showDocumentUsage(document)" nz-menu-item>
-                              <a translate>resource.button.showUsage</a>
-                            </li>
-                            <li (click)="coreService.copyLink('document',document.path)" nz-menu-item>
-                              <a translate>common.button.copyLinkToObject</a>
-                            </li>
-                          </ul>
-                        </nz-dropdown-menu>
-                      </div>
-                      <div class="text-sm  text-left text-muted p-t-sm">
-                        <span translate>resource.documentation.label.reference </span>:
-                        <span [innerHtml]="document.assignReference | highlight : documentFilters.searchText"></span>
-                      </div>
-                      <div class="text-sm  text-left text-muted p-t-sm">
-                        <span translate>common.label.type </span>:
-                        <span [innerHtml]="document.type | highlight : documentFilters.searchText"></span>
-                      </div>
-                      <div class="text-sm text-left text-muted p-t-sm">
-                        <span translate>resource.documentation.label.lastUpdateTime </span>:
-                        <span [innerHtml]="document.modified | stringToDate"></span>
-                      </div>
+            @if (pageView=='grid' && data.length>0) {
+              <div [hidden]="loading" class="row">
+                @for (item of data  | groupBy: 'path1'; track item) {
+                  <div class="w-full">
+                    <div class="col-sm-12" style="margin-bottom: 10px">
+                      <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
                     </div>
-                    <div class="box-footer b-t">
-                      <a (click)="exportDocument(document)"
-                         *ngIf="permission.joc && permission.joc.documentations.manage"
-                         class="text-left primary-text-hover-color ">
-                        <i class="fa fa-download text-black-lt p-r-xs"></i>
-                        <span class="text-black-lt" translate>common.button.export</span>
-                      </a>
-                      <a (click)="deleteDocumentations(document)"
-                         *ngIf="permission.joc && permission.joc.documentations.manage"
-                         class="pull-right text-hover-color ">
-                        <i class="fa fa-trash text-black-lt p-r-xs"></i>
-                        <span class="text-black-lt" translate>common.button.delete</span>
-                      </a>
-                    </div>
+                    @for (document of item.value; track document) {
+                      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                        <div class="box card">
+                          <div class="box-body">
+                            <label class="pos-abt" style="margin-top: -2px">
+                              <label nz-checkbox [nzChecked]="object.mapOfCheckedId.has(document.path)"
+                                     (nzCheckedChange)="onItemChecked(document, $event)"></label>
+                            </label>
+                            <div class="text-left block-ellipsis m-l-md">
+                              <span class="text-left">
+                                <i class="fa fa-document text-sm "></i>
+                                <span [innerHtml]="document.name | highlight : documentFilters.searchText"></span>
+                              </span>
+                            </div>
+                            <div class="btn-group dropdown pull-right abt-dropdown">
+                              <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                                      type="button">
+                                <i class="fa fa-ellipsis-h"></i>
+                              </button>
+                              <nz-dropdown-menu #option="nzDropdownMenu">
+                                <ul nz-menu>
+                                  @if (permission.joc && permission.joc.documentations.manage) {
+                                    <li (click)="editDocument(document)" nz-menu-item>
+                                      <a translate>resource.documentation.button.editDocument</a>
+                                    </li>
+                                  }
+                                  <li (click)="previewDocument(document)" nz-menu-item>
+                                    <a translate>resource.documentation.button.previewDocument</a>
+                                  </li>
+                                  @if (permission.joc && permission.joc.documentations.manage) {
+                                    <li (click)="exportDocument(document)" nz-menu-item>
+                                      <a translate>common.button.export</a>
+                                    </li>
+                                  }
+                                  @if (permission.joc && permission.joc.documentations.manage) {
+                                    <li (click)="deleteDocumentations(document)" class="bg-hover-color"
+                                        nz-menu-item>
+                                      <a translate>common.button.delete</a>
+                                    </li>
+                                  }
+                                  <li (click)="showDocumentUsage(document)" nz-menu-item>
+                                    <a translate>resource.button.showUsage</a>
+                                  </li>
+                                  <li (click)="coreService.copyLink('document',document.path)" nz-menu-item>
+                                    <a translate>common.button.copyLinkToObject</a>
+                                  </li>
+                                </ul>
+                              </nz-dropdown-menu>
+                            </div>
+                            <div class="text-sm  text-left text-muted p-t-sm">
+                              <span translate>resource.documentation.label.reference </span>:
+                              <span [innerHtml]="document.assignReference | highlight : documentFilters.searchText"></span>
+                            </div>
+                            <div class="text-sm  text-left text-muted p-t-sm">
+                              <span translate>common.label.type </span>:
+                              <span [innerHtml]="document.type | highlight : documentFilters.searchText"></span>
+                            </div>
+                            <div class="text-sm text-left text-muted p-t-sm">
+                              <span translate>resource.documentation.label.lastUpdateTime </span>:
+                              <span [innerHtml]="document.modified | stringToDate"></span>
+                            </div>
+                          </div>
+                          <div class="box-footer b-t">
+                            @if (permission.joc && permission.joc.documentations.manage) {
+                              <a (click)="exportDocument(document)"
+                                 class="text-left primary-text-hover-color ">
+                                <i class="fa fa-download text-black-lt p-r-xs"></i>
+                                <span class="text-black-lt" translate>common.button.export</span>
+                              </a>
+                            }
+                            @if (permission.joc && permission.joc.documentations.manage) {
+                              <a (click)="deleteDocumentations(document)"
+                                 class="pull-right text-hover-color ">
+                                <i class="fa fa-trash text-black-lt p-r-xs"></i>
+                                <span class="text-black-lt" translate>common.button.delete</span>
+                              </a>
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    }
                   </div>
+                }
+              </div>
+            }
+            @if (object.checked && object.mapOfCheckedId.size > 0 && data.length > (documentFilters.entryPerPage || preferences.entryPerPage)) {
+              <div class="text-center font14 box p-a-10 m-b-12">
+                @if (object.mapOfCheckedId.size !== data.length) {
+                  <span [translateParams]="{count: object.mapOfCheckedId.size}"
+                        translate>common.label.selectAllEntriesOfCurrentPage</span>
+                }
+                @if (object.mapOfCheckedId.size === data.length) {
+                  <span [translateParams]="{count: data.length}"
+                        translate>common.label.allEntriesSelected</span>
+                }
+                @if (object.mapOfCheckedId.size !== data.length) {
+                  <a (click)="selectAll()" [translateParams]="{count: data.length}"
+                     class="text-primary p-l-xs" translate>common.label.selectAllEntries</a>
+                }
+                @if (object.mapOfCheckedId.size === data.length) {
+                  <a (click)="reset()" class="text-primary p-l-xs"
+                     translate>common.label.clearSelection</a>
+                }
+              </div>
+            }
+            @if (pageView=='list' && tree.length > 0) {
+              <div class="box p-a">
+                <div class="table-responsive" id="documentDivId">
+                  <nz-table
+                    #ajaxTable
+                    (nzPageIndexChange)="pageIndexChange($event)"
+                    (nzPageSizeChange)="pageSizeChange($event)"
+                    [nzBordered]="true"
+                    [nzData]="data"
+                    [nzLoading]="loading"
+                    [nzPageIndex]="documentFilters.currentPage"
+                    [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
+                    [nzPageSize]="documentFilters.entryPerPage || preferences.entryPerPage || 25"
+                    [nzShowPagination]="data.length > 0"
+                    [nzShowSizeChanger]="true"
+                    [nzSize]="'small'"
+                  >
+                    <thead>
+                    <tr>
+                      <th [(nzChecked)]="object.checked"
+                          [nzIndeterminate]="object.indeterminate"
+                          [nzShowCheckbox]="true"
+                          (nzCheckedChange)="checkAll($event)"
+                          class="chk"
+                      ></th>
+                      <th class="menu"><span translate>common.label.action</span></th>
+                      <th (click)="sort('name')"><a><span class="p-r-xs" translate>resource.documentation.label.documentName</span>
+                        @if (documentFilters.filter.sortBy == 'name' && !documentFilters.reverse) {
+                          <i class="fa fa-caret-up "></i>
+                        }
+                        @if (documentFilters.filter.sortBy == 'name' && documentFilters.reverse) {
+                          <i class="fa fa-caret-down "></i>
+                        }</a>
+                      </th>
+                      @if (isPathDisplay) {
+                        <th (click)="sort('path1')"><a><span class="p-r-xs" translate>common.label.path</span>
+                          @if (documentFilters.filter.sortBy == 'path1' && !documentFilters.reverse) {
+                            <i class="fa fa-caret-up "></i>
+                          }
+                          @if (documentFilters.filter.sortBy == 'path1' && documentFilters.reverse) {
+                            <i class="fa fa-caret-down "></i>
+                          }</a>
+                        </th>
+                      }
+                      <th (click)="sort('assignReference')"><a><span class="p-r-xs" translate>resource.documentation.label.reference</span>
+                        @if (documentFilters.filter.sortBy == 'assignReference' && !documentFilters.reverse) {
+                          <i class="fa fa-caret-up "></i>
+                        }
+                        @if (documentFilters.filter.sortBy == 'assignReference' && documentFilters.reverse) {
+                          <i class="fa fa-caret-down "></i>
+                        }</a>
+                      </th>
+                      <th (click)="sort('type')"><a><span class="p-r-xs" translate>common.label.type</span>
+                        @if (documentFilters.filter.sortBy == 'type' && !documentFilters.reverse) {
+                          <i class="fa fa-caret-up "></i>
+                        }
+                        @if (documentFilters.filter.sortBy == 'type' && documentFilters.reverse) {
+                          <i class="fa fa-caret-down "></i>
+                        }</a>
+                      </th>
+                      <th (click)="sort('modified')"><a><span class="p-r-xs" translate>resource.documentation.label.lastUpdateTime</span>
+                        @if (documentFilters.filter.sortBy == 'modified' && !documentFilters.reverse) {
+                          <i class="fa fa-caret-up "></i>
+                        }
+                        @if (documentFilters.filter.sortBy == 'modified' && documentFilters.reverse) {
+                          <i class="fa fa-caret-down "></i>
+                        }</a>
+                      </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      @for (document of ajaxTable.data; track document) {
+                        <tr>
+                          <td [nzChecked]="object.mapOfCheckedId.has(document.path)" (nzCheckedChange)="onItemChecked(document, $event)"
+                              [nzShowCheckbox]="true"></td>
+                          <td>
+                            <div class="btn-group dropdown">
+                              <button [nzDisabled]="object.checked || object.indeterminate" [nzDropdownMenu]="option2"
+                                      class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                                      type="button">
+                                <i class="fa fa-ellipsis-h"></i></button>
+                              <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
+                                <ul nz-menu>
+                                  @if (permission.joc && permission.joc.documentations.manage) {
+                                    <li (click)="editDocument(document)" nz-menu-item>
+                                      <a translate>resource.documentation.button.editDocument</a>
+                                    </li>
+                                  }
+                                  <li (click)="previewDocument(document)" nz-menu-item>
+                                    <a translate>resource.documentation.button.previewDocument</a>
+                                  </li>
+                                  @if (permission.joc && permission.joc.documentations.manage) {
+                                    <li (click)="exportDocument(document)" nz-menu-item>
+                                      <a translate>common.button.export</a>
+                                    </li>
+                                  }
+                                  @if (permission.joc && permission.joc.documentations.manage) {
+                                    <li (click)="deleteDocumentations(document)" class="bg-hover-color"
+                                        nz-menu-item>
+                                      <a translate>common.button.delete</a>
+                                    </li>
+                                  }
+                                  <li (click)="showDocumentUsage(document)" nz-menu-item>
+                                    <a translate>resource.button.showUsage</a>
+                                  </li>
+                                  <li (click)="coreService.copyLink('document',document.path)" nz-menu-item>
+                                    <a translate>common.button.copyLinkToObject</a>
+                                  </li>
+                                </ul>
+                              </nz-dropdown-menu>
+                            </div>
+                          </td>
+                          <td [innerHtml]="document.name | highlight : documentFilters.searchText"></td>
+                          @if (isPathDisplay) {
+                            <td [innerHtml]="document.path1 | highlight : documentFilters.searchText"></td>
+                          }
+                          <td [innerHtml]="document.assignReference | highlight : documentFilters.searchText"></td>
+                          <td [innerHtml]="document.type | highlight : documentFilters.searchText"></td>
+                          <td [innerHtml]="document.modified | stringToDate"></td>
+                        </tr>
+                      }
+                    </tbody>
+                  </nz-table>
+                  @if (ajaxTable.data.length >0) {
+                    <div class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
+                      @if (ajaxTable.data.length >1) {
+                        <span translate>resource.documentation.label.documentationsFound</span>
+                      }
+                      @if (ajaxTable.data.length ==1) {
+                        <span translate>resource.documentation.label.documentationFound</span>
+                      }
+                    </div>
+                  }
                 </div>
               </div>
-            </div>
-            <div *ngIf="object.checked && object.mapOfCheckedId.size > 0 && data.length > (documentFilters.entryPerPage || preferences.entryPerPage)"
-                 class="text-center font14 box p-a-10 m-b-12">
-              <span *ngIf="object.mapOfCheckedId.size !== data.length" [translateParams]="{count: object.mapOfCheckedId.size}"
-                    translate>common.label.selectAllEntriesOfCurrentPage</span>
-              <span *ngIf="object.mapOfCheckedId.size === data.length" [translateParams]="{count: data.length}"
-                    translate>common.label.allEntriesSelected</span>
-              <a (click)="selectAll()" *ngIf="object.mapOfCheckedId.size !== data.length" [translateParams]="{count: data.length}"
-                 class="text-primary p-l-xs" translate>common.label.selectAllEntries</a>
-              <a (click)="reset()" *ngIf="object.mapOfCheckedId.size === data.length" class="text-primary p-l-xs"
-                 translate>common.label.clearSelection</a>
-            </div>
-            <div *ngIf="pageView=='list' && tree.length > 0" class="box p-a">
-              <div class="table-responsive" id="documentDivId">
-                <nz-table
-                  #ajaxTable
-                  (nzPageIndexChange)="pageIndexChange($event)"
-                  (nzPageSizeChange)="pageSizeChange($event)"
-                  [nzBordered]="true"
-                  [nzData]="data"
-                  [nzLoading]="loading"
-                  [nzPageIndex]="documentFilters.currentPage"
-                  [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
-                  [nzPageSize]="documentFilters.entryPerPage || preferences.entryPerPage || 25"
-                  [nzShowPagination]="data.length > 0"
-                  [nzShowSizeChanger]="true"
-                  [nzSize]="'small'"
-                >
-                  <thead>
-                  <tr>
-                    <th [(nzChecked)]="object.checked"
-                        [nzIndeterminate]="object.indeterminate"
-                        [nzShowCheckbox]="true"
-                        (nzCheckedChange)="checkAll($event)"
-                        class="chk"
-                    ></th>
-                    <th class="menu"><span translate>common.label.action</span></th>
-                    <th (click)="sort('name')"><a><span class="p-r-xs" translate>resource.documentation.label.documentName</span>
-                      <i *ngIf="documentFilters.filter.sortBy == 'name' && !documentFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="documentFilters.filter.sortBy == 'name' && documentFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th *ngIf="isPathDisplay" (click)="sort('path1')"><a><span class="p-r-xs" translate>common.label.path</span>
-                      <i *ngIf="documentFilters.filter.sortBy == 'path1' && !documentFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="documentFilters.filter.sortBy == 'path1' && documentFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th (click)="sort('assignReference')"><a><span class="p-r-xs" translate>resource.documentation.label.reference</span>
-                      <i *ngIf="documentFilters.filter.sortBy == 'assignReference' && !documentFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="documentFilters.filter.sortBy == 'assignReference' && documentFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th (click)="sort('type')"><a><span class="p-r-xs" translate>common.label.type</span>
-                      <i *ngIf="documentFilters.filter.sortBy == 'type' && !documentFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="documentFilters.filter.sortBy == 'type' && documentFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th (click)="sort('modified')"><a><span class="p-r-xs" translate>resource.documentation.label.lastUpdateTime</span>
-                      <i *ngIf="documentFilters.filter.sortBy == 'modified' && !documentFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="documentFilters.filter.sortBy == 'modified' && documentFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr *ngFor="let document of ajaxTable.data">
-                    <td [nzChecked]="object.mapOfCheckedId.has(document.path)" (nzCheckedChange)="onItemChecked(document, $event)"
-                        [nzShowCheckbox]="true"></td>
-                    <td>
-                      <div class="btn-group dropdown">
-                        <button [nzDisabled]="object.checked || object.indeterminate" [nzDropdownMenu]="option2"
-                                class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
-                                type="button">
-                          <i class="fa fa-ellipsis-h"></i></button>
-                        <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
-                          <ul nz-menu>
-                            <li (click)="editDocument(document)" *ngIf="permission.joc && permission.joc.documentations.manage"
-                                nz-menu-item>
-                              <a translate>resource.documentation.button.editDocument</a>
-                            </li>
-                            <li (click)="previewDocument(document)" nz-menu-item>
-                              <a translate>resource.documentation.button.previewDocument</a>
-                            </li>
-                            <li (click)="exportDocument(document)" *ngIf="permission.joc && permission.joc.documentations.manage"
-                                nz-menu-item>
-                              <a translate>common.button.export</a>
-                            </li>
-                            <li (click)="deleteDocumentations(document)" *ngIf="permission.joc && permission.joc.documentations.manage" class="bg-hover-color"
-                                nz-menu-item>
-                              <a translate>common.button.delete</a>
-                            </li>
-                            <li (click)="showDocumentUsage(document)" nz-menu-item>
-                              <a translate>resource.button.showUsage</a>
-                            </li>
-                            <li (click)="coreService.copyLink('document',document.path)" nz-menu-item>
-                              <a translate>common.button.copyLinkToObject</a>
-                            </li>
-                          </ul>
-                        </nz-dropdown-menu>
-                      </div>
-                    </td>
-                    <td [innerHtml]="document.name | highlight : documentFilters.searchText"></td>
-                    <td *ngIf="isPathDisplay" [innerHtml]="document.path1 | highlight : documentFilters.searchText"></td>
-                    <td [innerHtml]="document.assignReference | highlight : documentFilters.searchText"></td>
-                    <td [innerHtml]="document.type | highlight : documentFilters.searchText"></td>
-                    <td [innerHtml]="document.modified | stringToDate"></td>
-                  </tr>
-                  </tbody>
-                </nz-table>
-                <div *ngIf="ajaxTable.data.length >0"
-                     class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
-                  <span *ngIf="ajaxTable.data.length >1"
-                        translate>resource.documentation.label.documentationsFound</span>
-                  <span *ngIf="ajaxTable.data.length ==1"
-                        translate>resource.documentation.label.documentationFound</span>
-                </div>
+            }
+            @if (pageView=='grid' && isLoading && !loading  && data.length==0 && tree.length>0) {
+              <div class="text-center m-t h6">
+                <app-empty-data></app-empty-data>
               </div>
-            </div>
-            <div *ngIf="pageView=='grid' && isLoading && !loading  && data.length==0 && tree.length>0"
-                 class="text-center m-t h6">
-              <app-empty-data></app-empty-data>
-            </div>
+            }
           </div>
         </div>
-        <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t">
-          <app-empty-data></app-empty-data>
-        </div>
+        @if (isLoading && tree.length==0 && !loading) {
+          <div class="text-center m-t">
+            <app-empty-data></app-empty-data>
+          </div>
+        }
       </div>
     </div>
   </div>
 </div>
-<div *ngIf="(loading && pageView === 'grid') || !isLoading" class="spinner">
-  <div class="cssload-inner cssload-one"></div>
-  <div class="cssload-inner cssload-two"></div>
-  <div class="cssload-inner cssload-three"></div>
-</div>
-<div *ngIf="loading || reloadState == 'yes'">
-  <div (click)="reload()" class="bottom-btn">
-    <i *ngIf="reloadState == 'no'" class="fa fa-times"></i>
-    <i *ngIf="reloadState == 'yes'" class="fa fa-refresh"></i>
+@if ((loading && pageView === 'grid') || !isLoading) {
+  <div class="spinner">
+    <div class="cssload-inner cssload-one"></div>
+    <div class="cssload-inner cssload-two"></div>
+    <div class="cssload-inner cssload-three"></div>
   </div>
-</div>
+}
+@if (loading || reloadState == 'yes') {
+  <div (click)="reload()" class="bottom-btn">
+    @if (reloadState == 'no') {
+      <i class="fa fa-times"></i>
+    }
+    @if (reloadState == 'yes') {
+      <i class="fa fa-refresh"></i>
+    }
+  </div>
+}

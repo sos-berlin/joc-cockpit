@@ -7,101 +7,126 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline">
-            <span *ngIf="nodes && nodes.length > 0" [ngClass]="validConfig ? 'badge-success':'badge-danger'"
-                  class="badge">
-              <span *ngIf="validConfig" translate>xml.label.validate</span>
-              <span *ngIf="!validConfig" translate>xml.label.nonValidate</span>
-            </span>
-            <span *ngIf="objectType === 'NOTIFICATION' && nodes && nodes.length > 0" [ngClass]="extraInfo.released ? 'badge-success' : 'badge-danger'"
-                  class="custom-icon badge m-l-12">
-              <span *ngIf="extraInfo.released" translate>xml.label.released</span>
-              <span *ngIf="!extraInfo.released" translate>xml.label.notReleased</span>
-            </span>
-            <span *ngIf="objectType === 'YADE' && nodes && nodes.length > 0 && extraInfo.isExist" [ngClass]="extraInfo.sync ? 'badge-success' : 'badge-danger'"
-                  class="custom-icon badge m-l-12">
-              <span *ngIf="extraInfo.sync" translate>xml.label.sync</span>
-              <span *ngIf="extraInfo.sync == false" translate>xml.label.notSync</span>
-              <span *ngIf="extraInfo.sync === undefined" translate>xml.label.unknownSyncState</span>
-            </span>
-            <span *ngIf="objectType === 'YADE' && nodes && nodes.length > 0" [ngClass]="extraInfo.deployed ? 'badge-success' : 'badge-danger'"
-                  class="custom-icon badge m-l-12">
-              <span *ngIf="extraInfo.deployed" translate>xml.label.deployed</span>
-              <span *ngIf="!extraInfo.deployed" translate>xml.label.notDeployed</span>
-            </span>
-            <button (click)="newFile()" *ngIf="permission.joc && ((objectType === 'NOTIFICATION' && permission.joc.notification.manage) || (objectType === 'YADE' && permission.joc.fileTransfer.manage) ||
-             (objectType === 'OTHER' && permission.joc.others.manage))" class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-file m-r-xs"></i>
-              <span translate>xml.button.new</span>
-            </button>
-            <button (click)="removeConf()"
-                    *ngIf="objectType === 'NOTIFICATION' && nodes && nodes.length > 0 && permission.joc && permission.joc.notification.manage"
-                    [disabled]="!extraInfo.hasReleases"
-                    class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-trash m-r-xs"></i>
-              <span translate>xml.button.remove</span>
-            </button>
-            <button (click)="deleteConf()" *ngIf="objectType === 'NOTIFICATION' && nodes && nodes.length > 0 && permission.joc && permission.joc.notification.manage"
-                    [disabled]="extraInfo.released"
-                    class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-trash-o m-r-xs"></i>
-              <span translate>xml.button.deleteDraft</span>
-            </button>
-            <button
-              (click)="reassignSchemaFunc()"
-              *ngIf="objectType === 'OTHER' && nodes && nodes.length > 0 && permission.joc && permission.joc.others.manage" class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-recycle m-r-xs"></i>
-              <span translate>xml.button.reassignSchema</span>
-            </button>
-            <button (click)="deleteAllConf()"
-                    *ngIf="nodes && nodes.length > 0 && objectType !== 'NOTIFICATION' && permission.joc && ((objectType === 'YADE' && permission.joc.fileTransfer.manage) ||
-              (objectType === 'OTHER' && permission.joc.others.manage))" class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-trash m-r-xs"></i>
-              <span translate>xml.button.deleteAll</span>
-            </button>
-            <button (click)="importXML()" *ngIf="permission.joc && ((objectType === 'NOTIFICATION' && permission.joc.notification.manage) || (objectType === 'YADE' && permission.joc.fileTransfer.manage) ||
-              (objectType === 'OTHER' && permission.joc.others.manage))" class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-upload m-r-xs"></i>
-              <span translate>xml.button.import</span>
-            </button>
-            <button (click)="save()" *ngIf="nodes && nodes.length > 0"
-                    class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-download m-r-xs"></i>
-              <span translate>xml.button.export</span>
-            </button>
-            <button (click)="showXml()" *ngIf="nodes && nodes.length > 0 && permission.joc && ((objectType === 'NOTIFICATION' && permission.joc.notification.manage) || (objectType === 'YADE' && permission.joc.fileTransfer.manage) ||
-                    (objectType === 'OTHER' && permission.joc.others.manage))"
-                    class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-pencil m-r-xs"></i>
-              <span translate>xml.button.editXML</span>
-            </button>
-            <button (click)="validate()"
-                    *ngIf="nodes && nodes.length > 0" [ngClass]="validConfig ? 'btn-badge-success' : 'btn-badge-danger'"
-                    class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-check m-r-xs"></i>
-              <span translate>xml.button.validate</span>
-            </button>
-            <button (click)="releaseXML()"
-                    *ngIf="objectType === 'NOTIFICATION' && nodes && nodes.length > 0
-              && permission.joc && permission.joc.notification.manage" [disabled]="extraInfo.released" [ngClass]="extraInfo.released ? 'btn-badge-success' : 'btn-badge-danger'"
-                    class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-rocket m-r-xs"></i>
-              <span translate>xml.button.release</span>
-            </button>
-<!--            <button (click)="checkXML()"-->
-<!--                    *ngIf="objectType === 'YADE' && nodes && nodes.length > 0"-->
-<!--                    [disabled]="!extraInfo.isExist" [ngClass]="extraInfo.isExist ? extraInfo.sync ? 'btn-badge-success' : 'btn-badge-danger' : ''"-->
-<!--                    class="btn btn-sm btn-grey m-l-12">-->
-<!--              <i class="fa fa-check m-r-xs"></i>-->
-<!--              <span translate>xml.button.check</span>-->
-<!--            </button>-->
-            <button (click)="deployXML()"
-                    *ngIf="objectType === 'YADE' && nodes && nodes.length > 0
-                && permission.joc && permission.joc.fileTransfer.manage"
-                   [ngClass]="extraInfo.isExist ? extraInfo.deployed ? 'btn-badge-success' : 'btn-badge-danger' : ''"
-                    class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-rocket m-r-xs"></i>
-              <span translate>xml.button.deploy</span>
-            </button>
+            @if (nodes && nodes.length > 0) {
+              <span [ngClass]="validConfig ? 'badge-success':'badge-danger'" class="badge">
+                @if (validConfig) {
+                  <span translate>xml.label.validate</span>
+                }
+                @if (!validConfig) {
+                  <span translate>xml.label.nonValidate</span>
+                }
+              </span>
+            }
+            @if (objectType === 'NOTIFICATION' && nodes && nodes.length > 0) {
+              <span [ngClass]="extraInfo.released ? 'badge-success' : 'badge-danger'" class="custom-icon badge m-l-12">
+                @if (extraInfo.released) {
+                  <span translate>xml.label.released</span>
+                }
+                @if (!extraInfo.released) {
+                  <span translate>xml.label.notReleased</span>
+                }
+              </span>
+            }
+            @if (objectType === 'YADE' && nodes && nodes.length > 0 && extraInfo.isExist) {
+              <span [ngClass]="extraInfo.sync ? 'badge-success' : 'badge-danger'" class="custom-icon badge m-l-12">
+                @if (extraInfo.sync) {
+                  <span translate>xml.label.sync</span>
+                }
+                @if (extraInfo.sync == false) {
+                  <span translate>xml.label.notSync</span>
+                }
+                @if (extraInfo.sync === undefined) {
+                  <span translate>xml.label.unknownSyncState</span>
+                }
+              </span>
+            }
+            @if (objectType === 'YADE' && nodes && nodes.length > 0) {
+              <span [ngClass]="extraInfo.deployed ? 'badge-success' : 'badge-danger'" class="custom-icon badge m-l-12">
+                @if (extraInfo.deployed) {
+                  <span translate>xml.label.deployed</span>
+                }
+                @if (!extraInfo.deployed) {
+                  <span translate>xml.label.notDeployed</span>
+                }
+              </span>
+            }
+            @if (permission.joc && ((objectType === 'NOTIFICATION' && permission.joc.notification.manage) || (objectType === 'YADE' && permission.joc.fileTransfer.manage) ||
+             (objectType === 'OTHER' && permission.joc.others.manage))) {
+              <button (click)="newFile()" class="btn btn-sm btn-grey m-l-12">
+                <i class="fa fa-file m-r-xs"></i>
+                <span translate>xml.button.new</span>
+              </button>
+            }
+            @if (objectType === 'NOTIFICATION' && nodes && nodes.length > 0 && permission.joc && permission.joc.notification.manage) {
+              <button (click)="removeConf()" [disabled]="!extraInfo.hasReleases" class="btn btn-sm btn-grey m-l-12">
+                <i class="fa fa-trash m-r-xs"></i>
+                <span translate>xml.button.remove</span>
+              </button>
+            }
+            @if (objectType === 'NOTIFICATION' && nodes && nodes.length > 0 && permission.joc && permission.joc.notification.manage) {
+              <button (click)="deleteConf()" [disabled]="extraInfo.released" class="btn btn-sm btn-grey m-l-12">
+                <i class="fa fa-trash-o m-r-xs"></i>
+                <span translate>xml.button.deleteDraft</span>
+              </button>
+            }
+            @if (objectType === 'OTHER' && nodes && nodes.length > 0 && permission.joc && permission.joc.others.manage) {
+              <button (click)="reassignSchemaFunc()" class="btn btn-sm btn-grey m-l-12">
+                <i class="fa fa-recycle m-r-xs"></i>
+                <span translate>xml.button.reassignSchema</span>
+              </button>
+            }
+            @if (nodes && nodes.length > 0 && objectType !== 'NOTIFICATION' && permission.joc && ((objectType === 'YADE' && permission.joc.fileTransfer.manage) ||
+              (objectType === 'OTHER' && permission.joc.others.manage))) {
+              <button (click)="deleteAllConf()" class="btn btn-sm btn-grey m-l-12">
+                <i class="fa fa-trash m-r-xs"></i>
+                <span translate>xml.button.deleteAll</span>
+              </button>
+            }
+            @if (permission.joc && ((objectType === 'NOTIFICATION' && permission.joc.notification.manage) || (objectType === 'YADE' && permission.joc.fileTransfer.manage) ||
+              (objectType === 'OTHER' && permission.joc.others.manage))) {
+              <button (click)="importXML()" class="btn btn-sm btn-grey m-l-12">
+                <i class="fa fa-upload m-r-xs"></i>
+                <span translate>xml.button.import</span>
+              </button>
+            }
+            @if (nodes && nodes.length > 0) {
+              <button (click)="save()" class="btn btn-sm btn-grey m-l-12">
+                <i class="fa fa-download m-r-xs"></i>
+                <span translate>xml.button.export</span>
+              </button>
+            }
+            @if (nodes && nodes.length > 0 && permission.joc && ((objectType === 'NOTIFICATION' && permission.joc.notification.manage) || (objectType === 'YADE' && permission.joc.fileTransfer.manage) ||
+                    (objectType === 'OTHER' && permission.joc.others.manage))) {
+              <button (click)="showXml()" class="btn btn-sm btn-grey m-l-12">
+                <i class="fa fa-pencil m-r-xs"></i>
+                <span translate>xml.button.editXML</span>
+              </button>
+            }
+            @if (nodes && nodes.length > 0) {
+              <button (click)="validate()" [ngClass]="validConfig ? 'btn-badge-success' : 'btn-badge-danger'" class="btn btn-sm btn-grey m-l-12">
+                <i class="fa fa-check m-r-xs"></i>
+                <span translate>xml.button.validate</span>
+              </button>
+            }
+            @if (objectType === 'NOTIFICATION' && nodes && nodes.length > 0
+              && permission.joc && permission.joc.notification.manage) {
+              <button (click)="releaseXML()" [disabled]="extraInfo.released" [ngClass]="extraInfo.released ? 'btn-badge-success' : 'btn-badge-danger'" class="btn btn-sm btn-grey m-l-12">
+                <i class="fa fa-rocket m-r-xs"></i>
+                <span translate>xml.button.release</span>
+              </button>
+            }
+<!--            @if (objectType === 'YADE' && nodes && nodes.length > 0) {-->
+<!--              <button (click)="checkXML()" [disabled]="!extraInfo.isExist" [ngClass]="extraInfo.isExist ? extraInfo.sync ? 'btn-badge-success' : 'btn-badge-danger' : ''" class="btn btn-sm btn-grey m-l-12">-->
+<!--                <i class="fa fa-check m-r-xs"></i>-->
+<!--                <span translate>xml.button.check</span>-->
+<!--              </button>-->
+<!--            }-->
+            @if (objectType === 'YADE' && nodes && nodes.length > 0 && permission.joc && permission.joc.fileTransfer.manage) {
+              <button (click)="deployXML()" [ngClass]="extraInfo.isExist ? extraInfo.deployed ? 'btn-badge-success' : 'btn-badge-danger' : ''" class="btn btn-sm btn-grey m-l-12">
+                <i class="fa fa-rocket m-r-xs"></i>
+                <span translate>xml.button.deploy</span>
+              </button>
+            }
           </div>
         </div>
       </div>
@@ -113,627 +138,571 @@
     <div class="col-md-12">
       <div>
         <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-          <li *ngIf="permission.joc && permission.joc.inventory.view" class="nav-item">
-            <a [routerLinkActive]="['active']" [routerLink]="['/configuration/inventory']" class="nav-link">
-              <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.inventory</span></span>
-            </a>
-          </li>
-          <li *ngIf="permission.joc && permission.joc.fileTransfer.view && permission.joc.inventory.view"
-              class="nav-item dropdown-separator">
-            <span class="separator"></span>
-          </li>
-          <li *ngIf="permission.joc && permission.joc.fileTransfer.view" class="nav-item">
-            <a [routerLinkActive]="['active']" [routerLink]="['/configuration/file_transfer']" class="nav-link">
-              <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.fileTransfer</span></span>
-            </a>
-          </li>
-          <li *ngIf="permission.joc && permission.joc.notification.view && (permission.joc.fileTransfer.view || permission.joc.inventory.view)"
-              class="nav-item dropdown-separator">
-            <span class="separator"></span>
-          </li>
-          <li *ngIf="permission.joc && permission.joc.notification.view" class="nav-item">
-            <a [routerLinkActive]="['active']" [routerLink]="['/configuration/notification']" class="nav-link">
-              <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.notification</span></span>
-            </a>
-          </li>
-          <li *ngIf="permission.joc && permission.joc.others.view && (permission.joc.notification.view || permission.joc.fileTransfer.view || permission.joc.inventory.view)"
-              class="nav-item dropdown-separator">
-            <span class="separator"></span>
-          </li>
-          <li *ngIf="permission.joc && permission.joc.others.view" class="nav-item">
-            <a [routerLinkActive]="['active']" [routerLink]="['/configuration/other']" class="nav-link">
-              <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.others</span></span>
-            </a>
-          </li>
+          @if (permission.joc && permission.joc.inventory.view) {
+            <li class="nav-item">
+              <a [routerLinkActive]="['active']" [routerLink]="['/configuration/inventory']" class="nav-link">
+                <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.inventory</span></span>
+              </a>
+            </li>
+          }
+          @if (permission.joc && permission.joc.fileTransfer.view && permission.joc.inventory.view) {
+            <li class="nav-item dropdown-separator">
+              <span class="separator"></span>
+            </li>
+          }
+          @if (permission.joc && permission.joc.fileTransfer.view) {
+            <li class="nav-item">
+              <a [routerLinkActive]="['active']" [routerLink]="['/configuration/file_transfer']" class="nav-link">
+                <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.fileTransfer</span></span>
+              </a>
+            </li>
+          }
+          @if (permission.joc && permission.joc.notification.view && (permission.joc.fileTransfer.view || permission.joc.inventory.view)) {
+            <li class="nav-item dropdown-separator">
+              <span class="separator"></span>
+            </li>
+          }
+          @if (permission.joc && permission.joc.notification.view) {
+            <li class="nav-item">
+              <a [routerLinkActive]="['active']" [routerLink]="['/configuration/notification']" class="nav-link">
+                <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.notification</span></span>
+              </a>
+            </li>
+          }
+          @if (permission.joc && permission.joc.others.view && (permission.joc.notification.view || permission.joc.fileTransfer.view || permission.joc.inventory.view)) {
+            <li class="nav-item dropdown-separator">
+              <span class="separator"></span>
+            </li>
+          }
+          @if (permission.joc && permission.joc.others.view) {
+            <li class="nav-item">
+              <a [routerLinkActive]="['active']" [routerLink]="['/configuration/other']" class="nav-link">
+                <span class="nav-text text-dark p-b-sm"><span translate>configuration.tab.others</span></span>
+              </a>
+            </li>
+          }
         </ul>
       </div>
       <div class="pos-abt" style="right: 13px;top: 4px">
-        <a *ngIf="!isLoading && schemaIdentifier" >
-          <span translate>xml.label.assignedSchema</span>:
-          <i (click)="downloadSchema(objectType, schemaIdentifier)" class="cursor fa fa-download p-l-sm"></i>
-          <span (click)="showXSD(objectType, schemaIdentifier)"
-                class="text-hover-primary cursor _600 p-l-xs">{{schemaIdentifier}}</span>
-        </a>
+        @if (!isLoading && schemaIdentifier) {
+          <a>
+            <span translate>xml.label.assignedSchema</span>:
+            <i (click)="downloadSchema(objectType, schemaIdentifier)" class="cursor fa fa-download p-l-sm"></i>
+            <span (click)="showXSD(objectType, schemaIdentifier)" class="text-hover-primary cursor _600 p-l-xs">{{schemaIdentifier}}</span>
+          </a>
+        }
       </div>
     </div>
   </div>
   <div class="scroll-y max-ht2" style="min-height: 100px">
-    <div *ngIf="!isLoading && !schedulerIds.selected" class="m-t-lg">
-      <app-empty-data [title]="'error.message.noControllerFound'"></app-empty-data>
-    </div>
-    <div *ngIf="objectType !== 'NOTIFICATION' && tabsArray.length>0">
-      <nz-tabset [nzAnimated]="false" [nzSelectedIndex]="selectedTabIndex" [nzTabBarGutter]="3" [nzType]="'line'">
-        <nz-tab (nzClick)="tabChange(tab, index)" *ngFor="let tab of tabsArray; let index= index" [nzForceRender]="true"
-                [nzTitle]="titleTemplate">
-          <ng-template #titleTemplate>
-            <div id="{{tab.id}}" style="width: 100%">
-              <span (click)="renameTab(tab);$event.stopPropagation();" *ngIf="activeTab && !tab.rename && activeTab.id === tab.id"
-                    class="text-hover-primary">{{tab.name}}</span>
-              <span *ngIf="activeTab && activeTab.id !== tab.id">{{tab.name}}</span>
-              <input (blur)="renameDone(tab)" (keypress)="renameOnEnter($event, tab)" *ngIf="tab.rename"
-                     [(ngModel)]="tab.name" class="form-control rename-field" id="rename-field" type="text">
-              <i (click)="cancelRename(tab);$event.stopPropagation();" *ngIf="tab.rename" class="fa fa-times pos-abt"
-                 style="top: 13px;right: 12px"></i>
-              <i (click)="deleteConf(tab);$event.stopPropagation();" *ngIf="!tab.rename" class="ant-tabs-close-x m-l-sm" nz-icon
-                 nzType="close"></i>
-            </div>
-          </ng-template>
-        </nz-tab>
-      </nz-tabset>
-    </div>
-    <div *ngIf="!isLoading" [ngClass]="!submitXsd ? 'show': 'hide'" class="center-block open">
-      <div *ngIf="objectType === 'OTHER' && tabsArray.length>0">
-        <div *ngIf="showSelectSchema" class="col-md-offset-2 col-md-8 m-t-md">
-          <h1 class="text-center"><strong translate>xml.label.assignSchema</strong></h1>
-          <hr>
-        </div>
-        <div class="col-md-offset-2 col-md-8 m-t-md">
-            <span class="form-group">
-              <span>
-                <nz-select [(ngModel)]="selectedXsd" class="w-full" name="schema"
-                           nzShowSearch (ngModelChange)="changeXSD(selectedXsd)" >
-                    <nz-option *ngFor="let xsd of otherSchema;" [nzLabel]="xsd"
-                               [nzValue]="xsd"></nz-option>
-                </nz-select>
-            </span>
-            <span class="pos-abt" style="right: -16px; top: 2px;">
-                <i (click)="importXSD()" aria-hidden="true" class="cursor fa fa-upload fa-lg p-t-sm"></i>
-            </span>
-            </span>
-        </div>
-        <div class="col-md-offset-2 col-md-8 m-t-md">
-          <button (click)="(!reassignSchema) ? othersSubmit(null) : changeSchema(null)" [disabled]="!selectedXsd"
-                  class="btn btn-primary btn-sm" translate>xml.button.assign
-          </button>
-          <button (click)="cancelReassignSchema()" *ngIf="reassignSchema" class="btn btn-grey btn-sm m-l-sm"
-                  translate type="button">common.button.cancel
-          </button>
-        </div>
+    @if (!isLoading && !schedulerIds.selected) {
+      <div class="m-t-lg">
+        <app-empty-data [title]="'error.message.noControllerFound'"></app-empty-data>
       </div>
-      <div *ngIf="extraInfo.state === 'NO_CONFIGURATION_EXIST'" class="text-center h6 text-uppercase hide show">
-        <app-empty-data [title]="'xml.message.noConfigurationFound'"></app-empty-data>
-      </div>
-    </div>
-    <div [ngClass]="submitXsd ? 'show': 'hide'" [ngStyle]="{'margin-top': objectType !== 'NOTIFICATION' ? '-3px' : '12px'}"
-         class="inline w-full">
-      <div [ngStyle]="{'width': sideView.xml ? sideView.xml.width +'px' : 'auto'}" [sideView]="sideView.xml" appResizable class="sticky leftPanel editor"
-           id="xmlLeftSidePanel">
-        <div class="pl-20 m-l-xs editor-tree">
-          <div *ngIf="nodes?.length > 0" class="row">
-            <div class="col-12 p-l-sm">
-              <a (click)="expandAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
-                <i class="fa fa-angle-double-down fa-lg"></i>
-              </a>
-              <a (click)="collapseAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
-                <i class="fa fa-angle-double-up fa-lg"></i>
-              </a>
-              <a class="text resize-cursor a-1" style="position: absolute; right: 34px;">
-                <i (click)="hidePanel()" class="fa fa-angle-double-left fa-lg"></i>
-              </a>
-              <a class="text resize-cursor a-3" style="position: absolute; right: 22px !important;">
-                <i (click)="showPanel()" class="fa fa-angle-double-right fa-lg"></i>
-              </a>
-            </div>
-          </div>
-          <perfect-scrollbar #scrollbar class="tree-block">
-            <div class="fade-in">
-              <nz-tree
-                #treeCtrl
-                (nzOnDragEnter)="dragEnter($event)"
-                (nzOnDrop)="dropData($event)"
-                [nzBeforeDrop]="beforeDrop"
-                [nzData]="nodes"
-                [nzDraggable]="true"
-                [nzExpandAll]="isExpandAll"
-                [nzShowExpand]="false"
-                [nzTreeTemplate]="nzTreeTemplate"
-                nzBlockNode
-                nzNoAnimation
-              ></nz-tree>
-              <ng-template #nzTreeTemplate let-node>
-                <div [ngClass]="{'isDropable': dropCheck.status}" class="node-wrapper" id="{{node.key}}">
-                  <span
-                    (click)="openFolder(node)"
-                    *ngIf="node.origin.children && node.origin.children.length > 0"
-                    [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
-                    [class.toggle-children-wrapper-expanded]="node.isExpanded" [ngClass]="{'m-l-0': node.origin.parent === '#'}"
-                    class="cursor w-14" style="margin-top: -1px;">
-                     <i *ngIf="!node.isExpanded && !node.origin.loading" nz-icon nzTheme="outline"
-                        nzType="caret-right"></i>
-                     <i *ngIf="node.isExpanded && !node.origin.loading" nz-icon nzTheme="outline"
-                        nzType="caret-down"></i>
-                     <i *ngIf="node.origin.loading"><nz-spin [nzSize]="'small'" nzSimple></nz-spin></i>
-                  </span>
-                  <span
-                    *ngIf="(!node.children || node.children.length === 0) && node.origin.children && node.origin.children.length === 0"
-                    class="w-14">
-                    <span class="fa fa-lg p-l-xs"></span>
-                  </span>
-                  <button (click)="contextMenu(node, $event);"
-                          class="btn-drop more-option-h">
-                    <i class="fa fa-ellipsis-h"></i>
-                  </button>
-                  <div [ngClass]="{'node-content-wrapper-active': selectedNode && (selectedNode.ref === node.origin.ref || selectedNode.name === node.origin.name) && selectedNode.uuid === node.origin.uuid}"
-                       class="node-content-wrapper">
-                    <ng-template #htmlContent>
-                      <table *ngIf="node.origin && node.origin.attributes" style="padding: 3px;">
-                        <tr *ngFor="let item of node.origin.attributes">
-                          <td style="padding: 3px;"><span> {{item.name}}</span></td>
-                          <td
-                            style="padding: 3px;">{{((item.data && item.name === 'password') || (item.base && item.base === 'password')) ? passwordLabel(item.data) : item.data}}
-                          </td>
-                        </tr>
-                      </table>
-                      <table *ngIf="node.origin && node.origin.values" style="padding: 3px;">
-                        <tr *ngFor="let item of node.origin.values">
-                          <td style="padding: 3px;"><span> {{item.name}}</span></td>
-                          <td [innerHTML]="(item.data && ((item.name && item.name === 'password') || (item.base && item.base === 'password') || (item.parent && item.parent === 'Password'))) ? passwordLabel(item.data) : (item.data | safeHtml)"
-                              style="padding: 3px;">
-                          </td>
-                        </tr>
-                      </table>
-                    </ng-template>
-                    <span
-                      (click)="selectNode(node);addContent(node.origin.values);"
-                      [ngClass]="cutData && node.origin.uuid === copyItem.uuid? 'cut-row' : ''"
-                      [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="((node.origin.attributes && node.origin.attributes.length>0) || (node.origin.values && node.origin.values.length>0)) ? (htmlContent) : ''" nzTooltipOverlayClassName="custom-tooltip"
-                      nzTooltipPlacement="right">{{node.origin.ref || node.origin.name }}
-                      </span>
-                    <span (click)="selectNode(node)"
-                          [hidden]="!node.origin.attributes || (node.origin.attributes && node.origin.attributes.length==0)"
-                          class="text-sm pl-2">
-                        {{getFirstNotEmptyAttribute(node.origin.attributes)}}
-                    </span>
-                    <span (click)="selectNode(node);addContent(node.origin.values);"
-                          *ngIf="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && ((node.origin.values[0].base && node.origin.values[0].base !== 'password') && node.origin.values[0].parent !== 'Password'))"
-                          class="text-sm pl-2">
-                        {{node.origin.values[0].base === 'html' ? removeTag(node.origin.values[0]) : node.origin.values[0].data}}
-                    </span>
-                    <span (click)="selectNode(node);addContent(node.origin.values);"
-                          *ngIf="(getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && (node.origin.values[0].parent === 'Password' || node.origin.values[0].base === 'password'))"
-                          class="text-sm pl-2">
-                        {{passwordLabel(node.origin.values[0].data)}}
-                    </span>
-                  </div>
-                  <span (click)="expandNode(node.origin);$event.stopPropagation()"
-                        *ngIf="node.children && node.children.length > 0"> <i
-                    class="expand-collapse fa fa-angle-double-down"></i> </span>
-                  <span (click)="collapseNode(node.origin);$event.stopPropagation()"
-                        *ngIf="node.children && node.children.length > 0"> <i
-                    class="expand-collapse fa fa-angle-double-up"></i></span>
+    }
+    @if (objectType !== 'NOTIFICATION' && tabsArray.length>0) {
+      <div>
+        <nz-tabset [nzAnimated]="false" [nzSelectedIndex]="selectedTabIndex" [nzTabBarGutter]="3" [nzType]="'line'">
+          @for (tab of tabsArray; track $index; let index = $index) {
+            <nz-tab (nzClick)="tabChange(tab, index)" [nzForceRender]="true" [nzTitle]="titleTemplate">
+              <ng-template #titleTemplate>
+                <div id="{{tab.id}}" style="width: 100%">
+                  @if (activeTab && !tab.rename && activeTab.id === tab.id) {
+                    <span (click)="renameTab(tab);$event.stopPropagation();" class="text-hover-primary">{{tab.name}}</span>
+                  }
+                  @if (activeTab && activeTab.id !== tab.id) {
+                    <span>{{tab.name}}</span>
+                  }
+                  @if (tab.rename) {
+                    <input (blur)="renameDone(tab)" (keypress)="renameOnEnter($event, tab)" [(ngModel)]="tab.name" class="form-control rename-field" id="rename-field" type="text">
+                  }
+                  @if (tab.rename) {
+                    <i (click)="cancelRename(tab);$event.stopPropagation();" class="fa fa-times pos-abt" style="top: 13px;right: 12px"></i>
+                  }
+                  @if (!tab.rename) {
+                    <i (click)="deleteConf(tab);$event.stopPropagation();" class="ant-tabs-close-x m-l-sm" nz-icon nzType="close"></i>
+                  }
                 </div>
               </ng-template>
-            </div>
-          </perfect-scrollbar>
-          <div class="rg-right"><span></span></div>
-        </div>
+            </nz-tab>
+          }
+        </nz-tabset>
       </div>
-      <div [ngStyle]="{'margin-left': sideView.xml ? (sideView.xml.width + 4) + 'px' : 'auto'}" id="rightPanel">
-        <div class="row">
-          <nav *ngIf="breadCrumbArray.length>0" aria-label="breadcrumb" class="col-12">
-            <ol class="breadcrumb">
-              <li *ngFor="let crumb of breadCrumbArray; let i = index" [ngClass]="i==breadCrumbArray.length-1? 'text-primary' : ''"
-                  aria-current="page" class="breadcrumb-item"><a
-                (click)="getData(crumb)">{{crumb.ref || crumb.child}}</a></li>
-            </ol>
-          </nav>
-          <div *ngIf="selectedNode && (selectedNode.ref || selectedNode.name)" class="col-12">
-            <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref || selectedNode.name}}
-              <span *ngIf="extraInfo.configurationDate" class="text-dark text-sm _400"> -
-                  <b translate>xml.label.configurationDate</b>
-                  <i class="text-muted p-l-xs">{{extraInfo.configurationDate | stringToDate}}</i>
-              </span>
-              <span *ngIf="extraInfo.modified" class="text-dark text-sm _400"> -
-                  <b translate>xml.label.modified</b>
-                  <i class="text-muted p-l-xs">{{extraInfo.modified | stringToDate}}</i>
-              </span>
-            </div>
-          </div>
-          <div class="col-12">
-            <div *ngIf="selectedNode && (selectedNode.ref || selectedNode.name) && selectedNodeDoc && selectedNodeDoc.doc"
-                 class="p-a box documents">
-              <div class="text _600">
-                <span translate>xml.label.documentation</span>
-                <i (click)="hideDocumentation(selectedNode)" [ngClass]="selectedNode.show ? 'fa-caret-up' : 'fa-caret-down'"
-                   aria-hidden="true"
-                   class="fa fa-lg pull-left p-t-xs pointer"
-                   id="expandIcon"></i>
-              </div>
-              <div *ngIf="selectedNode.show" id="doc">
+    }
+    @if (!isLoading) {
+      <div [ngClass]="!submitXsd ? 'show': 'hide'" class="center-block open">
+        @if (objectType === 'OTHER' && tabsArray.length>0) {
+          <div>
+            @if (showSelectSchema) {
+              <div class="col-md-offset-2 col-md-8 m-t-md">
+                <h1 class="text-center"><strong translate>xml.label.assignSchema</strong></h1>
                 <hr>
-                <div>
-                  <div [innerHTML]="selectedNodeDoc.doc | safeHtml"></div>
-                </div>
               </div>
+            }
+            <div class="col-md-offset-2 col-md-8 m-t-md">
+              <span class="form-group">
+                <span>
+                  <nz-select [(ngModel)]="selectedXsd" class="w-full" name="schema" nzShowSearch (ngModelChange)="changeXSD(selectedXsd)">
+                      @for (xsd of otherSchema; track xsd) {
+                        <nz-option [nzLabel]="xsd" [nzValue]="xsd"></nz-option>
+                      }
+                  </nz-select>
+              </span>
+              <span class="pos-abt" style="right: -16px; top: 2px;">
+                <i (click)="importXSD()" aria-hidden="true" class="cursor fa fa-upload fa-lg p-t-sm"></i>
+              </span>
+              </span>
+            </div>
+            <div class="col-md-offset-2 col-md-8 m-t-md">
+              <button (click)="(!reassignSchema) ? othersSubmit(null) : changeSchema(null)" [disabled]="!selectedXsd" class="btn btn-primary btn-sm" translate>xml.button.assign
+              </button>
+              @if (reassignSchema) {
+                <button (click)="cancelReassignSchema()" class="btn btn-grey btn-sm m-l-sm" translate type="button">common.button.cancel
+                </button>
+              }
             </div>
           </div>
-          <div class="col-12" id="attr">
-            <div *ngIf="selectedNode">
-              <div *ngIf="selectedNode.attributes && selectedNode.attributes.length>0" class="box p-a attr">
-                <div
-                  *ngIf="selectedNode.attributes && selectedNode.attributes.length>0 && selectedNode.attributes[0].id"
-                  class="_600 text m-b-sm" translate>xml.label.attributes
+        }
+        @if (extraInfo.state === 'NO_CONFIGURATION_EXIST') {
+          <div class="text-center h6 text-uppercase hide show">
+            <app-empty-data [title]="'xml.message.noConfigurationFound'"></app-empty-data>
+          </div>
+        }
+      </div>
+    }
+    @if (submitXsd) {
+      <div [ngClass]="submitXsd ? 'show': 'hide'" [ngStyle]="{'margin-top': objectType !== 'NOTIFICATION' ? '-3px' : '12px'}" class="inline w-full">
+        <div [ngStyle]="{'width': sideView.xml ? sideView.xml.width +'px' : 'auto'}" [sideView]="sideView.xml" appResizable class="sticky leftPanel editor" id="xmlLeftSidePanel">
+          <div class="pl-20 m-l-xs editor-tree">
+            @if (nodes?.length > 0) {
+              <div class="row">
+                <div class="col-12 p-l-sm">
+                  <a (click)="expandAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
+                    <i class="fa fa-angle-double-down fa-lg"></i>
+                  </a>
+                  <a (click)="collapseAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
+                    <i class="fa fa-angle-double-up fa-lg"></i>
+                  </a>
+                  <a class="text resize-cursor a-1" style="position: absolute; right: 34px;">
+                    <i (click)="hidePanel()" class="fa fa-angle-double-left fa-lg"></i>
+                  </a>
+                  <a class="text resize-cursor a-3" style="position: absolute; right: 22px !important;">
+                    <i (click)="showPanel()" class="fa fa-angle-double-right fa-lg"></i>
+                  </a>
                 </div>
-                <div *ngFor="let node of selectedNode.attributes; let i= index" class="form-group">
-                  <div class="row m-t">
-                    <div [ngClass]="{'form-control-label' : !(node.values && node.values.length==0 && node.name && node.type === 'xs:boolean')}"
-                         class="col-md-4 col-lg-3 text-dark ">
-                      <label
-                        *ngIf="node.name && node.id">{{node.name}}
-                        <sup *ngIf="node.use ==='required'" class="text-danger text-sm">*</sup>
-                      </label></div>
-                    <div class="col-sm-5">
-                      <div *ngIf="node.name === 'job_resources'">
-                        <app-multi-select [attribute]="'data'" [list]="node" [nodes]="jobResourcesTree"
-                                          [type]="'JOBRESOURCE'" (onSelectCall)="onChangeJobResource(node.data, node)"></app-multi-select>
-                      </div>
-                      <div *ngIf="node.name === 'name' && node.parent === 'JobResource'">
-                        <input (click)="isTreeShow = true;" [(ngModel)]="node.data" autocomplete="off" class="form-control"
-                               name="jobResourceName" type="text">
-                        <div *ngIf="isTreeShow" [ngStyle]="{'margin-top': '-29px'}" class="z-index-9999 w-full">
-                          <app-search-input (searchTermChange)="onTreeSearch($event, node)" (onBlur)="onBlur()" (onSelect)="onChangeJobResource($event, node)" [isDisplay]="true"
-                                            [nodes]="jobResourcesTree"
-                                            [type]="'JOBRESOURCE'"></app-search-input>
-                        </div>
-                      </div>
-                      <input (blur)="validateAttr(node.data, node)" (change)="submitData(node.data, node)" (focus)="hideError();previousName = node.data;"
-                             *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:string' && !node.refer && node.name !== 'job_resource' && node.name !== 'job_resources' && node.name !== 'time_zone'"
-                             [(ngModel)]="node.data"
-                             [ngClass]="error && errorName === node.name? 'invalid': ''"
-                             [required]="node.use ==='required'"
-                             class="form-control w-full"
-                             id="{{node.name}}"
-                             type="text"
-                             xmlAutofocus>
-                      <input (blur)="validateAttr(node.data, node)" (change)="submitData(node.data, node)" (focus)="hideError()"
-                             *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:NCName'"
-                             [(ngModel)]="node.data"
-                             [ngClass]="error && errorName === node.name? 'invalid': ''"
-                             [required]="node.use ==='required'"
-                             class="form-control w-full"
-                             id="{{node.name}}"
-                             type="text"
-                             xmlAutofocus
-                      >
-                      <input [disabled]="true"
-                             *ngIf="node.data && node.parent === 'Configurations' && node.name === 'xmlns:xsi'"
-                             [(ngModel)]="node.data"
-                             [ngClass]="error && errorName === node.name? 'invalid': ''"
-                             class="form-control w-full"
-                             id="{{node.name}}"
-                             type="text"
-                             xmlAutofocus
-                      >
-                      <input [disabled]="true"
-                             *ngIf="node.data && node.parent === 'Configurations' && node.name === 'xsi:noNamespaceSchemaLocation'"
-                             [(ngModel)]="node.data"
-                             [ngClass]="error && errorName === node.name? 'invalid': ''"
-                             class="form-control w-full"
-                             id="{{node.name}}"
-                             type="text"
-                             xmlAutofocus
-                      >
-                      <input (blur)="validateAttr(node.data, node)" (change)="submitData(node.data, node)" (focus)="hideError()"
-                             *ngIf="node.values && node.values.length==0 && node.name && node.name !== 'password' && !node.type && !node.refer"
-                             [(ngModel)]="node.data"
-                             [ngClass]="error && errorName === node.name? 'invalid': ''"
-                             [required]="node.use ==='required'"
-                             class="form-control w-full"
-                             id="{{node.name}}"
-                             type="text"
-                             xmlAutofocus
-                      >
-                      <input (blur)="validateAttr(node.data, node)"
-                             (change)="submitData(node.data, node)"
-                             (focus)="hideError()" *ngIf="node.values && node.values.length==0 && (node.type=='password' || node.name=='password')"
-                             [(ngModel)]="node.data"
-                             [ngClass]="error && errorName === node.name? 'invalid': ''"
-                             [required]="node.use ==='required'"
-                             class="form-control" id="{{node.name}}"
-                             placeholder="{{!node.text ? 'Example input' : ''}}"
-                             type="{{!node.pShow ? 'password' : 'text'}}"
-                             xmlAutofocus>
-                      <i (click)="showPassword(node)" *ngIf="node.values && node.values.length==0 && (node.type=='password' || node.name=='password')"
-                         [ngClass]="!node.pShow ? 'fa-eye' : 'fa-eye-slash'"
-                         aria-hidden="true"
-                         class="fa password-hide-icon"></i>
-                      <input (blur)="validateAttr(node.data, node);checkDupProfileId(node.data, node)" (change)="submitData(node.data, node)" (focus)="hideError()"
-                             (keydown)="stopPressingSpace(node.name)"
-                             *ngIf="node.name && node.type === 'xs:NMTOKEN' && !node.refer && node.name !== 'job_resources' &&
-                             !(node.parent === 'JobResource' && (node.name === 'name' || node.name === 'variable' || node.name === 'environment_variable'))"
-                             [(ngModel)]="node.data"
-                             [ngClass]="error && errorName === node.name? 'invalid': ''"
-                             [required]="node.use ==='required'"
-                             class="form-control w-full"
-                             id="{{node.name}}"
-                             type="text"
-                             xmlAutofocus>
-                      <ng-container
-                        *ngIf="node.name && node.type === 'xs:NMTOKEN' && node.parent === 'JobResource' && node.name === 'variable'">
-                        <input #aname="ngModel" (blur)="validateAttr(node.data, node)" (change)="submitData(node.data, node)" [(ngModel)]="node.data"
-                               [ngClass]="((error && errorName === node.name) || ((aname.dirty || aname.touched) && aname.invalid)) ? 'invalid': ''"
-                               [required]="node.use ==='required'"
-                               autocomplete="off"
-                               class="form-control w-full"
-                               identifierValidation
-                               name="variable"
-                               type="text">
-                        <div *ngIf="aname.invalid && aname.errors && (aname.dirty || aname.touched)"
-                             class="text-danger help-block">
-                          <div *ngIf="aname.errors.invalidIdentifier" translate>common.message.invalid</div>
-                        </div>
-                      </ng-container>
-                      <ng-container
-                        *ngIf="node.name && node.type === 'xs:NMTOKEN' && node.parent === 'JobResource' && node.name === 'environment_variable'">
-                        <input #envname="ngModel" (blur)="upperCase(node);validateAttr(node.data, node)" (change)="submitData(node.data, node)" [(ngModel)]="node.data"
-                               [ngClass]="((error && errorName === node.name) || ((envname.dirty || envname.touched) && envname.invalid)) ? 'invalid': ''"
-                               [required]="node.use ==='required'"
-                               autocomplete="off"
-                               class="form-control w-full"
-                               envVariableValidation
-                               name="env_variable"
-                               type="text">
-                        <div *ngIf="envname.invalid && envname.errors && (envname.dirty || envname.touched)"
-                             class="text-danger help-block">
-                          <div *ngIf="envname.errors.invalidIdentifier" translate>common.message.invalid</div>
-                        </div>
-                      </ng-container>
-                      <input (blur)="validateAttr(node.data, node)" (change)="submitData(node.data, node)"
-                             (focus)="hideError()"
-                             *ngIf="node.name && node.type === 'xs:anyURI' && !node.refer"
-                             [(ngModel)]="node.data"
-                             [ngClass]="error && errorName === node.name? 'invalid': ''"
-                             [required]="node.use ==='required'"
-                             class="form-control w-full"
-                             id="{{node.name}}" title="{{node.name}} should not contain spaces"
-                             type="url"
-                             xmlAutofocus>
-                      <nz-select *ngIf="node.values && node.values.length==0 && node.name && (node.type === 'xs:NMTOKEN' || node.type === 'xs:string' || !node.type) && node.refer" [(ngModel)]="node.data"
-                                 [ngClass]="error && errorName === node.name? 'invalid': ''"
-                                 [required]="node.use ==='required'"
-                                 (ngModelChange)="submitData(node.data, node)"
-                                 (nzBlur)="validateAttr(node.data, node)"
-                                 (nzFocus)="getDataAttr(node.refer)"
-                                 class="w-full"
-                                 id="{{node.name}}">
-                        <nz-option *ngFor="let key of tempArr" [nzLabel]="key" [nzValue]="key"></nz-option>
-                      </nz-select>
-                      <nz-select *ngIf="node.values && node.values.length>0 && node.type === 'xs:list'"
-                                 [(ngModel)]="node.data1"
-                                 [ngClass]="error && errorName === node.name? 'invalid': ''"
-                                 [required]="node.use ==='required'"
-                                 (ngModelChange)="updateListData(node)"
-                                 class="w-full"
-                                 id="{{node.name}}"
-                                 nzMode="multiple">
-                        <nz-option *ngFor="let key of node.values" [nzLabel]="key"
-                                   [nzValue]="key"></nz-option>
-                      </nz-select>
-                      <nz-input-number *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:integer'"
-                                       [(ngModel)]="node.data"
-                                       [ngClass]="error && errorName === node.name? 'invalid': ''"
-                                       class="w-full"
-                                       (ngModelChange)="submitData(node.data, node)"
-                                       (nzBlur)="validateAttr(node.data, node)"
-                                       (nzFocus)="hideError()"
-                                       id="{{node.name}}" required
-                                       xmlAutofocus>
-                      </nz-input-number>
-                      <nz-input-number *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:positiveInteger'"
-                                       [(ngModel)]="node.data"
-                                       [ngClass]="error && errorName === node.name? 'invalid': ''"
-                                       [nzMin]="0"
-                                       (ngModelChange)="submitData(node.data, node)"
-                                       (nzBlur)="validateAttr(node.data, node)"
-                                       (nzFocus)="hideError()"
-                                       class="w-full" id="{{node.name}}" required
-                                       xmlAutofocus>
-                      </nz-input-number>
-                      <label *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:boolean'"
-                             class="md-check w">
-                        <input (change)="submitData(node.data, node)"
-                               [(ngModel)]="node.data"
-                               [ngClass]="error && errorName === node.name? 'invalid': ''"
-                               [required]="node.use ==='required'"
-                               class="form-control"
-                               id="{{node.name}}"
-                               type="checkbox">
-                        <i class="primary"></i>
-                      </label>
-                      <nz-select *ngIf="node.values && node.values.length > 0 && node.type !== 'xs:list'"
-                                 [(ngModel)]="node.data"
-                                 [ngClass]="error && errorName === node.name? 'invalid': ''"
-                                 [required]="node.use ==='required'" class="w-full"
-                                 (ngModelChange)="submitData(node.data, node)"
-                                 (nzBlur)="validateAttr(node.data, node)"
-                                 id="{{node.name}}">
-                        <nz-option *ngFor="let key of node.values" [nzLabel]="key.value"
-                                   [nzValue]="key.value"></nz-option>
-                      </nz-select>
-                      <div *ngIf="error && errorName === node.name" [innerText]="text" class="help-block text-danger"
-                           id="{{node.name}}Alert" role="alert">
-                      </div>
-                      <nz-select  *ngIf="node.values && node.values.length==0 && node.name && node.type === 'xs:string' && node.name === 'time_zone'"
-                                  [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''"
-                                  (ngModelChange)="submitData(node.data, node)" (nzBlur)="validateAttr(node.data, node)"
-                                 [required]="node.use ==='required'"
-                                 class="w-full"
-                                 id="{{node.name}}"
-                                 nzAllowClear
-                                 nzShowSearch>
-                        <nz-option *ngFor="let zone of zones" [nzLabel]="zone" [nzValue]="zone"></nz-option>
-                      </nz-select>
-                    </div>
-                    <div class="col-sm-3 p-l-xs">
-                      <span (click)="gotoKey(node);getIndividualData(selectedNode, undefined);expandParentNodesOfSelectedNode(selectedNode)"
-                            *ngIf="node.refer"
-                            class=""><a translate>xml.button.gotoKeyElement</a></span>
+              </div>
+            }
+            <perfect-scrollbar #scrollbar class="tree-block">
+              <div class="fade-in">
+                <nz-tree
+                  #treeCtrl
+                  (nzOnDragEnter)="dragEnter($event)"
+                  (nzOnDrop)="dropData($event)"
+                  [nzBeforeDrop]="beforeDrop"
+                  [nzData]="nodes"
+                  [nzDraggable]="true"
+                  [nzExpandAll]="isExpandAll"
+                  [nzShowExpand]="false"
+                  [nzTreeTemplate]="nzTreeTemplate"
+                  nzBlockNode
+                  nzNoAnimation
+                ></nz-tree>
+                <ng-template #nzTreeTemplate let-node>
+                  <div [ngClass]="{'isDropable': dropCheck.status}" class="node-wrapper" id="{{node.key}}">
+                    @if (node.origin.children && node.origin.children.length > 0) {
                       <span
-                        (click)="gotoKeyref(node);getIndividualData(selectedNode, undefined);expandParentNodesOfSelectedNode(selectedNode)"
-                        *ngIf="node.refElement"
-                        [ngClass]="{'v-align-link': !(node.text && node.text.doc && node.text.doc[0] && node.text.doc[0].innerHTML)}"
-                      ><a translate>xml.button.gotoRefElement</a></span>
-                      <span (mouseover)="getPos(node.id)"
-                            *ngIf="node.text && node.text.doc && node.text.doc[0] && node.text.doc[0].innerHTML"
-                            [ngClass]="(node.refer || node.refElement) ? 'm-l-xs' : ''" data-placement="bottom" data-toggle="tooltip" id="{{node.id}}"
-                            title="{{node.text.doc[0].innerHTML}}">
-                          <i class="fa fa-info-circle m-t-sm"></i>
+                        (click)="openFolder(node)"
+                        [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
+                        [class.toggle-children-wrapper-expanded]="node.isExpanded" [ngClass]="{'m-l-0': node.origin.parent === '#'}"
+                        class="cursor w-14" style="margin-top: -1px;">
+                         @if (!node.isExpanded && !node.origin.loading) {
+                           <i nz-icon nzTheme="outline" nzType="caret-right"></i>
+                         }
+                         @if (node.isExpanded && !node.origin.loading) {
+                           <i nz-icon nzTheme="outline" nzType="caret-down"></i>
+                         }
+                         @if (node.origin.loading) {
+                           <i><nz-spin [nzSize]="'small'" nzSimple></nz-spin></i>
+                         }
                       </span>
+                    }
+                    @if ((!node.children || node.children.length === 0) && node.origin.children && node.origin.children.length === 0) {
+                      <span class="w-14">
+                        <span class="fa fa-lg p-l-xs"></span>
+                      </span>
+                    }
+                    <button (click)="contextMenu(node, $event);" class="btn-drop more-option-h">
+                      <i class="fa fa-ellipsis-h"></i>
+                    </button>
+                    <div [ngClass]="{'node-content-wrapper-active': selectedNode && (selectedNode.ref === node.origin.ref || selectedNode.name === node.origin.name) && selectedNode.uuid === node.origin.uuid}"
+                         class="node-content-wrapper">
+                      <ng-template #htmlContent>
+                        @if (node.origin && node.origin.attributes) {
+                          <table style="padding: 3px;">
+                            @for (item of node.origin.attributes; track item) {
+                              <tr>
+                                <td style="padding: 3px;"><span> {{item.name}}</span></td>
+                                <td style="padding: 3px;">{{((item.data && item.name === 'password') || (item.base && item.base === 'password')) ? passwordLabel(item.data) : item.data}}</td>
+                              </tr>
+                            }
+                          </table>
+                        }
+                        @if (node.origin && node.origin.values) {
+                          <table style="padding: 3px;">
+                            @for (item of node.origin.values; track item) {
+                              <tr>
+                                <td style="padding: 3px;"><span> {{item.name}}</span></td>
+                                <td [innerHTML]="(item.data && ((item.name && item.name === 'password') || (item.base && item.base === 'password') || (item.parent && item.parent === 'Password'))) ? passwordLabel(item.data) : (item.data | safeHtml)" style="padding: 3px;"></td>
+                              </tr>
+                            }
+                          </table>
+                        }
+                      </ng-template>
+                      <span
+                        (click)="selectNode(node);addContent(node.origin.values);"
+                        [ngClass]="cutData && node.origin.uuid === copyItem.uuid? 'cut-row' : ''"
+                        [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="((node.origin.attributes && node.origin.attributes.length>0) || (node.origin.values && node.origin.values.length>0)) ? (htmlContent) : ''" nzTooltipOverlayClassName="custom-tooltip"
+                        nzTooltipPlacement="right">{{node.origin.ref || node.origin.name }}
+                        </span>
+                      <span (click)="selectNode(node)" [hidden]="!node.origin.attributes || (node.origin.attributes && node.origin.attributes.length==0)" class="text-sm pl-2">
+                          {{getFirstNotEmptyAttribute(node.origin.attributes)}}
+                      </span>
+                      @if (getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && ((node.origin.values[0].base && node.origin.values[0].base !== 'password') && node.origin.values[0].parent !== 'Password')) {
+                        <span (click)="selectNode(node);addContent(node.origin.values);" class="text-sm pl-2">
+                          {{node.origin.values[0].base === 'html' ? removeTag(node.origin.values[0]) : node.origin.values[0].data}}
+                        </span>
+                      }
+                      @if (getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && (node.origin.values[0].parent === 'Password' || node.origin.values[0].base === 'password')) {
+                        <span (click)="selectNode(node);addContent(node.origin.values);" class="text-sm pl-2">
+                          {{passwordLabel(node.origin.values[0].data)}}
+                        </span>
+                      }
                     </div>
+                    @if (node.children && node.children.length > 0) {
+                      <span (click)="expandNode(node.origin);$event.stopPropagation()">
+                        <i class="expand-collapse fa fa-angle-double-down"></i>
+                      </span>
+                    }
+                    @if (node.children && node.children.length > 0) {
+                      <span (click)="collapseNode(node.origin);$event.stopPropagation()">
+                        <i class="expand-collapse fa fa-angle-double-up"></i>
+                      </span>
+                    }
                   </div>
+                </ng-template>
+              </div>
+            </perfect-scrollbar>
+            <div class="rg-right"><span></span></div>
+          </div>
+        </div>
+        <div [ngStyle]="{'margin-left': sideView.xml ? (sideView.xml.width + 4) + 'px' : 'auto'}" id="rightPanel">
+          <div class="row">
+            @if (breadCrumbArray.length>0) {
+              <nav aria-label="breadcrumb" class="col-12">
+                <ol class="breadcrumb">
+                  @for (crumb of breadCrumbArray; track $index; let i = $index) {
+                    <li [ngClass]="i==breadCrumbArray.length-1? 'text-primary' : ''" aria-current="page" class="breadcrumb-item">
+                      <a (click)="getData(crumb)">{{crumb.ref || crumb.child}}</a>
+                    </li>
+                  }
+                </ol>
+              </nav>
+            }
+            @if (selectedNode && (selectedNode.ref || selectedNode.name)) {
+              <div class="col-12">
+                <div class="text-md m-b _600 b-b p-b-sm">{{selectedNode.ref || selectedNode.name}}
+                  @if (extraInfo.configurationDate) {
+                    <span class="text-dark text-sm _400"> -
+                        <b translate>xml.label.configurationDate</b>
+                        <i class="text-muted p-l-xs">{{extraInfo.configurationDate | stringToDate}}</i>
+                    </span>
+                  }
+                  @if (extraInfo.modified) {
+                    <span class="text-dark text-sm _400"> -
+                        <b translate>xml.label.modified</b>
+                        <i class="text-muted p-l-xs">{{extraInfo.modified | stringToDate}}</i>
+                    </span>
+                  }
                 </div>
               </div>
-              <div *ngIf="selectedNode.values && selectedNode.values.length>0" class="box p-a val">
-                <div class="row">
-                  <div class="col-md-12"><span translate>xml.label.value</span>
-                    <sup *ngIf="!(selectedNode.values && selectedNode.values[0].use)"
-                         class="text-danger text-sm">*</sup>
+            }
+            <div class="col-12">
+              @if (selectedNode && (selectedNode.ref || selectedNode.name) && selectedNodeDoc && selectedNodeDoc.doc) {
+                <div class="p-a box documents">
+                  <div class="text _600">
+                    <span translate>xml.label.documentation</span>
+                    <i (click)="hideDocumentation(selectedNode)" [ngClass]="selectedNode.show ? 'fa-caret-up' : 'fa-caret-down'" aria-hidden="true" class="fa fa-lg pull-left p-t-xs pointer" id="expandIcon"></i>
                   </div>
-                  <div class="col-md-12 m-t-xs">
-                    <input (blur)="validValue(selectedNode.values[0].data, (selectedNode.ref  || selectedNode.name), selectedNode.values[0])"
-                           (change)="submitValue(selectedNode.values[0].data, (selectedNode.ref  || selectedNode.name), selectedNode.values[0])"
-                           *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name ) && (selectedNode.ref !== 'Message' || selectedNode.name !== 'Message') && selectedNode.values[0].base == 'password'"
-                           [(ngModel)]="selectedNode.values[0].data"
-                           [ngClass]="error && errorName == (selectedNode.ref  || selectedNode.name) ? 'invalid': ''"
-                           class="form-control" id="{{(selectedNode.ref  || selectedNode.name)}}"
-                           type="{{!selectedNode.values[0].pShow ? 'password' : 'text'}}"
-                           value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}"
-                           xmlAutofocus>
-                    <i (click)="showPassword(selectedNode.values[0])"
-                       *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name) && (selectedNode.ref !== 'Message' || selectedNode.name !== 'Message') && selectedNode.values[0].base == 'password'"
-                       [ngClass]="!selectedNode.values[0].pShow ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true"
-                       class="fa password-hide-icon"></i>
-                    <textarea (blur)="validValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])" (change)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])"
-                              (keydown)="checkForTab(selectedNode.values[0].uuid);"
-                              *ngIf="selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'password')  && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name) && selectedNode.values[0].base !== 'html'"
-                              [(ngModel)]="selectedNode.values[0].data"
-                              [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''"
-                              [nzAutosize]="{ minRows: 3}"
-                              class="form-control"
-                              id="{{selectedNode.values[0].uuid}}"
-                              nz-input
-                              rows="1"
-                              xmlAutofocus></textarea>
-                    <div *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base === 'html'"
-                         [ngClass]="{'has-error': myckeditor.invalid && (myckeditor.touched || myckeditor.dirty)}"
-                         class="form-group">
-                      <a (click)="selectedNode.preview = false;" [ngClass]="{'text-primary': selectedNode.preview !== true}"
-                         class="btn btn-xs btn-default"
-                         style="box-shadow: none !important;" translate>xml.button.sourceCode</a>
-                      <a (click)="selectedNode.preview = true;" [ngClass]="{'text-primary': selectedNode.preview === true}"
-                         class="btn btn-xs btn-default b-l"
-                         style="box-shadow: none !important;" translate>xml.button.preview</a>
-                      <textarea #myckeditor="ngModel" (blur)="validValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])" (change)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])"
-                                (keydown)="checkForTab(selectedNode.values[0].uuid);"
-                                [(ngModel)]="selectedNode.values[0].data"
-                                [hidden]="selectedNode.preview"
-                                [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''"
-                                [nzAutosize]="{ minRows: 5, maxRows:22}"
-                                class="form-control"
-                                id="{{selectedNode.values[0].uuid}}"
-                                nz-input
-                                required
-                      ></textarea>
-                      <div *ngIf="selectedNode.preview" class="b-a"
-                           style="min-height: 104px;max-height: 450px;overflow: auto">
-                        <pre *ngIf="selectedNode.values[0].data"
-                             [innerHTML]="selectedNode.values[0].data | safeHtml"></pre>
-                      </div>
-                      <div
-                        *ngIf="!selectedNode.preview && myckeditor.invalid && (myckeditor.touched || myckeditor.dirty)"
-                        class="help-block" translate>
-                        xml.message.requiredField
+                  @if (selectedNode.show) {
+                    <div id="doc">
+                      <hr>
+                      <div>
+                        <div [innerHTML]="selectedNodeDoc.doc | safeHtml"></div>
                       </div>
                     </div>
-                    <nz-select *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].base === 'xs:boolean'"
-                               [(ngModel)]="selectedNode.values[0].data"
-                               (ngModelChange)="submitValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])"
-                               [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" class="w-full"
-                               id="{{(selectedNode.ref || selectedNode.name)}}">
-                      <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-                      <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-                    </nz-select>
-                    <nz-select *ngIf="selectedNode && selectedNode.values && selectedNode.values[0].values"
-                               [(ngModel)]="selectedNode.values[0].data"
-                               (ngModelChange)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])"
-                               [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''"
-                               class="w-full"
-                               id="{{(selectedNode.ref || selectedNode.name)}}">
-                      <nz-option *ngFor="let value of selectedNode.values[0].values" [nzLabel]="value.value"
-                                 [nzValue]="value.value"></nz-option>
-                    </nz-select>
-                    <div *ngIf="error && errorName === (selectedNode.ref || selectedNode.name)" [innerText]="text"
-                         class="help-block text-danger"
-                         id="{{nodes.ref || nodes.ref}}Alert"
-                         role="alert">
-                    </div>
-                  </div>
+                  }
                 </div>
-              </div>
+              }
+            </div>
+            <div class="col-12" id="attr">
+              @if (selectedNode) {
+                <div>
+                  @if (selectedNode.attributes && selectedNode.attributes.length>0) {
+                    <div class="box p-a attr">
+                      @if (selectedNode.attributes && selectedNode.attributes.length>0 && selectedNode.attributes[0].id) {
+                        <div class="_600 text m-b-sm" translate>xml.label.attributes</div>
+                      }
+                      @for (node of selectedNode.attributes; track $index; let i = $index) {
+                        <div class="form-group">
+                          <div class="row m-t">
+                            <div [ngClass]="{'form-control-label' : !(node.values && node.values.length==0 && node.name && node.type === 'xs:boolean')}" class="col-md-4 col-lg-3 text-dark ">
+                              @if (node.name && node.id) {
+                                <label>{{node.name}}
+                                  @if (node.use ==='required') {
+                                    <sup class="text-danger text-sm">*</sup>
+                                  }
+                                </label>
+                              }
+                            </div>
+                            <div class="col-sm-5">
+                              @if (node.name === 'job_resources') {
+                                <div>
+                                  <app-multi-select [attribute]="'data'" [list]="node" [nodes]="jobResourcesTree" [type]="'JOBRESOURCE'" (onSelectCall)="onChangeJobResource(node.data, node)"></app-multi-select>
+                                </div>
+                              }
+                              @if (node.name === 'name' && node.parent === 'JobResource') {
+                                <div>
+                                  <input (click)="isTreeShow = true;" [(ngModel)]="node.data" autocomplete="off" class="form-control" name="jobResourceName" type="text">
+                                  @if (isTreeShow) {
+                                    <div [ngStyle]="{'margin-top': '-29px'}" class="z-index-9999 w-full">
+                                      <app-search-input (searchTermChange)="onTreeSearch($event, node)" (onBlur)="onBlur()" (onSelect)="onChangeJobResource($event, node)" [isDisplay]="true" [nodes]="jobResourcesTree" [type]="'JOBRESOURCE'"></app-search-input>
+                                    </div>
+                                  }
+                                </div>
+                              }
+                              @if (node.values && node.values.length==0 && node.name && node.type === 'xs:string' && !node.refer && node.name !== 'job_resource' && node.name !== 'job_resources' && node.name !== 'time_zone') {
+                                <input (blur)="validateAttr(node.data, node)" (change)="submitData(node.data, node)" (focus)="hideError();previousName = node.data;" [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" class="form-control w-full" id="{{node.name}}" type="text" xmlAutofocus>
+                              }
+                              @if (node.values && node.values.length==0 && node.name && node.type === 'xs:NCName') {
+                                <input (blur)="validateAttr(node.data, node)" (change)="submitData(node.data, node)" (focus)="hideError()" [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" class="form-control w-full" id="{{node.name}}" type="text" xmlAutofocus>
+                              }
+                              @if (node.data && node.parent === 'Configurations' && node.name === 'xmlns:xsi') {
+                                <input [disabled]="true" [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" class="form-control w-full" id="{{node.name}}" type="text" xmlAutofocus>
+                              }
+                              @if (node.data && node.parent === 'Configurations' && node.name === 'xsi:noNamespaceSchemaLocation') {
+                                <input [disabled]="true" [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" class="form-control w-full" id="{{node.name}}" type="text" xmlAutofocus>
+                              }
+                              @if (node.values && node.values.length==0 && node.name && node.name !== 'password' && !node.type && !node.refer) {
+                                <input (blur)="validateAttr(node.data, node)" (change)="submitData(node.data, node)" (focus)="hideError()" [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" class="form-control w-full" id="{{node.name}}" type="text" xmlAutofocus>
+                              }
+                              @if (node.values && node.values.length==0 && (node.type=='password' || node.name=='password')) {
+                                <input (blur)="validateAttr(node.data, node)" (change)="submitData(node.data, node)" (focus)="hideError()" [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" class="form-control" id="{{node.name}}" placeholder="{{!node.text ? 'Example input' : ''}}" type="{{!node.pShow ? 'password' : 'text'}}" xmlAutofocus>
+                              }
+                              @if (node.values && node.values.length==0 && (node.type=='password' || node.name=='password')) {
+                                <i (click)="showPassword(node)" [ngClass]="!node.pShow ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true" class="fa password-hide-icon"></i>
+                              }
+                              @if (node.name && node.type === 'xs:NMTOKEN' && !node.refer && node.name !== 'job_resources' &&
+                               !(node.parent === 'JobResource' && (node.name === 'name' || node.name === 'variable' || node.name === 'environment_variable'))) {
+                                <input (blur)="validateAttr(node.data, node);checkDupProfileId(node.data, node)" (change)="submitData(node.data, node)" (focus)="hideError()" (keydown)="stopPressingSpace(node.name)" [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" class="form-control w-full" id="{{node.name}}" type="text" xmlAutofocus>
+                              }
+                              @if (node.name && node.type === 'xs:NMTOKEN' && node.parent === 'JobResource' && node.name === 'variable') {
+                                <ng-container>
+                                  <input #aname="ngModel" (blur)="validateAttr(node.data, node)" (change)="submitData(node.data, node)" [(ngModel)]="node.data" [ngClass]="((error && errorName === node.name) || ((aname.dirty || aname.touched) && aname.invalid)) ? 'invalid': ''" [required]="node.use ==='required'" autocomplete="off" class="form-control w-full" identifierValidation name="variable" type="text">
+                                  @if (aname.invalid && aname.errors && (aname.dirty || aname.touched)) {
+                                    <div class="text-danger help-block">
+                                      @if (aname.errors.invalidIdentifier) {
+                                        <div translate>common.message.invalid</div>
+                                      }
+                                    </div>
+                                  }
+                                </ng-container>
+                              }
+                              @if (node.name && node.type === 'xs:NMTOKEN' && node.parent === 'JobResource' && node.name === 'environment_variable') {
+                                <ng-container>
+                                  <input #envname="ngModel" (blur)="upperCase(node);validateAttr(node.data, node)" (change)="submitData(node.data, node)" [(ngModel)]="node.data" [ngClass]="((error && errorName === node.name) || ((envname.dirty || envname.touched) && envname.invalid)) ? 'invalid': ''" [required]="node.use ==='required'" autocomplete="off" class="form-control w-full" envVariableValidation name="env_variable" type="text">
+                                  @if (envname.invalid && envname.errors && (envname.dirty || envname.touched)) {
+                                    <div class="text-danger help-block">
+                                      @if (envname.errors.invalidIdentifier) {
+                                        <div translate>common.message.invalid</div>
+                                      }
+                                    </div>
+                                  }
+                                </ng-container>
+                              }
+                              @if (node.name && node.type === 'xs:anyURI' && !node.refer) {
+                                <input (blur)="validateAttr(node.data, node)" (change)="submitData(node.data, node)" (focus)="hideError()" [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" class="form-control w-full" id="{{node.name}}" title="{{node.name}} should not contain spaces" type="url" xmlAutofocus>
+                              }
+                              @if (node.values && node.values.length==0 && node.name && (node.type === 'xs:NMTOKEN' || node.type === 'xs:string' || !node.type) && node.refer) {
+                                <nz-select [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" (ngModelChange)="submitData(node.data, node)" (nzBlur)="validateAttr(node.data, node)" (nzFocus)="getDataAttr(node.refer)" class="w-full" id="{{node.name}}">
+                                  @for (key of tempArr; track key) {
+                                    <nz-option [nzLabel]="key" [nzValue]="key"></nz-option>
+                                  }
+                                </nz-select>
+                              }
+                              @if (node.values && node.values.length>0 && node.type === 'xs:list') {
+                                <nz-select [(ngModel)]="node.data1" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" (ngModelChange)="updateListData(node)" class="w-full" id="{{node.name}}" nzMode="multiple">
+                                  @for (key of node.values; track key) {
+                                    <nz-option [nzLabel]="key" [nzValue]="key"></nz-option>
+                                  }
+                                </nz-select>
+                              }
+                              @if (node.values && node.values.length==0 && node.name && node.type === 'xs:integer') {
+                                <nz-input-number [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" class="w-full" (ngModelChange)="submitData(node.data, node)" (nzBlur)="validateAttr(node.data, node)" (nzFocus)="hideError()" id="{{node.name}}" required xmlAutofocus></nz-input-number>
+                              }
+                              @if (node.values && node.values.length==0 && node.name && node.type === 'xs:positiveInteger') {
+                                <nz-input-number [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [nzMin]="0" (ngModelChange)="submitData(node.data, node)" (nzBlur)="validateAttr(node.data, node)" (nzFocus)="hideError()" class="w-full" id="{{node.name}}" required xmlAutofocus></nz-input-number>
+                              }
+                              @if (node.values && node.values.length==0 && node.name && node.type === 'xs:boolean') {
+                                <label class="md-check w">
+                                  <input (change)="submitData(node.data, node)" [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" class="form-control" id="{{node.name}}" type="checkbox">
+                                  <i class="primary"></i>
+                                </label>
+                              }
+                              @if (node.values && node.values.length > 0 && node.type !== 'xs:list') {
+                                <nz-select [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" [required]="node.use ==='required'" class="w-full" (ngModelChange)="submitData(node.data, node)" (nzBlur)="validateAttr(node.data, node)" id="{{node.name}}">
+                                  @for (key of node.values; track key) {
+                                    <nz-option [nzLabel]="key.value" [nzValue]="key.value"></nz-option>
+                                  }
+                                </nz-select>
+                              }
+                              @if (error && errorName === node.name) {
+                                <div [innerText]="text" class="help-block text-danger" id="{{node.name}}Alert" role="alert"></div>
+                              }
+                              @if (node.values && node.values.length==0 && node.name && node.type === 'xs:string' && node.name === 'time_zone') {
+                                <nz-select [(ngModel)]="node.data" [ngClass]="error && errorName === node.name? 'invalid': ''" (ngModelChange)="submitData(node.data, node)" (nzBlur)="validateAttr(node.data, node)" [required]="node.use ==='required'" class="w-full" id="{{node.name}}" nzAllowClear nzShowSearch>
+                                  @for (zone of zones; track zone) {
+                                    <nz-option [nzLabel]="zone" [nzValue]="zone"></nz-option>
+                                  }
+                                </nz-select>
+                              }
+                            </div>
+                            <div class="col-sm-3 p-l-xs">
+                              @if (node.refer) {
+                                <span (click)="gotoKey(node);getIndividualData(selectedNode, undefined);expandParentNodesOfSelectedNode(selectedNode)"><a translate>xml.button.gotoKeyElement</a></span>
+                              }
+                              @if (node.refElement) {
+                                <span (click)="gotoKeyref(node);getIndividualData(selectedNode, undefined);expandParentNodesOfSelectedNode(selectedNode)" [ngClass]="{'v-align-link': !(node.text && node.text.doc && node.text.doc[0] && node.text.doc[0].innerHTML)}"><a translate>xml.button.gotoRefElement</a></span>
+                              }
+                              @if (node.text && node.text.doc && node.text.doc[0] && node.text.doc[0].innerHTML) {
+                                <span (mouseover)="getPos(node.id)" [ngClass]="(node.refer || node.refElement) ? 'm-l-xs' : ''" data-placement="bottom" data-toggle="tooltip" id="{{node.id}}" title="{{node.text.doc[0].innerHTML}}">
+                                    <i class="fa fa-info-circle m-t-sm"></i>
+                                </span>
+                              }
+                            </div>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  }
+                  @if (selectedNode.values && selectedNode.values.length>0) {
+                    <div class="box p-a val">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <span translate>xml.label.value</span>
+                          @if (!(selectedNode.values && selectedNode.values[0].use)) {
+                            <sup class="text-danger text-sm">*</sup>
+                          }
+                        </div>
+                        <div class="col-md-12 m-t-xs">
+                          @if (selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name ) && (selectedNode.ref !== 'Message' || selectedNode.name !== 'Message') && selectedNode.values[0].base == 'password') {
+                            <input (blur)="validValue(selectedNode.values[0].data, (selectedNode.ref  || selectedNode.name), selectedNode.values[0])" (change)="submitValue(selectedNode.values[0].data, (selectedNode.ref  || selectedNode.name), selectedNode.values[0])" [(ngModel)]="selectedNode.values[0].data" [ngClass]="error && errorName == (selectedNode.ref  || selectedNode.name) ? 'invalid': ''" class="form-control" id="{{(selectedNode.ref  || selectedNode.name)}}" type="{{!selectedNode.values[0].pShow ? 'password' : 'text'}}" value="{{selectedNode.values[0].data? selectedNode.values[0].data:''}}" xmlAutofocus>
+                          }
+                          @if (selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base && selectedNode.values[0].base !== 'xs:boolean' && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name) && (selectedNode.ref !== 'Message' || selectedNode.name !== 'Message') && selectedNode.values[0].base == 'password') {
+                            <i (click)="showPassword(selectedNode.values[0])" [ngClass]="!selectedNode.values[0].pShow ? 'fa-eye' : 'fa-eye-slash'" aria-hidden="true" class="fa password-hide-icon"></i>
+                          }
+                          @if (selectedNode && selectedNode.values && !selectedNode.values[0].values && selectedNode.values[0].base  && (selectedNode.values[0].base !== 'xs:boolean' && selectedNode.values[0].base !== 'password')  && (selectedNode.values[0].parent === selectedNode.ref || selectedNode.values[0].parent === selectedNode.name) && selectedNode.values[0].base !== 'html') {
+                            <textarea (blur)="validValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])" (change)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])" (keydown)="checkForTab(selectedNode.values[0].uuid);" [(ngModel)]="selectedNode.values[0].data" [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" [nzAutosize]="{ minRows: 3}" class="form-control" id="{{selectedNode.values[0].uuid}}" nz-input rows="1" xmlAutofocus></textarea>
+                          }
+                          @if (selectedNode && selectedNode.values && selectedNode.values[0].base === 'html') {
+                            <div [ngClass]="{'has-error': myckeditor.invalid && (myckeditor.touched || myckeditor.dirty)}" class="form-group">
+                              <a (click)="selectedNode.preview = false;" [ngClass]="{'text-primary': selectedNode.preview !== true}" class="btn btn-xs btn-default" style="box-shadow: none !important;" translate>xml.button.sourceCode</a>
+                              <a (click)="selectedNode.preview = true;" [ngClass]="{'text-primary': selectedNode.preview === true}" class="btn btn-xs btn-default b-l" style="box-shadow: none !important;" translate>xml.button.preview</a>
+                              <textarea #myckeditor="ngModel" (blur)="validValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])" (change)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])" (keydown)="checkForTab(selectedNode.values[0].uuid);" [(ngModel)]="selectedNode.values[0].data" [hidden]="selectedNode.preview" [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" [nzAutosize]="{ minRows: 5, maxRows:22}" class="form-control" id="{{selectedNode.values[0].uuid}}" nz-input required></textarea>
+                              @if (selectedNode.preview) {
+                                <div class="b-a" style="min-height: 104px;max-height: 450px;overflow: auto">
+                                  @if (selectedNode.values[0].data) {
+                                    <pre [innerHTML]="selectedNode.values[0].data | safeHtml"></pre>
+                                  }
+                                </div>
+                              }
+                              @if (!selectedNode.preview && myckeditor.invalid && (myckeditor.touched || myckeditor.dirty)) {
+                                <div class="help-block" translate>
+                                  xml.message.requiredField
+                                </div>
+                              }
+                            </div>
+                          }
+                          @if (selectedNode && selectedNode.values && selectedNode.values[0].base === 'xs:boolean') {
+                            <nz-select [(ngModel)]="selectedNode.values[0].data" (ngModelChange)="submitValue(selectedNode.values[0].data, (selectedNode.ref || selectedNode.name), selectedNode.values[0])" [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" class="w-full" id="{{(selectedNode.ref || selectedNode.name)}}">
+                              <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                              <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+                            </nz-select>
+                          }
+                          @if (selectedNode && selectedNode.values && selectedNode.values[0].values) {
+                            <nz-select [(ngModel)]="selectedNode.values[0].data" (ngModelChange)="submitValue(selectedNode.values[0].data, selectedNode.ref || selectedNode.name, selectedNode.values[0])" [ngClass]="error && errorName == (selectedNode.ref || selectedNode.name) ? 'invalid': ''" class="w-full" id="{{(selectedNode.ref || selectedNode.name)}}">
+                              @for (value of selectedNode.values[0].values; track value) {
+                                <nz-option [nzLabel]="value.value" [nzValue]="value.value"></nz-option>
+                              }
+                            </nz-select>
+                          }
+                          @if (error && errorName === (selectedNode.ref || selectedNode.name)) {
+                            <div [innerText]="text" class="help-block text-danger" id="{{nodes.ref || nodes.ref}}Alert" role="alert"></div>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
             </div>
           </div>
         </div>
       </div>
-    </div>
+    }
   </div>
 </div>
 <nz-dropdown-menu #menu="nzDropdownMenu">
-  <ul *ngIf="menuNode.origin" nz-menu>
-    <li [nzDisabled]="!(menuNode.origin.parent == '#' || childNode.length>0)" [nzTitle]="'xml.button.addChild' | translate"
-        nz-submenu>
-      <ul *ngIf="childNode && childNode.length>0">
-        <li (click)="addChild(child, menuNode.origin, true, i);addDefaultValue(child)" *ngFor="let child of childNode; let i=index"
-            [ngClass]="getCustomCss(child,menuNode.origin)"
-            nz-menu-item>
-          <a>
-            <i class="fa fa-angle-right"></i>&nbsp;
-            {{child.ref || child.name}}
-          </a>
+  @if (menuNode.origin) {
+    <ul nz-menu>
+      <li [nzDisabled]="!(menuNode.origin.parent == '#' || childNode.length>0)" [nzTitle]="'xml.button.addChild' | translate" nz-submenu>
+        @if (childNode && childNode.length>0) {
+          <ul>
+            @for (child of childNode; track $index; let i = $index) {
+              <li (click)="addChild(child, menuNode.origin, true, i);addDefaultValue(child)" [ngClass]="getCustomCss(child,menuNode.origin)" nz-menu-item>
+                <a>
+                  <i class="fa fa-angle-right"></i>&nbsp;
+                  {{child.ref || child.name}}
+                </a>
+              </li>
+            }
+          </ul>
+        }
+      </li>
+      <li nz-menu-divider>
+      <li (click)="showAllChildNode(menuNode.origin)" [nzDisabled]="!(menuNode.origin.parent == '#' || childNode.length>0)" nz-menu-item>
+        <a translate>xml.button.showAllChildNodes</a>
+      </li>
+      <li nz-menu-divider>
+      @if (menuNode.origin && menuNode.origin.parent !=='#') {
+        <li (click)="cutNode(menuNode.origin)" [nzDisabled]="cutData && menuNode.origin.uuid === copyItem.uuid" nz-menu-item>
+          <a translate>xml.button.cut</a>
         </li>
-      </ul>
-    </li>
-    <li nz-menu-divider>
-    <li (click)="showAllChildNode(menuNode.origin)" [nzDisabled]="!(menuNode.origin.parent == '#' || childNode.length>0)"
-        nz-menu-item>
-      <a translate>xml.button.showAllChildNodes</a>
-    </li>
-    <li nz-menu-divider>
-    <li (click)="cutNode(menuNode.origin)" *ngIf="menuNode.origin && menuNode.origin.parent !=='#'" [nzDisabled]="cutData && menuNode.origin.uuid === copyItem.uuid"
-        nz-menu-item>
-      <a translate>xml.button.cut</a>
-    </li>
-    <li (click)="copyNode(menuNode.origin)" nz-menu-item><a translate>xml.button.copy</a></li>
-    <li (click)="pasteNode(menuNode.origin)" [nzDisabled]="!checkRule" nz-menu-item>
-      <a translate>xml.button.paste</a>
-    </li>
-    <li nz-menu-divider>
-    <li (click)="removeNode(menuNode)" [nzDisabled]="!(menuNode.origin && menuNode.origin.parent !== '#')" nz-menu-item>
-      <a translate>xml.button.remove</a>
-    </li>
-  </ul>
+      }
+      <li (click)="copyNode(menuNode.origin)" nz-menu-item><a translate>xml.button.copy</a></li>
+      <li (click)="pasteNode(menuNode.origin)" [nzDisabled]="!checkRule" nz-menu-item>
+        <a translate>xml.button.paste</a>
+      </li>
+      <li nz-menu-divider>
+      <li (click)="removeNode(menuNode)" [nzDisabled]="!(menuNode.origin && menuNode.origin.parent !== '#')" nz-menu-item>
+        <a translate>xml.button.remove</a>
+      </li>
+    </ul>
+  }
 </nz-dropdown-menu>
-<div *ngIf="isLoading" class="spinner">
-  <div class="cssload-inner cssload-one"></div>
-  <div class="cssload-inner cssload-two"></div>
-  <div class="cssload-inner cssload-three"></div>
-</div>
+@if (isLoading) {
+  <div class="spinner">
+    <div class="cssload-inner cssload-one"></div>
+    <div class="cssload-inner cssload-two"></div>
+    <div class="cssload-inner cssload-three"></div>
+  </div>
+}

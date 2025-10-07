@@ -29,10 +29,13 @@
             >
               <thead>
               <tr>
-                <th *ngIf="permission.currentController && permission.currentController.noticeBoards.post"
-                    nzWidth="55px"><span translate>common.label.action</span></th>
+                @if (permission.currentController && permission.currentController.noticeBoards.post) {
+                  <th nzWidth="55px"><span translate>common.label.action</span></th>
+                }
                 <th><span translate>resource.board.label.name</span></th>
-                <th *ngIf="isPathDisplay"><span translate>common.label.path</span></th>
+                @if (isPathDisplay) {
+                  <th><span translate>common.label.path</span></th>
+                }
                 <th nzWidth="130px"><span translate>resource.board.label.deploymentDate</span></th>
                 <th nzWidth="100px"><span translate>common.label.status</span></th>
                 <th nzWidth="100px"><span translate>resource.board.label.numOfNotices</span></th>
@@ -40,104 +43,10 @@
               </tr>
               </thead>
               <tbody>
-              <ng-template [ngForOf]="ajaxTable.data" let-board ngFor>
-                <tr [ngClass]="{'light-bg':board.show}">
-                  <td *ngIf="permission.currentController && permission.currentController.noticeBoards.post">
-                    <div class="btn-group dropdown">
-                      <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
-                              type="button">
-                        <i class="fa fa-ellipsis-h"></i>
-                      </button>
-                      <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                        <ul nz-menu>
-                          <li (click)="post(board)" nz-menu-item>
-                            <a translate>resource.board.button.post</a>
-                          </li>
-                        </ul>
-                      </nz-dropdown-menu>
-                    </div>
-                  </td>
-                  <td>
-                    <span class="w-full">
-                      <i (click)="board.show = true;"
-                         *ngIf="!board.show" class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
-                      <i (click)="board.show = false;"
-                         *ngIf="board.show" class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
-                      <i (click)="coreService.showDocumentation(board.documentationName, preferences)"
-                         *ngIf="board.documentationName"
-                         class="cursor fa fa-book p-l-xs p-r-xs"></i>
-                      <i (click)="coreService.navToInventoryTab(board.path, 'NOTICEBOARD');"
-                         *ngIf="permission.joc && permission.joc.inventory.view && !isPathDisplay"
-                         class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                      <span [innerHtml]="board.name"></span>
-                      <i *ngIf="board.title"> - </i>
-                      <i [innerHtml]="board.title" class="text-muted"></i>
-                    </span>
-                  </td>
-                  <td *ngIf="isPathDisplay">
-                    <span class="show-in-single-line">
-                      <i (click)="coreService.navToInventoryTab(board.path, 'NOTICEBOARD');"
-                         *ngIf="permission.joc && permission.joc.inventory.view"
-                         class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                      <span [innerHtml]="board.path"></span>
-                    </span>
-                  </td>
-                  <td>
-                    <span [innerHtml]="board.versionDate | stringToDate"></span>
-                  </td>
-                  <td>
-                    <a *ngIf="board.state" [innerHtml]="board.state._text | translate" [ngClass]="coreService.getColor(board.state.severity, 'bg')"
-                       class="label"></a>
-                  </td>
-                  <td>{{board.numOfNotices}}</td>
-                  <td><span [innerHtml]="board.numOfExpectingOrders"></span></td>
-                </tr>
-                <ng-container *ngIf="board.show">
-                  <tr>
-                    <td class="menu"></td>
-                    <td colspan="8" style="padding:0 !important;">
-                      <nz-table #innerTable [nzData]="['']" [nzFrontPagination]="false" [nzShowPagination]="false"
-                                [nzSize]="'small'" class="m-a-0 inner-table">
-              <thead>
-              <tr>
-                <th><span translate>resource.board.label.postOrderToNoticeId</span></th>
-                <th><span translate>resource.board.label.expectOrderToNoticeId</span></th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                <td>
-                  <span [innerHtml]="board.postOrderToNoticeId"></span>
-                </td>
-                <td>
-                  <span [innerHtml]="board.expectOrderToNoticeId"></span>
-                </td>
-              </tr>
-              </tbody>
-            </nz-table>
-            </td>
-            </tr>
-            <tr>
-              <td class="menu"></td>
-              <td class="order-history-template0" colspan="8" style="padding:0 !important;">
-                <nz-table #nestedTable [nzData]="board.notices" [nzShowPagination]="false" [nzFrontPagination]="false"
-                          [nzSize]="'small'" class="m-a-0 inner-table">
-                  <thead>
-                  <tr>
-                    <th
-                      *ngIf="permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)"
-                      nzWidth="55px"><span translate>common.label.action</span></th>
-                    <th><span translate>resource.board.label.id</span></th>
-                    <th><span translate>common.label.state</span></th>
-                    <th><span translate>resource.board.label.expectingOrders</span></th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <ng-template [ngForOf]="nestedTable.data" let-notice
-                               ngFor>
-                    <tr>
-                      <td
-                        *ngIf="permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)">
+                @for (board of ajaxTable.data; track board) {
+                  <tr [ngClass]="{'light-bg':board.show}">
+                    @if (permission.currentController && permission.currentController.noticeBoards.post) {
+                      <td>
                         <div class="btn-group dropdown">
                           <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
                                   type="button">
@@ -145,57 +54,177 @@
                           </button>
                           <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                             <ul nz-menu>
-                              <li (click)="delete(board, notice)" *ngIf="permission.currentController.noticeBoards.delete"
-                                  [nzDisabled]="notice.state._text === 'EXPECTED'"
-                                  nz-menu-item>
-                                <a translate>resource.board.button.delete</a>
-                              </li>
-                              <li (click)="post(board, notice)" *ngIf="permission.currentController.noticeBoards.post"
-                                  [nzDisabled]="notice.state._text !== 'EXPECTED'"
-                                  nz-menu-item>
+                              <li (click)="post(board)" nz-menu-item>
                                 <a translate>resource.board.button.post</a>
                               </li>
                             </ul>
                           </nz-dropdown-menu>
                         </div>
                       </td>
-                      <td>{{notice.id}}</td>
-                      <td>{{notice.endOfLife | stringToDate}}</td>
-                      <td><span [innerHtml]="notice.state._text | translate" [ngClass]="coreService.getColor(notice.state.severity, 'bg')"
-                                class="label"></span></td>
-                      <td>{{notice.expectingOrders?.length}}</td>
+                    }
+                    <td>
+                    <span class="w-full">
+                      @if (!board.show) {
+                        <i (click)="board.show = true;"
+                           class="cursor fa fa-caret-down fa-lg p-l-xs p-r-xs"></i>
+                      }
+                      @if (board.show) {
+                        <i (click)="board.show = false;"
+                           class="cursor fa fa-caret-up fa-lg p-l-xs p-r-xs"></i>
+                      }
+                      @if (board.documentationName) {
+                        <i (click)="coreService.showDocumentation(board.documentationName, preferences)"
+                           class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                      }
+                      @if (permission.joc && permission.joc.inventory.view && !isPathDisplay) {
+                        <i (click)="coreService.navToInventoryTab(board.path, 'NOTICEBOARD');"
+                           class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                      }
+                      <span [innerHtml]="board.name"></span>
+                      @if (board.title) {
+                        <i> - </i>
+                      }
+                      <i [innerHtml]="board.title" class="text-muted"></i>
+                    </span>
+                    </td>
+                    @if (isPathDisplay) {
+                      <td>
+                      <span class="show-in-single-line">
+                        @if (permission.joc && permission.joc.inventory.view) {
+                          <i (click)="coreService.navToInventoryTab(board.path, 'NOTICEBOARD');"
+                             class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                        }
+                        <span [innerHtml]="board.path"></span>
+                      </span>
+                      </td>
+                    }
+                    <td>
+                      <span [innerHtml]="board.versionDate | stringToDate"></span>
+                    </td>
+                    <td>
+                      @if (board.state) {
+                        <a [innerHtml]="board.state._text | translate" [ngClass]="coreService.getColor(board.state.severity, 'bg')"
+                           class="label"></a>
+                      }
+                    </td>
+                    <td>{{board.numOfNotices}}</td>
+                    <td><span [innerHtml]="board.numOfExpectingOrders"></span></td>
+                  </tr>
+                  @if (board.show) {
+                    <tr>
+                      <td class="menu"></td>
+                      <td colspan="8" style="padding:0 !important;">
+                        <nz-table #innerTable [nzData]="['']" [nzFrontPagination]="false" [nzShowPagination]="false"
+                                  [nzSize]="'small'" class="m-a-0 inner-table">
+                          <thead>
+                          <tr>
+                            <th><span translate>resource.board.label.postOrderToNoticeId</span></th>
+                            <th><span translate>resource.board.label.expectOrderToNoticeId</span></th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          <tr>
+                            <td>
+                              <span [innerHtml]="board.postOrderToNoticeId"></span>
+                            </td>
+                            <td>
+                              <span [innerHtml]="board.expectOrderToNoticeId"></span>
+                            </td>
+                          </tr>
+                          </tbody>
+                        </nz-table>
+                      </td>
                     </tr>
-                    <ng-container *ngIf="notice.expectingOrders && notice.expectingOrders.length > 0">
-                      <tr>
-                        <td class="custom-th"></td>
-                        <td class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
-                        <td class="custom-th" colspan="2"><span translate>order.label.workflow</span></td>
-                        <td class="custom-th"><span translate>workflow.label.label</span></td>
-                      </tr>
-                      <tr *ngFor="let order of notice.expectingOrders">
-                        <td></td>
-                        <td><span class="p-l">{{order.orderId}}</span></td>
-                        <td colspan="2">
-                          <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');"
-                             *ngIf="permission.joc && permission.joc.inventory.view"
-                             class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-                          <a (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);"
-                             class="text-hover-primary">{{order.workflowId.path}} </a>
-                        </td>
-                        <td>
-                          <span class="cur-point" *ngIf="order.label" [innerHtml]="order.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.positionString"></span>
-                          <span *ngIf="!order.label" [innerHtml]="order.positionString"></span>
-                        </td>
-                      </tr>
-                    </ng-container>
-                  </ng-template>
-                  </tbody>
-                </nz-table>
-              </td>
-            </tr>
-            </ng-container>
-            </ng-template>
-            </tbody>
+                    <tr>
+                      <td class="menu"></td>
+                      <td class="order-history-template0" colspan="8" style="padding:0 !important;">
+                        <nz-table #nestedTable [nzData]="board.notices" [nzShowPagination]="false" [nzFrontPagination]="false"
+                                  [nzSize]="'small'" class="m-a-0 inner-table">
+                          <thead>
+                          <tr>
+                            @if (permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)) {
+                              <th nzWidth="55px"><span translate>common.label.action</span></th>
+                            }
+                            <th><span translate>resource.board.label.id</span></th>
+                            <th><span translate>common.label.state</span></th>
+                            <th><span translate>resource.board.label.expectingOrders</span></th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                            @for (notice of nestedTable.data; track notice) {
+                              <tr>
+                                @if (permission.currentController && (permission.currentController.noticeBoards.delete || permission.currentController.noticeBoards.post)) {
+                                  <td>
+                                    <div class="btn-group dropdown">
+                                      <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                                              type="button">
+                                        <i class="fa fa-ellipsis-h"></i>
+                                      </button>
+                                      <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                                        <ul nz-menu>
+                                          @if (permission.currentController.noticeBoards.delete) {
+                                            <li (click)="delete(board, notice)"
+                                                [nzDisabled]="notice.state._text === 'EXPECTED'"
+                                                nz-menu-item>
+                                              <a translate>resource.board.button.delete</a>
+                                            </li>
+                                          }
+                                          @if (permission.currentController.noticeBoards.post) {
+                                            <li (click)="post(board, notice)"
+                                                [nzDisabled]="notice.state._text !== 'EXPECTED'"
+                                                nz-menu-item>
+                                              <a translate>resource.board.button.post</a>
+                                            </li>
+                                          }
+                                        </ul>
+                                      </nz-dropdown-menu>
+                                    </div>
+                                  </td>
+                                }
+                                <td>{{notice.id}}</td>
+                                <td>{{notice.endOfLife | stringToDate}}</td>
+                                <td><span [innerHtml]="notice.state._text | translate" [ngClass]="coreService.getColor(notice.state.severity, 'bg')"
+                                          class="label"></span></td>
+                                <td>{{notice.expectingOrders?.length}}</td>
+                              </tr>
+                              @if (notice.expectingOrders && notice.expectingOrders.length > 0) {
+                                <tr>
+                                  <td class="custom-th"></td>
+                                  <td class="custom-th"><span class="p-l" translate>order.label.orderId</span></td>
+                                  <td class="custom-th" colspan="2"><span translate>order.label.workflow</span></td>
+                                  <td class="custom-th"><span translate>workflow.label.label</span></td>
+                                </tr>
+                                @for (order of notice.expectingOrders; track order) {
+                                  <tr>
+                                    <td></td>
+                                    <td><span class="p-l">{{order.orderId}}</span></td>
+                                    <td colspan="2">
+                                      @if (permission.joc && permission.joc.inventory.view) {
+                                        <i (click)="coreService.navToInventoryTab(order.workflowId.path, 'WORKFLOW');"
+                                           class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+                                      }
+                                      <a (click)="coreService.showWorkflow(order.workflowId.path, order.workflowId.versionId);"
+                                         class="text-hover-primary">{{order.workflowId.path}} </a>
+                                    </td>
+                                    <td>
+                                      @if (order.label) {
+                                        <span class="cur-point" [innerHtml]="order.label" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="order.positionString"></span>
+                                      }
+                                      @if (!order.label) {
+                                        <span [innerHtml]="order.positionString"></span>
+                                      }
+                                    </td>
+                                  </tr>
+                                }
+                              }
+                            }
+                          </tbody>
+                        </nz-table>
+                      </td>
+                    </tr>
+                  }
+                }
+              </tbody>
             </nz-table>
           </div>
         </div>

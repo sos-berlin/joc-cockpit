@@ -25,6 +25,7 @@ import {ScaleType} from './types/scale-type.enum';
 import {ViewDimensions} from './types/view-dimension.interface';
 
 @Component({
+  standalone: false,
   selector: 'base-chart',
   template: ` <div></div> `
 })

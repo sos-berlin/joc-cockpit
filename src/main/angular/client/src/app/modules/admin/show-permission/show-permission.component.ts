@@ -4,6 +4,7 @@ import {AuthService} from "../../../components/guard";
 import {CoreService} from "../../../services/core.service";
 
 @Component({
+  standalone: false,
   selector: 'app-show-permission-view',
   templateUrl: './show-permission.component.html'
 })

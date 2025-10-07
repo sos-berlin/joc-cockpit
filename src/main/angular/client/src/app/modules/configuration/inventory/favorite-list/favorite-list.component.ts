@@ -2,6 +2,7 @@ import {OnChanges, Component, Input, Output, ViewChild, SimpleChanges, EventEmit
 import {CoreService} from "../../../../services/core.service";
 
 @Component({
+  standalone: false,
   selector: 'app-favorite-list',
   templateUrl: './favorite-list.component.html'
 })

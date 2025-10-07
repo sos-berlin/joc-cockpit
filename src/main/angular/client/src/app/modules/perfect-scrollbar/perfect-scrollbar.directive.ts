@@ -20,6 +20,7 @@ import {
 } from './perfect-scrollbar.interfaces';
 
 @Directive({
+  standalone: false,
   selector: '[perfectScrollbar]',
   exportAs: 'perfectScrollbar'
 })

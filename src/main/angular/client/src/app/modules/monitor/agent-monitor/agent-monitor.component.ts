@@ -10,6 +10,7 @@ import {AuthService} from '../../../components/guard';
 import {GroupByPipe} from '../../../pipes/core.pipe';
 
 @Component({
+  standalone: false,
   selector: 'app-agent-monitor',
   templateUrl: './agent-monitor.component.html',
   styleUrls: ['./agent-monitor.component.scss']

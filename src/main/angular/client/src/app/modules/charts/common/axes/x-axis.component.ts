@@ -14,6 +14,7 @@ import {Orientation} from '../types/orientation.enum';
 import {ViewDimensions} from '../types/view-dimension.interface';
 
 @Component({
+  standalone: false,
   selector: 'g[ngx-charts-x-axis]',
   template: `
     <svg:g [attr.class]="xAxisClassName" [attr.transform]="transform">

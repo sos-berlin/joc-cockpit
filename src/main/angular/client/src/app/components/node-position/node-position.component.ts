@@ -5,6 +5,7 @@ import {WorkflowService} from "../../services/workflow.service";
 import {CoreService} from "../../services/core.service";
 
 @Component({
+  standalone: false,
   selector: 'app-node-position',
   templateUrl: './node-position.component.html'
 })

@@ -1,9 +1,15 @@
 <div class="modal-header">
   <h4 class="modal-title">
     <span translate>workflow.wizard.label.new</span>&nbsp;
-    <span *ngIf="job.docName">{{job.docName}}</span>
-    <span *ngIf="!job.docName && job.name">{{job.name}}</span>
-    <span *ngIf="!job.docName && !job.name" class="_600" translate>workflow.wizard.label.job</span>
+    @if (job.docName) {
+      <span>{{job.docName}}</span>
+    }
+    @if (!job.docName && job.name) {
+      <span>{{job.name}}</span>
+    }
+    @if (!job.docName && !job.name) {
+      <span class="_600" translate>workflow.wizard.label.job</span>
+    }
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -12,279 +18,358 @@
 <form #myForm="ngForm" (ngSubmit)="ok()">
   <div class="modal-body p-a">
     <div class="row">
-      <div *ngIf="wizard.step === 1" class="col-md-12">
-        <div class="form-group row">
-          <label class="col-sm-3 form-control-label" translate>workflow.wizard.label.title</label>
-          <div class="col-sm-9">
-            <input [(ngModel)]="job.title" class="form-control" name="title"
-                   placeholder="{{'common.placeholder.title' | translate}}" type="text">
-          </div>
-        </div>
-        <nz-tabset (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="index" [nzAnimated]="false">
-          <nz-tab [nzTitle]="'workflow.wizard.tab.jitl' | translate">
-            <div class="form-group row">
-              <div class="col-sm-12 m-t-sm m-b" *ngIf="index == 0">
-                <input [(ngModel)]="wizard.searchText" [appAutofocus]="true" name="search"
-                       placeholder="{{'common.placeholder.search' | translate}}" type="search">
-                <i (click)="wizard.searchText = '';" *ngIf="wizard.searchText" class="fa fa-times search-close"></i>
-              </div>
-              <div class="col-sm-12">
-                <div class="table-responsive" style="max-height: 400px;overflow: auto">
-                  <nz-table #ajaxTable [nzBordered]="true" [nzData]="(jobList | filter: wizard.searchText: ['assignReference', 'title', 'javaClass']) | orderBy: filter.sortBy:filter.reverse" [nzFrontPagination]="false"
-                            [nzLoading]="loading"
-                            [nzFrontPagination]="false"
-                            [nzShowPagination]="false"
-                            [nzShowSizeChanger]="false" [nzSize]="'small'">
-                    <thead>
-                    <tr>
-                      <th (click)="sort('assignReference')" nzWidth="22%"><a><span class="p-r-xs"
-                                                                                   translate>workflow.wizard.label.name</span>
-                        <i *ngIf="filter.sortBy == 'assignReference' && !filter.reverse"
-                           class="fa fa-caret-up "></i>
-                        <i *ngIf="filter.sortBy == 'assignReference' && filter.reverse"
-                           class="fa fa-caret-down "></i></a>
-                      </th>
-                      <th (click)="sort('title')"><a><span class="p-r-xs" translate>workflow.wizard.label.title</span>
-                        <i *ngIf="filter.sortBy == 'title' && !filter.reverse" class="fa fa-caret-up "></i>
-                        <i *ngIf="filter.sortBy == 'title' && filter.reverse" class="fa fa-caret-down "></i></a>
-                      </th>
-                      <th (click)="sort('javaClass')"><a><span class="p-r-xs"
-                                                               translate>workflow.wizard.label.class</span>
-                        <i *ngIf="filter.sortBy == 'javaClass' && !filter.reverse" class="fa fa-caret-up "></i>
-                        <i *ngIf="filter.sortBy == 'javaClass' && filter.reverse" class="fa fa-caret-down "></i></a>
-                      </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr (click)="selectJob(item)" *ngFor="let item of ajaxTable.data" [ngClass]="{'light-bg' : item.javaClass == job.javaClass}"
-                        class="cursor">
-                      <td>
-                          <span class="show-in-single-line">
-                            <i (click)="showDoc(item.assignReference || item.docPath);$event.stopPropagation()" *ngIf="item.docPath"
-                               class="fa fa-book p-r-sm"></i>
-                            <span [innerHTML]="item.assignReference | highlight:wizard.searchText"></span>
-                          </span>
-                      </td>
-                      <td><span [innerHTML]="item.title | highlight:wizard.searchText"></span></td>
-                      <td><span [innerHTML]="item.javaClass | highlight:wizard.searchText"></span></td>
-                    </tr>
-                    </tbody>
-                  </nz-table>
-                </div>
-              </div>
+      @if (wizard.step === 1) {
+        <div class="col-md-12">
+          <div class="form-group row">
+            <label class="col-sm-3 form-control-label" translate>workflow.wizard.label.title</label>
+            <div class="col-sm-9">
+              <input [(ngModel)]="job.title" class="form-control" name="title"
+                     placeholder="{{'common.placeholder.title' | translate}}" type="text">
             </div>
-          </nz-tab>
-          <nz-tab *ngIf="node" [nzTitle]="'workflow.wizard.tab.jobTemplate' | translate">
-            <div class="min-ht-150">
-              <div>
-                <div *ngIf="index == 1">
-                  <input [appAutofocus]="true" [(ngModel)]="wizard.searchText2" (blur)="clearSearchInput()"
-                         (ngModelChange)="onSearchInput($event)"
-                         [nzAutocomplete]="auto" [placeholder]="'workflow.placeholder.findNode' | translate"
-                         type="search" class="input-tree-search"
-                         name="treeSearch"
-                  />
-                  <i *ngIf="wizard.loading" [nzType]="'loading'" class="tree-search-icon" nz-icon
-                     nzTheme="outline"></i>
-                </div>
-                <nz-autocomplete #auto>
-                  <ng-container *ngFor="let option of jobTemplates | orderBy: 'name'">
-                    <nz-auto-option (click)="selectJobTemp(option)" [nzValue]="option.path" class="min-ht-opt">
-                      <div class="node-wrapper p-l">
-                        <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
-                             class="node-content-wrapper2" nzTooltipPlacement="right">
-                          <i class="icon-jobs-icon icon-color tree-icon"></i>
-                          <span class="p-l-sm">{{ option.name }}</span>
-                        </div>
-                      </div>
-                    </nz-auto-option>
-                  </ng-container>
-                </nz-autocomplete>
-              </div>
-              <div *ngIf="jobTree.length>0" class="row m-t-12">
-                <div *ngIf="isTreeLoad" class="col-md-12">
-                  <nz-tree (nzExpandChange)="onExpand($event)" [nzData]="jobTree" [nzTreeTemplate]="nzTreeTemplate"
-                           nzNoAnimation></nz-tree>
-                  <ng-template #nzTreeTemplate let-node>
-                    <div class="node-wrapper">
-                      <i *ngIf="node.origin.loading" class="w-14 m-l-xxs m-r-xs m-t-n-1">
-                        <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
-                      </i>
-                      <div (click)="selectNode(node)" class="node-content-wrapper">
-                        <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
-                        {{node.origin.name || node.origin.path}}
-                      </div>
-                    </div>
-                    <ng-container *ngIf="node.isExpanded">
-                      <div *ngFor="let item of node.origin.jobTemplates" [ngClass]="{'node-content-wrapper-active': item.name === job.name}"
-                           class="node-content-wrapper m-l-22"
-                           style="display: block">
-                        <a (click)="selectJobTemp(item);$event.stopPropagation();" class="text-primary-hover m-t-xs">
-                          <i *ngIf="item.loading" class="w-14 m-r-sm m-t-n-1" style="display: inline-block">
-                            <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
-                          </i>
-                          <i (click)="showDoc(item.assignReference || item.documentationName);$event.stopPropagation()" *ngIf="item.documentationName"
-                             class="fa fa-book p-r-sm"></i>
-                          <i *ngIf="item.description" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="contentTemplate"
-                             class="fa fa-info-circle p-r-sm"></i>
-                          <ng-template #contentTemplate>
-                            <div [innerHTML]="item.description"></div>
-                          </ng-template>
-                          <i class="icon icon-jobs-icon text-sm"></i>
-                          {{item.name}}
-                        </a>
-                        <i *ngIf="item.title" class="p-l-xs p-r-xs">-</i>
-                        <span *ngIf="item.title" class="text-muted">{{item.title}}</span>
-                      </div>
-                    </ng-container>
-
-                  </ng-template>
-                </div>
-              </div>
-              <div *ngIf="jobTree.length===0 && isTreeLoad" class="m-t-md">
-                <app-empty-data></app-empty-data>
-              </div>
-              <div *ngIf="!isTreeLoad" class="text-center m-t-md">
-                <nz-spin nzSimple></nz-spin>
-              </div>
-            </div>
-          </nz-tab>
-        </nz-tabset>
-      </div>
-      <div *ngIf="wizard.step === 2" class="col-md-12">
-        <div class="row">
-          <div class="col-sm-1 m-b-sm text-center">
-            <label nz-checkbox [(nzChecked)]="wizard.checked" [nzIndeterminate]="wizard.indeterminate"
-                   (nzCheckedChange)="onAllChecked($event)" ></label>
           </div>
-          <div class="col-sm-5 m-b-sm p-l-0" translate>common.label.name</div>
-          <div class="col-sm-6 m-b-sm p-r-0" translate>common.label.value</div>
-        </div>
-        <div class="form-group row">
-          <div class="col-md-12">
-            <div *ngFor="let param of job.params; let i = index" class="form-group row m-b-0">
-              <div class="col-sm-1 m-b-sm text-center">
-                <label nz-checkbox [nzChecked]="wizard.setOfCheckedValue.has(param.name)"
-                       [nzDisabled]="(!(param.newValue || param.newValue == 0 || param.newValue == false)) || param.required"
-                       (nzCheckedChange)="onItemChecked(param, $event)"
-                       style="position: relative;top:5px"></label>
-              </div>
-              <div class="col-sm-5 m-b-sm p-l-0">
-                <label class="form-control-label p-l-0"
-                       style="white-space: normal;word-wrap: break-word;">{{param.name}}
-                  <sup *ngIf="param.required" class="text-danger text-sm">*</sup>
-                </label>
-              </div>
-              <ng-container *ngIf="!param.list">
-                <ng-container [ngSwitch]="param.type">
-                  <ng-container *ngSwitchCase="'Number'">
-                    <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-                         class="col-sm-5 m-b-sm p-r-0">
-                      <nz-input-number #value="ngModel" (nzBlur)="checkCheckbox(param)" [(ngModel)]="param.newValue"
-                                       [nzMin]="0" [nzStep]="1"
-                                       [required]="param.required && !allowEmptyArguments"
-                                       name="_value{{i}}" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
-                      <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                           class="text-danger help-block">
-                        <div *ngIf="value.errors.required">
-                          <div translate>common.message.requiredError</div>
-                        </div>
-                      </div>
-                    </div>
-                  </ng-container>
-                  <ng-container *ngSwitchCase="'Boolean'">
-                    <div class="col-sm-5 m-b-sm p-r-0">
-                      <app-select-input (modelChange)="checkCheckbox(param)" [attributeName]="'newValue'" [isRequired]="param.required && !allowEmptyArguments"
-                                        [placeholder]="'common.placeholder.selectValue'" [isAllowClear]="true"
-                                        [listArray]="selectValue" [name]="'_value' + i" [optionLabel]="'label'" [optionValue]="'value'"
-                                        [object]="param"></app-select-input>
-                    </div>
-                  </ng-container>
-                  <ng-container *ngSwitchCase="'String'">
-                    <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-                         class="col-sm-5 m-b-sm p-r-0">
-                      <input #value="ngModel" (blur)="checkCheckbox(param)" (keydown)="onKeyPress($event)"
-                             [(ngModel)]="param.newValue" [facetValidation]="param.facet" [required]="param.required && !allowEmptyArguments" autocomplete="off"
-                             class="form-control" name="_value{{i}}" placeholder="{{'common.placeholder.value' | translate}}"
-                             type="text">
-                      <i *ngIf="param.message" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="param.message" class="pos-abt cursor fa fa-info-circle"
-                         style="right: 32px;top:1px;"></i>
-                      <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                           class="text-danger help-block">
-                        <div *ngIf="value.errors.required">
-                          <div translate>common.message.requiredError</div>
-                        </div>
-                        <div *ngIf="value.errors.invalidFacet" translate>common.message.invalid</div>
-                      </div>
-                    </div>
-                  </ng-container>
-                  <ng-container *ngSwitchDefault>
-                    <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-                         class="col-sm-5 m-b-sm p-r-0">
-                      <input #value="ngModel" (blur)="checkCheckbox(param)" [(ngModel)]="param.newValue" [required]="param.required && !allowEmptyArguments"
-                             autocomplete="off" class="form-control" name="newValue{{i}}"
-                             type="text">
-                      <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                           class="text-danger help-block">
-                        <div *ngIf="value.errors.required">
-                          <div translate>common.message.requiredError</div>
-                        </div>
-                      </div>
-                    </div>
-                  </ng-container>
-                </ng-container>
-              </ng-container>
-              <div *ngIf="param.list" [ngClass]="{'has-error' : ((list.dirty || list.touched) && list.invalid)}"
-                   class="col-sm-5 m-b-sm p-r-0">
-                <nz-select #list="ngModel" [(ngModel)]="param.newValue" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                           [required]="param.required && !allowEmptyArguments" name="list{{i}}" nzAllowClear>
-                  <ng-container *ngFor="let option of param.list">
-                    <nz-option [nzLabel]="option.name" [nzValue]="option.name" nzCustomContent>
-                      <div>
-                        {{option.name}} <i *ngIf="option.default">- </i> <span *ngIf="option.default"
-                                                                               class="label label-default"
-                                                                               translate>default</span>
-                      </div>
-                    </nz-option>
-                  </ng-container>
-                </nz-select>
-                <div *ngIf="list.invalid && list.errors && (list.dirty || list.touched)" class="text-danger help-block">
-                  <div *ngIf="list.errors.required">
-                    <div translate>common.message.requiredError</div>
+          <nz-tabset (nzSelectChange)="tabChange($event)" [(nzSelectedIndex)]="index" [nzAnimated]="false">
+            <nz-tab [nzTitle]="'workflow.wizard.tab.jitl' | translate">
+              <div class="form-group row">
+                @if (index == 0) {
+                  <div class="col-sm-12 m-t-sm m-b">
+                    <input [(ngModel)]="wizard.searchText" [appAutofocus]="true" name="search"
+                           placeholder="{{'common.placeholder.search' | translate}}" type="search">
+                    @if (wizard.searchText) {
+                      <i (click)="wizard.searchText = '';" class="fa fa-times search-close"></i>
+                    }
+                  </div>
+                }
+                <div class="col-sm-12">
+                  <div class="table-responsive" style="max-height: 400px;overflow: auto">
+                    <nz-table #ajaxTable [nzBordered]="true" [nzData]="(jobList | filter: wizard.searchText: ['assignReference', 'title', 'javaClass']) | orderBy: filter.sortBy:filter.reverse" [nzFrontPagination]="false"
+                              [nzLoading]="loading"
+                              [nzFrontPagination]="false"
+                              [nzShowPagination]="false"
+                              [nzShowSizeChanger]="false" [nzSize]="'small'">
+                      <thead>
+                      <tr>
+                        <th (click)="sort('assignReference')" nzWidth="22%"><a><span class="p-r-xs"
+                                                                                     translate>workflow.wizard.label.name</span>
+                          @if (filter.sortBy == 'assignReference' && !filter.reverse) {
+                            <i class="fa fa-caret-up "></i>
+                          }
+                          @if (filter.sortBy == 'assignReference' && filter.reverse) {
+                            <i class="fa fa-caret-down "></i>
+                          }</a>
+                        </th>
+                        <th (click)="sort('title')"><a><span class="p-r-xs" translate>workflow.wizard.label.title</span>
+                          @if (filter.sortBy == 'title' && !filter.reverse) {
+                            <i class="fa fa-caret-up "></i>
+                          }
+                          @if (filter.sortBy == 'title' && filter.reverse) {
+                            <i class="fa fa-caret-down "></i>
+                          }</a>
+                        </th>
+                        <th (click)="sort('javaClass')"><a><span class="p-r-xs"
+                                                                 translate>workflow.wizard.label.class</span>
+                          @if (filter.sortBy == 'javaClass' && !filter.reverse) {
+                            <i class="fa fa-caret-up "></i>
+                          }
+                          @if (filter.sortBy == 'javaClass' && filter.reverse) {
+                            <i class="fa fa-caret-down "></i>
+                          }</a>
+                        </th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                        @for (item of ajaxTable.data; track item) {
+                          <tr (click)="selectJob(item)" [ngClass]="{'light-bg' : item.javaClass == job.javaClass}"
+                              class="cursor">
+                            <td>
+                              <span class="show-in-single-line">
+                                @if (item.docPath) {
+                                  <i (click)="showDoc(item.assignReference || item.docPath);$event.stopPropagation()" class="fa fa-book p-r-sm"></i>
+                                }
+                                <span [innerHTML]="item.assignReference | highlight:wizard.searchText"></span>
+                              </span>
+                            </td>
+                            <td><span [innerHTML]="item.title | highlight:wizard.searchText"></span></td>
+                            <td><span [innerHTML]="item.javaClass | highlight:wizard.searchText"></span></td>
+                          </tr>
+                        }
+                      </tbody>
+                    </nz-table>
                   </div>
                 </div>
               </div>
-              <div *ngIf="param.description" class="col-sm-1">
-                <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="contentTemplate" class="cursor fa fa-info-circle m-t-sm"></i>
-                <ng-template #contentTemplate>
-                  <div [innerHTML]="param.description"></div>
-                </ng-template>
+            </nz-tab>
+            @if (node) {
+              <nz-tab [nzTitle]="'workflow.wizard.tab.jobTemplate' | translate">
+                <div class="min-ht-150">
+                  <div>
+                    @if (index == 1) {
+                      <div>
+                        <input [appAutofocus]="true" [(ngModel)]="wizard.searchText2" (blur)="clearSearchInput()"
+                               (ngModelChange)="onSearchInput($event)"
+                               [nzAutocomplete]="auto" [placeholder]="'workflow.placeholder.findNode' | translate"
+                               type="search" class="input-tree-search"
+                               name="treeSearch"
+                        />
+                        @if (wizard.loading) {
+                          <i [nzType]="'loading'" class="tree-search-icon" nz-icon
+                             nzTheme="outline"></i>
+                        }
+                      </div>
+                    }
+                    <nz-autocomplete #auto>
+                      @for (option of jobTemplates | orderBy: 'name'; track option) {
+                        <ng-container>
+                          <nz-auto-option (click)="selectJobTemp(option)" [nzValue]="option.path" class="min-ht-opt">
+                            <div class="node-wrapper p-l">
+                              <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
+                                   class="node-content-wrapper2" nzTooltipPlacement="right">
+                                <i class="icon-jobs-icon icon-color tree-icon"></i>
+                                <span class="p-l-sm">{{ option.name }}</span>
+                              </div>
+                            </div>
+                          </nz-auto-option>
+                        </ng-container>
+                      }
+                    </nz-autocomplete>
+                  </div>
+                  @if (jobTree.length>0) {
+                    <div class="row m-t-12">
+                      @if (isTreeLoad) {
+                        <div class="col-md-12">
+                          <nz-tree (nzExpandChange)="onExpand($event)" [nzData]="jobTree" [nzTreeTemplate]="nzTreeTemplate"
+                                   nzNoAnimation></nz-tree>
+                          <ng-template #nzTreeTemplate let-node>
+                            <div class="node-wrapper">
+                              @if (node.origin.loading) {
+                                <i class="w-14 m-l-xxs m-r-xs m-t-n-1">
+                                  <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
+                                </i>
+                              }
+                              <div (click)="selectNode(node)" class="node-content-wrapper">
+                                <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
+                                {{node.origin.name || node.origin.path}}
+                              </div>
+                            </div>
+                            @if (node.isExpanded) {
+                              <ng-container>
+                                @for (item of node.origin.jobTemplates; track item) {
+                                  <div [ngClass]="{'node-content-wrapper-active': item.name === job.name}"
+                                       class="node-content-wrapper m-l-22"
+                                       style="display: block">
+                                    <a (click)="selectJobTemp(item);$event.stopPropagation();" class="text-primary-hover m-t-xs">
+                                      @if (item.loading) {
+                                        <i class="w-14 m-r-sm m-t-n-1" style="display: inline-block">
+                                          <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
+                                        </i>
+                                      }
+                                      @if (item.documentationName) {
+                                        <i (click)="showDoc(item.assignReference || item.documentationName);$event.stopPropagation()"
+                                           class="fa fa-book p-r-sm"></i>
+                                      }
+                                      @if (item.description) {
+                                        <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="contentTemplate"
+                                           class="fa fa-info-circle p-r-sm"></i>
+                                      }
+                                      <ng-template #contentTemplate>
+                                        <div [innerHTML]="item.description"></div>
+                                      </ng-template>
+                                      <i class="icon icon-jobs-icon text-sm"></i>
+                                      {{item.name}}
+                                    </a>
+                                    @if (item.title) {
+                                      <i class="p-l-xs p-r-xs">-</i>
+                                    }
+                                    @if (item.title) {
+                                      <span class="text-muted">{{item.title}}</span>
+                                    }
+                                  </div>
+                                }
+                              </ng-container>
+                            }
+
+                          </ng-template>
+                        </div>
+                      }
+                    </div>
+                  }
+                  @if (jobTree.length===0 && isTreeLoad) {
+                    <div class="m-t-md">
+                      <app-empty-data></app-empty-data>
+                    </div>
+                  }
+                  @if (!isTreeLoad) {
+                    <div class="text-center m-t-md">
+                      <nz-spin nzSimple></nz-spin>
+                    </div>
+                  }
+                </div>
+              </nz-tab>
+            }
+          </nz-tabset>
+        </div>
+      }
+      @if (wizard.step === 2) {
+        <div class="col-md-12">
+          <div class="row">
+            <div class="col-sm-1 m-b-sm text-center">
+              <label nz-checkbox [(nzChecked)]="wizard.checked" [nzIndeterminate]="wizard.indeterminate"
+                     (nzCheckedChange)="onAllChecked($event)" ></label>
+            </div>
+            <div class="col-sm-5 m-b-sm p-l-0" translate>common.label.name</div>
+            <div class="col-sm-6 m-b-sm p-r-0" translate>common.label.value</div>
+          </div>
+          <div class="form-group row">
+            <div class="col-md-12">
+              @for (param of job.params; track $index; let i = $index) {
+                <div class="form-group row m-b-0">
+                  <div class="col-sm-1 m-b-sm text-center">
+                    <label nz-checkbox [nzChecked]="wizard.setOfCheckedValue.has(param.name)"
+                           [nzDisabled]="(!(param.newValue || param.newValue == 0 || param.newValue == false)) || param.required"
+                           (nzCheckedChange)="onItemChecked(param, $event)"
+                           style="position: relative;top:5px"></label>
+                  </div>
+                  <div class="col-sm-5 m-b-sm p-l-0">
+                    <label class="form-control-label p-l-0"
+                           style="white-space: normal;word-wrap: break-word;">{{param.name}}
+                      @if (param.required) {
+                        <sup class="text-danger text-sm">*</sup>
+                      }
+                    </label>
+                  </div>
+                  @if (!param.list) {
+                    @switch (param.type) {
+                      @case ('Number') {
+                        <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                             class="col-sm-5 m-b-sm p-r-0">
+                          <nz-input-number #value="ngModel" (nzBlur)="checkCheckbox(param)" [(ngModel)]="param.newValue"
+                                           [nzMin]="0" [nzStep]="1"
+                                           [required]="param.required && !allowEmptyArguments"
+                                           name="_value{{i}}" nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
+                          @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                            <div class="text-danger help-block">
+                              @if (value.errors.required) {
+                                <div translate>common.message.requiredError</div>
+                              }
+                            </div>
+                          }
+                        </div>
+                      }
+                      @case ('Boolean') {
+                        <div class="col-sm-5 m-b-sm p-r-0">
+                          <app-select-input (modelChange)="checkCheckbox(param)" [attributeName]="'newValue'" [isRequired]="param.required && !allowEmptyArguments"
+                                            [placeholder]="'common.placeholder.selectValue'" [isAllowClear]="true"
+                                            [listArray]="selectValue" [name]="'_value' + i" [optionLabel]="'label'" [optionValue]="'value'"
+                                            [object]="param"></app-select-input>
+                        </div>
+                      }
+                      @case ('String') {
+                        <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                             class="col-sm-5 m-b-sm p-r-0">
+                          <input #value="ngModel" (blur)="checkCheckbox(param)" (keydown)="onKeyPress($event)"
+                                 [(ngModel)]="param.newValue" [facetValidation]="param.facet" [required]="param.required && !allowEmptyArguments" autocomplete="off"
+                                 class="form-control" name="_value{{i}}" placeholder="{{'common.placeholder.value' | translate}}"
+                                 type="text">
+                          @if (param.message) {
+                            <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="param.message" class="pos-abt cursor fa fa-info-circle"
+                               style="right: 32px;top:1px;"></i>
+                          }
+                          @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                            <div class="text-danger help-block">
+                              @if (value.errors.required) {
+                                <div translate>common.message.requiredError</div>
+                              }
+                              @if (value.errors.invalidFacet) {
+                                <div translate>common.message.invalid</div>
+                              }
+                            </div>
+                          }
+                        </div>
+                      }
+                      @default {
+                        <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                             class="col-sm-5 m-b-sm p-r-0">
+                          <input #value="ngModel" (blur)="checkCheckbox(param)" [(ngModel)]="param.newValue" [required]="param.required && !allowEmptyArguments"
+                                 autocomplete="off" class="form-control" name="newValue{{i}}"
+                                 type="text">
+                          @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                            <div class="text-danger help-block">
+                              @if (value.errors.required) {
+                                <div translate>common.message.requiredError</div>
+                              }
+                            </div>
+                          }
+                        </div>
+                      }
+                    }
+                  }
+                  @if (param.list) {
+                    <div [ngClass]="{'has-error' : ((list.dirty || list.touched) && list.invalid)}"
+                         class="col-sm-5 m-b-sm p-r-0">
+                      <nz-select #list="ngModel" [(ngModel)]="param.newValue" [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
+                                 [required]="param.required && !allowEmptyArguments" name="list{{i}}" nzAllowClear>
+                        @for (option of param.list; track option) {
+                          <ng-container>
+                            <nz-option [nzLabel]="option.name" [nzValue]="option.name" nzCustomContent>
+                              <div>
+                                {{option.name}} @if (option.default) {<i>- </i>} @if (option.default) {
+                                <span class="label label-default"
+                                      translate>default</span>
+                              }
+                              </div>
+                            </nz-option>
+                          </ng-container>
+                        }
+                      </nz-select>
+                      @if (list.invalid && list.errors && (list.dirty || list.touched)) {
+                        <div class="text-danger help-block">
+                          @if (list.errors.required) {
+                            <div translate>common.message.requiredError</div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  }
+                  @if (param.description) {
+                    <div class="col-sm-1">
+                      <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="contentTemplate" class="cursor fa fa-info-circle m-t-sm"></i>
+                      <ng-template #contentTemplate>
+                        <div [innerHTML]="param.description"></div>
+                      </ng-template>
+                    </div>
+                  }
+                </div>
+              }
+              @if (node) {
+                <ng-container>
+                  @for (param of job.paramList; track $index; let i = $index) {
+                    <div class="form-group row m-b-0">
+                      <div class="col-sm-1 m-b-sm text-center">
+                        <label nz-checkbox [nzChecked]="!!param.name" [nzDisabled]="true" style="position: relative;top:5px"></label>
+                      </div>
+                      <div class="col-sm-5 m-b-sm p-l-0">
+                        <input [(ngModel)]="param.name" autocomplete="off" class="form-control" name="name{{i}}" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" type="text">
+                      </div>
+                      <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}" class="col-sm-5 m-b-sm p-r-0">
+                        <input #value="ngModel" (keydown)="onKeyPress($event);" [(ngModel)]="param.newValue" [required]="!!param.name" autocomplete="off" class="form-control" name="value{{i}}" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" type="text">
+                      </div>
+                      <div class="col-sm-1">
+                        <a><i (click)="removeParams(i)" class="fa fa-times m-t-sm text-muted"></i></a>
+                      </div>
+                    </div>
+                  }
+                </ng-container>
+              }
+            </div>
+          </div>
+          @if (node) {
+            <div class="form-group row">
+              <div class="col-sm-12 p-l-md">
+                <a (click)="addParameter()" class="text-u-l" translate>workflow.wizard.button.addAnotherParameter</a>
               </div>
             </div>
-            <ng-container *ngIf="node">
-            <div *ngFor="let param of job.paramList; let i = index" class="form-group row m-b-0">
-              <div class="col-sm-1 m-b-sm text-center">
-                <label nz-checkbox [nzChecked]="!!param.name" [nzDisabled]="true" style="position: relative;top:5px"></label>
-              </div>
-              <div class="col-sm-5 m-b-sm p-l-0">
-                <input [(ngModel)]="param.name" autocomplete="off" class="form-control" name="name{{i}}" placeholder="{{'common.placeholder.name' | translate}} {{i+1}}" type="text">
-              </div>
-              <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}" class="col-sm-5 m-b-sm p-r-0">
-                <input #value="ngModel" (keydown)="onKeyPress($event);" [(ngModel)]="param.newValue" [required]="!!param.name" autocomplete="off" class="form-control" name="value{{i}}" placeholder="{{'common.placeholder.value' | translate}} {{i+1}}" type="text">
-              </div>
-              <div class="col-sm-1">
-                <a><i (click)="removeParams(i)" class="fa fa-times m-t-sm text-muted"></i></a>
-              </div>
-            </div>
-            </ng-container>
-          </div>
+          }
         </div>
-        <div *ngIf="node" class="form-group row">
-          <div class="col-sm-12 p-l-md">
-            <a (click)="addParameter()" class="text-u-l" translate>workflow.wizard.button.addAnotherParameter</a>
-          </div>
-        </div>
-      </div>
+      }
     </div>
   </div>
   <div class="modal-footer">
@@ -294,25 +379,33 @@
             type="submit">
       {{ 'common.button.submit' | translate }}
     </button>
-    <button (click)="next()" *ngIf="wizard.step >= 1 && node" [disabled]="(!job.javaClass && !job.name) || !myForm.form.valid || wizard.step >= 2"
-            class="btn btn-secondary btn-sm" translate type="button">workflow.wizard.button.next
-    </button>
-    <button (click)="back()" *ngIf="wizard.step === 2" class="btn btn-secondary btn-sm" translate
-            type="button">common.button.back
-    </button>
+    @if (wizard.step >= 1 && node) {
+      <button (click)="next()" [disabled]="(!job.javaClass && !job.name) || !myForm.form.valid || wizard.step >= 2"
+              class="btn btn-secondary btn-sm" translate type="button">workflow.wizard.button.next
+      </button>
+    }
+    @if (wizard.step === 2) {
+      <button (click)="back()" class="btn btn-secondary btn-sm" translate
+              type="button">common.button.back
+      </button>
+    }
     <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel
     </button>
-    <button (click)="showDoc(job.assignReference || job.docPath || job.documentationName)" *ngIf="wizard.step === 2 && (job.docPath || job.documentationName)"
-            class="btn btn-grey btn-sm pull-right"
-            type="button">
-      <i class="fa fa-book p-r-sm"></i>
-      <span translate>workflow.wizard.button.showDocumentation</span>
-    </button>
-    <button *ngIf="wizard.step === 2 && job.description" [nzPopoverContent]="contentTemplate" class="btn btn-grey btn-sm pull-right" nz-popover
-            nzPopoverTrigger="click" type="button">
-      <i class="fa fa-file-text-o p-r-sm"></i>
-      <span translate>workflow.label.description</span>
-    </button>
+    @if (wizard.step === 2 && (job.docPath || job.documentationName)) {
+      <button (click)="showDoc(job.assignReference || job.docPath || job.documentationName)"
+              class="btn btn-grey btn-sm pull-right"
+              type="button">
+        <i class="fa fa-book p-r-sm"></i>
+        <span translate>workflow.wizard.button.showDocumentation</span>
+      </button>
+    }
+    @if (wizard.step === 2 && job.description) {
+      <button [nzPopoverContent]="contentTemplate" class="btn btn-grey btn-sm pull-right" nz-popover
+              nzPopoverTrigger="click" type="button">
+        <i class="fa fa-file-text-o p-r-sm"></i>
+        <span translate>workflow.label.description</span>
+      </button>
+    }
     <ng-template #contentTemplate>
       <div [innerHTML]="job.description"></div>
     </ng-template>
@@ -326,4 +419,3 @@
     </div>
   </ng-container>
 </nz-drawer>
-

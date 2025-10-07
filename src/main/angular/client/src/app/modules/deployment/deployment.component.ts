@@ -20,6 +20,7 @@ import {FileUploaderComponent} from "../../components/file-uploader/file-uploade
 declare const $: any;
 
 @Component({
+  standalone: false,
   selector: 'app-bulk-update',
   templateUrl: './bulk-update-dialog.html'
 })
@@ -113,6 +114,7 @@ export class BulkUpdateModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-show-json',
   templateUrl: './show-json-dialog.html'
 })
@@ -206,6 +208,7 @@ export class ShowJsonModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-deployment',
   templateUrl: './deployment.component.html',
   styleUrls: ['./deployment.component.scss']

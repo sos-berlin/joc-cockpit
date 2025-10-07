@@ -31,49 +31,59 @@
               <tr>
                 <th class="menu"><span translate>common.label.action</span></th>
                 <th><span translate>resource.documentation.label.documentName</span></th>
-                <th *ngIf="isPathDisplay"><span translate>common.label.path</span></th>
+                @if (isPathDisplay) {
+                  <th><span translate>common.label.path</span></th>
+                }
                 <th><span translate>resource.documentation.label.reference</span></th>
                 <th><span translate>common.label.type</span></th>
                 <th><span translate>resource.documentation.label.lastUpdateTime</span></th>
               </tr>
               </thead>
               <tbody>
-              <tr
-                *ngFor="let document of ajaxTable.data">
-                <td>
-                  <div class="btn-group dropdown">
-                    <button [nzDropdownMenu]="option2" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
-                            type="button">
-                      <i class="fa fa-ellipsis-h"></i></button>
-                    <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
-                      <ul nz-menu>
-                        <li *ngIf="permission.joc && permission.joc.documentations.manage" nz-menu-item>
-                          <a (click)="editDocument(document)" translate>resource.documentation.button.editDocument</a>
-                        </li>
-                        <li nz-menu-item>
-                          <a (click)="previewDocument(document)"
-                             translate>resource.documentation.button.previewDocument</a>
-                        </li>
-                        <li *ngIf="permission.joc && permission.joc.documentations.manage" nz-menu-item>
-                          <a (click)="exportDocument(document)" translate>common.button.export</a>
-                        </li>
-                        <li *ngIf="permission.joc && permission.joc.documentations.manage" class="bg-hover-color"
-                            nz-menu-item>
-                          <a (click)="deleteDocumentation(document)" translate>common.button.delete</a>
-                        </li>
-                        <li nz-menu-item>
-                          <a (click)="showDocumentUsage(document)" translate>resource.button.showUsage</a>
-                        </li>
-                      </ul>
-                    </nz-dropdown-menu>
-                  </div>
-                </td>
-                <td [innerHtml]="document.name || '-'"></td>
-                <td *ngIf="isPathDisplay">{{document.path}}</td>
-                <td>{{document.assignReference}}</td>
-                <td [innerHtml]="document.type"></td>
-                <td [innerHtml]="document.modified | stringToDate"></td>
-              </tr>
+                @for (document of ajaxTable.data; track document) {
+                  <tr>
+                    <td>
+                      <div class="btn-group dropdown">
+                        <button [nzDropdownMenu]="option2" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                                type="button">
+                          <i class="fa fa-ellipsis-h"></i></button>
+                        <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
+                          <ul nz-menu>
+                            @if (permission.joc && permission.joc.documentations.manage) {
+                              <li nz-menu-item>
+                                <a (click)="editDocument(document)" translate>resource.documentation.button.editDocument</a>
+                              </li>
+                            }
+                            <li nz-menu-item>
+                              <a (click)="previewDocument(document)"
+                                 translate>resource.documentation.button.previewDocument</a>
+                            </li>
+                            @if (permission.joc && permission.joc.documentations.manage) {
+                              <li nz-menu-item>
+                                <a (click)="exportDocument(document)" translate>common.button.export</a>
+                              </li>
+                            }
+                            @if (permission.joc && permission.joc.documentations.manage) {
+                              <li class="bg-hover-color" nz-menu-item>
+                                <a (click)="deleteDocumentation(document)" translate>common.button.delete</a>
+                              </li>
+                            }
+                            <li nz-menu-item>
+                              <a (click)="showDocumentUsage(document)" translate>resource.button.showUsage</a>
+                            </li>
+                          </ul>
+                        </nz-dropdown-menu>
+                      </div>
+                    </td>
+                    <td [innerHtml]="document.name || '-'"></td>
+                    @if (isPathDisplay) {
+                      <td>{{document.path}}</td>
+                    }
+                    <td>{{document.assignReference}}</td>
+                    <td [innerHtml]="document.type"></td>
+                    <td [innerHtml]="document.modified | stringToDate"></td>
+                  </tr>
+                }
               </tbody>
             </nz-table>
           </div>

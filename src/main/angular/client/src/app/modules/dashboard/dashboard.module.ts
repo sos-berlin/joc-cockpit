@@ -19,14 +19,16 @@ import {
 import {AgentClusterStatusComponent} from "./agent-cluster-status/agent-cluster-status.component";
 import {APIServerStatusComponent} from './api-server-status/api-server-status.component';
 import {WorkflowComponent} from './workflow/workflow.component';
+import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 
 @NgModule({
-  imports: [
-    NgChartsModule,
-    GridsterModule,
-    SharedModule,
-    DashboardRoutingModule
-  ],
+    imports: [
+        NgChartsModule,
+        GridsterModule,
+        SharedModule,
+        DashboardRoutingModule,
+        NzTooltipDirective
+    ],
   declarations: [
     CommentModalComponent,
     AddWidgetModalComponent,

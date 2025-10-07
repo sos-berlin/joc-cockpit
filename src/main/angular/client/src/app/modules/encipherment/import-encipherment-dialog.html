@@ -1,6 +1,8 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="type === 'encipherment'" translate>encipherment.label.importCertificate</span>
+    @if (type === 'encipherment') {
+      <span translate>encipherment.label.importCertificate</span>
+    }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -13,34 +15,38 @@
         <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
       </div>
     </div>
-    <div *ngIf="type === 'encipherment'">
+    @if (type === 'encipherment') {
       <div [ngClass]="{'has-error' : ((certAlias.dirty || certAlias.touched) && certAlias.invalid)}"
-          class="form-group row">
+           class="form-group row">
         <label class="col-sm-3 form-control-label" translate>encipherment.label.certAlias
           <sup class="text-danger text-sm">*</sup>
         </label>
         <div class="col-sm-9">
           <input #certAlias="ngModel" [(ngModel)]="certificateObj.certAlias" [appAutofocus]="true" autocomplete="off" class="form-control"
-                name="certAlias" required type="text"  placeholder="{{'encipherment.placeholder.certAlias' | translate}}" />
-          <div *ngIf="certAlias.invalid && (certAlias.dirty || certAlias.touched)" class="text-danger help-block">
-            <div *ngIf="certAlias.errors.required">
-              <div translate>common.message.requiredError</div>
+                 name="certAlias" required type="text"  placeholder="{{'encipherment.placeholder.certAlias' | translate}}" />
+          @if (certAlias.invalid && (certAlias.dirty || certAlias.touched)) {
+            <div class="text-danger help-block">
+              @if (certAlias.errors.required) {
+                <div translate>common.message.requiredError</div>
+              }
             </div>
-          </div>
+          }
         </div>
       </div>
       <div [ngClass]="{'has-error' : ((privateKeyPath.dirty || privateKeyPath.touched) && privateKeyPath.invalid)}"
-          class="form-group row">
+           class="form-group row">
         <label class="col-sm-3 form-control-label" translate>encipherment.label.privateKeyPath
         </label>
         <div class="col-sm-9">
           <input #privateKeyPath="ngModel" [(ngModel)]="certificateObj.privateKeyPath" autocomplete="off" class="form-control"
-                name="privateKeyPath" type="text"  placeholder="{{'encipherment.placeholder.privateKeyPath' | translate}}" />
-          <div *ngIf="privateKeyPath.invalid && (privateKeyPath.dirty || privateKeyPath.touched)" class="text-danger help-block">
-            <div *ngIf="privateKeyPath.errors.required">
-              <div translate>common.message.requiredError</div>
+                 name="privateKeyPath" type="text"  placeholder="{{'encipherment.placeholder.privateKeyPath' | translate}}" />
+          @if (privateKeyPath.invalid && (privateKeyPath.dirty || privateKeyPath.touched)) {
+            <div class="text-danger help-block">
+              @if (privateKeyPath.errors.required) {
+                <div translate>common.message.requiredError</div>
+              }
             </div>
-          </div>
+          }
         </div>
       </div>
       <div class="form-group row" [ngClass]="{'has-error' : ((jobResourceFolder.dirty || jobResourceFolder.touched) && jobResourceFolder.invalid)}">
@@ -49,38 +55,41 @@
         </label>
         <div class="col-sm-9">
           <nz-tree-select
-          #treeSelectCtrl
-          [(ngModel)]="certificateObj.jobResourceFolder"
-          [nzDisplayWith]="displayWith"
-          [nzDropdownStyle]="{ 'max-height': '300px' }"
-          [nzHideUnMatched]="true"
-          [nzMultiple]="false"
-          [nzNodes]="nodes"
-          [nzPlaceHolder]="'common.placeholder.selectFromTree' | translate"
-          name="folder"
-          nzShowSearch
-          #jobResourceFolder="ngModel"
-        >
-          <ng-template #nzTreeTemplate let-node>
-            <div class="node-wrapper w-93">
-              <div [class.node-content-wrapper-active]="folderObj.paths && folderObj.paths.indexOf(node.origin.path) > -1"
-                   class="node-content-wrapper">
-                <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
-                {{node.origin.name}}
-                <span *ngIf="node.origin.notExist" class="m-l-sm label bg-danger"
-                      translate>user.label.folderNotExist</span>
+            #treeSelectCtrl
+            [(ngModel)]="certificateObj.jobResourceFolder"
+            [nzDisplayWith]="displayWith"
+            [nzDropdownStyle]="{ 'max-height': '300px' }"
+            [nzHideUnMatched]="true"
+            [nzMultiple]="false"
+            [nzNodes]="nodes"
+            [nzPlaceHolder]="'common.placeholder.selectFromTree' | translate"
+            name="folder"
+            nzShowSearch
+            #jobResourceFolder="ngModel"
+          >
+            <ng-template #nzTreeTemplate let-node>
+              <div class="node-wrapper w-93">
+                <div [class.node-content-wrapper-active]="folderObj.paths && folderObj.paths.indexOf(node.origin.path) > -1"
+                     class="node-content-wrapper">
+                  <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
+                  {{node.origin.name}}
+                  @if (node.origin.notExist) {
+                    <span class="m-l-sm label bg-danger" translate>user.label.folderNotExist</span>
+                  }
+                </div>
               </div>
+            </ng-template>
+          </nz-tree-select>
+          @if (jobResourceFolder.invalid && (jobResourceFolder.dirty || jobResourceFolder.touched)) {
+            <div class="text-danger help-block">
+              @if (jobResourceFolder.errors.required) {
+                <div translate>common.message.requiredError</div>
+              }
             </div>
-          </ng-template>
-        </nz-tree-select>
-          <div *ngIf="jobResourceFolder.invalid && (jobResourceFolder.dirty || jobResourceFolder.touched)" class="text-danger help-block">
-            <div *ngIf="jobResourceFolder.errors.required">
-              <div translate>common.message.requiredError</div>
-            </div>
-          </div>
+          }
         </div>
       </div>
-    </div>
+    }
     <nz-upload
       [(nzFileList)]="fileList"
       [nzBeforeUpload]="beforeUpload"
@@ -90,34 +99,43 @@
       [nzMultiple]="true"
       [nzLimit]="2"
     >
-      <div *ngIf="fileList.length === 0">
-        <i class="icon-upload-icon"></i>
-        <div class="upload-text" translate>common.button.dragAndDropFileToUpload</div>
-      </div>
+      @if (fileList.length === 0) {
+        <div>
+          <i class="icon-upload-icon"></i>
+          <div class="upload-text" translate>common.button.dragAndDropFileToUpload</div>
+        </div>
+      }
     </nz-upload>
-    <div class="process-container" *ngIf="showProgressBar">
-      <div class="upload-progress-bar">
-        <div class="progress-bar-value" [ngClass]="{'success': !uploading}"></div>
+    @if (showProgressBar) {
+      <div class="process-container">
+        <div class="upload-progress-bar">
+          <div class="progress-bar-value" [ngClass]="{'success': !uploading}"></div>
+        </div>
       </div>
+    }
+    @if (fileList.length === 0) {
+      <nz-upload [nzLimit]="2" [nzMultiple]="true" [nzBeforeUpload]="beforeUpload">
+        <div class="p-t-sm">
+          <button class="btn btn-default btn-sm" type="button">
+            <i nz-icon nzTheme="outline" nzType="upload"></i>&nbsp;
+            <span translate>common.button.chooseFileToUpload</span>
+          </button>
+        </div>
+      </nz-upload>
+    }
+  </div>
+  @if (fileList.length > 0 && certificateObj.jobResourceFolder && certificateObj.certAlias) {
+    <div class="modal-footer">
+      <button (click)="import()" [disabled]="submitted || uploading || (required && !comments.comment)"
+              class="btn btn-primary btn-sm" type="submit">
+        @if (uploading) {
+          <i class="fa fa-spin fa-spinner p-r-xs"></i>
+        }
+        {{'common.button.import' | translate}}
+      </button>
+      <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
+        common.button.cancel
+      </button>
     </div>
-    <nz-upload *ngIf="fileList.length === 0" [nzLimit]="2" [nzMultiple]="true"
-               [nzBeforeUpload]="beforeUpload">
-      <div class="p-t-sm">
-        <button class="btn btn-default btn-sm" type="button">
-          <i nz-icon nzTheme="outline" nzType="upload"></i>&nbsp;
-          <span translate>common.button.chooseFileToUpload</span>
-        </button>
-      </div>
-    </nz-upload>
-  </div>
-  <div *ngIf="fileList.length > 0 && certificateObj.jobResourceFolder && certificateObj.certAlias" class="modal-footer">
-    <button (click)="import()" [disabled]="submitted || uploading || (required && !comments.comment)"
-            class="btn btn-primary btn-sm" type="submit">
-      <i *ngIf="uploading" class="fa fa-spin fa-spinner p-r-xs"></i>
-      {{'common.button.import' | translate}}
-    </button>
-    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
-    </button>
-  </div>
+  }
 </form>

@@ -4,7 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {TranslateModule} from '@ngx-translate/core';
 import {NzModalModule} from 'ng-zorro-antd/modal';
 import {NzDropDownModule} from 'ng-zorro-antd/dropdown';
-import {NzToolTipModule} from 'ng-zorro-antd/tooltip';
+import {NzTooltipDirective, NzToolTipModule} from 'ng-zorro-antd/tooltip';
 import {NzPopoverModule} from "ng-zorro-antd/popover";
 import {
   AboutModalComponent,
@@ -17,9 +17,10 @@ const MODULES = [CommonModule, FormsModule, TranslateModule, NzToolTipModule, Nz
 const EXPORTS = [InfoMenuComponent];
 
 @NgModule({
-  imports: [
-    ...MODULES,
-  ],
+    imports: [
+        ...MODULES,
+        NzTooltipDirective,
+    ],
   declarations: [
     ...EXPORTS,
     AboutModalComponent,

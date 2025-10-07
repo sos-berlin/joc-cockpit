@@ -9,6 +9,7 @@ import {ExcelService} from "../../../services/excel.service";
 declare const $;
 
 @Component({
+  standalone: false,
   selector: 'app-projection-export-modal',
   templateUrl: './export-dialog.html'
 })
@@ -210,6 +211,7 @@ export class ExportComponent {
 
 
 @Component({
+  standalone: false,
   selector: 'app-projection-dialog-modal-content',
   templateUrl: './projection-dialog.html'
 })
@@ -354,6 +356,7 @@ export class ShowProjectionModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-projection',
   templateUrl: './projection.component.html',
   styleUrls: ['./projection.component.css']

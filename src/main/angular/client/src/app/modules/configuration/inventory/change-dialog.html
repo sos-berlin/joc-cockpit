@@ -1,6 +1,7 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span translate>{{'changes.label.'+ title}}</span>  </h4>
+    <span translate>{{'changes.label.'+ title}}</span>
+  </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
@@ -17,15 +18,18 @@
         </label>
         <div class="col-sm-6">
           <nz-select #name="ngModel" required [(ngModel)]="this.changeName" (ngModelChange)="onChange($event)"
-                     name="name"  nzPlaceHolder="{{'common.placeholder.name' | translate}}" nzShowSearch>
-            <nz-option *ngFor="let option of changeObj" [nzLabel]="option.name"
-                       [nzValue]="option.name"></nz-option>
+                     name="name" nzPlaceHolder="{{'common.placeholder.name' | translate}}" nzShowSearch>
+            @for (option of changeObj; track option) {
+              <nz-option [nzLabel]="option.name" [nzValue]="option.name"></nz-option>
+            }
           </nz-select>
-          <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-            <div *ngIf="name.errors['required']">
-              <div translate>common.message.requiredError</div>
+          @if (name.invalid && (name.dirty || name.touched)) {
+            <div class="text-danger help-block">
+              @if (name.errors['required']) {
+                <div translate>common.message.requiredError</div>
+              }
             </div>
-          </div>
+          }
         </div>
       </div>
       <div class="row">
@@ -40,81 +44,134 @@
             nzNoAnimation
           ></nz-tree>
 
-
           <ng-template #nzTreeTemplate let-node>
             <div class="node-wrapper">
-              <i *ngIf="node.origin.loading" class="pos-abt" style="margin-left: -42px">
-                <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
-              </i>
+              @if (node.origin.loading) {
+                <i class="pos-abt" style="margin-left: -42px">
+                  <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
+                </i>
+              }
               <div (click)="openFolder(node)" [ngClass]="{'m-t-xs' :node.origin.object}" class="node-content-wrapper2">
-                <i *ngIf="!node.origin.object && !node.origin.type" [nzType]="node.isExpanded ? 'folder-open' : 'folder'"
-                   class="w-14" nz-icon></i>
-                <i *ngIf="node.origin.object == 'WORKFLOW'" class="icon-color" nz-icon nzTheme="outline"
-                   nzType="apartment"></i>
-                <i *ngIf="node.origin.object == 'FILEORDERSOURCE'" class="icon-orders-icon icon-color tree-icon"></i>
-                <i *ngIf="node.origin.object == 'JOBRESOURCE'" class="icon-resources-icon icon-color tree-icon"></i>
-                <i *ngIf="node.origin.object == 'JOBTEMPLATE'" class="icon-jobs-icon icon-color tree-icon"></i>
-                <i *ngIf="node.origin.object == 'NOTICEBOARD'" class="icon-color" nz-icon nzTheme="outline"
-                   nzType="pushpin"></i>
-                <i *ngIf="node.origin.object == 'LOCK'" class="icon-color" nz-icon nzTheme="outline" nzType="lock"></i>
-                <i *ngIf="node.origin.object == 'SCHEDULE'" class="icon-color" nz-icon nzTheme="outline"
-                   nzType="schedule"></i>
-                <i *ngIf="node.origin.object == 'INCLUDESCRIPT'" class="fa fa-terminal w-13"></i>
-                <i *ngIf="node.origin.object && node.origin.object.match('CALENDAR')" class="icon-color" nz-icon
-                   nzTheme="outline" nzType="calendar"></i>
-                <span *ngIf="node.origin.type" [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' :(node.origin.deployed || node.origin.released) || node.origin.deployId || node.origin.releaseId,
-                    'opacity7': node.origin.syncState && (node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING')}" class="fa fa-check-circle-o orange text-xs m-t-xs"></span>
-                <span *ngIf="node.origin.type && node.origin.syncState" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="node.origin.syncState._text | translate"
-                      class="p-l-xxs">
-                      <i
-                        *ngIf="node.origin.syncState._text === 'IN_SYNC' || node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING'"
-                        class="fa fa-refresh font11 p-l-xxs"></i>
-                      <i *ngIf="node.origin.syncState._text === 'UNKNOWN'"
-                         class="fa fa-exclamation-triangle font11 p-l-xxs"></i>
-                      <i *ngIf="node.origin.syncState._text === 'NOT_IN_SYNC'"
-                         class="icon3-reload-error font11 pos-rel t-1 p-l-xxs"></i>
-                    </span>
-                <span *ngIf="node.origin.object" class="p-l-sm text-capitalize">{{node.origin.name | translate}}</span>
-                <span *ngIf="!node.origin.object" class="p-l-sm">{{node.origin.name}}</span>
+                @if (!node.origin.object && !node.origin.type) {
+                  <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
+                }
+                @if (node.origin.object == 'WORKFLOW') {
+                  <i class="icon-color" nz-icon nzTheme="outline" nzType="apartment"></i>
+                }
+                @if (node.origin.object == 'FILEORDERSOURCE') {
+                  <i class="icon-orders-icon icon-color tree-icon"></i>
+                }
+                @if (node.origin.object == 'JOBRESOURCE') {
+                  <i class="icon-resources-icon icon-color tree-icon"></i>
+                }
+                @if (node.origin.object == 'JOBTEMPLATE') {
+                  <i class="icon-jobs-icon icon-color tree-icon"></i>
+                }
+                @if (node.origin.object == 'NOTICEBOARD') {
+                  <i class="icon-color" nz-icon nzTheme="outline" nzType="pushpin"></i>
+                }
+                @if (node.origin.object == 'LOCK') {
+                  <i class="icon-color" nz-icon nzTheme="outline" nzType="lock"></i>
+                }
+                @if (node.origin.object == 'SCHEDULE') {
+                  <i class="icon-color" nz-icon nzTheme="outline" nzType="schedule"></i>
+                }
+                @if (node.origin.object == 'INCLUDESCRIPT') {
+                  <i class="fa fa-terminal w-13"></i>
+                }
+                @if (node.origin.object && node.origin.object.match('CALENDAR')) {
+                  <i class="icon-color" nz-icon nzTheme="outline" nzType="calendar"></i>
+                }
+                @if (node.origin.type) {
+                  <span [ngClass]="{'fa-circle-o': !node.origin.valid, 'fa-circle dark-blue' :(node.origin.deployed || node.origin.released) || node.origin.deployId || node.origin.releaseId,
+                      'opacity7': node.origin.syncState && (node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING')}" class="fa fa-check-circle-o orange text-xs m-t-xs"></span>
+                }
+                @if (node.origin.type && node.origin.syncState) {
+                  <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="node.origin.syncState._text | translate"
+                        class="p-l-xxs">
+                    @if (node.origin.syncState._text === 'IN_SYNC' || node.origin.syncState._text === 'SUSPENDED' || node.origin.syncState._text === 'SUSPENDING') {
+                      <i class="fa fa-refresh font11 p-l-xxs"></i>
+                    }
+                    @if (node.origin.syncState._text === 'UNKNOWN') {
+                      <i class="fa fa-exclamation-triangle font11 p-l-xxs"></i>
+                    }
+                    @if (node.origin.syncState._text === 'NOT_IN_SYNC') {
+                      <i class="icon3-reload-error font11 pos-rel t-1 p-l-xxs"></i>
+                    }
+                  </span>
+                }
+                @if (node.origin.object) {
+                  <span class="p-l-sm text-capitalize">{{node.origin.name | translate}}</span>
+                }
+                @if (!node.origin.object) {
+                  <span class="p-l-sm">{{node.origin.name}}</span>
+                }
               </div>
-              <div *ngIf=" node.origin.type  && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)"
-                   class="m-l">
-                <i *ngIf="!node.origin.deleted" class="text-muted" translate>workflow.label.draft</i>
-                <i *ngIf="node.origin.deleted && node.origin.deploymentId" class="text-danger" translate>inventory.label.deployMarkDelete</i>
-                <i *ngIf="node.origin.deleted && !node.origin.deploymentId" class="text-danger" translate>inventory.label.markForDelete</i>
-              </div>
-              <div *ngIf=" !node.origin.type && !node.origin.object" class="m-l">
-                <i *ngIf="node.origin.deleted && node.origin.deploymentId" class="text-danger" translate>inventory.label.deployMarkDelete</i>
-                <i *ngIf="node.origin.deleted && !node.origin.deploymentId" class="text-danger" translate>inventory.label.markForDelete</i>
-              </div>
+              @if (node.origin.type && (!node.origin.deployablesVersions || node.origin.deployablesVersions.length ===0)) {
+                <div class="m-l">
+                  @if (!node.origin.deleted) {
+                    <i class="text-muted" translate>workflow.label.draft</i>
+                  }
+                  @if (node.origin.deleted && node.origin.deploymentId) {
+                    <i class="text-danger" translate>inventory.label.deployMarkDelete</i>
+                  }
+                  @if (node.origin.deleted && !node.origin.deploymentId) {
+                    <i class="text-danger" translate>inventory.label.markForDelete</i>
+                  }
+                </div>
+              }
+              @if (!node.origin.type && !node.origin.object) {
+                <div class="m-l">
+                  @if (node.origin.deleted && node.origin.deploymentId) {
+                    <i class="text-danger" translate>inventory.label.deployMarkDelete</i>
+                  }
+                  @if (node.origin.deleted && !node.origin.deploymentId) {
+                    <i class="text-danger" translate>inventory.label.markForDelete</i>
+                  }
+                </div>
+              }
             </div>
-
-
           </ng-template>
-          <div *ngIf="data?.objectType">
-            <i [nzType]="'folder'"
-               class="w-14" nz-icon></i> {{'/'}}<br/>
-               <span *ngIf="data.objectType" [ngClass]="{'fa-circle-o': !data.valid, 'fa-circle dark-blue' :(data.deployed || data.released) || data.releaseId,
-                                'opacity7': data.syncState && (data.syncState._text === 'SUSPENDED' || data.syncState._text === 'SUSPENDING')}" class="fa fa-check-circle-o orange text-xs m-t-xs p-l-md"></span>
-            <span *ngIf="data.object" class="p-l-sm text-capitalize">{{data.name | translate}}</span>
-            <span *ngIf="!data.object" class="p-l-sm">{{data.name}}</span>
 
-          </div>        </div>
+          @if (data?.objectType) {
+            <div>
+              <i [nzType]="'folder'" class="w-14" nz-icon></i> {{'/'}}<br/>
+              @if (data.objectType) {
+                <span [ngClass]="{'fa-circle-o': !data.valid, 'fa-circle dark-blue' :(data.deployed || data.released) || data.releaseId,
+                                  'opacity7': data.syncState && (data.syncState._text === 'SUSPENDED' || data.syncState._text === 'SUSPENDING')}" class="fa fa-check-circle-o orange text-xs m-t-xs p-l-md"></span>
+              }
+              @if (data.object) {
+                <span class="p-l-sm text-capitalize">{{data.name | translate}}</span>
+              }
+              @if (!data.object) {
+                <span class="p-l-sm">{{data.name}}</span>
+              }
+            </div>
+          }
+        </div>
       </div>
     </div>
-    <div *ngIf="nodes.length===0 && !loading && !data.objectType" class="m-t-md">
-      <app-empty-data></app-empty-data>
-    </div>
-    <div *ngIf="loading" [ngClass]="{'loading-on-text': nodes.length>0}" class="text-center m-t-md">
-      <nz-spin nzSimple></nz-spin>
-    </div>
+    @if (nodes.length===0 && !loading && !data.objectType) {
+      <div class="m-t-md">
+        <app-empty-data></app-empty-data>
+      </div>
+    }
+    @if (loading) {
+      <div [ngClass]="{'loading-on-text': nodes.length>0}" class="text-center m-t-md">
+        <nz-spin nzSimple></nz-spin>
+      </div>
+    }
   </div>
   <div class="modal-footer">
-    <button *ngIf="nodes.length > 0 || data.objectType" [disabled]="!myForm.form.valid  || submitted || loading" class="btn btn-primary btn-sm"
-            type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      {{'common.button.submit' | translate}}
-    </button>
+    @if (nodes.length > 0 || data.objectType) {
+      <button [disabled]="!myForm.form.valid  || submitted || loading" class="btn btn-primary btn-sm"
+              type="submit">
+        @if (submitted) {
+          <i class="fa fa-spin fa-spinner p-r-xs"></i>
+        }
+        {{'common.button.submit' | translate}}
+      </button>
+    }
     <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>

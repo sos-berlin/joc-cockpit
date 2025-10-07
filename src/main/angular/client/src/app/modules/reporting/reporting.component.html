@@ -6,117 +6,145 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div *ngIf="index == 0" class="inline">
-            <div class="btn-group dropdown">
-              <button [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
-                      nzTrigger="click">
-                <span translate>common.label.sortBy</span>
+          @if (index == 0) {
+            <div class="inline">
+              <div class="btn-group dropdown">
+                <button [nzDropdownMenu]="sortBy" [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown
+                        nzTrigger="click">
+                  <span translate>common.label.sortBy</span>
+                  <span class="text-primary">
+                    @if (filter.manageList.filter.sortBy =='name') {
+                      <span>
+                        {{'common.label.name' | translate}}
+                        @if (!filter.manageList.reverse) {
+                          <i class="fa fa-caret-up"></i>
+                        }
+                        @if (filter.manageList.reverse) {
+                          <i class="fa fa-caret-down"></i>
+                        }
+                      </span>
+                    }
+                    @if (filter.manageList.filter.sortBy =='path1') {
+                      <span>
+                        {{'common.label.path' | translate}}
+                        @if (!filter.manageList.reverse) {
+                          <i class="fa fa-caret-up"></i>
+                        }
+                        @if (filter.manageList.reverse) {
+                          <i class="fa fa-caret-down"></i>
+                        }
+                      </span>
+                    }
+                  </span>
+                </button>
+                <nz-dropdown-menu #sortBy="nzDropdownMenu">
+                  <ul nz-menu>
+                    <li (click)="sort('name')" nz-menu-item>
+                      <a translate>resource.lock.label.name</a>
+                    </li>
+                    <li (click)="sort('path1')" nz-menu-item>
+                      <a translate>common.label.path</a>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+              @if (display) {
+                <button class="btn btn-grey btn-sm m-l-12" (click)="runReport()" translate>
+                  <span nz-icon nzType="play-circle" nzTheme="outline"></span>
+                  reporting.button.runReport
+                </button>
+              }
+              <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
+            </div>
+          }
+          @if (index == 1) {
+            <div class="inline">
+              <div class="btn-group m-l-12 ">
+                <button (click)="changeState('ALL')"
+                        [ngClass]="{'btn-primary': filter.runHistory.filter.state=='ALL'}"
+                        class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.allStatus
+                </button>
+                <button (click)="changeState('SUCCESSFUL')"
+                        [ngClass]="{'btn-primary': filter.runHistory.filter.state=='SUCCESSFUL'}"
+                        class="btn btn-grey btn-sm button-group-ellipsis" translate>
+                  common.button.successful
+                </button>
+                <button (click)="changeState('FAILED')"
+                        [ngClass]="{'btn-primary': filter.runHistory.filter.state=='FAILED'}"
+                        class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.failed
+                </button>
+                <button (click)="changeState('IN_PROGRESS')"
+                        [ngClass]="{'btn-primary': filter.runHistory.filter.state=='IN_PROGRESS'}"
+                        class="btn btn-grey btn-sm button-group-ellipsis" translate>
+                  common.button.incomplete
+                </button>
+              </div>
+            </div>
+          }
+          @if (index == 2 && runIds.size === 0) {
+            <div class="inline">
+              <div class="btn-group m-l-12 ">
+                <button (click)="filterBy({state: 'All'})"
+                        [ngClass]="{'btn-primary': filter.generateReport.filter.state=='All'}"
+                        class="btn btn-grey btn-sm button-group-ellipsis" translate>filters.button.all
+                </button>
+                <button (click)="filterBy({state: 'lastMonth'})"
+                        [ngClass]="{'btn-primary': filter.generateReport.filter.state=='lastMonth'}"
+                        class="btn btn-grey btn-sm button-group-ellipsis" translate>
+                  reporting.label.lastMonth
+                </button>
+                <button (click)="filterBy({state: 'last3Months'})"
+                        [ngClass]="{'btn-primary': filter.generateReport.filter.state=='last3Months'}"
+                        class="btn btn-grey btn-sm button-group-ellipsis" translate>reporting.label.last3Months
+                </button>
+                <button (click)="filterBy({state: 'last6Months'})"
+                        [ngClass]="{'btn-primary': filter.generateReport.filter.state=='last6Months'}"
+                        class="btn btn-grey btn-sm button-group-ellipsis" translate>
+                  reporting.label.last6Months
+                </button>
+                <button (click)="filterBy({state: 'lastYear'})"
+                        [ngClass]="{'btn-primary': filter.generateReport.filter.state=='lastYear'}"
+                        class="btn btn-grey btn-sm button-group-ellipsis" translate>
+                  reporting.label.lastYear
+                </button>
+              </div>
+              <button [nzDropdownMenu]="filteration" [nzPlacement]="'bottomRight'"
+                      class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
+                      type="button">monitor.button.filterBy
+                @if (filteredTemplate) {
+                  <span>: </span>
+                }
+                <span class="text-primary"></span>
+                @if (!filteredTemplate) {
+                  <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
+                }
                 <span class="text-primary">
-                  <span *ngIf="filter.manageList.filter.sortBy =='name'">
-                    {{'common.label.name' | translate}}
-                    <i *ngIf="!filter.manageList.reverse" class="fa fa-caret-up"></i>
-                    <i *ngIf="filter.manageList.reverse" class="fa fa-caret-down"></i>
-                  </span>
-                  <span *ngIf="filter.manageList.filter.sortBy =='path1'">
-                    {{'common.label.path' | translate}}
-                    <i *ngIf="!filter.manageList.reverse" class="fa fa-caret-up"></i>
-                    <i *ngIf="filter.manageList.reverse" class="fa fa-caret-down"></i>
-                  </span>
+                 <span>{{ filteredTemplate | translate }}</span>
                 </span>
               </button>
-              <nz-dropdown-menu #sortBy="nzDropdownMenu">
+              @if (filteredTemplate) {
+                <span (click)="filterBy({allTemplate: 'All'})" class="p-l-xs cur-point"> <i class="fa fa-times-circle-o fa-lg" aria-hidden="true"></i></span>
+              }
+
+              <nz-dropdown-menu #filteration="nzDropdownMenu">
                 <ul nz-menu>
-                  <li (click)="sort('name')" nz-menu-item>
-                    <a translate>resource.lock.label.name</a>
-                  </li>
-                  <li (click)="sort('path1')" nz-menu-item>
-                    <a translate>common.label.path</a>
-                  </li>
+                  @for (item of templates; track item) {
+                    <li nz-menu-item (click)="filterBy(item)">
+                      <label translate>
+                        {{ 'reporting.templates.' +  item.templateName | translate }}
+                      </label>
+                    </li>
+                  }
                 </ul>
               </nz-dropdown-menu>
             </div>
-            <button *ngIf="display" class="btn btn-grey btn-sm m-l-12" (click)="runReport()" translate>
-              <span nz-icon nzType="play-circle" nzTheme="outline"></span>
-              reporting.button.runReport
-            </button>
-            <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
-          </div>
-          <div *ngIf="index == 1" class="inline">
-            <div class="btn-group m-l-12 ">
-              <button (click)="changeState('ALL')"
-                      [ngClass]="{'btn-primary': filter.runHistory.filter.state=='ALL'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.allStatus
-              </button>
-              <button (click)="changeState('SUCCESSFUL')"
-                      [ngClass]="{'btn-primary': filter.runHistory.filter.state=='SUCCESSFUL'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>
-                common.button.successful
-              </button>
-              <button (click)="changeState('FAILED')"
-                      [ngClass]="{'btn-primary': filter.runHistory.filter.state=='FAILED'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>common.button.failed
-              </button>
-              <button (click)="changeState('IN_PROGRESS')"
-                      [ngClass]="{'btn-primary': filter.runHistory.filter.state=='IN_PROGRESS'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>
-                common.button.incomplete
+          }
+          @if (index == 2 && runIds.size > 0) {
+            <div class="inline">
+              <button (click)="deleteReports()" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-trash"></i>&nbsp; {{'common.button.delete' | translate}}
               </button>
             </div>
-          </div>
-          <div *ngIf="index == 2 && runIds.size === 0" class="inline">
-            <div class="btn-group m-l-12 ">
-              <button (click)="filterBy({state: 'All'})"
-                      [ngClass]="{'btn-primary': filter.generateReport.filter.state=='All'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>filters.button.all
-                          </button>
-                          <button (click)="filterBy({state: 'lastMonth'})"
-                      [ngClass]="{'btn-primary': filter.generateReport.filter.state=='lastMonth'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>
-                            reporting.label.lastMonth
-              </button>
-              <button (click)="filterBy({state: 'last3Months'})"
-                      [ngClass]="{'btn-primary': filter.generateReport.filter.state=='last3Months'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>reporting.label.last3Months
-              </button>
-              <button (click)="filterBy({state: 'last6Months'})"
-                      [ngClass]="{'btn-primary': filter.generateReport.filter.state=='last6Months'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>
-                reporting.label.last6Months
-              </button>
-              <button (click)="filterBy({state: 'lastYear'})"
-                      [ngClass]="{'btn-primary': filter.generateReport.filter.state=='lastYear'}"
-                      class="btn btn-grey btn-sm button-group-ellipsis" translate>
-                reporting.label.lastYear
-              </button>
-            </div>
-            <button [nzDropdownMenu]="filteration" [nzPlacement]="'bottomRight'"
-                    class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click" translate
-                    type="button">monitor.button.filterBy
-              <span *ngIf="filteredTemplate">: </span>
-              <span class="text-primary"></span>
-              <i *ngIf="!filteredTemplate" class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
-              <span class="text-primary">
-               <span>{{ filteredTemplate | translate }}</span>
-              </span>
-            </button>
-            <span *ngIf="filteredTemplate" (click)="filterBy({allTemplate: 'All'})" class="p-l-xs cur-point"> <i class="fa fa-times-circle-o fa-lg" aria-hidden="true"></i></span>
-
-            <nz-dropdown-menu #filteration="nzDropdownMenu">
-              <ul nz-menu>
-                <ng-container *ngFor="let item of templates">
-                  <li nz-menu-item (click)="filterBy(item)">
-                    <label translate>
-                      {{ 'reporting.templates.' +  item.templateName | translate }}
-                    </label>
-                  </li>
-                </ng-container>
-              </ul>
-            </nz-dropdown-menu>
-          </div>
-          <div *ngIf="(index == 2 && runIds.size > 0)" class="inline">
-            <button (click)="deleteReports()" class="btn btn-grey btn-sm m-l-12"><i class="fa fa-trash"></i>&nbsp; {{'common.button.delete' | translate}}
-            </button>
-          </div>
+          }
         </div>
       </div>
     </div>
@@ -126,14 +154,18 @@
   <div class="row">
     <div class="col-md-8">
       <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-        <li *ngIf="permission.joc && permission.joc.reports.manage" class="nav-item">
-          <a [ngClass]="{'active': index == 0}" (click)="index = 0" class="nav-link">
-            <span class="nav-text text-dark p-b-sm"><span translate>reporting.tab.reportRuns</span></span>
-          </a>
-        </li>
-        <li *ngIf="permission.joc && permission.joc.reports.manage" class="nav-item dropdown-separator">
-          <span class="separator"></span>
-        </li>
+        @if (permission.joc && permission.joc.reports.manage) {
+          <li class="nav-item">
+            <a [ngClass]="{'active': index == 0}" (click)="index = 0" class="nav-link">
+              <span class="nav-text text-dark p-b-sm"><span translate>reporting.tab.reportRuns</span></span>
+            </a>
+          </li>
+        }
+        @if (permission.joc && permission.joc.reports.manage) {
+          <li class="nav-item dropdown-separator">
+            <span class="separator"></span>
+          </li>
+        }
         <li class="nav-item">
           <a (click)="index = 2" class="nav-link" [ngClass]="{'active': index == 2}">
             <span class="nav-text text-dark p-b-sm"><span translate>reporting.tab.reports</span></span>
@@ -150,7 +182,7 @@
       </ul>
     </div>
     <div class="col-md-4 text-right">
-      <ng-container *ngIf="index == 0">
+      @if (index == 0) {
         <button (click)="search()" class="btn btn-sm inline pull-right m-l btn-grey">
           <i class="fa fa-search"></i>&nbsp;
           <span translate>common.button.search</span>
@@ -163,58 +195,71 @@
           <i (click)="filter.manageList.searchText = '';searchInResult(filter.manageList.searchText)" [hidden]="!filter.manageList.searchText"
              class="fa fa-times search-close"></i>
         </div>
-      </ng-container>
-      <div class="search-box-field pull-right" *ngIf="index == 1">
-        <label>
-          <input (keyup)="searchInResult(filter.runHistory.searchText)" [(ngModel)]="filter.runHistory.searchText"
-                 placeholder="{{'common.placeholder.search' | translate}}" type="search">
-        </label>
-        <i (click)="filter.runHistory.searchText = '';searchInResult(filter.runHistory.searchText)" [hidden]="!filter.runHistory.searchText"
-           class="fa fa-times search-close"></i>
-      </div>
-      <div *ngIf="index == 2" class="m-b-xs right" style="display: flex; justify-content: flex-end">
-        <div class="search-box-field m-b-0">
+      }
+      @if (index == 1) {
+        <div class="search-box-field pull-right">
           <label>
-            <input (keyup)="searchInResult(filter.generateReport.searchText)" [(ngModel)]="filter.generateReport.searchText"
+            <input (keyup)="searchInResult(filter.runHistory.searchText)" [(ngModel)]="filter.runHistory.searchText"
                    placeholder="{{'common.placeholder.search' | translate}}" type="search">
           </label>
-          <i (click)="filter.generateReport.searchText = '';searchInResult(filter.generateReport.searchText)" [hidden]="!filter.generateReport.searchText"
+          <i (click)="filter.runHistory.searchText = '';searchInResult(filter.runHistory.searchText)" [hidden]="!filter.runHistory.searchText"
              class="fa fa-times search-close"></i>
         </div>
-        <button class="btn btn-sm btn-grey m-l-12" nz-tooltip="{{'common.button.expandDetails' | translate}}"
-                (click)="expandAll()">
-          <i class="fa fa-expand text"></i>
-        </button>
-        <button class="btn btn-sm btn-grey m-l-sm m-r-sm" nz-tooltip="{{'common.button.collapseDetails' | translate}}"
-                (click)="collapseAll()">
-          <i class="fa fa-compress text"></i>
-        </button>
-        <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': filter.generateReport.groupBy==='path'}" (click)="groupByFun('path')">
-          <span translate>reporting.button.groupByName</span>
-        </button>
-        <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': filter.generateReport.groupBy==='hits'}" (click)="groupByFun('hits')">
-          <span translate>reporting.button.groupByTemplate</span>
-        </button>
-      </div>
+      }
+      @if (index == 2) {
+        <div class="m-b-xs right" style="display: flex; justify-content: flex-end">
+          <div class="search-box-field m-b-0">
+            <label>
+              <input (keyup)="searchInResult(filter.generateReport.searchText)" [(ngModel)]="filter.generateReport.searchText"
+                     placeholder="{{'common.placeholder.search' | translate}}" type="search">
+            </label>
+            <i (click)="filter.generateReport.searchText = '';searchInResult(filter.generateReport.searchText)" [hidden]="!filter.generateReport.searchText"
+               class="fa fa-times search-close"></i>
+          </div>
+          <button class="btn btn-sm btn-grey m-l-12" nz-tooltip="{{'common.button.expandDetails' | translate}}"
+                  (click)="expandAll()">
+            <i class="fa fa-expand text"></i>
+          </button>
+          <button class="btn btn-sm btn-grey m-l-sm m-r-sm" nz-tooltip="{{'common.button.collapseDetails' | translate}}"
+                  (click)="collapseAll()">
+            <i class="fa fa-compress text"></i>
+          </button>
+          <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': filter.generateReport.groupBy==='path'}" (click)="groupByFun('path')">
+            <span translate>reporting.button.groupByName</span>
+          </button>
+          <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': filter.generateReport.groupBy==='hits'}" (click)="groupByFun('hits')">
+            <span translate>reporting.button.groupByTemplate</span>
+          </button>
+        </div>
+      }
     </div>
   </div>
 </div>
 <div class="scroll-y max-ht2">
-  <div class="padding p-b-0" *ngIf="loading">
-    <div *ngIf="index == 0">
-      <app-manage-report (reportRun)="checkRunBtn($event)" [permission]="permission" [preferences]="preferences" [filters]="filter.manageList" [templates]="templates"></app-manage-report>
+  @if (loading) {
+    <div class="padding p-b-0">
+      @if (index == 0) {
+        <div>
+          <app-manage-report (reportRun)="checkRunBtn($event)" [permission]="permission" [preferences]="preferences" [filters]="filter.manageList" [templates]="templates"></app-manage-report>
+        </div>
+      }
+      @if (index == 1) {
+        <div>
+          <app-running-history [permission]="permission" [preferences]="preferences" [filters]="filter.runHistory" [templates]="templates"></app-running-history>
+        </div>
+      }
+      @if (index == 2) {
+        <div>
+          <app-generate-report (bulkDelete)="bulkDelete($event)" [permission]="permission" [preferences]="preferences" [filters]="filter.generateReport" [templates]="templates"></app-generate-report>
+        </div>
+      }
     </div>
-    <div *ngIf="index == 1">
-      <app-running-history [permission]="permission" [preferences]="preferences" [filters]="filter.runHistory" [templates]="templates"></app-running-history>
+  }
+  @if (!loading) {
+    <div class="spinner">
+      <div class="cssload-inner cssload-one"></div>
+      <div class="cssload-inner cssload-two"></div>
+      <div class="cssload-inner cssload-three"></div>
     </div>
-    <div *ngIf="index == 2">
-      <app-generate-report (bulkDelete)="bulkDelete($event)" [permission]="permission" [preferences]="preferences" [filters]="filter.generateReport" [templates]="templates"></app-generate-report>
-    </div>
-  </div>
-  <div *ngIf="!loading" class="spinner">
-    <div class="cssload-inner cssload-one"></div>
-    <div class="cssload-inner cssload-two"></div>
-    <div class="cssload-inner cssload-three"></div>
-  </div>
+  }
 </div>
-

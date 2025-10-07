@@ -6,6 +6,7 @@ import { HelpService, HelpRenderResult } from '../../services/help.service';
 import { CoreService } from '../../services/core.service';
 
 @Component({
+  standalone: false,
   selector: 'app-help-viewer',
   templateUrl: './help-viewer.component.html',
 })

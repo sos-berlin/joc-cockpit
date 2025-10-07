@@ -8,6 +8,7 @@ import {WorkflowService} from '../../../../services/workflow.service';
 import {AuthService} from '../../../../components/guard';
 
 @Component({
+  standalone: false,
   selector: 'app-update-job',
   templateUrl: './update-job.component.html'
 })

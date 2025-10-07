@@ -1,8 +1,9 @@
 <div class="modal-header">
   <h4 class="modal-title">
     <span translate>common.label.writeComment</span>
-
-    <span *ngIf="controllerID">: {{controllerID}}</span>
+    @if (controllerID) {
+      <span>: {{controllerID}}</span>
+    }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -10,22 +11,30 @@
 </div>
 <form #myForm="ngForm" (ngSubmit)="onSubmit(comments,obj)">
   <div class="modal-body container">
-    <div *ngIf="comments.name" class="form-group row">
-      <label class="col-sm-4" translate>common.label.controllerId</label>
-      <label class="col-sm-8">{{comments.name}}</label>
-    </div>
-    <div *ngIf="comments.operation" class="form-group row">
-      <label class="col-sm-4" translate>common.label.operation</label>
-      <label class="col-sm-8">{{comments.operation}}</label>
-    </div>
-    <div *ngIf="show">
-      <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="8"></app-audit-log-input>
-    </div>
+    @if (comments.name) {
+      <div class="form-group row">
+        <label class="col-sm-4" translate>common.label.controllerId</label>
+        <label class="col-sm-8">{{comments.name}}</label>
+      </div>
+    }
+    @if (comments.operation) {
+      <div class="form-group row">
+        <label class="col-sm-4" translate>common.label.operation</label>
+        <label class="col-sm-8">{{comments.operation}}</label>
+      </div>
+    }
+    @if (show) {
+      <div>
+        <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="8"></app-audit-log-input>
+      </div>
+    }
   </div>
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
             type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm m-l-sm" translate type="button">

@@ -16,139 +16,192 @@
     >
       <thead>
       <tr>
-        <th *ngIf="permission.joc && permission.joc.administration.accounts.manage"
-            [(nzChecked)]="object.checked"
-            [nzIndeterminate]="object.indeterminate"
-            [nzShowCheckbox]="true"
-            (nzCheckedChange)="checkAll($event)"
-            class="chk"
-        ></th>
-        <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span translate>common.label.action</span>
-        </th>
+        @if (permission.joc && permission.joc.administration.accounts.manage) {
+          <th [(nzChecked)]="object.checked"
+              [nzIndeterminate]="object.indeterminate"
+              [nzShowCheckbox]="true"
+              (nzCheckedChange)="checkAll($event)"
+              class="chk"
+          ></th>
+        }
+        @if (permission.joc && permission.joc.administration.accounts.manage) {
+          <th class="menu"><span translate>common.label.action</span></th>
+        }
         <th (click)="sort('accountName')">
           <a><span class="p-r-xs" translate>user.label.user</span>
-            <i *ngIf="usr.sortBy == 'accountName' && !usr.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="usr.sortBy == 'accountName' && usr.reverse"
-               class="fa fa-caret-down "></i></a>
+            @if (usr.sortBy == 'accountName' && !usr.reverse) {
+              <i class="fa fa-caret-up "></i>
+            }
+            @if (usr.sortBy == 'accountName' && usr.reverse) {
+              <i class="fa fa-caret-down "></i>
+            }</a>
         </th>
-        <th (click)="sort('email')" *ngIf="identityServiceType == 'FIDO'">
-          <a><span class="p-r-xs" translate>user.label.email</span>
-            <i *ngIf="usr.sortBy == 'email' && !usr.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="usr.sortBy == 'email' && usr.reverse"
-               class="fa fa-caret-down "></i></a>
-        </th>
+        @if (identityServiceType == 'FIDO') {
+          <th (click)="sort('email')">
+            <a><span class="p-r-xs" translate>user.label.email</span>
+              @if (usr.sortBy == 'email' && !usr.reverse) {
+                <i class="fa fa-caret-up "></i>
+              }
+              @if (usr.sortBy == 'email' && usr.reverse) {
+                <i class="fa fa-caret-down "></i>
+              }</a>
+          </th>
+        }
         <th (click)="sort('roles')">
           <a><span class="p-r-xs" translate>user.label.roles</span>
-            <i *ngIf="usr.sortBy == 'roles' && !usr.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="usr.sortBy == 'roles' && usr.reverse"
-               class="fa fa-caret-down "></i></a>
+            @if (usr.sortBy == 'roles' && !usr.reverse) {
+              <i class="fa fa-caret-up "></i>
+            }
+            @if (usr.sortBy == 'roles' && usr.reverse) {
+              <i class="fa fa-caret-down "></i>
+            }</a>
         </th>
-        <th (click)="sort('forcePasswordChange')" *ngIf="(identityServiceType === 'JOC')"
-            nzWidth="20%">
-          <a><span class="p-r-xs" translate>user.label.forcePasswordChange</span>
-            <i *ngIf="usr.sortBy == 'forcePasswordChange' && !usr.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="usr.sortBy == 'forcePasswordChange' && usr.reverse"
-               class="fa fa-caret-down "></i></a>
-        </th>
+        @if ((identityServiceType === 'JOC')) {
+          <th (click)="sort('forcePasswordChange')" nzWidth="20%">
+            <a><span class="p-r-xs" translate>user.label.forcePasswordChange</span>
+              @if (usr.sortBy == 'forcePasswordChange' && !usr.reverse) {
+                <i class="fa fa-caret-up "></i>
+              }
+              @if (usr.sortBy == 'forcePasswordChange' && usr.reverse) {
+                <i class="fa fa-caret-down "></i>
+              }</a>
+          </th>
+        }
         <th (click)="sort('blocked')" nzWidth="20%">
           <a><span class="p-r-xs" translate>common.label.blocked</span>
-            <i *ngIf="usr.sortBy == 'blocked' && !usr.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="usr.sortBy == 'blocked' && usr.reverse"
-               class="fa fa-caret-down "></i></a>
+            @if (usr.sortBy == 'blocked' && !usr.reverse) {
+              <i class="fa fa-caret-up "></i>
+            }
+            @if (usr.sortBy == 'blocked' && usr.reverse) {
+              <i class="fa fa-caret-down "></i>
+            }</a>
         </th>
         <th (click)="sort('disabled')" nzWidth="20%">
           <a><span class="p-r-xs" translate>user.label.disabled</span>
-            <i *ngIf="usr.sortBy == 'disabled' && !usr.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="usr.sortBy == 'disabled' && usr.reverse"
-               class="fa fa-caret-down "></i></a>
+            @if (usr.sortBy == 'disabled' && !usr.reverse) {
+              <i class="fa fa-caret-up "></i>
+            }
+            @if (usr.sortBy == 'disabled' && usr.reverse) {
+              <i class="fa fa-caret-down "></i>
+            }</a>
         </th>
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let account of ajaxTable.data" [ngClass]="{'opacity7': account.disabled}">
-        <td *ngIf="permission.joc && permission.joc.administration.accounts.manage"
-            [nzChecked]="object.mapOfCheckedId.has(account.accountName)"
-            [nzShowCheckbox]="true"
-            (nzCheckedChange)="onItemChecked(account, $event)">
-        </td>
-        <td *ngIf="permission.joc && permission.joc.administration.accounts.manage">
-          <div class="btn-group dropdown pull-left m-r-sm">
-            <button [nzDisabled]="object.checked || object.indeterminate" [nzDropdownMenu]="option" class="btn-drop more-option-h"
-                    nz-dropdown nzTrigger="click" type="button"><i class="fa fa-ellipsis-h"></i></button>
-            <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-              <ul nz-menu>
-                <li (click)="editUser(account)" nz-menu-item>
-                  <a translate>common.button.edit</a>
-                </li>
-                <li *ngIf="identityServiceType == 'FIDO'" nz-menu-divider></li>
-                <li (click)="addDevice(account)" *ngIf="identityServiceType == 'FIDO'" nz-menu-item>
-                  <a translate>user.button.addAuthenticatorDevice</a>
-                </li>
-                <li (click)="removeDevice(account)" *ngIf="identityServiceType == 'FIDO'" nz-menu-item>
-                  <a translate>user.button.removeDevices</a>
-                </li>
-                <li (click)="copyUser(account)" *ngIf="identityServiceType !== 'FIDO'" nz-menu-item>
-                  <a translate>common.button.duplicate</a>
-                </li>
-                <li (click)="resetPassword(account)" *ngIf="(identityServiceType === 'JOC')"
-                    nz-menu-item>
-                  <a translate>user.button.resetPassword</a>
-                </li>
-                <li (click)="forcePasswordChange(account)" *ngIf="(identityServiceType === 'JOC')"
-                    [nzDisabled]="account.forcePasswordChange" nz-menu-item>
-                  <a translate>user.button.forcePasswordChange</a>
-                </li>
-                <li (click)="addToBlocklist(account)" *ngIf="account.blocked === 'undefined' || account.blocked === false"
-                    [ngClass]="{'disable-link': (username==account.accountName && selectedIdentityService === userIdentityService)}"
-                    nz-menu-item>
-                  <a translate>user.button.addToBlocklist</a>
-                </li>
-                <li (click)="removeBlockAcc(account)" *ngIf="account.blocked" nz-menu-item>
-                  <a translate>user.button.removeFromBlocklist</a>
-                </li>
-                <li nz-menu-divider></li>
-                <li (click)="disabledUser(account, account.disabled)" [ngClass]="{'disable-link' :username==account.accountName && selectedIdentityService === userIdentityService}"
-                    nz-menu-item>
-                  <a *ngIf="account.disabled" translate>user.button.enable</a>
-                  <a *ngIf="!account.disabled" translate>user.button.disable</a>
-                </li>
-                <li (click)="deleteUser(account.accountName)" [ngClass]="{'disable-link' :username==account.accountName && selectedIdentityService === userIdentityService}" class="bg-hover-color"
-                    nz-menu-item>
-                  <a translate>user.button.delete</a>
-                </li>
-                <li nz-menu-divider></li>
-                <li (click)="showPermission(account)" nz-menu-item>
-                  <a translate>user.button.showPermission</a>
-                </li>
-              </ul>
-            </nz-dropdown-menu>
-          </div>
-        </td>
-        <td>
-          <a (click)="editUser(account)" [innerHtml]="account.accountName  | decodeSpace | highlight: searchKey"
-             class="text-hover-primary"></a>
-        </td>
-        <td *ngIf="identityServiceType == 'FIDO'">{{account.email}}</td>
-        <td>
-          <div *ngFor="let role of account.roles"><span [innerHtml]="role | highlight: searchKey"></span></div>
-        </td>
-        <td *ngIf="(identityServiceType === 'JOC')">
-          <span>{{(account.forcePasswordChange ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
-        <td><span>{{(account.blocked ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
-        <td><span>{{(account.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
-      </tr>
+        @for (account of ajaxTable.data; track account.accountName) {
+          <tr [ngClass]="{'opacity7': account.disabled}">
+            @if (permission.joc && permission.joc.administration.accounts.manage) {
+              <td [nzChecked]="object.mapOfCheckedId.has(account.accountName)"
+                  [nzShowCheckbox]="true"
+                  (nzCheckedChange)="onItemChecked(account, $event)">
+              </td>
+            }
+            @if (permission.joc && permission.joc.administration.accounts.manage) {
+              <td>
+                <div class="btn-group dropdown pull-left m-r-sm">
+                  <button [nzDisabled]="object.checked || object.indeterminate" [nzDropdownMenu]="option" class="btn-drop more-option-h"
+                          nz-dropdown nzTrigger="click" type="button"><i class="fa fa-ellipsis-h"></i></button>
+                  <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                    <ul nz-menu>
+                      <li (click)="editUser(account)" nz-menu-item>
+                        <a translate>common.button.edit</a>
+                      </li>
+                      @if (identityServiceType == 'FIDO') {
+                        <li nz-menu-divider></li>
+                      }
+                      @if (identityServiceType == 'FIDO') {
+                        <li (click)="addDevice(account)" nz-menu-item>
+                          <a translate>user.button.addAuthenticatorDevice</a>
+                        </li>
+                      }
+                      @if (identityServiceType == 'FIDO') {
+                        <li (click)="removeDevice(account)" nz-menu-item>
+                          <a translate>user.button.removeDevices</a>
+                        </li>
+                      }
+                      @if (identityServiceType !== 'FIDO') {
+                        <li (click)="copyUser(account)" nz-menu-item>
+                          <a translate>common.button.duplicate</a>
+                        </li>
+                      }
+                      @if ((identityServiceType === 'JOC')) {
+                        <li (click)="resetPassword(account)" nz-menu-item>
+                          <a translate>user.button.resetPassword</a>
+                        </li>
+                      }
+                      @if ((identityServiceType === 'JOC')) {
+                        <li (click)="forcePasswordChange(account)"
+                            [nzDisabled]="account.forcePasswordChange" nz-menu-item>
+                          <a translate>user.button.forcePasswordChange</a>
+                        </li>
+                      }
+                      @if (account.blocked === 'undefined' || account.blocked === false) {
+                        <li (click)="addToBlocklist(account)"
+                            [ngClass]="{'disable-link': (username==account.accountName && selectedIdentityService === userIdentityService)}"
+                            nz-menu-item>
+                          <a translate>user.button.addToBlocklist</a>
+                        </li>
+                      }
+                      @if (account.blocked) {
+                        <li (click)="removeBlockAcc(account)" nz-menu-item>
+                          <a translate>user.button.removeFromBlocklist</a>
+                        </li>
+                      }
+                      <li nz-menu-divider></li>
+                      <li (click)="disabledUser(account, account.disabled)" [ngClass]="{'disable-link' :username==account.accountName && selectedIdentityService === userIdentityService}"
+                          nz-menu-item>
+                        @if (account.disabled) {
+                          <a translate>user.button.enable</a>
+                        }
+                        @if (!account.disabled) {
+                          <a translate>user.button.disable</a>
+                        }
+                      </li>
+                      <li (click)="deleteUser(account.accountName)" [ngClass]="{'disable-link' :username==account.accountName && selectedIdentityService === userIdentityService}" class="bg-hover-color"
+                          nz-menu-item>
+                        <a translate>user.button.delete</a>
+                      </li>
+                      <li nz-menu-divider></li>
+                      <li (click)="showPermission(account)" nz-menu-item>
+                        <a translate>user.button.showPermission</a>
+                      </li>
+                    </ul>
+                  </nz-dropdown-menu>
+                </div>
+              </td>
+            }
+            <td>
+              <a (click)="editUser(account)" [innerHtml]="account.accountName  | decodeSpace | highlight: searchKey"
+                 class="text-hover-primary"></a>
+            </td>
+            @if (identityServiceType == 'FIDO') {
+              <td>{{account.email}}</td>
+            }
+            <td>
+              @for (role of account.roles; track role) {
+                <div><span [innerHtml]="role | highlight: searchKey"></span></div>
+              }
+            </td>
+            @if ((identityServiceType === 'JOC')) {
+              <td>
+                <span>{{(account.forcePasswordChange ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+            }
+            <td><span>{{(account.blocked ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+            <td><span>{{(account.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+          </tr>
+        }
       </tbody>
     </nz-table>
   </div>
-  <div *ngIf="ajaxTable.data.length >0" class="w-half label-top">
-    <span translate>common.label.total</span> <span> {{data.length}} </span>
-    <span *ngIf="ajaxTable.data.length >1" translate>user.label.usersFound</span>
-    <span *ngIf="ajaxTable.data.length ===1" translate>user.label.userFound</span>
-  </div>
+  @if (ajaxTable.data.length >0) {
+    <div class="w-half label-top">
+      <span translate>common.label.total</span> <span> {{data.length}} </span>
+      @if (ajaxTable.data.length >1) {
+        <span translate>user.label.usersFound</span>
+      }
+      @if (ajaxTable.data.length ===1) {
+        <span translate>user.label.userFound</span>
+      }
+    </div>
+  }
 </div>

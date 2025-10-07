@@ -2,12 +2,15 @@ import {Component, Output, EventEmitter, Input} from '@angular/core';
 import {Router} from '@angular/router';
 
 @Component({
+  standalone: false,
   selector: 'app-toggle',
   template: `
     <div class="btn-group m-l-12">
-      <button *ngIf="type === 'ORDER'" class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='bulk'}" (click)="setView('bulk')"><i
-        class="fa fa-sitemap"></i>
-      </button>
+      @if (type === 'ORDER') {
+        <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='bulk'}" (click)="setView('bulk')"><i
+          class="fa fa-sitemap"></i>
+        </button>
+      }
       <button class="btn btn-grey btn-sm" [ngClass]="{'btn-primary': pageView=='grid' || pageView==='dep'}" (click)="setView(type === 'DEPENDENCIES' ? 'dep' : 'grid')"><i
         class="fa fa-th-large" [ngClass]="{'fa-sitemap' : router.url.match('workflow_detail'), 'fa-sliders' : (router.url.match('daily_plan') && type != 'DEPENDENCIES') }"></i>
       </button>

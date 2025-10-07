@@ -21,23 +21,24 @@
           <input #name="ngModel" (blur)="checkFileName()" (focus)="inValid=false" [(ngModel)]="exportObj.filename" [appAutofocus]="true" class="form-control"
                  name="name" placeholder="{{'inventory.placeholder.enterFileName' | translate}}"
                  required type="text"/>
-          <div *ngIf="inValid || (name.invalid && name.errors && (name.dirty || name.touched))"
-               class="text-danger help-block">
-            <div *ngIf="name.errors && name.errors.required">
-              <div translate>common.message.requiredError</div>
+          @if (inValid || (name.invalid && name.errors && (name.dirty || name.touched))) {
+            <div class="text-danger help-block">
+              @if (name.errors && name.errors.required) {
+                <div translate>common.message.requiredError</div>
+              }
+              @if (inValid) {
+                <div translate>common.message.invalid</div>
+              }
             </div>
-            <div *ngIf="inValid">
-              <div translate>common.message.invalid</div>
-            </div>
-          </div>
+          }
         </div>
       </div>
       <div class="form-group row">
         <label class="col-md-4 form-control-label" translate>inventory.label.fileFormat</label>
         <div class="col-md-8">
           <app-select-input [optionLabel]="'name'" [optionValue]="'value'" [ignoreTranslate]="true"
-            [name]="'format'" [object]="exportObj" [attributeName]="'fileFormat'"
-            [listArray]="fileFormat"></app-select-input>
+                            [name]="'format'" [object]="exportObj" [attributeName]="'fileFormat'"
+                            [listArray]="fileFormat"></app-select-input>
         </div>
       </div>
     </div>
@@ -45,7 +46,9 @@
   <div class="modal-footer text-left">
     <button [disabled]="!myForm.form.valid || submitted || inValid" class="btn btn-primary btn-sm"
             type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">

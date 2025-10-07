@@ -12,6 +12,7 @@ import {SharingDataService} from "../sharing-data.service";
 import {RunModalComponent} from "../reporting.component";
 import { TranslateService } from '@ngx-translate/core';
 @Component({
+  standalone: false,
   selector: 'app-manage-report',
   templateUrl: './manage-report.component.html'
 })

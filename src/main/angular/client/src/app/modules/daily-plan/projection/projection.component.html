@@ -1,76 +1,100 @@
-<div *ngIf="showSearchPanel" class="row">
-  <div class="col-md-12">
-    <div class="box p-t-sm p-b-12" style="padding-bottom: 8px">
-      <form (ngSubmit)="onSubmit()">
-        <div class="modal-header p-t-0 bg-transparent" [ngClass]="isHide ? 'b-b-0 p-b-0' : 'p-b-sm'">
-          <h4 class="modal-title">
-            <span translate="">inventory.search.label.filterBy</span>
-            <i *ngIf="filter.submit && isHide && (filter.workflowPaths.length > 0 || filter.workflowFolders.length > 0 ||
-             filter.schedulePaths.length > 0 || filter.scheduleFolders.length > 0)" class="fa fa-circle text-success pos-abt font9 m-l-sm"></i>
-          </h4>
-          <button type="button" class="close" aria-label="Close" (click)="isHide = !isHide">
-            <span *ngIf="!isHide" aria-hidden="true" class="fa fa-caret-down"></span>
-            <span *ngIf="isHide" aria-hidden="true" class="fa fa-caret-up"></span>
-          </button>
-        </div>
-        <div *ngIf="!isHide" class="modal-body p-a p-t p-b-xs">
-          <div class="form-group row">
-            <label class="col-md-2 form-control-label"
-                   translate>dailyPlan.label.workflows</label>
-            <div class="col-sm-6">
-              <app-multi-select [addFolderPossible]="true" [attribute]="'workflowPaths'" [folders]="filter" [list]="filter"
-                                [nodes]="workflowTree" [pathAttribute]="'workflowFolders'"
-                                [type]="'WORKFLOW'"></app-multi-select>
-            </div>
+@if (showSearchPanel) {
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box p-t-sm p-b-12" style="padding-bottom: 8px">
+        <form (ngSubmit)="onSubmit()">
+          <div class="modal-header p-t-0 bg-transparent" [ngClass]="isHide ? 'b-b-0 p-b-0' : 'p-b-sm'">
+            <h4 class="modal-title">
+              <span translate="">inventory.search.label.filterBy</span>
+              @if (filter.submit && isHide && (filter.workflowPaths.length > 0 || filter.workflowFolders.length > 0 ||
+                filter.schedulePaths.length > 0 || filter.scheduleFolders.length > 0)) {
+                <i class="fa fa-circle text-success pos-abt font9 m-l-sm"></i>
+              }
+            </h4>
+            <button type="button" class="close" aria-label="Close" (click)="isHide = !isHide">
+              @if (!isHide) {
+                <span aria-hidden="true" class="fa fa-caret-down"></span>
+              }
+              @if (isHide) {
+                <span aria-hidden="true" class="fa fa-caret-up"></span>
+              }
+            </button>
           </div>
-          <div *ngIf="filter.workflowFolders?.length > 0" class="form-group row">
-            <label class="col-md-2" translate>dailyPlan.label.workflowFolders</label>
-            <div class="col-sm-6" style="max-height: 140px; overflow: auto">
-              <div *ngFor="let path of filter.workflowFolders">
-                <span>{{path}}</span>
-                <i (click)="remove(path, true)" class="pull-right pos-rel t-xs fa fa-remove text-hover-primary"></i>
+          @if (!isHide) {
+            <div class="modal-body p-a p-t p-b-xs">
+              <div class="form-group row">
+                <label class="col-md-2 form-control-label"
+                       translate>dailyPlan.label.workflows</label>
+                <div class="col-sm-6">
+                  <app-multi-select [addFolderPossible]="true" [attribute]="'workflowPaths'" [folders]="filter" [list]="filter"
+                                    [nodes]="workflowTree" [pathAttribute]="'workflowFolders'"
+                                    [type]="'WORKFLOW'"></app-multi-select>
+                </div>
               </div>
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-md-2 form-control-label"
-                   translate>dailyPlan.label.schedules</label>
-            <div class="col-sm-6">
-              <app-multi-select [addFolderPossible]="true" [attribute]="'schedulePaths'" [folders]="filter" [list]="filter"
-                                [nodes]="scheduleTree" [pathAttribute]="'scheduleFolders'"
-                                [type]="'SCHEDULE'"></app-multi-select>
-            </div>
-          </div>
-          <div *ngIf="filter.scheduleFolders?.length > 0" class="form-group row">
-            <label class="col-md-2" translate>dailyPlan.label.scheduleFolders</label>
-            <div class="col-sm-6" style="max-height: 140px; overflow: auto">
-              <div *ngFor="let path of filter.scheduleFolders">
-                <span class="">{{path}}</span>
-                <i (click)="remove(path)" class="pull-right pos-rel t-xs fa fa-remove text-hover-primary"></i>
+              @if (filter.workflowFolders?.length > 0) {
+                <div class="form-group row">
+                  <label class="col-md-2" translate>dailyPlan.label.workflowFolders</label>
+                  <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+                    @for (path of filter.workflowFolders; track path) {
+                      <div>
+                        <span>{{path}}</span>
+                        <i (click)="remove(path, true)" class="pull-right pos-rel t-xs fa fa-remove text-hover-primary"></i>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
+              <div class="form-group row">
+                <label class="col-md-2 form-control-label"
+                       translate>dailyPlan.label.schedules</label>
+                <div class="col-sm-6">
+                  <app-multi-select [addFolderPossible]="true" [attribute]="'schedulePaths'" [folders]="filter" [list]="filter"
+                                    [nodes]="scheduleTree" [pathAttribute]="'scheduleFolders'"
+                                    [type]="'SCHEDULE'"></app-multi-select>
+                </div>
               </div>
-            </div>
-          </div>
+              @if (filter.scheduleFolders?.length > 0) {
+                <div class="form-group row">
+                  <label class="col-md-2" translate>dailyPlan.label.scheduleFolders</label>
+                  <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+                    @for (path of filter.scheduleFolders; track path) {
+                      <div>
+                        <span class="">{{path}}</span>
+                        <i (click)="remove(path)" class="pull-right pos-rel t-xs fa fa-remove text-hover-primary"></i>
+                      </div>
+                    }
+                  </div>
+                </div>
+              }
 
-        </div>
-        <div *ngIf="!isHide" class="modal-footer p-b-xs">
-          <button [disabled]="submitted" class="btn btn-primary btn-sm" type="submit">
-            <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-            {{'common.button.search' | translate}}
-          </button>
-          <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
-            common.button.cancel
-          </button>
-        </div>
-      </form>
+            </div>
+          }
+          @if (!isHide) {
+            <div class="modal-footer p-b-xs">
+              <button [disabled]="submitted" class="btn btn-primary btn-sm" type="submit">
+                @if (submitted) {
+                  <i class="fa fa-spin fa-spinner p-r-xs"></i>
+                }
+                {{'common.button.search' | translate}}
+              </button>
+              <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
+                common.button.cancel
+              </button>
+            </div>
+          }
+        </form>
+      </div>
     </div>
   </div>
-</div>
+}
 <div class="box overflow-y p-a m-b h-full max-ht-n-252" [ngClass]="{'max-ht-n-476': showSearchPanel && !isHide, 'max-ht-n-320': showSearchPanel && isHide}">
   <div class="calendar-lg" id="full-calendar-projection"></div>
 </div>
 
-<div *ngIf="!isLoaded" class="spinner">
-  <div class="cssload-inner cssload-one"></div>
-  <div class="cssload-inner cssload-two"></div>
-  <div class="cssload-inner cssload-three"></div>
-</div>
+@if (!isLoaded) {
+  <div class="spinner">
+    <div class="cssload-inner cssload-one"></div>
+    <div class="cssload-inner cssload-two"></div>
+    <div class="cssload-inner cssload-three"></div>
+  </div>
+}

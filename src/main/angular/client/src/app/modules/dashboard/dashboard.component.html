@@ -6,90 +6,128 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div *ngIf="!editLayoutObj" class="inline">
-            <button (click)="editLayout()" class="btn btn-grey btn-sm m-l-12">
-              <i class="fa fa-pencil"></i>&nbsp;
-              <span translate>dashboard.button.editLayout</span>
-            </button>
-            <button (click)="resetLayout()" class="btn btn-grey btn-sm m-l-12">
-              <i class="fa fa-refresh"></i>&nbsp;
-              <span translate>dashboard.button.resetLayout</span>
-            </button>
-          </div>
-          <div *ngIf="editLayoutObj" class="inline">
-            <button (click)="addWidgetDialog()" class="btn btn-grey btn-sm m-l-12">
-              <i class="fa fa-plus"></i>&nbsp;
-              <span translate>dashboard.button.widget</span>
-            </button>
-            <button (click)="saveWidget()" class="btn btn-grey btn-sm m-l-12">
-              <i class="fa fa-save"></i>&nbsp;
-              <span translate>common.button.save</span>
-            </button>
-            <button (click)="cancelWidget()" class="btn btn-grey btn-sm m-l-12">
-              <i class="fa fa-times"></i>&nbsp;
-              <span translate>common.button.cancel</span>
-            </button>
-          </div>
+          @if (!editLayoutObj) {
+            <div class="inline">
+              <button (click)="editLayout()" class="btn btn-grey btn-sm m-l-12">
+                <i class="fa fa-pencil"></i>&nbsp;
+                <span translate>dashboard.button.editLayout</span>
+              </button>
+              <button (click)="resetLayout()" class="btn btn-grey btn-sm m-l-12">
+                <i class="fa fa-refresh"></i>&nbsp;
+                <span translate>dashboard.button.resetLayout</span>
+              </button>
+            </div>
+          }
+          @if (editLayoutObj) {
+            <div class="inline">
+              <button (click)="addWidgetDialog()" class="btn btn-grey btn-sm m-l-12">
+                <i class="fa fa-plus"></i>&nbsp;
+                <span translate>dashboard.button.widget</span>
+              </button>
+              <button (click)="saveWidget()" class="btn btn-grey btn-sm m-l-12">
+                <i class="fa fa-save"></i>&nbsp;
+                <span translate>common.button.save</span>
+              </button>
+              <button (click)="cancelWidget()" class="btn btn-grey btn-sm m-l-12">
+                <i class="fa fa-times"></i>&nbsp;
+                <span translate>common.button.cancel</span>
+              </button>
+            </div>
+          }
         </div>
       </div>
     </div>
   </div>
 </div>
 <div id="gridster-container">
-  <div [ngClass]="{'show':dashboard.length == 0 && isLoading}" class="m-a hide">
-    <div class="m-a-sm emtpy-text">
-      <a (click)="addWidgetDialog()" class="cursor" translate>dashboard.button.addNewWidget</a>
+  @if (dashboard.length == 0 && isLoading) {
+    <div class="m-a">
+      <div class="m-a-sm emtpy-text">
+        <a (click)="addWidgetDialog()" class="cursor" translate>dashboard.button.addNewWidget</a>
+      </div>
     </div>
-  </div>
-  <div *ngIf="dashboard.length > 0" class="gridster">
-    <gridster [options]="options">
-      <gridster-item *ngFor="let item of dashboard" [item]="item" id="{{item.name}}">
-        <div class="destroy-button">
-          <i (click)="removeWidget($event, item)" (mousedown)="$event.stopPropagation()" *ngIf="editLayoutObj"
-             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.button.remove' | translate" class="fa fa-times-circle"></i>
-        </div>
-        <div *ngIf="item.name === 'agentStatus'">
-          <app-agent-status [layout]="item"></app-agent-status>
-        </div>
-        <div *ngIf="item.name === 'agentClusterStatus'">
-          <app-agent-cluster-status [layout]="item"></app-agent-cluster-status>
-        </div>
-        <div *ngIf="item.name === 'componentStatus'">
-          <app-controller-cluster [permission]="permission" [sizeY]="item.rows"></app-controller-cluster>
-        </div>
-        <div *ngIf="item.name === 'agentRunningJobs'">
-          <app-agent-running-task [layout]="item"></app-agent-running-task>
-        </div>
-        <div *ngIf="item.name === 'JS7Status'">
-          <app-scheduler-instance [permission]="permission" [sizeY]="item.rows"></app-scheduler-instance>
-        </div>
-        <div *ngIf="item.name === 'apiServerStatus'">
-          <app-api-server-status [permission]="permission" [sizeY]="item.rows"></app-api-server-status>
-        </div>
-        <div *ngIf="item.name === 'orders'">
-          <app-order-overview [sizeX]="item.cols" [sizeY]="item.rows"></app-order-overview>
-        </div>
-        <div *ngIf="item.name === 'history'">
-          <app-history-summary></app-history-summary>
-        </div>
-        <div *ngIf="item.name === 'fileTransferSummary'">
-          <app-file-transfer-history-summary></app-file-transfer-history-summary>
-        </div>
-        <div *ngIf="item.name === 'inventory'">
-          <app-inventory-statistics [sizeX]="item.cols" [sizeY]="item.rows"></app-inventory-statistics>
-        </div>
-        <div *ngIf="item.name === 'dailyPlan'">
-          <app-daily-plan></app-daily-plan>
-        </div>
-        <div *ngIf="item.name === 'workflows'">
-          <app-workflow></app-workflow>
-        </div>
-      </gridster-item>
-    </gridster>
-  </div>
+  }
+  @if (dashboard.length > 0) {
+    <div class="gridster">
+      <gridster [options]="options">
+        @for (item of dashboard; track item.id) {
+          <gridster-item [item]="item" id="{{item.name}}">
+            <div class="destroy-button">
+              @if (editLayoutObj) {
+                <i (click)="removeWidget($event, item)" (mousedown)="$event.stopPropagation()"
+                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.button.remove' | translate" class="fa fa-times-circle"></i>
+              }
+            </div>
+            @if (item.name === 'agentStatus') {
+              <div>
+                <app-agent-status [layout]="item"></app-agent-status>
+              </div>
+            }
+            @if (item.name === 'agentClusterStatus') {
+              <div>
+                <app-agent-cluster-status [layout]="item"></app-agent-cluster-status>
+              </div>
+            }
+            @if (item.name === 'componentStatus') {
+              <div>
+                <app-controller-cluster [permission]="permission" [sizeY]="item.rows"></app-controller-cluster>
+              </div>
+            }
+            @if (item.name === 'agentRunningJobs') {
+              <div>
+                <app-agent-running-task [layout]="item"></app-agent-running-task>
+              </div>
+            }
+            @if (item.name === 'JS7Status') {
+              <div>
+                <app-scheduler-instance [permission]="permission" [sizeY]="item.rows"></app-scheduler-instance>
+              </div>
+            }
+            @if (item.name === 'apiServerStatus') {
+              <div>
+                <app-api-server-status [permission]="permission" [sizeY]="item.rows"></app-api-server-status>
+              </div>
+            }
+            @if (item.name === 'orders') {
+              <div>
+                <app-order-overview [sizeX]="item.cols" [sizeY]="item.rows"></app-order-overview>
+              </div>
+            }
+            @if (item.name === 'history') {
+              <div>
+                <app-history-summary></app-history-summary>
+              </div>
+            }
+            @if (item.name === 'fileTransferSummary') {
+              <div>
+                <app-file-transfer-history-summary></app-file-transfer-history-summary>
+              </div>
+            }
+            @if (item.name === 'inventory') {
+              <div>
+                <app-inventory-statistics [sizeX]="item.cols" [sizeY]="item.rows"></app-inventory-statistics>
+              </div>
+            }
+            @if (item.name === 'dailyPlan') {
+              <div>
+                <app-daily-plan></app-daily-plan>
+              </div>
+            }
+            @if (item.name === 'workflows') {
+              <div>
+                <app-workflow></app-workflow>
+              </div>
+            }
+          </gridster-item>
+        }
+      </gridster>
+    </div>
+  }
 </div>
-<div *ngIf="!isLoading" class="spinner">
-  <div class="cssload-inner cssload-one"></div>
-  <div class="cssload-inner cssload-two"></div>
-  <div class="cssload-inner cssload-three"></div>
-</div>
+@if (!isLoading) {
+  <div class="spinner">
+    <div class="cssload-inner cssload-one"></div>
+    <div class="cssload-inner cssload-two"></div>
+    <div class="cssload-inner cssload-three"></div>
+  </div>
+}

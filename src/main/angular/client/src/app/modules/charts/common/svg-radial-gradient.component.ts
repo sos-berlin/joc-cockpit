@@ -2,6 +2,7 @@ import {Component, Input, OnChanges, ChangeDetectionStrategy, SimpleChanges} fro
 import {Gradient} from './types/gradient.interface';
 
 @Component({
+  standalone: false,
   selector: 'g[ngx-charts-svg-radial-gradient]',
   template: `
     <svg:radialGradient [id]="name" [attr.cx]="cx" [attr.cy]="cy" [attr.r]="r" gradientUnits="userSpaceOnUse">

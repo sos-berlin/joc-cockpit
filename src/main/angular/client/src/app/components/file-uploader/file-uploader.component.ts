@@ -9,6 +9,7 @@ import {ByteToSizePipe} from '../../pipes/core.pipe';
 import {AuthService} from '../guard';
 
 @Component({
+  standalone: false,
   selector: 'app-file-uploader',
   templateUrl: './file-uploader.component.html',
 })

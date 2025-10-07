@@ -82,7 +82,7 @@ Use of Non-working Day Calendars is different when assigned the *Run-time* and w
 Users should consider implications of Cyclic Orders: they create individual Order instances per cycle. As an alternative to Cyclic Orders created by Schedules using repeat intervals, the [JS7 - Cycle Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Cycle+Instruction) is available for Cyclic Workflows.
 
 - Execution
-  - A *Cycle Instruction* spawning a complete workflow is equivalent to the use of Cyclic Orders from a Schedule.
+  - A *Cycle Instruction* spawning a complete Workflow is equivalent to the use of Cyclic Orders from a Schedule.
   - A *Cycle Instruction* can be used to execute parts of a Workflow in cycles.
 - Efficiency
   - Schedules create a number of Order instances for each period of a Cyclic Order. Running a single Workflow every 30s adds up to 2880 Orders per day.
@@ -94,12 +94,12 @@ Users should consider implications of Cyclic Orders: they create individual Orde
     - If a job within a *Cycle Instruction* fails, then depending on the error handling in place, any cycles that would occur while an Order is in a *failed* state will be skipped.
   - Notification
     - For each failing Order instance of a Cyclic Order a Notification is created.
-    - For the single order of a Cyclic Workflow a single Notification is created.
+    - For the single Order of a Cyclic Workflow a single Notification is created.
   - Intervention
     - Any operations on Cyclic Orders are applied to all Order instances included, for example, resuming execution after failure. This results in parallel execution of Orders previously scheduled for execution in intervals.
     - For Cyclic Workflows there is a single Order that waits for user intervention.
 - Logging
-  - For each order instance of a Cyclic Order a separate entry is created in the [Order History](/history-orders) and in the [Task History](/history-tasks).
+  - For each Order instance of a Cyclic Order a separate entry is created in the [Order History](/history-orders) and in the [Task History](/history-tasks).
   - For a Cyclic Workflow there is a single entry in the Order History that is appended the log output of each cycle. Individual entries per job execution are added to the Task History.
 
 ## References

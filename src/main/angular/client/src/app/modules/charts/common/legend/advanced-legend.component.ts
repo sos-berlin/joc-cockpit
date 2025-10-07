@@ -25,6 +25,7 @@ export interface AdvancedLegendItem {
 }
 
 @Component({
+  standalone: false,
   selector: 'ngx-charts-advanced-legend',
   template: `
     <div class="advanced-pie-legend" [style.width.px]="width">

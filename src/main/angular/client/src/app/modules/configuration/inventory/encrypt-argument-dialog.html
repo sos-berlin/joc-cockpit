@@ -9,22 +9,32 @@
 
 <form #myForm="ngForm" (ngSubmit)="onSubmit()">
   <div class="modal-body p-a">
-    <div *ngIf="!isBulkOperation" class="form-group row">
-      <div class="col-md-4 col-lg-4">
-        <label class="form-control-label" *ngIf="type === 'job'">{{argu.name}}</label>
-        <label class="form-control-label" *ngIf="type === 'jobTemplate'">{{argu.name}}</label>
+    @if (!isBulkOperation) {
+      <div class="form-group row">
+        <div class="col-md-4 col-lg-4">
+          @if (type === 'job') {
+            <label class="form-control-label">{{argu.name}}</label>
+          }
+          @if (type === 'jobTemplate') {
+            <label class="form-control-label">{{argu.name}}</label>
+          }
+        </div>
+        @if (type === 'job') {
+          <div class="col-md-8 col-lg-8">
+            <input #value="ngModel" [(ngModel)]="argu.value" [facetValidation]="argu.value"
+                   autocomplete="off" class="form-control" name="value"
+                   placeholder="{{'common.placeholder.value' | translate}}" type="text">
+          </div>
+        }
+        @if (type === 'jobTemplate') {
+          <div class="col-md-8 col-lg-8">
+            <input #value="ngModel" [(ngModel)]="argu.value.default" [facetValidation]="argu.value.default"
+                   autocomplete="off" class="form-control" name="value"
+                   placeholder="{{'common.placeholder.value' | translate}}" type="text">
+          </div>
+        }
       </div>
-      <div class="col-md-8 col-lg-8" *ngIf="type === 'job'">
-        <input #value="ngModel" [(ngModel)]="argu.value" [facetValidation]="argu.value"
-          autocomplete="off" class="form-control" name="value"
-          placeholder="{{'common.placeholder.value' | translate}}" type="text">
-      </div>
-      <div class="col-md-8 col-lg-8" *ngIf="type === 'jobTemplate'">
-        <input #value="ngModel" [(ngModel)]="argu.value.default" [facetValidation]="argu.value.default"
-          autocomplete="off" class="form-control" name="value"
-          placeholder="{{'common.placeholder.value' | translate}}" type="text">
-      </div>
-    </div>
+    }
     <div class="form-group row">
       <div class="col-md-4 col-lg-4">
         <label class="form-control-label" translate></label>
@@ -36,33 +46,45 @@
         </nz-radio-group>
       </div>
     </div>
-    <div class="form-group row" *ngIf="certificateMode === 'alias'">
-      <div class="col-md-4 col-lg-4">
-        <label class="form-control-label" translate>encipherment.label.certAlias</label>
+    @if (certificateMode === 'alias') {
+      <div class="form-group row">
+        <div class="col-md-4 col-lg-4">
+          <label class="form-control-label" translate>encipherment.label.certAlias</label>
+        </div>
+        <div class="col-md-8 col-lg-8">
+          <nz-select nzShowSearch nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [(ngModel)]="selectedCert" name="selectedCert" (ngModelChange)="changeCertificate($event)">
+            @for (certificate of certificateList; track certificate) {
+              <nz-option [nzLabel]="certificate.certAlias" [nzValue]="certificate.certAlias"></nz-option>
+            }
+          </nz-select>
+        </div>
       </div>
-      <div class="col-md-8 col-lg-8">
-        <nz-select nzShowSearch nzAllowClear [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [(ngModel)]="selectedCert" name="selectedCert" (ngModelChange)="changeCertificate($event)">
-          <nz-option *ngFor="let certificate of certificateList" [nzLabel]="certificate.certAlias" [nzValue]="certificate.certAlias"></nz-option>
-        </nz-select>
+    }
+    @if (certificateMode === 'alias') {
+      <div class="form-group row">
+        <div class="col-sm-12">
+          @if (selectedCert) {
+            <a (click)="showAssignedAgents(selectedCert)" class="text-u-l" translate>encipherment.label.showAssignedAgents</a>
+          }
+        </div>
       </div>
-    </div>
-    <div class="form-group row" *ngIf="certificateMode === 'alias'">
-      <div class="col-sm-12">
-        <a *ngIf="selectedCert" (click)="showAssignedAgents(selectedCert)" class="text-u-l" translate>encipherment.label.showAssignedAgents</a>
+    }
+    @if (certificateMode === 'paste') {
+      <div class="form-group row">
+        <div class="col-md-4 col-lg-4">
+          <label class="form-control-label" translate>encipherment.label.certificate</label>
+        </div>
+        <div class="col-md-8 col-lg-8">
+          <textarea [(ngModel)]="certificate" (keyup)="onFocusCertificate()" autocomplete="false" class="form-control" name="certificate" placeholder="{{'encipherment.placeholder.certificate' | translate}}" required rows="10" style="font-family: monospace;"></textarea>
+        </div>
       </div>
-    </div>
-    <div class="form-group row" *ngIf="certificateMode === 'paste'">
-      <div class="col-md-4 col-lg-4">
-        <label class="form-control-label" translate>encipherment.label.certificate</label>
-      </div>
-      <div class="col-md-8 col-lg-8">
-        <textarea [(ngModel)]="certificate" (keyup)="onFocusCertificate()" autocomplete="false" class="form-control" name="certificate" placeholder="{{'encipherment.placeholder.certificate' | translate}}" required rows="10" style="font-family: monospace;"></textarea>
-      </div>
-    </div>
+    }
   </div>
   <div class="modal-footer">
     <button class="btn btn-primary btn-sm" type="submit" [disabled]="!selectedCert && !certificate">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">

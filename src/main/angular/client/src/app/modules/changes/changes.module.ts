@@ -2,6 +2,7 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {SharedModule} from '../shared/shared.module';
 import { AddChangesModalComponent, ChangesComponent } from './changes.component';
+import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 
 const routes: Routes = [
   {
@@ -15,10 +16,11 @@ const routes: Routes = [
     ChangesComponent,
     AddChangesModalComponent
   ],
-  imports: [
-    RouterModule.forChild(routes),
-    SharedModule,
-  ]
+    imports: [
+        RouterModule.forChild(routes),
+        SharedModule,
+        NzTooltipDirective,
+    ]
 })
 
 export class changesModule {

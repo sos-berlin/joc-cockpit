@@ -26,6 +26,7 @@ import {HelpViewerComponent} from "../../../../components/help-viewer/help-viewe
 
 
 @Component({
+  standalone: false,
   selector: 'app-schedule',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './schedule.component.html',

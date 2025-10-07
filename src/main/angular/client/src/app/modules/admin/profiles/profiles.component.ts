@@ -9,6 +9,7 @@ import {DataService} from '../data.service';
 import {AuthService} from '../../../components/guard';
 
 @Component({
+  standalone: false,
   selector: 'app-profiles',
   templateUrl: './profiles.component.html'
 })

@@ -9,6 +9,7 @@ import {CoreService} from '../../services/core.service';
 declare const $: any;
 
 @Component({
+  standalone: false,
   selector: 'app-update-url-modal-content',
   templateUrl: './update-url-dialog.html'
 })
@@ -39,6 +40,7 @@ export class UpdateUrlModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-widget-modal-content',
   templateUrl: './add-widget-dialog.html'
 })
@@ -65,6 +67,7 @@ export class AddWidgetModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']

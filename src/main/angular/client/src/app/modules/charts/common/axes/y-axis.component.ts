@@ -13,6 +13,7 @@ import {Orientation} from '../types/orientation.enum';
 import {ViewDimensions} from '../types/view-dimension.interface';
 
 @Component({
+  standalone: false,
   selector: 'g[ngx-charts-y-axis]',
   template: `
     <svg:g [attr.class]="yAxisClassName" [attr.transform]="transform">

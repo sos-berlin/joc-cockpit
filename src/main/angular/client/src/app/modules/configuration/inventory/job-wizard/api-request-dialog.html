@@ -1,27 +1,183 @@
 <div class="modal-header">
-  <h4 *ngIf="!list && !docs" class="modal-title" translate>workflow.apiRequest.label.defineVariable</h4>
-  <h4 *ngIf="list" class="modal-title" translate>workflow.apiRequest.button.variableList</h4>
-  <h4 *ngIf="docs" class="modal-title" translate>workflow.apiRequest.button.documentation</h4>
-  <button *ngIf="!list && !docs" type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
-    <span aria-hidden="true" class="fa fa-times-circle"></span>
-  </button>
-  <button *ngIf="list" type="button" class="close" aria-label="Close" (click)="closeWithMappings()">
-    <span aria-hidden="true" class="fa fa-times-circle"></span>
-  </button>
+  @if (!list && !docs) {
+    <h4 class="modal-title" translate>workflow.apiRequest.label.defineVariable</h4>
+  }
+  @if (list) {
+    <h4 class="modal-title" translate>workflow.apiRequest.button.variableList</h4>
+  }
+  @if (docs) {
+    <h4 class="modal-title" translate>workflow.apiRequest.button.documentation</h4>
+  }
+  @if (!list && !docs) {
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.destroy()">
+      <span aria-hidden="true" class="fa fa-times-circle"></span>
+    </button>
+  }
+  @if (list) {
+    <button type="button" class="close" aria-label="Close" (click)="closeWithMappings()">
+      <span aria-hidden="true" class="fa fa-times-circle"></span>
+    </button>
+  }
 </div>
 <div class="modal-body p-a">
-  <button *ngIf="selectedRows.size > 0 && list" class="btn btn-grey btn-sm m-l-12 pull-right m-b-sm" (click)="bulkDelete()"><i
-    class="fa fa-trash"></i>&nbsp; {{'common.button.delete' | translate}}</button>
-  <form *ngIf="!list && !docs" #mappingForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
-    <div class="form-group row">
-      <div class="col-md-3 form-control-label">
-        <label translate>workflow.apiRequest.label.value</label>
+  @if (selectedRows.size > 0 && list) {
+    <button class="btn btn-grey btn-sm m-l-12 pull-right m-b-sm" (click)="bulkDelete()"><i
+      class="fa fa-trash"></i>&nbsp; {{'common.button.delete' | translate}}</button>
+  }
+  @if (!list && !docs) {
+    <form #mappingForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
+      <div class="form-group row">
+        <div class="col-md-3 form-control-label">
+          <label translate>workflow.apiRequest.label.value</label>
+        </div>
+        <div class="col-md-6">
+          <label>{{ variableValue }}</label>
+        </div>
       </div>
-      <div class="col-md-6">
-        <label>{{ variableValue }}</label>
+
+      <div class="form-group row">
+        <div class="col-md-3 form-control-label">
+          <label translate>workflow.apiRequest.label.name
+            <sup class="text-danger text-sm">*</sup>
+          </label>
+        </div>
+        <div class="col-md-6">
+          <div [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}"
+               class="">
+            <label class="w-full">
+              <input #aname="ngModel" [(ngModel)]="currentName"
+                     required
+                     autocomplete="off" class="form-control"
+                     identifierValidation name="name"
+                     placeholder="{{'common.placeholder.name' | translate}} "
+                     type="text">
+            </label>
+            @if (aname.invalid && (aname.dirty || aname.touched)) {
+              <div class="text-danger help-block">
+                @if (aname.errors && aname.errors['required']) {
+                  <div translate>common.message.requiredError</div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </form>
+  }
+  @if (list && !isAdding) {
+    <div>
+      <nz-table
+        #mappingTable
+        [nzData]="mappings"
+        nzSize="small"
+        [nzBordered]="true"
+        [nzShowPagination]="false"
+        [nzNoResult]="noMappingTpl"
+      >
+        <thead>
+        <tr>
+          <th
+            nzShowCheckbox
+            [nzChecked]="isAllChecked()"
+            [nzIndeterminate]="isIndeterminate()"
+            (nzCheckedChange)="onAllChecked($event)"
+            class="chk"
+          ></th>
+          <th class="menu"><span
+            translate>common.label.action</span></th>
+          <th translate>common.label.name</th>
+          <th translate>common.label.path</th>
+        </tr>
+        </thead>
+        <tbody>
+          @for (m of mappings; track $index; let i = $index) {
+            <tr>
+              <td  nzShowCheckbox
+                   [nzChecked]="selectedRows.has(i)"
+                   (nzCheckedChange)="onItemChecked($event, i)"
+              ></td>
+              <td><div class="btn-group dropdown">
+                <button
+                  [nzDropdownMenu]="option" class="btn-drop more-option-h"
+                  nz-dropdown nzTrigger="click" type="button">
+                  <i class="fa fa-ellipsis-h"></i>
+                </button>
+                <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                  <ul nz-menu>
+                    <li (click)="edit(i)" nz-menu-item >
+                      <a translate>common.button.edit</a>
+                    </li>
+                    <li (click)="removeMapping(i)" nz-menu-item>
+                      <a translate>common.button.delete</a>
+                    </li>
+                  </ul>
+                </nz-dropdown-menu>
+              </div></td>
+              <td>{{ m.name }}</td>
+              <td>{{ m.path }}</td>
+            </tr>
+          }
+        </tbody>
+      </nz-table>
+      <ng-template #noMappingTpl>
+        <app-empty-data></app-empty-data>
+      </ng-template>
+    </div>
+  }
+  @if (list && !isAdding) {
+    <div class="form-group row m-t-1 m-b-0">
+      <div class="col-sm-12">
+        <a (click)="addVariable()" class="text-u-l" translate>workflow.apiRequest.label.addVariable</a>
       </div>
     </div>
+  }
+  @if (docs) {
+    <div>
+      <nz-table
+        #docsTable
+        [nzData]="endpoints"
+        nzSize="small"
+        [nzBordered]="true"
+        [nzShowPagination]="false"
+        [nzNoResult]="nodocs"
+      >
+        <thead>
+        <tr>
+          <th translate>common.label.name</th>
+          <th translate>common.label.title</th>
+          <th translate>workflow.apiRequest.label.ramlDocs</th>
+        </tr>
+        </thead>
+        <tbody>
+          @for (ep of endpoints; track ep) {
+            <tr>
+              <td class="cur-point" (click)="dynamicForm(ep)">{{ ep.title }}</td>
+              <td class="cur-point" (click)="dynamicForm(ep)">{{ ep.des }}</td>
+              <td class="text-center">
+                @if (ep.raml) {
+                  <i
+                    nz-icon
+                    nzType="file-text"
+                    nzTheme="outline"
+                    class="cur-point raml-icon"
+                    (click)="openRamlDocs(ep.raml)"
+                  ></i>
+                }
+                @if (!ep.raml) {
+                  <span class="text-muted">-</span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </nz-table>
 
+      <ng-template #nodocs>
+        <app-empty-data></app-empty-data>
+      </ng-template>
+    </div>
+  }
+  @if (isAdding) {
     <div class="form-group row">
       <div class="col-md-3 form-control-label">
         <label translate>workflow.apiRequest.label.name
@@ -29,191 +185,79 @@
         </label>
       </div>
       <div class="col-md-6">
-        <div [ngClass]="{'has-error' : ((aname.dirty || aname.touched) && aname.invalid)}"
+        <div [ngClass]="{'has-error' : ((addname.dirty || addname.touched) && addname.invalid)}"
              class="">
           <label class="w-full">
-            <input #aname="ngModel" [(ngModel)]="currentName"
+            <input #addname="ngModel" [(ngModel)]="newMapping.name"
                    required
                    autocomplete="off" class="form-control"
                    identifierValidation name="name"
-                   placeholder="{{'common.placeholder.name' | translate}} "
+                   placeholder="{{'common.placeholder.name' | translate}}"
                    type="text">
           </label>
-          <div *ngIf="aname.invalid && (aname.dirty || aname.touched)"
-               class="text-danger help-block">
-            <div *ngIf="(aname.errors && aname.errors['required'])">
-              <div translate>common.message.requiredError</div>
+          @if (addname.invalid && (addname.dirty || addname.touched)) {
+            <div class="text-danger help-block">
+              @if (addname.errors && addname.errors['required']) {
+                <div translate>common.message.requiredError</div>
+              }
             </div>
-          </div>
+          }
         </div>
       </div>
     </div>
-  </form>
-  <div *ngIf="list && !isAdding">
-    <nz-table
-      #mappingTable
-      [nzData]="mappings"
-      nzSize="small"
-      [nzBordered]="true"
-      [nzShowPagination]="false"
-      [nzNoResult]="noMappingTpl"
-    >
-      <thead>
-      <tr>
-        <th
-          nzShowCheckbox
-          [nzChecked]="isAllChecked()"
-          [nzIndeterminate]="isIndeterminate()"
-          (nzCheckedChange)="onAllChecked($event)"
-          class="chk"
-        ></th>
-        <th class="menu"><span
-          translate>common.label.action</span></th>
-        <th translate>common.label.name</th>
-        <th translate>common.label.path</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let m of mappings; let i = index">
-        <td  nzShowCheckbox
-             [nzChecked]="selectedRows.has(i)"
-             (nzCheckedChange)="onItemChecked($event, i)"
-        ></td>
-        <td><div class="btn-group dropdown">
-          <button
-            [nzDropdownMenu]="option" class="btn-drop more-option-h"
-            nz-dropdown nzTrigger="click" type="button">
-            <i class="fa fa-ellipsis-h"></i>
-          </button>
-          <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-            <ul nz-menu>
-              <li (click)="edit(i)" nz-menu-item >
-                <a translate>common.button.edit</a>
-              </li>
-              <li (click)="removeMapping(i)" nz-menu-item>
-                <a translate>common.button.delete</a>
-              </li>
-            </ul>
-          </nz-dropdown-menu>
-        </div></td>
-        <td>{{ m.name }}</td>
-        <td>{{ m.path }}</td>
-      </tr>
-      </tbody>
-    </nz-table>
-    <ng-template #noMappingTpl>
-      <app-empty-data></app-empty-data>
-    </ng-template>
-  </div>
-  <div *ngIf="list && !isAdding" class="form-group row m-t-1 m-b-0">
-    <div class="col-sm-12">
-      <a (click)="addVariable()" class="text-u-l" translate>workflow.apiRequest.label.addVariable</a>
-    </div>
-  </div>
-  <div *ngIf="docs">
-    <nz-table
-      #docsTable
-      [nzData]="endpoints"
-      nzSize="small"
-      [nzBordered]="true"
-      [nzShowPagination]="false"
-      [nzNoResult]="nodocs"
-    >
-      <thead>
-      <tr>
-        <th translate>common.label.name</th>
-        <th translate>common.label.title</th>
-        <th translate>workflow.apiRequest.label.ramlDocs</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let ep of endpoints">
-        <td class="cur-point" (click)="dynamicForm(ep)">{{ ep.title }}</td>
-        <td class="cur-point" (click)="dynamicForm(ep)">{{ ep.des }}</td>
-        <td class="text-center">
-          <i
-            *ngIf="ep.raml"
-            nz-icon
-            nzType="file-text"
-            nzTheme="outline"
-            class="cur-point raml-icon"
-            (click)="openRamlDocs(ep.raml)"
-          ></i>
-          <span *ngIf="!ep.raml" class="text-muted">-</span>
-        </td>
-      </tr>
-      </tbody>
-    </nz-table>
+  }
 
-    <ng-template #nodocs>
-      <app-empty-data></app-empty-data>
-    </ng-template>
-  </div>
-  <div *ngIf="isAdding" class="form-group row">
-    <div class="col-md-3 form-control-label">
-      <label translate>workflow.apiRequest.label.name
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-    </div>
-    <div class="col-md-6">
-      <div [ngClass]="{'has-error' : ((addname.dirty || addname.touched) && addname.invalid)}"
-           class="">
-        <label class="w-full">
-          <input #addname="ngModel" [(ngModel)]="newMapping.name"
-                 required
-                 autocomplete="off" class="form-control"
-                 identifierValidation name="name"
-                 placeholder="{{'common.placeholder.name' | translate}}"
-                 type="text">
-        </label>
-        <div *ngIf="addname.invalid && (addname.dirty || addname.touched)"
-             class="text-danger help-block">
-          <div *ngIf="(addname.errors && addname.errors['required'])">
-            <div translate>common.message.requiredError</div>
-          </div>
+  @if (isAdding) {
+    <div class="form-group row">
+      <div class="col-md-3 form-control-label">
+        <label translate>workflow.apiRequest.label.value
+          <sup class="text-danger text-sm">*</sup></label>
+      </div>
+      <div class="col-md-6">
+        <div [ngClass]="{'has-error' : ((addvalue.dirty || addvalue.touched) && addvalue.invalid)}"
+             class="">
+          <label class="w-full">
+            <textarea #addvalue="ngModel" [(ngModel)]="newMapping.path" class="form-control" required  placeholder="{{'common.placeholder.value' | translate}} "></textarea>
+          </label>
+          @if (addvalue.invalid && (addvalue.dirty || addvalue.touched)) {
+            <div class="text-danger help-block">
+              @if (addvalue.errors && addvalue.errors['required']) {
+                <div translate>common.message.requiredError</div>
+              }
+            </div>
+          }
         </div>
       </div>
-    </div>
-  </div>
 
-  <div *ngIf="isAdding" class="form-group row">
-    <div class="col-md-3 form-control-label">
-      <label translate>workflow.apiRequest.label.value
-        <sup class="text-danger text-sm">*</sup></label>
     </div>
-    <div class="col-md-6">
-      <div [ngClass]="{'has-error' : ((addvalue.dirty || addvalue.touched) && addvalue.invalid)}"
-           class="">
-        <label class="w-full">
-          <textarea #addvalue="ngModel" [(ngModel)]="newMapping.path" class="form-control" required  placeholder="{{'common.placeholder.value' | translate}} "></textarea>
-        </label>
-        <div *ngIf="addvalue.invalid && (addvalue.dirty || addvalue.touched)"
-             class="text-danger help-block">
-          <div *ngIf="(addvalue.errors && addvalue.errors['required'])">
-            <div translate>common.message.requiredError</div>
-          </div>
-        </div>
-    </div>
-  </div>
-
-</div>
+  }
 </div>
 <div class="modal-footer text-left">
-  <button *ngIf="!list && !docs" (click)="onSubmit()" type="submit" class="btn btn-primary btn-sm"
-          [disabled]="!currentName">
-    {{ 'common.button.submit' | translate }}
-  </button>
-  <button *ngIf="isAdding"   [disabled]="!( newMapping.name?.trim() && ( (newMapping.path ?? '') + '' ).trim() )"
-          (click)="saveMapping()" type="submit" class="btn btn-primary btn-sm">
-    {{ 'common.button.submit' | translate }}
-  </button>
-  <button *ngIf="docs" type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
-    common.button.close
-  </button>
-  <button *ngIf="isAdding" type="button" class="btn btn-grey btn-sm" (click)="cancelAdd()" translate>
-    common.button.cancel
-  </button>
-  <button *ngIf="list && !isAdding" type="button" class="btn btn-grey btn-sm" (click)="closeWithMappings()" translate>
-    common.button.close
-  </button>
+  @if (!list && !docs) {
+    <button (click)="onSubmit()" type="submit" class="btn btn-primary btn-sm"
+            [disabled]="!currentName">
+      {{ 'common.button.submit' | translate }}
+    </button>
+  }
+  @if (isAdding) {
+    <button [disabled]="!( newMapping.name?.trim() && ( (newMapping.path ?? '') + '' ).trim() )"
+            (click)="saveMapping()" type="submit" class="btn btn-primary btn-sm">
+      {{ 'common.button.submit' | translate }}
+    </button>
+  }
+  @if (docs) {
+    <button type="button" class="btn btn-grey btn-sm" (click)="activeModal.destroy()" translate>
+      common.button.close
+    </button>
+  }
+  @if (isAdding) {
+    <button type="button" class="btn btn-grey btn-sm" (click)="cancelAdd()" translate>
+      common.button.cancel
+    </button>
+  }
+  @if (list && !isAdding) {
+    <button type="button" class="btn btn-grey btn-sm" (click)="closeWithMappings()" translate>
+      common.button.close
+    </button>
+  }
 </div>

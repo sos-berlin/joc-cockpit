@@ -3,6 +3,7 @@ import * as moment from 'moment-timezone';
 import {DomSanitizer} from '@angular/platform-browser';
 
 @Pipe({
+  standalone: false,
   name: 'preferredDate'
 })
 export class PreferredDatePipe implements PipeTransform {
@@ -32,6 +33,7 @@ function convertToPreferredTimeZone(date: string): string {
 }
 
 @Pipe({
+  standalone: false,
   name: 'stringToDate'
 })
 export class StringDatePipe implements PipeTransform {
@@ -57,6 +59,7 @@ export class StringDatePipe implements PipeTransform {
 }
 
 @Pipe({
+  standalone: false,
   name: 'stringToTime'
 })
 export class StringTimePipe implements PipeTransform {
@@ -77,6 +80,7 @@ export class StringTimePipe implements PipeTransform {
 }
 
 @Pipe({
+  standalone: false,
   name: 'stringToDate1'
 })
 export class StringDateFormatePipe implements PipeTransform {
@@ -118,6 +122,7 @@ export class StringDateFormatePipe implements PipeTransform {
 }
 
 @Pipe({
+  standalone: false,
   name: 'timeInString',
   pure: false
 })
@@ -177,6 +182,7 @@ export class TimeInStringFormatPipe implements PipeTransform {
 }
 
 @Pipe({
+  standalone: false,
   name: 'duration'
 })
 export class DurationPipe implements PipeTransform {
@@ -204,6 +210,7 @@ export class DurationPipe implements PipeTransform {
 }
 
 @Pipe({
+  standalone: false,
   name: 'convertTime'
 })
 export class ConvertTimePipe implements PipeTransform {
@@ -220,6 +227,7 @@ export class ConvertTimePipe implements PipeTransform {
 }
 
 @Pipe({
+  standalone: false,
   name: 'durationFromCurrent'
 })
 export class DurationFromCurrentPipe implements PipeTransform {
@@ -247,6 +255,7 @@ export class DurationFromCurrentPipe implements PipeTransform {
 }
 
 @Pipe({
+  standalone: false,
   name: 'decodeSpace'
 })
 export class DecodeSpacePipe implements PipeTransform {
@@ -256,6 +265,7 @@ export class DecodeSpacePipe implements PipeTransform {
 }
 
 @Pipe({
+  standalone: false,
   name: 'byteToSize'
 })
 export class ByteToSizePipe implements PipeTransform {
@@ -270,7 +280,9 @@ export class ByteToSizePipe implements PipeTransform {
   }
 }
 
-@Pipe({name: 'groupBy'})
+@Pipe({
+  standalone: false,
+  name: 'groupBy'})
 export class GroupByPipe implements PipeTransform {
   transform(value: Array<any>, field: string): Array<any> {
     const groupedObj = value.reduce((prev, cur) => {
@@ -286,7 +298,9 @@ export class GroupByPipe implements PipeTransform {
 }
 
 
-@Pipe({name: 'safeHtml'})
+@Pipe({
+  standalone: false,
+  name: 'safeHtml'})
 export class SafeHtmlPipe implements PipeTransform {
   constructor(private sanitized: DomSanitizer) {
   }
@@ -297,6 +311,7 @@ export class SafeHtmlPipe implements PipeTransform {
 }
 
 @Pipe({
+  standalone: false,
   name: 'filter'
 })
 export class SearchPipe implements PipeTransform {
@@ -359,6 +374,7 @@ export class SearchPipe implements PipeTransform {
 }
 
 @Pipe({
+  standalone: false,
   name: 'highlight'
 })
 export class HighlightSearch implements PipeTransform {
@@ -380,6 +396,7 @@ export class HighlightSearch implements PipeTransform {
 }
 
 @Pipe({
+  standalone: false,
   name: "orderBy",
   pure: false
 })
@@ -589,6 +606,7 @@ export class OrderPipe implements PipeTransform {
 }
 
 @Pipe({
+  standalone: false,
   name: 'stringToLink'
 })
 export class StringToLinkPipe implements PipeTransform {
@@ -619,6 +637,7 @@ export class StringToLinkPipe implements PipeTransform {
 }
 
 @Pipe({
+  standalone: false,
   name: 'secondsToTime'
 })
 export class SecondsToTimePipe implements PipeTransform {
@@ -658,7 +677,9 @@ export class SecondsToTimePipe implements PipeTransform {
 }
 
 
-@Pipe({ name: 'noRoundNumber' })
+@Pipe({
+  standalone: false,
+  name: 'noRoundNumber' })
 export class NoRoundNumberPipe implements PipeTransform {
   transform(value: number, decimals: number = 2): string {
     if (value || value === 0) {

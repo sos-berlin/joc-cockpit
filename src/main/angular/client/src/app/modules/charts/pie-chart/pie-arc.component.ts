@@ -16,6 +16,7 @@ import {DataItem} from '../models/chart-data.model';
 import {BarOrientation} from '../common/types/bar-orientation.enum';
 
 @Component({
+  standalone: false,
   selector: 'g[ngx-charts-pie-arc]',
   template: `
     <svg:g class="arc-group">

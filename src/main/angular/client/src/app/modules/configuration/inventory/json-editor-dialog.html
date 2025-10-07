@@ -1,7 +1,11 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="edit" translate>inventory.label.editJson</span>
-    <span *ngIf="!edit" translate>inventory.label.showJson</span>:
+    @if (edit) {
+      <span translate>inventory.label.editJson</span>
+    }
+    @if (!edit) {
+      <span translate>inventory.label.showJson</span>
+    }:
     <span class="text-muted">{{name}}</span>
   </h4>
   <a appMaximum class="max-btn">
@@ -17,29 +21,41 @@
       <div [ngClass]="{'error-input': isError, 'json-editor-readonly': !edit}" class="col-md-12">
         <json-editor #editor [data]="data" [options]="options"></json-editor>
       </div>
-      <div *ngIf="isError" class="col-md-12">
-        <div class="help-block text-danger">
-          {{errorMsg}}
+      @if (isError) {
+        <div class="col-md-12">
+          <div class="help-block text-danger">
+            {{errorMsg}}
+          </div>
         </div>
-      </div>
+      }
     </div>
   </div>
   <div class="modal-footer">
-    <button *ngIf="edit" [disabled]="submitted || isError" class="btn btn-primary btn-sm" type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      {{'common.button.submit' | translate}}
-    </button>
-    <button *ngIf="edit && isError" [disabled]="submitted" class="btn btn-secondary btn-sm"
-            type="button" (click)="onSubmit(true)">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      {{'common.button.forceSubmit' | translate}}
-    </button>
-    <button (click)="copyToClipboard()" class="btn btn-default btn-sm"
-            translate type="button">log.button.copyToClipboard
+    @if (edit) {
+      <button [disabled]="submitted || isError" class="btn btn-primary btn-sm" type="submit">
+        @if (submitted) {
+          <i class="fa fa-spin fa-spinner p-r-xs"></i>
+        }
+        {{'common.button.submit' | translate}}
+      </button>
+    }
+    @if (edit && isError) {
+      <button [disabled]="submitted" class="btn btn-secondary btn-sm" type="button" (click)="onSubmit(true)">
+        @if (submitted) {
+          <i class="fa fa-spin fa-spinner p-r-xs"></i>
+        }
+        {{'common.button.forceSubmit' | translate}}
+      </button>
+    }
+    <button (click)="copyToClipboard()" class="btn btn-default btn-sm" translate type="button">log.button.copyToClipboard
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
-      <span *ngIf="edit" translate>common.button.cancel</span>
-      <span *ngIf="!edit" translate>common.button.close</span>
+      @if (edit) {
+        <span translate>common.button.cancel</span>
+      }
+      @if (!edit) {
+        <span translate>common.button.close</span>
+      }
     </button>
   </div>
 </form>

@@ -33,6 +33,7 @@ import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.comp
 declare const $: any;
 
 @Component({
+  standalone: false,
   selector: 'app-order-history-template',
   templateUrl: './order-history-template.html'
 })
@@ -84,6 +85,7 @@ export class OrderTemplateComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-filter-modal-content',
   templateUrl: './filter-dialog.html'
 })
@@ -142,6 +144,7 @@ export class FilterModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-order-form-template',
   templateUrl: './order-form-template.html',
 })
@@ -168,6 +171,7 @@ export class OrderSearchComponent {
     {label: 'failed', value: 'FAILED', checked: false},
     {label: 'incomplete', value: 'INCOMPLETE', checked: false}
   ];
+  selectedHistoryStates: string[] = [];
 
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,) {
   }
@@ -188,10 +192,23 @@ export class OrderSearchComponent {
         };
       });
     }
+    if (this.filter.historyStates && this.filter.historyStates.length > 0) {
+      this.selectedHistoryStates = [...this.filter.historyStates];
+
+      this.checkOptions = this.checkOptions.map(item => {
+        return {
+          ...item,
+          checked: this.filter.historyStates.indexOf(item.value) > -1
+        };
+      });
+    } else {
+      this.selectedHistoryStates = [];
+    }
   }
 
   stateChange(value: string[]): void {
     this.filter.historyStates = value;
+    this.selectedHistoryStates = value;
   }
 
   selectTime(time, isEditor = false, val = 'from'): void {
@@ -374,6 +391,7 @@ export class OrderSearchComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-task-form-template',
   templateUrl: './task-form-template.html',
 })
@@ -387,7 +405,8 @@ export class TaskSearchComponent {
 
   @Output() onCancel: EventEmitter<any> = new EventEmitter();
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
-
+  selectedHistoryStates: string[] = [];
+  selectedCriticalities: string[] = [];
   dateFormat: any;
   folders = [];
   existingName: any;
@@ -418,6 +437,7 @@ export class TaskSearchComponent {
     this.fetchTags();
     this.fetchOrderTags();
     if (this.filter.historyStates && this.filter.historyStates.length > 0) {
+      this.selectedHistoryStates = [...this.filter.historyStates];
       this.checkOptions = this.checkOptions.map(item => {
         return {
           ...item,
@@ -426,6 +446,7 @@ export class TaskSearchComponent {
       });
     }
     if (this.filter.criticality && this.filter.criticality.length > 0) {
+      this.selectedCriticalities = [...this.filter.criticality];
       this.criticalities = this.criticalities.map(item => {
         return {
           ...item,
@@ -438,10 +459,12 @@ export class TaskSearchComponent {
 
   stateChange(value: string[]): void {
     this.filter.historyStates = value;
+    this.selectedHistoryStates = value;
   }
 
   criticalityChange(value: string[]): void {
     this.filter.criticality = value;
+    this.selectedCriticalities = value;
   }
 
   selectTime(time, isEditor = false, val = 'from'): void {
@@ -622,6 +645,7 @@ export class TaskSearchComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-deployment-form-template',
   templateUrl: './deployment-form-template.html',
 })
@@ -752,6 +776,7 @@ export class DeploymentSearchComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-submission-form-template',
   templateUrl: './submission-form-template.html',
 })
@@ -767,7 +792,7 @@ export class SubmissionSearchComponent {
   @Output() onSearch: EventEmitter<any> = new EventEmitter();
 
   dateFormat: any;
-
+  selectedHistoryTypes: string[] = [];
   existingName: any;
   submitted = false;
   isUnique = true;
@@ -779,20 +804,25 @@ export class SubmissionSearchComponent {
   constructor(public coreService: CoreService, private authService: AuthService, private modal: NzModalService,) {
   }
 
-  ngOnInit(): void {
-    this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    if (this.filter.name) {
-      this.existingName = this.coreService.clone(this.filter.name);
-    }
-    if (this.filter.type && this.filter.type.length > 0) {
-      this.checkOptions = this.checkOptions.map(item => {
-        return {
-          ...item,
-          checked: this.filter.type.indexOf(item.value) > -1
-        };
-      });
-    }
+ngOnInit(): void {
+  this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
+  if (this.filter.name) {
+    this.existingName = this.coreService.clone(this.filter.name);
   }
+
+  if (this.filter.type && this.filter.type.length > 0) {
+    this.selectedHistoryTypes = [...this.filter.type];
+
+    this.checkOptions = this.checkOptions.map(item => {
+      return {
+        ...item,
+        checked: this.filter.type.indexOf(item.value) > -1
+      };
+    });
+  } else {
+    this.selectedHistoryTypes = [];
+  }
+}
 
   remove(path): void {
     this.filter.paths.splice(this.filter.paths.indexOf(path), 1);
@@ -800,7 +830,9 @@ export class SubmissionSearchComponent {
 
   typeChange(value: string[]): void {
     this.filter.type = value;
+    this.selectedHistoryTypes = value; // Keep in sync
   }
+
 
   checkFilterName(): void {
     this.isUnique = true;
@@ -897,6 +929,7 @@ export class SubmissionSearchComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-single-history',
   templateUrl: './single-history.component.html'
 })
@@ -1148,6 +1181,7 @@ export class SingleHistoryComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-history',
   templateUrl: './history.component.html'
 })

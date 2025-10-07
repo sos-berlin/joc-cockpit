@@ -8,60 +8,76 @@
                type="search" class="input-tree-search"
                name="treeSearch"
         />
-        <i *ngIf="obj.loading" [nzType]="'loading'" class="tree-search-icon" nz-icon
-           nzTheme="outline"></i>
+        @if (obj.loading) {
+          <i [nzType]="'loading'" class="tree-search-icon" nz-icon
+             nzTheme="outline"></i>
+        }
       </div>
       <nz-autocomplete #auto>
-        <ng-container *ngFor="let option of objectList | orderBy: 'name'">
-          <nz-auto-option (click)="selectObject(option.name)" [nzValue]="option.path" class="min-ht-opt">
-            <div class="node-wrapper p-l">
-              <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
-                   class="node-content-wrapper2" nzTooltipPlacement="right">
-                <i class="icon-jobs-icon icon-color tree-icon"></i>
-                <span class="p-l-sm">{{ option.name }}</span>
+        @for (option of objectList | orderBy: 'name'; track option) {
+          <ng-container>
+            <nz-auto-option (click)="selectObject(option.name)" [nzValue]="option.path" class="min-ht-opt">
+              <div class="node-wrapper p-l">
+                <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
+                     class="node-content-wrapper2" nzTooltipPlacement="right">
+                  <i class="icon-jobs-icon icon-color tree-icon"></i>
+                  <span class="p-l-sm">{{ option.name }}</span>
+                </div>
               </div>
-            </div>
-          </nz-auto-option>
-        </ng-container>
+            </nz-auto-option>
+          </ng-container>
+        }
       </nz-autocomplete>
     </div>
-    <div *ngIf="tree.length > 0" class="tree-content m-t-sm">
-      <nz-tree
-        [nzData]="tree"
-        [nzExpandAll]="isExpandAll"
-        [nzTreeTemplate]="nzTreeTemplate"
-        nzNoAnimation
-      ></nz-tree>
-      <ng-template #nzTreeTemplate let-node>
-        <div class="node-wrapper">
-          <div (click)="selectNode(node)"
-               class="node-content-wrapper">
-            <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
-            {{node.origin.name || node.origin.path}}
+    @if (tree.length > 0) {
+      <div class="tree-content m-t-sm">
+        <nz-tree
+          [nzData]="tree"
+          [nzExpandAll]="isExpandAll"
+          [nzTreeTemplate]="nzTreeTemplate"
+          nzNoAnimation
+        ></nz-tree>
+        <ng-template #nzTreeTemplate let-node>
+          <div class="node-wrapper">
+            <div (click)="selectNode(node)"
+                 class="node-content-wrapper">
+              <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
+              {{node.origin.name || node.origin.path}}
+            </div>
           </div>
-        </div>
-        <ng-container *ngIf="node.isExpanded">
-          <div *ngFor="let cal of node.origin.calendars" class="m-b-xs m-l-22">
-            <label *ngIf="!calendar" nz-checkbox [(ngModel)]="cal.isChecked" name="'chk-'+ {{cal.id}}"></label>
-            <span (click)="selectObject(cal.name)" class="m-t-xs" [ngClass]="{'p-l-sm': !calendar, 'cursor': calendar}"><i class="fa fa-calendar p-r-xs text-sm"></i>{{cal.name}}</span>
-          </div>
-        </ng-container>
-      </ng-template>
-    </div>
-    <div *ngIf="tree.length === 0 && loading" class="m-t-lg">
-      <app-empty-data></app-empty-data>
-    </div>
-    <div *ngIf="!loading" class="m-t-lg text-center">
-      <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
-    </div>
+          @if (node.isExpanded) {
+            <ng-container>
+              @for (cal of node.origin.calendars; track cal.id) {
+                <div class="m-b-xs m-l-22">
+                  @if (!calendar) {
+                    <label nz-checkbox [(ngModel)]="cal.isChecked" name="'chk-'+ {{cal.id}}"></label>
+                  }
+                  <span (click)="selectObject(cal.name)" class="m-t-xs" [ngClass]="{'p-l-sm': !calendar, 'cursor': calendar}"><i class="fa fa-calendar p-r-xs text-sm"></i>{{cal.name}}</span>
+                </div>
+              }
+            </ng-container>
+          }
+        </ng-template>
+      </div>
+    }
+    @if (tree.length === 0 && loading) {
+      <div class="m-t-lg">
+        <app-empty-data></app-empty-data>
+      </div>
+    }
+    @if (!loading) {
+      <div class="m-t-lg text-center">
+        <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
+      </div>
+    }
   </div>
   <div class="modal-footer ">
-      <button (click)="submit()" class="btn btn-primary btn-sm" translate
-              type="button">common.button.done
-      </button>
-      <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm m-l-sm" translate
-              type="button">
-        common.button.cancel
-      </button>
+    <button (click)="submit()" class="btn btn-primary btn-sm" translate
+            type="button">common.button.done
+    </button>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm m-l-sm" translate
+            type="button">
+      common.button.cancel
+    </button>
   </div>
 </div>

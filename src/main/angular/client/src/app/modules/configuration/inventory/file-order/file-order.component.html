@@ -1,243 +1,282 @@
 <div class="row">
-  <div *ngIf="data.type" class="col-md-12">
-    <div class="box p-a p-r-md m-t-n-xs">
-      <div class="b-b p-b m-b">
-        <span class="text-left">
-          <a (click)="backToListView()"><i class="fa fa-arrow-circle-left config-back-btn"
-                                           nz-tooltip="{{'inventory.button.backToList' | translate}}"></i></a>
-          <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
-          <span *ngIf="lastModified" class="text-dark text-sm _400"> -
-            <b translate>inventory.label.lastModified</b>
-            <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
+  @if (data.type) {
+    <div class="col-md-12">
+      <div class="box p-a p-r-md m-t-n-xs">
+        <div class="b-b p-b m-b">
+          <span class="text-left">
+            <a (click)="backToListView()"><i class="fa fa-arrow-circle-left config-back-btn"
+                                             nz-tooltip="{{'inventory.button.backToList' | translate}}"></i></a>
+            <span class="_600">{{data.path}}@if (data.path !== '/') {<span>/</span>}{{data.name}}</span>
+            @if (lastModified) {
+              <span class="text-dark text-sm _400"> -
+                <b translate>inventory.label.lastModified</b>
+                <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
+              </span>
+            }
+          <i (click)="helpPage('configuration-inventory-file-order-sources')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
           </span>
-        <i (click)="helpPage('configuration-inventory-file-order-sources')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
-        </span>
-        <div *ngIf="!isTrash" class="inline pull-right">
-          <span *ngIf="fileOrder.configuration" [ngClass]="!fileOrder.valid ? 'badge-danger':'badge-success'"
-                class="badge m-r-12">
-            <span *ngIf="fileOrder.valid" translate>inventory.label.valid</span>
-            <span *ngIf="!fileOrder.valid">
-              <span translate>inventory.label.notValid</span>
-              <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
-            </span>
-          </span>
-          <span [ngClass]="!data.deployed ? 'badge-danger':'badge-success'" class="badge">
-            <span *ngIf="!data.deployed" translate>inventory.label.notDeployed</span>
-            <span *ngIf="data.deployed" translate>inventory.label.deployed</span>
-          </span>
-          <span *ngIf="data.syncState && inventoryService.checkDeploymentStatus.isChecked"
-                [hidden]="(data.syncState._text == 'NOT_DEPLOYED' && !data.deployed)"
-                [ngClass]="coreService.getColor(data.syncState.severity, 'bg')" class="badge badge-sync m-l-12">
-            {{data.syncState._text | translate}}
-          </span>
-          <button
-            (click)="deploy()"
-            *ngIf="permission.joc.inventory.deploy && securityLevel !== 'HIGH' && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" [disabled]="!fileOrder.valid && !fileOrder.hasDeployments"
-            class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
-            <i class="fa fa-rocket p-r-xs"></i>
-            <span translate>inventory.button.deploy</span>
-          </button>
+          @if (!isTrash) {
+            <div class="inline pull-right">
+              @if (fileOrder.configuration) {
+                <span [ngClass]="!fileOrder.valid ? 'badge-danger':'badge-success'"
+                      class="badge m-r-12">
+                  @if (fileOrder.valid) {
+                    <span translate>inventory.label.valid</span>
+                  }
+                  @if (!fileOrder.valid) {
+                    <span>
+                      <span translate>inventory.label.notValid</span>
+                      <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
+                    </span>
+                  }
+                </span>
+              }
+              <span [ngClass]="!data.deployed ? 'badge-danger':'badge-success'" class="badge">
+                @if (!data.deployed) {
+                  <span translate>inventory.label.notDeployed</span>
+                }
+                @if (data.deployed) {
+                  <span translate>inventory.label.deployed</span>
+                }
+              </span>
+              @if (data.syncState && inventoryService.checkDeploymentStatus.isChecked) {
+                <span [hidden]="(data.syncState._text == 'NOT_DEPLOYED' && !data.deployed)"
+                      [ngClass]="coreService.getColor(data.syncState.severity, 'bg')" class="badge badge-sync m-l-12">
+                  {{data.syncState._text | translate}}
+                </span>
+              }
+              @if (permission.joc.inventory.deploy && securityLevel !== 'HIGH' && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)) {
+                <button
+                  (click)="deploy()"
+                  [disabled]="!fileOrder.valid && !fileOrder.hasDeployments"
+                  class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
+                  <i class="fa fa-rocket p-r-xs"></i>
+                  <span translate>inventory.button.deploy</span>
+                </button>
+              }
+            </div>
+          }
         </div>
-      </div>
-      <div *ngIf="fileOrder.configuration">
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.name' | translate) : ''"
+        @if (fileOrder.configuration) {
+          <div class="form-group row">
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.name' | translate) : ''"
 
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
-                 translate>common.label.name
-            <sup class="text-danger text-sm">*</sup>
-          </label>
-          <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
-               class="col-lg-9 col-xl-8 col-xxl-6">
-            <input #name="ngModel" (blur)="rename(name.invalid)" [(ngModel)]="fileOrder.name" [appAutofocus]="!isTrash"
-                   [readonly]="isTrash || !permission.joc.inventory.manage"
-                   autocomplete="off" class="form-control"
-                   identifierValidation name="name" required type="text">
-            <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-              <div *ngIf="name.errors.required">
-                <div translate>common.message.requiredError</div>
-              </div>
-              <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
+                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
+                   translate>common.label.name
+              <sup class="text-danger text-sm">*</sup>
+            </label>
+            <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
+                 class="col-lg-9 col-xl-8 col-xxl-6">
+              <input #name="ngModel" (blur)="rename(name.invalid)" [(ngModel)]="fileOrder.name" [appAutofocus]="!isTrash"
+                     [readonly]="isTrash || !permission.joc.inventory.manage"
+                     autocomplete="off" class="form-control"
+                     identifierValidation name="name" required type="text">
+              @if (name.invalid && (name.dirty || name.touched)) {
+                <div class="text-danger help-block">
+                  @if (name.errors.required) {
+                    <div translate>common.message.requiredError</div>
+                  }
+                  @if (name.errors.invalidIdentifier) {
+                    <div translate>common.message.invalid</div>
+                  }
+                </div>
+              }
             </div>
           </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.title' | translate) : ''"
+          <div class="form-group row">
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.title' | translate) : ''"
 
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
-                 translate>common.label.title</label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <input (blur)="saveJSON()" [(ngModel)]="fileOrder.configuration.title" [readonly]="isTrash || !permission.joc.inventory.manage"
-                   autocomplete="off" class="form-control"
-                   maxlength="255"
-                   name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.tagName</label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
-              <nz-tag
-                *ngFor="let tag of tags; let i = index"
-                [nzMode]="'closeable'"
-                (nzOnClose)="handleClose(tag)"
-              >
-                {{ sliceTagName(tag) }}
-              </nz-tag>
-              <nz-tag *ngIf="!inputVisible" class="editable-tag" nzNoAnimation (click)="showInput()">
-                <span nz-icon nzType="plus"></span>
-                {{'inventory.button.newTag' | translate}}
-              </nz-tag>
-              <div class="d-inline-block" *ngIf="inputVisible" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-                <input
-                  #name="ngModel"
-                  #inputElement
-                  tagValidation
-                  [nzAutocomplete]="auto"
-                  nz-input
-                  name="tag"
-                  type="text"
-                  [(ngModel)]="inputValue"
-                  (ngModelChange)="onChange($event)"
-                  style="width: 128px;"
-                  (blur)="handleInputConfirm()"
-                  (keydown.enter)="handleInputConfirm()"
-                />
-                <nz-autocomplete [nzDataSource]="filteredOptions" #auto></nz-autocomplete>
-              </div>
+                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
+                   translate>common.label.title</label>
+            <div class="col-lg-9 col-xl-8 col-xxl-6">
+              <input (blur)="saveJSON()" [(ngModel)]="fileOrder.configuration.title" [readonly]="isTrash || !permission.joc.inventory.manage"
+                     autocomplete="off" class="form-control"
+                     maxlength="255"
+                     name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text">
             </div>
           </div>
-        </div>
-        <div *ngIf="coreService.expertMode" class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.documentation' | translate) : ''"
-
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
-                 translate>inventory.label.documentation</label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <app-select-document (funcCall)="saveJSON($event)" [data]="fileOrder.configuration"
-                                 [documentationTree]="documentationTree"></app-select-document>
-          </div>
-        </div>
-        <div [ngClass]="{ 'has-error' : (((workflowName.dirty || workflowName.touched) && workflowName.invalid))}"
-             class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.workflowName' | translate) : ''"
-
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.workflowName
-            <sup class="text-danger text-sm">*</sup>
-          </label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6 ">
-            <input #workflowName="ngModel" (click)="isTreeShow = true;"
-                   [(ngModel)]="fileOrder.configuration.workflowName" [readOnly]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
-                   class="form-control" name="workflowName" type="text">
-            <div *ngIf="isTreeShow" [ngStyle]="{'margin-top': '-29px'}" class="z-index-9999 w-full">
-              <app-search-input (onBlur)="onBlur()" (onSelect)="onSelect($event)" [changeDetect]="true" [isDisplay]="true"
-                                [nodes]="workflowTree" [type]="'WORKFLOW'"></app-search-input>
-            </div>
-            <div *ngIf="workflowName.invalid && (workflowName.dirty || workflowName.touched)"
-                 class="text-danger help-block">
-              <div *ngIf="workflowName.errors.required">
-                <div translate>common.message.requiredError</div>
+          <div class="form-group row">
+            <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.tagName</label>
+            <div class="col-lg-9 col-xl-8 col-xxl-6">
+              <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
+                @for (tag of tags; track tag; let i = $index) {
+                  <nz-tag
+                    [nzMode]="'closeable'"
+                    (nzOnClose)="handleClose(tag)"
+                  >
+                    {{ sliceTagName(tag) }}
+                  </nz-tag>
+                }
+                @if (!inputVisible) {
+                  <nz-tag class="editable-tag" nzNoAnimation (click)="showInput()">
+                    <span nz-icon nzType="plus"></span>
+                    {{'inventory.button.newTag' | translate}}
+                  </nz-tag>
+                }
+                @if (inputVisible) {
+                  <div class="d-inline-block" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+                    <input
+                      #name="ngModel"
+                      #inputElement
+                      tagValidation
+                      [nzAutocomplete]="auto"
+                      nz-input
+                      name="tag"
+                      type="text"
+                      [(ngModel)]="inputValue"
+                      (ngModelChange)="onChange($event)"
+                      style="width: 128px;"
+                      (blur)="handleInputConfirm()"
+                      (keydown.enter)="handleInputConfirm()"
+                    />
+                    <nz-autocomplete [nzDataSource]="filteredOptions" #auto></nz-autocomplete>
+                  </div>
+                }
               </div>
             </div>
-            <div *ngIf="fileOrder.configuration.workflowName" class="pos-abt r-n-8 m-t-n-25">
-              <i (click)="navToWorkflow()" class="fa fa-pencil cursor"></i>
+          </div>
+          @if (coreService.expertMode) {
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.documentation' | translate) : ''"
+
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
+                     translate>inventory.label.documentation</label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <app-select-document (funcCall)="saveJSON($event)" [data]="fileOrder.configuration"
+                                     [documentationTree]="documentationTree"></app-select-document>
+              </div>
+            </div>
+          }
+          <div [ngClass]="{ 'has-error' : (((workflowName.dirty || workflowName.touched) && workflowName.invalid))}"
+               class="form-group row">
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.workflowName' | translate) : ''"
+
+                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.workflowName
+              <sup class="text-danger text-sm">*</sup>
+            </label>
+            <div class="col-lg-9 col-xl-8 col-xxl-6 ">
+              <input #workflowName="ngModel" (click)="isTreeShow = true;"
+                     [(ngModel)]="fileOrder.configuration.workflowName" [readOnly]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
+                     class="form-control" name="workflowName" type="text">
+              @if (isTreeShow) {
+                <div [ngStyle]="{'margin-top': '-29px'}" class="z-index-9999 w-full">
+                  <app-search-input (onBlur)="onBlur()" (onSelect)="onSelect($event)" [changeDetect]="true" [isDisplay]="true"
+                                    [nodes]="workflowTree" [type]="'WORKFLOW'"></app-search-input>
+                </div>
+              }
+              @if (workflowName.invalid && (workflowName.dirty || workflowName.touched)) {
+                <div class="text-danger help-block">
+                  @if (workflowName.errors.required) {
+                    <div translate>common.message.requiredError</div>
+                  }
+                </div>
+              }
+              @if (fileOrder.configuration.workflowName) {
+                <div class="pos-abt r-n-8 m-t-n-25">
+                  <i (click)="navToWorkflow()" class="fa fa-pencil cursor"></i>
+                </div>
+              }
             </div>
           </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.agent' | translate) : ''"
+          <div class="form-group row">
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.agent' | translate) : ''"
 
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>workflow.label.agent
-            <sup class="text-danger text-sm">*</sup>
-          </label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <app-agent-selection (onBlur)="saveJSON()" [agents]="agentList" [data]="fileOrder.configuration"
-                                 [preferences]="preferences" [skipSubagents]="true"></app-agent-selection>
+                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>workflow.label.agent
+              <sup class="text-danger text-sm">*</sup>
+            </label>
+            <div class="col-lg-9 col-xl-8 col-xxl-6">
+              <app-agent-selection (onBlur)="saveJSON()" [agents]="agentList" [data]="fileOrder.configuration"
+                                   [preferences]="preferences" [skipSubagents]="true"></app-agent-selection>
+            </div>
           </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.directory' | translate) : ''"
+          <div class="form-group row">
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.directory' | translate) : ''"
 
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.directory
-            <sup class="text-danger text-sm">*</sup>
-          </label>
-          <div [ngClass]="{'has-error' : (directory.dirty || directory.touched) && directory.invalid}"
-               class="col-lg-9 col-xl-8 col-xxl-6">
-            <input #directory="ngModel" (blur)="saveJSON()" [(ngModel)]="fileOrder.configuration.directoryExpr" [readonly]="isTrash" autocomplete="off"
-                   class="form-control"
-                   name="directory" placeholder="{{'inventory.placeholder.directory' | translate}}" type="text">
+                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.directory
+              <sup class="text-danger text-sm">*</sup>
+            </label>
+            <div [ngClass]="{'has-error' : (directory.dirty || directory.touched) && directory.invalid}"
+                 class="col-lg-9 col-xl-8 col-xxl-6">
+              <input #directory="ngModel" (blur)="saveJSON()" [(ngModel)]="fileOrder.configuration.directoryExpr" [readonly]="isTrash" autocomplete="off"
+                     class="form-control"
+                     name="directory" placeholder="{{'inventory.placeholder.directory' | translate}}" type="text">
+            </div>
           </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.pattern' | translate) : ''"
+          <div class="form-group row">
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.pattern' | translate) : ''"
 
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.pattern</label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <input (blur)="saveJSON()" [(ngModel)]="fileOrder.configuration.pattern" [readonly]="isTrash" autocomplete="off"
-                   class="form-control"
-                   name="pattern" placeholder="{{'inventory.placeholder.pattern' | translate}}" type="text">
-            <app-favorite-list (reload)="detectChanges" [data]="fileOrder.configuration"
-                               [list]="favList" [type]="'pattern'"
-                               [value]="fileOrder.configuration.pattern"></app-favorite-list>
+                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.pattern</label>
+            <div class="col-lg-9 col-xl-8 col-xxl-6">
+              <input (blur)="saveJSON()" [(ngModel)]="fileOrder.configuration.pattern" [readonly]="isTrash" autocomplete="off"
+                     class="form-control"
+                     name="pattern" placeholder="{{'inventory.placeholder.pattern' | translate}}" type="text">
+              <app-favorite-list (reload)="detectChanges" [data]="fileOrder.configuration"
+                                 [list]="favList" [type]="'pattern'"
+                                 [value]="fileOrder.configuration.pattern"></app-favorite-list>
+            </div>
           </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.timeZone' | translate) : ''"
+          <div class="form-group row">
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.timeZone' | translate) : ''"
 
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.timeZone</label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <app-select-input (modelChange)="changeValue($event, 'timeZone')" [attributeName]="'timeZone'"
-                              [isAllowClear]="true" [isSearchable]="true"
-                              [listArray]="zones" [name]="'timeZone'"
-                              [object]="fileOrder.configuration"></app-select-input>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.delay' | translate) : ''"
-
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>workflow.label.delay</label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <nz-input-number (nzBlur)="saveJSON()" [(ngModel)]="fileOrder.configuration.delay" [nzMin]="1" [nzStep]="1"
-                             name="delay"></nz-input-number>
-          </div>
-        </div>
-
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.priority' | translate) : ''"
-
-                 class="col-lg-3 col-xl-3 col-xxl-3"
-                 translate>order.label.priority</label>
-          <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}"
-               class="col-lg-9 col-xl-8 col-xxl-6">
-            <nz-input-group [nzAddOnAfter]="priorityTemplate">
-              <nz-input-number #priority="ngModel" (nzBlur)="saveJSON()" [(ngModel)]="fileOrder.configuration.priority"
-                               name="priority" nzPlaceHolder="{{'inventory.placeholder.priority' | translate}}"
-              ></nz-input-number>
-            </nz-input-group>
-            <ng-template #priorityTemplate>
-              <app-select-input [classNames]="'w-220'" (modelChange)="changePriority($event)" [attributeName]="'priority'"
-                                [listArray]="priorities" [name]="'priorities'" [optionLabel]="'label'" [optionValue]="'value'"  [placeholder]="'inventory.placeholder.selectPredefinedPriorities'"
+                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.timeZone</label>
+            <div class="col-lg-9 col-xl-8 col-xxl-6">
+              <app-select-input (modelChange)="changeValue($event, 'timeZone')" [attributeName]="'timeZone'"
+                                [isAllowClear]="true" [isSearchable]="true"
+                                [listArray]="zones" [name]="'timeZone'"
                                 [object]="fileOrder.configuration"></app-select-input>
-            </ng-template>
-            <div *ngIf="priority.invalid && (priority.dirty || priority.touched)" class="text-danger help-block">
-              <div *ngIf="priority.errors['required']">
-                <div translate>common.message.requiredError</div>
-              </div>
             </div>
           </div>
-        </div>
+          <div class="form-group row">
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.fileOrderSource.delay' | translate) : ''"
+
+                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>workflow.label.delay</label>
+            <div class="col-lg-9 col-xl-8 col-xxl-6">
+              <nz-input-number (nzBlur)="saveJSON()" [(ngModel)]="fileOrder.configuration.delay" [nzMin]="1" [nzStep]="1"
+                               name="delay"></nz-input-number>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.priority' | translate) : ''"
+
+                   class="col-lg-3 col-xl-3 col-xxl-3"
+                   translate>order.label.priority</label>
+            <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}"
+                 class="col-lg-9 col-xl-8 col-xxl-6">
+              <nz-input-group [nzAddOnAfter]="priorityTemplate">
+                <nz-input-number #priority="ngModel" (nzBlur)="saveJSON()" [(ngModel)]="fileOrder.configuration.priority"
+                                 name="priority" nzPlaceHolder="{{'inventory.placeholder.priority' | translate}}"
+                ></nz-input-number>
+              </nz-input-group>
+              <ng-template #priorityTemplate>
+                <app-select-input [classNames]="'w-220'" (modelChange)="changePriority($event)" [attributeName]="'priority'"
+                                  [listArray]="priorities" [name]="'priorities'" [optionLabel]="'label'" [optionValue]="'value'"  [placeholder]="'inventory.placeholder.selectPredefinedPriorities'"
+                                  [object]="fileOrder.configuration"></app-select-input>
+              </ng-template>
+              @if (priority.invalid && (priority.dirty || priority.touched)) {
+                <div class="text-danger help-block">
+                  @if (priority.errors['required']) {
+                    <div translate>common.message.requiredError</div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
       </div>
     </div>
-  </div>
-  <div *ngIf="data.object" class="col-md-12">
-    <app-table
-      [copyObj]="copyObj"
-      [securityLevel]="securityLevel"
-      [dataObj]="data"
-      [isTrash]="isTrash"
-      [objectType]="objectType"
-      [permission]="permission"
-      [preferences]="preferences"
-      [schedulerId]="schedulerId"></app-table>
-  </div>
+  }
+  @if (data.object) {
+    <div class="col-md-12">
+      <app-table
+        [copyObj]="copyObj"
+        [securityLevel]="securityLevel"
+        [dataObj]="data"
+        [isTrash]="isTrash"
+        [objectType]="objectType"
+        [permission]="permission"
+        [preferences]="preferences"
+        [schedulerId]="schedulerId"></app-table>
+    </div>
+  }
 </div>

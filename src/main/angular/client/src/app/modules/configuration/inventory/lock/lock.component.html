@@ -1,113 +1,142 @@
-<div *ngIf="permission.joc" class="row">
-  <div *ngIf="data.type" class="col-md-12">
-    <div class="box p-a p-r-md m-t-n-xs">
-      <div class="b-b p-b m-b">
-        <span class="text-left">
-          <a (click)="backToListView()"><i class="fa fa-arrow-circle-left config-back-btn"
-                                           nz-tooltip="{{'inventory.button.backToList' | translate}}"></i></a>
-          <span (click)="navToLockTab()" [ngClass]="{'cursor text-hover-primary': lock.hasDeployments || data.deployed}"
-                class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
-          <span *ngIf="lastModified" class="text-dark text-sm _400"> -
-            <b translate>inventory.label.lastModified</b>
-            <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
-          </span>
-          <i (click)="helpPage('configuration-inventory-resource-locks')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
-        </span>
-        <div *ngIf="!isTrash" class="inline pull-right">
-          <span *ngIf="lock.valid" class="badge badge-success m-r-12">
-              <span translate>inventory.label.valid</span>
-          </span>
-          <span [ngClass]="!data.deployed ? 'badge-danger':'badge-success'" class="badge">
-            <span *ngIf="!data.deployed" translate>inventory.label.notDeployed</span>
-            <span *ngIf="data.deployed" translate>inventory.label.deployed</span>
-          </span>
-          <span *ngIf="data.syncState && inventoryService.checkDeploymentStatus.isChecked"
-                [hidden]="(data.syncState._text == 'NOT_DEPLOYED' && !data.deployed)"
-                [ngClass]="coreService.getColor(data.syncState.severity, 'bg')" class="badge badge-sync m-l-12">
-            {{data.syncState._text | translate}}
-          </span>
-          <button
-            (click)="deploy()"
-            *ngIf="permission.joc.inventory.deploy && securityLevel !== 'HIGH' && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" [disabled]="!lock.valid && !lock.hasDeployments" class="btn btn-sm btn-grey m-l-12 m-t-n-xs"
-            type="button">
-            <i class="fa fa-rocket p-r-xs"></i>
-            <span translate>inventory.button.deploy</span>
-          </button>
+@if (permission.joc) {
+  <div class="row">
+    @if (data.type) {
+      <div class="col-md-12">
+        <div class="box p-a p-r-md m-t-n-xs">
+          <div class="b-b p-b m-b">
+            <span class="text-left">
+              <a (click)="backToListView()"><i class="fa fa-arrow-circle-left config-back-btn"
+                                               nz-tooltip="{{'inventory.button.backToList' | translate}}"></i></a>
+              <span (click)="navToLockTab()" [ngClass]="{'cursor text-hover-primary': lock.hasDeployments || data.deployed}"
+                    class="_600">{{data.path}}@if (data.path !=='/') {<span>/</span>}{{data.name}}</span>
+              @if (lastModified) {
+                <span class="text-dark text-sm _400"> -
+                  <b translate>inventory.label.lastModified</b>
+                  <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
+                </span>
+              }
+              <i (click)="helpPage('configuration-inventory-resource-locks')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
+            </span>
+            @if (!isTrash) {
+              <div class="inline pull-right">
+                @if (lock.valid) {
+                  <span class="badge badge-success m-r-12">
+                      <span translate>inventory.label.valid</span>
+                  </span>
+                }
+                <span [ngClass]="!data.deployed ? 'badge-danger':'badge-success'" class="badge">
+                  @if (!data.deployed) {
+                    <span translate>inventory.label.notDeployed</span>
+                  }
+                  @if (data.deployed) {
+                    <span translate>inventory.label.deployed</span>
+                  }
+                </span>
+                @if (data.syncState && inventoryService.checkDeploymentStatus.isChecked) {
+                  <span [hidden]="(data.syncState._text == 'NOT_DEPLOYED' && !data.deployed)"
+                        [ngClass]="coreService.getColor(data.syncState.severity, 'bg')" class="badge badge-sync m-l-12">
+                    {{data.syncState._text | translate}}
+                  </span>
+                }
+                @if (permission.joc.inventory.deploy && securityLevel !== 'HIGH' && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)) {
+                  <button
+                    (click)="deploy()"
+                    [disabled]="!lock.valid && !lock.hasDeployments" class="btn btn-sm btn-grey m-l-12 m-t-n-xs"
+                    type="button">
+                    <i class="fa fa-rocket p-r-xs"></i>
+                    <span translate>inventory.button.deploy</span>
+                  </button>
+                }
+              </div>
+            }
+          </div>
+          @if (lock.configuration) {
+            <form>
+              <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
+                   class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.lock.name' | translate) : ''"
+
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
+                       translate>common.label.name
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
+                <div class="col-lg-9 col-xl-8 col-xxl-6">
+                  <input #name="ngModel" (blur)="rename(name.invalid)" [(ngModel)]="lock.name" [appAutofocus]="!isTrash"
+                         [readonly]="isTrash || !permission.joc.inventory.manage" autocomplete="off" class="form-control"
+                         identifierValidation name="name" required type="text">
+                  @if (name.invalid && (name.dirty || name.touched)) {
+                    <div class="text-danger help-block">
+                      @if (name.errors['required']) {
+                        <div translate>common.message.requiredError</div>
+                      }
+                      @if (name.errors['invalidIdentifier']) {
+                        <div translate>common.message.invalid</div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.lock.title' | translate) : ''"
+
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
+                       translate>common.label.title</label>
+                <div class="col-lg-9 col-xl-8 col-xxl-6">
+                  <input (blur)="saveJSON()" [(ngModel)]="lock.configuration.title" [readonly]="isTrash || !permission.joc.inventory.manage"
+                         autocomplete="off" class="form-control"
+                         name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text">
+                </div>
+              </div>
+              @if (coreService.expertMode) {
+                <div class="form-group row">
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.lock.documentation' | translate) : ''"
+
+                         class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
+                         translate>inventory.label.documentation</label>
+                  <div class="col-lg-9 col-xl-8 col-xxl-6">
+                    <app-select-document (funcCall)="saveJSON($event)" [data]="lock.configuration"
+                                         [documentationTree]="documentationTree"></app-select-document>
+                  </div>
+                </div>
+              }
+              <div [ngClass]="{ 'has-error' : (((limit.dirty || limit.touched) && limit.invalid))}" class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.lock.limit' | translate) : ''"
+
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
+                       translate>inventory.label.limit
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
+                <div class="col-lg-9 col-xl-8 col-xxl-6">
+                  <nz-input-number #limit="ngModel" (nzBlur)="saveJSON()" [(ngModel)]="lock.configuration.limit"
+                                   [nzDisabled]="isTrash || !permission.joc.inventory.manage" [nzMin]="0"
+                                   [nzPlaceHolder]="'inventory.placeholder.enterLimit' | translate" [nzStep]="1" name="limit"
+                                   required></nz-input-number>
+                  @if (limit.invalid && (limit.dirty || limit.touched)) {
+                    <div class="text-danger help-block">
+                      @if (limit.errors['required']) {
+                        <div translate>common.message.requiredError</div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            </form>
+          }
         </div>
       </div>
-      <form *ngIf="lock.configuration">
-        <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
-             class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.lock.name' | translate) : ''"
-
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
-                 translate>common.label.name
-            <sup class="text-danger text-sm">*</sup>
-          </label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <input #name="ngModel" (blur)="rename(name.invalid)" [(ngModel)]="lock.name" [appAutofocus]="!isTrash"
-                   [readonly]="isTrash || !permission.joc.inventory.manage" autocomplete="off" class="form-control"
-                   identifierValidation name="name" required type="text">
-            <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-              <div *ngIf="name.errors['required']">
-                <div translate>common.message.requiredError</div>
-              </div>
-              <div *ngIf="name.errors['invalidIdentifier']" translate>common.message.invalid</div>
-            </div>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.lock.title' | translate) : ''"
-
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
-                 translate>common.label.title</label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <input (blur)="saveJSON()" [(ngModel)]="lock.configuration.title" [readonly]="isTrash || !permission.joc.inventory.manage"
-                   autocomplete="off" class="form-control"
-                   name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text">
-          </div>
-        </div>
-        <div *ngIf="coreService.expertMode" class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.lock.documentation' | translate) : ''"
-
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
-                 translate>inventory.label.documentation</label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <app-select-document (funcCall)="saveJSON($event)" [data]="lock.configuration"
-                                 [documentationTree]="documentationTree"></app-select-document>
-          </div>
-        </div>
-        <div [ngClass]="{ 'has-error' : (((limit.dirty || limit.touched) && limit.invalid))}" class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.lock.limit' | translate) : ''"
-
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
-                 translate>inventory.label.limit
-            <sup class="text-danger text-sm">*</sup>
-          </label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <nz-input-number #limit="ngModel" (nzBlur)="saveJSON()" [(ngModel)]="lock.configuration.limit"
-                             [nzDisabled]="isTrash || !permission.joc.inventory.manage" [nzMin]="0"
-                             [nzPlaceHolder]="'inventory.placeholder.enterLimit' | translate" [nzStep]="1" name="limit"
-                             required></nz-input-number>
-            <div *ngIf="limit.invalid && (limit.dirty || limit.touched)" class="text-danger help-block">
-              <div *ngIf="limit.errors['required']">
-                <div translate>common.message.requiredError</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
+    }
+    @if (data.object) {
+      <div class="col-md-12">
+        <app-table
+          [copyObj]="copyObj"
+          [securityLevel]="securityLevel"
+          [dataObj]="data"
+          [isTrash]="isTrash"
+          [objectType]="objectType"
+          [permission]="permission"
+          [preferences]="preferences"
+          [schedulerId]="schedulerId"></app-table>
+      </div>
+    }
   </div>
-  <div *ngIf="data.object" class="col-md-12">
-    <app-table
-      [copyObj]="copyObj"
-      [securityLevel]="securityLevel"
-      [dataObj]="data"
-      [isTrash]="isTrash"
-      [objectType]="objectType"
-      [permission]="permission"
-      [preferences]="preferences"
-      [schedulerId]="schedulerId"></app-table>
-  </div>
-</div>
+}

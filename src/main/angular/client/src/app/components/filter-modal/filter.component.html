@@ -19,49 +19,61 @@
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let filter of filterList | orderBy:'name'; let i = index" class="start-on-hover">
-          <td>{{i + 1}}</td>
-          <td nowrap>
-            <a (click)="removeFavorite()" *ngIf="favorite == filter.id"
-               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.useDefault' | translate" class="fa fa-star text-primary fa-lg m-r-xs"></a>
-            <a (click)="makeFavorite(filter)" *ngIf="favorite !=filter.id"
-               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.useDefault' | translate" class="fa fa-star-o fa-lg m-r-xs"></a>
-            {{filter.name}} <label *ngIf="filter.shared" class="label label-info"
-                                   translate>customization.label.share</label>
-          </td>
-          <td>{{filter.account}}</td>
-          <td>
-            <div class="btn-group dropdown">
-              <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
-                      type="button"><i
-                class="fa fa-ellipsis-h"></i></button>
-              <nz-dropdown-menu #option="nzDropdownMenu">
-                <ul nz-menu>
-                  <li (click)="editFilter(filter)" *ngIf="permission.joc.administration.customization.manage || filter.account==username"
-                      nz-menu-item>
-                    <a translate>customization.button.edit</a>
-                  </li>
-                  <li (click)="copyFilter(filter)" *ngIf="permission.joc.administration.customization.manage"
-                      nz-menu-item>
-                    <a translate>customization.button.copy</a>
-                  </li>
-                  <li (click)="makeShare(filter)" *ngIf="permission.joc.administration.customization.share && filter.account==username && !filter.shared"
-                      nz-menu-item>
-                    <a translate>customization.button.share</a>
-                  </li>
-                  <li (click)="deleteFilter(filter)" *ngIf="filterList.length==1 && (permission.joc.administration.customization.manage || filter.account==username)" class="bg-hover-color"
-                      nz-menu-item>
-                    <a translate>customization.button.delete</a>
-                  </li>
-                  <li (click)="deleteFilter(filter)" *ngIf="filterList.length>1 && (permission.joc.administration.customization.manage || filter.account==username)" class="bg-hover-color"
-                      nz-menu-item>
-                    <a translate>customization.button.delete</a>
-                  </li>
-                </ul>
-              </nz-dropdown-menu>
-            </div>
-          </td>
-        </tr>
+          @for (filter of filterList | orderBy:'name'; track filter.id || filter.name; let i = $index) {
+            <tr class="start-on-hover">
+              <td>{{i + 1}}</td>
+              <td nowrap>
+                @if (favorite == filter.id) {
+                  <a (click)="removeFavorite()"
+                     [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.useDefault' | translate" class="fa fa-star text-primary fa-lg m-r-xs"></a>
+                }
+                @if (favorite != filter.id) {
+                  <a (click)="makeFavorite(filter)"
+                     [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.useDefault' | translate" class="fa fa-star-o fa-lg m-r-xs"></a>
+                }
+                {{filter.name}} @if (filter.shared) {
+                <label class="label label-info" translate>customization.label.share</label>
+              }
+              </td>
+              <td>{{filter.account}}</td>
+              <td>
+                <div class="btn-group dropdown">
+                  <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                          type="button"><i
+                    class="fa fa-ellipsis-h"></i></button>
+                  <nz-dropdown-menu #option="nzDropdownMenu">
+                    <ul nz-menu>
+                      @if (permission.joc.administration.customization.manage || filter.account==username) {
+                        <li (click)="editFilter(filter)" nz-menu-item>
+                          <a translate>customization.button.edit</a>
+                        </li>
+                      }
+                      @if (permission.joc.administration.customization.manage) {
+                        <li (click)="copyFilter(filter)" nz-menu-item>
+                          <a translate>customization.button.copy</a>
+                        </li>
+                      }
+                      @if (permission.joc.administration.customization.share && filter.account==username && !filter.shared) {
+                        <li (click)="makeShare(filter)" nz-menu-item>
+                          <a translate>customization.button.share</a>
+                        </li>
+                      }
+                      @if (filterList.length==1 && (permission.joc.administration.customization.manage || filter.account==username)) {
+                        <li (click)="deleteFilter(filter)" class="bg-hover-color" nz-menu-item>
+                          <a translate>customization.button.delete</a>
+                        </li>
+                      }
+                      @if (filterList.length>1 && (permission.joc.administration.customization.manage || filter.account==username)) {
+                        <li (click)="deleteFilter(filter)" class="bg-hover-color" nz-menu-item>
+                          <a translate>customization.button.delete</a>
+                        </li>
+                      }
+                    </ul>
+                  </nz-dropdown-menu>
+                </div>
+              </td>
+            </tr>
+          }
         </tbody>
       </table>
     </div>

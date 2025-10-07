@@ -7,52 +7,64 @@
       </button>
     </div>
     <div (cdkDropListDropped)="drop($event)" cdkDropList class="role-list m-t-sm">
-      <div *ngFor="let group of groups" class="w-full role-box" cdkDrag>
-        <div class="node-wrapper p-l-xxs p-b-xxs">
-          <div cdkDragHandle class="drag-handler pos-rel t-n-xxs m-l-xxs">
-            <i aria-hidden="true" class="fa fa-bars"></i>
-          </div>
-          <span (click)="selectGroup(group, true)" class="cursor w-14 m-l-xs ">
-            <i *ngIf="!group.isExpanded && !group.loading" nz-icon nzTheme="outline"
-                nzType="caret-right"></i>
-            <i *ngIf="group.isExpanded && !group.loading" nz-icon nzTheme="outline"
-                nzType="caret-down"></i>
-            <i *ngIf="group.loading"><nz-spin [nzSize]="'small'" nzSimple></nz-spin></i>
-          </span>
-          <div class="btn-group dropdown">
-            <button [nzDropdownMenu]="groupTagMenu" class="btn-drop more-option-h" nz-dropdown
-                    nzTrigger="click" type="button">
-              <i class="fa fa-ellipsis-h"></i>
-            </button>
-            <nz-dropdown-menu #groupTagMenu="nzDropdownMenu" role="menu">
-              <ul nz-menu>
-                <li (click)="addTagsToGroup(group);" nz-menu-item>
-                  <a translate>inventory.button.assignTags</a></li>
-                <li (click)="renameGroup(group);" nz-menu-item>
-                  <a translate>inventory.button.rename</a></li>
-                <li (click)="deleteGroup(group);" class="bg-hover-color"
-                    nz-menu-item>
-                  <a translate>inventory.button.delete</a></li>
-              </ul>
-            </nz-dropdown-menu>
-          </div>
-          <div class="node-content-wrapper" (click)="selectGroup(group)">
-            <i class="icon-color p-r-xs" nz-icon nzTheme="outline" nzType="tags"></i>
-            <span class="p-l-xxs">{{ group.name }}</span>
-          </div>
-        </div>
-        <div class="p-l-md" *ngIf="group.isExpanded && !group.loading">
-          <div class="m-l-sm node-wrapper p-b-xxs" *ngIf="group.children?.length == 0" translate>
-            common.message.noDataAvailable
-          </div>
-          <div class="m-l-12" *ngFor="let child of group.children">
-            <div class="d-flex justify-content-start align-items-center gap-2">
-              <span class="icon-color p-r-xs" nz-icon nzType="tag" nzTheme="outline"></span>
-              <span class="p-l-xxs">{{ child }}</span>
+      @for (group of groups; track $index) {
+        <div class="w-full role-box" cdkDrag>
+          <div class="node-wrapper p-l-xxs p-b-xxs">
+            <div cdkDragHandle class="drag-handler pos-rel t-n-xxs m-l-xxs">
+              <i aria-hidden="true" class="fa fa-bars"></i>
+            </div>
+            <span (click)="selectGroup(group, true)" class="cursor w-14 m-l-xs ">
+              @if (!group.isExpanded && !group.loading) {
+                <i nz-icon nzTheme="outline" nzType="caret-right"></i>
+              }
+              @if (group.isExpanded && !group.loading) {
+                <i nz-icon nzTheme="outline" nzType="caret-down"></i>
+              }
+              @if (group.loading) {
+                <i><nz-spin [nzSize]="'small'" nzSimple></nz-spin></i>
+              }
+            </span>
+            <div class="btn-group dropdown">
+              <button [nzDropdownMenu]="groupTagMenu" class="btn-drop more-option-h" nz-dropdown
+                      nzTrigger="click" type="button">
+                <i class="fa fa-ellipsis-h"></i>
+              </button>
+              <nz-dropdown-menu #groupTagMenu="nzDropdownMenu" role="menu">
+                <ul nz-menu>
+                  <li (click)="addTagsToGroup(group);" nz-menu-item>
+                    <a translate>inventory.button.assignTags</a></li>
+                  <li (click)="renameGroup(group);" nz-menu-item>
+                    <a translate>inventory.button.rename</a></li>
+                  <li (click)="deleteGroup(group);" class="bg-hover-color"
+                      nz-menu-item>
+                    <a translate>inventory.button.delete</a></li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+            <div class="node-content-wrapper" (click)="selectGroup(group)">
+              <i class="icon-color p-r-xs" nz-icon nzTheme="outline" nzType="tags"></i>
+              <span class="p-l-xxs">{{ group.name }}</span>
             </div>
           </div>
+          @if (group.isExpanded && !group.loading) {
+            <div class="p-l-md">
+              @if (group.children?.length == 0) {
+                <div class="m-l-sm node-wrapper p-b-xxs" translate>
+                  common.message.noDataAvailable
+                </div>
+              }
+              @for (child of group.children; track child) {
+                <div class="m-l-12">
+                  <div class="d-flex justify-content-start align-items-center gap-2">
+                    <span class="icon-color p-r-xs" nz-icon nzType="tag" nzTheme="outline"></span>
+                    <span class="p-l-xxs">{{ child }}</span>
+                  </div>
+                </div>
+              }
+            </div>
+          }
         </div>
-      </div>
+      }
     </div>
   </div>
 </div>

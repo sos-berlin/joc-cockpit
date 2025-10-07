@@ -18,19 +18,23 @@
   </div>
 
   <div class="m-l-2">
-    <div class="row" *ngFor="let schedule of schedules; let i = index">
-      <div class="col-sm-12">
-        <label nz-checkbox [(ngModel)]="schedule.selected" (ngModelChange)="onScheduleChange()">
-          {{ schedule.name }}
-        </label>
+    @for (schedule of schedules; track schedule; let i = $index) {
+      <div class="row">
+        <div class="col-sm-12">
+          <label nz-checkbox [(ngModel)]="schedule.selected" (ngModelChange)="onScheduleChange()">
+            {{ schedule.name }}
+          </label>
+        </div>
       </div>
-    </div>
+    }
   </div>
 </div>
 
 <div class="modal-footer text-left">
   <button class="btn btn-primary btn-sm" type="submit" (click)="submit()" [disabled]="!isAnySelected()">
-    <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+    @if (submitted) {
+      <i class="fa fa-spin fa-spinner p-r-xs"></i>
+    }
     {{'common.button.submit' | translate}}
   </button>
   <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>

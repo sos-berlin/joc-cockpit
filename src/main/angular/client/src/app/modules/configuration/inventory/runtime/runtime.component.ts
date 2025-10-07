@@ -22,6 +22,7 @@ interface CalendarItem {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-restriction',
   templateUrl: './add-restriction-dialog.html'
 })
@@ -88,7 +89,8 @@ export class AddRestrictionComponent {
   hd = new Holidays.default();
   frequencyEditIndex: number = -1;
   showMonthRange = false;
-
+  selectedDays: string[] = [];
+  selectedMonthChk: string[] = [];
   constructor(public activeModal: NzModalRef, private coreService: CoreService, public modal: NzModalService, public calendarService: CalendarService, private datePipe: DatePipe) {
   }
 
@@ -154,6 +156,21 @@ export class AddRestrictionComponent {
       this.checkMonths();
       this.showMonthRange = true;
     }
+
+      if (this.frequency.days && this.frequency.days.length > 0) {
+    this.selectedDays = [...this.frequency.days]; // Initialize selected days
+    this.checkDays();
+  } else {
+    this.selectedDays = [];
+  }
+
+  if (this.frequency.months && this.frequency.months.length > 0) {
+    this.selectedMonthChk = [...this.frequency.months];
+    this.checkMonths();
+    this.showMonthRange = true;
+  } else {
+    this.selectedMonthChk = [];
+  }
     this.loadAvailableNonWorkingDayCalendars();
   }
 
@@ -365,11 +382,6 @@ export class AddRestrictionComponent {
     }
   }
 
-  dayChange(value: string[]): void {
-    this.frequency.days = value;
-    this.onChangeDays();
-  }
-
   onChangeDays(): void {
     if (this.frequency.days) {
       this.editor.isEnable = this.frequency.days.length > 0;
@@ -499,7 +511,14 @@ export class AddRestrictionComponent {
 
   monthChange(value: string[]): void {
     this.frequency.months = value;
+    this.selectedMonthChk = value;
     this.onChangeMonths();
+  }
+
+  dayChange(value: string[]): void {
+    this.frequency.days = value;
+    this.selectedDays = value;
+    this.onChangeDays();
   }
 
   onChangeMonths(): void {
@@ -1143,6 +1162,7 @@ export class AddRestrictionComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-period',
   templateUrl: './period-editor-dialog.html',
 })
@@ -1278,6 +1298,7 @@ export class PeriodComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-run-time',
   templateUrl: './run-time-dialog.html',
 })

@@ -7,6 +7,7 @@ import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.c
 import {NzModalService} from "ng-zorro-antd/modal";
 
 @Component({
+  standalone: false,
   selector: 'app-agent-running-task',
   templateUrl: './agent-running-task.component.html',
   styleUrls: ['agent-running-task.component.css']

@@ -8,6 +8,7 @@ import {CoreService} from '../../../services/core.service';
 import {DataService} from '../data.service';
 
 @Component({
+  standalone: false,
   selector: 'app-pending-requests',
   templateUrl: './pending-requests.component.html',
   styleUrls: ['./pending-requests.component.scss']

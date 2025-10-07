@@ -5,19 +5,21 @@ import {CoreService} from '../../services/core.service';
 import {DataService} from "../../services/data.service";
 
 @Component({
+  standalone: false,
   selector: 'app-about',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <div class="modal-header">
-      <h4 class="modal-title">
-        <span translate>info.button.aboutJS7</span>
-      </h4>
-      <button type="button" class="close" aria-label="Close" (click)="modalService.destroy()">
-        <span aria-hidden="true" class="fa fa-times-circle"></span>
-      </button>
-    </div>
-    <div class="modal-body p-a">
-      <div class="row" *ngIf="isLoaded">
+template: `
+  <div class="modal-header">
+    <h4 class="modal-title">
+      <span translate>info.button.aboutJS7</span>
+    </h4>
+    <button type="button" class="close" aria-label="Close" (click)="modalService.destroy()">
+      <span aria-hidden="true" class="fa fa-times-circle"></span>
+    </button>
+  </div>
+  <div class="modal-body p-a">
+    @if (isLoaded) {
+      <div class="row">
         <div class="col-sm-3">
           <img class="p-t-xs m-l logo-for-default" [ngClass]="{'m-l-sm': validUntil}"
                src="./assets/images/JS7-logo-default-theme.png" alt="JS7" [width]="validUntil ? 122 : 100">
@@ -38,50 +40,71 @@ import {DataService} from "../../services/data.service";
           <div class="p-b-xs row">
             <div class="col-sm-12 text-black-lt" translate>info.label.allRightReserved</div>
           </div>
-          <div class="row" *ngIf="licenseType">
-            <label class="col-sm-3" translate>info.label.licenseType</label>
-            <div class="col-sm-9">
-              <span *ngIf="licenseType !== 'OPENSOURCE'">
-                <i *ngIf="licenseType == 'COMMERCIAL_INVALID'" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'info.tooltip.invalidLicense' | translate"
-                   class="fa fa-times-circle text-danger" aria-hidden="true"></i>
-                {{'info.label.commercialLicense' | translate}}
-              </span>
-              <span *ngIf="licenseType === 'OPENSOURCE'" translate>info.label.openSourceLicense</span>
-              <a *ngIf="licenseType !== 'OPENSOURCE'" class="text-primary text-hover-primary m-l-md"
-                 (click)="checkLicense()">
-                <i *ngIf="!isCompleted || isLoading" class="fa fa-refresh m-r-xs" [ngClass]="{'fa-spin': isLoading}"></i>
-                <i *ngIf="isCompleted && !isLoading" class="fa fa-check p-r-xs"></i>
-                {{'info.button.checkLicense' | translate}}
-              </a>
+          @if (licenseType) {
+            <div class="row">
+              <label class="col-sm-3" translate>info.label.licenseType</label>
+              <div class="col-sm-9">
+                @if (licenseType !== 'OPENSOURCE') {
+                  <span>
+                    @if (licenseType == 'COMMERCIAL_INVALID') {
+                      <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'info.tooltip.invalidLicense' | translate"
+                         class="fa fa-times-circle text-danger" aria-hidden="true"></i>
+                    }
+                    {{'info.label.commercialLicense' | translate}}
+                  </span>
+                }
+                @if (licenseType === 'OPENSOURCE') {
+                  <span translate>info.label.openSourceLicense</span>
+                }
+                @if (licenseType !== 'OPENSOURCE') {
+                  <a class="text-primary text-hover-primary m-l-md"
+                     (click)="checkLicense()">
+                    @if (!isCompleted || isLoading) {
+                      <i class="fa fa-refresh m-r-xs" [ngClass]="{'fa-spin': isLoading}"></i>
+                    }
+                    @if (isCompleted && !isLoading) {
+                      <i class="fa fa-check p-r-xs"></i>
+                    }
+                    {{'info.button.checkLicense' | translate}}
+                  </a>
+                }
+              </div>
             </div>
-          </div>
-          <div class="row m-t-xs" *ngIf="licenseType && licenseType !== 'OPENSOURCE'">
-            <label class="col-sm-3" translate>info.label.licenseValidity</label>
-            <div class="col-sm-9"
-                 [ngClass]="remainingDays < 1 ? 'text-danger' : remainingDays < 7 ? 'text-warning' : ''">
-              <i>{{validFrom}}</i>
-              -
-              <i>{{validUntil}}</i>
+          }
+          @if (licenseType && licenseType !== 'OPENSOURCE') {
+            <div class="row m-t-xs">
+              <label class="col-sm-3" translate>info.label.licenseValidity</label>
+              <div class="col-sm-9"
+                   [ngClass]="remainingDays < 1 ? 'text-danger' : remainingDays < 7 ? 'text-warning' : ''">
+                <i>{{validFrom}}</i>
+                -
+                <i>{{validUntil}}</i>
+              </div>
             </div>
-          </div>
-          <div class="row m-t-xs" *ngIf="versionData.gitHash">
-            <label class="col-sm-3">JOC Cockpit</label>
-            <div class=" col-sm-9">
-              <span>{{versionData.gitHash}}</span>&nbsp;
-              <span>{{versionData.version}} ({{versionData.date}})</span>
+          }
+          @if (versionData.gitHash) {
+            <div class="row m-t-xs">
+              <label class="col-sm-3">JOC Cockpit</label>
+              <div class=" col-sm-9">
+                <span>{{versionData.gitHash}}</span>&nbsp;
+                <span>{{versionData.version}} ({{versionData.date}})</span>
+              </div>
             </div>
-          </div>
+          }
         </div>
       </div>
-      <div class="row" *ngIf="!isLoaded">
+    }
+    @if (!isLoaded) {
+      <div class="row">
         <div class="col-md-12">
           <div class="loading-center text-primary text min-ht-128">
             <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
           </div>
         </div>
       </div>
-    </div>
-  `
+    }
+  </div>
+`
 })
 export class AboutModalComponent {
   versionData: any = {};
@@ -176,6 +199,7 @@ export class AboutModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-step-guide',
   templateUrl: './step-guide-dialog.component.html'
 })
@@ -205,6 +229,7 @@ export class StepGuideComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-info-menu',
   templateUrl: './info-menu.component.html'
 })

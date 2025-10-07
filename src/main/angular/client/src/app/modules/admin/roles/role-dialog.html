@@ -1,11 +1,19 @@
 <div class="modal-header">
   <h4 class="modal-title">
-        <span *ngIf="!newRole">
-            <span *ngIf="copy" translate>user.label.copyRole</span>
-            <span *ngIf="!copy" translate>user.label.editRole</span> :
-            <span>{{oldName}}</span>
-        </span>
-    <span *ngIf="newRole" translate>user.label.addRole</span>
+    @if (!newRole) {
+      <span>
+        @if (copy) {
+          <span translate>user.label.copyRole</span>
+        }
+        @if (!copy) {
+          <span translate>user.label.editRole</span>
+        } :
+        <span>{{oldName}}</span>
+      </span>
+    }
+    @if (newRole) {
+      <span translate>user.label.addRole</span>
+    }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -25,21 +33,29 @@
         <input #roleName="ngModel" (blur)="checkRole(currentRole.roleName)" [(ngModel)]="currentRole.roleName" [appAutofocus]="true"
                autocomplete="off" class="form-control" name="roleName" placeholder="{{'user.placeholder.role' | translate}}" required
                type="text"/>
-        <div *ngIf="roleName.invalid && (roleName.dirty || roleName.touched)" class="text-danger help-block">
-          <div *ngIf="roleName.errors['required']" translate>
-            common.message.requiredError
+        @if (roleName.invalid && (roleName.dirty || roleName.touched)) {
+          <div class="text-danger help-block">
+            @if (roleName.errors['required']) {
+              <div translate>
+                common.message.requiredError
+              </div>
+            }
           </div>
-        </div>
-        <div *ngIf="!isUnique" class="text-danger help-block" translate>
-          common.message.uniqueError
-        </div>
+        }
+        @if (!isUnique) {
+          <div class="text-danger help-block" translate>
+            common.message.uniqueError
+          </div>
+        }
       </div>
     </div>
   </div>
   <div class="modal-footer">
     <button [disabled]="!isUnique || !myForm.form.valid || submitted" class="btn btn-primary btn-sm"
             type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">

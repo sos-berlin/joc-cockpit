@@ -12,28 +12,36 @@
         <a translate>workflow.button.showGraphicalView</a>
       </li>
       <li nz-menu-divider></li>
-      <li (click)="addOrder(workflow);" *ngIf="permission.currentController.orders.create"
-          [nzDisabled]="!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'"
-          nz-menu-item>
-        <a>{{'workflow.button.addOrder' | translate}} ..</a>
-      </li>
-      <li (click)="suspend(workflow);" *ngIf="!workflow.suspended"
-          [nzDisabled]="!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'"
-          nz-menu-item>
-        <a>{{'order.button.suspend' | translate}}</a>
-      </li>
-      <li (click)="resume(workflow);" *ngIf="workflow.suspended" [nzDisabled]="!workflow.isCurrentVersion" nz-menu-item>
-        <a>{{'order.button.resume' | translate}}</a>
-      </li>
-      <li (click)="showDependency(workflow);"
-          *ngIf="workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies"
-          nz-menu-item>
-        <a>{{'workflow.button.showDependency' | translate}} ..</a>
-      </li>
-      <li (click)="transitionOrders(workflow);" *ngIf="!workflow.isCurrentVersion" [nzDisabled]="workflow.state._text === 'NOT_IN_SYNC'"
-          nz-menu-item>
-        <a>{{'workflow.button.transitionOrders' | translate}}</a>
-      </li>
+      @if (permission.currentController.orders.create) {
+        <li (click)="addOrder(workflow);"
+            [nzDisabled]="!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'"
+            nz-menu-item>
+          <a>{{'workflow.button.addOrder' | translate}} ..</a>
+        </li>
+      }
+      @if (!workflow.suspended) {
+        <li (click)="suspend(workflow);"
+            [nzDisabled]="!workflow.isCurrentVersion || workflow.state._text === 'NOT_IN_SYNC'"
+            nz-menu-item>
+          <a>{{'order.button.suspend' | translate}}</a>
+        </li>
+      }
+      @if (workflow.suspended) {
+        <li (click)="resume(workflow);" [nzDisabled]="!workflow.isCurrentVersion" nz-menu-item>
+          <a>{{'order.button.resume' | translate}}</a>
+        </li>
+      }
+      @if (workflow.hasExpectedNoticeBoards || workflow.hasConsumeNoticeBoards || workflow.hasPostNoticeBoards || workflow.hasAddOrderDependencies) {
+        <li (click)="showDependency(workflow);" nz-menu-item>
+          <a>{{'workflow.button.showDependency' | translate}} ..</a>
+        </li>
+      }
+      @if (!workflow.isCurrentVersion) {
+        <li (click)="transitionOrders(workflow);" [nzDisabled]="workflow.state._text === 'NOT_IN_SYNC'"
+            nz-menu-item>
+          <a>{{'workflow.button.transitionOrders' | translate}}</a>
+        </li>
+      }
       <li nz-menu-divider></li>
       <li (click)="coreService.showDocumentation(workflow.documentationName, preferences)" [nzDisabled]="!workflow.documentationName"
           nz-menu-item>

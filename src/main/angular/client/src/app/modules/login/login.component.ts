@@ -13,6 +13,7 @@
   import {KioskService} from "../../services/kiosk.service";
 
   @Component({
+    standalone: false,
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.css']
@@ -275,7 +276,7 @@
           }
           this.oAuthService.clientFlowType = res.iamOidcFlowType;
           sessionStorage.setItem('clientFlowType', res.iamOidcFlowType);
-          
+
           if (res.iamOidcClientId || res.iamOidcClientSecret) {
             this.oAuthService.initLoginFlow();
           }

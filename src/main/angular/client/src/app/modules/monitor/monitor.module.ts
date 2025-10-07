@@ -12,15 +12,17 @@ import {OrderNotificationComponent} from './order-notification/order-notificatio
 import {SystemNotificationComponent} from "./system-notification/system-notification.component";
 import {AcknowledgeModalComponent} from "./acknowledge-notification/acknowledge.component";
 import {GroupByPipe} from '../../pipes/core.pipe';
+import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 
 @NgModule({
-  imports: [
-    SharedModule,
-    NzTabsModule,
-    NzPopoverModule,
-    GaugeModule.forRoot(),
-    MonitorRoutingModule
-  ],
+    imports: [
+        SharedModule,
+        NzTabsModule,
+        NzPopoverModule,
+        GaugeModule.forRoot(),
+        MonitorRoutingModule,
+        NzTooltipDirective
+    ],
   declarations: [
     MonitorComponent,
     ControllerMonitorComponent,

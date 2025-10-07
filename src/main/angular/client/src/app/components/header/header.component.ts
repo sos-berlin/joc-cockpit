@@ -10,6 +10,7 @@ import {AboutModalComponent} from '../info-menu/info-menu.component';
 import { KioskService } from '../../services/kiosk.service';
 
 @Component({
+  standalone: false,
   selector: 'app-header',
   templateUrl: './header.component.html'
 })

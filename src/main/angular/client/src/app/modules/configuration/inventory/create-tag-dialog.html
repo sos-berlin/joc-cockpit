@@ -1,15 +1,25 @@
 <div class="modal-header">
-  <h4 class="modal-title" *ngIf="!data && !isRename">
-    <span *ngIf="!filters" translate>inventory.label.addTags</span>
-    <span *ngIf="filters" translate>workflow.label.selectTags</span>
-  </h4>
-  <h4 class="modal-title" *ngIf="isRename">
-    <span translate>inventory.label.renameTag</span>
-  </h4>
-  <h4 class="modal-title" *ngIf="data">
-    <span translate>inventory.label.addTagsToWorkflow</span>
-    <span >: {{data.name}}</span>
-  </h4>
+  @if (!data && !isRename) {
+    <h4 class="modal-title">
+      @if (!filters) {
+        <span translate>inventory.label.addTags</span>
+      }
+      @if (filters) {
+        <span translate>workflow.label.selectTags</span>
+      }
+    </h4>
+  }
+  @if (isRename) {
+    <h4 class="modal-title">
+      <span translate>inventory.label.renameTag</span>
+    </h4>
+  }
+  @if (data) {
+    <h4 class="modal-title">
+      <span translate>inventory.label.addTagsToWorkflow</span>
+      <span >: {{data.name}}</span>
+    </h4>
+  }
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
@@ -19,129 +29,170 @@
     <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
     </div>
-    <div *ngIf="data && !data.controller && !data.object && !data.type"
-         class="form-group row">
-      <div class="col-md-3">
-        <label translate>inventory.label.handleRecursively</label>
-      </div>
-      <div class="col-md-6">
-        <label [(ngModel)]="object.isRecursive" name="isRecursive"
-               nz-checkbox (ngModelChange)="handleRecursive()"></label>
-      </div>
-    </div>
-
-    <div class="form-group row" *ngIf="!isRename">
-      <label class="col-md-3 form-control-label" translate>inventory.label.tags
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      <div class="col-md-8" *ngIf="!filters">
-        <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
-          <nz-tag
-            *ngFor="let tag of tags; let i = index"
-            [nzMode]="'closeable'"
-            (nzOnClose)="handleClose(tag)"
-          >
-            {{ sliceTagName(tag) }}
-          </nz-tag>
-          <nz-tag *ngIf="!inputVisible" class="editable-tag" nzNoAnimation (click)="showInput()">
-            <span nz-icon nzType="plus"></span>
-            {{'inventory.button.newTag' | translate}}
-          </nz-tag>
-          <div class="d-inline-block" *ngIf="inputVisible" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
-            <input
-              #name="ngModel"
-              #inputElement
-              tagValidation
-              [nzAutocomplete]="auto"
-              nz-input
-              name="tag"
-              type="text"
-              [(ngModel)]="inputValue"
-              (ngModelChange)="onChange($event)"
-              style="width: 128px;"
-              (blur)="handleInputConfirm()"
-              (keydown.enter)="handleInputConfirm()"
-            />
-            <nz-autocomplete [nzDataSource]="filteredOptions" #auto></nz-autocomplete>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-8" *ngIf="filters && filters.tagType === 'workflowTags'">
-        <nz-select #tagSelect [(ngModel)]="filter.tags" name="tag" nzAllowClear nzMode="multiple" [nzAutoFocus]="true"
-                   nzPlaceHolder="{{ 'inventory.search.label.searchHeading' | translate }}"
-                   nzShowSearch width="100%" >
-          <nz-option *ngFor="let tag of allTags | orderBy: 'ordering'" [nzLabel]="tag.name" [nzValue]="tag"></nz-option>
-        </nz-select>
-
-      </div>
-      <div class="col-md-8" *ngIf="filters && filters.tagType === 'orderTags'">
-        <nz-select [(ngModel)]="filter.orderTags" name="tag" nzAllowClear nzMode="multiple" [nzAutoFocus]="true"
-                   nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
-                   nzShowSearch>
-          <nz-option *ngFor="let tag of allOrderTags | orderBy: 'ordering'" [nzLabel]="tag.name"
-                     [nzValue]="tag"></nz-option>
-        </nz-select>
-      </div>
-    </div>
-    <div class="form-group row" *ngIf="isRename">
-      <label class="col-md-3 form-control-label" translate>inventory.label.tagName
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique}" class="col-md-8">
-        <input #name="ngModel" tagValidation (blur)="checkValidInput()" [(ngModel)]="tag.name" [appAutofocus]="true" autocomplete="off" class="form-control"
-               name="name" required type="text" (ngModelChange)="isUnique = true">
-        <div *ngIf="name.invalid && (name.dirty || name.touched)"
-             class="text-danger help-block">
-          <div *ngIf="(name.errors && name.errors.required)">
-            <div translate>common.message.requiredError</div>
-          </div>
-          <div *ngIf="name.errors.invalidIdentifier" translate>common.message.invalid</div>
-        </div>
-        <div *ngIf="!isUnique && !(name.errors && name.errors.required)" class="help-block text-danger">
-          <div translate>common.message.uniqueError</div>
-        </div>
-      </div>
-    </div>
-    <ng-container *ngIf="data && !data.type && object.tagsObject">
-      <div class="row">
-        <div class="col-md-12">
-          <span class="_600 m-r-xs" translate>
-            inventory.label.listOfTags
-          </span>
-          <a (click)="expandAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
-            <i class="fa fa-angle-double-down fa-lg"></i>
-          </a>
-          <a (click)="collapseAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
-            <i class="fa fa-angle-double-up fa-lg"></i>
-          </a>
-        </div>
-      </div>
+    @if (data && !data.controller && !data.object && !data.type) {
       <div class="form-group row">
-        <div class="col-md-12">
-          <div class="p-l-sm p-t-sm" *ngFor="let keyValuePair of object.tagsObject | keyvalue">
-            <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
-            <span class="p-l-6 cur-point">
-              <span [ngClass]="{'cut-row' : object.deleteTags.has(keyValuePair.key)}">{{keyValuePair.key}}</span>
-              <i *ngIf="!object.expanded.has(keyValuePair.key)" (click)="object.expanded.add(keyValuePair.key)" class="fa fa-angle-down fa-lg p-l-sm" style="font-weight: bold"></i>
-              <i *ngIf="object.expanded.has(keyValuePair.key)" (click)="object.expanded.delete(keyValuePair.key)" class="fa fa-angle-up fa-lg p-l-sm" style="font-weight: bold"></i>
-              <i *ngIf="!object.deleteTags.has(keyValuePair.key)" (click)="object.deleteTags.add(keyValuePair.key)" class="fa fa-times fa-lg text-hover-color p-l-sm"></i>
-              <i *ngIf="object.deleteTags.has(keyValuePair.key)" (click)="object.deleteTags.delete(keyValuePair.key)" class="fa fa-plus fa-lg text-hover-primary p-l-sm"></i>
-            </span>
-            <ng-container *ngIf="object.expanded.has(keyValuePair.key)">
-              <div class="p-l" *ngFor="let workflow of keyValuePair.value">
-                <i class="icon-color" nz-icon nzTheme="outline" nzType="apartment"></i>
-                <span class="p-l-6">{{getFormattedPath(workflow)}}</span>
-              </div>
-            </ng-container>
-          </div>
+        <div class="col-md-3">
+          <label translate>inventory.label.handleRecursively</label>
+        </div>
+        <div class="col-md-6">
+          <label [(ngModel)]="object.isRecursive" name="isRecursive"
+                 nz-checkbox (ngModelChange)="handleRecursive()"></label>
         </div>
       </div>
-    </ng-container>
+    }
+
+    @if (!isRename) {
+      <div class="form-group row">
+        <label class="col-md-3 form-control-label" translate>inventory.label.tags
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        @if (!filters) {
+          <div class="col-md-8">
+            <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
+              @for (tag of tags; track $index; let i = $index) {
+                <nz-tag
+                  [nzMode]="'closeable'"
+                  (nzOnClose)="handleClose(tag)"
+                >
+                  {{ sliceTagName(tag) }}
+                </nz-tag>
+              }
+              @if (!inputVisible) {
+                <nz-tag class="editable-tag" nzNoAnimation (click)="showInput()">
+                  <span nz-icon nzType="plus"></span>
+                  {{'inventory.button.newTag' | translate}}
+                </nz-tag>
+              }
+              @if (inputVisible) {
+                <div class="d-inline-block" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}">
+                  <input
+                    #name="ngModel"
+                    #inputElement
+                    tagValidation
+                    [nzAutocomplete]="auto"
+                    nz-input
+                    name="tag"
+                    type="text"
+                    [(ngModel)]="inputValue"
+                    (ngModelChange)="onChange($event)"
+                    style="width: 128px;"
+                    (blur)="handleInputConfirm()"
+                    (keydown.enter)="handleInputConfirm()"
+                  />
+                  <nz-autocomplete [nzDataSource]="filteredOptions" #auto></nz-autocomplete>
+                </div>
+              }
+            </div>
+          </div>
+        }
+        @if (filters && filters.tagType === 'workflowTags') {
+          <div class="col-md-8">
+            <nz-select #tagSelect [(ngModel)]="filter.tags" name="tag" nzAllowClear nzMode="multiple" [nzAutoFocus]="true"
+                       nzPlaceHolder="{{ 'inventory.search.label.searchHeading' | translate }}"
+                       nzShowSearch width="100%" >
+              @for (tag of allTags | orderBy: 'ordering'; track tag) {
+                <nz-option [nzLabel]="tag.name" [nzValue]="tag"></nz-option>
+              }
+            </nz-select>
+          </div>
+        }
+        @if (filters && filters.tagType === 'orderTags') {
+          <div class="col-md-8">
+            <nz-select [(ngModel)]="filter.orderTags" name="tag" nzAllowClear nzMode="multiple" [nzAutoFocus]="true"
+                       nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
+                       nzShowSearch>
+              @for (tag of allOrderTags | orderBy: 'ordering'; track tag) {
+                <nz-option [nzLabel]="tag.name" [nzValue]="tag"></nz-option>
+              }
+            </nz-select>
+          </div>
+        }
+      </div>
+    }
+    @if (isRename) {
+      <div class="form-group row">
+        <label class="col-md-3 form-control-label" translate>inventory.label.tagName
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid) || !isUnique}" class="col-md-8">
+          <input #name="ngModel" tagValidation (blur)="checkValidInput()" [(ngModel)]="tag.name" [appAutofocus]="true" autocomplete="off" class="form-control"
+                 name="name" required type="text" (ngModelChange)="isUnique = true">
+          @if (name.invalid && (name.dirty || name.touched)) {
+            <div class="text-danger help-block">
+              @if (name.errors && name.errors.required) {
+                <div translate>common.message.requiredError</div>
+              }
+              @if (name.errors.invalidIdentifier) {
+                <div translate>common.message.invalid</div>
+              }
+            </div>
+          }
+          @if (!isUnique && !(name.errors && name.errors.required)) {
+            <div class="help-block text-danger">
+              <div translate>common.message.uniqueError</div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+    @if (data && !data.type && object.tagsObject) {
+      <ng-container>
+        <div class="row">
+          <div class="col-md-12">
+            <span class="_600 m-r-xs" translate>
+              inventory.label.listOfTags
+            </span>
+            <a (click)="expandAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="text">
+              <i class="fa fa-angle-double-down fa-lg"></i>
+            </a>
+            <a (click)="collapseAll();" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="text m-l-xs">
+              <i class="fa fa-angle-double-up fa-lg"></i>
+            </a>
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-md-12">
+            @for (keyValuePair of object.tagsObject | keyvalue; track keyValuePair) {
+              <div class="p-l-sm p-t-sm">
+                <span class="icon-color" nz-icon nzType="tag" nzTheme="outline"></span>
+                <span class="p-l-6 cur-point">
+                  <span [ngClass]="{'cut-row' : object.deleteTags.has(keyValuePair.key)}">{{keyValuePair.key}}</span>
+                  @if (!object.expanded.has(keyValuePair.key)) {
+                    <i (click)="object.expanded.add(keyValuePair.key)" class="fa fa-angle-down fa-lg p-l-sm" style="font-weight: bold"></i>
+                  }
+                  @if (object.expanded.has(keyValuePair.key)) {
+                    <i (click)="object.expanded.delete(keyValuePair.key)" class="fa fa-angle-up fa-lg p-l-sm" style="font-weight: bold"></i>
+                  }
+                  @if (!object.deleteTags.has(keyValuePair.key)) {
+                    <i (click)="object.deleteTags.add(keyValuePair.key)" class="fa fa-times fa-lg text-hover-color p-l-sm"></i>
+                  }
+                  @if (object.deleteTags.has(keyValuePair.key)) {
+                    <i (click)="object.deleteTags.delete(keyValuePair.key)" class="fa fa-plus fa-lg text-hover-primary p-l-sm"></i>
+                  }
+                </span>
+                @if (object.expanded.has(keyValuePair.key)) {
+                  <ng-container>
+                    @for (workflow of keyValuePair.value; track workflow) {
+                      <div class="p-l">
+                        <i class="icon-color" nz-icon nzTheme="outline" nzType="apartment"></i>
+                        <span class="p-l-6">{{getFormattedPath(workflow)}}</span>
+                      </div>
+                    }
+                  </ng-container>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      </ng-container>
+    }
   </div>
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || submitted || !isUnique" class="btn btn-primary btn-sm"
             type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">

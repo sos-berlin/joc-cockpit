@@ -7,6 +7,7 @@ import {UpdateUrlModalComponent} from "../dashboard.component";
 import {NzModalService} from "ng-zorro-antd/modal";
 
 @Component({
+  standalone: false,
   selector: 'app-api-server-status',
   templateUrl: './api-server-status.component.html'
 })

@@ -9,135 +9,174 @@
   </button>
 </div>
 <div class="modal-body p-a min-ht-200">
-  <div *ngIf="schedule.list">
-    <div class="inline pos-rel t-xxs">
-      <span *ngIf="schedule.isPlanned">
-      <i class="fa fa-stop date-planned"></i>
-        {{'common.label.planned' | translate}}
-        </span>
-      <span *ngIf="!schedule.isPlanned">
-      <i class="fa fa-stop date-unplanned"></i>
-        {{'dailyPlan.label.projected' | translate}}
-      </span>
-    </div>
-    <div class="inline pos-rel t-xxs b-l m-l-12 p-l-12 h-25">
-      <span *ngIf="schedule.numOfPeriods >= 0">
-        <span class="text-muted">{{'dailyPlan.label.numOfOrders' | translate}}</span>:
-        {{schedule.numOfPeriods}}
-      </span>
-      <span *ngIf="schedule.numOfNonPeriods >= 0">
-        <span class="text-muted">{{'dailyPlan.label.numOfNonPeriods' | translate}}</span>:
-        {{schedule.numOfNonPeriods}}
-      </span>
-    </div>
-    <div class="search-box-field pull-right form-group">
-      <label>
-        <input (keyup)="searchInResult()" [(ngModel)]="filter.searchText"
-               placeholder="{{'common.placeholder.search' | translate}}"
-               type="search">
-      </label>
-      <i (click)="filter.searchText = '';searchInResult()" [hidden]="!filter.searchText"
-         class="fa fa-times search-close"></i>
-    </div>
+  @if (schedule.list) {
     <div>
-      <nz-table
-        #ajaxTable
-        [nzBordered]="true"
-        (nzPageIndexChange)="pageIndexChange($event)"
-        (nzPageSizeChange)="pageSizeChange($event)"
-        [nzData]="data | orderBy: filter.sortBy: filter.reverse"
-        [nzLoading]="loading"
-        [nzPageIndex]="filter.currentPage"
-        [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
-        [nzPageSize]="filter.entryPerPage || preferences.entryPerPage || 25"
-        [nzShowPagination]="true"
-        [nzShowSizeChanger]="true"
-        [nzSize]="'small'"
-      >
-        <thead>
-        <tr>
-          <th (click)="sort('workflow')">
-            <a><span class="p-r-xs" translate>dailyPlan.label.workflow</span>
-              <i *ngIf="filter.sortBy == 'workflow' && !filter.reverse"
-                 class="fa fa-caret-up "></i>
-              <i *ngIf="filter.sortBy == 'workflow' && filter.reverse"
-                 class="fa fa-caret-down "></i></a>
-          </th>
-          <th (click)="sort('schedule')">
-            <a><span class="p-r-xs" translate>dailyPlan.label.schedule</span>
-              <i *ngIf="filter.sortBy == 'schedule' && !filter.reverse"
-                 class="fa fa-caret-up "></i>
-              <i *ngIf="filter.sortBy == 'schedule' && filter.reverse"
-                 class="fa fa-caret-down "></i></a>
-          </th>
-          <th (click)="sort('period')" *ngIf="schedule.numOfPeriods >= 0">
-            <a><span class="p-r-xs" translate>runtime.label.period</span>
-              <i *ngIf="filter.sortBy == 'period' && !filter.reverse"
-                 class="fa fa-caret-up "></i>
-              <i *ngIf="filter.sortBy == 'period' && filter.reverse"
-                 class="fa fa-caret-down "></i></a>
-          </th>
-          <th (click)="sort('controllerId')" *ngIf="!isCurrentController">
-            <a><span class="p-r-xs" translate>common.label.controllerId</span>
-              <i *ngIf="filter.sortBy == 'controllerId' && !filter.reverse"
-                 class="fa fa-caret-up "></i>
-              <i *ngIf="filter.sortBy == 'controllerId' && filter.reverse"
-                 class="fa fa-caret-down "></i></a>
-          </th>
-        </tr>
-        </thead>
-        <tbody>
-        <ng-template ngFor [ngForOf]="ajaxTable.data" let-sch>
+      <div class="inline pos-rel t-xxs">
+        @if (schedule.isPlanned) {
+          <span>
+            <i class="fa fa-stop date-planned"></i>
+            {{'common.label.planned' | translate}}
+          </span>
+        }
+        @if (!schedule.isPlanned) {
+          <span>
+            <i class="fa fa-stop date-unplanned"></i>
+            {{'dailyPlan.label.projected' | translate}}
+          </span>
+        }
+      </div>
+      <div class="inline pos-rel t-xxs b-l m-l-12 p-l-12 h-25">
+        @if (schedule.numOfPeriods >= 0) {
+          <span>
+            <span class="text-muted">{{'dailyPlan.label.numOfOrders' | translate}}</span>:
+            {{schedule.numOfPeriods}}
+          </span>
+        }
+        @if (schedule.numOfNonPeriods >= 0) {
+          <span>
+            <span class="text-muted">{{'dailyPlan.label.numOfNonPeriods' | translate}}</span>:
+            {{schedule.numOfNonPeriods}}
+          </span>
+        }
+      </div>
+      <div class="search-box-field pull-right form-group">
+        <label>
+          <input (keyup)="searchInResult()" [(ngModel)]="filter.searchText"
+                 placeholder="{{'common.placeholder.search' | translate}}"
+                 type="search">
+        </label>
+        <i (click)="filter.searchText = '';searchInResult()" [hidden]="!filter.searchText"
+           class="fa fa-times search-close"></i>
+      </div>
+      <div>
+        <nz-table
+          #ajaxTable
+          [nzBordered]="true"
+          (nzPageIndexChange)="pageIndexChange($event)"
+          (nzPageSizeChange)="pageSizeChange($event)"
+          [nzData]="data | orderBy: filter.sortBy: filter.reverse"
+          [nzLoading]="loading"
+          [nzPageIndex]="filter.currentPage"
+          [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
+          [nzPageSize]="filter.entryPerPage || preferences.entryPerPage || 25"
+          [nzShowPagination]="true"
+          [nzShowSizeChanger]="true"
+          [nzSize]="'small'"
+        >
+          <thead>
           <tr>
-            <td>
-               <span class="show-in-single-line">
-                 <a class="cursor text-hover-primary p-r-xxs" *ngIf="permission.joc && permission.joc.inventory.view"
-                    (click)="coreService.navToInventoryTab(sch['workflow'], 'WORKFLOW');"><i
-                   class="fa fa-pencil"></i>
-                 </a>
-                 {{sch['workflow']}}
-              </span>
-            </td>
-            <td>
-            <span class="show-in-single-line">
-              <a *ngIf="permission.joc?.inventory?.view"
-                 class="cursor text-hover-primary p-r-xxs"
-                 (click)="coreService.navToInventoryTab(sch.schedule, 'SCHEDULE')">
-                <i class="fa fa-pencil"></i>
-              </a>
-
-              {{ sch.schedule }}
-
-              <ng-container *ngIf="sch.orderNames?.length">
-                ({{ sch.orderNames.join(', ') }})
-              </ng-container>
-            </span>
-            </td>
-            <td *ngIf="schedule.numOfPeriods >= 0">
-              <div *ngFor="let p of sch.periods">
-              <span *ngIf="p.period">
-                {{ coreService.getPeriodStr(p.period) }}
-              </span>
-              </div>
-            </td>
-            <td *ngIf="!isCurrentController">
-              {{sch['controller']}}
-            </td>
+            <th (click)="sort('workflow')">
+              <a><span class="p-r-xs" translate>dailyPlan.label.workflow</span>
+                @if (filter.sortBy == 'workflow' && !filter.reverse) {
+                  <i class="fa fa-caret-up "></i>
+                }
+                @if (filter.sortBy == 'workflow' && filter.reverse) {
+                  <i class="fa fa-caret-down "></i>
+                }</a>
+            </th>
+            <th (click)="sort('schedule')">
+              <a><span class="p-r-xs" translate>dailyPlan.label.schedule</span>
+                @if (filter.sortBy == 'schedule' && !filter.reverse) {
+                  <i class="fa fa-caret-up "></i>
+                }
+                @if (filter.sortBy == 'schedule' && filter.reverse) {
+                  <i class="fa fa-caret-down "></i>
+                }</a>
+            </th>
+            @if (schedule.numOfPeriods >= 0) {
+              <th (click)="sort('period')">
+                <a><span class="p-r-xs" translate>runtime.label.period</span>
+                  @if (filter.sortBy == 'period' && !filter.reverse) {
+                    <i class="fa fa-caret-up "></i>
+                  }
+                  @if (filter.sortBy == 'period' && filter.reverse) {
+                    <i class="fa fa-caret-down "></i>
+                  }</a>
+              </th>
+            }
+            @if (!isCurrentController) {
+              <th (click)="sort('controllerId')">
+                <a><span class="p-r-xs" translate>common.label.controllerId</span>
+                  @if (filter.sortBy == 'controllerId' && !filter.reverse) {
+                    <i class="fa fa-caret-up "></i>
+                  }
+                  @if (filter.sortBy == 'controllerId' && filter.reverse) {
+                    <i class="fa fa-caret-down "></i>
+                  }</a>
+              </th>
+            }
           </tr>
-        </ng-template>
-        </tbody>
-      </nz-table>
-      <div *ngIf="ajaxTable.data.length >0"
-           class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
-        <span *ngIf="ajaxTable.data.length >1" translate>inventory.label.entriesFound</span>
-        <span *ngIf="ajaxTable.data.length ==1" translate>inventory.label.entryFound</span>
+          </thead>
+          <tbody>
+            @for (sch of ajaxTable.data; track $index) {
+              <tr>
+                <td>
+                 <span class="show-in-single-line">
+                   @if (permission.joc && permission.joc.inventory.view) {
+                     <a class="cursor text-hover-primary p-r-xxs"
+                        (click)="coreService.navToInventoryTab(sch['workflow'], 'WORKFLOW');"><i
+                       class="fa fa-pencil"></i>
+                     </a>
+                   }
+                   {{sch['workflow']}}
+                </span>
+                </td>
+                <td>
+              <span class="show-in-single-line">
+                @if (permission.joc?.inventory?.view) {
+                  <a class="cursor text-hover-primary p-r-xxs"
+                     (click)="coreService.navToInventoryTab(sch.schedule, 'SCHEDULE')">
+                    <i class="fa fa-pencil"></i>
+                  </a>
+                }
+
+                {{ sch.schedule }}
+
+                @if (sch.orderNames?.length) {
+                  <ng-container>
+                    ({{ sch.orderNames.join(', ') }})
+                  </ng-container>
+                }
+              </span>
+                </td>
+                @if (schedule.numOfPeriods >= 0) {
+                  <td>
+                    @for (p of sch.periods; track p) {
+                      <div>
+                        @if (p.period) {
+                          <span>
+                        {{ coreService.getPeriodStr(p.period) }}
+                      </span>
+                        }
+                      </div>
+                    }
+                  </td>
+                }
+                @if (!isCurrentController) {
+                  <td>
+                    {{sch['controller']}}
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </nz-table>
+        @if (ajaxTable.data.length >0) {
+          <div class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
+            @if (ajaxTable.data.length >1) {
+              <span translate>inventory.label.entriesFound</span>
+            }
+            @if (ajaxTable.data.length ==1) {
+              <span translate>inventory.label.entryFound</span>
+            }
+          </div>
+        }
       </div>
     </div>
-  </div>
+  }
 </div>
 <div class="modal-footer">
   <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
     common.button.close
   </button>
 </div>
-

@@ -18,17 +18,19 @@ import {NzDrawerComponent} from "ng-zorro-antd/drawer";
 import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {NzPaginationModule} from "ng-zorro-antd/pagination";
 import {WorkflowModule} from "../workflow/workflow.module";
+import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 
 @NgModule({
-  imports: [
-    SharedModule,
-    DailyPlanRoutingModule,
-    NzTabsModule,
-    NzDrawerComponent,
-    NzDrawerModule,
-    NzPaginationModule,
-    WorkflowModule
-  ],
+    imports: [
+        SharedModule,
+        DailyPlanRoutingModule,
+        NzTabsModule,
+        NzDrawerComponent,
+        NzDrawerModule,
+        NzPaginationModule,
+        WorkflowModule,
+        NzTooltipDirective
+    ],
   declarations: [DailyPlanComponent, GanttComponent, ProjectionComponent, DependenciesComponent, RemovePlanModalComponent, FilterModalComponent,
     SearchComponent, DailyPlanRegexValidator, CreatePlanModalComponent, ShowProjectionModalComponent, ExportComponent],
   providers: [GroupByPipe]

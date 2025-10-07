@@ -69,38 +69,48 @@
                     </ul>
                   </nz-dropdown-menu>
                 </div>
-                <div *ngIf="permission.joc && permission.joc.administration.customization.view"
-                     class="btn-group dropdown">
-                  <button [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
-                          class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
-                          type="button">
-                    {{'customization.label.customizations' | translate}}
-                    <span [innerHtml]="selectedFiltered.name" class="text-primary"></span>
-                    <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
-                  </button>
-                  <nz-dropdown-menu #customization="nzDropdownMenu">
-                    <ul nz-menu>
-                      <li (click)="createCustomization()" *ngIf="permission.joc && permission.joc.administration.customization.manage"
-                          nz-menu-item>
-                        <a translate>customization.label.createCustomization</a>
-                      </li>
-                      <li (click)="editFilters()" *ngIf="filterList.length>0" nz-menu-item>
-                        <a translate>customization.label.editExistingCustomizations</a>
-                      </li>
-                      <li *ngIf="filterList.length>0" nz-menu-divider></li>
-                      <li (click)="changeFilter(filter)" *ngFor="let filter of filterList | orderBy: 'name'"
-                          [ngClass]="{'ant-select-dropdown-menu-item-active': (savedFilter.selected == filter.id)}"
-                          nz-menu-item>
-                        <a>
-                          <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
-                          <i (click)="changeFilter(null);$event.stopPropagation();"
-                             *ngIf="savedFilter.selected == filter.id" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
-                             class="fa fa-times-circle-o remove"></i>
-                        </a>
-                      </li>
-                    </ul>
-                  </nz-dropdown-menu>
-                </div>
+                @if (permission.joc && permission.joc.administration.customization.view) {
+                  <div class="btn-group dropdown">
+                    <button [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization" [nzPlacement]="'bottomRight'"
+                            class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
+                            type="button">
+                      {{'customization.label.customizations' | translate}}
+                      <span [innerHtml]="selectedFiltered.name" class="text-primary"></span>
+                      <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
+                    </button>
+                    <nz-dropdown-menu #customization="nzDropdownMenu">
+                      <ul nz-menu>
+                        @if (permission.joc && permission.joc.administration.customization.manage) {
+                          <li (click)="createCustomization()" nz-menu-item>
+                            <a translate>customization.label.createCustomization</a>
+                          </li>
+                        }
+                        @if (filterList.length>0) {
+                          <li (click)="editFilters()" nz-menu-item>
+                            <a translate>customization.label.editExistingCustomizations</a>
+                          </li>
+                        }
+                        @if (filterList.length>0) {
+                          <li nz-menu-divider></li>
+                        }
+                        @for (filter of filterList | orderBy: 'name'; track filter) {
+                          <li (click)="changeFilter(filter)"
+                              [ngClass]="{'ant-select-dropdown-menu-item-active': (savedFilter.selected == filter.id)}"
+                              nz-menu-item>
+                            <a>
+                              <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
+                              @if (savedFilter.selected == filter.id) {
+                                <i (click)="changeFilter(null);$event.stopPropagation();"
+                                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                                   class="fa fa-times-circle-o remove"></i>
+                              }
+                            </a>
+                          </li>
+                        }
+                      </ul>
+                    </nz-dropdown-menu>
+                  </div>
+                }
                 <button (click)="exportToExcel()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.exportInXLS' | translate"
                         class="btn btn-grey btn-sm m-l-12"><i class="fa fa fa-share-square-o"></i></button>
               </div>
@@ -117,14 +127,18 @@
       <app-links></app-links>
     </div>
     <div class="col-md-4 text-right">
-      <button (click)="advancedSearch()" *ngIf="!showSearchPanel" class="btn btn-sm btn-grey pull-right m-l-12">
-        <span translate>common.button.advancedSearch</span>&nbsp;
-        <i class="fa fa-caret-down p-l-xs"></i>
-      </button>
-      <button (click)="cancel()" *ngIf="showSearchPanel" class="btn btn-sm btn-grey pull-right m-l-12">
-        <span translate>common.button.advancedSearch</span>&nbsp;
-        <i class="fa fa-caret-down p-l-xs"></i>
-      </button>
+      @if (!showSearchPanel) {
+        <button (click)="advancedSearch()" class="btn btn-sm btn-grey pull-right m-l-12">
+          <span translate>common.button.advancedSearch</span>&nbsp;
+          <i class="fa fa-caret-down p-l-xs"></i>
+        </button>
+      }
+      @if (showSearchPanel) {
+        <button (click)="cancel()" class="btn btn-sm btn-grey pull-right m-l-12">
+          <span translate>common.button.advancedSearch</span>&nbsp;
+          <i class="fa fa-caret-down p-l-xs"></i>
+        </button>
+      }
       <div class="search-box-field pull-right">
         <label>
           <input (keyup)="searchInResult()" [(ngModel)]="agentFilters.searchText" placeholder="{{'common.placeholder.search' | translate}}"
@@ -140,15 +154,17 @@
   <div class="padding p-b-0">
     <div class="row">
       <div class="col-sm-12">
-        <div *ngIf="showSearchPanel" class="row m-b">
-          <div class="col-md-12">
-            <div class="box p-a m-b-xs m-t-xs">
-              <app-form-template (onCancel)="cancel()" (onSearch)="search()" [allFilter]="filterList"
-                                 [filter]="searchFilter" [isSearch]="true"
-                                 [permission]="permission" [preferences]="preferences" [schedulerIds]="schedulerIds"></app-form-template>
+        @if (showSearchPanel) {
+          <div class="row m-b">
+            <div class="col-md-12">
+              <div class="box p-a m-b-xs m-t-xs">
+                <app-form-template (onCancel)="cancel()" (onSearch)="search()" [allFilter]="filterList"
+                                   [filter]="searchFilter" [isSearch]="true"
+                                   [permission]="permission" [preferences]="preferences" [schedulerIds]="schedulerIds"></app-form-template>
+              </div>
             </div>
           </div>
-        </div>
+        }
         <div class="box p-a">
           <div class="table-responsive">
             <nz-table
@@ -167,66 +183,82 @@
             >
               <thead>
               <tr>
-                <th (click)="sort('controllerId')" *ngIf="!agentFilters.current">
-                  <a><span class="p-r-xs" translate>common.label.controllerId</span>
-                    <i
-                      *ngIf="agentFilters.filter.sortBy == 'controllerId' && !agentFilters.reverse"
-                      class="fa fa-caret-up "></i>
-                    <i
-                      *ngIf="agentFilters.filter.sortBy == 'controllerId' && agentFilters.reverse"
-                      class="fa fa-caret-down "></i></a>
-                </th>
+                @if (!agentFilters.current) {
+                  <th (click)="sort('controllerId')">
+                    <a><span class="p-r-xs" translate>common.label.controllerId</span>
+                      @if (agentFilters.filter.sortBy == 'controllerId' && !agentFilters.reverse) {
+                        <i class="fa fa-caret-up "></i>
+                      }
+                      @if (agentFilters.filter.sortBy == 'controllerId' && agentFilters.reverse) {
+                        <i class="fa fa-caret-down "></i>
+                      }</a>
+                  </th>
+                }
                 <th (click)="sort('agentId')"><a><span class="p-r-xs" translate>agent.label.agentId</span>
-                  <i *ngIf="agentFilters.filter.sortBy == 'agentId' && !agentFilters.reverse"
-                     class="fa fa-caret-up "></i>
-                  <i *ngIf="agentFilters.filter.sortBy == 'agentId' && agentFilters.reverse"
-                     class="fa fa-caret-down "></i></a>
+                  @if (agentFilters.filter.sortBy == 'agentId' && !agentFilters.reverse) {
+                    <i class="fa fa-caret-up "></i>
+                  }
+                  @if (agentFilters.filter.sortBy == 'agentId' && agentFilters.reverse) {
+                    <i class="fa fa-caret-down "></i>
+                  }</a>
                 </th>
                 <th (click)="sort('url')"><a><span class="p-r-xs" translate>agent.label.url</span>
-                  <i *ngIf="agentFilters.filter.sortBy == 'url' && !agentFilters.reverse"
-                     class="fa fa-caret-up "></i>
-                  <i *ngIf="agentFilters.filter.sortBy == 'url' && agentFilters.reverse"
-                     class="fa fa-caret-down "></i></a>
+                  @if (agentFilters.filter.sortBy == 'url' && !agentFilters.reverse) {
+                    <i class="fa fa-caret-up "></i>
+                  }
+                  @if (agentFilters.filter.sortBy == 'url' && agentFilters.reverse) {
+                    <i class="fa fa-caret-down "></i>
+                  }</a>
                 </th>
                 <th (click)="sort('numOfSuccessfulTasks')"><a><span class="p-r-xs" translate>resource.agentJobExecution.label.numberOfSuccessfullyExecutedTask</span>
-                  <i
-                    *ngIf="agentFilters.filter.sortBy == 'numOfSuccessfulTasks' && !agentFilters.reverse"
-                    class="fa fa-caret-up "></i>
-                  <i
-                    *ngIf="agentFilters.filter.sortBy == 'numOfSuccessfulTasks' && agentFilters.reverse"
-                    class="fa fa-caret-down "></i></a>
+                  @if (agentFilters.filter.sortBy == 'numOfSuccessfulTasks' && !agentFilters.reverse) {
+                    <i class="fa fa-caret-up "></i>
+                  }
+                  @if (agentFilters.filter.sortBy == 'numOfSuccessfulTasks' && agentFilters.reverse) {
+                    <i class="fa fa-caret-down "></i>
+                  }</a>
                 </th>
                 <th (click)="sort('numOfJobs')"><a><span class="p-r-xs" translate>resource.agentJobExecution.label.numberOfJobsExecuted</span>
-                  <i *ngIf="agentFilters.filter.sortBy == 'numOfJobs' && !agentFilters.reverse"
-                     class="fa fa-caret-up "></i>
-                  <i *ngIf="agentFilters.filter.sortBy == 'numOfJobs' && agentFilters.reverse"
-                     class="fa fa-caret-down "></i></a>
+                  @if (agentFilters.filter.sortBy == 'numOfJobs' && !agentFilters.reverse) {
+                    <i class="fa fa-caret-up "></i>
+                  }
+                  @if (agentFilters.filter.sortBy == 'numOfJobs' && agentFilters.reverse) {
+                    <i class="fa fa-caret-down "></i>
+                  }</a>
                 </th>
               </tr>
               </thead>
               <tbody>
-              <ng-template [ngForOf]="ajaxTable.data" let-agentTask
-                           ngFor>
-                <tr>
-                  <td *ngIf="!agentFilters.current"><span
-                    [innerHtml]="agentTask.controllerId | highlight : agentFilters.searchText"></span></td>
-                  <td><span [innerHtml]="agentTask.agentId | highlight : agentFilters.searchText"></span></td>
-                  <td><a [innerHtml]="agentTask.url | highlight : agentFilters.searchText" class="text-hover-primary" href="{{agentTask.url+'/agent/api'}}"
-                         target="_blank"></a></td>
-                  <td><span [innerHtml]="agentTask.numOfSuccessfulTasks | highlight : agentFilters.searchText"></span>
-                  </td>
-                  <td><span [innerHtml]="agentTask.numOfJobs | highlight : agentFilters.searchText"></span></td>
-                </tr>
-              </ng-template>
+                @for (agentTask of ajaxTable.data; track agentTask) {
+                  <tr>
+                    @if (!agentFilters.current) {
+                      <td><span
+                        [innerHtml]="agentTask.controllerId | highlight : agentFilters.searchText"></span></td>
+                    }
+                    <td><span [innerHtml]="agentTask.agentId | highlight : agentFilters.searchText"></span></td>
+                    <td><a [innerHtml]="agentTask.url | highlight : agentFilters.searchText" class="text-hover-primary" href="{{agentTask.url+'/agent/api'}}"
+                           target="_blank"></a></td>
+                    <td><span [innerHtml]="agentTask.numOfSuccessfulTasks | highlight : agentFilters.searchText"></span>
+                    </td>
+                    <td><span [innerHtml]="agentTask.numOfJobs | highlight : agentFilters.searchText"></span></td>
+                  </tr>
+                }
               </tbody>
             </nz-table>
-            <div *ngIf="ajaxTable.data.length >0" class="w-half label-top"> {{data.length}}
-              <span *ngIf="ajaxTable.data.length >1" translate>resource.agentJobExecution.label.agentTasksFound</span>
-              <span *ngIf="ajaxTable.data.length ==1" translate>resource.agentJobExecution.label.agentTaskFound</span>.
-              <span translate>resource.agentJobExecution.label.totalNumberOfExecutions</span>: {{totalJobExecution}}.
-              <span *ngIf="totalNumOfJobs"
-                    translate>resource.agentJobExecution.label.totalNumberOfJobExecutions</span>: {{totalNumOfJobs}}
-            </div>
+            @if (ajaxTable.data.length >0) {
+              <div class="w-half label-top"> {{data.length}}
+                @if (ajaxTable.data.length >1) {
+                  <span translate>resource.agentJobExecution.label.agentTasksFound</span>
+                }
+                @if (ajaxTable.data.length ==1) {
+                  <span translate>resource.agentJobExecution.label.agentTaskFound</span>
+                }.
+                <span translate>resource.agentJobExecution.label.totalNumberOfExecutions</span>: {{totalJobExecution}}.
+                @if (totalNumOfJobs) {
+                  <span translate>resource.agentJobExecution.label.totalNumberOfJobExecutions</span>: {{totalNumOfJobs}}
+                }
+              </div>
+            }
           </div>
         </div>
       </div>

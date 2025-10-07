@@ -11,6 +11,7 @@ import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 declare const $;
 
 @Component({
+  standalone: false,
   selector: 'app-value-content',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './value-editor.html'

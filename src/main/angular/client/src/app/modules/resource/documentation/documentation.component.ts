@@ -15,6 +15,7 @@ import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.c
 
 declare const $: any;
 @Component({
+  standalone: false,
   selector: 'app-show-modal-content',
   templateUrl: './show-dialog.html'
 })
@@ -31,6 +32,7 @@ export class ShowModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-edit-modal-content',
   templateUrl: './edit-dialog.html'
 })
@@ -77,6 +79,7 @@ export class EditModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-single-document',
   templateUrl: './single-documentation.component.html'
 })
@@ -241,6 +244,7 @@ export class SingleDocumentationComponent {
 
 // Main Component
 @Component({
+  standalone: false,
   selector: 'app-document',
   templateUrl: 'documentation.component.html'
 })

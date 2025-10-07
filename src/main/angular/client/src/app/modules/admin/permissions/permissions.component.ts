@@ -14,6 +14,7 @@ declare var d3: any;
 
 // Permission Modal
 @Component({
+  standalone: false,
   selector: 'app-permission-modal-content',
   templateUrl: 'permission-modal.html'
 })
@@ -121,6 +122,7 @@ export class PermissionModalComponent {
 
 // Folder Modal
 @Component({
+  standalone: false,
   selector: 'app-folder-modal-content',
   templateUrl: 'folder-modal.html'
 })
@@ -283,6 +285,7 @@ export class FolderModalComponent {
 
 // Main Component
 @Component({
+  standalone: false,
   selector: 'app-permissions',
   templateUrl: './permissions.component.html'
 })

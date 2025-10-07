@@ -17,6 +17,7 @@ import {
 } from './perfect-scrollbar.interfaces';
 
 @Component({
+  standalone: false,
   selector: 'perfect-scrollbar',
   templateUrl: './perfect-scrollbar.component.html',
   styleUrls: [

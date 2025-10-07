@@ -34,15 +34,19 @@
                           [type]="'WORKFLOW'"></app-multi-select>
       </div>
     </div>
-    <div *ngIf="filter.workflowFolders?.length > 0" class="form-group row">
-      <label class="col-md-3" translate>dailyPlan.label.workflowFolders</label>
-      <div class="col-md-6" style="max-height: 140px; overflow: auto">
-        <div *ngFor="let path of filter.workflowFolders">
-          <span>{{path}}</span>
-          <i (click)="remove(path, true)" class="pull-right pos-rel t-xs fa fa-remove text-hover-primary"></i>
+    @if (filter.workflowFolders?.length > 0) {
+      <div class="form-group row">
+        <label class="col-md-3" translate>dailyPlan.label.workflowFolders</label>
+        <div class="col-md-6" style="max-height: 140px; overflow: auto">
+          @for (path of filter.workflowFolders; track path) {
+            <div>
+              <span>{{path}}</span>
+              <i (click)="remove(path, true)" class="pull-right pos-rel t-xs fa fa-remove text-hover-primary"></i>
+            </div>
+          }
         </div>
       </div>
-    </div>
+    }
     <div class="form-group row">
       <label class="col-md-3 form-control-label"
              translate>dailyPlan.label.schedules</label>
@@ -52,15 +56,19 @@
                           [type]="'SCHEDULE'"></app-multi-select>
       </div>
     </div>
-    <div *ngIf="filter.scheduleFolders?.length > 0" class="form-group row">
-      <label class="col-md-3" translate>dailyPlan.label.scheduleFolders</label>
-      <div class="col-md-6" style="max-height: 140px; overflow: auto">
-        <div *ngFor="let path of filter.scheduleFolders">
-          <span class="">{{path}}</span>
-          <i (click)="remove(path)" class="pull-right pos-rel t-xs fa fa-remove text-hover-primary"></i>
+    @if (filter.scheduleFolders?.length > 0) {
+      <div class="form-group row">
+        <label class="col-md-3" translate>dailyPlan.label.scheduleFolders</label>
+        <div class="col-md-6" style="max-height: 140px; overflow: auto">
+          @for (path of filter.scheduleFolders; track path) {
+            <div>
+              <span class="">{{path}}</span>
+              <i (click)="remove(path)" class="pull-right pos-rel t-xs fa fa-remove text-hover-primary"></i>
+            </div>
+          }
         </div>
       </div>
-    </div>
+    }
     <div class="form-group row ">
       <label class="col-md-3" translate>dailyPlan.label.invertProjection</label>
       <div class="col-md-6">
@@ -71,7 +79,9 @@
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
             type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
@@ -79,4 +89,3 @@
     </button>
   </div>
 </form>
-

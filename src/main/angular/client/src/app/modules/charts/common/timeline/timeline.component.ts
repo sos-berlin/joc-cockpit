@@ -18,6 +18,7 @@ import {ScaleType} from '../types/scale-type.enum';
 import {ViewDimensions} from '../types/view-dimension.interface';
 
 @Component({
+  standalone: false,
   selector: 'g[ngx-charts-timeline]',
   template: `
     <svg:g class="timeline" [attr.transform]="transform">

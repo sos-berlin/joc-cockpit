@@ -8,6 +8,7 @@ import {ApprovalModalComponent} from "../../../components/approval-modal/approva
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
 
 @Component({
+  standalone: false,
   selector: 'app-add-approver-dialog',
   templateUrl: './add-approver-dialog.html',
 })
@@ -48,6 +49,7 @@ export class AddApproverModalComponent {
   }
 }
 @Component({
+  standalone: false,
   selector: 'app-approvers',
   templateUrl: './approvers.component.html',
   styleUrl: './approvers.component.scss'

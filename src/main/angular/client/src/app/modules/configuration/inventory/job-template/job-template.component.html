@@ -1,881 +1,983 @@
 <div class="row">
-  <div *ngIf="data.type" class="col-md-12">
-    <div class="box p-a p-r-md m-t-n-xs">
-      <div class="b-b p-b m-b">
+  @if (data.type) {
+    <div class="col-md-12">
+      <div class="box p-a p-r-md m-t-n-xs">
+        <div class="b-b p-b m-b">
         <span class="text-left">
           <a (click)="backToListView()"><i class="fa fa-arrow-circle-left config-back-btn"
                                            nz-tooltip="{{'inventory.button.backToList' | translate}}"></i></a>
-          <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
-          <span *ngIf="lastModified" class="text-dark text-sm _400"> -
-            <b translate>inventory.label.lastModified</b>
-            <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
-          </span>
-         <i (click)="helpPage('configuration-inventory-job-templates')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
+          <span class="_600">{{data.path}}@if (data.path !=='/' ) {<span>/</span>}{{data.name}}</span>
+          @if (lastModified) {
+            <span class="text-dark text-sm _400"> -
+              <b translate>inventory.label.lastModified</b>
+              <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
+            </span>
+          }
+          <i (click)="helpPage('configuration-inventory-job-templates')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
        </span>
-        <div class="inline pull-right">
-          <ng-container *ngIf="!isTrash">
-            <span *ngIf="job.configuration" [ngClass]="!job.valid ? 'badge-danger':'badge-success'" class="badge m-r-12">
-              <span *ngIf="job.valid" translate>inventory.label.valid</span>
-              <span *ngIf="!job.valid">
-                <span translate>inventory.label.notValid</span>
-                <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
-              </span>
-            </span>
-            <span *ngIf="job.configuration" [ngClass]="!data.released ? 'badge-danger':'badge-success'" class="badge">
-              <span *ngIf="!data.released" translate>inventory.label.notReleased</span>
-              <span *ngIf="data.released" translate>inventory.label.released</span>
-            </span>
-            <button
-              (click)="release()"
-              *ngIf="permission.joc && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" [disabled]="!job.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
-              <i class="fa fa-rocket p-r-xs"></i>
-              <span translate>inventory.button.release</span>
+          <div class="inline pull-right">
+            @if (!isTrash) {
+              <ng-container>
+                @if (job.configuration) {
+                  <span [ngClass]="!job.valid ? 'badge-danger':'badge-success'" class="badge m-r-12">
+                  @if (job.valid) {
+                    <span translate>inventory.label.valid</span>
+                  }
+                    @if (!job.valid) {
+                      <span>
+                      <span translate>inventory.label.notValid</span>
+                      <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
+                    </span>
+                    }
+                </span>
+                }
+                @if (job.configuration) {
+                  <span [ngClass]="!data.released ? 'badge-danger':'badge-success'" class="badge">
+                  @if (!data.released) {
+                    <span translate>inventory.label.notReleased</span>
+                  }
+                    @if (data.released) {
+                      <span translate>inventory.label.released</span>
+                    }
+                </span>
+                }
+                @if (permission.joc && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)) {
+                  <button
+                    (click)="release()"
+                    [disabled]="!job.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
+                    <i class="fa fa-rocket p-r-xs"></i>
+                    <span translate>inventory.button.release</span>
+                  </button>
+                }
+                @if (job.configuration) {
+                  <button (click)="updateJobs()"
+                          [disabled]="!data.released" class="btn btn-sm btn-grey m-l-12 m-t-n-xs">
+                    <i class="fa fa-refresh p-r-xs"></i>
+                    {{'inventory.button.updateJobs' | translate}}
+                  </button>
+                }
+              </ng-container>
+            }
+            <button (click)="openJobWizard()"
+                    [disabled]="job.configuration && job.configuration.executable && job.configuration.executable.TYPE === 'ShellScriptExecutable'"
+                    class="btn btn-sm btn-grey m-l-12 m-t-n-xs">
+              <i class="fa fa-magic p-r-xs"></i>
+              {{'workflow.button.wizard' | translate}}
             </button>
-            <button (click)="updateJobs()"
-                    *ngIf="job.configuration" [disabled]="!data.released" class="btn btn-sm btn-grey m-l-12 m-t-n-xs">
-              <i class="fa fa-refresh p-r-xs"></i>
-              {{'inventory.button.updateJobs' | translate}}
-            </button>
-          </ng-container>
-          <button (click)="openJobWizard()"
-                  [disabled]="job.configuration && job.configuration.executable && job.configuration.executable.TYPE === 'ShellScriptExecutable'"
-                  class="btn btn-sm btn-grey m-l-12 m-t-n-xs">
-            <i class="fa fa-magic p-r-xs"></i>
-            {{'workflow.button.wizard' | translate}}
-          </button>
+          </div>
         </div>
-      </div>
-      <div *ngIf="job.configuration && permission.joc">
-        <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}" class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.name' | translate) : ''"
+        @if (job.configuration && permission.joc) {
+          <div>
+            <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}" class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.name' | translate) : ''"
 
-                 class="col-md-4 col-lg-3 form-control-label" translate>common.label.name
-            <sup class="text-danger text-sm">*</sup>
-          </label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <input #name="ngModel" (blur)="rename(name.invalid)" [(ngModel)]="job.name"
-                   [readOnly]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
-                   class="form-control" identifierValidation name="name"
-                   required type="text">
-            <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-              <div *ngIf="name.errors['required']">
-                <div translate>common.message.requiredError</div>
+                     class="col-md-4 col-lg-3 form-control-label" translate>common.label.name
+                <sup class="text-danger text-sm">*</sup>
+              </label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <input #name="ngModel" (blur)="rename(name.invalid)" [(ngModel)]="job.name"
+                       [readOnly]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
+                       class="form-control" identifierValidation name="name"
+                       required type="text">
+                @if (name.invalid && (name.dirty || name.touched)) {
+                  <div class="text-danger help-block">
+                    @if (name.errors['required']) {
+                      <div translate>common.message.requiredError</div>
+                    }
+                    @if (name.errors['invalidIdentifier']) {
+                      <div translate>common.message.invalid</div>
+                    }
+                  </div>
+                }
               </div>
-              <div *ngIf="name.errors['invalidIdentifier']" translate>common.message.invalid</div>
             </div>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.title' | translate) : ''"
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.title' | translate) : ''"
 
-                 class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <input #title="ngModel" (blur)="saveJSON()" [(ngModel)]="job.configuration.title"
-                   [readOnly]="isTrash || !permission.joc.inventory.manage"
-                   autocomplete="off" class="form-control" name="title"
-                   placeholder="{{'common.placeholder.title' | translate}}" type="text">
-          </div>
-        </div>
-        <div *ngIf="coreService.expertMode" class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.documentation' | translate) : ''"
+                     class="col-md-4 col-lg-3 form-control-label" translate>common.label.title</label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <input #title="ngModel" (blur)="saveJSON()" [(ngModel)]="job.configuration.title"
+                       [readOnly]="isTrash || !permission.joc.inventory.manage"
+                       autocomplete="off" class="form-control" name="title"
+                       placeholder="{{'common.placeholder.title' | translate}}" type="text">
+              </div>
+            </div>
+            @if (coreService.expertMode) {
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.documentation' | translate) : ''"
 
-                 class="col-md-4 col-lg-3 form-control-label"
-                 title="{{'inventory.label.documentation' | translate}}" translate>inventory.label.documentation</label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <app-select-document (funcCall)="saveJSON($event)" [data]="job.configuration"
-                                 [documentationTree]="documentationTree"></app-select-document>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.jobResourceNames' | translate) : ''"
+                       class="col-md-4 col-lg-3 form-control-label"
+                       title="{{'inventory.label.documentation' | translate}}" translate>inventory.label.documentation</label>
+                <div class="col-lg-9 col-xl-8 col-xxl-6">
+                  <app-select-document (funcCall)="saveJSON($event)" [data]="job.configuration"
+                                       [documentationTree]="documentationTree"></app-select-document>
+                </div>
+              </div>
+            }
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.jobResourceNames' | translate) : ''"
 
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
-                 title="{{'workflow.label.jobResourceNames' | translate}}" translate>workflow.label.jobResourceNames</label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <app-multi-select (funcCall)="saveJSON()" [attribute]="'jobResourceNames'" [list]="job.configuration"
-                              [nodes]="jobResourcesTree" [type]="'JOBRESOURCE'"></app-multi-select>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.description' | translate) : ''"
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label"
+                     title="{{'workflow.label.jobResourceNames' | translate}}" translate>workflow.label.jobResourceNames</label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <app-multi-select (funcCall)="saveJSON()" [attribute]="'jobResourceNames'" [list]="job.configuration"
+                                  [nodes]="jobResourcesTree" [type]="'JOBRESOURCE'"></app-multi-select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.description' | translate) : ''"
 
-                 class="col-md-4 col-lg-3 form-control-label"
-                 title="{{'workflow.label.description' | translate}}" translate>workflow.label.description</label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
+                     class="col-md-4 col-lg-3 form-control-label"
+                     title="{{'workflow.label.description' | translate}}" translate>workflow.label.description</label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
             <textarea (blur)="saveJSON()" [(ngModel)]="job.configuration.description"
                       class="form-control" name="description" placeholder="{{'workflow.placeholder.description' | translate}}"
                       rows="2"></textarea>
-          </div>
-        </div>
-        <div *ngIf="job.configuration.executable && job.configuration.executable.TYPE === 'ShellScriptExecutable'"
-             class="form-group row">
-          <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.returnCode' | translate) : ''"
-               class="col-md-4 col-lg-3"
-               translate>workflow.label.returnCode
-          </div>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <nz-radio-group [(ngModel)]="returnCodes.on" (ngModelChange)="saveJSON();" >
-              <label (click)="job.configuration.executable.returnCodeMeaning.success = (job.configuration.executable.returnCodeMeaning.failure == 'none' ? '0' : job.configuration.executable.returnCodeMeaning.failure);job.configuration.executable.returnCodeMeaning.failure = ''" nz-radio
-                     nzValue="success"><span
-                translate>workflow.label.onSuccess</span></label>
-              <label (click)="job.configuration.executable.returnCodeMeaning.failure = job.configuration.executable.returnCodeMeaning.success;job.configuration.executable.returnCodeMeaning.success = ''" nz-radio
-                     nzValue="failure"><span
-                translate>workflow.label.onFailure</span></label>
-              <label (click)="job.configuration.executable.returnCodeMeaning.failure = 'none';job.configuration.executable.returnCodeMeaning.success = ''" nz-radio nzValue="ignore"><span
-                translate>workflow.label.ignore</span></label>
-            </nz-radio-group>
-          </div>
-        </div>
-        <div *ngIf="(returnCodes.on === 'success' || returnCodes.on === 'failure') && job.configuration.executable.TYPE === 'ShellScriptExecutable'"
-             class="form-group row">
-          <label class="col-md-4 col-lg-3 form-control-label"></label>
-          <div [ngClass]="{'has-error' : ((success.dirty || success.touched) && success.invalid)}"
-               class="col-lg-9 col-xl-8 col-xxl-6">
-            <label class="w-full">
-              <input #success="ngModel" (blur)="validateReturnCode(job.configuration.executable.returnCodeMeaning, success);saveJSON();" [(ngModel)]="job.configuration.executable.returnCodeMeaning[returnCodes.on]" autocomplete="off"
-                     class="form-control"
-                     name="success"
-                     placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}" type="text"
-                     validateRangeRegex>
-            </label>
-            <div *ngIf="success.invalid && (success.dirty || success.touched)"
-                 class="text-danger help-block">
-              <div *ngIf="success.errors['invalidRange']" translate>common.message.invalid</div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.onWarning' | translate) : ''"
-                 class="col-md-4 col-lg-3 form-control-label"
-                 title="{{'workflow.label.onWarning' | translate}}" translate>
-            workflow.label.onWarning
-          </label>
-          <div [ngClass]="{'has-error' : ((warning.dirty || warning.touched) && warning.invalid)}"
-               class="col-lg-9 col-xl-8 col-xxl-6">
-            <label class="w-full">
-              <input #warning="ngModel" (blur)="validateReturnCode(job.configuration.executable.returnCodeMeaning, warning);saveJSON();" [(ngModel)]="job.configuration.executable.returnCodeMeaning.warning" autocomplete="off"
-                     class="form-control"
-                     name="warning"
-                     placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}" type="text"
-                     validateRangeRegex>
-            </label>
-            <div *ngIf="warning.invalid && (warning.dirty || warning.touched)"
-                 class="text-danger help-block">
-              <div *ngIf="warning.errors['invalidRange']" translate>common.message.invalid</div>
+            @if (job.configuration.executable && job.configuration.executable.TYPE === 'ShellScriptExecutable') {
+              <div class="form-group row">
+                <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.returnCode' | translate) : ''"
+                     class="col-md-4 col-lg-3"
+                     translate>workflow.label.returnCode
+                </div>
+                <div class="col-lg-9 col-xl-8 col-xxl-6">
+                  <nz-radio-group [(ngModel)]="returnCodes.on" (ngModelChange)="saveJSON();" >
+                    <label (click)="job.configuration.executable.returnCodeMeaning.success = (job.configuration.executable.returnCodeMeaning.failure == 'none' ? '0' : job.configuration.executable.returnCodeMeaning.failure);job.configuration.executable.returnCodeMeaning.failure = ''" nz-radio
+                           nzValue="success"><span
+                      translate>workflow.label.onSuccess</span></label>
+                    <label (click)="job.configuration.executable.returnCodeMeaning.failure = job.configuration.executable.returnCodeMeaning.success;job.configuration.executable.returnCodeMeaning.success = ''" nz-radio
+                           nzValue="failure"><span
+                      translate>workflow.label.onFailure</span></label>
+                    <label (click)="job.configuration.executable.returnCodeMeaning.failure = 'none';job.configuration.executable.returnCodeMeaning.success = ''" nz-radio nzValue="ignore"><span
+                      translate>workflow.label.ignore</span></label>
+                  </nz-radio-group>
+                </div>
+              </div>
+            }
+            @if ((returnCodes.on === 'success' || returnCodes.on === 'failure') && job.configuration.executable.TYPE === 'ShellScriptExecutable') {
+              <div class="form-group row">
+                <label class="col-md-4 col-lg-3 form-control-label"></label>
+                <div [ngClass]="{'has-error' : ((success.dirty || success.touched) && success.invalid)}"
+                     class="col-lg-9 col-xl-8 col-xxl-6">
+                  <label class="w-full">
+                    <input #success="ngModel" (blur)="validateReturnCode(job.configuration.executable.returnCodeMeaning, success);saveJSON();" [(ngModel)]="job.configuration.executable.returnCodeMeaning[returnCodes.on]" autocomplete="off"
+                           class="form-control"
+                           name="success"
+                           placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}" type="text"
+                           validateRangeRegex>
+                  </label>
+                  @if (success.invalid && (success.dirty || success.touched)) {
+                    <div class="text-danger help-block">
+                      @if (success.errors['invalidRange']) {
+                        <div translate>common.message.invalid</div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.onWarning' | translate) : ''"
+                     class="col-md-4 col-lg-3 form-control-label"
+                     title="{{'workflow.label.onWarning' | translate}}" translate>
+                workflow.label.onWarning
+              </label>
+              <div [ngClass]="{'has-error' : ((warning.dirty || warning.touched) && warning.invalid)}"
+                   class="col-lg-9 col-xl-8 col-xxl-6">
+                <label class="w-full">
+                  <input #warning="ngModel" (blur)="validateReturnCode(job.configuration.executable.returnCodeMeaning, warning);saveJSON();" [(ngModel)]="job.configuration.executable.returnCodeMeaning.warning" autocomplete="off"
+                         class="form-control"
+                         name="warning"
+                         placeholder="{{'workflow.placeholder.enterPositiveNumber' | translate}}" type="text"
+                         validateRangeRegex>
+                </label>
+                @if (warning.invalid && (warning.dirty || warning.touched)) {
+                  <div class="text-danger help-block">
+                    @if (warning.errors['invalidRange']) {
+                      <div translate>common.message.invalid</div>
+                    }
+                  </div>
+                }
+              </div>
             </div>
-          </div>
-        </div>
-        <div *ngIf="job.configuration.executable" class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.jobClass' | translate) : ''"
+            @if (job.configuration.executable) {
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.jobClass' | translate) : ''"
 
-                 class="col-md-4 col-lg-3 form-control-label"
-                 translate>workflow.label.jobClass</label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <nz-select [(ngModel)]="job.configuration.executable.TYPE"
-                       name="executableType" (ngModelChange)="reloadScript();saveJSON()" >
-              <nz-option [nzLabel]="'workflow.label.shell' | translate" [nzValue]="'ShellScriptExecutable'"></nz-option>
-              <nz-option [nzLabel]="'workflow.label.jitl' | translate" [nzValue]="'InternalExecutable'"></nz-option>
-              <nz-option [nzLabel]="'workflow.label.java' | translate" [nzValue]="'Java'"></nz-option>
-              <nz-option [nzLabel]="'workflow.label.javaScript' | translate" [nzValue]="'JavaScript'"></nz-option>
-            </nz-select>
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-md-12">
-            <nz-tabset [(nzSelectedIndex)]="selectedIndex" >
-              <nz-tab *ngIf="job.configuration.executable && (job.configuration.executable.TYPE === 'ShellScriptExecutable' || job.configuration.executable.TYPE === 'JavaScript')"
-                      [nzTitle]="titleTemplate">
-                <ng-template #titleTemplate>
-                  <span translate>workflow.label.script</span>
-                  <sup class="text-danger text-sm">*</sup>
-                </ng-template>
-                <div class="row">
-                  <div *ngIf="isDisplay && selectedIndex == 0" class="col-md-12">
-                    <div *ngIf="isTreeShow" class="z-index-9999 pos-abt opacity0" id="show-tree"
-                         style="min-width: 150px;">
-                      <app-search-input (onBlur)="onBlurTree($event)" (onSelect)="checkExpectNoticeExp($event)"
-                                        [changeDetect]="true"
-                                        [nodes]="scriptTree" [type]="'INCLUDESCRIPT'"></app-search-input>
-                    </div>
-                    <i (click)="showEditor(job.configuration.executable.TYPE === 'JavaScript' ? 'javascript' : 'shell')" class="pos-abt z-index-9999 text-20 r-24 t-1" nz-icon nzTheme="outline"
-                       nzType="form"></i>
-                    <div [ngClass]="{'invalid': (script.invalid && (script.dirty && script.touched))}" class="b-a">
-                      <ngx-codemirror #codeMirror #script="ngModel" (focusout)="saveJSON()" [(ngModel)]="job.configuration.executable.script"
-                                      [options]="{
-                                          lineNumbers: true,
-                                          autoRefresh: true,
-                                          lineWrapping: true,
-                                          matchBrackets: true,
-                                          foldGutter: true,
-                                          tabSize: preferences.tabSize,
-                                          autoCloseBrackets: job.configuration.executable.TYPE === 'JavaScript',
-                                          scrollbarStyle: 'simple',
-                                          highlightSelectionMatches: {showToken, annotateScrollbar: true},
-                                          mode: job.configuration.executable.TYPE === 'JavaScript' ? 'javascript' : 'shell',
-                                          gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
-                                        }" name="script"
-                                      required></ngx-codemirror>
-                    </div>
-                    <div class="text-sm text-muted" translate>inventory.tooltips.script.autocompleteShortCut</div>
-                    <div *ngIf="(script.invalid && (script.dirty && script.touched))" class="text-danger help-block">
-                      <div *ngIf="(script.errors && script.errors['required'])">
-                        <div translate>common.message.requiredError</div>
-                      </div>
-                    </div>
-                  </div>
+                       class="col-md-4 col-lg-3 form-control-label"
+                       translate>workflow.label.jobClass</label>
+                <div class="col-lg-9 col-xl-8 col-xxl-6">
+                  <nz-select [(ngModel)]="job.configuration.executable.TYPE"
+                             name="executableType" (ngModelChange)="reloadScript();saveJSON()" >
+                    <nz-option [nzLabel]="'workflow.label.shell' | translate" [nzValue]="'ShellScriptExecutable'"></nz-option>
+                    <nz-option [nzLabel]="'workflow.label.jitl' | translate" [nzValue]="'InternalExecutable'"></nz-option>
+                    <nz-option [nzLabel]="'workflow.label.java' | translate" [nzValue]="'Java'"></nz-option>
+                    <nz-option [nzLabel]="'workflow.label.javaScript' | translate" [nzValue]="'JavaScript'"></nz-option>
+                  </nz-select>
                 </div>
-              </nz-tab>
-              <nz-tab *ngIf="job.configuration.executable && (job.configuration.executable.TYPE === 'InternalExecutable'
-                      || job.configuration.executable.TYPE === 'Java')"
-                      [nzTitle]="titleTemplate">
-                <ng-template #titleTemplate>
-                  <span translate>workflow.label.className</span>
-                  <sup class="text-danger text-sm">*</sup>
-                </ng-template>
-                <div class="row">
-                  <div [ngClass]="{'has-error': (className.invalid && (className.dirty && className.touched))}"
-                       class="col-md-12">
-                    <label class="w-full">
-                      <input #className="ngModel" (blur)="saveJSON()" [(ngModel)]="job.configuration.executable.className" autocomplete="off" class="form-control"
-                             name="className" placeholder="{{'workflow.placeholder.className' | translate}}"
-                             required type="text">
-                    </label>
-                    <div *ngIf="(className.invalid && (className.dirty && className.touched))"
-                         class="text-danger help-block">
-                      <div *ngIf="(className.errors && className.errors['required'])">
-                        <div translate>common.message.requiredError</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </nz-tab>
-              <nz-tab [nzTitle]="'workflow.label.arguments' | translate">
-                <div class="pos-abt r-t-12">
-                  <button (click)="encryptAllArguments()" [disabled]="object.setOfCheckedArgu.size === 0" class="btn btn-grey btn-sm" nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" translate type="button">
-                    <span nz-icon nzType="file-protect" nzTheme="outline"></span>
-                  </button>
-                  <button (click)="cutParam('arguments')" [disabled]="object.setOfCheckedArgu.size === 0" class="btn btn-grey btn-sm m-l-sm"
-                          nz-tooltip="{{'common.button.cut' | translate}}" translate type="button">
-                    <i class="fa fa-scissors"></i>
-                  </button>
-                  <button (click)="copyParam('arguments')" [disabled]="object.setOfCheckedArgu.size === 0"
-                          class="btn btn-grey btn-sm m-l-sm"
-                          nz-tooltip="{{'common.button.copy' | translate}}" translate type="button">
-                    <i class="fa fa-copy"></i>
-                  </button>
-                  <button (click)="pasteParam(job.configuration, 'arguments')" [disabled]="!copiedParamObjects.data || object.setOfCheckedArgu.size > 0"
-                          class="btn btn-grey btn-sm m-l-sm"
-                          nz-tooltip="{{'common.button.paste' | translate}}"
-                          translate type="button">
-                    <i class="fa fa-paste"></i>
-                  </button>
-                </div>
-                <div class="row">
-                  <div *ngIf="job.configuration.arguments.length > 0" class="col-md-12">
-                    <div class="pos-abt m-t-n-xxs m-l-11">
-                      <label nz-checkbox [(nzChecked)]="object.checked1" [nzIndeterminate]="object.indeterminate1"
-                             (nzCheckedChange)="onAllChecked(job.configuration,'arguments', $event)"></label>
-                    </div>
-                    <div class="form-group row m-b-0 m-l-md">
-                      <div class="col-md-4 col-lg-4 col-xl-3 m-b-sm" translate>common.label.name</div>
-                      <div class="col-md-3 col-lg-3 col-xl-3 m-b-sm" translate>common.label.type</div>
-                      <div class="col-md-5 col-lg-5 col-xl-3 m-b-sm" translate>common.label.value</div>
-                    </div>
-                  </div>
-                  <div class="col-md-12 tab-ht">
-                    <div (cdkDropListDropped)="drop($event, job.configuration.arguments)" cdkDropList>
-                      <div *ngFor="let parameter of job.configuration.arguments; let i = index"
-                           cdkDrag class="form-group row m-b-0 m-l-md move-on-hover b-b m-b">
-                        <div cdkDragHandle class="pos-abt move-icon drag-move-icon">
-                          <i aria-hidden="true" class="fa fa-bars"></i>
-                        </div>
-                        <div class="pos-abt m-l-n-13">
-                          <label nz-checkbox [nzChecked]="object.setOfCheckedArgu.has(parameter.name)" [nzDisabled]="!parameter.name"
-                                 class="m-t-xs" (nzCheckedChange)="onItemChecked(job.configuration, 'arguments', parameter.name, $event)"></label>
-                        </div>
-                        <div [ngClass]="{'has-error' : ((pname.dirty || pname.touched) && pname.invalid)}"
-                             class="col-md-4 col-lg-4 col-xl-3 m-b-sm p-r-0">
-                          <input #pname="ngModel" (blur)="isStringValid(parameter, pname, job.configuration.arguments)" [(ngModel)]="parameter.name" [readonly]="isTrash"
-                                 autocomplete="off" class="form-control"
-                                 identifierValidation name="pname{{i}}"
-                                 placeholder="{{'common.placeholder.name' | translate}}"
-                                 type="text">
-                          <div *ngIf="pname.invalid && pname.errors && (pname.dirty || pname.touched)"
-                               class="text-danger help-block">
-                            <div *ngIf="pname.errors['invalidIdentifier']" translate>common.message.invalid</div>
-                          </div>
-                        </div>
-                        <div class="col-md-3 col-lg-3 col-xl-3 m-b-sm p-r-0">
-                          <nz-select [(ngModel)]="parameter.value.type" [nzDisabled]="isTrash" (ngModelChange)="saveJSON()"
-                                     name="type{{i}}">
-                            <nz-option *ngFor="let dataType of allowedDatatype" [nzLabel]="dataType | translate"
-                                       [nzValue]="dataType"></nz-option>
-                          </nz-select>
-                        </div>
-                        <div [ngSwitch]="parameter.value.type" class="col-md-4 col-lg-4 col-xl-3 m-b-sm">
-                          <nz-input-number (nzBlur)="saveJSON()" *ngSwitchCase="'Number'" [(ngModel)]="parameter.value.default" [nzDisabled]="isTrash"
-                                           [nzStep]="1" name="value{{i}}"
-                                           nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
-                          <nz-select *ngSwitchCase="'Boolean'"
-                                     [(ngModel)]="parameter.value.default"
-                                     [nzDisabled]="isTrash" (ngModelChange)="saveJSON()"
-                                     [nzPlaceHolder]="'common.placeholder.selectValue' | translate" name="value{{i}}"
-                                     nzAllowClear>
-                            <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-                            <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-                          </nz-select>
-                          <i (click)="addList(parameter)"
-                             *ngIf="parameter.value.type === 'Number' || parameter.value.type === 'Boolean'"
-                             [ngClass]="{'text-primary': parameter.value.list && parameter.value.list.length > 0}"
-                             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.listEntryMode' | translate"
-                             class="pos-abt cursor text-primary-hover"
-                             nz-icon nzTheme="outline" nzType="unordered-list" style="right: 13px;top:0;"></i>
-                          <ng-container *ngSwitchDefault>
-                            <input #value="ngModel" (blur)="saveJSON()" (keydown)="onKeyPress($event, 'arguments')"
-                                   [(ngModel)]="parameter.value.default" [facetValidation]="parameter.value.facet" autocomplete="off"
-                                   class="form-control"
-                                   name="value{{i}}"
-                                   placeholder="{{'common.placeholder.value' | translate}}" type="text">
-                            <i (click)="addFacet(parameter)"
-                               *ngIf="parameter.value.type === 'String'"
-                               [ngClass]="{'text-primary': parameter.value.facet}" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.facetEntryMode' | translate"
-                               class="pos-abt cursor text-primary-hover" nz-icon nzTheme="outline"
-                               nzType="snippets" style="right: 49px;top:1px;"></i>
-                            <i (click)="addList(parameter)"
-                               *ngIf="parameter.value.type === 'String'"
-                               [ngClass]="{'text-primary': parameter.value.list && parameter.value.list.length > 0}"
-                               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.listEntryMode' | translate" class="pos-abt cursor text-primary-hover"
-                               nz-icon nzTheme="outline" nzType="unordered-list" style="right: 31px;top:1px;"></i>
-                            <i (click)="openEditor(parameter.value, 'default')" *ngIf="parameter.value.type === 'String'"
-                               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
-                               nzTheme="outline" nzType="form"
-                               style="right: 13px;top:1px;"></i>
-                            <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                                 class="text-danger help-block">
-                              <div *ngIf="value.errors['invalidFacet']" translate>common.message.invalid</div>
+              </div>
+            }
+            <div class="form-group row">
+              <div class="col-md-12">
+                <nz-tabset [(nzSelectedIndex)]="selectedIndex" >
+                  @if (job.configuration.executable && (job.configuration.executable.TYPE === 'ShellScriptExecutable' || job.configuration.executable.TYPE === 'JavaScript')) {
+                    <nz-tab [nzTitle]="titleTemplate">
+                      <ng-template #titleTemplate>
+                        <span translate>workflow.label.script</span>
+                        <sup class="text-danger text-sm">*</sup>
+                      </ng-template>
+                      <div class="row">
+                        @if (isDisplay && selectedIndex == 0) {
+                          <div class="col-md-12">
+                            @if (isTreeShow) {
+                              <div class="z-index-9999 pos-abt opacity0" id="show-tree"
+                                   style="min-width: 150px;">
+                                <app-search-input (onBlur)="onBlurTree($event)" (onSelect)="checkExpectNoticeExp($event)"
+                                                  [changeDetect]="true"
+                                                  [nodes]="scriptTree" [type]="'INCLUDESCRIPT'"></app-search-input>
+                              </div>
+                            }
+                            <i (click)="showEditor(job.configuration.executable.TYPE === 'JavaScript' ? 'javascript' : 'shell')" class="pos-abt z-index-9999 text-20 r-24 t-1" nz-icon nzTheme="outline"
+                               nzType="form"></i>
+                            <div [ngClass]="{'invalid': (script.invalid && (script.dirty && script.touched))}" class="b-a">
+                              <ngx-codemirror #codeMirror #script="ngModel" (focusout)="saveJSON()" [(ngModel)]="job.configuration.executable.script"
+                                              [options]="{
+                                lineNumbers: true,
+                                autoRefresh: true,
+                                lineWrapping: true,
+                                matchBrackets: true,
+                                foldGutter: true,
+                                tabSize: preferences.tabSize,
+                                autoCloseBrackets: job.configuration.executable.TYPE === 'JavaScript',
+                                scrollbarStyle: 'simple',
+                                highlightSelectionMatches: {showToken, annotateScrollbar: true},
+                                mode: job.configuration.executable.TYPE === 'JavaScript' ? 'javascript' : 'shell',
+                                gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
+                              }" name="script"
+                                              required></ngx-codemirror>
                             </div>
-                          </ng-container>
-                          <div class="pos-abt r-t-n-6 job-template-encrypt">
-                            <i
-                              *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(parameter.name)"
-                              class="fa fa-scissors"></i>
-                              <a *ngIf="parameter.value.type === 'String' && parameter.name"><i (click)="encryptValue(parameter, 'jobTemplate', 'arguments')" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
-                            <a
-                              *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(parameter.name))"><i
-                              (click)="removeParameter(i)" class="fa fa-times text-hover-color"></i></a>
+                            <div class="text-sm text-muted" translate>inventory.tooltips.script.autocompleteShortCut</div>
+                            @if ((script.invalid && (script.dirty && script.touched))) {
+                              <div class="text-danger help-block">
+                                @if ((script.errors && script.errors['required'])) {
+                                  <div translate>common.message.requiredError</div>
+                                }
+                              </div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </nz-tab>
+                  }
+                  @if (job.configuration.executable && (job.configuration.executable.TYPE === 'InternalExecutable' || job.configuration.executable.TYPE === 'Java')) {
+                    <nz-tab [nzTitle]="titleTemplate">
+                      <ng-template #titleTemplate>
+                        <span translate>workflow.label.className</span>
+                        <sup class="text-danger text-sm">*</sup>
+                      </ng-template>
+                      <div class="row">
+                        <div [ngClass]="{'has-error': (className.invalid && (className.dirty && className.touched))}"
+                             class="col-md-12">
+                          <label class="w-full">
+                            <input #className="ngModel" (blur)="saveJSON()" [(ngModel)]="job.configuration.executable.className" autocomplete="off" class="form-control"
+                                   name="className" placeholder="{{'workflow.placeholder.className' | translate}}"
+                                   required type="text">
+                          </label>
+                          @if ((className.invalid && (className.dirty && className.touched))) {
+                            <div class="text-danger help-block">
+                              @if ((className.errors && className.errors['required'])) {
+                                <div translate>common.message.requiredError</div>
+                              }
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    </nz-tab>
+                  }
+                  <nz-tab [nzTitle]="'workflow.label.arguments' | translate">
+                    <div class="pos-abt r-t-12">
+                      <button (click)="encryptAllArguments()" [disabled]="object.setOfCheckedArgu.size === 0" class="btn btn-grey btn-sm" nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" translate type="button">
+                        <span nz-icon nzType="file-protect" nzTheme="outline"></span>
+                      </button>
+                      <button (click)="cutParam('arguments')" [disabled]="object.setOfCheckedArgu.size === 0" class="btn btn-grey btn-sm m-l-sm"
+                              nz-tooltip="{{'common.button.cut' | translate}}" translate type="button">
+                        <i class="fa fa-scissors"></i>
+                      </button>
+                      <button (click)="copyParam('arguments')" [disabled]="object.setOfCheckedArgu.size === 0"
+                              class="btn btn-grey btn-sm m-l-sm"
+                              nz-tooltip="{{'common.button.copy' | translate}}" translate type="button">
+                        <i class="fa fa-copy"></i>
+                      </button>
+                      <button (click)="pasteParam(job.configuration, 'arguments')" [disabled]="!copiedParamObjects.data || object.setOfCheckedArgu.size > 0"
+                              class="btn btn-grey btn-sm m-l-sm"
+                              nz-tooltip="{{'common.button.paste' | translate}}"
+                              translate type="button">
+                        <i class="fa fa-paste"></i>
+                      </button>
+                    </div>
+                    <div class="row">
+                      @if (job.configuration.arguments.length > 0) {
+                        <div class="col-md-12">
+                          <div class="pos-abt m-t-n-xxs m-l-11">
+                            <label nz-checkbox [(nzChecked)]="object.checked1" [nzIndeterminate]="object.indeterminate1"
+                                   (nzCheckedChange)="onAllChecked(job.configuration,'arguments', $event)"></label>
+                          </div>
+                          <div class="form-group row m-b-0 m-l-md">
+                            <div class="col-md-4 col-lg-4 col-xl-3 m-b-sm" translate>common.label.name</div>
+                            <div class="col-md-3 col-lg-3 col-xl-3 m-b-sm" translate>common.label.type</div>
+                            <div class="col-md-5 col-lg-5 col-xl-3 m-b-sm" translate>common.label.value</div>
                           </div>
                         </div>
-                        <div class="col-lg-12 col-xl-9 m-b-xs">
-                          <a (click)="parameter.preview = false;" [ngClass]="{'text-primary': parameter.preview !== true}"
-                             class="btn btn-xs btn-default" style="box-shadow: none !important;" translate>xml.button.sourceCode</a>
-                          <a (click)="parameter.preview = true;" [ngClass]="{'text-primary': parameter.preview === true}"
-                             class="btn btn-xs btn-default b-l" style="box-shadow: none !important;" translate>xml.button.preview</a>
-                          <textarea *ngIf="!parameter.preview" (blur)="saveJSON()" [(ngModel)]="parameter.value.description" class="form-control"
-                                    name="pdescription{{i}}"
-                                    placeholder="{{'workflow.placeholder.description' | translate}}"
-                                    rows="2"></textarea>
-                          <div *ngIf="parameter.preview" class="b-a" style="min-height: 104px;max-height: 300px;overflow: auto">
-                            <pre [innerHTML]="parameter.value.description | safeHtml"></pre>
+                      }
+                      <div class="col-md-12 tab-ht">
+                        <div (cdkDropListDropped)="drop($event, job.configuration.arguments)" cdkDropList>
+                          @for (parameter of job.configuration.arguments; track $index; let i = $index) {
+                            <div cdkDrag class="form-group row m-b-0 m-l-md move-on-hover b-b m-b">
+                              <div cdkDragHandle class="pos-abt move-icon drag-move-icon">
+                                <i aria-hidden="true" class="fa fa-bars"></i>
+                              </div>
+                              <div class="pos-abt m-l-n-13">
+                                <label nz-checkbox [nzChecked]="object.setOfCheckedArgu.has(parameter.name)" [nzDisabled]="!parameter.name"
+                                       class="m-t-xs" (nzCheckedChange)="onItemChecked(job.configuration, 'arguments', parameter.name, $event)"></label>
+                              </div>
+                              <div [ngClass]="{'has-error' : ((pname.dirty || pname.touched) && pname.invalid)}"
+                                   class="col-md-4 col-lg-4 col-xl-3 m-b-sm p-r-0">
+                                <input #pname="ngModel" (blur)="isStringValid(parameter, pname, job.configuration.arguments)" [(ngModel)]="parameter.name" [readonly]="isTrash"
+                                       autocomplete="off" class="form-control"
+                                       identifierValidation name="pname{{i}}"
+                                       placeholder="{{'common.placeholder.name' | translate}}"
+                                       type="text">
+                                @if (pname.invalid && pname.errors && (pname.dirty || pname.touched)) {
+                                  <div class="text-danger help-block">
+                                    @if (pname.errors['invalidIdentifier']) {
+                                      <div translate>common.message.invalid</div>
+                                    }
+                                  </div>
+                                }
+                              </div>
+                              <div class="col-md-3 col-lg-3 col-xl-3 m-b-sm p-r-0">
+                                <nz-select [(ngModel)]="parameter.value.type" [nzDisabled]="isTrash" (ngModelChange)="saveJSON()"
+                                           name="type{{i}}">
+                                  @for (dataType of allowedDatatype; track dataType) {
+                                    <nz-option [nzLabel]="dataType | translate"
+                                               [nzValue]="dataType"></nz-option>
+                                  }
+                                </nz-select>
+                              </div>
+                              <div class="col-md-4 col-lg-4 col-xl-3 m-b-sm">
+                                @switch (parameter.value.type) {
+                                  @case ('Number') {
+                                    <nz-input-number (nzBlur)="saveJSON()" [(ngModel)]="parameter.value.default" [nzDisabled]="isTrash"
+                                                     [nzStep]="1" name="value{{i}}"
+                                                     nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
+                                  }
+                                  @case ('Boolean') {
+                                    <nz-select [(ngModel)]="parameter.value.default"
+                                               [nzDisabled]="isTrash" (ngModelChange)="saveJSON()"
+                                               [nzPlaceHolder]="'common.placeholder.selectValue' | translate" name="value{{i}}"
+                                               nzAllowClear>
+                                      <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                                      <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+                                    </nz-select>
+                                  }
+                                  @default {
+                                    <input #value="ngModel" (blur)="saveJSON()" (keydown)="onKeyPress($event, 'arguments')"
+                                           [(ngModel)]="parameter.value.default" [facetValidation]="parameter.value.facet" autocomplete="off"
+                                           class="form-control"
+                                           name="value{{i}}"
+                                           placeholder="{{'common.placeholder.value' | translate}}" type="text">
+                                    @if (parameter.value.type === 'String') {
+                                      <i (click)="addFacet(parameter)"
+                                         [ngClass]="{'text-primary': parameter.value.facet}" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.facetEntryMode' | translate"
+                                         class="pos-abt cursor text-primary-hover" nz-icon nzTheme="outline"
+                                         nzType="snippets" style="right: 49px;top:1px;"></i>
+                                    }
+                                    @if (parameter.value.type === 'String') {
+                                      <i (click)="addList(parameter)"
+                                         [ngClass]="{'text-primary': parameter.value.list && parameter.value.list.length > 0}"
+                                         [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.listEntryMode' | translate" class="pos-abt cursor text-primary-hover"
+                                         nz-icon nzTheme="outline" nzType="unordered-list" style="right: 31px;top:1px;"></i>
+                                    }
+                                    @if (parameter.value.type === 'String') {
+                                      <i (click)="openEditor(parameter.value, 'default')"
+                                         [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
+                                         nzTheme="outline" nzType="form"
+                                         style="right: 13px;top:1px;"></i>
+                                    }
+                                    @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                                      <div class="text-danger help-block">
+                                        @if (value.errors['invalidFacet']) {
+                                          <div translate>common.message.invalid</div>
+                                        }
+                                      </div>
+                                    }
+                                  }
+                                }
+                                @if (parameter.value.type === 'Number' || parameter.value.type === 'Boolean') {
+                                  <i (click)="addList(parameter)"
+                                     [ngClass]="{'text-primary': parameter.value.list && parameter.value.list.length > 0}"
+                                     [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.listEntryMode' | translate"
+                                     class="pos-abt cursor text-primary-hover"
+                                     nz-icon nzTheme="outline" nzType="unordered-list" style="right: 13px;top:0;"></i>
+                                }
+                                <div class="pos-abt r-t-n-6 job-template-encrypt">
+                                  @if (copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(parameter.name)) {
+                                    <i class="fa fa-scissors"></i>
+                                  }
+                                  @if (parameter.value.type === 'String' && parameter.name) {
+                                    <a><i (click)="encryptValue(parameter, 'jobTemplate', 'arguments')" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                                  }
+                                  @if (!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'arguments' && object.setOfCheckedArgu.has(parameter.name))) {
+                                    <a><i (click)="removeParameter(i)" class="fa fa-times text-hover-color"></i></a>
+                                  }
+                                </div>
+                              </div>
+                              <div class="col-lg-12 col-xl-9 m-b-xs">
+                                <a (click)="parameter.preview = false;" [ngClass]="{'text-primary': parameter.preview !== true}"
+                                   class="btn btn-xs btn-default" style="box-shadow: none !important;" translate>xml.button.sourceCode</a>
+                                <a (click)="parameter.preview = true;" [ngClass]="{'text-primary': parameter.preview === true}"
+                                   class="btn btn-xs btn-default b-l" style="box-shadow: none !important;" translate>xml.button.preview</a>
+                                @if (!parameter.preview) {
+                                  <textarea (blur)="saveJSON()" [(ngModel)]="parameter.value.description" class="form-control"
+                                            name="pdescription{{i}}"
+                                            placeholder="{{'workflow.placeholder.description' | translate}}"
+                                            rows="2"></textarea>
+                                }
+                                @if (parameter.preview) {
+                                  <div class="b-a" style="min-height: 104px;max-height: 300px;overflow: auto">
+                                    <pre [innerHTML]="parameter.value.description | safeHtml"></pre>
+                                  </div>
+                                }
+                              </div>
+                              <div class="col-lg-12 col-xl-9 m-b-12">
+                                <label [(ngModel)]="parameter.value.required" class="m-t-xs" (ngModelChange)="saveJSON()"
+                                       nz-checkbox>
+                                  {{'workflow.label.required' | translate}}
+                                </label>
+                              </div>
+                            </div>
+                          }
+                        </div>
+                        <div class="form-group row">
+                          @if (job.configuration.arguments) {
+                            <div class="col-sm-12">
+                              <a (click)="addParameter();saveJSON()" class="text-u-l m-l-11" translate>workflow.button.addArgument</a>
+                            </div>
+                          }
+                        </div>
+                      </div>
+                    </div>
+                  </nz-tab>
+                  @if (job.configuration.executable && job.configuration.executable.TYPE === 'ShellScriptExecutable') {
+                    <nz-tab [nzTitle]="'workflow.label.environmentVariables' | translate">
+                      <div class="pos-abt r-t-12">
+                        <button (click)="encryptAllEnvVariables()" [disabled]="object.setOfCheckedEnv.size === 0" class="btn btn-grey btn-sm" nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" translate type="button">
+                          <span nz-icon nzType="file-protect" nzTheme="outline"></span>
+                        </button>
+                        <button (click)="cutParam('env')" [disabled]="object.setOfCheckedEnv.size === 0" class="btn btn-grey btn-sm m-l-sm"
+                                nz-tooltip="{{'common.button.cut' | translate}}" translate type="button">
+                          <i class="fa fa-scissors"></i>
+                        </button>
+                        <button (click)="copyParam('env')" [disabled]="object.setOfCheckedEnv.size === 0"
+                                class="btn btn-grey btn-sm m-l-sm"
+                                nz-tooltip="{{'common.button.copy' | translate}}" translate type="button">
+                          <i class="fa fa-copy"></i>
+                        </button>
+                        <button (click)="pasteParam(job.configuration.executable,'env')" [disabled]="!copiedParamObjects.data || object.setOfCheckedEnv.size > 0"
+                                class="btn btn-grey btn-sm m-l-sm"
+                                nz-tooltip="{{'common.button.paste' | translate}}"
+                                translate type="button">
+                          <i class="fa fa-paste"></i>
+                        </button>
+                      </div>
+                      <div class="row">
+                        @if (job.configuration.executable.env.length > 0) {
+                          <div class="col-md-12">
+                            <div class="pos-abt m-t-n-xxs m-l-11">
+                              <label nz-checkbox [(nzChecked)]="object.checked3" [nzIndeterminate]="object.indeterminate3"
+                                     (nzCheckedChange)="onAllChecked(job.configuration.executable,'env', $event)"></label>
+                            </div>
+                            <div class="form-group row m-b-0 m-l-md">
+                              <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>
+                              <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-9 m-b-sm" translate>common.label.value</div>
+                            </div>
+                          </div>
+                        }
+                        <div class="col-md-12 tab-ht">
+                          <div (cdkDropListDropped)="drop($event, job.configuration.executable.env)" cdkDropList>
+                            @for (env of job.configuration.executable.env; track $index; let i = $index) {
+                              <div cdkDrag class="form-group row m-b-0 m-l-md move-on-hover">
+                                <div cdkDragHandle class="pos-abt move-icon drag-move-icon">
+                                  <i aria-hidden="true" class="fa fa-bars"></i>
+                                </div>
+                                <div class="pos-abt m-l-n-13">
+                                  <label nz-checkbox [nzChecked]="object.setOfCheckedEnv.has(env.name)" [nzDisabled]="!env.name"
+                                         class="m-t-xs" (nzCheckedChange)="onItemChecked(job.configuration.executable, 'env', env.name, $event)"
+                                  ></label>
+                                </div>
+                                <div [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}"
+                                     class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm p-r-0">
+                                  <input #ename="ngModel" (blur)="isStringValid(env, ename, job.configuration.executable.env);upperCase(env)" [(ngModel)]="env.name" autocomplete="off"
+                                         class="form-control" envVariableValidation name="ename{{i}}"
+                                         nz-input
+                                         placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
+                                  @if (ename.invalid && ename.errors && (ename.dirty || ename.touched)) {
+                                    <div class="text-danger help-block">
+                                      @if (ename.errors['invalidIdentifier']) {
+                                        <div translate>common.message.invalid</div>
+                                      }
+                                    </div>
+                                  }
+                                </div>
+                                <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
+                                  <input [(ngModel)]="env.value" autocomplete="off"
+                                         class="form-control" name="value{{i}}" (blur)="saveJSON()" (ngModelChange)="checkValue(env)"
+                                         nz-input placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
+                                  <i (click)="openEditor(env,  'value')" class="pos-abt cursor r-t-13" nz-icon nzTheme="outline"
+                                     nzType="form"></i>
+                                  <div class="pos-abt r-t-n-6 job-template-encrypt">
+                                    @if (copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name)) {
+                                      <i class="fa fa-scissors"></i>
+                                    }
+                                    @if (env.name) {
+                                      <a><i (click)="encryptValue(env, 'job', 'env')" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                                    }
+                                    @if (!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name))) {
+                                      <a><i (click)="removeEnv(i)" class="fa fa-times text-hover-color"></i></a>
+                                    }
+                                  </div>
+                                </div>
+                              </div>
+                            }
+                          </div>
+                          <div class="form-group row">
+                            <div class="col-sm-12">
+                              <a (click)="addEnv();saveJSON()" class="text-u-l m-l-11" translate>order.button.addVariable</a>
+                            </div>
                           </div>
                         </div>
-                        <div class="col-lg-12 col-xl-9 m-b-12">
-                          <label [(ngModel)]="parameter.value.required" class="m-t-xs" (ngModelChange)="saveJSON()"
-                                 nz-checkbox>
-                            {{'workflow.label.required' | translate}}
+                      </div>
+                    </nz-tab>
+                  }
+
+                  @if (job.configuration.executable && (job.configuration.executable.TYPE === 'InternalExecutable')) {
+                    <nz-tab [nzTitle]="'workflow.label.jobArguments' | translate">
+                      <div class="pos-abt r-t-12">
+                        <button (click)="encryptAllJobArguments()" [disabled]="object.setOfCheckedJobArgu.size === 0" class="btn btn-grey btn-sm" nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" translate type="button">
+                          <span nz-icon nzType="file-protect" nzTheme="outline"></span>
+                        </button>
+                        <button (click)="cutParam('jobArguments')" [disabled]="object.setOfCheckedJobArgu.size === 0" class="btn btn-grey btn-sm m-l-sm"
+                                nz-tooltip="{{'common.button.cut' | translate}}" translate type="button">
+                          <i class="fa fa-scissors"></i>
+                        </button>
+                        <button (click)="copyParam('jobArguments')" [disabled]="object.setOfCheckedJobArgu.size === 0"
+                                class="btn btn-grey btn-sm m-l-sm"
+                                nz-tooltip="{{'common.button.copy' | translate}}" translate
+                                type="button">
+                          <i class="fa fa-copy"></i>
+                        </button>
+                        <button (click)="pasteParam(job.configuration.executable,'jobArguments')" [disabled]="!copiedParamObjects.data || object.setOfCheckedJobArgu.size > 0"
+                                class="btn btn-grey btn-sm m-l-sm"
+                                nz-tooltip="{{'common.button.paste' | translate}}"
+                                translate type="button">
+                          <i class="fa fa-paste"></i>
+                        </button>
+                      </div>
+                      <div class="row">
+                        @if (job.configuration.executable.jobArguments.length > 0) {
+                          <div class="col-md-12">
+                            <div class="pos-abt m-t-n-xxs m-l-11">
+                              <label nz-checkbox [(nzChecked)]="object.checked2" [nzIndeterminate]="object.indeterminate2"
+                                     (nzCheckedChange)="onAllChecked(job.configuration.executable,'jobArguments', $event)"></label>
+                            </div>
+                            <div class="form-group row m-b-0 m-l-md">
+                              <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>
+                              <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-9 m-b-sm" translate>common.label.value</div>
+                            </div>
+                          </div>
+                        }
+                        <div class="col-md-12 tab-ht">
+                          <div (cdkDropListDropped)="drop($event, job.configuration.executable.jobArguments)" cdkDropList>
+                            @for (argument of job.configuration.executable.jobArguments; track $index; let i = $index) {
+                              <div cdkDrag class="form-group row m-b-0 m-l-md move-on-hover">
+                                <div cdkDragHandle class="pos-abt move-icon drag-move-icon">
+                                  <i aria-hidden="true" class="fa fa-bars"></i>
+                                </div>
+                                <div class="pos-abt m-l-n-13">
+                                  <label nz-checkbox [nzChecked]="object.setOfCheckedJobArgu.has(argument.name)" [nzDisabled]="!argument.name"
+                                         class="m-t-xs" (nzCheckedChange)="onItemChecked(job.configuration.executable,'jobArguments', argument.name, $event)"
+                                  ></label>
+                                </div>
+                                <div [ngClass]="{'has-error' : ((jname.dirty || jname.touched) && jname.invalid)}"
+                                     class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm p-r-0">
+                                  <label class="w-full">
+                                    <input #jname="ngModel" (blur)="isStringValid(argument, jname, job.configuration.executable.jobArguments)" [(ngModel)]="argument.name" [appAutofocus]="i == job.configuration.executable.jobArguments.length -1"
+                                           autocomplete="off"
+                                           class="form-control"
+                                           identifierValidation name="jname{{i}}"
+                                           placeholder="{{'common.placeholder.name' | translate}} {{i+1}}"
+                                           type="text">
+                                  </label>
+                                  @if (jname.invalid && jname.errors && (jname.dirty || jname.touched)) {
+                                    <div class="text-danger help-block">
+                                      @if (jname.errors['invalidIdentifier']) {
+                                        <div translate>common.message.invalid</div>
+                                      }
+                                    </div>
+                                  }
+                                </div>
+                                <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
+                                  <input (blur)="checkString(argument, 'value')" (keydown)="onKeyPress($event, 'jobArgument')" [(ngModel)]="argument.value" autocomplete="off"
+                                         class="form-control" name="value{{i}}"
+                                         placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
+                                         type="text">
+                                  <i (click)="openEditor(argument, 'value')" class="pos-abt cursor r-t-13" nz-icon nzTheme="outline"
+                                     nzType="form"></i>
+                                  <div class="pos-abt r-t-n-6 job-template-encrypt">
+                                    @if (copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'jobArguments' && object.setOfCheckedJobArgu.has(argument.name)) {
+                                      <i class="fa fa-scissors"></i>
+                                    }
+                                    @if (argument.name) {
+                                      <a><i (click)="encryptValue(argument, 'job', 'jobArguments')" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                                    }
+                                    @if (!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'jobArguments' && object.setOfCheckedJobArgu.has(argument.name))) {
+                                      <a><i (click)="removeJobArgument(i)" class="fa fa-times text-hover-color"></i></a>
+                                    }
+                                  </div>
+                                </div>
+                              </div>
+                            }
+                          </div>
+                          <div class="form-group row">
+                            @if (job.configuration.executable.jobArguments) {
+                              <div class="col-sm-12">
+                                <a (click)="addJobArgument();saveJSON()" class="text-u-l m-l-11" translate>workflow.button.addArgument</a>
+                              </div>
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    </nz-tab>
+                  }
+                  <nz-tab [nzTitle]="'workflow.tab.jobOptions' | translate">
+                    <div class="job-property-editor">
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.parallelism' | translate) : ''"
+
+                               class="col-md-4 col-lg-3 form-control-label"
+                               title="{{'workflow.label.parallelism' | translate}}"
+                               translate>workflow.label.parallelism</label>
+                        <div class="col-lg-9 col-xl-8 col-xxl-6">
+                          <nz-input-number #parallelism="ngModel" [(ngModel)]="job.configuration.parallelism"
+                                           [appAutofocus]="true" [nzDisabled]="isTrash || !permission.joc.inventory.manage" [nzMin]="0" [nzStep]="1"
+                                           name="parallelism"
+                                           required></nz-input-number>
+                          @if (parallelism.invalid && (parallelism.dirty || parallelism.touched)) {
+                            <div class="text-danger help-block">
+                              @if (parallelism.errors['required']) {
+                                <div translate>common.message.requiredError</div>
+                              }
+                            </div>
+                          }
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.timeout' | translate) : ''"
+                               class="col-md-4 col-lg-3 form-control-label"
+                               title="{{'workflow.label.timeout' | translate}}"
+                               translate>workflow.label.timeout</label>
+                        <div [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}"
+                             class="col-lg-9 col-xl-8 col-xxl-6">
+                          <label class="w-full">
+                            <input #timeout="ngModel" (blur)="saveJSON()" [(ngModel)]="job.configuration.timeout1"
+                                   [disabled]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
+                                   class="form-control" name="timeout"
+                                   placeholder="{{'workflow.placeholder.duration' | translate}}" type="text"
+                                   validateDurtionReqex>
                           </label>
                         </div>
                       </div>
-                    </div>
-                    <div class="form-group row">
-                      <div *ngIf="job.configuration.arguments" class="col-sm-12">
-                        <a (click)="addParameter();saveJSON()" class="text-u-l m-l-11" translate>workflow.button.addArgument</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </nz-tab>
-              <nz-tab *ngIf="job.configuration.executable && job.configuration.executable.TYPE === 'ShellScriptExecutable'"
-                      [nzTitle]="'workflow.label.environmentVariables' | translate">
-                <div class="pos-abt r-t-12">
-                  <button (click)="encryptAllEnvVariables()" [disabled]="object.setOfCheckedEnv.size === 0" class="btn btn-grey btn-sm" nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" translate type="button">
-                    <span nz-icon nzType="file-protect" nzTheme="outline"></span>
-                  </button>
-                  <button (click)="cutParam('env')" [disabled]="object.setOfCheckedEnv.size === 0" class="btn btn-grey btn-sm m-l-sm"
-                          nz-tooltip="{{'common.button.cut' | translate}}" translate type="button">
-                    <i class="fa fa-scissors"></i>
-                  </button>
-                  <button (click)="copyParam('env')" [disabled]="object.setOfCheckedEnv.size === 0"
-                          class="btn btn-grey btn-sm m-l-sm"
-                          nz-tooltip="{{'common.button.copy' | translate}}" translate type="button">
-                    <i class="fa fa-copy"></i>
-                  </button>
-                  <button (click)="pasteParam(job.configuration.executable,'env')" [disabled]="!copiedParamObjects.data || object.setOfCheckedEnv.size > 0"
-                          class="btn btn-grey btn-sm m-l-sm"
-                          nz-tooltip="{{'common.button.paste' | translate}}"
-                          translate type="button">
-                    <i class="fa fa-paste"></i>
-                  </button>
-                </div>
-                <div class="row">
-                  <div *ngIf="job.configuration.executable.env.length > 0" class="col-md-12">
-                    <div class="pos-abt m-t-n-xxs m-l-11">
-                      <label nz-checkbox [(nzChecked)]="object.checked3" [nzIndeterminate]="object.indeterminate3"
-                             (nzCheckedChange)="onAllChecked(job.configuration.executable,'env', $event)"></label>
-                    </div>
-                    <div class="form-group row m-b-0 m-l-md">
-                      <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>
-                      <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-9 m-b-sm" translate>common.label.value</div>
-                    </div>
-                  </div>
-                  <div class="col-md-12 tab-ht">
-                    <div (cdkDropListDropped)="drop($event, job.configuration.executable.env)" cdkDropList>
-                      <div *ngFor="let env of job.configuration.executable.env; let i = index"
-                           cdkDrag class="form-group row m-b-0 m-l-md move-on-hover">
-                        <div cdkDragHandle class="pos-abt move-icon drag-move-icon">
-                          <i aria-hidden="true" class="fa fa-bars"></i>
-                        </div>
-                        <div class="pos-abt m-l-n-13">
-                          <label nz-checkbox [nzChecked]="object.setOfCheckedEnv.has(env.name)" [nzDisabled]="!env.name"
-                                 class="m-t-xs" (nzCheckedChange)="onItemChecked(job.configuration.executable, 'env', env.name, $event)"
-                                 ></label>
-                        </div>
-                        <div [ngClass]="{'has-error' : ((ename.dirty || ename.touched) && ename.invalid)}"
-                             class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm p-r-0">
-                          <input #ename="ngModel" (blur)="isStringValid(env, ename, job.configuration.executable.env);upperCase(env)" [(ngModel)]="env.name" autocomplete="off"
-                                 class="form-control" envVariableValidation name="ename{{i}}"
-                                 nz-input
-                                 placeholder="{{'common.placeholder.name' | translate}} {{i+1}}">
-                          <div *ngIf="ename.invalid && ename.errors && (ename.dirty || ename.touched)"
-                               class="text-danger help-block">
-                            <div *ngIf="ename.errors['invalidIdentifier']" translate>common.message.invalid</div>
-                          </div>
-                        </div>
-                        <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                          <input [(ngModel)]="env.value" autocomplete="off"
-                                 class="form-control" name="value{{i}}" (blur)="saveJSON()" (ngModelChange)="checkValue(env)"
-                                 nz-input placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"/>
-                          <i (click)="openEditor(env,  'value')" class="pos-abt cursor r-t-13" nz-icon nzTheme="outline"
-                             nzType="form"></i>
-                          <div class="pos-abt r-t-n-6 job-template-encrypt">
-                            <i
-                              *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name)"
-                              class="fa fa-scissors"></i>
-                              <a *ngIf="env.name"><i (click)="encryptValue(env, 'job', 'env')" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
-                            <a
-                              *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'env' && object.setOfCheckedEnv.has(env.name))"><i
-                              (click)="removeEnv(i)" class="fa fa-times text-hover-color"></i></a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="form-group row">
-                      <div class="col-sm-12">
-                        <a (click)="addEnv();saveJSON()" class="text-u-l m-l-11" translate>order.button.addVariable</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </nz-tab>
-              <nz-tab *ngIf="job.configuration.executable && (job.configuration.executable.TYPE === 'InternalExecutable')"
-                      [nzTitle]="'workflow.label.jobArguments' | translate">
-                <div class="pos-abt r-t-12">
-                  <button (click)="encryptAllJobArguments()" [disabled]="object.setOfCheckedJobArgu.size === 0" class="btn btn-grey btn-sm" nz-tooltip="{{'encipherment.label.encryptAll' | translate}}" translate type="button">
-                    <span nz-icon nzType="file-protect" nzTheme="outline"></span>
-                  </button>
-                  <button (click)="cutParam('jobArguments')" [disabled]="object.setOfCheckedJobArgu.size === 0" class="btn btn-grey btn-sm m-l-sm"
-                          nz-tooltip="{{'common.button.cut' | translate}}" translate type="button">
-                    <i class="fa fa-scissors"></i>
-                  </button>
-                  <button (click)="copyParam('jobArguments')" [disabled]="object.setOfCheckedJobArgu.size === 0"
-                          class="btn btn-grey btn-sm m-l-sm"
-                          nz-tooltip="{{'common.button.copy' | translate}}" translate
-                          type="button">
-                    <i class="fa fa-copy"></i>
-                  </button>
-                  <button (click)="pasteParam(job.configuration.executable,'jobArguments')" [disabled]="!copiedParamObjects.data || object.setOfCheckedJobArgu.size > 0"
-                          class="btn btn-grey btn-sm m-l-sm"
-                          nz-tooltip="{{'common.button.paste' | translate}}"
-                          translate type="button">
-                    <i class="fa fa-paste"></i>
-                  </button>
-                </div>
-                <div class="row">
-                  <div *ngIf="job.configuration.executable.jobArguments.length > 0" class="col-md-12">
-                    <div class="pos-abt m-t-n-xxs m-l-11">
-                      <label nz-checkbox [(nzChecked)]="object.checked2" [nzIndeterminate]="object.indeterminate2"
-                             (nzCheckedChange)="onAllChecked(job.configuration.executable,'jobArguments', $event)"></label>
-                    </div>
-                    <div class="form-group row m-b-0 m-l-md">
-                      <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>
-                      <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-9 m-b-sm" translate>common.label.value</div>
-                    </div>
-                  </div>
-                  <div class="col-md-12 tab-ht">
-                    <div (cdkDropListDropped)="drop($event, job.configuration.executable.jobArguments)" cdkDropList>
-                      <div *ngFor="let argument of job.configuration.executable.jobArguments; let i = index"
-                           cdkDrag class="form-group row m-b-0 m-l-md move-on-hover">
-                        <div cdkDragHandle class="pos-abt move-icon drag-move-icon">
-                          <i aria-hidden="true" class="fa fa-bars"></i>
-                        </div>
-                        <div class="pos-abt m-l-n-13">
-                          <label nz-checkbox [nzChecked]="object.setOfCheckedJobArgu.has(argument.name)" [nzDisabled]="!argument.name"
-                                 class="m-t-xs" (nzCheckedChange)="onItemChecked(job.configuration.executable,'jobArguments', argument.name, $event)"
-                                 ></label>
-                        </div>
-                        <div [ngClass]="{'has-error' : ((jname.dirty || jname.touched) && jname.invalid)}"
-                             class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm p-r-0">
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.graceTimeout' | translate) : ''"
+
+                               class="col-md-4 col-lg-3 form-control-label"
+                               title="{{'workflow.label.graceTimeout' | translate}}" translate>workflow.label.graceTimeout</label>
+                        <div [ngClass]="{'has-error' : ((graceTimeout.dirty || graceTimeout.touched) && graceTimeout.invalid)}"
+                             class="col-lg-9 col-xl-8 col-xxl-6">
                           <label class="w-full">
-                            <input #jname="ngModel" (blur)="isStringValid(argument, jname, job.configuration.executable.jobArguments)" [(ngModel)]="argument.name" [appAutofocus]="i == job.configuration.executable.jobArguments.length -1"
-                                   autocomplete="off"
-                                   class="form-control"
-                                   identifierValidation name="jname{{i}}"
-                                   placeholder="{{'common.placeholder.name' | translate}} {{i+1}}"
+                            <input #graceTimeout="ngModel" (blur)="saveJSON()" [(ngModel)]="job.configuration.graceTimeout1"
+                                   [disabled]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
+                                   class="form-control" name="graceTimeout"
+                                   placeholder="{{'workflow.placeholder.duration' | translate}}" type="text"
+                                   validateDurtionReqex>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.warnIfShorter' | translate) : ''"
+
+                               class="col-md-4 col-lg-3 form-control-label"
+                               title="{{'workflow.label.warnIfShorter' | translate}}" translate>workflow.label.warnIfShorter</label>
+                        <div [ngClass]="{'has-error' : ((warnIfShorter.dirty || warnIfShorter.touched) && warnIfShorter.invalid)}"
+                             class="col-lg-9 col-xl-8 col-xxl-6">
+                          <label class="w-full">
+                            <input #warnIfShorter="ngModel" (blur)="saveJSON()" [(ngModel)]="job.configuration.warnIfShorter"
+                                   [disabled]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
+                                   class="form-control" name="warnIfShorter"
+                                   placeholder="{{'workflow.placeholder.durationWithPercentage' | translate}}"
+                                   type="text"
+                                   validateDurtionWithPercentageReqex>
+                          </label>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.warnIfLonger' | translate) : ''"
+
+                               class="col-md-4 col-lg-3 form-control-label"
+                               title="{{'workflow.label.warnIfLonger' | translate}}" translate>workflow.label.warnIfLonger</label>
+                        <div [ngClass]="{'has-error' : ((warnIfLonger.dirty || warnIfLonger.touched) && warnIfLonger.invalid)}"
+                             class="col-lg-9 col-xl-8 col-xxl-6">
+                          <label class="w-full">
+                            <input #warnIfLonger="ngModel" (blur)="saveJSON()" [(ngModel)]="job.configuration.warnIfLonger"
+                                   [disabled]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
+                                   class="form-control" name="warnIfLonger"
+                                   placeholder="{{'workflow.placeholder.durationWithPercentage' | translate}}"
+                                   type="text" validateDurtionWithPercentageReqex>
+                          </label>
+                        </div>
+                      </div>
+                      @if (job.configuration.executable && job.configuration.executable.TYPE === 'ShellScriptExecutable' && (coreService.expertMode)) {
+                        <div class="form-group row">
+                          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.compatibleMode' | translate) : ''"
+                                 class="col-md-4 col-lg-3 form-control-label"
+                                 title="{{'workflow.label.compatibleMode' | translate}}"
+                                 translate>workflow.label.compatibleMode</label>
+                          <div class="col-lg-9 col-xl-8 col-xxl-6">
+                            <nz-select [(ngModel)]="job.configuration.executable.v1Compatible" name="v1Compatible"
+                                       nzAllowClear (ngModelChange)="saveJSON();">
+                              <nz-option [nzLabel]="'workflow.label.branch1.x' | translate" [nzValue]="true"></nz-option>
+                            </nz-select>
+                          </div>
+                        </div>
+                      }
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.criticality' | translate) : ''"
+
+                               class="col-md-4 col-lg-3 form-control-label"
+                               title="{{'workflow.label.criticality' | translate}}" translate>workflow.label.criticality</label>
+                        <div class="col-lg-9 col-xl-8 col-xxl-6">
+                          <nz-select [(ngModel)]="job.configuration.criticality" (ngModelChange)="saveJSON()"
+                                     [nzDisabled]="isTrash || !permission.joc.inventory.manage" [nzPlaceHolder]="'inventory.placeholder.selectCriticality' | translate"
+                                     class="w-full"
+                                     name="criticality" nzAllowClear>
+                            <nz-option [nzLabel]="'common.label.minor' | translate" [nzValue]="'MINOR'"></nz-option>
+                            <nz-option [nzLabel]="'common.label.normal' | translate" [nzValue]="'NORMAL'"></nz-option>
+                            <nz-option [nzLabel]="'common.label.major' | translate" [nzValue]="'MAJOR'"></nz-option>
+                            <nz-option [nzLabel]="'common.label.critical' | translate" [nzValue]="'CRITICAL'"></nz-option>
+                          </nz-select>
+                        </div>
+                      </div>
+                      @if (job.configuration.executable && job.configuration.executable.TYPE === 'ShellScriptExecutable' && coreService.expertMode) {
+                        <div class="form-group row">
+                          <label
+                            [nzTooltipMouseEnterDelay]="0.5"
+                            [nz-tooltip]="
+            !preferences.showTooltipInfo
+              ? ('inventory.tooltips.workflow.job.jobNotRestartable'
+                | translate)
+              : ''
+          "
+                            class="col-md-4 col-lg-3 block-ellipsis-job"
+                            title="{{
+            'workflow.label.jobNotRestartable' | translate
+          }}"
+                            translate
+                          >workflow.label.jobNotRestartable</label
+                          >
+                          <div class="col-lg-9 col-xl-8 col-xxl-6">
+                            <label
+                              [(ngModel)]="job.configuration.isNotRestartable"
+                              (ngModelChange)="saveJSON()"
+                              name="isNotRestartable"
+                              nz-checkbox
+                            ></label>
+                          </div>
+                        </div>
+                      }
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.credentialKey' | translate) : ''"
+
+                               class="col-md-4 col-lg-3 form-control-label"
+                               title="{{'workflow.label.credentialKey' | translate}}" translate>workflow.label.credentialKey
+                          @if (job.configuration.executable.login.withUserProfile) {
+                            <sup class="text-danger text-sm">*</sup>
+                          }
+                        </label>
+                        <div [ngClass]="{'has-error' : ((credentialKey.dirty || credentialKey.touched) && credentialKey.invalid)}"
+                             class="col-lg-9 col-xl-8 col-xxl-6">
+                          <label class="w-full">
+                            <input #credentialKey="ngModel" (blur)="saveJSON()"
+                                   [(ngModel)]="job.configuration.executable.login.credentialKey" [disabled]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
+                                   class="form-control" name="credentialKey"
+                                   placeholder="{{'workflow.placeholder.enterCredentialKey' | translate}}"
                                    type="text">
                           </label>
-                          <div *ngIf="jname.invalid && jname.errors && (jname.dirty || jname.touched)"
-                               class="text-danger help-block">
-                            <div *ngIf="jname.errors['invalidIdentifier']" translate>common.message.invalid</div>
-                          </div>
-                        </div>
-                        <div class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                          <input (blur)="checkString(argument, 'value')" (keydown)="onKeyPress($event, 'jobArgument')" [(ngModel)]="argument.value" autocomplete="off"
-                                 class="form-control" name="value{{i}}"
-                                 placeholder="{{'common.placeholder.value' | translate}} {{i+1}}"
-                                 type="text">
-                          <i (click)="openEditor(argument, 'value')" class="pos-abt cursor r-t-13" nz-icon nzTheme="outline"
-                             nzType="form"></i>
-                          <div class="pos-abt r-t-n-6 job-template-encrypt">
-                            <i
-                              *ngIf="copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'jobArguments' && object.setOfCheckedJobArgu.has(argument.name)"
-                              class="fa fa-scissors"></i>
-                              <a *ngIf="argument.name"><i (click)="encryptValue(argument, 'job', 'jobArguments')" class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
-                            <a
-                              *ngIf="!(copiedParamObjects.operation === 'CUT' && copiedParamObjects.type === 'jobArguments' && object.setOfCheckedJobArgu.has(argument.name))"><i
-                              (click)="removeJobArgument(i)" class="fa fa-times text-hover-color"></i></a>
-                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div class="form-group row">
-                      <div *ngIf="job.configuration.executable.jobArguments" class="col-sm-12">
-                        <a (click)="addJobArgument();saveJSON()" class="text-u-l m-l-11" translate>workflow.button.addArgument</a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </nz-tab>
-              <nz-tab [nzTitle]="'workflow.tab.jobOptions' | translate">
-                <div class="job-property-editor">
-                  <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.parallelism' | translate) : ''"
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.loadUserProfile' | translate) : ''"
 
-                           class="col-md-4 col-lg-3 form-control-label"
-                           title="{{'workflow.label.parallelism' | translate}}"
-                           translate>workflow.label.parallelism</label>
-                    <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <nz-input-number #parallelism="ngModel" [(ngModel)]="job.configuration.parallelism"
-                                       [appAutofocus]="true" [nzDisabled]="isTrash || !permission.joc.inventory.manage" [nzMin]="0" [nzStep]="1"
-                                       name="parallelism"
-                                       required></nz-input-number>
-                      <div *ngIf="parallelism.invalid && (parallelism.dirty || parallelism.touched)"
-                           class="text-danger help-block">
-                        <div *ngIf="parallelism.errors['required']">
-                          <div translate>common.message.requiredError</div>
+                               class="col-md-4 col-lg-3 block-ellipsis-job"
+                               title="{{'workflow.label.loadUserProfile' | translate}}" translate>workflow.label.loadUserProfile</label>
+                        <div class="col-lg-9 col-xl-8 col-xxl-6">
+                          <label [(ngModel)]="job.configuration.executable.login.withUserProfile" (ngModelChange)="saveJSON()"
+                                 [nzDisabled]="isTrash || !permission.joc.inventory.manage"
+                                 name="loadUserProfile" nz-checkbox></label>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.failOnOutputErr' | translate) : ''"
+
+                               class="col-md-4 col-lg-3 block-ellipsis-job"
+                               title="{{'workflow.label.failOnOutputErr' | translate}}" translate>workflow.label.failOnOutputErr</label>
+                        <div class="col-lg-9 col-xl-8 col-xxl-6">
+                          <label [(ngModel)]="job.configuration.failOnErrWritten" (ngModelChange)="saveJSON()"
+                                 [nzDisabled]="isTrash || !permission.joc.inventory.manage || job.configuration.warnOnErrWritten"
+                                 name="failOnErrWritten" nz-checkbox></label>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.warnOnOutputErr' | translate) : ''"
+
+                               class="col-md-4 col-lg-3 block-ellipsis-job"
+                               title="{{'workflow.label.warnOnOutputErr' | translate}}"
+                               translate>workflow.label.warnOnOutputErr</label>
+                        <div class="col-lg-9 col-xl-8 col-xxl-6">
+                          <label [(ngModel)]="job.configuration.warnOnErrWritten" (ngModelChange)="saveJSON()"
+                                 [nzDisabled]="isTrash || !permission.joc.inventory.manage || job.configuration.failOnErrWritten"
+                                 name="warnOnErrWritten" nz-checkbox></label>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.skipIfNoAdmissionForOrderDay' | translate) : ''"
+
+                               class="col-md-4 col-lg-3 block-ellipsis-job"
+                               title="{{'workflow.label.skipIfNoAdmissionForOrderDay' | translate}}"
+                               translate>workflow.label.skipIfNoAdmissionForOrderDay</label>
+                        <div class="col-lg-9 col-xl-8 col-xxl-6">
+                          <label [(ngModel)]="job.configuration.skipIfNoAdmissionForOrderDay" (ngModelChange)="saveJSON()"
+                                 [nzDisabled]="isTrash || !permission.joc.inventory.manage"
+                                 name="skipIfNoAdmissionForOrderDay" nz-checkbox></label>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.killAtEndOfAdmissionPeriod' | translate) : ''"
+
+                               class="col-md-4 col-lg-3 block-ellipsis-job"
+                               title="{{'workflow.label.killAtEndOfAdmissionPeriod' | translate}}"
+                               translate>workflow.label.killAtEndOfAdmissionPeriod</label>
+                        <div class="col-lg-9 col-xl-8 col-xxl-6">
+                          <label [(ngModel)]="job.configuration.killAtEndOfAdmissionPeriod" (ngModelChange)="saveJSON()"
+                                 [nzDisabled]="isTrash || !permission.joc.inventory.manage"
+                                 name="killAtEndOfAdmissionPeriod" nz-checkbox></label>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.admissionTime' | translate) : ''"
+
+                               class="col-md-4 col-lg-3 block-ellipsis-job"
+                               title="{{'workflow.label.admissionTime' | translate}}"
+                               translate>workflow.label.admissionTime</label>
+                        <div class="col-lg-9 col-xl-8 col-xxl-6">
+                          <a (click)="showRuntime()" class="text-hover-primary" translate>workflow.label.showPeriods</a>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.timeout' | translate) : ''"
-                           class="col-md-4 col-lg-3 form-control-label"
-                           title="{{'workflow.label.timeout' | translate}}"
-                           translate>workflow.label.timeout</label>
-                    <div [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}"
-                         class="col-lg-9 col-xl-8 col-xxl-6">
-                      <label class="w-full">
-                        <input #timeout="ngModel" (blur)="saveJSON()" [(ngModel)]="job.configuration.timeout1"
-                               [disabled]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
-                               class="form-control" name="timeout"
-                               placeholder="{{'workflow.placeholder.duration' | translate}}" type="text"
-                               validateDurtionReqex>
-                      </label>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.graceTimeout' | translate) : ''"
-
-                           class="col-md-4 col-lg-3 form-control-label"
-                           title="{{'workflow.label.graceTimeout' | translate}}" translate>workflow.label.graceTimeout</label>
-                    <div [ngClass]="{'has-error' : ((graceTimeout.dirty || graceTimeout.touched) && graceTimeout.invalid)}"
-                         class="col-lg-9 col-xl-8 col-xxl-6">
-                      <label class="w-full">
-                        <input #graceTimeout="ngModel" (blur)="saveJSON()" [(ngModel)]="job.configuration.graceTimeout1"
-                               [disabled]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
-                               class="form-control" name="graceTimeout"
-                               placeholder="{{'workflow.placeholder.duration' | translate}}" type="text"
-                               validateDurtionReqex>
-                      </label>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.warnIfShorter' | translate) : ''"
-
-                           class="col-md-4 col-lg-3 form-control-label"
-                           title="{{'workflow.label.warnIfShorter' | translate}}" translate>workflow.label.warnIfShorter</label>
-                    <div [ngClass]="{'has-error' : ((warnIfShorter.dirty || warnIfShorter.touched) && warnIfShorter.invalid)}"
-                         class="col-lg-9 col-xl-8 col-xxl-6">
-                      <label class="w-full">
-                        <input #warnIfShorter="ngModel" (blur)="saveJSON()" [(ngModel)]="job.configuration.warnIfShorter"
-                               [disabled]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
-                               class="form-control" name="warnIfShorter"
-                               placeholder="{{'workflow.placeholder.durationWithPercentage' | translate}}"
-                               type="text"
-                               validateDurtionWithPercentageReqex>
-                      </label>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.warnIfLonger' | translate) : ''"
-
-                           class="col-md-4 col-lg-3 form-control-label"
-                           title="{{'workflow.label.warnIfLonger' | translate}}" translate>workflow.label.warnIfLonger</label>
-                    <div [ngClass]="{'has-error' : ((warnIfLonger.dirty || warnIfLonger.touched) && warnIfLonger.invalid)}"
-                         class="col-lg-9 col-xl-8 col-xxl-6">
-                      <label class="w-full">
-                        <input #warnIfLonger="ngModel" (blur)="saveJSON()" [(ngModel)]="job.configuration.warnIfLonger"
-                               [disabled]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
-                               class="form-control" name="warnIfLonger"
-                               placeholder="{{'workflow.placeholder.durationWithPercentage' | translate}}"
-                               type="text" validateDurtionWithPercentageReqex>
-                      </label>
-                    </div>
-                  </div>
-                  <div *ngIf="job.configuration.executable && job.configuration.executable.TYPE === 'ShellScriptExecutable' && (coreService.expertMode)"
-                       class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.compatibleMode' | translate) : ''"
-                           class="col-md-4 col-lg-3 form-control-label"
-                           title="{{'workflow.label.compatibleMode' | translate}}"
-                           translate>workflow.label.compatibleMode</label>
-                    <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <nz-select [(ngModel)]="job.configuration.executable.v1Compatible" name="v1Compatible"
-                                 nzAllowClear (ngModelChange)="saveJSON();">
-                        <nz-option [nzLabel]="'workflow.label.branch1.x' | translate" [nzValue]="true"></nz-option>
-                      </nz-select>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.criticality' | translate) : ''"
-
-                           class="col-md-4 col-lg-3 form-control-label"
-                           title="{{'workflow.label.criticality' | translate}}" translate>workflow.label.criticality</label>
-                    <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <nz-select [(ngModel)]="job.configuration.criticality" (ngModelChange)="saveJSON()"
-                                 [nzDisabled]="isTrash || !permission.joc.inventory.manage" [nzPlaceHolder]="'inventory.placeholder.selectCriticality' | translate"
-                                 class="w-full"
-                                 name="criticality" nzAllowClear>
-                        <nz-option [nzLabel]="'common.label.minor' | translate" [nzValue]="'MINOR'"></nz-option>
-                        <nz-option [nzLabel]="'common.label.normal' | translate" [nzValue]="'NORMAL'"></nz-option>
-                        <nz-option [nzLabel]="'common.label.major' | translate" [nzValue]="'MAJOR'"></nz-option>
-                        <nz-option [nzLabel]="'common.label.critical' | translate" [nzValue]="'CRITICAL'"></nz-option>
-                      </nz-select>
-                    </div>
-                  </div>
-                  <div  *ngIf="
-                      job.configuration.executable &&
-                      job.configuration.executable.TYPE ===
-                        'ShellScriptExecutable' &&
-                      coreService.expertMode
-                    "
-                    class="form-group row"
-                  >
-                    <label
-                      [nzTooltipMouseEnterDelay]="0.5"
-                      [nz-tooltip]="
-                        !preferences.showTooltipInfo
-                          ? ('inventory.tooltips.workflow.job.jobNotRestartable'
-                            | translate)
-                          : ''
-                      "
-                      class="col-md-4 col-lg-3 block-ellipsis-job"
-                      title="{{
-                        'workflow.label.jobNotRestartable' | translate
-                      }}"
-                      translate
-                      >workflow.label.jobNotRestartable</label
-                    >
-                    <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <label
-                        [(ngModel)]="job.configuration.isNotRestartable"
-                        (ngModelChange)="saveJSON()"
-                        name="isNotRestartable"
-                        nz-checkbox
-                      ></label>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.credentialKey' | translate) : ''"
-
-                           class="col-md-4 col-lg-3 form-control-label"
-                           title="{{'workflow.label.credentialKey' | translate}}" translate>workflow.label.credentialKey
-                      <sup *ngIf="job.configuration.executable.login.withUserProfile"
-                           class="text-danger text-sm">*</sup>
-                    </label>
-                    <div [ngClass]="{'has-error' : ((credentialKey.dirty || credentialKey.touched) && credentialKey.invalid)}"
-                         class="col-lg-9 col-xl-8 col-xxl-6">
-                      <label class="w-full">
-                        <input #credentialKey="ngModel" (blur)="saveJSON()"
-                               [(ngModel)]="job.configuration.executable.login.credentialKey" [disabled]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
-                               class="form-control" name="credentialKey"
-                               placeholder="{{'workflow.placeholder.enterCredentialKey' | translate}}"
-                               type="text">
-                      </label>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.loadUserProfile' | translate) : ''"
-
-                           class="col-md-4 col-lg-3 block-ellipsis-job"
-                           title="{{'workflow.label.loadUserProfile' | translate}}" translate>workflow.label.loadUserProfile</label>
-                    <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <label [(ngModel)]="job.configuration.executable.login.withUserProfile" (ngModelChange)="saveJSON()"
-                             [nzDisabled]="isTrash || !permission.joc.inventory.manage"
-                             name="loadUserProfile" nz-checkbox></label>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.failOnOutputErr' | translate) : ''"
-
-                           class="col-md-4 col-lg-3 block-ellipsis-job"
-                           title="{{'workflow.label.failOnOutputErr' | translate}}" translate>workflow.label.failOnOutputErr</label>
-                    <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <label [(ngModel)]="job.configuration.failOnErrWritten" (ngModelChange)="saveJSON()"
-                             [nzDisabled]="isTrash || !permission.joc.inventory.manage || job.configuration.warnOnErrWritten"
-                             name="failOnErrWritten" nz-checkbox></label>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.warnOnOutputErr' | translate) : ''"
-
-                           class="col-md-4 col-lg-3 block-ellipsis-job"
-                           title="{{'workflow.label.warnOnOutputErr' | translate}}"
-                           translate>workflow.label.warnOnOutputErr</label>
-                    <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <label [(ngModel)]="job.configuration.warnOnErrWritten" (ngModelChange)="saveJSON()"
-                        [nzDisabled]="isTrash || !permission.joc.inventory.manage || job.configuration.failOnErrWritten"
-                        name="warnOnErrWritten" nz-checkbox></label>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.skipIfNoAdmissionForOrderDay' | translate) : ''"
-
-                           class="col-md-4 col-lg-3 block-ellipsis-job"
-                           title="{{'workflow.label.skipIfNoAdmissionForOrderDay' | translate}}"
-                           translate>workflow.label.skipIfNoAdmissionForOrderDay</label>
-                    <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <label [(ngModel)]="job.configuration.skipIfNoAdmissionForOrderDay" (ngModelChange)="saveJSON()"
-                             [nzDisabled]="isTrash || !permission.joc.inventory.manage"
-                             name="skipIfNoAdmissionForOrderDay" nz-checkbox></label>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.killAtEndOfAdmissionPeriod' | translate) : ''"
-
-                           class="col-md-4 col-lg-3 block-ellipsis-job"
-                           title="{{'workflow.label.killAtEndOfAdmissionPeriod' | translate}}"
-                           translate>workflow.label.killAtEndOfAdmissionPeriod</label>
-                    <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <label [(ngModel)]="job.configuration.killAtEndOfAdmissionPeriod" (ngModelChange)="saveJSON()"
-                             [nzDisabled]="isTrash || !permission.joc.inventory.manage"
-                             name="killAtEndOfAdmissionPeriod" nz-checkbox></label>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.admissionTime' | translate) : ''"
-
-                           class="col-md-4 col-lg-3 block-ellipsis-job"
-                           title="{{'workflow.label.admissionTime' | translate}}"
-                           translate>workflow.label.admissionTime</label>
-                    <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <a (click)="showRuntime()" class="text-hover-primary" translate>workflow.label.showPeriods</a>
-                    </div>
-                  </div>
-                </div>
-              </nz-tab>
-              <nz-tab [nzTitle]="'workflow.tab.notification' | translate">
-                <div class="job-property-editor">
-                  <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailOn' | translate) : ''"
-                           class="col-md-4 col-lg-3 form-control-label"
-                           title="{{'workflow.label.mailOn' | translate}}" translate>workflow.label.mailOn</label>
-                    <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <nz-select [(ngModel)]="job.configuration.notification.types" [nzPlaceHolder]="'workflow.placeholder.mailOn' | translate"
-                                 class="w-full" (ngModelChange)="saveJSON()"
-                                 name="types" nzMode="multiple">
-                        <nz-option [nzLabel]="'ERROR'" [nzValue]="'ERROR'"></nz-option>
-                        <nz-option [nzLabel]="'WARNING'" [nzValue]="'WARNING'"></nz-option>
-                        <nz-option [nzLabel]="'SUCCESS'" [nzValue]="'SUCCESS'"></nz-option>
-                      </nz-select>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailTo' | translate) : ''"
-                           class="col-md-4 col-lg-3 form-control-label"
-                           title="{{'workflow.label.mailTo' | translate}}" translate>workflow.label.mailTo</label>
-                    <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <label class="w-full">
-                        <input (blur)="checkLength();" [(ngModel)]="job.configuration.notification.mail.to"
-                               [disabled]="isTrash || !permission.joc.inventory.manage" class="form-control" name="mailTo"
-                               placeholder="{{'workflow.placeholder.mailTo' | translate}}"
-                               type="text">
-                      </label>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailCC' | translate) : ''"
-                           class="col-md-4 col-lg-3 form-control-label"
-                           title="{{'workflow.label.mailCC' | translate}}" translate>workflow.label.mailCC</label>
-                    <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <label class="w-full">
-                        <input (blur)="checkLength()" [(ngModel)]="job.configuration.notification.mail.cc"
-                               [disabled]="isTrash || !permission.joc.inventory.manage" class="form-control" name="mailCC"
-                               placeholder="{{'workflow.placeholder.mailCC' | translate}}"
-                               type="text">
-                      </label>
-                    </div>
-                  </div>
-                  <div class="form-group row">
-                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailBcc' | translate) : ''"
-                           class="col-md-4 col-lg-3 form-control-label"
-                           title="{{'workflow.label.mailBcc' | translate}}" translate>workflow.label.mailBcc</label>
-                    <div class="col-lg-9 col-xl-8 col-xxl-6">
-                      <label class="w-full">
-                        <input (blur)="checkLength()" [(ngModel)]="job.configuration.notification.mail.bcc"
-                               [disabled]="isTrash || !permission.joc.inventory.manage" class="form-control" name="mailBcc"
-                               placeholder="{{'workflow.placeholder.mailBcc' | translate}}"
-                               type="text">
-                      </label>
-                      <div *ngIf="isLengthExceed" class="text-danger help-block">
-                        <div translate>workflow.message.mailLengthExceed</div>
+                  </nz-tab>
+                  <nz-tab [nzTitle]="'workflow.tab.notification' | translate">
+                    <div class="job-property-editor">
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailOn' | translate) : ''"
+                               class="col-md-4 col-lg-3 form-control-label"
+                               title="{{'workflow.label.mailOn' | translate}}" translate>workflow.label.mailOn</label>
+                        <div class="col-lg-9 col-xl-8 col-xxl-6">
+                          <nz-select [(ngModel)]="job.configuration.notification.types" [nzPlaceHolder]="'workflow.placeholder.mailOn' | translate"
+                                     class="w-full" (ngModelChange)="saveJSON()"
+                                     name="types" nzMode="multiple">
+                            <nz-option [nzLabel]="'ERROR'" [nzValue]="'ERROR'"></nz-option>
+                            <nz-option [nzLabel]="'WARNING'" [nzValue]="'WARNING'"></nz-option>
+                            <nz-option [nzLabel]="'SUCCESS'" [nzValue]="'SUCCESS'"></nz-option>
+                          </nz-select>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailTo' | translate) : ''"
+                               class="col-md-4 col-lg-3 form-control-label"
+                               title="{{'workflow.label.mailTo' | translate}}" translate>workflow.label.mailTo</label>
+                        <div class="col-lg-9 col-xl-8 col-xxl-6">
+                          <label class="w-full">
+                            <input (blur)="checkLength();" [(ngModel)]="job.configuration.notification.mail.to"
+                                   [disabled]="isTrash || !permission.joc.inventory.manage" class="form-control" name="mailTo"
+                                   placeholder="{{'workflow.placeholder.mailTo' | translate}}"
+                                   type="text">
+                          </label>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailCC' | translate) : ''"
+                               class="col-md-4 col-lg-3 form-control-label"
+                               title="{{'workflow.label.mailCC' | translate}}" translate>workflow.label.mailCC</label>
+                        <div class="col-lg-9 col-xl-8 col-xxl-6">
+                          <label class="w-full">
+                            <input (blur)="checkLength()" [(ngModel)]="job.configuration.notification.mail.cc"
+                                   [disabled]="isTrash || !permission.joc.inventory.manage" class="form-control" name="mailCC"
+                                   placeholder="{{'workflow.placeholder.mailCC' | translate}}"
+                                   type="text">
+                          </label>
+                        </div>
+                      </div>
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.mailBcc' | translate) : ''"
+                               class="col-md-4 col-lg-3 form-control-label"
+                               title="{{'workflow.label.mailBcc' | translate}}" translate>workflow.label.mailBcc</label>
+                        <div class="col-lg-9 col-xl-8 col-xxl-6">
+                          <label class="w-full">
+                            <input (blur)="checkLength()" [(ngModel)]="job.configuration.notification.mail.bcc"
+                                   [disabled]="isTrash || !permission.joc.inventory.manage" class="form-control" name="mailBcc"
+                                   placeholder="{{'workflow.placeholder.mailBcc' | translate}}"
+                                   type="text">
+                          </label>
+                          @if (isLengthExceed) {
+                            <div class="text-danger help-block">
+                              <div translate>workflow.message.mailLengthExceed</div>
+                            </div>
+                          }
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </nz-tab>
-            </nz-tabset>
+                  </nz-tab>
+
+                </nz-tabset>
+              </div>
+            </div>
           </div>
-        </div>
+        }
       </div>
     </div>
-  </div>
-  <div *ngIf="data.object" class="col-md-12">
-    <app-table [copyObj]="copyObj" [dataObj]="data" [isTrash]="isTrash" [objectType]="objectType"
-               [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"></app-table>
-  </div>
+  }
+
+  @if (data.object) {
+    <div class="col-md-12">
+      <app-table [copyObj]="copyObj" [dataObj]="data" [isTrash]="isTrash" [objectType]="objectType"
+                 [permission]="permission" [preferences]="preferences" [schedulerId]="schedulerId"></app-table>
+    </div>
+  }
 </div>
 <nz-drawer (nzOnClose)="closeRuntime()" [nzVisible]="isRuntimeVisible" nzPlacement="right">
   <ng-container *nzDrawerContent>
     <div (click)="closeRuntime()" class="close-btn"></div>
-    <div *ngIf="isRuntimeVisible && permission.joc">
+    @if (isRuntimeVisible && permission.joc) {
       <div class="p-a">
         <div class="text-center m-b text"><i class="fa fa-clock-o"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm"
                                                                                    translate>workflow.label.admissionTime</span>
@@ -884,6 +986,6 @@
                             [isTooltipVisible]="!preferences.showTooltipInfo"
                             [job]="job.configuration"></app-admission-time>
       </div>
-    </div>
+    }
   </ng-container>
 </nz-drawer>

@@ -30,148 +30,192 @@
         </li>
       </ul>
     </div>
-    <div *ngIf="!adminFilter.isBlocklist && !adminFilter.isSession" class="search-box-field pull-right">
-      <label>
-        <input [(ngModel)]="filter.searchKey"
-               placeholder="{{'common.placeholder.search' | translate}}" type="search">
-        <i (click)="filter.searchKey = '';" *ngIf="filter.searchKey" class="fa fa-times search-close"></i>
-      </label>
+    @if (!adminFilter.isBlocklist && !adminFilter.isSession) {
+      <div class="search-box-field pull-right">
+        <label>
+          <input [(ngModel)]="filter.searchKey"
+                 placeholder="{{'common.placeholder.search' | translate}}" type="search">
+          @if (filter.searchKey) {
+            <i (click)="filter.searchKey = '';" class="fa fa-times search-close"></i>
+          }
+        </label>
+      </div>
+    }
+  </div>
+</div>
+@if (!adminFilter.isBlocklist && !adminFilter.isSession) {
+  <div class="box p-a" style="padding-top: 24px">
+    <div class="table-responsive">
+      <nz-table
+        #ajaxTable
+        [nzBordered]="true"
+        [nzData]="(identityServices | filter: filter.searchKey: ['identityServiceName', 'identityServiceType', 'serviceAuthenticationScheme']) | orderBy: filter.filter.sortBy:filter.filter.reverse"
+        [nzLoading]="loading"
+        [nzPageIndex]="filter.currentPage"
+        [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage) || 500]"
+        [nzPageSize]="preferences.entryPerPage || 25"
+        [nzShowPagination]="(identityServices | filter: filter.searchKey : ['identityServiceName', 'identityServiceType', 'serviceAuthenticationScheme']).length > 0"
+        [nzShowSizeChanger]="true"
+        [nzSize]="'small'"
+      >
+        <thead>
+        <tr>
+          @if (permission.joc && permission.joc.administration.accounts.manage) {
+            <th class="menu"><span translate>common.label.action</span></th>
+          }
+          <th (click)="sort('identityServiceName')">
+            <a><span class="p-r-xs" translate>user.label.identityServiceName</span>
+              @if (filter.filter.sortBy == 'identityServiceName' && !filter.filter.reverse) {
+                <i class="fa fa-caret-up "></i>
+              }
+              @if (filter.filter.sortBy == 'identityServiceName' && filter.filter.reverse) {
+                <i class="fa fa-caret-down "></i>
+              }</a>
+          </th>
+          <th (click)="sort('identityServiceType')">
+            <a><span class="p-r-xs" translate>user.label.identityServiceType</span>
+              @if (filter.filter.sortBy == 'identityServiceType' && !filter.filter.reverse) {
+                <i class="fa fa-caret-up "></i>
+              }
+              @if (filter.filter.sortBy == 'identityServiceType' && filter.filter.reverse) {
+                <i class="fa fa-caret-down "></i>
+              }</a>
+          </th>
+          <th (click)="sort('serviceAuthenticationScheme')">
+            <a><span class="p-r-xs" translate>user.label.serviceAuthenticationScheme</span>
+              @if (filter.filter.sortBy == 'serviceAuthenticationScheme' && !filter.filter.reverse) {
+                <i class="fa fa-caret-up "></i>
+              }
+              @if (filter.filter.sortBy == 'serviceAuthenticationScheme' && filter.filter.reverse) {
+                <i class="fa fa-caret-down "></i>
+              }</a>
+          </th>
+          <th (click)="sort('secondFactor')">
+            <a><span class="p-r-xs" translate>user.label.secondFactor</span>
+              @if (filter.filter.sortBy == 'secondFactor' && !filter.filter.reverse) {
+                <i class="fa fa-caret-up "></i>
+              }
+              @if (filter.filter.sortBy == 'secondFactor' && filter.filter.reverse) {
+                <i class="fa fa-caret-down "></i>
+              }</a>
+          </th>
+          <th (click)="sort('ordering')">
+            <a><span class="p-r-xs" translate>user.label.identityServiceOrdering</span>
+              @if (filter.filter.sortBy == 'ordering' && !filter.filter.reverse) {
+                <i class="fa fa-caret-up "></i>
+              }
+              @if (filter.filter.sortBy == 'ordering' && filter.filter.reverse) {
+                <i class="fa fa-caret-down "></i>
+              }</a>
+          </th>
+          <th (click)="sort('disabled')">
+            <a><span class="p-r-xs" translate>user.label.identityServiceDisabled</span>
+              @if (filter.filter.sortBy == 'disabled' && !filter.filter.reverse) {
+                <i class="fa fa-caret-up "></i>
+              }
+              @if (filter.filter.sortBy == 'disabled' && filter.filter.reverse) {
+                <i class="fa fa-caret-down "></i>
+              }</a>
+          </th>
+          <th (click)="sort('required')">
+            <a><span class="p-r-xs" translate>user.label.identityServiceRequired</span>
+              @if (filter.filter.sortBy == 'required' && !filter.filter.reverse) {
+                <i class="fa fa-caret-up "></i>
+              }
+              @if (filter.filter.sortBy == 'required' && filter.filter.reverse) {
+                <i class="fa fa-caret-down "></i>
+              }</a>
+          </th>
+        </tr>
+        </thead>
+        <tbody (cdkDropListDropped)="drop($event)" cdkDropList>
+          @for (identityService of ajaxTable.data; track identityService.identityServiceName) {
+            <tr [ngClass]="{'opacity7': identityService.disabled}"
+                cdkDrag class="cursor move-on-hover">
+              @if (permission.joc && permission.joc.administration.accounts.manage) {
+                <td class="menu">
+                  @if (filter.filter.sortBy === 'ordering') {
+                    <div cdkDragHandle class="pos-abt move-icon text-16 cur-m"
+                         style="left: -1px">
+                      <i aria-hidden="true" class="fa fa-bars"></i>
+                    </div>
+                  }
+                  <div class="btn-group dropdown m-l-xs">
+                    <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                            type="button"><i class="fa fa-ellipsis-h"></i></button>
+                    <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                      <ul nz-menu>
+                        @if (identityService.identityServiceType !== 'UNKNOWN') {
+                          <li (click)="edit({identityService : identityService})" nz-menu-item>
+                            <a translate>common.button.edit</a>
+                          </li>
+                        }
+                        @if (identityService.identityServiceType !== 'JOC' && identityService.identityServiceType !== 'UNKNOWN' && identityService.identityServiceType !== 'CERTIFICATE') {
+                          <li (click)="manageSetting({data : identityService})" nz-menu-item>
+                            <a translate>user.button.manageSetting</a>
+                          </li>
+                        }
+                        @if (!identityService.disabled && identityService.identityServiceType !== 'UNKNOWN') {
+                          <li (click)="disable({identityService : identityService})" nz-menu-item>
+                            <a translate>user.button.disable</a>
+                          </li>
+                        }
+                        @if (identityService.disabled && identityService.identityServiceType !== 'UNKNOWN') {
+                          <li (click)="enable({identityService : identityService})" nz-menu-item>
+                            <a translate>user.button.enable</a>
+                          </li>
+                        }
+                        <li (click)="delete({identityService : identityService})" [ngClass]="{'disable-link': identityServices.length === 1}" class="bg-hover-color"
+                            nz-menu-item>
+                          <a translate>common.button.delete</a>
+                        </li>
+                      </ul>
+                    </nz-dropdown-menu>
+                  </div>
+                </td>
+              }
+              <td (click)="showUser({identityService : identityService})"><span
+                [innerHtml]="identityService.identityServiceName | highlight: filter.searchKey"></span></td>
+              <td (click)="showUser({identityService : identityService})"><span
+                [innerHtml]="identityService.identityServiceType | highlight: filter.searchKey"></span></td>
+              <td (click)="showUser({identityService : identityService})">
+                @if (!identityService.secondFactor) {
+                  <span [innerHtml]="identityService.serviceAuthenticationScheme | translate | highlight: filter.searchKey"></span>
+                }
+              </td>
+              <td (click)="showUser({identityService : identityService})">
+                <span>{{(identityService.secondFactor ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+              <td (click)="showUser({identityService : identityService})"><span [innerHtml]="identityService.ordering"></span>
+              </td>
+              <td (click)="showUser({identityService : identityService})">
+                <span>{{(identityService.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+              <td (click)="showUser({identityService : identityService})">
+                @if (!identityService.secondFactor) {
+                  <span>{{(identityService.required ? 'common.label.yes' : 'common.label.no') | translate}}</span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </nz-table>
     </div>
+    @if (ajaxTable.data.length >0) {
+      <div class="w-half label-top">
+        <span translate>common.label.total</span>
+        <span> {{(identityServices | filter: filter.searchKey: ['identityServiceName', 'identityServiceType']).length}} </span>
+        @if (ajaxTable.data.length >1) {
+          <span translate>user.label.identityServicesFound</span>
+        }
+        @if (ajaxTable.data.length ===1) {
+          <span translate>user.label.identityServiceFound</span>
+        }
+      </div>
+    }
   </div>
-</div>
-<div *ngIf="!adminFilter.isBlocklist && !adminFilter.isSession" class="box p-a" style="padding-top: 24px">
-  <div class="table-responsive">
-    <nz-table
-      #ajaxTable
-      [nzBordered]="true"
-      [nzData]="(identityServices | filter: filter.searchKey: ['identityServiceName', 'identityServiceType', 'serviceAuthenticationScheme']) | orderBy: filter.filter.sortBy:filter.filter.reverse"
-      [nzLoading]="loading"
-      [nzPageIndex]="filter.currentPage"
-      [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage) || 500]"
-      [nzPageSize]="preferences.entryPerPage || 25"
-      [nzShowPagination]="(identityServices | filter: filter.searchKey : ['identityServiceName', 'identityServiceType', 'serviceAuthenticationScheme']).length > 0"
-      [nzShowSizeChanger]="true"
-      [nzSize]="'small'"
-    >
-      <thead>
-      <tr>
-        <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span translate>common.label.action</span>
-        </th>
-        <th (click)="sort('identityServiceName')">
-          <a><span class="p-r-xs" translate>user.label.identityServiceName</span>
-            <i *ngIf="filter.filter.sortBy == 'identityServiceName' && !filter.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filter.filter.sortBy == 'identityServiceName' && filter.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-        </th>
-        <th (click)="sort('identityServiceType')">
-          <a><span class="p-r-xs" translate>user.label.identityServiceType</span>
-            <i *ngIf="filter.filter.sortBy == 'identityServiceType' && !filter.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filter.filter.sortBy == 'identityServiceType' && filter.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-        </th>
-        <th (click)="sort('serviceAuthenticationScheme')">
-          <a><span class="p-r-xs" translate>user.label.serviceAuthenticationScheme</span>
-            <i *ngIf="filter.filter.sortBy == 'serviceAuthenticationScheme' && !filter.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filter.filter.sortBy == 'serviceAuthenticationScheme' && filter.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-        </th>
-        <th (click)="sort('secondFactor')">
-          <a><span class="p-r-xs" translate>user.label.secondFactor</span>
-            <i *ngIf="filter.filter.sortBy == 'secondFactor' && !filter.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filter.filter.sortBy == 'secondFactor' && filter.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-        </th>
-        <th (click)="sort('ordering')">
-          <a><span class="p-r-xs" translate>user.label.identityServiceOrdering</span>
-            <i *ngIf="filter.filter.sortBy == 'ordering' && !filter.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filter.filter.sortBy == 'ordering' && filter.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-        </th>
-        <th (click)="sort('disabled')">
-          <a><span class="p-r-xs" translate>user.label.identityServiceDisabled</span>
-            <i *ngIf="filter.filter.sortBy == 'disabled' && !filter.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filter.filter.sortBy == 'disabled' && filter.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-        </th>
-        <th (click)="sort('required')">
-          <a><span class="p-r-xs" translate>user.label.identityServiceRequired</span>
-            <i *ngIf="filter.filter.sortBy == 'required' && !filter.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filter.filter.sortBy == 'required' && filter.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-        </th>
-      </tr>
-      </thead>
-      <tbody (cdkDropListDropped)="drop($event)" cdkDropList>
-      <tr *ngFor="let identityService of ajaxTable.data" [ngClass]="{'opacity7': identityService.disabled}"
-          cdkDrag class="cursor move-on-hover">
-        <td *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu">
-          <div *ngIf="filter.filter.sortBy === 'ordering'" cdkDragHandle class="pos-abt move-icon text-16 cur-m"
-               style="left: -1px">
-            <i aria-hidden="true" class="fa fa-bars"></i>
-          </div>
-          <div class="btn-group dropdown m-l-xs">
-            <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
-                    type="button"><i class="fa fa-ellipsis-h"></i></button>
-            <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-              <ul nz-menu>
-                <li (click)="edit({identityService : identityService})" *ngIf="identityService.identityServiceType !== 'UNKNOWN'"
-                    nz-menu-item>
-                  <a translate>common.button.edit</a>
-                </li>
-                <li (click)="manageSetting({data : identityService})" *ngIf="identityService.identityServiceType !== 'JOC' && identityService.identityServiceType !== 'UNKNOWN' && identityService.identityServiceType !== 'CERTIFICATE'"
-                    nz-menu-item>
-                  <a translate>user.button.manageSetting</a>
-                </li>
-                <li (click)="disable({identityService : identityService})" *ngIf="!identityService.disabled && identityService.identityServiceType !== 'UNKNOWN'"
-                    nz-menu-item>
-                  <a translate>user.button.disable</a>
-                </li>
-                <li (click)="enable({identityService : identityService})" *ngIf="identityService.disabled && identityService.identityServiceType !== 'UNKNOWN'"
-                    nz-menu-item>
-                  <a translate>user.button.enable</a>
-                </li>
-                <li (click)="delete({identityService : identityService})" [ngClass]="{'disable-link': identityServices.length === 1}" class="bg-hover-color"
-                    nz-menu-item>
-                  <a translate>common.button.delete</a>
-                </li>
-              </ul>
-            </nz-dropdown-menu>
-          </div>
-        </td>
-        <td (click)="showUser({identityService : identityService})"><span
-          [innerHtml]="identityService.identityServiceName | highlight: filter.searchKey"></span></td>
-        <td (click)="showUser({identityService : identityService})"><span
-          [innerHtml]="identityService.identityServiceType | highlight: filter.searchKey"></span></td>
-        <td (click)="showUser({identityService : identityService})"><span *ngIf="!identityService.secondFactor"
-                                                                          [innerHtml]="identityService.serviceAuthenticationScheme | translate | highlight: filter.searchKey"></span>
-        </td>
-        <td (click)="showUser({identityService : identityService})">
-          <span>{{(identityService.secondFactor ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
-        <td (click)="showUser({identityService : identityService})"><span [innerHtml]="identityService.ordering"></span>
-        </td>
-        <td (click)="showUser({identityService : identityService})">
-          <span>{{(identityService.disabled ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
-        <td (click)="showUser({identityService : identityService})"><span
-          *ngIf="!identityService.secondFactor">{{(identityService.required ? 'common.label.yes' : 'common.label.no') | translate}}</span>
-        </td>
-      </tr>
-      </tbody>
-    </nz-table>
-  </div>
-  <div *ngIf="ajaxTable.data.length >0" class="w-half label-top">
-    <span translate>common.label.total</span>
-    <span> {{(identityServices | filter: filter.searchKey: ['identityServiceName', 'identityServiceType']).length}} </span>
-    <span *ngIf="ajaxTable.data.length >1" translate>user.label.identityServicesFound</span>
-    <span *ngIf="ajaxTable.data.length ===1" translate>user.label.identityServiceFound</span>
-  </div>
-</div>
-<app-blocklist *ngIf="adminFilter.isBlocklist && !adminFilter.isSession" [permission]="permission"></app-blocklist>
-<app-session-management *ngIf="adminFilter.isSession && !adminFilter.isBlocklist"
-                        [permission]="permission"></app-session-management>
+}
+@if (adminFilter.isBlocklist && !adminFilter.isSession) {
+  <app-blocklist [permission]="permission"></app-blocklist>
+}
+@if (adminFilter.isSession && !adminFilter.isBlocklist) {
+  <app-session-management [permission]="permission"></app-session-management>
+}

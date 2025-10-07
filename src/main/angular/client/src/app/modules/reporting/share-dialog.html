@@ -11,7 +11,7 @@
   <div class="modal-body p-a">
     <div class="form-group row">
       <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.sendMailToNotifyRegistrationEmail' | translate"
-              class="col-sm-4 form-control-label"
+             class="col-sm-4 form-control-label"
              translate>user.label.to
       </label>
       <div class="col-sm-6">
@@ -23,7 +23,7 @@
     </div>
     <div class="form-group row">
       <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.cc' | translate"
-              class="col-sm-4 form-control-label"
+             class="col-sm-4 form-control-label"
              translate>user.label.cc
       </label>
       <div class="col-sm-6">
@@ -33,25 +33,29 @@
           name="ccRegistration" type="text">
       </div>
     </div>
-    <div class="form-group row" *ngIf="imageUrl">
-      <div class="col-sm-12 m-b-sm">
-        <label class="_600">Attachment</label>
+    @if (imageUrl) {
+      <div class="form-group row">
+        <div class="col-sm-12 m-b-sm">
+          <label class="_600">Attachment</label>
+        </div>
+        <div class="col-sm-12">
+          <img [nzSrc]="imageUrl"
+               alt=""
+               height="100%"
+               nz-image
+               width="100%"
+          />
+        </div>
       </div>
-      <div class="col-sm-12">
-        <img [nzSrc]="imageUrl"
-             alt=""
-             height="100%"
-             nz-image
-             width="100%"
-        />
-      </div>
-    </div>
+    }
   </div>
 
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || submitted"
             class="btn btn-primary btn-sm" type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{ 'Share' | translate }}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">

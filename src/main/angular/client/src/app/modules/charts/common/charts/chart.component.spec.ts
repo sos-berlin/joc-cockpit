@@ -5,6 +5,7 @@ import {NoopAnimationsModule} from '@angular/platform-browser/animations';
 import {ChartCommonModule} from '../chart-common.module';
 
 @Component({
+  standalone: false,
   selector: 'test-component',
   template: ''
 })

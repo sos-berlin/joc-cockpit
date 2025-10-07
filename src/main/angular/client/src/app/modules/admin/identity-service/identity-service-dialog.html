@@ -1,10 +1,14 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="identityService">
-      <span translate>user.label.editIdentityService</span>:
-      <span [innerHtml]="identityService.identityServiceName"></span>
-    </span>
-    <span *ngIf="!identityService" translate>user.label.addIdentityService</span>
+    @if (identityService) {
+      <span>
+        <span translate>user.label.editIdentityService</span>:
+        <span [innerHtml]="identityService.identityServiceName"></span>
+      </span>
+    }
+    @if (!identityService) {
+      <span translate>user.label.addIdentityService</span>
+    }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -22,14 +26,18 @@
       <div class="col-sm-6">
         <input type="text" class="form-control" name="name" [(ngModel)]="currentObj.identityServiceName" required
                #name="ngModel" [appAutofocus]="true" autocomplete="off" (blur)="checkService()"/>
-        <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-          <div *ngIf="name.errors['required']">
-            <div translate>common.message.requiredError</div>
+        @if (name.invalid && (name.dirty || name.touched)) {
+          <div class="text-danger help-block">
+            @if (name.errors['required']) {
+              <div translate>common.message.requiredError</div>
+            }
           </div>
-        </div>
-        <div *ngIf="!isUnique" class="help-block text-danger">
-          <div translate>common.message.uniqueError</div>
-        </div>
+        }
+        @if (!isUnique) {
+          <div class="help-block text-danger">
+            <div translate>common.message.uniqueError</div>
+          </div>
+        }
       </div>
     </div>
     <div class="form-group row">
@@ -37,7 +45,7 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
-       <app-select-input [isRequired]="true" [isSearchable]="true" [name]="'type'"
+        <app-select-input [isRequired]="true" [isSearchable]="true" [name]="'type'"
                           [placeholder]="'user.placeholder.selectIdentityServiceType'"
                           [object]="currentObj" [attributeName]="'identityServiceType'"
                           (modelChange)="changeType($event)"
@@ -51,65 +59,74 @@
                          name="ordering"></nz-input-number>
       </div>
     </div>
-    <div *ngIf="currentObj.identityServiceType != 'OIDC' && currentObj.identityServiceType !== 'CERTIFICATE' && !(currentObj.secondFactor && currentObj.identityServiceType == 'FIDO')"
-         class="form-group row">
-      <label class="col-sm-4" translate>user.label.identityServiceRequired</label>
-      <div class="col-sm-6">
-        <label [(ngModel)]="currentObj.required" name="serviceRequired"
-               nz-checkbox></label>
+    @if (currentObj.identityServiceType != 'OIDC' && currentObj.identityServiceType !== 'CERTIFICATE' && !(currentObj.secondFactor && currentObj.identityServiceType == 'FIDO')) {
+      <div class="form-group row">
+        <label class="col-sm-4" translate>user.label.identityServiceRequired</label>
+        <div class="col-sm-6">
+          <label [(ngModel)]="currentObj.required" name="serviceRequired"
+                 nz-checkbox></label>
+        </div>
       </div>
-    </div>
-    <div *ngIf="(currentObj.identityServiceType === 'CERTIFICATE' || currentObj.identityServiceType == 'FIDO')"
-         class="form-group row">
-      <label class="col-sm-4" translate>user.label.usedAsSecondFactor</label>
-      <div class="col-sm-6">
-        <label [(ngModel)]="currentObj.secondFactor" name="secondFactor" (ngModelChange)="checkTwoFactor($event)"
-               nz-checkbox></label>
+    }
+    @if ((currentObj.identityServiceType === 'CERTIFICATE' || currentObj.identityServiceType == 'FIDO')) {
+      <div class="form-group row">
+        <label class="col-sm-4" translate>user.label.usedAsSecondFactor</label>
+        <div class="col-sm-6">
+          <label [(ngModel)]="currentObj.secondFactor" name="secondFactor" (ngModelChange)="checkTwoFactor($event)"
+                 nz-checkbox></label>
+        </div>
       </div>
-    </div>
-    <div *ngIf="identityService" class="form-group row">
-      <label class="col-sm-4" translate>user.label.disable</label>
-      <div class="col-sm-6">
-        <label nz-checkbox [(ngModel)]="currentObj.disabled"
-               name="disabled"></label>
+    }
+    @if (identityService) {
+      <div class="form-group row">
+        <label class="col-sm-4" translate>user.label.disable</label>
+        <div class="col-sm-6">
+          <label nz-checkbox [(ngModel)]="currentObj.disabled"
+                 name="disabled"></label>
+        </div>
       </div>
-    </div>
-    <div *ngIf="currentObj.identityServiceType !== 'CERTIFICATE' && !(currentObj.secondFactor && currentObj.identityServiceType == 'FIDO')"
-         class="form-group row b-t p-t">
-      <label class="col-sm-4 form-control-label" translate>user.label.serviceAuthenticationScheme
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      <div class="col-sm-6">
-        <app-select-input [isRequired]="true" [name]="'serviceAuthenticationScheme'"
-                          [object]="currentObj" [attributeName]="'serviceAuthenticationScheme'"
-                          [listArray]="serviceAuthenticationSchemes"></app-select-input>
+    }
+    @if (currentObj.identityServiceType !== 'CERTIFICATE' && !(currentObj.secondFactor && currentObj.identityServiceType == 'FIDO')) {
+      <div class="form-group row b-t p-t">
+        <label class="col-sm-4 form-control-label" translate>user.label.serviceAuthenticationScheme
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div class="col-sm-6">
+          <app-select-input [isRequired]="true" [name]="'serviceAuthenticationScheme'"
+                            [object]="currentObj" [attributeName]="'serviceAuthenticationScheme'"
+                            [listArray]="serviceAuthenticationSchemes"></app-select-input>
+        </div>
       </div>
-    </div>
-    <div *ngIf="currentObj.serviceAuthenticationScheme === 'TWO-FACTOR' && currentObj.identityServiceType !== 'FIDO'"
-         class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>user.label.listOfFido</label>
-      <div class="col-sm-6">
-       <app-select-input [name]="'fidoName'"
-                          [object]="currentObj" [attributeName]="'secondFactorIdentityServiceName'"
-                          [listArray]="fidoList" [optionLabel]="'identityServiceName'"
-                          [optionValue]="'identityServiceName'"></app-select-input>
+    }
+    @if (currentObj.serviceAuthenticationScheme === 'TWO-FACTOR' && currentObj.identityServiceType !== 'FIDO') {
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label" translate>user.label.listOfFido</label>
+        <div class="col-sm-6">
+          <app-select-input [name]="'fidoName'"
+                            [object]="currentObj" [attributeName]="'secondFactorIdentityServiceName'"
+                            [listArray]="fidoList" [optionLabel]="'identityServiceName'"
+                            [optionValue]="'identityServiceName'"></app-select-input>
+        </div>
       </div>
-    </div>
-    <div *ngIf="currentObj.serviceAuthenticationScheme === 'TWO-FACTOR' && currentObj.identityServiceType !== 'CERTIFICATE'"
-         class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>user.label.listOfCert</label>
-      <div class="col-sm-6">
-         <app-select-input [name]="'certName'"
-                          [object]="currentObj" [attributeName]="'secondFactorIdentityServiceName'"
-                          [listArray]="certList" [optionLabel]="'identityServiceName'"
-                          [optionValue]="'identityServiceName'"></app-select-input>
+    }
+    @if (currentObj.serviceAuthenticationScheme === 'TWO-FACTOR' && currentObj.identityServiceType !== 'CERTIFICATE') {
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label" translate>user.label.listOfCert</label>
+        <div class="col-sm-6">
+          <app-select-input [name]="'certName'"
+                            [object]="currentObj" [attributeName]="'secondFactorIdentityServiceName'"
+                            [listArray]="certList" [optionLabel]="'identityServiceName'"
+                            [optionValue]="'identityServiceName'"></app-select-input>
+        </div>
       </div>
-    </div>
+    }
   </div>
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || !isUnique || submitted" class="btn btn-primary btn-sm"
             type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel

@@ -1,12 +1,26 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="approve" translate>common.label.approve</span>
-    <span *ngIf="reject" translate>common.label.reject</span>
-    <span *ngIf="delete || deleteRequest || deleteDevices" translate>common.label.delete</span>
-    <span *ngIf="cancel" translate>common.button.cancel</span>
-    <span *ngIf="reset" translate>user.label.resetPassword</span>
-    <span *ngIf="forceChange" translate>user.label.forcePasswordChange</span>
-    <span *ngIf="account">: {{account.accountName}}</span>?
+    @if (approve) {
+      <span translate>common.label.approve</span>
+    }
+    @if (reject) {
+      <span translate>common.label.reject</span>
+    }
+    @if (delete || deleteRequest || deleteDevices) {
+      <span translate>common.label.delete</span>
+    }
+    @if (cancel) {
+      <span translate>common.button.cancel</span>
+    }
+    @if (reset) {
+      <span translate>user.label.resetPassword</span>
+    }
+    @if (forceChange) {
+      <span translate>user.label.forcePasswordChange</span>
+    }
+    @if (account) {
+      <span>: {{account.accountName}}</span>
+    }?
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -16,51 +30,99 @@
   <div [ngClass]="{'show': display}" class="hide">
     <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
   </div>
-  <div *ngIf="!display" class="row text-center">
-    <div class="col-sm-12 text m-t m-b">
-      <span *ngIf="delete">
-        <span *ngIf="blocklist">
-          <span *ngIf="account" translate>user.message.deleteBlocklist</span>
-          <span *ngIf="!account" translate>user.message.deleteSelectedBlocklist</span>
-        </span>
-        <span *ngIf="!isRole && !blocklist" translate>user.message.deleteSelectedUser</span>
-        <span *ngIf="isRole" translate>user.message.deleteSelectedRole</span>
-      </span>
-      <span *ngIf="cancel">
-        <span *ngIf="activeSession">
-          <span *ngIf="account" translate>user.message.cancelActiveSession</span>
-          <span *ngIf="!account" translate>user.message.cancelSelectedActiveSession</span>
-        </span>
-      </span>
-      <span *ngIf="account && !blocklist">
-        <span *ngIf="reset" translate>user.message.resetPasswordForUser</span>
-        <span *ngIf="forceChange" translate>user.message.forcePasswordChangeForUser</span>
-      </span>
-      <span *ngIf="!account">
-        <span *ngIf="reset" translate>user.message.resetPasswordForSelectedUser</span>
-        <span *ngIf="forceChange" translate>user.message.forcePasswordChangeForSelectedUser</span>
-      </span>
-      <span *ngIf="approve">
-        <span translate>user.message.approveForSelectedPendingRequests</span>
-      </span>
-      <span *ngIf="reject">
-        <span translate>user.message.rejectForSelectedPendingRequests</span>
-      </span>
-      <span *ngIf="deleteRequest">
-        <span translate>user.message.deleteForSelectedPendingRequests</span>
-      </span>
-      <span *ngIf="deleteDevices">
-        <span translate>user.message.deleteDevices</span>
-      </span>
+  @if (!display) {
+    <div class="row text-center">
+      <div class="col-sm-12 text m-t m-b">
+        @if (delete) {
+          <span>
+            @if (blocklist) {
+              <span>
+                @if (account) {
+                  <span translate>user.message.deleteBlocklist</span>
+                }
+                @if (!account) {
+                  <span translate>user.message.deleteSelectedBlocklist</span>
+                }
+              </span>
+            }
+            @if (!isRole && !blocklist) {
+              <span translate>user.message.deleteSelectedUser</span>
+            }
+            @if (isRole) {
+              <span translate>user.message.deleteSelectedRole</span>
+            }
+          </span>
+        }
+        @if (cancel) {
+          <span>
+            @if (activeSession) {
+              <span>
+                @if (account) {
+                  <span translate>user.message.cancelActiveSession</span>
+                }
+                @if (!account) {
+                  <span translate>user.message.cancelSelectedActiveSession</span>
+                }
+              </span>
+            }
+          </span>
+        }
+        @if (account && !blocklist) {
+          <span>
+            @if (reset) {
+              <span translate>user.message.resetPasswordForUser</span>
+            }
+            @if (forceChange) {
+              <span translate>user.message.forcePasswordChangeForUser</span>
+            }
+          </span>
+        }
+        @if (!account) {
+          <span>
+            @if (reset) {
+              <span translate>user.message.resetPasswordForSelectedUser</span>
+            }
+            @if (forceChange) {
+              <span translate>user.message.forcePasswordChangeForSelectedUser</span>
+            }
+          </span>
+        }
+        @if (approve) {
+          <span>
+            <span translate>user.message.approveForSelectedPendingRequests</span>
+          </span>
+        }
+        @if (reject) {
+          <span>
+            <span translate>user.message.rejectForSelectedPendingRequests</span>
+          </span>
+        }
+        @if (deleteRequest) {
+          <span>
+            <span translate>user.message.deleteForSelectedPendingRequests</span>
+          </span>
+        }
+        @if (deleteDevices) {
+          <span>
+            <span translate>user.message.deleteDevices</span>
+          </span>
+        }
+      </div>
     </div>
-  </div>
+  }
 </div>
 <div class="modal-footer">
   <button (click)="confirm()" [disabled]="submitted || (required && !comments.comment)" [ngClass]="{'btn-primary' : (!delete || !deleteRequest)}"
           class="btn btn-danger btn-sm" type="button">
-    <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-    <span *ngIf="delete || deleteRequest">{{'common.button.delete' | translate}}</span>
-    <span *ngIf="!delete && !deleteRequest">{{'common.button.confirm' | translate}}</span>
+    @if (submitted) {
+      <i class="fa fa-spin fa-spinner p-r-xs"></i>
+    }
+    @if (delete || deleteRequest) {
+      <span>{{'common.button.delete' | translate}}</span>
+    }
+    @if (!delete && !deleteRequest) {
+      <span>{{'common.button.confirm' | translate}}</span>
+    }
   </button>
   <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate
           type="button">common.button.cancel

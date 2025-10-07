@@ -12,6 +12,7 @@ import Gauge from 'svg-gauge';
 import {GaugeDefaults, GaugeOptions} from './gauge-defaults.service';
 
 @Component({
+  standalone: false,
   selector: 'app-gauge',
   template: '',
 })

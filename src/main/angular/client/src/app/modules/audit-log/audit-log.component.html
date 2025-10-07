@@ -7,116 +7,138 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
-          <div *ngIf="auditLog.type === 'AUDITLOG'" class="inline valign">
-            <label nz-checkbox [(ngModel)]="adtLog.current" (ngModelChange)="changeController()" name="current">
-              {{'common.label.currentController' | translate}}
-            </label>
-          </div>
-          <div *ngIf="auditLog.type !== 'AUDITLOG'" class="btn-group m-l-12 hidden-btn-group">
-            <button (click)="loadLoginHistory('all')" [ngClass]="{'btn-primary': historyLogin.filter.date=='all'}"
-                    class="btn btn-grey btn-sm" translate>filters.button.all
-            </button>
-            <button (click)="loadLoginHistory('today')" [ngClass]="{'btn-primary': historyLogin.filter.date=='today'}"
-                    class="btn btn-grey btn-sm" translate>filters.button.today
-            </button>
-            <button (click)="loadLoginHistory('-1h')" [ngClass]="{'btn-primary': historyLogin.filter.date=='-1h'}"
-                    class="btn btn-grey btn-sm" translate>filters.button.last1
-            </button>
-            <button (click)="loadLoginHistory('-12h')" [ngClass]="{'btn-primary': historyLogin.filter.date=='-12h'}"
-                    class="btn btn-grey btn-sm" translate>filters.button.last12
-            </button>
-            <button (click)="loadLoginHistory('-24h')" [ngClass]="{'btn-primary': historyLogin.filter.date=='-24h'}"
-                    class="btn btn-grey btn-sm" translate>filters.button.last24
-            </button>
-            <button (click)="loadLoginHistory('-7d')" [ngClass]="{'btn-primary': historyLogin.filter.date=='-7d'}"
-                    class="btn btn-grey btn-sm" translate>filters.button.lastWeak
-            </button>
-          </div>
-          <div *ngIf="auditLog.type === 'AUDITLOG'" class="btn-group m-l-12 hidden-btn-group">
-            <button (click)="load('all')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='all'}"
-                    class="btn btn-grey btn-sm" translate>filters.button.all
-            </button>
-            <button (click)="load('today')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='today'}"
-                    class="btn btn-grey btn-sm" translate>filters.button.today
-            </button>
-            <button (click)="load('-1h')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='-1h'}"
-                    class="btn btn-grey btn-sm" translate>filters.button.last1
-            </button>
-            <button (click)="load('-12h')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='-12h'}"
-                    class="btn btn-grey btn-sm" translate>filters.button.last12
-            </button>
-            <button (click)="load('-24h')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='-24h'}"
-                    class="btn btn-grey btn-sm" translate>filters.button.last24
-            </button>
-            <button (click)="load('-7d')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='-7d'}"
-                    class="btn btn-grey btn-sm" translate>filters.button.lastWeak
-            </button>
-          </div>
-          <div *ngIf="auditLog.type === 'AUDITLOG'" class="btn-group dropdown hidden-dropdown">
-            <button [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown
-                    nzTrigger="click" translate type="button">
-              common.label.anyDate
-              <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
-            </button>
-            <nz-dropdown-menu #menu="nzDropdownMenu">
-              <ul nz-menu>
-                <li (click)="load('all')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='all', 'disable-link':savedFilter.selected}"
-                    nz-menu-item>
-                  <a translate>filters.button.all</a>
-                </li>
-                <li (click)="load('today')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='today', 'disable-link':savedFilter.selected}"
-                    nz-menu-item>
-                  <a translate>filters.button.today</a>
-                </li>
-                <li (click)="load('-1h')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-1h', 'disable-link':savedFilter.selected}"
-                    nz-menu-item>
-                  <a translate>filters.button.last1</a>
-                </li>
-                <li (click)="load('-12h')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-12h', 'disable-link':savedFilter.selected}"
-                    nz-menu-item>
-                  <a translate>filters.button.last12</a>
-                </li>
-                <li (click)="load('-24h')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-24h', 'disable-link':savedFilter.selected}"
-                    nz-menu-item>
-                  <a translate>filters.button.last24</a>
-                </li>
-                <li (click)="load('-7d')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-7d', 'disable-link':savedFilter.selected}"
-                    nz-menu-item>
-                  <a translate>filters.button.lastWeak</a>
-                </li>
-              </ul>
-            </nz-dropdown-menu>
-          </div>
-          <div *ngIf="permission.joc && permission.joc.administration.customization.view" class="btn-group dropdown">
-            <button *ngIf="auditLog.type === 'AUDITLOG'" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization"
-                    [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
-                    type="button">
-              {{'customization.label.customizations' | translate}}
-              <span [innerHtml]="selectedFiltered.name" class="text-primary"></span>
-              <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
-            </button>
-            <nz-dropdown-menu #customization="nzDropdownMenu">
-              <ul nz-menu>
-                <li (click)="createCustomization()" *ngIf="permission.joc && permission.joc.administration.customization.manage"
-                    nz-menu-item>
-                  <a translate>customization.label.createCustomization</a>
-                </li>
-                <li *ngIf="filterList.length>0" nz-menu-item>
-                  <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
-                </li>
-                <li *ngIf="filterList.length>0" nz-menu-divider></li>
-                <li (click)="changeFilter(filter)" *ngFor="let filter of filterList | orderBy: 'name'" [ngClass]="{'ant-select-dropdown-menu-item-active': (savedFilter.selected == filter.id)}"
-                    nz-menu-item>
-                  <a>
-                    <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
-                    <i (click)="changeFilter(null);$event.stopPropagation();"
-                       *ngIf="savedFilter.selected == filter.id" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
-                       class="fa fa-times-circle-o remove"></i>
-                  </a>
-                </li>
-              </ul>
-            </nz-dropdown-menu>
-          </div>
+          @if (auditLog.type === 'AUDITLOG') {
+            <div class="inline valign">
+              <label nz-checkbox [(ngModel)]="adtLog.current" (ngModelChange)="changeController()" name="current">
+                {{'common.label.currentController' | translate}}
+              </label>
+            </div>
+          }
+          @if (auditLog.type !== 'AUDITLOG') {
+            <div class="btn-group m-l-12 hidden-btn-group">
+              <button (click)="loadLoginHistory('all')" [ngClass]="{'btn-primary': historyLogin.filter.date=='all'}"
+                      class="btn btn-grey btn-sm" translate>filters.button.all
+              </button>
+              <button (click)="loadLoginHistory('today')" [ngClass]="{'btn-primary': historyLogin.filter.date=='today'}"
+                      class="btn btn-grey btn-sm" translate>filters.button.today
+              </button>
+              <button (click)="loadLoginHistory('-1h')" [ngClass]="{'btn-primary': historyLogin.filter.date=='-1h'}"
+                      class="btn btn-grey btn-sm" translate>filters.button.last1
+              </button>
+              <button (click)="loadLoginHistory('-12h')" [ngClass]="{'btn-primary': historyLogin.filter.date=='-12h'}"
+                      class="btn btn-grey btn-sm" translate>filters.button.last12
+              </button>
+              <button (click)="loadLoginHistory('-24h')" [ngClass]="{'btn-primary': historyLogin.filter.date=='-24h'}"
+                      class="btn btn-grey btn-sm" translate>filters.button.last24
+              </button>
+              <button (click)="loadLoginHistory('-7d')" [ngClass]="{'btn-primary': historyLogin.filter.date=='-7d'}"
+                      class="btn btn-grey btn-sm" translate>filters.button.lastWeak
+              </button>
+            </div>
+          }
+          @if (auditLog.type === 'AUDITLOG') {
+            <div class="btn-group m-l-12 hidden-btn-group">
+              <button (click)="load('all')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='all'}"
+                      class="btn btn-grey btn-sm" translate>filters.button.all
+              </button>
+              <button (click)="load('today')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='today'}"
+                      class="btn btn-grey btn-sm" translate>filters.button.today
+              </button>
+              <button (click)="load('-1h')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='-1h'}"
+                      class="btn btn-grey btn-sm" translate>filters.button.last1
+              </button>
+              <button (click)="load('-12h')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='-12h'}"
+                      class="btn btn-grey btn-sm" translate>filters.button.last12
+              </button>
+              <button (click)="load('-24h')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='-24h'}"
+                      class="btn btn-grey btn-sm" translate>filters.button.last24
+              </button>
+              <button (click)="load('-7d')" [disabled]="savedFilter.selected" [ngClass]="{'btn-primary': adtLog.filter.date=='-7d'}"
+                      class="btn btn-grey btn-sm" translate>filters.button.lastWeak
+              </button>
+            </div>
+          }
+          @if (auditLog.type === 'AUDITLOG') {
+            <div class="btn-group dropdown hidden-dropdown">
+              <button [nzDropdownMenu]="menu" [nzPlacement]="'bottomRight'" class="btn-drop btn btn-grey btn-sm m-l-12" nz-dropdown
+                      nzTrigger="click" translate type="button">
+                common.label.anyDate
+                <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
+              </button>
+              <nz-dropdown-menu #menu="nzDropdownMenu">
+                <ul nz-menu>
+                  <li (click)="load('all')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='all', 'disable-link':savedFilter.selected}"
+                      nz-menu-item>
+                    <a translate>filters.button.all</a>
+                  </li>
+                  <li (click)="load('today')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='today', 'disable-link':savedFilter.selected}"
+                      nz-menu-item>
+                    <a translate>filters.button.today</a>
+                  </li>
+                  <li (click)="load('-1h')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-1h', 'disable-link':savedFilter.selected}"
+                      nz-menu-item>
+                    <a translate>filters.button.last1</a>
+                  </li>
+                  <li (click)="load('-12h')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-12h', 'disable-link':savedFilter.selected}"
+                      nz-menu-item>
+                    <a translate>filters.button.last12</a>
+                  </li>
+                  <li (click)="load('-24h')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-24h', 'disable-link':savedFilter.selected}"
+                      nz-menu-item>
+                    <a translate>filters.button.last24</a>
+                  </li>
+                  <li (click)="load('-7d')" [ngClass]="{'ant-select-dropdown-menu-item-active': adtLog.filter.date=='-7d', 'disable-link':savedFilter.selected}"
+                      nz-menu-item>
+                    <a translate>filters.button.lastWeak</a>
+                  </li>
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+          }
+          @if (permission.joc && permission.joc.administration.customization.view) {
+            <div class="btn-group dropdown">
+              @if (auditLog.type === 'AUDITLOG') {
+                <button [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="selectedFiltered.account" [nzDropdownMenu]="customization"
+                        [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12" nz-dropdown nzTrigger="click"
+                        type="button">
+                  {{'customization.label.customizations' | translate}}
+                  <span [innerHtml]="selectedFiltered.name" class="text-primary"></span>
+                  <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
+                </button>
+              }
+              <nz-dropdown-menu #customization="nzDropdownMenu">
+                <ul nz-menu>
+                  @if (permission.joc && permission.joc.administration.customization.manage) {
+                    <li (click)="createCustomization()"
+                        nz-menu-item>
+                      <a translate>customization.label.createCustomization</a>
+                    </li>
+                  }
+                  @if (filterList.length>0) {
+                    <li nz-menu-item>
+                      <a (click)="editFilters()" translate>customization.label.editExistingCustomizations</a>
+                    </li>
+                  }
+                  @if (filterList.length>0) {
+                    <li nz-menu-divider></li>
+                  }
+                  @for (filter of filterList | orderBy: 'name'; track filter.id) {
+                    <li (click)="changeFilter(filter)" [ngClass]="{'ant-select-dropdown-menu-item-active': (savedFilter.selected == filter.id)}"
+                        nz-menu-item>
+                      <a>
+                        <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="filter.account">{{filter.name}}</span>
+                        @if (savedFilter.selected == filter.id) {
+                          <i (click)="changeFilter(null);$event.stopPropagation();"
+                             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'customization.tooltip.deactivateCustomization' | translate"
+                             class="fa fa-times-circle-o remove"></i>
+                        }
+                      </a>
+                    </li>
+                  }
+                </ul>
+              </nz-dropdown-menu>
+            </div>
+          }
           <button (click)="exportToExcel()" [disabled]="data.length===0"
                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.exportInXLS' | translate" class="btn btn-grey btn-sm m-l-12">
             <i class="fa fa fa-share-square-o"></i></button>
@@ -158,287 +180,368 @@
                 class="btn btn-sm btn-grey m-l-12 pull-right" nz-tooltip="{{'common.tooltip.expandDetails' | translate}}">
           <i class="fa fa-expand text"></i>
         </button>
-        <button (click)="advancedSearch()" *ngIf="!showSearchPanel && auditLog.type === 'AUDITLOG'"
-                class="btn btn-sm inline pull-right m-l btn-grey">
-          <span translate>common.button.advancedSearch</span>
-          <i class="fa fa-caret-down p-l-xs"></i>
-        </button>
-        <button (click)="cancel()" *ngIf="showSearchPanel && auditLog.type === 'AUDITLOG'"
-                class="btn btn-sm inline pull-right m-l btn-grey">
-          <span translate>common.button.advancedSearch</span>
-          <i class="fa fa-caret-down p-l-xs"></i>
-        </button>
+        @if (!showSearchPanel && auditLog.type === 'AUDITLOG') {
+          <button (click)="advancedSearch()"
+                  class="btn btn-sm inline pull-right m-l btn-grey">
+            <span translate>common.button.advancedSearch</span>
+            <i class="fa fa-caret-down p-l-xs"></i>
+          </button>
+        }
+        @if (showSearchPanel && auditLog.type === 'AUDITLOG') {
+          <button (click)="cancel()"
+                  class="btn btn-sm inline pull-right m-l btn-grey">
+            <span translate>common.button.advancedSearch</span>
+            <i class="fa fa-caret-down p-l-xs"></i>
+          </button>
+        }
         <div class="search-box-field pull-right">
-          <label *ngIf="auditLog.type === 'AUDITLOG'">
-            <input (keyup)="searchInResult()" [(ngModel)]="adtLog.searchText" placeholder="{{'common.placeholder.search' | translate}}"
-                   type="search">
-          </label>
-          <label *ngIf="auditLog.type !== 'AUDITLOG'">
-            <input (keyup)="searchInResult()" [(ngModel)]="historyLogin.searchText" placeholder="{{'common.placeholder.search' | translate}}"
-                   type="search">
-          </label>
-          <i (click)="adtLog.searchText = '';searchInResult()" *ngIf="auditLog.type === 'AUDITLOG'" [hidden]="!adtLog.searchText"
-             class="fa fa-times search-close"></i>
-          <i (click)="historyLogin.searchText = '';searchInResult()" *ngIf="auditLog.type !== 'AUDITLOG'" [hidden]="!historyLogin.searchText"
-             class="fa fa-times search-close"></i>
+          @if (auditLog.type === 'AUDITLOG') {
+            <label>
+              <input (keyup)="searchInResult()" [(ngModel)]="adtLog.searchText" placeholder="{{'common.placeholder.search' | translate}}"
+                     type="search">
+            </label>
+          }
+          @if (auditLog.type !== 'AUDITLOG') {
+            <label>
+              <input (keyup)="searchInResult()" [(ngModel)]="historyLogin.searchText" placeholder="{{'common.placeholder.search' | translate}}"
+                     type="search">
+            </label>
+          }
+          @if (auditLog.type === 'AUDITLOG') {
+            <i (click)="adtLog.searchText = '';searchInResult()" [hidden]="!adtLog.searchText"
+               class="fa fa-times search-close"></i>
+          }
+          @if (auditLog.type !== 'AUDITLOG') {
+            <i (click)="historyLogin.searchText = '';searchInResult()" [hidden]="!historyLogin.searchText"
+               class="fa fa-times search-close"></i>
+          }
         </div>
       </div>
     </div>
-    <div *ngIf="showSearchPanel" class="row m-b">
-      <div class="col-md-12">
-        <div class="box p-a m-b-xs">
-          <app-form-template (onCancel)="cancel()" (onSearch)="search()" [allFilter]="filterList"
-                             [filter]="searchFilter" [isSearch]="true"
-                             [permission]="permission" [preferences]="preferences" [schedulerIds]="schedulerIds"></app-form-template>
+    @if (showSearchPanel) {
+      <div class="row m-b">
+        <div class="col-md-12">
+          <div class="box p-a m-b-xs">
+            <app-form-template (onCancel)="cancel()" (onSearch)="search()" [allFilter]="filterList"
+                               [filter]="searchFilter" [isSearch]="true"
+                               [permission]="permission" [preferences]="preferences" [schedulerIds]="schedulerIds"></app-form-template>
+          </div>
         </div>
       </div>
-    </div>
+    }
     <div>
-      <div *ngIf="auditLog.type === 'AUDITLOG'" class="m-t-sm box p-a">
-        <div class="table-responsive" id="auditLogTableId">
-          <nz-table
-            #ajaxTable
-            (nzPageIndexChange)="pageIndexChange($event)"
-            (nzPageSizeChange)="pageSizeChange($event)"
-            [nzBordered]="true"
-            [nzData]="data"
-            [nzLoading]="!isLoaded"
-            [nzPageIndex]="adtLog.currentPage"
-            [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
-            [nzPageSize]="adtLog.entryPerPage || preferences.entryPerPage || 25"
-            [nzShowPagination]="data.length > 0"
-            [nzShowSizeChanger]="true"
-            [nzSize]="'small'"
-          >
-            <thead>
-            <tr>
-              <th (click)="sort('controllerId')" *ngIf="!adtLog.current" nzWidth="185px"><a><span class="p-r-xs"
-                                                                                                  translate>common.label.controllerId</span>
-                <i *ngIf="adtLog.filter.sortBy == 'controllerId' && !adtLog.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="adtLog.filter.sortBy == 'controllerId' && adtLog.reverse"
-                   class="fa fa-caret-down "></i></a>
-              </th>
-              <th (click)="sort('created')" nzWidth="185px"><a><span class="p-r-xs"
-                                                                     translate>auditLog.label.created</span>
-                <i *ngIf="adtLog.filter.sortBy == 'created' && !adtLog.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="adtLog.filter.sortBy == 'created' && adtLog.reverse"
-                   class="fa fa-caret-down "></i></a>
-              </th>
-              <th (click)="sort('account')"><a><span class="p-r-xs" translate>auditLog.label.account</span>
-                <i *ngIf="adtLog.filter.sortBy == 'account' && !adtLog.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="adtLog.filter.sortBy == 'account' && adtLog.reverse"
-                   class="fa fa-caret-down "></i></a>
-              </th>
-              <th (click)="sort('request')"><a><span class="p-r-xs" translate>auditLog.label.request</span>
-                <i *ngIf="adtLog.filter.sortBy == 'request' && !adtLog.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="adtLog.filter.sortBy == 'request' && adtLog.reverse"
-                   class="fa fa-caret-down "></i></a>
-              </th>
-              <th (click)="sort('category')"><a><span class="p-r-xs" translate>auditLog.label.category</span>
-                <i *ngIf="adtLog.filter.sortBy == 'category' && !adtLog.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="adtLog.filter.sortBy == 'category' && adtLog.reverse"
-                   class="fa fa-caret-down "></i></a>
-              </th>
-              <th (click)="sort('comment')"><a><span class="p-r-xs" translate>auditLog.label.comment</span>
-                <i *ngIf="adtLog.filter.sortBy == 'comment' && !adtLog.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="adtLog.filter.sortBy == 'comment' && adtLog.reverse"
-                   class="fa fa-caret-down "></i></a>
-              </th>
-              <th (click)="sort('timeSpent')"><a><span class="p-r-xs" translate>auditLog.label.timeSpend</span>
-                <i *ngIf="adtLog.filter.sortBy == 'timeSpent' && !adtLog.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="adtLog.filter.sortBy == 'timeSpent' && adtLog.reverse"
-                   class="fa fa-caret-down "></i></a>
-              </th>
-              <th (click)="sort('ticketLink')"><a><span class="p-r-xs" translate>auditLog.label.ticketLink</span>
-                <i *ngIf="adtLog.filter.sortBy == 'ticketLink' && !adtLog.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="adtLog.filter.sortBy == 'ticketLink' && adtLog.reverse"
-                   class="fa fa-caret-down "></i></a>
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            <ng-template [ngForOf]="ajaxTable.data" [ngForTrackBy]="trackByFn" let-auditLog ngFor>
-              <tr (click)="navToDeploymentHistory(auditLog)"
-                  [ngClass]="{'primary-text-hover-color cursor': auditLog.commitId || auditLog['category'] === 'DAILYPLAN'}">
-                <td (click)="$event.stopPropagation()" *ngIf="!adtLog.current">
-                  <i (click)="showDetail(auditLog);$event.stopPropagation()" *ngIf="!auditLog.show"
-                     class="cursor fa fa-caret-down fa-lg"></i>
-                  <i (click)="auditLog.show = false;$event.stopPropagation()" *ngIf="auditLog.show"
-                     class="cursor fa fa-caret-up fa-lg"></i>&nbsp;
-                  <span [innerHtml]="auditLog.controllerId | highlight : adtLog.searchText"></span>
-                </td>
-                <td (click)="$event.stopPropagation()" nowrap>
-                  <i (click)="showDetail(auditLog);$event.stopPropagation()"
-                     *ngIf="!auditLog.show && adtLog.current"
-                     class="cursor fa fa-caret-down fa-lg"></i>
-                  <i (click)="auditLog.show = false;$event.stopPropagation()"
-                     *ngIf="auditLog.show && adtLog.current"
-                     class="cursor fa fa-caret-up fa-lg"></i>&nbsp;
-                  <span [innerHtml]="auditLog.created | stringToDate | highlight : adtLog.searchText"></span></td>
-                <td><span [innerHtml]="auditLog.account | highlight : adtLog.searchText"></span></td>
-                <td><span [innerHtml]="auditLog.request | highlight : adtLog.searchText"></span></td>
-                <td><span [innerHtml]="auditLog['category'] |translate | highlight : adtLog.searchText"></span></td>
-                <td><span [innerHtml]="auditLog.comment | highlight : adtLog.searchText"></span></td>
-                <td>
-                  <span *ngIf="auditLog.timeSpent">
-                    <span [innerHtml]="auditLog.timeSpent"></span>
-                    <span>m</span>
-                  </span>
-                </td>
-                <td><a [innerHtml]="auditLog.ticketLink | highlight : adtLog.searchText" class="text-hover-primary" href="{{auditLog.ticketLink}}"
-                       target="_blank"></a></td>
-              </tr>
-              <ng-container *ngIf="auditLog.show">
-                <tr>
-                  <td></td>
-                  <td colspan="7">
-                    <div class="m-a-0">
-                      <span class="_500" translate>auditLog.label.requestBody</span>
-                      :
-                      <span [innerHtml]="auditLog.parameters"></span>
-                    </div>
-                  </td>
-                </tr>
-                <tr *ngIf="!auditLog.isLoaded">
-                  <td></td>
-                  <td colspan="7">
-                    <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
-                  </td>
-                </tr>
-                <tr *ngIf="auditLog.details && auditLog.details.length> 0">
-                  <td></td>
-                  <td colspan="7">
-                    <div class="m-a-0">
-                      <span class="_500" translate>auditLog.label.details</span>
-                      :
-                      <span>{{auditLog.details | json}}</span>
-                    </div>
-                  </td>
-                </tr>
-              </ng-container>
-            </ng-template>
-            </tbody>
-          </nz-table>
-        </div>
-        <div *ngIf="ajaxTable.data.length >0"
-             class="w-half label-top"><span
-          translate>common.label.total</span> {{data.length}}
-          <span *ngIf="ajaxTable.data.length >1" translate>auditLog.label.auditLogsFound</span>
-          <span *ngIf="ajaxTable.data.length ==1" translate>auditLog.label.auditLogFound</span>
-        </div>
-      </div>
-      <div *ngIf="auditLog.type === 'LOGINHISTORY'" class="m-t-sm box p-a">
-        <div class="table-responsive">
-          <nz-table
-            #ajaxTable
-            (nzPageIndexChange)="pageIndexChange($event)"
-            (nzPageSizeChange)="pageSizeChange($event)"
-            [nzBordered]="true"
-            [nzData]="data"
-            [nzLoading]="!isLoaded"
-            [nzPageIndex]="historyLogin.currentPage"
-            [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
-            [nzPageSize]="historyLogin.entryPerPage || preferences.entryPerPage || 25"
-            [nzShowPagination]="data.length > 0"
-            [nzShowSizeChanger]="true"
-            [nzSize]="'small'"
-          >
-            <thead>
-            <tr>
-              <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span translate>common.label.action</span>
-              </th>
-              <th (click)="sort('accountName')" nzWidth="30%"><a>
-                <span class="p-r-xs" translate>auditLog.label.account</span>
-                <i *ngIf="historyLogin.filter.sortBy == 'accountName' && !historyLogin.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="historyLogin.filter.sortBy == 'accountName' && historyLogin.reverse"
-                   class="fa fa-caret-down "></i>
-              </a>
-              </th>
-              <th (click)="sort('loginDate')"><a>
-                <span class="p-r-xs" translate>auditLog.label.loginDate</span>
-                <i *ngIf="historyLogin.filter.sortBy == 'loginDate' && !historyLogin.reverse"
-                   class="fa fa-caret-up "></i>
-                <i *ngIf="historyLogin.filter.sortBy == 'loginDate' && historyLogin.reverse"
-                   class="fa fa-caret-down "></i>
-              </a>
-              </th>
-            </tr>
-            </thead>
-            <tbody>
-            <ng-template [ngForOf]="ajaxTable.data" [ngForTrackBy]="trackByFn" let-account ngFor>
+      @if (auditLog.type === 'AUDITLOG') {
+        <div class="m-t-sm box p-a">
+          <div class="table-responsive" id="auditLogTableId">
+            <nz-table
+              #ajaxTable
+              (nzPageIndexChange)="pageIndexChange($event)"
+              (nzPageSizeChange)="pageSizeChange($event)"
+              [nzBordered]="true"
+              [nzData]="data"
+              [nzLoading]="!isLoaded"
+              [nzPageIndex]="adtLog.currentPage"
+              [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
+              [nzPageSize]="adtLog.entryPerPage || preferences.entryPerPage || 25"
+              [nzShowPagination]="data.length > 0"
+              [nzShowSizeChanger]="true"
+              [nzSize]="'small'"
+            >
+              <thead>
               <tr>
-                <td *ngIf="permission.joc && permission.joc.administration.accounts.manage">
-                  <div class="btn-group dropdown pull-left m-r-sm">
-                    <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
-                            type="button"><i class="fa fa-ellipsis-h"></i></button>
-                    <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                      <ul nz-menu>
-                        <li (click)="addBlockedAccounts(account)" [nzDisabled]="account.accountName === '*none'"
-                            nz-menu-item>
-                          <a translate>user.button.addToBlocklist</a>
-                        </li>
-                      </ul>
-                    </nz-dropdown-menu>
-                  </div>
-                </td>
-                <td>
-                  <i (click)="account.show = true;$event.stopPropagation()"
-                     *ngIf="!account.show" class="cursor fa fa-caret-down fa-lg"></i>
-                  <i (click)="account.show = false;$event.stopPropagation()"
-                     *ngIf="account.show" class="cursor fa fa-caret-up fa-lg"></i>&nbsp;
-                  <span [innerHtml]="account.accountName | highlight : historyLogin.searchText"></span>
-                </td>
-                <td>
-                  <span [innerHtml]="account.loginDate | stringToDate | highlight : historyLogin.searchText"></span>
-                </td>
+                @if (!adtLog.current) {
+                  <th (click)="sort('controllerId')" nzWidth="185px"><a><span class="p-r-xs"
+                                                                              translate>common.label.controllerId</span>
+                    @if (adtLog.filter.sortBy == 'controllerId' && !adtLog.reverse) {
+                      <i class="fa fa-caret-up "></i>
+                    }
+                    @if (adtLog.filter.sortBy == 'controllerId' && adtLog.reverse) {
+                      <i class="fa fa-caret-down "></i>
+                    }</a>
+                  </th>
+                }
+                <th (click)="sort('created')" nzWidth="185px"><a><span class="p-r-xs"
+                                                                       translate>auditLog.label.created</span>
+                  @if (adtLog.filter.sortBy == 'created' && !adtLog.reverse) {
+                    <i class="fa fa-caret-up "></i>
+                  }
+                  @if (adtLog.filter.sortBy == 'created' && adtLog.reverse) {
+                    <i class="fa fa-caret-down "></i>
+                  }</a>
+                </th>
+                <th (click)="sort('account')"><a><span class="p-r-xs" translate>auditLog.label.account</span>
+                  @if (adtLog.filter.sortBy == 'account' && !adtLog.reverse) {
+                    <i class="fa fa-caret-up "></i>
+                  }
+                  @if (adtLog.filter.sortBy == 'account' && adtLog.reverse) {
+                    <i class="fa fa-caret-down "></i>
+                  }</a>
+                </th>
+                <th (click)="sort('request')"><a><span class="p-r-xs" translate>auditLog.label.request</span>
+                  @if (adtLog.filter.sortBy == 'request' && !adtLog.reverse) {
+                    <i class="fa fa-caret-up "></i>
+                  }
+                  @if (adtLog.filter.sortBy == 'request' && adtLog.reverse) {
+                    <i class="fa fa-caret-down "></i>
+                  }</a>
+                </th>
+                <th (click)="sort('category')"><a><span class="p-r-xs" translate>auditLog.label.category</span>
+                  @if (adtLog.filter.sortBy == 'category' && !adtLog.reverse) {
+                    <i class="fa fa-caret-up "></i>
+                  }
+                  @if (adtLog.filter.sortBy == 'category' && adtLog.reverse) {
+                    <i class="fa fa-caret-down "></i>
+                  }</a>
+                </th>
+                <th (click)="sort('comment')"><a><span class="p-r-xs" translate>auditLog.label.comment</span>
+                  @if (adtLog.filter.sortBy == 'comment' && !adtLog.reverse) {
+                    <i class="fa fa-caret-up "></i>
+                  }
+                  @if (adtLog.filter.sortBy == 'comment' && adtLog.reverse) {
+                    <i class="fa fa-caret-down "></i>
+                  }</a>
+                </th>
+                <th (click)="sort('timeSpent')"><a><span class="p-r-xs" translate>auditLog.label.timeSpend</span>
+                  @if (adtLog.filter.sortBy == 'timeSpent' && !adtLog.reverse) {
+                    <i class="fa fa-caret-up "></i>
+                  }
+                  @if (adtLog.filter.sortBy == 'timeSpent' && adtLog.reverse) {
+                    <i class="fa fa-caret-down "></i>
+                  }</a>
+                </th>
+                <th (click)="sort('ticketLink')"><a><span class="p-r-xs" translate>auditLog.label.ticketLink</span>
+                  @if (adtLog.filter.sortBy == 'ticketLink' && !adtLog.reverse) {
+                    <i class="fa fa-caret-up "></i>
+                  }
+                  @if (adtLog.filter.sortBy == 'ticketLink' && adtLog.reverse) {
+                    <i class="fa fa-caret-down "></i>
+                  }</a>
+                </th>
               </tr>
-              <tr *ngIf="account.show">
-                <td class="menu"></td>
-                <td class="audit-log-failed-template" colspan="2" style="padding:0 !important;">
-                  <nz-table #innerChildTable [nzData]="account.details.loginHistoryItems" [nzFrontPagination]="false"
-                            [nzShowPagination]="false" class="m-a-0 inner-table"
-                            nzSize="small">
-            <thead>
-            <tr>
-              <th nzWidth="31%"><span translate>auditLog.label.identityServiceName</span></th>
-              <th><span translate>auditLog.label.message</span></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr *ngFor="let child of innerChildTable.data">
-              <td><span>{{child.identityServiceName}}</span></td>
-              <td><span class="text-danger">{{child.message}}</span></td>
-            </tr>
-            </tbody>
-          </nz-table>
-          </td>
-          </tr>
-          </ng-template>
-          </tbody>
-          </nz-table>
+              </thead>
+              <tbody>
+                @for (auditLog of ajaxTable.data; track trackByFn($index, auditLog)) {
+                  <tr (click)="navToDeploymentHistory(auditLog)"
+                      [ngClass]="{'primary-text-hover-color cursor': auditLog.commitId || auditLog['category'] === 'DAILYPLAN'}">
+                    @if (!adtLog.current) {
+                      <td (click)="$event.stopPropagation()">
+                        @if (!auditLog.show) {
+                          <i (click)="showDetail(auditLog);$event.stopPropagation()"
+                             class="cursor fa fa-caret-down fa-lg"></i>
+                        }
+                        @if (auditLog.show) {
+                          <i (click)="auditLog.show = false;$event.stopPropagation()"
+                             class="cursor fa fa-caret-up fa-lg"></i>
+                        }&nbsp;
+                        <span [innerHtml]="auditLog.controllerId | highlight : adtLog.searchText"></span>
+                      </td>
+                    }
+                    <td (click)="$event.stopPropagation()" nowrap>
+                      @if (!auditLog.show && adtLog.current) {
+                        <i (click)="showDetail(auditLog);$event.stopPropagation()"
+                           class="cursor fa fa-caret-down fa-lg"></i>
+                      }
+                      @if (auditLog.show && adtLog.current) {
+                        <i (click)="auditLog.show = false;$event.stopPropagation()"
+                           class="cursor fa fa-caret-up fa-lg"></i>
+                      }&nbsp;
+                      <span [innerHtml]="auditLog.created | stringToDate | highlight : adtLog.searchText"></span></td>
+                    <td><span [innerHtml]="auditLog.account | highlight : adtLog.searchText"></span></td>
+                    <td><span [innerHtml]="auditLog.request | highlight : adtLog.searchText"></span></td>
+                    <td><span [innerHtml]="auditLog['category'] |translate | highlight : adtLog.searchText"></span></td>
+                    <td><span [innerHtml]="auditLog.comment | highlight : adtLog.searchText"></span></td>
+                    <td>
+                      @if (auditLog.timeSpent) {
+                        <span>
+                        <span [innerHtml]="auditLog.timeSpent"></span>
+                        <span>m</span>
+                      </span>
+                      }
+                    </td>
+                    <td><a [innerHtml]="auditLog.ticketLink | highlight : adtLog.searchText" class="text-hover-primary" href="{{auditLog.ticketLink}}"
+                           target="_blank"></a></td>
+                  </tr>
+                  @if (auditLog.show) {
+                    <ng-container>
+                      <tr>
+                        <td></td>
+                        <td colspan="7">
+                          <div class="m-a-0">
+                            <span class="_500" translate>auditLog.label.requestBody</span>
+                            :
+                            <span [innerHtml]="auditLog.parameters"></span>
+                          </div>
+                        </td>
+                      </tr>
+                      @if (!auditLog.isLoaded) {
+                        <tr>
+                          <td></td>
+                          <td colspan="7">
+                            <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
+                          </td>
+                        </tr>
+                      }
+                      @if (auditLog.details && auditLog.details.length> 0) {
+                        <tr>
+                          <td></td>
+                          <td colspan="7">
+                            <div class="m-a-0">
+                              <span class="_500" translate>auditLog.label.details</span>
+                              :
+                              <span>{{auditLog.details | json}}</span>
+                            </div>
+                          </td>
+                        </tr>
+                      }
+                    </ng-container>
+                  }
+                }
+              </tbody>
+            </nz-table>
+          </div>
+          @if (ajaxTable.data.length >0) {
+            <div class="w-half label-top"><span
+              translate>common.label.total</span> {{data.length}}
+              @if (ajaxTable.data.length >1) {
+                <span translate>auditLog.label.auditLogsFound</span>
+              }
+              @if (ajaxTable.data.length ==1) {
+                <span translate>auditLog.label.auditLogFound</span>
+              }
+            </div>
+          }
         </div>
-        <div *ngIf="ajaxTable.data.length >0"
-             class="w-half label-top"><span
-          translate>common.label.total</span> {{data.length}}
-          <span *ngIf="ajaxTable.data.length >1" translate>auditLog.label.loginsFound</span>
-          <span *ngIf="ajaxTable.data.length ==1" translate>auditLog.label.loginFound</span>
+      }
+      @if (auditLog.type === 'LOGINHISTORY') {
+        <div class="m-t-sm box p-a">
+          <div class="table-responsive">
+            <nz-table
+              #ajaxTable
+              (nzPageIndexChange)="pageIndexChange($event)"
+              (nzPageSizeChange)="pageSizeChange($event)"
+              [nzBordered]="true"
+              [nzData]="data"
+              [nzLoading]="!isLoaded"
+              [nzPageIndex]="historyLogin.currentPage"
+              [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
+              [nzPageSize]="historyLogin.entryPerPage || preferences.entryPerPage || 25"
+              [nzShowPagination]="data.length > 0"
+              [nzShowSizeChanger]="true"
+              [nzSize]="'small'"
+            >
+              <thead>
+              <tr>
+                @if (permission.joc && permission.joc.administration.accounts.manage) {
+                  <th class="menu"><span translate>common.label.action</span></th>
+                }
+                <th (click)="sort('accountName')" nzWidth="30%"><a>
+                  <span class="p-r-xs" translate>auditLog.label.account</span>
+                  @if (historyLogin.filter.sortBy == 'accountName' && !historyLogin.reverse) {
+                    <i class="fa fa-caret-up "></i>
+                  }
+                  @if (historyLogin.filter.sortBy == 'accountName' && historyLogin.reverse) {
+                    <i class="fa fa-caret-down "></i>
+                  }
+                </a>
+                </th>
+                <th (click)="sort('loginDate')"><a>
+                  <span class="p-r-xs" translate>auditLog.label.loginDate</span>
+                  @if (historyLogin.filter.sortBy == 'loginDate' && !historyLogin.reverse) {
+                    <i class="fa fa-caret-up "></i>
+                  }
+                  @if (historyLogin.filter.sortBy == 'loginDate' && historyLogin.reverse) {
+                    <i class="fa fa-caret-down "></i>
+                  }
+                </a>
+                </th>
+              </tr>
+              </thead>
+              <tbody>
+                @for (account of ajaxTable.data; track trackByFn($index, account)) {
+                  <tr>
+                    @if (permission.joc && permission.joc.administration.accounts.manage) {
+                      <td>
+                        <div class="btn-group dropdown pull-left m-r-sm">
+                          <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                                  type="button"><i class="fa fa-ellipsis-h"></i></button>
+                          <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                            <ul nz-menu>
+                              <li (click)="addBlockedAccounts(account)" [nzDisabled]="account.accountName === '*none'"
+                                  nz-menu-item>
+                                <a translate>user.button.addToBlocklist</a>
+                              </li>
+                            </ul>
+                          </nz-dropdown-menu>
+                        </div>
+                      </td>
+                    }
+                    <td>
+                      @if (!account.show) {
+                        <i (click)="account.show = true;$event.stopPropagation()"
+                           class="cursor fa fa-caret-down fa-lg"></i>
+                      }
+                      @if (account.show) {
+                        <i (click)="account.show = false;$event.stopPropagation()"
+                           class="cursor fa fa-caret-up fa-lg"></i>
+                      }&nbsp;
+                      <span [innerHtml]="account.accountName | highlight : historyLogin.searchText"></span>
+                    </td>
+                    <td>
+                      <span [innerHtml]="account.loginDate | stringToDate | highlight : historyLogin.searchText"></span>
+                    </td>
+                  </tr>
+                  @if (account.show) {
+                    <tr>
+                      <td class="menu"></td>
+                      <td class="audit-log-failed-template" colspan="2" style="padding:0 !important;">
+                        <nz-table #innerChildTable [nzData]="account.details.loginHistoryItems" [nzFrontPagination]="false"
+                                  [nzShowPagination]="false" class="m-a-0 inner-table"
+                                  nzSize="small">
+                          <thead>
+                          <tr>
+                            <th nzWidth="31%"><span translate>auditLog.label.identityServiceName</span></th>
+                            <th><span translate>auditLog.label.message</span></th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                            @for (child of innerChildTable.data; track child) {
+                              <tr>
+                                <td><span>{{child.identityServiceName}}</span></td>
+                                <td><span class="text-danger">{{child.message}}</span></td>
+                              </tr>
+                            }
+                          </tbody>
+                        </nz-table>
+                      </td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </nz-table>
+          </div>
+          @if (ajaxTable.data.length >0) {
+            <div class="w-half label-top"><span
+              translate>common.label.total</span> {{data.length}}
+              @if (ajaxTable.data.length >1) {
+                <span translate>auditLog.label.loginsFound</span>
+              }
+              @if (ajaxTable.data.length ==1) {
+                <span translate>auditLog.label.loginFound</span>
+              }
+            </div>
+          }
         </div>
-      </div>
+      }
     </div>
   </div>
 </div>
-<div *ngIf="!isLoaded || reloadState == 'yes'">
+@if (!isLoaded || reloadState == 'yes') {
   <div (click)="reload()" class="bottom-btn">
-    <i *ngIf="reloadState == 'no'" class="fa fa-times"></i>
-    <i *ngIf="reloadState == 'yes'" class="fa fa-refresh"></i>
+    @if (reloadState == 'no') {
+      <i class="fa fa-times"></i>
+    }
+    @if (reloadState == 'yes') {
+      <i class="fa fa-refresh"></i>
+    }
   </div>
-</div>
+}

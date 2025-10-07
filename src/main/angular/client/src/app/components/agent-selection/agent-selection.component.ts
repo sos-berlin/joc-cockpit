@@ -5,6 +5,7 @@ import {DataService} from "../../services/data.service";
 declare const $: any;
 
 @Component({
+  standalone: false,
   selector: 'app-agent-selection',
   templateUrl: './agent-selection.component.html'
 })

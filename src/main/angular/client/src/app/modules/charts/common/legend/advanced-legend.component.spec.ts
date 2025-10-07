@@ -7,6 +7,7 @@ import {Color} from '../../utils/color-sets';
 import {ScaleType} from '../types/scale-type.enum';
 
 @Component({
+  standalone: false,
   selector: 'test-component',
   template: ''
 })

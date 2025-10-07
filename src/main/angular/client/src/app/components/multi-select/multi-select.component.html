@@ -1,12 +1,16 @@
 <div (click)="openSearch()" [ngClass]="{'b-b-0 active': object.isTreeShow, 'disable-link': isDisabled}" class="tag-input">
-  <span *ngIf="list[attribute]?.length == 0" class="placeholder">{{'common.placeholder.search' | translate}}</span>
-  <ng-container *ngFor="let notice of list[attribute]">
+  @if (list[attribute]?.length == 0) {
+    <span class="placeholder">{{'common.placeholder.search' | translate}}</span>
+  }
+  @for (notice of list[attribute]; track notice) {
     <nz-tag (nzOnClose)="removeItemFromList($event, notice)" nzMode="closeable">{{notice}}</nz-tag>
-  </ng-container>
+  }
 </div>
-<div *ngIf="object.isTreeShow" [ngStyle]="{'margin-top': list[attribute]?.length == 0 ? '-29px' : 'auto'}"
-     class="z-index-9999 w-full" id="show-select-tree">
-  <app-search-input [controllerId]="controllerId" (onBlur)="onBlur($event)" (onSelect)="onSelect($event)" [addFolderPossible]="addFolderPossible" [changeDetect]="true"
-                    [folders]="folders" [isPath]="isPath" [list]="list[attribute]" [nodes]="nodes"
-                    [pathAttribute]="pathAttribute" [type]="type"></app-search-input>
-</div>
+@if (object.isTreeShow) {
+  <div [ngStyle]="{'margin-top': list[attribute]?.length == 0 ? '-29px' : 'auto'}"
+       class="z-index-9999 w-full" id="show-select-tree">
+    <app-search-input [controllerId]="controllerId" (onBlur)="onBlur($event)" (onSelect)="onSelect($event)" [addFolderPossible]="addFolderPossible" [changeDetect]="true"
+                      [folders]="folders" [isPath]="isPath" [list]="list[attribute]" [nodes]="nodes"
+                      [pathAttribute]="pathAttribute" [type]="type"></app-search-input>
+  </div>
+}

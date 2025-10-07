@@ -21,6 +21,7 @@ import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.comp
 declare var $;
 
 @Component({
+  standalone: false,
   selector: 'app-edit-favorite-modal',
   templateUrl: './edit-favorite-dialog.html'
 })
@@ -167,6 +168,7 @@ export class EditFavoriteModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-manage-favorite-list',
   templateUrl: './favorite-list.component.html',
   styles: [`
@@ -334,6 +336,7 @@ export class FavoriteListComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-git-modal-content',
   templateUrl: './git-dialog.html'
 })
@@ -415,6 +418,7 @@ export class GitModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-update-modal-content',
   templateUrl: './update-dialog.html'
 })
@@ -495,6 +499,7 @@ export class UpdateKeyModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-import-key-modal',
   templateUrl: './import-key-dialog.html'
 })
@@ -660,6 +665,7 @@ export class ImportKeyModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-generate-key-component',
   templateUrl: './generate-key-dialog.html'
 })
@@ -746,6 +752,7 @@ export class GenerateKeyComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-remove-key-modal',
   templateUrl: './remove-key-dialog.html'
 })
@@ -797,6 +804,7 @@ export class RemoveKeyModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-user',
   templateUrl: './user.component.html'
 })

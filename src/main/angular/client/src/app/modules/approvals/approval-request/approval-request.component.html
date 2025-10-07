@@ -1,135 +1,164 @@
-<div *ngIf="!(object.checked && filters.mapOfCheckedId.size > 0 && data.length > (filters.filter.entryPerPage || preferences.entryPerPage))"
-     class="row m-b-sm m-t-n-xs">
-  <div class="col-lg-offset-6 col-lg-6 col-md-offset-0 col-md-12">
-    <div class="notify-tool approval-tool">
-      <button (click)="collapseDetails()"
-              class="btn btn-sm btn-grey m-l-12 pull-right"
-              nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}">
-        <i class="fa fa-compress text"></i>
-      </button>
-      <button (click)="expandDetails()" class="btn btn-sm btn-grey m-l-12 pull-right"
-              nz-tooltip="{{'common.tooltip.expandDetails' | translate}}">
-        <i class="fa fa-expand text"></i>
-      </button>
-      <div class="search-box-field pull-right">
-        <label>
-          <input (keyup)="searchInResult()" [(ngModel)]="filters.filter.searchText" placeholder="{{'common.placeholder.search' | translate}}"
-                 type="search">
-        </label>
-        <i (click)="filters.filter.searchText = '';searchInResult()" [hidden]="!filters.filter.searchText"
-           class="fa fa-times search-close"></i>
+@if (!(object.checked && filters.mapOfCheckedId.size > 0 && data.length > (filters.filter.entryPerPage || preferences.entryPerPage))) {
+  <div class="row m-b-sm m-t-n-xs">
+    <div class="col-lg-offset-6 col-lg-6 col-md-offset-0 col-md-12">
+      <div class="notify-tool approval-tool">
+        <button (click)="collapseDetails()"
+                class="btn btn-sm btn-grey m-l-12 pull-right"
+                nz-tooltip="{{'common.tooltip.collapseDetails' | translate}}">
+          <i class="fa fa-compress text"></i>
+        </button>
+        <button (click)="expandDetails()" class="btn btn-sm btn-grey m-l-12 pull-right"
+                nz-tooltip="{{'common.tooltip.expandDetails' | translate}}">
+          <i class="fa fa-expand text"></i>
+        </button>
+        <div class="search-box-field pull-right">
+          <label>
+            <input (keyup)="searchInResult()" [(ngModel)]="filters.filter.searchText" placeholder="{{'common.placeholder.search' | translate}}"
+                   type="search">
+          </label>
+          <i (click)="filters.filter.searchText = '';searchInResult()" [hidden]="!filters.filter.searchText"
+             class="fa fa-times search-close"></i>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<div *ngIf="object.checked && filters.mapOfCheckedId.size > 0 && data.length > (filters.filter.entryPerPage || preferences.entryPerPage)"
-     class="text-center font14 box p-a-sm m-b-12">
-  <span *ngIf="filters.mapOfCheckedId.size !== totalApprovalRequests" [translateParams]="{count: filters.mapOfCheckedId.size}"
-        translate>common.label.selectAllEntriesOfCurrentPage</span>
-  <span *ngIf="filters.mapOfCheckedId.size === totalApprovalRequests" [translateParams]="{count: totalApprovalRequests}"
-        translate>common.label.allEntriesSelected</span>
-  <a (click)="selectAll()" *ngIf="filters.mapOfCheckedId.size !== totalApprovalRequests" [translateParams]="{count: totalApprovalRequests}"
-     class="text-primary p-l-xs" translate>common.label.selectAllEntries</a>
-  <a (click)="resetCheckBox()" *ngIf="filters.mapOfCheckedId.size === totalApprovalRequests" class="text-primary p-l-xs"
-     translate>common.label.clearSelection</a>
-</div>
-  <div class="m-t-sm box p-a">
-    <div class="table-responsive">
-      <nz-table
-        #ajaxTable
-        (nzPageIndexChange)="pageIndexChange($event)"
-        (nzPageSizeChange)="pageSizeChange($event)"
-        [nzBordered]="true"
-        [nzData]="data"
-        [nzLoading]="!isLoaded"
-        [nzPageIndex]="filters.filter.currentPage"
-        [nzPageSizeOptions]="[10, 25, 50, 100, +(preferences.maxEntryPerPage)]"
-        [nzPageSize]="filters.filter.entryPerPage || preferences.entryPerPage || 25"
-        [nzShowPagination]="data?.length > 0"
-        [nzShowSizeChanger]="true"
-        [nzSize]="'small'"
-      >
-        <thead>
-        <tr>
-          <th
-              [(nzChecked)]="object.checked"
-              [nzIndeterminate]="object.indeterminate"
-              [nzShowCheckbox]="true"
-              (nzCheckedChange)="checkAll($event)"
-              class="chk"
-          ></th>
-          <th class="menu"><span
-            translate>common.label.action</span></th>
-          <th (click)="sort('requestorStateDate')">
-            <a><span class="p-r-xs" translate>monitor.approvalRequest.label.requestorStateDate</span>
-              <i *ngIf="filters.filter.sortBy == 'requestorStateDate' && !filters.filter.reverse"
-                 class="fa fa-caret-up "></i>
-              <i *ngIf="filters.filter.sortBy == 'requestorStateDate' && filters.filter.reverse"
-                 class="fa fa-caret-down "></i></a>
-          </th>
-          <th (click)="sort('title')">
-            <a><span class="p-r-xs" translate>monitor.approvalRequest.label.title</span>
-              <i *ngIf="filters.filter.sortBy == 'title' && !filters.filter.reverse"
-                 class="fa fa-caret-up "></i>
-              <i *ngIf="filters.filter.sortBy == 'title' && filters.filter.reverse"
-                 class="fa fa-caret-down "></i></a>
-          </th>
-          <th (click)="sort('requestor')">
-            <a><span class="p-r-xs" translate>monitor.approvalRequest.label.requestor</span>
-              <i *ngIf="filters.filter.sortBy == 'requestor' && !filters.filter.reverse"
-                 class="fa fa-caret-up "></i>
-              <i *ngIf="filters.filter.sortBy == 'requestor' && filters.filter.reverse"
-                 class="fa fa-caret-down "></i></a>
-          </th>
-          <th (click)="sort('requestorState')"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.requestorState</span>
-            <i *ngIf="filters.filter.sortBy == 'requestorState' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'requestorState' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-          </th>
-          <th (click)="sort('approver ')"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.approver</span>
-            <i *ngIf="filters.filter.sortBy == 'approver' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'approver' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-          </th>
-          <th (click)="sort('approverState')"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.approverState</span>
-            <i *ngIf="filters.filter.sortBy == 'approverState' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'approverState' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-          </th>
-          <th (click)="sort('approverStateDate')">
-            <a><span class="p-r-xs" translate>monitor.approvalRequest.label.approverStateDate</span>
-              <i *ngIf="filters.filter.sortBy == 'approverStateDate' && !filters.filter.reverse"
-                 class="fa fa-caret-up "></i>
-              <i *ngIf="filters.filter.sortBy == 'approverStateDate' && filters.filter.reverse"
-                 class="fa fa-caret-down "></i></a>
-          </th>
-          <th (click)="sort('requestUrl')"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.requestUrl</span>
-            <i *ngIf="filters.filter.sortBy == 'requestUrl' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'requestUrl' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-          </th>
+}
+@if (object.checked && filters.mapOfCheckedId.size > 0 && data.length > (filters.filter.entryPerPage || preferences.entryPerPage)) {
+  <div class="text-center font14 box p-a-sm m-b-12">
+    @if (filters.mapOfCheckedId.size !== totalApprovalRequests) {
+      <span [translateParams]="{count: filters.mapOfCheckedId.size}"
+            translate>common.label.selectAllEntriesOfCurrentPage</span>
+    }
+    @if (filters.mapOfCheckedId.size === totalApprovalRequests) {
+      <span [translateParams]="{count: totalApprovalRequests}"
+            translate>common.label.allEntriesSelected</span>
+    }
+    @if (filters.mapOfCheckedId.size !== totalApprovalRequests) {
+      <a (click)="selectAll()" [translateParams]="{count: totalApprovalRequests}"
+         class="text-primary p-l-xs" translate>common.label.selectAllEntries</a>
+    }
+    @if (filters.mapOfCheckedId.size === totalApprovalRequests) {
+      <a (click)="resetCheckBox()" class="text-primary p-l-xs"
+         translate>common.label.clearSelection</a>
+    }
+  </div>
+}
+<div class="m-t-sm box p-a">
+  <div class="table-responsive">
+    <nz-table
+      #ajaxTable
+      (nzPageIndexChange)="pageIndexChange($event)"
+      (nzPageSizeChange)="pageSizeChange($event)"
+      [nzBordered]="true"
+      [nzData]="data"
+      [nzLoading]="!isLoaded"
+      [nzPageIndex]="filters.filter.currentPage"
+      [nzPageSizeOptions]="[10, 25, 50, 100, +(preferences.maxEntryPerPage)]"
+      [nzPageSize]="filters.filter.entryPerPage || preferences.entryPerPage || 25"
+      [nzShowPagination]="data?.length > 0"
+      [nzShowSizeChanger]="true"
+      [nzSize]="'small'"
+    >
+      <thead>
+      <tr>
+        <th
+          [(nzChecked)]="object.checked"
+          [nzIndeterminate]="object.indeterminate"
+          [nzShowCheckbox]="true"
+          (nzCheckedChange)="checkAll($event)"
+          class="chk"
+        ></th>
+        <th class="menu"><span
+          translate>common.label.action</span></th>
+        <th (click)="sort('requestorStateDate')">
+          <a><span class="p-r-xs" translate>monitor.approvalRequest.label.requestorStateDate</span>
+            @if (filters.filter.sortBy == 'requestorStateDate' && !filters.filter.reverse) {
+              <i class="fa fa-caret-up "></i>
+            }
+            @if (filters.filter.sortBy == 'requestorStateDate' && filters.filter.reverse) {
+              <i class="fa fa-caret-down "></i>
+            }</a>
+        </th>
+        <th (click)="sort('title')">
+          <a><span class="p-r-xs" translate>monitor.approvalRequest.label.title</span>
+            @if (filters.filter.sortBy == 'title' && !filters.filter.reverse) {
+              <i class="fa fa-caret-up "></i>
+            }
+            @if (filters.filter.sortBy == 'title' && filters.filter.reverse) {
+              <i class="fa fa-caret-down "></i>
+            }</a>
+        </th>
+        <th (click)="sort('requestor')">
+          <a><span class="p-r-xs" translate>monitor.approvalRequest.label.requestor</span>
+            @if (filters.filter.sortBy == 'requestor' && !filters.filter.reverse) {
+              <i class="fa fa-caret-up "></i>
+            }
+            @if (filters.filter.sortBy == 'requestor' && filters.filter.reverse) {
+              <i class="fa fa-caret-down "></i>
+            }</a>
+        </th>
+        <th (click)="sort('requestorState')"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.requestorState</span>
+          @if (filters.filter.sortBy == 'requestorState' && !filters.filter.reverse) {
+            <i class="fa fa-caret-up "></i>
+          }
+          @if (filters.filter.sortBy == 'requestorState' && filters.filter.reverse) {
+            <i class="fa fa-caret-down "></i>
+          }</a>
+        </th>
+        <th (click)="sort('approver ')"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.approver</span>
+          @if (filters.filter.sortBy == 'approver' && !filters.filter.reverse) {
+            <i class="fa fa-caret-up "></i>
+          }
+          @if (filters.filter.sortBy == 'approver' && filters.filter.reverse) {
+            <i class="fa fa-caret-down "></i>
+          }</a>
+        </th>
+        <th (click)="sort('approverState')"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.approverState</span>
+          @if (filters.filter.sortBy == 'approverState' && !filters.filter.reverse) {
+            <i class="fa fa-caret-up "></i>
+          }
+          @if (filters.filter.sortBy == 'approverState' && filters.filter.reverse) {
+            <i class="fa fa-caret-down "></i>
+          }</a>
+        </th>
+        <th (click)="sort('approverStateDate')">
+          <a><span class="p-r-xs" translate>monitor.approvalRequest.label.approverStateDate</span>
+            @if (filters.filter.sortBy == 'approverStateDate' && !filters.filter.reverse) {
+              <i class="fa fa-caret-up "></i>
+            }
+            @if (filters.filter.sortBy == 'approverStateDate' && filters.filter.reverse) {
+              <i class="fa fa-caret-down "></i>
+            }</a>
+        </th>
+        <th (click)="sort('requestUrl')"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.requestUrl</span>
+          @if (filters.filter.sortBy == 'requestUrl' && !filters.filter.reverse) {
+            <i class="fa fa-caret-up "></i>
+          }
+          @if (filters.filter.sortBy == 'requestUrl' && filters.filter.reverse) {
+            <i class="fa fa-caret-down "></i>
+          }</a>
+        </th>
 
-          <th (click)="sort('category')"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.category</span>
-            <i *ngIf="filters.filter.sortBy == 'category' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'category' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-          </th>
-          <th (click)="sort('reason')" nzWidth="20%"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.reason</span>
-            <i *ngIf="filters.filter.sortBy == 'reason' && !filters.filter.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="filters.filter.sortBy == 'reason' && filters.filter.reverse"
-               class="fa fa-caret-down "></i></a>
-          </th>
-        </tr>
-        </thead>
-        <tbody>
-        <ng-template [ngForOf]="ajaxTable.data" let-approval
-                     ngFor>
+        <th (click)="sort('category')"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.category</span>
+          @if (filters.filter.sortBy == 'category' && !filters.filter.reverse) {
+            <i class="fa fa-caret-up "></i>
+          }
+          @if (filters.filter.sortBy == 'category' && filters.filter.reverse) {
+            <i class="fa fa-caret-down "></i>
+          }</a>
+        </th>
+        <th (click)="sort('reason')" nzWidth="20%"><a><span class="p-r-xs" translate>monitor.approvalRequest.label.reason</span>
+          @if (filters.filter.sortBy == 'reason' && !filters.filter.reverse) {
+            <i class="fa fa-caret-up "></i>
+          }
+          @if (filters.filter.sortBy == 'reason' && filters.filter.reverse) {
+            <i class="fa fa-caret-down "></i>
+          }</a>
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+        @for (approval of ajaxTable.data; track approval.id) {
           <tr>
             <td [nzChecked]="filters.mapOfCheckedId.has(approval.id)"
                 [nzShowCheckbox]="true"
@@ -138,37 +167,53 @@
             <td>
               <div class="btn-group dropdown">
                 <button
-                        [nzDropdownMenu]="option" class="btn-drop more-option-h"
-                        nz-dropdown nzTrigger="click" type="button">
+                  [nzDropdownMenu]="option" class="btn-drop more-option-h"
+                  nz-dropdown nzTrigger="click" type="button">
                   <i class="fa fa-ellipsis-h"></i>
                 </button>
                 <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
                   <ul nz-menu>
-                    <li *ngIf="isApprover" [nzDisabled]="approval.approverState != 'PENDING'" (click)="approve(approval.id)" nz-menu-item>
-                      <a translate>monitor.approvalRequest.button.approve</a>
-                    </li>
-                    <li *ngIf="isApprover" [nzDisabled]="approval.approverState != 'PENDING'" (click)="reject(approval.id)" nz-menu-item>
-                      <a translate>monitor.approvalRequest.button.reject</a>
-                    </li>
-                    <li *ngIf="isApprover && isRequestor" nz-menu-divider></li>
-                    <li *ngIf="isRequestor"  [nzDisabled]="approval.requestorState !== 'REQUESTED'" (click)="withdraw(approval.id)" nz-menu-item>
-                      <a translate>monitor.approvalRequest.button.withdraw</a>
-                    </li>
-                    <li *ngIf="isRequestor" [nzDisabled]="!(approval.requestorState === 'REQUESTED' && approval.approverState === 'PENDING')" (click)="edit(approval)" nz-menu-item>
-                      <a translate>common.button.edit</a>
-                    </li>
-                    <li *ngIf="isRequestor" [nzDisabled]="!(approval.requestorState === 'REQUESTED' && approval.approverState === 'APPROVED')" (click)="execute(approval)" nz-menu-item>
-                      <a translate>monitor.approvalRequest.label.execute</a>
-                    </li>
+                    @if (isApprover) {
+                      <li [nzDisabled]="approval.approverState != 'PENDING'" (click)="approve(approval.id)" nz-menu-item>
+                        <a translate>monitor.approvalRequest.button.approve</a>
+                      </li>
+                    }
+                    @if (isApprover) {
+                      <li [nzDisabled]="approval.approverState != 'PENDING'" (click)="reject(approval.id)" nz-menu-item>
+                        <a translate>monitor.approvalRequest.button.reject</a>
+                      </li>
+                    }
+                    @if (isApprover && isRequestor) {
+                      <li nz-menu-divider></li>
+                    }
+                    @if (isRequestor) {
+                      <li [nzDisabled]="approval.requestorState !== 'REQUESTED'" (click)="withdraw(approval.id)" nz-menu-item>
+                        <a translate>monitor.approvalRequest.button.withdraw</a>
+                      </li>
+                    }
+                    @if (isRequestor) {
+                      <li [nzDisabled]="!(approval.requestorState === 'REQUESTED' && approval.approverState === 'PENDING')" (click)="edit(approval)" nz-menu-item>
+                        <a translate>common.button.edit</a>
+                      </li>
+                    }
+                    @if (isRequestor) {
+                      <li [nzDisabled]="!(approval.requestorState === 'REQUESTED' && approval.approverState === 'APPROVED')" (click)="execute(approval)" nz-menu-item>
+                        <a translate>monitor.approvalRequest.label.execute</a>
+                      </li>
+                    }
                   </ul>
                 </nz-dropdown-menu>
               </div>
             </td>
             <td (click)="$event.stopPropagation()">
-              <i (click)="approval.show = true;$event.stopPropagation()" *ngIf="!approval.show"
-                 class="cursor fa fa-caret-down fa-lg"></i>
-              <i (click)="approval.show = false;$event.stopPropagation()" *ngIf="approval.show"
-                 class="cursor fa fa-caret-up fa-lg"></i>&nbsp;
+              @if (!approval.show) {
+                <i (click)="approval.show = true;$event.stopPropagation()"
+                   class="cursor fa fa-caret-down fa-lg"></i>
+              }
+              @if (approval.show) {
+                <i (click)="approval.show = false;$event.stopPropagation()"
+                   class="cursor fa fa-caret-up fa-lg"></i>
+              }&nbsp;
               <span [innerHtml]="approval['requestorStateDate'] | stringToDate | highlight : filters.filter.searchText"></span>
             </td>
             <td (click)="$event.stopPropagation()" nowrap>
@@ -178,34 +223,36 @@
               <span [innerHtml]="approval['requestor'] | highlight : filters.filter.searchText"></span>
             </td>
             <td (click)="$event.stopPropagation()">
-              <span class="label"
-                    [ngClass]="{
-                      'bg-scheduled': approval.requestorState === 'REQUESTED',
-                      'bg-orange': approval.requestorState === 'WITHDRAWN',
-                      'bg-inProgress': approval.requestorState === 'EXECUTED'
-                    }"
-                    [innerHtml]="approval.requestorState | translate | highlight : filters.filter.searchText">
-              </span>
+            <span class="label"
+                  [ngClass]="{
+                    'bg-scheduled': approval.requestorState === 'REQUESTED',
+                    'bg-orange': approval.requestorState === 'WITHDRAWN',
+                    'bg-inProgress': approval.requestorState === 'EXECUTED'
+                  }"
+                  [innerHtml]="approval.requestorState | translate | highlight : filters.filter.searchText">
+            </span>
             </td>
             <td>
-              <span
-                [innerHtml]="
-                  (approval.approverFullName || approval.approver)
-                  | highlight : filters.filter.searchText
-                "
-              ></span>
-              <i *ngIf="approval.unknownApprover" class="fa fa-exclamation-triangle text-danger pull-right"></i>
+            <span
+              [innerHtml]="
+                (approval.approverFullName || approval.approver)
+                | highlight : filters.filter.searchText
+              "
+            ></span>
+              @if (approval.unknownApprover) {
+                <i class="fa fa-exclamation-triangle text-danger pull-right"></i>
+              }
             </td>
 
             <td>
-              <span class="label"
-                    [ngClass]="{
-                      'bg-scheduled': approval.approverState === 'PENDING',
-                      'bg-running': approval.approverState === 'APPROVED',
-                      'bg-failed': approval.approverState === 'REJECTED'
-                    }"
-                    [innerHtml]="approval.approverState | translate | highlight : filters.filter.searchText">
-              </span>
+            <span class="label"
+                  [ngClass]="{
+                    'bg-scheduled': approval.approverState === 'PENDING',
+                    'bg-running': approval.approverState === 'APPROVED',
+                    'bg-failed': approval.approverState === 'REJECTED'
+                  }"
+                  [innerHtml]="approval.approverState | translate | highlight : filters.filter.searchText">
+            </span>
             </td>
             <td (click)="$event.stopPropagation()">
               <span [innerHtml]="approval['approverStateDate'] | stringToDate | highlight : filters.filter.searchText"></span>
@@ -218,7 +265,8 @@
             </td>
             <td><span [innerHtml]="approval.reason  | highlight : filters.filter.searchText"></span></td>
           </tr>
-          <ng-container *ngIf="approval.show">
+          @if (approval.show) {
+            <ng-container>
               <tr>
                 <td></td>
                 <td></td>
@@ -230,16 +278,21 @@
                   </div>
                 </td>
               </tr>
-          </ng-container>
-        </ng-template>
-        </tbody>
-      </nz-table>
-    </div>
-    <div *ngIf="ajaxTable.data.length >0"
-         class="w-half label-top"><span
-      translate>common.label.total</span> {{data.length}}
-      <span *ngIf="ajaxTable.data.length >1" translate>monitor.approvalRequest.label.approvalsFound</span>
-      <span *ngIf="ajaxTable.data.length ==1" translate>monitor.approvalRequest.label.approvalFound</span>
-    </div>
+            </ng-container>
+          }
+        }
+      </tbody>
+    </nz-table>
   </div>
-
+  @if (ajaxTable.data.length >0) {
+    <div class="w-half label-top"><span
+      translate>common.label.total</span> {{data.length}}
+      @if (ajaxTable.data.length >1) {
+        <span translate>monitor.approvalRequest.label.approvalsFound</span>
+      }
+      @if (ajaxTable.data.length ==1) {
+        <span translate>monitor.approvalRequest.label.approvalFound</span>
+      }
+    </div>
+  }
+</div>

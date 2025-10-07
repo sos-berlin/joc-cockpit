@@ -13,6 +13,7 @@ import {SaveService} from '../../../services/save.service';
 import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 
 @Component({
+  standalone: false,
   selector: 'app-filter-agent-content',
   templateUrl: './filter-dialog.html'
 })
@@ -65,6 +66,7 @@ export class FilterModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-form-template',
   templateUrl: './form-template.html',
 })
@@ -207,6 +209,7 @@ export class SearchComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-agent-job-execution',
   templateUrl: 'agent-job-execution.component.html'
 })

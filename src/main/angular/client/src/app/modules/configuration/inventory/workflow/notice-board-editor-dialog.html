@@ -13,10 +13,12 @@
   <div class="modal-body p-a">
     <div class="row">
       <div class="col-md-12 mono-font">
-        <div *ngIf="isTreeShow" class="z-index-9999 pos-abt opacity0" id="show-tree-editor" style="min-width: 150px;">
-          <app-search-input (onBlur)="onBlur($event)" (onSelect)="checkExpectNoticeExp($event)" [nodes]="boardTree"
-                            [type]="'NOTICEBOARD'"></app-search-input>
-        </div>
+        @if (isTreeShow) {
+          <div class="z-index-9999 pos-abt opacity0" id="show-tree-editor" style="min-width: 150px;">
+            <app-search-input (onBlur)="onBlur($event)" (onSelect)="checkExpectNoticeExp($event)" [nodes]="boardTree"
+                              [type]="'NOTICEBOARD'"></app-search-input>
+          </div>
+        }
         <div [ngClass]="{'invalid': (expectBoardExpression.invalid && (expectBoardExpression.dirty && expectBoardExpression.touched))}" class="b-a"
              id="boardId">
           <ngx-codemirror #codeMirror #expectBoardExpression="ngModel" [(ngModel)]="obj.data"

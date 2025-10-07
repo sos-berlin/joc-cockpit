@@ -20,13 +20,16 @@
       <div class="col-sm-9">
         <input #certAlias="ngModel" [(ngModel)]="certificateObj.certAlias" [appAutofocus]="true" autocomplete="off" class="form-control"
                name="certAlias" placeholder="{{'encipherment.placeholder.certAlias' | translate}}" identifierValidation required type="text"/>
-        <div *ngIf="certAlias.invalid && (certAlias.dirty || certAlias.touched)"
-             class="text-danger help-block">
-          <div *ngIf="(certAlias.errors && certAlias.errors.required)">
-            <div translate>common.message.requiredError</div>
+        @if (certAlias.invalid && (certAlias.dirty || certAlias.touched)) {
+          <div class="text-danger help-block">
+            @if ((certAlias.errors && certAlias.errors.required)) {
+              <div translate>common.message.requiredError</div>
+            }
+            @if (certAlias.errors.invalidIdentifier) {
+              <div translate>common.message.invalid</div>
+            }
           </div>
-          <div *ngIf="certAlias.errors.invalidIdentifier" translate>common.message.invalid</div>
-        </div>
+        }
       </div>
     </div>
     <div [ngClass]="{'has-error' : ((certificate.dirty || certificate.touched) && certificate.invalid)}"
@@ -36,13 +39,15 @@
       </label>
       <div class="col-sm-9">
         <textarea #certificate="ngModel" [(ngModel)]="certificateObj.certificate" autocomplete="false" class="form-control"
-          name="certificate" placeholder="{{'encipherment.placeholder.certificate' | translate}}"
-          required rows="10" style="font-family: monospace;"></textarea>
-        <div *ngIf="certificate.invalid && (certificate.dirty || certificate.touched)" class="text-danger help-block">
-          <div *ngIf="certificate.errors.required">
-            <div translate>common.message.requiredError</div>
+                  name="certificate" placeholder="{{'encipherment.placeholder.certificate' | translate}}"
+                  required rows="10" style="font-family: monospace;"></textarea>
+        @if (certificate.invalid && (certificate.dirty || certificate.touched)) {
+          <div class="text-danger help-block">
+            @if (certificate.errors.required) {
+              <div translate>common.message.requiredError</div>
+            }
           </div>
-        </div>
+        }
       </div>
     </div>
     <div [ngClass]="{'has-error' : ((privateKeyPath.dirty || privateKeyPath.touched) && privateKeyPath.invalid)}"
@@ -52,11 +57,13 @@
       <div class="col-sm-9">
         <input #privateKeyPath="ngModel" [(ngModel)]="certificateObj.privateKeyPath" autocomplete="off" class="form-control"
                name="privateKeyPath" placeholder="{{'encipherment.placeholder.privateKeyPath' | translate}}" type="text"/>
-        <div *ngIf="privateKeyPath.invalid && (privateKeyPath.dirty || privateKeyPath.touched)" class="text-danger help-block">
-          <div *ngIf="privateKeyPath.errors.required">
-            <div translate>common.message.requiredError</div>
+        @if (privateKeyPath.invalid && (privateKeyPath.dirty || privateKeyPath.touched)) {
+          <div class="text-danger help-block">
+            @if (privateKeyPath.errors.required) {
+              <div translate>common.message.requiredError</div>
+            }
           </div>
-        </div>
+        }
       </div>
     </div>
     <div [ngClass]="{'has-error' : ((jobResourceFolder.dirty || jobResourceFolder.touched) && jobResourceFolder.invalid)}" class="form-group row">
@@ -83,37 +90,46 @@
                    class="node-content-wrapper">
                 <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
                 {{node.origin.name}}
-                <span *ngIf="node.origin.notExist" class="m-l-sm label bg-danger"
-                      translate>user.label.folderNotExist</span>
+                @if (node.origin.notExist) {
+                  <span class="m-l-sm label bg-danger" translate>user.label.folderNotExist</span>
+                }
               </div>
             </div>
           </ng-template>
         </nz-tree-select>
-        <div *ngIf="jobResourceFolder.invalid && (jobResourceFolder.dirty || jobResourceFolder.touched)" class="text-danger help-block">
-          <div *ngIf="jobResourceFolder.errors.required">
-            <div translate>common.message.requiredError</div>
+        @if (jobResourceFolder.invalid && (jobResourceFolder.dirty || jobResourceFolder.touched)) {
+          <div class="text-danger help-block">
+            @if (jobResourceFolder.errors.required) {
+              <div translate>common.message.requiredError</div>
+            }
           </div>
-        </div>
+        }
       </div>
     </div>
     <div class="form-group row">
       <div class="col-sm-12">
-        <a *ngIf="certificateObj.certAlias && title === 'updateCertificate'" (click)="showAssignedAgents(certificateObj.certAlias)" class="text-u-l" translate>encipherment.label.showAssignedAgents</a>
+        @if (certificateObj.certAlias && title === 'updateCertificate') {
+          <a (click)="showAssignedAgents(certificateObj.certAlias)" class="text-u-l" translate>encipherment.label.showAssignedAgents</a>
+        }
       </div>
     </div>
 
-    <div *ngIf="title === 'updateCertificate'" class="form-group row">
-      <div class="col-sm-12">
-        <a (click)="showAssignedAgents(certificateObj.certAlias, true)" class="text-u-l" translate>encipherment.label.assignAgents</a>
+    @if (title === 'updateCertificate') {
+      <div class="form-group row">
+        <div class="col-sm-12">
+          <a (click)="showAssignedAgents(certificateObj.certAlias, true)" class="text-u-l" translate>encipherment.label.assignAgents</a>
+        </div>
       </div>
-    </div>
+    }
 
-    <div *ngIf="!showEncryptionSample && title === 'updateCertificate'" class="form-group row">
-      <div class="col-sm-12">
-        <a (click)="toggleEncryptionSample()" class="text-u-l" translate>encipherment.label.showEncryptionSample</a>
+    @if (!showEncryptionSample && title === 'updateCertificate') {
+      <div class="form-group row">
+        <div class="col-sm-12">
+          <a (click)="toggleEncryptionSample()" class="text-u-l" translate>encipherment.label.showEncryptionSample</a>
+        </div>
       </div>
-    </div>
-    <div *ngIf="showEncryptionSample">
+    }
+    @if (showEncryptionSample) {
       <div class="form-group row">
         <label class="col-sm-3" translate>encipherment.label.plainText</label>
         <div class="col-sm-8">
@@ -125,21 +141,25 @@
           <a><i (click)="toggleEncryptionSample()" class="fa fa-times m-t-sm text-hover-color m-l-12"></i></a>
         </div>
       </div>
-      <div *ngIf="encryptedText" class="form-group row">
-        <label class="col-sm-3 form-control-label" translate>encipherment.label.encrypt</label>
-        <div class="col-sm-8">
-          <textarea readonly style="width: 100%" >{{ encryptedText }}</textarea>
+      @if (encryptedText) {
+        <div class="form-group row">
+          <label class="col-sm-3 form-control-label" translate>encipherment.label.encrypt</label>
+          <div class="col-sm-8">
+            <textarea readonly style="width: 100%" >{{ encryptedText }}</textarea>
+          </div>
+          <div class="col-sm-1">
+            <span (click)="copyToClipboard()" class="fa fa-copy cursor" nz-tooltip="{{'encipherment.button.copyEncryptValue' | translate}}"></span>
+          </div>
         </div>
-        <div class="col-sm-1">
-          <span (click)="copyToClipboard()" class="fa fa-copy cursor" nz-tooltip="{{'encipherment.button.copyEncryptValue' | translate}}"></span>
-        </div>
-      </div>
-    </div>
+      }
+    }
   </div>
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || submitted || (required && !comments.comment)" class="btn btn-primary btn-sm"
             type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">

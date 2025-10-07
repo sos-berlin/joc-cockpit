@@ -5,6 +5,7 @@ import {Subscription} from 'rxjs';
 declare const $: any;
 
 @Component({
+  standalone: false,
   selector: 'app-configuration',
   templateUrl: './configuration.component.html'
 })

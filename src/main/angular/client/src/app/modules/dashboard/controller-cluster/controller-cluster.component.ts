@@ -25,6 +25,7 @@ declare const mxPoint: any;
 declare const $: any;
 
 @Component({
+  standalone: false,
   selector: 'app-controller-cluster',
   templateUrl: './controller-cluster.component.html'
 })

@@ -32,21 +32,39 @@
                           nzTrigger="click">
                     <span translate>common.label.sortBy</span>
                     <span class="text-primary">
-                         <span *ngIf="calendarFilters.filter.sortBy ==='name'">
-                        {{'common.label.name' | translate}}
-                           <i *ngIf="!calendarFilters.reverse" class="fa fa-caret-up"></i>
-                        <i *ngIf="calendarFilters.reverse" class="fa fa-caret-down"></i>
-                      </span>
-                      <span *ngIf="calendarFilters.filter.sortBy ==='path1'">
-                        {{'common.label.path' | translate}}
-                        <i *ngIf="!calendarFilters.reverse" class="fa fa-caret-up"></i>
-                        <i *ngIf="calendarFilters.reverse" class="fa fa-caret-down"></i>
-                      </span>
-                      <span *ngIf="calendarFilters.filter.sortBy ==='type'">
-                        {{'common.label.type' | translate}}
-                        <i *ngIf="!calendarFilters.reverse" class="fa fa-caret-up"></i>
-                        <i *ngIf="calendarFilters.reverse" class="fa fa-caret-down"></i>
-                      </span>
+                       @if (calendarFilters.filter.sortBy ==='name') {
+                         <span>
+                          {{'common.label.name' | translate}}
+                           @if (!calendarFilters.reverse) {
+                             <i class="fa fa-caret-up"></i>
+                           }
+                           @if (calendarFilters.reverse) {
+                             <i class="fa fa-caret-down"></i>
+                           }
+                        </span>
+                       }
+                      @if (calendarFilters.filter.sortBy ==='path1') {
+                        <span>
+                          {{'common.label.path' | translate}}
+                          @if (!calendarFilters.reverse) {
+                            <i class="fa fa-caret-up"></i>
+                          }
+                          @if (calendarFilters.reverse) {
+                            <i class="fa fa-caret-down"></i>
+                          }
+                        </span>
+                      }
+                      @if (calendarFilters.filter.sortBy ==='type') {
+                        <span>
+                          {{'common.label.type' | translate}}
+                          @if (!calendarFilters.reverse) {
+                            <i class="fa fa-caret-up"></i>
+                          }
+                          @if (calendarFilters.reverse) {
+                            <i class="fa fa-caret-down"></i>
+                          }
+                        </span>
+                      }
                     </span>
                   </button>
                   <nz-dropdown-menu #sortBy="nzDropdownMenu">
@@ -98,199 +116,250 @@
     <div class="row">
       <div class="col-sm-12">
         <div [sideView]="sideView.calendar" appResizable class="sticky leftPanel resource" id="leftPanel">
-          <div *ngIf="tree.length>0">
-            <app-tree-navigation (messageEvent)="receiveAction($event)" (selectObjectEvent)="selectObject($event)" [defaultExpandedKeys]="calendarFilters.expandedKeys"
-                                 [defaultSelectedKeys]="calendarFilters.selectedkeys" [schedulerId]="schedulerIds.selected"
-                                 [sideView]="sideView.calendar"
-                                 [tree]="tree"
-                                 [type]="'CALENDAR'"></app-tree-navigation>
-          </div>
+          @if (tree.length>0) {
+            <div>
+              <app-tree-navigation (messageEvent)="receiveAction($event)" (selectObjectEvent)="selectObject($event)" [defaultExpandedKeys]="calendarFilters.expandedKeys"
+                                   [defaultSelectedKeys]="calendarFilters.selectedkeys" [schedulerId]="schedulerIds.selected"
+                                   [sideView]="sideView.calendar"
+                                   [tree]="tree"
+                                   [type]="'CALENDAR'"></app-tree-navigation>
+            </div>
+          }
         </div>
         <div id="rightPanel">
           <div [ngClass]="{'show': isLoading}" class="hide">
-            <div *ngIf="pageView=='grid' && data.length>0" [hidden]="loading" class="row">
-              <div *ngFor="let item of data  | groupBy: 'path1'" class="w-full">
-                <div class="col-sm-12" style="margin-bottom: 10px">
-                  <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
-                </div>
-                <div *ngFor="let calendar of item.value | orderBy: calendarFilters.filter.sortBy:calendarFilters.reverse"
-                     class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                  <div class="box card">
-                    <div class="box-body">
-                      <div>
-                        <div class="text-left block-ellipsis">
-                          <span [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'fa-calendar-check-o': 'fa-calendar-times-o'"
-                                class="text-sm fa"></span>&nbsp;
-                          <i (click)="coreService.showDocumentation(calendar.documentationName, preferences)"
-                             *ngIf="calendar.documentationName"
-                             class="cursor fa fa-book p-l-xs p-r-xs"></i>
-                          <a (click)="previewCalendar(calendar)" [innerHtml]="calendar.name | highlight : calendarFilters.searchText"
-                             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="calendar.title"
-                             class="text-primary-hover"></a>
-                        </div>
-                        <div class="btn-group dropdown pull-right abt-dropdown ">
-                          <a [nzDropdownMenu]="option2" class=" more-option text-black-lt" nz-dropdown nzPlacement="bottomRight"
-                             nzTrigger="click">
-                            <i class="text fa fa-ellipsis-h"></i></a>
-                          <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
-                            <ul nz-menu>
-                              <li (click)="previewCalendar(calendar)" nz-menu-item>
-                                <a translate>resource.calendar.button.showPreview</a>
-                              </li>
-                              <li (click)="coreService.copyLink('calendar',calendar.name)" nz-menu-item>
-                                <a translate>common.button.copyLinkToObject</a>
-                              </li>
-                            </ul>
-                          </nz-dropdown-menu>
-                        </div>
-                      </div>
-                      <div class="text-sm text-left p-t-sm">
-                        <span translate>common.label.type </span>:
-                        <span
-                          [innerHtml]="calendar.type | translate | highlight : calendarFilters.searchText"
-                          [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'text-success':'text-gold'"></span>
-                      </div>
-                      <div class="text-sm text-left p-t-xs">
-                        <span *ngIf="calendar.from && calendar.to"><span
-                          translate>resource.calendar.label.validity</span> :</span>
-                        <span *ngIf="!calendar.from && calendar.to"><span translate>resource.calendar.label.validityUntil</span> : </span>
-                        <span *ngIf="calendar.from" [innerHtml]="calendar.from | stringToDate1:true"></span>
-                        <span *ngIf="calendar.from && calendar.to" translate>common.label.to </span>
-                        <span *ngIf="calendar.to" [innerHtml]="calendar.to | stringToDate1:true"></span>
-                        <span *ngIf="!calendar.from && !calendar.to">-</span>
-                      </div>
+            @if (pageView=='grid' && data.length>0) {
+              <div [hidden]="loading" class="row">
+                @for (item of data  | groupBy: 'path1'; track item) {
+                  <div class="w-full">
+                    <div class="col-sm-12" style="margin-bottom: 10px">
+                      <span class="text inline"><i class="fa fa-folder-o"></i> {{item.key}}</span>
                     </div>
-                    <div class="box-footer b-t">
-                      <div>
-                        <a (click)="previewCalendar(calendar)"
-                           class="text-left primary-text-hover-color">
-                          <i class="fa fa-television text-black-lt"></i>&nbsp;
-                          <span class="text-black-lt" translate>resource.calendar.button.showPreview</span></a>
+                    @for (calendar of item.value | orderBy: calendarFilters.filter.sortBy:calendarFilters.reverse; track calendar) {
+                      <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-xs-12">
+                        <div class="box card">
+                          <div class="box-body">
+                            <div>
+                              <div class="text-left block-ellipsis">
+                                <span [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'fa-calendar-check-o': 'fa-calendar-times-o'"
+                                      class="text-sm fa"></span>&nbsp;
+                                @if (calendar.documentationName) {
+                                  <i (click)="coreService.showDocumentation(calendar.documentationName, preferences)"
+                                     class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                                }
+                                <a (click)="previewCalendar(calendar)" [innerHtml]="calendar.name | highlight : calendarFilters.searchText"
+                                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="calendar.title"
+                                   class="text-primary-hover"></a>
+                              </div>
+                              <div class="btn-group dropdown pull-right abt-dropdown ">
+                                <a [nzDropdownMenu]="option2" class=" more-option text-black-lt" nz-dropdown nzPlacement="bottomRight"
+                                   nzTrigger="click">
+                                  <i class="text fa fa-ellipsis-h"></i></a>
+                                <nz-dropdown-menu #option2="nzDropdownMenu" role="menu">
+                                  <ul nz-menu>
+                                    <li (click)="previewCalendar(calendar)" nz-menu-item>
+                                      <a translate>resource.calendar.button.showPreview</a>
+                                    </li>
+                                    <li (click)="coreService.copyLink('calendar',calendar.name)" nz-menu-item>
+                                      <a translate>common.button.copyLinkToObject</a>
+                                    </li>
+                                  </ul>
+                                </nz-dropdown-menu>
+                              </div>
+                            </div>
+                            <div class="text-sm text-left p-t-sm">
+                              <span translate>common.label.type </span>:
+                              <span
+                                [innerHtml]="calendar.type | translate | highlight : calendarFilters.searchText"
+                                [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'text-success':'text-gold'"></span>
+                            </div>
+                            <div class="text-sm text-left p-t-xs">
+                              @if (calendar.from && calendar.to) {
+                                <span><span
+                                  translate>resource.calendar.label.validity</span> :</span>
+                              }
+                              @if (!calendar.from && calendar.to) {
+                                <span><span translate>resource.calendar.label.validityUntil</span> : </span>
+                              }
+                              @if (calendar.from) {
+                                <span [innerHtml]="calendar.from | stringToDate1:true"></span>
+                              }
+                              @if (calendar.from && calendar.to) {
+                                <span translate>common.label.to </span>
+                              }
+                              @if (calendar.to) {
+                                <span [innerHtml]="calendar.to | stringToDate1:true"></span>
+                              }
+                              @if (!calendar.from && !calendar.to) {
+                                <span>-</span>
+                              }
+                            </div>
+                          </div>
+                          <div class="box-footer b-t">
+                            <div>
+                              <a (click)="previewCalendar(calendar)"
+                                 class="text-left primary-text-hover-color">
+                                <i class="fa fa-television text-black-lt"></i>&nbsp;
+                                <span class="text-black-lt" translate>resource.calendar.button.showPreview</span></a>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    }
                   </div>
+                }
+              </div>
+            }
+            @if (pageView==='list' && tree.length > 0) {
+              <div class="box p-a">
+                <div class="table-responsive">
+                  <nz-table
+                    #ajaxTable
+                    (nzPageIndexChange)="pageIndexChange($event)"
+                    (nzPageSizeChange)="pageSizeChange($event)"
+                    [nzBordered]="true"
+                    [nzData]="data | orderBy: calendarFilters.filter.sortBy:calendarFilters.reverse"
+                    [nzLoading]="loading"
+                    [nzPageIndex]="calendarFilters.currentPage"
+                    [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
+                    [nzPageSize]="calendarFilters.entryPerPage || preferences.entryPerPage || 25"
+                    [nzShowPagination]="data.length > 0"
+                    [nzShowSizeChanger]="true"
+                    [nzSize]="'small'"
+                  >
+                    <thead>
+                    <tr>
+                      <th nzWidth="55px"><span translate>common.label.action</span></th>
+                      <th (click)="sort('name')"><a><span class="p-r-xs" translate>common.label.name</span>
+                        @if (calendarFilters.filter.sortBy == 'name' && !calendarFilters.reverse) {
+                          <i class="fa fa-caret-up "></i>
+                        }
+                        @if (calendarFilters.filter.sortBy == 'name' && calendarFilters.reverse) {
+                          <i class="fa fa-caret-down "></i>
+                        }</a>
+                      </th>
+                      @if (isPathDisplay) {
+                        <th (click)="sort('path1')"><a><span class="p-r-xs" translate>common.label.path</span>
+                          @if (calendarFilters.filter.sortBy == 'path1' && !calendarFilters.reverse) {
+                            <i class="fa fa-caret-up "></i>
+                          }
+                          @if (calendarFilters.filter.sortBy == 'path1' && calendarFilters.reverse) {
+                            <i class="fa fa-caret-down "></i>
+                          }</a>
+                        </th>
+                      }
+                      <th (click)="sort('type')"><a><span class="p-r-xs" translate>common.label.type</span>
+                        @if (calendarFilters.filter.sortBy == 'type' && !calendarFilters.reverse) {
+                          <i class="fa fa-caret-up "></i>
+                        }
+                        @if (calendarFilters.filter.sortBy == 'type' && calendarFilters.reverse) {
+                          <i class="fa fa-caret-down "></i>
+                        }</a>
+                      </th>
+                      <th (click)="sort('from')"><a><span class="p-r-xs"
+                                                          translate>resource.calendar.label.validityFrom</span>
+                        @if (calendarFilters.filter.sortBy == 'from' && !calendarFilters.reverse) {
+                          <i class="fa fa-caret-up "></i>
+                        }
+                        @if (calendarFilters.filter.sortBy == 'from' && calendarFilters.reverse) {
+                          <i class="fa fa-caret-down "></i>
+                        }</a>
+                      </th>
+                      <th (click)="sort('to')"><a><span class="p-r-xs" translate>resource.calendar.label.validityTo</span>
+                        @if (calendarFilters.filter.sortBy == 'to' && !calendarFilters.reverse) {
+                          <i class="fa fa-caret-up "></i>
+                        }
+                        @if (calendarFilters.filter.sortBy == 'to' && calendarFilters.reverse) {
+                          <i class="fa fa-caret-down "></i>
+                        }</a>
+                      </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      @for (calendar of ajaxTable.data; track calendar) {
+                        <tr>
+                          <td>
+                            <div class="btn-group dropdown">
+                              <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                                      type="button">
+                                <i class="fa fa-ellipsis-h"></i>
+                              </button>
+                              <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                                <ul nz-menu>
+                                  <li (click)="previewCalendar(calendar)" nz-menu-item>
+                                    <a translate>resource.calendar.button.showPreview</a>
+                                  </li>
+                                  <li (click)="coreService.copyLink('calendar',calendar.name)" nz-menu-item>
+                                    <a translate>common.button.copyLinkToObject</a>
+                                  </li>
+                                </ul>
+                              </nz-dropdown-menu>
+                            </div>
+                          </td>
+                          <td>
+                            @if (calendar.documentationName) {
+                              <i (click)="coreService.showDocumentation(calendar.documentationName, preferences)"
+                                 class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                            }
+                            @if (permission.joc && permission.joc.inventory.view && !isPathDisplay) {
+                              <i (click)="coreService.navToInventoryTab(calendar.path, calendar.type);"
+                                 class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                            }
+                            <a (click)="previewCalendar(calendar)" class="text-primary-hover text-dark">
+                              <span [innerHTML]="calendar.name | highlight : calendarFilters.searchText"></span>
+                            </a>
+                            @if (calendar.title) {
+                              <span> - </span>
+                            }
+                            <i class="text-muted">
+                              <span [innerHTML]="calendar.title | stringToLink"></span>
+                            </i>
+                          </td>
+                          @if (isPathDisplay) {
+                            <td>
+                            <span class="show-in-single-line">
+                              @if (permission.joc && permission.joc.inventory.view) {
+                                <i (click)="coreService.navToInventoryTab(calendar.path, calendar.type);"
+                                   class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
+                              }
+                              <span [innerHtml]="calendar.path1 | highlight : calendarFilters.searchText"></span>
+                            </span>
+                            </td>
+                          }
+                          <td><span [innerHtml]="calendar.type | translate | highlight : calendarFilters.searchText"
+                                    [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'bg-dark-blue': 'bg-orange'"
+                                    class="label "></span>
+                          </td>
+                          <td [innerHtml]="calendar.from | stringToDate1:true"></td>
+                          <td [innerHtml]="calendar.to | stringToDate1:true"></td>
+                        </tr>
+                      }
+                    </tbody>
+                  </nz-table>
+                  @if (ajaxTable.data.length >0) {
+                    <div class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
+                      @if (ajaxTable.data.length >1) {
+                        <span translate>resource.calendar.label.calendarsFound</span>
+                      }
+                      @if (ajaxTable.data.length ==1) {
+                        <span translate>resource.calendar.label.calendarFound</span>
+                      }
+                    </div>
+                  }
                 </div>
               </div>
-            </div>
-            <div *ngIf="pageView==='list' && tree.length > 0" class="box p-a">
-              <div class="table-responsive">
-                <nz-table
-                  #ajaxTable
-                  (nzPageIndexChange)="pageIndexChange($event)"
-                  (nzPageSizeChange)="pageSizeChange($event)"
-                  [nzBordered]="true"
-                  [nzData]="data | orderBy: calendarFilters.filter.sortBy:calendarFilters.reverse"
-                  [nzLoading]="loading"
-                  [nzPageIndex]="calendarFilters.currentPage"
-                  [nzPageSizeOptions]="[10, 25, 50, 100 , +(preferences.maxEntryPerPage)]"
-                  [nzPageSize]="calendarFilters.entryPerPage || preferences.entryPerPage || 25"
-                  [nzShowPagination]="data.length > 0"
-                  [nzShowSizeChanger]="true"
-                  [nzSize]="'small'"
-                >
-                  <thead>
-                  <tr>
-                    <th nzWidth="55px"><span translate>common.label.action</span></th>
-                    <th (click)="sort('name')"><a><span class="p-r-xs" translate>common.label.name</span>
-                      <i *ngIf="calendarFilters.filter.sortBy == 'name' && !calendarFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="calendarFilters.filter.sortBy == 'name' && calendarFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th *ngIf="isPathDisplay" (click)="sort('path1')"><a><span class="p-r-xs" translate>common.label.path</span>
-                      <i *ngIf="calendarFilters.filter.sortBy == 'path1' && !calendarFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="calendarFilters.filter.sortBy == 'path1' && calendarFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th (click)="sort('type')"><a><span class="p-r-xs" translate>common.label.type</span>
-                      <i *ngIf="calendarFilters.filter.sortBy == 'type' && !calendarFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="calendarFilters.filter.sortBy == 'type' && calendarFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th (click)="sort('from')"><a><span class="p-r-xs"
-                                                        translate>resource.calendar.label.validityFrom</span>
-                      <i *ngIf="calendarFilters.filter.sortBy == 'from' && !calendarFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="calendarFilters.filter.sortBy == 'from' && calendarFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                    <th (click)="sort('to')"><a><span class="p-r-xs" translate>resource.calendar.label.validityTo</span>
-                      <i *ngIf="calendarFilters.filter.sortBy == 'to' && !calendarFilters.reverse"
-                         class="fa fa-caret-up "></i>
-                      <i *ngIf="calendarFilters.filter.sortBy == 'to' && calendarFilters.reverse"
-                         class="fa fa-caret-down "></i></a>
-                    </th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr *ngFor="let calendar of ajaxTable.data">
-                    <td>
-                      <div class="btn-group dropdown">
-                        <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
-                                type="button">
-                          <i class="fa fa-ellipsis-h"></i>
-                        </button>
-                        <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                          <ul nz-menu>
-                            <li (click)="previewCalendar(calendar)" nz-menu-item>
-                              <a translate>resource.calendar.button.showPreview</a>
-                            </li>
-                            <li (click)="coreService.copyLink('calendar',calendar.name)" nz-menu-item>
-                              <a translate>common.button.copyLinkToObject</a>
-                            </li>
-                          </ul>
-                        </nz-dropdown-menu>
-                      </div>
-                    </td>
-                    <td>
-                      <i (click)="coreService.showDocumentation(calendar.documentationName, preferences)"
-                         *ngIf="calendar.documentationName"
-                         class="cursor fa fa-book p-l-xs p-r-xs"></i>
-                      <i (click)="coreService.navToInventoryTab(calendar.path, calendar.type);"
-                         *ngIf="permission.joc && permission.joc.inventory.view && !isPathDisplay"
-                         class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                      <a (click)="previewCalendar(calendar)" class="text-primary-hover text-dark">
-                        <span [innerHTML]="calendar.name | highlight : calendarFilters.searchText"></span>
-                      </a>
-                      <span *ngIf="calendar.title"> - </span>
-                      <i class="text-muted">
-                        <span [innerHTML]="calendar.title | stringToLink"></span>
-                      </i>
-                    </td>
-                    <td *ngIf="isPathDisplay">
-                        <span class="show-in-single-line">
-                          <i (click)="coreService.navToInventoryTab(calendar.path, calendar.type);"
-                             *ngIf="permission.joc && permission.joc.inventory.view"
-                             class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
-                          <span [innerHtml]="calendar.path1 | highlight : calendarFilters.searchText"></span>
-                        </span>
-                    </td>
-                    <td><span [innerHtml]="calendar.type | translate | highlight : calendarFilters.searchText"
-                              [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'bg-dark-blue': 'bg-orange'"
-                              class="label "></span>
-                    </td>
-                    <td [innerHtml]="calendar.from | stringToDate1:true"></td>
-                    <td [innerHtml]="calendar.to | stringToDate1:true"></td>
-                  </tr>
-                  </tbody>
-                </nz-table>
-                <div *ngIf="ajaxTable.data.length >0"
-                     class="w-half label-top"><span translate>common.label.total</span> {{data.length}}
-                  <span *ngIf="ajaxTable.data.length >1" translate>resource.calendar.label.calendarsFound</span>
-                  <span *ngIf="ajaxTable.data.length ==1" translate>resource.calendar.label.calendarFound</span>
-                </div>
+            }
+            @if (pageView=='grid' && isLoading && !loading && data.length==0 && tree.length>0) {
+              <div class="text-center m-t h6">
+                <app-empty-data></app-empty-data>
               </div>
-            </div>
-            <div *ngIf="pageView=='grid' && isLoading && !loading && data.length==0 && tree.length>0"
-                 class="text-center m-t h6">
+            }
+          </div>
+          @if (isLoading && tree.length==0 && !loading) {
+            <div class="text-center m-t">
               <app-empty-data></app-empty-data>
             </div>
-          </div>
-          <div *ngIf="isLoading && tree.length==0 && !loading" class="text-center m-t">
-            <app-empty-data></app-empty-data>
-          </div>
+          }
         </div>
       </div>
     </div>
@@ -300,22 +369,30 @@
   <ng-container *nzDrawerContent>
     <div (click)="closeSearch()" class="close-btn"></div>
     <i (click)="helpPage('resources-calendar-search')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
-    <div *ngIf="isSearchVisible">
-      <div class="text-center m-b-sm text"><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span>
+    @if (isSearchVisible) {
+      <div>
+        <div class="text-center m-b-sm text"><span class="_600 b-b p-b-sm m-l-sm" translate>inventory.search.label.searchHeading</span>
+        </div>
+        <app-inventory-search (onCancel)="closeSearch()" (onNavigate)="onNavigate($event)" [controllerId]="schedulerIds.selected"
+                              [isCalendar]="true"></app-inventory-search>
       </div>
-      <app-inventory-search (onCancel)="closeSearch()" (onNavigate)="onNavigate($event)" [controllerId]="schedulerIds.selected"
-                            [isCalendar]="true"></app-inventory-search>
-    </div>
+    }
   </ng-container>
 </nz-drawer>
-<div *ngIf="(loading && pageView === 'grid') || !isLoading" class="spinner">
-  <div class="cssload-inner cssload-one"></div>
-  <div class="cssload-inner cssload-two"></div>
-  <div class="cssload-inner cssload-three"></div>
-</div>
-<div *ngIf="loading || reloadState == 'yes'">
-  <div (click)="reload()" class="bottom-btn">
-    <i *ngIf="reloadState == 'no'" class="fa fa-times"></i>
-    <i *ngIf="reloadState == 'yes'" class="fa fa-refresh"></i>
+@if ((loading && pageView === 'grid') || !isLoading) {
+  <div class="spinner">
+    <div class="cssload-inner cssload-one"></div>
+    <div class="cssload-inner cssload-two"></div>
+    <div class="cssload-inner cssload-three"></div>
   </div>
-</div>
+}
+@if (loading || reloadState == 'yes') {
+  <div (click)="reload()" class="bottom-btn">
+    @if (reloadState == 'no') {
+      <i class="fa fa-times"></i>
+    }
+    @if (reloadState == 'yes') {
+      <i class="fa fa-refresh"></i>
+    }
+  </div>
+}

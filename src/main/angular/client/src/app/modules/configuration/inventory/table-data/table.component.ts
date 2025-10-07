@@ -21,6 +21,7 @@ import {OrderPipe, SearchPipe} from "../../../../pipes/core.pipe";
 import {AuthService} from "../../../../components/guard";
 
 @Component({
+  standalone: false,
   selector: 'app-table',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './table.component.html'

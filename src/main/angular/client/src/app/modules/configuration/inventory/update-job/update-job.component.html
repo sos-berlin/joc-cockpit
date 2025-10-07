@@ -11,118 +11,158 @@
 <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
   <div class="modal-body p-a min-ht-400">
     <div class="row">
-      <div *ngIf="step === 1" class="col-md-12">
-        <div *ngIf="data.onlyUpdate" class="text-center m-t-lg">
-          <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
-        </div>
-        <div *ngIf="!data.onlyUpdate">
-          <div class="m-l font14 _600" translate>
-            inventory.updateJob.message.selectWorkflowToOpenJobEditor
-          </div>
-          <div class="m-t">
-            <ul>
-              <li *ngFor="let item of data.workflows">
-                <a (click)="getObject(item.id)" class="text-hover-primary"><i
-                  class="icon-workflows-icon p-r-xs"></i> {{item.path}}</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div *ngIf="step === 2" class="col-md-12">
-        <app-job-content [agents]="agents.agentList" [checkboxObjects]="checkboxObjects" [documentationTree]="documentationTree"
-                         [exactMatch]="data.exactMatch" [isModal]="true" [scriptTree]="scriptTree"
-                         [isTooltipVisible]="!preferences.showTooltipInfo" [jobResourcesTree]="jobResourcesTree"
-                         [preferences]="preferences" [schedulerId]="controllerId"
-                         [selectedNode]="selectedNode"></app-job-content>
-      </div>
-      <div *ngIf="step === 3" class="col-md-12 min-ht-400">
-        <div [ngStyle]="{'height': renameFailedJobs.length > 0 ? '100px' : '100%'}"
-             style="display: flex;justify-content: center;align-items: center;">
-          <div class="text-md">
-            <span [translateParams]="{workflowsCount: data.workflows.length}" class="_600" translate>inventory.updateJob.message.updateSuccessfully</span>
-            <a (click)="step = 4;" class="text-primary p-l-xs"
-               translate>inventory.updateJob.button.clickHereToDeploy</a>
-          </div>
-        </div>
-        <div *ngIf="renameFailedJobs.length > 0" class="font14 m-t text-center">
-          <span class="_600" translate>Renaming of job '{{data.jobName}}' to '{{selectedNode.obj.jobName}}
-            ' is failed in {{renameFailedJobs.length}} workflows</span>
-          <div *ngFor="let workflow of renameFailedJobs">
-            <i class="icon-workflows-icon p-r-xs"></i> {{workflow}}
-          </div>
-        </div>
-      </div>
-      <div *ngIf="step === 4" class="col-md-12">
-        <div *ngIf="preferences.auditLog">
-          <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
-        </div>
-        <div class="form-group row">
-          <label class="col-md-3 form-control-label">
-            <label translate>inventory.label.controllers</label>
-          </label>
-          <div class="col-md-8">
-            <nz-select
-              [(ngModel)]="selectedSchedulerIds"
-              name="schedulerIds"
-              nzMode="multiple"
-              nzShowSearch>
-              <ng-container *ngFor="let id of schedulerIds.controllerIds">
-                <nz-option [nzLabel]="id" [nzValue]="id"></nz-option>
-              </ng-container>
-            </nz-select>
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
-          <div class="col-md-9">
-            <nz-radio-group [(ngModel)]="dailyPlanDate.addOrdersDateFrom" name="addOrdersDateFrom">
-              <label nz-radio nzValue="now"><span translate>inventory.addOrdersDateFrom.now</span></label>
-              <label nz-radio nzValue="startingFrom"><span
-                translate>inventory.addOrdersDateFrom.startingFrom</span></label>
-              <label nz-radio nzValue=""><span translate>inventory.addOrdersDateFrom.no</span></label>
-            </nz-radio-group>
-          </div>
-        </div>
-        <div *ngIf="dailyPlanDate.addOrdersDateFrom == 'startingFrom'" class="form-group row">
-          <div class="col-md-3" translate>common.label.specificDate
-            <sup class="text-danger text-sm">*</sup>
-          </div>
-          <div [ngClass]="{ 'has-error' : (((date.dirty || date.touched) && date.invalid))}" class="col-md-9">
-            <nz-date-picker #date="ngModel" [(ngModel)]="dateObj.fromDate"
-                            [nzFormat]="dateFormat" name="date" required></nz-date-picker>
-            <div *ngIf="date.invalid && (date.dirty || date.touched)" class="text-danger help-block">
-              <div *ngIf="date.errors.required">
-                <div translate>common.message.requiredError</div>
+      @if (step === 1) {
+        <div class="col-md-12">
+          @if (data.onlyUpdate) {
+            <div class="text-center m-t-lg">
+              <nz-spin [nzSize]="'small'" nzSimple></nz-spin>
+            </div>
+          }
+          @if (!data.onlyUpdate) {
+            <div>
+              <div class="m-l font14 _600" translate>
+                inventory.updateJob.message.selectWorkflowToOpenJobEditor
+              </div>
+              <div class="m-t">
+                <ul>
+                  @for (item of data.workflows; track item) {
+                    <li>
+                      <a (click)="getObject(item.id)" class="text-hover-primary"><i
+                        class="icon-workflows-icon p-r-xs"></i> {{item.path}}</a>
+                    </li>
+                  }
+                </ul>
               </div>
             </div>
-          </div>
+          }
         </div>
-      </div>
+      }
+      @if (step === 2) {
+        <div class="col-md-12">
+          <app-job-content [agents]="agents.agentList" [checkboxObjects]="checkboxObjects" [documentationTree]="documentationTree"
+                           [exactMatch]="data.exactMatch" [isModal]="true" [scriptTree]="scriptTree"
+                           [isTooltipVisible]="!preferences.showTooltipInfo" [jobResourcesTree]="jobResourcesTree"
+                           [preferences]="preferences" [schedulerId]="controllerId"
+                           [selectedNode]="selectedNode"></app-job-content>
+        </div>
+      }
+      @if (step === 3) {
+        <div class="col-md-12 min-ht-400">
+          <div [ngStyle]="{'height': renameFailedJobs.length > 0 ? '100px' : '100%'}"
+               style="display: flex;justify-content: center;align-items: center;">
+            <div class="text-md">
+              <span [translateParams]="{workflowsCount: data.workflows.length}" class="_600" translate>inventory.updateJob.message.updateSuccessfully</span>
+              <a (click)="step = 4;" class="text-primary p-l-xs"
+                 translate>inventory.updateJob.button.clickHereToDeploy</a>
+            </div>
+          </div>
+          @if (renameFailedJobs.length > 0) {
+            <div class="font14 m-t text-center">
+              <span class="_600" translate>Renaming of job '{{data.jobName}}' to '{{selectedNode.obj.jobName}}
+                ' is failed in {{renameFailedJobs.length}} workflows</span>
+              @for (workflow of renameFailedJobs; track workflow) {
+                <div>
+                  <i class="icon-workflows-icon p-r-xs"></i> {{workflow}}
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+      @if (step === 4) {
+        <div class="col-md-12">
+          @if (preferences.auditLog) {
+            <div>
+              <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
+            </div>
+          }
+          <div class="form-group row">
+            <label class="col-md-3 form-control-label">
+              <label translate>inventory.label.controllers</label>
+            </label>
+            <div class="col-md-8">
+              <nz-select
+                [(ngModel)]="selectedSchedulerIds"
+                name="schedulerIds"
+                nzMode="multiple"
+                nzShowSearch>
+                @for (id of schedulerIds.controllerIds; track id) {
+                  <ng-container>
+                    <nz-option [nzLabel]="id" [nzValue]="id"></nz-option>
+                  </ng-container>
+                }
+              </nz-select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-md-3" translate>inventory.addOrdersDateFrom.addOrders</div>
+            <div class="col-md-9">
+              <nz-radio-group [(ngModel)]="dailyPlanDate.addOrdersDateFrom" name="addOrdersDateFrom">
+                <label nz-radio nzValue="now"><span translate>inventory.addOrdersDateFrom.now</span></label>
+                <label nz-radio nzValue="startingFrom"><span
+                  translate>inventory.addOrdersDateFrom.startingFrom</span></label>
+                <label nz-radio nzValue=""><span translate>inventory.addOrdersDateFrom.no</span></label>
+              </nz-radio-group>
+            </div>
+          </div>
+          @if (dailyPlanDate.addOrdersDateFrom == 'startingFrom') {
+            <div class="form-group row">
+              <div class="col-md-3" translate>common.label.specificDate
+                <sup class="text-danger text-sm">*</sup>
+              </div>
+              <div [ngClass]="{ 'has-error' : (((date.dirty || date.touched) && date.invalid))}" class="col-md-9">
+                <nz-date-picker #date="ngModel" [(ngModel)]="dateObj.fromDate"
+                                [nzFormat]="dateFormat" name="date" required></nz-date-picker>
+                @if (date.invalid && (date.dirty || date.touched)) {
+                  <div class="text-danger help-block">
+                    @if (date.errors.required) {
+                      <div translate>common.message.requiredError</div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
     </div>
   </div>
   <div class="modal-footer">
-    <button *ngIf="step === 2" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm" translate
-            type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      {{'common.button.submit' | translate}}
-    </button>
-    <button (click)="deploy()" *ngIf="step === 4" [disabled]="!myForm.form.valid || submitted"
-            class="btn btn-primary btn-sm" translate
-            type="button">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      {{'inventory.button.deploy' | translate}}
-    </button>
-    <button (click)="step = 1" *ngIf="step == 2 && !data.onlyUpdate" class="btn btn-secondary btn-sm" translate
-            type="button">
-      common.button.back
-    </button>
-    <button (click)="activeModal.close('Close')" *ngIf="step === 3" class="btn btn-grey btn-sm" translate type="button">
-      common.button.close
-    </button>
-    <button (click)="activeModal.destroy()" *ngIf="step !== 3" [disabled]="submitted" class="btn btn-grey btn-sm"
-            translate type="button">
-      common.button.cancel
-    </button>
+    @if (step === 2) {
+      <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm" translate
+              type="submit">
+        @if (submitted) {
+          <i class="fa fa-spin fa-spinner p-r-xs"></i>
+        }
+        {{'common.button.submit' | translate}}
+      </button>
+    }
+    @if (step === 4) {
+      <button (click)="deploy()" [disabled]="!myForm.form.valid || submitted"
+              class="btn btn-primary btn-sm" translate
+              type="button">
+        @if (submitted) {
+          <i class="fa fa-spin fa-spinner p-r-xs"></i>
+        }
+        {{'inventory.button.deploy' | translate}}
+      </button>
+    }
+    @if (step == 2 && !data.onlyUpdate) {
+      <button (click)="step = 1" class="btn btn-secondary btn-sm" translate
+              type="button">
+        common.button.back
+      </button>
+    }
+    @if (step === 3) {
+      <button (click)="activeModal.close('Close')" class="btn btn-grey btn-sm" translate type="button">
+        common.button.close
+      </button>
+    }
+    @if (step !== 3) {
+      <button (click)="activeModal.destroy()" [disabled]="submitted" class="btn btn-grey btn-sm"
+              translate type="button">
+        common.button.cancel
+      </button>
+    }
   </div>
 </form>

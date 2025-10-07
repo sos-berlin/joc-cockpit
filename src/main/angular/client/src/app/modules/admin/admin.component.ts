@@ -7,6 +7,7 @@ import {AuthService} from '../../components/guard';
 import {DataService} from './data.service';
 
 @Component({
+  standalone: false,
   selector: 'app-admin',
   templateUrl: './admin.component.html'
 })

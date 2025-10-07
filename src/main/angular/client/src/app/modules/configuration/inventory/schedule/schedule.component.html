@@ -14,119 +14,139 @@
            nz-tooltip="{{'common.button.copyArguments' | translate}}">
           <i class="fa fa-copy"></i>
         </a>
-        <a class="cursor p-l-12" (click)="handleIndlPaste(storedIndlArguments[0], j, x)" *ngIf="storedIndlArguments?.length > 0"
-           nz-tooltip="{{'common.button.paste' | translate}}">
-          <i class="fa fa-paste"></i>
-        </a>
+        @if (storedIndlArguments?.length > 0) {
+          <a class="cursor p-l-12" (click)="handleIndlPaste(storedIndlArguments[0], j, x)"
+             nz-tooltip="{{'common.button.paste' | translate}}">
+            <i class="fa fa-paste"></i>
+          </a>
+        }
       </div>
     </div>
 
-    <div *ngIf="!listVariables.isCollapse && listVariables.list" class="p-a-sm b-a m-b">
-      <div class="form-group row m-b-0 m-l-12">
-        <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>
-        <div class="col-md-6 col-lg-8 col-xl-9 m-b-sm m-l-n-23" translate>common.label.value</div>
-      </div>
-      <div *ngFor="let actualListArr of listVariables.actualList; let i = index"
-           [ngClass]="{'b-b-dark m-b-sm': i !== listVariables.actualList.length - 1}"
-           class="form-group row m-b-0 m-l-12">
-        <div (click)="addVariableToList(listVariables)"
-             *ngIf="listVariables.actualList && (i === listVariables.actualList.length - 1)"
-             class="pos-abt" style="margin-left: -13px;font-size: 16px;margin-top: 3px;cursor: pointer">
-          <i aria-hidden="true" class="fa fa-plus"></i>
+    @if (!listVariables.isCollapse && listVariables.list) {
+      <div class="p-a-sm b-a m-b">
+        <div class="form-group row m-b-0 m-l-12">
+          <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>
+          <div class="col-md-6 col-lg-8 col-xl-9 m-b-sm m-l-n-23" translate>common.label.value</div>
         </div>
-        <div *ngFor="let argument of actualListArr; let k = index" class="col-md-12">
-          <div class="form-group row m-b-0">
-            <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" style="padding-right: 34px">
-              <input [(ngModel)]="argument.name" class="form-control" name="_name{{i}}{{j}}{{k}}{{x}}" readonly
-                     type="text">
-            </div>
-            <ng-container [ngSwitch]="argument.type">
-              <ng-container *ngSwitchCase="'Number'">
-                <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-                     class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                  <nz-input-number #value="ngModel" (nzBlur)="saveJSON()" [(ngModel)]="argument.value"
-                                    [nzStep]="1" [required]="argument.isRequired" class="m-l-n-23 w-103"
-                                   name="_value{{i}}{{j}}{{k}}{{x}}"
-                                   nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
-                  <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                       class="text-danger help-block m-l-n-23">
-                    <div *ngIf="value.errors['required']">
-                      <div translate>common.message.requiredError</div>
-                    </div>
+        @for (actualListArr of listVariables.actualList; track $index; let i = $index) {
+          <div [ngClass]="{'b-b-dark m-b-sm': i !== listVariables.actualList.length - 1}"
+               class="form-group row m-b-0 m-l-12">
+            @if (listVariables.actualList && (i === listVariables.actualList.length - 1)) {
+              <div (click)="addVariableToList(listVariables)"
+                   class="pos-abt" style="margin-left: -13px;font-size: 16px;margin-top: 3px;cursor: pointer">
+                <i aria-hidden="true" class="fa fa-plus"></i>
+              </div>
+            }
+            @for (argument of actualListArr; track $index; let k = $index) {
+              <div class="col-md-12">
+                <div class="form-group row m-b-0">
+                  <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" style="padding-right: 34px">
+                    <input [(ngModel)]="argument.name" class="form-control" name="_name{{i}}{{j}}{{k}}{{x}}" readonly
+                           type="text">
                   </div>
-                  <div
-                    *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1"
-                    class="pos-abt r-t-n-28 copy-item">
-                    <a *ngIf="listVariables.actualList && listVariables.actualList.length >= 1"><i (click)="copyVariableFromList(i, listVariables)"
-                          class="fa fa-copy m-t-sm "></i></a>
-                    <a><i (click)="removeVariableFromList(i, listVariables.actualList)"
-                          class="fa fa-times m-t-sm "></i></a>
-                  </div>
+                  @switch (argument.type) {
+                    @case ('Number') {
+                      <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                           class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
+                        <nz-input-number #value="ngModel" (nzBlur)="saveJSON()" [(ngModel)]="argument.value"
+                                         [nzStep]="1" [required]="argument.isRequired" class="m-l-n-23 w-103"
+                                         name="_value{{i}}{{j}}{{k}}{{x}}"
+                                         nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
+                        @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                          <div class="text-danger help-block m-l-n-23">
+                            @if (value.errors['required']) {
+                              <div translate>common.message.requiredError</div>
+                            }
+                          </div>
+                        }
+                        @if (listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1) {
+                          <div class="pos-abt r-t-n-28 copy-item">
+                            @if (listVariables.actualList && listVariables.actualList.length >= 1) {
+                              <a><i (click)="copyVariableFromList(i, listVariables)"
+                                    class="fa fa-copy m-t-sm "></i></a>
+                            }
+                            <a><i (click)="removeVariableFromList(i, listVariables.actualList)"
+                                  class="fa fa-times m-t-sm "></i></a>
+                          </div>
+                        }
+                      </div>
+                    }
+                    @case ('Boolean') {
+                      <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                           class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
+                        <nz-select #value="ngModel" [(ngModel)]="argument.value"
+                                   [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
+                                   [required]="argument.isRequired" class="m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
+                                   nzAllowClear (ngModelChange)="checkVal()">
+                          <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                          <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+                        </nz-select>
+                        @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                          <div class="text-danger help-block m-l-n-23">
+                            @if (value.errors['required']) {
+                              <div translate>common.message.requiredError</div>
+                            }
+                          </div>
+                        }
+                        @if (k === actualListArr.length - 1) {
+                          <div class="pos-abt r-t-n-28 copy-item">
+                            @if (listVariables.actualList && listVariables.actualList.length >= 1) {
+                              <a><i (click)="copyVariableFromList(i, listVariables)"
+                                    class="fa fa-copy m-t-sm "></i></a>
+                            }
+                            @if (listVariables.actualList && listVariables.actualList.length > 1) {
+                              <a><i (click)="removeVariableFromList(i, listVariables.actualList)"
+                                    class="fa fa-times m-t-sm "></i></a>
+                            }
+                          </div>
+                        }
+                      </div>
+                    }
+                    @default {
+                      <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                           class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
+                        <input #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired"
+                               autocomplete="off" (blur)="saveJSON()"
+                               class="form-control m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
+                               placeholder="{{'common.placeholder.value' | translate}}"
+                               type="text">
+                        <i (click)="openEditor(argument, 'value')"
+                           [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
+                           nzTheme="outline" nzType="form"
+                           style="right: 13px;top:1px;"></i>
+                        @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                          <div class="text-danger help-block m-l-n-23">
+                            @if (value.errors['required']) {
+                              <div translate>common.message.requiredError</div>
+                            }
+                          </div>
+                        }
+                        <div class="pos-abt r-t-n-28 add-order-encrypt" [ngClass]="(listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1) ? 'right-58px' : 'right-34px'">
+                          @if (listVariables.actualList && listVariables.actualList.length >= 1 && k === actualListArr.length - 1) {
+                            <a><i (click)="copyVariableFromList(i, listVariables)"
+                                  class="fa fa-copy m-t-sm"></i></a>
+                          }
+                          @if (argument.name && argument.type === 'String') {
+                            <a><i (click)="encryptValue(argument, 'job')" class="m-t-sm text-hover-color"
+                                  nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                          }
+                          @if (listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1) {
+                            <a><i (click)="removeVariableFromList(i, listVariables.actualList)"
+                                  class="fa fa-times m-t-sm text-muted"></i></a>
+                          }
+                        </div>
+                      </div>
+                    }
+                  }
                 </div>
-              </ng-container>
-              <ng-container *ngSwitchCase="'Boolean'">
-                <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-                     class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                  <nz-select #value="ngModel" [(ngModel)]="argument.value"
-                             [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                             [required]="argument.isRequired" class="m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
-                             nzAllowClear (ngModelChange)="checkVal()">
-                    <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-                    <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-                  </nz-select>
-                  <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                       class="text-danger help-block m-l-n-23">
-                    <div *ngIf="value.errors['required']">
-                      <div translate>common.message.requiredError</div>
-                    </div>
-                  </div>
-                  <div
-                    *ngIf="k === actualListArr.length - 1"
-                    class="pos-abt r-t-n-28 copy-item">
-                    <a *ngIf="listVariables.actualList && listVariables.actualList.length >= 1"><i (click)="copyVariableFromList(i, listVariables)"
-                          class="fa fa-copy m-t-sm "></i></a>
-                    <a *ngIf="listVariables.actualList && listVariables.actualList.length > 1"><i (click)="removeVariableFromList(i, listVariables.actualList)"
-                          class="fa fa-times m-t-sm "></i></a>
-                  </div>
-                </div>
-              </ng-container>
-              <ng-container *ngSwitchDefault>
-                <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-                     class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                  <input #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired"
-                         autocomplete="off" (blur)="saveJSON()"
-                         class="form-control m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
-                         placeholder="{{'common.placeholder.value' | translate}}"
-                         type="text">
-                  <i (click)="openEditor(argument, 'value')"
-                     [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
-                     nzTheme="outline" nzType="form"
-                     style="right: 13px;top:1px;"></i>
-                  <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                       class="text-danger help-block m-l-n-23">
-                    <div *ngIf="value.errors['required']">
-                      <div translate>common.message.requiredError</div>
-                    </div>
-                  </div>
-                  <div class="pos-abt r-t-n-28 add-order-encrypt"[ngClass]="(listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1) ? 'right-58px' : 'right-34px'">
-                    <a  *ngIf="listVariables.actualList && listVariables.actualList.length >= 1 && k === actualListArr.length - 1"><i (click)="copyVariableFromList(i, listVariables)"
-                                                                                                                                      class="fa fa-copy m-t-sm"></i></a>
-                    <a *ngIf="argument.name && argument.type === 'String'"><i (click)="encryptValue(argument, 'job')" class="m-t-sm text-hover-color"
-                      nz-icon nzType="property-safety" nzTheme="outline"></i></a>
-                    <a *ngIf="listVariables.actualList && listVariables.actualList.length > 1 && k === actualListArr.length - 1"
-                    ><i (click)="removeVariableFromList(i, listVariables.actualList)"
-
-                          class="fa fa-times m-t-sm text-muted"></i></a>
-                  </div>
-                </div>
-              </ng-container>
-            </ng-container>
+              </div>
+            }
           </div>
-        </div>
+        }
       </div>
-    </div>
+    }
   </div>
-
 </ng-template>
 <ng-template #mapVariableTemplate let-j="j" let-listVariables let-x="x">
   <div>
@@ -147,575 +167,699 @@
       </div>
     </div>
 
-    <div *ngIf="!listVariables.isCollapse && listVariables.map" class="p-a-sm b-a m-b">
-      <div class="form-group row m-b-0 m-l-12">
-        <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>
-        <div class="col-md-6 col-lg-8 col-xl-9 m-b-sm m-l-n-23" translate>common.label.value</div>
-      </div>
-      <div *ngFor="let actualMapArr of listVariables.actualMap; let i = index"
-           [ngClass]="{'b-b-dark m-b-sm': i !== listVariables.actualMap.length - 1}"
-           class="form-group row m-b-0 m-l-12">
-        <!-- <div (click)="addVariableToList(listVariables)"
-             *ngIf="listVariables.actualMap && (i === listVariables.actualMap.length - 1)"
-             class="pos-abt" style="margin-left: -13px;font-size: 16px;margin-top: 3px;cursor: pointer">
-          <i aria-hidden="true" class="fa fa-plus"></i>
-        </div> -->
-        <div *ngFor="let argument of actualMapArr; let k = index" class="col-md-12">
-          <div class="form-group row m-b-0">
-            <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" style="padding-right: 34px">
-              <input [(ngModel)]="argument.name" class="form-control" name="_name{{i}}{{j}}{{k}}{{x}}" readonly
-                     type="text">
-            </div>
-            <ng-container [ngSwitch]="argument.type">
-              <ng-container *ngSwitchCase="'Number'">
-                <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-                     class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                  <nz-input-number #value="ngModel" (nzBlur)="saveJSON()" [(ngModel)]="argument.value"
-                                    [nzStep]="1" [required]="argument.isRequired" class="m-l-n-23 w-103"
-                                   name="_value{{i}}{{j}}{{k}}{{x}}"
-                                   nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
-                  <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                       class="text-danger help-block m-l-n-23">
-                    <div *ngIf="value.errors['required']">
-                      <div translate>common.message.requiredError</div>
-                    </div>
-                  </div>
-                  <div
-                    *ngIf="listVariables.actualMap && listVariables.actualMap.length > 1 && k === actualMapArr.length - 1"
-                    class="pos-abt r-t-n-28">
-                    <a><i (click)="removeVariableFromList(i, listVariables.actualMap)"
-                          class="fa fa-times m-t-sm text-muted"></i></a>
-                  </div>
-                </div>
-              </ng-container>
-              <ng-container *ngSwitchCase="'Boolean'">
-                <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-                     class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                  <nz-select #value="ngModel" [(ngModel)]="argument.value"
-                             [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
-                             [required]="argument.isRequired" class="m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
-                             nzAllowClear (ngModelChange)="checkVal()">
-                    <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-                    <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-                  </nz-select>
-                  <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                       class="text-danger help-block m-l-n-23">
-                    <div *ngIf="value.errors['required']">
-                      <div translate>common.message.requiredError</div>
-                    </div>
-                  </div>
-                  <div
-                    *ngIf="listVariables.actualMap && listVariables.actualMap.length > 1 && k === actualMapArr.length - 1"
-                    class="pos-abt r-t-n-28">
-                    <a><i (click)="removeVariableFromList(i, listVariables.actualMap)"
-                          class="fa fa-times m-t-sm text-muted"></i></a>
-                  </div>
-                </div>
-              </ng-container>
-              <ng-container *ngSwitchDefault>
-                <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-                     class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                  <input #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired"
-                         autocomplete="off" (blur)="saveJSON()"
-                         class="form-control m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
-                         placeholder="{{'common.placeholder.value' | translate}}"
-                         type="text">
-                  <i (click)="openEditor(argument, 'value')"
-                     [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
-                     nzTheme="outline" nzType="form"
-                     style="right: 13px;top:1px;"></i>
-                  <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                       class="text-danger help-block m-l-n-23">
-                    <div *ngIf="value.errors['required']">
-                      <div translate>common.message.requiredError</div>
-                    </div>
-                  </div>
-                  <div class="pos-abt r-t-n-28 add-order-encrypt" style="right: -34px">
-                    <a  *ngIf="argument.name && argument.type === 'String'"><i (click)="encryptValue(argument, 'job')"
-                      class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
-                    <a *ngIf="listVariables.actualMap && listVariables.actualMap.length > 1 && k === actualMapArr.length - 1">
-                      <i (click)="removeVariableFromList(i, listVariables.actualMap)"class="fa fa-times m-t-sm text-muted"></i></a>
-                </div>
-                </div>
-              </ng-container>
-            </ng-container>
-          </div>
+    @if (!listVariables.isCollapse && listVariables.map) {
+      <div class="p-a-sm b-a m-b">
+        <div class="form-group row m-b-0 m-l-12">
+          <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" translate>common.label.name</div>
+          <div class="col-md-6 col-lg-8 col-xl-9 m-b-sm m-l-n-23" translate>common.label.value</div>
         </div>
+        @for (actualMapArr of listVariables.actualMap; track $index; let i = $index) {
+          <div [ngClass]="{'b-b-dark m-b-sm': i !== listVariables.actualMap.length - 1}"
+               class="form-group row m-b-0 m-l-12">
+            <!-- <div (click)="addVariableToList(listVariables)"
+                 *ngIf="listVariables.actualMap && (i === listVariables.actualMap.length - 1)"
+                 class="pos-abt" style="margin-left: -13px;font-size: 16px;margin-top: 3px;cursor: pointer">
+              <i aria-hidden="true" class="fa fa-plus"></i>
+            </div> -->
+            @for (argument of actualMapArr; track $index; let k = $index) {
+              <div class="col-md-12">
+                <div class="form-group row m-b-0">
+                  <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm" style="padding-right: 34px">
+                    <input [(ngModel)]="argument.name" class="form-control" name="_name{{i}}{{j}}{{k}}{{x}}" readonly
+                           type="text">
+                  </div>
+                  @switch (argument.type) {
+                    @case ('Number') {
+                      <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                           class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
+                        <nz-input-number #value="ngModel" (nzBlur)="saveJSON()" [(ngModel)]="argument.value"
+                                         [nzStep]="1" [required]="argument.isRequired" class="m-l-n-23 w-103"
+                                         name="_value{{i}}{{j}}{{k}}{{x}}"
+                                         nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
+                        @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                          <div class="text-danger help-block m-l-n-23">
+                            @if (value.errors['required']) {
+                              <div translate>common.message.requiredError</div>
+                            }
+                          </div>
+                        }
+                        @if (listVariables.actualMap && listVariables.actualMap.length > 1 && k === actualMapArr.length - 1) {
+                          <div class="pos-abt r-t-n-28">
+                            <a><i (click)="removeVariableFromList(i, listVariables.actualMap)"
+                                  class="fa fa-times m-t-sm text-muted"></i></a>
+                          </div>
+                        }
+                      </div>
+                    }
+                    @case ('Boolean') {
+                      <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                           class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
+                        <nz-select #value="ngModel" [(ngModel)]="argument.value"
+                                   [nzPlaceHolder]="'common.placeholder.selectValue' | translate"
+                                   [required]="argument.isRequired" class="m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
+                                   nzAllowClear (ngModelChange)="checkVal()">
+                          <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                          <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+                        </nz-select>
+                        @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                          <div class="text-danger help-block m-l-n-23">
+                            @if (value.errors['required']) {
+                              <div translate>common.message.requiredError</div>
+                            }
+                          </div>
+                        }
+                        @if (listVariables.actualMap && listVariables.actualMap.length > 1 && k === actualMapArr.length - 1) {
+                          <div class="pos-abt r-t-n-28">
+                            <a><i (click)="removeVariableFromList(i, listVariables.actualMap)"
+                                  class="fa fa-times m-t-sm text-muted"></i></a>
+                          </div>
+                        }
+                      </div>
+                    }
+                    @default {
+                      <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                           class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
+                        <input #value="ngModel" [(ngModel)]="argument.value" [required]="argument.isRequired"
+                               autocomplete="off" (blur)="saveJSON()"
+                               class="form-control m-l-n-23 w-103" name="_value{{i}}{{j}}{{k}}{{x}}"
+                               placeholder="{{'common.placeholder.value' | translate}}"
+                               type="text">
+                        <i (click)="openEditor(argument, 'value')"
+                           [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
+                           nzTheme="outline" nzType="form"
+                           style="right: 13px;top:1px;"></i>
+                        @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                          <div class="text-danger help-block m-l-n-23">
+                            @if (value.errors['required']) {
+                              <div translate>common.message.requiredError</div>
+                            }
+                          </div>
+                        }
+                        <div class="pos-abt r-t-n-28 add-order-encrypt" style="right: -34px">
+                          @if (argument.name && argument.type === 'String') {
+                            <a><i (click)="encryptValue(argument, 'job')"
+                                  class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                          }
+                          @if (listVariables.actualMap && listVariables.actualMap.length > 1 && k === actualMapArr.length - 1) {
+                            <a>
+                              <i (click)="removeVariableFromList(i, listVariables.actualMap)" class="fa fa-times m-t-sm text-muted"></i></a>
+                          }
+                        </div>
+                      </div>
+                    }
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        }
       </div>
-    </div>
+    }
   </div>
-
 </ng-template>
 <div class="row">
-  <div *ngIf="data.type" class="col-md-12">
-    <div class="box p-a p-r-md m-t-n-xs" >
+@if (data.type) {
+  <div class="col-md-12">
+    <div class="box p-a p-r-md m-t-n-xs">
       <div class="b-b p-b m-b">
         <span class="text-left">
           <a (click)="backToListView()"><i class="fa fa-arrow-circle-left config-back-btn"
                                            nz-tooltip="{{'inventory.button.backToList' | translate}}"></i></a>
-          <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
-          <span *ngIf="lastModified" class="text-dark text-sm _400"> -
-            <b translate>inventory.label.lastModified</b>
-            <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
-          </span>
+          <span class="_600">{{data.path}}@if (data.path !=='/') {<span>/</span>}{{data.name}}</span>
+          @if (lastModified) {
+            <span class="text-dark text-sm _400"> -
+              <b translate>inventory.label.lastModified</b>
+              <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
+            </span>
+          }
         <i (click)="helpPage('configuration-inventory-schedules')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
         </span>
         <div class="inline pull-right">
-          <ng-container *ngIf="!isTrash">
-            <span *ngIf="schedule.configuration" [ngClass]="!schedule.valid ? 'badge-danger':'badge-success'"
-                  class="badge m-r-12">
-                <span *ngIf="schedule.valid" translate>inventory.label.valid</span>
-                <span *ngIf="!schedule.valid">
-                  <span translate>inventory.label.notValid</span>
-                  <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
-                </span>
-              </span>
-            <span *ngIf="schedule.configuration" [ngClass]="!data.released ? 'badge-danger':'badge-success'"
-                  class="badge">
-                <span *ngIf="!data.released" translate>inventory.label.notReleased</span>
-                <span *ngIf="data.released" translate>inventory.label.released</span>
-              </span>
-            <button
-              (click)="release()"
-              *ngIf="permission.joc && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" [disabled]="!schedule.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
-              <i class="fa fa-rocket p-r-xs"></i>
-              <span translate>inventory.button.release</span>
-            </button>
-          </ng-container>
+          @if (!isTrash) {
+            <ng-container>
+              @if (schedule.configuration) {
+                <span [ngClass]="!schedule.valid ? 'badge-danger':'badge-success'"
+                      class="badge m-r-12">
+                    @if (schedule.valid) {
+                      <span translate>inventory.label.valid</span>
+                    }
+                    @if (!schedule.valid) {
+                      <span>
+                        <span translate>inventory.label.notValid</span>
+                        <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
+                      </span>
+                    }
+                  </span>
+              }
+              @if (schedule.configuration) {
+                <span [ngClass]="!data.released ? 'badge-danger':'badge-success'"
+                      class="badge">
+                    @if (!data.released) {
+                      <span translate>inventory.label.notReleased</span>
+                    }
+                    @if (data.released) {
+                      <span translate>inventory.label.released</span>
+                    }
+                  </span>
+              }
+              @if (permission.joc && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)) {
+                <button
+                  (click)="release()"
+                  [disabled]="!schedule.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
+                  <i class="fa fa-rocket p-r-xs"></i>
+                  <span translate>inventory.button.release</span>
+                </button>
+              }
+            </ng-container>
+          }
           <button (click)="openRuntimeEditor()" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
             <i class="fa fa-clock-o p-r-xs"></i>
             <span translate>inventory.button.runTime</span>
           </button>
         </div>
       </div>
-        <form *ngIf="schedule.configuration && permission.joc">
-          <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
-               class="form-group row">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.name' | translate) : ''"
+        @if (schedule.configuration && permission.joc) {
+          <form>
+            <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
+                 class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.name' | translate) : ''"
 
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.orderTemplateName
-              <sup class="text-danger text-sm">*</sup>
-            </label>
-            <div class="col-lg-9 col-xl-8 col-xxl-6">
-              <input #name="ngModel" (blur)="rename(name.invalid)" [(ngModel)]="schedule.name"
-                     [appAutofocus]="!isTrash" [readOnly]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
-                     class="form-control" identifierValidation name="name" required>
-              <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-                <div *ngIf="name.errors['invalidIdentifier']" translate>common.message.invalid</div>
-                <div *ngIf="name.errors['required']">
-                  <div translate>common.message.requiredError</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="form-group row">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.title' | translate) : ''"
-
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
-            <div class="col-lg-9 col-xl-8 col-xxl-6">
-              <input (blur)="saveJSON()" [(ngModel)]="schedule.configuration.title" [readOnly]="isTrash || !permission.joc.inventory.manage"
-                     autocomplete="off" class="form-control"
-                     name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text">
-            </div>
-          </div>
-          <div *ngIf="coreService.expertMode" class="form-group row">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.documentation' | translate) : ''"
-
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
-            <div class="col-lg-9 col-xl-8 col-xxl-6">
-              <app-select-document (funcCall)="saveJSON($event)" [data]="schedule.configuration"
-                                   [documentationTree]="documentationTree"></app-select-document>
-            </div>
-          </div>
-          <div class="form-group row">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.workflowName' | translate) : ''"
-
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.workflowNames
-              <sup class="text-danger text-sm">*</sup>
-            </label>
-            <div class="col-lg-9 col-xl-8 col-xxl-6">
-              <app-multi-select (onSelectCall)="changeWorkflow($event)" [attribute]="'workflowNames'" [list]="schedule.configuration"
-                                [nodes]="workflowTree" [type]="'WORKFLOW'"></app-multi-select>
-              <div *ngIf="schedule.configuration.workflowNames && schedule.configuration.workflowNames.length > 0"
-                   class="pos-abt r-n-8 m-t-n-25">
-                <i (click)="navToWorkflow(schedule.configuration.workflowNames[0])" class="fa fa-pencil cursor"></i>
-              </div>
-            </div>
-          </div>
-          <div class="form-group row">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.planOrderAutomatically' | translate) : ''"
-
-                   class="col-lg-3 col-xl-3 col-xxl-3 block-ellipsis-job"
-                   title="{{'inventory.label.planOrderAutomatically' | translate}}" translate>inventory.label.planOrderAutomatically</label>
-            <div class="col-lg-9 col-xl-8 col-xxl-6">
-              <label nz-checkbox [(ngModel)]="schedule.configuration.planOrderAutomatically" (ngModelChange)="saveJSON()"
-                     [nzDisabled]="isTrash || !permission.joc.inventory.manage" name="planOrderAutomatically"
-                     ></label>
-            </div>
-          </div>
-          <div class="form-group row">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.submitOrderToControllerWhenPlanned' | translate) : ''"
-
-                   class="col-lg-3 col-xl-3 col-xxl-3 block-ellipsis-job"
-                   title="{{'inventory.label.submitOrderToControllerWhenPlanned' | translate}}" translate>inventory.label.submitOrderToControllerWhenPlanned</label>
-            <div class="col-lg-9 col-xl-8 col-xxl-6">
-              <label nz-checkbox [(ngModel)]="schedule.configuration.submitOrderToControllerWhenPlanned"
-                     [nzDisabled]="isTrash || !permission.joc.inventory.manage || !schedule.configuration.planOrderAutomatically" name="submitOrderToControllerWhenPlanned"
-                     (ngModelChange)="saveJSON()"></label>
-            </div>
-          </div>
-          <div
-               class="form-group row">
-            <label class="col-md-12 _600" translate>inventory.label.orderParameterisations</label>
-          </div>
-          <div *ngIf="workflow">
-            <div *ngFor="let variableSet of schedule.configuration.orderParameterisations; let j = index"
-                 [ngClass]="{'b-t b-t-2x p-t' : j != 0}">
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.orderName' | translate) : ''"
-
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.orderName</label>
-                <div [ngClass]="{ 'has-error' : (((orderName.dirty || orderName.touched) && orderName.invalid))}"
-                     class="col-lg-9 col-xl-8 col-xxl-6">
-                  <input #orderName="ngModel" (blur)="isOrderNameValid(variableSet, orderName, schedule.configuration.orderParameterisations)" (keydown)="onKeyPress($event, null)"
-                         [(ngModel)]="variableSet.orderName" [readOnly]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
-                         class="form-control"
-                         identifierValidation maxlength="30" name="orderName{{j}}"
-                         placeholder="{{'inventory.placeholder.orderName' | translate}}"
-                         type="text">
-                  <div *ngIf="orderName.invalid && (orderName.dirty || orderName.touched)" class="text-danger help-block">
-                    <div *ngIf="orderName.errors['invalidIdentifier']" translate>common.message.invalid</div>
-                  </div>
-
-                  <div [hidden]="schedule.configuration.orderParameterisations.length == 1"
-                       class="pos-abt r-t-n-28">
-                    <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
-                      (click)="removeVariableSet(j)" class="fa fa-times m-t-sm text-hover-color"></i></a>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group row">
-                <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>
-                  inventory.label.tagName
-                </label>
-                <div class="col-lg-9 col-xl-8 col-xxl-6">
-                  <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
-                    <div
-                      cdkDropList
-                      cdkDropListOrientation="horizontal"
-                      (cdkDropListDropped)="drop($event, j)"
-                      class="d-inline-block"
-                    >
-                      <nz-tag class="cursor" style="transition: none"
-                        *ngFor="let tag of variableSet.tags; let i = index; trackBy: trackByFn"
-                        cdkDrag
-                        nzNoAnimation
-                        [nzMode]="'closeable'"
-                        (nzOnClose)="handleClose(tag, j)"
-                      >
-                        {{ sliceTagName(tag) }}
-                      </nz-tag>
-                    </div>
-                    <nz-tag
-                      *ngIf="!variableSet.inputVisible"
-                      class="editable-tag"
-                      nzNoAnimation
-                      (click)="showInput(j)"
-                    >
-                      <span nz-icon nzType="plus"></span>
-                      {{ 'inventory.button.newTag' | translate }}
-                    </nz-tag>
-                    <div
-                      class="d-inline-block"
-                      *ngIf="variableSet.inputVisible"
-                      [ngClass]="{ 'has-error': (name.dirty || name.touched) && name.invalid }"
-                    >
-                      <input
-                        #name="ngModel"
-                        #inputElement
-                        tagValidation
-                        [nzAutocomplete]="auto"
-                        nz-input
-                        name="tag{{j}}"
-                        type="text"
-                        [(ngModel)]="variableSet.inputValue"
-                        (ngModelChange)="onChange($event,j)"
-                        style="width: 128px;"
-                        (blur)="handleInputConfirm(j)"
-                        (keydown.enter)="handleInputConfirm(j)"
-                      />
-                      <nz-autocomplete [nzDataSource]="filteredOptions" #auto></nz-autocomplete>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-group row" *ngIf="blockPositions?.size > 0 && ((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.blockPosition' | translate) : ''"
-
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.blockPosition</label>
-                <div class="col-lg-9 col-xl-8 col-xxl-6">
-                  <app-node-position [obj]="variableSet.positions" [blockPositions]="blockPositions" [blockPositionList]="blockPositionList"
-                                     [type]="'BLOCK_POSITION'" [workflow]="workflow" (onBlur)="getNewPositions($event, variableSet.positions)"></app-node-position>
-                </div>
-              </div>
-              <div class="form-group row" *ngIf="((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.startNode' | translate) : ''"
-
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.startNode</label>
-                <div class="col-lg-9 col-xl-8 col-xxl-6">
-                  <app-node-position (onBlur)="saveJSON()" [obj]="variableSet.positions" [newPositions]="variableSet.positions.newPositions" [positions]="positions"
-                                     [type]="'START'" [workflow]="workflow"></app-node-position>
-                </div>
-              </div>
-              <div class="form-group row" *ngIf="((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.endNode' | translate) : ''"
-
-                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.endNode</label>
-                <div class="col-lg-9 col-xl-8 col-xxl-6">
-                  <app-node-position (onBlur)="updateEndNode(variableSet.positions)" [newPositions]="variableSet.positions.newPositions" [obj]="variableSet.positions"
-                                     [position]="variableSet.positions.startPosition"
-                                     [positions]="positions" [type]="'END'"
-                                     [workflow]="workflow"></app-node-position>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.priority' | translate) : ''"
-
-                       class="col-lg-3 col-xl-3 col-xxl-3"
-                       translate>order.label.priority</label>
-                <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}"
-                     class="col-lg-9 col-xl-8 col-xxl-6">
-                  <nz-input-group [nzAddOnAfter]="priorityTemplate">
-                    <nz-input-number #priority="ngModel" (nzBlur)="saveJSON()" [(ngModel)]="variableSet.priority"
-                                     name="priority{{j}}" nzPlaceHolder="{{'inventory.placeholder.priority' | translate}}"
-                    ></nz-input-number>
-                  </nz-input-group>
-                  <ng-template #priorityTemplate>
-                    <app-select-input [classNames]="'w-220'" (modelChange)="changePriority($event)" [attributeName]="'priority'"
-                                      [listArray]="priorities" [name]="'priorities'" [optionLabel]="'label'" [optionValue]="'value'"  [placeholder]="'inventory.placeholder.selectPredefinedPriorities'"
-                                      [object]="variableSet"></app-select-input>
-                  </ng-template>
-                  <div *ngIf="priority.invalid && (priority.dirty || priority.touched)" class="text-danger help-block">
-                    <div *ngIf="priority.errors['required']">
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.orderTemplateName
+                <sup class="text-danger text-sm">*</sup>
+              </label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <input #name="ngModel" (blur)="rename(name.invalid)" [(ngModel)]="schedule.name"
+                       [appAutofocus]="!isTrash" [readOnly]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
+                       class="form-control" identifierValidation name="name" required>
+                @if (name.invalid && (name.dirty || name.touched)) {
+                  <div class="text-danger help-block">
+                    @if (name.errors['invalidIdentifier']) {
+                      <div translate>common.message.invalid</div>
+                    }
+                    @if (name.errors['required']) {
                       <div translate>common.message.requiredError</div>
-                    </div>
+                    }
                   </div>
-                </div>
+                }
               </div>
-              <div class="form-group row" *ngIf="((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.ignoreAdmissionTimes' | translate) : ''"
+            </div>
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.title' | translate) : ''"
 
-                       class="col-lg-3 col-xl-3 col-xxl-3"
-                       translate>order.label.ignoreAdmissionTimes</label>
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <input (blur)="saveJSON()" [(ngModel)]="schedule.configuration.title" [readOnly]="isTrash || !permission.joc.inventory.manage"
+                       autocomplete="off" class="form-control"
+                       name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text">
+              </div>
+            </div>
+            @if (coreService.expertMode) {
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.documentation' | translate) : ''"
+
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
                 <div class="col-lg-9 col-xl-8 col-xxl-6">
-                  <label nz-checkbox [(ngModel)]="variableSet.forceJobAdmission" name="ignoreAdmissionTimes{{j}}"
-                         (ngModelChange)="saveJSON()" >
-                  </label>
+                  <app-select-document (funcCall)="saveJSON($event)" [data]="schedule.configuration"
+                                       [documentationTree]="documentationTree"></app-select-document>
                 </div>
               </div>
+            }
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.workflowName' | translate) : ''"
 
-              <ng-container *ngIf="variableSet.variables.length && ((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)">
-                <div class="row m-b-sm">
-                  <label class="_600 font14 col-sm-8 col-xl-6">
-                    <span translate>order.label.variables</span>
-                    <i (click)="variableSet.isCollapseVariable = !variableSet.isCollapseVariable" class="cursor fa fa-lg p-l-sm"
-                       [ngClass]="!variableSet.isCollapseVariable ? 'fa-angle-up' : 'fa-angle-down' "></i>
-
-                    <a *ngIf="isForkListVariable" (click)="expandAll(variableSet.variables);" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="p-l-sm pos-rel t-3">
-                      <i class="fa fa-angle-double-down text-16"></i>
-                    </a>
-                    <a *ngIf="isForkListVariable" (click)="collapseAll(variableSet.variables);" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="m-l-xs pos-rel t-3">
-                      <i class="fa fa-angle-double-up text-16"></i>
-                    </a>
-                  </label>
-                  <div class="text-right col-sm-3 col-xl-3">
-                    <a (click)="copyArguments(j)" class="cursor"
-                       nz-tooltip="{{'common.button.copyArguments' | translate}}">
-                      <i class="fa fa-copy"></i>
-                    </a>
-                    <a (click)="handlePaste(storedArguments[0], j)" *ngIf="storedArguments?.length > 0"
-                       class="cursor p-l-12"
-                       nz-tooltip="{{'common.button.paste' | translate}}">
-                      <i class="fa fa-paste"></i>
-                    </a>
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.workflowNames
+                <sup class="text-danger text-sm">*</sup>
+              </label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <app-multi-select (onSelectCall)="changeWorkflow($event)" [attribute]="'workflowNames'" [list]="schedule.configuration"
+                                  [nodes]="workflowTree" [type]="'WORKFLOW'"></app-multi-select>
+                @if (schedule.configuration.workflowNames && schedule.configuration.workflowNames.length > 0) {
+                  <div class="pos-abt r-n-8 m-t-n-25">
+                    <i (click)="navToWorkflow(schedule.configuration.workflowNames[0])" class="fa fa-pencil cursor"></i>
                   </div>
-                </div>
-              </ng-container>
-              <ng-container *ngIf="!variableSet.isCollapseVariable && ((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)">
-                <div *ngFor="let variable of variableSet.variables; let i = index" class="form-group row m-b-0">
-                  <div *ngIf="i==0" class="col-md-6 col-lg-4 col-xl-3 m-b-sm" translate>common.label.name</div>
-                  <div *ngIf="i==0" class="col-md-6 col-lg-8 col-xl-9 m-b-sm" translate>common.label.value</div>
-                  <ng-container *ngIf="variable.type === 'List'">
-                    <div class="col-sm-12">
-                      <ng-container [ngTemplateOutletContext]="{ $implicit: variable, x: i, j: j}"
-                                    [ngTemplateOutlet]="listVariableTemplate"></ng-container>
-                    </div>
-                  </ng-container>
-                  <ng-container *ngIf="variable.type === 'Map'">
-                    <div class="col-sm-12">
-                      <ng-container [ngTemplateOutletContext]="{ $implicit: variable, x: i, j: j}"
-                                    [ngTemplateOutlet]="mapVariableTemplate"></ng-container>
-                    </div>
-                  </ng-container>
-                  <ng-container *ngIf="variable.type !== 'List' && variable.type !== 'Map'">
-                    <div *ngIf="variable.isTextField" [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
-                         class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm">
-                      <input #name="ngModel" [(ngModel)]="variable.name" autocomplete="off" class="form-control" name="name_{{i}}{{j}}"
-                             placeholder="{{'common.placeholder.name' | translate}}" required type="text">
-                    </div>
-                    <div *ngIf="!variable.isTextField" class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm">
-                      <nz-select  [(ngModel)]="variable.name" [nzDisabled]="isTrash || !permission.joc.inventory.manage || variable.isRequired"
-                                 name="name{{i}}{{j}}{{variable.name}}" (ngModelChange)="checkVariableType(variableSet.variables, i);saveJSON()"
-                                 nzPlaceHolder="{{'common.placeholder.selectVariable' | translate}}" nzShowSearch>
-                        <nz-option *ngFor="let list of variableSet.variableList" [nzDisabled]="list.isSelected"
-                                   [nzLabel]="list.name" [nzValue]="list.name"></nz-option>
-                      </nz-select>
-                    </div>
-                    <ng-container *ngIf="!variable.list">
-                      <ng-container [ngSwitch]="variable.type">
-                        <ng-container *ngSwitchCase="'Number'">
-                          <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-                               class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                            <nz-input-number #value="ngModel"
-                                             (keydown)="onKeyPress($event, variableSet)" (nzBlur)="saveJSON()"
-                                             [(ngModel)]="variable.value" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
-                                              [nzStep]="1" [required]="variable.isRequired" name="value{{i}}{{j}}{{variable.value}}"
-                                             nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
-                            <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                                 class="text-danger help-block">
-                              <div *ngIf="value.errors['required']">
-                                <div translate>common.message.requiredError</div>
-                              </div>
-                            </div>
-                            <div *ngIf="!variable.isRequired" class="pos-abt r-t-n-28">
-                              <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
-                                (click)="removeVariable(i, variableSet)" class="fa fa-times m-t-sm text-hover-color"></i></a>
-                            </div>
+                }
+              </div>
+            </div>
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.planOrderAutomatically' | translate) : ''"
+
+                     class="col-lg-3 col-xl-3 col-xxl-3 block-ellipsis-job"
+                     title="{{'inventory.label.planOrderAutomatically' | translate}}" translate>inventory.label.planOrderAutomatically</label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <label nz-checkbox [(ngModel)]="schedule.configuration.planOrderAutomatically" (ngModelChange)="saveJSON()"
+                       [nzDisabled]="isTrash || !permission.joc.inventory.manage" name="planOrderAutomatically"
+                       ></label>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.submitOrderToControllerWhenPlanned' | translate) : ''"
+
+                     class="col-lg-3 col-xl-3 col-xxl-3 block-ellipsis-job"
+                     title="{{'inventory.label.submitOrderToControllerWhenPlanned' | translate}}" translate>inventory.label.submitOrderToControllerWhenPlanned</label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <label nz-checkbox [(ngModel)]="schedule.configuration.submitOrderToControllerWhenPlanned"
+                       [nzDisabled]="isTrash || !permission.joc.inventory.manage || !schedule.configuration.planOrderAutomatically" name="submitOrderToControllerWhenPlanned"
+                       (ngModelChange)="saveJSON()"></label>
+              </div>
+            </div>
+            <div
+                 class="form-group row">
+              <label class="col-md-12 _600" translate>inventory.label.orderParameterisations</label>
+            </div>
+            @if (workflow) {
+              <div>
+                @for (variableSet of schedule.configuration.orderParameterisations; track $index; let j = $index) {
+                  <div [ngClass]="{'b-t b-t-2x p-t' : j != 0}">
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.orderName' | translate) : ''"
+
+                             class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.orderName</label>
+                      <div [ngClass]="{ 'has-error' : (((orderName.dirty || orderName.touched) && orderName.invalid))}"
+                           class="col-lg-9 col-xl-8 col-xxl-6">
+                        <input #orderName="ngModel" (blur)="isOrderNameValid(variableSet, orderName, schedule.configuration.orderParameterisations)" (keydown)="onKeyPress($event, null)"
+                               [(ngModel)]="variableSet.orderName" [readOnly]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
+                               class="form-control"
+                               identifierValidation maxlength="30" name="orderName{{j}}"
+                               placeholder="{{'inventory.placeholder.orderName' | translate}}"
+                               type="text">
+                        @if (orderName.invalid && (orderName.dirty || orderName.touched)) {
+                          <div class="text-danger help-block">
+                            @if (orderName.errors['invalidIdentifier']) {
+                              <div translate>common.message.invalid</div>
+                            }
                           </div>
-                        </ng-container>
-                        <ng-container *ngSwitchCase="'Boolean'">
-                          <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-                               class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                            <nz-select #value="ngModel" [(ngModel)]="variable.value" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
-                                       [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [required]="variable.isRequired"
-                                       name="value{{i}}{{j}}{{variable.value}}" nzAllowClear  (ngModelChange)="checkVal()">
-                              <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
-                              <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
-                            </nz-select>
-                            <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                                 class="text-danger help-block">
-                              <div *ngIf="value.errors['required']">
-                                <div translate>common.message.requiredError</div>
-                              </div>
-                            </div>
-                            <div *ngIf="!variable.isRequired" class="pos-abt r-t-n-28">
-                              <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
-                                (click)="removeVariable(i, variableSet)" class="fa fa-times m-t-sm text-hover-color"></i></a>
-                            </div>
-                          </div>
-                        </ng-container>
-                        <ng-container *ngSwitchDefault>
-                          <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
-                               class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                            <input #value="ngModel" (blur)="saveJSON(false, false, value, variable)"
-                                   (keydown)="onKeyPress($event, variableSet)"
-                                   [(ngModel)]="variable.value" [facetValidation]="variable.facet" [readOnly]="isTrash || !permission.joc.inventory.manage"
-                                   [required]="variable.isRequired || variable.facet" autocomplete="off"
-                                   class="form-control" name="value{{i}}{{j}}{{variable.value}}" placeholder="{{'common.placeholder.value' | translate}}"
-                                   type="text">
-                            <i *ngIf="variable.message" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="variable.message"
-                               class="pos-abt cursor fa fa-info-circle" style="right: 18px;top:9px;"></i>
-                            <i (click)="openEditor(variable, 'value')"
-                               [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
-                               nzTheme="outline" nzType="form"
-                               style="right: 13px;top:1px;"></i>
-                            <div *ngIf="value.invalid && value.errors && (value.dirty || value.touched)"
-                                 class="text-danger help-block">
-                              <div *ngIf="value.errors['required']" translate>common.message.requiredError</div>
-                              <div *ngIf="value.errors['invalidFacet']" translate>common.message.invalid</div>
-                            </div>
-                            <div class="pos-abt r-t-n-28 job-template-encrypt">
-                              <a *ngIf="variable.name && variable.type === 'String'"><i (click)="encryptValue(variable, 'job')"
-                                class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
-                              <a *ngIf="!variable.isRequired" [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
-                                (click)="removeVariable(i, variableSet)" class="fa fa-times m-t-sm text-hover-color"></i></a>
-                            </div>
-                          </div>
-                        </ng-container>
-                      </ng-container>
-                    </ng-container>
-                    <div *ngIf="variable.list" [ngClass]="{'has-error' : ((list.dirty || list.touched) && list.invalid)}"
-                         class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
-                      <nz-select #list="ngModel" [(ngModel)]="variable.value"
-                                 [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [required]="variable.isRequired" name="list{{i}}{{j}}"
-                                 nzAllowClear>
-                        <ng-container *ngFor="let option of variable.list">
-                          <nz-option [nzLabel]="option.name" [nzValue]="option.name" nzCustomContent>
-                            <div>
-                              {{option.name}} <i *ngIf="option.default">- </i> <span *ngIf="option.default"
-                                                                                     class="label label-default"
-                                                                                     translate>default</span>
-                            </div>
-                          </nz-option>
-                        </ng-container>
-                      </nz-select>
-                      <div *ngIf="list.invalid && list.errors && (list.dirty || list.touched)"
-                           class="text-danger help-block">
-                        <div *ngIf="list.errors['required']">
-                          <div translate>common.message.requiredError</div>
+                        }
+
+                        <div [hidden]="schedule.configuration.orderParameterisations.length == 1"
+                             class="pos-abt r-t-n-28">
+                          <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
+                            (click)="removeVariableSet(j)" class="fa fa-times m-t-sm text-hover-color"></i></a>
                         </div>
                       </div>
-                      <div *ngIf="!variable.isRequired" class="pos-abt r-t-n-28">
-                        <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
-                          (click)="removeVariable(i, variableSet)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                    </div>
+
+                    <div class="form-group row">
+                      <label class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>
+                        inventory.label.tagName
+                      </label>
+                      <div class="col-lg-9 col-xl-8 col-xxl-6">
+                        <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
+                          <div
+                            cdkDropList
+                            cdkDropListOrientation="horizontal"
+                            (cdkDropListDropped)="drop($event, j)"
+                            class="d-inline-block"
+                          >
+                            @for (tag of variableSet.tags; track trackByFn($index, tag); let i = $index) {
+                              <nz-tag class="cursor" style="transition: none"
+                                cdkDrag
+                                nzNoAnimation
+                                [nzMode]="'closeable'"
+                                (nzOnClose)="handleClose(tag, j)"
+                              >
+                                {{ sliceTagName(tag) }}
+                              </nz-tag>
+                            }
+                          </div>
+                          @if (!variableSet.inputVisible) {
+                            <nz-tag
+                              class="editable-tag"
+                              nzNoAnimation
+                              (click)="showInput(j)"
+                            >
+                              <span nz-icon nzType="plus"></span>
+                              {{ 'inventory.button.newTag' | translate }}
+                            </nz-tag>
+                          }
+                          @if (variableSet.inputVisible) {
+                            <div
+                              class="d-inline-block"
+                              [ngClass]="{ 'has-error': (name.dirty || name.touched) && name.invalid }"
+                            >
+                              <input
+                                #name="ngModel"
+                                #inputElement
+                                tagValidation
+                                [nzAutocomplete]="auto"
+                                nz-input
+                                name="tag{{j}}"
+                                type="text"
+                                [(ngModel)]="variableSet.inputValue"
+                                (ngModelChange)="onChange($event,j)"
+                                style="width: 128px;"
+                                (blur)="handleInputConfirm(j)"
+                                (keydown.enter)="handleInputConfirm(j)"
+                              />
+                              <nz-autocomplete [nzDataSource]="filteredOptions" #auto></nz-autocomplete>
+                            </div>
+                          }
+                        </div>
                       </div>
                     </div>
-                  </ng-container>
-                </div>
-              </ng-container>
-              <div [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}" class="form-group row">
-                <div *ngIf="variableList.length > variableSet.variables.length || (allowUndeclaredVariables && workflow?.orderPreparation?.allowUndeclared && variableList.length > 0)" class="col-sm-12">
-                  <a (click)="addVariable(false, variableSet)" class="text-u-l" translate>order.button.modifyVariable</a>
-                  <a (click)="addVariables(false, variableSet)" class="text-u-l m-l-12" translate>order.button.modifyVariables</a>
-                </div>
-                <div class="col-sm-12" [ngClass]="{'m-t-sm': variableList.length > variableSet.variables.length}" *ngIf="allowUndeclaredVariables && workflow?.orderPreparation?.allowUndeclared">
-                  <a class="text-u-l" (click)="addVariable(true, variableSet)" translate>order.button.addVariable</a>
+
+                    @if (blockPositions?.size > 0 && ((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)) {
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.blockPosition' | translate) : ''"
+
+                               class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.blockPosition</label>
+                        <div class="col-lg-9 col-xl-8 col-xxl-6">
+                          <app-node-position [obj]="variableSet.positions" [blockPositions]="blockPositions" [blockPositionList]="blockPositionList"
+                                             [type]="'BLOCK_POSITION'" [workflow]="workflow" (onBlur)="getNewPositions($event, variableSet.positions)"></app-node-position>
+                        </div>
+                      </div>
+                    }
+                    @if (((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)) {
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.startNode' | translate) : ''"
+
+                               class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.startNode</label>
+                        <div class="col-lg-9 col-xl-8 col-xxl-6">
+                          <app-node-position (onBlur)="saveJSON()" [obj]="variableSet.positions" [newPositions]="variableSet.positions.newPositions" [positions]="positions"
+                                             [type]="'START'" [workflow]="workflow"></app-node-position>
+                        </div>
+                      </div>
+                    }
+                    @if (((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)) {
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.endNode' | translate) : ''"
+
+                               class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>order.label.endNode</label>
+                        <div class="col-lg-9 col-xl-8 col-xxl-6">
+                          <app-node-position (onBlur)="updateEndNode(variableSet.positions)" [newPositions]="variableSet.positions.newPositions" [obj]="variableSet.positions"
+                                             [position]="variableSet.positions.startPosition"
+                                             [positions]="positions" [type]="'END'"
+                                             [workflow]="workflow"></app-node-position>
+                        </div>
+                      </div>
+                    }
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.priority' | translate) : ''"
+
+                             class="col-lg-3 col-xl-3 col-xxl-3"
+                             translate>order.label.priority</label>
+                      <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}"
+                           class="col-lg-9 col-xl-8 col-xxl-6">
+                        <nz-input-group [nzAddOnAfter]="priorityTemplate">
+                          <nz-input-number #priority="ngModel" (nzBlur)="saveJSON()" [(ngModel)]="variableSet.priority"
+                                           name="priority{{j}}" nzPlaceHolder="{{'inventory.placeholder.priority' | translate}}"
+                          ></nz-input-number>
+                        </nz-input-group>
+                        <ng-template #priorityTemplate>
+                          <app-select-input [classNames]="'w-220'" (modelChange)="changePriority($event)" [attributeName]="'priority'"
+                                            [listArray]="priorities" [name]="'priorities'" [optionLabel]="'label'" [optionValue]="'value'"  [placeholder]="'inventory.placeholder.selectPredefinedPriorities'"
+                                            [object]="variableSet"></app-select-input>
+                        </ng-template>
+                        @if (priority.invalid && (priority.dirty || priority.touched)) {
+                          <div class="text-danger help-block">
+                            @if (priority.errors['required']) {
+                              <div translate>common.message.requiredError</div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </div>
+                    @if (((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)) {
+                      <div class="form-group row">
+                        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.schedule.ignoreAdmissionTimes' | translate) : ''"
+
+                               class="col-lg-3 col-xl-3 col-xxl-3"
+                               translate>order.label.ignoreAdmissionTimes</label>
+                        <div class="col-lg-9 col-xl-8 col-xxl-6">
+                          <label nz-checkbox [(ngModel)]="variableSet.forceJobAdmission" name="ignoreAdmissionTimes{{j}}"
+                                 (ngModelChange)="saveJSON()" >
+                          </label>
+                        </div>
+                      </div>
+                    }
+
+                    @if (variableSet.variables.length && ((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)) {
+                      <ng-container>
+                        <div class="row m-b-sm">
+                          <label class="_600 font14 col-sm-8 col-xl-6">
+                            <span translate>order.label.variables</span>
+                            <i (click)="variableSet.isCollapseVariable = !variableSet.isCollapseVariable" class="cursor fa fa-lg p-l-sm"
+                               [ngClass]="!variableSet.isCollapseVariable ? 'fa-angle-up' : 'fa-angle-down' "></i>
+
+                            @if (isForkListVariable) {
+                              <a (click)="expandAll(variableSet.variables);" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" class="p-l-sm pos-rel t-3">
+                                <i class="fa fa-angle-double-down text-16"></i>
+                              </a>
+                            }
+                            @if (isForkListVariable) {
+                              <a (click)="collapseAll(variableSet.variables);" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" class="m-l-xs pos-rel t-3">
+                                <i class="fa fa-angle-double-up text-16"></i>
+                              </a>
+                            }
+                          </label>
+                          <div class="text-right col-sm-3 col-xl-3">
+                            <a (click)="copyArguments(j)" class="cursor"
+                               nz-tooltip="{{'common.button.copyArguments' | translate}}">
+                              <i class="fa fa-copy"></i>
+                            </a>
+                            @if (storedArguments?.length > 0) {
+                              <a (click)="handlePaste(storedArguments[0], j)"
+                                 class="cursor p-l-12"
+                                 nz-tooltip="{{'common.button.paste' | translate}}">
+                                <i class="fa fa-paste"></i>
+                              </a>
+                            }
+                          </div>
+                        </div>
+                      </ng-container>
+                    }
+                    @if (!variableSet.isCollapseVariable && ((schedule.configuration.workflowNames && schedule.configuration.workflowNames.length ==1) && schedule.configuration.orderParameterisations.length)) {
+                      <ng-container>
+                        @for (variable of variableSet.variables; track $index; let i = $index) {
+                          <div class="form-group row m-b-0">
+                            @if (i==0) {
+                              <div class="col-md-6 col-lg-4 col-xl-3 m-b-sm" translate>common.label.name</div>
+                            }
+                            @if (i==0) {
+                              <div class="col-md-6 col-lg-8 col-xl-9 m-b-sm" translate>common.label.value</div>
+                            }
+                            @if (variable.type === 'List') {
+                              <ng-container>
+                                <div class="col-sm-12">
+                                  <ng-container [ngTemplateOutletContext]="{ $implicit: variable, x: i, j: j}"
+                                                [ngTemplateOutlet]="listVariableTemplate"></ng-container>
+                                </div>
+                              </ng-container>
+                            }
+                            @if (variable.type === 'Map') {
+                              <ng-container>
+                                <div class="col-sm-12">
+                                  <ng-container [ngTemplateOutletContext]="{ $implicit: variable, x: i, j: j}"
+                                                [ngTemplateOutlet]="mapVariableTemplate"></ng-container>
+                                </div>
+                              </ng-container>
+                            }
+                            @if (variable.type !== 'List' && variable.type !== 'Map') {
+                              <ng-container>
+                                @if (variable.isTextField) {
+                                  <div [ngClass]="{'has-error' : ((name.dirty || name.touched) && name.invalid)}"
+                                       class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm">
+                                    <input #name="ngModel" [(ngModel)]="variable.name" autocomplete="off" class="form-control" name="name_{{i}}{{j}}"
+                                           placeholder="{{'common.placeholder.name' | translate}}" required type="text">
+                                  </div>
+                                }
+                                @if (!variable.isTextField) {
+                                  <div class="col-md-6 col-lg-4 col-xl-3 col-xxl-3 m-b-sm">
+                                    <nz-select  [(ngModel)]="variable.name" [nzDisabled]="isTrash || !permission.joc.inventory.manage || variable.isRequired"
+                                               name="name{{i}}{{j}}{{variable.name}}" (ngModelChange)="checkVariableType(variableSet.variables, i);saveJSON()"
+                                               nzPlaceHolder="{{'common.placeholder.selectVariable' | translate}}" nzShowSearch>
+                                        @for (list of variableSet.variableList; track list) {
+                                          <nz-option [nzDisabled]="list.isSelected"
+                                                     [nzLabel]="list.name" [nzValue]="list.name"></nz-option>
+                                        }
+                                    </nz-select>
+                                  </div>
+                                }
+                                @if (!variable.list) {
+                                  <ng-container>
+                                    @switch (variable.type) {
+                                      @case ('Number') {
+                                        <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                                             class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
+                                          <nz-input-number #value="ngModel"
+                                                           (keydown)="onKeyPress($event, variableSet)" (nzBlur)="saveJSON()"
+                                                           [(ngModel)]="variable.value" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
+                                                           [nzStep]="1" [required]="variable.isRequired" name="value{{i}}{{j}}{{variable.value}}"
+                                                           nzPlaceHolder="{{'common.placeholder.enterNumber' | translate}}"></nz-input-number>
+                                          @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                                            <div class="text-danger help-block">
+                                              @if (value.errors['required']) {
+                                                <div translate>common.message.requiredError</div>
+                                              }
+                                            </div>
+                                          }
+                                          @if (!variable.isRequired) {
+                                            <div class="pos-abt r-t-n-28">
+                                              <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
+                                                (click)="removeVariable(i, variableSet)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                                            </div>
+                                          }
+                                        </div>
+                                      }
+                                      @case ('Boolean') {
+                                        <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                                             class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
+                                          <nz-select #value="ngModel" [(ngModel)]="variable.value" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
+                                                     [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [required]="variable.isRequired"
+                                                     name="value{{i}}{{j}}{{variable.value}}" nzAllowClear  (ngModelChange)="checkVal()">
+                                            <nz-option [nzLabel]="'True' | translate" [nzValue]="true"></nz-option>
+                                            <nz-option [nzLabel]="'False' | translate" [nzValue]="false"></nz-option>
+                                          </nz-select>
+                                          @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                                            <div class="text-danger help-block">
+                                              @if (value.errors['required']) {
+                                                <div translate>common.message.requiredError</div>
+                                              }
+                                            </div>
+                                          }
+                                          @if (!variable.isRequired) {
+                                            <div class="pos-abt r-t-n-28">
+                                              <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
+                                                (click)="removeVariable(i, variableSet)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                                            </div>
+                                          }
+                                        </div>
+                                      }
+                                      @default {
+                                        <div [ngClass]="{'has-error' : ((value.dirty || value.touched) && value.invalid)}"
+                                             class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
+                                          <input #value="ngModel" (blur)="saveJSON(false, false, value, variable)"
+                                                 (keydown)="onKeyPress($event, variableSet)"
+                                                 [(ngModel)]="variable.value" [facetValidation]="variable.facet" [readOnly]="isTrash || !permission.joc.inventory.manage"
+                                                 [required]="variable.isRequired || variable.facet" autocomplete="off"
+                                                 class="form-control" name="value{{i}}{{j}}{{variable.value}}" placeholder="{{'common.placeholder.value' | translate}}"
+                                                 type="text">
+                                          @if (variable.message) {
+                                            <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="variable.message"
+                                               class="pos-abt cursor fa fa-info-circle" style="right: 18px;top:9px;"></i>
+                                          }
+                                          <i (click)="openEditor(variable, 'value')"
+                                             [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.tooltip.editorEntryMode' | translate" class="pos-abt cursor" nz-icon
+                                             nzTheme="outline" nzType="form"
+                                             style="right: 13px;top:1px;"></i>
+                                          @if (value.invalid && value.errors && (value.dirty || value.touched)) {
+                                            <div class="text-danger help-block">
+                                              @if (value.errors['required']) {
+                                                <div translate>common.message.requiredError</div>
+                                              }
+                                              @if (value.errors['invalidFacet']) {
+                                                <div translate>common.message.invalid</div>
+                                              }
+                                            </div>
+                                          }
+                                          <div class="pos-abt r-t-n-28 job-template-encrypt">
+                                            @if (variable.name && variable.type === 'String') {
+                                              <a><i (click)="encryptValue(variable, 'job')"
+                                                    class="m-t-sm text-hover-color" nz-icon nzType="property-safety" nzTheme="outline"></i></a>
+                                            }
+                                            @if (!variable.isRequired) {
+                                              <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
+                                                (click)="removeVariable(i, variableSet)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                                            }
+                                          </div>
+                                        </div>
+                                      }
+                                    }
+                                  </ng-container>
+                                }
+                                @if (variable.list) {
+                                  <div [ngClass]="{'has-error' : ((list.dirty || list.touched) && list.invalid)}"
+                                       class="col-md-6 col-lg-8 col-xl-8 col-xxl-6 m-b-sm">
+                                    <nz-select #list="ngModel" [(ngModel)]="variable.value"
+                                               [nzPlaceHolder]="'common.placeholder.selectValue' | translate" [required]="variable.isRequired" name="list{{i}}{{j}}"
+                                               nzAllowClear>
+                                        @for (option of variable.list; track option) {
+                                          <ng-container>
+                                            <nz-option [nzLabel]="option.name" [nzValue]="option.name" nzCustomContent>
+                                              <div>
+                                                {{option.name}} @if (option.default) {<i>- </i>} @if (option.default) {
+                                                  <span class="label label-default"
+                                                                                                       translate>default</span>
+                                                }
+                                              </div>
+                                            </nz-option>
+                                          </ng-container>
+                                        }
+                                    </nz-select>
+                                    @if (list.invalid && list.errors && (list.dirty || list.touched)) {
+                                      <div class="text-danger help-block">
+                                        @if (list.errors['required']) {
+                                          <div translate>common.message.requiredError</div>
+                                        }
+                                      </div>
+                                    }
+                                    @if (!variable.isRequired) {
+                                      <div class="pos-abt r-t-n-28">
+                                        <a [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}"><i
+                                          (click)="removeVariable(i, variableSet)" class="fa fa-times m-t-sm text-hover-color"></i></a>
+                                      </div>
+                                    }
+                                  </div>
+                                }
+                              </ng-container>
+                            }
+                          </div>
+                        }
+                      </ng-container>
+                    }
+                    <div [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}" class="form-group row">
+                      @if (variableList.length > variableSet.variables.length || (allowUndeclaredVariables && workflow?.orderPreparation?.allowUndeclared && variableList.length > 0)) {
+                        <div class="col-sm-12">
+                          <a (click)="addVariable(false, variableSet)" class="text-u-l" translate>order.button.modifyVariable</a>
+                          <a (click)="addVariables(false, variableSet)" class="text-u-l m-l-12" translate>order.button.modifyVariables</a>
+                        </div>
+                      }
+                      @if (allowUndeclaredVariables && workflow?.orderPreparation?.allowUndeclared) {
+                        <div class="col-sm-12" [ngClass]="{'m-t-sm': variableList.length > variableSet.variables.length}">
+                          <a class="text-u-l" (click)="addVariable(true, variableSet)" translate>order.button.addVariable</a>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                }
+                <div [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}" class="form-group row">
+                  @if (variableList.length > 0 || (schedule.configuration.workflowNames && schedule.configuration.workflowNames.length >=1)) {
+                    <div class="col-sm-12">
+                      <a (click)="addVariableSet()" class="text-u-l" translate>inventory.button.addOrderParameter</a>
+                    </div>
+                  }
                 </div>
               </div>
-            </div>
-            <div [ngClass]="{'disable-link': isTrash || !permission.joc.inventory.manage}" class="form-group row">
-              <div *ngIf="variableList.length > 0 || (schedule.configuration.workflowNames && schedule.configuration.workflowNames.length >=1)"
-                   class="col-sm-12">
-                <a (click)="addVariableSet()" class="text-u-l" translate>inventory.button.addOrderParameter</a>
-              </div>
-            </div>
-          </div>
-        </form>
+            }
+          </form>
+        }
     </div>
   </div>
-  <div *ngIf="data.object" class="col-md-12">
-    <app-table
-      [copyObj]="copyObj"
-      [dataObj]="data"
-      [isTrash]="isTrash"
-      [objectType]="objectType"
-      [permission]="permission"
-      [preferences]="preferences"
-      [schedulerId]="schedulerId"></app-table>
-  </div>
+}
+  @if (data.object) {
+    <div class="col-md-12">
+      <app-table
+        [copyObj]="copyObj"
+        [dataObj]="data"
+        [isTrash]="isTrash"
+        [objectType]="objectType"
+        [permission]="permission"
+        [preferences]="preferences"
+        [schedulerId]="schedulerId"></app-table>
+    </div>
+  }
 </div>
 <nz-drawer (nzOnClose)="closeCalendarView()" [nzVisible]="isVisible" nzPlacement="right">
   <ng-container *nzDrawerContent>
     <div (click)="closeCalendarView()" class="close-btn"></div>
     <i (click)="helpPage('configuration-inventory-schedules-run-time')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info cur-point fa fa-info-circle text-20"></i>
-    <div *ngIf="isVisible && permission.joc">
-      <div class="text-center m-b text"><i class="fa fa-clock-o"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm"
-                                                                                 translate>runtime.label.runTime</span>
+    @if (isVisible && permission.joc) {
+      <div>
+        <div class="text-center m-b text"><i class="fa fa-clock-o"></i>&nbsp;<span class="_600 b-b p-b-sm m-l-sm"
+                                                                                   translate>runtime.label.runTime</span>
+        </div>
+        <app-run-time [isTrash]="isTrash || !permission.joc.inventory.manage" [permission]="permission"
+                      [preferences]="preferences" [schedule]="schedule" [schedulerId]="schedulerId"></app-run-time>
       </div>
-      <app-run-time [isTrash]="isTrash || !permission.joc.inventory.manage" [permission]="permission"
-                    [preferences]="preferences" [schedule]="schedule" [schedulerId]="schedulerId"></app-run-time>
-    </div>
+    }
   </ng-container>
 </nz-drawer>

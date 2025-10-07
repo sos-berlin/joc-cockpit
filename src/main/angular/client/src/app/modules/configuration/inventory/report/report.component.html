@@ -1,266 +1,327 @@
 <div class="row">
-  <div *ngIf="data.type" class="col-md-12">
-    <div class="box p-a p-r-md m-t-n-xs">
-      <div class="b-b p-b m-b">
-        <span class="text-left">
-          <a (click)="backToListView()"><i class="fa fa-arrow-circle-left config-back-btn"
-                                           nz-tooltip="{{'inventory.button.backToList' | translate}}"></i></a>
-          <span class="_600">{{ data.path }}<span *ngIf="data.path !=='/'">/</span>{{ data.name }}</span>
-          <span *ngIf="lastModified" class="text-dark text-sm _400"> -
-            <b translate>inventory.label.lastModified</b>
-            <i class="text-muted p-l-xs">{{ lastModified | stringToDate }}</i>
-          </span>
-        </span>
-        <div *ngIf="!isTrash" class="inline pull-right">
-          <span *ngIf="report.configuration" [ngClass]="!report.valid ? 'badge-danger':'badge-success'"
-                class="badge m-r-12">
-              <span *ngIf="report.valid" translate>inventory.label.valid</span>
-              <span *ngIf="!report.valid">
-                <span translate>inventory.label.notValid</span>
-                <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
+  @if (data.type) {
+    <div class="col-md-12">
+      <div class="box p-a p-r-md m-t-n-xs">
+        <div class="b-b p-b m-b">
+          <span class="text-left">
+            <a (click)="backToListView()"><i class="fa fa-arrow-circle-left config-back-btn"
+                                             nz-tooltip="{{'inventory.button.backToList' | translate}}"></i></a>
+            <span class="_600">{{ data.path }}@if (data.path !=='/') {<span>/</span>}{{ data.name }}</span>
+            @if (lastModified) {
+              <span class="text-dark text-sm _400"> -
+                <b translate>inventory.label.lastModified</b>
+                <i class="text-muted p-l-xs">{{ lastModified | stringToDate }}</i>
               </span>
-            </span>
-          <span *ngIf="report.configuration" [ngClass]="!data.released ? 'badge-danger':'badge-success'" class="badge">
-              <span *ngIf="!data.released" translate>inventory.label.notReleased</span>
-              <span *ngIf="data.released" translate>inventory.label.released</span>
-            </span>
-          <button
-            (click)="release()"
-            *ngIf="permission.joc && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)"
-            [disabled]="!report.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
-            <i class="fa fa-rocket p-r-xs"></i>
-            <span translate>inventory.button.release</span>
-          </button>
+            }
+          </span>
+          @if (!isTrash) {
+            <div class="inline pull-right">
+              @if (report.configuration) {
+                <span [ngClass]="!report.valid ? 'badge-danger':'badge-success'"
+                      class="badge m-r-12">
+                    @if (report.valid) {
+                      <span translate>inventory.label.valid</span>
+                    }
+                  @if (!report.valid) {
+                    <span>
+                        <span translate>inventory.label.notValid</span>
+                        <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
+                      </span>
+                  }
+                  </span>
+              }
+              @if (report.configuration) {
+                <span [ngClass]="!data.released ? 'badge-danger':'badge-success'" class="badge">
+                    @if (!data.released) {
+                      <span translate>inventory.label.notReleased</span>
+                    }
+                  @if (data.released) {
+                    <span translate>inventory.label.released</span>
+                  }
+                  </span>
+              }
+              @if (permission.joc && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)) {
+                <button
+                  (click)="release()"
+                  [disabled]="!report.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
+                  <i class="fa fa-rocket p-r-xs"></i>
+                  <span translate>inventory.button.release</span>
+                </button>
+              }
+            </div>
+          }
         </div>
-      </div>
-      <form *ngIf="report.configuration && permission.joc">
-        <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
-             class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.name' | translate) : ''"
-                 
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.name
-            <sup class="text-danger text-sm">*</sup>
-          </label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <input #name="ngModel" (blur)="rename(name.invalid)" [(ngModel)]="report.name"
-                   [appAutofocus]="!isTrash" [readOnly]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
-                   class="form-control" identifierValidation name="name" required>
-            <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-              <div *ngIf="name.errors['invalidIdentifier']" translate>common.message.invalid</div>
-              <div *ngIf="name.errors['required']">
-                <div translate>common.message.requiredError</div>
+        @if (report.configuration && permission.joc) {
+          <form>
+            <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
+                 class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.name' | translate) : ''"
+
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.name
+                <sup class="text-danger text-sm">*</sup>
+              </label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <input #name="ngModel" (blur)="rename(name.invalid)" [(ngModel)]="report.name"
+                       [appAutofocus]="!isTrash" [readOnly]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
+                       class="form-control" identifierValidation name="name" required>
+                @if (name.invalid && (name.dirty || name.touched)) {
+                  <div class="text-danger help-block">
+                    @if (name.errors['invalidIdentifier']) {
+                      <div translate>common.message.invalid</div>
+                    }
+                    @if (name.errors['required']) {
+                      <div translate>common.message.requiredError</div>
+                    }
+                  </div>
+                }
               </div>
             </div>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.title' | translate) : ''"
-                 
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <input (blur)="saveJSON()" [(ngModel)]="report.configuration.title"
-                   [readOnly]="isTrash || !permission.joc.inventory.manage"
-                   autocomplete="off" class="form-control"
-                   name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.template' | translate) : ''"
-                 
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.template
-            <sup class="text-danger text-sm">*</sup>
-          </label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <app-select-input (modelChange)="saveJSON();" [isSearchable]="true"
-                              [placeholder]="'reporting.placeholder.selectTemplate' | translate"
-                              [name]="'templateName'"
-                              [object]="report.configuration" [attributeName]="'templateName'" [listArray]="templates"
-                              [optionLabel]="'title' | translate" [optionValue]="'templateName'"></app-select-input>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.interval' | translate) : ''"
-           class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.interval</label>
-          <div class="col-md-8">
-            <nz-radio-group name="interval" [(ngModel)]="isInterval" (ngModelChange)="onIntervalChange()">
-              <label nz-radio nzValue="absolute"><span translate>reporting.label.absolute</span></label>
-              <label nz-radio nzValue="relative"><span translate>reporting.label.relative</span></label>
-              <label nz-radio nzValue="preset"><span translate>reporting.label.preset</span></label>
-            </nz-radio-group>
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.title' | translate) : ''"
 
-          </div>
-        </div>
-
-        <div class="form-group row" *ngIf="isInterval === 'absolute'">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.absolute.monthFrom' | translate) : ''"
-                 
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.monthFrom
-            <sup class="text-danger text-sm">*</sup>
-          </label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6 month-picker"
-               [ngClass]="{'has-error': (monthFrom.dirty || monthFrom.touched) && monthFrom.invalid}">
-            <input (blur)="saveJSON()" #monthFrom="ngModel" [(ngModel)]="report.configuration.monthFrom"
-                   [disabled]="isTrash || !permission.joc.inventory.manage" class="form-control"
-                   name="monthFrom" placeholder="YYYY-MM | Mm|Qq|Yy" appMonthValidate type="text">
-            <nz-date-picker [nzDisabled]="isTrash || !permission.joc.inventory.manage" nzMode="month"
-                            [(ngModel)]="report.monthFrom" [nzPlaceHolder]="'YYYY-MM | Mm|Qq|Yy'"
-                            name="monthFrom1" (ngModelChange)="changeDate('monthFrom', $event)"></nz-date-picker>
-            <div *ngIf="monthFrom.invalid && (monthFrom.dirty || monthFrom.touched)"
-                 class="text-danger help-block">
-              <div *ngIf="monthFrom.errors?.required" translate>common.message.requiredError</div>
-              <div *ngIf="monthFrom.errors?.invalidMonth" translate>common.message.invalid</div>
-              <div *ngIf="monthFrom.errors?.invalidMonthUnit" translate>common.message.invalidMonthUnit</div>
-              <div *ngIf="monthFrom.errors?.monthFromAfterMonthTo" translate>common.message.monthFromAfterMonthTo</div>
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <input (blur)="saveJSON()" [(ngModel)]="report.configuration.title"
+                       [readOnly]="isTrash || !permission.joc.inventory.manage"
+                       autocomplete="off" class="form-control"
+                       name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text">
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="isInterval === 'absolute'">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.absolute.monthTo' | translate) : ''"
-                 
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.monthTo
-          </label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6 month-picker"
-               [ngClass]="{'has-error': (monthTo.dirty || monthTo.touched) && monthTo.invalid}">
-            <input (blur)="saveJSON()" #monthTo="ngModel" [(ngModel)]="report.configuration.monthTo"
-                   [disabled]="isTrash || !permission.joc.inventory.manage" class="form-control"
-                   [name]="'monthTo'" placeholder="YYYY-MM | Mm|Qq|Yy" [appMonthValidate]="report.configuration.monthFrom"
-                   type="text">
-            <nz-date-picker [nzDisabled]="isTrash || !permission.joc.inventory.manage" nzMode="month"
-                            [(ngModel)]="report.monthTo" [nzPlaceHolder]="'YYYY-MM | Mm|Qq|Yy'"
-                            name="monthTo1" (ngModelChange)="changeDate('monthTo', $event)"></nz-date-picker>
-            <div *ngIf="monthTo.invalid && (monthTo.dirty || monthTo.touched)"
-                 class="text-danger help-block">
-              <div *ngIf="monthTo.errors?.required" translate>common.message.requiredError</div>
-              <div *ngIf="monthTo.errors?.invalidMonth" translate>common.message.invalid</div>
-              <div *ngIf="monthTo.errors?.invalidMonthUnit" translate>common.message.notValidInput</div>
-              <div *ngIf="monthTo.errors?.monthFromAfterMonthTo" translate>common.message.monthFromAfterMonthTo</div>
-            </div>
-          </div>
-        </div>
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.template' | translate) : ''"
 
-        <div class="form-group row" *ngIf="isInterval === 'relative'">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.relative.unit' | translate) : ''"
-                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.unit
-            <sup class="text-danger text-sm">*</sup>
-          </label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <app-select-input [isSearchable]="true" [isMultiple]="false" [name]="'units'"
-                              [object]="units" [attributeName]="'name'" [listArray]="units"
-                              (modelChange)="saveRelativeInterval()"   [optionLabel]="'name'" [optionValue]="'name'"></app-select-input>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="isInterval === 'relative'">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.relative.from' | translate) : ''"
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.from<sup class="text-danger text-sm">*</sup>
-          </label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <nz-input-number [(ngModel)]="from" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
-                             (nzBlur)="saveRelativeInterval()" appRelativeMonthValidate name="countFrom" ></nz-input-number>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="isInterval === 'preset'">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.preset.fromSample' | translate) : ''"
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.fromSample</label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <app-select-input [isSearchable]="false" [isMultiple]="false" [name]="'preset'"
-                              [object]="preset" [attributeName]="'name'" [listArray]="preset"
-                              (modelChange)="onPresetChange()"   [optionLabel]="'name'" [optionValue]="'name'"></app-select-input>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="isInterval === 'relative'">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.relative.count' | translate) : ''"
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.count
-          </label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <nz-input-number [(ngModel)]="count" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
-                             [nzMin]="0" (nzBlur)="saveRelativeInterval()"   name="count" ></nz-input-number>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.sort' | translate) : ''"
-                   class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.sort</label>
-          <div class="col-md-8">
-            <nz-radio-group [(ngModel)]="report.configuration.sort" name="sort" (ngModelChange)="saveJSON()">
-              <label nz-radio nzValue="HIGHEST"><span translate>reporting.label.highest</span></label>
-              <label nz-radio nzValue="LOWEST"><span translate>reporting.label.lowest</span></label>
-            </nz-radio-group>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label
-            [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.frequencies' | translate) : ''"
-            
-            class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.frequencies
-            <sup class="text-danger text-sm">*</sup>
-          </label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <app-select-input (modelChange)="saveJSON()" [isSearchable]="true" [isMultiple]="true"
-                              [placeholder]="'reporting.placeholder.selectFrequencies' | translate"
-                              [name]="'frequencies'"
-                              [object]="report.configuration" [attributeName]="'frequencies'" [listArray]="frequencies"
-                              [optionLabel]="'name'" [optionValue]="'name'"></app-select-input>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label
-            [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.controllerId' | translate) : ''"
-            
-            class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.controllerId</label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <app-select-input (modelChange)="saveJSON()" [attributeName]="'controllerId'" [name]="'id'"
-                              [placeholder]="'common.label.selectController'" [isAllowClear]="true"
-                              [ignoreTranslate]="true" [listArray]="schedulerIds.controllerIds"
-                              [object]="report.configuration"></app-select-input>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.hits' | translate) : ''"
-                 
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.hits
-          </label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <nz-input-number [nzDisabled]="isTrash || !permission.joc.inventory.manage" (nzBlur)="saveJSON()"
-                             name="hits"
-                             [(ngModel)]="report.configuration.hits" [nzMin]="1" [nzMax]="100"
-                             [nzStep]="5"></nz-input-number>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="['PERIODS_MOST_ORDER_EXECUTIONS', 'PERIODS_MOST_JOB_EXECUTIONS'].includes(report.configuration.templateName)">
-          <label
-            [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.periodLength' | translate) : ''"
-            
-            class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.periodLength
-          </label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <nz-input-number [nzDisabled]="isTrash || !permission.joc.inventory.manage" (nzBlur)="saveJSON()"
-                             name="length"
-                             [(ngModel)]="report.configuration.period.length" [nzMin]="1" [nzMax]="60"
-                             [nzStep]="5"></nz-input-number>
-          </div>
-        </div>
-        <div class="form-group row" *ngIf="['PERIODS_MOST_ORDER_EXECUTIONS', 'PERIODS_MOST_JOB_EXECUTIONS'].includes(report.configuration.templateName)">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.periodStep' | translate) : ''"
-                 
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.periodStep
-          </label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <nz-input-number [nzDisabled]="isTrash || !permission.joc.inventory.manage" (nzBlur)="saveJSON()"
-                             name="step"
-                             [(ngModel)]="report.configuration.period.step" [nzMin]="1" [nzMax]="60"
-                             [nzStep]="5"></nz-input-number>
-          </div>
-        </div>
-      </form>
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.template
+                <sup class="text-danger text-sm">*</sup>
+              </label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <app-select-input (modelChange)="saveJSON();" [isSearchable]="true"
+                                  [placeholder]="'reporting.placeholder.selectTemplate' | translate"
+                                  [name]="'templateName'"
+                                  [object]="report.configuration" [attributeName]="'templateName'" [listArray]="templates"
+                                  [optionLabel]="'title' | translate" [optionValue]="'templateName'"></app-select-input>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.interval' | translate) : ''"
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.interval</label>
+              <div class="col-md-8">
+                <nz-radio-group name="interval" [(ngModel)]="isInterval" (ngModelChange)="onIntervalChange()">
+                  <label nz-radio nzValue="absolute"><span translate>reporting.label.absolute</span></label>
+                  <label nz-radio nzValue="relative"><span translate>reporting.label.relative</span></label>
+                  <label nz-radio nzValue="preset"><span translate>reporting.label.preset</span></label>
+                </nz-radio-group>
+
+              </div>
+            </div>
+
+            @if (isInterval === 'absolute') {
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.absolute.monthFrom' | translate) : ''"
+
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.monthFrom
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
+                <div class="col-lg-9 col-xl-8 col-xxl-6 month-picker"
+                     [ngClass]="{'has-error': (monthFrom.dirty || monthFrom.touched) && monthFrom.invalid}">
+                  <input (blur)="saveJSON()" #monthFrom="ngModel" [(ngModel)]="report.configuration.monthFrom"
+                         [disabled]="isTrash || !permission.joc.inventory.manage" class="form-control"
+                         name="monthFrom" placeholder="YYYY-MM | Mm|Qq|Yy" appMonthValidate type="text">
+                  <nz-date-picker [nzDisabled]="isTrash || !permission.joc.inventory.manage" nzMode="month"
+                                  [(ngModel)]="report.monthFrom" [nzPlaceHolder]="'YYYY-MM | Mm|Qq|Yy'"
+                                  name="monthFrom1" (ngModelChange)="changeDate('monthFrom', $event)"></nz-date-picker>
+                  @if (monthFrom.invalid && (monthFrom.dirty || monthFrom.touched)) {
+                    <div class="text-danger help-block">
+                      @if (monthFrom.errors?.required) {
+                        <div translate>common.message.requiredError</div>
+                      }
+                      @if (monthFrom.errors?.invalidMonth) {
+                        <div translate>common.message.invalid</div>
+                      }
+                      @if (monthFrom.errors?.invalidMonthUnit) {
+                        <div translate>common.message.invalidMonthUnit</div>
+                      }
+                      @if (monthFrom.errors?.monthFromAfterMonthTo) {
+                        <div translate>common.message.monthFromAfterMonthTo</div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+            @if (isInterval === 'absolute') {
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.absolute.monthTo' | translate) : ''"
+
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.monthTo
+                </label>
+                <div class="col-lg-9 col-xl-8 col-xxl-6 month-picker"
+                     [ngClass]="{'has-error': (monthTo.dirty || monthTo.touched) && monthTo.invalid}">
+                  <input (blur)="saveJSON()" #monthTo="ngModel" [(ngModel)]="report.configuration.monthTo"
+                         [disabled]="isTrash || !permission.joc.inventory.manage" class="form-control"
+                         [name]="'monthTo'" placeholder="YYYY-MM | Mm|Qq|Yy" [appMonthValidate]="report.configuration.monthFrom"
+                         type="text">
+                  <nz-date-picker [nzDisabled]="isTrash || !permission.joc.inventory.manage" nzMode="month"
+                                  [(ngModel)]="report.monthTo" [nzPlaceHolder]="'YYYY-MM | Mm|Qq|Yy'"
+                                  name="monthTo1" (ngModelChange)="changeDate('monthTo', $event)"></nz-date-picker>
+                  @if (monthTo.invalid && (monthTo.dirty || monthTo.touched)) {
+                    <div class="text-danger help-block">
+                      @if (monthTo.errors?.required) {
+                        <div translate>common.message.requiredError</div>
+                      }
+                      @if (monthTo.errors?.invalidMonth) {
+                        <div translate>common.message.invalid</div>
+                      }
+                      @if (monthTo.errors?.invalidMonthUnit) {
+                        <div translate>common.message.notValidInput</div>
+                      }
+                      @if (monthTo.errors?.monthFromAfterMonthTo) {
+                        <div translate>common.message.monthFromAfterMonthTo</div>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            @if (isInterval === 'relative') {
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.relative.unit' | translate) : ''"
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.unit
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
+                <div class="col-lg-9 col-xl-8 col-xxl-6">
+                  <app-select-input [isSearchable]="true" [isMultiple]="false" [name]="'units'"
+                                    [object]="units" [attributeName]="'name'" [listArray]="units"
+                                    (modelChange)="saveRelativeInterval()"   [optionLabel]="'name'" [optionValue]="'name'"></app-select-input>
+                </div>
+              </div>
+            }
+            @if (isInterval === 'relative') {
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.relative.from' | translate) : ''"
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.from<sup class="text-danger text-sm">*</sup>
+                </label>
+                <div class="col-lg-9 col-xl-8 col-xxl-6">
+                  <nz-input-number [(ngModel)]="from" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
+                                   (nzBlur)="saveRelativeInterval()" appRelativeMonthValidate name="countFrom" ></nz-input-number>
+                </div>
+              </div>
+            }
+            @if (isInterval === 'preset') {
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.preset.fromSample' | translate) : ''"
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.fromSample</label>
+                <div class="col-lg-9 col-xl-8 col-xxl-6">
+                  <app-select-input [isSearchable]="false" [isMultiple]="false" [name]="'preset'"
+                                    [object]="preset" [attributeName]="'name'" [listArray]="preset"
+                                    (modelChange)="onPresetChange()"   [optionLabel]="'name'" [optionValue]="'name'"></app-select-input>
+                </div>
+              </div>
+            }
+            @if (isInterval === 'relative') {
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.interval.relative.count' | translate) : ''"
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.count
+                </label>
+                <div class="col-lg-9 col-xl-8 col-xxl-6">
+                  <nz-input-number [(ngModel)]="count" [nzDisabled]="isTrash || !permission.joc.inventory.manage"
+                                   [nzMin]="0" (nzBlur)="saveRelativeInterval()"   name="count" ></nz-input-number>
+                </div>
+              </div>
+            }
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.sort' | translate) : ''"
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.sort</label>
+              <div class="col-md-8">
+                <nz-radio-group [(ngModel)]="report.configuration.sort" name="sort" (ngModelChange)="saveJSON()">
+                  <label nz-radio nzValue="HIGHEST"><span translate>reporting.label.highest</span></label>
+                  <label nz-radio nzValue="LOWEST"><span translate>reporting.label.lowest</span></label>
+                </nz-radio-group>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label
+                [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.frequencies' | translate) : ''"
+
+                class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.frequencies
+                <sup class="text-danger text-sm">*</sup>
+              </label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <app-select-input (modelChange)="saveJSON()" [isSearchable]="true" [isMultiple]="true"
+                                  [placeholder]="'reporting.placeholder.selectFrequencies' | translate"
+                                  [name]="'frequencies'"
+                                  [object]="report.configuration" [attributeName]="'frequencies'" [listArray]="frequencies"
+                                  [optionLabel]="'name'" [optionValue]="'name'"></app-select-input>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label
+                [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.controllerId' | translate) : ''"
+
+                class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.controllerId</label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <app-select-input (modelChange)="saveJSON()" [attributeName]="'controllerId'" [name]="'id'"
+                                  [placeholder]="'common.label.selectController'" [isAllowClear]="true"
+                                  [ignoreTranslate]="true" [listArray]="schedulerIds.controllerIds"
+                                  [object]="report.configuration"></app-select-input>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.hits' | translate) : ''"
+
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.hits
+              </label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <nz-input-number [nzDisabled]="isTrash || !permission.joc.inventory.manage" (nzBlur)="saveJSON()"
+                                 name="hits"
+                                 [(ngModel)]="report.configuration.hits" [nzMin]="1" [nzMax]="100"
+                                 [nzStep]="5"></nz-input-number>
+              </div>
+            </div>
+            @if (['PERIODS_MOST_ORDER_EXECUTIONS', 'PERIODS_MOST_JOB_EXECUTIONS'].includes(report.configuration.templateName)) {
+              <div class="form-group row">
+                <label
+                  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.periodLength' | translate) : ''"
+
+                  class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.periodLength
+                </label>
+                <div class="col-lg-9 col-xl-8 col-xxl-6">
+                  <nz-input-number [nzDisabled]="isTrash || !permission.joc.inventory.manage" (nzBlur)="saveJSON()"
+                                   name="length"
+                                   [(ngModel)]="report.configuration.period.length" [nzMin]="1" [nzMax]="60"
+                                   [nzStep]="5"></nz-input-number>
+                </div>
+              </div>
+            }
+            @if (['PERIODS_MOST_ORDER_EXECUTIONS', 'PERIODS_MOST_JOB_EXECUTIONS'].includes(report.configuration.templateName)) {
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.report.periodStep' | translate) : ''"
+
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>reporting.label.periodStep
+                </label>
+                <div class="col-lg-9 col-xl-8 col-xxl-6">
+                  <nz-input-number [nzDisabled]="isTrash || !permission.joc.inventory.manage" (nzBlur)="saveJSON()"
+                                   name="step"
+                                   [(ngModel)]="report.configuration.period.step" [nzMin]="1" [nzMax]="60"
+                                   [nzStep]="5"></nz-input-number>
+                </div>
+              </div>
+            }
+          </form>
+        }
+      </div>
     </div>
-  </div>
-  <div *ngIf="data.object" class="col-md-12">
-    <app-table
-      [copyObj]="copyObj"
-      [dataObj]="data"
-      [isTrash]="isTrash"
-      [objectType]="objectType"
-      [permission]="permission"
-      [preferences]="preferences"
-      [schedulerId]="schedulerId"></app-table>
-  </div>
+  }
+  @if (data.object) {
+    <div class="col-md-12">
+      <app-table
+        [copyObj]="copyObj"
+        [dataObj]="data"
+        [isTrash]="isTrash"
+        [objectType]="objectType"
+        [permission]="permission"
+        [preferences]="preferences"
+        [schedulerId]="schedulerId"></app-table>
+    </div>
+  }
 </div>

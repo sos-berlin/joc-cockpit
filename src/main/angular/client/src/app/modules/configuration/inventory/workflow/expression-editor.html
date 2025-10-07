@@ -1,7 +1,7 @@
 <div class="form-group row">
   <div class="col-sm-12 m-b-xs">
     <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="isTooltipVisible ? ('inventory.tooltips.workflow.if.predicate' | translate) : ''"
-           translate>workflow.label.predicate
+          translate>workflow.label.predicate
     </span>:
     <sup class="text-danger text-sm">*</sup>
   </div>
@@ -11,23 +11,30 @@
                       required
       ></ngx-codemirror>
     </div>
-    <div *ngIf="error || (cm.invalid && (cm.dirty || cm.touched))"
-         class="text-danger help-block">
-      <div *ngIf="(cm.errors && cm.errors['required']) || error">
-        <div translate>common.message.requiredError</div>
+    @if (error || (cm.invalid && (cm.dirty || cm.touched))) {
+      <div class="text-danger help-block">
+        @if ((cm.errors && cm.errors['required']) || error) {
+          <div translate>common.message.requiredError</div>
+        }
       </div>
-    </div>
+    }
   </div>
   <div class="m-t col-sm-12">
     <div class="text-center">
       <div>
-        <button (click)="generateExpression('returnCode', btn)" *ngFor="let btn of operators" class="btn btn-sm btn-grey m-t-xs m-l-xs"
-                type="button"> {{btn}} </button>
+        @for (btn of operators; track btn) {
+          <button (click)="generateExpression('returnCode', btn)" class="btn btn-sm btn-grey m-t-xs m-l-xs"
+                  type="button"> {{btn}} </button>
+        }
       </div>
-      <div *ngIf="expression.type === 'variable'" class="m-t">
-        <button (click)="generateExpression('variables', btn)" *ngFor="let btn of variablesOperators" class="btn btn-sm btn-grey m-t-xs m-l-xs"
-                type="button"> {{btn}} </button>
-      </div>
+      @if (expression.type === 'variable') {
+        <div class="m-t">
+          @for (btn of variablesOperators; track btn) {
+            <button (click)="generateExpression('variables', btn)" class="btn btn-sm btn-grey m-t-xs m-l-xs"
+                    type="button"> {{btn}} </button>
+          }
+        </div>
+      }
     </div>
   </div>
   <div class="m-t col-sm-12">
@@ -38,47 +45,59 @@
           <a (click)="generateExpression('returnCode', null)"
              [ngClass]="{'_600' :expression.type === 'returnCode'}">returnCode</a></div>
         <div class="m-t-xs">
-          <i (click)="expression.open = false" *ngIf="expression.open" class="fa fa-angle-down m-r-sm"></i>
-          <i (click)="expression.open = true" *ngIf="!expression.open" class="fa fa-angle-right m-r-sm"></i>
+          @if (expression.open) {
+            <i (click)="expression.open = false" class="fa fa-angle-down m-r-sm"></i>
+          }
+          @if (!expression.open) {
+            <i (click)="expression.open = true" class="fa fa-angle-right m-r-sm"></i>
+          }
           <a (click)="generateExpression('variable', null)"
              [ngClass]="{'_600' :expression.type === 'variable'}">Order Variables</a>
-          <ul *ngIf="expression.open" class="m-t-xs p-l">
-            <li *ngFor="let func of functions">
-              <div class="show-in-single-line">
-                <i class="fa fa-circle text-xs m-r-sm"></i>
-                <a (click)="generateExpression('function', func)" class="text-hover-primary">{{func}}</a>
-              </div>
-            </li>
-          </ul>
+          @if (expression.open) {
+            <ul class="m-t-xs p-l">
+              @for (func of functions; track func) {
+                <li>
+                  <div class="show-in-single-line">
+                    <i class="fa fa-circle text-xs m-r-sm"></i>
+                    <a (click)="generateExpression('function', func)" class="text-hover-primary">{{func}}</a>
+                  </div>
+                </li>
+              }
+            </ul>
+          }
         </div>
       </div>
     </div>
     <div class="col-sm-6 p-r-0">
       <div><span translate>workflow.label.description</span>:</div>
       <div class="b-a p-a" style="min-height: 220px; max-height: 320px; overflow: auto">
-        <div *ngIf="expression.type === 'returnCode'">
-          <label class="_600">returnCode</label>
-          <p class="text-sm">
-            The reserved word returnCode is used.
-          </p>
-          <div class="text-sm p-a-sm syntax-box">
-            <div translate>workflow.label.syntax</div>
-            <div class="text-muted">returnCode</div>
-            <div class="m-t-sm" translate>workflow.label.example</div>
-            <div class="text-muted">!($returnCode in [7,9])</div>
+        @if (expression.type === 'returnCode') {
+          <div>
+            <label class="_600">returnCode</label>
+            <p class="text-sm">
+              The reserved word returnCode is used.
+            </p>
+            <div class="text-sm p-a-sm syntax-box">
+              <div translate>workflow.label.syntax</div>
+              <div class="text-muted">returnCode</div>
+              <div class="m-t-sm" translate>workflow.label.example</div>
+              <div class="text-muted">!($returnCode in [7,9])</div>
+            </div>
           </div>
-        </div>
-        <div *ngIf="expression.type === 'variable'">
-          <label class="_600">Order Variables</label>
-          <p class="text-sm">
-            The 2nd parameter in variable for a default value is optional, but if the variable is undefined and doesn't
-            have a default value then the order stops at the If-Instruction.
-          </p>
-          <div class="text-sm p-a-sm syntax-box">
-            <div translate>workflow.label.syntax</div>
-            <div class="text-muted">{{varExam}}</div>
+        }
+        @if (expression.type === 'variable') {
+          <div>
+            <label class="_600">Order Variables</label>
+            <p class="text-sm">
+              The 2nd parameter in variable for a default value is optional, but if the variable is undefined and doesn't
+              have a default value then the order stops at the If-Instruction.
+            </p>
+            <div class="text-sm p-a-sm syntax-box">
+              <div translate>workflow.label.syntax</div>
+              <div class="text-muted">{{varExam}}</div>
+            </div>
           </div>
-        </div>
+        }
       </div>
     </div>
   </div>

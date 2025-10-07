@@ -5,6 +5,7 @@ import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 
 @Component({
+  standalone: false,
   selector: 'app-scheduler-instance',
   templateUrl: './scheduler-instance.component.html'
 })

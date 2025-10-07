@@ -20,6 +20,7 @@ import {CommentModalComponent} from '../../../../components/comment-modal/commen
 import {HelpViewerComponent} from "../../../../components/help-viewer/help-viewer.component";
 
 @Component({
+  standalone: false,
   selector: 'app-lock',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './lock.component.html'

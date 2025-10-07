@@ -6,13 +6,13 @@ Users who wish a longer projection period can modify the related setting in the 
 
 ### Dates, Periods and Time Zones
 
-Projections are related to daily plan dates, not calendar dates. 
+Projections are related to Daily Plan dates, not calendar dates. 
 
 - Periods
   - If the Daily Plan's 24 hours' period starts at midnight, then it will match the calendar day.
   - For Daily Plan periods starting during the day, the 24 hours' period will overlap with two calendar days.
 - Time Zones
-  - If Schedules make use of time zones different to the Daily Plan, then Order start times can overlap with the previous or next day. Such Orders are displayed with the related daily plan date but indicate start times for a different date.
+  - If Schedules make use of time zones different to the Daily Plan, then Order start times can overlap with the previous or next day. Such Orders are displayed with the related Daily Plan date but indicate start times for a different date.
   - Use of time zones can result in start times of -14 hours and +12 hours in addition to the 24 hours' Daily Plan period. Most surprisingly for some users, a day is not 24 hours long, but can span up to 50 hours. The period of a day always is 24 hours long as it depends on earth's rotation. However, for a given time zone there is a 50 hours' coverage to include all possible times around the planet.
 
 Any dates and times are displayed in the time zone specified by the user's profile.
@@ -39,15 +39,15 @@ The filter offers to limit display of Orders to certain folders holding Workflow
 
 - Projections are calculated by the Daily Plan Service during its daily run. Later changes to the Daily Plan during the day are not reflected.
 - Users can re-create projections on demand from the related button.
-- The *Survey Date* indicates the creation date of the current daily plan projection.
+- The *Survey Date* indicates the creation date of the current Daily Plan projection.
 
 ### Exporting Projections
 
-Projections can be exported to a file in .xlsx format with the daily plan date in the x-axis and the Workflow and Schedule in the y-axis.
+Projections can be exported to a file in .xlsx format with the Daily Plan date in the x-axis and the Workflow and Schedule in the y-axis.
 
 - The *Export* shortcut will export Orders visible from the window. 
 - The *Export* button offers to select Orders for export:
-  - **Start Date**, **End Date**: First and last daily plan date for which Orders will be exported.
+  - **Start Date**, **End Date**: First and last Daily Plan date for which Orders will be exported.
   - **Workflows**, **Schedules**: Users can limit export to certain Schedules and Workflows, optionally limited by folders.
   - **Inverted Projection**: 
     - *Unchecked*: Exports dates for which Orders are calculated.

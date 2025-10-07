@@ -1,36 +1,42 @@
 <div class="modal-header">
-    <h4 class="modal-title">
+  <h4 class="modal-title">
     <span>
       <span>{{'profile.keyManagement.label.deleteCertificate' | translate}}</span>
     </span>
-    </h4>
-    <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
-        <span aria-hidden="true" class="fa fa-times-circle"></span>
-    </button>
+  </h4>
+  <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
 </div>
 <form #myForm="ngForm">
-    <div class="modal-body p-a">
-      <div class="row" *ngIf="display">
+  <div class="modal-body p-a">
+    @if (display) {
+      <div class="row">
         <div class="col-md-12">
           <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
         </div>
       </div>
-      <div class="text-center" *ngIf="!display">
+    }
+    @if (!display) {
+      <div class="text-center">
         <div class="m-t text">
           <p class="m-t">
             <span>{{'profile.keyManagement.popup.deleteSubmissions' | translate}}</span>
           </p>
         </div>
       </div>
-    </div>
-    <div class="modal-footer">
-        <button (click)="onSubmit()" [disabled]="!myForm.form.valid"
-                class="btn btn-danger btn-sm" type="button">
-            <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-            {{'common.button.delete' | translate}}
-        </button>
-        <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
-            common.button.cancel
-        </button>
-    </div>
+    }
+  </div>
+  <div class="modal-footer">
+    <button (click)="onSubmit()" [disabled]="!myForm.form.valid"
+            class="btn btn-danger btn-sm" type="button">
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
+      {{'common.button.delete' | translate}}
+    </button>
+    <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
+      common.button.cancel
+    </button>
+  </div>
 </form>

@@ -6,6 +6,7 @@ import {ValueEditorComponent} from '../value-editor/value.component';
 import {WorkflowService} from "../../services/workflow.service";
 
 @Component({
+  standalone: false,
   selector: 'app-resume-order',
   templateUrl: './resume-order-dialog.html',
 })

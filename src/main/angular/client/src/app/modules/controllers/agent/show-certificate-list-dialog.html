@@ -7,17 +7,23 @@
   </button>
 </div>
 <div class="modal-body p-a">
-  <div *ngIf="certificateList.length > 0">
-    <div class="row pb-3 algin-item-center" *ngFor="let certificate of certificateList;">
-      <div class="col-md-8">{{certificate?.certAlias}}</div>
-      <div class="col-md-4 text-right">
-        <button (click)="deleteCertificateAlias(certificate?.certAlias)"class="btn btn-sm btn-grey m-l-12">
-          <i class="fa fa-trash"></i>
-        </button>
-      </div>
+  @if (certificateList.length > 0) {
+    <div>
+      @for (certificate of certificateList; track certificate.certAlias) {
+        <div class="row pb-3 algin-item-center">
+          <div class="col-md-8">{{certificate?.certAlias}}</div>
+          <div class="col-md-4 text-right">
+            <button (click)="deleteCertificateAlias(certificate?.certAlias)"class="btn btn-sm btn-grey m-l-12">
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      }
     </div>
-  </div>
-  <div *ngIf="certificateList.length === 0" class="d-flex justify-content-center" translate>common.message.noDataAvailable</div>
+  }
+  @if (certificateList.length === 0) {
+    <div class="d-flex justify-content-center" translate>common.message.noDataAvailable</div>
+  }
 </div>
 <div class="modal-footer">
   <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">

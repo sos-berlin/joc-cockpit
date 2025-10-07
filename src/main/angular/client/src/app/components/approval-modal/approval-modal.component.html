@@ -1,7 +1,11 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="!edit" translate>common.label.requestApproval</span>
-    <span *ngIf="edit" translate>common.button.edit</span>
+    @if (!edit) {
+      <span translate>common.label.requestApproval</span>
+    }
+    @if (edit) {
+      <span translate>common.button.edit</span>
+    }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -20,11 +24,13 @@
                    #titleField="ngModel" autocomplete="off"/>
           </div>
         </div>
-        <div *ngIf="titleField.invalid && (titleField.dirty || titleField.touched)" class="text-danger help-block">
-          <div *ngIf="titleField.errors?.['required']">
-            <div translate>common.message.requiredError</div>
+        @if (titleField.invalid && (titleField.dirty || titleField.touched)) {
+          <div class="text-danger help-block">
+            @if (titleField.errors?.['required']) {
+              <div translate>common.message.requiredError</div>
+            }
           </div>
-        </div>
+        }
       </div>
     </div>
 
@@ -32,34 +38,35 @@
       <label class="col-sm-4 form-control-label" translate>common.label.approver
         <sup class="text-danger text-sm">*</sup>
       </label>
-        <div class="col-sm-8">
-            <div class="row">
-                <div class="col-12"[ngClass]="{'has-error':((approverField.dirty || approverField.touched) && approverField.invalid)}">
-                    <nz-select
-                            nzShowSearch
-                            nzAllowClear
-                            nzPlaceHolder="{{ 'common.placeholder.approver' | translate }}"
-                            [(ngModel)]="approvalData.approver"
-                            name="approver" required
-                            #approverField="ngModel"
-                            [nzFilterOption]="filterApprover"
-                            [nzDisabled]="submitted">
-                        <nz-option
-                                *ngFor="let a of approvers"
-                                [nzValue]="a.accountName"
-                                [nzLabel]="a.firstName + ' ' + a.lastName"
-                        ></nz-option>
-                    </nz-select>
-                </div>
-            </div>
-            <div
-                    *ngIf="approverField.invalid && (approverField.dirty || approverField.touched)"
-                    class="text-danger help-block">
-                <div *ngIf="approverField.errors?.['required']">
-                    <div translate>common.message.requiredError</div>
-                </div>
-            </div>
+      <div class="col-sm-8">
+        <div class="row">
+          <div class="col-12"[ngClass]="{'has-error':((approverField.dirty || approverField.touched) && approverField.invalid)}">
+            <nz-select
+              nzShowSearch
+              nzAllowClear
+              nzPlaceHolder="{{ 'common.placeholder.approver' | translate }}"
+              [(ngModel)]="approvalData.approver"
+              name="approver" required
+              #approverField="ngModel"
+              [nzFilterOption]="filterApprover"
+              [nzDisabled]="submitted">
+              @for (a of approvers; track a.accountName) {
+                <nz-option
+                  [nzValue]="a.accountName"
+                  [nzLabel]="a.firstName + ' ' + a.lastName"
+                ></nz-option>
+              }
+            </nz-select>
+          </div>
         </div>
+        @if (approverField.invalid && (approverField.dirty || approverField.touched)) {
+          <div class="text-danger help-block">
+            @if (approverField.errors?.['required']) {
+              <div translate>common.message.requiredError</div>
+            }
+          </div>
+        }
+      </div>
 
     </div>
 
@@ -77,7 +84,9 @@
   </div>
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid" class="btn btn-primary btn-sm" type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">

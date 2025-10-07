@@ -1,36 +1,54 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="new" translate>customization.label.createCustomization</span>
-    <span *ngIf="edit" translate>customization.label.updateCustomization</span>
-    <span *ngIf="!new && !edit" translate>customization.label.copyCustomization</span>
-    <span *ngIf="name">: {{name}}</span>
+    @if (new) {
+      <span translate>customization.label.createCustomization</span>
+    }
+    @if (edit) {
+      <span translate>customization.label.updateCustomization</span>
+    }
+    @if (!new && !edit) {
+      <span translate>customization.label.copyCustomization</span>
+    }
+    @if (name) {
+      <span>: {{name}}</span>
+    }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
-<div *ngIf="type === 'ORDER'">
-  <app-order-form-template (onCancel)="cancel($event)" [allFilter]="allFilter" [filter]="filter"
-                           [permission]="permission" [preferences]="preferences"
-                           [schedulerIds]="schedulerIds"></app-order-form-template>
-</div>
-<div *ngIf="type === 'TASK'">
-  <app-task-form-template (onCancel)="cancel($event)" [allFilter]="allFilter" [filter]="filter"
-                          [permission]="permission" [preferences]="preferences"
-                          [schedulerIds]="schedulerIds"></app-task-form-template>
-</div>
-<div *ngIf="type === 'YADE'">
-  <app-file-transfer-form-template (onCancel)="cancel($event)" [allFilter]="allFilter" [filter]="filter"
-                                   [isHistory]="true" [permission]="permission"
-                                   [preferences]="preferences" [schedulerIds]="schedulerIds"></app-file-transfer-form-template>
-</div>
-<div *ngIf="type === 'DEPLOYMENT'">
-  <app-deployment-form-template (onCancel)="cancel($event)" [allFilter]="allFilter" [filter]="filter"
-                                [permission]="permission" [preferences]="preferences"
-                                [schedulerIds]="schedulerIds"></app-deployment-form-template>
-</div>
-<div *ngIf="type === 'SUBMISSION'">
-  <app-submission-form-template (onCancel)="cancel($event)" [allFilter]="allFilter" [filter]="filter"
-                                [permission]="permission" [preferences]="preferences"
-                                [schedulerIds]="schedulerIds"></app-submission-form-template>
-</div>
+@if (type === 'ORDER') {
+  <div>
+    <app-order-form-template (onCancel)="cancel($event)" [allFilter]="allFilter" [filter]="filter"
+                             [permission]="permission" [preferences]="preferences"
+                             [schedulerIds]="schedulerIds"></app-order-form-template>
+  </div>
+}
+@if (type === 'TASK') {
+  <div>
+    <app-task-form-template (onCancel)="cancel($event)" [allFilter]="allFilter" [filter]="filter"
+                            [permission]="permission" [preferences]="preferences"
+                            [schedulerIds]="schedulerIds"></app-task-form-template>
+  </div>
+}
+@if (type === 'YADE') {
+  <div>
+    <app-file-transfer-form-template (onCancel)="cancel($event)" [allFilter]="allFilter" [filter]="filter"
+                                     [isHistory]="true" [permission]="permission"
+                                     [preferences]="preferences" [schedulerIds]="schedulerIds"></app-file-transfer-form-template>
+  </div>
+}
+@if (type === 'DEPLOYMENT') {
+  <div>
+    <app-deployment-form-template (onCancel)="cancel($event)" [allFilter]="allFilter" [filter]="filter"
+                                  [permission]="permission" [preferences]="preferences"
+                                  [schedulerIds]="schedulerIds"></app-deployment-form-template>
+  </div>
+}
+@if (type === 'SUBMISSION') {
+  <div>
+    <app-submission-form-template (onCancel)="cancel($event)" [allFilter]="allFilter" [filter]="filter"
+                                  [permission]="permission" [preferences]="preferences"
+                                  [schedulerIds]="schedulerIds"></app-submission-form-template>
+  </div>
+}

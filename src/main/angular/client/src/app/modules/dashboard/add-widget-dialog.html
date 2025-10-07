@@ -5,68 +5,59 @@
   </button>
 </div>
 <div class="modal-body p-a-md min-ht-200">
-  <div *ngFor="let widget of widgets" [hidden]="widget.visible" class="form-group row p-b b-b">
-    <img alt=""
-         class="pull-left m-l" height="60px"
-         src="./assets/images/{{widget.name == 'agentStatus' ? 'agentClusterStatus' : widget.name}}.png" width="120px">
-    <div class="col-sm-6">
-      <label [innerHtml]="'dashboard.label.'+widget.name | translate" class="font14 text-dark m-b-0"></label>
-      <p class="text-sm text-muted">{{'dashboard.' + widget.message | translate}}</p>
-    </div>
-    <div class="col-sm-4 text-right">
-      <div>
-        <button nz-dropdown [nzDropdownMenu]="size" class="btn btn-grey btn-sm" nzTrigger="click" translate
-                type="button">
-          <i class="fa fa-cog"></i> dashboard.button.changeSize
-        </button>
-        <nz-dropdown-menu #size="nzDropdownMenu">
-          <ul class="text-overflow max-ht-120 max-w-110" nz-menu>
-            <li (click)="widget.cols= 4;widget.rows = 2;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 2}" class="w-xs"
-                nz-menu-item><a>1 <i
-              class="fa fa-times"></i> 2</a></li>
-            <li (click)="widget.cols= 4;widget.rows = 3;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 3}" class="w-xs"
-                nz-menu-item><a>1 <i
-              class="fa fa-times"></i> 3</a></li>
-            <li (click)="widget.cols= 4;widget.rows = 4;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 4}" class="w-xs"
-                nz-menu-item><a>1 <i
-              class="fa fa-times"></i> 4</a></li>
-            <li (click)="widget.cols= 4;widget.rows = 5;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 5}" class="w-xs"
-                nz-menu-item><a>1 <i
-              class="fa fa-times"></i> 5</a></li>
-            <li (click)="widget.cols= 8;widget.rows = 2;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 8 && widget.rows == 2}" class="w-xs"
-                nz-menu-item><a>2 <i
-              class="fa fa-times"></i> 2</a></li>
-            <li (click)="widget.cols= 8;widget.rows = 3;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 8 && widget.rows == 3}" class="w-xs"
-                nz-menu-item><a>2 <i
-              class="fa fa-times"></i> 3</a></li>
-            <li (click)="widget.cols= 8;widget.rows = 4;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 8 && widget.rows == 4}" class="w-xs"
-                nz-menu-item><a>2 <i
-              class="fa fa-times"></i> 4</a></li>
-            <li (click)="widget.cols= 8;widget.rows = 5;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 8 && widget.rows == 5}" class="w-xs"
-                nz-menu-item><a>2 <i
-              class="fa fa-times"></i> 5</a></li>
-            <li (click)="widget.cols= 12;widget.rows = 2;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 12 && widget.rows == 2}" class="w-xs"
-                nz-menu-item><a>3 <i
-              class="fa fa-times"></i> 2</a></li>
-            <li (click)="widget.cols= 12;widget.rows = 3;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 12 && widget.rows == 3}" class="w-xs"
-                nz-menu-item><a>3 <i
-              class="fa fa-times"></i> 3</a></li>
-            <li (click)="widget.cols= 12;widget.rows = 4;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 12 && widget.rows == 4}" class="w-xs"
-                nz-menu-item><a>3 <i
-              class="fa fa-times"></i> 4</a></li>
-            <li (click)="widget.cols= 12;widget.rows = 5;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 12 && widget.rows == 5}" class="w-xs"
-                nz-menu-item><a>3 <i
-              class="fa fa-times"></i> 5</a></li>
-          </ul>
-        </nz-dropdown-menu>
-        <button (click)="addWidgetFunc(widget)" class="btn btn-grey btn-sm m-l-sm" translate type="button">
-          <i class="fa fa-plus"></i> dashboard.button.widget
-        </button>
+  @for (widget of widgets; track widget.name) {
+    <div [hidden]="widget.visible" class="form-group row p-b b-b">
+      <img alt=""
+           class="pull-left m-l" height="60px"
+           src="./assets/images/{{widget.name == 'agentStatus' ? 'agentClusterStatus' : widget.name}}.png" width="120px">
+      <div class="col-sm-6">
+        <label [innerHtml]="'dashboard.label.'+widget.name | translate" class="font14 text-dark m-b-0"></label>
+        <p class="text-sm text-muted">{{'dashboard.' + widget.message | translate}}</p>
+      </div>
+      <div class="col-sm-4 text-right">
+        <div>
+          <button nz-dropdown [nzDropdownMenu]="size" class="btn btn-grey btn-sm" nzTrigger="click" translate
+                  type="button">
+            <i class="fa fa-cog"></i> dashboard.button.changeSize
+          </button>
+          <nz-dropdown-menu #size="nzDropdownMenu">
+            <ul class="text-overflow max-ht-120 max-w-110" nz-menu>
+              <li (click)="widget.cols= 4;widget.rows = 2;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 2}" class="w-xs"
+                  nz-menu-item><a>1 <i class="fa fa-times"></i> 2</a></li>
+              <li (click)="widget.cols= 4;widget.rows = 3;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 3}" class="w-xs"
+                  nz-menu-item><a>1 <i class="fa fa-times"></i> 3</a></li>
+              <li (click)="widget.cols= 4;widget.rows = 4;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 4}" class="w-xs"
+                  nz-menu-item><a>1 <i class="fa fa-times"></i> 4</a></li>
+              <li (click)="widget.cols= 4;widget.rows = 5;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 4 && widget.rows == 5}" class="w-xs"
+                  nz-menu-item><a>1 <i class="fa fa-times"></i> 5</a></li>
+              <li (click)="widget.cols= 8;widget.rows = 2;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 8 && widget.rows == 2}" class="w-xs"
+                  nz-menu-item><a>2 <i class="fa fa-times"></i> 2</a></li>
+              <li (click)="widget.cols= 8;widget.rows = 3;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 8 && widget.rows == 3}" class="w-xs"
+                  nz-menu-item><a>2 <i class="fa fa-times"></i> 3</a></li>
+              <li (click)="widget.cols= 8;widget.rows = 4;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 8 && widget.rows == 4}" class="w-xs"
+                  nz-menu-item><a>2 <i class="fa fa-times"></i> 4</a></li>
+              <li (click)="widget.cols= 8;widget.rows = 5;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 8 && widget.rows == 5}" class="w-xs"
+                  nz-menu-item><a>2 <i class="fa fa-times"></i> 5</a></li>
+              <li (click)="widget.cols= 12;widget.rows = 2;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 12 && widget.rows == 2}" class="w-xs"
+                  nz-menu-item><a>3 <i class="fa fa-times"></i> 2</a></li>
+              <li (click)="widget.cols= 12;widget.rows = 3;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 12 && widget.rows == 3}" class="w-xs"
+                  nz-menu-item><a>3 <i class="fa fa-times"></i> 3</a></li>
+              <li (click)="widget.cols= 12;widget.rows = 4;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 12 && widget.rows == 4}" class="w-xs"
+                  nz-menu-item><a>3 <i class="fa fa-times"></i> 4</a></li>
+              <li (click)="widget.cols= 12;widget.rows = 5;" [ngClass]="{'ant-select-dropdown-menu-item-active': widget.cols== 12 && widget.rows == 5}" class="w-xs"
+                  nz-menu-item><a>3 <i class="fa fa-times"></i> 5</a></li>
+            </ul>
+          </nz-dropdown-menu>
+          <button (click)="addWidgetFunc(widget)" class="btn btn-grey btn-sm m-l-sm" translate type="button">
+            <i class="fa fa-plus"></i> dashboard.button.widget
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-  <div [ngClass]="{'show':dashboard.length === widgets.length}" class="m-t-lg hide">
-    <app-empty-data [title]="'dashboard.message.noWidgetFound'"></app-empty-data>
-  </div>
+  }
+  @if (dashboard.length === widgets.length) {
+    <div class="m-t-lg">
+      <app-empty-data [title]="'dashboard.message.noWidgetFound'"></app-empty-data>
+    </div>
+  }
 </div>
-

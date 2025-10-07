@@ -16,6 +16,7 @@ import {SaveService} from '../services/save.service';
 declare const $: any;
 
 @Directive({
+  standalone: false,
   selector: '[timeDurationValidator]',
   providers: [
     {
@@ -155,6 +156,7 @@ onInputChange(target): void {
 }
 
 @Directive({
+  standalone: false,
   selector: '[timevalidator]',
   providers: [NgModel]
 })
@@ -227,6 +229,7 @@ export class TimeValidatorDirective {
 }
 
 @Directive({
+  standalone: false,
   selector: '[validateReqex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => RegexValidator), multi: true}
@@ -258,6 +261,7 @@ export class RegexValidator implements Validator {
 }
 
 @Directive({
+  standalone: false,
   selector: '[validateDailyPlanReqex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => DailyPlanRegexValidator), multi: true}
@@ -282,6 +286,7 @@ export class DailyPlanRegexValidator implements Validator {
 }
 
 @Directive({
+  standalone: false,
   selector: '[validateUrl]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => UrlValidator), multi: true}
@@ -305,6 +310,7 @@ export class UrlValidator implements Validator {
 }
 
 @Directive({
+  standalone: false,
   selector: '[validTimeReqex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => TimeRegexValidator), multi: true}
@@ -333,6 +339,7 @@ export class TimeRegexValidator implements Validator {
 }
 
 @Directive({
+  standalone: false,
   selector: '[nValidTimeRegex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => NegativeTimeRegexValidator), multi: true}
@@ -404,6 +411,7 @@ export class NegativeTimeRegexValidator implements Validator {
 }
 
 @Directive({
+  standalone: false,
   selector: '[nRValidTimeRegex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => NegativeRelativeTimeRegexValidator), multi: true}
@@ -479,6 +487,7 @@ export class NegativeRelativeTimeRegexValidator implements Validator {
 }
 
 @Directive({
+  standalone: false,
   selector: '[relativeDateValidator]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => RelativeDateValidator), multi: true}
@@ -502,6 +511,7 @@ export class RelativeDateValidator implements Validator {
 }
 
 @Directive({
+  standalone: false,
   selector: '[relativeDateValidatorRegex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => RelativeDateRegexValidator), multi: true}
@@ -525,6 +535,7 @@ export class RelativeDateRegexValidator implements Validator {
 }
 
 @Directive({
+  standalone: false,
   selector: '[validateNumberArrayReqex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => NumberArrayRegexValidator), multi: true}
@@ -553,6 +564,7 @@ export class NumberArrayRegexValidator implements Validator {
 }
 
 @Directive({
+  standalone: false,
   selector: '[validateDurtionWithPercentageReqex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => DurationWithPercentageRegexValidator), multi: true}
@@ -580,6 +592,7 @@ export class DurationWithPercentageRegexValidator implements Validator {
 }
 
 @Directive({
+  standalone: false,
   selector: '[validateSessionTimeReqex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => SessionTimeRegexValidator), multi: true}
@@ -606,6 +619,7 @@ export class SessionTimeRegexValidator implements Validator {
 }
 
 @Directive({
+  standalone: false,
   selector: '[validateDurtionReqex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => DurationRegexValidator), multi: true}
@@ -635,6 +649,7 @@ export class DurationRegexValidator implements Validator {
 
 
 @Directive({
+  standalone: false,
   selector: '[validateRangeRegex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => TimeRangeRegexValidator), multi: true}
@@ -661,6 +676,7 @@ export class TimeRangeRegexValidator implements Validator {
 
 
 @Directive({
+  standalone: false,
   selector: '[identifierValidation]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => IdentifierValidator), multi: true}
@@ -695,6 +711,7 @@ export class IdentifierValidator implements Validator {
 }
 
 @Directive({
+  standalone: false,
   selector: '[identifierWithQuotesValidation]',
   providers: [
     {
@@ -736,6 +753,7 @@ export class IdentifierWithQuotesValidator implements Validator {
 
 
 @Directive({
+  standalone: false,
   selector: '[tagValidation]',
   providers: [
     { provide: NG_VALIDATORS, useExisting: forwardRef(() => TagValidator), multi: true }
@@ -772,6 +790,7 @@ export class TagValidator implements Validator {
 
 
 @Directive({
+  standalone: false,
   selector: '[facetValidation]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => FacetValidator), multi: true}
@@ -790,6 +809,7 @@ export class FacetValidator implements Validator {
 }
 
 @Directive({
+  standalone: false,
   selector: '[envVariableValidation]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => EnvVariableValidator), multi: true}
@@ -817,6 +837,7 @@ export class EnvVariableValidator implements Validator {
 }
 
 @Directive({
+  standalone: false,
   selector: '[labelValidation]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => LabelValidator), multi: true}
@@ -844,6 +865,7 @@ export class LabelValidator implements Validator {
 }
 
 @Directive({
+  standalone: false,
   selector: '[appResizable]'
 })
 export class ResizableDirective {
@@ -956,6 +978,7 @@ export class ResizableDirective {
 }
 
 @Directive({
+  standalone: false,
   selector: '[appAutofocus]'
 })
 export class AutofocusDirective implements AfterViewInit {
@@ -978,6 +1001,7 @@ export class AutofocusDirective implements AfterViewInit {
 }
 
 @Directive({
+  standalone: false,
   selector: '[xmlAutofocus]'
 })
 export class XMLAutofocusDirective implements AfterViewInit, OnChanges {
@@ -1016,6 +1040,7 @@ export class XMLAutofocusDirective implements AfterViewInit, OnChanges {
 }
 
 @Directive({
+  standalone: false,
   selector: '[appMaximum]'
 })
 export class MaximumDirective {
@@ -1075,6 +1100,7 @@ export class MaximumDirective {
 }
 
 @Directive({
+  standalone: false,
   selector: '[timevalidatorReqex]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => TimeValidatorReqexDirective), multi: true}
@@ -1194,6 +1220,7 @@ export class TimeValidatorReqexDirective implements Validator {
 
 
 @Directive({
+  standalone: false,
   selector: '[timeRelativeStartValidatorReqex]',
   providers: [
     { provide: NG_VALIDATORS, useExisting: forwardRef(() => TimeValidatorRelativeStartReqexDirective), multi: true }
@@ -1313,6 +1340,7 @@ export class TimeValidatorRelativeStartReqexDirective implements Validator {
 
 }
 @Directive({
+  standalone: false,
   selector: '[timeRelativeValidatorReqex]',
   providers: [
     { provide: NG_VALIDATORS, useExisting: forwardRef(() => TimeValidatorRelativeReqexDirective), multi: true }

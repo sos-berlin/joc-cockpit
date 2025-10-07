@@ -31,44 +31,52 @@
               <tr>
                 <th class="menu"><span translate>common.label.action</span></th>
                 <th><span translate>common.label.name</span></th>
-                <th *ngIf="isPathDisplay"><span translate>common.label.path</span></th>
+                @if (isPathDisplay) {
+                  <th><span translate>common.label.path</span></th>
+                }
                 <th><span translate>common.label.type</span></th>
                 <th><span translate>resource.calendar.label.validityFrom</span></th>
                 <th><span translate>resource.calendar.label.validityTo</span></th>
               </tr>
               </thead>
               <tbody>
-              <tr
-                *ngFor="let calendar of ajaxTable.data">
-                <td>
-                  <div class="btn-group dropdown">
-                    <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
-                            type="button">
-                      <i class="fa fa-ellipsis-h"></i>
-                    </button>
-                    <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                      <ul nz-menu>
-                        <li nz-menu-item>
-                          <a (click)="previewCalendar(calendar)" translate>resource.calendar.button.showPreview</a>
-                        </li>
-                      </ul>
-                    </nz-dropdown-menu>
-                  </div>
-                </td>
-                <td>
-                  <i (click)="coreService.showDocumentation(calendar.documentationName, preferences)"
-                     *ngIf="calendar.documentationName"
-                     class="cursor fa fa-book p-l-xs p-r-xs"></i>
-                  <a (click)="previewCalendar(calendar)" class="text-primary-hover text-dark">{{calendar.name}}</a>
-                  <span *ngIf="calendar.title">-</span>
-                  <i class="text-muted">{{calendar.title}}</i>
-                </td>
-                <td *ngIf="isPathDisplay" [innerHtml]="calendar.path"></td>
-                <td><span [innerHtml]="calendar.type | translate" [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'bg-dark-blue': 'bg-orange'"
-                          class="label "></span></td>
-                <td [innerHtml]="calendar.from | stringToDate1:true"></td>
-                <td [innerHtml]="calendar.to | stringToDate1:true"></td>
-              </tr>
+                @for (calendar of ajaxTable.data; track calendar) {
+                  <tr>
+                    <td>
+                      <div class="btn-group dropdown">
+                        <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                                type="button">
+                          <i class="fa fa-ellipsis-h"></i>
+                        </button>
+                        <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                          <ul nz-menu>
+                            <li nz-menu-item>
+                              <a (click)="previewCalendar(calendar)" translate>resource.calendar.button.showPreview</a>
+                            </li>
+                          </ul>
+                        </nz-dropdown-menu>
+                      </div>
+                    </td>
+                    <td>
+                      @if (calendar.documentationName) {
+                        <i (click)="coreService.showDocumentation(calendar.documentationName, preferences)"
+                           class="cursor fa fa-book p-l-xs p-r-xs"></i>
+                      }
+                      <a (click)="previewCalendar(calendar)" class="text-primary-hover text-dark">{{calendar.name}}</a>
+                      @if (calendar.title) {
+                        <span>-</span>
+                      }
+                      <i class="text-muted">{{calendar.title}}</i>
+                    </td>
+                    @if (isPathDisplay) {
+                      <td [innerHtml]="calendar.path"></td>
+                    }
+                    <td><span [innerHtml]="calendar.type | translate" [ngClass]="calendar.type=='WORKINGDAYSCALENDAR' ? 'bg-dark-blue': 'bg-orange'"
+                              class="label "></span></td>
+                    <td [innerHtml]="calendar.from | stringToDate1:true"></td>
+                    <td [innerHtml]="calendar.to | stringToDate1:true"></td>
+                  </tr>
+                }
               </tbody>
             </nz-table>
           </div>

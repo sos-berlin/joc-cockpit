@@ -13,6 +13,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
 declare const $: any;
 
 @Component({
+  standalone: false,
   selector: 'app-single-lock',
   templateUrl: './single-lock.component.html'
 })
@@ -97,6 +98,7 @@ export class SingleLockComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-lock',
   templateUrl: 'lock.component.html'
 })

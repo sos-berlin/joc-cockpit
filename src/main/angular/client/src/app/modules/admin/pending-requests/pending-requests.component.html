@@ -16,92 +16,115 @@
     >
       <thead>
       <tr>
-        <th *ngIf="permission.joc && permission.joc.administration.accounts.manage"
-            [(nzChecked)]="object.checked"
-            [nzIndeterminate]="object.indeterminate"
-            [nzShowCheckbox]="true"
-            (nzCheckedChange)="checkAll($event)"
-            class="chk"
-        ></th>
-        <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span translate>common.label.action</span>
-        </th>
+        @if (permission.joc && permission.joc.administration.accounts.manage) {
+          <th [(nzChecked)]="object.checked"
+              [nzIndeterminate]="object.indeterminate"
+              [nzShowCheckbox]="true"
+              (nzCheckedChange)="checkAll($event)"
+              class="chk"
+          ></th>
+        }
+        @if (permission.joc && permission.joc.administration.accounts.manage) {
+          <th class="menu"><span translate>common.label.action</span></th>
+        }
         <th (click)="sort('accountName')">
           <a><span class="p-r-xs" translate>user.label.name</span>
-            <i *ngIf="requests.sortBy == 'accountName' && !requests.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="requests.sortBy == 'accountName' && requests.reverse"
-               class="fa fa-caret-down "></i></a>
+            @if (requests.sortBy == 'accountName' && !requests.reverse) {
+              <i class="fa fa-caret-up "></i>
+            }
+            @if (requests.sortBy == 'accountName' && requests.reverse) {
+              <i class="fa fa-caret-down "></i>
+            }</a>
         </th>
         <th (click)="sort('email')">
           <a><span class="p-r-xs" translate>user.label.email</span>
-            <i *ngIf="requests.sortBy == 'email' && !requests.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="requests.sortBy == 'email' && requests.reverse"
-               class="fa fa-caret-down "></i></a>
+            @if (requests.sortBy == 'email' && !requests.reverse) {
+              <i class="fa fa-caret-up "></i>
+            }
+            @if (requests.sortBy == 'email' && requests.reverse) {
+              <i class="fa fa-caret-down "></i>
+            }</a>
         </th>
         <th (click)="sort('origin')">
           <a><span class="p-r-xs" translate>user.label.origin</span>
-            <i *ngIf="requests.sortBy == 'origin' && !requests.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="requests.sortBy == 'origin' && requests.reverse"
-               class="fa fa-caret-down "></i></a>
+            @if (requests.sortBy == 'origin' && !requests.reverse) {
+              <i class="fa fa-caret-up "></i>
+            }
+            @if (requests.sortBy == 'origin' && requests.reverse) {
+              <i class="fa fa-caret-down "></i>
+            }</a>
         </th>
         <th (click)="sort('confirmed')">
           <a><span class="p-r-xs" translate>user.label.emailVerified</span>
-            <i *ngIf="requests.sortBy == 'confirmed' && !requests.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="requests.sortBy == 'confirmed' && requests.reverse"
-               class="fa fa-caret-down "></i></a>
+            @if (requests.sortBy == 'confirmed' && !requests.reverse) {
+              <i class="fa fa-caret-up "></i>
+            }
+            @if (requests.sortBy == 'confirmed' && requests.reverse) {
+              <i class="fa fa-caret-down "></i>
+            }</a>
         </th>
         <th (click)="sort('deferred')">
           <a><span class="p-r-xs" translate>user.label.rejected</span>
-            <i *ngIf="requests.sortBy == 'deferred' && !requests.reverse"
-               class="fa fa-caret-up "></i>
-            <i *ngIf="requests.sortBy == 'deferred' && requests.reverse"
-               class="fa fa-caret-down "></i></a>
+            @if (requests.sortBy == 'deferred' && !requests.reverse) {
+              <i class="fa fa-caret-up "></i>
+            }
+            @if (requests.sortBy == 'deferred' && requests.reverse) {
+              <i class="fa fa-caret-down "></i>
+            }</a>
         </th>
       </tr>
       </thead>
       <tbody>
-      <tr *ngFor="let account of ajaxTable.data" [ngClass]="{'opacity7': account.disabled}">
-        <td *ngIf="permission.joc && permission.joc.administration.accounts.manage"
-            [nzChecked]="object.mapOfCheckedId.has(account.accountName)"
-            [nzShowCheckbox]="true"
-            (nzCheckedChange)="onItemChecked(account, $event)"
-        ></td>
-        <td *ngIf="permission.joc && permission.joc.administration.accounts.manage">
-          <div class="btn-group dropdown pull-left m-r-sm">
-            <button [nzDisabled]="object.checked || object.indeterminate" [nzDropdownMenu]="option" class="btn-drop more-option-h"
-                    nz-dropdown nzTrigger="click" type="button"><i class="fa fa-ellipsis-h"></i></button>
-            <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-              <ul nz-menu>
-                <li (click)="approveList(account)" nz-menu-item>
-                  <a translate>common.button.approve</a>
-                </li>
-                <li (click)="rejectList(account)" [nzDisabled]="account.rejected" nz-menu-item>
-                  <a translate>common.button.reject</a>
-                </li>
-                <li (click)="deleteList(account)" class="bg-hover-color" nz-menu-item>
-                  <a translate>user.button.delete</a>
-                </li>
-              </ul>
-            </nz-dropdown-menu>
-          </div>
-        </td>
-        <td>
-          <span [innerHtml]="account.accountName  | decodeSpace | highlight: searchKey"></span>
-        </td>
-        <td><span [innerHtml]="account.email | highlight: searchKey"></span></td>
-        <td><span [innerHtml]="account.origin | highlight: searchKey"></span></td>
-        <td><span>{{(account.confirmed ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
-        <td><span>{{(account.deferred ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
-      </tr>
+        @for (account of ajaxTable.data; track account.accountName) {
+          <tr [ngClass]="{'opacity7': account.disabled}">
+            @if (permission.joc && permission.joc.administration.accounts.manage) {
+              <td [nzChecked]="object.mapOfCheckedId.has(account.accountName)"
+                  [nzShowCheckbox]="true"
+                  (nzCheckedChange)="onItemChecked(account, $event)"
+              ></td>
+            }
+            @if (permission.joc && permission.joc.administration.accounts.manage) {
+              <td>
+                <div class="btn-group dropdown pull-left m-r-sm">
+                  <button [nzDisabled]="object.checked || object.indeterminate" [nzDropdownMenu]="option" class="btn-drop more-option-h"
+                          nz-dropdown nzTrigger="click" type="button"><i class="fa fa-ellipsis-h"></i></button>
+                  <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                    <ul nz-menu>
+                      <li (click)="approveList(account)" nz-menu-item>
+                        <a translate>common.button.approve</a>
+                      </li>
+                      <li (click)="rejectList(account)" [nzDisabled]="account.rejected" nz-menu-item>
+                        <a translate>common.button.reject</a>
+                      </li>
+                      <li (click)="deleteList(account)" class="bg-hover-color" nz-menu-item>
+                        <a translate>user.button.delete</a>
+                      </li>
+                    </ul>
+                  </nz-dropdown-menu>
+                </div>
+              </td>
+            }
+            <td>
+              <span [innerHtml]="account.accountName  | decodeSpace | highlight: searchKey"></span>
+            </td>
+            <td><span [innerHtml]="account.email | highlight: searchKey"></span></td>
+            <td><span [innerHtml]="account.origin | highlight: searchKey"></span></td>
+            <td><span>{{(account.confirmed ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+            <td><span>{{(account.deferred ? 'common.label.yes' : 'common.label.no') | translate}}</span></td>
+          </tr>
+        }
       </tbody>
     </nz-table>
   </div>
-  <div *ngIf="ajaxTable.data.length >0" class="w-half label-top">
-    <span translate>common.label.total</span> <span> {{data.length}} </span>
-    <span *ngIf="ajaxTable.data.length >1" translate>user.label.usersFound</span>
-    <span *ngIf="ajaxTable.data.length ===1" translate>user.label.userFound</span>
-  </div>
+  @if (ajaxTable.data.length >0) {
+    <div class="w-half label-top">
+      <span translate>common.label.total</span> <span> {{data.length}} </span>
+      @if (ajaxTable.data.length >1) {
+        <span translate>user.label.usersFound</span>
+      }
+      @if (ajaxTable.data.length ===1) {
+        <span translate>user.label.userFound</span>
+      }
+    </div>
+  }
 </div>

@@ -30,6 +30,7 @@ import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.c
 declare const $: any;
 
 @Component({
+  standalone: false,
   selector: 'app-create-tag-template',
   templateUrl: './create-tag-dialog.html'
 })
@@ -304,6 +305,7 @@ export class CreateTagModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-show-objects',
   templateUrl: './show-objects-dialog.html'
 })
@@ -340,6 +342,7 @@ export class ShowObjectsComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-new-draft-modal',
   templateUrl: './new-draft-dialog.html'
 })
@@ -448,6 +451,7 @@ export class NewDraftComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-single-deploy-modal',
   templateUrl: './single-deploy-dialog.html'
 })
@@ -1435,6 +1439,7 @@ export class SingleDeployComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-deploy-draft-modal',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './deploy-dialog.html'
@@ -3564,6 +3569,7 @@ export class DeployComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-export-modal',
   templateUrl: './export-dialog.html'
 })
@@ -5088,6 +5094,7 @@ export class ExportComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-repository-modal',
   templateUrl: './repository-dialog.html'
 })
@@ -6698,6 +6705,7 @@ export class RepositoryComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-git-modal',
   templateUrl: './git-dialog.html'
 })
@@ -6817,6 +6825,7 @@ export class GitComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-notification-modal',
   templateUrl: './notification-dialog.html'
 })
@@ -6837,6 +6846,7 @@ export class NotificationComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-json-editor',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './json-editor-dialog.html'
@@ -6943,6 +6953,7 @@ export class JsonEditorModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-create-object-template',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './create-object-dialog.html'
@@ -7141,6 +7152,7 @@ export class CreateObjectModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-create-folder-template',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './create-folder-dialog.html'
@@ -7310,6 +7322,7 @@ export class CreateFolderModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-show-agents-assigned',
   templateUrl: './show-agents-dialog.html'
 })
@@ -7686,6 +7699,7 @@ export class ShowAgentsModalComponent {
 
 
 @Component({
+  standalone: false,
   selector: 'app-encrpyt-argument-template',
   templateUrl: './encrypt-argument-dialog.html'
 })
@@ -7917,6 +7931,7 @@ export class EncryptArgumentModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-change-modal',
   templateUrl: './change-dialog.html'
 })
@@ -8301,6 +8316,7 @@ export class ChangeModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-publish-change-modal',
   templateUrl: './publish-change-dialog.html'
 })
@@ -9128,6 +9144,7 @@ export class PublishChangeModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-show-dependencies-modal',
   templateUrl: './show-dependencies-dialog.html'
 })
@@ -9412,6 +9429,7 @@ export class ShowDependenciesModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-group-tags',
   templateUrl: './group-tags.html',
 })
@@ -9622,6 +9640,7 @@ export class GroupTagsComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-add-group',
   templateUrl: './add-groups-dialog.html',
 })
@@ -9747,6 +9766,7 @@ export class AddGropusModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-add-group',
   templateUrl: './add-tags-to-group-dialog.html',
 })
@@ -9927,6 +9947,7 @@ export class AddTagsToGropusModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-inventory',
   templateUrl: './inventory.component.html',
   styleUrls: ['./inventory.component.scss']

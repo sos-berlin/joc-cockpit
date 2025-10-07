@@ -1,9 +1,17 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="new" translate>customization.label.createCustomization</span>
-    <span *ngIf="edit" translate>customization.label.updateCustomization</span>
-    <span *ngIf="!new && !edit" translate>customization.label.copyCustomization</span> <span
-    *ngIf="name">: {{name}}</span>
+    @if (new) {
+      <span translate>customization.label.createCustomization</span>
+    }
+    @if (edit) {
+      <span translate>customization.label.updateCustomization</span>
+    }
+    @if (!new && !edit) {
+      <span translate>customization.label.copyCustomization</span>
+    }
+    @if (name) {
+      <span>: {{name}}</span>
+    }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>

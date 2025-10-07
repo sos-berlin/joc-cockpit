@@ -9,6 +9,7 @@ import {ConfirmModalComponent} from "../../components/comfirm-modal/confirm.comp
 import {NzFormatEmitEvent} from "ng-zorro-antd/tree";
 
 @Component({
+  standalone: false,
   selector: 'app-change-modal',
   templateUrl: './add-change-dialog.html'
 })
@@ -628,6 +629,7 @@ export class AddChangesModalComponent{
 
 
 @Component({
+  standalone: false,
   selector: 'app-changes',
   templateUrl: './changes.component.html',
 })

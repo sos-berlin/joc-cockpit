@@ -10,6 +10,7 @@ import {CalendarService} from "../../../../services/calendar.service";
 import {ValueEditorComponent} from "../../../../components/value-editor/value.component";
 
 @Component({
+  standalone: false,
   selector: 'app-update-object',
   templateUrl: './update-object.component.html'
 })

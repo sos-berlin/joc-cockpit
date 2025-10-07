@@ -5,6 +5,7 @@ import {DataService} from "../../../services/data.service";
 import {AuthService} from "../../../components/guard";
 
 @Component({
+  standalone: false,
   selector: 'app-email-setting',
   templateUrl: './email-setting.component.html',
   styleUrl: './email-setting.component.scss'

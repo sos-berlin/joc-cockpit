@@ -23,6 +23,7 @@ import {EncryptArgumentModalComponent, NotificationComponent} from "../inventory
 import {HelpViewerComponent} from "../../../../components/help-viewer/help-viewer.component";
 
 @Component({
+  standalone: false,
   selector: 'app-test-mail',
   templateUrl: './test-mail-dialog.html'
 })
@@ -61,6 +62,7 @@ export class TestMailComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-job-resource',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './job-resource.component.html'

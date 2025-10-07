@@ -1,10 +1,14 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="!data" translate>user.label.generalSetting</span>
-    <span *ngIf="data">
-      <span translate>user.label.settingFor</span>:
-      {{data['identityServiceName']}}
-    </span>
+    @if (!data) {
+      <span translate>user.label.generalSetting</span>
+    }
+    @if (data) {
+      <span>
+        <span translate>user.label.settingFor</span>:
+        {{data['identityServiceName']}}
+      </span>
+    }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -15,458 +19,301 @@
     <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
     </div>
-    <div *ngIf="!data">
-      <div [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}" class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.general.sessionTimeout' | translate" 
-               class="col-sm-4 form-control-label" translate>user.label.sessionTimeout
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div class="col-sm-6">
-          <input type="text" class="form-control" required name="timeout"
-            [placeholder]="'user.placeholder.sessionTimeout' | translate" #timeout="ngModel" validateSessionTimeReqex
-            [(ngModel)]="currentObj.sessionTimeout">
-          <div *ngIf="timeout.invalid && (timeout.dirty || timeout.touched)" class="text-danger help-block">
-            <div *ngIf="timeout.errors['required']">
-              <div translate>common.message.requiredError</div>
-            </div>
+    @if (!data) {
+      <div>
+        <div [ngClass]="{'has-error' : ((timeout.dirty || timeout.touched) && timeout.invalid)}" class="form-group row">
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.general.sessionTimeout' | translate"
+                 class="col-sm-4 form-control-label" translate>user.label.sessionTimeout
+            <sup class="text-danger text-sm">*</sup>
+          </label>
+          <div class="col-sm-6">
+            <input type="text" class="form-control" required name="timeout"
+                   [placeholder]="'user.placeholder.sessionTimeout' | translate" #timeout="ngModel" validateSessionTimeReqex
+                   [(ngModel)]="currentObj.sessionTimeout">
+            @if (timeout.invalid && (timeout.dirty || timeout.touched)) {
+              <div class="text-danger help-block">
+                @if (timeout.errors['required']) {
+                  <div translate>common.message.requiredError</div>
+                }
+              </div>
+            }
           </div>
         </div>
-      </div>
-      <div [ngClass]="{'has-error' : ((pwd.dirty || pwd.touched) && pwd.invalid) || !isLengthMatch}"
-           class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.general.initialPassword' | translate" 
-               class="col-sm-4 form-control-label" translate>user.label.initialPassword
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div class="col-sm-6">
-          <input [hidden]="passwordFields.first" type="password" class="form-control" required name="initialPassword1"
-            [placeholder]="'user.placeholder.initialPassword' | translate" (blur)="changePswd('PASSWORD')"
-            autocomplete="off" #pwd="ngModel" [(ngModel)]="currentObj.initialPassword1">
-          <input [hidden]="!passwordFields.first" type="text" class="form-control" required name="initialPassword"
-            [placeholder]="'user.placeholder.initialPassword' | translate" (blur)="changePswd('TEXT')"
-            autocomplete="off" #pwd="ngModel" [(ngModel)]="currentObj.initialPassword">
-          <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.first ? 'fa-eye' : 'fa-eye-slash'"
-            (click)="passwordFields.first = !passwordFields.first"></i>
-          <div *ngIf="pwd.invalid && (pwd.dirty || pwd.touched)" class="text-danger help-block">
-            <div *ngIf="pwd.errors && pwd.errors['required']">
-              <div translate>common.message.requiredError</div>
-            </div>
-          </div>
-          <div *ngIf="!isLengthMatch" class="text-danger help-block">
-            <div translate>user.message.minPasswordLength</div>
-          </div>
-        </div>
-      </div>
-      <div
-        [ngClass]="{'has-error' : ((minPasswordLength.dirty || minPasswordLength.touched) && minPasswordLength.invalid)}"
-        class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.general.minPasswordLength' | translate" 
-               class="col-sm-4 form-control-label" translate>user.label.minPasswordLength
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div class="col-sm-6">
-          <nz-input-number required name="minPasswordLength"
-            [nzPlaceHolder]="'user.placeholder.minPasswordLength' | translate" [nzMin]="0" #minPasswordLength="ngModel"
-            [(ngModel)]="currentObj.minPasswordLength" (ngModelChange)="isLengthMatch = true"></nz-input-number>
-          <div *ngIf="minPasswordLength.invalid && (minPasswordLength.dirty || minPasswordLength.touched)"
-               class="text-danger help-block">
-            <div *ngIf="minPasswordLength.errors['required']">
-              <div translate>common.message.requiredError</div>
-            </div>
+        <div [ngClass]="{'has-error' : ((pwd.dirty || pwd.touched) && pwd.invalid) || !isLengthMatch}"
+             class="form-group row">
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.general.initialPassword' | translate"
+                 class="col-sm-4 form-control-label" translate>user.label.initialPassword
+            <sup class="text-danger text-sm">*</sup>
+          </label>
+          <div class="col-sm-6">
+            <input [hidden]="passwordFields.first" type="password" class="form-control" required name="initialPassword1"
+                   [placeholder]="'user.placeholder.initialPassword' | translate" (blur)="changePswd('PASSWORD')"
+                   autocomplete="off" #pwd="ngModel" [(ngModel)]="currentObj.initialPassword1">
+            <input [hidden]="!passwordFields.first" type="text" class="form-control" required name="initialPassword"
+                   [placeholder]="'user.placeholder.initialPassword' | translate" (blur)="changePswd('TEXT')"
+                   autocomplete="off" #pwd="ngModel" [(ngModel)]="currentObj.initialPassword">
+            <i class="fa pswd-hide-icon2" [ngClass]="!passwordFields.first ? 'fa-eye' : 'fa-eye-slash'"
+               (click)="passwordFields.first = !passwordFields.first"></i>
+            @if (pwd.invalid && (pwd.dirty || pwd.touched)) {
+              <div class="text-danger help-block">
+                @if (pwd.errors && pwd.errors['required']) {
+                  <div translate>common.message.requiredError</div>
+                }
+              </div>
+            }
+            @if (!isLengthMatch) {
+              <div class="text-danger help-block">
+                <div translate>user.message.minPasswordLength</div>
+              </div>
+            }
           </div>
         </div>
-      </div>
-    </div>
-    <!------------------------------------BEGIN KEYCLOAK----------------------------------------->
-    <div *ngIf="data && data['identityServiceType'].match('KEYCLOAK')">
-      <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakUrl' | translate" 
-               class="col-sm-4 form-control-label" translate>user.label.iamKeycloakUrl
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div [ngClass]="{'has-error' : ((keycloakUrl.dirty || keycloakUrl.touched) && keycloakUrl.invalid)}"
-             class="col-sm-6">
-          <input #keycloakUrl="ngModel" [(ngModel)]="currentObj.iamKeycloakUrl" [appAutofocus]="true"
-                 [placeholder]="'user.placeholder.iamKeycloakUrl' | translate" class="form-control"
-                 name="iamKeycloakUrl"
-                 required type="url">
-          <div *ngIf="keycloakUrl.invalid && (keycloakUrl.dirty || keycloakUrl.touched)" class="text-danger help-block">
-            <div *ngIf="keycloakUrl.errors['required']">
-              <div translate>common.message.requiredError</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div *ngIf="data['identityServiceType'] === 'KEYCLOAK'" class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakAdminAccount' | translate"
-               
-               class="col-sm-4 form-control-label"
-               translate>user.label.iamKeycloakAdminAccount
-          <sup class="text-danger text-sm">*</sup>
-        </label>
         <div
-          [ngClass]="{'has-error' : ((iamKeycloakAdminAccount.dirty || iamKeycloakAdminAccount.touched) && iamKeycloakAdminAccount.invalid)}"
-          class="col-sm-6">
-          <input #iamKeycloakAdminAccount="ngModel" [(ngModel)]="currentObj.iamKeycloakAdminAccount"
-                 [placeholder]="'user.placeholder.iamKeycloakAdminAccount' | translate" class="form-control"
-                 name="iamKeycloakAdminAccount" required
-                 type="text">
-          <div
-            *ngIf="iamKeycloakAdminAccount.invalid && (iamKeycloakAdminAccount.dirty || iamKeycloakAdminAccount.touched)"
-            class="text-danger help-block">
-            <div *ngIf="iamKeycloakAdminAccount.errors['required']">
-              <div translate>common.message.requiredError</div>
-            </div>
+          [ngClass]="{'has-error' : ((minPasswordLength.dirty || minPasswordLength.touched) && minPasswordLength.invalid)}"
+          class="form-group row">
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.general.minPasswordLength' | translate"
+                 class="col-sm-4 form-control-label" translate>user.label.minPasswordLength
+            <sup class="text-danger text-sm">*</sup>
+          </label>
+          <div class="col-sm-6">
+            <nz-input-number required name="minPasswordLength"
+                             [nzPlaceHolder]="'user.placeholder.minPasswordLength' | translate" [nzMin]="0" #minPasswordLength="ngModel"
+                             [(ngModel)]="currentObj.minPasswordLength" (ngModelChange)="isLengthMatch = true"></nz-input-number>
+            @if (minPasswordLength.invalid && (minPasswordLength.dirty || minPasswordLength.touched)) {
+              <div class="text-danger help-block">
+                @if (minPasswordLength.errors['required']) {
+                  <div translate>common.message.requiredError</div>
+                }
+              </div>
+            }
           </div>
         </div>
       </div>
-      <div *ngIf="data['identityServiceType'] === 'KEYCLOAK'" class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakAdminPassword' | translate"
-               
-               class="col-sm-4 form-control-label"
-               translate>user.label.iamKeycloakAdminPassword</label>
-        <div class="col-sm-6">
-          <input [(ngModel)]="currentObj.iamKeycloakAdminPassword"
-                 [placeholder]="'user.placeholder.iamKeycloakAdminPassword' | translate"
-                 autocomplete="off" class="form-control" name="iamKeycloakAdminPassword"
-                 type="{{!passwordFields.third ? 'password' : 'text'}}">
-          <i (click)="passwordFields.third = !passwordFields.third"
-             [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
-             class="fa pswd-hide-icon2"></i>
+    }
+    <!------------------------------------BEGIN KEYCLOAK------------------------------------------->
+    @if (data && data['identityServiceType'].match('KEYCLOAK')) {
+      <div>
+        <div class="form-group row">
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakUrl' | translate"
+                 class="col-sm-4 form-control-label" translate>user.label.iamKeycloakUrl
+            <sup class="text-danger text-sm">*</sup>
+          </label>
+          <div [ngClass]="{'has-error' : ((keycloakUrl.dirty || keycloakUrl.touched) && keycloakUrl.invalid)}"
+               class="col-sm-6">
+            <input #keycloakUrl="ngModel" [(ngModel)]="currentObj.iamKeycloakUrl" [appAutofocus]="true"
+                   [placeholder]="'user.placeholder.iamKeycloakUrl' | translate" class="form-control"
+                   name="iamKeycloakUrl"
+                   required type="url">
+            @if (keycloakUrl.invalid && (keycloakUrl.dirty || keycloakUrl.touched)) {
+              <div class="text-danger help-block">
+                @if (keycloakUrl.errors['required']) {
+                  <div translate>common.message.requiredError</div>
+                }
+              </div>
+            }
+          </div>
         </div>
-      </div>
-      <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakTrustStorePath' | translate"
-               
-               class="col-sm-4 form-control-label"
-               translate>user.label.iamKeycloakTrustStorePath</label>
-        <div class="col-sm-6">
-          <input [(ngModel)]="currentObj.iamKeycloakTruststorePath"
-                 [placeholder]="'user.placeholder.iamKeycloakTrustStorePath' | translate" class="form-control"
-                 name="iamKeycloakTruststorePath"
-                 type="text">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakTrustStorePassword' | translate"
-               
-               class="col-sm-4 form-control-label" translate>user.label.iamKeycloakTrustStorePassword</label>
-        <div class="col-sm-6">
-          <input [(ngModel)]="currentObj.iamKeycloakTruststorePassword"
-                 [placeholder]="'user.placeholder.iamKeycloakTrustStorePassword' | translate"
-                 autocomplete="off" class="form-control"
-                 name="iamKeycloakTruststorePassword"
-                 type="{{!passwordFields.fourth ? 'password' : 'text'}}">
-          <i (click)="passwordFields.fourth = !passwordFields.fourth"
-             [ngClass]="!passwordFields.fourth ? 'fa-eye' : 'fa-eye-slash'"
-             class="fa pswd-hide-icon2"></i>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakTrustStoreType' | translate"
-               
-               class="col-sm-4 form-control-label"
-               translate>user.label.iamKeycloakTrustStoreType
-          <sup *ngIf="currentObj.iamKeycloakTruststorePath" class="text-danger text-sm">*</sup>
-        </label>
-        <div [ngClass]="{'has-error' : ((storePath.dirty || storePath.touched) && storePath.invalid)}" class="col-sm-6">
-          <input #storePath="ngModel" [(ngModel)]="currentObj.iamKeycloakTruststoreType"
-                 [nzAutocomplete]="auto"
-                 [placeholder]="'user.placeholder.iamKeycloakTrustStoreType' | translate"
-                 [required]="(currentObj.iamKeycloakTruststorePath && currentObj.iamKeycloakTruststorePath.length > 0) ? true : false"
-                 class="form-control" name="iamKeycloakTruststoreType"/>
-          <nz-autocomplete #auto>
-            <nz-auto-option *ngFor="let option of keyStoreTypes" [nzLabel]="option" [nzValue]="option">
-              <span>{{option}}</span>
-            </nz-auto-option>
-          </nz-autocomplete>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakClientId' | translate"
-                class="col-sm-4 form-control-label"
-               translate>user.label.iamKeycloakClientId</label>
-        <div class="col-sm-6">
-          <input [(ngModel)]="currentObj.iamKeycloakClientId"
-                 [placeholder]="'user.placeholder.iamKeycloakClientId' | translate" class="form-control"
-                 name="iamKeycloakClientId"
-                 type="text">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakClientSecret' | translate"
-               
-               class="col-sm-4 form-control-label"
-               translate>user.label.iamKeycloakClientSecret</label>
-        <div class="col-sm-6">
-          <input [(ngModel)]="currentObj.iamKeycloakClientSecret"
-                 [placeholder]="'user.placeholder.iamKeycloakClientSecret' | translate"
-                 class="form-control" name="iamKeycloakClientSecret"
-                 type="{{!passwordFields.third ? 'password' : 'text'}}">
-          <i (click)="passwordFields.third = !passwordFields.third"
-             [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
-             class="fa pswd-hide-icon2"></i>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakRealm' | translate" 
-               class="col-sm-4 form-control-label" translate>user.label.iamKeycloakRealm</label>
-        <div class="col-sm-6">
-          <input [(ngModel)]="currentObj.iamKeycloakRealm"
-                 [placeholder]="'user.placeholder.iamKeycloakRealm' | translate" class="form-control"
-                 name="iamKeycloakRealm"
-                 type="text">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakVersionCompatibility' | translate" 
-               class="col-sm-4 form-control-label" translate>user.label.iamKeycloakVersionCompatibility</label>
-        <div class="col-sm-6">
-          <label nz-checkbox [(ngModel)]="versionCompatibility.isCheck" (ngModelChange)="checkVersionCompatibility($event, currentObj)"
-                 name="iamKeycloakVersionCompatibility"></label>
-        </div>
-      </div>
-    </div>
-    <!------------------------------------BEGIN LDAP--------------------------------------------->
-    <div *ngIf="data && data['identityServiceType'].match('LDAP')">
-      <nz-tabset class="m-t-n-8">
-        <nz-tab [nzTitle]="'user.tab.simpleMode' | translate">
-          <div class="m-l-12 m-r-12">
-            <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapHost' | translate" 
-                     class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapHost
-                <sup class="text-danger text-sm">*</sup>
-              </label>
-              <div [ngClass]="{'has-error' : ((host.dirty || host.touched) && host.invalid)}" class="col-sm-6">
-                <input #host="ngModel" (blur)="changeField()" [(ngModel)]="userObj.iamLdapHost" [appAutofocus]="true"
-                       [placeholder]="'user.usermode.placeholder.iamLdapHost' | translate"
-                       class="form-control"
-                       name="iamLdapHost" required
-                       type="text">
-              </div>
-            </div>
-            <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapProtocol' | translate" 
-                     class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapProtocol
-                <sup class="text-danger text-sm">*</sup>
-              </label>
-              <div class="col-sm-6">
-                <app-select-input [isRequired]="true"  [name]="'iamLdapProtocol'" [extraLabelText]="'user.usermode.label.'"
-                                  [object]="userObj" [attributeName]="'iamLdapProtocol'" (modelChange)="changeConfiguration($event)" [listArray]="iamLdapProtocols"
-                [optionLabel]="'text'" [optionValue]="'value'" ></app-select-input>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapPort' | translate" 
-                     class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapPort
-                <sup class="text-danger text-sm">*</sup>
-              </label>
-              <div [ngClass]="{'has-error' : ((port.dirty || port.touched) && port.invalid)}" class="col-sm-6">
-                <input #port="ngModel" (blur)="changeField()" [(ngModel)]="userObj.iamLdapPort"
-                       [placeholder]="'user.usermode.placeholder.iamLdapPort' | translate" class="form-control"
-                       name="iamLdapPort" required
-                       type="text">
-              </div>
-            </div>
-            <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapAD' | translate" 
-                     class="col-sm-4" translate>user.usermode.label.iamLdapAD</label>
-              <div class="col-sm-6">
-                <label nz-checkbox [(ngModel)]="userObj.iamLdapAD" name="iamLdapAD"
-                       (ngModelChange)="checkConfirmation($event, 'AD')"></label>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapADWithSamAccount' | translate"
-                     
-                     class="col-sm-4" translate>user.usermode.label.iamLdapADWithSamAccount</label>
-              <div class="col-sm-6">
-                <label nz-checkbox [(ngModel)]="userObj.iamLdapADwithSamAccount" [nzDisabled]="!userObj.iamLdapAD"
-                       name="iamLdapADWithSamAccount" (ngModelChange)="checkConfirmation($event, 'samAccount')"></label>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapWithMemberOf' | translate"
-                     
-                     class="col-sm-4" translate>user.usermode.label.iamLdapWithMemberOf</label>
-              <div class="col-sm-6">
-                <label nz-checkbox [(ngModel)]="userObj.iamLdapWithMemberOf"
-                       name="iamLdapWithMemberOf" (ngModelChange)="checkConfirmation($event, 'MemberOf')"></label>
-              </div>
-            </div>
-            <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapUserDnTemplate' | translate"
-                     
-                     class="col-sm-4 form-control-label"
-                     translate>user.label.iamLdapUserDnTemplate
-                <sup class="text-danger text-sm">*</sup>
-              </label>
-              <div [ngClass]="{'has-error' : ((dnTemplate.dirty || dnTemplate.touched) && dnTemplate.invalid)}"
-                   class="col-sm-6">
-                <input #dnTemplate="ngModel" (blur)="changeInput('Dn')" [(ngModel)]="currentObj.iamLdapUserDnTemplate"
-                       [placeholder]="'user.placeholder.iamLdapUserDnTemplate' | translate" class="form-control"
-                       name="iamLdapUserDnTemplate" required
-                       type="text">
-              </div>
-            </div>
-            <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapSearchBase' | translate"
-                      class="col-sm-4 form-control-label"
-                     translate>user.label.iamLdapSearchBase
-                <sup *ngIf="userObj.iamLdapWithMemberOf" class="text-danger text-sm">*</sup>
-              </label>
-              <div [ngClass]="{'has-error' : ((searchBase.dirty || searchBase.touched) && searchBase.invalid)}"
-                   class="col-sm-6">
-                <input #searchBase="ngModel" [(ngModel)]="currentObj.iamLdapSearchBase"
-                       [placeholder]="'user.placeholder.iamLdapSearchBase' | translate"
-                       [required]="userObj.iamLdapWithMemberOf" class="form-control"
-                       name="iamLdapSearchBase"
-                       type="text">
-              </div>
-            </div>
-            <div class="form-group row">
-              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapUserSearchFilter' | translate"
-                     
-                     class="col-sm-4 form-control-label"
-                     translate>user.label.iamLdapUserSearchFilter</label>
-              <div class="col-sm-6">
-                <input [(ngModel)]="currentObj.iamLdapUserSearchFilter"
-                       [placeholder]="'user.placeholder.iamLdapUserSearchFilter' | translate" class="form-control"
-                       name="iamLdapUserSearchFilter"
-                       type="text">
-              </div>
+        @if (data['identityServiceType'] === 'KEYCLOAK') {
+          <div class="form-group row">
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakAdminAccount' | translate"
+                   class="col-sm-4 form-control-label"
+                   translate>user.label.iamKeycloakAdminAccount
+              <sup class="text-danger text-sm">*</sup>
+            </label>
+            <div
+              [ngClass]="{'has-error' : ((iamKeycloakAdminAccount.dirty || iamKeycloakAdminAccount.touched) && iamKeycloakAdminAccount.invalid)}"
+              class="col-sm-6">
+              <input #iamKeycloakAdminAccount="ngModel" [(ngModel)]="currentObj.iamKeycloakAdminAccount"
+                     [placeholder]="'user.placeholder.iamKeycloakAdminAccount' | translate" class="form-control"
+                     name="iamKeycloakAdminAccount" required
+                     type="text">
+              @if (iamKeycloakAdminAccount.invalid && (iamKeycloakAdminAccount.dirty || iamKeycloakAdminAccount.touched)) {
+                <div class="text-danger help-block">
+                  @if (iamKeycloakAdminAccount.errors['required']) {
+                    <div translate>common.message.requiredError</div>
+                  }
+                </div>
+              }
             </div>
           </div>
-        </nz-tab>
-        <nz-tab [nzTitle]="'user.tab.expertMode' | translate">
-          <div class="m-l-12 m-r-12">
-            <div class="form-group row">
-              <div class="col-md-12" translate>user.label.general</div>
+        }
+        @if (data['identityServiceType'] === 'KEYCLOAK') {
+          <div class="form-group row">
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakAdminPassword' | translate"
+                   class="col-sm-4 form-control-label"
+                   translate>user.label.iamKeycloakAdminPassword</label>
+            <div class="col-sm-6">
+              <input [(ngModel)]="currentObj.iamKeycloakAdminPassword"
+                     [placeholder]="'user.placeholder.iamKeycloakAdminPassword' | translate"
+                     autocomplete="off" class="form-control" name="iamKeycloakAdminPassword"
+                     type="{{!passwordFields.third ? 'password' : 'text'}}">
+              <i (click)="passwordFields.third = !passwordFields.third"
+                 [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
+                 class="fa pswd-hide-icon2"></i>
             </div>
-            <div class="p-a b-a">
+          </div>
+        }
+        <div class="form-group row">
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakTrustStorePath' | translate"
+                 class="col-sm-4 form-control-label"
+                 translate>user.label.iamKeycloakTrustStorePath</label>
+          <div class="col-sm-6">
+            <input [(ngModel)]="currentObj.iamKeycloakTruststorePath"
+                   [placeholder]="'user.placeholder.iamKeycloakTrustStorePath' | translate" class="form-control"
+                   name="iamKeycloakTruststorePath"
+                   type="text">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakTrustStorePassword' | translate"
+                 class="col-sm-4 form-control-label" translate>user.label.iamKeycloakTrustStorePassword</label>
+          <div class="col-sm-6">
+            <input [(ngModel)]="currentObj.iamKeycloakTruststorePassword"
+                   [placeholder]="'user.placeholder.iamKeycloakTrustStorePassword' | translate"
+                   autocomplete="off" class="form-control"
+                   name="iamKeycloakTruststorePassword"
+                   type="{{!passwordFields.fourth ? 'password' : 'text'}}">
+            <i (click)="passwordFields.fourth = !passwordFields.fourth"
+               [ngClass]="!passwordFields.fourth ? 'fa-eye' : 'fa-eye-slash'"
+               class="fa pswd-hide-icon2"></i>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakTrustStoreType' | translate"
+                 class="col-sm-4 form-control-label"
+                 translate>user.label.iamKeycloakTrustStoreType
+            @if (currentObj.iamKeycloakTruststorePath) {
+              <sup class="text-danger text-sm">*</sup>
+            }
+          </label>
+          <div [ngClass]="{'has-error' : ((storePath.dirty || storePath.touched) && storePath.invalid)}" class="col-sm-6">
+            <input #storePath="ngModel" [(ngModel)]="currentObj.iamKeycloakTruststoreType"
+                   [nzAutocomplete]="auto"
+                   [placeholder]="'user.placeholder.iamKeycloakTrustStoreType' | translate"
+                   [required]="(currentObj.iamKeycloakTruststorePath && currentObj.iamKeycloakTruststorePath.length > 0) ? true : false"
+                   class="form-control" name="iamKeycloakTruststoreType"/>
+            <nz-autocomplete #auto>
+              @for (option of keyStoreTypes; track option) {
+                <nz-auto-option [nzLabel]="option" [nzValue]="option">
+                  <span>{{option}}</span>
+                </nz-auto-option>
+              }
+            </nz-autocomplete>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakClientId' | translate"
+                 class="col-sm-4 form-control-label"
+                 translate>user.label.iamKeycloakClientId</label>
+          <div class="col-sm-6">
+            <input [(ngModel)]="currentObj.iamKeycloakClientId"
+                   [placeholder]="'user.placeholder.iamKeycloakClientId' | translate" class="form-control"
+                   name="iamKeycloakClientId"
+                   type="text">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakClientSecret' | translate"
+                 class="col-sm-4 form-control-label"
+                 translate>user.label.iamKeycloakClientSecret</label>
+          <div class="col-sm-6">
+            <input [(ngModel)]="currentObj.iamKeycloakClientSecret"
+                   [placeholder]="'user.placeholder.iamKeycloakClientSecret' | translate"
+                   class="form-control" name="iamKeycloakClientSecret"
+                   type="{{!passwordFields.third ? 'password' : 'text'}}">
+            <i (click)="passwordFields.third = !passwordFields.third"
+               [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
+               class="fa pswd-hide-icon2"></i>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakRealm' | translate"
+                 class="col-sm-4 form-control-label" translate>user.label.iamKeycloakRealm</label>
+          <div class="col-sm-6">
+            <input [(ngModel)]="currentObj.iamKeycloakRealm"
+                   [placeholder]="'user.placeholder.iamKeycloakRealm' | translate" class="form-control"
+                   name="iamKeycloakRealm"
+                   type="text">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.keycloak.iamKeycloakVersionCompatibility' | translate"
+                 class="col-sm-4 form-control-label" translate>user.label.iamKeycloakVersionCompatibility</label>
+          <div class="col-sm-6">
+            <label nz-checkbox [(ngModel)]="versionCompatibility.isCheck" (ngModelChange)="checkVersionCompatibility($event, currentObj)"
+                   name="iamKeycloakVersionCompatibility"></label>
+          </div>
+        </div>
+      </div>
+    }
+    <!------------------------------------BEGIN LDAP----------------------------------------------->
+    @if (data && data['identityServiceType'].match('LDAP')) {
+      <div>
+        <nz-tabset class="m-t-n-8">
+          <nz-tab [nzTitle]="'user.tab.simpleMode' | translate">
+            <div class="m-l-12 m-r-12">
               <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapServerUrl' | translate"
-                        class="col-sm-4 form-control-label"
-                       translate>user.label.iamLdapServerUrl
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapHost' | translate"
+                       class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapHost
                   <sup class="text-danger text-sm">*</sup>
                 </label>
-                <div
-                  [ngClass]="{'has-error' : ((iamLdapServerUrl.dirty || iamLdapServerUrl.touched) && iamLdapServerUrl.invalid)}"
-                  class="col-sm-6">
-                  <input #iamLdapServerUrl="ngModel" (blur)="changeInput('URL')"
-                         [(ngModel)]="currentObj.iamLdapServerUrl"
-                         [placeholder]="'user.placeholder.iamLdapServerUrl' | translate" class="form-control"
-                         name="iamLdapServerUrl" required
-                         type="url">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapReadTimeout' | translate"
-                       
-                       class="col-sm-4 form-control-label"
-                       translate>user.label.iamLdapReadTimeout
-                </label>
-                <div
-                  [ngClass]="{'has-error' : ((iamLdapReadTimeout.dirty || iamLdapReadTimeout.touched) && iamLdapReadTimeout.invalid)}"
-                  class="col-sm-6">
-                  <nz-input-number #iamLdapReadTimeout="ngModel"
-                                   [(ngModel)]="currentObj.iamLdapReadTimeout" [nzMin]="0"
-                                   [nzPlaceHolder]="'user.placeholder.iamLdapReadTimeout' | translate"
-                                   name="iamLdapReadTimeout"></nz-input-number>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapConnectTimeout' | translate"
-                       
-                       class="col-sm-4 form-control-label"
-                       translate>user.label.iamLdapConnectTimeout
-                </label>
-                <div
-                  [ngClass]="{'has-error' : ((iamLdapConnectTimeout.dirty || iamLdapConnectTimeout.touched) && iamLdapConnectTimeout.invalid)}"
-                  class="col-sm-6">
-                  <nz-input-number #iamLdapConnectTimeout="ngModel"
-                                   [(ngModel)]="currentObj.iamLdapConnectTimeout" [nzMin]="0"
-                                   [nzPlaceHolder]="'user.placeholder.iamLdapConnectTimeout' | translate"
-                                   name="iamLdapConnectTimeout"></nz-input-number>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapUseStartTls' | translate"
-                       
-                       class="col-sm-4" translate>user.label.iamLdapUseStartTls</label>
-                <div class="col-sm-6">
-                  <label nz-checkbox [(ngModel)]="currentObj.iamLdapUseStartTls"
-                         name="iamLdapUseStartTls" (ngModelChange)="checkConfirmation($event, 'StartTls')"></label>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapHostNameVerification' | translate"
-                       
-                       class="col-sm-4" translate>user.label.iamLdapHostNameVerification</label>
-                <div class="col-sm-6">
-                  <label [(ngModel)]="currentObj.iamLdapHostNameVerification" name="iamLdapHostNameVerification"
-                         nz-checkbox></label>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapTrustStorePath' | translate"
-                       
-                       class="col-sm-4 form-control-label"
-                       translate>user.label.iamLdapTrustStorePath</label>
-                <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamLdapTruststorePath"
-                         [placeholder]="'user.placeholder.iamLdapTrustStorePath' | translate" autocomplete="off"
+                <div [ngClass]="{'has-error' : ((host.dirty || host.touched) && host.invalid)}" class="col-sm-6">
+                  <input #host="ngModel" (blur)="changeField()" [(ngModel)]="userObj.iamLdapHost" [appAutofocus]="true"
+                         [placeholder]="'user.usermode.placeholder.iamLdapHost' | translate"
                          class="form-control"
-                         name="iamLdapTruststorePath"
+                         name="iamLdapHost" required
                          type="text">
                 </div>
               </div>
               <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapTrustStorePassword' | translate"
-                       
-                       class="col-sm-4 form-control-label" translate>user.label.iamLdapTrustStorePassword</label>
-                <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamLdapTruststorePassword"
-                         [placeholder]="'user.placeholder.iamLdapTrustStorePassword' | translate"
-                         autocomplete="off" class="form-control"
-                         name="iamLdapTruststorePassword"
-                         type="{{!passwordFields.third ? 'password' : 'text'}}">
-                  <i (click)="passwordFields.third = !passwordFields.third"
-                     [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
-                     class="fa pswd-hide-icon2"></i>
-                </div>
-              </div>
-              <div class="row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapTrustStoreType' | translate"
-                       
-                       class="col-sm-4 form-control-label"
-                       translate>user.label.iamLdapTrustStoreType
-                  <sup *ngIf="currentObj.iamLdapTruststorePath" class="text-danger text-sm">*</sup>
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapProtocol' | translate"
+                       class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapProtocol
+                  <sup class="text-danger text-sm">*</sup>
                 </label>
-                <div
-                  [ngClass]="{'has-error' : ((ldapTruststorePath.dirty || ldapTruststorePath.touched) && ldapTruststorePath.invalid)}"
-                  class="col-sm-6">
-                  <input #ldapTruststorePath="ngModel"
-                         [(ngModel)]="currentObj.iamLdapTruststoreType"
-                         [nzAutocomplete]="auto"
-                         [placeholder]="'user.placeholder.iamLdapTrustStoreType' | translate"
-                         [required]="(currentObj.iamLdapTruststorePath && currentObj.iamLdapTruststorePath.length>0) ? true : false"
-                         class="form-control" name="iamLdapTruststoreType"/>
-                  <nz-autocomplete #auto>
-                    <nz-auto-option *ngFor="let option of keyStoreTypes" [nzLabel]="option" [nzValue]="option">
-                      <span>{{option}}</span>
-                    </nz-auto-option>
-                  </nz-autocomplete>
+                <div class="col-sm-6">
+                  <app-select-input [isRequired]="true"  [name]="'iamLdapProtocol'" [extraLabelText]="'user.usermode.label.'"
+                                    [object]="userObj" [attributeName]="'iamLdapProtocol'" (modelChange)="changeConfiguration($event)" [listArray]="iamLdapProtocols"
+                                    [optionLabel]="'text'" [optionValue]="'value'" ></app-select-input>
                 </div>
               </div>
-            </div>
-            <div class="form-group row m-t">
-              <div class="col-md-12" translate>user.label.authentication</div>
-            </div>
-            <div class="p-a b-a">
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapPort' | translate"
+                       class="col-sm-4 form-control-label" translate>user.usermode.label.iamLdapPort
+                  <sup class="text-danger text-sm">*</sup>
+                </label>
+                <div [ngClass]="{'has-error' : ((port.dirty || port.touched) && port.invalid)}" class="col-sm-6">
+                  <input #port="ngModel" (blur)="changeField()" [(ngModel)]="userObj.iamLdapPort"
+                         [placeholder]="'user.usermode.placeholder.iamLdapPort' | translate" class="form-control"
+                         name="iamLdapPort" required
+                         type="text">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapAD' | translate"
+                       class="col-sm-4" translate>user.usermode.label.iamLdapAD</label>
+                <div class="col-sm-6">
+                  <label nz-checkbox [(ngModel)]="userObj.iamLdapAD" name="iamLdapAD"
+                         (ngModelChange)="checkConfirmation($event, 'AD')"></label>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapADWithSamAccount' | translate"
+                       class="col-sm-4" translate>user.usermode.label.iamLdapADWithSamAccount</label>
+                <div class="col-sm-6">
+                  <label nz-checkbox [(ngModel)]="userObj.iamLdapADwithSamAccount" [nzDisabled]="!userObj.iamLdapAD"
+                         name="iamLdapADWithSamAccount" (ngModelChange)="checkConfirmation($event, 'samAccount')"></label>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapWithMemberOf' | translate"
+                       class="col-sm-4" translate>user.usermode.label.iamLdapWithMemberOf</label>
+                <div class="col-sm-6">
+                  <label nz-checkbox [(ngModel)]="userObj.iamLdapWithMemberOf"
+                         name="iamLdapWithMemberOf" (ngModelChange)="checkConfirmation($event, 'MemberOf')"></label>
+                </div>
+              </div>
               <div class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapUserDnTemplate' | translate"
-                       
                        class="col-sm-4 form-control-label"
                        translate>user.label.iamLdapUserDnTemplate
                   <sup class="text-danger text-sm">*</sup>
@@ -474,64 +321,18 @@
                 <div [ngClass]="{'has-error' : ((dnTemplate.dirty || dnTemplate.touched) && dnTemplate.invalid)}"
                      class="col-sm-6">
                   <input #dnTemplate="ngModel" (blur)="changeInput('Dn')" [(ngModel)]="currentObj.iamLdapUserDnTemplate"
-                         [placeholder]="'user.placeholder.iamLdapUserDnTemplate' | translate"
-                         class="form-control" name="iamLdapUserDnTemplate"
-                         required type="text">
-                </div>
-              </div>
-
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapSysemUserDnTemplate' | translate"
-                       
-                       class="col-sm-4 form-control-label"
-                       translate>user.label.iamLdapSysemUserDnTemplate
-                </label>
-                <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamLdapSysemUserDnTemplate"
-                         [placeholder]="'user.placeholder.iamLdapSysemUserDnTemplate' | translate"
-                         class="form-control" name="iamLdapSysemUserDnTemplate"
+                         [placeholder]="'user.placeholder.iamLdapUserDnTemplate' | translate" class="form-control"
+                         name="iamLdapUserDnTemplate" required
                          type="text">
                 </div>
               </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapSystemUser' | translate"
-                       
-                       class="col-sm-4 form-control-label"
-                       translate>user.label.iamLdapSystemUser</label>
-                <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamLdapSystemUser"
-                         [placeholder]="'user.placeholder.iamLdapSystemUser' | translate" autocomplete="off"
-                         class="form-control"
-                         name="iamLdapSystemUser"
-                         type="text">
-                </div>
-              </div>
-              <div class="row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapSystemPassword' | translate"
-                       
-                       class="col-sm-4 form-control-label"
-                       translate>user.label.iamLdapSystemPassword</label>
-                <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamLdapSystemPassword"
-                         [placeholder]="'user.placeholder.iamLdapSystemPassword' | translate"
-                         autocomplete="off" class="form-control" name="iamLdapSystemPassword"
-                         type="{{!passwordFields.fourth ? 'password' : 'text'}}">
-                  <i (click)="passwordFields.fourth = !passwordFields.fourth"
-                     [ngClass]="!passwordFields.fourth ? 'fa-eye' : 'fa-eye-slash'"
-                     class="fa pswd-hide-icon2"></i>
-                </div>
-              </div>
-            </div>
-            <div *ngIf="data['identityServiceType'] !== 'LDAP-JOC'" class="form-group row m-t">
-              <div class="col-md-12" translate>user.label.groupRolesMapping</div>
-            </div>
-            <div *ngIf="data['identityServiceType'] !== 'LDAP-JOC'" class="p-a b-a">
               <div class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapSearchBase' | translate"
-                       
                        class="col-sm-4 form-control-label"
                        translate>user.label.iamLdapSearchBase
-                  <sup *ngIf="userObj.iamLdapWithMemberOf" class="text-danger text-sm">*</sup>
+                  @if (userObj.iamLdapWithMemberOf) {
+                    <sup class="text-danger text-sm">*</sup>
+                  }
                 </label>
                 <div [ngClass]="{'has-error' : ((searchBase.dirty || searchBase.touched) && searchBase.invalid)}"
                      class="col-sm-6">
@@ -543,33 +344,9 @@
                 </div>
               </div>
               <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapGroupSearchBase' | translate"
-                       
-                       class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupSearchBase</label>
-                <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamLdapGroupSearchBase" [disabled]="userObj.iamLdapWithMemberOf"
-                         [placeholder]="'user.placeholder.iamLdapGroupSearchBase' | translate"
-                         class="form-control"
-                         name="iamLdapGroupSearchBase"
-                         type="text">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapGroupSearchFilter' | translate"
-                       
-                       class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupSearchFilter</label>
-                <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamLdapGroupSearchFilter" [disabled]="userObj.iamLdapWithMemberOf"
-                         [placeholder]="'user.placeholder.iamLdapGroupSearchFilter' | translate"
-                         class="form-control"
-                         name="iamLdapGroupSearchFilter"
-                         type="text">
-                </div>
-              </div>
-              <div class="form-group row">
                 <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapUserSearchFilter' | translate"
-                       
-                       class="col-sm-4 form-control-label" translate>user.label.iamLdapUserSearchFilter</label>
+                       class="col-sm-4 form-control-label"
+                       translate>user.label.iamLdapUserSearchFilter</label>
                 <div class="col-sm-6">
                   <input [(ngModel)]="currentObj.iamLdapUserSearchFilter"
                          [placeholder]="'user.placeholder.iamLdapUserSearchFilter' | translate" class="form-control"
@@ -577,806 +354,1115 @@
                          type="text">
                 </div>
               </div>
+            </div>
+          </nz-tab>
+          <nz-tab [nzTitle]="'user.tab.expertMode' | translate">
+            <div class="m-l-12 m-r-12">
               <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapGroupNameAttribute' | translate"
-                       
-                       class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupNameAttribute</label>
-                <div class="col-sm-6">
-                  <input (blur)="changeInput('GroupName')" [(ngModel)]="currentObj.iamLdapGroupNameAttribute"
-                         [placeholder]="'user.placeholder.iamLdapGroupNameAttribute' | translate"
-                         class="form-control"
-                         name="iamLdapGroupNameAttribute"
-                         type="text">
-                </div>
+                <div class="col-md-12" translate>user.label.general</div>
               </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapUserNameAttribute' | translate"
-                       
-                       class="col-sm-4 form-control-label" translate>user.label.iamLdapUserNameAttribute</label>
-                <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamLdapUserNameAttribute"
-                         [placeholder]="'user.placeholder.iamLdapUserNameAttribute' | translate" class="form-control"
-                         name="iamLdapUserNameAttribute"
-                         type="text">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapGroupRolesMap' | translate"
-                       
-                       class="col-sm-5 _600" translate>user.label.iamLdapGroupRolesMap</label>
-              </div>
-              <div class="form-group row" *ngIf="currentObj.iamLdapGroupRolesMap">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.disableNestedGroupSearch' | translate"
-                       
-                       class="col-sm-4"
-                       translate>user.label.disableNestedGroupSearch</label>
-                <div class="col-sm-6">
-                  <label [(ngModel)]="currentObj.iamLdapGroupRolesMap.iamLdapDisableNestedGroupSearch" name="iamLdapDisableNestedGroupSearch" nz-checkbox>
+              <div class="p-a b-a">
+                <div class="form-group row">
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapServerUrl' | translate"
+                         class="col-sm-4 form-control-label"
+                         translate>user.label.iamLdapServerUrl
+                    <sup class="text-danger text-sm">*</sup>
                   </label>
-                </div>
-              </div>
-              <div *ngIf="currentObj.iamLdapGroupRolesMap && currentObj.iamLdapGroupRolesMap.items.length > 0"
-                   class="form-group row m-b-0">
-                <div class="col-md-4 m-b-sm" translate>user.label.group</div>
-                <div class="col-md-6 m-b-sm" translate>user.label.roles</div>
-              </div>
-              <ng-container *ngIf="currentObj.iamLdapGroupRolesMap && currentObj.iamLdapGroupRolesMap.items.length > 0">
-                <div *ngFor="let item of currentObj.iamLdapGroupRolesMap.items; let i = index"
-                     class="form-group row m-b-0">
-                  <div [ngClass]="{'has-error' : ((group.dirty || group.touched) && group.invalid)}"
-                       class="col-md-4 m-b-sm">
-                    <input #group="ngModel" [(ngModel)]="item.ldapGroupDn" class="form-control" name="group{{i}}"
-                           placeholder="{{'user.placeholder.group' | translate}}" type="text">
-                  </div>
-                  <div class="col-md-6 m-b-sm">
-                     <app-select-input [isSearchable]="true" [isMultiple]="true" [placeholder]="'user.placeholder.selectRoles'" [isRequired]="(item.ldapGroupDn && item.ldapGroupDn.length > 0) ? true : false"  [name]="'roles' + i"
-                    [object]="item" [attributeName]="'roles'" [listArray]="allRoles"  ></app-select-input>
-                  </div>
-                  <div class="col-md-1">
-                    <a (click)="removeGroupRoles(i)" class="cursor"><i
-                      class="fa fa-times m-t-sm text-hover-color"></i></a>
+                  <div
+                    [ngClass]="{'has-error' : ((iamLdapServerUrl.dirty || iamLdapServerUrl.touched) && iamLdapServerUrl.invalid)}"
+                    class="col-sm-6">
+                    <input #iamLdapServerUrl="ngModel" (blur)="changeInput('URL')"
+                           [(ngModel)]="currentObj.iamLdapServerUrl"
+                           [placeholder]="'user.placeholder.iamLdapServerUrl' | translate" class="form-control"
+                           name="iamLdapServerUrl" required
+                           type="url">
                   </div>
                 </div>
-              </ng-container>
-              <div class="row">
-                <div class="col-sm-12">
-                  <a (click)="addGroupRoles()" class="text-u-l" translate>user.button.addGroupRole</a>
+                <div class="form-group row">
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapReadTimeout' | translate"
+                         class="col-sm-4 form-control-label"
+                         translate>user.label.iamLdapReadTimeout
+                  </label>
+                  <div
+                    [ngClass]="{'has-error' : ((iamLdapReadTimeout.dirty || iamLdapReadTimeout.touched) && iamLdapReadTimeout.invalid)}"
+                    class="col-sm-6">
+                    <nz-input-number #iamLdapReadTimeout="ngModel"
+                                     [(ngModel)]="currentObj.iamLdapReadTimeout" [nzMin]="0"
+                                     [nzPlaceHolder]="'user.placeholder.iamLdapReadTimeout' | translate"
+                                     name="iamLdapReadTimeout"></nz-input-number>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapConnectTimeout' | translate"
+                         class="col-sm-4 form-control-label"
+                         translate>user.label.iamLdapConnectTimeout
+                  </label>
+                  <div
+                    [ngClass]="{'has-error' : ((iamLdapConnectTimeout.dirty || iamLdapConnectTimeout.touched) && iamLdapConnectTimeout.invalid)}"
+                    class="col-sm-6">
+                    <nz-input-number #iamLdapConnectTimeout="ngModel"
+                                     [(ngModel)]="currentObj.iamLdapConnectTimeout" [nzMin]="0"
+                                     [nzPlaceHolder]="'user.placeholder.iamLdapConnectTimeout' | translate"
+                                     name="iamLdapConnectTimeout"></nz-input-number>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapUseStartTls' | translate"
+                         class="col-sm-4" translate>user.label.iamLdapUseStartTls</label>
+                  <div class="col-sm-6">
+                    <label nz-checkbox [(ngModel)]="currentObj.iamLdapUseStartTls"
+                           name="iamLdapUseStartTls" (ngModelChange)="checkConfirmation($event, 'StartTls')"></label>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapHostNameVerification' | translate"
+                         class="col-sm-4" translate>user.label.iamLdapHostNameVerification</label>
+                  <div class="col-sm-6">
+                    <label [(ngModel)]="currentObj.iamLdapHostNameVerification" name="iamLdapHostNameVerification"
+                           nz-checkbox></label>
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapTrustStorePath' | translate"
+                         class="col-sm-4 form-control-label"
+                         translate>user.label.iamLdapTrustStorePath</label>
+                  <div class="col-sm-6">
+                    <input [(ngModel)]="currentObj.iamLdapTruststorePath"
+                           [placeholder]="'user.placeholder.iamLdapTrustStorePath' | translate" autocomplete="off"
+                           class="form-control"
+                           name="iamLdapTruststorePath"
+                           type="text">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapTrustStorePassword' | translate"
+                         class="col-sm-4 form-control-label" translate>user.label.iamLdapTrustStorePassword</label>
+                  <div class="col-sm-6">
+                    <input [(ngModel)]="currentObj.iamLdapTruststorePassword"
+                           [placeholder]="'user.placeholder.iamLdapTrustStorePassword' | translate"
+                           autocomplete="off" class="form-control"
+                           name="iamLdapTruststorePassword"
+                           type="{{!passwordFields.third ? 'password' : 'text'}}">
+                    <i (click)="passwordFields.third = !passwordFields.third"
+                       [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
+                       class="fa pswd-hide-icon2"></i>
+                  </div>
+                </div>
+                <div class="row">
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapTrustStoreType' | translate"
+                         class="col-sm-4 form-control-label"
+                         translate>user.label.iamLdapTrustStoreType
+                    @if (currentObj.iamLdapTruststorePath) {
+                      <sup class="text-danger text-sm">*</sup>
+                    }
+                  </label>
+                  <div
+                    [ngClass]="{'has-error' : ((ldapTruststorePath.dirty || ldapTruststorePath.touched) && ldapTruststorePath.invalid)}"
+                    class="col-sm-6">
+                    <input #ldapTruststorePath="ngModel"
+                           [(ngModel)]="currentObj.iamLdapTruststoreType"
+                           [nzAutocomplete]="auto"
+                           [placeholder]="'user.placeholder.iamLdapTrustStoreType' | translate"
+                           [required]="(currentObj.iamLdapTruststorePath && currentObj.iamLdapTruststorePath.length>0) ? true : false"
+                           class="form-control" name="iamLdapTruststoreType"/>
+                    <nz-autocomplete #auto>
+                      @for (option of keyStoreTypes; track option) {
+                        <nz-auto-option [nzLabel]="option" [nzValue]="option">
+                          <span>{{option}}</span>
+                        </nz-auto-option>
+                      }
+                    </nz-autocomplete>
+                  </div>
                 </div>
               </div>
+              <div class="form-group row m-t">
+                <div class="col-md-12" translate>user.label.authentication</div>
+              </div>
+              <div class="p-a b-a">
+                <div class="form-group row">
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapUserDnTemplate' | translate"
+                         class="col-sm-4 form-control-label"
+                         translate>user.label.iamLdapUserDnTemplate
+                    <sup class="text-danger text-sm">*</sup>
+                  </label>
+                  <div [ngClass]="{'has-error' : ((dnTemplate.dirty || dnTemplate.touched) && dnTemplate.invalid)}"
+                       class="col-sm-6">
+                    <input #dnTemplate="ngModel" (blur)="changeInput('Dn')" [(ngModel)]="currentObj.iamLdapUserDnTemplate"
+                           [placeholder]="'user.placeholder.iamLdapUserDnTemplate' | translate"
+                           class="form-control" name="iamLdapUserDnTemplate"
+                           required type="text">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapSysemUserDnTemplate' | translate"
+                         class="col-sm-4 form-control-label"
+                         translate>user.label.iamLdapSysemUserDnTemplate
+                  </label>
+                  <div class="col-sm-6">
+                    <input [(ngModel)]="currentObj.iamLdapSysemUserDnTemplate"
+                           [placeholder]="'user.placeholder.iamLdapSysemUserDnTemplate' | translate"
+                           class="form-control" name="iamLdapSysemUserDnTemplate"
+                           type="text">
+                  </div>
+                </div>
+                <div class="form-group row">
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapSystemUser' | translate"
+                         class="col-sm-4 form-control-label"
+                         translate>user.label.iamLdapSystemUser</label>
+                  <div class="col-sm-6">
+                    <input [(ngModel)]="currentObj.iamLdapSystemUser"
+                           [placeholder]="'user.placeholder.iamLdapSystemUser' | translate" autocomplete="off"
+                           class="form-control"
+                           name="iamLdapSystemUser"
+                           type="text">
+                  </div>
+                </div>
+                <div class="row">
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapSystemPassword' | translate"
+                         class="col-sm-4 form-control-label"
+                         translate>user.label.iamLdapSystemPassword</label>
+                  <div class="col-sm-6">
+                    <input [(ngModel)]="currentObj.iamLdapSystemPassword"
+                           [placeholder]="'user.placeholder.iamLdapSystemPassword' | translate"
+                           autocomplete="off" class="form-control" name="iamLdapSystemPassword"
+                           type="{{!passwordFields.fourth ? 'password' : 'text'}}">
+                    <i (click)="passwordFields.fourth = !passwordFields.fourth"
+                       [ngClass]="!passwordFields.fourth ? 'fa-eye' : 'fa-eye-slash'"
+                       class="fa pswd-hide-icon2"></i>
+                  </div>
+                </div>
+              </div>
+              @if (data['identityServiceType'] !== 'LDAP-JOC') {
+                <div class="form-group row m-t">
+                  <div class="col-md-12" translate>user.label.groupRolesMapping</div>
+                </div>
+              }
+              @if (data['identityServiceType'] !== 'LDAP-JOC') {
+                <div class="p-a b-a">
+                  <div class="form-group row">
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapSearchBase' | translate"
+                           class="col-sm-4 form-control-label"
+                           translate>user.label.iamLdapSearchBase
+                      @if (userObj.iamLdapWithMemberOf) {
+                        <sup class="text-danger text-sm">*</sup>
+                      }
+                    </label>
+                    <div [ngClass]="{'has-error' : ((searchBase.dirty || searchBase.touched) && searchBase.invalid)}"
+                         class="col-sm-6">
+                      <input #searchBase="ngModel" [(ngModel)]="currentObj.iamLdapSearchBase"
+                             [placeholder]="'user.placeholder.iamLdapSearchBase' | translate"
+                             [required]="userObj.iamLdapWithMemberOf" class="form-control"
+                             name="iamLdapSearchBase"
+                             type="text">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapGroupSearchBase' | translate"
+                           class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupSearchBase</label>
+                    <div class="col-sm-6">
+                      <input [(ngModel)]="currentObj.iamLdapGroupSearchBase" [disabled]="userObj.iamLdapWithMemberOf"
+                             [placeholder]="'user.placeholder.iamLdapGroupSearchBase' | translate"
+                             class="form-control"
+                             name="iamLdapGroupSearchBase"
+                             type="text">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapGroupSearchFilter' | translate"
+                           class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupSearchFilter</label>
+                    <div class="col-sm-6">
+                      <input [(ngModel)]="currentObj.iamLdapGroupSearchFilter" [disabled]="userObj.iamLdapWithMemberOf"
+                             [placeholder]="'user.placeholder.iamLdapGroupSearchFilter' | translate"
+                             class="form-control"
+                             name="iamLdapGroupSearchFilter"
+                             type="text">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapUserSearchFilter' | translate"
+                           class="col-sm-4 form-control-label" translate>user.label.iamLdapUserSearchFilter</label>
+                    <div class="col-sm-6">
+                      <input [(ngModel)]="currentObj.iamLdapUserSearchFilter"
+                             [placeholder]="'user.placeholder.iamLdapUserSearchFilter' | translate" class="form-control"
+                             name="iamLdapUserSearchFilter"
+                             type="text">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapGroupNameAttribute' | translate"
+                           class="col-sm-4 form-control-label" translate>user.label.iamLdapGroupNameAttribute</label>
+                    <div class="col-sm-6">
+                      <input (blur)="changeInput('GroupName')" [(ngModel)]="currentObj.iamLdapGroupNameAttribute"
+                             [placeholder]="'user.placeholder.iamLdapGroupNameAttribute' | translate"
+                             class="form-control"
+                             name="iamLdapGroupNameAttribute"
+                             type="text">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapUserNameAttribute' | translate"
+                           class="col-sm-4 form-control-label" translate>user.label.iamLdapUserNameAttribute</label>
+                    <div class="col-sm-6">
+                      <input [(ngModel)]="currentObj.iamLdapUserNameAttribute"
+                             [placeholder]="'user.placeholder.iamLdapUserNameAttribute' | translate" class="form-control"
+                             name="iamLdapUserNameAttribute"
+                             type="text">
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.iamLdapGroupRolesMap' | translate"
+                           class="col-sm-5 _600" translate>user.label.iamLdapGroupRolesMap</label>
+                  </div>
+                  @if (currentObj.iamLdapGroupRolesMap) {
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.ldap.disableNestedGroupSearch' | translate"
+                             class="col-sm-4"
+                             translate>user.label.disableNestedGroupSearch</label>
+                      <div class="col-sm-6">
+                        <label [(ngModel)]="currentObj.iamLdapGroupRolesMap.iamLdapDisableNestedGroupSearch" name="iamLdapDisableNestedGroupSearch" nz-checkbox>
+                        </label>
+                      </div>
+                    </div>
+                  }
+                  @if (currentObj.iamLdapGroupRolesMap && currentObj.iamLdapGroupRolesMap.items.length > 0) {
+                    <div class="form-group row m-b-0">
+                      <div class="col-md-4 m-b-sm" translate>user.label.group</div>
+                      <div class="col-md-6 m-b-sm" translate>user.label.roles</div>
+                    </div>
+                  }
+                  @if (currentObj.iamLdapGroupRolesMap && currentObj.iamLdapGroupRolesMap.items.length > 0) {
+                    <ng-container>
+                      @for (item of currentObj.iamLdapGroupRolesMap.items; track item; let i = $index) {
+                        <div class="form-group row m-b-0">
+                          <div [ngClass]="{'has-error' : ((group.dirty || group.touched) && group.invalid)}"
+                               class="col-md-4 m-b-sm">
+                            <input #group="ngModel" [(ngModel)]="item.ldapGroupDn" class="form-control" name="group{{i}}"
+                                   placeholder="{{'user.placeholder.group' | translate}}" type="text">
+                          </div>
+                          <div class="col-md-6 m-b-sm">
+                            <app-select-input [isSearchable]="true" [isMultiple]="true" [placeholder]="'user.placeholder.selectRoles'" [isRequired]="(item.ldapGroupDn && item.ldapGroupDn.length > 0) ? true : false"  [name]="'roles' + i"
+                                              [object]="item" [attributeName]="'roles'" [listArray]="allRoles"  ></app-select-input>
+                          </div>
+                          <div class="col-md-1">
+                            <a (click)="removeGroupRoles(i)" class="cursor"><i
+                              class="fa fa-times m-t-sm text-hover-color"></i></a>
+                          </div>
+                        </div>
+                      }
+                    </ng-container>
+                  }
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <a (click)="addGroupRoles()" class="text-u-l" translate>user.button.addGroupRole</a>
+                    </div>
+                  </div>
+                </div>
+              }
             </div>
-          </div>
-        </nz-tab>
-      </nz-tabset>
-    </div>
-    <!------------------------------------BEGIN OIDC--------------------------------------------->
-    <div *ngIf="data && data['identityServiceType'].match('OIDC')">
-      <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcName' | translate" 
-               class="col-sm-4 form-control-label" translate>user.label.iamOidcName
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div [ngClass]="{'has-error' : ((iamOidcName.dirty || iamOidcName.touched) && iamOidcName.invalid)}"
-             class="col-sm-6">
-          <input #iamOidcName="ngModel" [(ngModel)]="currentObj.iamOidcName" [appAutofocus]="true"
-                 [placeholder]="'user.placeholder.iamOidcName' | translate" class="form-control"
-                 name="iamOidcName"
-                 required type="text">
-          <div *ngIf="iamOidcName.invalid && (iamOidcName.dirty || iamOidcName.touched)" class="text-danger help-block">
-            <div *ngIf="iamOidcName.errors['required']">
-              <div translate>common.message.requiredError</div>
-            </div>
-          </div>
-        </div>
+          </nz-tab>
+        </nz-tabset>
       </div>
-      <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcAuthenticationUrl' | translate"
-                class="col-sm-4 form-control-label"
-               translate>user.label.iamOidcAuthenticationUrl
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div
-          [ngClass]="{'has-error' : ((iamOidcAuthenticationUrl.dirty || iamOidcAuthenticationUrl.touched) && iamOidcAuthenticationUrl.invalid)}"
-          class="col-sm-6">
-          <input #iamOidcAuthenticationUrl="ngModel" [(ngModel)]="currentObj.iamOidcAuthenticationUrl"
-                 [placeholder]="'user.placeholder.iamOidcAuthenticationUrl' | translate" class="form-control"
-                 name="iamOidcAuthenticationUrl" required
-                 type="text">
-          <div
-            *ngIf="iamOidcAuthenticationUrl.invalid && (iamOidcAuthenticationUrl.dirty || iamOidcAuthenticationUrl.touched)"
-            class="text-danger help-block">
-            <div *ngIf="iamOidcAuthenticationUrl.errors['required']">
-              <div translate>common.message.requiredError</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="m-b-12 row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcFlowType' | translate" 
-               class="col-sm-4"
-               translate>user.label.iamOidcFlowType
-        </label>
-        <div class="col-sm-8">
-          <nz-radio-group [(ngModel)]="currentObj.iamOidcFlowType" name="type">
-            <label nz-radio nzValue="AUTHENTICATION"><span
-              translate>user.label.iamOidcAuthenticationCodeFlow</span></label>
-            <label nz-radio nzValue="IMPLICIT"><span translate>user.label.iamOidcImplicitFlow</span></label>
-            <label nz-radio nzValue="CLIENT-CREDENTIAL"><span translate>user.label.iamOidcClientCredentialsFlow</span></label>
-          </nz-radio-group>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcClientId' | translate" 
-               class="col-sm-4 form-control-label" translate>user.label.iamOidcClientId
-          <sup class="text-danger text-sm">*</sup>
-        </label>
-        <div [ngClass]="{'has-error' : ((iamOidcClientId.dirty || iamOidcClientId.touched) && iamOidcClientId.invalid)}"
-             class="col-sm-6">
-          <input #iamOidcClientId="ngModel" [(ngModel)]="currentObj.iamOidcClientId"
-                 [placeholder]="'user.placeholder.iamOidcClientId' | translate" class="form-control"
-                 name="iamOidcClientId"
-                 required
-                 type="text">
-          <div *ngIf="iamOidcClientId.invalid && (iamOidcClientId.dirty || iamOidcClientId.touched)"
-               class="text-danger help-block">
-            <div *ngIf="iamOidcClientId.errors['required']">
-              <div translate>common.message.requiredError</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <ng-container *ngIf="currentObj.iamOidcFlowType == 'AUTHENTICATION'">
+    }
+    <!------------------------------------BEGIN OIDC----------------------------------------------->
+    @if (data && data['identityServiceType'].match('OIDC')) {
+      <div>
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcClientSecret' | translate" 
-                 class="col-sm-4 form-control-label" translate>user.label.iamOidcClientSecret
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcName' | translate"
+                 class="col-sm-4 form-control-label" translate>user.label.iamOidcName
+            <sup class="text-danger text-sm">*</sup>
+          </label>
+          <div [ngClass]="{'has-error' : ((iamOidcName.dirty || iamOidcName.touched) && iamOidcName.invalid)}"
+               class="col-sm-6">
+            <input #iamOidcName="ngModel" [(ngModel)]="currentObj.iamOidcName" [appAutofocus]="true"
+                   [placeholder]="'user.placeholder.iamOidcName' | translate" class="form-control"
+                   name="iamOidcName"
+                   required type="text">
+            @if (iamOidcName.invalid && (iamOidcName.dirty || iamOidcName.touched)) {
+              <div class="text-danger help-block">
+                @if (iamOidcName.errors['required']) {
+                  <div translate>common.message.requiredError</div>
+                }
+              </div>
+            }
+          </div>
+        </div>
+        <div class="form-group row">
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcAuthenticationUrl' | translate"
+                 class="col-sm-4 form-control-label"
+                 translate>user.label.iamOidcAuthenticationUrl
             <sup class="text-danger text-sm">*</sup>
           </label>
           <div
-            [ngClass]="{'has-error' : ((iamOidcClientSecret.dirty || iamOidcClientSecret.touched) && iamOidcClientSecret.invalid)}"
+            [ngClass]="{'has-error' : ((iamOidcAuthenticationUrl.dirty || iamOidcAuthenticationUrl.touched) && iamOidcAuthenticationUrl.invalid)}"
             class="col-sm-6">
-            <input #iamOidcClientSecret="ngModel" [(ngModel)]="currentObj.iamOidcClientSecret"
-                   [placeholder]="'user.placeholder.iamOidcClientSecret' | translate"
-                   autocomplete="off" class="form-control"
-                   name="iamOidcClientSecret"
-                   required type="{{!passwordFields.fourth ? 'password' : 'text'}}">
-            <i (click)="passwordFields.fourth = !passwordFields.fourth"
-               [ngClass]="!passwordFields.fourth ? 'fa-eye' : 'fa-eye-slash'"
-               class=" fa pswd-hide-icon2"></i>
-            <div *ngIf="iamOidcClientSecret.invalid && (iamOidcClientSecret.dirty || iamOidcClientSecret.touched)"
-                 class="text-danger help-block">
-              <div *ngIf="iamOidcClientSecret.errors['required']">
-                <div translate>common.message.requiredError</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-      <div class="form-group row" *ngIf="currentObj.iamOidcFlowType !== 'CLIENT-CREDENTIAL'">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcUserAttribute' | translate" 
-               class="col-sm-4 form-control-label" translate>user.label.iamOidcUserAttribute
-        </label>
-        <div
-          [ngClass]="{'has-error' : ((iamOidcUserAttribute.dirty || iamOidcUserAttribute.touched) && iamOidcUserAttribute.invalid)}"
-          class="col-sm-6">
-          <input #iamOidcUserAttribute="ngModel" [(ngModel)]="currentObj.iamOidcUserAttribute"
-                 [placeholder]="'user.placeholder.iamOidcUserAttribute' | translate" autocomplete="off"
-                 class="form-control"
-                 name="iamOidcUserAttribute" type="text">
-          <div *ngIf="iamOidcUserAttribute.invalid && (iamOidcUserAttribute.dirty || iamOidcUserAttribute.touched)"
-               class="text-danger help-block">
-            <div *ngIf="iamOidcUserAttribute.errors['required']">
-              <div translate>common.message.requiredError</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <ng-container *ngIf="data['identityServiceType'] === 'OIDC'">
-        <div *ngFor="let groupClaim of currentObj.iamOidcGroupClaims; let i = index" class="form-group row">
-          <div class="col-sm-4 form-control-label">
-            <label *ngIf="i == 0" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcGroupClaims' | translate"
-                    translate>user.label.iamOidcGroupClaims</label>
-          </div>
-          <div class="col-sm-6">
-            <input [(ngModel)]="groupClaim.name" [placeholder]="'user.placeholder.iamOidcGroupClaims' | translate"
-                   autocomplete="off"
-                   class="form-control"
-                   name="iamOidcGroupClaims{{i}}" type="text">
-            <i (click)="addGroup(currentObj.iamOidcGroupClaims)"
-               class="fa fa-plus pos-abt t-10 text-hover-primary" style="right: -10px;"></i>
-            <i (click)="removeGroup(currentObj.iamOidcGroupClaims, i)" *ngIf="i != 0"
-               class="fa fa-times pos-abt t-10 text-hover-color cursor" style="right: -28px;"></i>
-          </div>
-        </div>
-        <div *ngFor="let groupScope of currentObj.iamOidcGroupScopes; let i = index" class="form-group row">
-          <div class="col-sm-4 form-control-label">
-            <label *ngIf="i == 0" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcGroupScopes' | translate"
-                   translate>user.label.iamOidcGroupScopes</label>
-          </div>
-          <div class="col-sm-6">
-            <input [(ngModel)]="groupScope.name" [placeholder]="'user.placeholder.iamOidcGroupScopes' | translate"
-                   autocomplete="off"
-                   class="form-control"
-                   name="iamOidcGroupScopes{{i}}" type="text">
-            <i (click)="addGroup(currentObj.iamOidcGroupScopes)"
-               class="fa fa-plus pos-abt t-10 text-hover-primary" style="right: -10px;"></i>
-            <i (click)="removeGroup(currentObj.iamOidcGroupScopes, i)" *ngIf="i != 0"
-               class="fa fa-times pos-abt t-10 text-hover-color cursor" style="right: -28px;"></i>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcGroupRolesMap' | translate" 
-                 class="col-sm-12 _600" translate>user.label.iamOidcGroupRolesMap</label>
-        </div>
-        <div *ngIf="currentObj.iamOidcGroupRolesMap && currentObj.iamOidcGroupRolesMap.items.length > 0"
-             class="form-group row m-b-0">
-          <div class="col-md-4 m-b-sm" translate>user.label.group</div>
-          <div class="col-md-6 m-b-sm m-l-22" translate>user.label.roles</div>
-        </div>
-        <ng-container *ngIf="currentObj.iamOidcGroupRolesMap && currentObj.iamOidcGroupRolesMap.items.length > 0">
-          <div *ngFor="let item of currentObj.iamOidcGroupRolesMap.items; let i = index"
-               class="form-group row m-b-0">
-            <div [ngClass]="{'has-error' : ((group.dirty || group.touched) && group.invalid)}"
-                 class="col-md-4 m-b-sm">
-              <input #group="ngModel" [(ngModel)]="item.oidcGroup" class="form-control" name="group{{i}}"
-                     placeholder="{{'user.placeholder.group' | translate}}" type="text">
-            </div>
-            <div class="col-md-6 m-b-sm">
-              <app-select-input [attributeName]="'roles'" [isMultiple]="true" [isSearchable]="true"
-                                [listArray]="allRoles" [name]="'roles'+ i" [isRequired]="(item.oidcGroup && item.oidcGroup.length > 0) ? true : false"
-                                [object]="item"></app-select-input>
-            </div>
-            <div class="col-md-1">
-              <a (click)="removeOidcGroupRoles(i)" class="cursor"><i
-                class="fa fa-times m-t-sm text-hover-color"></i></a>
-            </div>
-          </div>
-        </ng-container>
-        <div class="form-group row">
-          <div class="col-sm-12">
-            <a (click)="addOidcGroupRoles()" class="text-u-l" translate>user.button.addGroupRole</a>
-          </div>
-        </div>
-      </ng-container>
-      <div class="form-group row">
-        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcImage' | translate" 
-               class="col-sm-4" translate>user.label.iamOidcImage
-        </label>
-        <div *ngIf="!imageUrl && fileList.length === 0" class="col-sm-6">
-          <nz-upload
-            [(nzFileList)]="fileList"
-            [nzAccept]="'image/png'"
-            [nzBeforeUpload]="beforeUpload"
-            nzListType="picture"
-          >
-            <button class="btn btn-default btn-sm " type="button">
-              <i nz-icon nzTheme="outline" nzType="upload"></i>&nbsp;
-              {{'user.button.uploadImage' | translate}}
-            </button>
-          </nz-upload>
-        </div>
-        <div class="col-sm-6" *ngFor="let item of fileList; let first = first;">
-          <img height="28px" [src]="avatarUrl"/>
-          {{ item?.file?.name }}
-          <a (click)="deleteImage()" class="text-hover-color text-16 pos-abt t-xs r-12">
-            <span nz-icon nzType="delete" nzTheme="outline"></span>
-          </a>
-        </div>
-        <div *ngIf="imageUrl" class="col-sm-6">
-          <div>
-            <img height="28px" src="{{imageUrl}}"/>
-          </div>
-          <a (click)="deleteImage()" class="text-hover-color text-16 pos-abt t-xs r-12">
-            <span nz-icon nzType="delete" nzTheme="outline"></span>
-          </a>
-        </div>
-      </div>
-
-      <div class="p-a b-a">
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcTruststorePath' | translate"
-                  class="col-sm-4 form-control-label"
-                 translate>user.label.iamOidcTruststorePath
-          </label>
-          <div class="col-sm-6">
-            <input [(ngModel)]="currentObj.iamOidcTruststorePath"
-                   [placeholder]="'user.placeholder.iamOidcTruststorePath' | translate" class="form-control"
-                   name="iamOidcTruststorePath"
+            <input #iamOidcAuthenticationUrl="ngModel" [(ngModel)]="currentObj.iamOidcAuthenticationUrl"
+                   [placeholder]="'user.placeholder.iamOidcAuthenticationUrl' | translate" class="form-control"
+                   name="iamOidcAuthenticationUrl" required
                    type="text">
+            @if (iamOidcAuthenticationUrl.invalid && (iamOidcAuthenticationUrl.dirty || iamOidcAuthenticationUrl.touched)) {
+              <div class="text-danger help-block">
+                @if (iamOidcAuthenticationUrl.errors['required']) {
+                  <div translate>common.message.requiredError</div>
+                }
+              </div>
+            }
           </div>
         </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcTruststoreType' | translate"
-                  class="col-sm-4 form-control-label"
-                 translate>user.label.iamOidcTruststoreType
-          </label>
-          <div class="col-sm-6">
-            <input [(ngModel)]="currentObj.iamOidcTruststoreType" [nzAutocomplete]="auto"
-                   [placeholder]="'user.placeholder.iamOidcTruststoreType' | translate"
-                   class="form-control"
-                   name="iamOidcTruststoreType" type="text"/>
-            <nz-autocomplete #auto>
-              <nz-auto-option *ngFor="let option of keyStoreTypes" [nzLabel]="option" [nzValue]="option">
-                <span>{{option}}</span>
-              </nz-auto-option>
-            </nz-autocomplete>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcTruststorePassword' | translate"
-                 
-                 class="col-sm-4 form-control-label"
-                 translate>user.label.iamOidcTruststorePassword
-          </label>
-          <div class="col-sm-6">
-
-            <input [(ngModel)]="currentObj.iamOidcTruststorePassword"
-                   [placeholder]="'user.placeholder.iamOidcTruststorePassword' | translate"
-                   autocomplete="off" class="form-control"
-                   name="iamOidcTruststorePassword"
-                   type="{{!passwordFields.third ? 'password' : 'text'}}">
-            <i (click)="passwordFields.third = !passwordFields.third"
-               [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
-               class="fa pswd-hide-icon2"></i>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!------------------------------------BEGIN FIDO-------------------------------------------->
-    <div *ngIf="data && data['identityServiceType'] == 'FIDO'">
-      <ng-container *ngIf="!fullScreen && !fullScreen2 && !fullScreen3">
         <div class="m-b-12 row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.iamAuthenticatorType' | translate"
-                 
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcFlowType' | translate"
                  class="col-sm-4"
-                 translate>user.label.iamFidoAuthenticatorType
+                 translate>user.label.iamOidcFlowType
           </label>
-          <div class="col-sm-6">
-            <nz-radio-group [(ngModel)]="currentObj.iamFidoProtocolType" name="type"
-                            (ngModelChange)="changeSettings($event)">
-              <label nz-radio nzValue="FIDO2"><span translate>user.label.roaming</span></label>
-              <label nz-radio nzValue="PASSKEY"><span translate>user.label.platform</span></label>
+          <div class="col-sm-8">
+            <nz-radio-group [(ngModel)]="currentObj.iamOidcFlowType" name="type">
+              <label nz-radio nzValue="AUTHENTICATION"><span
+                translate>user.label.iamOidcAuthenticationCodeFlow</span></label>
+              <label nz-radio nzValue="IMPLICIT"><span translate>user.label.iamOidcImplicitFlow</span></label>
+              <label nz-radio nzValue="CLIENT-CREDENTIAL"><span translate>user.label.iamOidcClientCredentialsFlow</span></label>
             </nz-radio-group>
           </div>
         </div>
         <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.iamRequireAccount' | translate" 
-                 class="col-sm-4" translate>user.label.requireAccount</label>
-          <div class="col-sm-6">
-            <label [(ngModel)]="currentObj.iamFidoRequireAccount" name="iamFidoRequireAccount" nz-checkbox>
-            </label>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.iamTimeout' | translate" 
-                 class="col-sm-4 form-control-label" translate>user.label.iamFidoTimeout
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcClientId' | translate"
+                 class="col-sm-4 form-control-label" translate>user.label.iamOidcClientId
+            <sup class="text-danger text-sm">*</sup>
           </label>
-          <div [ngClass]="{'has-error' : ((iamFidoTimeout.dirty || iamFidoTimeout.touched) && iamFidoTimeout.invalid)}"
+          <div [ngClass]="{'has-error' : ((iamOidcClientId.dirty || iamOidcClientId.touched) && iamOidcClientId.invalid)}"
                class="col-sm-6">
-            <nz-input-number #iamFidoTimeout="ngModel"
-                             [(ngModel)]="currentObj.iamFidoTimeout" [nzMin]="0"
-                             [nzPlaceHolder]="'user.placeholder.iamFidoTimeout' | translate"
-                             name="iamFidoTimeout"></nz-input-number>
+            <input #iamOidcClientId="ngModel" [(ngModel)]="currentObj.iamOidcClientId"
+                   [placeholder]="'user.placeholder.iamOidcClientId' | translate" class="form-control"
+                   name="iamOidcClientId"
+                   required
+                   type="text">
+            @if (iamOidcClientId.invalid && (iamOidcClientId.dirty || iamOidcClientId.touched)) {
+              <div class="text-danger help-block">
+                @if (iamOidcClientId.errors['required']) {
+                  <div translate>common.message.requiredError</div>
+                }
+              </div>
+            }
           </div>
         </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.iamTransports' | translate" 
-                 class="col-sm-4 form-control-label" translate>user.label.iamFidoTransports
-          </label>
-          <div class="col-sm-6">
-            <app-select-input  [isMultiple]="true" [name]="'iamFidoTransports'"
-              [object]="currentObj" [attributeName]="'iamFidoTransports'" [listArray]="iamFidoTransports" [optionLabel]="'text'" [optionValue]="'value'"></app-select-input>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label [ngClass]="{'form-control-label' : currentObj.iamFidoProtocolType !== 'FIDO2'}"
-                 [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.iamUserVerification' | translate"
-                 
-                 class="col-sm-4 " translate>user.label.iamFidoUserVerification
-          </label>
-          <div *ngIf="currentObj.iamFidoProtocolType !== 'FIDO2'" class="col-sm-6">
-           <app-select-input  [name]="'iamFidoUserVerification'" [object]="currentObj" [attributeName]="'iamFidoUserVerification'"
-                              [listArray]="iamFidoUserVerification" [optionLabel]="'text'" [optionValue]="'value'"></app-select-input>
-          </div>
-          <div *ngIf="currentObj.iamFidoProtocolType === 'FIDO2'" class="col-sm-6">Required</div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.iamResidentKey' | translate"
-                 
-                 class="col-sm-4" translate>user.label.iamFidoResidentKey
-          </label>
-          <div class="col-sm-6">Required</div>
-        </div>
-        <div class="row">
-          <div class="col-sm-12">
-            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.emailSettings' | translate"
-                   
-                   class=" _500" translate>user.label.emailSettings
+        @if (currentObj.iamOidcFlowType == 'AUTHENTICATION') {
+          <ng-container>
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcClientSecret' | translate"
+                     class="col-sm-4 form-control-label" translate>user.label.iamOidcClientSecret
+                <sup class="text-danger text-sm">*</sup>
+              </label>
+              <div
+                [ngClass]="{'has-error' : ((iamOidcClientSecret.dirty || iamOidcClientSecret.touched) && iamOidcClientSecret.invalid)}"
+                class="col-sm-6">
+                <input #iamOidcClientSecret="ngModel" [(ngModel)]="currentObj.iamOidcClientSecret"
+                       [placeholder]="'user.placeholder.iamOidcClientSecret' | translate"
+                       autocomplete="off" class="form-control"
+                       name="iamOidcClientSecret"
+                       required type="{{!passwordFields.fourth ? 'password' : 'text'}}">
+                <i (click)="passwordFields.fourth = !passwordFields.fourth"
+                   [ngClass]="!passwordFields.fourth ? 'fa-eye' : 'fa-eye-slash'"
+                   class=" fa pswd-hide-icon2"></i>
+                @if (iamOidcClientSecret.invalid && (iamOidcClientSecret.dirty || iamOidcClientSecret.touched)) {
+                  <div class="text-danger help-block">
+                    @if (iamOidcClientSecret.errors['required']) {
+                      <div translate>common.message.requiredError</div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          </ng-container>
+        }
+        @if (currentObj.iamOidcFlowType !== 'CLIENT-CREDENTIAL') {
+          <div class="form-group row">
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcUserAttribute' | translate"
+                   class="col-sm-4 form-control-label" translate>user.label.iamOidcUserAttribute
             </label>
+            <div
+              [ngClass]="{'has-error' : ((iamOidcUserAttribute.dirty || iamOidcUserAttribute.touched) && iamOidcUserAttribute.invalid)}"
+              class="col-sm-6">
+              <input #iamOidcUserAttribute="ngModel" [(ngModel)]="currentObj.iamOidcUserAttribute"
+                     [placeholder]="'user.placeholder.iamOidcUserAttribute' | translate" autocomplete="off"
+                     class="form-control"
+                     name="iamOidcUserAttribute" type="text">
+              @if (iamOidcUserAttribute.invalid && (iamOidcUserAttribute.dirty || iamOidcUserAttribute.touched)) {
+                <div class="text-danger help-block">
+                  @if (iamOidcUserAttribute.errors['required']) {
+                    <div translate>common.message.requiredError</div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        }
+        @if (data['identityServiceType'] === 'OIDC') {
+          <ng-container>
+            @for (groupClaim of currentObj.iamOidcGroupClaims; track groupClaim; let i = $index) {
+              <div class="form-group row">
+                <div class="col-sm-4 form-control-label">
+                  @if (i == 0) {
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcGroupClaims' | translate"
+                           translate>user.label.iamOidcGroupClaims</label>
+                  }
+                </div>
+                <div class="col-sm-6">
+                  <input [(ngModel)]="groupClaim.name" [placeholder]="'user.placeholder.iamOidcGroupClaims' | translate"
+                         autocomplete="off"
+                         class="form-control"
+                         name="iamOidcGroupClaims{{i}}" type="text">
+                  <i (click)="addGroup(currentObj.iamOidcGroupClaims)"
+                     class="fa fa-plus pos-abt t-10 text-hover-primary" style="right: -10px;"></i>
+                  @if (i != 0) {
+                    <i (click)="removeGroup(currentObj.iamOidcGroupClaims, i)"
+                       class="fa fa-times pos-abt t-10 text-hover-color cursor" style="right: -28px;"></i>
+                  }
+                </div>
+              </div>
+            }
+            @for (groupScope of currentObj.iamOidcGroupScopes; track groupScope; let i = $index) {
+              <div class="form-group row">
+                <div class="col-sm-4 form-control-label">
+                  @if (i == 0) {
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcGroupScopes' | translate"
+                           translate>user.label.iamOidcGroupScopes</label>
+                  }
+                </div>
+                <div class="col-sm-6">
+                  <input [(ngModel)]="groupScope.name" [placeholder]="'user.placeholder.iamOidcGroupScopes' | translate"
+                         autocomplete="off"
+                         class="form-control"
+                         name="iamOidcGroupScopes{{i}}" type="text">
+                  <i (click)="addGroup(currentObj.iamOidcGroupScopes)"
+                     class="fa fa-plus pos-abt t-10 text-hover-primary" style="right: -10px;"></i>
+                  @if (i != 0) {
+                    <i (click)="removeGroup(currentObj.iamOidcGroupScopes, i)"
+                       class="fa fa-times pos-abt t-10 text-hover-color cursor" style="right: -28px;"></i>
+                  }
+                </div>
+              </div>
+            }
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcGroupRolesMap' | translate"
+                     class="col-sm-12 _600" translate>user.label.iamOidcGroupRolesMap</label>
+            </div>
+            @if (currentObj.iamOidcGroupRolesMap && currentObj.iamOidcGroupRolesMap.items.length > 0) {
+              <div class="form-group row m-b-0">
+                <div class="col-md-4 m-b-sm" translate>user.label.group</div>
+                <div class="col-md-6 m-b-sm m-l-22" translate>user.label.roles</div>
+              </div>
+            }
+            @if (currentObj.iamOidcGroupRolesMap && currentObj.iamOidcGroupRolesMap.items.length > 0) {
+              <ng-container>
+                @for (item of currentObj.iamOidcGroupRolesMap.items; track item; let i = $index) {
+                  <div class="form-group row m-b-0">
+                    <div [ngClass]="{'has-error' : ((group.dirty || group.touched) && group.invalid)}"
+                         class="col-md-4 m-b-sm">
+                      <input #group="ngModel" [(ngModel)]="item.oidcGroup" class="form-control" name="group{{i}}"
+                             placeholder="{{'user.placeholder.group' | translate}}" type="text">
+                    </div>
+                    <div class="col-md-6 m-b-sm">
+                      <app-select-input [attributeName]="'roles'" [isMultiple]="true" [isSearchable]="true"
+                                        [listArray]="allRoles" [name]="'roles'+ i" [isRequired]="(item.oidcGroup && item.oidcGroup.length > 0) ? true : false"
+                                        [object]="item"></app-select-input>
+                    </div>
+                    <div class="col-md-1">
+                      <a (click)="removeOidcGroupRoles(i)" class="cursor"><i
+                        class="fa fa-times m-t-sm text-hover-color"></i></a>
+                    </div>
+                  </div>
+                }
+              </ng-container>
+            }
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <a (click)="addOidcGroupRoles()" class="text-u-l" translate>user.button.addGroupRole</a>
+              </div>
+            </div>
+          </ng-container>
+        }
+        <div class="form-group row">
+          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcImage' | translate"
+                 class="col-sm-4" translate>user.label.iamOidcImage
+          </label>
+          @if (!imageUrl && fileList.length === 0) {
+            <div class="col-sm-6">
+              <nz-upload
+                [(nzFileList)]="fileList"
+                [nzAccept]="'image/png'"
+                [nzBeforeUpload]="beforeUpload"
+                nzListType="picture"
+              >
+                <button class="btn btn-default btn-sm " type="button">
+                  <i nz-icon nzTheme="outline" nzType="upload"></i>&nbsp;
+                  {{'user.button.uploadImage' | translate}}
+                </button>
+              </nz-upload>
+            </div>
+          }
+          @for (item of fileList; track item; let first = $first) {
+            <div class="col-sm-6">
+              <img height="28px" [src]="avatarUrl"/>
+              {{ item?.file?.name }}
+              <a (click)="deleteImage()" class="text-hover-color text-16 pos-abt t-xs r-12">
+                <span nz-icon nzType="delete" nzTheme="outline"></span>
+              </a>
+            </div>
+          }
+          @if (imageUrl) {
+            <div class="col-sm-6">
+              <div>
+                <img height="28px" src="{{imageUrl}}"/>
+              </div>
+              <a (click)="deleteImage()" class="text-hover-color text-16 pos-abt t-xs r-12">
+                <span nz-icon nzType="delete" nzTheme="outline"></span>
+              </a>
+            </div>
+          }
+        </div>
+
+        <div class="p-a b-a">
+          <div class="form-group row">
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcTruststorePath' | translate"
+                   class="col-sm-4 form-control-label"
+                   translate>user.label.iamOidcTruststorePath
+            </label>
+            <div class="col-sm-6">
+              <input [(ngModel)]="currentObj.iamOidcTruststorePath"
+                     [placeholder]="'user.placeholder.iamOidcTruststorePath' | translate" class="form-control"
+                     name="iamOidcTruststorePath"
+                     type="text">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcTruststoreType' | translate"
+                   class="col-sm-4 form-control-label"
+                   translate>user.label.iamOidcTruststoreType
+            </label>
+            <div class="col-sm-6">
+              <input [(ngModel)]="currentObj.iamOidcTruststoreType" [nzAutocomplete]="auto"
+                     [placeholder]="'user.placeholder.iamOidcTruststoreType' | translate"
+                     class="form-control"
+                     name="iamOidcTruststoreType" type="text"/>
+              <nz-autocomplete #auto>
+                @for (option of keyStoreTypes; track option) {
+                  <nz-auto-option [nzLabel]="option" [nzValue]="option">
+                    <span>{{option}}</span>
+                  </nz-auto-option>
+                }
+              </nz-autocomplete>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.oidc.iamOidcTruststorePassword' | translate"
+                   class="col-sm-4 form-control-label"
+                   translate>user.label.iamOidcTruststorePassword
+            </label>
+            <div class="col-sm-6">
+              <input [(ngModel)]="currentObj.iamOidcTruststorePassword"
+                     [placeholder]="'user.placeholder.iamOidcTruststorePassword' | translate"
+                     autocomplete="off" class="form-control"
+                     name="iamOidcTruststorePassword"
+                     type="{{!passwordFields.third ? 'password' : 'text'}}">
+              <i (click)="passwordFields.third = !passwordFields.third"
+                 [ngClass]="!passwordFields.third ? 'fa-eye' : 'fa-eye-slash'"
+                 class="fa pswd-hide-icon2"></i>
+            </div>
           </div>
         </div>
-        <nz-tabset [nzAnimated]="false">
-          <nz-tab [nzTitle]="'user.label.connection' | translate">
-            <div *ngIf="currentObj.iamFidoEmailSettings">
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.jobResource' | translate" 
-                       class="col-sm-4 form-control-label"
-                       title="{{'user.label.jobResourceName' | translate}}"
-                       translate>user.label.jobResourceName
-                  <sup class="text-danger text-sm">*</sup>
-                </label>
-                <div [ngClass]="{'has-error' : ((jobResource.dirty || jobResource.touched) && jobResource.invalid)}"
-                     class="col-md-6">
-                  <input #jobResource="ngModel" (click)="isTreeShow = true;"
-                         [(ngModel)]="currentObj.iamFidoEmailSettings.nameOfJobResource" autocomplete="off"
-                         class="form-control" name="jobResource"
-                         type="text">
-                  <div *ngIf="isTreeShow" [ngStyle]="{'margin-top': '-29px'}" class="z-index-9999 w-full">
-                    <app-search-input (onBlur)="onBlur()" (onSelect)="onSelect($event)" [isDisplay]="true"
-                                      [nodes]="jobResourcesTree" [type]="'JOBRESOURCE'"></app-search-input>
-                  </div>
-                </div>
+      </div>
+    }
+    <!------------------------------------BEGIN FIDO---------------------------------------------->
+    @if (data && data['identityServiceType'] == 'FIDO') {
+      <div>
+        @if (!fullScreen && !fullScreen2 && !fullScreen3) {
+          <ng-container>
+            <div class="m-b-12 row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.iamAuthenticatorType' | translate"
+                     class="col-sm-4"
+                     translate>user.label.iamFidoAuthenticatorType
+              </label>
+              <div class="col-sm-6">
+                <nz-radio-group [(ngModel)]="currentObj.iamFidoProtocolType" name="type"
+                                (ngModelChange)="changeSettings($event)">
+                  <label nz-radio nzValue="FIDO2"><span translate>user.label.roaming</span></label>
+                  <label nz-radio nzValue="PASSKEY"><span translate>user.label.platform</span></label>
+                </nz-radio-group>
               </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.contentType' | translate"
-                        class="col-sm-4 form-control-label"
-                       translate>user.label.contentType
-                  <sup class="text-danger text-sm">*</sup>
+            </div>
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.iamRequireAccount' | translate"
+                     class="col-sm-4" translate>user.label.requireAccount</label>
+              <div class="col-sm-6">
+                <label [(ngModel)]="currentObj.iamFidoRequireAccount" name="iamFidoRequireAccount" nz-checkbox>
                 </label>
-                <div [ngClass]="{'has-error' : ((contentType.dirty || contentType.touched) && contentType.invalid)}"
-                     class="col-sm-6">
-                  <input #contentType="ngModel" [(ngModel)]="currentObj.iamFidoEmailSettings.contentType"
-                         [placeholder]="'user.placeholder.contentType' | translate" autocomplete="off"
-                         class="form-control"
-                         name="contentType" type="text">
-                  <div *ngIf="contentType.invalid && (contentType.dirty || contentType.touched)"
-                       class="text-danger help-block">
-                    <div *ngIf="contentType.errors['required']">
-                      <div translate>common.message.requiredError</div>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.iamTimeout' | translate"
+                     class="col-sm-4 form-control-label" translate>user.label.iamFidoTimeout
+              </label>
+              <div [ngClass]="{'has-error' : ((iamFidoTimeout.dirty || iamFidoTimeout.touched) && iamFidoTimeout.invalid)}"
+                   class="col-sm-6">
+                <nz-input-number #iamFidoTimeout="ngModel"
+                                 [(ngModel)]="currentObj.iamFidoTimeout" [nzMin]="0"
+                                 [nzPlaceHolder]="'user.placeholder.iamFidoTimeout' | translate"
+                                 name="iamFidoTimeout"></nz-input-number>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.iamTransports' | translate"
+                     class="col-sm-4 form-control-label" translate>user.label.iamFidoTransports
+              </label>
+              <div class="col-sm-6">
+                <app-select-input  [isMultiple]="true" [name]="'iamFidoTransports'"
+                                   [object]="currentObj" [attributeName]="'iamFidoTransports'" [listArray]="iamFidoTransports" [optionLabel]="'text'" [optionValue]="'value'"></app-select-input>
+              </div>
+            </div>
+            <div class="form-group row">
+              <label [ngClass]="{'form-control-label' : currentObj.iamFidoProtocolType !== 'FIDO2'}"
+                     [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.iamUserVerification' | translate"
+                     class="col-sm-4 " translate>user.label.iamFidoUserVerification
+              </label>
+              @if (currentObj.iamFidoProtocolType !== 'FIDO2') {
+                <div class="col-sm-6">
+                  <app-select-input  [name]="'iamFidoUserVerification'" [object]="currentObj" [attributeName]="'iamFidoUserVerification'"
+                                     [listArray]="iamFidoUserVerification" [optionLabel]="'text'" [optionValue]="'value'"></app-select-input>
+                </div>
+              }
+              @if (currentObj.iamFidoProtocolType === 'FIDO2') {
+                <div class="col-sm-6">Required</div>
+              }
+            </div>
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.iamResidentKey' | translate"
+                     class="col-sm-4" translate>user.label.iamFidoResidentKey
+              </label>
+              <div class="col-sm-6">Required</div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.emailSettings' | translate"
+                       class=" _500" translate>user.label.emailSettings
+                </label>
+              </div>
+            </div>
+            <nz-tabset [nzAnimated]="false">
+              <nz-tab [nzTitle]="'user.label.connection' | translate">
+                @if (currentObj.iamFidoEmailSettings) {
+                  <div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.jobResource' | translate"
+                             class="col-sm-4 form-control-label"
+                             title="{{'user.label.jobResourceName' | translate}}"
+                             translate>user.label.jobResourceName
+                        <sup class="text-danger text-sm">*</sup>
+                      </label>
+                      <div [ngClass]="{'has-error' : ((jobResource.dirty || jobResource.touched) && jobResource.invalid)}"
+                           class="col-md-6">
+                        <input #jobResource="ngModel" (click)="isTreeShow = true;"
+                               [(ngModel)]="currentObj.iamFidoEmailSettings.nameOfJobResource" autocomplete="off"
+                               class="form-control" name="jobResource"
+                               type="text">
+                        @if (isTreeShow) {
+                          <div [ngStyle]="{'margin-top': '-29px'}" class="z-index-9999 w-full">
+                            <app-search-input (onBlur)="onBlur()" (onSelect)="onSelect($event)" [isDisplay]="true"
+                                              [nodes]="jobResourcesTree" [type]="'JOBRESOURCE'"></app-search-input>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.contentType' | translate"
+                             class="col-sm-4 form-control-label"
+                             translate>user.label.contentType
+                        <sup class="text-danger text-sm">*</sup>
+                      </label>
+                      <div [ngClass]="{'has-error' : ((contentType.dirty || contentType.touched) && contentType.invalid)}"
+                           class="col-sm-6">
+                        <input #contentType="ngModel" [(ngModel)]="currentObj.iamFidoEmailSettings.contentType"
+                               [placeholder]="'user.placeholder.contentType' | translate" autocomplete="off"
+                               class="form-control"
+                               name="contentType" type="text">
+                        @if (contentType.invalid && (contentType.dirty || contentType.touched)) {
+                          <div class="text-danger help-block">
+                            @if (contentType.errors['required']) {
+                              <div translate>common.message.requiredError</div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.charset' | translate"
+                             class="col-sm-4 form-control-label"
+                             translate>user.label.charset
+                        <sup class="text-danger text-sm">*</sup>
+                      </label>
+                      <div [ngClass]="{'has-error' : ((charset.dirty || charset.touched) && charset.invalid)}"
+                           class="col-sm-6">
+                        <input #charset="ngModel" [(ngModel)]="currentObj.iamFidoEmailSettings.charset"
+                               [placeholder]="'user.placeholder.contentType' | translate" autocomplete="off"
+                               class="form-control"
+                               name="charset" type="text">
+                        @if (charset.invalid && (charset.dirty || charset.touched)) {
+                          <div class="text-danger help-block">
+                            @if (charset.errors['required']) {
+                              <div translate>common.message.requiredError</div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.encoding' | translate"
+                             class="col-sm-4 form-control-label"
+                             translate>user.label.encoding
+                        <sup class="text-danger text-sm">*</sup>
+                      </label>
+                      <div [ngClass]="{'has-error' : ((encoding.dirty || encoding.touched) && encoding.invalid)}"
+                           class="col-sm-6">
+                        <input #encoding="ngModel" [(ngModel)]="currentObj.iamFidoEmailSettings.encoding"
+                               [placeholder]="'user.placeholder.encoding' | translate" autocomplete="off"
+                               class="form-control"
+                               name="encoding" type="text">
+                        @if (encoding.invalid && (encoding.dirty || encoding.touched)) {
+                          <div class="text-danger help-block">
+                            @if (encoding.errors['required']) {
+                              <div translate>common.message.requiredError</div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.priority' | translate"
+                             class="col-sm-4 form-control-label"
+                             translate>user.label.priority
+                      </label>
+                      <div class="col-sm-6">
+                        <nz-select [(ngModel)]="currentObj.iamFidoEmailSettings.priority" name="priority">
+                          <nz-option [nzLabel]="'Normal'" [nzValue]="'normal'"></nz-option>
+                          <nz-option [nzLabel]="'Low'" [nzValue]="'low'"></nz-option>
+                          <nz-option [nzLabel]="'High'" [nzValue]="'high'"></nz-option>
+                        </nz-select>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.charset' | translate"
-                        class="col-sm-4 form-control-label"
-                       translate>user.label.charset
-                  <sup class="text-danger text-sm">*</sup>
-                </label>
-                <div [ngClass]="{'has-error' : ((charset.dirty || charset.touched) && charset.invalid)}"
-                     class="col-sm-6">
-                  <input #charset="ngModel" [(ngModel)]="currentObj.iamFidoEmailSettings.charset"
-                         [placeholder]="'user.placeholder.contentType' | translate" autocomplete="off"
-                         class="form-control"
-                         name="charset" type="text">
-                  <div *ngIf="charset.invalid && (charset.dirty || charset.touched)"
-                       class="text-danger help-block">
-                    <div *ngIf="charset.errors['required']">
-                      <div translate>common.message.requiredError</div>
+                }
+              </nz-tab>
+              <nz-tab [nzTitle]="'user.label.confirmationEmail' | translate">
+                @if (currentObj.iamFidoEmailSettings) {
+                  <div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.sendMailToConfirmEmail' | translate"
+                             class="col-sm-4" translate>user.label.sendMailToConfirmEmail</label>
+                      <div class="col-sm-6">
+                        <label [(ngModel)]="currentObj.iamFidoEmailSettings.sendMailToConfirm" name="sendMailToConfirmEmail"
+                               nz-checkbox></label>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.cc' | translate"
+                             class="col-sm-4 form-control-label"
+                             translate>user.label.cc
+                      </label>
+                      <div class="col-sm-6">
+                        <input [(ngModel)]="currentObj.iamFidoEmailSettings.ccRegistration"
+                               [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
+                               class="form-control"
+                               name="ccRegistration" type="text">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.bcc' | translate"
+                             class="col-sm-4 form-control-label"
+                             translate>user.label.bcc
+                      </label>
+                      <div class="col-sm-6">
+                        <input [(ngModel)]="currentObj.iamFidoEmailSettings.bccRegistration"
+                               [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
+                               class="form-control"
+                               name="bccRegistration" type="text">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.subject' | translate"
+                             class="col-sm-4 form-control-label"
+                             translate>user.label.subject
+                      </label>
+                      <div class="col-sm-6">
+                        <input [(ngModel)]="currentObj.iamFidoEmailSettings.subjectRegistration"
+                               [placeholder]="'user.placeholder.subject' | translate" autocomplete="off"
+                               class="form-control"
+                               name="subjectRegistration" type="text">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.body' | translate"
+                             class="col-sm-4 form-control-label"
+                             translate>user.label.body
+                      </label>
+                      <div class="col-sm-6">
+                        <a (click)="previewRegistration = false;" [ngClass]="{'text-primary': previewRegistration !== true}"
+                           class="btn btn-xs btn-default" style="box-shadow: none !important;"
+                           translate>xml.button.sourceCode</a>
+                        <a (click)="previewRegistration = true;" [ngClass]="{'text-primary': previewRegistration === true}"
+                           class="btn btn-xs btn-default b-l" style="box-shadow: none !important;"
+                           translate>xml.button.preview</a>
+                        <a (click)="fullScreen = true" class="pull-right">
+                          <i class="fa fa-arrows-alt text-hover-primary"></i>
+                        </a>
+                        <textarea [(ngModel)]="currentObj.iamFidoEmailSettings.bodyRegistration"
+                                  [hidden]="previewRegistration" [nzAutosize]="{ minRows: 5, maxRows:10}"
+                                  [placeholder]="'user.placeholder.body' | translate"
+                                  class="form-control"
+                                  name="bodyRegistration"
+                                  nz-input
+                        ></textarea>
+                        @if (previewRegistration) {
+                          <div class="b-a"
+                               style="min-height: 104px;max-height: 450px;overflow: auto">
+                            <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyRegistration | safeHtml"
+                                    class="mail-template"></iframe>
+                          </div>
+                        }
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.encoding' | translate"
-                        class="col-sm-4 form-control-label"
-                       translate>user.label.encoding
-                  <sup class="text-danger text-sm">*</sup>
-                </label>
-                <div [ngClass]="{'has-error' : ((encoding.dirty || encoding.touched) && encoding.invalid)}"
-                     class="col-sm-6">
-                  <input #encoding="ngModel" [(ngModel)]="currentObj.iamFidoEmailSettings.encoding"
-                         [placeholder]="'user.placeholder.encoding' | translate" autocomplete="off"
-                         class="form-control"
-                         name="encoding" type="text">
-                  <div *ngIf="encoding.invalid && (encoding.dirty || encoding.touched)"
-                       class="text-danger help-block">
-                    <div *ngIf="encoding.errors['required']">
-                      <div translate>common.message.requiredError</div>
+                }
+              </nz-tab>
+              <nz-tab [nzTitle]="'user.label.notificationEmail' | translate">
+                @if (currentObj.iamFidoEmailSettings) {
+                  <div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.sendMailToNotifyRegistrationEmail' | translate"
+                             class="col-sm-4" translate>user.label.sendMailToNotifyRegistrationEmail</label>
+                      <div class="col-sm-6">
+                        <label [(ngModel)]="currentObj.iamFidoEmailSettings.sendMailToNotifySuccessfulRegistration"
+                               name="sendMailToNotifyRegistrationEmail"
+                               nz-checkbox></label>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.cc' | translate"
+                             class="col-sm-4 form-control-label"
+                             translate>user.label.cc
+                      </label>
+                      <div class="col-sm-6">
+                        <input [(ngModel)]="currentObj.iamFidoEmailSettings.ccAccess"
+                               [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
+                               class="form-control"
+                               name="ccAccess" type="text">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.bcc' | translate"
+                             class="col-sm-4 form-control-label"
+                             translate>user.label.bcc
+                      </label>
+                      <div class="col-sm-6">
+                        <input [(ngModel)]="currentObj.iamFidoEmailSettings.bccAccess"
+                               [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
+                               class="form-control"
+                               name="bccAccess" type="text">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.subject' | translate"
+                             class="col-sm-4 form-control-label"
+                             translate>user.label.subject
+                      </label>
+                      <div class="col-sm-6">
+                        <input [(ngModel)]="currentObj.iamFidoEmailSettings.subjectAccess"
+                               [placeholder]="'user.placeholder.subject' | translate" autocomplete="off"
+                               class="form-control"
+                               name="subjectAccess" type="text">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.body' | translate"
+                             class="col-sm-4 form-control-label"
+                             translate>user.label.body
+                      </label>
+                      <div class="col-sm-6">
+                        <a (click)="preview = false;" [ngClass]="{'text-primary': preview !== true}"
+                           class="btn btn-xs btn-default" style="box-shadow: none !important;"
+                           translate>xml.button.sourceCode</a>
+                        <a (click)="preview = true;" [ngClass]="{'text-primary': preview === true}"
+                           class="btn btn-xs btn-default b-l" style="box-shadow: none !important;" translate>xml.button.preview</a>
+                        <a (click)="fullScreen2 = true" class="pull-right">
+                          <i class="fa fa-arrows-alt text-hover-primary"></i>
+                        </a>
+                        <textarea [(ngModel)]="currentObj.iamFidoEmailSettings.bodyAccess" [hidden]="preview"
+                                  [nzAutosize]="{ minRows: 5, maxRows:10}"
+                                  [placeholder]="'user.placeholder.body' | translate"
+                                  class="form-control"
+                                  name="bodyAccess"
+                                  nz-input
+                        ></textarea>
+                        @if (preview) {
+                          <div class="b-a" style="min-height: 104px;max-height: 450px;overflow: auto">
+                            <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyAccess | safeHtml"
+                                    class="mail-template"></iframe>
+                          </div>
+                        }
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.priority' | translate"
-                        class="col-sm-4 form-control-label"
-                       translate>user.label.priority
-                </label>
-                <div class="col-sm-6">
-                  <nz-select [(ngModel)]="currentObj.iamFidoEmailSettings.priority" name="priority">
-                    <nz-option [nzLabel]="'Normal'" [nzValue]="'normal'"></nz-option>
-                    <nz-option [nzLabel]="'Low'" [nzValue]="'low'"></nz-option>
-                    <nz-option [nzLabel]="'High'" [nzValue]="'high'"></nz-option>
-                  </nz-select>
-                </div>
-              </div>
-            </div>
-          </nz-tab>
-          <nz-tab [nzTitle]="'user.label.confirmationEmail' | translate">
-            <div *ngIf="currentObj.iamFidoEmailSettings">
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.sendMailToConfirmEmail' | translate"
-                       
-                       class="col-sm-4" translate>user.label.sendMailToConfirmEmail</label>
-                <div class="col-sm-6">
-                  <label [(ngModel)]="currentObj.iamFidoEmailSettings.sendMailToConfirm" name="sendMailToConfirmEmail"
-                         nz-checkbox></label>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.cc' | translate"
-                        class="col-sm-4 form-control-label"
-                       translate>user.label.cc
-                </label>
-                <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.ccRegistration"
-                         [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
-                         class="form-control"
-                         name="ccRegistration" type="text">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.bcc' | translate"
-                        class="col-sm-4 form-control-label"
-                       translate>user.label.bcc
-                </label>
-                <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.bccRegistration"
-                         [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
-                         class="form-control"
-                         name="bccRegistration" type="text">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.subject' | translate"
-                        class="col-sm-4 form-control-label"
-                       translate>user.label.subject
-                </label>
-                <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.subjectRegistration"
-                         [placeholder]="'user.placeholder.subject' | translate" autocomplete="off"
-                         class="form-control"
-                         name="subjectRegistration" type="text">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.body' | translate"
-                        class="col-sm-4 form-control-label"
-                       translate>user.label.body
-                </label>
-                <div class="col-sm-6">
-                  <a (click)="previewRegistration = false;" [ngClass]="{'text-primary': previewRegistration !== true}"
-                     class="btn btn-xs btn-default" style="box-shadow: none !important;"
-                     translate>xml.button.sourceCode</a>
-                  <a (click)="previewRegistration = true;" [ngClass]="{'text-primary': previewRegistration === true}"
-                     class="btn btn-xs btn-default b-l" style="box-shadow: none !important;"
-                     translate>xml.button.preview</a>
-                  <a (click)="fullScreen = true" class="pull-right">
-                    <i class="fa fa-arrows-alt text-hover-primary"></i>
-                  </a>
-                  <textarea [(ngModel)]="currentObj.iamFidoEmailSettings.bodyRegistration"
-                            [hidden]="previewRegistration" [nzAutosize]="{ minRows: 5, maxRows:10}"
-                            [placeholder]="'user.placeholder.body' | translate"
-                            class="form-control"
-                            name="bodyRegistration"
-                            nz-input
-                  ></textarea>
-                  <div *ngIf="previewRegistration" class="b-a"
-                       style="min-height: 104px;max-height: 450px;overflow: auto">
-                    <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyRegistration | safeHtml"
-                            class="mail-template"></iframe>
+                }
+              </nz-tab>
+              <nz-tab [nzTitle]="'user.label.administrationEmail' | translate">
+                @if (currentObj.iamFidoEmailSettings) {
+                  <div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.sendMailToNotifyConfirmationReceived' | translate"
+                             class="col-sm-4"
+                             translate>user.label.sendMailToNotifyConfirmationReceived</label>
+                      <div class="col-sm-6">
+                        <label [(ngModel)]="currentObj.iamFidoEmailSettings.sendMailToNotifyConfirmationReceived"
+                               name="sendMailToNotifyConfirmationReceived"
+                               nz-checkbox></label>
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.recipient' | translate"
+                             class="col-sm-4 form-control-label"
+                             translate>user.label.recipient
+                      </label>
+                      <div class="col-sm-6">
+                        <input [(ngModel)]="currentObj.iamFidoEmailSettings.receiptConfirmed"
+                               [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
+                               class="form-control"
+                               name="recipient" type="text">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.cc' | translate"
+                             class="col-sm-4 form-control-label"
+                             translate>user.label.cc
+                      </label>
+                      <div class="col-sm-6">
+                        <input [(ngModel)]="currentObj.iamFidoEmailSettings.ccConfirmed"
+                               [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
+                               class="form-control"
+                               name="ccConfirmed" type="text">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.bcc' | translate"
+                             class="col-sm-4 form-control-label"
+                             translate>user.label.bcc
+                      </label>
+                      <div class="col-sm-6">
+                        <input [(ngModel)]="currentObj.iamFidoEmailSettings.bccConfirmed"
+                               [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
+                               class="form-control"
+                               name="bccConfirmed" type="text">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.subject' | translate"
+                             class="col-sm-4 form-control-label"
+                             translate>user.label.subject
+                      </label>
+                      <div class="col-sm-6">
+                        <input [(ngModel)]="currentObj.iamFidoEmailSettings.subjectConfirmed"
+                               [placeholder]="'user.placeholder.subject' | translate" autocomplete="off"
+                               class="form-control"
+                               name="subjectConfirmed" type="text">
+                      </div>
+                    </div>
+                    <div class="form-group row">
+                      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.body' | translate"
+                             class="col-sm-4 form-control-label"
+                             translate>user.label.body
+                      </label>
+                      <div class="col-sm-6">
+                        <a (click)="preview = false;" [ngClass]="{'text-primary': preview !== true}"
+                           class="btn btn-xs btn-default" style="box-shadow: none !important;"
+                           translate>xml.button.sourceCode</a>
+                        <a (click)="preview = true;" [ngClass]="{'text-primary': preview === true}"
+                           class="btn btn-xs btn-default b-l" style="box-shadow: none !important;" translate>xml.button.preview</a>
+                        <a (click)="fullScreen3 = true" class="pull-right">
+                          <i class="fa fa-arrows-alt text-hover-primary"></i>
+                        </a>
+                        <textarea [(ngModel)]="currentObj.iamFidoEmailSettings.bodyConfirmed" [hidden]="preview"
+                                  [nzAutosize]="{ minRows: 5, maxRows:10}"
+                                  [placeholder]="'user.placeholder.body' | translate"
+                                  class="form-control"
+                                  name="bodyConfirmed"
+                                  nz-input
+                        ></textarea>
+                        @if (preview) {
+                          <div class="b-a" style="min-height: 104px;max-height: 450px;overflow: auto">
+                            <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyConfirmed | safeHtml"
+                                    class="mail-template"></iframe>
+                          </div>
+                        }
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            </div>
-          </nz-tab>
-          <nz-tab [nzTitle]="'user.label.notificationEmail' | translate">
-            <div *ngIf="currentObj.iamFidoEmailSettings">
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.sendMailToNotifyRegistrationEmail' | translate"
-                       
-                       class="col-sm-4" translate>user.label.sendMailToNotifyRegistrationEmail</label>
-                <div class="col-sm-6">
-                  <label [(ngModel)]="currentObj.iamFidoEmailSettings.sendMailToNotifySuccessfulRegistration"
-                         name="sendMailToNotifyRegistrationEmail"
-                         nz-checkbox></label>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.cc' | translate"
-                        class="col-sm-4 form-control-label"
-                       translate>user.label.cc
-                </label>
-                <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.ccAccess"
-                         [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
-                         class="form-control"
-                         name="ccAccess" type="text">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.bcc' | translate"
-                        class="col-sm-4 form-control-label"
-                       translate>user.label.bcc
-                </label>
-                <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.bccAccess"
-                         [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
-                         class="form-control"
-                         name="bccAccess" type="text">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.subject' | translate"
-                        class="col-sm-4 form-control-label"
-                       translate>user.label.subject
-                </label>
-                <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.subjectAccess"
-                         [placeholder]="'user.placeholder.subject' | translate" autocomplete="off"
-                         class="form-control"
-                         name="subjectAccess" type="text">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.body' | translate"
-                        class="col-sm-4 form-control-label"
-                       translate>user.label.body
-                </label>
-                <div class="col-sm-6">
-                  <a (click)="preview = false;" [ngClass]="{'text-primary': preview !== true}"
-                     class="btn btn-xs btn-default" style="box-shadow: none !important;"
-                     translate>xml.button.sourceCode</a>
-                  <a (click)="preview = true;" [ngClass]="{'text-primary': preview === true}"
-                     class="btn btn-xs btn-default b-l" style="box-shadow: none !important;" translate>xml.button.preview</a>
-                  <a (click)="fullScreen2 = true" class="pull-right">
-                    <i class="fa fa-arrows-alt text-hover-primary"></i>
-                  </a>
-                  <textarea [(ngModel)]="currentObj.iamFidoEmailSettings.bodyAccess" [hidden]="preview"
-                            [nzAutosize]="{ minRows: 5, maxRows:10}"
-                            [placeholder]="'user.placeholder.body' | translate"
-                            class="form-control"
-                            name="bodyAccess"
-                            nz-input
-                  ></textarea>
-                  <div *ngIf="preview" class="b-a" style="min-height: 104px;max-height: 450px;overflow: auto">
-                    <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyAccess | safeHtml"
-                            class="mail-template"></iframe>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </nz-tab>
-          <nz-tab [nzTitle]="'user.label.administrationEmail' | translate">
-            <div *ngIf="currentObj.iamFidoEmailSettings">
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.sendMailToNotifyConfirmationReceived' | translate"
-                       
-                       class="col-sm-4"
-                       translate>user.label.sendMailToNotifyConfirmationReceived</label>
-                <div class="col-sm-6">
-                  <label [(ngModel)]="currentObj.iamFidoEmailSettings.sendMailToNotifyConfirmationReceived"
-                         name="sendMailToNotifyConfirmationReceived"
-                         nz-checkbox></label>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.recipient' | translate"
-                        class="col-sm-4 form-control-label"
-                       translate>user.label.recipient
-                </label>
-                <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.receiptConfirmed"
-                         [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
-                         class="form-control"
-                         name="recipient" type="text">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.cc' | translate"
-                        class="col-sm-4 form-control-label"
-                       translate>user.label.cc
-                </label>
-                <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.ccConfirmed"
-                         [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
-                         class="form-control"
-                         name="ccConfirmed" type="text">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.bcc' | translate"
-                        class="col-sm-4 form-control-label"
-                       translate>user.label.bcc
-                </label>
-                <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.bccConfirmed"
-                         [placeholder]="'user.placeholder.enterEmail' | translate" autocomplete="off"
-                         class="form-control"
-                         name="bccConfirmed" type="text">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.subject' | translate"
-                        class="col-sm-4 form-control-label"
-                       translate>user.label.subject
-                </label>
-                <div class="col-sm-6">
-                  <input [(ngModel)]="currentObj.iamFidoEmailSettings.subjectConfirmed"
-                         [placeholder]="'user.placeholder.subject' | translate" autocomplete="off"
-                         class="form-control"
-                         name="subjectConfirmed" type="text">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.tooltips.webauthn.body' | translate"
-                        class="col-sm-4 form-control-label"
-                       translate>user.label.body
-                </label>
-                <div class="col-sm-6">
-                  <a (click)="preview = false;" [ngClass]="{'text-primary': preview !== true}"
-                     class="btn btn-xs btn-default" style="box-shadow: none !important;"
-                     translate>xml.button.sourceCode</a>
-                  <a (click)="preview = true;" [ngClass]="{'text-primary': preview === true}"
-                     class="btn btn-xs btn-default b-l" style="box-shadow: none !important;" translate>xml.button.preview</a>
-                  <a (click)="fullScreen3 = true" class="pull-right">
-                    <i class="fa fa-arrows-alt text-hover-primary"></i>
-                  </a>
-                  <textarea [(ngModel)]="currentObj.iamFidoEmailSettings.bodyConfirmed" [hidden]="preview"
-                            [nzAutosize]="{ minRows: 5, maxRows:10}"
-                            [placeholder]="'user.placeholder.body' | translate"
-                            class="form-control"
-                            name="bodyConfirmed"
-                            nz-input
-                  ></textarea>
-                  <div *ngIf="preview" class="b-a" style="min-height: 104px;max-height: 450px;overflow: auto">
-                    <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyConfirmed | safeHtml"
-                            class="mail-template"></iframe>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </nz-tab>
-        </nz-tabset>
-      </ng-container>
-      <ng-container *ngIf="fullScreen || fullScreen2 || fullScreen3">
-        <a (click)="fullScreen = false;fullScreen2 = false;fullScreen3 = false;" class="pos-abt text-18 r-18"><i
-          class="fa fa-minus-square-o text-hover-primary"></i></a>
-        <iframe *ngIf="fullScreen2" [srcdoc]="currentObj.iamFidoEmailSettings.bodyAccess | safeHtml"
-                class="mail-template-full"></iframe>
-        <iframe *ngIf="fullScreen" [srcdoc]="currentObj.iamFidoEmailSettings.bodyRegistration | safeHtml"
-                class="mail-template-full"></iframe>
-        <iframe *ngIf="fullScreen3" [srcdoc]="currentObj.iamFidoEmailSettings.bodyConfirmed | safeHtml"
-                class="mail-template-full"></iframe>
-      </ng-container>
-    </div>
-    <!------------------------------------END FIDO---------------------------------------------->
+                }
+              </nz-tab>
+            </nz-tabset>
+          </ng-container>
+        }
+        @if (fullScreen || fullScreen2 || fullScreen3) {
+          <ng-container>
+            <a (click)="fullScreen = false;fullScreen2 = false;fullScreen3 = false;" class="pos-abt text-18 r-18"><i
+              class="fa fa-minus-square-o text-hover-primary"></i></a>
+            @if (fullScreen2) {
+              <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyAccess | safeHtml"
+                      class="mail-template-full"></iframe>
+            }
+            @if (fullScreen) {
+              <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyRegistration | safeHtml"
+                      class="mail-template-full"></iframe>
+            }
+            @if (fullScreen3) {
+              <iframe [srcdoc]="currentObj.iamFidoEmailSettings.bodyConfirmed | safeHtml"
+                      class="mail-template-full"></iframe>
+            }
+          </ng-container>
+        }
+      </div>
+    }
+    <!------------------------------------END FIDO------------------------------------------------>
   </div>
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || submitted || !isLengthMatch"
             class="btn btn-primary btn-sm"
             type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
-    <button (click)="copySetting()" *ngIf="data" class="btn btn-default btn-sm" translate
-            type="button">user.button.copySetting
-    </button>
-    <button (click)="pasteSetting()" *ngIf="isEnable" class="btn btn-default btn-sm" translate
-            type="button">user.button.pasteSetting
-    </button>
+    @if (data) {
+      <button (click)="copySetting()" class="btn btn-default btn-sm" translate
+              type="button">user.button.copySetting
+      </button>
+    }
+    @if (isEnable) {
+      <button (click)="pasteSetting()" class="btn btn-default btn-sm" translate
+              type="button">user.button.pasteSetting
+      </button>
+    }
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
       common.button.cancel
     </button>
-    <div *ngIf="data" class="w-full" style="display: flex;justify-content: end;">
-      <button (click)="downloadSetting()" class="btn btn-default btn-sm m-r-xxs" translate type="button">
-        <i nz-icon nzTheme="outline" nzType="download"></i>&nbsp;
-        inventory.button.download
-      </button>
-      <nz-upload [nzBeforeUpload]="beforeUpload2" nzAccept=".json">
-        <button class="btn btn-default btn-sm m-l-sm" type="button">
-          <i nz-icon nzTheme="outline" nzType="upload"></i>&nbsp;
-          <span translate>inventory.button.upload</span>
+    @if (data) {
+      <div class="w-full" style="display: flex;justify-content: end;">
+        <button (click)="downloadSetting()" class="btn btn-default btn-sm m-r-xxs" translate type="button">
+          <i nz-icon nzTheme="outline" nzType="download"></i>&nbsp;
+          inventory.button.download
         </button>
-      </nz-upload>
-    </div>
+        <nz-upload [nzBeforeUpload]="beforeUpload2" nzAccept=".json">
+          <button class="btn btn-default btn-sm m-l-sm" type="button">
+            <i nz-icon nzTheme="outline" nzType="upload"></i>&nbsp;
+            <span translate>inventory.button.upload</span>
+          </button>
+        </nz-upload>
+      </div>
+    }
   </div>
 </form>

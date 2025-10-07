@@ -7,75 +7,83 @@
             <app-breadcrumbs></app-breadcrumbs>
           </div>
           <div class="inline valign">
-            <label *ngIf="approvalsFilters.tabIndex == 0 && approvalsFilters.approvalRequests.mapOfCheckedId.size ===0 && this.isApprover" [(ngModel)]="approvalsFilters.approvalRequests.current" name="current"
-                   nz-checkbox (nzCheckedChange)="requestChange()">
-              {{'monitor.approvalRequest.label.allApproverRequests' | translate}}
-            </label>
-
+            @if (approvalsFilters.tabIndex == 0 && approvalsFilters.approvalRequests.mapOfCheckedId.size ===0 && this.isApprover) {
+              <label [(ngModel)]="approvalsFilters.approvalRequests.current" name="current"
+                     nz-checkbox (nzCheckedChange)="requestChange()">
+                {{'monitor.approvalRequest.label.allApproverRequests' | translate}}
+              </label>
+            }
           </div>
-          <div *ngIf="approvalsFilters.tabIndex == 0 && approvalsFilters.approvalRequests.mapOfCheckedId.size ===0"
-               class="inline">
-            <div class="btn-group m-l-12">
-              <button (click)="changeRequestors('REQUESTED')" [ngClass]="{'btn-primary': approvalsFilters.approvalRequests.filter.requestorStates.includes('REQUESTED')}"
-                      class="btn btn-grey btn-sm"
-                      translate>monitor.approvalRequest.button.requested
-              </button>
-              <button (click)="changeRequestors('WITHDRAWN')" [ngClass]="{'btn-primary': approvalsFilters.approvalRequests.filter.requestorStates.includes('WITHDRAWN')}"
-                      class="btn btn-grey btn-sm"
-                      translate>monitor.approvalRequest.button.withdrawn
-              </button>
-              <button (click)="changeRequestors('EXECUTED')" [ngClass]="{'btn-primary': approvalsFilters.approvalRequests.filter.requestorStates.includes('EXECUTED')}"
-                      class="btn btn-grey btn-sm"
-                      translate>monitor.approvalRequest.button.inProgress
-              </button>
+          @if (approvalsFilters.tabIndex == 0 && approvalsFilters.approvalRequests.mapOfCheckedId.size ===0) {
+            <div class="inline">
+              <div class="btn-group m-l-12">
+                <button (click)="changeRequestors('REQUESTED')" [ngClass]="{'btn-primary': approvalsFilters.approvalRequests.filter.requestorStates.includes('REQUESTED')}"
+                        class="btn btn-grey btn-sm"
+                        translate>monitor.approvalRequest.button.requested
+                </button>
+                <button (click)="changeRequestors('WITHDRAWN')" [ngClass]="{'btn-primary': approvalsFilters.approvalRequests.filter.requestorStates.includes('WITHDRAWN')}"
+                        class="btn btn-grey btn-sm"
+                        translate>monitor.approvalRequest.button.withdrawn
+                </button>
+                <button (click)="changeRequestors('EXECUTED')" [ngClass]="{'btn-primary': approvalsFilters.approvalRequests.filter.requestorStates.includes('EXECUTED')}"
+                        class="btn btn-grey btn-sm"
+                        translate>monitor.approvalRequest.button.inProgress
+                </button>
+              </div>
+              <div class="btn-group m-l-12">
+                <button (click)="changeApprover('PENDING')" [ngClass]="{'btn-primary':approvalsFilters.approvalRequests.filter.approverStates.includes('PENDING')}"
+                        class="btn btn-grey btn-sm"
+                        translate>monitor.approvalRequest.button.pending
+                </button>
+                <button (click)="changeApprover('APPROVED')" [ngClass]="{'btn-primary':approvalsFilters.approvalRequests.filter.approverStates.includes('APPROVED')}"
+                        class="btn btn-grey btn-sm"
+                        translate>monitor.approvalRequest.button.approved
+                </button>
+                <button (click)="changeApprover('REJECTED')" [ngClass]="{'btn-primary': approvalsFilters.approvalRequests.filter.approverStates.includes('REJECTED')}"
+                        class="btn btn-grey btn-sm"
+                        translate>monitor.approvalRequest.button.rejected
+                </button>
+              </div>
             </div>
-            <div class="btn-group m-l-12">
-              <button (click)="changeApprover('PENDING')" [ngClass]="{'btn-primary':approvalsFilters.approvalRequests.filter.approverStates.includes('PENDING')}"
-                      class="btn btn-grey btn-sm"
-                      translate>monitor.approvalRequest.button.pending
-              </button>
-              <button (click)="changeApprover('APPROVED')" [ngClass]="{'btn-primary':approvalsFilters.approvalRequests.filter.approverStates.includes('APPROVED')}"
-                      class="btn btn-grey btn-sm"
-                      translate>monitor.approvalRequest.button.approved
-              </button>
-              <button (click)="changeApprover('REJECTED')" [ngClass]="{'btn-primary': approvalsFilters.approvalRequests.filter.approverStates.includes('REJECTED')}"
-                      class="btn btn-grey btn-sm"
-                      translate>monitor.approvalRequest.button.rejected
-              </button>
-            </div>
-          </div>
+          }
           <div class="inline">
-            <button (click)="updateRequest('approve')"
-                    *ngIf="approvalsFilters.approvalRequests.mapOfCheckedId.size > 0 && isApprover" class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-check"></i>&nbsp;
-              <span translate>common.button.approve</span>
-            </button>
-            <button (click)="updateRequest('reject')"
-                    *ngIf="approvalsFilters.approvalRequests.mapOfCheckedId.size > 0 && isApprover" class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-times"></i>&nbsp;
-              <span translate>monitor.approvalRequest.button.reject</span>
-            </button>
-            <button (click)="updateRequest('withdraw')"
-                    *ngIf="approvalsFilters.approvalRequests.mapOfCheckedId.size > 0 && isRequestor" class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-caret-square-o-down"></i>&nbsp;
-              <span translate>monitor.approvalRequest.button.withdraw</span>
-            </button>
-
-          </div>
-
-          <div *ngIf="approvalsFilters.tabIndex == 1 && approvalsFilters.approvers.mapOfCheckedId.size ===0"
-               class="inline">
-            <div class="btn-group m-l-12">
-              <button (click)="newApprover()"
-                      class="btn btn-grey btn-sm"
-                      translate>
-                <i class="fa fa-plus"></i>&nbsp;
-                <span translate>
-                monitor.approvers.button.newApprover
-                </span>
+            @if (approvalsFilters.approvalRequests.mapOfCheckedId.size > 0 && isApprover) {
+              <button (click)="updateRequest('approve')"
+                      class="btn btn-sm btn-grey m-l-12">
+                <i class="fa fa-check"></i>&nbsp;
+                <span translate>common.button.approve</span>
               </button>
-            </div>
+            }
+            @if (approvalsFilters.approvalRequests.mapOfCheckedId.size > 0 && isApprover) {
+              <button (click)="updateRequest('reject')"
+                      class="btn btn-sm btn-grey m-l-12">
+                <i class="fa fa-times"></i>&nbsp;
+                <span translate>monitor.approvalRequest.button.reject</span>
+              </button>
+            }
+            @if (approvalsFilters.approvalRequests.mapOfCheckedId.size > 0 && isRequestor) {
+              <button (click)="updateRequest('withdraw')"
+                      class="btn btn-sm btn-grey m-l-12">
+                <i class="fa fa-caret-square-o-down"></i>&nbsp;
+                <span translate>monitor.approvalRequest.button.withdraw</span>
+              </button>
+            }
           </div>
+
+          @if (approvalsFilters.tabIndex == 1 && approvalsFilters.approvers.mapOfCheckedId.size ===0) {
+            <div class="inline">
+              <div class="btn-group m-l-12">
+                <button (click)="newApprover()"
+                        class="btn btn-grey btn-sm"
+                        translate>
+                  <i class="fa fa-plus"></i>&nbsp;
+                  <span translate>
+                  monitor.approvers.button.newApprover
+                  </span>
+                </button>
+              </div>
+            </div>
+          }
         </div>
       </div>
     </div>
@@ -88,59 +96,62 @@
         <div class="row m-b-12">
           <div class="col-md-12">
             <div class="pull-left">
-                  <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-                    <li class="nav-item">
-                      <a (click)="onTabChange(0)" [ngClass]="{'active': approvalsFilters.tabIndex === 0}"
-                         class="nav-link">
+              <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
+                <li class="nav-item">
+                  <a (click)="onTabChange(0)" [ngClass]="{'active': approvalsFilters.tabIndex === 0}"
+                     class="nav-link">
             <span class="nav-text text-dark p-b-sm"><span class="text"
                                                           translate>monitor.label.approvalRequest</span></span>
-                      </a>
-                    </li>
-                    <li *ngIf="permission.joc && permission.joc.administration.accounts.view" class="nav-item dropdown-separator">
-                      <span class="separator"></span>
-                    </li>
-                    <li class="nav-item" *ngIf="permission.joc && permission.joc.administration.accounts.view">
-                      <a (click)="onTabChange(1)" [ngClass]="{'active': approvalsFilters.tabIndex === 1}"
-                         class="nav-link">
-                        <span class="nav-text text-dark p-b-sm"><span class="text" translate>monitor.label.approvers</span></span>
-                      </a>
-                    </li>
-                    <li *ngIf="permission.joc && permission.joc.administration.accounts.view" class="nav-item dropdown-separator">
-                      <span class="separator"></span>
-                    </li>
-                    <li class="nav-item" *ngIf="permission.joc && permission.joc.administration.accounts.view">
-                      <a (click)="onTabChange(2)" [ngClass]="{'active': approvalsFilters.tabIndex === 2}"
-                         class="nav-link">
-                        <span class="nav-text text-dark p-b-sm"><span class="text" translate>monitor.label.emailSettings</span></span>
-                      </a>
-                    </li>
-                  </ul>
+                  </a>
+                </li>
+                @if (permission.joc && permission.joc.administration.accounts.view) {
+                  <li class="nav-item dropdown-separator">
+                    <span class="separator"></span>
+                  </li>
+                }
+                @if (permission.joc && permission.joc.administration.accounts.view) {
+                  <li class="nav-item">
+                    <a (click)="onTabChange(1)" [ngClass]="{'active': approvalsFilters.tabIndex === 1}"
+                       class="nav-link">
+                      <span class="nav-text text-dark p-b-sm"><span class="text" translate>monitor.label.approvers</span></span>
+                    </a>
+                  </li>
+                }
+                @if (permission.joc && permission.joc.administration.accounts.view) {
+                  <li class="nav-item dropdown-separator">
+                    <span class="separator"></span>
+                  </li>
+                }
+                @if (permission.joc && permission.joc.administration.accounts.view) {
+                  <li class="nav-item">
+                    <a (click)="onTabChange(2)" [ngClass]="{'active': approvalsFilters.tabIndex === 2}"
+                       class="nav-link">
+                      <span class="nav-text text-dark p-b-sm"><span class="text" translate>monitor.label.emailSettings</span></span>
+                    </a>
+                  </li>
+                }
+              </ul>
 
             </div>
           </div>
         </div>
-        <div *ngIf="approvalsFilters.tabIndex === 0">
-          <app-approval-request [preferences]="preferences" [permission]="permission" [filters]="approvalsFilters.approvalRequests"></app-approval-request>
-        </div>
-        <div *ngIf="approvalsFilters.tabIndex === 1 && permission.joc && permission.joc.administration.accounts.view">
-          <app-approvers #approvers [preferences]="preferences" [permission]="permission" [filters]="approvalsFilters.approvers"></app-approvers>
-        </div>
-        <div *ngIf="approvalsFilters.tabIndex === 2 && permission.joc && permission.joc.administration.accounts.view">
-          <app-email-setting  [preferences]="preferences" [permission]="permission"></app-email-setting>
-        </div>
+        @if (approvalsFilters.tabIndex === 0) {
+          <div>
+            <app-approval-request [preferences]="preferences" [permission]="permission" [filters]="approvalsFilters.approvalRequests"></app-approval-request>
+          </div>
+        }
+        @if (approvalsFilters.tabIndex === 1 && permission.joc && permission.joc.administration.accounts.view) {
+          <div>
+            <app-approvers #approvers [preferences]="preferences" [permission]="permission" [filters]="approvalsFilters.approvers"></app-approvers>
+          </div>
+        }
+        @if (approvalsFilters.tabIndex === 2 && permission.joc && permission.joc.administration.accounts.view) {
+          <div>
+            <app-email-setting  [preferences]="preferences" [permission]="permission"></app-email-setting>
+          </div>
+        }
       </div>
     </div>
 
   </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-

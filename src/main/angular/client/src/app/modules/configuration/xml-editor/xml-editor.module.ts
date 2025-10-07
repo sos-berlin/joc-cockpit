@@ -10,17 +10,19 @@ import {
   XmlEditorComponent
 } from './xml-editor.component';
 import {XMLAutofocusDirective} from '../../../directives/core.directive';
+import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 
 const COMPONENTS = [ShowModalComponent, ShowChildModalComponent,
   ConfirmationModalComponent];
 
 @NgModule({
-  imports: [
-    XmlEditorRoutingModule,
-    SharedModule,
-    CodemirrorModule,
-    NzTabsModule
-  ],
+    imports: [
+        XmlEditorRoutingModule,
+        SharedModule,
+        CodemirrorModule,
+        NzTabsModule,
+        NzTooltipDirective
+    ],
   declarations: [
     XmlEditorComponent,
     XMLAutofocusDirective,

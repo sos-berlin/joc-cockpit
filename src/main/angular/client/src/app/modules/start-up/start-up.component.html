@@ -3,64 +3,76 @@
     <div class="col-md-12">
       <div class="bg-color bg-auto w-full">
         <div class="center-block w-auto-xs p-y-lg" style="width: 526px">
-<!--          <app-start-up-modal (afterSubmit)="getSchedulerIds()" [new]="true"></app-start-up-modal>-->
+          <!--          <app-start-up-modal (afterSubmit)="getSchedulerIds()" [new]="true"></app-start-up-modal>-->
           <form #myForm="ngForm" (ngSubmit)="onSubmit()" spellcheck="false">
             <div>
-              <div *ngIf="hasLicense" class="form-group row">
-                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.type' | translate" class="col-sm-4" translate>common.label.type</label>
-                <div class="col-sm-8">
-                  <nz-radio-group [(ngModel)]="controller.type" name="type">
-                    <label nz-radio nzValue="STANDALONE"><span translate>controller.label.standalone</span></label>
-                    <label nz-radio nzValue="CLUSTER"><span translate>controller.label.cluster</span></label>
-                  </nz-radio-group>
-                </div>
-              </div>
-              <div *ngIf="controller.type === 'STANDALONE'" class="p-a b-a">
+              @if (hasLicense) {
                 <div class="form-group row">
-                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.standaloneTitle' | translate" class="col-sm-4 form-control-label"
-                         translate>controller.label.caption
-                    <sup class="text-danger text-sm">*</sup>
-                  </label>
-                  <div [ngClass]="{ 'has-error' : ((title.dirty || title.touched) && title.invalid)}"
-                       class="col-sm-8">
-                    <input #title="ngModel" [(ngModel)]="controller.title" [maxlength]="30" class="form-control" name="title" required
-                           type="text">
-                    <div *ngIf="title.invalid && (title.dirty || title.touched)" class="text-danger help-block">
-                      <div *ngIf="title.errors['required']">
-                        <div translate>common.message.requiredError</div>
-                      </div>
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.type' | translate" class="col-sm-4" translate>common.label.type</label>
+                  <div class="col-sm-8">
+                    <nz-radio-group [(ngModel)]="controller.type" name="type">
+                      <label nz-radio nzValue="STANDALONE"><span translate>controller.label.standalone</span></label>
+                      <label nz-radio nzValue="CLUSTER"><span translate>controller.label.cluster</span></label>
+                    </nz-radio-group>
+                  </div>
+                </div>
+              }
+              @if (controller.type === 'STANDALONE') {
+                <div class="p-a b-a">
+                  <div class="form-group row">
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.standaloneTitle' | translate" class="col-sm-4 form-control-label"
+                           translate>controller.label.caption
+                      <sup class="text-danger text-sm">*</sup>
+                    </label>
+                    <div [ngClass]="{ 'has-error' : ((title.dirty || title.touched) && title.invalid)}"
+                         class="col-sm-8">
+                      <input #title="ngModel" [(ngModel)]="controller.title" [maxlength]="30" class="form-control" name="title" required
+                             type="text">
+                      @if (title.invalid && (title.dirty || title.touched)) {
+                        <div class="text-danger help-block">
+                          @if (title.errors['required']) {
+                            <div translate>common.message.requiredError</div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  </div>
+                  <div class="form-group row">
+                    <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.standaloneUrlForJOC' | translate" class="col-sm-4 form-control-label"
+                           translate>controller.label.standaloneUrl
+                      <sup class="text-danger text-sm">*</sup>
+                    </label>
+                    <div [ngClass]="{ 'has-error' : ((remoteUrl.dirty || remoteUrl.touched) && remoteUrl.invalid)}"
+                         class="col-sm-8">
+                      <input #remoteUrl="ngModel" [(ngModel)]="controller.url" [appAutofocus]="true" class="form-control" name="remoteUrl"
+                             placeholder="http://host:port" required
+                             type="url">
+                      @if (remoteUrl.invalid && (remoteUrl.dirty || remoteUrl.touched)) {
+                        <div class="text-danger help-block">
+                          @if (remoteUrl.errors['required']) {
+                            <div translate>common.message.requiredError</div>
+                          }
+                          @if (remoteUrl.errors['invalidUrl']) {
+                            <div translate>common.message.invalid</div>
+                          }
+                        </div>
+                      }
+                    </div>
+                  </div>
+                  <div class="row ">
+                    <div class="col-md-12">
+                      <button (click)="testConnection('ALL', controller.url)" [disabled]="!controller.url" class="btn  btn-grey btn-sm"
+                              type="button">
+                        @if (isConnectionChecked) {
+                          <i class="fa fa-spin fa-spinner"></i>
+                        }
+                        {{'controller.button.testConnection' | translate}}
+                      </button>
                     </div>
                   </div>
                 </div>
-                <div class="form-group row">
-                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'controller.tooltip.standaloneUrlForJOC' | translate" class="col-sm-4 form-control-label"
-                         translate>controller.label.standaloneUrl
-                    <sup class="text-danger text-sm">*</sup>
-                  </label>
-                  <div [ngClass]="{ 'has-error' : ((remoteUrl.dirty || remoteUrl.touched) && remoteUrl.invalid)}"
-                       class="col-sm-8">
-                    <input #remoteUrl="ngModel" [(ngModel)]="controller.url" [appAutofocus]="true" class="form-control" name="remoteUrl"
-                           placeholder="http://host:port" required
-                           type="url">
-                    <div *ngIf="remoteUrl.invalid && (remoteUrl.dirty || remoteUrl.touched)" class="text-danger help-block">
-                      <div *ngIf="remoteUrl.errors['required']">
-                        <div translate>common.message.requiredError</div>
-                      </div>
-                      <div *ngIf="remoteUrl.errors['invalidUrl']" translate>common.message.invalid</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="row ">
-                  <div class="col-md-12">
-                    <button (click)="testConnection('ALL', controller.url)" [disabled]="!controller.url" class="btn  btn-grey btn-sm"
-                            type="button">
-                      <i *ngIf="isConnectionChecked" class="fa fa-spin fa-spinner"></i>
-                      {{'controller.button.testConnection' | translate}}
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div *ngIf="controller.type === 'CLUSTER'">
+              }
+              @if (controller.type === 'CLUSTER') {
                 <div class="form-group row">
                   <div class="col-sm-12" translate>controller.label.primaryController</div>
                 </div>
@@ -75,12 +87,13 @@
                       <input #primaryTitle="ngModel" [(ngModel)]="controller.primaryTitle" [appAutofocus]="true" [maxlength]="30" class="form-control" name="primaryTitle"
                              required
                              type="text">
-                      <div *ngIf="primaryTitle.invalid && (primaryTitle.dirty || primaryTitle.touched)"
-                           class="text-danger help-block">
-                        <div *ngIf="primaryTitle.errors['required']">
-                          <div translate>message.requiredError</div>
+                      @if (primaryTitle.invalid && (primaryTitle.dirty || primaryTitle.touched)) {
+                        <div class="text-danger help-block">
+                          @if (primaryTitle.errors['required']) {
+                            <div translate>message.requiredError</div>
+                          }
                         </div>
-                      </div>
+                      }
                     </div>
                   </div>
                   <div class="form-group row">
@@ -92,12 +105,16 @@
                          class="col-sm-8">
                       <input #primaryUrl="ngModel" [(ngModel)]="controller.primaryUrl" class="form-control" name="primaryUrl" placeholder="http://host:port"
                              required type="url">
-                      <div *ngIf="primaryUrl.invalid && (primaryUrl.dirty || primaryUrl.touched)" class="text-danger help-block">
-                        <div *ngIf="primaryUrl.errors['required']">
-                          <div translate>common.message.requiredError</div>
+                      @if (primaryUrl.invalid && (primaryUrl.dirty || primaryUrl.touched)) {
+                        <div class="text-danger help-block">
+                          @if (primaryUrl.errors['required']) {
+                            <div translate>common.message.requiredError</div>
+                          }
+                          @if (primaryUrl.errors['invalidUrl']) {
+                            <div translate>common.message.invalid</div>
+                          }
                         </div>
-                        <div *ngIf="primaryUrl.errors['invalidUrl']" translate>common.message.invalid</div>
-                      </div>
+                      }
                     </div>
                   </div>
                   <div class="form-group row">
@@ -107,10 +124,13 @@
                          class="col-sm-8">
                       <input #primaryClusterUrl="ngModel" [(ngModel)]="controller.primaryClusterUrl" class="form-control" name="primaryClusterUrl"
                              placeholder="http://host:port" type="url">
-                      <div *ngIf="primaryClusterUrl.invalid && (primaryClusterUrl.dirty || primaryClusterUrl.touched)"
-                           class="text-danger help-block">
-                        <div *ngIf="primaryClusterUrl.errors['invalidUrl']" translate>common.message.invalid</div>
-                      </div>
+                      @if (primaryClusterUrl.invalid && (primaryClusterUrl.dirty || primaryClusterUrl.touched)) {
+                        <div class="text-danger help-block">
+                          @if (primaryClusterUrl.errors['invalidUrl']) {
+                            <div translate>common.message.invalid</div>
+                          }
+                        </div>
+                      }
                     </div>
                   </div>
                   <div class="row ">
@@ -118,7 +138,9 @@
                       <button (click)="testConnection('PRIMARY', controller.primaryUrl )" [disabled]="!(controller.primaryUrl)"
                               class="btn btn-grey btn-sm"
                               type="button">
-                        <i *ngIf="isPrimaryConnectionChecked" class="fa fa-spin fa-spinner"></i>
+                        @if (isPrimaryConnectionChecked) {
+                          <i class="fa fa-spin fa-spinner"></i>
+                        }
                         {{'controller.button.testConnection' | translate}}
                       </button>
                     </div>
@@ -138,12 +160,13 @@
                       <input #backupTitle="ngModel" [(ngModel)]="controller.backupTitle" [maxlength]="30" class="form-control" name="backupTitle"
                              required
                              type="text">
-                      <div *ngIf="backupTitle.invalid && (backupTitle.dirty || backupTitle.touched)"
-                           class="text-danger help-block">
-                        <div *ngIf="backupTitle.errors['required']">
-                          <div translate>common.message.requiredError</div>
+                      @if (backupTitle.invalid && (backupTitle.dirty || backupTitle.touched)) {
+                        <div class="text-danger help-block">
+                          @if (backupTitle.errors['required']) {
+                            <div translate>common.message.requiredError</div>
+                          }
                         </div>
-                      </div>
+                      }
                     </div>
                   </div>
                   <div class="form-group row">
@@ -155,12 +178,16 @@
                          class="col-sm-8">
                       <input #backupUrl="ngModel" [(ngModel)]="controller.backupUrl" class="form-control" name="backupUrl" placeholder="http://host:port"
                              required type="url">
-                      <div *ngIf="backupUrl.invalid && (backupUrl.dirty || backupUrl.touched)" class="text-danger help-block">
-                        <div *ngIf="backupUrl.errors['required']">
-                          <div translate>common.message.requiredError</div>
+                      @if (backupUrl.invalid && (backupUrl.dirty || backupUrl.touched)) {
+                        <div class="text-danger help-block">
+                          @if (backupUrl.errors['required']) {
+                            <div translate>common.message.requiredError</div>
+                          }
+                          @if (backupUrl.errors['invalidUrl']) {
+                            <div translate>common.message.invalid</div>
+                          }
                         </div>
-                        <div *ngIf="backupUrl.errors['invalidUrl']" translate>common.message.invalid</div>
-                      </div>
+                      }
                     </div>
                   </div>
                   <div class="form-group row">
@@ -170,10 +197,13 @@
                          class="col-sm-8">
                       <input #backupClusterUrl="ngModel" [(ngModel)]="controller.backupClusterUrl" class="form-control" name="backupClusterUrl"
                              placeholder="http://host:port" type="url">
-                      <div *ngIf="backupClusterUrl.invalid && (backupClusterUrl.dirty || backupClusterUrl.touched)"
-                           class="text-danger help-block">
-                        <div *ngIf="backupClusterUrl.errors['invalidUrl']" translate>common.message.invalid</div>
-                      </div>
+                      @if (backupClusterUrl.invalid && (backupClusterUrl.dirty || backupClusterUrl.touched)) {
+                        <div class="text-danger help-block">
+                          @if (backupClusterUrl.errors['invalidUrl']) {
+                            <div translate>common.message.invalid</div>
+                          }
+                        </div>
+                      }
                     </div>
                   </div>
                   <div class="row ">
@@ -181,18 +211,21 @@
                       <button (click)="testConnection('BACKUP', controller.backupUrl)" [disabled]="!(controller.backupUrl)"
                               class="btn btn-grey btn-sm"
                               type="button">
-                        <i *ngIf="isBackupConnectionChecked" class="fa fa-spin fa-spinner"></i>
+                        @if (isBackupConnectionChecked) {
+                          <i class="fa fa-spin fa-spinner"></i>
+                        }
                         {{'controller.button.testConnection' | translate}}
                       </button>
                     </div>
                   </div>
                 </div>
-
-              </div>
+              }
               <div class="form-group row">
                 <div class="col-md-12 m-t">
                   <button type="submit" [disabled]="!myForm.form.valid || submitted || error" class="btn btn-primary btn-sm">
-                    <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+                    @if (submitted) {
+                      <i class="fa fa-spin fa-spinner"></i>
+                    }
                     {{'common.button.submit' | translate}}
                   </button>
                   <button type="button" class="btn btn-grey btn-sm m-l-sm" (click)="cancel()" translate>

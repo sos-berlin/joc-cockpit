@@ -14,6 +14,7 @@ import {NgModel} from "@angular/forms";
 import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 
 @Component({
+  standalone: false,
   selector: 'app-show-dependency',
   templateUrl: './show-dependency-dialog.html'
 })
@@ -80,6 +81,7 @@ export class ShowDependencyComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-add-order',
   templateUrl: './add-order-dialog.html',
 })
@@ -1951,6 +1953,7 @@ addArguments(orderIndex): void {
 
 
 @Component({
+  standalone: false,
   selector: 'app-add-schedules',
   templateUrl: './add-schedules-dialog.html',
 })
@@ -2030,6 +2033,7 @@ export class AddSchedulesModalComponent {
 
 
 @Component({
+  standalone: false,
   selector: 'app-workflow-action',
   templateUrl: './workflow-action.component.html'
 })

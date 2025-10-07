@@ -4,7 +4,7 @@ The *Task History* view summarizes the execution history of Jobs that are indica
 
 The *Task History* is subject to purge of the database performed by the [Cleanup Service](/service-cleanup).
 
-For the history of orders see [Order History](/history-orders).
+For the history of Orders see [Order History](/history-orders).
 
 ## Navigation Panel
 

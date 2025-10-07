@@ -13,18 +13,18 @@
     </div>
     <div>
       <nz-tree
-      #treeCtrlGroup
-      nzCheckable
-      nzMultiple
-      [nzData]="allTags"
-      [nzAsyncData]="true"
-      [nzShowExpand]="true"
-      [nzTreeTemplate]="nzTreeTemplateGroup"
-      [nzCheckedKeys]="defaultAssignedTags"
-      [nzSelectedKeys]="defaultAssignedTags"
-      nzNoAnimation
-      (nzCheckBoxChange)="onCheckBoxChange($event)"
-      (nzCheckBoxChange)="onClick($event)"
+        #treeCtrlGroup
+        nzCheckable
+        nzMultiple
+        [nzData]="allTags"
+        [nzAsyncData]="true"
+        [nzShowExpand]="true"
+        [nzTreeTemplate]="nzTreeTemplateGroup"
+        [nzCheckedKeys]="defaultAssignedTags"
+        [nzSelectedKeys]="defaultAssignedTags"
+        nzNoAnimation
+        (nzCheckBoxChange)="onCheckBoxChange($event)"
+        (nzCheckBoxChange)="onClick($event)"
       ></nz-tree>
       <ng-template #nzTreeTemplateGroup let-node>
         <span>{{ node.title }}</span>
@@ -34,7 +34,9 @@
   <div class="modal-footer">
     <button [disabled]="submitted || !myForm.form.valid" class="btn btn-primary btn-sm"
             type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">

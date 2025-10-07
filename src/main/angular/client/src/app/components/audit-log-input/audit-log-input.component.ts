@@ -4,6 +4,7 @@ import {NzModalRef} from 'ng-zorro-antd/modal';
 import {ControlContainer, NgForm} from "@angular/forms";
 
 @Component({
+  standalone: false,
   selector: 'app-audit-log-input',
   templateUrl: './audit-log-input-component.html',
   viewProviders: [{

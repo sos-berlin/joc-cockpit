@@ -1,17 +1,22 @@
 <ng-template #contentTemplate>
-  <div *ngIf="workflow.info">
-    <div *ngIf="workflow.info.notConfirmedAgentNames && workflow.info.notConfirmedAgentNames.length > 0">
-      <div class="p-l-sm m-t-xs">
-        <span translate> workflow.label.outstandingAgents </span>:
-        <span class="_600"> {{workflow.info.notConfirmedAgentNames.length}}</span>
-      </div>
-      <div *ngFor="let agent of workflow.info.notConfirmedAgentNames" class="p-l m-l-xs">
-        {{agent}}
-      </div>
+  @if (workflow.info) {
+    <div>
+      @if (workflow.info.notConfirmedAgentNames && workflow.info.notConfirmedAgentNames.length > 0) {
+        <div>
+          <div class="p-l-sm m-t-xs">
+            <span translate> workflow.label.outstandingAgents </span>:
+            <span class="_600"> {{workflow.info.notConfirmedAgentNames.length}}</span>
+          </div>
+          @for (agent of workflow.info.notConfirmedAgentNames; track agent) {
+            <div class="p-l m-l-xs">
+              {{agent}}
+            </div>
+          }
+        </div>
+      }
     </div>
-  </div>
+  }
 </ng-template>
 <span [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="contentTemplate" nzTooltipPlacement="top">
     <i (mouseenter)="getTooltipInfo(workflow)" class="fa fa-info-circle p-l-xs"></i>
 </span>
-

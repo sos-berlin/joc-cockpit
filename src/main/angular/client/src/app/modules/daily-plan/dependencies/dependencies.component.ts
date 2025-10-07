@@ -40,6 +40,7 @@ declare const mxImage: any;
 declare const mxCellOverlay: any;
 
 @Component({
+  standalone: false,
   selector: 'app-dependencies',
   templateUrl: './dependencies.component.html',
   styleUrl: './dependencies.component.scss'

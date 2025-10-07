@@ -6,19 +6,18 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div *ngIf="
-              permission &&
-              permission.joc
-            " class="inline">
-            <ng-container>
-              <div class="btn-group"></div>
-              <button (click)="addChange()"
-                      class="btn btn-grey btn-sm m-l-12">
-                <i class="fa fa-plus"></i>&nbsp;
-                <span translate>changes.button.addChange</span>
-              </button>
-            </ng-container>
-          </div>
+          @if (permission && permission.joc) {
+            <div class="inline">
+              <ng-container>
+                <div class="btn-group"></div>
+                <button (click)="addChange()"
+                        class="btn btn-grey btn-sm m-l-12">
+                  <i class="fa fa-plus"></i>&nbsp;
+                  <span translate>changes.button.addChange</span>
+                </button>
+              </ng-container>
+            </div>
+          }
         </div>
       </div>
     </div>
@@ -56,78 +55,89 @@
           </tr>
           </thead>
           <tbody>
-          <ng-template
-            [ngForOf]="changesTable.data"
-            let-changes
-            ngFor>
-            <tr>
-              <td>
-                <div class="btn-group dropdown">
-                  <button [nzDropdownMenu]="export3" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
-                          type="button">
-                    <i class="fa fa-ellipsis-h"></i>
-                  </button>
-                  <nz-dropdown-menu #export3="nzDropdownMenu" role="menu">
-                    <ul nz-menu>
-                      <li (click)="updateChanges(changes,'updateChange')" nz-menu-item>
-                        <a translate>common.button.edit</a>
-                      </li>
-                      <li nz-menu-divider></li>
-                      <li (click)="deleteChanges(changes?.name)" nz-menu-item>
-                        <a translate>common.button.delete</a>
-                      </li>
-                    </ul>
-                  </nz-dropdown-menu>
-                </div>
-              </td>
-              <td>
-                <div class="d-flex justify-content-between algin-item-center">
-                  <span (click)="updateChanges(changes,'updateChange')" class="cursor">{{ changes?.name }}</span>
-                </div>
-              </td>
-              <td>
-                <div class="d-flex justify-content-between algin-item-center">
-                  <span *ngIf="changes?.title">{{ changes?.title }}</span>
-                </div>
-              </td>
-              <td>
-                <div class="d-flex justify-content-between algin-item-center">
-                  <span *ngIf="changes?.state">{{ changes?.state }}</span>
-                </div>
-              </td>
-              <td>
-                <div class="d-flex justify-content-between algin-item-center">
-                  <span *ngIf="changes?.owner">{{ changes?.owner }}</span>
-                </div>
-              </td>
-              <td>
-                <div class="d-flex justify-content-between algin-item-center">
-                  <span *ngIf="changes?.created">{{ changes?.created | stringToDate }}</span>
-                </div>
-              </td>
-              <td>
-                <div class="d-flex justify-content-between algin-item-center">
-                  <span *ngIf="changes?.modified">{{ changes?.modified | stringToDate  }}</span>
-                </div>
-              </td>
-              <td>
-                <div class="d-flex justify-content-between algin-item-center">
-                  <span *ngIf="changes" class="cursor" (click)="changesFound(changes,'changesFound')"><i class="fa fa-television "></i></span>
-                </div>
-              </td>
-            </tr>
-          </ng-template>
+            @for (changes of changesTable.data; track changes.name || changes.id) {
+              <tr>
+                <td>
+                  <div class="btn-group dropdown">
+                    <button [nzDropdownMenu]="export3" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                            type="button">
+                      <i class="fa fa-ellipsis-h"></i>
+                    </button>
+                    <nz-dropdown-menu #export3="nzDropdownMenu" role="menu">
+                      <ul nz-menu>
+                        <li (click)="updateChanges(changes,'updateChange')" nz-menu-item>
+                          <a translate>common.button.edit</a>
+                        </li>
+                        <li nz-menu-divider></li>
+                        <li (click)="deleteChanges(changes?.name)" nz-menu-item>
+                          <a translate>common.button.delete</a>
+                        </li>
+                      </ul>
+                    </nz-dropdown-menu>
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-between algin-item-center">
+                    <span (click)="updateChanges(changes,'updateChange')" class="cursor">{{ changes?.name }}</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-between algin-item-center">
+                    @if (changes?.title) {
+                      <span>{{ changes?.title }}</span>
+                    }
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-between algin-item-center">
+                    @if (changes?.state) {
+                      <span>{{ changes?.state }}</span>
+                    }
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-between algin-item-center">
+                    @if (changes?.owner) {
+                      <span>{{ changes?.owner }}</span>
+                    }
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-between algin-item-center">
+                    @if (changes?.created) {
+                      <span>{{ changes?.created | stringToDate }}</span>
+                    }
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-between algin-item-center">
+                    @if (changes?.modified) {
+                      <span>{{ changes?.modified | stringToDate  }}</span>
+                    }
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex justify-content-between algin-item-center">
+                    @if (changes) {
+                      <span class="cursor" (click)="changesFound(changes,'changesFound')"><i class="fa fa-television "></i></span>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
           </tbody>
         </nz-table>
-        <div *ngIf="changesTable.data.length > 0" class="w-half label-top">
-          <span translate>common.label.total</span> {{ data.length }}
-          <span *ngIf="changesTable.data.length > 1" translate
-          >changes.label.changesFound</span
-          >
-          <span *ngIf="changesTable.data.length === 1" translate
-          >changes.label.changeFound</span
-          >
-        </div>
+        @if (changesTable.data.length > 0) {
+          <div class="w-half label-top">
+            <span translate>common.label.total</span> {{ data.length }}
+            @if (changesTable.data.length > 1) {
+              <span translate>changes.label.changesFound</span>
+            }
+            @if (changesTable.data.length === 1) {
+              <span translate>changes.label.changeFound</span>
+            }
+          </div>
+        }
       </div>
     </div>
   </div>

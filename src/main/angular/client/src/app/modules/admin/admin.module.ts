@@ -23,14 +23,16 @@ import {ShowPermissionComponent} from './show-permission/show-permission.compone
 import {AddBlocklistModalComponent, BlocklistComponent} from './blocklist/blocklist.component';
 import {SessionManagementComponent} from './session-management/session-management.component';
 import {PendingRequestsComponent} from './pending-requests/pending-requests.component';
+import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 
 @NgModule({
-  imports: [
-    AdminRoutingModule,
-    SharedModule,
-    NzTabsModule,
-    NzAutocompleteModule
-  ],
+    imports: [
+        AdminRoutingModule,
+        SharedModule,
+        NzTabsModule,
+        NzAutocompleteModule,
+        NzTooltipDirective
+    ],
   declarations: [
     FolderModalComponent,
     PermissionModalComponent,

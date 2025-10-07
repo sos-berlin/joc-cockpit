@@ -1,7 +1,11 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="!copy" translate>user.label.addController</span>
-    <span *ngIf="copy"><span translate>user.label.copyController</span> : {{currentController.controller || 'default'}}</span>
+    @if (!copy) {
+      <span translate>user.label.addController</span>
+    }
+    @if (copy) {
+      <span><span translate>user.label.copyController</span> : {{currentController.controller || 'default'}}</span>
+    }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -12,12 +16,14 @@
     <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
     </div>
-    <div *ngIf="copy" class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>user.label.js7Controller</label>
-      <div class="col-sm-6">
-        <input [(ngModel)]="currentController.name" class="form-control" name="controllerId" readonly type="text">
+    @if (copy) {
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label" translate>user.label.js7Controller</label>
+        <div class="col-sm-6">
+          <input [(ngModel)]="currentController.name" class="form-control" name="controllerId" readonly type="text">
+        </div>
       </div>
-    </div>
+    }
     <div class="form-group row">
       <label class="col-sm-4 form-control-label" translate>user.label.role
         <sup class="text-danger text-sm">*</sup>
@@ -25,42 +31,52 @@
       <div class="col-sm-6">
         <nz-select [(ngModel)]="currentController.roleName" (ngModelChange)="checkRole($event)"
                    name="role"  nzPlaceHolder="{{'user.placeholder.selectRoles' | translate}}" nzShowSearch>
-          <nz-option *ngFor="let option of allRoles" [nzLabel]="option.roleName"
-                     [nzValue]="option.roleName"></nz-option>
+          @for (option of allRoles; track option) {
+            <nz-option [nzLabel]="option.roleName" [nzValue]="option.roleName"></nz-option>
+          }
         </nz-select>
       </div>
     </div>
-    <div *ngIf="!copy" class="form-group row">
-      <label class="col-sm-4 form-control-label" translate>user.label.js7Controller
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      <div [ngClass]="{'has-error' : !isUnique || ((controllerName.dirty || controllerName.touched) && controllerName.invalid)}"
-           class="col-sm-6">
-        <nz-select #controllerName="ngModel" [(ngModel)]="currentController.controller"
-                   (ngModelChange)="checkController($event, currentController.role)"
-                   [nzDisabled]="!currentController.roleName" name="schedulerIds"
-                   nzPlaceHolder="{{'user.placeholder.enterController' | translate}}"
-                   required>
-          <ng-container *ngFor="let id of schedulerIds.controllerIds">
-            <nz-option [nzLabel]="id" [nzValue]="id"></nz-option>
-          </ng-container>
-        </nz-select>
-        <div *ngIf="controllerName.invalid && (controllerName.dirty || controllerName.touched)"
-             class="text-danger help-block">
-          <div *ngIf="controllerName.errors['required']" translate>
-            common.message.requiredError
-          </div>
-        </div>
-        <div *ngIf="!isUnique" class="text-danger help-block" translate>
-          common.message.uniqueError
+    @if (!copy) {
+      <div class="form-group row">
+        <label class="col-sm-4 form-control-label" translate>user.label.js7Controller
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div [ngClass]="{'has-error' : !isUnique || ((controllerName.dirty || controllerName.touched) && controllerName.invalid)}"
+             class="col-sm-6">
+          <nz-select #controllerName="ngModel" [(ngModel)]="currentController.controller"
+                     (ngModelChange)="checkController($event, currentController.role)"
+                     [nzDisabled]="!currentController.roleName" name="schedulerIds"
+                     nzPlaceHolder="{{'user.placeholder.enterController' | translate}}"
+                     required>
+            @for (id of schedulerIds.controllerIds; track id) {
+              <nz-option [nzLabel]="id" [nzValue]="id"></nz-option>
+            }
+          </nz-select>
+          @if (controllerName.invalid && (controllerName.dirty || controllerName.touched)) {
+            <div class="text-danger help-block">
+              @if (controllerName.errors['required']) {
+                <div translate>
+                  common.message.requiredError
+                </div>
+              }
+            </div>
+          }
+          @if (!isUnique) {
+            <div class="text-danger help-block" translate>
+              common.message.uniqueError
+            </div>
+          }
         </div>
       </div>
-    </div>
+    }
   </div>
   <div class="modal-footer">
     <button [disabled]="!isUnique || !myForm.form.valid || submitted" class="btn btn-primary btn-sm"
             type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">

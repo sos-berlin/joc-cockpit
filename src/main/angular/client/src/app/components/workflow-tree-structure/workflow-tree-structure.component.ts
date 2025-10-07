@@ -5,6 +5,7 @@ import {ScriptModalComponent} from '../../modules/workflow/script-modal/script-m
 import {AuthService} from "../guard";
 
 @Component({
+  standalone: false,
   selector: 'app-workflow-tree-structure',
   templateUrl: './workflow-tree-structure.component.html',
   styleUrls: ['./workflow-tree-structure.component.scss']

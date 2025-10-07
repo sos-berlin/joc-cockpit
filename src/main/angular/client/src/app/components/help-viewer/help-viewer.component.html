@@ -1,35 +1,44 @@
 <div class="modal-header">
-    <button type="button" class="close" aria-label="Close" (click)="cancel()">
-        <span aria-hidden="true" class="fa fa-times-circle"></span>
-    </button>
+  <button type="button" class="close" aria-label="Close" (click)="cancel()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
 </div>
 
 <div class="modal-body p-a">
-    <div class="help-content-wrapper">
-        <div *ngIf="isLoading" class="col-md-12 text-center">
-            <div class="loading-center text-primary text ht-260">
-                <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
-            </div>
+  <div class="help-content-wrapper">
+    @if (isLoading) {
+      <div class="col-md-12 text-center">
+        <div class="loading-center text-primary text ht-260">
+          <div><i class="fa fa-refresh fa-lg fa-spin"></i></div>
         </div>
-      <ng-container *ngIf="!hasError; else empty">
-      <div *ngIf="!isLoading" [innerHTML]="html" class="help-md"></div>
+      </div>
+    }
+    @if (!hasError) {
+      <ng-container>
+        @if (!isLoading) {
+          <div [innerHTML]="html" class="help-md"></div>
+        }
       </ng-container>
-      <ng-template #empty>
-        <nz-result nzStatus="404" nzTitle="404" nzSubTitle="{{ 'common.message.noHelpData' | translate}}">
-        </nz-result>
-      </ng-template>
-    </div>
+    } @else {
+      <nz-result nzStatus="404" nzTitle="404" nzSubTitle="{{ 'common.message.noHelpData' | translate}}">
+      </nz-result>
+    }
+  </div>
 </div>
 <div class="modal-footer">
-    <button *ngIf="history.length > 0" type="button" class="btn btn-grey btn-sm" (click)="goBack()">
-        <span translate>common.button.back</span>
+  @if (history.length > 0) {
+    <button type="button" class="btn btn-grey btn-sm" (click)="goBack()">
+      <span translate>common.button.back</span>
     </button>
+  }
   <button type="button" class="btn btn-grey btn-sm" (click)="cancel()">
-        <span translate>common.button.close</span>
-    </button>
-  <small *ngIf="fallbackNotice" class="text-warning" style="white-space: nowrap;">
-    {{ 'common.message.fallbackNotice' | translate }}
-  </small>
+    <span translate>common.button.close</span>
+  </button>
+  @if (fallbackNotice) {
+    <small class="text-warning" style="white-space: nowrap;">
+      {{ 'common.message.fallbackNotice' | translate }}
+    </small>
+  }
   <div style="position: absolute; right: 10px;">
     <app-select-input (modelChange)="setLocale()" [attributeName]="'language'" [classNames]="'w-xl'"
                       [listArray]="coreService.locales" [name]="'language'" [object]="helpFilters"

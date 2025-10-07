@@ -17,6 +17,7 @@ enum ClassEnum {
 }
 
 @Component({
+  standalone: false,
   selector: 'g[ngx-charts-grid-panel-series]',
   template: `
     <svg:g

@@ -14,6 +14,7 @@ import {ClipboardService} from "ngx-clipboard";
 
 
 @Component({
+  standalone: false,
   selector: 'app-system-notification',
   templateUrl: './system-notification.component.html'
 })

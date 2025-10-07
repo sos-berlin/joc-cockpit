@@ -5,7 +5,7 @@ import {NzSelectModule} from 'ng-zorro-antd/select';
 import {NzSpinModule} from 'ng-zorro-antd/spin';
 import {NzInputModule} from 'ng-zorro-antd/input';
 import {NzCollapseModule} from 'ng-zorro-antd/collapse';
-import {NzMessageModule} from 'ng-zorro-antd/message';
+// import {NzMessageModule} from 'ng-zorro-antd/message';
 import {NzTreeSelectModule} from 'ng-zorro-antd/tree-select';
 import {NzDatePickerModule} from 'ng-zorro-antd/date-picker';
 import {NzNoAnimationModule} from 'ng-zorro-antd/core/no-animation';
@@ -17,6 +17,7 @@ import {NzUploadModule} from 'ng-zorro-antd/upload';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {Shared2Module} from './shared2.module';
 import {ChartsModule} from "../charts/charts.module";
+import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 import {
   DurationPipe,
   DurationFromCurrentPipe,
@@ -85,7 +86,7 @@ import {NzResultComponent} from "ng-zorro-antd/result";
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
   NzInputNumberModule, NzSpinModule, NzAutocompleteModule, NzTagModule, NzSelectModule,
-  NzInputModule, NzMessageModule, NzRadioModule, ChartsModule, NzTreeSelectModule,
+  NzInputModule, NzRadioModule, ChartsModule, NzTreeSelectModule,
   NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, NzUploadModule, NzProgressModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, ResumeOrderModalComponent, GraphicalViewModalComponent, ChangeParameterModalComponent,
@@ -99,10 +100,11 @@ const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponen
   SelectDocumentComponent, PermissionViewComponent, MultiSelectComponent, SearchInputComponent, SelectInputComponent, FileUploaderComponent, DateInputComponent];
 
 @NgModule({
-    imports: [
-        ...MODULES,
-        NzResultComponent
-    ],
+  imports: [
+    ...MODULES,
+    NzResultComponent,
+    NzTooltipDirective,
+  ],
   declarations: [
     ...COMPONENTS,
     ...EXPORTS

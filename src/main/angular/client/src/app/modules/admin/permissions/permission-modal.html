@@ -1,7 +1,11 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="add" translate>user.label.addPermission</span>
-    <span *ngIf="!add"><span translate>user.label.editPermission</span> : {{currentPermission.permissionLabel}} </span>
+    @if (add) {
+      <span translate>user.label.addPermission</span>
+    }
+    @if (!add) {
+      <span><span translate>user.label.editPermission</span> : {{currentPermission.permissionLabel}} </span>
+    }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -17,14 +21,16 @@
         <sup class="text-danger text-sm">*</sup>
       </label>
       <div class="col-sm-6">
-         <app-select-input [isRequired]="true" [isSearchable]="true" [name]="'path1'"
+        <app-select-input [isRequired]="true" [isSearchable]="true" [name]="'path1'"
                           [placeholder]="'user.placeholder.enterOrSelectPermission'" [object]="currentPermission"
                           [attributeName]="'permissionPath'"
                           (modelChange)="checkCovered(currentPermission)"
                           [listArray]="permissionOptions"></app-select-input>
-        <div *ngIf="isCovered" [ngClass]="{'m-b-sm':isCovered}" class="help-block text-danger">
-          <div translate>user.message.permissionIsAlreadyCovered</div>
-        </div>
+        @if (isCovered) {
+          <div [ngClass]="{'m-b-sm':isCovered}" class="help-block text-danger">
+            <div translate>user.message.permissionIsAlreadyCovered</div>
+          </div>
+        }
       </div>
     </div>
     <div class="form-group row">
@@ -38,7 +44,9 @@
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || isCovered || submitted" class="btn btn-primary btn-sm"
             type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
@@ -46,4 +54,3 @@
     </button>
   </div>
 </form>
-

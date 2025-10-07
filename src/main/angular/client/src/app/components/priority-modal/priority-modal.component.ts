@@ -5,6 +5,7 @@ import {WorkflowService} from "../../services/workflow.service";
 import {isArray} from "underscore";
 
 @Component({
+  standalone: false,
   selector: 'app-priority-modal',
   templateUrl: './priority-modal.component.html'
 })

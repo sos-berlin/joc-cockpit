@@ -9,7 +9,6 @@ import {
   TemplateRef,
   TrackByFunction
 } from '@angular/core';
-import {trigger, style, animate, transition} from '@angular/animations';
 import {scaleBand, scaleLinear} from 'd3-scale';
 
 import {calculateViewDimensions} from '../common/view-dimensions.helper';
@@ -24,6 +23,7 @@ import {BarOrientation} from '../common/types/bar-orientation.enum';
 import {isPlatformServer} from '@angular/common';
 
 @Component({
+  standalone: false,
   selector: 'ngx-charts-bar-vertical-2d',
   template: `
     <ngx-charts-chart
@@ -78,7 +78,6 @@ import {isPlatformServer} from '@angular/common';
           <svg:g
             ngx-charts-series-vertical
             *ngFor="let group of results; let index = index; trackBy: trackBy"
-            [@animationState]="'active'"
             [attr.transform]="groupTransform(group)"
             [activeEntries]="activeEntries"
             [xScale]="innerScale"
@@ -133,17 +132,6 @@ import {isPlatformServer} from '@angular/common';
   styleUrls: ['../common/base-chart.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('animationState', [
-      transition(':leave', [
-        style({
-          opacity: 1,
-          transform: '*'
-        }),
-        animate(500, style({opacity: 0, transform: 'scale(0)'}))
-      ])
-    ])
-  ]
 })
 export class BarVertical2DComponent extends BaseChartComponent {
   @Input() legend: boolean = false;

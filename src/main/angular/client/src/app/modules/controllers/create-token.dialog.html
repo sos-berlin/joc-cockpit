@@ -1,9 +1,15 @@
 <div class="modal-header">
   <h4 class="modal-title">
     <span translate>agent.button.createToken</span>
-    <i *ngIf="agent || controllerId">:</i>
-    <i *ngIf="!agent" class="text-muted p-l-xs text">{{controllerId}}</i>
-    <i *ngIf="agent" class="text-muted p-l-xs text">{{agent.agentId}}</i>
+    @if (agent || controllerId) {
+      <i>:</i>
+    }
+    @if (!agent) {
+      <i class="text-muted p-l-xs text">{{controllerId}}</i>
+    }
+    @if (agent) {
+      <i class="text-muted p-l-xs text">{{agent.agentId}}</i>
+    }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -27,23 +33,30 @@
       <label class="col-sm-3 form-control-label" translate>agent.label.validUntil
         <sup class="text-danger text-sm">*</sup>
       </label>
-      <div *ngIf="token.at === 'date'" class="col-sm-8">
-        <app-date-input [object]="token" [ignoreThirdParam]="true" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'" [isRequired]="true"
-                        [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat" [isPreviousDateDisabled]="true"
-                        [placeholder]="( dateFormat | uppercase )"
-        ></app-date-input>
-      </div>
-      <div *ngIf="token.at !== 'date'" [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}"
-           class="col-sm-8">
-        <input #time="ngModel" [(ngModel)]="token.atTime" class="form-control" name="atTime" placeholder="+1(h|d|w|M|y)"
-               relativeDateValidator required type="text">
-        <div *ngIf="time.errors && (time.dirty || time.touched)" class="help-block text-danger">
-          <div *ngIf="!time.valid && !time.errors.required" translate>common.message.invalid</div>
-          <div *ngIf="time.errors.required">
-            <div translate>common.message.requiredError</div>
-          </div>
+      @if (token.at === 'date') {
+        <div class="col-sm-8">
+          <app-date-input [object]="token" [ignoreThirdParam]="true" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'" [isRequired]="true"
+                          [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat" [isPreviousDateDisabled]="true"
+                          [placeholder]="( dateFormat | uppercase )"
+          ></app-date-input>
         </div>
-      </div>
+      }
+      @if (token.at !== 'date') {
+        <div [ngClass]="{ 'has-error' : (time.dirty || time.touched) && time.invalid}" class="col-sm-8">
+          <input #time="ngModel" [(ngModel)]="token.atTime" class="form-control" name="atTime" placeholder="+1(h|d|w|M|y)"
+                 relativeDateValidator required type="text">
+          @if (time.errors && (time.dirty || time.touched)) {
+            <div class="help-block text-danger">
+              @if (!time.valid && !time.errors.required) {
+                <div translate>common.message.invalid</div>
+              }
+              @if (time.errors.required) {
+                <div translate>common.message.requiredError</div>
+              }
+            </div>
+          }
+        </div>
+      }
     </div>
     <div class="form-group row">
       <div class="col-sm-3 form-control-label" translate>common.label.timeZone
@@ -58,7 +71,9 @@
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
             type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
@@ -66,4 +81,3 @@
     </button>
   </div>
 </form>
-

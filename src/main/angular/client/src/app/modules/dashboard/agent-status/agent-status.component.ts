@@ -11,6 +11,7 @@ import { HelpViewerComponent } from 'src/app/components/help-viewer/help-viewer.
 import {NzModalService} from "ng-zorro-antd/modal";
 
 @Component({
+  standalone: false,
   selector: 'app-agent-status',
   templateUrl: './agent-status.component.html'
 })

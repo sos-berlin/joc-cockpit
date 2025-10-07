@@ -8,198 +8,251 @@
           </div>
           <div class="inline">
             <!-- Sorting via Account Name Starts -->
-            <div *ngIf="!isSelected && route && identityServiceType !== 'KEYCLOAK' && identityServiceType !== 'LDAP' && route.match('/users/identity_service/role')"
-                 class="btn-group dropdown">
-              <button [nzDropdownMenu]="account"
-                      [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12 " nz-dropdown
-                      nzTrigger="click">{{'user.label.user' | translate}}
-                <span class="text-primary">{{selectedUser | decodeSpace}} </span>
-                <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
-              </button>
-              <nz-dropdown-menu #account="nzDropdownMenu">
-                <ul nz-menu>
-                  <li (click)="selectUser(account.accountName)" *ngFor="let account of accounts | orderBy: 'name'"
-                      [ngClass]="{orange: selectedUser === account.accountName}"
-                      nz-menu-item>
-                    <a>
-                      <span>{{account.accountName | decodeSpace}}</span>
-                      <i (click)="selectUser(null);$event.stopPropagation();"
-                         *ngIf="selectedUser === account.accountName"
-                         class="fa fa-times-circle-o remove"></i>
-                    </a>
-                  </li>
-                </ul>
-              </nz-dropdown-menu>
-            </div>
-            <div *ngIf="(route === '/users' || route === '/users/identity_service') && adminFilter.isBlocklist && !isBlockButtonShow"
-                 class="btn-group m-l-12 hidden-btn-group">
-              <button (click)="loadBlocklist('all')" [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='all'}"
-                      class="btn btn-grey btn-sm" translate>filters.button.all
-              </button>
-              <button (click)="loadBlocklist('today')" [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='today'}"
-                      class="btn btn-grey btn-sm" translate>
-                filters.button.today
-              </button>
-              <button (click)="loadBlocklist('-1h')" [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='-1h'}"
-                      class="btn btn-grey btn-sm" translate>
-                filters.button.last1
-              </button>
-              <button (click)="loadBlocklist('-12h')" [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='-12h'}"
-                      class="btn btn-grey btn-sm" translate>
-                filters.button.last12
-              </button>
-              <button (click)="loadBlocklist('-24h')" [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='-24h'}"
-                      class="btn btn-grey btn-sm" translate>
-                filters.button.last24
-              </button>
-              <button (click)="loadBlocklist('-7d')" [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='-7d'}"
-                      class="btn btn-grey btn-sm" translate>
-                filters.button.lastWeak
-              </button>
-            </div>
+            @if (!isSelected && route && identityServiceType !== 'KEYCLOAK' && identityServiceType !== 'LDAP' && route.match('/users/identity_service/role')) {
+              <div class="btn-group dropdown">
+                <button [nzDropdownMenu]="account"
+                        [nzPlacement]="'bottomRight'" class="btn btn-grey btn-sm m-l-12 " nz-dropdown
+                        nzTrigger="click">{{'user.label.user' | translate}}
+                  <span class="text-primary">{{selectedUser | decodeSpace}} </span>
+                  <i class="caretDownIcon" nz-icon nzTheme="outline" nzType="caret-down"></i>
+                </button>
+                <nz-dropdown-menu #account="nzDropdownMenu">
+                  <ul nz-menu>
+                    @for (account of accounts | orderBy: 'name'; track account.accountName) {
+                      <li (click)="selectUser(account.accountName)"
+                          [ngClass]="{orange: selectedUser === account.accountName}"
+                          nz-menu-item>
+                        <a>
+                          <span>{{account.accountName | decodeSpace}}</span>
+                          @if (selectedUser === account.accountName) {
+                            <i (click)="selectUser(null);$event.stopPropagation();"
+                               class="fa fa-times-circle-o remove"></i>
+                          }
+                        </a>
+                      </li>
+                    }
+                  </ul>
+                </nz-dropdown-menu>
+              </div>
+            }
+            @if ((route === '/users' || route === '/users/identity_service') && adminFilter.isBlocklist && !isBlockButtonShow) {
+              <div class="btn-group m-l-12 hidden-btn-group">
+                <button (click)="loadBlocklist('all')" [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='all'}"
+                        class="btn btn-grey btn-sm" translate>filters.button.all
+                </button>
+                <button (click)="loadBlocklist('today')" [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='today'}"
+                        class="btn btn-grey btn-sm" translate>
+                  filters.button.today
+                </button>
+                <button (click)="loadBlocklist('-1h')" [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='-1h'}"
+                        class="btn btn-grey btn-sm" translate>
+                  filters.button.last1
+                </button>
+                <button (click)="loadBlocklist('-12h')" [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='-12h'}"
+                        class="btn btn-grey btn-sm" translate>
+                  filters.button.last12
+                </button>
+                <button (click)="loadBlocklist('-24h')" [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='-24h'}"
+                        class="btn btn-grey btn-sm" translate>
+                  filters.button.last24
+                </button>
+                <button (click)="loadBlocklist('-7d')" [ngClass]="{'btn-primary': adminFilter.blocklist.filter.date=='-7d'}"
+                        class="btn btn-grey btn-sm" translate>
+                  filters.button.lastWeak
+                </button>
+              </div>
+            }
           </div>
-          <div *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="inline">
-            <!-- Sorting via Account Name Ends -->
-            <button
-              (click)="exportObject()"
-              *ngIf="isSelected && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-download"></i>&nbsp;
-              <span translate>inventory.button.export</span>
-            </button>
-            <button
-              (click)="importObject()"
-              *ngIf="!isSelected && ((route.match('/users/identity_service/account') && identityServiceType !== 'FIDO') || route.match('/users/identity_service/role'))" class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-upload"></i>&nbsp;
-              <span translate>inventory.button.import</span>
-            </button>
-            <button (click)="approveRequest()"
-                    *ngIf="isSelected && (route.match('/users/identity_service/pending_requests'))" class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-check"></i>&nbsp;
-              <span translate>common.button.approve</span>
-            </button>
-            <button (click)="rejectRequest()"
-                    *ngIf="isSelected && (route.match('/users/identity_service/pending_requests'))" class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-times"></i>&nbsp;
-              <span translate>common.button.reject</span>
-            </button>
-            <button (click)="deleteRequest()"
-                    *ngIf="isSelected && (route.match('/users/identity_service/pending_requests'))" class="btn btn-sm btn-grey m-l-12">
-              <i class="fa fa-trash"></i>&nbsp;
-              <span translate>common.button.delete</span>
-            </button>
+          @if (permission.joc && permission.joc.administration.accounts.manage) {
+            <div class="inline">
+              <!-- Sorting via Account Name Ends -->
+              @if (isSelected && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))) {
+                <button
+                  (click)="exportObject()"
+                  class="btn btn-sm btn-grey m-l-12">
+                  <i class="fa fa-download"></i>&nbsp;
+                  <span translate>inventory.button.export</span>
+                </button>
+              }
+              @if (!isSelected && ((route.match('/users/identity_service/account') && identityServiceType !== 'FIDO') || route.match('/users/identity_service/role'))) {
+                <button
+                  (click)="importObject()"
+                  class="btn btn-sm btn-grey m-l-12">
+                  <i class="fa fa-upload"></i>&nbsp;
+                  <span translate>inventory.button.import</span>
+                </button>
+              }
+              @if (isSelected && (route.match('/users/identity_service/pending_requests'))) {
+                <button (click)="approveRequest()"
+                        class="btn btn-sm btn-grey m-l-12">
+                  <i class="fa fa-check"></i>&nbsp;
+                  <span translate>common.button.approve</span>
+                </button>
+              }
+              @if (isSelected && (route.match('/users/identity_service/pending_requests'))) {
+                <button (click)="rejectRequest()"
+                        class="btn btn-sm btn-grey m-l-12">
+                  <i class="fa fa-times"></i>&nbsp;
+                  <span translate>common.button.reject</span>
+                </button>
+              }
+              @if (isSelected && (route.match('/users/identity_service/pending_requests'))) {
+                <button (click)="deleteRequest()"
+                        class="btn btn-sm btn-grey m-l-12">
+                  <i class="fa fa-trash"></i>&nbsp;
+                  <span translate>common.button.delete</span>
+                </button>
+              }
 <!--            <button-->
 <!--              (click)="manageSetting()"-->
-<!--              *ngIf="(route === '/users' || route === '/users/identity_service') && !adminFilter.isBlocklist && !adminFilter.isSession" class="btn btn-grey btn-sm m-l-12">-->
+<!--              @if ((route === '/users' || route === '/users/identity_service') && !adminFilter.isBlocklist && !adminFilter.isSession) {" class="btn btn-grey btn-sm m-l-12">-->
 <!--              <i class="fa fa-plus"></i>&nbsp;-->
 <!--              <span translate>user.button.manageGeneralSetting</span>-->
 <!--            </button>-->
-            <button
-              (click)="addAccount()"
-              *ngIf="(route === '/users' || route === '/users/identity_service') && !adminFilter.isBlocklist && !adminFilter.isSession" class="btn btn-grey btn-sm m-l-12">
-              <i class="fa fa-plus"></i>&nbsp;
-              <span translate>user.button.addIdentityService</span>
-            </button>
-            <button
-              (click)="pasteList()"
-              *ngIf="!isSelected && isPaste && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-grey btn-sm m-l-12">
-              <i class="fa fa-paste"></i>&nbsp;
-              <span translate>common.button.paste</span>
-            </button>
-            <button
-              (click)="addAccount()"
-              *ngIf="!isSelected && route.match('/users/identity_service/account') && identityServiceType !== 'FIDO'" class="btn btn-grey btn-sm m-l-12">
-              <i class="fa fa-plus"></i>&nbsp;
-              <span translate>user.button.addUser</span>
-            </button>
-            <button
-              (click)="copyList()"
-              *ngIf="isSelected && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-grey btn-sm m-l-12">
-              <i class="fa fa-copy"></i>&nbsp;
-              <span translate>common.button.copy</span>
-            </button>
-            <button
-              (click)="resetPassword()"
-              *ngIf="isSelected && (identityServiceType === 'JOC') && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12">
-              <i class="fa fa-refresh"></i>&nbsp;
-              <span translate>user.button.resetPassword</span>
-            </button>
-            <button
-              (click)="forcePasswordChange()"
-              *ngIf="isSelected && (identityServiceType === 'JOC') && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12">
-              <i class="fa fa-key"></i>&nbsp;
-              <span translate>user.button.forcePasswordChange</span>
-            </button>
-            <button
-              (click)="disableList()"
-              *ngIf="isSelected && identityServiceType && identityServiceType.match('JOC') && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12">
-              <i class="fa fa-ban"></i>&nbsp;
-              <span translate>user.button.disable</span>
-            </button>
-            <button
-              (click)="disableList(true)"
-              *ngIf="isSelected && identityServiceType && identityServiceType.match('JOC') && (route.match('/users/identity_service/account'))" class="btn btn-grey btn-sm m-l-12">
-              <i class="fa fa-check"></i>&nbsp;
-              <span translate>user.button.enable</span>
-            </button>
-            <button
-              (click)="deleteList()"
-              *ngIf="isSelected && route && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))" class="btn btn-grey btn-sm m-l-12">
-              <i class="fa fa-trash"></i>&nbsp;
-              <span translate>user.button.delete</span>
-            </button>
-            <button (click)="addController()"
-                    *ngIf="!isSelected && route && route.match('/users/identity_service/role')" class="btn btn-grey btn-sm m-l-12">
-              <i class="fa fa-plus"></i>&nbsp;
-              <span translate>user.button.addController</span>
-            </button>
-            <button (click)="addRole()"
-                    *ngIf="!isSelected && route && route.match('/users/identity_service/role')" class="btn btn-grey btn-sm m-l-12">
-              <i class="fa fa-plus"></i>&nbsp;
-              <span translate>user.button.addRole</span>
-            </button>
-            <button (click)="resetProfiles()" *ngIf="route === '/users/identity_service/profiles' && isButtonShow"
-                    class="btn btn-sm btn-grey m-l-12"
-                    type="button">
-              <i class="fa fa-trash-o"></i>&nbsp;
-              <span translate>user.button.deleteProfile</span>
-            </button>
-            <button (click)="deleteBulkBlockedAccounts()" *ngIf="isBlockButtonShow && adminFilter.isBlocklist"
-                    class="btn btn-sm btn-grey m-l-12"
-                    type="button">
-              <i class="fa fa-trash-o"></i>&nbsp;
-              <span translate>user.button.deleteBlockedAccounts</span>
-            </button>
-            <button (click)="deleteBulkActiveSessions()" *ngIf="isSessionButtonShow && adminFilter.isSession"
-                    class="btn btn-sm btn-grey m-l-12"
-                    type="button">
-              <i class="fa fa-times"></i>&nbsp;
-              <span translate>user.button.cancelSessions</span>
-            </button>
-            <button (click)="deleteProfiles()" *ngIf="route === '/users/identity_service/profiles' && isButtonShow"
-                    class="btn btn-sm btn-grey m-l-12"
-                    type="button">
-              <i class="fa fa-trash"></i>&nbsp;
-              <span translate>user.button.deleteProfileAndCustomization</span>
-            </button>
-            <button (click)="addFolder()" *ngIf="route && route.match('/users/identity_service/permissions')"
-                    class="btn btn-sm btn-grey m-l-12"
-                    type="button">
-              <i class="fa fa-plus"></i>
-              {{'user.button.addFolder' | translate}}
-            </button>
-            <button (click)="addPermission();" *ngIf="route && route.match('/users/identity_service/permissions')"
-                    [hidden]="pageView=='grid'"
-                    class="btn btn-sm btn-grey m-l-12" type="button">
-              <i class="fa fa-plus"></i>&nbsp;
-              {{'user.button.addPermission' | translate}}
-            </button>
-            <button
-              (click)="addToBlocklist()"
-              *ngIf="(route === '/users/identity_service' || route === '/users') && !isBlockButtonShow && adminFilter.isBlocklist" class="btn btn-grey btn-sm m-l-12">
-              <i aria-hidden="true" class="fa fa-plus"></i>&nbsp;
-              <span translate>user.button.addToBlocklist</span>
-            </button>
-          </div>
+              @if ((route === '/users' || route === '/users/identity_service') && !adminFilter.isBlocklist && !adminFilter.isSession) {
+                <button
+                  (click)="addAccount()"
+                  class="btn btn-grey btn-sm m-l-12">
+                  <i class="fa fa-plus"></i>&nbsp;
+                  <span translate>user.button.addIdentityService</span>
+                </button>
+              }
+              @if (!isSelected && isPaste && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))) {
+                <button
+                  (click)="pasteList()"
+                  class="btn btn-grey btn-sm m-l-12">
+                  <i class="fa fa-paste"></i>&nbsp;
+                  <span translate>common.button.paste</span>
+                </button>
+              }
+              @if (!isSelected && route.match('/users/identity_service/account') && identityServiceType !== 'FIDO') {
+                <button
+                  (click)="addAccount()"
+                  class="btn btn-grey btn-sm m-l-12">
+                  <i class="fa fa-plus"></i>&nbsp;
+                  <span translate>user.button.addUser</span>
+                </button>
+              }
+              @if (isSelected && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))) {
+                <button
+                  (click)="copyList()"
+                  class="btn btn-grey btn-sm m-l-12">
+                  <i class="fa fa-copy"></i>&nbsp;
+                  <span translate>common.button.copy</span>
+                </button>
+              }
+              @if (isSelected && (identityServiceType === 'JOC') && (route.match('/users/identity_service/account'))) {
+                <button
+                  (click)="resetPassword()"
+                  class="btn btn-grey btn-sm m-l-12">
+                  <i class="fa fa-refresh"></i>&nbsp;
+                  <span translate>user.button.resetPassword</span>
+                </button>
+              }
+              @if (isSelected && (identityServiceType === 'JOC') && (route.match('/users/identity_service/account'))) {
+                <button
+                  (click)="forcePasswordChange()"
+                  class="btn btn-grey btn-sm m-l-12">
+                  <i class="fa fa-key"></i>&nbsp;
+                  <span translate>user.button.forcePasswordChange</span>
+                </button>
+              }
+              @if (isSelected && identityServiceType && identityServiceType.match('JOC') && (route.match('/users/identity_service/account'))) {
+                <button
+                  (click)="disableList()"
+                  class="btn btn-grey btn-sm m-l-12">
+                  <i class="fa fa-ban"></i>&nbsp;
+                  <span translate>user.button.disable</span>
+                </button>
+              }
+              @if (isSelected && identityServiceType && identityServiceType.match('JOC') && (route.match('/users/identity_service/account'))) {
+                <button
+                  (click)="disableList(true)"
+                  class="btn btn-grey btn-sm m-l-12">
+                  <i class="fa fa-check"></i>&nbsp;
+                  <span translate>user.button.enable</span>
+                </button>
+              }
+              @if (isSelected && route && (route.match('/users/identity_service/account') || route.match('/users/identity_service/role'))) {
+                <button
+                  (click)="deleteList()"
+                  class="btn btn-grey btn-sm m-l-12">
+                  <i class="fa fa-trash"></i>&nbsp;
+                  <span translate>user.button.delete</span>
+                </button>
+              }
+              @if (!isSelected && route && route.match('/users/identity_service/role')) {
+                <button (click)="addController()"
+                        class="btn btn-grey btn-sm m-l-12">
+                  <i class="fa fa-plus"></i>&nbsp;
+                  <span translate>user.button.addController</span>
+                </button>
+              }
+              @if (!isSelected && route && route.match('/users/identity_service/role')) {
+                <button (click)="addRole()"
+                        class="btn btn-grey btn-sm m-l-12">
+                  <i class="fa fa-plus"></i>&nbsp;
+                  <span translate>user.button.addRole</span>
+                </button>
+              }
+              @if (route === '/users/identity_service/profiles' && isButtonShow) {
+                <button (click)="resetProfiles()"
+                        class="btn btn-sm btn-grey m-l-12"
+                        type="button">
+                  <i class="fa fa-trash-o"></i>&nbsp;
+                  <span translate>user.button.deleteProfile</span>
+                </button>
+              }
+              @if (isBlockButtonShow && adminFilter.isBlocklist) {
+                <button (click)="deleteBulkBlockedAccounts()"
+                        class="btn btn-sm btn-grey m-l-12"
+                        type="button">
+                  <i class="fa fa-trash-o"></i>&nbsp;
+                  <span translate>user.button.deleteBlockedAccounts</span>
+                </button>
+              }
+              @if (isSessionButtonShow && adminFilter.isSession) {
+                <button (click)="deleteBulkActiveSessions()"
+                        class="btn btn-sm btn-grey m-l-12"
+                        type="button">
+                  <i class="fa fa-times"></i>&nbsp;
+                  <span translate>user.button.cancelSessions</span>
+                </button>
+              }
+              @if (route === '/users/identity_service/profiles' && isButtonShow) {
+                <button (click)="deleteProfiles()"
+                        class="btn btn-sm btn-grey m-l-12"
+                        type="button">
+                  <i class="fa fa-trash"></i>&nbsp;
+                  <span translate>user.button.deleteProfileAndCustomization</span>
+                </button>
+              }
+              @if (route && route.match('/users/identity_service/permissions')) {
+                <button (click)="addFolder()"
+                        class="btn btn-sm btn-grey m-l-12"
+                        type="button">
+                  <i class="fa fa-plus"></i>
+                  {{'user.button.addFolder' | translate}}
+                </button>
+              }
+              @if (route && route.match('/users/identity_service/permissions')) {
+                <button (click)="addPermission();"
+                        [hidden]="pageView=='grid'"
+                        class="btn btn-sm btn-grey m-l-12" type="button">
+                  <i class="fa fa-plus"></i>&nbsp;
+                  {{'user.button.addPermission' | translate}}
+                </button>
+              }
+              @if ((route === '/users/identity_service' || route === '/users') && !isBlockButtonShow && adminFilter.isBlocklist) {
+                <button
+                  (click)="addToBlocklist()"
+                  class="btn btn-grey btn-sm m-l-12">
+                  <i aria-hidden="true" class="fa fa-plus"></i>&nbsp;
+                  <span translate>user.button.addToBlocklist</span>
+                </button>
+              }
+            </div>
+          }
           <div class="inline">
             <div [ngClass]="{'show-block': route && route.match('/users/identity_service/permissions')}" class="hide">
               <app-toggle (messageEvent)="receiveMessage($event)"></app-toggle>
@@ -212,61 +265,73 @@
 </div>
 
 <div class="scroll-y max-ht">
-  <div *ngIf="isLoaded" class="padding p-b-0">
-    <div *ngIf="route !== '/users' && route !== '/users/identity_service'" class="row m-b m-t-xs">
-      <div class="col-md-12">
-        <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
-          <li *ngIf="!secondFactor" class="nav-item">
-            <a class="nav-link" routerLink="identity_service/role" routerLinkActive="active">
-              <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.manageRoles</span></span>
-            </a>
-          </li>
-          <li *ngIf="!secondFactor && identityServiceType !== 'KEYCLOAK' && identityServiceType !== 'LDAP' && identityServiceType !== 'OIDC'"
-              class="nav-item dropdown-separator">
-            <span class="separator"></span>
-          </li>
-          <li *ngIf="identityServiceType !== 'KEYCLOAK' && identityServiceType !== 'LDAP' && identityServiceType !== 'OIDC'"
-              class="nav-item">
-            <a class="nav-link" routerLink="identity_service/account" routerLinkActive="active">
-              <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.users</span></span>
-            </a>
-          </li>
-          <li class="nav-item dropdown-separator">
-            <span class="separator"></span>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="identity_service/profiles" routerLinkActive="active">
-              <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.profiles</span></span>
-            </a>
-          </li>
-          <ng-container *ngIf="identityServiceType == 'FIDO'">
-            <li class="nav-item dropdown-separator">
-              <span class="separator"></span>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="identity_service/pending_requests" routerLinkActive="active">
-                <span class="nav-text text-dark p-b-sm"><span class="text"
-                                                              translate>user.label.pendingRequests</span></span>
-              </a>
-            </li>
-          </ng-container>
-        </ul>
-        <div
-          *ngIf="route.match('/users/identity_service/account') || route.match('/users/identity_service/pending_requests')"
-          class="inline pull-right search-box-field admin-search-bar">
-          <label>
-            <input #input (keyup)="searchBar(input.value)" [(ngModel)]="filter.searchKey"
-                   placeholder="{{'common.placeholder.search' | translate}}" type="search">
-            <i (click)="filter.searchKey = '';searchBar('')" *ngIf="filter.searchKey"
-               class="fa fa-times search-close"></i>
-          </label>
+  @if (isLoaded) {
+    <div class="padding p-b-0">
+      @if (route !== '/users' && route !== '/users/identity_service') {
+        <div class="row m-b m-t-xs">
+          <div class="col-md-12">
+            <ul class="nav navbar-nav navbar-nav-inline nav-active-border nav-active-border2 b-primary">
+              @if (!secondFactor) {
+                <li class="nav-item">
+                  <a class="nav-link" routerLink="identity_service/role" routerLinkActive="active">
+                    <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.manageRoles</span></span>
+                  </a>
+                </li>
+              }
+              @if (!secondFactor && identityServiceType !== 'KEYCLOAK' && identityServiceType !== 'LDAP' && identityServiceType !== 'OIDC') {
+                <li class="nav-item dropdown-separator">
+                  <span class="separator"></span>
+                </li>
+              }
+              @if (identityServiceType !== 'KEYCLOAK' && identityServiceType !== 'LDAP' && identityServiceType !== 'OIDC') {
+                <li class="nav-item">
+                  <a class="nav-link" routerLink="identity_service/account" routerLinkActive="active">
+                    <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.users</span></span>
+                  </a>
+                </li>
+              }
+              <li class="nav-item dropdown-separator">
+                <span class="separator"></span>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" routerLink="identity_service/profiles" routerLinkActive="active">
+                  <span class="nav-text text-dark p-b-sm"><span class="text" translate>user.label.profiles</span></span>
+                </a>
+              </li>
+              @if (identityServiceType == 'FIDO') {
+                <ng-container>
+                  <li class="nav-item dropdown-separator">
+                    <span class="separator"></span>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" routerLink="identity_service/pending_requests" routerLinkActive="active">
+                      <span class="nav-text text-dark p-b-sm"><span class="text"
+                                                                    translate>user.label.pendingRequests</span></span>
+                    </a>
+                  </li>
+                </ng-container>
+              }
+            </ul>
+            @if (route.match('/users/identity_service/account') || route.match('/users/identity_service/pending_requests')) {
+              <div class="inline pull-right search-box-field admin-search-bar">
+                <label>
+                  <input #input (keyup)="searchBar(input.value)" [(ngModel)]="filter.searchKey"
+                         placeholder="{{'common.placeholder.search' | translate}}" type="search">
+                  @if (filter.searchKey) {
+                    <i (click)="filter.searchKey = '';searchBar('')"
+                       class="fa fa-times search-close"></i>
+                  }
+                </label>
+              </div>
+            }
+          </div>
+        </div>
+      }
+      <div class="row m-t-sm">
+        <div class="col-sm-12">
+          <router-outlet></router-outlet>
         </div>
       </div>
     </div>
-    <div class="row m-t-sm">
-      <div class="col-sm-12">
-        <router-outlet></router-outlet>
-      </div>
-    </div>
-  </div>
+  }
 </div>

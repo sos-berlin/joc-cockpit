@@ -10,6 +10,7 @@ import { EncryptArgumentModalComponent } from 'src/app/modules/configuration/inv
 import {NgModel} from "@angular/forms";
 
 @Component({
+  standalone: false,
   selector: 'app-change-parameter',
   templateUrl: './change-parameter-dialog.html'
 })
@@ -669,6 +670,7 @@ export class ChangeParameterModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-start-time',
   templateUrl: './start-time-dialog.html'
 })

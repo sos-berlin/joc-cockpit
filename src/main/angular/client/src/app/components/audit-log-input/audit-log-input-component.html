@@ -7,34 +7,45 @@
     </nz-radio-group>
   </div>
 </div>
-<div class="form-group row" *ngIf="comments.radio=='predefined'">
-  <label class="col-sm-{{sizeX}} form-control-label" translate>common.label.selectComment
-    <sup *ngIf="required" class="text-danger text-sm">*</sup>
-  </label>
-  <div class="col-sm-{{sizeY}}">
-    <app-select-input  [attributeName]="'comment'" [isRequired]="required" [placeholder]="'common.label.selectPredefinedReason'"
-                      [listArray]="messageList" [name]="'comment'" [isAllowClear]="true"
-                      [object]="comments"></app-select-input>
-  </div>
-</div>
-<div *ngIf="comments.radio=='new'" [ngClass]="{'has-error' : ((textComment.dirty || textComment.touched) && textComment.invalid)}"
-     class="form-group row">
-  <label class="col-sm-{{sizeX}} " translate>common.label.comment
-    <sup *ngIf="required" class="text-danger text-sm">*</sup>
-  </label>
-  <div class="col-sm-{{sizeY}}">
-    <textarea class="form-control" maxlength="2000" name="textComment" #textComment="ngModel"
-              [required]="required" [(ngModel)]="comments.comment"
-              placeholder="{{'common.placeholder.enterComment' | translate}}" rows="3"
-    ></textarea>
-    <div *ngIf="textComment.invalid && (textComment.dirty || textComment.touched)"
-         class="text-danger help-block">
-      <div *ngIf="textComment.errors && textComment.errors['required']" translate>
-        common.message.requiredError
-      </div>
+@if (comments.radio=='predefined') {
+  <div class="form-group row">
+    <label class="col-sm-{{sizeX}} form-control-label" translate>common.label.selectComment
+      @if (required) {
+        <sup class="text-danger text-sm">*</sup>
+      }
+    </label>
+    <div class="col-sm-{{sizeY}}">
+      <app-select-input  [attributeName]="'comment'" [isRequired]="required" [placeholder]="'common.label.selectPredefinedReason'"
+                         [listArray]="messageList" [name]="'comment'" [isAllowClear]="true"
+                         [object]="comments"></app-select-input>
     </div>
   </div>
-</div>
+}
+@if (comments.radio=='new') {
+  <div [ngClass]="{'has-error' : ((textComment.dirty || textComment.touched) && textComment.invalid)}"
+       class="form-group row">
+    <label class="col-sm-{{sizeX}} " translate>common.label.comment
+      @if (required) {
+        <sup class="text-danger text-sm">*</sup>
+      }
+    </label>
+    <div class="col-sm-{{sizeY}}">
+      <textarea class="form-control" maxlength="2000" name="textComment" #textComment="ngModel"
+                [required]="required" [(ngModel)]="comments.comment"
+                placeholder="{{'common.placeholder.enterComment' | translate}}" rows="3"
+      ></textarea>
+      @if (textComment.invalid && (textComment.dirty || textComment.touched)) {
+        <div class="text-danger help-block">
+          @if (textComment.errors && textComment.errors['required']) {
+            <div translate>
+              common.message.requiredError
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}
 <div class="form-group row">
   <label class="col-sm-{{sizeX}} form-control-label" translate>common.label.timeSpend</label>
   <div class="col-sm-{{sizeY}}">
@@ -49,9 +60,11 @@
            [(ngModel)]="comments.ticketLink">
   </div>
 </div>
-<div *ngIf="router.url.match('/users/') || router.url.match('/settings')" class="form-group row">
-  <label class="col-sm-{{sizeX}}" translate>user.label.reuseReason</label>
-  <div class="col-sm-{{sizeY}}">
-    <label nz-checkbox [(ngModel)]="comments.isChecked" name="reuseReason"></label>
+@if (router.url.match('/users/') || router.url.match('/settings')) {
+  <div class="form-group row">
+    <label class="col-sm-{{sizeX}}" translate>user.label.reuseReason</label>
+    <div class="col-sm-{{sizeY}}">
+      <label nz-checkbox [(ngModel)]="comments.isChecked" name="reuseReason"></label>
+    </div>
   </div>
-</div>
+}

@@ -12,6 +12,7 @@ import {formatLabel} from '../common/label.helper';
 import {BarOrientation} from '../common/types/bar-orientation.enum';
 
 @Component({
+  standalone: false,
   selector: 'g[ngx-charts-bar-label]',
   template: `
     <svg:text

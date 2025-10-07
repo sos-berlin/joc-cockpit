@@ -12,6 +12,7 @@ declare const $: any;
 export let that: any;
 
 @Component({
+  standalone: false,
   selector: 'app-log-view',
   templateUrl: './log-view.component.html'
 })

@@ -15,6 +15,7 @@ declare const mxEventObject: any;
 declare const $: any;
 
 @Component({
+  standalone: false,
   selector: 'app-graphical-view-modal',
   templateUrl: './graphical-view-modal.component.html',
   styleUrls: ['./graphical-view-modal.component.css']

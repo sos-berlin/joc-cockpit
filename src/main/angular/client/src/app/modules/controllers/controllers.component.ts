@@ -15,6 +15,7 @@ import {FileUploaderComponent} from "../../components/file-uploader/file-uploade
 import {SearchPipe} from "../../pipes/core.pipe";
 
 @Component({
+  standalone: false,
   selector: 'app-export-modal',
   templateUrl: './export-dialog.html'
 })
@@ -132,6 +133,7 @@ export class ExportComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-export-bulk-modal',
   templateUrl: './export-bulk-dialog.html'
 })
@@ -214,6 +216,7 @@ export class ExportBulkComponent {
 
 }
 @Component({
+  standalone: false,
   selector: 'app-create-token-modal',
   templateUrl: './create-token.dialog.html'
 })
@@ -306,6 +309,7 @@ export class CreateTokenModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-controllers',
   templateUrl: './controllers.component.html'
 })

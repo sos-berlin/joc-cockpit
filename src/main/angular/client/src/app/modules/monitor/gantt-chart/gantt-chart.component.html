@@ -3,43 +3,65 @@
     <table class="taskTable">
       <thead>
       <tr>
-        <th *ngIf="groupBy === 'DATE'"><span translate>monitor.label.date</span></th>
+        @if (groupBy === 'DATE') {
+          <th><span translate>monitor.label.date</span></th>
+        }
         <th><span translate>dashboard.label.controllerId</span></th>
-        <th *ngIf="groupBy !== 'DATE'"><span translate>monitor.label.date</span></th>
-        <th *ngIf="isAgent"><span translate>agent.label.agentId</span></th>
-        <th *ngIf="isAgent"><span translate>dashboard.label.url</span></th>
+        @if (groupBy !== 'DATE') {
+          <th><span translate>monitor.label.date</span></th>
+        }
+        @if (isAgent) {
+          <th><span translate>agent.label.agentId</span></th>
+        }
+        @if (isAgent) {
+          <th><span translate>dashboard.label.url</span></th>
+        }
       </tr>
       </thead>
       <tbody>
-      <tr
-        *ngFor="let task of tasks"
-        [hidden]="task.isHidden">
-        <td *ngIf="groupBy === 'DATE'">
-          <span class="show-in-single-line">
-          <i (click)="onTaskClick(task)" *ngIf="task.isParent"
-             [ngClass]="{ 'fa-angle-down': !task.active, 'fa-angle-right': task.active }"
-             aria-hidden="true" class="fa cursor fa-lg p-r-xs"></i>
-            {{ task.date}}
-          </span>
-        </td>
-        <td *ngIf="groupBy === 'CONTROLLERID'">
-          <span class="show-in-single-line">
-          <i (click)="onTaskClick(task)" *ngIf="task.isParent"
-             [ngClass]="{ 'fa-angle-down': !task.active, 'fa-angle-right': task.active }"
-             aria-hidden="true" class="fa cursor fa-lg p-r-xs"></i>
-            {{ task.controllerId}}
-          </span>
-        </td>
-        <td *ngIf="groupBy !== 'CONTROLLERID'">{{ task.controllerId }}</td>
-        <td *ngIf="groupBy !== 'DATE'">
-          {{ task.date}}
-        </td>
-        <td *ngIf="isAgent">{{ task.agentId }}</td>
-        <td *ngIf="isAgent">
-          <a [href]="task.url+'/agent/api'" [innerHtml]="task.url" class="text-hover-primary"
-             target="_blank"></a>
-        </td>
-      </tr>
+        @for (task of tasks; track task) {
+          <tr [hidden]="task.isHidden">
+            @if (groupBy === 'DATE') {
+              <td>
+              <span class="show-in-single-line">
+              @if (task.isParent) {
+                <i (click)="onTaskClick(task)"
+                   [ngClass]="{ 'fa-angle-down': !task.active, 'fa-angle-right': task.active }"
+                   aria-hidden="true" class="fa cursor fa-lg p-r-xs"></i>
+              }
+                {{ task.date}}
+              </span>
+              </td>
+            }
+            @if (groupBy === 'CONTROLLERID') {
+              <td>
+              <span class="show-in-single-line">
+              @if (task.isParent) {
+                <i (click)="onTaskClick(task)"
+                   [ngClass]="{ 'fa-angle-down': !task.active, 'fa-angle-right': task.active }"
+                   aria-hidden="true" class="fa cursor fa-lg p-r-xs"></i>
+              }
+                {{ task.controllerId}}
+              </span>
+              </td>
+            }
+            @if (groupBy !== 'CONTROLLERID') {
+              <td>{{ task.controllerId }}</td>
+            }
+            @if (groupBy !== 'DATE') {
+              <td>{{ task.date}}</td>
+            }
+            @if (isAgent) {
+              <td>{{ task.agentId }}</td>
+            }
+            @if (isAgent) {
+              <td>
+                <a [href]="task.url+'/agent/api'" [innerHtml]="task.url" class="text-hover-primary"
+                   target="_blank"></a>
+              </td>
+            }
+          </tr>
+        }
       </tbody>
     </table>
   </div>
@@ -51,32 +73,35 @@
     <table class="timeline">
       <thead>
       <tr>
-        <th *ngFor="let item of [].constructor(workingHours); let i = index">
-          {{ this.dayStartHour + i }}:00
-        </th>
+        @for (item of [].constructor(workingHours); track $index) {
+          <th>{{ this.dayStartHour + $index }}:00</th>
+        }
       </tr>
       </thead>
       <tbody>
-      <div *ngFor="let task of tasks" [hidden]="task.isHidden" class="row">
-        <div
-          [ngStyle]="{
-              left: task.offset + 'px',
-              width: task.width + 'px'
-            }"
-          class="taskBar"
-        ></div>
-        <span
-          *ngFor="let status of task.statusList; let i = index"
-          [ngStyle]="{
-              left: status.offset + 'px',
-              width: status.width + 'px',
-              'background-color': status.color
-            }" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="status.start + ' to ' + (status.end === '25:00' ? '24:00:00' : status.end)"
-          class="statusBar"
-        >
-          <i translate>COUPLED</i>
-        </span>
-      </div>
+        @for (task of tasks; track task) {
+          <div [hidden]="task.isHidden" class="row">
+            <div
+              [ngStyle]="{
+                left: task.offset + 'px',
+                width: task.width + 'px'
+              }"
+              class="taskBar"
+            ></div>
+            @for (status of task.statusList; track status) {
+              <span
+                [ngStyle]="{
+                  left: status.offset + 'px',
+                  width: status.width + 'px',
+                  'background-color': status.color
+                }" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="status.start + ' to ' + (status.end === '25:00' ? '24:00:00' : status.end)"
+                class="statusBar"
+              >
+              <i translate>COUPLED</i>
+            </span>
+            }
+          </div>
+        }
       </tbody>
     </table>
   </div>

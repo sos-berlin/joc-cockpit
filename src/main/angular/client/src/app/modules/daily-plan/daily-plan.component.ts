@@ -31,6 +31,7 @@ declare const $: any;
 
 
 @Component({
+  standalone: false,
   selector: 'app-create-plan-modal-content',
   templateUrl: './create-plan-dialog.html'
 })
@@ -172,6 +173,7 @@ export class CreatePlanModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-remove-plan-modal',
   templateUrl: './remove-plan-dialog.html',
 })
@@ -341,6 +343,7 @@ export class RemovePlanModalComponent {
 }
 
 @Component({
+  standalone: false,
   encapsulation: ViewEncapsulation.None,
   selector: 'app-gantt',
   template: `
@@ -494,6 +497,7 @@ export class GanttComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-ngbd-modal-content',
   templateUrl: './filter-dialog.html',
 })
@@ -556,6 +560,7 @@ export class FilterModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-form-template',
   templateUrl: './form-template.html',
 })
@@ -728,6 +733,7 @@ export class SearchComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-daily-plan',
   templateUrl: './daily-plan.component.html',
   styleUrls: ['./daily-plan.component.css']

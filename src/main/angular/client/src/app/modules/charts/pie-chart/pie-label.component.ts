@@ -22,6 +22,7 @@ export interface PieData extends DefaultArcObject {
 }
 
 @Component({
+  standalone: false,
   selector: 'g[ngx-charts-pie-label]',
   template: `
     <title>{{ label }}</title>

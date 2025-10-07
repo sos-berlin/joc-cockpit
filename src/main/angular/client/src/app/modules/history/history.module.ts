@@ -12,12 +12,14 @@ import {SharedModule} from '../shared/shared.module';
 import {EditIgnoreListComponent} from './ignore-list-modal/ignore-list.component';
 import {FileTransferService} from '../../services/file-transfer.service';
 import {NzTabsModule} from "ng-zorro-antd/tabs";
+import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 
 @NgModule({
     imports: [
         SharedModule,
         HistoryRoutingModule,
-        NzTabsModule
+        NzTabsModule,
+        NzTooltipDirective
     ],
   providers: [FileTransferService],
   declarations: [

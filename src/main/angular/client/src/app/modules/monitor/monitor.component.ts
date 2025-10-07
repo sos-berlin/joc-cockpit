@@ -4,6 +4,7 @@ import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
 
 @Component({
+  standalone: false,
   selector: 'app-monitor',
   templateUrl: './monitor.component.html'
 })

@@ -71,6 +71,7 @@ declare const mxKeyHandler: any;
 declare const $: any;
 
 @Directive({
+  standalone: false,
   selector: '[appValidateDuration]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => DurationValidator), multi: true}
@@ -118,6 +119,7 @@ export class DurationValidator implements Validator {
 }
 
 @Directive({
+  standalone: false,
   selector: '[appValidateDurationChange]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => DurationValidatorChange), multi: true}
@@ -199,6 +201,7 @@ export class DurationValidatorChange implements Validator {
 }
 
 @Directive({
+  standalone: false,
   selector: '[appValidateOffset]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => OffsetValidator), multi: true}
@@ -247,6 +250,7 @@ export class OffsetValidator implements Validator {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-notice-board-editor-modal',
   templateUrl: './notice-board-editor-dialog.html'
 })
@@ -348,6 +352,7 @@ export class NoticeBoardEditorComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-facet-editor-modal',
   templateUrl: './facet-editor-dialog.html'
 })
@@ -420,6 +425,7 @@ export class FacetEditorComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-repeat-editor-modal',
   templateUrl: './repeat-editor-dialog.html'
 })
@@ -463,6 +469,7 @@ export class RepeatEditorComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-time-editor-modal',
   templateUrl: './time-editor-dialog.html'
 })
@@ -540,6 +547,7 @@ export class TimeEditorComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-cycle-instruction',
   templateUrl: './cycle-instruction-editor.html'
 })
@@ -1090,6 +1098,7 @@ export class CycleInstructionComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-admission-time',
   templateUrl: './admission-time-dialog.html'
 })
@@ -1149,6 +1158,8 @@ export class AdmissionTimeComponent {
   isEditingRestrictedFrequency = false;
   selectedRegularRowIndex: number = -1;
   selectedRestrictedRowIndex: number = -1;
+  selectedDaysUI: string[] = [];
+  selectedMonthsUI: string[] = [];
   @Output() close: EventEmitter<any> = new EventEmitter();
   @ViewChild('timePicker', {static: true}) tp;
 
@@ -1157,23 +1168,26 @@ export class AdmissionTimeComponent {
   }
 
 
-  ngOnInit(): void {
-    if (!this.job.admissionTimeScheme) {
-      this.job.admissionTimeScheme = {};
-    }
-    if (this.repeatObject && !this.repeatObject.TYPE) {
-      this.repeatObject.TYPE = 'Periodic';
-    }
-    if (!this.job.admissionTimeScheme.restrictedSchemes) {
-      this.job.admissionTimeScheme.restrictedSchemes = [];
-    }
-    this.days = this.coreService.getLocale().days;
-    this.days.push(this.days[0]);
+ngOnInit(): void {
+  if (!this.job.admissionTimeScheme) {
+    this.job.admissionTimeScheme = {};
+  }
+  if (this.repeatObject && !this.repeatObject.TYPE) {
+    this.repeatObject.TYPE = 'Periodic';
+  }
+  if (!this.job.admissionTimeScheme.restrictedSchemes) {
+    this.job.admissionTimeScheme.restrictedSchemes = [];
+  }
+  this.days = this.coreService.getLocale().days;
+  this.days.push(this.days[0]);
 
-    if (this.isEdit && this.data.isRestrictedEdit) {
-      let actualSchemeIndex = -1;
-      let localPeriodIndex = -1;
-      let periodCounter = 0;
+  this.selectedDaysUI = [];
+  this.selectedMonthsUI = [];
+
+  if (this.isEdit && this.data.isRestrictedEdit) {
+    let actualSchemeIndex = -1;
+    let localPeriodIndex = -1;
+    let periodCounter = 0;
 
       const regularPeriods = this.workflowService.convertAdmissionTimeToList(this.job.admissionTimeScheme.periods || [], this.days, {});
       periodCounter += regularPeriods.length;
@@ -1192,50 +1206,59 @@ export class AdmissionTimeComponent {
         periodCounter += numPeriodsInScheme;
       }
 
-      if (actualSchemeIndex > -1) {
-        const restrictedScheme = this.job.admissionTimeScheme.restrictedSchemes[actualSchemeIndex];
-        const periodListForForm = this.workflowService.convertAdmissionTimeToList(restrictedScheme.periods || [], this.days, {});
-        const targetPeriod = periodListForForm[localPeriodIndex];
+    if (actualSchemeIndex > -1) {
+      const restrictedScheme = this.job.admissionTimeScheme.restrictedSchemes[actualSchemeIndex];
+      const periodListForForm = this.workflowService.convertAdmissionTimeToList(restrictedScheme.periods || [], this.days, {});
+      const targetPeriod = periodListForForm[localPeriodIndex];
 
-        if (restrictedScheme && targetPeriod) {
-          this.isEditingRestrictedFrequency = true;
-          this.restrictedSchemeIndex = actualSchemeIndex;
-          this.selectedMonthsForRestriction = restrictedScheme.restriction.months.map(m => m.toString());
-          this.checkMonths();
-          this.onChangeMonths();
-          this.editFrequency(targetPeriod);
-        } else {
-          console.error('Could not find a valid scheme or target period for the calculated indices.');
-        }
+      if (restrictedScheme && targetPeriod) {
+        this.isEditingRestrictedFrequency = true;
+        this.restrictedSchemeIndex = actualSchemeIndex;
+        this.selectedMonthsForRestriction = restrictedScheme.restriction.months.map(m => m.toString());
+        this.selectedMonthsUI = [...this.selectedMonthsForRestriction]; // ✅ Initialize UI array
+        this.checkMonths();
+        this.onChangeMonths();
+        this.editFrequency(targetPeriod);
       } else {
-        const targetPeriod = regularPeriods[this.index];
-        if (targetPeriod) {
-          this.isEditingRestrictedFrequency = false;
-          this.editFrequency(targetPeriod);
-        } else {
-          console.error('Could not find a period for the given global index:', this.index);
-        }
+        console.error('Could not find a valid scheme or target period for the calculated indices.');
       }
     } else {
-      if (this.job.admissionTimeScheme.periods && this.job.admissionTimeScheme.periods.length > 0) {
-        this.workflowService.convertSecondIntoWeek(this.job.admissionTimeScheme, this.data.periodList, this.days, this.frequency);
-        if (this.isEdit && this.data.periodList && this.data.periodList.length > 0) {
-          this.editFrequency(this.data.periodList[this.index > -1 ? this.index : 0]);
-        }
-        if (this.data.periodList.length > 0) {
-          if (this.repeatObject && !this.data.periodList[0].frequency) {
-            this.frequency.days = ['1', '2', '3', '4', '5', '6', '7'];
-            this.frequency.all = true;
-          }
+      const targetPeriod = regularPeriods[this.index];
+      if (targetPeriod) {
+        this.isEditingRestrictedFrequency = false;
+        this.editFrequency(targetPeriod);
+      } else {
+        console.error('Could not find a period for the given global index:', this.index);
+      }
+    }
+  } else {
+    if (this.job.admissionTimeScheme.periods && this.job.admissionTimeScheme.periods.length > 0) {
+      this.workflowService.convertSecondIntoWeek(this.job.admissionTimeScheme, this.data.periodList, this.days, this.frequency);
+      if (this.isEdit && this.data.periodList && this.data.periodList.length > 0) {
+        this.editFrequency(this.data.periodList[this.index > -1 ? this.index : 0]);
+      }
+      if (this.data.periodList.length > 0) {
+        if (this.repeatObject && !this.data.periodList[0].frequency) {
+          this.frequency.days = ['1', '2', '3', '4', '5', '6', '7'];
+          this.selectedDaysUI = [...this.frequency.days];
+          this.frequency.all = true;
         }
       }
     }
-
-    if (this.repeatObject) {
-      this.checkDays();
-      this.checkFrequency();
-    }
   }
+
+  if (this.frequency.days) {
+    this.selectedDaysUI = [...this.frequency.days];
+  }
+  if (this.selectedMonthsForRestriction && this.selectedMonthsForRestriction.length > 0) {
+    this.selectedMonthsUI = [...this.selectedMonthsForRestriction];
+  }
+
+  if (this.repeatObject) {
+    this.checkDays();
+    this.checkFrequency();
+  }
+}
 
   ngOnDestroy(): void {
     this.cleanupAdmissionTimeScheme();
@@ -1252,6 +1275,7 @@ export class AdmissionTimeComponent {
 
   dayChange(value: string[]): void {
     this.frequency.days = value;
+    this.selectedDaysUI = value;
     this.onChangeDays();
   }
 
@@ -1334,6 +1358,7 @@ export class AdmissionTimeComponent {
 
     if (!this.arraysEqual(this.selectedMonthsForRestriction.sort(), newValues.sort())) {
       this.selectedMonthsForRestriction = newValues;
+      this.selectedMonthsUI = newValues; // Keep UI in sync
       this.onChangeMonths();
     }
   }
@@ -2535,6 +2560,7 @@ export class AdmissionTimeComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-find-replace-modal',
   templateUrl: './find-replace-dialog.html'
 })
@@ -2599,6 +2625,7 @@ export class FindAndReplaceComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-show-reference',
   templateUrl: './show-reference-dialog.html'
 })
@@ -2665,6 +2692,7 @@ export class ShowReferenceComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-job-content',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './job-text-editor.html'
@@ -4681,6 +4709,7 @@ export class JobComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-script-content',
   templateUrl: './script-editor.html'
 })
@@ -4927,6 +4956,7 @@ export class ScriptEditorComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-expression-content',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './expression-editor.html'
@@ -5022,6 +5052,7 @@ export class ExpressionComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-change-impact-dialog',
   templateUrl: './change-impact-dialog.html',
 })
@@ -5091,6 +5122,7 @@ export class ChangeImpactDialogComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-workflow',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './workflow.component.html',

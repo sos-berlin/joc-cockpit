@@ -1,7 +1,11 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="isEdit" translate>inventory.label.editJson</span>
-    <span *ngIf="!isEdit" translate>inventory.label.showJson</span>:
+    @if (isEdit) {
+      <span translate>inventory.label.editJson</span>
+    }
+    @if (!isEdit) {
+      <span translate>inventory.label.showJson</span>
+    }:
     <span class="text-muted">{{name}}</span>
   </h4>
   <a appMaximum class="max-btn">
@@ -17,24 +21,34 @@
       <div [ngClass]="{'error-input': isError, 'json-editor-readonly': !isEdit}" class="col-md-12">
         <json-editor #editor [data]="data" [options]="options"></json-editor>
       </div>
-      <div *ngIf="isError" class="col-md-12">
-        <div class="help-block text-danger">
-          {{errorMsg}}
+      @if (isError) {
+        <div class="col-md-12">
+          <div class="help-block text-danger">
+            {{errorMsg}}
+          </div>
         </div>
-      </div>
+      }
     </div>
   </div>
   <div class="modal-footer">
-    <button *ngIf="isEdit" [disabled]="submitted || isError" class="btn btn-primary btn-sm" type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      {{'common.button.submit' | translate}}
-    </button>
+    @if (isEdit) {
+      <button [disabled]="submitted || isError" class="btn btn-primary btn-sm" type="submit">
+        @if (submitted) {
+          <i class="fa fa-spin fa-spinner p-r-xs"></i>
+        }
+        {{'common.button.submit' | translate}}
+      </button>
+    }
     <button (click)="copyToClipboard()" class="btn btn-default btn-sm"
             translate type="button">log.button.copyToClipboard
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
-      <span *ngIf="isEdit" translate>common.button.cancel</span>
-      <span *ngIf="!isEdit" translate>common.button.close</span>
+      @if (isEdit) {
+        <span translate>common.button.cancel</span>
+      }
+      @if (!isEdit) {
+        <span translate>common.button.close</span>
+      }
     </button>
   </div>
 </form>

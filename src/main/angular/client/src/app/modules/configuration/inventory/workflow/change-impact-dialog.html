@@ -13,17 +13,21 @@
       <span translate>inventory.message.impactedSchedules</span>
     </div>
   </div>
-  <div *ngIf="impactedSchedules?.length > 0 " class="m-t-sm _600">
-    <i nz-icon nzTheme="outline" nzType="schedule" class="p-r-xs"></i>
-    {{ 'inventory.label.impactedSchedules' | translate }}
-  </div>
-  <div *ngFor="let item of impactedSchedules" class="p-l">
-    <span [ngClass]="{'fa-circle-o': !item.valid, 'fa-circle dark-blue' :item.deployed || item.released, 'opacity7': item.syncState}"
-          class="fa fa-check-circle-o orange text-xs p-l-xs m-r-sm"
-          style="margin-top: 4px"></span>
+  @if (impactedSchedules?.length > 0) {
+    <div class="m-t-sm _600">
+      <i nz-icon nzTheme="outline" nzType="schedule" class="p-r-xs"></i>
+      {{ 'inventory.label.impactedSchedules' | translate }}
+    </div>
+  }
+  @for (item of impactedSchedules; track item) {
+    <div class="p-l">
+      <span [ngClass]="{'fa-circle-o': !item.valid, 'fa-circle dark-blue' :item.deployed || item.released, 'opacity7': item.syncState}"
+            class="fa fa-check-circle-o orange text-xs p-l-xs m-r-sm"
+            style="margin-top: 4px"></span>
       <i (click)="navToObj(item.path, 'SCHEDULE')" class="fa fa-pencil cursor"></i>
       &nbsp;{{ item.path }}
-  </div>
+    </div>
+  }
 </div>
 <div class="modal-footer">
   <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm"
@@ -31,4 +35,3 @@
     common.button.close
   </button>
 </div>
-

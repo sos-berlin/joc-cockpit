@@ -2,12 +2,15 @@
   <h4 class="modal-title">
     <span translate>dailyPlan.label.createPlan</span>
     :
-    <i *ngIf="!(dateRanges && dateRanges.length > 0)"
-       class="text-muted p-l-xs text">{{selectedDate | stringToDate1: true}}</i>
-    <span *ngIf="dateRanges && dateRanges.length > 0">
-      <i class="text-muted">{{dateRanges[0] | stringToDate1:true}}</i> -
-      <i class="text-muted">{{dateRanges[1] | stringToDate1:true}}</i>
-    </span>
+    @if (!(dateRanges && dateRanges.length > 0)) {
+      <i class="text-muted p-l-xs text">{{selectedDate | stringToDate1: true}}</i>
+    }
+    @if (dateRanges && dateRanges.length > 0) {
+      <span>
+        <i class="text-muted">{{dateRanges[0] | stringToDate1:true}}</i> -
+        <i class="text-muted">{{dateRanges[1] | stringToDate1:true}}</i>
+      </span>
+    }
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -27,41 +30,53 @@
         </nz-radio-group>
       </div>
     </div>
-    <div *ngIf="object.at === 'template'" class="form-group row">
-      <label class="col-md-3 form-control-label" translate>dailyPlan.label.schedules</label>
-      <div class="col-md-6">
-        <app-multi-select [addFolderPossible]="true" [attribute]="'schedules'" [folders]="selectedTemplates" [isPath]="true"
-                          [list]="selectedTemplates"
-                          [nodes]="scheduleTree" [pathAttribute]="'paths'" [type]="'SCHEDULE'"></app-multi-select>
-      </div>
-    </div>
-    <div *ngIf="object.at === 'template' && selectedTemplates.paths.length > 0" class="form-group row">
-      <label class="col-md-3" translate>dailyPlan.label.scheduleFolders</label>
-      <div class="col-sm-6" style="max-height: 140px; overflow: auto">
-        <div *ngFor="let path of selectedTemplates.paths">
-          <span class="">{{path}}</span>
-          <i (click)="remove(path, true)" class="pull-right pos-rel t-xs fa fa-remove text-hover-primary"></i>
+    @if (object.at === 'template') {
+      <div class="form-group row">
+        <label class="col-md-3 form-control-label" translate>dailyPlan.label.schedules</label>
+        <div class="col-md-6">
+          <app-multi-select [addFolderPossible]="true" [attribute]="'schedules'" [folders]="selectedTemplates" [isPath]="true"
+                            [list]="selectedTemplates"
+                            [nodes]="scheduleTree" [pathAttribute]="'paths'" [type]="'SCHEDULE'"></app-multi-select>
         </div>
       </div>
-    </div>
-    <div *ngIf="object.at === 'template'" class="form-group row">
-      <label class="col-md-3 form-control-label" translate>dailyPlan.label.workflows</label>
-      <div class="col-md-6">
-        <app-multi-select [addFolderPossible]="true" [attribute]="'workflowPaths'" [folders]="object" [isPath]="true"
-                          [list]="object"
-                          [nodes]="workflowsTree" [pathAttribute]="'paths'"
-                          [type]="'WORKFLOW'"></app-multi-select>
-      </div>
-    </div>
-    <div *ngIf="object.at === 'template' && object.paths.length > 0" class="form-group row">
-      <label class="col-md-3" translate>dailyPlan.label.workflowFolders</label>
-      <div class="col-sm-6" style="max-height: 140px; overflow: auto">
-        <div *ngFor="let path of object.paths">
-          <span>{{path}}</span>
-          <i (click)="remove(path)" class="pull-right pos-rel t-xs fa fa-remove text-hover-primary"></i>
+    }
+    @if (object.at === 'template' && selectedTemplates.paths.length > 0) {
+      <div class="form-group row">
+        <label class="col-md-3" translate>dailyPlan.label.scheduleFolders</label>
+        <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+          @for (path of selectedTemplates.paths; track path) {
+            <div>
+              <span class="">{{path}}</span>
+              <i (click)="remove(path, true)" class="pull-right pos-rel t-xs fa fa-remove text-hover-primary"></i>
+            </div>
+          }
         </div>
       </div>
-    </div>
+    }
+    @if (object.at === 'template') {
+      <div class="form-group row">
+        <label class="col-md-3 form-control-label" translate>dailyPlan.label.workflows</label>
+        <div class="col-md-6">
+          <app-multi-select [addFolderPossible]="true" [attribute]="'workflowPaths'" [folders]="object" [isPath]="true"
+                            [list]="object"
+                            [nodes]="workflowsTree" [pathAttribute]="'paths'"
+                            [type]="'WORKFLOW'"></app-multi-select>
+        </div>
+      </div>
+    }
+    @if (object.at === 'template' && object.paths.length > 0) {
+      <div class="form-group row">
+        <label class="col-md-3" translate>dailyPlan.label.workflowFolders</label>
+        <div class="col-sm-6" style="max-height: 140px; overflow: auto">
+          @for (path of object.paths; track path) {
+            <div>
+              <span>{{path}}</span>
+              <i (click)="remove(path)" class="pull-right pos-rel t-xs fa fa-remove text-hover-primary"></i>
+            </div>
+          }
+        </div>
+      </div>
+    }
     <div class="form-group row">
       <label class="col-md-3" translate>dailyPlan.label.overwrite</label>
       <div class="col-md-6">
@@ -86,7 +101,9 @@
     <button [disabled]="!myForm.form.valid || submitted || (object.at === 'template' && selectedTemplates.schedules && selectedTemplates.schedules.length ===0
      && object.workflowPaths && object.workflowPaths.length ===0 && object.paths.length === 0 && selectedTemplates.paths.length === 0)" class="btn btn-primary btn-sm"
             type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">

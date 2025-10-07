@@ -20,69 +20,85 @@ import {Orientation} from '../types/orientation.enum';
 import {TextAnchor} from '../types/text-anchor.enum';
 
 @Component({
+  standalone: false,
   selector: 'g[ngx-charts-y-axis-ticks]',
   template: `
-    <svg:g #ticksel>
-      <svg:g *ngFor="let tick of ticks" class="tick" [attr.transform]="transform(tick)">
-        <title>{{ tickFormat(tick) }}</title>
-        <svg:text
-          stroke-width="0.01"
-          [attr.dy]="dy"
-          [attr.x]="x1"
-          [attr.y]="y1"
-          [attr.text-anchor]="textAnchor"
-          [style.font-size]="'12px'"
-        >
-          {{ tickTrim(tickFormat(tick)) }}
-        </svg:text>
-      </svg:g>
-    </svg:g>
+    <svg xmlns="http://www.w3.org/2000/svg">
+      <g #ticksel>
+        @for (tick of ticks; track tick) {
+          <g class="tick" [attr.transform]="transform(tick)">
+            <title>{{ tickFormat(tick) }}</title>
+            <text
+              stroke-width="0.01"
+              [attr.dy]="dy"
+              [attr.x]="x1"
+              [attr.y]="y1"
+              [attr.text-anchor]="textAnchor"
+              [style.font-size]="'12px'"
+            >
+              {{ tickTrim(tickFormat(tick)) }}
+            </text>
+          </g>
+        }
+      </g>
 
-    <svg:path
-      *ngIf="referenceLineLength > 1 && refMax && refMin && showRefLines"
-      class="reference-area"
-      [attr.d]="referenceAreaPath"
-      [attr.transform]="gridLineTransform()"
-    />
-    <svg:g *ngFor="let tick of ticks" [attr.transform]="transform(tick)">
-      <svg:g *ngIf="showGridLines" [attr.transform]="gridLineTransform()">
-        <svg:line
-          *ngIf="orient === Orientation.Left"
-          class="gridline-path gridline-path-horizontal"
-          x1="0"
-          [attr.x2]="gridLineWidth"
-        />
-        <svg:line
-          *ngIf="orient === Orientation.Right"
-          class="gridline-path gridline-path-horizontal"
-          x1="0"
-          [attr.x2]="-gridLineWidth"
-        />
-      </svg:g>
-    </svg:g>
-
-    <svg:g *ngFor="let refLine of referenceLines">
-      <svg:g *ngIf="showRefLines" [attr.transform]="transform(refLine.value)">
-        <svg:line
-          class="refline-path gridline-path-horizontal"
-          x1="0"
-          [attr.x2]="gridLineWidth"
+      @if (referenceLineLength > 1 && refMax && refMin && showRefLines) {
+        <path
+          class="reference-area"
+          [attr.d]="referenceAreaPath"
           [attr.transform]="gridLineTransform()"
         />
-        <svg:g *ngIf="showRefLabels">
-          <title>{{ tickTrim(tickFormat(refLine.value)) }}</title>
-          <svg:text
-            class="refline-label"
-            [attr.dy]="dy"
-            [attr.y]="-6"
-            [attr.x]="gridLineWidth"
-            [attr.text-anchor]="textAnchor"
-          >
-            {{ refLine.name }}
-          </svg:text>
-        </svg:g>
-      </svg:g>
-    </svg:g>
+      }
+      @for (tick of ticks; track tick) {
+        <g [attr.transform]="transform(tick)">
+          @if (showGridLines) {
+            <g [attr.transform]="gridLineTransform()">
+              @if (orient === Orientation.Left) {
+                <line
+                  class="gridline-path gridline-path-horizontal"
+                  x1="0"
+                  [attr.x2]="gridLineWidth"
+                />
+              }
+              @if (orient === Orientation.Right) {
+                <line
+                  class="gridline-path gridline-path-horizontal"
+                  x1="0"
+                  [attr.x2]="-gridLineWidth"
+                />
+              }
+            </g>
+          }
+        </g>
+      }
+
+      @for (refLine of referenceLines; track refLine) {
+        @if (showRefLines) {
+          <g [attr.transform]="transform(refLine.value)">
+            <line
+              class="refline-path gridline-path-horizontal"
+              x1="0"
+              [attr.x2]="gridLineWidth"
+              [attr.transform]="gridLineTransform()"
+            />
+            @if (showRefLabels) {
+              <g>
+                <title>{{ tickTrim(tickFormat(refLine.value)) }}</title>
+                <text
+                  class="refline-label"
+                  [attr.dy]="dy"
+                  [attr.y]="-6"
+                  [attr.x]="gridLineWidth"
+                  [attr.text-anchor]="textAnchor"
+                >
+                  {{ refLine.name }}
+                </text>
+              </g>
+            }
+          </g>
+        }
+      }
+    </svg>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })

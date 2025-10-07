@@ -22,6 +22,7 @@ import { AllOrderResumeModelComponent } from '../../order-overview/order-overvie
 import {PriorityModalComponent} from "../../../components/priority-modal/priority-modal.component";
 
 @Component({
+  standalone: false,
   selector: 'app-order-list-sidebar',
   templateUrl: './order-list-sidebar.component.html'
 })

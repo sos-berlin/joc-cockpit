@@ -106,7 +106,7 @@ JS7 offers to display warnings in case of upcoming license expiration. The featu
 
 ### Setting: *log\_ext\_directory*
 
-Specifies a directory that is accessible for JOC Cockpit and to which copies of order log files and task log files will be written.
+Specifies a directory that is accessible for JOC Cockpit and to which copies of Order log files and task log files will be written.
 
 ### Setting: *log\_ext\_order\_history*
 

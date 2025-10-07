@@ -4,6 +4,7 @@ import {CoreService} from '../../services/core.service';
 import {AuthService} from "../guard";
 
 @Component({
+  standalone: false,
   selector: 'app-approval-modal',
   templateUrl: './approval-modal.component.html'
 })

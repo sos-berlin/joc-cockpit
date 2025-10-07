@@ -5,6 +5,7 @@ import {NZ_MODAL_DATA, NzModalRef} from 'ng-zorro-antd/modal';
 import {CoreService} from '../../services/core.service';
 
 @Component({
+  standalone: false,
   selector: 'app-change-password',
   templateUrl: './change-password-dialog.html'
 })

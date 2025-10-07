@@ -15,6 +15,7 @@ import {CoreService} from '../../services/core.service';
 declare const $: any;
 
 @Component({
+  standalone: false,
   selector: 'app-search-input',
   templateUrl: './search-input.component.html'
 })

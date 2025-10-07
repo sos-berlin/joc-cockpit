@@ -14,15 +14,18 @@
     [required]="isRequired"
     [nzAllowClear]="isAllowClear"
     [nzPlaceHolder]="placeholder | translate">
-    <nz-option *ngFor="let option of listArray;let i = index"
-               [nzLabel]="!ignoreTranslate ? ((optionLabel ? option[optionLabel] : (extraLabelText && i == 0) ? (extraLabelText +  option) : option) | translate) : (optionLabel ? option[optionLabel] : (extraLabelText && i == 0) ? (extraLabelText +  option) : option)"
-               [nzValue]="optionValue ? option[optionValue] : option"
-               [nzDisabled]="option === '-----------------------------' || option.disable">
-    </nz-option>
+    @for (option of listArray; track optionValue ? option[optionValue] : option; let i = $index) {
+      <nz-option [nzLabel]="!ignoreTranslate ? ((optionLabel ? option[optionLabel] : (extraLabelText && i == 0) ? (extraLabelText +  option) : option) | translate) : (optionLabel ? option[optionLabel] : (extraLabelText && i == 0) ? (extraLabelText +  option) : option)"
+                 [nzValue]="optionValue ? option[optionValue] : option"
+                 [nzDisabled]="option === '-----------------------------' || option.disable">
+      </nz-option>
+    }
   </nz-select>
-  <div *ngIf="type.invalid && (type.dirty || type.touched)" class="text-danger help-block">
-    <div *ngIf="type.errors['required']">
-      <div translate>common.message.requiredError</div>
+  @if (type.invalid && (type.dirty || type.touched)) {
+    <div class="text-danger help-block">
+      @if (type.errors['required']) {
+        <div translate>common.message.requiredError</div>
+      }
     </div>
-  </div>
+  }
 </div>

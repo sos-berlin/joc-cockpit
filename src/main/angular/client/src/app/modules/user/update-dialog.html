@@ -1,11 +1,17 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span
-      *ngIf="paste && (securityLevel !=='HIGH' || (securityLevel === 'HIGH' && (type == 'ca' || type === 'certificate')))"
-      translate>profile.keyManagement.label.updateKeys</span>
-    <span *ngIf="paste && securityLevel ==='HIGH' && type !== 'ca' && type !== 'certificate'" translate>profile.keyManagement.label.updatePublicKey</span>
-    <span *ngIf="!paste && type !== 'certificate'" translate>profile.keyManagement.label.showKey</span>
-    <span *ngIf="!paste && type === 'certificate'" translate>profile.keyManagement.label.showCertificate</span>
+    @if (paste && (securityLevel !=='HIGH' || (securityLevel === 'HIGH' && (type == 'ca' || type === 'certificate')))) {
+      <span translate>profile.keyManagement.label.updateKeys</span>
+    }
+    @if (paste && securityLevel ==='HIGH' && type !== 'ca' && type !== 'certificate') {
+      <span translate>profile.keyManagement.label.updatePublicKey</span>
+    }
+    @if (!paste && type !== 'certificate') {
+      <span translate>profile.keyManagement.label.showKey</span>
+    }
+    @if (!paste && type === 'certificate') {
+      <span translate>profile.keyManagement.label.showCertificate</span>
+    }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -16,93 +22,123 @@
     <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="9"></app-audit-log-input>
     </div>
-    <div *ngIf="paste && type !== 'certificate'" class="form-group row">
-      <div class="col-sm-3" translate>profile.keyManagement.label.keyAlgorithm</div>
-      <div class="col-sm-9">
-        <nz-radio-group [(ngModel)]="algorithm.keyAlg" name="alg">
-          <label nz-radio  nzValue="ECDSA"><span translate>profile.keyManagement.label.ecdsa</span></label>
-          <label *ngIf="type === 'key'" nz-radio nzValue="RSA"><span
-            translate>profile.keyManagement.label.rsa</span></label>
-          <label *ngIf="type === 'key'" nz-radio nzValue="PGP"><span
-            translate>profile.keyManagement.label.pgp</span></label>
-        </nz-radio-group>
-      </div>
-    </div>
-    <div *ngIf="!paste" class="form-group row">
-      <div class="col-sm-3" translate>Key ID:</div>
-      <div class="col-sm-9">{{data.keyID}}</div>
-    </div>
-    <div *ngIf="((securityLevel === 'HIGH' && type == 'ca') || securityLevel !== 'HIGH') && ((!paste && data.privateKey) || paste) && type !== 'certificate'"
-         class="form-group row">
-      <label class="col-sm-12 form-control-label" translate>profile.keyManagement.label.privateKey
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      <div [ngClass]="{'has-error' : ((privateKey.dirty || privateKey.touched) && privateKey.invalid) }"
-           class="col-sm-12">
-        <textarea #privateKey="ngModel" [(ngModel)]="data.privateKey" [readOnly]="!paste" autocomplete="false"
-                  autofocus class="form-control"
-                  name="privateKey" placeholder="{{'profile.keyManagement.placeholder.pastePrivateKey' | translate}}" required rows="10" style="font-family: monospace;"></textarea>
-        <div *ngIf="privateKey.invalid && (privateKey.dirty || privateKey.touched)" class="text-danger help-block">
-          <div *ngIf="privateKey.errors.required">
-            <div translate>common.message.requiredError</div>
-          </div>
+    @if (paste && type !== 'certificate') {
+      <div class="form-group row">
+        <div class="col-sm-3" translate>profile.keyManagement.label.keyAlgorithm</div>
+        <div class="col-sm-9">
+          <nz-radio-group [(ngModel)]="algorithm.keyAlg" name="alg">
+            <label nz-radio  nzValue="ECDSA"><span translate>profile.keyManagement.label.ecdsa</span></label>
+            @if (type === 'key') {
+              <label nz-radio nzValue="RSA"><span
+                translate>profile.keyManagement.label.rsa</span></label>
+            }
+            @if (type === 'key') {
+              <label nz-radio nzValue="PGP"><span
+                translate>profile.keyManagement.label.pgp</span></label>
+            }
+          </nz-radio-group>
         </div>
       </div>
-    </div>
-    <div *ngIf="((!paste && data.keyAlgorithm === 'PGP') || (securityLevel === 'HIGH' && type !== 'ca' && algorithm.keyAlg === 'PGP' && paste))"
-         class="form-group row">
-      <label class="col-sm-12 form-control-label" translate>profile.keyManagement.label.publicKey
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      <div [ngClass]="{'has-error' : ((publicKey.dirty || publicKey.touched) && publicKey.invalid) }" class="col-sm-12">
-        <textarea #publicKey="ngModel" [(ngModel)]="data.publicKey" [readOnly]="!paste" autocomplete="false" class="form-control"
-                  name="publicKey" placeholder="{{'profile.keyManagement.placeholder.pastePublicKey' | translate}}"
-                  required rows="10" style="font-family: monospace;"></textarea>
+    }
+    @if (!paste) {
+      <div class="form-group row">
+        <div class="col-sm-3" translate>Key ID:</div>
+        <div class="col-sm-9">{{data.keyID}}</div>
+      </div>
+    }
+    @if (((securityLevel === 'HIGH' && type == 'ca') || securityLevel !== 'HIGH') && ((!paste && data.privateKey) || paste) && type !== 'certificate') {
+      <div class="form-group row">
+        <label class="col-sm-12 form-control-label" translate>profile.keyManagement.label.privateKey
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div [ngClass]="{'has-error' : ((privateKey.dirty || privateKey.touched) && privateKey.invalid) }"
+             class="col-sm-12">
+          <textarea #privateKey="ngModel" [(ngModel)]="data.privateKey" [readOnly]="!paste" autocomplete="false"
+                    autofocus class="form-control"
+                    name="privateKey" placeholder="{{'profile.keyManagement.placeholder.pastePrivateKey' | translate}}" required rows="10" style="font-family: monospace;"></textarea>
+          @if (privateKey.invalid && (privateKey.dirty || privateKey.touched)) {
+            <div class="text-danger help-block">
+              @if (privateKey.errors.required) {
+                <div translate>common.message.requiredError</div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+    @if ((!paste && data.keyAlgorithm === 'PGP') || (securityLevel === 'HIGH' && type !== 'ca' && algorithm.keyAlg === 'PGP' && paste)) {
+      <div class="form-group row">
+        <label class="col-sm-12 form-control-label" translate>profile.keyManagement.label.publicKey
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div [ngClass]="{'has-error' : ((publicKey.dirty || publicKey.touched) && publicKey.invalid) }" class="col-sm-12">
+          <textarea #publicKey="ngModel" [(ngModel)]="data.publicKey" [readOnly]="!paste" autocomplete="false" class="form-control"
+                    name="publicKey" placeholder="{{'profile.keyManagement.placeholder.pastePublicKey' | translate}}"
+                    required rows="10" style="font-family: monospace;"></textarea>
 
-        <div *ngIf="publicKey.invalid && (publicKey.dirty || publicKey.touched)" class="text-danger help-block">
-          <div *ngIf="publicKey.errors.required">
-            <div translate>common.message.requiredError</div>
-          </div>
+          @if (publicKey.invalid && (publicKey.dirty || publicKey.touched)) {
+            <div class="text-danger help-block">
+              @if (publicKey.errors.required) {
+                <div translate>common.message.requiredError</div>
+              }
+            </div>
+          }
         </div>
       </div>
-    </div>
-    <div *ngIf="((!paste && data.keyAlgorithm !== 'PGP') || ((algorithm.keyAlg !== 'PGP') && paste))"
-         [hidden]="(!data.certificate && !paste)"
-         class="form-group row">
-      <label class="col-sm-12 form-control-label" translate>profile.keyManagement.label.x509Certificate
-        <sup class="text-danger text-sm">*</sup>
-      </label>
-      <div [ngClass]="{'has-error' : ((certificate.dirty || certificate.touched) && certificate.invalid) }"
-           class="col-sm-12">
-        <textarea #certificate="ngModel" [(ngModel)]="data.certificate" [readOnly]="!paste" autocomplete="false" class="form-control"
-                  name="certificate" placeholder="{{'profile.keyManagement.placeholder.pasteCertificate' | translate}}"
-                  required rows="10" style="font-family: monospace;"></textarea>
+    }
+    @if ((!paste && data.keyAlgorithm !== 'PGP') || ((algorithm.keyAlg !== 'PGP') && paste)) {
+      <div class="form-group row" [hidden]="(!data.certificate && !paste)">
+        <label class="col-sm-12 form-control-label" translate>profile.keyManagement.label.x509Certificate
+          <sup class="text-danger text-sm">*</sup>
+        </label>
+        <div [ngClass]="{'has-error' : ((certificate.dirty || certificate.touched) && certificate.invalid) }"
+             class="col-sm-12">
+          <textarea #certificate="ngModel" [(ngModel)]="data.certificate" [readOnly]="!paste" autocomplete="false" class="form-control"
+                    name="certificate" placeholder="{{'profile.keyManagement.placeholder.pasteCertificate' | translate}}"
+                    required rows="10" style="font-family: monospace;"></textarea>
 
-        <div *ngIf="certificate.invalid && (certificate.dirty || certificate.touched)" class="text-danger help-block">
-          <div *ngIf="certificate.errors.required">
-            <div translate>common.message.requiredError</div>
-          </div>
+          @if (certificate.invalid && (certificate.dirty || certificate.touched)) {
+            <div class="text-danger help-block">
+              @if (certificate.errors.required) {
+                <div translate>common.message.requiredError</div>
+              }
+            </div>
+          }
         </div>
       </div>
-    </div>
-    <div *ngIf="!paste && data.validUntil" class="row">
-      <div class="col-sm-12">
-        <label *ngIf="type === 'key'" translate>profile.keyManagement.label.keyExpiredOn</label>
-        <label *ngIf="type !== 'key'" translate>profile.keyManagement.label.certificateExpiredOn</label>:
-        <span [ngClass]="{ 'text-danger': data.isKeyExpired}"
-              class="text-muted p-l-sm">{{data.validUntil | stringToDate}}</span>
+    }
+    @if (!paste && data.validUntil) {
+      <div class="row">
+        <div class="col-sm-12">
+          @if (type === 'key') {
+            <label translate>profile.keyManagement.label.keyExpiredOn</label>
+          }
+          @if (type !== 'key') {
+            <label translate>profile.keyManagement.label.certificateExpiredOn</label>
+          }:
+          <span [ngClass]="{ 'text-danger': data.isKeyExpired}"
+                class="text-muted p-l-sm">{{data.validUntil | stringToDate}}</span>
+        </div>
       </div>
-    </div>
+    }
   </div>
   <div class="modal-footer">
-    <button *ngIf="paste" [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
-            type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      {{'common.button.submit' | translate}}
-    </button>
+    @if (paste) {
+      <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
+              type="submit">
+        @if (submitted) {
+          <i class="fa fa-spin fa-spinner p-r-xs"></i>
+        }
+        {{'common.button.submit' | translate}}
+      </button>
+    }
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" type="button">
-      <span *ngIf="paste" translate>common.button.cancel</span>
-      <span *ngIf="!paste" translate>common.button.close</span>
+      @if (paste) {
+        <span translate>common.button.cancel</span>
+      }
+      @if (!paste) {
+        <span translate>common.button.close</span>
+      }
     </button>
   </div>
 </form>

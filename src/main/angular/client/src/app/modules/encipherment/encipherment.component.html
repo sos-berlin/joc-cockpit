@@ -6,15 +6,8 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <div
-            *ngIf="
-              permission &&
-              permission.joc &&
-              permission.joc.encipherment.encrypt
-            "
-            class="inline"
-          >
-            <ng-container >
+          @if (permission && permission.joc && permission.joc.encipherment.encrypt) {
+            <div class="inline">
               <div class="btn-group"></div>
               <button
                 (click)="importKey('encipherment')"
@@ -30,8 +23,8 @@
                 <i class="fa fa-plus"></i>&nbsp;
                 <span translate>encipherment.button.addNewCertificate</span>
               </button>
-            </ng-container>
-          </div>
+            </div>
+          }
         </div>
       </div>
     </div>
@@ -55,20 +48,17 @@
           [nzShowSizeChanger]="true"
           [nzSize]="'small'">
           <thead>
-            <tr>
-              <th class="menu" rowspan="2">
-                <span translate>common.label.action</span>
-              </th>
-              <th rowspan="2" nzWidth="50%"><span translate>encipherment.label.certAlias</span></th>
-              <th rowspan="2" nzWidth="50%"><span translate>encipherment.label.privateKeyPath</span></th>
-              <!-- <th rowspan="2"><span translate>encipherment.label.certificate</span></th> -->
-            </tr>
+          <tr>
+            <th class="menu" rowspan="2">
+              <span translate>common.label.action</span>
+            </th>
+            <th rowspan="2" nzWidth="50%"><span translate>encipherment.label.certAlias</span></th>
+            <th rowspan="2" nzWidth="50%"><span translate>encipherment.label.privateKeyPath</span></th>
+            <!-- <th rowspan="2"><span translate>encipherment.label.certificate</span></th> -->
+          </tr>
           </thead>
           <tbody>
-            <ng-template
-              [ngForOf]="enciphermentTable.data"
-              let-encipherment
-              ngFor>
+            @for (encipherment of enciphermentTable.data; track encipherment) {
               <tr>
                 <td>
                   <div class="btn-group dropdown">
@@ -97,23 +87,29 @@
                 </td>
                 <td>
                   <div class="d-flex justify-content-between algin-item-center">
-                    <span *ngIf="encipherment?.privateKeyPath">{{ encipherment?.privateKeyPath }}</span>
-                    <span *ngIf="!encipherment?.privateKeyPath">-</span>
+                    @if (encipherment?.privateKeyPath) {
+                      <span>{{ encipherment?.privateKeyPath }}</span>
+                    }
+                    @if (!encipherment?.privateKeyPath) {
+                      <span>-</span>
+                    }
                   </div>
                 </td>
               </tr>
-            </ng-template>
+            }
           </tbody>
         </nz-table>
-        <div *ngIf="enciphermentTable.data.length > 0" class="w-half label-top">
-          <span translate>common.label.total</span> {{ data.length }}
-          <span *ngIf="enciphermentTable.data.length > 1" translate
-            >encipherment.label.enciphermentsFound</span
-          >
-          <span *ngIf="enciphermentTable.data.length === 1" translate
-            >encipherment.label.enciphermentFound</span
-          >
-        </div>
+        @if (enciphermentTable.data.length > 0) {
+          <div class="w-half label-top">
+            <span translate>common.label.total</span> {{ data.length }}
+            @if (enciphermentTable.data.length > 1) {
+              <span translate>encipherment.label.enciphermentsFound</span>
+            }
+            @if (enciphermentTable.data.length === 1) {
+              <span translate>encipherment.label.enciphermentFound</span>
+            }
+          </div>
+        }
       </div>
     </div>
   </div>

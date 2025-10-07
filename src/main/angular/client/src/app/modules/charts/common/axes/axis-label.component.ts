@@ -2,6 +2,7 @@ import {Component, Input, ElementRef, OnChanges, SimpleChanges, ChangeDetectionS
 import {Orientation} from '../types/orientation.enum';
 
 @Component({
+  standalone: false,
   selector: 'g[ngx-charts-axis-label]',
   template: `
     <svg:text

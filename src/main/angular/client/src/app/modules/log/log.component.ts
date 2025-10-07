@@ -11,6 +11,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
 
 declare const $;
 @Component({
+  standalone: false,
   selector: 'app-log',
   templateUrl: './log.component.html'
 })

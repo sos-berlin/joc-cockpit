@@ -38,6 +38,7 @@ import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.comp
 declare const $;
 
 @Directive({
+  standalone: false,
   selector: '[appValidateRelativeDate]',
   providers: [
     {provide: NG_VALIDATORS, useExisting: forwardRef(() => RelativeDateValidator), multi: true}
@@ -72,6 +73,7 @@ export class RelativeDateValidator implements Validator {
 
 
 @Component({
+  standalone: false,
   selector: 'app-pie-chart',
   templateUrl: './chart-template.component.html',
 })
@@ -201,6 +203,7 @@ export class OrderPieChartComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-all-order-resume',
   templateUrl: './all-order-resume-dialog.html',
 })
@@ -527,6 +530,7 @@ export class AllOrderResumeModelComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-order-overview',
   templateUrl: './order-overview.component.html',
   styleUrls: ['./order-overview.component.css']

@@ -1,9 +1,10 @@
 <div class="modal-header">
   <h4 class="modal-title">
-    <span *ngIf="!flag; else assignAgents" class="drag-text" translate>encipherment.label.assignedAgents</span>
-    <ng-template #assignAgents>
+    @if (!flag) {
+      <span class="drag-text" translate>encipherment.label.assignedAgents</span>
+    } @else {
       <span class="drag-text" translate>encipherment.label.assignAgents</span>
-    </ng-template>
+    }
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -12,85 +13,112 @@
 
 <div class="modal-body p-a">
   <!-- Standalone Agents -->
-  <div *ngIf="agents.length > 0">
-    <div class="m-t p-b-xs" translate>agent.label.agents</div>
-    <nz-table #agentsTable [nzData]="agents" [nzBordered]="true"
-              [nzFrontPagination]="false"
-              [nzShowPagination]="false"
-              [nzShowSizeChanger]="false" [nzSize]="'small'">
-      <thead>
+  @if (agents.length > 0) {
+    <div>
+      <div class="m-t p-b-xs" translate>agent.label.agents</div>
+      <nz-table #agentsTable [nzData]="agents" [nzBordered]="true"
+                [nzFrontPagination]="false"
+                [nzShowPagination]="false"
+                [nzShowSizeChanger]="false" [nzSize]="'small'">
+        <thead>
         <tr>
-          <th *ngIf="flag" nzShowCheckbox [(nzChecked)]="allAgentsChecked" [nzIndeterminate]="allAgentsIndeterminate" (nzCheckedChange)="toggleSelectAllAgents($event)" nzWidth="50px" class="chk"></th>
+          @if (flag) {
+            <th nzShowCheckbox [(nzChecked)]="allAgentsChecked" [nzIndeterminate]="allAgentsIndeterminate" (nzCheckedChange)="toggleSelectAllAgents($event)" nzWidth="50px" class="chk"></th>
+          }
           <th nzWidth="150px" translate>agent.label.agentName</th>
           <th nzWidth="250px" translate>agent.label.url</th>
         </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let agent of agentsTable.data">
-          <td *ngIf="flag" nzShowCheckbox [(nzChecked)]="agent.checked" (nzCheckedChange)="onAgentChecked(agent)" class="chk"></td>
-          <td>{{ agent.agentName }}</td>
-          <td><span>{{ agent.agentUrl }}</span></td>
-        </tr>
-      </tbody>
-    </nz-table>
-  </div>
+        </thead>
+        <tbody>
+          @for (agent of agentsTable.data; track agent) {
+            <tr>
+              @if (flag) {
+                <td nzShowCheckbox [(nzChecked)]="agent.checked" (nzCheckedChange)="onAgentChecked(agent)" class="chk"></td>
+              }
+              <td>{{ agent.agentName }}</td>
+              <td><span>{{ agent.agentUrl }}</span></td>
+            </tr>
+          }
+        </tbody>
+      </nz-table>
+    </div>
+  }
 
   <!-- Cluster Agents -->
-  <div *ngIf="clusterAgents.length > 0">
-    <div class="m-t p-b-xs" translate>agent.label.agentGroups</div>
-    <nz-table #clusterAgentsTable [nzData]="clusterAgents" [nzBordered]="true"
-              [nzFrontPagination]="false" [nzShowPagination]="false" [nzShowSizeChanger]="false" nzSize="small">
-      <thead>
+  @if (clusterAgents.length > 0) {
+    <div>
+      <div class="m-t p-b-xs" translate>agent.label.agentGroups</div>
+      <nz-table #clusterAgentsTable [nzData]="clusterAgents" [nzBordered]="true"
+                [nzFrontPagination]="false" [nzShowPagination]="false" [nzShowSizeChanger]="false" nzSize="small">
+        <thead>
         <tr>
-          <th *ngIf="flag" nzShowCheckbox [(nzChecked)]="allClusterAgentsChecked" [nzIndeterminate]="allClusterAgentsIndeterminate" (nzCheckedChange)="toggleSelectAllClusterAgents($event)" nzWidth="50px" class="chk"></th>
+          @if (flag) {
+            <th nzShowCheckbox [(nzChecked)]="allClusterAgentsChecked" [nzIndeterminate]="allClusterAgentsIndeterminate" (nzCheckedChange)="toggleSelectAllClusterAgents($event)" nzWidth="50px" class="chk"></th>
+          }
           <th nzWidth="150px" translate>agent.label.agentName</th>
           <th nzWidth="250px" translate>agent.label.url</th>
         </tr>
-      </thead>
-      <tbody>
-        <ng-container *ngFor="let clusterAgent of clusterAgentsTable.data">
-          <tr>
-            <td *ngIf="flag"></td>
-            <td (click)="toggleClusterAgent(clusterAgent)" class="cursor-pointer">{{ clusterAgent.agentName }}
-              <i class="fa" [ngClass]="clusterAgent.show ? 'fa-caret-up' : 'fa-caret-down'"></i>
-            </td>
-            <td>{{ clusterAgent.agentUrl }}</td>
-          </tr>
-          <tr *ngIf="clusterAgent.show">
-            <td colspan="3" style="padding: 0 !important; border-top: none !important;">
-              <nz-table [nzData]="clusterAgent.subagents" [nzBordered]="true"
-                        [nzFrontPagination]="false" [nzShowPagination]="false" [nzShowSizeChanger]="false" nzSize="small">
-                <thead>
-                  <tr>
-                    <th *ngIf="flag" nzShowCheckbox [(nzChecked)]="clusterAgent.checked" [nzIndeterminate]="clusterAgent.indeterminate" (nzCheckedChange)="onClusterAgentChecked(clusterAgent)" class="chk"></th>
-                    <th nzWidth="150px" translate>agent.label.subagentId</th>
-                    <th nzWidth="250px" translate>agent.label.url</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let subagent of clusterAgent.subagents">
-                    <td *ngIf="flag" nzShowCheckbox [(nzChecked)]="subagent.checked" (nzCheckedChange)="onSubagentChecked(clusterAgent, subagent)" class="chk"></td>
-                    <td>{{ subagent.agentName }}</td>
-                    <td><span>{{ subagent.agentUrl }}</span></td>
-                  </tr>
-                </tbody>
-              </nz-table>
-            </td>
-          </tr>
-        </ng-container>
-      </tbody>
-    </nz-table>
+        </thead>
+        <tbody>
+          @for (clusterAgent of clusterAgentsTable.data; track clusterAgent) {
+            <ng-container>
+              <tr>
+                @if (flag) {
+                  <td></td>
+                }
+                <td (click)="toggleClusterAgent(clusterAgent)" class="cursor-pointer">{{ clusterAgent.agentName }}
+                  <i class="fa" [ngClass]="clusterAgent.show ? 'fa-caret-up' : 'fa-caret-down'"></i>
+                </td>
+                <td>{{ clusterAgent.agentUrl }}</td>
+              </tr>
+              @if (clusterAgent.show) {
+                <tr>
+                  <td colspan="3" style="padding: 0 !important; border-top: none !important;">
+                    <nz-table [nzData]="clusterAgent.subagents" [nzBordered]="true"
+                              [nzFrontPagination]="false" [nzShowPagination]="false" [nzShowSizeChanger]="false" nzSize="small">
+                      <thead>
+                      <tr>
+                        @if (flag) {
+                          <th nzShowCheckbox [(nzChecked)]="clusterAgent.checked" [nzIndeterminate]="clusterAgent.indeterminate" (nzCheckedChange)="onClusterAgentChecked(clusterAgent)" class="chk"></th>
+                        }
+                        <th nzWidth="150px" translate>agent.label.subagentId</th>
+                        <th nzWidth="250px" translate>agent.label.url</th>
+                      </tr>
+                      </thead>
+                      <tbody>
+                        @for (subagent of clusterAgent.subagents; track subagent) {
+                          <tr>
+                            @if (flag) {
+                              <td nzShowCheckbox [(nzChecked)]="subagent.checked" (nzCheckedChange)="onSubagentChecked(clusterAgent, subagent)" class="chk"></td>
+                            }
+                            <td>{{ subagent.agentName }}</td>
+                            <td><span>{{ subagent.agentUrl }}</span></td>
+                          </tr>
+                        }
+                      </tbody>
+                    </nz-table>
+                  </td>
+                </tr>
+              }
+            </ng-container>
+          }
+        </tbody>
+      </nz-table>
+    </div>
+  }
+</div>
+@if (agents.length === 0 && clusterAgents.length === 0) {
+  <div>
+    <app-empty-data></app-empty-data>
   </div>
-</div>
-<div *ngIf="agents.length === 0 && clusterAgents.length === 0">
-  <app-empty-data></app-empty-data>
-</div>
+}
 <div class="modal-footer">
-  <button *ngIf="flag" (click)="submit()" class="btn btn-primary btn-sm" translate type="button">
-    common.button.submit
-  </button>
+  @if (flag) {
+    <button (click)="submit()" class="btn btn-primary btn-sm" translate type="button">
+      common.button.submit
+    </button>
+  }
   <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
     common.button.cancel
   </button>
 </div>
-

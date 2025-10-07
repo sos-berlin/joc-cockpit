@@ -7,100 +7,146 @@
   </button>
 </div>
 <div class="modal-body p-a">
-  <div *ngIf="!loading" class="row">
-    <div *ngFor="let expectedNotices of workflow.expectedNoticeBoards" class="col-md-12">
-      <div class="p-l-sm m-b">
-        <i class="p-r-xs" nz-icon nzTheme="outline"
-           nzType="gateway"></i>
-        <i (click)="navToInventoryTab(expectedNotices.name, 'NOTICEBOARD');"
-           *ngIf="permission.joc && permission.joc.inventory.view"
-           class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-        <a (click)="showBoard(expectedNotices.name)" class="text-hover-primary">{{expectedNotices.name}}</a> <i
-        aria-hidden="true" class="fa fa-long-arrow-left p-l-xs"></i>
-        <div *ngFor="let item of expectedNotices.value" class="text-muted m-l-md">
-          <i class="p-r-xs" nz-icon nzTheme="outline"
-             nzType="apartment"></i>
-          <i (click)="navToInventoryTab(item.path, 'WORKFLOW');" *ngIf="permission.joc && permission.joc.inventory.view"
-             class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-          <a (click)="showWorkflow(item.path, item.versionId)" class="text-hover-primary"> {{item.path}}</a>
-          <a *ngIf="workflow.workflowTags?.length > 0" [innerHTML]="coreService.getModifiedWorkflowTags(item, null)"></a>
+  @if (!loading) {
+    <div class="row">
+      @for (expectedNotices of workflow.expectedNoticeBoards; track expectedNotices) {
+        <div class="col-md-12">
+          <div class="p-l-sm m-b">
+            <i class="p-r-xs" nz-icon nzTheme="outline"
+               nzType="gateway"></i>
+            @if (permission.joc && permission.joc.inventory.view) {
+              <i (click)="navToInventoryTab(expectedNotices.name, 'NOTICEBOARD');"
+                 class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+            }
+            <a (click)="showBoard(expectedNotices.name)" class="text-hover-primary">{{expectedNotices.name}}</a> <i
+            aria-hidden="true" class="fa fa-long-arrow-left p-l-xs"></i>
+            @for (item of expectedNotices.value; track item) {
+              <div class="text-muted m-l-md">
+                <i class="p-r-xs" nz-icon nzTheme="outline"
+                   nzType="apartment"></i>
+                @if (permission.joc && permission.joc.inventory.view) {
+                  <i (click)="navToInventoryTab(item.path, 'WORKFLOW');"
+                     class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+                }
+                <a (click)="showWorkflow(item.path, item.versionId)" class="text-hover-primary"> {{item.path}}</a>
+                @if (workflow.workflowTags?.length > 0) {
+                  <a [innerHTML]="coreService.getModifiedWorkflowTags(item, null)"></a>
+                }
+              </div>
+            }
+          </div>
         </div>
+      }
+      @for (postNotices of workflow.postNoticeBoards; track postNotices) {
+        <div class="col-md-12">
+          <div class="p-l-sm m-b">
+            <i class="p-r-xs" nz-icon nzTheme="outline"
+               nzType="gateway"></i>
+            @if (permission.joc && permission.joc.inventory.view) {
+              <i (click)="navToInventoryTab(postNotices.name, 'NOTICEBOARD');"
+                 class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+            }
+            <a (click)="showBoard(postNotices.name)" class="text-hover-primary">{{postNotices.name}}</a> <i
+            aria-hidden="true" class="fa fa-long-arrow-right p-l-xs"></i>
+            @for (item of postNotices.value; track item) {
+              <div class="text-muted m-l-md">
+                <i class="p-r-xs" nz-icon nzTheme="outline"
+                   nzType="apartment"></i>
+                @if (permission.joc && permission.joc.inventory.view) {
+                  <i (click)="navToInventoryTab(item.path, 'WORKFLOW');"
+                     class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+                }
+                <a (click)="showWorkflow(item.path, item.versionId)" class="text-hover-primary"> {{item.path}}</a>
+                @if (workflow.workflowTags?.length > 0) {
+                  <a [innerHTML]="coreService.getModifiedWorkflowTags(item, null)"></a>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+      @for (postNotices of workflow.consumeNoticeBoards; track postNotices) {
+        <div class="col-md-12">
+          <div class="p-l-sm m-b">
+            <i class="p-r-xs" nz-icon nzTheme="outline"
+               nzType="gateway"></i>
+            @if (permission.joc && permission.joc.inventory.view) {
+              <i (click)="navToInventoryTab(postNotices.name, 'NOTICEBOARD');"
+                 class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+            }
+            <a (click)="showBoard(postNotices.name)" class="text-hover-primary">{{postNotices.name}}</a> <i
+            aria-hidden="true" class="fa fa-long-arrow-left p-l-xs"></i>
+            @for (item of postNotices.value; track item) {
+              <div class="text-muted m-l-md">
+                <i class="p-r-xs" nz-icon nzTheme="outline"
+                   nzType="apartment"></i>
+                @if (permission.joc && permission.joc.inventory.view) {
+                  <i (click)="navToInventoryTab(item.path, 'WORKFLOW');"
+                     class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+                }
+                <a (click)="showWorkflow(item.path, item.versionId)" class="text-hover-primary"> {{item.path}}</a>
+                @if (workflow.workflowTags?.length > 0) {
+                  <a [innerHTML]="coreService.getModifiedWorkflowTags(item, null)"></a>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+      @if (workflow.addOrderFromWorkflows && workflow.addOrderFromWorkflows.length > 0) {
+        <div class="col-md-12">
+          <div class="p-l-sm m-b">
+            <a>AddOrder</a> <i aria-hidden="true" class="fa fa-long-arrow-left p-l-xs"></i>
+            @for (item of workflow.addOrderFromWorkflows; track item) {
+              <div class="text-muted m-l-md">
+                <i class="p-r-xs" nz-icon nzTheme="outline"
+                   nzType="apartment"></i>
+                @if (permission.joc && permission.joc.inventory.view) {
+                  <i (click)="navToInventoryTab(item.path, 'WORKFLOW');"
+                     class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+                }
+                <a (click)="showWorkflow(item.path, item.versionId)" class="text-hover-primary"> {{item.path}}</a>
+                @if (workflow.workflowTags?.length > 0) {
+                  <a [innerHTML]="coreService.getModifiedWorkflowTags(item, null)"></a>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+      @if (workflow.addOrderToWorkflows && workflow.addOrderToWorkflows.length > 0) {
+        <div class="col-md-12">
+          <div class="p-l-sm m-b">
+            <a>AddOrder</a> <i aria-hidden="true" class="fa fa-long-arrow-right p-l-xs"></i>
+            @for (item of workflow.addOrderToWorkflows; track item) {
+              <div class="text-muted m-l-md">
+                <i class="p-r-xs" nz-icon nzTheme="outline"
+                   nzType="apartment"></i>
+                @if (permission.joc && permission.joc.inventory.view) {
+                  <i (click)="navToInventoryTab(item.path, 'WORKFLOW');"
+                     class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
+                }
+                <a (click)="showWorkflow(item.path, item.versionId)" class="text-hover-primary"> {{item.path}}</a>
+                @if (workflow.workflowTags?.length > 0) {
+                  <a [innerHTML]="coreService.getModifiedWorkflowTags(item, null)"></a>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+  @if (loading) {
+    <div class="form-group row">
+      <div class="col-md-12 m-t-xs text-center">
+        <i>
+          <nz-spin nzSimple></nz-spin>
+        </i>
       </div>
     </div>
-    <div *ngFor="let postNotices of workflow.postNoticeBoards" class="col-md-12">
-      <div class="p-l-sm m-b">
-        <i class="p-r-xs" nz-icon nzTheme="outline"
-           nzType="gateway"></i>
-        <i (click)="navToInventoryTab(postNotices.name, 'NOTICEBOARD');"
-           *ngIf="permission.joc && permission.joc.inventory.view"
-           class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-        <a (click)="showBoard(postNotices.name)" class="text-hover-primary">{{postNotices.name}}</a> <i
-        aria-hidden="true" class="fa fa-long-arrow-right p-l-xs"></i>
-        <div *ngFor="let item of postNotices.value" class="text-muted m-l-md">
-          <i class="p-r-xs" nz-icon nzTheme="outline"
-             nzType="apartment"></i>
-          <i (click)="navToInventoryTab(item.path, 'WORKFLOW');" *ngIf="permission.joc && permission.joc.inventory.view"
-             class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-          <a (click)="showWorkflow(item.path, item.versionId)" class="text-hover-primary"> {{item.path}}</a>
-          <a *ngIf="workflow.workflowTags?.length > 0" [innerHTML]="coreService.getModifiedWorkflowTags(item, null)"></a>
-        </div>
-      </div>
-    </div>
-    <div *ngFor="let postNotices of workflow.consumeNoticeBoards" class="col-md-12">
-      <div class="p-l-sm m-b">
-        <i class="p-r-xs" nz-icon nzTheme="outline"
-           nzType="gateway"></i>
-        <i (click)="navToInventoryTab(postNotices.name, 'NOTICEBOARD');"
-           *ngIf="permission.joc && permission.joc.inventory.view"
-           class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-        <a (click)="showBoard(postNotices.name)" class="text-hover-primary">{{postNotices.name}}</a> <i
-        aria-hidden="true" class="fa fa-long-arrow-left p-l-xs"></i>
-        <div *ngFor="let item of postNotices.value" class="text-muted m-l-md">
-          <i class="p-r-xs" nz-icon nzTheme="outline"
-             nzType="apartment"></i>
-          <i (click)="navToInventoryTab(item.path, 'WORKFLOW');" *ngIf="permission.joc && permission.joc.inventory.view"
-             class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-          <a (click)="showWorkflow(item.path, item.versionId)" class="text-hover-primary"> {{item.path}}</a>
-          <a *ngIf="workflow.workflowTags?.length > 0" [innerHTML]="coreService.getModifiedWorkflowTags(item, null)"></a>
-        </div>
-      </div>
-    </div>
-    <div *ngIf="workflow.addOrderFromWorkflows && workflow.addOrderFromWorkflows.length > 0" class="col-md-12">
-      <div class="p-l-sm m-b">
-        <a>AddOrder</a> <i aria-hidden="true" class="fa fa-long-arrow-left p-l-xs"></i>
-        <div *ngFor="let item of workflow.addOrderFromWorkflows" class="text-muted m-l-md">
-          <i class="p-r-xs" nz-icon nzTheme="outline"
-             nzType="apartment"></i>
-          <i (click)="navToInventoryTab(item.path, 'WORKFLOW');" *ngIf="permission.joc && permission.joc.inventory.view"
-             class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-          <a (click)="showWorkflow(item.path, item.versionId)" class="text-hover-primary"> {{item.path}}</a>
-          <a *ngIf="workflow.workflowTags?.length > 0" [innerHTML]="coreService.getModifiedWorkflowTags(item, null)"></a>
-        </div>
-      </div>
-    </div>
-    <div *ngIf="workflow.addOrderToWorkflows && workflow.addOrderToWorkflows.length > 0" class="col-md-12">
-      <div class="p-l-sm m-b">
-        <a>AddOrder</a> <i aria-hidden="true" class="fa fa-long-arrow-right p-l-xs"></i>
-        <div *ngFor="let item of workflow.addOrderToWorkflows" class="text-muted m-l-md">
-          <i class="p-r-xs" nz-icon nzTheme="outline"
-             nzType="apartment"></i>
-          <i (click)="navToInventoryTab(item.path, 'WORKFLOW');" *ngIf="permission.joc && permission.joc.inventory.view"
-             class="cursor fa fa-pencil text-hover-primary p-l-xs p-r-xs"></i>
-          <a (click)="showWorkflow(item.path, item.versionId)" class="text-hover-primary"> {{item.path}}</a>
-          <a *ngIf="workflow.workflowTags?.length > 0" [innerHTML]="coreService.getModifiedWorkflowTags(item, null)"></a>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div *ngIf="loading" class="form-group row">
-    <div class="col-md-12 m-t-xs text-center">
-      <i>
-        <nz-spin nzSimple></nz-spin>
-      </i>
-    </div>
-  </div>
+  }
 </div>
 <div class="modal-footer">
   <button (click)="close()" class="btn btn-grey btn-sm" translate type="button">common.button.close</button>
 </div>
-

@@ -33,6 +33,7 @@ declare const mxUtils;
 declare const mxCellOverlay;
 
 @Component({
+  standalone: false,
   selector: 'app-sub-agent-modal',
   templateUrl: './sub-agent.dialog.html'
 })
@@ -125,6 +126,7 @@ export class SubagentModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'add-cluster-agent-modal',
   templateUrl: './add-cluster.dialog.html'
 })
@@ -222,6 +224,7 @@ export class AddClusterModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-agent-modal',
   templateUrl: './agent.dialog.html'
 })
@@ -439,6 +442,7 @@ export class AgentModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-certificate-modal',
   templateUrl: './add-certificate-dialog.html'
 })
@@ -508,6 +512,7 @@ export class AddCertificateModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-certificate-modal',
   templateUrl: './show-certificate-list-dialog.html'
 })
@@ -625,6 +630,7 @@ export class ShowCertificateListModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-add-priority-modal',
   templateUrl: './add-priority-dialog.html'
 })
@@ -702,6 +708,7 @@ export class AddPriorityModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-agent',
   templateUrl: './agent.component.html',
   styleUrls: ['./agent.component.scss']

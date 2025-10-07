@@ -3,110 +3,141 @@
     <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid) && !isSearch || !isUnique)}"
          class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>customization.label.customizationName
-        <sup *ngIf="!isSearch" class="text-danger text-sm">*</sup>
+        @if (!isSearch) {
+          <sup class="text-danger text-sm">*</sup>
+        }
       </label>
       <div class="col-sm-6">
         <input #name="ngModel" (blur)="checkFilterName()" [(ngModel)]="filter.name" [appAutofocus]="!isSearch" autocomplete="off"
                class="form-control"
                maxlength="30" name="name" placeholder="{{'customization.placeholder.enterName' | translate}}" required
                type="text">
-        <div *ngIf="!isSearch && name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-          <div *ngIf="name.errors.required">
-            <div translate>common.message.requiredError</div>
+        @if (!isSearch && name.invalid && (name.dirty || name.touched)) {
+          <div class="text-danger help-block">
+            @if (name.errors.required) {
+              <div translate>common.message.requiredError</div>
+            }
           </div>
-        </div>
-        <div *ngIf="!isUnique" class="help-block text-danger">
-          <div translate>common.message.uniqueError</div>
-        </div>
+        }
+        @if (!isUnique) {
+          <div class="help-block text-danger">
+            <div translate>common.message.uniqueError</div>
+          </div>
+        }
       </div>
     </div>
-    <div *ngIf="isSearch" class="form-group row">
-      <label class="col-md-2 col-sm-4" translate>common.label.startDateRange</label>
-      <div class="col-md-6 col-sm-8">
-        <nz-radio-group [(ngModel)]="filter.radio" name="date">
-          <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
-          <label nz-radio nzValue="planned"><span translate>common.label.relativeDate</span></label>
-        </nz-radio-group>
-      </div>
-    </div>
-    <div *ngIf="filter.radio == 'current'" class="form-group row">
-      <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.startFrom</label>
-      <div class="col-sm-6">
-        <app-date-input [object]="filter" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
-                        [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat"
-                        [placeholder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
-        ></app-date-input>
-      </div>
-    </div>
-    <div *ngIf="filter.radio == 'current'" class="form-group row">
-      <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.startTo</label>
-      <div class="col-sm-6">
-        <app-date-input [object]="filter" [attributeDate]="'toDate'" [attributeTime]="'toTime'"
-                        [isTime]="true" [isAllowClear]="true" [name]="'to'" [dateFormat]="dateFormat"
-                        [placeholder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
-        ></app-date-input>
-      </div>
-    </div>
-    <div *ngIf="filter.radio == 'planned'" [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}"
-         class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>common.label.processStarted</label>
-      <div class=" col-sm-6">
-        <input #processExc1="ngModel" [(ngModel)]="filter.planned" autocomplete="off" class="form-control" name="planned" placeholder="{{'common.placeholder.processExecuted' | translate}}"
-               type="text" validateReqex>
-        <div *ngIf="processExc1.errors && (processExc1.dirty || processExc1.touched)" class="help-block text-danger">
-          <div *ngIf="!processExc1.valid" translate>common.message.invalid</div>
+    @if (isSearch) {
+      <div class="form-group row">
+        <label class="col-md-2 col-sm-4" translate>common.label.startDateRange</label>
+        <div class="col-md-6 col-sm-8">
+          <nz-radio-group [(ngModel)]="filter.radio" name="date">
+            <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
+            <label nz-radio nzValue="planned"><span translate>common.label.relativeDate</span></label>
+          </nz-radio-group>
         </div>
       </div>
-    </div>
+    }
+    @if (filter.radio == 'current') {
+      <div class="form-group row">
+        <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.startFrom</label>
+        <div class="col-sm-6">
+          <app-date-input [object]="filter" [attributeDate]="'fromDate'" [attributeTime]="'fromTime'"
+                          [isTime]="true" [isAllowClear]="true" [name]="'from'" [dateFormat]="dateFormat"
+                          [placeholder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
+          ></app-date-input>
+        </div>
+      </div>
+    }
+    @if (filter.radio == 'current') {
+      <div class="form-group row">
+        <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.startTo</label>
+        <div class="col-sm-6">
+          <app-date-input [object]="filter" [attributeDate]="'toDate'" [attributeTime]="'toTime'"
+                          [isTime]="true" [isAllowClear]="true" [name]="'to'" [dateFormat]="dateFormat"
+                          [placeholder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
+          ></app-date-input>
+        </div>
+      </div>
+    }
+    @if (filter.radio == 'planned') {
+      <div [ngClass]="{ 'has-error' : (processExc1.dirty || processExc1.touched) && processExc1.invalid}"
+           class="form-group row">
+        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>common.label.processStarted</label>
+        <div class=" col-sm-6">
+          <input #processExc1="ngModel" [(ngModel)]="filter.planned" autocomplete="off" class="form-control" name="planned" placeholder="{{'common.placeholder.processExecuted' | translate}}"
+                 type="text" validateReqex>
+          @if (processExc1.errors && (processExc1.dirty || processExc1.touched)) {
+            <div class="help-block text-danger">
+              @if (!processExc1.valid) {
+                <div translate>common.message.invalid</div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
 
-    <div *ngIf="isSearch" class="form-group row">
-      <label class="col-md-2 col-sm-4" translate>common.label.endDateRange</label>
-      <div class="col-md-6 col-sm-8">
-        <nz-radio-group [(ngModel)]="filter.radio1" name="date1">
-          <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
-          <label nz-radio nzValue="planned"><span translate>common.label.relativeDate</span></label>
-        </nz-radio-group>
-      </div>
-    </div>
-    <div *ngIf="filter.radio1 == 'current'" class="form-group row">
-      <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.endFrom</label>
-      <div class="col-sm-6">
-        <app-date-input [object]="filter" [attributeDate]="'endFromDate'" [attributeTime]="'endFromTime'"
-                        [isTime]="true" [isAllowClear]="true" [name]="'endFrom'" [dateFormat]="dateFormat"
-                        [placeholder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
-        ></app-date-input>
-      </div>
-    </div>
-    <div *ngIf="filter.radio1 == 'current'" class="form-group row">
-      <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.endTo</label>
-      <div class="col-sm-6">
-        <app-date-input [object]="filter" [attributeDate]="'endToDate'" [attributeTime]="'endToTime'"
-                        [isTime]="true" [isAllowClear]="true" [name]="'endTo'" [dateFormat]="dateFormat"
-                        [placeholder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
-        ></app-date-input>
-      </div>
-    </div>
-    <div *ngIf="filter.radio1 == 'planned'" [ngClass]="{ 'has-error' : (processCompleted.dirty || processCompleted.touched) && processCompleted.invalid}"
-         class="form-group row">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>common.label.processCompleted</label>
-      <div class=" col-sm-6">
-        <input #processCompleted="ngModel" [(ngModel)]="filter.processCompleted" autocomplete="off" class="form-control" name="processCompleted"
-               placeholder="{{'common.placeholder.processExecuted' | translate}}"
-               type="text" validateReqex>
-        <div *ngIf="processCompleted.errors && (processCompleted.dirty || processCompleted.touched)"
-             class="help-block text-danger">
-          <div *ngIf="!processCompleted.valid" translate>common.message.invalid</div>
+    @if (isSearch) {
+      <div class="form-group row">
+        <label class="col-md-2 col-sm-4" translate>common.label.endDateRange</label>
+        <div class="col-md-6 col-sm-8">
+          <nz-radio-group [(ngModel)]="filter.radio1" name="date1">
+            <label nz-radio nzValue="current"><span translate>common.label.specificDate</span></label>
+            <label nz-radio nzValue="planned"><span translate>common.label.relativeDate</span></label>
+          </nz-radio-group>
         </div>
       </div>
-    </div>
-    <div *ngIf="isSearch" class="form-group row">
-      <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.controllerId</label>
-      <div class=" col-sm-6">
-        <app-select-input [attributeName]="'controllerId'" [name]="'id'" [isAllowClear]="true"
-                          [ignoreTranslate]="true" [placeholder]="'common.label.selectController'"
-                          [listArray]="schedulerIds.controllerIds" [object]="filter"></app-select-input>
+    }
+    @if (filter.radio1 == 'current') {
+      <div class="form-group row">
+        <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.endFrom</label>
+        <div class="col-sm-6">
+          <app-date-input [object]="filter" [attributeDate]="'endFromDate'" [attributeTime]="'endFromTime'"
+                          [isTime]="true" [isAllowClear]="true" [name]="'endFrom'" [dateFormat]="dateFormat"
+                          [placeholder]="('common.placeholder.setStartDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
+          ></app-date-input>
+        </div>
       </div>
-    </div>
+    }
+    @if (filter.radio1 == 'current') {
+      <div class="form-group row">
+        <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.endTo</label>
+        <div class="col-sm-6">
+          <app-date-input [object]="filter" [attributeDate]="'endToDate'" [attributeTime]="'endToTime'"
+                          [isTime]="true" [isAllowClear]="true" [name]="'endTo'" [dateFormat]="dateFormat"
+                          [placeholder]="('common.placeholder.setEndDate' | translate) + ' (' +( dateFormat | uppercase ) +')'"
+          ></app-date-input>
+        </div>
+      </div>
+    }
+    @if (filter.radio1 == 'planned') {
+      <div [ngClass]="{ 'has-error' : (processCompleted.dirty || processCompleted.touched) && processCompleted.invalid}"
+           class="form-group row">
+        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label" translate>common.label.processCompleted</label>
+        <div class=" col-sm-6">
+          <input #processCompleted="ngModel" [(ngModel)]="filter.processCompleted" autocomplete="off" class="form-control" name="processCompleted"
+                 placeholder="{{'common.placeholder.processExecuted' | translate}}"
+                 type="text" validateReqex>
+          @if (processCompleted.errors && (processCompleted.dirty || processCompleted.touched)) {
+            <div class="help-block text-danger">
+              @if (!processCompleted.valid) {
+                <div translate>common.message.invalid</div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+    @if (isSearch) {
+      <div class="form-group row">
+        <label class="col-md-2 col-sm-4 form-control-label" translate>common.label.controllerId</label>
+        <div class=" col-sm-6">
+          <app-select-input [attributeName]="'controllerId'" [name]="'id'" [isAllowClear]="true"
+                            [ignoreTranslate]="true" [placeholder]="'common.label.selectController'"
+                            [listArray]="schedulerIds.controllerIds" [object]="filter"></app-select-input>
+        </div>
+      </div>
+    }
     <div class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
              translate>common.label.folders</label>
@@ -130,25 +161,29 @@
                    class="node-content-wrapper">
                 <i [nzType]="node.isExpanded ? 'folder-open' : 'folder'" class="w-14" nz-icon></i>
                 {{node.origin.name}}
-                <i (click)="addFolder(node.origin.path);$event.stopPropagation()"
-                   *ngIf="filter.paths && filter.paths.indexOf(node.origin.path) === -1"
-                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.button.addFolder' | translate" [nzType]="'plus'" class="p-l-sm" nz-icon></i>
-                <i (click)="remove(node.origin.path);$event.stopPropagation()"
-                   *ngIf="filter.paths && filter.paths.indexOf(node.origin.path) > -1" [nzType]="'delete'" class="p-l-sm"
-                   nz-icon></i>
+                @if (filter.paths && filter.paths.indexOf(node.origin.path) === -1) {
+                  <i (click)="addFolder(node.origin.path);$event.stopPropagation()"
+                     [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'user.button.addFolder' | translate" [nzType]="'plus'" class="p-l-sm" nz-icon></i>
+                }
+                @if (filter.paths && filter.paths.indexOf(node.origin.path) > -1) {
+                  <i (click)="remove(node.origin.path);$event.stopPropagation()"
+                     [nzType]="'delete'" class="p-l-sm" nz-icon></i>
+                }
               </div>
             </div>
           </ng-template>
         </nz-tree-select>
       </div>
     </div>
-    <div class="m-b-xs row" *ngIf="filter.paths?.length > 0">
-      <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
+    @if (filter.paths?.length > 0) {
+      <div class="m-b-xs row">
+        <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
                translate>inventory.label.handleRecursively</label>
-      <div class="col-md-2">
-        <label [(ngModel)]="filter.handleRecursively" name="handleRecursively" nz-checkbox></label>
+        <div class="col-md-2">
+          <label [(ngModel)]="filter.handleRecursively" name="handleRecursively" nz-checkbox></label>
+        </div>
       </div>
-    </div>
+    }
     <div class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4 form-control-label"
              translate>dailyPlan.label.workflow</label>
@@ -170,8 +205,9 @@
         <nz-select [(ngModel)]="filter.workflowTags" name="workflowTag" nzAllowClear nzMode="multiple"
                    nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
                    nzShowSearch>
-          <nz-option *ngFor="let tag of tags" [nzLabel]="tag.name"
-                     [nzValue]="tag.name"></nz-option>
+          @for (tag of tags; track tag) {
+            <nz-option [nzLabel]="tag.name" [nzValue]="tag.name"></nz-option>
+          }
         </nz-select>
       </div>
     </div>
@@ -181,8 +217,9 @@
         <nz-select [(ngModel)]="filter.orderTags" name="orderTag" nzAllowClear nzMode="multiple"
                    nzPlaceHolder="{{'inventory.search.label.searchHeading' | translate}}"
                    nzShowSearch>
-          <nz-option *ngFor="let tag of orderTags" [nzLabel]="tag.name"
-                     [nzValue]="tag.name"></nz-option>
+          @for (tag of orderTags; track tag) {
+            <nz-option [nzLabel]="tag.name" [nzValue]="tag.name"></nz-option>
+          }
         </nz-select>
       </div>
     </div>
@@ -197,53 +234,71 @@
     <div class="m-b-sm row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4" translate>history.label.status</label>
       <div class="col-sm-8">
-        <nz-checkbox-wrapper (nzOnChange)="stateChange($event)">
-          <ng-container *ngFor="let option of checkOptions">
-            <label [name]="option.label" [ngModel]="option.checked" [nzValue]="option.value" nz-checkbox><span
-              translate>common.label.{{option.label}}</span></label>
-          </ng-container>
-        </nz-checkbox-wrapper>
+        <nz-checkbox-group
+          name="status"
+          [(ngModel)]="selectedHistoryStates"
+          (ngModelChange)="stateChange($event)">
+          @for (option of checkOptions; track option) {
+            <label [nzValue]="option.value" nz-checkbox>
+              <span translate>common.label.{{option.label}}</span>
+            </label>
+          }
+        </nz-checkbox-group>
       </div>
     </div>
     <div class="form-group row">
       <label [ngClass]="{'col-md-2': isSearch}" class="col-sm-4" translate> history.label.criticality</label>
       <div class="col-sm-8">
-        <nz-checkbox-wrapper (nzOnChange)="criticalityChange($event)">
-          <ng-container *ngFor="let option of criticalities">
-            <label [name]="option.label" [ngModel]="option.checked" [nzValue]="option.value" nz-checkbox><span
-              translate>common.label.{{option.label}}</span></label>
-          </ng-container>
-        </nz-checkbox-wrapper>
+        <nz-checkbox-group
+          name="criticality"
+          [(ngModel)]="selectedCriticalities"
+          (ngModelChange)="criticalityChange($event)">
+          @for (option of criticalities; track option) {
+            <label [nzValue]="option.value" nz-checkbox>
+              <span translate>common.label.{{option.label}}</span>
+            </label>
+          }
+        </nz-checkbox-group>
       </div>
     </div>
-    <div *ngIf="permission.joc.administration.customization.share && !isSearch" class="form-group row">
-      <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
-      <div class="col-sm-6">
-        <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
+    @if (permission.joc.administration.customization.share && !isSearch) {
+      <div class="form-group row">
+        <label class="col-sm-4" translate>customization.label.sharedCustomization</label>
+        <div class="col-sm-6">
+          <label [(ngModel)]="filter.shared" name="shared" nz-checkbox></label>
+        </div>
       </div>
-    </div>
-    <div *ngIf="isSearch" class="form-group m-t m-b-xs">
-      <button (click)="search()" class="btn btn-primary btn-sm" translate type="button">
-        common.button.search
+    }
+    @if (isSearch) {
+      <div class="form-group m-t m-b-xs">
+        <button (click)="search()" class="btn btn-primary btn-sm" translate type="button">
+          common.button.search
+        </button>
+        <button [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted" class="btn btn-default btn-sm m-l-sm"
+                type="submit">
+          @if (submitted) {
+            <i class="fa fa-spin fa-spinner"></i>
+          }
+          {{'customization.button.saveAsCustomization' | translate}}
+        </button>
+        <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
+          common.button.cancel
+        </button>
+      </div>
+    }
+  </div>
+  @if (!isSearch) {
+    <div class="modal-footer">
+      <button [disabled]="!myForm.form.valid || !isUnique || submitted" class="btn btn-primary btn-sm" type="submit">
+        @if (submitted) {
+          <i class="fa fa-spin fa-spinner p-r-xs"></i>
+        }
+        {{'common.button.submit' | translate}}
       </button>
-      <button [disabled]="!myForm.form.valid || !isUnique || !filter.name || submitted" class="btn btn-default btn-sm m-l-sm"
-              type="submit">
-        <i *ngIf="submitted" class="fa fa-spin fa-spinner"></i>
-        {{'customization.button.saveAsCustomization' | translate}}
-      </button>
-      <button (click)="cancel()" class="btn btn-grey btn-sm m-l-sm" translate type="button">
+      <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
         common.button.cancel
       </button>
     </div>
-  </div>
-  <div *ngIf="!isSearch" class="modal-footer">
-    <button [disabled]="!myForm.form.valid || !isUnique || submitted" class="btn btn-primary btn-sm" type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
-      {{'common.button.submit' | translate}}
-    </button>
-    <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">
-      common.button.cancel
-    </button>
-  </div>
+  }
   <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-filter cur-point fa fa-info-circle text-20"></i>
 </form>

@@ -13,6 +13,7 @@ import {HttpParams} from "@angular/common/http";
 declare const $: any;
 
 @Component({
+  standalone: false,
   selector: 'app-root',
   templateUrl: './app.component.html'
 })

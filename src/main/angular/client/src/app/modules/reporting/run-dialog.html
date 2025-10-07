@@ -12,16 +12,20 @@
     <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="4" [sizeY]="6"></app-audit-log-input>
     </div>
-    <div class="row text-center" *ngIf="!display">
-      <div class="col-sm-12 m-t m-b">
-        Are you sure to run all the selected reports?
+    @if (!display) {
+      <div class="row text-center">
+        <div class="col-sm-12 m-t m-b">
+          Are you sure to run all the selected reports?
+        </div>
       </div>
-    </div>
+    }
   </div>
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || submitted"
             class="btn btn-primary btn-sm" type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{ 'reporting.button.run' | translate }}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">

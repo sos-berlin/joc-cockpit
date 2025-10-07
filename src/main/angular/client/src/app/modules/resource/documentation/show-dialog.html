@@ -12,24 +12,30 @@
 <div class="modal-body p-a">
   <div class="row">
     <div class="col-sm-12">
-      <div *ngIf="document.usedIn.length>0" class="p-l-sm">
-        <div class="row m-b">
-          <div class="col-md-12">
-            <span class="text _600" translate>resource.documentation.label.documentationUsedIn</span> : -
+      @if (document.usedIn.length>0) {
+        <div class="p-l-sm">
+          <div class="row m-b">
+            <div class="col-md-12">
+              <span class="text _600" translate>resource.documentation.label.documentationUsedIn</span> : -
+            </div>
           </div>
+          @for (doc of document.usedIn; track doc) {
+            <div class="row">
+              <label class="col-md-3 _600">
+                {{doc.type | translate}} :
+              </label>
+              <div class="col-md-9">
+                <a>{{doc.path}}</a>
+              </div>
+            </div>
+          }
         </div>
-        <div *ngFor="let doc of document.usedIn" class="row">
-          <label class="col-md-3 _600">
-            {{doc.type | translate}} :
-          </label>
-          <div class="col-md-9">
-            <a>{{doc.path}}</a>
-          </div>
+      }
+      @if (!document.usedIn || document.usedIn.length ==0) {
+        <div class="text-center text" translate>
+          resource.documentation.message.documentNotUsed
         </div>
-      </div>
-      <div *ngIf="!document.usedIn || document.usedIn.length ==0" class="text-center text" translate>
-        resource.documentation.message.documentNotUsed
-      </div>
+      }
     </div>
   </div>
 </div>

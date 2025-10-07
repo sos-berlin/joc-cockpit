@@ -1,48 +1,46 @@
 <div class="row">
-  <div
-    *ngIf="!(checked && setOfCheckedId.size > 0 && noticeBoards.length > (plansFilters.entryPerPage || preferences.entryPerPage))"
-    class="col-md-12 m-b">
-    <div class="inline" style="height: 26px">
-      <div class="pos-rel t-xxs">
-        <button (click)="setNoticeStatus('future')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.future'|translate"
-                [ngClass]="{'btn-primary': plansFilters.filter.filterBy && plansFilters.filter.filterBy.indexOf('future') !== -1}"
-                class="btn btn-grey btn-sm hidden-btn-text">
-          <i class="icon icon-workflows-icon"></i>
-          <span translate>dailyPlan.button.future</span>
-        </button>
-        <button (click)="setNoticeStatus('present')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.present'|translate"
-                [ngClass]="{'btn-primary': plansFilters.filter.filterBy && plansFilters.filter.filterBy.indexOf('present') !== -1}"
-                class="btn btn-grey btn-sm hidden-btn-text">
-          <i class="icon icon-workflows-icon"></i>
-          <span translate>dailyPlan.button.present</span>
-        </button>
+  @if (!(checked && setOfCheckedId.size > 0 && noticeBoards.length > (plansFilters.entryPerPage || preferences.entryPerPage))) {
+    <div class="col-md-12 m-b">
+      <div class="inline" style="height: 26px">
+        <div class="pos-rel t-xxs">
+          <button (click)="setNoticeStatus('future')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.future'|translate"
+                  [ngClass]="{'btn-primary': plansFilters.filter.filterBy && plansFilters.filter.filterBy.indexOf('future') !== -1}"
+                  class="btn btn-grey btn-sm hidden-btn-text">
+            <i class="icon icon-workflows-icon"></i>
+            <span translate>dailyPlan.button.future</span>
+          </button>
+          <button (click)="setNoticeStatus('present')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.present'|translate"
+                  [ngClass]="{'btn-primary': plansFilters.filter.filterBy && plansFilters.filter.filterBy.indexOf('present') !== -1}"
+                  class="btn btn-grey btn-sm hidden-btn-text">
+            <i class="icon icon-workflows-icon"></i>
+            <span translate>dailyPlan.button.present</span>
+          </button>
 
-        <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.normal'|translate" class="fa fa-stop bg-postingWorkflow" style="margin-left: 109px"></i>
-        {{'dailyPlan.label.normal' | translate}}
-        <i  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.critical'|translate"class="fa fa-stop bg-expectingWorkflow p-l-sm"></i>
-        {{'dailyPlan.label.critical' | translate}}
-        <i  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.expecting'|translate"class="fa fa-stop bg-consumingWorkflow p-l-sm"></i>
-        {{'dailyPlan.label.expecting' | translate}}
+          <i [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.normal'|translate" class="fa fa-stop bg-postingWorkflow" style="margin-left: 109px"></i>
+          {{'dailyPlan.label.normal' | translate}}
+          <i  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.critical'|translate"class="fa fa-stop bg-expectingWorkflow p-l-sm"></i>
+          {{'dailyPlan.label.critical' | translate}}
+          <i  [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'dailyPlan.tooltip.expecting'|translate"class="fa fa-stop bg-consumingWorkflow p-l-sm"></i>
+          {{'dailyPlan.label.expecting' | translate}}
+        </div>
       </div>
+
+      <div class="search-box-field pull-right">
+        <label>
+          <input
+            [(ngModel)]="searchValue"
+            (ngModelChange)="reloadGraph()"
+            placeholder="{{ 'common.placeholder.search' | translate }}"
+            type="search">
+        </label>
+        <i (click)="clearSearch()"
+           [hidden]="!searchValue"
+           class="fa fa-times search-close"></i>
+
+      </div>
+      <br/>
     </div>
-
-    <div class="search-box-field pull-right">
-      <label>
-        <input
-          [(ngModel)]="searchValue"
-          (ngModelChange)="reloadGraph()"
-          placeholder="{{ 'common.placeholder.search' | translate }}"
-          type="search">
-
-
-      </label>
-      <i (click)="clearSearch()"
-         [hidden]="!searchValue"
-         class="fa fa-times search-close"></i>
-
-    </div>
-    <br/>
-  </div>
+  }
   <div class="col-lg-12">
     <div class="sticky leftPanel dependencies" id="leftPanel2">
       <div class="box m-b-0 overflow-y max-ht-n-252">
@@ -57,17 +55,18 @@
           <div class="calendar-sm m-t-0" id="full-calendar2"></div>
         </div>
         <div class="text-center m-t">
-          <button (click)="openPlan()" [disabled]="!isClosed" *ngIf="permission.joc && permission.joc.dailyPlan.manage"
-                  class="btn btn-grey btn-sm m-b-sm">
-            <i class="fa fa-stop selected-blue m-r-sm"></i>
-            <span translate>dailyPlan.button.openPlan</span>
-          </button>
-          <button (click)="closePlan()" [disabled]="!isOpen"
-            *ngIf="permission.joc && permission.joc.dailyPlan.manage"
-            class="btn btn-grey btn-sm m-l-xs m-b-sm">
-            <i class="fa fa-stop selected-orange m-r-sm"></i>
-            <span translate>dailyPlan.button.closePlan</span>
-          </button>
+          @if (permission.joc && permission.joc.dailyPlan.manage) {
+            <button (click)="openPlan()" [disabled]="!isClosed" class="btn btn-grey btn-sm m-b-sm">
+              <i class="fa fa-stop selected-blue m-r-sm"></i>
+              <span translate>dailyPlan.button.openPlan</span>
+            </button>
+          }
+          @if (permission.joc && permission.joc.dailyPlan.manage) {
+            <button (click)="closePlan()" [disabled]="!isOpen" class="btn btn-grey btn-sm m-l-xs m-b-sm">
+              <i class="fa fa-stop selected-orange m-r-sm"></i>
+              <span translate>dailyPlan.button.closePlan</span>
+            </button>
+          }
         </div>
 
       </div>
@@ -102,24 +101,28 @@
             </ul>
           </div>
           <div #graphContainer class="graph-container mt-1 "></div>
-          <div *ngIf="cachedRows?.length === 0" class="m-t-md">
-            <app-empty-data></app-empty-data>
-          </div>
+          @if (cachedRows?.length === 0) {
+            <div class="m-t-md">
+              <app-empty-data></app-empty-data>
+            </div>
+          }
         </div>
       <div style="margin-top: 14px">
       <span class="m-l-2 m-t-2"
             [translateParams]="{total: totalWorkflows, noticeCount: totalNotices}"
             translate>dailyPlan.label.totalWorkflowNoticeEntry</span>
-        <nz-pagination *ngIf="workflowData?.consumingWorkflows || workflowData?.expectingWorkflows || workflowData?.postingWorkflows" class="pull-right m-r-sm"
-                       [nzPageSize]="pageSize || preferences.entryPerPage || 25"
-                       [nzShowSizeChanger]="true"
-                       [nzPageSizeOptions]="[10, 25, 50, 100, +(preferences.maxEntryPerPage)]"
-                       [nzTotal]="cachedRows.length"
-                       [(nzPageIndex)]="plansFilters.filter.currentPage"
-                       (nzPageIndexChange)="onPageIndexChange($event)"
-                       (nzPageSizeChange)="pageSizeChange($event)"
-                       [nzSize]="'small'">
-        </nz-pagination>
+        @if (workflowData?.consumingWorkflows || workflowData?.expectingWorkflows || workflowData?.postingWorkflows) {
+          <nz-pagination class="pull-right m-r-sm"
+                         [nzPageSize]="pageSize || preferences.entryPerPage || 25"
+                         [nzShowSizeChanger]="true"
+                         [nzPageSizeOptions]="[10, 25, 50, 100, +(preferences.maxEntryPerPage)]"
+                         [nzTotal]="cachedRows.length"
+                         [(nzPageIndex)]="plansFilters.filter.currentPage"
+                         (nzPageIndexChange)="onPageIndexChange($event)"
+                         (nzPageSizeChange)="pageSizeChange($event)"
+                         [nzSize]="'small'">
+          </nz-pagination>
+        }
       </div>
     </div>
   </div>
@@ -134,8 +137,10 @@
     </div>
   </ng-container>
 </nz-drawer>
-<div *ngIf="!isLoaded" class="spinner">
-  <div class="cssload-inner cssload-one"></div>
-  <div class="cssload-inner cssload-two"></div>
-  <div class="cssload-inner cssload-three"></div>
-</div>
+@if (!isLoaded) {
+  <div class="spinner">
+    <div class="cssload-inner cssload-one"></div>
+    <div class="cssload-inner cssload-two"></div>
+    <div class="cssload-inner cssload-three"></div>
+  </div>
+}

@@ -1,11 +1,17 @@
 <div class="modal-header">
   <h4 class="modal-title">
-     <span *ngIf="!new">
-      <span translate>agent.label.editSubAgent</span>:
-      <span [innerHtml]="data.subagentId"></span>
-     </span>
-    <span *ngIf="new" translate>agent.label.addSubAgent</span>
-    <i *ngIf="new" (click)="helpPage('initial-operation-register-agent-subagent')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+    @if (!new) {
+      <span>
+        <span translate>agent.label.editSubAgent</span>:
+        <span [innerHtml]="data.subagentId"></span>
+      </span>
+    }
+    @if (new) {
+      <span translate>agent.label.addSubAgent</span>
+    }
+    @if (new) {
+      <i (click)="helpPage('initial-operation-register-agent-subagent')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+    }
   </h4>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -16,12 +22,14 @@
     <div [ngClass]="{'show': display}" class="hide">
       <app-audit-log-input [comments]="comments" [sizeX]="3" [sizeY]="8"></app-audit-log-input>
     </div>
-    <div *ngIf="!new" class="form-group row">
-      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.tooltip.agentId' | translate" class="col-sm-3" translate>agent.label.agentId</label>
-      <div class="col-sm-8">
-        {{clusterAgent.agentId}}
+    @if (!new) {
+      <div class="form-group row">
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.tooltip.agentId' | translate" class="col-sm-3" translate>agent.label.agentId</label>
+        <div class="col-sm-8">
+          {{clusterAgent.agentId}}
+        </div>
       </div>
-    </div>
+    }
 
     <div class="form-group row">
       <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.subagent.tooltip.subagentId' | translate" class="col-sm-3 form-control-label"
@@ -34,13 +42,16 @@
                identifierValidation
                name="subagentId" placeholder="{{'agent.placeholder.enterSubagentId' | translate}}" required
                type="text">
-        <div *ngIf="subagentId.invalid && (subagentId.dirty || subagentId.touched)"
-             class="text-danger help-block">
-          <div *ngIf="(subagentId.errors && subagentId.errors.required)">
-            <div translate>common.message.requiredError</div>
+        @if (subagentId.invalid && (subagentId.dirty || subagentId.touched)) {
+          <div class="text-danger help-block">
+            @if (subagentId.errors && subagentId.errors.required) {
+              <div translate>common.message.requiredError</div>
+            }
+            @if (subagentId.errors.invalidIdentifier) {
+              <div translate>common.message.invalid</div>
+            }
           </div>
-          <div *ngIf="subagentId.errors.invalidIdentifier" translate>common.message.invalid</div>
-        </div>
+        }
       </div>
     </div>
     <div class="form-group row">
@@ -57,26 +68,31 @@
       <div [ngClass]="{'has-error' : ((url.dirty || url.touched) && url.invalid)}" class=" col-sm-8">
         <input #url="ngModel" [(ngModel)]="subagent.url" class="form-control" name="url"
                placeholder="http://host:port" required type="url">
-        <div *ngIf="url.invalid && (url.dirty || url.touched)"
-             class="text-danger help-block">
-          <div *ngIf="(url.errors && url.errors.required)">
-            <div translate>common.message.requiredError</div>
+        @if (url.invalid && (url.dirty || url.touched)) {
+          <div class="text-danger help-block">
+            @if (url.errors && url.errors.required) {
+              <div translate>common.message.requiredError</div>
+            }
           </div>
+        }
+      </div>
+    </div>
+    @if (new) {
+      <div class="form-group row">
+        <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.subagent.tooltip.withGenerateSubagentCluster' | translate" class="col-sm-3" translate>agent.label.withGenerateSubagentCluster</label>
+        <div class="col-sm-6">
+          <label [(ngModel)]="subagent.withGenerateSubagentCluster" name="withGenerateSubagentCluster"
+                 nz-checkbox></label>
         </div>
       </div>
-    </div>
-    <div *ngIf="new" class="form-group row">
-      <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'agent.subagent.tooltip.withGenerateSubagentCluster' | translate" class="col-sm-3" translate>agent.label.withGenerateSubagentCluster</label>
-      <div class="col-sm-6">
-        <label [(ngModel)]="subagent.withGenerateSubagentCluster" name="withGenerateSubagentCluster"
-               nz-checkbox></label>
-      </div>
-    </div>
+    }
   </div>
   <div class="modal-footer">
     <button [disabled]="!myForm.form.valid || submitted" class="btn btn-primary btn-sm"
             type="submit">
-      <i *ngIf="submitted" class="fa fa-spin fa-spinner p-r-xs"></i>
+      @if (submitted) {
+        <i class="fa fa-spin fa-spinner p-r-xs"></i>
+      }
       {{'common.button.submit' | translate}}
     </button>
     <button (click)="activeModal.destroy()" class="btn btn-grey btn-sm" translate type="button">
@@ -84,4 +100,3 @@
     </button>
   </div>
 </form>
-

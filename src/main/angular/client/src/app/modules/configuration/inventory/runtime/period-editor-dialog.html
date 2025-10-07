@@ -1,8 +1,12 @@
 <div class="box-shadow-on-modal">
   <div class="modal-header">
     <h4 class="modal-title">
-      <span *ngIf="isNew" translate>runtime.label.addPeriod</span>
-      <span *ngIf="!isNew" translate>runtime.label.editPeriod</span>
+      @if (isNew) {
+        <span translate>runtime.label.addPeriod</span>
+      }
+      @if (!isNew) {
+        <span translate>runtime.label.editPeriod</span>
+      }
     </h4>
     <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
       <span aria-hidden="true" class="fa fa-times-circle"></span>
@@ -24,57 +28,81 @@
                 </nz-select>
               </div>
             </div>
-            <div *ngIf="period.frequency=='singleStart'" class="form-group row">
-              <label class="col-sm-4 form-control-label" translate>runtime.label.startTime</label>
-              <div [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}"
-                   class="col-sm-3">
-                <input #startTime="ngModel" [(ngModel)]="period.period.singleStart" (blur)="onBlur(startTime,'singleStart')" [appAutofocus]="true" autocomplete="off" class="form-control"
-                       maxlength="8" name="startTime" placeholder="HH:MM:SS"
-                       timeRelativeValidatorReqex type="text" >
-                <div *ngIf="startTime.errors && (startTime.dirty || startTime.touched)" class="help-block text-danger">
-                  <div *ngIf="!startTime.valid" translate>common.message.invalid</div>
+            @if (period.frequency=='singleStart') {
+              <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>runtime.label.startTime</label>
+                <div [ngClass]="{ 'has-error' : (((startTime.dirty || startTime.touched) && startTime.invalid))}"
+                     class="col-sm-3">
+                  <input #startTime="ngModel" [(ngModel)]="period.period.singleStart" (blur)="onBlur(startTime,'singleStart')" [appAutofocus]="true" autocomplete="off" class="form-control"
+                         maxlength="8" name="startTime" placeholder="HH:MM:SS"
+                         timeRelativeValidatorReqex type="text" >
+                  @if (startTime.errors && (startTime.dirty || startTime.touched)) {
+                    <div class="help-block text-danger">
+                      @if (!startTime.valid) {
+                        <div translate>common.message.invalid</div>
+                      }
+                    </div>
+                  }
                 </div>
               </div>
-            </div>
+            }
 
-            <div *ngIf="period.frequency=='repeat'" class="form-group row">
-              <label  class="col-sm-4 form-control-label" translate>
-                runtime.label.repeatTime
-                <i *ngIf="isDisplay" id="repeatId" [nzTooltipArrowPointAtCenter]="true" nz-tooltip="{{'workflow.tooltip.warningMessageForShortIntervalSelection' | translate}}"
-                   [nzTooltipVisible]="true" [nzTooltipTrigger]="'click'" class="p-l-sm fa fa-info-circle"></i>
-              </label>
-              <div [ngClass]="{ 'has-error' : (((repeat.dirty || repeat.touched) && repeat.invalid))}" class="col-sm-3">
-                <input #repeat="ngModel" [(ngModel)]="period.period.repeat" class="form-control" (blur)="onBlur(repeat,'repeat')" maxlength="8" name="repeat" placeholder="HH:MM:SS"
-                        (ngModelChange)="isRepeatIntervalShort($event)" type="text" timeRelativeValidatorReqex>
-                <div *ngIf="repeat.errors && (repeat.dirty || repeat.touched)" class="help-block text-danger">
-                  <div *ngIf="!repeat.valid" translate>common.message.invalid</div>
+            @if (period.frequency=='repeat') {
+              <div class="form-group row">
+                <label class="col-sm-4 form-control-label" translate>
+                  runtime.label.repeatTime
+                  @if (isDisplay) {
+                    <i id="repeatId" [nzTooltipArrowPointAtCenter]="true" nz-tooltip="{{'workflow.tooltip.warningMessageForShortIntervalSelection' | translate}}"
+                       [nzTooltipVisible]="true" [nzTooltipTrigger]="'click'" class="p-l-sm fa fa-info-circle"></i>
+                  }
+                </label>
+                <div [ngClass]="{ 'has-error' : (((repeat.dirty || repeat.touched) && repeat.invalid))}" class="col-sm-3">
+                  <input #repeat="ngModel" [(ngModel)]="period.period.repeat" class="form-control" (blur)="onBlur(repeat,'repeat')" maxlength="8" name="repeat" placeholder="HH:MM:SS"
+                         (ngModelChange)="isRepeatIntervalShort($event)" type="text" timeRelativeValidatorReqex>
+                  @if (repeat.errors && (repeat.dirty || repeat.touched)) {
+                    <div class="help-block text-danger">
+                      @if (!repeat.valid) {
+                        <div translate>common.message.invalid</div>
+                      }
+                    </div>
+                  }
                 </div>
               </div>
-            </div>
+            }
             <div [hidden]="period.frequency=='singleStart'" class="form-group row">
               <label class="col-sm-4 form-control-label" translate>runtime.label.begin</label>
               <div [ngClass]="{'has-error': (begin.dirty || begin.touched) && begin.invalid}" class="col-sm-3">
                 <input #begin="ngModel" [(ngModel)]="period.period.begin" (blur)="onBlur(begin, 'begin')" class="form-control" maxlength="8" name="begin" placeholder="HH:MM:SS"
-                        type="text" timeRelativeValidatorReqex>
-                <div *ngIf="begin.errors && (begin.dirty || begin.touched)" class="help-block text-danger">
-                  <div *ngIf="!begin.valid" translate>common.message.invalid</div>
-                </div>
+                       type="text" timeRelativeValidatorReqex>
+                @if (begin.errors && (begin.dirty || begin.touched)) {
+                  <div class="help-block text-danger">
+                    @if (!begin.valid) {
+                      <div translate>common.message.invalid</div>
+                    }
+                  </div>
+                }
               </div>
               <label class="col-sm-2 form-control-label text-right" translate>runtime.label.end</label>
               <div [ngClass]="{'has-error': (end.dirty || end.touched) && end.invalid}" class="col-sm-3">
                 <input #end="ngModel" [(ngModel)]="period.period.end" (blur)="onBlur(end, 'end')" class="form-control" maxlength="8" name="end" placeholder="HH:MM:SS"
-                        type="text" timeRelativeValidatorReqex>
-                <div *ngIf="end.errors && (end.dirty || end.touched)" class="help-block text-danger">
-                  <div *ngIf="!end.valid" translate>common.message.invalid</div>
-                </div>
+                       type="text" timeRelativeValidatorReqex>
+                @if (end.errors && (end.dirty || end.touched)) {
+                  <div class="help-block text-danger">
+                    @if (!end.valid) {
+                      <div translate>common.message.invalid</div>
+                    }
+                  </div>
+                }
               </div>
             </div>
             <div class="form-group row">
               <label class="col-sm-4 form-control-label" translate>runtime.label.onHoliday</label>
               <div class="col-sm-8">
                 <nz-select [(ngModel)]="period.period.whenHoliday" name="holidayOption">
-                  <nz-option *ngFor="let option of when_holiday_options" [nzLabel]="option | translate"
-                             [nzValue]="option"></nz-option>
+                  @for (option of when_holiday_options; track option) {
+                    <nz-option [nzLabel]="option | translate"
+                               [nzValue]="option"></nz-option>
+                  }
                 </nz-select>
               </div>
             </div>

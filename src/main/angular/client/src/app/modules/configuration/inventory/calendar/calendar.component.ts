@@ -25,12 +25,14 @@ interface CalendarItem {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-frequency-modal-content',
   templateUrl: './frequency-dialog.html'
 })
 export class FrequencyModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
-
+  selectedDays: string[] = [];
+  selectedMonthChk: string[] = [];
   schedulerId: any;
   dateFormat: any;
   dateFormatM: any;
@@ -152,52 +154,64 @@ export class FrequencyModalComponent {
       }
     }
 
-    if (this._temp && !isEmpty(this._temp)) {
-      this.isRuntimeEdit = true;
-      if (this._temp.tab === 'nationalHoliday') {
-        this.frequency.year = new Date(this._temp.nationalHoliday[0]).getFullYear();
-        this.holidayDays.checked = true;
-        this.countryField = true;
-      } else if (this._temp.tab === 'weekDays') {
-        this.frequency.all = this._temp.days.length === 7;
-      }
-      for (let i = 0; i < this.frequencyList.length; i++) {
-        if (this.frequencyList[i] == this._temp || isEqual(this._temp, this.frequencyList[i])) {
-          this.updateFrequencyObj(i);
-          break;
-        }
-      }
-    } else {
-      if (this.frequencyList && this.frequencyList.length > 0) {
-        this.generateFrequencyObj();
+  if (this._temp && !isEmpty(this._temp)) {
+    this.isRuntimeEdit = true;
+    if (this._temp.tab === 'nationalHoliday') {
+      this.frequency.year = new Date(this._temp.nationalHoliday[0]).getFullYear();
+      this.holidayDays.checked = true;
+      this.countryField = true;
+    } else if (this._temp.tab === 'weekDays') {
+      this.frequency.all = this._temp.days.length === 7;
+    }
+    for (let i = 0; i < this.frequencyList.length; i++) {
+      if (this.frequencyList[i] == this._temp || isEqual(this._temp, this.frequencyList[i])) {
+        this.updateFrequencyObj(i);
+        break;
       }
     }
-    if (this.frequency.tab !== 'specificDays' && this.editor.showYearView) {
-      $('#full-calendar').calendar({
-        language: this.coreService.getLocale(),
-        renderEnd: (e) => {
-          this.calendarTitle = e.currentYear;
-          if (this.isCalendarDisplay) {
-            this.changeDate();
-          }
-        }
-      });
-    }
-    this.setEditorEnable();
-    if (this.frequency.days && this.frequency.days.length > 0) {
-      this.checkDays();
-    }
-    if (this.frequency.months && this.frequency.months.length > 0) {
-      this.checkMonths();
-      this.showMonthRange = true;
-    }
-    if (!this.editor.update) {
-      this.frequency.nonWorkingDayCalendars = []
-    }
-    if (this.frequencyType === 'EXCLUDE' && this.calendarData.type === 'WORKINGDAYSCALENDAR') {
-      this.loadAvailableNonWorkingDayCalendars();
+  } else {
+    if (this.frequencyList && this.frequencyList.length > 0) {
+      this.generateFrequencyObj();
     }
   }
+
+  if (this.frequency.tab !== 'specificDays' && this.editor.showYearView) {
+    $('#full-calendar').calendar({
+      language: this.coreService.getLocale(),
+      renderEnd: (e) => {
+        this.calendarTitle = e.currentYear;
+        if (this.isCalendarDisplay) {
+          this.changeDate();
+        }
+      }
+    });
+  }
+
+  this.setEditorEnable();
+
+  if (this.frequency.days && this.frequency.days.length > 0) {
+    this.selectedDays = [...this.frequency.days];
+    this.checkDays();
+  } else {
+    this.selectedDays = [];
+  }
+
+  if (this.frequency.months && this.frequency.months.length > 0) {
+    this.selectedMonthChk = [...this.frequency.months];
+    this.checkMonths();
+    this.showMonthRange = true;
+  } else {
+    this.selectedMonthChk = [];
+  }
+
+  if (!this.editor.update) {
+    this.frequency.nonWorkingDayCalendars = []
+  }
+
+  if (this.frequencyType === 'EXCLUDE' && this.calendarData.type === 'WORKINGDAYSCALENDAR') {
+    this.loadAvailableNonWorkingDayCalendars();
+  }
+}
 
   get filteredFrequencyTab() {
     if (this.frequencyType === 'EXCLUDE' && this.calendarData.type === 'WORKINGDAYSCALENDAR') {
@@ -215,13 +229,16 @@ export class FrequencyModalComponent {
 
   dayChange(value: string[]): void {
     this.frequency.days = value;
+    this.selectedDays = value;
     this.onChangeDays();
   }
 
   monthChange(value: string[]): void {
     this.frequency.months = value;
+    this.selectedMonthChk = value;
     this.onChangeMonths();
   }
+
 
   setEditorEnable(): void {
     if (this.frequency.days && this.frequency.days.length > 0) {
@@ -1468,6 +1485,7 @@ export class FrequencyModalComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
 })

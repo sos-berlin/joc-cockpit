@@ -12,6 +12,7 @@ import {CommentModalComponent} from '../../../../components/comment-modal/commen
 import { HelpViewerComponent } from 'src/app/components/help-viewer/help-viewer.component';
 
 @Component({
+  standalone: false,
   selector: 'app-board',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './board.component.html'

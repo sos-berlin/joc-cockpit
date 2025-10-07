@@ -83,6 +83,7 @@ import {NzFormModule} from "ng-zorro-antd/form";
 import {WorkflowModule} from "../../workflow/workflow.module";
 import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
 import {NzAlertModule} from "ng-zorro-antd/alert";
+import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 
 const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, CalendarComponent, ScheduleComponent, ScriptComponent, LockComponent,
   WorkflowComponent, BoardComponent, JobResourceComponent, JobTemplateComponent, FileOrderComponent, TableComponent, FrequencyModalComponent,
@@ -93,23 +94,24 @@ const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, Calen
   RunTimeComponent, TreeModalComponent, JobWizardComponent, FacetEditorComponent, FavoriteListComponent, ChangeModalComponent, PublishChangeModalComponent, ShowDependenciesModalComponent, NewDraftComponent, NoticeBoardEditorComponent, ReportComponent, ChangeImpactDialogComponent, EncryptArgumentModalComponent, ShowAgentsModalComponent, GroupTagsComponent, AddGropusModalComponent, AddTagsToGropusModalComponent, ApiRequestComponent,JsonSchemaFieldComponent, ApiRequestDialogComponent, ApiFormDialogComponent];
 
 @NgModule({
-  imports: [
-    InventoryRoutingModule,
-    SharedModule,
-    CodemirrorModule,
-    NzMentionModule,
-    NzTabsModule,
-    NzDrawerModule,
-    NzSwitchModule,
-    NgJsonEditorModule,
-    ReactiveFormsModule,
-    NzDividerModule,
-    NzCardModule,
-    NzFormModule,
-    WorkflowModule,
-    NzAutocompleteModule,
-    NzAlertModule
-  ],
+    imports: [
+        InventoryRoutingModule,
+        SharedModule,
+        CodemirrorModule,
+        NzMentionModule,
+        NzTabsModule,
+        NzDrawerModule,
+        NzSwitchModule,
+        NgJsonEditorModule,
+        ReactiveFormsModule,
+        NzDividerModule,
+        NzCardModule,
+        NzFormModule,
+        WorkflowModule,
+        NzAutocompleteModule,
+        NzAlertModule,
+        NzTooltipDirective
+    ],
   providers: [DatePipe, CalendarService, InventoryService],
   exports: [
     JsonEditorModalComponent

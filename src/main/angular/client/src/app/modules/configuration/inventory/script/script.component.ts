@@ -17,6 +17,7 @@ import {ScriptEditorComponent} from "../workflow/workflow.component";
 import {HelpViewerComponent} from "../../../../components/help-viewer/help-viewer.component";
 
 @Component({
+  standalone: false,
   selector: 'app-script',
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './script.component.html',

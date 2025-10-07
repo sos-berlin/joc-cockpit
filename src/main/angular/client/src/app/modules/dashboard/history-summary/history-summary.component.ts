@@ -8,6 +8,7 @@ import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.c
 import {NzModalService} from "ng-zorro-antd/modal";
 
 @Component({
+  standalone: false,
   selector: 'app-history-summary',
   templateUrl: './history-summary.component.html'
 })

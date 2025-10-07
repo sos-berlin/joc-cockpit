@@ -2,8 +2,10 @@
   <label>
     <input (keyup)="searchInResult()" [(ngModel)]="sessionFilter.filter.searchText" placeholder="{{'common.placeholder.search' | translate}}"
            type="search">
-    <i (click)="sessionFilter.filter.searchKey = '';" *ngIf="sessionFilter.filter.searchKey"
-       class="fa fa-times search-close"></i>
+    @if (sessionFilter.filter.searchKey) {
+      <i (click)="sessionFilter.filter.searchKey = '';"
+         class="fa fa-times search-close"></i>
+    }
   </label>
 </div>
 
@@ -17,27 +19,33 @@
               [nzSize]="'small'">
       <thead>
       <tr>
-        <th *ngIf="permission.joc && permission.joc.administration.accounts.manage"
-            [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
-            (nzCheckedChange)="checkAll($event)" [nzShowCheckbox]="true"
-            class="chk">
-        </th>
-        <th *ngIf="permission.joc && permission.joc.administration.accounts.manage" class="menu"><span
-          translate>common.label.action</span></th>
+        @if (permission.joc && permission.joc.administration.accounts.manage) {
+          <th [(nzChecked)]="object.checked" [nzIndeterminate]="object.indeterminate"
+              (nzCheckedChange)="checkAll($event)" [nzShowCheckbox]="true"
+              class="chk">
+          </th>
+        }
+        @if (permission.joc && permission.joc.administration.accounts.manage) {
+          <th class="menu"><span translate>common.label.action</span></th>
+        }
         <th (click)="sort('accountName')"><a>
           <span class="p-r-xs" translate>user.label.account</span>
-          <i *ngIf="sessionFilter.filter.sortBy == 'accountName' && !sessionFilter.filter.reverse"
-             class="fa fa-caret-up "></i>
-          <i *ngIf="sessionFilter.filter.sortBy == 'accountName' && sessionFilter.filter.reverse"
-             class="fa fa-caret-down "></i>
+          @if (sessionFilter.filter.sortBy == 'accountName' && !sessionFilter.filter.reverse) {
+            <i class="fa fa-caret-up "></i>
+          }
+          @if (sessionFilter.filter.sortBy == 'accountName' && sessionFilter.filter.reverse) {
+            <i class="fa fa-caret-down "></i>
+          }
         </a>
         </th>
         <th (click)="sort('identityService')"><a>
           <span class="p-r-xs" translate>user.label.identityService</span>
-          <i *ngIf="sessionFilter.filter.sortBy == 'identityService' && sessionFilter.filter.reverse"
-             class="fa fa-caret-up "></i>
-          <i *ngIf="sessionFilter.filter.sortBy == 'identityService' && !sessionFilter.filter.reverse"
-             class="fa fa-caret-down "></i>
+          @if (sessionFilter.filter.sortBy == 'identityService' && sessionFilter.filter.reverse) {
+            <i class="fa fa-caret-up "></i>
+          }
+          @if (sessionFilter.filter.sortBy == 'identityService' && !sessionFilter.filter.reverse) {
+            <i class="fa fa-caret-down "></i>
+          }
         </a>
         </th>
         <th (click)="sort('timeout')"><a>
@@ -47,48 +55,57 @@
       </tr>
       </thead>
       <tbody>
-      <ng-template [ngForOf]="ajaxTable.data" let-account ngFor>
-        <tr>
-          <td *ngIf="permission.joc && permission.joc.administration.accounts.manage"
-              [nzChecked]="object.mapOfCheckedId.has(account.id)" [nzShowCheckbox]="true"
-              (nzCheckedChange)="onItemChecked(account, $event)" >
-          </td>
-          <td *ngIf="permission.joc && permission.joc.administration.accounts.manage">
-            <div class="btn-group dropdown pull-left m-r-sm">
-              <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
-                      type="button"><i class="fa fa-ellipsis-h"></i></button>
-              <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
-                <ul nz-menu>
-                  <li (click)="addToBlocklist(account)" nz-menu-item>
-                    <a translate>user.button.addToBlocklist</a>
-                  </li>
-                  <li (click)="removeSessions(account)" nz-menu-item>
-                    <a translate>user.button.cancelFromSession</a>
-                  </li>
-                  <li (click)="removeSessionByAccount(account)" nz-menu-item>
-                    <a translate>user.button.cancelSessionByAccount</a>
-                  </li>
-                </ul>
-              </nz-dropdown-menu>
-            </div>
-          </td>
-          <td>
-            <span [innerHtml]="account.accountName | highlight : sessionFilter.filter.searchText"></span>
-          </td>
-          <td>
-            <span [innerHtml]="account.identityService | highlight : sessionFilter.filter.searchText"></span>
-          </td>
-          <td>
-            <span [innerHtml]="account.remainingSessionTimeout"></span>
-          </td>
-        </tr>
-      </ng-template>
+        @for (account of ajaxTable.data; track account.id || account.accountName) {
+          <tr>
+            @if (permission.joc && permission.joc.administration.accounts.manage) {
+              <td [nzChecked]="object.mapOfCheckedId.has(account.id)" [nzShowCheckbox]="true"
+                  (nzCheckedChange)="onItemChecked(account, $event)">
+              </td>
+            }
+            @if (permission.joc && permission.joc.administration.accounts.manage) {
+              <td>
+                <div class="btn-group dropdown pull-left m-r-sm">
+                  <button [nzDropdownMenu]="option" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
+                          type="button"><i class="fa fa-ellipsis-h"></i></button>
+                  <nz-dropdown-menu #option="nzDropdownMenu" role="menu">
+                    <ul nz-menu>
+                      <li (click)="addToBlocklist(account)" nz-menu-item>
+                        <a translate>user.button.addToBlocklist</a>
+                      </li>
+                      <li (click)="removeSessions(account)" nz-menu-item>
+                        <a translate>user.button.cancelFromSession</a>
+                      </li>
+                      <li (click)="removeSessionByAccount(account)" nz-menu-item>
+                        <a translate>user.button.cancelSessionByAccount</a>
+                      </li>
+                    </ul>
+                  </nz-dropdown-menu>
+                </div>
+              </td>
+            }
+            <td>
+              <span [innerHtml]="account.accountName | highlight : sessionFilter.filter.searchText"></span>
+            </td>
+            <td>
+              <span [innerHtml]="account.identityService | highlight : sessionFilter.filter.searchText"></span>
+            </td>
+            <td>
+              <span [innerHtml]="account.remainingSessionTimeout"></span>
+            </td>
+          </tr>
+        }
       </tbody>
     </nz-table>
   </div>
-  <div *ngIf="ajaxTable.data.length >0" class="w-half label-top"><span translate>common.label.total</span>
-    {{data.length}}
-    <span *ngIf="ajaxTable.data.length >1" translate>user.label.sessionsFound</span>
-    <span *ngIf="ajaxTable.data.length ==1" translate>user.label.sessionFound</span>
-  </div>
+  @if (ajaxTable.data.length >0) {
+    <div class="w-half label-top"><span translate>common.label.total</span>
+      {{data.length}}
+      @if (ajaxTable.data.length >1) {
+        <span translate>user.label.sessionsFound</span>
+      }
+      @if (ajaxTable.data.length ==1) {
+        <span translate>user.label.sessionFound</span>
+      }
+    </div>
+  }
 </div>

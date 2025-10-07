@@ -17,6 +17,7 @@ import {BarOrientation} from '../common/types/bar-orientation.enum';
 import {Gradient} from '../common/types/gradient.interface';
 
 @Component({
+  standalone: false,
   selector: 'g[ngx-charts-bar]',
   template: `
     <svg:defs *ngIf="hasGradient">

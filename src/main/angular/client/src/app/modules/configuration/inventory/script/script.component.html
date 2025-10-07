@@ -1,111 +1,142 @@
 <div class="row">
-  <div *ngIf="data.type" class="col-md-12">
-    <div class="box p-a p-r-md m-t-n-xs">
-      <div class="b-b p-b m-b">
-        <span class="text-left">
-          <a (click)="backToListView()"><i class="fa fa-arrow-circle-left config-back-btn"
-                                           nz-tooltip="{{'inventory.button.backToList' | translate}}"></i></a>
-          <span class="_600">{{data.path}}<span *ngIf="data.path !=='/'">/</span>{{data.name}}</span>
-          <span *ngIf="lastModified" class="text-dark text-sm _400"> -
-            <b translate>inventory.label.lastModified</b>
-            <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
-          </span>
-          <i (click)="helpPage('configuration-inventory-script-includes')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
-        </span>
-        <div *ngIf="!isTrash" class="inline pull-right">
-          <span *ngIf="script.configuration" [ngClass]="!script.valid ? 'badge-danger':'badge-success'"
-                class="badge m-r-12">
-              <span *ngIf="script.valid" translate>inventory.label.valid</span>
-              <span *ngIf="!script.valid">
-                <span translate>inventory.label.notValid</span>
-                <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
+  @if (data.type) {
+    <div class="col-md-12">
+      <div class="box p-a p-r-md m-t-n-xs">
+        <div class="b-b p-b m-b">
+          <span class="text-left">
+            <a (click)="backToListView()"><i class="fa fa-arrow-circle-left config-back-btn"
+                                             nz-tooltip="{{'inventory.button.backToList' | translate}}"></i></a>
+            <span class="_600">{{data.path}}@if (data.path !=='/') {<span>/</span>}{{data.name}}</span>
+            @if (lastModified) {
+              <span class="text-dark text-sm _400"> -
+                <b translate>inventory.label.lastModified</b>
+                <i class="text-muted p-l-xs">{{lastModified | stringToDate}}</i>
               </span>
-            </span>
-          <span *ngIf="script.configuration" [ngClass]="!data.released ? 'badge-danger':'badge-success'" class="badge">
-              <span *ngIf="!data.released" translate>inventory.label.notReleased</span>
-              <span *ngIf="data.released" translate>inventory.label.released</span>
-            </span>
-          <button
-            (click)="release()"
-            *ngIf="permission.joc && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)" [disabled]="!script.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
-            <i class="fa fa-rocket p-r-xs"></i>
-            <span translate>inventory.button.release</span>
-          </button>
+            }
+            <i (click)="helpPage('configuration-inventory-script-includes')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
+          </span>
+          @if (!isTrash) {
+            <div class="inline pull-right">
+              @if (script.configuration) {
+                <span [ngClass]="!script.valid ? 'badge-danger':'badge-success'"
+                      class="badge m-r-12">
+                    @if (script.valid) {
+                      <span translate>inventory.label.valid</span>
+                    }
+                  @if (!script.valid) {
+                    <span>
+                        <span translate>inventory.label.notValid</span>
+                        <i class="fa fa-info-circle p-l-xs" nz-tooltip="{{invalidMsg | translate}}"></i>
+                      </span>
+                  }
+                  </span>
+              }
+              @if (script.configuration) {
+                <span [ngClass]="!data.released ? 'badge-danger':'badge-success'" class="badge">
+                    @if (!data.released) {
+                      <span translate>inventory.label.notReleased</span>
+                    }
+                  @if (data.released) {
+                    <span translate>inventory.label.released</span>
+                  }
+                  </span>
+              }
+              @if (permission.joc && permission.joc.inventory.deploy && (permission.controllerDefaults.deployments.deploy || permission.currentController.deployments.deploy)) {
+                <button
+                  (click)="release()"
+                  [disabled]="!script.valid" class="btn btn-sm btn-grey m-l-12 m-t-n-xs" type="button">
+                  <i class="fa fa-rocket p-r-xs"></i>
+                  <span translate>inventory.button.release</span>
+                </button>
+              }
+            </div>
+          }
         </div>
+        @if (script.configuration && permission.joc) {
+          <form>
+            <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
+                 class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.name' | translate) : ''"
+
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.name
+                <sup class="text-danger text-sm">*</sup>
+              </label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <input #name="ngModel" (blur)="rename(name.invalid)" [(ngModel)]="script.name"
+                       [appAutofocus]="!isTrash" [readOnly]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
+                       class="form-control" identifierValidation name="name" required>
+                @if (name.invalid && (name.dirty || name.touched)) {
+                  <div class="text-danger help-block">
+                    @if (name.errors['invalidIdentifier']) {
+                      <div translate>common.message.invalid</div>
+                    }
+                    @if (name.errors['required']) {
+                      <div translate>common.message.requiredError</div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.title' | translate) : ''"
+
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <input (blur)="saveJSON()" [(ngModel)]="script.configuration.title" [readOnly]="isTrash || !permission.joc.inventory.manage"
+                       autocomplete="off" class="form-control"
+                       name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text">
+              </div>
+            </div>
+            @if (coreService.expertMode) {
+              <div class="form-group row">
+                <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.documentation' | translate) : ''"
+
+                       class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
+                <div class="col-lg-9 col-xl-8 col-xxl-6">
+                  <app-select-document (funcCall)="saveJSON($event)" [data]="script.configuration"
+                                       [documentationTree]="documentationTree"></app-select-document>
+                </div>
+              </div>
+            }
+            <div class="form-group row">
+              <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.script' | translate) : ''"
+
+                     class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.script
+                <sup class="text-danger text-sm">*</sup>
+              </label>
+              <div class="col-lg-9 col-xl-8 col-xxl-6">
+                <i (click)="showEditor()" class="pos-abt z-index-9999 text-20 r-24 t-1" nz-icon nzTheme="outline"
+                   nzType="form"></i>
+                <div [ngClass]="{'invalid': (cm.invalid && (cm.dirty && cm.touched) && !script.configuration.script)}"
+                     class="b-a">
+                  <ngx-codemirror #cm="ngModel" #codeMirror (focusout)="saveJSON()"
+                                  [(ngModel)]="script.configuration.script" [options]="cmOption"
+                                  name="cm" required></ngx-codemirror>
+                </div>
+                @if ((cm.invalid && (cm.dirty && cm.touched)) && !script.configuration.script) {
+                  <div class="text-danger help-block">
+                    @if (cm.errors && cm.errors['required']) {
+                      <div translate>common.message.requiredError</div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          </form>
+        }
       </div>
-      <form *ngIf="script.configuration && permission.joc">
-        <div [ngClass]="{ 'has-error' : (((name.dirty || name.touched) && name.invalid))}"
-             class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.name' | translate) : ''"
-
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.name
-            <sup class="text-danger text-sm">*</sup>
-          </label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <input #name="ngModel" (blur)="rename(name.invalid)" [(ngModel)]="script.name"
-                   [appAutofocus]="!isTrash" [readOnly]="isTrash || !permission.joc.inventory.manage" autocomplete="off"
-                   class="form-control" identifierValidation name="name" required>
-            <div *ngIf="name.invalid && (name.dirty || name.touched)" class="text-danger help-block">
-              <div *ngIf="name.errors['invalidIdentifier']" translate>common.message.invalid</div>
-              <div *ngIf="name.errors['required']">
-                <div translate>common.message.requiredError</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.title' | translate) : ''"
-
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>common.label.title</label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <input (blur)="saveJSON()" [(ngModel)]="script.configuration.title" [readOnly]="isTrash || !permission.joc.inventory.manage"
-                   autocomplete="off" class="form-control"
-                   name="title" placeholder="{{'common.placeholder.title' | translate}}" type="text">
-          </div>
-        </div>
-        <div *ngIf="coreService.expertMode" class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.documentation' | translate) : ''"
-
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.documentation</label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <app-select-document (funcCall)="saveJSON($event)" [data]="script.configuration"
-                                 [documentationTree]="documentationTree"></app-select-document>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.script.script' | translate) : ''"
-
-                 class="col-lg-3 col-xl-3 col-xxl-3 form-control-label" translate>inventory.label.script
-            <sup class="text-danger text-sm">*</sup>
-          </label>
-          <div class="col-lg-9 col-xl-8 col-xxl-6">
-            <i (click)="showEditor()" class="pos-abt z-index-9999 text-20 r-24 t-1" nz-icon nzTheme="outline"
-               nzType="form"></i>
-            <div [ngClass]="{'invalid': (cm.invalid && (cm.dirty && cm.touched) && !script.configuration.script)}"
-                 class="b-a">
-              <ngx-codemirror #cm="ngModel" #codeMirror (focusout)="saveJSON()"
-                              [(ngModel)]="script.configuration.script" [options]="cmOption"
-                              name="cm" required></ngx-codemirror>
-            </div>
-            <div *ngIf="(cm.invalid && (cm.dirty && cm.touched)) && !script.configuration.script"
-                 class="text-danger help-block">
-              <div *ngIf="(cm.errors && cm.errors['required'])">
-                <div translate>common.message.requiredError</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </form>
     </div>
-  </div>
-  <div *ngIf="data.object" class="col-md-12">
-    <app-table
-      [copyObj]="copyObj"
-      [dataObj]="data"
-      [isTrash]="isTrash"
-      [objectType]="objectType"
-      [permission]="permission"
-      [preferences]="preferences"
-      [schedulerId]="schedulerId"></app-table>
-  </div>
+  }
+  @if (data.object) {
+    <div class="col-md-12">
+      <app-table
+        [copyObj]="copyObj"
+        [dataObj]="data"
+        [isTrash]="isTrash"
+        [objectType]="objectType"
+        [permission]="permission"
+        [preferences]="preferences"
+        [schedulerId]="schedulerId"></app-table>
+    </div>
+  }
 </div>

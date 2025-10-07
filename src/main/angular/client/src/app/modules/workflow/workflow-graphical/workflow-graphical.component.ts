@@ -40,6 +40,7 @@ declare const mxCellHighlight: any;
 declare const $: any;
 
 @Component({
+  standalone: false,
   selector: 'app-workflow-graphical-dialog',
   templateUrl: './dependent-workflow-dialog.html'
 })
@@ -206,6 +207,7 @@ export class DependentWorkflowComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-workflow-graphical',
   templateUrl: './workflow-graphical.component.html',
   styleUrls: ['./workflow-graphical.component.css']

@@ -18,6 +18,7 @@ import {DataService} from '../../../services/data.service';
 import {NzMessageService} from "ng-zorro-antd/message";
 
 @Component({
+  standalone: false,
   selector: 'app-order-history-template',
   templateUrl: './workflow-history-template.html'
 })
@@ -56,6 +57,7 @@ export class WorkflowTemplateComponent {
 }
 
 @Component({
+  standalone: false,
   selector: 'app-workflow-history',
   templateUrl: './workflow-history.component.html'
 })

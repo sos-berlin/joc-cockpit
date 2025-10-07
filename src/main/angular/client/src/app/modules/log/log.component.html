@@ -16,14 +16,18 @@
             <i class="fa fa-download"></i>&nbsp;
             <span translate>common.button.download</span>
           </button>
-          <button type="button" class="btn btn-grey btn-sm m-l-12" *ngIf="finished || isCancel" (click)="reloadLog()">
-            <i class="fa fa-refresh"></i>&nbsp;
-            <span translate>workflow.button.reload</span>
-          </button>
-          <button type="button" class="btn btn-grey btn-sm m-l-12" *ngIf="!isCancel && !finished" (click)="cancel()">
-            <i class="fa fa-times"></i>&nbsp;
-            <span translate>common.button.cancel</span>
-          </button>
+          @if (finished || isCancel) {
+            <button type="button" class="btn btn-grey btn-sm m-l-12" (click)="reloadLog()">
+              <i class="fa fa-refresh"></i>&nbsp;
+              <span translate>workflow.button.reload</span>
+            </button>
+          }
+          @if (!isCancel && !finished) {
+            <button type="button" class="btn btn-grey btn-sm m-l-12" (click)="cancel()">
+              <i class="fa fa-times"></i>&nbsp;
+              <span translate>common.button.cancel</span>
+            </button>
+          }
           <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-workflows cur-point fa fa-info-circle m-l-12 text-20"></i>
         </div>
       </div>
@@ -35,66 +39,101 @@
     <div class="row m-t-xs">
       <div class="col-md-12">
         <h5 class="_300 m-t-sm">
-          <span *ngIf="workflow">
-            Workflow: <i class="text-muted">{{workflow.substring(workflow.lastIndexOf('/') + 1)}}</i> -&nbsp;
-          </span>
-          <span *ngIf="orderId">
-            Order ID: <i class="text-muted">{{orderId}}</i></span>
-          <span *ngIf="taskId">
-            <span *ngIf="job">
-            Job: <i class="text-muted">{{job}}</i>
+          @if (workflow) {
+            <span>
+              Workflow: <i class="text-muted">{{workflow.substring(workflow.lastIndexOf('/') + 1)}}</i> -&nbsp;
             </span>
-            <span *ngIf="!job" translate>common.label.taskId </span> - <i
-            class="text-muted">{{taskId}}</i></span>
+          }
+          @if (orderId) {
+            <span>
+              Order ID: <i class="text-muted">{{orderId}}</i>
+            </span>
+          }
+          @if (taskId) {
+            <span>
+              @if (job) {
+                <span>
+                Job: <i class="text-muted">{{job}}</i>
+                </span>
+              }
+              @if (!job) {
+                <span translate>common.label.taskId </span>
+              } - <i class="text-muted">{{taskId}}</i>
+            </span>
+          }
         </h5>
       </div>
     </div>
-    <div class="row m-t-sm" *ngIf="!error">
-      <div class="col-sm-12">
-        <span class="m-r" *ngIf="isExpandCollapse">
-          <a class="text" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" (click)="expandAll();">
-            <i class="fa fa-angle-double-down fa-lg"></i>
-          </a>
-          <a class="text m-l-sm" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="collapseAll();">
-            <i class="fa fa-angle-double-up fa-lg"></i>
-          </a>
-        </span>
-        <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.main" (ngModelChange)="checkLogLevel('MAIN')"><span
-          translate>log.label.main</span></label>
-        <label *ngIf="isStdSuccessLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.success"
-               (ngModelChange)="checkLogLevel('SUCCESS')"><span translate>log.label.success</span></label>
-        <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.stdout"
-               (ngModelChange)="checkLogLevel('STDOUT')"><span translate>log.label.stdout</span></label>
-        <label *ngIf="isStdErrLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.stderr"
-               (ngModelChange)="checkLogLevel('STDERR')"><span translate>log.label.stderr</span></label>
-        <label *ngIf="isInfoLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.info"
-               (ngModelChange)="checkLogLevel('INFO')"><span translate>log.label.info</span></label>
-        <label *ngIf="isFatalLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.fatal"
-               (ngModelChange)="checkLogLevel('FATAL')"><span translate>log.label.fatal</span></label>
-        <label *ngIf="isErrorLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.error"
-               (ngModelChange)="checkLogLevel('ERROR')"><span translate>log.label.error</span></label>
-        <label *ngIf="isWarnLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.warn"
-               (ngModelChange)="checkLogLevel('WARN')"><span translate>log.label.warn</span></label>
-        <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.debug"
-               (ngModelChange)="checkLogLevel('DEBUG')"><span translate>log.label.debug</span></label>
-        <label *ngIf="isTraceLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.trace"
-               (ngModelChange)="checkLogLevel('TRACE')"><span translate>log.label.trace</span></label>
-        <label *ngIf="isDetailLevel" class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.detail"
-               (ngModelChange)="checkLogLevel('DETAIL')"><span translate>log.label.detail</span></label>
+    @if (!error) {
+      <div class="row m-t-sm">
+        <div class="col-sm-12">
+          @if (isExpandCollapse) {
+            <span class="m-r">
+              <a class="text" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.expandAll' | translate" (click)="expandAll();">
+                <i class="fa fa-angle-double-down fa-lg"></i>
+              </a>
+              <a class="text m-l-sm" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.collapseAll' | translate" (click)="collapseAll();">
+                <i class="fa fa-angle-double-up fa-lg"></i>
+              </a>
+            </span>
+          }
+          <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.main" (ngModelChange)="checkLogLevel('MAIN')"><span
+            translate>log.label.main</span></label>
+          @if (isStdSuccessLevel) {
+            <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.success"
+                   (ngModelChange)="checkLogLevel('SUCCESS')"><span translate>log.label.success</span></label>
+          }
+          <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.stdout"
+                 (ngModelChange)="checkLogLevel('STDOUT')"><span translate>log.label.stdout</span></label>
+          @if (isStdErrLevel) {
+            <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.stderr"
+                   (ngModelChange)="checkLogLevel('STDERR')"><span translate>log.label.stderr</span></label>
+          }
+          @if (isInfoLevel) {
+            <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.info"
+                   (ngModelChange)="checkLogLevel('INFO')"><span translate>log.label.info</span></label>
+          }
+          @if (isFatalLevel) {
+            <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.fatal"
+                   (ngModelChange)="checkLogLevel('FATAL')"><span translate>log.label.fatal</span></label>
+          }
+          @if (isErrorLevel) {
+            <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.error"
+                   (ngModelChange)="checkLogLevel('ERROR')"><span translate>log.label.error</span></label>
+          }
+          @if (isWarnLevel) {
+            <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.warn"
+                   (ngModelChange)="checkLogLevel('WARN')"><span translate>log.label.warn</span></label>
+          }
+          <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.debug"
+                 (ngModelChange)="checkLogLevel('DEBUG')"><span translate>log.label.debug</span></label>
+          @if (isTraceLevel) {
+            <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.trace"
+                   (ngModelChange)="checkLogLevel('TRACE')"><span translate>log.label.trace</span></label>
+          }
+          @if (isDetailLevel) {
+            <label class="m-r" nz-checkbox [(ngModel)]="object.checkBoxs.detail"
+                   (ngModelChange)="checkLogLevel('DETAIL')"><span translate>log.label.detail</span></label>
+          }
+        </div>
       </div>
-    </div>
+    }
     <div class="row m-t-sm">
       <div class="col-md-12">
         <div class="box white">
           <div class="box-body p-a-0">
-
-            <pre id="logs" (scroll)="onScroll($event)" #dataBody *ngIf="!error" class="log p-r-sm p-b-sm p-t-sm "></pre>
-            <div class="log text-center p-b-md" *ngIf="error">
-              <div class="text-dark p-t text-38 m-b-n-8"><span [innerHtml]="errStatus"></span></div>
-              <div class="text-lg text-muted" *ngIf="errStatus">{{'log.label.error' | translate}}!</div>
-              <div class="text m-t" [innerHtml]="error"></div>
-            </div>
-
+            @if (!error) {
+              <pre id="logs" (scroll)="onScroll($event)" #dataBody class="log p-r-sm p-b-sm p-t-sm "></pre>
+            }
+            @if (error) {
+              <div class="log text-center p-b-md">
+                <div class="text-dark p-t text-38 m-b-n-8"><span [innerHtml]="errStatus"></span></div>
+                @if (errStatus) {
+                  <div class="text-lg text-muted">{{'log.label.error' | translate}}!</div>
+                }
+                <div class="text m-t" [innerHtml]="error"></div>
+              </div>
+            }
           </div>
         </div>
       </div>
@@ -112,14 +151,16 @@
   <div appResizable class="sidebar sidebar-log-panel bg-white" id="property-panel">
     <div class="m-l-xs m-r-xs">
       <div style="padding: 12px">
-        <div *ngIf="isChildren" class="m-l-xs m-b-xs">
-          <a class="text-primary-hover" (click)="expandAllTree();">
-            <i class="fa fa-angle-double-down fa-lg"></i>
-          </a>
-          <a class="m-l-sm text-primary-hover" (click)="collapseAllTree();">
-            <i class="fa fa-angle-double-up fa-lg"></i>
-          </a>
-        </div>
+        @if (isChildren) {
+          <div class="m-l-xs m-b-xs">
+            <a class="text-primary-hover" (click)="expandAllTree();">
+              <i class="fa fa-angle-double-down fa-lg"></i>
+            </a>
+            <a class="m-l-sm text-primary-hover" (click)="collapseAllTree();">
+              <i class="fa fa-angle-double-up fa-lg"></i>
+            </a>
+          </div>
+        }
         <div class="fade-in">
           <nz-tree
             [nzShowExpand]="false"
@@ -128,33 +169,51 @@
           ></nz-tree>
           <ng-template #nzTreeTemplate let-node>
             <div class="node-wrapper" id="{{node.origin.key}}">
-              <span (click)="openFolder(node)" *ngIf="(node.origin.children && node.origin.children.length > 0)"
-                    [class.toggle-children-wrapper-expanded]="node.isExpanded"
-                    [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
-                    class="cursor w-14 m-l-xxs m-t-n-1">
-                  <i *ngIf="!node.isExpanded" class="fa fa-caret-right"></i>
-                  <i *ngIf="node.isExpanded" class="fa fa-caret-down"></i>
-              </span>
-              <span *ngIf="node.origin.isLeaf || (!node.origin.children || node.origin.children.length === 0)"
-                    class="w-16">
+              @if (node.origin.children && node.origin.children.length > 0) {
+                <span (click)="openFolder(node)"
+                      [class.toggle-children-wrapper-expanded]="node.isExpanded"
+                      [class.toggle-children-wrapper-collapsed]="!node.isExpanded"
+                      class="cursor w-14 m-l-xxs m-t-n-1">
+                  @if (!node.isExpanded) {
+                    <i class="fa fa-caret-right"></i>
+                  }
+                  @if (node.isExpanded) {
+                    <i class="fa fa-caret-down"></i>
+                  }
+                </span>
+              }
+              @if (node.origin.isLeaf || (!node.origin.children || node.origin.children.length === 0)) {
+                <span class="w-16">
                   <span class="fa fa-lg p-r-sm"></span>
-              </span>
+                </span>
+              }
               <div (click)="selectNode(node)" class="node-content-wrapper">
-                  <span
-                    *ngIf="node.origin.name"
-                    [ngClass]="{'log_error': node.origin.logLevel === 'ERROR','error_success': node.origin.logLevel !== 'ERROR'}"> {{node.origin.name}} </span>
-                  <span *ngIf="node.origin.end" class="_600" [ngClass]="{'log_error': node.origin.logLevel === 'ERROR','error_success': node.origin.logLevel !== 'ERROR'}" >{{node.origin.end | translate}}</span>
-                  <span *ngIf="!node.origin.end && !node.origin.name"
-                        class="_600" [ngClass]="{'log_error': node.origin.logLevel === 'ERROR','error_success': node.origin.logLevel !== 'ERROR'}" >{{node.origin.title | translate}}</span>
-                  <span *ngIf="!node.origin.end && !node.origin.name && !node.origin.title"
-                        class="text-muted" [ngClass]="{'log_error': node.origin.logLevel === 'ERROR','error_success': node.origin.logLevel !== 'ERROR'}" >{{node.origin.logEvent}}</span>
-                  <span *ngIf="node.origin.label" class="text-muted m-l-xs" [ngClass]="{'log_error': node.origin.logLevel === 'ERROR','error_success': node.origin.logLevel !== 'ERROR'}" >({{node.origin.label}})</span>
-                  <i *ngIf="node.origin.name1" class="text-primary">&nbsp;({{node.origin.name1}})</i>
-                  <i *ngIf="node.origin.retryCount > 1 && node.origin.title == 'Retry'" class="text-primary">&nbsp;(Total
-                    Tries {{node.origin.retryCount}})</i>
-                  <span *ngIf="node.origin.logLevel == 'ERROR'">
-                    - (<i class="text-sm log_error">Failed</i>)
-                  </span>
+                @if (node.origin.name) {
+                  <span [ngClass]="{'log_error': node.origin.logLevel === 'ERROR','error_success': node.origin.logLevel !== 'ERROR'}"> {{node.origin.name}} </span>
+                }
+                @if (node.origin.end) {
+                  <span class="_600" [ngClass]="{'log_error': node.origin.logLevel === 'ERROR','error_success': node.origin.logLevel !== 'ERROR'}" >{{node.origin.end | translate}}</span>
+                }
+                @if (!node.origin.end && !node.origin.name) {
+                  <span class="_600" [ngClass]="{'log_error': node.origin.logLevel === 'ERROR','error_success': node.origin.logLevel !== 'ERROR'}" >{{node.origin.title | translate}}</span>
+                }
+                @if (!node.origin.end && !node.origin.name && !node.origin.title) {
+                  <span class="text-muted" [ngClass]="{'log_error': node.origin.logLevel === 'ERROR','error_success': node.origin.logLevel !== 'ERROR'}" >{{node.origin.logEvent}}</span>
+                }
+                @if (node.origin.label) {
+                  <span class="text-muted m-l-xs" [ngClass]="{'log_error': node.origin.logLevel === 'ERROR','error_success': node.origin.logLevel !== 'ERROR'}" >({{node.origin.label}})</span>
+                }
+                @if (node.origin.name1) {
+                  <i class="text-primary">&nbsp;({{node.origin.name1}})</i>
+                }
+                @if (node.origin.retryCount > 1 && node.origin.title == 'Retry') {
+                  <i class="text-primary">&nbsp;(Total Tries {{node.origin.retryCount}})</i>
+                }
+                @if (node.origin.logLevel == 'ERROR') {
+                  <span>
+                      - (<i class="text-sm log_error">Failed</i>)
+                    </span>
+                }
               </div>
             </div>
           </ng-template>
@@ -164,8 +223,10 @@
     <div class="rg-right"><span></span></div>
   </div>
 </div>
-<div class="spinner" *ngIf="loading || isLoading">
-  <div class="cssload-inner cssload-one"></div>
-  <div class="cssload-inner cssload-two"></div>
-  <div class="cssload-inner cssload-three"></div>
-</div>
+@if (loading || isLoading) {
+  <div class="spinner">
+    <div class="cssload-inner cssload-one"></div>
+    <div class="cssload-inner cssload-two"></div>
+    <div class="cssload-inner cssload-three"></div>
+  </div>
+}

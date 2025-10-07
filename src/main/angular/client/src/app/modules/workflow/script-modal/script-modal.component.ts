@@ -11,6 +11,7 @@ import {AuthService} from '../../../components/guard';
 declare const $;
 
 @Component({
+  standalone: false,
   selector: 'app-script-modal',
   templateUrl: './script-modal.component.html'
 })

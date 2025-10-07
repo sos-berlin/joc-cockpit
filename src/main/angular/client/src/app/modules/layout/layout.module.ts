@@ -13,16 +13,18 @@ import {WorkflowService} from "../../services/workflow.service";
 import {OrderPipe, SearchPipe} from '../../pipes/core.pipe';
 import {ChangePasswordComponent} from "../../components/change-password/change-password.component";
 import {LogViewComponent} from "../../components/log-view/log-view.component";
+import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 
 @NgModule({
-  imports: [
-    Shared2Module,
-    LayoutRoutingModule,
-    LogModule,
-    LoggingModule,
-    DashboardModule,
-    UserModule
-  ],
+    imports: [
+        Shared2Module,
+        LayoutRoutingModule,
+        LogModule,
+        LoggingModule,
+        DashboardModule,
+        UserModule,
+        NzTooltipDirective
+    ],
   declarations: [
     LayoutComponent,
     ChangePasswordComponent,

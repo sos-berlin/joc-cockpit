@@ -2,7 +2,7 @@
 
 The *Daily Plan* view provides an overview of Orders scheduled for future execution and allows to manage the *Daily Plan*. The *Daily Plan* is subject to purge of the database performed by the [Cleanup Service](/service-cleanup).
 
-For operations related to the calendar widget see [Daily Plan Calendar](/daily-plan-calendar).
+For operations related to the calendar widget see [Daily Plan - Calendar](/daily-plan-calendar).
 
 ## Order States
 
@@ -75,17 +75,17 @@ The following filter buttons limit the scope of operations:
 - **Remove Orders**
   - When applied to *planned* Orders, then Orders will be removed from the Daily Plan. A later run of the Daily Plan Service will not try to add Orders to the given date.
 - **Copy Orders**
-  - **Start Time**: Copies Orders to a future daily plan date. Date/time input is similar to modifying an Order's start time.
-  - **Keep Daily Plan Assignment**: Calendar-based dependencies from Notice Boards will be resolved to the original daily plan date.
+  - **Start Time**: Copies Orders to a future Daily Plan date. Date/time input is similar to modifying an Order's start time.
+  - **Keep Daily Plan Assignment**: Calendar-based dependencies from Notice Boards will be resolved to the original Daily Plan date.
   - **Ignore Job Admission Times**: Jobs can be limited to run on certain days and/or in certain timeslots. Orders arriving have to wait for the next available timeslot. The option forces Jobs to start independently from such limitations.
 
 #### Modify Start Time
 
 - **Now**: Orders will start immediately.
-- **Specific Date**: Orders will start on the given date and time. Orders will be assigned the related daily plan date when it comes to resolving calendar-based dependencies.
+- **Specific Date**: Orders will start on the given date and time. Orders will be assigned the related Daily Plan date when it comes to resolving calendar-based dependencies.
 - **Relative to Current Time**: Orders will start with an offset to the current time in seconds or in hours, minutes, seconds, for example *15* to start in 15 seconds or *01:30:15* to start 1 hour, 30 minutes and 15 seconds later.
 - **Relative to Start Time**: Orders will start with a positive or negative offset to their original start time in seconds or in hours, 
-minutes, seconds, for example *-04:00:00* to start 4 hours earlier or *+12:00:00* to start 12 hours later. The Orders' assignment to the original daily plan date remains in place when it comes to resolving calendar-based dependencies.
+minutes, seconds, for example *-04:00:00* to start 4 hours earlier or *+12:00:00* to start 12 hours later. The Orders' assignment to the original Daily Plan date remains in place when it comes to resolving calendar-based dependencies.
 
 #### Modify Parameterization
 
@@ -101,14 +101,14 @@ A position can be specified if Orders should not start from the first node in th
 - **Start Position**: If no *Start Position* is specified, then the Order will start from the first node in the Workflow or *Block Position*
   - If no *Block Position* is specified, then any top-level instruction in the Workflow can be selected from which the Order will start.
   - If a *Block Position* is specified, then the Start Position is a same-level node inside the block.
-- **End Positions**
+- **End Positions**:
   - If no *Block Position* is specified, then any top-level instruction in the Workflow can be selected before which the Order will terminate.
   - If a *Block Position* is specified, then any same-level node inside the block can be specified before which the Order will terminate.
   - More than one *End Position* can be specified.
 
 #### Modify Priority
 
-- **Priority**; 
+- **Priority**:
   - If an Order will meet a *Resource Lock* instruction in the Workflow that limits parallelism, then its *Priority* determines the position in the queue of *waiting* Orders.
   - *Priorities* are specified from negative, zero and positive integers or from the shortcuts offered. A higher *Priority* has precedence. Shortcuts offer the following values:
     - **Low**: -20000
@@ -119,8 +119,13 @@ A position can be specified if Orders should not start from the first node in th
 
 ## References
 
+### Context Help
+
 - [Cleanup Service](/service-cleanup)
 - [Daily Plan - Calendar](/daily-plan-calendar)
 - [Order History](/history-orders)
 - [Settings - Daily Plan](/settings-daily-plan)
+
+### Product Knowledge Base
+
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)

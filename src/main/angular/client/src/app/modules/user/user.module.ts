@@ -13,6 +13,7 @@ import {NzTabsModule} from 'ng-zorro-antd/tabs';
 import {SharedModule} from '../shared/shared.module';
 import {UserRoutingModule} from './user-routing.module';
 import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
+import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 @NgModule({
   declarations: [
     UserComponent,
@@ -24,12 +25,13 @@ import { NzColorPickerModule } from 'ng-zorro-antd/color-picker';
     EditFavoriteModalComponent,
     RemoveKeyModalComponent,
   ],
-  imports: [
-    SharedModule,
-    NzTabsModule,
-    UserRoutingModule,
-    NzColorPickerModule
-  ]
+    imports: [
+        SharedModule,
+        NzTabsModule,
+        UserRoutingModule,
+        NzColorPickerModule,
+        NzTooltipDirective
+    ]
 })
 export class UserModule {
 

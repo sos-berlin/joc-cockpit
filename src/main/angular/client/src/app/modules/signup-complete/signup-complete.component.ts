@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {CoreService} from "../../services/core.service";
 
 @Component({
+  standalone: false,
   selector: 'app-signup-complete',
   templateUrl: './signup-complete.component.html',
   styleUrls: ['./signup-complete.component.scss']
