@@ -48,6 +48,19 @@
 import 'zone.js';  // Included with Angular CLI.
 
 
+import { Buffer } from 'buffer';
+
+// Make Buffer globally available
+(window as any).global = window;
+(window as any).Buffer = Buffer;
+(window as any).process = {
+  env: {},
+  browser: true,
+  version: '',
+  versions: {},
+  platform: 'browser'
+};
+
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
