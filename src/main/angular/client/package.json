@@ -32,6 +32,7 @@
     "ace-builds": "^1.43.3",
     "ang-jsoneditor": "^3.1.0",
     "angular-gridster2": "^20.2.2",
+    "buffer": "^6.0.3",
     "chart.js": "^3.7.0",
     "chartjs-plugin-datalabels": "^2.0.0",
     "codemirror": "^5.65.20",
@@ -64,7 +65,9 @@
     "zone.js": "^0.15.1"
   },
   "devDependencies": {
+    "@angular-devkit/architect": "^0.2003.3",
     "@angular-devkit/build-angular": "^20.3.3",
+    "@angular-devkit/core": "^20.3.3",
     "@angular/cli": "^20.3.3",
     "@angular/compiler-cli": "^20.3.2",
     "@types/crypto-js": "^4.1.1",
