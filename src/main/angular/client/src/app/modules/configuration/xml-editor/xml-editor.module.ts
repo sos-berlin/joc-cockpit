@@ -1,7 +1,6 @@
 import {NgModule} from '@angular/core';
 import {XmlEditorRoutingModule} from './xml-editor-routing.module';
 import {NzTabsModule} from 'ng-zorro-antd/tabs';
-import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {SharedModule} from '../../shared/shared.module';
 import {
   ConfirmationModalComponent,
@@ -19,7 +18,6 @@ const COMPONENTS = [ShowModalComponent, ShowChildModalComponent,
     imports: [
         XmlEditorRoutingModule,
         SharedModule,
-        CodemirrorModule,
         NzTabsModule,
         NzTooltipDirective
     ],

@@ -418,6 +418,24 @@ export class JobTemplateComponent {
     });
   }
 
+  get editorOptions() {
+    return {
+      lineNumbers: true,
+      autoRefresh: true,
+      lineWrapping: true,
+      matchBrackets: true,
+      foldGutter: true,
+      tabSize: this.preferences.tabSize,
+      autoCloseBrackets: this.job.configuration.executable.TYPE === 'JavaScript',
+      scrollbarStyle: 'simple',
+      highlightSelectionMatches: {
+        showToken: this.showToken,
+        annotateScrollbar: true
+      },
+      mode: this.job.configuration.executable.TYPE === 'JavaScript' ? 'javascript' : 'shell',
+      gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
+    };
+  }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['copyObj'] && !changes['data']) {
       return;

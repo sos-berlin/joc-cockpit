@@ -21,7 +21,7 @@
         }
         <div [ngClass]="{'invalid': (expectBoardExpression.invalid && (expectBoardExpression.dirty && expectBoardExpression.touched))}" class="b-a"
              id="boardId">
-          <ngx-codemirror #codeMirror #expectBoardExpression="ngModel" [(ngModel)]="obj.data"
+          <app-codemirror-editor #codeMirror #expectBoardExpression="ngModel" [(ngModel)]="obj.data"
                           [autoFocus]="true"
                           [options]="{
                                          lineNumbers: true,
@@ -36,7 +36,7 @@
                                          gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
                                        }"
                           name="expectBoardExpression"
-                          required title="{{'workflow.placeholder.expression' | translate}}"></ngx-codemirror>
+                          required title="{{'workflow.placeholder.expression' | translate}}"></app-codemirror-editor>
         </div>
         <div class="text-sm text-muted" translate>workflow.label.showNoticeBoardNames</div>
       </div>

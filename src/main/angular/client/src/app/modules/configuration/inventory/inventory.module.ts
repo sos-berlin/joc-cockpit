@@ -5,7 +5,6 @@ import {NzDrawerModule} from "ng-zorro-antd/drawer";
 import {NzSwitchModule} from "ng-zorro-antd/switch";
 import {NgJsonEditorModule} from 'ang-jsoneditor';
 import {DatePipe} from '@angular/common';
-import {CodemirrorModule} from '@ctrl/ngx-codemirror';
 import {InventoryRoutingModule} from './inventory-routing.module';
 import {InventoryService} from './inventory.service';
 import {SharedModule} from '../../shared/shared.module';
@@ -97,7 +96,6 @@ const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, Calen
     imports: [
         InventoryRoutingModule,
         SharedModule,
-        CodemirrorModule,
         NzMentionModule,
         NzTabsModule,
         NzDrawerModule,

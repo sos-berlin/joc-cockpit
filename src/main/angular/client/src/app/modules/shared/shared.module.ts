@@ -83,10 +83,12 @@ import {ApprovalModalComponent} from "../../components/approval-modal/approval-m
 import {PriorityModalComponent} from "../../components/priority-modal/priority-modal.component";
 import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 import {NzResultComponent} from "ng-zorro-antd/result";
+import {CodeMirrorEditorComponent} from "../codemirror-editor/codemirror-editor.component";
+import {CodeMirrorModule} from "../codemirror-editor/codemirror-editor.module";
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
   NzInputNumberModule, NzSpinModule, NzAutocompleteModule, NzTagModule, NzSelectModule,
-  NzInputModule, NzRadioModule, ChartsModule, NzTreeSelectModule,
+  NzInputModule, NzRadioModule, ChartsModule, NzTreeSelectModule, CodeMirrorModule,
   NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, NzUploadModule, NzProgressModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, ResumeOrderModalComponent, GraphicalViewModalComponent, ChangeParameterModalComponent,

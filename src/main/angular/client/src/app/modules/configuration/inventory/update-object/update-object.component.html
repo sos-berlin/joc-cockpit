@@ -806,7 +806,7 @@
                 <div class="col-md-6">
                   @if (isDisplay) {
                     <div class="b-a">
-                      <ngx-codemirror [(ngModel)]="object.script" (ngModelChange)="toggleCheckbox('script', $event)" [options]="cmOption" name="cm"></ngx-codemirror>
+                      <app-codemirror-editor [(ngModel)]="object.script" (ngModelChange)="toggleCheckbox('script', $event)" [options]="cmOption" name="cm"></app-codemirror-editor>
                     </div>
                   }
                 </div>
