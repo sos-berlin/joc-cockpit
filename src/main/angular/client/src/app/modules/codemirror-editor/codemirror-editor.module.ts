@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {CodeMirrorEditorComponent} from "./codemirror-editor.component";
+import {CodeEditorComponent} from "./codemirror-editor.component";
 
 @NgModule({
-  declarations: [CodeMirrorEditorComponent],
+  declarations: [CodeEditorComponent],
   imports: [CommonModule, FormsModule, ReactiveFormsModule],
-  exports: [CodeMirrorEditorComponent]
+  exports: [CodeEditorComponent]
 })
 export class CodeMirrorModule {}

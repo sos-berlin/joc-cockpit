@@ -109,7 +109,7 @@
                    nzType="form"></i>
                 <div [ngClass]="{'invalid': (cm.invalid && (cm.dirty && cm.touched) && !script.configuration.script)}"
                      class="b-a">
-                  <app-codemirror-editor #cm="ngModel" #codeMirror (focusout)="saveJSON()"
+                  <app-codemirror-editor #cm="ngModel" #codeEditor (focusout)="saveJSON()"
                                   [(ngModel)]="script.configuration.script" [options]="cmOption"
                                   name="cm" required></app-codemirror-editor>
                 </div>

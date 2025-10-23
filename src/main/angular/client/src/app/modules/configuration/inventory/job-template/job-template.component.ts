@@ -391,7 +391,7 @@ export class JobTemplateComponent {
   subscription2: Subscription;
   subscription3: Subscription;
 
-  @ViewChild('codeMirror', {static: false}) cm: any;
+  @ViewChild('codeEditor', {static: false}) cm: any;
 
   constructor(public coreService: CoreService, private dataService: DataService, private router: Router, private translate: TranslateService,
               private modal: NzModalService, private ref: ChangeDetectorRef, private message: NzMessageService,
@@ -433,7 +433,7 @@ export class JobTemplateComponent {
         annotateScrollbar: true
       },
       mode: this.job.configuration.executable.TYPE === 'JavaScript' ? 'javascript' : 'shell',
-      gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
+      gutters: ['CodeEditor-linenumbers', 'CodeEditor-foldgutter']
     };
   }
   ngOnChanges(changes: SimpleChanges): void {
@@ -682,9 +682,9 @@ export class JobTemplateComponent {
     }
 
     setTimeout(() => {
-      if (this.cm && this.cm.codeMirror) {
+      if (this.cm && this.cm.codeEditor) {
         const self = this;
-        this.cm.codeMirror.setOption("extraKeys", {
+        this.cm.codeEditor.setOption("extraKeys", {
           "Shift-Ctrl-Space": "autocomplete",
           "Tab": (cm) => {
             let spaces = '';
@@ -1340,9 +1340,9 @@ export class JobTemplateComponent {
     this.isTreeShow = false;
     this.ref.detectChanges();
     if (name) {
-      const doc = this.cm.codeMirror.getDoc();
+      const doc = this.cm.codeEditor.getDoc();
       const cursor = doc.getCursor(); // gets the line number in the cursor position
-      const currentLine = this.cm.codeMirror.getLine(cursor.line);
+      const currentLine = this.cm.codeEditor.getLine(cursor.line);
       const isSpace = cursor.ch > 0 ? currentLine.substring(cursor.ch - 1, cursor.ch) == ' ' : true;
 
       let str = (!isSpace ? ' ' : '');
@@ -1361,7 +1361,7 @@ export class JobTemplateComponent {
       doc.replaceRange(str, cursor);
       cursor.ch = cursor.ch + (text.length);
 
-      this.cm.codeMirror.focus();
+      this.cm.codeEditor.focus();
       doc.setCursor(cursor);
     }
   }

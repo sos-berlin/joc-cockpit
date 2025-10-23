@@ -1,0 +1,62 @@
+.resizer {
+  width: 16px;
+  height: 16px;
+  cursor: se-resize;
+  position: absolute;
+  right: 12px;
+  border-radius: 3px;
+  z-index: 10;
+}
+.note-wrapper {
+  position: relative; /* ensure resizer positions properly */
+}
+
+
+::ng-deep .custom-resizable-modal {
+  width: auto !important;
+  min-width: 300px !important;
+  height: auto !important;
+  min-height: 200px !important;
+}
+.note-wrapper {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.note-textarea {
+  width: 100%;
+  height: 100%;
+  resize: none;
+  border: none;
+  outline: none;
+  padding: 10px;
+  box-sizing: border-box;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.preview-wrapper {
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.note-preview {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding: 10px;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.toolbar {
+  flex: 0 0 auto;
+  margin-bottom: 8px;
+}
+
+.preview-btn{
+  right: 40px;
+}

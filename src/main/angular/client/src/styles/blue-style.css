@@ -976,38 +976,38 @@ div.jsoneditor {
 /**
 Code mirror
  */
-.CodeMirror, .CodeMirror-gutters {
+.CodeEditor, .CodeEditor-gutters {
   color: rgba(255, 255, 255, .87) !important;
 }
 
-.CodeMirror-gutters {
+.CodeEditor-gutters {
   background: #2b3e50 !important;
   border-color: rgba(221, 221, 221, .2)
 }
 
-.CodeMirror-cursor {
+.CodeEditor-cursor {
   border-left: solid thin #E6C845 !important;
 }
 
-.CodeMirror-linenumber {
+.CodeEditor-linenumber {
   color: #f8f8f2 !important;
 }
 
-.CodeMirror-focused div.CodeMirror-selected,
+.CodeEditor-focused div.CodeEditor-selected,
 .ace-jsoneditor .ace_marker-layer .ace_selection,
-.CodeMirror-selected {
+.CodeEditor-selected {
   background: #243443 !important;
 }
 
-.CodeMirror-line::selection,
-.CodeMirror-line > span::selection,
-.CodeMirror-line > span > span::selection {
+.CodeEditor-line::selection,
+.CodeEditor-line > span::selection,
+.CodeEditor-line > span > span::selection {
   background: #243443 !important;
 }
 
-.CodeMirror-line::-moz-selection,
-.CodeMirror-line > span::-moz-selection,
-.CodeMirror-line > span > span::-moz-selection {
+.CodeEditor-line::-moz-selection,
+.CodeEditor-line > span::-moz-selection,
+.CodeEditor-line > span > span::-moz-selection {
   background: #243443 !important;
 }
 
@@ -1079,11 +1079,11 @@ span.cm-variable-3, span.cm-type {
   color: #ffb86c !important;
 }
 
-.CodeMirror-activeline-background {
+.CodeEditor-activeline-background {
   background: #243443 !important;
 }
 
-.CodeMirror-matchingbracket {
+.CodeEditor-matchingbracket {
   text-decoration: underline;
   color: white !important;
 }

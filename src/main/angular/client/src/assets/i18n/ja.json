@@ -1940,7 +1940,7 @@
     "label.belowNormal": "中低",
     "label.Low": "低",
     "label.deleteRepository": "リポジトリ削除",
-
+    "label.useDependencies": "Include Dependencies",
     "button.modifyVariableSet": "変数設定変更",
     "button.addOrderParameter": "オーダー変数追加",
     "button.setVersion": "バージョン設定",
@@ -2484,6 +2484,15 @@
       "no": "No",
       "now": "Now",
       "startingFrom": "開始位置"
+    },
+    "notes": {
+      "label.notes": "Notes",
+      "label.style": "Style",
+      "button.preview": "Preview",
+      "tooltip.bold": "bold",
+      "tooltip.italic": "italic",
+      "tooltip.bullets": "Bullets",
+      "tooltip.colorPicker": "Change Note Color"
     }
   },
   "license": {

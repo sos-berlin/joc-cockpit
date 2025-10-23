@@ -50,14 +50,14 @@ export class ScriptComponent {
     scrollbarStyle: 'simple',
     highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
     mode: 'shell',
-    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
+    gutters: ['CodeEditor-linenumbers', 'CodeEditor-foldgutter']
   };
   lastModified: any = '';
   subscription1: Subscription;
   subscription2: Subscription;
   subscription3: Subscription;
 
-  @ViewChild('codeMirror', {static: false}) cm: any;
+  @ViewChild('codeEditor', {static: false}) cm: any;
 
   constructor(public coreService: CoreService, private translate: TranslateService, private dataService: DataService,
               private ref: ChangeDetectorRef, private modal: NzModalService) {
@@ -340,8 +340,8 @@ export class ScriptComponent {
     }).subscribe((res: any) => {
       this.isLocalChange = '';
       this.lastModified = res.configurationDate;
-      if (this.cm && this.cm.codeMirror) {
-        this.cm.codeMirror.setValue('');
+      if (this.cm && this.cm.codeEditor) {
+        this.cm.codeEditor.setValue('');
       }
       this.history = [];
       this.indexOfNextAdd = 0;
@@ -363,8 +363,8 @@ export class ScriptComponent {
       }
       this.script = this.coreService.clone(res);
       if (this.script.configuration.script) {
-        if (this.cm && this.cm.codeMirror) {
-          this.cm.codeMirror.setValue(this.script.configuration.script);
+        if (this.cm && this.cm.codeEditor) {
+          this.cm.codeEditor.setValue(this.script.configuration.script);
         }
       }
       this.script.actual = JSON.stringify(this.script.configuration);

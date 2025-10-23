@@ -49,6 +49,7 @@
                     </span>
                     }
                     <i (click)="helpPage('configuration-inventory-workflows')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
+                    <i (click)="notes()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'todo' | translate" nz-icon nzType="paper-clip" nzTheme="outline" class="cur-point text-16 m-r-sm"></i>
                   </div>
                 </div>
               }
@@ -764,7 +765,7 @@
                          nzType="form"></i>
                       <div [ngClass]="{'invalid': (expectBoardExpression.invalid && (expectBoardExpression.dirty && expectBoardExpression.touched))}" class="b-a"
                            id="boardId">
-                        <app-codemirror-editor #codeMirror #expectBoardExpression="ngModel"
+                        <app-codemirror-editor #codeEditor #expectBoardExpression="ngModel"
                                         [(ngModel)]="selectedNode.obj.noticeBoardNames" [options]="{
                                     lineNumbers: false, autoRefresh: true, scrollbarStyle: 'simple',
                                     tabSize: preferences.tabSize,

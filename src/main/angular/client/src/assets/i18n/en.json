@@ -2483,6 +2483,15 @@
       "no": "No",
       "now": "Now",
       "startingFrom": "Start Date"
+    },
+    "notes": {
+      "label.notes": "Notes",
+      "label.style": "Style",
+      "button.preview": "Preview",
+      "tooltip.bold": "bold",
+      "tooltip.italic": "italic",
+      "tooltip.bullets": "Bullets",
+      "tooltip.colorPicker": "Change Note Color"
     }
   },
   "license": {

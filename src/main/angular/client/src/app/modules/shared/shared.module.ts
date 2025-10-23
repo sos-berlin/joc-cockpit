@@ -17,7 +17,7 @@ import {NzUploadModule} from 'ng-zorro-antd/upload';
 import {DragDropModule} from '@angular/cdk/drag-drop';
 import {Shared2Module} from './shared2.module';
 import {ChartsModule} from "../charts/charts.module";
-import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
+import {NzTooltipComponent, NzTooltipDirective} from "ng-zorro-antd/tooltip";
 import {
   DurationPipe,
   DurationFromCurrentPipe,
@@ -83,8 +83,12 @@ import {ApprovalModalComponent} from "../../components/approval-modal/approval-m
 import {PriorityModalComponent} from "../../components/priority-modal/priority-modal.component";
 import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 import {NzResultComponent} from "ng-zorro-antd/result";
-import {CodeMirrorEditorComponent} from "../codemirror-editor/codemirror-editor.component";
+import {CodeEditorComponent} from "../codemirror-editor/codemirror-editor.component";
 import {CodeMirrorModule} from "../codemirror-editor/codemirror-editor.module";
+import {NoteComponent} from "../../components/notes/note.component";
+import {NzSpaceComponent} from "ng-zorro-antd/space";
+import {NzColorPickerComponent} from "ng-zorro-antd/color-picker";
+import {NzResizableDirective} from "ng-zorro-antd/resizable";
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
   NzInputNumberModule, NzSpinModule, NzAutocompleteModule, NzTagModule, NzSelectModule,
@@ -99,13 +103,17 @@ const DIRECTIVES = [TimeValidatorDirective,TimeDurationValidatorDirective,TimeVa
   FacetValidator, AutofocusDirective];
 const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponent, FileTransferSearchComponent, AuditLogInputComponent,
   StartUpModalComponent, TreeComponent, AgentSelectionComponent, ValueEditorComponent, WorkflowTreeStructureComponent, NodePositionComponent, SearchComponent,
-  SelectDocumentComponent, PermissionViewComponent, MultiSelectComponent, SearchInputComponent, SelectInputComponent, FileUploaderComponent, DateInputComponent];
+  SelectDocumentComponent, PermissionViewComponent, MultiSelectComponent, SearchInputComponent, SelectInputComponent, FileUploaderComponent, DateInputComponent, NoteComponent];
 
 @NgModule({
   imports: [
     ...MODULES,
     NzResultComponent,
     NzTooltipDirective,
+    NzTooltipComponent,
+    NzSpaceComponent,
+    NzColorPickerComponent,
+    NzResizableDirective,
   ],
   declarations: [
     ...COMPONENTS,

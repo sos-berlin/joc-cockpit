@@ -2087,7 +2087,7 @@ export class CoreService {
 
   updateReplaceText(): void {
     setTimeout(() => {
-      const dom = $('.CodeMirror-dialog .CodeMirror-search-label');
+      const dom = $('.CodeEditor-dialog .CodeEditor-search-label');
       const text = dom.text();
       if (text.match(/Replace:/)) {
         dom.text('Search:');
@@ -2095,9 +2095,9 @@ export class CoreService {
         dom.text('Search all:');
       }
       if (text.match(/Replace/)) {
-        $('.CodeMirror-search-field').on('keydown', (e: any) => {
+        $('.CodeEditor-search-field').on('keydown', (e: any) => {
           if (e.keyCode === 13) {
-            const dom2 = $('.CodeMirror-dialog .CodeMirror-search-label');
+            const dom2 = $('.CodeEditor-dialog .CodeEditor-search-label');
             if (dom2.text().match(/With:/)) {
               dom2.text('Replace:');
             }

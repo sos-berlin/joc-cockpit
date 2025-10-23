@@ -9,26 +9,11 @@ import {
   Output,
   ViewChild,
   ViewEncapsulation,
-  HostListener,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import * as CodeMirror from 'codemirror';
+import { CodeEditorService } from './../../services/code-editor.service';
 
-// Import modes and addons
-import 'codemirror/mode/javascript/javascript';
-import 'codemirror/mode/shell/shell';
-import 'codemirror/mode/xml/xml';
-import 'codemirror/addon/edit/closebrackets';
-import 'codemirror/addon/edit/matchbrackets';
-import 'codemirror/addon/fold/foldgutter';
-import 'codemirror/addon/fold/brace-fold';
-import 'codemirror/addon/scroll/simplescrollbars';
-import 'codemirror/addon/search/searchcursor';
-import 'codemirror/addon/search/match-highlighter';
-
-// ✅ Flexible interface that allows any property
 interface ExtendedEditorConfiguration {
-  // Core CodeMirror options
   lineNumbers?: boolean;
   theme?: string;
   mode?: string | object;
@@ -42,8 +27,6 @@ interface ExtendedEditorConfiguration {
   tabSize?: number;
   indentUnit?: number;
   indentWithTabs?: boolean;
-
-  // Extended options (from ngx-codemirror)
   autoRefresh?: boolean;
   placeholder?: string;
   highlightSelectionMatches?: boolean | {
@@ -54,73 +37,87 @@ interface ExtendedEditorConfiguration {
     style?: string;
     trim?: boolean;
   };
-
-  // Allow any other properties
   [key: string]: any;
 }
 
 @Component({
   standalone: false,
   selector: 'app-codemirror-editor',
-  styleUrl: './codemirror-editor.component.css',
-  template: `<div #textareaRef class="codemirror-container"></div>`,
+  template: `<textarea #textArea></textarea>`,
+  styleUrls: ['./codemirror-editor.component.css'],
   encapsulation: ViewEncapsulation.None,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => CodeMirrorEditorComponent),
+      useExisting: forwardRef(() => CodeEditorComponent),
       multi: true,
     },
   ],
 })
-export class CodeMirrorEditorComponent implements OnInit, OnDestroy, ControlValueAccessor {
-  @ViewChild('textareaRef', { static: true }) textareaRef!: ElementRef;
+export class CodeEditorComponent implements OnInit, OnDestroy, ControlValueAccessor {
+  @ViewChild('textArea', { static: true }) textArea!: ElementRef<HTMLTextAreaElement>;
 
-  // ✅ Use flexible interface
   @Input() options: ExtendedEditorConfiguration = {};
-  @Input() placeholder: string = '';
-  @Input() autoFocus: boolean = false;
-  @Input() name: string = '';
-  @Input() required: boolean = false;
-  @Input() title: string = '';
+  @Input() placeholder = '';
+  @Input() autoFocus = false;
+  @Input() name = '';
+  @Input() required = false;
+  @Input() title = '';
 
-  // Output events - matching ngx-codemirror API
   @Output() valueChange = new EventEmitter<string>();
   @Output() focusChange = new EventEmitter<boolean>();
   @Output() focusout = new EventEmitter<void>();
   @Output() keydown = new EventEmitter<KeyboardEvent>();
+  @Output() keyup = new EventEmitter<KeyboardEvent>();
+  @Output() cursorActivity = new EventEmitter<void>();
   @Output() ngModelChange = new EventEmitter<string>();
+  @Output() ready = new EventEmitter<void>();
 
-  private codeMirror!: CodeMirror.Editor;
-  private _value: string = '';
-  private isDisabled: boolean = false;
+  private editorInstance: any;
+  private _value = '';
+  private isDisabled = false;
   private resizeObserver?: ResizeObserver;
 
-  // ControlValueAccessor callbacks
-  private onChange = (value: string) => {};
-  private onTouched = () => {};
+  private onChange: (value: string) => void = () => {};
+  private onTouched: () => void = () => {};
+
+  public get codeEditor(): any {
+    return this.editorInstance;
+  }
+
+  constructor(private cmService: CodeEditorService) {}
 
   ngOnInit(): void {
-    this.initializeCodeMirror();
+    if (!this.cmService.isLoaded()) {
+      const interval = setInterval(() => {
+        if (this.cmService.isLoaded()) {
+          clearInterval(interval);
+          this.initEditor();
+        }
+      }, 100);
+    } else {
+      this.initEditor();
+    }
   }
 
   ngOnDestroy(): void {
-    if (this.codeMirror) {
-      this.codeMirror.off('change', this.onCodeMirrorChange);
-      this.codeMirror.off('focus', this.onCodeMirrorFocus);
-      this.codeMirror.off('blur', this.onCodeMirrorBlur);
-      this.codeMirror.off('keydown', this.onCodeMirrorKeydown);
-      this.codeMirror.getWrapperElement().remove();
+    if (this.editorInstance) {
+      this.editorInstance.off('change', this.onCodeMirrorChange);
+      this.editorInstance.off('focus', this.onCodeMirrorFocus);
+      this.editorInstance.off('blur', this.onCodeMirrorBlur);
+      this.editorInstance.off('keydown', this.onCodeMirrorKeydown);
+      this.editorInstance.off('keyup', this.onCodeMirrorKeyup);
+      this.editorInstance.off('cursorActivity', this.onCodeMirrorCursorActivity);
+      this.editorInstance.toTextArea();
+      this.editorInstance = null;
     }
 
-    // Clean up resize observer
     if (this.resizeObserver) {
       this.resizeObserver.disconnect();
     }
   }
 
-  private initializeCodeMirror(): void {
-    // ✅ Extract custom options that are not part of CodeMirror
+  private initEditor(): void {
     const {
       autoRefresh,
       highlightSelectionMatches,
@@ -128,7 +125,6 @@ export class CodeMirrorEditorComponent implements OnInit, OnDestroy, ControlValu
       ...otherOptions
     } = this.options;
 
-    // ✅ Build configuration object with type assertion
     const config: any = {
       lineNumbers: true,
       theme: 'default',
@@ -138,113 +134,102 @@ export class CodeMirrorEditorComponent implements OnInit, OnDestroy, ControlValu
       matchBrackets: true,
       autoCloseBrackets: true,
       foldGutter: false,
-      gutters: ['CodeMirror-linenumbers'],
+      gutters: ['CodeEditor-linenumbers'],
       scrollbarStyle: 'native',
       tabSize: 2,
-      ...otherOptions
+      indentUnit: 2,
+      ...otherOptions,
     };
 
-    // ✅ Handle placeholder (CodeMirror 5 support)
     const placeholderText = optionPlaceholder || this.placeholder;
     if (placeholderText) {
       config.placeholder = placeholderText;
     }
 
-    // ✅ Handle highlightSelectionMatches properly
     if (highlightSelectionMatches) {
       if (typeof highlightSelectionMatches === 'boolean') {
         config.highlightSelectionMatches = {
           showToken: /\w/,
-          annotateScrollbar: true
+          annotateScrollbar: true,
         };
       } else {
-        // Use type assertion to bypass TypeScript checking
         config.highlightSelectionMatches = {
           showToken: highlightSelectionMatches.showToken || /\w/,
           annotateScrollbar: highlightSelectionMatches.annotateScrollbar ?? true,
           delay: highlightSelectionMatches.delay || 100,
           style: highlightSelectionMatches.style || 'matchhighlight',
-          trim: highlightSelectionMatches.trim ?? true
-        } as any;
-
-        // Add onUpdate if provided
+          trim: highlightSelectionMatches.trim ?? true,
+        };
         if (highlightSelectionMatches.onUpdate) {
           config.highlightSelectionMatches.onUpdate = highlightSelectionMatches.onUpdate;
         }
       }
     }
 
-    // ✅ Create editor with type assertion
-    this.codeMirror = CodeMirror(this.textareaRef.nativeElement, config as CodeMirror.EditorConfiguration);
+    this.editorInstance = this.cmService.fromTextArea(this.textArea.nativeElement, config);
+    this.editorInstance.setValue(this._value);
 
-    // Set initial value
-    this.codeMirror.setValue(this._value);
-
-    // Auto focus if needed
     if (this.autoFocus) {
-      setTimeout(() => this.codeMirror.focus(), 0);
+      setTimeout(() => this.editorInstance.focus(), 0);
     }
 
-    // ✅ Handle autoRefresh functionality
-    this.handleAutoRefresh(autoRefresh !== false); // Default to true
+    this.handleAutoRefresh(autoRefresh !== false);
 
-    // Bind events
-    this.codeMirror.on('change', this.onCodeMirrorChange);
-    this.codeMirror.on('focus', this.onCodeMirrorFocus);
-    this.codeMirror.on('blur', this.onCodeMirrorBlur);
-    this.codeMirror.on('keydown', this.onCodeMirrorKeydown);
+    this.editorInstance.on('change', this.onCodeMirrorChange);
+    this.editorInstance.on('focus', this.onCodeMirrorFocus);
+    this.editorInstance.on('blur', this.onCodeMirrorBlur);
+    this.editorInstance.on('keydown', this.onCodeMirrorKeydown);
+    this.editorInstance.on('keyup', this.onCodeMirrorKeyup);
+    this.editorInstance.on('cursorActivity', this.onCodeMirrorCursorActivity);
+
+    this.ready.emit();
   }
 
-  // ✅ Handle autoRefresh functionality
   private handleAutoRefresh(enabled: boolean): void {
     if (!enabled) return;
 
-    // Initial refresh
     setTimeout(() => {
-      if (this.codeMirror) {
-        this.codeMirror.refresh();
+      if (this.editorInstance) {
+        this.editorInstance.refresh();
       }
     }, 0);
 
-    // Refresh on window resize
     const resizeHandler = () => {
-      if (this.codeMirror) {
-        this.codeMirror.refresh();
+      if (this.editorInstance) {
+        this.editorInstance.refresh();
       }
     };
     window.addEventListener('resize', resizeHandler);
 
-    // Refresh when container size changes
     if ('ResizeObserver' in window) {
       this.resizeObserver = new ResizeObserver(() => {
-        if (this.codeMirror) {
-          this.codeMirror.refresh();
+        if (this.editorInstance) {
+          this.editorInstance.refresh();
         }
       });
 
-      if (this.textareaRef?.nativeElement?.parentElement) {
-        this.resizeObserver.observe(this.textareaRef.nativeElement.parentElement);
+      if (this.textArea?.nativeElement?.parentElement) {
+        this.resizeObserver.observe(this.textArea.nativeElement.parentElement);
       }
     }
 
-    // Refresh when element becomes visible (for modals/tabs)
     if ('IntersectionObserver' in window) {
       const intersectionObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting && this.codeMirror) {
-            setTimeout(() => this.codeMirror.refresh(), 50);
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && this.editorInstance) {
+            setTimeout(() => this.editorInstance.refresh(), 50);
           }
         });
       });
 
-      if (this.textareaRef?.nativeElement) {
-        intersectionObserver.observe(this.textareaRef.nativeElement);
+      if (this.textArea?.nativeElement) {
+        intersectionObserver.observe(this.textArea.nativeElement);
       }
     }
   }
 
   private onCodeMirrorChange = (): void => {
-    const value = this.codeMirror.getValue();
+    const value = this.editorInstance.getValue();
     this._value = value;
     this.onChange(value);
     this.valueChange.emit(value);
@@ -261,25 +246,29 @@ export class CodeMirrorEditorComponent implements OnInit, OnDestroy, ControlValu
     this.focusout.emit();
   };
 
-  private onCodeMirrorKeydown = (cm: CodeMirror.Editor, event: KeyboardEvent): void => {
+  private onCodeMirrorKeydown = (_cm: any, event: KeyboardEvent): void => {
     this.keydown.emit(event);
   };
 
-  // ControlValueAccessor Implementation
+  private onCodeMirrorKeyup = (_cm: any, event: KeyboardEvent): void => {
+    this.keyup.emit(event);
+  };
+
+  private onCodeMirrorCursorActivity = (): void => {
+    this.cursorActivity.emit();
+  };
+
   writeValue(value: string): void {
     this._value = value || '';
-    if (this.codeMirror) {
-      const currentValue = this.codeMirror.getValue();
+    if (this.editorInstance) {
+      const currentValue = this.editorInstance.getValue();
       if (currentValue !== this._value) {
-        // Preserve cursor position when updating value
-        const cursor = this.codeMirror.getCursor();
-        this.codeMirror.setValue(this._value);
-        // Only restore cursor if the new content is long enough
+        const cursor = this.editorInstance.getCursor();
+        this.editorInstance.setValue(this._value);
         if (this._value.length > 0 && cursor) {
           try {
-            this.codeMirror.setCursor(cursor);
+            this.editorInstance.setCursor(cursor);
           } catch (e) {
-            // Ignore cursor position errors
           }
         }
       }
@@ -296,57 +285,55 @@ export class CodeMirrorEditorComponent implements OnInit, OnDestroy, ControlValu
 
   setDisabledState(isDisabled: boolean): void {
     this.isDisabled = isDisabled;
-    if (this.codeMirror) {
-      this.codeMirror.setOption('readOnly', isDisabled ? 'nocursor' : false);
+    if (this.editorInstance) {
+      this.editorInstance.setOption('readOnly', isDisabled ? 'nocursor' : false);
     }
   }
 
-  // ✅ Public API methods - matching ngx-codemirror
   public focus(): void {
-    if (this.codeMirror) {
-      this.codeMirror.focus();
+    if (this.editorInstance) {
+      this.editorInstance.focus();
     }
   }
 
-  public getCodeMirror(): CodeMirror.Editor {
-    return this.codeMirror;
+  public getCodeMirror(): any {
+    return this.editorInstance;
   }
 
   public refresh(): void {
-    if (this.codeMirror) {
-      this.codeMirror.refresh();
+    if (this.editorInstance) {
+      this.editorInstance.refresh();
     }
   }
 
   public setValue(value: string): void {
     this._value = value;
-    if (this.codeMirror) {
-      this.codeMirror.setValue(value);
+    if (this.editorInstance) {
+      this.editorInstance.setValue(value);
     }
   }
 
   public getValue(): string {
-    return this.codeMirror ? this.codeMirror.getValue() : this._value;
+    return this.editorInstance ? this.editorInstance.getValue() : this._value;
   }
 
-  // ✅ Additional utility methods
   public setOption(option: string, value: any): void {
-    if (this.codeMirror) {
-      (this.codeMirror as any).setOption(option, value);
+    if (this.editorInstance) {
+      this.editorInstance.setOption(option, value);
     }
   }
 
   public getOption(option: string): any {
-    return this.codeMirror ? (this.codeMirror as any).getOption(option) : undefined;
+    return this.editorInstance ? this.editorInstance.getOption(option) : undefined;
   }
 
   public setCursor(line: number, ch?: number): void {
-    if (this.codeMirror) {
-      this.codeMirror.setCursor(line, ch);
+    if (this.editorInstance) {
+      this.editorInstance.setCursor(line, ch);
     }
   }
 
-  public getCursor(): CodeMirror.Position | undefined {
-    return this.codeMirror ? this.codeMirror.getCursor() : undefined;
+  public getCursor(): any {
+    return this.editorInstance ? this.editorInstance.getCursor() : undefined;
   }
 }

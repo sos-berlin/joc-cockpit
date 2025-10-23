@@ -388,7 +388,7 @@
                              nzType="form"></i>
                           <div [ngClass]="{'invalid': obj.script || (script.invalid && (script.dirty && script.touched))}" class="b-a"
                                id="scriptId">
-                            <app-codemirror-editor #codeMirror #script="ngModel"
+                            <app-codemirror-editor #codeEditor #script="ngModel"
                                             [(ngModel)]="selectedNode.job.executable.script" (ngModelChange)="toggleCheckbox('script', $event)"
                                             [options]="{
                                              lineNumbers: true,
@@ -402,7 +402,7 @@
                                              readOnly: (selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name),
                                              highlightSelectionMatches: {showToken, annotateScrollbar: true},
                                              mode: selectedNode.job.executable.TYPE === 'JavaScript' ? 'javascript' : 'shell',
-                                             gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
+                                             gutters: ['CodeEditor-linenumbers', 'CodeEditor-foldgutter']
                                            }"
                                             (focusChange)="focusChange()"
                                             (focusout)="saveToHistory()"

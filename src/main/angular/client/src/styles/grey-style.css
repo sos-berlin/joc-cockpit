@@ -941,25 +941,25 @@ span ul li a {
 /**
 Code mirror
  */
-.CodeMirror {
+.CodeEditor {
   color: rgba(255, 255, 255, .87) !important
 }
 
-.CodeMirror-gutters {
+.CodeEditor-gutters {
   background: rgba(92, 99, 109, 0.7) !important;
   border-color: rgba(221, 221, 221, .2)
 }
 
-.CodeMirror-linenumber {
+.CodeEditor-linenumber {
   color: #fff !important
 }
 
 
-.CodeMirror-foldgutter-folded, .CodeMirror-foldgutter-open {
+.CodeEditor-foldgutter-folded, .CodeEditor-foldgutter-open {
   color: #999!important;
 }
 
-.CodeMirror-cursor {
+.CodeEditor-cursor {
   border-left: 1px solid #fff
 }
 
@@ -1044,43 +1044,43 @@ span.cm-link {
 span.cm-error {
   color: red!important;
 }
-span.CodeMirror-matchingbracket {
+span.CodeEditor-matchingbracket {
   box-sizing: border-box;
   background: 0 0;
   border-bottom: 1px solid
 }
 
-span.CodeMirror-nonmatchingbracket {
+span.CodeEditor-nonmatchingbracket {
   border-bottom: 1px solid;
   background: 0 0
 }
 
-.CodeMirror-activeline {
+.CodeEditor-activeline {
   background: #000!important;
 }
 
-.CodeMirror-activeline-background {
+.CodeEditor-activeline-background {
   background: #000!important;
 }
 
-div.CodeMirror-selected {
+div.CodeEditor-selected {
   background: #3c4147!important;
 }
 
 .ace-jsoneditor .ace_marker-layer .ace_selection,
-.CodeMirror-focused div.CodeMirror-selected {
+.CodeEditor-focused div.CodeEditor-selected {
   background: #3c4147!important;
 }
 
-.CodeMirror-line::selection,
-.CodeMirror-line > span::selection,
-.CodeMirror-line > span > span::selection {
+.CodeEditor-line::selection,
+.CodeEditor-line > span::selection,
+.CodeEditor-line > span > span::selection {
   background: rgb(60, 65, 71);
 }
 
-.CodeMirror-line::-moz-selection,
-.CodeMirror-line > span::-moz-selection,
-.CodeMirror-line > span > span::-moz-selection {
+.CodeEditor-line::-moz-selection,
+.CodeEditor-line > span::-moz-selection,
+.CodeEditor-line > span > span::-moz-selection {
   background: rgb(60, 65, 71);
 }
 

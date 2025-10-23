@@ -1,0 +1,107 @@
+<div class="modal-header">
+  <div class="inline" id="toolbar-icons">
+    <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
+      <li class="nav-item">
+        <div style="line-height: 18px; padding: 10px 3px">
+          <span class="cur-point" [nzDropdownMenu]="headingMenu"
+                nz-dropdown nzTrigger="click" translate>inventory.notes.label.style<i class="m-l-xs cur-point" nz-icon nzType="down"></i></span>
+
+          <nz-dropdown-menu #headingMenu="nzDropdownMenu" role="menu">
+            <ul nz-menu>
+              <li nz-menu-item (click)="applyHeading('h1')"><a translate>H1</a></li>
+              <li nz-menu-item (click)="applyHeading('h2')"><a translate>H2</a></li>
+              <li nz-menu-item (click)="applyHeading('h3')"><a translate>H3</a></li>
+              <li nz-menu-item (click)="applyHeading('h4')"><a translate>H4</a></li>
+              <li nz-menu-item (click)="applyHeading('h5')"><a translate>H5</a></li>
+              <li nz-menu-item (click)="applyHeading('h6')"><a translate>H6</a></li>
+            </ul>
+          </nz-dropdown-menu>
+        </div>
+      </li>
+
+      <li class="nav-item dropdown-separator">
+        <span class="separator"></span>
+      </li>
+
+      <li class="nav-item">
+        <a (click)="toggleBold()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.notes.tooltip.bold' | translate" class="nav-link">
+          <span class="nav-text"><i nz-icon nzTheme="outline" nzType="bold"></i></span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a (click)="toggleItalic()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.notes.tooltip.italic' | translate" class="nav-link">
+          <span class="nav-text"><i nz-icon nzTheme="outline" nzType="italic"></i></span>
+        </a>
+      </li>
+
+      <li class="nav-item dropdown-separator">
+        <span class="separator"></span>
+      </li>
+
+      <li class="nav-item">
+        <a (click)="undo()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.undo' | translate" class="nav-link">
+          <span class="nav-text"><i nz-icon nzTheme="outline" nzType="undo"></i></span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a (click)="redo()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.redo' | translate" class="nav-link">
+          <span class="nav-text"><i nz-icon nzTheme="outline" nzType="redo"></i></span>
+        </a>
+      </li>
+
+      <li class="nav-item dropdown-separator">
+        <span class="separator"></span>
+      </li>
+
+      <li class="nav-item">
+        <a (click)="toggleBulletList()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.notes.tooltip.bullets' | translate" class="nav-link">
+          <span class="nav-text"><i nz-icon nzTheme="outline" nzType="unordered-list"></i></span>
+        </a>
+      </li>
+
+      <li class="nav-item dropdown-separator">
+        <span class="separator"></span>
+      </li>
+
+      <li class="nav-item">
+        <a [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.notes.tooltip.colorPicker' | translate">
+          <nz-color-picker [(ngModel)]="noteColor"></nz-color-picker>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <button type="button" class="close" aria-label="Close" (click)="cancel()">
+    <span aria-hidden="true" class="fa fa-times-circle"></span>
+  </button>
+</div>
+
+<div class="modal-body p-a" [style.backgroundColor]="noteColor">
+  @if (!isPreviewMode) {
+    <div class="note-wrapper" [ngStyle]="{'width.px': width, 'height.px': height}" nzResizable>
+      <textarea [(ngModel)]="noteContent"
+                (input)="updatePreview()"
+                rows="6"
+                class="note-textarea"
+                [style.backgroundColor]="noteColor"></textarea>
+    </div>
+  }
+  @if (isPreviewMode) {
+    <div class="note-wrapper preview-wrapper" [ngStyle]="{'width.px': width, 'height.px': height}" nzResizable>
+      <div class="note-preview help-md" [innerHTML]="notePreview" [style.backgroundColor]="noteColor"></div>
+    </div>
+  }
+</div>
+
+
+<div class="modal-footer text-left">
+
+  <button [disabled]="submitted" class="btn btn-primary btn-sm" type="submit">
+    {{'common.button.submit' | translate}}
+  </button>
+  <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
+  <button [disabled]="submitted" class="btn btn-default btn-sm m-l-sm pos-abt preview-btn" type="button" (click)="togglePreview()">
+    {{ isPreviewMode ? ('common.button.edit' | translate) : ('inventory.notes.button.preview' | translate) }}
+  </button>
+  <div class="resizer fa fa-arrows" (mousedown)="onResizeStart($event)"></div>
+</div>
