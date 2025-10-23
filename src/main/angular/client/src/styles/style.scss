@@ -6331,7 +6331,7 @@ input:-webkit-autofill {
 }
 
 .cdk-global-scrollblock {
-  overflow: auto;
+  overflow: auto !important;
 }
 
 .cdk-global-scrollblock body {
