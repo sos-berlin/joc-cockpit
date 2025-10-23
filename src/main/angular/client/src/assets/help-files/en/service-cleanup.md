@@ -13,7 +13,7 @@ This includes data from the following sources:
 For each job executed during the day an entry in the *Task History* will be created, similarly for the *Order History*. Depending on the number of daily Jobs this can add up to huge numbers.
 
 - Users should consider applicable log retention policies, i.e. the period for which the job execution history and logs must be maintained by legal requirements and by compliance requirements.
-- A database cannot grow indefinitely. Using a performant DBMS might allow having 100 million records in a *Task History* table. However, this will tend to be detrimental to performance and might not be required. Purging the database is a reasonable measure for smooth operations.
+- A database cannot grow indefinitely. Using a performant DBMS might allow having 100 million records in a *Task History* table. However, this tends to be detrimental for performance and might not be required. Purging the database is a reasonable measure for smooth operations. Additional measures for database maintenance such as recreating indexes are the responsibility of the user.
 
 The Cleanup Service is started based on its settings and it can be started in the Dashboard view from the active JOC Cockpit instances' rectangle offering the *Run Service - Cleanup Service* operation.
 

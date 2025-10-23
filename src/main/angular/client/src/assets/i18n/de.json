@@ -2485,13 +2485,13 @@
       "startingFrom": "Startdatum"
     },
     "notes": {
-      "label.notes": "Notes",
-      "label.style": "Style",
-      "button.preview": "Preview",
-      "tooltip.bold": "bold",
-      "tooltip.italic": "italic",
-      "tooltip.bullets": "Bullets",
-      "tooltip.colorPicker": "Change Note Color"
+      "label.notes": "Hinweise",
+      "label.style": "Stil",
+      "button.preview": "Vorschau",
+      "tooltip.bold": "fett",
+      "tooltip.italic": "kursiv",
+      "tooltip.bullets": "Aufzählungspunkte",
+      "tooltip.colorPicker": "Farbe ändern"
     }
   },
   "license": {
