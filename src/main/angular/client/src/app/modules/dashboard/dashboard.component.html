@@ -50,73 +50,52 @@
   @if (dashboard.length > 0) {
     <div class="gridster">
       <gridster [options]="options">
-        @for (item of dashboard; track item.id) {
-          <gridster-item [item]="item" id="{{item.name}}">
+        @for (item of dashboard; track item) {
+          <gridster-item [item]="item">
             <div class="destroy-button">
               @if (editLayoutObj) {
                 <i (click)="removeWidget($event, item)" (mousedown)="$event.stopPropagation()"
-                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.button.remove' | translate" class="fa fa-times-circle"></i>
+                   [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.button.remove' | translate"
+                   class="fa fa-times-circle"></i>
               }
             </div>
-            @if (item.name === 'agentStatus') {
-              <div>
+            @switch (item.name) {
+              @case ('agentStatus') {
                 <app-agent-status [layout]="item"></app-agent-status>
-              </div>
-            }
-            @if (item.name === 'agentClusterStatus') {
-              <div>
+              }
+              @case ('agentClusterStatus') {
                 <app-agent-cluster-status [layout]="item"></app-agent-cluster-status>
-              </div>
-            }
-            @if (item.name === 'componentStatus') {
-              <div>
+              }
+              @case ('componentStatus') {
                 <app-controller-cluster [permission]="permission" [sizeY]="item.rows"></app-controller-cluster>
-              </div>
-            }
-            @if (item.name === 'agentRunningJobs') {
-              <div>
+              }
+              @case ('agentRunningJobs') {
                 <app-agent-running-task [layout]="item"></app-agent-running-task>
-              </div>
-            }
-            @if (item.name === 'JS7Status') {
-              <div>
+              }
+              @case ('JS7Status') {
                 <app-scheduler-instance [permission]="permission" [sizeY]="item.rows"></app-scheduler-instance>
-              </div>
-            }
-            @if (item.name === 'apiServerStatus') {
-              <div>
+              }
+              @case ('apiServerStatus') {
                 <app-api-server-status [permission]="permission" [sizeY]="item.rows"></app-api-server-status>
-              </div>
-            }
-            @if (item.name === 'orders') {
-              <div>
+              }
+              @case ('orders') {
                 <app-order-overview [sizeX]="item.cols" [sizeY]="item.rows"></app-order-overview>
-              </div>
-            }
-            @if (item.name === 'history') {
-              <div>
+              }
+              @case ('history') {
                 <app-history-summary></app-history-summary>
-              </div>
-            }
-            @if (item.name === 'fileTransferSummary') {
-              <div>
+              }
+              @case ('fileTransferSummary') {
                 <app-file-transfer-history-summary></app-file-transfer-history-summary>
-              </div>
-            }
-            @if (item.name === 'inventory') {
-              <div>
+              }
+              @case ('inventory') {
                 <app-inventory-statistics [sizeX]="item.cols" [sizeY]="item.rows"></app-inventory-statistics>
-              </div>
-            }
-            @if (item.name === 'dailyPlan') {
-              <div>
+              }
+              @case ('dailyPlan') {
                 <app-daily-plan></app-daily-plan>
-              </div>
-            }
-            @if (item.name === 'workflows') {
-              <div>
+              }
+              @case ('workflows') {
                 <app-workflow></app-workflow>
-              </div>
+              }
             }
           </gridster-item>
         }

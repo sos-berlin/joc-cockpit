@@ -21,7 +21,7 @@
           </tr>
           </thead>
           <tbody>
-            @for (controller of controllersList; track controller.controllerId) {
+            @for (controller of controllersList; track $index) {
               <tr>
                 <td>
                   <app-action [controller]="controller" [permission]="permission"></app-action>

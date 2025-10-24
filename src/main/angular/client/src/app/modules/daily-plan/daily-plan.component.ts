@@ -140,36 +140,25 @@ export class CreatePlanModalComponent {
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     if (this.dateRanges && this.dateRanges.length > 0) {
-      this.recursivelyCreate(obj);
+      const dates = this.coreService.getDates(this.dateRanges[0], this.dateRanges[1]);
+      obj.dailyPlanDates = dates.map(date => this.coreService.getStringDate(date));
     } else {
-      obj.dailyPlanDate = this.coreService.getStringDate(this.selectedDate);
-      this.coreService.post('daily_plan/orders/generate', obj).subscribe({
-        next: () => {
-          this.activeModal.close('Done');
-        }, error: () => this.submitted = false
-      });
+      obj.dailyPlanDates = [this.coreService.getStringDate(this.selectedDate)];
     }
+
+    this.coreService.post('daily_plan/orders/generate', obj).subscribe({
+      next: () => {
+        this.activeModal.close('Done');
+      },
+      error: () => this.submitted = false
+    });
   }
 
   cancel(): void {
     this.activeModal.destroy();
   }
 
-  private recursivelyCreate(obj): void {
-    let apiArr = [];
-    const dates = this.coreService.getDates(this.dateRanges[0], this.dateRanges[1]);
-    dates.forEach((date) => {
-      obj.dailyPlanDate = this.coreService.getStringDate(date);
-      apiArr.push(this.coreService.post('daily_plan/orders/generate', this.coreService.clone(obj)).pipe(
-        catchError(error => of(error))
-      ));
-    });
-    forkJoin(apiArr).subscribe({
-      next: () => {
-        this.activeModal.close('Done');
-      }, error: () => this.submitted = false
-    });
-  }
+
 }
 
 @Component({
@@ -716,7 +705,7 @@ export class SearchComponent {
     this.onCancel.emit();
   }
 
-  helpPage(): void{
+  helpPage(): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: HelpViewerComponent,
