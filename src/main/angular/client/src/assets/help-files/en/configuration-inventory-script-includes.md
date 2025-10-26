@@ -55,9 +55,35 @@ Script Includes can be parameterized like this:
 
 The *search-literal* will be looked up in the Script Include and will be replaced by the *replacement-literal* when the Workflow holding the related Job will be deployed.
 
+### Examples
+
+#### PowerShell for Unix
+
+For use with PowerShell on Unix platforms the following shebang is suggested for a Script Include:
+
+<pre>
+#!/usr/bin/env pwsh
+</pre>
+
+#### PowerShell for Windows
+
+For use with PowerShell on Windows platforms the following shebang is suggested for a Script Include:
+
+<pre>
+@@setlocal enabledelayedexpansion & set NO_COLOR=1 & set f=%RANDOM%.ps1 & @@findstr/v "^@@[fs].*&" "%~f0" > !f! & powershell.exe -NonInteractive -File !f! & set e=!errorlevel! & del /q !f! & exit !e!/b&
+</pre>
+
+The Script Include will write the contents of the *Job Script* to a temporary file that will be executed with the *powershell.exe* binary. Users should switch to using the *pwsh.exe* binary if later PowerShell versions are in use. Script errors will be considered by the JS7 Agent and log output will be stripped from escape characters for colouring. 
+
 ## References
+
+### Context Help
 
 - [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
 - [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
 - [Object Naming Rules](/object-naming-rules)
+
+### Product Knowledge Base
+
 - [JS7 - Script Includes](https://kb.sos-berlin.com/display/JS7/JS7+-+Script+Includes)
+- [JS7 - How to run PowerShell scripts from jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+run+PowerShell+scripts+from+jobs)

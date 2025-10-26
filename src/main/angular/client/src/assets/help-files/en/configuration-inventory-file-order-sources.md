@@ -4,11 +4,11 @@ The *File Order Sources* panel offers specifying sources for [JS7 - File Watchin
 
 - A directory is monitored by an Agent for incoming files.
 - For each incoming file an Order is created that represents the file. 
-  - If the file is moved or removed by a Job before completion of the Workflow, then the Order will leave the Workflow.
+  - If the file is moved or removed by a Job before completion of the Workflow, then the Order will continue the Workflow and will leave it on completion.
   - If the file remains in place on completion of the Workflow, then the Order will remain available with the *completed* state. To make the Order leave the Workflow, the incoming file has to be moved or removed.
 - Orders hold the *file* variable that carries the path to the incoming file. The *file* variable must be declared by the Workflow and can be used by Jobs.
 
-File Order Sources are assigned a Workflow to which they will add an Order.
+File Order Sources are assigned a Workflow to which they will add an Order per incoming file.
 
 File Order Sources are managed from the following panels:
 
@@ -47,9 +47,14 @@ For available operations see [Configuration - Inventory - Navigation Panel](/con
 
 ## References
 
+### Context Help
+
 - [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
 - [Daily Plan](/daily-plan)
 - [Object Naming Rules](/object-naming-rules)
 - [Regular Expression](https://en.wikipedia.org/wiki/Regular_expression)
+
+### Product Knowledge Base
+
 - [JS7 - File Watching](https://kb.sos-berlin.com/display/JS7/JS7+-+File+Watching)
 - [List of tz database time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)

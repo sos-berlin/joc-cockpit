@@ -42,11 +42,25 @@ For a Resource Lock the following inputs are available:
 
 For available operations see [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
 
+### Order Priorities
+
+Resource Locks consider Order *Priorities*. When adding orders from [Configuration - Inventory - Schedules](/configuration-inventory-schedules) and when adding ad hoc orders using [Workflows - Add Orders](/workflows-orders-add), the *Priority* can be specified.
+
+If a number of Orders are waiting in front of a Resource Lock, then the Order with the highest *Priority* will be the first to acquire the Resource Lock.
+
 ## References
 
-- [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
+### Context Help
+
 - [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
+- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
+- [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
 - [Object Naming Rules](/object-naming-rules)
-- [Semaphore](https://en.wikipedia.org/wiki/Semaphore_%28programming%29)
+- [Workflow - Inventory - Navigation Panel](/configuration-inventory-navigation)
+
+### Product Knwoledge Base
+
 - [JS7 - Lock Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Lock+Instruction)
 - [JS7 - Options Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Options+Instruction)
+- [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules)
+- [Semaphore](https://en.wikipedia.org/wiki/Semaphore_%28programming%29)
