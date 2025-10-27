@@ -2,6 +2,8 @@ import {Component, ChangeDetectorRef } from '@angular/core';
 import {AuthService} from '../../components/guard';
 import {DataService} from '../../services/data.service';
 import {CoreService} from '../../services/core.service';
+import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
+import {NzModalService} from "ng-zorro-antd/modal";
 
 @Component({
   standalone: false,
@@ -20,7 +22,7 @@ export class MonitorComponent {
   tabChangeListener: any;
 
   constructor(private authService: AuthService, public coreService: CoreService,
-              private dataService: DataService, private cdr: ChangeDetectorRef) {
+              private dataService: DataService, private modal: NzModalService, private cdr: ChangeDetectorRef) {
     this.subscription = dataService.refreshAnnounced$.subscribe(() => {
       this.loading = false;
       this.init();
@@ -118,4 +120,35 @@ export class MonitorComponent {
   exportToExcel() {
     this.dataService.announceFunction('EXPORT');
   }
+
+  helpPage(): void {
+    let helpKey: string;
+
+    switch (this.monitorFilters?.tabIndex) {
+      case 0:
+        helpKey = 'monitor-availability-controller';
+        break;
+      case 1:
+        helpKey = 'monitor-availability-agent';
+        break;
+      case 2:
+        helpKey = 'monitor-notifications-order';
+        break;
+      case 3:
+        helpKey = 'monitor-notifications-system';
+        break;
+      default:
+        helpKey = 'monitor-availability-controll';
+    }
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {preferences: this.preferences, helpKey},
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
 }

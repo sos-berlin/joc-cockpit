@@ -10074,11 +10074,11 @@ cdk-virtual-scroll-viewport {
 
 .help-info-dailyplan-cal {
   position: absolute;
-  right: 10px;
+  right: 8px;
   font-size: 16px;
   cursor: pointer;
   z-index: 10;
-  bottom: 6px;
+  top: 260px;
   color: var(--text-color);
   opacity: 0.7;
 }
