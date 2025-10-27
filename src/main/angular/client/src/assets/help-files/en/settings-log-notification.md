@@ -2,6 +2,8 @@
 
 The [Log Notification Service](/service-log-notification) implements a syslog server that receives warnings and errors of JS7 products such as Controllers and Agents. The service can be configured to send notifications, for example by mail.
 
+Notifications are displayed from the [Monitor - System Notifications](/monitor-notifications-system) page.
+
 The following settings are applied to the Log Notification Service. Changes become effective immediately.
 
 ## Log Notification Service Settings
@@ -20,7 +22,13 @@ Specifies the max. number of messages per second that the Log Notification Servi
 
 ## References
 
+### Context Help
+
 - [Log Notification Service](/service-log-notification)
+- [Monitor - System Notifications](/monitor-notifications-system)
 - [Settings](/settings)
+
+### Product Knowledge Base
+
 - [JS7 - Log Notification Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Notification+Service)
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)

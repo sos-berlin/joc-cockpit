@@ -6,7 +6,7 @@ The following settings are applied to the [Daily Plan](/daily-plan). Changes bec
 
 ### Setting: *time\_zone*, Default: *UTC*
 
-Specifies the time zone that is applied to the start time of the Daily Plan Service and period of the Daily Plan.
+Specifies the time zone that is applied to the start time of the [Daily Plan Service](/service-daily-plan) and period of the Daily Plan.
 
 ### Setting: *period\_begin*, Default: *00:00*
 
@@ -42,6 +42,7 @@ Specifies the number of months ahead for which [Daily Plan - Projections](/daily
 
 - [Daily Plan](/daily-plan)
 - [Daily Plan - Projections](/daily-plan-projections)
+- [Daily Plan Service](/service-daily-plan)
 - [Resources - Notice Boards](/resources-notice-boards)
 - [Settings](/settings)
 
