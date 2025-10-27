@@ -150,7 +150,83 @@ export class WorkflowService {
         '</linearGradient>\n' +
         '</defs>\n' +
         '</svg>';
-    } else if (name === 'finish') {
+    } else if (name === 'admissionTime') {
+      svg = `<svg width="50" height="50" viewBox="0 0 37.5 37.5" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="c"><path d="m1.3047 1.3047h34.695v34.695h-34.695z"/></clipPath>
+    <clipPath id="f"><path d="m20.746 2.2422 14.316 14.316c0.55469 0.55469 0.86719 1.3086 0.86719 2.0938s-0.3125 1.5391-0.86719 2.0938l-14.316 14.316c-0.55469 0.55469-1.3086 0.86719-2.0938 0.86719s-1.5391-0.3125-2.0938-0.86719l-14.316-14.316c-0.55469-0.55469-0.86719-1.3086-0.86719-2.0938s0.3125-1.5391 0.86719-2.0938l14.316-14.316c0.55469-0.55469 1.3086-0.86719 2.0938-0.86719s1.5391 0.3125 2.0938 0.86719z"/></clipPath>
+    <clipPath id="b"><path d="m0.375 0.375h34.555v34.555h-34.555z"/></clipPath>
+    <clipPath id="d"><path d="m19.746 1.2422 14.316 14.316c0.55469 0.55469 0.86719 1.3086 0.86719 2.0938s-0.3125 1.5391-0.86719 2.0938l-14.316 14.316c-0.55469 0.55469-1.3086 0.86719-2.0938 0.86719s-1.5391-0.3125-2.0938-0.86719l-14.316-14.316c-0.55469-0.55469-0.86719-1.3086-0.86719-2.0938s0.3125-1.5391 0.86719-2.0938l14.316-14.316c0.55469-0.55469 1.3086-0.86719 2.0938-0.86719s1.5391 0.3125 2.0938 0.86719z"/></clipPath>
+    <linearGradient id="e" x1="128" x2="128" y1="8.4831" y2="247.52" gradientTransform="matrix(.14456 0 0 .14456 -.85197 -.85197)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffd96a" offset="0"/>
+      <stop stop-color="#fff6dd" offset="1"/>
+    </linearGradient>
+    <clipPath id="a"><rect width="35" height="35"/></clipPath>
+  </defs>
+
+  <g clip-path="url(#c)">
+    <g clip-path="url(#f)">
+      <g transform="translate(1 1)">
+        <g clip-path="url(#a)">
+          <g clip-path="url(#b)">
+            <g clip-path="url(#d)">
+              <path d="m0.375 0.375v34.555h34.555v-34.555z" fill="url(#e)"/>
+            </g>
+          </g>
+        </g>
+      </g>
+      <path transform="matrix(.74013 0 0 .74013 .14803 .14803)" d="m27.83 2.8294 19.343 19.343c0.74944 0.74944 1.1717 1.7681 1.1717 2.8289 0 1.0608-0.42222 2.0794-1.1717 2.8289l-19.343 19.343c-0.74944 0.74944-1.7681 1.1717-2.8289 1.1717s-2.0794-0.42222-2.8289-1.1717l-19.343-19.343c-0.74944-0.74944-1.1717-1.7681-1.1717-2.8289 0-1.0608 0.42222-2.0794 1.1717-2.8289l19.343-19.343c0.74944-0.74944 1.7681-1.1717 2.8289-1.1717s2.0794 0.42222 2.8289 1.1717z" fill="none" stroke="#ffde59" stroke-width="2"/>
+    </g>
+  </g>
+
+  <path d="m23.941 24.816c0.25 0.21094 0.28125 0.58203 0.054688 0.81641-1.0195 1.0547-2.3125 1.8164-3.7344 2.2031-1.6172 0.43359-3.3281 0.35937-4.8984-0.21094-1.5742-0.57031-2.9336-1.6094-3.8945-2.9805-0.96094-1.3711-1.4766-3-1.4766-4.6758-0.003907-1.6719 0.51172-3.3047 1.4688-4.6758 0.95703-1.3711 2.3164-2.4141 3.8867-2.9883 1.5703-0.57422 3.2812-0.64844 4.8984-0.21875 1.4258 0.38281 2.7188 1.1406 3.7422 2.1953 0.22656 0.23438 0.19141 0.60547-0.058593 0.81641-0.24609 0.20703-0.61719 0.17578-0.84766-0.054687-0.86719-0.87109-1.9492-1.5-3.1406-1.8164-1.3828-0.37109-2.8438-0.30469-4.1914 0.1875-1.3438 0.48828-2.5039 1.3828-3.3242 2.5547-0.82031 1.1719-1.2578 2.5703-1.2578 4 0.003906 1.4297 0.44531 2.8281 1.2656 4 0.82422 1.1719 1.9844 2.0586 3.332 2.5469 1.3438 0.48828 2.8047 0.55078 4.1875 0.17969 1.1914-0.32031 2.2734-0.94922 3.1367-1.8203 0.23047-0.23047 0.60156-0.26562 0.85156-0.058594z" fill="#333"/>
+  <path d="m16.512 16.457c0-0.35938 0.28906-0.64844 0.64453-0.64844 0.35938 0 0.64844 0.28906 0.64844 0.64844v3.0586l2.2695 2.4297c0.24219 0.26172 0.23047 0.67188-0.03125 0.91406s-0.67188 0.23047-0.91406-0.03125l-2.3984-2.5664c-0.13672-0.14453-0.21484-0.33594-0.21875-0.53906z" fill="#333"/>
+  <path d="m16.781 8.8789h2.7188c0.19531 0 0.36328 0.070313 0.50391 0.21094 0.13672 0.13672 0.20703 0.30469 0.20703 0.50391 0 0.19531-0.070313 0.36328-0.20703 0.50391-0.14062 0.13672-0.30859 0.20703-0.50391 0.20703h-2.7188c-0.19531 0-0.36328-0.070313-0.5-0.20703-0.14062-0.14062-0.21094-0.30859-0.21094-0.50391 0-0.19922 0.070313-0.36719 0.21094-0.50391 0.13672-0.14062 0.30469-0.21094 0.5-0.21094z" fill="#333"/>
+  <path d="m24.93 22.609c-0.24609 0.26172-0.65625 0.26953-0.91797 0.023437l-2.1523-2.0508c-0.039063-0.039062-0.070313-0.074219-0.10156-0.11719-0.11719-0.11719-0.1875-0.27734-0.1875-0.45703 0-0.12891 0.039063-0.24609 0.10156-0.34766 0.042969-0.097656 0.10547-0.1875 0.1875-0.26562l2.1523-2.0547c0.26172-0.24609 0.67188-0.23438 0.91797 0.023437 0.24609 0.25781 0.23437 0.66797-0.023438 0.91406l-1.1367 1.082h3.3867c0.35547 0 0.64453 0.29297 0.64453 0.64844 0 0.35938-0.28906 0.64844-0.64453 0.64844h-3.3438l1.0938 1.0391c0.25781 0.24609 0.26953 0.65625 0.023438 0.91406z" fill="#333"/>
+   </svg>`;
+    }else if (name === 'closeAdmissionTime') {
+      svg = `<svg width="50" height="50" version="1.0" viewBox="0 0 37.5 37.5" xmlns="http://www.w3.org/2000/svg" zoomAndPan="magnify">
+<defs>
+<clipPath id="f">
+<path d="m1.1562 1.1562h34.695v34.695h-34.695z"/>
+</clipPath>
+<clipPath id="e">
+<path d="m20.598 2.0938 14.316 14.316c0.55469 0.55469 0.86719 1.3086 0.86719 2.0938s-0.3125 1.5391-0.86719 2.0938l-14.316 14.316c-0.55469 0.55469-1.3086 0.86719-2.0938 0.86719s-1.5391-0.3125-2.0938-0.86719l-14.316-14.316c-0.55469-0.55469-0.86719-1.3086-0.86719-2.0938s0.3125-1.5391 0.86719-2.0938l14.316-14.316c0.55469-0.55469 1.3086-0.86719 2.0938-0.86719s1.5391 0.3125 2.0938 0.86719z"/>
+</clipPath>
+<clipPath id="a">
+<path d="m0.22656 0.22656h34.555v34.555h-34.555z"/>
+</clipPath>
+<clipPath id="b">
+<path d="m19.598 1.0938 14.316 14.316c0.55469 0.55469 0.86719 1.3086 0.86719 2.0938s-0.3125 1.5391-0.86719 2.0938l-14.316 14.316c-0.55469 0.55469-1.3086 0.86719-2.0938 0.86719s-1.5391-0.3125-2.0938-0.86719l-14.316-14.316c-0.55469-0.55469-0.86719-1.3086-0.86719-2.0938s0.3125-1.5391 0.86719-2.0938l14.316-14.316c0.55469-0.55469 1.3086-0.86719 2.0938-0.86719s1.5391 0.3125 2.0938 0.86719z"/>
+</clipPath>
+<linearGradient id="c" x1="128" x2="128" y1="8.4831" y2="247.52" gradientTransform="matrix(.14456 0 0 .14456 -1 -1)" gradientUnits="userSpaceOnUse">
+<stop stop-color="#ffd96a" offset="0"/>
+<stop stop-color="#fff6dd" offset="1"/>
+</linearGradient>
+<clipPath id="d">
+<rect width="35" height="35"/>
+</clipPath>
+</defs>
+<g clip-path="url(#f)">
+<g clip-path="url(#e)">
+<g transform="translate(1 1)">
+<g clip-path="url(#d)">
+<g clip-path="url(#a)">
+<g clip-path="url(#b)">
+<path d="m0.22656 0.22656v34.555h34.555v-34.555z" fill="url(#c)"/>
+</g>
+</g>
+</g>
+</g>
+<path transform="matrix(.74013 0 0 .74013 5e-7 -1.3147e-14)" d="m27.83 2.8289 19.343 19.343c0.74944 0.74944 1.1717 1.7681 1.1717 2.8289s-0.42222 2.0794-1.1717 2.8289l-19.343 19.343c-0.74944 0.74944-1.7681 1.1717-2.8289 1.1717-1.0608 0-2.0794-0.42222-2.8289-1.1717l-19.343-19.343c-0.74944-0.74944-1.1717-1.7681-1.1717-2.8289s0.42222-2.0794 1.1717-2.8289l19.343-19.343c0.74944-0.74944 1.7681-1.1717 2.8289-1.1717 1.0608 0 2.0794 0.42222 2.8289 1.1717z" fill="none" stroke="#ffde59" stroke-width="2"/>
+</g>
+</g>
+<path d="m24.184 24.91c0.25391 0.21094 0.28906 0.58984 0.058594 0.82812-1.0352 1.0703-2.3438 1.8438-3.793 2.2344-1.6367 0.4375-3.3711 0.36719-4.9688-0.21484-1.5938-0.57812-2.9727-1.6328-3.9492-3.0234-0.97266-1.3867-1.4961-3.043-1.5-4.7422 0-1.6953 0.51953-3.3516 1.4922-4.7461 0.97266-1.3906 2.3477-2.4492 3.9453-3.0312 1.5938-0.58203 3.3281-0.65625 4.9688-0.21875 1.4453 0.38672 2.7578 1.1562 3.793 2.2227 0.23047 0.23828 0.19922 0.61719-0.054688 0.82812-0.25391 0.21484-0.62891 0.17969-0.86328-0.054687-0.875-0.88281-1.9766-1.5195-3.1836-1.8398-1.4023-0.375-2.8867-0.30859-4.25 0.1875-1.3672 0.49609-2.543 1.4023-3.375 2.5938-0.83203 1.1875-1.2773 2.6055-1.2773 4.0586 0.003907 1.4531 0.44922 2.8672 1.2852 4.0547 0.83203 1.1914 2.0117 2.0938 3.3789 2.5898 1.3633 0.49219 2.8477 0.55859 4.25 0.17969 1.207-0.32422 2.3047-0.96484 3.1836-1.8477 0.23047-0.23438 0.60547-0.26953 0.85938-0.058594z" fill="#333"/>
+<path d="m16.922 8.7422h2.7578c0.19922 0 0.37109 0.070312 0.51172 0.21094s0.21094 0.3125 0.21094 0.51172c0 0.19922-0.070313 0.36719-0.21094 0.51172-0.14062 0.14063-0.3125 0.21094-0.51172 0.21094h-2.7578c-0.19922 0-0.36719-0.070312-0.50781-0.21094-0.14062-0.14453-0.21094-0.3125-0.21094-0.51172 0-0.19922 0.070313-0.37109 0.21094-0.51172 0.14063-0.14062 0.30859-0.21094 0.50781-0.21094z" fill="#333"/>
+<path d="m24.695 17.348c0.25-0.26562 0.66797-0.27344 0.92969-0.023437l2.1836 2.082c0.039062 0.039062 0.074218 0.078125 0.10156 0.11719 0.11719 0.11719 0.19141 0.28125 0.19141 0.46484 0 0.12891-0.039062 0.25-0.10156 0.35156-0.042969 0.097656-0.10547 0.19141-0.19141 0.26953l-2.1836 2.0859c-0.26172 0.25-0.67969 0.23828-0.92969-0.023437s-0.23828-0.67969 0.023438-0.92969l1.1562-1.0977h-3.4375c-0.36328 0-0.65625-0.29297-0.65625-0.65625s0.29297-0.65625 0.65625-0.65625h3.3906l-1.1094-1.0586c-0.26172-0.25-0.27344-0.66406-0.023438-0.92578z" fill="#333"/>
+<path d="m16.863 16.426c0-0.35938 0.29297-0.65625 0.65625-0.65625s0.65625 0.29688 0.65625 0.65625v3.1094l2.3008 2.4609c0.25 0.26562 0.23438 0.67969-0.03125 0.92578-0.26562 0.25-0.67969 0.23438-0.92578-0.03125l-2.4336-2.6016c-0.14063-0.14844-0.21875-0.34375-0.22266-0.54687z" fill="#333"/>
+</svg>`;
+    }else if (name === 'finish') {
       svg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd"><rect width="16.8" height="16.8" x="4" y="4" stroke="' + (colorCode || color) + '" stroke-width=".5" rx="1.92" transform="rotate(45 12.4 12.4)"/><polygon fill="' + (colorCode || color) + '" fill-rule="nonzero" stroke="' + color2 + '" stroke-width=".4" points="8.571 0 9.857 1.286 3.866 7.286 0 3.429 1.286 2.143 3.866 4.714" transform="translate(7 9)"/></g></svg>';
     } else if (name === 'fail') {
       svg = '<svg width="48px" height="48px" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g ><g transform="translate(24.000000, 24.000000) rotate(90.000000) translate(-24.000000, -24.000000) translate(-2.000000, -2.000000)" stroke="' + (colorCode || color) + '"><rect id="Rectangle-33" transform="translate(25.955844, 26.044156) rotate(45.000000) translate(-25.955844, -26.044156) " x="8.45584412" y="8.54415588" width="35" height="35" rx="4"></rect></g><path d="M24.88275,23.82175 L31.42375,17.28075 C31.71675,16.98775 31.71675,16.51275 31.42375,16.21975 C31.13075,15.92675 30.65575,15.92675 30.36275,16.21975 L23.82175,22.76075 L17.28075,16.22075 C16.98775,15.92775 16.51275,15.92775 16.21975,16.22075 C15.92675,16.51375 15.92675,16.98875 16.21975,17.28175 L22.76075,23.82275 L16.22075,30.36275 C15.92775,30.65575 15.92775,31.13075 16.22075,31.42375 C16.36775,31.56975 16.55875,31.64375 16.75075,31.64375 C16.94275,31.64375 17.13475,31.57075 17.28075,31.42375 L23.82175,24.88275 L30.36275,31.42375 C30.50975,31.56975 30.70075,31.64375 30.89275,31.64375 C31.08475,31.64375 31.27675,31.57075 31.42275,31.42375 C31.71575,31.13075 31.71575,30.65575 31.42275,30.36275 L24.88275,23.82175 Z" id="Shape" fill="' + (colorCode || color) + '" fill-rule="nonzero"></path></g></g></svg>';
@@ -299,8 +375,15 @@ export class WorkflowService {
     } else if (name === 'Options') {
       const fillColor = '#B0BEC5';
       svg = '<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M28.0797 46.669L47.1716 27.5771C48.7337 26.015 48.7337 23.4824 47.1716 21.9203L28.0797 2.82841C26.5176 1.26631 23.9849 1.26631 22.4228 2.82841L3.33095 21.9203C1.76885 23.4824 1.76885 26.015 3.33095 27.5771L22.4228 46.669C23.9849 48.2311 26.5176 48.2311 28.0797 46.669Z" fill="url(#paint0_linear_6_158)" stroke="' + fillColor + '"/><path d="M28.9394 15.0712C27.8946 15.3087 26.9576 16.0293 26.411 17.0151C26.1284 17.5219 25.8904 18.3771 25.8904 18.872V19.0739H26.4482H27.0059V18.9353C27.0059 18.6701 27.1249 18.1831 27.2625 17.8663C27.7272 16.8211 28.6531 16.1837 29.709 16.1837C30.1627 16.1837 30.5159 16.2708 30.9286 16.4806C31.4715 16.7578 31.9362 17.2527 32.1891 17.8188C32.4084 18.3137 32.4047 18.3216 32.0329 18.0128L31.6983 17.7317L31.3636 18.195C31.1777 18.4483 31.0364 18.6701 31.0439 18.6859C31.0513 18.6978 31.5012 19.0778 32.0441 19.5252L33.0257 20.3408L33.9664 19.5648C34.4832 19.1372 34.9331 18.7611 34.9703 18.7255C35.0261 18.6621 35.0075 18.6265 34.7026 18.2108C34.5204 17.9653 34.3642 17.7594 34.3568 17.7555C34.3493 17.7515 34.1634 17.8941 33.9441 18.0762C33.721 18.2583 33.5388 18.4008 33.5351 18.3929C33.5313 18.385 33.4904 18.2227 33.4458 18.0247C33.0963 16.54 31.8879 15.3483 30.4341 15.0514C30.0548 14.9761 29.3298 14.9841 28.9394 15.0712Z" fill="' + color + '"/><path d="M16.0037 25.8124C16.0037 31.8304 16.0074 32.3371 16.0669 32.5787C16.2305 33.2359 16.7325 33.7664 17.3646 33.9406C17.5505 33.9921 18.4726 34 24.4106 34C31.2335 34 31.2483 34 31.4789 33.9169C31.925 33.7585 32.3155 33.3982 32.5125 32.9667C32.5943 32.7925 35 23.4844 35 23.3498C35 23.3261 34.2861 23.3102 33.1037 23.3102H31.2074V22.0037V20.6972H27.3926H23.5777L22.7485 20.0043L21.9157 19.3115H18.9597H16L16.0037 25.8124ZM22.3432 21.1802L23.1575 21.8651L26.6155 21.8849L30.0734 21.9047L30.0845 22.6055L30.092 23.3102H25.5409C21.2352 23.3102 20.9861 23.3142 20.9675 23.3775C20.9564 23.4171 20.4544 25.3888 19.8483 27.7643C19.246 30.1398 18.7254 32.1471 18.692 32.2263C18.5432 32.5866 18.2309 32.7925 17.8368 32.7925C17.6137 32.7925 17.5505 32.7766 17.4241 32.6856C17.3348 32.6222 17.2419 32.5114 17.1935 32.4084L17.1155 32.2342V26.3667V20.4992H19.3241H21.529L22.3432 21.1802ZM33.5499 24.5138C33.5499 24.5217 33.1 26.2955 32.5497 28.4532C31.9325 30.8762 31.5198 32.4282 31.4677 32.5153C31.4231 32.5945 31.3227 32.6895 31.2409 32.7331C31.0996 32.8122 30.9955 32.8122 25.3885 32.8122H19.681L19.7368 32.6697C19.7665 32.5905 20.2462 30.7535 20.7965 28.5839C21.3505 26.4103 21.8115 24.6049 21.8227 24.5653C21.8413 24.502 22.1536 24.498 27.6975 24.498C30.9174 24.498 33.5499 24.5059 33.5499 24.5138Z" fill="' + color + '"/><path d="M22.9902 31.0306V31.6245H26.3552H29.7202V31.0306V30.4368H26.3552H22.9902V31.0306Z" fill="' + color + '"/><defs><linearGradient id="paint0_linear_6_158" x1="25.2513" y1="-1.86563e-05" x2="25.2513" y2="49.4975" gradientUnits="userSpaceOnUse"><stop stop-color="' + fillColor + '"/><stop offset="1" stop-color="' + fillColor + '"/></linearGradient></defs></svg>';
+    }else if (name === 'AdmissionTime') {
+      svg = '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">'
+        + '<path d="M17.5037 18.5699C17.7631 18.7872 17.7989 19.1754 17.5635 19.4185C16.5011 20.5154 15.1591 21.3078 13.6772 21.7065C11.9976 22.1584 10.2195 22.0826 8.58448 21.4893C6.94941 20.896 5.53648 19.814 4.53744 18.3902C3.5384 16.9663 3.00164 15.2695 3 13.5302C2.99837 11.7908 3.53194 10.093 4.52831 8.6673C5.52467 7.24158 6.93557 6.15693 8.56952 5.56058C10.2035 4.96422 11.9813 4.88504 13.6618 5.33377C15.1445 5.72968 16.488 6.51959 17.5524 7.61451C17.7883 7.85716 17.7532 8.24544 17.4942 8.46318V8.46318C17.2352 8.68092 16.8504 8.64531 16.6115 8.40556C15.7112 7.50172 14.5853 6.84875 13.3457 6.51776C11.9082 6.13391 10.3874 6.20164 8.98968 6.71177C7.59199 7.22189 6.38509 8.14971 5.53279 9.36928C4.68049 10.5889 4.22407 12.0411 4.22547 13.529C4.22687 15.0169 4.68601 16.4683 5.5406 17.6863C6.39519 18.9043 7.60382 19.8298 9.00247 20.3373C10.4011 20.8448 11.9221 20.9097 13.3588 20.5231C14.5978 20.1898 15.7225 19.5347 16.6211 18.6292C16.8595 18.389 17.2442 18.3527 17.5037 18.5699V18.5699Z" fill="white"/>'
+        + '<path d="M9.7793 9.87577C9.7793 9.50428 10.0805 9.20312 10.4519 9.20312C10.8234 9.20312 11.1246 9.50428 11.1246 9.87577V13.0594L13.4844 15.583C13.7376 15.8548 13.7225 16.2805 13.4507 16.5337C13.1789 16.7869 12.7532 16.7718 12.5 16.5L10.0079 13.8344C9.86557 13.6816 9.78445 13.4821 9.77952 13.2738L9.7793 13.2536V9.87577Z" fill="white"/>'
+        + '<rect x="9.32227" y="2" width="4.30493" height="1.47982" rx="0.73991" fill="white"/>'
+        + '<path d="M18.5313 16.2756C18.2751 16.5445 17.849 16.5551 17.5801 16.2991L15.3398 14.1643C15.301 14.1273 15.2666 14.087 15.2363 14.0452C15.1147 13.9234 15.0391 13.7553 15.0391 13.5696C15.0391 13.4365 15.0798 13.3136 15.1465 13.2092C15.1905 13.1074 15.2543 13.0115 15.3398 12.9299L17.5801 10.7961C17.849 10.5399 18.275 10.5497 18.5313 10.8186C18.7873 11.0875 18.7767 11.5136 18.5078 11.7698L17.3252 12.8967L20.8467 12.8967C21.2181 12.8968 21.5195 13.1982 21.5195 13.5696C21.5195 13.941 21.2181 14.2424 20.8467 14.2424L17.3721 14.2424L18.5078 15.3245C18.7766 15.5806 18.7872 16.0067 18.5313 16.2756Z" fill="white"/>'
+        + '<path d="M9.7793 9.87577C9.7793 9.50428 10.0805 9.20312 10.4519 9.20312C10.8234 9.20312 11.1246 9.50428 11.1246 9.87577V13.0594L13.4844 15.583C13.7376 15.8548 13.7225 16.2805 13.4507 16.5337C13.1789 16.7869 12.7532 16.7718 12.5 16.5L10.0079 13.8344C9.86557 13.6816 9.78445 13.4821 9.77952 13.2738L9.7793 13.2536V9.87577Z" fill="white"/>'
+        + '</svg>';
     }
-
     if (!svg) {
       return image;
     } else {
@@ -404,6 +487,8 @@ export class WorkflowService {
     WorkflowService.setStyleToSymbol('closeStickySubagent', colorCode, theme, graph);
     WorkflowService.setStyleToSymbol('options', colorCode, theme, graph);
     WorkflowService.setStyleToSymbol('closeOptions', colorCode, theme, graph);
+    WorkflowService.setStyleToSymbol('admissionTime', colorCode, theme, graph);
+    WorkflowService.setStyleToSymbol('closeAdmissionTime', colorCode, theme, graph);
     WorkflowService.setStyleToSymbol('finish', colorCode, theme, graph);
     WorkflowService.setStyleToSymbol('fail', colorCode, theme, graph);
     WorkflowService.setStyleToSymbol('break', colorCode, theme, graph);
@@ -1312,6 +1397,27 @@ export class WorkflowService {
             } else {
               v2 = closingNode(v1, v1.id, parent, 'Options');
             }
+          }else if (json.instructions[x].TYPE === 'AdmissionTime') {
+            _node.setAttribute('displayLabel', 'admissionTime');
+
+            if (json.instructions[x].admissionTimeScheme) {
+              _node.setAttribute('admissionTimeScheme', JSON.stringify(json.instructions[x].admissionTimeScheme));
+            }
+
+            v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68,
+              isGraphView ? WorkflowService.setStyleToSymbol('admissionTime', colorCode, self.theme) : 'admissionTime');
+
+            if (mapObj.vertixMap && json.instructions[x].position) {
+              mapObj.vertixMap.set(JSON.stringify(json.instructions[x].position), v1);
+            }
+
+            if (json.instructions[x].instructions && json.instructions[x].instructions.length > 0) {
+              recursive(json.instructions[x], '', v1, path, versionId);
+              connectInstruction(v1, vertexMap.get(json.instructions[x].instructions[0].uuid), 'admissionTime', 'admissionTime', v1);
+              v2 = closingNode(json.instructions[x], v1.id, parent, 'AdmissionTime');
+            } else {
+              v2 = closingNode(v1, v1.id, parent, 'AdmissionTime');
+            }
           } else if (json.instructions[x].TYPE === 'Cycle') {
             _node.setAttribute('displayLabel', 'cycle');
             if (json.instructions[x].schedule) {
@@ -1404,7 +1510,7 @@ export class WorkflowService {
 
           if (x > 0) {
             const prev = json.instructions[x - 1];
-            if (prev.TYPE !== 'Fork' && prev.TYPE !== 'CaseWhen' && prev.TYPE !== 'ForkList' && prev.TYPE !== 'ConsumeNotices' && prev.TYPE !== 'If' && prev.TYPE !== 'When' && prev.TYPE !== 'Try' && prev.TYPE !== 'Retry' && prev.TYPE !== 'Lock' && prev.TYPE !== 'StickySubagent' && prev.TYPE !== 'Options' && prev.TYPE !== 'Cycle' && prev.TYPE !== 'ElseWhen' && vertexMap.get(prev.uuid)) {
+            if (prev.TYPE !== 'Fork' && prev.TYPE !== 'CaseWhen' && prev.TYPE !== 'ForkList' && prev.TYPE !== 'ConsumeNotices' && prev.TYPE !== 'If' && prev.TYPE !== 'When' && prev.TYPE !== 'Try' && prev.TYPE !== 'Retry' && prev.TYPE !== 'Lock' && prev.TYPE !== 'StickySubagent' && prev.TYPE !== 'Options' && prev.TYPE !== 'AdmissionTime' && prev.TYPE !== 'Cycle' && prev.TYPE !== 'ElseWhen' && vertexMap.get(prev.uuid)) {
               connectInstruction(vertexMap.get(prev.uuid), v1, type, type, parent);
             }
           }
@@ -1674,8 +1780,8 @@ export class WorkflowService {
     }
 
     function closingNode(branches: any, targetId: any, parent: any, type: any): any {
-      const _node = doc.createElement(type === 'When' ? 'EndWhen' : type === 'ElseWhen' ? 'EndElse' : type === 'CaseWhen' ? 'EndCase' : type === 'Lock' ? 'EndLock' : type === 'StickySubagent' ? 'EndStickySubagent' : type === 'Options' ? 'EndOptions' : type === 'Retry' ? 'EndRetry' : type === 'ConsumeNotices' ? 'EndConsumeNotices' : 'EndCycle');
-      _node.setAttribute('displayLabel', type === 'When' ? 'whenEnd' : type === 'ElseWhen' ? 'elseEnd' : type === 'CaseWhen' ? 'caseEnd' : type === 'Lock' ? 'lockEnd' : type === 'StickySubagent' ? 'stickySubagentEnd' : type === 'Options' ? 'optionsEnd' : type === 'Retry' ? 'retryEnd' : type === 'ConsumeNotices' ? 'consumeNoticesEnd' : 'cycleEnd');
+      const _node = doc.createElement(type === 'When' ? 'EndWhen' : type === 'ElseWhen' ? 'EndElse' : type === 'CaseWhen' ? 'EndCase' : type === 'Lock' ? 'EndLock' : type === 'StickySubagent' ? 'EndStickySubagent' : type === 'Options' ? 'EndOptions' : type === 'AdmissionTime' ? 'EndAdmissionTime' : type === 'Retry' ? 'EndRetry' : type === 'ConsumeNotices' ? 'EndConsumeNotices' : 'EndCycle');
+      _node.setAttribute('displayLabel', type === 'When' ? 'whenEnd' : type === 'ElseWhen' ? 'elseEnd' : type === 'CaseWhen' ? 'caseEnd' : type === 'Lock' ? 'lockEnd' : type === 'StickySubagent' ? 'stickySubagentEnd' : type === 'Options' ? 'optionsEnd' : type === 'AdmissionTime' ? 'AdmissionTimeEnd' : type === 'Retry' ? 'retryEnd' : type === 'ConsumeNotices' ? 'consumeNoticesEnd' : 'cycleEnd');
       if (targetId) {
         _node.setAttribute('targetId', targetId);
       }
@@ -1686,6 +1792,8 @@ export class WorkflowService {
         v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('closeStickySubagent', colorCode, self.theme) : 'closeStickySubagent');
       } else if (type === 'Options') {
         v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('closeOptions', colorCode, self.theme) : 'closeOptions');
+      } else if (type === 'AdmissionTime') {
+        v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68, isGraphView ? WorkflowService.setStyleToSymbol('closeAdmissionTime', colorCode, self.theme) : 'closeAdmissionTime');
       } else if (type === 'Retry') {
         v1 = graph.insertVertex(parent, null, _node, 0, 0, 72, 72, isGraphView ? WorkflowService.setStyleToVertex('retry', colorCode, self.theme) : 'retry');
       } else if (type === 'ConsumeNotices') {
@@ -1708,7 +1816,7 @@ export class WorkflowService {
           } else {
             endNode = vertexMap.get(x.uuid);
           }
-          const _label = type === 'When' ? 'endWhen' : type === 'ElseWhen' ? 'endElse' : type === 'CaseWhen' ? 'endCase' : type === 'Lock' ? 'endLock' : type === 'StickySubagent' ? 'endStickySubagent' : type === 'Options' ? 'endOptions' : type === 'Retry' ? 'endRetry' : type === 'ConsumeNotices' ? 'endConsumeNotices' : 'endCycle';
+          const _label = type === 'When' ? 'endWhen' : type === 'ElseWhen' ? 'endElse' : type === 'CaseWhen' ? 'endCase' : type === 'Lock' ? 'endLock' : type === 'StickySubagent' ? 'endStickySubagent' : type === 'Options' ? 'endOptions' : type === 'AdmissionTime' ? 'endAdmissionTime' : type === 'Retry' ? 'endRetry' : type === 'ConsumeNotices' ? 'endConsumeNotices' : 'endCycle';
           connectInstruction(endNode, v1, _label, _label, parent);
         }
       } else {
@@ -2369,19 +2477,19 @@ convertStringToDuration(str: string, isDuration = false): number {
   }
 
   isInstructionCollapsible(tagName: string): boolean {
-    return (tagName === 'Fork' || tagName === 'CaseWhen' || tagName === 'ForkList' || tagName === 'If' || tagName === 'When' || tagName === 'Retry' || tagName === 'Options'
+    return (tagName === 'Fork' || tagName === 'CaseWhen' || tagName === 'ForkList' || tagName === 'If' || tagName === 'When' || tagName === 'Retry' || tagName === 'Options' || tagName === 'AdmissionTime'
       || tagName === 'Lock' || tagName === 'StickySubagent' || tagName === 'Cycle' || tagName === 'ElseWhen' || tagName === 'Try' || tagName === 'ConsumeNotices');
   }
 
   isOnlyInstruction(tagName: string): boolean {
-    return (tagName === 'ForkList' || tagName === 'Retry' || tagName === 'Options'
+    return (tagName === 'ForkList' || tagName === 'Retry' || tagName === 'Options' || tagName === 'AdmissionTime'
       || tagName === 'Lock' || tagName === 'StickySubagent' || tagName === 'Cycle' || tagName === 'ElseWhen' || tagName === 'When' || tagName === 'ConsumeNotices');
   }
 
   getLabelName(tagName: string): string {
     return tagName === 'Fork' ? 'join' : tagName === 'Retry' ? 'endRetry' : tagName === 'ConsumeNotices' ? 'endConsumeNotices'
       : tagName === 'Lock' ? 'endLock' : tagName === 'StickySubagent' ? 'endStickySubagent' : tagName === 'ForkList' ? 'endForkList'
-        : tagName === 'Catch' ? 'catch' : tagName === 'If' ? 'endIf' : tagName === 'Cycle' ? 'endCycle' : tagName === 'Options' ? 'endOptions' : tagName === 'Try' ? 'endTry' : tagName === 'CaseWhen' ? 'endCase' : tagName === 'When' ? 'endWhen' : 'endElse';
+        : tagName === 'Catch' ? 'catch' : tagName === 'If' ? 'endIf' : tagName === 'Cycle' ? 'endCycle' : tagName === 'Options' ? 'endOptions' : tagName === 'AdmissionTime' ? 'endAdmissionTime' : tagName === 'Try' ? 'endTry' : tagName === 'CaseWhen' ? 'endCase' : tagName === 'When' ? 'endWhen' : 'endElse';
   }
 
   isSingleInstruction(tagName: string): boolean {
@@ -2391,7 +2499,7 @@ convertStringToDuration(str: string, isDuration = false): number {
 
   checkClosingCell(tagName: string): boolean {
     return tagName === 'Join' || tagName === 'EndCase' || tagName === 'EndIf' || tagName === 'EndWhen' || tagName === 'EndForkList' || tagName === 'EndTry' || tagName === 'EndStickySubagent'
-      || tagName === 'EndRetry' || tagName === 'EndCycle' || tagName === 'EndElse' || tagName === 'EndLock' || tagName === 'EndConsumeNotices' || tagName === 'EndOptions';
+      || tagName === 'EndRetry' || tagName === 'EndCycle' || tagName === 'EndElse' || tagName === 'EndLock' || tagName === 'EndConsumeNotices' || tagName === 'EndOptions' || tagName === 'EndAdmissionTime';
   }
 
   exportInPng(name: string, isModal = false): void {

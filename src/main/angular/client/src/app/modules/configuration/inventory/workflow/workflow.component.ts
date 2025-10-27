@@ -6323,7 +6323,7 @@ export class WorkflowComponent {
 
   private updateToolbar(operation, cell, name = ''): void {
     $('#toolbar').find('img').each(function (index) {
-      if (index === 23) {
+      if (index === 24) {
         if (!cell && !name) {
           $(this).addClass('disable-link');
           $(this).attr('title', '');
@@ -6335,7 +6335,7 @@ export class WorkflowComponent {
 
       var texts = [
         "", "Job", "Try", "Retry", "Finish", "Fail",
-        "Fork", "Fork<br>List", "Cycle", "Break", "Lock",
+        "Fork", "Fork<br>List", "Cycle","Admission<br>Time", "Break", "Lock",
         "Sleep", "Prompt", "AddOrder", "Post<br>Notices",
         "Expect<br>Notices", "Consume<br>Notices", "If",
         "Case", "CaseWhen", "CaseElse", "Sticky<br>Subagent",
@@ -6348,7 +6348,7 @@ export class WorkflowComponent {
       }
 
       const hasLicense = sessionStorage.getItem('hasLicense');
-      if (index === 21 && hasLicense === 'false') {
+      if (index === 22 && hasLicense === 'false') {
         $img.next('span').remove();
         return;
       }
@@ -8771,15 +8771,15 @@ export class WorkflowComponent {
     const doc = mxUtils.createXmlDocument();
     if (!callFun && !isNavigate) {
       $('#toolbar').find('img').each(function (index) {
-        if (index === 21 && !self.hasLicense) {
+        if (index === 22 && !self.hasLicense) {
           $('#toolbar').find('hr').each(function (index) {
-            if (index === 20) {
+            if (index === 21) {
               $(this).hide();
             }
           });
           $(this).hide();
         }
-        if (index === 23) {
+        if (index === 24) {
           $(this).addClass('disable-link');
         }
       });
@@ -10063,7 +10063,7 @@ export class WorkflowComponent {
               if ((drpTargt.value.tagName != 'CaseWhen' && drpTargt.value.tagName != 'Connection') && (dragElement.match('when') || dragElement.match('elseWhen'))) {
                 return
               }
-              if (dragElement.match('fork') || dragElement.match('retry') || dragElement.match('cycle') || dragElement.match('lock') || dragElement.match('options') || dragElement.match('try') || dragElement.match('if')) {
+              if (dragElement.match('fork') || dragElement.match('retry') || dragElement.match('cycle') || dragElement.match('lock') || dragElement.match('options') || dragElement.match('admissionTime') || dragElement.match('try') || dragElement.match('if')) {
                 const selectedCell = graph.getSelectionCell();
 
                 if (selectedCell) {
@@ -10481,7 +10481,7 @@ export class WorkflowComponent {
                   if (cell.source) {
                     if (cell.source.getParent() && cell.source.getParent().id !== '1') {
                       const _type = cell.getAttribute('type');
-                      if (!(_type === 'retry' || _type === 'lock' || _type === 'options' || _type === 'cycle' || _type === 'elseWhen' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
+                      if (!(_type === 'retry' || _type === 'lock' || _type === 'options' || _type === 'admissionTime' || _type === 'cycle' || _type === 'elseWhen' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
                         cell.setParent(cell.source.getParent());
                       }
                     }
@@ -10509,7 +10509,8 @@ export class WorkflowComponent {
                       graph.insertEdge(parent, null, getConnectionNode('endWhen'), v2, v3);
                       graph.insertEdge(parent, null, getConnectionNode('endCase'), v3, v1);
                     } else if (cells[0].value.tagName === 'ForkList' || cells[0].value.tagName === 'Lock' || cells[0].value.tagName === 'StickySubagent' ||
-                      cells[0].value.tagName === 'Options' || cells[0].value.tagName === 'ConsumeNotices') {
+                      cells[0].value.tagName === 'Options' ||
+                      cells[0].value.tagName === 'AdmissionTime' || cells[0].value.tagName === 'ConsumeNotices') {
                       v1 = createEndVertex(parent, cells[0].value.tagName);
                     } else if (cells[0].value.tagName === 'If') {
                       v1 = graph.insertVertex(parent, null, getCellNode('EndIf', 'ifEnd', null), 0, 0, 72, 72, 'if');
@@ -10952,7 +10953,8 @@ export class WorkflowComponent {
         (sourName === 'Cycle' && tarName === 'EndCycle') || (sourName === 'ElseWhen' && tarName === 'EndElse') ||
         (sourName === 'ForkList' && tarName === 'EndForkList') ||
         (sourName === 'Lock' && tarName === 'EndLock') ||
-        (sourName === 'Options' && tarName === 'EndOptions') ||
+        (sourName === 'Options' && tarName === 'EndOptions')||
+        (sourName === 'AdmissionTime' && tarName === 'EndAdmissionTime') ||
         (sourName === 'StickySubagent' && tarName === 'EndStickySubagent');
     }
 
@@ -10999,6 +11001,10 @@ export class WorkflowComponent {
         label1 = 'options';
         label2 = 'endOptions';
         v2 = graph.insertVertex(parent, null, getCellNode('EndOptions', 'optionsEnd', parentCell.id), 0, 0, 68, 68, 'options');
+      } else if (name === 'AdmissionTime') {
+        label1 = 'admissionTime';
+        label2 = 'endAdmissionTime';
+        v2 = graph.insertVertex(parent, null, getCellNode('EndAdmissionTime', 'admissionTimeEnd', parentCell.id), 0, 0, 68, 68, 'admissionTime');
       } else if (name === 'ConsumeNotices') {
         label1 = 'consumeNotices';
         label2 = 'endConsumeNotices';
@@ -11697,6 +11703,12 @@ export class WorkflowComponent {
             const edit2 = new mxCellAttributeChange(
               obj.cell, 'onlyOnePeriod', self.selectedNode.newObj.onlyOnePeriod);
             graph.getModel().execute(edit2);
+          }else if (self.selectedNode.type === 'AdmissionTime') {
+            const edit = new mxCellAttributeChange(
+              obj.cell, 'admissionTimeScheme',
+              JSON.stringify(self.selectedNode.newObj.admissionTimeScheme)
+            );
+            graph.getModel().execute(edit);
           } else if (self.selectedNode.type === 'ForkList') {
             if (self.selectedNode.radio1 === 'byListVariable' || !self.hasLicense) {
               const edit = new mxCellAttributeChange(
@@ -12161,6 +12173,21 @@ export class WorkflowComponent {
               obj.schedule = JSON.parse(obj.schedule);
             } catch (e) {
               obj.schedule = {};
+            }
+          }
+        }else if (cell.value.tagName === 'AdmissionTime') {
+          obj.admissionTimeScheme = cell.getAttribute('admissionTimeScheme');
+          if (!obj.admissionTimeScheme || isEmpty(obj.admissionTimeScheme) || typeof obj.admissionTimeScheme !== 'string') {
+            obj.admissionTimeScheme = {
+              periods: []
+            };
+          } else {
+            try {
+              obj.admissionTimeScheme = JSON.parse(obj.admissionTimeScheme);
+            } catch (e) {
+              obj.admissionTimeScheme = {
+                periods: []
+              };
             }
           }
         } else if (cell.value.tagName === 'ForkList') {
@@ -13043,6 +13070,11 @@ export class WorkflowComponent {
           _node.setAttribute('displayLabel', 'options');
           _node.setAttribute('uuid', self.coreService.create_UUID());
           clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'options');
+        } else if (title.match('admissionTime')) {
+          _node = doc.createElement('AdmissionTime');
+          _node.setAttribute('displayLabel', 'admissionTime');
+          _node.setAttribute('uuid', self.coreService.create_UUID());
+          clickedCell = graph.insertVertex(defaultParent, null, _node, 0, 0, 68, 68, 'admissionTime');
         } else if (title.match('try')) {
           _node = doc.createElement('Try');
           _node.setAttribute('displayLabel', 'try');
@@ -13090,7 +13122,7 @@ export class WorkflowComponent {
           if (targetCell.source) {
             if (targetCell.source.getParent().id !== '1') {
               const _type = targetCell.getAttribute('type') || targetCell.getAttribute('displayLabel');
-              if (!(_type === 'retry' || _type === 'cycle' || _type === 'elseWhen' || _type === 'lock' || _type === 'options' || _type === 'consumeNotices' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
+              if (!(_type === 'retry' || _type === 'cycle' || _type === 'elseWhen' || _type === 'lock' || _type === 'options' || _type === 'admissionTime' || _type === 'consumeNotices' || _type === 'then' || _type === 'else' || _type === 'branch' || _type === 'try' || _type === 'catch')) {
                 targetCell.setParent(targetCell.source.getParent());
                 clickedCell.setParent(targetCell.source.getParent());
               }
@@ -13115,7 +13147,8 @@ export class WorkflowComponent {
             } else if (clickedCell.value.tagName === 'Retry') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', null), 0, 0, 72, 72, 'retry');
             } else if (clickedCell.value.tagName === 'ForkList' || clickedCell.value.tagName === 'Lock' || clickedCell.value.tagName === 'StickySubagent' ||
-              clickedCell.value.tagName === 'Options' || clickedCell.value.tagName === 'ConsumeNotices') {
+              clickedCell.value.tagName === 'Options' ||
+              clickedCell.value.tagName === 'AdmissionTime' || clickedCell.value.tagName === 'ConsumeNotices') {
               v1 = createEndVertex(parent, clickedCell.value.tagName);
             } else if (clickedCell.value.tagName === 'Cycle') {
               v1 = graph.insertVertex(parent, null, getCellNode('EndCycle', 'cycleEnd', null), 0, 0, 72, 72, 'cycle');
@@ -13210,7 +13243,7 @@ export class WorkflowComponent {
         if ((tagName === 'ForkList' || tagName === 'StickySubagent') && title.match('fork.')) {
           return 'inValid';
         }
-        if (title.match('fork') || title.match('caseWhen') || title.match('retry') || title.match('cycle') || title.match('consume') || title.match('lock') || title.match('options') || title.match('try') || title.match('if') || title.match('when') || title.match('elseWhen')) {
+        if (title.match('fork') || title.match('caseWhen') || title.match('retry') || title.match('cycle') || title.match('consume') || title.match('lock') || title.match('options') || title.match('admissionTime') || title.match('try') || title.match('if') || title.match('when') || title.match('elseWhen')) {
           const selectedCell = graph.getSelectionCell();
           if (selectedCell) {
             const cells = graph.getSelectionCells();
@@ -13412,6 +13445,8 @@ export class WorkflowComponent {
         displayLabel = 'stickySubagent';
       } else if (dropTargetName === 'Options') {
         displayLabel = 'options';
+      } else if (dropTargetName === 'AdmissionTime') {
+        displayLabel = 'admissionTime';
       } else if (dropTargetName === 'ConsumeNotices') {
         displayLabel = 'consumeNotices';
       } else if (dropTargetName === 'ForkList') {
@@ -13450,7 +13485,8 @@ export class WorkflowComponent {
           v1 = graph.insertVertex(parent, null, getCellNode('EndRetry', 'retryEnd', cell.id), 0, 0, 72, 72, 'retry');
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'ForkList' || cell.value.tagName === 'Lock' || cell.value.tagName === 'StickySubagent' ||
-          cell.value.tagName === 'Options' || cell.value.tagName === 'ConsumeNotices') {
+          cell.value.tagName === 'Options' ||
+          cell.value.tagName === 'AdmissionTime' || cell.value.tagName === 'ConsumeNotices') {
           v1 = createEndVertex(parent, cell.value.tagName, cell.id);
           graph.insertEdge(parent, null, getConnectionNode(''), cell, v1);
         } else if (cell.value.tagName === 'Cycle') {
@@ -13555,6 +13591,8 @@ export class WorkflowComponent {
           checkLabel = 'EndStickySubagent';
         } else if (dropTargetName === 'Options') {
           checkLabel = 'EndOptions';
+        } else if (dropTargetName === 'AdmissionTime') {
+          checkLabel = 'EndAdmissionTime';
         } else if (dropTargetName === 'ConsumeNotices') {
           checkLabel = 'EndConsumeNotices';
         } else if (dropTargetName === 'Cycle') {
@@ -14829,6 +14867,17 @@ export class WorkflowComponent {
               instructions: json.instructions[x].instructions
             };
             delete json.instructions[x].instructions;
+          }else if (json.instructions[x].TYPE === 'AdmissionTime') {
+            json.instructions[x].block = {
+              instructions: json.instructions[x].instructions
+            };
+            let admissionTimeSchemeObj = json.instructions[x].admissionTimeScheme ? clone(json.instructions[x].admissionTimeScheme) : null;
+            delete json.instructions[x].instructions;
+            delete json.instructions[x].admissionTimeScheme;
+            admissionTimeSchemeObj = parseString(admissionTimeSchemeObj);
+            if (admissionTimeSchemeObj) {
+              json.instructions[x].admissionTimeScheme = admissionTimeSchemeObj;
+            }
           } else if (json.instructions[x].TYPE === 'Cycle') {
             json.instructions[x].cycleWorkflow = {
               instructions: json.instructions[x].instructions
@@ -15270,7 +15319,7 @@ export class WorkflowComponent {
     }
     this.cutCell = [];
     $('#toolbar').find('img').each(function (index) {
-      if (index === 23) {
+      if (index === 24) {
         $(this).addClass('disable-link');
       }
     });
@@ -15803,5 +15852,4 @@ export class WorkflowComponent {
       nzStyle: { width: this.modalWidth + 'px', height: this.modalHeight + 'px', minWidth: '300px',  minHeight: '200px' }
     });
   }
-
 }

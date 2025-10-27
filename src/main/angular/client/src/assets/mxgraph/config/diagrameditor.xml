@@ -81,6 +81,13 @@
         </mxCell>
       </Cycle>
     </add>
+    <add as="AdmissionTime">
+      <AdmissionTime displayLabel="admissionTime">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="72" height="72"/>
+        </mxCell>
+      </AdmissionTime>
+    </add>
     <add as="Retry">
       <Retry displayLabel="retry" maxTries="10" retryDelays="60">
         <mxCell vertex="1">
@@ -252,6 +259,8 @@
          icon="./assets/mxgraph/images/fork-list.png"/>
     <hr/>
     <add as="Cycle" template="Cycle" style="cycle" icon="./assets/mxgraph/images/cycle.png"/>
+    <hr/>
+    <add as="AdmissionTime" template="AdmissionTime" style="admissionTime" icon="./assets/mxgraph/images/admissionTime.png"/>
     <hr/>
     <add as="Break" template="Break" style="break" icon="./assets/mxgraph/images/break.png"/>
     <hr/>
