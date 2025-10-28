@@ -867,7 +867,12 @@
 
             @if (selectedNode.type === 'AdmissionTime') {
               <div>
-                -----------------------------------todo---------------------------------
+                <app-admission-time
+                  [data]="selectedNode.data"
+                  [job]="selectedNode.obj"
+                  [timeZone]="preferences.zone"
+                  [isTooltipVisible]="!preferences.showTooltipInfo">
+                </app-admission-time>
               </div>
             }
 

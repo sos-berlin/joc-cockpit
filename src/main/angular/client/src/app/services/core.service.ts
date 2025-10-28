@@ -3118,6 +3118,11 @@ private checkParentNode(lastPos, data, item, nodes): any {
               json.instructions[x].instructions = json.instructions[x].block.instructions;
               delete json.instructions[x].block;
             }
+          } else if (json.instructions[x].TYPE === 'AdmissionTime') {
+            if (json.instructions[x].block) {
+              json.instructions[x].instructions = json.instructions[x].block.instructions;
+              delete json.instructions[x].block;
+            }
           } else if (json.instructions[x].TYPE === 'Cycle') {
             if (json.instructions[x].cycleWorkflow) {
               json.instructions[x].instructions = json.instructions[x].cycleWorkflow.instructions;

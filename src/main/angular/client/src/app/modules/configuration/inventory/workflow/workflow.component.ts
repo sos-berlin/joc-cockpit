@@ -11705,7 +11705,8 @@ export class WorkflowComponent {
             graph.getModel().execute(edit2);
           }else if (self.selectedNode.type === 'AdmissionTime') {
             const edit = new mxCellAttributeChange(
-              obj.cell, 'admissionTimeScheme',
+              obj.cell,
+              'admissionTimeScheme',
               JSON.stringify(self.selectedNode.newObj.admissionTimeScheme)
             );
             graph.getModel().execute(edit);
@@ -11936,6 +11937,17 @@ export class WorkflowComponent {
             self.selectedNode.job.admissionTimeScheme = {};
           }
           self.selectedNode.job.admissionTimeScheme.periods = self.workflowService.convertListToAdmissionTime(self.selectedNode.periodList);
+        }else if (self.selectedNode.type === 'AdmissionTime') {
+          if (self.selectedNode.data.periodList &&
+            self.selectedNode.data.periodList.length > 0) {
+            self.selectedNode.obj.admissionTimeScheme.periods = [];
+            self.selectedNode.obj.admissionTimeScheme.periods =
+              self.workflowService.convertListToAdmissionTime(
+                self.selectedNode.data.periodList
+              );
+          } else {
+            self.selectedNode.obj.admissionTimeScheme.periods = [];
+          }
         }
 
         self.cutOperation();
@@ -12177,18 +12189,29 @@ export class WorkflowComponent {
           }
         }else if (cell.value.tagName === 'AdmissionTime') {
           obj.admissionTimeScheme = cell.getAttribute('admissionTimeScheme');
-          if (!obj.admissionTimeScheme || isEmpty(obj.admissionTimeScheme) || typeof obj.admissionTimeScheme !== 'string') {
+
+          if (!obj.admissionTimeScheme || isEmpty(obj.admissionTimeScheme) ||
+            typeof obj.admissionTimeScheme !== 'string') {
             obj.admissionTimeScheme = {
-              periods: []
+              periods: [],
+              restrictedSchemes: []
             };
           } else {
             try {
               obj.admissionTimeScheme = JSON.parse(obj.admissionTimeScheme);
             } catch (e) {
               obj.admissionTimeScheme = {
-                periods: []
+                periods: [],
+                restrictedSchemes: []
               };
             }
+          }
+
+          if (!obj.admissionTimeScheme.periods) {
+            obj.admissionTimeScheme.periods = [];
+          }
+          if (!obj.admissionTimeScheme.restrictedSchemes) {
+            obj.admissionTimeScheme.restrictedSchemes = [];
           }
         } else if (cell.value.tagName === 'ForkList') {
           let children = cell.getAttribute('children');
@@ -12352,6 +12375,12 @@ export class WorkflowComponent {
           } else {
             self.selectedNode.radio = 'agent';
           }
+        }
+        if (cell.value.tagName === 'AdmissionTime') {
+          self.selectedNode.data = {
+            periodList: [],
+            isFromCycle: false
+          };
         }
 
         if (cell.value.tagName === 'Lock') {
@@ -15852,4 +15881,13 @@ export class WorkflowComponent {
       nzStyle: { width: this.modalWidth + 'px', height: this.modalHeight + 'px', minWidth: '300px',  minHeight: '200px' }
     });
   }
+
+  getAdmissionTimeData(): any {
+    return {
+      ...this.selectedNode,
+      periodList: this.selectedNode.instructionPeriodList || [],
+      isFromCycle: false
+    };
+  }
+
 }

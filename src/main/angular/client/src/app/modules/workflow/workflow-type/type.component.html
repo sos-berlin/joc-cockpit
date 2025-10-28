@@ -171,7 +171,7 @@
   <div>
     <ul class="m-b-0">
       <li>
-        @if (instruction['TYPE'] === 'Fork' || instruction['TYPE'] === 'ForkList' || instruction['TYPE'] === 'Retry' || instruction['TYPE'] === 'If' || instruction['TYPE'] === 'Try' || instruction['TYPE'] === 'Cycle' || instruction['TYPE'] === 'Lock' || instruction['TYPE'] === 'CaseWhen' || instruction['TYPE'] === 'When' || instruction['TYPE'] === 'ElseWhen' || instruction['TYPE'] === 'Options' || instruction['TYPE'] === 'StickySubagent' || instruction['TYPE'] === 'ConsumeNotices') {
+        @if (instruction['TYPE'] === 'Fork' || instruction['TYPE'] === 'ForkList' || instruction['TYPE'] === 'Retry' || instruction['TYPE'] === 'If' || instruction['TYPE'] === 'Try' || instruction['TYPE'] === 'Cycle' || instruction['TYPE'] === 'Lock' || instruction['TYPE'] === 'CaseWhen' || instruction['TYPE'] === 'When' || instruction['TYPE'] === 'ElseWhen' || instruction['TYPE'] === 'Options'  || instruction['TYPE'] === 'AdmissionTime' || instruction['TYPE'] === 'StickySubagent' || instruction['TYPE'] === 'ConsumeNotices') {
           <a class="hover">
             <ng-template #contentTemplate>
               <div>
@@ -724,7 +724,7 @@
             </div>
           </div>
         }
-        @if ((instruction['TYPE'] === 'Retry' || instruction['TYPE'] === 'Cycle' || instruction['TYPE'] === 'Options' || instruction['TYPE'] === 'Lock' || instruction['TYPE'] === 'CaseWhen' || instruction['TYPE'] === 'When' || instruction['TYPE'] === 'ElseWhen' || instruction['TYPE'] === 'StickySubagent' || instruction['TYPE'] === 'ForkList' || instruction['TYPE'] === 'ConsumeNotices') && (instruction.show)) {
+        @if ((instruction['TYPE'] === 'Retry' || instruction['TYPE'] === 'Cycle' || instruction['TYPE'] === 'Options'  || instruction['TYPE'] === 'AdmissionTime' || instruction['TYPE'] === 'Lock' || instruction['TYPE'] === 'CaseWhen' || instruction['TYPE'] === 'When' || instruction['TYPE'] === 'ElseWhen' || instruction['TYPE'] === 'StickySubagent' || instruction['TYPE'] === 'ForkList' || instruction['TYPE'] === 'ConsumeNotices') && (instruction.show)) {
           <div>
             @if (instruction.instructions && instruction.instructions.length > 0) {
               <div>
