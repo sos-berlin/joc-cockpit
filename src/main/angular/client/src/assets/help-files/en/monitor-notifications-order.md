@@ -7,7 +7,7 @@ Notifications are configured from the [Configuration - Notification](/configurat
 - The *notify_on_failure_gui* fragment specifies if Notifications become visible in this view.
 - In addition to displaying Notifications in this view, they can be forwarded by mail and from the command line, for example to 3rd-party System Monitor products.
 
-Users should be aware that Notifications are subject to purge by the [Cleanup Service](/service-cleanup). By default, Notifications are visible for the current day.
+Users should be aware that Notifications are subject to purge by the [Cleanup Service](/service-cleanup). By default, Notifications are purged if older than one day.
 
 ## Display of Notifications
 
