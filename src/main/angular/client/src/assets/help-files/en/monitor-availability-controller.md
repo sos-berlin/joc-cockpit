@@ -4,6 +4,8 @@ The view displays indicators for availability of a Controller.
 
 If a Controller Cluster is used then cluster availability is considered. For example, if a Controller instance in a cluster is shutdown for maintenance purposes and the remaining instance picks up the load, then this does not reduce availability.
 
+The upper right corner of the screen offers the *Current Controller* checkbox: when unchecked availability will be displayed for all connected Controllers and otherwise the information is displayed for the currently selected Controller only.
+
 Users should be aware that historic data for Controller availability are subject to purge by the [Cleanup Service](/service-cleanup).
 
 ## Date Filters
@@ -27,8 +29,8 @@ Shows availability from a bar chart on a daily basis in the given period.
 Shows availability per Controller and day in the given period.
 
 - The chart indicates hours in green color for which Controller availability is confirmed. 
-- A red color indicates unavailability.
-- A grey color indicates missing data.
+- The red color indicates unavailability.
+- The grey color indicates missing data.
 
 ## References
 

@@ -4,7 +4,7 @@ The view displays Notifications raised from JS7 products.
 
 System Notifications require setting up the the *Log Notification Service* from the [Settings](/settings) page section [Settings - Log Notification](/settings-log-notification). If configured, the JOC Cockpit acts as a syslog service that receives warnings and errors from Controllers and Agents registered with JOC Cockpit.
 
-Users should be aware that Notifications are subject to purge by the [Cleanup Service](/service-cleanup). By default, Notifications are visible for the current day.
+Users should be aware that Notifications are subject to purge by the [Cleanup Service](/service-cleanup). By default, Notifications are purged if older than one day.
 
 ## Display of Notifications
 

@@ -4,6 +4,7 @@ The view displays indicators for availability of Agent instances.
 
 If an Agent Cluster is used then cluster availability is considered. For example, if an Agent instance in a cluster is shutdown for maintenance purposes and the remaining instance picks up the load, then this does not reduce availability.
 
+The upper right corner of the screen offers the *Current Controller* checkbox: when unchecked availability will be displayed for Agents from all connected Controllers and otherwise the information is displayed for Agents registered with the currently selected Controller only.
 
 Users should be aware that historic data for Agent availability are subject to purge by the [Cleanup Service](/service-cleanup).
 
@@ -28,8 +29,8 @@ Shows availability from a bar chart on a daily basis in the given period. Each A
 Shows availability per Agent and day in the given period.
 
 - The chart indicates hours in green color for which Agent availability is confirmed. 
-- A red color indicates unavailability.
-- A grey color indicates missing data.
+- The red color indicates unavailability.
+- The grey color indicates missing data.
 
 ## References
 
