@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import {Injectable} from '@angular/core';
+import {DomSanitizer, SafeHtml} from '@angular/platform-browser';
 
 /**
  *
@@ -33,21 +33,62 @@ export interface MarkdownOptions {
 }
 
 
-interface TokenBase { type: string; raw: string; }
-interface HeadingToken extends TokenBase { depth: number; text: string; id?: string; }
-interface ParagraphToken extends TokenBase { text: string; }
-interface HrToken extends TokenBase {}
-interface CodeToken extends TokenBase { code: string; lang?: string; }
-interface BlockquoteToken extends TokenBase { tokens: Token[]; }
-interface ListToken extends TokenBase { ordered: boolean; start: number; items: ListItemToken[]; tight: boolean; }
-interface ListItemToken extends TokenBase { task?: boolean; checked?: boolean; tokens: Token[]; }
-interface TableToken extends TokenBase { header: string[]; align: ("left"|"center"|"right"|null)[]; rows: string[][]; }
-interface HtmlBlockToken extends TokenBase { html: string; block: boolean; }
+interface TokenBase {
+  type: string;
+  raw: string;
+}
+
+interface HeadingToken extends TokenBase {
+  depth: number;
+  text: string;
+  id?: string;
+}
+
+interface ParagraphToken extends TokenBase {
+  text: string;
+}
+
+interface HrToken extends TokenBase {
+}
+
+interface CodeToken extends TokenBase {
+  code: string;
+  lang?: string;
+}
+
+interface BlockquoteToken extends TokenBase {
+  tokens: Token[];
+}
+
+interface ListToken extends TokenBase {
+  ordered: boolean;
+  start: number;
+  items: ListItemToken[];
+  tight: boolean;
+}
+
+interface ListItemToken extends TokenBase {
+  task?: boolean;
+  checked?: boolean;
+  tokens: Token[];
+}
+
+interface TableToken extends TokenBase {
+  header: string[];
+  align: ("left" | "center" | "right" | null)[];
+  rows: string[][];
+}
+
+interface HtmlBlockToken extends TokenBase {
+  html: string;
+  block: boolean;
+}
+
 type Token =
   | HeadingToken | ParagraphToken | HrToken | CodeToken | BlockquoteToken
   | ListToken | ListItemToken | TableToken | HtmlBlockToken;
 
-@Injectable({ providedIn: 'root' })
+@Injectable({providedIn: 'root'})
 export class MarkdownParserService {
   private readonly defaults: MarkdownOptions = {
     gfm: true,
@@ -57,16 +98,18 @@ export class MarkdownParserService {
     smartypants: false,
     headerIds: true,
     headerPrefix: 'md-'
-    ,sanitize: true,
+    , sanitize: true,
     xhtml: false,
     rawHtml: false
   };
+  private baseImagePath: string = 'assets/help-files/images/';
 
-  constructor(private readonly sanitizer: DomSanitizer) {}
+  constructor(private readonly sanitizer: DomSanitizer) {
+  }
 
   /** Render Markdown to (optionally Safe) HTML. */
   render(markdown: string, opts: Partial<MarkdownOptions> = {}): string | SafeHtml {
-    const options = { ...this.defaults, ...opts } as MarkdownOptions;
+    const options = {...this.defaults, ...opts} as MarkdownOptions;
     const src = (markdown ?? '').replace(/\r\n?|\u2028|\u2029/g, '\n');
 
     const tokens = this.lex(src, options);
@@ -79,7 +122,7 @@ export class MarkdownParserService {
   }
 
   parseMarkdown(markdown: string, opts: Partial<MarkdownOptions> = {}): string {
-    const result = this.render(markdown, { ...opts, sanitize: true });
+    const result = this.render(markdown, {...opts, sanitize: true});
     return typeof result === 'string' ? result : '' + result;
   }
 
@@ -88,12 +131,18 @@ export class MarkdownParserService {
     let lines = src.split('\n');
     const outdent = (s: string, n: number) =>
       s.split('\n').map(line => line.replace(new RegExp(`^ {0,${n}}`), '')).join('\n');
-    const eat = (n: number) => { lines.splice(0, n); };
+    const eat = (n: number) => {
+      lines.splice(0, n);
+    };
 
     const isBlank = (s: string) => /^\s*$/.test(s);
 
     while (lines.length) {
-      if (isBlank(lines[0])) { tokens.push({ type: 'space', raw: lines[0] } as any); eat(1); continue; }
+      if (isBlank(lines[0])) {
+        tokens.push({type: 'space', raw: lines[0]} as any);
+        eat(1);
+        continue;
+      }
       if (options.rawHtml) {
         if (/^<!--/.test(lines[0])) {
           let i = 0;
@@ -131,16 +180,16 @@ export class MarkdownParserService {
         while (i < lines.length && !new RegExp(`^\s*${fence}\s*$`).test(lines[i])) i++;
         const body = lines.slice(1, i).join('\n');
         const raw = lines.slice(0, i + 1).join('\n');
-        tokens.push({ type: 'code', raw, code: body.replace(/\n$/, ''), lang } as CodeToken);
+        tokens.push({type: 'code', raw, code: body.replace(/\n$/, ''), lang} as CodeToken);
         eat(i + 1);
         continue;
       }
 
       if (lines.length >= 2 && /^(=+|-+)\s*$/.test(lines[1])) {
         const depth = /^=+\s*$/.test(lines[1]) ? 1 : 2;
-        const { text, id } = this.extractHeadingId(lines[0]);
+        const {text, id} = this.extractHeadingId(lines[0]);
         const raw = lines[0] + '\n' + lines[1];
-        tokens.push({ type: 'heading', raw, depth, text, /* @ts-ignore */ id } as HeadingToken);
+        tokens.push({type: 'heading', raw, depth, text, /* @ts-ignore */ id} as HeadingToken);
         eat(2);
         continue;
       }
@@ -149,25 +198,29 @@ export class MarkdownParserService {
       m = lines[0].match(/^(#{1,6})\s+(.+?)\s*#*\s*$/);
       if (m) {
         const depth = m[1].length;
-        const { text, id } = this.extractHeadingId(m[2]);
-        tokens.push({ type: 'heading', raw: lines[0], depth, text, /* @ts-ignore */ id } as HeadingToken);
+        const {text, id} = this.extractHeadingId(m[2]);
+        tokens.push({type: 'heading', raw: lines[0], depth, text, /* @ts-ignore */ id} as HeadingToken);
         eat(1);
         continue;
       }
 
       if (/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(lines[0])) {
-        tokens.push({ type: 'hr', raw: lines[0] } as HrToken);
+        tokens.push({type: 'hr', raw: lines[0]} as HrToken);
         eat(1);
         continue;
       }
 
 
       if (/^\s*>\s?/.test(lines[0])) {
-        let i = 0; const chunk: string[] = [];
-        while (i < lines.length && /^\s*>\s?/.test(lines[i])) { chunk.push(lines[i].replace(/^\s*>\s?/, '')); i++; }
+        let i = 0;
+        const chunk: string[] = [];
+        while (i < lines.length && /^\s*>\s?/.test(lines[i])) {
+          chunk.push(lines[i].replace(/^\s*>\s?/, ''));
+          i++;
+        }
         const inner = chunk.join('\n');
         const innerTokens = this.lex(inner, options);
-        tokens.push({ type: 'blockquote', raw: chunk.join('\n'), tokens: innerTokens } as BlockquoteToken);
+        tokens.push({type: 'blockquote', raw: chunk.join('\n'), tokens: innerTokens} as BlockquoteToken);
         eat(i);
         continue;
       }
@@ -179,7 +232,8 @@ export class MarkdownParserService {
         const start = ordered ? parseInt(bullet, 10) : 1;
 
         const items: ListItemToken[] = [];
-        let i = 0; const buf: string[] = [];
+        let i = 0;
+        const buf: string[] = [];
         const getIndent = (s: string) => (s.match(/^\s*/)?.[0].length ?? 0);
         const baseIndent = getIndent(lines[0]);
 
@@ -194,7 +248,8 @@ export class MarkdownParserService {
           let body = rawItem;
 
           if (taskMatch) {
-            task = true; checked = /x/i.test(taskMatch[1]);
+            task = true;
+            checked = /x/i.test(taskMatch[1]);
             body = body.replace(/^(\s*(?:[*+-]|\d+\.)\s+)\[(?: |x|X)\]\s+/, '$1');
           }
 
@@ -204,7 +259,7 @@ export class MarkdownParserService {
           body = outdent(body, firstIndent + 2);
 
           const tokens = this.lex(body, options);
-          items.push({ type: 'list_item', raw: rawItem, task, checked, tokens } as ListItemToken);
+          items.push({type: 'list_item', raw: rawItem, task, checked, tokens} as ListItemToken);
           buf.length = 0;
         };
 
@@ -222,28 +277,23 @@ export class MarkdownParserService {
           if (/^\s*([*+-]|\d+\.)\s+/.test(s) && getIndent(s) <= baseIndent) {
             flush();
             buf.push(s);
-          }
-          else if (buf.length && !isBlank(s) && getIndent(s) <= baseIndent &&
+          } else if (buf.length && !isBlank(s) && getIndent(s) <= baseIndent &&
             !/^\s*([*+-]|\d+\.)\s+/.test(s)) {
             break;
-          }
-          else if (buf.length && isBlank(s)) {
+          } else if (buf.length && isBlank(s)) {
             buf.push(s);
-          }
-          else if (buf.length && getIndent(s) <= baseIndent && isBlockStart(s)) {
+          } else if (buf.length && getIndent(s) <= baseIndent && isBlockStart(s)) {
             break;
-          }
-          else if (buf.length) {
+          } else if (buf.length) {
             buf.push(s);
-          }
-          else break;
+          } else break;
 
           i++;
         }
         flush();
         const raw = lines.slice(0, i).join('\n');
         const tight = !raw.match(/\n\s*\n/);
-        tokens.push({ type: 'list', raw, ordered, start, items, tight } as ListToken);
+        tokens.push({type: 'list', raw, ordered, start, items, tight} as ListToken);
         eat(i);
         continue;
       }
@@ -251,7 +301,7 @@ export class MarkdownParserService {
       if (options.gfm && options.tables && lines.length >= 2 && /\|/.test(lines[0]) && /^(\s*\|)?\s*(:?-{3,}:?)(\s*\|\s*:?-{3,}:?)*\s*(\|\s*)?$/.test(lines[1])) {
         const headerLine = this.splitTableRow(lines[0]);
         const alignLine = this.splitTableRow(lines[1]);
-        const align: ("left"|"center"|"right"|null)[] = alignLine.map(cell => {
+        const align: ("left" | "center" | "right" | null)[] = alignLine.map(cell => {
           const s = cell.trim();
           const left = s.startsWith(':');
           const right = s.endsWith(':');
@@ -261,34 +311,39 @@ export class MarkdownParserService {
           return null;
         });
         const header = headerLine.map(s => s.trim());
-        let i = 2; const rows: string[][] = [];
+        let i = 2;
+        const rows: string[][] = [];
         while (i < lines.length && /\|/.test(lines[i]) && !/^\s*$/.test(lines[i])) {
           rows.push(this.splitTableRow(lines[i]).map(s => s.trim()));
           i++;
         }
         const raw = lines.slice(0, i).join('\n');
-        tokens.push({ type: 'table', raw, header, align, rows } as TableToken);
+        tokens.push({type: 'table', raw, header, align, rows} as TableToken);
         eat(i);
         continue;
       }
 
-      let i = 0; const buf: string[] = [];
+      let i = 0;
+      const buf: string[] = [];
       while (i < lines.length && !/^\s*$/.test(lines[i]) &&
         !/^(#{1,6})\s+/.test(lines[i]) &&
         !/^\s*([-*_])(?:\s*\1){2,}\s*$/.test(lines[i]) &&
         !/^\s*>\s?/.test(lines[i]) &&
         !/^\s*([*+-]|\d+\.)\s+/.test(lines[i]) &&
-        !(options.gfm && options.tables && /\|/.test(lines[i]) && i+1 < lines.length && /^(\s*\|)?\s*(:?-{3,}:?)(\s*\|\s*:?-{3,}:?)*\s*(\|\s*)?$/.test(lines[i+1])) &&
+        !(options.gfm && options.tables && /\|/.test(lines[i]) && i + 1 < lines.length && /^(\s*\|)?\s*(:?-{3,}:?)(\s*\|\s*:?-{3,}:?)*\s*(\|\s*)?$/.test(lines[i + 1])) &&
         !/^\s*(```|~~~)\s*[^`]*$/.test(lines[i])
-        ) { buf.push(lines[i]); i++; }
+        ) {
+        buf.push(lines[i]);
+        i++;
+      }
       const text = buf.join('\n');
       if (text.trim().length) {
-        tokens.push({ type: 'paragraph', raw: text, text } as ParagraphToken);
+        tokens.push({type: 'paragraph', raw: text, text} as ParagraphToken);
         eat(i);
         continue;
       }
 
-      tokens.push({ type: 'paragraph', raw: lines[0], text: lines[0] } as ParagraphToken);
+      tokens.push({type: 'paragraph', raw: lines[0], text: lines[0]} as ParagraphToken);
       eat(1);
     }
 
@@ -297,12 +352,27 @@ export class MarkdownParserService {
 
   private splitTableRow(row: string): string[] {
     const out: string[] = [];
-    let cur = ''; let inCode = false; let backticks = 0;
+    let cur = '';
+    let inCode = false;
+    let backticks = 0;
     for (let i = 0; i < row.length; i++) {
       const ch = row[i];
-      if (ch === '`') { backticks++; inCode = backticks % 2 === 1; cur += ch; continue; }
-      if (ch === '|' && !inCode) { out.push(cur); cur = ''; continue; }
-      if (ch === '\\' && i + 1 < row.length) { cur += row[i+1]; i++; continue; }
+      if (ch === '`') {
+        backticks++;
+        inCode = backticks % 2 === 1;
+        cur += ch;
+        continue;
+      }
+      if (ch === '|' && !inCode) {
+        out.push(cur);
+        cur = '';
+        continue;
+      }
+      if (ch === '\\' && i + 1 < row.length) {
+        cur += row[i + 1];
+        i++;
+        continue;
+      }
       cur += ch;
     }
     out.push(cur);
@@ -351,20 +421,24 @@ export class MarkdownParserService {
         chunk = chunk.replace(/(`+)([^`\n]+?)\1/g, (_m, _bt: string, code: string) =>
           `<code>${escapeHtml(code)}</code>`);
 
-       chunk = chunk.replace(/!\[([^\]]*)\]\(([^\s)]+)(?:\s+"([^"]*)")?\)({([^}]+)})?/g,
-  (_m, alt: string, src: string, title?: string, attrs?: string) => {
-    const safeSrc = this.safeUrl(src);
-    if (!safeSrc) return '';
-    let titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
-    let sizeAttrs = '';
-    if (attrs) {
-      const widthMatch = attrs.match(/width=(\d+)/);
-      const heightMatch = attrs.match(/height=(\d+)/);
-      if (widthMatch) sizeAttrs += ` width="${widthMatch[1]}"`;
-      if (heightMatch) sizeAttrs += ` height="${heightMatch[1]}"`;
-    }
-    return `<img src="${safeSrc}" alt="${escapeHtml(alt)}"${titleAttr}${sizeAttrs}>`;
-  });
+        chunk = chunk.replace(/!\[([^\]]*)\]\(([^\s)]+)(?:\s+"([^"]*)")?\)({([^}]+)})?/g,
+          (_m, alt: string, src: string, title?: string, attrs?: string) => {
+            if (src && !src.includes('/') && !src.startsWith('http') && !src.startsWith('#')) {
+              src = this.baseImagePath + src;
+            }
+
+            const safeSrc = this.safeUrl(src);
+            if (!safeSrc) return '';
+            let titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
+            let sizeAttrs = '';
+            if (attrs) {
+              const widthMatch = attrs.match(/width=(\d+)/);
+              const heightMatch = attrs.match(/height=(\d+)/);
+              if (widthMatch) sizeAttrs += ` width="${widthMatch[1]}"`;
+              if (heightMatch) sizeAttrs += ` height="${heightMatch[1]}"`;
+            }
+            return `<img src="${safeSrc}" alt="${escapeHtml(alt)}"${titleAttr}${sizeAttrs}>`;
+          });
 
 
         chunk = chunk.replace(/\[([^\[\]]+)\]\((?:<([^<>]+)>|([^\s)]+))(?:\s+"([^"]*)")?\)/g,
@@ -483,7 +557,10 @@ export class MarkdownParserService {
           const langClass = c.lang ? ` class="language-${this.escapeClass(c.lang)}"` : '';
           let code = escapeHtml(c.code);
           if (c.lang && typeof (options.highlight) === 'function') {
-            try { code = options.highlight(c.code, c.lang); } catch { /* noop */ }
+            try {
+              code = options.highlight(c.code, c.lang);
+            } catch { /* noop */
+            }
           }
           out.push(`<pre><code${langClass}>${code}</code></pre>`);
           break;
@@ -526,8 +603,13 @@ export class MarkdownParserService {
     return out.join('');
   }
 
-  private alignAttr(a: "left"|"center"|"right"|null): string { return a ? ` align="${a}"` : ''; }
-  private escapeClass(s: string): string { return s.replace(/[^a-zA-Z0-9_-]/g, ''); }
+  private alignAttr(a: "left" | "center" | "right" | null): string {
+    return a ? ` align="${a}"` : '';
+  }
+
+  private escapeClass(s: string): string {
+    return s.replace(/[^a-zA-Z0-9_-]/g, '');
+  }
 
 
   private smartypants(html: string): string {
@@ -547,33 +629,30 @@ export class MarkdownParserService {
   }
 
 
-
-
   private sanitize(html: string): string {
-      const allowedTags = new Set([
-        'h1','h2','h3','h4','h5','h6','p','br','hr','em','strong','del','code','pre',
-        'a','img','ul','ol','li','blockquote','table','thead','tbody','tr','th','td',
-        'input','details','summary','figure','figcaption','span','div','kbd','mark'
-      ]);
+    const allowedTags = new Set([
+      'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'hr', 'em', 'strong', 'del', 'code', 'pre',
+      'a', 'img', 'ul', 'ol', 'li', 'blockquote', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
+      'input', 'details', 'summary', 'figure', 'figcaption', 'span', 'div', 'kbd', 'mark'
+    ]);
 
-      const allowedAttrs: Record<string, Set<string>> = {
-        'a': new Set(['href','title','rel','target','class','id']),
-        'img': new Set(['src','alt','title','class','id', 'width', 'height']),
-        'th': new Set(['align','colspan','rowspan','class','id']),
-        'td': new Set(['align','colspan','rowspan','class','id']),
-        'ol': new Set(['start','class','id']),
-        'pre': new Set(['class','id']),
-        'code': new Set(['class','id']),
-        'details': new Set(['open','class','id']),
-        'summary': new Set(['class','id']),
-        'span': new Set(['class','id']),
-        'div': new Set(['class','id']),
-        'input': new Set(['type','checked','disabled','class','id']),
-      };
+    const allowedAttrs: Record<string, Set<string>> = {
+      'a': new Set(['href', 'title', 'rel', 'target', 'class', 'id']),
+      'img': new Set(['src', 'alt', 'title', 'class', 'id', 'width', 'height']),
+      'th': new Set(['align', 'colspan', 'rowspan', 'class', 'id']),
+      'td': new Set(['align', 'colspan', 'rowspan', 'class', 'id']),
+      'ol': new Set(['start', 'class', 'id']),
+      'pre': new Set(['class', 'id']),
+      'code': new Set(['class', 'id']),
+      'details': new Set(['open', 'class', 'id']),
+      'summary': new Set(['class', 'id']),
+      'span': new Set(['class', 'id']),
+      'div': new Set(['class', 'id']),
+      'input': new Set(['type', 'checked', 'disabled', 'class', 'id']),
+    };
 
 
-
-      const doc = this.stringToDoc(`<div>${html}</div>`);
+    const doc = this.stringToDoc(`<div>${html}</div>`);
 
     const walk: any = (node: Element | ChildNode) => {
       if (node.nodeType === Node.ELEMENT_NODE) {
@@ -590,11 +669,17 @@ export class MarkdownParserService {
 
         for (const attr of Array.from(el.attributes)) {
           const name = attr.name.toLowerCase();
-          if (!keep.has(name)) { toRemove.push(attr.name); continue; }
+          if (!keep.has(name)) {
+            toRemove.push(attr.name);
+            continue;
+          }
 
           if ((tag === 'a' && name === 'href') || (tag === 'img' && name === 'src')) {
             const safe = this.safeUrl(attr.value);
-            if (!safe) { toRemove.push(attr.name); continue; }
+            if (!safe) {
+              toRemove.push(attr.name);
+              continue;
+            }
             el.setAttribute(name, safe);
           }
 
@@ -624,10 +709,9 @@ export class MarkdownParserService {
 
   private extractHeadingId(text: string): { text: string; id?: string } {
     const m = text.match(/\s*\{#([A-Za-z0-9._:-]+)\}\s*$/);
-    if (!m) return { text: text.trim() };
-    return { text: text.replace(/\s*\{#[A-Za-z0-9._:-]+\}\s*$/, '').trim(), id: m[1] };
+    if (!m) return {text: text.trim()};
+    return {text: text.replace(/\s*\{#[A-Za-z0-9._:-]+\}\s*$/, '').trim(), id: m[1]};
   }
-
 
 
   private slugifyPlain(str: string, prefix: string): string {
@@ -639,7 +723,6 @@ export class MarkdownParserService {
       .replace(/\s+/g, '-')
       .replace(/-+/g, '-');
   }
-
 
 
   private safeUrl(url: string): string | null {
