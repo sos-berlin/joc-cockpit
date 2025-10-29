@@ -46,7 +46,7 @@ The following operations are available from links:
 
 ### Context Help
 
-- [Manage Encryption Certificate](/encryption-manage-certificate)
+- [Manage Encryption Keys](/encryption-manage-keys)
 
 ### Product Knowledge Base
 

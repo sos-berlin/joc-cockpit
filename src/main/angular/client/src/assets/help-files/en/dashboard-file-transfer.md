@@ -2,6 +2,8 @@
 
 The *File Transfer* panel provides the summary of past transfers using the YADE Managed File Transfer.
 
+<img src="assets/help-files/images/dashboard-file-transfer.png" alt="File Transfer" width="320" height="90" />
+
 ## File Transfer History
 
 The history summary counts successful and failed transfers.
