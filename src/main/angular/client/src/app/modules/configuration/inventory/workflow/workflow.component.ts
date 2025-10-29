@@ -2,7 +2,8 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  Directive, ElementRef,
+  Directive,
+  ElementRef,
   EventEmitter,
   forwardRef,
   HostListener,
@@ -17,7 +18,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {NzContextMenuService, NzDropdownMenuComponent} from 'ng-zorro-antd/dropdown';
 import {Subscription} from 'rxjs';
 import {NzMessageService} from "ng-zorro-antd/message";
-import {clone, extend, isArray, isEmpty, isEqual, isNaN, sortBy} from 'underscore';
+import {clone, extend, isArray, isEmpty, isEqual, isNaN} from 'underscore';
 import {saveAs} from 'file-saver';
 import {ToastrService} from 'ngx-toastr';
 import {Router} from '@angular/router';
@@ -1150,7 +1151,7 @@ export class AdmissionTimeComponent {
     {label: 'november', value: '11', checked: false},
     {label: 'december', value: '12', checked: false}
   ];
-
+  selectedDaysUI: string[] = [];
   selectedMonthsForRestriction = [];
   showMonthRange = true;
   restrictedSchemeIndex = -1;
@@ -1159,8 +1160,6 @@ export class AdmissionTimeComponent {
   isEditingRestrictedFrequency = false;
   selectedRegularRowIndex: number = -1;
   selectedRestrictedRowIndex: number = -1;
-  selectedDaysUI: string[] = [];
-  selectedMonthsUI: string[] = [];
   @Output() close: EventEmitter<any> = new EventEmitter();
   @ViewChild('timePicker', {static: true}) tp;
 
@@ -1182,8 +1181,6 @@ ngOnInit(): void {
   this.days = this.coreService.getLocale().days;
   this.days.push(this.days[0]);
 
-  this.selectedDaysUI = [];
-  this.selectedMonthsUI = [];
 
   if (this.isEdit && this.data.isRestrictedEdit) {
     let actualSchemeIndex = -1;
@@ -1216,7 +1213,6 @@ ngOnInit(): void {
         this.isEditingRestrictedFrequency = true;
         this.restrictedSchemeIndex = actualSchemeIndex;
         this.selectedMonthsForRestriction = restrictedScheme.restriction.months.map(m => m.toString());
-        this.selectedMonthsUI = [...this.selectedMonthsForRestriction]; // ✅ Initialize UI array
         this.checkMonths();
         this.onChangeMonths();
         this.editFrequency(targetPeriod);
@@ -1239,19 +1235,12 @@ ngOnInit(): void {
       if (this.data.periodList.length > 0) {
         if (this.repeatObject && !this.data.periodList[0].frequency) {
           this.frequency.days = ['1', '2', '3', '4', '5', '6', '7'];
-          this.selectedDaysUI = [...this.frequency.days];
           this.frequency.all = true;
         }
       }
     }
   }
 
-  if (this.frequency.days) {
-    this.selectedDaysUI = [...this.frequency.days];
-  }
-  if (this.selectedMonthsForRestriction && this.selectedMonthsForRestriction.length > 0) {
-    this.selectedMonthsUI = [...this.selectedMonthsForRestriction];
-  }
 
   if (this.repeatObject) {
     this.checkDays();
@@ -1289,12 +1278,15 @@ ngOnInit(): void {
   selectAllWeek(): void {
     if (this.frequency.all) {
       this.frequency.days = ['1', '2', '3', '4', '5', '6', '7'];
+      this.selectedDaysUI = ['1', '2', '3', '4', '5', '6', '7'];
     } else {
       this.frequency.days = [];
+      this.selectedDaysUI = [];
     }
     this.editor.isEnable = this.frequency.days.length > 0;
     this.checkDays();
   }
+
 
   selectMonthDaysFunc(value): void {
     if (this.selectedMonths.indexOf(value) === -1) {
@@ -1357,7 +1349,6 @@ ngOnInit(): void {
 
     if (!this.arraysEqual(this.selectedMonthsForRestriction.sort(), newValues.sort())) {
       this.selectedMonthsForRestriction = newValues;
-      this.selectedMonthsUI = newValues; // Keep UI in sync
       this.onChangeMonths();
     }
   }
@@ -1693,6 +1684,7 @@ ngOnInit(): void {
     } else {
       this.frequency.tab = 'weekDays';
       this.frequency.days = (!data?.frequency && data?.day == '1') ? ['1', '2', '3', '4', '5', '6', '7'] : [data?.day.toString()];
+      this.selectedDaysUI = [...this.frequency.days];
       this.checkDays();
     }
 
@@ -2050,6 +2042,7 @@ ngOnInit(): void {
     this.selectedMonths = [];
     this.selectedMonthsU = [];
     this.selectedMonthsForRestriction = [];
+    this.selectedDaysUI = []
     this.frequency.days = [];
     this.frequency.all = false;
     this.showMonthRange = false;
@@ -2066,6 +2059,7 @@ ngOnInit(): void {
     this.selectedMonths = [];
     this.selectedMonthsU = [];
     this.frequency.days = [];
+    this.selectedDaysUI = [];
     this.frequency.all = false;
     this.selectedMonthsForRestriction = [];
     this.showMonthRange = false;
@@ -5155,7 +5149,6 @@ export class WorkflowComponent {
   configXml = './assets/mxgraph/config/diagrameditor.xml';
   editor: any;
   dummyXml: any;
-  // Declare Map object to store closeable instructions Ids
   nodeMap = new Map();
   droppedCell: any;
   movedCells: any = [];
@@ -11938,15 +11931,20 @@ export class WorkflowComponent {
           }
           self.selectedNode.job.admissionTimeScheme.periods = self.workflowService.convertListToAdmissionTime(self.selectedNode.periodList);
         }else if (self.selectedNode.type === 'AdmissionTime') {
-          if (self.selectedNode.data.periodList &&
-            self.selectedNode.data.periodList.length > 0) {
-            self.selectedNode.obj.admissionTimeScheme.periods = [];
-            self.selectedNode.obj.admissionTimeScheme.periods =
-              self.workflowService.convertListToAdmissionTime(
-                self.selectedNode.data.periodList
+          // Access from data.admissionTimeScheme (always an object!)
+          if (self.selectedNode.data && self.selectedNode.data.admissionTimeScheme) {
+            if (self.selectedNode.data.periodList && self.selectedNode.data.periodList.length > 0) {
+              self.selectedNode.data.admissionTimeScheme.periods =
+                self.workflowService.convertListToAdmissionTime(
+                  self.selectedNode.data.periodList
+                );
+            }
+
+            if (self.selectedNode.newObj && self.selectedNode.newObj.admissionTimeScheme) {
+              self.selectedNode.obj.admissionTimeScheme = self.coreService.clone(
+                self.selectedNode.newObj.admissionTimeScheme
               );
-          } else {
-            self.selectedNode.obj.admissionTimeScheme.periods = [];
+            }
           }
         }
 
@@ -12188,32 +12186,34 @@ export class WorkflowComponent {
             }
           }
         }else if (cell.value.tagName === 'AdmissionTime') {
-          obj.admissionTimeScheme = cell.getAttribute('admissionTimeScheme');
+          let admissionTimeScheme = cell.getAttribute('admissionTimeScheme');
 
-          if (!obj.admissionTimeScheme || isEmpty(obj.admissionTimeScheme) ||
-            typeof obj.admissionTimeScheme !== 'string') {
-            obj.admissionTimeScheme = {
+          if (!admissionTimeScheme || isEmpty(admissionTimeScheme) || typeof admissionTimeScheme !== 'string') {
+            admissionTimeScheme = {
               periods: [],
               restrictedSchemes: []
             };
           } else {
             try {
-              obj.admissionTimeScheme = JSON.parse(obj.admissionTimeScheme);
+              admissionTimeScheme = JSON.parse(admissionTimeScheme);
             } catch (e) {
-              obj.admissionTimeScheme = {
+              admissionTimeScheme = {
                 periods: [],
                 restrictedSchemes: []
               };
             }
           }
 
-          if (!obj.admissionTimeScheme.periods) {
-            obj.admissionTimeScheme.periods = [];
+          if (!admissionTimeScheme.periods) {
+            admissionTimeScheme.periods = [];
           }
-          if (!obj.admissionTimeScheme.restrictedSchemes) {
-            obj.admissionTimeScheme.restrictedSchemes = [];
+          if (!admissionTimeScheme.restrictedSchemes) {
+            admissionTimeScheme.restrictedSchemes = [];
           }
-        } else if (cell.value.tagName === 'ForkList') {
+
+          obj.admissionTimeScheme = admissionTimeScheme;
+        }
+        else if (cell.value.tagName === 'ForkList') {
           let children = cell.getAttribute('children');
           if (children) {
             obj.children = children;
@@ -12314,7 +12314,6 @@ export class WorkflowComponent {
           obj.noticeBoardNames = cell.getAttribute('noticeBoardNames');
           self.coreService.removeSlashToString(obj, 'noticeBoardNames');
           if (obj.noticeBoardNames) {
-            // Ensure single space around && and ||
             obj.noticeBoardNames = obj.noticeBoardNames.replace(/\s*(\|\||&&)\s*/g, ' $1 ');
           }
           obj.whenNotAnnounced = cell.getAttribute('whenNotAnnounced');
@@ -12379,10 +12378,13 @@ export class WorkflowComponent {
         if (cell.value.tagName === 'AdmissionTime') {
           self.selectedNode.data = {
             periodList: [],
-            isFromCycle: false
+            admissionTimeScheme: obj.admissionTimeScheme,
+            isFromCycle: false,
           };
-        }
 
+          self.selectedNode.isEdit = false;
+
+        }
         if (cell.value.tagName === 'Lock') {
           obj.lockNames = [];
           //self.getLimit();
@@ -15882,12 +15884,5 @@ export class WorkflowComponent {
     });
   }
 
-  getAdmissionTimeData(): any {
-    return {
-      ...this.selectedNode,
-      periodList: this.selectedNode.instructionPeriodList || [],
-      isFromCycle: false
-    };
-  }
 
 }

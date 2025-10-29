@@ -159,7 +159,7 @@
           </label><br>
           <nz-checkbox-group
             name="admissionTimeMonths"
-            [(ngModel)]="selectedMonthsUI"
+            [(ngModel)]="selectedMonthsForRestriction"
             (ngModelChange)="monthChange($event)">
             @for (option of monthsOptions; track option) {
               <ng-container>

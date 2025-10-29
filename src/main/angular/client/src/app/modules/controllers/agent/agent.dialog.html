@@ -17,10 +17,10 @@
     @if (new && isCluster) {
       <span translate>agent.label.addClusterAgent</span>
     }
-    @if (new && !isCluster) {
+    @if (!isCluster) {
       <i (click)="helpPage('initial-operation-register-agent-standalone')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
     }
-    @if (new && isCluster) {
+    @if (isCluster) {
       <i (click)="helpPage('initial-operation-register-agent-cluster')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
     }
   </h4>

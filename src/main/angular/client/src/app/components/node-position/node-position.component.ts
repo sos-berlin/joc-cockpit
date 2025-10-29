@@ -22,7 +22,7 @@ export class NodePositionComponent {
   @Input() reload: boolean;
 
   nodes: any = [];
-  blockInstructions = ['Lock', 'Cycle', 'ConsumeNotices', 'Options', 'StickySubagent', 'ForkList','CaseWhen'];
+  blockInstructions = ['Lock', 'Cycle', 'ConsumeNotices', 'Options', 'AdmissionTime', 'StickySubagent', 'ForkList','CaseWhen'];
 
   @Output() onBlur = new EventEmitter<string>();
 
@@ -262,7 +262,7 @@ export class NodePositionComponent {
               }
             }
             else if (json.instructions[x].TYPE === 'Cycle' || json.instructions[x].TYPE === 'Lock' ||
-              json.instructions[x].TYPE === 'Options' || json.instructions[x].TYPE === 'ForkList' || json.instructions[x].TYPE === 'ConsumeNotices' || json.instructions[x].TYPE === 'StickySubagent') {
+              json.instructions[x].TYPE === 'Options' || json.instructions[x].TYPE === 'AdmissionTime' || json.instructions[x].TYPE === 'ForkList' || json.instructions[x].TYPE === 'ConsumeNotices' || json.instructions[x].TYPE === 'StickySubagent') {
               let _obj = {
                 title: json.instructions[x].TYPE,
                 disabled: !isEnable,
@@ -281,6 +281,8 @@ export class NodePositionComponent {
               } else if ((json.instructions[x].TYPE === 'Lock' && json.instructions[x].lockedWorkflow)) {
                 recursive(json.instructions[x].lockedWorkflow, _obj);
               } else if ((json.instructions[x].TYPE === 'Options' && json.instructions[x].block)) {
+                recursive(json.instructions[x].block, _obj);
+              }  else if ((json.instructions[x].TYPE === 'AdmissionTime' && json.instructions[x].block)) {
                 recursive(json.instructions[x].block, _obj);
               } else if (((json.instructions[x].TYPE === 'ConsumeNotices' || json.instructions[x].TYPE === 'StickySubagent') && json.instructions[x].subworkflow)) {
                 recursive(json.instructions[x].subworkflow, _obj);

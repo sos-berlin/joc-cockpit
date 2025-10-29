@@ -351,14 +351,21 @@ export class MarkdownParserService {
         chunk = chunk.replace(/(`+)([^`\n]+?)\1/g, (_m, _bt: string, code: string) =>
           `<code>${escapeHtml(code)}</code>`);
 
-        chunk = chunk.replace(/!\[([^\]]*)\]\((?:<([^<>]+)>|([^\s)]+))(?:\s+"([^"]*)")?\)/g,
-          (_m, alt: string, hrefInBrackets: string, hrefRegular: string, title?: string) => {
-            const href = hrefInBrackets || hrefRegular;
-            const safeSrc = this.safeUrl(href);
-            if (!safeSrc) return '';
-            const titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
-            return `<img src="${safeSrc}" alt="${escapeHtml(alt)}"${titleAttr}>`;
-          });
+       chunk = chunk.replace(/!\[([^\]]*)\]\(([^\s)]+)(?:\s+"([^"]*)")?\)({([^}]+)})?/g,
+  (_m, alt: string, src: string, title?: string, attrs?: string) => {
+    const safeSrc = this.safeUrl(src);
+    if (!safeSrc) return '';
+    let titleAttr = title ? ` title="${escapeHtml(title)}"` : '';
+    let sizeAttrs = '';
+    if (attrs) {
+      const widthMatch = attrs.match(/width=(\d+)/);
+      const heightMatch = attrs.match(/height=(\d+)/);
+      if (widthMatch) sizeAttrs += ` width="${widthMatch[1]}"`;
+      if (heightMatch) sizeAttrs += ` height="${heightMatch[1]}"`;
+    }
+    return `<img src="${safeSrc}" alt="${escapeHtml(alt)}"${titleAttr}${sizeAttrs}>`;
+  });
+
 
         chunk = chunk.replace(/\[([^\[\]]+)\]\((?:<([^<>]+)>|([^\s)]+))(?:\s+"([^"]*)")?\)/g,
           (_m, label: string, hrefInBrackets: string, hrefRegular: string, title?: string) => {
@@ -551,7 +558,7 @@ export class MarkdownParserService {
 
       const allowedAttrs: Record<string, Set<string>> = {
         'a': new Set(['href','title','rel','target','class','id']),
-        'img': new Set(['src','alt','title','class','id']),
+        'img': new Set(['src','alt','title','class','id', 'width', 'height']),
         'th': new Set(['align','colspan','rowspan','class','id']),
         'td': new Set(['align','colspan','rowspan','class','id']),
         'ol': new Set(['start','class','id']),
@@ -638,7 +645,9 @@ export class MarkdownParserService {
   private safeUrl(url: string): string | null {
     const trimmed = (url || '').trim();
 
-    if (!trimmed) return null;
+    if (!trimmed) {
+      return null;
+    }
 
     if (trimmed.toLowerCase().startsWith('javascript:') ||
       trimmed.toLowerCase().startsWith('data:') ||
@@ -658,17 +667,17 @@ export class MarkdownParserService {
       return trimmed;
     }
 
-    if (/^\//.test(trimmed)) {
+    if (trimmed.startsWith('/')) {
       return trimmed;
     }
 
-    if (/^\/[a-z0-9._\-]+(\.md)?$/i.test(trimmed)) {
+
+    if (trimmed.startsWith('assets/') || trimmed.startsWith('./assets/')) {
       return trimmed;
     }
+
     return null;
   }
-
-
 
 
 }

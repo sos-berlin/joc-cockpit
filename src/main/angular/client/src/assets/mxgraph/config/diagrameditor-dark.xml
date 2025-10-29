@@ -249,7 +249,7 @@
     <hr/>
     <add as="Cycle" template="Cycle" style="cycle" icon="./assets/mxgraph/images/white-cycle.png"/>
     <hr/>
-    <add as="AdmissionTime" template="AdmissionTime" style="admissionTime" icon="./assets/mxgraph/images/admissionTime.png"/>
+    <add as="AdmissionTime" template="AdmissionTime" style="admissionTime" icon="./assets/mxgraph/images/white-admissionTime.png"/>
     <hr/>
     <add as="Break" template="Break" style="break" icon="./assets/mxgraph/images/white-break.png"/>
     <hr/>
