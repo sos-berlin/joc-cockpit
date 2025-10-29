@@ -2,7 +2,7 @@
 
 The *Agent Status* panel summarizes the connection status of registered Agents.
 
-<img src="assets/help-files/images/dashboard-agent-status.png" alt="Agent Status" width="330" height="140" />
+<img src="assets/help-files/images/dashboard-agent-status.png" alt="Agent Status" width="332" height="135" />
 
 ## Architecture
 
