@@ -21,42 +21,239 @@
 .note-wrapper {
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
-  position: relative;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+}
+
+.chat-thread {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 12px;
+  min-height: 0; /* Important for flex scrolling */
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+  }
+}
+
+.post-message {
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  border-left: 4px solid;
+
+  &.current-user {
+    margin-left: 40px;
+
+    .post-header {
+      .author {
+        font-weight: 700;
+      }
+    }
+  }
+
+  &.other-user {
+    margin-right: 40px;
+
+    .post-header {
+      .author {
+        font-weight: 600;
+      }
+    }
+  }
+
+  &:hover {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
+  }
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  font-size: 12px;
+}
+
+.post-number {
+  font-weight: bold;
+  color: #1890ff;
+  font-size: 11px;
+  background: rgba(24, 144, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.author {
+  font-size: 13px;
+  color: #333;
+  transition: color 0.2s;
+}
+
+.timestamp {
+  color: #999;
+  font-size: 11px;
+  margin-left: auto;
+}
+
+.edited-badge {
+  color: #999;
+  font-style: italic;
+  font-size: 10px;
+}
+
+.post-content {
+  padding: 8px 10px;
+  line-height: 1.6;
+  word-wrap: break-word;
+  color: #333;
+  font-size: 13px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+
+  ::ng-deep {
+    p {
+      margin: 0 0 8px 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    ul, ol {
+      margin: 4px 0;
+      padding-left: 20px;
+    }
+
+    strong {
+      font-weight: 600;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      margin: 8px 0 4px 0;
+    }
+  }
+}
+
+.new-post-section {
+  flex: 0 0 auto; /* Fixed height, won't grow or shrink */
+  padding: 12px;
+  border-radius: 0 0 4px 4px;
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
 }
 
 .note-textarea {
   width: 100%;
-  height: 100%;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
   resize: none;
-  border: none;
-  outline: none;
-  padding: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  padding: 8px 12px;
   box-sizing: border-box;
-  font-family: monospace;
-  font-size: 14px;
+  font-size: 13px;
+  line-height: 1.5;
+  transition: all 0.3s;
+  background-color: #fff;
+  margin-bottom: 10px;
+
+  &:focus {
+    outline: none;
+    border-color: #40a9ff;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+  }
+
+  &::placeholder {
+    color: #bfbfbf;
+  }
+}
+
+.message-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.color-selector {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.color-preset-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid #d9d9d9;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  padding: 0;
+
+  &:hover {
+    transform: scale(1.15);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    border-color: #40a9ff;
+  }
+
+  &.active {
+    border: 3px solid #1890ff;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+    transform: scale(1.1);
+  }
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .preview-wrapper {
-  overflow: auto;
-  box-sizing: border-box;
+  overflow-y: auto;
+  padding: 15px;
+  border-radius: 4px;
+  background-color: #fff;
 }
 
 .note-preview {
   width: 100%;
   height: 100%;
-  overflow-y: auto;
-  padding: 10px;
-  box-sizing: border-box;
   word-wrap: break-word;
-  white-space: pre-wrap;
 }
 
-.toolbar {
-  flex: 0 0 auto;
-  margin-bottom: 8px;
+.resizer {
+  cursor: se-resize;
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  font-size: 16px;
+  color: #999;
+  transition: color 0.3s;
+
+  &:hover {
+    color: #1890ff;
+  }
 }
 
-.preview-btn{
-  right: 40px;
+.preview-btn {
+  position: absolute !important;
+  right: 50px;
+}
+
+.modal-body {
+  min-height: 300px;
+  background-color: #f5f5f5;
 }

@@ -687,7 +687,16 @@
               </nz-tab>
             }
             @if (securityLevel !== 'LOW' && permission.joc && permission.joc.administration.certificates.view) {
-              <nz-tab [nzTitle]="'profile.label.keyManagement' | translate">
+              <nz-tab [nzTitle]="tabTitle3">
+                <ng-template #tabTitle3>
+                  {{ 'profile.label.keyManagement' | translate }}
+                  <i
+                    (click)="helpPage('profile-signature-key-management')"
+                    [nzTooltipMouseEnterDelay]="0.5"
+                    [nz-tooltip]="'common.tooltip.help' | translate"
+                    class="help-info-dashboard cur-point fa fa-info-circle text-20">
+                  </i>
+                </ng-template>
                 <div class="m-l-12">
                   <div class="row m-t-sm p-b-xs">
                     <div class="col-sm-12">
@@ -773,7 +782,16 @@
               </nz-tab>
             }
             @if (permission.joc && permission.joc.administration.certificates.view) {
-              <nz-tab [nzTitle]="'profile.label.caManagement' | translate">
+              <nz-tab [nzTitle]="tabTitle4">
+                <ng-template #tabTitle4>
+                  {{ 'profile.label.caManagement' | translate }}
+                  <i
+                    (click)="helpPage('profile-ssl-key-management')"
+                    [nzTooltipMouseEnterDelay]="0.5"
+                    [nz-tooltip]="'common.tooltip.help' | translate"
+                    class="help-info-dashboard cur-point fa fa-info-circle text-20">
+                  </i>
+                </ng-template>
                 <div class="m-l-12">
                   <div class="row m-t-sm p-b-xs">
                     <div class="col-sm-12">
@@ -846,7 +864,16 @@
               </nz-tab>
             }
             @if (securityLevel !== 'LOW' && permission.joc && permission.joc.inventory.view) {
-              <nz-tab [nzTitle]="'profile.label.gitManagement' | translate">
+              <nz-tab [nzTitle]="tabTitle5">
+                <ng-template #tabTitle5>
+                  {{ 'profile.label.gitManagement' | translate }}
+                  <i
+                    (click)="helpPage('profile-git-management')"
+                    [nzTooltipMouseEnterDelay]="0.5"
+                    [nz-tooltip]="'common.tooltip.help' | translate"
+                    class="help-info-dashboard cur-point fa fa-info-circle text-20">
+                  </i>
+                </ng-template>
                 <div class="m-l-12">
                   <div class="row m-t-xs p-b-xs">
                     <div class="col-sm-12">
@@ -925,7 +952,16 @@
                 </div>
               </nz-tab>
             }
-            <nz-tab [nzTitle]="'profile.label.favoriteManagement' | translate">
+            <nz-tab [nzTitle]="tabTitle5">
+              <ng-template #tabTitle5>
+                {{ 'profile.label.favoriteManagement' | translate }}
+                <i
+                  (click)="helpPage('profile-favorite-management')"
+                  [nzTooltipMouseEnterDelay]="0.5"
+                  [nz-tooltip]="'common.tooltip.help' | translate"
+                  class="help-info-dashboard cur-point fa fa-info-circle text-20">
+                </i>
+              </ng-template>
               <div class="p-l-sm p-r-rm m-t-n-sm">
                 <nz-tabset (nzSelectChange)="innnerTabChange($event)">
                   <nz-tab [nzTitle]="'profile.favoriteManagement.tab.agents' | translate">

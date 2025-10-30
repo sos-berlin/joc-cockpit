@@ -302,6 +302,7 @@ export class CreateTagModalComponent {
     return this.isPathDisplay ? path?.split('/').pop() : path
   }
 
+  protected readonly Array = Array;
 }
 
 @Component({
@@ -9816,7 +9817,7 @@ export class AddTagsToGropusModalComponent {
       const assignedNode = new NzTreeNode({
         title: 'Assigned Tags',
         key: 'AssignedKeys',
-        expanded: true, // To load children immediately
+        expanded: true,
         disabled: this.assignedTags.length > 0 ? false : true,
         isLeaf: this.assignedTags.length > 0 ? false : true,
         children: this.assignedTags
@@ -9908,37 +9909,45 @@ export class AddTagsToGropusModalComponent {
 
   onSubmit() {
     this.submitted = true;
+
+    if (!this.treeCtrlGroup) {
+      console.error('Tree component is not initialized');
+      return;
+    }
+
+    const checkedNodes = this.treeCtrlGroup.getCheckedNodeList();
+    console.log('Checked nodes:', checkedNodes);
+
+    const selectedTags: string[] = [];
+
+        const collectLeafKeys = (node: any) => {
+      if (node.isLeaf) {
+                selectedTags.push(node.key);
+      } else if (node.children && node.children.length > 0) {
+                node.children.forEach((child: any) => {
+          collectLeafKeys(child);
+        });
+      }
+    };
+
+        checkedNodes.forEach((node: any) => {
+      collectLeafKeys(node);
+    });
+
+  
     const obj: any = {
       auditLog: {},
-      group: this.groupName
+      group: this.groupName,
+      tags: selectedTags
     };
+
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-    let selectedTags = [];
-    if (this.checkedAssignedTags.length > 0) {
-      selectedTags = [...selectedTags, ...this.checkedAssignedTags];
-    }
-    this.checkedTags.forEach(tag => {
-      if (tag === 'WorkflowKeys') {
-        this.workflowTags.forEach(item => {
-          selectedTags.push(item.key);
-        });
-      } else if (tag === 'OrderKeys') {
-        this.orderTags.forEach(item => {
-          selectedTags.push(item.key);
-        });
-      } else if (tag === 'JobKeys') {
-        this.jobTags.forEach(item => {
-          selectedTags.push(item.key);
-        });
-      } else {
-        selectedTags.push(tag);
-      }
-    });
-    obj.tags = selectedTags;
+
     this.coreService.post('tags/group/store', obj).subscribe({
       next: () => {
         this.activeModal.close('DONE');
-      }, error: () => {
+      },
+      error: () => {
         this.submitted = false;
       }
     });

@@ -2292,6 +2292,19 @@ export class DailyPlanComponent {
         tempArr = this.coreService.clone(this.planOrders);
       }
       this.planOrders = this.groupByPipe.transform(filterData, this.dailyPlanFilters.filter.groupBy === 'WORKFLOW' ? 'workflowPath' : 'schedulePath');
+       if (this.dailyPlanFilters.filter.filterBy) {
+        this.planOrders = this.planOrders.map(group => {
+            let filteredValue;
+            if (this.dailyPlanFilters.filter.filterBy === 'CYCLICORDER') {
+                filteredValue = group.value.filter(order => order.cyclicOrder);
+            } else if (this.dailyPlanFilters.filter.filterBy === 'ONETIMEORDERS') {
+                filteredValue = group.value.filter(order => !order.cyclicOrder);
+            } else {
+                filteredValue = group.value;
+            }
+            return {...group, value: filteredValue};
+        }).filter(group => group.value.length > 0);
+    }
       if (this.dailyPlanFilters.filter.sortBy === 'orderId') {
         this.planOrders = this.orderPipe.transform(this.planOrders,
           this.dailyPlanFilters.filter.groupBy === 'ORDER' ? 'schedulePath' : this.dailyPlanFilters.filter.sortBy,

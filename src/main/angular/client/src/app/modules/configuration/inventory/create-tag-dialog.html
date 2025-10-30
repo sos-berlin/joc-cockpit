@@ -49,7 +49,7 @@
         @if (!filters) {
           <div class="col-md-8">
             <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
-              @for (tag of tags; track $index; let i = $index) {
+              @for (tag of tags; track tag) {
                 <nz-tag
                   [nzMode]="'closeable'"
                   (nzOnClose)="handleClose(tag)"
@@ -172,7 +172,7 @@
                 </span>
                 @if (object.expanded.has(keyValuePair.key)) {
                   <ng-container>
-                    @for (workflow of keyValuePair.value; track workflow) {
+                    @for (workflow of (Array.isArray(keyValuePair.value) ? keyValuePair.value : []); track workflow) {
                       <div class="p-l">
                         <i class="icon-color" nz-icon nzTheme="outline" nzType="apartment"></i>
                         <span class="p-l-6">{{getFormattedPath(workflow)}}</span>
@@ -180,6 +180,8 @@
                     }
                   </ng-container>
                 }
+.
+
               </div>
             }
           </div>

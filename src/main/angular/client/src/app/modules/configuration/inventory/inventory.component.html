@@ -572,7 +572,7 @@
           </perfect-scrollbar>
           <div [ngClass]="{'bg-white' : isTrash}" class="rg-right"><span></span></div>
         </div>
-        @if (sideView.inventory.width > 315) {
+        @if (sideView.inventory.width > 315 && !isTrash) {
           <i (click)="helpPage('configuration-inventory-navigation')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-nav-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
         }
       </div>

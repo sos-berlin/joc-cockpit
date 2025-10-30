@@ -40,7 +40,7 @@
             </label><br>
             <nz-checkbox-group
               name="frequencyDays"
-              [(ngModel)]="selectedDays"
+              [(ngModel)]="this.frequency.days"
               (ngModelChange)="dayChange($event)">
               @for (option of daysOptions; track option) {
                 <ng-container>
@@ -386,7 +386,7 @@
         </label><br>
         <nz-checkbox-group
           name="frequencyMonths"
-          [(ngModel)]="selectedMonthChk"
+          [(ngModel)]="this.frequency.months"
           (ngModelChange)="monthChange($event)">
           @for (option of monthsOptions; track option) {
             <ng-container>

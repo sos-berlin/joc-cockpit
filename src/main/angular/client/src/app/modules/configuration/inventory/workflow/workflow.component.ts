@@ -4043,17 +4043,19 @@ export class JobComponent {
   }
 
   private fetchJobTags() {
-    const obj = {
-      path: this.workflowPath,
-      jobNames: [this.selectedNode.job.jobName]
-    }
-    this.coreService.post('inventory/workflow/tags/job', obj).subscribe({
-      next: (res: any) => {
-        this.tagsData = res.jobs;
-        this.tags = this.tagsData.find(jobTag => jobTag.jobName === this.selectedNode.job.jobName)?.jobTags ?? [];
-        this.ref.detectChanges();
+    if(this.selectedNode.job.jobName){
+      const obj = {
+        path: this.workflowPath,
+        jobNames: [this.selectedNode.job.jobName]
       }
-    });
+      this.coreService.post('inventory/workflow/tags/job', obj).subscribe({
+        next: (res: any) => {
+          this.tagsData = res.jobs;
+          this.tags = this.tagsData.find(jobTag => jobTag.jobName === this.selectedNode.job.jobName)?.jobTags ?? [];
+          this.ref.detectChanges();
+        }
+      });
+    }
   }
 
   handleClose(removedTag: {}): void {
@@ -5225,8 +5227,8 @@ export class WorkflowComponent {
   isCopiedWorkflow = false;
   copiedWorkflowJobTags: any = {};
   lastSavedOrderPreparation: any = null;
-  modalWidth = 600;
-  modalHeight = 400;
+  modalWidth = 800;
+  modalHeight = 600;
   @ViewChild('menu', {static: true}) menu: NzDropdownMenuComponent;
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
 
@@ -8506,7 +8508,7 @@ export class WorkflowComponent {
             let val = attr[j].value;
             if ((attr[j].name === 'arguments' || attr[j].name === 'defaultArguments' || attr[j].name === 'outcome' || attr[j].name === 'result')) {
               val = val ? JSON.parse(val) : attr[j].name === 'outcome' ? {returnCode: 0} : {};
-            } else if (attr[j].name === 'remainWhenTerminated' || attr[j].name === 'onlyOnePeriod' || attr[j].name === 'forceJobAdmission' || attr[j].name === 'stopOnFailure' || attr[j].name === 'joinIfFailed' || attr[j].name === 'uncatchable' || attr[j].name === 'unsuccessful') {
+            } else if (attr[j].name === 'remainWhenTerminated' || attr[j].name === 'onlyOnePeriod' || attr[j].name === 'forceJobAdmission' || attr[j].name === 'stopOnFailure' || attr[j].name === 'joinIfFailed'  || attr[j].name === 'skipIfNoAdmissionForOrderDay' || attr[j].name === 'uncatchable' || attr[j].name === 'unsuccessful') {
               val = val == 'true';
             } else if (obj.TYPE === 'PostNotices' && attr[j].name === 'noticeBoardNames') {
               val = val ? val.split(',') : '';
@@ -11702,6 +11704,9 @@ export class WorkflowComponent {
               'admissionTimeScheme',
               JSON.stringify(self.selectedNode.newObj.admissionTimeScheme)
             );
+            const edit2 = new mxCellAttributeChange(
+              obj.cell, 'skipIfNoAdmissionForOrderDay', self.selectedNode.newObj.skipIfNoAdmissionForOrderDay);
+            graph.getModel().execute(edit2);
             graph.getModel().execute(edit);
           } else if (self.selectedNode.type === 'ForkList') {
             if (self.selectedNode.radio1 === 'byListVariable' || !self.hasLicense) {
@@ -12212,6 +12217,8 @@ export class WorkflowComponent {
           }
 
           obj.admissionTimeScheme = admissionTimeScheme;
+          obj.skipIfNoAdmissionForOrderDay = cell.getAttribute('skipIfNoAdmissionForOrderDay');
+          obj.skipIfNoAdmissionForOrderDay = obj.skipIfNoAdmissionForOrderDay == 'true';
         }
         else if (cell.value.tagName === 'ForkList') {
           let children = cell.getAttribute('children');

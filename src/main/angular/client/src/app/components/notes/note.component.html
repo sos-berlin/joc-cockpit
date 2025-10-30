@@ -58,16 +58,6 @@
           <span class="nav-text"><i nz-icon nzTheme="outline" nzType="unordered-list"></i></span>
         </a>
       </li>
-
-      <li class="nav-item dropdown-separator">
-        <span class="separator"></span>
-      </li>
-
-      <li class="nav-item">
-        <a [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.notes.tooltip.colorPicker' | translate">
-          <nz-color-picker [(ngModel)]="noteColor"></nz-color-picker>
-        </a>
-      </li>
     </ul>
   </div>
 
@@ -76,29 +66,72 @@
   </button>
 </div>
 
-<div class="modal-body p-a" [style.backgroundColor]="noteColor">
+<div class="modal-body p-a">
   @if (!isPreviewMode) {
-    <div class="note-wrapper" [ngStyle]="{'width.px': width, 'height.px': height}" nzResizable>
-      <textarea [(ngModel)]="noteContent"
-                (input)="updatePreview()"
-                rows="6"
-                class="note-textarea"
-                [style.backgroundColor]="noteColor"></textarea>
+    <div class="note-wrapper" [ngStyle]="{'width.px': width, 'height.px': height}">
+      <div class="chat-thread">
+        @for (post of posts; track post.postId; let i = $index) {
+          <div class="post-message"
+               [class.current-user]="isCurrentUser(post)"
+               [class.other-user]="!isCurrentUser(post)"
+               [style.borderLeftColor]="post.color || noteColor">
+            <div class="post-header">
+              <span class="post-number">#{{ i + 1 }}</span>
+              <span class="author">{{ post.author.displayName }}</span>
+              <span class="timestamp">{{ post.postedAt | date:'short' }}</span>
+              @if (post.isEdited) {
+                <span class="edited-badge">(edited)</span>
+              }
+            </div>
+            <div class="post-content help-md"
+                 [innerHTML]="renderMarkdown(post.content)"
+                 [style.backgroundColor]="getMessageBackgroundColor(post)"></div>
+          </div>
+        }
+      </div>
+
+      <div class="new-post-section box" style="margin-bottom: 0px;">
+        <textarea [(ngModel)]="noteContent"
+                  (input)="updatePreview()"
+                  rows="3"
+                  class="note-textarea"
+                  placeholder="Type your message here..."></textarea>
+
+        <div class="message-actions">
+          <div class="color-selector">
+            @for (preset of colorPresets; track preset.value) {
+              <button
+                class="color-preset-btn"
+                [class.active]="noteColor === preset.value"
+                [style.backgroundColor]="preset.value"
+                [nzTooltipMouseEnterDelay]="0.5"
+                [nz-tooltip]="preset.label | translate"
+                (click)="selectColor(preset.value)">
+              </button>
+            }
+          </div>
+
+          <button [disabled]="submitted || !noteContent.trim()"
+                  class="btn btn-primary btn-sm"
+                  type="button"
+                  (click)="addPost()">
+            @if (submitted) {
+              <i class="fa fa-spin fa-spinner p-r-xs"></i>
+            }
+            {{'common.button.submit' | translate}}
+          </button>
+        </div>
+      </div>
     </div>
   }
   @if (isPreviewMode) {
-    <div class="note-wrapper preview-wrapper" [ngStyle]="{'width.px': width, 'height.px': height}" nzResizable>
-      <div class="note-preview help-md" [innerHTML]="notePreview" [style.backgroundColor]="noteColor"></div>
+    <div class="note-wrapper preview-wrapper" [ngStyle]="{'width.px': width, 'height.px': height}">
+      <div class="note-preview help-md" [innerHTML]="notePreview"></div>
     </div>
   }
 </div>
 
-
 <div class="modal-footer text-left">
-
-  <button [disabled]="submitted" class="btn btn-primary btn-sm" type="submit">
-    {{'common.button.submit' | translate}}
-  </button>
   <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
   <button [disabled]="submitted" class="btn btn-default btn-sm m-l-sm pos-abt preview-btn" type="button" (click)="togglePreview()">
     {{ isPreviewMode ? ('common.button.edit' | translate) : ('inventory.notes.button.preview' | translate) }}

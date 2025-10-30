@@ -25,7 +25,7 @@
         </label>
         <div class="col-md-8">
           <div class="b-a p-l-sm p-r-sm p-t-xs p-b-xs">
-            @for (group of groups; track $index; let i = $index) {
+            @for (group of groups; track group;) {
               <nz-tag
                 [nzMode]="'closeable'"
                 (nzOnClose)="handleClose(group)"

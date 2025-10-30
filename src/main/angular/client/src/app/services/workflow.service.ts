@@ -1435,7 +1435,9 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'AdmissionTime') {
             _node.setAttribute('displayLabel', 'admissionTime');
-
+            if (json.instructions[x].skipIfNoAdmissionForOrderDay !== undefined) {
+              _node.setAttribute('skipIfNoAdmissionForOrderDay', json.instructions[x].skipIfNoAdmissionForOrderDay);
+            }
             if (json.instructions[x].admissionTimeScheme) {
               _node.setAttribute('admissionTimeScheme', JSON.stringify(json.instructions[x].admissionTimeScheme));
             }
