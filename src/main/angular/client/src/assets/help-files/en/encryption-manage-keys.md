@@ -13,11 +13,11 @@ For management of Encryption Keys see [JS7 - Encryption - Management of Encrypti
 
 The process of encryption works like this:
 
-![Encryption Process](encryption-process.png)
+<img src="assets/help-files/images/encryption-process.png" alt="Encryption Process" width="750" height="240" />
 
 The process of decryption works like this:
 
-![Decryption Process](decryption-process.png)
+<img src="assets/help-files/images/decryption-process.png" alt="Decryption Process" width="880" height="210" />
 
 The *Manage Encryption Keys* page is used for managing Certificates and specifying properties of the Certificate.
 

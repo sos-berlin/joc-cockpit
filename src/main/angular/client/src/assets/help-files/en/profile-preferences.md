@@ -4,12 +4,6 @@ The *Profile - Preferences* page holds settings for a user account.
 
 When a user connects to JOC Cockpit for the first time, then the *Default User Account's* preferences are copied to the user's preferences. The *Default User Account* is specified from the [Settings - JOC Cockpit](/settings-joc) page.
 
-## User Details
-
-The user's *Account Name* is displayed.
-
-If the user account is logged in from an Identity Service that makes use of passwords managed with JOC Cockpit, then the *Change Password* operation is available. Users can change their password any time.
-
 ## Roles
 
 The roles assigned the user account are displayed. Resulting permissions are merged from role assignments and are available from the [Profile - Permissions](/profile-permissions) tab.
@@ -123,6 +117,7 @@ Preferences apply to display of Workflow Instructions with the [Configuration - 
 - [Order Log View](/order-log)
 - [Order States](/order-states)
 - [Orders - Overview](/orders-overview)
+- [Profile](/profile)
 - [Profile - Permissions](/profile-permissions)
 - [Resources - Notice Boards](/resources-notice-boards)
 - [Resources - Resource Locks](/resources-resource-locks)
@@ -135,8 +130,8 @@ Preferences apply to display of Workflow Instructions with the [Configuration - 
 
 - [JS7 - Audit Log](https://kb.sos-berlin.com/display/JS7/JS7+-+Audit+Log)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)
-- [JS7 - How to manage License Expiration Warnings](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+manage+License+Expiration+Warnings)
 - [JS7 - File Transfer History](https://kb.sos-berlin.com/display/JS7/JS7+-+File+Transfer+History)
+- [JS7 - How to manage License Expiration Warnings](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+manage+License+Expiration+Warnings)
 - [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
 - [JS7 - Order State Transitions](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+State+Transitions)
 - [JS7 - Profiles](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles)

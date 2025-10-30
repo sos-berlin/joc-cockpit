@@ -6,6 +6,8 @@ The *Orders* panel provides information about Orders from the following sources:
 - Orders added on demand by users from the [Workflows](/workflows) view
 - Orders added from [File Order Sources](/configuration-inventory-file-order-sources) that watch directories for incoming files
 
+<img src="assets/help-files/images/dashboard-orders.png" alt="Orders" width="330" height="140" />
+
 ## Order States
 
 The *Orders* panel provides information about the current state of Orders. The panel is updated when Orders' state changes.

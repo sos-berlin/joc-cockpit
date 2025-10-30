@@ -2,6 +2,8 @@
 
 The *History* panel provides information about past execution of Orders and Jobs.
 
+<img src="assets/help-files/images/dashboard-history.png" alt="History" width="330" height="80" />
+
 ## History Status
 
 The history status is the final status when an Order or Job is completed. The history status does not consider Orders and Jobs that are in progress. No operations are available on indicated Orders or Jobs - they are history.

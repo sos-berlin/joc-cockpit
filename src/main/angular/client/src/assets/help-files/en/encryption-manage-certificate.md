@@ -11,7 +11,9 @@ The *Manage Encryption Certificate* page is used for specifying properties of th
 The following properties are specified for a Certificate:
 
 - **Certificate Alias** is the unique name that users assign a Certificate. Users are free to choose the name. The Certificate and properties will be stored with a Job Resource using the indicated name.
-- **Certificate** allows copying/pasting a Certificate in PEM format. A Certificate can look like this:<pre>
+- **Certificate** allows copying/pasting a Certificate in PEM format. A Certificate can look like this:
+
+<pre>
 -----BEGIN CERTIFICATE-----
 MIIB9TCCAZqgAwIBAgIJAIFT2KH9txb9MAoGCCqGSM49BAMCMFgxCzAJBgNVBAYT
 AkRFMQ8wDQYDVQQIDAZCZXJsaW4xDzANBgNVBAcMBkJlcmxpbjEMMAoGA1UECgwD
@@ -25,7 +27,8 @@ covwh3OMrSXjP02VHG5cj03xHxswDAYDVR0TBAUwAwEB/zAKBggqhkjOPQQDAgNJ
 ADBGAiEAwjGLIhLfV0q/cOYVAnXSZ+jWp8Og/lG5YdvtLcj9CD0CIQCK8O4wURQj
 SbNCv0bJswLadTFEcz8ZoYP7alXJzj9FQQ== 
 -----END CERTIFICATE-----
-  </pre>
+</pre>
+
 - **Path to Private Key file** specifies the location of the Private Key with related Agents.
 - **Job Resource Folder** specifies the inventory folder in which the Job Resource holding the Certificate will be stored. A folder hierarchy can be specified using forward slashes as in /a/b/c. Non-existing folders will be created.
 
@@ -43,7 +46,7 @@ The following operations are available from links:
 
 ### Context Help
 
-- [Manage Encryption Certificate](/encryption-manage-certificate)
+- [Manage Encryption Keys](/encryption-manage-keys)
 
 ### Product Knowledge Base
 

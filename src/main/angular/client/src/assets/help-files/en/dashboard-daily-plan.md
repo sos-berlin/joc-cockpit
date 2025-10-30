@@ -2,6 +2,8 @@
 
 The *Daily Plan* panel provides information about execution of Orders created by the Daily Plan. This excludes Orders created on demand by user intervention and Orders created from file watching by *File Order Sources*.
 
+<img src="assets/help-files/images/dashboard-daily-plan.png" alt="Daily Plan" width="330" height="80" />
+
 ## Daily Plan Status
 
 The Daily Plan status is the initial status when an Order is created by the Daily Plan Service.
