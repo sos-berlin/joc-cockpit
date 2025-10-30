@@ -1,6 +1,6 @@
 # Profile - Signature Key Management
 
-The *Profile - Signature Key Management* page holds the Signing Certificate used for deployment of Workflows and Job Resources.
+The *Profile - Signature Key Management* tab holds the Signing Certificate used for deployment of Workflows and Job Resources.
 
 - If JOC Cockpit is operated for the *low* Security Level, then the Signing Certificate is stored with the *root* account and is used for deployment operations of any user account.
 - If JOC Cockpit is operated for the *medium* Security Level, then the Signing Certificate is stored individually with the user account and is used for deployment operations of the related user account.
@@ -35,6 +35,7 @@ The following operations are offered:
 
 ### Context Help
 
+- [Profile](/profile)
 - [Profile - SSL Key Management](/profile-ssl-key-management)
 
 ### Product Knowledge Base

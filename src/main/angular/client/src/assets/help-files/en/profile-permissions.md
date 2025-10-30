@@ -2,12 +2,6 @@
 
 The *Profile - Permissions* page reports resulting permissions of roles assigned a user account.
 
-## User Details
-
-The user's *Account Name* is displayed.
-
-If the user account is logged in from an Identity Service that makes use of passwords managed with JOC Cockpit, then the *Change Password* operation is available. Users can change their password any time.
-
 ## Roles
 
 The roles assigned the user account are displayed. Resulting permissions are merged from role assignments.
@@ -26,7 +20,7 @@ Permissions are indicated per Controller instance. The *default* Controller perm
 
 ### Context Help
 
-- [Profile - Preferences](/profile-preferences)
+- [Profile](/profile)
 
 ### Product Knowledge Base
 

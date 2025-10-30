@@ -1,6 +1,6 @@
 # Profile - SSL Key Management
 
-The *Profile - SSL Key Management* implements the built-in Certificate Authority (CA) that allows creating Server Authentication Certificates and Client Authentication Certificates for TLS/SSL connections to JS7 products.
+The *Profile - SSL Key Management* tab offers the built-in Certificate Authority (CA) that allows creating Server Authentication Certificates and Client Authentication Certificates for TLS/SSL connections to JS7 products.
 
 For details see [JS7 - Profiles - SSL Key Management](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles+-+SSL+Key+Management).
 
@@ -26,6 +26,7 @@ The following operations are offered:
 
 ### Context Help
 
+- [Profile](/profile)
 - [Profile - SSL Key Management](/profile-ssl-key-management)
 
 ### Product Knowledge Base
