@@ -33,6 +33,8 @@ Settings for *User Profiles* are available from the following sections:
 - [Profile - Git Management](/profile-git-management)
 - [Profile - Favorite Management](/profile-favorite-management)
 
+## References
+
 ### Context Help
 
 - [Identity Services](/identity-services)

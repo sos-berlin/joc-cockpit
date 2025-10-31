@@ -26,6 +26,8 @@ The following operations are offered from each Git connection's action menu:
 - **Edit** offers to modify the Git connection properties.
 - **Delete** will remove the Git connection entry.
 
+## References
+
 ### Context Help
 
 - [Profile](/profile)

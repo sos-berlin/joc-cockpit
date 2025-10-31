@@ -61,6 +61,8 @@ The following operations are available from a *Favorite Facet's* 3-dots action m
 - **Share** offers to share the favorite with other users. Shared favorites are indicated by a related icon.
 - **Delete** removes the related *Facet* from the list of favorites.
 
+## References
+
 ### Context Help
 
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
