@@ -1,6 +1,6 @@
 # Identity Services
 
-Identity Services rule access to JOC Cockpit for authentication and authorisation.
+Identity Services rule access to JOC Cockpit for authentication and authorization.
 
 Identity Services implement Authentication Methods and access to Identity Providers. For example, credentials such as user account/password are used as Authentication Method to access an LDAP Directory Service acting as the Identity Provider. See [JS7 - Identity and Access Management](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+and+Access+Management).
 
@@ -31,12 +31,12 @@ Identity Services can be qualified being optional or required. They indicate an 
 For each Identity Service the following attributes are displayed:
 
 - **Identity Service Name** can be freely chosen.
-- **Identity Service Type** is one of JOC,  LDAP, OIDC, CERTIFICATE, FIDO. For LDAP and OIDC the service types LDAP-JOC and OIDC-JOC can be used that store role assignment with JOC Cockpit.
+- **Identity Service Type** is one of JOC,  LDAP, OIDC, CERTIFICATE, FIDO. For LDAP and OIDC the additional service types LDAP-JOC and OIDC-JOC can be used that store role assignment with JOC Cockpit.
 - **Authentication Scheme** is one of *single-factor* or *two-factor*. 
 - **Second Factor** indicates if the second factor is in place for *two-factor* authentication.
 - **Ordering** indicates the order in which the Identity Service will be triggered for authentication.
-- **Disabled** indicates if the Identity Service can be used to login.
-- **Required** indicates that the Identity Service will be triggered in addition to Identtiy Services with an earlier ordering.
+- **Disabled** indicates if the Identity Service can be used for login.
+- **Required** indicates that the Identity Service will be triggered in addition to Identity Services with an earlier ordering.
 
 ## Operations on Identity Services
 
