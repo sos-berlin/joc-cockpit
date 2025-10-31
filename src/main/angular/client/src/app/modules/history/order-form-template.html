@@ -278,5 +278,7 @@
       </button>
     </div>
   }
+  @if (isSearch) {
   <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-filter cur-point fa fa-info-circle text-20"></i>
+  }
 </form>

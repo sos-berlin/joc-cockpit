@@ -6,6 +6,8 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
+          <i (click)="helpPage('profile')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+
           <div class="show-inline">
             <button (click)="resetProfile();" class="btn btn-sm btn-grey" type="button">
               <i class="fa fa-refresh"></i>
