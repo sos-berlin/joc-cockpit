@@ -497,6 +497,13 @@ export class TypeComponent {
           readonly: true
         };
       }
+    }if (instruction.TYPE === 'AdmissionTime') {
+        nzData = {
+          workflowPath: this.workflowObj.path,
+          admissionTime: instruction.admissionTimeScheme,
+          timezone: this.timezone,
+          readonly: true
+        };
     } else if (instruction.TYPE === 'If') {
       nzData = {
         predicate: true,

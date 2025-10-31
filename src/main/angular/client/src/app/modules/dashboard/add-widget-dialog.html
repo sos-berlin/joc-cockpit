@@ -55,9 +55,7 @@
       </div>
     </div>
   }
-  @if (dashboard.length === widgets.length) {
-    <div class="m-t-lg">
-      <app-empty-data [title]="'dashboard.message.noWidgetFound'"></app-empty-data>
-    </div>
-  }
+  <div [ngClass]="{'show':dashboard.length === widgets.length}" class="m-t-lg hide">
+    <app-empty-data [title]="'dashboard.message.noWidgetFound'"></app-empty-data>
+  </div>
 </div>
