@@ -26,6 +26,8 @@ Registration of a Subagent Cluster includes registering
   - *active-passive*: only the first Subagent will be used for job execution. If it is unavailable, then the next Subagent will be used. For details see [JS7 - Agent Cluster - Active-Passive Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Passive+Subagent+Cluster).
   - *metrics-based*: based on rules such as CPU and memory consumption, the next Subagent will be selected for job execution. For details see [JS7 - Agent Cluster - Metrics-based Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Metrics-based+Subagent+Cluster).
 
+For details see [Initial Operation - Subagent Cluster](/initial-operation-agent-subagent-cluster)
+
 ## References
 
 ### Context Help
@@ -34,7 +36,7 @@ Registration of a Subagent Cluster includes registering
 - [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-cluster)
 - [Initial Operation - Register Controller](/initial-operation-register-controller)
 - [Initial Operation - Register Subagent](/initial-operation-register-agent-subagent)
-- [Initial Operation - Register Subagent Cluster](/initial-operation-register-agent-subagent-cluster)
+- [Initial Operation - Subagent Cluster](/initial-operation-agent-subagent-cluster)
 
 ### Product Knowledge Base
 
