@@ -81,13 +81,6 @@
         </mxCell>
       </Cycle>
     </add>
-    <add as="AdmissionTime" >
-      <AdmissionTime displayLabel="admissionTime">
-        <mxCell vertex="1">
-          <mxGeometry as="geometry" width="72" height="72"/>
-        </mxCell>
-      </AdmissionTime>
-    </add>
     <add as="Retry">
       <Retry displayLabel="retry" maxTries="10" retryDelays="60">
         <mxCell vertex="1">
@@ -172,6 +165,13 @@
         </mxCell>
       </Prompt>
     </add>
+    <add as="AdmissionTime" >
+      <AdmissionTime displayLabel="admissionTime">
+        <mxCell vertex="1">
+          <mxGeometry as="geometry" width="72" height="72"/>
+        </mxCell>
+      </AdmissionTime>
+    </add>
     <add as="symbol">
       <Symbol displayLabel="Instruction">
         <mxCell vertex="1" style="symbol;image=images/symbols/event.png">
@@ -249,8 +249,6 @@
     <hr/>
     <add as="Cycle" template="Cycle" style="cycle" icon="./assets/mxgraph/images/white-cycle.png"/>
     <hr/>
-    <add as="AdmissionTime" template="AdmissionTime" style="admissionTime" icon="./assets/mxgraph/images/white-admissionTime.png"/>
-    <hr/>
     <add as="Break" template="Break" style="break" icon="./assets/mxgraph/images/white-break.png"/>
     <hr/>
     <add as="Lock" template="Lock" style="lock" icon="./assets/mxgraph/images/white-lock.png"/>
@@ -258,6 +256,8 @@
     <add as="Sleep" template="Sleep" style="sleep" icon="./assets/mxgraph/images/white-sleep.png"/>
     <hr/>
     <add as="Prompt" template="Prompt" style="prompt" icon="./assets/mxgraph/images/white-prompt.png"/>
+    <hr/>
+    <add as="AdmissionTime" template="AdmissionTime" style="admissionTime" icon="./assets/mxgraph/images/white-admissionTime.png"/>
     <hr/>
     <add as="AddOrder" template="AddOrder" style="addOrder" icon="./assets/mxgraph/images/white-addOrder.png"/>
     <hr/>

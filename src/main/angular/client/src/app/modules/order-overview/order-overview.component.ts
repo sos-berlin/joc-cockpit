@@ -823,7 +823,7 @@ export class OrderOverviewComponent {
   }
 
   getObstacles(order): void {
-    if (order.state._text === 'INPROGRESS' && !order.obstacles) {
+    if ((order.state._text === 'INPROGRESS' || (order.state._text === 'WAITING' && order.state._reason === 'WAITING_FOR_ADMISSION')) && !order.obstacles) {
       order.obstacles = [];
       this.coreService.post('order/obstacles', {
         controllerId: this.schedulerIds.selected,

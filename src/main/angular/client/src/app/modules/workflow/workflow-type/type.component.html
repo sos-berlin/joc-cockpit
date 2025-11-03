@@ -179,7 +179,7 @@
                 <b translate>workflow.label.delay</b> : {{instruction.retryDelays}}
               </div>
             </ng-template>
-            @if (instruction['TYPE'] !== 'If' && instruction['TYPE'] !== 'Cycle' && instruction['TYPE'] !== 'When' && instruction['TYPE'] !== 'ElseWhen') {
+            @if (instruction['TYPE'] !== 'If' && instruction['TYPE'] !== 'Cycle' && instruction['TYPE'] && instruction['TYPE'] !== 'AdmissionTime' && instruction['TYPE'] !== 'When' && instruction['TYPE'] !== 'ElseWhen') {
               <div class="btn-group dropdown" style="margin-left: -10px">
                 <button [nzDropdownMenu]="menu" class="btn-drop more-option-h" nz-dropdown nzTrigger="click"
                         type="button">

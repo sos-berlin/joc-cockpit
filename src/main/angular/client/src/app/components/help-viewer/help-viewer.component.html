@@ -17,6 +17,34 @@
       <ng-container>
         @if (!isLoading) {
           <div [innerHTML]="html" class="help-md"></div>
+
+          <!-- Link Validation Results -->
+          @if (showValidationResults) {
+            <div class="link-validation-results" style="margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 4px;">
+              <h4>Link Validation Results</h4>
+              <div style="margin-bottom: 10px;">
+                <strong>Total Links:</strong> {{ linkValidationResults.length }} |
+                <strong style="color: green;">Valid:</strong> {{ getValidLinks().length }} |
+                <strong style="color: red;">Broken:</strong> {{ getBrokenLinks().length }}
+              </div>
+
+              @if (getBrokenLinks().length > 0) {
+                <div style="margin-top: 15px;">
+                  <h5 style="color: red;">Broken Links:</h5>
+                  <ul style="list-style: none; padding-left: 0;">
+                    @for (link of getBrokenLinks(); track link.url) {
+                      <li style="padding: 5px; border-bottom: 1px solid #eee;">
+                        <span [class]="link.type === 'internal' ? 'badge badge-warning' : 'badge badge-danger'">
+                          {{ link.type }}
+                        </span>
+                        <code style="margin-left: 10px; color: red;">{{ link.url }}</code>
+                      </li>
+                    }
+                  </ul>
+                </div>
+              }
+            </div>
+          }
         }
       </ng-container>
     } @else {
@@ -31,14 +59,30 @@
       <span translate>common.button.back</span>
     </button>
   }
+
+  <button
+    type="button"
+    class="btn btn-primary btn-sm"
+    (click)="validateLinks()"
+    [disabled]="isValidatingLinks || isLoading"
+    style="margin-right: 10px;">
+    @if (isValidatingLinks) {
+      <i class="fa fa-spinner fa-spin"></i> Validating...
+    } @else {
+      <i class="fa fa-check-circle"></i> Validate Links
+    }
+  </button>
+
   <button type="button" class="btn btn-grey btn-sm" (click)="cancel()">
     <span translate>common.button.close</span>
   </button>
+
   @if (fallbackNotice) {
     <small class="text-warning" style="white-space: nowrap;">
       {{ 'common.message.fallbackNotice' | translate }}
     </small>
   }
+
   <div style="position: absolute; right: 10px;">
     <app-select-input (modelChange)="setLocale()" [attributeName]="'language'" [classNames]="'w-xl'"
                       [listArray]="coreService.locales" [name]="'language'" [object]="helpFilters"

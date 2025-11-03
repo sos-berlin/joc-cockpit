@@ -6330,8 +6330,8 @@ export class WorkflowComponent {
 
       var texts = [
         "", "Job", "Try", "Retry", "Finish", "Fail",
-        "Fork", "Fork<br>List", "Cycle","Admission<br>Time", "Break", "Lock",
-        "Sleep", "Prompt", "AddOrder", "Post<br>Notices",
+        "Fork", "Fork<br>List", "Cycle", "Break", "Lock",
+        "Sleep", "Prompt","Admission<br>Time", "AddOrder", "Post<br>Notices",
         "Expect<br>Notices", "Consume<br>Notices", "If",
         "Case", "CaseWhen", "CaseElse", "Sticky<br>Subagent",
         "Option", "Paste"

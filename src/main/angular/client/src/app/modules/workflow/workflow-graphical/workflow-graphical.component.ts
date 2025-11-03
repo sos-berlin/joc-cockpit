@@ -1955,7 +1955,7 @@ export class WorkflowGraphicalComponent {
   }
 
   getObstacles(order, cell): void {
-    if (order.state._text === 'INPROGRESS' && !order.obstacles) {
+    if ((order.state._text === 'INPROGRESS' || (order.state._text === 'WAITING' && order.state._reason === 'WAITING_FOR_ADMISSION')) && !order.obstacles) {
       cell.setAttribute('isCall', true);
       order.obstacles = [];
       this.coreService.post('order/obstacles', {
