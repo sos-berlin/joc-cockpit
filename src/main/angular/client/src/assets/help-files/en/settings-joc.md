@@ -2,6 +2,8 @@
 
 The following settings are applied to JOC Cockpit. Changes become effective immediately.
 
+The *Settings* page is accessible from the ![wheel icon](assets/images/wheel.png) icon in the menu bar.
+
 ## Audit Log Settings
 
 ### Setting: *force\_comments\_for\_audit\_log*, Default: *false*

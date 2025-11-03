@@ -2,7 +2,7 @@
 
 The following settings are applied to the [Cleanup Service](/service-cleanup). Changes become effective immediately.
 
-The *Settings* page is accessible from the ![wheel icon](assets/images/wheel.png) in the menu bar.
+The *Settings* page is accessible from the ![wheel icon](assets/images/wheel.png) icon in the menu bar.
 
 ## Start Time Settings
 
@@ -85,7 +85,7 @@ Specifies the retention period for notifications, for example about job errors a
 
 ### Setting: *profile\_age*, Default: *365*d
 
-Specifies the retention period for unused [Profiles](/profiles), i.e. profiles of user accounts that did not login for the given period.
+Specifies the retention period for unused [Profiles](/profile), i.e. profiles of user accounts that did not login for the given period.
 
 ### Setting: *failed\_login\_history\_age*, Default: *90*d
 
@@ -106,9 +106,10 @@ Specifies the number of versions per deployed object that should be retained. Ve
 - [Audit Log](/audit-log)
 - [Daily Plan](/daily-plan)
 - [Daily Plan - Projections](/daily-plan-projections)
-- [Profiles](/profiles)
+- [Profile](/profile)
 - [Reports](/reports)
 - [Resources - Notice Boards](/resources-notice-boards)
+- [Cleanup Service](/service-cleanup)
 - [Settings](/settings)
 
 ### Product Knowledge Base

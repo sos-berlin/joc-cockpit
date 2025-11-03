@@ -2,6 +2,8 @@
 
 The JOC Cockpit offers [JS7 - Inventory Git Integration](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Git+Integration) for versioning and rollout of scheduling objects by use of Git repositories.
 
+The *Settings* page is accessible from the ![wheel icon](assets/images/wheel.png) icon in the menu bar.
+
 The following settings are applied for use with Git repositories. Changes become effective immediately.
 
 ## Git Repository Settings

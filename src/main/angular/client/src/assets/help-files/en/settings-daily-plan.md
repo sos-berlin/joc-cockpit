@@ -2,6 +2,8 @@
 
 The following settings are applied to the [Daily Plan](/daily-plan). Changes become effective immediately.
 
+The *Settings* page is accessible from the ![wheel icon](assets/images/wheel.png) icon in the menu bar.
+
 ## Daily Plan Settings
 
 ### Setting: *time\_zone*, Default: *UTC*

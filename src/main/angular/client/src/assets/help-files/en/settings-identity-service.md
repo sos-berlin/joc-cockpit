@@ -1,6 +1,8 @@
 # Settings - Identity Service
 
-The following settings are applied to any [Identity Service](/identity-service). Changes become effective immediately.
+The following settings are applied to any [Identity Services](/identity-services). Changes become effective immediately.
+
+The *Settings* page is accessible from the ![wheel icon](assets/images/wheel.png) icon in the menu bar.
 
 ## Identity Service Settings
 
@@ -14,7 +16,7 @@ Specifies the maximum duration in minutes of an idle session in JOC Cockpit.
 
 ### Setting: *initial\_password*, Default: *initial*
 
-Specifies the initial password used when creating new accounts or when resetting passwords in the [Identity Service - JOC Cockpit](/identity-service-joc).
+Specifies the initial password used when creating new accounts or when resetting passwords in the [JS7 - JOC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+JOC+Identity+Service).
 
 - If an administrator adds user accounts with the JOC Cockpit and does not specify a password then the Initial Password will be used. As a general rule the JOC Cockpit does not allow use of empty passwords but populates them from the *initial\_password*. Administrators can apply the initial password and they can specify an individual password for the given account.
 - When resetting a user account's password, then an existing password will be replaced by the *initial\_password*.
@@ -31,11 +33,11 @@ Note that the number of characters and arbitrariness of character selection are 
 
 ### Context Help
 
-- [Identity Service](/identity-service)
-- [Identity Service - JOC Cockpit](/identity-service-joc)
+- [Identity Services](/identity-services)
 - [Settings](/settings)
 
 ### Product Knowledge Base
 
+- [JS7 - JOC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+JOC+Identity+Service)
 - [JS7 - Log Notification Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Notification+Service)
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)

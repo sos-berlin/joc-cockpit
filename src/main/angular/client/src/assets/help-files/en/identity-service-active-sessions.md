@@ -8,7 +8,7 @@ Active sessions are displayed from the account in use, from the Identity Service
 
 - JOC Cockpit does not limit the number of sessions per account.
 - The remaining session time is limited by the following factors:
-  - The *session_idle_timeout* setting configured with the [Settings - Identity Management](/settings-identity-management) page limits the maximum duration a session can remain active without user activity.
+  - The *session_idle_timeout* setting configured with the [Settings - Identity Service](/settings-identity-service) page limits the maximum duration a session can remain active without user activity.
   - Identity Service Providers such as OIDC and Keycloak can limit the maximum duration of a user session.
 
 ## Operations on Active Sessions
@@ -27,7 +27,7 @@ When selecting one or more sessions, then the *Cancel Session* operation is avai
 
 - [Identity Service - Blocklist](/identity-service-blocklist)
 - [Identity Services](/identity-services)
-- [Settings - Identity Management](/settings-identity-management)
+- [Settings - Identity Service](/settings-identity-service)
 
 ### Product Knowledge Base
 

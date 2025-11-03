@@ -4,10 +4,12 @@ The *Profile* holds settings relevant for a user's interaction with JOC Cockpit.
 
 A *Base Profile* is available, typically from the *root* account that is used
 
-- to populate *User Profiles* of new user accounts on first login,
+- to populate *User Profiles* of user accounts on first login,
 - to provide settings relevant to all user accounts if JOC Cockpit is operated in *low* Security Level.
 
-Users can switch the *Base Profile* to using a different account from the [Settings - JOC Cockpit](/settings-joc) page.
+Users can switch the *Base Profile* to a different account from the [Settings - JOC Cockpit](/settings-joc) page.
+
+Users should be aware that inactive profiles are subject to purge by the [Cleanup Service](/service-cleanup).
 
 The *User Profile* allows managing preferences and settings that are applicable to the current user.
 
@@ -37,6 +39,7 @@ Settings for *User Profiles* are available from the following sections:
 
 ### Context Help
 
+- [Cleanup Service](/service-cleanup)
 - [Identity Services](/identity-services)
 - [Settings - JOC Cockpit](/settings-joc)
 - [Settings - Identity Service](/settings-identity-service)

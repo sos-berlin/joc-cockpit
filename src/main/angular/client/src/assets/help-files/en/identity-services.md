@@ -59,7 +59,6 @@ For existing Identity Services the following operations are offered from their 3
 - [Identity Service - Accounts](/identity-service-accounts)
 - [Identity Service - Configuration](/identity-service-configuration)
 - [Identity Service - Roles](/identity-service-roles)
-- [Identity Service - Settings](/identity-service-settings)
 
 ### Product Knowledge Base
 

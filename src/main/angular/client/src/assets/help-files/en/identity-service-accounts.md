@@ -24,7 +24,7 @@ For each account the following properties are displayed:
 - **Account** indicates the account as specified during login.
 - **Roles** indicates the list of [Identity Service - Roles](/identity-service-roles) that are assigned the account.
 - **Force Password Change** indicates if on next login the user account must change its password.
-- **Blocked** indicates that the account has been added to a [Identity Services - Blocklist](/identity-services-blocklist) and is denied access.
+- **Blocked** indicates that the account has been added to a [Identity Service - Blocklist](/identity-service-blocklist) and is denied access.
 - **Disabled** indicates that the account is inactive and is denied access.
 
 ## Operations on Accounts
@@ -39,7 +39,7 @@ The following operations are available from each account's 3-dots action menu:
 - **Duplicate** copies the selected account to a new account. Users must specify the name of the new account.
 - **Reset Password** drops the account's password and assigns the password specified with the *initial_password* setting in the [Settings - Identity Service](/settings-identity-service) page. The related user account must login with the *initial_password* and must change its password on next login.
 - **Force Password Change** forces the account to change its password on next login.
-- **Add to Blocklist** denies access to the account for the duration that the account is added the [Identity Services - Blocklist](/identity-services-blocklist).
+- **Add to Blocklist** denies access to the account for the duration that the account is added the [Identity Service - Blocklist](/identity-service-blocklist).
 - **Disable** deactivates the account and denies access from this account.
 - **Delete** wipes the account from the Identity Service.
 - **Show Permissions** displays the list of permissions resulting from merged roles of the given account.
@@ -66,8 +66,8 @@ Users can select one or more *Accounts* to perform above operations in bulk for 
 - [Identity Service - Configuration](/identity-service-configuration)
 - [Identity Service - Account Configuration](/identity-service-account-configuration)
 - [Identity Service - Roles](/identity-service-roles) 
+- [Identity Service - Blocklist](/identity-service-blocklist)
 - [Identity Services](/identity-services)
-- [Identity Services - Blocklist](/identity-services-blocklist)
 - [Settings - Identity Service](/settings-identity-service)
 - [Settings - JOC Cockpit](/settings-joc)
 

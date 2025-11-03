@@ -4,6 +4,8 @@ Users receive a welcome pop-up window when connecting to JOC Cockpit for the fir
 
 The welcome pop-up window provides links for downloading defaults for Job Resources and examples for Workflows and related objects.
 
+The *Settings* page is accessible from the ![wheel icon](assets/images/wheel.png) icon in the menu bar.
+
 ## User Settings
 
 ### Setting: *welcome\_got\_it*, Default: *false*

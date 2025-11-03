@@ -4,6 +4,8 @@ The [Log Notification Service](/service-log-notification) implements a syslog se
 
 Notifications are displayed from the [Monitor - System Notifications](/monitor-notifications-system) page.
 
+The *Settings* page is accessible from the ![wheel icon](assets/images/wheel.png) icon in the menu bar.
+
 The following settings are applied to the Log Notification Service. Changes become effective immediately.
 
 ## Log Notification Service Settings
