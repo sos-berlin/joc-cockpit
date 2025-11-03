@@ -17,6 +17,7 @@ import {SaveService} from '../../../services/save.service';
 import {OrderPipe} from '../../../pipes/core.pipe';
 import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.component';
 import {CommentModalComponent} from '../../../components/comment-modal/comment.component';
+import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 
 @Component({
   standalone: false,
@@ -100,8 +101,9 @@ export class SettingModalComponent {
   fullScreen = false;
   fullScreen2 = false;
   fullScreen3 = false;
+  preferences: any;
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private translate: TranslateService, private authService: AuthService,
+  constructor(public activeModal: NzModalRef,private modal: NzModalService, private coreService: CoreService, private translate: TranslateService, private authService: AuthService,
               private message: NzMessageService, private saveService: SaveService, private toasterService: ToastrService, private dataService: DataService) {
 
   }
@@ -154,7 +156,9 @@ export class SettingModalComponent {
 
   ngOnInit(): void {
     this.data = this.modalData.data;
-
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']) || {};
+    }
     const preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.display = preferences.auditLog;
     this.comments.radio = 'predefined';
@@ -739,6 +743,27 @@ export class SettingModalComponent {
       this.coreService.request('api/iam/import', formData, headers).subscribe();
     }
   }
+
+  helpPage(): void {
+    let helpKey: string;
+    if(this.data['identityServiceType'] === 'OIDC'){
+      helpKey = 'identity-service-settings-oidc'
+    }else if(this.data['identityServiceType'] === 'LDAP'){
+      helpKey = 'identity-service-settings-ldap'
+    }else if(this.data['identityServiceType'] === 'KEYCLOAK'){
+      helpKey = 'identity-service-settings-keycloak'
+    }
+
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {preferences: this.preferences, helpKey},
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
 }
 
 @Component({
@@ -751,7 +776,7 @@ export class IdentityServiceModalComponent {
   identityServices?: any[] | undefined;
   identityService?: any;
   identityServiceTypes?: any[];
-
+  preferences: any;
   submitted = false;
   isUnique = true;
   serviceAuthenticationSchemes = ['SINGLE-FACTOR', 'TWO-FACTOR'];
@@ -764,10 +789,13 @@ export class IdentityServiceModalComponent {
   fidoList = [];
   certList = [];
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
+  constructor(private modal: NzModalService, public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
   }
 
   ngOnInit(): void {
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']) || {};
+    }
     this.identityServices = this.modalData.identityServices;
     this.identityService = this.modalData.identityService;
     this.identityServiceTypes = this.modalData.identityServiceTypes;
@@ -946,6 +974,22 @@ export class IdentityServiceModalComponent {
       }, error: () => this.submitted = false
     });
   }
+  helpPage(): void {
+    let helpKey: string;
+
+    helpKey = 'identity-service-configuration'
+
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {preferences: this.preferences, helpKey},
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
 }
 
 // Main Component

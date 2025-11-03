@@ -66,6 +66,7 @@
         @if (showPanel1) {
           <i (click)="showPanel1=false" class="cursor fa fa-caret-up m-l-xs"></i>
         }
+        <span><i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-dashboard cur-point fa fa-info-circle text-20"></i></span>
       </div>
       @if (!showPanel1) {
         <div class="col-sm-12 m-t-sm m-b-xs">

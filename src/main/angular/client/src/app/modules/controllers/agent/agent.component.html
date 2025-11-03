@@ -6,7 +6,11 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
-          <i (click)="helpPage('initial-operation-register-agent-subagent-cluster')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+          @if(selectedCluster && selectedCluster.subagentClusterId){
+            <i (click)="helpPage('initial-operation-agent-subagent-cluster')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+          }@else{
+            <i (click)="helpPage('initial-operation-register-agent-subagent-cluster')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+          }
           <div class="inline">
             @if (object.mapOfCheckedId.size === 0 && permission.joc && permission.joc.administration.controllers.manage) {
               <button (click)="createCluster()" class="btn btn-grey btn-sm" translate>

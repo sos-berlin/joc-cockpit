@@ -5,6 +5,8 @@ import {Subscription} from 'rxjs';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
 import {DataService} from './data.service';
+import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
+import {NzModalService} from "ng-zorro-antd/modal";
 
 @Component({
   standalone: false,
@@ -34,9 +36,10 @@ export class AdminComponent {
   };
   subscription1: Subscription;
   subscription2: Subscription;
+  preferences: any = {};
 
   constructor(private authService: AuthService, private router: Router, public coreService: CoreService,
-              private dataService: DataService, private message: NzMessageService) {
+              private dataService: DataService, private message: NzMessageService, private modal: NzModalService,) {
     this.subscription1 = router.events.subscribe((e) => {
       if (e instanceof NavigationEnd) {
         this.checkUrl(e);
@@ -80,6 +83,9 @@ export class AdminComponent {
 
 
   ngOnInit(): void {
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']) || {};
+    }
     this.schedulerIds = this.authService.scheduleIds ? JSON.parse(this.authService.scheduleIds) : {};
     this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     this.adminFilter = this.coreService.getAdminTab();
@@ -271,6 +277,33 @@ export class AdminComponent {
         this.dataService.announceData(this.accounts);
       })
     }
+  }
+
+  helpPage(): void {
+    let helpKey: string;
+    if(this.adminFilter.isBlocklist){
+      helpKey = 'identity-service-blocklist'
+    }else if(this.adminFilter.isSession){
+      helpKey = 'identity-service-active-sessions'
+    }else if(this.route.match('/users/identity_service/role')){
+      helpKey = 'identity-service-roles'
+    }else if(this.route.match('/users/identity_service/account')){
+      helpKey = 'identity-service-accounts'
+    }else if(this.route.match('/users/identity_service/profiles')){
+      helpKey = 'identity-service-profiles'
+    }else{
+      helpKey = 'identity-services'
+    }
+
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {preferences: this.preferences, helpKey},
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
   }
 
 }

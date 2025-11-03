@@ -1,12 +1,18 @@
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, inject } from '@angular/core';
-import { finalize, takeUntil } from 'rxjs/operators';
-import {Subject, forkJoin, of, lastValueFrom} from 'rxjs';
-import {NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
+import { finalize, takeUntil, catchError, timeout, retryWhen, delay, take } from 'rxjs/operators';
+import { Subject, lastValueFrom, of } from 'rxjs';
+import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
 import { HelpService, HelpRenderResult } from '../../services/help.service';
 import { CoreService } from '../../services/core.service';
 import { HttpClient } from '@angular/common/http';
-import { catchError, timeout } from 'rxjs/operators';
-import {ToastrService} from "ngx-toastr";
+import { ToastrService } from 'ngx-toastr';
+
+interface LinkValidationResult {
+  url: string;
+  isValid: boolean;
+  type: 'internal' | 'external';
+  status?: 'verified' | 'broken' | 'cors-blocked' | 'error';
+}
 
 @Component({
   standalone: false,
@@ -26,8 +32,13 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
   fallbackNotice: any;
 
   isValidatingLinks = false;
-  linkValidationResults: { url: string; isValid: boolean; type: 'internal' | 'external' }[] = [];
+  linkValidationResults: LinkValidationResult[] = [];
   showValidationResults = false;
+
+  private readonly INTERNAL_LINK_TIMEOUT = 5000;
+  private readonly EXTERNAL_LINK_TIMEOUT = 15000;
+  private readonly RETRY_ATTEMPTS = 2;
+  private readonly RETRY_DELAY = 2000;
 
   private readonly destroy$ = new Subject<void>();
 
@@ -69,6 +80,7 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
     this.loadHelp(this.helpKey, true);
   }
 
+
   async validateLinks(): Promise<void> {
     this.isValidatingLinks = true;
     this.linkValidationResults = [];
@@ -77,6 +89,7 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
     const root = this.host.nativeElement.querySelector('.help-md') as HTMLElement | null;
     if (!root) {
       this.isValidatingLinks = false;
+      this.toasterService.warning('Help content not loaded. Please wait and try again.');
       return;
     }
 
@@ -88,109 +101,9 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const validationPromises = links.map(async (link) => {
-      const href = link.getAttribute('href')?.trim() || '';
+    this.toasterService.info(`Validating ${links.length} link(s)...`);
 
-      try {
-        if (href.startsWith('#')) {
-          const targetId = decodeURIComponent(href.slice(1));
-          const target = document.getElementById(targetId) ||
-            this.host.nativeElement.querySelector(`[id="${CSS.escape(targetId)}"]`);
-          return {
-            url: href,
-            isValid: !!target,
-            type: 'internal' as const
-          };
-        }
-
-        const mdMatch = href.match(/([a-z0-9._-]+\.md)(#.*)?$/i);
-        if (mdMatch) {
-          const key = mdMatch[1];
-          try {
-            const res = await lastValueFrom(
-              this.help.getHelpHtml(key).pipe(
-                timeout(5000),
-                catchError(() => of(null)),
-                takeUntil(this.destroy$)
-              )
-            );
-            return {
-              url: href,
-              isValid: res !== null,
-              type: 'internal' as const
-            };
-          } catch {
-            return {
-              url: href,
-              isValid: false,
-              type: 'internal' as const
-            };
-          }
-        }
-
-      if (href.startsWith('/') && !href.startsWith('//')) {
-        const routePath = href.split('#')[0].replace(/^\//, '');
-        const mdFileName = `${routePath}`;
-
-        try {
-          const res = await lastValueFrom(
-            this.help.getHelpHtml(mdFileName).pipe(
-              timeout(5000),
-              catchError(() => of(null)),
-              takeUntil(this.destroy$)
-            )
-          );
-          return {
-            url: href,
-            isValid: res !== null,
-            type: 'internal' as const
-          };
-        } catch {
-          return {
-            url: href,
-            isValid: false,
-            type: 'internal' as const
-          };
-        }
-      }
-
-      if (/^https?:\/\//i.test(href)) {
-        try {
-          const res = await lastValueFrom(
-            this.http.head(href, { observe: 'response' }).pipe(
-              timeout(10000),
-              catchError(() => of(null)),
-              takeUntil(this.destroy$)
-            )
-          );
-          return {
-            url: href,
-            isValid: res !== null && res.status >= 200 && res.status < 400,
-            type: 'external' as const
-          };
-        } catch {
-          return {
-            url: href,
-            isValid: false,
-            type: 'external' as const
-          };
-        }
-      }
-
-        return {
-          url: href,
-          isValid: true,
-          type: 'internal' as const
-        };
-      } catch (error) {
-        console.error(`Error validating link ${href}:`, error);
-        return {
-          url: href,
-          isValid: false,
-          type: 'internal' as const
-        };
-      }
-    });
+    const validationPromises = links.map((link) => this.validateSingleLink(link));
 
     try {
       this.linkValidationResults = await Promise.all(validationPromises);
@@ -198,16 +111,17 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
       this.showValidationResults = true;
 
       const brokenCount = this.linkValidationResults.filter(r => !r.isValid).length;
+      const corsBlockedCount = this.linkValidationResults.filter(r => r.status === 'cors-blocked').length;
       const validCount = this.linkValidationResults.filter(r => r.isValid).length;
 
+      const message = `Validation complete: ${validCount} valid, ${brokenCount} broken${corsBlockedCount > 0 ? `, ${corsBlockedCount} CORS-blocked` : ''} out of ${this.linkValidationResults.length} total.`;
+
       if (brokenCount > 0) {
-        this.toasterService.warning(
-          `Validation complete: ${brokenCount} broken link(s) found out of ${this.linkValidationResults.length} total links.`
-        );
+        this.toasterService.error(message);
+      } else if (corsBlockedCount > 0) {
+        this.toasterService.warning(message);
       } else {
-        this.toasterService.success(
-          `All ${validCount} links are valid!`
-        );
+        this.toasterService.success(message);
       }
     } catch (error) {
       console.error('Error during link validation:', error);
@@ -216,6 +130,186 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
       this.isValidatingLinks = false;
     }
   }
+
+
+  private async validateSingleLink(link: HTMLAnchorElement): Promise<LinkValidationResult> {
+    const href = link.getAttribute('href')?.trim() || '';
+
+    try {
+      if (href.startsWith('#')) {
+        return this.validateAnchorLink(href);
+      }
+
+      const mdMatch = href.match(/([a-z0-9._-]+\.md)(#.*)?$/i);
+      if (mdMatch) {
+        return await this.validateMarkdownLink(mdMatch[1]);
+      }
+
+      if (href.startsWith('/') && !href.startsWith('//')) {
+        return await this.validateInternalRoutePath(href);
+      }
+
+      if (/^https?:\/\//i.test(href)) {
+        return await this.validateExternalLink(href);
+      }
+
+      return {
+        url: href,
+        isValid: true,
+        type: 'internal',
+        status: 'verified'
+      };
+    } catch (error) {
+      console.error(`Unexpected error validating link ${href}:`, error);
+      return {
+        url: href,
+        isValid: false,
+        type: 'internal',
+        status: 'error'
+      };
+    }
+  }
+
+
+  private validateAnchorLink(href: string): LinkValidationResult {
+    const targetId = decodeURIComponent(href.slice(1));
+    const target = document.getElementById(targetId) ||
+      this.host.nativeElement.querySelector(`[id="${CSS.escape(targetId)}"]`);
+
+    return {
+      url: href,
+      isValid: !!target,
+      type: 'internal',
+      status: target ? 'verified' : 'broken'
+    };
+  }
+
+
+  private async validateMarkdownLink(fileName: string): Promise<LinkValidationResult> {
+    try {
+      const res = await lastValueFrom(
+        this.help.getHelpHtml(fileName).pipe(
+          timeout(this.INTERNAL_LINK_TIMEOUT),
+          catchError(() => of(null)),
+          takeUntil(this.destroy$)
+        )
+      );
+
+      return {
+        url: fileName,
+        isValid: res !== null,
+        type: 'internal',
+        status: res !== null ? 'verified' : 'broken'
+      };
+    } catch (error) {
+      console.warn(`Failed to validate markdown link ${fileName}:`, error);
+      return {
+        url: fileName,
+        isValid: false,
+        type: 'internal',
+        status: 'error'
+      };
+    }
+  }
+
+
+  private async validateInternalRoutePath(href: string): Promise<LinkValidationResult> {
+    try {
+      const routePath = href.split('#')[0].replace(/^\//, '');
+
+      const res = await lastValueFrom(
+        this.help.getHelpHtml(routePath).pipe(
+          timeout(this.INTERNAL_LINK_TIMEOUT),
+          catchError(() => of(null)),
+          takeUntil(this.destroy$)
+        )
+      );
+
+      return {
+        url: href,
+        isValid: res !== null,
+        type: 'internal',
+        status: res !== null ? 'verified' : 'broken'
+      };
+    } catch (error) {
+      console.warn(`Failed to validate route path ${href}:`, error);
+      return {
+        url: href,
+        isValid: false,
+        type: 'internal',
+        status: 'error'
+      };
+    }
+  }
+
+
+  private async validateExternalLink(href: string): Promise<LinkValidationResult> {
+    try {
+      const res = await lastValueFrom(
+        this.http.head(href, { observe: 'response' }).pipe(
+          timeout(this.EXTERNAL_LINK_TIMEOUT),
+          retryWhen(errors =>
+            errors.pipe(
+              delay(this.RETRY_DELAY),
+              take(this.RETRY_ATTEMPTS)
+            )
+          ),
+          catchError((error) => {
+            const errorMessage = error?.message || error?.status || '';
+            console.warn(`External link validation failed for ${href}: ${errorMessage}`);
+            return of(null);
+          }),
+          takeUntil(this.destroy$)
+        )
+      );
+
+      if (res !== null && res.status >= 200 && res.status < 400) {
+        return {
+          url: href,
+          isValid: true,
+          type: 'external',
+          status: 'verified'
+        };
+      } else if (res !== null && res.status >= 400) {
+        return {
+          url: href,
+          isValid: false,
+          type: 'external',
+          status: 'broken'
+        };
+      } else {
+        return {
+          url: href,
+          isValid: true,
+          type: 'external',
+          status: 'cors-blocked'
+        };
+      }
+    } catch (error: any) {
+      const isCorsError = error?.status === 0 ||
+        error?.message?.includes('CORS') ||
+        error?.message?.includes('refused');
+
+      if (isCorsError) {
+        console.warn(`CORS blocked for external link ${href}`);
+        return {
+          url: href,
+          isValid: true,
+          type: 'external',
+          status: 'cors-blocked'
+        };
+      }
+
+      console.error(`Error validating external link ${href}:`, error);
+      return {
+        url: href,
+        isValid: false,
+        type: 'external',
+        status: 'error'
+      };
+    }
+  }
+
 
   private highlightBrokenLinks(): void {
     const root = this.host.nativeElement.querySelector('.help-md') as HTMLElement | null;
@@ -226,30 +320,46 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
       const href = link.getAttribute('href')?.trim() || '';
       const result = this.linkValidationResults.find(r => r.url === href);
 
-      link.classList.remove('link-valid', 'link-broken');
+      link.classList.remove('link-valid', 'link-broken', 'link-cors-blocked');
       link.style.removeProperty('border-bottom');
       link.style.removeProperty('color');
+      link.removeAttribute('title');
 
       if (result) {
-        if (result.isValid) {
+        if (result.isValid && result.status === 'verified') {
           link.classList.add('link-valid');
           link.style.borderBottom = '2px solid green';
-        } else {
+          link.title = 'Link verified as working';
+        } else if (result.isValid && result.status === 'cors-blocked') {
+          link.classList.add('link-cors-blocked');
+          link.style.borderBottom = '2px solid orange';
+          link.style.color = 'darkorange';
+          link.title = 'External link - cannot verify due to CORS policy (likely working)';
+        } else if (!result.isValid) {
           link.classList.add('link-broken');
           link.style.borderBottom = '2px solid red';
           link.style.color = 'red';
+          link.title = `Link is broken (${result.status})`;
         }
       }
     });
   }
 
-  getBrokenLinks(): typeof this.linkValidationResults {
-    return this.linkValidationResults.filter(r => !r.isValid);
+
+  getBrokenLinks(): LinkValidationResult[] {
+    return this.linkValidationResults.filter(r => !r.isValid && r.status !== 'cors-blocked');
   }
 
-  getValidLinks(): typeof this.linkValidationResults {
+
+  getValidLinks(): LinkValidationResult[] {
     return this.linkValidationResults.filter(r => r.isValid);
   }
+
+
+  getCorsBlockedLinks(): LinkValidationResult[] {
+    return this.linkValidationResults.filter(r => r.status === 'cors-blocked');
+  }
+
 
   @HostListener('click', ['$event'])
   onClick(e: MouseEvent): void {
@@ -276,6 +386,7 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
       return;
     }
   }
+
 
   private loadHelp(key: string, restoreAnchor = false): void {
     this.isLoading = true;
@@ -312,11 +423,13 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
       });
   }
 
+
   private openHelpFile(key: string): void {
     if (this.helpKey) this.history.push(this.helpKey);
     this.fallbackNotice = '';
     this.loadHelp(key);
   }
+
 
   private applyHeadingIds(container: HTMLElement): void {
     const headings = container.querySelectorAll<HTMLElement>('h1,h2,h3,h4,h5,h6');
@@ -334,6 +447,7 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
     });
   }
 
+
   private scrollToId(id: string): void {
     const target =
       this.host.nativeElement.querySelector<HTMLElement>(`[id="${CSS.escape(id)}"]`) ||
@@ -345,6 +459,7 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
     target.classList.add('help-md-target');
     setTimeout(() => target.classList.remove('help-md-target'), 800);
   }
+
 
   private scrollToInPageAnchorFromUrl(): void {
     const full = window.location.hash;
@@ -358,6 +473,7 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
 
     if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
+
 
   private slug(s: string): string {
     return s

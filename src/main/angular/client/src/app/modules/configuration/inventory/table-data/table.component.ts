@@ -595,18 +595,25 @@ export class TableComponent implements OnChanges, OnDestroy {
     };
 
     if (object) {
+      if (type === 'delete_draft' && object.deployed) {
+        return;
+      }
       request.objects.push({
         objectType: object.objectType || object.type,
         path: object.path + (object.path === '/' ? '' : '/') + object.name
       })
     } else if (this.mapOfCheckedId.size > 0) {
       this.mapOfCheckedId.forEach(item => {
-        request.objects.push(item)
+        if (type !== 'delete_draft' || !item.deployed) {
+          request.objects.push(item);
+        }
       });
     }
-    this.coreService.post('inventory/' + type, request).subscribe(() => {
-      this.updateList(object, type);
-    });
+    if (request.objects.length > 0) {
+      this.coreService.post('inventory/' + type, request).subscribe(() => {
+        this.updateList(object, type);
+      });
+    }
   }
 
   private updateList(object, type): void {
