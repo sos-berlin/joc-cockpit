@@ -13,6 +13,7 @@ import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
 import {ShowPermissionComponent} from "../show-permission/show-permission.component";
 import {AddBlocklistModalComponent} from '../blocklist/blocklist.component';
 import {FileUploaderComponent} from "../../../components/file-uploader/file-uploader.component";
+import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 
 @Component({
   standalone: false,
@@ -145,7 +146,7 @@ export class AccountModalComponent {
   oldUser: any;
   identityServiceType = '';
   identityServiceName = '';
-
+  preferences: any;
   submitted = false;
   isUnique = true;
   currentUser: any = {};
@@ -162,10 +163,13 @@ export class AccountModalComponent {
   isApprovalRoleValid = true;
   approvalRequestorRole = '';
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
+  constructor(private modal: NzModalService, public activeModal: NzModalRef, private coreService: CoreService, private dataService: DataService) {
   }
 
   ngOnInit(): void {
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']) || {};
+    }
     this.newUser = this.modalData.newUser;
     this.copy = this.modalData.copy;
     this.userDetail = this.modalData.userDetail;
@@ -383,6 +387,22 @@ export class AccountModalComponent {
       }, error: () => {
         this.submitted = false;
       }
+    });
+  }
+
+  helpPage(): void {
+    let helpKey: string;
+
+    helpKey = 'identity-service-account-configuration'
+
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {preferences: this.preferences, helpKey},
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
     });
   }
 }
