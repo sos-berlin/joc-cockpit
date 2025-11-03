@@ -44,5 +44,5 @@ On top of the window the *Add Documentation* button is offered:
 
 ## References
 
-[Workflows](/workflows)
+- [Workflows](/workflows)
 - [JS7 - User Documentation](https://kb.sos-berlin.com/display/JS7/JS7+-+User+Documentation)

@@ -5,7 +5,7 @@ The view displays Notifications raised from Workflows.
 Notifications are configured from the [Configuration - Notification](/configuration-notification) page and can be raised in case of success, warnings or errors of Order execution or Job execution.
 
 - The *notify_on_failure_gui* fragment specifies if Notifications become visible in this view.
-- In addition to displaying Notifications in this view, they can be forwarded by mail and from the command line, for example to 3rd-party System Monitor products.
+- In addition to displaying Notifications in this view, they can be forwarded by mail and from the command line, for example to 3rd-party System Monitor products. For details see [Configuration - Notification ](/configuration-notification).
 
 Users should be aware that Notifications are subject to purge by the [Cleanup Service](/service-cleanup). By default, Notifications are purged if older than one day.
 
@@ -54,7 +54,7 @@ The top of the page offers a number of filter buttons that can be applied indivi
 - [Cleanup Service](/service-cleanup)
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
 - [Configuration - Notification](/configuration-notification)
-- [Monitor - System Notifications - Agent](/monitor-notifications-system)
+- [Monitor - System Notifications](/monitor-notifications-system)
 - [Workflows](/workflows)
 
 ### Product Knowledge Base

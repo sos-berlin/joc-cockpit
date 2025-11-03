@@ -2,7 +2,8 @@
 
 The view displays Notifications raised from JS7 products.
 
-System Notifications require setting up the the *Log Notification Service* from the [Settings](/settings) page section [Settings - Log Notification](/settings-log-notification). If configured, the JOC Cockpit acts as a syslog service that receives warnings and errors from Controllers and Agents registered with JOC Cockpit.
+- System Notifications require setting up the the *Log Notification Service* from the [Settings](/settings) page section [Settings - Log Notification](/settings-log-notification). If configured, the JOC Cockpit acts as a syslog service that receives warnings and errors from Controllers and Agents registered with JOC Cockpit.
+- In addition to displaying Notifications in this view, they can be forwarded by mail and from the command line, for example to 3rd-party System Monitor products. For details see [Configuration - Notification ](/configuration-notification).
 
 Users should be aware that Notifications are subject to purge by the [Cleanup Service](/service-cleanup). By default, Notifications are purged if older than one day.
 
@@ -46,7 +47,7 @@ The following buttons filter the source of Notifications:
 
 - **All** displays Notifications from all JS7 products.
 - **System**
-- **JOC** limits display of Notifications to Orders that *failed*.
+- **JOC** limits display of Notifications to *failed* Orders. 
 - **Controller** limits display of Notifications to Orders that caused warnings.
 - **Agent** limits display of Notifications to Orders that first failed and then recovered by successfully proceeding in the Workflow.
 
@@ -61,9 +62,10 @@ The following buttons filter the type of Notifications:
 ### Context Help
 
 - [Cleanup Service](/service-cleanup)
+- [Configuration - Notification ](/configuration-notification)
 - [Settings](/settings)
 - [Settings - Log Notification](/settings-log-notification)
-- [Monitor - System Notifications - Agent](/monitor-notifications-system)
+- [Monitor - Order Notifications](/monitor-notifications-order)
 - [Workflows](/workflows)
 
 ### Product Knowledge Base

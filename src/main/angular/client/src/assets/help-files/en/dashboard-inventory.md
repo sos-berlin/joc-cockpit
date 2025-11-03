@@ -8,12 +8,11 @@ The *Inventory* panel provides information about the number of objects in use.
 
 The inventory summary counts deployed and released objects. It does not count draft objects that have not been deployed or released.
 
-- **Workflows**
-- **Jobs**.
-- **Resource Locks**
-- **Schedules**
+- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Configuration - Inventory - Workflows - Jobs](/configuration-inventory-workflows-job-properties)
+- [Configuration - Inventory - Resource Locks](/configuration-inventory-resource-locks)
+- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
 
 ## References
 
-- [Inventory](/inventory)
 - [JS7 - Inventory](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory)

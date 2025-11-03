@@ -63,6 +63,8 @@ User's can apply filters available on top of the window to limit display of Orde
 
 ## References
 
+### Context Help
+
 - [Cleanup Service](/service-cleanup)
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
 - [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
@@ -72,5 +74,8 @@ User's can apply filters available on top of the window to limit display of Orde
 - [Settings - JOC Cockpit](/settings-joc)
 - [Task History](/history-tasks)
 - [Workflows](/workflows)
+
+### Product Knowledge Base
+
 - [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
 - [JS7 - Task History](https://kb.sos-berlin.com/display/JS7/JS7+-+Task+History)
