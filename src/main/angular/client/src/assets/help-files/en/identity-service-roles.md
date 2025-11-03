@@ -24,7 +24,7 @@ Users are encouraged to drop unused roles and to adjust permissions for roles as
 
 Roles are specified for the following scopes:
 
-- A role optionally can be limited to one or more inventory folders.
+- Every role can be limited to one or more inventory folders.
 - Every role is assigned a permission set for operations in JOC Cockpit.
 - Every role is assigned a permission set for default operations on any Controllers.
 - Every role can be assigned additional permission sets per Controller.
