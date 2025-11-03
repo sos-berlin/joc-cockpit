@@ -7,46 +7,50 @@ For authorization the JS7 offers a Role Based Access Model (RBAC) which includes
 - roles are freely configured from available permissions,
 - users are assigned one or more roles that are merged for resulting permissions.
 
-## Scope of Roles
+Permissions specify one of the following states:
 
-Roles are specified for the following scopes:
+- the permission is unassigned (white background color),
+- the permissions is granted (blue background color),
+- the permission is denied (grey background color).
 
-- A role optionally can be limited to one or more inventory folders.
-- Every role is assigned a permission set for operations in JOC Cockpit.
-- Every role is assigned a permission set for default operations on any Controllers.
-- Every role can be assigned additional permission sets per Controller.
+Permission are merged from all roles for resulting permissions of a user account.
 
-Permissions specify one of the following states in the related scope:
+## Folder Scope
 
-- the permission is unassigned,
-- the permissions is granted,
-- the permission is denied.
+The scope of permissions in a role can be limited to one or more inventory folders.
 
-Permission are merged from all roles for resulting permissions of a user account:
-
-- JOC Cockpit
-  - If a permission is unassigned in the scope of a single role, then additional roles can grant the permission. If no role grants the permission, then it is not granted from resulting permissions.
-  - If a permission is granted in scope of a single role, then it will be granted for resulting permissions.
-  - If a permission is denied in scope of a single role, then it will be denied from resulting permissions. Denied permissions overrule granted permissions.
-- Controller
-  - if a permission is unassigned in the default scope, then scopes for individual Controllers can grant the permission for the related Controller.
-  - if a permission is granted in the default scope, then by default this applies to all Controllers.
-  - if a permission is granted for a given Controller, then resulting permissions for the Controller will include the permission.
-  - If a permission is denied from a given Controller, then this overrules the same permission granted from the default scope and from other roles for the same Controller.
-  - If a permission is denied from the default scope, then this overrules the same permission granted for any Controller.
+- Users can apply the *Add Folder* button in the right upper corner of the view to select an inventory folder and to specify recursive use.
+- Users can add any number of inventory folders to a role.
 
 ## Permission Tree
 
-Permissions can be considered as a tree that offers a hierarchy of branches. Granting or denying permissions at a higher level inherits the permission assignment recursively to deeper levels of the tree.
+Permissions can be considered a tree that offers a hierarchy of branches. Granting or denying permissions at a higher level inherits permission assignment recursively to deeper levels of the tree.
 
-## Operations on Permissions
+### Granting and Denying Permissions
 
 Permission are visualized from a rectangle similar to a battery:
 
-- A rectangle using white background color indicates an unassigned permission.
-- A rectangle using blue background color indicates a granted permission that will be passed to descendent permissions. Clicking the middle of the rectangle switches between the unassigned and the granted permission status.
-- A rectangle using light blue background color indicates an inherited, granted permission. Changes to the permission status require not to grant the parent permission but to grant child permissions individually.
-- A rectangle using grey background color indicates a denied permission. Clicking the + icon in a permission's rectangle switches to the denied status, clicking the - icon of a denied permission makes it an unassigned permission.
+- Clicking the pole at the right side of a battery will expand/collapse descendent permissions.
+- Clicking the background of the battery will switch permission between the unassigned status and the granted status:
+  - A rectangle using white background color indicates an unassigned permission.
+  - A rectangle using blue background color indicates a granted permission that will be passed to descendent permissions. <br/><img src="assets/help-files/images/identity-service-permissions-granted.png" alt="Granted Permissions" width="600" height="100" />
+  - A rectangle using light blue background color indicates an inherited, granted permission. Changes to the permission require not to grant the parent permission but to grant child permissions individually.  <br/><img src="assets/help-files/images/identity-service-permissions-inherited.png" alt="Inherited Permissions" width="600" height="100" />
+- Clicking the + icon inside a permission's rectangle switches the permission to the denied status indicated from grey background color. Clicking the - icon inside a denied permission makes it an unassigned permission using white background color. <br/><img src="assets/help-files/images/identity-service-permissions-denied.png" alt="Denied Permissions" width="600" height="100" />
+
+### Collapsing and Expanding Permissions
+
+The following buttons are offered to expand/collapse permissions:
+
+- **Expand All**, **Collapse All** will expand or collapse all permissions.
+- **Expand Active** will expand granted/denied permission and will keep inherited permissions collapsed.
+- **Collapse Inactive** will collapse unassigned permissions.
+
+## Graphical and Tabular View
+
+In the right upper corner the following buttons are offered for display of permissions:
+
+- **Graphical View** displays permissions from a tree using battery shape.
+- **Tabular View** displays permissions from a textual representation with permission levels being separated by colon.
 
 ## References
 
