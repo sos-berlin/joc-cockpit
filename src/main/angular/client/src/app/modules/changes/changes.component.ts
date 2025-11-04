@@ -7,6 +7,7 @@ import {AddEnciphermentModalComponent} from "../encipherment/encipherment.compon
 import {CommentModalComponent} from "../../components/comment-modal/comment.component";
 import {ConfirmModalComponent} from "../../components/comfirm-modal/confirm.component";
 import {NzFormatEmitEvent} from "ng-zorro-antd/tree";
+import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 
 @Component({
   standalone: false,
@@ -30,15 +31,19 @@ export class AddChangesModalComponent{
   INVchanges = false
   selectedChange: any;
   data: any;
+  preferences: any = {};
   affectedObjectsByType: { [key: string]: any[] } = {};
   referencedObjectsByType: { [key: string]: any[] } = {};
   affectedObjectTypes: string[] = [];
   referencedObjectTypes: string[] = [];
   affectedCollapsed: { [key: string]: boolean } = {};
   referencedCollapsed: { [key: string]: boolean } = {};
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private authService: AuthService, private cdRef: ChangeDetectorRef ){}
+  constructor(public activeModal: NzModalRef, private modal: NzModalService, private coreService: CoreService, private authService: AuthService, private cdRef: ChangeDetectorRef ){}
 
   ngOnInit(): void {
+    if (sessionStorage['preferences']) {
+      this.preferences = JSON.parse(sessionStorage['preferences']) || {};
+    }
     this.schedulerIds = JSON.parse(this.authService.scheduleIds);
     this.display = this.modalData.display;
     this.title = this.modalData.title;
@@ -625,6 +630,20 @@ export class AddChangesModalComponent{
     this.cdRef.detectChanges();
   }
 
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
 }
 
 
@@ -801,5 +820,20 @@ export class ChangesComponent {
         this.changes();
       }, error: () => {}
     });
+  }
+
+  helpPage(): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: 'changes'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }

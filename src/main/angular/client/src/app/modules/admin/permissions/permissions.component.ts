@@ -1708,19 +1708,5 @@ export class PermissionsComponent {
 
     self.nodes = nodes;
   }
-  helpPage(): void {
-    let helpKey: string;
 
-    helpKey = 'identity-service-permissions'
-
-    this.modal.create({
-      nzTitle: undefined,
-      nzContent: HelpViewerComponent,
-      nzClassName: 'lg',
-      nzData: {preferences: this.preferences, helpKey},
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false
-    });
-  }
 }

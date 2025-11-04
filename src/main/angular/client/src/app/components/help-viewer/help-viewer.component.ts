@@ -362,29 +362,54 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
 
 
   @HostListener('click', ['$event'])
-  onClick(e: MouseEvent): void {
-    const el = e.target as HTMLElement;
-    const a = (el.closest?.('a') as HTMLAnchorElement) || null;
+onClick(e: MouseEvent): void {
+  const el = e.target as HTMLElement;
+  const a = (el.closest?.('a') as HTMLAnchorElement) || null;
 
-    if (!a) return;
+  if (!a) return;
 
-    const href = a.getAttribute('href')?.trim();
+  const href = a.getAttribute('href')?.trim();
+  if (!href) return;
 
-    if (href?.startsWith('#')) {
-      e.preventDefault();
-      e.stopPropagation();
-      this.scrollToId(decodeURIComponent(href.slice(1)));
-      return;
+  if (href.startsWith('#')) {
+    e.preventDefault();
+    e.stopPropagation();
+    this.scrollToId(decodeURIComponent(href.slice(1)));
+    return;
+  }
+
+  const mdMatch = href.match(/([a-z0-9._-]+\.md)(#.*)?$/i);
+  if (mdMatch) {
+    e.preventDefault();
+    e.stopPropagation();
+    const key = mdMatch[1];
+    const anchor = mdMatch[2];
+    this.openHelpFile(key);
+    if (anchor) {
+      setTimeout(() => {
+        this.scrollToId(decodeURIComponent(anchor.slice(1)));
+      }, 300);
     }
+    return;
+  }
 
-    const mdMatch = href?.match(/([a-z0-9._-]+\.md)(#.*)?$/i);
-    if (mdMatch) {
-      e.preventDefault();
-      e.stopPropagation();
-      const key = mdMatch[1];
-      this.openHelpFile(key);
-      return;
+  if (href.startsWith('/') && !href.startsWith('//')) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const parts = href.split('#');
+    const routePath = parts[0].replace(/^\//, '');
+    const anchor = parts[1];
+
+    this.openHelpFile(routePath);
+
+    if (anchor) {
+      setTimeout(() => {
+        this.scrollToId(decodeURIComponent(anchor));
+      }, 300);
     }
+    return;
+  }
   }
 
 

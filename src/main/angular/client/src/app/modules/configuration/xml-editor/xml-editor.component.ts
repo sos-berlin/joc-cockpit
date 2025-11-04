@@ -16,6 +16,7 @@ import {CommentModalComponent} from '../../../components/comment-modal/comment.c
 import {AuthService} from '../../../components/guard';
 import {CoreService} from '../../../services/core.service';
 import {DataService} from '../../../services/data.service';
+import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
 
 declare const require: any;
 declare const $: any;
@@ -6262,5 +6263,20 @@ export class XmlEditorComponent {
     this.toasterService.error(msg, title).onTap
       .pipe(take(1))
       .subscribe(() => this.gotoErrorLocation());
+  }
+
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }

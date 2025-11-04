@@ -746,11 +746,11 @@ export class SettingModalComponent {
 
   helpPage(): void {
     let helpKey: string;
-    if(this.data['identityServiceType'] === 'OIDC'){
+    if(this.data['identityServiceType'] === 'OIDC' || this.data['identityServiceType'] === 'OIDC-JOC'){
       helpKey = 'identity-service-settings-oidc'
-    }else if(this.data['identityServiceType'] === 'LDAP'){
+    }else if(this.data['identityServiceType'] === 'LDAP' || this.data['identityServiceType'] === 'LDAP-JOC'){
       helpKey = 'identity-service-settings-ldap'
-    }else if(this.data['identityServiceType'] === 'KEYCLOAK'){
+    }else if(this.data['identityServiceType'] === 'KEYCLOAK' || this.data['identityServiceType'] === 'KEYCLOAK-JOC'){
       helpKey = 'identity-service-settings-keycloak'
     }
 

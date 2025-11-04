@@ -291,6 +291,8 @@ export class AdminComponent {
       helpKey = 'identity-service-accounts'
     }else if(this.route.match('/users/identity_service/profiles')){
       helpKey = 'identity-service-profiles'
+    }else if(this.route.match('/users/identity_service/permissions')){
+      helpKey = 'identity-service-permissions'
     }else{
       helpKey = 'identity-services'
     }

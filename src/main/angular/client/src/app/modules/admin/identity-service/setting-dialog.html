@@ -8,7 +8,7 @@
         <span translate>user.label.settingFor</span>:
         {{data['identityServiceName']}}
       </span>
-      @if(data['identityServiceType'] === 'KEYCLOAK' || data['identityServiceType'] === 'LDAP' || data['identityServiceType'] === 'OIDC'){
+      @if(data['identityServiceType'].match('KEYCLOAK') || data['identityServiceType'].match('LDAP') || data['identityServiceType'].match('OIDC')){
         <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
       }
     }

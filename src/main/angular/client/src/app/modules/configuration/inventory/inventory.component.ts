@@ -9934,7 +9934,7 @@ export class AddTagsToGropusModalComponent {
       collectLeafKeys(node);
     });
 
-  
+
     const obj: any = {
       auditLog: {},
       group: this.groupName,

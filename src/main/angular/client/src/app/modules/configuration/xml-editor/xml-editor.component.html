@@ -6,6 +6,9 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
+          @if(objectType === 'NOTIFICATION'){
+            <i (click)="helpPage('configuration-notification')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
+          }
           <div class="inline">
             @if (nodes && nodes.length > 0) {
               <span [ngClass]="validConfig ? 'badge-success':'badge-danger'" class="badge">

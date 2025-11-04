@@ -1054,13 +1054,19 @@ export class AuditLogComponent {
   }
 
   helpPage(): void{
+    let helpKey
+    if(this.auditLog.type === 'AUDITLOG'){
+      helpKey = 'audit-log'
+    }else{
+      helpKey = 'identity-service-faíled-logins'
+    }
     this.modal.create({
       nzTitle: undefined,
       nzContent: HelpViewerComponent,
       nzClassName: 'lg',
       nzData: {
         preferences: this.preferences,
-        helpKey: 'audit-log'
+        helpKey: helpKey
       },
       nzFooter: null,
       nzClosable: false,
