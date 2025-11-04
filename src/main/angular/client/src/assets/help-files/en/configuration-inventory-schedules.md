@@ -10,7 +10,7 @@ The *Schedule Panel* offers specifying rules for creating Orders from the [Daily
   - for cyclic execution of Workflows. This specifies repeated execution of Workflows based on configurable intervals.
 - Schedules are applied by the [Daily Plan](/daily-plan) to create Orders for the resulting dates and times.
   - Schedules can be manually applied from the Daily Plan view.
-  - Schedules are automatically applied by the [Daily Plan Service](/daily-plan-service).
+  - Schedules are automatically applied by the [Daily Plan Service](/service-daily-plan).
 
 Schedules are managed from the following panels:
 
@@ -24,7 +24,7 @@ For a Schedule the following inputs are available:
 - **Name** is the unique identifier of a Schedule, see [Object Naming Rules](/object-naming-rules).
 - **Title** holds an optional explanation of the Schedule's purpose.
 - **Workflow Names** holds the list of Workflows that should be started.
-- **Plan Order automatically** specifies that the Schedule will be considered by the [Daily Plan Service](/daily-plan-service).
+- **Plan Order automatically** specifies that the Schedule will be considered by the [Daily Plan Service](/service-daily-plan).
 - **Submit Order to Controller when planned** specifies that Orders will be submitted immediately to a Controller when being planned. Without this option, the Daily Plan Service will submit *planned* Orders based on [Settings - Daily Plan](/settings-daily-plan).
 
 ### Order Parameterization
@@ -82,7 +82,7 @@ For available operations see [Configuration - Inventory - Navigation Panel](/con
 - [Configuration - Inventory - Schedules - Run-time](/configuration-inventory-schedules-run-time)
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
 - [Daily Plan](/daily-plan)
-- [Daily Plan Service](/daily-plan-service)
+- [Daily Plan Service](/service-daily-plan)
 - [Object Naming Rules](/object-naming-rules)
 - [Order History](/history-orders)
 - [Profile - Preferences](/profile-preferences)

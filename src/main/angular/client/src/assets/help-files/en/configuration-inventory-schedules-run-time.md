@@ -107,10 +107,10 @@ Users should consider implications of Cyclic Orders: they create individual Orde
 ### Context Help
 
 - [Configuration - Inventory - Calendars](/configuration-inventory-calendars)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
 - [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
+- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
 - [Daily Plan](/daily-plan)
-- [Daily Plan Service](/daily-plan-service)
+- [Daily Plan Service](/service-daily-plan)
 - [Object Naming Rules](/object-naming-rules)
 - [Order History](/history-orders)
 - [Profile - Preferences](/profile-preferences)

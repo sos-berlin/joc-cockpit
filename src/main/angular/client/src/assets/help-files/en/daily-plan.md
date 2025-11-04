@@ -1,12 +1,16 @@
 # Daily Plan
 
-The *Daily Plan* view provides an overview of Orders scheduled for future execution and allows to manage the *Daily Plan*. The *Daily Plan* is subject to purge of the database performed by the [Cleanup Service](/service-cleanup).
+The *Daily Plan* view provides an overview of Orders scheduled for future execution and allows to manage the *Daily Plan*. 
 
-For operations related to the calendar widget see [Daily Plan - Calendar](/daily-plan-calendar).
+The [Daily Plan Service](/service-daily-plan) is used to create and to submit Orders for the Daily Plan to Controllers. The service is operated in background and acts on a daily basis to plan and to submit Orders a few days ahead.
+
+The Daily Plan is subject to purge of the database performed by the [Cleanup Service](/service-cleanup).
+
+For operations related to the *Calendar Panel* see [Daily Plan - Calendar](/daily-plan-calendar).
 
 ## Order States
 
-The *Daily Plan* includes Orders holding one of the states:
+The Daily Plan includes Orders holding one of the states:
 
 - **Planned**: Orders have been created but have not been *submitted* to the Controller and Agents.
 - **Submitted**: Orders have been forwarded to the Controller and Agents that will start Orders autonomously. The status applies to Orders scheduled for future execution and to Orders in execution.
@@ -123,6 +127,7 @@ A position can be specified if Orders should not start from the first node in th
 
 - [Cleanup Service](/service-cleanup)
 - [Daily Plan - Calendar](/daily-plan-calendar)
+- [Daily Plan Service](/service-daily-plan)
 - [Order History](/history-orders)
 - [Settings - Daily Plan](/settings-daily-plan)
 

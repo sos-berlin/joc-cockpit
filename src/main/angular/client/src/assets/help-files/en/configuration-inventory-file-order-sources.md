@@ -1,6 +1,6 @@
 # Configuration - Inventory - File Order Sources
 
-The *File Order Sources* panel offers specifying sources for [JS7 - File Watching](https://kb.sos-berlin.com/display/JS7/JS7+-+File+Watching) with Workflows:
+The *File Order Source Panel* offers specifying sources for [JS7 - File Watching](https://kb.sos-berlin.com/display/JS7/JS7+-+File+Watching) with Workflows:
 
 - A directory is monitored by an Agent for incoming files.
 - For each incoming file an Order is created that represents the file. 

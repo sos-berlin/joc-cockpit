@@ -1,6 +1,6 @@
 # Configuration - Inventory - Job Templates
 
-The *Job Template Panel* offers specifying central templates for Jobs used in any Workflow. They are applied if the same Job implementation is used for a number of Jobs.
+The *Job Template* panel offers specifying centrally managed templates for Jobs used in Workflows. They are applied if the same Job implementation is used for a number of Jobs.
 
 - Jobs hold a reference to a Job Template that is applied when the Job is created. 
 - Jobs can be updated when Job Templates are changed.
@@ -8,7 +8,7 @@ The *Job Template Panel* offers specifying central templates for Jobs used in an
 
 Job Templates are managed from the following panels:
 
-- The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding Schedules. In addition, the panel offers operations on Schedules.
+- The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding Job Templates. In addition, the panel offers operations on Job Templates.
 - The *Job Template Panel* on the right side of the window holds details for Schedule configuration.
 
 ## Job Template Panel
@@ -84,11 +84,10 @@ To dynamically assign values to **Arguments for JVM Jobs** or **Environment Vari
 ### Context Help
 
 - [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
-- [Configuration - Inventory - Workflow - Run-time](/configuration-inventory-schedules-run-time)
-- [Job Properties](/configuration-inventory-workflow-job-properties)
-- [Job Options](/configuration-inventory-workflow-job-options)
 - [Job Node Properties](/configuration-inventory-workflow-job-node-properties)
 - [Job Notifications](/configuration-inventory-workflow-job-notifications)
+- [Job Options](/configuration-inventory-workflow-job-options)
+- [Job Properties](/configuration-inventory-workflow-job-properties)
 - [Job Tags](/configuration-inventory-workflow-job-tags)
 - [Object Naming Rules](/object-naming-rules)
 

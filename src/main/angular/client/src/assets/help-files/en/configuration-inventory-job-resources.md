@@ -1,6 +1,6 @@
 # Configuration - Inventory - Job Resources
 
-The *Job Resources* panel offers specifying Job Resources for use with Workflows and Jobs.
+The *Job Resource Panel* offers specifying Job Resources for use with Workflows and Jobs.
 
 Job Resources hold variables from key/value pairs that are used for the following purposes:
 

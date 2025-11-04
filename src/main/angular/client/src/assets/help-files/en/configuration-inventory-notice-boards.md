@@ -1,6 +1,6 @@
 # Configuration - Inventory - Notice Boards
 
-The *Notice Boards* panel offers specifying Notice Boards for use with Workflows. For details see [JS7 - Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards).
+The *Notice Board Panel* offers specifying Notice Boards for use with Workflows. For details see [JS7 - Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards).
 
 Notice Boards implement dependencies between Workflows:
 

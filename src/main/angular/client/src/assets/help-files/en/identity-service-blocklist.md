@@ -13,7 +13,7 @@ The *Blocklist* sub-view offers adding accounts to the blocklist from the relate
 
 User accounts can be added to the blocklist from the following sub-views:
 
-- [Audit Log - Failed Logins](/audit-log-failed-logins): if accounts are identified raising frequently failed logins then this can indicate an attack. Such accounts can be added to the blocklist.
+- [Audit Log - Failed Logins](/identity-service-failed-logins): if accounts are identified raising frequently failed logins then this can indicate an attack. Such accounts can be added to the blocklist.
 - [Identity Service - Active Sessions](/identity-service-active-sessions): if accounts in active sessions are identified being unwanted, then they can be added to the blocklist.
 
 Both sub-views offer adding single accounts to the blocklist and adding selected accounts from a bulk operation.
@@ -28,7 +28,7 @@ A bulk operation is offered from using the *Remove from Blocklist* button in the
 
 ### Context Help
 
-- [Audit Log - Failed Logins](/audit-log-failed-logins)
+- [Audit Log - Failed Logins](/identity-service-failed-logins)
 - [Identity Service - Active Sessions](/identity-service-active-sessions)
 - [Identity Services](/identity-services)
 

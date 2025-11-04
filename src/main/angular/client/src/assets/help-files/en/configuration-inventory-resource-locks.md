@@ -1,6 +1,6 @@
 # Configuration - Inventory - Resource Locks
 
-The *Resource Locks* panel offers specifying Resource Locks for use with Workflows.
+The *Resource Lock Panel* offers specifying Resource Locks for use with Workflows.
 
 Resource Locks limit parallelism of Jobs and other Workflow Instructions. They can be considered a traffic light, more precisely a [Semaphore](https://en.wikipedia.org/wiki/Semaphore_%28programming%29) with the implication that 
 
@@ -53,8 +53,6 @@ If a number of Orders are waiting in front of a Resource Lock, then the Order wi
 ### Context Help
 
 - [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
-- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
-- [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
 - [Object Naming Rules](/object-naming-rules)
 - [Workflow - Inventory - Navigation Panel](/configuration-inventory-navigation)
 
@@ -62,5 +60,4 @@ If a number of Orders are waiting in front of a Resource Lock, then the Order wi
 
 - [JS7 - Lock Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Lock+Instruction)
 - [JS7 - Options Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Options+Instruction)
-- [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules)
 - [Semaphore](https://en.wikipedia.org/wiki/Semaphore_%28programming%29)

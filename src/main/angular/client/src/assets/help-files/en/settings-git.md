@@ -48,7 +48,7 @@ Specifies if Schedules should be considered local to an environment or are inten
 
 ### Context Help
 
-- [Profiles - Git](/profiles-git)
+- [Profile - Git Management](/profile-git-management)
 - [Resources - Notice Boards](/resources-notice-boards)
 - [Resources - Resource Locks](/resources-resource-locks)
 - [Settings](/settings)

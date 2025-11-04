@@ -4,18 +4,22 @@ Identity Services rule access to JOC Cockpit by authentication and authorization
 
 User accounts will be managed and stored with JOC Cockpit for the following Identity Service Types:
 
-- *JOC*: [JS7 - JOC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+JOC+Identity+Service)
-- *KEYCLOAK-JOC*: [JS7 - Keycloak Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Keycloak+Identity+Service)
-- *LDAP-JOC*: [JS7 - LDAP Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+LDAP+Identity+Service)
-- *OIDC-JOC*: [JS7 - OIDC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+OIDC+Identity+Service)
-- *CERTIFICATE*: [JS7 - Certificate Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Certificate+Identity+Service)
-- *FIDO*: [JS7 - FIDO Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Certificate+Identity+Service)
+| Identity Service Type | Documentation |
+| ----- | ----- |
+| *JOC* | [JS7 - JOC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+JOC+Identity+Service) |
+| *KEYCLOAK-JOC* | [JS7 - Keycloak Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Keycloak+Identity+Service) |
+| *LDAP-JOC* | [JS7 - LDAP Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+LDAP+Identity+Service) |
+| *OIDC-JOC* | [JS7 - OIDC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+OIDC+Identity+Service) |
+| *CERTIFICATE* | [JS7 - Certificate Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Certificate+Identity+Service) |
+| *FIDO* | [JS7 - FIDO Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Certificate+Identity+Service) |
 
 For the following Identity Service Types user accounts are not managed with JOC Cockpit but with the Identity Service Provider:
 
-- *KEYCLOAK*: [JS7 - Keycloak Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Keycloak+Identity+Service)
-- *LDAP-*: [JS7 - LDAP Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+LDAP+Identity+Service)
-- *OIDC-*: [JS7 - OIDC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+OIDC+Identity+Service)
+| Identity Service Type | Documentation |
+| ----- | ----- |
+| *KEYCLOAK* | [JS7 - Keycloak Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Keycloak+Identity+Service) |
+| *LDAP* | [JS7 - LDAP Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+LDAP+Identity+Service) |
+| *OIDC* | [JS7 - OIDC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+OIDC+Identity+Service) |
 
 ## List of Accounts
 
@@ -23,7 +27,7 @@ For each account the following properties are displayed:
 
 - **Account** indicates the account as specified during login.
 - **Roles** indicates the list of [Identity Service - Roles](/identity-service-roles) that are assigned the account.
-- **Force Password Change** indicates if on next login the user account must change its password.
+- **Force Password Change** indicates if the user account must change its password on next login.
 - **Blocked** indicates that the account has been added to a [Identity Service - Blocklist](/identity-service-blocklist) and is denied access.
 - **Disabled** indicates that the account is inactive and is denied access.
 

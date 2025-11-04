@@ -1,6 +1,6 @@
 # Configuration - Inventory - Workflows
 
-The *Workflow* panel offers designing Workflows from a sequence of instructions that shape the Workflow for a [Directed acyclic graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph). 
+The *Workflow Panel* offers designing Workflows from a sequence of instructions that shape the Workflow for a [Directed acyclic graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph). 
 
 - Users can drag & drop instructions from the *Toolbar* to create Workflow patterns such as a sequence of Jobs, forking and joining Jobs, conditional execution etc.
 - The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) offers navigation by Tags and folders. In addition, the panel offers operations on Workflows.

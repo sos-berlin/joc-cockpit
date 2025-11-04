@@ -11,8 +11,8 @@ The *Calendar Panel* offers specifying rule-based Calendars that are used by [Co
 
 Calendars are managed from the following panels:
 
-- The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding Schedules. In addition, the panel offers operations on Schedules.
-- The *Calendar Panel* on the right side of the window holds details for Schedule configuration.
+- The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding Calendars. In addition, the panel offers operations on Calendars.
+- The *Calendar Panel* on the right side of the window holds details for Calendar configuration.
 
 ## Calendar Panel
 

@@ -1,6 +1,6 @@
 # Configuration - Inventory - Script Includes
 
-The *Script Includes* panel offers specifying code snippets for use with Jobs. For details see [JS7 - Script Includes](https://kb.sos-berlin.com/display/JS7/JS7+-+Script+Includes).
+The *Script Include Panel* offers specifying code snippets for use with Jobs. For details see [JS7 - Script Includes](https://kb.sos-berlin.com/display/JS7/JS7+-+Script+Includes).
 
 Shell Jobs can be used for a number of scripting languages such as Bash, Python, PowerShell etc.
 
@@ -79,11 +79,11 @@ The Script Include will write the contents of the *Job Script* to a temporary fi
 
 ### Context Help
 
-- [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
 - [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
+- [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
 - [Object Naming Rules](/object-naming-rules)
 
 ### Product Knowledge Base
 
-- [JS7 - Script Includes](https://kb.sos-berlin.com/display/JS7/JS7+-+Script+Includes)
 - [JS7 - How to run PowerShell scripts from jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+run+PowerShell+scripts+from+jobs)
+- [JS7 - Script Includes](https://kb.sos-berlin.com/display/JS7/JS7+-+Script+Includes)
