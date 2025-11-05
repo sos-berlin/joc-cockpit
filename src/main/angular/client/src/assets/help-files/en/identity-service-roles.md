@@ -32,7 +32,7 @@ Roles are specified for the following scopes:
 Permissions specify one of the following states in the related scope:
 
 - the permission is unassigned,
-- the permissions is granted,
+- the permission is granted,
 - the permission is denied.
 
 Permission are merged from all roles for resulting permissions of a user account:
@@ -45,7 +45,7 @@ Permission are merged from all roles for resulting permissions of a user account
   - if a permission is unassigned in the default scope, then scopes for individual Controllers can grant the permission for the related Controller.
   - if a permission is granted in the default scope, then by default this applies to all Controllers.
   - if a permission is granted for a given Controller, then resulting permissions for the Controller will include the permission.
-  - If a permission is denied from a given Controller, then this overrules the same permission granted from the default scope and from other roles for the same Controller.
+  - If a permission is denied for a given Controller, then this overrules the same permission granted from the default scope and from other roles for the same Controller.
   - If a permission is denied from the default scope, then this overrules the same permission granted for any Controller.
 
 ## Operations on Roles
