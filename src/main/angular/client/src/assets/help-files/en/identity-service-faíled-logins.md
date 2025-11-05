@@ -4,6 +4,7 @@ Identity Services rule access to JOC Cockpit by authentication and authorization
 
 User accounts that fail to login are recorded with the *Failed Logins* sub-view.
 
+- The list of Failed Logins includes entries for any Identity Services that were triggered unsuccessfully. If a number of optional Identity Services are used, then login is considered successful if one of the Identity Services was triggered successfully. In this situation no Failed Login is reported.
 - JOC Cockpit implements delays for repeatedly failed logins to prevent analysis of response times and to prevent brute force attacks.
 - Note that a number of Identity Providers, for example LDAP being used for Active Directory access, might not accept repeatedly failed login attempts and might block the relevant user account.
 
