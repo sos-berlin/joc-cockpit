@@ -7,6 +7,7 @@ import {AuthService} from "../../components/guard";
 import {SharingDataService} from "./sharing-data.service";
 import {CommentModalComponent} from "../../components/comment-modal/comment.component";
 import {ConfirmModalComponent} from "../../components/comfirm-modal/confirm.component";
+import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 
 @Component({
   standalone: false,
@@ -287,4 +288,33 @@ export class ReportingComponent {
   private _deleteReport(request) {
     this.coreService.post('reporting/reports/delete', request).subscribe();
   }
+
+  helpPage(): void {
+    let helpKey: string;
+
+    switch (this.index) {
+      case 0:
+        helpKey = 'report-creation';
+        break;
+      case 1:
+        helpKey = 'report-run-history';
+        break;
+        case 2:
+        helpKey = 'reports';
+        break;
+      default:
+        helpKey = 'report-creation';
+    }
+
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {preferences: this.preferences, helpKey},
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    });
+  }
+
 }

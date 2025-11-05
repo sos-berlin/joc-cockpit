@@ -107,7 +107,6 @@ export class MarkdownParserService {
   constructor(private readonly sanitizer: DomSanitizer) {
   }
 
-  /** Render Markdown to (optionally Safe) HTML. */
   render(markdown: string, opts: Partial<MarkdownOptions> = {}): string | SafeHtml {
     const options = {...this.defaults, ...opts} as MarkdownOptions;
     const src = (markdown ?? '').replace(/\r\n?|\u2028|\u2029/g, '\n');
@@ -675,7 +674,16 @@ export class MarkdownParserService {
           }
 
           if ((tag === 'a' && name === 'href') || (tag === 'img' && name === 'src')) {
-            const safe = this.safeUrl(attr.value);
+            let attrValue = attr.value;
+
+            if (tag === 'img' && name === 'src') {
+              if (attrValue && !attrValue.includes('/') &&
+                !attrValue.startsWith('http') && !attrValue.startsWith('#')) {
+                attrValue = this.baseImagePath + attrValue;
+              }
+            }
+
+            const safe = this.safeUrl(attrValue);
             if (!safe) {
               toRemove.push(attr.name);
               continue;

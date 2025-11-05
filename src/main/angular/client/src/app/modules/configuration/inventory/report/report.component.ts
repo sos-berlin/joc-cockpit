@@ -18,6 +18,7 @@ import {DataService} from '../../../../services/data.service';
 import {InventoryObject} from '../../../../models/enums';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import * as moment from 'moment';
+import {HelpViewerComponent} from "../../../../components/help-viewer/help-viewer.component";
 
 @Directive({
   standalone: false,
@@ -727,7 +728,6 @@ export class ReportComponent implements OnChanges, OnDestroy {
 
       this.saveRelativeInterval();
     } else if (this.isInterval === 'absolute') {
-      // If the original values are empty, set them from the current configuration
       if (this.originalAbsoluteValues.monthFrom || this.originalAbsoluteValues.monthTo) {
         this.report.configuration.monthFrom = this.originalAbsoluteValues.monthFrom;
         this.report.configuration.monthTo = this.originalAbsoluteValues.monthTo;
@@ -737,5 +737,20 @@ export class ReportComponent implements OnChanges, OnDestroy {
       this.saveAbsoluteInterval();
     }
 
+  }
+
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }
