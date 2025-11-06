@@ -6,6 +6,7 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
+          <i (click)="helpPage('logging')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           <button (click)="copy()" [disabled]="clientLogs.length == 0" class="btn btn-sm btn-grey" translate>
             log.button.copyToClipboard
           </button>

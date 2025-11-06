@@ -11936,7 +11936,6 @@ export class WorkflowComponent {
           }
           self.selectedNode.job.admissionTimeScheme.periods = self.workflowService.convertListToAdmissionTime(self.selectedNode.periodList);
         }else if (self.selectedNode.type === 'AdmissionTime') {
-          // Access from data.admissionTimeScheme (always an object!)
           if (self.selectedNode.data && self.selectedNode.data.admissionTimeScheme) {
             if (self.selectedNode.data.periodList && self.selectedNode.data.periodList.length > 0) {
               self.selectedNode.data.admissionTimeScheme.periods =
@@ -11997,6 +11996,7 @@ export class WorkflowComponent {
         }
 
         let isChange = true;
+
         if (isEqual(JSON.stringify(self.selectedNode.newObj), JSON.stringify(self.selectedNode.actualValue))) {
           isChange = false;
           if (self.selectedNode.type === 'Job') {
@@ -12193,31 +12193,24 @@ export class WorkflowComponent {
         }else if (cell.value.tagName === 'AdmissionTime') {
           let admissionTimeScheme = cell.getAttribute('admissionTimeScheme');
 
-          if (!admissionTimeScheme || isEmpty(admissionTimeScheme) || typeof admissionTimeScheme !== 'string') {
-            admissionTimeScheme = {
-              periods: [],
-              restrictedSchemes: []
-            };
-          } else {
+          if (admissionTimeScheme && typeof admissionTimeScheme === 'string') {
             try {
               admissionTimeScheme = JSON.parse(admissionTimeScheme);
+              if (typeof admissionTimeScheme === 'string') {
+                admissionTimeScheme = JSON.parse(admissionTimeScheme);
+              }
             } catch (e) {
-              admissionTimeScheme = {
-                periods: [],
-                restrictedSchemes: []
-              };
+              admissionTimeScheme = { periods: [], restrictedSchemes: [] };
             }
           }
 
-          if (!admissionTimeScheme.periods) {
-            admissionTimeScheme.periods = [];
-          }
-          if (!admissionTimeScheme.restrictedSchemes) {
-            admissionTimeScheme.restrictedSchemes = [];
+          if (!admissionTimeScheme || typeof admissionTimeScheme !== 'object') {
+            admissionTimeScheme = { periods: [], restrictedSchemes: [] };
           }
 
           obj.admissionTimeScheme = admissionTimeScheme;
-          obj.skipIfNoAdmissionForOrderDay = cell.getAttribute('skipIfNoAdmissionForOrderDay');
+
+        obj.skipIfNoAdmissionForOrderDay = cell.getAttribute('skipIfNoAdmissionForOrderDay');
           obj.skipIfNoAdmissionForOrderDay = obj.skipIfNoAdmissionForOrderDay == 'true';
         }
         else if (cell.value.tagName === 'ForkList') {
@@ -14909,14 +14902,17 @@ export class WorkflowComponent {
             json.instructions[x].block = {
               instructions: json.instructions[x].instructions
             };
+            const skipIfNoAdmissionForOrderDay = clone(json.instructions[x].skipIfNoAdmissionForOrderDay);
             let admissionTimeSchemeObj = json.instructions[x].admissionTimeScheme ? clone(json.instructions[x].admissionTimeScheme) : null;
             delete json.instructions[x].instructions;
             delete json.instructions[x].admissionTimeScheme;
+            delete json.instructions[x].onlyOnePeriod;
             admissionTimeSchemeObj = parseString(admissionTimeSchemeObj);
-            if (admissionTimeSchemeObj) {
+            if (admissionTimeSchemeObj && admissionTimeSchemeObj) {
               json.instructions[x].admissionTimeScheme = admissionTimeSchemeObj;
             }
-          } else if (json.instructions[x].TYPE === 'Cycle') {
+            json.instructions[x].skipIfNoAdmissionForOrderDay = skipIfNoAdmissionForOrderDay;
+          }else if (json.instructions[x].TYPE === 'Cycle') {
             json.instructions[x].cycleWorkflow = {
               instructions: json.instructions[x].instructions
             };
@@ -15153,6 +15149,7 @@ export class WorkflowComponent {
       data = noValidate;
     }
     this.checkJobInstruction(data);
+
     if (this.workflow.path && !isEqual(this.workflow.actual, JSON.stringify(data)) && !this.isStore) {
       this.isStore = true;
       this.storeData(data);

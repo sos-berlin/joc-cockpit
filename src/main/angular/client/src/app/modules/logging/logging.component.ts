@@ -4,6 +4,8 @@ import {ClipboardService} from 'ngx-clipboard';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {CoreService} from '../../services/core.service';
 import {AuthService} from '../../components/guard';
+import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
+import {NzModalService} from "ng-zorro-antd/modal";
 
 declare const $;
 
@@ -71,9 +73,10 @@ export class LoggingComponent {
     {label: 'warn', value: 'warn', checked: false},
     {label: 'debug', value: 'debug', checked: false}
   ];
+  preferences: any = {};
 
   constructor(private coreService: CoreService, private authService: AuthService,
-              private clipboardService: ClipboardService, private message: NzMessageService) {
+              private clipboardService: ClipboardService, private message: NzMessageService, private modal: NzModalService) {
     if (sessionStorage['clientLogFilter']) {
       this.clientLogFilter = JSON.parse(sessionStorage['clientLogFilter']);
     } else {
@@ -82,6 +85,7 @@ export class LoggingComponent {
   }
 
 ngOnInit(): void {
+  this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
   if (this.authService.scheduleIds) {
     this.schedulerIds = JSON.parse(this.authService.scheduleIds) || {};
   }
@@ -153,5 +157,20 @@ ngOnInit(): void {
 
   redirectToNewTab(): void {
     window.open('#/client-logs', '_blank');
+  }
+
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }

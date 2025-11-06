@@ -6,6 +6,7 @@
           <div class="pull-left">
             <app-breadcrumbs></app-breadcrumbs>
           </div>
+          <i (click)="helpPage()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-common cur-point fa fa-info-circle text-20"></i>
           <div class="inline valign">
             @if (approvalsFilters.tabIndex == 0 && approvalsFilters.approvalRequests.mapOfCheckedId.size ===0 && this.isApprover) {
               <label [(ngModel)]="approvalsFilters.approvalRequests.current" name="current"
