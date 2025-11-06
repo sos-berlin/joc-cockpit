@@ -3668,7 +3668,7 @@ export class ExportComponent {
     {value: 'TAR_GZ', name: 'TAR_GZ'}
   ]
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef,
+  constructor(public activeModal: NzModalRef,private modal: NzModalService, private coreService: CoreService, private ref: ChangeDetectorRef,
               private inventoryService: InventoryService) {
   }
 
@@ -5122,6 +5122,20 @@ export class ExportComponent {
     this.activeModal.destroy();
   }
 
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
 }
 
 @Component({

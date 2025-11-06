@@ -19,7 +19,7 @@
       <span>: {{path}}</span>
     }
     @if(!releasable && !isRemove && !isRevoke){
-      <i (click)="helpPage('configuration-inventory-operations-deploy-object')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+      <i (click)="helpPage('configuration-inventory-operations-deploy-folder')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
     }
     @if(releasable && !isRemove && operation !== 'recall'){
       <i (click)="helpPage('configuration-inventory-operations-release-folder')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
