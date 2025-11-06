@@ -3281,6 +3281,7 @@ private checkParentNode(lastPos, data, item, nodes): any {
     sessionStorage['displayFoldersInViews'] = result.displayFoldersInViews;
     sessionStorage['numOfTagsDisplayedAsOrderId'] = result.numOfTagsDisplayedAsOrderId;
     sessionStorage['numOfWorkflowTagsDisplayed'] = result.numOfWorkflowTagsDisplayed;
+    sessionStorage['enableLinkChecker'] = result.enableLinkChecker;
     if(!isKiosk){
       sessionStorage['kioskRole'] = result.kioskRole;
     }

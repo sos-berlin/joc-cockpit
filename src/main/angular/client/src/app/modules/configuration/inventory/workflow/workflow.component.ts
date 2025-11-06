@@ -11704,10 +11704,10 @@ export class WorkflowComponent {
               'admissionTimeScheme',
               JSON.stringify(self.selectedNode.newObj.admissionTimeScheme)
             );
+            graph.getModel().execute(edit);
             const edit2 = new mxCellAttributeChange(
               obj.cell, 'skipIfNoAdmissionForOrderDay', self.selectedNode.newObj.skipIfNoAdmissionForOrderDay);
             graph.getModel().execute(edit2);
-            graph.getModel().execute(edit);
           } else if (self.selectedNode.type === 'ForkList') {
             if (self.selectedNode.radio1 === 'byListVariable' || !self.hasLicense) {
               const edit = new mxCellAttributeChange(
@@ -12209,9 +12209,10 @@ export class WorkflowComponent {
           }
 
           obj.admissionTimeScheme = admissionTimeScheme;
-
-        obj.skipIfNoAdmissionForOrderDay = cell.getAttribute('skipIfNoAdmissionForOrderDay');
+          obj.skipIfNoAdmissionForOrderDay = cell.getAttribute('skipIfNoAdmissionForOrderDay');
           obj.skipIfNoAdmissionForOrderDay = obj.skipIfNoAdmissionForOrderDay == 'true';
+
+
         }
         else if (cell.value.tagName === 'ForkList') {
           let children = cell.getAttribute('children');
@@ -14899,20 +14900,20 @@ export class WorkflowComponent {
             };
             delete json.instructions[x].instructions;
           }else if (json.instructions[x].TYPE === 'AdmissionTime') {
+            let admissionTimeSchemeObj = json.instructions[x].admissionTimeScheme ? clone(json.instructions[x].admissionTimeScheme) : null;
+            const skipIfNoAdmissionForOrderDay = clone(json.instructions[x].skipIfNoAdmissionForOrderDay);
+
+            if (admissionTimeSchemeObj && typeof admissionTimeSchemeObj === 'string') {
+              admissionTimeSchemeObj = parseString(admissionTimeSchemeObj);
+              json.instructions[x].admissionTimeScheme = admissionTimeSchemeObj;
+            }
+
             json.instructions[x].block = {
               instructions: json.instructions[x].instructions
             };
-            const skipIfNoAdmissionForOrderDay = clone(json.instructions[x].skipIfNoAdmissionForOrderDay);
-            let admissionTimeSchemeObj = json.instructions[x].admissionTimeScheme ? clone(json.instructions[x].admissionTimeScheme) : null;
             delete json.instructions[x].instructions;
-            delete json.instructions[x].admissionTimeScheme;
-            delete json.instructions[x].onlyOnePeriod;
-            admissionTimeSchemeObj = parseString(admissionTimeSchemeObj);
-            if (admissionTimeSchemeObj && admissionTimeSchemeObj) {
-              json.instructions[x].admissionTimeScheme = admissionTimeSchemeObj;
-            }
-            json.instructions[x].skipIfNoAdmissionForOrderDay = skipIfNoAdmissionForOrderDay;
-          }else if (json.instructions[x].TYPE === 'Cycle') {
+          }
+          else if (json.instructions[x].TYPE === 'Cycle') {
             json.instructions[x].cycleWorkflow = {
               instructions: json.instructions[x].instructions
             };

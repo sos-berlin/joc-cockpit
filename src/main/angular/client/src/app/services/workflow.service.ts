@@ -1435,13 +1435,13 @@ export class WorkflowService {
             }
           } else if (json.instructions[x].TYPE === 'AdmissionTime') {
             _node.setAttribute('displayLabel', 'admissionTime');
-            if (json.instructions[x].skipIfNoAdmissionForOrderDay !== undefined) {
-              _node.setAttribute('skipIfNoAdmissionForOrderDay', json.instructions[x].skipIfNoAdmissionForOrderDay);
-            }
+
             if (json.instructions[x].admissionTimeScheme) {
               _node.setAttribute('admissionTimeScheme', JSON.stringify(json.instructions[x].admissionTimeScheme));
             }
-
+            if (json.instructions[x].skipIfNoAdmissionForOrderDay !== undefined) {
+              _node.setAttribute('skipIfNoAdmissionForOrderDay', json.instructions[x].skipIfNoAdmissionForOrderDay);
+            }
             v1 = graph.insertVertex(parent, null, _node, 0, 0, 68, 68,
               isGraphView ? WorkflowService.setStyleToSymbol('admissionTime', colorCode, self.theme) : 'admissionTime');
 

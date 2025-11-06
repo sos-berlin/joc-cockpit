@@ -60,18 +60,21 @@
     </button>
   }
 
-  <button
-    type="button"
-    class="btn btn-primary btn-sm"
-    (click)="validateLinks()"
-    [disabled]="isValidatingLinks || isLoading"
-    style="margin-right: 10px;">
-    @if (isValidatingLinks) {
-      <i class="fa fa-spinner fa-spin"></i> Validating...
-    } @else {
-      <i class="fa fa-check-circle"></i> Validate Links
-    }
-  </button>
+
+  @if(isValidate){
+    <button
+      type="button"
+      class="btn btn-primary btn-sm"
+      (click)="validateLinks()"
+      [disabled]="isValidatingLinks || isLoading"
+      style="margin-right: 10px;">
+      @if (isValidatingLinks) {
+        <i class="fa fa-spinner fa-spin"></i> Validating...
+      } @else {
+        <i class="fa fa-check-circle"></i> Validate Links
+      }
+    </button>
+  }
 
   <button type="button" class="btn btn-grey btn-sm" (click)="cancel()">
     <span translate>common.button.close</span>
