@@ -17,7 +17,7 @@ For each Job executed during the day an entry in the *Task History* will be crea
 
 The Cleanup Service is started based on its settings and it can be started in the Dashboard view from the active JOC Cockpit instances' rectangle offering the *Run Service - Cleanup Service* operation.
 
-<img src="dashboard-run-cleanup-service" alt="Run Cleanup Service" width="750" height="280" />
+<img src="dashboard-run-cleanup-service.png" alt="Run Cleanup Service" width="750" height="280" />
 
 ## Cleanup Service Settings
 

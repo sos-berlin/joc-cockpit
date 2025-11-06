@@ -8,6 +8,8 @@ A similar functionality is available in the Daily Plan view for operation by use
 
 The Daily Plan Service is started based on its settings and it can be started in the Dashboard view from the active JOC Cockpit instances' rectangle offering the *Run Service - Daily Plan Service* operation. There is no harm from starting the Daily Plan Service a number of times per day.
 
+<img src="dashboard-run-daily-plan-service.png" alt="Run Daily Plan Service" width="750" height="280" />
+
 ## Daily Plan Service Settings
 
 For settings of the Daily Plan Service see [Settings - Daily Plan](/settings-daily-plan).
