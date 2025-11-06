@@ -11,7 +11,7 @@ For details see [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/
 
 The Dependency Matrix of inventory objects looks like this:
 
-| Area |Object Type | Incoming References	 |     | Outgoing References |
+| Area |Object Type | Incoming References	 |     | Outgoing References |      |       |       |       |       |
 | ----- | ----- | ----- | ----- |
 | Controller |
 |      | Workflow | Workflow | Schedule | Workflow | Job Resource | Notice Board | Resource Lock | Job Template | Script Include |
