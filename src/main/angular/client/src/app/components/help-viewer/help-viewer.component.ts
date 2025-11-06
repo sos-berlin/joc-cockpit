@@ -34,7 +34,7 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
   isValidatingLinks = false;
   linkValidationResults: LinkValidationResult[] = [];
   showValidationResults = false;
-
+  isValidate = false;
   private readonly INTERNAL_LINK_TIMEOUT = 5000;
   private readonly EXTERNAL_LINK_TIMEOUT = 15000;
   private readonly RETRY_ATTEMPTS = 2;
@@ -52,6 +52,7 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.isValidate = sessionStorage['enableLinkChecker'] == 'true';
     this.helpKey = this.modalData.helpKey;
     this.title = this.modalData.title;
     this.helpFilters = this.coreService.getHelpTab();

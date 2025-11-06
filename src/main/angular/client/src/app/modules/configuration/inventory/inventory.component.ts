@@ -499,10 +499,12 @@ export class SingleDeployComponent {
   selectAllFilteredAffected: { [key: string]: boolean } = {};
   dependenciesToggleAvailable = false;
   useDependencies = false;
-  constructor(public activeModal: NzModalRef, private coreService: CoreService) {
+  preferences: any = {};
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private modal: NzModalService,) {
   }
 
   ngOnInit(): void {
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.modalData.schedulerIds;
     this.data = this.modalData.data;
     this.type = this.modalData.type;
@@ -1437,6 +1439,21 @@ export class SingleDeployComponent {
   private computeDependenciesToggleAvailable(item: any): boolean {
       return !(item?.forceDependencies === true);
   }
+
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
 }
 
 @Component({
@@ -1505,7 +1522,7 @@ export class DeployComponent {
   dependenciesToggleAvailable = false;
   useDependencies = false;
   private recursiveDependenciesCache: any = null;
-  constructor(public activeModal: NzModalRef, public coreService: CoreService, private ref: ChangeDetectorRef,
+  constructor(public activeModal: NzModalRef,private modal: NzModalService, public coreService: CoreService, private ref: ChangeDetectorRef,
               private inventoryService: InventoryService, private toasterService: ToastrService, private translate: TranslateService, private cdRef: ChangeDetectorRef, private cdr: ChangeDetectorRef) {
   }
 
@@ -3565,7 +3582,20 @@ export class DeployComponent {
 
     return !anyTrue;
   }
-
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
 
 }
 
@@ -3638,7 +3668,7 @@ export class ExportComponent {
     {value: 'TAR_GZ', name: 'TAR_GZ'}
   ]
 
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef,
+  constructor(public activeModal: NzModalRef,private modal: NzModalService, private coreService: CoreService, private ref: ChangeDetectorRef,
               private inventoryService: InventoryService) {
   }
 
@@ -5092,6 +5122,20 @@ export class ExportComponent {
     this.activeModal.destroy();
   }
 
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
 }
 
 @Component({

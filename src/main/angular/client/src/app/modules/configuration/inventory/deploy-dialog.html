@@ -18,6 +18,21 @@
     @if (path) {
       <span>: {{path}}</span>
     }
+    @if(!releasable && !isRemove && !isRevoke){
+      <i (click)="helpPage('configuration-inventory-operations-deploy-folder')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+    }
+    @if(releasable && !isRemove && operation !== 'recall'){
+      <i (click)="helpPage('configuration-inventory-operations-release-folder')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+    }
+    @if(isRevoke){
+      <i (click)="helpPage('configuration-inventory-operations-revoke-folder')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+    }
+    @if(operation === 'recall'){
+      <i (click)="helpPage('configuration-inventory-operations-recall-folder')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+    }
+    @if(isRemove){
+      <i (click)="helpPage('configuration-inventory-operations-remove-folder')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-controllers-agent cur-point fa fa-info-circle text-20"></i>
+    }
   </h4>
   <button (click)="cancel()" aria-label="Close" class="close" type="button">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
