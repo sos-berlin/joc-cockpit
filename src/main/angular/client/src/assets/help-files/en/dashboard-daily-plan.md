@@ -2,7 +2,7 @@
 
 The *Daily Plan* panel provides information about execution of Orders created by the Daily Plan. This excludes Orders created on demand by user intervention and Orders created from file watching by *File Order Sources*.
 
-<img src="assets/help-files/images/dashboard-daily-plan.png" alt="Daily Plan" width="330" height="80" />
+<img src="dashboard-daily-plan.png" alt="Daily Plan" width="330" height="80" />
 
 ## Daily Plan Status
 
@@ -19,7 +19,7 @@ Clicking the indicated number of Orders navigates to the *Daily Plan* view that 
 The drop-down button in the right upper corner of the panel offers selecting Orders from a date range:
 
 - **Today** Orders are related to the current day which is calculated from the time zone in the user's profile.
-- **Next Day** Orders are targeted for execution on the next day. This excludes *Today*`s Orders.
+- **Next Day** Orders are targeted for execution on the next day. This excludes *Today's* Orders.
 - **Next 2nd Day** Orders are targeted for execution on the next 2nd day.
 - **Next 3rd Day** Orders are targeted for execution on the next 3rd day.
 - **Next 4th Day** Orders are targeted for execution on the next 4th day.

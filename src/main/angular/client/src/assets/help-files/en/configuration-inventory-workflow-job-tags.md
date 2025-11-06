@@ -18,7 +18,12 @@ Tag Groups can be used to organize Tags that should share a common group. For ex
 
 ## References
 
+### Context Help
+
 - [Tags](/tags)
+
+### Product Knowledge Base
+
 - [JS7 - Tagging](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging)
   - [JS7 - Tagging Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging+-+Jobs)
   - [JS7 - Tagging Orders](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging+-+Orders)

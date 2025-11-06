@@ -33,9 +33,9 @@ Permission are visualized from a rectangle similar to a battery:
 - Clicking the pole at the right side of a battery will expand/collapse descendent permissions.
 - Clicking the background of the battery will switch permission between the unassigned status and the granted status:
   - A rectangle using white background color indicates an unassigned permission.
-  - A rectangle using blue background color indicates a granted permission that will be passed to descendent permissions. <br/><img src="assets/help-files/images/identity-service-permissions-granted.png" alt="Granted Permissions" width="600" height="100" />
-  - A rectangle using light blue background color indicates an inherited, granted permission. Changes to the permission require not to grant the parent permission but to grant child permissions individually.  <br/><img src="assets/help-files/images/identity-service-permissions-inherited.png" alt="Inherited Permissions" width="600" height="100" />
-- Clicking the + icon inside a permission's rectangle switches the permission to the denied status indicated from grey background color. Clicking the - icon inside a denied permission makes it an unassigned permission using white background color. <br/><img src="assets/help-files/images/identity-service-permissions-denied.png" alt="Denied Permissions" width="600" height="100" />
+  - A rectangle using blue background color indicates a granted permission that will be passed to descendent permissions. <br/><img src="identity-service-permissions-granted.png" alt="Granted Permissions" width="600" height="100" />
+  - A rectangle using light blue background color indicates an inherited, granted permission. Changes to the permission require not to grant the parent permission but to grant child permissions individually.  <br/><img src="identity-service-permissions-inherited.png" alt="Inherited Permissions" width="600" height="100" />
+- Clicking the + icon inside a permission's rectangle switches the permission to the denied status indicated from grey background color. Clicking the - icon inside a denied permission makes it an unassigned permission using white background color. <br/><img src="identity-service-permissions-denied.png" alt="Denied Permissions" width="600" height="100" />
 
 ### Collapsing and Expanding Permissions
 

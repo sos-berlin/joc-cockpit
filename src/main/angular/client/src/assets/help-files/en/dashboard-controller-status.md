@@ -4,7 +4,7 @@ The *Controller Status* panel provides information about registered Controllers.
 
 ## Controller Instances
 
-Controller instances are displayed from the following attributes:
+Each Controller instance displayed offers the following attributes:
 
 - **Controller ID** indicates a unique identifier specified when a Controller is installed. In a Controller Cluster all instances share the same Controller ID.
 - **URL** specifies the URL by which the Controller instance can be reached.

@@ -2,7 +2,7 @@
 
 The *Inventory* panel provides information about the number of objects in use.
 
-<img src="assets/help-files/images/dashboard-inventory.png" alt="Inventory" width="330" height="80" />
+<img src="dashboard-inventory.png" alt="Inventory" width="330" height="80" />
 
 ## Inventory Objects
 

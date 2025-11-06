@@ -8,7 +8,7 @@ The *Profile - Signature Key Management* tab holds the Signing Certificate used 
 
 For details see [JS7 - Profiles - Signature Key Management](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles+-+Signature+Key+Management).
 
-<img src="assets/help-files/images/profile-signature-key-management.png" alt="Signature Key Management" width="800" height="75" />
+<img src="profile-signature-key-management.png" alt="Signature Key Management" width="800" height="75" />
 
 ## Signing Certificate
 

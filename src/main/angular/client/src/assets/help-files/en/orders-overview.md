@@ -109,7 +109,7 @@ When selecting Orders, then related buttons for bulk operations become visible i
 
 ## Filters
 
-User's can apply filters to limit display of Orders. Filter buttons are available at top of the window.
+Users can apply filters to limit display of Orders. Filter buttons are available at top of the window.
 
 ### Date Range Filter Button
 
@@ -143,7 +143,7 @@ The filter limits display to matching *Order IDs* and *Workflow Names*. The filt
 
 - [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)n
+- [Daily Plan](/daily-plan)
 - [Order Log View](/order-log)
 - [Order State](/order-states)
 - [Profile - Preferences](/profile-preferences)

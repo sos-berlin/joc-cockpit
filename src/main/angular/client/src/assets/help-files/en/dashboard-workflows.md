@@ -2,7 +2,7 @@
 
 The *Workflows* panel provides information about the status of Workflows.
 
-<img src="assets/help-files/images/dashboard-workflows.png" alt="Workflows" width="330" height="80" />
+<img src="dashboard-workflows.png" alt="Workflows" width="330" height="80" />
 
 ## Workflow Status
 

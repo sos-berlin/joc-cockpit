@@ -26,7 +26,7 @@ The JOC Cockpit offers [Notifications- Configuration ](/configuration-notificati
 
 ## Log Notification Service Settings
 
-For settings that shape the behavior of the Log Notification Service refer to [Settings - Log Notification](/settings-log-notification).
+For settings of the Log Notification Service see [Settings - Log Notification](/settings-log-notification).
 
 ## References
 

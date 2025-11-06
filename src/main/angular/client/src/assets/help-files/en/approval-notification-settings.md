@@ -1,6 +1,6 @@
 # Approval Notification Settings
 
-Users find the [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) for situations in which users intend performing operations such as adding or cancelling Orders that require approval. This can include any operation that modifies a scheduling object.
+The [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) is offered for situations in which users intend performing operations such as adding or cancelling Orders that require approval by a second user. This can include any operation that modifies a scheduling object.
 
 The Approval Process involves the following roles:
 

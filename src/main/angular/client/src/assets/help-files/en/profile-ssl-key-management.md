@@ -4,7 +4,7 @@ The *Profile - SSL Key Management* tab offers the built-in Certificate Authority
 
 For details see [JS7 - Profiles - SSL Key Management](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles+-+SSL+Key+Management).
 
-<img src="assets/help-files/images/profile-ssl-key-management.png" alt="SSL Key Management" width="800" height="75" />
+<img src="profile-ssl-key-management.png" alt="SSL Key Management" width="800" height="75" />
 
 ## SSL CA Certificate
 

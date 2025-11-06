@@ -2,7 +2,7 @@
 
 The *History* panel provides information about past execution of Orders and Jobs.
 
-<img src="assets/help-files/images/dashboard-history.png" alt="History" width="330" height="80" />
+<img src="dashboard-history.png" alt="History" width="330" height="80" />
 
 ## History Status
 

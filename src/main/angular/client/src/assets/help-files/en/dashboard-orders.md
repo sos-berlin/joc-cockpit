@@ -6,7 +6,7 @@ The *Orders* panel provides information about Orders from the following sources:
 - Orders added on demand by users from the [Workflows](/workflows) view
 - Orders added from [File Order Sources](/configuration-inventory-file-order-sources) that watch directories for incoming files
 
-<img src="assets/help-files/images/dashboard-orders.png" alt="Orders" width="330" height="140" />
+<img src="dashboard-orders.png" alt="Orders" width="330" height="140" />
 
 ## Order States
 
@@ -29,7 +29,7 @@ Clicking the indicated number of Orders navigates to the [Orders Overview](/orde
 
 The drop-down button in the right upper corner of the panel offers selecting Orders from a date range:
 
-- **All** displays all Orders available with Controller and Agents.
+- **All** displays all Orders available with the Controller and the Agents.
 - **Today** Orders are related to the current day which is calculated from the time zone in the user's [Profile - Preferences](/profile-preferences).
   - **Pending** Orders without start time,
   - **Scheduled** Orders holding a start time for the current day,

@@ -10,7 +10,7 @@ The Daily Plan Service is started based on its settings and it can be started in
 
 ## Daily Plan Service Settings
 
-For settings that shape the behavior of the Daily Plan Service refer to [Settings - Daily Plan](/settings-daily-plan).
+For settings of the Daily Plan Service see [Settings - Daily Plan](/settings-daily-plan).
 
 ## References
 

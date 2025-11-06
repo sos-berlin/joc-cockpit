@@ -1,8 +1,8 @@
 # Daily Plan
 
-The *Daily Plan* view provides an overview of Orders scheduled for future execution and allows to manage the *Daily Plan*. 
+The *Daily Plan* view provides an overview of Orders scheduled for future execution and allows users to manage the *Daily Plan*. 
 
-The [Daily Plan Service](/service-daily-plan) is used to create and to submit Orders for the Daily Plan to Controllers. The service is operated in background and acts on a daily basis to plan and to submit Orders a few days ahead.
+The [Daily Plan Service](/service-daily-plan) is used to create and to submit Orders for the Daily Plan to Controllers. The service is operated in the background and acts on a daily basis to plan and to submit Orders a few days ahead.
 
 The Daily Plan is subject to purge of the database performed by the [Cleanup Service](/service-cleanup).
 

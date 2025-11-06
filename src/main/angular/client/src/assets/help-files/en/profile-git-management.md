@@ -4,7 +4,7 @@ The *Profile - Git Management* tab holds settings for connections to Git servers
 
 For details see [JS7 - Profiles - Git Management](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles+-+Git+Management).
 
-<img src="assets/help-files/images/profile-git-management.png" alt="Git Management" width="800" height="110" />
+<img src="profile-git-management.png" alt="Git Management" width="800" height="110" />
 
 ## Git Connections
 
