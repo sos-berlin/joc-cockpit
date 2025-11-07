@@ -1815,7 +1815,7 @@ export class CoreService {
 
   }
 
-  getTimeFromDate(t: any, tf: string): string {
+  getTimeFromDate(t: any, tf: string, ismodify?: boolean): string {
     let x = 'HH:mm:ss';
     if ((tf.match(/HH:mm:ss/gi) || tf.match(/HH:mm/gi) || tf.match(/hh:mm:ss A/gi) || tf.match(/hh:mm A/gi)) != null) {
       const result = (tf.match(/HH:mm:ss/gi) || tf.match(/HH:mm/gi) || tf.match(/hh:mm:ss A/gi) || tf.match(/hh:mm A/gi)) + '';
@@ -1826,7 +1826,9 @@ export class CoreService {
       }
     }
     let time = moment(t).format(x);
-    if (time === '00:00' || time === '00:00:00') {
+    if(ismodify && (time === '00:00' || time === '00:00:00')){
+      time = '00:00:00';
+    } else if (time === '00:00' || time === '00:00:00') {
       time = '24:00:00';
     }
     return time;

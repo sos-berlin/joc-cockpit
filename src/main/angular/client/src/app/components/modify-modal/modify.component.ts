@@ -819,7 +819,7 @@ export class ModifyStartTimeModalComponent {
         period.begin = period.begin.replace('2000-01-01', dateStr);
       }
     }
-    this.period.begin = this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, period.begin), this.preferences.dateFormat);
+    this.period.begin = this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, period.begin), this.preferences.dateFormat, true);
     this.period.end = this.coreService.getTimeFromDate(this.coreService.convertTimeToLocalTZ(this.preferences, period.end), this.preferences.dateFormat);
     this.period.repeat = this.secondsToHMS(period.repeat);
     this.order.scheduleDate = this.coreService.getDateByFormat(period.begin, this.preferences.zone, 'YYYY-MM-DD');
