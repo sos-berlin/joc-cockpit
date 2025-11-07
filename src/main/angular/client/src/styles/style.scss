@@ -10087,7 +10087,7 @@ cdk-virtual-scroll-viewport {
 .help-md {
   font-size: 14px !important;
   line-height: 1.65 !important;
-  color: #111827 !important;
+  color: var(--text-color) !important;
 }
 
 .help-md h1 {
@@ -10120,7 +10120,7 @@ cdk-virtual-scroll-viewport {
 
 .help-md p {
   margin: .5rem 0 1rem !important;
-  color: #374151;
+  color: var(--text-color);
 }
 
 .help-md ul,
@@ -10231,7 +10231,7 @@ cdk-virtual-scroll-viewport {
 
 .help-md h1 a, .help-md h2 a, .help-md h3 a,
 .help-md h4 a, .help-md h5 a, .help-md h6 a {
-  color: inherit !important;
+  color: var(--text-color) !important;
   text-decoration: underline !important;
 }
 
