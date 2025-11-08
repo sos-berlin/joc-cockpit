@@ -8,7 +8,7 @@ The *Rename* operation is available from the *Navigation* panel and is offered f
 
 <img src="rename-object.png" alt="Rename Object" width="400" height="125" />
 
-## Rename Object
+## Renaming Object
 
 Users can modify the location and the name of an object. The following assumes an object located in the **/Test/Users** folder with the name **myWorkflow**:
 

@@ -8,7 +8,7 @@ When revoking a single object from the *Revoke* operation available from the obj
 
 <img src="revoke-workflow.png" alt="Revoke Workflow" width="600" height="460" />
 
-## Revoking from Controllers
+## Revoking Object from Controllers
 
 The input field accepts one or more Controllers from which the object will be revoked.
 

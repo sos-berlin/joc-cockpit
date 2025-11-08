@@ -23,21 +23,21 @@ When exporting objects from folders using the related *Export* operation from th
 
 ## Exporting Individual Objects
 
-<img src="export-object.png" alt="Export Object" width="600" height="580" />
-
 The *Export Type* allows selecting individual objects from the list of objects displayed.
+
+<img src="export-object.png" alt="Export Object" width="600" height="580" />
 
 ## Exporting Folders
 
-<img src="export-folder.png" alt="Export Folder" width="600" height="580" />
-
 The *Export Type* offers limiting export to certain scheduling object types such as Workflows or Schedules. Users can select the desired object types that will be added to the export archive file.
+
+<img src="export-folder.png" alt="Export Folder" width="600" height="580" />
 
 ## Exporting Changes
 
-<img src="export-change.png" alt="Export Change" width="600" height="320" />
-
 The *Export Type* offers selecting a Change from the list of [Changes](/changes). Export will be limited to objects related to the Change.
+
+<img src="export-change.png" alt="Export Change" width="600" height="320" />
 
 ## Including Dependencies
 

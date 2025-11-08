@@ -118,7 +118,7 @@ The following operations are available for *Inventory Folders*:
   - **Shallow Copy** will *copy* the folder, any sub-folders and inventory objects. References to inventory objects in other folders are not considered.
   - **Rename** allows to rename the folder and optionally included inventory objects. For details see [Rename Folder](/configuration-inventory-operations-rename-folder).
   - **Manage Tags** offers to add and to delete Tags to/from Workflows in the given folder hierarchy.
-  - **Export** allows creating an export archive file in .zip or .tar.gz format that holds the folder hierarchy and the JSON representation of included inventory objects. For details see [Configuration - Inventory - Operations - Export Folder](/configuration-inventory-operations-export-folder).
+  - **Export** allows creating an export archive file in .zip or .tar.gz format that holds the folder hierarchy and the JSON representation of included inventory objects. For details see [Export Folder](/configuration-inventory-operations-export-folder).
   - **Git Repository** offers integration with a Git Server. Inventory objects can be committed to Git repositories and can be pulled and pushed. For details see [Git - Clone Repository](/configuration-inventory-operations-git-clone).
   - **Change** offers operations for change management of inventory objects. Users can add objects such as Workflows that are under construction to a *Change* that allows common deployment and export of changed objects. For details see [Changes](/changes).
 - Operations on Controller Objects

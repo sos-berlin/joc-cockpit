@@ -24,7 +24,7 @@ Users can modify the location and the name of a folder. The following assumes th
 
 Changes to the name or location of folders leave included objects in deployed/released status.
 
-## Rename Objects Recursively
+## Renaming Objects Recursively
 
 <img src="rename-folder-object.png" alt="Rename Folder Objects Recursively" width="400" height="180" />
 

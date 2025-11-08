@@ -8,7 +8,7 @@ When revoking objects from a folder using the *Revoke* operation available from 
 
 <img src="revoke-folder.png" alt="Revoke Folder" width="600" height="580" />
 
-## Revoking from Controllers
+## Revoking Objects from Controllers
 
 The input field accepts one or more Controllers from which objects will be revoked.
 

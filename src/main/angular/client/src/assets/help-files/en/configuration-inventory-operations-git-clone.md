@@ -23,9 +23,11 @@ The input field expects the Git URL used for cloning, for example, *git@github.c
 
 - *git@* is a constant prefix,
 - *github.com* specifies the hostname of the Git server,
-- *sos-berlin.com* is the repository owner,
+- *sos-berlin* is the repository owner,
 - *js7-demo-inventory-rollout* is the repository name,
 - *.git* is a constant suffix.
+
+Above values represent an example. Please specify values matching the desired Git server.
 
 ## References
 
