@@ -6,7 +6,7 @@ The *Configuration->Inventory* view offers releasing a single object, see [Confi
 
 When releasing objects from folders using the related *Release* operation from the folder's 3-dots action menu, a pop-up window will be displayed like this:
 
-<img src="release-schedule.png" alt="Release Folder" width="600" height="580" />
+<img src="release-schedule.png" alt="Release Folder" width="592" height="560" />
 
 ## Updating the Daily Plan
 
