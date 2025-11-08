@@ -17,7 +17,7 @@ The history of Report Runs is displayed from the following properties:
 - **Frequencies** indicates the *Report Frequencies* that divide the *Report Period* into equal units.
 - **No. of Reports** indicates the number of Reports that have been created for the Report Configuration.
 - **Error Message** indicates the error that occurred should the *Status* of the Report Run be *failed*.
-- **Month From**, **Month To** indicates begin and end of the *Report Period*.
+- **Month From**, **Month To** indicate beginning and end of the *Report Period*.
 
 ## References
 

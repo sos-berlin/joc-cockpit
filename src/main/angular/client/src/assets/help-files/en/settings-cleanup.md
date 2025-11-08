@@ -14,7 +14,7 @@ Specifies the time zone that is applied to the start time and period of the Clea
 
 Specifies weekdays on which the Cleanup Service is performed. The first day of week is assumed being Monday. When initially installing JS7, then default values specify: 1,2,3,4,5,6,7 for daily clean-up. If no weekdays are specified, the Cleanup Service will not start.
 
-For most situations it is recommended to run the Cleanup Service at a daily basis as this keeps the number of records low that will be purged. There can be exceptions if daily job execution is very dense for 24 hours and if off-peak periods for example are available on weekends.
+In most cases it is recommended to run the Cleanup Service on a daily basis, as this keeps the number of records to be purged low. There can be exceptions if daily job execution is very dense for 24 hours and if off-peak periods for example are available on weekends.
 
 ### Setting: *period\_begin*, Default: *01:00:00*
 
@@ -93,7 +93,7 @@ Specifies the retention period for the history of failed logins. Unsuccessful lo
 
 ### Setting: *reporting\_age*, Default: *365*d
 
-Specifies the retention periof for [Reports](/reports).
+Specifies the retention period for [Reports](/reports).
 
 ### Setting: *deployment\_history\_versions*, Default: *10*
 

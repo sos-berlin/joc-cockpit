@@ -2,15 +2,15 @@
 
 The view displays indicators for availability of Agent instances.
 
-If an Agent Cluster is used then cluster availability is considered. For example, if an Agent instance in a cluster is shutdown for maintenance purposes and the remaining instance picks up the load, then this does not reduce availability.
+If an Agent Cluster is used then cluster availability is considered. For example, if an Agent instance in a cluster is shut down for maintenance purposes and the remaining instance picks up the load, then this does not reduce availability.
 
-The upper right corner of the screen offers the *Current Controller* checkbox: when unchecked availability will be displayed for Agents from all connected Controllers and otherwise the information is displayed for Agents registered with the currently selected Controller only.
+The right-upper corner of the screen offers the *Current Controller* checkbox: when unchecked availability will be displayed for Agents from all connected Controllers and otherwise the information is displayed for Agents registered with the currently selected Controller only.
 
 Users should be aware that historic data for Agent availability are subject to purge by the [Cleanup Service](/service-cleanup).
 
 ## Date Filters
 
-The right upper corner of the panel offers selecting a date range for display of availability:
+The upper-right corner of the panel offers selecting a date range for display of availability:
 
 - **Week** makes the date slider switch for a week's period.
 - **Month** makes the date slider switch for a month's period.

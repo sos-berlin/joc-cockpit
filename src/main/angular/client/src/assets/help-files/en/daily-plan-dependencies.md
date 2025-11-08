@@ -16,7 +16,7 @@ The calendar widget offers to select a Daily Plan date for which dependencies wi
 Operations on plan dates include:
 
 - **Open Plan**: This happens automatically if new Orders are added for a plan date. Users can re-open a closed plan.
-- **Close Plan**: An open plan is closed and will not allow adding Orders. This happens automatically for past plan dates with a delay of 1 day. Users can adjust the related setting from the [Settings - Daily Plan](/settings-daily-plan) page. Users can close an open plan earlier to prevent futher Orders from being added.
+- **Close Plan**: An open plan is closed and will not allow adding Orders. This happens automatically for past plan dates with a delay of one day. Users can adjust the related setting from the [Settings - Daily Plan](/settings-daily-plan) page. Users can close an open plan earlier to prevent further Orders from being added.
 
 ## Display of Dependencies
 
@@ -31,7 +31,7 @@ The following relationships are indicated:
 - **Posting Workflow**: Creates one or more Notices that are expected/consumed by one or more *Receiving Workflows*.
 - **Receiving Workflow**: Expects/consumes one or more Notices from the same or different *Posting Workflows*.
 
-The fulfillment status of dependencies is indicated by lines:
+The fulfilment status of dependencies is indicated by lines:
 
 - **Line in Blue Color**: A Notice is announced for a future point in time when the *Posting Workflow's* Order will start and will create the Notice.
 - **Line in Greenish Color**: The dependency is unresolved, a Notice has been posted but is not yet processed by all *Receiving Workflows*.
@@ -41,7 +41,7 @@ The fulfillment status of dependencies is indicated by lines:
 
 ## Filters
 
-Filters offer limiting display of Workflows and dependencies:
+Filters allow limiting the display of Workflows and dependencies:
 
 - **Notices Announced**: Displays Workflows for which Notices are announced, i.e. Orders are scheduled but did not yet start and did not yet post the Notice. When a Notice is posted, its announcement is dropped.
 - **Notices Present**: Displays Workflows for which Notices have been posted and can be processed. If a Notice is consumed by a Workflow, then it will be dropped and will no longer be present.

@@ -9,7 +9,7 @@ Administrative user accounts can add accounts from any Identity Service to a blo
 
 ## Adding Accounts to the Blocklist
 
-The *Blocklist* sub-view offers adding accounts to the blocklist from the related button in the right upper corner of the view.
+The *Blocklist* sub-view offers adding accounts to the blocklist from the related button in the upper-right corner of the view.
 
 User accounts can be added to the blocklist from the following sub-views:
 
@@ -22,7 +22,7 @@ Both sub-views offer adding single accounts to the blocklist and adding selected
 
 In the *Blocklist* sub-view per account displayed the action menu item is offered to *Remove from Blocklist*.
 
-A bulk operation is offered from using the *Remove from Blocklist* button in the right upper corner of the sub-view for selected accounts.
+A bulk operation is offered from using the *Remove from Blocklist* button in the upper-right corner of the sub-view for selected accounts.
 
 ## References
 

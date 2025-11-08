@@ -15,7 +15,7 @@ The basic functionality of the Approval Process includes:
 
 ## List of Approver Profiles
 
-To add an Approver Profile, users find the related button in the right upper corner of the view.
+To add an Approver Profile, users find the related button in the upper-right corner of the view.
 
 The list of Approver Profiles is offered with the following properties:
 

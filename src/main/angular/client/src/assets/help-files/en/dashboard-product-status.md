@@ -15,7 +15,7 @@ JS7 products can be operated stand alone and from active-passive clustering.
 The JOC Cockpit connects to the database and to Controller instances.
 
 - Component Status
-  - The Component Status is indicated from the color of the tile in the left upper corner of the JOC Cockpit rectangle.
+  - The Component Status is indicated from the color of the tile in the upper-left corner of the JOC Cockpit rectangle.
   - **Tile in Green Color** indicates a healthy JOC Cockpit instance.
   - **Tile in Red Color** indicates an unknown status. 
 - Database Connection Status
@@ -30,7 +30,7 @@ The JOC Cockpit connects to the database and to Controller instances.
 The Controller connects to Agent instances. In a Controller Cluster its members hold bi-directional connections.
 
 - Component Status
-  - The Component Status is indicated from the color of the tile in the left upper corner of the Controller rectangle.
+  - The Component Status is indicated from the color of the tile in the upper-left corner of the Controller rectangle.
   - **Tile in Green Color** indicates a healthy Controller instance.
   - **Tile in Yellow Color** indicates a running, unhealthy Controller instance, for example in case that coupling failed in a cluster. 
   - **Tile in Red Color** indicates an *unknown* status. 

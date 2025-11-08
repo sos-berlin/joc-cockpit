@@ -2,7 +2,7 @@
 
 The [JS7 - Encryption and Decryption](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+and+Decryption) offers a secure way of handling secrets used in Jobs. Users can encrypt and decrypt sensitive data such as passwords by use of asymmetric keys.
 
-Encryption and decryption make use of asymmetric X.509 Private Keys and Certificates. This includes the following roles:
+Encryption and Decryption make use of asymmetric X.509 Private Keys and Certificates. This includes the following roles:
 
 - Sender: has access to the receiver's Certificate or Public Key and encrypts a secret based on the receiver's Public Key that is directly available or that can be calculated from a Certificate.
 - Receiver: has access to the Private Key that allows decryption of the encrypted secret.

@@ -19,7 +19,7 @@ Permission are merged from all roles for resulting permissions of a user account
 
 The scope of permissions in a role can be limited to one or more inventory folders.
 
-- Users can apply the *Add Folder* button in the right upper corner of the view to select an inventory folder and to specify recursive use.
+- Users can apply the *Add Folder* button in the upper-right corner of the view to select an inventory folder and to specify recursive use.
 - Users can add any number of inventory folders to a role.
 
 ## Permission Tree
@@ -47,7 +47,7 @@ The following buttons are offered to expand/collapse permissions:
 
 ## Graphical and Tabular View
 
-In the right upper corner the following buttons are offered for display of permissions:
+In the upper-right corner the following buttons are offered for display of permissions:
 
 - **Graphical View** displays permissions from a tree using battery shape.
 - **Tabular View** displays permissions from a textual representation with permission levels being separated by colon.

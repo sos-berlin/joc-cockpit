@@ -19,8 +19,8 @@ Notifications are displayed from the following information items:
 - **Order ID** specifies the unique identifier of an Order.
 - **Job** is indicated if the warning or error was caused by a Job.
 - **Type** is one of
-  - **SUCCESS** which indicates successful Order execution should Notifications be configured to report the status.
-  - **WARNING** which is raised from Shell Jobs for which specific return codes are configured being *Warnings* that will not affect an Order's flow but will raise the related Notification.
+  - **SUCCESS** which indicates successful Order execution, provided that Notifications are configured to report this status.
+  - **WARNING** which is raised from Shell Jobs for which specific return codes that are configured being *Warnings* that will not affect an Order's flow but will raise the related Notification.
   - **ERROR** which can be raised by Jobs or other Workflow Instructions. The Notification is triggered independently from the fact that a Workflow might apply error handling as from the *Try/Catch* or *Retry Instruction* that will allow an Order to proceed in the Workflow.
   - **RECOVERED** which indicates that a previously *failed* Order did recover and did successfully proceed in the Workflow.
 - **Return Code** indicates the exit code of Shell Jobs or the return code of JVM Jobs that raised the Notification.
@@ -41,11 +41,11 @@ For each warning and error Notification the 3-dots action menu is offered for th
 
 The top of the page offers a number of filter buttons that can be applied individually or in combination:
 
-- **Successful** limits display to Notifications about successful Order execution.
-- **Failed** limits display of Notifications to Orders that *failed*.
-- **Warning** limits display of Notifications to Orders that caused warnings.
-- **Recovered** limits display of Notifications to Orders that first failed and then recovered by successfully proceeding in the Workflow.
-- **Acknowledged** limits display to Notifications that previously have been acknowledged from the related operation.
+- **Successful** limits the display to Notifications about successful Order execution.
+- **Failed** limits the display of Notifications to Orders that *failed*.
+- **Warning** limits the display of Notifications to Orders that caused warnings.
+- **Recovered** limits the display of Notifications to Orders that first failed and then recovered by successfully proceeding in the Workflow.
+- **Acknowledged** limits the display to Notifications that previously have been acknowledged from the related operation.
 
 ## References
 

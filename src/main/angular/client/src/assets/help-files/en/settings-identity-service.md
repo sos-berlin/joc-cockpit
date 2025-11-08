@@ -11,7 +11,7 @@ The *Settings* page is accessible from the ![wheel icon](assets/images/wheel.png
 Specifies the maximum duration in minutes of an idle session in JOC Cockpit.
 
 - If users are inactive for the given number of minutes, then the user session expires and is terminated. Users can specify credentials and login to create a new user session.
-- Should the lifetime of an access token provided by an external Identity Service be different from the maximum idle-timeout, then the JOC Cockpit will try to renew the access token with the Identity Service. Renewal of an access token does not require the user to re-specify their login credentials.
+- Should the lifetime of an access token provided by an external Identity Service be different from the maximum idle-timeout, then the JOC Cockpit will try to renew the access token with the Identity Service. Renewing an access token does not require the user to re-enter their login credentials.
 - Identity Services can restrict the lifetime of access tokens (time to live) and they can limit renewal of access tokens (maximum time to live). If an access token cannot be renewed, then the user session is terminated and the user is required to perform login.
 
 ### Setting: *initial\_password*, Default: *initial*

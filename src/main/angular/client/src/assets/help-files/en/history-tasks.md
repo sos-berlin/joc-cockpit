@@ -27,7 +27,7 @@ Display is limited to a maximum of 5000 entries if not otherwise specified from 
   - Clicking the pencil icon navigates to the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
 - **Label** indicates the position of the Job in the Workflow. Users assign *Labels* to Jobs that will be displayed. If the same Job occurs more than once in a Workflow, it will be indicated from different *Labels*.
 - **History Status** indicates the outcome of the Job.
-  - If Jobs are completed, then the *History Status* will be *successful* or *failed*.
+  - If Jobs are completed, the *History Status* will be  either*successful* or *failed*.
   - If Jobs are not completed, the *History Status* will be *in progress*.
 
 ### Access to Log Output
@@ -44,7 +44,7 @@ Users find an action menu per Task that offers the following operations:
 - **Add Job to Ignore List** will permanently hide the Job from display. This can be useful for repeatedly executed Jobs that populate the *Task History*.
 - **Add Workflow to Ignore List** will permanently hide the Workflow's Jobs from display. This can be useful for cyclic Workflows that populate the *Task History*.
 
-The *Ignore List* is managed from the related button in the right upper corner of the window:
+The *Ignore List* is managed from the related button in the upper-right corner of the window:
 
 - **Edit Ignore List** will display the Jobs and Workflows in the *Ignore List* and offers to individually remove entries from the *Ignore List*. 
 - **Enable Ignore List** will activate the filtering to hide Jobs that have been individually added to the *Ignore List* or that are included with a Workflow that was added. An active *Ignore List* is indicated from the related button.

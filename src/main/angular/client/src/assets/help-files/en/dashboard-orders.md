@@ -16,7 +16,7 @@ The *Orders* panel provides information about the current state of Orders. The p
 - **Scheduled** Orders have been added to Workflows and are scheduled for execution at a later date and time.
 - **In Progress** Orders are processed by Workflow Instructions but are not running a Job. 
 - **Running** Orders are in execution of a Job. 
-- **Suspended** Orders have been halted on user intervention and can be resumed.
+- **Suspended** Orders have been halted by user intervention and can be resumed.
 - **Completed** Orders did finish a Workflow but have not been removed, for example if a File Order Source is used for file watching and the Workflow would not (re)move incoming files. In this situation the Order will remain in place as long as the file exists in the incoming directory.
 - **Prompting** Orders are put on hold by the *Prompt Instruction* in a Workflow and require user confirmation to continue execution of the Workflow.
 - **Waiting** Orders wait for a resource such as a *Resource Lock*, *Notice*, *Retry* or *Cycle* interval or for a process should the Agent in use specify a process limit that is exceeded.
@@ -27,7 +27,7 @@ Clicking the indicated number of Orders navigates to the [Orders Overview](/orde
 
 ## Filters
 
-The drop-down button in the right upper corner of the panel offers selecting Orders from a date range:
+The drop-down button in the upper-right corner of the panel offers selecting Orders from a date range:
 
 - **All** displays all Orders available with the Controller and the Agents.
 - **Today** Orders are related to the current day which is calculated from the time zone in the user's [Profile - Preferences](/profile-preferences).

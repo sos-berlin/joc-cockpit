@@ -10,7 +10,7 @@ The [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) offer i
 
 Reports are configured with the [Configuration - Inventory - Reports](/configuration-inventory-reports) view.
 
-Reports Configurations are made available 
+Reports Configurations are available 
 
 - from the *Folder Panel* that offers navigation to Report Configurations.
 - from the *Report Configuration Panel* that shows details of the selected Report Configuration.
@@ -36,7 +36,7 @@ The panel displays Report Configurations available from the currently selected f
 
 Reports can be created from a Report Configuration's 3-dots action menu using the *Run Reports* operation.
 
-Users can select a number of Report Configurations and apply the *Run Reports* bulk operation available from a button in the right upper corner of the screen.
+Users can select a number of Report Configurations and apply the *Run Reports* bulk operation available from a button in the upper-right corner of the screen.
 
 ## References
 

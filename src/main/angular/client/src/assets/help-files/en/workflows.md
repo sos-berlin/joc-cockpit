@@ -9,7 +9,7 @@ The *Workflows* view offers monitoring and control of Workflows.
 
 The left panel is organized in tabs that allow navigation from folders and filtering by Tags for Workflows and Orders.
 
-- **Folder** navigation offers the chevron-down icon when hovering on a folder. This will display Workflows from the current folder and from any sub-folders. Use of the chevron-up icon resets the selection to the current folder.
+- **Folder** navigation offers the chevron-down icon when hovering over a folder name. This will display Workflows from the current folder and from any sub-folders. Use of the chevron-up icon resets the selection to the current folder.
 - Tag filtering is offered from the following tabs:
   - **Workflow Tags** are assigned from the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
   - **Order Tags** are assigned from the [Configuration - Inventory - Schedules](/configuration-inventory-schedules) view.
@@ -20,7 +20,7 @@ Tags are selected from + and - icons and can be looked up using the Quick Search
 
 ### Order Summary
 
-The top of the window holds the Order summary similar to [Dashboard - Orders](/dashboard-orders). Users can click the indicated number of Orders for a given state to bring up a pop-pup window that will display the list of Orders.
+The top of the window holds the Order summary similar to [Dashboard - Orders](/dashboard-orders). Users can click the indicated number of Orders for a given state to bring up a pop-up window that will display the list of Orders.
 
 The Order summary is indicated for Orders related to the Workflows displayed for selected folders or Tags.
 
@@ -78,8 +78,8 @@ By default display of Order logs is limited to 10MB log size and otherwise logs 
 
 At the top of the window the following buttons are offered for Workflow operations:
 
-- **Suspend All** acts as an *Emergency Stop* and will suspend all Workflows independently from the currently displayed selection of Workflows. Suspended Workflows are frozen, they accept Orders but will not start Orders unless the Workflow is resumed. Running Orders continue the current Job or other instruction before being suspended.
-- **Resume All** resumes all suspended Workflows independently from the currently displayed selection of Workflows.
+- **Suspend All** acts as an *Emergency Stop* and will suspend all Workflows regardless of the currently displayed selection of Workflows. Suspended Workflows are frozen, they accept Orders but will not start Orders unless the Workflow is resumed. Running Orders continue the current Job or other instruction before being suspended.
+- **Resume All** resumes all suspended Workflows regardless of the currently displayed selection of Workflows.
 
 ### Operations on Jobs and Workflow Instructions
 
@@ -105,7 +105,7 @@ Additional operations can be available that are specific for the Order state.
 
 ## Filters
 
-Users can apply filters to limit display of Workflows. Filter buttons are available at top of the window:
+Users can apply filters to limit display of Workflows. Filter buttons are available at the top of the window:
 
 - **Agents** offers filtering Workflows holding Jobs that are assigned one or more selected Agents.
 - **Synchronized** Workflows are deployed and are available with the Controller and Agents.

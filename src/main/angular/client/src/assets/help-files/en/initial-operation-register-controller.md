@@ -24,7 +24,7 @@ For a Controller Cluster initial operation includes
 
 After first login a pop-up window is displayed that offers registering a Controller. The pop-up window similarly is available from the wheel icon in the main menu bar selecting the *Manage Controllers/Agents* page.
 
-The pop-up window offers registration of a Standalone Controller. Registration of a Controller Cluster is offered if a JS7 license key is in place for JOC Cockpit. Clicking the JS7 logo in the left upper corner of the JOC Cockpit GUI will display the license type in use.
+The pop-up window offers registration of a Standalone Controller. Registration of a Controller Cluster is offered if a JS7 license key is in place for JOC Cockpit. Clicking the JS7 logo in the upper-left corner of the JOC Cockpit GUI will display the license type in use.
 
 Users should verify that network connections from JOC Cockpit's server to the Controller's server are available and that firewall rules allow connections.
 

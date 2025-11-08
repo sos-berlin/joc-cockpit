@@ -10,39 +10,39 @@ The following settings are applied for use with Git repositories. Changes become
 
 ### Setting: *git\_hold\_workflows*, Default: *rollout*
 
-Specifies if Workflows should be considered local to an environment or are intended for rollout with Git.
+Specifies whether Workflows are considered local to an environment or intended for rollout with Git.
 
 ### Setting: *git\_hold\_resource\_locks*, Default: *rollout*
 
-Specifies if [Resources - Resource Locks](/resources-resource-locks) should be considered local to an environment or are intended for rollout with Git.
+Specifies whether [Resource Locks](/resources-resource-locks) are considered local to an environment or intended for rollout with Git.
 
 ### Setting: *git\_hold\_file\_order\_sources*, Default: *rollout*
 
-Specifies if File Order Sources should be considered local to an environment or are intended for rollout with Git.
+Specifies whether File Order Sources are considered local to an environment or intended for rollout with Git.
 
 ### Setting: *git\_hold\_notice\_boards*, Default: *rollout*
 
-Specifies if [Resources - Notice Boards](/resources-notice-boards) should be considered local to an environment or are intended for rollout with Git.
+Specifies whether [Notice Boards](/resources-notice-boards) are considered local to an environment or intended for rollout with Git.
 
 ### Setting: *git\_hold\_script\_includes*, Default: *rollout*
 
-Specifies if Script Includes should be considered local to an environment or are intended for rollout with Git.
+Specifies whether Script Includes are considered local to an environment or intended for rollout with Git.
 
 ### Setting: *git\_hold\_job\_templates*, Default: *rollout*
 
-Specifies if Job Templates should be considered local to an environment or are intended for rollout with Git.
+Specifies whether Job Templates are considered local to an environment or intended for rollout with Git.
 
 ### Setting: *git\_hold\_job\_resources*, Default: *local*
 
-Specifies if Job Resources should be considered local to an environment or are intended for rollout with Git.
+Specifies whether Job Resources are considered local to an environment or intended for rollout with Git.
 
 ### Setting: *git\_hold\_calendars*, Default: *local*
 
-Specifies if Calendars should be considered local to an environment or are intended for rollout with Git.
+Specifies whether Calendars are considered local to an environment or intended for rollout with Git.
 
 ### Setting: *git\_hold\_schedules*, Default: *local*
 
-Specifies if Schedules should be considered local to an environment or are intended for rollout with Git.
+Specifies whether Schedules are considered local to an environment or intended for rollout with Git.
 
 ## References
 

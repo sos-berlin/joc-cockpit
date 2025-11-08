@@ -1,6 +1,8 @@
 # Configuration - Inventory - Operations - Deploy Folder
 
-The *Configuration->Inventory* view offers the operation to deploy a single object, see [Configuration - Inventory - Operations - Deploy Object](/configuration-inventory-operations-deploy-object), and to deploy objects from folders.
+Deploying objects includes to transfer them to a Controller. This applies to objects such as Workflows and Job Resources available from the *Controller* system folder.
+
+The *Configuration->Inventory* view offers deploying a single object, see [Configuration - Inventory - Operations - Deploy Object](/configuration-inventory-operations-deploy-object), and  deploying objects from folders.
 
 When deploying objects from folders using the related *Deploy* operation from the folder's 3-dots action menu, a pop-up window will be displayed like this:
 
@@ -8,7 +10,7 @@ When deploying objects from folders using the related *Deploy* operation from th
 
 ## Deploying to Controllers
 
-The first input field accepts one or more Controllers to which objects will be deployed.
+The input field accepts one or more Controllers to which objects will be deployed.
 
 By default the currently selected Controller will be indicated.
 
@@ -27,18 +29,18 @@ Deployment of objects such as Workflows, Schedules and Calendars impacts the [Da
 The **Deploy Type** offers selecting from 
 
 - **Individual Objects** available in the selected folder.
-- **Changes** including objects that are subject to the [Change](/changes). Users select the desired Change from the list of Changes made available from a list box.
+- **Changes** including objects that are subject to a [Change](/changes). Users select the desired Change from the list of Changes available from a list box.
 
 ## Filtering Objects
 
 Objects can be filtered from the following options:
 
 - **Draft** specifies that objects in draft status should be deployed.
-- **Deployed** specifies that objects in deployed status should be included with the deployment.
+- **Deployed** specifies that objects in deployed status should be included in the deployment.
 
-## Deploying from Folders
+## Including Sub-folders
 
-The **Handle recursively** option allows to add sub-folders recursively to the deployment.
+The **Handle recursively** option allows adding objects from sub-folders recursively to the deployment.
 
 ## Including Dependencies
 
@@ -47,13 +49,13 @@ Inventory objects are related by dependencies, see [Dependency Matrix](/dependen
 When deploying objects, consistency is considered, for example:
 
 - If a Job Resource is created and is referenced by a newly created Workflow, then deployment of the Workflow includes deploying the Job Resource.
-- If a Job Resource is referenced by a deployed Workflow and should be revoked or removed, then the Workflow must be revoked or removed too
+- If a Job Resource is referenced by a deployed Workflow and should be revoked or removed, then the Workflow must be revoked or removed too.
 
 Users control consistent deployment from the following options:
 
 - **Include Dependencies**
   - when checked, this will include both referencing and referenced objects.
-    - If related objects are in draft status, then common deployment is enforced.
+    - If related objects are in draft status, then common deployment is offered. It will be enforced, if required by changes to object relationships.
     - If related objects are in deployed/released status, then common deployment is optional. Users can select related objects for common deployment.
   - when unchecked, this will not consider dependencies. Users must verify if related objects are valid and deployed/released. The Controller will raise error messages in case of missing objects due to inconsistent deployment.
   

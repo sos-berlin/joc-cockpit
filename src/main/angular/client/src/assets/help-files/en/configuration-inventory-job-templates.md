@@ -51,12 +51,12 @@ Job Templates can be created from existing Jobs. In the *Configuration-Inventory
 
 To assign a Job a Job Template users can proceed as follows:
 
-- In the right upper corner of the window invoke the Wizard.
+- In the upper-right corner of the window invoke the Wizard.
 - This brings up a pop-up window that allows choosing the *User Job Templates* tab.
   - Navigate to the desired Job Template or type parts of its name.
   - Select the Job Template and optionally add arguments if provided by the Job Template.
   
-When a Job Template is assigned a Job, this is indicated in the right upper corner of the window:
+When a Job Template is assigned a Job, this is indicated in the upper-right corner of the window:
 
 - Users find the *Job Template Reference*,
 - followed by an icon for the *Synchronization Status Indicator*: 
@@ -64,7 +64,7 @@ When a Job Template is assigned a Job, this is indicated in the right upper corn
   - orange color indicates that the Job Template was changed and that the Job is not in sync.
 - Clicking the orange *Synchronization Status Indicator* will update the Job from its Job Template.
 
-To remove a Job Template reference from a Job, users can click the trash icon in the right upper corner following the Job Template name. The operation will leave Job properties untouched and will release the link to the Job Template. 
+To remove a Job Template reference from a Job, users can click the trash icon in the upper-right corner following the Job Template name. The operation will leave Job properties untouched and will release the link to the Job Template. 
 
 Jobs that reference Job Templates do not allow major parts of the Job being changed. Instead, changes have to be applied to the Job Template. This does not apply to the following inputs that can be freely chosen:
 

@@ -13,8 +13,8 @@ Workflow Search is used to look up Workflows based on criteria such as
 
 ## Meta Characters
 
-- **?** meta character will replace any single character.
-- **\*** meta character will replace zero or more characters.
+- **?** meta character replaces any single character.
+- **\*** meta character replaces zero or more characters.
 
 Search is performed case-insensitive and partially qualified, for example
 

@@ -8,7 +8,7 @@ The *Daily Plan* panel provides information about execution of Orders created by
 
 The Daily Plan status is the initial status when an Order is created by the Daily Plan Service.
 
-- **Planned** Orders have not been submitted to Controller and Agents. Any number of *Planned* Orders indicates a problem if the date range is in scope of the number of days for which Orders should be submitted.
+- **Planned** Orders have not been submitted to the Controller and Agents. Any number of *Planned* Orders indicates a problem if the date range is in scope of the number of days for which Orders should be submitted.
 - **Submitted** Orders are scheduled for later execution during the day or are in execution. The status does not reflect the current state of Orders that have been started but summarizes Orders that should be executed during the day.
 - **Finished** Orders are completed. This is independent from the outcome if Orders completed successfully or with failure which is indicated by the *Order History* view.
 
@@ -16,7 +16,7 @@ Clicking the indicated number of Orders navigates to the *Daily Plan* view that 
 
 ## Filters
 
-The drop-down button in the right upper corner of the panel offers selecting Orders from a date range:
+The drop-down button in the upper-right corner of the panel offers selecting Orders from a date range:
 
 - **Today** Orders are related to the current day which is calculated from the time zone in the user's profile.
 - **Next Day** Orders are targeted for execution on the next day. This excludes *Today's* Orders.

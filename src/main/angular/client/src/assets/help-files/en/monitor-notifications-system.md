@@ -2,7 +2,7 @@
 
 The view displays Notifications raised from JS7 products.
 
-- System Notifications require setting up the the *Log Notification Service* from the [Settings](/settings) page section [Settings - Log Notification](/settings-log-notification). If configured, the JOC Cockpit acts as a syslog service that receives warnings and errors from Controllers and Agents registered with JOC Cockpit.
+- System Notifications require setting up the *Log Notification Service* from the [Settings](/settings) page section [Settings - Log Notification](/settings-log-notification). If configured, the JOC Cockpit acts as a syslog service that receives warnings and errors from Controllers and Agents registered with JOC Cockpit.
 - In addition to displaying Notifications in this view, they can be forwarded by mail and from the command line, for example to 3rd-party System Monitor products. For details see [Configuration - Notification ](/configuration-notification).
 
 Users should be aware that Notifications are subject to purge by the [Cleanup Service](/service-cleanup). By default, Notifications are purged if older than one day.
@@ -12,8 +12,8 @@ Users should be aware that Notifications are subject to purge by the [Cleanup Se
 Notifications are displayed from the following information items:
 
 - **JOC Cockpit ID** specifies the unique identifier of the JOC Cockpit instance. 
-  - **Prefix** typicall is *joc* for a JOC Cockpit instance that offers GUI access.
-  - **Serial No.** the number assigned the JOC Cockpit instance during installation.
+  - **Prefix** typically is *joc* for a JOC Cockpit instance that offers GUI access.
+  - **Serial No.** the number assigned to the JOC Cockpit instance during installation.
 - **Category** indicates the JS7 product that raised the Notification which is one of *JOC*, *CONTROLLER*, *AGENT*.
 - **Source** specifies the 
   - **LogNotification** indicates that the message was received from the syslog interface.

@@ -1,6 +1,6 @@
 # Settings - Log Notification Service
 
-The [Log Notification Service](/service-log-notification) implements a syslog server that receives warnings and errors of JS7 products such as Controllers and Agents. The service can be configured to send notifications, for example by mail.
+The [Log Notification Service](/service-log-notification) implements a syslog server that receives warnings and errors from JS7 products such as Controllers and Agents. The service can be configured to send notifications, for example, by e-mail.
 
 Notifications are displayed from the [Monitor - System Notifications](/monitor-notifications-system) page.
 
@@ -16,7 +16,7 @@ Specifies that the Log Notification Service is started with JOC Cockpit.
 
 ### Setting: *log\_server\_port*, Default: *4245*
 
-Specifies the UDP port to which the Log Notification Service will listen.
+Specifies the UDP port on which the Log Notification Service will listen.
 
 ### Setting: *log\_server\_max\_messages\_per\_second*, Default: *1000*
 

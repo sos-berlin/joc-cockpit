@@ -1,6 +1,8 @@
 # Configuration - Inventory - Operations - Deploy Object
 
-The *Configuration->Inventory* view offers the operation to deploy a single object and to deploy objects from folders, see [Configuration - Inventory - Operations - Deploy Folder](/configuration-inventory-operations-deploy-folder).
+Deploying objects includes to transfer them to a Controller. This applies to objects such as Workflows and Job Resources available from the *Controller* system folder.
+
+The *Configuration->Inventory* view offers deploying a single object and deploying objects from folders, see [Configuration - Inventory - Operations - Deploy Folder](/configuration-inventory-operations-deploy-folder).
 
 When deploying a single object from the related *Deploy* button, a pop-up window will be displayed like this:
 
@@ -8,7 +10,7 @@ When deploying a single object from the related *Deploy* button, a pop-up window
 
 ## Deploying to Controllers
 
-The first input field accepts one or more Controllers to which the object will be deployed.
+The input field accepts one or more Controllers to which the object will be deployed.
 
 By default the currently selected Controller will be indicated.
 
@@ -29,13 +31,13 @@ Inventory objects are related by dependencies, see [Dependency Matrix](/dependen
 When deploying objects, consistency is considered, for example:
 
 - If a Job Resource is created and is referenced by a newly created Workflow, then deployment of the Workflow includes deploying the Job Resource.
-- If a Job Resource is referenced by a deployed Workflow and should be revoked or removed, then the Workflow must be revoked or removed too
+- If a Job Resource is referenced by a deployed Workflow and should be revoked or removed, then the Workflow must be revoked or removed too.
 
 Users control consistent deployment from the following options:
 
 - **Include Dependencies**
   - when checked, this will include both referencing and referenced objects.
-    - If related objects are in draft status, then common deployment is enforced.
+    - If related objects are in draft status, then common deployment is offered. It will be enforced, if required by changes to object relationships.
     - If related objects are in deployed/released status, then common deployment is optional. Users can select related objects for common deployment.
   - when unchecked, this will not consider dependencies. Users must verify if related objects are valid and deployed/released. The Controller will raise error messages in case of missing objects due to inconsistent deployment.
   

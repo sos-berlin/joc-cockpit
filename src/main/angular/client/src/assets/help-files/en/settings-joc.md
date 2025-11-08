@@ -19,7 +19,7 @@ Note that the [Profile - Preferences](/profile-preferences) include a related se
 
 Specifies a list of possible comments for selection by a user when performing a GUI operation that modifies an object. In addition to using list entries, users are free to use individual comments when performing such operations.
 
-The list is populated from some well known reasons for object modifications. Users are free to modify list entries and add their own entries for possible comments.
+The list is populated with some well-known reasons for object modifications. Users are free to modify list entries and add their own entries for possible comments.
 
 ### Setting: *default\_profile\_account*, Default: *root*
 
@@ -34,7 +34,7 @@ When user accounts are added to the JOC Cockpit using the [Identity Services](/i
 
 This setting enables the *Remember me* checkbox that is available from the login window and which stores user's credentials such as account and password in a site cookie. As a result the user account and password are populated with the next login.
 
-- Some users might consider it a security risk to store credentials with browser data.
+- Some users might consider it a security risk to store credentials in browser data.
 - This setting can be disabled in order not to offer storing user credentials.
 
 ## Inventory Settings
@@ -108,7 +108,7 @@ JS7 offers to display warnings in case of upcoming license expiration. The featu
 
 ### Setting: *log\_ext\_directory*
 
-Specifies a directory that is accessible for JOC Cockpit and to which copies of Order log files and task log files will be written.
+Specifies a directory that is accessible to JOC Cockpit and to which copies of Order log files and task log files will be written.
 
 ### Setting: *log\_ext\_order\_history*
 
@@ -136,15 +136,15 @@ Specifies that a task log file is created in case of successful task, failed tas
 
 ### Setting: *log\_maximum\_display\_size*, Default: *10* MB
 
-JOC Cockpit offers log output for display with the Log View window if the size of uncompressed log output does not exceed this value. Otherwise the log is offered for download only. The size is assumed in MB.
+JOC Cockpit offers log output for display with the Log View window if the size of uncompressed log output does not exceed this value. Otherwise the log is offered for download only. The size is specified in MB.
 
 ### Setting: *log\_applicable\_size*, Default: *500* MB
 
-If the value for the size of a job's log output is exceeded, then the History Service will truncate the log output and will use the first and last 100 KB for the task log. The original log file will be removed. The size is assumed in MB.
+If the value for the size of a job's log output is exceeded, then the History Service will truncate the log output and will use the first and last 100 KB for the task log. The original log file will be removed. The size is specified in MB.
 
 ### Setting: *log\_maximum\_size*, Default: *1000* MB
 
-If this value for the size of a job's log output is exceeded, then the History Service will truncate the log output and will use the first 100 KB for the task log. The original log file will be removed. The size is assumed in MB.
+If this value for the size of a job's log output is exceeded, then the History Service will truncate the log output and will use the first 100 KB for the task log. The original log file will be removed. The size is specified in MB.
 
 ## Link Settings
 

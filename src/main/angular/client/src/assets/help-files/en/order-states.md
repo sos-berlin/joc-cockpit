@@ -8,13 +8,13 @@ Orders can be added from the following sources:
 
 ## Order States
 
-The follwoing *Order States* are available:
+The following *Order States* are available:
 
 - **Pending** Orders have been added to Workflows without specifying a start time, they can later on be assigned a start time.
 - **Scheduled** Orders have been added to Workflows and are scheduled for execution at a later date and time.
 - **In Progress** Orders are processed by Workflow Instructions but are not running a Job. 
 - **Running** Orders are in execution of a Job. 
-- **Suspended** Orders have been halted on user intervention and can be resumed.
+- **Suspended** Orders have been halted by user intervention and can be resumed.
 - **Completed** Orders did finish a Workflow but have not been removed, for example if a File Order Source is used for file watching and the Workflow would not (re)move incoming files. In this situation the Order will remain in place as long as the file exists in the incoming directory.
 - **Prompting** Orders are put on hold by the *Prompt Instruction* in a Workflow and require user confirmation to continue execution of the Workflow.
 - **Waiting** Orders wait for a resource such as a *Resource Lock*, *Notice*, *Retry* or *Cycle* interval or for a process should the Agent in use specify a process limit that is exceeded.

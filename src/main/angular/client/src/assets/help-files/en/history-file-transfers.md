@@ -18,8 +18,8 @@ Display is grouped in a block for the transfer operation and blocks for transfer
 - **Workflow** indicates the Workflow executed by the Order.
   - Clicking the Workflow name navigates to the [Workflows](/workflows) view.
   - Clicking the pencil icon navigates to the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
-- **Order ID** is the unique identifier assigned an Order.
-- **Total** indicates the number of files included with the transfer.
+- **Order ID** is the unique identifier assigned to an Order.
+- **Total** indicates the number of files included in the transfer.
 
 ### History per File
 
@@ -41,7 +41,7 @@ Details are displayed for *Source*, *Target* and *Jump* hosts:
 For *Source* and *Target* the following details are displayed:
 
 - **File Name** indicates the name of the file.
-- **File Path** indicates the path from the file name and any directories.
+- **File Path** shows the directory path of the file, including its name.
 - **Status**
   - **TRANSFERRED** indicates that the file was successfully transferred when used with *COPY* or *MOVE* operations.
   - **DELETED** indicates that the file was deleted when used with the *REMOVE* operation.

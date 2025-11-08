@@ -9,7 +9,7 @@ JOC Cockpit offers managing [JS7 - Inventory Changes](https://kb.sos-berlin.com/
 Changes include inventory objects such as Workflows, Schedules etc. and they include referenced objects, for example a Job Resource referenced by a Workflow.
 
 - Users can add inventory objects directly to a Change.
-- Referenced objects are automatically associated a Change.
+- Referenced objects are automatically associated with a Change.
 
 The *Manage Changes* page is used for adding, updating and deleting Changes.
 

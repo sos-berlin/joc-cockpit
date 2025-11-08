@@ -21,7 +21,7 @@ By default users find the JOC-INITIAL Identity Service which is added during ini
 
 ## Triggering of Identity Services
 
-Identity Services are qualified being optional or required. They indicate an ordering by which they will be triggered.
+Identity Services can be makred being optional or required. They indicate an ordering by which they will be triggered.
 
 - Identity Services will be triggered in ascending ordering.
 - If Identity Services are qualified being optional, then login is completed on successful login with the first Identity Service. In case of failed login, the next Identity Service is triggered.
@@ -31,19 +31,19 @@ Identity Services are qualified being optional or required. They indicate an ord
 
 For each Identity Service the following properties are displayed:
 
-- **Identity Service Name** can be freely chosen.
+- **Identity Service Name** can be chosen freely.
 - **Identity Service Type** is one of JOC,  LDAP, OIDC, CERTIFICATE, FIDO, KEYCLOAK. For LDAP, OIDC and KEYCLOAK the additional service types LDAP-JOC, OIDC-JOC and KEYCLOAK-JOC can be used that store role assignment with JOC Cockpit.
-- **Authentication Scheme** is one of *single-factor* or *two-factor*. 
-- **Second Factor** indicates if a second factor is in place for *two-factor* authentication.
-- **Ordering** indicates the sequence in which the Identity Service will be triggered for authentication.
-- **Disabled** indicates if the Identity Service is inactive and will not be used for login.
+- **Authentication Scheme** can be either *single-factor* or *two-factor*. 
+- **Second Factor** indicates whether a second factor is enabled for *two-factor* authentication.
+- **Ordering** indicates the sequence in which the Identity Service is triggered for authentication.
+- **Disabled** indicates whether the Identity Service is inactive and not used for login.
 - **Required** indicates that the Identity Service will be triggered in addition to Identity Services with an earlier ordering.
 
 ## Operations on Identity Services
 
 Users can click one of the Identity Services to navigate to the [Identity Service - Roles](/identity-service-roles) view or [Identity Service - Accounts](/identity-service-accounts) view if offered for the service.
 
-Users can add an Identity Service from the related button in the right upper corner of the screen.
+Users can add an Identity Service from the related button in the upper-right corner of the screen.
 
 For existing Identity Services the following operations are offered from their 3-dots action menu:
 

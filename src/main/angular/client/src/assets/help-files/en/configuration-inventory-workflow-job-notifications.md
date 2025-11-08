@@ -18,7 +18,7 @@ Notifications allow use of different channels:
 
 ### Job related Notifications
 
-Specific Notifications per Job override Global Notifications from the follwoing settings:
+Specific Notifications per Job override Global Notifications from the following settings:
 
 - **Mail on** specifies one or more events in which e-mail should be sent
   - *ERROR* triggers the Notification in case of Job failure.

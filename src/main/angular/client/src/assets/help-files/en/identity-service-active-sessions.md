@@ -19,7 +19,7 @@ Users find the following operations on Active Sessions:
 - **Cancel Session** will forcibly terminate the account's current session. This will not prevent the account from performing a new login operation.
 - **Cancel all Sessions for Account** similarly to *Cancel Session* will terminate all sessions of the given account.
 
-When selecting one or more sessions, then the *Cancel Session* operation is available from a bulk operation with the related button in the right upper corner of the sub-view.
+When selecting one or more sessions, then the *Cancel Session* operation is available from a bulk operation with the related button in the upper-right corner of the sub-view.
 
 ## References
 

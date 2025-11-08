@@ -91,7 +91,7 @@ Preferences apply to pagination on any page:
 
 ### View Type Preferences
 
-- **Show View** applies to a number of views that offer the related indicator from the right upper corner of the window. The setting specifies the view type that will be used by default. Users can change the view type on demand in any view. The *Card* view type requires more space on the screen than the *List* view type. However, some users might prefer visibility from cards.
+- **Show View** applies to a number of views that offer the related indicator from the upper-right corner of the window. The setting specifies the view type that will be used by default. Users can change the view type on demand in any view. The *Card* view type requires more space on the screen than the *List* view type. However, some users might prefer visibility from cards.
 - **Show Orders Overview** is similar to the *Show View* setting but applies to the [Orders - Overview](/orders-overview) view. In addition, the view offers the *Bulk* view type that allows transitioning Orders from bulk operations.
 
 ### Workflow Layout Preferences

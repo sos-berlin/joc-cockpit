@@ -6,8 +6,8 @@ The *Order Log View* offers a running log that is updated every 2-3s. This allow
 
 The *Order Log View* offers filtering from a number of criteria available from the top of the window:
 
-- **Main** specifies that details about Order starts, Job starts and the parameterization on Job starts will be displayed. Such output is indicated from the [MAIN] qualifier.
-- **Success** events are indicated from the [SUCCESS] qualifier and specify details such as resulting parameterization when Jobs completed.
+- **Main** specifies that details about Order starts, Job starts and the parameterization on Job starts will be displayed. Such output is indicated by the [MAIN] qualifier.
+- **Success** events are indicated by the [SUCCESS] qualifier and show details such as the resulting parameterization when Jobs are completed.
 - **stdout** specifies if output written by Jobs to the stdout channel will be displayed using the [STDOUT] qualifier.
 - **Debug** applies to JVM Jobs that make use of the [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API). Such Jobs can be added the *log_level* argument holding the *debug*  or *trace* value. If debug output is available from a Job, then it will be displayed using the [DEBUG] qualifier.
 

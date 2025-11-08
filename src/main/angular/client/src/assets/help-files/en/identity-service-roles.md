@@ -50,7 +50,7 @@ Permission are merged from all roles for resulting permissions of a user account
 
 ## Operations on Roles
 
-The following operations are available from related buttons in the right upper corner of the sub-view:
+The following operations are available from related buttons in the upper-right corner of the sub-view:
 
 - **Account** limits display to roles assigned the selected account.
 - **Import** offers importing roles form a file in JSON format that was previously created from an *Export* of roles.

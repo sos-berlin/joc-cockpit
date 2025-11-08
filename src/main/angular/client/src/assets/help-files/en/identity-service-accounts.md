@@ -33,7 +33,7 @@ For each account the following properties are displayed:
 
 ## Operations on Accounts
 
-Users can add an account using the related button from the right upper corner of the view.
+Users can add an account using the related button from the upper-right corner of the view.
 
 ### Operations on Single Accounts
 

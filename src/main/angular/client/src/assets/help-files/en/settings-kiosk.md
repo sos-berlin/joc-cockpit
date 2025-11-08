@@ -15,14 +15,14 @@ The *Settings* page is accessible from the ![wheel icon](assets/images/wheel.png
 Specifies the name of the role that is assigned an account used for operation in kiosk mode:
 
 - The role must be created by the user.
-- The role should include read permissions only.
+- The role should include read-only permissions.
 - The role is the only one assigned the account.
 
 ### Setting: *view\_dashboard\_duration*, Default: *20*
 
 Specifies the duration in seconds for which the Dashboard will be displayed.
 
-Users are free to modify the dashboard layout for the account used for kiosk mode.
+Users can modify the dashboard layout for the account used for kiosk mode.
 
 - A value 0 specifies that the view will not be displayed.
 - A value >10 specifies the desired duration.
