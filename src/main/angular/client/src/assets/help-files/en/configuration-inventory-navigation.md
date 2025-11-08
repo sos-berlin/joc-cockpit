@@ -7,7 +7,7 @@ The *Configuration - Inventory* view is used to manage inventory objects such as
 
 ## Navigation Panel
 
-The left panel is organized in tabs that allow navigation from folders and from Tags by Workflows and Jobs.
+The left panel is organized in tabs that allow navigation from folders and from Tags for Workflows and Jobs.
 
 - **Folder** navigation will display inventory objects from the selected folder.
 - Tag filtering is offered from the following tabs to select Workflows:
@@ -48,7 +48,7 @@ Right to the top-level folder in the *Navigation Panel* users find a Search Icon
 
 #### Object Trash
 
-When inventory objects are removed, then they will be put to the Trash. The Trash allows to restore objects and to permanently delete objects.
+When inventory objects are removed, they will be put to the Trash. The Trash allows to restore objects and to permanently delete objects.
 
 The Trash is opened from the Trash Icon right to the top-level folder in the *Navigation Panel*.
 
@@ -87,14 +87,14 @@ The following operations are available for *Inventory Folders*:
 - Operations on Controller Objects
   - *Workflows*
     - **New** creates a Workflow.
-    - **Rename** allows to search and replace Workflow names in the folder. Object dependencies will be considered and referencing inventory objects such as *Schedules* and *File Order Sources* will hold the updated name. The Workflow and referencing objects will be put to *draft* status.
+    - **Rename** allows to rename a workflow. Object dependencies will be considered and referencing inventory objects such as *Schedules* and *File Order Sources* will hold the updated name. The Workflow and referencing objects will be put to *draft* status. For details see [Rename Folder](/configuration-inventory-operations-rename-folder).
     - **Manage Tags** offers adding and deleting Tags to/from Workflows in the folder.
-    - **Export** allows creating an export archive file in .zip or .tar.gz format that holds the folder hierarchy and the JSON representation of Workflows.
-    - **Git Repository** offers integration with a Git Server. Workflows can be committed to Git repositories and can be pulled and pushed.
-    - **Change** offers operations for change management of Workflows. Users can add a Workflow under construction to a *Change* that allows common deployment and export of changed objects.
-    - **Deploy** will make Workflows available to the Controller and Agents. The Workflows will be put to the *deployed* status.
-    - **Revoke** reverts a previous *Deploy* operation. Workflows will be put to *draft* status. This implies that Orders for Workflows will be removed from the [Daily Plan](/daily-plan). Object dependencies are considered and referencing objects such as *Schedules* and *File Order Sources* will be revoked/recalled too.
-    - **Remove** will move Workflows to the Trash. Removed Workflows can be restored or can be permanently deleted from the Trash.
+    - **Export** allows creating an export archive file in .zip or .tar.gz format that holds the folder hierarchy and the JSON representation of Workflows. For details see [Export Folder](/configuration-inventory-operations-export-folder).
+    - **Git Repository** offers integration with a Git Server. Workflows can be committed to Git repositories and can be pulled and pushed. For details see [Git - Clone Repository](/configuration-inventory-operations-git-clone).
+    - **Change** offers operations for change management of Workflows. Users can add a Workflow under construction to a *Change* that allows common deployment and export of changed objects. For details see [Changes](/changes).
+    - **Deploy** will make Workflows available to the Controller and Agents. The Workflows will be put to the *deployed* status. For details see [Deploy Folder](/configuration-inventory-operations-deploy-folder).
+    - **Revoke** reverts a previous *Deploy* operation. Workflows will be put to *draft* status. This implies that Orders for Workflows will be removed from the [Daily Plan](/daily-plan). Object dependencies are considered and referencing objects such as *Schedules* and *File Order Sources* will be revoked/recalled too. For details see [Revoke Folder](/configuration-inventory-operations-revoke-folder).
+    - **Remove** will move Workflows to the Trash. Removed Workflows can be restored or can be permanently deleted from the Trash. For details see [Remove Folder](/configuration-inventory-operations-remove-folder).
     - **Revert Draft** will delete the current draft version of Workflows. If a previously *deployed* version exists, then it will be made the current version of the related Workflow.
     - **Update Jobs from Templates** will update Jobs from Workflows in the selected *Inventory Folder* from *Job Templates* located in any folder.
   - *File Order Sources*, *Job Resources*, *Notice Boards*, *Resource Locks* offer similar operations as *Workflows*.
@@ -102,9 +102,10 @@ The following operations are available for *Inventory Folders*:
   - **Release** makes *draft* objects available
     - for use with other objects, for example *Script Includes* will be considered for next deployment of Workflows, *Job Templates* can be updated in referencing Workflows.
     - for use with the [Daily Plan](/daily-plan), for example *Schedules* will be considered for creation of Orders.
-  - **Recall** reverts a previous *Release* operation. The inventory objects will be put to *draft* status. This implies that draft *Schedules* and *Calendars* will not be considered by the [Daily Plan](/daily-plan). The operation considers object dependencies and will recall/revoke referencing objects too.
+    - for details see [Release Folder](/configuration-inventory-operations-release-folder).
+  - **Recall** reverts a previous *Release* operation. The inventory objects will be put to *draft* status. This implies that draft *Schedules* and *Calendars* will not be considered by the [Daily Plan](/daily-plan). The operation considers object dependencies and will recall/revoke referencing objects too. For details see [Recall Folder](/configuration-inventory-operations-recall-folder).
   - **Apply Template to Jobs** will update Jobs in Workflows located in any folder that hold references to *Job Templates* included with the selected *Inventory Folder* or any sub-folder.
-  - Other operations are available similar to *Operations on Controller Objects*
+  - Other operations are available similar to *Operations on Controller Objects*.
 
 #### User Folder Operations
 
@@ -115,14 +116,14 @@ The following operations are available for *Inventory Folders*:
   - **Cut** will *cut* the folder, any sub-folders and inventory objects for later pasting to a different location in the folder hierarchy.
   - **Copy** will *copy* the folder, any sub-folders and inventory objects including referenced inventory objects that might be located in other folders. The operation is a *deep copy* that works on any referenced objects.
   - **Shallow Copy** will *copy* the folder, any sub-folders and inventory objects. References to inventory objects in other folders are not considered.
-  - **Rename** allows to rename the folder and optionally included inventory objects.
+  - **Rename** allows to rename the folder and optionally included inventory objects. For details see [Rename Folder](/configuration-inventory-operations-rename-folder).
   - **Manage Tags** offers to add and to delete Tags to/from Workflows in the given folder hierarchy.
-  - **Export** allows creating an export archive file in .zip or .tar.gz format that holds the folder hierarchy and the JSON representation of included inventory objects.
-  - **Git Repository** offers integration with a Git Server. Inventory objects can be committed to Git repositories and can be pulled and pushed.
-  - **Change** offers operations for change management of inventory objects. Users can add objects such as Workflows that are under construction to a *Change* that allows common deployment and export of changed objects.
+  - **Export** allows creating an export archive file in .zip or .tar.gz format that holds the folder hierarchy and the JSON representation of included inventory objects. For details see [Configuration - Inventory - Operations - Export Folder](/configuration-inventory-operations-export-folder).
+  - **Git Repository** offers integration with a Git Server. Inventory objects can be committed to Git repositories and can be pulled and pushed. For details see [Git - Clone Repository](/configuration-inventory-operations-git-clone).
+  - **Change** offers operations for change management of inventory objects. Users can add objects such as Workflows that are under construction to a *Change* that allows common deployment and export of changed objects. For details see [Changes](/changes).
 - Operations on Controller Objects
-  - **Deploy** will make objects available to the Controller and Agents. Inventory objects will be put to the *deployed* status.
-  - **Revoke** reverts a previous *Deploy* operation. The inventory objects will be put to *draft* status. This implies that Orders for Workflows will be removed from the [Daily Plan](/daily-plan).
+  - **Deploy** will make objects available to the Controller and Agents. Inventory objects will be put to the *deployed* status. For details see [Deploy Folder](/configuration-inventory-operations-deploy-folder).
+  - **Revoke** reverts a previous *Deploy* operation. The inventory objects will be put to *draft* status. This implies that Orders for Workflows will be removed from the [Daily Plan](/daily-plan). For details see [Revoke Folder](/configuration-inventory-operations-revoke-folder).
   - **Revalidate** checks the validity of inventory objects that can become inconsistent for example after import of objects.
   - **Synchronize** will bring the status of scheduling objects with the Controller and the inventory in sync:
     - *Synchronize to Controller* will *Deploy* or *Revoke* inventory objects to/from the Controller and Agents depending on their *deployed* or *draft* inventory status. The operation can be used in case of Journal loss when a Controller's memory is wiped and the Controller is initialized.
@@ -131,9 +132,10 @@ The following operations are available for *Inventory Folders*:
   - **Release** makes *draft* objects available
     - for use with other objects, for example *Script Includes* will be considered for next deployment of Workflows, *Job Templates* can be updated in referencing Workflows.
     - for use with the [Daily Plan](/daily-plan), for example *Schedules* will be considered for creation of Orders.
-  - **Recall** reverts a previous *Release* operation. The inventory objects will be put to *draft* status. This implies that draft *Schedules* and *Calendars* will not be considered by the [Daily Plan](/daily-plan).
+    - for details see [Release Folder](/configuration-inventory-operations-release-folder).
+  - **Recall** reverts a previous *Release* operation. The inventory objects will be put to *draft* status. This implies that draft *Schedules* and *Calendars* will not be considered by the [Daily Plan](/daily-plan). For details see [Recall Folder](/configuration-inventory-operations-recall-folder).
 - Removal Operations
-  - **Remove** will move the folder, any sub-folders and included objects to the Trash. Removed inventory objects can be restored or can be permanently deleted from the Trash.
+  - **Remove** will move the folder, any sub-folders and included objects to the Trash. Removed inventory objects can be restored or can be permanently deleted from the Trash. For details see [Remove Folder](/configuration-inventory-operations-remove-folder).
   - **Revert Draft** will delete the current draft version of objects in the folder and any sub-folders. If a previously *deployed* or *released* version exists, then it will be made the current version of the related object.
 - Job Template Operations
   - **Update Jobs from Templates** will update Jobs in Workflows located in any folder that hold references to *Job Templates* included with the selected *User Folder* or any sub-folder.
@@ -146,8 +148,8 @@ The following operations are offered for individual inventory objects:
 - All Objects
   - **Cut** will *cut* the object for later pasting to a different location in the folder hierarchy.
   - **Copy** will *copy* the object for later pasting.
-  - **Rename** allows modifying the object's name. Object dependencies will be considered and referencing inventory objects will hold the updated name. The renamed object and referencing objects will be put to *draft* status.
-  - **Change** offers operations for change management of inventory objects. Users can add objects such as Workflows that are under construction to a *Change* that allows common deployment and export of changed objects.
+  - **Rename** allows modifying the object's name. Object dependencies will be considered and referencing inventory objects will hold the updated name. The renamed object and referencing objects will be put to *draft* status. For details see [Rename Object](/configuration-inventory-operations-rename-object).
+  - **Change** offers operations for change management of inventory objects. Users can add objects such as Workflows that are under construction to a *Change* that allows common deployment and export of changed objects. For details see [Changes](/changes).
   - **Show Dependencies** displays the list of referencing objects and referenced objects. For example, a Workflow can hold references to Job Resources and can be referenced by *Schedules* or *File Order Sources*.
   - **New Draft** creates a draft version from a previously *deployed* or *released* version of the object.
   - JSON Operations
@@ -156,22 +158,25 @@ The following operations are offered for individual inventory objects:
     - **Download JSON** will download the object in JSON storage format to a .json file.
     - **Upload JSON** offers to upload a .json file that will replace the object.
   - Removal Operations
-    - **Remove** will move the object to the Trash. Removed inventory objects can be restored or can be permanently deleted from the Trash.
+    - **Remove** will move the object to the Trash. Removed inventory objects can be restored or can be permanently deleted from the Trash. For details see [Remove Object](/configuration-inventory-operations-remove-object).
     - **Revert Draft** will delete the current draft version of the object. If a previously *deployed* or *released* version exists, then it will be made the current version of the object.
 - Controller Objects
   - **Manage Tags** is available for Workflows and offers adding and deleting Tags to/from the Workflow.
-  - **Deploy** will make the object available to the Controller and Agents. The object will be put to the *deployed* status. Deployment considers object dependencies of referenced and referencing inventory objects.
-  - **Revoke** reverts a previous *Deploy* operation. The object will be put to *draft* status. For use with Workflows this implies that Orders will be removed from the [Daily Plan](/daily-plan).
+  - **Deploy** will make the object available to the Controller and Agents. The object will be put to the *deployed* status. Deployment considers object dependencies of referenced and referencing inventory objects. For details see [Deploy Object](/configuration-inventory-operations-deploy-object).
+  - **Revoke** reverts a previous *Deploy* operation. The object will be put to *draft* status. For use with Workflows this implies that Orders will be removed from the [Daily Plan](/daily-plan). For details see [Revoke Object](/configuration-inventory-operations-revoke-object).
 - Automation Objects
   - **Release** makes *draft* objects available
     - for use with other objects, for example *Script Includes* will be considered for next deployment of Workflows, *Job Templates* can be updated in referencing Workflows.
     - for use with the [Daily Plan](/daily-plan), for example *Schedules* will be considered for creation of Orders.
-  - **Recall** reverts a previous *Release* operation. The inventory objects will be put to *draft* status. This implies that draft *Schedules* and *Calendars* will not be considered by the [Daily Plan](/daily-plan).
+    - for details see [Release Object](/configuration-inventory-operations-release-object).
+  - **Recall** reverts a previous *Release* operation. The inventory objects will be put to *draft* status. This implies that draft *Schedules* and *Calendars* will not be considered by the [Daily Plan](/daily-plan). For details see [Recall Object](/configuration-inventory-operations-recall-object).
 
 ## References
 
 ### Context Help
 
+- [Changes](/changes)
+- [Daily Plan](/daily-plan)
 - [Object Naming Rules](/object-naming-rules)
 - Controller Objects
   - [Workflows](/configuration-inventory-workflows)
@@ -187,6 +192,22 @@ The following operations are offered for individual inventory objects:
   - [Calendars](/configuration-inventory-calendars)
   - [Job Templates](/configuration-inventory-job-templates)
   - [Reports](/configuration-inventory-reports)
+- Object Operations
+  - [Deploy Object](/configuration-inventory-operations-deploy-object)
+  - [Revoke Object](/configuration-inventory-operations-revoke-object)
+  - [Release Object](/configuration-inventory-operations-release-object)
+  - [Recall Object](/configuration-inventory-operations-recall-object)
+  - [Remove Object](/configuration-inventory-operations-remove-object)
+  - [Rename Object](/configuration-inventory-operations-rename-object)
+- User Folder Operations
+  - [Deploy Folder](/configuration-inventory-operations-deploy-folder)
+  - [Revoke Folder](/configuration-inventory-operations-revoke-folder)
+  - [Release Folder](/configuration-inventory-operations-release-folder)
+  - [Recall Folder](/configuration-inventory-operations-recall-folder)
+  - [Remove Folder](/configuration-inventory-operations-remove-folder)
+  - [Rename Folder](/configuration-inventory-operations-rename-folder)
+  - [Export Folder](/configuration-inventory-operations-export-folder)
+  - [Git - Clone Repository](/configuration-inventory-operations-git-clone)
 
 ### Product Knowledge Base
 
