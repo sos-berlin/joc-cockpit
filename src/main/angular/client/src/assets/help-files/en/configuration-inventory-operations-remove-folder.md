@@ -6,7 +6,7 @@ Removing a folder includes to remove sub-folders recursively. Removed objects re
 
 The *Configuration->Inventory* view offers removing a single object, see [Configuration - Inventory - Operations - Remove Object](/configuration-inventory-operations-remove-object), and removing objects from folders.
 
-When removing a folder from the *Remove* operation available from the folder's 3-dots action menu in the navigation panel, a pop-up window will be displayed like this:
+When removing a folder using the *Remove* operation available from the folder's 3-dots action menu in the navigation panel, a pop-up window will be displayed like this:
 
 <img src="remove-folder.png" alt="Remove Folder" width="600" height="560" />
 

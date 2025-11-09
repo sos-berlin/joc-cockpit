@@ -21,19 +21,23 @@ When exporting objects from folders using the related *Export* operation from th
   - **Use relative Path** specifies whether the export file will include the folder hierarchy from an absolute path or from a relative path indicated by the latest folder in the hierarchy for which export is performed.
 - **Handle recursively** allows adding objects from sub-folders recursively to the export archive.
 
-## Exporting Individual Objects
+## Export Types
+
+The **Export Type** allows selecting individual objects, objects from folders and objects from changes.
+
+### Exporting Individual Objects
 
 The *Export Type* allows selecting individual objects from the list of objects displayed.
 
 <img src="export-object.png" alt="Export Object" width="600" height="580" />
 
-## Exporting Folders
+### Exporting Objects from Folders
 
 The *Export Type* offers limiting export to certain scheduling object types such as Workflows or Schedules. Users can select the desired object types that will be added to the export archive file.
 
 <img src="export-folder.png" alt="Export Folder" width="600" height="580" />
 
-## Exporting Changes
+### Exporting Objects from Changes
 
 The *Export Type* offers selecting a Change from the list of [Changes](/changes). Export will be limited to objects related to the Change.
 

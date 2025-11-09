@@ -47,7 +47,7 @@ After updating Jobs from Job Templates, the related Workflows will be set to *Dr
 
 ## Use with Jobs
 
-Job Templates can be created from existing Jobs. In the *Configuration-Inventory* view for a given Workflow users can click the related Job to find its action menu offering the *Make Job Template* operation.
+Job Templates can be created from existing Jobs. In the *Configuration->Inventory* view for a given Workflow users can click the related Job to find its action menu offering the *Make Job Template* operation.
 
 To assign a Job a Job Template users can proceed as follows:
 

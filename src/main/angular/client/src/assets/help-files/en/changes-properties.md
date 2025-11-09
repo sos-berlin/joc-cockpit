@@ -1,6 +1,6 @@
 # Change Properties
 
-JOC Cockpit offers managing [JS7 - Inventory Changes](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Changes) to objects such as Workflows. A Change is a collection of inventory objects that are subject to joint deployment operations
+JOC Cockpit offers managing [JS7 - Inventory Changes](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Changes) to objects such as Workflows. A Change is a collection of inventory objects that are subject to common deployment operations
 
 - for deployment to Controllers,
 - for rollout using [JS7 - Inventory Export and Import](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Export+and+Import),

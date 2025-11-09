@@ -76,7 +76,7 @@ Preferences apply to pagination on any page:
 
 ### Configuration View Preferences
 
-- **Show sub-folders and folder contents** rules the behavior when clicking a folder in the *Navigation Panel* of the *Configuration-Inventory* view to either display available objects only or to display available objects and sub-folders.
+- **Show sub-folders and folder contents** rules the behavior when clicking a folder in the *Navigation Panel* of the *Configuration->Inventory* view to either display available objects only or to display available objects and sub-folders.
 
 ### Mixed Preferences
 
@@ -84,9 +84,9 @@ Preferences apply to pagination on any page:
 - **Enable Reasons for Audit Log** will force the user to specify a reason when modifying objects such as adding or cancelling Orders, suspending Workflows etc. The user setting can be overruled from the related [Settings - JOC Cockpit](/settings-joc).
 - **Use time zone for log timestamps** is applicable when Agents run on servers in different time zones or different from the Controller server's time zone. In this situation an Order log that holds log output of a number of Jobs executed with possibly different Agents might look confusing. The setting converts log timestamps to the *Time Zone* specified with the user's profile.
 - **Current Controller** applies when more than one Controller is connected to JOC Cockpit. The option that is offered in a number of views, for example the [History - Orders](/history-orders) view. When checked it limits display to Orders submitted to the currently selected Controller and otherwise will display Orders of any connected Controller. The setting determines the default value for related *Current Controller* options in JOC Cockpit views.
-- **Suppress tooltips for Inventory objects** relates to the *Configuration-Inventory* view that offers tooltips, for example for [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-job-properties). Tooltips will pop up if the mouse is moved to the label of an input field to assist users by explaining possible input. While this is useful for users who are not too familiar with JS7, tooltips might not be needed for experienced users.
+- **Suppress tooltips for Inventory objects** relates to the *Configuration->Inventory* view that offers tooltips, for example for [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-job-properties). Tooltips will pop up if the mouse is moved to the label of an input field to assist users by explaining possible input. While this is useful for users who are not too familiar with JS7, tooltips might not be needed for experienced users.
 - **License Warning acknowledged** refers to use of subscription licences that are typically limited to one year. Before license expiration related warnings will be displayed by JOC Cockpit. User can opt to suppress related license expiration warnings. For details see [JS7 - How to manage License Expiration Warnings](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+manage+License+Expiration+Warnings).
-- **Show more options** activates the related slider button in the *Configuration-Inventory* view. It offers more detailed options for job configuration, for example with the [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options) tab.
+- **Show more options** activates the related slider button in the *Configuration->Inventory* view. It offers more detailed options for job configuration, for example with the [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options) tab.
 - **Collapse list variable** applies to the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view that offers specifying Workflow Variables from a number of data types. If the *List* data type (array) is used then it can hold a larger number of entries. Users might not want to immediately see list variables expanded when editing a Workflow.
 
 ### View Type Preferences

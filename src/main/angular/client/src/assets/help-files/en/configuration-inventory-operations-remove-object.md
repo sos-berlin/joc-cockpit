@@ -6,7 +6,7 @@ Removed objects remain available in the Inventory trash.
 
 The *Configuration->Inventory* view offers removing a single object and removing objects from folders, see [Configuration - Inventory - Operations - Remove Folder](/configuration-inventory-operations-remove-folder).
 
-When removing a single object from the *Remove* operation available from the object's 3-dots action menu in the navigation panel, a pop-up window will be displayed like this:
+When removing a single object using the *Remove* operation available from the object's 3-dots action menu in the navigation panel, a pop-up window will be displayed like this:
 
 <img src="remove-workflow.png" alt="Remove Workflow" width="600" height="140" />
 
