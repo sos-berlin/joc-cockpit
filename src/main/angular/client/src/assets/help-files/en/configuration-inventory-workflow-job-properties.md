@@ -35,7 +35,7 @@ The minimum properties for a Job are as follows:
     - *User Defined Jobs*
       - **Java Jobs** are executed in the JVM provided by the JS7 Agent.
       - **JavaScript Jobs** require use of the Oracle® GraalVM Java Virtual Machine with the JS7 Agent The JVM provides the interpreter/compiler for JavaScript.
-  
+
 ### Environment Variables
 
 For *Shell Jobs* the parameterization is made available from Environment Variables.

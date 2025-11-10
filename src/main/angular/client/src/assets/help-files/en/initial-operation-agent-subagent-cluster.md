@@ -26,21 +26,21 @@ The sequence of Subagents determines the type of cluster:
 
 Subagents are dragged & dropped to the *same column*:
 
-- Subagents  in the same column specify an active-passive cluster (fixed-priority) in which the first Subagent will be used for any jobs as long as it is available. Only when the first Subagent is unavailable, then the next Subagent will be used.
+- Subagents in the same column specify an active-passive cluster (fixed-priority) in which the first Subagent will be used for any jobs as long as it is available. Only when the first Subagent is unavailable, then the next Subagent will be used.
 - For details see [JS7 - Agent Cluster - Active-Passive Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Passive+Subagent+Cluster).
 
 #### Active-active Subagent Cluster
 
 Subagents are dragged & dropped to the *same row*:
 
-- Subagents  in the same row specify an active-active cluster (round-robin) in which each next job will be executed with the next Subagent.
+- Subagents in the same row specify an active-active cluster (round-robin) in which each next job will be executed with the next Subagent.
 - For details see [JS7 - Agent Cluster - Active-Active Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Active+Subagent+Cluster).
 
 #### Metrics-based Subagent Cluster
 
 Subagents are dragged & dropped to the *same row* and are assigned a *Metrics-based Priority*:
 
-- Subagents  in the same row can specify a metrics based priority:
+- Subagents in the same row specify a metrics based priority:
     - Hovering the mouse on the Subagent's rectangle offers its 3-dots action menu: the *Metrics-based Priority* action allows specifying the priority from an expression.
 - For details see [JS7 - Agent Cluster - Metrics-based Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Metrics-based+Subagent+Cluster).
 

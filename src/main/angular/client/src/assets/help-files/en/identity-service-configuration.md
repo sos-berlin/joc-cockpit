@@ -12,7 +12,7 @@ Identity Services are specified from the following configuration:
 For any Identity Service the following properties are displayed:
 
 - **Identity Service Name** can be freely chosen.
-- **Identity Service Type** is one of JOC,  LDAP, OIDC, CERTIFICATE, FIDO, KEYCLOAK. For LDAP, OIDC and KEYCLOAK the additional service types LDAP-JOC, OIDC-JOC and KEYCLOAK-JOC can be used that store role assignment with JOC Cockpit.
+- **Identity Service Type** is one of JOC, LDAP, OIDC, CERTIFICATE, FIDO, KEYCLOAK. For LDAP, OIDC and KEYCLOAK the additional service types LDAP-JOC, OIDC-JOC and KEYCLOAK-JOC can be used that store role assignment with JOC Cockpit.
 - **Ordering** indicates the sequence in which the Identity Service will be triggered for authentication.
   - Users can specify an integer value to indicate the ordering.
   - Users can modify the ordering by moving the service in the list of [Identity Services](/identity-services).

@@ -2,7 +2,7 @@
 
 Inventory objects can be renamed or relocated. This applies to objects, user folders or both. For renaming user folders see [Configuration - Inventory - Operations - Rename Folder](/configuration-inventory-operations-rename-folder). 
 
-When renaming objects, [Object Naming Rules](/object-naming-rules.md) apply.
+When renaming objects, [Object Naming Rules](/object-naming-rules) apply.
 
 The *Rename* operation is available from the *Navigation* panel and is offered for objects and user folders from their related 3-dots action menu.
 
@@ -42,7 +42,7 @@ When renaming objects, consistency is considered and referencing objects are upd
 
 - [Configuration - Inventory - Operations - Rename Folder](/configuration-inventory-operations-rename-folder)
 - [Dependency Matrix](/dependencies-matrix)
-- [Object Naming Rules](/object-naming-rules.md)
+- [Object Naming Rules](/object-naming-rules)
 
 ### Product Knowledge Base
 

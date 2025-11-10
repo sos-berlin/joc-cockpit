@@ -8,6 +8,22 @@ JS7 offers [JS7 - Tagging](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging) 
 - Tags can be applied when manually adding ad hoc Orders.
 - Tags can be used in the *Workflows* view, *Orders Overview* view, *Daily Plan* view and *History* view for filtering of Workflows and Orders.
 
+## Manage Tags for Workflow
+
+Users can add, update and remove Tags for a single Workflow.
+
+<img src="tags-manage-object.png" alt="Manage Tags for Workflow" width="600" height="125" />
+
+When entering Tags, the list of existing Tags is offered. Other than that, users can type the name of a new Tag. Tag names are case-sensitive.
+
+## Manage Tags for Workflows from Folders
+
+Users can add, update and remove Tags for all Workflows available in the selected folder and in sub-folders recursively.
+
+<img src="tags-manage-folder.png" alt="Manage Tags for Workflows from Folders" width="600" height="210" />
+
+The *List of Tags* indicates the Tag name and the Workflows that are assigned the Tag. Users can remove the assignment of a Tag.
+
 ## References
 
 ### Context Help

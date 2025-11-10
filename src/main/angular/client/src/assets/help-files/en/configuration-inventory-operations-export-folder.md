@@ -49,7 +49,7 @@ Inventory objects are related by dependencies, see [Dependency Matrix](/dependen
 
 When exporting objects, consistency is considered, for example:
 
-- If a Workflow references a Job Resource, then both the Workflow and the Job Resource can be exported, even in case  they are stored in folders unrelated to the selected folder.
+- If a Workflow references a Job Resource, then both the Workflow and the Job Resource can be exported, even in case they are stored in folders unrelated to the selected folder.
 - If a Schedule references a Calendar and should be exported, then both the Schedule and the Calendar can be exported.
 
 Users control consistent export from the following options:
