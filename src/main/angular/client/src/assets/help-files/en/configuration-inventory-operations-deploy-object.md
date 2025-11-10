@@ -1,8 +1,8 @@
 # Configuration - Inventory - Operations - Deploy Object
 
-Deploying objects includes to transfer them to a Controller. This applies to objects such as Workflows and Job Resources available from the *Controller* system folder.
+Deploying objects includes to transfer them to one or more Controllers. This applies to objects such as Workflows and Job Resources available from the *Controller* system folder.
 
-The *Configuration->Inventory* view offers deploying a single object and deploying objects from folders, see [Configuration - Inventory - Operations - Deploy Folder](/configuration-inventory-operations-deploy-folder).
+The *Configuration->Inventory* view offers deploying a single object and deploying objects from folders, see [Deploy Folder](/configuration-inventory-operations-deploy-folder).
 
 When deploying a single object from the related *Deploy* button, a pop-up window will be displayed like this:
 
@@ -10,9 +10,9 @@ When deploying a single object from the related *Deploy* button, a pop-up window
 
 ## Deploying to Controllers
 
-The input field accepts one or more Controllers to which the object will be deployed.
+The **Controller** input field accepts one or more Controllers to which the object will be deployed.
 
-By default the currently selected Controller will be indicated.
+By default the currently selected Controller will be used.
 
 ## Updating the Daily Plan
 
@@ -40,7 +40,7 @@ Users control consistent deployment from the following options:
     - If related objects are in draft status, then common deployment is offered. It will be enforced, if required by changes to object relationships.
     - If related objects are in deployed/released status, then common deployment is optional. Users can select related objects for common deployment.
   - when unchecked, this will not consider dependencies. Users must verify if related objects are valid and deployed/released. The Controller will raise error messages in case of missing objects due to inconsistent deployment.
-  
+
 ## References
 
 ### Context Help

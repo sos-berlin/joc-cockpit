@@ -1,6 +1,6 @@
 # Configuration - Inventory - Operations - Remove Object
 
-Removing objects includes to delete them from the Controller and from the inventory. This applies to objects such as Workflows and Schedules available from the *Controller* and *Automation* system folders.
+Removing objects includes to delete them from Controllers and from the inventory. This applies to objects such as Workflows and Schedules available from the *Controller* and *Automation* system folders.
 
 Removed objects remain available in the Inventory trash.
 
@@ -10,17 +10,15 @@ When removing a single object using the *Remove* operation available from the ob
 
 <img src="remove-workflow.png" alt="Remove Workflow" width="600" height="140" />
 
-## Removing Object from Controllers
+## Removing Objects from Controllers
 
-The input field accepts one or more Controllers from which the object will be removed.
-
-By default the currently selected Controller will be indicated.
+When removing an object, it will be removed from all Controllers to which it has been deployed.
 
 ## Updating the Daily Plan
 
 Removal of objects such as Workflows and Schedules impacts the [Daily Plan](/daily-plan). 
 
-Existing Orders for related Workflows will be cancelled from the Controller and will be removed from the Daily Plan.
+Existing Orders for related Workflows will be cancelled from Controllers and will be removed from the Daily Plan.
 
 ## Including Dependencies
 
@@ -28,14 +26,14 @@ Inventory objects are related by dependencies, see [Dependency Matrix](/dependen
 
 When removing objects, consistency is considered, for example:
 
-- If a Job Resource is referenced by a Workflow, then removal of the Job Resource includes revoking  the Workflow.
+- If a Job Resource is referenced by a Workflow, then removal of the Job Resource includes revoking the Workflow.
 - If a Workflow is removed, then a Schedule referencing the Workflow will be recalled and related Orders will be cancelled and removed from the Daily Plan.
 
 Users control consistent removal of objects from the following options:
 
 - **Include Dependencies**
   - when checked, this will include both referencing and referenced objects.
-    - If related objects have previously been deployed or released, then common removal/revocation is offered. It will be enforced, if required by object relationships.
+    - If related objects have previously been deployed or released, then common removal/revocation is offered: the object for which the *Remove* operation is performed will be removed, for related objects revocation is offered. Revocation of related objects will be enforced, if required by object relationships.
     - This similarly applies to objects in draft status that have previously been deployed or released.
   - when unchecked, this will not consider dependencies. Users must verify if related objects are valid and deployed/released. The Controller will raise error messages in case of missing objects due to inconsistent revocation.
 

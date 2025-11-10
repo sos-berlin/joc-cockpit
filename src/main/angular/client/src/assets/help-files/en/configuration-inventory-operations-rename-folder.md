@@ -2,7 +2,7 @@
 
 Inventory objects can be renamed or relocated. This applies to objects, folders or both. For renaming objects see [Configuration - Inventory - Operations - Rename Object](/configuration-inventory-operations-rename-object). 
 
-When renaming folders, [Object Naming Rules](/object-naming-rules.md) apply.
+When renaming folders, [Object Naming Rules](/object-naming-rules) apply.
 
 The *Rename* operation is available from the *Navigation* panel and is offered for objects and folders from their related 3-dots action menu.
 
@@ -49,7 +49,7 @@ When renaming objects, consistency is considered and referencing objects are upd
   - the Schedule will be updated to reflect the changed name,
   - the Schedule will be set to draft status,
   - a later *Deploy* operation on the Workflow will include a *Release* operation on the Schedule and vice versa.
-  
+
 ## References
 
 ### Context Help
@@ -58,7 +58,7 @@ When renaming objects, consistency is considered and referencing objects are upd
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
 - [Daily Plan](/daily-plan)
 - [Dependency Matrix](/dependencies-matrix)
-- [Object Naming Rules](/object-naming-rules.md)
+- [Object Naming Rules](/object-naming-rules)
 
 ### Product Knowledge Base
 

@@ -32,7 +32,7 @@ Identity Services can be makred being optional or required. They indicate an ord
 For each Identity Service the following properties are displayed:
 
 - **Identity Service Name** can be chosen freely.
-- **Identity Service Type** is one of JOC,  LDAP, OIDC, CERTIFICATE, FIDO, KEYCLOAK. For LDAP, OIDC and KEYCLOAK the additional service types LDAP-JOC, OIDC-JOC and KEYCLOAK-JOC can be used that store role assignment with JOC Cockpit.
+- **Identity Service Type** is one of JOC, LDAP, OIDC, CERTIFICATE, FIDO, KEYCLOAK. For LDAP, OIDC and KEYCLOAK the additional service types LDAP-JOC, OIDC-JOC and KEYCLOAK-JOC can be used that store role assignment with JOC Cockpit.
 - **Authentication Scheme** can be either *single-factor* or *two-factor*. 
 - **Second Factor** indicates whether a second factor is enabled for *two-factor* authentication.
 - **Ordering** indicates the sequence in which the Identity Service is triggered for authentication.

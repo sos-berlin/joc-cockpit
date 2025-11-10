@@ -23,7 +23,7 @@ Approval Requests are added when a user tries to perform an operation that is su
 For example, if the *Requestor Role* specifies permissions for Orders and the user is trying to add an Order to a Workflow, then a pop-up window will be displayed that asks specifying the following information items:
 
 - **Title** is the indicator of the Approval Request. Users can freely specify the *Title*.
-- **Approver** is selected from the list of [Approver Profiles](/approval-profiles). The  indicated*Approver* will be preferably notified. However, any *Approver* can approve or reject the Approval Request.
+- **Approver** is selected from the list of [Approver Profiles](/approval-profiles). The indicated*Approver* will be preferably notified. However, any *Approver* can approve or reject the Approval Request.
 - **Reason** provides an explanation to the *Approver* about the need for the intervention.
 
 When the Approval Request is submitted, then it will become visible in the [Approval Requests](/approval-requests) view. The related *Approver* will receive notification by e-mail.

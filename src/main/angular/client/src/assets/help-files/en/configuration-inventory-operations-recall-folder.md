@@ -27,7 +27,7 @@ Users control consistent deployment from the following options:
 
 - **Include Dependencies**
   - when checked, this will include both referencing and referenced objects.
-    - If related objects are in deployed/released status, then common recalling is offered. It will be enforced, if required by object relationships.
+    - If related objects are in deployed/released status, then common recalling is offered. Recalling will be enforced, if required by object relationships.
     - If related objects are in draft status, then common recalling is optional. Users can select related objects for common recalling.
   - when unchecked, this will not consider dependencies. Users must verify if related objects are valid and deployed/released. The Controller will raise error messages in case of missing objects due to inconsistent deployment.
 

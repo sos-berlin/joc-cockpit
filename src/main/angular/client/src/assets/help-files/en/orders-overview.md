@@ -28,9 +28,9 @@ The panel offers the list of Orders for the given state:
 - **Workflow Name** is the unique name assigned a Workflow.
   - Clicking the *Workflow Name* navigates to the [Workflows](/workflows) view.
   - Clicking the pencil icon navigates to the [Configuration - Inventory - Workflows](/configuration-inventory-workflows) view.
-- **Label** indicates the Order's position from the label of the Workflow instruction. In absence of labels the technical position is indicated.  
+- **Label** indicates the Order's position from the label of the Workflow instruction. In absence of labels the technical position is indicated.
 - **State** indicates the [Order State](/order-states).
-  - Hovering the mouse on the state indicator displays state details if available. For example, *waiting* Orders indicate reasons such as *waiting for process*, *waiting for Notice Board* etc.
+  - Hovering the mouse over the state indicator displays details if available. For example, *waiting* Orders indicate reasons such as *waiting for process*, *waiting for Notice Board* etc.
 - **Scheduled For** indicates the start date of the Order.
 
 ## History Panel

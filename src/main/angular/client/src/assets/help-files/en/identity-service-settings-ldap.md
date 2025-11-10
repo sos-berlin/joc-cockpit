@@ -46,7 +46,7 @@ For details see
   - If the LDAP Server is operated for TLS/SSL connections and this setting is not specified, then JOC Cockpit will use the truststore that is configured with the *JETTY_BASE/resources/joc/joc.properties* configuration file. This includes use of settings for the truststore password and truststore type.
   - The path to the truststore is specified relative to the *JETTY_BASE/resources/joc* directory. If the truststore is located in this directory, then specify the file name only, typically with a .p12 extension. Other relative locations can be specified using e.g. *../../joc-truststore.p12* if the truststore is located in the *JETTY_BASE* directory. No absolute path can be specified and no path can be specified that is located before the *JETTY_BASE* directory in the file system hierarchy.
 - **LDAP Truststore Password** specifies the password that protects the LDAP truststore. If the Java JDK *cacerts* truststore is used, then the default password is *changeit*.
-- **LDAP Truststore Type** specifies the type of  truststore which is one of *PKCS12* or *JKS* (deprecated).
+- **LDAP Truststore Type** specifies the type of truststore which is one of *PKCS12* or *JKS* (deprecated).
 
 #### Authentication Settings
 
