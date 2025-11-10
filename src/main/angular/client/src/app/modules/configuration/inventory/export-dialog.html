@@ -206,7 +206,7 @@
             <nz-tree
               #treeCtrl
               [nzCheckable]="true"
-              (nzCheckBoxChange)="checkBoxChange($event)"
+              (nzCheckboxChange)="checkBoxChange($event)"
               (nzExpandChange)="getDeploymentVersion($event)"
               [nzData]="nodes"
               [nzTreeTemplate]="nzTreeTemplate"
@@ -526,7 +526,7 @@
           <div class="col-md-12">
             <nz-tree
               [nzCheckable]="false"
-              (nzCheckBoxChange)="checkBoxChanges($event)"
+              (nzCheckboxChange)="checkBoxChanges($event)"
               [nzData]="nodes"
               [nzTreeTemplate]="nzTreeChnagesTemplate"
               [nzShowExpand]="false"

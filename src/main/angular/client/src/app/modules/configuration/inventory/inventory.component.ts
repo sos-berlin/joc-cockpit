@@ -72,7 +72,7 @@ export class CreateTagModalComponent {
   @ViewChild(NzSelectComponent) tagSelect;
 
 
-  constructor(private coreService: CoreService, public activeModal: NzModalRef, private workflowService: WorkflowService) {
+  constructor(private coreService: CoreService,private modal: NzModalService, public activeModal: NzModalRef, private workflowService: WorkflowService) {
   }
 
   ngOnInit(): void {
@@ -303,6 +303,21 @@ export class CreateTagModalComponent {
   }
 
   protected readonly Array = Array;
+
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
 }
 
 @Component({
@@ -1454,6 +1469,43 @@ export class SingleDeployComponent {
       nzMaskClosable: false
     })
   }
+
+  hasUncheckedInvalidCalendar(): boolean {
+    if (!this.isRevoke || this.releasable) {
+      for (const type of Object.keys(this.referencedObjectsByType)) {
+        const hasInvalidCalendar = this.referencedObjectsByType[type].some(obj =>
+          !obj.selected &&
+          !obj.valid &&
+          (obj.objectType === 'WORKINGDAYSCALENDAR' || obj.objectType === 'NONWORKINGDAYSCALENDAR')
+        );
+        if (hasInvalidCalendar) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  getInvalidCalendarMessage(): string {
+    if (!this.isRevoke || this.releasable) {
+      const invalidCalendars: string[] = [];
+
+      Object.keys(this.referencedObjectsByType).forEach(type => {
+        this.referencedObjectsByType[type].forEach(obj => {
+          if (!obj.selected && !obj.valid &&
+            (obj.objectType === 'WORKINGDAYSCALENDAR' || obj.objectType === 'NONWORKINGDAYSCALENDAR')) {
+            invalidCalendars.push(obj.path || obj.name);
+          }
+        });
+      });
+
+      if (invalidCalendars.length > 0) {
+        return `Invalid calendar: ${invalidCalendars.join(', ')}`;
+      }
+    }
+    return '';
+  }
+
 }
 
 @Component({
@@ -3595,6 +3647,85 @@ export class DeployComponent {
       nzClosable: false,
       nzMaskClosable: false
     })
+  }
+
+  hasUncheckedInvalidCalendar(): boolean {
+    if (!this.isRevoke && this.releasable) {
+      let hasSchedule = false;
+
+      const checkForSchedule = (nodes: any[]): void => {
+        for (const node of nodes) {
+          if (node.checked && node.type === 'SCHEDULE') {
+            hasSchedule = true;
+            return;
+          }
+          if (node.children && node.children.length > 0) {
+            checkForSchedule(node.children);
+          }
+        }
+      };
+
+      checkForSchedule(this.nodes);
+
+      if (!hasSchedule) {
+        return false;
+      }
+
+      for (const type of Object.keys(this.referencedObjectsByType)) {
+        const hasInvalidCalendar = this.referencedObjectsByType[type].some(obj =>
+          !obj.selected &&
+          !obj.valid &&
+          (obj.objectType === 'WORKINGDAYSCALENDAR' || obj.objectType === 'NONWORKINGDAYSCALENDAR')
+        );
+        if (hasInvalidCalendar) {
+          return true;
+        }
+      }
+
+    }
+
+    return false;
+  }
+
+  getInvalidCalendarMessage(): string {
+    if (!this.isRevoke && this.releasable) {
+      let hasSchedule = false;
+
+      const checkForSchedule = (nodes: any[]): void => {
+        for (const node of nodes) {
+          if (node.checked && node.type === 'SCHEDULE') {
+            hasSchedule = true;
+            return;
+          }
+          if (node.children && node.children.length > 0) {
+            checkForSchedule(node.children);
+          }
+        }
+      };
+
+      checkForSchedule(this.nodes);
+
+      if (!hasSchedule) {
+        return '';
+      }
+
+      const invalidCalendars: string[] = [];
+
+      Object.keys(this.referencedObjectsByType).forEach(type => {
+        this.referencedObjectsByType[type].forEach(obj => {
+          if (!obj.selected && !obj.valid &&
+            (obj.objectType === 'WORKINGDAYSCALENDAR' || obj.objectType === 'NONWORKINGDAYSCALENDAR')) {
+            invalidCalendars.push(obj.path || obj.name);
+          }
+        });
+      });
+
+      if (invalidCalendars.length > 0) {
+        return `Invalid calendar(s): ${invalidCalendars.join(', ')}`;
+      }
+    }
+
+    return '';
   }
 
 }
@@ -6867,6 +6998,21 @@ export class GitComponent {
   cancel(): void {
     this.activeModal.destroy();
   }
+
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
 }
 
 @Component({
@@ -7217,11 +7363,12 @@ export class CreateFolderModalComponent {
   isValid = true;
   folder = {error: false, name: '', deepRename: 'rename', search: '', replace: ''};
   comments: any = {};
-
-  constructor(private coreService: CoreService, public activeModal: NzModalRef, private ref: ChangeDetectorRef) {
+  preferences: any = {};
+  constructor(private coreService: CoreService,private modal: NzModalService, public activeModal: NzModalRef, private ref: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
+    this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerId = this.modalData.schedulerId;
     this.origin = this.modalData.origin;
     this.type = this.modalData.type;
@@ -7363,6 +7510,21 @@ export class CreateFolderModalComponent {
       }
     });
     return obj;
+  }
+
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
   }
 }
 

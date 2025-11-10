@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { MarkdownParserService } from './markdown-parser.service';
+import { AuthService } from '../components/guard';
 
 export interface HelpRenderResult {
   html: string;
@@ -22,6 +23,7 @@ export class HelpService {
     private http: HttpClient,
     private i18n: TranslateService,
     private md: MarkdownParserService,
+    private authService: AuthService,
   ) {}
 
   setLanguage(lang: string): void {
@@ -32,6 +34,10 @@ export class HelpService {
     const requestedLang = this.currentLanguage || this.i18n.currentLang || this.defaultLanguage;
     const urlPrimary  = `${this.helpBasePath}/${requestedLang}/${key}.md`;
     const urlFallback = `${this.helpBasePath}/${this.defaultLanguage}/${key}.md`;
+
+    const headers = new HttpHeaders({
+      'X-Access-Token': this.authService.accessTokenId || ''
+    });
 
     const render = (markdown: string, usedLang: string, fellBack: boolean): HelpRenderResult => ({
       html: this.md.parseMarkdown(markdown, {
@@ -49,10 +55,16 @@ export class HelpService {
       fellBack,
     });
 
-    return this.http.get(urlPrimary, { responseType: 'text' }).pipe(
+    return this.http.get(urlPrimary, {
+      responseType: 'text',
+      headers: headers
+    }).pipe(
       map(md => render(md, requestedLang, false)),
       catchError(() =>
-        this.http.get(urlFallback, { responseType: 'text' }).pipe(
+        this.http.get(urlFallback, {
+          responseType: 'text',
+          headers: headers
+        }).pipe(
           map(md => render(md, this.defaultLanguage, requestedLang !== this.defaultLanguage)),
           catchError(() => of(null))
         )

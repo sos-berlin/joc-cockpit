@@ -23,8 +23,8 @@
         [nzCheckedKeys]="defaultAssignedTags"
         [nzSelectedKeys]="defaultAssignedTags"
         nzNoAnimation
-        (nzCheckBoxChange)="onCheckBoxChange($event)"
-        (nzCheckBoxChange)="onClick($event)"
+        (nzCheckboxChange)="onCheckBoxChange($event)"
+        (nzCheckboxChange)="onClick($event)"
       ></nz-tree>
       <ng-template #nzTreeTemplateGroup let-node>
         <span>{{ node.title }}</span>

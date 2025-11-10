@@ -200,7 +200,7 @@
           <div class="col-md-12">
             <nz-tree
               #treeCtrl
-              (nzCheckBoxChange)="checkBoxChange($event)"
+              (nzCheckboxChange)="checkBoxChange($event)"
               (nzExpandChange)="getDeploymentVersion($event)"
               [nzCheckStrictly]="!object.isRecursive"
               [nzCheckable]="!isRemove && !isSelectedObjects"
@@ -514,7 +514,7 @@
           <div class="col-md-12">
             <nz-tree
               [nzCheckable]="false"
-              (nzCheckBoxChange)="checkBoxChanges($event)"
+              (nzCheckboxChange)="checkBoxChanges($event)"
               [nzData]="nodes"
               [nzTreeTemplate]="nzTreeChnagesTemplate"
               [nzShowExpand]="false"
@@ -688,7 +688,8 @@
   </div>
   <div class="modal-footer">
     @if (nodes.length > 0 && !isRemove) {
-      <button [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || submitted || loading" class="btn btn-primary btn-sm"
+      <button   [nz-tooltip]="hasUncheckedInvalidCalendar() ? getInvalidCalendarMessage() : null"
+                [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || submitted || loading || hasUncheckedInvalidCalendar() " class="btn btn-primary btn-sm"
               type="submit">
         @if (submitted) {
           <i class="fa fa-spin fa-spinner p-r-xs"></i>

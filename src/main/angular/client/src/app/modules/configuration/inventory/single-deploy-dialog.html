@@ -430,7 +430,8 @@
   </div>
   <div class="modal-footer text-left">
     @if (!isRemoved) {
-      <button [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || deployablesObject.length===0 || loading || submitted" class="btn btn-primary btn-sm" translate type="submit">
+      <button [nz-tooltip]="getInvalidCalendarMessage()"
+              [nzTooltipTitle]="getInvalidCalendarMessage()" [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || deployablesObject.length===0 || loading || submitted || hasUncheckedInvalidCalendar()" class="btn btn-primary btn-sm" translate type="submit">
         @if (submitted) {
           <i class="fa fa-spin fa-spinner p-r-xs"></i>
         }
