@@ -1388,6 +1388,41 @@ export class SingleDeployComponent {
     return labelMapping[objectType] || objectType;
   }
 
+hasUncheckedInvalidCalendar(): boolean {
+    if (!this.isRevoke || this.releasable) {
+      for (const type of Object.keys(this.referencedObjectsByType)) {
+        const hasInvalidCalendar = this.referencedObjectsByType[type].some(obj =>
+          !obj.selected &&
+          !obj.valid &&
+          (obj.objectType === 'WORKINGDAYSCALENDAR' || obj.objectType === 'NONWORKINGDAYSCALENDAR')
+        );
+        if (hasInvalidCalendar) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  getInvalidCalendarMessage(): string {
+    if (!this.isRevoke || this.releasable) {
+      const invalidCalendars: string[] = [];
+
+      Object.keys(this.referencedObjectsByType).forEach(type => {
+        this.referencedObjectsByType[type].forEach(obj => {
+          if (!obj.selected && !obj.valid &&
+            (obj.objectType === 'WORKINGDAYSCALENDAR' || obj.objectType === 'NONWORKINGDAYSCALENDAR')) {
+            invalidCalendars.push(obj.path || obj.name);
+          }
+        });
+      });
+
+      if (invalidCalendars.length > 0) {
+        return `Invalid calendar: ${invalidCalendars.join(', ')}`;
+      }
+    }
+    return '';
+  }
 
 }
 
@@ -3403,6 +3438,84 @@ export class DeployComponent {
     this.activeModal.destroy();
   }
 
+hasUncheckedInvalidCalendar(): boolean {
+    if (!this.isRevoke && this.releasable) {
+      let hasSchedule = false;
+
+      const checkForSchedule = (nodes: any[]): void => {
+        for (const node of nodes) {
+          if (node.checked && node.type === 'SCHEDULE') {
+            hasSchedule = true;
+            return;
+          }
+          if (node.children && node.children.length > 0) {
+            checkForSchedule(node.children);
+          }
+        }
+      };
+
+      checkForSchedule(this.nodes);
+
+      if (!hasSchedule) {
+        return false;
+      }
+
+      for (const type of Object.keys(this.referencedObjectsByType)) {
+        const hasInvalidCalendar = this.referencedObjectsByType[type].some(obj =>
+          !obj.selected &&
+          !obj.valid &&
+          (obj.objectType === 'WORKINGDAYSCALENDAR' || obj.objectType === 'NONWORKINGDAYSCALENDAR')
+        );
+        if (hasInvalidCalendar) {
+          return true;
+        }
+      }
+
+    }
+
+    return false;
+  }
+
+  getInvalidCalendarMessage(): string {
+    if (!this.isRevoke && this.releasable) {
+      let hasSchedule = false;
+
+      const checkForSchedule = (nodes: any[]): void => {
+        for (const node of nodes) {
+          if (node.checked && node.type === 'SCHEDULE') {
+            hasSchedule = true;
+            return;
+          }
+          if (node.children && node.children.length > 0) {
+            checkForSchedule(node.children);
+          }
+        }
+      };
+
+      checkForSchedule(this.nodes);
+
+      if (!hasSchedule) {
+        return '';
+      }
+
+      const invalidCalendars: string[] = [];
+
+      Object.keys(this.referencedObjectsByType).forEach(type => {
+        this.referencedObjectsByType[type].forEach(obj => {
+          if (!obj.selected && !obj.valid &&
+            (obj.objectType === 'WORKINGDAYSCALENDAR' || obj.objectType === 'NONWORKINGDAYSCALENDAR')) {
+            invalidCalendars.push(obj.path || obj.name);
+          }
+        });
+      });
+
+      if (invalidCalendars.length > 0) {
+        return `Invalid calendar(s): ${invalidCalendars.join(', ')}`;
+      }
+    }
+
+    return '';
+  }
 }
 
 @Component({
