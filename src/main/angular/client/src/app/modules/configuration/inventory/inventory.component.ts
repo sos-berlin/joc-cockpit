@@ -515,7 +515,7 @@ export class SingleDeployComponent {
   dependenciesToggleAvailable = false;
   useDependencies = false;
   preferences: any = {};
-  constructor(public activeModal: NzModalRef, private coreService: CoreService, private modal: NzModalService,) {
+  constructor(public activeModal: NzModalRef, private coreService: CoreService, private modal: NzModalService, private ref: ChangeDetectorRef,) {
   }
 
   ngOnInit(): void {
@@ -691,6 +691,7 @@ export class SingleDeployComponent {
   }
 
   getDeployObject(): void {
+    this.submitted = true;
     const allowedTypes = ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'];
 
     const obj: any = {
@@ -758,6 +759,7 @@ export class SingleDeployComponent {
       this.submitted = false;
       return;
     }
+    this.submitted = true
     this.coreService.post(this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy', obj).subscribe({
       next: () => {
         this.activeModal.close();
@@ -770,6 +772,7 @@ export class SingleDeployComponent {
 
   deploy(): void {
     this.submitted = true;
+    this.ref.detectChanges();
     if (this.isRemoved) {
       this.remove();
       return;
@@ -838,6 +841,7 @@ export class SingleDeployComponent {
           this.submitted = false;
           return;
         }
+        this.submitted = true
         this.coreService.post(this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy', obj).subscribe({
           next: () => {
             this.activeModal.close();
@@ -882,7 +886,8 @@ export class SingleDeployComponent {
     }
 
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-
+    this.submitted = true;
+    this.ref.detectChanges();
     this.coreService.post('inventory/release', obj).subscribe({
       next: () => {
         this.activeModal.close();
@@ -892,7 +897,8 @@ export class SingleDeployComponent {
   }
 
   getReleaseObject(recall?): void {
-
+    this.submitted = true;
+    this.ref.detectChanges();
     const PATH = this.data.path1 ? ((this.data.path1 + (this.data.path1 === '/' ? '' : '/') + this.data.name)) : ((this.data.path + (this.data.path === '/' ? '' : '/') + this.data.name));
 
     let obj: any = {
@@ -984,12 +990,15 @@ export class SingleDeployComponent {
 
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     const releaseURL = recall ? 'inventory/releasables/recall' : 'inventory/release';
+    this.submitted = true
+    this.ref.detectChanges();
     this.coreService.post(releaseURL, obj).subscribe({
       next: () => {
         this.activeModal.close();
       },
       error: () => this.submitted = false
     });
+
   }
 
 
@@ -3798,6 +3807,8 @@ export class ExportComponent {
   fileFormat = [{value: 'ZIP', name: 'ZIP'},
     {value: 'TAR_GZ', name: 'TAR_GZ'}
   ]
+  useDependencies = false;
+  dependenciesToggleAvailable = false;
 
   constructor(public activeModal: NzModalRef,private modal: NzModalService, private coreService: CoreService, private ref: ChangeDetectorRef,
               private inventoryService: InventoryService) {
@@ -4013,38 +4024,50 @@ export class ExportComponent {
     return checkedObjects;
   }
 
-  private getDependencies(checkedNodes: { name: string, type: string }[], node, isChecked = false): void {
-    const configurations = checkedNodes.map(node => ({
-      name: node.name,
-      type: node.type,
-    }));
+private getDependencies(checkedNodes: {name: string, type: string}[], node, isChecked = false): void {
+  const configurations = checkedNodes.map(node => ({name: node.name, type: node.type}));
 
-    let operationType = 'EXPORT';
+  let operationType = 'EXPORT';
+  if (this.exportObj.exportType === 'changes') {
+    operationType = 'DEPLOY';
+  }
 
-    if (this.exportObj.exportType === 'changes') {
-      operationType = 'DEPLOY'
-    }
+  const requestBody = {configurations: configurations, operationType: operationType};
 
-    const requestBody = {
-      configurations: configurations,
-      operationType: operationType
-    };
+  this.coreService.post('inventory/dependencies', requestBody).subscribe({
+    next: (res: any) => {
+      if (res.dependencies && (res.dependencies?.requestedItems.length > 0 || res.dependencies?.affectedItems.length > 0)) {
+        this.updateNodeDependencies(res.dependencies, isChecked);
+        this.prepareObject(res.dependencies);
 
-    this.coreService.post('inventory/dependencies', requestBody).subscribe({
-      next: (res: any) => {
+        if (this.exportObj.exportType === 'individual') {
+          this.dependenciesToggleAvailable = this.computeDependenciesToggleAvailable(res.dependencies);
 
-        if (res.dependencies && res.dependencies?.requestedItems.length > 0 || res.dependencies?.affectedItems.length > 0) {
-          this.updateNodeDependencies(res.dependencies, isChecked);
-          this.prepareObject(res.dependencies);
-          this.ref.detectChanges();
-        } else {
+          if (this.dependenciesToggleAvailable) {
+            this.useDependencies = true;
+          }
         }
 
-      },
-      error: (err) => {
+        this.ref.detectChanges();
       }
-    });
+    },
+    error: (err) => {
+    }
+  });
+}
+
+
+private computeDependenciesToggleAvailable(dependencies: any): boolean {
+  let anyForceDependencies = false;
+
+  const items = [...(dependencies?.requestedItems ?? [])];
+
+  if (items.some((d: any) => d?.forceDependencies === true)) {
+    anyForceDependencies = true;
   }
+
+    return !anyForceDependencies;
+}
 
   private updateNodeDependencies(dependenciesResponse: any, isChecked: boolean): void {
     const requestedItems = dependenciesResponse.requestedItems;
@@ -4112,73 +4135,122 @@ export class ExportComponent {
     return null;
   }
 
-  private prepareObject(dependencies: any): void {
-    if (dependencies && dependencies?.requestedItems.length > 0) {
+private prepareObject(dependencies: any): void {
+  if (dependencies && dependencies?.requestedItems.length > 0) {
+    dependencies?.requestedItems.forEach((dep) => {
+      if (dep.referencedBy) {
+        const affectedTypeSet = new Set<string>();
+        dep.referencedBy.forEach((refObj) => {
+          const type = refObj.objectType;
+          affectedTypeSet.add(type);
 
-      dependencies?.requestedItems.forEach(dep => {
-        if (dep.referencedBy) {
-          const affectedTypeSet = new Set<string>();
-          dep.referencedBy.forEach(refObj => {
-            const type = refObj.objectType;
-            affectedTypeSet.add(type);
-            if (!this.affectedObjectsByType[type]) {
-              this.affectedObjectsByType[type] = [];
-              this.affectedObjectTypes.push(type);
+          if (!this.affectedObjectsByType[type]) {
+            this.affectedObjectsByType[type] = [];
+            this.affectedObjectTypes.push(type);
+          }
+
+          if (this.exportObj.exportType === 'individual') {
+            if (this.useDependencies) {
+              refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
+              refObj.disabled = !refObj.valid;
+            } else {
+              refObj.selected = false;
+              refObj.disabled = false;
             }
-            refObj.selected = true
-            if (this.exportObj.forSigning) {
-              refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
-              refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
-              ;
-              refObj.change = refObj.deployed;
+          } else if (this.exportObj.exportType === 'changes') {
+            refObj.selected = this.exportObj.includeDependencies;
+            refObj.disabled = false;
+          } else {
+            refObj.selected = true;
+            refObj.disabled = false;
+          }
+
+          if (this.exportObj.forSigning) {
+            refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
+            refObj.disabled = !refObj.valid;
+          }
+
+          refObj.change = refObj.deployed;
+          this.affectedObjectsByType[type].push(refObj);
+        });
+      }
+
+      if (dep.references) {
+        const referencedTypeSet = new Set<string>();
+        dep.references.forEach((refObj) => {
+          const type = refObj.objectType;
+          referencedTypeSet.add(type);
+
+          if (!this.referencedObjectsByType[type]) {
+            this.referencedObjectsByType[type] = [];
+            this.referencedObjectTypes.push(type);
+          }
+
+          if (this.exportObj.exportType === 'individual') {
+            if (this.useDependencies) {
+              refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
+              refObj.disabled = !refObj.valid;
+            } else {
+              refObj.selected = false;
+              refObj.disabled = false;
             }
-            this.affectedObjectsByType[type].push(refObj);
-          });
-        }
+          } else if (this.exportObj.exportType === 'changes') {
+            refObj.selected = this.exportObj.includeDependencies;
+            refObj.disabled = false;
+          } else {
+            refObj.selected = true;
+            refObj.disabled = false;
+          }
 
-        if (dep.references) {
-          const referencedTypeSet = new Set<string>();
-          dep.references.forEach(refObj => {
-            const type = refObj.objectType;
-            referencedTypeSet.add(type);
-            if (!this.referencedObjectsByType[type]) {
-              this.referencedObjectsByType[type] = [];
-              this.referencedObjectTypes.push(type);
-            }
-            refObj.selected = true
-            if (this.exportObj.forSigning) {
-              refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
-              refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
-              ;
-              refObj.change = refObj.deployed;
-            }
-            this.referencedObjectsByType[type].push(refObj);
+          if (this.exportObj.forSigning) {
+            refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
+            refObj.disabled = !refObj.valid;
+          }
 
-          });
-        }
+          refObj.change = refObj.deployed;
+          this.referencedObjectsByType[type].push(refObj);
+        });
+      }
+    });
 
-      });
-      const filteredAffectedTypeSet = new Set<string>();
-      this.filteredAffectedItems.forEach(item => {
-        const type = item.objectType;
-        filteredAffectedTypeSet.add(type);
-        if (this.exportObj.exportType === 'changes' && this.exportObj.includeDependencies) {
-          item.selected = true
-        } else if (this.exportObj.exportType != 'changes') {
-          item.selected = true
-        }
-        if (this.exportObj.forSigning) {
-          item.selected = item.valid && (!item.deployed && !item.released);
-          item.disabled = !item.valid || item.valid && (!item.deployed && !item.released);
-          ;
-          item.change = item.deployed;
-        }
-      });
-      this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
-      this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
+    const filteredAffectedTypeSet = new Set<string>();
+    this.filteredAffectedItems.forEach((item) => {
+      const type = item.objectType;
+      filteredAffectedTypeSet.add(type);
 
-    }
+      if (this.exportObj.exportType === 'individual') {
+        if (this.useDependencies) {
+          item.selected = item.valid && !item.deployed && !item.released;
+          item.disabled = !item.valid;
+        } else {
+          item.selected = false;
+          item.disabled = false;
+        }
+      } else if (this.exportObj.exportType === 'changes') {
+        item.selected = this.exportObj.includeDependencies;
+        item.disabled = false;
+      } else {
+        item.selected = true;
+        item.disabled = false;
+      }
+
+      if (this.exportObj.forSigning) {
+        item.selected = item.valid && !item.deployed && !item.released;
+        item.disabled = !item.valid;
+      }
+
+      item.change = item.deployed;
+    });
+
+    this.affectedObjectTypes.forEach((type) => {
+      this.affectedCollapsed[type] = true;
+    });
+
+    this.referencedObjectTypes.forEach((type) => {
+      this.referencedCollapsed[type] = true;
+    });
   }
+}
 
   private mergeDeep(deployables: any, releasables: any): any {
     function recursive(sour: any, dest: any): void {
@@ -4206,6 +4278,15 @@ export class ExportComponent {
     return deployables;
   }
 
+  onUseDependenciesChange(): void {
+    // Re-fetch dependencies with updated enforcement flag
+    const checkedNodes = this.collectCheckedObjects(this.nodes);
+    if (checkedNodes.length > 0) {
+      this.getDependencies(checkedNodes, this.nodes[0]);
+    }
+
+    this.ref.detectChanges();
+  }
   onchangeSigning(): void {
     if (this.exportObj.forSigning) {
       this.filter.valid = true;
@@ -4760,20 +4841,20 @@ export class ExportComponent {
     this.export();
   }
 
-  export(): void {
-    const obj: any = {
-      useShortPath: this.exportObj.useShortPath,
-      exportFile: {filename: this.exportObj.filename, format: this.exportObj.fileFormat}
-    };
+export(): void {
+  const obj: any = {
+    useShortPath: this.exportObj.useShortPath,
+    exportFile: {filename: this.exportObj.filename, format: this.exportObj.fileFormat}
+  };
 
-    if (this.path && this.path != 'path') {
-      obj.startFolder = this.path;
-    }
+  if (this.path && this.path != 'path') {
+    obj.startFolder = this.path;
+  }
 
-    if (this.comments.comment) {
-      obj.auditLog = {};
-      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-    }
+  if (this.comments.comment) {
+    obj.auditLog = {};
+    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+  }
 
   let folders = [];
   if (this.exportObj.exportType !== 'folders') {
@@ -4936,33 +5017,38 @@ export class ExportComponent {
       }
     }
 
-      if (this.object.folders && this.object.folders.length > 0) {
-        this.exportFolder(obj);
-      } else {
-        if (!this.exportObj.forSigning) {
+    if (this.object.folders && this.object.folders.length > 0) {
+      this.exportFolder(obj);
+    } else {
+      if (!this.exportObj.forSigning) {
+        if (this.exportObj.exportType === 'individual' && this.useDependencies) {
           this.nodes.forEach(node => {
             this.handleDependenciesForExport(node, obj);
           });
-          if (this.exportObj.exportType !== 'changes') {
-            this.handleAffectedItemsForExport(obj)
-          }
+          this.handleAffectedItemsForExport(obj);
+        } else if (this.exportObj.exportType === 'changes' && this.exportObj.includeDependencies) {
+          this.nodes.forEach(node => {
+            this.handleDependenciesForExport(node, obj);
+          });
+          this.handleAffectedItemsForExport(obj);
         }
-        this.coreService.download('inventory/export', obj, this.exportObj.filename, (res) => {
-          if (res) {
-            this.activeModal.close('ok');
-          } else {
-            this.submitted = false;
-          }
-        });
       }
+      this.coreService.download('inventory/export', obj, this.exportObj.filename, (res) => {
+        if (res) {
+          this.activeModal.close('ok');
+        } else {
+          this.submitted = false;
+        }
+      });
+    }
+  } else {
+    if (this.object.folders && this.object.folders.length > 0) {
+      this.exportFolder(obj);
     } else {
-      if (this.object.folders && this.object.folders.length > 0) {
-        this.exportFolder(obj);
-      } else {
-        this.submitted = false;
-      }
+      this.submitted = false;
     }
   }
+}
 
   private handleDependenciesForExport(node: any, obj: any): void {
     if (!obj.shallowCopy) {

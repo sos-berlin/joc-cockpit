@@ -188,6 +188,18 @@
           </div>
         </div>
       }
+      @if (nodes.length > 0 && exportObj.exportType === 'individual' && dependenciesToggleAvailable){
+        <div class="form-group row">
+          <div class="col-md-3">
+            <label translate>inventory.label.useDependencies</label>
+          </div>
+          <div class="col-md-6">
+            <label [(ngModel)]="useDependencies" (ngModelChange)="onUseDependenciesChange()" name="useDependencies" nz-checkbox></label>
+          </div>
+        </div>
+      }
+
+
       @if (nodes.length > 0) {
         <div class="row m-b-sm">
           <div class="col-md-12">
