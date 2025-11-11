@@ -4775,101 +4775,166 @@ export class ExportComponent {
       this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     }
 
-    let folders = [];
-    if (this.exportObj.exportType !== 'folders') {
-      this.checkFolderSelection(folders);
+  let folders = [];
+  if (this.exportObj.exportType !== 'folders') {
+    this.checkFolderSelection(folders);
+  }
+
+  if ((folders.length > 0) || (this.object.deployConfigurations && this.object.deployConfigurations.length > 0) ||
+    (this.object.draftConfigurations.length && this.object.draftConfigurations.length > 0) ||
+    (this.object.releasedConfigurations && this.object.releasedConfigurations.length > 0) ||
+    (this.object.releaseDraftConfigurations.length && this.object.releaseDraftConfigurations.length > 0) || (this.filteredAffectedItems && this.filteredAffectedItems.length > 0)) {
+
+    // Clean up empty arrays
+    if (this.object.deployConfigurations && this.object.deployConfigurations.length === 0) {
+      delete this.object.deployConfigurations;
     }
-    if ((folders.length > 0) || (this.object.deployConfigurations && this.object.deployConfigurations.length > 0) ||
-      (this.object.draftConfigurations.length && this.object.draftConfigurations.length > 0) ||
-      (this.object.releasedConfigurations && this.object.releasedConfigurations.length > 0) ||
-      (this.object.releaseDraftConfigurations.length && this.object.releaseDraftConfigurations.length > 0) || (this.filteredAffectedItems && this.filteredAffectedItems.length > 0)) {
-      if (this.object.deployConfigurations && this.object.deployConfigurations.length === 0) {
-        delete this.object.deployConfigurations;
+    if (this.object.draftConfigurations && this.object.draftConfigurations.length === 0) {
+      delete this.object.draftConfigurations;
+    }
+    if (this.object.releasedConfigurations && this.object.releasedConfigurations.length === 0) {
+      delete this.object.releasedConfigurations;
+    }
+    if (this.object.releaseDraftConfigurations && this.object.releaseDraftConfigurations.length === 0) {
+      delete this.object.releaseDraftConfigurations;
+    }
+
+    if (this.exportObj.filename) {
+      if (this.exportObj.filename.indexOf('.') === -1) {
+        this.exportObj.filename = this.exportObj.filename + (this.exportObj.fileFormat === 'ZIP' ? '.zip' : '.tar.gz');
       }
-      if (this.object.draftConfigurations && this.object.draftConfigurations.length === 0) {
-        delete this.object.draftConfigurations;
-      }
-      if (this.object.releasedConfigurations && this.object.releasedConfigurations.length === 0) {
-        delete this.object.releasedConfigurations;
-      }
-      if (this.object.releaseDraftConfigurations && this.object.releaseDraftConfigurations.length === 0) {
-        delete this.object.releaseDraftConfigurations;
-      }
-      if (this.exportObj.filename) {
-        if (this.exportObj.filename.indexOf('.') === -1) {
-          this.exportObj.filename = this.exportObj.filename + (this.exportObj.fileFormat === 'ZIP' ? '.zip' : '.tar.gz');
-        }
-      }
-      if (this.exportObj.forSigning) {
-        obj.forSigning = {controllerId: this.exportObj.controllerId};
-        if (this.object.draftConfigurations || this.object.deployConfigurations) {
-          obj.forSigning.deployables = {
-            draftConfigurations: this.object.draftConfigurations,
-            deployConfigurations: this.object.deployConfigurations
-          };
-        }
-        this.nodes.forEach(node => {
-          this.handleDependenciesForSigning(node, obj);
-        });
-        if (this.exportObj.exportType !== 'changes') {
-          this.handleAffectedItemsForSigning(obj)
-        }
-      } else {
-        obj.shallowCopy = {
-          withoutInvalid: this.filter.valid
+    }
+
+    if (this.exportObj.forSigning) {
+      obj.forSigning = {controllerId: this.exportObj.controllerId};
+      if (this.object.draftConfigurations || this.object.deployConfigurations) {
+        obj.forSigning.deployables = {
+          draftConfigurations: this.object.draftConfigurations,
+          deployConfigurations: this.object.deployConfigurations
         };
-        if (this.object.releasedConfigurations || this.object.releaseDraftConfigurations) {
+      }
+      this.nodes.forEach(node => {
+        this.handleDependenciesForSigning(node, obj);
+      });
+      if (this.exportObj.exportType !== 'changes') {
+        this.handleAffectedItemsForSigning(obj)
+      }
+    } else {
+      obj.shallowCopy = {
+        withoutInvalid: this.filter.valid
+      };
+
+      const isIndividualExport = this.exportObj.exportType === 'individual' || this.origin?.object;
+
+      const isControllerObject = (type: string) => {
+        return ['WORKFLOW', 'JOBRESOURCE', 'FILEORDERSOURCE', 'NOTICEBOARD', 'LOCK'].includes(type);
+      };
+
+      const isScheduleOrJobTemplate = (type: string) => {
+        return ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR', 'REPORT'].includes(type);
+      };
+
+      let originObjectType: string | null = null;
+      if (this.origin?.object) {
+        if (typeof this.origin.object === 'string') {
+          originObjectType = this.origin.object;
+        } else if (this.origin.object.match && this.origin.object.match('CALENDAR')) {
+          originObjectType = 'CALENDAR';
+        }
+      }
+
+      if (this.object.releasedConfigurations || this.object.releaseDraftConfigurations) {
+        let shouldSkipReleasables = false;
+
+        if (isIndividualExport) {
+          if (originObjectType && isControllerObject(originObjectType)) {
+            shouldSkipReleasables = true;
+          }
+          else if (this.object.releasedConfigurations?.length > 0) {
+            shouldSkipReleasables = this.object.releasedConfigurations.every(item =>
+              isControllerObject(item.configuration?.objectType)
+            );
+          } else if (this.object.releaseDraftConfigurations?.length > 0) {
+            shouldSkipReleasables = this.object.releaseDraftConfigurations.every(item =>
+              isControllerObject(item.configuration?.objectType)
+            );
+          }
+        }
+
+        if (!shouldSkipReleasables) {
           obj.shallowCopy.releasables = {
             releasedConfigurations: this.object.releasedConfigurations,
             draftConfigurations: this.object.releaseDraftConfigurations
           };
         }
-        if (this.object.draftConfigurations || this.object.deployConfigurations) {
+      }
+
+      if (this.object.draftConfigurations || this.object.deployConfigurations) {
+        let shouldSkipDeployables = false;
+
+        if (isIndividualExport) {
+          if (originObjectType && isScheduleOrJobTemplate(originObjectType)) {
+            shouldSkipDeployables = true;
+          }
+          else if (this.object.draftConfigurations?.length > 0) {
+            shouldSkipDeployables = this.object.draftConfigurations.every(item =>
+              isScheduleOrJobTemplate(item.configuration?.objectType)
+            );
+          } else if (this.object.deployConfigurations?.length > 0) {
+            shouldSkipDeployables = this.object.deployConfigurations.every(item =>
+              isScheduleOrJobTemplate(item.configuration?.objectType)
+            );
+          }
+        }
+
+        if (!shouldSkipDeployables) {
           obj.shallowCopy.deployables = {
             draftConfigurations: this.object.draftConfigurations,
             deployConfigurations: this.object.deployConfigurations
           };
         }
+      }
 
-        if (folders.length > 0) {
-          if (!obj.shallowCopy.releasables) {
-            obj.shallowCopy.releasables = {
-              releasedConfigurations: folders,
-              draftConfigurations: folders
-            }
-          } else {
-            if (!obj.shallowCopy.releasables.releasedConfigurations) {
-              obj.shallowCopy.releasables.releasedConfigurations = folders;
-            } else {
-              obj.shallowCopy.releasables.releasedConfigurations = obj.shallowCopy.releasables.releasedConfigurations.concat(folders);
-            }
-
-            if (!obj.shallowCopy.releasables.draftConfigurations) {
-              obj.shallowCopy.releasables.draftConfigurations = folders;
-            } else {
-              obj.shallowCopy.releasables.draftConfigurations = obj.shallowCopy.releasables.draftConfigurations.concat(folders);
-            }
+      if (folders.length > 0 && !isIndividualExport) {
+        if (!obj.shallowCopy.releasables) {
+          obj.shallowCopy.releasables = {
+            releasedConfigurations: folders,
+            draftConfigurations: folders
           }
-          if (!obj.shallowCopy.deployables) {
-            obj.shallowCopy.releasables = {
-              deployConfigurations: folders,
-              draftConfigurations: folders
-            }
+        } else {
+          if (!obj.shallowCopy.releasables.releasedConfigurations) {
+            obj.shallowCopy.releasables.releasedConfigurations = folders;
           } else {
-            if (!obj.shallowCopy.deployables.deployConfigurations) {
-              obj.shallowCopy.deployables.deployConfigurations = folders;
-            } else {
-              obj.shallowCopy.deployables.deployConfigurations = obj.shallowCopy.deployables.deployConfigurations.concat(folders);
-            }
+            obj.shallowCopy.releasables.releasedConfigurations = obj.shallowCopy.releasables.releasedConfigurations.concat(folders);
+          }
 
-            if (!obj.shallowCopy.deployables.draftConfigurations) {
-              obj.shallowCopy.deployables.draftConfigurations = folders;
-            } else {
-              obj.shallowCopy.deployables.draftConfigurations = obj.shallowCopy.deployables.draftConfigurations.concat(folders);
-            }
+          if (!obj.shallowCopy.releasables.draftConfigurations) {
+            obj.shallowCopy.releasables.draftConfigurations = folders;
+          } else {
+            obj.shallowCopy.releasables.draftConfigurations = obj.shallowCopy.releasables.draftConfigurations.concat(folders);
+          }
+        }
+
+        if (!obj.shallowCopy.deployables) {
+          obj.shallowCopy.deployables = {
+            deployConfigurations: folders,
+            draftConfigurations: folders
+          }
+        } else {
+          if (!obj.shallowCopy.deployables.deployConfigurations) {
+            obj.shallowCopy.deployables.deployConfigurations = folders;
+          } else {
+            obj.shallowCopy.deployables.deployConfigurations = obj.shallowCopy.deployables.deployConfigurations.concat(folders);
+          }
+
+          if (!obj.shallowCopy.deployables.draftConfigurations) {
+            obj.shallowCopy.deployables.draftConfigurations = folders;
+          } else {
+            obj.shallowCopy.deployables.draftConfigurations = obj.shallowCopy.deployables.draftConfigurations.concat(folders);
           }
         }
       }
+    }
 
       if (this.object.folders && this.object.folders.length > 0) {
         this.exportFolder(obj);
