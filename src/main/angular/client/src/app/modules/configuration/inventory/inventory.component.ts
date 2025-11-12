@@ -1400,6 +1400,15 @@ hasUncheckedInvalidCalendar(): boolean {
           return true;
         }
       }
+
+      const hasInvalidCalendarInFiltered = this.filteredAffectedItems.some(item =>
+        !item.selected &&
+        !item.valid &&
+        (item.objectType === 'WORKINGDAYSCALENDAR' || item.objectType === 'NONWORKINGDAYSCALENDAR')
+      );
+      if (hasInvalidCalendarInFiltered) {
+        return true;
+      }
     }
     return false;
   }
@@ -1415,6 +1424,13 @@ hasUncheckedInvalidCalendar(): boolean {
             invalidCalendars.push(obj.path || obj.name);
           }
         });
+      });
+
+            this.filteredAffectedItems.forEach(item => {
+        if (!item.selected && !item.valid &&
+          (item.objectType === 'WORKINGDAYSCALENDAR' || item.objectType === 'NONWORKINGDAYSCALENDAR')) {
+          invalidCalendars.push(item.path || item.name);
+        }
       });
 
       if (invalidCalendars.length > 0) {
@@ -3471,6 +3487,14 @@ hasUncheckedInvalidCalendar(): boolean {
         }
       }
 
+      const hasInvalidCalendarInFiltered = this.filteredAffectedItems.some(item =>
+        !item.selected &&
+        !item.valid &&
+        (item.objectType === 'WORKINGDAYSCALENDAR' || item.objectType === 'NONWORKINGDAYSCALENDAR')
+      );
+      if (hasInvalidCalendarInFiltered) {
+        return true;
+      }
     }
 
     return false;
@@ -3507,6 +3531,13 @@ hasUncheckedInvalidCalendar(): boolean {
             invalidCalendars.push(obj.path || obj.name);
           }
         });
+      });
+
+      this.filteredAffectedItems.forEach(item => {
+        if (!item.selected && !item.valid &&
+          (item.objectType === 'WORKINGDAYSCALENDAR' || item.objectType === 'NONWORKINGDAYSCALENDAR')) {
+          invalidCalendars.push(item.path || item.name);
+        }
       });
 
       if (invalidCalendars.length > 0) {
