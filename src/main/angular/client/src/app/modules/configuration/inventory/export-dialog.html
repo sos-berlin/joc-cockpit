@@ -188,7 +188,7 @@
           </div>
         </div>
       }
-      @if (nodes.length > 0 && exportObj.exportType === 'individual' && dependenciesToggleAvailable){
+      @if (nodes.length > 0 && (exportObj.exportType === 'individual' || exportObj.exportType === 'folders') && dependenciesToggleAvailable){
         <div class="form-group row">
           <div class="col-md-3">
             <label translate>inventory.label.useDependencies</label>

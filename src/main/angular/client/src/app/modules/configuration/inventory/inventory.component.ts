@@ -4040,7 +4040,7 @@ private getDependencies(checkedNodes: {name: string, type: string}[], node, isCh
         this.updateNodeDependencies(res.dependencies, isChecked);
         this.prepareObject(res.dependencies);
 
-        if (this.exportObj.exportType === 'individual') {
+        if (this.exportObj.exportType === 'folders' || this.exportObj.exportType === 'individual') {
           this.dependenciesToggleAvailable = this.computeDependenciesToggleAvailable(res.dependencies);
 
           if (this.dependenciesToggleAvailable) {
@@ -4135,122 +4135,123 @@ private computeDependenciesToggleAvailable(dependencies: any): boolean {
     return null;
   }
 
-private prepareObject(dependencies: any): void {
-  if (dependencies && dependencies?.requestedItems.length > 0) {
-    dependencies?.requestedItems.forEach((dep) => {
-      if (dep.referencedBy) {
-        const affectedTypeSet = new Set<string>();
-        dep.referencedBy.forEach((refObj) => {
-          const type = refObj.objectType;
-          affectedTypeSet.add(type);
+  private prepareObject(dependencies: any): void {
+    if (dependencies && dependencies?.requestedItems.length > 0) {
+      dependencies?.requestedItems.forEach((dep) => {
+        if (dep.referencedBy) {
+          const affectedTypeSet = new Set<string>();
+          dep.referencedBy.forEach((refObj) => {
+            const type = refObj.objectType;
+            affectedTypeSet.add(type);
 
-          if (!this.affectedObjectsByType[type]) {
-            this.affectedObjectsByType[type] = [];
-            this.affectedObjectTypes.push(type);
-          }
+            if (!this.affectedObjectsByType[type]) {
+              this.affectedObjectsByType[type] = [];
+              this.affectedObjectTypes.push(type);
+            }
 
-          if (this.exportObj.exportType === 'individual') {
-            if (this.useDependencies) {
-              refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
-              refObj.disabled = !refObj.valid;
+            if (this.exportObj.exportType === 'individual' || this.exportObj.exportType === 'folders') {
+              if (this.useDependencies) {
+                refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
+                refObj.disabled = !refObj.valid;
+              } else {
+                refObj.selected = false;
+                refObj.disabled = false;
+              }
+            } else if (this.exportObj.exportType === 'changes') {
+              refObj.selected = this.exportObj.includeDependencies;
+              refObj.disabled = false;
             } else {
-              refObj.selected = false;
+              refObj.selected = true;
               refObj.disabled = false;
             }
-          } else if (this.exportObj.exportType === 'changes') {
-            refObj.selected = this.exportObj.includeDependencies;
-            refObj.disabled = false;
-          } else {
-            refObj.selected = true;
-            refObj.disabled = false;
-          }
 
-          if (this.exportObj.forSigning) {
-            refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
-            refObj.disabled = !refObj.valid;
-          }
-
-          refObj.change = refObj.deployed;
-          this.affectedObjectsByType[type].push(refObj);
-        });
-      }
-
-      if (dep.references) {
-        const referencedTypeSet = new Set<string>();
-        dep.references.forEach((refObj) => {
-          const type = refObj.objectType;
-          referencedTypeSet.add(type);
-
-          if (!this.referencedObjectsByType[type]) {
-            this.referencedObjectsByType[type] = [];
-            this.referencedObjectTypes.push(type);
-          }
-
-          if (this.exportObj.exportType === 'individual') {
-            if (this.useDependencies) {
+            if (this.exportObj.forSigning) {
               refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
               refObj.disabled = !refObj.valid;
+            }
+
+            refObj.change = refObj.deployed;
+            this.affectedObjectsByType[type].push(refObj);
+          });
+        }
+
+        if (dep.references) {
+          const referencedTypeSet = new Set<string>();
+          dep.references.forEach((refObj) => {
+            const type = refObj.objectType;
+            referencedTypeSet.add(type);
+
+            if (!this.referencedObjectsByType[type]) {
+              this.referencedObjectsByType[type] = [];
+              this.referencedObjectTypes.push(type);
+            }
+
+            if (this.exportObj.exportType === 'individual' || this.exportObj.exportType === 'folders') {
+              if (this.useDependencies) {
+                refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
+                refObj.disabled = !refObj.valid;
+              } else {
+                refObj.selected = false;
+                refObj.disabled = false;
+              }
+            } else if (this.exportObj.exportType === 'changes') {
+              refObj.selected = this.exportObj.includeDependencies;
+              refObj.disabled = false;
             } else {
-              refObj.selected = false;
+              refObj.selected = true;
               refObj.disabled = false;
             }
-          } else if (this.exportObj.exportType === 'changes') {
-            refObj.selected = this.exportObj.includeDependencies;
-            refObj.disabled = false;
+
+            if (this.exportObj.forSigning) {
+              refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
+              refObj.disabled = !refObj.valid;
+            }
+
+            refObj.change = refObj.deployed;
+            this.referencedObjectsByType[type].push(refObj);
+          });
+        }
+      });
+
+      // Handle filteredAffectedItems
+      const filteredAffectedTypeSet = new Set<string>();
+      this.filteredAffectedItems.forEach((item) => {
+        const type = item.objectType;
+        filteredAffectedTypeSet.add(type);
+
+        if (this.exportObj.exportType === 'individual' || this.exportObj.exportType === 'folders') {
+          if (this.useDependencies) {
+            item.selected = item.valid && !item.deployed && !item.released;
+            item.disabled = !item.valid;
           } else {
-            refObj.selected = true;
-            refObj.disabled = false;
+            item.selected = false;
+            item.disabled = false;
           }
-
-          if (this.exportObj.forSigning) {
-            refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
-            refObj.disabled = !refObj.valid;
-          }
-
-          refObj.change = refObj.deployed;
-          this.referencedObjectsByType[type].push(refObj);
-        });
-      }
-    });
-
-    const filteredAffectedTypeSet = new Set<string>();
-    this.filteredAffectedItems.forEach((item) => {
-      const type = item.objectType;
-      filteredAffectedTypeSet.add(type);
-
-      if (this.exportObj.exportType === 'individual') {
-        if (this.useDependencies) {
-          item.selected = item.valid && !item.deployed && !item.released;
-          item.disabled = !item.valid;
+        } else if (this.exportObj.exportType === 'changes') {
+          item.selected = this.exportObj.includeDependencies;
+          item.disabled = false;
         } else {
-          item.selected = false;
+          item.selected = true;
           item.disabled = false;
         }
-      } else if (this.exportObj.exportType === 'changes') {
-        item.selected = this.exportObj.includeDependencies;
-        item.disabled = false;
-      } else {
-        item.selected = true;
-        item.disabled = false;
-      }
 
-      if (this.exportObj.forSigning) {
-        item.selected = item.valid && !item.deployed && !item.released;
-        item.disabled = !item.valid;
-      }
+        if (this.exportObj.forSigning) {
+          item.selected = item.valid && !item.deployed && !item.released;
+          item.disabled = !item.valid;
+        }
 
-      item.change = item.deployed;
-    });
+        item.change = item.deployed;
+      });
 
-    this.affectedObjectTypes.forEach((type) => {
-      this.affectedCollapsed[type] = true;
-    });
+      this.affectedObjectTypes.forEach((type) => {
+        this.affectedCollapsed[type] = true;
+      });
 
-    this.referencedObjectTypes.forEach((type) => {
-      this.referencedCollapsed[type] = true;
-    });
+      this.referencedObjectTypes.forEach((type) => {
+        this.referencedCollapsed[type] = true;
+      });
+    }
   }
-}
 
   private mergeDeep(deployables: any, releasables: any): any {
     function recursive(sour: any, dest: any): void {
@@ -4279,13 +4280,47 @@ private prepareObject(dependencies: any): void {
   }
 
   onUseDependenciesChange(): void {
-    // Re-fetch dependencies with updated enforcement flag
     const checkedNodes = this.collectCheckedObjects(this.nodes);
     if (checkedNodes.length > 0) {
-      this.getDependencies(checkedNodes, this.nodes[0]);
+      this.updateDependencySelectionStates();
     }
 
     this.ref.detectChanges();
+  }
+  private updateDependencySelectionStates(): void {
+    Object.keys(this.affectedObjectsByType).forEach(type => {
+      this.affectedObjectsByType[type].forEach(obj => {
+        if (this.useDependencies) {
+          obj.selected = obj.valid && !obj.deployed && !obj.released;
+          obj.disabled = !obj.valid;
+        } else {
+          obj.selected = false;
+          obj.disabled = false;
+        }
+      });
+    });
+
+    Object.keys(this.referencedObjectsByType).forEach(type => {
+      this.referencedObjectsByType[type].forEach(obj => {
+        if (this.useDependencies) {
+          obj.selected = obj.valid && !obj.deployed && !obj.released;
+          obj.disabled = !obj.valid;
+        } else {
+          obj.selected = false;
+          obj.disabled = false;
+        }
+      });
+    });
+
+    this.filteredAffectedItems.forEach(item => {
+      if (this.useDependencies) {
+        item.selected = item.valid && !item.deployed && !item.released;
+        item.disabled = !item.valid;
+      } else {
+        item.selected = false;
+        item.disabled = false;
+      }
+    });
   }
   onchangeSigning(): void {
     if (this.exportObj.forSigning) {
@@ -5021,7 +5056,7 @@ export(): void {
       this.exportFolder(obj);
     } else {
       if (!this.exportObj.forSigning) {
-        if (this.exportObj.exportType === 'individual' && this.useDependencies) {
+        if ((this.exportObj.exportType === 'individual' || this.exportObj.exportType === 'folders') && this.useDependencies) {
           this.nodes.forEach(node => {
             this.handleDependenciesForExport(node, obj);
           });
