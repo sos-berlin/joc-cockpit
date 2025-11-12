@@ -83,7 +83,6 @@ import {ApprovalModalComponent} from "../../components/approval-modal/approval-m
 import {PriorityModalComponent} from "../../components/priority-modal/priority-modal.component";
 import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
 import {NzResultComponent} from "ng-zorro-antd/result";
-import {CodeEditorComponent} from "../codemirror-editor/codemirror-editor.component";
 import {CodeMirrorModule} from "../codemirror-editor/codemirror-editor.module";
 import {NoteComponent} from "../../components/notes/note.component";
 import {NzSpaceComponent} from "ng-zorro-antd/space";
