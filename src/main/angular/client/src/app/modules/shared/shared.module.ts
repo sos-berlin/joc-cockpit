@@ -78,10 +78,11 @@ import {SelectInputComponent} from "../../components/select-input/select-input.c
 import {FileUploaderComponent} from '../../components/file-uploader/file-uploader.component';
 import {DateInputComponent} from "../../components/date-input/date-input.component";
 import {NzProgressModule} from "ng-zorro-antd/progress";
+import { CodeMirrorModule } from '../codemirror-editor/codemirror-editor.module';
 
 const MODULES = [Shared2Module, NzTableModule, DragDropModule, NzCollapseModule,
   NzInputNumberModule, NzSpinModule, NzAutocompleteModule, NzTagModule, NzSelectModule,
-  NzInputModule, NzMessageModule, NzRadioModule, ChartsModule, NzTreeSelectModule,
+  NzInputModule, NzMessageModule, NzRadioModule, ChartsModule, NzTreeSelectModule,CodeMirrorModule,
   NzDatePickerModule, NzNoAnimationModule, NzTimePickerModule, NzUploadModule, NzProgressModule];
 const COMPONENTS = [CommentModalComponent, EditFilterModalComponent, ConfirmModalComponent,
   CalendarModalComponent, ResumeOrderModalComponent, GraphicalViewModalComponent, ChangeParameterModalComponent,

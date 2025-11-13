@@ -629,13 +629,13 @@
                    nzType="form"></i>
                 <div [ngClass]="{'invalid': (expectBoardExpression.invalid && (expectBoardExpression.dirty && expectBoardExpression.touched))}" class="b-a"
                      id="boardId">
-                  <ngx-codemirror #codeMirror #expectBoardExpression="ngModel"
-                                  [(ngModel)]="selectedNode.obj.noticeBoardNames" [options]="{
-                                  lineNumbers: false, autoRefresh: true, scrollbarStyle: 'simple',
-                                  tabSize: preferences.tabSize,
-                                  mode: 'shell'}"
-                                  required
-                  ></ngx-codemirror>
+                  <app-codemirror-editor #codeEditor #expectBoardExpression="ngModel"
+                                        [(ngModel)]="selectedNode.obj.noticeBoardNames" [options]="{
+                                    lineNumbers: false, autoRefresh: true, scrollbarStyle: 'simple',
+                                    tabSize: preferences.tabSize,
+                                    mode: 'shell'}"
+                                        required
+                        ></app-codemirror-editor>
                 </div>
                 <div class="text-sm text-muted" translate>workflow.label.showNoticeBoardNames</div>
               </div>

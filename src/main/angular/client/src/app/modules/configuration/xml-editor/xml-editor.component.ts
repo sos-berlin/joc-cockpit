@@ -567,12 +567,12 @@ export class ShowModalComponent {
     tabSize: 4,
     scrollbarStyle: 'simple',
     viewportMargin: Infinity,
-    highlightSelectionMatches: {showToken:/\w/, annotateScrollbar: true},
-    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+    highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
+    gutters: ["CodeEditor-linenumbers", "CodeEditor-foldgutter"],
     mode: 'xml',
   };
   obj: any = {xml: ''};
-  @ViewChild('codeMirror', {static: true}) cm;
+  @ViewChild('codeEditor', {static: true}) cm;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private message: NzMessageService,
               private toasterService: ToastrService, private clipboardService: ClipboardService, private translate: TranslateService,) {
@@ -593,11 +593,11 @@ export class ShowModalComponent {
       this.toasterService.error(this.validation.validationError.message, '');
     }
     setTimeout(() => {
-      if (this.cm && this.cm.codeMirror) {
-        const doc = this.cm.codeMirror.getDoc();
+      if (this.cm && this.cm.codeEditor) {
+        const doc = this.cm.codeEditor.getDoc();
         const cursor = doc.getCursor(); // gets the line number in the cursor position
         doc.replaceRange(this.xml, cursor);
-        this.cm.codeMirror.focus();
+        this.cm.codeEditor.focus();
         doc.setCursor(cursor);
       }
     }, 300);
@@ -638,7 +638,7 @@ export class ShowModalComponent {
   }
 
   execCommand(type): void {
-    this.cm.codeMirror.execCommand(type);
+    this.cm.codeEditor.execCommand(type);
     this.coreService.updateReplaceText();
   }
 
@@ -664,7 +664,7 @@ export class ShowModalComponent {
     this.coreService.post(this.objectType !== 'NOTIFICATION' ? 'xmleditor/apply' : 'notification/store', obj).subscribe((res: any) => {
       if (res.validationError) {
         this.highlightLineNo(res.validationError.line);
-        this.toasterService.error(res.ValidationError.message, '');
+        this.toasterService.error(res?.ValidationError?.message, '');
       } else {
         this.activeModal.close(res);
       }
@@ -673,27 +673,27 @@ export class ShowModalComponent {
 
   private highlightLineNo(num): void {
     let lNum = clone(num);
-    let dom: any = document.getElementsByClassName('CodeMirror-code');
+    let dom: any = document.getElementsByClassName('CodeEditor-code');
     if (dom && dom[0]) {
       if (num > dom[0].children.length) {
-        $('.CodeMirror-scroll').animate({
+        $('.CodeEditor-scroll').animate({
           scrollTop: (17.8 * num)
         }, 500);
       }
       setTimeout(() => {
-        dom = document.getElementsByClassName('CodeMirror-code');
+        dom = document.getElementsByClassName('CodeEditor-code');
         lNum = clone(num - parseInt(dom[0].children[0].innerText.split(' ')[0].split('↵')[0], 10) + 1);
         if (this.prevErrLine) {
           dom[0].children[this.prevErrLine - 1].classList.remove('bg-highlight');
           let x = dom[0].children[this.prevErrLine - 1];
-          x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('text-danger');
-          x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.remove('bg-highlight');
+          x.getElementsByClassName('CodeEditor-gutter-elt')[0].classList.remove('text-danger');
+          x.getElementsByClassName('CodeEditor-gutter-elt')[0].classList.remove('bg-highlight');
         }
         if (dom[0].children[lNum - 1]) {
           dom[0].children[lNum - 1].classList.add('bg-highlight');
           let x = dom[0].children[lNum - 1];
-          x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('text-danger');
-          x.getElementsByClassName('CodeMirror-gutter-elt')[0].classList.add('bg-highlight');
+          x.getElementsByClassName('CodeEditor-gutter-elt')[0].classList.add('text-danger');
+          x.getElementsByClassName('CodeEditor-gutter-elt')[0].classList.add('bg-highlight');
           this.prevErrLine = clone(lNum);
         }
       }, 500);

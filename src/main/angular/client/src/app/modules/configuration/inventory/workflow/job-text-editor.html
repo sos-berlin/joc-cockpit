@@ -314,26 +314,26 @@
                        nzType="form"></i>
                     <div [ngClass]="{'invalid': obj.script || (script.invalid && (script.dirty && script.touched))}" class="b-a"
                          id="scriptId">
-                      <ngx-codemirror #codeMirror #script="ngModel"
-                                      [(ngModel)]="selectedNode.job.executable.script" (ngModelChange)="toggleCheckbox('script', $event)"
-                                      [options]="{
-                                         lineNumbers: true,
-                                         autoRefresh: true,
-                                         lineWrapping: true,
-                                         foldGutter: true,
-                                         matchBrackets: true,
-                                         tabSize: preferences.tabSize,
-                                         autoCloseBrackets: selectedNode.job.executable.TYPE === 'JavaScript',
-                                         scrollbarStyle: 'simple',
-                                         readOnly: (selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name),
-                                         highlightSelectionMatches: {showToken, annotateScrollbar: true},
-                                         mode: selectedNode.job.executable.TYPE === 'JavaScript' ? 'javascript' : 'shell',
-                                         gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
-                                       }"
-                                      (focusChange)="focusChange()"
-                                      (focusout)="saveToHistory()"
-                                      required
-                      ></ngx-codemirror>
+                       <app-codemirror-editor #codeEditor #script="ngModel"
+                                            [(ngModel)]="selectedNode.job.executable.script" (ngModelChange)="toggleCheckbox('script', $event)"
+                                            [options]="{
+                                             lineNumbers: true,
+                                             autoRefresh: true,
+                                             lineWrapping: true,
+                                             foldGutter: true,
+                                             matchBrackets: true,
+                                             tabSize: preferences.tabSize,
+                                             autoCloseBrackets: selectedNode.job.executable.TYPE === 'JavaScript',
+                                             scrollbarStyle: 'simple',
+                                             readOnly: (selectedNode.job.jobTemplate && selectedNode.job.jobTemplate.name),
+                                             highlightSelectionMatches: {showToken, annotateScrollbar: true},
+                                             mode: selectedNode.job.executable.TYPE === 'JavaScript' ? 'javascript' : 'shell',
+                                             gutters: ['CodeEditor-linenumbers', 'CodeEditor-foldgutter']
+                                           }"
+                                            (focusChange)="focusChange()"
+                                            (focusout)="saveToHistory()"
+                                            required
+                            ></app-codemirror-editor>
                     </div>
                     <div class="text-sm text-muted" translate>inventory.tooltips.script.autocompleteShortCut</div>
                     <div *ngIf="obj.script || (script.invalid && (script.dirty && script.touched))"

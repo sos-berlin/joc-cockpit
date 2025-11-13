@@ -132,7 +132,7 @@
           <label translate>inventory.label.handleRecursively</label>
         </div>
         <div class="col-md-6">
-          <label [(ngModel)]="exportObj.isRecursive" name="isRecursive" nz-checkbox></label>
+          <label [(ngModel)]="exportObj.isRecursive" name="isRecursive" (ngModelChange)="handleRecursive()" nz-checkbox></label>
         </div>
       </div>
       <div *ngIf="exportObj.exportType === 'changes'" [ngClass]="{'has-error' : ((change.dirty || change.touched) && change.invalid)}" class="form-group row">

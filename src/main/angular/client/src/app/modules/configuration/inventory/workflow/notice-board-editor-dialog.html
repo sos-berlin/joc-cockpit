@@ -2,7 +2,7 @@
   <h4 class="modal-title">
     <span translate>workflow.label.valueEditor</span>
   </h4>
-  <a [codeMirror]="codeMirror" appMaximum class="max-btn">
+  <a [codeEditor]="codeEditor" appMaximum class="max-btn">
     <i class="fa fa-window-maximize"></i>
   </a>
   <button (click)="activeModal.destroy()" aria-label="Close" class="close" type="button">
@@ -19,7 +19,7 @@
         </div>
         <div [ngClass]="{'invalid': (expectBoardExpression.invalid && (expectBoardExpression.dirty && expectBoardExpression.touched))}" class="b-a"
              id="boardId">
-          <ngx-codemirror #codeMirror #expectBoardExpression="ngModel" [(ngModel)]="obj.data"
+<app-codemirror-editor #codeEditor #expectBoardExpression="ngModel" [(ngModel)]="obj.data"
                           [autoFocus]="true"
                           [options]="{
                                          lineNumbers: true,
@@ -31,10 +31,11 @@
                                          tabSize: modalData.tabSize,
                                          highlightSelectionMatches: {showToken, annotateScrollbar: true},
                                          mode: 'shell',
-                                         gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
+                                         gutters: ['CodeEditor-linenumbers', 'CodeEditor-foldgutter']
                                        }"
                           name="expectBoardExpression"
-                          required title="{{'workflow.placeholder.expression' | translate}}"></ngx-codemirror>
+                          required title="{{'workflow.placeholder.expression' | translate}}"></app-codemirror-editor>
+
         </div>
         <div class="text-sm text-muted" translate>workflow.label.showNoticeBoardNames</div>
       </div>

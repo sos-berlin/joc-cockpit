@@ -1029,37 +1029,37 @@ div.jsoneditor {
 /*
 Code Mirror
 **/
-.CodeMirror {
+.CodeEditor {
   color: var(--text-color) !important
 }
 
-.CodeMirror-gutters {
+.CodeEditor-gutters {
   background: rgba(0, 48, 64, .7) !important;
   border-color: var(--border-color)
 }
 
-.CodeMirror-cursor {
+.CodeEditor-cursor {
   border-left: 1px solid white !important;
 }
 
-.CodeMirror-linenumber {
+.CodeEditor-linenumber {
   color: #f8f8f2 !important;
 }
 
 .ace-jsoneditor .ace_marker-layer .ace_selection,
-div.CodeMirror-selected {
+div.CodeEditor-selected {
   background: rgba(179, 101, 57, .99) !important;
 }
 
-.CodeMirror-line::selection,
-.CodeMirror-line > span::selection,
-.CodeMirror-line > span > span::selection {
+.CodeEditor-line::selection,
+.CodeEditor-line > span::selection,
+.CodeEditor-line > span > span::selection {
   background: rgba(179, 101, 57, .99) !important;
 }
 
-.CodeMirror-line::-moz-selection,
-.CodeMirror-line > span::-moz-selection,
-.CodeMirror-line > span > span::-moz-selection {
+.CodeEditor-line::-moz-selection,
+.CodeEditor-line > span::-moz-selection,
+.CodeEditor-line > span > span::-moz-selection {
   background: rgba(179, 101, 57, .99) !important;
 }
 
@@ -1115,7 +1115,7 @@ span.cm-link {
   color: #845dc4 !important
 }
 
-.CodeMirror-activeline-background {
+.CodeEditor-activeline-background {
   background: #314151
 }
 

@@ -199,21 +199,10 @@
                     <i (click)="showEditor(job.configuration.executable.TYPE === 'JavaScript' ? 'javascript' : 'shell')" class="pos-abt z-index-9999 text-20 r-24 t-1" nz-icon nzTheme="outline"
                        nzType="form"></i>
                     <div [ngClass]="{'invalid': (script.invalid && (script.dirty && script.touched))}" class="b-a">
-                      <ngx-codemirror #codeMirror #script="ngModel" (focusout)="saveJSON()" [(ngModel)]="job.configuration.executable.script"
-                                      [options]="{
-                                          lineNumbers: true,
-                                          autoRefresh: true,
-                                          lineWrapping: true,
-                                          matchBrackets: true,
-                                          foldGutter: true,
-                                          tabSize: preferences.tabSize,
-                                          autoCloseBrackets: job.configuration.executable.TYPE === 'JavaScript',
-                                          scrollbarStyle: 'simple',
-                                          highlightSelectionMatches: {showToken, annotateScrollbar: true},
-                                          mode: job.configuration.executable.TYPE === 'JavaScript' ? 'javascript' : 'shell',
-                                          gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
-                                        }" name="script"
-                                      required></ngx-codemirror>
+                      <app-codemirror-editor #codeEditor #script="ngModel" (focusout)="saveJSON()"
+                                                     [(ngModel)]="job.configuration.executable.script"
+                                                     [options]="editorOptions"
+                                                     name="script" required></app-codemirror-editor>
                     </div>
                     <div class="text-sm text-muted" translate>inventory.tooltips.script.autocompleteShortCut</div>
                     <div *ngIf="(script.invalid && (script.dirty && script.touched))" class="text-danger help-block">

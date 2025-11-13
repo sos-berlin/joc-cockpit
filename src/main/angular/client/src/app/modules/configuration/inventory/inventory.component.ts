@@ -1388,8 +1388,8 @@ export class SingleDeployComponent {
     return labelMapping[objectType] || objectType;
   }
 
-hasUncheckedInvalidCalendar(): boolean {
-    if (!this.isRevoke || this.releasable) {
+  hasUncheckedInvalidCalendar(): boolean {
+    if ((!this.isRevoke || this.releasable) && this.operation !== 'recall') {
       for (const type of Object.keys(this.referencedObjectsByType)) {
         const hasInvalidCalendar = this.referencedObjectsByType[type].some(obj =>
           !obj.selected &&
@@ -1400,12 +1400,21 @@ hasUncheckedInvalidCalendar(): boolean {
           return true;
         }
       }
+
+      const hasInvalidCalendarInFiltered = this.filteredAffectedItems.some(item =>
+        !item.selected &&
+        !item.valid &&
+        (item.objectType === 'WORKINGDAYSCALENDAR' || item.objectType === 'NONWORKINGDAYSCALENDAR')
+      );
+      if (hasInvalidCalendarInFiltered) {
+        return true;
+      }
     }
     return false;
   }
 
   getInvalidCalendarMessage(): string {
-    if (!this.isRevoke || this.releasable) {
+    if ((!this.isRevoke || this.releasable) && this.operation !== 'recall') {
       const invalidCalendars: string[] = [];
 
       Object.keys(this.referencedObjectsByType).forEach(type => {
@@ -1415,6 +1424,13 @@ hasUncheckedInvalidCalendar(): boolean {
             invalidCalendars.push(obj.path || obj.name);
           }
         });
+      });
+
+      this.filteredAffectedItems.forEach(item => {
+        if (!item.selected && !item.valid &&
+          (item.objectType === 'WORKINGDAYSCALENDAR' || item.objectType === 'NONWORKINGDAYSCALENDAR')) {
+          invalidCalendars.push(item.path || item.name);
+        }
       });
 
       if (invalidCalendars.length > 0) {
@@ -2258,7 +2274,7 @@ export class DeployComponent {
     if (!this.isDeleted && !this.releasable) {
       obj.withoutDrafts = !this.filter.draft;
       if (!this.isRevoke) {
-      obj.withoutDeployed = !this.filter.deploy;
+        obj.withoutDeployed = !this.filter.deploy;
       }
     }
     if (this.isSelectedObjects) {
@@ -2483,6 +2499,7 @@ export class DeployComponent {
     if ((this.data && this.data.object) || this.isSelectedObjects) {
       selectFolder = false;
     }
+
     function recursive(nodes: any): void {
       for (let i = 0; i < nodes.length; i++) {
         if (!nodes[i].object && nodes[i].checked) {
@@ -2778,32 +2795,32 @@ export class DeployComponent {
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
-  Promise.all(promises)
-    .then(() => {
-      this.removeDuplicateConfigurations(obj);
+    Promise.all(promises)
+      .then(() => {
+        this.removeDuplicateConfigurations(obj);
 
-      if ((isEmpty(obj.store) && isEmpty(obj.delete)) && !this.isRevoke) {
-        this.submitted = false;
-        return;
-      }
-      this.submitted = true;
-      const deployURL = this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy';
-      this.coreService.post(deployURL, obj).subscribe({
-        next: () => {
-          this.activeModal.close();
-        },
-        error: () => {
+        if ((isEmpty(obj.store) && isEmpty(obj.delete)) && !this.isRevoke) {
           this.submitted = false;
-          this.activeModal.close();
-          this.ref.detectChanges();
+          return;
         }
+        this.submitted = true;
+        const deployURL = this.isRevoke ? 'inventory/deployment/revoke' : 'inventory/deployment/deploy';
+        this.coreService.post(deployURL, obj).subscribe({
+          next: () => {
+            this.activeModal.close();
+          },
+          error: () => {
+            this.submitted = false;
+            this.activeModal.close();
+            this.ref.detectChanges();
+          }
+        });
+      })
+      .catch(() => {
+        this.submitted = false;
+        this.ref.detectChanges();
       });
-    })
-    .catch(() => {
-      this.submitted = false;
-      this.ref.detectChanges();
-    });
-}
+  }
 
   private handleRelease(recall?): void {
     this.getReleaseObject();
@@ -3438,8 +3455,8 @@ export class DeployComponent {
     this.activeModal.destroy();
   }
 
-hasUncheckedInvalidCalendar(): boolean {
-    if (!this.isRevoke && this.releasable) {
+  hasUncheckedInvalidCalendar(): boolean {
+    if ((!this.isRevoke || this.releasable) && this.operation !== 'recall') {
       let hasSchedule = false;
 
       const checkForSchedule = (nodes: any[]): void => {
@@ -3471,13 +3488,21 @@ hasUncheckedInvalidCalendar(): boolean {
         }
       }
 
+      const hasInvalidCalendarInFiltered = this.filteredAffectedItems.some(item =>
+        !item.selected &&
+        !item.valid &&
+        (item.objectType === 'WORKINGDAYSCALENDAR' || item.objectType === 'NONWORKINGDAYSCALENDAR')
+      );
+      if (hasInvalidCalendarInFiltered) {
+        return true;
+      }
     }
 
     return false;
   }
 
   getInvalidCalendarMessage(): string {
-    if (!this.isRevoke && this.releasable) {
+    if ((!this.isRevoke || this.releasable) && this.operation !== 'recall') {
       let hasSchedule = false;
 
       const checkForSchedule = (nodes: any[]): void => {
@@ -3509,6 +3534,13 @@ hasUncheckedInvalidCalendar(): boolean {
         });
       });
 
+      this.filteredAffectedItems.forEach(item => {
+        if (!item.selected && !item.valid &&
+          (item.objectType === 'WORKINGDAYSCALENDAR' || item.objectType === 'NONWORKINGDAYSCALENDAR')) {
+          invalidCalendars.push(item.path || item.name);
+        }
+      });
+
       if (invalidCalendars.length > 0) {
         return `Invalid calendar(s): ${invalidCalendars.join(', ')}`;
       }
@@ -3516,6 +3548,7 @@ hasUncheckedInvalidCalendar(): boolean {
 
     return '';
   }
+
 }
 
 @Component({
@@ -3585,6 +3618,7 @@ export class ExportComponent {
   fileFormat = [{value: 'ZIP', name: 'ZIP'},
     {value: 'TAR_GZ', name: 'TAR_GZ'}
   ]
+  private recursiveDependenciesCache: any = null;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef,
               private inventoryService: InventoryService) {
@@ -3819,8 +3853,10 @@ export class ExportComponent {
 
     this.coreService.post('inventory/dependencies', requestBody).subscribe({
       next: (res: any) => {
-
-        if (res.dependencies && res.dependencies?.requestedItems.length > 0 || res.dependencies?.affectedItems.length > 0) {
+        if (this.exportObj.isRecursive) {
+          this.recursiveDependenciesCache = res.dependencies;
+        }
+        if (res.dependencies && (res.dependencies?.requestedItems.length > 0 || res.dependencies?.affectedItems.length > 0)) {
           this.updateNodeDependencies(res.dependencies, isChecked);
           this.prepareObject(res.dependencies);
           this.ref.detectChanges();
@@ -4562,166 +4598,164 @@ export class ExportComponent {
       this.coreService.getAuditLogObj(this.comments, obj.auditLog);
     }
 
-  let folders = [];
-  if (this.exportObj.exportType !== 'folders') {
-    this.checkFolderSelection(folders);
-  }
-
-  if ((folders.length > 0) || (this.object.deployConfigurations && this.object.deployConfigurations.length > 0) ||
-    (this.object.draftConfigurations.length && this.object.draftConfigurations.length > 0) ||
-    (this.object.releasedConfigurations && this.object.releasedConfigurations.length > 0) ||
-    (this.object.releaseDraftConfigurations.length && this.object.releaseDraftConfigurations.length > 0) || (this.filteredAffectedItems && this.filteredAffectedItems.length > 0)) {
-
-    // Clean up empty arrays
-    if (this.object.deployConfigurations && this.object.deployConfigurations.length === 0) {
-      delete this.object.deployConfigurations;
-    }
-    if (this.object.draftConfigurations && this.object.draftConfigurations.length === 0) {
-      delete this.object.draftConfigurations;
-    }
-    if (this.object.releasedConfigurations && this.object.releasedConfigurations.length === 0) {
-      delete this.object.releasedConfigurations;
-    }
-    if (this.object.releaseDraftConfigurations && this.object.releaseDraftConfigurations.length === 0) {
-      delete this.object.releaseDraftConfigurations;
+    let folders = [];
+    if (this.exportObj.exportType !== 'folders') {
+      this.checkFolderSelection(folders);
     }
 
-    if (this.exportObj.filename) {
-      if (this.exportObj.filename.indexOf('.') === -1) {
-        this.exportObj.filename = this.exportObj.filename + (this.exportObj.fileFormat === 'ZIP' ? '.zip' : '.tar.gz');
+    if ((folders.length > 0) || (this.object.deployConfigurations && this.object.deployConfigurations.length > 0) ||
+      (this.object.draftConfigurations.length && this.object.draftConfigurations.length > 0) ||
+      (this.object.releasedConfigurations && this.object.releasedConfigurations.length > 0) ||
+      (this.object.releaseDraftConfigurations.length && this.object.releaseDraftConfigurations.length > 0) || (this.filteredAffectedItems && this.filteredAffectedItems.length > 0)) {
+
+      // Clean up empty arrays
+      if (this.object.deployConfigurations && this.object.deployConfigurations.length === 0) {
+        delete this.object.deployConfigurations;
       }
-    }
-
-    if (this.exportObj.forSigning) {
-      obj.forSigning = {controllerId: this.exportObj.controllerId};
-      if (this.object.draftConfigurations || this.object.deployConfigurations) {
-        obj.forSigning.deployables = {
-          draftConfigurations: this.object.draftConfigurations,
-          deployConfigurations: this.object.deployConfigurations
-        };
+      if (this.object.draftConfigurations && this.object.draftConfigurations.length === 0) {
+        delete this.object.draftConfigurations;
       }
-      this.nodes.forEach(node => {
-        this.handleDependenciesForSigning(node, obj);
-      });
-      if (this.exportObj.exportType !== 'changes') {
-        this.handleAffectedItemsForSigning(obj)
+      if (this.object.releasedConfigurations && this.object.releasedConfigurations.length === 0) {
+        delete this.object.releasedConfigurations;
       }
-    } else {
-      obj.shallowCopy = {
-        withoutInvalid: this.filter.valid
-      };
+      if (this.object.releaseDraftConfigurations && this.object.releaseDraftConfigurations.length === 0) {
+        delete this.object.releaseDraftConfigurations;
+      }
 
-      const isIndividualExport = this.exportObj.exportType === 'individual' || this.origin?.object;
-
-      const isControllerObject = (type: string) => {
-        return ['WORKFLOW', 'JOBRESOURCE', 'FILEORDERSOURCE', 'NOTICEBOARD', 'LOCK'].includes(type);
-      };
-
-      const isScheduleOrJobTemplate = (type: string) => {
-        return ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR', 'REPORT'].includes(type);
-      };
-
-      let originObjectType: string | null = null;
-      if (this.origin?.object) {
-        if (typeof this.origin.object === 'string') {
-          originObjectType = this.origin.object;
-        } else if (this.origin.object.match && this.origin.object.match('CALENDAR')) {
-          originObjectType = 'CALENDAR';
+      if (this.exportObj.filename) {
+        if (this.exportObj.filename.indexOf('.') === -1) {
+          this.exportObj.filename = this.exportObj.filename + (this.exportObj.fileFormat === 'ZIP' ? '.zip' : '.tar.gz');
         }
       }
 
-      if (this.object.releasedConfigurations || this.object.releaseDraftConfigurations) {
-        let shouldSkipReleasables = false;
-
-        if (isIndividualExport) {
-          if (originObjectType && isControllerObject(originObjectType)) {
-            shouldSkipReleasables = true;
-          }
-          else if (this.object.releasedConfigurations?.length > 0) {
-            shouldSkipReleasables = this.object.releasedConfigurations.every(item =>
-              isControllerObject(item.configuration?.objectType)
-            );
-          } else if (this.object.releaseDraftConfigurations?.length > 0) {
-            shouldSkipReleasables = this.object.releaseDraftConfigurations.every(item =>
-              isControllerObject(item.configuration?.objectType)
-            );
-          }
-        }
-
-        if (!shouldSkipReleasables) {
-          obj.shallowCopy.releasables = {
-            releasedConfigurations: this.object.releasedConfigurations,
-            draftConfigurations: this.object.releaseDraftConfigurations
-          };
-        }
-      }
-
-      if (this.object.draftConfigurations || this.object.deployConfigurations) {
-        let shouldSkipDeployables = false;
-
-        if (isIndividualExport) {
-          if (originObjectType && isScheduleOrJobTemplate(originObjectType)) {
-            shouldSkipDeployables = true;
-          }
-          else if (this.object.draftConfigurations?.length > 0) {
-            shouldSkipDeployables = this.object.draftConfigurations.every(item =>
-              isScheduleOrJobTemplate(item.configuration?.objectType)
-            );
-          } else if (this.object.deployConfigurations?.length > 0) {
-            shouldSkipDeployables = this.object.deployConfigurations.every(item =>
-              isScheduleOrJobTemplate(item.configuration?.objectType)
-            );
-          }
-        }
-
-        if (!shouldSkipDeployables) {
-          obj.shallowCopy.deployables = {
+      if (this.exportObj.forSigning) {
+        obj.forSigning = {controllerId: this.exportObj.controllerId};
+        if (this.object.draftConfigurations || this.object.deployConfigurations) {
+          obj.forSigning.deployables = {
             draftConfigurations: this.object.draftConfigurations,
             deployConfigurations: this.object.deployConfigurations
           };
         }
-      }
+        this.nodes.forEach(node => {
+          this.handleDependenciesForSigning(node, obj);
+        });
+        if (this.exportObj.exportType !== 'changes') {
+          this.handleAffectedItemsForSigning(obj)
+        }
+      } else {
+        obj.shallowCopy = {
+          withoutInvalid: this.filter.valid
+        };
 
-      if (folders.length > 0 && !isIndividualExport) {
-        if (!obj.shallowCopy.releasables) {
-          obj.shallowCopy.releasables = {
-            releasedConfigurations: folders,
-            draftConfigurations: folders
-          }
-        } else {
-          if (!obj.shallowCopy.releasables.releasedConfigurations) {
-            obj.shallowCopy.releasables.releasedConfigurations = folders;
-          } else {
-            obj.shallowCopy.releasables.releasedConfigurations = obj.shallowCopy.releasables.releasedConfigurations.concat(folders);
-          }
+        const isIndividualExport = this.exportObj.exportType === 'individual' || this.origin?.object;
 
-          if (!obj.shallowCopy.releasables.draftConfigurations) {
-            obj.shallowCopy.releasables.draftConfigurations = folders;
-          } else {
-            obj.shallowCopy.releasables.draftConfigurations = obj.shallowCopy.releasables.draftConfigurations.concat(folders);
+        const isControllerObject = (type: string) => {
+          return ['WORKFLOW', 'JOBRESOURCE', 'FILEORDERSOURCE', 'NOTICEBOARD', 'LOCK'].includes(type);
+        };
+
+        const isScheduleOrJobTemplate = (type: string) => {
+          return ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR', 'REPORT'].includes(type);
+        };
+
+        let originObjectType: string | null = null;
+        if (this.origin?.object) {
+          if (typeof this.origin.object === 'string') {
+            originObjectType = this.origin.object;
+          } else if (this.origin.object.match && this.origin.object.match('CALENDAR')) {
+            originObjectType = 'CALENDAR';
           }
         }
 
-        if (!obj.shallowCopy.deployables) {
-          obj.shallowCopy.deployables = {
-            deployConfigurations: folders,
-            draftConfigurations: folders
-          }
-        } else {
-          if (!obj.shallowCopy.deployables.deployConfigurations) {
-            obj.shallowCopy.deployables.deployConfigurations = folders;
-          } else {
-            obj.shallowCopy.deployables.deployConfigurations = obj.shallowCopy.deployables.deployConfigurations.concat(folders);
+        if (this.object.releasedConfigurations || this.object.releaseDraftConfigurations) {
+          let shouldSkipReleasables = false;
+
+          if (isIndividualExport) {
+            if (originObjectType && isControllerObject(originObjectType)) {
+              shouldSkipReleasables = true;
+            } else if (this.object.releasedConfigurations?.length > 0) {
+              shouldSkipReleasables = this.object.releasedConfigurations.every(item =>
+                isControllerObject(item.configuration?.objectType)
+              );
+            } else if (this.object.releaseDraftConfigurations?.length > 0) {
+              shouldSkipReleasables = this.object.releaseDraftConfigurations.every(item =>
+                isControllerObject(item.configuration?.objectType)
+              );
+            }
           }
 
-          if (!obj.shallowCopy.deployables.draftConfigurations) {
-            obj.shallowCopy.deployables.draftConfigurations = folders;
+          if (!shouldSkipReleasables) {
+            obj.shallowCopy.releasables = {
+              releasedConfigurations: this.object.releasedConfigurations,
+              draftConfigurations: this.object.releaseDraftConfigurations
+            };
+          }
+        }
+
+        if (this.object.draftConfigurations || this.object.deployConfigurations) {
+          let shouldSkipDeployables = false;
+
+          if (isIndividualExport) {
+            if (originObjectType && isScheduleOrJobTemplate(originObjectType)) {
+              shouldSkipDeployables = true;
+            } else if (this.object.draftConfigurations?.length > 0) {
+              shouldSkipDeployables = this.object.draftConfigurations.every(item =>
+                isScheduleOrJobTemplate(item.configuration?.objectType)
+              );
+            } else if (this.object.deployConfigurations?.length > 0) {
+              shouldSkipDeployables = this.object.deployConfigurations.every(item =>
+                isScheduleOrJobTemplate(item.configuration?.objectType)
+              );
+            }
+          }
+
+          if (!shouldSkipDeployables) {
+            obj.shallowCopy.deployables = {
+              draftConfigurations: this.object.draftConfigurations,
+              deployConfigurations: this.object.deployConfigurations
+            };
+          }
+        }
+
+        if (folders.length > 0 && !isIndividualExport) {
+          if (!obj.shallowCopy.releasables) {
+            obj.shallowCopy.releasables = {
+              releasedConfigurations: folders,
+              draftConfigurations: folders
+            }
           } else {
-            obj.shallowCopy.deployables.draftConfigurations = obj.shallowCopy.deployables.draftConfigurations.concat(folders);
+            if (!obj.shallowCopy.releasables.releasedConfigurations) {
+              obj.shallowCopy.releasables.releasedConfigurations = folders;
+            } else {
+              obj.shallowCopy.releasables.releasedConfigurations = obj.shallowCopy.releasables.releasedConfigurations.concat(folders);
+            }
+
+            if (!obj.shallowCopy.releasables.draftConfigurations) {
+              obj.shallowCopy.releasables.draftConfigurations = folders;
+            } else {
+              obj.shallowCopy.releasables.draftConfigurations = obj.shallowCopy.releasables.draftConfigurations.concat(folders);
+            }
+          }
+
+          if (!obj.shallowCopy.deployables) {
+            obj.shallowCopy.deployables = {
+              deployConfigurations: folders,
+              draftConfigurations: folders
+            }
+          } else {
+            if (!obj.shallowCopy.deployables.deployConfigurations) {
+              obj.shallowCopy.deployables.deployConfigurations = folders;
+            } else {
+              obj.shallowCopy.deployables.deployConfigurations = obj.shallowCopy.deployables.deployConfigurations.concat(folders);
+            }
+
+            if (!obj.shallowCopy.deployables.draftConfigurations) {
+              obj.shallowCopy.deployables.draftConfigurations = folders;
+            } else {
+              obj.shallowCopy.deployables.draftConfigurations = obj.shallowCopy.deployables.draftConfigurations.concat(folders);
+            }
           }
         }
       }
-    }
 
       if (this.object.folders && this.object.folders.length > 0) {
         this.exportFolder(obj);
@@ -5067,6 +5101,60 @@ export class ExportComponent {
         }
       }
     })
+  }
+
+  handleRecursive(): void {
+    this.ref.detectChanges();
+    if (this.exportObj.isRecursive) {
+      if (this.recursiveDependenciesCache) {
+        this.updateNodeDependencies(this.recursiveDependenciesCache, true);
+        this.prepareObject(this.recursiveDependenciesCache);
+        this.ref.detectChanges();
+        return;
+      } else {
+        this.checkedObject.clear();
+        this.recursiveCheck(this.nodes, false);
+        this.expandAllWithStateRestore();
+      }
+    }
+  }
+
+
+  expandAllWithStateRestore(): void {
+    const savedCheckedState = new Set(this.checkedObject);
+
+    this.buildTree(this.path, null, () => {
+      const self = this;
+      if (this.nodes && this.nodes.length > 0) {
+        this.nodes.forEach(rootNode => {
+          if (!rootNode.isLeaf) {
+            rootNode.expanded = true;
+          }
+        });
+
+        function recursive(node: any): void {
+          for (const i in node) {
+            if (node[i].children && node[i].children.length > 0) {
+              if (!node[i].isCall) {
+                self.inventoryService.checkAndUpdateVersionList(node[i]);
+              }
+              recursive(node[i].children);
+            }
+          }
+        }
+        recursive(this.nodes);
+      }
+
+      this.checkedObject = savedCheckedState;
+      this.recursiveCheck(this.nodes, true);
+      this.nodes = [...this.nodes];
+      this.ref.detectChanges();
+
+      const checkedNodes = this.collectCheckedObjects(this.nodes);
+      if (checkedNodes.length > 0 && this.exportObj.includeDependencies) {
+        this.getDependencies(checkedNodes, this.nodes[0]);
+      }
+    }, true);
   }
 
   private exportFolder(obj: any): void {
@@ -8403,7 +8491,7 @@ export class PublishChangeModalComponent {
           case "JOBRESOURCE":
             groupedObjects["JOBRESOURCE"].push(item);
             break;
-            case "FILEORDERSOURCE":
+          case "FILEORDERSOURCE":
             groupedObjects["FILEORDERSOURCE"].push(item);
             break;
           case "SCHEDULE":
@@ -8840,15 +8928,15 @@ export class PublishChangeModalComponent {
   }
 
   private handleDependenciesForRelease(node: any, obj: any): void {
-      if (node.valid && node.checked && !node.released && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(node.type) && node.path !== '/' && node.name !== '/') {
-        if (!obj.update) {
-          obj.update = [];
-        }
-        obj.update.push({
-          path: node.path,
-          objectType: node.objectType || node.type,
-        });
+    if (node.valid && node.checked && !node.released && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(node.type) && node.path !== '/' && node.name !== '/') {
+      if (!obj.update) {
+        obj.update = [];
       }
+      obj.update.push({
+        path: node.path,
+        objectType: node.objectType || node.type,
+      });
+    }
     if (node.dependencies) {
       node.dependencies.referencedBy.forEach(dep => {
         if (dep.valid && dep.selected && !dep.released && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
@@ -8929,19 +9017,19 @@ export class PublishChangeModalComponent {
   }
 
   private handleDependenciesForDeploy(node: any, obj: any): void {
-      if (node.valid && node.checked && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(node.type) && node.path !== '/' && node.name !== '/') {
-        if (!obj.store) {
-          obj.store = {draftConfigurations: [], deployConfigurations: []};
-        }
-        const config = {
-          configuration: {
-            path: node.path,
-            objectType: node.type,
-            recursive: false
-          }
-        };
-        obj.store.draftConfigurations.push(config);
+    if (node.valid && node.checked && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(node.type) && node.path !== '/' && node.name !== '/') {
+      if (!obj.store) {
+        obj.store = {draftConfigurations: [], deployConfigurations: []};
       }
+      const config = {
+        configuration: {
+          path: node.path,
+          objectType: node.type,
+          recursive: false
+        }
+      };
+      obj.store.draftConfigurations.push(config);
+    }
     if (node.dependencies) {
       node.dependencies.referencedBy.forEach(dep => {
         if (dep.valid && dep.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType) && dep.path !== '/' && dep.name !== '/') {
@@ -12797,7 +12885,7 @@ export class InventoryComponent {
   }
 
   private storeData(obj, result, reload): void {
-    if (result &&  result.calendars && reload) {
+    if (result && result.calendars && reload) {
       result.calendars.forEach(cal => {
         if (cal && cal.periods) {
           cal.periods.forEach(period => {

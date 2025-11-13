@@ -1019,7 +1019,7 @@ export class XMLAutofocusDirective implements AfterViewInit, OnChanges {
   selector: '[appMaximum]'
 })
 export class MaximumDirective {
-  @Input('codeMirror') cm: any;
+  @Input('codeEditor') cm: any;
   @Input() textarea: any;
   isMax = false;
   height = 0;
@@ -1034,7 +1034,7 @@ export class MaximumDirective {
     this.isMax = !this.isMax;
     const modalElem = hostElem.closest('.ant-modal');
     if (this.isMax) {
-      this.height = $('.CodeMirror').height();
+      this.height = $('.CodeEditor').height();
       if (this.textarea) {
         this.rows = this.textarea.nativeElement.rows;
       }
@@ -1044,7 +1044,7 @@ export class MaximumDirective {
       hostElem.querySelector('i').classList.remove('fa-window-minimize');
       modalElem.classList.remove('maximum');
     }
-    if (this.cm && this.cm.codeMirror) {
+    if (this.cm && this.cm.codeEditor) {
       this.checkAndUpdateCM($(modalElem));
     } else if (this.textarea) {
       this.doResize();
@@ -1063,7 +1063,7 @@ export class MaximumDirective {
     } else {
       height = this.height;
     }
-    this.cm.codeMirror.setSize((width), (height));
+    this.cm.codeEditor.setSize((width), (height));
     $('#resizable').css({'width': 'auto', 'height': 'auto'});
   }
 

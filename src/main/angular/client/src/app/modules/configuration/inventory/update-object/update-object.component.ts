@@ -61,9 +61,9 @@ export class UpdateObjectComponent {
     scrollbarStyle: 'simple',
     highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
     mode: 'shell',
-    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
+    gutters: ['CodeEditor-linenumbers', 'CodeEditor-foldgutter']
   };
-  @ViewChild('codeMirror', {static: false}) cm;
+  @ViewChild('codeEditor', {static: false}) cm;
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private calendarService: CalendarService,
               private authService: AuthService, private modal: NzModalService, private translate: TranslateService) {

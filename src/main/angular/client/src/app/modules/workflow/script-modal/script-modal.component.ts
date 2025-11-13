@@ -50,7 +50,7 @@ export class ScriptModalComponent {
   todayDate: string;
   type: string;
 
-  @ViewChild('codeMirror', {static: false}) cm: any;
+  @ViewChild('codeEditor', {static: false}) cm: any;
 
   constructor(public activeModal: NzModalRef, public coreService: CoreService, private translate: TranslateService, private authService: AuthService,
               private message: NzMessageService, private clipboardService: ClipboardService, private workflowService: WorkflowService, private dragDrop: DragDrop) {
@@ -99,18 +99,18 @@ export class ScriptModalComponent {
   ngAfterViewInit(): void {
     this.dragEle = this.dragDrop.createDrag(this.activeModal.containerInstance.modalElementRef.nativeElement);
     setTimeout(() => {
-      if (this.cm && this.cm.codeMirror) {
-        const doc = this.cm.codeMirror.getDoc();
+      if (this.cm && this.cm.codeEditor) {
+        const doc = this.cm.codeEditor.getDoc();
         const cursor = doc.getCursor(); // gets the line number in the cursor position
         doc.replaceRange(this.data, cursor);
-        this.cm.codeMirror.focus();
+        this.cm.codeEditor.focus();
         doc.setCursor(cursor);
       }
     }, 250);
     $('#resizable').resizable({
       resize: (e, x) => {
         const dom: any = document.getElementsByClassName('script-editor2')[0];
-        this.cm.codeMirror.setSize((x.size.width - 2), (x.size.height - 2));
+        this.cm.codeEditor.setSize((x.size.width - 2), (x.size.height - 2));
         dom.style.setProperty('width', (x.size.width + 32) + 'px', 'important');
       }
     });

@@ -961,38 +961,38 @@ Code mirror
   border-color: var(--border-color) !important
 }
 
-.CodeMirror {
+.CodeEditor {
   color: rgba(255, 255, 255, .87) !important
 }
 
-.CodeMirror-gutters {
+.CodeEditor-gutters {
   background: var(--bg-footer) !important;
   border-color: rgba(221, 221, 221, .2)
 }
 
-.CodeMirror-linenumber {
+.CodeEditor-linenumber {
   color: #fff !important
 }
 
-.CodeMirror-linenumber {
+.CodeEditor-linenumber {
   color: #6D8A88;
 }
 
 .ace-jsoneditor .ace_marker-layer .ace_selection,
-div.CodeMirror-selected {
+div.CodeEditor-selected {
   background: rgba(255, 255, 255, 0.10)
 }
 
-.CodeMirror-focused div.CodeMirror-selected {
+.CodeEditor-focused div.CodeEditor-selected {
   background: rgba(255, 255, 255, 0.10) !important;
 }
 
-.CodeMirror-line::selection,
-.CodeMirror-line > span::selection, .CodeMirror-line > span > span::selection {
+.CodeEditor-line::selection,
+.CodeEditor-line > span::selection, .CodeEditor-line > span > span::selection {
   background: rgba(255, 255, 255, 0.10) !important;
 }
 
-.CodeMirror-line::-moz-selection, .CodeMirror-line > span::-moz-selection, .CodeMirror-line > span > span::-moz-selection {
+.CodeEditor-line::-moz-selection, .CodeEditor-line > span::-moz-selection, .CodeEditor-line > span > span::-moz-selection {
   background: rgba(255, 255, 255, 0.10) !important;
 }
 
@@ -1066,11 +1066,11 @@ span.cm-builtin {
   color: #9fca56 !important;
 }
 
-.CodeMirror-activeline-background {
+.CodeEditor-activeline-background {
   background: #101213 !important;
 }
 
-.CodeMirror-matchingbracket {
+.CodeEditor-matchingbracket {
   text-decoration: underline;
   color: white !important;
 }

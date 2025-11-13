@@ -704,8 +704,9 @@
             <label class="col-md-4 form-control-label" translate>inventory.label.script</label>
             <div class="col-md-6">
               <div class="b-a" *ngIf="isDisplay">
-                <ngx-codemirror [(ngModel)]="object.script" (ngModelChange)="toggleCheckbox('script', $event)"  [options]="cmOption" name="cm"></ngx-codemirror>
-              </div>
+               <app-codemirror-editor [(ngModel)]="object.script" (ngModelChange)="toggleCheckbox('script', $event)" [options]="cmOption" name="cm"></app-codemirror-editor>
+                    </div>
+
             </div>
             <div class="col-md-1">
               <label [(ngModel)]="checkboxObjects.script" class="m-t-xs" name="cscript" nz-checkbox></label>

@@ -267,7 +267,7 @@ export class NoticeBoardEditorComponent {
   showToken = /\w/;
   isTreeShow = false;
 
-  @ViewChild('codeMirror', {static: false}) cm;
+  @ViewChild('codeEditor', {static: false}) cm;
 
   constructor(public activeModal: NzModalRef) {
   }
@@ -282,19 +282,19 @@ export class NoticeBoardEditorComponent {
     const self = this;
     this.isTreeShow = false;
     setTimeout(() => {
-      if (this.cm && this.cm.codeMirror) {
+      if (this.cm && this.cm.codeEditor) {
         setTimeout(() => {
           let arr = this.data?.split('\n') || [];
-          const doc = this.cm.codeMirror.getDoc();
-          const cursor = doc.getCursor();  // gets the line number in the cursor position
+          const doc = this.cm.codeEditor.getDoc();
+          const cursor = doc.getCursor();
           doc.replaceRange(this.data || '', cursor);
           cursor.line = arr.length > 0 ? arr.length - 1 : 0;
           cursor.ch = arr.length > 0 ? arr[arr.length - 1]?.length + 1 : 0;
-          this.cm.codeMirror.focus();
+          this.cm.codeEditor.focus();
           doc.setCursor(cursor);
         }, 400);
 
-        this.cm.codeMirror.setOption("extraKeys", {
+        this.cm.codeEditor.setOption("extraKeys", {
           "Shift-Ctrl-Space": "autocomplete",
           "Tab": (cm) => {
             let spaces = '';
@@ -330,20 +330,20 @@ export class NoticeBoardEditorComponent {
   checkExpectNoticeExp(event): void {
     this.isTreeShow = false;
     if (event) {
-      const doc = this.cm.codeMirror.getDoc();
+      const doc = this.cm.codeEditor.getDoc();
       const cursor = doc.getCursor();
-      if (this.cm.codeMirror.getSelection()) {
-        let text = this.cm.codeMirror.getValue();
-        text = text.replace(this.cm.codeMirror.getSelection(), event);
-        this.cm.codeMirror.setValue(text);
+      if (this.cm.codeEditor.getSelection()) {
+        let text = this.cm.codeEditor.getValue();
+        text = text.replace(this.cm.codeEditor.getSelection(), event);
+        this.cm.codeEditor.setValue(text);
         cursor.ch = text.length;
       } else {
-        const doc = this.cm.codeMirror.getDoc();
-        const cursor = doc.getCursor(); // gets the line number in the cursor position
+        const doc = this.cm.codeEditor.getDoc();
+        const cursor = doc.getCursor();
         doc.replaceRange("'" + event + "'", cursor);
         cursor.ch = cursor.ch + (event.length + 2);
       }
-      this.cm.codeMirror.focus();
+      this.cm.codeEditor.focus();
       doc.setCursor(cursor);
     }
   }
@@ -1490,7 +1490,7 @@ export class JobComponent {
   subscription: Subscription;
   tabIndex: number = 0;
   @ViewChild('inputElement', {static: false}) inputElement?: ElementRef;
-  @ViewChild('codeMirror', {static: false}) cm: any;
+  @ViewChild('codeEditor', {static: false}) cm: any;
 
   @Output() updateFromJobTemplateFn: EventEmitter<any> = new EventEmitter();
 
@@ -1561,8 +1561,8 @@ export class JobComponent {
   private initAutoComplete(time = 0): void {
     const self = this;
     setTimeout(() => {
-      if (this.cm && this.cm.codeMirror) {
-        this.cm.codeMirror.setOption("extraKeys", {
+      if (this.cm && this.cm.codeEditor) {
+        this.cm.codeEditor.setOption("extraKeys", {
           "Shift-Ctrl-Space": "autocomplete",
           "Tab": (cm) => {
             let spaces = '';
@@ -2446,9 +2446,9 @@ export class JobComponent {
     this.isTreeShow = false;
     this.ref.detectChanges();
     if (name) {
-      const doc = this.cm.codeMirror.getDoc();
-      const cursor = doc.getCursor(); // gets the line number in the cursor position
-      const currentLine = this.cm.codeMirror.getLine(cursor.line);
+      const doc = this.cm.codeEditor.getDoc();
+      const cursor = doc.getCursor();
+      const currentLine = this.cm.codeEditor.getLine(cursor.line);
       const isSpace = cursor.ch > 0 ? currentLine.substring(cursor.ch - 1, cursor.ch) == ' ' : true;
 
       let str = (!isSpace ? ' ' : '');
@@ -2471,7 +2471,7 @@ export class JobComponent {
       doc.replaceRange(str, cursor);
       cursor.ch = cursor.ch + (text.length);
 
-      this.cm.codeMirror.focus();
+      this.cm.codeEditor.focus();
       doc.setCursor(cursor);
     }
   }
@@ -3318,9 +3318,9 @@ export class ScriptEditorComponent {
     scrollbarStyle: 'simple',
     viewportMargin: Infinity,
     highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
-    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+    gutters: ["CodeEditor-linenumbers", "CodeEditor-foldgutter"]
   };
-  @ViewChild('codeMirror', {static: false}) cm: any;
+  @ViewChild('codeEditor', {static: false}) cm: any;
 
   constructor(private coreService: CoreService, public activeModal: NzModalRef, private dragDrop: DragDrop) {
   }
@@ -3348,7 +3348,7 @@ export class ScriptEditorComponent {
     $('#resizable').resizable({
       resize: (e, x) => {
         const dom: any = document.getElementsByClassName('script-editor')[0];
-        this.cm.codeMirror.setSize((x.size.width - 2), (x.size.height - 2));
+        this.cm.codeEditor.setSize((x.size.width - 2), (x.size.height - 2));
         dom.style.setProperty('width', (x.size.width + 32) + 'px', 'important');
       }, stop: (e, x) => {
         localStorage['$SOS$SCRIPTWINDOWWIDTH'] = x.size.width;
@@ -3357,10 +3357,10 @@ export class ScriptEditorComponent {
     });
 
     setTimeout(() => {
-      if (this.cm && this.cm.codeMirror) {
+      if (this.cm && this.cm.codeEditor) {
         if (localStorage['$SOS$SCRIPTWINDOWWIDTH']) {
           const wt = parseInt(localStorage['$SOS$SCRIPTWINDOWWIDTH'], 10);
-          this.cm.codeMirror.setSize(wt - 2, (parseInt(localStorage['$SOS$SCRIPTWINDOWHIGHT'], 10) - 2));
+          this.cm.codeEditor.setSize(wt - 2, (parseInt(localStorage['$SOS$SCRIPTWINDOWHIGHT'], 10) - 2));
           $('.ant-modal').css('cssText', 'width : ' + (wt + 32) + 'px !important');
         }
       }
@@ -3369,16 +3369,16 @@ export class ScriptEditorComponent {
     const self = this;
     this.isTreeShow = false;
     setTimeout(() => {
-      if (this.cm && this.cm.codeMirror) {
+      if (this.cm && this.cm.codeEditor) {
         setTimeout(() => {
-          const doc = this.cm.codeMirror.getDoc();
-          const cursor = doc.getCursor();  // gets the line number in the cursor position
+          const doc = this.cm.codeEditor.getDoc();
+          const cursor = doc.getCursor();
           doc.replaceRange(this.script, cursor);
-          this.cm.codeMirror.focus();
+          this.cm.codeEditor.focus();
           doc.setCursor(cursor);
         }, 400);
         this.cmOption.tabSize = parseInt(this.modalData.tabSize) || 4;
-        this.cm.codeMirror.setOption("extraKeys", {
+        this.cm.codeEditor.setOption("extraKeys", {
           "Shift-Ctrl-Space": "autocomplete",
           "Tab": (cm) => {
             let spaces = '';
@@ -3408,9 +3408,11 @@ export class ScriptEditorComponent {
 
     setTimeout(() => {
       const interval = setInterval(() => {
-        const editorWrapper = document.querySelector('.CodeMirror');
+        const editorWrapper = document.querySelector('.CodeEditor');
         if (editorWrapper && editorWrapper.clientHeight > 0) {
-          this.cm.codeMirror.refresh();
+          if (this.cm && this.cm.codeEditor) {
+            this.cm.codeEditor.refresh();
+          }
           clearInterval(interval);
         }
       }, 100);
@@ -3431,7 +3433,7 @@ export class ScriptEditorComponent {
 
   autoFormatCode(event: Event): void {
     event.preventDefault();
-    const doc = this.cm?.codeMirror?.getDoc();
+    const doc = this.cm?.codeEditor?.getDoc();
     if (!doc) return;
     const cursor = doc.getCursor();
     const originalText = doc.getValue();
@@ -3440,7 +3442,7 @@ export class ScriptEditorComponent {
       ? doc.getCursor('end')
       : {line: doc.lineCount() - 1, ch: doc.getLine(doc.lineCount() - 1).length};
 
-    const tabSize = this.cm.codeMirror.getOption('tabSize');
+    const tabSize = this.cm.codeEditor.getOption('tabSize');
     const indentString = ' '.repeat(tabSize);
 
     let indentLevel = 0;
@@ -3482,7 +3484,7 @@ export class ScriptEditorComponent {
       this.scriptObj.data = formattedText;
     }
 
-    this.cm.codeMirror.focus();
+    this.cm.codeEditor.focus();
     doc.setCursor(cursor);
   }
 
@@ -3501,7 +3503,7 @@ export class ScriptEditorComponent {
   }
 
   execCommand(type): void {
-    this.cm.codeMirror.execCommand(type);
+    this.cm.codeEditor.execCommand(type);
     this.coreService.updateReplaceText();
   }
 
@@ -3513,9 +3515,9 @@ export class ScriptEditorComponent {
   checkExpectNoticeExp(name): void {
     this.isTreeShow = false;
     if (name) {
-      const doc = this.cm.codeMirror.getDoc();
+      const doc = this.cm.codeEditor.getDoc();
       const cursor = doc.getCursor(); // gets the line number in the cursor position
-      const currentLine = this.cm.codeMirror.getLine(cursor.line);
+      const currentLine = this.cm.codeEditor.getLine(cursor.line);
       const isSpace = cursor.ch > 0 ? currentLine.substring(cursor.ch - 1, cursor.ch) == ' ' : true;
 
       let str = (!isSpace ? ' ' : '');
@@ -3533,7 +3535,7 @@ export class ScriptEditorComponent {
       doc.replaceRange(str, cursor);
       cursor.ch = cursor.ch + (text.length);
 
-      this.cm.codeMirror.focus();
+      this.cm.codeEditor.focus();
       doc.setCursor(cursor);
     }
   }
@@ -3566,7 +3568,7 @@ export class ExpressionComponent {
     mode: 'ruby'
   };
 
-  @ViewChild('codeMirror', {static: true}) cm;
+  @ViewChild('codeEditor', {static: true}) cm;
 
   constructor() {
   }
@@ -3579,14 +3581,14 @@ export class ExpressionComponent {
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      if (this.cm && this.cm.codeMirror) {
+      if (this.cm && this.cm.codeEditor) {
         let arr = this.selectedNode.obj.predicate?.split('\n') || [];
-        const doc = this.cm.codeMirror.getDoc();
+        const doc = this.cm.codeEditor.getDoc();
         const cursor = doc.getCursor();  // gets the line number in the cursor position
         doc.replaceRange('', cursor);
         cursor.line = arr.length > 0 ? arr.length - 1 : 0;
         cursor.ch = arr.length > 0 ? arr[arr.length - 1]?.length + 1 : 0;
-        this.cm.codeMirror.focus();
+        this.cm.codeEditor.focus();
         doc.setCursor(cursor);
       }
     }, 400);
@@ -3618,7 +3620,7 @@ export class ExpressionComponent {
       }
     }
 
-    this.insertText(setText, this.cm.codeMirror.getDoc());
+    this.insertText(setText, this.cm.codeEditor.getDoc());
   }
 
   change(): void {
@@ -3630,7 +3632,7 @@ export class ExpressionComponent {
     const cursor = doc.getCursor(); // gets the line number in the cursor position
     doc.replaceRange(data, cursor);
     cursor.ch = cursor.ch + data.length;
-    this.cm.codeMirror.focus();
+    this.cm.codeEditor.focus();
     doc.setCursor(cursor);
   }
 }
@@ -3719,7 +3721,7 @@ export class WorkflowComponent {
   @Input() reload: any;
   @Input() isTrash: any;
   @Input() securityLevel: any;
-  @ViewChild('codeMirror', {static: false}) cm;
+  @ViewChild('codeEditor', {static: false}) cm;
 
   searchNode = {
     text: '',
@@ -5122,18 +5124,18 @@ export class WorkflowComponent {
     }
     if (event) {
       this.selectedNode.obj.noticeBoardName = '';
-      const doc = this.cm.codeMirror.getDoc();
+      const doc = this.cm.codeEditor.getDoc();
       const cursor = doc.getCursor();  // gets the line number in the cursor position
-      if (this.cm.codeMirror.getSelection()) {
-        let text = this.cm.codeMirror.getValue();
-        text = text.replace(this.cm.codeMirror.getSelection(), event);
-        this.cm.codeMirror.setValue(text);
+      if (this.cm.codeEditor.getSelection()) {
+        let text = this.cm.codeEditor.getValue();
+        text = text.replace(this.cm.codeEditor.getSelection(), event);
+        this.cm.codeEditor.setValue(text);
         cursor.ch = text.length;
       } else {
         doc.replaceRange("'" + event + "'", cursor);
         cursor.ch = cursor.ch + (event.length + 2);
       }
-      this.cm.codeMirror.focus();
+      this.cm.codeEditor.focus();
       doc.setCursor(cursor);
     }
   }
@@ -10917,21 +10919,21 @@ export class WorkflowComponent {
         }
         self.ref.detectChanges();
         setTimeout(() => {
-          if (self.cm && self.cm.codeMirror) {
+          if (self.cm && self.cm.codeEditor) {
             setTimeout(() => {
               if (self.selectedNode && self.selectedNode.obj) {
                 let arr = self.selectedNode.obj.noticeBoardNames?.split('\n') || [];
-                const doc = self.cm.codeMirror.getDoc();
+                const doc = self.cm.codeEditor.getDoc();
                 const cursor = doc.getCursor();  // gets the line number in the cursor position
                 doc.replaceRange('', cursor);
                 cursor.line = arr.length > 0 ? arr.length - 1 : 0;
                 cursor.ch = arr.length > 0 ? arr[arr.length - 1]?.length + 1 : 0;
-                self.cm.codeMirror.focus();
+                self.cm.codeEditor.focus();
                 doc.setCursor(cursor);
               }
             }, 100);
 
-            self.cm.codeMirror.setOption("extraKeys", {
+            self.cm.codeEditor.setOption("extraKeys", {
               "Shift-Ctrl-Space": "autocomplete",
               "Tab": (cm) => {
                 let spaces = '';
