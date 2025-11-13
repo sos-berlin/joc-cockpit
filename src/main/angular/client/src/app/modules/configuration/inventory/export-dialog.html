@@ -152,7 +152,7 @@
             <label translate>inventory.label.handleRecursively</label>
           </div>
           <div class="col-md-6">
-            <label [(ngModel)]="exportObj.isRecursive" name="isRecursive" nz-checkbox></label>
+            <label [(ngModel)]="exportObj.isRecursive" name="isRecursive" (ngModelChange)="handleRecursive()" nz-checkbox></label>
           </div>
         </div>
       }
@@ -217,6 +217,7 @@
           <div class="col-md-12 export-tree-checkbox">
             <nz-tree
               #treeCtrl
+              [nzCheckStrictly]="!this.exportObj.isRecursive"
               [nzCheckable]="true"
               (nzCheckboxChange)="checkBoxChange($event)"
               (nzExpandChange)="getDeploymentVersion($event)"

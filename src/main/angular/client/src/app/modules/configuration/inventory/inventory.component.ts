@@ -1486,7 +1486,7 @@ export class SingleDeployComponent {
   }
 
   hasUncheckedInvalidCalendar(): boolean {
-    if (!this.isRevoke || this.releasable) {
+    if ((!this.isRevoke || this.releasable) && this.operation !== 'recall') {
       for (const type of Object.keys(this.referencedObjectsByType)) {
         const hasInvalidCalendar = this.referencedObjectsByType[type].some(obj =>
           !obj.selected &&
@@ -1511,7 +1511,7 @@ export class SingleDeployComponent {
   }
 
   getInvalidCalendarMessage(): string {
-    if (!this.isRevoke || this.releasable) {
+    if ((!this.isRevoke || this.releasable) && this.operation !== 'recall') {
       const invalidCalendars: string[] = [];
 
       Object.keys(this.referencedObjectsByType).forEach(type => {
@@ -3687,7 +3687,7 @@ export class DeployComponent {
   }
 
   hasUncheckedInvalidCalendar(): boolean {
-    if (!this.isRevoke && this.releasable) {
+    if ((!this.isRevoke || this.releasable) && this.operation !== 'recall') {
       let hasSchedule = false;
 
       const checkForSchedule = (nodes: any[]): void => {
@@ -3733,7 +3733,7 @@ export class DeployComponent {
   }
 
   getInvalidCalendarMessage(): string {
-    if (!this.isRevoke && this.releasable) {
+    if ((!this.isRevoke || this.releasable) && this.operation !== 'recall') {
       let hasSchedule = false;
 
       const checkForSchedule = (nodes: any[]): void => {
@@ -3851,8 +3851,9 @@ export class ExportComponent {
     {value: 'TAR_GZ', name: 'TAR_GZ'}
   ]
   useDependencies = false;
+  private recursiveDependenciesCache: any = null;
 
-  constructor(public activeModal: NzModalRef,private modal: NzModalService, private coreService: CoreService, private ref: ChangeDetectorRef,
+  constructor(public activeModal: NzModalRef, private modal: NzModalService, private coreService: CoreService, private ref: ChangeDetectorRef,
               private inventoryService: InventoryService) {
   }
 
@@ -4066,31 +4067,33 @@ export class ExportComponent {
     return checkedObjects;
   }
 
-private getDependencies(checkedNodes: {name: string, type: string}[], node, isChecked = false): void {
-  const configurations = checkedNodes.map(node => ({name: node.name, type: node.type}));
+  private getDependencies(checkedNodes: { name: string, type: string }[], node, isChecked = false): void {
+    const configurations = checkedNodes.map(node => ({name: node.name, type: node.type}));
 
-  let operationType = 'EXPORT';
-  if (this.exportObj.exportType === 'changes') {
-    operationType = 'DEPLOY';
-  }
-
-  const requestBody = {configurations: configurations, operationType: operationType};
-
-  this.coreService.post('inventory/dependencies', requestBody).subscribe({
-    next: (res: any) => {
-      if (res.dependencies && (res.dependencies?.requestedItems.length > 0 || res.dependencies?.affectedItems.length > 0)) {
-        this.updateNodeDependencies(res.dependencies, isChecked);
-        this.prepareObject(res.dependencies);
-
-
-        this.ref.detectChanges();
-      }
-    },
-    error: (err) => {
+    let operationType = 'EXPORT';
+    if (this.exportObj.exportType === 'changes') {
+      operationType = 'DEPLOY';
     }
-  });
-}
 
+    const requestBody = {configurations: configurations, operationType: operationType};
+
+    this.coreService.post('inventory/dependencies', requestBody).subscribe({
+      next: (res: any) => {
+        if (this.exportObj.isRecursive) {
+          this.recursiveDependenciesCache = res.dependencies;
+        }
+        if (res.dependencies && (res.dependencies?.requestedItems.length > 0 || res.dependencies?.affectedItems.length > 0)) {
+          this.updateNodeDependencies(res.dependencies, isChecked);
+          this.prepareObject(res.dependencies);
+
+
+          this.ref.detectChanges();
+        }
+      },
+      error: (err) => {
+      }
+    });
+  }
 
 
   private updateNodeDependencies(dependenciesResponse: any, isChecked: boolean): void {
@@ -4159,100 +4162,100 @@ private getDependencies(checkedNodes: {name: string, type: string}[], node, isCh
     return null;
   }
 
-private prepareObject(dependencies: any): void {
-  if (dependencies && dependencies?.requestedItems.length > 0) {
-    dependencies?.requestedItems.forEach((dep) => {
-      if (dep.referencedBy) {
-        dep.referencedBy.forEach((refObj) => {
-          const type = refObj.objectType;
+  private prepareObject(dependencies: any): void {
+    if (dependencies && dependencies?.requestedItems.length > 0) {
+      dependencies?.requestedItems.forEach((dep) => {
+        if (dep.referencedBy) {
+          dep.referencedBy.forEach((refObj) => {
+            const type = refObj.objectType;
 
-          if (!this.affectedObjectsByType[type]) {
-            this.affectedObjectsByType[type] = [];
-            this.affectedObjectTypes.push(type);
-          }
+            if (!this.affectedObjectsByType[type]) {
+              this.affectedObjectsByType[type] = [];
+              this.affectedObjectTypes.push(type);
+            }
 
-          if (this.exportObj.exportType === 'individual') {
-            refObj.disabled = false;
-            refObj.selected = this.useDependencies && refObj.valid && !refObj.deployed && !refObj.released;
-          } else if (this.exportObj.exportType === 'changes') {
-            refObj.disabled = false;
-            refObj.selected = this.exportObj.includeDependencies;
-          } else {
-            refObj.disabled = false;
-            refObj.selected = true;
-          }
+            if (this.exportObj.exportType === 'individual') {
+              refObj.disabled = false;
+              refObj.selected = this.useDependencies && refObj.valid && !refObj.deployed && !refObj.released;
+            } else if (this.exportObj.exportType === 'changes') {
+              refObj.disabled = false;
+              refObj.selected = this.exportObj.includeDependencies;
+            } else {
+              refObj.disabled = false;
+              refObj.selected = true;
+            }
 
-          if (this.exportObj.forSigning) {
-            refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
-            refObj.disabled = !refObj.valid;
-          }
+            if (this.exportObj.forSigning) {
+              refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
+              refObj.disabled = !refObj.valid;
+            }
 
-          refObj.change = refObj.deployed;
-          this.affectedObjectsByType[type].push(refObj);
-        });
-      }
+            refObj.change = refObj.deployed;
+            this.affectedObjectsByType[type].push(refObj);
+          });
+        }
 
-      if (dep.references) {
-        dep.references.forEach((refObj) => {
-          const type = refObj.objectType;
+        if (dep.references) {
+          dep.references.forEach((refObj) => {
+            const type = refObj.objectType;
 
-          if (!this.referencedObjectsByType[type]) {
-            this.referencedObjectsByType[type] = [];
-            this.referencedObjectTypes.push(type);
-          }
+            if (!this.referencedObjectsByType[type]) {
+              this.referencedObjectsByType[type] = [];
+              this.referencedObjectTypes.push(type);
+            }
 
-          if (this.exportObj.exportType === 'individual') {
-            refObj.disabled = false;
-            refObj.selected = this.useDependencies && refObj.valid && !refObj.deployed && !refObj.released;
-          } else if (this.exportObj.exportType === 'changes') {
-            refObj.disabled = false;
-            refObj.selected = this.exportObj.includeDependencies;
-          } else {
-            refObj.disabled = false;
-            refObj.selected = true;
-          }
+            if (this.exportObj.exportType === 'individual') {
+              refObj.disabled = false;
+              refObj.selected = this.useDependencies && refObj.valid && !refObj.deployed && !refObj.released;
+            } else if (this.exportObj.exportType === 'changes') {
+              refObj.disabled = false;
+              refObj.selected = this.exportObj.includeDependencies;
+            } else {
+              refObj.disabled = false;
+              refObj.selected = true;
+            }
 
-          if (this.exportObj.forSigning) {
-            refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
-            refObj.disabled = !refObj.valid;
-          }
+            if (this.exportObj.forSigning) {
+              refObj.selected = refObj.valid && !refObj.deployed && !refObj.released;
+              refObj.disabled = !refObj.valid;
+            }
 
-          refObj.change = refObj.deployed;
-          this.referencedObjectsByType[type].push(refObj);
-        });
-      }
-    });
+            refObj.change = refObj.deployed;
+            this.referencedObjectsByType[type].push(refObj);
+          });
+        }
+      });
 
-    // Handle filteredAffectedItems
-    this.filteredAffectedItems.forEach((item) => {
-      if (this.exportObj.exportType === 'individual') {
-        item.disabled = false;
-        item.selected = this.useDependencies && item.valid && !item.deployed && !item.released;
-      } else if (this.exportObj.exportType === 'changes') {
-        item.disabled = false;
-        item.selected = this.exportObj.includeDependencies;
-      } else {
-        item.disabled = false;
-        item.selected = true;
-      }
+      // Handle filteredAffectedItems
+      this.filteredAffectedItems.forEach((item) => {
+        if (this.exportObj.exportType === 'individual') {
+          item.disabled = false;
+          item.selected = this.useDependencies && item.valid && !item.deployed && !item.released;
+        } else if (this.exportObj.exportType === 'changes') {
+          item.disabled = false;
+          item.selected = this.exportObj.includeDependencies;
+        } else {
+          item.disabled = false;
+          item.selected = true;
+        }
 
-      if (this.exportObj.forSigning) {
-        item.selected = item.valid && !item.deployed && !item.released;
-        item.disabled = !item.valid;
-      }
+        if (this.exportObj.forSigning) {
+          item.selected = item.valid && !item.deployed && !item.released;
+          item.disabled = !item.valid;
+        }
 
-      item.change = item.deployed;
-    });
+        item.change = item.deployed;
+      });
 
-    this.affectedObjectTypes.forEach((type) => {
-      this.affectedCollapsed[type] = true;
-    });
+      this.affectedObjectTypes.forEach((type) => {
+        this.affectedCollapsed[type] = true;
+      });
 
-    this.referencedObjectTypes.forEach((type) => {
-      this.referencedCollapsed[type] = true;
-    });
+      this.referencedObjectTypes.forEach((type) => {
+        this.referencedCollapsed[type] = true;
+      });
+    }
   }
-}
 
   onToggleUseDependencies(): void {
     const to = this.useDependencies;
@@ -4291,6 +4294,7 @@ private prepareObject(dependencies: any): void {
       this.updateParentCheckboxFilteredAffected(t);
     });
   }
+
   private mergeDeep(deployables: any, releasables: any): any {
     function recursive(sour: any, dest: any): void {
       if (!sour.deployables) {
@@ -4325,6 +4329,7 @@ private prepareObject(dependencies: any): void {
 
     this.ref.detectChanges();
   }
+
   onchangeSigning(): void {
     if (this.exportObj.forSigning) {
       this.filter.valid = true;
@@ -4879,214 +4884,212 @@ private prepareObject(dependencies: any): void {
     this.export();
   }
 
-export(): void {
-  const obj: any = {
-    useShortPath: this.exportObj.useShortPath,
-    exportFile: {filename: this.exportObj.filename, format: this.exportObj.fileFormat}
-  };
+  export(): void {
+    const obj: any = {
+      useShortPath: this.exportObj.useShortPath,
+      exportFile: {filename: this.exportObj.filename, format: this.exportObj.fileFormat}
+    };
 
-  if (this.path && this.path != 'path') {
-    obj.startFolder = this.path;
-  }
-
-  if (this.comments.comment) {
-    obj.auditLog = {};
-    this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-  }
-
-  let folders = [];
-  if (this.exportObj.exportType !== 'folders') {
-    this.checkFolderSelection(folders);
-  }
-
-  if ((folders.length > 0) || (this.object.deployConfigurations && this.object.deployConfigurations.length > 0) ||
-    (this.object.draftConfigurations.length && this.object.draftConfigurations.length > 0) ||
-    (this.object.releasedConfigurations && this.object.releasedConfigurations.length > 0) ||
-    (this.object.releaseDraftConfigurations.length && this.object.releaseDraftConfigurations.length > 0) || (this.filteredAffectedItems && this.filteredAffectedItems.length > 0)) {
-
-    // Clean up empty arrays
-    if (this.object.deployConfigurations && this.object.deployConfigurations.length === 0) {
-      delete this.object.deployConfigurations;
-    }
-    if (this.object.draftConfigurations && this.object.draftConfigurations.length === 0) {
-      delete this.object.draftConfigurations;
-    }
-    if (this.object.releasedConfigurations && this.object.releasedConfigurations.length === 0) {
-      delete this.object.releasedConfigurations;
-    }
-    if (this.object.releaseDraftConfigurations && this.object.releaseDraftConfigurations.length === 0) {
-      delete this.object.releaseDraftConfigurations;
+    if (this.path && this.path != 'path') {
+      obj.startFolder = this.path;
     }
 
-    if (this.exportObj.filename) {
-      if (this.exportObj.filename.indexOf('.') === -1) {
-        this.exportObj.filename = this.exportObj.filename + (this.exportObj.fileFormat === 'ZIP' ? '.zip' : '.tar.gz');
+    if (this.comments.comment) {
+      obj.auditLog = {};
+      this.coreService.getAuditLogObj(this.comments, obj.auditLog);
+    }
+
+    let folders = [];
+    if (this.exportObj.exportType !== 'folders') {
+      this.checkFolderSelection(folders);
+    }
+
+    if ((folders.length > 0) || (this.object.deployConfigurations && this.object.deployConfigurations.length > 0) ||
+      (this.object.draftConfigurations.length && this.object.draftConfigurations.length > 0) ||
+      (this.object.releasedConfigurations && this.object.releasedConfigurations.length > 0) ||
+      (this.object.releaseDraftConfigurations.length && this.object.releaseDraftConfigurations.length > 0) || (this.filteredAffectedItems && this.filteredAffectedItems.length > 0)) {
+
+      // Clean up empty arrays
+      if (this.object.deployConfigurations && this.object.deployConfigurations.length === 0) {
+        delete this.object.deployConfigurations;
       }
-    }
-
-    if (this.exportObj.forSigning) {
-      obj.forSigning = {controllerId: this.exportObj.controllerId};
-      if (this.object.draftConfigurations || this.object.deployConfigurations) {
-        obj.forSigning.deployables = {
-          draftConfigurations: this.object.draftConfigurations,
-          deployConfigurations: this.object.deployConfigurations
-        };
+      if (this.object.draftConfigurations && this.object.draftConfigurations.length === 0) {
+        delete this.object.draftConfigurations;
       }
-      this.nodes.forEach(node => {
-        this.handleDependenciesForSigning(node, obj);
-      });
-      if (this.exportObj.exportType !== 'changes') {
-        this.handleAffectedItemsForSigning(obj)
+      if (this.object.releasedConfigurations && this.object.releasedConfigurations.length === 0) {
+        delete this.object.releasedConfigurations;
       }
-    } else {
-      obj.shallowCopy = {
-        withoutInvalid: this.filter.valid
-      };
+      if (this.object.releaseDraftConfigurations && this.object.releaseDraftConfigurations.length === 0) {
+        delete this.object.releaseDraftConfigurations;
+      }
 
-      const isIndividualExport = this.exportObj.exportType === 'individual' || this.origin?.object;
-
-      const isControllerObject = (type: string) => {
-        return ['WORKFLOW', 'JOBRESOURCE', 'FILEORDERSOURCE', 'NOTICEBOARD', 'LOCK'].includes(type);
-      };
-
-      const isScheduleOrJobTemplate = (type: string) => {
-        return ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR', 'REPORT'].includes(type);
-      };
-
-      let originObjectType: string | null = null;
-      if (this.origin?.object) {
-        if (typeof this.origin.object === 'string') {
-          originObjectType = this.origin.object;
-        } else if (this.origin.object.match && this.origin.object.match('CALENDAR')) {
-          originObjectType = 'CALENDAR';
+      if (this.exportObj.filename) {
+        if (this.exportObj.filename.indexOf('.') === -1) {
+          this.exportObj.filename = this.exportObj.filename + (this.exportObj.fileFormat === 'ZIP' ? '.zip' : '.tar.gz');
         }
       }
 
-      if (this.object.releasedConfigurations || this.object.releaseDraftConfigurations) {
-        let shouldSkipReleasables = false;
-
-        if (isIndividualExport) {
-          if (originObjectType && isControllerObject(originObjectType)) {
-            shouldSkipReleasables = true;
-          }
-          else if (this.object.releasedConfigurations?.length > 0) {
-            shouldSkipReleasables = this.object.releasedConfigurations.every(item =>
-              isControllerObject(item.configuration?.objectType)
-            );
-          } else if (this.object.releaseDraftConfigurations?.length > 0) {
-            shouldSkipReleasables = this.object.releaseDraftConfigurations.every(item =>
-              isControllerObject(item.configuration?.objectType)
-            );
-          }
-        }
-
-        if (!shouldSkipReleasables) {
-          obj.shallowCopy.releasables = {
-            releasedConfigurations: this.object.releasedConfigurations,
-            draftConfigurations: this.object.releaseDraftConfigurations
-          };
-        }
-      }
-
-      if (this.object.draftConfigurations || this.object.deployConfigurations) {
-        let shouldSkipDeployables = false;
-
-        if (isIndividualExport) {
-          if (originObjectType && isScheduleOrJobTemplate(originObjectType)) {
-            shouldSkipDeployables = true;
-          }
-          else if (this.object.draftConfigurations?.length > 0) {
-            shouldSkipDeployables = this.object.draftConfigurations.every(item =>
-              isScheduleOrJobTemplate(item.configuration?.objectType)
-            );
-          } else if (this.object.deployConfigurations?.length > 0) {
-            shouldSkipDeployables = this.object.deployConfigurations.every(item =>
-              isScheduleOrJobTemplate(item.configuration?.objectType)
-            );
-          }
-        }
-
-        if (!shouldSkipDeployables) {
-          obj.shallowCopy.deployables = {
+      if (this.exportObj.forSigning) {
+        obj.forSigning = {controllerId: this.exportObj.controllerId};
+        if (this.object.draftConfigurations || this.object.deployConfigurations) {
+          obj.forSigning.deployables = {
             draftConfigurations: this.object.draftConfigurations,
             deployConfigurations: this.object.deployConfigurations
           };
         }
-      }
+        this.nodes.forEach(node => {
+          this.handleDependenciesForSigning(node, obj);
+        });
+        if (this.exportObj.exportType !== 'changes') {
+          this.handleAffectedItemsForSigning(obj)
+        }
+      } else {
+        obj.shallowCopy = {
+          withoutInvalid: this.filter.valid
+        };
 
-      if (folders.length > 0 && !isIndividualExport) {
-        if (!obj.shallowCopy.releasables) {
-          obj.shallowCopy.releasables = {
-            releasedConfigurations: folders,
-            draftConfigurations: folders
-          }
-        } else {
-          if (!obj.shallowCopy.releasables.releasedConfigurations) {
-            obj.shallowCopy.releasables.releasedConfigurations = folders;
-          } else {
-            obj.shallowCopy.releasables.releasedConfigurations = obj.shallowCopy.releasables.releasedConfigurations.concat(folders);
-          }
+        const isIndividualExport = this.exportObj.exportType === 'individual' || this.origin?.object;
 
-          if (!obj.shallowCopy.releasables.draftConfigurations) {
-            obj.shallowCopy.releasables.draftConfigurations = folders;
-          } else {
-            obj.shallowCopy.releasables.draftConfigurations = obj.shallowCopy.releasables.draftConfigurations.concat(folders);
+        const isControllerObject = (type: string) => {
+          return ['WORKFLOW', 'JOBRESOURCE', 'FILEORDERSOURCE', 'NOTICEBOARD', 'LOCK'].includes(type);
+        };
+
+        const isScheduleOrJobTemplate = (type: string) => {
+          return ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR', 'REPORT'].includes(type);
+        };
+
+        let originObjectType: string | null = null;
+        if (this.origin?.object) {
+          if (typeof this.origin.object === 'string') {
+            originObjectType = this.origin.object;
+          } else if (this.origin.object.match && this.origin.object.match('CALENDAR')) {
+            originObjectType = 'CALENDAR';
           }
         }
 
-        if (!obj.shallowCopy.deployables) {
-          obj.shallowCopy.deployables = {
-            deployConfigurations: folders,
-            draftConfigurations: folders
-          }
-        } else {
-          if (!obj.shallowCopy.deployables.deployConfigurations) {
-            obj.shallowCopy.deployables.deployConfigurations = folders;
-          } else {
-            obj.shallowCopy.deployables.deployConfigurations = obj.shallowCopy.deployables.deployConfigurations.concat(folders);
+        if (this.object.releasedConfigurations || this.object.releaseDraftConfigurations) {
+          let shouldSkipReleasables = false;
+
+          if (isIndividualExport) {
+            if (originObjectType && isControllerObject(originObjectType)) {
+              shouldSkipReleasables = true;
+            } else if (this.object.releasedConfigurations?.length > 0) {
+              shouldSkipReleasables = this.object.releasedConfigurations.every(item =>
+                isControllerObject(item.configuration?.objectType)
+              );
+            } else if (this.object.releaseDraftConfigurations?.length > 0) {
+              shouldSkipReleasables = this.object.releaseDraftConfigurations.every(item =>
+                isControllerObject(item.configuration?.objectType)
+              );
+            }
           }
 
-          if (!obj.shallowCopy.deployables.draftConfigurations) {
-            obj.shallowCopy.deployables.draftConfigurations = folders;
+          if (!shouldSkipReleasables) {
+            obj.shallowCopy.releasables = {
+              releasedConfigurations: this.object.releasedConfigurations,
+              draftConfigurations: this.object.releaseDraftConfigurations
+            };
+          }
+        }
+
+        if (this.object.draftConfigurations || this.object.deployConfigurations) {
+          let shouldSkipDeployables = false;
+
+          if (isIndividualExport) {
+            if (originObjectType && isScheduleOrJobTemplate(originObjectType)) {
+              shouldSkipDeployables = true;
+            } else if (this.object.draftConfigurations?.length > 0) {
+              shouldSkipDeployables = this.object.draftConfigurations.every(item =>
+                isScheduleOrJobTemplate(item.configuration?.objectType)
+              );
+            } else if (this.object.deployConfigurations?.length > 0) {
+              shouldSkipDeployables = this.object.deployConfigurations.every(item =>
+                isScheduleOrJobTemplate(item.configuration?.objectType)
+              );
+            }
+          }
+
+          if (!shouldSkipDeployables) {
+            obj.shallowCopy.deployables = {
+              draftConfigurations: this.object.draftConfigurations,
+              deployConfigurations: this.object.deployConfigurations
+            };
+          }
+        }
+
+        if (folders.length > 0 && !isIndividualExport) {
+          if (!obj.shallowCopy.releasables) {
+            obj.shallowCopy.releasables = {
+              releasedConfigurations: folders,
+              draftConfigurations: folders
+            }
           } else {
-            obj.shallowCopy.deployables.draftConfigurations = obj.shallowCopy.deployables.draftConfigurations.concat(folders);
+            if (!obj.shallowCopy.releasables.releasedConfigurations) {
+              obj.shallowCopy.releasables.releasedConfigurations = folders;
+            } else {
+              obj.shallowCopy.releasables.releasedConfigurations = obj.shallowCopy.releasables.releasedConfigurations.concat(folders);
+            }
+
+            if (!obj.shallowCopy.releasables.draftConfigurations) {
+              obj.shallowCopy.releasables.draftConfigurations = folders;
+            } else {
+              obj.shallowCopy.releasables.draftConfigurations = obj.shallowCopy.releasables.draftConfigurations.concat(folders);
+            }
+          }
+
+          if (!obj.shallowCopy.deployables) {
+            obj.shallowCopy.deployables = {
+              deployConfigurations: folders,
+              draftConfigurations: folders
+            }
+          } else {
+            if (!obj.shallowCopy.deployables.deployConfigurations) {
+              obj.shallowCopy.deployables.deployConfigurations = folders;
+            } else {
+              obj.shallowCopy.deployables.deployConfigurations = obj.shallowCopy.deployables.deployConfigurations.concat(folders);
+            }
+
+            if (!obj.shallowCopy.deployables.draftConfigurations) {
+              obj.shallowCopy.deployables.draftConfigurations = folders;
+            } else {
+              obj.shallowCopy.deployables.draftConfigurations = obj.shallowCopy.deployables.draftConfigurations.concat(folders);
+            }
           }
         }
       }
-    }
 
-    if (this.object.folders && this.object.folders.length > 0) {
-      this.exportFolder(obj);
+      if (this.object.folders && this.object.folders.length > 0) {
+        this.exportFolder(obj);
+      } else {
+        if (!this.exportObj.forSigning) {
+          if (this.exportObj.exportType === 'individual' && this.useDependencies) {
+            this.nodes.forEach(node => {
+              this.handleDependenciesForExport(node, obj);
+            });
+            this.handleAffectedItemsForExport(obj);
+          } else if (this.exportObj.exportType === 'changes' && this.exportObj.includeDependencies) {
+            this.nodes.forEach(node => {
+              this.handleDependenciesForExport(node, obj);
+            });
+            this.handleAffectedItemsForExport(obj);
+          }
+        }
+        this.coreService.download('inventory/export', obj, this.exportObj.filename, (res) => {
+          if (res) {
+            this.activeModal.close('ok');
+          } else {
+            this.submitted = false;
+          }
+        });
+      }
     } else {
-      if (!this.exportObj.forSigning) {
-        if (this.exportObj.exportType === 'individual' && this.useDependencies) {
-          this.nodes.forEach(node => {
-            this.handleDependenciesForExport(node, obj);
-          });
-          this.handleAffectedItemsForExport(obj);
-        } else if (this.exportObj.exportType === 'changes' && this.exportObj.includeDependencies) {
-          this.nodes.forEach(node => {
-            this.handleDependenciesForExport(node, obj);
-          });
-          this.handleAffectedItemsForExport(obj);
-        }
+      if (this.object.folders && this.object.folders.length > 0) {
+        this.exportFolder(obj);
+      } else {
+        this.submitted = false;
       }
-      this.coreService.download('inventory/export', obj, this.exportObj.filename, (res) => {
-        if (res) {
-          this.activeModal.close('ok');
-        } else {
-          this.submitted = false;
-        }
-      });
-    }
-  } else {
-    if (this.object.folders && this.object.folders.length > 0) {
-      this.exportFolder(obj);
-    } else {
-      this.submitted = false;
     }
   }
-}
 
   private handleDependenciesForExport(node: any, obj: any): void {
     if (!obj.shallowCopy) {
@@ -5406,6 +5409,60 @@ export(): void {
     })
   }
 
+  handleRecursive(): void {
+    this.ref.detectChanges();
+    if (this.exportObj.isRecursive) {
+      if (this.recursiveDependenciesCache) {
+        this.updateNodeDependencies(this.recursiveDependenciesCache, true);
+        this.prepareObject(this.recursiveDependenciesCache);
+        this.ref.detectChanges();
+        return;
+      } else {
+        this.checkedObject.clear();
+        this.recursiveCheck(this.nodes, false);
+        this.expandAllWithStateRestore();
+      }
+    }
+  }
+
+
+  expandAllWithStateRestore(): void {
+    const savedCheckedState = new Set(this.checkedObject);
+
+    this.buildTree(this.path, null, () => {
+      const self = this;
+      if (this.nodes && this.nodes.length > 0) {
+        this.nodes.forEach(rootNode => {
+          if (!rootNode.isLeaf) {
+            rootNode.expanded = true;
+          }
+        });
+
+        function recursive(node: any): void {
+          for (const i in node) {
+            if (node[i].children && node[i].children.length > 0) {
+              if (!node[i].isCall) {
+                self.inventoryService.checkAndUpdateVersionList(node[i]);
+              }
+              recursive(node[i].children);
+            }
+          }
+        }
+        recursive(this.nodes);
+      }
+
+      this.checkedObject = savedCheckedState;
+      this.recursiveCheck(this.nodes, true);
+      this.nodes = [...this.nodes];
+      this.ref.detectChanges();
+
+      const checkedNodes = this.collectCheckedObjects(this.nodes);
+      if (checkedNodes.length > 0 && this.exportObj.includeDependencies) {
+        this.getDependencies(checkedNodes, this.nodes[0]);
+      }
+    }, true);
+  }
+
   private exportFolder(obj: any): void {
 
     if (this.exportObj.forSigning) {
@@ -5442,7 +5499,7 @@ export(): void {
     this.activeModal.destroy();
   }
 
-  helpPage(key): void{
+  helpPage(key): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: HelpViewerComponent,
