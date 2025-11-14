@@ -14,7 +14,6 @@
   },
   "private": true,
   "dependencies": {
-<<<<<<< HEAD
     "@angular/animations": "^20.3.2",
     "@angular/common": "^20.3.2",
     "@angular/compiler": "^20.3.2",
@@ -24,17 +23,6 @@
     "@angular/platform-browser-dynamic": "^20.3.2",
     "@angular/router": "^20.3.2",
     "@cyclonedx/cyclonedx-npm": "^4.0.3",
-=======
-    "@angular/animations": "^18.0.0",
-    "@angular/common": "^18.0.0",
-    "@angular/compiler": "^18.0.0",
-    "@angular/core": "^18.0.0",
-    "@angular/forms": "^18.0.0",
-    "@angular/platform-browser": "^18.0.0",
-    "@angular/platform-browser-dynamic": "^18.0.0",
-    "@angular/router": "^18.0.0",
-    "@cyclonedx/cyclonedx-npm": "^1.10.0",
->>>>>>> release/2.7
     "@juggle/resize-observer": "^3.4.0",
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
