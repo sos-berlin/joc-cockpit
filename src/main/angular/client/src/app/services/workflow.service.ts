@@ -736,8 +736,8 @@ export class WorkflowService {
             (!value.admissionTimeScheme.restrictedSchemes || value.admissionTimeScheme.restrictedSchemes.length === 0))) {
           delete value['admissionTimeScheme'];
         }
-        if (!value.executable || (!value.executable.className && ((value.executable.TYPE === 'InternalExecutable' || value.executable.TYPE === 'Java') && value.executable.internalType !== 'JavaScript_Graal'))
-          || (!value.executable.script && (value.executable.TYPE === 'ShellScriptExecutable' || value.executable.TYPE === 'JavaScript' || value.executable.internalType === 'JavaScript_Graal')) || !value.agentName) {
+        if (!value.executable || (!value.executable.className && ((value.executable.TYPE === 'InternalExecutable' || value.executable.TYPE === 'Java') && value.executable.internalType !== 'JavaScript_Graal' && value.executable.internalType !== 'Python_Graal'))
+          || (!value.executable.script && (value.executable.TYPE === 'ShellScriptExecutable' || value.executable.TYPE === 'JavaScript' || value.executable.TYPE === 'Python' || value.executable.internalType === 'JavaScript_Graal' || value.executable.internalType === 'Python_Graal')) || !value.agentName) {
           return false;
         }
         if (value.executable && value.executable.login && value.executable.login.withUserProfile && !value.executable.login.credentialKey) {
@@ -3244,8 +3244,13 @@ export class WorkflowService {
   }
 
   convertJobObject(job: any, isJobTemplate = true): any {
-    if (job.executable.TYPE === 'Java' || job.executable.TYPE === 'JavaScript') {
-      job.executable.internalType = job.executable.TYPE === 'Java' ? 'Java' : 'JavaScript_Graal';
+    if (job.executable.TYPE === 'Java' || job.executable.TYPE === 'JavaScript' || job.executable.TYPE === 'Python') {
+      job.executable.internalType =
+        job.executable.TYPE === 'Java'
+          ? 'Java'
+          : job.executable.TYPE === 'Python'
+            ? 'Python_Graal'
+            : 'JavaScript_Graal';
       job.executable.TYPE = 'InternalExecutable';
     }
     if (job.jobResourceNames && (job.jobResourceNames.length == 0 || isEmpty(job.jobResourceNames))) {
@@ -3287,7 +3292,7 @@ export class WorkflowService {
         }
       }
       if (job.executable.arguments) {
-        if (job.executable.TYPE === 'InternalExecutable' || job.executable.TYPE === 'Java' || job.executable.TYPE === 'JavaScript') {
+        if (job.executable.TYPE === 'InternalExecutable' || job.executable.TYPE === 'Java' || job.executable.TYPE === 'JavaScript' || job.executable.TYPE === 'Python') {
           if (isArray(job.executable.arguments)) {
             job.executable.arguments.forEach((argu: any) => {
               this.coreService.addSlashToString(argu, 'value');
@@ -3329,10 +3334,10 @@ export class WorkflowService {
         delete job.notification['mail'];
       }
     }
-    if ((job.executable.TYPE === 'InternalExecutable' || job.executable.TYPE === 'Java') && job.executable.internalType !== 'JavaScript_Graal') {
+    if ((job.executable.TYPE === 'InternalExecutable' || job.executable.TYPE === 'Java') && job.executable.internalType !== 'JavaScript_Graal' && job.executable.internalType !== 'Python_Graal') {
       delete job.executable['script'];
       delete job.executable['login'];
-    } else if (job.executable.TYPE === 'ShellScriptExecutable' || job.executable.TYPE === 'JavaScript' || job.executable.internalType === 'JavaScript_Graal') {
+    } else if (job.executable.TYPE === 'ShellScriptExecutable' || job.executable.TYPE === 'JavaScript' || job.executable.internalType === 'JavaScript_Graal' || job.executable.TYPE === 'Python' || job.executable.internalType === 'Python_Graal') {
       delete job.executable['className'];
     }
     if (job.executable.env) {

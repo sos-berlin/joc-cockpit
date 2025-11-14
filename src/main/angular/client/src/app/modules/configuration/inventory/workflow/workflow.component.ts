@@ -2875,6 +2875,9 @@ export class JobComponent {
     } else if (this.selectedNode.job.executable.TYPE === 'JavaScript') {
       this.selectedNode.job.executable.internalType = 'JavaScript_Graal';
       this.selectedNode.job.executable.script = this.coreService.getDefaultJSFunc();
+    } else if (this.selectedNode.job.executable.TYPE === 'Python') {
+      this.selectedNode.job.executable.internalType = 'Python_Graal';
+      this.selectedNode.job.executable.script = this.coreService.getDefaultJSFunc();
     } else if (this.selectedNode.job.executable.TYPE === 'InternalExecutable') {
       this.selectedNode.job.executable.internalType = 'JITL';
     }
@@ -3054,11 +3057,13 @@ export class JobComponent {
     this.selectedNode.job.executable.v1Compatible = result.executable.v1Compatible;
     if (result.executable.internalType === 'JavaScript_Graal') {
       this.selectedNode.job.executable.TYPE = "JavaScript";
+    } if (result.executable.internalType === 'Python_Graal') {
+      this.selectedNode.job.executable.TYPE = "Python";
     } else if (result.executable.internalType === 'Java') {
       this.selectedNode.job.executable.TYPE = "Java";
     }
     if (this.selectedNode.job.executable.TYPE === 'InternalExecutable' || this.selectedNode.job.executable.TYPE === 'Java'
-      || this.selectedNode.job.executable.TYPE === 'JavaScript') {
+      || this.selectedNode.job.executable.TYPE === 'JavaScript' || this.selectedNode.job.executable.TYPE === 'Python') {
       this.selectedNode.job.executable.arguments = result.executable.arguments || [];
       if (!isArray(this.selectedNode.job.executable.arguments)) {
         this.selectedNode.job.executable.arguments = this.coreService.convertObjectToArray(this.selectedNode.job.executable, 'arguments');
@@ -3710,7 +3715,7 @@ export class JobComponent {
     if (this.error && this.selectedNode && this.selectedNode.obj) {
       this.obj.label = !this.selectedNode.obj.label;
       this.obj.agent = !this.selectedNode.job.agentName;
-      this.obj.script = !this.selectedNode.job.executable.script && (this.selectedNode.job.executable.TYPE === 'ShellScriptExecutable' || this.selectedNode.job.executable.TYPE === 'JavaScript');
+      this.obj.script = !this.selectedNode.job.executable.script && (this.selectedNode.job.executable.TYPE === 'ShellScriptExecutable' || this.selectedNode.job.executable.TYPE === 'JavaScript' || this.selectedNode.job.executable.TYPE === 'Python');
       this.obj.className = !this.selectedNode.job.executable.className && (this.selectedNode.job.executable.TYPE === 'InternalExecutable' || this.selectedNode.job.executable.TYPE === 'Java');
     } else {
       this.obj = {};
@@ -3752,7 +3757,7 @@ export class JobComponent {
         text = '##!include ' + name;
       }
 
-      if (this.selectedNode.job.executable.TYPE == 'JavaScript') {
+      if (this.selectedNode.job.executable.TYPE == 'JavaScript' || this.selectedNode.job.executable.TYPE == 'Python') {
         if (!currentLine.substring(0, cursor.ch).match('//!include')) {
           text = '//!include ' + name;
         }
@@ -4244,6 +4249,8 @@ export class JobComponent {
         this.selectedNode.job.executable.TYPE = 'Java';
       } else if (this.selectedNode.job.executable.internalType === 'JavaScript_Graal') {
         this.selectedNode.job.executable.TYPE = 'JavaScript';
+      } else if (this.selectedNode.job.executable.internalType === 'Python_Graal') {
+        this.selectedNode.job.executable.TYPE = 'Python';
       }
     }
     if (this.hasLicense && (this.selectedNode.job.subagentClusterIdExpr || this.selectedNode.job.withSubagentClusterIdExpr)) {
@@ -4932,7 +4939,7 @@ ngOnInit(): void {
 
       let str = (!isSpace ? ' ' : '');
       let text = name;
-      if (this.cmOption.mode == 'javascript') {
+      if (this.cmOption.mode == 'javascript' || this.cmOption.mode == 'python') {
         if (!currentLine.substring(0, cursor.ch).match('//!include')) {
           text = '//!include ' + name;
         }
@@ -11990,7 +11997,7 @@ export class WorkflowComponent {
         }
 
         if (self.selectedNode?.job?.executable?.TYPE) {
-          if (self.selectedNode.job.executable.TYPE === 'Java' || self.selectedNode.job.executable.TYPE === 'JavaScript') {
+          if (self.selectedNode.job.executable.TYPE === 'Java' || self.selectedNode.job.executable.TYPE === 'JavaScript' || self.selectedNode.job.executable.TYPE === 'Python') {
             self.selectedNode.job.executable.TYPE = 'InternalExecutable';
           }
         }
@@ -15033,10 +15040,10 @@ export class WorkflowComponent {
               checkErr = true;
               if (!this.invalidMsg) {
                 if (this.jobs[n].value.executable) {
-                  if ((this.jobs[n].value.executable.TYPE === 'ShellScriptExecutable' || this.jobs[n].value.executable.internalType === 'JavaScript_Graal')
+                  if ((this.jobs[n].value.executable.TYPE === 'ShellScriptExecutable' || this.jobs[n].value.executable.internalType === 'JavaScript_Graal' || this.jobs[n].value.executable.internalType === 'Python_Graal')
                     && !this.jobs[n].value.executable.script) {
                     this.invalidMsg = 'workflow.message.scriptIsMissing';
-                  } else if (this.jobs[n].value.executable.TYPE === 'InternalExecutable' && this.jobs[n].value.executable.internalType !== 'JavaScript_Graal' && !this.jobs[n].value.executable.className) {
+                  } else if (this.jobs[n].value.executable.TYPE === 'InternalExecutable' && this.jobs[n].value.executable.internalType !== 'JavaScript_Graal' && this.jobs[n].value.executable.internalType !== 'Python_Graal' && !this.jobs[n].value.executable.className) {
                     this.invalidMsg = 'workflow.message.classNameIsMissing';
                   } else if (!this.jobs[n].value.agentName) {
                     this.invalidMsg = 'workflow.message.agentIsMissing';

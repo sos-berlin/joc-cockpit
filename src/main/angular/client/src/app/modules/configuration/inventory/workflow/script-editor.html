@@ -65,12 +65,12 @@
                 <span class="nav-text" translate>workflow.button.redo</span>
               </a>
             </li>
-            @if (cmOption.mode === 'javascript') {
+            @if (cmOption.mode === 'javascript' || cmOption.mode === 'python') {
               <li class="nav-item dropdown-separator">
                 <span class="separator"></span>
               </li>
             }
-            @if (cmOption.mode === 'javascript') {
+            @if (cmOption.mode === 'javascript' || cmOption.mode === 'python') {
               <li class="nav-item">
                 <a class="nav-link" nz-tooltip="shft+Alt-F">
                   <span class="nav-text" (click)="autoFormatCode($event)" translate>workflow.button.format</span>

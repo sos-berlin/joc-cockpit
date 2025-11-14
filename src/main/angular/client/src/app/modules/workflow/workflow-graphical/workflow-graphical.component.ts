@@ -1901,7 +1901,7 @@ export class WorkflowGraphicalComponent {
     let nzData;
     if (argu.jobName) {
       const job = this.jobs[argu.jobName];
-      const data = (job.executable.TYPE === 'ShellScriptExecutable' || job.executable.internalType === 'JavaScript_Graal') ? job.executable.script : job.executable.className;
+      const data = (job.executable.TYPE === 'ShellScriptExecutable' || job.executable.internalType === 'JavaScript_Graal' || job.executable.internalType === 'Python_Graal') ? job.executable.script : job.executable.className;
       if (job && job.executable) {
         nzData = {
           data,
@@ -1911,8 +1911,12 @@ export class WorkflowGraphicalComponent {
           workflowPath: this.workFlowJson.path,
           admissionTime: job.admissionTimeScheme,
           timezone: this.workFlowJson.timeZone,
-          mode: job.executable.TYPE === 'ShellScriptExecutable' ? 'shell' : 'javascript',
-          isScript: (job.executable.TYPE === 'ShellScriptExecutable' || job.executable.internalType === 'JavaScript_Graal'),
+          mode: job.executable.TYPE === 'ShellScriptExecutable'
+            ? 'shell'
+            : job.executable.TYPE === 'Python'
+              ? 'python'
+              : 'javascript',
+          isScript: (job.executable.TYPE === 'ShellScriptExecutable' || job.executable.internalType === 'JavaScript_Graal' || job.executable.internalType === 'Python_Graal'),
           readonly: true
         };
       }
