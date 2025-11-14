@@ -54,7 +54,7 @@ When a Workflow is expanded using the arrow-down icon available for a Workflow, 
 
 The panel is displayed at the lower part of the window when users click the name of the Workflow or add an Order.
 
-### History of Orders
+### Order History
 
 - **Order ID** is the unique identifier assigned an Order. Clicking the arrow-down icon will display the Order variables and the Jobs passed by the Order. 
 - **Label** indicates the latest position of an Order in the Workflow. Users can assign *Labels* to Workflow Instructions that will be displayed and otherwise the technical position will be indicated.
@@ -65,12 +65,37 @@ The panel is displayed at the lower part of the window when users click the name
   - If Orders are completed, then the *Order State* will be *successful* or *failed*.
   - If Orders are not completed, the *Order State* will be *processing*.
 
-### Access to Log Output
+For access to log output the following options are available:
 
-- **Order ID**: Clicking the *Order ID* will display the Order's log output from the [Order Log View](/order-log). The log includes output created by any Jobs executed with the Workflow.
+- **Order ID**: clicking the *Order ID* will display the Order's log output from the [Order Log View](/order-log). The log includes output created by all Jobs executed with the Workflow.
 - **Download Icon**: clicking the icon will download the Order's log to a file.
 
-By default display of Order logs is limited to 10MB log size and otherwise logs are downloaded to files. Users can adjust the limit from the [Settings - JOC Cockpit](/settings-joc) page.
+By default display of Order logs is limited to 10 MB log size and otherwise logs are downloaded to files. Users can adjust the limit from the [Settings - JOC Cockpit](/settings-joc) page.
+
+### Task History
+
+- **Job** indicates the name of the Job.
+- **Label** indicates the position of the Job in the Workflow.
+- **Status** is the outcome of Job execution indicated by *in progress*, *successful* or *failed*.
+- **Start Time**, **End Time** indicate the beginning and end of Job execution.
+- **Criticality** is specified with [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflow-job-options) and indicates the relevance of a Job:
+  - *Minor*
+  - *Normal*
+  - *Major*
+  - *Critical*
+- **Return Code** is the exit code of a Shell Job or the return code of a JVM Job. The [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-job-properties) panel offers configuring return codes for successful and failed execution of Jobs.
+
+For access to log output the following action is available:
+
+- **Job**: clicking the *Job Name* will display the Job's log output from the [Task Log View](/task-log). 
+
+By default display of Task logs is limited to 10 MB log size and otherwise logs are downloaded to files. Users can adjust the limit from the [Settings - JOC Cockpit](/settings-joc) page.
+
+### Audit Log
+
+The panel displays the same information as the [Audit Log](/audit-log) focused on the current Workflow.
+
+The number of Audit Log entries displayed can be modified from the *Max. number of Audit Log entries per object* setting in the user's [Profile - Preferences](/profile-preferences).
 
 ## Operations
 
@@ -126,6 +151,8 @@ The [Workflows - Search](/workflows-search) offers criteria for looking up Workf
 
 - [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+  - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-job-properties)
+  - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflow-job-options)
 - [Daily Plan](/daily-plan)
 - [Order Log View](/order-log)
 - [Order States](/order-states)

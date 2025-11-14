@@ -1,4 +1,4 @@
-# Manage Controller/Agents
+# Manage Controller and Agents
 
 The *Manage Controller/Agents* page is used 
 
@@ -8,6 +8,8 @@ The *Manage Controller/Agents* page is used
   - specifying a Cluster of *Director Agents*
   - specifying any number of *Subagents* that act as worker nodes.
   - specifying any number of *Subagent Clusters* that rule use of Agents and that can be assigned Jobs in Workflows.
+
+Operation of a Controller Cluster or Agent Cluster is subject to the agreements of the [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License).
 
 ## Register Controller
 

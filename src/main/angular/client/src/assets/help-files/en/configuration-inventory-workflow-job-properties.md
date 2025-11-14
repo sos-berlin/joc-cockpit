@@ -55,6 +55,10 @@ The *Configuration - Inventory* view offers the *More Options* slider on top of 
 
 - [Configuration - Inventory - Job Resources](/configuration-inventory-job-resources)
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+  - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflows-job-options)
+  - [Configuration - Inventory - Workflows - Job Node Properties](/configuration-inventory-workflows-job-node-properties)
+  - [Configuration - Inventory - Workflows - Job Notifications](/configuration-inventory-workflows-job-notifications)
+  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-job-tags)
 - [Resources - Documentations](/resources-documentations)
 
 ### Product Knowledge Base
