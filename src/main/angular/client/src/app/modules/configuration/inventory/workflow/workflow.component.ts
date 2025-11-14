@@ -2877,7 +2877,7 @@ export class JobComponent {
       this.selectedNode.job.executable.script = this.coreService.getDefaultJSFunc();
     } else if (this.selectedNode.job.executable.TYPE === 'Python') {
       this.selectedNode.job.executable.internalType = 'Python_Graal';
-      this.selectedNode.job.executable.script = this.coreService.getDefaultJSFunc();
+      this.selectedNode.job.executable.script = this.coreService.getDefaultPYFunc();
     } else if (this.selectedNode.job.executable.TYPE === 'InternalExecutable') {
       this.selectedNode.job.executable.internalType = 'JITL';
     }
