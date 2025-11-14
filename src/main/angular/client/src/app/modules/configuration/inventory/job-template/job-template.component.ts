@@ -432,7 +432,11 @@ export class JobTemplateComponent {
         showToken: this.showToken,
         annotateScrollbar: true
       },
-      mode: this.job.configuration.executable.TYPE === 'JavaScript' ? 'javascript' : 'shell',
+      mode: this.job.configuration.executable.TYPE === 'JavaScript'
+        ? 'javascript'
+        : this.job.configuration.executable.TYPE === 'Python'
+          ? 'python'
+          : 'shell',
       gutters: ['CodeEditor-linenumbers', 'CodeEditor-foldgutter']
     };
   }
@@ -579,6 +583,8 @@ export class JobTemplateComponent {
         this.job.configuration.executable.TYPE = 'Java';
       } else if (this.job.configuration.executable.internalType === 'JavaScript_Graal') {
         this.job.configuration.executable.TYPE = 'JavaScript';
+      } else if (this.job.configuration.executable.internalType === 'Python_Graal') {
+        this.job.configuration.executable.TYPE = 'Python';
       }
     }
     if (!this.job.configuration.executable.returnCodeMeaning) {
@@ -1348,7 +1354,7 @@ export class JobTemplateComponent {
       let str = (!isSpace ? ' ' : '');
       let text = name;
 
-      if (this.job.configuration.executable.TYPE == 'JavaScript') {
+      if (this.job.configuration.executable.TYPE == 'JavaScript' || this.job.configuration.executable.TYPE == 'Python') {
         if (!currentLine.substring(0, cursor.ch).match('//!include')) {
           text = '//!include ' + name;
         }
@@ -1439,9 +1445,9 @@ export class JobTemplateComponent {
       if (!this.invalidMsg) {
         this.invalidMsg = res.invalidMsg;
       }
-      if ((this.job.configuration.executable.TYPE === 'ShellScriptExecutable' || this.job.configuration.executable.internalType === 'JavaScript_Graal') && !this.job.configuration.executable.script) {
+      if ((this.job.configuration.executable.TYPE === 'ShellScriptExecutable' || this.job.configuration.executable.internalType === 'JavaScript_Graal' || this.job.configuration.executable.internalType === 'Python_Graal') && !this.job.configuration.executable.script) {
         this.invalidMsg = 'workflow.message.scriptIsMissing';
-      } else if (this.job.configuration.executable.TYPE === 'InternalExecutable' && this.job.configuration.executable.internalType !== 'JavaScript_Graal' && !this.job.configuration.executable.className) {
+      } else if (this.job.configuration.executable.TYPE === 'InternalExecutable' && this.job.configuration.executable.internalType !== 'JavaScript_Graal' && this.job.configuration.executable.internalType !== 'Python_Graal' && !this.job.configuration.executable.className) {
         this.invalidMsg = 'workflow.message.classNameIsMissing';
       } else if (this.job.configuration.executable && this.job.configuration.executable.login &&
         this.job.configuration.executable.login.withUserProfile && !this.job.configuration.executable.login.credentialKey) {

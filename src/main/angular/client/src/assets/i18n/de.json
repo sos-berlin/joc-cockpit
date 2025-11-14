@@ -3791,6 +3791,7 @@
     "label.jitl": "JITL",
     "label.java": "Java",
     "label.javaScript": "JavaScript",
+    "label.python": "Python",
     "label.branch1.x": "Version 1.x",
     "label.uncatchable": "Uneinfangbar",
     "label.unsuccessful": "fehlgeschlagen",

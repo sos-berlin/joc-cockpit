@@ -3455,6 +3455,10 @@ private checkParentNode(lastPos, data, item, nodes): any {
     return "class JS7Job extends js7.Job {\n\tprocessOrder(js7Step) {\n\t\tjs7Step.getLogger().info('hello world');\n\t\t// do some stuff\n\t}\n}";
   }
 
+  getDefaultPYFunc(): string {
+    return "class JS7Job(js7.Job):\n    def processOrder(self, js7Step):\n        js7Step.getLogger().info('hello world')\n        # do some stuff";
+  }
+
   copyArguments(data, type, message): void {
 
     let arr: any[];

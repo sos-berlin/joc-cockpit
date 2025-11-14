@@ -134,8 +134,12 @@ export class WorkflowTreeStructureComponent {
           jobName: instruction.jobName,
           admissionTime: job.admissionTimeScheme,
           timezone: this.timezone,
-          mode: job.executable.TYPE === 'ShellScriptExecutable' ? 'shell' : 'javascript',
-          isScript: (job.executable.TYPE === 'ShellScriptExecutable' || job.executable.internalType === 'JavaScript_Graal'),
+          mode: job.executable.TYPE === 'ShellScriptExecutable'
+            ? 'shell'
+            : job.executable.TYPE === 'Python'
+              ? 'python'
+              : 'javascript',
+          isScript: (job.executable.TYPE === 'ShellScriptExecutable' || job.executable.internalType === 'JavaScript_Graal' || job.executable.internalType === 'Python_Graal'),
           readonly: true
         };
       }
