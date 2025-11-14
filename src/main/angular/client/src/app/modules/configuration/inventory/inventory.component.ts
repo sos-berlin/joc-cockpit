@@ -3688,26 +3688,6 @@ export class DeployComponent {
 
   hasUncheckedInvalidCalendar(): boolean {
     if ((!this.isRevoke || this.releasable) && this.operation !== 'recall') {
-      let hasSchedule = false;
-
-      const checkForSchedule = (nodes: any[]): void => {
-        for (const node of nodes) {
-          if (node.checked && node.type === 'SCHEDULE') {
-            hasSchedule = true;
-            return;
-          }
-          if (node.children && node.children.length > 0) {
-            checkForSchedule(node.children);
-          }
-        }
-      };
-
-      checkForSchedule(this.nodes);
-
-      if (!hasSchedule) {
-        return false;
-      }
-
       for (const type of Object.keys(this.referencedObjectsByType)) {
         const hasInvalidCalendar = this.referencedObjectsByType[type].some(obj =>
           !obj.selected &&
@@ -3734,26 +3714,6 @@ export class DeployComponent {
 
   getInvalidCalendarMessage(): string {
     if ((!this.isRevoke || this.releasable) && this.operation !== 'recall') {
-      let hasSchedule = false;
-
-      const checkForSchedule = (nodes: any[]): void => {
-        for (const node of nodes) {
-          if (node.checked && node.type === 'SCHEDULE') {
-            hasSchedule = true;
-            return;
-          }
-          if (node.children && node.children.length > 0) {
-            checkForSchedule(node.children);
-          }
-        }
-      };
-
-      checkForSchedule(this.nodes);
-
-      if (!hasSchedule) {
-        return '';
-      }
-
       const invalidCalendars: string[] = [];
 
       Object.keys(this.referencedObjectsByType).forEach(type => {
@@ -13439,7 +13399,8 @@ export class InventoryComponent {
         objectType: this.copyObj.objectType || this.copyObj.type,
         path: res.path.substring(0, res.path.lastIndexOf('/')) || '/',
         name: res.path.substring(res.path.lastIndexOf('/') + 1),
-        valid: this.copyObj.valid
+        valid: this.copyObj.valid,
+        id: res.id
       };
       object.expanded = true;
       this.type = obj.objectType;
