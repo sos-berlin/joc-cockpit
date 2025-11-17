@@ -2999,15 +2999,17 @@ export class WorkflowService {
           break;
 
         case 'MonthlyDatePeriod':
-          const monthDay = Math.floor(admissionPeriod.secondOfMonth / (24 * 3600)) + 1;
+          const secondOfMonth = admissionPeriod.secondOfMonth !== undefined ? admissionPeriod.secondOfMonth : 0;
+          const monthDay = Math.floor(secondOfMonth / (24 * 3600)) + 1;
+
           periodItem = {
             day: monthDay.toString(),
-            secondOfMonth: Math.floor(admissionPeriod.secondOfMonth / (24 * 3600)) * (24 * 3600),
+            secondOfMonth: (monthDay - 1) * 24 * 3600,
             frequency: this.getMonthDays(monthDay, false),
             periods: []
           };
 
-          const monthRelativeStartTime = admissionPeriod.secondOfMonth - periodItem.secondOfMonth;
+          const monthRelativeStartTime = secondOfMonth - periodItem.secondOfMonth;
           periodItem.periods.push({
             startTime: monthRelativeStartTime,
             duration: admissionPeriod.duration,
