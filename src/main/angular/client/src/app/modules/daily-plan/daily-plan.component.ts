@@ -670,6 +670,8 @@ export class SearchComponent {
     const obj: any = {};
     obj.workflowPaths = result.workflowPaths;
     obj.workflowFolders = result.workflowFolders;
+    obj.workflowTags = result.workflowTags;
+    obj.orderTags = result.orderTags;
     obj.schedules = result.schedules;
     obj.scheduleFolders = result.scheduleFolders;
     obj.state = result.state;

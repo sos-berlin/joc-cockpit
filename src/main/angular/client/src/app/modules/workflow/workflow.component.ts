@@ -239,6 +239,7 @@ export class SearchComponent {
       regex: result.regex,
       paths: result.paths,
       workflowTags: result.workflowTags,
+      orderTags: result.orderTags,
       handleRecursively: result.handleRecursively,
       name: result.name,
       instructionStates: result.instructionStates,
