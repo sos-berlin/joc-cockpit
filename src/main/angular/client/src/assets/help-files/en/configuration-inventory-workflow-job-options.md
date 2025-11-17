@@ -82,6 +82,10 @@ The following options specify for Jobs executed with Agents for Windows that the
 
 - [Cleanup Service](/service-cleanup)
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+  - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflows-job-properties)
+  - [Configuration - Inventory - Workflows - Job Node Properties](/configuration-inventory-workflows-job-node-properties)
+  - [Configuration - Inventory - Workflows - Job Notifications](/configuration-inventory-workflows-job-notifications)
+  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-job-tags)
 - [Task History](/history-tasks)
 
 ### Product Knowledge Base

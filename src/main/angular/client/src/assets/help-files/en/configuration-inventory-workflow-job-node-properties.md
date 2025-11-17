@@ -19,6 +19,16 @@ Node Variable names are case-sensitive.
 
 ## References
 
+### Context Help
+
+- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+  - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflows-job-options)
+  - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflows-job-properties)
+  - [Configuration - Inventory - Workflows - Job Notifications](/configuration-inventory-workflows-job-notifications)
+  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-job-tags)
+
+### Product Knowledge Base
+
 - [JS7 - Assignment of Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Assignment+of+Variables)
 - [JS7 - Expressions for Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Expressions+for+Variables)
 - [JS7 - Job Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Instruction)
