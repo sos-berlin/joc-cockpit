@@ -4983,7 +4983,7 @@ export class ExpressionComponent {
     tabSize: 4,
     scrollbarStyle: 'simple',
     highlightSelectionMatches: {showToken: /\w/, annotateScrollbar: true},
-    mode: 'ruby'
+    mode: null
   };
 
   @ViewChild('codeEditor', {static: true}) cm;
@@ -11992,8 +11992,7 @@ export class WorkflowComponent {
           }
         }
         if (self.selectedNode.type === 'If' || self.selectedNode.type === 'When') {
-          self.selectedNode.newObj.predicate = self.selectedNode.newObj.predicate?.replace(/<[^>]+>/gm, '').replace(/&amp;/g, '&').replace(/&gt;/g, '>').replace(/&lt;/g, '<')
-            .replace(/&nbsp;/g, ' ').replace(/&#39;/g, '\'').replace('\n', '').replace('\r', '') || '';
+          self.selectedNode.newObj.predicate = self.selectedNode.newObj.predicate
         }
 
         if (self.selectedNode?.job?.executable?.TYPE) {

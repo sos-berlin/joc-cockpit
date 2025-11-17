@@ -2646,14 +2646,22 @@ export class WorkflowService {
           frequency: '',
           periods: []
         };
-        const hours = (period.secondOfMonth || period.lastSecondOfMonth) / hour;
+        const secondValue = period.secondOfMonth !== undefined ? period.secondOfMonth :
+          (period.lastSecondOfMonth !== undefined ? period.lastSecondOfMonth : 0);
+
+        const hours = secondValue / hour;
         let day = Math.floor(hours / 24) + 1;
         const d = day - 1;
-        obj = {
-          day,
-          periods: []
-        };
-        obj[period.TYPE === 'MonthlyLastDatePeriod' ? 'lastSecondOfMonth' : 'secondOfMonth'] = (d * 24 * 3600);
+
+        obj.day = day;
+        obj.periods = [];
+
+        if (period.TYPE === 'MonthlyLastDatePeriod') {
+          obj.lastSecondOfMonth = d * 24 * 3600;
+        } else {
+          obj.secondOfMonth = d * 24 * 3600;
+        }
+
         obj.frequency = this.getMonthDays(day, period.TYPE === 'MonthlyLastDatePeriod');
         if (period.TYPE === 'MonthlyLastDatePeriod') {
           obj.day = obj.day > -1 ? obj.day + 1 : obj.day - 1;
@@ -2919,7 +2927,7 @@ export class WorkflowService {
           const obj: any = {
             TYPE: item.frequency ? 'WeekdayPeriod' : 'DailyPeriod'
           };
-          if (item.secondOfMonth != undefined) {
+          if (item.secondOfMonth != undefined && item.secondOfMonth !== null) {
             obj.TYPE = 'MonthlyDatePeriod';
             obj.secondOfMonth = item.secondOfMonth + period.startTime;
           } else if (item.lastSecondOfMonth != undefined) {
