@@ -168,7 +168,9 @@ ngOnInit(): void {
 }
 
   private getFolderTree(): void {
-    this.filter.paths = [];
+    if (!this.filter.paths) {
+      this.filter.paths = [];
+    }
     this.coreService.post('tree', {
       controllerId: this.schedulerIds.selected,
       forInventory: true,

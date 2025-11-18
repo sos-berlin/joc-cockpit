@@ -105,8 +105,8 @@
           }
         </div>
       </ng-template>
+      @if (approvalEvent.numOfPendingApprovals > 0 && (isApprover)) {
       <li class="nav-item">
-        @if (approvalEvent.numOfPendingApprovals > 0 && (isApprover)) {
           <a class="nav-link pointer text-warning" style="top: 3px">
             <span [nzPopoverContent]="approvalEventTemp" class="p-l-xs cursor"
                   nz-popover nzPopoverPlacement="bottomRight"
@@ -116,10 +116,10 @@
               <i class="text-xs pos-abt" style="top:-15px;right: 0px">{{ approvalEvent.numOfPendingApprovals }}</i>
             </span>
           </a>
-        }
       </li>
+      }
+      @if ((requestorEvent.numOfApprovedRequests || requestorEvent.numOfRejectedRequests) && (isRequestor)) {
       <li class="nav-item">
-        @if ((requestorEvent.numOfApprovedRequests || requestorEvent.numOfRejectedRequests) && (isRequestor)) {
           <a class="nav-link pointer text-warning" style="top: 3px">
             <span [nzPopoverContent]="requestorEventTemp" class="p-l-xs cursor"
                   nz-popover nzPopoverPlacement="bottomRight"
@@ -129,10 +129,10 @@
               <i class="text-xs pos-abt" style="top:-15px;right: 0px">{{ requestorEvent.numOfRejectedRequests + requestorEvent.numOfApprovedRequests}}</i>
             </span>
           </a>
-        }
       </li>
+      }
+      @if (problemEvent?.message) {
       <li class="nav-item">
-        @if (problemEvent?.message) {
           <a class="nav-link pointer text-danger" style="top: 3px">
             <span [nzPopoverContent]="problemEventTemp" class="p-l-xs cursor"
                   nz-popover nzPopoverPlacement="bottomRight"
@@ -141,8 +141,8 @@
               <i class="fa fa-bell bell text-18" style="line-height: 0"></i>
             </span>
           </a>
-        }
       </li>
+      }
       <li class="nav-item">
         <a [ngClass]="{'text-white': colorOfJOCEvent == 0, 'text-warning': colorOfJOCEvent == 1, 'text-danger': colorOfJOCEvent == 2}" class="nav-link pointer"
            style="top: 3px">

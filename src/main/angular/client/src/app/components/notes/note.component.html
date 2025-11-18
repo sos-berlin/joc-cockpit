@@ -1,87 +1,25 @@
 <div class="modal-header">
-  <div class="inline" id="toolbar-icons">
-    <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
-      <li class="nav-item">
-        <div style="line-height: 18px; padding: 10px 3px">
-          <span class="cur-point" [nzDropdownMenu]="headingMenu"
-                nz-dropdown nzTrigger="click" translate>inventory.notes.label.style<i class="m-l-xs cur-point" nz-icon nzType="down"></i></span>
-
-          <nz-dropdown-menu #headingMenu="nzDropdownMenu" role="menu">
-            <ul nz-menu>
-              <li nz-menu-item (click)="applyHeading('h1')"><a translate>H1</a></li>
-              <li nz-menu-item (click)="applyHeading('h2')"><a translate>H2</a></li>
-              <li nz-menu-item (click)="applyHeading('h3')"><a translate>H3</a></li>
-              <li nz-menu-item (click)="applyHeading('h4')"><a translate>H4</a></li>
-              <li nz-menu-item (click)="applyHeading('h5')"><a translate>H5</a></li>
-              <li nz-menu-item (click)="applyHeading('h6')"><a translate>H6</a></li>
-            </ul>
-          </nz-dropdown-menu>
-        </div>
-      </li>
-
-      <li class="nav-item dropdown-separator">
-        <span class="separator"></span>
-      </li>
-
-      <li class="nav-item">
-        <a (click)="toggleBold()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.notes.tooltip.bold' | translate" class="nav-link">
-          <span class="nav-text"><i nz-icon nzTheme="outline" nzType="bold"></i></span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a (click)="toggleItalic()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.notes.tooltip.italic' | translate" class="nav-link">
-          <span class="nav-text"><i nz-icon nzTheme="outline" nzType="italic"></i></span>
-        </a>
-      </li>
-
-      <li class="nav-item dropdown-separator">
-        <span class="separator"></span>
-      </li>
-
-      <li class="nav-item">
-        <a (click)="undo()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.undo' | translate" class="nav-link">
-          <span class="nav-text"><i nz-icon nzTheme="outline" nzType="undo"></i></span>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a (click)="redo()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.redo' | translate" class="nav-link">
-          <span class="nav-text"><i nz-icon nzTheme="outline" nzType="redo"></i></span>
-        </a>
-      </li>
-
-      <li class="nav-item dropdown-separator">
-        <span class="separator"></span>
-      </li>
-
-      <li class="nav-item">
-        <a (click)="toggleBulletList()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.notes.tooltip.bullets' | translate" class="nav-link">
-          <span class="nav-text"><i nz-icon nzTheme="outline" nzType="unordered-list"></i></span>
-        </a>
-      </li>
-    </ul>
-  </div>
-
+  <h4 class="modal-title">
+    <span translate> inventory.notes.label.notes</span>
+  </h4>
   <button type="button" class="close" aria-label="Close" (click)="cancel()">
     <span aria-hidden="true" class="fa fa-times-circle"></span>
   </button>
 </div>
 
 <div class="modal-body p-a">
-  @if (!isPreviewMode) {
+  @if (!isFullscreenEdit) {
     <div class="note-wrapper" [ngStyle]="{'width.px': width, 'height.px': height}">
       <div class="chat-thread">
         @for (post of posts; track post.postId; let i = $index) {
           <div class="post-message"
                [class.current-user]="isCurrentUser(post)"
                [class.other-user]="!isCurrentUser(post)"
-               [style.borderLeftColor]="post.color || noteColor">
+               [style.borderLeftColor]="post.color">
             <div class="post-header">
               <span class="post-number">#{{ i + 1 }}</span>
-              <span class="author">{{ post.author.displayName }}</span>
-              <span class="timestamp">{{ post.postedAt | date:'short' }}</span>
-              @if (post.isEdited) {
-                <span class="edited-badge">(edited)</span>
-              }
+              <span class="author">{{ post.author.userName }}</span>
+              <span class="timestamp">{{ post.posted | date:'short' }}</span>
             </div>
             <div class="post-content help-md"
                  [innerHTML]="renderMarkdown(post.content)"
@@ -95,26 +33,218 @@
                   (input)="updatePreview()"
                   rows="3"
                   class="note-textarea"
-                  placeholder="Type your message here..."></textarea>
+                  placeholder="{{'inventory.notes.placeholder.message' | translate}}"></textarea>
 
         <div class="message-actions">
+          <div>
+            <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
+          </div>
           <div class="color-selector">
+            <div class="inline" id="toolbar-icons">
+              <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
+                <li class="nav-item">
+                  <div style="line-height: 18px; padding: 10px 3px">
+                  <span class="cur-point" [nzDropdownMenu]="headingMenu"
+                    nz-dropdown nzTrigger="click" translate>inventory.notes.label.style<i class="m-l-xs cur-point" nz-icon nzType="down"></i></span>
+
+                    <nz-dropdown-menu #headingMenu="nzDropdownMenu" role="menu">
+                      <ul nz-menu>
+                        <li nz-menu-item (click)="applyHeading('h1')"><a translate>H1</a></li>
+                        <li nz-menu-item (click)="applyHeading('h2')"><a translate>H2</a></li>
+                        <li nz-menu-item (click)="applyHeading('h3')"><a translate>H3</a></li>
+                        <li nz-menu-item (click)="applyHeading('h4')"><a translate>H4</a></li>
+                        <li nz-menu-item (click)="applyHeading('h5')"><a translate>H5</a></li>
+                        <li nz-menu-item (click)="applyHeading('h6')"><a translate>H6</a></li>
+                      </ul>
+                    </nz-dropdown-menu>
+                  </div>
+                </li>
+
+                <li class="nav-item dropdown-separator">
+                  <span class="separator"></span>
+                </li>
+
+                <li class="nav-item">
+                  <a (click)="toggleBold()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.notes.tooltip.bold' | translate" class="nav-link">
+                    <span class="nav-text"><i nz-icon nzTheme="outline" nzType="bold"></i></span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a (click)="toggleItalic()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.notes.tooltip.italic' | translate" class="nav-link">
+                    <span class="nav-text"><i nz-icon nzTheme="outline" nzType="italic"></i></span>
+                  </a>
+                </li>
+
+                <li class="nav-item dropdown-separator">
+                  <span class="separator"></span>
+                </li>
+
+                <li class="nav-item">
+                  <a (click)="undo()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.undo' | translate" class="nav-link">
+                    <span class="nav-text"><i nz-icon nzTheme="outline" nzType="undo"></i></span>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a (click)="redo()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.redo' | translate" class="nav-link">
+                    <span class="nav-text"><i nz-icon nzTheme="outline" nzType="redo"></i></span>
+                  </a>
+                </li>
+
+                <li class="nav-item dropdown-separator">
+                  <span class="separator"></span>
+                </li>
+
+                <li class="nav-item">
+                  <a (click)="toggleBulletList()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.notes.tooltip.bullets' | translate" class="nav-link">
+                    <span class="nav-text"><i nz-icon nzTheme="outline" nzType="unordered-list"></i></span>
+                  </a>
+                </li>
+                <li class="nav-item dropdown-separator">
+                  <span class="separator"></span>
+                </li>
+              </ul>
+            </div>
+            <i class="cur-point m-l-sm m-r-1" (click)="toggleFullscreenEdit()"
+               [nz-tooltip]="'inventory.notes.tooltip.fullscreen' | translate"
+               nz-icon nzType="fullscreen">
+            </i>
             @for (preset of colorPresets; track preset.value) {
               <button
                 class="color-preset-btn"
-                [class.active]="noteColor === preset.value"
+                [class.active]="noteColor === preset.severity"
                 [style.backgroundColor]="preset.value"
                 [nzTooltipMouseEnterDelay]="0.5"
                 [nz-tooltip]="preset.label | translate"
-                (click)="selectColor(preset.value)">
+                (click)="selectColor(preset.severity)">
               </button>
             }
           </div>
+          <div>
+            <button [disabled]="submitted || !noteContent.trim()"
+                    class="btn btn-primary btn-sm m-r-2"
+                    type="button"
+                    (click)="addPost()">
+              {{'inventory.notes.button.post' | translate}}
+              <i class="fa fa-paper-plane" aria-hidden="true"></i>
+            </button>
+              <div class="resizer fa fa-arrows" (mousedown)="onResizeStart($event)"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
 
+  @if (isFullscreenEdit) {
+    <div class="fullscreen-edit-wrapper">
+      <div class="split-view">
+        <div class="editor-panel">
+          <div class="modal-header">
+            <span translate>inventory.notes.label.editor</span>
+          </div>
+          <textarea [(ngModel)]="noteContent"
+                    (input)="updatePreview()"
+                    class="fullscreen-textarea"
+                    placeholder="{{'inventory.notes.placeholder.message' | translate}}"></textarea>
+        </div>
+
+        <div class="preview-panel">
+          <div class="modal-header">
+            <span translate>inventory.notes.label.preview</span>
+          </div>
+          <div class="fullscreen-preview help-md" [innerHTML]="notePreview"></div>
+        </div>
+      </div>
+
+      <div class="fullscreen-actions">
+        <div class="color-selector">
+          <div class="inline" id="toolbar-iconsx">
+            <ul class="nav navbar-nav navbar-nav-inline nav-active-border3 ">
+              <li class="nav-item">
+                <div style="line-height: 18px; padding: 10px 3px">
+          <span class="cur-point" [nzDropdownMenu]="headingMenu"
+                nz-dropdown nzTrigger="click" translate>inventory.notes.label.style<i class="m-l-xs cur-point" nz-icon nzType="down"></i></span>
+
+                  <nz-dropdown-menu #headingMenu="nzDropdownMenu" role="menu">
+                    <ul nz-menu>
+                      <li nz-menu-item (click)="applyHeading('h1')"><a translate>H1</a></li>
+                      <li nz-menu-item (click)="applyHeading('h2')"><a translate>H2</a></li>
+                      <li nz-menu-item (click)="applyHeading('h3')"><a translate>H3</a></li>
+                      <li nz-menu-item (click)="applyHeading('h4')"><a translate>H4</a></li>
+                      <li nz-menu-item (click)="applyHeading('h5')"><a translate>H5</a></li>
+                      <li nz-menu-item (click)="applyHeading('h6')"><a translate>H6</a></li>
+                    </ul>
+                  </nz-dropdown-menu>
+                </div>
+              </li>
+
+              <li class="nav-item dropdown-separator">
+                <span class="separator"></span>
+              </li>
+
+              <li class="nav-item">
+                <a (click)="toggleBold()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.notes.tooltip.bold' | translate" class="nav-link">
+                  <span class="nav-text"><i nz-icon nzTheme="outline" nzType="bold"></i></span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a (click)="toggleItalic()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.notes.tooltip.italic' | translate" class="nav-link">
+                  <span class="nav-text"><i nz-icon nzTheme="outline" nzType="italic"></i></span>
+                </a>
+              </li>
+
+              <li class="nav-item dropdown-separator">
+                <span class="separator"></span>
+              </li>
+
+              <li class="nav-item">
+                <a (click)="undo()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.undo' | translate" class="nav-link">
+                  <span class="nav-text"><i nz-icon nzTheme="outline" nzType="undo"></i></span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a (click)="redo()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'workflow.button.redo' | translate" class="nav-link">
+                  <span class="nav-text"><i nz-icon nzTheme="outline" nzType="redo"></i></span>
+                </a>
+              </li>
+
+              <li class="nav-item dropdown-separator">
+                <span class="separator"></span>
+              </li>
+
+              <li class="nav-item">
+                <a (click)="toggleBulletList()" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'inventory.notes.tooltip.bullets' | translate" class="nav-link">
+                  <span class="nav-text"><i nz-icon nzTheme="outline" nzType="unordered-list"></i></span>
+                </a>
+              </li>
+              <li class="nav-item dropdown-separator">
+                <span class="separator"></span>
+              </li>
+            </ul>
+          </div>
+          <i class="cur-point m-l-sm m-r-1"
+             (click)="toggleFullscreenEdit()"
+             [nz-tooltip]="'inventory.notes.tooltip.exitFullscreen' | translate" nz-icon nzType="fullscreen-exit"></i>
+          @for (preset of colorPresets; track preset.value) {
+            <button
+              class="color-preset-btn"
+              [class.active]="noteColor === preset.severity"
+              [style.backgroundColor]="preset.value"
+              [nzTooltipMouseEnterDelay]="0.5"
+              [nz-tooltip]="preset.label | translate"
+              (click)="selectColor(preset.severity)">
+            </button>
+          }
+
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn btn-grey btn-sm" (click)="toggleFullscreenEdit()" translate>
+            common.button.close
+          </button>
           <button [disabled]="submitted || !noteContent.trim()"
                   class="btn btn-primary btn-sm"
                   type="button"
-                  (click)="addPost()">
+                  (click)="addPost(); toggleFullscreenEdit()">
             @if (submitted) {
               <i class="fa fa-spin fa-spinner p-r-xs"></i>
             }
@@ -124,17 +254,5 @@
       </div>
     </div>
   }
-  @if (isPreviewMode) {
-    <div class="note-wrapper preview-wrapper" [ngStyle]="{'width.px': width, 'height.px': height}">
-      <div class="note-preview help-md" [innerHTML]="notePreview"></div>
-    </div>
-  }
 </div>
 
-<div class="modal-footer text-left">
-  <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
-  <button [disabled]="submitted" class="btn btn-default btn-sm m-l-sm pos-abt preview-btn" type="button" (click)="togglePreview()">
-    {{ isPreviewMode ? ('common.button.edit' | translate) : ('inventory.notes.button.preview' | translate) }}
-  </button>
-  <div class="resizer fa fa-arrows" (mousedown)="onResizeStart($event)"></div>
-</div>

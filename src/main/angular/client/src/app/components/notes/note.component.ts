@@ -2,23 +2,51 @@ import {Component, HostListener, inject} from '@angular/core';
 import { MarkdownParserService } from '../../services/markdown-parser.service'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import {NZ_MODAL_DATA, NzModalRef} from "ng-zorro-antd/modal";
+import {CoreService} from "../../services/core.service";
+import {AuthService} from "../guard";
+
+interface Author {
+  userName: string;
+}
 
 interface Post {
-  postId: string;
+  postId: number;
   content: string;
-  author: {
-    userId: string;
-    displayName: string;
-  };
-  postedAt: Date;
-  isEdited: boolean;
-  color: string;
+  severity: string;
+  author: Author;
+  posted: string;
+  color?: string;
+}
+
+interface Participant {
+  postCount: number;
+  modified: string;
+  userName: string;
+}
+
+interface NoteMetadata {
+  created: string;
+  createdBy: Author;
+  modified: string;
+  modifiedBy: Author;
+  postCount: number;
+  participantCount: number;
+  severity: string;
+}
+
+interface NoteResponse {
+  deliveryDate: string;
+  name: string;
+  objectType: string;
+  metadata: NoteMetadata;
+  posts: Post[];
+  participants: Participant[];
 }
 
 interface ColorPreset {
   value: string;
+  severity: 'CRITICAL' | 'HIGH' | 'NORMAL' | 'LOW' | 'INFO';
   label: string;
-  importance: 'critical' | 'high' | 'normal' | 'low' | 'info';
 }
 
 @Component({
@@ -30,11 +58,10 @@ interface ColorPreset {
 export class NoteComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   noteContent: string = '';
-  noteColor: string = '#ffff99';
+  noteColor: string = 'NORMAL';
   notePreview: SafeHtml = '';
   width = 800;
   height = 600;
-  editorVisible = false;
   submitted = false;
   resizing = false;
   lastX = 0;
@@ -42,111 +69,154 @@ export class NoteComponent {
   history: string[] = [];
   historyIndex = -1;
   isUndoRedo = false;
-  isPreviewMode = false;
+  isFullscreenEdit = false;
+
+  objectName: string = '';
+  objectType: string = 'WORKFLOW';
 
   colorPresets: ColorPreset[] = [
     {
       value: '#ff4d4f',
-      label: 'inventory.notes.color.critical',
-      importance: 'critical'
+      severity: 'CRITICAL',
+      label: 'inventory.notes.label.critical'
     },
     {
       value: '#ff9800',
-      label: 'inventory.notes.color.high',
-      importance: 'high'
+      severity: 'HIGH',
+      label: 'inventory.notes.label.high'
     },
     {
       value: '#fadb14',
-      label: 'inventory.notes.color.normal',
-      importance: 'normal'
+      severity: 'NORMAL',
+      label: 'inventory.notes.label.normal'
     },
     {
       value: '#52c41a',
-      label: 'inventory.notes.color.low',
-      importance: 'low'
+      severity: 'LOW',
+      label: 'inventory.notes.label.low'
     },
     {
       value: '#1890ff',
-      label: 'inventory.notes.color.info',
-      importance: 'info'
+      severity: 'INFO',
+      label: 'inventory.notes.label.info'
     }
   ];
 
-  posts: Post[] = [
-    {
-      postId: 'post_001',
-      content: '**Important**: This workflow requires manual approval on holidays.\n\n- Check holiday calendar\n- Verify dependencies',
-      author: {
-        userId: 'user_001',
-        displayName: 'John Doe'
-      },
-      postedAt: new Date('2025-10-24T10:30:00'),
-      isEdited: false,
-      color: '#ff4d4f'
-    },
-    {
-      postId: 'post_002',
-      content: '@john.doe Confirmed. I\'ve added the holiday calendar integration.',
-      author: {
-        userId: 'user_002',
-        displayName: 'Jane Smith'
-      },
-      postedAt: new Date('2025-10-24T12:15:00'),
-      isEdited: false,
-      color: '#52c41a'
-    },
-    {
-      postId: 'post_003',
-      content: 'Question: Should we also document this in the workflow description?',
-      author: {
-        userId: 'user_003',
-        displayName: 'Mike Johnson'
-      },
-      postedAt: new Date('2025-10-24T14:20:00'),
-      isEdited: false,
-      color: '#1890ff'
-    },
-    {
-      postId: 'post_004',
-      content: 'Good idea @mike.johnson - I\'ve updated the description with a link to our holiday policy.',
-      author: {
-        userId: 'user_004',
-        displayName: 'Current User'
-      },
-      postedAt: new Date('2025-10-24T16:45:00'),
-      isEdited: true,
-      color: '#fadb14'
-    }
-  ];
+  posts: Post[] = [];
 
   currentUser = {
-    userId: 'user_004',
-    displayName: 'Current User'
+    userName: ''
   };
 
   constructor(
     private markdownParser: MarkdownParserService,
     private sanitizer: DomSanitizer,
-    private activeModal: NzModalRef
+    private activeModal: NzModalRef,
+    public coreService: CoreService,
+    public authService: AuthService,
   ) {}
 
   ngOnInit() {
     if(this.modalData.width) this.width = this.modalData.width;
     if(this.modalData.height) this.height = this.modalData.height;
+    if(this.modalData.objectName) this.objectName = this.modalData.objectName;
+    if(this.modalData.objectType) this.objectType = this.modalData.objectType;
+    this.currentUser = {
+      userName: this.authService.currentUserData || 'unknown'
+    };
 
-    this.noteColor = this.colorPresets[2].value;
+    this.noteColor = 'NORMAL';
+
+    this.loadNote();
   }
 
-  selectColor(color: string) {
-    this.noteColor = color;
+
+  loadNote(): void {
+    const obj = {
+      name: this.objectName,
+      objectType: this.objectType
+    };
+
+    this.coreService.post('note', obj).subscribe({
+      next: (res: NoteResponse) => {
+        if (res && res.posts) {
+          this.posts = res.posts.map((post: Post) => ({
+            ...post,
+            color: this.getSeverityColor(post.severity || 'NORMAL')
+          }));
+
+        } else {
+          this.posts = [];
+        }
+      },
+      error: (err) => {
+        console.error('Error loading note:', err);
+        this.posts = [];
+      }
+    });
+  }
+
+  addPost(): void {
+    if (!this.noteContent.trim()) return;
+
+    this.submitted = true;
+
+    const obj = {
+      name: this.objectName,
+      objectType: this.objectType,
+      content: this.noteContent,
+      severity: this.getCurrentSeverity()
+    };
+
+    this.coreService.post('note/post/add', obj).subscribe({
+      next: (res: NoteResponse) => {
+        if (res && res.posts) {
+          this.posts = res.posts.map((post: Post) => ({
+            ...post,
+            color: this.getSeverityColor(post.severity || 'NORMAL')
+          }));
+        }
+
+        this.noteContent = '';
+        this.noteColor = 'NORMAL';
+        this.submitted = false;
+
+        setTimeout(() => {
+          const chatThread = document.querySelector('.chat-thread');
+          if (chatThread) {
+            chatThread.scrollTop = chatThread.scrollHeight;
+          }
+        }, 100);
+      },
+      error: (err) => {
+        console.error('Error adding post:', err);
+        this.submitted = false;
+        // TODO: Show error notification to user
+      }
+    });
   }
 
   isCurrentUser(post: Post): boolean {
-    return post.author.userId === this.currentUser.userId;
+    return post.author.userName === this.currentUser.userName;
   }
 
+
+  selectColor(severity: string) {
+    this.noteColor = severity;
+  }
+
+  getSeverityColor(severity: string): string {
+    const preset = this.colorPresets.find(p => p.severity === severity);
+    return preset ? preset.value : '#fadb14';
+  }
+
+  getCurrentSeverity(): string {
+    return this.noteColor;
+  }
+
+
   getMessageBackgroundColor(post: Post): string {
-    const baseColor = post.color || this.noteColor;
+    const baseColor = post.color;
 
     if (this.isCurrentUser(post)) {
       return this.lightenColor(baseColor, 0.85);
@@ -182,41 +252,19 @@ export class NoteComponent {
     }).join('');
   }
 
-  addPost() {
-    if (!this.noteContent.trim()) return;
-
-    this.submitted = true;
-
-    setTimeout(() => {
-      const newPost: Post = {
-        postId: `post_${Date.now()}`,
-        content: this.noteContent,
-        author: {
-          userId: this.currentUser.userId,
-          displayName: this.currentUser.displayName
-        },
-        postedAt: new Date(),
-        isEdited: false,
-        color: this.noteColor
-      };
-
-      this.posts.push(newPost);
-      this.noteContent = '';
-      this.submitted = false;
-      this.updatePreview();
-
-      setTimeout(() => {
-        const chatThread = document.querySelector('.chat-thread');
-        if (chatThread) {
-          chatThread.scrollTop = chatThread.scrollHeight;
-        }
-      }, 100);
-    }, 500);
+  renderMarkdown(content: string): SafeHtml {
+    const contentWithMentions = this.highlightMentions(content);
+    const rendered = this.markdownParser.render(contentWithMentions) as any;
+    return this.sanitizer.bypassSecurityTrustHtml(rendered);
   }
 
-  renderMarkdown(content: string): SafeHtml {
-    const rendered = this.markdownParser.render(content) as any;
-    return this.sanitizer.bypassSecurityTrustHtml(rendered);
+  highlightMentions(content: string): string {
+    return content.replace(
+      /@\[([^\]]+)\]/g,
+      (match, username) => {
+        return `<span class="user-mention" data-username="${username}">@${username}</span>`;
+      }
+    );
   }
 
   onResizeStart(event: MouseEvent) {
@@ -243,10 +291,6 @@ export class NoteComponent {
     this.resizing = false;
     window.removeEventListener('mousemove', this.onResizing);
     window.removeEventListener('mouseup', this.onResizeEnd);
-  }
-
-  togglePreview() {
-    this.isPreviewMode = !this.isPreviewMode;
   }
 
   updateModalSize() {
@@ -422,4 +466,12 @@ export class NoteComponent {
       return;
     }
   }
+
+  toggleFullscreenEdit() {
+    this.isFullscreenEdit = !this.isFullscreenEdit;
+    if (this.isFullscreenEdit) {
+      this.updatePreview();
+    }
+  }
+
 }

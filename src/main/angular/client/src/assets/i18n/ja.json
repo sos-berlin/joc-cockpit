@@ -2487,12 +2487,24 @@
     },
     "notes": {
       "label.notes": "Notes",
+      "label.critical": "Critical",
+      "label.high": "High",
+      "label.normal": "Normal",
+      "label.low": "Low",
+      "label.info": "Info",
+      "label.editor": "Editor",
+      "label.preview": "Preview",
+      "label.editMode": "Edit Mode",
       "label.style": "Style",
       "button.preview": "Preview",
+      "button.post": "Post",
       "tooltip.bold": "bold",
       "tooltip.italic": "italic",
       "tooltip.bullets": "Bullets",
-      "tooltip.colorPicker": "Change Note Color"
+      "tooltip.colorPicker": "Change Color",
+      "tooltip.fullscreen": "Full screen",
+      "tooltip.exitFullscreen": "exit Full screen",
+      "placeholder.message": "Type your message here..."
     }
   },
   "license": {

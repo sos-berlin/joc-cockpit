@@ -1347,20 +1347,25 @@ ngOnInit(): void {
   monthChange(checkedValues: string[]): void {
     const newValues = checkedValues.map(val => val.toString().trim());
 
-    if (!this.arraysEqual(this.selectedMonthsForRestriction.sort(), newValues.sort())) {
-      this.selectedMonthsForRestriction = newValues;
-      this.onChangeMonths();
-    }
+    this.selectedMonthsForRestriction = [...newValues];
+
+    this.allMonthsSelected = this.selectedMonthsForRestriction.length === 12;
+
+    this.onChangeMonths();
   }
 
+
   onChangeMonths(): void {
-    if (this.selectedMonthsForRestriction) {
-      this.selectedMonthsForRestriction = this.selectedMonthsForRestriction.sort();
-      this.showMonthRange = this.selectedMonthsForRestriction.length > 0;
-      this.allMonthsSelected = this.selectedMonthsForRestriction.length === 12;
-      this.updateMonthCheckboxes();
-    }
+  if (this.selectedMonthsForRestriction) {
+    this.selectedMonthsForRestriction.sort();
   }
+  this.showMonthRange = this.selectedMonthsForRestriction.length > 0;
+
+  this.allMonthsSelected = this.selectedMonthsForRestriction.length === 12;
+
+  this.updateMonthCheckboxes();
+}
+
 
   selectAllMonth(): void {
     if (this.allMonthsSelected) {
@@ -15886,7 +15891,9 @@ export class WorkflowComponent {
       nzData: {
         preferences: this.preferences,
         width: this.modalWidth,
-        height: this.modalHeight
+        height: this.modalHeight,
+        objectName: this.workflow.name,
+        objectType: 'WORKFLOW'
       },
       nzFooter: null,
       nzClosable: false,
