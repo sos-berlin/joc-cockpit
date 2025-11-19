@@ -3596,8 +3596,14 @@ export class ExportComponent {
         if (this.origin.dailyPlan) {
           this.objectTypes.push(InventoryObject.REPORT, InventoryObject.INCLUDESCRIPT, InventoryObject.SCHEDULE, InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR, InventoryObject.JOBTEMPLATE);
         } else {
-          this.objectTypes.push(this.origin.object.match('CALENDAR') ? (InventoryObject.WORKINGDAYSCALENDAR, InventoryObject.NONWORKINGDAYSCALENDAR) : this.origin.object);
+          if (this.origin.object.match('CALENDAR')) {
+            this.objectTypes.push(InventoryObject.WORKINGDAYSCALENDAR);
+            this.objectTypes.push(InventoryObject.NONWORKINGDAYSCALENDAR);
+          } else {
+            this.objectTypes.push(this.origin.object);
+          }
         }
+
       } else {
         if (this.origin.controller || this.origin.object) {
           this.exportType = this.origin.object || 'CONTROLLER';
