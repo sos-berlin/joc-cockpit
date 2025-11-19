@@ -172,6 +172,9 @@ export class AuthInterceptor implements HttpInterceptor {
                   }
                 }
                 if (!flag) {
+                  if (req.url.match('/note') && err.error?.error?.code === 'JOC-408') {
+                    return;
+                  }
                   if (err.error.error) {
                     if (err.error.error.message && err.error.error.message.match('JocObjectAlreadyExistException')) {
                       this.toasterService.error('', err.error.error.message.replace(/JocObjectAlreadyExistException:/, ''));

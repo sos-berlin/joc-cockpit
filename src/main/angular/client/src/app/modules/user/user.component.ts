@@ -1139,7 +1139,7 @@ export class UserComponent {
 
   setLocale(): void {
     localStorage['$SOS$LANG'] = this.preferences.locale;
-    import(`../../../../node_modules/@angular/common/locales/${this.preferences.locale}.mjs`).then(locale => {
+    import(`../../../../node_modules/@angular/common/locales/${this.preferences.locale}.js`).then(locale => {
       registerLocaleData(locale.default);
     });
     this.translate.use(this.preferences.locale).subscribe((res) => {

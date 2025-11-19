@@ -92,7 +92,7 @@ export class AppComponent {
       lang = 'en';
     }
     if (!localStorage['$SOS$LANG'] && lang !== 'en') {
-      import(`../../node_modules/@angular/common/locales/${lang}.mjs`).then(locale => {
+      import(`../../node_modules/@angular/common/locales/${lang}.js`).then(locale => {
         registerLocaleData(locale.default);
       });
     }

@@ -1,12 +1,4 @@
-.resizer {
-  width: 16px;
-  height: 16px;
-  cursor: se-resize;
-  position: absolute;
-  right: 12px;
-  border-radius: 3px;
-  z-index: 10;
-}
+
 .note-wrapper {
   position: relative;
 }
@@ -86,20 +78,7 @@
   font-size: 12px;
 }
 
-.post-number {
-  font-weight: bold;
-  color: #1890ff;
-  font-size: 11px;
-  background: rgba(24, 144, 255, 0.1);
-  padding: 2px 6px;
-  border-radius: 3px;
-}
 
-.author {
-  font-size: 13px;
-  color: #333;
-  transition: color 0.2s;
-}
 
 .timestamp {
   color: #999;
@@ -113,38 +92,6 @@
   font-size: 10px;
 }
 
-.post-content {
-  padding: 8px 10px;
-  line-height: 1.6;
-  word-wrap: break-word;
-  color: #333;
-  font-size: 13px;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-
-  ::ng-deep {
-    p {
-      margin: 0 0 8px 0;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-
-    ul, ol {
-      margin: 4px 0;
-      padding-left: 20px;
-    }
-
-    strong {
-      font-weight: 600;
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-      margin: 8px 0 4px 0;
-    }
-  }
-}
 
 .new-post-section {
   flex: 0 0 auto;
@@ -152,31 +99,6 @@
   position: sticky;
   z-index: 10;
   margin-bottom: 0!important;
-}
-
-.note-textarea {
-  width: 100%;
-  border: 1px solid #d9d9d9;
-  border-radius: 4px;
-  resize: none;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  padding: 8px 12px;
-  box-sizing: border-box;
-  font-size: 13px;
-  line-height: 1.5;
-  transition: all 0.3s;
-  background-color: #fff;
-  margin-bottom: 10px;
-
-  &:focus {
-    outline: none;
-    border-color: #40a9ff;
-    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
-  }
-
-  &::placeholder {
-    color: #bfbfbf;
-  }
 }
 
 .message-actions {
@@ -192,32 +114,6 @@
   align-items: center;
 }
 
-.color-preset-btn {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 2px solid #d9d9d9;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  padding: 0;
-
-  &:hover {
-    transform: scale(1.15);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    border-color: #40a9ff;
-  }
-
-  &.active {
-    border: 3px solid #1890ff;
-    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
-    transform: scale(1.1);
-  }
-
-  &:focus {
-    outline: none;
-  }
-}
 
 .preview-wrapper {
   overflow-y: auto;
@@ -238,12 +134,7 @@
   right: 0px;
   bottom: 8px;
   font-size: 16px;
-  color: #999;
   transition: color 0.3s;
-
-  &:hover {
-    color: #1890ff;
-  }
 }
 
 .preview-btn {
@@ -351,21 +242,6 @@
 .action-buttons {
   display: flex;
   gap: 8px;
-}
-
-.textarea-header {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 4px;
-
-  .btn-icon {
-    padding: 4px 8px;
-    color: #666;
-
-    &:hover {
-      color: #1890ff;
-    }
-  }
 }
 
 .nav-active-border3{

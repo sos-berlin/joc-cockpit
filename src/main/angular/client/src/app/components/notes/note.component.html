@@ -27,8 +27,7 @@
           </div>
         }
       </div>
-
-      <div class="new-post-section box" style="margin-bottom: 0px;">
+      <div class="new-post-section" style="margin-bottom: 0px;">
         <textarea [(ngModel)]="noteContent"
                   (input)="updatePreview()"
                   rows="3"
@@ -37,7 +36,16 @@
 
         <div class="message-actions">
           <div>
-            <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.cancel</button>
+            <button (click)="cancel()" class="btn btn-grey btn-sm" translate type="button">common.button.close</button>
+            @if (permission.joc && permission.joc.inventory.manage){
+            <button (click)="delete()"  [disabled]="posts.length === 0"
+                    class="btn btn-danger btn-sm m-l-sm" type="button">
+              @if (submitted) {
+                <i class="fa fa-spin fa-spinner p-r-xs"></i>
+              }
+              {{'common.button.delete' | translate}}
+            </button>
+            }
           </div>
           <div class="color-selector">
             <div class="inline" id="toolbar-icons">

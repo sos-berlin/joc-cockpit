@@ -20,7 +20,7 @@ import {POPOUT_MODAL_DATA, PopupService} from "./services/popup.service";
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
   const lang = localStorage['$SOS$LANG'] || 'en';
-  import(`../../node_modules/@angular/common/locales/${lang}.mjs`).then(locale => {
+  import(`../../node_modules/@angular/common/locales/${lang}.js`).then(locale => {
     registerLocaleData(locale.default);
   });
   return new TranslateHttpLoader(http, './assets/i18n/', '.json?v=1659421544261');

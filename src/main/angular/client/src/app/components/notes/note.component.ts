@@ -70,7 +70,7 @@ export class NoteComponent {
   historyIndex = -1;
   isUndoRedo = false;
   isFullscreenEdit = false;
-
+  permission: any = {};
   objectName: string = '';
   objectType: string = 'WORKFLOW';
 
@@ -117,6 +117,7 @@ export class NoteComponent {
   ) {}
 
   ngOnInit() {
+    this.permission = this.authService.permission ? JSON.parse(this.authService.permission) : {};
     if(this.modalData.width) this.width = this.modalData.width;
     if(this.modalData.height) this.height = this.modalData.height;
     if(this.modalData.objectName) this.objectName = this.modalData.objectName;
@@ -159,8 +160,6 @@ export class NoteComponent {
   addPost(): void {
     if (!this.noteContent.trim()) return;
 
-    this.submitted = true;
-
     const obj = {
       name: this.objectName,
       objectType: this.objectType,
@@ -191,7 +190,25 @@ export class NoteComponent {
       error: (err) => {
         console.error('Error adding post:', err);
         this.submitted = false;
-        // TODO: Show error notification to user
+      }
+    });
+  }
+
+  delete(): void {
+    this.submitted = true;
+    const obj = {
+      name: this.objectName,
+      objectType: this.objectType,
+    };
+
+    this.coreService.post('note/delete', obj).subscribe({
+      next: (res: NoteResponse) => {
+        this.submitted = false;
+        this.activeModal.destroy();
+      },
+      error: (err) => {
+        this.submitted = false;
+        this.activeModal.destroy();
       }
     });
   }
@@ -333,8 +350,16 @@ export class NoteComponent {
     }
   }
 
+  getActiveTextarea(): HTMLTextAreaElement | null {
+    if (this.isFullscreenEdit) {
+      return document.querySelector('.fullscreen-textarea') as HTMLTextAreaElement;
+    } else {
+      return document.querySelector('.new-post-section textarea') as HTMLTextAreaElement;
+    }
+  }
+
   applyHeading(level: string) {
-    const textarea = document.querySelector('.new-post-section textarea') as HTMLTextAreaElement;
+    const textarea = this.getActiveTextarea();
     if (!textarea) return;
 
     const start = textarea.selectionStart;
@@ -358,9 +383,8 @@ export class NoteComponent {
       textarea.focus();
     }, 0);
   }
-
   toggleBulletList() {
-    const textarea = document.querySelector('.new-post-section textarea') as HTMLTextAreaElement;
+    const textarea = this.getActiveTextarea();
     if (!textarea) return;
 
     const start = textarea.selectionStart;
@@ -389,7 +413,6 @@ export class NoteComponent {
       textarea.focus();
     }, 0);
   }
-
   toggleBold() {
     this.wrapSelection('**');
   }
@@ -399,7 +422,7 @@ export class NoteComponent {
   }
 
   wrapSelection(wrapper: string) {
-    const textarea = document.querySelector('.new-post-section textarea') as HTMLTextAreaElement;
+    const textarea = this.getActiveTextarea();
     if (!textarea) return;
 
     const start = textarea.selectionStart;
@@ -420,7 +443,6 @@ export class NoteComponent {
       textarea.focus();
     }, 0);
   }
-
   cancel(): void {
     this.activeModal.destroy();
   }
