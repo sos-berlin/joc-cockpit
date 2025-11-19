@@ -5936,7 +5936,8 @@ export class InventoryComponent {
         objectType: this.copyObj.objectType || this.copyObj.type,
         path: res.path.substring(0, res.path.lastIndexOf('/')) || '/',
         name: res.path.substring(res.path.lastIndexOf('/') + 1),
-        valid: this.copyObj.valid
+        valid: this.copyObj.valid,
+        id: res.id
       };
       object.expanded = true;
       this.type = obj.objectType;
