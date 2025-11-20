@@ -1,4 +1,4 @@
-import {Component, HostListener, inject} from '@angular/core';
+import {Component, HostListener, inject, ViewEncapsulation } from '@angular/core';
 import { MarkdownParserService } from '../../services/markdown-parser.service'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import {NZ_MODAL_DATA, NzModalRef} from "ng-zorro-antd/modal";
@@ -32,6 +32,10 @@ interface NoteMetadata {
   postCount: number;
   participantCount: number;
   severity: string;
+  displayPreferences?: {
+    width: number;
+    height: number;
+  };
 }
 
 interface NoteResponse {
@@ -53,7 +57,7 @@ interface ColorPreset {
   standalone: false,
   selector: 'app-note',
   templateUrl: './note.component.html',
-  styleUrls: ['./note.component.scss']
+  styleUrls: ['./note.component.scss'],
 })
 export class NoteComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
@@ -148,6 +152,11 @@ export class NoteComponent {
 
         } else {
           this.posts = [];
+        }
+        if (res.metadata?.displayPreferences) {
+          this.width = res.metadata.displayPreferences.width || this.width;
+          this.height = res.metadata.displayPreferences.height || this.height;
+          this.updateModalSize();
         }
       },
       error: (err) => {
@@ -295,20 +304,48 @@ export class NoteComponent {
 
   onResizing = (event: MouseEvent) => {
     if (!this.resizing) return;
+
     const dx = event.clientX - this.lastX;
     const dy = event.clientY - this.lastY;
-    this.width = Math.max(400, this.width + dx);
-    this.height = Math.max(300, this.height + dy);
+
+    const maxWidth = window.innerWidth * 0.9;
+    const maxHeight = window.innerHeight * 0.9;
+
+    this.width = Math.max(400, Math.min(maxWidth, this.width + dx));
+    this.height = Math.max(300, Math.min(maxHeight, this.height + dy));
+
     this.lastX = event.clientX;
     this.lastY = event.clientY;
     this.updateModalSize();
   }
 
+
   onResizeEnd = () => {
     this.resizing = false;
     window.removeEventListener('mousemove', this.onResizing);
     window.removeEventListener('mouseup', this.onResizeEnd);
+
+    this.saveDisplayPreferences();
   }
+
+  saveDisplayPreferences(): void {
+    const obj = {
+      name: this.objectName,
+      objectType: this.objectType,
+      displayPreferences: {
+        width:  Math.round(this.width),
+        height:  Math.round(this.height)
+      }
+    };
+
+    this.coreService.post('note/preferences', obj).subscribe({
+      next: (res) => {
+      },
+      error: (err) => {
+      }
+    });
+  }
+
 
   updateModalSize() {
     this.activeModal.updateConfig({
@@ -493,6 +530,33 @@ export class NoteComponent {
     this.isFullscreenEdit = !this.isFullscreenEdit;
     if (this.isFullscreenEdit) {
       this.updatePreview();
+    }
+  }
+
+  onTextareaInput(event: Event): void {
+    this.updatePreview();
+    const textarea = event.target as HTMLTextAreaElement;
+    const cursorPos = textarea.selectionStart;
+    const textBeforeCursor = this.noteContent.substring(0, cursorPos);
+
+    if (textBeforeCursor.endsWith('@ ')) {
+      const charBeforeAt = textBeforeCursor[textBeforeCursor.length - 3];
+      const isValidPosition = !charBeforeAt || charBeforeAt === ' ' || charBeforeAt === '\n';
+
+      if (isValidPosition) {
+        const before = this.noteContent.substring(0, cursorPos - 1); // Remove the space
+        const after = this.noteContent.substring(cursorPos);
+
+        this.noteContent = before + '[]' + after;
+
+        this.updatePreview();
+
+        setTimeout(() => {
+          const newPos = cursorPos;
+          textarea.setSelectionRange(newPos, newPos);
+          textarea.focus();
+        }, 0);
+      }
     }
   }
 

@@ -21,15 +21,17 @@ import {TypeComponent} from './workflow-type/type.component';
 import {ScriptModalComponent} from './script-modal/script-modal.component';
 import {TooltipInfoComponent} from "./tooltip-info/tooltip-info.component";
 import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
+import {NzSpaceCompactComponent} from "ng-zorro-antd/space";
 
 @NgModule({
-  imports: [
-    SharedModule,
-    NzTabsModule,
-    NzDrawerModule,
-    WorkflowRoutingModule,
-    NzTooltipDirective
-  ],
+    imports: [
+        SharedModule,
+        NzTabsModule,
+        NzDrawerModule,
+        WorkflowRoutingModule,
+        NzTooltipDirective,
+        NzSpaceCompactComponent
+    ],
   declarations: [
     WorkflowComponent,
     WorkflowDetailComponent,

@@ -29,7 +29,7 @@
       </div>
       <div class="new-post-section" style="margin-bottom: 0px;">
         <textarea [(ngModel)]="noteContent"
-                  (input)="updatePreview()"
+                  (input)="onTextareaInput($event)"
                   rows="3"
                   class="note-textarea"
                   placeholder="{{'inventory.notes.placeholder.message' | translate}}"></textarea>
@@ -150,7 +150,7 @@
             <span translate>inventory.notes.label.editor</span>
           </div>
           <textarea [(ngModel)]="noteContent"
-                    (input)="updatePreview()"
+                    (input)="onTextareaInput($event)"
                     class="fullscreen-textarea"
                     placeholder="{{'inventory.notes.placeholder.message' | translate}}"></textarea>
         </div>
@@ -253,10 +253,8 @@
                   class="btn btn-primary btn-sm"
                   type="button"
                   (click)="addPost(); toggleFullscreenEdit()">
-            @if (submitted) {
-              <i class="fa fa-spin fa-spinner p-r-xs"></i>
-            }
-            {{'common.button.submit' | translate}}
+            {{'inventory.notes.button.post' | translate}}
+          <i class="fa fa-paper-plane" aria-hidden="true"></i>
           </button>
         </div>
       </div>

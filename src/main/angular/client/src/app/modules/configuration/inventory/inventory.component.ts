@@ -5012,7 +5012,7 @@ export class ExportComponent {
         this.exportFolder(obj);
       } else {
         if (!this.exportObj.forSigning) {
-          if (this.exportObj.exportType === 'individual' && this.useDependencies) {
+          if (this.exportObj.exportType != 'changes' && this.exportObj.exportType != 'folders' && this.useDependencies) {
             this.nodes.forEach(node => {
               this.handleDependenciesForExport(node, obj);
             });

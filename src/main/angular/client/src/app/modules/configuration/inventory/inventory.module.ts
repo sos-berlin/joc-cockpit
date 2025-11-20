@@ -83,6 +83,7 @@ import {WorkflowModule} from "../../workflow/workflow.module";
 import { NzAutocompleteModule } from 'ng-zorro-antd/auto-complete';
 import {NzAlertModule} from "ng-zorro-antd/alert";
 import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
+import {NzSpaceCompactComponent} from "ng-zorro-antd/space";
 
 const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, CalendarComponent, ScheduleComponent, ScriptComponent, LockComponent,
   WorkflowComponent, BoardComponent, JobResourceComponent, JobTemplateComponent, FileOrderComponent, TableComponent, FrequencyModalComponent,
@@ -108,7 +109,8 @@ const COMPONENTS = [InventoryComponent, JobComponent, ExpressionComponent, Calen
         WorkflowModule,
         NzAutocompleteModule,
         NzAlertModule,
-        NzTooltipDirective
+        NzTooltipDirective,
+        NzSpaceCompactComponent
     ],
   providers: [DatePipe, CalendarService, InventoryService],
   exports: [

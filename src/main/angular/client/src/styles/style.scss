@@ -10384,4 +10384,10 @@ cdk-virtual-scroll-viewport {
   margin-left: 48px !important;
 }
 
+.fullscreen-edit-wrapper{
+  background-color: var(--background-color);
+}
 
+.editor-panel{
+  border-right: 1px solid var(--border-color);
+}
