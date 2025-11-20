@@ -1684,8 +1684,28 @@ export class CoreService {
 
   // Function: get list of time zones
   getTimeZoneList(): any {
-    return moment.tz.names();
+    const deprecated3LetterZones = [
+      'ACT', 'AET', 'AGT', 'ART', 'AST', 'BET', 'BST', 'CAT', 'CNT', 'CST',
+      'CTT', 'EAT', 'ECT', 'EST', 'HST', 'IET', 'IST', 'JST', 'MIT', 'MST',
+      'NET', 'NST', 'PLT', 'PNT', 'PRT', 'PST', 'SST', 'VST',
+      'CET', 'EET', 'WET', 'MET', 'UCT', 'GMT'
+    ];
+
+    const deprecatedPrefixes = ['US/', 'Canada/', 'Mexico/', 'Brazil/', 'Chile/'];
+
+    return moment.tz.names().filter(tz => {
+      if (deprecated3LetterZones.includes(tz)) {
+        return false;
+      }
+
+      if (deprecatedPrefixes.some(prefix => tz.startsWith(prefix))) {
+        return false;
+      }
+
+      return tz.match(/^(Africa|America|Antarctica|Asia|Australia|Europe|Arctic|Atlantic|Indian|Pacific)\/.+$/);
+    });
   }
+
 
   getProtocols(): Array<string> {
     return ['LOCAL', 'FTP', 'FTPS', 'SFTP', 'HTTP', 'HTTPS', 'WEBDAV', 'WEBDAVS', 'SMB', 'AZURE_BLOB_STORAGE'];
