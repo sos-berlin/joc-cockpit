@@ -15,6 +15,7 @@ import {CommentModalComponent} from '../../../../components/comment-modal/commen
 import {InventoryObject} from '../../../../models/enums';
 import {ScriptEditorComponent} from "../workflow/workflow.component";
 import {HelpViewerComponent} from "../../../../components/help-viewer/help-viewer.component";
+import { NoteComponent } from 'src/app/components/notes/note.component';
 
 @Component({
   standalone: false,
@@ -143,6 +144,8 @@ export class ScriptComponent {
                 this.isLocalChange = '';
               }
             }
+          }else if(args.eventSnapshots[j].eventType.match(/InventoryNoteUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryNoteAdded/) || args.eventSnapshots[j].eventType.match(/InventoryNoteDeleted/)){
+            this.getObject();
           }
         }
       }
@@ -424,4 +427,24 @@ export class ScriptComponent {
       nzMaskClosable: false
     })
   }
+
+  notes(name): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: NoteComponent,
+      nzClassName: 'custom-resizable-modal',
+      nzData: {
+        preferences: this.preferences,
+        width: 800,
+        height: 600,
+        objectName: name,
+        objectType: 'INCLUDESCRIPT'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false,
+      nzStyle: { width: '800px', height: '600px', minWidth: '300px',  minHeight: '200px' }
+    });
+  }
+
 }

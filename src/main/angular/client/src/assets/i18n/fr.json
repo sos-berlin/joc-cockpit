@@ -2498,6 +2498,7 @@
       "button.preview": "Preview",
       "button.post": "Post",
       "tooltip.bold": "bold",
+      "tooltip.notes": "Notes",
       "tooltip.italic": "italic",
       "tooltip.bullets": "Bullets",
       "tooltip.colorPicker": "Change Color",

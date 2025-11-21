@@ -12,6 +12,7 @@ import {ConfirmModalComponent} from '../../../components/comfirm-modal/confirm.c
 import {CommentModalComponent} from "../../../components/comment-modal/comment.component";
 import {NgModel} from "@angular/forms";
 import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
+import {NoteComponent} from "../../../components/notes/note.component";
 
 declare const $: any;
 
@@ -421,7 +422,7 @@ export class SingleBoardComponent {
   private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'NoticeBoardStateChanged' && args.eventSnapshots[j].path && args.eventSnapshots[j].path.indexOf(this.name) > -1) {
+        if ((args.eventSnapshots[j].eventType === 'NoticeBoardStateChanged' && args.eventSnapshots[j].path && args.eventSnapshots[j].path.indexOf(this.name) > -1) || (args.eventSnapshots[j].eventType.match(/InventoryNoteUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryNoteAdded/) || args.eventSnapshots[j].eventType.match(/InventoryNoteDeleted/))) {
           const obj = {
             controllerId: this.controllerId,
             limit: this.preferences.maxBoardRecords,
@@ -437,7 +438,24 @@ export class SingleBoardComponent {
       }
     }
   }
-
+  notes(name): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: NoteComponent,
+      nzClassName: 'custom-resizable-modal',
+      nzData: {
+        preferences: this.preferences,
+        width: 800,
+        height: 600,
+        objectName: name,
+        objectType: 'NOTICEBOARD'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false,
+      nzStyle: { width: '800px', height: '600px', minWidth: '300px',  minHeight: '200px' }
+    });
+  }
 }
 
 @Component({
@@ -631,6 +649,8 @@ export class BoardComponent {
             }
           }
         } else if (args.eventSnapshots[j].eventType.match(/Item/) && args.eventSnapshots[j].objectType === 'NOTICEBOARD') {
+          flag = true;
+        }else if(args.eventSnapshots[j].eventType.match(/InventoryNoteUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryNoteAdded/) || args.eventSnapshots[j].eventType.match(/InventoryNoteDeleted/)){
           flag = true;
         }
       }
@@ -1279,5 +1299,25 @@ export class BoardComponent {
       nzMaskClosable: false
     })
   }
+
+  notes(name): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: NoteComponent,
+      nzClassName: 'custom-resizable-modal',
+      nzData: {
+        preferences: this.preferences,
+        width: 800,
+        height: 600,
+        objectName: name,
+        objectType: 'NOTICEBOARD'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false,
+      nzStyle: { width: '800px', height: '600px', minWidth: '300px',  minHeight: '200px' }
+    });
+  }
+
 }
 

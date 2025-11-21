@@ -19,6 +19,7 @@ import {InventoryObject} from '../../../../models/enums';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import * as moment from 'moment';
 import {HelpViewerComponent} from "../../../../components/help-viewer/help-viewer.component";
+import {NoteComponent} from "../../../../components/notes/note.component";
 
 @Directive({
   standalone: false,
@@ -274,6 +275,8 @@ export class ReportComponent implements OnChanges, OnDestroy {
                 this.isLocalChange = '';
               }
             }
+          }else if(args.eventSnapshots[j].eventType.match(/InventoryNoteUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryNoteAdded/) || args.eventSnapshots[j].eventType.match(/InventoryNoteDeleted/)){
+            this.getObject();
           }
         }
       }
@@ -753,4 +756,24 @@ export class ReportComponent implements OnChanges, OnDestroy {
       nzMaskClosable: false
     })
   }
+
+  notes(name): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: NoteComponent,
+      nzClassName: 'custom-resizable-modal',
+      nzData: {
+        preferences: this.preferences,
+        width: 800,
+        height: 600,
+        objectName: name,
+        objectType: 'REPORT'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false,
+      nzStyle: { width: '800px', height: '600px', minWidth: '300px',  minHeight: '200px' }
+    });
+  }
+
 }

@@ -293,6 +293,14 @@
             </span>
           }
         <i (click)="helpPage('configuration-inventory-schedules')" [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="'common.tooltip.help' | translate" class="help-info-inv cur-point fa fa-info-circle text-20 m-r-sm"></i>
+          <i (click)="notes(schedule.name)"
+             [nzTooltipMouseEnterDelay]="0.5"
+             [nz-tooltip]="'inventory.notes.tooltip.notes' | translate"
+             nz-icon
+             nzType="paper-clip"
+             nzTheme="outline"
+             class="cur-point text-16 m-r-sm"
+             [style.color]="coreService.getColorByNoteSeverity(schedule?.hasNote)"></i>
         </span>
         <div class="inline pull-right">
           @if (!isTrash) {

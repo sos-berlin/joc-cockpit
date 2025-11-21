@@ -3953,4 +3953,15 @@ private checkParentNode(lastPos, data, item, nodes): any {
   });
 }
 
+  getColorByNoteSeverity(severity: string): string {
+    switch(severity) {
+      case 'CRITICAL': return '#ff4d4f';
+      case 'HIGH': return '#ff9800';
+      case 'NORMAL': return '#dcac00';
+      case 'LOW': return '#52c41a';
+      case 'INFO': return '#1890ff';
+      default: return '';
+    }
+  }
+
 }
