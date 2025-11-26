@@ -515,6 +515,9 @@ export class SingleDeployComponent {
   dependenciesToggleAvailable = false;
   useDependencies = false;
   preferences: any = {};
+  dependencyMode: 'none' | 'enforced' | 'unenforced' | 'both' = 'both';
+
+  private _filteredDepsCache: Map<string, any> = new Map();
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private modal: NzModalService, private ref: ChangeDetectorRef,) {
   }
@@ -611,7 +614,7 @@ export class SingleDeployComponent {
           }
         });
       };
-      const depsEnabled = !this.dependenciesToggleAvailable || this.useDependencies;
+      const depsEnabled = this.dependencyMode !== 'none';
       if (depsEnabled) {
         Object.keys(this.affectedObjectsByType).forEach(type => {
           this.affectedObjectsByType[type].forEach(obj => {
@@ -707,7 +710,7 @@ export class SingleDeployComponent {
         obj.addOrdersDateFrom = 'now';
       }
     }
-    const depsEnabled = !this.dependenciesToggleAvailable || this.useDependencies;
+    const depsEnabled = this.dependencyMode !== 'none';
     if (depsEnabled) {
       Object.keys(this.affectedObjectsByType).forEach(type => {
         this.affectedObjectsByType[type].forEach(obj => {
@@ -1170,16 +1173,11 @@ export class SingleDeployComponent {
           } else {
             result.deployablesVersions = [];
           }
-          this.dependenciesToggleAvailable = !this.releasable && !this.isRemoved && !this.isRevoke
-            ? this.computeDependenciesToggleAvailable(result)
-            : false;
 
-          if (this.dependenciesToggleAvailable) {
-            this.useDependencies = true;
-          }
           this.loading = false;
           this.deployablesObject = [result];
-        }, error: () => this.loading = false
+        },
+        error: () => this.loading = false
       });
     }
   }
@@ -1202,19 +1200,19 @@ export class SingleDeployComponent {
       operationType = 'REMOVE';
     }
 
-    const obj = {
+    const requestBody = {
       configurations: configurations,
       operationType: operationType
     };
 
-
-    const requestedKeys = new Set(configurations.map(config => `${config.name}-${config.type}`));
-
-    this.coreService.post('inventory/dependencies', obj).subscribe({
+    this.coreService.post('inventory/dependencies2', requestBody).subscribe({
       next: (res: any) => {
-        this.dependencies = res.dependencies;
-        this.updateNodeDependencies(this.dependencies, requestedKeys);
-        this.prepareObject(this.dependencies);
+        if (res.requestedItems && res.requestedItems.length > 0) {
+          this.dependencies = res;
+          this.updateNodeDependencies(res);
+          this.prepareObject(res);
+        }
+        this.loading = false;
       },
       error: (err) => {
         this.loading = false;
@@ -1222,144 +1220,237 @@ export class SingleDeployComponent {
     });
   }
 
-  private updateNodeDependencies(dependenciesResponse: any, requestedKeys: Set<string>): void {
-    const requestedItems = dependenciesResponse.requestedItems;
-    const affectedItems = dependenciesResponse.affectedItems || [];
 
-    const referencedSet = new Set<string>();
-    requestedItems.forEach(item => {
-      item.references?.forEach(ref => {
-        referencedSet.add(`${ref.name}-${ref.objectType}`);
+  private updateNodeDependencies(dependenciesResponse: any): void {
+    const requestedItemIds = dependenciesResponse.requestedItems || [];
+    const objectsMap = dependenciesResponse.objects || {};
+
+    requestedItemIds.forEach(objectId => {
+      const dep = objectsMap[objectId];
+      if (!dep) return;
+
+      const allReferencedIds = [
+        ...(dep.enforcedReferencedBy || []),
+        ...(dep.referencedBy || []),
+        ...(dep.enforcedReferences || []),
+        ...(dep.references || [])
+      ];
+
+      allReferencedIds.forEach(refId => {
+        const refObj = objectsMap[refId];
+        if (!refObj) return;
+
+        const uniqueKey = `${refObj.name}-${refObj.objectType}`;
+
+        if (!this.filteredAffectedItems.some(existing =>
+          `${existing.name}-${existing.objectType}` === uniqueKey)) {
+          this.filteredAffectedItems.push(refObj);
+        }
       });
-      item.referencedBy?.forEach(refBy => {
-        referencedSet.add(`${refBy.name}-${refBy.objectType}`);
-      });
-    });
-
-    const requestedSet = new Set<string>();
-    requestedItems.forEach(item => {
-      requestedSet.add(`${item.name}-${item.objectType}`);
-    });
-
-    affectedItems.forEach(itemWrapper => {
-      const item = itemWrapper.item;
-      const uniqueKey = `${item.name}-${item.objectType}`;
-      if (!referencedSet.has(uniqueKey) && !requestedSet.has(uniqueKey) &&
-        !requestedKeys.has(uniqueKey) &&
-        !this.filteredAffectedItems.some(existing => `${existing.name}-${existing.objectType}` === uniqueKey)) {
-        this.filteredAffectedItems.push(item);
-      }
     });
   }
 
-  prepareObject(dependencies): void {
-    if (dependencies && dependencies?.requestedItems.length > 0) {
-      dependencies?.requestedItems.forEach(dep => {
-        if (dep.referencedBy) {
-          const affectedTypeSet = new Set<string>();
-          dep.referencedBy.forEach(refObj => {
-            const type = refObj.objectType;
-            affectedTypeSet.add(type);
-            if (!this.affectedObjectsByType[type]) {
-              this.affectedObjectsByType[type] = [];
-              this.affectedObjectTypes.push(type);
-            }
 
-            refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
-            refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
-            refObj.change = refObj.deployed;
+  getFilteredAffectedObjects(type: string): any[] {
+    const objects = this.affectedObjectsByType[type] || [];
+    return this.filterDependenciesByMode(objects);
+  }
 
-            if (this.releasable) {
-              refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
-              refObj.disabled = !refObj.valid
-              refObj.change = refObj.deployed;
-            }
-            if (this.isRemoved) {
-              refObj.disabled = false;
-              refObj.selected = true;
-            }
+  getFilteredReferencedObjects(type: string): any[] {
+    const objects = this.referencedObjectsByType[type] || [];
+    return this.filterDependenciesByMode(objects);
+  }
 
-            if (this.isRevoke || this.operation === 'recall') {
-              refObj.selected = refObj.valid && (refObj.released || refObj.deployed);
-              refObj.disabled = !refObj.valid;
-            }
-            if (this.dependenciesToggleAvailable) {
-              refObj.disabled = false;
-              if (!this.useDependencies) refObj.selected = false;
-            }
-            this.affectedObjectsByType[type].push(refObj);
-          });
+  private prepareObject(dependencies: any): void {
+    const requestedItemIds = dependencies.requestedItems || [];
+    const objectsMap = dependencies.objects || {};
 
-
-          affectedTypeSet.forEach(type => {
-            this.updateParentCheckboxAffected(type);
-          });
-        }
-
-
-        if (dep.references) {
-          const referencedTypeSet = new Set<string>();
-          dep.references.forEach(refObj => {
-            const type = refObj.objectType;
-            referencedTypeSet.add(type);
-            if (!this.referencedObjectsByType[type]) {
-              this.referencedObjectsByType[type] = [];
-              this.referencedObjectTypes.push(type);
-            }
-
-            refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
-            refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
-            refObj.change = refObj.deployed;
-
-            if (this.isRevoke || this.operation === 'recall') {
-              refObj.selected = false;
-              refObj.disabled = !refObj.valid;
-            }
-            if (this.isRemoved) {
-              refObj.disabled = false;
-              refObj.selected = false;
-            }
-            if (this.dependenciesToggleAvailable) {
-              refObj.disabled = false;
-              if (!this.useDependencies) refObj.selected = false;
-            }
-            this.referencedObjectsByType[type].push(refObj);
-          });
-
-          referencedTypeSet.forEach(type => {
-            this.updateParentCheckboxReferenced(type);
-          });
-
-        }
-      });
-
-
-      const filteredAffectedTypeSet = new Set<string>();
-      this.filteredAffectedItems.forEach(itemWrapper => {
-        const item = itemWrapper;
-        const type = item.objectType;
-        filteredAffectedTypeSet.add(type);
-
-        item.disabled = !item.valid;
-        item.selected = item.valid && (!item.deployed && !item.released);
-        if (this.dependenciesToggleAvailable) {
-          item.disabled = false;
-          if (!this.useDependencies) item.selected = false;
-        }
-        if (this.isRevoke || this.operation === 'recall') {
-          item.selected = false
-          item.disabled = !item.valid || item.valid && (!item.deployed && !item.released);
-        }
-        if (this.isRemoved) {
-          item.selected = false;
-        }
-        filteredAffectedTypeSet.forEach(type => {
-          this.updateParentCheckboxFilteredAffected(type);
-        });
-      });
-      this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
-      this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
+    if (requestedItemIds.length === 0) {
+      return;
     }
+
+    this.affectedObjectsByType = {};
+    this.referencedObjectsByType = {};
+    this.affectedObjectTypes = [];
+    this.referencedObjectTypes = [];
+
+    requestedItemIds.forEach(objectId => {
+      const dep = objectsMap[objectId];
+      if (!dep) return;
+
+      const allReferencedByIds = [
+        ...(dep.enforcedReferencedBy || []),
+        ...(dep.referencedBy || [])
+      ];
+
+      allReferencedByIds.forEach((refById) => {
+        const refObj = objectsMap[refById];
+        if (!refObj) return;
+
+        const type = refObj.objectType;
+        if (!this.affectedObjectsByType[type]) {
+          this.affectedObjectsByType[type] = [];
+          this.affectedObjectTypes.push(type);
+        }
+
+        const refObjClone = {...refObj};
+        const isEnforced = (dep.enforcedReferencedBy || []).includes(refById);
+        const state = this.getDependencyState(refObj, isEnforced);
+
+        refObjClone.enforce = isEnforced;
+        refObjClone.selected = state.selected;
+        refObjClone.disabled = state.disabled;
+        refObjClone.change = refObj.deployed;
+
+        const existingIndex = this.affectedObjectsByType[type].findIndex(
+          obj => obj.id === refObjClone.id
+        );
+        if (existingIndex === -1) {
+          this.affectedObjectsByType[type].push(refObjClone);
+        }
+      });
+
+      const allReferencesIds = [
+        ...(dep.enforcedReferences || []),
+        ...(dep.references || [])
+      ];
+
+      allReferencesIds.forEach(refId => {
+        const refObj = objectsMap[refId];
+        if (!refObj) return;
+
+        const type = refObj.objectType;
+        if (!this.referencedObjectsByType[type]) {
+          this.referencedObjectsByType[type] = [];
+          this.referencedObjectTypes.push(type);
+        }
+
+        const refObjClone = {...refObj};
+        const isEnforced = (dep.enforcedReferences || []).includes(refId);
+        const state = this.getDependencyState(refObj, isEnforced);
+
+        refObjClone.enforce = isEnforced;
+        refObjClone.selected = state.selected;
+        refObjClone.disabled = state.disabled;
+        refObjClone.change = refObj.deployed;
+
+        const existingIndex = this.referencedObjectsByType[type].findIndex(
+          obj => obj.id === refObjClone.id
+        );
+        if (existingIndex === -1) {
+          this.referencedObjectsByType[type].push(refObjClone);
+        }
+      });
+    });
+
+    this.affectedObjectTypes.forEach(type => {
+      this.affectedCollapsed[type] = true;
+      this.updateParentCheckboxAffected(type);
+    });
+
+    this.referencedObjectTypes.forEach(type => {
+      this.referencedCollapsed[type] = true;
+      this.updateParentCheckboxReferenced(type);
+    });
+  }
+
+
+  private getDependencyState(refObj: any, isEnforced: boolean): { selected: boolean, disabled: boolean } {
+    let selected = false;
+    let disabled = false;
+
+    if (this.dependencyMode === 'none') {
+      return {selected: false, disabled: false};
+    }
+
+    if (isEnforced) {
+      selected = true;
+      disabled = true;
+    } else {
+      selected = refObj.valid && (!refObj.deployed && !refObj.released);
+      disabled = false;
+    }
+
+    if (this.releasable) {
+      if (isEnforced) {
+        selected = true;
+        disabled = true;
+      } else {
+        selected = refObj.valid && (!refObj.deployed && !refObj.released);
+        disabled = !refObj.valid;
+      }
+    }
+
+    if (this.isRemoved) {
+      selected = isEnforced ? true : false;
+      disabled = false;
+    }
+
+    if (this.isRevoke || this.operation === 'recall') {
+      selected = isEnforced ? true : (refObj.valid && (refObj.released || refObj.deployed));
+      disabled = isEnforced ? true : !refObj.valid;
+    }
+
+    return {selected, disabled};
+  }
+
+
+  private filterDependenciesByMode(dependencies: any[]): any[] {
+    if (!dependencies || dependencies.length === 0) {
+      return [];
+    }
+
+    if (this.dependencyMode === 'none') {
+      return [];
+    }
+
+    if (this.dependencyMode === 'both') {
+      return dependencies;
+    }
+
+    if (this.dependencyMode === 'enforced') {
+      return dependencies.filter(dep => dep.enforce === true);
+    }
+
+    if (this.dependencyMode === 'unenforced') {
+      return dependencies.filter(dep => dep.enforce === false);
+    }
+
+    return dependencies;
+  }
+
+
+  onDependencyModeChange(): void {
+
+    this._filteredDepsCache.clear();
+
+    Object.values(this.affectedObjectsByType).forEach(arr =>
+      arr.forEach(o => {
+        const state = this.getDependencyState(o, o.enforce || false);
+        o.selected = state.selected;
+        o.disabled = state.disabled;
+      })
+    );
+
+    Object.values(this.referencedObjectsByType).forEach(arr =>
+      arr.forEach(o => {
+        const state = this.getDependencyState(o, o.enforce || false);
+        o.selected = state.selected;
+        o.disabled = state.disabled;
+      })
+    );
+
+    this.filteredAffectedItems.forEach(o => {
+      const state = this.getDependencyState(o, false);
+      o.selected = state.selected;
+      o.disabled = state.disabled;
+    });
+
+    this.affectedObjectTypes.forEach(t => this.updateParentCheckboxAffected(t));
+    this.referencedObjectTypes.forEach(t => this.updateParentCheckboxReferenced(t));
+    this.getUniqueObjectTypes(this.filteredAffectedItems).forEach(t => this.updateParentCheckboxFilteredAffected(t));
+
+    this.ref.detectChanges();
   }
 
   getUniqueObjectTypes(objects: any[]): string[] {
@@ -1466,9 +1557,6 @@ export class SingleDeployComponent {
     this.getUniqueObjectTypes(this.filteredAffectedItems).forEach(t => this.updateParentCheckboxFilteredAffected(t));
   }
 
-  private computeDependenciesToggleAvailable(item: any): boolean {
-    return !(item?.forceDependencies === true);
-  }
 
   helpPage(key): void {
     this.modal.create({
@@ -1523,7 +1611,6 @@ export class SingleDeployComponent {
         });
       });
 
-      // Check filteredAffectedItems
       this.filteredAffectedItems.forEach(item => {
         if (!item.selected && !item.valid &&
           (item.objectType === 'WORKINGDAYSCALENDAR' || item.objectType === 'NONWORKINGDAYSCALENDAR')) {
@@ -1604,7 +1691,9 @@ export class DeployComponent {
   selectAllFilteredAffected: { [key: string]: boolean } = {};
   sharedCheckboxState: { [key: string]: boolean } = {};
   dependenciesToggleAvailable = false;
-  useDependencies = false;
+  useDependencies = true;
+  dependencyMode: 'none' | 'enforced' | 'unenforced' | 'both' = 'both';
+  private _filteredDepsCache: WeakMap<any, { references: any[], referencedBy: any[] }> = new WeakMap();
   private recursiveDependenciesCache: any = null;
 
   constructor(public activeModal: NzModalRef, private modal: NzModalService, public coreService: CoreService, private ref: ChangeDetectorRef,
@@ -1779,7 +1868,7 @@ export class DeployComponent {
       return
     }
     if (this.object.deployType === 'individual') {
-      // this.filteredAffectedItems = []
+
     }
     this.checkedObject.clear();
     this.recursiveCheck(this.nodes);
@@ -1900,14 +1989,13 @@ export class DeployComponent {
   }
 
   private getDependencies(checkedNodes: { name: string, type: string }[], node, isChecked = false): void {
-    this.loading = true
+    this.loading = true;
     const configurations = checkedNodes.map(node => ({
       name: node.name,
       type: node.type,
     }));
 
     let operationType = 'DEPLOY';
-
 
     if (this.isRevoke) {
       operationType = 'REVOKE';
@@ -1919,9 +2007,8 @@ export class DeployComponent {
       operationType = 'REMOVE';
     }
 
-
     if (this.object.deployType === 'changes') {
-      operationType = 'DEPLOY'
+      operationType = 'DEPLOY';
     }
 
     const requestBody = {
@@ -1931,192 +2018,285 @@ export class DeployComponent {
 
     const requestedKeys = new Set(configurations.map(config => `${config.name}-${config.type}`));
 
-    this.coreService.post('inventory/dependencies', requestBody).subscribe({
+    this.coreService.post('inventory/dependencies2', requestBody).subscribe({
       next: (res: any) => {
         if (this.object.isRecursive) {
-          this.recursiveDependenciesCache = res.dependencies;
+          this.recursiveDependenciesCache = res;
         }
-        if (res.dependencies && res.dependencies.requestedItems.length > 0 || res.dependencies?.affectedItems?.length > 0) {
-          this.updateNodeDependencies(res.dependencies, requestedKeys, isChecked);
-          this.prepareObject(res.dependencies);
+
+        if (res.requestedItems && res.requestedItems.length > 0) {
+          this.updateNodeDependencies(res, requestedKeys, isChecked);
+          this.prepareObject(res);
           this.ref.detectChanges();
         }
-        this.loading = false
+        this.loading = false;
         this.ref.detectChanges();
-
       },
       error: (err) => {
+        this.loading = false;
       }
     });
   }
 
-  private updateNodeDependencies(dependenciesResponse: any, requestedKeys: Set<string>, isChecked: boolean): void {
-    const requestedItems = dependenciesResponse.requestedItems;
-    const affectedItems = dependenciesResponse.affectedItems || [];
 
-    const referencedSet = new Set<string>();
-    requestedItems.forEach(item => {
-      item.references?.forEach(ref => {
-        referencedSet.add(`${ref.name}-${ref.objectType}`);
-      });
-      item.referencedBy?.forEach(refBy => {
-        referencedSet.add(`${refBy.name}-${refBy.objectType}`);
-      });
-    });
+  private findAndUpdateNodeWithDependencies(dep: any, nodes: any[]): void {
+    for (const node of nodes) {
 
-    const requestedSet = new Set<string>();
-    requestedItems.forEach(item => {
-      requestedSet.add(`${item.name}-${item.objectType}`);
-    });
+      if (node.id === dep.id ||
+        node.path === dep.path ||
+        (node.name === dep.name && node.type === dep.objectType)) {
 
-    affectedItems.forEach(itemWrapper => {
-      const item = itemWrapper.item;
-      const uniqueKey = `${item.name}-${item.objectType}`;
-      if (!referencedSet.has(uniqueKey) && !requestedSet.has(uniqueKey) &&
-        !requestedKeys.has(uniqueKey) &&
-        !this.filteredAffectedItems.some(existing => `${existing.name}-${existing.objectType}` === uniqueKey)) {
-        this.filteredAffectedItems.push(item);
+
+        node.dependencies = {
+          referencedBy: dep.referencedBy || [],
+          references: dep.references || []
+        };
+
+        return;
       }
-    });
 
-    if (isChecked) {
-      requestedItems.forEach(dep => {
-        const uniqueKey = `${dep.name}-${dep.objectType}`;
-        if (!referencedSet.has(uniqueKey) && !requestedSet.has(uniqueKey) &&
-          !requestedKeys.has(uniqueKey) &&
-          !this.filteredAffectedItems.some(existing => `${existing.name}-${existing.objectType}` === uniqueKey)) {
-          this.filteredAffectedItems.push(dep);
-        }
-      });
+      if (node.children && node.children.length > 0) {
+        this.findAndUpdateNodeWithDependencies(dep, node.children);
+      }
+    }
+  }
+
+  /**
+   * Common function to determine selected/disabled state for dependencies
+   */
+  private getDependencyState(refObj: any, isEnforced: boolean): { selected: boolean, disabled: boolean } {
+    let selected = false;
+    let disabled = false;
+
+    if (isEnforced) {
+
+      selected = true;
+      disabled = true;
+    } else {
+
+      selected = refObj.valid && (!refObj.deployed && !refObj.released);
+      disabled = false;
     }
 
-    requestedItems.forEach(dep => {
-      this.findAndUpdateNodeWithDependencies(dep, this.nodes);
+    if (this.releasable) {
+      if (isEnforced) {
+        selected = true;
+        disabled = true;
+      } else {
+        selected = refObj.valid && (!refObj.deployed && !refObj.released);
+        disabled = !refObj.valid;
+      }
+    }
+
+    if (this.isRemove) {
+      selected = isEnforced ? true : true;
+      disabled = isEnforced ? true : false;
+    }
+
+    if (this.isRevoke || this.operation === 'recall') {
+      selected = isEnforced ? true : (refObj.valid && (refObj.released || refObj.deployed));
+      disabled = isEnforced ? true : !refObj.valid;
+    }
+
+    return {selected, disabled};
+  }
+
+  onDependencyModeChange(): void {
+
+    this._filteredDepsCache = new WeakMap();
+
+    this.clearFilterModeTracking(this.nodes);
+
+
+    this.nodes = [...this.nodes];
+    this.ref.detectChanges();
+  }
+
+
+  private clearFilterModeTracking(nodes: any[]): void {
+    nodes.forEach(node => {
+      delete node._lastFilterMode;
+      if (node.children && node.children.length > 0) {
+        this.clearFilterModeTracking(node.children);
+      }
+    });
+  }
+
+
+  private updateNodeDependencies(dependenciesResponse: any, requestedKeys: Set<string>, isChecked: boolean): void {
+    const requestedItemIds = dependenciesResponse.requestedItems || [];
+    const objectsMap = dependenciesResponse.objects || {};
+
+
+    requestedItemIds.forEach(objectId => {
+      const dep = objectsMap[objectId];
+      if (!dep) return;
+
+      const allReferencedBy = new Map<number, any>();
+      const allReferences = new Map<number, any>();
+
+      const collectReferencedBy = (obj: any, isEnforced: boolean) => {
+        const ids = isEnforced ? (obj.enforcedReferencedBy || []) : (obj.referencedBy || []);
+
+        ids.forEach(id => {
+          if (!allReferencedBy.has(id)) {
+            const refObj = objectsMap[id];
+            if (refObj) {
+              const state = this.getDependencyState(refObj, isEnforced);
+
+              const depObj: any = {
+                id: refObj.id,
+                name: refObj.name,
+                path: refObj.path,
+                objectType: refObj.objectType,
+                valid: refObj.valid,
+                deployed: refObj.deployed,
+                released: refObj.released,
+                enforce: isEnforced,
+                selected: state.selected,
+                disabled: state.disabled
+              };
+
+              allReferencedBy.set(id, depObj);
+            }
+          }
+        });
+      };
+
+      const collectReferences = (obj: any, isEnforced: boolean) => {
+        const ids = isEnforced ? (obj.enforcedReferences || []) : (obj.references || []);
+
+        ids.forEach(id => {
+          if (!allReferences.has(id)) {
+            const refObj = objectsMap[id];
+            if (refObj) {
+              const state = this.getDependencyState(refObj, isEnforced);
+
+              const depObj: any = {
+                id: refObj.id,
+                name: refObj.name,
+                path: refObj.path,
+                objectType: refObj.objectType,
+                valid: refObj.valid,
+                deployed: refObj.deployed,
+                released: refObj.released,
+                enforce: isEnforced,
+                selected: state.selected,
+                disabled: state.disabled
+              };
+
+              allReferences.set(id, depObj);
+            }
+          }
+        });
+      };
+
+      collectReferencedBy(dep, true);
+      collectReferencedBy(dep, false);
+      collectReferences(dep, true);
+      collectReferences(dep, false);
+
+      const transformedDep = {
+        ...dep,
+        referencedBy: Array.from(allReferencedBy.values()),
+        references: Array.from(allReferences.values())
+      };
+
+      this.findAndUpdateNodeWithDependencies(transformedDep, this.nodes);
     });
 
     this.nodes = [...this.nodes];
   }
 
 
-  private findAndUpdateNodeWithDependencies(dep: any, nodes: any[]): any {
-    for (let i = 0; i < nodes.length; i++) {
-      const node = nodes[i];
-      if (node.name === dep.name && node.type === dep.type) {
-        node.dependencies = dep;
-        this.ref.detectChanges();
-        return node;
-      }
-
-      if (node.children && node.children.length > 0) {
-        const foundNode = this.findAndUpdateNodeWithDependencies(dep, node.children);
-        if (foundNode) {
-          return foundNode;
-        }
-      }
-    }
-
-    return null;
-  }
-
   private prepareObject(dependencies: any): void {
+    const requestedItemIds = dependencies.requestedItems || [];
+    const objectsMap = dependencies.objects || {};
 
-    if (dependencies && dependencies?.requestedItems.length > 0) {
-      dependencies?.requestedItems.forEach(dep => {
-        if (dep.referencedBy) {
-          const affectedTypeSet = new Set<string>();
-          dep.referencedBy.forEach(refObj => {
-            const type = refObj.objectType;
-            affectedTypeSet.add(type);
-            if (!this.affectedObjectsByType[type]) {
-              this.affectedObjectsByType[type] = [];
-              this.affectedObjectTypes.push(type);
-            }
-
-            refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
-            refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
-            refObj.change = refObj.deployed;
-            if (this.dependenciesToggleAvailable) {
-              refObj.disabled = false;
-              if (!this.useDependencies) refObj.selected = false;
-            }
-            if (this.releasable) {
-              refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
-              refObj.disabled = !refObj.valid
-              refObj.change = refObj.deployed;
-            }
-
-            if (this.isRemove) {
-              refObj.disabled = false;
-              refObj.selected = true
-            }
-
-            if (this.isRevoke || this.operation === 'recall') {
-              refObj.selected = refObj.valid && (refObj.released || refObj.deployed);
-              refObj.disabled = !refObj.valid;
-            }
-            this.affectedObjectsByType[type].push(refObj);
-          });
-        }
-
-        if (dep.references) {
-          const referencedTypeSet = new Set<string>();
-          dep.references.forEach(refObj => {
-            const type = refObj.objectType;
-            referencedTypeSet.add(type);
-            if (!this.referencedObjectsByType[type]) {
-              this.referencedObjectsByType[type] = [];
-              this.referencedObjectTypes.push(type);
-            }
-
-            refObj.selected = refObj.valid && (!refObj.deployed && !refObj.released);
-            refObj.disabled = !refObj.valid || refObj.valid && (!refObj.deployed && !refObj.released);
-            refObj.change = refObj.deployed;
-            if (this.dependenciesToggleAvailable) {
-              refObj.disabled = false;
-              if (!this.useDependencies) refObj.selected = false;
-            }
-            if (this.isRemove) {
-              refObj.disabled = false;
-              refObj.selected = false;
-            }
-
-            if (this.isRevoke || this.operation === 'recall') {
-              refObj.selected = false;
-              refObj.disabled = !refObj.valid;
-            }
-
-            this.referencedObjectsByType[type].push(refObj);
-
-
-          });
-        }
-
-      });
-      const filteredAffectedTypeSet = new Set<string>();
-      this.filteredAffectedItems.forEach(item => {
-        const type = item.objectType;
-        filteredAffectedTypeSet.add(type);
-
-        item.disabled = !item.valid;
-        item.selected = item.valid && (!item.deployed && !item.released);
-
-        if (this.dependenciesToggleAvailable) {
-          item.disabled = false;
-          if (!this.useDependencies) item.selected = false;
-        }
-
-        if (this.isRevoke || this.operation === 'recall') {
-          item.selected = false
-          item.disabled = !item.valid || item.valid && (!item.deployed && !item.released);
-        }
-        if (this.isRemove) {
-          item.selected = false;
-        }
-      });
-      this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
-      this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
-
+    if (requestedItemIds.length === 0) {
+      return;
     }
+
+    requestedItemIds.forEach(objectId => {
+      const dep = objectsMap[objectId];
+      if (!dep) return;
+
+      const allReferencedByIds = [
+        ...(dep.enforcedReferencedBy || []),
+        ...(dep.referencedBy || [])
+      ];
+
+      allReferencedByIds.forEach((refById) => {
+        const refObj = objectsMap[refById];
+        if (!refObj) return;
+
+        const type = refObj.objectType;
+        if (!this.affectedObjectsByType[type]) {
+          this.affectedObjectsByType[type] = [];
+          this.affectedObjectTypes.push(type);
+        }
+
+        const refObjClone = {...refObj};
+        const isEnforced = (dep.enforcedReferencedBy || []).includes(refById);
+        const state = this.getDependencyState(refObj, isEnforced);
+
+        refObjClone.enforce = isEnforced;
+        refObjClone.change = refObj.deployed;
+        refObjClone.selected = state.selected;
+        refObjClone.disabled = state.disabled;
+
+        const existingIndex = this.affectedObjectsByType[type].findIndex(
+          obj => obj.id === refObjClone.id
+        );
+        if (existingIndex === -1) {
+          this.affectedObjectsByType[type].push(refObjClone);
+        }
+      });
+
+      const allReferencesIds = [
+        ...(dep.enforcedReferences || []),
+        ...(dep.references || [])
+      ];
+
+      allReferencesIds.forEach(refId => {
+        const refObj = objectsMap[refId];
+        if (!refObj) return;
+
+        const type = refObj.objectType;
+        if (!this.referencedObjectsByType[type]) {
+          this.referencedObjectsByType[type] = [];
+          this.referencedObjectTypes.push(type);
+        }
+
+        const refObjClone = {...refObj};
+        const isEnforced = (dep.enforcedReferences || []).includes(refId);
+        const state = this.getDependencyState(refObj, isEnforced);
+
+        refObjClone.enforce = isEnforced;
+        refObjClone.change = refObj.deployed;
+        refObjClone.selected = state.selected;
+        refObjClone.disabled = state.disabled;
+
+        const existingIndex = this.referencedObjectsByType[type].findIndex(
+          obj => obj.id === refObjClone.id
+        );
+        if (existingIndex === -1) {
+          this.referencedObjectsByType[type].push(refObjClone);
+        }
+      });
+    });
+
+    this.affectedObjectTypes.forEach(type => {
+      if (this.affectedCollapsed[type] === undefined) {
+        this.affectedCollapsed[type] = true;
+      }
+    });
+
+    this.referencedObjectTypes.forEach(type => {
+      if (this.referencedCollapsed[type] === undefined) {
+        this.referencedCollapsed[type] = true;
+      }
+    });
   }
 
   private collectCheckedObjects(nodes: any[]): any[] {
@@ -2310,12 +2490,6 @@ export class DeployComponent {
 
     this.coreService.post(URL, obj).subscribe({
       next: (res: any) => {
-        this.dependenciesToggleAvailable = !this.releasable && !this.isRemove && !this.isRevoke
-          ? this.computeDependenciesToggleAvailable(res)
-          : false;
-        if (this.dependenciesToggleAvailable) {
-          this.useDependencies = true;
-        }
         if (this.isRevoke && res.deployables) {
           res.deployables = res.deployables.filter((deployable: any) => {
             const versions = deployable.deployablesVersions || [];
@@ -2976,16 +3150,16 @@ export class DeployComponent {
       }
       obj.store = this.object.store;
     }
-
     const promises = [
-      ...((!this.dependenciesToggleAvailable || this.useDependencies)
+      ...(this.dependencyMode !== 'none'
         ? this.nodes.map(node => this.handleDependenciesForDeploy(node, obj))
         : []),
 
-      ((!this.dependenciesToggleAvailable || this.useDependencies)
+      (this.dependencyMode !== 'none'
         ? this.handleAffectedItemsForDeploy(obj)
         : Promise.resolve())
     ];
+
     if (!this.isRevoke && this.object.deleteObj.deployConfigurations.length > 0) {
       obj.delete = this.object.deleteObj;
     }
@@ -3056,12 +3230,16 @@ export class DeployComponent {
 
     obj.auditLog = {};
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
-    this.nodes.forEach(node => {
-      this.handleDependenciesForRelease(node, obj, recall);
-    });
-    if (this.object.type !== 'changes') {
-      this.handleAffectedItemsForRelease(obj, recall)
+
+    if (this.dependencyMode !== 'none') {
+      this.nodes.forEach(node => {
+        this.handleDependenciesForRelease(node, obj, recall);
+      });
+      if (this.object.type !== 'changes') {
+        this.handleAffectedItemsForRelease(obj, recall);
+      }
     }
+
     if (!isEmpty(obj.update) || !isEmpty(obj.delete) || !isEmpty(obj.releasables)) {
       const releaseURL = this.operation === 'recall' ? 'inventory/releasables/recall' : 'inventory/release';
       this.coreService.post(releaseURL, obj).subscribe({
@@ -3314,13 +3492,16 @@ export class DeployComponent {
       }
     }
 
-    this.nodes.forEach(node => {
-      this.handleDependenciesForRelease(node, obj, recall);
-    });
+    if (this.dependencyMode !== 'none') {
+      this.nodes.forEach(node => {
+        this.handleDependenciesForRelease(node, obj, recall);
+      });
 
-    if (this.object.type !== 'changes') {
-      this.handleAffectedItemsForRelease(obj, recall)
+      if (this.object.type !== 'changes') {
+        this.handleAffectedItemsForRelease(obj, recall)
+      }
     }
+
     if ((this.releasable || this.shouldAddOrdersDateFrom()) && !recall) {
       if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
         obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
@@ -3475,7 +3656,7 @@ export class DeployComponent {
       controllerIds: this.selectedSchedulerIds
     };
 
-    if (!this.dependenciesToggleAvailable || this.useDependencies) {
+    if (this.dependencyMode !== 'none') {
       this.nodes.forEach(node => this.handleDependenciesForDeploy(node, obj));
       if (this.object.type !== 'changes') {
         this.handleAffectedItemsForDeploy(obj);
@@ -3656,20 +3837,6 @@ export class DeployComponent {
     this.activeModal.destroy();
   }
 
-  private computeDependenciesToggleAvailable(payload: any): boolean {
-
-    let anyTrue = false;
-
-    const items = [
-      ...(payload?.deployables ?? [])
-    ];
-    if (items.some(d => d?.forceDependencies === true)) {
-      anyTrue = true;
-    }
-
-
-    return !anyTrue;
-  }
 
   helpPage(key): void {
     this.modal.create({
@@ -3724,6 +3891,72 @@ export class DeployComponent {
     return '';
   }
 
+  private filterDependenciesByMode(dependencies: any[]): any[] {
+    if (!dependencies || dependencies.length === 0) {
+      return [];
+    }
+
+    if (this.dependencyMode === 'none') {
+      return [];
+    }
+
+    if (this.dependencyMode === 'both') {
+      return dependencies;
+    }
+
+    if (this.dependencyMode === 'enforced') {
+      return dependencies.filter(dep => dep.enforce === true);
+    }
+
+    if (this.dependencyMode === 'unenforced') {
+      return dependencies.filter(dep => dep.enforce === false);
+    }
+
+    return dependencies;
+  }
+
+  /**
+   * Get filtered affected objects by type
+   */
+  getFilteredAffectedObjects(type: string): any[] {
+    const objects = this.affectedObjectsByType[type] || [];
+    return this.filterDependenciesByMode(objects);
+  }
+
+  /**
+   * Get filtered referenced objects by type
+   */
+  getFilteredReferencedObjects(type: string): any[] {
+    const objects = this.referencedObjectsByType[type] || [];
+    return this.filterDependenciesByMode(objects);
+  }
+
+  /**
+   * Get filtered dependencies for a node
+   */
+  getFilteredNodeDependencies(node: any): { references: any[], referencedBy: any[] } {
+    if (!node || !node.dependencies) {
+      return {references: [], referencedBy: []};
+    }
+
+
+    const cacheKey = `${this.dependencyMode}`;
+
+    const cached = this._filteredDepsCache.get(node);
+    if (cached && node._lastFilterMode === cacheKey) {
+      return cached;
+    }
+
+    const result = {
+      references: this.filterDependenciesByMode(node.dependencies.references || []),
+      referencedBy: this.filterDependenciesByMode(node.dependencies.referencedBy || [])
+    };
+
+    node._lastFilterMode = cacheKey;
+    this._filteredDepsCache.set(node, result);
+
+    return result;
+  }
 }
 
 @Component({
@@ -4176,7 +4409,6 @@ export class ExportComponent {
         }
       });
 
-      // Handle filteredAffectedItems
       this.filteredAffectedItems.forEach((item) => {
         if (this.exportObj.exportType === 'individual') {
           item.disabled = false;
@@ -4323,10 +4555,8 @@ export class ExportComponent {
         if (res.changes) {
           this.data = res.changes
           this.changesNodes = this.prepareGroupedTree(this.data[0].configurations)
-          // const checkedNodes = this.collectCheckedObjects(this.changesNodes);
-          // if (checkedNodes.length > 0) {
-          //   this.getDependencies(checkedNodes, this.changesNodes);
-          // }
+
+
           this.nodes = [...this.changesNodes]
         }
       },
@@ -4859,7 +5089,6 @@ export class ExportComponent {
       (this.object.releasedConfigurations && this.object.releasedConfigurations.length > 0) ||
       (this.object.releaseDraftConfigurations.length && this.object.releaseDraftConfigurations.length > 0) || (this.filteredAffectedItems && this.filteredAffectedItems.length > 0)) {
 
-      // Clean up empty arrays
       if (this.object.deployConfigurations && this.object.deployConfigurations.length === 0) {
         delete this.object.deployConfigurations;
       }
@@ -5398,6 +5627,7 @@ export class ExportComponent {
             }
           }
         }
+
         recursive(this.nodes);
       }
 
@@ -9339,12 +9569,7 @@ export class PublishChangeModalComponent {
     this.nodes.forEach(node => {
       this.handleDependenciesForRelease(node, obj);
     });
-    //
-    // if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
-    //   obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-    // } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
-    //   obj.addOrdersDateFrom = 'now';
-    // }
+
 
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
 
@@ -9446,12 +9671,6 @@ export class PublishChangeModalComponent {
     this.nodes.forEach(node => {
       this.handleDependenciesForDeploy(node, obj);
     });
-
-    // if (this.dailyPlanDate.addOrdersDateFrom === 'startingFrom') {
-    //   obj.addOrdersDateFrom = this.coreService.getDateByFormat(this.dateObj.fromDate, null, 'YYYY-MM-DD');
-    // } else if (this.dailyPlanDate.addOrdersDateFrom === 'now') {
-    //   obj.addOrdersDateFrom = 'now';
-    // }
 
 
     this.coreService.getAuditLogObj(this.comments, obj.auditLog);
@@ -9990,7 +10209,7 @@ export class GroupTagsComponent {
         preferences: this.preferences,
         group: group,
         isRename: true,
-        // isJobTag: this.isJobTag
+
       },
       nzFooter: null,
       nzClosable: false,
@@ -10280,7 +10499,7 @@ export class AddTagsToGropusModalComponent {
 
   onCheckBoxChange(event: any) {
     const node = event.node;
-    // const keys = event.keys;
+
     if (node.parentNode && node.parentNode.key !== 'AssignedKeys') {
       if (node.origin.checked) {
         this.checkedTags.push(node.key);
@@ -10320,7 +10539,6 @@ export class AddTagsToGropusModalComponent {
     }
 
     const checkedNodes = this.treeCtrlGroup.getCheckedNodeList();
-    console.log('Checked nodes:', checkedNodes);
 
     const selectedTags: string[] = [];
 
@@ -11473,7 +11691,7 @@ export class InventoryComponent {
       this.allObjects = [];
       this.searchNode.text = '';
       $('#treeSearch').blur();
-      //$('.editor-tree > a').removeClass('hide-on-focus');
+
     }, 10);
   }
 
@@ -12250,7 +12468,7 @@ export class InventoryComponent {
     const origin = this.coreService.clone(node.origin ? node.origin : node);
     if (origin.type || this.inventoryService.isControllerObject(origin.objectType)) {
       if (!node.origin) {
-        // origin.path = origin.path.substring(0, origin.path.lastIndexOf('/')) || '/';
+
       }
       this.modal.create({
         nzTitle: undefined,
