@@ -1205,7 +1205,7 @@ export class SingleDeployComponent {
       operationType: operationType
     };
 
-    this.coreService.post('inventory/dependencies2', requestBody).subscribe({
+    this.coreService.post('inventory/dependencies', requestBody).subscribe({
       next: (res: any) => {
         if (res.requestedItems && res.requestedItems.length > 0) {
           this.dependencies = res;
@@ -2018,7 +2018,7 @@ export class DeployComponent {
 
     const requestedKeys = new Set(configurations.map(config => `${config.name}-${config.type}`));
 
-    this.coreService.post('inventory/dependencies2', requestBody).subscribe({
+    this.coreService.post('inventory/dependencies', requestBody).subscribe({
       next: (res: any) => {
         if (this.object.isRecursive) {
           this.recursiveDependenciesCache = res;
