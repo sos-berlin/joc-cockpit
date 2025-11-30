@@ -1684,8 +1684,28 @@ export class CoreService {
 
   // Function: get list of time zones
   getTimeZoneList(): any {
-    return moment.tz.names();
+    const deprecated3LetterZones = [
+      'ACT', 'AET', 'AGT', 'ART', 'AST', 'BET', 'BST', 'CAT', 'CNT', 'CST',
+      'CTT', 'EAT', 'ECT', 'EST', 'HST', 'IET', 'IST', 'JST', 'MIT', 'MST',
+      'NET', 'NST', 'PLT', 'PNT', 'PRT', 'PST', 'SST', 'VST',
+      'CET', 'EET', 'WET', 'MET', 'UCT', 'GMT'
+    ];
+
+    const deprecatedPrefixes = ['US/', 'Canada/', 'Mexico/', 'Brazil/', 'Chile/'];
+
+    return moment.tz.names().filter(tz => {
+      if (deprecated3LetterZones.includes(tz)) {
+        return false;
+      }
+
+      if (deprecatedPrefixes.some(prefix => tz.startsWith(prefix))) {
+        return false;
+      }
+
+      return tz.match(/^(Africa|America|Antarctica|Asia|Australia|Europe|Arctic|Atlantic|Indian|Pacific)\/.+$/);
+    });
   }
+
 
   getProtocols(): Array<string> {
     return ['LOCAL', 'FTP', 'FTPS', 'SFTP', 'HTTP', 'HTTPS', 'WEBDAV', 'WEBDAVS', 'SMB', 'AZURE_BLOB_STORAGE'];
@@ -3932,5 +3952,16 @@ private checkParentNode(lastPos, data, item, nodes): any {
     observe: 'response'
   });
 }
+
+  getColorByNoteSeverity(severity: string): string {
+    switch(severity) {
+      case 'CRITICAL': return '#ff4d4f';
+      case 'HIGH': return '#ff9800';
+      case 'NORMAL': return '#dcac00';
+      case 'LOW': return '#52c41a';
+      case 'INFO': return '#1890ff';
+      default: return '';
+    }
+  }
 
 }

@@ -5450,6 +5450,9 @@ export class WorkflowComponent {
           } else if (args.eventSnapshots[j].eventType.match(/InventoryTaggingUpdated/) && (path == args.eventSnapshots[j].path
             || this.data.name == args.eventSnapshots[j].path)) {
             this.fetchWorkflowTags(args.eventSnapshots[j].path);
+          }else if(args.eventSnapshots[j].eventType.match(/InventoryNoteUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryNoteAdded/) || args.eventSnapshots[j].eventType.match(/InventoryNoteDeleted/)&& (path == args.eventSnapshots[j].path
+            || this.data.name == args.eventSnapshots[j].path)){
+            this.getWorkflowObject();
           }
         }
       }

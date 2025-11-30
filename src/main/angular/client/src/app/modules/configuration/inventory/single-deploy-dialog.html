@@ -109,15 +109,23 @@
             </div>
           </div>
         }
-        @if (dependenciesToggleAvailable && !isRemoved && !isRevoke && operation !== 'recall') {
+
           <div class="form-group row">
-            <div class="col-md-6">
-              <label nz-checkbox [(ngModel)]="useDependencies" name="useDependencies" (ngModelChange)="onToggleUseDependencies()">
-                <span>{{ 'inventory.label.useDependencies' | translate }}</span>
-              </label>
+            <div class="col-md-3">
+              <label translate>inventory.label.includeDependencies</label>
+            </div>
+            <div class="col-md-9">
+              <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">
+                <label nz-radio nzValue="enforced"><span translate>inventory.label.enforcedOnly</span></label>
+                <label nz-radio nzValue="unenforced"><span translate>inventory.label.unenforcedOnly</span></label>
+                <label nz-radio nzValue="both"><span translate>inventory.label.both</span></label>
+                <label nz-radio nzValue="none"><span translate>inventory.label.none</span></label>
+
+              </nz-radio-group>
             </div>
           </div>
-        }
+
+
         @if (isRemoved && (affectedObjectTypes.length > 0 || referencedObjectTypes.length > 0 || filteredAffectedItems.length > 0)) {
           <div class="m-b-sm opacity-0_5">
             <label><span nz-icon nzType="exclamation-circle" class="m-r-sm" nzTheme="outline"></span>{{'inventory.message.remove' | translate}}</label>
@@ -245,8 +253,7 @@
           </div>
         }
 
-        <div class="form-group row m-t-md">
-          <!-- Affected Objects (referencedBy) -->
+      <div class="form-group row m-t-md">
           @if (affectedObjectTypes.length > 0) {
             <div class="col-md-6" [class.col-md-12]="referencedObjectTypes.length === 0">
               <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isAffectedCollapsed, 'fa-caret-down': isAffectedCollapsed}"
@@ -255,57 +262,51 @@
               @if (isAffectedCollapsed) {
                 <div class="m-t-sm m-l-sm">
                   @for (objectType of affectedObjectTypes; track objectType) {
-                    <ng-container>
-                      @if (affectedObjectsByType[objectType]?.length) {
-                        <div class="m-t-sm">
-                          <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !affectedCollapsed[objectType], 'fa-caret-down': affectedCollapsed[objectType]}"
-                             (click)="toggleAffectedCollapse(objectType)"></i>
-                          <label class="m-l-sm">
-                            <ng-container>
-                              <label>
-                                @if (!isCustomIcon(objectType)) {
-                                  <span class="icon-color">
-                                    <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
-                                  </span>
-                                }
-                                @if (isCustomIcon(objectType)) {
-                                  <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
-                                }
-                                {{ getObjectTypeLabel(objectType) | translate }}
-                              </label>
-                            </ng-container>
-                          </label>
-                          @if (affectedCollapsed[objectType]) {
-                            <div class="m-t-sm m-l-md">
-                              @for (obj of affectedObjectsByType[objectType]; track obj) {
-                                <div>
-                                  <ng-container>
-                                    <label class="m-l-sm">
-                                      <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-' + obj.path"
-                                             [disabled]="obj.disabled" (ngModelChange)="updateParentCheckboxAffected(objectType)">
-                                        <span [ngClass]="{
-                                          'fa-circle-o': !obj.valid,
-                                          'fa-circle dark-blue': obj.deployed || obj.released,
-                                          'opacity7': obj.syncState
-                                        }" class="fa fa-check-circle-o orange text-xs p-l-xs m-l-xs"></span>
-                                        {{ obj.path }}
-                                      </label>
-                                    </label>
-                                  </ng-container>
-                                </div>
-                              }
-                            </div>
+                    @if (getFilteredAffectedObjects(objectType).length > 0) {
+                      <div class="m-t-sm">
+                        <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !affectedCollapsed[objectType], 'fa-caret-down': affectedCollapsed[objectType]}"
+                           (click)="toggleAffectedCollapse(objectType)"></i>
+                        <label class="m-l-sm">
+                          @if (!isCustomIcon(objectType)) {
+                            <span class="icon-color">
+                              <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+                            </span>
                           }
-                        </div>
-                      }
-                    </ng-container>
+                          @if (isCustomIcon(objectType)) {
+                            <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
+                          }
+                          {{ getObjectTypeLabel(objectType) | translate }}
+                        </label>
+                        @if (affectedCollapsed[objectType]) {
+                          <div class="m-t-sm m-l-md">
+                            @for (obj of getFilteredAffectedObjects(objectType); track obj.path) {
+                              <div>
+                                <label class="m-l-sm">
+                                  <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-' + obj.path"
+                                         [nzDisabled]="obj.disabled" (ngModelChange)="updateParentCheckboxAffected(objectType)">
+                                    <span [ngClass]="{
+                                      'fa-circle-o': !obj.valid,
+                                      'fa-circle dark-blue': obj.deployed || obj.released,
+                                      'opacity7': obj.syncState
+                                    }" class="fa fa-check-circle-o orange text-xs p-l-xs m-l-xs"></span>
+                                    {{ obj.path }}
+                                    @if (obj.enforce) {
+                                      <span class="badge badge-warning m-l-xs">Enforced</span>
+                                    }
+                                  </label>
+                                </label>
+                              </div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    }
                   }
                 </div>
               }
             </div>
           }
 
-          <!-- Referenced Objects (references) -->
           @if (referencedObjectTypes.length > 0) {
             <div class="col-md-6" [class.col-md-12]="affectedObjectTypes.length === 0">
               <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isReferencedCollapsed, 'fa-caret-down': isReferencedCollapsed}"
@@ -364,57 +365,7 @@
             </div>
           }
         </div>
-        <!-- Filtered Affected Objects -->
-        <div class="form-group row m-t-sm">
-          @if (filteredAffectedItems?.length > 0) {
-            <div class="col-md-6">
-              <i class="cursor text-16 fa"
-                 [ngClass]="{'fa-caret-right': !filteredAffectedCollapsed, 'fa-caret-down': filteredAffectedCollapsed}"
-                 (click)="filteredAffectedCollapsed = !filteredAffectedCollapsed"></i>
-              <label class="m-l-sm">{{ 'inventory.label.filteredAffectedItems' | translate }}</label>
-              @if (filteredAffectedCollapsed) {
-                <div class="m-t-sm m-l-md">
-                  @for (objectType of getUniqueObjectTypes(filteredAffectedItems); track objectType) {
-                    <ng-container>
-                      @if (getObjectsByType(filteredAffectedItems, objectType)?.length) {
-                        <div class="m-t-sm">
-                          <label nz-checkbox [(ngModel)]="selectAllFilteredAffected[objectType]" [name]="'checkbox--' + objectType"
-                                 (ngModelChange)="toggleAllFilteredAffected(objectType, $event)">
-                            @if (!isCustomIcon(objectType)) {
-                              <span class="icon-color">
-                                <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
-                              </span>
-                            }
-                            @if (isCustomIcon(objectType)) {
-                              <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
-                            }
-                            {{ getObjectTypeLabel(objectType) | translate }}
-                          </label>
-                          @if (filteredAffectedCollapsed) {
-                            <div class="m-t-sm m-l-md">
-                              @for (obj of getObjectsByType(filteredAffectedItems, objectType); track obj) {
-                                <div>
-                                  <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox--' + objectType + obj.path" [disabled]="obj.disabled"
-                                         (ngModelChange)="updateParentCheckboxFilteredAffected(objectType)">
-                                    <span [ngClass]="{
-                                        'fa-circle-o': !obj.valid,
-                                        'fa-circle dark-blue': obj.deployed || obj.released
-                                    }" class="fa fa-check-circle-o orange text-xs m-t-xs m-l-xs"></span>
-                                    {{ obj.path }}
-                                  </label>
-                                </div>
-                              }
-                            </div>
-                          }
-                        </div>
-                      }
-                    </ng-container>
-                  }
-                </div>
-              }
-            </div>
-          }
-        </div>
+
       </div>
     }
     @if (deployablesObject.length===0 && !loading && !isRemoved) {

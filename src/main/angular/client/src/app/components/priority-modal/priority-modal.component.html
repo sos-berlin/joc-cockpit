@@ -28,16 +28,18 @@
              translate>order.label.priority</label>
       <div [ngClass]="{ 'has-error' : (((priority.dirty || priority.touched) && priority.invalid))}"
            class="col-sm-7">
-        <nz-input-group [nzAddOnAfter]="priorityTemplate">
-          <nz-input-number #priority="ngModel"   [(ngModel)]="obj.priority" [appAutofocus]="true"
+        <nz-space-compact nzBlock>
+          <nz-input-number #priority="ngModel" [(ngModel)]="obj.priority" [appAutofocus]="true"
                            name="priority" nzPlaceHolder="{{'inventory.placeholder.priority' | translate}}"
+                           style="width: 60%;"
           ></nz-input-number>
-        </nz-input-group>
-        <ng-template #priorityTemplate>
           <app-select-input [classNames]="'w-220'" [attributeName]="'priority'"
-                            [listArray]="priorities" [name]="'priorities'" [optionLabel]="'label'" [optionValue]="'value'"  [placeholder]="'inventory.placeholder.selectPredefinedPriorities'"
-                            [object]="obj"></app-select-input>
-        </ng-template>
+                            [listArray]="priorities" [name]="'priorities'" [optionLabel]="'label'" [optionValue]="'value'"
+                            [placeholder]="'inventory.placeholder.selectPredefinedPriorities'"
+                            [object]="obj">
+          </app-select-input>
+        </nz-space-compact>
+
         @if (priority.invalid && (priority.dirty || priority.touched)) {
           <div class="text-danger help-block">
             @if (priority.errors['required']) {

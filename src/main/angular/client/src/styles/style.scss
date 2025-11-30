@@ -2751,6 +2751,10 @@ button.close {
   font-size: 16px;
 }
 
+.text-14 {
+  font-size: 14px;
+}
+
 .text-18 {
   font-size: 18px;
 }
@@ -10384,4 +10388,10 @@ cdk-virtual-scroll-viewport {
   margin-left: 48px !important;
 }
 
+.fullscreen-edit-wrapper{
+  background-color: var(--background-color);
+}
 
+.editor-panel{
+  border-right: 1px solid var(--border-color);
+}

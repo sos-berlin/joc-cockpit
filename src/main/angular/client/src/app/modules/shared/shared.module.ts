@@ -85,7 +85,7 @@ import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.comp
 import {NzResultComponent} from "ng-zorro-antd/result";
 import {CodeMirrorModule} from "../codemirror-editor/codemirror-editor.module";
 import {NoteComponent} from "../../components/notes/note.component";
-import {NzSpaceComponent} from "ng-zorro-antd/space";
+import {NzSpaceCompactComponent, NzSpaceComponent} from "ng-zorro-antd/space";
 import {NzColorPickerComponent} from "ng-zorro-antd/color-picker";
 import {NzResizableDirective} from "ng-zorro-antd/resizable";
 
@@ -105,15 +105,16 @@ const EXPORTS = [...PIPES, ...DIRECTIVES, ToggleComponent, OrderVariableComponen
   SelectDocumentComponent, PermissionViewComponent, MultiSelectComponent, SearchInputComponent, SelectInputComponent, FileUploaderComponent, DateInputComponent, NoteComponent];
 
 @NgModule({
-  imports: [
-    ...MODULES,
-    NzResultComponent,
-    NzTooltipDirective,
-    NzTooltipComponent,
-    NzSpaceComponent,
-    NzColorPickerComponent,
-    NzResizableDirective,
-  ],
+    imports: [
+        ...MODULES,
+        NzResultComponent,
+        NzTooltipDirective,
+        NzTooltipComponent,
+        NzSpaceComponent,
+        NzColorPickerComponent,
+        NzResizableDirective,
+        NzSpaceCompactComponent,
+    ],
   declarations: [
     ...COMPONENTS,
     ...EXPORTS

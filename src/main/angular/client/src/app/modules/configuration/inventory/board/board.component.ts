@@ -10,6 +10,7 @@ import {InventoryObject} from '../../../../models/enums';
 import {InventoryService} from '../inventory.service';
 import {CommentModalComponent} from '../../../../components/comment-modal/comment.component';
 import { HelpViewerComponent } from 'src/app/components/help-viewer/help-viewer.component';
+import {NoteComponent} from "../../../../components/notes/note.component";
 
 @Component({
   standalone: false,
@@ -139,6 +140,9 @@ export class BoardComponent {
                 this.isLocalChange = '';
               }
             }
+          }else if(args.eventSnapshots[j].eventType.match(/InventoryNoteUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryNoteAdded/) || args.eventSnapshots[j].eventType.match(/InventoryNoteDeleted/)&& (path == args.eventSnapshots[j].path
+            || this.data.name == args.eventSnapshots[j].path)){
+            this.getObject();
           }
         }
       }
@@ -597,5 +601,23 @@ export class BoardComponent {
       nzClosable: false,
       nzMaskClosable: false
     })
+  }
+  notes(name): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: NoteComponent,
+      nzClassName: 'custom-resizable-modal',
+      nzData: {
+        preferences: this.preferences,
+        width: 800,
+        height: 600,
+        objectName: name,
+        objectType: 'NOTICEBOARD'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false,
+      nzStyle: { width: '800px', height: '600px', minWidth: '300px',  minHeight: '200px' }
+    });
   }
 }

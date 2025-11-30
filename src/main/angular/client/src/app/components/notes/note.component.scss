@@ -38,7 +38,7 @@
   margin-bottom: 16px;
   padding: 10px 12px;
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
   border-left: 4px solid;
 
@@ -164,7 +164,6 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: #fff;
   z-index: 1100;
   display: flex;
   flex-direction: column;
@@ -218,14 +217,12 @@
   flex: 1;
   padding: 16px;
   overflow-y: auto;
-  background: #fafafa;
 
   &::-webkit-scrollbar {
     width: 6px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2);
     border-radius: 3px;
   }
 }
@@ -236,7 +233,6 @@
   align-items: center;
   padding: 16px 24px;
   border-top: 1px solid #e8e8e8;
-  background: #fafafa;
 }
 
 .action-buttons {
@@ -246,4 +242,54 @@
 
 .nav-active-border3{
   margin-top: -6px !important;
+}
+
+.post-content {
+  ::ng-deep {
+    p, span, div, li, a:not([href]) {
+      color: #333 !important;
+    }
+
+    p {
+      margin: 0 0 8px 0;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    ul, ol {
+      margin: 4px 0;
+      padding-left: 20px;
+    }
+
+    strong {
+      font-weight: 600;
+      color: #000 !important;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      margin: 8px 0 4px 0;
+      color: #222 !important;
+    }
+
+    code {
+      color: #d63384;
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+}
+
+
+.user-mention {
+  background-color: rgba(24, 144, 255, 0.1);
+  color: #1890ff;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(24, 144, 255, 0.2);
+  }
 }

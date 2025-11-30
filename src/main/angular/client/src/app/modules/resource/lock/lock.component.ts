@@ -7,8 +7,9 @@ import {AuthService} from '../../../components/guard';
 import {DataService} from '../../../services/data.service';
 import {TreeComponent} from '../../../components/tree-navigation/tree.component';
 import {SearchPipe, OrderPipe} from '../../../pipes/core.pipe';
-import { HelpViewerComponent } from 'src/app/components/help-viewer/help-viewer.component';
+import {HelpViewerComponent} from 'src/app/components/help-viewer/help-viewer.component';
 import {NzModalService} from "ng-zorro-antd/modal";
+import {NoteComponent} from "../../../components/notes/note.component";
 
 declare const $: any;
 
@@ -27,7 +28,7 @@ export class SingleLockComponent {
   isPathDisplay = false;
   subscription: Subscription;
 
-  constructor(private authService: AuthService, public coreService: CoreService,
+  constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,
               private dataService: DataService, private route: ActivatedRoute) {
     this.subscription = dataService.eventAnnounced$.subscribe(res => {
       this.refresh(res);
@@ -65,6 +66,7 @@ export class SingleLockComponent {
           value.path = value.lock.path;
           value.limit = value.lock.limit;
           value.title = value.lock.title;
+          value.hasNote = value.lock?.hasNote;
         });
         this.locks = res.locks;
       }, error: () => this.loading = false
@@ -74,7 +76,7 @@ export class SingleLockComponent {
   private refresh(args: { eventSnapshots: any[] }): void {
     if (args.eventSnapshots && args.eventSnapshots.length > 0) {
       for (let j = 0; j < args.eventSnapshots.length; j++) {
-        if (args.eventSnapshots[j].eventType === 'LockStateChanged' && args.eventSnapshots[j].path && args.eventSnapshots[j].path.indexOf(this.name) > -1) {
+        if ((args.eventSnapshots[j].eventType === 'LockStateChanged' && args.eventSnapshots[j].path && args.eventSnapshots[j].path.indexOf(this.name) > -1) || (args.eventSnapshots[j].eventType.match(/InventoryNoteUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryNoteAdded/) || args.eventSnapshots[j].eventType.match(/InventoryNoteDeleted/))) {
           const obj = {
             controllerId: this.controllerId,
             limit: this.preferences.maxLockRecords,
@@ -95,6 +97,26 @@ export class SingleLockComponent {
       }
     }
   }
+
+  notes(name): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: NoteComponent,
+      nzClassName: 'custom-resizable-modal',
+      nzData: {
+        preferences: this.preferences,
+        width: 800,
+        height: 600,
+        objectName: name,
+        objectType: 'LOCK'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false,
+      nzStyle: {width: '800px', height: '600px', minWidth: '300px', minHeight: '200px'}
+    });
+  }
+
 }
 
 @Component({
@@ -279,6 +301,8 @@ export class LockComponent {
           }
         } else if (args.eventSnapshots[j].eventType.match(/Item/) && args.eventSnapshots[j].objectType === 'LOCK') {
           flag = true;
+        } else if (args.eventSnapshots[j].eventType.match(/InventoryNoteUpdated/) || args.eventSnapshots[j].eventType.match(/InventoryNoteAdded/) || args.eventSnapshots[j].eventType.match(/InventoryNoteDeleted/)) {
+          flag = true;
         }
       }
       if (lockPaths && lockPaths.length) {
@@ -362,6 +386,7 @@ export class LockComponent {
           value.limit = value.lock.limit;
           value.documentationName = value.lock.documentationName;
           value.title = value.lock.title;
+          value.hasNote = value.lock?.hasNote;
           if (value.path) {
             value.path1 = value.path.substring(0, value.path.lastIndexOf('/')) || value.path.substring(0, value.path.lastIndexOf('/') + 1);
           }
@@ -532,7 +557,7 @@ export class LockComponent {
     return '';
   }
 
-  helpPage(key): void{
+  helpPage(key): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: HelpViewerComponent,
@@ -546,5 +571,25 @@ export class LockComponent {
       nzMaskClosable: false
     })
   }
+
+  notes(name): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: NoteComponent,
+      nzClassName: 'custom-resizable-modal',
+      nzData: {
+        preferences: this.preferences,
+        width: 800,
+        height: 600,
+        objectName: name,
+        objectType: 'LOCK'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false,
+      nzStyle: {width: '800px', height: '600px', minWidth: '300px', minHeight: '200px'}
+    });
+  }
+
 }
 
