@@ -1,32 +1,43 @@
-# Advanced Search Help
+# 在庫検索
 
-Welcome to the **Advanced Search** feature! This guide will help you master all the search capabilities.
+インベントリ検索は、例えば、オブジェクトの種類ごとに結果を制限するために使用されます：
 
-## Getting Started
+- 指定された名前またはタイトルに一致するオブジェクトを返します。
+- 配置済みオブジェクトやリリース済みオブジェクト、ドラフトオブジェクト、無効なオブジェクトを返します。
 
-The Advanced Search allows you to find exactly what you're looking for using *powerful filters* and **search operators**.
+## メタ文字
 
-### Basic Search Tips
+- **メタ文字は任意の1文字を置き換えます。
+- **\*** メタ文字は0文字以上を置き換えます。
 
-Here are some essential tips to get you started:
+検索は大文字と小文字を区別せず、部分的に修飾して行われます：
 
-- Use **quotes** for exact phrase matching: `"user management"`
-- Use the **asterisk** (*) as a wildcard: `manag*` finds "manage", "management", "manager"
-- Use **minus sign** (-) to exclude terms: `coffee -decaf`
+- **rest**は、"pdfNon***Rest***artable" と "**REST**-RunningTaskLog" という名前のオブジェクトを見つけます。
+- **re?t**は、"ActivePassiveDi***rect***or" と "JITL-JS7**REST**ClientJob" という名前のオブジェクトを見つけます。
+- re**t**は、"pdSQLExecuto**rExt**ractJSON "と "pdu**Reset**Subagent "という名前のオブジェクトを見つけます。
 
-### Search Operators
+## 高度な検索
 
-You can use these operators to refine your search:
+この機能はリンクをクリックすると利用できます： **&gt; 詳細検索
 
-1. **AND**: Both terms must be present
-2. **OR**: Either term can be present
-3. **NOT**: Exclude specific terms
-4. **NEAR**: Terms must be close to each other
+### 属性検索
 
-## Advanced Filters
+詳細検索では、オブジェクトの属性で検索することができます：
 
-### Date Range Filtering
+- **エージェント名**は、指定されたエージェントで実行されたジョブを含む結果を返します。
+- **Count Jobs** は、検索結果を **From** 条件で指定された最小数のジョブを使用するワークフローに制限します。もし **To** 条件と一緒に使用すると、*From* から *To* までの範囲のジョブ数を含むワークフローが返されます。To**項のみを使用した場合、*To*項を超えるジョブ数を含まないワークフローが返されます。
+- **ジョブ名**は、指定された名前に一致するジョブを含むワークフローを返します。
 
-To filter by date range:
+ジョブ名**の*完全一致*チェックボックスを使用する場合、入力された検索語は大文字と小文字の区別を含むジョブ名と完全に一致する必要があります。ジョブ名を検索することで、結果のワークフローに対してジョブに対する一括操作が可能です。
 
-* Select the **start date** from the calendar
+### 依存関係検索
+
+検索メタ文字 ******* は、例えばリソースロックがどのような名前であっても、依存関係を検索することを指定するために使用されます：
+
+- ResourceLocks***のために*****メタ文字を使用して検索すると、ResourceLockを使用するワークフローが返されます。
+- File Order Sources** のために ***** メタ文字を使用した検索は、File Order Source によって参照されるワークフローを返します。
+
+## 参照
+
+[JS7 - Inventory Search](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Search)
+

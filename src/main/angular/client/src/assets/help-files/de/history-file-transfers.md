@@ -1,0 +1,64 @@
+# Verlauf der Dateiübertragung
+
+Die Ansicht *Dateiübertragungshistorie* fasst die Ausführungshistorie von Aufträgen für YADE Managed File Transfer Jobs zusammen.
+
+Für die Protokollausgabe von Dateiübertragungsaufträgen siehe [Task History](/history-tasks). Für die Historie von Aufträgen siehe [Order History](/history-orders).
+
+## Verlaufspanel
+
+### Historie der Übertragungen
+
+Die Anzeige ist gruppiert in einen Block für den Übertragungsvorgang und Blöcke für die Übertragung einzelner Dateien:
+
+- **History Status** zeigt an, ob eine Übertragung *erfolgreich* oder *gescheitert* war.
+  - *Erfolg* bedeutet, dass alle Dateien der Übertragung erfolgreich verarbeitet wurden.
+  - *Fehlgeschlagen* bedeutet, dass eine oder mehrere Dateien in der Übertragung mit Fehlern verarbeitet wurden.
+- **Profilname** ist der eindeutige Bezeichner eines Dateiübertragungsprofils.
+- **Operation** gibt eine der Optionen *COPY*, *MOVE*, *REMOVE*, *GETLIST* an.
+- **Workflow** gibt den Workflow an, den der Auftrag ausführt.
+  - Wenn Sie auf den Namen des Workflows klicken, gelangen Sie zur Ansicht [Workflows](/workflows).
+  - Wenn Sie auf das Bleistiftsymbol klicken, gelangen Sie zur Ansicht [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
+- **Auftrags-ID** ist die eindeutige Kennung, die einem Auftrag zugewiesen ist.
+- **Gesamt** gibt die Anzahl der Dateien an, die in der Übertragung enthalten sind.
+
+### Verlauf pro Datei
+
+Eine Dateiübertragung kann eine beliebige Anzahl von Dateien umfassen. Der *Dateitransferverlauf* zeigt den Übertragungsstatus pro Datei an, wenn Sie auf das Pfeil-nach-unten-Symbol klicken, das bei der Übertragung verfügbar ist:
+
+Die angezeigten Informationen sind in den folgenden Blöcken gruppiert:
+
+- **Quelle** zeigt die Quelle der Übertragung an.
+- **Ziel** zeigt das Ziel der Übertragung an.
+- **Sprung** zeigt die Verwendung eines Jump-Hosts zwischen Quelle und Ziel an. Ein *Jump*-Host wird verwendet, wenn die Dateiübertragung nicht direkt zwischen Quelle und Ziel durchgeführt werden kann, sondern einen Host in der DMZ für eingehende und ausgehende Operationen benötigt.
+
+Details werden für die Hosts *Quelle*, *Ziel* und *Sprung* angezeigt:
+
+- **Host** gibt den Hostnamen oder die IP-Adresse des Servers an.
+- **Konto** gibt das Benutzerkonto an, das für den Zugriff auf den Server verwendet wird.
+- **Port** gibt den Port an, der für die Verbindung zum Server verwendet wird.
+- **Protokoll** gibt das Dateiübertragungsprotokoll an, wie z.B. FTP, FTPS, SFTP, CIFS usw.
+
+Für *Quelle* und *Ziel* werden die folgenden Details angezeigt:
+
+- **Dateiname** zeigt den Namen der Datei an.
+- **Dateipfad** zeigt den Verzeichnispfad der Datei an, einschließlich ihres Namens.
+- **Status**
+  - **TRANSFERRED** zeigt an, dass die Datei erfolgreich übertragen wurde, wenn sie mit den Operationen *COPY* oder *MOVE* verwendet wird.
+  - **DELETED** zeigt an, dass die Datei gelöscht wurde, wenn sie mit der Operation *REMOVE* verwendet wurde.
+  - **SKIPPED** zeigt an, dass die Datei von der Übertragung ausgeschlossen wurde, z.B. wenn sie mit der Operation *GETLIST* verwendet wird.
+- **Size** gibt die Anzahl der übertragenen Bytes an.
+- **Integrity Hash** gibt einen MD5-Hash an, wenn die entsprechenden Optionen für die Übertragung verwendet wurden.
+
+## Referenzen
+
+### Kontexthilfe
+
+- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Order History](/history-orders)
+- [Task History](/history-tasks)
+
+### Product Knowledge Base
+
+- [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
+- [JS7 - Task History](https://kb.sos-berlin.com/display/JS7/JS7+-+Task+History)
+

@@ -1,0 +1,32 @@
+# État du contrôleur
+
+Le panneau *État du contrôleur* fournit des informations sur les contrôleurs enregistrés.
+
+## Instances du contrôleur
+
+Chaque instance de contrôleur affichée présente les attributs suivants :
+
+- **Identifiant du contrôleur** indique un identifiant unique spécifié lors de l'installation d'un contrôleur. Dans un groupe de contrôleurs, toutes les instances partagent le même ID de contrôleur.
+- **L'URL** indique l'URL permettant d'accéder à l'instance de contrôleur.
+- **Status** indique l'état du composant, à savoir *opérationnel* ou *inconnu* si l'instance de contrôleur n'est pas accessible.
+- **Cluster Role** indique le rôle *actif* ou *standby* d'une instance de contrôleur dans un cluster.
+
+En cliquant sur l'ID du contrôleur d'une instance, le tableau de bord affiche l'état du produit du contrôleur concerné.
+
+## Opérations sur les instances de contrôleur
+
+Les opérations suivantes sont disponibles :
+
+Les instances de contrôleur offrent les opérations suivantes à partir du menu d'action à 3 points de chaque instance :
+
+- **Terminate**, **Terminate and Restart** pour arrêter l'instance. Pour l'instance active d'un cluster, le menu est élargi :
+  - **avec basculement** pour passer le rôle actif à l'instance en attente.
+  - **sans basculement** : pour que le rôle actif reste dans l'instance arrêtée. Les utilisateurs doivent savoir qu'aucun basculement n'aura lieu et qu'aucune instance ne sera active.
+- les options **Annuler**, **Annuler et redémarrer** mettent fin de force à l'instance. S'il est appliqué à l'instance active d'un cluster, il forcera le basculement :
+  - **avec basculement** transmet le rôle actif à l'instance en attente.
+- **Le fichier controller.log du contrôleur peut être téléchargé à partir d'un fichier .gz au format gzippé.
+
+## Références
+
+- [Dashboard - Product Status](/dashboard-product-status)
+

@@ -22,7 +22,7 @@ Users have a choice to enable forwarding of log output per instance of Controlle
 
 The JOC Cockpit offers System Notifications from the [Monitor - System Notifications](/monitor-notifications-system) view.
 
-The JOC Cockpit offers [Notifications- Configuration ](/configuration-notification) for forwarding notifications by mail, from command line tools etc.
+The JOC Cockpit offers [Notifications- Configuration ](/configuration-notification) for forwarding notifications by e-mail, from command line tools etc.
 
 ## Log Notification Service Settings
 

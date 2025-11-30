@@ -1,0 +1,59 @@
+# Gérer le certificat de cryptage
+
+Le site [JS7 - Encryption and Decryption](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+and+Decryption) offre un moyen sûr de traiter les secrets utilisés dans les emplois. Les utilisateurs peuvent chiffrer et déchiffrer des données sensibles telles que des mots de passe en utilisant des clés asymétriques.
+
+Pour plus de détails, voir [Manage Encryption Keys](/encryption-manage-keys).
+
+La page *Manage Encryption Certificate* permet de spécifier les propriétés du certificat.
+
+## Certificat
+
+Les propriétés suivantes sont spécifiées pour un certificat :
+
+- **Alias du certificat** est le nom unique que les utilisateurs attribuent à un certificat. Les utilisateurs sont libres de choisir le nom. Le certificat et ses propriétés seront stockés dans une ressource de travail sous le nom indiqué.
+- certificat : **Certificat** permet de copier/coller un certificat au format PEM. Un certificat peut ressembler à ceci :
+
+<pre>
+-----BEGIN CERTIFICATE-----
+MIIB9TCCAZqgAwIBAgIJAIFT2KH9txb9MAoGCCqGSM49BAMCMFgxCzAJBgNVBAYT
+AkRFMQ8wDQYDVQIDAZCZXJsaW4xDzANBgNVBAcMBkJlcmxpbjEMMAoGA1UECgwD
+U09TMQswCQYDVQDAJVDEMMAoGA1UEAwwDSlM3MB4XDTI0MDYyNzA5MzU0MloX
+DTI5MDYyNjA5MzU0MlowWDELMAkGA1UEBhMCREUxDzANBgNVBAgMBkJlcmxpbjEP
+MA0GA1UEBwwGQmVybGluMQwwCgYDVQKDANTT1MxCzAJBgNVBAsMAklUMQwwCgYD
+VQQDDANKUzcwVjAQBgcqhkjOPQIBBgUrgQACgNCAATBF6yXinah6K/x2TikPNaT
+447gK2SxCH8vgO5NygZzUonzhaGOK5n1jktvhmxmrn5V4VSHMC0NzU6O87nUKpA
+o1AwTjAdBgNVHQ4EFgQUcovwh3OMrSXjP02VHG5cj03xHxswHwYDVR0jBBgFoAU
+covwh3OMrSXjP02VHG5cj03xHxswDAYDVR0TBAUwAwEB/zAKBggqhkjOPQDAgNJ
+ADBGAiEAwjGLIhLfV0q/cOYVAnXSZ+jWp8Og/lG5YdvtLcj9CD0CIQCK8O4wURQj
+SbNCv0bJswLadTFEcz8ZoYP7alXJzj9FQQ== 
+-----END CERTIFICAT-----
+</pre>
+
+- **Chemin d'accès au fichier de la clé privée** spécifie l'emplacement de la clé privée et des agents associés.
+- **Dossier de la ressource d'emploi** spécifie le dossier d'inventaire dans lequel la ressource d'emploi contenant le certificat sera stockée. Une hiérarchie de dossiers peut être spécifiée à l'aide de barres obliques, comme dans /a/b/c. Les dossiers non existants seront créés.
+
+## Opérations sur le certificat
+
+Les opérations suivantes sont disponibles à partir des liens :
+
+- **Utilisation du certificat par les agents** affiche le *nom de l'agent* et l'URL des agents auxquels le certificat a été attribué. 
+- **Attribuer un certificat aux agents** permet de sélectionner les agents autonomes et les agents de groupe auxquels le certificat est attribué. Les utilisateurs doivent veiller à ce que l'agent concerné détienne le fichier de clé privée à l'emplacement spécifié dans la propriété *Chemin d'accès au fichier de clé privée*. Les utilisateurs peuvent sélectionner les agents qui connaissent la clé privée.
+- **Test de cryptage** permet d'effectuer un test de cryptage :
+  - En cliquant sur le lien, vous ouvrez le champ de saisie *Texte clair* dans lequel vous pouvez ajouter une chaîne de caractères telle que *secret*.
+  - À droite du champ de saisie, l'icône de cryptage est proposée. En cliquant sur l'icône, l'étiquette *Résultat du cryptage* s'affiche avec le résultat correspondant.
+
+## Références
+
+### Aide contextuelle
+
+- [Manage Encryption Keys](/encryption-manage-keys)
+
+### Product Knowledge Base
+
+- [JS7 - Encryption and Decryption](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+and+Decryption)
+  - [JS7 - Encryption - Management of Encryption Keys](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+-+Management+of+Encryption+Keys)
+  - [JS7 - Encryption - Integration with Workflows - Jobs - Orders](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+-+Integration+with+Workflows+-+Jobs+-+Orders)
+  - [JS7 - Encryption - Integration with Shell CLI](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+-+Integration+with+Shell+CLI)
+  - [JS7 - Encryption - Integration with Secret Manager Products](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+-+Integration+with+Secret+Manager+Products)
+- [JS7 - How to create X.509 Encryption Keys](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+create+X.509+Encryption+Keys)
+

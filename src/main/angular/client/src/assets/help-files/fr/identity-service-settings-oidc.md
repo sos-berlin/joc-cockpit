@@ -1,0 +1,56 @@
+# Paramètres du service d'identité de l'OIDC
+
+Les services d'identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
+
+Les services d'identité sont spécifiés à partir de la configuration suivante :
+
+- **General Configuration** qui contient les propriétés disponibles pour tous les services d'identité, voir [Identity Service - Configuration](/identity-service-configuration).
+- **Réglages** spécifiques au type de service d'identité de l'OIDC.
+
+## Paramètres
+
+Les paramètres suivants sont disponibles :
+
+- **OIDC Name** est utilisé par JOC Cockpit pour la légende du bouton de connexion correspondant dans la page de connexion.
+- **L'URL d'authentification OIDC** est utilisée par le client pour se connecter au fournisseur d'identité OIDC. L'URL est appelée par le client pour la connexion et renvoie le jeton d'accès du fournisseur d'identité OIDC. Elle est également utilisée lors de la lecture des paramètres du fournisseur d'identité OIDC avec l'URL */.well-known/openid-configuration* et est utilisée comme émetteur lors de la vérification du jeton.
+- **Flow Type**
+  - **Le flux de code d'autorisation** est le flux le plus couramment utilisé avec une sécurité éprouvée.
+  - **Le flux implicite est un ancien flux considéré comme peu sûr.
+  - **Le "Client Credentials Flow" est un flux simplifié pour le traitement par lots sans interaction avec l'utilisateur.
+- **L'ID du client OIDC** identifie le client auprès du fournisseur d'identité OIDC.
+- **OIDC Client Secret** est le mot de passe attribué à l'*OIDC Client ID* dans le fournisseur d'identité OIDC.
+- **OIDC User Name Attribute** est le nom de l'attribut utilisé par le service d'identité de l'OIDC pour identifier le compte d'utilisateur.
+  - La stratégie suivante est appliquée pour identifier l'attribut utilisé pour établir une correspondance avec le compte JOC Cockpit :
+    - l'URL *https://\<identity-provider\>/.well-known/openid-configuration* est appelée.
+    - la réponse est vérifiée pour l'objet *claims_supported*
+      - s'il n'est pas disponible ou vide, l'attribut *email* est utilisé
+      - s'il est disponible et s'il comprend l'attribut *preferred_username*, cet attribut sera utilisé.
+    - si aucun attribut n'a été identifié, l'attribut *email* est utilisé.
+  - Si cela n'aboutit pas à un compte d'utilisateur identifiable, les utilisateurs peuvent spécifier l'attribut name. Les fournisseurs d'identité OIDC prennent souvent en charge des noms d'attribut tels que *username* ou *email*.
+- **L'image OIDC** peut éventuellement être téléchargée et sera affichée sur la page de connexion. Les utilisateurs peuvent cliquer sur l'image pour se connecter au service d'identité OIDC.
+- **OIDC Truststore Path** si indiqué doit inclure un certificat X.509 spécifié pour l'utilisation de la clé étendue de l'authentification du serveur pour le fournisseur d'identité.
+  - Pour les connexions à des fournisseurs d'identité OIDC bien connus tels qu'Azure®, les utilisateurs doivent indiquer le chemin d'accès au fichier Java *cacerts* truststore fourni avec le JDK Java utilisé avec JOC Cockpit.
+  - Le fichier de confiance doit inclure un certificat auto-signé d'une autorité de certification privée ou publique. En règle générale, le certificat CA est utilisé car, dans le cas contraire, la chaîne de certificats complète impliquée dans la signature du certificat d'authentification du serveur doit être disponible dans la base de données de confiance.
+  - Si ce paramètre n'est pas spécifié, le Cockpit JOC utilisera le truststore configuré dans le fichier de configuration *JETTY_BASE/resources/joc/joc.properties*. Cela inclut l'utilisation des paramètres *OIDC Truststore Password* et *OIDC Truststore Type*.
+  - Le chemin d'accès au Truststore peut être spécifié par rapport au répertoire *JETTY_BASE/resources/joc*. Si le dépôt fiduciaire se trouve dans ce répertoire, seul le nom du fichier est spécifié, généralement avec une extension .p12 ou .pfx. D'autres emplacements relatifs peuvent être spécifiés en utilisant par exemple *../../joc-truststore.p12* si le truststore est situé dans le répertoire *JETTY_BASE*.
+  - Un chemin absolu peut être spécifié.
+- **OIDC Truststore Password** spécifie le mot de passe qui protège le Truststore. Pour le Truststore *cacerts* du JDK Java, le mot de passe par défaut est *changeit*.
+- **OIDC Truststore Type** est soit PKCS12, soit JKS (obsolète).
+- **OIDC Claims** spécifie les *rôles* ou *groupes* OIDC qui sont utilisés pour la correspondance avec les rôles JS7. Les *OIDC Claims* par défaut incluent *roles*, *groups*.
+- **Les *OIDC Scopes** spécifient l'étendue pour laquelle les *OIDC Claims* seront renvoyées par le fournisseur de services d'identité OIDC. Les *OIDC Scopes* par défaut incluent *roles*, *groups*, *profile*
+- **Le *OIDC Group/Roles Mapping** permet d'attribuer des rôles aux comptes.
+  - Une liste de revendications contenant les groupes configurés dans le fournisseur de services d'identité OIDC peut être spécifiée. Les revendications disponibles peuvent être mises à disposition en vérifiant le *JSON Web Token* lors de l'enregistrement.
+ - Lors de l'affectation, les groupes disponibles auprès du fournisseur de services d'identité OIDC sont affectés aux rôles configurés avec le service d'identité. Un nombre quelconque de rôles peut être attribué à chaque groupe.
+
+## Références
+
+### Aide contextuelle
+
+- [Identity Service - Configuration](/identity-service-configuration)
+- [Identity Services](/identity-services)
+
+### Product Knowledge Base
+
+- [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
+- [JS7 - OIDC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+OIDC+Identity+Service)
+

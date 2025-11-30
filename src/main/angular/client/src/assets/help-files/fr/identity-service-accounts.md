@@ -1,0 +1,81 @@
+# Comptes de service d'identité
+
+Les services d'identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
+
+Les comptes utilisateurs seront gérés et stockés dans JOC Cockpit pour les types de services d'identité suivants :
+
+| Type de service d'identité | Documentation |
+| ----- | ----- |
+*JOC* | [JS7 - JOC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+JOC+Identity+Service) | *KEYCLOAK-JOC* | 
+| *KEYCLOAK-JOC* | [JS7 - Keycloak Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Keycloak+Identity+Service) | | *LDAP-JOC* | 
+*LDAP-JOC* | [JS7 - LDAP Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+LDAP+Identity+Service) | *OIDC-JOC* | 
+*OIDC-JOC* | [JS7 - OIDC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+OIDC+Identity+Service) | *CERTIFICATE* | 
+| *CERTIFICAT* | [JS7 - Certificate Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Certificate+Identity+Service) | *FIDO* | 
+| *FIDO* | [JS7 - FIDO Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Certificate+Identity+Service) | *FIDO* | 
+
+Pour les types de services d'identité suivants, les comptes utilisateurs ne sont pas gérés par JOC Cockpit mais par le fournisseur de services d'identité :
+
+| Type de service d'identité | Documentation |
+| ----- | ----- |
+*KEYCLOAK* | [JS7 - Keycloak Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Keycloak+Identity+Service) | *LDAP* | 
+| *LDAP* | [JS7 - LDAP Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+LDAP+Identity+Service) | *OIDC* | 
+| *OIDC* | [JS7 - OIDC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+OIDC+Identity+Service) | *OIDC* | 
+
+## Liste des comptes
+
+Pour chaque compte, les propriétés suivantes sont affichées :
+
+- **Account** indique le compte tel qu'il a été spécifié lors de la connexion.
+- **Rôles** indique la liste des [Identity Service - Roles](/identity-service-roles) auxquels le compte est associé.
+- **Forcer le changement de mot de passe** indique si le compte utilisateur doit changer son mot de passe lors de la prochaine connexion.
+- **Bloqué** indique que le compte a été ajouté à un site [Identity Service - Blocklist](/identity-service-blocklist) et que l'accès lui est refusé.
+- **Désactivé** indique que le compte est inactif et que l'accès lui est refusé.
+
+## Opérations sur les comptes
+
+Les utilisateurs peuvent ajouter un compte en utilisant le bouton correspondant dans le coin supérieur droit de la vue.
+
+### Opérations sur les comptes individuels
+
+Les opérations suivantes sont disponibles dans le menu d'action à 3 points de chaque compte :
+
+- **Editer** permet de spécifier l'adresse [Identity Service - Account Configuration](/identity-service-account-configuration).
+- **Dupliquer** permet de copier le compte sélectionné dans un nouveau compte. Les utilisateurs doivent spécifier le nom du nouveau compte.
+- **Réinitialiser le mot de passe** supprime le mot de passe du compte et attribue le mot de passe spécifié avec le paramètre *initial_password* dans la page [Settings - Identity Service](/settings-identity-service). Le compte utilisateur concerné doit se connecter avec le *mot_de_passe initial* et doit modifier son mot de passe lors de la prochaine connexion.
+- **Forcer le changement de mot de passe** oblige le compte à changer son mot de passe lors de la prochaine connexion.
+- **Ajouter à la liste de blocage** interdit l'accès au compte pendant la durée de l'ajout du compte à la liste de blocage [Identity Service - Blocklist](/identity-service-blocklist).
+- **Désactiver** désactive le compte et interdit l'accès à partir de ce compte.
+- **Supprimer** supprime le compte du service d'identité.
+- **Afficher les autorisations** affiche la liste des autorisations résultant de la fusion des rôles du compte donné.
+
+### Opérations en masse sur les comptes
+
+Les utilisateurs peuvent effectuer les opérations de masse suivantes à partir des boutons situés en haut de l'écran :
+
+- **Exporter** ajoute les comptes sélectionnés à un fichier d'exportation au format JSON qui peut être utilisé pour importer des comptes vers un autre service d'identité dans la même instance ou dans une instance différente de JOC Cockpit.
+- **Copier** copie les comptes sélectionnés dans un presse-papiers interne à partir duquel ils peuvent être collés dans un autre service d'identité de la même instance du Cockpit JOC.
+
+Les utilisateurs peuvent sélectionner un ou plusieurs *comptes* pour effectuer les opérations ci-dessus en masse pour les *comptes* sélectionnés.
+
+- **Réinitialiser le mot de passe** supprime le mot de passe des comptes sélectionnés et attribue le mot de passe spécifié avec le paramètre *initial_password* dans la page [Settings - Identity Service](/settings-identity-service). Les comptes utilisateurs concernés doivent se connecter avec le *mot_de_passe initial* et doivent changer leur mot de passe lors de la prochaine connexion.
+- **Forcer le changement de mot de passe** oblige les comptes sélectionnés à changer leur mot de passe lors de la prochaine connexion.
+- **Désactiver** désactive les comptes sélectionnés et refuse l'accès aux comptes donnés.
+- **Activer** active les comptes sélectionnés et désactivés.
+- **Supprimez les comptes sélectionnés du service d'identité.
+
+## Références
+
+### Aide contextuelle
+
+- [Identity Service - Configuration](/identity-service-configuration)
+- [Identity Service - Account Configuration](/identity-service-account-configuration)
+- [Identity Service - Roles](/identity-service-roles) 
+- [Identity Service - Blocklist](/identity-service-blocklist)
+- [Identity Services](/identity-services)
+- [Settings - Identity Service](/settings-identity-service)
+- [Settings - JOC Cockpit](/settings-joc)
+
+### Product Knowledge Base
+
+- [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
+

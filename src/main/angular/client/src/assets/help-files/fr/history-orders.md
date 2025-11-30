@@ -1,0 +1,82 @@
+# Historique des ordres
+
+La vue *Historique de l'Ordre* résume l'historique de l'exécution des Ordres. Cela inclut l'historique d'exécution des Jobs utilisés dans les Workflows déclenchés par les Ordres associés.
+
+L'Historique des Ordres est sujet à une purge de la base de données effectuée par [Cleanup Service](/service-cleanup).
+
+Pour l'Historique des tâches, voir [Task History](/history-tasks).
+
+## Panneau de navigation
+
+Le panneau de gauche permet de filtrer les tags des Workflows et des Ordres.
+
+- les **étiquettes de Workflow** sont attribuées à partir de la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
+- les **balises d'Ordres** sont attribuées à partir de la vue [Configuration - Inventory - Schedules](/configuration-inventory-schedules).
+
+Les balises sont sélectionnées à partir des icônes + et - et peuvent être recherchées à l'aide de l'icône Recherche rapide. L'affichage des étiquettes doit être activé à partir de la page [Settings - JOC Cockpit](/settings-joc).
+
+## Panneau Historique
+
+L'affichage est limité à un maximum de 5000 entrées, sauf indication contraire sur la page [Profile - Preferences](/profile-preferences).
+
+### Historique des Ordres
+
+- **L'ID de l'Ordre** est l'identifiant unique attribué à un Ordre. En cliquant sur l'icône flèche vers le bas, vous afficherez les variables de l'Ordre et les travaux passés par l'Ordre. 
+- **Workflow** indique le Workflow passé par l'Ordre.
+  - En cliquant sur le nom du Workflow, vous accédez à la vue [Workflows](/workflows).
+  - En cliquant sur l'icône en forme de crayon, vous accédez à la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
+- **L'étiquette** indique la dernière position de l'Ordre dans le Workflow. Les utilisateurs peuvent attribuer des étiquettes aux instructions du Workflow qui seront affichées, sinon la position technique sera indiquée.
+- **Historique** indique l'état de l'historique qui est le dernier résultat dans la vie de l'Ordre.
+  - Si les Ordres sont terminés, le *Statut de l'historique* sera *succès* ou *échec*.
+  - Si les Ordres ne sont pas terminés, le *Statut de l'Historique* sera *en cours*.
+- **Ordre State** indique le dernier état de l'Ordre, voir [Order States](/order-states).
+  - Si les ordres sont terminés, l'*état de l'ordre* sera *réussi* ou *échec*.
+  - Si les Ordres ne sont pas terminés, l'état de l'Ordre sera *en cours de traitement*.
+
+### Accès à la sortie du journal
+
+- **Ordre ID** : En cliquant sur l'ID de l'Ordre, vous afficherez le journal de sortie de l'Ordre à partir du site [Order Log View](/order-log). Le journal comprend les données de sortie créées par tous les travaux exécutés avec le Workflow.
+- **Icône de téléchargement** : cliquez sur l'icône pour télécharger le journal de l'Ordre dans un fichier.
+
+Par défaut, l'affichage des journaux de l'Ordre est limité à une taille de 10 Mo et, dans le cas contraire, les journaux sont téléchargés dans des fichiers. Les utilisateurs peuvent ajuster la limite à partir de la page [Settings - JOC Cockpit](/settings-joc).
+
+### Opérations sur l'Historique des tâches
+
+Les utilisateurs trouvent un menu d'action par tâche qui offre les opérations suivantes :
+
+- **Ajouter le Workflow à la liste des ignorés** masque définitivement l'affichage des Ordres du Workflow. Cette opération peut s'avérer utile pour les Workflows cycliques qui alimentent l'Historique des Ordres.
+
+La *Liste d'ignorance* est gérée à partir du bouton correspondant dans le coin supérieur droit de la fenêtre :
+
+- **Editer la liste d'ignorance** affiche les Jobs et les Workflows dans la *Liste d'ignorance* et propose de supprimer individuellement des entrées de la *Liste d'ignorance*. 
+- **Activer la liste d'ignorés** active le filtrage pour masquer les offres d'emploi qui ont été ajoutées individuellement à la liste d'ignorés ou qui sont incluses dans un Workflow qui a été ajouté. Une *Liste d'ignorés* active est indiquée par le bouton correspondant.
+- **Désactiver la liste d'ignorés** désactive le filtrage des travaux et des Workflows. L'opération est disponible pour une *Liste d'ignorés* active.
+- **Réinitialiser la liste d'ignorés** supprime les offres d'emploi et les Workflows de la liste d'ignorés, ce qui permet d'afficher toutes les offres d'emploi.
+
+## Filtres
+
+L'utilisateur peut appliquer les filtres disponibles en haut de la fenêtre pour limiter l'affichage des Ordres.
+
+- les boutons de filtrage **Successful**, **Failed**, **In Progress** limitent l'affichage aux Ordres ayant le *Historique Status* correspondant.
+- les boutons de filtrage **Date Range** permettent de choisir la plage de dates pour l'affichage des Ordres.
+- **La case à cocher "Contrôleur actuel" limite l'affichage des Ordres au contrôleur actuellement sélectionné.
+
+## Références
+
+### Aide contextuelle
+
+- [Cleanup Service](/service-cleanup)
+- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
+- [Order Log View](/order-log)
+- [Order States](/order-states)
+- [Profile - Preferences](/profile-preferences)
+- [Settings - JOC Cockpit](/settings-joc)
+- [Task History](/history-tasks)
+- [Workflows](/workflows)
+
+### Product Knowledge Base
+
+- [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
+- [JS7 - Task History](https://kb.sos-berlin.com/display/JS7/JS7+-+Task+History)
+
