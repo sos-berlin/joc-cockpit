@@ -5977,7 +5977,10 @@ export class RepositoryComponent {
   rolloutObjects: string[] = [];
   link: any;
   deleteRepository = false;
+  useDependencies = false;
+  dependencyMode: 'none' | 'enforced' | 'unenforced' | 'both' = 'both';
 
+  private filteredDepsCache = new WeakMap<any, { references: any[], referencedBy: any[] }>();
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef,
               private inventoryService: InventoryService, private cdr: ChangeDetectorRef,) {
   }
@@ -7088,54 +7091,71 @@ export class RepositoryComponent {
   cancel(): void {
     this.activeModal.destroy();
   }
+private handleDependenciesForGit(node: any, obj: any): void {
 
-  private handleDependenciesForGit(node: any, obj: any): void {
-    if (node.disabled) {
-      return;
-    }
-    if (!obj.local) {
-      obj.local = {
-        deployConfigurations: [],
-        draftConfigurations: [],
-        releasedConfigurations: []
-      };
-    }
+  if (this.dependencyMode === 'none') {
+    return;
+  }
 
-    if (!obj.rollout) {
-      obj.rollout = {
-        deployConfigurations: [],
-        draftConfigurations: [],
-        releasedConfigurations: []
-      };
-    }
+  if (node.disabled) {
+    return;
+  }
 
-    const isDuplicate = (array: any[], config: any): boolean => {
-      return array?.some(item => item.configuration.path === config.configuration.path && item.configuration.objectType === config.configuration.objectType);
+  if (!obj.local) {
+    obj.local = {
+      deployConfigurations: [],
+      draftConfigurations: [],
+      releasedConfigurations: []
     };
+  }
 
-    const targetGroup = (config, type) => {
-      if (this.filter.envIndependent) {
+  if (!obj.rollout) {
+    obj.rollout = {
+      deployConfigurations: [],
+      draftConfigurations: [],
+      releasedConfigurations: []
+    };
+  }
+
+  const isDuplicate = (array: any[], config: any): boolean => {
+    return array?.some(item =>
+      item.configuration.path === config.configuration.path &&
+      item.configuration.objectType === config.configuration.objectType
+    );
+  };
+
+  const shouldIncludeDependency = (dep: any): boolean => {
+    if (this.dependencyMode === 'none') return false;
+    if (this.dependencyMode === 'both') return true;
+    if (this.dependencyMode === 'enforced') return dep.enforce === true;
+    if (this.dependencyMode === 'unenforced') return dep.enforce === false;
+    return true;
+  };
+
+  const targetGroup = (config: any, type: string) => {
+    if (this.filter.envIndependent) {
+      if (!obj.rollout[type]) {
+        obj.rollout[type] = [];
+      }
+      if (!isDuplicate(obj.rollout[type], config)) {
+        obj.rollout[type].push(config);
+      }
+    } else if (this.filter.envRelated) {
+      if (!obj.local[type]) {
+        obj.local[type] = [];
+      }
+      if (!isDuplicate(obj.local[type], config)) {
+        obj.local[type].push(config);
+      }
+    } else if (this.object.type === 'changes') {
+      if (this.category === 'ROLLOUT') {
         if (!obj.rollout[type]) {
           obj.rollout[type] = [];
         }
         if (!isDuplicate(obj.rollout[type], config)) {
           obj.rollout[type].push(config);
         }
-      } else if (this.filter.envRelated) {
-        if (!obj.local[type]) {
-          obj.local[type] = [];
-        }
-        if (!isDuplicate(obj.local[type], config)) {
-          obj.local[type].push(config);
-        }
-      } else if (this.object.type === 'changes' && this.category === "ROLLOUT") {
-        if (!obj.rollout[type]) {
-          obj.rollout[type] = [];
-        }
-        if (!isDuplicate(obj.rollout[type], config)) {
-          obj.rollout[type].push(config);
-        }
-      } else if (this.object.type === 'changes' && this.category === "LOCAL") {
+      } else if (this.category === 'LOCAL') {
         if (!obj.local[type]) {
           obj.local[type] = [];
         }
@@ -7143,77 +7163,100 @@ export class RepositoryComponent {
           obj.local[type].push(config);
         }
       }
-    };
-    if (this.object.type === 'changes') {
+    }
+  };
 
-      if (node.path !== '/' && node.name !== '/') {
-        const config = {
-          configuration: {
-            path: node.path,
-            objectType: node.type,
-            recursive: false
-          }
-        };
-        if (node.checked && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(node.type)) {
-          targetGroup(config, 'draftConfigurations');
-        } else if (node.checked && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(node.type)) {
-          targetGroup(config, 'draftConfigurations');
+  const nodeData = node.origin || node;
+  const nodeDependencies = nodeData.dependencies;
+
+  if (this.object.type === 'changes') {
+    if (nodeData.path !== '/' && nodeData.name !== '/') {
+      const config = {
+        configuration: {
+          path: nodeData.path,
+          objectType: nodeData.type,
+          recursive: false
         }
+      };
+
+      if (node.checked && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(nodeData.type)) {
+        targetGroup(config, 'draftConfigurations');
+      } else if (node.checked && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(nodeData.type)) {
+        targetGroup(config, 'draftConfigurations');
       }
-    }
-    if (node.dependencies) {
-      node.dependencies.referencedBy.forEach(dep => {
-        if (dep.path !== '/' && dep.name !== '/') {
-          const config = {
-            configuration: {
-              path: dep.path,
-              objectType: dep.objectType,
-            }
-          };
-
-          if (dep.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType)) {
-            targetGroup(config, 'draftConfigurations');
-          } else if (dep.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType)) {
-            targetGroup(config, 'draftConfigurations');
-          }
-        }
-      });
-
-      node.dependencies.references.forEach(ref => {
-        if (ref.path !== '/' && ref.name !== '/') {
-          const config = {
-            configuration: {
-              path: ref.path,
-              objectType: ref.objectType,
-              recursive: false
-
-            }
-          };
-
-          if (ref.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(ref.objectType)) {
-            targetGroup(config, 'draftConfigurations');
-          } else if (ref.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(ref.objectType)) {
-            targetGroup(config, 'draftConfigurations');
-          }
-        }
-      });
-    }
-
-    if (node.children && node.children.length > 0) {
-      node.children.forEach(childNode => {
-        this.handleDependenciesForGit(childNode, obj);
-      });
     }
   }
 
-  handleAffectedItemsForGit(obj): void {
+  if (nodeDependencies && nodeDependencies.referencedBy) {
+    nodeDependencies.referencedBy.forEach((dep: any) => {
+
+      if (!shouldIncludeDependency(dep)) {
+        return;
+      }
+
+      if (dep.path !== '/' && dep.name !== '/') {
+        const config = {
+          configuration: {
+            path: dep.path,
+            objectType: dep.objectType,
+            recursive: false
+          }
+        };
+
+        if (dep.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(dep.objectType)) {
+          targetGroup(config, 'draftConfigurations');
+        } else if (dep.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(dep.objectType)) {
+          targetGroup(config, 'draftConfigurations');
+        }
+      }
+    });
+  }
+
+  if (nodeDependencies && nodeDependencies.references) {
+    nodeDependencies.references.forEach((ref: any) => {
+
+      if (!shouldIncludeDependency(ref)) {
+        return;
+      }
+
+      if (ref.path !== '/' && ref.name !== '/') {
+        const config = {
+          configuration: {
+            path: ref.path,
+            objectType: ref.objectType,
+            recursive: false
+          }
+        };
+
+        if (ref.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(ref.objectType)) {
+          targetGroup(config, 'draftConfigurations');
+        } else if (ref.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(ref.objectType)) {
+          targetGroup(config, 'draftConfigurations');
+        }
+      }
+    });
+  }
+
+  if (node.children && node.children.length > 0) {
+    node.children.forEach((childNode: any) => {
+      this.handleDependenciesForGit(childNode, obj);
+    });
+  }
+}
+
+
+  private handleAffectedItemsForGit(obj: any): void {
+
+    if (this.dependencyMode === 'none') {
+      return;
+    }
+
     if (!obj.local) {
       obj.local = {
         deployConfigurations: [],
         draftConfigurations: [],
         releasedConfigurations: [],
         releaseDraftConfigurations: []
-
       };
     }
 
@@ -7223,15 +7266,25 @@ export class RepositoryComponent {
         draftConfigurations: [],
         releasedConfigurations: [],
         releaseDraftConfigurations: []
-
       };
     }
 
     const isDuplicate = (array: any[], config: any): boolean => {
-      return array.some(item => item.configuration.path === config.configuration.path && item.configuration.objectType === config.configuration.objectType);
+      return array.some(item =>
+        item.configuration.path === config.configuration.path &&
+        item.configuration.objectType === config.configuration.objectType
+      );
     };
 
-    const targetGroup = (config, type) => {
+    const shouldIncludeDependency = (item: any): boolean => {
+      if (this.dependencyMode === 'none') return false;
+      if (this.dependencyMode === 'both') return true;
+      if (this.dependencyMode === 'enforced') return item.enforce === true;
+      if (this.dependencyMode === 'unenforced') return item.enforce === false;
+      return true;
+    };
+
+    const targetGroup = (config: any, type: string) => {
       if (this.filter.envIndependent) {
         if (!obj.rollout[type]) {
           obj.rollout[type] = [];
@@ -7249,7 +7302,12 @@ export class RepositoryComponent {
       }
     };
 
-    this.filteredAffectedItems.forEach(item => {
+    this.filteredAffectedItems.forEach((item: any) => {
+
+      if (!shouldIncludeDependency(item)) {
+        return;
+      }
+
       if (item.path !== '/' && item.name !== '/') {
         const config = {
           configuration: {
@@ -7268,8 +7326,7 @@ export class RepositoryComponent {
     });
   }
 
-
-  private getDependencies(checkedNodes: { name: string, type: string }[], node, isChecked = false): void {
+  private getDependencies(checkedNodes: { name: string, type: string }[], node: any, isChecked = false): void {
     const configurations = checkedNodes.map(node => ({
       name: node.name,
       type: node.type,
@@ -7277,22 +7334,28 @@ export class RepositoryComponent {
 
     let operationType = 'GIT';
     if (this.object.type === 'changes') {
-      operationType = 'DEPLOY'
+      operationType = 'DEPLOY';
     }
+
     const requestBody = {
       configurations: configurations,
       operationType: operationType
     };
 
+
     this.coreService.post('inventory/dependencies', requestBody).subscribe({
       next: (res: any) => {
-        if (res.dependencies && res.dependencies?.requestedItems.length > 0 || res.dependencies?.affectedItems.length > 0) {
-          this.updateNodeDependencies(res.dependencies, isChecked);
-          this.prepareObject(res.dependencies);
+
+        if (res && res.requestedItems && res.requestedItems.length > 0) {
+          this.updateNodeDependencies(res, isChecked);
+          this.prepareObject(res);
+          this.ref.detectChanges();
+        } else if (res && res.affectedItems && res.affectedItems.length > 0) {
+          this.updateNodeDependencies(res, isChecked);
+          this.prepareObject(res);
           this.ref.detectChanges();
         } else {
         }
-
       },
       error: (err) => {
       }
@@ -7300,56 +7363,96 @@ export class RepositoryComponent {
   }
 
   private updateNodeDependencies(dependenciesResponse: any, isChecked: boolean): void {
-    const requestedItems = dependenciesResponse.requestedItems;
+    const requestedItems = dependenciesResponse.requestedItems || [];
     const affectedItems = dependenciesResponse.affectedItems || [];
+    const objects = dependenciesResponse.objects || {};
 
     const referencedSet = new Set<string>();
-    requestedItems.forEach(item => {
-      item.references?.forEach(ref => {
-        referencedSet.add(`${ref.name}-${ref.objectType}`);
+    requestedItems.forEach((itemId: number) => {
+      const item = objects[itemId];
+      if (!item) return;
+
+      [...(item.references || []), ...(item.enforcedReferences || [])].forEach(refId => {
+        const refObj = objects[refId];
+        if (refObj) referencedSet.add(`${refObj.name}-${refObj.objectType}`);
       });
-      item.referencedBy?.forEach(refBy => {
-        referencedSet.add(`${refBy.name}-${refBy.objectType}`);
+
+      [...(item.referencedBy || []), ...(item.enforcedReferencedBy || [])].forEach(refId => {
+        const refObj = objects[refId];
+        if (refObj) referencedSet.add(`${refObj.name}-${refObj.objectType}`);
       });
     });
 
     const requestedSet = new Set<string>();
-    requestedItems.forEach(item => {
-      requestedSet.add(`${item.name}-${item.objectType}`);
+    requestedItems.forEach((itemId: number) => {
+      const item = objects[itemId];
+      if (item) requestedSet.add(`${item.name}-${item.objectType}`);
     });
 
-    affectedItems.forEach(itemWrapper => {
-      const item = itemWrapper.item;
+    affectedItems.forEach((itemId: number) => {
+      const item = objects[itemId];
+      if (!item) return;
+
       const uniqueKey = `${item.name}-${item.objectType}`;
-      if (!referencedSet.has(uniqueKey) && !requestedSet.has(uniqueKey) &&
-        !this.filteredAffectedItems.some(existing => `${existing.name}-${existing.objectType}` === uniqueKey)) {
-        this.filteredAffectedItems.push(item);
+
+      if (!referencedSet.has(uniqueKey) && !requestedSet.has(uniqueKey)) {
+        if (!this.filteredAffectedItems.some(existing =>
+          `${existing.name}-${existing.objectType}` === uniqueKey
+        )) {
+          this.filteredAffectedItems.push({
+            ...item,
+            selected: true,
+            disabled: false,
+            change: item.deployed || false
+          });
+        }
       }
     });
 
-    if (isChecked) {
-      requestedItems.forEach(dep => {
-        const uniqueKey = `${dep.name}-${dep.objectType}`;
-        if (!referencedSet.has(uniqueKey) && !requestedSet.has(uniqueKey) &&
-          !this.filteredAffectedItems.some(existing => `${existing.name}-${existing.objectType}` === uniqueKey)) {
-          this.filteredAffectedItems.push(dep);
-        }
-      });
-    }
+    requestedItems.forEach((itemId: number) => {
+      const dep = objects[itemId];
+      if (!dep) return;
 
-    requestedItems.forEach(dep => {
-      this.findAndUpdateNodeWithDependencies(dep, this.nodes);
+      const transformedDep = {
+        name: dep.name,
+        type: dep.objectType,
+        path: dep.path,
+        referencedBy: [
+          ...(dep.enforcedReferencedBy || []).map(id => ({ ...objects[id], enforce: true })),
+          ...(dep.referencedBy || []).map(id => ({ ...objects[id], enforce: false }))
+        ].filter(Boolean),
+        references: [
+          ...(dep.enforcedReferences || []).map(id => ({ ...objects[id], enforce: true })),
+          ...(dep.references || []).map(id => ({ ...objects[id], enforce: false }))
+        ].filter(Boolean)
+      };
+
+      this.findAndUpdateNodeWithDependencies(transformedDep, this.nodes);
     });
 
     this.nodes = [...this.nodes];
   }
 
-
   private findAndUpdateNodeWithDependencies(dep: any, nodes: any[]): any {
     for (let i = 0; i < nodes.length; i++) {
       const node = nodes[i];
-      if (node.name === dep.name && node.type === dep.type) {
-        node.dependencies = dep;
+
+      const nodeName = node.origin?.name || node.name;
+      const nodeType = node.origin?.type || node.type;
+
+      if (nodeName === dep.name && nodeType === dep.type) {
+        if (node.origin) {
+          node.origin.dependencies = {
+            referencedBy: dep.referencedBy || [],
+            references: dep.references || []
+          };
+        } else {
+          node.dependencies = {
+            referencedBy: dep.referencedBy || [],
+            references: dep.references || []
+          };
+        }
+
         this.ref.detectChanges();
         return node;
       }
@@ -7366,58 +7469,290 @@ export class RepositoryComponent {
   }
 
   private prepareObject(dependencies: any): void {
-    if (dependencies && dependencies?.requestedItems.length > 0) {
+    const requestedItems = dependencies.requestedItems || [];
+    const objects = dependencies.objects || {};
 
-      dependencies?.requestedItems.forEach(dep => {
-        if (dep.referencedBy) {
-          const affectedTypeSet = new Set<string>();
-          dep.referencedBy.forEach(refObj => {
-            const type = refObj.objectType;
-            affectedTypeSet.add(type);
-            if (!this.affectedObjectsByType[type]) {
-              this.affectedObjectsByType[type] = [];
-              this.affectedObjectTypes.push(type);
-            }
-
-            refObj.selected = true;
-            refObj.change = refObj.deployed;
-
-            this.affectedObjectsByType[type].push(refObj);
-          });
-        }
-
-        if (dep.references) {
-          const referencedTypeSet = new Set<string>();
-          dep.references.forEach(refObj => {
-            const type = refObj.objectType;
-            referencedTypeSet.add(type);
-            if (!this.referencedObjectsByType[type]) {
-              this.referencedObjectsByType[type] = [];
-              this.referencedObjectTypes.push(type);
-            }
-
-            refObj.selected = true;
-            refObj.change = refObj.deployed;
-
-            this.referencedObjectsByType[type].push(refObj);
-
-
-          });
-        }
-
-      });
-      const filteredAffectedTypeSet = new Set<string>();
-      this.filteredAffectedItems.forEach(item => {
-        const type = item.objectType;
-        filteredAffectedTypeSet.add(type);
-
-        item.selected = true;
-
-      });
-      this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
-      this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
-
+    if (requestedItems.length === 0) {
+      return;
     }
+
+
+    requestedItems.forEach((itemId: number) => {
+      const dep = objects[itemId];
+      if (!dep) return;
+
+      if (dep.referencedBy || dep.enforcedReferencedBy) {
+        const allReferencedByIds = [
+          ...(dep.enforcedReferencedBy || []),
+          ...(dep.referencedBy || [])
+        ];
+
+        allReferencedByIds.forEach(refById => {
+          const refObj = objects[refById];
+          if (!refObj) return;
+
+          const type = refObj.objectType;
+          const isEnforced = (dep.enforcedReferencedBy || []).includes(refById);
+
+          if (!this.affectedObjectsByType[type]) {
+            this.affectedObjectsByType[type] = [];
+            this.affectedObjectTypes.push(type);
+          }
+
+          const exists = this.affectedObjectsByType[type].some(
+            obj => obj.id === refObj.id || (obj.name === refObj.name && obj.path === refObj.path)
+          );
+
+          if (!exists) {
+
+            this.affectedObjectsByType[type].push({
+              ...refObj,
+              enforce: isEnforced,
+              selected: this.useDependencies && isEnforced ? true : (refObj.valid && !refObj.deployed && !refObj.released),
+              disabled: isEnforced ? true : !refObj.valid,
+              change: refObj.deployed || false
+            });
+          }
+        });
+      }
+
+      if (dep.references || dep.enforcedReferences) {
+        const allReferencesIds = [
+          ...(dep.enforcedReferences || []),
+          ...(dep.references || [])
+        ];
+
+        allReferencesIds.forEach(refId => {
+          const refObj = objects[refId];
+          if (!refObj) return;
+
+          const type = refObj.objectType;
+          const isEnforced = (dep.enforcedReferences || []).includes(refId);
+
+          if (!this.referencedObjectsByType[type]) {
+            this.referencedObjectsByType[type] = [];
+            this.referencedObjectTypes.push(type);
+          }
+
+          const exists = this.referencedObjectsByType[type].some(
+            obj => obj.id === refObj.id || (obj.name === refObj.name && obj.path === refObj.path)
+          );
+
+          if (!exists) {
+
+            this.referencedObjectsByType[type].push({
+              ...refObj,
+              enforce: isEnforced,
+              selected: this.useDependencies && isEnforced ? true : (refObj.valid && !refObj.deployed && !refObj.released),
+              disabled: isEnforced ? true : !refObj.valid,
+              change: refObj.deployed || false
+            });
+          }
+        });
+      }
+    });
+
+    this.filteredAffectedItems.forEach(item => {
+      item.selected = this.useDependencies && (item.valid && !item.deployed && !item.released);
+      item.disabled = !item.valid;
+    });
+
+    this.affectedObjectTypes.forEach(type => {
+      if (this.affectedCollapsed[type] === undefined) {
+        this.affectedCollapsed[type] = true;
+      }
+      this.updateParentCheckboxAffected(type);
+    });
+
+    this.referencedObjectTypes.forEach(type => {
+      if (this.referencedCollapsed[type] === undefined) {
+        this.referencedCollapsed[type] = true;
+      }
+      this.updateParentCheckboxReferenced(type);
+    });
+
+    this.getUniqueObjectTypes(this.filteredAffectedItems).forEach(type => {
+      this.updateParentCheckboxFilteredAffected(type);
+    });
+
+  }
+
+
+  private filterDependenciesByMode(dependencies: any[]): any[] {
+    if (!dependencies || dependencies.length === 0) {
+      return [];
+    }
+
+    if (this.dependencyMode === 'none') {
+      return [];
+    }
+
+    if (this.dependencyMode === 'both') {
+      return dependencies;
+    }
+
+    if (this.dependencyMode === 'enforced') {
+      return dependencies.filter(dep => dep.enforce === true);
+    }
+
+    if (this.dependencyMode === 'unenforced') {
+      return dependencies.filter(dep => dep.enforce === false);
+    }
+
+    return dependencies;
+  }
+
+  getFilteredNodeDependencies(node: any): { references: any[], referencedBy: any[] }[] {
+
+    const nodeOrigin = node.origin || node;
+
+    if (!nodeOrigin || !nodeOrigin.dependencies) {
+      return [{ references: [], referencedBy: [] }];
+    }
+
+    const cacheKey = this.dependencyMode;
+    const cached = this.filteredDepsCache.get(nodeOrigin);
+
+    if (cached && (nodeOrigin as any).lastFilterMode === cacheKey) {
+      return [cached];
+    }
+
+    const result = {
+      references: this.filterDependenciesByMode(nodeOrigin.dependencies.references || []),
+      referencedBy: this.filterDependenciesByMode(nodeOrigin.dependencies.referencedBy || [])
+    };
+
+    (nodeOrigin as any).lastFilterMode = cacheKey;
+    this.filteredDepsCache.set(nodeOrigin, result);
+
+    return [result];
+  }
+
+  private clearFilterModeTracking(nodes: any[]): void {
+    nodes.forEach(node => {
+      const nodeOrigin = node.origin || node;
+      delete (nodeOrigin as any).lastFilterMode;
+
+      if (node.children && node.children.length > 0) {
+        this.clearFilterModeTracking(node.children);
+      }
+    });
+  }
+
+  onDependencyModeChange(): void {
+
+    this.filteredDepsCache = new WeakMap();
+
+    this.clearFilterModeTracking(this.nodes);
+
+    Object.values(this.affectedObjectsByType).forEach((arr: any[]) => {
+      arr.forEach(o => {
+        if (!o.disabled) {
+          o.selected = this.useDependencies && (o.valid && !o.deployed && !o.released);
+        }
+      });
+    });
+
+    Object.values(this.referencedObjectsByType).forEach((arr: any[]) => {
+      arr.forEach(o => {
+        if (!o.disabled) {
+          o.selected = this.useDependencies && (o.valid && !o.deployed && !o.released);
+        }
+      });
+    });
+
+    this.filteredAffectedItems.forEach(o => {
+      if (!o.disabled) {
+        o.selected = this.useDependencies && (o.valid && !o.deployed && !o.released);
+      }
+    });
+
+    this.affectedObjectTypes.forEach(t => this.updateParentCheckboxAffected(t));
+    this.referencedObjectTypes.forEach(t => this.updateParentCheckboxReferenced(t));
+    this.getUniqueObjectTypes(this.filteredAffectedItems).forEach(t =>
+      this.updateParentCheckboxFilteredAffected(t)
+    );
+
+    this.nodes = [...this.nodes];
+    this.ref.detectChanges();
+  }
+
+  onToggleUseDependencies(): void {
+    const to = this.useDependencies;
+
+    Object.values(this.affectedObjectsByType).forEach((arr: any[]) => {
+      arr.forEach(o => {
+        if (!o.disabled) {
+          o.selected = to && (o.valid && !o.deployed && !o.released);
+        }
+      });
+    });
+
+    Object.values(this.referencedObjectsByType).forEach((arr: any[]) => {
+      arr.forEach(o => {
+        if (!o.disabled) {
+          o.selected = to && (o.valid && !o.deployed && !o.released);
+        }
+      });
+    });
+
+    this.filteredAffectedItems.forEach(o => {
+      if (!o.disabled) {
+        o.selected = to && (o.valid && !o.deployed && !o.released);
+      }
+    });
+
+    this.affectedObjectTypes.forEach(t => this.updateParentCheckboxAffected(t));
+    this.referencedObjectTypes.forEach(t => this.updateParentCheckboxReferenced(t));
+    this.getUniqueObjectTypes(this.filteredAffectedItems).forEach(t =>
+      this.updateParentCheckboxFilteredAffected(t)
+    );
+
+    this.ref.detectChanges();
+  }
+
+  getFilteredAffectedObjects(type: string): any[] {
+    const objects = this.affectedObjectsByType[type] || [];
+    return this.filterDependenciesByMode(objects);
+  }
+
+  getFilteredReferencedObjects(type: string): any[] {
+    const objects = this.referencedObjectsByType[type] || [];
+    return this.filterDependenciesByMode(objects);
+  }
+
+  updateParentCheckboxFilteredAffected(objectType: string): void {
+    const allSelected = this.filteredAffectedItems
+      .filter(item => item.objectType === objectType)
+      .every(obj => obj.selected || obj.disabled);
+
+    this.selectAllFilteredAffected[objectType] = allSelected;
+  }
+
+  toggleAllFilteredAffected(objectType: string, isChecked: boolean): void {
+    this.filteredAffectedItems
+      .filter(item => item.objectType === objectType)
+      .forEach(obj => {
+        if (!obj.disabled) {
+          obj.selected = isChecked;
+        }
+      });
+  }
+
+  toggleAllAffected(objectType: string, isChecked: boolean): void {
+    (this.affectedObjectsByType[objectType] || []).forEach(obj => {
+      if (!obj.disabled) {
+        obj.selected = isChecked;
+      }
+    });
+  }
+
+  toggleAllReferenced(objectType: string, isChecked: boolean): void {
+    (this.referencedObjectsByType[objectType] || []).forEach(obj => {
+      if (!obj.disabled) {
+        obj.selected = isChecked;
+      }
+    });
   }
 
   private collectCheckedObjects(nodes: any[]): any[] {
@@ -7441,19 +7776,6 @@ export class RepositoryComponent {
     return objects.filter(obj => obj.objectType === type);
   }
 
-  toggleAllFilteredAffected(objectType: string, isChecked: boolean): void {
-    this.filteredAffectedItems.filter(item => item.objectType === objectType).forEach(obj => {
-      if (!obj.disabled) {
-        obj.selected = isChecked;
-      }
-    });
-  }
-
-  updateParentCheckboxFilteredAffected(objectType: string): void {
-    const allSelected = this.filteredAffectedItems.filter(item => item.objectType === objectType).every(obj => obj.selected || obj.disabled);
-    this.selectAllFilteredAffected[objectType] = allSelected;
-  }
-
   toggleAffectedCollapse(nodeKey: string): void {
     this.affectedCollapsed[nodeKey] = !this.affectedCollapsed[nodeKey];
   }
@@ -7462,22 +7784,6 @@ export class RepositoryComponent {
     this.referencedCollapsed[nodeKey] = !this.referencedCollapsed[nodeKey];
   }
 
-
-  toggleAllAffected(objectType: string, isChecked: boolean): void {
-    this.affectedObjectsByType[objectType].forEach(obj => {
-      if (!obj.disabled) {
-        obj.selected = isChecked;
-      }
-    });
-  }
-
-  toggleAllReferenced(objectType: string, isChecked: boolean): void {
-    this.referencedObjectsByType[objectType].forEach(obj => {
-      if (!obj.disabled) {
-        obj.selected = isChecked;
-      }
-    });
-  }
 
 
   updateParentCheckboxAffected(objectType: string): void {
