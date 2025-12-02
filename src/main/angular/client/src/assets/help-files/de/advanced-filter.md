@@ -2,10 +2,10 @@
 
 Erweiterte Filter bieten die Möglichkeit, Suchergebnisse in einer Reihe von Ansichten einzuschränken.
 
-## Anpassung
+## Personalisierung
 
-- Benutzer können den Namen einer Anpassung angeben, unter dem der Filter zur späteren Wiederverwendung gespeichert wird.
-- Anpassungen sind in den meisten Ansichten verfügbar und können über eine Dropdown-Schaltfläche unterhalb des Hauptmenüs aktiviert werden.
+- Benutzer können den Namen einer Personalisierung angeben, unter der der Filter zur späteren Wiederverwendung gespeichert wird.
+- Personalisierungen sind in den meisten Ansichten verfügbar und können über eine Dropdown-Schaltfläche unterhalb des Hauptmenüs aktiviert werden.
 
 ## Suchkriterien
 

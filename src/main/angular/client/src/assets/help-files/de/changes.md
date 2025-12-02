@@ -15,16 +15,16 @@ Die Seite *Änderungen verwalten* wird zum Hinzufügen, Aktualisieren und Lösch
 
 ## Liste der Änderungen
 
-Vorhandene Changes werden in einer Liste angezeigt:
+Vorhandene Änderungen werden in einer Liste angezeigt:
 
-- **Aktionsmenü** bietet die Möglichkeit, den Change-Eintrag zu aktualisieren und zu löschen.
+- **Aktionsmenü** bietet die Möglichkeit, den Änderungseintrag zu aktualisieren und zu löschen.
 - **Name** ist der eindeutige Name, den die Benutzer einer Änderung zuweisen.
 - **Titel** erklärt den Zweck der Änderung.
-- **Status** ist einer der Werte *Offen* oder *Geschlossen*. Geschlossene Änderungen werden nicht für Bereitstellungs- oder Exportvorgänge angeboten.
+- **Status** ist einer der Werte *Offen* oder *Geschlossen*. Geschlossene Änderungen werden nicht für Operation zum Export oder Rollout angeboten.
 - **Eigentümer** gibt das Konto an, das Eigentümer der Änderung ist.
 - **Objekte** bietet ein Symbol zur Anzeige von Objekten, die der Änderung unterliegen.
 
-## Operationen mit Änderungen
+## Operationen für Änderungen
 
 Im oberen Teil des Bildschirms stehen Ihnen die folgenden Schaltflächen zur Verfügung:
 

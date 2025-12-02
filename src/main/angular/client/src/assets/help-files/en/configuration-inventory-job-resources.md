@@ -33,7 +33,7 @@ Job Resource variables are configured for each tab from the following inputs:
   - For *Environment Variables* operating system limits apply, for example excluding dashes and spaces. A frequent naming convention includes uppercase spelling. On Unix the names of Environment Variables are considered case-sensitive, on Windows they are considered case-insensitive.
 - **Value** can be direct input from strings, numbers or expressions, see [JS7 - Expressions for Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Expressions+for+Variables).
 
-Should the same variable be made available for both *Arguments* and *Environment Variables*, then the value of the Environment Variable can reference the *Argument* name like this: *$argument-name*
+Should the same variable be made available for both *Arguments* and *Environment Variables*, then the value of the Environment Variable can reference the *Argument* name like this: *$argument*
 
 ### Operations on Job Resources
 
@@ -41,9 +41,14 @@ For available operations see [Configuration - Inventory - Navigation Panel](/con
 
 ## References
 
+### Context Help
+
 - [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
 - [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
 - [Object Naming Rules](/object-naming-rules)
+
+### Product Knowledge Base
+
 - [JS7 - Assignment of Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Assignment+of+Variables)
 - [JS7 - Expressions for Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Expressions+for+Variables)
 - [JS7 - Order Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+Variables)

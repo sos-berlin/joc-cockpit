@@ -13,7 +13,7 @@ Changes include inventory objects such as Workflows, Schedules etc. and they inc
 
 The *Change - Properties* pop-up window is used for specifying properties of Changes.
 
-## Change Properties
+## Properties
 
 Changes hold the following properties:
 
