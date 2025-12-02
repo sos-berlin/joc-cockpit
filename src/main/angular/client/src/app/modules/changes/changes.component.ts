@@ -14,7 +14,7 @@ import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.comp
   selector: 'app-change-modal',
   templateUrl: './add-change-dialog.html'
 })
-export class AddChangesModalComponent{
+export class AddChangesModalComponent {
   readonly modalData: any = inject(NZ_MODAL_DATA);
   display: any;
   title: string;
@@ -23,12 +23,12 @@ export class AddChangesModalComponent{
   required = false;
   schedulerIds: any;
   changesObj: any = {};
-  changes: any
-  originalName: any
-  flag = false
+  changes: any;
+  originalName: any;
+  flag = false;
   nodes: any[] = [];
-  loading = false
-  INVchanges = false
+  loading = false;
+  INVchanges = false;
   selectedChange: any;
   data: any;
   preferences: any = {};
@@ -38,7 +38,17 @@ export class AddChangesModalComponent{
   referencedObjectTypes: string[] = [];
   affectedCollapsed: { [key: string]: boolean } = {};
   referencedCollapsed: { [key: string]: boolean } = {};
-  constructor(public activeModal: NzModalRef, private modal: NzModalService, private coreService: CoreService, private authService: AuthService, private cdRef: ChangeDetectorRef ){}
+
+  dependencyMode: 'none' | 'enforced' | 'unenforced' | 'all' = 'all';
+  private filteredDepsCache = new WeakMap<any, { referencedBy: any[], references: any[] }>();
+
+  constructor(
+    public activeModal: NzModalRef,
+    private modal: NzModalService,
+    private coreService: CoreService,
+    private authService: AuthService,
+    private cdRef: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     if (sessionStorage['preferences']) {
@@ -51,53 +61,58 @@ export class AddChangesModalComponent{
     this.flag = this.modalData.flag;
     this.originalName = this.modalData.originalName;
     this.INVchanges = this.modalData.INVchanges;
-    if(this.changes){
+
+    if (this.changes) {
       this.changesObj.name = this.changes.name;
       this.changesObj.title = this.changes.title;
       this.changesObj.state = this.changes.state;
     }
+
     this.comments.radio = 'predefined';
+
     if (sessionStorage['$SOS$FORCELOGING'] === 'true') {
       this.required = true;
       this.display = true;
     }
 
-    if(this.title === 'changesFound'){
-      this.nodes = this.prepareGroupedTree(this.changes.configurations)
+    if (this.title === 'changesFound') {
+      this.nodes = this.prepareGroupedTree(this.changes.configurations);
       const checkedNodes = this.collectObjects(this.nodes);
 
       if (checkedNodes.length > 0) {
         setTimeout(() => {
           this.getDependencies(checkedNodes);
-        }, 100)
+        }, 100);
       }
     }
-    if(this.INVchanges){
-      this.changesData()
+
+    if (this.INVchanges) {
+      this.changesData();
     }
   }
-  changesData():void{
+
+  changesData(): void {
     this.loading = true;
     this.coreService.post('inventory/changes', {details: true}).subscribe({
       next: (res) => {
-        this.changes = res.changes
+        this.changes = res.changes;
         this.loading = false;
       },
-      error: ()=> {
+      error: () => {
         this.loading = false;
       }
     });
   }
 
   onChange(selected: string): void {
-    const slectedChange = this.changes.filter(change => change.name === selected);
-    this.nodes = this.prepareChangesTree(slectedChange);
+    const selectedChange = this.changes.filter(change => change.name === selected);
+    this.nodes = this.prepareChangesTree(selectedChange);
     const checkedNodes = this.collectObjects(this.nodes);
 
     if (checkedNodes.length > 0) {
       setTimeout(() => {
         this.getDependencies(checkedNodes);
-      }, 100)
+      }, 100);
     }
   }
 
@@ -123,12 +138,14 @@ export class AddChangesModalComponent{
       auditLog: auditLog.comment ? auditLog : undefined,
       store: this.changesObj
     };
+
     if (this.changesObj.name !== this.originalName && this.flag) {
       this._delete(this.originalName, obj);
     } else {
       this._submitChange(obj);
     }
   }
+
   _submitChange(obj: any) {
     this.coreService.post('inventory/changes/store', obj).subscribe({
       next: () => {
@@ -140,7 +157,7 @@ export class AddChangesModalComponent{
     });
   }
 
-  _delete(originalName,newChangeObj):void{
+  _delete(originalName, newChangeObj): void {
     const objToDelete = { changes: [{ name: originalName }] };
     this.coreService.post('inventory/changes/delete', objToDelete).subscribe({
       next: () => {
@@ -154,21 +171,16 @@ export class AddChangesModalComponent{
 
   checkBoxChanges(e: NzFormatEmitEvent): void {
     const node: any = e.node;
-
-
     this.updateChildCheckboxes(node, node.isChecked);
-
     this.updateParentCheckboxes(node);
   }
 
   updateChildCheckboxes(node: any, isChecked: boolean): void {
     node.children.forEach((child: any) => {
       child.isChecked = isChecked;
-
       if (child.children && child.children.length > 0) {
         this.updateChildCheckboxes(child, isChecked);
       }
-
       child.isHalfChecked = false;
     });
   }
@@ -176,7 +188,6 @@ export class AddChangesModalComponent{
   updateParentCheckboxes(node: any): void {
     if (node.parentNode) {
       const siblings = node.parentNode.children;
-
       const allChecked = siblings.every((sibling: any) => sibling.isChecked);
       const someChecked = siblings.some((sibling: any) => sibling.isChecked || sibling.isHalfChecked);
 
@@ -186,7 +197,6 @@ export class AddChangesModalComponent{
       this.updateParentCheckboxes(node.parentNode);
     }
   }
-
 
   prepareGroupedTree(data: any): any[] {
     const root = {
@@ -212,39 +222,8 @@ export class AddChangesModalComponent{
     };
 
     data?.forEach((item: any) => {
-      switch (item.objectType) {
-        case "WORKFLOW":
-          groupedObjects["WORKFLOW"].push(item);
-          break;
-        case "JOBRESOURCE":
-          groupedObjects["JOBRESOURCE"].push(item);
-          break;
-        case "FILEORDERSOURCE":
-          groupedObjects["FILEORDERSOURCE"].push(item);
-          break;
-        case "SCHEDULE":
-          groupedObjects["SCHEDULE"].push(item);
-          break;
-        case "NOTICEBOARD":
-          groupedObjects["NOTICEBOARD"].push(item);
-          break;
-        case "LOCK":
-          groupedObjects["LOCK"].push(item);
-          break;
-        case "JOBTEMPLATE":
-          groupedObjects["JOBTEMPLATE"].push(item);
-          break;
-        case "INCLUDESCRIPT":
-          groupedObjects["INCLUDESCRIPT"].push(item);
-          break;
-        case "WORKINGDAYSCALENDAR":
-          groupedObjects["WORKINGDAYSCALENDAR"].push(item);
-          break;
-        case "NONWORKINGDAYSCALENDAR":
-          groupedObjects["NONWORKINGDAYSCALENDAR"].push(item);
-          break;
-        default:
-          break;
+      if (groupedObjects[item.objectType]) {
+        groupedObjects[item.objectType].push(item);
       }
     });
 
@@ -275,15 +254,14 @@ export class AddChangesModalComponent{
     return [root];
   }
 
-
   prepareChangesTree(dataArray: any[]): any[] {
-
     const rootNodes = [];
 
     dataArray.forEach(data => {
       if (data.state !== "OPEN") {
         return;
       }
+
       const ownerRoot = {
         name: data.name || 'root',
         path: '/',
@@ -308,39 +286,8 @@ export class AddChangesModalComponent{
       };
 
       data?.configurations?.forEach((item: any) => {
-        switch (item.objectType) {
-          case "WORKFLOW":
-            groupedObjects["WORKFLOW"].push(item);
-            break;
-          case "JOBRESOURCE":
-            groupedObjects["JOBRESOURCE"].push(item);
-            break;
-          case "FILEORDERSOURCE":
-            groupedObjects["FILEORDERSOURCE"].push(item);
-            break;
-          case "SCHEDULE":
-            groupedObjects["SCHEDULE"].push(item);
-            break;
-          case "NOTICEBOARD":
-            groupedObjects["NOTICEBOARD"].push(item);
-            break;
-          case "LOCK":
-            groupedObjects["LOCK"].push(item);
-            break;
-          case "JOBTEMPLATE":
-            groupedObjects["JOBTEMPLATE"].push(item);
-            break;
-          case "INCLUDESCRIPT":
-            groupedObjects["INCLUDESCRIPT"].push(item);
-            break;
-          case "WORKINGDAYSCALENDAR":
-            groupedObjects["WORKINGDAYSCALENDAR"].push(item);
-            break;
-          case "NONWORKINGDAYSCALENDAR":
-            groupedObjects["NONWORKINGDAYSCALENDAR"].push(item);
-            break;
-          default:
-            break;
+        if (groupedObjects[item.objectType]) {
+          groupedObjects[item.objectType].push(item);
         }
       });
 
@@ -416,6 +363,7 @@ export class AddChangesModalComponent{
   getObjectsByType(objects: any[], type: string): any[] {
     return objects.filter(obj => obj.objectType === type);
   }
+
   toggleAffectedCollapse(nodeKey: string): void {
     this.affectedCollapsed[nodeKey] = !this.affectedCollapsed[nodeKey];
   }
@@ -447,86 +395,148 @@ export class AddChangesModalComponent{
 
     this.coreService.post('inventory/dependencies', requestBody).subscribe({
       next: (res: any) => {
-        if (res.dependencies && res.dependencies?.requestedItems.length > 0 && res.dependencies?.affectedItems.length > 0) {
-          this.updateNodeDependencies(res.dependencies);
-          this.prepareObject(res.dependencies);
-        } else {
+        if (res && (res.requestedItems?.length > 0 || Object.keys(res.objects || {}).length > 0)) {
+          this.updateNodeDependencies(res);
+          this.prepareObject(res);
         }
-
       },
       error: (err) => {
+        console.error('Error fetching dependencies:', err);
       }
     });
   }
 
   private prepareObject(dependencies: any): void {
-    if (dependencies && dependencies?.requestedItems.length > 0) {
+    const requestedItems = dependencies.requestedItems || [];
+    const objects = dependencies.objects || {};
 
-      dependencies?.requestedItems.forEach(dep => {
-        if (dep.referencedBy) {
-          const affectedTypeSet = new Set<string>();
-          dep.referencedBy.forEach(refObj => {
-            const type = refObj.objectType;
-            affectedTypeSet.add(type);
-            if (!this.affectedObjectsByType[type]) {
-              this.affectedObjectsByType[type] = [];
-              this.affectedObjectTypes.push(type);
-            }
+    if (!requestedItems.length) return;
 
+    this.affectedObjectsByType = {};
+    this.referencedObjectsByType = {};
+    this.affectedObjectTypes = [];
+    this.referencedObjectTypes = [];
 
-            this.affectedObjectsByType[type].push(refObj);
-          });
-        }
+    requestedItems.forEach((itemId: number) => {
+      const dep = objects[itemId];
+      if (!dep) return;
 
-        if (dep.references) {
-          const referencedTypeSet = new Set<string>();
-          dep.references.forEach(refObj => {
-            const type = refObj.objectType;
-            referencedTypeSet.add(type);
-            if (!this.referencedObjectsByType[type]) {
-              this.referencedObjectsByType[type] = [];
-              this.referencedObjectTypes.push(type);
-            }
+      if (dep.referencedBy || dep.enforcedReferencedBy) {
+        const allReferencedByIds = [...(dep.enforcedReferencedBy || []), ...(dep.referencedBy || [])];
 
-            this.referencedObjectsByType[type].push(refObj);
+        allReferencedByIds.forEach(refById => {
+          const refObj = objects[refById];
+          if (!refObj) return;
 
+          const type = refObj.objectType;
+          const isEnforced = (dep.enforcedReferencedBy || []).includes(refById);
 
-          });
-        }
+          if (!this.affectedObjectsByType[type]) {
+            this.affectedObjectsByType[type] = [];
+            this.affectedObjectTypes.push(type);
+          }
 
-      });
+          const exists = this.affectedObjectsByType[type].some(
+            obj => obj.id === refObj.id || (obj.name === refObj.name && obj.path === refObj.path)
+          );
+
+          if (!exists) {
+            this.affectedObjectsByType[type].push({
+              ...refObj,
+              enforce: isEnforced
+            });
+          }
+        });
+      }
+
+      if (dep.references || dep.enforcedReferences) {
+        const allReferencesIds = [...(dep.enforcedReferences || []), ...(dep.references || [])];
+
+        allReferencesIds.forEach(refId => {
+          const refObj = objects[refId];
+          if (!refObj) return;
+
+          const type = refObj.objectType;
+          const isEnforced = (dep.enforcedReferences || []).includes(refId);
+
+          if (!this.referencedObjectsByType[type]) {
+            this.referencedObjectsByType[type] = [];
+            this.referencedObjectTypes.push(type);
+          }
+
+          const exists = this.referencedObjectsByType[type].some(
+            obj => obj.id === refObj.id || (obj.name === refObj.name && obj.path === refObj.path)
+          );
+
+          if (!exists) {
+            this.referencedObjectsByType[type].push({
+              ...refObj,
+              enforce: isEnforced
+            });
+          }
+        });
+      }
+    });
+
+    setTimeout(() => {
       this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
       this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
-
-    }
+      this.cdRef.detectChanges();
+    }, 0);
   }
 
   private updateNodeDependencies(dependenciesResponse: any): void {
-    const requestedItems = dependenciesResponse.requestedItems;
+    const requestedItems = dependenciesResponse.requestedItems || [];
+    const objects = dependenciesResponse.objects || {};
 
     const referencedSet = new Set<string>();
-    requestedItems.forEach(item => {
-      item.references?.forEach(ref => {
-        referencedSet.add(`${ref.name}-${ref.objectType}`);
-      });
-      item.referencedBy?.forEach(refBy => {
-        referencedSet.add(`${refBy.name}-${refBy.objectType}`);
-      });
-    });
-
     const requestedSet = new Set<string>();
-    requestedItems.forEach(item => {
+
+    requestedItems.forEach((itemId: number) => {
+      const item = objects[itemId];
+      if (!item) return;
+
       requestedSet.add(`${item.name}-${item.objectType}`);
+
+      [...(item.references || []), ...(item.enforcedReferences || [])].forEach(refId => {
+        const refObj = objects[refId];
+        if (refObj) {
+          referencedSet.add(`${refObj.name}-${refObj.objectType}`);
+        }
+      });
+
+      [...(item.referencedBy || []), ...(item.enforcedReferencedBy || [])].forEach(refId => {
+        const refObj = objects[refId];
+        if (refObj) {
+          referencedSet.add(`${refObj.name}-${refObj.objectType}`);
+        }
+      });
     });
 
+    requestedItems.forEach((itemId: number) => {
+      const dep = objects[itemId];
+      if (!dep) return;
 
-    requestedItems.forEach(dep => {
-      this.findAndUpdateNodeWithDependencies(dep, this.nodes);
+      const transformedDep = {
+        name: dep.name,
+        type: dep.objectType,
+        path: dep.path,
+        referencedBy: [
+          ...(dep.enforcedReferencedBy || []).map(id => ({...objects[id], enforce: true})),
+          ...(dep.referencedBy || []).map(id => ({...objects[id], enforce: false}))
+        ].filter(Boolean),
+        references: [
+          ...(dep.enforcedReferences || []).map(id => ({...objects[id], enforce: true})),
+          ...(dep.references || []).map(id => ({...objects[id], enforce: false}))
+        ].filter(Boolean)
+      };
+
+      this.findAndUpdateNodeWithDependencies(transformedDep, this.nodes);
     });
 
+    this.filteredDepsCache = new WeakMap();
     this.nodes = [...this.nodes];
   }
-
 
   private findAndUpdateNodeWithDependencies(dep: any, nodes: any[]): any {
     for (let i = 0; i < nodes.length; i++) {
@@ -543,10 +553,59 @@ export class AddChangesModalComponent{
         }
       }
     }
-
     return null;
   }
 
+  private filterDependenciesByMode(dependencies: any[]): any[] {
+    if (!dependencies || dependencies.length === 0) {
+      return [];
+    }
+
+    if (this.dependencyMode === 'none') {
+      return [];
+    }
+
+    if (this.dependencyMode === 'all') {
+      return dependencies;
+    }
+
+    if (this.dependencyMode === 'enforced') {
+      return dependencies.filter(dep => dep.enforce === true);
+    }
+
+    if (this.dependencyMode === 'unenforced') {
+      return dependencies.filter(dep => dep.enforce === false);
+    }
+
+    return dependencies;
+  }
+
+  getFilteredNodeDependencies(node: any): any[] {
+    if (!node || !node.origin || !node.origin.dependencies) {
+      return [];
+    }
+
+    const dep = node.origin.dependencies;
+
+    if (this.filteredDepsCache.has(dep)) {
+      return [this.filteredDepsCache.get(dep)];
+    }
+
+    const filtered = {
+      referencedBy: this.filterDependenciesByMode(dep.referencedBy || []),
+      references: this.filterDependenciesByMode(dep.references || [])
+    };
+
+    this.filteredDepsCache.set(dep, filtered);
+    return [filtered];
+  }
+
+  onDependencyModeChange(): void {
+    this.filteredDepsCache = new WeakMap();
+    setTimeout(() => {
+      this.cdRef.detectChanges();
+    }, 0);
+  }
 
   removeFromChange(): void {
     const uncheckedNodes = this.getUncheckedNodes(this.nodes);
@@ -608,10 +667,9 @@ export class AddChangesModalComponent{
 
   expandAll(nodes): void {
     nodes.forEach(node => {
-      node.expanded = true; // Expand the node
+      node.expanded = true;
       if (node.children && node.children.length > 0) {
-
-          this.expandAll(node.children); // Recursively expand children
+        this.expandAll(node.children);
       }
     });
     this.nodes = [...nodes];
@@ -620,17 +678,16 @@ export class AddChangesModalComponent{
 
   collapseAll(nodes): void {
     nodes.forEach(node => {
-      node.expanded = false; // Expand the node
+      node.expanded = false;
       if (node.children && node.children.length > 0) {
-
-          this.expandAll(node.children); // Recursively expand children
+        this.collapseAll(node.children);
       }
     });
     this.nodes = [...nodes];
     this.cdRef.detectChanges();
   }
 
-  helpPage(key): void{
+  helpPage(key): void {
     this.modal.create({
       nzTitle: undefined,
       nzContent: HelpViewerComponent,
@@ -642,7 +699,7 @@ export class AddChangesModalComponent{
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
-    })
+    });
   }
 }
 
@@ -740,7 +797,7 @@ export class ChangesComponent {
     const modal = this.modal.create({
       nzTitle: undefined,
       nzContent: AddChangesModalComponent,
-      nzClassName: 'sm',
+      nzClassName: 'lg',
       nzData: {
         title: title ? title : 'addChange',
         display: this.preferences.auditLog,
