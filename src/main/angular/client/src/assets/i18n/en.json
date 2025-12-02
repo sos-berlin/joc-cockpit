@@ -1939,7 +1939,7 @@
     "label.normal": "Normal",
     "label.belowNormal": "Below Normal",
     "label.Low": "Low",
-    "label.both": "Both",
+    "label.all": "All",
     "label.none": "None",
     "label.enforcedOnly": "Enforced",
     "label.unenforcedOnly": "Unenforced",

@@ -161,7 +161,7 @@
             <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">
               <label nz-radio nzValue="enforced"><span translate>inventory.label.enforcedOnly</span></label>
               <label nz-radio nzValue="unenforced"><span translate>inventory.label.unenforcedOnly</span></label>
-              <label nz-radio nzValue="both"><span translate>inventory.label.both</span></label>
+              <label nz-radio nzValue="all"><span translate>inventory.label.all</span></label>
               <label nz-radio nzValue="none"><span translate>inventory.label.none</span></label>
             </nz-radio-group>
           </div>
@@ -641,6 +641,82 @@
                 }
               }
             </ng-template>
+          </div>
+        </div>
+      }
+      @if (relatedObjectTypes.length > 0 && dependencyMode !== 'none') {
+        <div class="form-group row m-t-md">
+          <div class="col-md-12">
+            <i class="cursor text-16 fa"
+               [ngClass]="{'fa-caret-right': !isRelatedCollapsed, 'fa-caret-down': isRelatedCollapsed}"
+               (click)="toggleAllRelatedCollapse()"></i>
+            <label class="m-l-sm font-bold" translate>inventory.label.filteredAffectedItems</label>
+            <i class="cursor text-16 fa fa-angle-double-down m-l-sm"
+               [nzTooltipMouseEnterDelay]="0.5"
+               [nz-tooltip]="'Expand All Related' | translate"
+               (click)="expandAllRelated()"></i>
+            <i class="cursor text-16 fa fa-angle-double-up m-l-xs"
+               [nzTooltipMouseEnterDelay]="0.5"
+               [nz-tooltip]="'Collapse All Related' | translate"
+               (click)="collapseAllRelated()"></i>
+
+            @if (isRelatedCollapsed) {
+              <div class="m-t-sm m-l-sm">
+                @for (objectType of relatedObjectTypes; track objectType) {
+                  <ng-container>
+                    @if (getFilteredRelatedObjects(objectType)?.length) {
+                      <div class="m-t-sm">
+                        <i class="cursor text-16 fa"
+                           [ngClass]="{'fa-caret-right': !relatedCollapsed[objectType], 'fa-caret-down': relatedCollapsed[objectType]}"
+                           (click)="toggleRelatedCollapse(objectType)"></i>
+                        <label class="m-l-sm">
+                          <label nz-checkbox
+                                 [(ngModel)]="selectAllRelated[objectType]"
+                                 [name]="'checkbox-related-all-' + objectType"
+                                 (ngModelChange)="toggleAllRelated(objectType, $event)">
+                            @if (!isCustomIcon(objectType)) {
+                              <span class="icon-color">
+                                <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+                              </span>
+                            }
+                            @if (isCustomIcon(objectType)) {
+                              <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
+                            }
+                            {{ getObjectTypeLabel(objectType) | translate }}
+                          </label>
+                        </label>
+
+                        @if (relatedCollapsed[objectType]) {
+                          <div class="m-t-sm m-l-md">
+                            @for (obj of getFilteredRelatedObjects(objectType); track obj.id) {
+                              <div>
+                                <label nz-checkbox
+                                       [(ngModel)]="obj.selected"
+                                       [name]="'checkbox-related-' + obj.path"
+                                       [nzDisabled]="obj.disabled"
+                                       (ngModelChange)="updateParentCheckboxRelated(objectType)">
+                                  <span [ngClass]="{
+                                      'fa-circle-o': !obj.valid,
+                                      'fa-circle dark-blue': obj.deployed || obj.released
+                                  }" class="fa fa-check-circle-o orange text-xs"></span>
+                                  {{ obj.path }}
+                                  @if (obj.enforce) {
+                                    <span class="badge badge-info m-l-xs">Enforced</span>
+                                  }
+                                  @if (obj.depth && obj.depth > 0) {
+                                    <span class="badge badge-secondary m-l-xs">Level {{ obj.depth }}</span>
+                                  }
+                                </label>
+                              </div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    }
+                  </ng-container>
+                }
+              </div>
+            }
           </div>
         </div>
       }

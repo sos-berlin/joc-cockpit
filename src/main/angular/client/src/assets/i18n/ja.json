@@ -1939,7 +1939,7 @@
     "label.normal": "中",
     "label.belowNormal": "中低",
     "label.Low": "低",
-    "label.both": "Both",
+    "label.all": "All",
     "label.none": "None",
     "label.enforcedOnly": "Enforced",
     "label.unenforcedOnly": "Unenforced",
