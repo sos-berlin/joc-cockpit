@@ -16,8 +16,8 @@ Die Anzeige ist gruppiert in einen Block für den Übertragungsvorgang und Blöc
 - **Profilname** ist der eindeutige Bezeichner eines Dateiübertragungsprofils.
 - **Operation** gibt eine der Optionen *COPY*, *MOVE*, *REMOVE*, *GETLIST* an.
 - **Workflow** gibt den Workflow an, den der Auftrag ausführt.
-  - Wenn Sie auf den Namen des Workflows klicken, gelangen Sie zur Ansicht [Workflows](/workflows).
-  - Wenn Sie auf das Bleistiftsymbol klicken, gelangen Sie zur Ansicht [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
+  - Wenn Sie auf den Namen des Workflows klicken, gelangen Sie zur Ansicht [Arbeitsabläufe](/workflows).
+  - Wenn Sie auf das Bleistiftsymbol klicken, gelangen Sie zur Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows).
 - **Auftrags-ID** ist die eindeutige Kennung, die einem Auftrag zugewiesen ist.
 - **Gesamt** gibt die Anzahl der Dateien an, die in der Übertragung enthalten sind.
 
@@ -53,7 +53,7 @@ Für *Quelle* und *Ziel* werden die folgenden Details angezeigt:
 
 ### Kontexthilfe
 
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
 - [Order History](/history-orders)
 - [Task History](/history-tasks)
 

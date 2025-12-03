@@ -3,10 +3,10 @@
 JOC Cockpit bietet die Verwaltung von [JS7 - Inventory Changes](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Changes) zu Objekten wie Arbeitsabläufen. Ein Change ist eine Sammlung von Inventarobjekten, die gemeinsamen Bereitstellungsoperationen unterliegen
 
 - für das Ausrollen auf Controller,
-- für den Rollout mit [JS7 - Inventory Export and Import](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Export+and+Import),
-- für den Rollout mit [JS7 - Git Repository Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+Git+Repository+Interface).
+- für das Ausrollen mit [JS7 - Inventory Export and Import](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Export+and+Import),
+- für das Ausrollen mit [JS7 - Git Repository Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+Git+Repository+Interface).
 
-Änderungen umfassen Inventarobjekte wie Arbeitsabläufe, Zeitpläne usw. und sie umfassen referenzierte Objekte, z.B. eine Job Ressource, die von einem Workflow referenziert wird.
+Änderungen umfassen Inventarobjekte wie Arbeitsabläufe, Zeitpläne usw. und sie umfassen referenzierte Objekte, z.B. eine Job-Ressource, die von einem Arbeitsablauf referenziert wird.
 
 - Benutzer können Inventarobjekte direkt zu einer Änderung hinzufügen.
 - Referenzierte Objekte werden automatisch mit einer Änderung verknüpft.
@@ -18,14 +18,14 @@ Das Popup-Fenster *Änderung - Eigenschaften* dient zum Festlegen der Eigenschaf
 Änderungen haben die folgenden Eigenschaften:
 
 - **Name** ist der eindeutige Name, den die Benutzer einer Änderung zuweisen.
-- **Title** erklärt den Zweck der Änderung.
+- **Titel** erklärt den Zweck der Änderung.
 - **Status** ist einer der Werte *Offen* oder *Geschlossen*. Geschlossene Änderungen werden nicht für Ausroll- oder Exportvorgänge angeboten.
 
 ## Referenzen
 
 ### Kontext-Hilfe
 
-- [Changes](/changes)
+- [Änderungen](/changes)
 
 ### Product Knowledge Base
 

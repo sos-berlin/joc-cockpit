@@ -21,7 +21,7 @@ Die Liste der Autorisiererprofile wird mit den folgenden Eigenschaften angeboten
 
 - **Kontoname** gibt das Benutzerkonto des *Approver* an.
 - **Vorname**, **Nachname** des *Approver*.
-- **E-Mail** gibt die E-Mail-Adresse des *Approver* an. Wenn diese angegeben wird, erhält der *Approver* eine Benachrichtigung über eingehende [Approval Requests](/approval-requests) per E-Mail.
+- **E-Mail** gibt die E-Mail-Adresse des *Approver* an. Wenn diese angegeben wird, erhält der *Approver* eine Benachrichtigung über eingehende [Autorisierungsanfragen](/approval-requests) per E-Mail.
 
 ## Operationen mit Autorisiererprofilen
 
@@ -34,9 +34,9 @@ Das 3-Punkte-Aktionsmenü eines Autorisiererprofils bietet die folgenden Operati
 
 ### Kontext-Hilfe
 
-- [Approval Notification Settings](/approval-notification-settings)
-- [Approval Request](/approval-request)
-- [Approval Requests](/approval-requests)
+- [Einstellungen für Autorisierungsbenachrichtigungen](/approval-notification-settings)
+- [Autorisierungsanfrage](/approval-request)
+- [Autorisierungsanfragen](/approval-requests)
 
 ### Product Knowledge Base
 

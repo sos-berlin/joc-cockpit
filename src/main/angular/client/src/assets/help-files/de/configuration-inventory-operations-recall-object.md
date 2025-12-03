@@ -1,6 +1,6 @@
 # Konfiguration - Inventar - Vorgänge - Objekt zurückrufen
 
-Durch den Rückruf von Objekten werden diese deaktiviert, z.B. für die Verwendung mit [Daily Plan](/daily-plan). Dies gilt für Objekte wie Zeitpläne und Kalender, die im Systemordner *Automation* verfügbar sind.
+Durch den Rückruf von Objekten werden diese deaktiviert, z.B. für die Verwendung mit [Tagesplan](/daily-plan). Dies gilt für Objekte wie Zeitpläne und Kalender, die im Systemordner *Automation* verfügbar sind.
 
 Die Ansicht *Konfiguration-&gt;Inventar* bietet die Möglichkeit, ein einzelnes Objekt abzurufen und Objekte aus Ordnern abzurufen, siehe [Configuration - Inventory - Operations - Recall Folder](/configuration-inventory-operations-recall-folder).
 
@@ -10,7 +10,7 @@ Wenn Sie ein einzelnes Objekt über die Operation *Aufrufen* aufrufen, die Sie �
 
 ## Aktualisieren des Tagesplans
 
-Das Aufrufen von Objekten wie Zeitplänen und Kalendern wirkt sich auf die [Daily Plan](/daily-plan) aus. 
+Das Aufrufen von Objekten wie Zeitplänen und Kalendern wirkt sich auf die [Tagesplan](/daily-plan) aus. 
 
 Bestehende Aufträge für Workflows, auf die von zugehörigen Zeitplänen verwiesen wird, werden vom Controller zurückgerufen und aus dem Tagesplan entfernt.
 
@@ -36,8 +36,8 @@ Die Benutzer steuern die konsistente Bereitstellung über die folgenden Optionen
 ### Kontext-Hilfe
 
 - [Configuration - Inventory - Operations - Recall Folder](/configuration-inventory-operations-recall-folder)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
+- [Tagesplan](/daily-plan)
 - [Dependency Matrix](/dependencies-matrix)
 
 ### Product Knowledge Base

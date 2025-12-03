@@ -10,8 +10,8 @@ Für die Historie von Aufträgen siehe [Order History](/history-orders).
 
 Im linken Bereich können Sie nach Tags aus Workflows und Aufträgen filtern, die die Ausführung des Auftrags ausgelöst haben.
 
-- **Workflow-Tags** werden in der Ansicht [Configuration - Inventory - Workflows](/configuration-inventory-workflows) zugewiesen.
-- **Auftrags-Tags** werden aus der Ansicht [Configuration - Inventory - Schedules](/configuration-inventory-schedules) zugewiesen.
+- **Workflow-Tags** werden in der Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows) zugewiesen.
+- **Auftrags-Tags** werden aus der Ansicht [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules) zugewiesen.
 
 Tags werden über die Symbole + und - ausgewählt und können über das Suchsymbol nachgeschlagen werden. Die Anzeige von Tags muss auf der Seite [Settings - JOC Cockpit](/settings-joc) aktiviert werden.
 
@@ -23,8 +23,8 @@ Die Anzeige ist auf maximal 5000 Einträge beschränkt, wenn nicht anders auf [P
 
 - **Auftragsname** zeigt den entsprechenden Auftrag an.
 - **Workflow** zeigt den Workflow an, für den der Auftrag ausgeführt wurde.
-  - Klicken Sie auf den Namen des Workflows, um zur Ansicht [Workflows](/workflows) zu gelangen.
-  - Wenn Sie auf das Bleistiftsymbol klicken, gelangen Sie zur Ansicht [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
+  - Klicken Sie auf den Namen des Workflows, um zur Ansicht [Arbeitsabläufe](/workflows) zu gelangen.
+  - Wenn Sie auf das Bleistiftsymbol klicken, gelangen Sie zur Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows).
 - **Label** zeigt die Position des Auftrags im Workflow an. Benutzer weisen den Jobs, die angezeigt werden sollen, *Etiketten* zu. Wenn derselbe Auftrag mehr als einmal in einem Workflow vorkommt, wird er unter verschiedenen *Labeln* angezeigt.
 - der **History Status** zeigt das Ergebnis des Auftrags an.
   - Wenn Aufträge abgeschlossen werden, lautet der *History Status* entweder *Erfolgreich* oder *Fehlgeschlagen*.
@@ -64,8 +64,8 @@ Sie können die oben im Fenster verfügbaren Filter anwenden, um die Anzeige von
 ### Kontexthilfe
 
 - [Cleanup Service](/service-cleanup)
-- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
 - [Order History](/history-orders)
 - [Profile - Preferences](/profile-preferences)
 - [Settings - JOC Cockpit](/settings-joc)

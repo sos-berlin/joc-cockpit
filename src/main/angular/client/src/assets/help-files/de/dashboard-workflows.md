@@ -17,6 +17,6 @@ Wenn Sie auf die angegebene Anzahl von Workflows klicken, gelangen Sie zur Ansic
 
 ## Referenzen
 
-- [Workflows](/workflows)
+- [Arbeitsabläufe](/workflows)
 - [JS7 - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows)
 

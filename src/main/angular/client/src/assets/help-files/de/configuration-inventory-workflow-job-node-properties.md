@@ -21,7 +21,7 @@ Bei den Namen von Knotenvariablen wird zwischen Groß- und Kleinschreibung unter
 
 ### Kontexthilfe
 
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
   - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflows-job-options)
   - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflows-job-properties)
   - [Configuration - Inventory - Workflows - Job Notifications](/configuration-inventory-workflows-job-notifications)

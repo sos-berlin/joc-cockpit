@@ -16,7 +16,7 @@ Standardmäßig wird der aktuell ausgewählte Controller angezeigt.
 
 ## Aktualisieren des Tagesplans
 
-Der Widerruf von Objekten wie Workflows und Job-Ressourcen wirkt sich auf die [Daily Plan](/daily-plan) aus. 
+Der Widerruf von Objekten wie Workflows und Job-Ressourcen wirkt sich auf die [Tagesplan](/daily-plan) aus. 
 
 Bestehende Aufträge für entsprechende Workflows werden vom Controller zurückgerufen und aus dem Tagesplan entfernt.
 
@@ -46,8 +46,8 @@ Benutzer steuern den konsistenten Widerruf von Objekten über die folgenden Opti
 ### Kontext-Hilfe
 
 - [Configuration - Inventory - Operations - Revoke Object](/configuration-inventory-operations-revoke-object)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
+- [Tagesplan](/daily-plan)
 - [Dependency Matrix](/dependencies-matrix)
 
 ### Product Knowledge Base

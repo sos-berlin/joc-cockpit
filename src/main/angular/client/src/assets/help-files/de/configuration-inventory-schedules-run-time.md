@@ -1,6 +1,6 @@
 # Konfiguration - Inventar - Zeitpläne - Laufzeit
 
-Das *Schedule Panel* bietet die Möglichkeit, Regeln für die Erstellung von Aufträgen auf [Daily Plan](/daily-plan) festzulegen.
+Das *Schedule Panel* bietet die Möglichkeit, Regeln für die Erstellung von Aufträgen auf [Tagesplan](/daily-plan) festzulegen.
 
 Über die Schaltfläche *Laufzeit* können Sie in einem Popup-Fenster Startzeiten für Aufträge festlegen: Zunächst wird ein Kalender zugewiesen, dann werden Zeiträume festgelegt und optional gelten Einschränkungen.
 
@@ -54,7 +54,7 @@ Als nächstes sollten Sie einen oder mehrere Zeiträume für Startzeiten angeben
 *Einschränkungen* werden verwendet, um die Tage einzuschränken, für die Aufträge erstellt werden sollen:
 
 - Zugewiesene Kalender mit Arbeitstagen und Kalender mit Nicht-Arbeitstagen werden zu den Tagen zusammengefasst, die sich für die Workflow-Ausführung von Aufträgen ergeben.
-- Einschränkungen gelten weiter und halten Regeln ähnlich wie [Configuration - Inventory - Calendars](/configuration-inventory-calendars):
+- Einschränkungen gelten weiter und halten Regeln ähnlich wie [Konfiguration - Inventar - Kalender](/configuration-inventory-calendars):
   - **Wochentage** geben den Wochentag an.
   - **Spezifische Wochentage** geben relative Wochentage an, wie z.B. den ersten oder letzten Montag eines Monats.
   - **Bestimmte Tage** geben die Tage des Jahres an.
@@ -106,12 +106,12 @@ Benutzer sollten die Auswirkungen von zyklischen Aufträgen berücksichtigen: Si
 
 ### Kontexthilfe
 
-- [Configuration - Inventory - Calendars](/configuration-inventory-calendars)
-- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
+- [Konfiguration - Inventar - Kalender](/configuration-inventory-calendars)
+- [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
+- [Tagesplan](/daily-plan)
 - [Daily Plan Service](/service-daily-plan)
-- [Object Naming Rules](/object-naming-rules)
+- [Regeln zur Benennung von Objekten](/object-naming-rules)
 - [Order History](/history-orders)
 - [Profile - Preferences](/profile-preferences)
 - [Settings - Daily Plan](/settings-daily-plan)

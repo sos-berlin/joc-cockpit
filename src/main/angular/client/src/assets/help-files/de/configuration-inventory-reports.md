@@ -1,25 +1,25 @@
-# Konfiguration - Inventar - Berichte
+# Konfiguration - Inventar - Berichtsvorlagen
 
-Im *Berichts-Panel* können Sie Berichte über die Ausführung von Workflows und Aufträgen erstellen:
+Im *Berichtsvorlage* Panel können Sie Vorlagen für Berichte über die Ausführung von Arbeitsabläufen und Aufträgen erstellen:
 
-- Berichtskonfigurationen werden über das Inventar verwaltet, das in der Ansicht *Konfiguration* des JOC-Cockpits verfügbar ist. Sie umfassen die Angabe von:
-  - **Berichtsvorlage**, die den Berichtstyp angibt, z.B. die Top 10 der fehlgeschlagenen Workflows, die Top 100 der fehlgeschlagenen Jobs usw. Die vollständige Liste finden Sie unter [Report Templates](/report-templates).
+- Berichtsvorlagen werden über das Inventar verwaltet, das in der Ansicht *Konfiguration* des JOC Cockpit verfügbar ist. Sie umfassen die Angabe von:
+  - **Berichtsmuster**, das den Berichtstyp angibt, z.B. die Top 10 der fehlgeschlagenen Arbeitsabläufe, die Top 100 der fehlgeschlagenen Jobs usw. Die vollständige Liste finden Sie unter [Berichtsmuster](/report-templates).
   - **Berichtszeitraum** ist ein Datumsbereich, für den Elemente gemeldet werden. Datumsbereiche können absolut oder relativ sein, z.B. letzte 2 Monate, letztes Quartal, letztes Jahr.
   - die **Berichtsfrequenz** unterteilt den *Berichtszeitraum* in gleiche Zeiteinheiten, z.B. pro Woche oder Monat.
 - Berichtsläufe und die Visualisierung von Berichten sind in der Ansicht *Berichte* von JOC Cockpit verfügbar.
 
 Berichte werden über die folgenden Panels verwaltet:
 
-- Die [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) auf der linken Seite des Fensters ermöglicht die Navigation durch die Ordner, in denen sich die Reports befinden. Außerdem bietet das Panel die Möglichkeit, Reports zu bearbeiten.
-- Das *Berichtspanel* auf der rechten Seite des Fensters enthält Details zur Berichtskonfiguration.
+- Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters ermöglicht die Navigation durch die Ordner, in denen sich die Berichtsvorlagen befinden. Außerdem bietet das Panel die Möglichkeit, Berichtsvorlagen zu bearbeiten.
+- Das *Berichtsvorlage* Panel auf der rechten Seite des Fensters enthält Details zur Berichtskonfiguration.
 
-*Berichts-Panel
+## Berichtsvorlage Panel
 
-Für einen Bericht sind die folgenden Eingaben möglich:
+Für eine Berichtsvorlage sind die folgenden Eingaben möglich:
 
-- **Name** ist der eindeutige Bezeichner eines Berichts, siehe [Object Naming Rules](/object-naming-rules).
+- **Name** ist der eindeutige Bezeichner eines Berichts, siehe [Regeln zur Benennung von Objekten](/object-naming-rules).
 - **Titel** erklärt den Zweck des Berichts. 
-- **Berichtsvorlage** gibt die verwendete [Report Template](/report-templates) an.
+- **Berichtsmuster** gibt das verwendete [Berichtsmuster](/report-templates) an.
 - **Berichtszeitraum** gibt den Datumsbereich an, der einer der folgenden ist:
   - **Von .. bis**
     - *Monat von*, *Monat bis* gibt die Anzahl der vergangenen Monate an, mit denen der *Berichtszeitraum* beginnt und mit denen er endet, zum Beispiel von *1m* bis *1m* für den letzten Monat.
@@ -39,26 +39,26 @@ Für einen Bericht sind die folgenden Eingaben möglich:
   - *alle 6 Monate*
   - *jährlich*
 
-## Vorgänge bei Berichten
+## Operationen für Berichte
 
-Für allgemeine Operationen siehe [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
+Für allgemeine Operationen siehe [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation).
 
-Operationen mit Berichten sind in den folgenden Ansichten verfügbar:
+Operationen für Berichte sind in den folgenden Ansichten verfügbar:
 
-- Berichte werden in der Ansicht [Report - Creation](/report-creation) erstellt.
-- Die Ausführung von Berichten ist über die Ansicht [Report - Run History](/report-run-history) möglich.
-- Berichte werden in der Ansicht [Reports](/reports) visualisiert.
+- Berichte werden in der Ansicht [Berichtsgenerierung](/report-creation) erstellt.
+- Die Ausführung von Berichten ist über die Ansicht [Berichte - Historie Berichtsläufe](/report-run-history) möglich.
+- Berichte werden in der Ansicht [Berichte](/reports) visualisiert.
 
 ## Referenzen
 
 ### Kontexthilfe
 
-- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
-- [Object Naming Rules](/object-naming-rules)
-- [Reports](/reports)
-- [Report - Creation](/report-creation)
-- [Report - Run History](/report-run-history)
-- [Report Templates](/report-templates)
+- [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
+- [Regeln zur Benennung von Objekten](/object-naming-rules)
+- [Berichte](/reports)
+- [Berichtsgenerierung](/report-creation)
+- [Berichte - Historie Berichtsläufe](/report-run-history)
+- [Berichtsmuster](/report-templates)
 
 ### Product Knowledge Base
 

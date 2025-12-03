@@ -1,6 +1,6 @@
 # Konfiguration - Inventar - Vorgänge - Objekt freigeben
 
-Durch die Freigabe von Objekten werden diese aktiviert, z.B. für die Verwendung mit dem [Daily Plan](/daily-plan). Dies gilt für Objekte wie Zeitpläne und Kalender, die im Systemordner *Automation* verfügbar sind.
+Durch die Freigabe von Objekten werden diese aktiviert, z.B. für die Verwendung mit dem [Tagesplan](/daily-plan). Dies gilt für Objekte wie Zeitpläne und Kalender, die im Systemordner *Automation* verfügbar sind.
 
 Die Ansicht *Konfiguration-&gt;Inventar* bietet die Freigabe eines einzelnen Objekts und die Freigabe von Objekten aus Ordnern, siehe [Configuration - Inventory - Operations - Release Folder](/configuration-inventory-operations-release-folder).
 
@@ -10,7 +10,7 @@ Wenn Sie ein einzelnes Objekt über die entsprechende Schaltfläche *Freigeben* 
 
 ## Aktualisieren des Tagesplans
 
-Das Freigeben von Objekten wie Zeitplänen und Kalendern wirkt sich auf die [Daily Plan](/daily-plan) aus. Häufig soll die aktualisierte Version eines Objekts für Aufträge im Tagesplan verwendet werden. Die Benutzer steuern das Verhalten über die folgenden Optionen:
+Das Freigeben von Objekten wie Zeitplänen und Kalendern wirkt sich auf die [Tagesplan](/daily-plan) aus. Häufig soll die aktualisierte Version eines Objekts für Aufträge im Tagesplan verwendet werden. Die Benutzer steuern das Verhalten über die folgenden Optionen:
 
 - **Tagesplan aktualisieren**
   - **Jetzt** legt die Aktualisierung des Tagesplans für Aufträge fest, die für einen Zeitpunkt ab jetzt geplant sind.
@@ -40,8 +40,8 @@ Die Benutzer steuern die konsistente Bereitstellung über die folgenden Optionen
 ### Kontext-Hilfe
 
 - [Configuration - Inventory - Operations - Release Folder](/configuration-inventory-operations-release-folder)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
+- [Tagesplan](/daily-plan)
 - [Dependency Matrix](/dependencies-matrix)
 
 ### Product Knowledge Base

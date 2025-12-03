@@ -2,7 +2,7 @@
 
 Inventarobjekte können umbenannt oder verlagert werden. Dies gilt für Objekte, Ordner oder beides. Zum Umbenennen von Objekten siehe [Configuration - Inventory - Operations - Rename Object](/configuration-inventory-operations-rename-object). 
 
-Für das Umbenennen von Ordnern gilt [Object Naming Rules](/object-naming-rules).
+Für das Umbenennen von Ordnern gilt [Regeln zur Benennung von Objekten](/object-naming-rules).
 
 Die Operation *Umbenennen* ist über das Bedienfeld *Navigation* verfügbar und wird für Objekte und Ordner über das zugehörige 3-Punkte-Aktionsmenü angeboten.
 
@@ -55,10 +55,10 @@ Bei der Umbenennung von Objekten wird die Konsistenz berücksichtigt und referen
 ### Kontext-Hilfe
 
 - [Configuration - Inventory - Operations - Rename Object](/configuration-inventory-operations-rename-object)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
+- [Tagesplan](/daily-plan)
 - [Dependency Matrix](/dependencies-matrix)
-- [Object Naming Rules](/object-naming-rules)
+- [Regeln zur Benennung von Objekten](/object-naming-rules)
 
 ### Product Knowledge Base
 

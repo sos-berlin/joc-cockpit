@@ -10,8 +10,8 @@ Für die Historie von Aufgaben siehe [Task History](/history-tasks).
 
 Der linke Bereich ermöglicht die Filterung nach Tags aus Workflows und Aufträgen.
 
-- **Workflow-Tags** werden in der Ansicht [Configuration - Inventory - Workflows](/configuration-inventory-workflows) zugewiesen.
-- **Auftrags-Tags** werden aus der Ansicht [Configuration - Inventory - Schedules](/configuration-inventory-schedules) zugewiesen.
+- **Workflow-Tags** werden in der Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows) zugewiesen.
+- **Auftrags-Tags** werden aus der Ansicht [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules) zugewiesen.
 
 Tags werden über die Symbole + und - ausgewählt und können über das Symbol Schnellsuche nachgeschlagen werden. Die Anzeige von Tags muss auf der Seite [Settings - JOC Cockpit](/settings-joc) aktiviert werden.
 
@@ -23,8 +23,8 @@ Die Anzeige ist auf maximal 5000 Einträge beschränkt, wenn nicht anders auf [P
 
 - die **Auftrags-ID** ist die eindeutige Kennung, die einem Auftrag zugeordnet ist. Wenn Sie auf das Pfeil-nach-unten-Symbol klicken, werden die Auftragsvariablen und die von dem Auftrag übermittelten Aufträge angezeigt. 
 - **Workflow** gibt den Workflow an, den die Bestellung durchlaufen hat.
-  - Wenn Sie auf den Namen des Workflows klicken, gelangen Sie zur Ansicht [Workflows](/workflows).
-  - Wenn Sie auf das Bleistiftsymbol klicken, gelangen Sie zur Ansicht [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
+  - Wenn Sie auf den Namen des Workflows klicken, gelangen Sie zur Ansicht [Arbeitsabläufe](/workflows).
+  - Wenn Sie auf das Bleistiftsymbol klicken, gelangen Sie zur Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows).
 - **Etikett** zeigt die letzte Position einer Order im Workflow an. Benutzer können den Workflow-Anweisungen Etiketten zuweisen, die dann angezeigt werden, andernfalls wird die technische Position angezeigt.
 - **Historienstatus** zeigt den *Historienstatus* an, d.h. das letzte Ergebnis im Leben der Bestellung.
   - Wenn Aufträge abgeschlossen werden, lautet der *History Status* *Erfolgreich* oder *Fehlgeschlagen*.
@@ -66,14 +66,14 @@ Benutzer können die oben im Fenster verfügbaren Filter anwenden, um die Anzeig
 ### Kontexthilfe
 
 - [Cleanup Service](/service-cleanup)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
+- [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules)
 - [Order Log View](/order-log)
 - [Order States](/order-states)
 - [Profile - Preferences](/profile-preferences)
 - [Settings - JOC Cockpit](/settings-joc)
 - [Task History](/history-tasks)
-- [Workflows](/workflows)
+- [Arbeitsabläufe](/workflows)
 
 ### Product Knowledge Base
 

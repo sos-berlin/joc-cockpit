@@ -9,7 +9,7 @@ The *Job Template* panel offers specifying centrally managed templates for Jobs 
 Job Templates are managed from the following panels:
 
 - The [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) on the left side of the window offers navigation by folders holding Job Templates. In addition, the panel offers operations on Job Templates.
-- The *Job Template Panel* on the right side of the window holds details for Schedule configuration.
+- The *Job Template Panel* on the right side of the window holds details for Job Template configuration.
 
 ## Job Template Panel
 

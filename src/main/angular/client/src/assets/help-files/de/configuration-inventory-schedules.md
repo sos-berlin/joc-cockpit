@@ -1,27 +1,27 @@
 # Konfiguration - Inventar - Zeitpläne
 
-Das *Schedule Panel* bietet die Möglichkeit, Regeln für die Erstellung von Aufträgen aus dem [Daily Plan](/daily-plan) festzulegen. Details finden Sie unter [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules).
+Das *Schedule Panel* bietet die Möglichkeit, Regeln für die Erstellung von Aufträgen aus dem [Tagesplan](/daily-plan) festzulegen. Details finden Sie unter [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules).
 
 - Zeitpläne legen den Zeitpunkt fest, zu dem die Ausführung von Aufträgen für Workflows beginnt. Ihnen werden ein oder mehrere Workflows und optional Variablen zugewiesen, die von Jobs in den jeweiligen Workflows verwendet werden.
-  - **Startdaten** werden von [Configuration - Inventory - Calendars](/configuration-inventory-calendars) angegeben und begrenzen die Tage für die Ausführung der Workflows.
+  - **Startdaten** werden von [Konfiguration - Inventar - Kalender](/configuration-inventory-calendars) angegeben und begrenzen die Tage für die Ausführung der Workflows.
   - **Startzeiten** werden von Zeitplänen angegeben, die eine oder mehrere Zeiten an einem Tag angeben. Sie können die Tage für die Ausführung von Workflows weiter einschränken.
 - Zeitpläne erstellen Aufträge auf täglicher Basis
   - für die einmalige Ausführung von Workflows. Dazu gehören Workflows, die zu einer Reihe von Zeitpunkten pro Tag starten.
   - für die zyklische Ausführung von Workflows. Damit wird die wiederholte Ausführung von Workflows in konfigurierbaren Intervallen festgelegt.
-- Zeitpläne werden von [Daily Plan](/daily-plan) angewandt, um Aufträge für die resultierenden Daten und Zeiten zu erstellen.
+- Zeitpläne werden von [Tagesplan](/daily-plan) angewandt, um Aufträge für die resultierenden Daten und Zeiten zu erstellen.
   - Zeitpläne können manuell in der Ansicht Tagesplan angewendet werden.
   - Zeitpläne werden automatisch von der [Daily Plan Service](/service-daily-plan) angewendet.
 
 Zeitpläne werden über die folgenden Fenster verwaltet:
 
-- Die [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner mit den Zeitplänen. Außerdem bietet das Panel die Möglichkeit, Operationen mit den Zeitplänen durchzuführen.
+- Die [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner mit den Zeitplänen. Außerdem bietet das Panel die Möglichkeit, Operationen mit den Zeitplänen durchzuführen.
 - Das *Schedule Panel* auf der rechten Seite des Fensters enthält Details zur Zeitplankonfiguration.
 
 *Schedule Panel
 
 Für einen Zeitplan sind die folgenden Eingaben möglich:
 
-- **Name** ist der eindeutige Bezeichner eines Zeitplans, siehe [Object Naming Rules](/object-naming-rules).
+- **Name** ist der eindeutige Bezeichner eines Zeitplans, siehe [Regeln zur Benennung von Objekten](/object-naming-rules).
 - **Titel** enthält eine optionale Erklärung zum Zweck des Zeitplans.
 - **Workflow-Namen** enthält die Liste der Workflows, die gestartet werden sollen.
 - **Automatisch planen** gibt an, dass der Zeitplan vom [Daily Plan Service](/service-daily-plan) berücksichtigt wird.
@@ -67,23 +67,23 @@ Die Zuweisung von Werten zu Variablen umfasst die Angabe von Strings und Zahlen.
 
 ## Laufzeit
 
-Über die Schaltfläche *Laufzeit* können Sie in einem Popup-Fenster die Startzeiten für Aufträge festlegen. Einzelheiten finden Sie unter [Configuration - Inventory - Schedules - Run-time](/configuration-inventory-schedules-run-time).
+Über die Schaltfläche *Laufzeit* können Sie in einem Popup-Fenster die Startzeiten für Aufträge festlegen. Einzelheiten finden Sie unter [Konfiguration - Inventar - Zeitpläne - Startzeitregel](/configuration-inventory-schedules-run-time).
 
 ## Operationen auf Zeitplänen
 
-Für verfügbare Operationen siehe [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
+Für verfügbare Operationen siehe [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation).
 
 ## Referenzen
 
 ### Kontext-Hilfe
 
-- [Configuration - Inventory - Calendars](/configuration-inventory-calendars)
-- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
-- [Configuration - Inventory - Schedules - Run-time](/configuration-inventory-schedules-run-time)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
+- [Konfiguration - Inventar - Kalender](/configuration-inventory-calendars)
+- [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
+- [Konfiguration - Inventar - Zeitpläne - Startzeitregel](/configuration-inventory-schedules-run-time)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
+- [Tagesplan](/daily-plan)
 - [Daily Plan Service](/service-daily-plan)
-- [Object Naming Rules](/object-naming-rules)
+- [Regeln zur Benennung von Objekten](/object-naming-rules)
 - [Order History](/history-orders)
 - [Profile - Preferences](/profile-preferences)
 - [Settings - Daily Plan](/settings-daily-plan)

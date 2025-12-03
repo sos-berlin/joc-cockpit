@@ -23,18 +23,18 @@ Autorisierungsanfragen werden hinzugefügt, wenn ein Benutzer versucht, eine aut
 Wenn die *Requestor* Rolle z.B. die Berechtigungen für Auträge benennt und der Benutzer versucht, einen Auftrag einem Arbeitsablauf hinzuzufügen, dann wird ein Popup-Fenster angezeigt, in dem die folgenden Informationen abgefragt werden:
 
 - **Titel** ist der Indikator für die Autorisierungsanfrage. Der Benutzer kann den *Titel* frei bestimmen.
-- **Autorisierer** wird aus der Liste [Approver Profiles](/approval-profiles) ausgewählt. Der angegebene *Approver* wird bevorzugt benachrichtigt. Allerdings kann jeder *Approver* die Autorisierungsanfrage genehmigen oder ablehnen.
+- **Autorisierer** wird aus der Liste [Autorisiererprofile](/approval-profiles) ausgewählt. Der angegebene *Approver* wird bevorzugt benachrichtigt. Allerdings kann jeder *Approver* die Autorisierungsanfrage genehmigen oder ablehnen.
 - **Begründung** liefert dem *Approver* eine Erklärung für die Notwendigkeit der Intervention.
 
-Wenn die Autorisierungsanfrage eingereicht ist, wird sie in der Ansicht [Approval Requests](/approval-requests) sichtbar. Der zugehörige *Approver* erhält eine Benachrichtigung per E-Mail.
+Wenn die Autorisierungsanfrage eingereicht ist, wird sie in der Ansicht [Autorisierungsanfragen](/approval-requests) sichtbar. Der zugehörige *Approver* erhält eine Benachrichtigung per E-Mail.
 
 ## Referenzen
 
 ### Kontexthilfe
 
-- [Approval Notification Settings](/approval-notification-settings)
-- [Approver Profiles](/approval-profiles)
-- [Approval Requests](/approval-requests)
+- [Einstellungen für Autorisierungsbenachrichtigungen](/approval-notification-settings)
+- [Autorisiererprofile](/approval-profiles)
+- [Autorisierungsanfragen](/approval-requests)
 
 ### Product Knowledge Base
 

@@ -8,10 +8,10 @@ Das Feld *Inventar* liefert Informationen über die Anzahl der verwendeten Objek
 
 Die Inventarübersicht zählt die bereitgestellten und freigegebenen Objekte. Entwürfe von Objekten, die noch nicht bereitgestellt oder freigegeben wurden, werden nicht gezählt.
 
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
 - [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-job-properties)
-- [Configuration - Inventory - Resource Locks](/configuration-inventory-resource-locks)
-- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
+- [Konfiguration - Inventar - Ressourcen-Sperren](/configuration-inventory-resource-locks)
+- [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules)
 
 ## Referenzen
 

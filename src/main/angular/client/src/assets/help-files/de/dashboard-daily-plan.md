@@ -29,7 +29,7 @@ Wenn Sie auf die angegebene Anzahl von Aufträgen klicken, gelangen Sie zur Ansi
 
 ## Referenzen
 
-- [Daily Plan](/daily-plan)
+- [Tagesplan](/daily-plan)
 - [Dashboard - Orders](/dashboard-orders)
 - [Order History](/history-orders)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)

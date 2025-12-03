@@ -15,7 +15,7 @@ Zu den grundlegenden Funktionen des Autorisierungsprozesses gehören:
 
 ## Einstellungen für Autorsierungsbenachrichtigungen
 
-Die Benachrichtigungseinstellungen umfassen Eigenschaften für den Versand von E-Mails an *Autorsierungsempfänger* bei eingehenden [Approval Requests](/approval-requests):
+Die Benachrichtigungseinstellungen umfassen Eigenschaften für den Versand von E-Mails an *Autorsierungsempfänger* bei eingehenden [Autorisierungsanfragen](/approval-requests):
 
 - **Job Resource** enthält Einstellungen für die Verbindung mit dem Mailserver. Einzelheiten finden Sie unter [JS7 - eMailDefault Job Resource](https://kb.sos-berlin.com/display/JS7/JS7+-+eMailDefault+Job+Resource).
 - **Inhaltstyp**, **Charset**, **Encoding** sind für jedes System, das E-Mails versendet, gleich.
@@ -42,10 +42,10 @@ Die Benachrichtigungseinstellungen umfassen Eigenschaften für den Versand von E
 
 ### Kontexthilfe
 
-- [Approval Notification Settings](/approval-notification-settings)
-- [Approval Request](/approval-request)
-- [Approval Requests](/approval-requests)
-- [Approver Profiles](/approval-profiles)
+- [Einstellungen für Autorisierungsbenachrichtigungen](/approval-notification-settings)
+- [Autorisierungsanfrage](/approval-request)
+- [Autorisierungsanfragen](/approval-requests)
+- [Autorisiererprofile](/approval-profiles)
 
 ### Product Knowledge Base
 

@@ -16,7 +16,7 @@ Wenn Sie Objekte entfernen, werden sie aus allen Controllern entfernt, in denen 
 
 ## Aktualisieren des Tagesplans
 
-Das Entfernen von Objekten wie Workflows und Zeitplänen wirkt sich auf die [Daily Plan](/daily-plan) aus. 
+Das Entfernen von Objekten wie Workflows und Zeitplänen wirkt sich auf die [Tagesplan](/daily-plan) aus. 
 
 Bestehende Aufträge für zugehörige Workflows werden aus Controllern gelöscht und aus dem Tagesplan entfernt.
 
@@ -42,8 +42,8 @@ Die Benutzer steuern die konsistente Entfernung von Objekten über die folgenden
 ### Kontext-Hilfe
 
 - [Configuration - Inventory - Operations - Remove Object](/configuration-inventory-operations-remove-object)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
+- [Tagesplan](/daily-plan)
 - [Dependency Matrix](/dependencies-matrix)
 
 ### Product Knowledge Base

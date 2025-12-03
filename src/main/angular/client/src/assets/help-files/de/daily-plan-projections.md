@@ -55,7 +55,7 @@ Projektionen können in eine .xlsx-Datei exportiert werden, wobei das Datum des 
 
 ## Referenzen
 
-- [Daily Plan](/daily-plan)
+- [Tagesplan](/daily-plan)
 - [Settings - Daily Plan](/settings-daily-plan)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)
 

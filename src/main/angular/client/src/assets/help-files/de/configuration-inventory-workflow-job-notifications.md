@@ -32,7 +32,7 @@ Spezifische Benachrichtigungen pro Job haben Vorrang vor den globalen Benachrich
 
 ### Kontexthilfe
 
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
   - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflows-job-options)
   - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflows-job-properties)
   - [Configuration - Inventory - Workflows - Job Node Properties](/configuration-inventory-workflows-job-node-properties)

@@ -10,20 +10,20 @@ Shell Jobs können für eine Reihe von Skriptsprachen wie Bash, Python, PowerShe
 
 Script Includes werden über die folgenden Bedienfelder verwaltet:
 
-- Die [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner, die Script Includes enthalten. Darüber hinaus bietet das Panel Operationen mit Script Includes.
+- Die [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner, die Script Includes enthalten. Darüber hinaus bietet das Panel Operationen mit Script Includes.
 - Das *Script Include Panel* auf der rechten Seite des Fensters enthält Details zur Konfiguration von Script Includes.
 
 *Skript Include Panel
 
 Für ein Script Include sind die folgenden Eingaben möglich:
 
-- **Name** ist der eindeutige Bezeichner eines Script Include, siehe [Object Naming Rules](/object-naming-rules).
+- **Name** ist der eindeutige Bezeichner eines Script Include, siehe [Regeln zur Benennung von Objekten](/object-naming-rules).
 - **Titel** enthält eine optionale Erklärung des Zwecks des Script Include.
 - **Skript Include** enthält den Codeschnipsel.
 
 ## Operationen mit Script Includes
 
-Für verfügbare Operationen siehe [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
+Für verfügbare Operationen siehe [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation).
 
 ## Verwendung mit Jobs
 
@@ -79,9 +79,9 @@ Das Skript Include schreibt den Inhalt des *Job-Skripts* in eine temporäre Date
 
 ### Kontexthilfe
 
-- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
-- [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
-- [Object Naming Rules](/object-naming-rules)
+- [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
+- [Konfiguration - Inventar - Arbeitsablauf - Job-Optionen](/configuration-inventory-workflow-job-options)
+- [Regeln zur Benennung von Objekten](/object-naming-rules)
 
 ### Product Knowledge Base
 

@@ -183,9 +183,9 @@ The following operations are offered for individual inventory objects:
   - [File Order Sources](/configuration-inventory-file-order-sources)
   - [Job Resources](/configuration-inventory-job-resources)
   - [Notice Boards](/configuration-inventory-notice-boards)
-    - [Resouroes - Notice Boards](/resources-notice-boards)
+    - [Resources - Notice Boards](/resources-notice-boards)
   - [Resource Locks](/configuration-inventory-resource-locks)
-    - [Resouroes - Resource Locks](/resources-resource-locks)
+    - [Resources - Resource Locks](/resources-resource-locks)
 - Automation Objects
   - [Script Includes](/configuration-inventory-script-includes)
   - [Schedules](/configuration-inventory-schedules)

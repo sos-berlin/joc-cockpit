@@ -28,14 +28,14 @@ Wenn Sie auf das Pfeil-nach-unten-Symbol neben dem *Einsatzdatum* klicken, werde
 - **Meldung** zeigt eine Fehlermeldung im Falle einer fehlgeschlagenen Bereitstellung an.
 - **Objekttyp** gibt den Typ des Inventarobjekts an, z.B. *Workflow*, *Job Resource* usw.
 - **Pfad** gibt den Inventarordner und den Objektnamen an. Für Workflow-Objekte
-  - klicken Sie auf den Namen des Workflows, um die Ansicht [Workflows](/workflows) aufzurufen,
-  - klicken Sie auf das Bleistiftsymbol, um zur Ansicht [Configuration - Inventory - Workflows](/configuration-inventory-workflows) zu gelangen.
+  - klicken Sie auf den Namen des Workflows, um die Ansicht [Arbeitsabläufe](/workflows) aufzurufen,
+  - klicken Sie auf das Bleistiftsymbol, um zur Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows) zu gelangen.
 - **Operation** ist eine von *Speichern* oder *Löschen*. Bei beiden Operationen werden die Objekte aktualisiert.
 - **Datum** gibt den Zeitpunkt der Bereitstellungsoperation an.
 
 ## Referenzen
 
 - [Configuration - Inventory- Workflows](/configuration-inventory-workflows)
-- [Workflows](/workflows)
+- [Arbeitsabläufe](/workflows)
 - [JS7 - Deployment of Scheduling Objects](https://kb.sos-berlin.com/display/JS7/JS7+-+Deployment+of+Scheduling+Objects)
 

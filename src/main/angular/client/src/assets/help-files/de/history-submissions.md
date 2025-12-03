@@ -1,6 +1,6 @@
 # Einreichungshistorie
 
-Die *Historie der Einreichungen* verfolgt die von [Daily Plan](/daily-plan) eingereichten Bestellungen.
+Die *Historie der Einreichungen* verfolgt die von [Tagesplan](/daily-plan) eingereichten Bestellungen.
 
 Aufträge werden durch den Tagesplan in zwei Schritten erstellt: zuerst werden sie *geplant*, dann werden sie an den Controller und die Agenten *übermittelt*. Die Übermittlung beinhaltet, dass die Aufträge selbstständig mit den Agenten gestartet werden.
 
@@ -45,8 +45,8 @@ Wenn Sie auf das Pfeil-nach-unten-Symbol des *Einreichungsdatums* klicken, werde
 - **Meldung** kann eine Fehlermeldung anzeigen, wenn die Einreichung fehlgeschlagen ist.
 - **Auftrags-ID** ist die eindeutige Kennung, die einem Auftrag zugeordnet ist.
 - **Workflow** gibt den Workflow an, den die Bestellung durchläuft.
-  - Wenn Sie auf den Namen des Workflows klicken, gelangen Sie zur Ansicht [Workflows](/workflows).
-  - Wenn Sie auf das Bleistiftsymbol klicken, gelangen Sie zur Ansicht [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
+  - Wenn Sie auf den Namen des Workflows klicken, gelangen Sie zur Ansicht [Arbeitsabläufe](/workflows).
+  - Wenn Sie auf das Bleistiftsymbol klicken, gelangen Sie zur Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows).
 - **Geplant für** gibt das Datum und die Uhrzeit an, zu der die Bestellung voraussichtlich beginnen wird.
 - **Status** ist einer der Werte *Vorgelegt* oder *Nicht vorgelegt*.
   - *Übermittelt* zeigt an, dass der Auftrag bei einem Agenten verfügbar ist.
@@ -65,11 +65,11 @@ Benutzer können Filter anwenden, die oben im Fenster verfügbar sind, um die An
 ### Kontexthilfe
 
 - [Cleanup Service](/service-cleanup)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
+- [Tagesplan](/daily-plan)
 - [Profile - Preferences](/profile-preferences)
 - [Settings - Daily Plan](/settings-daily-plan)
-- [Workflows](/workflows)
+- [Arbeitsabläufe](/workflows)
 
 ### Product Knowledge Base
 

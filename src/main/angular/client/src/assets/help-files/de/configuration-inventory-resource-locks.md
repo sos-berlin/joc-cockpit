@@ -23,14 +23,14 @@ Das Folgende gilt für die Verwendung von Resource Locks durch *Lock Instruction
 
 Ressourcensperren werden über die folgenden Bedienfelder verwaltet:
 
-- Die [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner, die Ressourcensperren enthalten. Darüber hinaus bietet das Panel Operationen mit Resource Locks.
+- Die [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner, die Ressourcensperren enthalten. Darüber hinaus bietet das Panel Operationen mit Resource Locks.
 - Das *Resource Lock Panel* auf der rechten Seite des Fensters enthält Details zur Konfiguration von Resource Locks.
 
 *Resource Lock Panel
 
 Für eine Ressourcensperre sind die folgenden Eingaben möglich:
 
-- **Name** ist der eindeutige Bezeichner einer Ressourcensperre, siehe [Object Naming Rules](/object-naming-rules).
+- **Name** ist der eindeutige Bezeichner einer Ressourcensperre, siehe [Regeln zur Benennung von Objekten](/object-naming-rules).
 - **Title** enthält eine optionale Erklärung zum Zweck der Ressourcensperre.
 - **Capacity** ist eine Zahl, die die maximale Akzeptanz von *Gewichten* aus parallelen *Lock-Anweisungen* darstellt:
   - eine *Kapazität* von 1 beschränkt die Ressourcensperre auf die einmalige Verwendung unabhängig von *exklusiven* oder *gemeinsamen* *Lock-Anweisungen*.
@@ -40,11 +40,11 @@ Für eine Ressourcensperre sind die folgenden Eingaben möglich:
 
 ### Operationen mit Ressourcensperren
 
-Für verfügbare Operationen siehe [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
+Für verfügbare Operationen siehe [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation).
 
 ### Auftragsprioritäten
 
-Ressourcensperren berücksichtigen Auftrags *Prioritäten*. Beim Hinzufügen von Aufträgen über [Configuration - Inventory - Schedules](/configuration-inventory-schedules) und beim Hinzufügen von Ad-hoc-Aufträgen über [Workflows - Add Orders](/workflows-orders-add) kann die *Priorität* angegeben werden.
+Ressourcensperren berücksichtigen Auftrags *Prioritäten*. Beim Hinzufügen von Aufträgen über [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules) und beim Hinzufügen von Ad-hoc-Aufträgen über [Workflows - Add Orders](/workflows-orders-add) kann die *Priorität* angegeben werden.
 
 Wenn mehrere Aufträge vor einer Ressourcensperre warten, wird der Auftrag mit der höchsten *Priorität* als erster die Ressourcensperre erhalten.
 
@@ -52,8 +52,8 @@ Wenn mehrere Aufträge vor einer Ressourcensperre warten, wird der Auftrag mit d
 
 ### Kontext-Hilfe
 
-- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
-- [Object Naming Rules](/object-naming-rules)
+- [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
+- [Regeln zur Benennung von Objekten](/object-naming-rules)
 - [Workflow - Inventory - Navigation Panel](/configuration-inventory-navigation)
 
 ### Produktwissen Basis

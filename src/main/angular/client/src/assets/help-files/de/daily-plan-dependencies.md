@@ -54,9 +54,9 @@ Wenn beide Filterschaltflächen inaktiv sind, werden alle Workflows und Abhängi
 
 ### Kontexthilfe
 
-- [Configuration - Inventory - Notice Boards](/configuration-inventory-notice-boards)
-- [Daily Plan](/daily-plan)
-- [Resources - Notice Boards](/resources-notice-boards)
+- [Konfiguration - Inventar - Notizbretter](/configuration-inventory-notice-boards)
+- [Tagesplan](/daily-plan)
+- [Ressourcen - Notizbretter](/resources-notice-boards)
 - [Settings - Daily Plan](/settings-daily-plan)
 
 ### Product Knowledge Base

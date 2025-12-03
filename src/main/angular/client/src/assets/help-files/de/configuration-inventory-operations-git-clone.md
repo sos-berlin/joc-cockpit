@@ -1,4 +1,4 @@
-# Konfiguration - Inventarisierung - Vorgänge - Git - Repository klonen
+# Konfiguration - Inventar - Operationen - Git - Repository klonen
 
 Inventarobjekte können über Git Repositories ausgerollt werden, siehe [JS7 - Inventory Git Integration](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Git+Integration).
 
@@ -11,7 +11,7 @@ Git Repositories werden den Inventarordnern der obersten Ebene zugeordnet.
   - Das Unterverzeichnis *local* bezeichnet ein Repository, das für Objekte verwendet wird, die für eine JOC Cockpit-Instanz lokal sind, z.B. Job-Ressourcen, die spezifische Einstellungen für eine Umgebung enthalten.
   - Das Unterverzeichnis *rollout* steht für ein Repository, das für Objekte verwendet wird, die in andere Umgebungen ausgerollt werden, z.B. Workflows, die in jeder Umgebung ohne Änderungen verwendet werden sollen.
   - Für die Zuordnung von Inventarobjekttypen zu Git-Repository-Typen siehe [Settings - Git](/settings-git).
-- Benutzer können über das Dateisystem auf die Repositorys des JOC Cockpits zugreifen und einen Git-Client für verwandte Operationen verwenden, zum Beispiel für die Verwaltung von Zweigen.
+- Benutzer können über das Dateisystem auf die Repositories des JOC Cockpit zugreifen und einen Git-Client für verwandte Operationen verwenden, zum Beispiel für die Verwaltung von Zweigen.
 
 Die Operation *Klonen* ist über das Bedienfeld *Navigation* verfügbar und wird für Ordner der obersten Ebene über das zugehörige 3-Punkte-Aktionsmenü angeboten. Die Menühierarchie umfasst *Git Repository-&gt;Local|Rollout-&gt;Git-&gt;Clone*.
 
@@ -23,8 +23,8 @@ Das Eingabefeld erwartet die zum Klonen verwendete Git-URL, zum Beispiel *git@gi
 
 - *git@* ist ein konstantes Präfix,
 - *github.com* gibt den Hostnamen des Git-Servers an,
-- *sos-berlin* ist der Eigentümer des Repositorys,
-- *js7-demo-inventory-rollout* ist der Name des Repositorys,
+- *sos-berlin* ist der Eigentümer des Repository,
+- *js7-demo-inventory-rollout* ist der Name des Repository,
 - *.git* ist eine konstante Endung.
 
 Die obigen Werte sind ein Beispiel. Bitte geben Sie Werte an, die dem gewünschten Git-Server entsprechen.

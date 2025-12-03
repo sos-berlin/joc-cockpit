@@ -2,9 +2,9 @@
 
 Das Panel *Aufträge* enthält Informationen zu Aufträgen aus den folgenden Quellen:
 
-- Aufträge, die von der [Daily Plan](/daily-plan)
-- Aufträge, die bei Bedarf von Benutzern aus der Ansicht [Workflows](/workflows) hinzugefügt wurden
-- Aufträge, die von [File Order Sources](/configuration-inventory-file-order-sources) hinzugefügt wurden, das Verzeichnisse auf eingehende Dateien überwacht
+- Aufträge, die von der [Tagesplan](/daily-plan)
+- Aufträge, die bei Bedarf von Benutzern aus der Ansicht [Arbeitsabläufe](/workflows) hinzugefügt wurden
+- Aufträge, die von [Dateiauftragsquellen](/configuration-inventory-file-order-sources) hinzugefügt wurden, das Verzeichnisse auf eingehende Dateien überwacht
 
 <img src="dashboard-orders.png" alt="Orders" width="330" height="140" />
 
@@ -51,11 +51,11 @@ Wenn Sie auf die angegebene Anzahl von Aufträgen klicken, gelangen Sie auf die 
 
 ### Kontext-Hilfe
 
-- [Daily Plan](/daily-plan)
-- [File Order Sources](/configuration-inventory-file-order-sources)
+- [Tagesplan](/daily-plan)
+- [Dateiauftragsquellen](/configuration-inventory-file-order-sources)
 - [Orders Overview](/orders-overview)
 - [Profile - Preferences](/profile-preferences)
-- [Workflows](/workflows)
+- [Arbeitsabläufe](/workflows)
 
 ### Product Knowledge Base
 

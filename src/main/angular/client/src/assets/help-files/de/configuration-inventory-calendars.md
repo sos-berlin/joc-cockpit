@@ -1,6 +1,6 @@
 # Konfiguration - Inventar - Kalender
 
-Das *Kalender-Panel* bietet die Möglichkeit, regelbasierte Kalender festzulegen, die von [Configuration - Inventory - Schedules](/configuration-inventory-schedules) für die Erstellung von Aufträgen aus dem [Daily Plan](/daily-plan) verwendet werden. Details finden Sie unter [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars).
+Das *Kalender* Panel bietet die Möglichkeit, regelbasierte Kalender festzulegen, die von [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules) für die Erstellung von Aufträgen aus dem [Tagesplan](/daily-plan) verwendet werden. Details finden Sie unter [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars).
 
 - In den Kalendern werden die Tage festgelegt, an denen Arbeitsabläufe ausgeführt werden.
   - **Arbeitstagskalender** legen die Tage für die Ausführung des Arbeitsablaufs fest.
@@ -11,14 +11,14 @@ Das *Kalender-Panel* bietet die Möglichkeit, regelbasierte Kalender festzulegen
 
 Kalender werden über die folgenden Fenster verwaltet:
 
-- Die Seite [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner mit den Kalendern. Außerdem bietet das Panel Operationen für Kalender.
-- Die *Kalender* Panel auf der rechten Seite des Fensters enthält Details zur Kalenderkonfiguration.
+- Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner mit den Kalendern. Außerdem bietet das Panel Operationen für Kalender.
+- Das *Kalender* Panel auf der rechten Seite des Fensters enthält Details zur Kalenderkonfiguration.
 
 ## Kalender-Panel
 
 Für einen Kalender sind die folgenden Eingaben möglich:
 
-- **Name** ist der eindeutige Bezeichner eines Kalenders, siehe [Object Naming Rules](/object-naming-rules).
+- **Name** ist der eindeutige Bezeichner eines Kalenders, siehe [Regeln zur Benennung von Objekten](/object-naming-rules).
 - **Titel** enthält eine optionale Erklärung zum Zweck des Kalenders.
 - **Typ** ist ein Kalender mit Arbeitstagen oder ein Kalender mit Nicht-Arbeitstagen.
 - **Gültig von**, **Gültig bis** geben optional die Gültigkeitsdauer eines Kalenders an. Vor und nach der Gültigkeit liefert ein Kalender keine resultierenden Tage. Wenn keine Gültigkeitsdauer angegeben wird, ist der Kalender unbegrenzt gültig.
@@ -28,7 +28,7 @@ Für einen Kalender sind die folgenden Eingaben möglich:
 Häufigkeiten gibt es in zwei Varianten, die kombiniert werden können:
 
 - **Eingeschlossene Häufigkeiten** geben positive Tage an, an denen Arbeitsabläufe ausgeführt werden.
-- **Ausgeschlossenne Häufigkeiten** geben Tage an, die aus der Liste der resultierenden Tage entfernt werden.
+- **Ausgeschlossene Häufigkeiten** geben Tage an, die aus der Liste der resultierenden Tage entfernt werden.
 
 Das bedeutet, dass *Ausgeschlossene Häufigkeiten* die Verwendung der angegebenen Tage verweigern und die *Eingeschlossenen Häufigkeiten* an übereinstimmenden Tagen außer Kraft setzen.
 
@@ -36,7 +36,7 @@ Betrachten Sie das Beispiel eines Arbeitstagskalenders:
 
 - Nehmen Sie eine *Eingeschlossene Häufigkeit* von Mo-Fr an.
 - Nehmen Sie eine *Ausgeschlossene Häufigkeit* für nationale Feiertage wie den 1. Januar und den 1. Mai an.
-- Bei Verwendung mit Zeitplänen, die die Eigenschaft **am arbeitsfreien Tag** mit dem Wert
+- Bei Verwendung mit Zeitplänen, nimmt die Eigenschaft **am arbeitsfreien Tag** einen der Werte an:
   - **vor dem arbeitsfreien Tag** 
     - wenn der 1. Januar ein Montag ist, dann wird der Auftrag für den vorhergehenden Sonntag erstellt, der nicht in den *Eingeschlossenen Häufigkeiten* und nicht in den *Ausgeschlossenen Häufigkeiten* enthalten ist. 
     - wenn der 1. Januar ein Samstag ist, dann wird kein Auftrag erstellt, da der vorherige Arbeitstag der Freitag ist, für den ein Auftrag aus den *Eingeschlossenen Häufigkeiten* erstellt wird.
@@ -82,16 +82,16 @@ Eine alternative Lösung besteht darin, den *Häufigkeitstyp* **Jeder** in der *
 
 ## Operationen für Kalender
 
-Für verfügbare Operationen siehe [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
+Für verfügbare Operationen siehe [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation).
 
 ## Referenzen
 
 ### Kontext-Hilfe
 
-- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
-- [Configuration - Inventory - Schedules - Run-time](/configuration-inventory-schedules-run-time)
-- [Daily Plan](/daily-plan)
-- [Object Naming Rules](/object-naming-rules)
+- [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
+- [Konfiguration - Inventar - Zeitpläne - Startzeitregel](/configuration-inventory-schedules-run-time)
+- [Tagesplan](/daily-plan)
+- [Regeln zur Benennung von Objekten](/object-naming-rules)
 
 ### Product Knowledge Base
 

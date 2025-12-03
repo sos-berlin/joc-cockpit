@@ -2,7 +2,7 @@
 
 Die Bereitstellung von Objekten bedeutet, dass sie auf einen oder mehrere Controller übertragen werden. Dies gilt für Objekte wie Workflows und Job-Ressourcen, die über den Systemordner *Controller* verfügbar sind.
 
-Die Ansicht *Konfiguration-&gt;Inventar* bietet die Möglichkeit, ein einzelnes Objekt zu verteilen und Objekte aus Ordnern zu verteilen, siehe [Deploy Folder](/configuration-inventory-operations-deploy-folder).
+Die Ansicht *Konfiguration-&gt;Inventar* bietet die Möglichkeit, ein einzelnes Objekt zu verteilen und Objekte aus Ordnern zu verteilen, siehe [Ordner ausrollen](/configuration-inventory-operations-deploy-folder).
 
 Wenn Sie ein einzelnes Objekt über die entsprechende Schaltfläche *Deploy* bereitstellen, wird ein Popup-Fenster wie das folgende angezeigt:
 
@@ -16,7 +16,7 @@ Standardmäßig wird der aktuell ausgewählte Controller verwendet.
 
 ## Aktualisieren des Tagesplans
 
-Die Bereitstellung von Objekten wie Workflows, Zeitplänen und Kalendern wirkt sich auf die [Daily Plan](/daily-plan) aus. Häufig soll die aktualisierte Version eines Objekts für Aufträge im Tagesplan verwendet werden. Die Benutzer steuern das Verhalten über die folgenden Optionen:
+Die Bereitstellung von Objekten wie Workflows, Zeitplänen und Kalendern wirkt sich auf die [Tagesplan](/daily-plan) aus. Häufig soll die aktualisierte Version eines Objekts für Aufträge im Tagesplan verwendet werden. Die Benutzer steuern das Verhalten über die folgenden Optionen:
 
 - **Tagesplan aktualisieren**
   - **Jetzt** legt die Aktualisierung des Tagesplans für Aufträge fest, die für einen Zeitpunkt ab jetzt geplant sind.
@@ -46,8 +46,8 @@ Die Benutzer steuern die konsistente Bereitstellung über die folgenden Optionen
 ### Kontext-Hilfe
 
 - [Configuration - Inventory - Operations - Deploy Folder](/configuration-inventory-operations-deploy-folder)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
+- [Tagesplan](/daily-plan)
 - [Dependency Matrix](/dependencies-matrix)
 
 ### Product Knowledge Base

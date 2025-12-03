@@ -6,7 +6,7 @@ Die grafische Benutzeroberfläche bietet eine Reihe von Registerkarten für die 
 
 *Tags
 
-Einem Auftrag kann eine beliebige Anzahl von Tags hinzugefügt werden. Sie werden in der Ansicht [Workflows](/workflows) angezeigt und sind optional in den Benachrichtigungen enthalten. Einzelheiten finden Sie unter [JS7 - Tagging Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging+-+Jobs).
+Einem Auftrag kann eine beliebige Anzahl von Tags hinzugefügt werden. Sie werden in der Ansicht [Arbeitsabläufe](/workflows) angezeigt und sind optional in den Benachrichtigungen enthalten. Einzelheiten finden Sie unter [JS7 - Tagging Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging+-+Jobs).
 
 - **Tags** ermöglicht das Hinzufügen oder Löschen von Tags. Sie können aus der Liste der vorhandenen Tags ausgewählt werden. Wenn Sie einen Tag-Namen eingeben, wird der Tag erstellt.
 
@@ -20,7 +20,7 @@ Tag-Gruppen können verwendet werden, um Tags zu organisieren, die einer gemeins
 
 ### Kontexthilfe
 
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
   - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflows-job-options)
   - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflows-job-properties)
   - [Configuration - Inventory - Workflows - Job Node Properties](/configuration-inventory-workflows-job-node-properties)

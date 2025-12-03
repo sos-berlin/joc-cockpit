@@ -81,7 +81,7 @@ Die folgenden Optionen legen für Jobs, die mit Agenten für Windows ausgeführt
 ### Kontext-Hilfe
 
 - [Cleanup Service](/service-cleanup)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
   - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflows-job-properties)
   - [Configuration - Inventory - Workflows - Job Node Properties](/configuration-inventory-workflows-job-node-properties)
   - [Configuration - Inventory - Workflows - Job Notifications](/configuration-inventory-workflows-job-notifications)

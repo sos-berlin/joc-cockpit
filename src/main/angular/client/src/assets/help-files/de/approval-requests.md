@@ -15,11 +15,11 @@ Zu den grundlegenden Funktionen des Autorisierungsprozesses gehören:
 
 ## Liste der Autorisierungsanfragen
 
-Autorisierungsanfragen werden von Benutzern hinzugefügt, die eine Bestätigung für eine geplante Intervenion anfordern, siehe [Approval Request](/approval-request).
+Autorisierungsanfragen werden von Benutzern hinzugefügt, die eine Bestätigung für eine geplante Intervenion anfordern, siehe [Autorisierungsanfrage](/approval-request).
 
 Die Liste der Autorisierungsanfragen wird mit den folgenden Eigenschaften angeboten:
 
-- **Statusdatum Anfrage** ist der Zeitpunkt, zu dem ein [Approval Request](/approval-request) hinzugefügt wurde.
+- **Statusdatum Anfrage** ist der Zeitpunkt, zu dem ein [Autorisierungsanfrage](/approval-request) hinzugefügt wurde.
 - **Titel** wird vom *Antragsteller* beim Hinzufügen der Autorisierungsanfrage angegeben.
 - **Anfrager** gibt das Benutzerkonto an, das die Autorisierungsanfrage gestellt hat.
 - **Status Anfrage** ist einer der folgenden: *eingereicht*, *genehmigt*, *zurückgezogen*, *erledigt*.
@@ -34,9 +34,9 @@ Die Liste der Autorisierungsanfragen wird mit den folgenden Eigenschaften angebo
 
 ### Kontext-Hilfe
 
-- [Approval Notification Settings](/approval-notification-settings)
-- [Approver Profiles](/approval-profiles)
-- [Approval Request](/approval-request)
+- [Einstellungen für Autorisierungsbenachrichtigungen](/approval-notification-settings)
+- [Autorisiererprofile](/approval-profiles)
+- [Autorisierungsanfrage](/approval-request)
 - [REST Web Service API](/rest-api)
 
 ### Product Knowledge Base

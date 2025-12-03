@@ -1,36 +1,36 @@
-# Konfiguration - Inventarisierung - Vorgänge - Verwalten Tags
+# Konfiguration - Inventar - Operationen - Kennzeichnungen verwalten
 
-JS7 bietet [JS7 - Tagging](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging) für Workflows, Aufträge und Bestellungen.
+JS7 bietet [JS7 - Tagging](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging) für Arbeitsabläufe, Jobs und Aufträge.
 
-- Tags werden über das Inventar verwaltet, das in der Ansicht *Konfiguration* des JOC-Cockpits verfügbar ist.
-  - Workflows können eine beliebige Anzahl von Tags zugewiesen werden.
-  - Zeitplänen wird eine beliebige Anzahl von Tags zugewiesen, die den von [Daily Plan Service](/service-daily-plan) erstellten Aufträgen hinzugefügt werden.
-- Tags können beim manuellen Hinzufügen von Ad-hoc-Aufträgen verwendet werden.
-- Tags können in den Ansichten *Workflows*, *Auftragsübersicht*, *Tagesplan* und *Historie* zum Filtern von Workflows und Aufträgen verwendet werden.
+- Kennzeichnungen werden über das Inventar verwaltet, das in der Ansicht *Konfiguration* des JOC Cockpit verfügbar ist.
+  - Arbeitsabläufen können eine beliebige Anzahl von Kennzeichnungen zugewiesen werden.
+  - Zeitplänen wird eine beliebige Anzahl von Kennzeichnungen zugewiesen, die den von [Daily Plan Service](/service-daily-plan) erstellten Aufträgen hinzugefügt werden.
+- Kennzeichnungen können beim manuellen Hinzufügen von Ad-hoc-Aufträgen verwendet werden.
+- Kennzeichnungen können in den Ansichten *Arbeitsabläufe*, *Übersicht der Aufträge*, *Tagesplan* und *Historie* zum Filtern von Arbeitsabläufen und Aufträgen verwendet werden.
 
-## Tags für Workflow verwalten
+## Kennzeichnungen für Arbeitsablauf verwalten
 
-Benutzer können Tags für einen einzelnen Workflow hinzufügen, aktualisieren und entfernen.
+Benutzer können Kennzeichnungen für einen einzelnen Arbeitsablauf hinzufügen, aktualisieren und entfernen.
 
 <img src="tags-manage-object.png" alt="Manage Tags for Workflow" width="600" height="125" />
 
-Bei der Eingabe von Tags wird die Liste der vorhandenen Tags angezeigt. Ansonsten können die Benutzer den Namen eines neuen Tags eingeben. Bei Tag-Namen wird zwischen Groß- und Kleinschreibung unterschieden.
+Bei der Eingabe von Kennzeichnungen wird die Liste der vorhandenen Kennzeichnungen angezeigt. Ansonsten können die Benutzer den Namen einer neuen Kennzeichnung eingeben. Bei Kennzeichnungen wird zwischen Groß- und Kleinschreibung unterschieden.
 
-## Tags für Workflows aus Ordnern verwalten
+## Kennzeichnungen für Arbeitsabläufe aus Ordnern verwalten
 
-Benutzer können Tags für alle Workflows hinzufügen, aktualisieren und entfernen, die im ausgewählten Ordner und in Unterordnern rekursiv verfügbar sind.
+Benutzer können Kennzeichnungen für alle Arbeitsabläufe hinzufügen, aktualisieren und entfernen, die im ausgewählten Ordner und in Unterordnern rekursiv verfügbar sind.
 
 <img src="tags-manage-folder.png" alt="Manage Tags for Workflows from Folders" width="600" height="210" />
 
-Die *Liste der Tags* zeigt den Tag-Namen und die Workflows an, denen das Tag zugewiesen ist. Benutzer können die Zuweisung eines Tags aufheben.
+Die *Liste der Kennzeichnungen* zeigt den Namen und die Arbeitsabläufe an, denen die Kennzeichnung zugewiesen ist. Benutzer können die Zuweisung einer Kennzeichnung aufheben.
 
 ## Referenzen
 
 ### Kontexthilfe
 
-- [Configuration - Inventory - Navigation](/configuration-inventory-navigation)
+- [Konfiguration - Inventar - Navigation](/configuration-inventory-navigation)
 - [Configuration - Inventory - Workflow - Job Tags](/configuration-inventory-workflow-job-tags)
-- [Daily Plan](/daily-plan)
+- [Tagesplan](/daily-plan)
 
 ### Product Knowledge Base
 

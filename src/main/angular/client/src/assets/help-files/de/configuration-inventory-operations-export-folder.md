@@ -39,7 +39,7 @@ Der *Exporttyp* bietet die Möglichkeit, den Export auf bestimmte Planungsobjekt
 
 ### Exportieren von Objekten aus Änderungen
 
-Unter *Exporttyp* können Sie eine Änderung aus der Liste [Changes](/changes) auswählen. Der Export beschränkt sich auf Objekte, die mit der Änderung verbunden sind.
+Unter *Exporttyp* können Sie eine Änderung aus der Liste [Änderungen](/changes) auswählen. Der Export beschränkt sich auf Objekte, die mit der Änderung verbunden sind.
 
 <img src="export-change.png" alt="Export Change" width="600" height="320" />
 
@@ -62,8 +62,8 @@ Die Benutzer steuern den konsistenten Export über die folgenden Optionen:
 
 ### Kontext-Hilfe
 
-- [Changes](/changes)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Änderungen](/changes)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
 - [Dependency Matrix](/dependencies-matrix)
 
 ### Product Knowledge Base

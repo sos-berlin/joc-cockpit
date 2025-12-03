@@ -17,8 +17,8 @@ Die Mindesteigenschaften für einen Auftrag sind wie folgt:
 
 ## Optionale Auftragseigenschaften
 
-- **Title** beschreibt den Zweck des Auftrags. Benutzer können Links mit Hilfe der Markdown-Syntax hinzufügen, z.B. \[Example\]\(https://example.com\). Der *Titel* wird beim Filtern der Ergebnisse berücksichtigt, zum Beispiel in der Ansicht [Workflows](/workflows).
-- **Job-Ressourcen** sind Inventarobjekte, die Variablen aus Schlüssel/Wert-Paaren enthalten, die von Workflow-Variablen und von Umgebungsvariablen verfügbar gemacht werden können. *Job Resources* können auf Job-Ebene zugewiesen werden und sie können auf Workflow-Ebene zugewiesen werden, wodurch sie für alle Jobs in einem Workflow verfügbar sind. Einzelheiten finden Sie unter [Configuration - Inventory - Job Resources](/configuration-inventory-job-resources).
+- **Title** beschreibt den Zweck des Auftrags. Benutzer können Links mit Hilfe der Markdown-Syntax hinzufügen, z.B. \[Example\]\(https://example.com\). Der *Titel* wird beim Filtern der Ergebnisse berücksichtigt, zum Beispiel in der Ansicht [Arbeitsabläufe](/workflows).
+- **Job-Ressourcen** sind Inventarobjekte, die Variablen aus Schlüssel/Wert-Paaren enthalten, die von Workflow-Variablen und von Umgebungsvariablen verfügbar gemacht werden können. *Job Resources* können auf Job-Ebene zugewiesen werden und sie können auf Workflow-Ebene zugewiesen werden, wodurch sie für alle Jobs in einem Workflow verfügbar sind. Einzelheiten finden Sie unter [Konfiguration - Inventar - Job-Ressourcen](/configuration-inventory-job-resources).
 - **Return Code** gibt an, ob ein Auftrag als erfolgreich oder fehlgeschlagen betrachtet wird. Standardmäßig steht der Wert 0 für Erfolg, andere Werte stehen für Misserfolg. Eine Reihe von erfolgreichen Rückgabewerten kann durch ein Komma getrennt werden, zum Beispiel *0,2,4,8*. Ein Bereich von Rückgabewerten kann durch zwei Punkte angegeben werden, z.B. *0..8* oder *0,2,4,8,16..64*, getrennt durch ein Komma. Negative Rückgabewerte sind undefiniert.
   - **Bei Erfolg** gibt erfolgreiche Rückgabewerte an.
   - **On Failure** gibt erfolglose Rückgabewerte an, die einen Fehler anzeigen.
@@ -47,14 +47,14 @@ Für *Shell Jobs* wird die Parametrisierung über Umgebungsvariablen zur Verfüg
 
 Die Ansicht *Konfiguration - Inventar* bietet oben im Fenster den Schieberegler *Weitere Optionen*, der standardmäßig inaktiv ist. Wenn Sie den Schieberegler verwenden, werden zusätzliche Optionen verfügbar.
 
-- **Dokumentation** enthält einen Verweis auf [Resources - Documentations](/resources-documentations), der zur Erläuterung des Auftrags verwendet werden kann. Der Verweis auf die Dokumentation ist in der Ansicht [Workflows](/workflows) sichtbar.
+- **Dokumentation** enthält einen Verweis auf [Resources - Documentations](/resources-documentations), der zur Erläuterung des Auftrags verwendet werden kann. Der Verweis auf die Dokumentation ist in der Ansicht [Arbeitsabläufe](/workflows) sichtbar.
 
 ## Referenzen
 
 ### Kontexthilfe
 
-- [Configuration - Inventory - Job Resources](/configuration-inventory-job-resources)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Konfiguration - Inventar - Job-Ressourcen](/configuration-inventory-job-resources)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
   - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflows-job-options)
   - [Configuration - Inventory - Workflows - Job Node Properties](/configuration-inventory-workflows-job-node-properties)
   - [Configuration - Inventory - Workflows - Job Notifications](/configuration-inventory-workflows-job-notifications)

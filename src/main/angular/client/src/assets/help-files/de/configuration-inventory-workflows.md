@@ -3,7 +3,7 @@
 Das *Workflow-Panel* bietet die Möglichkeit, Workflows aus einer Folge von Anweisungen zu entwerfen, die den Workflow für einen [gerichteten azyklischen Graphen](https://en.wikipedia.org/wiki/Directed_acyclic_graph) formen. 
 
 - Benutzer können Anweisungen per Drag &amp; Drop aus der *Symbolleiste* ziehen, um Workflow-Muster zu erstellen, wie z.B. eine Abfolge von Jobs, das Verzweigen und Verbinden von Jobs, bedingte Ausführung usw.
-- Die [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) bietet eine Navigation nach Tags und Ordnern. Darüber hinaus bietet das Panel Operationen für Workflows.
+- Die [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) bietet eine Navigation nach Tags und Ordnern. Darüber hinaus bietet das Panel Operationen für Workflows.
 
 *Toolbar Panel
 
@@ -53,9 +53,9 @@ Arbeitsabläufe werden automatisch im Inventar gespeichert. Dies geschieht alle 
 
 Für einen Workflow sind die folgenden Eingaben möglich:
 
-- **Name** ist der eindeutige Bezeichner eines Workflows, siehe [Object Naming Rules](/object-naming-rules).
+- **Name** ist der eindeutige Bezeichner eines Workflows, siehe [Regeln zur Benennung von Objekten](/object-naming-rules).
 - **Titel** enthält eine optionale Erklärung zum Zweck des Workflows.
-- **Job-Ressourcen** sind Inventarobjekte, die Variablen aus Schlüssel/Wert-Paaren enthalten, die aus Workflow-Variablen und aus Umgebungsvariablen verfügbar gemacht werden können. *Job Resources* können auf Job-Ebene zugewiesen werden und sie können auf Workflow-Ebene zugewiesen werden, wodurch sie für alle Jobs in einem Workflow verfügbar sind. Einzelheiten finden Sie unter [Configuration - Inventory - Job Resources](/configuration-inventory-job-resources).
+- **Job-Ressourcen** sind Inventarobjekte, die Variablen aus Schlüssel/Wert-Paaren enthalten, die aus Workflow-Variablen und aus Umgebungsvariablen verfügbar gemacht werden können. *Job Resources* können auf Job-Ebene zugewiesen werden und sie können auf Workflow-Ebene zugewiesen werden, wodurch sie für alle Jobs in einem Workflow verfügbar sind. Einzelheiten finden Sie unter [Konfiguration - Inventar - Job-Ressourcen](/configuration-inventory-job-resources).
 - **Zeitzone**, die aus der [Profile - Preferences](/profile-preferences) des Benutzers übernommen wird. Für die Eingabe werden Zeitzonenkennungen wie *UTC*, *Europa/London* usw. akzeptiert. Eine vollständige Liste der Zeitzonenkennungen finden Sie unter [Liste der Zeitzonen der tz-Datenbank](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
   - Die *Zeitzone* wird auf Zeiträume in Job Admission Times und in *Cycle Instructions* angewendet.
   - Es ist möglich, eine *Zeitzone* zu verwenden, die von der [Settings - Daily Plan](/settings-daily-plan) abweicht. Dies kann jedoch zu verwirrenden Ergebnissen führen.
@@ -100,7 +100,7 @@ Oben auf dem *Workflow-Panel* finden Sie die folgenden Statusanzeigen:
 - **gültig** / **nicht gültig** zeigt mit blauer / oranger Farbe an, ob der Workflow konsistent und bereit für die Bereitstellung ist. *Ungültige* Workflows können nicht bereitgestellt werden, Änderungen werden jedoch im Inventar gespeichert. Wenn beispielsweise einem Auftrag kein Agent zugewiesen wurde, wird der Workflow *ungültig*. Innerhalb des Statusindikators *ungültig* ist das Informationssymbol (i) verfügbar, das den Grund anzeigt, warum der Workflow +ungültig* ist
 - **Eingesetzt** / **nicht eingesetzt** zeigt an, ob die aktuelle Version des Workflows *eingesetzt* wurde oder ein Entwurf ist, der *nicht eingesetzt* wurde.
 
-Die Schaltfläche *Einsatz* ermöglicht den Einsatz auf einem Controller mit einem einzigen Klick. Ansonsten sind Bereitstellungsvorgänge auf Ordnerebene verfügbar, siehe [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
+Die Schaltfläche *Einsatz* ermöglicht den Einsatz auf einem Controller mit einem einzigen Klick. Ansonsten sind Bereitstellungsvorgänge auf Ordnerebene verfügbar, siehe [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation).
 
 #### Operationen auf Anweisungen
 
@@ -142,9 +142,9 @@ Wenn Sie auf die Leinwand des *Workflow-Panels* klicken, wird ein *Operations-Pa
 
 ### Kontexthilfe
 
-- [Configuration - Inventory - Job Resources](/configuration-inventory-job-resources)
-- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
-- [Daily Plan](/daily-plan)
+- [Konfiguration - Inventar - Job-Ressourcen](/configuration-inventory-job-resources)
+- [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
+- [Tagesplan](/daily-plan)
 - [Order History](/history-orders)
 - [Order States](/order-states)
 

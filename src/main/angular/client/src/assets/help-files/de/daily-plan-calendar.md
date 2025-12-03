@@ -2,7 +2,7 @@
 
 Über den Tagesplan-Kalender sind eine Reihe von Vorgängen verfügbar. 
 
-Für allgemeine Operationen, die über den Tagesplan verfügbar sind, siehe [Daily Plan](/daily-plan).
+Für allgemeine Operationen, die über den Tagesplan verfügbar sind, siehe [Tagesplan](/daily-plan).
 
 ## Einzelnes Datum auswählen
 
@@ -58,7 +58,7 @@ Dieser Vorgang ist über eine Schaltfläche unterhalb des Kalender-Widgets für 
 
 ## Referenzen
 
-- [Daily Plan](/daily-plan)
+- [Tagesplan](/daily-plan)
 - [Settings - Daily Plan](/settings-daily-plan)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)
 

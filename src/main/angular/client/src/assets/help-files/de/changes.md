@@ -1,12 +1,12 @@
 # Änderungen verwalten
 
-JOC Cockpit bietet die Verwaltung von [JS7 - Inventory Changes](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Changes) für Objekte wie Workflows. Eine Änderung wird als eine Liste von Inventarobjekten betrachtet, die Gegenstand gemeinsamer Bereitstellungsoperationen sind
+JOC Cockpit bietet die Verwaltung von [JS7 - Inventory Changes](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Changes) für Objekte wie Arbeitsabläufe. Eine Änderung wird als eine Liste von Inventarobjekten betrachtet, die Gegenstand gemeinsamer Ausrolloperationen sind
 
-- für die Bereitstellung auf Controllern,
-- für den Rollout über [JS7 - Inventory Export and Import](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Export+and+Import),
-- für den Rollout mit [JS7 - Git Repository Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+Git+Repository+Interface).
+- für das Ausrollen auf Controller,
+- für das Ausrollen über [JS7 - Inventory Export and Import](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Export+and+Import),
+- für das Ausrollen mit [JS7 - Git Repository Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+Git+Repository+Interface).
 
-Änderungen umfassen Inventarobjekte wie Workflows, Zeitpläne usw. und sie umfassen referenzierte Objekte, z.B. eine Job Resource, die von einem Workflow referenziert wird.
+Änderungen umfassen Inventarobjekte wie Arbeitsabläufe, Zeitpläne usw. und sie umfassen referenzierte Objekte, z.B. eine Job-Ressource, die von einem Arbeitsablauf referenziert wird.
 
 - Benutzer können Inventarobjekte direkt zu einer Änderung hinzufügen.
 - Referenzierte Objekte werden automatisch mit einer Änderung verknüpft.
@@ -28,18 +28,18 @@ Vorhandene Änderungen werden in einer Liste angezeigt:
 
 Im oberen Teil des Bildschirms stehen Ihnen die folgenden Schaltflächen zur Verfügung:
 
-- **Änderung hinzufügen** bietet das Hinzufügen einer Änderung an. Details finden Sie unter [Changes - Properties](/changes-properties).
+- **Änderung hinzufügen** bietet das Hinzufügen einer Änderung an. Details finden Sie unter [Änderungen - Eigenschaften](/changes-properties).
 
 In der *Liste der Änderungen* werden die folgenden Operationen mit dem entsprechenden 3-Punkte-Aktionsmenü angeboten:
 
-- **Bearbeiten** ermöglicht das Aktualisieren der Eigenschaften der Änderung. Details finden Sie unter [Changes - Properties](/changes-properties).
+- **Bearbeiten** ermöglicht das Aktualisieren der Eigenschaften der Änderung. Details finden Sie unter [Änderungen - Eigenschaften](/changes-properties).
 - **Löschen** entfernt den Eintrag der Änderung.
 
 ## Referenzen
 
 ### Kontexthilfe
 
-- [Changes - Properties](/changes-properties)
+- [Änderungen - Eigenschaften](/changes-properties)
 
 ### Product Knowledge Base
 
