@@ -16,7 +16,7 @@ Das Kalender-Widget bietet Ihnen die Möglichkeit, ein Tagesplan-Datum auszuwäh
 Operationen an Plandaten umfassen:
 
 - **Plan öffnen**: Dies geschieht automatisch, wenn neue Orders für ein Plandatum hinzugefügt werden. Benutzer können einen geschlossenen Plan wieder öffnen.
-- **Plan schließen**: Ein offener Plan wird geschlossen und erlaubt keine neuen Orders mehr. Dies geschieht automatisch für vergangene Plandaten mit einer Verzögerung von einem Tag. Benutzer können die entsprechende Einstellung auf der Seite [Settings - Daily Plan](/settings-daily-plan) ändern. Sie können einen offenen Plan früher schließen, um zu verhindern, dass weitere Aufträge hinzugefügt werden.
+- **Plan schließen**: Ein offener Plan wird geschlossen und erlaubt keine neuen Orders mehr. Dies geschieht automatisch für vergangene Plandaten mit einer Verzögerung von einem Tag. Benutzer können die entsprechende Einstellung auf der Seite [Einstellungen - Tagesplan](/settings-daily-plan) ändern. Sie können einen offenen Plan früher schließen, um zu verhindern, dass weitere Aufträge hinzugefügt werden.
 
 ## Anzeige von Abhängigkeiten
 
@@ -57,7 +57,7 @@ Wenn beide Filterschaltflächen inaktiv sind, werden alle Workflows und Abhängi
 - [Konfiguration - Inventar - Notizbretter](/configuration-inventory-notice-boards)
 - [Tagesplan](/daily-plan)
 - [Ressourcen - Notizbretter](/resources-notice-boards)
-- [Settings - Daily Plan](/settings-daily-plan)
+- [Einstellungen - Tagesplan](/settings-daily-plan)
 
 ### Product Knowledge Base
 

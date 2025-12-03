@@ -10,7 +10,7 @@ Die *Übermittlungshistorie* unterliegt der Bereinigung der Datenbank, die von [
 
 Die Anzeige ist in Blöcken pro Tagesplandatum, pro Einreichung und inklusive Bestellungen gruppiert.
 
-Die Anzeige ist auf maximal 5000 Einträge begrenzt, wenn nicht anders auf [Profile - Preferences](/profile-preferences) angegeben.
+Die Anzeige ist auf maximal 5000 Einträge begrenzt, wenn nicht anders auf [Profil - Einstellungen](/profile-preferences) angegeben.
 
 ### Historie des Tagesplans
 
@@ -21,10 +21,10 @@ Die folgenden Informationen werden pro Tagesplan-Datum angezeigt.
 - **Anzahl der Einreichungen** zeigt die Anzahl der erfolgreich eingereichten Aufträge an.
   - Wenn die Zahl der *Gesamtzahl* entspricht, wurden alle Aufträge erfolgreich eingereicht.
   - Liegt die Zahl über Null, aber unter der *Gesamtzahl*, dann
-    - die Einstellung, dass die Aufträge einzeln übermittelt werden, ist vorhanden, siehe [Settings - Daily Plan](/settings-daily-plan) und
+    - die Einstellung, dass die Aufträge einzeln übermittelt werden, ist vorhanden, siehe [Einstellungen - Tagesplan](/settings-daily-plan) und
     - eine Anzahl von Aufträgen konnte nicht übermittelt werden.
   - Wenn die Zahl Null ist, bedeutet dies
-    - dass die Einstellung für die individuelle Übermittlung von Aufträgen nicht aktiviert ist, siehe [Settings - Daily Plan](/settings-daily-plan), und/oder
+    - dass die Einstellung für die individuelle Übermittlung von Aufträgen nicht aktiviert ist, siehe [Einstellungen - Tagesplan](/settings-daily-plan), und/oder
     - sie konnten nicht alle Aufträge übermitteln.
 
 ### Historie der Übermittlungen
@@ -67,8 +67,8 @@ Benutzer können Filter anwenden, die oben im Fenster verfügbar sind, um die An
 - [Cleanup Service](/service-cleanup)
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
 - [Tagesplan](/daily-plan)
-- [Profile - Preferences](/profile-preferences)
-- [Settings - Daily Plan](/settings-daily-plan)
+- [Profil - Einstellungen](/profile-preferences)
+- [Einstellungen - Tagesplan](/settings-daily-plan)
 - [Arbeitsabläufe](/workflows)
 
 ### Product Knowledge Base

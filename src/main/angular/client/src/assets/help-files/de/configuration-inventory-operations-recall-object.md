@@ -1,44 +1,44 @@
-# Konfiguration - Inventar - Vorgänge - Objekt zurückrufen
+# Konfiguration - Inventar - Vorgänge - Objekt zurücknehmen
 
-Durch den Rückruf von Objekten werden diese deaktiviert, z.B. für die Verwendung mit [Tagesplan](/daily-plan). Dies gilt für Objekte wie Zeitpläne und Kalender, die im Systemordner *Automation* verfügbar sind.
+Durch das *Zurücknehmen* von Objekten werden diese deaktiviert, z.B. für die Verwendung mit dem [Tagesplan](/daily-plan). Dies gilt für Objekte wie Zeitpläne und Kalender, die im Systemordner *Automation* verfügbar sind.
 
-Die Ansicht *Konfiguration-&gt;Inventar* bietet die Möglichkeit, ein einzelnes Objekt abzurufen und Objekte aus Ordnern abzurufen, siehe [Configuration - Inventory - Operations - Recall Folder](/configuration-inventory-operations-recall-folder).
+Die Ansicht *Konfiguration-&gt;Inventar* bietet die Möglichkeit, ein einzelnes Objekt zurückzunehmen und Objekte aus Ordnern zurückzunehmen, siehe [Konfiguration - Inventar - Operationen - Ordner zurücknehmen](/configuration-inventory-operations-recall-folder).
 
-Wenn Sie ein einzelnes Objekt über die Operation *Aufrufen* aufrufen, die Sie über das 3-Punkte-Aktionsmenü des Objekts im Navigationsbereich erreichen, wird ein Popup-Fenster wie das folgende angezeigt:
+Wenn Sie für ein einzelnes Objekt die Operation *Zurücknehmen* ausführen, die Sie über das 3-Punkte-Aktionsmenü des Objekts im Navigationsbereich erreichen, wird ein Popup-Fenster wie das folgende angezeigt:
 
 <img src="recall-schedule.png" alt="Recall Schedule" width="600" height="300" />
 
 ## Aktualisieren des Tagesplans
 
-Das Aufrufen von Objekten wie Zeitplänen und Kalendern wirkt sich auf die [Tagesplan](/daily-plan) aus. 
+Das Aufrufen von Objekten wie Zeitplänen und Kalendern wirkt sich auf den [Tagesplan](/daily-plan) aus. 
 
-Bestehende Aufträge für Workflows, auf die von zugehörigen Zeitplänen verwiesen wird, werden vom Controller zurückgerufen und aus dem Tagesplan entfernt.
+Bestehende Aufträge für Arbeitsabläufe, auf die von zugehörigen Zeitplänen verwiesen wird, werden vom Controller zurückgenommen und aus dem Tagesplan entfernt.
 
 ## Abhängigkeiten einbeziehen
 
-Inventarobjekte sind durch Abhängigkeiten miteinander verbunden, siehe [Dependency Matrix](/dependencies-matrix). Zum Beispiel ein Workflow, der auf eine Job Resource und eine Resource Lock verweist; ein Zeitplan, der auf einen Kalender und einen oder mehrere Workflows verweist.
+Inventarobjekte sind durch Abhängigkeiten miteinander verbunden, siehe [Abhängigkeitsmatrix](/dependencies-matrix). Zum Beispiel ein Arbeitsablauf, der auf eine Job-Ressource und eine Ressourcen-Sperre verweist; ein Zeitplan, der auf einen Kalender und einen oder mehrere Arbeitsabläufe verweist.
 
-Beim Abrufen von Objekten wird die Konsistenz berücksichtigt, zum Beispiel:
+Beim Abrufen von Objekten wird die Konsistenz des Inventars berücksichtigt, zum Beispiel:
 
-- Wenn ein Zeitplan erstellt wird und auf einen neu erstellten Kalender verweist, dann beinhaltet die Freigabe des Zeitplans auch die Freigabe des Kalenders. Dazu gehört auch die Bereitstellung eines Workflow-Entwurfs, auf den der Zeitplan verweist.
-- Wenn ein Kalender von einem freigegebenen Zeitplan referenziert wird und zurückgerufen oder entfernt werden soll, dann muss auch der Zeitplan zurückgerufen oder entfernt werden. Dazu gehört auch, dass Sie den Workflow, auf den der Zeitplan verweist, widerrufen oder entfernen.
+- Wenn ein Zeitplan erstellt wird und auf einen neu erstellten Kalender verweist, dann beinhaltet die Freigabe des Zeitplans auch die Freigabe des Kalenders. Dazu gehört auch das Ausrollen eines Arbeitsablaufs im Entwurfsstatus, auf den der Zeitplan verweist.
+- Wenn ein Kalender von einem freigegebenen Zeitplan referenziert wird und zurückgenommen oder entfernt werden soll, dann muss auch der Zeitplan zurückgenommen oder entfernt werden. Dazu gehört auch, dass Sie den Arbeitsablauf, auf den der Zeitplan verweist, zurücknehmen oder entfernen.
 
-Die Benutzer steuern die konsistente Bereitstellung über die folgenden Optionen:
+Die Benutzer steuern das konsistente *Zurücknehmen* über die folgenden Optionen:
 
 - **Abhängigkeiten einbeziehen**
   - wenn diese Option aktiviert ist, werden sowohl referenzierende als auch referenzierte Objekte einbezogen.
-    - Wenn sich verwandte Objekte im Status Bereitgestellt/Freigegeben befinden, wird ein gemeinsamer Rückruf angeboten. Sie wird erzwungen, wenn die Objektbeziehungen dies erfordern.
-    - Wenn sich verwandte Objekte im Entwurfsstatus befinden, ist der gemeinsame Abruf optional. Benutzer können verwandte Objekte für den gemeinsamen Abruf auswählen.
-  - wenn diese Option nicht markiert ist, werden Abhängigkeiten nicht berücksichtigt. Die Benutzer müssen überprüfen, ob die verknüpften Objekte gültig und bereitgestellt/freigegeben sind. Der Controller gibt Fehlermeldungen aus, wenn Objekte aufgrund einer inkonsistenten Bereitstellung fehlen.
+    - Wenn sich verwandte Objekte im Status *ausgerollt*/*freigegeben* befinden, wird ein gemeinsamer Rückruf angeboten. Er wird erzwungen, wenn die Objektbeziehungen dies erfordern.
+    - Wenn sich verwandte Objekte im Entwurfsstatus befinden, ist der gemeinsame Rückruf optional. Benutzer können verwandte Objekte für den gemeinsamen Rückruf auswählen.
+  - wenn diese Option nicht markiert ist, werden Abhängigkeiten nicht berücksichtigt. Die Benutzer müssen überprüfen, ob die verknüpften Objekte gültig und *ausgerollt*/*freigegeben* sind. Der Controller gibt Fehlermeldungen aus, wenn Objekte aufgrund inkonsistenten *Zurücknehmens* fehlen.
 
 ## Referenzen
 
 ### Kontext-Hilfe
 
-- [Configuration - Inventory - Operations - Recall Folder](/configuration-inventory-operations-recall-folder)
+- [Konfiguration - Inventar - Operationen - Ordner zurücknehmen](/configuration-inventory-operations-recall-folder)
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
 - [Tagesplan](/daily-plan)
-- [Dependency Matrix](/dependencies-matrix)
+- [Abhängigkeitsmatrix](/dependencies-matrix)
 
 ### Product Knowledge Base
 

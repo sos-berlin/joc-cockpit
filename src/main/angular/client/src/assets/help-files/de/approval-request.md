@@ -17,7 +17,7 @@ Zu den grundlegenden Funktionen des Autorisierungsprozesses gehören:
 
 Autorisierungsanfragen werden hinzugefügt, wenn ein Benutzer versucht, eine autorisierungspflichtige Intervention durchzuführen. Zu den Voraussetzungen gehören:
 
-- Dem Benutzer ist die *Requestor* Rolle zugewiesen. Den Namen der Rolle finden Sie unter [Settings - JOC Cockpit](/settings-joc).
+- Dem Benutzer ist die *Requestor* Rolle zugewiesen. Den Namen der Rolle finden Sie unter [Einstellungen - JOC Cockpit](/settings-joc).
 - Die angefragte Intervention wird mit den Berechtigungen der *Requestor* Rolle ausgeführt.
 
 Wenn die *Requestor* Rolle z.B. die Berechtigungen für Auträge benennt und der Benutzer versucht, einen Auftrag einem Arbeitsablauf hinzuzufügen, dann wird ein Popup-Fenster angezeigt, in dem die folgenden Informationen abgefragt werden:

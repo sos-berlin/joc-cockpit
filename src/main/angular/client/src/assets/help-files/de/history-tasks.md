@@ -4,7 +4,7 @@ Die Ansicht *Aufgabenhistorie* fasst die Ausführungshistorie von Aufträgen zus
 
 Die *Aufgabenhistorie* unterliegt der Bereinigung der Datenbank, die von [Cleanup Service](/service-cleanup) durchgeführt wird.
 
-Für die Historie von Aufträgen siehe [Order History](/history-orders).
+Für die Historie von Aufträgen siehe [Auftragshistorie](/history-orders).
 
 ## Navigationsleiste
 
@@ -13,11 +13,11 @@ Im linken Bereich können Sie nach Tags aus Workflows und Aufträgen filtern, di
 - **Workflow-Tags** werden in der Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows) zugewiesen.
 - **Auftrags-Tags** werden aus der Ansicht [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules) zugewiesen.
 
-Tags werden über die Symbole + und - ausgewählt und können über das Suchsymbol nachgeschlagen werden. Die Anzeige von Tags muss auf der Seite [Settings - JOC Cockpit](/settings-joc) aktiviert werden.
+Tags werden über die Symbole + und - ausgewählt und können über das Suchsymbol nachgeschlagen werden. Die Anzeige von Tags muss auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) aktiviert werden.
 
 ## Verlaufspanel
 
-Die Anzeige ist auf maximal 5000 Einträge beschränkt, wenn nicht anders auf [Profile - Preferences](/profile-preferences) angegeben.
+Die Anzeige ist auf maximal 5000 Einträge beschränkt, wenn nicht anders auf [Profil - Einstellungen](/profile-preferences) angegeben.
 
 ### Historie der Aufträge
 
@@ -35,7 +35,7 @@ Die Anzeige ist auf maximal 5000 Einträge beschränkt, wenn nicht anders auf [P
 - **Job Name**: Wenn Sie auf den *Job-Namen* klicken, wird die Protokollausgabe des Jobs auf [Task Log View](/task-log) angezeigt.
 - **Download-Symbol**: Wenn Sie auf das Symbol klicken, wird das Protokoll des Auftrags in eine Datei heruntergeladen.
 
-Standardmäßig ist die Anzeige von Aufgabenprotokollen auf eine Größe von 10 MB begrenzt, ansonsten werden die Protokolle in Dateien heruntergeladen. Die Benutzer können das Limit auf der Seite [Settings - JOC Cockpit](/settings-joc) anpassen.
+Standardmäßig ist die Anzeige von Aufgabenprotokollen auf eine Größe von 10 MB begrenzt, ansonsten werden die Protokolle in Dateien heruntergeladen. Die Benutzer können das Limit auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) anpassen.
 
 ### Operationen im Aufgabenprotokoll
 
@@ -66,9 +66,9 @@ Sie können die oben im Fenster verfügbaren Filter anwenden, um die Anzeige von
 - [Cleanup Service](/service-cleanup)
 - [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules)
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
-- [Order History](/history-orders)
-- [Profile - Preferences](/profile-preferences)
-- [Settings - JOC Cockpit](/settings-joc)
+- [Auftragshistorie](/history-orders)
+- [Profil - Einstellungen](/profile-preferences)
+- [Einstellungen - JOC Cockpit](/settings-joc)
 - [Task Log View](/task-log)
 
 ### Product Knowledge Base

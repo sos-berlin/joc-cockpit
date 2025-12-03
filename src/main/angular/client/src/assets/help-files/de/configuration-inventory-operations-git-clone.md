@@ -33,7 +33,7 @@ Die obigen Werte sind ein Beispiel. Bitte geben Sie Werte an, die dem gewünscht
 
 ### Kontext-Hilfe
 
-- [Dependency Matrix](/dependencies-matrix)
+- [Abhängigkeitsmatrix](/dependencies-matrix)
 
 ### Product Knowledge Base
 

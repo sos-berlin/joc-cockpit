@@ -30,7 +30,7 @@ Wenn Sie auf die angegebene Anzahl von Aufträgen klicken, gelangen Sie auf die 
 Über die Dropdown-Schaltfläche in der oberen rechten Ecke des Fensters können Sie Bestellungen aus einem Datumsbereich auswählen:
 
 - **Alle** zeigt alle beim Controller und den Agenten verfügbaren Aufträge an.
-- **Heute** Aufträge beziehen sich auf den aktuellen Tag, der aus der Zeitzone im [Profile - Preferences](/profile-preferences) des Benutzers berechnet wird.
+- **Heute** Aufträge beziehen sich auf den aktuellen Tag, der aus der Zeitzone im [Profil - Einstellungen](/profile-preferences) des Benutzers berechnet wird.
   - **Ausstehend** Aufträge ohne Startzeit,
   - **Geplante** Aufträge mit einer Startzeit für den aktuellen Tag,
   - **In Bearbeitung** Aufträge von einem beliebigen Datum in der Vergangenheit,
@@ -54,7 +54,7 @@ Wenn Sie auf die angegebene Anzahl von Aufträgen klicken, gelangen Sie auf die 
 - [Tagesplan](/daily-plan)
 - [Dateiauftragsquellen](/configuration-inventory-file-order-sources)
 - [Orders Overview](/orders-overview)
-- [Profile - Preferences](/profile-preferences)
+- [Profil - Einstellungen](/profile-preferences)
 - [Arbeitsabläufe](/workflows)
 
 ### Product Knowledge Base

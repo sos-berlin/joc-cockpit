@@ -18,11 +18,11 @@ Die grafische Benutzeroberfläche bietet eine Reihe von Registerkarten für die 
 - **Warnung bei kürzerer Ausführungszeit** löst eine Warnung und eine entsprechende Benachrichtigung aus, wenn der Auftrag früher als in der angegebenen Zeitspanne beendet wird. Die Eingabeformate umfassen:
   - *1* oder *1s*: entweder eine Zahl oder eine Zahl gefolgt von *s* gibt den Ausführungszeitraum in Sekunden an.
   - *01:02:03*: gibt 1 Stunde, 2 Minuten und 3 Sekunden für den Ausführungszeitraum an.
-  - *30%*: gibt eine um 30% kürzere Ausführungszeit an als der Durchschnitt der bisherigen Ausführungen des Auftrags. Bei der Berechnung wird die [Task History](/history-tasks) verwendet, die der Bereinigung durch die [Cleanup Service](/service-cleanup) unterliegt.
+  - *30%*: gibt eine um 30% kürzere Ausführungszeit an als der Durchschnitt der bisherigen Ausführungen des Auftrags. Bei der Berechnung wird die [Prozesshistorie](/history-tasks) verwendet, die der Bereinigung durch die [Cleanup Service](/service-cleanup) unterliegt.
 - **Warnung bei längerer Ausführungsdauer** löst eine Warnung und eine damit verbundene Benachrichtigung aus, wenn der Job die angegebene Dauer überschreiten wird. Die Eingabeformate umfassen:
   - *1* oder *1s*: entweder eine Zahl oder eine Zahl gefolgt von *s* gibt den Ausführungszeitraum in Sekunden an.
   - *01:02:03*: gibt 1 Stunde, 2 Minuten und 3 Sekunden für den Ausführungszeitraum an.
-  - *30%*: gibt eine um 30% längere Ausführungszeit an als der Durchschnitt der bisherigen Ausführungen des Auftrags. Für die Berechnung wird die [Task History](/history-tasks) verwendet, die von der [Cleanup Service](/service-cleanup) bereinigt wird.
+  - *30%*: gibt eine um 30% längere Ausführungszeit an als der Durchschnitt der bisherigen Ausführungen des Auftrags. Für die Berechnung wird die [Prozesshistorie](/history-tasks) verwendet, die von der [Cleanup Service](/service-cleanup) bereinigt wird.
 
 ### Job Log Ausgabe
 
@@ -86,7 +86,7 @@ Die folgenden Optionen legen für Jobs, die mit Agenten für Windows ausgeführt
   - [Configuration - Inventory - Workflows - Job Node Properties](/configuration-inventory-workflows-job-node-properties)
   - [Configuration - Inventory - Workflows - Job Notifications](/configuration-inventory-workflows-job-notifications)
   - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-job-tags)
-- [Task History](/history-tasks)
+- [Prozesshistorie](/history-tasks)
 
 ### Product Knowledge Base
 

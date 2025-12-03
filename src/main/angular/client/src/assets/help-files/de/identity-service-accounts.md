@@ -73,7 +73,7 @@ Benutzer können ein oder mehrere *Konten* auswählen, um die oben genannten Ope
 - [Identity Service - Blocklist](/identity-service-blocklist)
 - [Identity Services](/identity-services)
 - [Settings - Identity Service](/settings-identity-service)
-- [Settings - JOC Cockpit](/settings-joc)
+- [Einstellungen - JOC Cockpit](/settings-joc)
 
 ### Product Knowledge Base
 

@@ -31,7 +31,7 @@ Wenn Sie auf die angegebene Anzahl von Aufträgen klicken, gelangen Sie zur Ansi
 
 - [Tagesplan](/daily-plan)
 - [Dashboard - Orders](/dashboard-orders)
-- [Order History](/history-orders)
+- [Auftragshistorie](/history-orders)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)
 - [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
 

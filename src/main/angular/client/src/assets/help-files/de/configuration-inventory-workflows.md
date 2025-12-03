@@ -56,9 +56,9 @@ Für einen Workflow sind die folgenden Eingaben möglich:
 - **Name** ist der eindeutige Bezeichner eines Workflows, siehe [Regeln zur Benennung von Objekten](/object-naming-rules).
 - **Titel** enthält eine optionale Erklärung zum Zweck des Workflows.
 - **Job-Ressourcen** sind Inventarobjekte, die Variablen aus Schlüssel/Wert-Paaren enthalten, die aus Workflow-Variablen und aus Umgebungsvariablen verfügbar gemacht werden können. *Job Resources* können auf Job-Ebene zugewiesen werden und sie können auf Workflow-Ebene zugewiesen werden, wodurch sie für alle Jobs in einem Workflow verfügbar sind. Einzelheiten finden Sie unter [Konfiguration - Inventar - Job-Ressourcen](/configuration-inventory-job-resources).
-- **Zeitzone**, die aus der [Profile - Preferences](/profile-preferences) des Benutzers übernommen wird. Für die Eingabe werden Zeitzonenkennungen wie *UTC*, *Europa/London* usw. akzeptiert. Eine vollständige Liste der Zeitzonenkennungen finden Sie unter [Liste der Zeitzonen der tz-Datenbank](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+- **Zeitzone**, die aus der [Profil - Einstellungen](/profile-preferences) des Benutzers übernommen wird. Für die Eingabe werden Zeitzonenkennungen wie *UTC*, *Europa/London* usw. akzeptiert. Eine vollständige Liste der Zeitzonenkennungen finden Sie unter [Liste der Zeitzonen der tz-Datenbank](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
   - Die *Zeitzone* wird auf Zeiträume in Job Admission Times und in *Cycle Instructions* angewendet.
-  - Es ist möglich, eine *Zeitzone* zu verwenden, die von der [Settings - Daily Plan](/settings-daily-plan) abweicht. Dies kann jedoch zu verwirrenden Ergebnissen führen.
+  - Es ist möglich, eine *Zeitzone* zu verwenden, die von der [Einstellungen - Tagesplan](/settings-daily-plan) abweicht. Dies kann jedoch zu verwirrenden Ergebnissen führen.
 - **Nicht deklarierte Variablen zulassen** bietet die Verwendung von Auftragsvariablen, die nicht mit dem Workflow deklariert sind. Dies bedeutet, dass Aufträge Variablen enthalten können, die nicht auf Datentyp oder obligatorische Verwendung geprüft werden. Aufträge schlagen fehl, wenn sie auf nicht deklarierte Variablen verweisen, die nicht in einer Order verfügbar sind.
 
 ### Workflow-Variablen
@@ -145,7 +145,7 @@ Wenn Sie auf die Leinwand des *Workflow-Panels* klicken, wird ein *Operations-Pa
 - [Konfiguration - Inventar - Job-Ressourcen](/configuration-inventory-job-resources)
 - [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
 - [Tagesplan](/daily-plan)
-- [Order History](/history-orders)
+- [Auftragshistorie](/history-orders)
 - [Order States](/order-states)
 
 ### Product Knowledge Base

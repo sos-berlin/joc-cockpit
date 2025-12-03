@@ -1,16 +1,16 @@
-# Konfiguration - Inventar - Vorgänge - Freigabeordner
+# Konfiguration - Inventar - Vorgänge - Ordner freigeben
 
 Durch die Freigabe von Objekten werden diese aktiviert, z.B. für die Verwendung mit dem [Tagesplan](/daily-plan). Dies gilt für Objekte wie Zeitpläne und Kalender, die im Systemordner *Automation* verfügbar sind.
 
-Die Ansicht *Konfiguration-&gt;Inventar* bietet die Möglichkeit, ein einzelnes Objekt freizugeben, siehe [Configuration - Inventory - Operations - Release Object](/configuration-inventory-operations-release-object) und Freigabe von Objekten aus Ordnern.
+Die Ansicht *Konfiguration-&gt;Inventar* bietet die Möglichkeit, ein einzelnes Objekt freizugeben, siehe [Konfiguration - Inventar - Operationen - Objekt freigeben]](/configuration-inventory-operations-release-object) und Freigabe von Objekten aus Ordnern.
 
-Wenn Sie Objekte aus Ordnern freigeben, indem Sie die entsprechende *Freigeben*-Operation aus dem 3-Punkte-Aktionsmenü des Ordners verwenden, wird ein Popup-Fenster wie dieses angezeigt:
+Wenn Sie Objekte aus Ordnern freigeben, indem Sie die entsprechende *Freigeben* Operation aus dem 3-Punkte-Aktionsmenü des Ordners verwenden, wird ein Popup-Fenster wie dieses angezeigt:
 
 <img src="release-folder.png" alt="Release Folder" width="592" height="560" />
 
 ## Aktualisieren des Tagesplans
 
-Das Freigeben von Objekten wie Zeitplänen und Kalendern wirkt sich auf die [Tagesplan](/daily-plan) aus. Häufig soll die aktualisierte Version eines Objekts für Aufträge im Tagesplan verwendet werden. Die Benutzer steuern das Verhalten über die folgenden Optionen:
+Das Freigeben von Objekten wie Zeitplänen und Kalendern wirkt sich auf den [Tagesplan](/daily-plan) aus. Häufig soll die aktualisierte Version eines Objekts für Aufträge im Tagesplan verwendet werden. Die Benutzer steuern das Verhalten über die folgenden Optionen:
 
 - **Tagesplan aktualisieren**
   - **Jetzt** legt die Aktualisierung des Tagesplans für Aufträge fest, die für einen Zeitpunkt ab jetzt geplant sind.
@@ -24,29 +24,29 @@ Die Option **Rekursiv behandeln** ermöglicht es, Objekte aus Unterordnern rekur
 
 ## Abhängigkeiten einbeziehen
 
-Inventarobjekte sind durch Abhängigkeiten miteinander verbunden, siehe [Dependency Matrix](/dependencies-matrix). Zum Beispiel ein Workflow, der eine Job Resource und eine Resource Lock referenziert; ein Schedule, der einen Kalender und einen oder mehrere Workflows referenziert.
+Inventarobjekte sind durch Abhängigkeiten miteinander verbunden, siehe [Abhängigkeitsmatrix](/dependencies-matrix). Zum Beispiel ein Arbeitsablauf, der eine Job-Ressource und eine Ressourcen-Sperre referenziert; ein Zeitplan, der einen Kalender und einen oder mehrere Arbeitsabläufe referenziert.
 
-Bei der Freigabe von Objekten wird die Konsistenz berücksichtigt, zum Beispiel:
+Bei der Freigabe von Objekten wird die Konsistenz des Inventars berücksichtigt, zum Beispiel:
 
-- Wenn ein Zeitplan erstellt wird und auf einen neu erstellten Kalender verweist, dann beinhaltet die Freigabe des Zeitplans auch die Freigabe des Kalenders. Dazu gehört auch die Freigabe eines Workflow-Entwurfs, auf den der Zeitplan verweist.
-- Wenn ein Kalender von einem freigegebenen Zeitplan referenziert wird und zurückgerufen oder entfernt werden soll, dann muss auch der Zeitplan zurückgerufen oder entfernt werden. Dazu gehört auch, dass Sie den Workflow, auf den der Zeitplan verweist, widerrufen oder entfernen.
+- Wenn ein Zeitplan erstellt wird und auf einen neu erstellten Kalender verweist, dann beinhaltet die Freigabe des Zeitplans auch die Freigabe des Kalenders. Dazu gehört auch das Ausrollen eines Arbeitsablaufs im Entwurfsstatus, auf den der Zeitplan verweist.
+- Wenn ein Kalender von einem freigegebenen Zeitplan referenziert wird und zurückgenommen oder entfernt werden soll, dann muss auch der Zeitplan zurückgenommen oder entfernt werden. Dazu gehört optional, dass Sie den Arbeitsablauf, auf den der Zeitplan verweist, zurückziehen oder entfernen.
 
-Die Benutzer steuern die konsistente Bereitstellung über die folgenden Optionen:
+Die Benutzer steuern die konsistente Freigabe über die folgenden Optionen:
 
 - **Abhängigkeiten einbeziehen**
   - wenn diese Option aktiviert ist, werden sowohl referenzierende als auch referenzierte Objekte einbezogen.
-    - Wenn sich verwandte Objekte im Entwurfsstatus befinden, wird eine gemeinsame Bereitstellung angeboten. Sie wird erzwungen, wenn dies aufgrund von Änderungen an den Objektbeziehungen erforderlich ist.
-    - Wenn sich verwandte Objekte im Status Bereitgestellt/Freigegeben befinden, ist die gemeinsame Bereitstellung optional. Benutzer können verwandte Objekte für die gemeinsame Bereitstellung auswählen.
-  - wenn diese Option nicht markiert ist, werden Abhängigkeiten nicht berücksichtigt. Die Benutzer müssen überprüfen, ob verwandte Objekte gültig und verteilt/freigegeben sind. Der Controller gibt Fehlermeldungen aus, wenn Objekte aufgrund einer inkonsistenten Verteilung fehlen.
+    - Wenn sich verwandte Objekte im Entwurfsstatus befinden, wird eine gemeinsame Freigabe angeboten. Sie wird erzwungen, wenn dies aufgrund von Änderungen an den Objektbeziehungen erforderlich ist.
+    - Wenn sich verwandte Objekte im Status *ausgerollt*/*freigegeben* befinden, ist das gemeinsame Ausrollen optional. Benutzer können verwandte Objekte für das gemeinsame Ausrollen auswählen.
+  - wenn diese Option nicht markiert ist, werden Abhängigkeiten nicht berücksichtigt. Die Benutzer müssen überprüfen, ob verwandte Objekte gültig und *ausgerollt*/*freigegeben* sind. Der Controller gibt Fehlermeldungen aus, wenn Objekte aufgrund inkonsistenten Ausrollens fehlen.
 
 ## Referenzen
 
 ### Kontext-Hilfe
 
-- [Configuration - Inventory - Operations - Release Object](/configuration-inventory-operations-release-object)
+- [Konfiguration - Inventar - Operationen - Objekt freigeben]](/configuration-inventory-operations-release-object)
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
 - [Tagesplan](/daily-plan)
-- [Dependency Matrix](/dependencies-matrix)
+- [Abhängigkeitsmatrix](/dependencies-matrix)
 
 ### Product Knowledge Base
 

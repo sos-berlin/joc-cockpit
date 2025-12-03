@@ -2,7 +2,7 @@
 
 Der Tagesplan enthält Aufträge, die einige Tage im Voraus an den Controller und die Agenten übermittelt werden, um die Ausfallsicherheit zu gewährleisten. Darüber hinaus bietet er Projektionen für zukünftige Auftragsstartzeiten, die für die nächsten sechs Monate berechnet werden.
 
-Benutzer, die einen längeren Projektionszeitraum wünschen, können die entsprechende Einstellung auf der Seite [Settings - Daily Plan](/settings-daily-plan) ändern.
+Benutzer, die einen längeren Projektionszeitraum wünschen, können die entsprechende Einstellung auf der Seite [Einstellungen - Tagesplan](/settings-daily-plan) ändern.
 
 ### Termine, Zeiträume und Zeitzonen
 
@@ -56,6 +56,6 @@ Projektionen können in eine .xlsx-Datei exportiert werden, wobei das Datum des 
 ## Referenzen
 
 - [Tagesplan](/daily-plan)
-- [Settings - Daily Plan](/settings-daily-plan)
+- [Einstellungen - Tagesplan](/settings-daily-plan)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)
 

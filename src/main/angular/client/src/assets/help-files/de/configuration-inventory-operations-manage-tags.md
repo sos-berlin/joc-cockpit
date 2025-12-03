@@ -4,7 +4,7 @@ JS7 bietet [JS7 - Tagging](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging) 
 
 - Kennzeichnungen werden über das Inventar verwaltet, das in der Ansicht *Konfiguration* des JOC Cockpit verfügbar ist.
   - Arbeitsabläufen können eine beliebige Anzahl von Kennzeichnungen zugewiesen werden.
-  - Zeitplänen wird eine beliebige Anzahl von Kennzeichnungen zugewiesen, die den von [Daily Plan Service](/service-daily-plan) erstellten Aufträgen hinzugefügt werden.
+  - Zeitplänen wird eine beliebige Anzahl von Kennzeichnungen zugewiesen, die den von [Tagesplandienst](/service-daily-plan) erstellten Aufträgen hinzugefügt werden.
 - Kennzeichnungen können beim manuellen Hinzufügen von Ad-hoc-Aufträgen verwendet werden.
 - Kennzeichnungen können in den Ansichten *Arbeitsabläufe*, *Übersicht der Aufträge*, *Tagesplan* und *Historie* zum Filtern von Arbeitsabläufen und Aufträgen verwendet werden.
 
@@ -29,7 +29,7 @@ Die *Liste der Kennzeichnungen* zeigt den Namen und die Arbeitsabläufe an, dene
 ### Kontexthilfe
 
 - [Konfiguration - Inventar - Navigation](/configuration-inventory-navigation)
-- [Configuration - Inventory - Workflow - Job Tags](/configuration-inventory-workflow-job-tags)
+- [Konfiguration - Inventar - Arbeitsablauf - Job Kennzeichnungen](/configuration-inventory-workflow-job-tags)
 - [Tagesplan](/daily-plan)
 
 ### Product Knowledge Base

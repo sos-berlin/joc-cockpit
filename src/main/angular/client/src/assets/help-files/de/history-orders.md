@@ -4,7 +4,7 @@ Die Ansicht *Auftragsverlauf* fasst den Verlauf der Ausführung von Aufträgen z
 
 Die *Auftragshistorie* unterliegt der Bereinigung der Datenbank, die von [Cleanup Service](/service-cleanup) durchgeführt wird.
 
-Für die Historie von Aufgaben siehe [Task History](/history-tasks).
+Für die Historie von Aufgaben siehe [Prozesshistorie](/history-tasks).
 
 ## Navigationsleiste
 
@@ -13,11 +13,11 @@ Der linke Bereich ermöglicht die Filterung nach Tags aus Workflows und Aufträg
 - **Workflow-Tags** werden in der Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows) zugewiesen.
 - **Auftrags-Tags** werden aus der Ansicht [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules) zugewiesen.
 
-Tags werden über die Symbole + und - ausgewählt und können über das Symbol Schnellsuche nachgeschlagen werden. Die Anzeige von Tags muss auf der Seite [Settings - JOC Cockpit](/settings-joc) aktiviert werden.
+Tags werden über die Symbole + und - ausgewählt und können über das Symbol Schnellsuche nachgeschlagen werden. Die Anzeige von Tags muss auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) aktiviert werden.
 
 ## Verlaufspanel
 
-Die Anzeige ist auf maximal 5000 Einträge beschränkt, wenn nicht anders auf [Profile - Preferences](/profile-preferences) angegeben.
+Die Anzeige ist auf maximal 5000 Einträge beschränkt, wenn nicht anders auf [Profil - Einstellungen](/profile-preferences) angegeben.
 
 ### Historie der Aufträge
 
@@ -38,7 +38,7 @@ Die Anzeige ist auf maximal 5000 Einträge beschränkt, wenn nicht anders auf [P
 - **Auftrags-ID**: Wenn Sie auf die *Auftrags-ID* klicken, wird die Protokollausgabe des Auftrags auf [Order Log View](/order-log) angezeigt. Das Protokoll enthält die Ausgaben, die von allen mit dem Workflow ausgeführten Aufträgen erstellt wurden.
 - **Download-Symbol**: Wenn Sie auf das Symbol klicken, wird das Protokoll der Bestellung in eine Datei heruntergeladen.
 
-Standardmäßig ist die Anzeige von Auftragsprotokollen auf eine Größe von 10 MB begrenzt, ansonsten werden die Protokolle in Dateien heruntergeladen. Die Benutzer können das Limit auf der Seite [Settings - JOC Cockpit](/settings-joc) anpassen.
+Standardmäßig ist die Anzeige von Auftragsprotokollen auf eine Größe von 10 MB begrenzt, ansonsten werden die Protokolle in Dateien heruntergeladen. Die Benutzer können das Limit auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) anpassen.
 
 ### Operationen in der Aufgabenhistorie
 
@@ -70,9 +70,9 @@ Benutzer können die oben im Fenster verfügbaren Filter anwenden, um die Anzeig
 - [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules)
 - [Order Log View](/order-log)
 - [Order States](/order-states)
-- [Profile - Preferences](/profile-preferences)
-- [Settings - JOC Cockpit](/settings-joc)
-- [Task History](/history-tasks)
+- [Profil - Einstellungen](/profile-preferences)
+- [Einstellungen - JOC Cockpit](/settings-joc)
+- [Prozesshistorie](/history-tasks)
 - [Arbeitsabläufe](/workflows)
 
 ### Product Knowledge Base

@@ -1,47 +1,47 @@
 # Konfiguration - Inventar - Vorgänge - Objekt umbenennen
 
-Inventarobjekte können umbenannt oder verlagert werden. Dies gilt für Objekte, Benutzerordner oder beides. Zum Umbenennen von Benutzerordnern siehe [Configuration - Inventory - Operations - Rename Folder](/configuration-inventory-operations-rename-folder). 
+Inventarobjekte können umbenannt oder verlagert werden. Dies gilt für Objekte, Benutzerordner oder beides. Zum Umbenennen von Benutzerordnern siehe [Konfiguration - Inventar - Operationen - Ordner umbenennen](/configuration-inventory-operations-rename-folder). 
 
-Wenn Sie Objekte umbenennen, gilt [Regeln zur Benennung von Objekten](/object-naming-rules).
+Wenn Sie Objekte umbenennen, gelten die [Regeln zur Benennung von Objekten](/object-naming-rules).
 
-Die Operation *Umbenennen* ist über das Bedienfeld *Navigation* verfügbar und wird für Objekte und Benutzerordner über das zugehörige 3-Punkte-Aktionsmenü angeboten.
+Die Operation *Umbenennen* ist über den *Navigationsbereich* verfügbar und wird für Objekte und Benutzerordner über das zugehörige 3-Punkte-Aktionsmenü angeboten.
 
 <img src="rename-object.png" alt="Rename Object" width="400" height="125" />
 
 ## Objekt umbenennen
 
-Benutzer können den Speicherort und den Namen eines Objekts ändern. Im Folgenden wird von einem Objekt ausgegangen, das sich im Ordner **/Test/Benutzer** befindet und den Namen **meinWorkflow** trägt:
+Benutzer können den Speicherort und den Namen eines Objekts ändern. Im Folgenden wird von einem Objekt ausgegangen, das sich im Ordner **/Test/User** befindet und den Namen **myWorkflow** trägt:
 
-- Wenn der Objektname geändert wird, verbleibt das Objekt im angegebenen Ordner und wird auf den Status Entwurf gesetzt.
-- Für den neuen Namen können Benutzer eine andere Ordnerhierarchie und einen anderen Objektnamen aus einem absoluten Pfad mit führendem Schrägstrich angeben, z.B. **/Test/Workflows/IhrWorkflow**:
+- Wenn der Objektname geändert wird, verbleibt das Objekt im angegebenen Ordner und wird auf den Status *Entwurf* gesetzt.
+- Für den neuen Namen können Benutzer eine andere Ordnerhierarchie und einen anderen Objektnamen aus einem absoluten Pfad mit führendem Schrägstrich angeben, z.B. **/Test/Workflows/yourWorkflow**:
   - wenn der Ordner **/Test/Workflows** nicht existiert, wird er erstellt.
-  - wird der Workflow von **meinWorkflow** in **IhrWorkflow** umbenannt.
-- Es kann ein relativer Pfad wie in **Workflows/IhrWorkflow** angegeben werden:
+  - wird der Workflow von **myWorkflow** in **yourWorkflow** umbenannt.
+- Es kann ein relativer Pfad wie in **Workflows/yourWorkflow** angegeben werden:
   - der Ordner **Workflows** wird im aktuellen Ordner erstellt.
-  - wird das Objekt umbenannt und befindet sich in **/Test/Users/Workflows/ihrWorkflow**.
-- Wenn der Objektordner geändert wird, aber nicht der Objektname, dann bleibt das Objekt im Status bereitgestellt/freigegeben.
+  - wird das Objekt umbenannt und befindet sich in **/Test/Users/Workflows/yourWorkflow**.
+- Wenn der Objektordner geändert wird, aber nicht der Objektname, dann bleibt das Objekt im Status *ausgerollt*/*freigegeben*.
 
 ## Abhängigkeiten
 
-Inventarobjekte sind durch Abhängigkeiten miteinander verbunden, siehe [Dependency Matrix](/dependencies-matrix). Zum Beispiel ein Workflow, der eine Job Resource und eine Resource Lock referenziert; ein Schedule, der einen Kalender und einen oder mehrere Workflows referenziert.
+Inventarobjekte sind durch Abhängigkeiten miteinander verbunden, siehe [Abhängigkeitsmatrix](/dependencies-matrix). Zum Beispiel ein Arbeitsablauf, der eine Job-Ressource und eine Ressourcen-Sperre referenziert; ein Zeitplan, der einen Kalender und einen oder mehrere Arbeitsabläufe referenziert.
 
-Bei der Umbenennung von Objekten wird die Konsistenz berücksichtigt und referenzierende Objekte werden aktualisiert und z.B. auf den Status Entwurf gesetzt:
+Bei der Umbenennung von Objekten wird die Konsistenz des Inventars berücksichtigt und referenzierende Objekte werden aktualisiert und z.B. auf den Status *Entwurf* gesetzt:
 
-- Wenn eine Job Resource umbenannt wird, die von einem Workflow referenziert wird, dann 
-  - wird der Workflow aktualisiert, um den geänderten Namen wiederzugeben,
-  - wird der Workflow in den Entwurfsstatus versetzt,
-  - eine spätere *Deploy*-Operation wird die gemeinsame Bereitstellung beider Objekte erzwingen.
-- Wenn ein Workflow umbenannt wird, der von einem Zeitplan referenziert wird, dann
+- Wenn eine Job-Ressource umbenannt wird, die von einem Arbeitsablauf referenziert wird, dann 
+  - wird der Arbeitsablauf aktualisiert, um den geänderten Namen wiederzugeben,
+  - wird der Arbeitsablauf in den Entwurfsstatus versetzt,
+  - eine spätere *Ausrollen* Operation wird das gemeinsame Ausrollen beider Objekte erzwingen.
+- Wenn ein Arbeitsablauf umbenannt wird, der von einem Zeitplan referenziert wird, dann
   - wird der Zeitplan aktualisiert, um den geänderten Namen wiederzugeben,
-  - wird der Zeitplan auf den Status Entwurf gesetzt,
-  - ein späterer *Deploy*-Vorgang für den Workflow schließt einen *Release*-Vorgang für den Zeitplan ein und umgekehrt.
+  - wird der Zeitplan auf den Status *Entwurf* gesetzt,
+  - ein späterer *Ausrollen* Vorgang für den Arbeitsablauf schließt einen *Freigabe* Vorgang für den Zeitplan ein und umgekehrt.
 
 ## Referenzen
 
 ### Kontext-Hilfe
 
-- [Configuration - Inventory - Operations - Rename Folder](/configuration-inventory-operations-rename-folder)
-- [Dependency Matrix](/dependencies-matrix)
+- [Konfiguration - Inventar - Operationen - Ordner umbenennen](/configuration-inventory-operations-rename-folder)
+- [Abhängigkeitsmatrix](/dependencies-matrix)
 - [Regeln zur Benennung von Objekten](/object-naming-rules)
 
 ### Product Knowledge Base

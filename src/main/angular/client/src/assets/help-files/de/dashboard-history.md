@@ -27,8 +27,8 @@ Wenn Sie auf die angegebene Anzahl von Aufträgen oder Jobs klicken, gelangen Si
 
 ## Referenzen
 
-- [Order History](/history-orders)
-- [Task History](/history-tasks)
+- [Auftragshistorie](/history-orders)
+- [Prozesshistorie](/history-tasks)
 - [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
 - [JS7 - Task History](https://kb.sos-berlin.com/display/JS7/JS7+-+Task+History)
 

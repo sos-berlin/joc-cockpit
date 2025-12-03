@@ -26,7 +26,7 @@ Die Bereitstellung von Objekten wie Workflows, Zeitplänen und Kalendern wirkt s
 
 ## Abhängigkeiten einbeziehen
 
-Inventarobjekte sind durch Abhängigkeiten miteinander verbunden, siehe [Dependency Matrix](/dependencies-matrix). Zum Beispiel ein Workflow, der eine Job Resource und eine Resource Lock referenziert; ein Schedule, der einen Kalender und einen oder mehrere Workflows referenziert.
+Inventarobjekte sind durch Abhängigkeiten miteinander verbunden, siehe [Abhängigkeitsmatrix](/dependencies-matrix). Zum Beispiel ein Workflow, der eine Job Resource und eine Resource Lock referenziert; ein Schedule, der einen Kalender und einen oder mehrere Workflows referenziert.
 
 Bei der Bereitstellung von Objekten wird zum Beispiel die Konsistenz berücksichtigt:
 
@@ -48,7 +48,7 @@ Die Benutzer steuern die konsistente Bereitstellung über die folgenden Optionen
 - [Configuration - Inventory - Operations - Deploy Folder](/configuration-inventory-operations-deploy-folder)
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
 - [Tagesplan](/daily-plan)
-- [Dependency Matrix](/dependencies-matrix)
+- [Abhängigkeitsmatrix](/dependencies-matrix)
 
 ### Product Knowledge Base
 

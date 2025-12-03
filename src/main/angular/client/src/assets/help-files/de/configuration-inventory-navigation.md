@@ -60,7 +60,7 @@ Der Papierkorb wird über das Papierkorbsymbol rechts neben dem obersten Ordner 
 
 Kennzeichnungen sind eine alternative Möglichkeit, um zwischen Inventarobjekten zu navigieren. Wenn Sie die Registerkarten *Kennz. Arbeitsablauf* oder *Kennz. Job* im *Navigationsbereich* aktivieren, zeigt das Panel die Liste der verfügbaren Kennzeichnungen an.
 
-Kennzeichnungen können über das Symbol + hinzugefügt werden. Es stehen Optionen für aufsteigende und absteigende Sortierung zur Verfügung. Die Anzeige von Kennzeichnungen in anderen Ansichten muss auf der Seite [Settings - JOC Cockpit](/settings-joc) aktiviert werden.
+Kennzeichnungen können über das Symbol + hinzugefügt werden. Es stehen Optionen für aufsteigende und absteigende Sortierung zur Verfügung. Die Anzeige von Kennzeichnungen in anderen Ansichten muss auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) aktiviert werden.
 
 - Wenn Sie auf die entsprechende Kennzeichnung klicken, werden die Arbeitsabläufe angezeigt, denen die Kennzeichnung zugewiesen ist.
 - Kennzeichnungen bieten die folgenden Operationen in ihrem 3-Punkte-Aktionsmenü:

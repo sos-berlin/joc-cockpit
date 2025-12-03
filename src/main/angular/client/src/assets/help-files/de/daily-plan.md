@@ -2,7 +2,7 @@
 
 Die Ansicht *Tagesplan* bietet einen Überblick über die Aufträge, die für die zukünftige Ausführung geplant sind, und ermöglicht es den Benutzern, den *Tagesplan* zu verwalten. 
 
-Die [Daily Plan Service](/service-daily-plan) wird verwendet, um Aufträge für den Tagesplan zu erstellen und an die Controller zu übermitteln. Der Dienst wird im Hintergrund betrieben und arbeitet täglich, um Aufträge für einige Tage im Voraus zu planen und zu übermitteln.
+Die [Tagesplandienst](/service-daily-plan) wird verwendet, um Aufträge für den Tagesplan zu erstellen und an die Controller zu übermitteln. Der Dienst wird im Hintergrund betrieben und arbeitet täglich, um Aufträge für einige Tage im Voraus zu planen und zu übermitteln.
 
 Der Tagesplan unterliegt der Bereinigung der Datenbank, die von [Cleanup Service](/service-cleanup) durchgeführt wird.
 
@@ -14,7 +14,7 @@ Der Tagesplan enthält Aufträge, die einen der folgenden Status haben:
 
 - **Geplant**: Die Aufträge wurden erstellt, aber noch nicht an den Controller und die Agenten *übermittelt*.
 - **Vorgelegt**: Die Aufträge wurden an den Controller und die Agenten weitergeleitet, die die Aufträge selbstständig starten werden. Dieser Status gilt für Aufträge, die für eine zukünftige Ausführung geplant sind, und für Aufträge, die gerade ausgeführt werden.
-- **Erledigt**: Die Aufträge wurden abgeschlossen. Die Ansicht [Order History](/history-orders) erklärt, ob die Ausführung erfolgreich war oder fehlgeschlagen ist.
+- **Erledigt**: Die Aufträge wurden abgeschlossen. Die Ansicht [Auftragshistorie](/history-orders) erklärt, ob die Ausführung erfolgreich war oder fehlgeschlagen ist.
 
 ## Order Status Übergänge
 
@@ -127,9 +127,9 @@ Eine Position kann angegeben werden, wenn die Order nicht beim ersten Knoten im 
 
 - [Cleanup Service](/service-cleanup)
 - [Daily Plan - Calendar](/daily-plan-calendar)
-- [Daily Plan Service](/service-daily-plan)
-- [Order History](/history-orders)
-- [Settings - Daily Plan](/settings-daily-plan)
+- [Tagesplandienst](/service-daily-plan)
+- [Auftragshistorie](/history-orders)
+- [Einstellungen - Tagesplan](/settings-daily-plan)
 
 ### Product Knowledge Base
 
