@@ -39,7 +39,7 @@ export class AddChangesModalComponent {
   affectedCollapsed: { [key: string]: boolean } = {};
   referencedCollapsed: { [key: string]: boolean } = {};
 
-  dependencyMode: 'none' | 'enforced' | 'unenforced' | 'all' = 'all';
+  dependencyMode: 'none' | 'enforced' | 'all' = 'all';
   private filteredDepsCache = new WeakMap<any, { referencedBy: any[], references: any[] }>();
 
   constructor(
@@ -571,10 +571,6 @@ export class AddChangesModalComponent {
 
     if (this.dependencyMode === 'enforced') {
       return dependencies.filter(dep => dep.enforce === true);
-    }
-
-    if (this.dependencyMode === 'unenforced') {
-      return dependencies.filter(dep => dep.enforce === false);
     }
 
     return dependencies;

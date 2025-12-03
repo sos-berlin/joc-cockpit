@@ -178,27 +178,16 @@
           </div>
         </div>
       }
-      @if (nodes.length > 0 && exportObj.exportType === 'changes') {
-        <div class="form-group row">
-          <div class="col-md-3">
-            <label translate>inventory.label.includeDependencies</label>
-          </div>
-          <div class="col-md-6">
-            <label [(ngModel)]="exportObj.includeDependencies" (ngModelChange)="includeDependencies()" name="includeDependencies" nz-checkbox></label>
-          </div>
-        </div>
-      }
-      @if (exportObj.exportType === 'individual') {
+      @if (exportObj.exportType === 'individual' || exportObj.exportType === 'changes') {
         <div class="form-group row">
           <div class="col-md-3">
             <label translate>inventory.label.includeDependencies</label>
           </div>
           <div class="col-md-9">
             <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">
-              <label nz-radio nzValue="none"><span translate>inventory.label.none</span></label>
-              <label nz-radio nzValue="enforced"><span translate>inventory.label.enforcedOnly</span></label>
-              <label nz-radio nzValue="unenforced"><span translate>inventory.label.unenforcedOnly</span></label>
               <label nz-radio nzValue="all"><span translate>inventory.label.all</span></label>
+              <label nz-radio nzValue="enforced"><span translate>inventory.label.enforcedOnly</span></label>
+              <label nz-radio nzValue="none"><span translate>inventory.label.none</span></label>
             </nz-radio-group>
           </div>
         </div>
@@ -608,113 +597,128 @@
                 </div>
               </div>
 
-              @if (node.origin.dependencies) {
-                <div style="width: 400px">
-                  @for (dependency of [node.origin.dependencies]; track dependency) {
-                    <div class="dependencies-list m-l-20 m-t-xs">
+             @if (node.origin.dependencies) {
+              <div style="width: 400px">
+                  @for (filteredDeps of getFilteredNodeDependencies(node.origin); track filteredDeps) {
+                  @if (filteredDeps.referencedBy.length > 0 || filteredDeps.references.length > 0) {
+                  <div class="dependencies-list m-l-20 m-t-xs">
                       <!-- Affected Objects (referencedBy) -->
-                      @if (dependency?.referencedBy?.length > 0) {
-                        <div class="col-md-6"  class="form-group">
-                          <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !affectedCollapsed[node.key], 'fa-caret-down': affectedCollapsed[node.key]}"
+                      @if (filteredDeps.referencedBy.length > 0) {
+                      <div class="col-md-6" class="form-group">
+                          <i class="cursor text-16 fa"
+                             [ngClass]="{'fa-caret-right': !affectedCollapsed[node.key], 'fa-caret-down': affectedCollapsed[node.key]}"
                              (click)="toggleAffectedCollapse(node.key)"></i>
-                          <label class="m-l-sm">{{ 'inventory.label.affectedObjects' | translate }}</label>
+                          <label class="m-l-sm">{{'inventory.label.affectedObjects' | translate}}</label>
+
                           @if (affectedCollapsed[node.key]) {
-                            <div class="m-t-sm m-l-md">
-                              @for (objectType of getUniqueObjectTypes(dependency?.referencedBy); track objectType) {
-                                <ng-container>
-                                  @if (getObjectsByType(dependency?.referencedBy, objectType)?.length) {
-                                    <div class="m-t-sm">
+                          <div class="m-t-sm m-l-md">
+                              @for (objectType of getUniqueObjectTypes(filteredDeps.referencedBy); track objectType) {
+                              <ng-container>
+                                  @if (getObjectsByType(filteredDeps.referencedBy, objectType)?.length) {
+                                  <div class="m-t-sm">
                                       <ng-container>
-                                        <label>
-                                          @if (!isCustomIcon(objectType)) {
-                                            <span class="icon-color">
-                                              <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
-                                            </span>
-                                          }
-                                          @if (isCustomIcon(objectType)) {
-                                            <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
-                                          }
-                                          {{ getObjectTypeLabel(objectType) | translate }}
-                                        </label>
+                                          <label>
+                                              @if (!isCustomIcon(objectType)) {
+                                              <span class="icon-color">
+                                                <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+                                              </span>
+                                              }
+                                              @if (isCustomIcon(objectType)) {
+                                              <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
+                                              }
+                                              {{ getObjectTypeLabel(objectType) | translate }}
+                                          </label>
                                       </ng-container>
+
                                       @if (affectedCollapsed[objectType]) {
-                                        <div class="m-t-sm m-l-md">
-                                          @for (obj of getObjectsByType(dependency?.referencedBy, objectType); track obj) {
-                                            <div>
+                                      <div class="m-t-sm m-l-md">
+                                          @for (obj of getObjectsByType(filteredDeps.referencedBy, objectType); track obj) {
+                                          <div>
                                               <ng-container>
-                                                <label>
-                                                  <span [ngClass]="{
+                                                  <label>
+                                                    <span [ngClass]="{
                                                       'fa-circle-o': !obj.valid,
                                                       'fa-circle dark-blue': obj.deployed || obj.released
-                                                  }" class="fa fa-check-circle-o orange text-xs"></span>
-                                                  {{ obj.path }}
-                                                </label>
+                                                    }" class="fa fa-check-circle-o orange text-xs"></span>
+                                                      {{ obj.path }}
+                                                      @if (obj.enforce) {
+                                                      <span class="badge badge-warning m-l-xs">Enforced</span>
+                                                      }
+                                                  </label>
                                               </ng-container>
-                                            </div>
+                                          </div>
                                           }
-                                        </div>
+                                      </div>
                                       }
-                                    </div>
+                                  </div>
                                   }
-                                </ng-container>
+                              </ng-container>
                               }
-                            </div>
+                          </div>
                           }
-                        </div>
+                      </div>
                       }
+
                       <!-- Referenced Objects (references) -->
-                      @if (dependency?.references?.length > 0) {
-                        <div class="col-md-6"  class="form-group">
-                          <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !referencedCollapsed[node.key], 'fa-caret-down': referencedCollapsed[node.key]}"
+                      @if (filteredDeps.references.length > 0) {
+                      <div class="col-md-6" class="form-group">
+                          <i class="cursor text-16 fa"
+                             [ngClass]="{'fa-caret-right': !referencedCollapsed[node.key], 'fa-caret-down': referencedCollapsed[node.key]}"
                              (click)="toggleReferencedCollapse(node.key)"></i>
-                          <label class="m-l-sm">{{ 'inventory.label.referencedObjects' | translate }}</label>
+                          <label class="m-l-sm">{{'inventory.label.referencedObjects' | translate}}</label>
+
                           @if (referencedCollapsed[node.key]) {
-                            <div class="m-t-sm m-l-md">
-                              @for (objectType of getUniqueObjectTypes(dependency?.references); track objectType) {
-                                <ng-container>
-                                  @if (getObjectsByType(dependency?.references, objectType)?.length) {
-                                    <div class="m-t-sm">
-                                      <ng-container >
-                                        <label>
-                                          @if (!isCustomIcon(objectType)) {
-                                            <span class="icon-color">
-                                              <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
-                                            </span>
-                                          }
-                                          @if (isCustomIcon(objectType)) {
-                                            <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
-                                          }
-                                          {{ getObjectTypeLabel(objectType) | translate }}
-                                        </label>
+                          <div class="m-t-sm m-l-md">
+                              @for (objectType of getUniqueObjectTypes(filteredDeps.references); track objectType) {
+                              <ng-container>
+                                  @if (getObjectsByType(filteredDeps.references, objectType)?.length) {
+                                  <div class="m-t-sm">
+                                      <ng-container>
+                                          <label>
+                                              @if (!isCustomIcon(objectType)) {
+                                              <span class="icon-color">
+                                                <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+                                              </span>
+                                              }
+                                              @if (isCustomIcon(objectType)) {
+                                              <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
+                                              }
+                                              {{ getObjectTypeLabel(objectType) | translate }}
+                                          </label>
                                       </ng-container>
+
                                       @if (referencedCollapsed[objectType]) {
-                                        <div class="m-t-sm m-l-md">
-                                          @for (obj of getObjectsByType(dependency?.references, objectType); track obj) {
-                                            <div>
+                                      <div class="m-t-sm m-l-md">
+                                          @for (obj of getObjectsByType(filteredDeps.references, objectType); track obj) {
+                                          <div>
                                               <ng-container>
-                                                <label>
-                                                  <span [ngClass]="{
+                                                  <label>
+                                                    <span [ngClass]="{
                                                       'fa-circle-o': !obj.valid,
                                                       'fa-circle dark-blue': obj.deployed || obj.released
-                                                  }" class="fa fa-check-circle-o orange text-xs"></span>
-                                                  {{ obj.path }}
-                                                </label>
+                                                    }" class="fa fa-check-circle-o orange text-xs"></span>
+                                                      {{ obj.path }}
+                                                      @if (obj.enforce) {
+                                                      <span class="badge badge-warning m-l-xs">Enforced</span>
+                                                      }
+                                                  </label>
                                               </ng-container>
-                                            </div>
+                                          </div>
                                           }
-                                        </div>
+                                      </div>
                                       }
-                                    </div>
+                                  </div>
                                   }
-                                </ng-container>
+                              </ng-container>
                               }
-                            </div>
+                          </div>
                           }
-                        </div>
+                      </div>
                       }
-                    </div>
+                  </div>
                   }
-                </div>
+                  }
+              </div>
               }
             </ng-template>
           </div>

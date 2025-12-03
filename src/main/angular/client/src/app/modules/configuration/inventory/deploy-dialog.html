@@ -152,16 +152,15 @@
         </div>
       }
 
-      @if (nodes.length > 0 && object.deployType != 'changes') {
+      @if (nodes.length > 0) {
         <div class="form-group row">
           <div class="col-md-3">
             <label translate>inventory.label.includeDependencies</label>
           </div>
           <div class="col-md-9">
             <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">
-              <label nz-radio nzValue="enforced"><span translate>inventory.label.enforcedOnly</span></label>
-              <label nz-radio nzValue="unenforced"><span translate>inventory.label.unenforcedOnly</span></label>
               <label nz-radio nzValue="all"><span translate>inventory.label.all</span></label>
+              <label nz-radio nzValue="enforced"><span translate>inventory.label.enforcedOnly</span></label>
               <label nz-radio nzValue="none"><span translate>inventory.label.none</span></label>
             </nz-radio-group>
           </div>
@@ -695,20 +694,15 @@
                                        [name]="'checkbox-related-' + obj.path"
                                        [nzDisabled]="obj.disabled"
                                        (ngModelChange)="updateParentCheckboxRelated(objectType)">
-                                  <span [ngClass]="{
-                                      'fa-circle-o': !obj.valid,
-                                      'fa-circle dark-blue': obj.deployed || obj.released
-                                  }" class="fa fa-check-circle-o orange text-xs"></span>
+      <span [ngClass]="{
+          'fa-circle-o': !obj.valid,
+          'fa-circle dark-blue': obj.deployed || obj.released
+      }" class="fa fa-check-circle-o orange text-xs"></span>
                                   {{ obj.path }}
-                                  @if (obj.enforce) {
-                                    <span class="badge badge-info m-l-xs">Enforced</span>
-                                  }
-                                  @if (obj.depth && obj.depth > 0) {
-                                    <span class="badge badge-secondary m-l-xs">Level {{ obj.depth }}</span>
-                                  }
                                 </label>
                               </div>
                             }
+
                           </div>
                         }
                       </div>
