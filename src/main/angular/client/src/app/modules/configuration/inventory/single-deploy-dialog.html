@@ -116,9 +116,8 @@
             </div>
             <div class="col-md-9">
               <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">
-                <label nz-radio nzValue="enforced"><span translate>inventory.label.enforcedOnly</span></label>
-                <label nz-radio nzValue="unenforced"><span translate>inventory.label.unenforcedOnly</span></label>
                 <label nz-radio nzValue="all"><span translate>inventory.label.all</span></label>
+                <label nz-radio nzValue="enforced"><span translate>inventory.label.enforcedOnly</span></label>
                 <label nz-radio nzValue="none"><span translate>inventory.label.none</span></label>
 
               </nz-radio-group>
@@ -254,7 +253,7 @@
         }
 
       <div class="form-group row m-t-md">
-          @if (affectedObjectTypes.length > 0) {
+        @if (affectedObjectTypes.length > 0 && dependencyMode !== 'none') {
             <div class="col-md-6" [class.col-md-12]="referencedObjectTypes.length === 0">
               <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isAffectedCollapsed, 'fa-caret-down': isAffectedCollapsed}"
                  (click)="toggleAllAffectedCollapse()"></i>
@@ -307,8 +306,8 @@
             </div>
           }
 
-          @if (referencedObjectTypes.length > 0) {
-            <div class="col-md-6" [class.col-md-12]="affectedObjectTypes.length === 0">
+        @if (referencedObjectTypes.length > 0 && dependencyMode !== 'none') {
+          <div class="col-md-6" [class.col-md-12]="affectedObjectTypes.length === 0">
               <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isReferencedCollapsed, 'fa-caret-down': isReferencedCollapsed}"
                  (click)="toggleAllReferencedCollapse()"></i>
               <label class="m-l-sm" translate>inventory.label.referencedObjects</label>
@@ -365,6 +364,69 @@
             </div>
           }
         </div>
+        <!-- Related Objects Section -->
+        @if (relatedObjectTypes.length > 0 && dependencyMode !== 'none') {
+          <div class="col-md-12 m-t-md">
+            <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isRelatedCollapsed, 'fa-caret-down': isRelatedCollapsed}"
+               (click)="toggleAllRelatedCollapse()"></i>
+            <label class="m-l-sm font-bold" translate>inventory.label.filteredAffectedItems</label>
+
+            @if (isRelatedCollapsed) {
+              <div class="m-t-sm m-l-sm">
+                @for (objectType of relatedObjectTypes; track objectType) {
+                  <ng-container>
+                    @if (getFilteredRelatedObjects(objectType)?.length > 0) {
+                      <div class="m-t-sm">
+                        <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !relatedCollapsed[objectType], 'fa-caret-down': relatedCollapsed[objectType]}"
+                           (click)="toggleRelatedCollapse(objectType)"></i>
+
+                        <label class="m-l-sm">
+                          <label nz-checkbox
+                                 [(ngModel)]="selectAllRelated[objectType]"
+                                 [name]="'checkbox-all-related-' + objectType"
+                                 (ngModelChange)="toggleAllRelated(objectType, $event)">
+                            @if (!isCustomIcon(objectType)) {
+                              <span class="icon-color">
+                        <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+                      </span>
+                            }
+                            @if (isCustomIcon(objectType)) {
+                              <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
+                            }
+                            {{ getObjectTypeLabel(objectType) | translate }}
+                          </label>
+                        </label>
+
+                        @if (relatedCollapsed[objectType]) {
+                          <div class="m-t-sm m-l-md">
+                            @for (obj of getFilteredRelatedObjects(objectType); track obj.id) {
+                              <div>
+                                <label class="m-l-sm">
+                                  <label nz-checkbox
+                                         [(ngModel)]="obj.selected"
+                                         [name]="'checkbox-related-' + obj.path"
+                                         [nzDisabled]="obj.disabled"
+                                         (ngModelChange)="updateParentCheckboxRelated(objectType)">
+                            <span [ngClass]="{
+                              'fa-circle-o': !obj.valid,
+                              'fa-circle dark-blue': obj.deployed || obj.released,
+                              'opacity7': obj.syncState
+                            }" class="fa fa-check-circle-o orange text-xs p-l-xs m-l-xs"></span>
+                                    {{ obj.path }}
+                                  </label>
+                                </label>
+                              </div>
+                            }
+                          </div>
+                        }
+                      </div>
+                    }
+                  </ng-container>
+                }
+              </div>
+            }
+          </div>
+        }
 
       </div>
     }
