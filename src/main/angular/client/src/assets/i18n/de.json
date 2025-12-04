@@ -2097,6 +2097,8 @@
     "message.recall": "Ausgewählte Objekte werden zurückgenommen, sie verbleiben im Inventar.",
     "message.link": "Verbindet den Inventarordner mit einem vorhandenen lokalen Klon eines Git Repository.",
     "message.unlink": "Trennt den Inventarordner vom lokalen Klon eines Git Repository.",
+    "message.relatedObjects": "Referenced by {{count}} selected objects",
+    "message.invalidEnforcedObjects": "Invalid enforced objects. Please validate them first.",
     "tab": {
       "folders": "Ordner",
       "trash": "Papierkorb",

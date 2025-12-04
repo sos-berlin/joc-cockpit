@@ -2097,6 +2097,8 @@
     "message.recall": "Les objets sélectionnés seront rappelés, ils resteront dans l'inventaire.",
     "message.link": "Lie le dossier d'inventaire à un clone local existant d'un dépôt Git.",
     "message.unlink": "Désassocie le dossier d'inventaire d'un clone local d'un dépôt Git.",
+    "message.relatedObjects": "Referenced by {{count}} selected objects",
+    "message.invalidEnforcedObjects": "Invalid enforced objects. Please validate them first.",
     "tab": {
       "folders": "Dossiers",
       "trash": "Corbeille",

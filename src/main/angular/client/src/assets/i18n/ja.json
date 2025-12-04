@@ -2097,6 +2097,8 @@
     "message.recall": "選択項目は戻りますが、インベントリーに残ります。",
     "message.link": "Git連携JOCフォルダーからのローカルクローンへリンク",
     "message.unlink": "Git連携JOCフォルダーからのローカルクローンへリンク解除",
+    "message.relatedObjects": "Referenced by {{count}} selected objects",
+    "message.invalidEnforcedObjects": "Invalid enforced objects. Please validate them first.",
     "tab": {
       "folders": "フォルダー",
       "trash": "ゴミ箱",

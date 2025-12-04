@@ -355,7 +355,7 @@
                             <div class="col-md-6" class="form-group">
                               <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !affectedCollapsed[node.key], 'fa-caret-down': affectedCollapsed[node.key]}"
                                  (click)="toggleAffectedCollapse(node.key)"></i>
-                              <label class="m-l-sm">{{ 'inventory.label.affectedObjects' | translate }}</label>
+                              <label (click)="toggleAffectedCollapse(node.key)" class="m-l-sm font-600 cursor">{{ 'inventory.label.affectedObjects' | translate }}</label>
                               @if (affectedCollapsed[node.key]) {
                                 <div class="m-t-sm m-l-md">
                                   @for (objectType of getUniqueObjectTypes(filteredDeps.referencedBy); track objectType) {
@@ -385,9 +385,6 @@
                                                         'fa-circle dark-blue': obj.deployed || obj.released
                                                     }" class="fa fa-check-circle-o orange text-xs"></span>
                                                     {{ obj.path }}
-                                                    @if (obj.enforce) {
-                                                      <span class="badge badge-warning m-l-xs">Enforced</span>
-                                                    }
                                                   </label>
                                                 } @else {
                                                   <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-' + obj.path"
@@ -397,9 +394,6 @@
                                                         'fa-circle dark-blue': obj.deployed || obj.released
                                                     }" class="fa fa-check-circle-o orange text-xs"></span>
                                                     {{ obj.path }}
-                                                    @if (obj.enforce) {
-                                                      <span class="badge badge-warning m-l-xs">Enforced</span>
-                                                    }
                                                   </label>
                                                 }
                                               </div>
@@ -417,7 +411,7 @@
                             <div class="col-md-6" class="form-group">
                               <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !referencedCollapsed[node.key], 'fa-caret-down': referencedCollapsed[node.key]}"
                                  (click)="toggleReferencedCollapse(node.key)"></i>
-                              <label class="m-l-sm">{{ 'inventory.label.referencedObjects' | translate }}</label>
+                              <label (click)="toggleReferencedCollapse(node.key)" class="m-l-sm font-600 cursor">{{ 'inventory.label.referencedObjects' | translate }}</label>
                               @if (referencedCollapsed[node.key]) {
                                 <div class="m-t-sm m-l-md">
                                   @for (objectType of getUniqueObjectTypes(filteredDeps.references); track objectType) {
@@ -446,9 +440,6 @@
                                                       'fa-circle dark-blue': obj.deployed || obj.released
                                                   }" class="fa fa-check-circle-o orange text-xs"></span>
                                                   {{ obj.path }}
-                                                  @if (obj.enforce) {
-                                                    <span class="badge badge-warning m-l-xs">Enforced</span>
-                                                  }
                                                 </label>
                                               </div>
                                             }
@@ -544,7 +535,7 @@
                           <div class="col-md-6" class="form-group">
                             <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !affectedCollapsed[node.key], 'fa-caret-down': affectedCollapsed[node.key]}"
                                (click)="toggleAffectedCollapse(node.key)"></i>
-                            <label class="m-l-sm">{{ 'inventory.label.affectedObjects' | translate }}</label>
+                            <label (click)="toggleAffectedCollapse(node.key)" class="m-l-sm font-600 cursor">{{ 'inventory.label.affectedObjects' | translate }}</label>
                             @if (affectedCollapsed[node.key]) {
                               <div class="m-t-sm m-l-md">
                                 @for (objectType of getUniqueObjectTypes(filteredDeps.referencedBy); track objectType) {
@@ -572,9 +563,6 @@
                                                     'fa-circle dark-blue': obj.deployed || obj.released
                                                 }" class="fa fa-check-circle-o orange text-xs"></span>
                                                 {{ obj.path }}
-                                                @if (obj.enforce) {
-                                                  <span class="badge badge-warning m-l-xs">Enforced</span>
-                                                }
                                               </label>
                                             </div>
                                           }
@@ -591,7 +579,7 @@
                           <div class="col-md-6" class="form-group">
                             <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !referencedCollapsed[node.key], 'fa-caret-down': referencedCollapsed[node.key]}"
                                (click)="toggleReferencedCollapse(node.key)"></i>
-                            <label class="m-l-sm">{{ 'inventory.label.referencedObjects' | translate }}</label>
+                            <label (click)="toggleReferencedCollapse(node.key)" class="m-l-sm font-600 cursor">{{ 'inventory.label.referencedObjects' | translate }}</label>
                             @if (referencedCollapsed[node.key]) {
                               <div class="m-t-sm m-l-md">
                                 @for (objectType of getUniqueObjectTypes(filteredDeps.references); track objectType) {
@@ -619,9 +607,6 @@
                                                     'fa-circle dark-blue': obj.deployed || obj.released
                                                 }" class="fa fa-check-circle-o orange text-xs"></span>
                                                 {{ obj.path }}
-                                                @if (obj.enforce) {
-                                                  <span class="badge badge-warning m-l-xs">Enforced</span>
-                                                }
                                               </label>
                                             </div>
                                           }
@@ -649,7 +634,7 @@
             <i class="cursor text-16 fa"
                [ngClass]="{'fa-caret-right': !isRelatedCollapsed, 'fa-caret-down': isRelatedCollapsed}"
                (click)="toggleAllRelatedCollapse()"></i>
-            <label class="m-l-sm font-bold" translate>inventory.label.filteredAffectedItems</label>
+            <label (click)="toggleAllRelatedCollapse()" class="m-l-sm font-600 cursor" translate>inventory.label.filteredAffectedItems</label>
             <i class="cursor text-16 fa fa-angle-double-down m-l-sm"
                [nzTooltipMouseEnterDelay]="0.5"
                [nz-tooltip]="'Expand All Related' | translate"
@@ -668,7 +653,7 @@
                         <i class="cursor text-16 fa"
                            [ngClass]="{'fa-caret-right': !relatedCollapsed[objectType], 'fa-caret-down': relatedCollapsed[objectType]}"
                            (click)="toggleRelatedCollapse(objectType)"></i>
-                        <label class="m-l-sm">
+                        <label class="m-l-sm font-600 cursor">
                           <label nz-checkbox
                                  [(ngModel)]="selectAllRelated[objectType]"
                                  [name]="'checkbox-related-all-' + objectType"

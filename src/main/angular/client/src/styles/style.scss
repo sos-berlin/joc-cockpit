@@ -8234,6 +8234,30 @@ tr.tr-border td:first-child {
   color: var(--text-muted)
 }
 
+//for dependencies
+.disabled-enforced {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+}
+
+.disabled-enforced .ant-checkbox {
+  cursor: not-allowed !important;
+}
+
+.disabled-enforced .ant-checkbox-inner {
+  background-color: #f5f5f5 !important;
+  border-color: #999 !important;
+}
+
+.disabled-enforced .ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #d9d9d9 !important;
+  border-color: #999 !important;
+}
+
+.disabled-enforced .ant-checkbox-disabled .ant-checkbox-inner::after {
+  border-color: #999 !important;
+}
+//end
 .ant-checkbox-inner {
   border-radius: 0;
 }
@@ -10394,4 +10418,8 @@ cdk-virtual-scroll-viewport {
 
 .editor-panel{
   border-right: 1px solid var(--border-color);
+}
+
+.font-600{
+  font-weight: 600;
 }

@@ -253,11 +253,11 @@
         }
 
       <div class="form-group row m-t-md">
-        @if (affectedObjectTypes.length > 0 && dependencyMode !== 'none') {
+        @if (affectedObjectTypes.length > 0 && dependencyMode !== 'none' && getFilteredAffectedObjectsCount() > 0) {
             <div class="col-md-6" [class.col-md-12]="referencedObjectTypes.length === 0">
               <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isAffectedCollapsed, 'fa-caret-down': isAffectedCollapsed}"
                  (click)="toggleAllAffectedCollapse()"></i>
-              <label class="m-l-sm" translate>inventory.label.affectedObjects</label>
+              <label (click)="toggleAllAffectedCollapse()" class="m-l-sm cursor font-600" translate>inventory.label.affectedObjects</label>
               @if (isAffectedCollapsed) {
                 <div class="m-t-sm m-l-sm">
                   @for (objectType of affectedObjectTypes; track objectType) {
@@ -281,7 +281,7 @@
                             @for (obj of getFilteredAffectedObjects(objectType); track obj.path) {
                               <div>
                                 <label class="m-l-sm">
-                                  <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-' + obj.path"
+                                  <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox-' + obj.path" [ngClass]="{'disabled-enforced': obj.disabled}"
                                          [nzDisabled]="obj.disabled" (ngModelChange)="updateParentCheckboxAffected(objectType)">
                                     <span [ngClass]="{
                                       'fa-circle-o': !obj.valid,
@@ -306,11 +306,11 @@
             </div>
           }
 
-        @if (referencedObjectTypes.length > 0 && dependencyMode !== 'none') {
+        @if (referencedObjectTypes.length > 0 && dependencyMode !== 'none' && getFilteredReferencedObjectsCount() > 0) {
           <div class="col-md-6" [class.col-md-12]="affectedObjectTypes.length === 0">
               <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isReferencedCollapsed, 'fa-caret-down': isReferencedCollapsed}"
                  (click)="toggleAllReferencedCollapse()"></i>
-              <label class="m-l-sm" translate>inventory.label.referencedObjects</label>
+              <label (click)="toggleAllReferencedCollapse()" class="m-l-sm cursor font-600" translate>inventory.label.referencedObjects</label>
               @if (isReferencedCollapsed) {
                 <div class="m-t-sm m-l-sm">
                   @for (objectType of referencedObjectTypes; track objectType) {
@@ -340,7 +340,7 @@
                                 <div>
                                   <ng-container>
                                     <label class="m-l-sm">
-                                      <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox_' + obj.path"
+                                      <label nz-checkbox [(ngModel)]="obj.selected" [name]="'checkbox_' + obj.path" [ngClass]="{'disabled-enforced': obj.disabled}"
                                              [disabled]="obj.disabled" (ngModelChange)="updateParentCheckboxReferenced(objectType)">
                                         <span [ngClass]="{
                                           'fa-circle-o': !obj.valid,
@@ -363,13 +363,12 @@
               }
             </div>
           }
-        </div>
         <!-- Related Objects Section -->
-        @if (relatedObjectTypes.length > 0 && dependencyMode !== 'none') {
+        @if (relatedObjectTypes.length > 0 && dependencyMode !== 'none' && getFilteredRelatedObjectsCount() > 0) {
           <div class="col-md-12 m-t-md">
             <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isRelatedCollapsed, 'fa-caret-down': isRelatedCollapsed}"
                (click)="toggleAllRelatedCollapse()"></i>
-            <label class="m-l-sm font-bold" translate>inventory.label.filteredAffectedItems</label>
+            <label (click)="toggleAllRelatedCollapse()" class="m-l-sm font-bold cursor font-600" translate>inventory.label.filteredAffectedItems</label>
 
             @if (isRelatedCollapsed) {
               <div class="m-t-sm m-l-sm">
@@ -406,14 +405,17 @@
                                          [(ngModel)]="obj.selected"
                                          [name]="'checkbox-related-' + obj.path"
                                          [nzDisabled]="obj.disabled"
+                                         [ngClass]="{'disabled-enforced': obj.disabled}"
+                                         [nz-tooltip]="getRelatedParentTooltip(obj.id)"
                                          (ngModelChange)="updateParentCheckboxRelated(objectType)">
-                            <span [ngClass]="{
-                              'fa-circle-o': !obj.valid,
-                              'fa-circle dark-blue': obj.deployed || obj.released,
-                              'opacity7': obj.syncState
-                            }" class="fa fa-check-circle-o orange text-xs p-l-xs m-l-xs"></span>
+                                      <span [ngClass]="{
+                                        'fa-circle-o': !obj.valid,
+                                        'fa-circle dark-blue': obj.deployed || obj.released,
+                                        'opacity7': obj.syncState
+                                      }" class="fa fa-check-circle-o orange text-xs p-l-xs m-l-xs"></span>
                                     {{ obj.path }}
                                   </label>
+
                                 </label>
                               </div>
                             }
@@ -427,7 +429,7 @@
             }
           </div>
         }
-
+        </div>
       </div>
     }
     @if (deployablesObject.length===0 && !loading && !isRemoved) {
@@ -443,13 +445,23 @@
   </div>
   <div class="modal-footer text-left">
     @if (!isRemoved) {
-      <button [nz-tooltip]="getInvalidCalendarMessage()"
-              [nzTooltipTitle]="getInvalidCalendarMessage()" [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || deployablesObject.length===0 || loading || submitted || hasUncheckedInvalidCalendar()" class="btn btn-primary btn-sm" translate type="submit">
+      <button   [nz-tooltip]="hasUncheckedInvalid() ? invalidTooltip : null"
+                nzTooltipPlacement="top" [disabled]="!myForm.form.valid || selectedSchedulerIds.length === 0 || deployablesObject.length===0 || loading || submitted || hasUncheckedInvalid()" class="btn btn-primary btn-sm" translate type="submit">
         @if (submitted) {
           <i class="fa fa-spin fa-spinner p-r-xs"></i>
         }
         {{'common.button.submit' | translate}}
       </button>
+      <ng-template #invalidTooltip>
+        <div style="max-width: 300px; text-align: left;">
+          <strong translate>inventory.message.invalidEnforcedObjects</strong>
+          <ul style="margin: 4px 0 0 0; padding-left: 20px; list-style: disc;">
+            @for (path of getInvalidObjects(); track path) {
+              <li style="margin: 2px 0;">{{ path }}</li>
+            }
+          </ul>
+        </div>
+      </ng-template>
     }
     @if (isRemoved) {
       <button [disabled]="submitted || !myForm.form.valid" class="btn btn-danger btn-sm" type="submit">

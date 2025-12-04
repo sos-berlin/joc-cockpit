@@ -1,3 +1,4 @@
+<script src="inventory.component.ts"></script>
 <div class="modal-header">
   <h4 class="modal-title">
     <span translate>{{'common.button.'+ title}}</span>  </h4>
@@ -8,28 +9,13 @@
 
 <div class="modal-body p-a max-ht-120">
   @if (affectedObjectTypes.length > 0 || referencedObjectTypes.length > 0) {
-    <div class="form-group row m-b-1">
-      <div class="col-md-3">
-        <label translate>inventory.label.includeDependencies</label>
-      </div>
-      <div class="col-md-9">
-        <nz-radio-group [(ngModel)]="dependencyMode" name="dependencyMode" (ngModelChange)="onDependencyModeChange()">
-          <label nz-radio nzValue="all"><span translate>inventory.label.all</span></label>
-          <label nz-radio nzValue="enforced"><span translate>inventory.label.enforcedOnly</span></label>
-          <label nz-radio nzValue="unenforced"><span translate>inventory.label.unenforcedOnly</span></label>
-          <label nz-radio nzValue="none"><span translate>inventory.label.none</span></label>
-        </nz-radio-group>
-      </div>
-    </div>
-  }
-  @if (affectedObjectTypes.length > 0 || referencedObjectTypes.length > 0) {
     <div class="form-group row">
       <!-- Affected Objects (referencedBy) -->
       @if (affectedObjectTypes.length > 0) {
         <div class="col-md-6" [class.col-md-12]="referencedObjectTypes.length === 0">
           <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isAffectedCollapsed, 'fa-caret-down': isAffectedCollapsed}"
              (click)="toggleAllAffectedCollapse()"></i>
-          <label class="m-l-sm" translate>inventory.label.affectedObjects</label>
+          <label (click)="toggleAllAffectedCollapse()" class="m-l-sm font-600 cursor" translate>inventory.label.affectedObjects</label>
           <i class="cursor text-16 fa fa-angle-double-down m-l-sm"
              (click)="expandAllAffected()"></i>
           <i class="cursor text-16 fa fa-angle-double-up m-l-xs"
@@ -52,7 +38,6 @@
                           <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
                         }
                         {{ getObjectTypeLabel(objectType) | translate }}
-                        <span class="text-muted">({{ getFilteredAffectedObjects(objectType).length }})</span>
                       </label>
                       @if (affectedCollapsed[objectType]) {
                         <div class="m-t-sm m-l-md">
@@ -87,7 +72,7 @@
         <div class="col-md-6" [class.col-md-12]="affectedObjectTypes.length === 0">
           <i class="cursor text-16 fa" [ngClass]="{'fa-caret-right': !isReferencedCollapsed, 'fa-caret-down': isReferencedCollapsed}"
              (click)="toggleAllReferencedCollapse()"></i>
-          <label class="m-l-sm" translate>inventory.label.referencedObjects</label>
+          <label (click)="toggleAllReferencedCollapse()" class="m-l-sm font-600 cursor" translate>inventory.label.referencedObjects</label>
           <i class="cursor text-16 fa fa-angle-double-down m-l-sm" (click)="expandAllReferenced()"></i>
           <i class="cursor text-16 fa fa-angle-double-up m-l-xs" (click)="collapseAllReferenced()"></i>
           @if (isReferencedCollapsed) {
@@ -108,7 +93,6 @@
                           <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
                         }
                         {{ getObjectTypeLabel(objectType) | translate }}
-                        <span class="text-muted">({{ getFilteredReferencedObjects(objectType).length }})</span>
                       </label>
                       @if (referencedCollapsed[objectType]) {
                         <div class="m-t-sm m-l-md">
@@ -145,6 +129,57 @@
       </div>
     }
   }
+  @if (relatedObjectTypes.length > 0) {
+    <div class="col-md-12 m-t-sm">
+      <i class="cursor text-16 fa"
+         [ngClass]="{'fa-caret-right': !isRelatedCollapsed, 'fa-caret-down': isRelatedCollapsed}"
+         (click)="isRelatedCollapsed = !isRelatedCollapsed"></i>
+      <label  (click)="isRelatedCollapsed = !isRelatedCollapsed" class="m-l-sm font-600 cursor" translate>inventory.label.filteredAffectedItems</label>
+
+      @if (isRelatedCollapsed) {
+        <div class="m-t-sm m-l-sm">
+          @for (objectType of relatedObjectTypes; track objectType) {
+            <ng-container>
+              <div class="m-t-sm">
+                <i class="cursor text-16 fa"
+                   [ngClass]="{'fa-caret-right': !relatedCollapsed[objectType], 'fa-caret-down': relatedCollapsed[objectType]}"
+                   (click)="relatedCollapsed[objectType] = !relatedCollapsed[objectType]"></i>
+                <label class="m-l-sm">
+                  @if (!isCustomIcon(objectType)) {
+                    <span class="icon-color">
+                    <i nz-icon nzTheme="outline" [nzType]="getIcon(objectType)"></i>
+                  </span>
+                  }
+                  @if (isCustomIcon(objectType)) {
+                    <span class="icon-color" [ngClass]="getIcon(objectType)"></span>
+                  }
+                  {{ getObjectTypeLabel(objectType) | translate }}
+                </label>
+                @if (relatedCollapsed[objectType]) {
+                  <div class="m-t-sm m-l-md">
+                    @for (obj of relatedObjectsByType[objectType]; track obj) {
+                      <div>
+                        <label class="m-l-sm">
+                        <span [ngClass]="{
+                          'fa-circle-o': !obj.valid,
+                          'fa-circle dark-blue': obj.deployed || obj.released,
+                          'opacity7': obj.syncState
+                        }" class="fa fa-check-circle-o orange text-xs p-l-xs m-l-xs"></span>
+                          {{ obj.path }}
+                        </label>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </ng-container>
+          }
+        </div>
+      }
+    </div>
+  }
+
+
   @if (loading) {
     <div class="text-center m-t-md">
       <nz-spin nzSimple></nz-spin>

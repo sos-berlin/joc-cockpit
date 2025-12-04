@@ -2097,6 +2097,8 @@
     "message.recall": "Selected objects will be recalled, they remain in the inventory.",
     "message.link": "links the inventory folder to an existing local clone of a Git Repository.",
     "message.unlink": "Unlinks the inventory folder from a local clone of a Git Repository.",
+    "message.relatedObjects": "Referenced by {{count}} selected objects",
+    "message.invalidEnforcedObjects": "Invalid enforced objects. Please validate them first.",
     "tab": {
       "folders": "Folders",
       "trash": "Trash",
