@@ -59,7 +59,7 @@ Die folgenden Operationen sind über die entsprechenden Schaltflächen in der ob
 
 ### Operationen für einzelne Rollen
 
-Aus der Liste der Rollen können Benutzer eine Rolle per Drag &amp; Drop an eine andere Position ziehen. Die Operation hat keinen Einfluss auf die Bearbeitung der Rollen.
+Aus der Liste der Rollen können Benutzer eine Rolle per Drag&amp;Drop an eine andere Position ziehen. Die Operation hat keinen Einfluss auf die Bearbeitung der Rollen.
 
 Im 3-Punkte-Aktionsmenü jeder Rolle werden die folgenden Operationen angeboten:
 

@@ -1,19 +1,19 @@
 # Konfiguration - Inventar - Skript-Bausteine
 
-Das *Skript-Bausteine* Panel bietet die Möglichkeit, Codeschnipsel für die Verwendung mit Jobs festzulegen. Einzelheiten finden Sie unter [JS7 - Script Includes](https://kb.sos-berlin.com/display/JS7/JS7+-+Script+Includes).
+Der Bereich *Skript-Baustein* bietet die Möglichkeit, Code-Blöcke für die Verwendung mit Jobs festzulegen. Einzelheiten finden Sie unter [JS7 - Script Includes](https://kb.sos-berlin.com/display/JS7/JS7+-+Script+Includes).
 
 Shell Jobs können für eine Reihe von Skriptsprachen wie Bash, Python, PowerShell usw. verwendet werden.
 
-- Benutzer verwenden häufig Codeschnipsel in einer Reihe von Jobs wieder, z.B. wiederverwendbare Funktionen, die in einer Reihe von *Job-Skripts* aufgerufen werden.
+- Benutzer verwenden häufig Code-Blöcke in einer Reihe von Jobs wieder, z.B. wiederverwendbare Funktionen, die in einer Reihe von *Job-Skripten* aufgerufen werden.
 - Dies gilt für Shell Jobs, die Bash usw. verwenden, und es gilt für die Verwendung einer beliebigen Skriptsprache mit einem Job.
-- Skript-Bausteine werden in *Job-Skripts* erweitert, wenn der Arbeitsablauf ausgerollt wird. Dies bedeutet, dass Änderungen an Skript-Bausteinen das Ausrollen des entsprechenden Arbeitsablaufs erfordern. JS7 verfolgt die Abhängigkeiten und bietet das Ausrollen der zugehörigen Arbeitsabläufe an, wenn Sie den Skript-Baustein freigeben.
+- Skript-Bausteine werden in *Job-Skripten* expandiert, wenn der Arbeitsablauf ausgerollt wird. Dies bedeutet, dass Änderungen an Skript-Bausteinen das Ausrollen des entsprechenden Arbeitsablaufs erfordern. JS7 verfolgt die Abhängigkeiten und bietet das Ausrollen der zugehörigen Arbeitsabläufe an, wenn Sie den Skript-Baustein freigeben.
 
 Skript-Bausteine werden über die folgenden Bedienfelder verwaltet:
 
-- Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner, die Skript-Bausteine enthalten. Darüber hinaus bietet das Panel Operationen für Skript-Bausteine.
-- Das *Skript-Baustein* Panel auf der rechten Seite des Fensters enthält Details zur Konfiguration von Skript-Bausteinen.
+- Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner, die Skript-Bausteine enthalten und Operationen für Skript-Bausteine.
+- Der Bereich *Skript-Baustein* auf der rechten Seite des Fensters enthält Details zur Konfiguration von Skript-Bausteinen.
 
-## Skript-Baustein Panel
+## Bereich: Skript-Baustein
 
 Für Skript-Bausteine sind die folgenden Eingaben möglich:
 
@@ -40,10 +40,10 @@ Das *script-include-name* gibt den Bezeichner des Skript-Bausteins an. Benutzer 
 Wenn Sie die Tastenkombination STRG+Leertaste drücken, während sich der Cursor im *Job-Skript* befindet, wird die Schnellsuche für Skript-Bausteine aufgerufen:
 
 - Die Schnellsuche bietet 
-  - die Navigation von Inventarordnern aus,
-  - auswahl von Skript-Bausteine nach Namen, wenn Sie ein oder mehrere Zeichen eingeben.
+  - die Navigation von Inventarordnern,
+  - die Auswahl von Skript-Bausteinen nach Namen, wenn Sie ein oder mehrere Zeichen eingeben.
 - Bei der Schnellsuche wird die Groß- und Kleinschreibung nicht berücksichtigt und es wird nach rechts abgeschnitten. Für links abgeschnittene Eingaben können Sie das Metazeichen \* verwenden, das als Platzhalter für eine beliebige Anzahl von Zeichen dient.
-- Nachdem Sie ein Skript-Baustein ausgewählt haben, wird die zugehörige Eingabe in die Zeile eingefügt, in der sich der Cursor befindet.
+- Nachdem Sie einen Skript-Baustein ausgewählt haben, wird die zugehörige Eingabe in die Zeile eingefügt, in der sich der Cursor befindet.
 
 ### Parametrisierung
 

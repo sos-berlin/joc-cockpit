@@ -1,27 +1,27 @@
 # Konfiguration - Inventar - Job-Ressourcen
 
-Im *Job-Ressource Panel* können Sie Job-Ressourcen für die Verwendung mit Arbeitsabläufen und Jobs angeben.
+Im Bereich *Job-Ressourcen* können Sie Job-Ressourcen für die Verwendung mit Arbeitsabläufen und Jobs konfigurieren.
 
 Job-Ressourcen enthalten Variablen aus Schlüssel/Wert-Paaren, die für die folgenden Zwecke verwendet werden:
 
 - Für JVM Jobs, die in der Java Virtual Machine des Agenten ablaufen, werden Variablen aus *Argumenten* angegeben. Wenn einem Job eine Job-Ressource zugewiesen wird, werden die entsprechenden Job-Argumente implizit versorgt.
-- Bei Shell Jobs werden die Variablen unter *Umgebungsvariablen* angegeben. Wenn einem Job eine Job-Ressource zugewiesen wird, werden die Umgebungsvariablen automatisch erstellt.
+- Für Shell Jobs werden die Variablen unter *Umgebungsvariablen* angegeben. Wenn einem Job eine Job-Ressource zugewiesen wird, werden die Umgebungsvariablen automatisch erstellt.
 
 Job-Ressourcen werden einem Arbeitsablauf oder Job über die entsprechende Objekteigenschaft zugewiesen, siehe [Konfiguration - Inventar - Arbeitsablauf - Job-Optionen](/configuration-inventory-workflow-job-options). Wenn sie auf Ebene des Arbeitsablaufs zugewiesen werden, sind die Variablen der Job-Ressource für alle Jobs im Arbeitsablauf verfügbar.
 
 Job-Ressourcen werden über die folgenden Fenster verwaltet:
 
-- Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner mit den Job-Ressourcen. Darüber hinaus bietet das Panel die Möglichkeit, Job-Ressourcen zu bearbeiten.
-- Das *Panel Job-Ressourcen* auf der rechten Seite des Fensters enthält Details zur Konfiguration der Job-Ressourcen.
+- Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner mit den Job-Ressourcen und die Möglichkeit, Job-Ressourcen zu bearbeiten.
+- Der Bereich *Job-Ressourcen* auf der rechten Seite des Fensters enthält Details zur Konfiguration der Job-Ressourcen.
 
-## Job-Ressource Panel
+## Bereich: Job-Ressource
 
 Für eine Job-Ressource sind die folgenden Eingaben möglich:
 
 - **Name** ist der eindeutige Bezeichner einer Job-Ressource, siehe [Regeln zur Benennung von Objekten](/object-naming-rules).
 - **Titel** enthält eine optionale Erläuterung des Zwecks der Job-Ressource.
 
-Das Panel ermöglicht die Konfiguration von Variablen der Job-Ressource auf den folgenden Registerkarten:
+Der Bereich ermöglicht die Konfiguration von Variablen der Job-Ressource auf den folgenden Registerkarten:
 
 - **Argumente** werden von JVM Jobs verwendet, die mit Java, JavaScript usw. erstellt wurden.
 - **Umgebungsvariablen** werden von Shell Jobs verwendet.
@@ -52,4 +52,3 @@ Für verfügbare Operationen siehe [Konfiguration - Inventar - Navigationsbereic
 - [JS7 - Assignment of Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Assignment+of+Variables)
 - [JS7 - Expressions for Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Expressions+for+Variables)
 - [JS7 - Order Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+Variables)
-

@@ -7,7 +7,7 @@ Die Ansicht *Konfiguration - Inventar* wird zur Verwaltung von Inventarobjekten 
 
 ## Navigationsbereich
 
-Das linke Panel ist in Registerkarten gegliedert, die die Navigation von Ordnern und von Kennzeichnungen für Arbeitsabläufe und Jobs ermöglichen.
+Der linke Bereich ist in Registerkarten gegliedert, die die Navigation von Ordnern und von Kennzeichnungen für Arbeitsabläufe und Jobs ermöglichen.
 
 - die **Ordnernavigation** zeigt Inventarobjekte aus dem ausgewählten Ordner an.
 - Auf den folgenden Registerkarten können Sie nach Kennzeichnungen filtern, um Arbeitsabläufe auszuwählen:
@@ -58,7 +58,7 @@ Der Papierkorb wird über das Papierkorbsymbol rechts neben dem obersten Ordner 
 
 ### Kennzeichnungen
 
-Kennzeichnungen sind eine alternative Möglichkeit, um zwischen Inventarobjekten zu navigieren. Wenn Sie die Registerkarten *Kennz. Arbeitsablauf* oder *Kennz. Job* im *Navigationsbereich* aktivieren, zeigt das Panel die Liste der verfügbaren Kennzeichnungen an.
+Kennzeichnungen sind eine alternative Möglichkeit, um zwischen Inventarobjekten zu navigieren. Wenn Sie die Registerkarten *Kennz. Arbeitsablauf* oder *Kennz. Job* im *Navigationsbereich* aktivieren, zeigt der Bereich die Liste der verfügbaren Kennzeichnungen an.
 
 Kennzeichnungen können über das Symbol + hinzugefügt werden. Es stehen Optionen für aufsteigende und absteigende Sortierung zur Verfügung. Die Anzeige von Kennzeichnungen in anderen Ansichten muss auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) aktiviert werden.
 
@@ -71,7 +71,7 @@ Kennzeichnungen können über das Symbol + hinzugefügt werden. Es stehen Option
 
 Operationen sind auf Ordner- und Objektebene über das 3-Punkte-Aktionsmenü verfügbar, das im *Navigationsbereich* angezeigt wird.
 
-### Operationen auf Ordnerebene
+### Operationen auf Ordner
 
 Operationen sind für *Systemordner* und *Benutzerordner* verfügbar.
 
@@ -80,7 +80,7 @@ Der Ordner der obersten Ebene / (Schrägstrich) bietet die folgenden Operationen
 - **Erneut Ausrollen** wird im Falle eines Journalverlusts verwendet, wenn der Speicher eines Controllers gelöscht und der Controller initialisiert wird. Die Operation *rollt alle Objekte aus*, die zuvor auf einen Controller ausgerollt wurden. 
 - **Abhängigkeiten aktualisieren** erstellt die interne Darstellung der Objektabhängigkeiten neu. Dies geschieht automatisch und wird beim Erstellen oder Löschen von Inventarobjekten und bei Änderungen von Objektnamen ausgelöst. Wenn Benutzer Grund zu der Annahme haben, dass die Abhängigkeiten nicht synchron sind, kann der Vorgang durchgeführt werden. Die Benutzer sollten bedenken, dass dies einige Zeit in Anspruch nehmen wird, etwa drei Minuten bei einem Bestand von 5000 Objekten. Die Benutzer können jedoch mit JOC Cockpit weiterarbeiten, während die Abhängigkeiten aktualisiert werden.
 
-#### Operationen im Systemordner
+#### Operationen für Systemordner
 
 Die folgenden Operationen sind für *Systemordner* verfügbar:
 
@@ -107,7 +107,7 @@ Die folgenden Operationen sind für *Systemordner* verfügbar:
   - **Vorlage auf Jobs anwenden** aktualisiert Jobs in Arbeitsabläufen, die sich in einem beliebigen Ordner befinden, der Verweise auf *Job-Vorlagen* enthält, die im ausgewählten *Systemordner* oder einem beliebigen Unterordner enthalten sind.
   - Weitere Operationen sind ähnlich wie bei *Operationen für Controller-Objekte* verfügbar.
 
-#### Operationen im Benutzerordner
+#### Operationen für Benutzerordner
 
 *Benutzerordner* werden von Benutzern erstellt und enthalten eine Reihe von *Systemordnern*. Die folgenden Operationen werden angeboten:
 
@@ -141,7 +141,7 @@ Die folgenden Operationen sind für *Systemordner* verfügbar:
   - **Jobs aus Vorlagen aktualisieren** aktualisiert Jobs in Arbeitsabläufen, die sich in einem beliebigen Ordner befinden, der Verweise auf *Job-Vorlagen* enthält, die zum ausgewählten *Benutzerordner* oder einem beliebigen Unterordner gehören.
   - **Vorlage auf Jobs anwenden** aktualisiert Jobs in Arbeitsabläufen, die sich im ausgewählten *Benutzerordner* befinden, anhand von *Job-Vorlagen*, die sich in einem beliebigen Ordner befinden.
 
-### Operationen auf Objektebene
+### Operationen auf Objekte
 
 Die folgenden Operationen werden für einzelne Inventarobjekte angeboten:
 
@@ -153,8 +153,8 @@ Die folgenden Operationen werden für einzelne Inventarobjekte angeboten:
   - **Abhängigkeiten anzeigen** zeigt die Liste der referenzierenden Objekte und der referenzierten Objekte an. Ein Arbeitsablauf kann beispielsweise Verweise auf Job-Ressourcen enthalten und kann von *Zeitplänen* oder *Dateiauftragsquellen* referenziert werden.
   - **Neuer Entwurf** erstellt eine Entwurfsversion aus einer zuvor *ausgerollten* oder *freigegebenen* Version des Objekts.
   - JSON-Operationen
-    - **JSON Format anzeigen** zeigt das JSON-Speicherformat des Inventarobjekts an.
-    - **JSON Format bearbeiten** bietet die Möglichkeit, ein Objekt direkt aus seinem JSON-Speicherformat heraus zu ändern.
+    - **JSON Format anzeigen** zeigt das JSON Format des Inventarobjekts an.
+    - **JSON Format bearbeiten** bietet die Möglichkeit, ein Objekt direkt in seinem JSON Format zu ändern.
     - **JSON Format herunterladen** lädt das Objekt im JSON-Speicherformat in eine .json-Datei herunter.
     - **JSON Format hochladen** bietet das Hochladen einer .json-Datei an, die das Objekt ersetzen wird.
   - Löschoperationen
@@ -225,4 +225,3 @@ Die folgenden Operationen werden für einzelne Inventarobjekte angeboten:
     - [JS7 - Management of Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Management+of+Calendars)
   - [JS7 - Job Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Templates)
   - [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports)
-

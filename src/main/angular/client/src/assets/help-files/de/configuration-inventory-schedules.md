@@ -1,6 +1,6 @@
 # Konfiguration - Inventar - Zeitpläne
 
-Das *Zeitplan* Panel bietet die Möglichkeit, Regeln für die Erstellung von Aufträgen aus dem [Tagesplan](/daily-plan) festzulegen. Details finden Sie unter [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules).
+Der Bereich *Zeitpläne* bietet die Möglichkeit, Regeln für die Erstellung von Aufträgen aus dem [Tagesplan](/daily-plan) festzulegen. Details finden Sie unter [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules).
 
 - Zeitpläne legen den Zeitpunkt fest, zu dem die Ausführung von Aufträgen für Arbeitsabläufe beginnt. Ihnen werden ein oder mehrere Arbeitsabläufe und optional Variablen zugewiesen, die von Jobs in den jeweiligen Arbeitsabläufen verwendet werden.
   - **Starttage** werden von [Konfiguration - Inventar - Kalender](/configuration-inventory-calendars) angegeben und begrenzen die Tage für die Ausführung der Arbeitsabläufe.
@@ -14,10 +14,10 @@ Das *Zeitplan* Panel bietet die Möglichkeit, Regeln für die Erstellung von Auf
 
 Zeitpläne werden über die folgenden Fenster verwaltet:
 
-- Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner mit den Zeitplänen. Außerdem bietet das Panel die Möglichkeit, Operationen für Zeitpläne durchzuführen.
-- Das *Schedule Panel* auf der rechten Seite des Fensters enthält Details zur Zeitplankonfiguration.
+- Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner mit den Zeitplänen und Operationen für Zeitpläne.
+- Der Bereich *Zeitplan* auf der rechten Seite des Fensters enthält Details zur Zeitplankonfiguration.
 
-## Zeitplan Panel
+## Bereich: Zeitplan
 
 Für einen Zeitplan sind die folgenden Eingaben möglich:
 

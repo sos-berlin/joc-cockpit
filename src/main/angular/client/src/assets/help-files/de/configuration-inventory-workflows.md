@@ -2,7 +2,7 @@
 
 Der Bereich *Arbeitsablauf* bietet die Möglichkeit, Arbeitsabläufe aus einer Folge von Anweisungen zu entwerfen, die den Arbeitsablauf für einen [gerichteten azyklischen Graphen](https://en.wikipedia.org/wiki/Directed_acyclic_graph) formen. 
 
-- Benutzer können Anweisungen per Drag &amp; Drop aus der *Symbolleiste* ziehen, wie z.B. eine Abfolge von Jobs, das Verzweigen und Verbinden von Jobs, bedingte Ausführung usw.
+- Benutzer können Anweisungen per Drag&amp;Drop aus der *Symbolleiste* ziehen, wie z.B. eine Abfolge von Jobs, das Verzweigen und Verbinden von Jobs, bedingte Ausführung usw.
 - Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) bietet eine Navigation nach Kennzeichnungen und Ordnern. Darüber hinaus bietet der Bereich Operationen für Arbeitsabläufe.
 
 ## Bereich: Symbolleiste
@@ -37,17 +37,17 @@ Die *Symbolleiste* enthält die folgenden Anweisungen:
 - die **CaseElse Anweisung** wird verwendet, wenn alle Prüfungen der *CaseWhen Anweisungen* fehlschlagen.
 - die **StickySubagent Anweisung** kann verwendet werden, um eine Reihe von Aufträgen mit demselben Subagenten eines Agent Cluster auszuführen. Die Blockanweisung prüft den ersten verfügbaren Subagenten eines Subagent Cluster. Dieser Subagent wird für die nachfolgenden Jobs innerhalb der Blockanweisung verwendet. Die Verwendung eines Agent Cluster unterliegt den Bedingungen für das Clustering mit der [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License). Einzelheiten finden Sie unter [JS7 - StickySubagent Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+StickySubagent+Instruction+for+Agent+Clusters).
 - **Options Anweisung** ist eine Blockanweisung, die die Fehlerbehandlung für die *Lock Anweisung* und die *ConsumeNotices Anweisung* regelt. Wenn die *Options Anweisung* vorhanden ist und die Eigenschaft *Stoppen im Fehlerfall* enthält, verbleiben die *fehlgeschlagenen* Aufträge bei der fehlgeschlagenen Anweisung, z.B. einem Job. Wenn die Anweisung nicht vorhanden ist, werden Aufträge, die innerhalb einer *Lock Anweisung* oder *ConsumeNotices Anweisung* fehlschlagen, an den Anfang des Anweisungsblocks verschoben und verbleiben im Zustand *Failed*. Einzelheiten finden Sie unter [JS7 - Options Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Options+Instruction).
-- mit **Einfügen** können Sie eine oder mehrere zuvor kopierte oder ausgeschnittene Anweisungen per Drag &amp; Drop in den Arbeitsablauf einfügen.
+- mit **Einfügen** können Sie eine oder mehrere zuvor kopierte oder ausgeschnittene Anweisungen per Drag&amp;Drop in den Arbeitsablauf einfügen.
 
 ## Bereich: Arbeitsablauf
 
 Der Bereich enthält die grafische Darstellung eines Arbeitsablaufs.
 
-- Sie können Anweisungen aus der *Symbolleiste* per Drag &amp; Drop in den Arbeitsablauf ziehen.
-  - Um die erste Anweisung in einem Arbeitsablauf per Drag &amp; Drop abzulegen, halten Sie die Maustaste gedrückt und legen die Anweisung im angegebenen Ablagebereich des Arbeitsablaufs ab.
-  - Um weitere Anweisungen per Drag &amp; Drop abzulegen, halten Sie die Maustaste gedrückt, navigieren zur gewünschten Verbindungslinie zwischen den Anweisungen und lassen die Maustaste los.
-- Bei der *Fork Anweisung* und *If Anweisung* können Sie eine *Job Anweisung* per Drag &amp; Drop direkt auf den Knoten *Fork* ziehen, um einen neuen Zweig zu erstellen.
-- Bei der *When Anweisung* können Sie eine *Job Anweisung* per Drag &amp; Drop direkt auf den *When-Block* ziehen: die erste Anweisung stellt die *wahr* Verzweigung dar, die zweite Anweisung, die Sie per Drag &amp; Drop ziehen, erzeugt die *falsch* Verzweigung.
+- Sie können Anweisungen aus der *Symbolleiste* per Drag&amp;Drop in den Arbeitsablauf ziehen.
+  - Um die erste Anweisung in einem Arbeitsablauf per Drag&amp;Drop abzulegen, halten Sie die Maustaste gedrückt und legen die Anweisung im angegebenen Ablagebereich des Arbeitsablaufs ab.
+  - Um weitere Anweisungen per Drag&amp;Drop abzulegen, halten Sie die Maustaste gedrückt, navigieren zur gewünschten Verbindungslinie zwischen den Anweisungen und lassen die Maustaste los.
+- Bei der *Fork Anweisung* und *If Anweisung* können Sie eine *Job Anweisung* per Drag&amp;Drop direkt auf den Knoten *Fork* ziehen, um einen neuen Zweig zu erstellen.
+- Bei der *When Anweisung* können Sie eine *Job Anweisung* per Drag&amp;Drop direkt auf den *When-Block* ziehen: die erste Anweisung stellt die *wahr* Verzweigung dar, die zweite Anweisung, die Sie per Drag&amp;Drop ziehen, erzeugt die *falsch* Verzweigung.
 
 Arbeitsabläufe werden automatisch im Inventar gespeichert. Dies geschieht alle 30 Sekunden und beim Verlassen des *Arbeitsablaufsbereichs*.
 
@@ -116,7 +116,7 @@ Wenn Sie den Mauszeiger über eine Anweisung bewegen, wird das 3-Punkte-Aktionsm
 - das Tastaturkürzel **Strg+C** kopiert die markierten Anweisungen.
 - mit dem Tastaturkürzel **Strg+X** können Sie die markierten Anweisungen ausschneiden.
 
-**Einfügen** ist über die *Symbolleiste* verfügbar und erlaubt die kopierten oder ausgeschnittenen Anweisungen per Drag &amp; Drop in den Arbeitsablauf zu ziehen.
+**Einfügen** ist über die *Symbolleiste* verfügbar und erlaubt die kopierten oder ausgeschnittenen Anweisungen per Drag&amp;Drop in den Arbeitsablauf zu ziehen.
 
 - die Tastenkombination **Strg+V** fügt die kopierten oder ausgeschnittenen Anweisungen ein, wenn der Benutzer auf eine Verbindungslinie zwischen Anweisungen im Arbeitsablauf klickt.
 

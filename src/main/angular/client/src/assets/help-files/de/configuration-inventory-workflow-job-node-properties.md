@@ -1,6 +1,6 @@
 # Konfiguration - Inventar - Arbeitsabläufe - Job Knoteneigenschaften
 
-Im *Arbeitsablauf* Panel können Sie Arbeitsabläufe aus einer Folge von Anweisungen erstellen. Sie können die *Job Anweisung* per Drag &amp; Drop aus der *Symbolleiste* an eine Position im Arbeitsablauf ziehen.
+Im Bereich *Arbeitsablauf* können Sie Arbeitsabläufe aus einer Folge von Anweisungen erstellen. Sie können die *Job Anweisung* per Drag&amp;Drop aus der *Symbolleiste* an eine Position im Arbeitsablauf ziehen.
 
 Die grafische Benutzeroberfläche bietet eine Reihe von Registerkarten zur Angabe von Details. Die vierte Registerkarte wird für *Knoteneigenschaften* angeboten.
 
