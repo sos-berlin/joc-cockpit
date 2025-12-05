@@ -2,13 +2,13 @@
 
 Die Seite [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) bietet Einblicke in die bisherige Ausführung von Arbeitsabläufen und Jobs:
 
-- Berichte werden aus vordefinierten [Report Templates](/report-templates) erstellt, die über [Configuration - Inventory - Reports](/configuration-inventory-reports) parametrisiert werden.
-- Benutzer führen Berichte über die Ansicht *Berichterstellung* oder über [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation) aus. Die Ansicht [Report - Run History](/report-run-history) liefert Nachweise über vergangene Berichtsläufe.
-- Berichte werden in der Ansicht [Reports](/reports) visualisiert.
+- Berichte werden aus vordefinierten [Berichtsmuster](/report-templates) erstellt, die über [Konfiguration - Inventar - Berichtsvorlagen](/configuration-inventory-reports) parametrisiert werden.
+- Benutzer führen Berichte über die Ansicht *Berichterstellung* oder über [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation) aus. Die Ansicht [Historie Berichtsläufe](/report-run-history) liefert Nachweise über vergangene Berichtsläufe.
+- Berichte werden in der Ansicht [Berichte](/reports) visualisiert.
 
 ## Anzeige von Berichtskonfigurationen
 
-Berichte werden in der Ansicht [Configuration - Inventory - Reports](/configuration-inventory-reports) konfiguriert.
+Berichte werden in der Ansicht [Konfiguration - Inventar - Berichtsvorlagen](/configuration-inventory-reports) konfiguriert.
 
 Die Berichtskonfigurationen sind verfügbar 
 
@@ -27,7 +27,7 @@ Das Panel ermöglicht die Navigation durch die Bestandsordner, in denen die Beri
 
 Das Panel zeigt die Berichtskonfigurationen an, die für den aktuell ausgewählten Ordner verfügbar sind. Die Berichtskonfigurationen werden mit den folgenden Eigenschaften angezeigt:
 
-- **Name** gibt den eindeutigen Namen einer Berichtskonfiguration an, wie er in der Ansicht [Configuration - Inventory - Reports](/configuration-inventory-reports) angegeben ist.
+- **Name** gibt den eindeutigen Namen einer Berichtskonfiguration an, wie er in der Ansicht [Konfiguration - Inventar - Berichtsvorlagen](/configuration-inventory-reports) angegeben ist.
 - **Berichtsvorlage** zeigt die verwendete [Report Template](/report-templates) an.
 - **Frequenzen** zeigt die *Berichtsfrequenzen* an, die den *Berichtszeitraum* in gleiche Einheiten unterteilen.
 - **Monat von**, **Monat bis** gibt Beginn und Ende des *Berichtszeitraums* an.
@@ -42,10 +42,10 @@ Sie können eine Reihe von Berichtskonfigurationen auswählen und die Massenoper
 
 ### Kontext-Hilfe
 
-- [Configuration - Inventory - Reports](/configuration-inventory-reports)
-- [Reports](/reports)
-- [Report - Run History](/report-run-history)
-- [Report Templates](/report-templates)
+- [Konfiguration - Inventar - Berichtsvorlagen](/configuration-inventory-reports)
+- [Berichte](/reports)
+- [Historie Berichtsläufe](/report-run-history)
+- [Berichtsmuster](/report-templates)
 
 ### Product Knowledge Base
 

@@ -46,7 +46,7 @@ The panel holds the graphical representation of a Workflow.
 - Users can drag & drop instructions from the *Toolbar Panel* to the Workflow.
   - To drag & drop the first instruction in a Workflow, users hold the mouse key pressed and drop the instruction in the indicated drop area of the Workflow.
   - To drag & drop further instructions, users hold the mouse key pressed, navigate to the desired connector line between instructions and release the mouse key.
-- For the *Fork Instruction* users can drag & drop a *Job Instruction* directly on the *Fork* node to create a new branch.
+- For the *Fork Instruction* and *If Instruction* users can drag & drop a *Job Instruction* directly on the *Fork* node to create a new branch.
 - For the *If Instruction* users can drag & drop a *Job Instruction* directly on the *If* block: the first instruction represents the *true* branch, the second instruction dragged & dropped creates the *false* branch.
 
 Workflows are automatically stored to the inventory. This happens every 30s and when leaving the *Workflow Panel*.
@@ -97,7 +97,7 @@ On top of the *Workflow Panel* a Search Icon is available. Clicking the icon off
 
 On top of the *Workflow Panel* users find the following status indicators:
 
-- **valid** / **not valid** indicates from blue / orange color if the Workflow is consistent and ready for deployment. *Invalid* Workflows cannot be deployed, however, changes are stored to the inventory. For example, a missing Agent assignment to a Job will make the Workflow *invalid*. Inside the *not valid* status indicator the (i) information icon is available that displays the reason why the Workflow is +not valid*
+- **valid** / **not valid** indicates from blue / orange color if the Workflow is consistent and ready for deployment. *Invalid* Workflows cannot be deployed, however, changes are stored to the inventory. For example, a missing Agent assignment to a Job will make the Workflow *invalid*. Inside the *not valid* status indicator the (i) information icon is available that displays the reason why the Workflow is *not valid*
 - **deployed** / **not deployed** indicates if the current version of the Workflow has been *deployed* or is a draft that was *not deployed*.
 
 The *Deploy* button offers deployment to a Controller from a single click operation. Other than that, deployment operations are available at folder level, see [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).

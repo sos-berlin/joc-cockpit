@@ -2,7 +2,7 @@
 
 Die Ansicht *Auftragsverlauf* fasst den Verlauf der Ausführung von Aufträgen zusammen. Dazu gehört auch der Verlauf der Ausführung von Aufträgen, die in Workflows verwendet werden, die durch zugehörige Aufträge ausgelöst werden.
 
-Die *Auftragshistorie* unterliegt der Bereinigung der Datenbank, die von [Cleanup Service](/service-cleanup) durchgeführt wird.
+Die *Auftragshistorie* unterliegt der Bereinigung der Datenbank, die von [Bereinigungsdienst](/service-cleanup) durchgeführt wird.
 
 Für die Historie von Aufgaben siehe [Prozesshistorie](/history-tasks).
 
@@ -29,7 +29,7 @@ Die Anzeige ist auf maximal 5000 Einträge beschränkt, wenn nicht anders auf [P
 - **Historienstatus** zeigt den *Historienstatus* an, d.h. das letzte Ergebnis im Leben der Bestellung.
   - Wenn Aufträge abgeschlossen werden, lautet der *History Status* *Erfolgreich* oder *Fehlgeschlagen*.
   - Wenn Aufträge nicht abgeschlossen sind, lautet der *History Status* *in Bearbeitung*.
-- **Auftragsstatus** zeigt den letzten Status des Auftrags an, siehe [Order States](/order-states).
+- **Auftragsstatus** zeigt den letzten Status des Auftrags an, siehe [Auftragszustände](/order-states).
   - Wenn Aufträge abgeschlossen sind, lautet der *Auftragsstatus* *Erfolgreich* oder *Scheitert*.
   - Wenn Aufträge nicht abgeschlossen sind, lautet der *Auftragsstatus* *in Bearbeitung*.
 
@@ -65,11 +65,11 @@ Benutzer können die oben im Fenster verfügbaren Filter anwenden, um die Anzeig
 
 ### Kontexthilfe
 
-- [Cleanup Service](/service-cleanup)
+- [Bereinigungsdienst](/service-cleanup)
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
 - [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules)
 - [Order Log View](/order-log)
-- [Order States](/order-states)
+- [Auftragszustände](/order-states)
 - [Profil - Einstellungen](/profile-preferences)
 - [Einstellungen - JOC Cockpit](/settings-joc)
 - [Prozesshistorie](/history-tasks)

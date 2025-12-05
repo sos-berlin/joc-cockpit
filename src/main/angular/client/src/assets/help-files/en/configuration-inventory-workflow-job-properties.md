@@ -33,8 +33,8 @@ The minimum properties for a Job are as follows:
     - *Job Templates*
       - **JITL Jobs** are Java Jobs that ship with JS7 and that are used from [JS7 - Integration Job Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+Integration+Job+Templates), for example to access databases, to access remote hosts by SSH etc.
     - *User Defined Jobs*
-      - **Java Jobs** are executed in the JVM provided by the JS7 Agent.
-      - **JavaScript Jobs** require use of the Oracle® GraalVM Java Virtual Machine with the JS7 Agent The JVM provides the interpreter/compiler for JavaScript.
+      - **Java Jobs** are executed in the JVM used with for JS7 Agent.
+      - **JavaScript Jobs**, **Python Jobs** require use of Oracle® Graal Polyglot libraries with the JS7 Agent. The libraries provide the JIT compiler.
 
 ### Environment Variables
 

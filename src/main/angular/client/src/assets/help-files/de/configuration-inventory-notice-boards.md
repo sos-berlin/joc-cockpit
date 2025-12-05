@@ -1,6 +1,6 @@
 # Konfiguration - Inventar - Notizbretter
 
-Das *Notizbrett* Panel bietet die Möglichkeit, Notizbretter für die Verwendung mit Arbeitsabläufen festzulegen. Einzelheiten finden Sie unter [JS7 - Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards).
+Der Bereich *Notizbrett* bietet die Möglichkeit, Notizbretter für die Verwendung mit Arbeitsabläufen festzulegen. Einzelheiten finden Sie unter [JS7 - Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards).
 
 Notizbretter implementieren Abhängigkeiten zwischen Arbeitsabläufen:
 
@@ -21,10 +21,10 @@ Die folgenden Varianten sind für Notizbretter verfügbar:
 
 Notizbretter werden über die folgenden Fenster verwaltet:
 
-- Die [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner, die die Notizbretter enthalten. Außerdem bietet das Panel die Möglichkeit, Operationen an den Notizbrettern durchzuführen.
-- Das *Notizbrett-Panel* auf der rechten Seite des Fensters enthält Details zur Konfiguration des Notizbretts.
+- Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner, die die Notizbretter enthalten. Außerdem bietet der Bereich die Möglichkeit, Operationen an den Notizbrettern durchzuführen.
+- Der Bereich *Notizbrett* auf der rechten Seite des Fensters enthält Details zur Konfiguration des Notizbretts.
 
-## Notizbrett Panel
+## Bereich: Notizbrett
 
 Für ein Notizbrett sind die folgenden Eingaben möglich:
 

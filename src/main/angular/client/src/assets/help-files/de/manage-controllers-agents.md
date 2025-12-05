@@ -17,7 +17,7 @@ Der Vorgang zur Registrierung eines Controllers ist über die Schaltfläche *Neu
 
 Erläuterungen finden Sie unter [Initial Operation - Register Controller](/initial-operation-register-controller).
 
-## Operationen mit Controllern
+## Operationen für Controller
 
 Für einen vorhandenen Controller werden die folgenden Operationen in seinem 3-Punkte-Aktionsmenü angeboten:
 

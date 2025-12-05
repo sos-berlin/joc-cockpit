@@ -4,7 +4,7 @@ Die Ansicht *Tagesplan* bietet einen Überblick über die Aufträge, die für di
 
 Die [Tagesplandienst](/service-daily-plan) wird verwendet, um Aufträge für den Tagesplan zu erstellen und an die Controller zu übermitteln. Der Dienst wird im Hintergrund betrieben und arbeitet täglich, um Aufträge für einige Tage im Voraus zu planen und zu übermitteln.
 
-Der Tagesplan unterliegt der Bereinigung der Datenbank, die von [Cleanup Service](/service-cleanup) durchgeführt wird.
+Der Tagesplan unterliegt der Bereinigung der Datenbank, die von [Bereinigungsdienst](/service-cleanup) durchgeführt wird.
 
 Für Operationen im Zusammenhang mit dem *Kalenderpanel* siehe [Daily Plan - Calendar](/daily-plan-calendar).
 
@@ -125,7 +125,7 @@ Eine Position kann angegeben werden, wenn die Order nicht beim ersten Knoten im 
 
 ### Kontext-Hilfe
 
-- [Cleanup Service](/service-cleanup)
+- [Bereinigungsdienst](/service-cleanup)
 - [Daily Plan - Calendar](/daily-plan-calendar)
 - [Tagesplandienst](/service-daily-plan)
 - [Auftragshistorie](/history-orders)

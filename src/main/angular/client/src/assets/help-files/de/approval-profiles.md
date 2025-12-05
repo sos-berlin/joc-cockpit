@@ -23,7 +23,7 @@ Die Liste der Autorisiererprofile wird mit den folgenden Eigenschaften angeboten
 - **Vorname**, **Nachname** des *Approver*.
 - **E-Mail** gibt die E-Mail-Adresse des *Approver* an. Wenn diese angegeben wird, erhält der *Approver* eine Benachrichtigung über eingehende [Autorisierungsanfragen](/approval-requests) per E-Mail.
 
-## Operationen mit Autorisiererprofilen
+## Operationen für Autorisiererprofile
 
 Das 3-Punkte-Aktionsmenü eines Autorisiererprofils bietet die folgenden Operationen:
 

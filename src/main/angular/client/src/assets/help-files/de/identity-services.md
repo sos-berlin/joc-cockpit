@@ -39,7 +39,7 @@ Für jeden Identitätsdienst werden die folgenden Eigenschaften angezeigt:
 - **Deaktiviert** zeigt an, ob der Identitätsdienst inaktiv ist und nicht für die Anmeldung verwendet wird.
 - **Erforderlich** zeigt an, dass der Identitätsdienst zusätzlich zu Identitätsdiensten mit einer früheren Bestellung ausgelöst wird.
 
-## Operationen mit Identitätsdiensten
+## Operationen für Identitätsdienste
 
 Benutzer können auf einen der Identitätsdienste klicken, um zur Ansicht [Identity Service - Roles](/identity-service-roles) oder [Identity Service - Accounts](/identity-service-accounts) zu navigieren, falls dies für den Dienst angeboten wird.
 

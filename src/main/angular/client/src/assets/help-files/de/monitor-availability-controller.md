@@ -6,7 +6,7 @@ Wenn ein Controller Cluster verwendet wird, wird die Verfügbarkeit des Clusters
 
 In der rechten oberen Ecke des Bildschirms finden Sie das Kontrollkästchen *Aktueller Controller*: Wenn es nicht markiert ist, wird die Verfügbarkeit für alle angeschlossenen Controller angezeigt, andernfalls werden die Informationen nur für den aktuell ausgewählten Controller angezeigt.
 
-Benutzer sollten sich darüber im Klaren sein, dass die historischen Daten zur Controller-Verfügbarkeit von [Cleanup Service](/service-cleanup) gelöscht werden können.
+Benutzer sollten sich darüber im Klaren sein, dass die historischen Daten zur Controller-Verfügbarkeit von [Bereinigungsdienst](/service-cleanup) gelöscht werden können.
 
 ## Datum-Filter
 
@@ -34,7 +34,7 @@ Zeigt die Verfügbarkeit pro Controller und Tag in dem angegebenen Zeitraum an.
 
 ## Referenzen
 
-- [Cleanup Service](/service-cleanup)
+- [Bereinigungsdienst](/service-cleanup)
 - [Monitor - Availability - Agent](/monitor-availability-agent)
 - [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor)
 

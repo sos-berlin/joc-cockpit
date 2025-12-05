@@ -4019,7 +4019,7 @@
     "tab.jobProperties": "Job Properties",
     "tab.jobOptions": "Job Options",
     "tab.nodeProperties": "Node Properties",
-    "tab.notification": "Notification",
+    "tab.notification": "Notifications",
     "tab.jobTags": "Job Tags",
     "message.noBranchFound": "No Branch found",
     "message.invalidTarget": "Invalid Target",
@@ -4203,7 +4203,7 @@
     }
   },
   "xml": {
-    "label.assignedSchema": "Assigned Schema",
+    "label.assignedSchema": "Assigned XSD Schema",
     "label.chooseFile": "Choose File",
     "label.systemMonitorNotification": "System Monitor Notification",
     "label.yade": "YADE",

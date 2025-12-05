@@ -21,7 +21,7 @@ Benutzer können ihr eigenes Signierzertifikat erstellen:
 
 Wenn Sie eine private oder öffentliche Zertifizierungsstelle verwenden, muss das Zertifikat der Stammzertifizierungsstelle oder das Zertifikat der Zwischenzertifizierungsstelle, das zum Signieren des Signierzertifikats verwendet wurde, den Controller- und Agent-Instanzen zur Verfügung gestellt werden. Das Zertifikat muss in einer Datei im PEM-Format verfügbar sein, die sich im Verzeichnis *./config/private/trusted-x509-keys* des Controllers und des Agenten befindet.
 
-## Operationen mit dem Signierzertifikat
+## Operationen für Signierzertifikate
 
 Die folgenden Operationen werden angeboten:
 

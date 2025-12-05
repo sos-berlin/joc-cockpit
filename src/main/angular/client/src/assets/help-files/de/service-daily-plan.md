@@ -1,6 +1,6 @@
 # Tagesplan Service
 
- [JS7 - Daily Plan Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan+Service) wird verwendet, um Aufträge für [Daily Plan](/daily-plan) zu erstellen und an die Controller zu übermitteln. Der Dienst wird im Hintergrund betrieben und arbeitet täglich, um Aufträge für einige Tage im Voraus zu planen und zu übermitteln.
+ [JS7 - Daily Plan Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan+Service) wird verwendet, um Aufträge für [Tagesplan](/daily-plan) zu erstellen und an die Controller zu übermitteln. Der Dienst wird im Hintergrund betrieben und arbeitet täglich, um Aufträge für einige Tage im Voraus zu planen und zu übermitteln.
 
 Der Tagesplan Service führt bestehende [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules) aus und erzeugt Aufträge für die angegebenen Startzeiten. Dies gilt sowohl für Zeitpläne, die eine einzige Startzeit für einen Auftrag vorgeben, als auch für Zeitpläne, die zyklische Startzeiten vorgeben. Für jede Startzeit in einem Zyklus wird ein einzelner Auftrag erstellt. In einem weiteren Schritt werden diese Aufträge an die entsprechenden Controller weitergeleitet.
 
@@ -18,7 +18,7 @@ Für die Einstellungen des Tagesplan Service siehe [Einstellungen - Tagesplan](/
 
 ### Kontext-Hilfe
 
-- [Daily Plan](/daily-plan)
+- [Tagesplan](/daily-plan)
 - [Einstellungen - Tagesplan](/settings-daily-plan)
 
 ### Product Knowledge Base

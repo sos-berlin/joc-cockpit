@@ -13,7 +13,7 @@ Unter [Standalone Agents](/initial-operation-register-agent-standalone) und [Sub
 
 ### Hinzufügen von bevorzugten Agenten
 
-*Bevorzugte Agenten* können direkt bei der Zuweisung von Agenten auf der Registerkarte [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-job-properties) hinzugefügt werden. Wenn Sie auf den Link \* für einen Agenten klicken, wird der entsprechende Agent zur Liste der Favoriten hinzugefügt.
+*Bevorzugte Agenten* können direkt bei der Zuweisung von Agenten auf der Registerkarte [Konfiguration - Inventar - Arbeitsabläufe - Job Eigenschaften](/configuration-inventory-workflow-job-properties) hinzugefügt werden. Wenn Sie auf den Link \* für einen Agenten klicken, wird der entsprechende Agent zur Liste der Favoriten hinzugefügt.
 
 Benutzer können *Favoriten-Agenten* von ihrem *Profil* aus über die Schaltfläche *Favoriten hinzufügen* hinzufügen. Dies ermöglicht die Auswahl des Agenten, der hinzugefügt werden soll.
 
@@ -25,7 +25,7 @@ Sie können die Liste weiter einschränken, indem Sie eine Zeichenfolge für das
 
 Benutzer können die Liste ordnen, indem sie einen *Favoriten-Agenten* an eine frühere oder spätere Position verschieben.
 
-### Operationen mit Favoriten-Agenten
+### Operationen für Favoriten-Agenten
 
 Die folgenden Operationen sind über das 3-Punkte-Aktionsmenü eines *Favoriten-Agenten* möglich:
 
@@ -66,7 +66,7 @@ Die folgenden Operationen sind über das 3-Punkte-Aktionsmenü einer *Favoritenf
 ### Kontexthilfe
 
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-job-properties)
+- [Konfiguration - Inventar - Arbeitsabläufe - Job Eigenschaften](/configuration-inventory-workflow-job-properties)
 - [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone)
 - [Initial Operation - Register Subagent Clusters](/initial-operation-register-agent-subagent-cluster)
 - [Profile](/profile)

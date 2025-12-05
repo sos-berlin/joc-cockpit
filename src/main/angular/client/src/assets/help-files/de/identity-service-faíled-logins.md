@@ -8,7 +8,7 @@ Benutzerkonten, die sich nicht anmelden können, werden in der Unteransicht *Fai
 - JOC Cockpit implementiert Verzögerungen für wiederholt fehlgeschlagene Anmeldungen, um eine Analyse der Antwortzeiten zu verhindern und um Brute-Force-Angriffe zu unterbinden.
 - Beachten Sie, dass eine Reihe von Identity Providern, z.B. LDAP, das für den Zugriff auf Active Directory verwendet wird, wiederholt fehlgeschlagene Anmeldeversuche möglicherweise nicht akzeptiert und das betreffende Benutzerkonto sperrt.
 
-Benutzer sollten sich darüber im Klaren sein, dass die historischen Daten für fehlgeschlagene Anmeldungen von [Cleanup Service](/service-cleanup) gelöscht werden können.
+Benutzer sollten sich darüber im Klaren sein, dass die historischen Daten für fehlgeschlagene Anmeldungen von [Bereinigungsdienst](/service-cleanup) gelöscht werden können.
 
 ## Operationen für fehlgeschlagene Anmeldungen
 
@@ -20,7 +20,7 @@ Benutzer finden die folgenden Operationen für fehlgeschlagene Anmeldungen:
 
 ### Kontexthilfe
 
-- [Cleanup Service](/service-cleanup)
+- [Bereinigungsdienst](/service-cleanup)
 - [Identity Service - Blocklist](/identity-service-blocklist)
 - [Identity Services](/identity-services)
 

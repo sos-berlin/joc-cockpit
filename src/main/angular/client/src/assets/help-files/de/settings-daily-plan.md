@@ -1,6 +1,6 @@
 # Einstellungen - Tagesplan
 
-Die folgenden Einstellungen werden auf [Daily Plan](/daily-plan) angewendet. Änderungen werden sofort wirksam.
+Die folgenden Einstellungen werden auf [Tagesplan](/daily-plan) angewendet. Änderungen werden sofort wirksam.
 
 Die Seite *Einstellungen* ist über das Symbol ![wheel icon](assets/images/wheel.png) in der Menüleiste zugänglich.
 
@@ -42,7 +42,7 @@ Gibt die Anzahl der Monate im Voraus an, für die [Daily Plan - Projections](/da
 
 ### Kontexthilfe
 
-- [Daily Plan](/daily-plan)
+- [Tagesplan](/daily-plan)
 - [Daily Plan - Projections](/daily-plan-projections)
 - [Tagesplandienst](/service-daily-plan)
 - [Resources - Notice Boards](/resources-notice-boards)
