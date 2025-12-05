@@ -16,7 +16,7 @@ Die Konfiguration eines Subagenten-Clusters umfasst
 
 Auf der linken Seite finden Sie die Liste der Subagenten, einschließlich der Director-Agenten, die zur Auswahl stehen.
 
-Unteragenten können per Drag &amp; Drop in das rechte Fenster in den entsprechenden Ziehbereich gezogen werden. Um die Auswahl eines Unteragenten aufzuheben, können Sie ihn im rechten Fenster in den Bereich *Hierher ziehen, um den Unteragenten zu entfernen* ziehen und ablegen.
+Unteragenten können per Drag&amp;Drop in das rechte Fenster in den entsprechenden Ziehbereich gezogen werden. Um die Auswahl eines Unteragenten aufzuheben, können Sie ihn im rechten Fenster in den Bereich *Hierher ziehen, um den Unteragenten zu entfernen* ziehen und ablegen.
 
 ### Reihenfolge der Agenten
 
@@ -24,21 +24,21 @@ Die Reihenfolge der Subagenten bestimmt die Art des Clusters:
 
 #### Aktiv-passiv Subagenten-Cluster
 
-Subagenten werden per Drag &amp; Drop in die *gleiche Spalte* gezogen:
+Subagenten werden per Drag&amp;Drop in die *gleiche Spalte* gezogen:
 
 - Subagenten in derselben Spalte geben einen aktiv-passiven Cluster (feste Priorität) an, in dem der erste Subagent für alle Aufträge verwendet wird, solange er verfügbar ist. Nur wenn der erste Subagent nicht mehr verfügbar ist, wird der nächste Subagent verwendet.
 - Einzelheiten finden Sie unter [JS7 - Agent Cluster - Active-Passive Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Passive+Subagent+Cluster).
 
 #### Aktiv-aktiver Subagent Cluster
 
-Subagenten werden per Drag &amp; Drop in die *gleiche Zeile* gezogen:
+Subagenten werden per Drag&amp;Drop in die *gleiche Zeile* gezogen:
 
 - Subagenten in derselben Zeile geben einen aktiv-aktiven Cluster (Round-Robin) an, in dem jeder nächste Auftrag mit dem nächsten Subagenten ausgeführt wird.
 - Einzelheiten finden Sie unter [JS7 - Agent Cluster - Active-Active Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Active+Subagent+Cluster).
 
 #### Metrikbasierte Subagenten-Cluster
 
-Subagenten werden per Drag &amp; Drop in die *gleiche Zeile* gezogen und erhalten eine *Metrik-basierte Priorität*:
+Subagenten werden per Drag&amp;Drop in die *gleiche Zeile* gezogen und erhalten eine *Metrik-basierte Priorität*:
 
 - Subagenten in derselben Reihe geben eine metrikbasierte Priorität an:
     - Wenn Sie mit der Maus über das Rechteck des Subagenten fahren, wird dessen 3-Punkte-Aktionsmenü angezeigt: Mit der Aktion *Messdatenbasierte Priorität* können Sie die Priorität anhand eines Ausdrucks festlegen.

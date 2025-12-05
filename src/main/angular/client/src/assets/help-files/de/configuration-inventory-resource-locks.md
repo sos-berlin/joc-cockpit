@@ -1,12 +1,12 @@
 # Konfiguration - Inventar - Ressourcen-Sperren
 
-Das *Ressourcen-Sperren* Panel bietet die Möglichkeit, Ressourcen-Sperren für die Verwendung mit Arbeitsabläufen festzulegen.
+Der Bereich *Ressourcen-Sperren* bietet die Möglichkeit, Ressourcen-Sperren für die Verwendung mit Arbeitsabläufen festzulegen.
 
-Ressourcen-Sperren begrenzen die Parallelität von Jobs und anderen Arbeitsablauf-Anweisungen. Sie können als Ampel betrachtet werden, genauer gesagt als [Semaphor](https://en.wikipedia.org/wiki/Semaphore_%28programming%29):
+Ressourcen-Sperren begrenzen die Parallelität von Jobs und anderen Anweisungen des Arbeitsablaufs. Sie können als Ampel betrachtet werden, genauer gesagt als [Semaphor](https://en.wikipedia.org/wiki/Semaphore_%28programming%29):
 
 - Aufträge müssen die Sperre erhalten, um im Arbeitsablauf fortfahren zu können. Andernfalls bleiben sie im *Wartezustand*, bis die Sperre verfügbar ist.
 - Aufträge, die auf eine Sperre warten, verbrauchen keine Rechenressourcen wie die CPU,
-- Die Versuche von Aufträgen, eine Sperre zu erhalten, werden für alle Jobs und andere Arbeitsablauf-Anweisungen in Arbeitsabläufen auf allen Agenten berücksichtigt.
+- Die Versuche von Aufträgen, eine Sperre zu erhalten, werden für alle Jobs und andere Anweisungen in Arbeitsabläufen auf allen Agenten berücksichtigt.
 
 Die folgenden Varianten sind für Ressourcen-Sperren verfügbar:
 
@@ -23,10 +23,10 @@ Das Folgende gilt für die Verwendung von Ressourcen-Sperren durch *Lock Anweisu
 
 Ressourcen-Sperren werden über die folgenden Bedienfelder verwaltet:
 
-- Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner, die Ressourcen-Sperren enthalten. Darüber hinaus bietet das Panel Operationen für Ressourcen-Sperren.
-- Das *Ressourcen-Sperre* Panel auf der rechten Seite des Fensters enthält Details zur Konfiguration von Ressourcen-Sperren.
+- Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner, die Ressourcen-Sperren enthalten und Operationen für Ressourcen-Sperren.
+- Der Bereich *Ressourcen-Sperren* auf der rechten Seite des Fensters enthält Details zur Konfiguration von Ressourcen-Sperren.
 
-## Ressourcen-Sperren Panel
+## Bereich: Ressourcen-Sperren
 
 Für eine Ressourcen-Sperre sind die folgenden Eingaben möglich:
 

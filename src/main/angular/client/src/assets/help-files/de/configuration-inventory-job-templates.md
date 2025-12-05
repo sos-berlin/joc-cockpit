@@ -1,6 +1,6 @@
 # Konfiguration - Inventarisierung - Job-Vorlagen
 
-Im *Job-Vorlage* Panel können Sie zentral verwaltete Vorlagen für Jobs festlegen, die in Arbeitsabläufen verwendet werden. Sie werden angewendet, wenn dieselbe Job-Implementierung für eine Reihe von Jobs verwendet wird.
+Im Bereich *Job-Vorlagen* können Sie zentral verwaltete Vorlagen für Jobs festlegen, die in Arbeitsabläufen verwendet werden. Sie werden angewendet, wenn dieselbe Job-Implementierung für eine Reihe von Jobs verwendet wird.
 
 - Jobs enthalten einen Verweis auf eine Job-Vorlage, die bei der Erstellung des Jobs angewendet wird. 
 - Jobs können aktualisiert werden, wenn Job-Vorlagen geändert werden.
@@ -8,10 +8,10 @@ Im *Job-Vorlage* Panel können Sie zentral verwaltete Vorlagen für Jobs festleg
 
 Job-Vorlagen werden über die folgenden Fenster verwaltet:
 
-- Die Seite [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner mit den Job-Vorlagen. Darüber hinaus bietet das Panel die Möglichkeit, Job-Vorlagen zu bearbeiten.
-- Das *Job-Vorlage* Panel auf der rechten Seite des Fensters enthält Details zur Konfiguration.
+- Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner mit den Job-Vorlagen und die Möglichkeit, Job-Vorlagen zu bearbeiten.
+- Der Bereich *Job-Vorlagen* auf der rechten Seite des Fensters enthält Details zur Konfiguration.
 
-## Job-Vorlagen-Panel
+## Bereich: Job-Vorlagen
 
 Für eine Job-Vorlage sind die folgenden Eingaben möglich:
 
@@ -96,4 +96,3 @@ Um **Argumenten für JVM Jobs** oder **Umgebungsvariablen für Shell Jobs** dyna
 - [JS7 - Job Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Templates)
   - [JS7 - JITL Job Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+JITL+Integration+Job+Templates)
   - [JS7 - User Defined Job Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+User+Defined+Job+Templates)
-

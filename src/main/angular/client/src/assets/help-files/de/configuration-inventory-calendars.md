@@ -1,6 +1,6 @@
 # Konfiguration - Inventar - Kalender
 
-Das *Kalender* Panel bietet die Möglichkeit, regelbasierte Kalender festzulegen, die von [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules) für die Erstellung von Aufträgen aus dem [Tagesplan](/daily-plan) verwendet werden. Details finden Sie unter [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars).
+Der Bereich *Kalender* bietet die Möglichkeit, regelbasierte Kalender festzulegen, die von [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules) für die Erstellung von Aufträgen aus dem [Tagesplan](/daily-plan) verwendet werden. Details finden Sie unter [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars).
 
 - In den Kalendern werden die Tage festgelegt, an denen Arbeitsabläufe ausgeführt werden.
   - **Arbeitstagskalender** legen die Tage für die Ausführung des Arbeitsablaufs fest.
@@ -11,10 +11,10 @@ Das *Kalender* Panel bietet die Möglichkeit, regelbasierte Kalender festzulegen
 
 Kalender werden über die folgenden Fenster verwaltet:
 
-- Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner mit den Kalendern. Außerdem bietet das Panel Operationen für Kalender.
-- Das *Kalender* Panel auf der rechten Seite des Fensters enthält Details zur Kalenderkonfiguration.
+- Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner mit den Kalendern und Operationen für Kalender.
+- Der Bereich *Kalender* auf der rechten Seite des Fensters zeigt Details zur Kalenderkonfiguration.
 
-## Kalender-Panel
+## Bereich: Kalender
 
 Für einen Kalender sind die folgenden Eingaben möglich:
 
