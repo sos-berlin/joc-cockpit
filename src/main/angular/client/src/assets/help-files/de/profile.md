@@ -9,7 +9,7 @@ Es gibt ein *Basisprofil*, das in der Regel von dem *Stammkonto* stammt, das ver
 
 Benutzer können das *Basisprofil* über die Seite [Einstellungen - JOC Cockpit](/settings-joc) auf ein anderes Konto umstellen.
 
-Benutzer sollten sich bewusst sein, dass inaktive Profile von [Cleanup Service](/service-cleanup) gelöscht werden.
+Benutzer sollten sich bewusst sein, dass inaktive Profile von [Bereinigungsdienst](/service-cleanup) gelöscht werden.
 
 Das *Benutzerprofil* ermöglicht die Verwaltung von Präferenzen und Einstellungen, die für den aktuellen Benutzer gelten.
 
@@ -39,7 +39,7 @@ Die Einstellungen für *Benutzerprofile* sind in den folgenden Abschnitten verf�
 
 ### Kontext-Hilfe
 
-- [Cleanup Service](/service-cleanup)
+- [Bereinigungsdienst](/service-cleanup)
 - [Identity Services](/identity-services)
 - [Einstellungen - JOC Cockpit](/settings-joc)
 - [Settings - Identity Service](/settings-identity-service)

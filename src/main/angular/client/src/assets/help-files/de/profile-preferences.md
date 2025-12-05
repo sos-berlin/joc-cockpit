@@ -33,7 +33,7 @@ Die folgenden Einstellungen, die für allgemeine Werte verwaltet werden können,
 - **Max. Anzahl der Audit-Log-Einträge** gilt für die Ansicht [Audit Log](/audit-log).
 - **Max. Anzahl der Benachrichtigungseinträge** gilt für die Ansichten *Monitor-Auftragsbenachrichtigungen* und *Monitor-Systembenachrichtigungen*.
 - **Max. Anzahl der Einträge in der Auftragsübersicht** gilt für die Ansicht [Orders - Overview](/orders-overview).
-- **Max. Anzahl der Tagesplan-Einträge** gilt für die Ansicht [Daily Plan](/daily-plan).
+- **Max. Anzahl der Tagesplan-Einträge** gilt für die Ansicht [Tagesplan](/daily-plan).
 - **Max. Anzahl der Aufträge pro Arbeitsablauf** begrenzt die Anzahl der Aufträge, die in der Ansicht [Workflows](/workflows) verfügbar sind.
 - **Max. Anzahl der Dateitransfer-Einträge** gilt für die Ansicht [History - File Transfers](/history-file-transfers).
 - **Max. Anzahl von Aufträgen pro Ressourcensperre** begrenzt die Anzahl der Aufträge, die in der Ansicht [Resources - Resource Locks](/resources-resource-locks) angezeigt werden.
@@ -61,7 +61,7 @@ Die Präferenzen gelten für die Paginierung auf jeder Seite:
 ### Theme-Einstellungen
 
 - **Thema wechseln** bietet die Möglichkeit, zwischen Themen zu wechseln. Einige Themen sind für einen höheren Kontrast vorgesehen, der für Benutzer mit Sehbehinderungen besser geeignet sein kann.
-  - **Farbe der Auftragszustände ändern** ist über ein Symbol rechts neben *Thema ändern* verfügbar und bietet die Möglichkeit, die Standardfarben für [Order States](/order-states) zu ändern. Es könnte verwirrend aussehen, Farben zu ändern, die in der JS7-Dokumentation anders dargestellt sind. Für Benutzer mit Sehbehinderungen könnte dies jedoch hilfreich sein: Sie können RGB-Werte für jede Farbe angeben, die für einen Auftragsstatus verwendet wird.
+  - **Farbe der Auftragszustände ändern** ist über ein Symbol rechts neben *Thema ändern* verfügbar und bietet die Möglichkeit, die Standardfarben für [Auftragszustände](/order-states) zu ändern. Es könnte verwirrend aussehen, Farben zu ändern, die in der JS7-Dokumentation anders dargestellt sind. Für Benutzer mit Sehbehinderungen könnte dies jedoch hilfreich sein: Sie können RGB-Werte für jede Farbe angeben, die für einen Auftragsstatus verwendet wird.
 - **Menüleistenfarbe** ist verfügbar, wenn das Thema *Hell* verwendet wird. Damit können Sie die Hintergrundfarbe der Menüleiste ändern. Die Einstellung kann z.B. verwendet werden, wenn Benutzer mit verschiedenen JS7-Umgebungen (Dev, Test, Prod) arbeiten: Die Verwendung unterschiedlicher Hintergrundfarben hilft bei der Identifizierung der jeweiligen JS7-Umgebung.
 - der **Thementitel** wird direkt unter der Menüleiste angezeigt. Ähnlich wie bei der *Menüleistenfarbe* kann dies zur Identifizierung der entsprechenden JS7-Umgebung verwendet werden.
 
@@ -111,11 +111,11 @@ Die Einstellungen gelten für die Anzeige von Arbeitsablauf-Anweisungen in der A
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
   - [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
   - [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-job-properties)
-- [Daily Plan](/daily-plan)
+- [Tagesplan](/daily-plan)
 - [History - File Transfers](/history-file-transfers)
 - [History - Orders](/history-orders)
 - [Order Log View](/order-log)
-- [Order States](/order-states)
+- [Auftragszustände](/order-states)
 - [Orders - Overview](/orders-overview)
 - [Profile](/profile)
    - [Profile - Permissions](/profile-permissions)

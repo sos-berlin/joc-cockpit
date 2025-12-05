@@ -2,7 +2,7 @@
 
 Aufträge können aus den folgenden Quellen hinzugefügt werden:
 
-- Aufträge, die von der [Daily Plan](/daily-plan)
+- Aufträge, die von der [Tagesplan](/daily-plan)
 - Aufträge, die bei Bedarf von Benutzern aus der Ansicht [Workflows](/workflows) hinzugefügt werden
 - Aufträge, die von Dateiauftragsquellen hinzugefügt wurden, die Verzeichnisse auf eingehende Dateien überwachen
 
@@ -25,7 +25,7 @@ Wenn Sie auf die angegebene Anzahl von Aufträgen klicken, gelangen Sie auf die 
 
 ## Referenzen
 
-- [Daily Plan](/daily-plan)
+- [Tagesplan](/daily-plan)
 - [Orders Overview](/orders-overview)
 - [Workflows](/workflows)
 - [JS7 - Orders](https://kb.sos-berlin.com/display/JS7/JS7+-+Orders)

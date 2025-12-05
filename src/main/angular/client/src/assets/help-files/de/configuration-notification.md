@@ -1,17 +1,17 @@
 # Konfiguration - Benachrichtigung
 
-JS7 bietet Benachrichtigungen bei Warnungen und Fehlern von JS7-Produkten und bei fehlgeschlagenen Jobs und Workflows. Benachrichtigungen können auch bei erfolgreicher Ausführung von Jobs und Workflows gesendet werden.
+JS7 bietet Benachrichtigungen bei Warnungen und Fehlern von JS7 Produkten und bei fehlgeschlagenen Jobs und Arbeitsabläufen. Benachrichtigungen können auch bei erfolgreicher Ausführung von Jobs und Arbeitsabläufen gesendet werden.
 
-- Die Benachrichtigungen basieren auf der laufenden Überwachung durch das JOC Cockpit von [Monitor Service](/service-monitor) und werden in der Ansicht [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor) visualisiert. Dazu gehören:
+- Die Benachrichtigungen basieren auf der laufenden Überwachung durch das JOC Cockpit mithilfe des [Überwachungsdienstes](/service-monitor) und werden in der Ansicht [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor) visualisiert. Dazu gehören:
   - die Überwachung der Verfügbarkeit von Controller und Agenten,
-  - die Überwachung der Ausführung von Workflows und Jobs.
+  - die Überwachung der Ausführung von Arbeitsabläufen und Jobs.
 - Benachrichtigungen werden auf eine der folgenden Arten weitergeleitet:
   - per E-Mail, Einzelheiten finden Sie unter [JS7 - Notifications - Configuration Element MailFragment](https://kb.sos-berlin.com/display/JS7/JS7+-+Notifications+-+Configuration+Element+MailFragment) und [JS7 - How to set up e-mail notification for jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+set+up+e-mail+notification+for+jobs).
   - über ein CLI-Tool wie den System Monitor Agent für [JS7 - Passive Checks with a System Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Passive+Checks+with+a+System+Monitor), Einzelheiten finden Sie unter [JS7 - Notifications - Configuration Element CommandFragment](https://kb.sos-berlin.com/display/JS7/JS7+-+Notifications+-+Configuration+Element+CommandFragment).
 
-Benachrichtigungen werden über die Unteransicht Konfiguration-&gt;Benachrichtigung im JOC Cockpit verwaltet. Die Konfiguration wird im XML-Format gespeichert und anhand des oben auf der Seite angegebenen *Assigned XSD Schema* validiert.
+Benachrichtigungen werden über die Unteransicht Konfiguration-&gt;Benachrichtigung im JOC Cockpit verwaltet. Die Konfiguration wird im XML-Format gespeichert und anhand des oben auf der Seite angegebenen *XSD Schema* validiert.
 
-Die Seite ist aufgeteilt in das *Navigationsfeld* auf der linken Seite und das *Detailfeld* auf der rechten Seite. 
+Die Seite ist aufgeteilt in den *Navigationsbereich* auf der linken Seite und den *Detailbereich* auf der rechten Seite. 
 
 - Der *Detailbereich* bietet Eingabefelder und die dazugehörige Dokumentation pro Element.
 - Wenn Sie Konfigurationsdetails eingeben, werden diese automatisch innerhalb von 30 Sekunden und beim Verlassen der Seite gespeichert.
@@ -19,8 +19,8 @@ Die Seite ist aufgeteilt in das *Navigationsfeld* auf der linken Seite und das *
 Der typische Lebenszyklus beim Ändern von Benachrichtigungen umfasst
 
 - die Eingabe von Konfigurationsdetails,
-- klicken Sie auf die Schaltfläche *Validieren*, um zu überprüfen, ob die Konfiguration konsistent ist,
-- klicken Sie auf die Schaltfläche *Freigeben*, um die Konfiguration zu aktivieren.
+- klicken der Schaltfläche *Validieren*, um zu überprüfen, ob die Konfiguration konsistent ist,
+- klicken der Schaltfläche *Freigeben*, um die Konfiguration zu aktivieren.
 
 ## Navigationsleiste
 
@@ -29,13 +29,13 @@ Die Konfiguration wird über die Navigation nach Elementen angeboten. Wenn Sie a
 Das 3-Punkte-Aktionsmenü eines Elements bietet die folgenden Operationen:
 
 - **Kindknoten hinzufügen** ermöglicht das Hinzufügen von Knoten zum aktuellen Element. Die verfügbaren Knotentypen werden angezeigt.
-- **Alle untergeordneten Knoten des ausgewählten Knotens anzeigen** öffnet ein Popup-Fenster, in dem mögliche untergeordnete Knoten angezeigt werden. Dazu gehört auch das Durchlaufen von Unterknoten und das Nachschlagen von Unterknoten nach Namen.
+- **Alle Kindknoten des ausgewählten Knotens anzeigen** öffnet ein Popup-Fenster, in dem mögliche untergeordnete Knoten angezeigt werden. Dazu gehört auch das Durchlaufen von Kindknoten und die Suche von Kindknoten nach Namen.
 - **Kopieren/Einfügen** ermöglicht das Kopieren eines Knotens einschließlich der Kindknoten. Das Einfügen ist über das Aktionsmenü des übergeordneten Knotens möglich.
 - mit **Entfernen** können Sie den Knoten und alle untergeordneten Knoten entfernen.
 
-### Fragmente
+### Fragments
 
-#### NachrichtenFragmente
+#### MessageFragmente
 
 - **Nachricht**
   - Eine *Message* definiert den Inhalt, der z.B. per E-Mail an einen Benutzer gesendet wird oder der zur Parametrisierung eines Kommandozeilenprogramms verwendet wird, wie z.B. der Inhalt, der an einen Systemmonitor weitergeleitet werden soll.
@@ -68,7 +68,7 @@ Die Fragmente gibt es in einer Reihe von Varianten für die folgenden Benachrich
 
 #### ObjektFragmente 
 
-- **Workflows**: Es können beliebig viele Workflow-Konfigurationen hinzugefügt werden, die sich durch einen eindeutigen Namen unterscheiden, der dem Element zugewiesen wird.
+- **Arbeitsabläufe**: Es können beliebig viele Workflow-Konfigurationen hinzugefügt werden, die sich durch einen eindeutigen Namen unterscheiden, der dem Element zugewiesen wird.
   - **Workflow**: Ein Workflow kann durch seinen Namen angegeben werden. Das Attribut *Pfad* erlaubt einen regulären Ausdruck, der einen Teil des Workflow-Pfads angibt.
     - **WorkflowJob**: Das Element kann verwendet werden, um Benachrichtigungen auf bestimmte Jobs in einem Workflow zu beschränken.
       - Dazu gehört die Möglichkeit, das Attribut *Job Name* und/oder sein Attribut *Label* anzugeben. Für beide Attribute können konstante Werte und reguläre Ausdrücke verwendet werden, z.B. *.\**, um anzugeben, dass für alle Jobs eine E-Mail gesendet wird.
@@ -92,14 +92,14 @@ Sie aktivieren die effektiven Benachrichtigungen durch Verweise auf die oben bes
 
 #### Benachrichtigung
 
-- **Benachrichtigung**: Es kann eine beliebige Anzahl von Benachrichtigungen hinzugefügt werden, wobei jede Benachrichtigung durch einen eindeutigen Namen gekennzeichnet ist. Einer Benachrichtigung wird ein Typ zugewiesen, der entweder *SUCCESS*, *WARNING* oder *ERROR* sein kann. Auf diese Weise können Benachrichtigungen z.B. bei Auftragsfehlern und Warnungen versendet werden. Ebenso können Sie Benachrichtigungen für die erfolgreiche Ausführung eines Workflows angeben. Beachten Sie, dass eine erfolgreiche Ausführung sowohl das Nichtvorhandensein von Job-Fehlern als auch optional das Vorhandensein von Job-Warnungen beinhaltet.
+- **Benachrichtigung**: Es kann eine beliebige Anzahl von Benachrichtigungen hinzugefügt werden, wobei jede Benachrichtigung durch einen eindeutigen Namen gekennzeichnet ist. Einer Benachrichtigung wird ein Typ zugewiesen, der entweder *SUCCESS*, *WARNING* oder *ERROR* sein kann. Auf diese Weise können Benachrichtigungen z.B. bei Auftragsfehlern und Warnungen versendet werden. Ebenso können Sie Benachrichtigungen für die erfolgreiche Ausführung eines Arbeitsabläufe angeben. Beachten Sie, dass eine erfolgreiche Ausführung sowohl das Nichtvorhandensein von Job-Fehlern als auch optional das Vorhandensein von Job-Warnungen beinhaltet.
   - **Benachrichtigungsmonitore**: Wählt eines oder mehrere der oben genannten *MonitorFragmente* aus. Es ist möglich, mehrere Fragmente desselben Fragmenttyps auszuwählen.
     - **CommandFragmentRef**: Wählt das verwendete *CommandFragment* aus.
       - **MessageRef**: Wählt das mit dem *Befehl* verwendete *Message*-Element aus.
     - **MailFragmentRef**: Wählt das *MailFragment* aus, das für den Versand von Benachrichtigungen per E-Mail verwendet wird. Wenn mehrere *MailFragment*-Elemente referenziert werden, können verschiedene Arten von E-Mails verwendet werden, z.B. für verschiedene Empfänger oder mit unterschiedlichem Inhalt und Layout des E-Mail-Bodys.
     - **JMSFragmentRef**: Wählt das *JMSFragment* aus, das für den Versand von Benachrichtigungen an ein Java Message Queue-kompatibles Produkt verwendet wird.
-  - **NotificationObjects**: Wählt die Workflows aus, für die Benachrichtigungen erstellt werden.
-    - **WorkflowRef**: Wählt ein *Workflows*-Element aus, das die Benachrichtigungen auf verwandte Workflows beschränkt. Es kann eine beliebige Anzahl von Workflow-Referenzen hinzugefügt werden.
+  - **NotificationObjects**: Wählt die Arbeitsabläufe aus, für die Benachrichtigungen erstellt werden.
+    - **WorkflowRef**: Wählt ein *Workflow*-Element aus, das die Benachrichtigungen auf verwandte Arbeitsabläufe beschränkt. Es kann eine beliebige Anzahl von Workflow-Referenzen hinzugefügt werden.
 
 ## Operationen für Benachrichtigungen
 
@@ -123,7 +123,7 @@ Die Seite Benachrichtigung bietet die folgenden Operationen über die entspreche
 - [Monitor - Controller Availability](/monitor-availability-controller)
 - [Monitor - Order Notifications](/monitor-notifications-order)
 - [Monitor - System Notifications](/monitor-notifications-system)
-- [Monitor Service](/service-monitor)
+- [Überwachungsdienst](/service-monitor)
 
 ### Product Knowledge Base
 

@@ -15,7 +15,7 @@ Benutzer können ihr eigenes SSL CA-Zertifikat erstellen:
 - von einer privaten Zertifizierungsstelle (CA) oder einer öffentlichen CA. Die Verwendung einer privaten CA wird unter [JS7 - How to create X.509 SSL TLS Certificates](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+create+X.509+SSL+TLS+Certificates) erklärt.
 - von der eingebauten SSL CA, die mit JOC Cockpit geliefert wird.
 
-## Operationen mit SSL CA-Zertifikat
+## Operationen für SSL CA-Zertifikate
 
 Die folgenden Operationen werden angeboten:
 

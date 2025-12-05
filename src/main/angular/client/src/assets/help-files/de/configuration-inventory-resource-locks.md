@@ -11,7 +11,7 @@ Ressourcen-Sperren begrenzen die Parallelität von Jobs und anderen Arbeitsablau
 Die folgenden Varianten sind für Ressourcen-Sperren verfügbar:
 
 - **Exklusive Sperren** erlauben die einmalige Nutzung einer Sperre durch eine [JS7 - Lock Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Lock+Instruction).
-- **Gemeinsame Sperren** erlauben die parallele Nutzung einer Sperre durch mehrere *Lock Anweisungen* desselben oder verschiedener Arbeitsabläufe.
+- **Gemeinsame Sperren** erlauben die parallele Nutzung einer Sperre durch mehrere *Lock Anweisungen* desselben oder unterschiedlicher Arbeitsabläufe.
   - Der zugrunde liegende Anwendungsfall ist eine Ressource wie z.B. eine Datenbanktabelle, auf die eine begrenzte Anzahl von Jobs gleichzeitig zugreifen kann. Um Deadlocks in der Datenbank zu vermeiden, ist die Anzahl der Jobs, die auf die Tabelle zugreifen, begrenzt.
   - Jede *Lock Anweisung* gibt ein *Gewicht* an, das auf die *Kapazität* der Ressourcen-Sperre angerechnet wird. Wenn das *Gewicht* mit der verfügbaren *Kapazität* übereinstimmt, kann der Auftrag ausgeführt werden. Andernfalls wartet der Auftrag, bis der erforderliche Anteil an *Kapazität* verfügbar wird.
 
@@ -26,7 +26,7 @@ Ressourcen-Sperren werden über die folgenden Bedienfelder verwaltet:
 - Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner, die Ressourcen-Sperren enthalten. Darüber hinaus bietet das Panel Operationen für Ressourcen-Sperren.
 - Das *Ressourcen-Sperre* Panel auf der rechten Seite des Fensters enthält Details zur Konfiguration von Ressourcen-Sperren.
 
-## Resource Lock Panel
+## Ressourcen-Sperren Panel
 
 Für eine Ressourcen-Sperre sind die folgenden Eingaben möglich:
 
@@ -38,7 +38,7 @@ Für eine Ressourcen-Sperre sind die folgenden Eingaben möglich:
     - die *Exklusive* Verwendung versucht, die Sperre unabhängig von ihrer *Kapazität* exklusiv zu belegen. 
     - die *Gemeinsame* Verwendung prüft, ob das *Gewicht* der *Lock Anweisung* mit der verbleibenden *Kapazität* übereinstimmt.
 
-### Operationen mit Ressourcen-Sperren
+### Operationen für Ressourcen-Sperren
 
 Für verfügbare Operationen siehe [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation).
 
@@ -55,9 +55,8 @@ Wenn mehrere Aufträge vor einer Ressourcen-Sperre warten, wird der Auftrag mit 
 - [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
 - [Regeln zur Benennung von Objekten](/object-naming-rules)
 
-### Produktwissen Basis
+### Product Knowledge Base
 
 - [JS7 - Lock Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Lock+Instruction)
 - [JS7 - Options Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Options+Instruction)
 - [Semaphor](https://en.wikipedia.org/wiki/Semaphore_%28programming%29)
-

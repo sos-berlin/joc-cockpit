@@ -30,7 +30,7 @@ Vorhandene Verschlüsselungszertifikate werden in einer Liste angezeigt:
 - **Symbol anzeigen** ermöglicht das Anklicken des Symbols, um das entsprechende Zertifikat anzuzeigen.
 - **Pfad zur Datei des privaten Schlüssels** gibt den Speicherort des privaten Schlüssels mit den zugehörigen Agenten an.
 
-## Operationen mit Zertifikaten
+## Operationen für Zertifikate
 
 Im oberen Teil des Bildschirms stehen Ihnen die folgenden Schaltflächen zur Verfügung:
 

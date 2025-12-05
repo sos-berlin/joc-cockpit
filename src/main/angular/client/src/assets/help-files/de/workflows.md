@@ -3,7 +3,7 @@
 Die Ansicht *Workflows* ermöglicht die Überwachung und Steuerung von Arbeitsabläufen.
 
 - Benutzer können Aufträge identifizieren, die für bestimmte Arbeitsabläufe bearbeitet werden.
-- Benutzer können Aufträge bei Bedarf zu Arbeitsabläufen hinzufügen. Solche Aufträge werden nicht zu [Daily Plan](/daily-plan) hinzugefügt, sondern werden ad hoc hinzugefügt.
+- Benutzer können Aufträge bei Bedarf zu Arbeitsabläufen hinzufügen. Solche Aufträge werden nicht zu [Tagesplan](/daily-plan) hinzugefügt, sondern werden ad hoc hinzugefügt.
 
 ## Navigationsleiste
 
@@ -61,7 +61,7 @@ Das Panel wird im unteren Teil des Fensters angezeigt, wenn Benutzer auf den Nam
 - der **Status der Historie** zeigt das letzte Ergebnis im Leben des Auftrags an.
   - Wenn Aufträge abgeschlossen sind, lautet der *Historie-Status* *Erfolgreich* oder *Fehlgeschlagen*.
   - Wenn Aufträge noch nicht abgeschlossen sind, lautet der *Status der Historie* *in Bearbeitung*.
-- **Auftragsstatus** zeigt den letzten Status des Auftrags an, siehe [Order States](/order-states).
+- **Auftragsstatus** zeigt den letzten Status des Auftrags an, siehe [Auftragszustände](/order-states).
   - Wenn Aufträge abgeschlossen sind, lautet der *Auftragsstatus* *Erfolgreich* oder *Scheitert*.
   - Wenn Aufträge noch nicht abgeschlossen sind, lautet der *Auftragsstatus* *in Bearbeitung*.
 
@@ -78,12 +78,12 @@ Standardmäßig ist die Anzeige von Auftragsprotokollen auf eine Größe von 10 
 - **Label** zeigt die Position des Auftrags im Arbeitsablauf an.
 - **Status** ist das Ergebnis der Job-Ausführung, angegeben durch *in Bearbeitung*, *erfolgreich* oder *gescheitert*.
 - **Startzeit**, **Endzeit** geben den Beginn und das Ende der Auftragsausführung an.
-- die **Kritikalität** wird mit [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflow-job-options) angegeben und zeigt die Relevanz eines Auftrags an:
+- die **Kritikalität** wird mit [Konfiguration - Inventar - Arbeitsabläufe - Job Optionen](/configuration-inventory-workflow-job-options) angegeben und zeigt die Relevanz eines Auftrags an:
   - *Minor*
   - *Normal*
   - *Groß*
   - *Kritisch*
-- **Return Code** ist der Exit-Code eines Shell-Jobs oder der Return-Code eines JVM-Jobs. Das Panel [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-job-properties) bietet die Möglichkeit, Rückgabecodes für die erfolgreiche und fehlgeschlagene Ausführung von Jobs zu konfigurieren.
+- **Return Code** ist der Exit-Code eines Shell-Jobs oder der Return-Code eines JVM-Jobs. Das Panel [Konfiguration - Inventar - Arbeitsabläufe - Job Eigenschaften](/configuration-inventory-workflow-job-properties) bietet die Möglichkeit, Rückgabewerte für die erfolgreiche und fehlgeschlagene Ausführung von Jobs zu konfigurieren.
 
 Für den Zugriff auf die Protokollausgabe ist die folgende Aktion verfügbar:
 
@@ -151,11 +151,11 @@ Die [Workflows - Search](/workflows-search) bietet Kriterien für die Suche nach
 
 - [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-  - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-job-properties)
-  - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflow-job-options)
-- [Daily Plan](/daily-plan)
+  - [Konfiguration - Inventar - Arbeitsabläufe - Job Eigenschaften](/configuration-inventory-workflow-job-properties)
+  - [Konfiguration - Inventar - Arbeitsabläufe - Job Optionen](/configuration-inventory-workflow-job-options)
+- [Tagesplan](/daily-plan)
 - [Order Log View](/order-log)
-- [Order States](/order-states)
+- [Auftragszustände](/order-states)
 - [Profil - Einstellungen](/profile-preferences)
 - [Einstellungen - JOC Cockpit](/settings-joc)
 - [Workflows - Add Orders](/workflows-orders-add)

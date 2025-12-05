@@ -2,7 +2,7 @@
 
 Die Ansicht *Aufgabenhistorie* fasst die Ausführungshistorie von Aufträgen zusammen, die unabhängig von dem Workflow und dem Auftrag, für den sie ausgeführt wurden, angezeigt werden.
 
-Die *Aufgabenhistorie* unterliegt der Bereinigung der Datenbank, die von [Cleanup Service](/service-cleanup) durchgeführt wird.
+Die *Aufgabenhistorie* unterliegt der Bereinigung der Datenbank, die von [Bereinigungsdienst](/service-cleanup) durchgeführt wird.
 
 Für die Historie von Aufträgen siehe [Auftragshistorie](/history-orders).
 
@@ -63,7 +63,7 @@ Sie können die oben im Fenster verfügbaren Filter anwenden, um die Anzeige von
 
 ### Kontexthilfe
 
-- [Cleanup Service](/service-cleanup)
+- [Bereinigungsdienst](/service-cleanup)
 - [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules)
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
 - [Auftragshistorie](/history-orders)

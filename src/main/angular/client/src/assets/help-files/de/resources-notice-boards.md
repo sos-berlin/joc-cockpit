@@ -5,7 +5,7 @@ Die Ansicht *Aushangtafeln* zeigt Live-Informationen über die Nutzung von Schwa
 Mit Hilfe von Hinweistafeln werden Abhängigkeiten zwischen Arbeitsabläufen durch die Verwendung von Hinweisen hergestellt. Eine Notiz ist eine Markierung, die an ein Schwarzes Brett angehängt ist oder nicht vorhanden ist. Anschlagbretter sind in den folgenden Varianten verfügbar:
 
 - **Globale Notice Boards** implementieren Notices* auf globaler Ebene, wodurch dieselbe Notice jederzeit für jeden Arbeitsablauf verfügbar ist. 
-- **Schedulable Notice Boards** implementieren Notizen im Rahmen des [Daily Plan](/daily-plan). Die Notiz existiert oder existiert nicht pro *Tagesplan* Datum, zum Beispiel
+- **Schedulable Notice Boards** implementieren Notizen im Rahmen des [Tagesplan](/daily-plan). Die Notiz existiert oder existiert nicht pro *Tagesplan* Datum, zum Beispiel
   - Arbeitsablauf 1 läuft von Montag bis Freitag.
   - Arbeitsablauf 2 läuft Mo-So und hängt von der vorherigen Ausführung von Arbeitsablauf 1 ab.
   - An Wochenenden wird Arbeitsablauf 1 nicht gestartet. Damit Arbeitsablauf 2 am Wochenende starten kann, wird die Abhängigkeit mit Hilfe von *Schedulable Notice Boards* auf den Tagesplan abgebildet: Wenn kein Auftrag für Arbeitsablauf 1 angekündigt ist, kann die Abhängigkeit ignoriert werden.
@@ -68,7 +68,7 @@ Die folgenden Operationen sind verfügbar:
 ### Kontexthilfe
 
 - [Configuration - Inventory - Notice Boards](/configuration-inventory-notice-boards)
-- [Daily Plan](/daily-plan)
+- [Tagesplan](/daily-plan)
 - [Daily Plan - Dependencies](/daily-plan-dependencies)
 - [Resources - Notice Boards - Search](/resources-notice-boards-search)
 

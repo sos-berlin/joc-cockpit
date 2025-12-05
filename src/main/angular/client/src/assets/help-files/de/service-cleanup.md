@@ -7,7 +7,7 @@ Dazu gehören Daten aus den folgenden Quellen:
 - [Auftragshistorie](/history-orders)
 - [Prozesshistorie](/history-tasks)
 - [File Transfer History](/history-file-transfers)
-- [Daily Plan](/daily-plan)
+- [Tagesplan](/daily-plan)
 - [Audit Log](/audit-log)
 
 Für jeden im Laufe des Tages ausgeführten Auftrag wird ein Eintrag in der *Aufgaben Historie* erstellt, ebenso für die *Auftrag Historie*. Je nach Anzahl der täglich ausgeführten Aufträge kann sich dies zu großen Zahlen summieren.
@@ -28,7 +28,7 @@ Einzelheiten zur Konfiguration des Aufräumdienstes finden Sie unter [Settings -
 ### Kontext-Hilfe
 
 - [Audit Log](/audit-log)
-- [Daily Plan](/daily-plan)
+- [Tagesplan](/daily-plan)
 - [File Transfer History](/history-file-transfers)
 - [Auftragshistorie](/history-orders)
 - [Prozesshistorie](/history-tasks)

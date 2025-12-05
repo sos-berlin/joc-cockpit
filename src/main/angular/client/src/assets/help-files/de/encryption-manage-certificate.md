@@ -32,7 +32,7 @@ SbNCv0bJswLadTFEcz8ZoYP7alXJzj9FQQ==
 - **Pfad zur Datei des privaten Schlüssels** gibt den Speicherort des privaten Schlüssels mit den zugehörigen Agenten an.
 - **Job Resource Folder** gibt den Inventarordner an, in dem die Job Resource, die das Zertifikat enthält, gespeichert werden soll. Eine Ordnerhierarchie kann mit Schrägstrichen wie in /a/b/c angegeben werden. Nicht existierende Ordner werden erstellt.
 
-## Operationen mit dem Zertifikat
+## Operationen für das Zertifikat
 
 Die folgenden Operationen sind über Links verfügbar:
 

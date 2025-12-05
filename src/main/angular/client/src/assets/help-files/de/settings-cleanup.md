@@ -1,6 +1,6 @@
 # Einstellungen - Bereinigung
 
-Die folgenden Einstellungen werden auf [Cleanup Service](/service-cleanup) angewendet. Änderungen werden sofort wirksam.
+Die folgenden Einstellungen werden auf [Bereinigungsdienst](/service-cleanup) angewendet. Änderungen werden sofort wirksam.
 
 Die Seite *Einstellungen* ist über das Symbol ![wheel icon](assets/images/wheel.png) in der Menüleiste zugänglich.
 
@@ -73,7 +73,7 @@ Gibt die Aufbewahrungsfrist für [Audit Log](/audit-log) an. Alle Audit Log-Eint
 
 ### Einstellung: *daily\_plan\_history\_age*, Voreinstellung: *30*d
 
-Legt den Aufbewahrungszeitraum für die Historie der Einreichungen mit der [Daily Plan](/daily-plan) fest. Alle Historie-Einträge, die älter als der angegebene Wert sind, werden gelöscht.
+Legt den Aufbewahrungszeitraum für die Historie der Einreichungen mit der [Tagesplan](/daily-plan) fest. Alle Historie-Einträge, die älter als der angegebene Wert sind, werden gelöscht.
 
 ### Einstellung: *monitoring\_history\_age*, Voreinstellung: *1*d
 
@@ -93,7 +93,7 @@ Legt den Aufbewahrungszeitraum für die Historie der fehlgeschlagenen Anmeldunge
 
 ### Einstellung: *reporting_age*, Standard: *365*d
 
-Legt die Aufbewahrungsfrist für [Reports](/reports) fest.
+Legt die Aufbewahrungsfrist für [Berichte](/reports) fest.
 
 ### Einstellung: *deployment\_history\_versions*, Voreinstellung: *10*
 
@@ -104,12 +104,12 @@ Gibt die Anzahl der Versionen pro bereitgestelltes Objekt an, die beibehalten we
 ### Kontext-Hilfe
 
 - [Audit Log](/audit-log)
-- [Daily Plan](/daily-plan)
+- [Tagesplan](/daily-plan)
 - [Daily Plan - Projections](/daily-plan-projections)
 - [Profile](/profile)
-- [Reports](/reports)
+- [Berichte](/reports)
 - [Resources - Notice Boards](/resources-notice-boards)
-- [Cleanup Service](/service-cleanup)
+- [Bereinigungsdienst](/service-cleanup)
 - [Settings](/settings)
 
 ### Product Knowledge Base

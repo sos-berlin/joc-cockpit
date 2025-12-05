@@ -7,7 +7,7 @@ Die Benachrichtigungen werden auf der Seite [Configuration - Notification](/conf
 - Das Fragment *notify_on_failure_gui* legt fest, ob Benachrichtigungen in dieser Ansicht sichtbar werden.
 - Zusätzlich zur Anzeige von Benachrichtigungen in dieser Ansicht können diese per E-Mail und über die Kommandozeile weitergeleitet werden, z.B. an System Monitor Produkte von Drittanbietern. Einzelheiten finden Sie unter [Configuration - Notification ](/configuration-notification).
 
-Benutzer sollten sich darüber im Klaren sein, dass Benachrichtigungen von [Cleanup Service](/service-cleanup) gelöscht werden können. Standardmäßig werden Benachrichtigungen gelöscht, wenn sie älter als ein Tag sind.
+Benutzer sollten sich darüber im Klaren sein, dass Benachrichtigungen von [Bereinigungsdienst](/service-cleanup) gelöscht werden können. Standardmäßig werden Benachrichtigungen gelöscht, wenn sie älter als ein Tag sind.
 
 ## Anzeige von Benachrichtigungen
 
@@ -51,7 +51,7 @@ Oben auf der Seite finden Sie eine Reihe von Filterschaltflächen, die Sie einze
 
 ### Kontexthilfe
 
-- [Cleanup Service](/service-cleanup)
+- [Bereinigungsdienst](/service-cleanup)
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
 - [Configuration - Notification](/configuration-notification)
 - [Monitor - System Notifications](/monitor-notifications-system)

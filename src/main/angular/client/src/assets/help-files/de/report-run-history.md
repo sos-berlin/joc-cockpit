@@ -2,15 +2,15 @@
 
 Die Seite [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) bietet Einblicke in die vergangene Ausführung von Arbeitsabläufen und Jobs:
 
-- Berichte werden aus vordefinierten [Report Templates](/report-templates) erstellt, die über [Configuration - Inventory - Reports](/configuration-inventory-reports) parametrisiert werden.
+- Berichte werden aus vordefinierten [Berichtsmuster](/report-templates) erstellt, die über [Konfiguration - Inventar - Berichtsvorlagen](/configuration-inventory-reports) parametrisiert werden.
 - Benutzer führen Reports über die Ansicht [Report Creation](/report-creation) oder über [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation) aus. Die Ansicht *Report Run Historie* liefert Nachweise über vergangene Reportläufe.
-- Die Berichte werden in der Ansicht [Reports](/reports) visualisiert.
+- Die Berichte werden in der Ansicht [Berichte](/reports) visualisiert.
 
 ## Anzeige der Historie von Berichtsläufen
 
 Die Historie von Report Runs wird über die folgenden Eigenschaften angezeigt:
 
-- **Name** gibt den eindeutigen Namen einer Berichtskonfiguration an, wie er in der Ansicht [Configuration - Inventory - Reports](/configuration-inventory-reports) angegeben ist.
+- **Name** gibt den eindeutigen Namen einer Berichtskonfiguration an, wie er in der Ansicht [Konfiguration - Inventar - Berichtsvorlagen](/configuration-inventory-reports) angegeben ist.
 - **Controller ID** gibt den Controller an, für den der Bericht erstellt wurde.
 - **Berichtsvorlage** zeigt die verwendete [Report Template](/report-templates) an.
 - **Status** gibt einen der Werte *Laufend*, *Erfolgreich*, *Fehlgeschlagen* an.
@@ -23,9 +23,9 @@ Die Historie von Report Runs wird über die folgenden Eigenschaften angezeigt:
 
 ### Kontext-Hilfe
 
-- [Configuration - Inventory - Reports](/configuration-inventory-reports)
-- [Reports](/reports)
-- [Report - Creation](/report-creation)
+- [Konfiguration - Inventar - Berichtsvorlagen](/configuration-inventory-reports)
+- [Berichte](/reports)
+- [Berichtsgenerierung](/report-creation)
 
 ### Product Knowledge Base
 

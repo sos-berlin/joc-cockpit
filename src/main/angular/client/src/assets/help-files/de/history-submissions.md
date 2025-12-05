@@ -4,7 +4,7 @@ Die *Historie der Einreichungen* verfolgt die von [Tagesplan](/daily-plan) einge
 
 Aufträge werden durch den Tagesplan in zwei Schritten erstellt: zuerst werden sie *geplant*, dann werden sie an den Controller und die Agenten *übermittelt*. Die Übermittlung beinhaltet, dass die Aufträge selbstständig mit den Agenten gestartet werden.
 
-Die *Übermittlungshistorie* unterliegt der Bereinigung der Datenbank, die von [Cleanup Service](/service-cleanup) durchgeführt wird.
+Die *Übermittlungshistorie* unterliegt der Bereinigung der Datenbank, die von [Bereinigungsdienst](/service-cleanup) durchgeführt wird.
 
 ## Verlaufspanel
 
@@ -64,7 +64,7 @@ Benutzer können Filter anwenden, die oben im Fenster verfügbar sind, um die An
 
 ### Kontexthilfe
 
-- [Cleanup Service](/service-cleanup)
+- [Bereinigungsdienst](/service-cleanup)
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
 - [Tagesplan](/daily-plan)
 - [Profil - Einstellungen](/profile-preferences)

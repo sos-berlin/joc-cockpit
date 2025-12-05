@@ -1,65 +1,65 @@
-# Konfiguration - Inventar - Skript enthält
+# Konfiguration - Inventar - Skript-Bausteine
 
-Das *Script Include Panel* bietet die Möglichkeit, Codeschnipsel für die Verwendung mit Jobs festzulegen. Einzelheiten finden Sie unter [JS7 - Script Includes](https://kb.sos-berlin.com/display/JS7/JS7+-+Script+Includes).
+Das *Skript-Bausteine* Panel bietet die Möglichkeit, Codeschnipsel für die Verwendung mit Jobs festzulegen. Einzelheiten finden Sie unter [JS7 - Script Includes](https://kb.sos-berlin.com/display/JS7/JS7+-+Script+Includes).
 
 Shell Jobs können für eine Reihe von Skriptsprachen wie Bash, Python, PowerShell usw. verwendet werden.
 
-- Benutzer verwenden häufig Codeschnipsel in einer Reihe von Jobs wieder, z.B. wiederverwendbare Funktionen, die in einer Reihe von *Job Scripts* aufgerufen werden.
-- Dies gilt für Shell-Jobs, die Bash usw. verwenden, und es gilt für die Verwendung einer beliebigen Skriptsprache mit einem Job.
-- Script Includes werden in *Job Scripts* erweitert, wenn der Workflow bereitgestellt wird. Dies bedeutet, dass Änderungen an Script Includes die Bereitstellung des entsprechenden Workflows erfordern. JS7 verfolgt die Abhängigkeiten und bietet die Bereitstellung der zugehörigen Workflows an, wenn Sie das Script Include freigeben.
+- Benutzer verwenden häufig Codeschnipsel in einer Reihe von Jobs wieder, z.B. wiederverwendbare Funktionen, die in einer Reihe von *Job-Skripts* aufgerufen werden.
+- Dies gilt für Shell Jobs, die Bash usw. verwenden, und es gilt für die Verwendung einer beliebigen Skriptsprache mit einem Job.
+- Skript-Bausteine werden in *Job-Skripts* erweitert, wenn der Arbeitsablauf ausgerollt wird. Dies bedeutet, dass Änderungen an Skript-Bausteinen das Ausrollen des entsprechenden Arbeitsablaufs erfordern. JS7 verfolgt die Abhängigkeiten und bietet das Ausrollen der zugehörigen Arbeitsabläufe an, wenn Sie den Skript-Baustein freigeben.
 
-Script Includes werden über die folgenden Bedienfelder verwaltet:
+Skript-Bausteine werden über die folgenden Bedienfelder verwaltet:
 
-- Die [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner, die Script Includes enthalten. Darüber hinaus bietet das Panel Operationen mit Script Includes.
-- Das *Script Include Panel* auf der rechten Seite des Fensters enthält Details zur Konfiguration von Script Includes.
+- Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner, die Skript-Bausteine enthalten. Darüber hinaus bietet das Panel Operationen für Skript-Bausteine.
+- Das *Skript-Baustein* Panel auf der rechten Seite des Fensters enthält Details zur Konfiguration von Skript-Bausteinen.
 
-*Skript Include Panel
+## Skript-Baustein Panel
 
-Für ein Script Include sind die folgenden Eingaben möglich:
+Für Skript-Bausteine sind die folgenden Eingaben möglich:
 
-- **Name** ist der eindeutige Bezeichner eines Script Include, siehe [Regeln zur Benennung von Objekten](/object-naming-rules).
-- **Titel** enthält eine optionale Erklärung des Zwecks des Script Include.
-- **Skript Include** enthält den Codeschnipsel.
+- **Name** ist der eindeutige Bezeichner eines Skript-Bausteins, siehe [Regeln zur Benennung von Objekten](/object-naming-rules).
+- **Titel** enthält eine optionale Erklärung des Zwecks des Skript-Bausteins.
+- **Skript-Baustein** enthält den Codeschnipsel.
 
-## Operationen mit Script Includes
+## Operationen für Skript-Bausteine
 
 Für verfügbare Operationen siehe [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation).
 
 ## Verwendung mit Jobs
 
-Jobs referenzieren Script Includes über die Eigenschaft *Job Script* mit einer der folgenden Syntaxvarianten:
+Jobs referenzieren Skript-Bausteine über die Eigenschaft *Job-Skript* mit einer der folgenden Syntaxvarianten:
 
-- **###!include *script-include-name***
+- **\#\#!include *script-include-name***
 - **::!include *script-include-name***
 - **//!include *script-include-name***
 
-Der *script-include-name* gibt den Bezeichner des Script-Includes an. Benutzer können die obige Eingabe in das *Job Script* eingeben und die Schnellsuche aufrufen.
+Das *script-include-name* gibt den Bezeichner des Skript-Bausteins an. Benutzer können die obige Eingabe in das *Job-Skript* eingeben und die Schnellsuche aufrufen.
 
 ### Schnellsuche
 
-Wenn Sie die Tastenkombination STRG+Leertaste drücken, während sich der Cursor im *Auftragsskript* befindet, wird die Schnellsuche für Script-Includes aufgerufen:
+Wenn Sie die Tastenkombination STRG+Leertaste drücken, während sich der Cursor im *Job-Skript* befindet, wird die Schnellsuche für Skript-Bausteine aufgerufen:
 
 - Die Schnellsuche bietet 
   - die Navigation von Inventarordnern aus,
-  - auswahl von Script Includes nach Namen, wenn Sie ein oder mehrere Zeichen eingeben.
+  - auswahl von Skript-Bausteine nach Namen, wenn Sie ein oder mehrere Zeichen eingeben.
 - Bei der Schnellsuche wird die Groß- und Kleinschreibung nicht berücksichtigt und es wird nach rechts abgeschnitten. Für links abgeschnittene Eingaben können Sie das Metazeichen \* verwenden, das als Platzhalter für eine beliebige Anzahl von Zeichen dient.
-- Nachdem Sie ein Script Include ausgewählt haben, wird die zugehörige Eingabe in die Zeile eingefügt, in der sich der Cursor befindet.
+- Nachdem Sie ein Skript-Baustein ausgewählt haben, wird die zugehörige Eingabe in die Zeile eingefügt, in der sich der Cursor befindet.
 
 ### Parametrisierung
 
-Script Includes können wie folgt parametrisiert werden:
+Skript-Bausteine können wie folgt parametrisiert werden:
 
-- **:!include *script-include-name* --replace="search-literal", "replacement-literal "**
+- **\#\#:!include *script-include-name* --replace="search-literal", "replacement-literal "**
 - **::!include *script-include-name* --replace="search-literal", "replacement-literal "**
 - **//!include *script-include-name* --replace="search-literal", "replacement-literal "**
 
-Die *Such-Literal* wird im Script Include nachgeschlagen und durch die *Ersatz-Literal* ersetzt, wenn der Workflow, der den entsprechenden Job enthält, bereitgestellt wird.
+Das *Such-Literal* wird im Skript-Baustein nachgeschlagen und durch das *Ersatz-Literal* ersetzt, wenn der Workflow, der den entsprechenden Job enthält, bereitgestellt wird.
 
 ### Beispiele
 
 #### PowerShell für Unix
 
-Für die Verwendung mit der PowerShell auf Unix-Plattformen wird der folgende Shebang für ein Script Include vorgeschlagen:
+Für die Verwendung mit der PowerShell auf Unix-Plattformen wird der folgende Shebang für einen Skript-Baustein vorgeschlagen:
 
 <pre>
 #!/usr/bin/env pwsh
@@ -67,13 +67,13 @@ Für die Verwendung mit der PowerShell auf Unix-Plattformen wird der folgende Sh
 
 #### PowerShell für Windows
 
-Für die Verwendung mit der PowerShell auf Windows-Plattformen wird der folgende Shebang für ein Script Include vorgeschlagen:
+Für die Verwendung mit PowerShell auf Windows-Plattformen wird der folgende Shebang für einen Skript-Baustein vorgeschlagen:
 
 <pre>
 @@setlocal enabledelayedexpansion &amp; set NO_COLOR=1 &amp; set f=%RANDOM%.ps1 &amp; @@findstr/v "^@@[fs].*&amp;" "%~f0" &gt; !f! &amp; powershell.exe -NonInteractive -File !f! &amp; set e=!errorlevel! &amp; del /q !f! &amp; exit !e!/b&amp
 </pre>
 
-Das Skript Include schreibt den Inhalt des *Job-Skripts* in eine temporäre Datei, die mit der Binärdatei *powershell.exe* ausgeführt wird. Benutzer sollten zur Verwendung der Binärdatei *pwsh.exe* wechseln, wenn spätere PowerShell-Versionen im Einsatz sind. Skriptfehler werden vom JS7-Agenten berücksichtigt und die Protokollausgabe wird von Escape-Zeichen für die Farbgebung befreit. 
+Der Skript-Baustein schreibt den Inhalt des *Job-Skripts* in eine temporäre Datei, die mit der Binärdatei *powershell.exe* ausgeführt wird. Benutzer sollten zur Verwendung der Binärdatei *pwsh.exe* wechseln, wenn spätere PowerShell-Versionen im Einsatz sind. Skriptfehler werden vom JS7 Agenten berücksichtigt und die Protokollausgabe wird von Escape-Zeichen für die Farbgebung befreit. 
 
 ## Referenzen
 
@@ -87,4 +87,3 @@ Das Skript Include schreibt den Inhalt des *Job-Skripts* in eine temporäre Date
 
 - [JS7 - How to run PowerShell scripts from jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+run+PowerShell+scripts+from+jobs)
 - [JS7 - Script Includes](https://kb.sos-berlin.com/display/JS7/JS7+-+Script+Includes)
-

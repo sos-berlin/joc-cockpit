@@ -1,23 +1,23 @@
 # Berichte
 
-Die [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) bietet Ihnen Einblicke in die Ausführung von Arbeitsabläufen und Aufträgen in der Vergangenheit:
+Die [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) bieten Einblicke in die zurückliegende Ausführung von Arbeitsabläufen und Jobs:
 
-- Berichte werden aus vordefinierten [Report Templates](/report-templates) erstellt, die über [Configuration - Inventory - Reports](/configuration-inventory-reports) parametrisiert werden.
-- Benutzer führen Berichte über die Ansicht [Report - Creation](/report-creation) oder über [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation) aus. Die Ansicht [Report - Run History](/report-run-history) liefert Nachweise über vergangene Berichtsläufe.
+- Berichte werden aus vordefinierten [Berichtsmuster](/report-templates) erstellt, die über [Konfiguration - Inventar - Berichtsvorlagen](/configuration-inventory-reports) parametrisiert werden.
+- Benutzer führen Berichte über die Ansicht [Berichtsgenerierung](/report-creation) oder über [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation) aus. Die Ansicht [Historie Berichtsläufe](/report-run-history) liefert Nachweise über vergangene Berichtsläufe.
 - Berichte werden in der Ansicht *Berichte* visualisiert.
 
-Berichte und die [Report - Run History](/report-run-history) unterliegen der Bereinigung der Datenbank durch [Cleanup Service](/service-cleanup).
+Berichte und die [Historie Berichtsläufe](/report-run-history) unterliegen der Bereinigung der Datenbank durch [Bereinigungsdienst](/service-cleanup).
 
-Für die Ausführung von Berichten siehe [Report - Creation](/report-creation). Zur Überprüfung von Berichtsläufen siehe [Report - Run History](/report-run-history).
+Für die Ausführung von Berichten siehe [Berichtsgenerierung](/report-creation). Zur Überprüfung von Berichtsläufen siehe [Historie Berichtsläufe](/report-run-history).
 
 ## Liste der Berichte
 
-Die angezeigten Berichte sind gruppiert nach [Report Templates](/report-templates) und nach *höchster*, *niedrigster* Sortierung. 
+Die angezeigten Berichte sind gruppiert nach [Berichtsmuster](/report-templates) und nach *höchster*, *niedrigster* Sortierung. 
 
 - Wenn Sie die *Berichtsvorlage* erweitern, können Sie zwischen der *höchsten* und *niedrigsten* Sortierung wählen.
 - Durch Erweitern der Sortierung werden die verfügbaren Berichte angezeigt.
 
-## Operationen mit Berichten
+## Operationen für Berichte
 
 Berichte können angezeigt werden, indem Sie auf den entsprechenden Bericht klicken.
 
@@ -44,10 +44,10 @@ Den Benutzern werden die folgenden Operationen für Berichte angeboten:
 
 ### Kontexthilfe
 
-- [Configuration - Inventory - Reports](/configuration-inventory-reports)
-- [Report - Creation](/report-creation)
-- [Report - Run History](/report-run-history)
-- [Report Templates](/report-templates)
+- [Konfiguration - Inventar - Berichtsvorlagen](/configuration-inventory-reports)
+- [Berichtsgenerierung](/report-creation)
+- [Historie Berichtsläufe](/report-run-history)
+- [Berichtsmuster](/report-templates)
 
 ### Product Knowledge Base
 
@@ -56,4 +56,3 @@ Den Benutzern werden die folgenden Operationen für Berichte angeboten:
 - [JS7 - Reports - Configuration](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Configuration)
 - [JS7 - Reports - Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Templates)
 - [JS7 - Reports - Visualization](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Visualization)
-

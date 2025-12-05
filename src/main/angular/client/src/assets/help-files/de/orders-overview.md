@@ -4,7 +4,7 @@ Die Ansicht *Auftragsübersicht* ermöglicht die Überwachung und Kontrolle von 
 
 - Benutzer können Aufträge, die bearbeitet werden, über [Order State](/order-states) identifizieren.
 - Sie können Aufträge umwandeln, indem Sie zum Beispiel *laufende* Aufträge stornieren.
-- Die Ansicht enthält Aufträge, die von [Daily Plan](/daily-plan) hinzugefügt werden, und Aufträge, die auf Anfrage hinzugefügt wurden.
+- Die Ansicht enthält Aufträge, die von [Tagesplan](/daily-plan) hinzugefügt werden, und Aufträge, die auf Anfrage hinzugefügt wurden.
 
 ## Auswahlfenster Auftragsstatus
 
@@ -62,7 +62,7 @@ Das *Audit Log* zeigt an, welche Änderungen an einem Auftrag vorgenommen wurden
 - **Erstellt** gibt das Datum an, an dem die Operation durchgeführt wurde.
 - **Konto** gibt das Benutzerkonto an, das den Vorgang durchgeführt hat.
 - **Anfrage** gibt den REST-API-Endpunkt an, der aufgerufen wurde.
-- **Category** gibt die Klassifizierung des Vorgangs an, z.B. CONTROLLER bei der Stornierung von Aufträgen oder DAILYPLAN bei der Erstellung von Aufträgen aus der [Daily Plan](/daily-plan).
+- **Category** gibt die Klassifizierung des Vorgangs an, z.B. CONTROLLER bei der Stornierung von Aufträgen oder DAILYPLAN bei der Erstellung von Aufträgen aus der [Tagesplan](/daily-plan).
 - **Grund** erklärt, warum ein Auftrag geändert wurde. Das JOC Cockpit kann so konfiguriert werden, dass die Angabe von Gründen bei der Änderung von Objekten erzwungen wird.
   - Die Einstellung ist unter [Profil - Einstellungen](/profile-preferences) verfügbar.
   - Die Einstellung kann über die Seite [Einstellungen - JOC Cockpit](/settings-joc) erzwungen werden.
@@ -143,7 +143,7 @@ Der Filter beschränkt die Anzeige auf übereinstimmende *Auftrags-IDs* und *Arb
 
 - [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
+- [Tagesplan](/daily-plan)
 - [Order Log View](/order-log)
 - [Order State](/order-states)
 - [Profil - Einstellungen](/profile-preferences)
