@@ -77,7 +77,7 @@ Der Skript-Baustein schreibt den Inhalt des *Job-Skripts* in eine temporäre Dat
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
 - [Konfiguration - Inventar - Arbeitsablauf - Job-Optionen](/configuration-inventory-workflow-job-options)

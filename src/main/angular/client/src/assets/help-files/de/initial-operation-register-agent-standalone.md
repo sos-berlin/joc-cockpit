@@ -23,9 +23,9 @@ Nach erfolgreicher Registrierung wird der Agent in der Ansicht [Resources - Agen
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
-- [Dashboard - Product Status](/dashboard-product-status)
+- [Übersicht - Produkt Status](/dashboard-product-status)
 - [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-cluster)
 - [Initial Operation - Register Controller](/initial-operation-register-controller)
 

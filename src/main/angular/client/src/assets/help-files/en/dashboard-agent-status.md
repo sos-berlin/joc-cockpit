@@ -1,4 +1,4 @@
-# Agent Status
+# Dashboard - Agent Status
 
 The *Agent Status* panel summarizes the connection status of registered Agents.
 

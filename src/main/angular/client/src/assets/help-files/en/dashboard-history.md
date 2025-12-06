@@ -1,4 +1,4 @@
-# History
+# Dashboard - History
 
 The *History* panel provides information about past execution of Orders and Jobs.
 
@@ -13,7 +13,7 @@ The history status is the final status when an Order or Job is completed. The hi
 - **Successful Jobs** are completed with a successful outcome. This includes Jobs in Workflows for which related Orders are not completed.
 - **Failed Jobs** did meet a problem when executing the Job.
 
-Clicking the indicated number of Orders or Jobs navigates to the *Order History* view or *Task History* view that displays Orders and Jobs in detail.
+Clicking the indicated number of Orders or Jobs navigates to the [Order History](/history-orders) view or [Task History](/history-tasks) view that displays Orders and Jobs in detail.
 
 ## Filters
 

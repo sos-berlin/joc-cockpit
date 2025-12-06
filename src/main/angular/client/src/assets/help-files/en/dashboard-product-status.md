@@ -61,7 +61,7 @@ Operations on JOC Cockpit offered for the instance to which the browser is conne
 - **Run Service** forces a service to run immediately:
   - **Cleanup Service** purges the database.
   - **Daily Plan Service** creates Orders for the Daily Plan. The service can be executed any number of times per day. An individual run will not prevent the service from running at the point in time specified by its settings.
-- **Download Log** offers JOC Cockpit's joc.log file for download from a .gz file in gzipped format.
+- **Download Log** offers JOC Cockpit's *joc.log* file for download.
 
 ### Controller Operations
 

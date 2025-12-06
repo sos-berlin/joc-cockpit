@@ -1,4 +1,4 @@
-# Controller Status
+# Dashboard - Controller Status
 
 The *Controller Status* panel provides information about registered Controllers.
 

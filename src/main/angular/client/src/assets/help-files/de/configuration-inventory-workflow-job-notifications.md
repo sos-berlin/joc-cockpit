@@ -12,7 +12,7 @@ Globale Benachrichtigungen werden von [Benachrichtigungen](/notifications) aus k
 
 Benachrichtigungen erlauben die Verwendung verschiedener Kanäle:
 
-- Benachrichtigungen in den Ansichten [Monitor - Order Notifications](/monitor-notifications-order) und [Monitor - System Notifications](/monitor-notifications-system).
+- Benachrichtigungen in den Ansichten [Überwachung - Auftragsbenachrichtigungen](/monitor-notifications-order) und [Überwachung - Sysembenachrichtigungen](/monitor-notifications-system).
 - Versenden von Benachrichtigungen per E-Mail.
 - Ausführen eines Shell Kommandos. Systemmonitor-Tools von Drittanbietern bieten beispielsweise häufig eine Befehlszeilenschnittstelle, die so parametrisiert werden kann, dass sie den Systemmonitor mit Ereignissen über die erfolgreiche oder fehlgeschlagene Ausführung von Jobs versorgt.
 
@@ -30,15 +30,15 @@ Spezifische Benachrichtigungen pro Job haben Vorrang vor den globalen Benachrich
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
   - [Konfiguration - Inventar - Arbeitsabläufe - Job Optionen](/configuration-inventory-workflows-job-options)
   - [Konfiguration - Inventar - Arbeitsabläufe - Job Eigenschaften](/configuration-inventory-workflows-job-properties)
   - [Konfiguration - Inventar - Arbeitsabläufe - Job Knoteneigenschaften](/configuration-inventory-workflows-job-node-properties)
   - [Konfiguration - Inventar - Arbeitsabläufe - Job Kennzeichnungen](/configuration-inventory-workflows-job-tags)
-- [Monitor - Order Notifications](/monitor-notifications-order)
-- [Monitor - System Notifications](/monitor-notifications-system)
+- [Überwachung - Auftragsbenachrichtigungen](/monitor-notifications-order)
+- [Überwachung - Sysembenachrichtigungen](/monitor-notifications-system)
 - [Benachrichtigungen](/notifications)
 
 ### Product Knowledge Base

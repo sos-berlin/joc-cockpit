@@ -40,7 +40,7 @@ Die Benachrichtigungseinstellungen umfassen Eigenschaften für den Versand von E
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Einstellungen für Autorisierungsbenachrichtigungen](/approval-notification-settings)
 - [Autorisierungsanfrage](/approval-request)

@@ -32,7 +32,7 @@ Für Details siehe [Initial Operation - Subagent Cluster](/initial-operation-age
 
 ## Kontext-Hilfe
 
-- [Dashboard - Product Status](/dashboard-product-status)
+- [Übersicht - Produkt Status](/dashboard-product-status)
 - [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-cluster)
 - [Initial Operation - Register Controller](/initial-operation-register-controller)
 - [Initial Operation - Register Subagent](/initial-operation-register-agent-subagent)

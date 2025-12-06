@@ -64,6 +64,6 @@ Wenn ein Auftrag nicht mit dem ersten Knoten im Arbeitsablauf beginnen soll, kan
 ## Referenzen
 
 - [Einstellungen - JOC Cockpit](/settings-joc)
-- [Workflows](/workflows)
+- [Arbeitsabläufe](/workflows)
 - [JS7 - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows)
 

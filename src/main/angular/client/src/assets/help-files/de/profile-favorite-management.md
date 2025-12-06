@@ -63,7 +63,7 @@ Die folgenden Operationen sind über das 3-Punkte-Aktionsmenü einer *Favoritenf
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
 - [Konfiguration - Inventar - Arbeitsabläufe - Job Eigenschaften](/configuration-inventory-workflow-job-properties)

@@ -42,7 +42,7 @@ Den Benutzern werden die folgenden Operationen für Berichte angeboten:
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Konfiguration - Inventar - Berichtsvorlagen](/configuration-inventory-reports)
 - [Berichtsgenerierung](/report-creation)

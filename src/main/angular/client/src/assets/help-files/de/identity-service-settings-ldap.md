@@ -67,7 +67,7 @@ Für Details siehe
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Identity Service - Configuration](/identity-service-configuration)
 - [Identity Services](/identity-services)

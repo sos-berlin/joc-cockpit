@@ -39,7 +39,7 @@ Die *Symbolleiste* enthält die folgenden Anweisungen:
 - **Options Anweisung** ist eine Blockanweisung, die die Fehlerbehandlung für die *Lock Anweisung* und die *ConsumeNotices Anweisung* regelt. Wenn die *Options Anweisung* vorhanden ist und die Eigenschaft *Stoppen im Fehlerfall* enthält, verbleiben die *fehlgeschlagenen* Aufträge bei der fehlgeschlagenen Anweisung, z.B. einem Job. Wenn die Anweisung nicht vorhanden ist, werden Aufträge, die innerhalb einer *Lock Anweisung* oder *ConsumeNotices Anweisung* fehlschlagen, an den Anfang des Anweisungsblocks verschoben und verbleiben im Zustand *Failed*. Einzelheiten finden Sie unter [JS7 - Options Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Options+Instruction).
 - mit **Einfügen** können Sie eine oder mehrere zuvor kopierte oder ausgeschnittene Anweisungen per Drag&amp;Drop in den Arbeitsablauf einfügen.
 
-## Bereich: Arbeitsablauf
+## Bereich Arbeitsablauf
 
 Der Bereich enthält die grafische Darstellung eines Arbeitsablaufs.
 
@@ -73,7 +73,7 @@ Für Variablen des Arbeitsablaufs werden die folgenden Datentypen angeboten:
 - **Zeichenkette** enthält beliebige Zeichen. Optional können die Werte in einfache Anführungszeichen gesetzt werden.
   - Konstante Werte: *hallo welt*
   - Funktionen: *now( format='yyyy-MM-dd hh:mm:ss', timezone='Europe/London' )*, *env('HOSTNAME')*
-- **Zahl** enthält ganze Zahlen und Gleitkommazahlen wie 3.14.
+- **Zahl** enthält ganze Zahlen und Gleitkommazahlen wie 3,14.
 - **Wahrheitswert** Werte sind *wahr* oder *falsch*.
 - **Final** Werte werden vom Controller ausgewertet, wenn ein Auftrag hinzugefügt wird. Andere Datentypen werden vom Agenten ausgewertet, wenn ein Auftrag gestartet wird.
   - Die hauptsächliche Verwendung liegt in Funktionen wie: *jobResourceVariable( 'meineJobResource', 'meineVariable' )*
@@ -140,7 +140,7 @@ Wenn Sie auf den Hintergrund des Bereichs *Arbeitsablauf* klicken, wird eine *Sy
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Konfiguration - Inventar - Job-Ressourcen](/configuration-inventory-job-resources)
 - [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)

@@ -65,7 +65,7 @@ Die folgenden Operationen sind verfügbar:
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Configuration - Inventory - Notice Boards](/configuration-inventory-notice-boards)
 - [Tagesplan](/daily-plan)

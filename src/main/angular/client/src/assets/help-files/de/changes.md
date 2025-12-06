@@ -37,7 +37,7 @@ In der *Liste der Änderungen* werden die folgenden Operationen mit dem entsprec
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Änderungen - Eigenschaften](/changes-properties)
 

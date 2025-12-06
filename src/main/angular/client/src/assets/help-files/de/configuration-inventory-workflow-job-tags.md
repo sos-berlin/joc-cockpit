@@ -18,7 +18,7 @@ Kennzeichnungsgruppen können verwendet werden, um Kennzeichnungen zu organisier
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
   - [Konfiguration - Inventar - Arbeitsabläufe - Job Optionen](/configuration-inventory-workflows-job-options)

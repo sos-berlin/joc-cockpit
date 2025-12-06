@@ -26,7 +26,7 @@ Die folgenden Operationen werden angeboten:
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Profile](/profile)
 - [Profile - SSL Key Management](/profile-ssl-key-management)

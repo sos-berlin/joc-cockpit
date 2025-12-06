@@ -1,41 +1,40 @@
-# Einsatzverlauf
+# Historie - Ausrollen
 
-Die Ansicht *Einsatzverlauf* fasst die Einsätze von Inventarobjekten zusammen.
+Die Ansicht *Ausrollhistorie* fasst das Ausrollen von Inventarobjekten zusammen.
 
-JS7 implementiert eine verteilte Architektur, die es ermöglicht, Jobs desselben Workflows auf verschiedenen Agenten und Plattformen auszuführen. Eine erfolgreiche Bereitstellung beinhaltet die Bestätigung der neuen und aktualisierten Objekte durch die einzelnen Agenten, die asynchron eintrifft.
+JS7 implementiert eine verteilte Architektur, die es ermöglicht, Jobs desselben Arbeitsablaufs auf unterschiedlichen Agenten und Plattformen auszuführen. Ein erfolgreiches Ausrollen beinhaltet die Bestätigung der neuen und aktualisierten Objekte durch die einzelnen Agenten, die asynchron erfolgt.
 
-Wenn Sie die Operation *deploy* in der Ansicht *Konfiguration* verwenden, wird die Bestätigung je nach Verfügbarkeit der Agenten erfolgen. Ein heruntergefahrener Agent wird beispielsweise die Bereitstellung bestätigen, wenn er neu gestartet wird, was einige Zeit später geschehen kann.
+Wenn Sie die Operation *Ausrollen* in der Ansicht *Konfiguration* verwenden, wird die Bestätigung je nach Verfügbarkeit der Agenten erfolgen. Ein heruntergefahrener Agent wird beispielsweise das Ausrollen bestätigen, wenn er neu gestartet wird.
 
-Die *Verteilungshistorie* wird asynchron aktualisiert, um den Verteilungsstatus der Inventarobjekte wiederzugeben.
+Die *Ausrollhistorie* wird asynchron aktualisiert, um den Ausrollstatus der Inventarobjekte wiederzugeben.
 
-## Verlaufspanel
+## Bereich: Ausrollhistorie
 
-### Verlauf der Einsätze
+### Historie des Ausrollens
 
-Die Anzeige erfolgt gruppiert in einem Block pro Einsatz und in Blöcken pro Inventarobjekt.
+Die Anzeige erfolgt gruppiert in einem Block pro Ausrollen und in Blöcken pro Inventarobjekt.
 
-- **Einsatzdatum** gibt den Zeitpunkt des Einsatzes an.
-- **Konto** gibt das JOC Cockpit-Benutzerkonto an, das die Bereitstellung durchgeführt hat.
-- **Status** zeigt an, ob die Bereitstellung erfolgreich war oder fehlgeschlagen ist.
-  - *Eingesetzt* zeigt an, dass alle Inventarobjekte erfolgreich eingesetzt wurden.
-  - *Nicht bereitgestellt* zeigt an, dass ein oder mehrere Inventarobjekte nicht bereitgestellt werden konnten.
-- **Anzahl der Objekte** gibt die Anzahl der Inventarobjekte wie Workflows, Auftragsressourcen usw. an, die in den Umfang der Bereitstellung fallen.
+- **Datum des Ausrollens** gibt den Zeitpunkt des Ausrollens an.
+- **Konto** gibt das JOC Cockpit Benutzerkonto an, das das Ausrollen durchgeführt hat.
+- **Status** zeigt an, ob das Ausrollen erfolgreich war oder fehlgeschlagen ist.
+  - *Ausgerollt* zeigt an, dass alle Inventarobjekte erfolgreich eingesetzt wurden.
+  - *Nicht ausgerollt* zeigt an, dass ein oder mehrere Inventarobjekte nicht ausgerollt werden konnten.
+- **Anzahl Einträge** gibt die Anzahl der Inventarobjekte wie Arbeitsabläufe usw. an, die in den Umfang des Ausrollens fallen.
 
-### Historie der Einsätze pro Inventarobjekt
+### Historie des Ausrollens pro Inventarobjekt
 
-Wenn Sie auf das Pfeil-nach-unten-Symbol neben dem *Einsatzdatum* klicken, werden Details zu jedem Inventarobjekt angezeigt:
+Wenn Sie auf das Pfeil-nach-unten-Symbol neben dem *Ausrolldatum* klicken, werden Details zu jedem Inventarobjekt angezeigt:
 
-- **Meldung** zeigt eine Fehlermeldung im Falle einer fehlgeschlagenen Bereitstellung an.
+- **Meldung** zeigt eine Fehlermeldung im Falle eines fehlgeschlagenen Ausrollens an.
 - **Objekttyp** gibt den Typ des Inventarobjekts an, z.B. *Workflow*, *Job Resource* usw.
-- **Pfad** gibt den Inventarordner und den Objektnamen an. Für Workflow-Objekte
-  - klicken Sie auf den Namen des Workflows, um die Ansicht [Arbeitsabläufe](/workflows) aufzurufen,
+- **Pfad** gibt den Inventarordner und den Objektnamen an. Für Arbeitsabläufe
+  - klicken Sie auf den Namen des Arbeitsablaufs, um die Ansicht [Arbeitsabläufe](/workflows) aufzurufen,
   - klicken Sie auf das Bleistiftsymbol, um zur Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows) zu gelangen.
-- **Operation** ist eine von *Speichern* oder *Löschen*. Bei beiden Operationen werden die Objekte aktualisiert.
-- **Datum** gibt den Zeitpunkt der Bereitstellungsoperation an.
+- **Operation** ist eine von *speichern* oder *löschen*. Bei beiden Operationen werden die Objekte aktualisiert.
+- **Datum** gibt den Zeitpunkt des Ausrollens an.
 
 ## Referenzen
 
 - [Configuration - Inventory- Workflows](/configuration-inventory-workflows)
 - [Arbeitsabläufe](/workflows)
 - [JS7 - Deployment of Scheduling Objects](https://kb.sos-berlin.com/display/JS7/JS7+-+Deployment+of+Scheduling+Objects)
-

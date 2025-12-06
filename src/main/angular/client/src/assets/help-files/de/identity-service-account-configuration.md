@@ -21,7 +21,7 @@ Für ein Konto sind die folgenden Eigenschaften verfügbar:
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Identity Service - Blocklist](/identity-service-blocklist)
 - [Identity Service - Roles](/identity-service-roles) 

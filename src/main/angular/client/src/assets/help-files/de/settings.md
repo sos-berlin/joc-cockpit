@@ -6,14 +6,14 @@ Die Seite *Einstellungen* ist über das Symbol ![wheel icon](assets/images/wheel
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Einstellungen - Tagesplan](/settings-daily-plan)
 - [Settings - Cleanup Service](/settings-cleanup)
 - [Settings - Identity Service](/settings-identity-service)
 - [Einstellungen - JOC Cockpit](/settings-joc)
 - [Settings - User](/settings-user)
-- [Settings - Log Notification](/settings-log-notification)
+- [Einstellungen - Protkoll-Benachrichtigung](/settings-log-notification)
 - [Settings - Git](/settings-git)
 - [Settings - Kiosk](/settings-kiosk)
 

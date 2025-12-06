@@ -34,14 +34,14 @@ Die folgenden Einstellungen, die für allgemeine Werte verwaltet werden können,
 - **Max. Anzahl der Benachrichtigungseinträge** gilt für die Ansichten *Monitor-Auftragsbenachrichtigungen* und *Monitor-Systembenachrichtigungen*.
 - **Max. Anzahl der Einträge in der Auftragsübersicht** gilt für die Ansicht [Orders - Overview](/orders-overview).
 - **Max. Anzahl der Tagesplan-Einträge** gilt für die Ansicht [Tagesplan](/daily-plan).
-- **Max. Anzahl der Aufträge pro Arbeitsablauf** begrenzt die Anzahl der Aufträge, die in der Ansicht [Workflows](/workflows) verfügbar sind.
+- **Max. Anzahl der Aufträge pro Arbeitsablauf** begrenzt die Anzahl der Aufträge, die in der Ansicht [Arbeitsabläufe](/workflows) verfügbar sind.
 - **Max. Anzahl der Dateitransfer-Einträge** gilt für die Ansicht [History - File Transfers](/history-file-transfers).
 - **Max. Anzahl von Aufträgen pro Ressourcensperre** begrenzt die Anzahl der Aufträge, die in der Ansicht [Resources - Resource Locks](/resources-resource-locks) angezeigt werden.
 - **Max. Anzahl der Aufträge pro Schwarzes Brett** begrenzt die Anzahl der Aufträge, die in der Ansicht [Resources - Notice Boards](/resources-notice-boards) angezeigt werden.
 
 ### Arbeitsablauf Ansichtsvorgaben
 
-Die Voreinstellungen gelten für die Ansicht [Workflows](/workflows):
+Die Voreinstellungen gelten für die Ansicht [Arbeitsabläufe](/workflows):
 
 - **Max. Anzahl der Einträge in der Auftrags Historie pro Arbeitsablauf** begrenzt die Anzahl der Einträge im Fenster *Auftrag Historie*.
 - **Max. Anzahl der Einträge in der Job Historie pro Arbeitsablauf** begrenzt die Anzahl der Einträge im Fenster *Auftrag Historie*.
@@ -67,11 +67,11 @@ Die Präferenzen gelten für die Paginierung auf jeder Seite:
 
 ### Editor-Einstellungen
 
-- **Tab Size** wird auf der Registerkarte [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-job-properties) verwendet, wenn Sie das *Job Script* bearbeiten. Die Einstellung gibt die Anzahl der Leerzeichen an, die der Größe entsprechen, wenn Sie die TAB-Taste drücken.
+- **Tab Size** wird auf der Registerkarte [Konfiguration - Inventar - Arbeitsabläufe - Job-Eigenschaften](/configuration-inventory-workflow-job-properties) verwendet, wenn Sie das *Job Script* bearbeiten. Die Einstellung gibt die Anzahl der Leerzeichen an, die der Größe entsprechen, wenn Sie die TAB-Taste drücken.
 
 ### Ansichtseinstellungen
 
-- **Protokolle anzeigen** legt die Anzeige von [Order Log View](/order-log) und [Task Log View](/task-log) fest. Beide Protokollansichten ermöglichen die Anzeige und den Download von Protokollen.
+- **Protokolle anzeigen** legt die Anzeige von [Anzeige Auftragsprotokoll](/order-log) und [Anzeige Job-Protokoll](/task-log) fest. Beide Protokollansichten ermöglichen die Anzeige und den Download von Protokollen.
 - **Dokumentationen anzeigen** legt die Anzeige der Benutzerdokumentation für Arbeitsabläufe und Jobs fest.
 
 ### Einstellungen der Konfigurationsansicht
@@ -84,7 +84,7 @@ Die Präferenzen gelten für die Paginierung auf jeder Seite:
 - **Gründe für Audit-Protokoll aktivieren** zwingt den Benutzer, einen Grund anzugeben, wenn er Objekte ändert, z.B. Aufträge hinzufügt oder storniert, Arbeitsabläufe aussetzt usw. Die Benutzereinstellung kann über die entsprechende Seite [Einstellungen - JOC Cockpit](/settings-joc) außer Kraft gesetzt werden.
 - **Zeitzone für Protokoll-Zeitstempel verwenden** ist anwendbar, wenn Agenten auf Servern in verschiedenen Zeitzonen oder in einer anderen Zeitzone als der des Controller-Servers laufen. In dieser Situation könnte ein Auftragsprotokoll, das die Protokollausgabe einer Reihe von Aufträgen enthält, die mit möglicherweise unterschiedlichen Agenten ausgeführt wurden, verwirrend aussehen. Die Einstellung konvertiert die Zeitstempel des Protokolls in die im Benutzerprofil angegebene *Zeitzone*.
 - **Aktueller Controller** gilt, wenn mehr als ein Controller mit JOC Cockpit verbunden ist. Die Option, die in einer Reihe von Ansichten angeboten wird, zum Beispiel in der Ansicht [History - Orders](/history-orders). Wenn diese Option aktiviert ist, wird die Anzeige auf Aufträge beschränkt, die an den aktuell ausgewählten Controller übermittelt wurden, andernfalls werden Aufträge aller verbundenen Controller angezeigt. Die Einstellung bestimmt den Standardwert für verwandte *Aktueller Controller*-Optionen in JOC Cockpit-Ansichten.
-- **Tooltips für Inventarobjekte unterdrücken** bezieht sich auf die Ansicht *Konfiguration-&gt;Inventar*, die Tooltips anbietet, zum Beispiel für [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-job-properties). Tooltips werden eingeblendet, wenn die Maus auf die Beschriftung eines Eingabefeldes bewegt wird, um den Benutzern die möglichen Eingaben zu erläutern. Während dies für Benutzer, die mit JS7 nicht allzu vertraut sind, nützlich ist, sind Tooltips für erfahrene Benutzer möglicherweise nicht erforderlich.
+- **Tooltips für Inventarobjekte unterdrücken** bezieht sich auf die Ansicht *Konfiguration-&gt;Inventar*, die Tooltips anbietet, zum Beispiel für [Konfiguration - Inventar - Arbeitsabläufe - Job-Eigenschaften](/configuration-inventory-workflow-job-properties). Tooltips werden eingeblendet, wenn die Maus auf die Beschriftung eines Eingabefeldes bewegt wird, um den Benutzern die möglichen Eingaben zu erläutern. Während dies für Benutzer, die mit JS7 nicht allzu vertraut sind, nützlich ist, sind Tooltips für erfahrene Benutzer möglicherweise nicht erforderlich.
 - **Lizenzwarnung bestätigt** bezieht sich auf die Verwendung von Abonnementlizenzen, die in der Regel auf ein Jahr begrenzt sind. Vor Ablauf der Lizenz werden entsprechende Warnungen von JOC Cockpit angezeigt. Der Benutzer kann die Warnungen zum Ablauf der Lizenz unterdrücken. Details finden Sie unter [JS7 - How to manage License Expiration Warnings](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+manage+License+Expiration+Warnings).
 - **Mehr Optionen anzeigen** aktiviert den entsprechenden Schieberegler in der Ansicht *Konfiguration-&gt;Inventar*. Er bietet detailliertere Optionen für die Auftragskonfiguration, zum Beispiel auf der Registerkarte [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options).
 - **Listenvariable kollabieren** gilt für die Ansicht [Configuration - Inventory - Workflows](/configuration-inventory-workflows), die die Angabe von Arbeitsablauf-Variablen aus einer Reihe von Datentypen bietet. Wenn der Datentyp *Liste* (Array) verwendet wird, kann er eine größere Anzahl von Einträgen aufnehmen. Die Benutzer möchten möglicherweise nicht sofort sehen, dass die Listenvariablen bei der Bearbeitung eines Arbeitsablaufs erweitert werden.
@@ -105,16 +105,16 @@ Die Einstellungen gelten für die Anzeige von Arbeitsablauf-Anweisungen in der A
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Audit Log](/audit-log)
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
   - [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
-  - [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-job-properties)
+  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Eigenschaften](/configuration-inventory-workflow-job-properties)
 - [Tagesplan](/daily-plan)
 - [History - File Transfers](/history-file-transfers)
 - [History - Orders](/history-orders)
-- [Order Log View](/order-log)
+- [Anzeige Auftragsprotokoll](/order-log)
 - [Auftragszustände](/order-states)
 - [Orders - Overview](/orders-overview)
 - [Profile](/profile)
@@ -123,8 +123,8 @@ Die Einstellungen gelten für die Anzeige von Arbeitsablauf-Anweisungen in der A
 - [Resources - Resource Locks](/resources-resource-locks)
 - [Einstellungen - Tagesplan](/settings-daily-plan)
 - [Einstellungen - JOC Cockpit](/settings-joc)
-- [Task Log View](/task-log)
-- [Workflows](/workflows)
+- [Anzeige Job-Protokoll](/task-log)
+- [Arbeitsabläufe](/workflows)
 
 ### Product Knowledge Base
 

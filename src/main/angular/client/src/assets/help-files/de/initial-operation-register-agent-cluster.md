@@ -61,9 +61,9 @@ Nach erfolgreicher Registrierung wird der Agent in der Ansicht [Resources - Agen
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
-- [Dashboard - Product Status](/dashboard-product-status)
+- [Übersicht - Produkt Status](/dashboard-product-status)
 - [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone)
 - [Initial Operation - Register Subagent](/initial-operation-register-agent-subagent)
 - [Initial Operation - Register Subagent Cluster](/initial-operation-register-agent-subagent-cluster)

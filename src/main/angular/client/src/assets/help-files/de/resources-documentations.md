@@ -2,7 +2,7 @@
 
 Die Ansicht *Dokumentationen* zeigt Informationen über die Verwendung von Dokumentationen an und ermöglicht die Verwaltung von Dokumentationen.
 
-Dokumentationen werden von Arbeitsabläufen und Jobs referenziert und in der Ansicht [Workflows](/workflows) angezeigt.
+Dokumentationen werden von Arbeitsabläufen und Jobs referenziert und in der Ansicht [Arbeitsabläufe](/workflows) angezeigt.
 
 ## Navigationsleiste
 
@@ -44,6 +44,6 @@ Im oberen Teil des Fensters wird die Schaltfläche *Dokumentation hinzufügen* a
 
 ## Referenzen
 
-- [Workflows](/workflows)
+- [Arbeitsabläufe](/workflows)
 - [JS7 - User Documentation](https://kb.sos-berlin.com/display/JS7/JS7+-+User+Documentation)
 

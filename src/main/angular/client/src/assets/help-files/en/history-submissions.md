@@ -33,7 +33,7 @@ There can be any number of Submissions for a given Daily Plan date. When users d
 
 When clicking the arrow-down icon from the *Daily Plan Date*, details per Submission will be displayed:
 
-- **Total Submission Count** indicates the number of Orders subject to the given Submission.
+- **Total Submission Count** indicates the number of Orders subject to the given Submissions.
 - **Submission Count** indicates the number of Orders successfully submitted in scope of the given Submission.
   - If the number corresponds to the *Total Submission Count*, then all Orders are successfully submitted.
   - If the number is zero or above zero, then previous explanations about Submissions per Daily Plan date apply.

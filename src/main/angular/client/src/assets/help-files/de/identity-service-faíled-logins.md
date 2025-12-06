@@ -18,7 +18,7 @@ Benutzer finden die folgenden Operationen für fehlgeschlagene Anmeldungen:
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Bereinigungsdienst](/service-cleanup)
 - [Identity Service - Blocklist](/identity-service-blocklist)

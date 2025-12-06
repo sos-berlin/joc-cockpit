@@ -26,7 +26,7 @@ Das Panel zeigt die Liste der Aufträge für den jeweiligen Status an:
 - **Auftrags-ID** ist die eindeutige Kennung, die einem Auftrag zugeordnet ist.
   - Wenn Sie auf das Pfeil-nach-unten-Symbol klicken, werden die Variablen angezeigt, die der Auftrag enthält.
 - **Arbeitsablauf-Name** ist der eindeutige Name eines Arbeitsablaufs.
-  - Wenn Sie auf den *Arbeitsablaufnamen* klicken, gelangen Sie zur Ansicht [Workflows](/workflows).
+  - Wenn Sie auf den *Arbeitsablaufnamen* klicken, gelangen Sie zur Ansicht [Arbeitsabläufe](/workflows).
   - Wenn Sie auf das Bleistiftsymbol klicken, gelangen Sie zur Ansicht [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
 - **Etikett** gibt die Position des Auftrags anhand des Etiketts der Arbeitsablauf-Anweisung an. Wenn keine Etiketten vorhanden sind, wird die technische Position angegeben.
 - **Status** zeigt den [Order State](/order-states) an.
@@ -50,7 +50,7 @@ Das Panel wird im unteren Teil des Fensters angezeigt, wenn Sie auf die Auftrags
 
 #### Zugriff auf die Protokollausgabe
 
-- **Auftrags-ID**: Wenn Sie im Bereich *Historie* auf die *Auftrags-ID* klicken, wird die Protokollausgabe des Auftrags auf [Order Log View](/order-log) angezeigt. Das Protokoll enthält die Ausgabe, die von allen mit dem Arbeitsablauf ausgeführten Aufträgen erstellt wurde.
+- **Auftrags-ID**: Wenn Sie im Bereich *Historie* auf die *Auftrags-ID* klicken, wird die Protokollausgabe des Auftrags auf [Anzeige Auftragsprotokoll](/order-log) angezeigt. Das Protokoll enthält die Ausgabe, die von allen mit dem Arbeitsablauf ausgeführten Aufträgen erstellt wurde.
 - **Download-Symbol**: Wenn Sie auf das Symbol klicken, wird das Protokoll des Auftrags in eine Datei heruntergeladen.
 
 Standardmäßig ist die Anzeige von Auftragsprotokollen auf eine Größe von 10 MB begrenzt, ansonsten werden die Protokolle in Dateien heruntergeladen. Die Benutzer können das Limit auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) anpassen.
@@ -139,12 +139,12 @@ Der Filter beschränkt die Anzeige auf übereinstimmende *Auftrags-IDs* und *Arb
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
 - [Tagesplan](/daily-plan)
-- [Order Log View](/order-log)
+- [Anzeige Auftragsprotokoll](/order-log)
 - [Order State](/order-states)
 - [Profil - Einstellungen](/profile-preferences)
 - [Einstellungen - JOC Cockpit](/settings-joc)

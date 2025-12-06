@@ -104,7 +104,7 @@ Benutzer sollten die Auswirkungen von zyklischen Aufträgen berücksichtigen: Si
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Auftragshistorie](/history-orders)
 - [Einstellungen - Tagesplan](/settings-daily-plan)

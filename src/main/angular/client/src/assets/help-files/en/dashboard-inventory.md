@@ -1,4 +1,4 @@
-# Inventory
+# Dashboard - Inventory
 
 The *Inventory* panel provides information about the number of objects in use.
 

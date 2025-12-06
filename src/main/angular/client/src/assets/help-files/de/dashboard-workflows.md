@@ -1,19 +1,19 @@
-# Arbeitsabläufe
+# Übersicht - Arbeitsabläufe
 
-Das Panel *Workflows* liefert Informationen über den Status von Workflows.
+Der Bereich *Arbeitsabläufe* liefert Informationen über den Status von Arbeitsabläufen.
 
 <img src="dashboard-workflows.png" alt="Workflows" width="330" height="80" />
 
-## Workflow-Status
+## Status Arbeitsabläufe
 
-Workflows werden mit dem folgenden Status angezeigt:
+Arbeitsabläufe werden mit dem folgenden Status angezeigt:
 
-- **Synchronisiert** Workflows werden bereitgestellt und sind mit dem Controller und den Agenten verfügbar.
-- **Nicht synchronisiert** Workflows werden nicht an Controller und Agenten verteilt, sondern sind nur über das Inventar verfügbar.
-- **Suspended** Workflows sind eingefroren, sie nehmen Aufträge an, lassen aber keine Aufträge zu, bis die Workflows wieder aufgenommen werden.
-- **Outstanding** Workflows warten auf die Bestätigung durch einen oder mehrere Agenten, dass der Workflow ausgesetzt ist.
+- **Synchronisierte** Arbeitsabläufe sind ausgerollt und sind mit dem Controller und den Agenten verfügbar.
+- **Nicht synchronisierte** Arbeitsabläufe sind nicht an Controller und Agenten ausgerollt, sondern sind nur über das Inventar verfügbar.
+- **Ausgesetzte** Arbeitsabläufe sind eingefroren, sie nehmen Aufträge an, lassen aber keine Ausführung zu, bis die Arbeitsabläufe wieder aufgenommen werden.
+- **Ausstehende** Arbeitsabläufe warten auf die Bestätigung durch einen oder mehrere Agenten, dass der Arbeitsablauf ausgesetzt ist.
 
-Wenn Sie auf die angegebene Anzahl von Workflows klicken, gelangen Sie zur Ansicht *Workflows*, in der Workflows mit dem entsprechenden Filter angezeigt werden.
+Wenn Sie auf die angegebene Anzahl von Arbeitsabläufen klicken, gelangen Sie zur Ansicht *Arbeitsabläufe*, in der Arbeitsabläufe mit dem entsprechenden Filter angezeigt werden.
 
 ## Referenzen
 

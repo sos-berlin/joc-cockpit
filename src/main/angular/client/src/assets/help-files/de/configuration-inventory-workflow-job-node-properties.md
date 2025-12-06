@@ -19,7 +19,7 @@ Für die Namen von Knotenvariablen wird zwischen Groß- und Kleinschreibung unte
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
   - [Konfiguration - Inventar - Arbeitsabläufe - Job Optionen](/configuration-inventory-workflows-job-options)

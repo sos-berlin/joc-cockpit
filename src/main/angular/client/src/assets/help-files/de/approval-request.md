@@ -30,7 +30,7 @@ Wenn die Autorisierungsanfrage eingereicht ist, wird sie in der Ansicht [Autoris
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Einstellungen für Autorisierungsbenachrichtigungen](/approval-notification-settings)
 - [Autorisiererprofile](/approval-profiles)

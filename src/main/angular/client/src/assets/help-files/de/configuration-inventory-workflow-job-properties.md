@@ -51,7 +51,7 @@ Die Ansicht *Konfiguration - Inventar* bietet oben im Fenster den Schieberegler 
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Konfiguration - Inventar - Job-Ressourcen](/configuration-inventory-job-resources)
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)

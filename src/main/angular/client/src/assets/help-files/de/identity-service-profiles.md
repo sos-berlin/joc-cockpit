@@ -21,7 +21,7 @@ Benutzer können ein oder mehrere *Profile* auswählen, um die oben genannten Op
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Identity Service - Configuration](/identity-service-configuration)
 - [Identity Service - Accounts](/identity-service-accounts) 

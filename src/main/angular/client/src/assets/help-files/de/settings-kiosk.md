@@ -29,14 +29,14 @@ Benutzer können das Dashboard-Layout für das im Kioskmodus verwendete Konto ä
 
 ### Einstellung: *view\_monitor\_order\_notification\_duration*, Standard: *15*
 
-Gibt die Dauer in Sekunden an, für die die Ansicht [Monitor - Order Notifications](/monitor-notifications-order) angezeigt werden soll.
+Gibt die Dauer in Sekunden an, für die die Ansicht [Überwachung - Auftragsbenachrichtigungen](/monitor-notifications-order) angezeigt werden soll.
 
 - Ein Wert von 0 gibt an, dass die Ansicht nicht angezeigt wird.
 - Ein Wert &gt;10 gibt die gewünschte Dauer an.
 
 ### Einstellung: *view\_monitor\_system\_notification\_duration*, Standard: *15*
 
-Gibt die Dauer in Sekunden an, für die die Ansicht [Monitor - System Notifications](/monitor-notifications-system) angezeigt werden soll.
+Gibt die Dauer in Sekunden an, für die die Ansicht [Überwachung - Sysembenachrichtigungen](/monitor-notifications-system) angezeigt werden soll.
 
 - Ein Wert von 0 gibt an, dass die Ansicht nicht angezeigt wird.
 - Ein Wert &gt;10 gibt die gewünschte Dauer an.
@@ -57,10 +57,10 @@ Ein Wert &gt;10 gibt die gewünschte Dauer an.
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
-- [Monitor - Order Notifications](/monitor-notifications-order)
-- [Monitor - System Notifications](/monitor-notifications-system)
+- [Überwachung - Auftragsbenachrichtigungen](/monitor-notifications-order)
+- [Überwachung - Sysembenachrichtigungen](/monitor-notifications-system)
 - [Auftragshistorie](/history-orders)
 - [Prozesshistorie](/history-tasks)
 - [Settings](/settings)

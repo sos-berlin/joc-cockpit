@@ -20,7 +20,7 @@ Tags werden über die Symbole + und - ausgewählt und können über das Symbol S
 
 ### Auftrag Zusammenfassung
 
-Im oberen Teil des Fensters befindet sich die Zusammenfassung der Aufträge, ähnlich wie bei [Dashboard - Orders](/dashboard-orders). Sie können auf die angegebene Anzahl von Aufträgen für einen bestimmten Status klicken, um ein Popup-Fenster zu öffnen, in dem die Liste der Aufträge angezeigt wird.
+Im oberen Teil des Fensters befindet sich die Zusammenfassung der Aufträge, ähnlich wie bei [Übersicht - Aufträge](/dashboard-orders). Sie können auf die angegebene Anzahl von Aufträgen für einen bestimmten Status klicken, um ein Popup-Fenster zu öffnen, in dem die Liste der Aufträge angezeigt wird.
 
 Die Zusammenfassung der Aufträge wird für Aufträge angezeigt, die sich auf Arbeitsabläufe beziehen, die für ausgewählte Ordner oder Tags angezeigt werden.
 
@@ -43,7 +43,7 @@ Die Zusammenfassung der Aufträge wird für Aufträge angezeigt, die sich auf Ar
   - **Ausstehend** Arbeitsabläufe warten auf die Bestätigung durch einen oder mehrere Agenten, dass der Arbeitsablauf ausgesetzt oder wieder aufgenommen wurde.
 - **Anzahl der Aufträge** zeigt die Anzahl der Aufträge an, die dem Arbeitsablauf zugewiesen sind. 
   - Bis zu drei Aufträge werden direkt mit dem Arbeitsablauf angezeigt. Sie bieten ein Aktionsmenü für Auftragsoperationen.
-    - Sie können auf die angegebene Auftrags-ID klicken, um die Protokollausgabe des Auftrags auf [Order Log View](/order-log) anzuzeigen. Das Protokoll enthält die Ausgaben, die von allen mit dem Arbeitsablauf ausgeführten Aufträgen erstellt wurden.
+    - Sie können auf die angegebene Auftrags-ID klicken, um die Protokollausgabe des Auftrags auf [Anzeige Auftragsprotokoll](/order-log) anzuzeigen. Das Protokoll enthält die Ausgaben, die von allen mit dem Arbeitsablauf ausgeführten Aufträgen erstellt wurden.
   - Wenn Sie auf *Anzahl der Aufträge* klicken, öffnet sich ein Popup-Fenster, in dem alle zugehörigen Aufträge angezeigt werden und das Operationen für einzelne Aufträge und Massenoperationen für ausgewählte Aufträge bietet.
 
 ### Anzeige von Jobs und Arbeitsablauf-Anweisungen
@@ -67,7 +67,7 @@ Das Panel wird im unteren Teil des Fensters angezeigt, wenn Benutzer auf den Nam
 
 Für den Zugriff auf die Protokollausgabe stehen Ihnen die folgenden Optionen zur Verfügung:
 
-- **Auftrags-ID**: Wenn Sie auf die *Auftrags-ID* klicken, wird die Protokollausgabe des Auftrags auf [Order Log View](/order-log) angezeigt. Das Protokoll enthält die Ausgabe, die von allen mit dem Arbeitsablauf ausgeführten Aufträgen erstellt wurde.
+- **Auftrags-ID**: Wenn Sie auf die *Auftrags-ID* klicken, wird die Protokollausgabe des Auftrags auf [Anzeige Auftragsprotokoll](/order-log) angezeigt. Das Protokoll enthält die Ausgabe, die von allen mit dem Arbeitsablauf ausgeführten Aufträgen erstellt wurde.
 - **Download-Symbol**: Wenn Sie auf das Symbol klicken, wird das Protokoll des Auftrags in eine Datei heruntergeladen.
 
 Standardmäßig ist die Anzeige von Auftragsprotokollen auf eine Größe von 10 MB begrenzt, ansonsten werden die Protokolle in Dateien heruntergeladen. Die Benutzer können das Limit auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) anpassen.
@@ -87,7 +87,7 @@ Standardmäßig ist die Anzeige von Auftragsprotokollen auf eine Größe von 10 
 
 Für den Zugriff auf die Protokollausgabe ist die folgende Aktion verfügbar:
 
-- **Job**: Wenn Sie auf den *Job-Namen* klicken, wird die Protokollausgabe des Jobs auf der Seite [Task Log View](/task-log) angezeigt. 
+- **Job**: Wenn Sie auf den *Job-Namen* klicken, wird die Protokollausgabe des Jobs auf der Seite [Anzeige Job-Protokoll](/task-log) angezeigt. 
 
 Standardmäßig ist die Anzeige von Aufgabenprotokollen auf 10 MB Protokollgröße beschränkt, ansonsten werden die Protokolle in Dateien heruntergeladen. Die Benutzer können das Limit auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) anpassen.
 
@@ -147,14 +147,14 @@ Die [Workflows - Search](/workflows-search) bietet Kriterien für die Suche nach
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
   - [Konfiguration - Inventar - Arbeitsabläufe - Job Eigenschaften](/configuration-inventory-workflow-job-properties)
   - [Konfiguration - Inventar - Arbeitsabläufe - Job Optionen](/configuration-inventory-workflow-job-options)
 - [Tagesplan](/daily-plan)
-- [Order Log View](/order-log)
+- [Anzeige Auftragsprotokoll](/order-log)
 - [Auftragszustände](/order-states)
 - [Profil - Einstellungen](/profile-preferences)
 - [Einstellungen - JOC Cockpit](/settings-joc)

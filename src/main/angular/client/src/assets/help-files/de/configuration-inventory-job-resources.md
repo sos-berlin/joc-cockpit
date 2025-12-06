@@ -41,7 +41,7 @@ Für verfügbare Operationen siehe [Konfiguration - Inventar - Navigationsbereic
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Konfiguration - Inventar - Arbeitsablauf - Job-Optionen](/configuration-inventory-workflow-job-options)
 - [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)

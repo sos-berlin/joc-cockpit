@@ -1,29 +1,28 @@
-# Dateiübertragung
+# Übersicht - Dateiübertragung
 
-Das Feld *Dateitransfer* zeigt eine Zusammenfassung der vergangenen Übertragungen mit dem YADE Managed File Transfer.
+Der Bereich *Dateiübertragungen* zeigt eine Zusammenfassung der vergangenen Übertragungen mit dem YADE Managed File Transfer.
 
 <img src="dashboard-file-transfer.png" alt="File Transfer" width="320" height="90" />
 
-## Dateiübertragungs-Historie
+## Historie Dateiübertragungen
 
-Die Verlaufsübersicht zählt erfolgreiche und fehlgeschlagene Übertragungen.
+Die Übersicht zählt erfolgreiche und fehlgeschlagene Übertragungen.
 
-- **Erfolgreiche** Übertragungen umfassen erfolgreiche Aufträge und fehlgeschlagene Aufträge, die z.B. durch einen erneuten Versuch wiederhergestellt wurden.
-- **Fehlgeschlagene** Übertragungen zeigen Aufträge an, die dauerhaft fehlgeschlagen sind.
+- **Erfolgreiche** Übertragungen umfassen erfolgreiche Jobs und fehlgeschlagene Jobs, die z.B. nach einen erneuten Versuch, erfolgreich abgeschlossen wurden.
+- **Fehlgeschlagene** Übertragungen zeigen Jobs an, die dauerhaft fehlgeschlagen sind.
 
-Wenn Sie auf die angezeigte Zahl klicken, gelangen Sie zur Ansicht *Dateitransferverlauf*, in der die Übertragungen im Detail angezeigt werden.
+Wenn Sie auf die angezeigte Zahl klicken, gelangen Sie zur Ansicht *Historie-&gt;Dateiübertragungen*, in der die Übertragungen im Detail angezeigt werden.
 
-*Filter
+## Filter
 
-Über die Dropdown-Schaltfläche in der oberen rechten Ecke des Fensters können Sie vergangene Übertragungen aus einem Datumsbereich auswählen:
+Über die Schaltfläche in der oberen rechten Ecke des Fensters können Sie zurückliegende Übertragungen aus einem Datumsbereich auswählen:
 
-- **Heute** Die Aufträge beziehen sich auf den aktuellen Tag, der anhand der Zeitzone im Profil des Benutzers berechnet wird.
-- **Letzte Stunde** enthält Aufträge, die in der letzten Stunde abgeschlossen wurden.
-- **Letzte 12 Stunden** umfasst Aufträge, die in den letzten 12 Stunden abgeschlossen wurden.
-- **Letzte 24 Stunden** enthält Aufträge, die innerhalb der letzten 24 Stunden abgeschlossen wurden.
-- **Letzte 7 Tage** enthält Aufträge, die in den letzten 7 Tagen abgeschlossen wurden.
+- **Heute** Die Jobs beziehen sich auf den aktuellen Tag, der anhand der Zeitzone im Profil des Benutzers berechnet wird.
+- **Letzte Stunde** enthält Jobs, die in der letzten Stunde abgeschlossen wurden.
+- **Letzte 12 Stunden** umfasst Jobs, die in den letzten 12 Stunden abgeschlossen wurden.
+- **Letzte 24 Stunden** enthält Jobs, die innerhalb der letzten 24 Stunden abgeschlossen wurden.
+- **Letzte 7 Tage** enthält Jobs, die in den letzten 7 Tagen abgeschlossen wurden.
 
 ## Referenzen
 
 - [JS7 - File Transfer](https://kb.sos-berlin.com/display/JS7/JS7+-+File+Transfer)
-

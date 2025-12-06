@@ -2,7 +2,7 @@
 
 In dieser Ansicht werden die von JS7-Produkten ausgelösten Benachrichtigungen angezeigt.
 
-- Für Systembenachrichtigungen muss der *Log Notification Service* auf der Seite [Settings](/settings) im Abschnitt [Settings - Log Notification](/settings-log-notification) eingerichtet werden. Wenn es konfiguriert ist, fungiert das JOC Cockpit als Syslog-Dienst, der Warnungen und Fehler von Controllern und Agenten empfängt, die bei JOC Cockpit registriert sind.
+- Für Systembenachrichtigungen muss der *Log Notification Service* auf der Seite [Settings](/settings) im Abschnitt [Einstellungen - Protkoll-Benachrichtigung](/settings-log-notification) eingerichtet werden. Wenn es konfiguriert ist, fungiert das JOC Cockpit als Syslog-Dienst, der Warnungen und Fehler von Controllern und Agenten empfängt, die bei JOC Cockpit registriert sind.
 - Zusätzlich zur Anzeige von Benachrichtigungen in dieser Ansicht können diese per E-Mail und über die Kommandozeile weitergeleitet werden, zum Beispiel an System Monitor Produkte von Drittanbietern. Details finden Sie unter [Configuration - Notification ](/configuration-notification).
 
 Benutzer sollten sich darüber im Klaren sein, dass Benachrichtigungen von [Bereinigungsdienst](/service-cleanup) gelöscht werden können. Standardmäßig werden Benachrichtigungen gelöscht, wenn sie älter als ein Tag sind.
@@ -59,14 +59,14 @@ Mit den folgenden Schaltflächen können Sie die Art der Benachrichtigungen filt
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Bereinigungsdienst](/service-cleanup)
 - [Configuration - Notification ](/configuration-notification)
 - [Settings](/settings)
-- [Settings - Log Notification](/settings-log-notification)
-- [Monitor - Order Notifications](/monitor-notifications-order)
-- [Workflows](/workflows)
+- [Einstellungen - Protkoll-Benachrichtigung](/settings-log-notification)
+- [Überwachung - Auftragsbenachrichtigungen](/monitor-notifications-order)
+- [Arbeitsabläufe](/workflows)
 
 ### Product Knowledge Base
 

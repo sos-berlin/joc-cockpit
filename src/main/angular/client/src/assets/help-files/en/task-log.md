@@ -1,18 +1,18 @@
 # Task Log View
 
-The *Task Log View* offers a running log that is updated every 2-3s. This allows to follow output of Jobs in near real-time.
+The *Task Log View* offers a running log that is updated every 2-3s. This allows following output of Jobs in near real-time.
 
-## Output Filtering
+## Filter
 
 The *Task Log View* offers filtering from a number of criteria available from the top of the window:
 
 - **Main** specifies that details about Job start and the parameterization on Job start will be displayed. Such output is indicated from the [MAIN] qualifier.
 - **stdout** specifies if output written by the Job to the stdout channel will be displayed using the [STDOUT] qualifier.
-- **Debug** applies to Java Jobs that make use of the [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API). Such Jobs can be added the *log_level* argument holding the *debug*  or *trace* value. If debug output is available from a Job, then it will be displayed using the [DEBUG] qualifier.
+- **Debug** applies to JVM Jobs that make use of the [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API). Such Jobs can be added the *log_level* argument holding the *debug*  or *trace* value. If debug output is available from a Job, then it will be displayed using the [DEBUG] qualifier.
 
 Log output written by Jobs to the stderr channel is not subject to filtering and wil be displayed from the [STDERR] qualifier.
 
-## Display of Log Output
+## Log Panel
 
 Log output is displayed in historic ordering of arrival.
 

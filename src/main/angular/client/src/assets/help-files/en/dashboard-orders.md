@@ -1,4 +1,4 @@
-# Orders
+# Dashboard - Orders
 
 The *Orders* panel provides information about Orders from the following sources:
 

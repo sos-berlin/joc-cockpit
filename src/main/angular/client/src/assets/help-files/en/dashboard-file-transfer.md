@@ -1,4 +1,4 @@
-# File Transfer
+# Dashboard - File Transfer
 
 The *File Transfer* panel provides the summary of past transfers using the YADE Managed File Transfer.
 

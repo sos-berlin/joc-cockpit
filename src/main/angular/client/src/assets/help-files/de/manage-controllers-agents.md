@@ -44,7 +44,7 @@ Die folgenden Filter-Schaltflächen für Agenten sind oben auf dem Bildschirm ve
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Initial Operation - Register Cluster Agent](/initial-operation-register-agent-cluster)
 - [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone)

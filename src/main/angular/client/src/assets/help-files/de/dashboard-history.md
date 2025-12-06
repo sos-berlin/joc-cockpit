@@ -1,23 +1,23 @@
-# Geschichte
+# Übersicht - Historie
 
-Der Bereich *Historie* enthält Informationen über frühere Ausführungen von Aufträgen und Jobs.
+Der Bereich *Historie* enthält Informationen über zurückliegende Ausführungen von Aufträgen und Jobs.
 
 <img src="dashboard-history.png" alt="History" width="330" height="80" />
 
-## Historie Status
+## Status in Historie
 
-Der Verlaufsstatus ist der endgültige Status, wenn ein Auftrag oder Job abgeschlossen ist. Der Verlaufsstatus berücksichtigt keine Aufträge und Jobs, die in Bearbeitung sind. Für angezeigte Aufträge oder Jobs sind keine Operationen verfügbar - sie sind Geschichte.
+Der Status in der Historie ist der endgültige Status, wenn ein Auftrag oder Job abgeschlossen ist. Der Status in der Historie berücksichtigt keine Aufträge und Jobs, die in Verarbeitung sind. Für angezeigte Aufträge oder Jobs sind keine Operationen verfügbar - sie sind Geschichte.
 
-- **Erfolgreiche Aufträge** werden mit einem erfolgreichen Ergebnis abgeschlossen. Dazu gehören auch Aufträge, die während ihrer Laufzeit fehlgeschlagen sind, aber durch eine automatische Fehlerbehandlung oder einen Benutzereingriff wiederhergestellt werden konnten.
-- **Fehlgeschlagene Aufträge** sind auf ein Problem gestoßen, wie z.B. einen fehlgeschlagenen Auftrag oder eine *Fehleranweisung*.
-- **Erfolgreiche Aufträge** werden mit einem erfolgreichen Ergebnis abgeschlossen. Dazu gehören auch Aufträge in Workflows, deren zugehörige Aufträge nicht abgeschlossen wurden.
-- **Fehlgeschlagene Aufträge** sind bei der Ausführung des Auftrags auf ein Problem gestoßen.
+- **Erfolgreiche Aufträge** werden mit einem erfolgreichen Ergebnis abgeschlossen. Dazu gehören auch Aufträge, die während ihrer Laufzeit fehlgeschlagen sind, aber durch eine automatische Fehlerbehandlung oder einen Benutzereingriff erfolgreich abgeschlossen werden konnten.
+- **Fehlgeschlagene Aufträge** sind auf ein Problem gestoßen, wie z.B. einen fehlgeschlagenen Job oder eine *Fail Anweisung*.
+- **Erfolgreiche Jobs** werden mit einem erfolgreichen Ergebnis abgeschlossen. Dazu gehören auch Jobs in Arbeitsabläufen, deren zugehörige Aufträge nicht abgeschlossen wurden.
+- **Fehlgeschlagene Jobs** sind bei der Ausführung des Jobs auf ein Problem gestoßen.
 
-Wenn Sie auf die angegebene Anzahl von Aufträgen oder Jobs klicken, gelangen Sie zur Ansicht *Auftragsverlauf* oder *Auftragsverlauf*, in der Aufträge und Jobs im Detail angezeigt werden.
+Wenn Sie auf die angegebene Anzahl von Aufträgen oder Jobs klicken, gelangen Sie zur Ansicht [Auftragshistorie](/history-orders) oder [Prozesshistorie](/history-tasks), in der Aufträge und Jobs im Detail angezeigt werden.
 
-*Filter
+## Filter
 
-Über die Dropdown-Schaltfläche in der oberen rechten Ecke des Fensters können Sie vergangene Aufträge und Jobs aus einem Datumsbereich auswählen:
+Über die Schaltfläche in der oberen rechten Ecke des Fensters können Sie zurückliegende Aufträge und Jobs aus einem Datumsbereich auswählen:
 
 - **Heute** Aufträge und Jobs beziehen sich auf den aktuellen Tag, der anhand der Zeitzone im Profil des Benutzers berechnet wird.
 - **Letzte Stunde** enthält Aufträge und Jobs, die in der letzten Stunde abgeschlossen wurden.
@@ -31,4 +31,3 @@ Wenn Sie auf die angegebene Anzahl von Aufträgen oder Jobs klicken, gelangen Si
 - [Prozesshistorie](/history-tasks)
 - [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
 - [JS7 - Task History](https://kb.sos-berlin.com/display/JS7/JS7+-+Task+History)
-

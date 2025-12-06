@@ -188,7 +188,7 @@ Gibt die Java-Optionen an, die bei der Erstellung von Berichten verwendet werden
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Audit Log](/audit-log)
 - [Identity Services](/identity-services)

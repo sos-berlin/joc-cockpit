@@ -33,7 +33,7 @@ For settings of the Log Notification Service see [Settings - Log Notification](/
 ### Context Help
 
 - [Monitor - System Notifications](/monitor-notifications-system)
-- [Notification - Configuration ](/configuration-notification)
+- [Notification - Configuration](/configuration-notification)
 - [Settings - Log Notification](/settings-log-notification)
 
 ### Product Knowledge Base

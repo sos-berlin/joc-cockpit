@@ -23,7 +23,7 @@ Wenn Sie eine oder mehrere Sitzungen auswählen, dann ist die Operation *Sitzung
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Identity Service - Blocklist](/identity-service-blocklist)
 - [Identity Services](/identity-services)

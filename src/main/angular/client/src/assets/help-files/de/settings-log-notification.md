@@ -1,8 +1,8 @@
 # Einstellungen - Protokoll-Benachrichtigungsdienst
 
-Auf [Log Notification Service](/service-log-notification) ist ein Syslog-Server implementiert, der Warnungen und Fehler von JS7-Produkten wie Controllern und Agenten empfängt. Der Dienst kann so konfiguriert werden, dass er Benachrichtigungen z.B. per E-Mail versendet.
+Auf [Protokoll-Benachrichtigungsdienst](/service-log-notification) ist ein Syslog-Server implementiert, der Warnungen und Fehler von JS7-Produkten wie Controllern und Agenten empfängt. Der Dienst kann so konfiguriert werden, dass er Benachrichtigungen z.B. per E-Mail versendet.
 
-Die Benachrichtigungen werden auf der Seite [Monitor - System Notifications](/monitor-notifications-system) angezeigt.
+Die Benachrichtigungen werden auf der Seite [Überwachung - Sysembenachrichtigungen](/monitor-notifications-system) angezeigt.
 
 Die Seite *Einstellungen* ist über das Symbol ![wheel icon](assets/images/wheel.png) in der Menüleiste zugänglich.
 
@@ -26,8 +26,8 @@ Gibt die maximale Anzahl von Nachrichten pro Sekunde an, die der Log Notificatio
 
 ### Kontext-Hilfe
 
-- [Log Notification Service](/service-log-notification)
-- [Monitor - System Notifications](/monitor-notifications-system)
+- [Protokoll-Benachrichtigungsdienst](/service-log-notification)
+- [Überwachung - Sysembenachrichtigungen](/monitor-notifications-system)
 - [Settings](/settings)
 
 ### Product Knowledge Base

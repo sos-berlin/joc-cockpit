@@ -40,7 +40,7 @@ Gibt die Anzahl der Monate im Voraus an, für die [Daily Plan - Projections](/da
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Tagesplan](/daily-plan)
 - [Daily Plan - Projections](/daily-plan-projections)

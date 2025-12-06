@@ -51,7 +51,7 @@ Operationen für Berichte sind in den folgenden Ansichten verfügbar:
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
 - [Regeln zur Benennung von Objekten](/object-naming-rules)

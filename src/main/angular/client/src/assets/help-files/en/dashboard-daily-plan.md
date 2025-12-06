@@ -1,4 +1,4 @@
-# Daily Plan
+# Dashboard - Daily Plan
 
 The *Daily Plan* panel provides information about execution of Orders created by the Daily Plan. This excludes Orders created on demand by user intervention and Orders created from file watching by *File Order Sources*.
 

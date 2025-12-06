@@ -1,4 +1,4 @@
-# Agent Running Jobs
+# Dashboard - Agent Running Jobs
 
 The *Agent Running Jobs* panel displays the number of running Jobs per Agent.
 

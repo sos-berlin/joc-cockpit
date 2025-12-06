@@ -54,7 +54,7 @@ In der oberen rechten Ecke werden die folgenden Schaltflächen zur Anzeige von B
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Identity Service - Roles](/identity-service-roles)
 - [Identity Services](/identity-services)

@@ -8,7 +8,7 @@ Workflow dependencies can be enforced for all days and for specific Daily Plan d
 
 ## Calendar
 
-The calendar widget offers to select a Daily Plan date for which dependencies will be displayed.
+The calendar widget offers selecting a Daily Plan date for which dependencies will be displayed.
 
 - **Light Red Color**: Past plan dates that are closed and that will not allow adding Orders.
 - **Green Color**: Past and future plan dates that are open and that will allow adding Orders.

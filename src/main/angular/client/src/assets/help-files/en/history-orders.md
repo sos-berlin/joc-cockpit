@@ -30,7 +30,7 @@ Display is limited to a maximum of 5000 entries if not otherwise specified from 
   - If Orders are completed, then the *History Status* will be *successful* or *failed*.
   - If Orders are not completed, the *History Status* will be *in progress*.
 - **Order State** indicates the Order's latest state, see [Order States](/order-states).
-  - If Orders are completed, then the *Order State* will be *successful* or *failed*.
+  - If Orders are completed, then the *Order State* will be *finished*.
   - If Orders are not completed, the *Order State* will be *processing*.
 
 ### Access to Log Output
@@ -48,10 +48,10 @@ Users find an action menu per Task that offers the following operation:
 
 The *Ignore List* is managed from the related button in the upper-right corner of the window:
 
-- **Edit Ignore List** will display the Jobs and Workflows in the *Ignore List* and offers to individually remove entries from the *Ignore List*. 
-- **Enable Ignore List** will activate the filtering to hide Jobs that have been individually added to the *Ignore List* or that are included with a Workflow that was added. An active *Ignore List* is indicated from the related button.
-- **Disable Ignore List** will deactivate the filtering of Jobs and Workflows. The operation is available for an active *Ignore List*.
-- **Reset Ignore List** will remove Jobs and Workflows from the *Ignore List* which results in display of all jobs.
+- **Edit Ignore List** will display the Workflows in the *Ignore List* and offers to individually remove entries from the *Ignore List*. 
+- **Enable Ignore List** will activate the filtering to hide Workflows that have been individually added to the *Ignore List*. An active *Ignore List* is indicated from the related button.
+- **Disable Ignore List** will deactivate the filtering of  Workflows. The operation is available for an active *Ignore List*.
+- **Reset Ignore List** will remove Workflows from the *Ignore List* which results in display of all Workflows.
 
 ## Filters
 

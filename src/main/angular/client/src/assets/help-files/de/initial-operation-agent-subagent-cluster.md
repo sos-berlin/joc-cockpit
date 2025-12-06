@@ -58,7 +58,7 @@ Ausdrücke für metrikbasierte Prioritäten:
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-cluster)
 - [Initial Operation - Register Subagent Cluster](/initial-operation-register-agent-subagent-cluster)

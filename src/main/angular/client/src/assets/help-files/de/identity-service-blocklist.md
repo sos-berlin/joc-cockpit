@@ -26,7 +26,7 @@ In der Unteransicht *Blockliste* wird für jedes angezeigte Konto der Menüpunkt
 
 ## Referenzen
 
-### Kontexthilfe
+### Kontext-Hilfe
 
 - [Audit Log - Failed Logins](/identity-service-faíled-logins)
 - [Identity Service - Active Sessions](/identity-service-active-sessions)
