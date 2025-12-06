@@ -2744,6 +2744,8 @@ export class DeployComponent {
     }
   }
 
+  // ============ DEPENDENCY MANAGEMENT ============
+
   private getDependencies(checkedNodes: { name: string, type: string }[], node, isChecked = false): void {
     this.loading = true;
     const configurations = checkedNodes.map(node => ({
@@ -2993,74 +2995,6 @@ private updateNodeDependencies(dependenciesResponse: any, requestedKeys: Set<str
     });
 
     this.nodes = [...this.nodes];
-  }
-
-  private resolveRecursiveDependencies(
-    itemId: number,
-    objectsMap: any,
-    visited: Set<number> = new Set(),
-    isUserSelected: boolean = false,
-    depth: number = 0
-  ): any[] {
-
-    if (visited.has(itemId) || depth > 10) {
-      return [];
-    }
-
-    visited.add(itemId);
-    const item = objectsMap[itemId];
-    if (!item) return [];
-
-    const result: any[] = [];
-
-    if (isUserSelected || depth === 0) {
-
-      const processDependency = (refId: number, isEnforced: boolean) => {
-        if (!visited.has(refId)) {
-          const refObj = objectsMap[refId];
-          if (refObj) {
-            const state = this.getDependencyState(refObj, isEnforced);
-
-            result.push({
-              ...refObj,
-              enforce: isEnforced,
-              selected: state.selected,
-              disabled: state.disabled,
-              depth: depth + 1,
-              parentId: itemId
-            });
-
-            const nested = this.resolveRecursiveDependencies(
-              refId,
-              objectsMap,
-              visited,
-              true,
-              depth + 1
-            );
-
-            result.push(...nested);
-          }
-        }
-      };
-
-      (item.enforcedReferences || []).forEach((refId: number) => {
-        processDependency(refId, true);
-      });
-
-      (item.enforcedReferencedBy || []).forEach((refId: number) => {
-        processDependency(refId, true);
-      });
-
-      (item.references || []).forEach((refId: number) => {
-        processDependency(refId, false);
-      });
-
-      (item.referencedBy || []).forEach((refId: number) => {
-        processDependency(refId, false);
-      });
-    }
-
-    return result;
   }
 
 
@@ -3598,40 +3532,6 @@ onDependencyModeChange(): void {
     return tooltip;
   }
 
-  private collectAllSelectedIds(): Set<number> {
-    const selectedIds = new Set<number>();
-    const objectsMap = this.dependencies?.objects || {};
-
-    const nodeIdMap = new Map<string, number>();
-    this.buildNodeIdMap(this.nodes, nodeIdMap);
-
-    const checkedNodes = this.collectCheckedObjects(this.nodes);
-    checkedNodes.forEach((node: any) => {
-      const key = `${node.name}-${node.type}`;
-      const id = nodeIdMap.get(key);
-      if (id) {
-        selectedIds.add(id);
-      }
-    });
-
-    Object.keys(this.affectedObjectsByType).forEach(type => {
-      this.affectedObjectsByType[type].forEach((obj: any) => {
-        if (obj.selected && obj.id) {
-          selectedIds.add(obj.id);
-        }
-      });
-    });
-
-    Object.keys(this.referencedObjectsByType).forEach(type => {
-      this.referencedObjectsByType[type].forEach((obj: any) => {
-        if (obj.selected && obj.id) {
-          selectedIds.add(obj.id);
-        }
-      });
-    });
-
-    return selectedIds;
-  }
   private buildNodeIdMap(nodes: any[], nodeIdMap: Map<string, number>): void {
     nodes.forEach(node => {
       if (node.name && node.type) {
@@ -3679,23 +3579,6 @@ onDependencyModeChange(): void {
     return filtered.length;
   }
 
-  private collectSelectedIdsFromTree(nodes: any[], selectedIds: Set<number>): void {
-    nodes.forEach(node => {
-
-      if (node.checked || node.isChecked) {
-
-        const nodeId = node.id || node.origin?.id;
-
-        if (nodeId) {
-          selectedIds.add(nodeId);
-        }
-      }
-
-      if (node.children && node.children.length > 0) {
-        this.collectSelectedIdsFromTree(node.children, selectedIds);
-      }
-    });
-  }
 
   private rebuildRelatedObjects(): void {
 
@@ -3908,6 +3791,8 @@ onDependencyModeChange(): void {
     return false;
   }
 
+  // ============ UI UTILITIES & GETTERS ============
+
   getIcon(objectType: string): string {
     const iconMapping = {
       'WORKFLOW': 'apartment',
@@ -3967,6 +3852,8 @@ onDependencyModeChange(): void {
     }
     return checkedNodes;
   }
+
+  // ============ HELPER & UTILITY METHODS ============
 
   private collectCheckedObjects(nodes: any[]): any[] {
     const checkedObjects = [];
@@ -7103,6 +6990,12 @@ onDependencyModeChange(): void {
         this.recursiveCheck(this.nodes, false);
         this.expandAllWithStateRestore();
       }
+    } else {
+      // When unchecking recursive, fetch dependencies for currently checked nodes
+      const checkedNodes = this.collectCheckedObjects(this.nodes);
+      if (checkedNodes.length > 0 && this.dependencyMode !== 'none') {
+        this.getDependencies(checkedNodes, this.nodes[0]);
+      }
     }
   }
 
@@ -7139,7 +7032,8 @@ onDependencyModeChange(): void {
       this.ref.detectChanges();
 
       const checkedNodes = this.collectCheckedObjects(this.nodes);
-      if (checkedNodes.length > 0 && this.exportObj.includeDependencies) {
+      if (checkedNodes.length > 0 && this.dependencyMode !== 'none') {
+        this.loading = true;
         this.getDependencies(checkedNodes, this.nodes[0]);
       }
     }, true);
