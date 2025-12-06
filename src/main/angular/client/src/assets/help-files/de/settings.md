@@ -10,7 +10,7 @@ Die Seite *Einstellungen* ist über das Symbol ![wheel icon](assets/images/wheel
 
 - [Einstellungen - Tagesplan](/settings-daily-plan)
 - [Settings - Cleanup Service](/settings-cleanup)
-- [Settings - Identity Service](/settings-identity-service)
+- [Einstellungen - Identitätsdienste](/settings-identity-service)
 - [Einstellungen - JOC Cockpit](/settings-joc)
 - [Settings - User](/settings-user)
 - [Einstellungen - Protkoll-Benachrichtigung](/settings-log-notification)

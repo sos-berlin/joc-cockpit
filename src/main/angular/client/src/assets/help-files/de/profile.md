@@ -17,11 +17,11 @@ Einzelheiten finden Sie unter [JS7 - Profiles](https://kb.sos-berlin.com/display
 
 ## Passwort ändern
 
-Wenn Sie auf den entsprechenden Link klicken, können Benutzer ihr Passwort ändern, wenn unter [Identity Services](/identity-services) ein Dienst vom Typ *JOC* aktiv ist, der für die aktuelle Anmeldung verwendet wurde.
+Wenn Sie auf den entsprechenden Link klicken, können Benutzer ihr Passwort ändern, wenn unter [Identitätsdienste](/identity-services) ein Dienst vom Typ *JOC* aktiv ist, der für die aktuelle Anmeldung verwendet wurde.
 
 - **Altes Passwort** erwartet, dass das aktuell verwendete Passwort angegeben wird.
 - **Neues Passwort** erwartet, dass das neue Passwort angegeben wird.
-    - Es ist eine Mindestlänge des Kennworts erforderlich, die mit [Settings - Identity Service](/settings-identity-service) konfiguriert wird.
+    - Es ist eine Mindestlänge des Kennworts erforderlich, die mit [Einstellungen - Identitätsdienste](/settings-identity-service) konfiguriert wird.
     - Das *Alte Passwort* und das *Neue Passwort* müssen unterschiedlich sein.
 
 ## Profilabschnitte
@@ -40,9 +40,9 @@ Die Einstellungen für *Benutzerprofile* sind in den folgenden Abschnitten verf�
 ### Kontext-Hilfe
 
 - [Bereinigungsdienst](/service-cleanup)
-- [Identity Services](/identity-services)
+- [Identitätsdienste](/identity-services)
 - [Einstellungen - JOC Cockpit](/settings-joc)
-- [Settings - Identity Service](/settings-identity-service)
+- [Einstellungen - Identitätsdienste](/settings-identity-service)
 
 ### Product Knowledge Base
 

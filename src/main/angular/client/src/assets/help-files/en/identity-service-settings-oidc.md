@@ -27,6 +27,11 @@ The following settings are available:
       - if available and if it includes the *preferred_username* attribute, then this attribute will be used.
     - if no attribute has been identified, then the *email* attribute is used.
   - Should this not result in an identifiable user account, then users can specify the name attribute. Frequently OIDC Identity Providers support attribute names such as *username* or *email*.
+- **OIDC Claims** specify OIDC *roles* or *groups* that are used for the mapping to JS7 roles. Default *OIDC Claims* include *roles*, *groups*.
+- **OIDC Scopes** specify the scope for which *OIDC Claims* will be returned by the OIDC Identity Service Provider. Default *OIDC Scopes* include *roles*, *groups*,  *profile*
+- **OIDC Group/Roles Mapping** includes to assign roles to accounts.
+  - A list of claims containing the groups configured in the OIDC Identity Service Provider can be specified. Available claims can be made available by checking the *JSON Web Token* during registration.
+ - During assignment, the groups available from the OIDC Identity Service Provider are assigned to roles configured with the Identity Service. Any number of roles can be assigned to each group.
 - **OIDC Image** optionally can be uploaded and will be displayed with the login page. Users can click the image to login with the OIDC Identity Service.
 - **OIDC Truststore Path** if indicated must include an X.509 certificate specified for the Extended Key Usage of Server Authentication for the Identity Provider.
   - For connections to well known OIDC Identity Providers such as Azure® users should specify the path to the Java *cacerts* truststore file that ships with the Java JDK used with JOC Cockpit.
@@ -34,13 +39,8 @@ The following settings are available:
   - If this setting is not specified, then the JOC Cockpit will use the truststore that is configured with the *JETTY_BASE/resources/joc/joc.properties* configuration file. This includes use of settings for the *OIDC Truststore Password* and *OIDC Truststore Type*.
   - The path to the truststore can be specified relative to the *JETTY_BASE/resources/joc* directory. If the truststore is located in this directory, then only the file name is specified, typically with a .p12 or .pfx extension. Other relative locations can be specified using for example *../../joc-truststore.p12* if the truststore is located in the *JETTY_BASE* directory.
   - An absolute path can be specified.
-- **OIDC Truststore Password** specifies the password that protects the truststore.For the Java JDK's *cacerts* truststore the default password is *changeit*.
 - **OIDC Truststore Type** is either PKCS12 or JKS (deprecated).
-- **OIDC Claims** specify OIDC *roles* or *groups* that are used for the mapping to JS7 roles. Default *OIDC Claims* include *roles*, *groups*.
-- **OIDC Scopes** specify the scope for which *OIDC Claims* will be returned by the OIDC Identity Service Provider. Default *OIDC Scopes* include *roles*, *groups*,  *profile*
-- **OIDC Group/Roles Mapping** includes to assign roles to accounts.
-  - A list of claims containing the groups configured in the OIDC Identity Service Provider can be specified. Available claims can be made available by checking the *JSON Web Token* during registration.
- - During assignment, the groups available from the OIDC Identity Service Provider are assigned to roles configured with the Identity Service. Any number of roles can be assigned to each group.
+- **OIDC Truststore Password** specifies the password that protects the truststore.For the Java JDK's *cacerts* truststore the default password is *changeit*.
 
 ## References
 

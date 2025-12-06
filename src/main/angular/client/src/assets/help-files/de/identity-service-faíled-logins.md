@@ -1,6 +1,6 @@
 # Fehlgeschlagene Anmeldungen
 
-Identity Services regeln den Zugriff auf JOC Cockpit durch Authentifizierung und Autorisierung, siehe [Identity Services](/identity-services).
+Identity Services regeln den Zugriff auf JOC Cockpit durch Authentifizierung und Autorisierung, siehe [Identitätsdienste](/identity-services).
 
 Benutzerkonten, die sich nicht anmelden können, werden in der Unteransicht *Failed Logins* erfasst.
 
@@ -14,15 +14,15 @@ Benutzer sollten sich darüber im Klaren sein, dass die historischen Daten für 
 
 Benutzer finden die folgenden Operationen für fehlgeschlagene Anmeldungen:
 
-- **Zur Blockliste hinzufügen** fügt das betreffende Konto zur [Identity Service - Blocklist](/identity-service-blocklist) hinzu, wodurch zukünftige Anmeldungen verweigert werden. Die Operation ist verfügbar, wenn ein Konto angegeben ist. Bei Anmeldungen ohne Konto wird der Platzhalter *\*keine* angezeigt.
+- **Zur Blockliste hinzufügen** fügt das betreffende Konto zur [Identitätsdienste - Sperrliste](/identity-service-blocklist) hinzu, wodurch zukünftige Anmeldungen verweigert werden. Die Operation ist verfügbar, wenn ein Konto angegeben ist. Bei Anmeldungen ohne Konto wird der Platzhalter *\*keine* angezeigt.
 
 ## Referenzen
 
 ### Kontext-Hilfe
 
 - [Bereinigungsdienst](/service-cleanup)
-- [Identity Service - Blocklist](/identity-service-blocklist)
-- [Identity Services](/identity-services)
+- [Identitätsdienste - Sperrliste](/identity-service-blocklist)
+- [Identitätsdienste](/identity-services)
 
 ### Product Knowledge Base
 

@@ -1,6 +1,6 @@
 # Einstellungen - Identitätsdienst
 
-Die folgenden Einstellungen werden auf alle [Identity Services](/identity-services) angewendet. Änderungen werden sofort wirksam.
+Die folgenden Einstellungen werden auf alle [Identitätsdienste](/identity-services) angewendet. Änderungen werden sofort wirksam.
 
 Die Seite *Einstellungen* ist über das Symbol ![wheel icon](assets/images/wheel.png) in der Menüleiste zugänglich.
 
@@ -33,7 +33,7 @@ Beachten Sie, dass die Anzahl der Zeichen und die Beliebigkeit der Zeichenauswah
 
 ### Kontext-Hilfe
 
-- [Identity Services](/identity-services)
+- [Identitätsdienste](/identity-services)
 - [Settings](/settings)
 
 ### Product Knowledge Base

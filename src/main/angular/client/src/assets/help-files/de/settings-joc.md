@@ -23,7 +23,7 @@ Die Liste ist mit einigen bekannten Gründen für Objektänderungen gefüllt. Es
 
 ### Einstellung: *default\_profile\_account*, Voreinstellung: *root*
 
-Wenn dem JOC Cockpit über [Identity Services](/identity-services) Benutzerkonten hinzugefügt werden, wird [Profil - Einstellungen](/profile-preferences) mit individuellen Einstellungen für jedes Benutzerkonto erstellt.
+Wenn dem JOC Cockpit über [Identitätsdienste](/identity-services) Benutzerkonten hinzugefügt werden, wird [Profil - Einstellungen](/profile-preferences) mit individuellen Einstellungen für jedes Benutzerkonto erstellt.
 
 - Diese Einstellung legt das Konto fest, das bei der Erstellung von Benutzerkonten als Vorlage für das Profil verwendet wird. 
 - Standardmäßig wird das *Stammkonto* verwendet, was darauf hinausläuft, dass das Profil eines neuen Kontos aus den Einstellungen wie Sprache, Thema usw. des Standardprofilkontos erstellt wird.
@@ -191,7 +191,7 @@ Gibt die Java-Optionen an, die bei der Erstellung von Berichten verwendet werden
 ### Kontext-Hilfe
 
 - [Audit Log](/audit-log)
-- [Identity Services](/identity-services)
+- [Identitätsdienste](/identity-services)
 - [Profil - Einstellungen](/profile-preferences)
 - [REST Web Service API](/rest-api)
 - [Settings](/settings)

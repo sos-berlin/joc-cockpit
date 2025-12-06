@@ -1,6 +1,6 @@
 # Identitätsdienst-Profile
 
-Identitätsdienste regeln den Zugriff auf JOC Cockpit durch Authentifizierung und Autorisierung, siehe [Identity Services](/identity-services).
+Identitätsdienste regeln den Zugriff auf JOC Cockpit durch Authentifizierung und Autorisierung, siehe [Identitätsdienste](/identity-services).
 
 Für Benutzer, die sich mit einem Identitätsdienst anmelden, wird bei der ersten Anmeldung ein *Profil* für den entsprechenden Identitätsdienst erstellt.
 
@@ -12,7 +12,7 @@ Für Benutzer, die sich mit einem Identitätsdienst anmelden, wird bei der erste
 
 Die Unteransicht zeigt die Liste der aktiven *Profile* und das Datum der letzten Anmeldung an. Die folgenden Operationen sind für *Profile* einzeln verfügbar:
 
-- Wenn Sie auf ein *Profil* klicken, gelangen Sie zur Unteransicht [Identity Service - Roles](/identity-service-roles), in der die vom jeweiligen *Profil* verwendeten Rollen angezeigt werden.
+- Wenn Sie auf ein *Profil* klicken, gelangen Sie zur Unteransicht [Identitätsdienste - Rollen](/identity-service-roles), in der die vom jeweiligen *Profil* verwendeten Rollen angezeigt werden.
 - Das Aktionsmenü eines *Profils* bietet die folgenden Operationen:
   - **Profileinstellungen löschen** setzt die [Profil - Einstellungen](/profile-preferences) auf ihre Standardeinstellungen zurück. Andere *Profil*-Einstellungen wie *Git-Verwaltung* und *Favoritenverwaltung* bleiben erhalten. Die Operation kann verwendet werden, um die Anwendung des *Profils* des Standardkontos zu erzwingen.
   - **Profil löschen** löscht das *Profil* des Benutzerkontos. Bei der nächsten Anmeldung des betreffenden Kontos wird ein neues *Profil* erstellt.
@@ -23,10 +23,10 @@ Benutzer können ein oder mehrere *Profile* auswählen, um die oben genannten Op
 
 ### Kontext-Hilfe
 
-- [Identity Service - Configuration](/identity-service-configuration)
-- [Identity Service - Accounts](/identity-service-accounts) 
-- [Identity Service - Roles](/identity-service-roles) 
-- [Identity Services](/identity-services)
+- [Identitätsdienste - Konfiguration](/identity-service-configuration)
+- [Identitätsdienste - Benutzerkonten](/identity-service-accounts) 
+- [Identitätsdienste - Rollen](/identity-service-roles) 
+- [Identitätsdienste](/identity-services)
 - [Profil - Einstellungen](/profile-preferences) 
 - [Settings - Cleanup Service](/settings-cleanup)
 - [Einstellungen - JOC Cockpit](/settings-joc)
