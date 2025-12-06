@@ -30,14 +30,14 @@ Die Präferenzen beziehen sich auf die Anzeige von Listen in JOC Cockpit. Wenn S
 Die folgenden Einstellungen, die für allgemeine Werte verwaltet werden können, finden Sie unter dem Link *Group Limit*:
 
 - **Max. Anzahl der Einträge in der Historie** gilt für die Ansicht [History - Orders](/history-orders).
-- **Max. Anzahl der Audit-Log-Einträge** gilt für die Ansicht [Audit Log](/audit-log).
+- **Max. Anzahl der Audit-Log-Einträge** gilt für die Ansicht [Prüfprotokoll](/audit-log).
 - **Max. Anzahl der Benachrichtigungseinträge** gilt für die Ansichten *Monitor-Auftragsbenachrichtigungen* und *Monitor-Systembenachrichtigungen*.
 - **Max. Anzahl der Einträge in der Auftragsübersicht** gilt für die Ansicht [Orders - Overview](/orders-overview).
 - **Max. Anzahl der Tagesplan-Einträge** gilt für die Ansicht [Tagesplan](/daily-plan).
 - **Max. Anzahl der Aufträge pro Arbeitsablauf** begrenzt die Anzahl der Aufträge, die in der Ansicht [Arbeitsabläufe](/workflows) verfügbar sind.
 - **Max. Anzahl der Dateitransfer-Einträge** gilt für die Ansicht [History - File Transfers](/history-file-transfers).
 - **Max. Anzahl von Aufträgen pro Ressourcensperre** begrenzt die Anzahl der Aufträge, die in der Ansicht [Resources - Resource Locks](/resources-resource-locks) angezeigt werden.
-- **Max. Anzahl der Aufträge pro Schwarzes Brett** begrenzt die Anzahl der Aufträge, die in der Ansicht [Resources - Notice Boards](/resources-notice-boards) angezeigt werden.
+- **Max. Anzahl der Aufträge pro Schwarzes Brett** begrenzt die Anzahl der Aufträge, die in der Ansicht [Ressourcen - Notizbretter](/resources-notice-boards) angezeigt werden.
 
 ### Arbeitsablauf Ansichtsvorgaben
 
@@ -87,7 +87,7 @@ Die Präferenzen gelten für die Paginierung auf jeder Seite:
 - **Tooltips für Inventarobjekte unterdrücken** bezieht sich auf die Ansicht *Konfiguration-&gt;Inventar*, die Tooltips anbietet, zum Beispiel für [Konfiguration - Inventar - Arbeitsabläufe - Job-Eigenschaften](/configuration-inventory-workflow-job-properties). Tooltips werden eingeblendet, wenn die Maus auf die Beschriftung eines Eingabefeldes bewegt wird, um den Benutzern die möglichen Eingaben zu erläutern. Während dies für Benutzer, die mit JS7 nicht allzu vertraut sind, nützlich ist, sind Tooltips für erfahrene Benutzer möglicherweise nicht erforderlich.
 - **Lizenzwarnung bestätigt** bezieht sich auf die Verwendung von Abonnementlizenzen, die in der Regel auf ein Jahr begrenzt sind. Vor Ablauf der Lizenz werden entsprechende Warnungen von JOC Cockpit angezeigt. Der Benutzer kann die Warnungen zum Ablauf der Lizenz unterdrücken. Details finden Sie unter [JS7 - How to manage License Expiration Warnings](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+manage+License+Expiration+Warnings).
 - **Mehr Optionen anzeigen** aktiviert den entsprechenden Schieberegler in der Ansicht *Konfiguration-&gt;Inventar*. Er bietet detailliertere Optionen für die Auftragskonfiguration, zum Beispiel auf der Registerkarte [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options).
-- **Listenvariable kollabieren** gilt für die Ansicht [Configuration - Inventory - Workflows](/configuration-inventory-workflows), die die Angabe von Arbeitsablauf-Variablen aus einer Reihe von Datentypen bietet. Wenn der Datentyp *Liste* (Array) verwendet wird, kann er eine größere Anzahl von Einträgen aufnehmen. Die Benutzer möchten möglicherweise nicht sofort sehen, dass die Listenvariablen bei der Bearbeitung eines Arbeitsablaufs erweitert werden.
+- **Listenvariable kollabieren** gilt für die Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows), die die Angabe von Arbeitsablauf-Variablen aus einer Reihe von Datentypen bietet. Wenn der Datentyp *Liste* (Array) verwendet wird, kann er eine größere Anzahl von Einträgen aufnehmen. Die Benutzer möchten möglicherweise nicht sofort sehen, dass die Listenvariablen bei der Bearbeitung eines Arbeitsablaufs erweitert werden.
 
 ### Ansichtstyp-Einstellungen
 
@@ -96,7 +96,7 @@ Die Präferenzen gelten für die Paginierung auf jeder Seite:
 
 ### Arbeitsablauf Layout Präferenzen
 
-Die Einstellungen gelten für die Anzeige von Arbeitsablauf-Anweisungen in der Ansicht [Configuration - Inventory - Workflows](/configuration-inventory-workflows):
+Die Einstellungen gelten für die Anzeige von Arbeitsablauf-Anweisungen in der Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows):
 
 - mit **Orientierung** können Sie die Anzeige von Arbeitsabläufen auf vertikale oder horizontale Darstellung umstellen. Die Verwendung der horizontalen *Orientierung* bringt Vorteile bei der Gestaltung von Arbeitsabläufen mit einer größeren Anzahl von Jobs und anderen Arbeitsanweisungen.
 - mit **Abstand zwischen Anweisungen auf benachbarten Ebenen** können Sie den Abstand zwischen vertikalen Arbeitsablauf-Anweisungen ändern.
@@ -107,8 +107,8 @@ Die Einstellungen gelten für die Anzeige von Arbeitsablauf-Anweisungen in der A
 
 ### Kontext-Hilfe
 
-- [Audit Log](/audit-log)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Prüfprotokoll](/audit-log)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
   - [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
   - [Konfiguration - Inventar - Arbeitsabläufe - Job-Eigenschaften](/configuration-inventory-workflow-job-properties)
 - [Tagesplan](/daily-plan)
@@ -119,7 +119,7 @@ Die Einstellungen gelten für die Anzeige von Arbeitsablauf-Anweisungen in der A
 - [Orders - Overview](/orders-overview)
 - [Profile](/profile)
    - [Profile - Permissions](/profile-permissions)
-- [Resources - Notice Boards](/resources-notice-boards)
+- [Ressourcen - Notizbretter](/resources-notice-boards)
 - [Resources - Resource Locks](/resources-resource-locks)
 - [Einstellungen - Tagesplan](/settings-daily-plan)
 - [Einstellungen - JOC Cockpit](/settings-joc)

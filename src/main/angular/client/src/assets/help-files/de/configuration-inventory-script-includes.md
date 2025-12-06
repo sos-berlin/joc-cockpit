@@ -45,7 +45,7 @@ Wenn Sie die Tastenkombination STRG+Leertaste drücken, während sich der Cursor
 - Bei der Schnellsuche wird die Groß- und Kleinschreibung nicht berücksichtigt und es wird nach rechts abgeschnitten. Für links abgeschnittene Eingaben können Sie das Metazeichen \* verwenden, das als Platzhalter für eine beliebige Anzahl von Zeichen dient.
 - Nachdem Sie einen Skript-Baustein ausgewählt haben, wird die zugehörige Eingabe in die Zeile eingefügt, in der sich der Cursor befindet.
 
-### Parametrisierung
+### Parametrierung
 
 Skript-Bausteine können wie folgt parametrisiert werden:
 

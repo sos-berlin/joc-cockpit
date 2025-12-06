@@ -14,8 +14,8 @@ Das linke Feld zeigt die Anzahl der Aufträge an, die pro Status verfügbar sind
 
 Der mittlere Bereich ist in Registerkarten unterteilt, die eine Filterung der Aufträge nach Tags ermöglichen.
 
-- **Arbeitsablauf-Tags** werden in der Ansicht [Configuration - Inventory - Workflows](/configuration-inventory-workflows) zugewiesen.
-- **Auftrags-Tags** werden in der Ansicht [Configuration - Inventory - Schedules](/configuration-inventory-schedules) zugewiesen.
+- **Arbeitsablauf-Tags** werden in der Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows) zugewiesen.
+- **Auftrags-Tags** werden in der Ansicht [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules) zugewiesen.
 
 Tags werden über die Symbole + und - ausgewählt und können über das Symbol Schnellsuche nachgeschlagen werden. Die Anzeige von Tags muss auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) aktiviert werden.
 
@@ -27,7 +27,7 @@ Das Panel zeigt die Liste der Aufträge für den jeweiligen Status an:
   - Wenn Sie auf das Pfeil-nach-unten-Symbol klicken, werden die Variablen angezeigt, die der Auftrag enthält.
 - **Arbeitsablauf-Name** ist der eindeutige Name eines Arbeitsablaufs.
   - Wenn Sie auf den *Arbeitsablaufnamen* klicken, gelangen Sie zur Ansicht [Arbeitsabläufe](/workflows).
-  - Wenn Sie auf das Bleistiftsymbol klicken, gelangen Sie zur Ansicht [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
+  - Wenn Sie auf das Bleistiftsymbol klicken, gelangen Sie zur Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows).
 - **Etikett** gibt die Position des Auftrags anhand des Etiketts der Arbeitsablauf-Anweisung an. Wenn keine Etiketten vorhanden sind, wird die technische Position angegeben.
 - **Status** zeigt den [Order State](/order-states) an.
   - Wenn Sie den Mauszeiger über den Statusindikator bewegen, werden Details angezeigt, sofern verfügbar. Zum Beispiel zeigen *Wartende* Aufträge Gründe an wie *Warten auf Bearbeitung*, *Warten auf Aushang* usw.
@@ -141,8 +141,8 @@ Der Filter beschränkt die Anzeige auf übereinstimmende *Auftrags-IDs* und *Arb
 
 ### Kontext-Hilfe
 
-- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
 - [Tagesplan](/daily-plan)
 - [Anzeige Auftragsprotokoll](/order-log)
 - [Order State](/order-states)

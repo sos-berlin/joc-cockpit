@@ -90,7 +90,7 @@ Die folgenden Filterschaltflächen schränken den Umfang der Operationen ein:
 - **Relativ zur Uhrzeit**: Aufträge beginnen mit einem Versatz zur aktuellen Zeit in Sekunden oder in Stunden, Minuten, Sekunden, z.B. *15* für einen Start in 15 Sekunden oder *01:30:15* für einen Start 1 Stunde, 30 Minuten und 15 Sekunden später.
 - **Relativ zur Startzeit**: Die Aufträge beginnen mit einem positiven oder negativen Versatz zu ihrer ursprünglichen Startzeit in Sekunden oder in Stunden, Minuten, Sekunden, z.B. *-04:00:00* für einen Start 4 Stunden früher oder *+12:00:00* für einen Start 12 Stunden später. Die Zuordnung der Aufträge zum ursprünglichen Tagesplandatum bleibt bestehen, wenn es um die Auflösung von kalenderbasierten Abhängigkeiten geht.
 
-#### Parametrisierung ändern
+#### Parametrierung ändern
 
 Für verwandte Arbeitsabläufe, die Variablen angeben, können die Werte geändert werden. Wenn Sie mit Massenoperationen arbeiten, haben alle Aufträge die gleichen Variablenwerte.
 

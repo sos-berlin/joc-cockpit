@@ -1,6 +1,6 @@
 # Einstellungen
 
-JOC Cockpit bietet zur Laufzeit [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings) an, die über die grafische Benutzeroberfläche geändert werden können und die sofort angewendet werden, ohne dass JOC Cockpit neu gestartet werden muss.
+JOC Cockpit bietet [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings) an, die über die grafische Benutzeroberfläche geändert werden können und die sofort angewendet werden, ohne dass JOC Cockpit neu gestartet werden muss.
 
 Die Seite *Einstellungen* ist über das Symbol ![wheel icon](assets/images/wheel.png) in der Menüleiste erreichbar.
 
@@ -8,16 +8,15 @@ Die Seite *Einstellungen* ist über das Symbol ![wheel icon](assets/images/wheel
 
 ### Kontext-Hilfe
 
-- [Einstellungen - Tagesplan](/settings-daily-plan)
-- [Settings - Cleanup Service](/settings-cleanup)
+- [Einstellungen - Benutzer](/settings-user)
+- [Einstellungen - Bereinigungsdienst](/settings-cleanup)
+- [Einstellungen - Git](/settings-git)
 - [Einstellungen - Identitätsdienste](/settings-identity-service)
 - [Einstellungen - JOC Cockpit](/settings-joc)
-- [Settings - User](/settings-user)
+- [Einstellungen - Kiosk Modus](/settings-kiosk)
 - [Einstellungen - Protkoll-Benachrichtigung](/settings-log-notification)
-- [Settings - Git](/settings-git)
-- [Settings - Kiosk](/settings-kiosk)
+- [Einstellungen - Tagesplan](/settings-daily-plan)
 
 ### Product Knowledge Base
 
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)
-

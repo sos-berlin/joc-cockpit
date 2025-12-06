@@ -36,5 +36,5 @@ Mit dem Such-Metazeichen **\*** können Sie festlegen, dass Abhängigkeiten gesu
 
 ## Referenzen
 
-- [Resources - Notice Boards](/resources-notice-boards)
+- [Ressourcen - Notizbretter](/resources-notice-boards)
 

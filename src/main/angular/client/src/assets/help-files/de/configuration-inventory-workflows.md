@@ -63,7 +63,7 @@ Für einen Arbeitsablauf sind die folgenden Eingaben möglich:
 
 ### Variablen des Arbeitsablaufs
 
-Variablen des Arbeitsablaufs werden im Arbeitsablauf deklariert und zur Parametrisierung der Ausführung von Jobs verwendet:
+Variablen des Arbeitsablaufs werden im Arbeitsablauf deklariert und zur Parametrierung der Ausführung von Jobs verwendet:
 
 - Erforderliche Variablen werden vom Arbeitsablauf ohne Standardwert deklariert. Aufträge, die dem Arbeitsablauf hinzugefügt werden, müssen Werte für erforderliche Variablen angeben.
 - Optionale Variablen werden durch den Arbeitsablauf mit einem Standardwert deklariert. Aufträge, die dem Arbeitsablauf hinzugefügt werden, können Werte angeben, ansonsten wird der Standardwert verwendet.

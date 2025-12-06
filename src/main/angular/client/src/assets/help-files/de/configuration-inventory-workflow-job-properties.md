@@ -38,7 +38,7 @@ Die Mindesteigenschaften für einen Job sind wie folgt:
 
 ### Umgebungsvariablen
 
-Für *Shell Jobs* wird die Parametrisierung über Umgebungsvariablen zur Verfügung gestellt.
+Für *Shell Jobs* wird die Parametrierung über Umgebungsvariablen zur Verfügung gestellt.
 
 - **Name** kann innerhalb der Grenzen des Betriebssystems frei gewählt werden, zum Beispiel ohne Bindestriche und Leerzeichen. Eine häufige Konvention bei der Namensgebung ist die Großschreibweise. Unter Unix wird bei *Namen* zwischen Groß- und Kleinschreibung unterschieden, unter Windows wird die Groß- und Kleinschreibung nicht berücksichtigt.
 - **Wert** kann eine direkte Eingabe von Zeichenketten und Zahlen sein. Darüber hinaus können Arbeitsablauf-Variablen angegeben werden, die mit dem Arbeitsablauf deklariert werden und denen ein $-Zeichen vorangestellt wird, wie in *$variable*. Bei der Schreibweise von Arbeitsablauf-Variablen wird die Groß- und Kleinschreibung beachtet.

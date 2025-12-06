@@ -6,7 +6,7 @@ Für Benutzer, die sich mit einem Identitätsdienst anmelden, wird bei der erste
 
 - Wenn mehr als ein Identitätsdienst für die Anmeldung zur Verfügung steht, hat der Benutzer ein *Profil* bei jedem Identitätsdienst, bei dem eine erfolgreiche Anmeldung durchgeführt wurde.
 - Das *Profil* wird von dem Konto erstellt, das mit der Einstellung *default_profile_account* auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) angegeben wurde. Standardmäßig wird das *Profil* des *Stammkontos* verwendet.
-- die *Profile* werden gelöscht, wenn sie über einen längeren Zeitraum nicht verwendet werden. Die Seite [Settings - Cleanup Service](/settings-cleanup) legt den maximalen Zeitraum fest, für den ein *Profil* bestehen bleibt, wenn keine Anmeldung über das zugehörige Benutzerkonto erfolgt.
+- die *Profile* werden gelöscht, wenn sie über einen längeren Zeitraum nicht verwendet werden. Die Seite [Einstellungen - Bereinigungsdienst](/settings-cleanup) legt den maximalen Zeitraum fest, für den ein *Profil* bestehen bleibt, wenn keine Anmeldung über das zugehörige Benutzerkonto erfolgt.
 
 ## Operationen für Profile
 
@@ -28,7 +28,7 @@ Benutzer können ein oder mehrere *Profile* auswählen, um die oben genannten Op
 - [Identitätsdienste - Rollen](/identity-service-roles) 
 - [Identitätsdienste](/identity-services)
 - [Profil - Einstellungen](/profile-preferences) 
-- [Settings - Cleanup Service](/settings-cleanup)
+- [Einstellungen - Bereinigungsdienst](/settings-cleanup)
 - [Einstellungen - JOC Cockpit](/settings-joc)
 
 ### Product Knowledge Base

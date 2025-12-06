@@ -38,7 +38,7 @@ Das 3-Punkte-Aktionsmenü eines Elements bietet die folgenden Operationen:
 #### MessageFragments
 
 - **Message**
-  - Eine *Message* definiert den Inhalt, der z.B. per E-Mail an einen Benutzer gesendet wird oder der zur Parametrisierung eines Kommandozeilenprogramms verwendet wird, wie z.B. der Inhalt, der an ein System Monitor Dienstprogramm weitergeleitet werden soll.
+  - Eine *Message* definiert den Inhalt, der z.B. per E-Mail an einen Benutzer gesendet wird oder der zur Parametrierung eines Kommandozeilenprogramms verwendet wird, wie z.B. der Inhalt, der an ein System Monitor Dienstprogramm weitergeleitet werden soll.
     - *Messages* für die Verwendung mit E-Mail stellen den E-Mail-Textkörper dar, der aus einfachem Text oder aus HTML verwendet wird.
     - Nachrichten für die Verwendung mit der Befehlszeile stellen eine Zeichenkette dar, die mit dem Element *CommandFragmentRef* verwendet werden kann, siehe unten.
     - *Message*-Elemente können Monitor-Variablen enthalten, die Platzhalter für Werte sind, z.B. für den Pfad des Arbeitsablaufs, die Auftragskennung usw.
@@ -88,7 +88,7 @@ Sie aktivieren die effektiven Benachrichtigungen durch Verweise auf die oben bes
 
 - **SystemNotification**: Wählt eines oder mehrere der oben genannten *MonitorFragmente* aus. Es ist möglich, eine Reihe von *Fragmenten* desselben Fragmenttyps auszuwählen.
   - Benachrichtigungen werden aus Systemfehlern und Warnungen erstellt, die in den JS7-Produktprotokolldateien identifiziert werden, siehe [Protokoll-Benachrichtigungsdienst](/service-log-notification).
-  - Das Element wird verwendet, um die Unteransicht [Überwachung - Sysembenachrichtigungen](/monitor-notifications-system) von JOC Cockpit zu füllen.
+  - Das Element wird verwendet, um die Unteransicht [Überwachung - Systembenachrichtigungen](/monitor-notifications-system) von JOC Cockpit zu füllen.
 
 #### Notification
 
@@ -122,7 +122,7 @@ Die Seite *Benachrichtigung* bietet die folgenden Operationen über die entsprec
 - [Überwachung - Verfügbarkeit Agenten](/monitor-availability-agent)
 - [Überwachung - Verfügbarkeit Controller](/monitor-availability-controller)
 - [Überwachung - Auftragsbenachrichtigungen](/monitor-notifications-order)
-- [Überwachung - Sysembenachrichtigungen](/monitor-notifications-system)
+- [Überwachung - Systembenachrichtigungen](/monitor-notifications-system)
 - [Überwachungsdienst](/service-monitor)
 
 ### Product Knowledge Base

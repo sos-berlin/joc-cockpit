@@ -35,13 +35,13 @@ Die folgenden Operationen sind über das 3-Punkte-Aktionsmenü eines *Favoriten-
 
 **Favoriten-Facetten
 
-Benutzer können eine größere Anzahl von *Facetten* in ihrem Inventar haben, die auf [Configuration - Inventory - Workflows](/configuration-inventory-workflows) angewendet werden. Wenn ein Arbeitsablauf Arbeitsablauf-Variablen vom Datentyp String angibt, kann eine *Facette* angewendet werden, um die Benutzereingabe einzuschränken. *Facetten* sind reguläre Ausdrücke, die angewendet werden, um passende Benutzereingaben zu prüfen.
+Benutzer können eine größere Anzahl von *Facetten* in ihrem Inventar haben, die auf [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows) angewendet werden. Wenn ein Arbeitsablauf Arbeitsablauf-Variablen vom Datentyp String angibt, kann eine *Facette* angewendet werden, um die Benutzereingabe einzuschränken. *Facetten* sind reguläre Ausdrücke, die angewendet werden, um passende Benutzereingaben zu prüfen.
 
 Bei der Zuweisung von *Facetten* zu Arbeitsablauf-Variablen können die Benutzer ihre *Favoriten-Facetten* angeben, die ganz oben auf der Liste erscheinen, anstatt durch lange Listen zu blättern.
 
 ### Hinzufügen von Favoriten-Facetten
 
-*Bevorzugte Facetten* können direkt bei der Angabe von Arbeitsablauf-Variablen in der Ansicht [Configuration - Inventory - Workflows](/configuration-inventory-workflows) hinzugefügt werden. Wenn Sie auf den Link \* für eine *Facette* klicken, wird die zugehörige *Facette* zur Liste der Favoriten hinzugefügt.
+*Bevorzugte Facetten* können direkt bei der Angabe von Arbeitsablauf-Variablen in der Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows) hinzugefügt werden. Wenn Sie auf den Link \* für eine *Facette* klicken, wird die zugehörige *Facette* zur Liste der Favoriten hinzugefügt.
 
 Benutzer können *Favoriten-Facetten* aus ihrem *Profil* über die Schaltfläche *Favoriten hinzufügen* hinzufügen. Dabei können Sie den Namen der *Facette* und den zugehörigen regulären Ausdruck angeben, der hinzugefügt werden soll.
 
@@ -65,7 +65,7 @@ Die folgenden Operationen sind über das 3-Punkte-Aktionsmenü einer *Favoritenf
 
 ### Kontext-Hilfe
 
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
 - [Konfiguration - Inventar - Arbeitsabläufe - Job Eigenschaften](/configuration-inventory-workflow-job-properties)
 - [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone)
 - [Initial Operation - Register Subagent Clusters](/initial-operation-register-agent-subagent-cluster)

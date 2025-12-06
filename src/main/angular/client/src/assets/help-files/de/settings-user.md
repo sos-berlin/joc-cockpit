@@ -18,6 +18,5 @@ Gibt an, ob weitere Erinnerungen erfolgen sollen.
 
 ## Referenzen
 
-- [Settings](/settings)
+- [Einstellungen](/settings)
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)
-

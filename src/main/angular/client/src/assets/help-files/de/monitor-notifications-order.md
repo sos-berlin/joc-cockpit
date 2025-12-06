@@ -15,7 +15,7 @@ Benachrichtigungen werden über die folgenden Informationselemente angezeigt:
 
 - **Arbeitsablauf** gibt den Namen eines Arbeitsablaufs an. 
   - Wenn Sie auf den Namen des Arbeitsablaufs klicken, gelangen Sie zur Ansicht [Arbeitsabläufe](/workflows).
-  - Wenn Sie auf das Bleistiftsymbol links neben dem Namen des Arbeitsablaufs klicken, gelangen Sie zur Ansicht [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
+  - Wenn Sie auf das Bleistiftsymbol links neben dem Namen des Arbeitsablaufs klicken, gelangen Sie zur Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows).
 - **Auftrags-ID** gibt den eindeutigen Bezeichner eines Auftrags an.
 - **Job** wird angegeben, wenn die Warnung oder der Fehler durch einen Job verursacht wurde.
 - **Typ** ist einer der folgenden Werte
@@ -52,9 +52,9 @@ Oben auf der Seite finden Sie eine Reihe von Filterschaltflächen, die Sie einze
 ### Kontext-Hilfe
 
 - [Bereinigungsdienst](/service-cleanup)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
 - [Configuration - Notification](/configuration-notification)
-- [Überwachung - Sysembenachrichtigungen](/monitor-notifications-system)
+- [Überwachung - Systembenachrichtigungen](/monitor-notifications-system)
 - [Arbeitsabläufe](/workflows)
 
 ### Product Knowledge Base

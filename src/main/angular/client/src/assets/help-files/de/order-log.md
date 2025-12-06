@@ -6,8 +6,8 @@ Die *Anzeige Auftragsprotokoll* bietet ein laufendes Protokoll, das alle 2-3 Sek
 
 In der *Anzeige Auftragsprotokoll* können Sie nach einer Reihe von Kriterien filtern, die im oberen Teil des Fensters verfügbar sind:
 
-- **Main** gibt an, dass Details über Auftragsstarts, Job Starts und die Parametrisierung von Auftragsstarts angezeigt werden. Eine solche Ausgabe wird durch den Qualifizierer [MAIN] angezeigt.
-- **Success** Ereignisse werden durch den Qualifizierer [SUCCESS] gekennzeichnet und zeigen Details wie die resultierende Parametrisierung an, wenn Jobs abgeschlossen sind.
+- **Main** gibt an, dass Details über Auftragsstarts, Job Starts und die Parametrierung von Auftragsstarts angezeigt werden. Eine solche Ausgabe wird durch den Qualifizierer [MAIN] angezeigt.
+- **Success** Ereignisse werden durch den Qualifizierer [SUCCESS] gekennzeichnet und zeigen Details wie die resultierende Parametrierung an, wenn Jobs abgeschlossen sind.
 - **stdout** gibt an, ob die von Jobs in den stdout Kanal geschriebenen Ausgaben mit dem Qualifizierer [STDOUT] angezeigt werden sollen.
 - **Debug** gilt für JVM Jobs, die [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API) verwenden. Solchen Jobs kann das Argument *log_level* mit dem Wert *debug* oder *trace* hinzugefügt werden. Wenn eine Debug-Ausgabe von einem Job verfügbar ist, wird sie mit dem Qualifizierer [DEBUG] angezeigt.
 - **Detail** legt fest, ob Ereignisse aus Arbeitsablauf-Anweisungen, die zum Beispiel Notizen senden oder empfangen, angezeigt werden sollen.

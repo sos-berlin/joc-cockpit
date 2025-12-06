@@ -6,7 +6,7 @@ Die *Anzeige Job-Protokoll* bietet ein laufendes Protokoll, das alle 2-3 Sekunde
 
 In der *Anzeige Job-Protokoll* können Sie nach einer Reihe von Kriterien filtern, die Sie oben im Fenster finden:
 
-- **Main** gibt an, dass Details über den Job-Start und die Parametrisierung beim Job-Start angezeigt werden sollen. Diese Ausgabe wird durch den Qualifizierer [MAIN] angezeigt.
+- **Main** gibt an, dass Details über den Job-Start und die Parametrierung beim Job-Start angezeigt werden sollen. Diese Ausgabe wird durch den Qualifizierer [MAIN] angezeigt.
 - **stdout** gibt an, ob die vom Job in den stdout Kanal geschriebenen Ausgaben mit dem Qualifizierer [STDOUT] angezeigt werden sollen.
 - **Debug** gilt für JVM Jobs, die [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API) verwenden. Solchen Jobs kann das Argument *log_level* mit dem Wert *debug* oder *trace* hinzugefügt werden. Wenn eine Debug-Ausgabe von einem Job verfügbar ist, wird sie mit dem Qualifizierer [DEBUG] angezeigt.
 

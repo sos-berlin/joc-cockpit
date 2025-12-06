@@ -3,128 +3,128 @@
 Die Ansicht *Workflows* ermöglicht die Überwachung und Steuerung von Arbeitsabläufen.
 
 - Benutzer können Aufträge identifizieren, die für bestimmte Arbeitsabläufe bearbeitet werden.
-- Benutzer können Aufträge bei Bedarf zu Arbeitsabläufen hinzufügen. Solche Aufträge werden nicht zu [Tagesplan](/daily-plan) hinzugefügt, sondern werden ad hoc hinzugefügt.
+- Benutzer können Aufträge bei Bedarf zu Arbeitsabläufen hinzufügen. Solche Aufträge werden nicht zum [Tagesplan](/daily-plan) hinzugefügt, sondern werden ad hoc hinzugefügt.
 
-## Navigationsleiste
+## Bereich: Navigation
 
-Der linke Bereich ist in Registerkarten unterteilt, die die Navigation in Ordnern und die Filterung nach Tags für Arbeitsabläufe und Aufträge ermöglichen.
+Der linke Bereich ist in Registerkarten unterteilt, die die Navigation in Ordnern und die Filterung nach Kennzeichnungen für Arbeitsabläufe und Aufträge ermöglichen.
 
-- die **Ordnernavigation** bietet das Symbol mit dem Pfeil nach unten, wenn Sie den Mauszeiger über einen Ordnernamen bewegen. Dadurch werden Arbeitsabläufe aus dem aktuellen Ordner und aus allen Unterordnern angezeigt. Wenn Sie das Symbol mit dem Pfeil nach oben verwenden, wird die Auswahl auf den aktuellen Ordner zurückgesetzt.
-- Die Tag-Filterung wird auf den folgenden Registerkarten angeboten:
-  - **Arbeitsablauf-Tags** werden in der Ansicht [Configuration - Inventory - Workflows](/configuration-inventory-workflows) zugewiesen.
-  - **Auftrags-Tags** werden in der Ansicht [Configuration - Inventory - Schedules](/configuration-inventory-schedules) zugewiesen.
+- die **Ordnernavigation** bietet das Symbol mit dem Doppelpfeil nach unten, wenn Sie den Mauszeiger über einen Ordnernamen bewegen. Dadurch werden Arbeitsabläufe aus dem aktuellen Ordner und aus allen Unterordnern angezeigt. Wenn Sie das Symbol mit dem Doppelpfeil nach oben verwenden, wird die Auswahl auf den aktuellen Ordner zurückgesetzt.
+- Die Filterung nach Kennzeichnungen wird auf den folgenden Registerkarten angeboten:
+  - **Kennz. Arbeitsablauf** werden in der Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows) zugewiesen.
+  - **Kennz. Auftrag** werden in der Ansicht [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules) zugewiesen.
 
-Tags werden über die Symbole + und - ausgewählt und können über das Symbol Schnellsuche nachgeschlagen werden. Die Anzeige von Tags muss auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) aktiviert werden.
+Kennzeichnungen werden über die Symbole + und - ausgewählt und können über das Symbol *Schnellsuche* nachgeschlagen werden. Die Anzeige von Kennzeichnungen muss auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) aktiviert werden.
 
-## Arbeitsablauf-Panel
+## Bereich: Arbeitsabläufe
 
-### Auftrag Zusammenfassung
+### Zusammenfassung der Aufträge
 
-Im oberen Teil des Fensters befindet sich die Zusammenfassung der Aufträge, ähnlich wie bei [Übersicht - Aufträge](/dashboard-orders). Sie können auf die angegebene Anzahl von Aufträgen für einen bestimmten Status klicken, um ein Popup-Fenster zu öffnen, in dem die Liste der Aufträge angezeigt wird.
+Im oberen Teil des Fensters befindet sich die Zusammenfassung der Aufträge, ähnlich wie bei [Übersicht - Aufträge](/dashboard-orders). Sie können auf die angegebene Anzahl von Aufträgen für einen bestimmten Zustand klicken, um ein Popup-Fenster zu öffnen, in dem die Liste der Aufträge angezeigt wird.
 
-Die Zusammenfassung der Aufträge wird für Aufträge angezeigt, die sich auf Arbeitsabläufe beziehen, die für ausgewählte Ordner oder Tags angezeigt werden.
+Die Zusammenfassung der Aufträge wird für Aufträge angezeigt, die sich auf Arbeitsabläufe beziehen, die für ausgewählte Ordner oder Kennzeichnungen angezeigt werden.
 
 ### Anzeige von Arbeitsabläufen
 
-- **Arbeitsablauf-Name** ist der eindeutige Name, der einem Arbeitsablauf zugewiesen ist.
-  - Wenn Sie auf den *Arbeitsablauf-Namen* klicken, öffnet sich im unteren Teil des Fensters das Fenster *Historie*, in dem die jüngste Ausführungsgeschichte des Arbeitsablaufs angezeigt wird.
-  - Wenn Sie auf das große Pfeil-nach-unten-Symbol klicken, werden alle Aufträge und Arbeitsabläufe angezeigt.
-  - Wenn Sie auf das kleine Pfeil-nach-unten-Symbol klicken, werden die Jobs und Arbeitsabläufe der obersten Ebene angezeigt.
-  - Klicken Sie auf das Bleistiftsymbol, um zur Ansicht [Configuration - Inventory - Workflows](/configuration-inventory-workflows) zu gelangen.
-  - Wenn Sie auf das +-Symbol klicken, öffnet sich ein Popup-Fenster mit [Add Orders](/workflows-orders-add).
-- mit den Symbolen **Tabellenansicht** und **Grafische Ansicht** können Sie sich Arbeitsabläufe
-  - im tabellarischen Format, das sich auf eine übersichtliche Struktur konzentriert und Platz im Fenster spart.
-  - im grafischen Format, das für eine Reihe von Benutzern besser verständlich ist.
-- **Datum der Bereitstellung** zeigt das Datum an, an dem der Arbeitsablauf bereitgestellt wurde.
-- **Einsatzstatus** zeigt an, ob der Arbeitsablauf an den Controller und die Agenten verteilt wurde.
-  - **Synchronisiert** Arbeitsabläufe werden bereitgestellt und sind für den Controller und die Agenten verfügbar.
-  - **Nicht synchronisiert** Arbeitsabläufe werden nicht an Controller und Agenten verteilt, sondern sind nur im Inventar verfügbar.
-  - **Suspended** Arbeitsabläufe sind eingefroren, sie nehmen Aufträge an, erlauben aber nicht, dass Aufträge gestartet werden, bis die Arbeitsabläufe wieder aufgenommen werden.
+- **Name** ist der eindeutige Name, der einem Arbeitsablauf zugewiesen ist.
+  - Wenn Sie auf den Namen des *Arbeitsablaufs* klicken, öffnet sich im unteren Teil des Fensters der Bereich *Historie*, in dem die jüngste Ausführungshistorie des Arbeitsablaufs angezeigt wird.
+  - Wenn Sie auf das große Pfeil-nach-unten-Symbol klicken, werden alle Aufträge und Jobs angezeigt.
+  - Wenn Sie auf das kleine Pfeil-nach-unten-Symbol klicken, werden die Aufträge und Jobs der obersten Ebene angezeigt.
+  - Klicken Sie auf das Bleistiftsymbol, um zur Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows) zu gelangen.
+  - Wenn Sie auf das +-Symbol klicken, öffnet sich ein Popup-Fenster mit [Aufträge hinzufügen](/workflows-orders-add).
+- mit den Symbolen **Tabellarische Ansicht** und **Grafische Ansicht** können Sie sich Arbeitsabläufe
+  - im tabellarischen Format ansehen, das sich auf eine übersichtliche Struktur konzentriert und Platz im Bereich spart.
+  - im grafischen Format ansehen, das ggf. besser verständlich ist.
+- **Ausrolldatum** zeigt das Datum an, an dem der Arbeitsablauf ausgerollt wurde.
+- **Status** zeigt an, ob der Arbeitsablauf an den Controller und die Agenten ausgerollt wurde.
+  - **Synchron** Arbeitsabläufe sind ausgerollt und sind für den Controller und die Agenten verfügbar.
+  - **Nicht synchron** Arbeitsabläufe sind nicht an Controller und Agenten ausgerollt, sondern sind nur im Inventar verfügbar.
+  - **Ausgesetzt** Arbeitsabläufe sind eingefroren, sie nehmen Aufträge an, erlauben aber nicht, dass Aufträge gestartet werden, bis die Arbeitsabläufe wieder aufgenommen werden.
   - **Ausstehend** Arbeitsabläufe warten auf die Bestätigung durch einen oder mehrere Agenten, dass der Arbeitsablauf ausgesetzt oder wieder aufgenommen wurde.
-- **Anzahl der Aufträge** zeigt die Anzahl der Aufträge an, die dem Arbeitsablauf zugewiesen sind. 
+- **Anzahl Aufträge** zeigt die Anzahl der Aufträge an, die dem Arbeitsablauf zugewiesen sind. 
   - Bis zu drei Aufträge werden direkt mit dem Arbeitsablauf angezeigt. Sie bieten ein Aktionsmenü für Auftragsoperationen.
-    - Sie können auf die angegebene Auftrags-ID klicken, um die Protokollausgabe des Auftrags auf [Anzeige Auftragsprotokoll](/order-log) anzuzeigen. Das Protokoll enthält die Ausgaben, die von allen mit dem Arbeitsablauf ausgeführten Aufträgen erstellt wurden.
+    - Sie können auf die angegebene Auftragskennung klicken, um die Protokollausgabe des Auftrags mittels [Anzeige Auftragsprotokoll](/order-log) darzustellen. Das Protokoll enthält die Ausgaben, die von allen mit dem Arbeitsablauf ausgeführten Jobs erzeugt wurden.
   - Wenn Sie auf *Anzahl der Aufträge* klicken, öffnet sich ein Popup-Fenster, in dem alle zugehörigen Aufträge angezeigt werden und das Operationen für einzelne Aufträge und Massenoperationen für ausgewählte Aufträge bietet.
 
 ### Anzeige von Jobs und Arbeitsablauf-Anweisungen
 
-Wenn Sie einen Arbeitsablauf mit Hilfe des Pfeil-nach-unten-Symbols für einen Arbeitsablauf erweitern, werden seine Aufträge und Arbeitsanweisungen angezeigt.
+Wenn Sie einen Arbeitsablauf mit Hilfe des Pfeil-nach-unten-Symbols erweitern, werden seine Aufträge und Arbeitsanweisungen angezeigt.
 
-## Bereich Historie
+## Bereich: Historie
 
-Das Panel wird im unteren Teil des Fensters angezeigt, wenn Benutzer auf den Namen des Arbeitsablaufs klicken oder einen Auftrag hinzufügen.
+Der Bereich wird im unteren Teil des Fensters angezeigt, wenn Benutzer auf den Namen des Arbeitsablaufs klicken oder einen Auftrag hinzufügen.
 
-### Auftrag Historie
+### Auftragshistorie
 
-- die **Auftrags-ID** ist die eindeutige Kennung, die einem Auftrag zugeordnet ist. Wenn Sie auf das Pfeil-nach-unten-Symbol klicken, werden die Auftragsvariablen und die vom Auftrag übergebenen Aufträge angezeigt. 
-- **Etikett** zeigt die letzte Position eines Auftrags im Arbeitsablauf an. Benutzer können den Arbeitsabläufen *Labels* zuweisen, die dann angezeigt werden, andernfalls wird die technische Position angezeigt.
-- der **Status der Historie** zeigt das letzte Ergebnis im Leben des Auftrags an.
-  - Wenn Aufträge abgeschlossen sind, lautet der *Historie-Status* *Erfolgreich* oder *Fehlgeschlagen*.
-  - Wenn Aufträge noch nicht abgeschlossen sind, lautet der *Status der Historie* *in Bearbeitung*.
-- **Auftragsstatus** zeigt den letzten Status des Auftrags an, siehe [Auftragszustände](/order-states).
-  - Wenn Aufträge abgeschlossen sind, lautet der *Auftragsstatus* *Erfolgreich* oder *Scheitert*.
-  - Wenn Aufträge noch nicht abgeschlossen sind, lautet der *Auftragsstatus* *in Bearbeitung*.
+- **Auftragskennung** ist die eindeutige Kennung, die einem Auftrag zugeordnet ist. Wenn Sie auf das Pfeil-nach-unten-Symbol klicken, werden die Auftragsvariablen und die vom Auftrag verarbeiteten Jobs angezeigt. 
+- **Kennung** zeigt die letzte Position des Auftrags im Arbeitsablauf an. Benutzer können den Arbeitsabläufen *Kennungen* zuweisen, die angezeigt werden, andernfalls wird die technische Position angezeigt.
+- **Status** zeigt das letzte Ergebnis im Leben des Auftrags an.
+  - Wenn Aufträge abgeschlossen sind, lautet der *Status der Historie* *Erfolgreich* oder *Fehlgeschlagen*.
+  - Wenn Aufträge noch nicht abgeschlossen sind, lautet der *Status der Historie* *in Verarbeitung*.
+- **Auftragszustand** zeigt den letzten Zustand des Auftrags an, siehe [Auftragszustände](/order-states).
+  - Wenn Aufträge abgeschlossen sind, lautet der *Auftragsstatus* *Erfolgreich* oder *Fehlgeschlagen*.
+  - Wenn Aufträge noch nicht abgeschlossen sind, lautet der *Auftragsstatus* *in Verarbeitung*.
 
 Für den Zugriff auf die Protokollausgabe stehen Ihnen die folgenden Optionen zur Verfügung:
 
-- **Auftrags-ID**: Wenn Sie auf die *Auftrags-ID* klicken, wird die Protokollausgabe des Auftrags auf [Anzeige Auftragsprotokoll](/order-log) angezeigt. Das Protokoll enthält die Ausgabe, die von allen mit dem Arbeitsablauf ausgeführten Aufträgen erstellt wurde.
-- **Download-Symbol**: Wenn Sie auf das Symbol klicken, wird das Protokoll des Auftrags in eine Datei heruntergeladen.
+- **Auftragskennung**: Wenn Sie auf die *Auftragskennung* klicken, wird die Protokollausgabe des Auftrags mittels [Anzeige Auftragsprotokoll](/order-log) dargestellt. Das Protokoll enthält die Ausgabe, die von allen mit dem Arbeitsablauf ausgeführten Jobs erstellt wurde.
+- **Herunterladen-Symbol**: Wenn Sie auf das Symbol klicken, wird das Protokoll des Auftrags in eine Datei heruntergeladen.
 
 Standardmäßig ist die Anzeige von Auftragsprotokollen auf eine Größe von 10 MB begrenzt, ansonsten werden die Protokolle in Dateien heruntergeladen. Die Benutzer können das Limit auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) anpassen.
 
-### Aufgaben Historie
+### Prozesshistorie
 
-- **Auftrag** gibt den Namen des Auftrags an.
-- **Label** zeigt die Position des Auftrags im Arbeitsablauf an.
-- **Status** ist das Ergebnis der Job-Ausführung, angegeben durch *in Bearbeitung*, *erfolgreich* oder *gescheitert*.
-- **Startzeit**, **Endzeit** geben den Beginn und das Ende der Auftragsausführung an.
-- die **Kritikalität** wird mit [Konfiguration - Inventar - Arbeitsabläufe - Job Optionen](/configuration-inventory-workflow-job-options) angegeben und zeigt die Relevanz eines Auftrags an:
+- **Job** gibt den Namen des Jobs an.
+- **Kennung** zeigt die Position des Jobs im Arbeitsablauf an.
+- **Status** ist das Ergebnis der Job-Ausführung, angegeben durch *in Verarbeitung*, *erfolgreich* oder *fehlgeschlagen*.
+- **Startzeit**, **Endezeit** geben den Beginn und das Ende der Auftragsausführung an.
+- die **Kritikalität** wird mit [Konfiguration - Inventar - Arbeitsabläufe - Job Optionen](/configuration-inventory-workflow-job-options) konfiguriert und zeigt die Relevanz eines Jobs an:
   - *Minor*
   - *Normal*
   - *Groß*
   - *Kritisch*
-- **Return Code** ist der Exit-Code eines Shell-Jobs oder der Return-Code eines JVM-Jobs. Das Panel [Konfiguration - Inventar - Arbeitsabläufe - Job Eigenschaften](/configuration-inventory-workflow-job-properties) bietet die Möglichkeit, Rückgabewerte für die erfolgreiche und fehlgeschlagene Ausführung von Jobs zu konfigurieren.
+- **Rückgabewert** ist der Exit Code eines Shell Jobs oder der Return Code eines JVM Jobs. Der Bereich [Konfiguration - Inventar - Arbeitsabläufe - Job Eigenschaften](/configuration-inventory-workflow-job-properties) bietet die Möglichkeit, Rückgabewerte für die erfolgreiche und fehlgeschlagene Ausführung von Jobs zu konfigurieren.
 
 Für den Zugriff auf die Protokollausgabe ist die folgende Aktion verfügbar:
 
-- **Job**: Wenn Sie auf den *Job-Namen* klicken, wird die Protokollausgabe des Jobs auf der Seite [Anzeige Job-Protokoll](/task-log) angezeigt. 
+- **Job**: Wenn Sie auf den *Job-Namen* klicken, wird die Protokollausgabe des Jobs auf der Seite [Anzeige Job-Protokoll](/task-log) dargestellt. 
 
-Standardmäßig ist die Anzeige von Aufgabenprotokollen auf 10 MB Protokollgröße beschränkt, ansonsten werden die Protokolle in Dateien heruntergeladen. Die Benutzer können das Limit auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) anpassen.
+Standardmäßig ist die Anzeige von Job-Protokollen auf 10 MB Protokollgröße beschränkt, ansonsten werden die Protokolle in Dateien heruntergeladen. Die Benutzer können das Limit auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) anpassen.
 
-### Audit Log
+### Prüfprotokoll
 
-Das Panel zeigt dieselben Informationen an wie die Seite [Audit Log](/audit-log), die sich auf den aktuellen Arbeitsablauf konzentriert.
+Der Bereich zeigt dieselben Informationen an wie die Seite [Prüfprotokoll](/audit-log) und ist auf den aktuellen Arbeitsablauf fokussiert.
 
-Die Anzahl der angezeigten Audit-Protokolleinträge kann über die Einstellung *Max. Anzahl von Audit-Protokolleinträgen pro Objekt* im [Profil - Einstellungen](/profile-preferences) des Benutzers geändert werden.
+Die Anzahl der angezeigten Protokolleinträge kann über die Einstellung *Max. Anzahl Einträge des Prüfprotokolls pro Objekt* im [Profil - Einstellungen](/profile-preferences) des Benutzers geändert werden.
 
-## Vorgänge
+## Operationen
 
-### Operationen in Arbeitsabläufen
+### Operationen für Arbeitsabläufe
 
 Im oberen Teil des Fensters werden die folgenden Schaltflächen für Arbeitsabläufe angeboten:
 
-- **Alle aussetzen** fungiert als *Notstopp* und setzt alle Arbeitsabläufe aus, unabhängig von der aktuell angezeigten Auswahl an Arbeitsabläufen. Angehaltene Arbeitsabläufe sind eingefroren, sie nehmen Aufträge an, starten aber keine Aufträge, solange der Arbeitsablauf nicht wieder aufgenommen wird. Laufende Aufträge setzen den aktuellen Auftrag oder eine andere Anweisung fort, bevor sie unterbrochen werden.
-- **Alle fortsetzen** setzt alle unterbrochenen Arbeitsabläufe fort, unabhängig von der aktuell angezeigten Auswahl an Arbeitsabläufen.
+- **Alle aussetzen** fungiert als *Notstopp* und setzt alle Arbeitsabläufe aus, unabhängig von der aktuell angezeigten Auswahl an Arbeitsabläufen. Angehaltene Arbeitsabläufe sind eingefroren, sie nehmen Aufträge an, starten aber keine Aufträge, solange der Arbeitsablauf nicht wieder aufgenommen wird. Laufende Aufträge setzen den aktuellen Auftrag oder eine andere Anweisung fort, bevor sie angehalten werden.
+- **Alle fortsetzen** setzt alle ausgesetzten Arbeitsabläufe fort, unabhängig von der aktuell angezeigten Auswahl an Arbeitsabläufen.
 
-### Operationen für Jobs und Arbeitsabläufe
+### Operationen für Jobs und Arbeitsablauf-Anweisungen
 
 Die folgenden Operationen sind für Jobs über das entsprechende Aktionsmenü verfügbar:
 
-- **Auftrag überspringen** verhindert, dass ein Auftrag den zugehörigen Auftrag ausführt und lässt ihn mit der nächsten Arbeitsablauf-Anweisung fortfahren.
-- **Auftrag überspringen** macht einen zuvor übersprungenen Auftrag wieder rückgängig.
-- **Auftrag anhalten** hält Aufträge an, die bei dem Auftrag ankommen. Aufträge können über eine *Fortsetzen*-Operation fortgesetzt werden, die es ermöglicht, die Verarbeitung von einem anderen Arbeitsablauf-Knoten aus fortzusetzen oder die Verarbeitung des angehaltenen Auftrags zu erzwingen.
-- **Auftrag rückgängig machen** macht einen zuvor angehaltenen Auftrag rückgängig.
+- **Job überspringen** verhindert, dass ein Auftrag den Job ausführt und lässt ihn mit der nächsten Arbeitsablauf-Anweisung fortfahren.
+- **Job einbeziehen** macht das vorige Überspringen eines Jobs rückgängig.
+- **Job stoppen** hält Aufträge an, die bei dem Job ankommen. Aufträge können über eine *Wiederaufnahmen*-Operation fortgesetzt werden, die es ermöglicht, die Verarbeitung von einem anderen Knoten im Arbeitsablauf fortzusetzen oder die Verarbeitung des gestoppten Jobs zu erzwingen.
+- **Job entstoppen** macht das vorige Stoppen eines Jobs rückgängig.
 
 ### Operationen für Aufträge
 
 Für jeden Auftrag steht Ihnen ein Aktionsmenü zur Verfügung, das die folgenden Operationen enthält:
 
-- **Abbrechen** bricht den Auftrag ab. *Laufende* Aufträge beenden den aktuellen Auftrag oder Arbeitsablauf und verlassen den Arbeitsablauf mit dem Status *gescheitert* *Historie*.
-- **Abbrechen/Aufgabe beenden** beendet Aufträge, die einen Auftrag ausführen, zwangsweise. Aufträge verlassen den Arbeitsablauf mit einem *Fehlgeschlagen* *Historie Status*.
-- **Aussetzen** setzt den Auftrag aus. Laufende Aufträge werden angehalten, nachdem sie den aktuellen Auftrag oder Arbeitsablauf abgeschlossen haben.
-- mit **Aussetzen/Aufgabe beenden** werden *laufende* Aufträge zwangsweise beendet und die Aufträge ausgesetzt.
-- **Aussetzen/Zurücksetzen** setzt die aktuelle Arbeitsablauf-Anweisung sofort zurück und versetzt den Auftrag in den Zustand *ausgesetzt*. Diese Option kann mit dem erzwungenen Beenden von Aufgaben für *laufende* Aufträge kombiniert werden.
-- **Fortsetzen** setzt einen *ausgesetzten* oder *gescheiterten* wiederaufnehmbaren Auftrag fort.
+- **Abbrechen** bricht den Auftrag ab. *Laufende* Aufträge setzen den aktuellen Job oder die aktuelle Arbeitsablauf-Anweisung fort und verlassen den Arbeitsablauf mit dem Status *fehlgeschlagen*.
+- **Abbrechen/Prozess beenden** beendet zwangsweise den Job, der einen Auftrag ausführt. Aufträge verlassen den Arbeitsablauf mit dem Status *Fehlgeschlagen*.
+- **Aussetzen** setzt den Auftrag aus. Laufende Aufträge werden angehalten, nachdem sie den aktuellen Job oder die aktuelle Arbeitsablauf-Anweisung abgeschlossen haben.
+- **Aussetzen/Prozess beenden** beendet zwangsweise einen *laufenden* Job und versetzt den Auftra in den Zustand *ausgesetzt*.
+- **Aussetzen/Rücksetzen** beendet zwangsweise den aktuellen Job oder die aktuelle Arbeitsablauf-Anweisung, die ein Auftrag ausführt, und versetzt den Auftrag in den Zustand *ausgesetzt*. Diese Option kann mit dem erzwungenen Beenden von Jobs für *laufende* Aufträge kombiniert werden.
+- **Fortsetzen** setzt einen *ausgesetzten* oder *fehlgeschlagenen*, wiederaufnehmbaren Auftrag fort.
 
 Es können zusätzliche Operationen verfügbar sein, die für den Zustand des Auftrags spezifisch sind.
 
@@ -133,36 +133,36 @@ Es können zusätzliche Operationen verfügbar sein, die für den Zustand des Au
 Benutzer können Filter anwenden, um die Anzeige von Arbeitsabläufen einzuschränken. Filter-Schaltflächen sind oben im Fenster verfügbar:
 
 - **Agenten** ermöglicht das Filtern von Arbeitsabläufen mit Aufträgen, die einem oder mehreren ausgewählten Agenten zugeordnet sind.
-- **Synchronisierte** Arbeitsabläufe werden bereitgestellt und sind mit dem Controller und den Agenten verfügbar.
-- **Nicht synchronisiert** Arbeitsabläufe werden nicht an Controller und Agenten verteilt, sondern sind nur im Inventar verfügbar.
-- **Suspended** Arbeitsabläufe sind eingefroren, sie nehmen Aufträge an, erlauben aber nicht, dass Aufträge gestartet werden, bis die Arbeitsabläufe wieder aufgenommen werden.
-- **Outstanding** Arbeitsabläufe warten auf die Bestätigung durch einen oder mehrere Agenten, dass der Arbeitsablauf ausgesetzt ist.
-- **Auftragsfilter** bietet die Möglichkeit, den Datumsbereich festzulegen, für den *geplante* Aufträge für ausgewählte Arbeitsabläufe angezeigt werden sollen.
+- **Synchrone** Arbeitsabläufe sind ausgerollt und sind mit dem Controller und den Agenten verfügbar.
+- **Nicht synchrone** Arbeitsabläufe sind nicht an Controller und Agenten ausgerollt, sondern sind nur im Inventar verfügbar.
+- **Ausgesetzte** Arbeitsabläufe sind eingefroren, sie nehmen Aufträge an, erlauben aber nicht, dass Aufträge gestartet werden, bis die Arbeitsabläufe wieder aufgenommen werden.
+- **Ausstehende** Arbeitsabläufe warten auf die Bestätigung durch einen oder mehrere Agenten, dass der Arbeitsablauf ausgesetzt ist.
+- **Auftragsfilter** bietet die Möglichkeit, den Datumsbereich festzulegen, für den *eingeplante* Aufträge für ausgewählte Arbeitsabläufe angezeigt werden sollen.
 
 Der *Erweiterte Filter* bietet detailliertere Kriterien für die Filterung von Arbeitsabläufen.
 
 ## Suche
 
-Die [Workflows - Search](/workflows-search) bietet Kriterien für die Suche nach Arbeitsabläufen anhand von Abhängigkeiten, z.B. die Suche nach Arbeitsabläufen, die einen bestimmten Jobnamen enthalten, oder nach bestimmten Schwarzen Brettern.
+Die [Arbeitsablaufsuche](/workflows-search) bietet Kriterien für die Suche nach Arbeitsabläufen anhand von Abhängigkeiten, z.B. die Suche nach Arbeitsabläufen, die einen bestimmten Job-Namen enthalten, oder nach bestimmten Notizbrettern.
 
 ## Referenzen
 
 ### Kontext-Hilfe
 
-- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Anzeige Auftragsprotokoll](/order-log)
+- [Anzeige Job-Protokoll](/task-log)
+- [Arbeitsablaufsuche](/workflows-search)
+- [Auftragszustände](/order-states)
+- [Aufträge hinzufügen](/workflows-orders-add)
+- [Einstellungen - JOC Cockpit](/settings-joc)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
   - [Konfiguration - Inventar - Arbeitsabläufe - Job Eigenschaften](/configuration-inventory-workflow-job-properties)
   - [Konfiguration - Inventar - Arbeitsabläufe - Job Optionen](/configuration-inventory-workflow-job-options)
-- [Tagesplan](/daily-plan)
-- [Anzeige Auftragsprotokoll](/order-log)
-- [Auftragszustände](/order-states)
+- [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules)
 - [Profil - Einstellungen](/profile-preferences)
-- [Einstellungen - JOC Cockpit](/settings-joc)
-- [Workflows - Add Orders](/workflows-orders-add)
-- [Workflows - Search](/workflows-search)
+- [Tagesplan](/daily-plan)
 
 ### Product Knowledge Base
 
 - [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules)
 - [JS7 - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows)
-

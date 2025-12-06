@@ -27,7 +27,7 @@ Für einen Zeitplan sind die folgenden Eingaben möglich:
 - **Automatisch planen** gibt an, dass der Zeitplan vom [Tagesplandienst](/service-daily-plan) berücksichtigt wird.
 - **Auftrag an Controller übermitteln, wenn geplant** legt fest, dass die Aufträge sofort an einen Controller übermittelt werden, wenn sie geplant werden. Ohne diese Option übermittelt der Tagesplanungsdienst *geplante* Aufträge auf der Grundlage von [Einstellungen - Tagesplan](/settings-daily-plan).
 
-### Auftragsparametrisierung
+### Auftragsparametrierung
 
 - **Auftragsname**: Ein optionaler Name, der zum Filtern von Aufträgen in einer Reihe von Ansichten verwendet werden kann.
 - **Kennzeichnung**: Es kann eine beliebige Anzahl von Kennzeichnungen angegeben werden, die dem Auftrag hinzugefügt werden sollen. Auftrags-Kennzeichnungen werden in einer Reihe von Ansichten angezeigt, wenn sie auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) angegeben werden.
@@ -56,7 +56,7 @@ Wenn ein Auftrag nicht vom ersten Knoten im Arbeitsablauf aus starten soll, kann
 
 ### Auftragsvariablen
 
-Auftragsvariablen werden angegeben, wenn ein Arbeitsablauf Variablen zur Parametrisierung der Ausführung von Aufträgen deklariert:
+Auftragsvariablen werden angegeben, wenn ein Arbeitsablauf Variablen zur Parametrierung der Ausführung von Aufträgen deklariert:
 
 - Erforderliche Variablen werden von einem Arbeitsablauf ohne Standardwert deklariert. Sie werden dem Zeitplan automatisch zur Verfügung gestellt und müssen mit entsprechenden Werten belegt werden.
 - Optionale Variablen werden von einem Arbeitsablauf mit einem Standardwert deklariert. Sie können über die folgenden Links aufgerufen werden:
