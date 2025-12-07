@@ -2,7 +2,7 @@
 
 Aufträge können aus den folgenden Quellen hinzugefügt werden:
 
-- Aufträge des [Tagesplan](/daily-plan)
+- Aufträge des [Tagesplans](/daily-plan)
 - Aufträge, die bei Bedarf von Benutzern aus der Ansicht [Arbeitsabläufe](/workflows) hinzugefügt werden
 - Aufträge, die von [Dateiauftragsquellen](/configuration-inventory-file-order-sources.md) hinzugefügt wurden, die Verzeichnisse auf eingehende Dateien überwachen
 
@@ -27,10 +27,10 @@ Wenn Sie auf die angegebene Anzahl von Aufträgen klicken, gelangen Sie auf die 
 
 ### Kontext-Hilte
 
+- [Arbeitsabläufe](/workflows)
+- [Auftragsübersicht](/orders-overview)
 - [Dateiauftragsquellen](/configuration-inventory-file-order-sources.md)
 - [Tagesplan](/daily-plan)
-- [Auftragsübersicht](/orders-overview)
-- [Arbeitsabläufe](/workflows)
 
 ### Product Knowledge Base
 

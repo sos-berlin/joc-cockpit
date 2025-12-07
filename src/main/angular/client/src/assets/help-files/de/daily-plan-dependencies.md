@@ -1,6 +1,6 @@
 # Tagesplan - Abhängigkeiten
 
-Abhängigkeiten in Arbeitsabläufen können z.B. für alle Tage und für bestimmte Tage des Tagesplans erzwungen werden:
+Abhängigkeiten in Arbeitsabläufen können z.B. für alle Tage und für bestimmte Tage des [Tagesplans](/daily-plan) erzwungen werden:
 
 - Arbeitsablauf 1 läuft von Montag bis Freitag.
 - Arbeitsablauf 2 läuft Mo-So und hängt von der vorherigen Ausführung von Arbeitsablauf 1 ab.
@@ -54,10 +54,10 @@ Wenn beide Filterschaltflächen inaktiv sind, werden alle Arbeitsabläufe und Ab
 
 ### Kontext-Hilfe
 
-- [Konfiguration - Inventar - Notizbretter](/configuration-inventory-notice-boards)
-- [Tagesplan](/daily-plan)
-- [Ressourcen - Notizbretter](/resources-notice-boards)
 - [Einstellungen - Tagesplan](/settings-daily-plan)
+- [Konfiguration - Inventar - Notizbretter](/configuration-inventory-notice-boards)
+- [Ressourcen - Notizbretter](/resources-notice-boards)
+- [Tagesplan](/daily-plan)
 
 ### Product Knowledge Base
 

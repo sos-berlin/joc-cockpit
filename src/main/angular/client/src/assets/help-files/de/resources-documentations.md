@@ -1,22 +1,22 @@
 # Dokumentationen
 
-Die Ansicht *Dokumentationen* zeigt Informationen über die Verwendung von Dokumentationen an und ermöglicht die Verwaltung von Dokumentationen.
+Die Ansicht *Dokumentation* zeigt Informationen über die Verwendung von Dokumentationen an und ermöglicht die Verwaltung von Dokumentationen.
 
 Dokumentationen werden von Arbeitsabläufen und Jobs referenziert und in der Ansicht [Arbeitsabläufe](/workflows) angezeigt.
 
-## Navigationsleiste
+## Bereich: Navigation
 
-Auf der linken Seite sehen Sie die Struktur der Bestandsordner, die Dokumentationen enthalten.
+Auf der linken Seite sehen Sie die Struktur der Ordner des Inventars, die Dokumentationen enthalten.
 
 - Wenn Sie auf einen Ordner klicken, werden die Dokumentationen aus diesem Ordner angezeigt.
 - Wenn Sie mit dem Mauszeiger auf einen Ordner klicken, werden die Dokumentationen aus diesem Ordner und allen Unterordnern angezeigt.
 
-Das Symbol Schnellsuche ermöglicht die Suche nach Dokumentationen auf der Grundlage von Benutzereingaben:
+Das Symbol *Schnellsuche* ermöglicht die Suche nach Dokumentationen auf der Grundlage von Benutzereingaben:
 
 - Wenn Sie **Test** eingeben, werden Dokumentationen mit Namen wie *test-documentation-1* und *TEST-documentation-2* angezeigt. 
 - Wenn Sie **Test** eingeben, werden Dokumentationen mit Namen wie *test-documentation-1* und *my-TEST-documentation-2* angezeigt
 
-## Dokumentations-Panel
+## Bereich: Dokumentations
 
 ### Anzeige der Dokumentationen
 

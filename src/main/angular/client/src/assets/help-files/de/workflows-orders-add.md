@@ -45,7 +45,7 @@ Wenn ein Auftrag nicht mit dem ersten Knoten im Arbeitsablauf beginnen soll, kan
     - **Niedrig**: -20000
     - **Niedrig Normal**: -10000
     - **Normal**: 0
-    - **Über Normal**: 10000
+    - **Höher als Normal**: 10000
     - **Hoch**: 20000
 
 ### Auftragsparametrierung

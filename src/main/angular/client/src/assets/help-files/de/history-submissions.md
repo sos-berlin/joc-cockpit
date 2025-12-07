@@ -1,4 +1,4 @@
-# Historie - Übermittlungen
+# Übermittlungshistorie
 
 Die *Historie der Übermittlungen* verfolgt die von [Tagesplan](/daily-plan) übermittelten Aufträge.
 
@@ -14,7 +14,7 @@ Die Anzeige ist auf maximal 5000 Einträge begrenzt, wenn nicht anders in [Profi
 
 ### Historie des Tagesplans
 
-Die folgenden Informationen werden pro Tagesplan-Datum angezeigt.
+Die folgenden Informationen werden pro Tagesplandatum angezeigt.
 
 - **Datum des Tagesplans** zeigt den Tag an, für den die Aufträge geplant sind.
 - **Summe** zeigt die Anzahl der Aufträge an, die für das jeweilige Datum übermittelt wurden.

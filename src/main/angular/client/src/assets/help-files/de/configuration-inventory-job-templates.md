@@ -1,6 +1,6 @@
 # Konfiguration - Inventarisierung - Job-Vorlagen
 
-Im Bereich *Job-Vorlagen* können Sie zentral verwaltete Vorlagen für Jobs festlegen, die in Arbeitsabläufen verwendet werden. Sie werden angewendet, wenn dieselbe Job-Implementierung für eine Reihe von Jobs verwendet wird.
+Im Bereich *Job-Vorlage* können Sie zentral verwaltete Vorlagen für Jobs festlegen, die in Arbeitsabläufen verwendet werden. Sie werden angewendet, wenn dieselbe Job-Implementierung für eine Reihe von Jobs verwendet wird.
 
 - Jobs enthalten einen Verweis auf eine Job-Vorlage, die bei der Erstellung des Jobs angewendet wird. 
 - Jobs können aktualisiert werden, wenn Job-Vorlagen geändert werden.
@@ -9,9 +9,9 @@ Im Bereich *Job-Vorlagen* können Sie zentral verwaltete Vorlagen für Jobs fest
 Job-Vorlagen werden über die folgenden Fenster verwaltet:
 
 - Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet eine Navigation durch die Ordner mit den Job-Vorlagen und die Möglichkeit, Job-Vorlagen zu bearbeiten.
-- Der Bereich *Job-Vorlagen* auf der rechten Seite des Fensters enthält Details zur Konfiguration.
+- Der Bereich *Job-Vorlage* auf der rechten Seite des Fensters enthält Details zur Konfiguration.
 
-## Bereich: Job-Vorlagen
+## Bereich: Job-Vorlage
 
 Für eine Job-Vorlage sind die folgenden Eingaben möglich:
 
@@ -41,7 +41,7 @@ Job-Vorlagen bieten die folgenden Operationen zur Aktualisierung von Jobs:
   - **Aktualisierung von erforderlichen Argumenten** legt fest, dass die Argumente der Job-Vorlage, die als erforderlich qualifiziert sind, in ausgewählten Jobs aktualisiert werden sollen.
   - **Aktualisierung von optionalen Argumenten** gibt an, dass die Argumente der Job-Vorlage, die als optional eingestuft sind, in den ausgewählten Jobs aktualisiert werden sollen.
 - **Jobs aus Vorlagen aktualisieren** ist im *Navigationsbereich* verfügbar und aktualisiert Jobs in Arbeitsabläufen, die sich im ausgewählten *Ordner* befinden, aus Job-Vorlagen, die sich in einem beliebigen Ordner befinden.
-- **Vorlage auf Jobs anwenden** ist über das *Navigations-Panel* verfügbar und aktualisiert Jobs in Arbeitsabläufen, die sich in einem beliebigen Ordner befinden und Verweise auf Job-Vorlagen enthalten, die im ausgewählten *Inventarordner* oder einem beliebigen Unterordner enthalten sind.
+- **Vorlage auf Jobs anwenden** ist über der *Navigationsbereich* verfügbar und aktualisiert Jobs in Arbeitsabläufen, die sich in einem beliebigen Ordner befinden und Verweise auf Job-Vorlagen enthalten, die im ausgewählten *Inventarordner* oder einem beliebigen Unterordner enthalten sind.
 
 Nach der Aktualisierung von Jobs aus Job-Vorlagen werden die zugehörigen Arbeitsabläufe auf den Status *Entwurf* gesetzt und sollten ausgerollt werden, damit die Änderungen wirksam werden.
 
@@ -83,12 +83,12 @@ Um **Argumenten für JVM Jobs** oder **Umgebungsvariablen für Shell Jobs** dyna
 
 ### Kontext-Hilfe
 
-- [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
-- [Job-Knoten-Eigenschaften](/configuration-inventory-workflow-job-node-properties)
 - [Job-Benachrichtigungen](/configuration-inventory-workflow-job-notifications)
-- [Job-Optionen](/configuration-inventory-workflow-job-options)
 - [Job-Eigenschaften](/configuration-inventory-workflow-job-properties)
 - [Job-Kennzeichnungen](/configuration-inventory-workflow-job-tags)
+- [Job-Knoten-Eigenschaften](/configuration-inventory-workflow-job-node-properties)
+- [Job-Optionen](/configuration-inventory-workflow-job-options)
+- [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
 - [Regeln zur Benennung von Objekten](/object-naming-rules)
 
 ### Product Knowledge Base

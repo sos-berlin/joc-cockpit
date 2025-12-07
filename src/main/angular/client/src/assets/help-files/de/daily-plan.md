@@ -117,18 +117,18 @@ Eine Position kann angegeben werden, wenn der Auftrag nicht beim ersten Knoten i
     - **Niedrig**: -20000
     - **Niedrig Normal**: -10000
     - **Normal**: 0
-    - **Über Normal**: 10000
+    - **Höher als Normal**: 10000
     - **Hoch**: 20000
 
 ## Referenzen
 
 ### Kontext-Hilfe
 
+- [Auftragshistorie](/history-orders)
 - [Bereinigungsdienst](/service-cleanup)
+- [Einstellungen - Tagesplan](/settings-daily-plan)
 - [Tagesplan - Kalender](/daily-plan-calendar)
 - [Tagesplandienst](/service-daily-plan)
-- [Auftragshistorie](/history-orders)
-- [Einstellungen - Tagesplan](/settings-daily-plan)
 
 ### Product Knowledge Base
 

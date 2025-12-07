@@ -1,6 +1,6 @@
 # Konfiguration - Inventar - Zeitpläne - Startzeitregel
 
-Das *Zeitplan* Panel bietet die Möglichkeit, Regeln für die Erstellung von Aufträgen im [Tagesplan](/daily-plan) festzulegen.
+Der Bereich *Zeitplan* bietet die Möglichkeit, Regeln für die Erstellung von Aufträgen im [Tagesplan](/daily-plan) festzulegen.
 
 Über die Schaltfläche *Startzeitregel* können Sie in einem Popup-Fenster Startzeiten für Aufträge festlegen: Zunächst wird ein Kalender zugewiesen, dann werden Zeiträume festgelegt und optional gelten Einschränkungen.
 

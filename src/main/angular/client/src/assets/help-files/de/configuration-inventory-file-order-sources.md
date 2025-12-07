@@ -1,19 +1,19 @@
 # Konfiguration - Inventar - Dateiauftragsquellen
 
-Der Bereich *Dateiauftragsquellen* ermöglicht die Angabe von Quellen für [JS7 - File Watching](https://kb.sos-berlin.com/display/JS7/JS7+-+File+Watching) mit Arbeitsabläufen:
+Der Bereich *Dateiauftragsquelle* ermöglicht die Angabe von Quellen für [JS7 - File Watching](https://kb.sos-berlin.com/display/JS7/JS7+-+File+Watching) mit Arbeitsabläufen:
 
 - Ein Verzeichnis wird von einem Agenten auf eingehende Dateien überwacht.
 - Für jede eingehende Datei wird ein Auftrag erstellt, der diese Datei repräsentiert. 
   - Wenn die Datei vor Abschluss des Arbeitsablaufs von einem Job verschoben oder entfernt wird, setzt der Auftrag den Arbeitsablauf fort und verlässt ihn nach Abschluss.
-  - Bleibt die Datei nach Abschluss des Arbeitsablaufs an ihrem Platz, dann bleibt der Auftrag im Status *erledigt* verfügbar. Damit der Auftrag den Arbeitsablaufs verlässt, muss die eingehende Datei verschoben oder entfernt werden.
-- Aufträge enthalten die Variable *file*, die den Pfad zu der eingehenden Datei enthält. Die Variable *file* muss vom Arbeitsablauf deklariert werden und kann von Jobs verwendet werden.
+  - Bleibt die Datei nach Abschluss des Arbeitsablaufs an ihrem Platz, dann bleibt der Auftrag im Zustand *abgeschlossen* verfügbar. Damit der Auftrag den Arbeitsablauf verlässt, muss die eingehende Datei verschoben oder entfernt werden.
+- Aufträge enthalten die Variable *file*, die den Pfad zur eingehenden Datei benennt. Die Variable *file* muss vom Arbeitsablauf deklariert werden und kann von Jobs verwendet werden.
 
 Quellen für Dateiaufträge werden einem Arbeitsablauf zugewiesen, dem sie für jede eingehende Datei einen Auftrag hinzufügen.
 
 Quellen für Dateiaufträge werden über die folgenden Fenster verwaltet:
 
 - Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters bietet Navigation in Ordnern, die Quellen für Dateiaufträge enthalten und Operationen für Dateiauftragsquellen.
-- Der Bereich *Dateiauftragsquellen* auf der rechten Seite des Fensters enthält Details zur Konfiguration der Dateiauftragsquellen.
+- Der Bereich *Dateiauftragsquelle* auf der rechten Seite des Fensters enthält Details zur Konfiguration der Dateiauftragsquelle.
 
 ## Bereich: Dateiauftragsquelle
 
@@ -21,13 +21,13 @@ Für eine Dateiauftragsquelle sind die folgenden Eingaben möglich:
 
 - **Name** ist der eindeutige Bezeichner einer Dateiauftragsquelle, siehe [Regeln zur Benennung von Objekten](/object-naming-rules).
 - **Titel** enthält eine optionale Erklärung zum Zweck der Dateiauftragsquelle.
-- **Kennzeichnung** bietet die Möglichkeit, eine Anzahl von Tags anzugeben, die den für eingehende Dateien erstellten Aufträgen zugewiesen werden sollen.
+- **Kennzeichnung** bietet die Möglichkeit, eine Anzahl von Begriffen anzugeben, die den Aufträgen für eingehende Dateien zugewiesen werden.
 - **Arbeitsablauf** gibt den Namen eines Arbeitsablaufs an, dem Aufträge für eingehende Dateien hinzugefügt werden.
-- **Agent** gibt den Agenten an, der das eingehende Verzeichnis überwacht. Wenn ein Agent Cluster verwendet wird, dann wird die Dateiüberwachung aus Gründen der Hochverfügbarkeit von Director Agenten durchgeführt: Im Falle einer Umschaltung oder eines Fail-over übernimmt der Standby Director Agent die aktive Rolle der Überwachung von Verzeichnissen.
+- **Agent** gibt den Agenten an, der das eingehende Verzeichnis überwacht. Wenn ein Agent Cluster verwendet wird, dann wird die Dateiüberwachung aus Gründen der Hochverfügbarkeit von Director Agent durchgeführt: Im Fall einer Umschaltung oder einer Akivierung der Ausfallsicherung übernimmt der Standby Director Agent die aktive Rolle der Überwachung von Verzeichnissen.
 - **Verzeichnis** gibt das Verzeichnis an, das auf eingehende Dateien überwacht wird. Dem Laufzeitkonto des Agenten müssen Lese- und Schreibrechte (Verschieben, Entfernen) für eingehende Dateien aus dem *Verzeichnis* zugewiesen werden.
 - **Muster** gibt einen Java-kompatiblen [regulären Ausdruck](https://en.wikipedia.org/wiki/Regular_expression) an, der mit den Namen der eingehenden Dateien übereinstimmt. Reguläre Ausdrücke unterscheiden sich von der Verwendung von Wildcards. Ein Beispiel, 
   - **.\*** passt auf jeden Dateinamen,
-  - **.csv$** passt zu Dateinamen mit der Erweiterung .csv.
+  - **.\*\\.csv$** passt zu Dateinamen mit der Erweiterung .csv.
 - **Zeitzone** gibt die Zeitzone an, um Aufträge aus eingehenden Dateien dem entsprechenden Tagesplandatum zuzuordnen, siehe [Tagesplan](/daily-plan). Für die Eingabe werden Zeitzonenkennungen wie *UTC*, *Europa/London* usw. akzeptiert. Eine vollständige Liste der Zeitzonen und Kennungen finden Sie unter [Liste der Zeitzonen der tz-Datenbank](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
 - **Verzögerung** gibt die Anzahl der Sekunden an, die der Agent wartet, bis die eingehende Datei als stabil angesehen wird.
   - Unter Unix können Dateien zur gleichen Zeit geschrieben werden, in der der Agent sie liest. Dies gilt nicht für Windows-Umgebungen, die standardmäßig das Lesen und Schreiben von Dateien zum selben Zeitpunkt nicht zulassen.
@@ -38,7 +38,7 @@ Für eine Dateiauftragsquelle sind die folgenden Eingaben möglich:
     - **Niedrig**: -20000
     - **Niedriger als Normal**: -10000
     - **Normal**: 0
-    - **Über Normal**: 10000
+    - **Höher als Normal**: 10000
     - **Hoch**: 20000
 
 ### Operationen für Dateiauftragsquellen
@@ -50,9 +50,9 @@ Für verfügbare Operationen siehe [Konfiguration - Inventar - Navigationsbereic
 ### Kontext-Hilfe
 
 - [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
-- [Tagesplan](/daily-plan)
 - [Regeln zur Benennung von Objekten](/object-naming-rules)
 - [Regulärer Ausdruck](https://en.wikipedia.org/wiki/Regular_expression)
+- [Tagesplan](/daily-plan)
 
 ### Product Knowledge Base
 

@@ -1,12 +1,12 @@
 # Protokollierung
 
-Das JOC-Cockpit bietet eine Protokollierung der GUI-Operationen, falls der Bedarf besteht, z.B. die Antwortzeiten des [REST Web Service API](/rest-api) zu analysieren.
+JOC Cockpit bietet eine Protokollierung der GUI-Operationen, falls der Bedarf besteht, z.B. die Antwortzeiten des [REST Web Service API](/rest-api) zu analysieren.
 
 Die Benutzer können die gewünschten Protokollierungsstufen festlegen:
 
 - **Info**
-- **Fehler**
-- **Warnung**
+- **Error**
+- **Warn**
 - **Debug**
 
 Um die Protokollierung zu aktivieren, muss das folgende Kontrollkästchen aktiviert werden:
@@ -19,10 +19,9 @@ Die Protokollausgabe wird in der Ansicht *Protokollierung* verfügbar. Die Proto
 
 Wenn die Protokollausgabe verfügbar ist, können die folgenden Operationen über die entsprechenden Schaltflächen in der rechten oberen Ecke der Ansicht ausgeführt werden:
 
-- **In die Zwischenablage kopieren** kopiert die Protokollausgabe in die Zwischenablage des Benutzers.
-- **In neuer Registerkarte öffnen** öffnet eine neue Browser-Registerkarte mit den entsprechenden Protokollausgaben.
+- **In die Zwischenablage kopieren** überträgt die Protokollausgabe in die Zwischenablage des Benutzers.
+- **In neuer Registerkarte öffnen** wird eine neue Browser-Registerkarte mit den entsprechenden Protokollausgaben öffnen.
 
 ## Referenzen
 
 [REST Web Service API](/rest-api)
-

@@ -34,7 +34,7 @@ Nach erfolgreicher Registrierung werden die Controller-Instanzen in der Ansicht 
 
 Die Benutzer geben die folgenden Eingaben ein:
 
-- **Beschriftung** ist der Titel des Controllers, der zusammen mit dem Rechteck des Controllers im Panel [Übersicht - Produkt Status](/dashboard-product-status) angezeigt wird.
+- **Beschriftung** ist der Titel des Controllers, der zusammen mit dem Rechteck des Controllers im der seite [Übersicht - Produkt Status](/dashboard-product-status) angezeigt wird.
 - **JOC Cockpit Verbindung zum Controller** erwartet die URL von Protokoll, Host und Port, die von JOC Cockpit für die Verbindung mit dem Controller verwendet werden, z.B. http://localhost:4444.
   - Die URL beginnt mit dem *http*-Protokoll, wenn der Controller das einfache HTTP-Protokoll verwendet. Das *https*-Protokoll wird verwendet, wenn der Controller für HTTPS konfiguriert ist.
   - Der Hostname kann *localhost* sein, wenn der Controller auf demselben Rechner wie JOC Cockpit installiert ist. Andernfalls sollte der FQDN des Hosts des Controllers angegeben werden.
@@ -53,11 +53,11 @@ Zu den Voraussetzungen für die Installation gehören:
 Die Benutzer geben die folgenden Eingaben ein:
 
 - **Primärer Controller** ist die Controller-Instanz, der zunächst die aktive Rolle zugewiesen wird. Die aktive Rolle kann zu einem späteren Zeitpunkt gewechselt werden.
-  - **Beschriftung** ist der Titel des Controllers, der zusammen mit dem Rechteck des Controllers im [Übersicht - Produkt Status](/dashboard-product-status) Panel angezeigt wird.
+  - **Beschriftung** ist der Titel des Controllers, der zusammen mit dem Rechteck des Controller im Bereich [Übersicht - Produkt Status](/dashboard-product-status) angezeigt wird.
   - **JOC Cockpit Verbindung zum Primary Controller** erwartet die URL von Protokoll, Host und Port, die von JOC Cockpit für die Verbindung zum Primary Controller verwendet werden, zum Beispiel http://primary-server:4444.
   - die **Secondary Controller Verbindung zum Primary Controller** ist in den meisten Situationen die gleiche wie die *JOC Cockpit Verbindung zum Primary Controller*. Eine andere URL wird verwendet, wenn ein Proxy Server zwischen dem Primary und dem Secondary Controller betrieben wird. Die URL wird vom Secondary Controller verwendet, um sich mit dem Primary Controller zu verbinden.
 - **Secondary Controller** ist die Controller-Instanz, der zunächst die Standby-Rolle zugewiesen wird.
-  - **Beschriftung** ist der Titel des Controllers, der zusammen mit dem Rechteck des Controllers im [Übersicht - Produkt Status](/dashboard-product-status) Panel angezeigt wird.
+  - **Beschriftung** ist der Titel des Controllers, der zusammen mit dem Rechteck des Controllers im Bereich [Übersicht - Produkt Status](/dashboard-product-status) angezeigt wird.
   - **JOC Cockpit Verbindung zum Secondary Controller** erwartet die URL von Protokoll, Host und Port, die von JOC Cockpit für die Verbindung zum Secondary Controller verwendet werden, zum Beispiel http://secondary-server:4444.
   - die **Verbindung vom primären Controller zum sekundären Controller** ist in den meisten Fällen die gleiche wie die *JOC Cockpit Verbindung zum sekundären Controller*. Eine andere URL wird verwendet, wenn ein Proxy Server zwischen dem Primary und dem Secondary Controller betrieben wird. Die URL wird vom Primary Controller verwendet, um sich mit dem Secondary Controller zu verbinden.
 

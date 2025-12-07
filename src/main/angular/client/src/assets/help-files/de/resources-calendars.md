@@ -19,7 +19,7 @@ Das Symbol Schnellsuche ermöglicht die Suche nach Kalendern auf der Grundlage v
 - Wenn Sie **Test** eingeben, werden Kalender mit Namen wie *Test-Kalender-1* und *TEST-Kalender-2* angezeigt. 
 - Wenn Sie **Test** eingeben, werden Kalender mit Namen wie *Test-Kalender-1* und *Mein-TEST-Kalender-2* angezeigt
 
-## Kalender-Panel
+## Bereich: Kalender
 
 ### Anzeige von Kalendern
 

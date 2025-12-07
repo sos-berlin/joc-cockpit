@@ -1,6 +1,6 @@
-# Historie - Dateiübertragungen
+# Dateiübertragungshistorie
 
-Die Ansicht *Histoie-&gt;Dateiübertragunggen* fasst die Historie von Aufträgen für YADE Managed File Transfer Jobs zusammen.
+Die Ansicht *Historie-&gt;Dateiübertragungen* fasst die Historie von Aufträgen für YADE Managed File Transfer Jobs zusammen.
 
 Für die Protokollausgabe von Jobs zur Dateiübertragung siehe [Prozesshistorie](/history-tasks). Für die Historie von Aufträgen siehe [Auftragshistorie](/history-orders).
 
@@ -53,8 +53,8 @@ Für *Quelle* und *Ziel* werden die folgenden Details angezeigt:
 
 ### Kontext-Hilfe
 
-- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
 - [Auftragshistorie](/history-orders)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
 - [Prozesshistorie](/history-tasks)
 
 ### Product Knowledge Base

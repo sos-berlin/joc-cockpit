@@ -1,6 +1,6 @@
 # Konfiguration - Inventar - Berichtsvorlagen
 
-Im *Berichtsvorlage* Panel können Sie Vorlagen für Berichte über die Ausführung von Arbeitsabläufen und Aufträgen erstellen:
+Im Bereich *Berichtsvorlage* können Sie Vorlagen für Berichte über die Ausführung von Arbeitsabläufen und Jobs erstellen:
 
 - Berichtsvorlagen werden über das Inventar verwaltet, das in der Ansicht *Konfiguration* des JOC Cockpit verfügbar ist. Sie umfassen die Angabe von:
   - **Berichtsmuster**, das den Berichtstyp angibt, z.B. die Top 10 der fehlgeschlagenen Arbeitsabläufe, die Top 100 der fehlgeschlagenen Jobs usw. Die vollständige Liste finden Sie unter [Berichtsmuster](/report-templates).
@@ -8,12 +8,12 @@ Im *Berichtsvorlage* Panel können Sie Vorlagen für Berichte über die Ausführ
   - die **Berichtsfrequenz** unterteilt den *Berichtszeitraum* in gleiche Zeiteinheiten, z.B. pro Woche oder Monat.
 - Berichtsläufe und die Visualisierung von Berichten sind in der Ansicht *Berichte* von JOC Cockpit verfügbar.
 
-Berichte werden über die folgenden Panels verwaltet:
+Berichte werden über die folgenden Bereiche verwaltet:
 
-- Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters ermöglicht die Navigation durch die Ordner, in denen sich die Berichtsvorlagen befinden. Außerdem bietet das Panel die Möglichkeit, Berichtsvorlagen zu bearbeiten.
-- Das *Berichtsvorlage* Panel auf der rechten Seite des Fensters enthält Details zur Berichtskonfiguration.
+- Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) auf der linken Seite des Fensters ermöglicht die Navigation durch die Ordner, in denen sich die Berichtsvorlagen befinden. Außerdem bietet der Bereich die Möglichkeit, Berichtsvorlagen zu bearbeiten.
+- Der Bereich *Berichtsvorlage* auf der rechten Seite des Fensters enthält Details zur Berichtskonfiguration.
 
-## Berichtsvorlage Panel
+## Bereich: Berichtsvorlage
 
 Für eine Berichtsvorlage sind die folgenden Eingaben möglich:
 
@@ -46,23 +46,22 @@ Für allgemeine Operationen siehe [Konfiguration - Inventar - Navigationsbereich
 Operationen für Berichte sind in den folgenden Ansichten verfügbar:
 
 - Berichte werden in der Ansicht [Berichtsgenerierung](/report-creation) erstellt.
-- Die Ausführung von Berichten ist über die Ansicht [Berichte - Historie Berichtsläufe](/report-run-history) möglich.
+- Die Prüfung der Ausführung von Berichten ist über die Ansicht [Berichte - Historie Berichtsläufe](/report-run-history) möglich.
 - Berichte werden in der Ansicht [Berichte](/reports) visualisiert.
 
 ## Referenzen
 
 ### Kontext-Hilfe
 
-- [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
-- [Regeln zur Benennung von Objekten](/object-naming-rules)
 - [Berichte](/reports)
 - [Berichtsgenerierung](/report-creation)
 - [Berichte - Historie Berichtsläufe](/report-run-history)
 - [Berichtsmuster](/report-templates)
+- [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
+- [Regeln zur Benennung von Objekten](/object-naming-rules)
 
 ### Product Knowledge Base
 
 - [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports)
 - [JS7 - Reports - Configuration](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Configuration)
 - [JS7 - Reports - Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Templates)
-

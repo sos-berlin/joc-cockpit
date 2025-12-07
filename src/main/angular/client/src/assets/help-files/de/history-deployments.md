@@ -1,4 +1,4 @@
-# Historie - Ausrollen
+# Ausrollhistorie
 
 Die Ansicht *Ausrollhistorie* fasst das Ausrollen von Inventarobjekten zusammen.
 
@@ -35,6 +35,6 @@ Wenn Sie auf das Pfeil-nach-unten-Symbol neben dem *Ausrolldatum* klicken, werde
 
 ## Referenzen
 
-- [Configuration - Inventory- Workflows](/configuration-inventory-workflows)
 - [Arbeitsabläufe](/workflows)
+- [Configuration - Inventory- Workflows](/configuration-inventory-workflows)
 - [JS7 - Deployment of Scheduling Objects](https://kb.sos-berlin.com/display/JS7/JS7+-+Deployment+of+Scheduling+Objects)

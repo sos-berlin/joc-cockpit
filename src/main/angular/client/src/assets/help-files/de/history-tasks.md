@@ -1,4 +1,4 @@
-# Historie - Prozesse
+# Prozesshistorie
 
 Die Ansicht *Prozesshistorie* fasst die Historie von Jobs zusammen, die unabhängig von dem Arbeitsablauf und dem Auftrag, für den sie ausgeführt wurden, angezeigt werden.
 
@@ -13,7 +13,7 @@ Im linken Bereich können Sie nach Kennzeichnungen aus Arbeitsabläufen und Auft
 - **Kennz. Arbeitsablauf** werden in der Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows) zugewiesen.
 - **Kennz. Auftrag** werden in der Ansicht [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules) zugewiesen.
 
-Kennzeichnungen werden über die Symbole + und - ausgewählt und können über das Suchsymbol nachgeschlagen werden. Die Anzeige von Kennzeichnungen muss auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) aktiviert werden.
+Kennzeichnungen werden über die Symbole + und - ausgewählt und können über das *Suchsymbol* nachgeschlagen werden. Die Anzeige von Kennzeichnungen muss auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) aktiviert werden.
 
 ## Bereich: Prozesshistorie
 
@@ -25,7 +25,7 @@ Die Anzeige ist auf maximal 5000 Einträge beschränkt, wenn nicht anders in [Pr
 - **Arbeitsablauf** zeigt den Arbeitsablauf an, für den der Auftrag ausgeführt wurde.
   - Klicken Sie auf den Namen des Arbeitsablaufs, um zur Ansicht [Arbeitsabläufe](/workflows) zu gelangen.
   - Wenn Sie auf das Bleistiftsymbol klicken, gelangen Sie zur Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows).
-- **Kennung** zeigt die Position des Jobs im Arbeitsablauf an. Benutzer weisen den Jobs, die angezeigt werden sollen, *Kennzeichen* zu. Wenn derselbe Auftrag mehr als einmal in einem Arbeitsablauf vorkommt, wird er unter verschiedenen *Kennzeichen* angezeigt.
+- **Kennung** zeigt die Position des Jobs im Arbeitsablauf an. Benutzer weisen den Jobs, die angezeigt werden sollen, *Kennzeichen* zu. Wenn derselbe Job mehr als einmal in einem Arbeitsablauf vorkommt, wird er unter verschiedenen *Kennzeichen* angezeigt.
 - **Status** zeigt das historische Ergebnis des Jobs an.
   - Wenn Jobs abgeschlossen werden, lautet der *Status* entweder *Erfolgreich* oder *Fehlgeschlagen*.
   - Wenn Jobs nicht abgeschlossen sind, lautet der *Status* *in Verarbeitung*.
@@ -63,13 +63,13 @@ Sie können die oben im Fenster verfügbaren Filter anwenden, um die Anzeige von
 
 ### Kontext-Hilfe
 
-- [Bereinigungsdienst](/service-cleanup)
-- [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules)
-- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
-- [Auftragshistorie](/history-orders)
-- [Profil - Einstellungen](/profile-preferences)
-- [Einstellungen - JOC Cockpit](/settings-joc)
 - [Anzeige Job-Protokoll](/task-log)
+- [Auftragshistorie](/history-orders)
+- [Bereinigungsdienst](/service-cleanup)
+- [Einstellungen - JOC Cockpit](/settings-joc)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
+- [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules)
+- [Profil - Einstellungen](/profile-preferences)
 
 ### Product Knowledge Base
 

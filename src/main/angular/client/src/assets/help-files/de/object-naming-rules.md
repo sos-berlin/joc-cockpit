@@ -1,15 +1,15 @@
 # Objektbenennungsregeln
 
-Objektnamen werden an einer Reihe von Stellen für angegeben:
+Objektnamen werden an einer Reihe von Stellen angegeben für
 
-- Arbeitsabläufe, Aufträge, Variablen, Schwarze Bretter, Ressourcensperren, Quellen für Dateiaufträge, Auftragsressourcen, Ordner,
-- Kalender, Zeitpläne, Skript-Includes, Jobvorlagen, Berichte.
+- Arbeitsabläufe, Jobs, Variablen, Notizbretter, Ressourcen-Sperren, Dateiauftragsquellen, Job-Ressourcen, Ordner,
+- Kalender, Zeitpläne, Skript-Bausteine, Job-Vorlagen, Berichtsvorlagen.
 
-JS7 erzwingt keine Namenskonventionen für Objekte: Die Benutzer können die Namenskonventionen nach Belieben wählen, z. B. für Jobnamen:
+JS7 erzwingt keine Namenskonventionen für Objekte: Die Benutzer können die Namenskonventionen nach Belieben wählen, z. B. für Job-Namen:
 
 - camel Case Stil wie in: *loadDataWarehouseDaily*
 - kebab-Stil wie in: *load-data-warehouse-daily*
-- gemischter Stil wie in: *DataWarehouse-Laden-Täglich*
+- gemischter Stil wie in: *DataWarehouse-Load-Daily*
 
 ## Zeichensatz
 
@@ -40,10 +40,10 @@ Für Objektnamen gelten eine Reihe von Einschränkungen:
   - *こんにちは世界*
 - Verwendung von Punkt, Bindestrich, Unterstrich:
   - *Say.Hello*
-  - *Say_Hallo*
-  - *Sage_Hallo*
+  - *Say-Hello*
+  - *Say_Hello*
 
-### Etiketten
+### Kennungen
 
 Für *Labels*, die die Position eines Auftrags oder einer anderen Anweisung des Arbeitsablaufs angeben, gelten weniger strenge Regeln:
 
@@ -53,7 +53,7 @@ Für *Labels*, die die Position eines Auftrags oder einer anderen Anweisung des 
 
 ### Eindeutigkeit von Objektnamen
 
-Objektnamen in JS7 sind pro Objekttyp eindeutig, d.h. pro Arbeitsablauf, pro Job in einem Arbeitsablauf, pro Ressourcensperre usw.
+Objektnamen in JS7 sind pro Objekttyp eindeutig, d.h. pro Arbeitsablauf, pro Job in einem Arbeitsablauf, pro Ressourcen-Sperre usw.
 
 - Benutzer können Objektnamen mit Groß-/Kleinschreibung hinzufügen.
 - Der Objektname wird vom JOC Cockpit GUI genau so übernommen, wie er vom Benutzer eingegeben wurde.
@@ -75,4 +75,3 @@ Die maximale Länge von Objektnamen ist wie folgt:
 - [Java-Bezeichner](https://docs.oracle.com/javase/specs/jls/se7/html/jls-3.html#jls-3.8)
 - [JS7 - Fork-Join Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Fork-Join+Instruction)
 - [JS7 - Object Naming Rules](https://kb.sos-berlin.com/display/JS7/JS7+-+Object+Naming+Rules)
-

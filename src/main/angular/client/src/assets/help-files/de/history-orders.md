@@ -1,4 +1,4 @@
-# Historie - Aufträge
+# Auftragshistorie
 
 Die Ansicht *Auftragshistorie* fasst den Verlauf der Ausführung von Aufträgen zusammen. Dazu gehört auch die Ausführung von Jobs, die in Arbeitsabläufen verwendet werden, die durch zugehörige Aufträge ausgelöst werden.
 
@@ -23,12 +23,12 @@ Die Anzeige ist auf maximal 5000 Einträge beschränkt, wenn nicht anders auf [P
 
 - **Auftragskennung** ist die eindeutige Kennung, die einem Auftrag zugeordnet ist. Wenn Sie auf das Pfeil-nach-unten-Symbol klicken, werden die Auftragsvariablen und die von dem Auftrag durchlaufenen Jobs angezeigt. 
 - **Arbeitsablauf** gibt den Arbeitsablauf an, den der Auftrag durchlaufen hat.
-  - Wenn Sie auf den Namen des Workflows klicken, gelangen Sie zur Ansicht [Arbeitsabläufe](/workflows).
+  - Wenn Sie auf den Namen des Arbeitsablaufs klicken, gelangen Sie zur Ansicht [Arbeitsabläufe](/workflows).
   - Wenn Sie auf das Bleistiftsymbol klicken, gelangen Sie zur Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows).
 - **Kennung** zeigt die letzte Position eines Auftrags im Arbeitsablauf an. Benutzer können den Arbeitsablauf-Anweisungen Kennungen zuweisen, die dann angezeigt werden, andernfalls wird die technische Position angezeigt.
 - **Status** zeigt den *Status der Historie* an, d.h. das letzte Ergebnis im Leben des Auftrags.
   - Wenn Aufträge abgeschlossen werden, lautet der *Status der Historie* *Erfolgreich* oder *Fehlgeschlagen*.
-  - Wenn Aufträge nicht abgeschlossen sind, lautet der *Status der Historie* *in Bearbeitung*.
+  - Wenn Aufträge nicht abgeschlossen sind, lautet der *Status der Historie* *in Verarbeitung*.
 - **Auftragszustand** zeigt den letzten Zustand des Auftrags an, siehe [Auftragszustände](/order-states).
   - Wenn Aufträge abgeschlossen sind, lautet der *Auftragszustand* *beendet*.
   - Wenn Aufträge nicht abgeschlossen sind, lautet der *Auftragszustand* *in Verarbeitung*.

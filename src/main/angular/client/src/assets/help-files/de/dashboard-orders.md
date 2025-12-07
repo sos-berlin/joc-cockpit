@@ -2,7 +2,7 @@
 
 Der Bereich *Aufträge* enthält Informationen zu Aufträgen aus den folgenden Quellen:
 
-- Aufträge des [Tagesplan](/daily-plan)
+- Aufträge des [Tagesplans](/daily-plan)
 - Aufträge, die bei Bedarf von Benutzern aus der Ansicht [Arbeitsabläufe](/workflows) hinzugefügt wurden
 - Aufträge, die von [Dateiauftragsquellen](/configuration-inventory-file-order-sources) hinzugefügt wurden, die Verzeichnisse auf eingehende Dateien überwachen
 
