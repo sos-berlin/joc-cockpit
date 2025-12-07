@@ -407,7 +407,7 @@
     "tab.others": "Andere"
   },
   "controller": {
-    "label.caption": "Beschriftung",
+    "label.caption": "Titel",
     "label.standalone": "Autonom",
     "label.cluster": "Cluster",
     "label.registerController": "Controller registrieren",
@@ -424,7 +424,7 @@
     "button.testConnection": "Verbindung testen",
     "button.newController": "Neuer Controller",
     "tooltip.type": "Ein Autonomer Controller mit einer Instanz kann konfiguriert werden. Unter Verwendung der kommerziellen Lizenz kann ein Controller Cluster mit zwei Instanzen konfiguriert werden.",
-    "tooltip.standaloneTitle": "Beschriftung der Kopfzeile des Autonomen Controllers in der ÜBERSICHT Ansicht",
+    "tooltip.standaloneTitle": "Beschriftung der Kopfzeile des Autonomen Controller in der ÜBERSICHT Ansicht",
     "tooltip.standaloneUrlForJOC": "Verbindung von JOC Cockpit zum autonomen Controller",
     "tooltip.primaryUrlForJOC": "Verbindung von JOC Cockpit zum Primären Controller",
     "tooltip.backupUrlForJOC": "Verbindung von JOC Cockpit zum Sekundären Controller",
@@ -2817,7 +2817,7 @@
     "label.maxNumberOfResourceLockEntries": "Max. Anzahl Aufträge pro Ressourcen-Sperre",
     "label.maxNumberOfNoticeBoardEntries": "Max. Anzahl Aufträge pro Notizbrett",
     "label.maxNumberOfHistoryEntriesPerOrder": "Max. Anzahl Einträge der Auftragshistorie pro Arbeitsablauf",
-    "label.maxNumberOfHistoryEntriesPerTask": "Max. Anzahl Einträge der Job-Historie pro Arbeitsablauf",
+    "label.maxNumberOfHistoryEntriesPerTask": "Max. Anzahl Einträge der Prozesshistorie pro Arbeitsablauf",
     "label.maxNumberOfFavoriteEntries": "Max. Anzahl Einträge für Favoriten",
     "label.showSubFolderAndFolderContents": "Ordner und Inhalt der Unterordner anzeigen",
     "label.subFolderAndFolderContents": "Unterordner und Ordnerinhalt",

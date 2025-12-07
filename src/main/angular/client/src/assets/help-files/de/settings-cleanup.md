@@ -85,7 +85,7 @@ Legt die Aufbewahrungsfrist für Benachrichtigungen fest, z.B. über Auftragsfeh
 
 ### Einstellung: *profile\_age*, Standard: *365*d
 
-Legt die Aufbewahrungsfrist für ungenutzte [Profile](/profile) fest, d.h. Profile von Benutzerkonten, die sich in dem angegebenen Zeitraum nicht angemeldet haben.
+Legt die Aufbewahrungsfrist für ungenutzte [Profil](/profile) fest, d.h. Profile von Benutzerkonten, die sich in dem angegebenen Zeitraum nicht angemeldet haben.
 
 ### Einstellung: *failed\_login\_history\_age*, Voreinstellung: *90*d
 
@@ -106,7 +106,7 @@ Gibt die Anzahl der Versionen pro ausgerolltem Objekt an, die beibehalten werden
 - [Bereinigungsdienst](/service-cleanup)
 - [Berichte](/reports)
 - [Einstellungen](/settings)
-- [Profile](/profile)
+- [Profil](/profile)
 - [Prüfprotokoll](/audit-log)
 - [Ressourcen - Notizbretter](/resources-notice-boards)
 - [Tagesplan](/daily-plan)

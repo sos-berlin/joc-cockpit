@@ -2,11 +2,11 @@
 
 Die Ansicht zeigt Indikatoren für die Verfügbarkeit von Agenten an.
 
-Wenn ein Agent Cluster verwendet wird, wird die Verfügbarkeit des Cluster berücksichtigt. Wenn z.B. ein Agent in einem Cluster zu Wartungszwecken abgeschaltet wird und die verbleibende Instanz die Last übernimmt, wird die Verfügbarkeit dadurch nicht beeinträchtigt.
+Wenn ein Agent Cluster verwendet wird, wird die Verfügbarkeit des Cluster berücksichtigt. Wenn z.B. ein Agent in einem Cluster zu Wartungszwecken abgeschaltet wird und die verbleibende Instanz die Verarbeitung übernimmt, wird die Verfügbarkeit dadurch nicht beeinträchtigt.
 
-In der rechten oberen Ecke des Bildschirms finden Sie das Kontrollkästchen *Aktueller Controller*: Wenn es nicht markiert ist, wird die Verfügbarkeit für Agenten von allen verbundenen Controllern angezeigt, andernfalls werden die Informationen nur für Agenten angezeigt, die bei dem aktuell ausgewählten Controller registriert sind.
+In der rechten oberen Ecke des Bildschirms finden Sie das Kontrollkästchen *Aktueller Controller*: Wenn es nicht markiert ist, wird die Verfügbarkeit für Agenten von allen verbundenen Controller Instanzen angezeigt, andernfalls werden die Informationen nur für Agenten angezeigt, die bei dem aktuell ausgewählten Controller registriert sind.
 
-Benutzer sollten sich bewusst sein, dass die historischen Daten zur Agentenverfügbarkeit vom [Bereinigungsdienst](/service-cleanup) gelöscht werden können.
+Benutzer sollten sich bewusst sein, dass die historischen Daten zur Agentenverfügbarkeit vom [Bereinigungsdienst](/service-cleanup) gelöscht werden.
 
 ## Filter
 
@@ -14,11 +14,11 @@ In der oberen rechten Ecke des Bereichs können Sie einen Datumsbereich für die
 
 - **Woche** schaltet den Datumsschieberegler auf den Zeitraum einer Woche um.
 - **Monat** schaltet den Datumsschieberegler für den Zeitraum eines Monats um.
-- mit **Bereich** können Sie das Start- und Enddatum festlegen.
+- **Bereich** legt ein individuelles Start- und Enddatum fest.
 
-## Laufende Zeit
+## Laufzeit
 
-Gibt den Prozentsatz an, für den bestätigt wird, dass Agenten im angegebenen Zeitraum verfügbar waren.
+Zeigt den Prozentsatz, für den bestätigt wird, dass Agenten im angegebenen Zeitraum verfügbar waren.
 
 ## Statistik
 

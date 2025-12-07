@@ -23,6 +23,7 @@ Clicking the related link, users can change their password if active [Identity S
 - **New Password** expects the new password being specified.
     - A minimum password length is required as configured with [Settings - Identity Service](/settings-identity-service).
     - The *Old Password* and *New Password* must be different.
+- **Confirm Password** expects the new password being specified.
 
 ## Profile Sections
 

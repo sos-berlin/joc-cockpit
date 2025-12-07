@@ -49,7 +49,7 @@ Legt fest, ob Zeitpläne als lokal in einer Umgebung betrachtet werden oder für
 ### Kontext-Hilfe
 
 - [Einstellungen](/settings)
-- [Profile - Git Management](/profile-git-management)
+- [Profil - Verwaltung Git](/profile-git-management)
 - [Ressourcen - Notizbretter](/resources-notice-boards)
 - [Ressourcen - Ressourcen-Sperren](/resources-resource-locks)
 

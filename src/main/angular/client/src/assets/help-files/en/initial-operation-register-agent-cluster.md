@@ -41,11 +41,15 @@ The *Manage Controllers/Agents* page is available from the wheel icon in the mai
 Users provide the following inputs:
 
 - **Agent ID** is the unique identifier of the Agent Cluster that cannot be changed during the Cluster's lifetime. The *Agent ID* is not visible with Jobs and Workflows.
-- **Agent Cluster Name** is the unique name of an Agent Cluster. When assigning a Job an Agent then the *Agent Cluster Name* is used. Changing the *Agent Cluster Name* later on requires continuing use of the previous *Agent Cluster Name* from an *Alias Name*.
+  - Hint: Use a unique name such as *agent-cluster-001*.
+- **Agent Cluster Name** is the unique name of an Agent Cluster. When assigning a Job an Agent then the *Agent Cluster Name* is used.
+  - Hint: If you use separate environments for production and non-production, you should use the same *Agent Cluster Name* for both. Therefore, enter a descriptive name, e.g., for a business department such as *sales*, *finance* etc.
+  - Hint: Changing the *Agent Cluster Name* later on offers continuing use of the previous *Agent Cluster Name* from an *Alias Name*.
 - **Title** is a description that can be added for an Agent Cluster.
 - **Alias Names** are alternative names for the same Agent Cluster. When assigning a Job an Agent, then *Alias Cluster Names* will be offered too. *Alias Cluster Names* can be used for example, if a test environment includes fewer Agent Clusters than the production environment: to keep Agent assignments unchanged between environments, the missing Agent Clusters are mapped from *Alias Cluster Names* of the same Agent Cluster.
 - **Primary Director Agent**
   - **Subagent ID** is the unique identifier of the Primary Director Agent that cannot be changed during the Director Agent's lifetime. The *Subagent ID* is not visible with Jobs and Workflows.
+    - Hint: Use a unique name such as the FQDN of the host and the port of the Subagent.
   - **Title** is a description that can be added for a Director Agent.
   - **URL** expects the URL from protocol, host and port used by the Controller to connect to the Primary Director Agent, for example http://localhost:4445.
     - The URL starts from the *http* protocol if the Director Agent makes use of plain HTTP. The *https* protocol is used, if the Director Agent is configured for HTTPS.
@@ -54,6 +58,7 @@ Users provide the following inputs:
   - **As own Subagent Cluster** optionally creates Subagent Clusters for each Primary and Secondary Director Agent, see [Initial Operation - Register Subagent Cluster](/initial-operation-register-agent-subagent-cluster).
 - **Secondary Director Agent**
   - **Subagent ID** is the unique identifier of the Secondary Director Agent that cannot be changed during the Director Agent's lifetime. The *Subagent ID* is not visible with Jobs and Workflows.
+    - Hint: Use a unique name such as the FQDN of the host and the port of the Subagent.
   - **Title** is a description that can be added for a Director Agent.
   - **URL** expects the URL from protocol, host and port used by the Controller to connect to the Secondary Director Agent similarly as for the *Primary Director Agent*.
 
@@ -63,7 +68,6 @@ After successful registration the Agent will be displayed from the [Resources - 
 
 ### Context Help
 
-- [Dashboard - Product Status](/dashboard-product-status)
 - [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone)
 - [Initial Operation - Register Subagent](/initial-operation-register-agent-subagent)
 - [Initial Operation - Register Subagent Cluster](/initial-operation-register-agent-subagent-cluster)

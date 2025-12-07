@@ -51,11 +51,11 @@ Wenn Sie auf die angegebene Anzahl von Aufträgen klicken, gelangen Sie auf die 
 
 ### Kontext-Hilfe
 
-- [Tagesplan](/daily-plan)
-- [Dateiauftragsquellen](/configuration-inventory-file-order-sources)
-- [Auftragsübersicht](/orders-overview)
-- [Profil - Einstellungen](/profile-preferences)
 - [Arbeitsabläufe](/workflows)
+- [Auftragsübersicht](/orders-overview)
+- [Dateiauftragsquellen](/configuration-inventory-file-order-sources)
+- [Profil - Einstellungen](/profile-preferences)
+- [Tagesplan](/daily-plan)
 
 ### Product Knowledge Base
 

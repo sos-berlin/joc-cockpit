@@ -1,4 +1,4 @@
-# Notice Board Search
+# Ressources - Notice Board Search
 
 *Notice Board Search* is used to look up Notice Boards based on criteria such as
 

@@ -1,4 +1,4 @@
-# Agent Status
+# Resources - Agents
 
 The *Agent* view summarizes the connection status of registered Agents.
 

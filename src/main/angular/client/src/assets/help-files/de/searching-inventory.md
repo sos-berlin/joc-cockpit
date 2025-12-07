@@ -8,7 +8,7 @@ Die Inventarsuche wird verwendet, um die Ergebnisse nach Objekttyp einzuschränk
 ## Meta-Zeichen
 
 - **?** Metazeichen ersetzt ein einzelnes Zeichen.
-- **\*** Metazeichen ersetzt null oder mehr Zeichen.
+- **\*** Metazeichen ersetzt kein oder mehr Zeichen.
 
 Die Suche erfolgt unabhängig von der Groß-/Kleinschreibung und teilweise qualifiziert, zum Beispiel:
 

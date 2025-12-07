@@ -1,4 +1,4 @@
-# Objektbenennungsregeln
+# Regeln zur Benennung von Objekten
 
 Objektnamen werden an einer Reihe von Stellen angegeben für
 

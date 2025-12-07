@@ -1,8 +1,8 @@
 # Überwachung - Verfügbarkeit - Controller
 
-Die Ansicht zeigt Indikatoren für die Verfügbarkeit eines Controllers an.
+Die Ansicht zeigt Indikatoren für die Verfügbarkeit der Controller an.
 
-Wenn ein Controller Cluster verwendet wird, wird die Verfügbarkeit des Cluster berücksichtigt. Wenn z.B. eine Controller Instanz in einem Cluster zu Wartungszwecken abgeschaltet wird und die verbleibende Instanz die Last aufnimmt, wird die Verfügbarkeit dadurch nicht verringert.
+Wenn ein Controller Cluster verwendet wird, wird die Verfügbarkeit des Cluster berücksichtigt. Wenn z.B. eine Controller Instanz in einem Cluster zu Wartungszwecken abgeschaltet wird und die verbleibende Instanz die Verarbeitung übernimmt, wird die Verfügbarkeit dadurch nicht verringert.
 
 In der rechten oberen Ecke des Bildschirms finden Sie das Kontrollkästchen *Aktueller Controller*: Wenn es nicht markiert ist, wird die Verfügbarkeit für alle angeschlossenen Controller angezeigt, andernfalls werden die Informationen nur für den aktuell ausgewählten Controller angezeigt.
 
@@ -14,11 +14,11 @@ In der oberen rechten Ecke des Bereichs können Sie einen Datumsbereich für die
 
 - **Woche** schaltet den Datumsschieberegler auf den Zeitraum einer Woche um.
 - **Monat** schaltet den Datumsschieberegler für den Zeitraum eines Monats um.
-- mit **Bereich** können Sie das Start- und Enddatum festlegen.
+- **Bereich** legt ein individuelles Start- und Enddatum fest.
 
-## Laufende Zeit
+## Laufzeit
 
-Gibt den Prozentsatz an, für den die Verfügbarkeit des Controller im angegebenen Zeitraum bestätigt wird.
+Zeigt den Prozentsatz, für den die Verfügbarkeit des Controller im angegebenen Zeitraum bestätigt ist.
 
 ## Statistik
 
@@ -26,7 +26,7 @@ Zeigt die Verfügbarkeit in einem Balkendiagramm auf täglicher Basis für den a
 
 ## Übersicht
 
-Zeigt die Verfügbarkeit pro Controller und Tag in dem angegebenen Zeitraum an.
+Zeigt die Verfügbarkeit pro Controller und Tag im angegebenen Zeitraum an.
 
 - Die Grafik zeigt in grüner Farbe die Stunden an, für die die Verfügbarkeit des Controller bestätigt ist. 
 - Die rote Farbe zeigt die Nichtverfügbarkeit an.

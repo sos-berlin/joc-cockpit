@@ -2,9 +2,9 @@
 
 Das *Profil* enthält Einstellungen, die für die Interaktion eines Benutzers mit JOC Cockpit relevant sind.
 
-Es gibt ein *Basisprofil*, das in der Regel von dem *Stammkonto* stammt, das verwendet wird
+Es gibt ein *Basisprofil*, das in der Regel aus dem *root* Benutzerkonto stammt
 
-- um die *Benutzerprofile* der Benutzerkonten bei der ersten Anmeldung aufzufüllen,
+- um die *Benutzerprofile* der Benutzerkonten bei der ersten Anmeldung mit Voreinstellungen zu füllen,
 - um Einstellungen bereitzustellen, die für alle Benutzerkonten relevant sind, wenn JOC Cockpit in der *niedrigen* Sicherheitsstufe betrieben wird.
 
 Benutzer können das *Basisprofil* über die Seite [Einstellungen - JOC Cockpit](/settings-joc) auf ein anderes Konto umstellen.
@@ -15,25 +15,26 @@ Das *Benutzerprofil* ermöglicht die Verwaltung von Präferenzen und Einstellung
 
 Einzelheiten finden Sie unter [JS7 - Profiles](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles).
 
-## Passwort ändern
+## Kennwort ändern
 
-Wenn Sie auf den entsprechenden Link klicken, können Benutzer ihr Passwort ändern, wenn unter [Identitätsdienste](/identity-services) ein Dienst vom Typ *JOC* aktiv ist, der für die aktuelle Anmeldung verwendet wurde.
+Wenn Sie auf den entsprechenden Link klicken, können Benutzer ihr Kennwort ändern, wenn unter [Identitätsdienste](/identity-services) ein Dienst vom Typ *JOC* aktiv ist, der für die aktuelle Anmeldung verwendet wurde.
 
-- **Altes Passwort** erwartet, dass das aktuell verwendete Passwort angegeben wird.
-- **Neues Passwort** erwartet, dass das neue Passwort angegeben wird.
+- **Altes Kennwort** erwartet, dass das aktuell verwendete Kennwort angegeben wird.
+- **Neues Kennwort** erwartet, dass das neue Kennwort angegeben wird.
     - Es ist eine Mindestlänge des Kennworts erforderlich, die mit [Einstellungen - Identitätsdienste](/settings-identity-service) konfiguriert wird.
-    - Das *Alte Passwort* und das *Neue Passwort* müssen unterschiedlich sein.
+    - Das *Alte Kennwort* und das *Neue Kennwort* müssen unterschiedlich sein.
+- **Kennwort bestätigen** erwartet, dass das neue Kennwort zur Bestätigung angegeben wird.
 
-## Profilabschnitte
+## Abschnitte
 
 Die Einstellungen für *Benutzerprofile* sind in den folgenden Abschnitten verfügbar:
 
 - [Profil - Einstellungen](/profile-preferences)
-- [Profile - Permissions](/profile-permissions)
-- [Profile - Signature Key Management](/profile-signature-key-management)
-- [Profile - SSL Key Management](/profile-ssl-key-management)
-- [Profile - Git Management](/profile-git-management)
-- [Profile - Favorite Management](/profile-favorite-management)
+- [Profil - Berechtigungen](/profile-permissions)
+- [Profil - Verwaltung Signaturschlüssel](/profile-signature-key-management)
+- [Profil - Verwaltung SSL Schlüssel](/profile-ssl-key-management)
+- [Profil - Verwaltung Git](/profile-git-management)
+- [Profil - Verwaltung Favoriten](/profile-favorite-management)
 
 ## Referenzen
 
@@ -41,10 +42,9 @@ Die Einstellungen für *Benutzerprofile* sind in den folgenden Abschnitten verf�
 
 - [Bereinigungsdienst](/service-cleanup)
 - [Identitätsdienste](/identity-services)
-- [Einstellungen - JOC Cockpit](/settings-joc)
 - [Einstellungen - Identitätsdienste](/settings-identity-service)
+- [Einstellungen - JOC Cockpit](/settings-joc)
 
 ### Product Knowledge Base
 
 - [JS7 - Profiles](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles)
-

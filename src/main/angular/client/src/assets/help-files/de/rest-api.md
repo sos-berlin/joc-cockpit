@@ -1,6 +1,6 @@
 # REST Web Service API
 
-Das [JS7 - REST Web Service API](https://kb.sos-berlin.com/display/JS7/JS7+-+REST+Web+Service+API) bietet Operationen für JS Produkte:
+Das [JS7 - REST Web Service API](https://kb.sos-berlin.com/display/JS7/JS7+-+REST+Web+Service+API) bietet Operationen für JS7 Produkte:
 
 - Alle Operationen, die mit Aufträgen, Arbeitsabläufen, Jobs und verwandten Objekten ausgeführt werden, wie z.B. das Abbrechen, Aussetzen und Wiederaufnehmen von Aufträgen, werden durch das *REST Web Service API* ausgeführt.
 - Beachten Sie, dass jede Operation, die vom JOC Cockpit GUI angeboten wird, das *REST Web Service API* verwendet.

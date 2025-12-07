@@ -11,7 +11,10 @@ The *Manage Controllers/Agents* page is available from the wheel icon in the mai
 Users provide the following inputs:
 
 - **Agent ID** is the unique identifier of an Agent that cannot be changed during the Agent's lifetime. The *Agent ID* is not visible with Jobs and Workflows.
-- **Agent Name** is the unique name of an Agent. When assigning a Job an Agent then the *Agent Name* is used. Changing the *Agent Name* later on requires continuing use of the previous *Agent Name* from an *Alias Name*.
+  - Hint: Use a unique name such as the FQDN of the host and the port of the Agent.
+- **Agent Name** is the unique name of an Agent. When assigning a Job an Agent then the *Agent Name* is used.
+  - Hint: If you use separate environments for production and non-production, you should use the same *Agent Name* for both. Therefore, enter a descriptive name, e.g., for a business process such as *Invoicing*, *Accounting*, *Reporting*, etc.
+  - Hint: Changing the *Agent Name* later on offers continuing use of the previous *Agent Name* from an *Alias Name*.
 - **Title** is a description that can be added for an Agent.
 - **Alias Names** are alternative names for the same Agent. When assigning a Job an Agent, then *Alias Names* will be offered too. *Alias Names* can be used for example, if a test environment includes fewer Agents than the production environment: to keep Agent assignments unchanged between environments, the missing Agents are mapped from *Alias Names* of the same Agent.
 - **URL** expects the URL from protocol, host and port used by the Controller to connect to the Agent, for example http://localhost:4445.

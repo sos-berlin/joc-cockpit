@@ -1,24 +1,24 @@
-# Erste Inbetriebnahme - Subagent Cluster registrieren
+# Erste Inbetriebnahme - Registrierung Subagent Cluster
 
-Initial Operation wird nach der Installation von JS7 Controller, Agent und JOC Cockpit durchgeführt. Die Registrierung eines Subagenten-Clusters erfolgt, nachdem [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-cluster) abgeschlossen ist.
+Erste Inbetriebnahme wird nach der Installation von JS7 Controller, Agent und JOC Cockpit durchgeführt. Die Registrierung eines Subagenten-Clusters erfolgt, nachdem die [Erste Inbetriebnahme - Registrierung Agent Cluster](/initial-operation-register-agent-cluster) abgeschlossen ist.
 
 ## Architektur
 
-## Agenten
+### Agenten
 
-- **Standalone-Agenten** führen Aufträge auf entfernten Rechnern vor Ort und in Containern aus. Sie werden einzeln betrieben und vom Controller verwaltet.
-- **Agenten-Cluster**
-  - **Direktor-Agenten** orchestrieren *Unteragenten* in einem Agenten-Cluster. Sie werden von zwei Instanzen im Aktiv-Passiv-Clustering betrieben und vom Controller verwaltet.
-  - **Subagents** führen Aufträge auf entfernten Rechnern vor Ort und in Containern aus. Sie können als Arbeitsknoten in einem Agenten-Cluster betrachtet werden und werden von *Direktor-Agenten* verwaltet.
+- **Standalone Agents** führen Jobs auf Rechnern und in Containern aus. Sie werden einzeln betrieben und vom Controller verwaltet.
+- **Agent Cluster**
+  - **Director Agents** orchestrieren *Subagenten* in einem Agent Cluster. Sie werden von zwei Instanzen im aktiv-passiv Clustering betrieben und vom Controller verwaltet.
+  - **Subagenten** führen Jobs auf Rechnern und in Containern aus. Sie können als Arbeitsknoten in einem Agent Cluster betrachtet werden und werden von *Director Agents* verwaltet.
 
 ### Verbindungen
 
 - **Standalone Agent**, **Director Agent** Verbindungen werden vom Controller hergestellt. 
-- **Subagenten**-Verbindungen in einem Agenten-Cluster werden von *Direktor-Agenten* hergestellt.
+- **Subagenten** Verbindungen in einem Agent Cluster werden von *Director Agents* hergestellt.
 
 ## Subagent Cluster registrieren
 
-Die Registrierung eines Subagenten-Clusters umfasst die Registrierung von
+Die Registrierung eines Subagent Cluster umfasst
 
 - die *Auswahl* von Direktor-Agenten und Unteragenten in einem Agenten-Cluster
 - die *Reihenfolge*, in der die Subagenten betrieben werden
@@ -32,10 +32,9 @@ Für Details siehe [Initial Operation - Subagent Cluster](/initial-operation-age
 
 ## Kontext-Hilfe
 
-- [Übersicht - Produkt Status](/dashboard-product-status)
-- [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-cluster)
-- [Initial Operation - Register Controller](/initial-operation-register-controller)
-- [Initial Operation - Register Subagent](/initial-operation-register-agent-subagent)
+- [Erste Inbetriebnahme - Registrierung Agent Cluster](/initial-operation-register-agent-cluster)
+- [Erste Inbetriebnahme - Registrierung Controller](/initial-operation-register-controller)
+- [Erste Inbetriebnahme - Registrierung Subagent](/initial-operation-register-agent-subagent)
 - [Initial Operation - Subagent Cluster](/initial-operation-agent-subagent-cluster)
 
 ### Product Knowledge Base
@@ -44,4 +43,3 @@ Für Details siehe [Initial Operation - Subagent Cluster](/initial-operation-age
   - [JS7 - Agent Cluster - Active-Active Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Active+Subagent+Cluster)
   - [JS7 - Agent Cluster - Active-Passive Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Passive+Subagent+Cluster)
   - [JS7 - Agent Cluster - Metrics-based Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Metrics-based+Subagent+Cluster)
-

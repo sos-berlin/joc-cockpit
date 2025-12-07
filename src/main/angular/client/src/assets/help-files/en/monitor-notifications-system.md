@@ -35,7 +35,7 @@ For each channel configured for the Notification a separate entry is displayed. 
 
 ## Operations on Notifications
 
-For each warning and error Notification the 3-dots action menu is offered with the following operation:
+For each error Notification the 3-dots action menu is offered with the following operation:
 
 - **Acknowledge** specifies that the user is aware of the Notification and is taking measures. The operation brings forward a pop-up window that allows specifying a comment about the handling of the Notification. <br/><br/>Acknowledged Notifications by default are excluded from display. They can be made visible by selecting the *Acknowledged* filter button.
 
@@ -46,10 +46,10 @@ The top of the page offers a number of filter buttons that can be applied indivi
 The following buttons filter the source of Notifications:
 
 - **All** displays Notifications from all JS7 products.
-- **System**
-- **JOC** limits display of Notifications to *failed* Orders. 
-- **Controller** limits display of Notifications to Orders that caused warnings.
-- **Agent** limits display of Notifications to Orders that first failed and then recovered by successfully proceeding in the Workflow.
+- **System** filters Notifications to OS related problems.
+- **JOC** limits display of Notifications to problems identified by JOC Cockpit. 
+- **Controller** limits display of Notifications to problems raised with the Controller.
+- **Agent** limits display of Notifications to problems raised with Agents.
 
 The following buttons filter the type of Notifications:
 
@@ -62,10 +62,10 @@ The following buttons filter the type of Notifications:
 ### Context Help
 
 - [Cleanup Service](/service-cleanup)
-- [Configuration - Notification ](/configuration-notification)
+- [Configuration - Notification](/configuration-notification)
+- [Monitor - Order Notifications](/monitor-notifications-order)
 - [Settings](/settings)
 - [Settings - Log Notification](/settings-log-notification)
-- [Monitor - Order Notifications](/monitor-notifications-order)
 - [Workflows](/workflows)
 
 ### Product Knowledge Base

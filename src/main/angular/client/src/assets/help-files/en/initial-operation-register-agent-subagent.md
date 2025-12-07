@@ -25,6 +25,7 @@ The *Manage Controllers/Agents* page is available from the wheel icon in the mai
 Users provide the following inputs:
 
 - **Subagent ID** is the unique identifier of a Subagent that cannot be changed during the Subagent's lifetime. The *Subagent ID* is not visible with Jobs and Workflows.
+  - Hint: Use a unique name such as the FQDN of the host and the port of the Subagent.
 - **Title** is a description that can be added for a Subagent.
 - **URL** expects the URL from protocol, host and port used by Director Agents to connect to the Subagent, for example http://localhost:4445.
   - The URL starts from the *http* protocol if the Subagent makes use of plain HTTP. The *https* protocol is used, if the Subagent is configured for HTTPS.
@@ -38,7 +39,6 @@ After successful registration the Subagent will be displayed from the [Resources
 
 ### Context Help
 
-- [Dashboard - Product Status](/dashboard-product-status)
 - [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-cluster)
 - [Initial Operation - Register Controller](/initial-operation-register-controller)
 - [Initial Operation - Register Subagent Cluster](/initial-operation-register-agent-subagent-cluster)

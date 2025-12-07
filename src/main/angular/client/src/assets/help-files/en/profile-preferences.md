@@ -31,7 +31,7 @@ Find the following settings that can be managed for common values from the *Grou
 
 - **Max. number of History entries** applies to the [History - Orders](/history-orders) view.
 - **Max. number of Audit Log entries** applies to the [Audit Log](/audit-log) view.
-- **Max. number of Notification entries** applies to the *Monitor-Order Notifications* and *Monitor-System Notifications* views.
+- **Max. number of Notification entries** applies to the [Monitor - Order Notifications](/monitor-notifications-order) and [Monitor - System Notifications](/monitor-notifications-system) views.
 - **Max. number of Order Overview entries** applies to the [Orders - Overview](/orders-overview) view.
 - **Max. number of Daily Plan entries** applies to the [Daily Plan](/daily-plan) view.
 - **Max. number of orders per Workflow** limits the number of Orders available with the [Workflows](/workflows) view.
