@@ -13,7 +13,7 @@ Git Repositories werden den Inventarordnern der obersten Ebene zugeordnet.
   - Für die Zuordnung von Inventarobjekttypen zu Git-Repository-Typen siehe [Einstellungen - Git](/settings-git).
 - Benutzer können über das Dateisystem auf die Repositories des JOC Cockpit zugreifen und einen Git-Client für verwandte Operationen verwenden, zum Beispiel für die Verwaltung von Zweigen.
 
-Die Operation *Klonen* ist über das Bedienfeld *Navigation* verfügbar und wird für Ordner der obersten Ebene über das zugehörige 3-Punkte-Aktionsmenü angeboten. Die Menühierarchie umfasst *Git Repository-&gt;Local|Rollout-&gt;Git-&gt;Clone*.
+Die Operation *Klonen* ist über das Bedienfeld *Navigation* verfügbar und wird für Ordner der obersten Ebene über das zugehörige 3-Punkte Aktionsmenü angeboten. Die Menühierarchie umfasst *Git Repository-&gt;Local|Rollout-&gt;Git-&gt;Clone*.
 
 ## Repository klonen
 

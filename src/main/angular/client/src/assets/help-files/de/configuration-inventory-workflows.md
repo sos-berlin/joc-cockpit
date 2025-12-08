@@ -2,12 +2,12 @@
 
 Der Bereich *Arbeitsablauf* bietet die Möglichkeit, Arbeitsabläufe aus einer Folge von Anweisungen zu entwerfen, die den Arbeitsablauf für einen [gerichteten azyklischen Graphen](https://en.wikipedia.org/wiki/Directed_acyclic_graph) formen. 
 
-- Benutzer können Anweisungen per Drag&amp;Drop aus der *Symbolleiste* ziehen, wie z.B. eine Abfolge von Jobs, das Verzweigen und Verbinden von Jobs, bedingte Ausführung usw.
+- Benutzer können Anweisungen per Drag&amp;Drop aus der *Funktionsleiste* ziehen, wie z.B. eine Abfolge von Jobs, das Verzweigen und Verbinden von Jobs, bedingte Ausführung usw.
 - Der [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation) bietet eine Navigation nach Kennzeichnungen und Ordnern. Darüber hinaus bietet der Bereich Operationen für Arbeitsabläufe.
 
-## Bereich: Symbolleiste
+## Bereich: Funktionsleiste
 
-Die *Symbolleiste* enthält die folgenden Anweisungen:
+Die *Funktionsleiste* enthält die folgenden Anweisungen:
 
 - **Job Anweisung** implementiert einen Job. Arbeitsabläufe können eine beliebige Anzahl von Jobs enthalten. Einzelheiten finden Sie unter [JS7 - Job Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Instruction).
 - **Try/Catch Anweisung** implementiert die Behandlung von Ausnahmen in einem *Try*-Block, der Jobs oder andere Anweisungen enthält. Wenn ein Auftrag fehlschlägt, werden die Anweisungen im *Catch*-Block ausgeführt. Ein leerer *Catch*-Block löst den Fehlerstatus einer zuvor fehlgeschlagenen Anweisung auf. Einzelheiten finden Sie unter [JS7 - Try-Catch Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Try-Catch+Instruction).
@@ -43,7 +43,7 @@ Die *Symbolleiste* enthält die folgenden Anweisungen:
 
 Der Bereich enthält die grafische Darstellung eines Arbeitsablaufs.
 
-- Sie können Anweisungen aus der *Symbolleiste* per Drag&amp;Drop in den Arbeitsablauf ziehen.
+- Sie können Anweisungen aus der *Funktionsleiste* per Drag&amp;Drop in den Arbeitsablauf ziehen.
   - Um die erste Anweisung in einem Arbeitsablauf per Drag&amp;Drop abzulegen, halten Sie die Maustaste gedrückt und legen die Anweisung im angegebenen Ablagebereich des Arbeitsablaufs ab.
   - Um weitere Anweisungen per Drag&amp;Drop abzulegen, halten Sie die Maustaste gedrückt, navigieren zur gewünschten Verbindungslinie zwischen den Anweisungen und lassen die Maustaste los.
 - Bei der *Fork Anweisung* und *If Anweisung* können Sie eine *Job Anweisung* per Drag&amp;Drop direkt auf den Knoten *Fork* ziehen, um einen neuen Zweig zu erstellen.
@@ -104,7 +104,7 @@ Die Schaltfläche *Ausrollen* ermöglicht das Übertragen auf einen Controller m
 
 #### Operationen für Anweisungen
 
-Wenn Sie den Mauszeiger über eine Anweisung bewegen, wird das 3-Punkte-Aktionsmenü für die folgenden Operationen angeboten:
+Wenn Sie den Mauszeiger über eine Anweisung bewegen, wird das 3-Punkte Aktionsmenü für die folgenden Operationen angeboten:
 
 - **Alle Anweisungen** bieten die Operationen *Kopieren*, *Ausschneiden* und *Entfernen*. Blockanweisungen wie die *Fork Anweisung* bieten zusätzlich die Operation *Alles entfernen*: Während *Entfernen* nur die Anweisung entfernt, entfernt die Operation *Alles entfernen* die Anweisung und alle ggf. rekursiv enthaltenen Anweisungen wie z.B. Jobs.
 - **Job Anweisung** bietet die Operation *Als Job-Vorlage*, mit der aus dem aktuellen Job eine Job-Vorlage erstellt wird. Die Job-Vorlage kann von anderen Jobs im gleichen oder in anderen Arbeitsabläufen verwendet werden.
@@ -116,13 +116,13 @@ Wenn Sie den Mauszeiger über eine Anweisung bewegen, wird das 3-Punkte-Aktionsm
 - das Tastaturkürzel **Strg+C** kopiert die markierten Anweisungen.
 - mit dem Tastaturkürzel **Strg+X** können Sie die markierten Anweisungen ausschneiden.
 
-**Einfügen** ist über die *Symbolleiste* verfügbar und erlaubt die kopierten oder ausgeschnittenen Anweisungen per Drag&amp;Drop in den Arbeitsablauf zu ziehen.
+**Einfügen** ist über die *Funktionsleiste* verfügbar und erlaubt die kopierten oder ausgeschnittenen Anweisungen per Drag&amp;Drop in den Arbeitsablauf zu ziehen.
 
 - die Tastenkombination **Strg+V** fügt die kopierten oder ausgeschnittenen Anweisungen ein, wenn der Benutzer auf eine Verbindungslinie zwischen Anweisungen im Arbeitsablauf klickt.
 
 #### Operationen für Darstellung
 
-Wenn Sie auf den Hintergrund des Bereichs *Arbeitsablauf* klicken, wird eine *Symbolleiste* sichtbar, die die folgenden Operationen bietet:
+Wenn Sie auf den Hintergrund des Bereichs *Arbeitsablauf* klicken, wird eine *Funktionsleiste* sichtbar, die die folgenden Operationen bietet:
 
 - Operationen für Zoomen
   - **Vergrößern** vergrößert die Größe der Anweisungen im Arbeitsablauf.
@@ -130,7 +130,7 @@ Wenn Sie auf den Hintergrund des Bereichs *Arbeitsablauf* klicken, wird eine *Sy
   - **Zoomen auf Standard** lässt Größe der Anweisungen im Arbeitsablauf auf den Standard zurückfallen.
   - **An den Bereich anpassen** wählt eine Größe für die Anweisungen im Arbeitsablauf, die es ermöglicht, den kompletten Arbeitsablauf an die Bereichsgröße anzupassen.
 - Rückgängig, Wiederherstellen
-  - **Rückgängig** macht die letzte Änderung rückgängig. Es können bis zu 20 Vorgänge rückgängig gemacht werden.
+  - **Rückgängig** macht die letzte Änderung rückgängig. Es können bis zu 20 Operationen rückgängig gemacht werden.
   - **Wiederholen** stellt die letzte Änderung, die rückgängig gemacht wurde, wieder her.
 - Operationen für Hochladen, Herunterladen
   - **JSON Format herunterladen** lädt den Arbeitsablauf im JSON Format in eine .json-Datei herunter.
@@ -142,15 +142,14 @@ Wenn Sie auf den Hintergrund des Bereichs *Arbeitsablauf* klicken, wird eine *Sy
 
 ### Kontext-Hilfe
 
+- [Auftragshistorie](/history-orders)
+- [Auftragszustände](/order-states)
 - [Konfiguration - Inventar - Job-Ressourcen](/configuration-inventory-job-resources)
 - [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
 - [Tagesplan](/daily-plan)
-- [Auftragshistorie](/history-orders)
-- [Auftragszustände](/order-states)
 
 ### Product Knowledge Base
 
-- [gerichteter azyklischer Graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph)
 - [JS7 - Assignment of Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Assignment+of+Variables)
 - [JS7 - Expressions for Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Expressions+for+Variables)
 - [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License)
@@ -185,3 +184,4 @@ Wenn Sie auf den Hintergrund des Bereichs *Arbeitsablauf* klicken, wird eine *Sy
 - [JS7 - Workflow Instructions - Forking](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflow+Instructions+-+Forking)
   - [JS7 - Fork-Join Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Fork-Join+Instruction)
   - [JS7 - ForkList-Join Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ForkList-Join+Instruction)
+- [gerichteter azyklischer Graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph)

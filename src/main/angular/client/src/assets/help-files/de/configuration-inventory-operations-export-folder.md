@@ -1,8 +1,8 @@
-# Konfiguration - Inventar - Vorgänge - Ordner exportieren
+# Konfiguration - Inventar - Operationen - Ordner exportieren
 
 Das Exportieren von Objekten beinhaltet das Hinzufügen zu einer .zip oder .tar.gz Archivdatei, die zum Download angeboten wird. Dies gilt für Objekte aus den Systemordnern *Controller* und *Automation* und für Objekte in Benutzerordnern. Archivdateien können für den späteren Import in dieselbe oder eine andere JOC Cockpit Instanz verwendet werden.
 
-Wenn Sie Objekte aus Ordnern exportieren, indem Sie die entsprechende *Exportieren* Operation aus dem 3-Punkte-Aktionsmenü des Ordners verwenden, wird ein Popup-Fenster angezeigt, das Folgendes anbietet 
+Wenn Sie Objekte aus Ordnern exportieren, indem Sie die entsprechende *Exportieren* Operation aus dem 3-Punkte Aktionsmenü des Ordners verwenden, wird ein Popup-Fenster angezeigt, das Folgendes anbietet 
 
 - **Dateiname** gibt den Namen der Archivdatei an.
 - **Dateiformat** gibt entweder .zip oder .tar.gz für den Komprimierungstyp an.

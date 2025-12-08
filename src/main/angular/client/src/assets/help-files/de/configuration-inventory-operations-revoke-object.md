@@ -1,10 +1,10 @@
-# Konfiguration - Inventar - Vorgänge - Objekt zurückziehen
+# Konfiguration - Inventar - Operationen - Objekt zurückziehen
 
 Das Zurückziehen von Objekten beinhaltet, dass sie aus dem Controller gelöscht werden und dass Objekte im Inventar im Entwurfsstatus verbleiben. Dies gilt für Objekte wie Arbeitsabläufe und Job-Ressourcen, die über den Systemordner *Controller* verfügbar sind.
 
-Die Ansicht *Konfiguration-&gt;Inventar* bietet die Möglichkeit, ein einzelnes Objekt zu widerrufen und Objekte aus Ordnern zurückzuziehen, siehe [Konfiguration - Inventar - Operationen - Ordner zurückziehen](/configuration-inventory-operations-revoke-folder).
+Die Ansicht *Konfiguration-&gt;Inventar* bietet die Möglichkeit, ein einzelnes Objekt zurückzuziehen und Objekte aus Ordnern zurückzuziehen, siehe [Konfiguration - Inventar - Operationen - Ordner zurückziehen](/configuration-inventory-operations-revoke-folder).
 
-Wenn Sie ein einzelnes Objekt mit der Operation *Zurückziehen* widerrufen, die Sie über das 3-Punkte-Aktionsmenü des Objekts im Navigationsbereich aufrufen können, wird ein Popup-Fenster wie das folgende angezeigt:
+Wenn Sie ein einzelnes Objekt mit der Operation *Zurückziehen* vom Controller entfernen, die Sie über das 3-Punkte Aktionsmenü des Objekts im Navigationsbereich aufrufen können, wird ein Popup-Fenster wie das folgende angezeigt:
 
 <img src="revoke-workflow.png" alt="Revoke Workflow" width="600" height="460" />
 
@@ -41,12 +41,11 @@ Benutzer steuern das konsistente Zurückziehen von Objekten über die folgenden 
 
 ### Kontext-Hilfe
 
-- [Konfiguration - Inventar - Operationen - Ordner zurückziehen](/configuration-inventory-operations-revoke-folder)
-- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
-- [Tagesplan](/daily-plan)
 - [Abhängigkeitsmatrix](/dependencies-matrix)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
+- [Konfiguration - Inventar - Operationen - Ordner zurückziehen](/configuration-inventory-operations-revoke-folder)
+- [Tagesplan](/daily-plan)
 
 ### Product Knowledge Base
 
 - [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies)
-

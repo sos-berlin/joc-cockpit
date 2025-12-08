@@ -1,10 +1,10 @@
-# Konfiguration - Inventar - Vorgänge - Ordner umbenennen
+# Konfiguration - Inventar - Operationen - Ordner umbenennen
 
 Inventarobjekte können umbenannt oder verlagert werden. Dies gilt für Objekte, Ordner oder beides. Zum Umbenennen von Objekten siehe [Konfiguration - Inventar - Operationen - Objekt umbenennen](/configuration-inventory-operations-rename-object). 
 
 Für das Umbenennen von Ordnern gelten die [Regeln zur Benennung von Objekten](/object-naming-rules).
 
-Die Operation *Umbenennen* ist über im *Navigationsbereich* verfügbar und wird für Objekte und Ordner über das zugehörige 3-Punkte-Aktionsmenü angeboten.
+Die Operation *Umbenennen* ist über im *Navigationsbereich* verfügbar und wird für Objekte und Ordner über das zugehörige 3-Punkte Aktionsmenü angeboten.
 
 Wenn Sie einen Benutzerordner umbenennen, haben Sie die Möglichkeit, den Ordnernamen zu ändern und die Namen der enthaltenen Objekte rekursiv zu ändern.
 
@@ -54,13 +54,12 @@ Bei der Umbenennung von Objekten wird die Konsistenz des Inventars berücksichti
 
 ### Kontext-Hilfe
 
-- [Konfiguration - Inventar - Operationen - Objekt umbenennen](/configuration-inventory-operations-rename-object)
-- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
-- [Tagesplan](/daily-plan)
 - [Abhängigkeitsmatrix](/dependencies-matrix)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
+- [Konfiguration - Inventar - Operationen - Objekt umbenennen](/configuration-inventory-operations-rename-object)
+- [Tagesplan](/daily-plan)
 - [Regeln zur Benennung von Objekten](/object-naming-rules)
 
 ### Product Knowledge Base
 
 - [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies)
-

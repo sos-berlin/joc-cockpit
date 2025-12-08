@@ -25,7 +25,7 @@ Die Anzeige ist auf maximal 5000 Einträge beschränkt, wenn nicht anders auf [P
 - **Arbeitsablauf** gibt den Arbeitsablauf an, den der Auftrag durchlaufen hat.
   - Wenn Sie auf den Namen des Arbeitsablaufs klicken, gelangen Sie zur Ansicht [Arbeitsabläufe](/workflows).
   - Wenn Sie auf das Bleistiftsymbol klicken, gelangen Sie zur Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows).
-- **Kennung** zeigt die letzte Position eines Auftrags im Arbeitsablauf an. Benutzer können den Arbeitsablauf-Anweisungen Kennungen zuweisen, die dann angezeigt werden, andernfalls wird die technische Position angezeigt.
+- **Adresse** zeigt die letzte Position eines Auftrags im Arbeitsablauf an. Benutzer können den Arbeitsablauf-Anweisungen Adressen zuweisen, die dann angezeigt werden, andernfalls wird die technische Position angezeigt.
 - **Status** zeigt den *Status der Historie* an, d.h. das letzte Ergebnis im Leben des Auftrags.
   - Wenn Aufträge abgeschlossen werden, lautet der *Status der Historie* *Erfolgreich* oder *Fehlgeschlagen*.
   - Wenn Aufträge nicht abgeschlossen sind, lautet der *Status der Historie* *in Verarbeitung*.

@@ -1,6 +1,6 @@
 # Konfiguration - Inventar - Arbeitsabläufe - Job-Benachrichtigungen
 
-Im Bereich *Arbeitsablauf* können Sie Arbeitsabläufe aus einer Folge von Anweisungen erstellen. Sie können die *Job Anweisung* per Drag&amp;Drop aus der *Symbolleiste* an eine Position im Arbeitsablauf ziehen.
+Im Bereich *Arbeitsablauf* können Sie Arbeitsabläufe aus einer Folge von Anweisungen erstellen. Sie können die *Job Anweisung* per Drag&amp;Drop aus der *Funktionsleiste* an eine Position im Arbeitsablauf ziehen.
 
 Die grafische Benutzeroberfläche bietet eine Reihe von Registerkarten für die Angabe von Details. Die fünfte Registerkarte wird für *Benachrichtigungen* angeboten.
 
@@ -32,14 +32,14 @@ Spezifische Benachrichtigungen pro Job haben Vorrang vor den globalen Benachrich
 
 ### Kontext-Hilfe
 
+- [Benachrichtigungen](/notifications)
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job Optionen](/configuration-inventory-workflows-job-options)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job Eigenschaften](/configuration-inventory-workflows-job-properties)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job Knoteneigenschaften](/configuration-inventory-workflows-job-node-properties)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job Kennzeichnungen](/configuration-inventory-workflows-job-tags)
+  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Optionen](/configuration-inventory-workflows-job-options)
+  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Eigenschaften](/configuration-inventory-workflows-job-properties)
+  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Knoteneigenschaften](/configuration-inventory-workflows-job-node-properties)
+  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Kennzeichnungen](/configuration-inventory-workflows-job-tags)
 - [Überwachung - Auftragsbenachrichtigungen](/monitor-notifications-order)
 - [Überwachung - Systembenachrichtigungen](/monitor-notifications-system)
-- [Benachrichtigungen](/notifications)
 
 ### Product Knowledge Base
 

@@ -65,7 +65,7 @@ Operationen für JOC Cockpit werden für die Instanz angeboten, mit der der Brow
 
 ### Operationen für Controller
 
-Controller Instanzen bieten die folgenden Operationen über das 3-Punkte-Aktionsmenü im Rechteck der jeweiligen Instanz an:
+Controller Instanzen bieten die folgenden Operationen über das 3-Punkte Aktionsmenü im Rechteck der jeweiligen Instanz an:
 
 - **Beenden**, **Beenden und neu starten** fährt die Instanz herunter. Für die aktive Instanz in einem Cluster wird das Menü erweitert:
   - **mit Umschaltung**, um die aktive Rolle an die Standby Instanz zu übergeben.
@@ -74,7 +74,7 @@ Controller Instanzen bieten die folgenden Operationen über das 3-Punkte-Aktions
   - mit **Ausfallsicherung** wird die aktive Rolle an die Standby Instanz übergeben.
 - **Protokoll herunterladen** bietet die Datei *controller.log* des Controller zum Herunterladen aus einer .gz-Datei in komprimiertem Format an.
 
-Das Rechteck *Cluster Status* bietet die folgenden Operationen in seinem 3-Punkte-Aktionsmenü an:
+Das Rechteck *Cluster Status* bietet die folgenden Operationen in seinem 3-Punkte Aktionsmenü an:
 
 - **Umschalten** übergibt die aktive Rolle an die Standby Instanz. Die Operation ist verfügbar, wenn der Cluster gekoppelt ist.
 - **Verlust einer Controller Instanz bestätigen** ist anwendbar, wenn keine JOC Cockpit Instanz verfügbar war als eine Controller Instanz in einem Cluster abgebrochen wurde. JOC Cockpit wird als Zeuge im Cluster benötigt. In dieser Situation müssen die Benutzer prüfen, welche Controller Instanz zum Zeitpunkt des Abbrechens im Standby Modus war und bestätigen, dass die Standby Instanz heruntergefahren wurde, damit die aktive Instanz wieder aufgenommen werden kann.

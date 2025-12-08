@@ -11,26 +11,26 @@ Einzelheiten finden Sie unter [JS7 - Inventory Object Dependencies](https://kb.s
 
 Die Abhängigkeitsmatrix der Inventarobjekte sieht wie folgt aus:
 
-| Bereich |Objekttyp | Eingehende Referenzen | | Ausgehende Referenzen | | | | |
+| Bereich |Objekttyp | Eingehende Referenzen | | Ausgehende Referenzen |      |      |      |      |
 | ----- | ----- | ----- | ----- |
 | Controller | Arbeitsablauf | Arbeitsablauf
-| | Arbeitsablauf | Arbeitsablauf | Zeitplan | Arbeitsablauf | Job-Ressource | Notizbrett | Ressourcen-Sperre | Job-Vorlage | Skript-Baustein |
-| | Dateiauftragsquelle | | | Arbeitsablauf |
-| | Job-Ressource | Arbeitsablauf |
-| | Notizbrett | Arbeitsablauf |
-| Ressourcen-Sperre | Arbeitsablauf |
+|      | Arbeitsablauf | Arbeitsablauf | Zeitplan | Arbeitsablauf | Job-Ressource | Notizbrett | Ressourcen-Sperre | Job-Vorlage | Skript-Baustein |
+|      | Dateiauftragsquelle |      |      | Arbeitsablauf |
+|      | Job-Ressource | Arbeitsablauf |
+|      | Notizbrett | Arbeitsablauf |
+|      | Ressourcen-Sperre | Arbeitsablauf |
 | Automatisierung |
-| | Zeitplan | | | Arbeitsablauf | Kalender |
-| | Kalender | Zeitplan |
-| | Job-Vorlage | Arbeitsablauf |
-| | Skript-Baustein | Arbeitsablauf |
+|      | Zeitplan |      |      | Arbeitsablauf | Kalender |
+|      | Kalender | Zeitplan |
+|      | Job-Vorlage | Arbeitsablauf |
+|      | Skript-Baustein | Arbeitsablauf |
 
 ## Referenzen
 
 ### Kontext-Hilfe
 
-- [Configuration - Inventory - Operations - Deploy Folder](/configuration-inventory-operations-deploy-folder)
-- [Configuration - Inventory - Operations - Deploy Object](/configuration-inventory-operations-deploy-object)
+- [Konfiguration - Inventar - Operationen - Ordner ausrollen](/configuration-inventory-operations-deploy-folder)
+- [Konfiguration - Inventar - Operationen - Objekt ausrollen](/configuration-inventory-operations-deploy-object)
 
 ### Product Knowledge Base
 

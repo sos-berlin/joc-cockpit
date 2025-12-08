@@ -54,8 +54,8 @@ Operationen für Berichte sind in den folgenden Ansichten verfügbar:
 ### Kontext-Hilfe
 
 - [Berichte](/reports)
-- [Berichtsgenerierung](/report-creation)
 - [Berichte - Historie Berichtsläufe](/report-run-history)
+- [Berichtsgenerierung](/report-creation)
 - [Berichtsmuster](/report-templates)
 - [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
 - [Regeln zur Benennung von Objekten](/object-naming-rules)

@@ -63,13 +63,13 @@ Kennzeichnungen sind eine alternative Möglichkeit, um zwischen Inventarobjekten
 Kennzeichnungen können über das Symbol + hinzugefügt werden. Es stehen Optionen für aufsteigende und absteigende Sortierung zur Verfügung. Die Anzeige von Kennzeichnungen in anderen Ansichten muss auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) aktiviert werden.
 
 - Wenn Sie auf die entsprechende Kennzeichnung klicken, werden die Arbeitsabläufe angezeigt, denen die Kennzeichnung zugewiesen ist.
-- Kennzeichnungen bieten die folgenden Operationen in ihrem 3-Punkte-Aktionsmenü:
+- Kennzeichnungen bieten die folgenden Operationen in ihrem 3-Punkte Aktionsmenü:
   - **Umbenennen** bietet die Möglichkeit, den Namen der Kennzeichnung zu ändern.
   - mit **Löschen** können Sie die Kennzeichnung und ihre Zuweisung zu Arbeitsabläufen und Jobs löschen.
 
 ## Operationen
 
-Operationen sind auf Ordner- und Objektebene über das 3-Punkte-Aktionsmenü verfügbar, das im *Navigationsbereich* angezeigt wird.
+Operationen sind auf Ordner- und Objektebene über das 3-Punkte Aktionsmenü verfügbar, das im *Navigationsbereich* angezeigt wird.
 
 ### Operationen auf Ordner
 

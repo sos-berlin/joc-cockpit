@@ -47,7 +47,7 @@ Benutzer können auf einen der Identitätsdienste klicken, um zur Ansicht [Ident
 
 Benutzer können einen Identitätsdienst über die entsprechende Schaltfläche in der oberen rechten Ecke des Bildschirms hinzufügen.
 
-Für bestehende Identitätsdienste werden die folgenden Operationen über das 3-Punkte-Aktionsmenü angeboten:
+Für bestehende Identitätsdienste werden die folgenden Operationen über das 3-Punkte Aktionsmenü angeboten:
 
 - **Bearbeiten** bietet die Möglichkeit, die allgemeine Konfiguration des Identitätsdienstes festzulegen.
 - **Einstellungen verwalten** bietet die Möglichkeit, spezifische Einstellungen für einen Diensttyp festzulegen.

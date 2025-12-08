@@ -1,10 +1,10 @@
-# Konfiguration - Inventar - Vorgänge - Objekt zurücknehmen
+# Konfiguration - Inventar - Operationen - Objekt zurücknehmen
 
 Durch das *Zurücknehmen* von Objekten werden diese deaktiviert, z.B. für die Verwendung mit dem [Tagesplan](/daily-plan). Dies gilt für Objekte wie Zeitpläne und Kalender, die im Systemordner *Automation* verfügbar sind.
 
 Die Ansicht *Konfiguration-&gt;Inventar* bietet die Möglichkeit, ein einzelnes Objekt zurückzunehmen und Objekte aus Ordnern zurückzunehmen, siehe [Konfiguration - Inventar - Operationen - Ordner zurücknehmen](/configuration-inventory-operations-recall-folder).
 
-Wenn Sie für ein einzelnes Objekt die Operation *Zurücknehmen* ausführen, die Sie über das 3-Punkte-Aktionsmenü des Objekts im Navigationsbereich erreichen, wird ein Popup-Fenster wie das folgende angezeigt:
+Wenn Sie für ein einzelnes Objekt die Operation *Zurücknehmen* ausführen, die Sie über das 3-Punkte Aktionsmenü des Objekts im Navigationsbereich erreichen, wird ein Popup-Fenster wie das folgende angezeigt:
 
 <img src="recall-schedule.png" alt="Recall Schedule" width="600" height="300" />
 
@@ -35,12 +35,11 @@ Die Benutzer steuern das konsistente *Zurücknehmen* über die folgenden Optione
 
 ### Kontext-Hilfe
 
-- [Konfiguration - Inventar - Operationen - Ordner zurücknehmen](/configuration-inventory-operations-recall-folder)
-- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
-- [Tagesplan](/daily-plan)
 - [Abhängigkeitsmatrix](/dependencies-matrix)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
+- [Konfiguration - Inventar - Operationen - Ordner zurücknehmen](/configuration-inventory-operations-recall-folder)
+- [Tagesplan](/daily-plan)
 
 ### Product Knowledge Base
 
 - [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies)
-

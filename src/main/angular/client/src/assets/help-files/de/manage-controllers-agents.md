@@ -19,7 +19,7 @@ Erläuterungen finden Sie unter [Erste Inbetriebnahme - Registrierung Controller
 
 ## Operationen für Controller
 
-Für einen vorhandenen Controller werden die folgenden Operationen in seinem 3-Punkte-Aktionsmenü angeboten:
+Für einen vorhandenen Controller werden die folgenden Operationen in seinem 3-Punkte Aktionsmenü angeboten:
 
 - **Bearbeiten** ermöglicht das Ändern der Eigenschaften eines Controller, einschließlich der URLs von Controller Instanzen.
 - **Autonomen Agenten hinzufügen** ermöglicht die Registrierung eines Standalone Agent.

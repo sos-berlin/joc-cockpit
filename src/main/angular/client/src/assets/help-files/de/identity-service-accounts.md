@@ -37,7 +37,7 @@ Benutzer können ein Konto hinzufügen, indem sie die entsprechende Schaltfläch
 
 ### Operationen für einzelne Konten
 
-Die folgenden Operationen sind über das 3-Punkte-Aktionsmenü eines jeden Kontos verfügbar:
+Die folgenden Operationen sind über das 3-Punkte Aktionsmenü eines jeden Kontos verfügbar:
 
 - **Editireren** erlaubt [Identitätsdienste - Konfiguration Benutzerkonten](/identity-service-account-configuration).
 - **Duplizieren** kopiert das ausgewählte Konto in ein neues Konto. Der Benutzer muss den Namen des neuen Kontos angeben.

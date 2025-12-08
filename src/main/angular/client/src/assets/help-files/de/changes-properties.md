@@ -19,7 +19,7 @@ Das Popup-Fenster *Änderung - Eigenschaften* dient zum Festlegen der Eigenschaf
 
 - **Name** ist der eindeutige Name, den die Benutzer einer Änderung zuweisen.
 - **Titel** erklärt den Zweck der Änderung.
-- **Status** ist einer der Werte *Offen* oder *Geschlossen*. Geschlossene Änderungen werden nicht für Ausroll- oder Exportvorgänge angeboten.
+- **Status** ist einer der Werte *Offen* oder *Geschlossen*. Geschlossene Änderungen werden nicht für Ausroll- oder Exportoperationen angeboten.
 
 ## Referenzen
 

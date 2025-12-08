@@ -25,7 +25,7 @@ Die Liste der Autorisiererprofile wird mit den folgenden Eigenschaften angeboten
 
 ## Operationen für Autorisiererprofile
 
-Das 3-Punkte-Aktionsmenü eines Autorisiererprofils bietet die folgenden Operationen:
+Das 3-Punkte Aktionsmenü eines Autorisiererprofils bietet die folgenden Operationen:
 
 - **Bearbeiten** aktualisiert die Eigenschaften des Autorisiererprofils.
 - **Löschen** entfernt das Autorisiererprofil.

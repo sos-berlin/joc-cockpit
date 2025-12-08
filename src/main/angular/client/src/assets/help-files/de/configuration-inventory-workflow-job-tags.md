@@ -1,10 +1,10 @@
-# Konfiguration - Inventarisierung - Arbeitsabläufe - Job Kennzeichnungen
+# Konfiguration - Inventarisierung - Arbeitsabläufe - Job-Kennzeichnungen
 
-Im Bereich *Arbeitsablauf* können Sie Arbeitsabläufe aus einer Folge von Anweisungen erstellen. Sie können die *Job Anweisung* per Drag&amp;Drop aus der *Symbolleiste* an eine Position im Arbeitsablauf ziehen.
+Im Bereich *Arbeitsablauf* können Sie Arbeitsabläufe aus einer Folge von Anweisungen erstellen. Sie können die *Job Anweisung* per Drag&amp;Drop aus der *Funktionsleiste* an eine Position im Arbeitsablauf ziehen.
 
-Die grafische Benutzeroberfläche bietet eine Reihe von Registerkarten für die Angabe von Details. Die dritte Registerkarte wird für *Job Kennzeichnungen* angeboten.
+Die grafische Benutzeroberfläche bietet eine Reihe von Registerkarten für die Angabe von Details. Die dritte Registerkarte wird für *Job-Kennzeichnungen* angeboten.
 
-## Kennzeichnungen
+## Job-Kennzeichnungen
 
 Einem Job kann eine beliebige Anzahl von Kennzeichnungen hinzugefügt werden. Sie werden in der Ansicht [Arbeitsabläufe](/workflows) angezeigt und sind optional in den Benachrichtigungen enthalten. Einzelheiten finden Sie unter [JS7 - Tagging Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging+-+Jobs).
 
@@ -21,11 +21,11 @@ Kennzeichnungsgruppen können verwendet werden, um Kennzeichnungen zu organisier
 ### Kontext-Hilfe
 
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job Optionen](/configuration-inventory-workflows-job-options)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job Eigenschaften](/configuration-inventory-workflows-job-properties)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job Knoteneigenschaften](/configuration-inventory-workflows-job-node-properties)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job Benachrichtigungen](/configuration-inventory-workflows-job-notifications)
-- [Tags](/tags)
+  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Optionen](/configuration-inventory-workflows-job-options)
+  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Eigenschaften](/configuration-inventory-workflows-job-properties)
+  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Knoteneigenschaften](/configuration-inventory-workflows-job-node-properties)
+  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Benachrichtigungen](/configuration-inventory-workflows-job-notifications)
+- [Kennzeichnungen](/tags)
 
 ### Product Knowledge Base
 

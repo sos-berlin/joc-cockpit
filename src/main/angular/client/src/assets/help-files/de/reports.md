@@ -21,7 +21,7 @@ Die angezeigten Berichte sind gruppiert nach [Berichtsmuster](/report-templates)
 
 Berichte können angezeigt werden, indem Sie auf den entsprechenden Bericht klicken.
 
-Das 3-Punkte-Aktionsmenü eines Berichts bietet die folgenden Operationen:
+Das 3-Punkte Aktionsmenü eines Berichts bietet die folgenden Operationen:
 
 - **Bericht anzeigen** zeigt den entsprechenden Bericht an.
 - **Löschen** entfernt den zugehörigen Bericht.

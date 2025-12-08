@@ -1,4 +1,4 @@
-# Konfiguration - Inventar - Vorgänge - Objekt entfernen
+# Konfiguration - Inventar - Operationen - Objekt entfernen
 
 Das Entfernen von Objekten bedeutet, dass sie aus Controllern und aus dem Inventar gelöscht werden. Dies gilt für Objekte wie Arbeitsabläufe und Zeitpläne, die in den Systemordnern *Controller* und *Automation* verfügbar sind.
 
@@ -6,7 +6,7 @@ Entfernte Objekte bleiben im Papierkorb des Inventars verfügbar.
 
 Die Ansicht *Konfiguration-&gt;Inventar* bietet die Möglichkeit, ein einzelnes Objekt zu entfernen und Objekte aus Ordnern zu entfernen, siehe [Konfiguration - Inventar - Operationen - Ordner entfernen](/configuration-inventory-operations-remove-folder).
 
-Wenn Sie ein einzelnes Objekt mit der Operation *Entfernen* aus dem 3-Punkte-Aktionsmenü des Objekts im Navigationsbereich entfernen, wird ein Popup-Fenster wie das folgende angezeigt:
+Wenn Sie ein einzelnes Objekt mit der Operation *Entfernen* aus dem 3-Punkte Aktionsmenü des Objekts im Navigationsbereich entfernen, wird ein Popup-Fenster wie das folgende angezeigt:
 
 <img src="remove-workflow.png" alt="Remove Workflow" width="600" height="140" />
 
@@ -41,12 +41,11 @@ Die Benutzer steuern das konsistente Entfernen von Objekten über die folgenden 
 
 ### Kontext-Hilfe
 
-- [Konfiguration - Inventar - Operationen - Ordner entfernen](/configuration-inventory-operations-remove-folder)
-- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
-- [Tagesplan](/daily-plan)
 - [Abhängigkeitsmatrix](/dependencies-matrix)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
+- [Konfiguration - Inventar - Operationen - Ordner entfernen](/configuration-inventory-operations-remove-folder)
+- [Tagesplan](/daily-plan)
 
 ### Product Knowledge Base
 
 - [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies)
-

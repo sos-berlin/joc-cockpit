@@ -19,7 +19,7 @@ Für eine Job-Vorlage sind die folgenden Eingaben möglich:
 - Andere Eingaben entsprechen den Eingaben eines Jobs:
   - [Job-Eigenschaften](/configuration-inventory-workflow-job-properties)
   - [Job-Optionen](/configuration-inventory-workflow-job-options)
-  - [Job-Knoten-Eigenschaften](/configuration-inventory-workflow-job-node-properties)
+  - [Job Knoten-Eigenschaften](/configuration-inventory-workflow-job-node-properties)
   - [Job-Benachrichtigungen](/configuration-inventory-workflow-job-notifications)
   - [Job-Kennzeichnungen](/configuration-inventory-workflow-job-tags)
 - **Argumente** werden für JVM Jobs verwendet. 
@@ -69,7 +69,7 @@ Um einen Verweis auf eine Job-Vorlage aus einem Job zu entfernen, können Sie au
 Bei Jobs, die auf Job-Vorlagen verweisen, können größere Teile des Jobs nicht geändert werden. Stattdessen müssen die Änderungen auf die Job-Vorlage angewendet werden. Dies gilt nicht für die folgenden Eingaben, die frei gewählt werden können:
 
 - **Job-Name**
-- **Kennung**
+- **Adresse**
 - **Agent**
 - **Job-Zutrittszeiten**
 - **Job-Benachrichtigungen**
@@ -86,7 +86,7 @@ Um **Argumenten für JVM Jobs** oder **Umgebungsvariablen für Shell Jobs** dyna
 - [Job-Benachrichtigungen](/configuration-inventory-workflow-job-notifications)
 - [Job-Eigenschaften](/configuration-inventory-workflow-job-properties)
 - [Job-Kennzeichnungen](/configuration-inventory-workflow-job-tags)
-- [Job-Knoten-Eigenschaften](/configuration-inventory-workflow-job-node-properties)
+- [Job Knoten-Eigenschaften](/configuration-inventory-workflow-job-node-properties)
 - [Job-Optionen](/configuration-inventory-workflow-job-options)
 - [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
 - [Regeln zur Benennung von Objekten](/object-naming-rules)

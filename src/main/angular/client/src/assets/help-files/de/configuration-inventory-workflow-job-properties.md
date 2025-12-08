@@ -1,21 +1,21 @@
-# Konfiguration - Inventar - Arbeitsablauf - Job Eigenschaften
+# Konfiguration - Inventar - Arbeitsablauf - Job-Eigenschaften
 
-Im Bereich *Arbeitsablauf* können Sie Arbeitsabläufe aus einer Folge von Anweisungen erstellen. Sie können die *Job Anweisung* per Drag&amp;Drop aus der *Symbolleiste* an eine Position im Arbeitsablauf ziehen.
+Im Bereich *Arbeitsablauf* können Sie Arbeitsabläufe aus einer Folge von Anweisungen erstellen. Sie können die *Job Anweisung* per Drag&amp;Drop aus der *Funktionsleiste* an eine Position im Arbeitsablauf ziehen.
 
-Die grafische Benutzeroberfläche bietet eine Reihe von Registerkarten zur Angabe von Details. Die erste Registerkarte wird für *Job Eigenschaften* angeboten.
+Die grafische Benutzeroberfläche bietet eine Reihe von Registerkarten zur Angabe von Details. Die erste Registerkarte wird für *Job-Eigenschaften* angeboten.
 
-## Erforderliche Job Eigenschaften
+## Erforderliche Job-Eigenschaften
 
 Die Mindesteigenschaften für einen Job sind wie folgt:
 
-- **Name** identifiziert den Job anhand eines eindeutigen Namens. Wenn mehrere Jobs im Arbeitsablauf denselben Namen verwenden, wird nur eine Kopie des Jobs gespeichert und die anderen Vorkommen referenzieren den Job mit unterschiedlichen *Kennungen*.
-- **Kennung** ist ein eindeutiger Bezeichner für Anweisungen in einem Arbeitsablauf. Die Eindeutigkeit wird über Jobs und andere Anweisungen hinweg erzwungen. Wenn derselbe *Job Name* mehrmals in einem Arbeitsablauf verwendet wird, müssen unterschiedliche *Kennungen* verwendet werden.
+- **Name** identifiziert den Job anhand eines eindeutigen Namens. Wenn mehrere Jobs im Arbeitsablauf denselben Namen verwenden, wird nur eine Kopie des Jobs gespeichert und die anderen Vorkommen referenzieren den Job mit unterschiedlichen *Adressen*.
+- **Adresse** ist ein eindeutiger Bezeichner für Anweisungen in einem Arbeitsablauf. Die Eindeutigkeit wird über Jobs und andere Anweisungen hinweg erzwungen. Wenn derselbe *Job Name* mehrmals in einem Arbeitsablauf verwendet wird, müssen unterschiedliche *Adressen* verwendet werden.
 - **Agent** weist einen Agenten für die Ausführung des Jobs zu.
   - *Standalone Agents* werden über ihren *Agentennamen* ausgewählt.
   - *Cluster Agents* werden durch Auswahl des *Agent Cluster* und des gewünschten *Subagent Cluster* festgelegt.
 - **Skript** enthält die Shell Kommandos, Aufrufe von Skripten und ausführbaren Dateien, die vom Job für die entsprechende Unix- oder Windows-Plattform ausgeführt werden.
 
-## Optionale Job Eigenschaften
+## Optionale Job-Eigenschaften
 
 - **Titel** beschreibt den Zweck des Jobs. Benutzer können Links mit Hilfe der Markdown-Syntax hinzufügen, z.B. \[Example\]\(https://example.com\). Der *Titel* wird beim Filtern der Ergebnisse berücksichtigt, zum Beispiel in der Ansicht [Arbeitsabläufe](/workflows).
 - **Job-Ressourcen** sind Inventarobjekte, die Variablen aus Schlüssel/Wert-Paaren enthalten, die von Arbeitsablauf-Variablen und von Umgebungsvariablen verfügbar gemacht werden können. *Job-Ressourcen* können einem Job zugewiesen werden und sie können einem Arbeitsablauf zugewiesen werden, wodurch sie für alle Jobs im Arbeitsablauf verfügbar sind. Einzelheiten finden Sie unter [Konfiguration - Inventar - Job-Ressourcen](/configuration-inventory-job-resources).
@@ -43,7 +43,7 @@ Für *Shell Jobs* wird die Parametrierung über Umgebungsvariablen zur Verfügun
 - **Name** kann innerhalb der Grenzen des Betriebssystems frei gewählt werden, zum Beispiel ohne Bindestriche und Leerzeichen. Eine häufige Konvention bei der Namensgebung ist die Großschreibweise. Unter Unix wird bei *Namen* zwischen Groß- und Kleinschreibung unterschieden, unter Windows wird die Groß- und Kleinschreibung nicht berücksichtigt.
 - **Wert** kann eine direkte Eingabe von Zeichenketten und Zahlen sein. Darüber hinaus können Arbeitsablauf-Variablen angegeben werden, die mit dem Arbeitsablauf deklariert werden und denen ein $-Zeichen vorangestellt wird, wie in *$variable*. Bei der Schreibweise von Arbeitsablauf-Variablen wird die Groß- und Kleinschreibung beachtet.
 
-## Job Eigenschaften verfügbar unter *Weitere Optionen*
+## Job-Eigenschaften verfügbar unter *Weitere Optionen*
 
 Die Ansicht *Konfiguration - Inventar* bietet oben im Fenster den Schieberegler *Weitere Optionen*, der standardmäßig inaktiv ist. Wenn Sie den Schieberegler verwenden, werden zusätzliche Optionen verfügbar.
 
@@ -55,10 +55,10 @@ Die Ansicht *Konfiguration - Inventar* bietet oben im Fenster den Schieberegler 
 
 - [Konfiguration - Inventar - Job-Ressourcen](/configuration-inventory-job-resources)
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job Optionen](/configuration-inventory-workflows-job-options)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job Knoteneigenschaften](/configuration-inventory-workflows-job-node-properties)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job Benachrichtigungen](/configuration-inventory-workflows-job-notifications)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job Kennzeichnungen](/configuration-inventory-workflows-job-tags)
+  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Optionen](/configuration-inventory-workflows-job-options)
+  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Knoteneigenschaften](/configuration-inventory-workflows-job-node-properties)
+  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Benachrichtigungen](/configuration-inventory-workflows-job-notifications)
+  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Kennzeichnungen](/configuration-inventory-workflows-job-tags)
 - [Ressourcen - Dokumentationen](/resources-documentations)
 
 ### Product Knowledge Base

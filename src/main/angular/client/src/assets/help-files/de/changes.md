@@ -30,7 +30,7 @@ Im oberen Teil des Bildschirms stehen Ihnen die folgenden Schaltflächen zur Ver
 
 - **Änderung hinzufügen** bietet das Hinzufügen einer Änderung an. Details finden Sie unter [Änderungen - Eigenschaften](/changes-properties).
 
-In der *Liste der Änderungen* werden die folgenden Operationen mit dem entsprechenden 3-Punkte-Aktionsmenü angeboten:
+In der *Liste der Änderungen* werden die folgenden Operationen mit dem entsprechenden 3-Punkte Aktionsmenü angeboten:
 
 - **Bearbeiten** ermöglicht das Aktualisieren der Eigenschaften der Änderung. Details finden Sie unter [Änderungen - Eigenschaften](/changes-properties).
 - **Löschen** entfernt den Eintrag der Änderung.

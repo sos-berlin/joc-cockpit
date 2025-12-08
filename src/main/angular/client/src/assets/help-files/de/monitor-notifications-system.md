@@ -35,7 +35,7 @@ Für jeden für die Benachrichtigung konfigurierten Kanal wird ein separater Ein
 
 ## Operationen für Benachrichtigungen
 
-Für jede Fehlerbenachrichtigung wird das 3-Punkte-Aktionsmenü mit der folgenden Operation angeboten:
+Für jede Fehlerbenachrichtigung wird das 3-Punkte Aktionsmenü mit der folgenden Operation angeboten:
 
 - **Quittieren** gibt an, dass der Benutzer die Benachrichtigung zur Kenntnis genommen hat und Maßnahmen ergreift. Die Aktion öffnet ein Popup-Fenster, in dem Sie einen Kommentar zur Behandlung der Meldung eingeben können. <br/><br/>Quittierte Benachrichtigungen sind standardmäßig von der Anzeige ausgeschlossen. Sie können sichtbar gemacht werden, indem Sie die Filterschaltfläche *Quittiert* auswählen.
 

@@ -28,7 +28,7 @@ Der Bereich zeigt die Liste der Aufträge für den jeweiligen Zustand an:
 - **Arbeitsablauf** ist der eindeutige Name eines Arbeitsablaufs.
   - Wenn Sie auf den *Arbeitsablauf* klicken, gelangen Sie zur Ansicht [Arbeitsabläufe](/workflows).
   - Wenn Sie auf das Bleistiftsymbol klicken, gelangen Sie zur Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows).
-- **Kennung** gibt die Position des Auftrags anhand der *Kennung* des Jobs oder der Arbeitsablauf-Anweisung an. Wenn keine Kennung vorhanden sind, wird die technische Position angegeben.
+- **Adresse** gibt die Position des Auftrags anhand der *Adresse* des Jobs oder der Arbeitsablauf-Anweisung an. Wenn keine Adresse vorhanden sind, wird die technische Position angegeben.
 - **Zustand** zeigt [Aufträge - Zustandstransitionen](/order-states) an.
   - Wenn Sie den Mauszeiger über den Statusindikator bewegen, werden Details angezeigt, sofern verfügbar. Zum Beispiel zeigen *Wartende* Aufträge Gründe an wie *Warten auf Prozess*, *Warten auf Notiz* usw.
 - **Geplant für** zeigt das Startdatum des Auftrags an.
@@ -40,7 +40,7 @@ Der Bereich wird im unteren Teil des Fensters angezeigt, wenn Sie auf die *Auftr
 ### Auftragshistorie
 
 - **Auftragskennung** ist die eindeutige Kennung, die einem Auftrag zugeordnet ist. Wenn Sie auf das Pfeil-nach-unten-Symbol klicken, werden die Auftragsvariablen angezeigt.
-- **Kennung** zeigt die letzte Position eines Auftrags im Arbeitsablauf an. Benutzer können den Arbeitsablauf-Anweisungen *Kennungen* zuweisen, die dann angezeigt werden, andernfalls wird die technische Position angezeigt.
+- **Adresse** zeigt die letzte Position eines Auftrags im Arbeitsablauf an. Benutzer können den Arbeitsablauf-Anweisungen *Adressen* zuweisen, die dann angezeigt werden, andernfalls wird die technische Position angezeigt.
 - **Status** zeigt das letzte Ergebnis im Leben des Auftrags an.
   - Wenn Aufträge abgeschlossen sind, lautet der *Status der Historie* entweder *Erfolgreich* oder *Fehlgeschlagen*.
   - Wenn Aufträge noch nicht abgeschlossen sind, lautet der *Status der Historie* *in Verarbeitung*.

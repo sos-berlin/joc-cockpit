@@ -29,7 +29,7 @@ Die *Liste der Kennzeichnungen* zeigt den Namen und die Arbeitsabläufe an, dene
 ### Kontext-Hilfe
 
 - [Konfiguration - Inventar - Navigation](/configuration-inventory-navigation)
-- [Konfiguration - Inventar - Arbeitsablauf - Job Kennzeichnungen](/configuration-inventory-workflow-job-tags)
+- [Konfiguration - Inventar - Arbeitsablauf - Job-Kennzeichnungen](/configuration-inventory-workflow-job-tags)
 - [Tagesplan](/daily-plan)
 
 ### Product Knowledge Base

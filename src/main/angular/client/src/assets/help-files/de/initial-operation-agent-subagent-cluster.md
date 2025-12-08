@@ -41,7 +41,7 @@ Subagenten werden per Drag&amp;Drop in die *gleiche Zeile* gezogen:
 Subagenten werden per Drag&amp;Drop in die *gleiche Zeile* gezogen und erhalten eine *Metrikbasierte Priorität*:
 
 - Subagenten in derselben Reihe legen eine metrikbasierte Priorität fest:
-    - Wenn Sie mit der Maus über das Rechteck des Subagenten fahren, wird dessen 3-Punkte-Aktionsmenü angezeigt: Mit der Aktion *Metrikbasierte Priorität* können Sie die Priorität anhand eines Ausdrucks festlegen.
+    - Wenn Sie mit der Maus über das Rechteck des Subagenten fahren, wird dessen 3-Punkte Aktionsmenü angezeigt: Mit der Aktion *Metrikbasierte Priorität* können Sie die Priorität anhand eines Ausdrucks festlegen.
 - Einzelheiten finden Sie unter [JS7 - Agent Cluster - Metrics-based Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Metrics-based+Subagent+Cluster).
 
 Ausdrücke für metrikbasierte Prioritäten:

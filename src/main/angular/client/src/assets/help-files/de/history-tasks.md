@@ -25,7 +25,7 @@ Die Anzeige ist auf maximal 5000 Einträge beschränkt, wenn nicht anders in [Pr
 - **Arbeitsablauf** zeigt den Arbeitsablauf an, für den der Auftrag ausgeführt wurde.
   - Klicken Sie auf den Namen des Arbeitsablaufs, um zur Ansicht [Arbeitsabläufe](/workflows) zu gelangen.
   - Wenn Sie auf das Bleistiftsymbol klicken, gelangen Sie zur Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows).
-- **Kennung** zeigt die Position des Jobs im Arbeitsablauf an. Benutzer weisen den Jobs, die angezeigt werden sollen, *Kennzeichen* zu. Wenn derselbe Job mehr als einmal in einem Arbeitsablauf vorkommt, wird er unter verschiedenen *Kennzeichen* angezeigt.
+- **Adresse** zeigt die Position des Jobs im Arbeitsablauf an. Benutzer weisen den Jobs, die angezeigt werden sollen, *Adressen* zu. Wenn derselbe Job mehr als einmal in einem Arbeitsablauf vorkommt, wird er unter verschiedenen *Adressen* angezeigt.
 - **Status** zeigt das historische Ergebnis des Jobs an.
   - Wenn Jobs abgeschlossen werden, lautet der *Status* entweder *Erfolgreich* oder *Fehlgeschlagen*.
   - Wenn Jobs nicht abgeschlossen sind, lautet der *Status* *in Verarbeitung*.

@@ -32,7 +32,7 @@ Der Bereich zeigt die Berichtsvorlagen an, die für den aktuell ausgewählten Or
 
 ## Berichtslauf starten
 
-Berichte können über das 3-Punkte-Aktionsmenü einer Berichtsvorlage mit der Operation *Berichtslauf starten* erstellt werden.
+Berichte können über das 3-Punkte Aktionsmenü einer Berichtsvorlage mit der Operation *Berichtslauf starten* erstellt werden.
 
 Sie können eine Reihe von Berichtsvorlagen auswählen und die Massenoperation *Berichtslauf starten* anwenden, die über eine Schaltfläche in der oberen rechten Ecke des Bildschirms verfügbar ist.
 

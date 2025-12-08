@@ -61,7 +61,7 @@ Die folgenden Operationen sind über die entsprechenden Schaltflächen in der ob
 
 Aus der Liste der Rollen können Benutzer eine Rolle per Drag&amp;Drop an eine andere Position ziehen. Die Operation hat keinen Einfluss auf die Bearbeitung der Rollen.
 
-Im 3-Punkte-Aktionsmenü jeder Rolle werden die folgenden Operationen angeboten:
+Im 3-Punkte Aktionsmenü jeder Rolle werden die folgenden Operationen angeboten:
 
 - **Bearbeiten** bietet die Möglichkeit, den Namen der Rolle zu ändern. Änderungen werden für bestehende Rollen berücksichtigt, denen beliebige Benutzerkonten zugewiesen sind.
 - **Duplizieren** kopiert die Rolle in eine neue Rolle. Der Benutzer gibt den Namen der neuen Rolle an.

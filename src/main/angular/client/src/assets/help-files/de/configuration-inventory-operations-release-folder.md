@@ -1,10 +1,10 @@
-# Konfiguration - Inventar - Vorgänge - Ordner freigeben
+# Konfiguration - Inventar - Operationen - Ordner freigeben
 
 Durch die Freigabe von Objekten werden diese aktiviert, z.B. für die Verwendung mit dem [Tagesplan](/daily-plan). Dies gilt für Objekte wie Zeitpläne und Kalender, die im Systemordner *Automation* verfügbar sind.
 
-Die Ansicht *Konfiguration-&gt;Inventar* bietet die Möglichkeit, ein einzelnes Objekt freizugeben, siehe [Konfiguration - Inventar - Operationen - Objekt freigeben]](/configuration-inventory-operations-release-object) und Freigabe von Objekten aus Ordnern.
+Die Ansicht *Konfiguration-&gt;Inventar* bietet die Möglichkeit, ein einzelnes Objekt freizugeben, siehe [Konfiguration - Inventar - Operationen - Objekt freigeben](/configuration-inventory-operations-release-object) und Freigabe von Objekten aus Ordnern.
 
-Wenn Sie Objekte aus Ordnern freigeben, indem Sie die entsprechende *Freigeben* Operation aus dem 3-Punkte-Aktionsmenü des Ordners verwenden, wird ein Popup-Fenster wie dieses angezeigt:
+Wenn Sie Objekte aus Ordnern freigeben, indem Sie die entsprechende *Freigeben* Operation aus dem 3-Punkte Aktionsmenü des Ordners verwenden, wird ein Popup-Fenster wie dieses angezeigt:
 
 <img src="release-folder.png" alt="Release Folder" width="592" height="560" />
 
@@ -14,7 +14,7 @@ Das Freigeben von Objekten wie Zeitplänen und Kalendern wirkt sich auf den [Tag
 
 - **Tagesplan aktualisieren**
   - **Jetzt** legt die Aktualisierung des Tagesplans für Aufträge fest, die für einen Zeitpunkt ab jetzt geplant sind.
-  - wenn Sie **Startdatum** auswählen, wird ein Eingabefeld für das Zieldatum hinzugefügt, ab dem der Tagesplan aktualisiert werden soll.
+  - **Startdatum** öffnet ein Eingabefeld für das Zieldatum, ab dem der Tagesplan aktualisiert werden soll.
   - **Nein** legt fest, dass der Tagesplan nicht aktualisiert werden soll. Bestehende Aufträge bleiben bei der Verwendung der zuvor eingesetzten Versionen von Objekten.
 - **Heute verspätete Aufträge einbeziehen** Wenn diese Option aktiviert ist, werden auch Aufträge berücksichtigt, die für einen vergangenen Zeitpunkt des aktuellen Tages geplant wurden, aber verspätet sind und nicht gestartet wurden.
 
@@ -43,12 +43,11 @@ Die Benutzer steuern die konsistente Freigabe über die folgenden Optionen:
 
 ### Kontext-Hilfe
 
-- [Konfiguration - Inventar - Operationen - Objekt freigeben]](/configuration-inventory-operations-release-object)
-- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
-- [Tagesplan](/daily-plan)
 - [Abhängigkeitsmatrix](/dependencies-matrix)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
+- [Konfiguration - Inventar - Operationen - Objekt freigeben](/configuration-inventory-operations-release-object)
+- [Tagesplan](/daily-plan)
 
 ### Product Knowledge Base
 
 - [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies)
-

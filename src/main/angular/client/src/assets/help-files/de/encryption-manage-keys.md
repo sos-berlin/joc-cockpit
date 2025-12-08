@@ -37,7 +37,7 @@ Im oberen Teil des Bildschirms stehen Ihnen die folgenden Schaltflächen zur Ver
 - **Zertifikat hinzufügen** bietet das Hinzufügen eines Zertifikats durch Kopieren/Einfügen an. Details finden Sie unter [Verschlüsselungszertifikat verwalten](/encryption-manage-certificate).
 - **Zertifikat importieren** ermöglicht das Hochladen einer Zertifikatsdatei.
 
-In der *Liste der Zertifikate* werden die folgenden Operationen mit dem entsprechenden 3-Punkte-Aktionsmenü angeboten:
+In der *Liste der Zertifikate* werden die folgenden Operationen mit dem entsprechenden 3-Punkte Aktionsmenü angeboten:
 
 - **Zertifikat aktualisieren** ermöglicht das Ändern des Zertifikatseintrags. Details finden Sie unter [Verschlüsselungszertifikat verwalten](/encryption-manage-certificate).
 - **Zertifikat löschen** entfernt den Zertifikatseintrag.

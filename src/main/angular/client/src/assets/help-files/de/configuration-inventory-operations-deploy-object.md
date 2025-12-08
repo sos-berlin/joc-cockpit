@@ -20,7 +20,7 @@ Das Ausrollen von Objekten wie Arbeitsabläufen, Zeitplänen und Kalendern wirkt
 
 - **Tagesplan aktualisieren**
   - **Jetzt** legt die Aktualisierung des Tagesplans für Aufträge fest, die für einen Zeitpunkt ab jetzt geplant sind.
-  - wenn Sie **Startdatum** auswählen, wird ein Eingabefeld für das Zieldatum hinzugefügt, ab dem der Tagesplan aktualisiert werden soll.
+  - **Startdatum** öffnet ein Eingabefeld für das Zieldatum, ab dem der Tagesplan aktualisiert werden soll.
   - **Nein** legt fest, dass der Tagesplan nicht aktualisiert werden soll. Bestehende Aufträge bleiben bei der Verwendung der zuvor eingesetzten Versionen von Objekten.
 - **Heutige verspätete Aufträge einbeziehen** Wenn diese Option aktiviert ist, werden auch Aufträge berücksichtigt, die für einen vergangenen Zeitpunkt des aktuellen Tages geplant wurden, aber verspätet sind und nicht gestartet wurden.
 
@@ -31,15 +31,15 @@ Inventarobjekte sind durch Abhängigkeiten miteinander verbunden, siehe [Abhäng
 Beim Ausrollen von Objekten wird die Konsistenz berücksichtigt:
 
 - Wenn eine Job-Ressource erstellt wird und von einem neu erstellten Arbeitsablauf referenziert wird, dann schließt das Ausrollen des Arbeitsablauf das Ausrollen der Job-Ressource ein.
-- Wenn eine Job-Ressource von einem ausgerollten Arbeitsablauf referenziert wird und zurückgezogen oder entfernt werden soll, muss auch der Arbeitsablauf zurückgezoen oder entfernt werden.
+- Wenn eine Job-Ressource von einem ausgerollten Arbeitsablauf referenziert wird und zurückgezogen oder entfernt werden soll, muss auch der Arbeitsablauf zurückgezogen oder entfernt werden.
 
 Die Benutzer steuern das konsistente Ausrollen über die folgenden Optionen:
 
 - **Abhängigkeiten einbeziehen**
   - wenn diese Option aktiviert ist, werden sowohl referenzierende als auch referenzierte Objekte einbezogen.
     - Wenn sich verwandte Objekte im Entwurfsstatus befinden, wird ein gemeinsames Ausrollen angeboten. Es wird erzwungen, wenn dies aufgrund von Änderungen an den Objektbeziehungen erforderlich ist.
-    - Wenn sich verwandte Objekte im Status Ausgerollt/Freigegeben befinden, ist das gemeinsame Ausrollen optional. Benutzer können verwandte Objekte für das gemeinsame Ausrollen auswählen.
-  - wenn diese Option nicht markiert ist, werden Abhängigkeiten nicht berücksichtigt. Die Benutzer müssen überprüfen, ob verwandte Objekte gültig und ausgerollt/freigegeben sind. Der Controller gibt Fehlermeldungen aus, wenn Objekte aufgrund eines inkonsistenten Ausrollens fehlen.
+    - Wenn sich verwandte Objekte im Status *ausgerollt*/*freigegeben* befinden, ist das gemeinsame Ausrollen optional. Benutzer können verwandte Objekte für das gemeinsame Ausrollen auswählen.
+  - wenn diese Option nicht markiert ist, werden Abhängigkeiten nicht berücksichtigt. Die Benutzer müssen überprüfen, ob verwandte Objekte gültig und *ausgerollt*/*freigegeben* sind. Der Controller gibt Fehlermeldungen aus, wenn Objekte aufgrund eines inkonsistenten Ausrollens fehlen.
 
 ## Referenzen
 

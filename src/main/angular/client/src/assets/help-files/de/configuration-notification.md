@@ -26,7 +26,7 @@ Der typische Lebenszyklus beim Ändern von Benachrichtigungen umfasst
 
 Die Konfiguration wird über die Navigation nach Elementen angeboten. Wenn Sie auf einen Elementnamen klicken, wird das Element geöffnet und die verfügbaren Unterelemente werden angezeigt. Die Pfeilanzeige links neben dem Elementnamen zeigt an, ob Unterelemente verfügbar sind.
 
-Das 3-Punkte-Aktionsmenü eines Elements bietet die folgenden Operationen:
+Das 3-Punkte Aktionsmenü eines Elements bietet die folgenden Operationen:
 
 - **Kindknoten hinzufügen** ermöglicht das Hinzufügen von Knoten zum aktuellen Element. Die verfügbaren Knotentypen werden angezeigt.
 - **Alle Kindknoten des ausgewählten Knotens anzeigen** öffnet ein Popup-Fenster, in dem mögliche untergeordnete Knoten angezeigt werden. Dazu gehört das Durchlaufen von Kindknoten und die Suche von Kindknoten nach Namen.

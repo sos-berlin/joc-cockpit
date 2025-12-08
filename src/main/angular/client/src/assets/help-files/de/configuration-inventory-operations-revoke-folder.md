@@ -1,10 +1,10 @@
-# Konfiguration - Inventar - Vorgänge - Ordner Zurückziehen
+# Konfiguration - Inventar - Operationen - Ordner zurückziehen
 
 Das Zurückziehen von Objekten bedeutet, dass sie aus dem Controller gelöscht werden und dass Objekte im Inventar im Entwurfsstatus verbleiben. Dies gilt für Objekte wie Arbeitsabläufe und Job-Ressourcen, die über den Systemordner *Controller* verfügbar sind.
 
 Die Ansicht *Konfiguration-&gt;Inventar* bietet die Möglichkeit, ein einzelnes Objekt zurückzuziehen, siehe [Konfiguration - Inventar - Operationen - Objekt zurückziehen](/configuration-inventory-operations-revoke-object), und Objekte aus Ordnern zurückzuziehen. 
 
-Wenn Sie Objekte aus einem Ordner zurückziehen, indem Sie die Operation *Zurückziehen* verwenden, die über das 3-Punkte-Aktionsmenü des Ordners im Navigationsbereich verfügbar ist, wird ein Popup-Fenster wie das folgende angezeigt:
+Wenn Sie Objekte aus einem Ordner zurückziehen, indem Sie die Operation *Zurückziehen* verwenden, die über das 3-Punkte Aktionsmenü des Ordners im Navigationsbereich verfügbar ist, wird ein Popup-Fenster wie das folgende angezeigt:
 
 <img src="revoke-folder.png" alt="Revoke Folder" width="600" height="580" />
 
@@ -45,12 +45,11 @@ Benutzer steuern das konsistente Zurückziehen von Objekten über die folgenden 
 
 ### Kontext-Hilfe
 
-- [Konfiguration - Inventar - Operationen - Objekt zurückziehen](/configuration-inventory-operations-revoke-object)
-- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
-- [Tagesplan](/daily-plan)
 - [Abhängigkeitsmatrix](/dependencies-matrix)
+- [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
+- [Konfiguration - Inventar - Operationen - Objekt zurückziehen](/configuration-inventory-operations-revoke-object)
+- [Tagesplan](/daily-plan)
 
 ### Product Knowledge Base
 
 - [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies)
-
