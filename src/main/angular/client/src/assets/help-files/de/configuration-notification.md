@@ -87,7 +87,7 @@ Sie aktivieren die effektiven Benachrichtigungen durch Verweise auf die oben bes
 #### SystemNotification
 
 - **SystemNotification**: Wählt eines oder mehrere der oben genannten *MonitorFragmente* aus. Es ist möglich, eine Reihe von *Fragmenten* desselben Fragmenttyps auszuwählen.
-  - Benachrichtigungen werden aus Systemfehlern und Warnungen erstellt, die in den JS7-Produktprotokolldateien identifiziert werden, siehe [Protokoll-Benachrichtigungsdienst](/service-log-notification).
+  - Benachrichtigungen werden aus Systemfehlern und Warnungen erstellt, die in den JS7 Produktprotokolldateien identifiziert werden, siehe [Protokoll-Benachrichtigungsdienst](/service-log-notification).
   - Das Element wird verwendet, um die Unteransicht [Überwachung - Systembenachrichtigungen](/monitor-notifications-system) von JOC Cockpit zu füllen.
 
 #### Notification

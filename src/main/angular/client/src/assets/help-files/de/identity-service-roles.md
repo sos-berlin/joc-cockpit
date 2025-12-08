@@ -1,24 +1,24 @@
-# Identitätsdienst-Rollen
+# Identitätsdienst - Rollen
 
 Identitätsdienste regeln den Zugriff auf JOC Cockpit durch Authentifizierung und Autorisierung, siehe [Identitätsdienste](/identity-services).
 
 Für die Autorisierung bietet JS7 ein rollenbasiertes Zugriffsmodell (RBAC), das beinhaltet, dass
 
-- rollen frei aus verfügbaren Berechtigungen konfiguriert werden,
-- benutzern eine oder mehrere Rollen zugewiesen werden, die für die daraus resultierenden Berechtigungen zusammengeführt werden.
+- Rollen frei aus verfügbaren Berechtigungen konfiguriert werden,
+- Benutzern eine oder mehrere Rollen zugewiesen werden, die für die daraus resultierenden Berechtigungen zusammengeführt werden.
 
 JS7 wird mit den folgenden Funktionen ausgeliefert - [JS7 - Default Roles and Permissions](https://kb.sos-berlin.com/display/JS7/JS7+-+Default+Roles+and+Permissions), die vom Benutzer nach Belieben geändert oder gelöscht werden können:
 
 | Rolle | Zweck | Berechtigungen |
 | ----- | ----- | ----- |
-| Administrator | Dies ist eine technische Rolle ohne jegliche Verantwortlichkeiten im IT-Prozess und Geschäftsprozess. | Die Rolle umfasst alle Berechtigungen zum Starten, Neustarten, Umschalten usw. der JS7-Produkte. |
-| api_user | Die Rolle ist für Anwendungen wie Systemmonitore gedacht, die auf JS7 über seine API zugreifen. | Die Rolle gewährt vorzugsweise Ansichtsberechtigungen. Hinzu kommen Berechtigungen zur Verwaltung von Aufträgen und zur Bereitstellung von Arbeitsabläufen. |
-| application_manager | Dies ist eine Ingenieursrolle mit fundierten Kenntnissen von Arbeitsabläufen, z.B. für das Änderungsmanagement. Diese Rolle ist nicht unbedingt in den täglichen Betrieb eingebunden. | Die Rolle umfasst Berechtigungen für administrative Aufgaben für Controller-Instanzen, Clusterkonfiguration, Zertifikate und Anpassungen. Darüber hinaus umfasst die Rolle die Berechtigung zur Verwaltung des JS7-Bestands. Die Verwaltung von Benutzerkonten ist nicht enthalten. |
-| business_user | Die Rolle ist für Back-Office-Benutzer gedacht, die nicht für den IT-Betrieb, sondern möglicherweise für den Geschäftsprozess verantwortlich sind und daher daran interessiert sind, über den Status der Ausführung von Arbeitsabläufen informiert zu sein. | Die Rolle bietet Nur-Lese-Berechtigungen. |
-| incident_manager |Die Rolle ist für den IT Service Desk gedacht, z.B. 1st und 2nd Level Support, Interventionen und Incident Management | Die Rolle basiert auf der Rolle *application_manager* und fügt volle Controller- und Agent-Berechtigungen hinzu, die für das Incident Management erforderlich sind, z.B. Zugriff auf Protokolldateien. |
-| it_operator | Dies ist die Rolle für den täglichen Betrieb von Arbeitsabläufen und Tagesplan. | Die Rolle gewährt vorzugsweise Ansichtsrechte. Hinzu kommen Berechtigungen zur Verwaltung von Aufträgen und zur Bereitstellung von Arbeitsabläufen. |
+| Administrator | Dies ist eine technische Rolle ohne jegliche Verantwortlichkeiten im IT-Prozess und Geschäftsprozess. | Die Rolle umfasst alle Berechtigungen zum Starten, Neustarten, Umschalten usw. der JS7 Produkte. |
+| api_user | Die Rolle ist für Anwendungen wie Systemmonitore gedacht, die auf JS7 über seine API zugreifen. | Die Rolle gewährt vorzugsweise Ansichtsberechtigungen. Hinzu kommen Berechtigungen zur Verwaltung von Aufträgen und zum Ausrollen von Arbeitsabläufen. |
+| application_manager | Dies ist eine Ingenieursrolle mit fundierten Kenntnissen von Arbeitsabläufen, z.B. für das Änderungsmanagement. Diese Rolle ist nicht unbedingt in den täglichen Betrieb eingebunden. | Die Rolle umfasst Berechtigungen für administrative Aufgaben für Controller Instanzen, Cluster-Konfiguration, Zertifikate und Anpassungen. Darüber hinaus umfasst die Rolle die Berechtigung zur Verwaltung des JS7 Inventars. Die Verwaltung von Benutzerkonten ist nicht enthalten. |
+| business_user | Die Rolle ist für Back-Office Benutzer gedacht, die nicht für den IT-Betrieb, sondern möglicherweise für den Geschäftsprozess verantwortlich sind und daher daran interessiert sind, über den Status der Ausführung von Arbeitsabläufen informiert zu sein. | Die Rolle bietet Nur-Lese-Berechtigungen. |
+| incident_manager |Die Rolle ist für das IT Service Desk gedacht, z.B. 1st und 2nd Level Support, Interventionen und Incident Management | Die Rolle basiert auf der Rolle *application_manager* und fügt volle Berechtigungen für Controller und Agenten hinzu, die für das Incident Management erforderlich sind, z.B. Zugriff auf Protokolldateien. |
+| it_operator | Dies ist die Rolle für den täglichen Betrieb von Arbeitsabläufen und Tagesplan. | Die Rolle gewährt vorzugsweise Ansichtsrechte. Hinzu kommen Berechtigungen zur Verwaltung von Aufträgen und zum Ausrollen von Arbeitsabläufen. |
 
-Benutzer werden ermutigt, ungenutzte Rollen abzulegen und die Berechtigungen für Rollen nach Bedarf anzupassen.
+Benutzer werden ermutigt, ungenutzte Rollen zu löschen und die Berechtigungen für Rollen nach Bedarf anzupassen.
 
 ## Umfang der Rollen
 

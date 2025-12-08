@@ -44,7 +44,7 @@ Für verfügbare Operationen siehe [Konfiguration - Inventar - Navigationsbereic
 
 ### Auftragsprioritäten
 
-Ressourcen-Sperren berücksichtigen Auftrags-*Prioritäten*. Beim Hinzufügen von Aufträgen über [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules) und beim Hinzufügen von Ad-hoc-Aufträgen über [Workflows - Add Orders](/workflows-orders-add) kann die *Priorität* angegeben werden.
+Ressourcen-Sperren berücksichtigen Auftrags-*Prioritäten*. Beim Hinzufügen von Aufträgen über [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules) und beim Hinzufügen von Ad-hoc-Aufträgen über [Auftrag hinzufügen](/workflows-orders-add) kann die *Priorität* angegeben werden.
 
 Wenn mehrere Aufträge vor einer Ressourcen-Sperre warten, wird der Auftrag mit der höchsten *Priorität* als erster die Ressourcen-Sperre erhalten.
 

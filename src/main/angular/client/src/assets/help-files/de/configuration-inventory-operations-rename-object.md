@@ -15,7 +15,7 @@ Benutzer können den Speicherort und den Namen eines Objekts ändern. Im Folgend
 - Wenn der Objektname geändert wird, verbleibt das Objekt im angegebenen Ordner und wird auf den Status *Entwurf* gesetzt.
 - Für den neuen Namen können Benutzer eine andere Ordnerhierarchie und einen anderen Objektnamen aus einem absoluten Pfad mit führendem Schrägstrich angeben, z.B. **/Test/Workflows/yourWorkflow**:
   - wenn der Ordner **/Test/Workflows** nicht existiert, wird er erstellt.
-  - wird der Workflow von **myWorkflow** in **yourWorkflow** umbenannt.
+  - wird der Arbeitsablauf von **myWorkflow** in **yourWorkflow** umbenannt.
 - Es kann ein relativer Pfad wie in **Workflows/yourWorkflow** angegeben werden:
   - der Ordner **Workflows** wird im aktuellen Ordner erstellt.
   - wird das Objekt umbenannt und befindet sich in **/Test/Users/Workflows/yourWorkflow**.

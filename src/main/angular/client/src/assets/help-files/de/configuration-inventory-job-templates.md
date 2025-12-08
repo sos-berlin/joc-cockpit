@@ -54,7 +54,7 @@ Um einem Job eine Job-Vorlage zuzuweisen, können Sie wie folgt vorgehen:
 - Rufen Sie in der oberen rechten Ecke des Fensters den Assistenten auf.
 - Daraufhin öffnet sich ein Popup-Fenster, in dem Sie die Registerkarte *Job-Vorlagen* auswählen können.
   - Navigieren Sie zu der gewünschten Job-Vorlage oder geben Sie Teile des Namens ein.
-  - Wählen Sie die Job-Vorlage aus und fügen Sie optional Argumente hinzu, falls diese von der Job-Vorlage bereitgestellt werden.
+  - Wählen Sie die Job-Vorlage aus und fügen Sie optional Argumente hinzu, falls diese von der Job-Vorlage angeboten werden.
   
 Wenn einer Job-Vorlage ein Job zugewiesen ist, wird dies in der oberen rechten Ecke des Fensters angezeigt:
 

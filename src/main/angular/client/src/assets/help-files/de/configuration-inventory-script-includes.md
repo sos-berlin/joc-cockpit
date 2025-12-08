@@ -53,7 +53,7 @@ Skript-Bausteine können wie folgt parametrisiert werden:
 - **::!include *script-include-name* --replace="search-literal", "replacement-literal "**
 - **//!include *script-include-name* --replace="search-literal", "replacement-literal "**
 
-Das *Such-Literal* wird im Skript-Baustein nachgeschlagen und durch das *Ersatz-Literal* ersetzt, wenn der Workflow, der den entsprechenden Job enthält, bereitgestellt wird.
+Das *Such-Literal* wird im Skript-Baustein nachgeschlagen und durch das *Ersatz-Literal* ersetzt, wenn der Arbeitsablauf, der den entsprechenden Job enthält, ausgerollt wird.
 
 ### Beispiele
 
@@ -79,8 +79,8 @@ Der Skript-Baustein schreibt den Inhalt des *Job-Skripts* in eine temporäre Dat
 
 ### Kontext-Hilfe
 
-- [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
 - [Konfiguration - Inventar - Arbeitsablauf - Job-Optionen](/configuration-inventory-workflow-job-options)
+- [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
 - [Regeln zur Benennung von Objekten](/object-naming-rules)
 
 ### Product Knowledge Base

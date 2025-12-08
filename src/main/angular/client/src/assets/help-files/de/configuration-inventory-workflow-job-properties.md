@@ -33,7 +33,7 @@ Die Mindesteigenschaften für einen Job sind wie folgt:
     - *Job Templates*
       - **JITL Jobs** sind Java Jobs, die mit JS7 ausgeliefert werden und die von [JS7 - Integration Job Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+Integration+Job+Templates) aus verwendet werden, z.B. für den Zugriff auf Datenbanken, für den Zugriff auf entfernte Hosts über SSH usw.
     - *Benutzerdefinierte Jobs*
-      - **Java Jobs** werden in der vom JS7 Agent bereitgestellten JVM ausgeführt.
+      - **Java Jobs** werden in der vom JS7 Agent genutzten JVM ausgeführt.
       - **JavaScript Jobs**, **Python Jobs** erfordern die Verwendung von Oracle® Graal Polyglot Bibliotheken mit dem JS7 Agent. Die Bibliiotheken stellen den JIT Compiler bereit.
 
 ### Umgebungsvariablen

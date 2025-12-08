@@ -27,7 +27,7 @@ Das Eingabefeld erwartet die zum Klonen verwendete Git-URL, zum Beispiel *git@gi
 - *js7-demo-inventory-rollout* ist der Name des Repository,
 - *.git* ist eine konstante Endung.
 
-Die obigen Werte sind ein Beispiel. Bitte geben Sie Werte an, die dem gewünschten Git-Server entsprechen.
+Die obigen Werte sind ein Beispiel. Bitte geben Sie Werte an, die dem gewünschten Git Server entsprechen.
 
 ## Referenzen
 
@@ -40,4 +40,3 @@ Die obigen Werte sind ein Beispiel. Bitte geben Sie Werte an, die dem gewünscht
 - [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies)
 - [JS7 - Inventory Git Integration](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Git+Integration)
 - [JS7 - Git Repository Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+Git+Repository+Interface)
-

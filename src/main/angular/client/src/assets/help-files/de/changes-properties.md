@@ -1,6 +1,6 @@
-# Änderungseigenschaften
+# Eigenschaften Änderung
 
-JOC Cockpit bietet die Verwaltung von [JS7 - Inventory Changes](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Changes) zu Objekten wie Arbeitsabläufen. Ein Change ist eine Sammlung von Inventarobjekten, die gemeinsamen Bereitstellungsoperationen unterliegen
+JOC Cockpit bietet die Verwaltung von [JS7 - Inventory Changes](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Changes) zu Objekten wie Arbeitsabläufen. Eine Änderung ist eine Sammlung von Inventarobjekten, die einer gemeinsamen Ausroll-Operation unterliegen
 
 - für das Ausrollen auf Controller,
 - für das Ausrollen mit [JS7 - Inventory Export and Import](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Export+and+Import),
@@ -32,4 +32,3 @@ Das Popup-Fenster *Änderung - Eigenschaften* dient zum Festlegen der Eigenschaf
 - [JS7 - Git Repository Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+Git+Repository+Interface)
 - [JS7 - Inventory Export and Import](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Export+and+Import)
 - [JS7 - Inventory Changes](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Changes)
-

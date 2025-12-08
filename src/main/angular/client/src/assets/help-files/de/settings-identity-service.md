@@ -11,7 +11,7 @@ Die Seite *Einstellungen* ist über das Symbol ![wheel icon](assets/images/wheel
 Gibt die maximale Dauer einer Leerlaufsitzung in JOC Cockpit in Minuten an.
 
 - Wenn Benutzer für die angegebene Anzahl von Minuten inaktiv sind, läuft die Benutzersitzung ab und wird beendet. Benutzer können Anmeldedaten angeben und sich anmelden, um eine neue Benutzersitzung zu erstellen.
-- Wenn die Lebensdauer eines von einem externen Identitätsdienst bereitgestellten Access Token von der maximalen Leerlaufzeit abweicht, versucht JOC Cockpit, das Access Token beim Identitätsdienst zu erneuern. Bei der Erneuerung eines Access Token muss der Benutzer seine Anmeldedaten nicht erneut eingeben.
+- Wenn die Lebensdauer eines von einem externen Identitätsdienst generierten Access Token von der maximalen Leerlaufzeit abweicht, versucht JOC Cockpit, das Access Token beim Identitätsdienst zu erneuern. Bei der Erneuerung eines Access Token muss der Benutzer seine Anmeldedaten nicht erneut eingeben.
 - Identitätsdienste können die Lebensdauer von Access Token begrenzen (time to live) und sie können die Erneuerung von Access Token begrenzen (maximum time to live). Wenn ein Access Token nicht erneuert werden kann, wird die Benutzersitzung beendet und der Benutzer muss sich erneut anmelden.
 
 ### Einstellung: *initial\_password*, Standard: *initial*

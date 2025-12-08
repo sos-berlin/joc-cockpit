@@ -18,7 +18,7 @@ Identitätsdienste werden in der folgenden Konfiguration festgelegt:
 - Der Pfad zum Truststore wird relativ zum Verzeichnis *JETTY_BASE/resources/joc* angegeben. Wenn sich der Truststore in diesem Verzeichnis befindet, wird nur der Dateiname angegeben, normalerweise mit der Erweiterung .p12. Andere relative Speicherorte können angegeben werden, zum Beispiel *../../joc-truststore.p12*, wenn sich der Truststore im Verzeichnis *JETTY_BASE* befindet. Ein absoluter Pfad kann nicht angegeben werden und es kann kein Pfad angegeben werden, der in der Dateisystemhierarchie vor dem Verzeichnis *JETTY_BASE* liegt.
 - **Keycloak Truststore Password** gibt das Kennwort an, das den Truststore schützt, wenn der Keycloak Server für HTTPS-Verbindungen konfiguriert ist.
 - **Keycloak Truststore Type** ist einer von *PKCS12* oder *JKS* (veraltet). Die Einstellung wird verwendet, wenn der Keycloak Server für HTTPS-Verbindungen konfiguriert ist.
-- Keycloak Clients sind Entitäten, die Keycloak zur Authentifizierung eines Benutzerkontos auffordern. Eine Anwendung wie z.B. JOC Cockpit fungiert als Client für den Keycloak Server. Clients verwenden Keycloak zur Authentifizierung und zur Bereitstellung einer Single Sign-On Lösung.
+- Keycloak Clients sind Entitäten, die Keycloak zur Authentifizierung eines Benutzerkontos auffordern. Eine Anwendung wie z.B. JOC Cockpit fungiert als Client für den Keycloak Server. Clients verwenden Keycloak zur Authentifizierung mit einer Single Sign-On Lösung.
   - **Keycloak Client ID** und *Keycloak Client Secret* werden verwendet für
     - das Anfordern eines Access Token
       - für die Benutzerauthentifizierung,

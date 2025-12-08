@@ -59,7 +59,7 @@ Für Details siehe
 
 - **LDAP Search Base** wird für die Suche nach Benutzerkonten in der Hierarchie der LDAP Server Einträge verwendet, z.B. *OU=Operations, O=IT, O=Users, DC=example,DC=com*.
 - **LDAP Group Search Base** wird ähnlich wie die *LDAP Search Base* verwendet, um nach Sicherheitsgruppen zu suchen, denen ein Benutzerkonto angehört.
-- **LDAP Group Search Filter** gibt eine LDAP Abfrage an, mit der Sicherheitsgruppen ermittelt werden, in denen das Benutzerkonto Mitglied ist. Der Filter wird auf die Suchergebnisse angewendet, die ausgehend von der *LDAP Group Search Base* bereitgestellt werden.
+- **LDAP Group Search Filter** gibt eine LDAP Abfrage an, mit der Sicherheitsgruppen ermittelt werden, in denen das Benutzerkonto Mitglied ist. Der Filter wird auf die Suchergebnisse angewendet, die ausgehend von der *LDAP Group Search Base* geliefert werden.
 - **LDAP Group Name Attribute** gibt das Attribut an, das den Namen der Sicherheitsgruppe angibt, in der ein Benutzerkonto Mitglied ist, z.B. das Attribut *CN* (Common Name).
 - LDAP Gruppe/Rollen Abbildung
   - **Suche in verschachtelten Gruppen deaktivieren** gibt an, dass Sicherheitsgruppen nicht rekursiv durchsucht werden, wenn sie Mitglieder von Sicherheitsgruppen sind.

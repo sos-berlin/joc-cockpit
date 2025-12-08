@@ -34,7 +34,7 @@ Die Benutzer steuern das konsistente Entfernen von Objekten über die folgenden 
 - **Abhängigkeiten einbeziehen**
   - wenn diese Option aktiviert ist, werden sowohl referenzierende als auch referenzierte Objekte einbezogen.
     - Wenn verwandte Objekte zuvor *ausgerollt* oder *freigegeben* wurden, wird ein gemeinsames Entfernen/Rückruf angeboten: Das Objekt, für das die *Entfernen* Operation ausgeführt wird, wird entfernt, verwandte Objekte werden für das *Zurückziehen*/*Zurücknehmen* angeboten. Der Rückruf wird erzwungen, wenn die Objektbeziehungen dies erfordern.
-    - Dies gilt auch für Objekte im Entwurfsstatus, die zuvor bereitgestellt oder freigegeben wurden.
+    - Dies gilt auch für Objekte im Entwurfsstatus, die zuvor ausgerollt oder freigegeben wurden.
   - wenn diese Option nicht aktiviert ist, werden Abhängigkeiten nicht berücksichtigt. Die Benutzer müssen überprüfen, ob verwandte Objekte gültig und *ausgerollt*/*freigegeben* sind. Der Controller gibt Fehlermeldungen aus, wenn Objekte aufgrund inkonsistenten Entfernens fehlen würden.
 
 ## Referenzen

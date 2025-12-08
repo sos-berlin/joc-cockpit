@@ -1,6 +1,6 @@
 # Arbeitsabläufe
 
-Die Ansicht *Workflows* ermöglicht die Überwachung und Steuerung von Arbeitsabläufen.
+Die Ansicht *Arbeitsabläufe* ermöglicht die Überwachung und Steuerung von Arbeitsabläufen.
 
 - Benutzer können Aufträge identifizieren, die für bestimmte Arbeitsabläufe verarbeitet werden.
 - Benutzer können Aufträge bei Bedarf zu Arbeitsabläufen hinzufügen. Solche Aufträge werden nicht zum [Tagesplan](/daily-plan) hinzugefügt, sondern werden ad hoc hinzugefügt.
