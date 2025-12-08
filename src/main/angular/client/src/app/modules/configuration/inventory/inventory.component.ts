@@ -26,7 +26,6 @@ import {WorkflowService} from "../../../services/workflow.service";
 import {NzSelectComponent} from 'ng-zorro-antd/select';
 import {AddChangesModalComponent} from "../../changes/changes.component";
 import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
-import {DependencyManagementService} from '../../../services/dependencies.service';
 
 declare const $: any;
 
