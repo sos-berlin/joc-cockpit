@@ -39,7 +39,7 @@ Die *Symbolleiste* enthält die folgenden Anweisungen:
 - **Options Anweisung** ist eine Blockanweisung, die die Fehlerbehandlung für die *Lock Anweisung* und die *ConsumeNotices Anweisung* regelt. Wenn die *Options Anweisung* vorhanden ist und die Eigenschaft *Stoppen im Fehlerfall* enthält, verbleiben die *fehlgeschlagenen* Aufträge bei der fehlgeschlagenen Anweisung, z.B. einem Job. Wenn die Anweisung nicht vorhanden ist, werden Aufträge, die innerhalb einer *Lock Anweisung* oder *ConsumeNotices Anweisung* fehlschlagen, an den Anfang des Anweisungsblocks verschoben und verbleiben im Zustand *Failed*. Einzelheiten finden Sie unter [JS7 - Options Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Options+Instruction).
 - mit **Einfügen** können Sie eine oder mehrere zuvor kopierte oder ausgeschnittene Anweisungen per Drag&amp;Drop in den Arbeitsablauf einfügen.
 
-## Bereich Arbeitsablauf
+## Bereich: Arbeitsablauf
 
 Der Bereich enthält die grafische Darstellung eines Arbeitsablaufs.
 
@@ -100,7 +100,7 @@ Für Variablen des Arbeitsablaufs werden die folgenden Datentypen angeboten:
 - **gültig** / **nicht gültig** zeigt mit blauer / oranger Farbe an, ob der Arbeitsablauf konsistent und bereit für das Ausrollen ist. *Ungültige* Arbeitsabläufe können nicht ausgerollt werden, Änderungen werden jedoch im Inventar gespeichert. Wenn beispielsweise einem Job kein Agent zugewiesen wurde, wird der Arbeitsablauf *ungültig*. Innerhalb des Statusindikators *ungültig* ist das Informationssymbol (i) verfügbar, das den Grund anzeigt, warum der Arbeitsablauf *ungültig* ist
 - **ausgerollt** / **nicht ausgerollt** zeigt an, ob die aktuelle Version des Arbeitsablaufs *ausgerollt* wurde oder ein Entwurf ist, der *nicht ausgerollt* wurde.
 
-Die Schaltfläche *Ausrollen* ermöglicht das Verteilen auf einen Controller mit einem einzigen Klick. Ansonsten sind Operationen für das Ausrollen auf Ordnerebene verfügbar, siehe [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation).
+Die Schaltfläche *Ausrollen* ermöglicht das Übertragen auf einen Controller mit einem einzigen Klick. Ansonsten sind Operationen für das Ausrollen auf Ordnerebene verfügbar, siehe [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation).
 
 #### Operationen für Anweisungen
 

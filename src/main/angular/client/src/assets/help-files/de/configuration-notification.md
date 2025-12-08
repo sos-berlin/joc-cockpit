@@ -22,7 +22,7 @@ Der typische Lebenszyklus beim Ändern von Benachrichtigungen umfasst
 - klicken der Schaltfläche *Validieren*, um zu überprüfen, ob die Konfiguration konsistent ist,
 - klicken der Schaltfläche *Freigeben*, um die Konfiguration zu aktivieren.
 
-## Navigationsbereich
+## Bereich: Navigation
 
 Die Konfiguration wird über die Navigation nach Elementen angeboten. Wenn Sie auf einen Elementnamen klicken, wird das Element geöffnet und die verfügbaren Unterelemente werden angezeigt. Die Pfeilanzeige links neben dem Elementnamen zeigt an, ob Unterelemente verfügbar sind.
 

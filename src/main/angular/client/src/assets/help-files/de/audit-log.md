@@ -10,7 +10,7 @@ Jede Anfrage benennt den verwendeten Endpunkt und den Inhalt der Anfrage, wenn S
 
 ## Kategorien
 
-- **CONTROLLER** zeigt Controller-Operationen an, wie z.B. das Hinzufügen von Aufträgen.
+- **CONTROLLER** zeigt Controlle Operationen an, wie z.B. das Hinzufügen von Aufträgen.
 - **DAILYPLAN** zeigt Änderungen am Tagesplan an.
 - **IDENTITY** zeigt Änderungen an den Identitätsdiensten an.
 - **INVENTORY** weist auf Änderungen am Inventar hin, wie z.B. das Speichern von Arbeitsabläufen.

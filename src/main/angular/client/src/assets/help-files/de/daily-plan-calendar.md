@@ -46,7 +46,7 @@ Diese Operation ist über eine Schaltfläche unterhalb des Kalenders für ein ei
 - Für die ausgewählten Tage wird der Tagesplan erstellt.
   - Sie haben die Wahl zwischen der Erstellung aller Aufträge oder der Erstellung von Aufträgen aus ausgewählten Zeitplänen und Arbeitsabläufen, optional eingeschränkt durch Ordner.
   - Sie können festlegen, dass bestehende Aufträge aus denselben Zeitplänen ersetzt werden und dass die Aufträge sofort an den Controller übermittelt werden.
-  - Sie können Aufträge aus Zeitplänen einbeziehen, die nicht für die Berücksichtigung durch den Tagesplanungsdienst konfiguriert sind.
+  - Sie können Aufträge aus Zeitplänen einbeziehen, die nicht für die Berücksichtigung durch den Tagesplandienst konfiguriert sind.
 - Wenn der Tagesplan für ein bestimmtes Datum erstellt wird, plant der nächste Lauf des Tagesplandienstes keine weiteren Aufträge für dasselbe Datum. Der Dienst übermittelt jedoch *geplante* Aufträge im Rahmen der vorausliegenden Tage, für die Aufträge übermittelt werden sollen, siehe Seite [Einstellungen - Tagesplan](/settings-daily-plan).
 
 ### Tagesplan löschen

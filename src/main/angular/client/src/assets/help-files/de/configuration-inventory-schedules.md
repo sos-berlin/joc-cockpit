@@ -3,12 +3,12 @@
 Der Bereich *Zeitpläne* bietet die Möglichkeit, Regeln für die Erstellung von Aufträgen aus dem [Tagesplan](/daily-plan) festzulegen. Details finden Sie unter [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules).
 
 - Zeitpläne legen den Zeitpunkt fest, zu dem die Ausführung von Aufträgen für Arbeitsabläufe beginnt. Ihnen werden ein oder mehrere Arbeitsabläufe und optional Variablen zugewiesen, die von Jobs in den jeweiligen Arbeitsabläufen verwendet werden.
-  - **Starttage** werden von [Konfiguration - Inventar - Kalender](/configuration-inventory-calendars) angegeben und begrenzen die Tage für die Ausführung der Arbeitsabläufe.
-  - **Startzeiten** werden von Zeitplänen angegeben, die eine oder mehrere Zeiten an einem Tag angeben. Sie können die Tage für die Ausführung von Arbeitsabläufe weiter einschränken.
+  - **Starttage** werden von [Konfiguration - Inventar - Kalender](/configuration-inventory-calendars) bestimmt und begrenzen die Tage für die Ausführung der Arbeitsabläufe.
+  - **Startzeiten** werden von Zeitplänen bestimmt, die eine oder mehrere Zeiten an einem Tag angeben. Sie können die Tage für die Ausführung von Arbeitsabläufen weiter einschränken.
 - Zeitpläne erstellen Aufträge auf täglicher Basis
   - für die einmalige Ausführung von Arbeitsabläufen. Dazu gehören Arbeitsabläufe, die zu einer Reihe von Zeitpunkten pro Tag starten.
   - für die zyklische Ausführung von Arbeitsabläufen. Damit wird die wiederholte Ausführung von Arbeitsabläufen in konfigurierbaren Intervallen festgelegt.
-- Zeitpläne werden von [Tagesplan](/daily-plan) angewendet, um Aufträge für die resultierenden Tage und Zeiten zu erstellen.
+- Zeitpläne werden vom [Tagesplan](/daily-plan) angewendet, um Aufträge für die resultierenden Tage und Zeiten zu erstellen.
   - Zeitpläne können manuell in der Ansicht des Tagesplans angewendet werden.
   - Zeitpläne werden automatisch vom [Tagesplandienst](/service-daily-plan) angewendet.
 
@@ -23,9 +23,9 @@ Für einen Zeitplan sind die folgenden Eingaben möglich:
 
 - **Name** ist der eindeutige Bezeichner eines Zeitplans, siehe [Regeln zur Benennung von Objekten](/object-naming-rules).
 - **Titel** enthält eine optionale Erklärung zum Zweck des Zeitplans.
-- **Arbeitsablauf-Namen** enthält die Liste der Arbeitsabläufe, die gestartet werden sollen.
+- **Namen der Arbeitsabläufe** enthält die Liste der Arbeitsabläufe, die gestartet werden sollen.
 - **Automatisch planen** gibt an, dass der Zeitplan vom [Tagesplandienst](/service-daily-plan) berücksichtigt wird.
-- **Auftrag an Controller übermitteln, wenn geplant** legt fest, dass die Aufträge sofort an einen Controller übermittelt werden, wenn sie geplant werden. Ohne diese Option übermittelt der Tagesplanungsdienst *geplante* Aufträge auf der Grundlage von [Einstellungen - Tagesplan](/settings-daily-plan).
+- **Auftrag an Controller übermitteln, wenn geplant** legt fest, dass die Aufträge sofort an einen Controller übermittelt werden, wenn sie geplant werden. Ohne diese Option übermittelt der Tagesplandienst *geplante* Aufträge auf der Grundlage von [Einstellungen - Tagesplan](/settings-daily-plan).
 
 ### Auftragsparametrierung
 
@@ -98,4 +98,3 @@ Für verfügbare Operationen siehe [Konfiguration - Inventar - Navigationsbereic
 - [JS7 - Order Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+Variables)
 - [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules)
 - [Liste der Zeitzonen der tz-Datenbank](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
-

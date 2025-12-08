@@ -46,7 +46,7 @@ Wenn die Registrierungsinformationen übermittelt werden, stellt JOC Cockpit ein
 
 Zu den Voraussetzungen für die Installation gehören:
 
-- JOC Cockpit und alle Controller-Instanzen müssen mit einem gültigen JS7 Lizenzschlüssel ausgestattet sein.
+- JOC Cockpit und alle Controller Instanzen müssen mit einem gültigen JS7 Lizenzschlüssel ausgestattet sein.
 - Der Sekundäre Controller muss in seiner Datei *./config/controller.conf* die folgende Einstellung enthalten: *js7.journal.cluster.node.is-backup = yes*
 - Die Primäre und Sekundäre Controller Instanz müssen gestartet und betriebsbereit sein.
 

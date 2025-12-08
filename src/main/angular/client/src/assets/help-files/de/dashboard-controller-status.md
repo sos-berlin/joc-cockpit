@@ -17,7 +17,7 @@ Wenn Sie auf die *Controller ID* einer Instanz klicken, wechselt das Dashboard z
 
 Die folgenden Operationen sind verfügbar:
 
-Controller-Instanzen bieten die folgenden Operationen aus dem 3-Punkte-Aktionsmenü der jeweiligen Instanz:
+Controller Instanzen bieten die folgenden Operationen aus dem 3-Punkte-Aktionsmenü der jeweiligen Instanz:
 
 - **Beenden**, **Beenden und Neustart** fährt die Instanz herunter. Für die aktive Instanz in einem Cluster wird das Menü erweitert:
   - **mit Umschalten**, um die aktive Rolle an die Standby Instanz zu übergeben.

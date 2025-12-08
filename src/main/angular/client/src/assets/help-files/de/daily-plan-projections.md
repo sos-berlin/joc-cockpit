@@ -51,7 +51,7 @@ Projektionen können in eine .xlsx-Datei exportiert werden, wobei das Datum des 
   - **Arbeitsabläufe**, **Zeitpläne**: Benutzer können den Export auf bestimmte Zeitpläne und Arbeitsabläufe beschränken, die optional durch Ordner eingeschränkt werden können.
   - **Invertierte Projektion**: 
     - *Unmarkiert*: Exportiert Tage, für die Aufträge berechnet werden.
-    - *Aktiviert*: Exportiert Tage, für die keine Aufträge berechnet werden. Damit können Sie überprüfen, ob arbeitsfreie Tage berücksichtigt werden.
+    - *Aktiviert*: Exportiert Tage, für die keine Aufträge berechnet werden. Damit können Sie überprüfen, ob Nicht-Arbeitstage berücksichtigt werden.
 
 ## Referenzen
 

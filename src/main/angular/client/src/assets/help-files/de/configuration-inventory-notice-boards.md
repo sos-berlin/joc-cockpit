@@ -7,9 +7,9 @@ Notizbretter implementieren Abhängigkeiten zwischen Arbeitsabläufen:
 - Notizbretter ermöglichen das Hinzufügen von Notizen 
   - ohne Benutzereingriff, siehe [Ressourcen - Notizbretter](/resources-notice-boards).
   - von der *PostNotices Anweisung* in einem Arbeitsablauf, siehe [JS7 - PostNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+PostNotices+Instruction).
-- Arbeitsabläufen können so konfiguriert werden, dass Aufträge Notizen aus den folgenden Anweisungen erwarten:
+- Arbeitsabläufe können so konfiguriert werden, dass Aufträge Notizen aus den folgenden Anweisungen erwarten:
   - die *ExpectNotices Anweisung* wird verwendet, um zu prüfen, ob Notizen von einem oder mehreren Notizbrettern verfügbar sind, die durch eine *PostNotices Anweisung* oder durch den Benutzer hinzugefügt wurden. Wenn die Notiz nicht vorhanden ist, verbleibt der Auftrag standardmäßig im Status *Wartend* an der Anweisung. Ein Arbeitsablauf kann eine beliebige Anzahl von *ExpectNotices Anweisungen* enthalten, um Notizen vom gleichen oder von unterschiedlichen Notizbrettern zu erwarten. Einzelheiten finden Sie unter [JS7 - ExpectNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ExpectNotices+Instruction).
-  - die Anweisung *ConsumeNotices Instruction* wird verwendet, um Aufträge zu veranlassen, eine oder mehrere Notizen von Notizbrettern zu erwarten, die durch eine *PostNotices Anweisung* oder durch den Benutzer hinzugefügt wurden. Die *ConsumeNotices Anweisung* ist eine Blockanweisung, die beliebige andere Anweisungen enthalten kann und die die erwarteten Notizen löscht, wenn ein Auftrag das Ende des Anweisungsblocks erreicht. Einzelheiten finden Sie unter [JS7 - ConsumeNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ConsumeNotices+Instruction).
+  - die *ConsumeNotices Anweisung* wird verwendet, um Aufträge zu veranlassen, eine oder mehrere Notizen von Notizbrettern zu erwarten, die durch eine *PostNotices Anweisung* oder durch den Benutzer hinzugefügt wurden. Die *ConsumeNotices Anweisung* ist eine Blockanweisung, die beliebige andere Anweisungen enthalten kann und die die erwarteten Notizen löscht, wenn ein Auftrag das Ende des Anweisungsblocks erreicht. Einzelheiten finden Sie unter [JS7 - ConsumeNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ConsumeNotices+Instruction).
 
 Die folgenden Varianten sind für Notizbretter verfügbar:
 
@@ -40,11 +40,11 @@ Für ein Notizbrett sind die folgenden Eingaben möglich:
     - *Matching Daily Plan Date* extrahiert das Tagesplandatum aus der Auftragskennung mit Hilfe des Ausdrucks: *replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*$', '$1')*
     - *Matching Daily Plan Date and Order Name* extrahiert das Tagesplan-Datum und den Auftragsnamen aus der Auftragskennung unter Verwendung des Ausdrucks: *replaceAll($js7OrderId, '^#([0-9]{4}-[0-9]{2}-[0-9]{2})#.*-([^:]*)(?::[^|]*)?([|].*)?$', '$1$2$3')*
     - *Matching Order Name* extrahiert den Auftragsnamen anhand des Ausdrucks: *replaceAll($js7OrderId, '^#[0-9]{4}-[0-9]{2}-[0-9]{2}#.*-([^:]*)(?::[^|]*)?([|].*)?$', '$1$2')*
-- die **Notizkennung des wartenden Auftrags** sollte denselben Ausdruck enthalten wie die *Notizkennung des sendenden Auftrags*.
+- **Notizkennung des wartenden Auftrags** sollte denselben Ausdruck enthalten wie die *Notizkennung des sendenden Auftrags*.
 
 ### Planbare Notizbretter
 
-- die **Notizkennung für sendenden Auftrag** enthält einen konstanten Wert oder einen Ausdruck, der vom sendenden Auftrag abgeleitet ist:
+- **Notizkennung für sendenden Auftrag** enthält einen konstanten Wert oder einen Ausdruck, der vom sendenden Auftrag abgeleitet ist:
   - Sie können einen leeren Wert oder eine Zeichenkette verwenden, die einen konstanten Wert angibt.
   - Es kann ein regulärer Ausdruck verwendet werden:
     - *Matching Order Name* extrahiert den Auftragsnamen anhand des Ausdrucks: *replaceAll($js7OrderId, '^#[0-9]{4}-[0-9]{2}-[0-9]{2}#.*-([^:]\*)(?::[^|]*)?([|].*)?$', '$1$2')*
@@ -90,4 +90,3 @@ Arbeitsablauf-Anweisungen für Notizbretter bieten die folgenden Optionen:
   - [JS7 - PostNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+PostNotices+Instruction)
   - [JS7 - ExpectNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ExpectNotices+Instruction)
   - [JS7 - ConsumeNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ConsumeNotices+Instruction)
-

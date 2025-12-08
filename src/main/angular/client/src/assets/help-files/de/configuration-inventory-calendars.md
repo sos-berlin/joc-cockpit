@@ -4,7 +4,7 @@ Der Bereich *Kalender* bietet die Möglichkeit, regelbasierte Kalender festzuleg
 
 - In den Kalendern werden die Tage festgelegt, an denen Arbeitsabläufe ausgeführt werden.
   - **Arbeitstagskalender** legen die Tage für die Ausführung des Arbeitsablaufs fest.
-  - **Nicht-Arbeitstag-Kalender** geben Tage an, an denen Arbeitsabläufe nicht ausgeführt werden.
+  - **Nicht-Arbeitstagskalender** geben Tage an, an denen Arbeitsabläufe nicht ausgeführt werden.
 - Zeitpläne 
   - enthalten Referenzen auf eine beliebige Anzahl von Arbeitstagskalendern und Nicht-Arbeitstagskalendern, die zusammengeführt werden, um die Liste der resultierenden Tage zu erhalten.
   - bestimmen den Zeitpunkt, an dem die Ausführung von Aufträgen für Arbeitsabläufe beginnt. 
@@ -36,15 +36,15 @@ Betrachten Sie das Beispiel eines Arbeitstagskalenders:
 
 - Nehmen Sie eine *Eingeschlossene Häufigkeit* von Mo-Fr an.
 - Nehmen Sie eine *Ausgeschlossene Häufigkeit* für nationale Feiertage wie den 1. Januar und den 1. Mai an.
-- Bei Verwendung mit Zeitplänen, nimmt die Eigenschaft **am arbeitsfreien Tag** einen der Werte an:
-  - **vor dem arbeitsfreien Tag** 
+- Bei Verwendung mit Zeitplänen, nimmt die Eigenschaft **bei Nicht-Arbeitstag** einen der Werte an:
+  - **vor Nicht-Arbeitstag** 
     - wenn der 1. Januar ein Montag ist, dann wird der Auftrag für den vorhergehenden Sonntag erstellt, der nicht in den *Eingeschlossenen Häufigkeiten* und nicht in den *Ausgeschlossenen Häufigkeiten* enthalten ist. 
     - wenn der 1. Januar ein Samstag ist, dann wird kein Auftrag erstellt, da der vorherige Arbeitstag der Freitag ist, für den ein Auftrag aus den *Eingeschlossenen Häufigkeiten* erstellt wird.
-  - **nach arbeitsfreiem Tag**
+  - **nach Nicht-Arbeitstag**
     - wenn der 1. Januar ein Samstag ist, dann wird der Auftrag für den nächsten Sonntag erstellt, der nicht zu den *Eingeschlossenen Häufigkeiten* und nicht zu den *Ausgeschlossenen Häufigkeiten* gehört. 
     - wenn der 1. Januar ein Sonntag ist, wird kein Auftrag erstellt, da der nächste Arbeitstag der Montag ist, für den ein Auftrag aus den *Eingeschlossenen Häufigkeiten* erstellt wird.
 
-Für die Verwendung von Kalendern für arbeitsfreie Tage gelten entsprechende Regeln: *Eingeschlossene Häufigkeiten* geben arbeitsfreie Tage an, *Ausgeschlossene Häufigkeiten* geben Arbeitstage an.
+Für die Verwendung von Kalendern für Nicht-Arbeitstage gelten entsprechende Regeln: *Eingeschlossene Häufigkeiten* geben Nicht-Arbeitstage an, *Ausgeschlossene Häufigkeiten* geben Arbeitstage an.
 
 Ein Kalender kann eine beliebige Anzahl von *Häufigkeiten* enthalten, die zusammengeführt werden. Die Schaltfläche *Häufigkeit hinzufügen* wird für jede der *Eingeschlossenen Häufigkeiten* und *Ausgeschlossenen Häufigkeiten* angeboten.
 
@@ -58,7 +58,7 @@ Beim Hinzufügen von *Häufigkeiten* können Sie aus einer Reihe von Typen ausw�
   - **Monatstage** geben relative Tage in einem Monat an, z.B. den ersten oder letzten Tag eines Monats.
   - **Jeder** gibt wiederkehrende Zeiträume an, z.B. jeden 2. Tag, jede 1. Woche, jeden 3. Monat. Dazu müssen Sie das Datum *Gültig ab* angeben, ab dem die Tage gezählt werden.
   - **Nationale Feiertage** geben bekannte Feiertage an. Die daraus resultierenden Tage sind nicht verbindlich und können von der lokalen Gesetzgebung abweichen.
-  - **Kalender für arbeitsfreie Tage** schließen die entsprechenden Tage aus den Arbeitstagen eines Arbeitstage-Kalenders aus.
+  - **Kalender für Nicht-Arbeitstage** schließen die entsprechenden Tage aus den Arbeitstagen eines Arbeitstagekalenders aus.
 
 *Häufigkeitstypen* können durch wiederholte Anwendung des gleichen oder eines anderen *Häufigkeitstyps* kombiniert werden.
 
@@ -66,7 +66,7 @@ Beim Hinzufügen von *Häufigkeiten* können Sie aus einer Reihe von Typen ausw�
 
 Nehmen wir das Beispiel eines Kalenders, der jeden 2. Arbeitstag liefert:
 
-- Angenommen, Mo-Fr sind Arbeitstage, Sa-So sind arbeitsfreie Tage.
+- Angenommen, Mo-Fr sind Arbeitstage, Sa-So sind Nicht-Arbeitstage.
 - Angenommen, der 1. Januar und der 1. Mai sind nationale Feiertage.
 
 Bei der Zählung jedes 2. Arbeitstages sollten Wochenenden und Feiertage ausgeschlossen werden:
@@ -90,11 +90,10 @@ Für verfügbare Operationen siehe [Konfiguration - Inventar - Navigationsbereic
 
 - [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
 - [Konfiguration - Inventar - Zeitpläne - Startzeitregel](/configuration-inventory-schedules-run-time)
-- [Tagesplan](/daily-plan)
 - [Regeln zur Benennung von Objekten](/object-naming-rules)
+- [Tagesplan](/daily-plan)
 
 ### Product Knowledge Base
 
 - [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars)
 - [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules)
-

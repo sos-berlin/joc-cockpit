@@ -84,7 +84,7 @@ Der Ordner der obersten Ebene / (Schrägstrich) bietet die folgenden Operationen
 
 Die folgenden Operationen sind für *Systemordner* verfügbar:
 
-- Operationen für Controller-Objekte
+- Operationen für Controller Objekte
   - *Arbeitsabläufe*
     - **Neu** erstellt einen Arbeitsablauf.
     - **Umbenennen** ermöglicht das Umbenennen eines Arbeitsablaufs. Objektabhängigkeiten werden berücksichtigt und referenzierende Inventarobjekte wie *Zeitpläne* und *Dateiauftragsquellen* erhalten den aktualisierten Namen. Der Arbeitsablauf und die referenzierenden Objekte werden auf den Status *Entwurf* gesetzt. Einzelheiten finden Sie unter [Ordner umbenennen](/configuration-inventory-operations-rename-folder).
@@ -105,7 +105,7 @@ Die folgenden Operationen sind für *Systemordner* verfügbar:
     - Einzelheiten finden Sie unter [Ordner freigeben](/configuration-inventory-operations-release-folder).
   - **Zurücknehmen** macht eine vorherige *Freigabe* Operation rückgängig. Die Inventarobjekte werden auf den Status *Entwurf* gesetzt. Dies bedeutet, dass *Zeitpläne* und *Kalender* vom [Tagesplan](/daily-plan) nicht berücksichtigt werden. Die Operation berücksichtigt Objektabhängigkeiten und ruft auch referenzierende Objekte zurück. Einzelheiten finden Sie unter [Ordner zurücknehmen](/configuration-inventory-operations-recall-folder).
   - **Vorlage auf Jobs anwenden** aktualisiert Jobs in Arbeitsabläufen, die sich in einem beliebigen Ordner befinden, der Verweise auf *Job-Vorlagen* enthält, die im ausgewählten *Systemordner* oder einem beliebigen Unterordner enthalten sind.
-  - Weitere Operationen sind ähnlich wie bei *Operationen für Controller-Objekte* verfügbar.
+  - Weitere Operationen sind ähnlich wie bei *Operationen für Controller Objekte* verfügbar.
 
 #### Operationen für Benutzerordner
 
@@ -121,7 +121,7 @@ Die folgenden Operationen sind für *Systemordner* verfügbar:
   - **Exportieren** ermöglicht die Erstellung einer Export-Archivdatei im .zip- oder .tar.gz-Format, die die Ordnerhierarchie und die JSON-Darstellung der enthaltenen Inventarobjekte enthält. Einzelheiten finden Sie unter [Ordner exportieren](/configuration-inventory-operations-export-folder).
   - **Git Repository** bietet die Integration mit einem Git Server. Inventarobjekte können an Git Repositories übergeben werden und können mittels pull & push synchronisiert werden. Einzelheiten finden Sie unter [Git - Clone Repository](/configuration-inventory-operations-git-clone).
   - **Änderung** bietet Operationen zur Änderungsverwaltung von Inventarobjekten. Benutzer können Objekte wie Arbeitsabläufe zu einer *Änderung* hinzufügen, die ein gemeinsames Ausrollen und den Export von geänderten Objekten ermöglicht. Einzelheiten finden Sie unter [Änderungen](/changes).
-- Operationen für Controller-Objekte
+- Operationen für Controller Objekte
   - **Ausrollen** macht Objekte für den Controller und die Agenten verfügbar. Inventarobjekte werden in den Status *Ausgerollt* versetzt. Einzelheiten finden Sie unter [Ordner ausrollen](/configuration-inventory-operations-deploy-folder).
   - **Zurückziehen** macht eine vorherige *Ausrollen*-Operation rückgängig. Die Inventarobjekte werden in den Status *Entwurf* gesetzt. Dies bedeutet, dass Aufträge für Arbeitsabläufe aus dem [Tagesplan](/daily-plan) entfernt werden. Einzelheiten finden Sie unter [Ordner zurückziehen](/configuration-inventory-operations-revoke-folder).
   - **Neu validieren** prüft die Gültigkeit von Inventarobjekten, die z.B. nach dem Import von Objekten inkonsistent werden können.
@@ -160,7 +160,7 @@ Die folgenden Operationen werden für einzelne Inventarobjekte angeboten:
   - Löschoperationen
     - **Entfernen** verschiebt das Objekt in den Papierkorb. Entfernte Inventarobjekte können wiederhergestellt oder dauerhaft aus dem Papierkorb gelöscht werden. Einzelheiten finden Sie unter [Objekt entfernen](/configuration-inventory-operations-remove-object).
     - mit **Entwurf löschen** wird die aktuelle Entwurfsversion des Objekts gelöscht. Wenn eine zuvor *ausgerollte* oder *freigegebene* Version existiert, wird diese zur aktuellen Version des Objekts gemacht.
-- Controller-Objekte
+- Controller Objekte
   - **Kennzeichnungen verwalten** ist für Arbeitsabläufe verfügbar und ermöglicht das Hinzufügen und Löschen von Kennzeichnungen zum/vom Arbeitsablauf.
   - mit **Ausrollen** wird das Objekt für den Controller und die Agenten verfügbar gemacht. Das Objekt wird in den Status *Ausgerollt* versetzt. Beim Ausrollen werden Objektabhängigkeiten von referenzierten und referenzierenden Inventarobjekten berücksichtigt. Einzelheiten finden Sie unter [Objekt ausrollen](/configuration-inventory-operations-deploy-object).
   - **Zurückziehen** macht eine vorherige *Ausroll*-Operation rückgängig. Das Objekt wird auf den Status *Entwurf* gesetzt. Für die Verwendung mit Arbeitsabläufen bedeutet dies, dass Aufträge aus dem [Tagesplan](/daily-plan) entfernt werden. Details finden Sie unter [Objekt zurückziehen](/configuration-inventory-operations-revoke-object).

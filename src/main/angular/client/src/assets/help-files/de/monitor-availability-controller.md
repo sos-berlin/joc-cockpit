@@ -6,7 +6,7 @@ Wenn ein Controller Cluster verwendet wird, wird die Verfügbarkeit des Cluster 
 
 In der rechten oberen Ecke des Bildschirms finden Sie das Kontrollkästchen *Aktueller Controller*: Wenn es nicht markiert ist, wird die Verfügbarkeit für alle angeschlossenen Controller angezeigt, andernfalls werden die Informationen nur für den aktuell ausgewählten Controller angezeigt.
 
-Benutzer sollten sich bewusst sein, dass die historischen Daten zur Controller-Verfügbarkeit vom [Bereinigungsdienst](/service-cleanup) gelöscht werden.
+Benutzer sollten sich bewusst sein, dass die historischen Daten zur Controller Verfügbarkeit vom [Bereinigungsdienst](/service-cleanup) gelöscht werden.
 
 ## Filter
 

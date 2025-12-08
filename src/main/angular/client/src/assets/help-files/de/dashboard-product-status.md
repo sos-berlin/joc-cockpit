@@ -12,7 +12,7 @@ JS7 Produkte können im Standalone-Betrieb und im Aktiv-Passiv Clustering einges
 
 ### JOC Cockpit
 
-Das JOC Cockpit stellt eine Verbindung zur Datenbank und zu Controller-Instanzen her.
+Das JOC Cockpit stellt eine Verbindung zur Datenbank und zu Controller Instanzen her.
 
 - Komponenten-Status
   - Der Status der Komponente wird durch die Farbe der Kachel in der oberen linken Ecke des JOC Cockpit Rechtecks angezeigt.
