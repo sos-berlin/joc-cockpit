@@ -135,6 +135,14 @@
               <i (click)="coreService.navToInventoryTab(value?.schedulePath, 'SCHEDULE');"
                  class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
             }
+            <i (click)="notesForSchedule(value?.schedulePath)"
+               [nzTooltipMouseEnterDelay]="0.5"
+               [nz-tooltip]="'inventory.notes.tooltip.notes' | translate"
+               nz-icon
+               nzType="paper-clip"
+               nzTheme="outline"
+               class="cur-point text-14 p-0 p-r-xs"
+               [style.color]="coreService.getColorByNoteSeverity(value?.scheduleHasNote)"></i>
             @if (isPathDisplay) {
               <span [innerHtml]="value?.schedulePath | highlight : dailyPlanFilters.searchText"></span>
             }
@@ -151,6 +159,14 @@
               <i (click)="coreService.navToInventoryTab(value.workflowPath, 'WORKFLOW');"
                  class="cursor fa fa-pencil text-hover-primary p-r-xs"></i>
             }
+            <i (click)="notesForWorkflow(value?.workflowPath)"
+               [nzTooltipMouseEnterDelay]="0.5"
+               [nz-tooltip]="'inventory.notes.tooltip.notes' | translate"
+               nz-icon
+               nzType="paper-clip"
+               nzTheme="outline"
+               class="cur-point text-14 p-0 p-r-xs"
+               [style.color]="coreService.getColorByNoteSeverity(value?.workflowHasNote)"></i>
              @if (isPathDisplay) {
                <a (click)="coreService.showWorkflow(value?.workflowPath);"
                   [innerHtml]="value?.workflowPath | highlight : dailyPlanFilters.searchText"

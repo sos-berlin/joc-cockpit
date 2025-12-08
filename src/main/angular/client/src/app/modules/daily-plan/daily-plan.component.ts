@@ -24,6 +24,7 @@ import {CreateTagModalComponent} from "../configuration/inventory/inventory.comp
 import {PostModalComponent} from '../resource/board/board.component';
 import {PriorityModalComponent} from "../../components/priority-modal/priority-modal.component";
 import {HelpViewerComponent} from "../../components/help-viewer/help-viewer.component";
+import {NoteComponent} from "../../components/notes/note.component";
 
 declare const JSGantt: any;
 declare let jsgantt: any;
@@ -3734,6 +3735,45 @@ export class DailyPlanComponent {
       nzFooter: null,
       nzClosable: false,
       nzMaskClosable: false
+    });
+  }
+
+
+  notesForWorkflow(workflowPath: string): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: NoteComponent,
+      nzClassName: 'custom-resizable-modal',
+      nzData: {
+        preferences: this.preferences,
+        width: 800,
+        height: 600,
+        objectName: workflowPath,
+        objectType: 'WORKFLOW'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false,
+      nzStyle: { width: '800px', height: '600px', minWidth: '300px', minHeight: '200px' }
+    });
+  }
+
+  notesForSchedule(schedulePath: string): void {
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: NoteComponent,
+      nzClassName: 'custom-resizable-modal',
+      nzData: {
+        preferences: this.preferences,
+        width: 800,
+        height: 600,
+        objectName: schedulePath,
+        objectType: 'SCHEDULE'
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false,
+      nzStyle: { width: '800px', height: '600px', minWidth: '300px', minHeight: '200px' }
     });
   }
 }

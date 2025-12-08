@@ -26,6 +26,7 @@ import {WorkflowService} from "../../../services/workflow.service";
 import {NzSelectComponent} from 'ng-zorro-antd/select';
 import {AddChangesModalComponent} from "../../changes/changes.component";
 import {HelpViewerComponent} from "../../../components/help-viewer/help-viewer.component";
+import {DependencyManagementService} from '../../../services/dependencies.service';
 
 declare const $: any;
 
@@ -1418,12 +1419,12 @@ export class SingleDeployComponent {
       return;
     }
 
-  const requestedSet = new Set(requestedItemIds);
+    const requestedSet = new Set(requestedItemIds);
 
-  this.affectedObjectsByType = {};
-  this.referencedObjectsByType = {};
-  this.affectedObjectTypes = [];
-  this.referencedObjectTypes = [];
+    this.affectedObjectsByType = {};
+    this.referencedObjectsByType = {};
+    this.affectedObjectTypes = [];
+    this.referencedObjectTypes = [];
 
     requestedItemIds.forEach(objectId => {
       const dep = objectsMap[objectId];
@@ -1434,12 +1435,12 @@ export class SingleDeployComponent {
         ...(dep.referencedBy || [])
       ];
 
-    allReferencedByIds.forEach((refById) => {
+      allReferencedByIds.forEach((refById) => {
 
-      if (requestedSet.has(refById)) return;
+        if (requestedSet.has(refById)) return;
 
-      const refObj = objectsMap[refById];
-      if (!refObj) return;
+        const refObj = objectsMap[refById];
+        if (!refObj) return;
 
         const type = refObj.objectType;
         if (!this.affectedObjectsByType[type]) {
@@ -1464,17 +1465,17 @@ export class SingleDeployComponent {
         }
       });
 
-    const allReferencesIds = [
-      ...(dep.enforcedReferences || []),
-      ...(dep.references || [])
-    ];
+      const allReferencesIds = [
+        ...(dep.enforcedReferences || []),
+        ...(dep.references || [])
+      ];
 
-    allReferencesIds.forEach(refId => {
+      allReferencesIds.forEach(refId => {
 
-      if (requestedSet.has(refId)) return;
+        if (requestedSet.has(refId)) return;
 
-      const refObj = objectsMap[refId];
-      if (!refObj) return;
+        const refObj = objectsMap[refId];
+        if (!refObj) return;
 
         const type = refObj.objectType;
         if (!this.referencedObjectsByType[type]) {
@@ -1518,7 +1519,7 @@ export class SingleDeployComponent {
     let disabled = false;
 
     if (this.dependencyMode === 'none') {
-      return { selected: false, disabled: false };
+      return {selected: false, disabled: false};
     }
 
     if (isEnforced) {
@@ -1562,7 +1563,7 @@ export class SingleDeployComponent {
       }
     }
 
-    return { selected, disabled };
+    return {selected, disabled};
   }
 
   private filterDependenciesByMode(dependencies: any[]): any[] {
@@ -1618,10 +1619,6 @@ export class SingleDeployComponent {
     this.relatedObjectTypes.forEach(t => this.updateParentCheckboxRelated(t));
 
     this.ref.detectChanges();
-  }
-
-  getUniqueObjectTypes(objects: any[]): string[] {
-    return [...new Set(objects.map(obj => obj.objectType))];
   }
 
   toggleRelatedCollapse(objectType: string): void {
@@ -1681,11 +1678,6 @@ export class SingleDeployComponent {
     this.ref.detectChanges();
   }
 
-  updateParentCheckboxFilteredAffected(objectType: string): void {
-    const allSelected = this.filteredAffectedItems.filter(item => item.objectType === objectType).every(obj => obj.selected || obj.disabled);
-    this.selectAllFilteredAffected[objectType] = allSelected;
-  }
-
   updateParentCheckboxAffected(objectType: string): void {
     const allSelected = this.affectedObjectsByType[objectType].every(obj => obj.selected || obj.disabled);
     this.selectAllAffected[objectType] = allSelected;
@@ -1721,38 +1713,38 @@ export class SingleDeployComponent {
     this.rebuildRelatedObjects();
   }
 
-  private rebuildRelatedObjects(): void {
+private rebuildRelatedObjects(): void {
 
-    const selectedParentIds = new Set<number>();
+  const selectedParentIds = new Set<number>();
 
-    Object.keys(this.affectedObjectsByType).forEach(type => {
-      this.affectedObjectsByType[type].forEach((obj: any) => {
-        if (obj.selected) {
-          selectedParentIds.add(obj.id);
-        }
-      });
+  Object.keys(this.affectedObjectsByType).forEach(type => {
+    this.affectedObjectsByType[type].forEach((obj: any) => {
+      if (obj.selected) {
+        selectedParentIds.add(obj.id);
+      }
     });
+  });
 
-    Object.keys(this.referencedObjectsByType).forEach(type => {
-      this.referencedObjectsByType[type].forEach((obj: any) => {
-        if (obj.selected) {
-          selectedParentIds.add(obj.id);
-        }
-      });
+  Object.keys(this.referencedObjectsByType).forEach(type => {
+    this.referencedObjectsByType[type].forEach((obj: any) => {
+      if (obj.selected) {
+        selectedParentIds.add(obj.id);
+      }
     });
+  });
 
-    if (selectedParentIds.size === 0) {
-      this.relatedObjectsByType = {};
-      this.relatedObjectTypes = [];
-      this.relatedParentMap.clear();
-      this.ref.detectChanges();
-      return;
-    }
+  if (selectedParentIds.size === 0) {
+    this.relatedObjectsByType = {};
+    this.relatedObjectTypes = [];
+    this.relatedParentMap.clear();
+    this.ref.detectChanges();
+    return;
+  }
 
-    const objectsMap = this.dependencies?.objects || {};
-    const tempRelatedByType: { [key: string]: any[] } = {};
-    const seenRelatedIds = new Set<number>();
-    const tempParentMap: Map<number, Set<number>> = new Map();
+  const objectsMap = this.dependencies?.objects || {};
+  const tempRelatedByType: { [key: string]: any[] } = {};
+  const seenRelatedIds = new Set<number>();
+  const tempParentMap: Map<number, Set<number>> = new Map();
 
   const existingIds = new Set<number>();
 
@@ -1774,9 +1766,8 @@ export class SingleDeployComponent {
 
     const allDepsIds = [
       ...(dep.enforcedReferencedBy || []),
-      ...(dep.referencedBy || []),
-      ...(dep.enforcedReferences || []),
-      ...(dep.references || [])
+      ...(dep.enforcedReferences || [])
+
     ];
 
     allDepsIds.forEach(relatedId => {
@@ -1788,49 +1779,48 @@ export class SingleDeployComponent {
       const relatedObj = objectsMap[relatedId];
       if (!relatedObj) return;
 
-        if (!tempParentMap.has(relatedId)) {
-          tempParentMap.set(relatedId, new Set());
-        }
-        tempParentMap.get(relatedId)!.add(selectedId);
+      if (!tempParentMap.has(relatedId)) {
+        tempParentMap.set(relatedId, new Set());
+      }
+      tempParentMap.get(relatedId)!.add(selectedId);
 
-        if (seenRelatedIds.has(relatedId)) {
-          return;
-        }
+      if (seenRelatedIds.has(relatedId)) {
+        return;
+      }
 
-        seenRelatedIds.add(relatedId);
+      seenRelatedIds.add(relatedId);
 
-        const type = relatedObj.objectType;
-        if (!tempRelatedByType[type]) {
-          tempRelatedByType[type] = [];
-        }
+      const type = relatedObj.objectType;
+      if (!tempRelatedByType[type]) {
+        tempRelatedByType[type] = [];
+      }
 
-      const isEnforced = (dep.enforcedReferencedBy || []).includes(relatedId) ||
-        (dep.enforcedReferences || []).includes(relatedId);
+      const isEnforced = true;
 
       const state = this.getDependencyState(relatedObj, isEnforced);
 
-        tempRelatedByType[type].push({
-          ...relatedObj,
-          enforce: isEnforced,
-          selected: state.selected,
-          disabled: state.disabled,
-          change: relatedObj.deployed
-        });
+      tempRelatedByType[type].push({
+        ...relatedObj,
+        enforce: true,  // ✅ Always true for related objects
+        selected: state.selected,
+        disabled: state.disabled,
+        change: relatedObj.deployed
       });
     });
+  });
 
-    this.relatedParentMap = tempParentMap;
+  this.relatedParentMap = tempParentMap;
 
-    this.relatedObjectsByType = tempRelatedByType;
-    this.relatedObjectTypes = Object.keys(tempRelatedByType);
+  this.relatedObjectsByType = tempRelatedByType;
+  this.relatedObjectTypes = Object.keys(tempRelatedByType);
 
-    this.relatedObjectTypes.forEach(type => {
-      this.relatedCollapsed[type] = true;
-      this.updateParentCheckboxRelated(type);
-    });
+  this.relatedObjectTypes.forEach(type => {
+    this.relatedCollapsed[type] = true;
+    this.updateParentCheckboxRelated(type);
+  });
 
-    this.ref.detectChanges();
-  }
+  this.ref.detectChanges();
+}
 
 
   getIcon(objectType: string): string {
@@ -1881,36 +1871,6 @@ export class SingleDeployComponent {
     })
   }
 
-
-
-  getInvalidMessage(): string {
-    if ((!this.isRevoke || this.releasable) && this.operation !== 'recall') {
-      const invalidObjects: string[] = [];
-
-      [this.referencedObjectsByType, this.affectedObjectsByType, this.relatedObjectsByType].forEach(objsByType => {
-        Object.keys(objsByType).forEach(type => {
-          objsByType[type].forEach(obj => {
-            if (obj.selected && obj.enforce && !obj.valid) {
-              invalidObjects.push(obj.path || obj.name);
-            }
-          });
-        });
-      });
-
-      if (invalidObjects.length > 0) {
-        let message = '';
-        this.translate.get('inventory.message.invalidEnforcedObjects')
-          .subscribe(translatedValue => {
-            message = translatedValue;
-          });
-
-        const listItems = invalidObjects.map(path => `• ${path}`).join('\n');
-
-        return `${message || 'Invalid enforced objects. Please validate them first'}:\n${listItems}`;
-      }
-    }
-    return '';
-  }
   getInvalidObjects(): string[] {
     if ((!this.isRevoke || this.releasable) && this.operation !== 'recall') {
       const invalidObjects: string[] = [];
@@ -2744,7 +2704,6 @@ export class DeployComponent {
     }
   }
 
-  // ============ DEPENDENCY MANAGEMENT ============
 
   private getDependencies(checkedNodes: { name: string, type: string }[], node, isChecked = false): void {
     this.loading = true;
@@ -2776,143 +2735,145 @@ export class DeployComponent {
 
     const requestedKeys = new Set(configurations.map(config => `${config.name}-${config.type}`));
 
-  this.coreService.post('inventory/dependencies', requestBody).subscribe({
-    next: (res: any) => {
-      this.dependencies = null;
-      this.affectedObjectsByType = {};
-      this.referencedObjectsByType = {};
-      this.affectedObjectTypes = [];
-      this.referencedObjectTypes = [];
-      this.relatedObjectsByType = {};
-      this.relatedObjectTypes = [];
-      this.relatedParentMap.clear();
+    this.coreService.post('inventory/dependencies', requestBody).subscribe({
+      next: (res: any) => {
+        this.dependencies = null;
+        this.affectedObjectsByType = {};
+        this.referencedObjectsByType = {};
+        this.affectedObjectTypes = [];
+        this.referencedObjectTypes = [];
+        this.relatedObjectsByType = {};
+        this.relatedObjectTypes = [];
+        this.relatedParentMap.clear();
 
-      this.dependencies = res;
+        this.dependencies = res;
 
-      if (this.object.isRecursive) {
-        this.recursiveDependenciesCache = res;
-      }
+        if (this.object.isRecursive) {
+          this.recursiveDependenciesCache = res;
+        }
 
-      if (res.requestedItems && res.requestedItems.length > 0) {
-        this.updateNodeDependencies(res, requestedKeys, isChecked);
-        this.prepareObject(res);
+        if (res.requestedItems && res.requestedItems.length > 0) {
+          this.updateNodeDependencies(res, requestedKeys, isChecked);
+          this.prepareObject(res);
+          this.ref.detectChanges();
+        }
+        this.loading = false;
+        this.rebuildRelatedObjects();
         this.ref.detectChanges();
+      },
+      error: (err) => {
+        this.loading = false;
       }
-      this.loading = false;
-      this.rebuildRelatedObjects();
-      this.ref.detectChanges();
-    },
-    error: (err) => {
-      this.loading = false;
-    }
-  });
-}
-private prepareObject(dependencies: any): void {
-  this.dependencies = dependencies;
-
-  const requestedItemIds = dependencies.requestedItems || [];
-  const objectsMap = dependencies.objects || {};
-
-  if (!requestedItemIds.length) {
-    return;
+    });
   }
 
-  this.affectedObjectsByType = {};
-  this.referencedObjectsByType = {};
-  this.affectedObjectTypes = [];
-  this.referencedObjectTypes = [];
+  private prepareObject(dependencies: any): void {
+    this.dependencies = dependencies;
 
-  requestedItemIds.forEach(objectId => {
-    const dep = objectsMap[objectId];
-    if (!dep) return;
+    const requestedItemIds = dependencies.requestedItems || [];
+    const objectsMap = dependencies.objects || {};
 
-    const allReferencedByIds = [
-      ...(dep.enforcedReferencedBy || []),
-      ...(dep.referencedBy || [])
-    ];
+    if (!requestedItemIds.length) {
+      return;
+    }
 
-    allReferencedByIds.forEach((refById) => {
-      const refObj = objectsMap[refById];
-      if (!refObj) return;
+    this.affectedObjectsByType = {};
+    this.referencedObjectsByType = {};
+    this.affectedObjectTypes = [];
+    this.referencedObjectTypes = [];
 
-      const type = refObj.objectType;
-      if (!this.affectedObjectsByType[type]) {
-        this.affectedObjectsByType[type] = [];
-        this.affectedObjectTypes.push(type);
-      }
+    requestedItemIds.forEach(objectId => {
+      const dep = objectsMap[objectId];
+      if (!dep) return;
 
-      const isEnforced = (dep.enforcedReferencedBy || []).includes(refById);
-      const state = this.getDependencyState(refObj, isEnforced);
+      const allReferencedByIds = [
+        ...(dep.enforcedReferencedBy || []),
+        ...(dep.referencedBy || [])
+      ];
 
-      const refObjClone = {
-        ...refObj,
-        enforce: isEnforced,
-        change: refObj.deployed,
-        selected: state.selected,
-        disabled: state.disabled
-      };
+      allReferencedByIds.forEach((refById) => {
+        const refObj = objectsMap[refById];
+        if (!refObj) return;
 
-      const existingIndex = this.affectedObjectsByType[type].findIndex(
-        obj => obj.id === refObjClone.id
-      );
-      if (existingIndex === -1) {
-        this.affectedObjectsByType[type].push(refObjClone);
-      }
+        const type = refObj.objectType;
+        if (!this.affectedObjectsByType[type]) {
+          this.affectedObjectsByType[type] = [];
+          this.affectedObjectTypes.push(type);
+        }
+
+        const isEnforced = (dep.enforcedReferencedBy || []).includes(refById);
+        const state = this.getDependencyState(refObj, isEnforced);
+
+        const refObjClone = {
+          ...refObj,
+          enforce: isEnforced,
+          change: refObj.deployed,
+          selected: state.selected,
+          disabled: state.disabled
+        };
+
+        const existingIndex = this.affectedObjectsByType[type].findIndex(
+          obj => obj.id === refObjClone.id
+        );
+        if (existingIndex === -1) {
+          this.affectedObjectsByType[type].push(refObjClone);
+        }
+      });
+
+      const allReferencesIds = [
+        ...(dep.enforcedReferences || []),
+        ...(dep.references || [])
+      ];
+
+      allReferencesIds.forEach(refId => {
+        const refObj = objectsMap[refId];
+        if (!refObj) return;
+
+        const type = refObj.objectType;
+        if (!this.referencedObjectsByType[type]) {
+          this.referencedObjectsByType[type] = [];
+          this.referencedObjectTypes.push(type);
+        }
+
+        const isEnforced = (dep.enforcedReferences || []).includes(refId);
+        const state = this.getDependencyState(refObj, isEnforced);
+
+        const refObjClone = {
+          ...refObj,
+          enforce: isEnforced,
+          change: refObj.deployed,
+          selected: state.selected,
+          disabled: state.disabled
+        };
+
+        const existingIndex = this.referencedObjectsByType[type].findIndex(
+          obj => obj.id === refObjClone.id
+        );
+        if (existingIndex === -1) {
+          this.referencedObjectsByType[type].push(refObjClone);
+        }
+      });
     });
 
-    const allReferencesIds = [
-      ...(dep.enforcedReferences || []),
-      ...(dep.references || [])
-    ];
+    setTimeout(() => {
+      this.affectedObjectTypes.forEach(type => {
+        if (this.affectedCollapsed[type] === undefined) {
+          this.affectedCollapsed[type] = true;
+        }
+      });
 
-    allReferencesIds.forEach(refId => {
-      const refObj = objectsMap[refId];
-      if (!refObj) return;
+      this.referencedObjectTypes.forEach(type => {
+        if (this.referencedCollapsed[type] === undefined) {
+          this.referencedCollapsed[type] = true;
+        }
+      });
 
-      const type = refObj.objectType;
-      if (!this.referencedObjectsByType[type]) {
-        this.referencedObjectsByType[type] = [];
-        this.referencedObjectTypes.push(type);
-      }
+      this.rebuildRelatedObjects();
+      this.ref.detectChanges();
+    }, 0);
+  }
 
-      const isEnforced = (dep.enforcedReferences || []).includes(refId);
-      const state = this.getDependencyState(refObj, isEnforced);
-
-      const refObjClone = {
-        ...refObj,
-        enforce: isEnforced,
-        change: refObj.deployed,
-        selected: state.selected,
-        disabled: state.disabled
-      };
-
-      const existingIndex = this.referencedObjectsByType[type].findIndex(
-        obj => obj.id === refObjClone.id
-      );
-      if (existingIndex === -1) {
-        this.referencedObjectsByType[type].push(refObjClone);
-      }
-    });
-  });
-
-  setTimeout(() => {
-    this.affectedObjectTypes.forEach(type => {
-      if (this.affectedCollapsed[type] === undefined) {
-        this.affectedCollapsed[type] = true;
-      }
-    });
-
-    this.referencedObjectTypes.forEach(type => {
-      if (this.referencedCollapsed[type] === undefined) {
-        this.referencedCollapsed[type] = true;
-      }
-    });
-
-    this.rebuildRelatedObjects();
-    this.ref.detectChanges();
-  }, 0);
-}
-private updateNodeDependencies(dependenciesResponse: any, requestedKeys: Set<string>, isChecked: boolean): void {
+  private updateNodeDependencies(dependenciesResponse: any, requestedKeys: Set<string>, isChecked: boolean): void {
     const requestedItemIds = dependenciesResponse.requestedItems || [];
     const objectsMap = dependenciesResponse.objects || {};
 
@@ -3025,7 +2986,7 @@ private updateNodeDependencies(dependenciesResponse: any, requestedKeys: Set<str
     let disabled = false;
 
     if (this.dependencyMode === 'none') {
-      return { selected: false, disabled: false };
+      return {selected: false, disabled: false};
     }
 
     if (isEnforced) {
@@ -3065,11 +3026,11 @@ private updateNodeDependencies(dependenciesResponse: any, requestedKeys: Set<str
       } else {
 
         selected = canRevoke;
-        disabled = !canRevoke;
+        disabled = false;
       }
     }
 
-    return { selected, disabled };
+    return {selected, disabled};
   }
 
   private filterDependenciesByMode(dependencies: any[]): any[] {
@@ -3221,115 +3182,61 @@ private updateNodeDependencies(dependenciesResponse: any, requestedKeys: Set<str
     return result;
   }
 
-  getParentDependencies(relatedObjectId: number): string {
-    const parentIds = this.relatedParentMap.get(relatedObjectId);
+  onDependencyModeChange(): void {
 
-    if (!parentIds || parentIds.size === 0) {
-      return '';
+    const savedAffectedSelections = new Map<number, boolean>();
+    const savedReferencedSelections = new Map<number, boolean>();
+
+    Object.values(this.affectedObjectsByType).forEach((arr: any[]) => {
+      arr.forEach(obj => {
+        if (obj.id) {
+          savedAffectedSelections.set(obj.id, obj.selected);
+        }
+      });
+    });
+
+    Object.values(this.referencedObjectsByType).forEach((arr: any[]) => {
+      arr.forEach(obj => {
+        if (obj.id) {
+          savedReferencedSelections.set(obj.id, obj.selected);
+        }
+      });
+    });
+
+    if (this.dependencies) {
+      this.prepareObject(this.dependencies);
+
+      setTimeout(() => {
+
+        Object.values(this.affectedObjectsByType).forEach((arr: any[]) => {
+          arr.forEach(obj => {
+            if (obj.id && savedAffectedSelections.has(obj.id)) {
+              obj.selected = savedAffectedSelections.get(obj.id)!;
+            }
+          });
+        });
+
+        Object.values(this.referencedObjectsByType).forEach((arr: any[]) => {
+          arr.forEach(obj => {
+            if (obj.id && savedReferencedSelections.has(obj.id)) {
+              obj.selected = savedReferencedSelections.get(obj.id)!;
+            }
+          });
+        });
+
+        this.affectedObjectTypes.forEach(type => {
+          this.updateParentCheckboxAffected(type);
+        });
+
+        this.referencedObjectTypes.forEach(type => {
+          this.updateParentCheckboxReferenced(type);
+        });
+
+        this.rebuildRelatedObjects();
+
+        this.ref.detectChanges();
+      }, 100);
     }
-
-    const parentNames: string[] = [];
-
-    parentIds.forEach(parentId => {
-
-      for (const type of this.affectedObjectTypes) {
-        const found = this.affectedObjectsByType[type]?.find((obj: any) => obj.id === parentId);
-        if (found) {
-          parentNames.push(found.name || found.path);
-          return;
-        }
-      }
-
-      for (const type of this.referencedObjectTypes) {
-        const found = this.referencedObjectsByType[type]?.find((obj: any) => obj.id === parentId);
-        if (found) {
-          parentNames.push(found.name || found.path);
-          return;
-        }
-      }
-
-      for (const type of this.relatedObjectTypes) {
-        const found = this.relatedObjectsByType[type]?.find((obj: any) => obj.id === parentId);
-        if (found) {
-          parentNames.push(found.name || found.path);
-          return;
-        }
-      }
-    });
-
-    return parentNames.join(', ');
-  }
-
-onDependencyModeChange(): void {
-
-  const savedAffectedSelections = new Map<number, boolean>();
-  const savedReferencedSelections = new Map<number, boolean>();
-
-  Object.values(this.affectedObjectsByType).forEach((arr: any[]) => {
-    arr.forEach(obj => {
-      if (obj.id) {
-        savedAffectedSelections.set(obj.id, obj.selected);
-      }
-    });
-  });
-
-  Object.values(this.referencedObjectsByType).forEach((arr: any[]) => {
-    arr.forEach(obj => {
-      if (obj.id) {
-        savedReferencedSelections.set(obj.id, obj.selected);
-      }
-    });
-  });
-
-  if (this.dependencies) {
-    this.prepareObject(this.dependencies);
-
-    setTimeout(() => {
-
-      Object.values(this.affectedObjectsByType).forEach((arr: any[]) => {
-        arr.forEach(obj => {
-          if (obj.id && savedAffectedSelections.has(obj.id)) {
-            obj.selected = savedAffectedSelections.get(obj.id)!;
-          }
-        });
-      });
-
-      Object.values(this.referencedObjectsByType).forEach((arr: any[]) => {
-        arr.forEach(obj => {
-          if (obj.id && savedReferencedSelections.has(obj.id)) {
-            obj.selected = savedReferencedSelections.get(obj.id)!;
-          }
-        });
-      });
-
-      this.affectedObjectTypes.forEach(type => {
-        this.updateParentCheckboxAffected(type);
-      });
-
-      this.referencedObjectTypes.forEach(type => {
-        this.updateParentCheckboxReferenced(type);
-      });
-
-      this.rebuildRelatedObjects();
-
-      this.ref.detectChanges();
-    }, 100);
-  }
-}
-  hasVisibleDepsForNode(node: any): boolean {
-    const deps = this.getFilteredNodeDependencies(node);
-    if (!deps) { return false; }
-    return (deps.referencedBy?.length || 0) > 0 || (deps.references?.length || 0) > 0;
-  }
-
-
-  private clearFilterModeTracking(nodes: any[]): void {
-    nodes.forEach(node => {
-      delete node._lastFilterMode;
-      if (node.children && node.children.length > 0) {
-        this.clearFilterModeTracking(node.children);
-      }
-    });
   }
 
   toggleAllRelated(objectType: string, isChecked: boolean): void {
@@ -3354,22 +3261,12 @@ onDependencyModeChange(): void {
   }
 
 
-
   toggleRelatedCollapse(objectType: string): void {
     this.relatedCollapsed[objectType] = !this.relatedCollapsed[objectType];
   }
 
   toggleAllRelatedCollapse(): void {
     this.isRelatedCollapsed = !this.isRelatedCollapsed;
-  }
-  expandAllRelated(): void {
-    this.isRelatedCollapsed = true;
-    this.relatedObjectTypes.forEach(type => this.relatedCollapsed[type] = true);
-  }
-
-  collapseAllRelated(): void {
-    this.isRelatedCollapsed = false;
-    this.relatedObjectTypes.forEach(type => this.relatedCollapsed[type] = false);
   }
 
   updateParentCheckboxRelated(objectType: string): void {
@@ -3390,6 +3287,7 @@ onDependencyModeChange(): void {
 
     this.ref.detectChanges();
   }
+
   onAffectedCheckboxChange(changedObj: any, objectType: string): void {
 
 
@@ -3421,7 +3319,6 @@ onDependencyModeChange(): void {
   updateParentCheckboxAffected(objectType: string): void {
 
 
-
     const objects = this.affectedObjectsByType[objectType] || [];
     const enabledObjects = objects.filter(o => !o.disabled);
     if (enabledObjects.length > 0) {
@@ -3433,57 +3330,12 @@ onDependencyModeChange(): void {
   updateParentCheckboxReferenced(objectType: string): void {
 
 
-
     const objects = this.referencedObjectsByType[objectType] || [];
     const enabledObjects = objects.filter(o => !o.disabled);
     if (enabledObjects.length > 0) {
       this.selectAllReferenced[objectType] = enabledObjects.every(o => o.selected);
     }
     this.rebuildRelatedObjects();
-  }
-
-
-  private updateRelatedObjectsVisibility(): void {
-    const selectedIds = new Set<number>();
-
-    Object.keys(this.affectedObjectsByType).forEach(type => {
-      this.affectedObjectsByType[type].forEach(obj => {
-        if (obj.selected && obj.id) {
-          selectedIds.add(obj.id);
-        }
-      });
-    });
-
-    Object.keys(this.referencedObjectsByType).forEach(type => {
-      this.referencedObjectsByType[type].forEach(obj => {
-        if (obj.selected && obj.id) {
-          selectedIds.add(obj.id);
-        }
-      });
-    });
-
-    const filteredRelatedByType: { [key: string]: any[] } = {};
-    Object.keys(this.relatedObjectsByType).forEach(type => {
-      filteredRelatedByType[type] = this.relatedObjectsByType[type].filter(obj => {
-        const parentIds = this.relatedParentMap.get(obj.id);
-        if (!parentIds || parentIds.size === 0) {
-          return false;
-        }
-
-        return Array.from(parentIds).some(parentId => selectedIds.has(parentId));
-      });
-    });
-
-    this.relatedObjectsByType = filteredRelatedByType;
-    this.relatedObjectTypes = Object.keys(filteredRelatedByType).filter(
-      type => filteredRelatedByType[type].length > 0
-    );
-
-    this.relatedObjectTypes.forEach(type => {
-      this.updateParentCheckboxRelated(type);
-    });
-
-    this.ref.detectChanges();
   }
 
   getFilteredRelatedObjects(type: string): any[] {
@@ -3518,6 +3370,7 @@ onDependencyModeChange(): void {
 
     return this.filterDependenciesByMode(filtered);
   }
+
   getRelatedParentTooltip(relatedObjectId: number): string {
     const parents = this.relatedParentMap.get(relatedObjectId);
     if (!parents || parents.size === 0) {
@@ -3527,42 +3380,9 @@ onDependencyModeChange(): void {
     const count = parents.size;
 
 
-    const tooltip = this.translate.instant('inventory.message.relatedObjects', { count });
+    const tooltip = this.translate.instant('inventory.message.relatedObjects', {count});
 
     return tooltip;
-  }
-
-  private buildNodeIdMap(nodes: any[], nodeIdMap: Map<string, number>): void {
-    nodes.forEach(node => {
-      if (node.name && node.type) {
-        const key = `${node.name}-${node.type}`;
-
-        if (this.dependencies?.objects) {
-          const objectsMap = this.dependencies.objects;
-          const matchingId = Object.keys(objectsMap).find(id => {
-            const obj = objectsMap[id];
-            return obj.name === node.name && obj.objectType === node.type;
-          });
-
-          if (matchingId) {
-            nodeIdMap.set(key, parseInt(matchingId));
-          }
-        }
-      }
-
-      if (node.children && node.children.length > 0) {
-        this.buildNodeIdMap(node.children, nodeIdMap);
-      }
-    });
-  }
-  getFilteredAffectedObjects(type: string): any[] {
-    const objects = this.affectedObjectsByType[type] || [];
-    return this.filterDependenciesByMode(objects);
-  }
-
-  getFilteredReferencedObjects(type: string): any[] {
-    const objects = this.referencedObjectsByType[type] || [];
-    return this.filterDependenciesByMode(objects);
   }
 
   getUniqueObjectTypes(objects: any[]): string[] {
@@ -3573,197 +3393,114 @@ onDependencyModeChange(): void {
     return objects.filter(obj => obj.objectType === type);
   }
 
-  getFilteredObjectTypeCount(objects: any[], objectType: string): number {
-    const objectsOfType = this.getObjectsByType(objects, objectType);
-    const filtered = this.filterDependenciesByMode(objectsOfType);
-    return filtered.length;
-  }
+private rebuildRelatedObjects(): void {
+  this.relatedObjectsByType = {};
+  this.relatedObjectTypes = [];
+  this.relatedParentMap.clear();
 
-
-  private rebuildRelatedObjects(): void {
-
-
-    this.relatedObjectsByType = {};
-    this.relatedObjectTypes = [];
-    this.relatedParentMap.clear();
-
-    if (!this.dependencies?.objects) {
-
-      this.ref.detectChanges();
-      return;
-    }
-
-    const objectsMap = this.dependencies.objects;
-
-
-    const selectedParentIds = new Set<number>();
-
-    Object.keys(this.affectedObjectsByType).forEach(type => {
-
-      this.affectedObjectsByType[type].forEach((obj: any) => {
-
-        if (obj.selected && obj.id) {
-          selectedParentIds.add(obj.id);
-        }
-      });
-    });
-
-    Object.keys(this.referencedObjectsByType).forEach(type => {
-
-      this.referencedObjectsByType[type].forEach((obj: any) => {
-
-        if (obj.selected && obj.id) {
-          selectedParentIds.add(obj.id);
-        }
-      });
-    });
-
-
-
-    if (selectedParentIds.size === 0) {
-
-      this.ref.detectChanges();
-      return;
-    }
-
-    const existingIds = new Set<number>();
-
-    Object.values(this.affectedObjectsByType).forEach((arr: any[]) => {
-      arr.forEach(obj => existingIds.add(obj.id));
-    });
-
-    Object.values(this.referencedObjectsByType).forEach((arr: any[]) => {
-      arr.forEach(obj => existingIds.add(obj.id));
-    });
-
-    (this.dependencies.requestedItems || []).forEach((id: number) => {
-      existingIds.add(id);
-    });
-
-
-
-    const relatedObjectsById = new Map<number, any>();
-    const parentMap = new Map<number, Set<number>>();
-
-    selectedParentIds.forEach(parentId => {
-
-      const parentObj = objectsMap[parentId];
-      if (!parentObj) {
-
-        return;
-      }
-
-
-
-      const allDependencyIds = [
-        ...(parentObj.enforcedReferencedBy || []),
-        ...(parentObj.referencedBy || []),
-        ...(parentObj.enforcedReferences || []),
-        ...(parentObj.references || [])
-      ];
-
-
-
-      allDependencyIds.forEach(depId => {
-        if (existingIds.has(depId)) {
-
-          return;
-        }
-
-        const depObj = objectsMap[depId];
-        if (!depObj) {
-
-          return;
-        }
-
-
-
-        if (!parentMap.has(depId)) {
-          parentMap.set(depId, new Set());
-        }
-        parentMap.get(depId)!.add(parentId);
-
-        if (!relatedObjectsById.has(depId)) {
-          const isEnforced =
-            (parentObj.enforcedReferencedBy || []).includes(depId) ||
-            (parentObj.enforcedReferences || []).includes(depId);
-
-          const state = this.getDependencyState(depObj, isEnforced);
-
-          relatedObjectsById.set(depId, {
-            ...depObj,
-            enforce: isEnforced,
-            selected: state.selected,
-            disabled: state.disabled,
-            change: depObj.deployed
-          });
-
-
-        } else {
-
-        }
-      });
-    });
-
-
-
-
-    const tempRelatedByType: { [key: string]: any[] } = {};
-
-    relatedObjectsById.forEach(obj => {
-      const type = obj.objectType;
-      if (!tempRelatedByType[type]) {
-        tempRelatedByType[type] = [];
-      }
-      tempRelatedByType[type].push(obj);
-    });
-
-
-
-    this.relatedParentMap = parentMap;
-    this.relatedObjectsByType = tempRelatedByType;
-    this.relatedObjectTypes = Object.keys(tempRelatedByType);
-
-
-
-
-    this.relatedObjectTypes.forEach(type => {
-      if (this.relatedCollapsed[type] === undefined) {
-        this.relatedCollapsed[type] = true;
-      }
-      this.updateParentCheckboxRelated(type);
-    });
-
+  if (!this.dependencies?.objects) {
     this.ref.detectChanges();
-
+    return;
   }
 
-  private collectAllIdsFromTree(nodes: any[], allIds: Set<number>): void {
-    nodes.forEach(node => {
+  const objectsMap = this.dependencies.objects;
 
-      const nodeId = node.id || node.origin?.id;
-      if (nodeId) {
-        allIds.add(nodeId);
-      }
-
-      if (node.dependencies?.referencedBy) {
-        node.dependencies.referencedBy.forEach((obj: any) => {
-          if (obj.id) allIds.add(obj.id);
-        });
-      }
-
-      if (node.dependencies?.references) {
-        node.dependencies.references.forEach((obj: any) => {
-          if (obj.id) allIds.add(obj.id);
-        });
-      }
-
-      if (node.children && node.children.length > 0) {
-        this.collectAllIdsFromTree(node.children, allIds);
+  const selectedParentIds = new Set<number>();
+  Object.keys(this.affectedObjectsByType).forEach((type) => {
+    this.affectedObjectsByType[type].forEach((obj: any) => {
+      if (obj.selected && obj.id) {
+        selectedParentIds.add(obj.id);
       }
     });
+  });
+
+  Object.keys(this.referencedObjectsByType).forEach((type) => {
+    this.referencedObjectsByType[type].forEach((obj: any) => {
+      if (obj.selected && obj.id) {
+        selectedParentIds.add(obj.id);
+      }
+    });
+  });
+
+  if (selectedParentIds.size === 0) {
+    this.ref.detectChanges();
+    return;
   }
 
+  const existingIds = new Set<number>();
+  Object.values(this.affectedObjectsByType).forEach((arr: any) => {
+    arr.forEach((obj) => existingIds.add(obj.id));
+  });
+  Object.values(this.referencedObjectsByType).forEach((arr: any) => {
+    arr.forEach((obj) => existingIds.add(obj.id));
+  });
+
+  (this.dependencies.requestedItems || []).forEach((id: number) => existingIds.add(id));
+
+  const relatedObjectsById = new Map<number, any>();
+  const parentMap = new Map<number, Set<number>>();
+
+  selectedParentIds.forEach((parentId) => {
+    const parentObj = objectsMap[parentId];
+    if (!parentObj) return;
+
+    const allDependencyIds = [
+      ...(parentObj.enforcedReferencedBy || []),
+      ...(parentObj.enforcedReferences || [])
+
+    ];
+
+    allDependencyIds.forEach((depId) => {
+
+      if (existingIds.has(depId)) return;
+
+      const depObj = objectsMap[depId];
+      if (!depObj) return;
+
+      if (!parentMap.has(depId)) {
+        parentMap.set(depId, new Set());
+      }
+      parentMap.get(depId)!.add(parentId);
+
+      if (!relatedObjectsById.has(depId)) {
+
+        const isEnforced = true;
+
+        const state = this.getDependencyState(depObj, isEnforced);
+
+        relatedObjectsById.set(depId, {
+          ...depObj,
+          enforce: true,  // ✅ Always true for related objects
+          selected: state.selected,
+          disabled: state.disabled,
+          change: depObj.deployed
+        });
+      }
+    });
+  });
+
+  const tempRelatedByType: { [key: string]: any[] } = {};
+  relatedObjectsById.forEach((obj) => {
+    const type = obj.objectType;
+    if (!tempRelatedByType[type]) {
+      tempRelatedByType[type] = [];
+    }
+    tempRelatedByType[type].push(obj);
+  });
+
+  this.relatedParentMap = parentMap;
+  this.relatedObjectsByType = tempRelatedByType;
+  this.relatedObjectTypes = Object.keys(tempRelatedByType);
+
+  this.relatedObjectTypes.forEach((type) => {
+    if (this.relatedCollapsed[type] === undefined) {
+      this.relatedCollapsed[type] = true;
+    }
+    this.updateParentCheckboxRelated(type);
+  });
+
+  this.ref.detectChanges();
+}
 
   hasDependencies(): any {
     const selectedObjects = [];
@@ -3791,7 +3528,6 @@ onDependencyModeChange(): void {
     return false;
   }
 
-  // ============ UI UTILITIES & GETTERS ============
 
   getIcon(objectType: string): string {
     const iconMapping = {
@@ -3853,7 +3589,6 @@ onDependencyModeChange(): void {
     return checkedNodes;
   }
 
-  // ============ HELPER & UTILITY METHODS ============
 
   private collectCheckedObjects(nodes: any[]): any[] {
     const checkedObjects = [];
@@ -4499,16 +4234,6 @@ onDependencyModeChange(): void {
           }
         };
 
-        if (!obj.store) {
-          obj.store = {draftConfigurations: [], deployConfigurations: []};
-        }
-        if (!obj.store?.deployConfigurations) {
-          obj.store.deployConfigurations = [];
-        }
-        if (!obj.store?.draftConfigurations) {
-          obj.store.draftConfigurations = [];
-        }
-
         const isConfigPresent = (arr, config) => {
           return arr.some(existingConfig =>
             existingConfig.configuration.path === config.configuration.path &&
@@ -4516,7 +4241,27 @@ onDependencyModeChange(): void {
           );
         };
 
-        obj.store.draftConfigurations.push(config);
+        if (this.isRevoke) {
+
+          if (!obj.deployConfigurations) {
+            obj.deployConfigurations = [];
+          }
+          if (!isConfigPresent(obj.deployConfigurations, config)) {
+            obj.deployConfigurations.push(config);
+          }
+        } else {
+
+          if (!obj.store) {
+            obj.store = {draftConfigurations: [], deployConfigurations: []};
+          }
+          if (!obj.store?.deployConfigurations) {
+            obj.store.deployConfigurations = [];
+          }
+          if (!obj.store?.draftConfigurations) {
+            obj.store.draftConfigurations = [];
+          }
+          obj.store.draftConfigurations.push(config);
+        }
       };
 
       const handleSingleDeployable = (item, revoke) => {
@@ -4549,8 +4294,15 @@ onDependencyModeChange(): void {
           if (item.valid && item.selected &&
             ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType) &&
             item.path !== '/' && item.name !== '/') {
-            if (!this.releasable && item.deployed) {
-              promises.push(handleSingleDeployable(item, this.isRevoke));
+
+            if (this.isRevoke) {
+
+              if (item.deployed) {
+                promises.push(handleSingleDeployable(item, this.isRevoke));
+              }
+            } else {
+
+              promises.push(handleSingleDeployable(item, false));
             }
           }
         });
@@ -4841,8 +4593,9 @@ export class ExportComponent {
   private filteredDepsCache = new WeakMap<any, { references: any[], referencedBy: any[] }>();
   dependencyMode: 'none' | 'enforced' | 'all' = 'all';
   private _filteredDepsCache: WeakMap<any, { references: any[], referencedBy: any[] }> = new WeakMap();
+
   constructor(public activeModal: NzModalRef, private modal: NzModalService, private coreService: CoreService, private ref: ChangeDetectorRef,
-              private inventoryService: InventoryService,private translate: TranslateService) {
+              private inventoryService: InventoryService, private translate: TranslateService) {
   }
 
   ngOnInit(): void {
@@ -5078,33 +4831,33 @@ export class ExportComponent {
     this.coreService.post('inventory/dependencies', requestBody).subscribe({
       next: (res: any) => {
         this.dependencies = null;
-      this.affectedObjectsByType = {};
-      this.referencedObjectsByType = {};
-      this.affectedObjectTypes = [];
-      this.referencedObjectTypes = [];
-      this.relatedObjectsByType = {};
-      this.relatedObjectTypes = [];
-      this.relatedParentMap.clear();
+        this.affectedObjectsByType = {};
+        this.referencedObjectsByType = {};
+        this.affectedObjectTypes = [];
+        this.referencedObjectTypes = [];
+        this.relatedObjectsByType = {};
+        this.relatedObjectTypes = [];
+        this.relatedParentMap.clear();
 
-      this.dependencies = res;
+        this.dependencies = res;
         if (this.exportObj.isRecursive) {
           this.recursiveDependenciesCache = res;
         }
 
-      if (res.requestedItems && res.requestedItems.length > 0) {
-        this.updateNodeDependencies(res, requestedKeys, isChecked);
-        this.prepareObject(res);
+        if (res.requestedItems && res.requestedItems.length > 0) {
+          this.updateNodeDependencies(res, requestedKeys, isChecked);
+          this.prepareObject(res);
+          this.ref.detectChanges();
+        }
+        this.loading = false;
+        this.rebuildRelatedObjects();
         this.ref.detectChanges();
+      },
+      error: (err) => {
+        this.loading = false;
       }
-      this.loading = false;
-      this.rebuildRelatedObjects();
-      this.ref.detectChanges();
-    },
-    error: (err) => {
-      this.loading = false;
-    }
-  });
-}
+    });
+  }
 
   private updateNodeDependencies(dependenciesResponse: any, requestedKeys: Set<string>, isChecked: boolean): void {
     const requestedItemIds = dependenciesResponse.requestedItems || [];
@@ -5242,7 +4995,7 @@ export class ExportComponent {
       }
     } else if (this.exportObj.exportType === 'changes') {
       disabled = false;
-      selected = this.exportObj.includeDependencies;
+      selected = false;
     } else {
       disabled = false;
       selected = true;
@@ -5407,237 +5160,170 @@ export class ExportComponent {
     return dependencies;
   }
 
-  private clearFilterModeTracking(nodes: any[]): void {
-    nodes.forEach((node: any) => {
-      delete node.lastFilterMode;
-      if (node.children && node.children.length > 0) {
-        this.clearFilterModeTracking(node.children);
+private rebuildRelatedObjects(): void {
+  this.relatedObjectsByType = {};
+  this.relatedObjectTypes = [];
+  this.relatedParentMap.clear();
+
+  if (!this.dependencies?.objects) {
+    this.ref.detectChanges();
+    return;
+  }
+
+  const objectsMap = this.dependencies.objects;
+
+  const selectedParentIds = new Set<number>();
+  Object.keys(this.affectedObjectsByType).forEach((type) => {
+    this.affectedObjectsByType[type].forEach((obj: any) => {
+      if (obj.selected && obj.id) {
+        selectedParentIds.add(obj.id);
       }
     });
+  });
+
+  Object.keys(this.referencedObjectsByType).forEach((type) => {
+    this.referencedObjectsByType[type].forEach((obj: any) => {
+      if (obj.selected && obj.id) {
+        selectedParentIds.add(obj.id);
+      }
+    });
+  });
+
+  if (selectedParentIds.size === 0) {
+    this.ref.detectChanges();
+    return;
   }
-  private rebuildRelatedObjects(): void {
 
+  const existingIds = new Set<number>();
+  Object.values(this.affectedObjectsByType).forEach((arr: any) => {
+    arr.forEach((obj) => existingIds.add(obj.id));
+  });
+  Object.values(this.referencedObjectsByType).forEach((arr: any) => {
+    arr.forEach((obj) => existingIds.add(obj.id));
+  });
 
-    this.relatedObjectsByType = {};
-    this.relatedObjectTypes = [];
-    this.relatedParentMap.clear();
+  (this.dependencies.requestedItems || []).forEach((id: number) => existingIds.add(id));
 
-    if (!this.dependencies?.objects) {
+  const relatedObjectsById = new Map<number, any>();
+  const parentMap = new Map<number, Set<number>>();
 
-      this.ref.detectChanges();
-      return;
-    }
+  selectedParentIds.forEach((parentId) => {
+    const parentObj = objectsMap[parentId];
+    if (!parentObj) return;
 
-    const objectsMap = this.dependencies.objects;
+    const allDependencyIds = [
+      ...(parentObj.enforcedReferencedBy || []),
+      ...(parentObj.enforcedReferences || [])
 
+    ];
 
-    const selectedParentIds = new Set<number>();
+    allDependencyIds.forEach((depId) => {
 
-    Object.keys(this.affectedObjectsByType).forEach(type => {
+      if (existingIds.has(depId)) return;
 
-      this.affectedObjectsByType[type].forEach((obj: any) => {
+      const depObj = objectsMap[depId];
+      if (!depObj) return;
 
-        if (obj.selected && obj.id) {
-          selectedParentIds.add(obj.id);
-        }
-      });
+      if (!parentMap.has(depId)) {
+        parentMap.set(depId, new Set());
+      }
+      parentMap.get(depId)!.add(parentId);
+
+      if (!relatedObjectsById.has(depId)) {
+
+        const isEnforced = true;
+
+        const state = this.getDependencyState(depObj, isEnforced);
+
+        relatedObjectsById.set(depId, {
+          ...depObj,
+          enforce: true,  // ✅ Always true for related objects
+          selected: state.selected,
+          disabled: state.disabled,
+          change: depObj.deployed
+        });
+      }
     });
+  });
 
-    Object.keys(this.referencedObjectsByType).forEach(type => {
-
-      this.referencedObjectsByType[type].forEach((obj: any) => {
-
-        if (obj.selected && obj.id) {
-          selectedParentIds.add(obj.id);
-        }
-      });
-    });
-
-
-
-    if (selectedParentIds.size === 0) {
-
-      this.ref.detectChanges();
-      return;
+  const tempRelatedByType: { [key: string]: any[] } = {};
+  relatedObjectsById.forEach((obj) => {
+    const type = obj.objectType;
+    if (!tempRelatedByType[type]) {
+      tempRelatedByType[type] = [];
     }
+    tempRelatedByType[type].push(obj);
+  });
 
-    const existingIds = new Set<number>();
+  this.relatedParentMap = parentMap;
+  this.relatedObjectsByType = tempRelatedByType;
+  this.relatedObjectTypes = Object.keys(tempRelatedByType);
+
+  this.relatedObjectTypes.forEach((type) => {
+    if (this.relatedCollapsed[type] === undefined) {
+      this.relatedCollapsed[type] = true;
+    }
+    this.updateParentCheckboxRelated(type);
+  });
+
+  this.ref.detectChanges();
+}
+
+  onDependencyModeChange(): void {
+
+    const savedAffectedSelections = new Map<number, boolean>();
+    const savedReferencedSelections = new Map<number, boolean>();
 
     Object.values(this.affectedObjectsByType).forEach((arr: any[]) => {
-      arr.forEach(obj => existingIds.add(obj.id));
+      arr.forEach(obj => {
+        if (obj.id) {
+          savedAffectedSelections.set(obj.id, obj.selected);
+        }
+      });
     });
 
     Object.values(this.referencedObjectsByType).forEach((arr: any[]) => {
-      arr.forEach(obj => existingIds.add(obj.id));
+      arr.forEach(obj => {
+        if (obj.id) {
+          savedReferencedSelections.set(obj.id, obj.selected);
+        }
+      });
     });
 
-    (this.dependencies.requestedItems || []).forEach((id: number) => {
-      existingIds.add(id);
-    });
+    if (this.dependencies) {
+      this.prepareObject(this.dependencies);
 
+      setTimeout(() => {
 
-
-    const relatedObjectsById = new Map<number, any>();
-    const parentMap = new Map<number, Set<number>>();
-
-    selectedParentIds.forEach(parentId => {
-
-      const parentObj = objectsMap[parentId];
-      if (!parentObj) {
-
-        return;
-      }
-
-
-
-      const allDependencyIds = [
-        ...(parentObj.enforcedReferencedBy || []),
-        ...(parentObj.referencedBy || []),
-        ...(parentObj.enforcedReferences || []),
-        ...(parentObj.references || [])
-      ];
-
-
-
-      allDependencyIds.forEach(depId => {
-        if (existingIds.has(depId)) {
-
-          return;
-        }
-
-        const depObj = objectsMap[depId];
-        if (!depObj) {
-
-          return;
-        }
-
-
-
-        if (!parentMap.has(depId)) {
-          parentMap.set(depId, new Set());
-        }
-        parentMap.get(depId)!.add(parentId);
-
-        if (!relatedObjectsById.has(depId)) {
-          const isEnforced =
-            (parentObj.enforcedReferencedBy || []).includes(depId) ||
-            (parentObj.enforcedReferences || []).includes(depId);
-
-          const state = this.getDependencyState(depObj, isEnforced);
-
-          relatedObjectsById.set(depId, {
-            ...depObj,
-            enforce: isEnforced,
-            selected: state.selected,
-            disabled: state.disabled,
-            change: depObj.deployed
+        Object.values(this.affectedObjectsByType).forEach((arr: any[]) => {
+          arr.forEach(obj => {
+            if (obj.id && savedAffectedSelections.has(obj.id)) {
+              obj.selected = savedAffectedSelections.get(obj.id)!;
+            }
           });
-
-
-        } else {
-
-        }
-      });
-    });
-
-
-
-
-    const tempRelatedByType: { [key: string]: any[] } = {};
-
-    relatedObjectsById.forEach(obj => {
-      const type = obj.objectType;
-      if (!tempRelatedByType[type]) {
-        tempRelatedByType[type] = [];
-      }
-      tempRelatedByType[type].push(obj);
-    });
-
-
-
-    this.relatedParentMap = parentMap;
-    this.relatedObjectsByType = tempRelatedByType;
-    this.relatedObjectTypes = Object.keys(tempRelatedByType);
-
-
-
-
-    this.relatedObjectTypes.forEach(type => {
-      if (this.relatedCollapsed[type] === undefined) {
-        this.relatedCollapsed[type] = true;
-      }
-      this.updateParentCheckboxRelated(type);
-    });
-
-    this.ref.detectChanges();
-
-  }
-onDependencyModeChange(): void {
-
-  const savedAffectedSelections = new Map<number, boolean>();
-  const savedReferencedSelections = new Map<number, boolean>();
-
-  Object.values(this.affectedObjectsByType).forEach((arr: any[]) => {
-    arr.forEach(obj => {
-      if (obj.id) {
-        savedAffectedSelections.set(obj.id, obj.selected);
-      }
-    });
-  });
-
-  Object.values(this.referencedObjectsByType).forEach((arr: any[]) => {
-    arr.forEach(obj => {
-      if (obj.id) {
-        savedReferencedSelections.set(obj.id, obj.selected);
-      }
-    });
-  });
-
-  if (this.dependencies) {
-    this.prepareObject(this.dependencies);
-
-    setTimeout(() => {
-
-      Object.values(this.affectedObjectsByType).forEach((arr: any[]) => {
-        arr.forEach(obj => {
-          if (obj.id && savedAffectedSelections.has(obj.id)) {
-            obj.selected = savedAffectedSelections.get(obj.id)!;
-          }
         });
-      });
 
-      Object.values(this.referencedObjectsByType).forEach((arr: any[]) => {
-        arr.forEach(obj => {
-          if (obj.id && savedReferencedSelections.has(obj.id)) {
-            obj.selected = savedReferencedSelections.get(obj.id)!;
-          }
+        Object.values(this.referencedObjectsByType).forEach((arr: any[]) => {
+          arr.forEach(obj => {
+            if (obj.id && savedReferencedSelections.has(obj.id)) {
+              obj.selected = savedReferencedSelections.get(obj.id)!;
+            }
+          });
         });
-      });
 
-      this.affectedObjectTypes.forEach(type => {
-        this.updateParentCheckboxAffected(type);
-      });
+        this.affectedObjectTypes.forEach(type => {
+          this.updateParentCheckboxAffected(type);
+        });
 
-      this.referencedObjectTypes.forEach(type => {
-        this.updateParentCheckboxReferenced(type);
-      });
+        this.referencedObjectTypes.forEach(type => {
+          this.updateParentCheckboxReferenced(type);
+        });
 
-      this.rebuildRelatedObjects();
+        this.rebuildRelatedObjects();
 
-      this.ref.detectChanges();
-    }, 100);
-  }
-}
-
-  private clearAllNodeDependencies(nodes: any[]): void {
-    nodes.forEach((node: any) => {
-      if (node.dependencies) {
-        delete node.dependencies;
-      }
-      if (node.children && node.children.length > 0) {
-        this.clearAllNodeDependencies(node.children);
-      }
-    });
+        this.ref.detectChanges();
+      }, 100);
+    }
   }
 
   private mergeDeep(deployables: any, releasables: any): any {
@@ -5664,15 +5350,6 @@ onDependencyModeChange(): void {
 
     recursive(deployables, releasables);
     return deployables;
-  }
-
-  onUseDependenciesChange(): void {
-    const checkedNodes = this.collectCheckedObjects(this.nodes);
-    if (checkedNodes.length > 0) {
-      this.getDependencies(checkedNodes, this.nodes[0]);
-    }
-
-    this.ref.detectChanges();
   }
 
   onchangeSigning(): void {
@@ -5727,21 +5404,6 @@ onDependencyModeChange(): void {
         this.loading = true;
       }
     });
-  }
-
-
-  includeDependencies(): void {
-    const checkedNodes = this.collectCheckedObjects(this.nodes);
-    if (checkedNodes.length > 0) {
-      if (!this.exportObj.includeDependencies) {
-        this.clearDependenciesForNode(this.nodes[0]);
-      } else {
-        this.getDependencies(checkedNodes, this.nodes[0]);
-      }
-    } else {
-      this.clearDependenciesForNode(this.nodes[0])
-    }
-    this.nodes = [...this.nodes];
   }
 
   updateChildCheckboxes(node: any, isChecked: boolean): void {
@@ -5867,9 +5529,6 @@ onDependencyModeChange(): void {
       return
     }
 
-    if (this.exportObj.exportType === 'folders') {
-      this.filteredAffectedItems = []
-    }
     this.checkedObject.clear();
     if (isChecked) {
       this.recursiveCheck(this.nodes);
@@ -6074,6 +5733,7 @@ onDependencyModeChange(): void {
   getObjectsByType(objects: any[], type: string): any[] {
     return objects.filter(obj => obj.objectType === type);
   }
+
   onAffectedCheckboxChange(changedObj: any, objectType: string): void {
 
 
@@ -6120,6 +5780,7 @@ onDependencyModeChange(): void {
 
     this.ref.detectChanges();
   }
+
   getRelatedParentTooltip(relatedObjectId: number): string {
     const parents = this.relatedParentMap.get(relatedObjectId);
     if (!parents || parents.size === 0) {
@@ -6129,10 +5790,11 @@ onDependencyModeChange(): void {
     const count = parents.size;
 
 
-    const tooltip = this.translate.instant('inventory.message.relatedObjects', { count });
+    const tooltip = this.translate.instant('inventory.message.relatedObjects', {count});
 
     return tooltip;
   }
+
   getFilteredRelatedObjects(type: string): any[] {
     const objects = this.relatedObjectsByType[type] || [];
 
@@ -6174,31 +5836,6 @@ onDependencyModeChange(): void {
     this.referencedCollapsed[nodeKey] = !this.referencedCollapsed[nodeKey];
   }
 
-
-  toggleAllAffected(objectType: string, isChecked: boolean): void {
-    this.affectedObjectsByType[objectType].forEach(obj => {
-      if (!obj.disabled) {
-        obj.selected = isChecked;
-      }
-    });
-  }
-
-  toggleAllReferenced(objectType: string, isChecked: boolean): void {
-    this.referencedObjectsByType[objectType].forEach(obj => {
-      if (!obj.disabled) {
-        obj.selected = isChecked;
-      }
-    });
-  }
-
-  toggleAllFilteredAffected(objectType: string, isChecked: boolean): void {
-    this.filteredAffectedItems.filter(item => item.objectType === objectType).forEach(obj => {
-      if (!obj.disabled) {
-        obj.selected = isChecked;
-      }
-    });
-  }
-
   toggleAllRelated(objectType: string, isChecked: boolean): void {
     const objects = this.relatedObjectsByType[objectType] || [];
 
@@ -6210,6 +5847,7 @@ onDependencyModeChange(): void {
 
     this.updateParentCheckboxRelated(objectType);
   }
+
   toggleRelatedCollapse(objectType: string): void {
     this.relatedCollapsed[objectType] = !this.relatedCollapsed[objectType];
   }
@@ -6217,13 +5855,9 @@ onDependencyModeChange(): void {
   toggleAllRelatedCollapse(): void {
     this.isRelatedCollapsed = !this.isRelatedCollapsed;
   }
-  updateParentCheckboxFilteredAffected(objectType: string): void {
-    const allSelected = this.filteredAffectedItems.filter(item => item.objectType === objectType).every(obj => obj.selected || obj.disabled);
-    this.selectAllFilteredAffected[objectType] = allSelected;
-  }
+
 
   updateParentCheckboxAffected(objectType: string): void {
-
 
 
     const objects = this.affectedObjectsByType[objectType] || [];
@@ -6237,7 +5871,6 @@ onDependencyModeChange(): void {
   updateParentCheckboxReferenced(objectType: string): void {
 
 
-
     const objects = this.referencedObjectsByType[objectType] || [];
     const enabledObjects = objects.filter(o => !o.disabled);
     if (enabledObjects.length > 0) {
@@ -6245,7 +5878,6 @@ onDependencyModeChange(): void {
     }
     this.rebuildRelatedObjects();
   }
-
 
 
   getIcon(objectType: string): string {
@@ -6400,10 +6032,16 @@ onDependencyModeChange(): void {
       this.checkFolderSelection(folders);
     }
 
-    if ((folders.length > 0) || (this.object.deployConfigurations && this.object.deployConfigurations.length > 0) ||
+    const hasRelatedObjects = Object.keys(this.relatedObjectsByType).some(
+      type => this.relatedObjectsByType[type]?.length > 0
+    );
+
+    if ((folders.length > 0) ||
+      (this.object.deployConfigurations && this.object.deployConfigurations.length > 0) ||
       (this.object.draftConfigurations.length && this.object.draftConfigurations.length > 0) ||
       (this.object.releasedConfigurations && this.object.releasedConfigurations.length > 0) ||
-      (this.object.releaseDraftConfigurations.length && this.object.releaseDraftConfigurations.length > 0) || (this.filteredAffectedItems && this.filteredAffectedItems.length > 0)) {
+      (this.object.releaseDraftConfigurations.length && this.object.releaseDraftConfigurations.length > 0) ||
+      hasRelatedObjects) {
 
       if (this.object.deployConfigurations && this.object.deployConfigurations.length === 0) {
         delete this.object.deployConfigurations;
@@ -6564,7 +6202,7 @@ onDependencyModeChange(): void {
               this.handleDependenciesForExport(node, obj);
             });
             this.handleAffectedItemsForExport(obj);
-          } else if (this.exportObj.exportType === 'changes' && this.exportObj.includeDependencies) {
+          } else if (this.exportObj.exportType === 'changes' && this.dependencyMode != 'none') {
 
             this.nodes.forEach(node => {
               this.handleDependenciesForExport(node, obj);
@@ -6741,7 +6379,10 @@ onDependencyModeChange(): void {
     }
 
     const isDuplicate = (array: any[], config: any): boolean => {
-      return array.some(item => item.configuration.path === config.configuration.path && item.configuration.objectType === config.configuration.objectType);
+      return array.some(item =>
+        item.configuration.path === config.configuration.path &&
+        item.configuration.objectType === config.configuration.objectType
+      );
     };
 
     const shouldIncludeDependency = (item: any): boolean => {
@@ -6751,39 +6392,52 @@ onDependencyModeChange(): void {
       return true;
     };
 
-    this.filteredAffectedItems.forEach(item => {
+    Object.keys(this.relatedObjectsByType).forEach(type => {
+      this.relatedObjectsByType[type].forEach(item => {
 
-      if (!shouldIncludeDependency(item)) {
-        return;
-      }
+        if (!shouldIncludeDependency(item)) {
+          return;
+        }
 
-      if (item.objectType !== 'FOLDER') {
-        if (item.path !== '/' && item.name !== '/') {
+        if (item.objectType !== 'FOLDER' && item.path !== '/' && item.name !== '/') {
           const config = {
             configuration: {
               path: item.path,
               objectType: item.objectType,
             }
           };
-          if (item.selected && item.deployed && item.valid) {
-            if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
-              obj.shallowCopy.deployables.draftConfigurations.push(config);
+
+          if (!item.selected) {
+            return;
+          }
+
+          if (['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType)) {
+            if (item.deployed && item.valid) {
+
+              if (!isDuplicate(obj.shallowCopy.deployables.deployConfigurations, config)) {
+                obj.shallowCopy.deployables.deployConfigurations.push(config);
+              }
+            } else {
+
+              if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
+                obj.shallowCopy.deployables.draftConfigurations.push(config);
+              }
             }
-          } else if (item.selected && item.released && item.valid) {
-            if (!isDuplicate(obj.shallowCopy.releasables.draftConfigurations, config)) {
-              obj.shallowCopy.releasables.draftConfigurations.push(config);
-            }
-          } else if (item.selected && (!item.valid || item.valid) && (item.deployed || !item.deployed) && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType)) {
-            if (!isDuplicate(obj.shallowCopy.deployables.draftConfigurations, config)) {
-              obj.shallowCopy.deployables.draftConfigurations.push(config);
-            }
-          } else if (item.selected && (!item.valid || item.valid) && (item.released || !item.released) && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType)) {
-            if (!isDuplicate(obj.shallowCopy.releasables.draftConfigurations, config)) {
-              obj.shallowCopy.releasables.draftConfigurations.push(config);
+          } else if (['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType)) {
+            if (item.released && item.valid) {
+
+              if (!isDuplicate(obj.shallowCopy.releasables.releasedConfigurations, config)) {
+                obj.shallowCopy.releasables.releasedConfigurations.push(config);
+              }
+            } else {
+
+              if (!isDuplicate(obj.shallowCopy.releasables.draftConfigurations, config)) {
+                obj.shallowCopy.releasables.draftConfigurations.push(config);
+              }
             }
           }
         }
-      }
+      });
     });
   }
 
@@ -6894,13 +6548,15 @@ onDependencyModeChange(): void {
   }
 
   handleAffectedItemsForSigning(obj): void {
-
     if (this.dependencyMode === 'none') {
       return;
     }
 
     const isDuplicate = (array: any[], config: any): boolean => {
-      return array.some(item => item.configuration.path === config.configuration.path && item.configuration.objectType === config.configuration.objectType);
+      return array.some(item =>
+        item.configuration.path === config.configuration.path &&
+        item.configuration.objectType === config.configuration.objectType
+      );
     };
 
     const shouldIncludeDependency = (item: any): boolean => {
@@ -6910,31 +6566,35 @@ onDependencyModeChange(): void {
       return true;
     };
 
-    this.filteredAffectedItems.forEach(item => {
+    Object.keys(this.relatedObjectsByType).forEach(type => {
+      this.relatedObjectsByType[type].forEach(item => {
 
-      if (!shouldIncludeDependency(item)) {
-        return;
-      }
+        if (!shouldIncludeDependency(item)) {
+          return;
+        }
 
-      if (item.objectType !== 'FOLDER') {
-        if (item.path !== '/' && item.name !== '/') {
-          const config = {
-            configuration: {
-              path: item.path,
-              objectType: item.objectType,
-            }
-          };
-          if (item.selected && item.deployed && item.valid) {
-            if (!isDuplicate(obj.forSigning.deployables.deployConfigurations, config)) {
-              obj.forSigning.deployables.deployConfigurations.push(config);
-            }
-          } else if (item.selected && (!item.valid || item.valid) && (item.deployed || !item.deployed) && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType)) {
-            if (!isDuplicate(obj.forSigning.deployables.draftConfigurations, config)) {
-              obj.forSigning.deployables.draftConfigurations.push(config);
+        if (item.objectType !== 'FOLDER') {
+          if (item.path !== '/' && item.name !== '/') {
+            const config = {
+              configuration: {
+                path: item.path,
+                objectType: item.objectType,
+              }
+            };
+
+            if (item.selected && item.deployed && item.valid) {
+              if (!isDuplicate(obj.forSigning.deployables.deployConfigurations, config)) {
+                obj.forSigning.deployables.deployConfigurations.push(config);
+              }
+            } else if (item.selected && (!item.valid || item.valid) && (item.deployed || !item.deployed) &&
+              ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType)) {
+              if (!isDuplicate(obj.forSigning.deployables.draftConfigurations, config)) {
+                obj.forSigning.deployables.draftConfigurations.push(config);
+              }
             }
           }
         }
-      }
+      });
     });
   }
 
@@ -6991,7 +6651,7 @@ onDependencyModeChange(): void {
         this.expandAllWithStateRestore();
       }
     } else {
-      // When unchecking recursive, fetch dependencies for currently checked nodes
+
       const checkedNodes = this.collectCheckedObjects(this.nodes);
       if (checkedNodes.length > 0 && this.dependencyMode !== 'none') {
         this.getDependencies(checkedNodes, this.nodes[0]);
@@ -7145,22 +6805,25 @@ export class RepositoryComponent {
   selectAllReferenced: { [key: string]: boolean } = {};
   affectedCollapsed: { [key: string]: boolean } = {};
   referencedCollapsed: { [key: string]: boolean } = {};
-  isAffectedCollapsed: boolean = true;
-  isReferencedCollapsed: boolean = true;
-  filteredAffectedItems: any[] = [];
-  filteredAffectedCollapsed: boolean = true;
   selectAllFilteredAffected: { [key: string]: boolean } = {};
   localObjects: string[] = [];
   rolloutObjects: string[] = [];
   link: any;
   deleteRepository = false;
   useDependencies = false;
+  relatedObjectsByType: { [key: string]: any[] } = {};
+  relatedObjectTypes: string[] = [];
+  selectAllRelated: { [key: string]: boolean } = {};
+  relatedCollapsed: { [key: string]: boolean } = {};
+  isRelatedCollapsed: boolean = true;
+  private relatedParentMap = new Map<number, Set<number>>();
+  private recursiveDependenciesCache: any = null;
   dependencyMode: 'none' | 'enforced' | 'all' = 'all';
-
   private filteredDepsCache = new WeakMap<any, { references: any[], referencedBy: any[] }>();
+  private checkedObject = new Set<string>();
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef,
-              private inventoryService: InventoryService, private cdr: ChangeDetectorRef,) {
+              private inventoryService: InventoryService, private cdr: ChangeDetectorRef, private translate: TranslateService) {
   }
 
   ngOnInit(): void {
@@ -7841,6 +7504,7 @@ export class RepositoryComponent {
     this.nodes = [...this.nodes];
   }
 
+
   updateChildCheckboxes(node: any, isChecked: boolean): void {
     node.children.forEach((child: any) => {
       child.isChecked = isChecked;
@@ -7897,6 +7561,83 @@ export class RepositoryComponent {
     }
   }
 
+  expandAllWithStateRestore(): void {
+    const savedCheckedState = new Set(this.checkedObject);
+
+    if (this.operation === 'store') {
+      this.buildTree(this.path, null, () => {
+        const self = this;
+        if (this.nodes && this.nodes.length > 0) {
+          this.nodes.forEach(rootNode => {
+            if (!rootNode.isLeaf) {
+              rootNode.expanded = true;
+            }
+          });
+
+          function recursive(node: any): void {
+            for (const i in node) {
+              if (node[i].children && node[i].children.length > 0) {
+                if (!node[i].isCall) {
+                  self.inventoryService.checkAndUpdateVersionList(node[i]);
+                }
+                recursive(node[i].children);
+              }
+            }
+          }
+
+          recursive(this.nodes);
+        }
+
+        this.checkedObject = savedCheckedState;
+        this.recursiveCheck(this.nodes, true);
+        this.nodes = [...this.nodes];
+        this.ref.detectChanges();
+
+        const checkedNodes = this.collectCheckedObjects(this.nodes);
+        if (checkedNodes.length > 0) {
+          this.loading = true;
+          this.getDependencies(checkedNodes, this.nodes[0]);
+        }
+      }, true);
+    } else {
+      this.readFileSystem(this.path, null, () => {
+        if (this.nodes && this.nodes.length > 0) {
+          this.nodes.forEach(rootNode => {
+            if (!rootNode.isLeaf) {
+              rootNode.expanded = true;
+            }
+          });
+        }
+
+        this.checkedObject = savedCheckedState;
+        this.recursiveCheck(this.nodes, true);
+        this.nodes = [...this.nodes];
+        this.ref.detectChanges();
+
+        const checkedNodes = this.collectCheckedObjects(this.nodes);
+        if (checkedNodes.length > 0) {
+          this.loading = true;
+          this.getDependencies(checkedNodes, this.nodes[0]);
+        }
+      }, true);
+    }
+  }
+
+  private recursiveCheck(node: any, isUpdate = false): void {
+    for (const i in node) {
+      if (!isUpdate) {
+        if (node[i].checked && !node[i].disableCheckbox) {
+          this.checkedObject.add(node[i].key);
+        }
+      } else {
+        node[i].checked = this.checkedObject.has(node[i].key);
+      }
+      if (node[i].children && node[i].children.length > 0) {
+        this.recursiveCheck(node[i].children, isUpdate);
+      }
+    }
+  }
+
   private expandCollapseRec(node): void {
     for (let i = 0; i < node.length; i++) {
       if (!node[i].isLeaf) {
@@ -7911,6 +7652,23 @@ export class RepositoryComponent {
   collapseAll(): void {
     this.expandCollapseRec(this.nodes);
     this.nodes = [...this.nodes];
+  }
+
+  handleRecursive(): void {
+    this.ref.detectChanges();
+
+    if (this.exportObj.isRecursive) {
+      if (this.recursiveDependenciesCache) {
+        this.updateNodeDependencies(this.recursiveDependenciesCache, new Set(), true);
+        this.prepareObject(this.recursiveDependenciesCache);
+        this.ref.detectChanges();
+        return;
+      } else {
+        this.checkedObject.clear();
+        this.recursiveCheck(this.nodes, false);
+        this.expandAllWithStateRestore();
+      }
+    }
   }
 
   getDeploymentVersion(e: NzFormatEmitEvent): void {
@@ -7966,6 +7724,14 @@ export class RepositoryComponent {
       }
     } else {
       this.clearDependenciesForNode(node);
+      this.dependencies = null;
+      this.affectedObjectsByType = {};
+      this.referencedObjectsByType = {};
+      this.affectedObjectTypes = [];
+      this.referencedObjectTypes = [];
+      this.relatedObjectsByType = {};
+      this.relatedObjectTypes = [];
+      this.relatedParentMap.clear();
     }
   }
 
@@ -8483,31 +8249,35 @@ export class RepositoryComponent {
       }
     };
 
-    this.filteredAffectedItems.forEach((item: any) => {
+    Object.keys(this.relatedObjectsByType).forEach(type => {
+      this.relatedObjectsByType[type].forEach((item: any) => {
 
-      if (!shouldIncludeDependency(item)) {
-        return;
-      }
-
-      if (item.path !== '/' && item.name !== '/') {
-        const config = {
-          configuration: {
-            path: item.path,
-            objectType: item.objectType,
-            recursive: false
-          }
-        };
-
-        if (item.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType)) {
-          targetGroup(config, 'draftConfigurations');
-        } else if (item.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType)) {
-          targetGroup(config, 'releaseDraftConfigurations');
+        if (!shouldIncludeDependency(item)) {
+          return;
         }
-      }
+
+        if (item.path !== '/' && item.name !== '/') {
+          const config = {
+            configuration: {
+              path: item.path,
+              objectType: item.objectType,
+              recursive: false
+            }
+          };
+
+          if (item.selected && ['WORKFLOW', 'JOBRESOURCE', 'LOCK', 'NOTICEBOARD', 'FILEORDERSOURCE'].includes(item.objectType)) {
+            targetGroup(config, 'draftConfigurations');
+          } else if (item.selected && ['SCHEDULE', 'JOBTEMPLATE', 'INCLUDESCRIPT', 'WORKINGDAYSCALENDAR', 'NONWORKINGDAYSCALENDAR'].includes(item.objectType)) {
+            targetGroup(config, 'releaseDraftConfigurations');
+          }
+        }
+      });
     });
   }
 
   private getDependencies(checkedNodes: { name: string, type: string }[], node: any, isChecked = false): void {
+    this.loading = true;
+
     const configurations = checkedNodes.map(node => ({
       name: node.name,
       type: node.type,
@@ -8518,94 +8288,112 @@ export class RepositoryComponent {
       operationType = 'DEPLOY';
     }
 
+    const requestedKeys = new Set(configurations.map(config => `${config.name}-${config.type}`));
+
     const requestBody = {
       configurations: configurations,
       operationType: operationType
     };
 
-
     this.coreService.post('inventory/dependencies', requestBody).subscribe({
       next: (res: any) => {
+        this.dependencies = null;
+        this.affectedObjectsByType = {};
+        this.referencedObjectsByType = {};
+        this.affectedObjectTypes = [];
+        this.referencedObjectTypes = [];
+        this.relatedObjectsByType = {};
+        this.relatedObjectTypes = [];
+        this.relatedParentMap.clear();
+
+        this.dependencies = res;
 
         if (res && res.requestedItems && res.requestedItems.length > 0) {
-          this.updateNodeDependencies(res, isChecked);
+          this.updateNodeDependencies(res, requestedKeys, isChecked);
           this.prepareObject(res);
           this.ref.detectChanges();
-        } else if (res && res.affectedItems && res.affectedItems.length > 0) {
-          this.updateNodeDependencies(res, isChecked);
-          this.prepareObject(res);
-          this.ref.detectChanges();
-        } else {
         }
+
+        this.loading = false;
+        this.rebuildRelatedObjects();
+        this.ref.detectChanges();
       },
       error: (err) => {
+        this.loading = false;
       }
     });
   }
 
-  private updateNodeDependencies(dependenciesResponse: any, isChecked: boolean): void {
-    const requestedItems = dependenciesResponse.requestedItems || [];
-    const affectedItems = dependenciesResponse.affectedItems || [];
-    const objects = dependenciesResponse.objects || {};
+  private updateNodeDependencies(dependenciesResponse: any, requestedKeys: Set<string>, isChecked: boolean): void {
+    const requestedItemIds = dependenciesResponse.requestedItems || [];
+    const objectsMap = dependenciesResponse.objects || {};
 
-    const referencedSet = new Set<string>();
-    requestedItems.forEach((itemId: number) => {
-      const item = objects[itemId];
-      if (!item) return;
-
-      [...(item.references || []), ...(item.enforcedReferences || [])].forEach(refId => {
-        const refObj = objects[refId];
-        if (refObj) referencedSet.add(`${refObj.name}-${refObj.objectType}`);
-      });
-
-      [...(item.referencedBy || []), ...(item.enforcedReferencedBy || [])].forEach(refId => {
-        const refObj = objects[refId];
-        if (refObj) referencedSet.add(`${refObj.name}-${refObj.objectType}`);
-      });
-    });
-
-    const requestedSet = new Set<string>();
-    requestedItems.forEach((itemId: number) => {
-      const item = objects[itemId];
-      if (item) requestedSet.add(`${item.name}-${item.objectType}`);
-    });
-
-    affectedItems.forEach((itemId: number) => {
-      const item = objects[itemId];
-      if (!item) return;
-
-      const uniqueKey = `${item.name}-${item.objectType}`;
-
-      if (!referencedSet.has(uniqueKey) && !requestedSet.has(uniqueKey)) {
-        if (!this.filteredAffectedItems.some(existing =>
-          `${existing.name}-${existing.objectType}` === uniqueKey
-        )) {
-          this.filteredAffectedItems.push({
-            ...item,
-            selected: true,
-            disabled: false,
-            change: item.deployed || false
-          });
-        }
-      }
-    });
-
-    requestedItems.forEach((itemId: number) => {
-      const dep = objects[itemId];
+    requestedItemIds.forEach((objectId: number) => {
+      const dep = objectsMap[objectId];
       if (!dep) return;
 
+      const allReferencedBy = new Map<number, any>();
+      const allReferences = new Map<number, any>();
+
+      const collectReferencedBy = (obj: any, isEnforced: boolean) => {
+        const ids = isEnforced ? obj.enforcedReferencedBy : obj.referencedBy;
+        (ids || []).forEach(id => {
+          if (!allReferencedBy.has(id)) {
+            const refObj = objectsMap[id];
+            if (refObj) {
+              const state = this.getDependencyState(refObj, isEnforced);
+              const depObj: any = {
+                id: refObj.id,
+                name: refObj.name,
+                path: refObj.path,
+                objectType: refObj.objectType,
+                valid: refObj.valid,
+                deployed: refObj.deployed,
+                released: refObj.released,
+                enforce: isEnforced,
+                selected: state.selected,
+                disabled: state.disabled
+              };
+              allReferencedBy.set(id, depObj);
+            }
+          }
+        });
+      };
+
+      const collectReferences = (obj: any, isEnforced: boolean) => {
+        const ids = isEnforced ? obj.enforcedReferences : obj.references;
+        (ids || []).forEach(id => {
+          if (!allReferences.has(id)) {
+            const refObj = objectsMap[id];
+            if (refObj) {
+              const state = this.getDependencyState(refObj, isEnforced);
+              const depObj: any = {
+                id: refObj.id,
+                name: refObj.name,
+                path: refObj.path,
+                objectType: refObj.objectType,
+                valid: refObj.valid,
+                deployed: refObj.deployed,
+                released: refObj.released,
+                enforce: isEnforced,
+                selected: state.selected,
+                disabled: state.disabled
+              };
+              allReferences.set(id, depObj);
+            }
+          }
+        });
+      };
+
+      collectReferencedBy(dep, true);
+      collectReferencedBy(dep, false);
+      collectReferences(dep, true);
+      collectReferences(dep, false);
+
       const transformedDep = {
-        name: dep.name,
-        type: dep.objectType,
-        path: dep.path,
-        referencedBy: [
-          ...(dep.enforcedReferencedBy || []).map(id => ({...objects[id], enforce: true})),
-          ...(dep.referencedBy || []).map(id => ({...objects[id], enforce: false}))
-        ].filter(Boolean),
-        references: [
-          ...(dep.enforcedReferences || []).map(id => ({...objects[id], enforce: true})),
-          ...(dep.references || []).map(id => ({...objects[id], enforce: false}))
-        ].filter(Boolean)
+        ...dep,
+        referencedBy: Array.from(allReferencedBy.values()),
+        references: Array.from(allReferences.values())
       };
 
       this.findAndUpdateNodeWithDependencies(transformedDep, this.nodes);
@@ -8614,52 +8402,63 @@ export class RepositoryComponent {
     this.nodes = [...this.nodes];
   }
 
-  private findAndUpdateNodeWithDependencies(dep: any, nodes: any[]): any {
-    for (let i = 0; i < nodes.length; i++) {
-      const node = nodes[i];
 
-      const nodeName = node.origin?.name || node.name;
-      const nodeType = node.origin?.type || node.type;
+  private findAndUpdateNodeWithDependencies(dep: any, nodes: any[]): void {
+    for (const node of nodes) {
 
-      if (nodeName === dep.name && nodeType === dep.type) {
-        if (node.origin) {
-          node.origin.dependencies = {
-            referencedBy: dep.referencedBy || [],
-            references: dep.references || []
-          };
-        } else {
-          node.dependencies = {
-            referencedBy: dep.referencedBy || [],
-            references: dep.references || []
-          };
-        }
+      if (node.id === dep.id ||
+        node.path === dep.path ||
+        (node.name === dep.name && node.type === dep.objectType)) {
+
+
+        node.dependencies = {
+          referencedBy: dep.referencedBy || [],
+          references: dep.references || []
+        };
 
         this.ref.detectChanges();
         return node;
       }
 
       if (node.children && node.children.length > 0) {
-        const foundNode = this.findAndUpdateNodeWithDependencies(dep, node.children);
-        if (foundNode) {
-          return foundNode;
-        }
+        this.findAndUpdateNodeWithDependencies(dep, node.children);
       }
     }
-
-    return null;
   }
 
   private prepareObject(dependencies: any): void {
-    const requestedItems = dependencies.requestedItems || [];
-    const objects = dependencies.objects || {};
+    this.dependencies = dependencies;
+    const requestedItemIds = dependencies.requestedItems || [];
+    const objectsMap = dependencies.objects || {};
 
-    if (requestedItems.length === 0) {
+    if (requestedItemIds.length === 0) {
       return;
     }
 
+    this.affectedObjectsByType = {};
+    this.referencedObjectsByType = {};
+    this.affectedObjectTypes = [];
+    this.referencedObjectTypes = [];
 
-    requestedItems.forEach((itemId: number) => {
-      const dep = objects[itemId];
+
+    const isWithinCurrentFolder = (objPath: string): boolean => {
+
+      if (this.object.type === 'changes') {
+        return true;
+      }
+
+      if (!this.path || this.path === '/') {
+        return true; // Root folder includes everything
+      }
+
+      const normalizedCurrentPath = this.path.endsWith('/') ? this.path : this.path + '/';
+      const normalizedObjPath = objPath.startsWith('/') ? objPath : '/' + objPath;
+
+      return normalizedObjPath.startsWith(normalizedCurrentPath) || normalizedObjPath === this.path;
+    };
+
+    requestedItemIds.forEach((objectId: number) => {
+      const dep = objectsMap[objectId];
       if (!dep) return;
 
       if (dep.referencedBy || dep.enforcedReferencedBy) {
@@ -8669,8 +8468,12 @@ export class RepositoryComponent {
         ];
 
         allReferencedByIds.forEach(refById => {
-          const refObj = objects[refById];
+          const refObj = objectsMap[refById];
           if (!refObj) return;
+
+          if (!isWithinCurrentFolder(refObj.path)) {
+            return;
+          }
 
           const type = refObj.objectType;
           const isEnforced = (dep.enforcedReferencedBy || []).includes(refById);
@@ -8680,19 +8483,22 @@ export class RepositoryComponent {
             this.affectedObjectTypes.push(type);
           }
 
-          const exists = this.affectedObjectsByType[type].some(
-            obj => obj.id === refObj.id || (obj.name === refObj.name && obj.path === refObj.path)
+          const state = this.getDependencyState(refObj, isEnforced);
+
+          const refObjClone = {
+            ...refObj,
+            enforce: isEnforced,
+            change: refObj.deployed || false,
+            selected: state.selected,
+            disabled: state.disabled
+          };
+
+          const existingIndex = this.affectedObjectsByType[type].findIndex(
+            obj => obj.id === refObjClone.id
           );
 
-          if (!exists) {
-
-            this.affectedObjectsByType[type].push({
-              ...refObj,
-              enforce: isEnforced,
-              selected: this.useDependencies && isEnforced ? true : (refObj.valid && !refObj.deployed && !refObj.released),
-              disabled: isEnforced ? true : !refObj.valid,
-              change: refObj.deployed || false
-            });
+          if (existingIndex === -1) {
+            this.affectedObjectsByType[type].push(refObjClone);
           }
         });
       }
@@ -8704,8 +8510,12 @@ export class RepositoryComponent {
         ];
 
         allReferencesIds.forEach(refId => {
-          const refObj = objects[refId];
+          const refObj = objectsMap[refId];
           if (!refObj) return;
+
+          if (!isWithinCurrentFolder(refObj.path)) {
+            return;
+          }
 
           const type = refObj.objectType;
           const isEnforced = (dep.enforcedReferences || []).includes(refId);
@@ -8715,49 +8525,249 @@ export class RepositoryComponent {
             this.referencedObjectTypes.push(type);
           }
 
-          const exists = this.referencedObjectsByType[type].some(
-            obj => obj.id === refObj.id || (obj.name === refObj.name && obj.path === refObj.path)
+          const state = this.getDependencyState(refObj, isEnforced);
+
+          const refObjClone = {
+            ...refObj,
+            enforce: isEnforced,
+            change: refObj.deployed || false,
+            selected: state.selected,
+            disabled: state.disabled
+          };
+
+          const existingIndex = this.referencedObjectsByType[type].findIndex(
+            obj => obj.id === refObjClone.id
           );
 
-          if (!exists) {
-
-            this.referencedObjectsByType[type].push({
-              ...refObj,
-              enforce: isEnforced,
-              selected: this.useDependencies && isEnforced ? true : (refObj.valid && !refObj.deployed && !refObj.released),
-              disabled: isEnforced ? true : !refObj.valid,
-              change: refObj.deployed || false
-            });
+          if (existingIndex === -1) {
+            this.referencedObjectsByType[type].push(refObjClone);
           }
         });
       }
     });
 
-    this.filteredAffectedItems.forEach(item => {
-      item.selected = this.useDependencies && (item.valid && !item.deployed && !item.released);
-      item.disabled = !item.valid;
-    });
+    setTimeout(() => {
+      this.affectedObjectTypes.forEach(type => {
+        if (this.affectedCollapsed[type] === undefined) {
+          this.affectedCollapsed[type] = true;
+        }
+      });
 
-    this.affectedObjectTypes.forEach(type => {
-      if (this.affectedCollapsed[type] === undefined) {
-        this.affectedCollapsed[type] = true;
-      }
-      this.updateParentCheckboxAffected(type);
-    });
+      this.referencedObjectTypes.forEach(type => {
+        if (this.referencedCollapsed[type] === undefined) {
+          this.referencedCollapsed[type] = true;
+        }
+      });
 
-    this.referencedObjectTypes.forEach(type => {
-      if (this.referencedCollapsed[type] === undefined) {
-        this.referencedCollapsed[type] = true;
-      }
-      this.updateParentCheckboxReferenced(type);
-    });
-
-    this.getUniqueObjectTypes(this.filteredAffectedItems).forEach(type => {
-      this.updateParentCheckboxFilteredAffected(type);
-    });
-
+      this.rebuildRelatedObjects();
+      this.ref.detectChanges();
+    }, 0);
   }
 
+private rebuildRelatedObjects(): void {
+  this.relatedObjectsByType = {};
+  this.relatedObjectTypes = [];
+  this.relatedParentMap.clear();
+
+  if (!this.dependencies?.objects) {
+    this.ref.detectChanges();
+    return;
+  }
+
+  const objectsMap = this.dependencies.objects;
+
+  const selectedParentIds = new Set<number>();
+  Object.keys(this.affectedObjectsByType).forEach((type) => {
+    this.affectedObjectsByType[type].forEach((obj: any) => {
+      if (obj.selected && obj.id) {
+        selectedParentIds.add(obj.id);
+      }
+    });
+  });
+
+  Object.keys(this.referencedObjectsByType).forEach((type) => {
+    this.referencedObjectsByType[type].forEach((obj: any) => {
+      if (obj.selected && obj.id) {
+        selectedParentIds.add(obj.id);
+      }
+    });
+  });
+
+  if (selectedParentIds.size === 0) {
+    this.ref.detectChanges();
+    return;
+  }
+
+  const existingIds = new Set<number>();
+  Object.values(this.affectedObjectsByType).forEach((arr: any) => {
+    arr.forEach((obj) => existingIds.add(obj.id));
+  });
+  Object.values(this.referencedObjectsByType).forEach((arr: any) => {
+    arr.forEach((obj) => existingIds.add(obj.id));
+  });
+
+  (this.dependencies.requestedItems || []).forEach((id: number) => existingIds.add(id));
+
+  const relatedObjectsById = new Map<number, any>();
+  const parentMap = new Map<number, Set<number>>();
+
+  selectedParentIds.forEach((parentId) => {
+    const parentObj = objectsMap[parentId];
+    if (!parentObj) return;
+
+    const allDependencyIds = [
+      ...(parentObj.enforcedReferencedBy || []),
+      ...(parentObj.enforcedReferences || [])
+
+    ];
+
+    allDependencyIds.forEach((depId) => {
+
+      if (existingIds.has(depId)) return;
+
+      const depObj = objectsMap[depId];
+      if (!depObj) return;
+
+      if (!parentMap.has(depId)) {
+        parentMap.set(depId, new Set());
+      }
+      parentMap.get(depId)!.add(parentId);
+
+      if (!relatedObjectsById.has(depId)) {
+
+        const isEnforced = true;
+
+        const state = this.getDependencyState(depObj, isEnforced);
+
+        relatedObjectsById.set(depId, {
+          ...depObj,
+          enforce: true,  // ✅ Always true for related objects
+          selected: state.selected,
+          disabled: state.disabled,
+          change: depObj.deployed
+        });
+      }
+    });
+  });
+
+  const tempRelatedByType: { [key: string]: any[] } = {};
+  relatedObjectsById.forEach((obj) => {
+    const type = obj.objectType;
+    if (!tempRelatedByType[type]) {
+      tempRelatedByType[type] = [];
+    }
+    tempRelatedByType[type].push(obj);
+  });
+
+  this.relatedParentMap = parentMap;
+  this.relatedObjectsByType = tempRelatedByType;
+  this.relatedObjectTypes = Object.keys(tempRelatedByType);
+
+  this.relatedObjectTypes.forEach((type) => {
+    if (this.relatedCollapsed[type] === undefined) {
+      this.relatedCollapsed[type] = true;
+    }
+    this.updateParentCheckboxRelated(type);
+  });
+
+  this.ref.detectChanges();
+}
+
+  private getDependencyState(refObj: any, isEnforced: boolean): { selected: boolean; disabled: boolean } {
+    let selected = false;
+    let disabled = false;
+
+    if (this.dependencyMode === 'none') {
+      return {selected: false, disabled: false};
+    }
+
+    if (isEnforced) {
+      selected = true;
+      disabled = false;
+    } else {
+      selected = true;
+      disabled = false;
+    }
+
+    if (this.object.type === 'individual') {
+      if (this.dependencyMode === 'enforced' || this.dependencyMode === 'all') {
+        if (isEnforced) {
+          selected = true;
+          disabled = false;
+        } else {
+          selected = true;
+          disabled = false;
+        }
+      }
+    } else {
+      disabled = false;
+      selected = true;
+    }
+
+
+    return {selected, disabled};
+  }
+
+  toggleRelatedCollapse(objectType: string): void {
+    this.relatedCollapsed[objectType] = !this.relatedCollapsed[objectType];
+  }
+
+  toggleAllRelatedCollapse(): void {
+    this.isRelatedCollapsed = !this.isRelatedCollapsed;
+  }
+
+  updateParentCheckboxRelated(objectType: string): void {
+    const objects = this.relatedObjectsByType[objectType];
+    if (!objects || objects.length === 0) {
+      this.selectAllRelated[objectType] = false;
+      return;
+    }
+
+    const enabledObjects = objects.filter((obj: any) => !obj.disabled);
+    if (enabledObjects.length === 0) {
+      this.selectAllRelated[objectType] = objects.every((obj: any) => obj.selected);
+    } else {
+      this.selectAllRelated[objectType] = enabledObjects.every((obj: any) => obj.selected);
+    }
+    this.ref.detectChanges();
+  }
+
+  getRelatedParentTooltip(relatedObjectId: number): string {
+    const parents = this.relatedParentMap.get(relatedObjectId);
+    if (!parents || parents.size === 0) return '';
+    const count = parents.size;
+    const tooltip = this.translate.instant('inventory.message.relatedObjects', {count});
+    return tooltip;
+  }
+
+  getFilteredRelatedObjects(type: string): any[] {
+    const objects = this.relatedObjectsByType[type];
+    const selectedParentIds = new Set<number>();
+
+    Object.keys(this.affectedObjectsByType).forEach((t) => {
+      this.affectedObjectsByType[t].forEach((obj: any) => {
+        if (obj.selected && obj.id) {
+          selectedParentIds.add(obj.id);
+        }
+      });
+    });
+
+    Object.keys(this.referencedObjectsByType).forEach((t) => {
+      this.referencedObjectsByType[t].forEach((obj: any) => {
+        if (obj.selected && obj.id) {
+          selectedParentIds.add(obj.id);
+        }
+      });
+    });
+
+    const filtered = objects.filter((obj) => {
+      const parentIds = this.relatedParentMap.get(obj.id);
+      if (!parentIds || parentIds.size === 0) return false;
+      return Array.from(parentIds).some(parentId => selectedParentIds.has(parentId));
+    });
+
+    return this.filterDependenciesByMode(filtered);
+  }
 
   private filterDependenciesByMode(dependencies: any[]): any[] {
     if (!dependencies || dependencies.length === 0) {
@@ -8819,117 +8829,19 @@ export class RepositoryComponent {
   onDependencyModeChange(): void {
 
     this.filteredDepsCache = new WeakMap();
-
     this.clearFilterModeTracking(this.nodes);
 
-    Object.values(this.affectedObjectsByType).forEach((arr: any[]) => {
-      arr.forEach(o => {
-        if (!o.disabled) {
-          o.selected = this.useDependencies && (o.valid && !o.deployed && !o.released);
-        }
-      });
-    });
+    if (this.dependencies) {
+      this.prepareObject(this.dependencies);
+    }
 
-    Object.values(this.referencedObjectsByType).forEach((arr: any[]) => {
-      arr.forEach(o => {
-        if (!o.disabled) {
-          o.selected = this.useDependencies && (o.valid && !o.deployed && !o.released);
-        }
-      });
-    });
+    this.affectedObjectTypes.forEach(type => this.updateParentCheckboxAffected(type));
+    this.referencedObjectTypes.forEach(type => this.updateParentCheckboxReferenced(type));
 
-    this.filteredAffectedItems.forEach(o => {
-      if (!o.disabled) {
-        o.selected = this.useDependencies && (o.valid && !o.deployed && !o.released);
-      }
-    });
-
-    this.affectedObjectTypes.forEach(t => this.updateParentCheckboxAffected(t));
-    this.referencedObjectTypes.forEach(t => this.updateParentCheckboxReferenced(t));
-    this.getUniqueObjectTypes(this.filteredAffectedItems).forEach(t =>
-      this.updateParentCheckboxFilteredAffected(t)
-    );
+    this.rebuildRelatedObjects();
 
     this.nodes = [...this.nodes];
     this.ref.detectChanges();
-  }
-
-  onToggleUseDependencies(): void {
-    const to = this.useDependencies;
-
-    Object.values(this.affectedObjectsByType).forEach((arr: any[]) => {
-      arr.forEach(o => {
-        if (!o.disabled) {
-          o.selected = to && (o.valid && !o.deployed && !o.released);
-        }
-      });
-    });
-
-    Object.values(this.referencedObjectsByType).forEach((arr: any[]) => {
-      arr.forEach(o => {
-        if (!o.disabled) {
-          o.selected = to && (o.valid && !o.deployed && !o.released);
-        }
-      });
-    });
-
-    this.filteredAffectedItems.forEach(o => {
-      if (!o.disabled) {
-        o.selected = to && (o.valid && !o.deployed && !o.released);
-      }
-    });
-
-    this.affectedObjectTypes.forEach(t => this.updateParentCheckboxAffected(t));
-    this.referencedObjectTypes.forEach(t => this.updateParentCheckboxReferenced(t));
-    this.getUniqueObjectTypes(this.filteredAffectedItems).forEach(t =>
-      this.updateParentCheckboxFilteredAffected(t)
-    );
-
-    this.ref.detectChanges();
-  }
-
-  getFilteredAffectedObjects(type: string): any[] {
-    const objects = this.affectedObjectsByType[type] || [];
-    return this.filterDependenciesByMode(objects);
-  }
-
-  getFilteredReferencedObjects(type: string): any[] {
-    const objects = this.referencedObjectsByType[type] || [];
-    return this.filterDependenciesByMode(objects);
-  }
-
-  updateParentCheckboxFilteredAffected(objectType: string): void {
-    const allSelected = this.filteredAffectedItems
-      .filter(item => item.objectType === objectType)
-      .every(obj => obj.selected || obj.disabled);
-
-    this.selectAllFilteredAffected[objectType] = allSelected;
-  }
-
-  toggleAllFilteredAffected(objectType: string, isChecked: boolean): void {
-    this.filteredAffectedItems
-      .filter(item => item.objectType === objectType)
-      .forEach(obj => {
-        if (!obj.disabled) {
-          obj.selected = isChecked;
-        }
-      });
-  }
-
-  toggleAllAffected(objectType: string, isChecked: boolean): void {
-    (this.affectedObjectsByType[objectType] || []).forEach(obj => {
-      if (!obj.disabled) {
-        obj.selected = isChecked;
-      }
-    });
-  }
-
-  toggleAllReferenced(objectType: string, isChecked: boolean): void {
-    (this.referencedObjectsByType[objectType] || []).forEach(obj => {
-      if (!obj.disabled) {
-        obj.selected = isChecked;
-      }
-    });
   }
 
   private collectCheckedObjects(nodes: any[]): any[] {
@@ -8961,15 +8873,63 @@ export class RepositoryComponent {
     this.referencedCollapsed[nodeKey] = !this.referencedCollapsed[nodeKey];
   }
 
+  onAffectedCheckboxChange(changedObj: any, objectType: string): void {
+    setTimeout(() => {
+      const list = this.affectedObjectsByType[objectType] || [];
+      const idx = list.findIndex(o => o.id === changedObj.id);
+      if (idx !== -1) {
+        list[idx].selected = changedObj.selected;
+      }
+
+      this.updateParentCheckboxAffected(objectType);
+    }, 0);
+  }
+
+  onReferencedCheckboxChange(changedObj: any, objectType: string): void {
+    setTimeout(() => {
+      const list = this.referencedObjectsByType[objectType] || [];
+      const idx = list.findIndex(o => o.id === changedObj.id);
+      if (idx !== -1) {
+        list[idx].selected = changedObj.selected;
+      }
+
+      this.updateParentCheckboxReferenced(objectType);
+    }, 0);
+  }
 
   updateParentCheckboxAffected(objectType: string): void {
-    const allSelected = this.affectedObjectsByType[objectType].every((obj: any) => obj.selected || obj.disabled);
-    this.selectAllAffected[objectType] = allSelected;
+
+
+    const objects = this.affectedObjectsByType[objectType] || [];
+    const enabledObjects = objects.filter(o => !o.disabled);
+    if (enabledObjects.length > 0) {
+      this.selectAllAffected[objectType] = enabledObjects.every(o => o.selected);
+    }
+    this.rebuildRelatedObjects();
   }
 
   updateParentCheckboxReferenced(objectType: string): void {
-    const allSelected = this.referencedObjectsByType[objectType].every((obj: any) => obj.selected || obj.disabled);
-    this.selectAllReferenced[objectType] = allSelected;
+
+
+    const objects = this.referencedObjectsByType[objectType] || [];
+    const enabledObjects = objects.filter(o => !o.disabled);
+    if (enabledObjects.length > 0) {
+      this.selectAllReferenced[objectType] = enabledObjects.every(o => o.selected);
+    }
+    this.rebuildRelatedObjects();
+  }
+
+
+  toggleAllRelated(objectType: string, isChecked: boolean): void {
+    const objects = this.relatedObjectsByType[objectType] || [];
+
+    objects.forEach(obj => {
+      if (!obj.disabled) {
+        obj.selected = isChecked;
+      }
+    });
+
+    this.updateParentCheckboxRelated(objectType);
   }
 
 
@@ -11159,14 +11119,6 @@ export class PublishChangeModalComponent {
     this.referencedCollapsed[nodeKey] = !this.referencedCollapsed[nodeKey];
   }
 
-  toggleAllFilteredAffected(objectType: string, isChecked: boolean): void {
-    this.filteredAffectedItems.filter(item => item.objectType === objectType).forEach(obj => {
-      if (!obj.disabled) {
-        obj.selected = isChecked;
-      }
-    });
-  }
-
   updateParentCheckboxFilteredAffected(objectType: string): void {
     const allSelected = this.filteredAffectedItems.filter(item => item.objectType === objectType).every(obj => obj.selected || obj.disabled);
     this.selectAllFilteredAffected[objectType] = allSelected;
@@ -11827,7 +11779,6 @@ export class ShowDependenciesModalComponent {
   }
 
 
-
   getFilteredAffectedObjects(type: string): any[] {
     return this.affectedObjectsByType[type] || [];
   }
@@ -11925,16 +11876,6 @@ export class ShowDependenciesModalComponent {
     this.selectAllFilteredAffected[objectType] = allSelected;
   }
 
-  toggleAllFilteredAffected(objectType: string, isChecked: boolean): void {
-    this.filteredAffectedItems
-      .filter(item => item.objectType === objectType)
-      .forEach(obj => {
-        if (!obj.disabled) {
-          obj.selected = isChecked;
-        }
-      });
-  }
-
   getIcon(objectType: string): string {
     const iconMapping = {
       'WORKFLOW': 'apartment',
@@ -11972,7 +11913,6 @@ export class ShowDependenciesModalComponent {
     this.activeModal.destroy();
   }
 }
-
 
 
 @Component({
