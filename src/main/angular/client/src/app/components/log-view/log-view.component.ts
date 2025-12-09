@@ -44,6 +44,9 @@ export class LogViewComponent {
   orderCanceller: any;
   taskCanceller: any;
   runningCanceller: any;
+  taskRunningCancellers = new Map<string, any>();
+  taskSessions = new Map<string, number>();
+  taskLogCache = new Map<string, string>();
   scrolled = false;
   loaded = false;
   isExpandCollapse = false;
@@ -391,13 +394,37 @@ export class LogViewComponent {
       this.coreService.logViewDetails.expandedAllLog = false;
     }
     const domId = 'tx_log_' + (i + 1);
+    const taskKey = 'task_' + (i + 1);
     const jobs: any = {};
     jobs.controllerId = this.controllerId;
     jobs.taskId = this.dataBody.nativeElement.querySelector('#tx_id_' + (i + 1))?.innerText;
     const a = this.dataBody.nativeElement.querySelector('#' + domId);
     const classList = this.dataBody.nativeElement.querySelector('#ex_' + (i + 1)).classList;
     if (a.classList.contains('hide') || classList.contains('down')) {
-      this.taskCanceller = this.coreService.log('task/log', jobs, {
+      if (this.taskRunningCancellers.has(taskKey)) {
+        this.taskRunningCancellers.get(taskKey).unsubscribe();
+        this.taskRunningCancellers.delete(taskKey);
+      }
+
+      const cachedLogs = this.taskLogCache.get(taskKey);
+      if (cachedLogs) {
+        const taskIdValue = this.dataBody.nativeElement.querySelector('#tx_id_' + (i + 1))?.innerText;
+        this.dataBody.nativeElement.querySelector('#' + domId).innerHTML = cachedLogs;
+        this.dataBody.nativeElement.querySelector('#ex_' + (i + 1)).classList.remove('down');
+        this.dataBody.nativeElement.querySelector('#ex_' + (i + 1)).classList.add('up');
+        this.coreService.logViewDetails.expandedLogPanel.add('#ex_' + (i + 1));
+        a.classList.remove('hide');
+        a.classList.add('show');
+        return;
+      }
+
+      const currentSession = (this.taskSessions.get(taskKey) || 0) + 1;
+      this.taskSessions.set(taskKey, currentSession);
+
+      const taskIdValue = this.dataBody.nativeElement.querySelector('#tx_id_' + (i + 1))?.innerText;
+      this.dataBody.nativeElement.querySelector('#' + domId).innerHTML = `<div id="tx_id_` + (i + 1) + `" class="hide">` + taskIdValue + `</div>`;
+
+      const initialFetchSubscription = this.coreService.log('task/log', jobs, {
         responseType: 'text' as 'json',
         observe: 'response' as 'response'
       }).subscribe((res: any) => {
@@ -408,18 +435,31 @@ export class LogViewComponent {
           this.coreService.logViewDetails.expandedLogPanel.add('#ex_' + (i + 1));
           a.classList.remove('hide');
           a.classList.add('show');
-          if (res.headers.get('x-log-complete').toString() === 'false' && !this.isCancel) {
+
+          if (res.headers.get('x-log-complete').toString() === 'true') {
+            const logContainer = this.dataBody.nativeElement.querySelector('#' + domId);
+            if (logContainer) {
+              this.taskLogCache.set(taskKey, logContainer.innerHTML);
+            }
+          } else if (!this.isCancel) {
             const obj = {
               controllerId: jobs.controllerId,
               taskId: res.headers.get('x-log-task-id') || jobs.taskId,
               eventId: res.headers.get('x-log-event-id')
             };
-            this.runningTaskLog(obj, domId);
+            this.runningTaskLog(obj, domId, taskKey, currentSession);
           }
         }
       });
+
+      this.taskRunningCancellers.set(taskKey, initialFetchSubscription);
     } else {
       if (!expand) {
+        if (this.taskRunningCancellers.has(taskKey)) {
+          this.taskRunningCancellers.get(taskKey).unsubscribe();
+          this.taskRunningCancellers.delete(taskKey);
+        }
+
         this.dataBody.nativeElement.querySelector('#ex_' + (i + 1)).classList.remove('up');
         this.dataBody.nativeElement.querySelector('#ex_' + (i + 1)).classList.add('down');
         this.coreService.logViewDetails.expandedLogPanel.delete('#ex_' + (i + 1));
@@ -477,9 +517,16 @@ export class LogViewComponent {
     });
   }
 
-  runningTaskLog(obj: any, domId: string): void {
+  runningTaskLog(obj: any, domId: string, taskKey?: string, sessionId?: number): void {
     if (obj.eventId) {
-      this.runningCanceller = this.coreService.post('task/log/running', obj).subscribe((res: any) => {
+      const subscription = this.coreService.post('task/log/running', obj).subscribe((res: any) => {
+        if (taskKey && sessionId !== undefined) {
+          const currentSession = this.taskSessions.get(taskKey);
+          if (currentSession !== sessionId) {
+            return;
+          }
+        }
+
         if (res) {
           if (res.log) {
             this.renderData(res.log, domId);
@@ -489,15 +536,27 @@ export class LogViewComponent {
               obj.eventId = res.eventId;
               obj.taskId = res.taskId;
             }
-            this.runningTaskLog(obj, domId);
+            this.runningTaskLog(obj, domId, taskKey, sessionId);
             if (res.log) {
               this.scrollBottom();
             }
           } else {
             this.finished = true;
+            if (taskKey && domId) {
+              const logContainer = this.dataBody.nativeElement.querySelector('#' + domId);
+              if (logContainer) {
+                this.taskLogCache.set(taskKey, logContainer.innerHTML);
+              }
+            }
           }
         }
       });
+
+      if (taskKey) {
+        this.taskRunningCancellers.set(taskKey, subscription);
+      } else {
+        this.runningCanceller = subscription;
+      }
     }
   }
 

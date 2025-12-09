@@ -166,7 +166,7 @@
       </Prompt>
     </add>
     <add as="AdmissionTime">
-      <AdmissionTime displayLabel="admissionTime">
+      <AdmissionTime displayLabel="admissionTimes">
         <mxCell vertex="1">
           <mxGeometry as="geometry" width="72" height="72"/>
         </mxCell>
@@ -268,7 +268,7 @@
     <hr/>
     <add as="Prompt" template="Prompt" style="prompt" icon="./assets/mxgraph/images/prompt.png"/>
     <hr/>
-    <add as="AdmissionTime" template="AdmissionTime" style="admissionTime" icon="./assets/mxgraph/images/admissionTime.png"/>
+    <add as="AdmissionTimes" template="AdmissionTime" style="admissionTime" icon="./assets/mxgraph/images/admissionTime.png"/>
     <hr/>
     <add as="AddOrder" template="AddOrder" style="addOrder" icon="./assets/mxgraph/images/addOrder.png"/>
     <hr/>
