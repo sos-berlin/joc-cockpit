@@ -1,4 +1,4 @@
-# Identitätsdienst - Rollen
+# Identitätsdienste - Rollen
 
 Identitätsdienste regeln den Zugriff auf JOC Cockpit durch Authentifizierung und Autorisierung, siehe [Identitätsdienste](/identity-services).
 
@@ -24,9 +24,9 @@ Benutzer werden ermutigt, ungenutzte Rollen zu löschen und die Berechtigungen f
 
 Rollen werden für die folgenden Geltungsbereiche festgelegt:
 
-- Jede Rolle kann auf einen oder mehrere Bestandsordner beschränkt werden.
+- Jede Rolle kann auf einen oder mehrere Inventarordner beschränkt werden.
 - Jeder Rolle wird ein Berechtigungssatz für Operationen in JOC Cockpit zugewiesen.
-- Jeder Rolle wird ein Berechtigungssatz für Standardoperationen auf allen Controllern zugewiesen.
+- Jeder Rolle wird ein Berechtigungssatz für Standardoperationen auf allen Controller Instanzen zugewiesen.
 - Jeder Rolle können zusätzliche Berechtigungssätze pro Controller zugewiesen werden.
 
 Berechtigungen legen einen der folgenden Zustände im zugehörigen Bereich fest:
@@ -48,7 +48,7 @@ Berechtigungen werden aus allen Rollen für die resultierenden Berechtigungen ei
   - Wenn eine Berechtigung für einen bestimmten Controller verweigert wird, hat dies Vorrang vor der gleichen Berechtigung, die im Standardbereich und in anderen Rollen für denselben Controller erteilt wurde.
   - Wenn eine Berechtigung aus dem Standardbereich verweigert wird, hat dies Vorrang vor der gleichen Berechtigung, die für einen beliebigen Controller erteilt wurde.
 
-## Operationen auf Rollen
+## Operationen für Rollen
 
 Die folgenden Operationen sind über die entsprechenden Schaltflächen in der oberen rechten Ecke der Unteransicht verfügbar:
 
@@ -67,7 +67,7 @@ Im 3-Punkte Aktionsmenü jeder Rolle werden die folgenden Operationen angeboten:
 - **Duplizieren** kopiert die Rolle in eine neue Rolle. Der Benutzer gibt den Namen der neuen Rolle an.
 - **Löschen** löscht die Rolle aus dem Inventar und aus allen Benutzerkonten, denen die Rolle zugewiesen ist.
 
-### Bulk-Operationen für Rollen
+### Massenoperationen für Rollen
 
 Die folgenden Massenoperationen sind verfügbar, wenn Sie eine oder mehrere Rollen auswählen:
 
@@ -79,12 +79,11 @@ Die folgenden Massenoperationen sind verfügbar, wenn Sie eine oder mehrere Roll
 
 ### Kontext-Hilfe
 
-- [Identity Service - Permissions](/identity-service-permissions)
 - [Identitätsdienste](/identity-services)
+- [Identitätsdienste - Berechtigungen](/identity-service-permissions)
 
 ### Product Knowledge Base
 
 - [JS7 - Default Roles and Permissions](https://kb.sos-berlin.com/display/JS7/JS7+-+Default+Roles+and+Permissions)
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
 - [JS7 - Verwaltung von Benutzerkonten, Rollen und Berechtigungen](https://kb.sos-berlin.com/display/JS7/JS7+-+Verwaltung+von+Benutzerkonten+Rollen+und+Berechtigungen)
-
