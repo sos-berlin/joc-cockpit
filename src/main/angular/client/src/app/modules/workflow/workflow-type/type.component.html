@@ -272,8 +272,11 @@
               @if (instruction['TYPE'] === 'Retry') {
                 <span nz-popover nzPopoverTrigger="click" [nzPopoverContent]="contentTemplate" nzPopoverPlacement="right">{{instruction['TYPE']}}</span>
               }
-              @if (instruction['TYPE'] === 'If' || instruction['TYPE'] === 'Cycle' || instruction['TYPE'] === 'AdmissionTime') {
+              @if (instruction['TYPE'] === 'If' || instruction['TYPE'] === 'Cycle') {
                 <a (click)="showConfiguration(instruction);" class="cursor">{{instruction['TYPE']}}</a>
+              }
+              @if (instruction['TYPE'] === 'AdmissionTime') {
+                <a (click)="showConfiguration(instruction);" class="cursor">AdmissionTimes</a>
               }
               @if (instruction['TYPE'] === 'Lock') {
                 <span>:</span>

@@ -41,6 +41,7 @@ export class LogComponent {
   workflow: any;
   job: any;
   canceller: any;
+  taskCancellers = new Map<string, any>();
   scrolled = false;
   isExpandCollapse = false;
   taskCount = 1;
@@ -344,12 +345,21 @@ export class LogComponent {
       this.coreService.logViewDetails.expandedAllLog = false;
     }
     const domId = 'tx_log_' + (i + 1);
+    const taskKey = 'task_' + (i + 1);
     const jobs: any = {};
     jobs.controllerId = this.controllerId;
     jobs.taskId = document.getElementById('tx_id_' + (i + 1))?.innerText;
     const a = document.getElementById(domId);
     if (a.classList.contains('hide')) {
-      this.coreService.log('task/log', jobs, {
+      if (this.taskCancellers.has(taskKey)) {
+        this.taskCancellers.get(taskKey).unsubscribe();
+        this.taskCancellers.delete(taskKey);
+      }
+
+      const taskIdValue = document.getElementById('tx_id_' + (i + 1))?.innerText;
+      document.getElementById(domId).innerHTML = `<div id="tx_id_` + (i + 1) + `" class="hide">` + taskIdValue + `</div>`;
+
+      const subscription = this.coreService.log('task/log', jobs, {
         responseType: 'text' as 'json',
         observe: 'response' as 'response'
       }).subscribe((res: any) => {
@@ -366,12 +376,19 @@ export class LogComponent {
               taskId: res.headers.get('x-log-task-id') || jobs.taskId,
               eventId: res.headers.get('x-log-event-id')
             };
-            this.runningTaskLog(obj, domId);
+            this.runningTaskLog(obj, domId, taskKey);
           }
         }
       });
+
+      this.taskCancellers.set(taskKey, subscription);
     } else {
       if (!expand) {
+        if (this.taskCancellers.has(taskKey)) {
+          this.taskCancellers.get(taskKey).unsubscribe();
+          this.taskCancellers.delete(taskKey);
+        }
+
         document.getElementById('ex_' + (i + 1)).classList.remove('fa-caret-up');
         document.getElementById('ex_' + (i + 1)).classList.add('fa-caret-down');
         this.coreService.logViewDetails.expandedLogPanel.delete('#ex_' + (i + 1));
@@ -426,9 +443,9 @@ export class LogComponent {
     });
   }
 
-  runningTaskLog(obj, orderTaskFlag): void {
+  runningTaskLog(obj, orderTaskFlag, taskKey?: string): void {
     if (obj.eventId) {
-      this.coreService.post('task/log/running', obj).subscribe((res: any) => {
+      const subscription = this.coreService.post('task/log/running', obj).subscribe((res: any) => {
         if (res) {
           if (res.log) {
             this.renderData(res.log, orderTaskFlag);
@@ -438,7 +455,7 @@ export class LogComponent {
               obj.eventId = res.eventId;
               obj.taskId = res.taskId;
             }
-            this.runningTaskLog(obj, orderTaskFlag);
+            this.runningTaskLog(obj, orderTaskFlag, taskKey);
             if (res.log) {
               this.scrollBottom();
             }
@@ -447,6 +464,10 @@ export class LogComponent {
           }
         }
       });
+
+      if (taskKey) {
+        this.taskCancellers.set(taskKey, subscription);
+      }
     }
   }
 

@@ -1409,6 +1409,16 @@ ngOnInit(): void {
   removeFrequency(data, index): void {
     this.isValid = true;
     this.data.periodList.splice(index, 1);
+
+    if (this.data.periodList.length === 0) {
+      if (this.job.admissionTimeScheme) {
+        this.job.admissionTimeScheme.periods = [];
+      }
+    } else {
+      this.cleanupAdmissionTimeScheme();
+    }
+
+    this.ref.detectChanges();
   }
 
   closeRuntime(): void {
@@ -6346,7 +6356,7 @@ export class WorkflowComponent {
       var texts = [
         "", "Job", "Try", "Retry", "Finish", "Fail",
         "Fork", "Fork<br>List", "Cycle", "Break", "Lock",
-        "Sleep", "Prompt","Admission<br>Time", "AddOrder", "Post<br>Notices",
+        "Sleep", "Prompt","Admission<br>Times", "AddOrder", "Post<br>Notices",
         "Expect<br>Notices", "Consume<br>Notices", "If",
         "Case", "CaseWhen", "CaseElse", "Sticky<br>Subagent",
         "Option", "Paste"
@@ -13492,7 +13502,7 @@ export class WorkflowComponent {
       } else if (dropTargetName === 'Options') {
         displayLabel = 'options';
       } else if (dropTargetName === 'AdmissionTime') {
-        displayLabel = 'admissionTime';
+        displayLabel = 'admissionTimes';
       } else if (dropTargetName === 'ConsumeNotices') {
         displayLabel = 'consumeNotices';
       } else if (dropTargetName === 'ForkList') {

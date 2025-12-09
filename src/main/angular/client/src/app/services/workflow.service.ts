@@ -1434,7 +1434,7 @@ export class WorkflowService {
               v2 = closingNode(v1, v1.id, parent, 'Options');
             }
           } else if (json.instructions[x].TYPE === 'AdmissionTime') {
-            _node.setAttribute('displayLabel', 'admissionTime');
+            _node.setAttribute('displayLabel', 'admissionTimes');
 
             if (json.instructions[x].admissionTimeScheme) {
               _node.setAttribute('admissionTimeScheme', JSON.stringify(json.instructions[x].admissionTimeScheme));
@@ -1819,7 +1819,7 @@ export class WorkflowService {
 
     function closingNode(branches: any, targetId: any, parent: any, type: any): any {
       const _node = doc.createElement(type === 'When' ? 'EndWhen' : type === 'ElseWhen' ? 'EndElse' : type === 'CaseWhen' ? 'EndCase' : type === 'Lock' ? 'EndLock' : type === 'StickySubagent' ? 'EndStickySubagent' : type === 'Options' ? 'EndOptions' : type === 'AdmissionTime' ? 'EndAdmissionTime' : type === 'Retry' ? 'EndRetry' : type === 'ConsumeNotices' ? 'EndConsumeNotices' : 'EndCycle');
-      _node.setAttribute('displayLabel', type === 'When' ? 'whenEnd' : type === 'ElseWhen' ? 'elseEnd' : type === 'CaseWhen' ? 'caseEnd' : type === 'Lock' ? 'lockEnd' : type === 'StickySubagent' ? 'stickySubagentEnd' : type === 'Options' ? 'optionsEnd' : type === 'AdmissionTime' ? 'AdmissionTimeEnd' : type === 'Retry' ? 'retryEnd' : type === 'ConsumeNotices' ? 'consumeNoticesEnd' : 'cycleEnd');
+      _node.setAttribute('displayLabel', type === 'When' ? 'whenEnd' : type === 'ElseWhen' ? 'elseEnd' : type === 'CaseWhen' ? 'caseEnd' : type === 'Lock' ? 'lockEnd' : type === 'StickySubagent' ? 'stickySubagentEnd' : type === 'Options' ? 'optionsEnd' : type === 'AdmissionTime' ? 'admissionTimeEnd' : type === 'Retry' ? 'retryEnd' : type === 'ConsumeNotices' ? 'consumeNoticesEnd' : 'cycleEnd');
       if (targetId) {
         _node.setAttribute('targetId', targetId);
       }

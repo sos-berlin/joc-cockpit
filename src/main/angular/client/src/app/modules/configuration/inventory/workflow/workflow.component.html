@@ -875,8 +875,8 @@
             @if (selectedNode.type === 'AdmissionTime') {
               <div>
                 <div class="form-group row">
-                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.skipIfNoAdmissionForOrderDay' | translate) : ''"
-                         class="col-md-4 col-lg-3 block-ellipsis-job" translate>workflow.label.skipIfNoAdmissionForOrderDay</label>
+                  <label [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="!preferences.showTooltipInfo ? ('inventory.tooltips.workflow.job.skipIfNoAdmissionForOrderDayForInstruction' | translate) : ''"
+                         class="col-md-4 col-lg-3 block-ellipsis-job" translate>workflow.label.skipIfNoAdmissionForOrderDayForInstruction</label>
                   <div class="col-md-8 col-lg-9">
                     <label [(ngModel)]="selectedNode.obj.skipIfNoAdmissionForOrderDay" name="stopOnFailure" nz-checkbox></label>
                   </div>
