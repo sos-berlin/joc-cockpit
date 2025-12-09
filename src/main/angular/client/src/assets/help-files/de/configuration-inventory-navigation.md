@@ -69,16 +69,16 @@ Kennzeichnungen können über das Symbol + hinzugefügt werden. Es stehen Option
 
 ## Operationen
 
-Operationen sind auf Ordner- und Objektebene über das 3-Punkte Aktionsmenü verfügbar, das im *Navigationsbereich* angezeigt wird.
+Operationen sind für Ordner- und Objektebene über das 3-Punkte Aktionsmenü verfügbar, das im *Navigationsbereich* angezeigt wird.
 
-### Operationen auf Ordner
+### Operationen für Ordner
 
 Operationen sind für *Systemordner* und *Benutzerordner* verfügbar.
 
 Der Ordner der obersten Ebene / (Schrägstrich) bietet die folgenden Operationen:
 
 - **Erneut Ausrollen** wird im Falle eines Journalverlusts verwendet, wenn der Speicher eines Controllers gelöscht und der Controller initialisiert wird. Die Operation *rollt alle Objekte aus*, die zuvor auf einen Controller ausgerollt wurden. 
-- **Abhängigkeiten aktualisieren** erstellt die interne Darstellung der Objektabhängigkeiten neu. Dies geschieht automatisch und wird beim Erstellen oder Löschen von Inventarobjekten und bei Änderungen von Objektnamen ausgelöst. Wenn Benutzer Grund zu der Annahme haben, dass die Abhängigkeiten nicht synchron sind, kann der Vorgang durchgeführt werden. Die Benutzer sollten bedenken, dass dies einige Zeit in Anspruch nehmen wird, etwa drei Minuten bei einem Bestand von 5000 Objekten. Die Benutzer können jedoch mit JOC Cockpit weiterarbeiten, während die Abhängigkeiten aktualisiert werden.
+- **Abhängigkeiten aktualisieren** erstellt die interne Darstellung der Objektabhängigkeiten neu. Dies geschieht automatisch und wird beim Erstellen oder Löschen von Inventarobjekten und bei Änderungen von Objektnamen ausgelöst. Wenn Benutzer Grund zu der Annahme haben, dass die Abhängigkeiten nicht synchron sind, kann die Operation durchgeführt werden. Die Benutzer sollten bedenken, dass dies einige Zeit in Anspruch nehmen kann, etwa zwei Minuten bei einem Bestand von 5000 Objekten. Die Benutzer können jedoch mit JOC Cockpit weiterarbeiten, während die Abhängigkeiten aktualisiert werden.
 
 #### Operationen für Systemordner
 
@@ -114,7 +114,7 @@ Die folgenden Operationen sind für *Systemordner* verfügbar:
 - Operationen für alle Objekte
   - **Neu** erstellt das im Aktionsmenü angebotene Objekt: einen Ordner oder ein Inventarobjekt, siehe [Regeln zur Benennung von Objekten](/object-naming-rules).
   - **Ausschneiden** *schneidet* den Ordner, alle Unterordner und Inventarobjekte aus, um sie später an einer anderen Stelle in der Ordnerhierarchie einzufügen.
-  - **Kopieren** *kopiert* den Ordner, alle Unterordner und Inventarobjekte, einschließlich referenzierter Inventarobjekte, die sich möglicherweise in anderen Ordnern befinden. Der Vorgang ist eine *tiefe Kopie*, die auf alle referenzierten Objekte wirkt.
+  - **Kopieren** *kopiert* den Ordner, alle Unterordner und Inventarobjekte, einschließlich referenzierter Inventarobjekte, die sich möglicherweise in anderen Ordnern befinden. Die Operation ist eine *tiefe Kopie*, die auf alle referenzierten Objekte wirkt.
   - bei der **Flachen Kopie** werden der Ordner, alle Unterordner und Inventarobjekte *kopiert*. Verweise auf Inventarobjekte in anderen Ordnern werden nicht berücksichtigt.
   - **Umbenennen** ermöglicht das Umbenennen des Ordners und der optional enthaltenen Inventarobjekte. Einzelheiten finden Sie unter [Ordner umbenennen](/configuration-inventory-operations-rename-folder).
   - **Kennzeichnungen verwalten** ermöglicht das Hinzufügen und Löschen von Kennzeichnungen zu/aus Arbeitsabläufen in der angegebenen Ordnerhierarchie, siehe [Kennzeichnungen verwalten](/configuration-inventory-operations-manage-tags).
@@ -126,7 +126,7 @@ Die folgenden Operationen sind für *Systemordner* verfügbar:
   - **Zurückziehen** macht eine vorherige *Ausrollen*-Operation rückgängig. Die Inventarobjekte werden in den Status *Entwurf* gesetzt. Dies bedeutet, dass Aufträge für Arbeitsabläufe aus dem [Tagesplan](/daily-plan) entfernt werden. Einzelheiten finden Sie unter [Ordner zurückziehen](/configuration-inventory-operations-revoke-folder).
   - **Neu validieren** prüft die Gültigkeit von Inventarobjekten, die z.B. nach dem Import von Objekten inkonsistent werden können.
   - **Synchronisieren** bringt den Status von Objekten mit dem Controller und dem Inventar auf den gleichen Stand:
-    - mit *Synchronisieren des Controller* werden Inventarobjekte je nach ihrem Status *Ausgerollt* oder *Entwurf* an/von Controller und Agenten *ausgerollt* oder *zurückgezogen*. Dieser Vorgang kann im Falle eines Journalverlustes verwendet werden, wenn der Speicher eines Controllers gelöscht und der Controller initialisiert wird.
+    - mit *Synchronisieren des Controller* werden Inventarobjekte je nach ihrem Status *Ausgerollt* oder *Entwurf* an/von Controller und Agenten *ausgerollt* oder *zurückgezogen*. Die Operation kann im Fall eines Journalverlustes verwendet werden, wenn der Speicher eines Controllers gelöscht und der Controller initialisiert wird.
     - mit *Synchronisieren des Inventars* werden Inventarobjekte in den Status *ausgerollt* oder *Entwurf* versetzt, je nach Verfügbarkeit des Objekts beim Controller.
 - Operationen für Automation Objekte
   - **Freigeben** macht *Entwurf*-Objekte verfügbar
@@ -141,7 +141,7 @@ Die folgenden Operationen sind für *Systemordner* verfügbar:
   - **Jobs aus Vorlagen aktualisieren** aktualisiert Jobs in Arbeitsabläufen, die sich in einem beliebigen Ordner befinden, der Verweise auf *Job-Vorlagen* enthält, die zum ausgewählten *Benutzerordner* oder einem beliebigen Unterordner gehören.
   - **Vorlage auf Jobs anwenden** aktualisiert Jobs in Arbeitsabläufen, die sich im ausgewählten *Benutzerordner* befinden, anhand von *Job-Vorlagen*, die sich in einem beliebigen Ordner befinden.
 
-### Operationen auf Objekte
+### Operationen für Objekte
 
 Die folgenden Operationen werden für einzelne Inventarobjekte angeboten:
 

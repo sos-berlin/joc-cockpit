@@ -48,7 +48,7 @@ Bei der Umbenennung von Objekten wird die Konsistenz des Inventars berücksichti
 - Wenn ein Arbeitsablauf umbenannt wird, der von einem Zeitplan referenziert wird, dann
   - wird der Zeitplan aktualisiert, um den geänderten Namen wiederzugeben,
   - wird der Zeitplan auf den Status *Entwurf* gesetzt,
-  - ein späterer *Ausrollen* Vorgang für den Arbeitsablauf schließt einen *Freigabe* Vorgang für den Zeitplan ein und umgekehrt.
+  - eine spätere Operation *Ausrollen* für den Arbeitsablauf schließt eine Operation *Freigabe* für den Zeitplan ein und umgekehrt.
 
 ## Referenzen
 

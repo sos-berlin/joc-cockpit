@@ -24,7 +24,7 @@ Benutzer, die mit den Standardwerten zufrieden sind und einen Auftrag zur sofort
 ### Abhängigkeiten
 
 - **Kennung des Notizraums**: Wenn der Arbeitsablauf Abhängigkeiten auf der Basis von Notizen enthält, kann ein Tagesplandatum angegeben werden, für das die Abhängigkeiten aufgelöst werden sollen. Standardmäßig wird der aktuelle Tag verwendet.
-  - es werden vergangene Tage akzeptiert, für die ein Plan geöffnet ist.
+  - es werden zurückliegende Tage akzeptiert, für die ein Plan geöffnet ist.
   - zukünftige Tage werden akzeptiert.
 
 ### Auftragsposition

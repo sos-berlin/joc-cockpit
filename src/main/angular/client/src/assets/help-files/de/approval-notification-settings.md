@@ -1,10 +1,10 @@
 # Einstellungen für Autorsierungsbenachrichtigungen
 
- Der [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) wird für Situationen angeboten, in denen Benutzer beabsichtigen, Operatione wie das Hinzufügen oder Stornieren von Aufträgen durchzuführen, die die Autorsierung eines zweiten Benutzers erfordern. Dies kann jede Operation umfassen, die ein Objekt ändert.
+ Der [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) wird für Situationen angeboten, in denen Benutzer beabsichtigen, Operatione wie das Hinzufügen oder Abbrechen von Aufträgen durchzuführen, die die Autorsierung eines zweiten Benutzers erfordern. Dies kann jede Operation umfassen, die ein Objekt ändert.
 
 Der Autorsierungsprozess umfasst die folgenden Rollen:
 
-- Ein *Requestor* beantragt die Durchführung eines autorisierungspflichtigen Vorgangs.
+- Ein *Requestor* beantragt die Durchführung einer autorisierungspflichtigen Operation.
 - Ein *Approver* bestätigt oder verweigert die Autorsierungsanfrage.
 
 Zu den grundlegenden Funktionen des Autorisierungsprozesses gehören:

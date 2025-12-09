@@ -77,7 +77,7 @@ Die Fragmente gibt es in einer Reihe von Varianten für die folgenden Benachrich
       - Für Versionen ab 2.7.1:
         - Die Kritikalität kann eine oder mehrere der Optionen *MINOR*, *NORMAL*, *MAJOR*, *CRITICAL* sein.
         - Die Kritikalität *ALL* ist veraltet.
-      - Die Attribute **return_code_from** und **return_code_to** können optional verwendet werden, um die Benachrichtigungen weiter auf Jobs zu beschränken, die mit dem angegebenen Return Code abgeschlossen wurden. Der Returncode für Shell-Jobs entspricht dem Exitcode des Betriebssystems.
+      - Die Attribute **return_code_from** und **return_code_to** können optional verwendet werden, um die Benachrichtigungen weiter auf Jobs zu beschränken, die mit dem angegebenen Return Code abgeschlossen wurden. Der Returncode für Shell Jobs entspricht dem Exitcode des Betriebssystems.
     - Leer: Wenn kein *WorkflowJob*-Element angegeben ist, gilt die Benachrichtigung für alle [JS7 - Workflow Instructions](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflow+Instructions) einschließlich der [JS7 - Fail Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Fail+Instruction). Andernfalls gilt sie für alle Vorkommen der [JS7 - Job Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Instruction).
 
 ### Notifications

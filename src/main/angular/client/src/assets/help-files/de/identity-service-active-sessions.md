@@ -16,7 +16,7 @@ Aktive Sitzungen werden anhand des verwendeten Kontos, des für die Anmeldung ve
 Benutzer finden die folgenden Operationen für aktive Sitzungen:
 
 - **Zur Sperrliste hinzufügen** fügt das betreffende Konto zur [Identitätsdienste - Sperrliste](/identity-service-blocklist) hinzu, wodurch eine zukünftige Anmeldung verweigert wird. Die Operation beendet nicht die aktuelle Sitzung des Kontos.
-- **Sitzung abbrechen** wird die aktuelle Sitzung des Kontos zwangsweise beenden. Dies hindert das Konto nicht daran, einen neuen Anmeldevorgang durchzuführen.
+- **Sitzung abbrechen** wird die aktuelle Sitzung des Kontos zwangsweise beenden. Dies hindert das Konto nicht daran, eine erneute Anmeldung vorzunehmen.
 - **Alle Sitzungen des Kontos abbrechen** beendet ähnlich wie *Sitzung abbrechen* alle Sitzungen des angegebenen Kontos.
 
 Wenn Sie eine oder mehrere Sitzungen auswählen, dann ist die Operation *Sitzung abbrechen* über eine Massenoperation mit der entsprechenden Schaltfläche in der oberen rechten Ecke der Unteransicht verfügbar.

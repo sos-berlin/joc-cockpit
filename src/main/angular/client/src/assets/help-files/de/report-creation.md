@@ -12,7 +12,7 @@ Berichte werden in der Ansicht [Konfiguration - Inventar - Berichtsvorlagen](/co
 
 Die Berichtsvorlagen sind verfügbar 
 
-- über den *Navigationsbereich*, die eine Navigation zu den Berichtskonfigurationen bietet.
+- über den *Navigationsbereich*, die eine Navigation zu den Berichtsvorlagen bietet.
 - über den Bereich *Berichtsvorlagen*, der Details zur Berichtskonfiguration anzeigt.
 
 ### Bereich: Ordner
