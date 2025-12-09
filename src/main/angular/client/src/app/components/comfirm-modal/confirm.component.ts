@@ -83,17 +83,16 @@ export class ConfirmModalComponent {
     const configurations = [];
     collectConfigurations(object, configurations);
 
-
     const requestObj = {
       configurations: configurations
     };
     const requestedKeys = new Set(configurations.map(config => `${config.name}-${config.type}`));
+
     this.coreService.post('inventory/dependencies', requestObj).subscribe({
       next: (res: any) => {
-        this.dependencies = res.dependencies;
-        this.updateNodeDependencies(this.dependencies, requestedKeys);
-
-        this.prepareObject(this.dependencies)
+        this.dependencies = res;
+        this.updateNodeDependencies(res, requestedKeys);
+        this.prepareObject(res);
       },
       error: (err) => {
       }
@@ -101,87 +100,153 @@ export class ConfirmModalComponent {
   }
 
   private updateNodeDependencies(dependenciesResponse: any, requestedKeys: Set<string>): void {
-    const requestedItems = dependenciesResponse.requestedItems;
-    const affectedItems = dependenciesResponse.affectedItems || [];
+    const requestedItemIds = dependenciesResponse.requestedItems || [];
+    const objectsMap = dependenciesResponse.objects || {};
 
     const referencedSet = new Set<string>();
-    requestedItems.forEach(item => {
-      item.references?.forEach(ref => {
-        referencedSet.add(`${ref.name}-${ref.objectType}`);
-      });
-      item.referencedBy?.forEach(refBy => {
-        referencedSet.add(`${refBy.name}-${refBy.objectType}`);
-      });
-    });
-
     const requestedSet = new Set<string>();
-    requestedItems.forEach(item => {
-      requestedSet.add(`${item.name}-${item.objectType}`);
+
+    requestedItemIds.forEach(objectId => {
+      const dep = objectsMap[objectId];
+      if (!dep) return;
+
+      requestedSet.add(`${dep.name}-${dep.objectType}`);
+
+      const allReferencedIds = [
+        ...(dep.enforcedReferencedBy || []),
+        ...(dep.referencedBy || []),
+        ...(dep.enforcedReferences || []),
+        ...(dep.references || [])
+      ];
+
+      allReferencedIds.forEach(refId => {
+        const refObj = objectsMap[refId];
+        if (refObj) {
+          referencedSet.add(`${refObj.name}-${refObj.objectType}`);
+        }
+      });
     });
 
-    affectedItems.forEach(itemWrapper => {
-      const item = itemWrapper.item;
-      const uniqueKey = `${item.name}-${item.objectType}`;
-      if (!referencedSet.has(uniqueKey) && !requestedSet.has(uniqueKey) &&
-        !requestedKeys.has(uniqueKey) &&
-        !this.filteredAffectedItems.some(existing => `${existing.name}-${existing.objectType}` === uniqueKey)) {
-        this.filteredAffectedItems.push(item);
-      }
+    requestedItemIds.forEach(objectId => {
+      const dep = objectsMap[objectId];
+      if (!dep) return;
+
+      const allReferencedIds = [
+        ...(dep.enforcedReferencedBy || []),
+        ...(dep.referencedBy || []),
+        ...(dep.enforcedReferences || []),
+        ...(dep.references || [])
+      ];
+
+      allReferencedIds.forEach(refId => {
+        const refObj = objectsMap[refId];
+        if (!refObj) return;
+
+        const uniqueKey = `${refObj.name}-${refObj.objectType}`;
+
+        if (!referencedSet.has(uniqueKey) &&
+            !requestedSet.has(uniqueKey) &&
+            !requestedKeys.has(uniqueKey) &&
+            !this.filteredAffectedItems.some(existing =>
+              `${existing.name}-${existing.objectType}` === uniqueKey)) {
+          this.filteredAffectedItems.push(refObj);
+        }
+      });
     });
   }
 
-  private   prepareObject(dependencies: any): void {
-    if (dependencies && dependencies?.requestedItems.length > 0) {
+  private prepareObject(dependencies: any): void {
+    const requestedItemIds = dependencies.requestedItems || [];
+    const objectsMap = dependencies.objects || {};
 
-      dependencies?.requestedItems.forEach(dep => {
-        if (dep.referencedBy) {
-          const affectedTypeSet = new Set<string>();
-          dep.referencedBy.forEach(refObj => {
-            const type = refObj.objectType;
-            affectedTypeSet.add(type);
-            if (!this.affectedObjectsByType[type]) {
-              this.affectedObjectsByType[type] = [];
-              this.affectedObjectTypes.push(type);
-            }
-
-              refObj.disabled = false;
-              refObj.selected = true
-
-            this.affectedObjectsByType[type].push(refObj);
-          });
-        }
-
-        if (dep.references) {
-          const referencedTypeSet = new Set<string>();
-          dep.references.forEach(refObj => {
-            const type = refObj.objectType;
-            referencedTypeSet.add(type);
-            if (!this.referencedObjectsByType[type]) {
-              this.referencedObjectsByType[type] = [];
-              this.referencedObjectTypes.push(type);
-            }
-
-
-              refObj.disabled = false;
-              refObj.selected = false;
-
-            this.referencedObjectsByType[type].push(refObj);
-
-
-          });
-        }
-
-      });
-      const filteredAffectedTypeSet = new Set<string>();
-      this.filteredAffectedItems.forEach(item => {
-        const type = item.objectType;
-        filteredAffectedTypeSet.add(type);
-          item.selected = false;
-      });
-      this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
-      this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
-
+    if (requestedItemIds.length === 0) {
+      return;
     }
+
+    const requestedSet = new Set(requestedItemIds);
+
+    this.affectedObjectsByType = {};
+    this.referencedObjectsByType = {};
+    this.affectedObjectTypes = [];
+    this.referencedObjectTypes = [];
+
+    requestedItemIds.forEach(objectId => {
+      const dep = objectsMap[objectId];
+      if (!dep) return;
+
+      const allReferencedByIds = [
+        ...(dep.enforcedReferencedBy || []),
+        ...(dep.referencedBy || [])
+      ];
+
+      allReferencedByIds.forEach(refById => {
+        if (requestedSet.has(refById)) return;
+
+        const refObj = objectsMap[refById];
+        if (!refObj) return;
+
+        const type = refObj.objectType;
+        if (!this.affectedObjectsByType[type]) {
+          this.affectedObjectsByType[type] = [];
+          this.affectedObjectTypes.push(type);
+        }
+
+        const existingIndex = this.affectedObjectsByType[type].findIndex(
+          obj => obj.id === refObj.id
+        );
+
+        if (existingIndex === -1) {
+          const refObjClone = { ...refObj };
+          const isEnforced = (dep.enforcedReferencedBy || []).includes(refById);
+
+          refObjClone.enforce = isEnforced;
+          refObjClone.disabled = false;
+          refObjClone.selected = true;
+
+          this.affectedObjectsByType[type].push(refObjClone);
+        }
+      });
+
+      const allReferencesIds = [
+        ...(dep.enforcedReferences || []),
+        ...(dep.references || [])
+      ];
+
+      allReferencesIds.forEach(refId => {
+        if (requestedSet.has(refId)) return;
+
+        const refObj = objectsMap[refId];
+        if (!refObj) return;
+
+        const type = refObj.objectType;
+        if (!this.referencedObjectsByType[type]) {
+          this.referencedObjectsByType[type] = [];
+          this.referencedObjectTypes.push(type);
+        }
+
+        const existingIndex = this.referencedObjectsByType[type].findIndex(
+          obj => obj.id === refObj.id
+        );
+
+        if (existingIndex === -1) {
+          const refObjClone = { ...refObj };
+          const isEnforced = (dep.enforcedReferences || []).includes(refId);
+
+          refObjClone.enforce = isEnforced;
+          refObjClone.disabled = false;
+          refObjClone.selected = false;
+
+          this.referencedObjectsByType[type].push(refObjClone);
+        }
+      });
+    });
+
+    this.filteredAffectedItems.forEach(item => {
+      item.selected = false;
+    });
+
+    this.affectedObjectTypes.forEach(type => this.affectedCollapsed[type] = true);
+    this.referencedObjectTypes.forEach(type => this.referencedCollapsed[type] = true);
   }
 
   getUniqueObjectTypes(objects: any[]): string[] {

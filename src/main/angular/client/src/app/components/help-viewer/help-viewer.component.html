@@ -60,7 +60,6 @@
     </button>
   }
 
-
   @if(isValidate){
     <button
       type="button"
@@ -81,14 +80,8 @@
   </button>
 
   @if (fallbackNotice) {
-    <small class="text-warning" style="white-space: nowrap;">
-      {{ 'common.message.fallbackNotice' | translate }}
+    <small class="text-muted m-l" style="white-space: nowrap;">
+      {{ fallbackNotice }}
     </small>
   }
-
-  <div style="position: absolute; right: 10px;">
-    <app-select-input (modelChange)="setLocale()" [attributeName]="'language'" [classNames]="'w-xl'"
-                      [listArray]="coreService.locales" [name]="'language'" [object]="helpFilters"
-                      [optionLabel]="'name'" [optionValue]="'lang'"></app-select-input>
-  </div>
 </div>

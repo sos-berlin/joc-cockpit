@@ -178,7 +178,7 @@
           </div>
         </div>
       }
-      @if (exportObj.exportType === 'individual' || exportObj.exportType === 'changes') {
+      @if ((exportObj.exportType === 'individual' || origin || origin.object) || exportObj.exportType === 'changes') {
         <div class="form-group row">
           <div class="col-md-3">
             <label translate>inventory.label.includeDependencies</label>
