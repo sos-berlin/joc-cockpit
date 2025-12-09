@@ -2285,8 +2285,8 @@
           "predicate": "Das Prädikat einer If-Anweisung stellt einen Ausdruck oder Vergleich dar, der zu 'wahr' oder 'falsch' evaluiert."
         },
         "job": {
-          "name": "Der Name eines Jobs ist eindeutig im Arbeitsablauf. Derselbe Job kann mehrfach als Anweisung im Arbeitsablauf vorkommen sofern er durch seine Kennzeichnung unterschieden ist. Für Job-Namen können Unicode Zeichen verwendet werden, Punkte und Bindestriche, jedoch nicht am Beginn oder Ende des Job-Namens sowie keine Leerzeichen.",
-          "label": "Eindeutige Kennzeichnung des Jobs oder der Anweisung im Arbeitsablauf. Ein Job oder eine Anweisung können im Arbeitsablauf wiederverwendet werden, das Auftreten wird durch die Kennzeichnung unterschieden.",
+          "name": "Der Name eines Jobs ist eindeutig im Arbeitsablauf. Derselbe Job kann mehrfach als Anweisung im Arbeitsablauf vorkommen sofern er durch seine Adresse unterschieden ist. Für Job-Namen können Unicode Zeichen verwendet werden, Punkte und Bindestriche, jedoch nicht am Beginn oder Ende des Job-Namens sowie keine Leerzeichen.",
+          "label": "Eindeutige Adresse des Jobs oder der Anweisung im Arbeitsablauf. Ein Job oder eine Anweisung können im Arbeitsablauf wiederverwendet werden, das Auftreten wird durch die Adresse unterschieden.",
           "title": "Der Titel eines Jobs kann nach Belieben angegeben werden. Der Titel wird in der Sicht ARBEITSABLÄUFE angezeigt.",
           "compatibleMode": "Kompatibilität mit zurückliegenden JobScheduler Versionen beinhaltet bspw. dass für alle Auftragsvariablen in Shell Jobs Umgebungsvariablen erzeugt werden, die mit 'SCHEDULER_PARAM_' präfiziert sind - analog zu JS1",
           "credentialKey": "In der Windows Anmeldeinformationsverwaltung kann ein Schlüssel mit Zugangsdaten hinterlegt werden, um den Job mit diesen Zugangsdaten für einen anderen Anwender zu starten. Optional kann das Anwenderprofil geladen werden.",

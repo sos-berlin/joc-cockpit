@@ -1,11 +1,11 @@
-# Berechtigungen für den Identitätsdienst
+# Berechtigungen für Identitätsdienste
 
 Identitätsdienste regeln den Zugriff auf JOC Cockpit durch Authentifizierung und Autorisierung, siehe [Identitätsdienste](/identity-services).
 
 Für die Autorisierung bietet JS7 ein rollenbasiertes Zugriffsmodell (RBAC), das beinhaltet, dass
 
-- rollen frei aus verfügbaren Berechtigungen konfiguriert werden,
-- benutzern eine oder mehrere Rollen zugewiesen werden, die für die daraus resultierenden Berechtigungen zusammengeführt werden.
+- Rollen frei aus verfügbaren Berechtigungen konfiguriert werden,
+- Benutzern eine oder mehrere Rollen zugewiesen werden, die für die daraus resultierenden Berechtigungen zusammengeführt werden.
 
 Berechtigungen legen einen der folgenden Zustände fest:
 
@@ -15,11 +15,11 @@ Berechtigungen legen einen der folgenden Zustände fest:
 
 Berechtigungen werden aus allen Rollen für die resultierenden Berechtigungen eines Benutzerkontos zusammengeführt.
 
-## Ordnerumfang
+## Inventarordner
 
-Der Umfang der Berechtigungen in einer Rolle kann auf einen oder mehrere Bestandsordner beschränkt werden.
+Der Umfang der Berechtigungen in einer Rolle kann auf einen oder mehrere Inventarordner beschränkt werden.
 
-- Über die Schaltfläche *Ordner hinzufügen* in der oberen rechten Ecke der Ansicht können Sie einen Bestandsordner auswählen und eine rekursive Verwendung festlegen.
+- Über die Schaltfläche *Ordner hinzufügen* in der oberen rechten Ecke der Ansicht können Sie einen Inventarordner auswählen und eine rekursive Verwendung festlegen.
 - Benutzer können einer Rolle eine beliebige Anzahl von Inventarordnern hinzufügen.
 
 ## Berechtigungsbaum
@@ -37,7 +37,7 @@ Berechtigungen werden durch ein Rechteck visualisiert, das einer Batterie ähnel
   - Ein Rechteck mit hellblauem Hintergrund zeigt eine vererbte, erteilte Berechtigung an. Bei Änderungen an der Berechtigung müssen Sie nicht die übergeordnete Berechtigung erteilen, sondern die untergeordneten Berechtigungen einzeln erteilen. <br/><img src="identity-service-permissions-inherited.png" alt="Inherited Permissions" width="600" height="100" />
 - Wenn Sie auf das Symbol + innerhalb des Rechtecks einer Berechtigung klicken, wechselt die Berechtigung in den Status Verweigert, der durch die graue Hintergrundfarbe angezeigt wird. Wenn Sie auf das Symbol - innerhalb einer verweigerten Berechtigung klicken, wird sie zu einer nicht zugewiesenen Berechtigung mit weißem Hintergrund. <br/><img src="identity-service-permissions-denied.png" alt="Denied Permissions" width="600" height="100" />
 
-### Reduzieren und Erweitern von Berechtigungen
+### Reduzieren und Erweitern der Ansicht
 
 Die folgenden Schaltflächen werden zum Erweitern/Komprimieren von Berechtigungen angeboten:
 
@@ -50,18 +50,17 @@ Die folgenden Schaltflächen werden zum Erweitern/Komprimieren von Berechtigunge
 In der oberen rechten Ecke werden die folgenden Schaltflächen zur Anzeige von Berechtigungen angeboten:
 
 - **Grafische Ansicht** zeigt die Berechtigungen in Form einer Baumstruktur mit Batterieform an.
-- **Tabellenansicht** zeigt die Berechtigungen in Textform an, wobei die Berechtigungsstufen durch einen Doppelpunkt getrennt sind.
+- **Tabellarische Ansicht** zeigt die Berechtigungen in Textform an, wobei die Berechtigungsstufen durch einen Doppelpunkt getrennt sind.
 
 ## Referenzen
 
 ### Kontext-Hilfe
 
-- [Identitätsdienste - Rollen](/identity-service-roles)
 - [Identitätsdienste](/identity-services)
+- [Identitätsdienste - Rollen](/identity-service-roles)
 
 ### Product Knowledge Base
 
 - [JS7 - Default Roles and Permissions](https://kb.sos-berlin.com/display/JS7/JS7+-+Default+Roles+and+Permissions)
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
 - [JS7 - Verwaltung von Benutzerkonten, Rollen und Berechtigungen](https://kb.sos-berlin.com/display/JS7/JS7+-+Verwaltung+von+Benutzerkonten+Rollen+und+Berechtigungen)
-

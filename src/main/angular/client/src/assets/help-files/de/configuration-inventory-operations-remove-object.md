@@ -1,6 +1,6 @@
 # Konfiguration - Inventar - Operationen - Objekt entfernen
 
-Das Entfernen von Objekten bedeutet, dass sie aus Controllern und aus dem Inventar gelöscht werden. Dies gilt für Objekte wie Arbeitsabläufe und Zeitpläne, die in den Systemordnern *Controller* und *Automation* verfügbar sind.
+Das Entfernen von Objekten bedeutet, dass sie aus Controller Instanzen und aus dem Inventar gelöscht werden. Dies gilt für Objekte wie Arbeitsabläufe und Zeitpläne, die in den Systemordnern *Controller* und *Automation* verfügbar sind.
 
 Entfernte Objekte bleiben im Papierkorb des Inventars verfügbar.
 
