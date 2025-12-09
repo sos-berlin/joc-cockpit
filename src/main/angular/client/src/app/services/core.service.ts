@@ -1652,16 +1652,27 @@ export class CoreService {
     return moment.tz.guess();
   }
 
-  // Function: get list of time zones
   getTimeZoneList(): any {
     const deprecated3LetterZones = [
       'ACT', 'AET', 'AGT', 'ART', 'AST', 'BET', 'BST', 'CAT', 'CNT', 'CST',
       'CTT', 'EAT', 'ECT', 'EST', 'HST', 'IET', 'IST', 'JST', 'MIT', 'MST',
-      'NET', 'NST', 'PLT', 'PNT', 'PRT', 'PST', 'SST', 'VST',
-      'CET', 'EET', 'WET', 'MET', 'UCT', 'GMT'
+      'NET', 'NST', 'PLT', 'PNT', 'PRT', 'PST', 'SST', 'VST'
     ];
 
-    const deprecatedPrefixes = ['US/', 'Canada/', 'Mexico/', 'Brazil/', 'Chile/'];
+    const deprecatedPrefixes = ['US/', 'Canada/', 'Brazil/', 'Chile/', 'Mexico/'];
+
+    const backwardCompatibilityZones = [
+      'Cuba', 'Egypt', 'Eire', 'GB', 'GB-Eire', 'GMT', 'GMT+0', 'GMT-0', 'GMT0',
+      'Greenwich', 'Hongkong', 'HST', 'Iceland', 'Iran', 'Israel', 'Jamaica',
+      'Japan', 'Kwajalein', 'Libya', 'MST', 'Navajo', 'NZ', 'NZ-CHAT',
+      'Poland', 'Portugal', 'PRC', 'ROC', 'ROK', 'Singapore', 'Turkey',
+      'UCT', 'Universal', 'UTC', 'W-SU', 'Zulu',
+      'CET', 'CST6CDT', 'EET', 'EST', 'EST5EDT', 'MET', 'MST7MDT', 'PST8PDT', 'WET'
+    ];
+
+    const invalidZones = ['Factory', 'Etc/Unknown'];
+
+    const etcDuplicates = ['Etc/GMT0', 'Etc/Greenwich', 'Etc/Universal', 'Etc/Zulu', 'Etc/UCT'];
 
     return moment.tz.names().filter(tz => {
       if (deprecated3LetterZones.includes(tz)) {
@@ -1672,7 +1683,19 @@ export class CoreService {
         return false;
       }
 
-      return tz.match(/^(Africa|America|Antarctica|Asia|Australia|Europe|Arctic|Atlantic|Indian|Pacific)\/.+$/);
+      if (backwardCompatibilityZones.includes(tz)) {
+        return false;
+      }
+
+      if (invalidZones.includes(tz)) {
+        return false;
+      }
+
+      if (etcDuplicates.includes(tz)) {
+        return false;
+      }
+
+      return true;
     });
   }
 
