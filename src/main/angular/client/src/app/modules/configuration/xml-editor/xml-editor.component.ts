@@ -409,7 +409,8 @@ export class ShowChildModalComponent {
                 a = 'base';
               }
               if (a === 'default') {
-                temp.data = b;
+                // Convert string boolean to actual boolean for xs:boolean type
+                temp.data = typeElement[0].attributes[i].nodeValue === 'xs:boolean' ? this.convertStringToBoolean(b) : b;
               }
               temp = Object.assign(temp, {[a]: b});
             }
@@ -543,6 +544,21 @@ export class ShowChildModalComponent {
       }
     }
     this.updateTree();
+  }
+
+  /**
+   * Convert string boolean values from XML (e.g., "false", "true") to actual boolean type
+   */
+  convertStringToBoolean(value: any): any {
+    if (typeof value === 'string') {
+      const trimmedValue = value.trim().toLowerCase();
+      if (trimmedValue === 'true') {
+        return true;
+      } else if (trimmedValue === 'false') {
+        return false;
+      }
+    }
+    return value;
   }
 }
 
@@ -3048,13 +3064,88 @@ export class XmlEditorComponent {
     return valueArr;
   }
 
+  /**
+   * Convert string boolean values from XML (e.g., "false", "true") to actual boolean type
+   */
+  convertStringToBoolean(value: any): any {
+    if (typeof value === 'string') {
+      const trimmedValue = value.trim().toLowerCase();
+      if (trimmedValue === 'true') {
+        return true;
+      } else if (trimmedValue === 'false') {
+        return false;
+      }
+    }
+    return value;
+  }
+
+  /**
+   * Recursively convert boolean string values in entire tree structure (for uploaded XML)
+   */
+  convertBooleanValuesInTree(nodes: any[]): void {
+    if (!nodes || !Array.isArray(nodes)) return;
+
+    for (const node of nodes) {
+      if (node.values && Array.isArray(node.values)) {
+        for (const valueObj of node.values) {
+          if (valueObj.data !== undefined) {
+            const originalValue = valueObj.data;
+            const originalType = typeof originalValue;
+            const convertedValue = this.convertStringToBoolean(valueObj.data);
+            if (convertedValue !== valueObj.data) {
+              valueObj.data = convertedValue;
+              console.log(`[Boolean Fix - Upload] Converted ${node.ref || node.name}:`, {
+                original: originalValue,
+                originalType: originalType,
+                converted: valueObj.data,
+                convertedType: typeof valueObj.data,
+                base: valueObj.base || 'unknown'
+              });
+            }
+          }
+        }
+      }
+
+      if (node.attributes && Array.isArray(node.attributes)) {
+        for (const attr of node.attributes) {
+          if (attr.data !== undefined) {
+            const originalValue = attr.data;
+            const convertedValue = this.convertStringToBoolean(attr.data);
+            if (convertedValue !== attr.data) {
+              attr.data = convertedValue;
+              console.log(`[Boolean Fix - Upload] Converted attribute ${attr.name}:`, {
+                original: originalValue,
+                converted: attr.data
+              });
+            }
+          }
+        }
+      }
+
+      // Recursively process children
+      if (node.children && Array.isArray(node.children)) {
+        this.convertBooleanValuesInTree(node.children);
+      }
+    }
+  }
+
   addDefaultValue(node) {
     if (node.values && (node.values[0].base === 'xs:string' && (node.values[0] && node.values[0].values && node.values[0].values.length > 0) && node.values[0].default === undefined)) {
       node.values[0].default = node.values[0].values[0].value;
       node.values[0].data = node.values[0].values[0].value;
-    } else if (node.values && (node.values[0].base === 'xs:boolean') && node.values[0].default === undefined) {
-      node.values[0].default = true;
-      node.values[0].data = true;
+    } else if (node.values && (node.values[0].base === 'xs:boolean')) {
+      // Convert string boolean values to actual boolean type
+      if (node.values[0].data !== undefined) {
+        node.values[0].data = this.convertStringToBoolean(node.values[0].data);
+      }
+      if (node.values[0].default !== undefined) {
+        node.values[0].default = this.convertStringToBoolean(node.values[0].default);
+      }
+      // Set default to true if no value exists
+      if (node.values[0].default === undefined && node.values[0].data === undefined) {
+        node.values[0].default = true;
+        node.values[0].data = true;
+      }
     }
   }
 
@@ -4599,7 +4690,12 @@ export class XmlEditorComponent {
 
   submitValue(value, ref, tag) {
     this.isChange = true;
-    if (/^\s*$/.test(value)) {
+    // For boolean types, ensure the value is a boolean, not a string
+    if (tag.base === 'xs:boolean') {
+      value = this.convertStringToBoolean(value);
+    }
+
+    if (/^\s*$/.test(value) && typeof value === 'string') {
       this.error = true;
       this.text = this.requiredField;
       this.errorName = ref;
@@ -5491,6 +5587,10 @@ export class XmlEditorComponent {
           for (let i = 0; i < mainjson.attributes.length; i++) {
             if (key === mainjson.attributes[i].name) {
               let a = xmljson[rootNode]._attributes[key];
+              // Convert string boolean to actual boolean for xs:boolean type attributes
+              if (mainjson.attributes[i].base === 'xs:boolean') {
+                a = this.convertStringToBoolean(a);
+              }
               mainjson.attributes[i] = Object.assign(mainjson.attributes[i], {data: a});
             }
           }
@@ -5498,7 +5598,12 @@ export class XmlEditorComponent {
       }
     }
     if (xmljson[rootNode] && xmljson[rootNode]._cdata !== undefined) {
-      mainjson.values[0] = Object.assign(mainjson.values[0], {data: xmljson[rootNode]._cdata});
+      let cdataValue = xmljson[rootNode]._cdata;
+      // Convert string boolean to actual boolean for xs:boolean type
+      if (mainjson.values && mainjson.values[0] && mainjson.values[0].base === 'xs:boolean') {
+        cdataValue = this.convertStringToBoolean(cdataValue);
+      }
+      mainjson.values[0] = Object.assign(mainjson.values[0], {data: cdataValue});
     }
 
     for (let key in xmljson[rootNode]) {
@@ -5549,6 +5654,14 @@ export class XmlEditorComponent {
           temp1 = Object.assign(temp1, {name: x, data: dat, parent: rootNode});
           mainjson.attributes.push(temp1);
         }
+        // Convert string boolean values to actual booleans for xs:boolean type attributes
+        if (mainjson.attributes) {
+          for (let i = 0; i < mainjson.attributes.length; i++) {
+            if (mainjson.attributes[i].base === 'xs:boolean') {
+              mainjson.attributes[i].data = this.convertStringToBoolean(mainjson.attributes[i].data);
+            }
+          }
+        }
       }
     }
     for (let key in xmljson[rootNode]) {
@@ -5588,6 +5701,22 @@ export class XmlEditorComponent {
     } else {
       return data.data;
     }
+  }
+
+  /**
+   * Format value for display in tree view - handles boolean, null, undefined, and other types
+   */
+  formatValueForDisplay(value: any): string {
+    if (value === null || value === undefined) {
+      return '';
+    }
+    if (typeof value === 'boolean') {
+      return value ? 'true' : 'false';
+    }
+    if (typeof value === 'string') {
+      return value;
+    }
+    return String(value);
   }
 
   addContent(data): void {
@@ -6114,6 +6243,9 @@ export class XmlEditorComponent {
         this.counting = arr.lastUuid;
         this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
         this.addKey(a);
+
+        this.convertBooleanValuesInTree(a);
+
         this.nodes = a;
         this.handleNodeToExpandAtOnce(this.nodes, _tempArrToExpand);
         this.selectedNode = this.nodes[0];

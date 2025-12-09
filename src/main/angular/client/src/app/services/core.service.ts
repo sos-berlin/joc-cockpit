@@ -1681,52 +1681,111 @@ export class CoreService {
     return moment.tz.guess();
   }
 
-  getTimeZoneList(): any {
-    const deprecated3LetterZones = [
-      'ACT', 'AET', 'AGT', 'ART', 'AST', 'BET', 'BST', 'CAT', 'CNT', 'CST',
-      'CTT', 'EAT', 'ECT', 'EST', 'HST', 'IET', 'IST', 'JST', 'MIT', 'MST',
-      'NET', 'NST', 'PLT', 'PNT', 'PRT', 'PST', 'SST', 'VST'
-    ];
+getTimeZoneList(): any {
+  const deprecated3LetterZones = new Set([
+    'ACT', 'AET', 'AGT', 'ART', 'AST', 'BET', 'BST', 'CAT', 'CNT', 'CST',
+    'CTT', 'EAT', 'ECT', 'EST', 'HST', 'IET', 'IST', 'JST', 'MIT', 'MST',
+    'NET', 'NST', 'PLT', 'PNT', 'PRT', 'PST', 'SST', 'VST'
+  ]);
 
-    const deprecatedPrefixes = ['US/', 'Canada/', 'Brazil/', 'Chile/', 'Mexico/'];
+  const backwardZones = new Set([
+    'CET', 'CST6CDT', 'Cuba', 'EET', 'EST', 'EST5EDT', 'Egypt', 'Eire',
+    'GB', 'GB-Eire', 'GMT+0', 'GMT-0', 'GMT0', 'Greenwich',
+    'Hongkong', 'Iceland', 'Iran', 'Israel', 'Jamaica', 'Japan',
+    'Kwajalein', 'Libya', 'MET', 'MST', 'MST7MDT', 'NZ', 'NZ-CHAT',
+    'Navajo', 'PRC', 'Poland', 'Portugal', 'ROC', 'ROK', 'Singapore',
+    'Turkey', 'UCT', 'UTC', 'Universal', 'W-SU', 'Zulu', 'PST8PDT', 'WET', 'HST',
 
-    const backwardCompatibilityZones = [
-      'Cuba', 'Egypt', 'Eire', 'GB', 'GB-Eire', 'GMT', 'GMT+0', 'GMT-0', 'GMT0',
-      'Greenwich', 'Hongkong', 'HST', 'Iceland', 'Iran', 'Israel', 'Jamaica',
-      'Japan', 'Kwajalein', 'Libya', 'MST', 'Navajo', 'NZ', 'NZ-CHAT',
-      'Poland', 'Portugal', 'PRC', 'ROC', 'ROK', 'Singapore', 'Turkey',
-      'UCT', 'Universal', 'UTC', 'W-SU', 'Zulu',
-      'CET', 'CST6CDT', 'EET', 'EST', 'EST5EDT', 'MET', 'MST7MDT', 'PST8PDT', 'WET'
-    ];
+    'Etc/GMT+0', 'Etc/GMT-0', 'Etc/GMT0', 'Etc/Greenwich',
+    'Etc/UCT', 'Etc/Universal', 'Etc/Zulu',
 
-    const invalidZones = ['Factory', 'Etc/Unknown'];
+    'Australia/ACT', 'Australia/LHI', 'Australia/NSW', 'Australia/North',
+    'Australia/Queensland', 'Australia/South', 'Australia/Tasmania',
+    'Australia/Victoria', 'Australia/West', 'Australia/Yancowinna',
+    'Australia/Canberra', 'Australia/Currie',
 
-    const etcDuplicates = ['Etc/GMT0', 'Etc/Greenwich', 'Etc/Universal', 'Etc/Zulu', 'Etc/UCT'];
+    'Brazil/Acre', 'Brazil/DeNoronha', 'Brazil/East', 'Brazil/West',
 
-    return moment.tz.names().filter(tz => {
-      if (deprecated3LetterZones.includes(tz)) {
-        return false;
-      }
+    'Canada/Atlantic', 'Canada/Central', 'Canada/Eastern', 'Canada/Mountain',
+    'Canada/Newfoundland', 'Canada/Pacific', 'Canada/Saskatchewan', 'Canada/Yukon',
 
-      if (deprecatedPrefixes.some(prefix => tz.startsWith(prefix))) {
-        return false;
-      }
+    'Chile/Continental', 'Chile/EasterIsland',
 
-      if (backwardCompatibilityZones.includes(tz)) {
-        return false;
-      }
+    'Mexico/BajaNorte', 'Mexico/BajaSur', 'Mexico/General',
 
-      if (invalidZones.includes(tz)) {
-        return false;
-      }
+    'US/Alaska', 'US/Aleutian', 'US/Arizona', 'US/Central', 'US/East-Indiana',
+    'US/Eastern', 'US/Hawaii', 'US/Indiana-Starke', 'US/Michigan',
+    'US/Mountain', 'US/Pacific', 'US/Samoa',
 
-      if (etcDuplicates.includes(tz)) {
-        return false;
-      }
+    'America/Buenos_Aires', 'America/Catamarca', 'America/Cordoba',
+    'America/Indianapolis', 'America/Jujuy', 'America/Knox_IN',
+    'America/Louisville', 'America/Mendoza', 'America/Virgin',
+    'Pacific/Samoa',
 
-      return true;
-    });
-  }
+    'Africa/Accra', 'Africa/Addis_Ababa', 'Africa/Asmara', 'Africa/Bamako',
+    'Africa/Bangui', 'Africa/Banjul', 'Africa/Blantyre', 'Africa/Brazzaville',
+    'Africa/Bujumbura', 'Africa/Conakry', 'Africa/Dakar', 'Africa/Dar_es_Salaam',
+    'Africa/Djibouti', 'Africa/Douala', 'Africa/Freetown', 'Africa/Gaborone',
+    'Africa/Harare', 'Africa/Kampala', 'Africa/Kigali', 'Africa/Kinshasa',
+    'Africa/Libreville', 'Africa/Lome', 'Africa/Luanda', 'Africa/Lubumbashi',
+    'Africa/Lusaka', 'Africa/Malabo', 'Africa/Maseru', 'Africa/Mbabane',
+    'Africa/Mogadishu', 'Africa/Niamey', 'Africa/Nouakchott', 'Africa/Ouagadougou',
+    'Africa/Porto-Novo', 'Africa/Timbuktu',
+
+    'America/Anguilla', 'America/Antigua', 'America/Argentina/ComodRivadavia',
+    'America/Aruba', 'America/Atka', 'America/Atikokan', 'America/Blanc-Sablon',
+    'America/Cayman', 'America/Coral_Harbour', 'America/Creston', 'America/Curacao',
+    'America/Dominica', 'America/Ensenada', 'America/Fort_Wayne', 'America/Godthab',
+    'America/Grenada', 'America/Guadeloupe', 'America/Kralendijk',
+    'America/Lower_Princes', 'America/Marigot', 'America/Montreal',
+    'America/Montserrat', 'America/Nassau', 'America/Nipigon',
+    'America/Pangnirtung', 'America/Porto_Acre', 'America/Port_of_Spain',
+    'America/Rainy_River', 'America/Rosario', 'America/Santa_Isabel',
+    'America/Shiprock', 'America/St_Barthelemy', 'America/St_Kitts',
+    'America/St_Lucia', 'America/St_Thomas', 'America/St_Vincent',
+    'America/Thunder_Bay', 'America/Tortola', 'America/Yellowknife',
+
+    'Antarctica/DumontDUrville', 'Antarctica/McMurdo', 'Antarctica/South_Pole',
+    'Antarctica/Syowa',
+
+    'Arctic/Longyearbyen',
+
+    'Asia/Aden', 'Asia/Ashkhabad', 'Asia/Bahrain', 'Asia/Brunei',
+    'Asia/Calcutta', 'Asia/Choibalsan', 'Asia/Chongqing', 'Asia/Chungking',
+    'Asia/Dacca', 'Asia/Harbin', 'Asia/Istanbul', 'Asia/Kashgar',
+    'Asia/Katmandu', 'Asia/Kuala_Lumpur', 'Asia/Kuwait', 'Asia/Macao',
+    'Asia/Muscat', 'Asia/Phnom_Penh', 'Asia/Rangoon', 'Asia/Saigon',
+    'Asia/Tel_Aviv', 'Asia/Thimbu', 'Asia/Ujung_Pandang', 'Asia/Ulan_Bator',
+    'Asia/Vientiane',
+
+    'Atlantic/Faeroe', 'Atlantic/Jan_Mayen', 'Atlantic/Reykjavik',
+    'Atlantic/St_Helena',
+
+    'Europe/Amsterdam', 'Europe/Belfast', 'Europe/Bratislava', 'Europe/Busingen',
+    'Europe/Copenhagen', 'Europe/Guernsey', 'Europe/Isle_of_Man', 'Europe/Jersey',
+    'Europe/Kiev', 'Europe/Ljubljana', 'Europe/Luxembourg', 'Europe/Mariehamn',
+    'Europe/Monaco', 'Europe/Nicosia', 'Europe/Oslo', 'Europe/Podgorica',
+    'Europe/San_Marino', 'Europe/Sarajevo', 'Europe/Skopje', 'Europe/Stockholm',
+    'Europe/Tiraspol', 'Europe/Vaduz', 'Europe/Vatican', 'Europe/Zagreb',
+    'Europe/Zaporozhye', 'Europe/Uzhgorod',
+
+    'Indian/Antananarivo', 'Indian/Christmas', 'Indian/Cocos', 'Indian/Comoro',
+    'Indian/Kerguelen', 'Indian/Mahe', 'Indian/Mayotte', 'Indian/Reunion',
+
+    'Pacific/Chuuk', 'Pacific/Enderbury', 'Pacific/Funafuti', 'Pacific/Johnston',
+    'Pacific/Majuro', 'Pacific/Midway', 'Pacific/Pohnpei', 'Pacific/Ponape',
+    'Pacific/Saipan', 'Pacific/Truk', 'Pacific/Wake', 'Pacific/Wallis',
+    'Pacific/Yap',
+
+    'Africa/Asmera', 'Asia/Ashgabat'
+  ]);
+
+  return moment.tz.names().filter(tz => {
+    if (deprecated3LetterZones.has(tz)) return false;
+    if (backwardZones.has(tz)) return false;
+    return true;
+  });
+}
 
 
   getProtocols(): Array<string> {

@@ -28,7 +28,6 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
   history: string[] = [];
   hasError = false;
   preferences: any;
-  helpFilters: any;
   fallbackNotice: any;
 
   isValidatingLinks = false;
@@ -55,8 +54,12 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
     this.isValidate = sessionStorage['enableLinkChecker'] == 'true';
     this.helpKey = this.modalData.helpKey;
     this.title = this.modalData.title;
-    this.helpFilters = this.coreService.getHelpTab();
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
+
+    // Use user's profile language instead of separate help language filter
+    const userLanguage = this.preferences.locale || localStorage['$SOS$LANG'] || 'en';
+    this.help.setLanguage(userLanguage);
+
     this.loadHelp(this.helpKey, true);
   }
 
@@ -73,12 +76,6 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
     const prev = this.history.pop();
     if (!prev) return;
     this.loadHelp(prev);
-  }
-
-  setLocale(): void {
-    this.fallbackNotice = '';
-    this.help.setLanguage(this.helpFilters.language);
-    this.loadHelp(this.helpKey, true);
   }
 
 

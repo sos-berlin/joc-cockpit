@@ -33,7 +33,7 @@ export class HelpService {
   getHelpHtml(key: string): Observable<HelpRenderResult | null> {
     const requestedLang = this.currentLanguage || this.i18n.currentLang || this.defaultLanguage;
     const urlPrimary  = `${this.helpBasePath}/${requestedLang}/${key}.md`;
-    const urlFallback = `${this.helpBasePath}/${this.defaultLanguage}/${key}.md`;
+    const urlFallback = `${this.helpBasePath}/en/${key}.md`;
 
     const headers = new HttpHeaders({
       'X-Access-Token': this.authService.accessTokenId || ''
@@ -65,7 +65,7 @@ export class HelpService {
           responseType: 'text',
           headers: headers
         }).pipe(
-          map(md => render(md, this.defaultLanguage, requestedLang !== this.defaultLanguage)),
+          map(md => render(md, 'en', requestedLang !== 'en')),
           catchError(() => of(null))
         )
       )

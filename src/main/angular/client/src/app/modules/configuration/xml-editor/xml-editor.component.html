@@ -356,7 +356,7 @@
                             @for (item of node.origin.values; track item) {
                               <tr>
                                 <td style="padding: 3px;"><span> {{item.name}}</span></td>
-                                <td [innerHTML]="(item.data && ((item.name && item.name === 'password') || (item.base && item.base === 'password') || (item.parent && item.parent === 'Password'))) ? passwordLabel(item.data) : (item.data | safeHtml)" style="padding: 3px;"></td>
+                                <td [innerHTML]="(item.data && ((item.name && item.name === 'password') || (item.base && item.base === 'password') || (item.parent && item.parent === 'Password'))) ? passwordLabel(item.data) : (formatValueForDisplay(item.data) | safeHtml)" style="padding: 3px;"></td>
                               </tr>
                             }
                           </table>
@@ -373,7 +373,7 @@
                       </span>
                       @if (getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && ((node.origin.values[0].base && node.origin.values[0].base !== 'password') && node.origin.values[0].parent !== 'Password')) {
                         <span (click)="selectNode(node);addContent(node.origin.values);" class="text-sm pl-2">
-                          {{node.origin.values[0].base === 'html' ? removeTag(node.origin.values[0]) : node.origin.values[0].data}}
+                          {{node.origin.values[0].base === 'html' ? removeTag(node.origin.values[0]) : formatValueForDisplay(node.origin.values[0].data)}}
                         </span>
                       }
                       @if (getFirstNotEmptyAttribute(node.origin.attributes) == '' && (node.origin.values && node.origin.values.length>0) && (node.origin.values[0].parent === 'Password' || node.origin.values[0].base === 'password')) {
