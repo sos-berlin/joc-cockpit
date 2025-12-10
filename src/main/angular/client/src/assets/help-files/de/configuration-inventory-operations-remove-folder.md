@@ -27,7 +27,7 @@ Inventarobjekte sind durch Abhängigkeiten miteinander verbunden, siehe [Abhäng
 Beim Entfernen von Objekten wird die Konsistenz des Inventars berücksichtigt, zum Beispiel:
 
 - Wenn eine Job-Ressource von einem Arbeitsablauf referenziert wird, dann beinhaltet das Entfernen der Job-Ressource auch das Zurückziehen des Arbeitsablaufs.
-- Wenn ein Arbeitsablauf entfernt wird, dann wird ein Zeitplan, der auf diesen Arbeitsablauf verweist, zurückgenommen und die damit verbundenen Aufträge werden storniert und aus dem Tagesplan entfernt.
+- Wenn ein Arbeitsablauf entfernt wird, dann wird ein Zeitplan, der auf diesen Arbeitsablauf verweist, zurückgenommen und die damit verbundenen Aufträge werden abgebrochen und aus dem Tagesplan entfernt.
 
 Die Benutzer steuern das konsistente Entfernen von Objekten über die folgenden Optionen:
 

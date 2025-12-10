@@ -22,7 +22,7 @@ Das Ausrollen von Objekten wie Arbeitsabläufen, Zeitplänen und Kalendern wirkt
   - **Jetzt** legt die Aktualisierung des Tagesplans für Aufträge fest, die für einen Zeitpunkt ab jetzt geplant sind.
   - **Startdatum** öffnet ein Eingabefeld für das Zieldatum, ab dem der Tagesplan aktualisiert werden soll.
   - **Nein** legt fest, dass der Tagesplan nicht aktualisiert werden soll. Bestehende Aufträge bleiben bei der Verwendung der zuvor eingesetzten Versionen von Objekten.
-- **Heutige verspätete Aufträge einbeziehen** Wenn diese Option aktiviert ist, werden auch Aufträge berücksichtigt, die für einen vergangenen Zeitpunkt des aktuellen Tages geplant wurden, aber verspätet sind und nicht gestartet wurden.
+- **Heutige verspätete Aufträge einbeziehen** Wenn diese Option aktiviert ist, werden auch Aufträge berücksichtigt, die für einen zurückliegenden Zeitpunkt des aktuellen Tages geplant wurden, aber verspätet sind und nicht gestartet wurden.
 
 ## Abhängigkeiten einbeziehen
 

@@ -1,6 +1,6 @@
 # Übersicht - Dateiübertragung
 
-Der Bereich *Dateiübertragungen* zeigt eine Zusammenfassung der vergangenen Übertragungen mit dem YADE Managed File Transfer.
+Der Bereich *Dateiübertragungen* zeigt eine Zusammenfassung der zurückliegenden Übertragungen mit dem YADE Managed File Transfer.
 
 <img src="dashboard-file-transfer.png" alt="File Transfer" width="320" height="90" />
 

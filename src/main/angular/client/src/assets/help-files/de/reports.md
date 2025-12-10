@@ -1,12 +1,12 @@
 # Berichte
 
-Die [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) bieten Einblicke in die zurückliegende Ausführung von Arbeitsabläufen und Jobs:
+[JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) bieten Auswertungen der zurückliegenden Ausführung von Arbeitsabläufen und Jobs:
 
-- Berichte werden aus vordefinierten [Berichtsmuster](/report-templates) erstellt, die über [Konfiguration - Inventar - Berichtsvorlagen](/configuration-inventory-reports) parametrisiert werden.
-- Benutzer führen Berichte über die Ansicht [Berichtsgenerierung](/report-creation) oder über [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation) aus. Die Ansicht [Historie Berichtsläufe](/report-run-history) liefert Nachweise über vergangene Berichtsläufe.
+- Berichte werden aus vordefinierten [Berichtsmustern](/report-templates) erstellt, die über [Konfiguration - Inventar - Berichtsvorlagen](/configuration-inventory-reports) parametriert werden.
+- Benutzer führen Berichte über die Ansicht [Berichtsgenerierung](/report-creation) oder über [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation) aus. Die Ansicht [Historie Berichtsläufe](/report-run-history) liefert Nachweise über zurückliegende Berichtsläufe.
 - Berichte werden in der Ansicht *Berichte* visualisiert.
 
-Berichte und die [Historie Berichtsläufe](/report-run-history) unterliegen der Bereinigung der Datenbank durch [Bereinigungsdienst](/service-cleanup).
+Berichte und die [Historie Berichtsläufe](/report-run-history) unterliegen der Bereinigung der Datenbank durch den [Bereinigungsdienst](/service-cleanup).
 
 Für die Ausführung von Berichten siehe [Berichtsgenerierung](/report-creation). Zur Überprüfung von Berichtsläufen siehe [Historie Berichtsläufe](/report-run-history).
 
@@ -37,17 +37,17 @@ Wenn Sie auf einen Bericht klicken, wird er für die *Berichtshäufigkeit* im an
 Den Benutzern werden die folgenden Operationen für Berichte angeboten:
 
 - **Filtern nach** bietet die Filterung nach Häufigkeitstyp wie z.B. *wöchentlich*.
-- **Karten verwalten** bietet die Auswahl von *Berichtshäufigkeiten*.
+- **Anzeige verwalten** bietet die Auswahl von *Berichtshäufigkeiten*.
 - **Exportieren** ermöglicht den Export von Berichtsdaten in eine Excel-Datei im .xls-Format.
 
 ## Referenzen
 
 ### Kontext-Hilfe
 
-- [Konfiguration - Inventar - Berichtsvorlagen](/configuration-inventory-reports)
 - [Berichtsgenerierung](/report-creation)
-- [Historie Berichtsläufe](/report-run-history)
 - [Berichtsmuster](/report-templates)
+- [Historie Berichtsläufe](/report-run-history)
+- [Konfiguration - Inventar - Berichtsvorlagen](/configuration-inventory-reports)
 
 ### Product Knowledge Base
 

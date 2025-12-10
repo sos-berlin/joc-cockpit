@@ -64,7 +64,7 @@ Wenn einer Job-Vorlage ein Job zugewiesen ist, wird dies in der oberen rechten E
   - orange Farbe zeigt an, dass die Job-Vorlage geändert wurde und der Job nicht synchronisiert ist.
 - Wenn Sie auf den orangefarbenen *Synchronisierungsstatusindikator* klicken, wird der Job aus seiner Job-Vorlage aktualisiert.
 
-Um einen Verweis auf eine Job-Vorlage aus einem Job zu entfernen, können Sie auf das Papierkorbsymbol in der oberen rechten Ecke nach dem Namen der Job-Vorlage klicken. Der Vorgang lässt die Job-Eigenschaften unberührt und löst die Verknüpfung mit der Job-Vorlage. 
+Um einen Verweis auf eine Job-Vorlage aus einem Job zu entfernen, können Sie auf das Papierkorbsymbol in der oberen rechten Ecke nach dem Namen der Job-Vorlage klicken. Die Operation lässt die Job-Eigenschaften unberührt und löst die Verknüpfung mit der Job-Vorlage. 
 
 Bei Jobs, die auf Job-Vorlagen verweisen, können größere Teile des Jobs nicht geändert werden. Stattdessen müssen die Änderungen auf die Job-Vorlage angewendet werden. Dies gilt nicht für die folgenden Eingaben, die frei gewählt werden können:
 

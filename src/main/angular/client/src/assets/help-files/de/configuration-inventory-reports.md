@@ -1,11 +1,11 @@
 # Konfiguration - Inventar - Berichtsvorlagen
 
-Im Bereich *Berichtsvorlage* können Sie Vorlagen für Berichte über die Ausführung von Arbeitsabläufen und Jobs erstellen:
+Im Bereich *Berichtsvorlagen* können Sie Vorlagen für Berichte über die Ausführung von Arbeitsabläufen und Jobs erstellen:
 
 - Berichtsvorlagen werden über das Inventar verwaltet, das in der Ansicht *Konfiguration* des JOC Cockpit verfügbar ist. Sie umfassen die Angabe von:
-  - **Berichtsmuster**, das den Berichtstyp angibt, z.B. die Top 10 der fehlgeschlagenen Arbeitsabläufe, die Top 100 der fehlgeschlagenen Jobs usw. Die vollständige Liste finden Sie unter [Berichtsmuster](/report-templates).
-  - **Berichtszeitraum** ist ein Datumsbereich, für den Elemente gemeldet werden. Datumsbereiche können absolut oder relativ sein, z.B. letzte 2 Monate, letztes Quartal, letztes Jahr.
-  - die **Berichtsfrequenz** unterteilt den *Berichtszeitraum* in gleiche Zeiteinheiten, z.B. pro Woche oder Monat.
+  - **Berichtsmuster**, das den Berichtstyp angibt, z.B. die häufigsten 10 fehlgeschlagenen Arbeitsabläufe, die häufigsten 100 fehlgeschlagenen Jobs usw. Die vollständige Liste finden Sie unter [Berichtsmuster](/report-templates).
+  - **Berichtszeitraum** ist ein Datumsbereich, für den Ausführungen gemeldet werden. Datumsbereiche können absolut oder relativ sein, z.B. letzte 2 Monate, letztes Quartal, letztes Jahr.
+  - die **Berichtshäufigkeit** unterteilt den *Berichtszeitraum* in gleiche Zeiteinheiten, z.B. pro Woche oder Monat.
 - Berichtsläufe und die Visualisierung von Berichten sind in der Ansicht *Berichte* von JOC Cockpit verfügbar.
 
 Berichte werden über die folgenden Bereiche verwaltet:
@@ -22,16 +22,16 @@ Für eine Berichtsvorlage sind die folgenden Eingaben möglich:
 - **Berichtsmuster** gibt das verwendete [Berichtsmuster](/report-templates) an.
 - **Berichtszeitraum** gibt den Datumsbereich an, der einer der folgenden ist:
   - **Von .. bis**
-    - *Monat von*, *Monat bis* gibt die Anzahl der vergangenen Monate an, mit denen der *Berichtszeitraum* beginnt und mit denen er endet, zum Beispiel von *1m* bis *1m* für den letzten Monat.
+    - *Monat von*, *Monat bis* gibt die Anzahl der zurückliegenden Monate an, mit denen der *Berichtszeitraum* beginnt und mit denen er endet, zum Beispiel von *1m* bis *1m* für den letzten Monat.
   - **Berechnet**
     - *Einheit* ist eine von *Jahr*, *Monat*, *Quartal*
-    - *Von* gibt die Anzahl der vergangenen Einheiten an, ab der der *Berichtszeitraum* beginnen soll, z.B. *3 Monate* zurück.
-    - *Anzahl* gibt die Anzahl der vergangenen Einheiten an, mit denen der *Berichtszeitraum* endet.
+    - *Von* gibt die Anzahl der zurückliegenden Einheiten an, ab der der *Berichtszeitraum* beginnen soll, z.B. *3 Monate* zurück.
+    - *Anzahl* gibt die Anzahl der zurückliegenden Einheiten an, mit denen der *Berichtszeitraum* endet.
   - **Voreinstellung** bietet die Auswahl aus einer Reihe vordefinierter Datumsbereiche wie *Letzter Monat*, *Dieses Quartal*, *Letztes Quartal*, *Dieses Jahr*, *Letztes Jahr*
 - **Sortieren**
   - **Höchste**: Der Bericht gibt die n höchsten Werte aus.
   - **Niedrigste**: Der Bericht zeigt die n niedrigsten Werte an.
-- **Berichtsfrequenz** gibt die Einteilung des *Berichtszeitraums* in gleiche Zeiteinheiten an:
+- **Berichtshäufigkeit** gibt die Einteilung des *Berichtszeitraums* in gleiche Zeiteinheiten an:
   - *wöchentlich*
   - *alle 2 Wochen*
   - *monatlich*

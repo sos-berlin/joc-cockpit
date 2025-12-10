@@ -10,13 +10,13 @@ Abhängigkeiten in Arbeitsabläufen können z.B. für alle Tage und für bestimm
 
 Der Kalender bietet Ihnen die Möglichkeit, ein Tagesplandatum auszuwählen, für das Abhängigkeiten angezeigt werden sollen.
 
-- **Hellrote Farbe**: Vergangene Tage des Plans, die geschlossen sind und für die keine Aufträge hinzugefügt werden können.
-- **Grüne Farbe**: Vergangene und zukünftige Tage des Plans, die offen sind und das Hinzufügen von Aufträgen erlauben.
+- **Hellrote Farbe**: Zurückliegende Tage des Plans, die geschlossen sind und für die keine Aufträge hinzugefügt werden können.
+- **Grüne Farbe**: Zurückliegende und zukünftige Tage des Plans, die offen sind und das Hinzufügen von Aufträgen erlauben.
 
 Operationen an Tagen des Plans umfassen:
 
 - **Plan öffnen**: Dies geschieht automatisch, wenn Aufträge für einen Tag des Plans hinzugefügt werden. Benutzer können einen geschlossenen Plan wieder öffnen.
-- **Plan schließen**: Ein offener Plan wird geschlossen und erlaubt keine neuen Aufträge. Dies geschieht automatisch für vergangene Tage des Plans mit einer Verzögerung von einem Tag. Benutzer können die entsprechende Einstellung auf der Seite [Einstellungen - Tagesplan](/settings-daily-plan) ändern. Sie können einen offenen Plan früher schließen, um zu verhindern, dass weitere Aufträge hinzugefügt werden.
+- **Plan schließen**: Ein offener Plan wird geschlossen und erlaubt keine neuen Aufträge. Dies geschieht automatisch für zurückliegende Tage des Plans mit einer Verzögerung von einem Tag. Benutzer können die entsprechende Einstellung auf der Seite [Einstellungen - Tagesplan](/settings-daily-plan) ändern. Sie können einen offenen Plan früher schließen, um zu verhindern, dass weitere Aufträge hinzugefügt werden.
 
 ## Anzeige von Abhängigkeiten
 

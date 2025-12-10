@@ -69,7 +69,7 @@ Die Zuweisung von Werten zu Variablen umfasst die Angabe von Zeichenketten und Z
 
 Über die Schaltfläche *Startzeitregel* können Sie in einem Popup-Fenster die Startzeiten für Aufträge festlegen. Einzelheiten finden Sie unter [Konfiguration - Inventar - Zeitpläne - Startzeitregel](/configuration-inventory-schedules-run-time).
 
-## Operationen auf Zeitplänen
+## Operationen für Zeitpläne
 
 Für verfügbare Operationen siehe [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation).
 

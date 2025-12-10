@@ -60,14 +60,14 @@ Standardmäßig ist die Anzeige von Auftragsprotokollen auf eine Größe von 10 
 Das *Prüfprotokoll* zeigt an, welche Änderungen an einem Auftrag vorgenommen wurden.
 
 - **Erstellt** gibt das Datum an, an dem die Operation durchgeführt wurde.
-- **Konto** gibt das Benutzerkonto an, das den Vorgang durchgeführt hat.
+- **Konto** gibt das Benutzerkonto an, das die Operation durchgeführt hat.
 - **Anfrage** gibt den REST-API-Endpunkt an, der aufgerufen wurde.
-- **Kategorie** gibt die Klassifizierung des Vorgangs an, z.B. CONTROLLER bei der Stornierung von Aufträgen oder DAILYPLAN bei der Erstellung von Aufträgen aus dem [Tagesplan](/daily-plan).
+- **Kategorie** gibt die Klassifizierung der Operation an, z.B. CONTROLLER bei beim Abbrechen von Aufträgen oder DAILYPLAN bei der Erstellung von Aufträgen aus dem [Tagesplan](/daily-plan).
 - **Begründung** erklärt, warum ein Auftrag geändert wurde. Das JOC Cockpit kann so konfiguriert werden, dass die Angabe von Gründen bei der Änderung von Objekten erzwungen wird.
   - Die Einstellung ist unter [Profil - Einstellungen](/profile-preferences) verfügbar.
   - Die Einstellung kann über die Seite [Einstellungen - JOC Cockpit](/settings-joc) erzwungen werden.
-- **Zeitaufwand**: Ähnlich wie bei der Angabe von *Gründen* kann bei der Änderung von Aufträgen die für einen Vorgang aufgewendete Zeit hinzugefügt werden.
-- **Ticket-Verweis**: Ähnlich wie bei der Angabe von *Gründe* kann bei der Änderung von Aufträgen ein Verweis auf ein Ticketsystem hinzugefügt werden.
+- **Zeitaufwand**: Ähnlich wie bei der *Begründung* kann bei der Änderung von Aufträgen die für einen Operation aufgewendete Zeit hinzugefügt werden.
+- **Ticket-Verweis**: Ähnlich wie bei der *Begründung* kann bei der Änderung von Aufträgen ein Verweis auf ein Ticketsystem hinzugefügt werden.
 
 ## Operation
 
@@ -118,7 +118,7 @@ Benutzer können Filter anwenden, um die Anzeige von Aufträgen einzuschränken.
 
 Über die Schaltfläche können Sie Aufträge aus einem Datumsbereich auswählen:
 
-- **Alle** gibt an, dass Aufträge, die für ein beliebiges vergangenes oder zukünftiges Datum geplant sind, angezeigt werden.
+- **Alle** gibt an, dass Aufträge, die für ein beliebiges zurückliegendes oder zukünftiges Datum geplant sind, angezeigt werden.
 - **Heute** Aufträge beziehen sich auf den aktuellen Tag, der anhand der Zeitzone der [Profil - Einstellungen](/profile-preferences) berechnet wird.
 - **Nächste Stunde** enthält Aufträge, die innerhalb der nächsten Stunde beginnen sollen.
 - **Nächste 12 Stunden** enthält Aufträge, die innerhalb der nächsten 12 Stunden beginnen sollten.

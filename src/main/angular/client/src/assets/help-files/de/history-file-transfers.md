@@ -8,7 +8,7 @@ Für die Protokollausgabe von Jobs zur Dateiübertragung siehe [Prozesshistorie]
 
 ### Historie der Übertragungen
 
-Die Anzeige ist gruppiert in einen Block für den Übertragungsvorgang und Blöcke für die Übertragung einzelner Dateien:
+Die Anzeige ist gruppiert in einen Block für die gesamte Übertragung und in Blöcke für die Übertragung einzelner Dateien:
 
 - **Status** zeigt an, ob eine Übertragung *erfolgreich* oder *gescheitert* war.
   - *Erfolg* bedeutet, dass alle Dateien der Übertragung erfolgreich verarbeitet wurden.

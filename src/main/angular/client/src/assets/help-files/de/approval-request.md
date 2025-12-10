@@ -1,6 +1,6 @@
 # Antrag für Autorisierung
 
- Der [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) wird für Situationen angeboten, in denen Benutzer beabsichtigen, Interventionen wie das Hinzufügen oder Stornieren von Aufträgen durchzuführen, die die Autorisierung durch einen zweiten Benutzer erfordern. Dies kann jede Operation umfassen, die ein Objekt verändert.
+ Der [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) wird für Situationen angeboten, in denen Benutzer beabsichtigen, Interventionen wie das Hinzufügen oder Abbrechen von Aufträgen durchzuführen, die die Autorisierung durch einen zweiten Benutzer erfordern. Dies kann jede Operation umfassen, die ein Objekt verändert.
 
 Der Autorisierungsprozess umfasst die folgenden Rollen:
 

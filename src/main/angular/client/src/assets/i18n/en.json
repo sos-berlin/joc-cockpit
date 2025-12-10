@@ -148,7 +148,7 @@
   "CALENDAR": "Calendar",
   "SCHEDULE": "Schedule",
   "INCLUDESCRIPT": "Script Include",
-  "REPORT": "Report",
+  "REPORT": "Report Templates",
   "DOCUMENTATION": "Documentation",
   "Workflows": "Workflows",
   "File Order Sources": "File Order Sources",
@@ -159,7 +159,7 @@
   "Schedules": "Schedules",
   "IncludeScripts": "Script Includes",
   "Calendars": "Calendars",
-  "Reports": "Reports",
+  "Reports": "Report Templates",
   "Controller": "Controller",
   "Daily Plan": "Automation",
   "ImplicitEnd": "End",
@@ -274,13 +274,13 @@
     "placeholder.enterClusterName": "Enter Cluster Name",
     "placeholder.enterPrimaryDirectorId": "Enter Director Agent ID",
     "placeholder.enterPriority": "Enter Priority",
-    "tooltip.agentId": "The Agent ID is a unique identifier of an Agent that cannot be changed during the Agent's lifetime. For Agent IDs most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
-    "tooltip.agentName": "The Agent Name is a unique designation of an Agent that can be changed. Agents are assigned to jobs by their Agent Name. For Agent Names most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+    "tooltip.agentId": "The Agent ID is a unique identifier of an Agent that cannot be changed during the Agent's lifetime. For Agent IDs most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+    "tooltip.agentName": "The Agent Name is a unique designation of an Agent that can be changed. Agents are assigned to jobs by their Agent Name. For Agent Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
     "tooltip.title": "The Title of an Agent can be specified as desired.",
-    "tooltip.agentNameAliases": "An Agent can be assigned a number of Alias Names. The Agent can be assigned to a job or File Order Source using its Alias Name. For Alias Names most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+    "tooltip.agentNameAliases": "An Agent can be assigned a number of Alias Names. The Agent can be assigned to a job or File Order Source using its Alias Name. For Alias Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
     "tooltip.url": "The URL of an Agent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Agent, e.g. http://localhost:4445",
     "tooltip.asStandaloneAgent": "A Standalone Agent or a Director Agent of an Agent Cluster can act as a Cluster Watch. The Agent specified will be created as a Standalone Agent if this checkbox is checked.",
-    "tooltip.primaryDirectorId": "The Director Agent ID is a unique identifier of a Director Agent that cannot be changed during the Agent's lifetime. For Director Agent IDs most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+    "tooltip.primaryDirectorId": "The Director Agent ID is a unique identifier of a Director Agent that cannot be changed during the Agent's lifetime. For Director Agent IDs most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
     "tooltip.hidden": "Agents can be hidden to prevent them from being displayed in the JOC Cockpit user interface. This applies to the DASHBOARD view as well as to all occurrences where Agents are assigned.",
     "tooltip.processLimit": "Agents by default run an unlimited number of parallel processes for jobs. A Process Limit can be assigned to restrict resource usages. A Prcess Limit value 0 will prevent jobs from starting.",
     "tooltip.$js7SubagentProcessCount": "Number of processes running with the Subagent.",
@@ -290,20 +290,20 @@
     "tooltip.$js7FreeMemorySize": "Java documentation %https://docs.oracle.com/en/java/javase/17/docs/api/jdk.management/com/sun/management/OperatingSystemMXBean.html%: Returns the amount of free memory in bytes.",
     "tooltip.$js7TotalMemorySize": "Java documentation %https://docs.oracle.com/en/java/javase/17/docs/api/jdk.management/com/sun/management/OperatingSystemMXBean.html%: Returns the total amount of memory in bytes.",
     "cluster": {
-      "tooltip.agentClusterName": "The Agent Cluster Name is a unique identifier of the Agent Cluster that cannot be changed during the Agent Cluster's lifetime. For Agent Cluster Names most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
-      "tooltip.subagentId": "The Subagent ID is a unique identifier of a Director Agent that cannot be changed during the Director Agent's lifetime. For Subagent IDs most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+      "tooltip.agentClusterName": "The Agent Cluster Name is a unique identifier of the Agent Cluster that cannot be changed during the Agent Cluster's lifetime. For Agent Cluster Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+      "tooltip.subagentId": "The Subagent ID is a unique identifier of a Director Agent that cannot be changed during the Director Agent's lifetime. For Subagent IDs most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
       "tooltip.title": "The Title of an Agent Cluster can be specified as desired.",
       "tooltip.url": "The URL of a Director Agent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Director Agent, e.g. http://localhost:4445",
       "tooltip.withGenerateSubagentCluster": "A Director Agent can be set up as a separate Subagent Cluster that includes this single Director Agent. This allows jobs to be run specifically on a Director Agent.",
-      "tooltip.agentNameAliases": "An Agent Cluster can be assigned a number of Alias Names. The Agent Cluster can be assigned to a job or File Order Source using its Alias Name. For Alias Names most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+      "tooltip.agentNameAliases": "An Agent Cluster can be assigned a number of Alias Names. The Agent Cluster can be assigned to a job or File Order Source using its Alias Name. For Alias Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
       "tooltip.processLimit": "Agents by default run an unlimited number of parallel processes for jobs. A Process Limit can be assigned to restrict resource usages across all Subagents in an Agent Cluster. A Prcess Limit value 0 will prevent jobs from starting.",
       "subagent": {
-        "tooltip.clusterName": "The Subagent Cluster Name is a unique identifier of the Subagent Cluster that cannot be changed during the Subagent Cluster's lifetime. For Subagent Cluster Names most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+        "tooltip.clusterName": "The Subagent Cluster Name is a unique identifier of the Subagent Cluster that cannot be changed during the Subagent Cluster's lifetime. For Subagent Cluster Names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
         "tooltip.title": "The Title of a Subagent Cluster can be specified as desired."
       }
     },
     "subagent": {
-      "tooltip.subagentId": "The Subagent ID is a unique identifier of a Subagent that cannot be changed during the Subagent's lifetime. For Subagent IDs most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+      "tooltip.subagentId": "The Subagent ID is a unique identifier of a Subagent that cannot be changed during the Subagent's lifetime. For Subagent IDs most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
       "tooltip.title": "The Title of a Subagent can be specified as desired.",
       "tooltip.url": "The URL of a Subagent specifies the protocol, HTTP or HTTPS, the host name or IP address and the port of the Subagent, e.g. http://localhost:4445",
       "tooltip.withGenerateSubagentCluster": "A Subagent can be set up as a separate Subagent Cluster that includes this single Subagent. This allows jobs to be run specifically on a Subagent.",
@@ -2138,7 +2138,7 @@
     },
     "tooltips": {
       "calendar": {
-        "name": "Calendars are used with Schedules that create orders for the days specified by the Calendar. For Calendar names most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+        "name": "Calendars are used with Schedules that create orders for the days specified by the Calendar. For Calendar names most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
         "documentation": "A reference to a Documentation can be added that will be displayed with the Calendar. The RESOURCES view allows to manage the documentation.",
         "title": "The Title of the Calendar can be specified as desired.",
         "type": "Calendars are created for working days or for non-working days. When assigning a Schedule a Calendar then in addition to a working day Calendar a non-working day Calendar can be assigned that limits the days for workflow execution.",
@@ -2146,7 +2146,7 @@
         "validTo": "Optionally the end of the Calendar's validity period can be specified. No orders will be created by a Schedule beyond this date."
       },
       "fileOrderSource": {
-        "name": "A File Order Source is used to watch a Directory for incoming files and to create an order for each file individually. This allows to start workflows automatically on arrival of files. For the name of the File Order Source most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+        "name": "A File Order Source is used to watch a Directory for incoming files and to create an order for each file individually. This allows to start workflows automatically on arrival of files. For the name of the File Order Source most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
         "documentation": "A reference to a Documentation can be added that will be displayed with the File Order Source. The RESOURCES view allows to manage the documentation.",
         "title": "The Title of the File Order Source can be specified as desired.",
         "workflowName": "A reference to a Workflow has to be added. An order will be created for this workflow on arrival of a file in the Directory that is watched for incoming files.",
@@ -2157,13 +2157,13 @@
         "delay": "A Delay is applied for which the Agent waits that an incoming file remains unchanged. Changes are detected from the file size and file timestamp. If the file changes, for example if the file is written to by some process, then once again the Delay will be applied and the check will be repeated until no further change occurs."
       },
       "jobResource": {
-        "name": "A Job Resource is a set of variables that can be used by a number of workflows or jobs. There are two flavors: Arguments are assigned to JITL jobs and Java jobs, Environment Variables automatically become available with Shell jobs. Values of Environment Variables can use Arguments as in $argument. For the name of the Job Resource most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+        "name": "A Job Resource is a set of variables that can be used by a number of workflows or jobs. There are two flavors: Arguments are assigned to JITL jobs and Java jobs, Environment Variables automatically become available with Shell jobs. Values of Environment Variables can use Arguments as in $argument. For the name of the Job Resource most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
         "documentation": "A reference to a Documentation can be added that will be displayed with the Job Resource. The RESOURCES view allows to manage the Documentation.",
         "title": "The Title of the Job Resource can be specified as desired."
       },
       "board": {
-        "name": "A Notice Board represents the dependencies between workflows. The respective PostNotices Instructions and ExpectNotices Instructions in workflows reference the Notice Board. The name of a Notice Board is unique in the inventory. For the name of the Notice Board most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
-        "expectBoardName": "A Notice Board represents the dependencies between workflows. The respective PostNotices Instructions and ExpectNotices Instructions in workflows reference the Notice Board. The name of a Notice Board is unique in the inventory.  For the name of the Notice Board most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+        "name": "A Notice Board represents the dependencies between workflows. The respective PostNotices Instructions and ExpectNotices Instructions in workflows reference the Notice Board. The name of a Notice Board is unique in the inventory. For the name of the Notice Board most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+        "expectBoardName": "A Notice Board represents the dependencies between workflows. The respective PostNotices Instructions and ExpectNotices Instructions in workflows reference the Notice Board. The name of a Notice Board is unique in the inventory.  For the name of the Notice Board most Unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
         "documentation": "A reference to a Documentation can be added that will be displayed with the Notice Board. The RESOURCES view allows to manage the documentation.",
         "title": "The Title of the Notice Board can be specified as desired.",
         "toNotice": "The Notice ID for posting order is extracted from its Order ID to look up matching expecting orders.",
@@ -2172,13 +2172,13 @@
         "boardType": "Notice Boards of 'global' type enforce dependencies independently from the Daily Plan. Notice Boards of 'schedulable' type consider days only for which orders exist that will create Notices."
       },
       "lock": {
-        "name": "Resource Locks are used to implement mutual exclusion for a sequence of jobs. They can be used in the same workflow and across any workflows to limit parallellism of jobs. The name of a Resource Lock is unique in the inventory. For the name of the Resource Lock most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+        "name": "Resource Locks are used to implement mutual exclusion for a sequence of jobs. They can be used in the same workflow and across any workflows to limit parallellism of jobs. The name of a Resource Lock is unique in the inventory. For the name of the Resource Lock most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
         "documentation": "A reference to a Documentation can be added that will be displayed with the Resource Lock. The RESOURCES view allows to manage the documentation.",
         "title": "The Title of the Resource Lock can be specified as desired.",
         "limit": "If a Resource Lock is acquired in shared mode then each Resource Lock consumer specifies a weight that is calculated towards the capacity of the Resource Lock. If the capacity is exceeded then jobs have to wait until their weight matches the available capacity of the Resource Lock."
       },
       "schedule": {
-        "name": "A Schedule is used to automatically create orders for a given workflow based on the Calendar assigned. The name of a Schedule is unique in the inventory. For the name of the Schedule most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+        "name": "A Schedule is used to automatically create orders for a given workflow based on the Calendar assigned. The name of a Schedule is unique in the inventory. For the name of the Schedule most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
         "documentation": "A reference to a Documentation can be added that will be displayed with the Schedule. The RESOURCES view allows to manage the documentation.",
         "title": "The Title of the Schedule can be specified as desired.",
         "workflowName": "A reference to one or more workflows has to be added for which orders are created.",
@@ -2193,16 +2193,16 @@
         "priority": "Priority."
       },
       "script": {
-        "name": "A Script Include is used to include recurring code snippets into a job script. The name of a Script Include is unique in the inventory. For the name of the Script Include most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+        "name": "A Script Include is used to include recurring code snippets into a job script. The name of a Script Include is unique in the inventory. For the name of the Script Include most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
         "documentation": "A reference to a Documentation can be added that will be displayed with the Script. The RESOURCES view allows to manage the documentation.",
         "title": "The Title of the Script Include can be specified as desired.",
         "script": "Depending on its use with job scripts the content of a Script Include can include Shell commands or Code for scripting languages such as Perl, PowerShell etc.",
         "autocompleteShortCut": "Hit Ctrl+Space to retrieve the list of available Script Includes"
       },
       "report": {
-        "name": "The name of a Report is unique in the inventory. For the name of the Report most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
-        "title": "The Title of the Report can be specified.",
-        "template": "Specifies the Report template to be applied.",
+        "name": "The name of a Report Template is unique in the inventory. For the name of the Report Template most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+        "title": "The Title of the Report Templatet can be specified.",
+        "template": "Specifies the Report Model to be applied.",
         "frequencies": "The frequency specifies the cycle that divides the reporting period, for example 5 minutes, 1 day etc.",
         "controllerId": "The report can be limited to data of a specific Controller",
         "interval": {
@@ -2227,7 +2227,7 @@
         "periodStep": "Specifies the Step Overlap between two steps in minutes. Example: Step Duration=5 minutes, Step Overlap=2, 00:00-00:05, 00:02-00:07, 00:04-00:09 ..."
       },
       "workflow": {
-        "name": "The name of a Workflow is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+        "name": "The name of a Workflow is unique in the inventory. Most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
         "jobResourceNames": "References to Job Resources can be added that hold shared variables for use by a number of jobs and workflows. Any variables from the selected Job Resources can be used by any jobs in the Workflow.",
         "documentation": "A workflow or job can be assigned a Documentation that is displayed with the WORKFLOWS view. Documentations are managed with the RESOURCES view.",
         "title": "The Title of the Workflow can be specified as desired. The Title is displayed with the WORKFLOWS view.",
@@ -2235,7 +2235,7 @@
         "allowUndeclared": "Allow undeclared variables from orders. This includes that an order can carry variables that are not checked for their data type or mandatory use. Jobs will fail when referencing undeclared variables that are not available from an order.",
         "duration": "Duration.",
         "board": {
-          "expectBoardName": "The name of a Notice Board is unique in the inventory. Most unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
+          "expectBoardName": "The name of a Notice Board is unique in the inventory. Most Unicode characters can be used, dots and hyphens, however, no leading or trailing dots or hyphens.",
           "boardNames": "A number of Notice Board names can be specified for which Notices are created.",
           "expectBoardExpression": "The ExpectNotices Expression can be used to specify a single Notice Board and to specify Boolean logic: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. The Notice Board names are quoted and the && (and) operator and || (or) operator can be used optinally including bracketing",
           "consumeBoardExpression": "The ConsumeNotices Expression can be used to specify a single Notice Board and to specify Boolean logic: ( 'A-BOARD' || 'B-BOARD' ) && 'C-BOARD'. The Notice Board names are quoted and the && (and) operator and || (or) operator can be used optinally including bracketing",
@@ -2285,7 +2285,7 @@
           "predicate": "A Predicate in an If Instruction is an expression or comparison that evaluates to 'true' or 'false'"
         },
         "job": {
-          "name": "A job name is unique in a workflow. A job with the same name can occur with a number of Job Instructions in the same workflow if individual job labels are used. For a job name most unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
+          "name": "A job name is unique in a workflow. A job with the same name can occur with a number of Job Instructions in the same workflow if individual job labels are used. For a job name most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
           "label": "A Label is used to distinguish multiple occurrences of the same job or instruction in a workflow.",
           "title": "The Title of a job can be specified as desired. The Title becomes visible with the WORKFLOWS view.",
           "compatibleMode": "Compatibility with previous JobScheduler versions includes e.g. for shell jobs to automatically create environment variables prefixed with 'SCHEDULER_PARAM_' for any order variables as in JS1.",
@@ -2305,9 +2305,9 @@
           "failOnOutputErr": "If a job writes output to the stderr channel then this is considered an error and the order is put in the FAILED state.",
           "warnOnOutputErr": "If a job writes output to the stderr channel then this is considered a warning. Job execution is considered successful and the order continues. A notification is created for the warning.",
           "admissionTime": "Admission Times rule access to jobs based on weekdays and hours. An order waits in front of a job node until the admission time is reached or can be configured to skip the job if admission times do not meet the order date.",
-          "skipIfNoAdmissionForOrderDay": "The job is skipped if admission periods have been configured that do not match the order's date. For example, if admission periods are configured for Monday and Tuesday, but the order is scheduled for Wednesday then the job will be skipped. On Monday and Tuesday the order will wait with the job instruction until the admission time is reached.",
-          "skipIfNoAdmissionForOrderDayForInstruction": "todo.",
-          "killAtEndOfAdmissionPeriod": "The job will be forcibly terminated if it exceeds the admission time period.",
+          "skipIfNoAdmissionForOrderDay": "The job is skipped if admission periods have been configured that do not match the order's date. For example, if admission periods are configured for Monday and Tuesday, but the order is scheduled for Wednesday then the job will be skipped. On Monday and Tuesday the order will wait with the Job Instruction until the admission time is reached.",
+          "skipIfNoAdmissionForOrderDayForInstruction": "The instruction is skipped if admission periods have been configured that do not match the order's date. For example, if admission periods are configured for Monday and Tuesday, but the order is scheduled for Wednesday then the instruction and any instructions included will be skipped. On Monday and Tuesday the order will wait with the AdmissionTimes Instruction until the admission time is reached.",
+          "killAtEndOfAdmissionPeriod": "A job will be forcibly terminated if it exceeds the admission time period.",
           "mailTo": "Send e-mail to the indicated recipient. A number of e-mail addresses can be specified separated by a comma.",
           "mailCC": "Send e-mail copy to the indicated recipient. A number of e-mail addresses can be specified separated by a comma.",
           "mailBcc": "Send e-mail blind copy to the indicated recipient. A number of e-mail addresses can be specified separated by a comma.",
@@ -3932,7 +3932,7 @@
     "label.blockPosition": "Block Position",
     "label.joinIfFailed": "Join If Failed",
     "label.skipIfNoAdmissionForOrderDay": "Skip Job if no admission for Order's date",
-    "label.skipIfNoAdmissionForOrderDayForInstruction": "Skip Job if no admission for Order's date",
+    "label.skipIfNoAdmissionForOrderDayForInstruction": "Skip instruction if no admission for Order's date",
     "label.killAtEndOfAdmissionPeriod": "Terminate Job at end of period",
     "label.listOfSchemes": "List of Cycles",
     "label.repeat": "Repeat",

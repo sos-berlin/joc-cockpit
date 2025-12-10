@@ -37,7 +37,7 @@ Die folgenden Filterschaltflächen schränken den Umfang der Operationen ein:
 - Wenn diese Funktion auf *geplante* Aufträge angewendet wird, werden die Aufträge aus dem Tagesplan entfernt.
   - Wenn Aufträge von einem Tagesplandatum entfernt werden, werden sie nicht ausgeführt und der Tagesplandienst wird nicht versuchen, Aufträge zu dem gegebenen Datum ernneut hinzuzufügen.
   - Die Operation *Tagesplan löschen* entfernt implizit die Aufträge. Außerdem werden alle Eingaben für das angegebene Tagesplandatum gelöscht und der nächste Lauf des Tagesplandienstes plant die Aufträge für das angegebene Datum, siehe [Tagesplan löschen](#delete-daily-plan).
-- Der Vorgang wird bei *übermittelten* und *beendeten* Aufträgen ignoriert.
+- Die Operation wird für *übermittelte* und *beendete* Aufträge ignoriert.
 
 ### Tagesplan erstellen
 

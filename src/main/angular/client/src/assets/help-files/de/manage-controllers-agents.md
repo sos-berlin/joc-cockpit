@@ -13,7 +13,7 @@ Der Betrieb eines Controller Cluster oder Agent Cluster unterliegt den Vereinbar
 
 ## Controller registrieren
 
-Der Vorgang zur Registrierung eines Controller ist über die Schaltfläche *Neuer Controller* verfügbar. Wenn Sie JOC Cockpit zum ersten Mal verwenden, wird das Popup-Fenster zur Registrierung eines Controller automatisch angezeigt.
+Die Operation zur Registrierung eines Controller ist über die Schaltfläche *Neuer Controller* verfügbar. Wenn Sie JOC Cockpit zum ersten Mal verwenden, wird das Popup-Fenster zur Registrierung eines Controller automatisch angezeigt.
 
 Erläuterungen finden Sie unter [Erste Inbetriebnahme - Registrierung Controller](/initial-operation-register-controller).
 

@@ -6,7 +6,7 @@ Erste Inbetriebnahme wird nach der Installation von JS7 Controller, Agent und JO
 
 Benutzer sollten überprüfen, ob Netzwerkverbindungen vom Server des Controller zum Server des Agenten verfügbar sind und ob die Firewall-Regeln Verbindungen zum Port des Agenten zulassen.
 
-Die Seite *Controller/Agenten verwalten* ist über das Rädchen-Symbol in der Hauptmenüleiste erreichbar und bietet den Vorgang *Autonomen Agenten hinzufügen* aus dem Aktionsmenü des Controller. Daraufhin wird das Popup-Fenster für die Registrierung eines Standalone Agenten angezeigt.
+Die Seite *Controller/Agenten verwalten* ist über das Rädchen-Symbol in der Hauptmenüleiste erreichbar und bietet die Operation *Autonomen Agenten hinzufügen* aus dem Aktionsmenü des Controller. Daraufhin wird das Popup-Fenster für die Registrierung eines Standalone Agenten angezeigt.
 
 Die Benutzer geben die folgenden Eingaben ein:
 

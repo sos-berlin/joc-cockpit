@@ -27,13 +27,13 @@ Inventarobjekte sind durch Abhängigkeiten miteinander verbunden, siehe [Abhäng
 Beim Entfernen von Objekten wird die Konsistenz des Inventars berücksichtigt, zum Beispiel:
 
 - Wenn eine Job-Ressource von einem Arbeitsablauf referenziert wird, dann beinhaltet das Entfernen der Job-Ressource auch das Zurückziehen des Arbeitsablaufs.
-- Wenn ein Arbeitsablauf entfernt wird, dann wird ein Zeitplan, der auf diesen Arbeitsablauf verweist, zurückgezogen und die damit verbundenen Aufträge werden storniert und aus dem Tagesplan entfernt.
+- Wenn ein Arbeitsablauf entfernt wird, dann wird ein Zeitplan, der auf diesen Arbeitsablauf verweist, zurückgezogen und die damit verbundenen Aufträge werden abgebrochen und aus dem Tagesplan entfernt.
 
 Die Benutzer steuern das konsistente Entfernen von Objekten über die folgenden Optionen:
 
 - **Abhängigkeiten einbeziehen**
   - wenn diese Option aktiviert ist, werden sowohl referenzierende als auch referenzierte Objekte einbezogen.
-    - Wenn verwandte Objekte zuvor *ausgerollt* oder *freigegeben* wurden, wird ein gemeinsames Entfernen/Rückruf angeboten: Das Objekt, für das der Vorgang *Entfernen* durchgeführt wird, wird entfernt, für verwandte Objekte wird ein *Zurückziehen*/*Zurücknehmen* angeboten. Der Rückruf von verwandten Objekten wird erzwungen, wenn die Objektbeziehungen dies erfordern.
+    - Wenn verwandte Objekte zuvor *ausgerollt* oder *freigegeben* wurden, wird ein gemeinsames Entfernen/Rückruf angeboten: Das Objekt, für das die Operation *Entfernen* durchgeführt wird, wird entfernt, für verwandte Objekte wird ein *Zurückziehen*/*Zurücknehmen* angeboten. Der Rückruf von verwandten Objekten wird erzwungen, wenn die Objektbeziehungen dies erfordern.
     - Dies gilt auch für Objekte im Entwurfsstatus, die zuvor *ausgerollt* oder *freigegeben* wurden.
   - wenn diese Option nicht aktiviert ist, werden Abhängigkeiten nicht berücksichtigt. Die Benutzer müssen überprüfen, ob verwandte Objekte gültig und *ausgerollt*/*freigegeben* sind. Der Controller gibt Fehlermeldungen aus, wenn Objekte aufgrund inkonsistenten Entfernens fehlen würden.
 
