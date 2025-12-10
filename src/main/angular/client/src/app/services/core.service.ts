@@ -2442,6 +2442,13 @@ getTimeZoneList(): any {
 
   addSlashToString(data: any, type: string): void {
     if (data[type]) {
+      // Check if the value originally had double quotes (marked by default1)
+      if (data['default1'] === '""' && typeof data[type] == 'string') {
+        // Wrap the value in quotes using JSON.stringify to properly escape
+        data[type] = JSON.stringify(data[type]);
+        return;
+      }
+
       if (data[type] === 'true' || data[type] === 'false') {
       } else if (/^\d+$/.test(data[type])) {
       } else if (/^(now\s*\()/i.test(data[type]) || /^(variable\s*\()/i.test(data[type]) || /^(env\s*\()/i.test(data[type])

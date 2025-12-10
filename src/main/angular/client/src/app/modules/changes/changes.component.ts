@@ -38,6 +38,7 @@ export class AddChangesModalComponent {
   referencedObjectTypes: string[] = [];
   affectedCollapsed: { [key: string]: boolean } = {};
   referencedCollapsed: { [key: string]: boolean } = {};
+  isPathDisplay = false;
 
   dependencyMode: 'none' | 'enforced' | 'all' = 'all';
   private filteredDepsCache = new WeakMap<any, { referencedBy: any[], references: any[] }>();
@@ -51,6 +52,7 @@ export class AddChangesModalComponent {
   ) {}
 
   ngOnInit(): void {
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] === 'true';
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
@@ -696,6 +698,17 @@ export class AddChangesModalComponent {
       nzClosable: false,
       nzMaskClosable: false
     });
+  }
+
+  getDisplayName(path: string): string {
+    if (!path) {
+      return '';
+    }
+    if (this.isPathDisplay) {
+      return path;
+    }
+    const parts = path.split('/');
+    return parts[parts.length - 1];
   }
 }
 

@@ -37,6 +37,7 @@ export class FileUploaderComponent {
   signatureAlgorithm = '';
   requestObj: any = {
     overwrite: false,
+    overwriteTags: false,
     format: 'ZIP',
     targetFolder: '',
     type: 'ignore'
@@ -489,6 +490,7 @@ export class FileUploaderComponent {
 
           }
           formData.append('overwrite', this.requestObj.overwrite);
+          formData.append('overwriteTags', this.requestObj.overwriteTags);
         }
         if (this.isDeploy) {
           formData.append('signatureAlgorithm', this.signatureAlgorithm);

@@ -1790,6 +1790,8 @@
     "label.deploy": "Ausrollen",
     "label.forSigning": "Zum Signieren",
     "label.overwrite": "Überschreiben",
+    "label.overwriteTags": "Overwrite Tags",
+    "label.inclusiveAllTags": "Inclusive all Tags",
     "label.folder": "Ordner",
     "label.release": "Freigabe",
     "label.recall": "Zurücknehmen",
@@ -4098,6 +4100,7 @@
     "tooltip.singleClickToSelect": "Einfaches Klicken markiert die Anweisung und lässt das Editieren der Eigenschaften zu.",
     "tooltip.doubleClickToSelect": "Doppeltes Klicken markiert die Anweisung. Wird eine neue Anweisung auf dieser Anweisung abgelegt, dann umfasst die neue Anweisung die vorhandene.",
     "tooltip.warningMessageForShortIntervalSelection": "Zyklische Aufträge für kurze Wiederholungsintervalle können zu Leistungseinbußen führen. Erwägen Sie den Wechsel zu zyklischen Arbeitsabläufen unter Verwendung von Cycle Anweisungen.",
+    "tooltip.restrictedMonthsTooltip": "Only 11 months can be selected. To restrict all months, leave the month restriction empty.",
     "findAndReplace": {
       "label.find": "Suchen",
       "label.replace": "Ersetzen",

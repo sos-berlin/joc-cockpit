@@ -1790,6 +1790,8 @@
     "label.deploy": "Déployer",
     "label.forSigning": "Pour Signature",
     "label.overwrite": "Écraser",
+    "label.overwriteTags": "Overwrite Tags",
+    "label.inclusiveAllTags": "Inclusive all Tags",
     "label.folder": "Répertoire",
     "label.release": "Publier",
     "label.recall": "Retirer",
@@ -4098,6 +4100,7 @@
     "tooltip.singleClickToSelect": "Un simple clic met en évidence une instruction et permet de modifier ses propriétés.",
     "tooltip.doubleClickToSelect": "Un double-clic met une instruction en évidence. Si une nouvelle instruction est déposée dessus, elle sera ajoutée en tant que parent.",
     "tooltip.warningMessageForShortIntervalSelection": "Les commandes cycliques pour de courts intervalles de répétition peuvent entraîner des pénalités de performance. Envisagez de passer à des flux de travail cycliques à l'aide de l'instruction de cycle.",
+    "tooltip.restrictedMonthsTooltip": "Only 11 months can be selected. To restrict all months, leave the month restriction empty.",
     "findAndReplace": {
       "label.find": "Rechercher",
       "label.replace": "Remplacer",

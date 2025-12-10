@@ -39,10 +39,13 @@ export class ConfirmModalComponent {
   filteredAffectedItems: any[] = [];
   filteredAffectedCollapsed: boolean = true;
   selectAllFilteredAffected: { [key: string]: boolean } = {};
+  isPathDisplay = false;
+
   constructor(public activeModal: NzModalRef,  public coreService: CoreService,) {
   }
 
   ngOnInit(): void {
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] === 'true';
     this.title = this.modalData.title;
     this.title2 = this.modalData.title2;
     this.message = this.modalData.message;
@@ -60,7 +63,9 @@ export class ConfirmModalComponent {
     this.object = this.modalData.object;
     this.planId = this.modalData.planId;
    if(this.type != 'Delete') {
-     this.getDependencies(this.object)
+     if(this.object){
+       this.getDependencies(this.object)
+     }
    }
   }
 
@@ -401,5 +406,16 @@ export class ConfirmModalComponent {
         });
       });
     return selectedObjects;
+  }
+
+  getDisplayName(path: string): string {
+    if (!path) {
+      return '';
+    }
+    if (this.isPathDisplay) {
+      return path;
+    }
+    const parts = path.split('/');
+    return parts[parts.length - 1];
   }
 }

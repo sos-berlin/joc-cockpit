@@ -1790,6 +1790,8 @@
     "label.deploy": "Deploy",
     "label.forSigning": "For Signing",
     "label.overwrite": "Overwrite",
+    "label.overwriteTags": "Overwrite Tags",
+    "label.inclusiveAllTags": "Inclusive all Tags",
     "label.folder": "Folder",
     "label.release": "Release",
     "label.recall": "Recall",
@@ -4098,6 +4100,7 @@
     "tooltip.singleClickToSelect": "Single-clicking highlights an instruction and makes its properties available for editing.",
     "tooltip.doubleClickToSelect": "Double-clicking highlights an instruction. If a new instruction is dropped onto it then the new instruction will be added as its parent.",
     "tooltip.warningMessageForShortIntervalSelection": "Cyclic orders for short repeat intervals can cause performance penalties. Consider switching to cyclic workflows using Cycle Instructions.",
+    "tooltip.restrictedMonthsTooltip": "Only 11 months can be selected. To restrict all months, leave the month restriction empty.",
     "findAndReplace": {
       "label.find": "Search",
       "label.replace": "Replace",

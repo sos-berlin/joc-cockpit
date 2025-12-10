@@ -257,7 +257,7 @@
                                                 }"
                                                 class="fa fa-check-circle-o orange text-xs"
                                               ></span>
-                                              {{ obj.path }}
+                                              {{ getDisplayName(obj.path) }}
                                               @if (obj.enforce) {
                                                 <span class="badge badge-warning m-l-xs">Enforced</span>
                                               }
@@ -322,7 +322,7 @@
                                                 }"
                                                 class="fa fa-check-circle-o orange text-xs"
                                               ></span>
-                                              {{ obj.path }}
+                                              {{ getDisplayName(obj.path) }}
                                               @if (obj.enforce) {
                                                 <span class="badge badge-warning m-l-xs">Enforced</span>
                                               }
@@ -547,7 +547,7 @@
                                             'fa-circle-o': !obj.valid,
                                             'fa-circle dark-blue': obj.deployed || obj.released
                                         }" class="fa fa-check-circle-o orange text-xs"></span>
-                                        {{ obj.path }}
+                                        {{ getDisplayName(obj.path) }}
                                       </label>
                                     </ng-container>
                                   </div>
@@ -603,7 +603,7 @@
                                             'fa-circle-o': !obj.valid,
                                             'fa-circle dark-blue': obj.deployed || obj.released
                                         }" class="fa fa-check-circle-o orange text-xs"></span>
-                                        {{ obj.path }}
+                                        {{ getDisplayName(obj.path) }}
                                       </label>
                                     </ng-container>
                                   </div>
@@ -674,7 +674,7 @@
                                             'fa-circle-o': !obj.valid,
                                             'fa-circle dark-blue': obj.deployed || obj.released
                                         }" class="fa fa-check-circle-o orange text-xs"></span>
-                                          {{ obj.path }}
+                                          {{ getDisplayName(obj.path) }}
                                         </label>
                                       </div>
                                     }

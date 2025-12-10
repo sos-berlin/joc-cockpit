@@ -520,6 +520,7 @@ export class SingleDeployComponent {
   preferences: any = {};
   dependencyMode: 'none' | 'enforced' | 'all' = 'all';
   relatedParentMap: Map<number, Set<number>> = new Map();
+  isPathDisplay = false;
 
   private _filteredDepsCache: Map<string, any> = new Map();
 
@@ -527,6 +528,7 @@ export class SingleDeployComponent {
   }
 
   ngOnInit(): void {
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] === 'true';
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
     this.schedulerIds = this.modalData.schedulerIds;
     this.data = this.modalData.data;
@@ -1520,7 +1522,9 @@ export class SingleDeployComponent {
     if (this.dependencyMode === 'none') {
       return {selected: false, disabled: false};
     }
-
+    if (this.operation === 'recall' && refObj.deployed) {
+      return {selected: false, disabled: true};
+    }
     if (isEnforced) {
       selected = true;
       disabled = true;
@@ -1800,7 +1804,7 @@ private rebuildRelatedObjects(): void {
 
       tempRelatedByType[type].push({
         ...relatedObj,
-        enforce: true,  // ✅ Always true for related objects
+        enforce: true,
         selected: state.selected,
         disabled: state.disabled,
         change: relatedObj.deployed
@@ -1893,6 +1897,17 @@ private rebuildRelatedObjects(): void {
     return this.getInvalidObjects().length > 0;
   }
 
+  getDisplayName(path: string): string {
+    if (!path) {
+      return '';
+    }
+    if (this.isPathDisplay) {
+      return path;
+    }
+    const parts = path.split('/');
+    return parts[parts.length - 1];
+  }
+
 
 }
 
@@ -1968,6 +1983,7 @@ export class DeployComponent {
   isRelatedCollapsed: boolean = true;
 
   sharedCheckboxState: { [key: string]: boolean } = {};
+  isPathDisplay = false;
 
   private _filteredDepsCache: WeakMap<any, { references: any[], referencedBy: any[] }> = new WeakMap();
   private recursiveDependenciesCache: any = null;
@@ -1987,6 +2003,7 @@ export class DeployComponent {
     this.operation = this.modalData.operation;
     this.isRemove = this.modalData.isRemove;
     this.isRevoke = this.modalData.isRevoke;
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] === 'true';
     this.isChecked = this.modalData.isChecked;
     this.isSelectedObjects = this.modalData.isSelectedObjects;
 
@@ -2987,7 +3004,9 @@ export class DeployComponent {
     if (this.dependencyMode === 'none') {
       return {selected: false, disabled: false};
     }
-
+    if (this.operation === 'recall' && refObj.deployed) {
+      return {selected: false, disabled: true};
+    }
     if (isEnforced) {
       selected = true;
       disabled = true;
@@ -3013,7 +3032,9 @@ export class DeployComponent {
 
     if (this.isRevoke || this.operation === 'recall') {
       const canRevoke = refObj.valid && (refObj.released || refObj.deployed);
-
+      if (this.operation === 'recall' && refObj.deployed) {
+        return {selected: false, disabled: true};
+      }
       if (isEnforced && canRevoke) {
 
         selected = true;
@@ -3469,7 +3490,7 @@ private rebuildRelatedObjects(): void {
 
         relatedObjectsById.set(depId, {
           ...depObj,
-          enforce: true,  // ✅ Always true for related objects
+          enforce: true,
           selected: state.selected,
           disabled: state.disabled,
           change: depObj.deployed
@@ -4508,6 +4529,17 @@ private rebuildRelatedObjects(): void {
 
     return this.getInvalidObjects().length > 0;
   }
+
+  getDisplayName(path: string): string {
+    if (!path) {
+      return '';
+    }
+    if (this.isPathDisplay) {
+      return path;
+    }
+    const parts = path.split('/');
+    return parts[parts.length - 1];
+  }
 }
 
 @Component({
@@ -4538,6 +4570,7 @@ export class ExportComponent {
     includeDependencies: false,
     controllerId: '',
     forSigning: false,
+    inclAllTags: false,
     filename: '',
     fileFormat: 'ZIP',
     exportType: 'folders',
@@ -4575,6 +4608,7 @@ export class ExportComponent {
   selectAllRelated: { [key: string]: boolean } = {};
   relatedCollapsed: { [key: string]: boolean } = {};
   isRelatedCollapsed: boolean = true;
+  isPathDisplay = false;
 
   private storedDependencies: any = null;
   private recursiveDependenciesCache: any = null;
@@ -4598,6 +4632,7 @@ export class ExportComponent {
   }
 
   ngOnInit(): void {
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] === 'true';
     this.schedulerIds = this.modalData.schedulerIds;
     this.preferences = this.modalData.preferences;
     this.origin = this.modalData.origin;
@@ -5236,7 +5271,7 @@ private rebuildRelatedObjects(): void {
 
         relatedObjectsById.set(depId, {
           ...depObj,
-          enforce: true,  // ✅ Always true for related objects
+          enforce: true,
           selected: state.selected,
           disabled: state.disabled,
           change: depObj.deployed
@@ -6078,7 +6113,8 @@ private rebuildRelatedObjects(): void {
         }
       } else {
         obj.shallowCopy = {
-          withoutInvalid: this.filter.valid
+          withoutInvalid: this.filter.valid,
+          inclAllTags: this.exportObj.inclAllTags
         };
 
         const isIndividualExport = this.exportObj.exportType === 'individual' || this.origin?.object;
@@ -6717,7 +6753,8 @@ private rebuildRelatedObjects(): void {
         onlyValidObjects: this.filter.valid,
         withoutDrafts: !this.filter.draft,
         withoutDeployed: !this.filter.deploy,
-        withoutReleased: !this.filter.release
+        withoutReleased: !this.filter.release,
+        inclAllTags: this.exportObj.inclAllTags
       };
     }
 
@@ -6747,6 +6784,17 @@ private rebuildRelatedObjects(): void {
       nzClosable: false,
       nzMaskClosable: false
     })
+  }
+
+  getDisplayName(path: string): string {
+    if (!path) {
+      return '';
+    }
+    if (this.isPathDisplay) {
+      return path;
+    }
+    const parts = path.split('/');
+    return parts[parts.length - 1];
   }
 }
 
@@ -6820,12 +6868,14 @@ export class RepositoryComponent {
   dependencyMode: 'none' | 'enforced' | 'all' = 'all';
   private filteredDepsCache = new WeakMap<any, { references: any[], referencedBy: any[] }>();
   private checkedObject = new Set<string>();
+  isPathDisplay = false;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private ref: ChangeDetectorRef,
               private inventoryService: InventoryService, private cdr: ChangeDetectorRef, private translate: TranslateService) {
   }
 
   ngOnInit(): void {
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] === 'true';
     this.controllerId = this.modalData.controllerId;
     this.preferences = this.modalData.preferences;
     this.origin = this.modalData.origin;
@@ -8447,7 +8497,7 @@ export class RepositoryComponent {
       }
 
       if (!this.path || this.path === '/') {
-        return true; // Root folder includes everything
+        return true;
       }
 
       const normalizedCurrentPath = this.path.endsWith('/') ? this.path : this.path + '/';
@@ -8640,7 +8690,7 @@ private rebuildRelatedObjects(): void {
 
         relatedObjectsById.set(depId, {
           ...depObj,
-          enforce: true,  // ✅ Always true for related objects
+          enforce: true,
           selected: state.selected,
           disabled: state.disabled,
           change: depObj.deployed
@@ -8963,6 +9013,17 @@ private rebuildRelatedObjects(): void {
       'JOBTEMPLATE': 'inventory.label.jobTemplates'
     };
     return labelMapping[objectType] || objectType;
+  }
+
+  getDisplayName(path: string): string {
+    if (!path) {
+      return '';
+    }
+    if (this.isPathDisplay) {
+      return path;
+    }
+    const parts = path.split('/');
+    return parts[parts.length - 1];
   }
 
 }
@@ -10644,6 +10705,7 @@ export class PublishChangeModalComponent {
   filteredAffectedCollapsed: boolean = true;
   selectAllFilteredAffected: { [key: string]: boolean } = {};
   path = '';
+  isPathDisplay = false;
 
   dependencyMode: 'none' | 'enforced' | 'all' = 'all';
   private filteredDepsCache = new WeakMap<any, { referencedBy: any[], references: any[] }>();
@@ -10657,6 +10719,7 @@ export class PublishChangeModalComponent {
   }
 
   ngOnInit(): void {
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] === 'true';
     this.schedulerIds = this.modalData.schedulerIds;
     this.preferences = this.modalData.preferences;
     this.display = this.modalData.display;
@@ -11504,6 +11567,17 @@ export class PublishChangeModalComponent {
       delete obj.store.draftConfigurations;
     }
   }
+
+  getDisplayName(path: string): string {
+    if (!path) {
+      return '';
+    }
+    if (this.isPathDisplay) {
+      return path;
+    }
+    const parts = path.split('/');
+    return parts[parts.length - 1];
+  }
 }
 
 @Component({
@@ -11541,11 +11615,13 @@ export class ShowDependenciesModalComponent {
   relatedObjectTypes: string[] = [];
   relatedCollapsed: { [key: string]: boolean } = {};
   isRelatedCollapsed = true;
+  isPathDisplay = false;
 
   constructor(public activeModal: NzModalRef, private coreService: CoreService, private inventoryService: InventoryService, private ref: ChangeDetectorRef) {
   }
 
   ngOnInit(): void {
+    this.isPathDisplay = sessionStorage['displayFoldersInViews'] === 'true';
     this.schedulerIds = this.modalData.schedulerIds;
     this.preferences = this.modalData.preferences;
     this.display = this.modalData.display;
@@ -11910,6 +11986,17 @@ export class ShowDependenciesModalComponent {
 
   cancel(): void {
     this.activeModal.destroy();
+  }
+
+  getDisplayName(path: string): string {
+    if (!path) {
+      return '';
+    }
+    if (this.isPathDisplay) {
+      return path;
+    }
+    const parts = path.split('/');
+    return parts[parts.length - 1];
   }
 }
 

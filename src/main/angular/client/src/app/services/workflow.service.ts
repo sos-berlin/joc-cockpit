@@ -3040,10 +3040,13 @@ export class WorkflowService {
           const weekdayIndex = Math.floor(Math.abs(admissionPeriod.secondOfWeeks) / (24 * 3600)) % 7 + 1;
           const weekNumber = Math.floor(Math.abs(admissionPeriod.secondOfWeeks) / (7 * 24 * 3600)) + 1;
 
+          
+          const baseSecondOfWeeks = Math.floor(Math.abs(admissionPeriod.secondOfWeeks) / (24 * 3600)) * (24 * 3600);
+
           periodItem = {
             specificWeekDay: weekdayIndex,
             specificWeek: isLast ? -weekNumber : weekNumber,
-            secondOfWeeks: admissionPeriod.secondOfWeeks,
+            secondOfWeeks: admissionPeriod.secondOfWeeks < 0 ? -baseSecondOfWeeks : baseSecondOfWeeks,
             frequency: this.getSpecificDay(isLast ? -weekNumber : weekNumber) + ' ' + this.getStringDayRes(weekdayIndex),
             periods: []
           };

@@ -179,7 +179,7 @@
                                 'fa-circle dark-blue': obj.deployed || obj.released,
                                 'opacity7': obj.syncState
                             }" class="fa fa-check-circle-o orange text-xs p-l-xs m-l-xs"></span>
-                            {{ obj.path }}
+                            {{ getDisplayName(obj.path) }}
                           </label>
                         </div>
                       }
@@ -231,7 +231,7 @@
                                 'fa-circle dark-blue': obj.deployed || obj.released,
                                 'opacity7': obj.syncState
                             }" class="fa fa-check-circle-o orange text-xs p-l-xs m-l-xs"></span>
-                            {{ obj.path }}
+                            {{ getDisplayName(obj.path) }}
                           </label>
                         </div>
                       }
@@ -280,7 +280,7 @@
                                 'fa-circle-o': !obj.valid,
                                 'fa-circle dark-blue': obj.deployed || obj.released
                             }" class="fa fa-check-circle-o orange text-xs m-t-xs m-l-xs"></span>
-                            {{ obj.path }}
+                            {{ getDisplayName(obj.path) }}
                           </label>
                         </div>
                       }

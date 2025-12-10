@@ -200,10 +200,7 @@
                                           'fa-circle-o': !obj.valid,
                                           'fa-circle dark-blue': obj.deployed || obj.released
                                       }" class="fa fa-check-circle-o orange text-xs"></span>
-                                                  {{ obj.path }}
-                                                  @if (obj.enforce) {
-                                                    <span class="label label-info m-l-xs text-xs">Enforced</span>
-                                                  }
+                                                  {{ getDisplayName(obj.path) }}
                                                 </label>
                                               </ng-container>
                                             </div>
@@ -252,10 +249,7 @@
                                           'fa-circle-o': !obj.valid,
                                           'fa-circle dark-blue': obj.deployed || obj.released
                                       }" class="fa fa-check-circle-o orange text-xs"></span>
-                                                  {{ obj.path }}
-                                                  @if (obj.enforce) {
-                                                    <span class="label label-info m-l-xs text-xs">Enforced</span>
-                                                  }
+                                                  {{ getDisplayName(obj.path) }}
                                                 </label>
                                               </ng-container>
                                             </div>
@@ -465,10 +459,7 @@
                                           'fa-circle-o': !obj.valid,
                                           'fa-circle dark-blue': obj.deployed || obj.released
                                       }" class="fa fa-check-circle-o orange text-xs"></span>
-                                                  {{ obj.path }}
-                                                  @if (obj.enforce) {
-                                                    <span class="label label-info m-l-xs text-xs">Enforced</span>
-                                                  }
+                                                  {{ getDisplayName(obj.path) }}
                                                 </label>
                                               </ng-container>
                                             </div>
@@ -517,10 +508,7 @@
                                           'fa-circle-o': !obj.valid,
                                           'fa-circle dark-blue': obj.deployed || obj.released
                                       }" class="fa fa-check-circle-o orange text-xs"></span>
-                                                  {{ obj.path }}
-                                                  @if (obj.enforce) {
-                                                    <span class="label label-info m-l-xs text-xs">Enforced</span>
-                                                  }
+                                                  {{ getDisplayName(obj.path) }}
                                                 </label>
                                               </ng-container>
                                             </div>
