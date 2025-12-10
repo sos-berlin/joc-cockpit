@@ -19,7 +19,7 @@ Benutzer können ihr eigenes Signierzertifikat erstellen:
 - von einer privaten Zertifizierungsstelle (CA) oder einer öffentlichen CA. Die Verwendung einer privaten CA wird unter [JS7 - How to create X.509 Signing Certificates](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+create+X.509+Signing+Certificates) erklärt.
 - von der eingebauten CA, die mit JOC Cockpit geliefert wird.
 
-Wenn Sie eine private oder öffentliche Zertifizierungsstelle verwenden, muss das Zertifikat der Stammzertifizierungsstelle oder das Zertifikat der Zwischenzertifizierungsstelle, das zum Signieren des Signierzertifikats verwendet wurde, den Controller Instanzen und Agenten Instanzen zur Verfügung gestellt werden. Das Zertifikat muss in einer Datei im PEM-Format verfügbar sein, die sich im Verzeichnis *./config/private/trusted-x509-keys* des Controllers und des Agenten befindet.
+Wenn Sie eine private oder öffentliche Zertifizierungsstelle verwenden, muss das Zertifikat der Stammzertifizierungsstelle oder das Zertifikat der Zwischenzertifizierungsstelle, das zum Signieren des Signierzertifikats verwendet wurde, den Controller Instanzen und Agenten Instanzen zur Verfügung gestellt werden. Das Zertifikat muss in einer Datei im PEM-Format verfügbar sein, die sich im Verzeichnis *./config/private/trusted-x509-keys* des Controller und des Agenten befindet.
 
 ## Operationen für Signierzertifikate
 

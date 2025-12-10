@@ -33,7 +33,7 @@ Die Anzeige ist auf maximal 5000 Einträge beschränkt, wenn nicht anders auf [P
   - Wenn Aufträge abgeschlossen sind, lautet der *Auftragszustand* *beendet*.
   - Wenn Aufträge nicht abgeschlossen sind, lautet der *Auftragszustand* *in Verarbeitung*.
 
-### Zugriff auf Protkolle
+### Zugriff auf Protokolle
 
 - **Auftragskennung**: Wenn Sie auf die *Auftragskennung* klicken, wird das Protokoll des Auftrags mit der [Anzeige Auftragsprotokoll](/order-log) dargestellt. Das Protokoll enthält die Ausgaben, die von allen mit dem Arbeitsablauf ausgeführten Jobs erstellt wurden.
 - **Herunterladen-Symbol**: Wenn Sie auf das Symbol klicken, wird das Protokoll des Auftrags in eine Datei heruntergeladen.

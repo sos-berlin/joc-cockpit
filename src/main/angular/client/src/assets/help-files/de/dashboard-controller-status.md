@@ -6,12 +6,12 @@ Der Bereich *Controller Status* enthält Informationen über registrierte Contro
 
 Jede angezeigte Controller Instanz bietet die folgenden Attribute:
 
-- **Controller ID** bezeichnet eine eindeutige Kennung, die bei der Installation eines Controllers angegeben wird. In einem Controller Cluster haben alle Instanzen die gleiche Controller ID.
+- **Controller ID** bezeichnet eine eindeutige Kennung, die bei der Installation eines Controller angegeben wird. In einem Controller Cluster haben alle Instanzen die gleiche Controller ID.
 - **URL** gibt die URL an, über die die Controller Instanz erreicht werden kann.
 - **Status** gibt den Status der Komponente an, d.h. *betriebsfähig* oder *unbekannt*, wenn die Controller Instanz nicht erreicht werden kann.
 - **Cluster Rolle** gibt die *aktive* oder *Standby* Rolle einer Controller Instanz in einem Cluster an.
 
-Wenn Sie auf die *Controller ID* einer Instanz klicken, wechselt das Dashboard zur Anzeige des Produktstatus des entsprechenden Controllers.
+Wenn Sie auf die *Controller ID* einer Instanz klicken, wechselt das Dashboard zur Anzeige des Produktstatus des entsprechenden Controller.
 
 ## Operationen für Controller Instanzen
 

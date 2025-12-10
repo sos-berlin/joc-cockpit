@@ -28,11 +28,11 @@ Die Protokollausgabe enthält Zeitstempel aus unterschiedlichen Quellen:
 
 - **Zeit des Agenten**: Initiale Eeignisse wie *OrderStarted* werden vom Agenten generiert und spiegeln die Echtzeituhr des Agenten wider.
 - **Zeit des Jobs**: Bei der Ausgabe von Jobs wird die Zeitzone des Servers verwendet, auf dem der Job ausgeführt wird, oder die Zeitzone, die in der Job-Implementierung angegeben ist.
-- **Zeit des Controller**: Abschließende Ereignisse wie *OrderFinished* werden vom Controller generiert und spiegeln die Echtzeituhr des Controllers wider.
+- **Zeit des Controller**: Abschließende Ereignisse wie *OrderFinished* werden vom Controller generiert und spiegeln die Echtzeituhr des Controller wieder.
 
-Die *Anzeige Auftragsprotokoll* konvertiert Zeitstempel in die Zeitzone des Benutzers, wenn die entsprechende Einstellung in [Profil - Einstellungen](/profile-preferences) aktiv ist. Andernfalls werden die Zeitzonen des Controllers und des Agenten verwendet, die ggf. nicht übereinstimmen.
+Die *Anzeige Auftragsprotokoll* konvertiert Zeitstempel in die Zeitzone des Benutzers, wenn die entsprechende Einstellung in [Profil - Einstellungen](/profile-preferences) aktiv ist. Andernfalls werden die Zeitzonen des Controller und des Agenten verwendet, die ggf. nicht übereinstimmen.
 
-Wenn die Echtzeituhren des Controller und des Agenten nicht synchronisiert sind, kann dies zu Protokollausgaben führen, die Zeitreisen suggerieren.
+Wenn die Echtzeituhren des Controller und eines Agenten nicht synchronisiert sind, kann dies zu Protokollausgaben führen, die Zeitreisen suggerieren.
 
 ### Navigationsbereich
 

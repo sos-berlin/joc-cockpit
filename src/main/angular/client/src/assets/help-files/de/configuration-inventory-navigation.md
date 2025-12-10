@@ -77,7 +77,7 @@ Operationen sind für *Systemordner* und *Benutzerordner* verfügbar.
 
 Der Ordner der obersten Ebene / (Schrägstrich) bietet die folgenden Operationen:
 
-- **Erneut Ausrollen** wird im Falle eines Journalverlusts verwendet, wenn der Speicher eines Controllers gelöscht und der Controller initialisiert wird. Die Operation *rollt alle Objekte aus*, die zuvor auf einen Controller ausgerollt wurden. 
+- **Erneut Ausrollen** wird im Falle eines Journalverlusts verwendet, wenn der Speicher eines Controller gelöscht und der Controller initialisiert wird. Die Operation *rollt alle Objekte aus*, die zuvor auf einen Controller ausgerollt wurden. 
 - **Abhängigkeiten aktualisieren** erstellt die interne Darstellung der Objektabhängigkeiten neu. Dies geschieht automatisch und wird beim Erstellen oder Löschen von Inventarobjekten und bei Änderungen von Objektnamen ausgelöst. Wenn Benutzer Grund zu der Annahme haben, dass die Abhängigkeiten nicht synchron sind, kann die Operation durchgeführt werden. Die Benutzer sollten bedenken, dass dies einige Zeit in Anspruch nehmen kann, etwa zwei Minuten bei einem Bestand von 5000 Objekten. Die Benutzer können jedoch mit JOC Cockpit weiterarbeiten, während die Abhängigkeiten aktualisiert werden.
 
 #### Operationen für Systemordner
@@ -126,7 +126,7 @@ Die folgenden Operationen sind für *Systemordner* verfügbar:
   - **Zurückziehen** macht eine vorherige *Ausrollen*-Operation rückgängig. Die Inventarobjekte werden in den Status *Entwurf* gesetzt. Dies bedeutet, dass Aufträge für Arbeitsabläufe aus dem [Tagesplan](/daily-plan) entfernt werden. Einzelheiten finden Sie unter [Ordner zurückziehen](/configuration-inventory-operations-revoke-folder).
   - **Neu validieren** prüft die Gültigkeit von Inventarobjekten, die z.B. nach dem Import von Objekten inkonsistent werden können.
   - **Synchronisieren** bringt den Status von Objekten mit dem Controller und dem Inventar auf den gleichen Stand:
-    - mit *Synchronisieren des Controller* werden Inventarobjekte je nach ihrem Status *Ausgerollt* oder *Entwurf* an/von Controller und Agenten *ausgerollt* oder *zurückgezogen*. Die Operation kann im Fall eines Journalverlustes verwendet werden, wenn der Speicher eines Controllers gelöscht und der Controller initialisiert wird.
+    - mit *Synchronisieren des Controller* werden Inventarobjekte je nach ihrem Status *Ausgerollt* oder *Entwurf* an/von Controller und Agenten *ausgerollt* oder *zurückgezogen*. Die Operation kann im Fall eines Journalverlustes verwendet werden, wenn der Speicher eines Controller gelöscht und der Controller initialisiert wird.
     - mit *Synchronisieren des Inventars* werden Inventarobjekte in den Status *ausgerollt* oder *Entwurf* versetzt, je nach Verfügbarkeit des Objekts beim Controller.
 - Operationen für Automation Objekte
   - **Freigeben** macht *Entwurf*-Objekte verfügbar

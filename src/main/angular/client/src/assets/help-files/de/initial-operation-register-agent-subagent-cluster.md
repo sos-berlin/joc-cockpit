@@ -1,6 +1,6 @@
 # Erste Inbetriebnahme - Registrierung Subagent Cluster
 
-Erste Inbetriebnahme wird nach der Installation von JS7 Controller, Agent und JOC Cockpit durchgeführt. Die Registrierung eines Subagenten-Clusters erfolgt, nachdem die [Erste Inbetriebnahme - Registrierung Agent Cluster](/initial-operation-register-agent-cluster) abgeschlossen ist.
+Die erste Inbetriebnahme wird nach der Installation von JS7 Controller, Agent und JOC Cockpit durchgeführt. Die Registrierung eines Subagent Clusters erfolgt, nachdem die [Erste Inbetriebnahme - Registrierung Agent Cluster](/initial-operation-register-agent-cluster) abgeschlossen ist.
 
 ## Architektur
 
@@ -35,7 +35,7 @@ Für Details siehe [Initial Operation - Subagent Cluster](/initial-operation-age
 - [Erste Inbetriebnahme - Registrierung Agent Cluster](/initial-operation-register-agent-cluster)
 - [Erste Inbetriebnahme - Registrierung Controller](/initial-operation-register-controller)
 - [Erste Inbetriebnahme - Registrierung Subagent](/initial-operation-register-agent-subagent)
-- [Initial Operation - Subagent Cluster](/initial-operation-agent-subagent-cluster)
+- [Erste Inbetriebnahme - Registrierung Subagent Cluster](/initial-operation-agent-subagent-cluster)
 
 ### Product Knowledge Base
 

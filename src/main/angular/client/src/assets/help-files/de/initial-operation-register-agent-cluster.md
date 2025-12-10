@@ -34,7 +34,7 @@ Zu den Voraussetzungen vor der Installation gehören:
 - Der Sekundäre Director Agent muss in seiner Datei *./config/agent.conf* die Einstellung aufweisen: *js7.journal.cluster.node.is-backup = yes*
 - Der Primäre und Sekundäre Director Agent müssen konfiguriert und gestartet sein.
 
-Die Benutzer sollten überprüfen, ob die Netzwerkverbindungen vom Server des Controllers zu den Servern beider Director Agents verfügbar sind und ob die Firewall-Regeln Verbindungen zu den Ports der Director Agents zulassen.
+Benutzer sollten überprüfen, ob die Netzwerkverbindungen vom Server des Controller zu den Servern beider Director Agents verfügbar sind und ob die Firewall-Regeln Verbindungen zu den Ports der Director Agents zulassen.
 
 Die Seite *Controller/Agenten verwalten* ist über das Radsymbol in der Hauptmenüleiste erreichbar und bietet die Operation *Cluster Agenten hinzufügen* aus dem Aktionsmenü des Controller. Dadurch wird das Popup-Fenster für die Registrierung eines Agent Cluster angezeigt.
 

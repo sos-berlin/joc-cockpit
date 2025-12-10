@@ -54,8 +54,8 @@ Die folgenden Operationen sind über die entsprechenden Schaltflächen in der ob
 
 - **Konto** schränkt die Anzeige auf Rollen ein, die dem ausgewählten Konto zugewiesen sind.
 - **Importieren** ermöglicht den Import von Rollen aus einer Datei im JSON-Format, die zuvor durch einen *Export* von Rollen erstellt wurde.
-- **Controller hinzufügen** ermöglicht das Hinzufügen des Bereichs eines bestimmten Controllers.
-- mit **Rolle hinzufügen** können Sie eine neue Rolle erstellen.
+- **Controller hinzufügen** ermöglicht das Hinzufügen eines bestimmten Controller mit einem separaten Berechtigungssatz.
+- **Rolle hinzufügen** erlaubt eine neue Rolle zu erstellen.
 
 ### Operationen für einzelne Rollen
 

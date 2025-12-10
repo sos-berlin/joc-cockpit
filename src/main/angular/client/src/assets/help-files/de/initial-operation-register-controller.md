@@ -38,7 +38,7 @@ Die Benutzer geben die folgenden Eingaben ein:
 - **JOC Cockpit Verbindung zum Controller** erwartet die URL bestehend aus Protokoll, Host und Port, die von JOC Cockpit für die Verbindung mit dem Controller verwendet werden, z.B. http://localhost:4444.
   - Die URL beginnt mit dem *http*-Protokoll, wenn der Controller das einfache HTTP-Protokoll verwendet. Das *HTTPS*-Protokoll wird verwendet, wenn der Controller für HTTPS konfiguriert ist.
   - Der Hostname kann *localhost* sein, wenn der Controller auf demselben Rechner wie JOC Cockpit installiert ist. Andernfalls sollte der FQDN des Hosts der Controller Instanz angegeben werden.
-  - Der *Port* des Controllers wird bei der Installation festgelegt. 
+  - Der *Port* der Controller Instanz wird bei der Installation festgelegt. 
 
 Wenn die Registrierungsinformationen übermittelt werden, stellt JOC Cockpit eine Verbindung zum Standalone Controller her.
 

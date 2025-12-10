@@ -28,7 +28,7 @@ Für einen vorhandenen Controller werden die folgenden Operationen in seinem 3-P
   - Konfiguration von zwei *Director Agents* und einer beliebigen Anzahl *Subagents*.
   - Erklärungen finden Sie unter [Erste Inbetriebnahme - Registrierung Agent Cluster](/initial-operation-register-agent-cluster).
 - **Einmaliges Token erstellen** 
-- **Agenten-Konfiguration exportieren** bietet eine Exportdatei im JSON-Format mit der Agenten-Konfiguration des ausgewählten Controllers zum Herunterladen an.
+- **Agenten-Konfiguration exportieren** bietet eine Exportdatei im JSON-Format mit der Agenten-Konfiguration des ausgewählten Controller zum Herunterladen an.
 - **Agenten-Konfiguration importieren** bietet das Hochladen einer Exportdatei im JSON-Format an, die zuvor exportierte Agenten-Konfigurationen enthält. Die entsprechenden Agenten werden beim Controller registriert.
 - **Löschen** ermöglicht das Löschen der Controller Konfiguration einschließlich aller Agenten-Konfigurationen. Dabei werden der Controller und die Agenten nicht von der Festplatte gelöscht, sondern die Konfiguration wird im JOC Cockpit gelöscht.
 
