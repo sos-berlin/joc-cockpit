@@ -1790,6 +1790,8 @@
     "label.deploy": "配置",
     "label.forSigning": "署名",
     "label.overwrite": "上書き",
+    "label.overwriteTags": "Overwrite Tags",
+    "label.inclusiveAllTags": "Inclusive all Tags",
     "label.folder": "フォルダー",
     "label.release": "リリース",
     "label.recall": "取消",
@@ -4099,6 +4101,7 @@
     "tooltip.singleClickToSelect": "命令をシングルクリックするとハイライトされ、プロパティエディタが開き、そのプロパティを更新することができます",
     "tooltip.doubleClickToSelect": "命令をダブルクリックするとハイライトされ、その上に新しい命令をドロップすると、新しい命令がその親として追加されます",
     "tooltip.warningMessageForShortIntervalSelection": "短いインターバルの周期的なオーダーは、性能劣化を引き起こす可能性があります。Cycle命令を使用するワークフローへの変更を検討してください",
+    "tooltip.restrictedMonthsTooltip": "Only 11 months can be selected. To restrict all months, leave the month restriction empty.",
     "findAndReplace": {
       "label.find": "検索",
       "label.replace": "置換",

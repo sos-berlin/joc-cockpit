@@ -1167,6 +1167,10 @@ export class AdmissionTimeComponent {
               private workflowService: WorkflowService, private ref: ChangeDetectorRef, public calendarService: CalendarService) {
   }
 
+  get isRestrictedMonthsAllSelected(): boolean {
+    return !!(this.selectedMonthsForRestriction && this.selectedMonthsForRestriction.length === 12);
+  }
+
 
 ngOnInit(): void {
   if (!this.job.admissionTimeScheme) {
@@ -1586,7 +1590,10 @@ ngOnInit(): void {
           const oldScheme = this.job.admissionTimeScheme.restrictedSchemes[indexToUpdate];
 
           if (this.selectedMonthsForRestriction.length === 0) {
-            this.removeFromRestrictedScheme(indexToUpdate, [this._temp]);
+            // Only remove if _temp is valid
+            if (this._temp) {
+              this.removeFromRestrictedScheme(indexToUpdate, [this._temp]);
+            }
             this.addToRegularPeriods(periodData);
             this.forceChangeDetection();
             this.resetAndClose(myForm);
@@ -1599,7 +1606,10 @@ ngOnInit(): void {
           if (oldMonths === newMonths) {
             this.replacePeriodsInRestrictedScheme(indexToUpdate, this._temp, periodData);
           } else {
-            this.removeFromRestrictedScheme(indexToUpdate, [this._temp]);
+            // Only remove if _temp is valid
+            if (this._temp) {
+              this.removeFromRestrictedScheme(indexToUpdate, [this._temp]);
+            }
             this.addToRestrictedScheme(periodData);
           }
         } else {
@@ -1625,7 +1635,10 @@ ngOnInit(): void {
           if (oldMonths === newMonths) {
             this.replacePeriodsInRestrictedScheme(this.restrictedSchemeIndex, this._temp, periodData);
           } else {
-            this.removeFromRestrictedScheme(this.restrictedSchemeIndex, [this._temp]);
+            // Only remove if _temp is valid
+            if (this._temp) {
+              this.removeFromRestrictedScheme(this.restrictedSchemeIndex, [this._temp]);
+            }
             this.addToRestrictedScheme(periodData);
           }
           this.restrictedSchemeIndex = -1;
@@ -1740,6 +1753,9 @@ ngOnInit(): void {
         p.text = this.workflowService.getText(p.startTime, p.duration);
 
         data.periods.push(p);
+
+        // Clear _temp to avoid stale frequency data interfering with future operations
+        this._temp = null;
 
         this.ref.detectChanges();
         this.isValid = true;
@@ -2163,7 +2179,7 @@ ngOnInit(): void {
             specificWeekDay: specificWeekDay,
             specificWeek: specificWeek,
             secondOfWeeks: (specificWeekDay * 24 * 3600) + ((specificWeek - (specificWeek > 0 ? 1 : 0)) * 7 * 24 * 3600),
-            frequency: this.workflowService.getSpecificDay(specificWeek) + ' ' + this.workflowService.getStringDay(specificWeekDay),
+            frequency: this.workflowService.getSpecificDay(specificWeek) + ' ' + this.workflowService.getStringDay(specificWeekDay - 1),
             periods: [...periods]
           });
         }
@@ -2279,8 +2295,11 @@ ngOnInit(): void {
     );
 
     periodsToRemove.forEach(periodToRemove => {
+      // Check if periodToRemove is valid and has the required properties
+      if (!periodToRemove) return;
+
       const index = periodList.findIndex(p =>
-        p.frequency === periodToRemove.frequency &&
+        p && p.frequency === periodToRemove.frequency &&
         p.day === periodToRemove.day &&
         p.secondOfWeek === periodToRemove.secondOfWeek
       );
@@ -2357,7 +2376,7 @@ ngOnInit(): void {
       specificWeekDay: frequency.specificWeekDay,
       specificWeek: frequency.specificWeek,
       secondOfWeeks: (frequency.specificWeekDay * 24 * 3600) + ((frequency.specificWeek - (frequency.specificWeek > 0 ? 1 : 0)) * 7 * 24 * 3600),
-      frequency: this.workflowService.getSpecificDay(frequency.specificWeek) + ' ' + this.workflowService.getStringDay(frequency.specificWeekDay),
+      frequency: this.workflowService.getSpecificDay(frequency.specificWeek) + ' ' + this.workflowService.getStringDay(frequency.specificWeekDay - 1),
       periods: periods
     };
     this.workflowService.updatePeriod(temp, obj, p);

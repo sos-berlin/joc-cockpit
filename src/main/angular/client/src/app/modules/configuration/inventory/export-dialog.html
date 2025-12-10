@@ -90,6 +90,16 @@
           </div>
         </div>
       }
+      @if (!exportObj.forSigning && exportObj.exportType != 'changes') {
+        <div class="form-group row">
+          <div class="col-md-3">
+            <label translate>inventory.label.inclusiveAllTags</label>
+          </div>
+          <div class="col-md-6">
+            <label [(ngModel)]="exportObj.inclAllTags" name="inclAllTags" nz-checkbox></label>
+          </div>
+        </div>
+      }
       @if (exportType === 'BOTH'  && exportObj.exportType != 'changes') {
         <div class="form-group row">
           <div class="col-md-3">
@@ -400,7 +410,7 @@
                                                     'fa-circle-o': !obj.valid,
                                                     'fa-circle dark-blue': obj.deployed || obj.released
                                                 }" class="fa fa-check-circle-o orange text-xs"></span>
-                                                {{ obj.path }}
+                                                {{ getDisplayName(obj.path) }}
                                               </label>
                                           </div>
                                         }
@@ -445,7 +455,7 @@
                                                   'fa-circle-o': !obj.valid,
                                                   'fa-circle dark-blue': obj.deployed || obj.released
                                               }" class="fa fa-check-circle-o orange text-xs"></span>
-                                              {{ obj.path }}
+                                              {{ getDisplayName(obj.path) }}
                                             </label>
                                           </div>
                                         }
@@ -514,7 +524,7 @@
                                             'fa-circle-o': !obj.valid,
                                             'fa-circle dark-blue': obj.deployed || obj.released
                                         }" class="fa fa-check-circle-o orange text-xs"></span>
-                                        {{ obj.path }}
+                                        {{ getDisplayName(obj.path) }}
                                       </label>
                                     </div>
                                   }
@@ -633,7 +643,7 @@
                                                     'fa-circle-o': !obj.valid,
                                                     'fa-circle dark-blue': obj.deployed || obj.released
                                                 }" class="fa fa-check-circle-o orange text-xs"></span>
-                                                {{ obj.path }}
+                                                {{ getDisplayName(obj.path) }}
                                               </label>
                                             </div>
                                           }
@@ -677,7 +687,7 @@
                                                     'fa-circle-o': !obj.valid,
                                                     'fa-circle dark-blue': obj.deployed || obj.released
                                                 }" class="fa fa-check-circle-o orange text-xs"></span>
-                                                {{ obj.path }}
+                                                {{ getDisplayName(obj.path) }}
                                               </label>
                                             </div>
                                           }

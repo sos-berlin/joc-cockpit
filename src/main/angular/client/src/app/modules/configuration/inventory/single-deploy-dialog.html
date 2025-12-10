@@ -288,7 +288,7 @@
                                       'fa-circle dark-blue': obj.deployed || obj.released,
                                       'opacity7': obj.syncState
                                     }" class="fa fa-check-circle-o orange text-xs p-l-xs m-l-xs"></span>
-                                    {{ obj.path }}
+                                    {{ getDisplayName(obj.path) }}
                                     @if (obj.enforce) {
                                       <span class="badge badge-warning m-l-xs">Enforced</span>
                                     }
@@ -347,7 +347,7 @@
                                           'fa-circle dark-blue': obj.deployed || obj.released,
                                           'opacity7': obj.syncState
                                         }" class="fa fa-check-circle-o orange text-xs p-l-xs m-l-xs"></span>
-                                        {{ obj.path }}
+                                        {{ getDisplayName(obj.path) }}
                                       </label>
                                     </label>
                                   </ng-container>
@@ -413,7 +413,7 @@
                                         'fa-circle dark-blue': obj.deployed || obj.released,
                                         'opacity7': obj.syncState
                                       }" class="fa fa-check-circle-o orange text-xs p-l-xs m-l-xs"></span>
-                                    {{ obj.path }}
+                                    {{ getDisplayName(obj.path) }}
                                   </label>
 
                                 </label>

@@ -383,7 +383,11 @@
   }
   <div class="form-group row ">
     <div class="col-sm-12 b-b p-t p-b">
-      <button class="btn btn-sm btn-primary" [disabled]="!myForm.form.valid || !editor.isEnable"
+      <button  class="btn btn-sm btn-primary"
+              [disabled]="!myForm.form.valid || !editor.isEnable || isRestrictedMonthsAllSelected"
+               [nzTooltipTitle]="isRestrictedMonthsAllSelected ? ('workflow.tooltip.restrictedMonthsTooltip' | translate) : null"
+              nz-tooltip
+              [nzTooltipPlacement]="'top'"
               (click)="addFrequency(myForm)" >
         @if (isEdit) {
           <span translate>workflow.admissionTime.button.update</span>

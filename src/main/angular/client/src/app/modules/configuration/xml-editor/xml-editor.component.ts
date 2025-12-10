@@ -409,7 +409,6 @@ export class ShowChildModalComponent {
                 a = 'base';
               }
               if (a === 'default') {
-                // Convert string boolean to actual boolean for xs:boolean type
                 temp.data = typeElement[0].attributes[i].nodeValue === 'xs:boolean' ? this.convertStringToBoolean(b) : b;
               }
               temp = Object.assign(temp, {[a]: b});
@@ -1488,9 +1487,11 @@ export class XmlEditorComponent {
               if (!res.recreateJson) {
                 this.counting = clone(a.nodesCount);
                 this.nodes = a.node;
+                this.convertBooleanValuesInTree(this.nodes);
               } else {
                 this.counting = a.lastUuid;
                 this.nodes = [a];
+                this.convertBooleanValuesInTree(this.nodes);
               }
               this.handleNodeToExpandAtOnce(this.nodes, _tempArrToExpand);
               this.selectedNode = this.nodes[0];
@@ -1629,6 +1630,9 @@ export class XmlEditorComponent {
             let a = [jsonArray];
             this.counting = jsonArray.lastUuid;
             this.nodes = a;
+          }
+          if (this.nodes) {
+            this.convertBooleanValuesInTree(this.nodes);
           }
           if (this.nodes) {
             this.isLoading = false;
@@ -5220,6 +5224,7 @@ export class XmlEditorComponent {
         this.doc = new DOMParser().parseFromString(res.schema, 'application/xml');
         this.nodes = [];
         this.nodes.push(JSON.parse(res.configurationJson));
+        this.convertBooleanValuesInTree(this.nodes);
         this.getIndividualData(this.nodes[0], undefined);
         this.getData(this.nodes[0]);
         this.submitXsd = true;
@@ -5310,6 +5315,8 @@ export class XmlEditorComponent {
         this.nodes = [arr];
         this.counting = arr.lastUuid || null;
       }
+
+      this.convertBooleanValuesInTree(this.nodes);
 
       this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
       this.submitXsd = true;
@@ -5872,6 +5879,7 @@ export class XmlEditorComponent {
                 this.counting = arr.lastUuid;
                 this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
                 this.nodes = a;
+                this.convertBooleanValuesInTree(this.nodes);
                 this.isLoading = false;
                 this.selectedNode = this.nodes[0];
                 this.selectedNodeDoc = this.checkText(this.nodes[0]);
@@ -5928,6 +5936,7 @@ export class XmlEditorComponent {
                 this.counting = arr.lastUuid;
                 this.doc = new DOMParser().parseFromString(this.path, 'application/xml');
                 this.nodes = a;
+                this.convertBooleanValuesInTree(this.nodes);
                 this.isLoading = false;
                 this.selectedNode = this.nodes[0];
                 this.selectedNodeDoc = this.checkText(this.nodes[0]);
