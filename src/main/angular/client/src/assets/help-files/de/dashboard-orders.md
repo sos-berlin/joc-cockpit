@@ -6,7 +6,7 @@ Der Bereich *Aufträge* enthält Informationen zu Aufträgen aus den folgenden Q
 - Aufträge, die bei Bedarf von Benutzern aus der Ansicht [Arbeitsabläufe](/workflows) hinzugefügt wurden
 - Aufträge, die von [Dateiauftragsquellen](/configuration-inventory-file-order-sources) hinzugefügt wurden, die Verzeichnisse auf eingehende Dateien überwachen
 
-<img src="dashboard-orders.png" alt="Orders" width="330" height="140" />
+<img src="dashboard-orders-de.png" alt="Orders" width="330" height="140" />
 
 ## Auftragszustände
 

@@ -37,12 +37,12 @@ Das *script-include-name* gibt den Bezeichner des Skript-Bausteins an. Benutzer 
 
 ### Schnellsuche
 
-Wenn Sie die Tastenkombination STRG+Leertaste drücken, während sich der Cursor im *Job-Skript* befindet, wird die Schnellsuche für Skript-Bausteine aufgerufen:
+Wenn Sie die Tastenkombination STRG+Leertaste drücken, während sich der Cursor im *Job-Skript* befindet, wird die *Schnellsuche* für Skript-Bausteine aufgerufen:
 
-- Die Schnellsuche bietet 
+- Die *Schnellsuche* bietet 
   - die Navigation von Inventarordnern,
   - die Auswahl von Skript-Bausteinen nach Namen, wenn Sie ein oder mehrere Zeichen eingeben.
-- Bei der Schnellsuche wird die Groß- und Kleinschreibung nicht berücksichtigt und es wird nach rechts abgeschnitten. Für links abgeschnittene Eingaben können Sie das Metazeichen \* verwenden, das als Platzhalter für eine beliebige Anzahl von Zeichen dient.
+- Bei der *Schnellsuche* wird die Groß- und Kleinschreibung nicht berücksichtigt und es wird nach rechts abgeschnitten. Für links abgeschnittene Eingaben können Sie das Metazeichen \* verwenden, das als Platzhalter für eine beliebige Anzahl von Zeichen dient.
 - Nachdem Sie einen Skript-Baustein ausgewählt haben, wird die zugehörige Eingabe in die Zeile eingefügt, in der sich der Cursor befindet.
 
 ### Parametrierung

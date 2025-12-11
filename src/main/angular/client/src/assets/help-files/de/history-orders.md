@@ -13,11 +13,11 @@ Der linke Bereich ermöglicht die Filterung nach Kennzeichnungen aus Arbeitsabl�
 - **Kennz. Arbeitsablauf** werden in der Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows) zugewiesen.
 - **Kennz. Auftrag** werden in der Ansicht [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules) zugewiesen.
 
-Kennzeichnungen werden über die Symbole + und - ausgewählt und können über das Symbol Schnellsuche nachgeschlagen werden. Die Anzeige von Kennzeichnungen muss auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) aktiviert werden.
+Kennzeichnungen werden über die Symbole + und - ausgewählt und können über das Symbol *Schnellsuche* nachgeschlagen werden. Die Anzeige von Kennzeichnungen muss auf der Seite [Einstellungen - JOC Cockpit](/settings-joc) aktiviert werden.
 
 ## Bereich: Auftragshistorie
 
-Die Anzeige ist auf maximal 5000 Einträge beschränkt, wenn nicht anders auf [Profil - Einstellungen](/profile-preferences) angegeben.
+Die Anzeige ist auf maximal 5000 Einträge beschränkt, wenn nicht anders in [Profil - Einstellungen](/profile-preferences) angegeben.
 
 ### Historie der Aufträge
 

@@ -39,9 +39,9 @@ Die Ordnerhierarchie kennt die folgenden Ordnertypen:
 
 Rechts neben dem obersten Ordner im *Navigationsbereich* finden Sie ein Suchsymbol, mit dem Sie nach Inventarobjekten suchen können.
 
-- Es müssen mindestens zwei Zeichen eingegeben werden, damit die Schnellsuche nach Objekten sucht, die mit den angegebenen Zeichen beginnen.
-- Bei der Schnellsuche wird nicht zwischen Groß- und Kleinschreibung unterschieden und es wird nach rechts abgeschnitten.
-- Die Schnellsuche gibt Objekte mit übereinstimmenden Namen pro Kategorie zurück, z.B. Arbeitsabläufe, Zeitpläne.
+- Es müssen mindestens zwei Zeichen eingegeben werden, damit die *Schnellsuche* nach Objekten sucht, die mit den angegebenen Zeichen beginnen.
+- Bei der *Schnellsuche* wird nicht zwischen Groß- und Kleinschreibung unterschieden und es wird nach rechts abgeschnitten.
+- Die *Schnellsuche* gibt Objekte mit übereinstimmenden Namen pro Kategorie zurück, z.B. Arbeitsabläufe, Zeitpläne.
 - Das Metazeichen \* kann als Platzhalter für null oder mehr Zeichen verwendet werden:
   - **test** findet die Objekte ***test**Initial*, *mein**Test***
   - **te\*st** findet die Objekte ***test**Initial*, ***te**rminate**St**illstand*

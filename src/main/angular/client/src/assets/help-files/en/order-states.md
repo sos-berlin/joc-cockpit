@@ -6,6 +6,10 @@ Orders can be added from the following sources:
 - Orders added on demand by users from the [Workflows](/workflows) view
 - Orders added from File Order Sources that watch directories for incoming files
 
+States of current Orders are displayed with the *Dashboard* view:
+
+<img src="dashboard-orders.png" alt="Orders" width="330" height="140" />
+
 ## Order States
 
 The following *Order States* are available:

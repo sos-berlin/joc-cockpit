@@ -31,7 +31,7 @@ For a Schedule the following inputs are available:
 
 - **Order Name**: An optional name that can be used to filter Orders in a number of views.
 - **Tag Name**: Any number of Tags can be specified that will be added to the Order. Order Tags are displayed in a number of views if specified from the [Settings - JOC Cockpit](/settings-joc) page.
-- **Ignore Job Admission Times**: Jobs can be limited to run on certain days and/or in certain timeslots. Orders arriving outside of a timeslot have to wait for the next available timeslot. The option forces Jobs to start independently from such limitations.
+- **Ignore Instruction/Job Admission Times**: Jobs can be limited to run on certain days and/or in certain timeslots. This similarly applies to use of the *AdmissionTimes Instruction*. Orders arriving outside of a timeslot have to wait for the next available timeslot. The option forces Jobs and other instructions to start independently from such limitations.
 
 ### Order Position
 

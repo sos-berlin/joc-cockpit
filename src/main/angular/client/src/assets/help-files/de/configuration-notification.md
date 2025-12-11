@@ -109,7 +109,7 @@ Die Seite *Benachrichtigung* bietet die folgenden Operationen über die entsprec
 - **Entfernen**: löscht die aktuelle Konfiguration.
 - **Entwurf zurücksetzen**: erstellt einen neuen Entwurf ausgehend von der zuletzt veröffentlichten Version. Aktuelle Änderungen gehen dabei verloren.
 - **Hochladen**: ermöglicht das Hochladen einer XML-Datei mit der Konfiguration.
-- **Download**: bietet das Herunterladen der Konfiguration in eine XML-Datei an.
+- **Herunterladen**: bietet das Herunterladen der Konfiguration in eine XML-Datei an.
 - **XML bearbeiten**: ermöglicht die direkte Bearbeitung der Konfiguration im XML-Format.
 - **Validieren**: validiert die Konfiguration anhand eines XSD-Schemas. Dies garantiert, dass die XML-Konfiguration wohlgeformt und formal korrekt ist.
 - **Freigeben**: veröffentlicht die Konfiguration in JOC Cockpit. Die Änderungen werden sofort wirksam.

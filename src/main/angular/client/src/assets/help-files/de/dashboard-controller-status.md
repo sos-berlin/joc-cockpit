@@ -24,7 +24,7 @@ Controller Instanzen bieten die folgenden Operationen aus dem 3-Punkte Aktionsme
   - **ohne Umschalten**: um die aktive Rolle bei der heruntergefahrenen Instanz zu belassen. Benutzer sollten sich bewusst sein, dass keine Aktivierung der Ausfallsicherung erfolgt und dass keine Instanz aktiv ist.
 - **Abbrechen**, **Abbrechen und neu starten** beenden die Instanz zwangsweise. Wenn dies auf die aktive Instanz in einem Cluster angewendet wird, wird die Ausfallsicherung aktiviert:
   - mit **Ausfallsicherung** wird die aktive Rolle an die Standby Instanz übergeben.
-- **Protokoll herunterladen** bietet die Datei *controller.log* des Controller zum Download aus einer .gz-Datei in komprimiertem Format an.
+- **Protokoll herunterladen** bietet die Datei *controller.log* des Controller zum Herunterladen aus einer .gz-Datei in komprimiertem Format an.
 
 ## Referenzen
 

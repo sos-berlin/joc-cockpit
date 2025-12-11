@@ -136,7 +136,7 @@ Wenn Sie auf den Hintergrund des Bereichs *Arbeitsablauf* klicken, wird eine *Fu
   - **JSON Format herunterladen** lädt den Arbeitsablauf im JSON Format in eine .json-Datei herunter.
   - **JSON Format hochladen** erlaubt das Hochladen einer .json-Datei, die den Arbeitsablauf ersetzen wird.
 - Operationen exportieren
-  - **Exportieren im PNG Format** bietet den Download einer .png Bilddatei des Arbeitsablauf an.
+  - **Exportieren im PNG Format** bietet das Herunterladen einer .png Bilddatei des Arbeitsablaufs an.
 
 ## Referenzen
 
