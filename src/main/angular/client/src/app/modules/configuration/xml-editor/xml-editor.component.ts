@@ -3098,13 +3098,6 @@ export class XmlEditorComponent {
             const convertedValue = this.convertStringToBoolean(valueObj.data);
             if (convertedValue !== valueObj.data) {
               valueObj.data = convertedValue;
-              console.log(`[Boolean Fix - Upload] Converted ${node.ref || node.name}:`, {
-                original: originalValue,
-                originalType: originalType,
-                converted: valueObj.data,
-                convertedType: typeof valueObj.data,
-                base: valueObj.base || 'unknown'
-              });
             }
           }
         }
@@ -3117,10 +3110,6 @@ export class XmlEditorComponent {
             const convertedValue = this.convertStringToBoolean(attr.data);
             if (convertedValue !== attr.data) {
               attr.data = convertedValue;
-              console.log(`[Boolean Fix - Upload] Converted attribute ${attr.name}:`, {
-                original: originalValue,
-                converted: attr.data
-              });
             }
           }
         }
@@ -5355,15 +5344,17 @@ export class XmlEditorComponent {
   createChildJson(node, childrenNode, curentNode, doc) {
     if (childrenNode && childrenNode.attributes) {
       for (let i = 0; i < childrenNode.attributes.length; i++) {
-        if (childrenNode.attributes[i].data) {
-          curentNode.setAttribute(childrenNode.attributes[i].name, childrenNode.attributes[i].data);
+        if (childrenNode.attributes[i].data !== undefined && childrenNode.attributes[i].data !== null) {
+          const attrValue = String(childrenNode.attributes[i].data);
+          curentNode.setAttribute(childrenNode.attributes[i].name, attrValue);
         }
       }
     }
     if (childrenNode && childrenNode.values && childrenNode.values.length >= 0) {
       for (let i = 0; i < childrenNode.values.length; i++) {
-        if (childrenNode.values[i].data) {
-          let a = doc.createCDATASection(childrenNode.values[i].data);
+        if (childrenNode.values[i].data !== undefined && childrenNode.values[i].data !== null) {
+          const cdataValue = String(childrenNode.values[i].data);
+          let a = doc.createCDATASection(cdataValue);
           if (a) {
             curentNode.appendChild(a);
           }
@@ -5817,15 +5808,16 @@ export class XmlEditorComponent {
       if (peopleElem) {
         if (nodes[0].attributes && nodes[0].attributes.length > 0) {
           for (let i = 0; i < nodes[0].attributes.length; i++) {
-            if (nodes[0].attributes[i].data) {
+            if (nodes[0].attributes[i].data !== undefined && nodes[0].attributes[i].data !== null) {
               peopleElem.setAttribute(nodes[0].attributes[i].name, nodes[0].attributes[i].data);
             }
           }
         }
         if (nodes[0] && nodes[0].values && nodes[0].values.length >= 0) {
           for (let i = 0; i < nodes[0].values.length; i++) {
-            if (nodes[0].values[0].data) {
-              peopleElem.createCDATASection(nodes[0].values[0].data);
+            if (nodes[0].values[0].data !== undefined && nodes[0].values[0].data !== null) {
+              const cdataValue = String(nodes[0].values[0].data);
+              peopleElem.createCDATASection(cdataValue);
             }
           }
         }
