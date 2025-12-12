@@ -1,6 +1,6 @@
 # Verschlüsselungsschlüssel verwalten
 
- [JS7 - Encryption and Decryption](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+and+Decryption) bietet einen sicheren Weg, um die in Jobs verwendeten Geheimnisse zu verwalten. Benutzer können sensible Daten wie Passwörter mit Hilfe asymmetrischer Schlüssel ver- und entschlüsseln.
+ [JS7 - Encryption and Decryption](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+and+Decryption) bietet einen sicheren Weg, um die in Jobs verwendeten Geheimnisse zu verwalten. Benutzer können sensible Daten wie Kennwörter mit Hilfe asymmetrischer Schlüssel ver- und entschlüsseln.
 
 Für die Ver- und Entschlüsselung werden asymmetrische private X.509-Schlüssel und -Zertifikate verwendet. Dazu gehören die folgenden Rollen:
 
@@ -27,7 +27,7 @@ Vorhandene Verschlüsselungszertifikate werden in einer Liste angezeigt:
 
 - **Aktionsmenü** bietet die Möglichkeit, den Zertifikatseintrag zu aktualisieren und zu löschen.
 - **Zertifikat-Alias** ist der eindeutige Name, den Benutzer einem Zertifikat zuweisen.
-- **Symbol anzeigen** ermöglicht das Anklicken des Symbols, um das entsprechende Zertifikat anzuzeigen.
+- **Anzeigesymbol** ermöglicht das Anklicken des Symbols, um das entsprechende Zertifikat anzuzeigen.
 - **Pfad zur Datei des privaten Schlüssels** gibt den Speicherort des privaten Schlüssels am zugehörigen Agenten an.
 
 ## Operationen für Zertifikate

@@ -1,4 +1,4 @@
-# Berechtigungen für Identitätsdienste
+# Identitätsdienste - Berechtigungen
 
 Identitätsdienste regeln den Zugriff auf JOC Cockpit durch Authentifizierung und Autorisierung, siehe [Identitätsdienste](/identity-services).
 
@@ -30,20 +30,20 @@ Berechtigungen können als Baum betrachtet werden, der eine Hierarchie von Zweig
 
 Berechtigungen werden durch ein Rechteck visualisiert, das einer Batterie ähnelt:
 
-- Wenn Sie auf den Pol an der rechten Seite einer Batterie klicken, werden die abhängigen Berechtigungen erweitert/verringert.
-- Wenn Sie auf den Hintergrund der Batterie klicken, wechselt die Berechtigung zwischen dem Status "nicht zugewiesen" und dem Status "zugewiesen":
+- Wenn Sie auf den Pol an der rechten Seite einer Batterie klicken, werden die abhängigen Berechtigungen ausgeklappt/eingeklappt.
+- Wenn Sie auf den Hintergrund der Batterie klicken, wechselt die Berechtigung zwischen dem Status *nicht zugewiesen* und dem Status *zugewiesen*:
   - Ein Rechteck mit weißer Hintergrundfarbe zeigt eine nicht zugewiesene Berechtigung an.
   - Ein Rechteck mit blauer Hintergrundfarbe zeigt eine erteilte Berechtigung an, die an nachgeordnete Berechtigungen weitergegeben wird. <br/><img src="identity-service-permissions-granted.png" alt="Granted Permissions" width="600" height="100" />
   - Ein Rechteck mit hellblauem Hintergrund zeigt eine vererbte, erteilte Berechtigung an. Bei Änderungen an der Berechtigung müssen Sie nicht die übergeordnete Berechtigung erteilen, sondern die untergeordneten Berechtigungen einzeln erteilen. <br/><img src="identity-service-permissions-inherited.png" alt="Inherited Permissions" width="600" height="100" />
-- Wenn Sie auf das Symbol + innerhalb des Rechtecks einer Berechtigung klicken, wechselt die Berechtigung in den Status Verweigert, der durch die graue Hintergrundfarbe angezeigt wird. Wenn Sie auf das Symbol - innerhalb einer verweigerten Berechtigung klicken, wird sie zu einer nicht zugewiesenen Berechtigung mit weißem Hintergrund. <br/><img src="identity-service-permissions-denied.png" alt="Denied Permissions" width="600" height="100" />
+- Wenn Sie auf das Symbol + innerhalb des Rechtecks einer Berechtigung klicken, wechselt die Berechtigung in den Status *verweigert*, der durch die graue Hintergrundfarbe angezeigt wird. Wenn Sie auf das Symbol - innerhalb einer verweigerten Berechtigung klicken, wird sie zu einer *nicht zugewiesenen* Berechtigung mit weißem Hintergrund. <br/><img src="identity-service-permissions-denied.png" alt="Denied Permissions" width="600" height="100" />
 
 ### Reduzieren und Erweitern der Ansicht
 
-Die folgenden Schaltflächen werden zum Erweitern/Komprimieren von Berechtigungen angeboten:
+Die folgenden Schaltflächen werden zum Ausklappen/Einklappen von Berechtigungen angeboten:
 
-- **Alle erweitern**, **Alle komprimieren** erweitert oder reduziert alle Berechtigungen.
-- **Aktiv erweitern** erweitert gewährte/verweigerte Berechtigungen und lässt geerbte Berechtigungen eingeklappt.
-- **Inaktiv zusammenklappen** klappt nicht zugewiesene Berechtigungen zusammen.
+- **Alle ausklappen**, **Alle einklappen** erweitert oder reduziert alle Berechtigungen.
+- **Aktive ausklappen** erweitert *zugewiesene*/*verweigerte* Berechtigungen und lässt vererbte Berechtigungen eingeklappt.
+- **Inaktive einklappen** klappt nicht zugewiesene Berechtigungen ein.
 
 ## Grafische und tabellarische Ansicht
 

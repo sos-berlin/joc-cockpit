@@ -21,7 +21,7 @@ The following settings are available:
 - **OIDC Client Secret** is the password assigned the *OIDC Client ID* in the OIDC Identity Provider.
 - **OIDC User Name Attribute** is the name of the attribute used by the OIDC Identity Service to identify the user account.
   - The following strategy is applied to identify the attribute used to map to the JOC Cockpit account:
-    - the URL *https://\<identity-provider\>/.well-known/openid-configuration* is called.
+    - the URL *https://identity-provider/.well-known/openid-configuration* is called.
     - the response is checked for the object *claims_supported*
       - if not available or empty then the *email* attribute will be used
       - if available and if it includes the *preferred_username* attribute, then this attribute will be used.

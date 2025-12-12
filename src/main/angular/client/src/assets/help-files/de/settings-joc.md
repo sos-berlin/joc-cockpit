@@ -39,21 +39,21 @@ Diese Einstellung aktiviert das Kontrollkästchen *Eingaben merken*, das im Anme
 
 ## Einstellungen: Inventar
 
-### Einstellungen: *copy\_paste\_suffix*, *copy\_paste\_prefix*, Standard: **kopieren*
+### Einstellungen: *copy\_paste\_suffix*, *copy\_paste\_prefix*, Standard: *copy*
 
 Legt das Präfix/Suffix fest, das für Objektnamen verwendet werden soll, wenn Sie Kopier- und Einfügeoperationen in der JOC Cockpit GUI durchführen.
 
 - In JS7 sind die Namen von Inventarobjekten für jeden Objekttyp eindeutig: Arbeitsabläufe verwenden z.B. eindeutige Namen, eine Job-Ressource kann jedoch denselben Namen wie ein Arbeitsablauf verwenden.
 - Daher muss ein neuer Objektname erstellt werden, wenn Sie Kopier- und Einfügeoperationen durchführen. Dies wird durch Hinzufügen eines Präfixes oder Suffixes erreicht, das von den Benutzern angegeben werden kann.
 
-### Einstellung: **restore\_suffix*, *restore\_prefix*, Standard: **wiederhergestellt*
+### Einstellung: *restore\_suffix*, *restore\_prefix*, Standard: *restored*
 
 Wenn Inventarobjekte entfernt werden, werden sie dem Papierkorb hinzugefügt.
 
 - Wenn entfernte Objekte aus dem Papierkorb wiederhergestellt werden, kann der ursprüngliche Objektname von einem neueren Objekt verwendet werden. 
 - Mit dieser Einstellung können Sie die Präfix- und Suffixwerte festlegen, die beim Wiederherstellen von Objekten aus dem Papierkorb verwendet werden sollen.
 
-### Einstellung: **import\_suffix*, *import\_prefix*, Standard: **importiert*
+### Einstellung: *import\_suffix*, *import\_prefix*, Standard: *imported*
 
 Die JS7 Export- und Importoperationen für Inventar ermöglichen den Import von Objekten aus einer Archivdatei.
 
@@ -75,7 +75,7 @@ Gibt an, dass in Ansichten wie *Arbeitsabläufe*, *Tagesplan*, *Ressourcen - Kal
 
 ## Einstellungen: Controller
 
-### Einstellung: **controller\_connection\_joc\_password*, *controller\_connection\_history\_password*
+### Einstellung: *controller\_connection\_joc\_password*, *controller\_connection\_history\_password*
 
 JS7 bietet eine konsistente Konfiguration ohne Verwendung von Kennwörtern. Dies gilt auch für die Verbindung von JOC Cockpit zu Controller Instanzen, die durch gegenseitige HTTPS Server Authentifizierung und Client Authentifizierung gesichert werden kann. Wenn Benutzer die gegenseitige Authentifizierung für Controller Verbindungen nicht konfigurieren möchten, muss ein Kennwort verwendet werden, um das JOC Cockpit beim Controller zu authentifizieren.
 
@@ -116,7 +116,7 @@ Legt fest, dass eine JSON-Datei mit Informationen über die Historie des Auftrag
 
 - **alle**: erstellt eine Historie für alle erfolgreichen und fehlgeschlagenen Aufträge.
 - **fehlgeschlagen**: erstellt eine Historie für fehlgeschlagene Aufträge.
-- **Erfolgreich**: erstellt eine Historie für erfolgreiche Aufträge.
+- **erfolgreich**: erstellt eine Historie für erfolgreiche Aufträge.
 
 ### Einstellung: *log\_ext\_order*
 
@@ -124,15 +124,15 @@ Legt fest, dass eine Auftragsprotokolldatei im Falle von erfolgreichen Aufträge
 
 - **alle**: erstellt eine Auftragsprotokolldatei für alle erfolgreichen und fehlgeschlagenen Aufträge.
 - **fehlgeschlagen**: erstellt eine Auftragsprotokolldatei für fehlgeschlagene Aufträge.
-- **Erfolgreich**: erstellt eine Auftragsprotokolldatei für erfolgreiche Aufträge.
+- **erfolgreich**: erstellt eine Auftragsprotokolldatei für erfolgreiche Aufträge.
 
 ### Einstellung: *log\_ext\_task*
 
-Gibt an, dass eine Aufgabenprotokolldatei im Falle einer erfolgreichen Aufgabe, einer fehlgeschlagenen Aufgabe oder beidem erstellt wird. Mögliche Werte sind:
+Gibt an, dass eine Job-protokolldatei im Fall eines erfolgreichen Jobs, eines fehlgeschlagenen Jobs oder beidem erstellt wird. Mögliche Werte sind:
 
-- **all**: erstellt eine Aufgabenprotokolldatei für alle erfolgreichen und fehlgeschlagenen Aufgaben.
-- **fehlgeschlagen**: erstellt eine Aufgabenprotokolldatei für fehlgeschlagene Aufgaben.
-- **Erfolgreich**: erstellt eine Aufgabenprotokolldatei für erfolgreiche Aufgaben.
+- **all**: erstellt eine Job-Protokolldatei für alle erfolgreichen und fehlgeschlagenen Jobs.
+- **fehlgeschlagen**: erstellt eine Job-Protokolldatei für fehlgeschlagene Jobs.
+- **erfolgreich**: erstellt eine Job-Protokolldatei für erfolgreiche Jobs.
 
 ### Einstellung: *log\_maximum\_display\_size*, Standard: *10* MB
 
@@ -140,11 +140,11 @@ JOC Cockpit bietet die Protokollausgaben zur Anzeige im Fenster *Protokollansich
 
 ### Einstellung: *log\_applicable\_size*, Voreinstellung: *500* MB
 
-Wenn der Wert für die Größe der Protokollausgaben eines Auftrags überschritten wird, schneidet der Historiendienst die Protokollausgabe ab und verwendet die ersten und letzten 100 KB für das Protokoll. Die ursprüngliche Protokolldatei wird entfernt. Die Größe wird in MB angegeben.
+Wenn die Größe der Protokollausgaben eines Auftrags den Wert überschreitet, schneidet der Historiendienst die Protokollausgaben ab und verwendet die ersten und letzten 100 KB für das Protokoll. Die ursprüngliche Protokolldatei wird entfernt. Die Größe wird in MB angegeben.
 
 ### Einstellung: *log\_maximum\_size*, Standard: *1000* MB
 
-Wenn der Wert für die Größe der Protokollausgaben eines Auftrags überschritten wird, schneidet der Historiendienst die Protokollausgaben ab und verwendet die ersten 100 KB für das Protokoll. Die ursprüngliche Protokolldatei wird entfernt. Die Größe wird in MB angegeben.
+Wenn die Größe der Protokollausgaben eines Auftrags den Wert überschreitet, schneidet der Historiendienst die Protokollausgaben ab und verwendet die ersten 100 KB für das Protokoll. Die ursprüngliche Protokolldatei wird entfernt. Die Größe wird in MB angegeben.
 
 ## Einstellungen: Links
 

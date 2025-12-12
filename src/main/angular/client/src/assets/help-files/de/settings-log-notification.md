@@ -26,12 +26,11 @@ Gibt die maximale Anzahl von Nachrichten pro Sekunde an, die der Protokoll-Benac
 
 ### Kontext-Hilfe
 
-- [Protokoll-Benachrichtigungsdienst](/service-log-notification)
 - [Einstellungen](/settings)
+- [Protokoll-Benachrichtigungsdienst](/service-log-notification)
 - [Überwachung - Systembenachrichtigungen](/monitor-notifications-system)
 
 ### Product Knowledge Base
 
 - [JS7 - Log Notification Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Notification+Service)
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)
-

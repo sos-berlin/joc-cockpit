@@ -1,4 +1,4 @@
-# Einstellungen - Bereinigung
+# Einstellungen - Bereinigungsdienst
 
 Die folgenden Einstellungen werden auf den [Bereinigungsdienst](/service-cleanup) angewendet. Änderungen werden sofort wirksam.
 
@@ -14,7 +14,7 @@ Gibt die Zeitzone an, die auf die Startzeit und den Zeitraum des Bereinigungsdie
 
 Legt die Wochentage fest, an denen der Bereinigungsdienst ausgeführt wird. Der erste Wochentag wird als Montag angenommen. Bei der Erstinstallation von JS7 sind die Standardwerte wie folgt: 1,2,3,4,5,6,7 für die tägliche Bereinigung. Wenn keine Wochentage angegeben werden, wird der Bereinigungsdienst nicht gestartet.
 
-In den meisten Fällen ist es empfehlenswert, den Bereinigungsdienst täglich auszuführen, da dies die Anzahl der zu bereinigenden Datensätze gering hält. Es kann Ausnahmen geben, wenn die tägliche Auftragsausführung für 24 Stunden sehr dicht ist und wenn es z.B. am Wochenende Zeiten mit gerninger Last gibt.
+In den meisten Fällen ist es empfehlenswert, den Bereinigungsdienst täglich auszuführen, da dies die Anzahl der zu bereinigenden Datensätze gering hält. Es kann Ausnahmen geben, wenn die tägliche Auftragsausführung für 24 Stunden sehr dicht ist und wenn es z.B. am Wochenende Zeiten mit geringer Last gibt.
 
 ### Einstellung: *period_begin*, Standard: *01:00:00*
 
@@ -22,7 +22,7 @@ Gibt die Startzeit des Bereinigungsdienstes in der entsprechenden *Zeitzone* an.
 
 ### Einstellung: *period_end*, Standard: *04:00:00*
 
-Gibt das Ende des Zeitraums an, in dem der Bereinigungsdienst in der entsprechenden *Zeitzone* laufen darf. Der Bereinigungsdienst wird die Bereinigung der Datenbank höchstwahrscheinlich vor der angegebenen Zeit abschließen. Wenn er jedoch eine Aktivität des *Historiendienstes* feststellt, wird der Bereinigungsdienst angehalten und später neu gestartet. Der Bereinigungsdienst wird nicht über das angegebene *Periodenende* hinaus weiterlaufen.
+Gibt das Ende des Zeitraums an, in dem der Bereinigungsdienst in der entsprechenden *Zeitzone* laufen darf. Der Bereinigungsdienst wird die Bereinigung der Datenbank höchstwahrscheinlich vor der angegebenen Zeit abschließen. Wenn er jedoch eine Aktivität des *Historiendienstes* feststellt, wird der Bereinigungsdienst beendet und später neu gestartet. Der Bereinigungsdienst wird nicht über das angegebene *period_end* hinaus fortgesetzt.
 
 ### Einstellung: *force\_cleanup*, Voreinstellung: *false*
 
@@ -61,7 +61,7 @@ Legt die Aufbewahrungsfrist für die [Auftragshistorie](/history-orders) und [Pr
 
 ### Einstellung: *order\_history\_logs\_age*, Voreinstellung: *90*d
 
-Legt die Aufbewahrungsfrist für Auftragsprotokolle und Job-Protokolle fest. Alle Protokolle, die älter als der angegebene Wert sind, werden gelöscht. Beachten Sie, dass dieser Wert den Wert der Einstellung *cleanup\_order\_history\_age* nicht überschreiten sollte, da sonst die Navigation zu den Protokollen nicht über die JOC Cockpit GUI erfolgen kann.
+Legt die Aufbewahrungsfrist für Auftragsprotokolle und Job-Protokolle fest. Alle Protokolle, die älter als der angegebene Wert sind, werden gelöscht. Beachten Sie, dass dieser Wert den Wert der Einstellung *cleanup\_order\_history\_age* nicht überschreiten sollte, da sonst die Navigation zu den Protokollen nicht über das JOC Cockpit GUI erfolgen kann.
 
 ### Einstellung: *file\_transfer\_history\_age*, Voreinstellung: *90*d
 
@@ -73,7 +73,7 @@ Gibt die Aufbewahrungsfrist für das [Prüfprotokoll](/audit-log) an. Alle Eintr
 
 ### Einstellung: *daily\_plan\_history\_age*, Voreinstellung: *30*d
 
-Legt den Aufbewahrungszeitraum für die Historie der Übermittlungen des [Tagesplan](/daily-plan) fest. Alle Einträge, die älter als der angegebene Wert sind, werden gelöscht.
+Legt den Aufbewahrungszeitraum für die Historie der Übermittlungen des [Tagesplans](/daily-plan) fest. Alle Einträge, die älter als der angegebene Wert sind, werden gelöscht.
 
 ### Einstellung: *monitoring\_history\_age*, Voreinstellung: *1*d
 
@@ -85,11 +85,11 @@ Legt die Aufbewahrungsfrist für Benachrichtigungen fest, z.B. über Auftragsfeh
 
 ### Einstellung: *profile\_age*, Standard: *365*d
 
-Legt die Aufbewahrungsfrist für ungenutzte [Profil](/profile) fest, d.h. Profile von Benutzerkonten, die sich in dem angegebenen Zeitraum nicht angemeldet haben.
+Legt die Aufbewahrungsfrist für ungenutzte [Profile](/profile) fest, d.h. Profile von Benutzerkonten, die sich in dem angegebenen Zeitraum nicht angemeldet haben.
 
 ### Einstellung: *failed\_login\_history\_age*, Voreinstellung: *90*d
 
-Legt den Aufbewahrungszeitraum für die Historie der fehlgeschlagenen Anmeldungen fest. Fehlgeschlagene Anmeldungen, die vor dem angegebenen Zeitraum erfolgten, werden gelöscht.
+Legt den Aufbewahrungszeitraum der Historie für [Fehlgeschlagene Anmeldungen](/identity-service-faíled-logins) fest. Fehlgeschlagene Anmeldungen, die vor dem angegebenen Zeitraum erfolgten, werden gelöscht.
 
 ### Einstellung: *reporting_age*, Standard: *365*d
 
@@ -106,7 +106,8 @@ Gibt die Anzahl der Versionen pro ausgerolltem Objekt an, die beibehalten werden
 - [Bereinigungsdienst](/service-cleanup)
 - [Berichte](/reports)
 - [Einstellungen](/settings)
-- [Profil](/profile)
+- [Fehlgeschlagene Anmeldungen](/identity-service-faíled-logins)
+- [Profile](/profile)
 - [Prüfprotokoll](/audit-log)
 - [Ressourcen - Notizbretter](/resources-notice-boards)
 - [Tagesplan](/daily-plan)

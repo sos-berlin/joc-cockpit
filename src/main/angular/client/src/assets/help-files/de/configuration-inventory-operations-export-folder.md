@@ -7,18 +7,18 @@ Wenn Sie Objekte aus Ordnern exportieren, indem Sie die entsprechende *Exportier
 - **Dateiname** gibt den Namen der Archivdatei an.
 - **Dateiformat** gibt entweder .zip oder .tar.gz für den Komprimierungstyp an.
 - **Exporttyp** ist eine der folgenden Optionen
-  - export von *Einzelnen Objekten*
-  - export von *Ordnern*
-  - export von *Änderungen*
+  - exportieren von *Einzelnen Objekten*
+  - exportieren von *Ordnern*
+  - exportieren von *Änderungen*
 - **Filtertyp**
   - **Controller** berücksichtigt Objekte wie Arbeitsabläufe und Job-Ressourcen, die in *Controller* Systemordnern gespeichert sind.
   - **Automation** berücksichtigt Objekte wie Zeitpläne und Kalender, die in *Automation* Systemordnern gespeichert sind.
 - **Filter**
   - **Nur gültige** beschränkt den Export auf gültige Objekte.
   - **Entwurf** schließt Objekte im Entwurfsstatus ein.
-  - **Ausgerollt** umfasst Objekte wie Arbeitsabläufe und Job-Ressourcen im Status "ausgerollt".
+  - **Ausgerollt** umfasst Objekte wie Arbeitsabläufe und Job-Ressourcen im Status *ausgerollt*.
   - **Freigegeben** schließt Objekte wie Zeitpläne und Kalender im freigegebenen Status ein. 
-  - **Relativen Pfad verwenden** gibt an, ob die Exportdatei die Ordnerhierarchie aus einem absoluten Pfad oder aus einem relativen Pfad enthält, der durch den letzten Ordner in der Hierarchie angegeben wird, für den der Export durchgeführt wird.
+  - **Relativen Pfad verwenden** gibt an, ob die Exportdatei die Ordnerhierarchie aus einem absoluten Pfad oder aus einem relativen Pfad enthält, der durch den ersten Ordner in der Hierarchie angegeben wird, für den der Export durchgeführt wird.
 - **Rekursiv verarbeiten** ermöglicht das rekursive Hinzufügen von Objekten aus Unterordnern zum Exportarchiv.
 
 ## Exporttypen
@@ -62,11 +62,10 @@ Die Benutzer steuern den konsistenten Export über die folgenden Optionen:
 
 ### Kontext-Hilfe
 
+- [Abhängigkeitsmatrix](/dependencies-matrix)
 - [Änderungen](/changes)
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
-- [Abhängigkeitsmatrix](/dependencies-matrix)
 
 ### Product Knowledge Base
 
 - [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies)
-

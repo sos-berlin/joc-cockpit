@@ -1,6 +1,6 @@
 # Verschlüsselungszertifikat verwalten
 
- [JS7 - Encryption and Decryption](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+and+Decryption) bietet eine sichere Methode für den Umgang mit Geheimnissen, die in Jobs verwendet werden. Benutzer können sensible Daten wie Passwörter mit Hilfe asymmetrischer Schlüssel ver- und entschlüsseln.
+ [JS7 - Encryption and Decryption](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+and+Decryption) bietet eine sichere Methode für den Umgang mit Geheimnissen, die in Jobs verwendet werden. Benutzer können sensible Daten wie Kennwörter mit Hilfe asymmetrischer Schlüssel ver- und entschlüsseln.
 
 Einzelheiten finden Sie unter [Verschlüsselungsschlüssel verwalten](/encryption-manage-keys).
 
@@ -37,10 +37,10 @@ SbNCv0bJswLadTFEcz8ZoYP7alXJzj9FQQ==
 Die folgenden Operationen sind über Links verfügbar:
 
 - **Nutzung des Zertifikats durch Agenten** zeigt den *Agentennamen* und die URL der Agenten an, denen das Zertifikat zugewiesen wurde. 
-- **Zertifikat an Agenten zuweisen** bietet die Auswahl von Standalone Agenten  und Cluster Agenten, denen das Zertifikat zugewiesen wird. Die Benutzer müssen darauf achten, dass der betreffende Agent die Datei mit dem privaten Schlüssel an dem mit der Eigenschaft *Pfad zur Datei mit dem privaten Schlüssel* angegebenen Ort aufbewahrt. Benutzer können Agenten auswählen, die den privaten Schlüssel kennen.
+- **Zertifikat an Agenten zuweisen** bietet die Auswahl von Standalone Agenten  und Cluster Agenten, denen das Zertifikat zugewiesen wird. Die Benutzer müssen darauf achten, dass der betreffende Agent die Datei mit dem privaten Schlüssel an dem mit der Eigenschaft *Pfad zur Datei mit dem privaten Schlüssel* angegebenen Speicherrt aufbewahrt. Benutzer können Agenten auswählen, die den privaten Schlüssel kennen.
 - mit **Verschlüsselungstest** können Sie eine Testverschlüsselung durchführen:
-  - Wenn Sie auf den Link klicken, öffnet sich das Eingabefeld *Plain Text*, in das Sie eine Zeichenfolge wie *Geheimnis* eingeben können.
-  - Rechts neben dem Eingabefeld wird das Verschlüsselungssymbol angeboten. Wenn Sie auf das Symbol klicken, wird das *Verschlüsselungsergebnis* mit dem entsprechenden Ergebnis angezeigt.
+  - Wenn Sie auf den Link klicken, öffnet sich das Eingabefeld *Klartext*, in das Sie eine Zeichenfolge wie *Geheimnis* eingeben können.
+  - Rechts neben dem Eingabefeld wird das Verschlüsselungssymbol angeboten. Wenn Sie auf das Symbol klicken, wird das *Verschlüsselungsergebnis* entsprechend angezeigt.
 
 ## Referenzen
 

@@ -5,7 +5,10 @@ Identity Services rule access to JOC Cockpit by authentication and authorization
 Identity Services are specified from the following configuration:
 
 - **General Configuration** that holds properties available to all Identity Services.
-- **Settings** that are specific for the Identity Service Type, see [Identity Service - Settings](/identity-service-settings).
+- **Settings** that are specific for the Identity Service Type, see
+  - [Keycloak Identity Service - Settings](/identity-service-settings-keycloak)
+  - [LDAP Identity Service - Settings](/identity-service-settings-ldap)
+  - [OIDC Identity Service - Settings](/identity-service-settings-oidc)
 
 ## General Configuration
 
@@ -25,8 +28,10 @@ For any Identity Service the following properties are displayed:
 
 ### Context Help
 
-- [Identity Service - Settings](/identity-service-settings)
 - [Identity Services](/identity-services)
+  - [JS7 - Keycloak Identity Service]/https://kb.sos-berlin.com/display/JS7/JS7+-+Keycloak+Identity+Service)
+  - [JS7 - LDAP Identity Service]/https://kb.sos-berlin.com/display/JS7/JS7+-+LDAP+Identity+Service)
+  - [JS7 - OIDC Identity Service]/https://kb.sos-berlin.com/display/JS7/JS7+-+OIDC+Identity+Service)
 
 ### Product Knowledge Base
 

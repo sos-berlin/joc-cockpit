@@ -5,7 +5,10 @@ Identitätsdienste regeln den Zugriff auf JOC Cockpit durch Authentifizierung un
 Identitätsdienste werden in der folgenden Konfiguration festgelegt:
 
 - **Allgemeine Konfiguration**, die Eigenschaften enthält, die für alle Identitätsdienste verfügbar sind.
-- **Einstellungen**, die für den Identitätsdiensttyp spezifisch sind, siehe [Identity Service - Settings](/identity-service-settings).
+- **Einstellungen**, die für den Identitätsdiensttyp spezifisch sind, siehe
+  - [Keycloak Identitätsdienst - Einstellungen](/identity-service-settings-keycloak)
+  - [LDAP Identitätsdienst - Einstellungen](/identity-service-settings-ldap)
+  - [OIDC Identitätsdienst - Einstellungen](/identity-service-settings-oidc)
 
 ## Allgemeine Konfiguration
 
@@ -25,10 +28,15 @@ Für jeden Identitätsdienst werden die folgenden Eigenschaften angezeigt:
 
 ### Kontext-Hilfe
 
-- [Identity Service - Settings](/identity-service-settings)
 - [Identitätsdienste](/identity-services)
+  - [Keycloak Identitätsdienst - Einstellungen](/identity-service-settings-keycloak)
+  - [LDAP Identitätsdienst - Einstellungen](/identity-service-settings-ldap)
+  - [OIDC Identitätsdienst - Einstellungen](/identity-service-settings-oidc)
 
 ### Product Knowledge Base
 
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
-
+  - [JS7 - Keycloak Identity Service]/https://kb.sos-berlin.com/display/JS7/JS7+-+Keycloak+Identity+Service)
+  - [JS7 - LDAP Identity Service]/https://kb.sos-berlin.com/display/JS7/JS7+-+LDAP+Identity+Service)
+  - [JS7 - OIDC Identity Service]/https://kb.sos-berlin.com/display/JS7/JS7+-+OIDC+Identity+Service)
+  

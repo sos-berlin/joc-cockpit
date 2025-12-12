@@ -1,4 +1,4 @@
-# Identitätsdienst-Profile
+# Identitätsdienst - Profile
 
 Identitätsdienste regeln den Zugriff auf JOC Cockpit durch Authentifizierung und Autorisierung, siehe [Identitätsdienste](/identity-services).
 
@@ -14,7 +14,7 @@ Die Unteransicht zeigt die Liste der aktiven *Profile* und das Datum der letzten
 
 - Wenn Sie auf ein *Profil* klicken, gelangen Sie zur Unteransicht [Identitätsdienste - Rollen](/identity-service-roles), in der die vom jeweiligen *Profil* verwendeten Rollen angezeigt werden.
 - Das Aktionsmenü eines *Profils* bietet die folgenden Operationen:
-  - **Profileinstellungen löschen** setzt die [Profil - Einstellungen](/profile-preferences) auf ihre Standardeinstellungen zurück. Andere *Profil*-Einstellungen wie *Git-Verwaltung* und *Favoritenverwaltung* bleiben erhalten. Die Operation kann verwendet werden, um die Anwendung des *Profils* des Standardkontos zu erzwingen.
+  - **Einstellungen des Profils löschen** setzt die [Profil - Einstellungen](/profile-preferences) auf ihre Standardeinstellungen zurück. Andere *Profil*-Einstellungen wie *Verwaltung Git* und *Verwaltung Favoriten* bleiben erhalten. Die Operation kann verwendet werden, um die Anwendung des *Profils* des Standardkontos zu erzwingen.
   - **Profil löschen** löscht das *Profil* des Benutzerkontos. Bei der nächsten Anmeldung des betreffenden Kontos wird ein neues *Profil* erstellt.
 
 Benutzer können ein oder mehrere *Profile* auswählen, um die oben genannten Operationen für die ausgewählten *Profile* im Ganzen durchzuführen.
@@ -23,15 +23,14 @@ Benutzer können ein oder mehrere *Profile* auswählen, um die oben genannten Op
 
 ### Kontext-Hilfe
 
-- [Identitätsdienste - Konfiguration](/identity-service-configuration)
-- [Identitätsdienste - Benutzerkonten](/identity-service-accounts) 
-- [Identitätsdienste - Rollen](/identity-service-roles) 
-- [Identitätsdienste](/identity-services)
-- [Profil - Einstellungen](/profile-preferences) 
 - [Einstellungen - Bereinigungsdienst](/settings-cleanup)
 - [Einstellungen - JOC Cockpit](/settings-joc)
+- [Identitätsdienste](/identity-services)
+- [Identitätsdienste - Benutzerkonten](/identity-service-accounts)
+- [Identitätsdienste - Konfiguration](/identity-service-configuration)
+- [Identitätsdienste - Rollen](/identity-service-roles)
+- [Profil - Einstellungen](/profile-preferences)
 
 ### Product Knowledge Base
 
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
-

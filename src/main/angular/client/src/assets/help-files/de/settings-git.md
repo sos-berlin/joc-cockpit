@@ -6,7 +6,7 @@ Die Seite *Einstellungen* ist über das Symbol ![wheel icon](assets/images/wheel
 
 Die folgenden Einstellungen sind für die Verwendung mit Git Repositories verfügbar. Änderungen werden sofort wirksam.
 
-## Einstellungen: Git-Repository
+## Einstellungen: Git Repository
 
 ### Einstellung: *git\_hold\_workflows*, Standard: *rollout*
 

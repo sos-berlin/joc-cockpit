@@ -22,7 +22,7 @@ Für Details siehe
 ### Einstellungen: Weniger Optionen
 
 - **LDAP Server Host** erwartet den Hostnamen oder die IP-Adresse des LDAP Server Host. Wenn TLS/SSL-Protokolle verwendet werden, muss der Fully Qualified Domain Name (FQDN) des Hosts verwendet werden, für den das LDAP Server SSL-Zertifikat ausgestellt ist.
-- **LDAP Protocol** kann Klartext, TLS oder SSL sein. Plain Text wird nicht empfohlen, da das Benutzerkonto und das Kennwort unverschlüsselt über das Netzwerk gesendet werden. TLS- und SSL-Protokolle gelten als sicher, da sie den Inhalt/die Verbindung zum LDAP Server verschlüsseln.
+- **LDAP Protocol** kann Klartext, TLS oder SSL sein. Klartext wird nicht empfohlen, da das Benutzerkonto und das Kennwort unverschlüsselt über das Netzwerk gesendet werden. TLS- und SSL-Protokolle gelten als sicher, da sie den Inhalt/die Verbindung zum LDAP Server verschlüsseln.
 - **LDAP Server Port** ist der Port, den der LDAP Server abhört. Für Klartext- und TLS-Verbindungen wird häufig Port 389 verwendet, für SSL-Verbindungen ist Port 636 eine häufige Option.
 - **LDAP Server ist Active Directory** vereinfacht die Konfiguration, wenn der LDAP Server von Active Directory implementiert wird. Eine Reihe von Attributen für die Benutzersuche und die Gruppensuche werden automatisch übernommen, wenn Active Directory verwendet wird.
 - **LDAP Server bietet samAccountName Attribut** gibt an, ob das Attribut *samAccountName* als eindeutiger Bezeichner eines Benutzerkontos dient. Dieses Attribut ist häufig bei Active Directory LDAP Servern verfügbar.
