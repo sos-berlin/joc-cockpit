@@ -2511,8 +2511,8 @@
       "tooltip.italic": "italic",
       "tooltip.bullets": "Bullets",
       "tooltip.colorPicker": "Change Color",
-      "tooltip.fullscreen": "Full screen",
-      "tooltip.exitFullscreen": "exit Full screen",
+      "tooltip.fullscreen": "Full screen mode",
+      "tooltip.exitFullscreen": "exit Full screen mode",
       "placeholder.message": "Type your message here..."
     }
   },
