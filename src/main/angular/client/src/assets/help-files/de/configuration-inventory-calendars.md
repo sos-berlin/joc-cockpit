@@ -58,7 +58,7 @@ Beim Hinzufügen von *Häufigkeiten* können Sie aus einer Reihe von Typen ausw�
   - **Monatstage** geben relative Tage in einem Monat an, z.B. den ersten oder letzten Tag eines Monats.
   - **Jeder** gibt wiederkehrende Zeiträume an, z.B. jeden 2. Tag, jede 1. Woche, jeden 3. Monat. Dazu müssen Sie das Datum *Gültig ab* angeben, ab dem die Tage gezählt werden.
   - **Nationale Feiertage** geben bekannte Feiertage an. Die daraus resultierenden Tage sind nicht verbindlich und können von der lokalen Gesetzgebung abweichen.
-  - **Kalender für Nicht-Arbeitstage** schließen die entsprechenden Tage aus den Arbeitstagen eines Arbeitstagekalenders aus.
+  - **Kalender für Nicht-Arbeitstage** schließen die entsprechenden Tage aus den Arbeitstagen eines Arbeitstagskalenders aus.
 
 *Häufigkeitstypen* können durch wiederholte Anwendung des gleichen oder eines anderen *Häufigkeitstyps* kombiniert werden.
 
@@ -73,8 +73,8 @@ Bei der Zählung jedes 2. Arbeitstages sollten Wochenenden und Feiertage ausgesc
 
 - Erstellen Sie einen Arbeitstagskalender mit
   - *Eingeschlossenen Häufigkeiten*: Fügen Sie den **Wochentage** *Häufigkeitstyp* hinzu und wählen Sie *Jeder Tag*. Das Ergebnis wird alle Tage des Jahres enthalten.
-  - *Ausgenommene Häufigkeiten*: Fügen Sie **Jeder** *Häufigkeitstyp* hinzu und wählen Sie *2* für das Intervall und *Tage* für die Einheit. Geben Sie das Datum *Gültig ab* an. Dadurch werden die resultierenden Tage halbiert.
-  - *Ausgenommene Häufigkeiten*: Fügen Sie den Häufigkeitstyp **Nationale Feiertage** hinzu und wählen Sie Ihr *Land* und *Jahr*. Dies schränkt die resultierenden Tage weiter ein.
+  - *Ausgeschlossenen Häufigkeiten*: Fügen Sie **Jeder** *Häufigkeitstyp* hinzu und wählen Sie *2* für das Intervall und *Tage* für die Einheit. Geben Sie das Datum *Gültig ab* an. Dadurch werden die resultierenden Tage halbiert.
+  - *Ausgeschlossenen Häufigkeiten*: Fügen Sie den Häufigkeitstyp **Nationale Feiertage** hinzu und wählen Sie Ihr *Land* und *Jahr*. Dies schränkt die resultierenden Tage weiter ein.
 
 Prüfen Sie die Ergebnisse über die Schaltfläche *Vorschau anzeigen*, die Ihnen jeden 2. Werktag ohne Wochenenden und Feiertage anzeigen wird.
 

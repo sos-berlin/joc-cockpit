@@ -17,7 +17,7 @@ Die folgenden Einstellungen sind verfügbar:
   - **Authorization Code Flow** ist der am häufigsten verwendete Flow mit bewährter Sicherheit.
   - **Implicit Flow** ist ein früherer Flow, der als unsicher gilt.
   - **Client Credentials Flow** íst ein vereinfachter Flow für die Stapelverarbeitung ohne Benutzerinteraktion.
-- **OIDC Client ID** identifiziert den Client mit dem OIDC Identity Provider.
+- **OIDC Client ID** identifiziert den Client mit dem OIDC Identitätsdienstanbieter.
 - **OIDC Client Secret** ist das Kennwort, das der *OIDC Client ID* beim OIDC Identitätsdienstanbieter zugeordnet ist.
 - **OIDC User Name Attribut** ist der Name des Attributs, das vom OIDC Identitätsdienst zur Identifizierung des Benutzerkontos verwendet wird.
   - Die folgende Strategie wird angewendet, um das Attribut zu identifizieren, das für die Zuordnung zum JOC Cockpit Konto verwendet wird:

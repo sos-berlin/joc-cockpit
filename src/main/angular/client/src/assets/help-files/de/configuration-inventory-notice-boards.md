@@ -77,15 +77,15 @@ Arbeitsablauf-Anweisungen für Notizbretter bieten die folgenden Optionen:
 ### Kontext-Hilfe
 
 - [Konfiguration - Inventar - Navigationsbereich](/configuration-inventory-navigation)
-- [Daily Plan - Dependencies](/daily-plan-dependencies)
 - [Regeln zur Benennung von Objekten](/object-naming-rules)
 - [Ressourcen - Notizbretter](/resources-notice-boards)
+- [Tagesplan - Abhängigkeiten](/daily-plan-dependencies)
 
 ### Product Knowledge Base
 
 - [JS7 - Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards)
   - [JS7 - Global Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Global+Notice+Boards)
-  - [JS7 - Schedulable Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedulable+Notice+Boards)
+  - [JS7 - Plannable Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Plannable+Notice+Boards)
 - [JS7 - Workflow Instructions - Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflow+Instructions+-+Dependencies)  
   - [JS7 - PostNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+PostNotices+Instruction)
   - [JS7 - ExpectNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ExpectNotices+Instruction)

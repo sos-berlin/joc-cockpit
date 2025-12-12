@@ -27,7 +27,7 @@ Für Objektnamen gelten eine Reihe von Einschränkungen:
   - Punkt: ist als vorangestelltes oder nachgestelltes Zeichen nicht erlaubt und zwei Punkte in Folge sind nicht erlaubt.
   - Bindestrich: ist als führendes oder nachgestelltes Zeichen nicht erlaubt und zwei Bindestriche in Folge sind nicht erlaubt.
   - Klammern sind nicht erlaubt \[({})\]
-- Zeichen mit halber Breite sind nicht erlaubt, siehe [Halfwidth and Fullwidth Forms](https://en.wikipedia.org/wiki/Halfwidth_and_Fullwidth_Forms_(Unicode_block)).
+- Zeichen mit halber Breite sind nicht erlaubt, siehe [Halfwidth and Fullwidth Forms](https://en.wikipedia.org/wiki/Halfwidth_and_Fullwidth_Forms_\(Unicode_block\)).
 - Leerzeichen sind nicht erlaubt.
 - Objektnamen dürfen mit einer Ziffer beginnen.
 - Die Verwendung von reservierten Java-Schlüsselwörtern ist nicht erlaubt:
@@ -71,7 +71,7 @@ Die maximale Länge von Objektnamen ist wie folgt:
 
 ## Referenzen
 
-- [Formulare mit halber und ganzer Breite](https://en.wikipedia.org/wiki/Halfwidth_and_Fullwidth_Forms_(Unicode_block))
 - [Java-Bezeichner](https://docs.oracle.com/javase/specs/jls/se7/html/jls-3.html#jls-3.8)
 - [JS7 - Fork-Join Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Fork-Join+Instruction)
 - [JS7 - Object Naming Rules](https://kb.sos-berlin.com/display/JS7/JS7+-+Object+Naming+Rules)
+- [Zeichen mit halber und ganzer Breite](https://en.wikipedia.org/wiki/Halfwidth_and_Fullwidth_Forms_\(Unicode_block\))

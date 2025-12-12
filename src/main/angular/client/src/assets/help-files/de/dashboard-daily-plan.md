@@ -1,6 +1,6 @@
 # Übersicht Tagesplan
 
-Der Bereich *Tagesplan* liefert Informationen über die Ausführung von Aufträgen, die durch den Tagesplan erstellt wurden. Davon ausgenommen sind Aufträge, die bei Bedarf durch Benutzereingriff erstellt werden, und Aufträge, die aus der Datei-Überwachung durch *Dateiauftragsquellen* erstellt werden.
+Der Bereich *Tagesplan* liefert Informationen über die Ausführung von Aufträgen, die durch den Tagesplan erstellt wurden. Davon ausgenommen sind Aufträge, die bei Bedarf durch Benutzereingriff erstellt werden, und Aufträge, die aus der Dateiüberwachung durch *Dateiauftragsquellen* erstellt werden.
 
 <img src="dashboard-daily-plan.png" alt="Daily Plan" width="330" height="80" />
 

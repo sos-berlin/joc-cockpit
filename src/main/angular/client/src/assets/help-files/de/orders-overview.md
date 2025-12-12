@@ -88,7 +88,7 @@ Für Aufträge im Zustand *anstehend*, *eingeplant*, *in Verarbeitung*, *laufend
 - **Abbrechen**: bricht den Auftrag ab. *Laufende* Aufträge setzen den aktuellen Job oder die aktuelle Arbeitsablauf-Anweisung fort und verlassen den Arbeitsablauf mit dem Status *fehlgeschlagen*.
 - **Abbrechen/Prozess beenden**: terminiert zwangsweise den Job, den ein Auftrag ausführt. Aufträge verlassen den Arbeitsablauf mit dem Status *fehlgeschlagen*.
 - **Aussetzen**: laufende Aufträge werden angehalten, nachdem sie den aktuellen Job oder die aktuelle Arbeitsablauf-Anweisung abgeschlossen haben. *Ausgesetzte* Aufträge können vom Benutzer wieder aufgenommen werden.
-- **Aussetzen/Prozess beenden**: terminiert zwangsweise einen *laufenden* Job und versetzt den Auftra in den Zustand *ausgesetzt*.
+- **Aussetzen/Prozess beenden**: terminiert zwangsweise einen *laufenden* Job und versetzt den Auftrag in den Zustand *ausgesetzt*.
 - **Aussetzen/Rücksetzen**: beendet zwangsweise die aktuelle Arbeitsablauf-Anweisung und versetzt den Auftrag in den Zustand *ausgesetzt*.  Diese Option kann mit dem erzwungenen Beenden von Jobs für *laufende* Aufträge kombiniert werden.
 - **Fortsetzen**: setzt einen *ausgesetzten* oder *fehlgeschlagenen*, wiederaufnehmbaren Auftrag fort.
 

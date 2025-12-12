@@ -33,7 +33,7 @@ Die folgenden Informationen werden angezeigt:
 
 Die folgenden Operationen sind verfügbar:
 
-- **Vorschau anzeigen** zeigt die vom Kalender zurückgegebenen Daten an.
+- **Vorschau anzeigen** zeigt die vom Kalender zurückgegebenen Tage an.
 
 ## Suchen
 

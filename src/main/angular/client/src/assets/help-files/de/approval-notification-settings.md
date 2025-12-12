@@ -1,11 +1,11 @@
-# Einstellungen für Autorsierungsbenachrichtigungen
+# Einstellungen für Autorisierungsbenachrichtigungen
 
- Der [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) wird für Situationen angeboten, in denen Benutzer beabsichtigen, Operatione wie das Hinzufügen oder Abbrechen von Aufträgen durchzuführen, die die Autorsierung eines zweiten Benutzers erfordern. Dies kann jede Operation umfassen, die ein Objekt ändert.
+ Der [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) wird für Situationen angeboten, in denen Benutzer beabsichtigen, Operatione wie das Hinzufügen oder Abbrechen von Aufträgen durchzuführen, die die Autorisierung eines zweiten Benutzers erfordern. Dies kann jede Operation umfassen, die ein Objekt ändert.
 
-Der Autorsierungsprozess umfasst die folgenden Rollen:
+Der Autorisierungsprozess umfasst die folgenden Rollen:
 
 - Ein *Requestor* beantragt die Durchführung einer autorisierungspflichtigen Operation.
-- Ein *Approver* bestätigt oder verweigert die Autorsierungsanfrage.
+- Ein *Approver* bestätigt oder verweigert die Autorisierungsanfrage.
 
 Zu den grundlegenden Funktionen des Autorisierungsprozesses gehören:
 
@@ -13,30 +13,30 @@ Zu den grundlegenden Funktionen des Autorisierungsprozesses gehören:
 - die Übersicht über ausstehende Autorisierungsanfragen.
 - die Möglichkeit, dass aus einer Reihe von *Approvers* jede/r die Autorisierungsanfrage beantworten kann.
 
-## Einstellungen für Autorsierungsbenachrichtigungen
+## Einstellungen für Autorisierungsbenachrichtigungen
 
-Die Benachrichtigungseinstellungen umfassen Eigenschaften für den Versand von E-Mails an *Autorsierungsempfänger* bei eingehenden [Autorisierungsanfragen](/approval-requests):
+Die Benachrichtigungseinstellungen umfassen Eigenschaften für den Versand von E-Mail an *Autorisierungsempfänger* bei eingehenden [Autorisierungsanfragen](/approval-requests):
 
 - **Job Resource** enthält Einstellungen für die Verbindung mit dem Mailserver. Einzelheiten finden Sie unter [JS7 - eMailDefault Job Resource](https://kb.sos-berlin.com/display/JS7/JS7+-+eMailDefault+Job+Resource).
 - **Inhaltstyp**, **Charset**, **Encoding** sind für jedes System, das E-Mails versendet, gleich.
-- **Autorsierungsanfrage E-Mail**
+- **Autorisierungsanfrage E-Mail**
   - **Cc**, **Bcc** geben optional die Empfänger von Kopien und Durchschlägen der Benachrichtigung an.
   - **Subject**, **Body** der E-Mail können Platzhalter enthalten, die beim Versand der E-Mail ersetzt werden. Platzhalter werden mit dem Format $\{Platzhalter\} angegeben.
     - Die folgenden Platzhalter sind verfügbar:
       - $\{RequestStatusDate\}: Datum des Anfragestatus
-      - $\{ApprovalStatusDate\}: Datum des Autorsierungsstatus
+      - $\{ApprovalStatusDate\}: Datum des Autorisierungsstatus
       - $\{Title\}: Titel der Anfrage
       - $\{Requestor\}: Konto des Antragstellers
       - $\{RequestStatus\}: Anfragestatus, einer von REQUESTED, EXECUTED, WITHDRAWN
       - $\{Approver\}: Konto des Genehmigenden
-      - $\{ApprovalStatus\}: Autorsierungsstatus, einer der Werte APPROVED, REJECTED
+      - $\{ApprovalStatus\}: Autorisierungsstatus, einer der Werte APPROVED, REJECTED
       - $\{RequestURI\}: Anfrage-URI
-      - $\{RequestBody\}: Anfragekörper mit den Details der REST-API-Anfrage
+      - $\{RequestBody\}: Anfragedaten mit den Details der REST-API-Anfrage
       - $\{Category\}: Kategorie
       - $\{Reason\}: Grund
-    - Darüber hinaus können die folgenden Platzhalter verwendet werden, wenn sie von einer Job Resource wie *eMailDefault* angegeben werden.
+    - Darüber hinaus können die folgenden Platzhalter verwendet werden, wenn sie von einer Job-Ressource wie *eMailDefault* angegeben werden.
       - $\{jocURL\}: URL, von der JOC Cockpit zugänglich ist.
-      - $\{jocURLReverseProxy\}: dieselbe Funktionalität wie *jocURL*, aber die URL wird über einen Reverse Proxy verfügbar gemacht.
+      - $\{jocURLReverseProxy\}: URL, von der JOC Cockpit zugänglich ist, wenn ein Reverse Proxy verwendet wird.
 
 ## Referenzen
 
@@ -51,4 +51,3 @@ Die Benachrichtigungseinstellungen umfassen Eigenschaften für den Versand von E
 
 - [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process)
 - [JS7 - eMailDefault Job Resource](https://kb.sos-berlin.com/display/JS7/JS7+-+eMailDefault+Job+Resource)
-
