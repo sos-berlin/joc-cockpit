@@ -14,9 +14,9 @@ When importing objects using the related *Import* operation from the a button wi
 - **File Format** specifies either .zip or .tar.gz for the compression type.
 - **Overwrite** specifies that existing objects with the same name will be overwritten.
   - In the JOC Cockpit inventory object names are unique per object type such as Workflows, Schedules etc.
-- **Overwrite Tags** specifies that tags of existing objects such as Workflows will be overwritten by imported tags.
+- **Overwrite Tags** specifies that tags of existing objects such as Workflows will be overwritten by tags from imported objects with the same name.
 - **Object Name** offers options available if the *Overwrite* option is not selected: 
-  - **Ignore if exists**: The object will not be imported. An existing object with the same name remains in place.
+  - **Ignore if exists**: The object will not be imported. An existing object of the same type with the same name remains in place.
   - **Add Prefix**: A prefix is specified that will be prepended any imported objects, separated by an additional dash.
   - **Add Suffix**: A suffix is specified that will be appended any imported objects, separated by an additional dash.
 - **File Name**: Users can drag&amp;drop a file or can use the *choose files for upload* option to select a file for import.

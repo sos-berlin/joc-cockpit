@@ -1,0 +1,30 @@
+# Échecs de connexion
+
+Identity Services règle l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
+
+Les comptes d'utilisateurs qui ne parviennent pas à se connecter sont enregistrés dans la sous-vue *Failed Logins*.
+
+- La liste des connexions échouées comprend des entrées pour tous les services d'identité qui ont été déclenchés sans succès. Si plusieurs services d'identité optionnels sont utilisés, la connexion est considérée comme réussie si l'un des services d'identité a été déclenché avec succès. Dans ce cas, aucun échec de connexion n'est signalé.
+- Le Cockpit JOC met en œuvre des délais pour les échecs répétés de connexion afin d'empêcher l'analyse des temps de réponse et de prévenir les attaques par force brute.
+- Notez qu'un certain nombre de fournisseurs d'identité, par exemple LDAP utilisé pour l'accès à Active Directory, peuvent ne pas accepter des tentatives de connexion échouées à plusieurs reprises et bloquer le compte d'utilisateur concerné.
+
+Les utilisateurs doivent savoir que les données historiques relatives aux échecs de connexion sont susceptibles d'être supprimées par le site [Cleanup Service](/service-cleanup).
+
+## Opérations sur les échecs de connexion
+
+Les utilisateurs peuvent effectuer les opérations suivantes sur les connexions échouées :
+
+- **Ajouter à la liste de blocage** ajoute le compte concerné à la liste [Identity Service - Blocklist](/identity-service-blocklist) qui interdit toute connexion ultérieure. Cette opération est disponible si un compte est indiqué. Pour les connexions effectuées sans compte, l'espace réservé *none* est indiqué.
+
+## Références
+
+### Aide contextuelle
+
+- [Cleanup Service](/service-cleanup)
+- [Identity Service - Blocklist](/identity-service-blocklist)
+- [Identity Services](/identity-services)
+
+### Product Knowledge Base
+
+- [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
+
