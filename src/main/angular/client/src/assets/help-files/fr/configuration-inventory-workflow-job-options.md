@@ -6,12 +6,12 @@ L'interface graphique offre un certain nombre d'onglets pour spécifier les dét
 
 ## Options de tâche fréquemment utilisées
 
-- **Limite de Tâche** spécifie le nombre d'instances parallèles pour lesquelles le tâche peut être exécuté. Si plusieurs Ordres traitent le Workflow, ils peuvent exécuter le Job en parallèle. En plus du *Parallélisme*, la limite de processus s'applique et est appliquée par les agents autonomes et les clusters d'agents.
+- **Limite de Tâche** spécifie le nombre d'instances parallèles pour lesquelles le tâche peut être exécuté. Si plusieurs Ordres traitent le Workflow, ils peuvent exécuter le Job en parallèle. En plus du *Parallélisme*, la limite de processus s'applique et est appliquée par les Agents autonomes et les clusters d'Agents.
 - **criticité** spécifie l'importance des défaillances du tâche. La *Criticité* est disponible dans les notifications relatives aux échecs des tâches.
 
 ### Périodes d'exécution des tâches
 
-- **Timeout** spécifie la période d'exécution maximale que le tâche est autorisé à consommer. Si le tâche dépasse le *Temps d'exécution*, il sera annulé par l'agent en tenant compte du *Temps de grâce* du tâche. Les données d'entrée peuvent être spécifiées dans les formats suivants :
+- **Timeout** spécifie la période d'exécution maximale que le tâche est autorisé à consommer. Si le tâche dépasse le *Temps d'exécution*, il sera annulé par l'Agent en tenant compte du *Temps de grâce* du tâche. Les données d'entrée peuvent être spécifiées dans les formats suivants :
   - *1* ou *1s* : un nombre ou un nombre suivi de *s* spécifie le *délai* en secondes.
   - *1m 2d 3h* : spécifie 1 mois, 2 jours et 3 heures comme période d'exécution maximale.
   - *01:02:03* : spécifie 1 heure, 2 minutes et 3 secondes comme période d'exécution maximale.
@@ -26,15 +26,15 @@ L'interface graphique offre un certain nombre d'onglets pour spécifier les dét
 
 ### Sortie du journal des tâches
 
-- **Echec sur la sortie stderr** spécifie que l'agent fera échouer le tâche s'il écrit une sortie sur le canal stderr. Cette vérification s'ajoute à la vérification de la *valeur de retour* (pour les travaux Shell : code de sortie) d'un tâche.
+- **Echec sur la sortie stderr** spécifie que l'Agent fera échouer le tâche s'il écrit une sortie sur le canal stderr. Cette vérification s'ajoute à la vérification de la *valeur de retour* (pour les travaux Shell : code de sortie) d'un tâche.
 - **Avertissement sur la sortie stderr** spécifie que la même vérification est effectuée que pour *Fail on output to stderr*. Toutefois, le tâche n'échouera pas, mais un avertissement sera émis et une notification sera créée.
 
 ### Temps d'admission des tâches 
 
 *Les délais d'admission* déterminent le moment où un tâche peut être lancé ou doit être ignoré, ainsi que la période absolue pendant laquelle un tâche peut être exécuté. Pour plus de détails, voir [JS7 - Admission Times for Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Admission+Times+for+Jobs).
 
-- **Ignorer si la période admission ne correspond pas à la date de l'Ordre** spécifie que le tâche sera ignoré si son *Admission Time* ne correspond pas à la date de l'Ordre. Par exemple, l'heure d'admission du tâche peut exclure les week-ends, ce qui signifie que le tâche sera exécuté du lundi au vendredi et sera ignoré par les Ordres planifiés pour les samedis et dimanches. Les utilisateurs doivent considérer que c'est la date à laquelle l'Ordre est planifié qui est pertinente, et non la date d'arrivée de l'Ordre à l'Opération. Si la date programmée de l'ordre correspond à l'"heure d'admission", mais que l'ordre arrive plus tard, en dehors de l'"heure d'admission", le tâche ne sera pas ignoré et l'ordre attendra l'"heure d'admission" suivante.
-- **Interrompre la tâche à la fin de la période** spécifie que l'agent annulera le tâche s'il dépasse la période spécifiée avec l'*heure d'admission*.
+- **Ignorer si la période admission ne correspond pas à la date de l'Ordre** spécifie que le tâche sera ignoré si son *Admission Time* ne correspond pas à la date de l'Ordre. Par exemple, l'heure d'admission du tâche peut exclure les week-ends, ce qui signifie que le tâche sera exécuté du lundi au vendredi et sera ignoré par les Ordres planifiés pour les samedis et dimanches. Les utilisateurs doivent considérer que c'est la date à laquelle l'Ordre est planifié qui est pertinente, et non la date d'arrivée de l'Ordre à l'Opération. Si la date programmée de l'Ordre correspond à l'"heure d'admission", mais que l'Ordre arrive plus tard, en dehors de l'"heure d'admission", le tâche ne sera pas ignoré et l'Ordre attendra l'"heure d'admission" suivante.
+- **Interrompre la tâche à la fin de la période** spécifie que l'Agent annulera le tâche s'il dépasse la période spécifiée avec l'*heure d'admission*.
 - L'option **Heure d'admission** permet de spécifier les jours et les heures pendant lesquels les tâches peuvent être exécutés à partir du lien *Afficher les périodes*.
 
 #### Types d'admission
@@ -60,18 +60,18 @@ La *période d'exécution* est spécifiée à partir de son *début* et de sa *d
 
 La vue *Configuration - Inventaire* propose un curseur *Plus d'options* en haut de la fenêtre, qui est inactif par défaut. L'utilisation de ce curseur permet d'accéder à des options supplémentaires.
 
-- le **Grace Timeout** est appliqué aux travaux sous Unix qui reçoivent un signal SIGTERM lorsqu'ils dépassent leur *Timeout* ou lorsqu'ils sont interrompus de force par l'intervention de l'utilisateur. Si le tâche ne se termine pas en réponse au signal SIGTERM, l'agent enverra un signal SIGKILL après le *Grace Timeout* pour terminer le tâche de force. Pour plus de détails, voir [JS7 - FAQ - How does JobScheduler terminate Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+FAQ+-+How+does+JobScheduler+terminate+Jobs) et [JS7 - Agent Operation](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Operation).
+- le **Grace Timeout** est appliqué aux travaux sous Unix qui reçoivent un signal SIGTERM lorsqu'ils dépassent leur *Timeout* ou lorsqu'ils sont interrompus de force par l'intervention de l'utilisateur. Si le tâche ne se termine pas en réponse au signal SIGTERM, l'Agent enverra un signal SIGKILL après le *Grace Timeout* pour terminer le tâche de force. Pour plus de détails, voir [JS7 - FAQ - How does JobScheduler terminate Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+FAQ+-+How+does+JobScheduler+terminate+Jobs) et [JS7 - Agent Operation](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Operation).
 - **Compatibilité** offre le niveau de compatibilité *v1* pour les utilisateurs de la branche 1.x de JobScheduler. En mode compatibilité, le comportement suivant est modifié :
   - *Les variables d'environnement* ne doivent pas être spécifiées mais sont automatiquement créées pour toutes les variables de Workflow. Les noms des variables d'environnement sont préfixés à partir de *SCHEDULER_PARAM_* en utilisant uniquement des lettres majuscules.
   - Pour l'utilisation des arguments de tâche, le mode de compatibilité offre un onglet correspondant.
 
 ### Redémarrage des travaux
 
-- l'option **Tâche pas redémarrable** s'applique aux tâches qui ont été interrompus de force par l'Agent ou lors de l'arrêt ou de l'annulation de l'Agent. Par défaut, les tâches sont considérés comme redémarrables et seront redémarrés lorsque l'agent sera redémarré. Les utilisateurs peuvent empêcher ce comportement en activant la case à cocher.
+- l'option **Tâche pas redémarrable** s'applique aux tâches qui ont été interrompus de force par l'Agent ou lors de l'arrêt ou de l'annulation de l'Agent. Par défaut, les tâches sont considérés comme redémarrables et seront redémarrés lorsque l'Agent sera redémarré. Les utilisateurs peuvent empêcher ce comportement en activant la case à cocher.
 
 ### Exécution de tâches sur Windows à l'aide de différents comptes d'utilisateur
 
-Les options suivantes indiquent que les travaux exécutés avec des agents pour Windows doivent changer de contexte d'utilisateur, voir [JS7 - Running Jobs as a different User](https://kb.sos-berlin.com/display/JS7/JS7+-+Running+Jobs+as+a+different+User).
+Les options suivantes indiquent que les travaux exécutés avec des Agents pour Windows doivent changer de contexte d'utilisateur, voir [JS7 - Running Jobs as a different User](https://kb.sos-berlin.com/display/JS7/JS7+-+Running+Jobs+as+a+different+User).
 
 - **Clé d'identification** spécifie la clé de l'entrée dans le gestionnaire d'identifiants Windows qui contient les identifiants du compte d'utilisateur cible.
 - **Charger le profil de l'utilisateur** spécifie si le profil du compte d'utilisateur cible, y compris les entrées de registre, doit être chargé au démarrage du tâche.
@@ -85,7 +85,7 @@ Les options suivantes indiquent que les travaux exécutés avec des agents pour 
   - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflows-tâche-properties)
   - [Configuration - Inventory - Workflows - Job Node Properties](/configuration-inventory-workflows-tâche-node-properties)
   - [Configuration - Inventory - Workflows - Job Notifications](/configuration-inventory-workflows-tâche-notifications)
-  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-tâche-tags)
+  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-tâche-Tags)
 - [Task History](/history-tasks)
 
 ### Product Knowledge Base

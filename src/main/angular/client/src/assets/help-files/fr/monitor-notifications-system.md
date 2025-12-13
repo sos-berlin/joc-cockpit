@@ -2,7 +2,7 @@
 
 Cette vue affiche les notifications émises par les produits JS7.
 
-- Les notifications système nécessitent la configuration du *Service de notification de journal* à partir de la page [Settings](/settings) section [Settings - Log Notification](/settings-log-notification). S'il est configuré, le Cockpit JOC agit comme un service syslog qui reçoit les avertissements et les erreurs des contrôleurs et des agents enregistrés dans le Cockpit JOC.
+- Les notifications système nécessitent la configuration du *Service de notification de journal* à partir de la page [Settings](/settings) section [Settings - Log Notification](/settings-log-notification). S'il est configuré, le Cockpit JOC agit comme un service syslog qui reçoit les avertissements et les erreurs des Contrôleurs et des Agents enregistrés dans le Cockpit JOC.
 - Outre l'affichage des notifications dans cette vue, celles-ci peuvent être transmises par courrier et à partir de la ligne de commande, par exemple à des produits System Monitor tiers. Pour plus d'informations, consultez le site [Configuration - Notification ](/configuration-notification).
 
 Les utilisateurs doivent savoir que les notifications peuvent être purgées par le site [Cleanup Service](/service-cleanup). Par défaut, les notifications sont purgées si elles datent de plus d'un jour.
@@ -19,8 +19,8 @@ Les notifications sont affichées à partir des éléments d'information suivant
   - **LogNotification** indique que le message a été reçu de l'interface syslog.
   - **Deployment** indique une opération de déploiement dans l'instance actuelle du JOC Cockpit.
 - **Notificateur** est l'un des éléments suivants
-  - **<*Controller-ID*>** indique l'identifiant unique d'un contrôleur si la *Catégorie CONTROLLER* est spécifiée.
-  - **<*Agent-Name*>(<*Director-Agent*>)** indique le nom de l'agent si la *Catégorie AGENT* est spécifiée.
+  - **<*Controller-ID*>** indique l'identifiant unique d'un Contrôleur si la *Catégorie CONTROLLER* est spécifiée.
+  - **<*Agent-Name*>(<*Director-Agent*>)** indique le nom de l'Agent si la *Catégorie AGENT* est spécifiée.
   - **<*Java-class*>** indique le nom de la classe Java qui a émis la notification.
 - le type **Type** est l'un des suivants
   - **WARNING** qui indique un avertissement dans le journal du produit JS7.

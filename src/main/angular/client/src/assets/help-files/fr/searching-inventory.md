@@ -24,7 +24,7 @@ La fonction est disponible en cliquant sur le lien : **&gt; Recherche avancée
 
 La recherche avancée permet d'effectuer une recherche par attributs d'objets :
 
-- **Nom de l'agent** renvoie les résultats qui incluent les travaux exécutés avec l'agent spécifié.
+- **Nom de l'Agent** renvoie les résultats qui incluent les travaux exécutés avec l'Agent spécifié.
 - **Compter Les Tâches** limitera les résultats de la recherche aux Workflows qui utilisent le nombre minimum de Jobs spécifié avec le terme **De**. S'il est utilisé avec le terme **à**, il renverra les Workflows qui comprennent un nombre de travaux compris entre *From* et *To*. Si le terme *To* est utilisé seul, les Workflows renvoyés n'incluent pas un nombre de travaux supérieur au terme *To*.
 - **Nom de la Tâche** renvoie les Workflows qui incluent les travaux correspondant au nom donné
 
@@ -32,7 +32,7 @@ Si vous utilisez la case à cocher *Correspondance exacte* pour **Nom de la Tâc
 
 ### Recherche de dépendances
 
-Le méta-caractère de recherche **\*** est utilisé pour spécifier que les dépendances sont recherchées, par exemple vers un verrou de ressource quel que soit le nom qu'il utilise :
+Le méta-caractère de recherche **\*** est utilisé pour spécifier que les dépendances sont recherchées, par exemple vers un Verrou de Ressource quel que soit le nom qu'il utilise :
 
 - une recherche utilisant le méta-caractère **\*** pour **Verrou** renverra les Workflows utilisant un Verrou
 - une recherche utilisant le méta-caractère **\*** pour **Source D'Ordre de Fichier** renverra les Workflows référencés par un Source D'Ordre de Fichier

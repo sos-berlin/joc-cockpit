@@ -1,6 +1,6 @@
 # Configuration - Inventaire - Opérations - Déployer un objet
 
-Le déploiement d'objets consiste à les transférer vers un ou plusieurs contrôleurs. Cela s'applique aux objets tels que les Workflows et les ressources de tâche disponibles dans le dossier système *Contrôleur*.
+Le déploiement d'objets consiste à les transférer vers un ou plusieurs Contrôleurs. Cela s'applique aux objets tels que les Workflows et les ressources de tâche disponibles dans le dossier système *Contrôleur*.
 
 La vue *Configuration-&gt;Inventaire* permet de déployer un seul objet et de déployer des objets à partir de dossiers, voir [Deploy Folder](/configuration-inventory-operations-deploy-folder).
 
@@ -8,11 +8,11 @@ Lorsque vous déployez un seul objet à partir du bouton *Déployer*, une fenêt
 
 <img src="deploy-workflow.png" alt="Deploy Workflow" width="600" height="460" />
 
-## Déploiement vers les contrôleurs
+## Déploiement vers les Contrôleurs
 
-Le champ **Contrôleur** accepte un ou plusieurs contrôleurs vers lesquels l'objet sera déployé.
+Le champ **Contrôleur** accepte un ou plusieurs Contrôleurs vers lesquels l'objet sera déployé.
 
-Par défaut, c'est le contrôleur actuellement sélectionné qui sera utilisé.
+Par défaut, c'est le Contrôleur actuellement sélectionné qui sera utilisé.
 
 ## Mise à jour du Plan Quotidien
 
@@ -26,7 +26,7 @@ Le déploiement d'objets tels que les Workflows, les Plannifications et les Cale
 
 ## Inclure les dépendances
 
-Les objets d'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un verrou de ressource ; une Plannification référençant un calendrier et un ou plusieurs Workflows.
+Les objets d'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un Verrou de Ressource ; une Plannification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lors du déploiement des objets, la cohérence est prise en compte, par exemple :
 
@@ -39,7 +39,7 @@ Les utilisateurs contrôlent la cohérence du déploiement à partir des options
   - si cette option est cochée, elle inclura à la fois les objets référencés et les objets référencés.
     - Si les objets liés sont à l'état de projet, un déploiement commun est proposé. Il sera appliqué, si nécessaire, en cas de modification des relations entre les objets.
     - Si les objets liés sont au statut déployé/publié, le déploiement commun est facultatif. Les utilisateurs peuvent sélectionner des objets liés pour le déploiement commun.
-  - si la case n'est pas cochée, les dépendances ne sont pas prises en compte. Les utilisateurs doivent vérifier si les objets liés sont valides et déployés/libérés. Le contrôleur émettra des messages d'erreur en cas d'objets manquants en raison d'un déploiement incohérent.
+  - si la case n'est pas cochée, les dépendances ne sont pas prises en compte. Les utilisateurs doivent vérifier si les objets liés sont valides et déployés/libérés. Le Contrôleur émettra des messages d'erreur en cas d'objets manquants en raison d'un déploiement incohérent.
 
 ## Références
 

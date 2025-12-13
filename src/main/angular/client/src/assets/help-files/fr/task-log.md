@@ -14,18 +14,18 @@ La sortie de journal écrite par les tâches sur le canal stderr n'est pas soumi
 
 ## Affichage de la sortie de journal
 
-La sortie du journal est affichée dans l'ordre historique d'arrivée.
+La sortie du journal est affichée dans l'Ordre historique d'arrivée.
 
 ### Horodatage
 
 La sortie du journal indique des horodatages provenant de différentes sources :
 
-- **Heure de l'agent** : Les événements tels que *Start* et *End* sont créés par l'agent et reflètent son horloge en temps réel.
+- **Heure de l'Agent** : Les événements tels que *Start* et *End* sont créés par l'Agent et reflètent son horloge en temps réel.
 - **Heure de la tâche** : La sortie des Jobs utilise le fuseau horaire du serveur sur lequel la tâche sera exécuté ou le fuseau horaire spécifié dans l'implémentation du Job.
 
-Le *Task Log View* convertit les horodatages dans le fuseau horaire de l'utilisateur, si le paramètre correspondant dans le site [Profile - Preferences](/profile-preferences) est actif. Sinon, c'est le fuseau horaire de l'agent qui est utilisé.
+Le *Task Log View* convertit les horodatages dans le fuseau horaire de l'utilisateur, si le paramètre correspondant dans le site [Profile - Preferences](/profile-preferences) est actif. Sinon, c'est le fuseau horaire de l'Agent qui est utilisé.
 
-Si l'horloge en temps réel de l'agent n'est pas synchronisée, les horodatages de la sortie du journal peuvent être inexacts.
+Si l'horloge en temps réel de l'Agent n'est pas synchronisée, les horodatages de la sortie du journal peuvent être inexacts.
 
 ## Références
 

@@ -28,7 +28,7 @@ Les certificats de cryptage existants sont affichés dans une liste :
 - le Menu **Action** permet de mettre à jour et de supprimer l'entrée du certificat.
 - **Alias du certificat** est le nom unique que les utilisateurs attribuent à un certificat.
 - **L'icône d'affichage** permet de cliquer sur l'icône pour afficher le certificat correspondant.
-- **Chemin d'accès de la clé privée** spécifie l'emplacement de la clé privée avec les agents associés.
+- **Chemin d'accès de la clé privée** spécifie l'emplacement de la clé privée avec les Agents associés.
 
 ## Opérations sur les certificats
 

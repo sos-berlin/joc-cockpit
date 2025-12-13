@@ -13,10 +13,10 @@ Pour tout service d'identité, les propriétés suivantes sont affichées :
 
 - **Nom du Service d'Identité** peut être choisi librement.
 - **Type du Service d'Identité** est l'un des suivants : JOC, LDAP, OIDC, CERTIFICATE, FIDO, KEYCLOAK. Pour LDAP, OIDC et KEYCLOAK, les types de service supplémentaires LDAP-JOC, OIDC-JOC et KEYCLOAK-JOC peuvent être utilisés pour stocker l'attribution des rôles avec JOC Cockpit.
-- **Séquence** indique l'ordre dans lequel le service d'identité sera déclenché pour l'authentification.
-  - Les utilisateurs peuvent spécifier une valeur entière pour indiquer l'ordre.
+- **Séquence** indique l'Ordre dans lequel le service d'identité sera déclenché pour l'authentification.
+  - Les utilisateurs peuvent spécifier une valeur entière pour indiquer l'Ordre.
   - Les utilisateurs peuvent modifier l'Ordre en déplaçant le service dans la liste de [Identity Services](/identity-services).
-- **Requis** indique que le service d'identité sera déclenché en plus des services d'identité dont l'ordre est antérieur.
+- **Requis** indique que le service d'identité sera déclenché en plus des services d'identité dont l'Ordre est antérieur.
 - **Désactivée** indique que le service d'identité est inactif et ne sera pas utilisé pour la connexion.
 - **Schéma d'Authentification** est l'un des deux suivants : *single-factor* ou *two-factor*. 
   - si *deux facteurs* est choisi, l'utilisateur doit sélectionner le deuxième facteur dans l'un des services d'identité de type FIDO ou CERTIFICATE.

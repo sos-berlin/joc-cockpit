@@ -27,7 +27,7 @@ La liste des demandes d'approbation est proposée avec les propriétés suivante
 - **Statut d'approbation** est l'un des statuts suivants : *en attente*, *approuvé*, *refusé*
 - la **Date d'approbation** est la date la plus récente à laquelle l'*approbateur* a agi sur la demande d'approbation, par exemple en approuvant ou en rejetant la demande.
 - **Request URL** est le point de terminaison [REST Web Service API](/rest-api) que le *Demandeur* souhaite utiliser.
-- **Catégorie** indique la portée de la demande, par exemple si elle est destinée à un contrôleur, au Plan Quotidien, etc.
+- **Catégorie** indique la portée de la demande, par exemple si elle est destinée à un Contrôleur, au Plan Quotidien, etc.
 - **Raison** indique l'explication fournie par le *demandeur* sur l'objet de la demande d'approbation.
 
 ## Références

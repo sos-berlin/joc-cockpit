@@ -23,7 +23,7 @@ Par défaut, les utilisateurs trouvent le service d'identité JOC-INITIAL qui es
 
 Les services d'identité peuvent être rendus facultatifs ou obligatoires. Ils indiquent un Ordre par lequel ils seront déclenchés.
 
-- Les services d'identité seront déclenchés dans l'ordre croissant.
+- Les services d'identité seront déclenchés dans l'Ordre croissant.
 - Si les services d'identité sont qualifiés d'optionnels, la connexion est terminée lorsque la connexion est réussie avec le premier service d'identité. En cas d'échec, le service d'identité suivant est déclenché.
 - Si les services d'identité sont qualifiés d'obligatoires, ils seront tous déclenchés lors de la connexion d'un utilisateur.
 
@@ -35,9 +35,9 @@ Pour chaque service d'identité, les propriétés suivantes sont affichées :
 - Le **Type de Service d'Identité** est l'un des suivants : JOC, LDAP, OIDC, CERTIFICATE, FIDO, KEYCLOAK. Pour LDAP, OIDC et KEYCLOAK, les types de service supplémentaires LDAP-JOC, OIDC-JOC et KEYCLOAK-JOC peuvent être utilisés pour stocker l'attribution des rôles avec JOC Cockpit.
 - Le **Schema d'authentification** peut être *à un facteur* ou *à deux facteurs*. 
 - **Deuxième facteur** indique si un deuxième facteur est activé pour l'authentification *à deux facteurs*.
-- **Séquence** indique l'ordre dans lequel le service d'identité est déclenché pour l'authentification.
+- **Séquence** indique l'Ordre dans lequel le service d'identité est déclenché pour l'authentification.
 - **Désactivé** indique si le service d'identité est inactif et n'est pas utilisé pour la connexion.
-- **Requis** indique que le service d'identité sera déclenché en plus des services d'identité dont l'ordre est antérieur.
+- **Requis** indique que le service d'identité sera déclenché en plus des services d'identité dont l'Ordre est antérieur.
 
 ## Opérations sur les services d'identité
 

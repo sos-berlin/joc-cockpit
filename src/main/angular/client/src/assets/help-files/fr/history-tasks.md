@@ -10,10 +10,10 @@ Pour l'Historique des Ordres, voir [Order History](/history-orders).
 
 La vue de gauche permet de filtrer les étiquettes des Workflows et des Ordres qui ont déclenché l'exécution du tâche.
 
-- les **tags de Workflow** sont attribuées à partir de la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
-- les **tags d'Ordres** sont attribuées à partir de la vue [Configuration - Inventory - Schedules](/configuration-inventory-schedules).
+- les **Tags de Workflow** sont attribuées à partir de la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
+- les **Tags d'Ordres** sont attribuées à partir de la vue [Configuration - Inventory - Schedules](/configuration-inventory-schedules).
 
-Les tags sont sélectionnées à partir des icônes + et - et peuvent être recherchées à l'aide de l'icône de recherche. L'affichage des tags doit être activé à partir de la page [Settings - JOC Cockpit](/settings-joc).
+Les Tags sont sélectionnées à partir des icônes + et - et peuvent être recherchées à l'aide de l'icône de recherche. L'affichage des Tags doit être activé à partir de la page [Settings - JOC Cockpit](/settings-joc).
 
 ## Historique
 
@@ -25,7 +25,7 @@ L'affichage est limité à un maximum de 5000 entrées, sauf indication contrair
 - **Workflow** indique le Workflow pour lequel la tâche a été exécuté.
   - En cliquant sur le nom du Workflow, vous accédez à la vue [Workflows](/workflows).
   - En cliquant sur l'icône en forme de crayon, vous accédez à la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
-- **Tag** indique la position du tâche dans le Workflow. Les utilisateurs attribuent des *tags* aux tâches qui seront affichés. Si la même tâche apparaît plus d'une fois dans un Workflow, il sera indiqué par des *étiquettes* différentes.
+- **Tag** indique la position du tâche dans le Workflow. Les utilisateurs attribuent des *Tags* aux tâches qui seront affichés. Si la même tâche apparaît plus d'une fois dans un Workflow, il sera indiqué par des *étiquettes* différentes.
 - **Historique** indique le résultat du tâche.
   - Si les tâches sont terminés, le *Historique Status* sera soit *succès*, soit *échoué*.
   - Si les tâches ne sont pas terminés, l'état de l'historique sera *en cours*.
@@ -57,7 +57,7 @@ Les utilisateurs peuvent appliquer les filtres disponibles en haut de la fenêtr
 
 - les boutons de filtrage **Succès**, **Echoué**, **En Progression** limitent l'affichage aux tâches ayant le *Historique Status* correspondant.
 - les boutons de filtrage **Date Range** permettent de choisir la plage de dates pour l'affichage des tâches.
-- **La case à cocher "Contrôleur actuel" limite l'affichage des tâches au contrôleur actuellement sélectionné.
+- **La case à cocher "Contrôleur actuel" limite l'affichage des tâches au Contrôleur actuellement sélectionné.
 
 ## Références
 

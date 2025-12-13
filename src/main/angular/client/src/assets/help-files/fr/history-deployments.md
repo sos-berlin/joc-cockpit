@@ -2,9 +2,9 @@
 
 La vue *Historique des déploiements* résume les déploiements des objets de l'inventaire.
 
-JS7 met en œuvre une architecture distribuée qui permet d'exécuter des tâches du même Workflow sur différents agents et plates-formes. Un déploiement réussi comprend la confirmation par chaque agent des nouveaux objets et des objets mis à jour, qui arrive de manière asynchrone.
+JS7 met en œuvre une architecture distribuée qui permet d'exécuter des tâches du même Workflow sur différents Agents et plates-formes. Un déploiement réussi comprend la confirmation par chaque Agent des nouveaux objets et des objets mis à jour, qui arrive de manière asynchrone.
 
-Lorsque vous utilisez l'opération *deploy* dans la vue *Configuration*, la confirmation arrivera en fonction de la disponibilité de l'agent. Par exemple, un agent arrêté confirmera le déploiement lorsqu'il sera redémarré, ce qui peut se produire quelque temps plus tard.
+Lorsque vous utilisez l'opération *deploy* dans la vue *Configuration*, la confirmation arrivera en fonction de la disponibilité de l'Agent. Par exemple, un Agent arrêté confirmera le déploiement lorsqu'il sera redémarré, ce qui peut se produire quelque temps plus tard.
 
 L' *Historique du déploiement* est mis à jour de manière asynchrone pour refléter l'état de déploiement des objets de l'inventaire.
 

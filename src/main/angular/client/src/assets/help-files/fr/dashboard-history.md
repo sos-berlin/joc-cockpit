@@ -19,7 +19,7 @@ En cliquant sur le nombre indiqué d'Ordres ou de Tâches, vous accédez à la v
 
 Le bouton déroulant situé dans le coin supérieur droit de l'affichage permet de sélectionner des Ordres et des Tâches passés à partir d'une plage de dates :
 
-- **Aujourd'hui** Les ordres et les Tâches sont liés à la journée en cours, qui est calculée à partir du fuseau horaire indiqué dans le profil de l'utilisateur.
+- **Aujourd'hui** Les Ordres et les Tâches sont liés à la journée en cours, qui est calculée à partir du fuseau horaire indiqué dans le profil de l'utilisateur.
 - **Dernière heure** inclut les Ordres et les Tâches qui se sont terminés au cours de la dernière heure.
 - **Les 12 dernières heures** incluent les Ordres et les Tâches qui ont été complétés au cours des 12 dernières heures.
 - **Les dernières 24 heures** incluent les Ordres et les Tâches qui ont été complétés au cours des dernières 24 heures.

@@ -1,8 +1,8 @@
 # Service du Plan Quotidien
 
-Le service [JS7 - Daily Plan Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan+Service) est utilisé pour créer et soumettre aux contrôleurs des Ordres pour le site [Daily Plan](/daily-plan). Le service fonctionne en arrière-plan et agit quotidiennement pour planifier et soumettre des Ordres quelques jours à l'avance.
+Le service [JS7 - Daily Plan Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan+Service) est utilisé pour créer et soumettre aux Contrôleurs des Ordres pour le site [Daily Plan](/daily-plan). Le service fonctionne en arrière-plan et agit quotidiennement pour planifier et soumettre des Ordres quelques jours à l'avance.
 
-Le service Plan Quotidien exécute les [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules) existants et génère des Ordres pour les heures de début données. Cela s'applique à la fois aux planifications qui spécifient une heure de début unique pour un ordre et aux planifications qui spécifient des heures de début cycliques. Un Ordre individuel est créé pour chaque heure de début d'un cycle. Lors d'une étape ultérieure, ces Ordres sont soumis aux contrôleurs concernés.
+Le service Plan Quotidien exécute les [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules) existants et génère des Ordres pour les heures de début données. Cela s'applique à la fois aux planifications qui spécifient une heure de début unique pour un Ordre et aux planifications qui spécifient des heures de début cycliques. Un Ordre individuel est créé pour chaque heure de début d'un cycle. Lors d'une étape ultérieure, ces Ordres sont soumis aux Contrôleurs concernés.
 
 Une fonctionnalité similaire est disponible dans la vue du Plan Quotidien pour les utilisateurs. Toutefois, le service Plan Quotidien exécute cette tâche automatiquement.
 

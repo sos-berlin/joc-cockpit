@@ -4,7 +4,7 @@ La vue *Ressources de tâche* permet de spécifier les ressources de tâche à u
 
 Les ressources de tâches contiennent des variables de paires clé/valeur qui sont utilisées dans les buts suivants :
 
-- Pour les tâches JVM exécutés dans la machine virtuelle Java de l'agent, les variables sont spécifiées à partir des *Arguments*. Lorsqu'une ressource de tâche est affectée à une tâche, les arguments du tâches correspondant sont remplis.
+- Pour les tâches JVM exécutés dans la machine virtuelle Java de l'Agent, les variables sont spécifiées à partir des *Arguments*. Lorsqu'une ressource de tâche est affectée à une tâche, les arguments du tâches correspondant sont remplis.
 - Pour les tâches Shell, les variables sont spécifiées dans *Environment Variables*. Lorsqu'une ressource est affectée à un tâches, les variables d'environnement sont créées automatiquement.
 
 Les ressources de tâche se voient attribuer un Workflow ou une tâche à partir de la propriété de l'objet correspondant, voir [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-tâche-options). Lorsqu'elles sont attribuées au niveau du Workflow, les variables de la ressource de tâches sont disponibles pour toutes les tâches du Workflow.

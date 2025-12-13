@@ -10,9 +10,9 @@ Les propriétés minimales d'un tâche sont les suivantes :
 
 - **Nom** identifie le Job à partir d'un nom unique. Si plus d'un Job dans le Workflow utilise le même nom, alors une seule copie du Job est stockée et les autres occurrences référencent le Job en utilisant différents *Etiquettes du Job*.
 - **Label** est un identifiant unique pour les instructions dans un Workflow. L'unicité est appliquée aux tâches et aux autres instructions. Si le même *nom de tâche* est utilisé plusieurs fois dans un Workflow, des *étiquettes* différentes doivent être utilisées.
-- **Agent** assigne un agent pour l'exécution du tâche.
-  - les *Agents Standalone* sont sélectionnés à partir de leur *Nom d'Agent*.
-  - les *Agents Clusters* sont spécifiés en sélectionnant le *Groupe d'agents* et le *Groupe de sous-agents* souhaité.
+- **Agent** assigne un Agent pour l'exécution du tâche.
+  - les *Agents Autonomes* sont sélectionnés à partir de leur *Nom d'Agent*.
+  - les *Agents Clusters* sont spécifiés en sélectionnant le *Groupe d'Agents* et le *Groupe de sous-agents* souhaité.
 - Les *Scripts** contiennent les commandes shell, les appels aux scripts et les fichiers exécutables qui sont exécutés par le tâche pour la plate-forme Unix ou Windows correspondante.
 
 ## Propriétés optionnelles du tâche
@@ -29,12 +29,12 @@ Les propriétés minimales d'un tâche sont les suivantes :
 
 - **Catégorie de Tâche** spécifie le type de tâche exécuté. Pour plus d'informations, consultez le site [JS7 - Job Classes](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Classes).
   - les tâches **Shell** sont exécutés avec le shell du système d'exploitation, par exemple le Shell Windows ou le Shell Unix disponible à partir de /bin/sh. Les travaux Shell peuvent inclure des commandes Shell, des appels à des scripts et des fichiers exécutables. Les travaux Shell permettent d'utiliser des langages de script tels que Node.js, Perl, Python, PowerShell, etc. Ils nécessitent l'installation d'un interpréteur avec le système d'exploitation qui peut être exécuté à partir de la ligne de commande.
-  - les tâche **JVM Jobs** sont mis en œuvre dans un certain nombre de langages exploités pour une machine virtuelle Java pour laquelle l'agent JS7 propose le site [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API). Les langages pris en charge sont les suivants :
+  - les tâche **JVM Jobs** sont mis en œuvre dans un certain nombre de langages exploités pour une machine virtuelle Java pour laquelle l'Agent JS7 propose le site [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API). Les langages pris en charge sont les suivants :
     - *Job Templates*
       - **JITL Jobs** sont des tâches Java livrés avec JS7 et utilisés à partir de [JS7 - Integration Job Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+Integration+Job+Templates), par exemple pour accéder à des bases de données, à des hôtes distants par SSH, etc.
     - tâches définis par l'utilisateur
-      - les taĉhes **Java** sont exécutés dans la JVM fournie par l'agent JS7.
-      - les tâches **JavaScript** nécessitent l'utilisation de la machine virtuelle Java Oracle® GraalVM avec l'agent JS7. La JVM fournit l'interpréteur/compilateur pour JavaScript.
+      - les taĉhes **Java** sont exécutés dans la JVM fournie par l'Agent JS7.
+      - les tâches **JavaScript** nécessitent l'utilisation de la machine virtuelle Java Oracle® GraalVM avec l'Agent JS7. La JVM fournit l'interpréteur/compilateur pour JavaScript.
 
 ### Variables d'environnement
 
@@ -58,7 +58,7 @@ La vue *Configuration - Inventaire* propose le curseur *Plus d'options* en haut 
   - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflows-tâche-options)
   - [Configuration - Inventory - Workflows - Job Node Properties](/configuration-inventory-workflows-tâche-node-properties)
   - [Configuration - Inventory - Workflows - Job Notifications](/configuration-inventory-workflows-tâche-notifications)
-  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-tâche-tags)
+  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-tâche-Tags)
 - [Resources - Documentations](/resources-documentations)
 
 ### Product Knowledge Base

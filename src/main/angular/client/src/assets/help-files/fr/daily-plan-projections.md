@@ -1,12 +1,12 @@
-# Projections du Plan Quotidien
+# Projection du Plan Quotidien
 
-Le Plan Quotidien contient les Ordres qui sont soumis au Contrôleur et aux Agents quelques jours à l'avance à des fins de résilience. En outre, il offre des projections des heures de début des Ordres qui sont calculées pour les six mois à venir.
+Le Plan Quotidien contient les Ordres qui sont soumis au Contrôleur et aux Agents quelques jours à l'avance à des fins de résilience. En outre, il offre la projection des heures de début des Ordres qui sont calculées pour les six mois à venir.
 
 Les utilisateurs qui souhaitent disposer d'une période de projection plus longue peuvent modifier le paramètre correspondant sur la page [Settings - Daily Plan](/settings-daily-plan).
 
 ### Dates, périodes et fuseaux horaires
 
-Les projections sont liées aux dates du Plan Quotidien, et non aux dates du calendrier. 
+La projection sont liées aux dates du Plan Quotidien, et non aux dates du Calendrier. 
 
 - Périodes
   - Si la période de 24 heures du Plan Quotidien commence à minuit, elle correspondra au jour civil.
@@ -23,27 +23,27 @@ Les utilisateurs peuvent passer de l'affichage *mensuel* à l'affichage *annuel*
 
 Pour chaque jour, le numéro du jour dans le mois et le nombre d'Ordres projetés sont affichés :
 
-- **Ordres Verts** : Ils représentent les Ordres qui ont été soumis au contrôleur et aux agents.
+- **Ordres Verts** : Ils représentent les Ordres qui ont été soumis au Contrôleur et aux Agents.
 - **Ordres Orange** : Ils indiquent les Ordres projetés qui sont calculés sur la base des règles d'heure de début.
 - **Projection inversée** :
   - *Non coché* : La projection indique les jours pour lesquels les Ordres sont calculés et le nombre d'Ordres. Les utilisateurs peuvent cliquer sur un jour individuel pour identifier les heures de début des Ordres.
-  - *Coché* : Lorsque la projection est inversée, les jours pour lesquels les ordres sont calculés et le nombre d'ordres sont indiqués : Lorsque vous inversez la projection, les jours pour lesquels il existe des Plannifications qui ne créeront pas d'Ordres sont mis en évidence. Lorsque vous cliquez sur le jour concerné, les planifications sans ordres s'affichent.
+  - *Coché* : Lorsque la projection est inversée, les jours pour lesquels les Ordres sont calculés et le nombre d'Ordres sont indiqués : Lorsque vous inversez la projection, les jours pour lesquels il existe des Plannifications qui ne créeront pas d'Ordres sont mis en évidence. Lorsque vous cliquez sur le jour concerné, les planifications sans Ordres s'affichent.
 
 ### Filtre avancé
 
 Le filtre permet de limiter l'affichage des Ordres à certains dossiers contenant des Workflows ou des Plannifications.
 
-## Opérations sur les projections
+## Opérations sur la projection
 
-### Création de projections
+### Création de projection
 
-- Les projections sont calculées par le service du Plan Quotidien au cours de son exécution quotidienne. Les modifications apportées au Plan Quotidien au cours de la journée ne sont pas prises en compte.
-- Les utilisateurs peuvent recréer des projections sur demande à partir du bouton correspondant.
+- La projection est calculées par le service du Plan Quotidien au cours de son exécution quotidienne. Les modifications apportées au Plan Quotidien au cours de la journée ne sont pas prises en compte.
+- Les utilisateurs peuvent recréer la projection sur demande à partir du bouton correspondant.
 - La *Date d'enquête* indique la date de création de la projection actuelle du Plan Quotidien.
 
-### Exportation des projections
+### Exportation de la projection
 
-Les projections peuvent être exportées vers un fichier .xlsx avec la date du Plan Quotidien sur l'axe des x et le Workflow et la Plannification sur l'axe des y.
+La projectios peut être exportées vers un fichier .xlsx avec la date du Plan Quotidien sur l'axe des x et le Workflow et la Plannification sur l'axe des y.
 
 - Le raccourci *Exporter* permet d'exporter les Ordres visibles dans la fenêtre. 
 - Le bouton *Exporter* permet de sélectionner les Ordres à exporter :

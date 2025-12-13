@@ -12,9 +12,9 @@ Les rôles attribués au compte d'utilisateur sont affichés. Les autorisations 
 
 Les autorisations sont indiquées pour toutes les instances du JOC Cockpit.
  
-### Permissions du contrôleur
+### Permissions du Contrôleur
 
-Les autorisations sont indiquées par instance de contrôleur. Les autorisations *par défaut* du contrôleur s'appliquent si aucune autorisation spécifique n'est configurée pour le contrôleur concerné.
+Les autorisations sont indiquées par instance de Contrôleur. Les autorisations *par défaut* du Contrôleur s'appliquent si aucune autorisation spécifique n'est configurée pour le Contrôleur concerné.
 
 ## Références
 

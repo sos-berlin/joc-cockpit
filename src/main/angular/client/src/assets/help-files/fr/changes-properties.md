@@ -2,7 +2,7 @@
 
 JOC Cockpit permet de gérer [JS7 - Inventory Changes](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Changes) des objets tels que les Workflows. Un changement est une collection d'objets d'inventaire qui sont soumis à des opérations de déploiement communes
 
-- pour le déploiement vers les contrôleurs,
+- pour le déploiement vers les Contrôleurs,
 - pour le déploiement via [JS7 - Inventory Export and Import](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Export+and+Import),
 - pour le déploiement via [JS7 - Git Repository Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+Git+Repository+Interface).
 

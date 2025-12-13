@@ -1,6 +1,6 @@
 # Configuration - Inventaire - Opérations - Supprimer le dossier
 
-La suppression d'objets consiste à les supprimer des contrôleurs et de l'inventaire. Cela s'applique aux objets tels que les Workflows et les Plannifications disponibles dans les dossiers système *Contrôleur* et *Automation*.
+La suppression d'objets consiste à les supprimer des Contrôleurs et de l'inventaire. Cela s'applique aux objets tels que les Workflows et les Plannifications disponibles dans les dossiers système *Contrôleur* et *Automation*.
 
 La suppression d'un dossier inclut la suppression récursive des sous-dossiers. Les objets supprimés restent disponibles dans la corbeille de l'inventaire.
 
@@ -10,19 +10,19 @@ Lorsque vous supprimez un dossier à l'aide de l'opération *Supprimer* disponib
 
 <img src="remove-folder.png" alt="Remove Folder" width="600" height="560" />
 
-## Supprimer des objets des contrôleurs
+## Supprimer des objets des Contrôleurs
 
-Lorsque vous supprimez des objets, ils sont supprimés de tous les contrôleurs dans lesquels ils ont été déployés.
+Lorsque vous supprimez des objets, ils sont supprimés de tous les Contrôleurs dans lesquels ils ont été déployés.
 
 ## Mise à jour du Plan Quotidien
 
 La suppression d'objets tels que les Workflows et les Plannifications a un impact sur la vue [Daily Plan](/daily-plan). 
 
-Les Ordres existants pour les Workflows associés seront annulés à partir des contrôleurs et seront supprimés du Plan Quotidien.
+Les Ordres existants pour les Workflows associés seront annulés à partir des Contrôleurs et seront supprimés du Plan Quotidien.
 
 ## Inclure les dépendances
 
-Les objets d'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un verrou de ressource ; une Plannification référençant un calendrier et un ou plusieurs Workflows.
+Les objets d'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un Verrou de Ressource ; une Plannification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lors de la suppression d'objets, la cohérence est prise en compte, par exemple :
 
@@ -35,7 +35,7 @@ Les utilisateurs contrôlent la suppression cohérente des objets à partir des 
   - si cette option est cochée, elle inclura à la fois les objets référents et les objets référencés.
     - Si des objets liés ont été précédemment déployés ou libérés, une suppression/révocation commune est proposée : l'objet pour lequel l'opération *Remove* est effectuée sera supprimé, les objets liés se verront proposer d'être révoqués/rappelés. La révocation sera appliquée, si les relations entre les objets l'exigent.
     - Ceci s'applique également aux objets en statut de brouillon qui ont été précédemment déployés ou libérés.
-  - si la case n'est pas cochée, les dépendances ne sont pas prises en compte. Les utilisateurs doivent vérifier si les objets liés sont valides et déployés/libérés. Le contrôleur émettra des messages d'erreur en cas d'objets manquants en raison d'une révocation incohérente.
+  - si la case n'est pas cochée, les dépendances ne sont pas prises en compte. Les utilisateurs doivent vérifier si les objets liés sont valides et déployés/libérés. Le Contrôleur émettra des messages d'erreur en cas d'objets manquants en raison d'une révocation incohérente.
 
 ## Références
 

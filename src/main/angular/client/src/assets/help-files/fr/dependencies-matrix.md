@@ -1,6 +1,6 @@
 # Matrice de dépendance
 
-Les objets de l'inventaire JS7 sont liés par des dépendances. Par exemple, un Workflow référençant une ressource de tâche et un verrou de ressource ; une Plannification référençant un calendrier et un ou plusieurs Workflows.
+Les objets de l'inventaire JS7 sont liés par des dépendances. Par exemple, un Workflow référençant une ressource de tâche et un Verrou de Ressource ; une Plannification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lors du déploiement des objets, la cohérence est prise en compte, par exemple :
 
@@ -18,7 +18,7 @@ la matrice de dépendance des objets d'inventaire se présente de la manière su
 | Source de l'Ordre des Fichiers | | | Workflow |
 | Modèle de tâche - Inclure le script - Source d'Ordres de fichier - Workflow - Inclure le script - Inclure le modèle de tâche
 | | Tableau de Condition | Workflow
-| Workflow | Verrouillage des ressources | Workflow | Automatisation | Verrouillage des ressources
+| Workflow | Verrouillage des Ressources | Workflow | Automatisation | Verrouillage des Ressources
 | Automatisation
 | Calendrier | Plannification | | Workflow | Calendrier
 | Calendrier | Plannification

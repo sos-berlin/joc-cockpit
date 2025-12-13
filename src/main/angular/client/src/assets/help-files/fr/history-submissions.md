@@ -2,7 +2,7 @@
 
 L'*Historique des soumissions* conserve la trace des Ordres soumis à partir du site [Daily Plan](/daily-plan).
 
-Les Ordres sont créés par le Plan Quotidien en deux étapes : d'abord ils sont *planifiés*, ensuite ils sont *soumis* au Contrôleur et aux Agents. La soumission signifie que les ordres seront lancés de manière autonome par les agents.
+Les Ordres sont créés par le Plan Quotidien en deux étapes : d'abord ils sont *planifiés*, ensuite ils sont *soumis* au Contrôleur et aux Agents. La soumission signifie que les Ordres seront lancés de manière autonome par les Agents.
 
 L'"Historique des soumissions" est soumis à une purge de la base de données effectuée par [Cleanup Service](/service-cleanup).
 
@@ -49,7 +49,7 @@ En cliquant sur l'icône de la flèche vers le bas à partir de la *Date de soum
   - En cliquant sur l'icône en forme de crayon, vous accédez à la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
 - **Prévu pour** indique la date et l'heure auxquelles l'Ordre est censé commencer.
 - **Etat** est l'un des deux suivants : *Soumis* ou *Non soumis*.
-  - *Soumis* indique que l'Ordre est disponible auprès d'un agent.
+  - *Soumis* indique que l'Ordre est disponible auprès d'un Agent.
   - *Non soumis" indique que la soumission a échoué.
 
 ## Filtres
@@ -58,7 +58,7 @@ L'utilisateur peut appliquer les filtres disponibles en haut de la fenêtre pour
 
 - les boutons de filtre **Soumis**, **Non soumis** limitent l'affichage aux soumissions ayant le statut correspondant.
 - les boutons de filtrage **Date Range** permettent de choisir la plage de dates pour l'affichage des soumissions.
-- la case à cocher **Contrôleur actuel** limite les soumissions au contrôleur actuellement sélectionné.
+- la case à cocher **Contrôleur actuel** limite les soumissions au Contrôleur actuellement sélectionné.
 
 ## Références
 

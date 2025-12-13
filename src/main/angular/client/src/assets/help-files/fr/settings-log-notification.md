@@ -1,6 +1,6 @@
 # Paramètres - Service de notification des journaux
 
-Le site [Log Notification Service](/service-log-notification) implémente un serveur syslog qui reçoit les avertissements et les erreurs des produits JS7 tels que les contrôleurs et les agents. Le service peut être configuré pour envoyer des notifications, par exemple, par courrier électronique.
+Le site [Log Notification Service](/service-log-notification) implémente un serveur syslog qui reçoit les avertissements et les erreurs des produits JS7 tels que les Contrôleurs et les Agents. Le service peut être configuré pour envoyer des notifications, par exemple, par courrier électronique.
 
 Les notifications sont affichées sur la page [Monitor - System Notifications](/monitor-notifications-system).
 

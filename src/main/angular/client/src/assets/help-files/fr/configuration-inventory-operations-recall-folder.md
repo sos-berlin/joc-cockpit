@@ -16,12 +16,12 @@ Les Ordres existants pour les Workflows référencés par les Plannifications as
 
 ## Inclure les dépendances
 
-Les objets d'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un verrou de ressource ; une Plannification référençant un calendrier et un ou plusieurs Workflows.
+Les objets d'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un Verrou de Ressource ; une Plannification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lors du rappel des objets, la cohérence est prise en compte, par exemple :
 
 - Si une Plannification est créée et fait référence à un Calendrier nouvellement créé, la libération de la Plannification inclut la libération du Calendrier également. Cela inclut également le déploiement d'un projet de Workflow référencé par la Plannification.
-- Si un calendrier est référencé par une Plannification validée et qu'il doit être rappelé ou supprimé, la Plannification doit également être rappelée ou supprimée. Ceci inclut la révocation ou la suppression du Workflow référencé par la Plannification.
+- Si un Calendrier est référencé par une Plannification validée et qu'il doit être rappelé ou supprimé, la Plannification doit également être rappelée ou supprimée. Ceci inclut la révocation ou la suppression du Workflow référencé par la Plannification.
 
 Les utilisateurs contrôlent le déploiement cohérent à partir des options suivantes :
 
@@ -29,7 +29,7 @@ Les utilisateurs contrôlent le déploiement cohérent à partir des options sui
   - lorsque cette option est cochée, elle inclut à la fois les objets référents et les objets référencés.
     - Si les objets liés sont dans un état déployé/libéré, un rappel commun est proposé. Le rappel sera appliqué si les relations entre les objets l'exigent.
     - Si les objets liés sont à l'état de projet, le rappel commun est facultatif. Les utilisateurs peuvent sélectionner les objets liés pour le rappel commun.
-  - si la case n'est pas cochée, les dépendances ne sont pas prises en compte. Les utilisateurs doivent vérifier que les objets liés sont valides et déployés/libérés. Le contrôleur émettra des messages d'erreur en cas d'objets manquants en raison d'un déploiement incohérent.
+  - si la case n'est pas cochée, les dépendances ne sont pas prises en compte. Les utilisateurs doivent vérifier que les objets liés sont valides et déployés/libérés. Le Contrôleur émettra des messages d'erreur en cas d'objets manquants en raison d'un déploiement incohérent.
 
 ## Références
 

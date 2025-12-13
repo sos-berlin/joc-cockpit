@@ -12,7 +12,7 @@ Pour l'exécution des rapports, voir [Report - Creation](/report-creation). Pour
 
 ## Liste des rapports
 
-Les rapports affichés sont regroupés par [Report Templates](/report-templates) et par ordre *le plus élevé*, *le plus bas*. 
+Les rapports affichés sont regroupés par [Report Templates](/report-templates) et par Ordre *le plus élevé*, *le plus bas*. 
 
 - Le développement du *Modèle de rapport* permet de sélectionner le tri *le plus élevé*, *le plus bas*.
 - Le développement du tri permet d'afficher les rapports disponibles.

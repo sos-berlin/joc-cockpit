@@ -16,7 +16,7 @@ Le modèle de rapport compte les échecs d'exécution des tâches.
 
 ## Modèle de rapport : Top n Agents avec le plus grand/le plus petit nombre d'exécutions parallèles de Tâches
 
-Le modèle de rapport compte les exécutions de tâches parallèles avec les agents. Un Job1 est considéré comme parallèle à un Job2 si
+Le modèle de rapport compte les exécutions de tâches parallèles avec les Agents. Un Job1 est considéré comme parallèle à un Job2 si
 
 - Le Job1 commence après le Job2 et avant que le Job2 ne se termine ou
 - Le Job1 se termine après le démarrage du Job2 et avant la fin du Job2.

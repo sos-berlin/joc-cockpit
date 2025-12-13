@@ -12,12 +12,12 @@ Lorsque vous exportez des objets à partir de dossiers à l'aide de l'opération
   - exportation de *Changements*
 - **Type d'Objets**
   - **Contrôleur** considère les objets tels que les Workflows et les Job Resources stockés dans les dossiers système du *Contrôleur*.
-  - **Automation** prend en compte les objets tels que les planifications et les calendriers stockés dans les dossiers système *Automation*.
+  - **Automation** prend en compte les objets tels que les planifications et les Calendriers stockés dans les dossiers système *Automation*.
 - **Filtre
   - **valide uniquement** limite l'exportation aux objets valides.
   - **Brouillon** inclut les objets à l'état de brouillon.
   - **Déployé** inclut les objets tels que les Workflows et les Job Resources en statut déployé.
-  - **Publié** inclut les objets tels que les planifications et les calendriers en statut libéré. 
+  - **Publié** inclut les objets tels que les planifications et les Calendriers en statut libéré. 
   - **Utiliser le chemin relatif** spécifie si le fichier d'exportation inclura la hiérarchie des dossiers à partir d'un chemin absolu ou d'un chemin relatif indiqué par le dernier dossier de la hiérarchie pour lequel l'exportation est effectuée.
 - **Gérer Récursivement** permet d'ajouter des objets de sous-dossiers de manière récursive à l'archive d'exportation.
 
@@ -45,7 +45,7 @@ Le *Type d'Export* permet de sélectionner une modification dans la liste [Chang
 
 ## Inclure les dépendances
 
-Les objets de l'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un verrou de ressource ; une Plannification référençant un calendrier et un ou plusieurs Workflows.
+Les objets de l'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un Verrou de Ressource ; une Plannification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lors de l'exportation d'objets, la cohérence est prise en compte, par exemple :
 
@@ -56,7 +56,7 @@ Les utilisateurs contrôlent la cohérence de l'exportation à partir des option
 
 - **Inclure les dépendances**
   - si cette option est cochée, elle inclura à la fois les objets référents et les objets référencés situés dans n'importe quel dossier.
-  - si la case n'est pas cochée, les dépendances ne sont pas prises en compte. Les utilisateurs doivent vérifier si les objets liés sont valides et déployés/libérés. Le contrôleur émettra des messages d'erreur en cas d'objets manquants en raison d'un déploiement incohérent.
+  - si la case n'est pas cochée, les dépendances ne sont pas prises en compte. Les utilisateurs doivent vérifier si les objets liés sont valides et déployés/libérés. Le Contrôleur émettra des messages d'erreur en cas d'objets manquants en raison d'un déploiement incohérent.
   
 ## Références
 

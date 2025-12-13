@@ -1,24 +1,24 @@
 # Fonctionnement initial - grappe de sous-agents
 
-L'opération initiale est effectuée après l'installation du contrôleur JS7, de l'agent et du JOC Cockpit. L'enregistrement d'un cluster de sous-agents a lieu après l'enregistrement [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-cluster).
+L'opération initiale est effectuée après l'installation du Contrôleur JS7, de l'Agent et du JOC Cockpit. L'enregistrement d'un cluster de sous-agents a lieu après l'enregistrement [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-cluster).
 
 ## Cluster de sous-agents
 
 La configuration d'un cluster de sous-agents comprend
 
-- la *sélection* des agents directeurs et des sous-agents dans un cluster d'agents
+- la *sélection* des Agents Directeurs et des sous-agents dans un cluster d'Agents
 - la *séquence* dans laquelle les sous-agents seront utilisés
   - *fixe-priority* : seul le premier sous-agent sera utilisé pour l'exécution du tâche. Si le sous-agent n'est pas disponible, le sous-agent suivant sera utilisé. Pour plus de détails, voir [JS7 - Agent Cluster - Active-Passive Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Passive+Subagent+Cluster).
   - *round-robin* : chaque tâche suivant sera exécuté avec le sous-agent suivant. Cela signifie que tous les sous-agents sélectionnés sont impliqués. Pour plus d'informations, voir [JS7 - Agent Cluster - Active-Active Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Active+Subagent+Cluster).
   - *basé sur les métriques* : sur la base de règles telles que la consommation de CPU et de mémoire, le sous-agent suivant sera sélectionné pour l'exécution du tâche. Pour plus de détails, voir [JS7 - Agent Cluster - Metrics-based Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Metrics-based+Subagent+Cluster).
 
-### Sélection des agents
+### Sélection des Agents
 
-Dans la vue de gauche, les utilisateurs trouvent la liste des sous-agents, y compris les agents directeurs, qui sont disponibles pour la sélection.
+Dans la vue de gauche, les utilisateurs trouvent la liste des sous-agents, y compris les Agents Directeurs, qui sont disponibles pour la sélection.
 
 Les sous-agents peuvent être glissés et déposés dans la vue de droite, dans la zone de glissement correspondante. Pour désélectionner un sous-agent, vous pouvez le faire glisser et le déposer dans la ve de droite dans la zone de glissement indiquée *Déposer ici pour supprimer le sous-agent*.
 
-### Séquence des agents
+### Séquence des Agents
 
 La séquence des sous-agents détermine le type de cluster :
 

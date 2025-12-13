@@ -10,7 +10,7 @@ Cela inclut les données provenant des sources suivantes :
 - [Daily Plan](/daily-plan)
 - [Audit Log](/audit-log)
 
-Pour chaque tâche exécutée au cours de la journée, une entrée dans l'"Historique des tâches" sera créée, de même pour l'"Historique des ordres". En fonction du nombre de tâches quotidiens, cela peut représenter un nombre considérable.
+Pour chaque tâche exécutée au cours de la journée, une entrée dans l'"Historique des tâches" sera créée, de même pour l'"Historique des Ordres". En fonction du nombre de tâches quotidiens, cela peut représenter un nombre considérable.
 
 - Les utilisateurs doivent tenir compte des politiques de conservation des journaux applicables, c'est-à-dire de la période pendant laquelle l'historique de l'exécution des tâches et les journaux doivent être conservés en vertu d'exigences légales et d'exigences de conformité.
 - Une base de données ne peut pas croître indéfiniment. L'utilisation d'un SGBD performant peut permettre d'avoir 100 millions d'enregistrements dans une table *Historique des tâches*. Toutefois, cela tend à nuire aux performances et n'est pas forcément nécessaire. La purge de la base de données est une mesure raisonnable pour assurer le bon déroulement des opérations. Les mesures supplémentaires de maintenance de la base de données, telles que la recréation d'index, relèvent de la responsabilité de l'utilisateur.

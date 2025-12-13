@@ -1,27 +1,27 @@
 # Configuration - Inventaire - Calendriers
 
-La vue *Calendrier* permet de spécifier des calendriers basés sur des règles qui sont utilisés par [Configuration - Inventory - Schedules](/configuration-inventory-schedules) pour créer des Ordres à partir du site [Daily Plan](/daily-plan). Pour plus de détails, voir [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars).
+La vue *Calendrier* permet de spécifier des Calendriers basés sur des règles qui sont utilisés par [Configuration - Inventory - Schedules](/configuration-inventory-schedules) pour créer des Ordres à partir du site [Daily Plan](/daily-plan). Pour plus de détails, voir [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars).
 
-- Les calendriers spécifient les jours pour lesquels les Workflows seront exécutés.
-  - **Les calendriers des jours ouvrables** spécifient les jours d'exécution des Workflows.
-  - **Les calendriers des jours non ouvrables** indiquent les jours pour lesquels les Workflows ne seront pas exécutés.
+- Les Calendriers spécifient les jours pour lesquels les Workflows seront exécutés.
+  - **Les Calendriers des jours ouvrables** spécifient les jours d'exécution des Workflows.
+  - **Les Calendriers des jours non ouvrables** indiquent les jours pour lesquels les Workflows ne seront pas exécutés.
 - Les planifications 
-  - contiennent des références à un nombre quelconque de calendriers de jours ouvrables et de calendriers de jours non ouvrables qui sont fusionnés pour recevoir la liste des jours résultants.
+  - contiennent des références à un nombre quelconque de Calendriers de jours ouvrables et de Calendriers de jours non ouvrables qui sont fusionnés pour recevoir la liste des jours résultants.
   - déterminent le moment où les Ordres d'exécution des Workflows commenceront. 
 
-Les calendriers sont gérés à partir des panneaux suivants :
+Les Calendriers sont gérés à partir des panneaux suivants :
 
-- La vue [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation), sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant les calendriers. En outre, ce panneau permet d'effectuer des opérations sur les calendriers.
-- La *vue des calendriers* sur le côté droit de la fenêtre contient les détails de la configuration des calendriers.
+- La vue [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation), sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant les Calendriers. En outre, ce panneau permet d'effectuer des opérations sur les Calendriers.
+- La *vue des Calendriers* sur le côté droit de la fenêtre contient les détails de la configuration des Calendriers.
 
 ## Vue Calendrier
 
-Pour un calendrier, les entrées suivantes sont disponibles :
+Pour un Calendrier, les entrées suivantes sont disponibles :
 
-- **Nom** est l'identifiant unique d'un calendrier, voir [Object Naming Rules](/object-naming-rules).
-- **Titre** contient une explication facultative de l'objectif du calendrier.
-- **Type** : calendrier des jours ouvrables ou calendrier des jours non ouvrables.
-- **Valide du**, **Valide au** spécifient facultativement la période de validité d'un calendrier. Avant et après la période de validité, un calendrier ne renverra pas de jours résultants. Si aucune période de validité n'est spécifiée, le calendrier sera valable pour une période illimitée.
+- **Nom** est l'identifiant unique d'un Calendrier, voir [Object Naming Rules](/object-naming-rules).
+- **Titre** contient une explication facultative de l'objectif du Calendrier.
+- **Type** : Calendrier des jours ouvrables ou Calendrier des jours non ouvrables.
+- **Valide du**, **Valide au** spécifient facultativement la période de validité d'un Calendrier. Avant et après la période de validité, un Calendrier ne renverra pas de jours résultants. Si aucune période de validité n'est spécifiée, le Calendrier sera valable pour une période illimitée.
 
 ### Fréquences
 
@@ -32,7 +32,7 @@ Les fréquences se présentent sous deux formes qui peuvent être combinées :
 
 Les *fréquences exclues* ont pour effet de refuser l'utilisation des dates spécifiées et d'annuler les *fréquences incluses* pour les jours correspondants.
 
-Prenons l'exemple d'un calendrier des jours ouvrables :
+Prenons l'exemple d'un Calendrier des jours ouvrables :
 
 - Supposez une *fréquence incluse* du lundi au vendredi.
 - Supposez une *fréquence exclue* pour les jours fériés nationaux tels que le 1er janvier ou le 1er mai.
@@ -44,9 +44,9 @@ Prenons l'exemple d'un calendrier des jours ouvrables :
     - si le 1er janvier est un samedi, l'Ordre sera créé pour le dimanche suivant qui ne fait pas partie des *fréquences incluses* et qui ne fait pas partie des *fréquences exclues*. 
     - si le 1er janvier est un dimanche, aucun Ordre ne sera créé car le prochain jour non ouvrable est le lundi pour lequel un Ordre est créé à partir des *fréquences incluses*.
 
-Les règles correspondantes s'appliquent aux calendriers des jours non ouvrables : *Les fréquences incluses* précisent les jours non ouvrables, les fréquences exclues* précisent les jours ouvrables.
+Les règles correspondantes s'appliquent aux Calendriers des jours non ouvrables : *Les fréquences incluses* précisent les jours non ouvrables, les fréquences exclues* précisent les jours ouvrables.
 
-Un calendrier peut contenir un nombre quelconque de *fréquences* qui seront fusionnées. Le bouton *Ajouter une fréquence* est proposé pour chacune des *Fréquences incluses* et des *Fréquences exclues*.
+Un Calendrier peut contenir un nombre quelconque de *fréquences* qui seront fusionnées. Le bouton *Ajouter une fréquence* est proposé pour chacune des *Fréquences incluses* et des *Fréquences exclues*.
 
 #### Types de fréquences
 
@@ -58,20 +58,20 @@ Lors de l'ajout de *fréquences*, un certain nombre de types peuvent être séle
   - **Mois Jours** indiquent les jours relatifs d'un mois, par exemple le premier ou le dernier jour du mois.
   - **tous** spécifie des périodes récurrentes, par exemple tous les 2 jours, toutes les 1ères semaines, tous les 3 mois. Pour ce faire, vous devez spécifier la date *Début de validité* à partir de laquelle les jours seront comptés.
   - **Jours fériés** spécifie les jours fériés connus. Les jours résultants ne font pas autorité et peuvent différer de la législation locale.
-  - **Calendriers des jours non ouvrés** exclut les jours concernés des calendriers des jours non ouvrés pour le calendrier en cours.
+  - **Calendriers des jours non ouvrés** exclut les jours concernés des Calendriers des jours non ouvrés pour le Calendrier en cours.
 
 Les *types de fréquence* peuvent être combinés en appliquant de manière répétée le même *Type de fréquence* ou différent.
 
 #### Exemple
 
-Prenons l'exemple d'un calendrier qui doit être affiché tous les deux jours ouvrables :
+Prenons l'exemple d'un Calendrier qui doit être affiché tous les deux jours ouvrables :
 
 - Supposez que les jours ouvrables sont du lundi au vendredi et que les jours non ouvrables sont du samedi au dimanche.
 - Supposez des jours fériés nationaux pour le 1er janvier et le 1er mai.
 
 Le comptage d'un jour ouvrable sur deux doit exclure les week-ends et les jours fériés :
 
-- Créez un calendrier des jours ouvrables en utilisant
+- Créez un Calendrier des jours ouvrables en utilisant
   - *Fréquences incluses* : Ajoutez le *Type de fréquence **Jours ouvrables** et sélectionnez *Tous les jours*. Le résultat contiendra tous les jours de l'année.
   - en utilisant les *Fréquences exclues* : ajoutez le *Type de fréquence **Tous les jours** et sélectionnez *Chaque jour* : Ajoutez le **Tous** *Type de fréquence* et sélectionnez *2* pour l'intervalle et *Jours* pour l'unité. Spécifiez la date *Début de validité*. Les jours obtenus sont divisés par deux.
   - *Fréquences exclues* : Ajoutez le *Type de fréquence **Fêtes nationales** et sélectionnez votre *Pays* et votre *Année*. Cela permet de limiter davantage le nombre de jours obtenus.
@@ -80,7 +80,7 @@ Vérifiez les résultats à partir du bouton *Afficher l'aperçu* qui devrait vo
 
 Une autre solution consiste à spécifier le *Type de fréquence **Tous** à partir de la *Restriction* d'une Plannification.
 
-## Opérations sur les calendriers
+## Opérations sur les Calendriers
 
 Pour les opérations disponibles, voir [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
 

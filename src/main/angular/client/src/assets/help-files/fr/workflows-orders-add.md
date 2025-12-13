@@ -1,6 +1,6 @@
 # Ajouter des Ordres aux Workflow
 
-Les ordres peuvent être ajoutés à la demande et seront exécutés indépendamment du Plan Quotidien.
+Les Ordres peuvent être ajoutés à la demande et seront exécutés indépendamment du Plan Quotidien.
 
 Les utilisateurs qui sont satisfaits des valeurs par défaut et qui souhaitent soumettre un Ordre pour une exécution immédiate n'auront pas besoin d'ajouter d'autres données. 
 
@@ -8,7 +8,7 @@ Les utilisateurs qui sont satisfaits des valeurs par défaut et qui souhaitent s
 
 - **Nom de l'Ordre** : Un nom optionnel qui peut être utilisé pour filtrer les Ordres dans un certain nombre de vues.
 - **Nom Tag** : Vous pouvez spécifier un nombre quelconque Tag qui seront ajoutées à l'Ordre. Les Tags sont affichées dans un certain nombre de vues si elles sont spécifiées sur la page [Settings - JOC Cockpit](/settings-joc).
-- **Ignorer les heures d'admission des Tâches** : Les tâches peuvent être limités à certains jours et/ou à certains créneaux horaires. Les ordres qui arrivent en dehors d'un créneau horaire doivent attendre le prochain créneau disponible. Cette option force les travaux à démarrer indépendamment de ces limitations.
+- **Ignorer les heures d'admission des Tâches** : Les tâches peuvent être limités à certains jours et/ou à certains créneaux horaires. Les Ordres qui arrivent en dehors d'un créneau horaire doivent attendre le prochain créneau disponible. Cette option force les travaux à démarrer indépendamment de ces limitations.
 
 ### Heure de début
 
@@ -23,7 +23,7 @@ Les utilisateurs qui sont satisfaits des valeurs par défaut et qui souhaitent s
 
 ### Dépendances de l'Ordre
 
-- **Clé d'Espace Annonce** : Si le Workflow contient des dépendances basées sur des annonces, il est possible de spécifier une date du Plan Quotidien à laquelle les dépendances seront résolues. Par défaut, le jour en cours est utilisé.
+- **Clé d'Espace Annonce** : Si le Workflow contient des dépendances basées sur des Annonces, il est possible de spécifier une date du Plan Quotidien à laquelle les dépendances seront résolues. Par défaut, le jour en cours est utilisé.
   - les dates passées pour lesquelles un plan est ouvert sont acceptées.
   - les dates futures sont acceptées.
 
@@ -40,7 +40,7 @@ Si un Ordre ne doit pas commencer au premier nœud du Workflow, une position peu
   - Si une position de bloc est spécifiée, n'importe quel nœud de même niveau à l'intérieur du bloc peut être spécifié avant lequel l'Ordre se terminera.
   - Il est possible de spécifier plusieurs positions de fin.
 - **Priorité** :
-  - Si l'Ordre doit répondre à une instruction de verrouillage des ressources dans le Workflow qui limite le parallélisme, sa *Priorité* détermine la position dans la file d'attente des Ordres en attente.
+  - Si l'Ordre doit répondre à une instruction de Verrouillage des Ressources dans le Workflow qui limite le parallélisme, sa *Priorité* détermine la position dans la file d'attente des Ordres en attente.
   - les *priorités* sont spécifiées à partir de nombres entiers négatifs, nuls et positifs ou à partir des raccourcis proposés. Une *priorité* plus élevée est prioritaire. Les raccourcis offrent les valeurs suivantes :
     - **Basse** : -20000
     - **Inférieur à la normale** : -10000
@@ -50,7 +50,7 @@ Si un Ordre ne doit pas commencer au premier nœud du Workflow, une position peu
 
 ### Paramétrage de l'Ordre
 
-- **Paramétrage à partir d'une Plannification** : Si le Workflow est assigné à une Plannification, cette option peut être sélectionnée pour copier son paramétrage, tel que les variables et les tags, dans l'Ordre actuel.
+- **Paramétrage à partir d'une Plannification** : Si le Workflow est assigné à une Plannification, cette option peut être sélectionnée pour copier son paramétrage, tel que les variables et les Tags, dans l'Ordre actuel.
 - **Modifier la variable** : 
   - Si le Workflow spécifie des variables sans valeurs par défaut, l'Ordre actuel doit spécifier les valeurs correspondantes.
   - Si le Workflow spécifie des variables avec des valeurs par défaut, alors le lien permet de sélectionner une variable pour laquelle une nouvelle valeur doit être spécifiée.

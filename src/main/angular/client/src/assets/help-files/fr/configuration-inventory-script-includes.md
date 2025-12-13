@@ -73,7 +73,7 @@ Pour l'utilisation de PowerShell sur les plates-formes Windows, le shebang suiva
 @@setlocal enabledelayedexpansion &amp; set NO_COLOR=1 &amp; set f=%RANDOM%.ps1 &amp; @@findstr/v "^@@[fs].*&amp;" "%~f0" &gt; !f ! &amp; powershell.exe -NonInteractive -File !f ! &amp; set e=!errorlevel ! &amp; del /q !f ! &amp; exit !e!/b&amp
 </pre>
 
-Le Script Include écrira le contenu du *Job Script* dans un fichier temporaire qui sera exécuté avec le binaire *powershell.exe*. Les utilisateurs doivent passer à l'utilisation du binaire *pwsh.exe* si des versions ultérieures de PowerShell sont utilisées. Les erreurs de script seront prises en compte par l'agent JS7 et la sortie du journal sera dépouillée des caractères d'échappement pour la coloration. 
+Le Script Include écrira le contenu du *Job Script* dans un fichier temporaire qui sera exécuté avec le binaire *powershell.exe*. Les utilisateurs doivent passer à l'utilisation du binaire *pwsh.exe* si des versions ultérieures de PowerShell sont utilisées. Les erreurs de script seront prises en compte par l'Agent JS7 et la sortie du journal sera dépouillée des caractères d'échappement pour la coloration. 
 
 ## Références
 

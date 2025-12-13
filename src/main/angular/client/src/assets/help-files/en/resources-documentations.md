@@ -24,7 +24,7 @@ The following information is displayed:
 
 - **Name** is the unique name of the Documentation.
 - **Reference** indicates the name of the documentation file that was uploaded.
-- **Type** is one of the supported types *Text*, *Markdwon*, *HTML*, *XML*, *PDF* etc.
+- **Type** is one of the supported types *Text*, *Markdown*, *HTML*, *XML*, *PDF* etc.
 - **Modified** last modification date.
 
 ### Operations on Documentations

@@ -25,7 +25,7 @@ Les noms des variables de nœud sont sensibles à la casse.
   - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflows-tâche-options)
   - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflows-tâche-properties)
   - [Configuration - Inventory - Workflows - Job Notifications](/configuration-inventory-workflows-tâche-notifications)
-  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-tâche-tags)
+  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-tâche-Tags)
 
 ### Product Knowledge Base
 

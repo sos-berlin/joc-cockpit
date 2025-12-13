@@ -1,35 +1,35 @@
-# Statut de l'agent
+# Statut de l'Agent
 
-La vue *Agent* résume l'état de la connexion des agents enregistrés.
+La vue *Agent* résume l'état de la connexion des Agents enregistrés.
 
 ## Architecture
 
 ### Agents
 
-- **Les agents Standalone** exécutent des tâches sur des machines distantes sur site et à partir de conteneurs. Ils fonctionnent individuellement et sont gérés par le contrôleur.
-- **Cluster d'agents
-  - les **Agents Directeurs** orchestrent les *Sous-Agents* dans un Cluster d'Agents. Ils fonctionnent à partir de deux instances en clustering actif-passif et sont gérés par le contrôleur.
-  - les **Sous-Agents** exécutent des tâches sur des machines distantes sur site et à partir de conteneurs. Ils peuvent être considérés comme des nœuds de tâche dans un cluster d'agents et sont gérés par des *agents directeurs*.
+- **Les Agents Autonomes** exécutent des tâches sur des machines distantes sur site et à partir de conteneurs. Ils fonctionnent individuellement et sont gérés par le Contrôleur.
+- **Cluster d'Agents
+  - les **Agents Directeurs** orchestrent les *Sous-Agents* dans un Cluster d'Agents. Ils fonctionnent à partir de deux instances en clustering actif-passif et sont gérés par le Contrôleur.
+  - les **Sous-Agents** exécutent des tâches sur des machines distantes sur site et à partir de conteneurs. Ils peuvent être considérés comme des nœuds de tâche dans un cluster d'Agents et sont gérés par des *Agents Directeurs*.
 
 ### Connexions
 
-- **Les connexions de l'Agent Standalone** et de l'Agent Directeur** sont établies par le Contrôleur. 
-- les connexions **Sous-Agents** dans un cluster d'agents sont établies par les *Agents Directeurs*.
+- **Les connexions de l'Agent Autonome** et de l'Agent Directeur** sont établies par le Contrôleur. 
+- les connexions **Sous-Agents** dans un cluster d'Agents sont établies par les *Agents Directeurs*.
 
 ## État de la connexion
 
-L'affichage de l'état des agents utilise les indicateurs de couleur suivants :
+L'affichage de l'état des Agents utilise les indicateurs de couleur suivants :
 
-- **La couleur verte** indique des connexions d'agents saines.
-- **La couleur jaune** indique que les agents sont en train de se réinitialiser, ce qui signifie qu'ils sont en train d'initialiser leur journal et de redémarrer.
-- **La couleur rouge** indique l'échec des connexions aux agents, par exemple si l'agent n'est pas joignable.
-- **La couleur grise** indique un état de connexion *inconnu*, par exemple si un agent directeur n'est pas joignable, l'état est *inconnu* pour les sous-agents.
+- **La couleur verte** indique des connexions d'Agents saines.
+- **La couleur jaune** indique que les Agents sont en train de se réinitialiser, ce qui signifie qu'ils sont en train d'initialiser leur journal et de redémarrer.
+- **La couleur rouge** indique l'échec des connexions aux Agents, par exemple si l'Agent n'est pas joignable.
+- **La couleur grise** indique un état de connexion *inconnu*, par exemple si un Agent directeur n'est pas joignable, l'état est *inconnu* pour les sous-agents.
 
 Les utilisateurs doivent tenir compte des implications suivantes :
 
-- Si la connexion d'un agent est considérée comme échouée, cela ne confirme pas que l'agent est hors service. Des problèmes de réseau peuvent empêcher la connexion.
-- Le JOC Cockpit reçoit du contrôleur des informations sur l'état de la connexion de l'agent. Si le contrôleur n'est pas disponible, ces informations ne sont pas présentes. Cela ne signifie pas que les agents sont hors service, mais que les agents seront indiqués à partir d'un état *inconnu*.
-- Le contrôleur signale les connexions aux *agents Standalone* et aux *agents Directeurs*. L'échec des connexions aux *agents directeurs* suggère que le contrôleur ne connaît pas l'état des *sous-agents* dans le groupe d'agents qui est donc indiqué comme étant *inconnu*.
+- Si la connexion d'un Agent est considérée comme échouée, cela ne confirme pas que l'Agent est hors service. Des problèmes de réseau peuvent empêcher la connexion.
+- Le JOC Cockpit reçoit du Contrôleur des informations sur l'état de la connexion de l'Agent. Si le Contrôleur n'est pas disponible, ces informations ne sont pas présentes. Cela ne signifie pas que les Agents sont hors service, mais que les Agents seront indiqués à partir d'un état *inconnu*.
+- Le Contrôleur signale les connexions aux *Agents Autonomes* et aux *Agents Directeurs*. L'échec des connexions aux *Agents Directeurs* suggère que le Contrôleur ne connaît pas l'état des *sous-agents* dans le groupe d'Agents qui est donc indiqué comme étant *inconnu*.
 
 ## Références
 

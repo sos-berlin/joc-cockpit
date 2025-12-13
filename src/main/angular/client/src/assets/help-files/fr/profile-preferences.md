@@ -31,13 +31,13 @@ Vous trouverez les paramètres suivants qui peuvent être gérés pour des valeu
 
 - **Nombre maximum d'entrées dans l'Historique** s'applique à la vue [History - Orders](/history-orders).
 - **Nombre maximum d'entrées du journal d'audit** s'applique à la vue [Audit Log](/audit-log).
-- **Nombre maximal d'entrées de notification** s'applique aux vues *Surveiller les notifications d'ordres* et *Surveiller les notifications du système*.
-- **Nombre maximal d'entrées de l'aperçu des ordres** s'applique à la vue [Orders - Overview](/orders-overview).
+- **Nombre maximal d'entrées de notification** s'applique aux vues *Surveiller les notifications d'Ordres* et *Surveiller les notifications du système*.
+- **Nombre maximal d'entrées de l'aperçu des Ordres** s'applique à la vue [Orders - Overview](/orders-overview).
 - **Nombre maximum d'entrées du Plan Quotidien** s'applique à la vue [Daily Plan](/daily-plan).
 - **Nombre maximum d'Ordres par Workflow** limite le nombre d'Ordres disponibles avec la vue [Workflows](/workflows).
 - **Nombre maximum d'entrées de transfert de fichiers** s'applique à la vue [History - File Transfers](/history-file-transfers).
 - **Nombre maximum d'Ordres par Verrou de Ressources** limite le nombre d'Ordres affichés avec la vue [Resources - Resource Locks](/resources-resource-locks).
-- **Le nombre maximum d'ordres par Tableau de Condition** limite le nombre d'Ordres affichés dans la vue [Resources - Notice Boards](/resources-notice-boards).
+- **Le nombre maximum d'Ordres par Tableau de Condition** limite le nombre d'Ordres affichés dans la vue [Resources - Notice Boards](/resources-notice-boards).
 
 ### Préférences de la vue Workflow
 
@@ -49,7 +49,7 @@ Les préférences s'appliquent à la vue [Workflows](/workflows):
 
 ### Configuration - Préférences d'affichage de l'inventaire
 
-- **Nombre maximum d'entrées de favoris** limite l'affichage des favoris, par exemple lors de l'attribution d'une tâche à un agent.
+- **Nombre maximum d'entrées de favoris** limite l'affichage des favoris, par exemple lors de l'attribution d'une tâche à un Agent.
 
 ### Préférences de pagination
 
@@ -82,8 +82,8 @@ Les préférences s'appliquent à la pagination sur n'importe quelle page :
 
 - **Afficher les fichiers immédiatement dans la vue Transfert de fichiers** est utile si chaque transfert de fichiers comprend un nombre prévisible de fichiers. Pour les transferts uniques pouvant inclure des milliers de fichiers, il peut être préférable de désactiver ce paramètre.
 - **Activer les raisons pour le journal d'audit** oblige l'utilisateur à spécifier une raison lorsqu'il modifie des objets tels que l'ajout ou l'annulation d'Ordres, la suspension de Workflows, etc. Le réglage de l'utilisateur peut être annulé à partir du site [Settings - JOC Cockpit](/settings-joc).
-- **Use time zone for log timestamps** s'applique lorsque les agents fonctionnent sur des serveurs situés dans des fuseaux horaires différents ou différents du fuseau horaire du serveur du contrôleur. Dans ce cas, un journal de l'Ordre qui contient la sortie du journal d'un certain nombre d'Ordres exécutés avec des Agents éventuellement différents peut sembler confus. Le paramètre convertit les horodatages des journaux dans le *fuseau horaire* spécifié dans le profil de l'utilisateur.
-- l'option **Current Controller** s'applique lorsque plusieurs contrôleurs sont connectés à JOC Cockpit. Option proposée dans un certain nombre de vues, par exemple la vue [History - Orders](/history-orders). Lorsqu'elle est cochée, elle limite l'affichage aux Ordres soumis au contrôleur actuellement sélectionné et, dans le cas contraire, elle affiche les Ordres de tous les contrôleurs connectés. Ce paramètre détermine la valeur par défaut des options *Contrôleur actuel* connexes dans les vues du JOC Cockpit.
+- **Use time zone for log timestamps** s'applique lorsque les Agents fonctionnent sur des serveurs situés dans des fuseaux horaires différents ou différents du fuseau horaire du serveur du Contrôleur. Dans ce cas, un journal de l'Ordre qui contient la sortie du journal d'un certain nombre d'Ordres exécutés avec des Agents éventuellement différents peut sembler confus. Le paramètre convertit les horodatages des journaux dans le *fuseau horaire* spécifié dans le profil de l'utilisateur.
+- l'option **Current Controller** s'applique lorsque plusieurs Contrôleurs sont connectés à JOC Cockpit. Option proposée dans un certain nombre de vues, par exemple la vue [History - Orders](/history-orders). Lorsqu'elle est cochée, elle limite l'affichage aux Ordres soumis au Contrôleur actuellement sélectionné et, dans le cas contraire, elle affiche les Ordres de tous les Contrôleurs connectés. Ce paramètre détermine la valeur par défaut des options *Contrôleur actuel* connexes dans les vues du JOC Cockpit.
 - **Supprimer les infobulles pour les objets de l'inventaire** concerne la vue *Configuration-&gt;Inventaire* qui propose des infobulles, par exemple pour [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-tâche-properties). Les infobulles s'affichent si la souris est déplacée sur l'étiquette d'un champ de saisie afin d'aider les utilisateurs en expliquant les saisies possibles. Bien que cela soit utile pour les utilisateurs qui ne sont pas trop familiers avec JS7, les infobulles peuvent ne pas être nécessaires pour les utilisateurs expérimentés.
 - **L'avertissement de licence reconnu** fait référence à l'utilisation de licences d'abonnement qui sont généralement limitées à un an. Avant l'expiration de la licence, JOC Cockpit affichera des avertissements connexes. L'utilisateur peut choisir de supprimer les avertissements relatifs à l'expiration de la licence. Pour plus d'informations, consultez le site [JS7 - How to manage License Expiration Warnings](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+manage+License+Expiration+Warnings).
 - **Afficher plus d'options** active le bouton du curseur correspondant dans la vue *Configuration-&gt;Inventaire*. Il offre des options plus détaillées pour la configuration du tâche, par exemple avec l'onglet [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-tâche-options).
@@ -92,7 +92,7 @@ Les préférences s'appliquent à la pagination sur n'importe quelle page :
 ### Préférences de type de vue
 
 - **Afficher la vue** s'applique à un certain nombre de vues qui offrent l'indicateur correspondant dans le coin supérieur droit de la fenêtre. Le paramètre spécifie le type de vue qui sera utilisé par défaut. Les utilisateurs peuvent modifier le type de vue sur demande dans n'importe quelle vue. Le type de vue *Carte* nécessite plus d'espace à l'écran que le type de vue *Liste*. Cependant, certains utilisateurs peuvent préférer la visibilité des cartes.
-- **Afficher la vue d'ensemble des ordres** est similaire au paramètre *Afficher la vue* mais s'applique à la vue [Orders - Overview](/orders-overview). De plus, la vue offre le type de vue *Bulk* qui permet la transition des Ordres à partir d'opérations en vrac.
+- **Afficher la vue d'ensemble des Ordres** est similaire au paramètre *Afficher la vue* mais s'applique à la vue [Orders - Overview](/orders-overview). De plus, la vue offre le type de vue *Bulk* qui permet la transition des Ordres à partir d'opérations en vrac.
 
 ### Préférences de mise en page du Workflow
 

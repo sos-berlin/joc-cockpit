@@ -2,94 +2,95 @@
 
 La vue *Plan Quotidien* donne un aperçu des Ordres programmés pour une exécution future et permet aux utilisateurs de gérer le *Plan Quotidien*. 
 
-Le site [Daily Plan Service](/service-daily-plan) est utilisé pour créer et soumettre aux contrôleurs les Ordres du Plan Quotidien. Le service fonctionne en arrière-plan et agit quotidiennement pour planifier et soumettre des Ordres quelques jours à l'avance.
+Le site [Daily Plan Service](/service-daily-plan) est utilisé pour créer et soumettre aux Contrôleurs les Ordres du Plan Quotidien. Le service fonctionne en arrière-plan et agit quotidiennement pour planifier et soumettre des Ordres quelques jours à l'avance.
 
 Le Plan Quotidien est soumis à une purge de la base de données effectuée par [Cleanup Service](/service-cleanup).
 
-Pour les opérations liées au *Panneau du calendrier*, voir [Daily Plan - Calendar](/daily-plan-calendar).
+Pour les opérations liées au *Panneau du Calendrier*, voir [Daily Plan - Calendar](/daily-plan-calendar).
 
 ## Ordres
 
 Le Plan Quotidien comprend les Ordres ayant l'un des états suivants :
 
-- **Planifié** : Les ordres ont été créés mais n'ont pas été *soumis* au contrôleur et aux agents.
-- **Soumis** : Les ordres ont été transmis au contrôleur et aux agents qui lanceront les ordres de manière autonome. Ce statut s'applique aux Ordres planifiés pour une exécution future et aux Ordres en cours d'exécution.
-- **Terminé** : Les ordres ont été exécutés. La vue [Order History](/history-orders) explique si l'exécution a réussi ou échoué.
+- **Planifié** : Les Ordres ont été créés mais n'ont pas été *soumis* au Contrôleur et aux Agents.
+- **Soumis** : Les Ordres ont été transmis au Contrôleur et aux Agents qui lanceront les Ordres de manière autonome. Ce statut s'applique aux Ordres planifiés pour une exécution future et aux Ordres en cours d'exécution.
+- **Terminé** : Les Ordres ont été exécutés. La vue [Order History](/history-orders) explique si l'exécution a réussi ou échoué.
 
-## Transitions de l'état des ordres
+## Transitions de l'état des Ordres
 
 Le Plan Quotidien offre les transitions d'état suivantes :
 
 <pre>
       ┌──────────────────┐
-      ▼ ▲
-   Créer │
-      │ │
-      ▼ │
+      ▼                  ▲
+   Créer                 │
+      │                  │
+      ▼                  │
   ┌───├──────┐ Supprimer ▲
-  │ Prévu │───────────┘
-  │ Ordres │───────────┐
-  ┖───┌──────┘ ▲
-      │ │
-   Submit │
-      │ │
-      ▼ │
-  ┌───├───────┐ │
-  │ Submitted │ │ │
-  │ Ordres │ │
-  ┖───┌───────┘ │
-      │ │
-      ▼ Cancel ▲
+  │ Ordres   │───────────┘
+  │ Planifiés│───────────┐
+  ┖───┌──────┘           ▲
+      │                  │
+   Submit                │
+      │                  │
+      ▼                  │
+  ┌───├───────┐          │
+  │ Ordres    │          │
+  │ Soumis    │          │
+  ┖───┌───────┘          │
+      │                  │
+      ▼         Annuler  ▲
       ├──────────────────┘
-      │ ▲
-   Execute / Let Run │
-      │ │
-      ▼ │
-  ┌───├───────┐ │
-  │ Finished │ │ │
-  │ Ordres │ │
-  ┖───┌───────┘ │
-      │ │
-      ▼ Cancel ▲
+      │                  ▲
+   Execute / Let Run     │
+      │                  │
+      ▼                  │
+  ┌───├───────┐          │
+  │ Orderes   │          │
+  │ Terminés  │          │
+  ┖───┌───────┘          │
+      │                  │
+      ▼         Annuler  ▲
       ┖──────────────────┘
 </pre>
 
+
 ## Vue Plan Quotidien 
 
-### Opérations sur l'état des ordres
+### Opérations sur l'état des Ordres
 
 Les opérations sont disponibles individuellement à partir du menu d'action d'un Ordre et à partir d'opérations groupées.
 
 Les boutons de filtrage suivants limitent la portée des opérations : 
 
 - **Tous** : L'opération sera appliquée aux Ordres ayant n'importe quel statut.
-- **Planifié** : Les opérations *soumettre* et *supprimer* peuvent être appliquées aux Ordres *planifiés* qui ne sont pas *soumises* au contrôleur.
-- **Soumis** : Les opérations *laisser exécuter* et *annuler* peuvent être appliquées aux Ordres *soumis* au contrôleur et aux agents.
-- **Terminé** : L'opération *cancel* peut être appliquée aux ordres *soumis* au contrôleur et aux agents : L'opération *annuler* peut être appliquée aux Ordres qui se sont terminés.
-- **En Retard** est un filtre supplémentaire qui s'ajoute aux états des ordres et qui indique que les ordres ont été lancés plus tard que prévu.
+- **Planifié** : Les opérations *soumettre* et *supprimer* peuvent être appliquées aux Ordres *planifiés* qui ne sont pas *soumises* au Contrôleur.
+- **Soumis** : Les opérations *laisser exécuter* et *annuler* peuvent être appliquées aux Ordres *soumis* au Contrôleur et aux Agents.
+- **Terminé** : L'opération *cancel* peut être appliquée aux Ordres *soumis* au Contrôleur et aux Agents : L'opération *annuler* peut être appliquée aux Ordres qui se sont terminés.
+- **En Retard** est un filtre supplémentaire qui s'ajoute aux états des Ordres et qui indique que les Ordres ont été lancés plus tard que prévu.
 
 #### Opérations du cycle de vie
 
 - **Laisser courir l'Ordre**
   - Lorsqu'il est appliqué à des Ordres *soumis*, ceux-ci démarrent immédiatement. Les Ordres faisant l'objet d'une opération groupée démarreront simultanément.
 - **Soumettre des Ordres**
-  - Lorsqu'il s'agit d'Ordres *planifiés*, ils passent à l'état *soumis* et sont transmis au contrôleur et aux agents.
+  - Lorsqu'il s'agit d'Ordres *planifiés*, ils passent à l'état *soumis* et sont transmis au Contrôleur et aux Agents.
 - **Annuler les Ordres**
-  - Lorsqu'il s'agit d'ordres *soumis*, les ordres sont rappelés par le contrôleur et les agents et passent à l'état *planifié*.
+  - Lorsqu'il s'agit d'Ordres *soumis*, les Ordres sont rappelés par le Contrôleur et les Agents et passent à l'état *planifié*.
 - **Suppression d'Ordres**
-  - Lorsqu'il s'agit d'ordres *planifiés*, les ordres sont retirés du Plan Quotidien. Une exécution ultérieure du service Plan Quotidien n'essaiera pas d'ajouter des Ordres à la date donnée.
+  - Lorsqu'il s'agit d'Ordres *planifiés*, les Ordres sont retirés du Plan Quotidien. Une exécution ultérieure du service Plan Quotidien n'essaiera pas d'ajouter des Ordres à la date donnée.
 - **Copier les Ordres**
   - **Heure de début** : Copie les Ordres à une date future du Plan Quotidien. La saisie de la date et de l'heure est similaire à la modification de l'heure de début d'un Ordre.
-  - **Conserver l'affectation du Plan Quotidien** : Les dépendances basées sur le calendrier des tableaux d'affichage seront résolues à la date du Plan Quotidien d'origine.
-  - **Ignorer les heures d'admission des tâches** : Les tâches peuvent être limités à certains jours et/ou à certains créneaux horaires. Les ordres qui arrivent doivent attendre le prochain créneau horaire disponible. Cette option permet de forcer les travaux à démarrer indépendamment de ces limitations.
+  - **Conserver l'affectation du Plan Quotidien** : Les dépendances basées sur le Calendrier des tableaux d'affichage seront résolues à la date du Plan Quotidien d'origine.
+  - **Ignorer les heures d'admission des tâches** : Les tâches peuvent être limités à certains jours et/ou à certains créneaux horaires. Les Ordres qui arrivent doivent attendre le prochain créneau horaire disponible. Cette option permet de forcer les travaux à démarrer indépendamment de ces limitations.
 
 #### Modifier l'heure de début
 
-- **Maintenant** : Les ordres commencent immédiatement.
-- **Date spécifique** : Les ordres commenceront à la date et à l'heure indiquées. Les ordres se verront attribuer la date du Plan Quotidien correspondante lorsqu'il s'agit de résoudre des dépendances basées sur le calendrier.
-- **Par rapport à l'heure actuelle** : Les ordres commenceront avec un décalage par rapport à l'heure actuelle en secondes ou en heures, minutes, secondes, par exemple *15* pour commencer dans 15 secondes ou *01:30:15* pour commencer 1 heure, 30 minutes et 15 secondes plus tard.
-- **Relatif à l'heure de début** : Les ordres commenceront avec un décalage positif ou négatif par rapport à leur heure de départ initiale en secondes ou en heures, 
-minutes, secondes, par exemple *-04:00:00* pour commencer 4 heures plus tôt ou *+12:00:00* pour commencer 12 heures plus tard. L'affectation des Ordres à la date originale du Plan Quotidien reste en place lorsqu'il s'agit de résoudre des dépendances basées sur le calendrier.
+- **Maintenant** : Les Ordres commencent immédiatement.
+- **Date spécifique** : Les Ordres commenceront à la date et à l'heure indiquées. Les Ordres se verront attribuer la date du Plan Quotidien correspondante lorsqu'il s'agit de résoudre des dépendances basées sur le Calendrier.
+- **Par rapport à l'heure actuelle** : Les Ordres commenceront avec un décalage par rapport à l'heure actuelle en secondes ou en heures, minutes, secondes, par exemple *15* pour commencer dans 15 secondes ou *01:30:15* pour commencer 1 heure, 30 minutes et 15 secondes plus tard.
+- **Relatif à l'heure de début** : Les Ordres commenceront avec un décalage positif ou négatif par rapport à leur heure de départ initiale en secondes ou en heures, 
+minutes, secondes, par exemple *-04:00:00* pour commencer 4 heures plus tôt ou *+12:00:00* pour commencer 12 heures plus tard. L'affectation des Ordres à la date originale du Plan Quotidien reste en place lorsqu'il s'agit de résoudre des dépendances basées sur le Calendrier.
 
 #### Modifier le paramétrage
 
@@ -113,7 +114,7 @@ Une position peut être spécifiée si les Ordres ne doivent pas commencer au pr
 #### Modifier la priorité
 
 - **Priorité** :
-  - Si un Ordre doit répondre à une instruction de *verrouillage des ressources* dans le Workflow qui limite le parallélisme, alors sa *Priorité* détermine la position dans la file d'attente des *Ordres en attente.
+  - Si un Ordre doit répondre à une instruction de *Verrouillage des Ressources* dans le Workflow qui limite le parallélisme, alors sa *Priorité* détermine la position dans la file d'attente des *Ordres en attente.
   - les *priorités* sont spécifiées à partir d'entiers négatifs, nuls et positifs ou à partir des raccourcis proposés. Une *priorité* plus élevée est prioritaire. Les raccourcis offrent les valeurs suivantes :
     - **Basse** : -20000
     - **Inférieur à la normale** : -10000

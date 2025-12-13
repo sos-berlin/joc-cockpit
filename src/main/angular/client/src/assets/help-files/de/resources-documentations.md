@@ -24,7 +24,7 @@ Die folgenden Informationen werden angezeigt:
 
 - **Name** ist der eindeutige Name der Dokumentation.
 - **Referenz** ist der Name der Dokumentationsdatei, die hochgeladen wurde.
-- **Typ** ist einer der unterstützten Typen *Text*, *Markdwon*, *HTML*, *XML*, *PDF* usw.
+- **Typ** ist einer der unterstützten Typen *Text*, *Markdown*, *HTML*, *XML*, *PDF* usw.
 - **Letzte Aktualisierung** Datum der letzten Änderung.
 
 ### Operationen für Dokumentationen

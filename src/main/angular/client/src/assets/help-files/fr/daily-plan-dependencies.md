@@ -8,7 +8,7 @@ Les dépendances du Workflow peuvent être appliquées pour tous les jours et po
 
 ## Calendrier
 
-Le widget calendrier permet de sélectionner une date du Plan Quotidien pour laquelle les dépendances seront affichées.
+Le widget Calendrier permet de sélectionner une date du Plan Quotidien pour laquelle les dépendances seront affichées.
 
 - **Couleur rouge clair** : Les dates de plan passées qui sont fermées et qui ne permettront pas d'ajouter des Ordres.
 - **Couleur verte** : Les dates de plan passées et futures qui sont ouvertes et qui permettront d'ajouter des Ordres.
@@ -22,33 +22,33 @@ Les opérations sur les dates de plan sont les suivantes :
 
 Les objets suivants sont affichés :
 
-- **Posting Workflow** : Sur le côté gauche s'affiche le Workflow qui affiche les annonces.
-- **Annonce** : Dans la partie centrale s'affiche le nom du panneau d'affichage qui crée l'annonce.
-- **Workflow de réception** : Sur le côté droit s'affiche le Workflow qui attend ou consomme l'annonce.
+- **Posting Workflow** : Sur le côté gauche s'affiche le Workflow qui affiche les Annonces.
+- **Annonce** : Dans la partie centrale s'affiche le nom du panneau d'affichage qui crée l'Annonce.
+- **Workflow de réception** : Sur le côté droit s'affiche le Workflow qui attend ou consomme l'Annonce.
 
 Les relations suivantes sont indiquées :
 
-- **Posting Workflow** : Crée un ou plusieurs annonces qui sont attendus/consommés par un ou plusieurs *Workflows de réception*.
-- **Workflow de réception** : Attend/consomme un ou plusieurs annonces provenant du même ou de différents *flux de tâche d'envoi*.
+- **Posting Workflow** : Crée un ou plusieurs Annonces qui sont attendus/consommés par un ou plusieurs *Workflows de réception*.
+- **Workflow de réception** : Attend/consomme un ou plusieurs Annonces provenant du même ou de différents *flux de tâche d'envoi*.
 
 L'état de réalisation des dépendances est indiqué par des lignes :
 
-- **Ligne de couleur bleue** : Un annonce est indiqué pour un moment futur où l'Ordre du *Posting Workflow* commencera et créera l'annonce.
-- **Ligne de couleur verdâtre** : La dépendance n'est pas résolue, un annonce a été publié mais n'est pas encore traité par tous les *Workflows de réception*.
-  - **Workflow de réception en couleur verte** : Le Workflow de réception* a été créé mais n'a pas encore été traité par tous les *flux de tâche de réception : L'Ordre du *Flux de tâche récepteur* est lancé mais n'a pas procédé à l'instruction de flux de tâche qui vérifie les annonces.
+- **Ligne de couleur bleue** : Un Annonce est indiqué pour un moment futur où l'Ordre du *Posting Workflow* commencera et créera l'Annonce.
+- **Ligne de couleur verdâtre** : La dépendance n'est pas résolue, un Annonce a été publié mais n'est pas encore traité par tous les *Workflows de réception*.
+  - **Workflow de réception en couleur verte** : Le Workflow de réception* a été créé mais n'a pas encore été traité par tous les *flux de tâche de réception : L'Ordre du *Flux de tâche récepteur* est lancé mais n'a pas procédé à l'instruction de flux de tâche qui vérifie les Annonces.
   - **Workflow de réception de couleur bleue** : L'Ordre du *Receiving Workflow* est planifié pour démarrer à un moment ultérieur de la journée.
-- **Ligne en couleur grise** : La dépendance est résolue, l'annonce a été posté et a été consommé par un *Workflow de réception*.
+- **Ligne en couleur grise** : La dépendance est résolue, l'Annonce a été posté et a été consommé par un *Workflow de réception*.
 
 ## Filtres
 
 Les filtres permettent de limiter l'affichage des Workflows et des dépendances :
 
-- **Annonce prévues** : Affiche les Workflows pour lesquels des annonces sont prévues, c'est-à-dire que les Ordres sont planifiés mais n'ont pas encore démarré et n'ont pas encore publié l'annonce. Lorsqu'un annonce est publié, son annonce est abandonnée.
-- **Annonce présents** : Affiche les Workflows pour lesquels des annonces ont été publiés et peuvent être traités. Si un annonce est consommé par un Workflow, il sera abandonné et ne sera plus présent.
+- **Annonce prévues** : Affiche les Workflows pour lesquels des Annonces sont prévues, c'est-à-dire que les Ordres sont planifiés mais n'ont pas encore démarré et n'ont pas encore publié l'Annonce. Lorsqu'un Annonce est publié, son Annonce est abandonnée.
+- **Annonce présents** : Affiche les Workflows pour lesquels des Annonces ont été publiés et peuvent être traités. Si un Annonce est consommé par un Workflow, il sera abandonné et ne sera plus présent.
 
-Si les deux boutons de filtrage sont actifs, les annonce annoncés et publiés sont inclus, mais les dépendances qui ont été résolues et pour lesquelles les annonce ont été consommés et ne sont plus présents sont exclues.
+Si les deux boutons de filtrage sont actifs, les Annonce annoncés et publiés sont inclus, mais les dépendances qui ont été résolues et pour lesquelles les Annonce ont été consommés et ne sont plus présents sont exclues.
 
-Si les deux boutons de filtrage sont inactifs, tous les Workflows et dépendances seront affichés, y compris les annonce qui ont été annoncés, qui sont présents ou qui ont été consommés.
+Si les deux boutons de filtrage sont inactifs, tous les Workflows et dépendances seront affichés, y compris les Annonce qui ont été annoncés, qui sont présents ou qui ont été consommés.
 
 ## Références
 

@@ -1,37 +1,37 @@
-# Exécution des tâches de l'agent
+# Exécution des tâches de l'Agent
 
-La vue *Exécution des travaux des agents* résume les travaux exécutés par les agents au cours d'une période donnée.
+La vue *Exécution des travaux des Agents* résume les travaux exécutés par les Agents au cours d'une période donnée.
 
-Les agents se présentent sous les formes suivantes :
+Les Agents se présentent sous les formes suivantes :
 
-- **Les agents standalone** exécutent des tâches sur des machines distantes ou à partir de conteneurs. Ils fonctionnent individuellement et sont gérés par le contrôleur.
-- **Cluster d'agents**
+- **Les Agents Autonomes** exécutent des tâches sur des machines distantes ou à partir de conteneurs. Ils fonctionnent individuellement et sont gérés par le Contrôleur.
+- **Cluster d'Agents**
   - les **Agents Directeurs** orchestrent les *Sous-Agents* dans un Cluster d'Agents. En outre, ils peuvent être utilisés pour exécuter des tâches.
-  - les **Subagents** exécutent des Jobs sur des machines distantes sur site et à partir de conteneurs. Ils peuvent être considérés comme des nœuds de tâche dans un cluster d'agents et sont gérés par des *Agents Directeurs*.
+  - les **Subagents** exécutent des Jobs sur des machines distantes sur site et à partir de conteneurs. Ils peuvent être considérés comme des nœuds de tâche dans un cluster d'Agents et sont gérés par des *Agents Directeurs*.
 
 ## Vue d'exécution des tâches 
 
 Les informations suivantes sont affichées :
 
-- **ID agent** est le nom unique d'un agent.
-- **URL** est l'URL qui permet d'accéder à l'agent à partir du contrôleur.
+- **ID Agent** est le nom unique d'un Agent.
+- **URL** est l'URL qui permet d'accéder à l'Agent à partir du Contrôleur.
 - **Nombre d'exécutions de Tâches réussis** correspond à ce que le titre suggère.
 - **Le nombre de tâches exécutées** comprend les tâches exécutées avec succès et celles qui ont échoué.
 
-## Exportation des tâches exécutées par les agents
+## Exportation des tâches exécutées par les Agents
 
-Les utilisateurs peuvent exporter les informations récapitulatives affichées dans un fichier Excel au format .xlsx. Les filtres actifs et l'ordre de tri seront appliqués à l'exportation.
+Les utilisateurs peuvent exporter les informations récapitulatives affichées dans un fichier Excel au format .xlsx. Les filtres actifs et l'Ordre de tri seront appliqués à l'exportation.
 
 ## Filtres
 
 L'utilisateur peut appliquer les filtres disponibles en haut de la fenêtre pour limiter le résumé des exécutions de tâches :
 
 - les boutons de filtrage **Plage de Date** permettent de choisir la plage de dates pour le résumé des exécutions de tâches.
-- la case à cocher **Contrôleur actuel** limite les exécutions de tâches aux agents enregistrés auprès du contrôleur actuellement sélectionné.
+- la case à cocher **Contrôleur actuel** limite les exécutions de tâches aux Agents enregistrés auprès du Contrôleur actuellement sélectionné.
 
 ## Filtre avancé
 
-Le *Filtre avancé* offre des critères de filtrage pour une plage de dates plus large, pour des instances d'agents et de contrôleurs spécifiques.
+Le *Filtre avancé* offre des critères de filtrage pour une plage de dates plus large, pour des instances d'Agents et de Contrôleurs spécifiques.
 
 Le *filtre avancé* permet d'exporter des données en fonction des critères spécifiés.
 

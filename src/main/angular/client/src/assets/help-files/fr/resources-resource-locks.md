@@ -1,18 +1,18 @@
-# Verrous de ressources
+# Verrous de Ressources
 
-La vue *Verrous de Ressources * affiche des informations en temps réel sur l'utilisation des verrous de ressources.
+La vue *Verrous de Ressources* affiche des informations en temps réel sur l'utilisation des Verrous de Ressources.
 
-Les verrous de ressources sont utilisés pour limiter le parallélisme des tâches et des instructions dans les Workflows.
-Les verrous de ressources sont des blocs d'instructions qui peuvent s'étendre sur un certain nombre de tâches et d'instructions dans le même Workflow.
+Les Verrous de Ressources sont utilisés pour limiter le parallélisme des tâches et des instructions dans les Workflows.
+Les Verrous de Ressources sont des blocs d'instructions qui peuvent s'étendre sur un certain nombre de tâches et d'instructions dans le même Workflow.
 
-- les **verrous exclusifs** peuvent être utilisés par une seule tâche. L'accès exclusif est configuré soit à partir du verrou de ressource, soit à partir de l'utilisation dans le Workflow.
-- les **verrous partagés** peuvent être utilisés par un nombre configurable de travaux.
-  - Une *capacité* est attribuée au verrou de ressource, par exemple 6.
-  - Chaque utilisation du verrou de ressource par un ensemble de travaux se voit attribuer un *poids*, par exemple 3 et 4 pour l'utilisation dans les Workflows A et B. Cela permet l'exécution en parallèle de deux Ordres pour le Workflow A et interdit l'exécution en parallèle d'Ordres pour les Workflows A et B.
+- Les **verrous exclusifs** peuvent être utilisés par une seule tâche. L'accès exclusif est configuré soit à partir du Verrou de Ressource, soit à partir de l'utilisation dans le Workflow.
+- Les **verrous partagés** peuvent être utilisés par un nombre configurable de travaux.
+  - Une *capacité* est attribuée au Verrou de Ressource, par exemple 6.
+  - Chaque utilisation du Verrou de Ressource par un ensemble de travaux se voit attribuer un *poids*, par exemple 3 et 4 pour l'utilisation dans les Workflows A et B. Cela permet l'exécution en parallèle de deux Ordres pour le Workflow A et interdit l'exécution en parallèle d'Ordres pour les Workflows A et B.
 
 ## Vue de navigation
 
-La vue de gauche affiche l'arborescence des dossiers d'inventaire contenant les verrous de ressources.
+La vue de gauche affiche l'arborescence des dossiers d'inventaire contenant les Verrous de Ressources.
 
 - Un clic sur le dossier affiche les verrouillages de ressources de ce dossier.
 - En cliquant sur l'icône en forme de chevron vers le bas disponible lorsque vous survolez un dossier, vous affichez les verrouillages de ressources du dossier et de tous les sous-dossiers.
@@ -20,17 +20,17 @@ La vue de gauche affiche l'arborescence des dossiers d'inventaire contenant les 
 L'icône de recherche rapide permet de rechercher les verrouillages de ressources en fonction des données saisies par l'utilisateur :
 
 - Si vous tapez **Test**, vous obtiendrez les verrouillages de ressources portant des noms tels que *test-lock-1* et *TEST-lock-2*. 
-- Si vous tapez **Test**, vous obtiendrez des verrous de ressources portant des noms tels que *test-lock-1* et *my-TEST-lock-2*
+- Si vous tapez **\*Test**, vous obtiendrez des Verrous de Ressources portant des noms tels que *test-lock-1* et *my-TEST-lock-2*
 
-## Panneau de verrouillage des ressources
+## Panneau de Verrouillage des Ressources
 
-### Affichage des verrous de ressources
+### Affichage des Verrous de Ressources
 
 Les informations suivantes sont affichées :
 
-- **Nom** est le nom unique d'un verrou de ressource.
-- **Date de déploiement** est la date à laquelle le verrou de ressource a été déployé.
-- **L'état** est l'un des deux suivants : *Synchronisé* et *Non synchronisé* si le verrou de ressource n'a pas été déployé sur le contrôleur.
+- **Nom** est le nom unique d'un Verrou de Ressource.
+- **Date de déploiement** est la date à laquelle le Verrou de Ressource a été déployé.
+- **L'état** est l'un des deux suivants : *Synchronisé* et *Non synchronisé* si le Verrou de Ressource n'a pas été déployé sur le Contrôleur.
 - **Nombre Acquis** indique le *poids* cumulé des Ordres parallèles qui ont acquis le verrou.
 - **Ordre Vérouillés** indique le nombre d'Ordres qui ont acquis le verrou.
 - **Ordres en attente** indique le nombre d'Ordres qui attendent d'acquérir le verrou.
@@ -38,14 +38,13 @@ Les informations suivantes sont affichées :
 
 ### Affichage des Ordres
 
-En cliquant sur l'icône de la flèche vers le bas, vous développerez le verrou de ressource et afficherez des informations détaillées sur les ordres en attente qui ont acquis le verrou de ressource et sur les ordres en attente du verrou de ressource.
+En cliquant sur l'icône de la flèche vers le bas, vous développerez le Verrou de Ressource et afficherez des informations détaillées sur les Ordres en attente qui ont acquis le Verrou de Ressource et sur les Ordres en attente du Verrou de Ressource.
 
 ## Recherche
 
-La fonction *Recherche* offre des critères permettant de rechercher des verrouillages de ressources à partir de dépendances. Par exemple, si vous recherchez des Workflows comprenant un nom de la tâche spécifique, vous obtiendrez les verrous de ressources utilisés par le Workflow.
+La fonction *Recherche* offre des critères permettant de rechercher des verrouillages de ressources à partir de dépendances. Par exemple, si vous recherchez des Workflows comprenant un nom de la tâche spécifique, vous obtiendrez les Verrous de Ressources utilisés par le Workflow.
 
 ## Références
 
 - [Resources - Resource Locks - Search](/resources-resource-locks-search)
 - [JS7 - Resource Locks](https://kb.sos-berlin.com/display/JS7/JS7+-+Resource+Locks)
-

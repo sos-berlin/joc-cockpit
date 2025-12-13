@@ -2,8 +2,8 @@
 
 Les noms d'objets sont spécifiés à plusieurs endroits pour :
 
-- Workflows, Tâches, Variables, Tableaux de Condition, Verrous de ressources, Sources d'ordres de fichiers, Ressources de tâches, Dossiers,
-- Les calendriers, les planifications, les scripts inclus, les modèles de tâches, les rapports.
+- Workflows, Tâches, Variables, Tableaux de Condition, Verrous de Ressources, Sources d'Ordres de fichiers, Ressources de tâches, Dossiers,
+- Les Calendriers, les planifications, les scripts inclus, les modèles de tâches, les rapports.
 
 Le JS7 n'impose pas de conventions de dénomination pour les objets : les utilisateurs sont libres de choisir des conventions de dénomination à leur guise, par exemple pour les noms de tâches en utilisant :
 
@@ -45,11 +45,11 @@ Un certain nombre de restrictions s'appliquent aux noms d'objets :
 
 #### Tags
 
-Des règles plus souples s'appliquent aux *tags* utilisées pour indiquer la position d'un tâche ou d'une autre instruction de Workflow :
+Des règles plus souples s'appliquent aux *Tags* utilisées pour indiquer la position d'un tâche ou d'une autre instruction de Workflow :
 
-- Les tags peuvent commencer par des chiffres, des caractères, _
-- Les tags peuvent inclure $, _, -, #, :, !
-- Les tags ne peuvent pas inclure ce qui n'est pas autorisé pour les noms d'objets, par exemple pas de guillemets, pas d'espaces, \[, \], {, }, /, \, =, +
+- Les Tags peuvent commencer par des chiffres, des caractères, _
+- Les Tags peuvent inclure $, _, -, #, :, !
+- Les Tags ne peuvent pas inclure ce qui n'est pas autorisé pour les noms d'objets, par exemple pas de guillemets, pas d'espaces, \[, \], {, }, /, \, =, +
 
 ### Unicité des noms d'objets
 

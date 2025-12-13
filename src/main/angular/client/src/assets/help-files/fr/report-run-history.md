@@ -11,7 +11,7 @@ La vue [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) offr
 L'Historique des exécutions de rapports est affiché à partir des propriétés suivantes :
 
 - **Nom** indique le nom unique d'une configuration de rapport tel que spécifié dans la vue [Configuration - Inventory - Reports](/configuration-inventory-reports).
-- **ID du contrôleur** indique le contrôleur pour lequel le rapport est créé.
+- **ID du Contrôleur** indique le Contrôleur pour lequel le rapport est créé.
 - **Modèle de Rapport ** indique le [Report Template](/report-templates) utilisé.
 - **Etat** indique l'une des valeurs suivantes : *running*, *successful*, *failed*.
 - **Fréquences** indique les *fréquences de rapport* qui divisent la *période de rapport* en unités égales.

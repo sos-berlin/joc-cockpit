@@ -10,7 +10,7 @@ Pour les utilisateurs qui se connectent avec un service d'identité, un *profil*
 
 ## Opérations sur les profils
 
-La vue secondaire affiche la liste des *Profils* actifs et la date de la dernière connexion. Les opérations suivantes sont disponibles pour les *Profils* individuellement :
+La vue Secondaire affiche la liste des *Profils* actifs et la date de la dernière connexion. Les opérations suivantes sont disponibles pour les *Profils* individuellement :
 
 - En cliquant sur le *Profil*, vous accédez à la sous-vue [Identity Service - Roles](/identity-service-roles) pour afficher les rôles utilisés par le *Profil* en question.
 - Le menu d'action d'un *Profil* propose les opérations suivantes :

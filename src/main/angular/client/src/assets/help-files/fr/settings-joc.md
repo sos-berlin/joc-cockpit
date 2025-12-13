@@ -71,26 +71,26 @@ Ces paramètres peuvent être utilisés pour désactiver des vues individuelles 
 
 ### Setting : *display_folders\_in\_views*, Défaut : *true*
 
-Spécifie que dans les vues telles que *Workflows*, *Plan Quotidien*, *Ressources - Calendriers*, *Ressources - Verrous de ressources*, *Ressources - Tableaux de Condition*, les noms des objets de planification et les chemins d'accès sont affichés. Si la valeur *false* est utilisée pour ce paramètre, le chemin est omis dans l'affichage des objets. Dans JS7, tous les noms d'objets sont uniques.
+Spécifie que dans les vues telles que *Workflows*, *Plan Quotidien*, *Ressources - Calendriers*, *Ressources - Verrous de Ressources*, *Ressources - Tableaux de Condition*, les noms des objets de planification et les chemins d'accès sont affichés. Si la valeur *false* est utilisée pour ce paramètre, le chemin est omis dans l'affichage des objets. Dans JS7, tous les noms d'objets sont uniques.
 
-## Paramètres du contrôleur
+## Paramètres du Contrôleur
 
 ### Paramètre : *controller\_connection\_joc\_password*, *controller\_connection\_history\_password*
 
-JS7 offre une configuration cohérente sans utiliser de mots de passe. Cela inclut la connexion entre le cockpit JOC et les contrôleurs, qui peut être sécurisée par l'authentification mutuelle du serveur HTTPS et du client. Si les utilisateurs ne souhaitent pas configurer l'authentification mutuelle pour les connexions aux contrôleurs, un mot de passe doit être utilisé pour identifier le JOC Cockpit avec le contrôleur.
+JS7 offre une configuration cohérente sans utiliser de mots de passe. Cela inclut la connexion entre le cockpit JOC et les Contrôleurs, qui peut être sécurisée par l'authentification mutuelle du serveur HTTPS et du client. Si les utilisateurs ne souhaitent pas configurer l'authentification mutuelle pour les connexions aux Contrôleurs, un mot de passe doit être utilisé pour identifier le JOC Cockpit avec le Contrôleur.
 
-Cela s'applique aux deux connexions établies entre le JOC Cockpit et les contrôleurs, qui sont reflétées par des paramètres distincts pour le *controller\_connection\_joc\_password* et le *controller\_connection\_history\_password* :
+Cela s'applique aux deux connexions établies entre le JOC Cockpit et les Contrôleurs, qui sont reflétées par des paramètres distincts pour le *controller\_connection\_joc\_password* et le *controller\_connection\_history\_password* :
 
 - L'interface graphique du cockpit JOC utilise une connexion pour recevoir des événements, par exemple sur les transitions d'état des Ordres.
-- Le service Historique est connecté à un contrôleur pour recevoir des informations sur l'historique, telles que l'état d'exécution des travaux et toute sortie de journal des travaux.
+- Le service Historique est connecté à un Contrôleur pour recevoir des informations sur l'historique, telles que l'état d'exécution des travaux et toute sortie de journal des travaux.
 
-Le mot de passe est spécifié en texte clair dans la page Paramètres et sous forme de valeur hachée dans le fichier private.conf du contrôleur.
+Le mot de passe est spécifié en texte clair dans la page Paramètres et sous forme de valeur hachée dans le fichier private.conf du Contrôleur.
 
 Le lien **Afficher la valeur de hachage** est disponible sur la page Paramètres et permet d'afficher la valeur de hachage du mot de passe.
 
-Si un mot de passe est modifié dans la page Paramètres, il doit également être modifié dans le fichier private.conf du contrôleur pour que les mots de passe correspondent.
+Si un mot de passe est modifié dans la page Paramètres, il doit également être modifié dans le fichier private.conf du Contrôleur pour que les mots de passe correspondent.
 
-Il est recommandé de modifier d'abord le mot de passe dans le fichier private.conf de l'instance active du contrôleur, puis dans la page Paramètres. Redémarrez ensuite l'instance du contrôleur. Le JOC Cockpit se reconnectera alors à l'instance de contrôleur active. Si un cluster de contrôleurs est utilisé, la même modification doit être appliquée au fichier private.conf de l'instance de contrôleur passive.
+Il est recommandé de modifier d'abord le mot de passe dans le fichier private.conf de l'instance active du Contrôleur, puis dans la page Paramètres. Redémarrez ensuite l'instance du Contrôleur. Le JOC Cockpit se reconnectera alors à l'instance de Contrôleur active. Si un cluster de Contrôleurs est utilisé, la même modification doit être appliquée au fichier private.conf de l'instance de Contrôleur passive.
 
 ## Paramètres Unicode
 
@@ -162,17 +162,17 @@ Par défaut, les arguments spécifiés pour les tâches doivent contenir des val
 
 ### Paramètre : *allow_undeclared\_variables*, Défaut : *false*
 
-Par défaut, toutes les variables de l'Ordre doivent être déclarées dans le Workflow. Ce paramètre modifie le comportement par défaut et permet aux Ordres de spécifier des variables arbitraires. Les utilisateurs doivent savoir que les travaux et les instructions connexes échoueront s'ils font référence à des variables qui ne sont pas spécifiées par les ordres entrants.
+Par défaut, toutes les variables de l'Ordre doivent être déclarées dans le Workflow. Ce paramètre modifie le comportement par défaut et permet aux Ordres de spécifier des variables arbitraires. Les utilisateurs doivent savoir que les travaux et les instructions connexes échoueront s'ils font référence à des variables qui ne sont pas spécifiées par les Ordres entrants.
 
-## Paramètres des tags
+## Paramètres des Tags
 
-### Paramètre : *num_of\_tags\_displayed\_as\_order\_id*, Défaut : *0*
+### Paramètre : *num_of\_Tags\_displayed\_as\_order\_id*, Défaut : *0*
 
-Indique le nombre de tags affichés avec chaque Ordre. La valeur 0 supprime l'affichage des tags. Tenez compte du fait que l'affichage d'un grand nombre de tags par Ordre peut entraîner des pertes de performances.
+Indique le nombre de Tags affichés avec chaque Ordre. La valeur 0 supprime l'affichage des Tags. Tenez compte du fait que l'affichage d'un grand nombre de Tags par Ordre peut entraîner des pertes de performances.
 
-### Paramètre : *num_of\_workflow\_tags\_displayed*, Valeur par défaut : *0*
+### Paramètre : *num_of\_workflow\_Tags\_displayed*, Valeur par défaut : *0*
 
-Indique le nombre de tags affichées pour chaque Workflow. La valeur 0 supprime l'affichage des tags.
+Indique le nombre de Tags affichées pour chaque Workflow. La valeur 0 supprime l'affichage des Tags.
 
 ## Paramètres d'approbation
 

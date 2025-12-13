@@ -1,12 +1,12 @@
-# Disponibilité du moniteur et du contrôleur
+# Disponibilité du moniteur et du Contrôleur
 
-La vue affiche les indicateurs de disponibilité d'un contrôleur.
+La vue affiche les indicateurs de disponibilité d'un Contrôleur.
 
-Si un groupe de contrôleurs est utilisé, la disponibilité du groupe est prise en compte. Par exemple, si une instance de contrôleur dans un cluster est arrêtée à des fins de maintenance et que l'instance restante reprend la charge, cela ne réduit pas la disponibilité.
+Si un groupe de Contrôleurs est utilisé, la disponibilité du groupe est prise en compte. Par exemple, si une instance de Contrôleur dans un cluster est arrêtée à des fins de maintenance et que l'instance restante reprend la charge, cela ne réduit pas la disponibilité.
 
-Dans le coin supérieur droit de l'écran, vous pouvez cocher la case *Current Controller* (contrôleur actuel) : si cette case n'est pas cochée, la disponibilité sera affichée pour tous les contrôleurs connectés ; dans le cas contraire, les informations ne seront affichées que pour le contrôleur actuellement sélectionné.
+Dans le coin supérieur droit de l'écran, vous pouvez cocher la case *Current Controller* (Contrôleur actuel) : si cette case n'est pas cochée, la disponibilité sera affichée pour tous les Contrôleurs connectés ; dans le cas contraire, les informations ne seront affichées que pour le Contrôleur actuellement sélectionné.
 
-Les utilisateurs doivent savoir que les données historiques relatives à la disponibilité des contrôleurs sont susceptibles d'être purgées par le site [Cleanup Service](/service-cleanup).
+Les utilisateurs doivent savoir que les données historiques relatives à la disponibilité des Contrôleurs sont susceptibles d'être purgées par le site [Cleanup Service](/service-cleanup).
 
 ## Filtres de date
 
@@ -18,7 +18,7 @@ Le coin supérieur droit du panneau permet de sélectionner une plage de dates p
 
 ## Temps d'exécution
 
-Indique le pourcentage de disponibilité confirmée du contrôleur pour la période donnée.
+Indique le pourcentage de disponibilité confirmée du Contrôleur pour la période donnée.
 
 ## Statistiques
 
@@ -26,9 +26,9 @@ Affiche la disponibilité à partir d'un diagramme à barres sur une base quotid
 
 ## Vue d'ensemble
 
-Affiche la disponibilité par contrôleur et par jour dans la période donnée.
+Affiche la disponibilité par Contrôleur et par jour dans la période donnée.
 
-- Le graphique indique en vert les heures pour lesquelles la disponibilité du contrôleur est confirmée. 
+- Le graphique indique en vert les heures pour lesquelles la disponibilité du Contrôleur est confirmée. 
 - La couleur rouge indique une indisponibilité.
 - La couleur grise indique des données manquantes.
 

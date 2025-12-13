@@ -1,4 +1,4 @@
-# Historique des ordres
+# Historique des Ordres
 
 La vue *Historique de l'Ordre* résume l'historique de l'exécution des Ordres. Cela inclut l'historique d'exécution des tâches utilisés dans les Workflows déclenchés par les Ordres associés.
 
@@ -8,12 +8,12 @@ Pour l'Historique des tâches, voir [Task History](/history-tasks).
 
 ## Vue de navigation
 
-La vue de gauche permet de filtrer les tags des Workflows et des Ordres.
+La vue de gauche permet de filtrer les Tags des Workflows et des Ordres.
 
-- les **tags de Workflow** sont attribuées à partir de la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
-- les **tags d'Ordres** sont attribuées à partir de la vue [Configuration - Inventory - Schedules](/configuration-inventory-schedules).
+- les **Tags de Workflow** sont attribuées à partir de la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
+- les **Tags d'Ordres** sont attribuées à partir de la vue [Configuration - Inventory - Schedules](/configuration-inventory-schedules).
 
-Les tags sont sélectionnées à partir des icônes + et - et peuvent être recherchées à l'aide de l'icône Recherche rapide. L'affichage des tags doit être activé à partir de la page [Settings - JOC Cockpit](/settings-joc).
+Les Tags sont sélectionnées à partir des icônes + et - et peuvent être recherchées à l'aide de l'icône Recherche rapide. L'affichage des Tags doit être activé à partir de la page [Settings - JOC Cockpit](/settings-joc).
 
 ## Vue Historique
 
@@ -30,7 +30,7 @@ L'affichage est limité à un maximum de 5000 entrées, sauf indication contrair
   - Si les Ordres sont terminés, le *Statut de l'historique* sera *succès* ou *échec*.
   - Si les Ordres ne sont pas terminés, le *Statut de l'Historique* sera *en cours*.
 - **Ordre State** indique le dernier état de l'Ordre, voir [Order States](/order-states).
-  - Si les ordres sont terminés, l'*état de l'ordre* sera *réussi* ou *échec*.
+  - Si les Ordres sont terminés, l'*état de l'Ordre* sera *réussi* ou *échec*.
   - Si les Ordres ne sont pas terminés, l'état de l'Ordre sera *en cours de traitement*.
 
 ### Accès à la sortie du journal
@@ -59,7 +59,7 @@ L'utilisateur peut appliquer les filtres disponibles en haut de la fenêtre pour
 
 - les boutons de filtrage **Succès**, **Echoué**, **En Progression** limitent l'affichage aux Ordres ayant le *l'Etat* correspondant.
 - les boutons de filtrage **Démarrage plage de dates** permettent de choisir la plage de dates pour l'affichage des Ordres.
-- **La case à cocher "Contrôleur actuel" limite l'affichage des Ordres au contrôleur actuellement sélectionné.
+- **La case à cocher "Contrôleur actuel" limite l'affichage des Ordres au Contrôleur actuellement sélectionné.
 
 ## Références
 

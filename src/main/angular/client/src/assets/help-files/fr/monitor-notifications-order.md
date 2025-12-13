@@ -1,4 +1,4 @@
-moniteur # - Notifications d'ordres
+moniteur # - Notifications d'Ordres
 
 La vue affiche les notifications émises par les Workflows.
 

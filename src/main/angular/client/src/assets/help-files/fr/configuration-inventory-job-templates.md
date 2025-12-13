@@ -4,7 +4,7 @@ La vue *Modele de Tâche* permet de spécifier des modèles gérés de manière 
 
 - Les tâches contiennent une référence à un modèle de tâche qui est appliqué lors de la création de la tâche. 
 - Les tâches peuvent être mises à jour lorsque les modèles de tâches sont modifiés.
-- Les modèles de tâches peuvent être créés pour n'importe quelle classe de tâches, telles que les tâches Shell et les tâches JVM exécutées dans la machine virtuelle Java de l'agent.
+- Les modèles de tâches peuvent être créés pour n'importe quelle classe de tâches, telles que les tâches Shell et les tâches JVM exécutées dans la machine virtuelle Java de l'Agent.
 
 Les modèles de tâches sont gérés à partir des vues suivants :
 
@@ -21,10 +21,10 @@ Pour un modèle de tâche, les entrées suivantes sont disponibles :
   - [Job Options](/configuration-inventory-workflow-job-options)
   - [Job Node Properties](/configuration-inventory-workflow-job-node-properties)
   - [Job Notifications](/configuration-inventory-workflow-job-notifications)
-  - [Job Tags](/configuration-inventory-workflow-job-tags)
+  - [Job Tags](/configuration-inventory-workflow-job-Tags)
 - les **Arguments** sont utilisés pour les travaux de la JVM. 
   - **Requis** spécifie si l'argument est requis ou s'il peut être supprimé lorsqu'il est utilisé dans un tâche.
-  - **La description ajoute une explication à l'argument, qui peut inclure des tags HTML.
+  - **La description ajoute une explication à l'argument, qui peut inclure des Tags HTML.
 
 ## Opérations sur les modèles de tâches
 
@@ -88,7 +88,7 @@ Pour attribuer dynamiquement des valeurs aux **Arguments pour les tâches JVM** 
 - [Job Notifications](/configuration-inventory-workflow-tâche-notifications)
 - [Job Options](/configuration-inventory-workflow-tâche-options)
 - [Job Properties](/configuration-inventory-workflow-tâche-properties)
-- [Job Tags](/configuration-inventory-workflow-tâche-tags)
+- [Job Tags](/configuration-inventory-workflow-tâche-Tags)
 - [Object Naming Rules](/object-naming-rules)
 
 ### Product Knowledge Base

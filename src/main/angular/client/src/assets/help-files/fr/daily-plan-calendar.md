@@ -1,12 +1,12 @@
 # Calendrier du Plan Quotidien
 
-Un certain nombre d'opérations sont disponibles à partir du calendrier du Plan Quotidien. 
+Un certain nombre d'opérations sont disponibles à partir du Calendrier du Plan Quotidien. 
 
 Pour les opérations générales disponibles à partir du Plan Quotidien, voir [Daily Plan](/daily-plan).
 
 ## Sélection d'une date unique
 
-En cliquant sur une date du calendrier, vous afficherez les Ordres disponibles pour la date sélectionnée.
+En cliquant sur une date du Calendrier, vous afficherez les Ordres disponibles pour la date sélectionnée.
 
 ## Sélection de plusieurs dates
 
@@ -14,21 +14,21 @@ Pour sélectionner plusieurs dates
 
 - maintenez la souris enfoncée et faites-la glisser pour sélectionner la plage de dates,
 - ou appuyez sur la touche Ctrl et sélectionnez la date de début et la date de fin en cliquant sur la souris,
-- ou cliquez sur l'icône du calendrier et sélectionnez la date de début et la date de fin à l'aide d'un clic de souris.
+- ou cliquez sur l'icône du Calendrier et sélectionnez la date de début et la date de fin à l'aide d'un clic de souris.
 
-Les dates sélectionnées seront mises en évidence et les boutons *Supprimer l'ordre* et *Annuler l'ordre* seront disponibles sous le menu principal.
+Les dates sélectionnées seront mises en évidence et les boutons *Supprimer l'Ordre* et *Annuler l'Ordre* seront disponibles sous le menu principal.
 
 Les boutons de filtrage suivants limitent l'étendue des opérations : 
 
 - **Tous** : L'opération peut être appliquée aux Ordres ayant n'importe quel statut.
-- **Planifié** : Les opérations *soumettre* et *supprimer* peuvent être appliquées aux Ordres *planifiés* qui ne sont pas *soumis* au contrôleur.
-- **Soumis** : L'opération *annuler* peut être appliquée aux Ordres *soumis* au contrôleur et aux agents.
+- **Planifié** : Les opérations *soumettre* et *supprimer* peuvent être appliquées aux Ordres *planifiés* qui ne sont pas *soumis* au Contrôleur.
+- **Soumis** : L'opération *annuler* peut être appliquée aux Ordres *soumis* au Contrôleur et aux Agents.
 - **Terminés** : L'opération *annuler* peut être appliquée aux Ordres qui se sont terminés.
-- **En retard** est un filtre supplémentaire qui s'ajoute aux états des ordres et qui indique que les ordres ont été lancés plus tard que prévu.
+- **En retard** est un filtre supplémentaire qui s'ajoute aux états des Ordres et qui indique que les Ordres ont été lancés plus tard que prévu.
 
 ### Annuler les Ordres
 
-- Lorsqu'elle est appliquée aux Ordres *soumis* dans la plage de dates sélectionnée, les Ordres sont rappelés par le contrôleur et les agents.
+- Lorsqu'elle est appliquée aux Ordres *soumis* dans la plage de dates sélectionnée, les Ordres sont rappelés par le Contrôleur et les Agents.
 - Lorsqu'elle est appliquée à des Ordres *soumis* ou *terminés*, les Ordres seront remis à l'état *planifié*.
 - L'opération est ignorée pour les Ordres *planifiés*.
 
@@ -41,7 +41,7 @@ Les boutons de filtrage suivants limitent l'étendue des opérations :
 
 ### Créer un Plan Quotidien
 
-L'opération est disponible à partir d'un bouton situé sous le widget du calendrier pour une date individuelle et pour une plage de dates.
+L'opération est disponible à partir d'un bouton situé sous le widget du Calendrier pour une date individuelle et pour une plage de dates.
 
 - Pour les jours sélectionnés, le Plan Quotidien sera créé.
   - Les utilisateurs peuvent choisir de créer tous les Ordres ou les Ordres des Plannifications et Workflows sélectionnés, éventuellement limités par des dossiers.
@@ -51,7 +51,7 @@ L'opération est disponible à partir d'un bouton situé sous le widget du calen
 
 ### Supprimer le Plan Quotidien
 
-L'opération est disponible à partir d'un bouton situé sous le widget du calendrier pour une date individuelle et pour une plage de dates.
+L'opération est disponible à partir d'un bouton situé sous le widget du Calendrier pour une date individuelle et pour une plage de dates.
 
 - Pour les jours sélectionnés, le Plan Quotidien sera supprimé, à condition qu'aucun Ordre *soumis* ou *terminés* ne soit disponible. Si des Ordres *planifiés* sont disponibles, ils seront abandonnés avec le Plan Quotidien.
 - Si le Plan Quotidien pour une date donnée est supprimé, la prochaine exécution du Service de Plan Quotidien planifiera les Ordres pour cette date, à condition que la date soit dans le champ des jours à venir pour lesquels les Ordres sont planifiés, voir [Settings - Daily Plan](/settings-daily-plan).

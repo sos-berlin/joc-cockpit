@@ -3,11 +3,11 @@
 JS7 fournit des notifications en cas d'avertissements et d'erreurs des produits JS7 et en cas d'échec des Tâches et des Workflows. Des notifications peuvent également être envoyées en cas d'exécution réussie des Tâches et des Workflows.
 
 - Les notifications sont basées sur une surveillance continue par le JOC Cockpit à partir de [Monitor Service](/service-monitor) et sont visualisées dans la vue [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor). Il s'agit notamment de
-  - la surveillance de la disponibilité du contrôleur et des agents,
+  - la surveillance de la disponibilité du Contrôleur et des Agents,
   - la surveillance de l'exécution des Workflows et des Jobs.
 - Les notifications sont transmises par l'un des moyens suivants :
   - par courriel électronique, pour plus de détails, voir [JS7 - Notifications - Configuration Element MailFragment](https://kb.sos-berlin.com/display/JS7/JS7+-+Notifications+-+Configuration+Element+MailFragment) et [JS7 - How to set up e-mail notification for tâches](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+set+up+e-mail+notification+for+tâches).
-  - en utilisant un outil CLI tel qu'un agent System Monitor pour [JS7 - Passive Checks with a System Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Passive+Checks+with+a+System+Monitor), pour plus de détails, voir [JS7 - Notifications - Configuration Element CommandFragment](https://kb.sos-berlin.com/display/JS7/JS7+-+Notifications+-+Configuration+Element+CommandFragment).
+  - en utilisant un outil CLI tel qu'un Agent System Monitor pour [JS7 - Passive Checks with a System Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Passive+Checks+with+a+System+Monitor), pour plus de détails, voir [JS7 - Notifications - Configuration Element CommandFragment](https://kb.sos-berlin.com/display/JS7/JS7+-+Notifications+-+Configuration+Element+CommandFragment).
 
 Les notifications sont gérées à partir de la sous-vue Configuration-&gt;Notification dans le JOC Cockpit. La configuration est stockée au format XML et est validée par rapport au *Schéma XSD assigné* indiqué en haut de la page.
 

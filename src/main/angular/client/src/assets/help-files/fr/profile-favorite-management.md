@@ -9,29 +9,29 @@ Pour plus de détails, voir [JS7 - Inventory Favorites](https://kb.sos-berlin.co
 
 ## Agents favoris
 
-Les utilisateurs peuvent trouver un plus grand nombre d'agents dans leur environnement de Plannification à partir de [Standalone Agents](/initial-operation-register-agent-standalone) et de [Subagent Clusters](/initial-operation-register-agent-subagent-cluster). Au lieu de faire défiler de longues listes, les utilisateurs peuvent spécifier leurs *Agents favoris* qui figureront en haut de la liste des agents assignables.
+Les utilisateurs peuvent trouver un plus grand nombre d'Agents dans leur environnement de Plannification à partir de [Standalone Agents](/initial-operation-register-agent-standalone) et de [Subagent Clusters](/initial-operation-register-agent-subagent-cluster). Au lieu de faire défiler de longues listes, les utilisateurs peuvent spécifier leurs *Agents favoris* qui figureront en haut de la liste des Agents assignables.
 
-### Ajouter des agents favoris
+### Ajouter des Agents favoris
 
-*Les agents favoris* peuvent être ajoutés directement lors de l'affectation d'agents dans l'onglet [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-tâche-properties). En cliquant sur le lien \* d'un agent, vous ajouterez l'agent en question à la liste des favoris.
+*Les Agents favoris* peuvent être ajoutés directement lors de l'affectation d'Agents dans l'onglet [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-tâche-properties). En cliquant sur le lien \* d'un Agent, vous ajouterez l'Agent en question à la liste des favoris.
 
-Les utilisateurs peuvent ajouter des *agents favoris* à partir de leur *profil* en utilisant le bouton *Ajouter un favori*. Cela permet de sélectionner l'agent à ajouter.
+Les utilisateurs peuvent ajouter des *agents favoris* à partir de leur *profil* en utilisant le bouton *Ajouter un favori*. Cela permet de sélectionner l'Agent à ajouter.
 
-### Liste des agents favoris
+### Liste des Agents favoris
 
 La liste des *agents favoris* peut être limitée à partir du bouton *Partagé avec moi*. Cela limite la liste aux favoris partagés par d'autres utilisateurs.
 
-Les utilisateurs peuvent limiter davantage la liste en spécifiant une chaîne de caractères dans le champ de saisie *Recherche* qui sera recherchée dans le nom de l'agent. La recherche implique une troncature à gauche et à droite.
+Les utilisateurs peuvent limiter davantage la liste en spécifiant une chaîne de caractères dans le champ de saisie *Recherche* qui sera recherchée dans le nom de l'Agent. La recherche implique une troncature à gauche et à droite.
 
 Les utilisateurs peuvent ordonner la liste en déplaçant un *Agent favori* vers une position antérieure ou postérieure.
 
-### Opérations sur les agents favoris
+### Opérations sur les Agents favoris
 
 Les opérations suivantes sont disponibles à partir du menu d'action à 3 points d'un *agent favori* :
 
-- **Éditer** permet de modifier l'agent.
+- **Éditer** permet de modifier l'Agent.
 - **Partager** permet de partager le favori avec d'autres utilisateurs. Les favoris partagés sont indiqués par une icône associée.
-- **Supprimer** supprime l'agent concerné de la liste des favoris.
+- **Supprimer** supprime l'Agent concerné de la liste des favoris.
 
 ## Agents favoris
 
@@ -39,13 +39,13 @@ Les utilisateurs peuvent détenir un plus grand nombre de *Facettes* dans leur i
 
 Lors de l'attribution de *Facettes* aux variables de Workflow, au lieu de faire défiler de longues listes, les utilisateurs peuvent spécifier leurs *Facettes préférées* qui figureront en haut de la liste.
 
-### Ajout des agents aux favoris
+### Ajout des Agents aux favoris
 
 Les *agents favorites* peuvent être ajoutés directement lors de la spécification des Variables de Workflow dans la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows). En cliquant sur le lien \* d'une *Facette*, vous ajoutez la *Facette* correspondante à la liste des favoris.
 
 Les utilisateurs peuvent ajouter des *agent favoris* à partir de leur *Profil* en utilisant le bouton *Ajouter un favori*. Cela permet de spécifier le nom de l'*agent* et l'expression régulière associée qui doit être ajoutée.
 
-### Liste des agents favorites
+### Liste des Agents favorites
 
 La liste des *Agents Favoris* peut être limitée à partir du bouton *Shared with me*. Cela limite la liste aux favoris partagés par d'autres utilisateurs.
 
@@ -53,7 +53,7 @@ Les utilisateurs peuvent limiter davantage la liste en spécifiant une chaîne d
 
 Les utilisateurs peuvent ordonner la liste en déplaçant une *Agent Favori* vers une position antérieure ou postérieure.
 
-### Opérations sur les agents favorits
+### Opérations sur les Agents favorits
 
 Les opérations suivantes sont disponibles à partir du menu d'action à 3 points d'une *Agent Favoris* :
 

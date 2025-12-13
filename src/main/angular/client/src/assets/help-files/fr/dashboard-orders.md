@@ -13,13 +13,13 @@ L'Affichage *Ordres* fournit des informations sur les Ordres provenant des sourc
 L'affichage *Ordres* fournit des informations sur l'état actuel des Ordres. L'affichage est mis à jour lorsque l'état des Ordres change.
 
 - **En attente** Les Ordres ont été ajoutés aux Workflows sans spécifier d'heure de début. Une heure de début peut leur être attribuée ultérieurement.
-- **Planifiés** Les ordres ont été ajoutés aux Workflows et sont programmés pour être exécutés à une date et une heure ultérieures.
-- **En cours** Les ordres sont traités par des instructions de Workflow mais ne sont pas en cours d'exécution. 
-- **En cours d'exécution** Les ordres sont en cours d'exécution d'une tâche. 
-- **Suspendu** Les ordres ont été interrompus par une intervention de l'utilisateur et peuvent être repris.
+- **Planifiés** Les Ordres ont été ajoutés aux Workflows et sont programmés pour être exécutés à une date et une heure ultérieures.
+- **En cours** Les Ordres sont traités par des instructions de Workflow mais ne sont pas en cours d'exécution. 
+- **En cours d'exécution** Les Ordres sont en cours d'exécution d'une tâche. 
+- **Suspendu** Les Ordres ont été interrompus par une intervention de l'utilisateur et peuvent être repris.
 - **Les Ordres ont terminé un Workflow mais n'ont pas été supprimés, par exemple si une Source d'Ordre de Fichier est utilisée pour l'observation de fichiers et que le Workflow n'a pas (re)déplacé les fichiers entrants. Dans ce cas, l'Ordre restera en place tant que le fichier existera dans le répertoire d'arrivée.
 - **Les Ordres sont mis en attente par l'instruction *Prompt* dans un Workflow et nécessitent la confirmation de l'utilisateur pour continuer l'exécution du Workflow.
-- **En attente** Les ordres attendent une ressource telle qu'un *verrouillage de ressource*, un *avis*, une *réponse* ou un *cyclage* ou un processus si l'agent utilisé spécifie une limite de processus qui est dépassée.
+- **En attente** Les Ordres attendent une ressource telle qu'un *verrouillage de ressource*, un *avis*, une *réponse* ou un *cyclage* ou un processus si l'Agent utilisé spécifie une limite de processus qui est dépassée.
 - les Ordres **Bloqués** ne peuvent pas démarrer, par exemple si l'Agent n'est pas joignable depuis l'ajout de l'Ordre.
 - **Les Ordres échoués** indiquent qu'une tâche a échoué ou qu'une *instruction d'échec* empêche la poursuite de l'Ordre. 
 
@@ -29,12 +29,12 @@ En cliquant sur le nombre d'Ordres indiqué, vous accédez au site [Orders Overv
 
 Le bouton déroulant situé dans le coin supérieur droit de l'affichage permet de sélectionner des Ordres dans une fourchette de dates :
 
-- **Tous** affiche tous les Ordres disponibles auprès du contrôleur et des agents.
+- **Tous** affiche tous les Ordres disponibles auprès du Contrôleur et des Agents.
 - **Aujourd'hui** Les Ordres sont liés à la journée en cours qui est calculée à partir du fuseau horaire de l'utilisateur [Profile - Preferences](/profile-preferences).
   - **En attente** Ordres sans heure de début,
   - **Ordres planifiés** avec une heure de début pour le jour en cours,
   - **Ordres en cours** à partir de n'importe quelle date antérieure,
-  - ordres en cours d'exécution** à partir de n'importe quelle date antérieure, **Ordres en cours d'exécution** à partir de n'importe quelle date antérieure,
+  - Ordres en cours d'exécution** à partir de n'importe quelle date antérieure, **Ordres en cours d'exécution** à partir de n'importe quelle date antérieure,
   - **Ordres suspendus** à partir de n'importe quelle date antérieure,
   - **Ordres terminés** à partir de n'importe quelle date antérieure,
   - **Ordres en attente** à partir de n'importe quelle date antérieure,

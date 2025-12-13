@@ -11,10 +11,10 @@ Le menu de gauche est organisé en onglets qui permettent de naviguer à partir 
 
 - **La navigation par dossier** offre l'icône chevron vers le bas lorsque vous survolez le nom d'un dossier. Cela permet d'afficher les Workflows du dossier en cours et de tous les sous-dossiers. L'utilisation de l'icône de chevron vers le haut réinitialise la sélection au dossier actuel.
 - Le filtrage par tag est proposé à partir des onglets suivants :
-  - **Les tags de Workflow** sont attribuées à partir de la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
-  - les **tags d'ordres** sont attribuées à partir de la vue [Configuration - Inventory - Schedules](/configuration-inventory-schedules).
+  - Les **Tags de Workflow** sont attribuées à partir de la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
+  - les **Tags d'Ordres** sont attribuées à partir de la vue [Configuration - Inventory - Schedules](/configuration-inventory-schedules).
 
-Les tags sont sélectionnées à partir des icônes + et - et peuvent être recherchées à l'aide de l'icône Recherche rapide. L'affichage des tags doit être activé à partir de la page [Settings - JOC Cockpit](/settings-joc).
+Les Tags sont sélectionnées à partir des icônes + et - et peuvent être recherchées à l'aide de l'icône Recherche rapide. L'affichage des Tags doit être activé à partir de la page [Settings - JOC Cockpit](/settings-joc).
 
 ## Panneau Workflow
 
@@ -22,11 +22,11 @@ Les tags sont sélectionnées à partir des icônes + et - et peuvent être rech
 
 La partie supérieure de la fenêtre contient le récapitulatif des Ordres, comme sur le site [Dashboard - Orders](/dashboard-orders). Les utilisateurs peuvent cliquer sur le nombre d'Ordres indiqué pour un état donné afin d'ouvrir une fenêtre contextuelle qui affichera la liste des Ordres.
 
-Le résumé de l'Ordre est indiqué pour les Ordres liés aux Workflows affichés pour les dossiers ou les tags sélectionnés.
+Le résumé de l'Ordre est indiqué pour les Ordres liés aux Workflows affichés pour les dossiers ou les Tags sélectionnés.
 
 ### Affichage des Workflows
 
-- **Le *Nom du Workflow** est le nom unique attribué à un Workflow.
+- Le **Nom du Workflow** est le nom unique attribué à un Workflow.
   - En cliquant sur le *Nom du Workflow*, vous ferez apparaître le panneau *Historique* dans la partie inférieure de la fenêtre qui affiche l'historique récent de l'exécution du Workflow.
   - En cliquant sur la grande icône de flèche vers le bas, vous afficherez tous les travaux et toutes les instructions de Workflow.
   - En cliquant sur la petite icône flèche vers le bas, vous afficherez les travaux et les instructions de Workflow de niveau supérieur.
@@ -36,11 +36,11 @@ Le résumé de l'Ordre est indiqué pour les Ordres liés aux Workflows affiché
   - en format tabulaire qui se concentre sur une structure concise et économise de l'espace dans la fenêtre.
   - en format graphique qui est plus parlant pour un certain nombre d'utilisateurs.
 - **Date de déploiement** indique la date à laquelle le Workflow a été déployé.
-- **Le statut du déploiement** indique si le Workflow est déployé dans le contrôleur et les agents.
-  - **Synchronisé** Les Workflows sont déployés et sont disponibles auprès du contrôleur et des agents.
-  - **Non synchronisé** Les Workflows ne sont pas déployés vers le contrôleur et les agents mais sont disponibles uniquement à partir de l'inventaire.
+- **Le statut du déploiement** indique si le Workflow est déployé dans le Contrôleur et les Agents.
+  - **Synchronisé** Les Workflows sont déployés et sont disponibles auprès du Contrôleur et des Agents.
+  - **Non synchronisé** Les Workflows ne sont pas déployés vers le Contrôleur et les Agents mais sont disponibles uniquement à partir de l'inventaire.
   - **Les Workflows suspendus** sont gelés, ils acceptent les Ordres mais n'autorisent pas le démarrage des Ordres jusqu'à ce que les Workflows reprennent.
-  - **Les Workflows en attente** attendent la confirmation par un ou plusieurs agents que le Workflow est suspendu ou repris.
+  - **Les Workflows en attente** attendent la confirmation par un ou plusieurs Agents que le Workflow est suspendu ou repris.
 - **No. d'Ordres** indique le nombre d'Ordres assignés au Workflow. 
   - Jusqu'à trois Ordres sont affichés directement avec le Workflow. Ils offrent un menu d'action pour les opérations de l'Ordre.
     - Les utilisateurs peuvent cliquer sur l'ID de l'Ordre indiqué pour afficher le journal de sortie de l'Ordre à partir de [Order Log View](/order-log). Le journal comprend la sortie créée par tous les tâches exécutés avec le Workflow.
@@ -57,12 +57,12 @@ Cette vue s'affiche dans la partie inférieure de la fenêtre lorsque les utilis
 ### Historique de l'Ordre
 
 - **L'ID de l'Ordre** est l'identifiant unique attribué à un Ordre. En cliquant sur l'icône de la flèche vers le bas, les variables de l'Ordre et les Ordres passés par l'Ordre s'affichent. 
-- **Tag** indique la dernière position d'un Ordre dans le Workflow. Les utilisateurs peuvent assigner des *tags* aux instructions de Workflow qui seront affichées et sinon la position technique sera indiquée.
+- **Tag** indique la dernière position d'un Ordre dans le Workflow. Les utilisateurs peuvent assigner des *Tags* aux instructions de Workflow qui seront affichées et sinon la position technique sera indiquée.
 - **État** indique le dernier résultat dans la vie de l'Ordre.
   - Si les Ordres sont terminés, le *Statut de l'historique* sera *succès* ou *échec*.
   - Si les Ordres ne sont pas terminés, l'état de l'historique sera *en cours*.
 - **État de l'Ordre** indique le dernier état de l'Ordre, voir [Order States](/order-states).
-  - Si les ordres sont terminés, l'*état de l'ordre* sera *réussi* ou *échec*.
+  - Si les Ordres sont terminés, l'*état de l'Ordre* sera *réussi* ou *échec*.
   - Si les Ordres ne sont pas terminés, l'état de l'Ordre sera *en cours de traitement*.
 
 Les options suivantes sont disponibles pour l'accès à la sortie du journal :
@@ -112,7 +112,7 @@ Les opérations suivantes sont disponibles pour les tâches à partir du menu d'
 
 - **Ignorer** empêche un Ordre d'exécuter le tâche associé et le fait passer à l'instruction de Workflow suivante.
 - **Inclure ** rétablit un taĉhe précédemment ignoré.
-- **Arrêter** suspend les Ordres arrivant à la tâche. Les ordres peuvent être poursuivis à partir d'une opération *Reprise* qui permet de continuer le traitement à partir d'un autre noeud de Workflow ou de forcer le traitement de la taĉhe arrêté.
+- **Arrêter** suspend les Ordres arrivant à la tâche. Les Ordres peuvent être poursuivis à partir d'une opération *Reprise* qui permet de continuer le traitement à partir d'un autre noeud de Workflow ou de forcer le traitement de la taĉhe arrêté.
 - **Debloquer ** rétablit une tâche précédemment arrêté.
 
 ### Opérations sur les Ordres
@@ -133,10 +133,10 @@ D'autres opérations spécifiques à l'état de l'Ordre peuvent être disponible
 Les utilisateurs peuvent appliquer des filtres pour limiter l'affichage des Workflows. Des boutons de filtrage sont disponibles en haut de la fenêtre :
 
 - **Agents** permet de filtrer les Workflows contenant des tâches affectés à un ou plusieurs Agents sélectionnés.
-- **Synchronisés** Les Workflows sont déployés et sont disponibles avec le contrôleur et les agents.
-- **Non synchronisés** Les Workflows ne sont pas déployés auprès du contrôleur et des agents, mais sont uniquement disponibles à partir de l'inventaire.
+- **Synchronisés** Les Workflows sont déployés et sont disponibles avec le Contrôleur et les Agents.
+- **Non synchronisés** Les Workflows ne sont pas déployés auprès du Contrôleur et des Agents, mais sont uniquement disponibles à partir de l'inventaire.
 - **Les Workflows suspendus** sont gelés, ils acceptent les Ordres mais n'autorisent pas le démarrage des Ordres jusqu'à ce que les Workflows reprennent.
-- **Les Workflows en suspens** attendent la confirmation par un ou plusieurs agents que le Workflow est suspendu.
+- **Les Workflows en suspens** attendent la confirmation par un ou plusieurs Agents que le Workflow est suspendu.
 - **Filtre d'Ordres** permet de spécifier la plage de dates pour laquelle les Ordres *plannifiés* seront affichés pour les Workflows sélectionnés.
 
 Le *Filtre avancé* offre des critères plus détaillés pour le filtrage des Workflows.
@@ -165,4 +165,3 @@ Le site [Workflows - Search](/workflows-search) offre des critères pour recherc
 
 - [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules)
 - [JS7 - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows)
-

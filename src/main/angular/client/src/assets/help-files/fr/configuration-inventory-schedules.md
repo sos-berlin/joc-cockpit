@@ -27,11 +27,11 @@ Pour une Plannification, les entrées suivantes sont disponibles :
 - **Planifier l'Ordre automatiquement** spécifie que la Plannification sera prise en compte par le [Daily Plan Service](/service-daily-plan).
 - **Soumettre l'Ordre au Contrôleur lorsqu'il est planifié** spécifie que les Ordres seront soumis immédiatement à un Contrôleur lorsqu'ils sont planifiés. Sans cette option, le service Plan Quotidien soumettra des Ordres *planifiés* basés sur [Settings - Daily Plan](/settings-daily-plan).
 
-### Paramétrage de l'ordre
+### Paramétrage de l'Ordre
 
 - **Nom de l'Ordre** : Un nom optionnel qui peut être utilisé pour filtrer les Ordres dans un certain nombre de vues.
 - **Nom Tags** : Il est possible de spécifier un nombre quelconque d'étiquettes qui seront ajoutées à l'Ordre. Les tag de l'Ordre sont affichées dans un certain nombre de vues si elles sont spécifiées à partir de la page [Settings - JOC Cockpit](/settings-joc).
-- **Ignorer si la période d'heures d'admission  ne corrrespond pas à la date de l'ordre** : Les commandes peuvent être limitées à certains jours et/ou à certains créneaux horaires. Les ordres qui arrivent en dehors d'un créneau horaire doivent attendre le prochain créneau disponible. Cette option force les travaux à démarrer indépendamment de ces limitations.
+- **Ignorer si la période d'heures d'admission  ne corrrespond pas à la date de l'Ordre** : Les commandes peuvent être limitées à certains jours et/ou à certains créneaux horaires. Les Ordres qui arrivent en dehors d'un créneau horaire doivent attendre le prochain créneau disponible. Cette option force les travaux à démarrer indépendamment de ces limitations.
 
 ### Position de l'Ordre
 
@@ -46,7 +46,7 @@ Si un Ordre ne doit pas démarrer à partir du premier nœud du Workflow, une po
   - Si une *position de bloc* est spécifiée, n'importe quel nœud de même niveau à l'intérieur du bloc peut être spécifié avant que l'Ordre ne se termine.
   - Il est possible de spécifier plus d'une *position finale*.
 - **Priorité** :
-  - Si l'Ordre doit répondre à une instruction de verrouillage des ressources dans le Workflow qui limite le parallélisme, sa *Priorité* détermine la position dans la file d'attente des Ordres en attente.
+  - Si l'Ordre doit répondre à une instruction de Verrouillage des Ressources dans le Workflow qui limite le parallélisme, sa *Priorité* détermine la position dans la file d'attente des Ordres en attente.
   - les *priorités* sont spécifiées à partir de nombres entiers négatifs, nuls et positifs ou à partir des raccourcis proposés. Une *priorité* plus élevée est prioritaire. Les raccourcis offrent les valeurs suivantes :
     - **Basse** : -20000
     - **Inférieur à la normale** : -10000

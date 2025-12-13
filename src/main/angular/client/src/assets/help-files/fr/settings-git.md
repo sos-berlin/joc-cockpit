@@ -18,7 +18,7 @@ Spécifie si [Resource Locks](/resources-resource-locks) est considéré comme l
 
 ### Paramètre : *git\_hold\_file\_order\_sources*, Valeur par défaut : *rollout*
 
-Ordonne si les sources d'ordre de fichier sont considérées comme locales à un environnement ou destinées à être déployées avec Git.
+Ordonne si les sources d'Ordre de fichier sont considérées comme locales à un environnement ou destinées à être déployées avec Git.
 
 ### Paramètre : *git_hold\Nnotice\Nboards*, Valeur par défaut : *rollout*
 
@@ -38,7 +38,7 @@ Indique si les ressources de tâches sont considérées comme locales à un envi
 
 ### Paramètre : *git_hold\_calendars*, Valeur par défaut : *local*
 
-Indique si les calendriers sont considérés comme locaux à un environnement ou s'ils sont destinés à être déployés avec Git.
+Indique si les Calendriers sont considérés comme locaux à un environnement ou s'ils sont destinés à être déployés avec Git.
 
 ### Paramètre : *git_hold\_schedules*, Valeur par défaut : *local*
 

@@ -24,7 +24,7 @@ Indique le nombre de jours à l'avance pour lesquels les Ordres sont générés 
 
 ### Paramètre : *days_ahead\_submit*, Valeur par défaut : *3*
 
-Spécifie le nombre de jours à l'avance pour lesquels les Ordres *planifiés* sont soumis aux contrôleurs et sont rendus disponibles avec l'état *soumis*. Une valeur de *0* indique qu'aucun Ordre ne doit être soumis et désactive la fonctionnalité.
+Spécifie le nombre de jours à l'avance pour lesquels les Ordres *planifiés* sont soumis aux Contrôleurs et sont rendus disponibles avec l'état *soumis*. Une valeur de *0* indique qu'aucun Ordre ne doit être soumis et désactive la fonctionnalité.
 
 ### Setting : *submit_orders\_individually*, Défaut : *false*
 

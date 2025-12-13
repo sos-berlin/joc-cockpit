@@ -19,7 +19,7 @@ Les utilisateurs peuvent créer leur propre certificat de signature :
 - à partir d'une autorité de certification (AC) privée ou publique. L'utilisation d'une autorité de certification privée est expliquée à l'adresse [JS7 - How to create X.509 Signing Certificates](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+create+X.509+Signing+Certificates).
 - à partir de l'autorité de certification intégrée à JOC Cockpit.
 
-Lorsque vous utilisez une autorité de certification privée ou publique, le certificat de l'autorité de certification racine ou le certificat de l'autorité de certification intermédiaire qui a été utilisé pour signer le certificat de signature doit être mis à la disposition des instances du contrôleur et de l'agent. Le certificat doit être disponible dans un fichier au format PEM situé dans le répertoire *./config/private/trusted-x509-keys* du contrôleur et de l'agent.
+Lorsque vous utilisez une autorité de certification privée ou publique, le certificat de l'autorité de certification racine ou le certificat de l'autorité de certification intermédiaire qui a été utilisé pour signer le certificat de signature doit être mis à la disposition des instances du Contrôleur et de l'Agent. Le certificat doit être disponible dans un fichier au format PEM situé dans le répertoire *./config/private/trusted-x509-keys* du Contrôleur et de l'Agent.
 
 ## Opérations sur le certificat de signature
 

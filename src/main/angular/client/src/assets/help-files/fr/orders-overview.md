@@ -12,12 +12,12 @@ Le vue de gauche indique le nombre d'Ordres disponibles par état. Si vous cliqu
 
 ## Vue des Tags
 
-La vue central est organisé en onglets qui permettent de filtrer les Ordres par tags.
+La vue central est organisé en onglets qui permettent de filtrer les Ordres par Tags.
 
-- les **tags de Workflow** sont attribuées à partir de la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
-- les **tags d'ordres** sont attribuées à partir de la vue [Configuration - Inventory - Schedules](/configuration-inventory-schedules).
+- les **Tags de Workflow** sont attribuées à partir de la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
+- les **Tags d'Ordres** sont attribuées à partir de la vue [Configuration - Inventory - Schedules](/configuration-inventory-schedules).
 
-Les tags sont sélectionnées à partir des icônes + et - et peuvent être recherchées à l'aide de l'icône de recherche rapide. L'affichage des tags doit être activé à partir de la page [Settings - JOC Cockpit](/settings-joc).
+Les Tags sont sélectionnées à partir des icônes + et - et peuvent être recherchées à l'aide de l'icône de recherche rapide. L'affichage des Tags doit être activé à partir de la page [Settings - JOC Cockpit](/settings-joc).
 
 ## Vue Ordre
 
@@ -35,7 +35,7 @@ Cette vue présente la liste des Ordres pour l'état donné :
 
 ## Vue Historique
 
-Cette vue s'affiche sur la partie inférieure de la fenêtre lorsque l'utilisateur clique sur l'identifiant de l'ordre. La vue contient des sous-onglets pour *Historique des Ordres* et *le Journal d'Audit*.
+Cette vue s'affiche sur la partie inférieure de la fenêtre lorsque l'utilisateur clique sur l'identifiant de l'Ordre. La vue contient des sous-onglets pour *Historique des Ordres* et *le Journal d'Audit*.
 
 ### Historique de l'Ordre
 
@@ -135,7 +135,7 @@ Les utilisateurs peuvent spécifier des dates et heures absolues ou relatives.
 
 ### Filtre de résultats
 
-Le filtre limite l'affichage aux *Identifiants d'ordres* et aux *Noms de Workflow* correspondants. Le filtre est appliqué aux Ordres visibles et ne tient pas compte des majuscules et minuscules.
+Le filtre limite l'affichage aux *Identifiants d'Ordres* et aux *Noms de Workflow* correspondants. Le filtre est appliqué aux Ordres visibles et ne tient pas compte des majuscules et minuscules.
 
 ## Références
 

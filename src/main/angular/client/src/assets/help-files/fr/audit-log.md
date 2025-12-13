@@ -10,7 +10,7 @@ La requête identifie le point de terminaison utilisé et propose d'afficher le 
 
 ## Catégories
 
-- **CONTROLLER** indique les opérations du contrôleur telles que l'ajout d'Ordres à la demande.
+- **CONTROLLER** indique les opérations du Contrôleur telles que l'ajout d'Ordres à la demande.
 - **DAILYPLAN** indique les modifications apportées au Plan Quotidien.
 - **IDENTITY** indique les modifications apportées aux services d'identité.
 - **INVENTORY** indique les modifications de l'inventaire telles que le stockage des Workflows.

@@ -36,7 +36,7 @@ Les notifications spécifiques par tâche ont la priorité sur les notifications
   - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflows-tâche-options)
   - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflows-tâche-properties)
   - [Configuration - Inventory - Workflows - Job Node Properties](/configuration-inventory-workflows-tâche-node-properties)
-  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-tâche-tags)
+  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-tâche-Tags)
 - [Monitor - Order Notifications](/monitor-notifications-order)
 - [Monitor - System Notifications](/monitor-notifications-system)
 - [Notifications](/notifications)

@@ -29,15 +29,15 @@ SbNCv0bJswLadTFEcz8ZoYP7alXJzj9FQQ==
 -----END CERTIFICAT-----
 </pre>
 
-- **Chemin d'accès au fichier de la Clé Privée** spécifie l'emplacement de la clé privée et des agents associés.
+- **Chemin d'accès au fichier de la Clé Privée** spécifie l'emplacement de la clé privée et des Agents associés.
 - **Dossier de la Ressource de tâches** spécifie le dossier d'inventaire dans lequel la ressource d'emploi contenant le certificat sera stockée. Une hiérarchie de dossiers peut être spécifiée à l'aide de barres obliques, comme dans /a/b/c. Les dossiers non existants seront créés.
 
 ## Opérations sur le certificat
 
 Les opérations suivantes sont disponibles à partir des liens :
 
-- **Afficher l'utilisation du Certificat par les Agents** affiche le *nom de l'agent* et l'URL des agents auxquels le certificat a été attribué. 
-- **Attribuer le certificat aux agents** permet de sélectionner les agents autonomes et les agents de groupe auxquels le certificat est attribué. Les utilisateurs doivent veiller à ce que l'agent concerné détienne le fichier de clé privée à l'emplacement spécifié dans la propriété *Chemin d'accès au fichier de clé privée*. Les utilisateurs peuvent sélectionner les agents qui connaissent la clé privée.
+- **Afficher l'utilisation du Certificat par les Agents** affiche le *nom de l'Agent* et l'URL des Agents auxquels le certificat a été attribué. 
+- **Attribuer le certificat aux Agents** permet de sélectionner les Agents autonomes et les Agents de groupe auxquels le certificat est attribué. Les utilisateurs doivent veiller à ce que l'Agent concerné détienne le fichier de clé privée à l'emplacement spécifié dans la propriété *Chemin d'accès au fichier de clé privée*. Les utilisateurs peuvent sélectionner les Agents qui connaissent la clé privée.
 - **Test de cryptage** permet d'effectuer un test de cryptage :
   - En cliquant sur le lien, vous ouvrez le champ de saisie *Texte clair* dans lequel vous pouvez ajouter une chaîne de caractères telle que *secret*.
   - À droite du champ de saisie, l'icône de cryptage est proposée. En cliquant sur l'icône, l'étiquette *Résultat du cryptage* s'affiche avec le résultat correspondant.

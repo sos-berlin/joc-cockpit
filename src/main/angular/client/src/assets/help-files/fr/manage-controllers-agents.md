@@ -1,46 +1,46 @@
-# Gérer les contrôleurs et les agents
+# Gérer les Contrôleurs et les Agents
 
 La page *Gerer Contrôleurs/Agents* est utilisée pour 
 
 - pour enregistrer des Contrôleurs autonomes et des Clusters de Contrôleurs,
-- pour enregistrer les agents autonomes auprès des contrôleurs,
-- d'enregistrer des agents de grappe avec des contrôleurs,
-  - spécifier une grappe d'*agents directeurs*, - spécifier un nombre quelconque de *sous-agents*
+- pour enregistrer les Agents autonomes auprès des Contrôleurs,
+- d'enregistrer des Agents de grappe avec des Contrôleurs,
+  - spécifier une grappe d'*Agents Directeurs*, - spécifier un nombre quelconque de *sous-agents*
   - en spécifiant un nombre quelconque de *Subagents* qui agissent en tant que nœuds de tâche.
-  - la spécification d'un nombre quelconque de *Clusters de sous-agents* qui régissent l'utilisation des agents et auxquels peuvent être attribués des Jobs dans les Workflows.
+  - la spécification d'un nombre quelconque de *Clusters de sous-agents* qui régissent l'utilisation des Agents et auxquels peuvent être attribués des Jobs dans les Workflows.
 
-L'exploitation d'un cluster de contrôleurs ou d'agents est soumise aux conditions de licence [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License).
+L'exploitation d'un cluster de Contrôleurs ou d'Agents est soumise aux conditions de licence [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License).
 
-## Enregistrer le contrôleur
+## Enregistrer le Contrôleur
 
-L'opération d'enregistrement d'un contrôleur est disponible à partir du bouton *Nouveau contrôleur*. Lors de la première utilisation de JOC Cockpit, la fenêtre contextuelle permettant d'enregistrer un contrôleur s'affiche automatiquement.
+L'opération d'enregistrement d'un Contrôleur est disponible à partir du bouton *Nouveau Contrôleur*. Lors de la première utilisation de JOC Cockpit, la fenêtre contextuelle permettant d'enregistrer un Contrôleur s'affiche automatiquement.
 
 Pour plus d'explications, voir [Initial Operation - Register Controller](/initial-operation-register-controller).
 
-## Opérations sur les contrôleurs
+## Opérations sur les Contrôleurs
 
-Pour un contrôleur existant, les opérations suivantes sont proposées à partir de son menu d'action à 3 points :
+Pour un Contrôleur existant, les opérations suivantes sont proposées à partir de son menu d'action à 3 points :
 
-- **Modifier** permet de modifier les propriétés d'un contrôleur, y compris les URL des instances de contrôleur.
-- **Ajouter Agent Autonome** permet d'enregistrer un agent autonome.
+- **Modifier** permet de modifier les propriétés d'un Contrôleur, y compris les URL des instances de Contrôleur.
+- **Ajouter Agent Autonome** permet d'enregistrer un Agent autonome.
   - Pour plus d'explications, voir [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone).
-- **Ajouter Agent Cluster** permet d'enregistrer une grappe d'agents. 
+- **Ajouter Agent Cluster** permet d'enregistrer une grappe d'Agents. 
   - L'opération comprend la spécification des *Agents Directeurs* et des *Sous-Agents*.
   - Pour plus d'explications, voir [Initial Operation - Register Cluster Agent](/initial-operation-register-agent-cluster).
 - **Créer un Jeton à usage unique** 
-- **Exporter la configuration des Agents** permet de télécharger un fichier d'exportation au format JSON contenant les configurations de l'agent du contrôleur sélectionné.
-- **Importer la configuration des Agents** permet de télécharger un fichier d'exportation au format JSON contenant les configurations de l'agent précédemment exportées. Les agents concernés seront enregistrés auprès du contrôleur.
-- **Effacer** permet de supprimer la configuration du contrôleur, y compris toutes les configurations des agents. Cette opération n'efface pas le contrôleur et les agents du disque, mais supprime la configuration dans JOC Cockpit.
+- **Exporter la configuration des Agents** permet de télécharger un fichier d'exportation au format JSON contenant les configurations de l'Agent du Contrôleur sélectionné.
+- **Importer la configuration des Agents** permet de télécharger un fichier d'exportation au format JSON contenant les configurations de l'Agent précédemment exportées. Les Agents concernés seront enregistrés auprès du Contrôleur.
+- **Effacer** permet de supprimer la configuration du Contrôleur, y compris toutes les configurations des Agents. Cette opération n'efface pas le Contrôleur et les Agents du disque, mais supprime la configuration dans JOC Cockpit.
 
 ## Filtres
 
-Les boutons de filtrage suivants pour les agents sont disponibles en haut de l'écran :
+Les boutons de filtrage suivants pour les Agents sont disponibles en haut de l'écran :
 
-- **Tous les Agents** affiche toutes les configurations d'agents indépendamment de leur état de déploiement.
-- **Synchronisé** affiche les configurations d'agents qui ont été déployées sur un contrôleur.
-- **Non Synchronisé** affiche les configurations d'agents pour lesquelles les changements n'ont pas été déployés vers un contrôleur.
-- **Non Déployé** affiche les configurations d'agents qui n'ont pas été initialement déployées vers un contrôleur.
-- **Non Connu** affiche les configurations d'agents dont l'état est inconnu, par exemple après la réinitialisation d'un contrôleur. Les utilisateurs doivent déployer la configuration de l'agent.
+- **Tous les Agents** affiche toutes les configurations d'Agents indépendamment de leur état de déploiement.
+- **Synchronisé** affiche les configurations d'Agents qui ont été déployées sur un Contrôleur.
+- **Non Synchronisé** affiche les configurations d'Agents pour lesquelles les changements n'ont pas été déployés vers un Contrôleur.
+- **Non Déployé** affiche les configurations d'Agents qui n'ont pas été initialement déployées vers un Contrôleur.
+- **Non Connu** affiche les configurations d'Agents dont l'état est inconnu, par exemple après la réinitialisation d'un Contrôleur. Les utilisateurs doivent déployer la configuration de l'Agent.
 
 ## Références
 
