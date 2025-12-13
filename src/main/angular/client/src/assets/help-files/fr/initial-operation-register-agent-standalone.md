@@ -11,7 +11,7 @@ La page *Gestion des Contrôleurs/Agents* est accessible à partir de l'icône d
 Les utilisateurs fournissent les données suivantes :
 
 - **Id Agent** est l'identifiant unique d'un Agent qui ne peut pas être modifié pendant la durée de vie de l'Agent. L'ID de l'Agent n'est pas visible avec les tâches et les Workflows.
-- **Nom Agent** est le nom unique de l'Agent. Lors de l'attribution d'un Agent à un tâche, c'est le *nom de l'Agent* qui est utilisé. Si vous modifiez le *nom de l'Agent* par la suite, vous devez continuer à utiliser le *nom de l'Agent* précédent à partir d'un *nom d'alias*.
+- **Nom Agent** est le nom unique de l'Agent. Lors de l'attribution d'un Agent à une tâche, c'est le *nom de l'Agent* qui est utilisé. Si vous modifiez le *nom de l'Agent* par la suite, vous devez continuer à utiliser le *nom de l'Agent* précédent à partir d'un *nom d'alias*.
 - **Titre** est une description qui peut être ajoutée pour un Agent.
 - **Noms d'Alias** sont des noms alternatifs pour le même Agent. Lorsque vous attribuez un Agent à une tâche, des *noms d'alias* vous seront également proposés. *Les noms d'alias* peuvent être utilisés, par exemple, si un environnement de test comprend moins d'Agents que l'environnement de production : pour que les affectations d'Agents restent inchangées d'un environnement à l'autre, les Agents manquants sont mappés à partir des *noms d'alias* du même Agent.
 - **URL** attend l'URL du protocole, de l'hôte et du port utilisés par le Contrôleur pour se connecter à l'Agent, par exemple http://localhost:4445.

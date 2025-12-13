@@ -40,7 +40,7 @@ Les opérations suivantes sont disponibles à partir des liens :
 - **Attribuer le Certificat aux Agents** permet de sélectionner les Agents Autonomes et les Agents de groupe auxquels le certificat est attribué. Les utilisateurs doivent veiller à ce que l'Agent concerné détienne le fichier de clé privée à l'emplacement spécifié dans la propriété *Chemin d'accès au fichier de clé privée*. Les utilisateurs peuvent sélectionner les Agents qui connaissent la clé privée.
 - **Test de Cryptage** permet d'effectuer un test de cryptage :
   - En cliquant sur le lien, vous ouvrez le champ de saisie *Texte clair* dans lequel vous pouvez ajouter une chaîne de caractères telle que *secret*.
-  - À droite du champ de saisie, l'icône de cryptage est proposée. En cliquant sur l'icône, l'étiquette *Résultat du cryptage* s'affiche avec le résultat correspondant.
+  - À droite du champ de saisie, l'icône de cryptage est proposée. En cliquant sur l'icône, le *Résultat du cryptage* s'affiche avec le résultat correspondant.
 
 ## Références
 

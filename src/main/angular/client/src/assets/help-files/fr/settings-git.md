@@ -30,7 +30,7 @@ Spécifie si les Blocs Scripts sont considérés comme locaux à un environnemen
 
 ### Paramètre : *git_hold\_tâche\_templates*, Valeur par défaut : *rollout*
 
-Indique si les Modèles de Tâches sont considérés comme locaux à un environnement ou s'ils sont destinés à être déployés avec Git.
+Indique si les Modèles de Tâche sont considérés comme locaux à un environnement ou s'ils sont destinés à être déployés avec Git.
 
 ### Paramètre : *git_hold\_tâche\_resources*, Valeur par défaut : *local*
 

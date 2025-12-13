@@ -29,7 +29,7 @@ La *Liste des Tags* indique le nom de la tag et les Workflows auxquels la Tag es
 ### Aide contextuelle
 
 - [Configuration - Inventory - Navigation](/configuration-inventory-navigation)
-- [Configuration - Inventory - Workflow - Job Tags](/configuration-inventory-workflow-tâche-tags)
+- [Configuration - Inventory - Workflow - Job Tags](/configuration-inventory-workflow-job-tags)
 - [Daily Plan](/daily-plan)
 
 ### Product Knowledge Base

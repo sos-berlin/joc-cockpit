@@ -7,8 +7,8 @@ Les utilisateurs qui sont satisfaits des valeurs par défaut et qui souhaitent s
 ### Attributs de l'Ordre
 
 - **Nom de l'Ordre** : Un nom optionnel qui peut être utilisé pour filtrer les Ordres dans un certain nombre de vues.
-- **Nom Tag** : Vous pouvez spécifier un nombre quelconque Tag qui seront ajoutées à l'Ordre. Les Tags sont affichées dans un certain nombre de vues si elles sont spécifiées sur la page [Settings - JOC Cockpit](/settings-joc).
-- **Ignorer les heures d'admission des Tâches** : Les tâches peuvent être limités à certains jours et/ou à certains créneaux horaires. Les Ordres qui arrivent en dehors d'un créneau horaire doivent attendre le prochain créneau disponible. Cette option force les tâches à démarrer indépendamment de ces limitations.
+- **Tag** : Vous pouvez spécifier un nombre quelconque Tag qui seront ajoutées à l'Ordre. Les Tags sont affichées dans un certain nombre de vues si elles sont spécifiées sur la page [Settings - JOC Cockpit](/settings-joc).
+- **Ignorer les heures d'admission des tâches** : Les tâches peuvent être limités à certains jours et/ou à certains créneaux horaires. Les Ordres qui arrivent en dehors d'un créneau horaire doivent attendre le prochain créneau disponible. Cette option force les tâches à démarrer indépendamment de ces limitations.
 
 ### Heure de début
 
@@ -19,7 +19,7 @@ Les utilisateurs qui sont satisfaits des valeurs par défaut et qui souhaitent s
   - **15m** : 15 minutes plus tard
   - **1h** : 1 heure plus tard
   - **1h 15m 30s** ou **01:15:30** : 1 heure, 15 minutes et 30 secondes plus tard
-- **Pas d'heure de début** : L'Ordre ne démarrera pas mais sera disponible à partir de l'état *en attente* et une heure de démarrage pourra lui être attribuée ultérieurement.
+- **Sand démarrage** : L'Ordre ne démarrera pas mais sera disponible à partir de l'état *à venir* et une heure de démarrage pourra lui être attribuée ultérieurement.
 
 ### Dépendances de l'Ordre
 
@@ -31,17 +31,17 @@ Les utilisateurs qui sont satisfaits des valeurs par défaut et qui souhaitent s
 
 Si un Ordre ne doit pas commencer au premier nœud du Workflow, une position peut être spécifiée.
 
-- **Position de blocage** : Pour les Workflows contenant des instructions de blocage telles que Try/Catch, ResourceLock, Fork/Join, l'instruction correspondante peut être sélectionnée.
-- **Position de départ** : Si aucune position de départ n'est spécifiée, l'Ordre commencera à partir du premier nœud.
+- **Position de Bloc** : Pour les Workflows contenant des instructions de bloc telles que Try/Catch, Lock, Fork/Join, l'instruction correspondante peut être sélectionnée.
+- **Position de Départ** : Si aucune position de départ n'est spécifiée, l'Ordre commencera à partir du premier nœud.
   - Si aucune position de blocage n'est spécifiée, il est possible de sélectionner n'importe quelle instruction de niveau supérieur dans le Workflow à partir de laquelle l'Ordre commencera.
   - Si une position de bloc est spécifiée, la position de départ est un nœud de même niveau à l'intérieur du bloc.
-- **Positions finales** :
+- **Positions de Fin** :
   - Si aucune position de bloc n'est spécifiée, il est possible de sélectionner n'importe quelle instruction de niveau supérieur dans le Workflow avant laquelle l'Ordre se terminera.
   - Si une position de bloc est spécifiée, n'importe quel nœud de même niveau à l'intérieur du bloc peut être spécifié avant lequel l'Ordre se terminera.
   - Il est possible de spécifier plusieurs positions de fin.
 - **Priorité** :
   - Si l'Ordre doit répondre à une Instruction Resource-Lock des Ressources dans le Workflow qui limite le parallélisme, sa *Priorité* détermine la position dans la file d'attente des Ordres en attente.
-  - les *priorités* sont spécifiées à partir de nombres entiers négatifs, nuls et positifs ou à partir des raccourcis proposés. Une *priorité* plus élevée est prioritaire. Les raccourcis offrent les valeurs suivantes :
+  - les *Priorités* sont spécifiées à partir de nombres entiers négatifs, nuls et positifs ou à partir des raccourcis proposés. Une *Priorité* plus élevée est prioritaire. Les raccourcis offrent les valeurs suivantes :
     - **Basse** : -20000
     - **Inférieur à la normale** : -10000
     - **Normal** : 0
@@ -66,4 +66,3 @@ Si un Ordre ne doit pas commencer au premier nœud du Workflow, une position peu
 - [Settings - JOC Cockpit](/settings-joc)
 - [Workflows](/workflows)
 - [JS7 - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows)
-

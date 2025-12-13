@@ -9,11 +9,11 @@ La vue *Inventaire-&gt;Workflow* permet de concevoir des Workflows à partir d'u
 
 La *barre d'outils* contient les instructions suivantes :
 
-- **Job** met en œuvre un tâche. Les Workflows peuvent inclure un nombre quelconque de Jobs. Pour plus d'informations, consultez le site [JS7 - Job Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Instruction).
-- L'instruction **Try/Catch** met en œuvre la gestion des exceptions à partir d'un bloc *Try* qui contient des Jobs ou d'autres instructions. Si un tâche échoue, les instructions du bloc *Catch* sont exécutées. Un bloc *Catch* vide résoudra l'état d'erreur d'une instruction ayant échoué précédemment. Pour plus d'informations, consultez le site [JS7 - Try-Catch Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Try-Catch+Instruction).
+- **Job** met en œuvre une tâche. Les Workflows peuvent inclure un nombre quelconque de Jobs. Pour plus d'informations, consultez le site [JS7 - Job Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Instruction).
+- L'instruction **Try/Catch** met en œuvre la gestion des exceptions à partir d'un bloc *Try* qui contient des Jobs ou d'autres instructions. Si une tâche échoue, les instructions du bloc *Catch* sont exécutées. Un bloc *Catch* vide résoudra l'état d'erreur d'une instruction ayant échoué précédemment. Pour plus d'informations, consultez le site [JS7 - Try-Catch Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Try-Catch+Instruction).
 - L'instruction **Retry** met en œuvre l'exécution répétée d'une séquence de tâches ou d'autres instructions en cas d'échec. Si l'un des Jobs du bloc *Retry* échoue, l'Ordre est déplacé au début du bloc *Retry* pour répéter l'exécution. Pour plus de détails, voir [JS7 - Retry Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Retry+Instruction).
 - L'instruction **Finish** fait en sorte qu'un Ordre quitte le Workflow avec un résultat positif ou négatif dans [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History). Pour plus de détails, voir [JS7 - Finish Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Finish+Instruction).
-- L'instruction **Fail** fait échouer un Ordre. Sans traitement d'erreur supplémentaire, l'Ordre restera dans l'état *failed* (échec), voir [Order States](/order-states). Une instruction *Try/Catch* ou *Retry* est déclenchée par l'instruction *Fail*. Pour plus de détails, voir [JS7 - Fail Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Fail+Instruction).
+- L'instruction **Fail** fait échouer un Ordre. Sans traitement d'erreur supplémentaire, l'Ordre restera dans l'état *échoué*, voir [Order States](/order-states). Une instruction *Try/Catch* ou *Retry* est déclenchée par l'instruction *Fail*. Pour plus de détails, voir [JS7 - Fail Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Fail+Instruction).
 - l'instruction **Fork** permet aux Ordres d'être bifurqués et joints pour permettre le traitement parallèle des Jobs et d'autres instructions dans un Workflow. Les branches sont créées en faisant glisser et en déposant des instructions sur l'instruction *Fork*. Lorsqu'un Ordre entre dans la *Instruction de tâche*, un Ordre enfant est créé pour chaque branche. Pour plus de détails, consultez le site [JS7 - Fork-Join Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Fork-Join+Instruction).
   - Chaque Ordre enfant transmettra les nœuds de sa branche indépendamment des Ordres enfants parallèles.
   - Les Ordres enfants peuvent renvoyer des résultats aux Ordres parents en leur transmettant des variables.
@@ -55,9 +55,9 @@ Pour un Workflow, les entrées suivantes sont disponibles :
 
 - **Nom** est l'identifiant unique d'un Workflow, voir [Object Naming Rules](/object-naming-rules).
 - **Titre** contient une explication facultative de l'objectif du Workflow.
-- les **Ressources de Tâche** sont des objets d'inventaire qui contiennent des variables de paires clé/valeur qui peuvent être rendues disponibles à partir des variables de Workflow et des variables d'environnement. *Les Ressources de Tâche* peuvent être attribuées au niveau du tâche et au niveau du Workflow, ce qui les rend disponibles pour tous les tâches d'un Workflow. Pour plus d'informations, consultez le site [Configuration - Inventory - Job Resources](/configuration-inventory-tâche-resources).
+- les **Ressources de Tâche** sont des objets d'inventaire qui contiennent des variables de paires clé/valeur qui peuvent être rendues disponibles à partir des variables de Workflow et des variables d'environnement. *Les Ressources de Tâche* peuvent être attribuées au niveau de la Tâche et au niveau du Workflow, ce qui les rend disponibles pour tous les Tâches d'un Workflow. Pour plus d'informations, consultez le site [Configuration - Inventory - Job Resources](/configuration-inventory-job-resources).
 - **Fuseau horaire** qui est renseigné à partir de l'adresse [Profile - Preferences](/profile-preferences) de l'utilisateur. Les identifiants de fuseaux horaires sont acceptés comme *UTC*, *Europe/London*, etc. Pour une liste complète des identificateurs de fuseaux horaires, voir [Liste des fuseaux horaires de la base de données tz] (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
-  - Le *fuseau horaire* est appliqué aux périodes dans les délais d'admission des emplois et dans les *instructions de cycle*.
+  - Le *fuseau horaire* est appliqué aux périodes dans les délais d'admission et dans l'*instruction Cycle*.
   - Il est possible d'utiliser un *fuseau horaire* différent de celui de la base de données [Settings - Daily Plan](/settings-daily-plan). Toutefois, cela peut entraîner des résultats déroutants.
 - **Autoriser les variables non déclarées** permet d'utiliser des variables d'Ordre qui ne sont pas déclarées avec le Workflow. Cela signifie que les Ordres peuvent contenir des variables dont le type de données n'a pas été vérifié et dont l'utilisation n'est pas obligatoire. Les Jobs échoueront lorsqu'ils feront référence à des variables non déclarées qui ne sont pas disponibles dans un Ordre.
 
@@ -85,7 +85,7 @@ Pour les variables de Workflow, les types de données suivants sont proposés :
 
 ### Recherche dans les Workflows
 
-Une icône de recherche est disponible en haut du *Panneau de Workflow*. En cliquant sur cette icône, vous pouvez spécifier une chaîne de caractères correspondant au nom d'un tâche ou d'une instruction de Workflow.
+Une icône de recherche est disponible en haut du *Panneau de Workflow*. En cliquant sur cette icône, vous pouvez spécifier une chaîne de caractères correspondant au nom d'une tâche ou d'une instruction de Workflow.
 
 - Lorsque vous saisissez le premier caractère, une zone de liste s'ouvre et affiche les instructions de Workflow correspondantes et indique les occurrences en rouge.
 - Lorsque vous cliquez sur une réponse, la fenêtre défile jusqu'à la tâche ou l'instruction de Workflow correspondante.
@@ -97,7 +97,7 @@ Une icône de recherche est disponible en haut du *Panneau de Workflow*. En cliq
 
 En haut du *Panneau Workflow*, les utilisateurs trouvent les indicateurs de statut suivants :
 
-- **valide** / **non valide** indique à partir de la couleur bleue / orange si le Workflow est cohérent et prêt à être déployé. *Les Workflows non valides* ne peuvent pas être déployés, mais les modifications sont enregistrées dans l'inventaire. Par exemple, l'affectation d'un Agent manquant à un tâche rendra le Workflow *invalide*. Dans l'indicateur de statut *non valide*, l'icône d'information (i) est disponible et affiche la raison pour laquelle le Workflow est +non valide*
+- **valide** / **non valide** indique à partir de la couleur bleue / orange si le Workflow est cohérent et prêt à être déployé. *Les Workflows non valides* ne peuvent pas être déployés, mais les modifications sont enregistrées dans l'inventaire. Par exemple, l'affectation d'un Agent manquant à une tâche rendra le Workflow *invalide*. Dans l'indicateur de statut *non valide*, l'icône d'information (i) est disponible et affiche la raison pour laquelle le Workflow est +non valide*
 - **déployé** / **non déployé** indique si la version actuelle du Workflow a été *déployée* ou s'il s'agit d'un brouillon qui n'a pas été *déployé*.
 
 Le bouton *Déployer* permet de déployer un Contrôleur en un seul clic. En dehors de cela, les opérations de déploiement sont disponibles au niveau du dossier, voir [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
@@ -107,11 +107,11 @@ Le bouton *Déployer* permet de déployer un Contrôleur en un seul clic. En deh
 Lorsque vous passez la souris sur une instruction, le menu d'action à 3 points vous propose les opérations suivantes :
 
 - **Toutes les instructions** proposent les opérations *Copier*, *Couper* et *Enlever*. Les instructions en bloc telles que l'instruction *Fork* proposent en outre l'opération *Remove All* : alors que l'opération *Remove* supprime uniquement l'instruction, l'opération *Remove All* supprime l'instruction et toutes les instructions incluses, telles que les Jobs.
-- **Job Instruction** propose l'opération *Créer Modèle de Tâche* qui permet de créer un Modèle de Tâche à partir du tâche en cours. Le Modèle de Tâche peut être utilisé par d'autres Jobs dans le même Workflow ou dans des Workflows différents.
+- **Job Instruction** propose l'opération *Créer Modèle de Tâche* qui permet de créer un Modèle de Tâche à partir de la tâche en cours. Le Modèle de Tâche peut être utilisé par d'autres Jobs dans le même Workflow ou dans des Workflows différents.
 
 #### Opérations Copier, Couper, Coller
 
-*les opérations *Copier** et **Couper** sont disponibles dans le menu d'action 3 points d'une instruction. Les opérations *copier* et *couper* sur une instruction de bloc agissent sur toutes les instructions incluses dans l'instruction de bloc. Pour copier ou couper plusieurs instructions d'un même niveau, l'utilisateur maintient la touche de la souris enfoncée et marque les instructions, comme s'il utilisait un lasso. 
+Les opérations **Copier** et **Couper** sont disponibles dans le menu d'action 3 points d'une instruction. Les opérations *copier* et *couper* sur une instruction de bloc agissent sur toutes les instructions incluses dans l'instruction de bloc. Pour copier ou couper plusieurs instructions d'un même niveau, l'utilisateur maintient la touche de la souris enfoncée et marque les instructions, comme s'il utilisait un lasso. 
 
 - le raccourci clavier **Ctrl+C** permet de copier les instructions surlignées.
 - le raccourci clavier **Ctrl+X** permet de couper les instructions surlignées.
@@ -142,7 +142,7 @@ Lorsque vous cliquez sur le canevas du *Panneau de Workflow*, un *Panneau d'opé
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Job Resources](/configuration-inventory-tâche-resources)
+- [Configuration - Inventory - Job Resources](/configuration-inventory-job-resources)
 - [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
 - [Daily Plan](/daily-plan)
 - [Order History](/history-orders)

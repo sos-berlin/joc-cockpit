@@ -4,10 +4,10 @@ La vue *Ressources de Tâche* permet de spécifier les Ressources de Tâche à u
 
 Les Ressources de Tâches contiennent des variables de paires clé/valeur qui sont utilisées dans les buts suivants :
 
-- Pour les tâches JVM exécutés dans la machine virtuelle Java de l'Agent, les variables sont spécifiées à partir des *Arguments*. Lorsqu'une Ressource de Tâche est affectée à une tâche, les arguments du tâches correspondant sont remplis.
-- Pour les tâches Shell, les variables sont spécifiées dans *Environment Variables*. Lorsqu'une ressource est affectée à un tâches, les variables d'environnement sont créées automatiquement.
+- Pour les tâches JVM exécutés dans la machine virtuelle Java de l'Agent, les variables sont spécifiées à partir des *Arguments*. Lorsqu'une Ressource de Tâche est affectée à une tâche, les arguments correspondant sont remplis.
+- Pour les tâches Shell, les variables sont spécifiées dans *Environment Variables*. Lorsqu'une Ressource de Tâche est affectée à une tâche, les variables d'environnement sont créées automatiquement.
 
-Les Ressources de Tâche se voient attribuer un Workflow ou une tâche à partir de la propriété de l'objet correspondant, voir [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-tâche-options). Lorsqu'elles sont attribuées au niveau du Workflow, les variables de la Ressource de Tâches sont disponibles pour toutes les tâches du Workflow.
+Les Ressources de Tâche se voient attribuer un Workflow ou une tâche à partir de la propriété de l'objet correspondant, voir [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options). Lorsqu'elles sont attribuées au niveau du Workflow, les variables de la Ressource de Tâches sont disponibles pour toutes les tâches du Workflow.
 
 Les Ressources de Tâche sont gérées à partir des vues suivantes :
 
@@ -41,7 +41,7 @@ Pour les opérations disponibles, voir [Configuration - Inventory - Navigation P
 
 ## Références
 
-- [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-tâche-options)
+- [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
 - [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
 - [Object Naming Rules](/object-naming-rules)
 - [JS7 - Assignment of Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Assignment+of+Variables)

@@ -62,7 +62,7 @@ Cette vue s'affiche dans la partie inférieure de la fenêtre lorsque les utilis
   - Si les Ordres sont terminés, le *Statut de l'historique* sera *succès* ou *échec*.
   - Si les Ordres ne sont pas terminés, l'état de l'historique sera *en cours*.
 - **État de l'Ordre** indique le dernier état de l'Ordre, voir [Order States](/order-states).
-  - Si les Ordres sont terminés, l'*état de l'Ordre* sera *réussi* ou *échec*.
+  - Si les Ordres sont terminés, l'*état de l'Ordre* sera *réussi* ou *échoué*.
   - Si les Ordres ne sont pas terminés, l'état de l'Ordre sera *en cours de traitement*.
 
 Les options suivantes sont disponibles pour l'accès à la sortie du journal :
@@ -76,14 +76,14 @@ Par défaut, l'affichage des journaux de l'Ordre est limité à une taille de 10
 
 - **Tâches** indique le nom de la tâche.
 - **Tag** indique la position de la tâche dans le Workflow.
-- **Status** est le résultat de l'exécution du tâche indiqué par *en progression*, *succès* ou *échoué*.
-- **Heure de démarrage**, **Heure de fin** indiquent le début et la fin de l'exécution du tâche.
-- la **criticité** est spécifiée à l'adresse [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflow-tâche-options) et indique la pertinence d'une tâche :
+- **Status** est le résultat de l'exécution de la tâche indiqué par *en progression*, *succès* ou *échoué*.
+- **Heure de démarrage**, **Heure de fin** indiquent le début et la fin de l'exécution de la tâche.
+- **Criticité** est spécifiée à l'adresse [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflow-job-options) et indique la pertinence d'une tâche :
   - *Mineur*
   - *Normal*
   - *Majeur*
   - *Critique*
-- **Code de retour** est le code de sortie d'un tâche Shell ou le code de retour d'un tâche JVM. Le panneau [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-tâche-properties) permet de configurer les codes de retour en cas de succès ou d'échec de l'exécution d'un tâche.
+- **Code de retour** est le code de sortie d'une tâche Shell ou le code de retour d'une tâche JVM. Le panneau [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-job-properties) permet de configurer les codes de retour en cas de succès ou d'échec de l'exécution d'une tâche.
 
 Pour accéder à la sortie du journal, l'action suivante est disponible :
 
@@ -103,14 +103,14 @@ Le nombre d'entrées du Journal d'Audit affichées peut être modifié à partir
 
 En haut de la fenêtre, les boutons suivants sont proposés pour les opérations sur les Workflows :
 
-- **Suspendre tout** agit comme un *arrêt d'urgence* et suspend tous les Workflows, quelle que soit la sélection de Workflows actuellement affichée. Les Workflows suspendus sont gelés, ils acceptent les Ordres mais ne démarrent pas d'Ordres à moins que le Workflow ne soit repris. Les Ordres en cours d'exécution poursuivent le tâche en cours ou une autre instruction avant d'être suspendus.
+- **Suspendre tout** agit comme un *arrêt d'urgence* et suspend tous les Workflows, quelle que soit la sélection de Workflows actuellement affichée. Les Workflows suspendus sont gelés, ils acceptent les Ordres mais ne démarrent pas d'Ordres à moins que le Workflow ne soit repris. Les Ordres en cours d'exécution poursuivent la tâche en cours ou une autre instruction avant d'être suspendus.
 - **Reprendre tout** reprend tous les Workflows suspendus, quelle que soit la sélection de Workflows actuellement affichée.
 
 ### Opérations sur les tâches et les instructions de Workflow
 
 Les opérations suivantes sont disponibles pour les tâches à partir du menu d'action correspondant :
 
-- **Ignorer** empêche un Ordre d'exécuter le tâche associé et le fait passer à l'instruction de Workflow suivante.
+- **Ignorer** empêche un Ordre d'exécuter la tâche associé et le fait passer à l'instruction de Workflow suivante.
 - **Inclure ** rétablit un taĉhe précédemment ignoré.
 - **Arrêter** suspend les Ordres arrivant à la tâche. Les Ordres peuvent être poursuivis à partir d'une opération *Reprise* qui permet de continuer le traitement à partir d'un autre noeud de Workflow ou de forcer le traitement de la taĉhe arrêté.
 - **Debloquer ** rétablit une tâche précédemment arrêté.
@@ -119,12 +119,12 @@ Les opérations suivantes sont disponibles pour les tâches à partir du menu d'
 
 Les utilisateurs disposent d'un menu d'action par Ordre qui propose les opérations suivantes :
 
-- **Annuler** met fin à l'Ordre. *Les Ordres en cours d'exécution* termineront la taĉhe ou l'instruction de Workflow en cours et quitteront le Workflow avec un *état d'historique* *échec*.
-- **Annuler et tuer la tâche** Les Ordres en cours d'exécution termineront le tâche ou l'instruction en cours et quitteront avec un *état de l'historique* *Annuler/terminer la tâche** mettra fin de force aux Ordres en cours d'exécution. Les Ordres quitteront le Workflow avec un *état d'historique* *échec*.
+- **Annuler** met fin à l'Ordre. Les Ordres en cours d'exécution attendent la fin de taĉhe ou l'instruction de Workflow en cours et quitteront le Workflow avec un *état d'historique* *échoué*.
+- **Annuler/terminer la tâche** met fin de force aux Ordres en cours d'exécution. Les Ordres quitteront le Workflow avec un *état d'historique* *échoué*.
 - **Suspendre** suspend l'Ordre. Les Ordres en cours d'exécution seront suspendus une fois qu'ils auront terminé la tâche ou l'instruction de Workflow en cours.
-- **Suspendre/terminer la tâche** mettra fin de force aux Ordres *en cours* et suspendra les Ordres.
+- **Suspendre/terminer la tâche** met fin de force aux Ordres *en exécution* et suspendra les Ordres.
 - **Suspendre/réinitialiser** réinitialise immédiatement l'instruction de Workflow en cours et remet l'Ordre à l'état *suspendu*. Cette option peut être combinée avec l'arrêt forcé des tâches pour les Ordres en cours d'exécution.
-- **Reprendre** poursuivra un Ordre *suspendu* ou *échec* pouvant être repris.
+- **Reprendre** poursuivra un Ordre *suspendu* ou *échoué* pouvant être repris.
 
 D'autres opérations spécifiques à l'état de l'Ordre peuvent être disponibles.
 
@@ -151,8 +151,8 @@ Le site [Workflows - Search](/workflows-search) offre des critères pour recherc
 
 - [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-  - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-tâche-properties)
-  - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflow-tâche-options)
+  - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-job-properties)
+  - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflow-job-options)
 - [Daily Plan](/daily-plan)
 - [Order Log View](/order-log)
 - [Order States](/order-states)

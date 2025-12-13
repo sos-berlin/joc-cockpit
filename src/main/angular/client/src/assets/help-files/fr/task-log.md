@@ -7,8 +7,8 @@ La vue *Task Log View* offre un journal en cours d'exécution qui est mis à jou
 La vue *Task Log View* permet de filtrer à partir d'un certain nombre de critères disponibles en haut de la fenêtre :
 
 - **Main** spécifie que les détails concernant le démarrage de la tâche et le paramétrage au démarrage de la tâche seront affichés. Cette sortie est indiquée par le qualificateur [MAIN].
-- **stdout** spécifie si la sortie écrite par le tâche sur le canal stdout sera affichée à l'aide du qualificateur [STDOUT].
-- **Debug** s'applique aux tâches Java qui utilisent [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API). Ces tâches peuvent se voir ajouter l'argument *log_level* contenant la valeur *debug* ou *trace*. Si une sortie de débogage est disponible pour un tâche, elle sera affichée à l'aide du qualificateur [DEBUG].
+- **stdout** spécifie si la sortie écrite par la tâche sur le canal stdout sera affichée à l'aide du qualificateur [STDOUT].
+- **Debug** s'applique aux tâches Java qui utilisent [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API). Ces tâches peuvent se voir ajouter l'argument *log_level* contenant la valeur *debug* ou *trace*. Si une sortie de débogage est disponible pour une tâche, elle sera affichée à l'aide du qualificateur [DEBUG].
 
 La sortie de journal écrite par les tâches sur le canal stderr n'est pas soumise au filtrage et sera affichée à l'aide du qualificateur [STDERR].
 

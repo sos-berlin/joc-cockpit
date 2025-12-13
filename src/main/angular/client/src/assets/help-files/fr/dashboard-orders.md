@@ -17,9 +17,9 @@ L'affichage *Ordres* fournit des informations sur l'état actuel des Ordres. L'a
 - **En progression**: Les Ordres sont traités par des instructions de Workflow mais ne sont pas en cours d'exécution. 
 - **En exécution**: Les Ordres sont en cours d'exécution d'une tâche. 
 - **Suspendu**: Les Ordres ont été interrompus par une intervention de l'utilisateur et peuvent être repris.
-- **Complet** Les Ordres ont terminé un Workflow mais n'ont pas été supprimés, par exemple si une Source d'Ordre de Fichier est utilisée pour l'observation de fichiers et que le Workflow n'a pas (re)déplacé les fichiers entrants. Dans ce cas, l'Ordre restera en place tant que le fichier existera dans le répertoire d'arrivée.
+- **Complété** Les Ordres ont terminé un Workflow mais n'ont pas été supprimés, par exemple si une Source d'Ordre de Fichier est utilisée pour l'observation de fichiers et que le Workflow n'a pas (re)déplacé les fichiers entrants. Dans ce cas, l'Ordre restera en place tant que le fichier existera dans le répertoire d'arrivée.
 - **À confirmer**: Les Ordres sont mis en attente par l'instruction *Prompt* dans un Workflow et nécessitent la confirmation de l'utilisateur pour continuer l'exécution du Workflow.
-- **En attente**: Les Ordres attendent une ressource telle qu'un *verrouillage de ressource*, un *avis*, une *réponse* ou un *cyclage* ou un processus si l'Agent utilisé spécifie une limite de processus qui est dépassée.
+- **En attente**: Les Ordres attendent une ressource telle qu'un *Verrou de Ressource*, une *Annonce* ou un *Cycle* ou un processus si l'Agent utilisé spécifie une limite de processus qui est dépassée.
 - **Bloqué**: Les Ordres ne peuvent pas démarrer, par exemple si l'Agent n'est pas joignable depuis l'ajout de l'Ordre.
 - **Échoué**: Les Ordres indiquent qu'une tâche a échoué ou qu'une *instruction Fail* empêche la poursuite de l'Ordre. 
 
@@ -36,7 +36,7 @@ Le bouton déroulant situé dans le coin supérieur droit de l'affichage permet 
   - **Ordres en progression** à partir de n'importe quelle date antérieure,
   - **Ordres en exécution** à partir de n'importe quelle date antérieure,
   - **Ordres suspendus** à partir de n'importe quelle date antérieure,
-  - **Ordres complets** à partir de n'importe quelle date antérieure,
+  - **Ordres complétés** à partir de n'importe quelle date antérieure,
   - **Ordres à confirmer** à partir de n'importe quelle date antérieure,
   - **Ordres en attente** à partir de n'importe quelle date passée,
   - **Ordres bloqués** à partir de n'importe quelle date antérieure,

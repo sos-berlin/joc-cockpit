@@ -16,7 +16,7 @@ L'Historique des exécutions de rapports est affiché à partir des propriétés
 - **Etat** indique l'une des valeurs suivantes : *running*, *successful*, *failed*.
 - **Fréquences** indique les *fréquences de rapport* qui divisent la *période de rapport* en unités égales.
 - **No. of Reports** indique le nombre de rapports qui ont été créés pour la configuration du rapport.
-- **Message d'erreur** indique l'erreur qui s'est produite si le *Statut* de l'exécution du rapport est *échec*.
+- **Message d'erreur** indique l'erreur qui s'est produite si le *Statut* de l'exécution du rapport est *échoué*.
 - **Mois de**, **Mois à** indiquent le début et la fin de la *période de rapport*.
 
 ## Références

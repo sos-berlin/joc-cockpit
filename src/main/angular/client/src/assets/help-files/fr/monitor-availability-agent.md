@@ -6,7 +6,7 @@ Si une grappe d'Agents est utilisée, la disponibilité de la grappe est prise e
 
 Le coin supérieur droit de l'écran propose la case à cocher *Contrôleur actuel* : si elle n'est pas cochée, la disponibilité sera affichée pour les Agents de tous les Contrôleurs connectés ; dans le cas contraire, l'information est affichée pour les Agents enregistrés auprès du Contrôleur actuellement sélectionné uniquement.
 
-Les utilisateurs doivent savoir que les données historiques relatives à la disponibilité des Agents sont susceptibles d'être supprimées par le site [Cleanup Service](/service-cleanup).
+Les utilisateurs doivent savoir que les données historiques relatives à la disponibilité des Agents sont susceptibles d'être supprimées par le [Cleanup Service](/service-cleanup).
 
 ## Filtres de date
 

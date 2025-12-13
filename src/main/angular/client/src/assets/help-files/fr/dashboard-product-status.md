@@ -27,7 +27,7 @@ Le JOC Cockpit se connecte à la base de données et aux instances du Contrôleu
 
 ### Contrôleur
 
-Le Contrôleur se connecte aux instances d'Agents. Dans un groupe de Contrôleurs, ses membres ont des connexions bidirectionnelles.
+Le Contrôleur se connecte aux instances d'Agents. Dans un Cluster de Contrôleurs, ses membres ont des connexions bidirectionnelles.
 
 - État du composant
   - L'état du composant est indiqué par la couleur de la tuile dans le coin supérieur gauche du rectangle du Contrôleur.

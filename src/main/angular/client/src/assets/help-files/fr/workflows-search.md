@@ -36,8 +36,8 @@ La recherche avancée permet d'effectuer une recherche par attributs d'objets :
 
 ### Recherche de dépendance
 
-Le méta-caractère de recherche **\*** est utilisé pour spécifier que les dépendances sont recherchées, par exemple vers un Verrou de Ressource quel que soit le nom qu'il utilise :
+Le métacaractère de recherche **\*** est utilisé pour spécifier que les dépendances sont recherchées, par exemple vers un Verrou de Ressource quel que soit le nom qu'il utilise :
 
-- le méta-caractère **\*** pour **Verrou** renverra les Workflows utilisant un Verrou,
+- le métacaractère **\*** pour **Verrou** renverra les Workflows utilisant un Verrou,
 - **\*** Le métacaractère **Source d'Ordre de Fichier** renverra les Workflows référencés par un Source d'Ordre de Fichier.
 

@@ -6,7 +6,7 @@ La vue [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) offr
 - Les utilisateurs exécutent les rapports à partir de la vue [Report - Creation](/report-creation) ou de [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation). La vue [Report - Run History](/report-run-history) fournit des informations sur les exécutions antérieures des rapports.
 - Les rapports sont visualisés dans la vue *Rapports*.
 
-Les rapports [Report - Run History](/report-run-history) sont soumis à une purge de la base de données effectuée par [Cleanup Service](/service-cleanup).
+Les rapports [Report - Run History](/report-run-history) sont soumis à une purge de la base de données effectuée par le [Cleanup Service](/service-cleanup).
 
 Pour l'exécution des rapports, voir [Report - Creation](/report-creation). Pour vérifier l'exécution des rapports, voir [Report - Run History](/report-run-history).
 

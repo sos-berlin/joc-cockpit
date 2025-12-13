@@ -7,7 +7,7 @@ Les notifications sont configurées à partir de la page [Configuration - Notifi
 - Le fragment *notify_on_failure_gui* spécifie si les notifications deviennent visibles dans cette vue.
 - En plus d'être affichées dans cette vue, les notifications peuvent être transmises par courrier électronique et à partir de la ligne de commande, par exemple à des produits System Monitor tiers. Pour plus de détails, consultez [Configuration - Notification ](/configuration-notification).
 
-Les utilisateurs doivent savoir que les notifications peuvent être purgées par [Cleanup Service](/service-cleanup). Par défaut, les notifications sont purgées si elles datent de plus d'un jour.
+Les utilisateurs doivent savoir que les notifications peuvent être purgées par le [Cleanup Service](/service-cleanup). Par défaut, les notifications sont purgées si elles datent de plus d'un jour.
 
 ## Affichage des notifications
 

@@ -11,8 +11,8 @@ Le vue de gauche est organisé en onglets qui permettent de naviguer à partir d
 
 - **La navigation par dossier** affiche les objets d'inventaire du dossier sélectionné.
 - Le filtrage des Tags est proposé à partir des onglets suivants pour sélectionner les Workflows :
-  - **Les Tags de Workflow** sont attribuées à partir de la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows) au niveau du Workflow.
-  - les **Tags de Tâche** sont attribuées à partir de la même vue au niveau du tâche.
+  - **Tags Workflow** sont attribuées à partir de la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows) au niveau du Workflow.
+  - **Tags Tâche** sont attribuées à partir de la même vue au niveau de la tâche.
 
 ### Dossiers
 
@@ -24,14 +24,14 @@ La hiérarchie des dossiers connaît les types de dossiers suivants :
   - les objets **Contrôleur** sont déployés dans un Contrôleur et des Agents :
     - [Workflows](/configuration-inventory-workflows) incluent les Tâches et autres instructions de Workflow. Pour plus d'informations, consultez le site [JS7 - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows).
     - [Sources d'Ordre de Fichier](/configuration-inventory-file-order-sources) sont utilisés pour le File Watching afin de démarrer automatiquement les Workflows en cas d'arrivée d'un fichier dans un répertoire. Pour plus de détails, voir [JS7 - File Watching](https://kb.sos-berlin.com/display/JS7/JS7+-+File+Watching).
-    - [Resources de Tâche](/configuration-inventory-tâche-resources) sont utilisés pour centraliser la configuration des variables qui sont réutilisées dans un certain nombre de Jobs. Pour plus de détails, voir [JS7 - Job Resources](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Resources).
+    - [Resources de Tâche](/configuration-inventory-job-resources) sont utilisés pour centraliser la configuration des variables qui sont réutilisées dans un certain nombre de Jobs. Pour plus de détails, voir [JS7 - Job Resources](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Resources).
     - [Condition](/configuration-inventory-notice-boards) spécifient les dépendances entre les Workflows. Pour plus de détails, voir [JS7 - Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards).
     - [Verrous de Ressource](/configuration-inventory-resource-locks) limitent l'exécution parallèle des tâches et d'autres instructions. Pour plus de détails, voir [JS7 - Resource Locks](https://kb.sos-berlin.com/display/JS7/JS7+-+Resource+Locks).
   - les objets **Automatisation** sont utilisés pour l'automatisation dans JOC Cockpit :
     - [Blocs Scripts](/configuration-inventory-script-includes) les objets **Automatisation** sont des extraits de code qui peuvent être réutilisés dans un certain nombre de Shell Jobs. Pour plus d'informations, voir [JS7 - Script Includes](https://kb.sos-berlin.com/display/JS7/JS7+-+Script+Includes).
     - [Planifications](/configuration-inventory-schedules) déterminent le moment où les Ordres pour l'exécution du Workflow commenceront. Un ou plusieurs Workflows leur sont attribués et, éventuellement, des variables d'Ordre qui sont utilisées par les Jobs dans le Workflow donné. Ils utilisent un ou plusieurs *Calendriers*. Pour plus d'informations, consultez le site [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules).
     - [Calendriers](/configuration-inventory-calendars) les *Calendriers* spécifient les jours au cours desquels les événements de Planification peuvent se produire. Ils contiennent des règles pour les jours récurrents et des listes de jours qui sont utilisés par les *Planifications* pour créer des Ordres pour l'exécution du Workflow avec [Daily Plan](/daily-plan). Pour plus de détails, voir [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars).
-    - [Modèles de Tâche](/configuration-inventory-tâche-templates) sont fournis par les Modèles de Jobs de l'utilisateur ou par des classes Java qui sont livrées avec JS7 et peuvent être utilisées pour toutes les plates-formes OS. Pour plus de détails, voir [JS7 - Job Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Templates).
+    - [Modèles de Tâche](/configuration-inventory-job-templates) sont fournis par les Modèles de Jobs de l'utilisateur ou par des classes Java qui sont livrées avec JS7 et peuvent être utilisées pour toutes les plates-formes OS. Pour plus de détails, voir [JS7 - Job Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Templates).
     - [Rapports](/configuration-inventory-reports) résumer les résultats de l'exécution des Workflows et des Jobs pour des périodes données. Pour plus de détails, voir [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports).
 - les **Dossiers utilisateur** sont créés par l'utilisateur à n'importe quel niveau de la hiérarchie. Chaque *dossier utilisateur* contient un ensemble de *dossiers d'inventaire*.
 
@@ -42,7 +42,7 @@ La hiérarchie des dossiers connaît les types de dossiers suivants :
 - Un minimum de deux caractères doit être saisi pour que la recherche rapide trouve les objets qui commencent par les caractères donnés.
 - La recherche rapide ne tient pas compte de la casse et est tronquée à droite.
 - La recherche rapide renvoie les objets dont le nom correspond à une catégorie telle que Workflow, Planification.
-- Le méta-caractère \* peut être utilisé comme substitut pour zéro ou plusieurs caractères :
+- Le métacaractère \* peut être utilisé comme substitut pour zéro ou plusieurs caractères :
   - **te\*test** trouvera les objets ***test**Initial*, *mon**Test***
   - **te\*st** recherchera les objets ***test**Initial*, ***te**rminate**St**illstand*
 
@@ -100,11 +100,11 @@ Les opérations suivantes sont disponibles pour les *dossiers d'inventaire* :
   - les *Sources d'Ordre de Fichier*, *Ressources de Tâche*, *Conditions*, *Verrous de Ressource* offrent des opérations similaires à celles des *Workflows*.
 - Opérations sur les objets d'automatisation
   - **Valider** rend les objets *brouillons* disponibles
-    - pour une utilisation avec d'autres objets, par exemple les *inclusions de scripts* seront prises en compte pour le prochain déploiement des Workflows, les *modèles d'emploi* peuvent être mis à jour dans le référencement des Workflows.
+    - pour une utilisation avec d'autres objets, par exemple les *Blocs Scripts* seront prises en compte pour le prochain déploiement des Workflows, les *Modèles de Tâche* peuvent être mis à jour dans le référencement des Workflows.
     - pour une utilisation avec [Daily Plan](/daily-plan), par exemple *Planifications* sera pris en compte pour la création d'Ordres.
     - pour plus de détails, voir [Release Folder](/configuration-inventory-operations-release-folder).
-  - **Retirer** annule une opération *Release* précédente. Les objets d'inventaire seront mis à l'état de *brouillon*. Cela signifie que les *Planifications* et *Calendriers* provisoires ne seront pas pris en compte par le site [Daily Plan](/daily-plan). L'opération prend en compte les dépendances entre objets et rappellera/révocera également les objets référents. Pour plus de détails, voir [Recall Folder](/configuration-inventory-operations-recall-folder).
-  - **Appliquer un Modèle de Tâche** mettra à jour les tâches dans les Workflows situés dans n'importe quel dossier contenant des références à des *Modele de Tâches* inclus dans le *dossier d'inventaire* sélectionné ou dans n'importe quel sous-dossier.
+  - **Retirer** annule une opération *Publier* précédente. Les objets d'inventaire seront mis à l'état de *brouillon*. Cela signifie que les *Planifications* et *Calendriers* provisoires ne seront pas pris en compte par le site [Daily Plan](/daily-plan). L'opération prend en compte les dépendances entre objets et retirera/révocera également les objets référents. Pour plus de détails, voir [Recall Folder](/configuration-inventory-operations-recall-folder).
+  - **Appliquer un Modèle de Tâche** mettra à jour les tâches dans les Workflows situés dans n'importe quel dossier contenant des références à des *Modeles de Tâche* inclus dans le *dossier d'inventaire* sélectionné ou dans n'importe quel sous-dossier.
   - D'autres opérations sont disponibles, similaires aux *Opérations sur les objets du Contrôleur*.
 
 #### Opérations sur les dossiers d'utilisateurs
@@ -137,9 +137,9 @@ Les opérations suivantes sont disponibles pour les *dossiers d'inventaire* :
 - Opérations de retrait
   - l'opération **Supprimer** déplace le dossier, tous les sous-dossiers et les objets inclus dans la Corbeille. Les objets d'inventaire supprimés peuvent être restaurés ou supprimés définitivement de la Corbeille. Pour plus de détails, voir [Remove Folder](/configuration-inventory-operations-remove-folder).
   - la commande **Rétablir le brouillon** supprime la version actuelle des objets du dossier et des sous-dossiers. Si une version *déployée* ou *publiée* existe, elle deviendra la version actuelle de l'objet concerné.
-- Opérations sur les modèles de tâche
-  - **Mettre à jour les Tâches à partir des Modèles** mettra à jour les tâches dans les Workflows situés dans n'importe quel dossier qui contient des références à des *Modèles de Tâches* inclus dans le *dossier de l'utilisateur* sélectionné ou dans n'importe quel sous-dossier.
-  - **Appliquer le Modèle aux Tâches** mettra à jour les tâches dans les Workflows situés dans le *Dossier de l'utilisateur* sélectionné à partir des *Modèles de Tâches* situés dans n'importe quel dossier.
+- Opérations sur les Modèles de Tâche
+  - **Mettre à jour les Tâches à partir des Modèles** mettra à jour les tâches dans les Workflows situés dans n'importe quel dossier qui contient des références à des *Modèles de Tâche* inclus dans le *dossier de l'utilisateur* sélectionné ou dans n'importe quel sous-dossier.
+  - **Appliquer le Modèle aux Tâches** mettra à jour les tâches dans les Workflows situés dans le *Dossier de l'utilisateur* sélectionné à partir des *Modèles de Tâche* situés dans n'importe quel dossier.
 
 ### Opérations au niveau de l'objet
 
@@ -166,7 +166,7 @@ Les opérations suivantes sont proposées pour les objets d'inventaire individue
   - **Révoquer** annule l'opération de *Déploiement* . L'objet sera remis à l'état de *brouillon*. Dans le cas des Workflows, cela signifie que les Ordres seront retirés du site [Daily Plan](/daily-plan). Pour plus de détails, voir [Revoke Object](/configuration-inventory-operations-revoke-object).
 - Objets d'Automatisation
   - **Publier** rend les objets *brouillon* disponibles
-    - pour une utilisation avec d'autres objets, par exemple les *inclusions de scripts* seront prises en compte pour le prochain déploiement des Workflows, les *modèles d'emploi* peuvent être mis à jour dans le référencement des Workflows.
+    - pour une utilisation avec d'autres objets, par exemple les *Blocs Scripts* seront prises en compte pour le prochain déploiement des Workflows, les *Modèles de Tâche* peuvent être mis à jour dans le référencement des Workflows.
     - pour une utilisation avec [Daily Plan](/daily-plan), par exemple *Planifications* sera pris en compte pour la création d'Ordres.
     - pour plus de détails, voir [Release Object](/configuration-inventory-operations-release-object).
   - **Retirer** annule l'opération *Publier* . Les objets d'inventaire seront mis à l'état de *brouillon*. Cela signifie que les *Planifications* et les *Calendriers* provisoires ne seront pas pris en compte par le système [Daily Plan](/daily-plan). Pour plus de détails, voir [Recall Object](/configuration-inventory-operations-recall-object).
@@ -181,7 +181,7 @@ Les opérations suivantes sont proposées pour les objets d'inventaire individue
 - Objets du Contrôleur
   - [Workflows](/configuration-inventory-workflows)
   - [File Order Sources](/configuration-inventory-file-order-sources)
-  - [Job Resources](/configuration-inventory-tâche-resources)
+  - [Job Resources](/configuration-inventory-job-resources)
   - [Notice Boards](/configuration-inventory-notice-boards)
     - [Resouroes - Notice Boards](/resources-notice-boards)
   - [Resource Locks](/configuration-inventory-resource-locks)
@@ -190,7 +190,7 @@ Les opérations suivantes sont proposées pour les objets d'inventaire individue
   - [Script Includes](/configuration-inventory-script-includes)
   - [Schedules](/configuration-inventory-schedules)
   - [Calendars](/configuration-inventory-calendars)
-  - [Job Templates](/configuration-inventory-tâche-templates)
+  - [Job Templates](/configuration-inventory-job-templates)
   - [Reports](/configuration-inventory-reports)
 - Opérations sur les objets
   - [Deploy Object](/configuration-inventory-operations-deploy-object)

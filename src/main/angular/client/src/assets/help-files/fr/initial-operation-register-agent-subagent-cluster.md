@@ -16,15 +16,15 @@ L'opération initiale est effectuée après l'installation du Contrôleur JS7, d
 - Les connexions **l'Agent Autonome** et de l'**Agent Directeur** sont établies par le Contrôleur. 
 - les connexions **Sous-Agents** dans un Cluster d'Agents sont établies par les *Agents Directeurs*.
 
-## Enregistrer un groupe de Sous-Agents
+## Enregistrer un Cluster de Sous-Agents
 
 L'enregistrement d'une Cluster de Sous-Agents comprend l'enregistrement des éléments suivants
 
 - la *sélection* des Agents Directeurs et des Sous-Agents dans un Cluster d'Agents
 - la *Séquence* dans laquelle les Sous-Agents seront exploités
   - *actif-actif* : chaque tâche suivante sera exécutée avec le Sous-Agent suivant. Cela signifie que tous les Sous-Agents sélectionnés sont impliqués. Pour plus de détails, voir - [JS7 - Agent Cluster - Active-Active Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Active+Subagent+Cluster).
-  - *actif-passif* : seul le premier Sous-Agent sera utilisé pour l'exécution du tâche. S'il n'est pas disponible, le Sous-Agent suivant sera utilisé. Pour plus d'informations, voir [JS7 - Agent Cluster - Active-Passive Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Passive+Subagent+Cluster).
-  - *basé sur les métriques* : sur la base de règles telles que la consommation de CPU et de mémoire, le Sous-Agent suivant sera sélectionné pour l'exécution du tâche. Pour plus de détails, voir [JS7 - Agent Cluster - Metrics-based Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Metrics-based+Subagent+Cluster).
+  - *actif-passif* : seul le premier Sous-Agent sera utilisé pour l'exécution de la tâche. S'il n'est pas disponible, le Sous-Agent suivant sera utilisé. Pour plus d'informations, voir [JS7 - Agent Cluster - Active-Passive Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Passive+Subagent+Cluster).
+  - *basé sur les métriques* : sur la base de règles telles que la consommation de CPU et de mémoire, le Sous-Agent suivant sera sélectionné pour l'exécution de la tâche. Pour plus de détails, voir [JS7 - Agent Cluster - Metrics-based Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Metrics-based+Subagent+Cluster).
 
 Pour plus d'informations, voir [Initial Operation - Subagent Cluster](/initial-operation-agent-subagent-Cluster)
 

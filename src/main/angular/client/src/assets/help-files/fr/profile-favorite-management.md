@@ -13,7 +13,7 @@ Les utilisateurs peuvent trouver un plus grand nombre d'Agents dans leur environ
 
 ### Ajouter des Agents favoris
 
-*Les Agents favoris* peuvent être ajoutés directement lors de l'affectation d'Agents dans l'onglet [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-tâche-properties). En cliquant sur le lien \* d'un Agent, vous ajouterez l'Agent en question à la liste des favoris.
+*Les Agents favoris* peuvent être ajoutés directement lors de l'affectation d'Agents dans l'onglet [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-job-properties). En cliquant sur le lien \* d'un Agent, vous ajouterez l'Agent en question à la liste des favoris.
 
 Les utilisateurs peuvent ajouter des *agents favoris* à partir de leur *profil* en utilisant le bouton *Ajouter un favori*. Cela permet de sélectionner l'Agent à ajouter.
 
@@ -66,7 +66,7 @@ Les opérations suivantes sont disponibles à partir du menu d'action à 3 point
 ### Aide contextuelle
 
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-tâche-properties)
+- [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-job-properties)
 - [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone)
 - [Initial Operation - Register Subagent Clusters](/initial-operation-register-agent-subagent-Cluster)
 - [Profile](/profile)

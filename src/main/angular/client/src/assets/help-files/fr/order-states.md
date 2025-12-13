@@ -15,9 +15,9 @@ Les *États d'Ordres* suivants sont disponibles :
 - **En progression**: Les Ordres sont traités par des instructions de Workflow mais ne sont pas en cours d'exécution. 
 - **En exécution**: Les Ordres sont en cours d'exécution d'une tâche. 
 - **Suspendu**: Les Ordres ont été interrompus par une intervention de l'utilisateur et peuvent être repris.
-- **Complet**: Les Ordres sont terminés dans un Workflow mais n'ont pas été supprimés, par exemple si une Source d'Ordre de Fichier est utilisée pour l'observation de fichiers et que le Workflow n'a pas (re)déplacé les fichiers entrants. Dans ce cas, l'Ordre restera en place tant que le fichier existera dans le répertoire d'arrivée.
+- **Complété**: Les Ordres sont terminés dans un Workflow mais n'ont pas été supprimés, par exemple si une Source d'Ordre de Fichier est utilisée pour l'observation de fichiers et que le Workflow n'a pas (re)déplacé les fichiers entrants. Dans ce cas, l'Ordre restera en place tant que le fichier existera dans le répertoire d'arrivée.
 - **A Confirmer**: Les Ordres sont mis en attente par l'instruction *Prompt* dans un Workflow et nécessitent la confirmation de l'utilisateur pour continuer l'exécution du Workflow.
-- **En attente**: Les Ordres attendent une ressource telle qu'un *Verrou de Ressource*, une *Condition* ou un *Cycle* ou un processus si l'Agent utilisé spécifie une limite de processus qui est dépassée.
+- **En attente**: Les Ordres attendent une ressource telle qu'un *Verrou de Ressource*, une *Annonce* ou un *Cycle* ou un processus si l'Agent utilisé spécifie une limite de processus qui est dépassée.
 - **Bloqué**: Les Ordres bloqués ne peuvent pas démarrer, par exemple si l'Agent n'est pas joignable depuis l'ajout de l'Ordre.
 - **Echoué**: Les Ordres échoués indiquent qu'une tâche a échoué ou qu'une *instruction Fail* empêche la poursuite de l'Ordre. 
 

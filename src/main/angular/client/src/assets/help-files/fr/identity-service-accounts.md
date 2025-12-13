@@ -1,4 +1,4 @@
-# Comptes de Service d'Identité
+# Service d'Identité - Comptes
 
 Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
 
@@ -43,7 +43,7 @@ Les opérations suivantes sont disponibles dans le menu d'action à 3 points de 
 - **Dupliquer** permet de copier le compte sélectionné dans un nouveau compte. Les utilisateurs doivent spécifier le nom du nouveau compte.
 - **Réinitialiser le mot de passe** supprime le mot de passe du compte et attribue le mot de passe spécifié avec le paramètre *initial_password* dans la page [Settings - Identity Service](/settings-identity-service). Le compte utilisateur concerné doit se connecter avec le *mot_de_passe initial* et doit modifier son mot de passe lors de la prochaine connexion.
 - **Forcer le changement de mot de passe** oblige le compte à changer son mot de passe lors de la prochaine connexion.
-- **Ajouter compte à la liste de blocage** interdit l'accès au compte pendant la durée de l'ajout du compte à la liste de blocage [Identity Service - Blocklist](/identity-service-blocklist).
+- **Ajouter compte à la Liste de Blocage** interdit l'accès au compte pendant la durée de l'ajout du compte à la Liste de Blocage [Identity Service - Blocklist](/identity-service-blocklist).
 - **Désactiver** désactive le compte et interdit l'accès à partir de ce compte.
 - **Supprimer** supprime le compte du Service d'Identité.
 - **Visualiser les Permissions** affiche la liste des autorisations résultant de la fusion des rôles du compte donné.
@@ -61,7 +61,7 @@ Les utilisateurs peuvent sélectionner un ou plusieurs *comptes* pour effectuer 
 - **Forcer le changement de mot de passe** oblige les comptes sélectionnés à changer leur mot de passe lors de la prochaine connexion.
 - **Désactiver** désactive les comptes sélectionnés et refuse l'accès aux comptes donnés.
 - **Activer** active les comptes sélectionnés et désactivés.
-- **Supprimer* les comptes sélectionnés du Service d'Identité.
+- **Supprimer** les comptes sélectionnés du Service d'Identité.
 
 ## Références
 
@@ -78,4 +78,3 @@ Les utilisateurs peuvent sélectionner un ou plusieurs *comptes* pour effectuer 
 ### Product Knowledge Base
 
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
-

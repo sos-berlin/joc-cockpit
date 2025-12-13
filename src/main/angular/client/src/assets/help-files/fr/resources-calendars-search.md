@@ -6,7 +6,7 @@ La recherche de Calendrier est utilisée pour rechercher des Calendrier sur la b
 
 ## Meta Characters
 
-- le méta-caractère **?** remplacera n'importe quel caractère.
+- le métacaractère **?** remplacera n'importe quel caractère.
 - **Caractère méta remplacera zéro ou plusieurs caractères.
 
 La recherche est insensible à la casse et partielle, par exemple
@@ -29,9 +29,9 @@ La recherche avancée permet d'effectuer une recherche par attributs d'objets :
 
 ### Recherche de dépendance
 
-Le méta-caractère de recherche **\*** est utilisé pour spécifier que les dépendances sont recherchées, par exemple vers un Verrou de Ressource quel que soit le nom qu'il utilise :
+Le métacaractère de recherche **\*** est utilisé pour spécifier que les dépendances sont recherchées, par exemple vers un Verrou de Ressource quel que soit le nom qu'il utilise :
 
-- **\*** Le méta-caractère de **Verrou** renverra les Calendriers des Workflows utilisant les verrous des ressources,
+- **\*** Le métacaractère de **Verrou** renverra les Calendriers des Workflows utilisant les verrous des ressources,
 - **\*** Le métacaractère **Source d'Ordre de Fichier** renverra les Calendriers des Workflows référencés par un Source d'Ordre de Fichier.
 
 ## Références

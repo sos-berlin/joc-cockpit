@@ -67,7 +67,7 @@ Les préférences s'appliquent à la pagination sur n'importe quelle page :
 
 ### Préférences de l'éditeur
 
-- **Taille de l'onglet** est utilisé dans l'onglet [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-tâche-properties) lors de l'édition du *Job Script*. Le paramètre spécifie le nombre d'espaces correspondant à la taille lorsque vous appuyez sur la touche TAB.
+- **Taille de l'onglet** est utilisé dans l'onglet [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-job-properties) lors de l'édition du *Job Script*. Le paramètre spécifie le nombre d'espaces correspondant à la taille lorsque vous appuyez sur la touche TAB.
 
 ### Préférences d'affichage
 
@@ -84,10 +84,10 @@ Les préférences s'appliquent à la pagination sur n'importe quelle page :
 - **Activer les raisons pour le Journal d'Audit** oblige l'utilisateur à spécifier une raison lorsqu'il modifie des objets tels que l'ajout ou l'annulation d'Ordres, la suspension de Workflows, etc. Le réglage de l'utilisateur peut être annulé à partir du site [Settings - JOC Cockpit](/settings-joc).
 - **Use time zone for log timestamps** s'applique lorsque les Agents fonctionnent sur des serveurs situés dans des fuseaux horaires différents ou différents du fuseau horaire du serveur du Contrôleur. Dans ce cas, un journal de l'Ordre qui contient la sortie du journal d'un certain nombre d'Ordres exécutés avec des Agents éventuellement différents peut sembler confus. Le paramètre convertit les horodatages des journaux dans le *fuseau horaire* spécifié dans le profil de l'utilisateur.
 - l'option **Current Controller** s'applique lorsque plusieurs Contrôleurs sont connectés à JOC Cockpit. Option proposée dans un certain nombre de vues, par exemple la vue [History - Orders](/history-orders). Lorsqu'elle est cochée, elle limite l'affichage aux Ordres soumis au Contrôleur actuellement sélectionné et, dans le cas contraire, elle affiche les Ordres de tous les Contrôleurs connectés. Ce paramètre détermine la valeur par défaut des options *Contrôleur actuel* connexes dans les vues du JOC Cockpit.
-- **Supprimer les infobulles pour les objets de l'inventaire** concerne la vue *Configuration-&gt;Inventaire* qui propose des infobulles, par exemple pour [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-tâche-properties). Les infobulles s'affichent si la souris est déplacée sur l'étiquette d'un champ de saisie afin d'aider les utilisateurs en expliquant les saisies possibles. Bien que cela soit utile pour les utilisateurs qui ne sont pas trop familiers avec JS7, les infobulles peuvent ne pas être nécessaires pour les utilisateurs expérimentés.
+- **Supprimer les infobulles pour les objets de l'inventaire** concerne la vue *Configuration-&gt;Inventaire* qui propose des infobulles, par exemple pour [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-job-properties). Les infobulles s'affichent si la souris est déplacée sur le label d'un champ de saisie afin d'aider les utilisateurs en expliquant les saisies possibles. Bien que cela soit utile pour les utilisateurs qui ne sont pas trop familiers avec JS7, les infobulles peuvent ne pas être nécessaires pour les utilisateurs expérimentés.
 - **L'avertissement de licence reconnu** fait référence à l'utilisation de licences d'abonnement qui sont généralement limitées à un an. Avant l'expiration de la licence, JOC Cockpit affichera des avertissements connexes. L'utilisateur peut choisir de supprimer les avertissements relatifs à l'expiration de la licence. Pour plus d'informations, consultez le site [JS7 - How to manage License Expiration Warnings](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+manage+License+Expiration+Warnings).
-- **Afficher plus d'options** active le bouton du curseur correspondant dans la vue *Configuration-&gt;Inventaire*. Il offre des options plus détaillées pour la configuration du tâche, par exemple avec l'onglet [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-tâche-options).
-- **Collapse list variable** s'applique à la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows) qui permet de spécifier des variables de Workflow à partir d'un certain nombre de types de données. Si le type de données *Liste* (tableau) est utilisé, il peut contenir un plus grand nombre d'entrées. Les utilisateurs peuvent ne pas vouloir voir immédiatement les variables de liste développées lorsqu'ils modifient un Workflow.
+- **Afficher plus d'options** active le bouton du curseur correspondant dans la vue *Configuration-&gt;Inventaire*. Il offre des options plus détaillées pour la configuration de la tâche, par exemple avec l'onglet [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options).
+- **Réduire variable list** s'applique à la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows) qui permet de spécifier des variables de Workflow à partir d'un certain nombre de types de données. Si le type de données *Liste* (tableau) est utilisé, il peut contenir un plus grand nombre d'entrées. Les utilisateurs peuvent ne pas vouloir voir immédiatement les variables de liste développées lorsqu'ils modifient un Workflow.
 
 ### Préférences de type de vue
 
@@ -109,8 +109,8 @@ Les préférences s'appliquent à l'affichage des instructions de Workflow avec 
 
 - [Audit Log](/audit-log)
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-  - [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-tâche-options)
-  - [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-tâche-properties)
+  - [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
+  - [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-job-properties)
 - [Daily Plan](/daily-plan)
 - [History - File Transfers](/history-file-transfers)
 - [History - Orders](/history-orders)
@@ -136,4 +136,3 @@ Les préférences s'appliquent à l'affichage des instructions de Workflow avec 
 - [JS7 - Order State Transitions](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+State+Transitions)
 - [JS7 - Profiles](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles)
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)
-

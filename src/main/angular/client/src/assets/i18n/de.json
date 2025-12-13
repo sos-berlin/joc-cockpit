@@ -2747,9 +2747,9 @@
     "button.addOrderParameterization": "Auftragsparametrierung hinzufügen",
     "button.addOrdersFromAllSchedules": "Aufträge aus Zeitplänen hinzufügen",
     "button.normal": "Prozessende abwarten",
-    "button.force": "beenden",
+    "button.force": "Prozess beenden",
     "button.reset": "rücksetzen",
-    "button.forceReset": "rücksetzen/beenden",
+    "button.forceReset": "rücksetzen/Prozess beenden",
     "placeholder.selectStartNode": "Start-Position auswählen",
     "placeholder.selectEndNode": "End-Position auswählen",
     "placeholder.selectBlockPosition": "Block-Position angeben",
@@ -3146,7 +3146,7 @@
       "label.lockFound": "Ressourcen-Sperre gefunden"
     },
     "board": {
-      "label.id": "Adresse",
+      "label.id": "ID",
       "label.name": "Name",
       "label.postOrderToNoticeId": "Notizkennung für sendenden Auftrag",
       "label.expectOrderToNoticeId": "Notizkennung für wartenden Auftrag",

@@ -1,9 +1,9 @@
-# Vue d'ensemble des Ordres
+# Vue Aperçu des Ordres
 
 La vue *Aperçu des Ordres* permet de surveiller et de contrôler les Ordres pour les Workflows.
 
 - Les utilisateurs peuvent identifier les Ordres en cours de traitement sur [Order State](/order-states).
-- Les utilisateurs peuvent assurer la transition des Ordres, par exemple en annulant des Ordres *en cours d'exécution*.
+- Les utilisateurs peuvent assurer la transition des Ordres, par exemple en annulant des Ordres *en exécution*.
 - La vue contient les Ordres qui sont ajoutés par [Daily Plan](/daily-plan) et les Ordres qui ont été ajoutés sur demande.
 
 ## Vue de sélection de l'état de l'Ordre
@@ -28,8 +28,8 @@ Cette vue présente la liste des Ordres pour l'état donné :
 - **Workflow** est le nom unique attribué à un Workflow.
   - En cliquant sur le *Workflow*, vous accédez à la vue [Workflows](/workflows).
   - En cliquant sur l'icône en forme de crayon, vous accédez à la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
-- **Tag** indique la position de l'Ordre à partir de l'étiquette de l'instruction de Workflow. En l'absence d'étiquettes, la position technique est indiquée.
-- **État** indique l'adresse [Order State](/order-states).
+- **Label** indique la position de l'Ordre à partir du *Label* de l'instruction de Workflow. En l'absence de *Label*, la position technique est indiquée.
+- **État** indique le [Order State](/order-states).
   - Le passage de la souris sur l'indicateur d'état permet d'afficher des détails s'ils sont disponibles. Par exemple, les Ordres *en attente* indiquent des raisons telles que *en attente d'un processus*, *en attente d'une condition*, etc.
 - **Prévu pour** indique la date de début de l'Ordre.
 
@@ -40,7 +40,7 @@ Cette vue s'affiche sur la partie inférieure de la fenêtre lorsque l'utilisate
 ### Historique de l'Ordre
 
 - **ID Ordre** est l'identifiant unique attribué à un Ordre. Cliquez sur l'icône de la flèche vers le bas pour afficher les variables de l'Ordre.
-- **Tag** indique la dernière position d'un Ordre dans le Workflow. Les utilisateurs peuvent assigner des *étiquettes* aux instructions de Workflow qui seront affichées et sinon la position technique sera indiquée.
+- **Label** indique la dernière position d'un Ordre dans le Workflow. Les utilisateurs peuvent assigner des *Labels* aux instructions de Workflow qui seront affichées et sinon la position technique sera indiquée.
 - **État** indique le dernier résultat dans la vie de l'Ordre.
   - Si les Ordres sont terminés, le *Statut de l'historique* sera *succès* ou *échec*.
   - Si les Ordres ne sont pas terminés, le *Statut de l'Historique* sera *en cours*.
@@ -75,29 +75,29 @@ Le *Journal d'Audit* indique les opérations de modification effectuées sur l'O
 
 Les utilisateurs trouvent un menu d'action par Ordre qui propose les opérations disponibles pour l'état donné de l'Ordre.
 
-Pour les Ordres en *attente*, *planifié*, *en cours*, *en cours d'exécution*, *suspendu*, *à confirmer*, *en attente*, *échoué*, les opérations suivantes sont proposées :
+Pour les Ordres en *attente*, *planifié*, *en cours*, *en exécution*, *suspendu*, *à confirmer*, *en attente*, *échoué*, les opérations suivantes sont proposées :
 
 - **Modifier la priorité** 
-  - Si un Ordre rencontre une instruction de *verrouillage de ressources* dans le Workflow qui limite le parallélisme, alors sa *Priorité* détermine la position dans la file d'attente des *Ordres en attente*.
+  - Si un Ordre rencontre une *instruction Lock* dans le Workflow qui limite le parallélisme, alors sa *Priorité* détermine la position dans la file d'attente des *Ordres en attente*.
   - les *priorités* sont spécifiées à partir d'entiers négatifs, nuls et positifs ou à partir des raccourcis proposés. Une *priorité* plus élevée est prioritaire. Les raccourcis offrent les valeurs suivantes :
     - **Basse** : -20000
     - **Inférieur à la normale** : -10000
     - **Normal** : 0
     - **Au-dessus de la normale** : 10000
     - **Haut** : 20000
-- **Annuler** met fin à l'Ordre. Les Ordres en cours d'exécution termineront le tâche ou l'instruction de Workflow en cours et quitteront le Workflow avec un statut d'historique d'échec.
-- **Annuler/doucement** mettra fin de force aux Ordres en cours d'exécution d'une tâche. Les Ordres quitteront le Workflow avec un statut d'historique d'échec.
-- **L'annulation/réinitialisation** mettra fin de force aux Ordres exécutant une tâche. Les Ordres quitteront le Workflow avec un statut d'historique d'échec.
+- **Annuler** met fin à l'Ordre. Les Ordres en cours d'exécution termineront la tâche ou l'instruction de Workflow en cours et quitteront le Workflow avec un statut d'historique d'échec.
+- **Annuler/terminer tâche** mettra fin de force aux Ordres en cours d'exécution d'une tâche. Les Ordres quitteront le Workflow avec un statut d'historique d'échec.
+- **Annuler/réinitialiser** mettra fin de force aux Ordres exécutant une instruction. Les Ordres quitteront le Workflow avec un statut d'historique d'échec.
 - **Suspendre** suspend l'Ordre. Les Ordres en cours d'exécution seront suspendus après avoir terminé la tâche ou l'instruction de Workflow en cours.
-- **Suspendre/doucement** mettra fin de force aux Ordres en cours et suspendra les Ordres.
+- **Suspendre/terminer tâche** mettra fin de force aux Ordres en cours d'exécution d'une tâche et suspendra les Ordres.
 - **Suspendre/réinitialiser** réinitialise immédiatement l'instruction de Workflow en cours et remet l'Ordre dans l'état *suspendu*. Cette option peut être combinée avec l'arrêt forcé des tâches pour les Ordres en cours d'exécution.
 - **Reprendre** poursuivra un Ordre *suspendu* ou *échoué* pouvant être repris.
 
-Les opérations suivantes sont proposées pour les Ordres dans l'état *Complété* et pour les Ordres perturbés dans l'état *échec* :
+Les opérations suivantes sont proposées pour les Ordres dans l'état *complété* et pour les Ordres perturbés dans l'état *échoué* :
 
 - **Quitter le Workflow** mettra fin à l'Ordre. 
   - les Ordres *complétés* quitteront le Workflow avec un statut historique *succès*.
-  - les Ordres *échec/perturbés* quitteront le Workflow avec un statut historique *échoué*.
+  - les Ordres *échoué/perturbés* quitteront le Workflow avec un statut historique *échoué*.
 
 D'autres opérations spécifiques à l'état de l'Ordre peuvent être disponibles.
 
@@ -129,7 +129,7 @@ Comme pour la *vue de sélection de l'état de l'Ordre*, un bouton de filtrage e
 
 ### Filtre de saisie de la date du ... au
 
-Pour les Ordres dans les états *en cours*, *en cours d'exécution*, *échec*, *achevé*, des champs de saisie sont disponibles pour spécifier la date et l'heure à laquelle un Ordre est dans l'état correspondant.
+Pour les Ordres dans les états *en progression*, *en exécution*, *échoué*, *complété*, des champs de saisie sont disponibles pour spécifier la date et l'heure à laquelle un Ordre est dans l'état correspondant.
 
 Les utilisateurs peuvent spécifier des dates et heures absolues ou relatives.
 
@@ -153,4 +153,3 @@ Le filtre limite l'affichage aux *Identifiants d'Ordres* et aux *Noms de Workflo
 ### Product Knowledge Base
 
 - [JS7 - Orders](https://kb.sos-berlin.com/display/JS7/JS7+-+Orders)
-

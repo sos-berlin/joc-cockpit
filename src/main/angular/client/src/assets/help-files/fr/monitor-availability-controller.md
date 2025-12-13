@@ -1,12 +1,12 @@
-# Disponibilité du moniteur et du Contrôleur
+# Disponibilité du Contrôleur
 
-La vue affiche les indicateurs de disponibilité d'un Contrôleur.
+La vue affiche les indicateurs de disponibilité des Contrôleurs.
 
-Si un groupe de Contrôleurs est utilisé, la disponibilité du groupe est prise en compte. Par exemple, si une instance de Contrôleur dans un Cluster est arrêtée à des fins de maintenance et que l'instance restante reprend la charge, cela ne réduit pas la disponibilité.
+Si un Cluster de Contrôleurs est utilisé, la disponibilité du Cluster est prise en compte. Par exemple, si une instance de Contrôleur dans un Cluster est arrêtée à des fins de maintenance et que l'instance restante reprend la charge, cela ne réduit pas la disponibilité.
 
-Dans le coin supérieur droit de l'écran, vous pouvez cocher la case *Current Controller* (Contrôleur actuel) : si cette case n'est pas cochée, la disponibilité sera affichée pour tous les Contrôleurs connectés ; dans le cas contraire, les informations ne seront affichées que pour le Contrôleur actuellement sélectionné.
+Dans le coin supérieur droit de l'écran, vous pouvez cocher la case *Contrôleur actuel* : si cette case n'est pas cochée, la disponibilité sera affichée pour tous les Contrôleurs connectés; dans le cas contraire, les informations ne seront affichées que pour le Contrôleur actuellement sélectionné.
 
-Les utilisateurs doivent savoir que les données historiques relatives à la disponibilité des Contrôleurs sont susceptibles d'être purgées par le site [Cleanup Service](/service-cleanup).
+Les utilisateurs doivent savoir que les données historiques relatives à la disponibilité des Contrôleurs sont susceptibles d'être purgées par le [Cleanup Service](/service-cleanup).
 
 ## Filtres de date
 

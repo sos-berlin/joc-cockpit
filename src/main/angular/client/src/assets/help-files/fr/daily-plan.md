@@ -4,7 +4,7 @@ La vue *Plan Quotidien* donne un aperçu des Ordres programmés pour une exécut
 
 Le site [Daily Plan Service](/service-daily-plan) est utilisé pour créer et soumettre aux Contrôleurs les Ordres du Plan Quotidien. Le service fonctionne en arrière-plan et agit quotidiennement pour planifier et soumettre des Ordres quelques jours à l'avance.
 
-Le Plan Quotidien est soumis à une purge de la base de données effectuée par [Cleanup Service](/service-cleanup).
+Le Plan Quotidien est soumis à une purge de la base de données effectuée par le [Cleanup Service](/service-cleanup).
 
 Pour les opérations liées au *Panneau du Calendrier*, voir [Daily Plan - Calendar](/daily-plan-calendar).
 
@@ -102,9 +102,9 @@ Pour les Workflows associés spécifiant des variables, les valeurs peuvent êtr
 
 Une position peut être spécifiée si les Ordres ne doivent pas commencer au premier nœud du Workflow mais à un nœud ultérieur.
 
-- **Position de bloc** : Pour les Workflows contenant des instructions de blocage telles que *Try/Catch*, *Resource Lock*, *Fork/Join*, l'instruction correspondante peut être sélectionnée.
-- **Position de départ** : Si aucune *Position de départ* n'est spécifiée, l'Ordre commencera à partir du premier nœud du Workflow ou de la *Position de blocage*
-  - Si aucune *position de blocage* n'est spécifiée, il est possible de sélectionner n'importe quelle instruction de niveau supérieur dans le Workflow à partir de laquelle l'Ordre commencera.
+- **Position de bloc** : Pour les Workflows contenant des instructions de bloc telles que *Try/Catch*, *Lock*, *Fork/Join*, l'instruction correspondante peut être sélectionnée.
+- **Position de départ** : Si aucune *Position de départ* n'est spécifiée, l'Ordre commencera à partir du premier nœud du Workflow ou de la *Position de bloc*
+  - Si aucune *position de bloc* n'est spécifiée, il est possible de sélectionner n'importe quelle instruction de niveau supérieur dans le Workflow à partir de laquelle l'Ordre commencera.
   - Si une *position de bloc* est spécifiée, la position de départ est un nœud de même niveau à l'intérieur du bloc.
 - **Positions finales** :
   - Si aucune *position de bloc* n'est spécifiée, il est possible de sélectionner n'importe quelle instruction de niveau supérieur dans le Workflow avant laquelle l'Ordre se terminera.

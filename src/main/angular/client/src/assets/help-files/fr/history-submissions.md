@@ -4,7 +4,7 @@ L'*Historique des soumissions* conserve la trace des Ordres soumis à partir du 
 
 Les Ordres sont créés par le Plan Quotidien en deux étapes : d'abord ils sont *planifiés*, ensuite ils sont *soumis* au Contrôleur et aux Agents. La soumission signifie que les Ordres seront lancés de manière autonome par les Agents.
 
-L'"Historique des soumissions" est soumis à une purge de la base de données effectuée par [Cleanup Service](/service-cleanup).
+L'"Historique des soumissions" est soumis à une purge de la base de données effectuée par le [Cleanup Service](/service-cleanup).
 
 ## Historique
 

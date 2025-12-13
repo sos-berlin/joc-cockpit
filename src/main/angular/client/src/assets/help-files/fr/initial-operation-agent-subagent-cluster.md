@@ -8,9 +8,9 @@ La configuration d'un Cluster de Sous-Agents comprend
 
 - la *sélection* des Agents Directeurs et des Sous-Agents dans un Cluster d'Agents
 - la *séquence* dans laquelle les Sous-Agents seront utilisés
-  - *fixed-priority* : seul le premier Sous-Agent sera utilisé pour l'exécution du tâche. Si le Sous-Agent n'est pas disponible, le Sous-Agent suivant sera utilisé. Pour plus de détails, voir [JS7 - Agent Cluster - Active-Passive Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Passive+Subagent+Cluster).
+  - *fixed-priority* : seul le premier Sous-Agent sera utilisé pour l'exécution de la tâche. Si le Sous-Agent n'est pas disponible, le Sous-Agent suivant sera utilisé. Pour plus de détails, voir [JS7 - Agent Cluster - Active-Passive Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Passive+Subagent+Cluster).
   - *round-robin* : chaque tâche suivant sera exécuté avec le Sous-Agent suivant. Cela signifie que tous les Sous-Agents sélectionnés sont impliqués. Pour plus d'informations, voir [JS7 - Agent Cluster - Active-Active Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Active+Subagent+Cluster).
-  - *basé sur les métriques* : sur la base de règles telles que la consommation de CPU et de mémoire, le Sous-Agent suivant sera sélectionné pour l'exécution du tâche. Pour plus de détails, voir [JS7 - Agent Cluster - Metrics-based Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Metrics-based+Subagent+Cluster).
+  - *basé sur les métriques* : sur la base de règles telles que la consommation de CPU et de mémoire, le Sous-Agent suivant sera sélectionné pour l'exécution de la tâche. Pour plus de détails, voir [JS7 - Agent Cluster - Metrics-based Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Metrics-based+Subagent+Cluster).
 
 ### Sélection des Agents
 

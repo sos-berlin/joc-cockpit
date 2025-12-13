@@ -1,11 +1,11 @@
-# Moniteur - Notifications du système
+# Moniteur - Notifications du Système
 
 Cette vue affiche les notifications émises par les produits JS7.
 
 - Les notifications système nécessitent la configuration du *Service de notification de journal* à partir de la page [Settings](/settings) section [Settings - Log Notification](/settings-log-notification). S'il est configuré, le Cockpit JOC agit comme un service syslog qui reçoit les avertissements et les erreurs des Contrôleurs et des Agents enregistrés dans le Cockpit JOC.
 - Outre l'affichage des notifications dans cette vue, celles-ci peuvent être transmises par courrier et à partir de la ligne de commande, par exemple à des produits System Monitor tiers. Pour plus d'informations, consultez le site [Configuration - Notification ](/configuration-notification).
 
-Les utilisateurs doivent savoir que les notifications peuvent être purgées par le site [Cleanup Service](/service-cleanup). Par défaut, les notifications sont purgées si elles datent de plus d'un jour.
+Les utilisateurs doivent savoir que les notifications peuvent être purgées par le [Cleanup Service](/service-cleanup). Par défaut, les notifications sont purgées si elles datent de plus d'un jour.
 
 ## Affichage des notifications
 
@@ -47,7 +47,7 @@ Les boutons suivants filtrent la source des notifications :
 
 - **Tous** affiche les notifications de tous les produits JS7.
 - **Système**
-- **JOC** limite l'affichage des notifications aux Ordres *échec*. 
+- **JOC** limite l'affichage des notifications aux Ordres *échoués*. 
 - **Contrôleur** limite l'affichage des notifications aux Ordres qui ont provoqué des avertissements.
 - **Agent** limite l'affichage des notifications aux Ordres qui ont d'abord échoué, puis se sont rétablis en poursuivant avec succès le Workflow.
 
@@ -72,4 +72,3 @@ Les boutons suivants permettent de filtrer le type de notifications :
 
 - [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor)
 - [JS7 - Notifications](https://kb.sos-berlin.com/display/JS7/JS7+-+Notifications)
-

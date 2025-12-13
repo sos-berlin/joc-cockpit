@@ -1,12 +1,12 @@
-# Configuration - Inventaire - Workflow - Propriétés du nœud de tâche
+# Configuration - Inventaire - Workflow - Propriétés du Nœud de Tâche
 
-La vue *Workflow* permet de concevoir des Workflow à partir d'une séquence d'instructions. Les utilisateurs peuvent glisser-déposer les *instructions de tâche* depuis la *barre d'outils* vers une position dans le Workflow.
+La vue *Workflow* permet de concevoir des Workflow à partir d'une séquence d'instructions. Les utilisateurs peuvent glisser-déposer la *instruction Job* depuis la *barre d'outils* vers une position dans le Workflow.
 
-L'interface graphique propose un certain nombre d'onglets pour spécifier les détails du tâche. Le quatrième onglet concerne les *Propriétés du nœud*.
+L'interface graphique propose un certain nombre d'onglets pour spécifier les détails de la tâche. Le quatrième onglet concerne les *Propriétés du nœud*.
 
 ## Propriétés du nœud
 
-Un nœud est la position d'une tâche dans le Workflow. Si le même tâche apparaît plusieurs fois dans le même Workflow, il utilisera le même *nom de tâche* mais des *étiquettes* différentes. L'*étiquette* identifie le nœud dans le Workflow.
+Un nœud est la position d'une tâche dans le Workflow. Si la même tâche apparaît plusieurs fois dans le même Workflow, elle utilisera le même *nom de tâche* mais des *Labels* différentes. Le *Label* identifie le nœud dans le Workflow.
 
 Si la même tâche est utilisé avec différents paramètres à chaque occurrence dans le Workflow, les *Propriétés de nœud* peuvent être utilisées. Elles offrent des paires clé/valeur qui créent des variables de nœud.
 
@@ -22,10 +22,10 @@ Les noms des variables de nœud sont sensibles à la casse.
 ### Aide contextuelle
 
 - [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-  - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflows-tâche-options)
-  - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflows-tâche-properties)
-  - [Configuration - Inventory - Workflows - Job Notifications](/configuration-inventory-workflows-tâche-notifications)
-  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-tâche-tags)
+  - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflows-job-options)
+  - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflows-job-properties)
+  - [Configuration - Inventory - Workflows - Job Notifications](/configuration-inventory-workflows-job-notifications)
+  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-job-tags)
 
 ### Product Knowledge Base
 
@@ -33,4 +33,3 @@ Les noms des variables de nœud sont sensibles à la casse.
 - [JS7 - Expressions for Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Expressions+for+Variables)
 - [JS7 - Job Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Instruction)
 - [JS7 - Order Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+Variables)
-

@@ -41,7 +41,7 @@ La page *Gérer Contrôleurs/Agents* est accessible à partir de l'icône de la 
 Les utilisateurs fournissent les données suivantes :
 
 - **Id Agent** est l'identifiant unique du Cluster d'Agents, qui ne peut pas être modifié pendant la durée de vie du groupe. L'*Identifiant de l'Agent* n'est pas visible avec les tâches et les Workflows.
-- **Nom du Cluster Agent** est le nom unique d'un Cluster d'Agents. Lors de l'attribution d'un Agent à un tâche, le *nom du Cluster Agents* est utilisé. Si vous modifiez le *nom du Cluster d'Agents* par la suite, vous devez continuer à utiliser le *nom du Clsuter Agent* précédent à partir d'un *nom d'alias*.
+- **Nom du Cluster Agent** est le nom unique d'un Cluster d'Agents. Lors de l'attribution d'un Agent à une tâche, le *nom du Cluster Agents* est utilisé. Si vous modifiez le *nom du Cluster d'Agents* par la suite, vous devez continuer à utiliser le *nom du Clsuter Agent* précédent à partir d'un *nom d'alias*.
 - le **Titre** est une description qui peut être ajoutée pour un Cluster d'Agents.
 - les **Noms d'Alias** sont des noms alternatifs pour le même Cluster d'Agents. Lorsque vous attribuez un Agent à une tâche, les *noms de groupe d'alias* vous seront également proposés. *Les noms de grappes d'alias* peuvent être utilisés, par exemple, si un environnement de test comprend moins de Cluster d'Agents que l'environnement de production : pour que les affectations d'Agents restent inchangées d'un environnement à l'autre, les Cluster d'Agents manquantes sont mappées à partir des *noms de grappes d'alias* de la même grappe d'Agents.
 - **Agent Directeur Primaire**

@@ -70,7 +70,7 @@ Les instructions de Workflow pour les Tableaux de Condition offrent les options 
   - **Lorsqu'il n'y a pas eu d'Annonce** spécifie le comportement à adopter dans le cas où une Annonce n'a pas été indiquée. Cela s'applique aux jours pour lesquels aucun Ordre n'est disponible à partir d'un Workflow de comptabilisation.
     - **Attendre** est la valeur par défaut et fait en sorte que les Ordres attendent la présence d'une Annonce indépendamment du fait qu'elles aient été indiquées ou non.
     - l'option **Ignorer** permet aux Ordres d'ignorer l'instruction si l'Annonce n'est pas indiquée.
-    - l'option **Process** est disponible pour l'instruction *ConsumeNotices* et permet à un Ordre d'entrer dans l'instruction de blocage au cas où l'Annonce n'est pas annoncé.
+    - l'option **Process** est disponible pour l'instruction *ConsumeNotices* et permet à un Ordre d'entrer dans l'instruction au cas où l'Annonce n'est pas annoncé.
 
 ## Références
 

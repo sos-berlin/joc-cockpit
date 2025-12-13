@@ -15,9 +15,9 @@ Les sessions actives sont affichées à partir du compte utilisé, du Service d'
 
 Les utilisateurs peuvent effectuer les opérations suivantes sur les sessions actives :
 
-- **Ajouter à la liste de blocage** ajoute le compte concerné à la liste [Identity Service - Blocklist](/identity-service-blocklist) qui interdit toute connexion ultérieure. Cette opération ne met pas fin à la session en cours du compte.
+- **Ajouter à la Liste de Blocage** ajoute le compte concerné à la liste [Identity Service - Blocklist](/identity-service-blocklist) qui interdit toute connexion ultérieure. Cette opération ne met pas fin à la session en cours du compte.
 - **Annuler la session** met fin de force à la session en cours du compte. Cela n'empêchera pas le compte d'effectuer une nouvelle opération de connexion.
-- l'opération **Annuler toutes les sessions du compte**, similaire à *Annuler la session*, met fin à toutes les sessions du compte donné.
+- **Annuler toutes les sessions du compte**, similaire à *Annuler la session*, met fin à toutes les sessions du compte donné.
 
 Si vous sélectionnez une ou plusieurs sessions, l'opération *Annuler la session* est disponible en bloc à l'aide du bouton correspondant dans le coin supérieur droit de la vue Secondaire.
 

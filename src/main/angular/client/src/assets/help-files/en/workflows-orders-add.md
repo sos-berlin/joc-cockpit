@@ -31,7 +31,7 @@ Users who are happy with default values and wish to submit an Order for immediat
 
 If an Order should not start from the first node in the Workflow, then a position can be specified.
 
-- **Block Position**: For Workflows holding block instructions such as Try/Catch, ResourceLock, Fork/Join the related instruction can be selected.
+- **Block Position**: For Workflows holding block instructions such as Try/Catch, Lock, Fork/Join the related instruction can be selected.
 - **Start Position**: If no Start Position is specified, then the Order will start from the first node.
   - If no Block Position is specified, then any top-level instruction in the Workflow can be selected from which the Order will start.
   - If a Block Position is specified, then the Start Position is a same-level node inside the block.

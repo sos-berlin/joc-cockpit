@@ -10,7 +10,7 @@ Pour le journal créé à partir des tâches de transfert de fichiers, voir [Tas
 
 L'affichage est regroupé en un bloc pour l'opération de transfert et en blocs pour le transfert de fichiers individuels :
 
-- **État** indique si un transfert a été *réussi* ou *échec*.
+- **État** indique si un transfert a été un *succès* ou *échec*.
   - *Succès" indique que tous les fichiers du transfert ont été traités avec succès.
   - *Échec" indique qu'un ou plusieurs fichiers du transfert ont été traités avec des erreurs.
 - **Nom du profil** est l'identifiant unique d'un profil de transfert de fichiers.
@@ -61,4 +61,3 @@ Pour *Source* et *Cible*, les détails suivants sont affichés :
 
 - [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)
 - [JS7 - Task History](https://kb.sos-berlin.com/display/JS7/JS7+-+Task+History)
-

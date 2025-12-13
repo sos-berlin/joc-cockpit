@@ -5,7 +5,7 @@ La vue *Blocs Scripts* permet de spécifier des extraits de code à utiliser ave
 Les tâches Shell peuvent être utilisées pour un certain nombre de langages de script tels que Bash, Python, PowerShell, etc.
 
 - Les utilisateurs réutilisent souvent des extraits de code dans plusieurs tâches, par exemple des fonctions réutilisables qui sont appelées dans plusieurs *Scripts de Jobs*.
-- Cela s'applique aux tâches Shell utilisant Bash, etc. et à l'utilisation de n'importe quel langage de script avec un tâche.
+- Cela s'applique aux tâches Shell utilisant Bash, etc. et à l'utilisation de n'importe quel langage de script avec une tâche.
 - Les Blocs Scripts sont développés dans les *Scripts de la Tâche* lorsque le Workflow est déployé. Cela implique que les modifications apportées aux inclusions de scripts nécessitent le déploiement du Workflow correspondant. Le JS7 garde la trace des dépendances et propose de déployer les Workflows associés lors de la publication du Bloc Script.
 
 Les Blocs Scripts sont gérés à partir des panneaux suivants :
@@ -42,7 +42,7 @@ Si vous appuyez sur le raccourci clavier CTRL+Espace alors que le curseur se tro
 - La recherche rapide offre 
   - la navigation à partir des dossiers de l'inventaire,
   - en sélectionnant les Blocs Scripts par leur nom en tapant un ou plusieurs caractères.
-- La recherche rapide ne tient pas compte des majuscules et des minuscules et est tronquée à droite. Pour les entrées tronquées à gauche, les utilisateurs peuvent appliquer le méta-caractère \* qui est un espace réservé pour n'importe quel nombre de caractères.
+- La recherche rapide ne tient pas compte des majuscules et des minuscules et est tronquée à droite. Pour les entrées tronquées à gauche, les utilisateurs peuvent appliquer le métacaractère \* qui est un espace réservé pour n'importe quel nombre de caractères.
 - Après avoir sélectionné un Bloc Script, l'entrée correspondante est ajoutée à la ligne sur laquelle se trouve le curseur.
 
 ### Paramétrage
@@ -80,7 +80,7 @@ Le Bloc Script écrira le contenu du *Script de la Tâche* dans un fichier tempo
 ### Aide contextuelle
 
 - [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
-- [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-tâche-options)
+- [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
 - [Object Naming Rules](/object-naming-rules)
 
 ### Product Knowledge Base

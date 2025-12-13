@@ -12,14 +12,14 @@ Les variantes suivantes sont disponibles pour les Verrous de Ressources :
 
 - **Les verrous exclusifs** permettent l'utilisation unique d'un verrou par un [JS7 - Lock Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Lock+Instruction).
 - les **verrous partagés** permettent l'utilisation parallèle d'un verrou par un certain nombre d'*instructions de verrouillage* provenant du même Workflow ou de différents Workflows.
-  - Le cas d'utilisation sous-jacent est une ressource telle qu'une table de base de données à laquelle un nombre limité de Tâches peuvent accéder en même temps. Pour éviter les blocages de la base de données, le nombre de tâches accédant à la table est limité.
+  - Le cas d'utilisation sous-jacent est une ressource telle qu'une table de base de données à laquelle un nombre limité de tâches peuvent accéder en même temps. Pour éviter les blocages de la base de données, le nombre de tâches accédant à la table est limité.
   - Chaque *Instruction Resource-Lock* spécifie un *poids* qui est pris en compte dans la *capacité* du Verrou de Ressource. Si le *poids* correspond à la *capacité* disponible, l'Ordre peut être exécuté. Dans le cas contraire, l'Ordre attendra que la part de *capacité* requise devienne disponible.
 
 Les dispositions suivantes s'appliquent à l'utilisation des écluses de ressources par les *instructions d'écluse* :
 
 - les *Instructions de verrouillage* sont des instructions en bloc utilisées dans un Workflow qui peut engendrer un nombre quelconque de tâches et d'autres instructions de Workflow.
 - les *Instructions de verrouillage* peuvent être imbriquées à n'importe quel niveau.
-- En cas d'erreur dans un tâche, l'Ordre libère par défaut le verrou et est déplacé au début de l'*Instruction de blocage*. Les utilisateurs qui souhaitent qu'un Ordre *défaillant* continue d'utiliser un verrou peuvent appliquer l'adresse [JS7 - Options Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Options+Instruction) avec la valeur *false* pour l'option *StopOnFailure*.
+- En cas d'erreur dans une tâche, l'Ordre libère par défaut le verrou et est déplacé au début de l'*Instruction Resource-Lock*. Les utilisateurs qui souhaitent qu'un Ordre *défaillant* continue d'utiliser un verrou peuvent appliquer l'adresse [JS7 - Options Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Options+Instruction) avec la valeur *false* pour l'option *StopOnFailure*.
 
 Les Verrous de Ressources sont gérés à partir des vues suivants :
 

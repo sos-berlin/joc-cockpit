@@ -92,7 +92,7 @@ Ils activent les notifications effectives par des références aux éléments *F
 
 #### Notification
 
-- **Notification** : Il est possible d'ajouter un nombre illimité de notifications, chacune d'entre elles se distinguant par un nom unique. Une notification se voit attribuer un type qui peut être *SUCCESS*, *WARNING* ou *ERROR*. Cela permet d'envoyer des notifications, par exemple en cas d'erreurs ou d'avertissements relatifs à un tâche. De même, des notifications peuvent être envoyées en cas d'exécution réussie d'un Workflow. Notez qu'une exécution réussie comprend à la fois l'absence d'erreurs de tâche et, optionnellement, la présence d'avertissements de tâche.
+- **Notification** : Il est possible d'ajouter un nombre illimité de notifications, chacune d'entre elles se distinguant par un nom unique. Une notification se voit attribuer un type qui peut être *SUCCESS*, *WARNING* ou *ERROR*. Cela permet d'envoyer des notifications, par exemple en cas d'erreurs ou d'avertissements relatifs à une tâche. De même, des notifications peuvent être envoyées en cas d'exécution réussie d'un Workflow. Notez qu'une exécution réussie comprend à la fois l'absence d'erreurs de tâche et, optionnellement, la présence d'avertissements de tâche.
   - **NotificationMonitors** : Sélectionne un ou plusieurs des *MonitorFragments* ci-dessus. Il est possible de sélectionner plusieurs fragments du même type.
     - **CommandFragmentRef** : Sélectionne le *CommandFragment* utilisé.
       - **MessageRef** : Sélectionne l'élément *Message* utilisé avec la *Commande*.

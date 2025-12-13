@@ -9,7 +9,7 @@ La vue *Ordre Log View* permet de filtrer à partir d'un certain nombre de crit�
 - **Main** spécifie que les détails concernant les débuts d'Ordres, les débuts de tâches et le paramétrage sur les débuts de tâches seront affichés. Cette sortie est indiquée par le qualificatif [MAIN].
 - **Les événements de succès** sont indiqués par le qualificatif [SUCCESS] et affichent des détails tels que le paramétrage résultant lorsque les tâches sont terminés.
 - **stdout** spécifie si la sortie écrite par les Jobs sur le canal stdout sera affichée à l'aide du qualificateur [STDOUT].
-- **Debug** s'applique aux Jobs de la JVM qui utilisent [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API). Ces Jobs peuvent se voir ajouter l'argument *log_level* contenant la valeur *debug* ou*trace*. Si une sortie de débogage est disponible pour un tâche, elle sera affichée à l'aide du qualificateur [DEBUG].
+- **Debug** s'applique aux Jobs de la JVM qui utilisent [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API). Ces Jobs peuvent se voir ajouter l'argument *log_level* contenant la valeur *debug* ou*trace*. Si une sortie de débogage est disponible pour une tâche, elle sera affichée à l'aide du qualificateur [DEBUG].
 
 La sortie de journal écrite par les âche sur le canal stderr n'est pas soumise au filtrage et sera affichée à l'aide du qualificateur [STDERR].
 
@@ -24,7 +24,7 @@ En haut de la fenêtre, les icônes chevron vers le bas et chevron vers le haut 
 La sortie du journal indique les horodatages provenant de différentes sources :
 
 - **Heure de l'Agent** : Les événements initiaux principaux tels que *OrderStarted* sont créés par l'Agent et reflètent l'horloge en temps réel de l'Agent.
-- **Heure du tâche** : La sortie des Jobs utilise le fuseau horaire du serveur sur lequel le Job sera exécuté ou le fuseau horaire spécifié dans l'implémentation de la tâche.
+- **Heure de la Tâche** : La sortie des tâches utilise le fuseau horaire du serveur sur lequel la tâche sera exécuté ou le fuseau horaire spécifié dans l'implémentation de la tâche.
 - **Heure du Contrôleur** : Les événements finaux tels que *OrderFinished* sont créés par le Contrôleur et reflètent l'horloge en temps réel du Contrôleur.
 
 Le *Ordre Log View* convertit les horodatages en fonction du fuseau horaire de l'utilisateur, si le paramètre correspondant dans le site [Profile - Preferences](/profile-preferences) est actif. Sinon, les fuseaux horaires du Contrôleur et de l'Agent seront utilisés.
