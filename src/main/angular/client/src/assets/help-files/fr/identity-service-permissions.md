@@ -1,6 +1,6 @@
-# Permissions du service d'identité
+# Permissions du Service d'Identité
 
-Les services d'identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
+Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
 
 Pour l'autorisation, le JS7 propose un modèle d'accès basé sur les rôles (RBAC) qui comprend les éléments suivants
 
@@ -63,5 +63,4 @@ Dans le coin supérieur droit, les boutons suivants permettent d'afficher les au
 
 - [JS7 - Default Roles and Permissions](https://kb.sos-berlin.com/display/JS7/JS7+-+Default+Roles+and+Permissions)
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
-- [JS7 - Gestion des comptes d'utilisateurs, des rôles et des autorisations](https://kb.sos-berlin.com/display/JS7/JS7+-+Gestion+des+comptes+d'utilisateurs%2C+Rôles+et+Permissions)
-
+- [JS7 - Management of User Accounts, Roles and Permissions](https://kb.sos-berlin.com/display/JS7/JS7+-+Management+of+User+Accounts%2C+Roles+and+Permissions)

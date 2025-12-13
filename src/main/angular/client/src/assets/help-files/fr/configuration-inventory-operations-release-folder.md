@@ -1,6 +1,6 @@
 # Configuration - Inventaire - Opérations - Dossier de validation
 
-La libération d'objets permet de les activer, par exemple pour les utiliser avec le site [Daily Plan](/daily-plan). Cela s'applique à des objets tels que les Plannifications et les Calendriers disponibles dans le dossier système *Automation*.
+La libération d'objets permet de les activer, par exemple pour les utiliser avec le site [Daily Plan](/daily-plan). Cela s'applique à des objets tels que les Planifications et les Calendriers disponibles dans le dossier système *Automatisation*.
 
 La vue *Configuration-&gt;Inventaire* permet de libérer un seul objet, voir [Configuration - Inventory - Operations - Release Object](/configuration-inventory-operations-release-object) et libérer les objets des dossiers.
 
@@ -10,7 +10,7 @@ Lorsque vous libérez des objets de dossiers en utilisant l'opération *Libérer
 
 ## Mise à jour du Plan Quotidien
 
-La libération d'objets tels que les Plannifications et les Calendriers a un impact sur le site [Daily Plan](/daily-plan). Il arrive fréquemment que la version mise à jour d'un objet soit utilisée pour les Ordres dans le Plan Quotidien. Les utilisateurs contrôlent le comportement à partir des options suivantes :
+La libération d'objets tels que les Planifications et les Calendriers a un impact sur le site [Daily Plan](/daily-plan). Il arrive fréquemment que la version mise à jour d'un objet soit utilisée pour les Ordres dans le Plan Quotidien. Les utilisateurs contrôlent le comportement à partir des options suivantes :
 
 - **Mettre à jour le Plan Quotidien**
   - **Maintenant** spécifie la mise à jour du Plan Quotidien pour les Ordres planifiés à un moment donné à partir de maintenant.
@@ -24,12 +24,12 @@ L'option **Gérer de manière récursive** permet de libérer des objets de sous
 
 ## Inclure les dépendances
 
-Les objets de l'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un Verrou de Ressource ; une Plannification référençant un Calendrier et un ou plusieurs Workflows.
+Les objets de l'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un Verrou de Ressource ; une Planification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lors de la libération des objets, la cohérence est prise en compte, par exemple :
 
-- Si une Plannification est créée et fait référence à un Calendrier nouvellement créé, la libération de la Plannification inclut également la libération du Calendrier. Cela inclut également le déploiement d'un projet de Workflow référencé par la Plannification.
-- Si un Calendrier est référencé par une Plannification validée et qu'il doit être rappelé ou supprimé, la Plannification doit également être rappelée ou supprimée. Ceci inclut la révocation ou la suppression du Workflow référencé par la Plannification.
+- Si une Planification est créée et fait référence à un Calendrier nouvellement créé, la libération de la Planification inclut également la libération du Calendrier. Cela inclut également le déploiement d'un projet de Workflow référencé par la Planification.
+- Si un Calendrier est référencé par une Planification validée et qu'il doit être rappelé ou supprimé, la Planification doit également être rappelée ou supprimée. Ceci inclut la révocation ou la suppression du Workflow référencé par la Planification.
 
 Les utilisateurs contrôlent le déploiement cohérent à partir des options suivantes :
 

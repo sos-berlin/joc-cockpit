@@ -22,14 +22,14 @@ Les utilisateurs peuvent ajouter, mettre à jour et supprimer des Tags pour tous
 
 <img src="Tags-manage-folder.png" alt="Manage Tags for Workflows from Folders" width="600" height="210" />
 
-La *Liste des Tags* indique le nom de la tag et les Workflows auxquels la balise est attribuée. Les utilisateurs peuvent supprimer l'attribution d'un tag.
+La *Liste des Tags* indique le nom de la tag et les Workflows auxquels la Tag est attribuée. Les utilisateurs peuvent supprimer l'attribution d'un tag.
 
 ## Références
 
 ### Aide contextuelle
 
 - [Configuration - Inventory - Navigation](/configuration-inventory-navigation)
-- [Configuration - Inventory - Workflow - Job Tags](/configuration-inventory-workflow-tâche-Tags)
+- [Configuration - Inventory - Workflow - Job Tags](/configuration-inventory-workflow-tâche-tags)
 - [Daily Plan](/daily-plan)
 
 ### Product Knowledge Base

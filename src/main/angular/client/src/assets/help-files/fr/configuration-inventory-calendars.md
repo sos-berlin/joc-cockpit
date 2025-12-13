@@ -36,7 +36,7 @@ Prenons l'exemple d'un Calendrier des jours ouvrables :
 
 - Supposez une *fréquence incluse* du lundi au vendredi.
 - Supposez une *fréquence exclue* pour les jours fériés nationaux tels que le 1er janvier ou le 1er mai.
-- Lorsqu'il est utilisé avec des Plannifications spécifiant la propriété **On Non-working Day** avec la valeur
+- Lorsqu'il est utilisé avec des Planifications spécifiant la propriété **On Non-working Day** avec la valeur
   - **avant le jour férié** 
     - si le 1er janvier est un lundi, l'Ordre sera créé pour le dimanche précédent qui ne fait pas partie des *Fréquences incluses* et ne fait pas partie des *Fréquences exclues*. 
     - si le 1er janvier est un samedi, aucun Ordre ne sera créé car le jour férié précédent est le vendredi pour lequel un Ordre est créé à partir des *fréquences incluses*.
@@ -78,7 +78,7 @@ Le comptage d'un jour ouvrable sur deux doit exclure les week-ends et les jours 
 
 Vérifiez les résultats à partir du bouton *Afficher l'aperçu* qui devrait vous donner un jour ouvrable sur deux, à l'exclusion des week-ends et des jours fériés.
 
-Une autre solution consiste à spécifier le *Type de fréquence **Tous** à partir de la *Restriction* d'une Plannification.
+Une autre solution consiste à spécifier le *Type de fréquence **Tous** à partir de la *Restriction* d'une Planification.
 
 ## Opérations sur les Calendriers
 

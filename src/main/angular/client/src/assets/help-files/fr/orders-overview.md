@@ -55,9 +55,9 @@ Cette vue s'affiche sur la partie inférieure de la fenêtre lorsque l'utilisate
 
 Par défaut, l'affichage des journaux de l'Ordre est limité à une taille de 10 Mo et, dans le cas contraire, les journaux sont téléchargés dans des fichiers. Les utilisateurs peuvent ajuster la limite à partir de la page [Settings - JOC Cockpit](/settings-joc).
 
-### Journal d'audit
+### Journal d'Audit
 
-Le *Journal d'audit* indique les opérations de modification effectuées sur l'Ordre.
+Le *Journal d'Audit* indique les opérations de modification effectuées sur l'Ordre.
 
 - **Créé** indique la date à laquelle l'opération a été effectuée.
 - **Compte** indique le compte d'utilisateur qui a effectué l'opération.

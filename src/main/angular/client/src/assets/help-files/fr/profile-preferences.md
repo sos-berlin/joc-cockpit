@@ -30,7 +30,7 @@ Les préférences s'appliquent à l'affichage des listes dans JOC Cockpit. Les i
 Vous trouverez les paramètres suivants qui peuvent être gérés pour des valeurs communes à partir du lien *Limite de groupe* :
 
 - **Nombre maximum d'entrées dans l'Historique** s'applique à la vue [History - Orders](/history-orders).
-- **Nombre maximum d'entrées du journal d'audit** s'applique à la vue [Audit Log](/audit-log).
+- **Nombre maximum d'entrées du Journal d'Audit** s'applique à la vue [Audit Log](/audit-log).
 - **Nombre maximal d'entrées de notification** s'applique aux vues *Surveiller les notifications d'Ordres* et *Surveiller les notifications du système*.
 - **Nombre maximal d'entrées de l'aperçu des Ordres** s'applique à la vue [Orders - Overview](/orders-overview).
 - **Nombre maximum d'entrées du Plan Quotidien** s'applique à la vue [Daily Plan](/daily-plan).
@@ -45,7 +45,7 @@ Les préférences s'appliquent à la vue [Workflows](/workflows):
 
 - **Nombre max. d'entrées de l'Historique des Ordres par Workflow** limite le nombre d'entrées dans le panneau *Historique des Ordres*.
 - **Nombre maximum d'entrées dans l'Historique des tâches par Workflow** limite le nombre d'entrées dans le panneau *Historique des tâches* .
-- **Le nombre maximum d'entrées du journal d'audit par objet** limite le nombre d'entrées dans le panneau *Journal d'audit*.
+- **Le nombre maximum d'entrées du Journal d'Audit par objet** limite le nombre d'entrées dans le panneau *Journal d'Audit*.
 
 ### Configuration - Préférences d'affichage de l'inventaire
 
@@ -81,7 +81,7 @@ Les préférences s'appliquent à la pagination sur n'importe quelle page :
 ### Préférences mixtes
 
 - **Afficher les fichiers immédiatement dans la vue Transfert de fichiers** est utile si chaque transfert de fichiers comprend un nombre prévisible de fichiers. Pour les transferts uniques pouvant inclure des milliers de fichiers, il peut être préférable de désactiver ce paramètre.
-- **Activer les raisons pour le journal d'audit** oblige l'utilisateur à spécifier une raison lorsqu'il modifie des objets tels que l'ajout ou l'annulation d'Ordres, la suspension de Workflows, etc. Le réglage de l'utilisateur peut être annulé à partir du site [Settings - JOC Cockpit](/settings-joc).
+- **Activer les raisons pour le Journal d'Audit** oblige l'utilisateur à spécifier une raison lorsqu'il modifie des objets tels que l'ajout ou l'annulation d'Ordres, la suspension de Workflows, etc. Le réglage de l'utilisateur peut être annulé à partir du site [Settings - JOC Cockpit](/settings-joc).
 - **Use time zone for log timestamps** s'applique lorsque les Agents fonctionnent sur des serveurs situés dans des fuseaux horaires différents ou différents du fuseau horaire du serveur du Contrôleur. Dans ce cas, un journal de l'Ordre qui contient la sortie du journal d'un certain nombre d'Ordres exécutés avec des Agents éventuellement différents peut sembler confus. Le paramètre convertit les horodatages des journaux dans le *fuseau horaire* spécifié dans le profil de l'utilisateur.
 - l'option **Current Controller** s'applique lorsque plusieurs Contrôleurs sont connectés à JOC Cockpit. Option proposée dans un certain nombre de vues, par exemple la vue [History - Orders](/history-orders). Lorsqu'elle est cochée, elle limite l'affichage aux Ordres soumis au Contrôleur actuellement sélectionné et, dans le cas contraire, elle affiche les Ordres de tous les Contrôleurs connectés. Ce paramètre détermine la valeur par défaut des options *Contrôleur actuel* connexes dans les vues du JOC Cockpit.
 - **Supprimer les infobulles pour les objets de l'inventaire** concerne la vue *Configuration-&gt;Inventaire* qui propose des infobulles, par exemple pour [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-tâche-properties). Les infobulles s'affichent si la souris est déplacée sur l'étiquette d'un champ de saisie afin d'aider les utilisateurs en expliquant les saisies possibles. Bien que cela soit utile pour les utilisateurs qui ne sont pas trop familiers avec JS7, les infobulles peuvent ne pas être nécessaires pour les utilisateurs expérimentés.

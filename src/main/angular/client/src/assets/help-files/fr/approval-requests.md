@@ -1,6 +1,6 @@
 # Demandes d'approbation
 
-Le site [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) est proposé pour les situations dans lesquelles les utilisateurs ont l'intention d'effectuer des opérations telles que l'ajout ou l'annulation d'Ordres qui nécessitent l'approbation d'un deuxième utilisateur. Il peut s'agir de toute opération modifiant un objet de planification.
+Le site [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) est proposé pour les situations dans lesquelles les utilisateurs ont l'intention d'effectuer des opérations telles que l'ajout ou l'annulation d'Ordres qui nécessitent l'approbation d'un deuxième utilisateur. Il peut s'agir de toute opération modifiant un objet de scheduling.
 
 Le processus d'approbation implique les rôles suivants :
 

@@ -2,7 +2,7 @@
 
 La vue affiche les indicateurs de disponibilité d'un Contrôleur.
 
-Si un groupe de Contrôleurs est utilisé, la disponibilité du groupe est prise en compte. Par exemple, si une instance de Contrôleur dans un cluster est arrêtée à des fins de maintenance et que l'instance restante reprend la charge, cela ne réduit pas la disponibilité.
+Si un groupe de Contrôleurs est utilisé, la disponibilité du groupe est prise en compte. Par exemple, si une instance de Contrôleur dans un Cluster est arrêtée à des fins de maintenance et que l'instance restante reprend la charge, cela ne réduit pas la disponibilité.
 
 Dans le coin supérieur droit de l'écran, vous pouvez cocher la case *Current Controller* (Contrôleur actuel) : si cette case n'est pas cochée, la disponibilité sera affichée pour tous les Contrôleurs connectés ; dans le cas contraire, les informations ne seront affichées que pour le Contrôleur actuellement sélectionné.
 

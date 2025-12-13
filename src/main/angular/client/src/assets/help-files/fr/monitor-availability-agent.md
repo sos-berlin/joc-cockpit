@@ -2,7 +2,7 @@
 
 La vue affiche des indicateurs de disponibilité des Agents.
 
-Si une grappe d'Agents est utilisée, la disponibilité de la grappe est prise en compte. Par exemple, si un Agent dans un cluster est arrêtée à des fins de maintenance et que l'instance restante reprend la charge, cela ne réduit pas la disponibilité.
+Si une grappe d'Agents est utilisée, la disponibilité de la grappe est prise en compte. Par exemple, si un Agent dans un Cluster est arrêtée à des fins de maintenance et que l'instance restante reprend la charge, cela ne réduit pas la disponibilité.
 
 Le coin supérieur droit de l'écran propose la case à cocher *Contrôleur actuel* : si elle n'est pas cochée, la disponibilité sera affichée pour les Agents de tous les Contrôleurs connectés ; dans le cas contraire, l'information est affichée pour les Agents enregistrés auprès du Contrôleur actuellement sélectionné uniquement.
 

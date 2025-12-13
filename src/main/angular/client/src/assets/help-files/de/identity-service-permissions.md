@@ -63,4 +63,4 @@ In der oberen rechten Ecke werden die folgenden Schaltflächen zur Anzeige von B
 
 - [JS7 - Default Roles and Permissions](https://kb.sos-berlin.com/display/JS7/JS7+-+Default+Roles+and+Permissions)
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
-- [JS7 - Verwaltung von Benutzerkonten, Rollen und Berechtigungen](https://kb.sos-berlin.com/display/JS7/JS7+-+Verwaltung+von+Benutzerkonten+Rollen+und+Berechtigungen)
+- [JS7 - Management of User Accounts, Roles and Permissions](https://kb.sos-berlin.com/display/JS7/JS7+-+Management+of+User+Accounts%2C+Roles+and+Permissions)

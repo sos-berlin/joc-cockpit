@@ -14,7 +14,7 @@ Les tableaux d'affichage mettent en œuvre des dépendances entre les Workflows 
 Les saveurs suivantes sont disponibles pour les Tableaux de Condition :
 
 - **Tableaux de Condition globaux** mettent en œuvre des avis de portée globale, ce qui rend le même avis disponible pour n'importe quel Workflow à n'importe quel moment.
-- **Tableaux de Condition planifiable** implémentent les avis dans le cadre de la Plannification [Daily Plan](/daily-plan). Un avis existe dans le cadre d'une date du *Plan Quotidien*, par exemple
+- **Tableaux de Condition planifiable** implémentent les avis dans le cadre de la Planification [Daily Plan](/daily-plan). Un avis existe dans le cadre d'une date du *Plan Quotidien*, par exemple
   - Le Workflow 1 se déroule du lundi au vendredi.
   - Le Workflow 2 se déroule du lundi au dimanche et dépend de l'exécution précédente du Workflow 1.
   - Le week-end, le Workflow 1 ne démarre pas. Pour permettre le démarrage du Workflow 2 pendant les week-ends, la dépendance est mappée au Plan Quotidien par l'utilisation de *Panneaux d'affichage programmables* : pour les jours où aucun Ordre n'est annoncé pour le Workflow 1, la dépendance est ignorée.

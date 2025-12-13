@@ -12,7 +12,7 @@ La projection sont liées aux dates du Plan Quotidien, et non aux dates du Calen
   - Si la période de 24 heures du Plan Quotidien commence à minuit, elle correspondra au jour civil.
   - Pour les périodes du Plan Quotidien commençant pendant la journée, la période de 24 heures chevauchera deux jours calendaires.
 - Fuseaux horaires
-  - Si les Plannifications utilisent des fuseaux horaires différents de ceux du Plan Quotidien, les heures de début des Ordres peuvent chevaucher le jour précédent ou le jour suivant. Ces Ordres sont affichés avec la date du Plan Quotidien correspondante mais indiquent des heures de début pour une date différente.
+  - Si les Planifications utilisent des fuseaux horaires différents de ceux du Plan Quotidien, les heures de début des Ordres peuvent chevaucher le jour précédent ou le jour suivant. Ces Ordres sont affichés avec la date du Plan Quotidien correspondante mais indiquent des heures de début pour une date différente.
   - L'utilisation de fuseaux horaires peut entraîner des heures de début de -14 heures et de +12 heures en plus de la période de 24 heures du Plan Quotidien. Le plus surprenant pour certains utilisateurs est qu'un jour ne dure pas 24 heures, mais peut s'étendre jusqu'à 50 heures. La période d'un jour est toujours de 24 heures, car elle dépend de la rotation de la Terre. Cependant, pour un fuseau horaire donné, il y a une couverture de 50 heures pour inclure toutes les heures possibles autour de la planète.
 
 Toutes les dates et heures sont affichées dans le fuseau horaire spécifié par le profil de l'utilisateur.
@@ -27,11 +27,11 @@ Pour chaque jour, le numéro du jour dans le mois et le nombre d'Ordres projeté
 - **Ordres Orange** : Ils indiquent les Ordres projetés qui sont calculés sur la base des règles d'heure de début.
 - **Projection inversée** :
   - *Non coché* : La projection indique les jours pour lesquels les Ordres sont calculés et le nombre d'Ordres. Les utilisateurs peuvent cliquer sur un jour individuel pour identifier les heures de début des Ordres.
-  - *Coché* : Lorsque la projection est inversée, les jours pour lesquels les Ordres sont calculés et le nombre d'Ordres sont indiqués : Lorsque vous inversez la projection, les jours pour lesquels il existe des Plannifications qui ne créeront pas d'Ordres sont mis en évidence. Lorsque vous cliquez sur le jour concerné, les planifications sans Ordres s'affichent.
+  - *Coché* : Lorsque la projection est inversée, les jours pour lesquels les Ordres sont calculés et le nombre d'Ordres sont indiqués : Lorsque vous inversez la projection, les jours pour lesquels il existe des Planifications qui ne créeront pas d'Ordres sont mis en évidence. Lorsque vous cliquez sur le jour concerné, les planifications sans Ordres s'affichent.
 
 ### Filtre avancé
 
-Le filtre permet de limiter l'affichage des Ordres à certains dossiers contenant des Workflows ou des Plannifications.
+Le filtre permet de limiter l'affichage des Ordres à certains dossiers contenant des Workflows ou des Planifications.
 
 ## Opérations sur la projection
 
@@ -43,12 +43,12 @@ Le filtre permet de limiter l'affichage des Ordres à certains dossiers contenan
 
 ### Exportation de la projection
 
-La projectios peut être exportées vers un fichier .xlsx avec la date du Plan Quotidien sur l'axe des x et le Workflow et la Plannification sur l'axe des y.
+La projectios peut être exportées vers un fichier .xlsx avec la date du Plan Quotidien sur l'axe des x et le Workflow et la Planification sur l'axe des y.
 
 - Le raccourci *Exporter* permet d'exporter les Ordres visibles dans la fenêtre. 
 - Le bouton *Exporter* permet de sélectionner les Ordres à exporter :
   - **Date de début**, **Date de fin** : Première et dernière date du Plan Quotidien pour lesquelles les Ordres seront exportés.
-  - **Workflows**, **Planifications** : Les utilisateurs peuvent limiter l'exportation à certaines Plannifications et à certains Workflow, éventuellement limités par des dossiers.
+  - **Workflows**, **Planifications** : Les utilisateurs peuvent limiter l'exportation à certaines Planifications et à certains Workflow, éventuellement limités par des dossiers.
   - **Projection inversée** : 
     - *Décoché* : Exporte les dates pour lesquelles les Ordres sont calculés.
     - *Coché* : exporte les dates pour lesquelles les commandes sont calculées : Exporte les dates pour lesquelles aucun Ordre n'est calculé. Ceci peut être utilisé pour vérifier si les jours non ouvrables sont pris en compte.

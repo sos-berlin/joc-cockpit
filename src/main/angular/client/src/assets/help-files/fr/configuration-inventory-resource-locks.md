@@ -13,7 +13,7 @@ Les variantes suivantes sont disponibles pour les Verrous de Ressources :
 - **Les verrous exclusifs** permettent l'utilisation unique d'un verrou par un [JS7 - Lock Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Lock+Instruction).
 - les **verrous partagés** permettent l'utilisation parallèle d'un verrou par un certain nombre d'*instructions de verrouillage* provenant du même Workflow ou de différents Workflows.
   - Le cas d'utilisation sous-jacent est une ressource telle qu'une table de base de données à laquelle un nombre limité de Tâches peuvent accéder en même temps. Pour éviter les blocages de la base de données, le nombre de tâches accédant à la table est limité.
-  - Chaque *instruction de verrouillage* spécifie un *poids* qui est pris en compte dans la *capacité* du Verrou de Ressource. Si le *poids* correspond à la *capacité* disponible, l'Ordre peut être exécuté. Dans le cas contraire, l'Ordre attendra que la part de *capacité* requise devienne disponible.
+  - Chaque *Instruction Resource-Lock* spécifie un *poids* qui est pris en compte dans la *capacité* du Verrou de Ressource. Si le *poids* correspond à la *capacité* disponible, l'Ordre peut être exécuté. Dans le cas contraire, l'Ordre attendra que la part de *capacité* requise devienne disponible.
 
 Les dispositions suivantes s'appliquent à l'utilisation des écluses de ressources par les *instructions d'écluse* :
 
@@ -36,7 +36,7 @@ Pour un Verrou de Ressource, les entrées suivantes sont disponibles :
   - une *capacité* de 1 limite le Resource Lock à un usage unique indépendamment des *Instructions de verrouillage *exclusives* ou *partagées*.
   - une *capacité* plus importante permet l'utilisation parallèle du Verrou de Ressource par des *verrous partagés*. Les *Instructions de verrouillage* connexes peuvent spécifier l'utilisation de la *Capacité* du verrou :
     - l'utilisation *exclusive* tente d'acquérir le verrou exclusivement, indépendamment de sa *capacité*. 
-    - *L'utilisation *partagée* vérifie si le *poids* de l'instruction de verrouillage correspond à la *capacité* restante.
+    - *L'utilisation *partagée* vérifie si le *poids* de l'Instruction Resource-Lock correspond à la *capacité* restante.
 
 ### Opérations sur les verrous de ressource
 

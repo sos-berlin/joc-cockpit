@@ -91,11 +91,11 @@ Pour accéder à la sortie du journal, l'action suivante est disponible :
 
 Par défaut, l'affichage des journaux de tâches est limité à une taille de 10 Mo et, dans le cas contraire, les journaux sont téléchargés dans des fichiers. Les utilisateurs peuvent ajuster la limite à partir de la page [Settings - JOC Cockpit](/settings-joc).
 
-### Journal d'audit
+### Journal d'Audit
 
 Cette vue affiche les mêmes informations que le site [Audit Log](/audit-log) en se concentrant sur le Workflow en cours.
 
-Le nombre d'entrées du journal d'audit affichées peut être modifié à partir du paramètre *Nombre maximum d'entrées du journal d'audit par objet* dans le site de l'utilisateur [Profile - Preferences](/profile-preferences).
+Le nombre d'entrées du Journal d'Audit affichées peut être modifié à partir du paramètre *Nombre maximum d'entrées du Journal d'Audit par objet* dans le site de l'utilisateur [Profile - Preferences](/profile-preferences).
 
 ## Opérations
 

@@ -29,7 +29,7 @@ Les informations suivantes sont affichées pour chaque date du Plan Quotidien.
 
 ### Historique des soumissions
 
-Il peut y avoir un nombre illimité de soumissions pour une date donnée du Plan Quotidien. Lorsque les utilisateurs apportent des modifications aux objets d'inventaire tels que les Workflows et les Plannifications, et qu'ils choisissent l'option de mise à jour du Plan Quotidien, une Soumission est ajoutée pour les objets en question.
+Il peut y avoir un nombre illimité de soumissions pour une date donnée du Plan Quotidien. Lorsque les utilisateurs apportent des modifications aux objets d'inventaire tels que les Workflows et les Planifications, et qu'ils choisissent l'option de mise à jour du Plan Quotidien, une Soumission est ajoutée pour les objets en question.
 
 Lorsque vous cliquez sur l'icône de la flèche vers le bas à partir de la *Date du Plan Quotidien*, les détails de chaque soumission s'affichent :
 

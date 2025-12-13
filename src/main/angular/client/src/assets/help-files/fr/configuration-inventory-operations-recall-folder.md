@@ -1,6 +1,6 @@
 # Configuration - Inventaire - Opérations - Dossier de rappel
 
-Le rappel d'objets les désactive, par exemple, pour une utilisation avec le site [Daily Plan](/daily-plan). Cela s'applique à des objets tels que les Plannifications et les Calendriers disponibles dans le dossier système *Automation*.
+Le rappel d'objets les désactive, par exemple, pour une utilisation avec le site [Daily Plan](/daily-plan). Cela s'applique à des objets tels que les Planifications et les Calendriers disponibles dans le dossier système *Automatisation*.
 
 La vue *Configuration-&gt;Inventaire* permet de rappeler un seul objet, voir [Configuration - Inventory - Operations - Recall Object](/configuration-inventory-operations-recall-object), et de rappeler des objets à partir de dossiers.
 
@@ -10,18 +10,18 @@ Lorsque vous rappelez des objets d'un dossier à l'aide de l'opération *Retirer
 
 ## Mise à jour du Plan Quotidien
 
-Le rappel d'objets tels que les Plannifications et les Calendriers a un impact sur la vue [Daily Plan](/daily-plan). 
+Le rappel d'objets tels que les Planifications et les Calendriers a un impact sur la vue [Daily Plan](/daily-plan). 
 
-Les Ordres existants pour les Workflows référencés par les Plannifications associées seront rappelés du Contrôleur et seront supprimés du Plan Quotidien.
+Les Ordres existants pour les Workflows référencés par les Planifications associées seront rappelés du Contrôleur et seront supprimés du Plan Quotidien.
 
 ## Inclure les dépendances
 
-Les objets d'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un Verrou de Ressource ; une Plannification référençant un Calendrier et un ou plusieurs Workflows.
+Les objets d'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un Verrou de Ressource ; une Planification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lors du rappel des objets, la cohérence est prise en compte, par exemple :
 
-- Si une Plannification est créée et fait référence à un Calendrier nouvellement créé, la libération de la Plannification inclut la libération du Calendrier également. Cela inclut également le déploiement d'un projet de Workflow référencé par la Plannification.
-- Si un Calendrier est référencé par une Plannification validée et qu'il doit être rappelé ou supprimé, la Plannification doit également être rappelée ou supprimée. Ceci inclut la révocation ou la suppression du Workflow référencé par la Plannification.
+- Si une Planification est créée et fait référence à un Calendrier nouvellement créé, la libération de la Planification inclut la libération du Calendrier également. Cela inclut également le déploiement d'un projet de Workflow référencé par la Planification.
+- Si un Calendrier est référencé par une Planification validée et qu'il doit être rappelé ou supprimé, la Planification doit également être rappelée ou supprimée. Ceci inclut la révocation ou la suppression du Workflow référencé par la Planification.
 
 Les utilisateurs contrôlent le déploiement cohérent à partir des options suivantes :
 

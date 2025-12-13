@@ -1,6 +1,6 @@
-# Journal d'audit
+# Journal d'Audit
 
-Le *Journal d'audit* garde la trace des modifications apportées aux objets de planification.
+Le *Journal d'Audit* garde la trace des modifications apportées aux objets de planification.
 
 ## Demande
 
@@ -12,7 +12,7 @@ La requête identifie le point de terminaison utilisé et propose d'afficher le 
 
 - **CONTROLLER** indique les opérations du Contrôleur telles que l'ajout d'Ordres à la demande.
 - **DAILYPLAN** indique les modifications apportées au Plan Quotidien.
-- **IDENTITY** indique les modifications apportées aux services d'identité.
+- **IDENTITY** indique les modifications apportées aux Services d'Identité.
 - **INVENTORY** indique les modifications de l'inventaire telles que le stockage des Workflows.
 
 # Audit Trail

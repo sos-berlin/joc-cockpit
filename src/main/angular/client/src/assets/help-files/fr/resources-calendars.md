@@ -37,7 +37,7 @@ Les opérations suivantes sont disponibles :
 
 ## Rechercher
 
-Le site [Resources - Calendars - Search](/resources-calendars-search) propose des critères de recherche des Calendriers à partir des dépendances. Par exemple, en recherchant les Workflows comprenant un nom de tâche spécifique, les Calendriers utilisés par les Plannifications pour le Workflow seront renvoyés.
+Le site [Resources - Calendars - Search](/resources-calendars-search) propose des critères de recherche des Calendriers à partir des dépendances. Par exemple, en recherchant les Workflows comprenant un nom de tâche spécifique, les Calendriers utilisés par les Planifications pour le Workflow seront renvoyés.
 
 ## Références
 

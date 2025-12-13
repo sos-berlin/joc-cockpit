@@ -1,18 +1,18 @@
-# Paramètres - Service d'identité
+# Paramètres - Service d'Identité
 
 Les paramètres suivants sont appliqués à tout [Identity Services](/identity-services). Les modifications prennent effet immédiatement.
 
 La page *Réglages* est accessible à partir de l'icône ![wheel icon](assets/images/wheel.png) dans la barre de menu.
 
-## Paramètres du service d'identité
+## Paramètres du Service d'Identité
 
 ### Paramètre : *idle\session\_timeout*, Défaut : *30*m
 
 Spécifie la durée maximale en minutes d'une session inactive dans JOC Cockpit.
 
 - Si les utilisateurs sont inactifs pendant le nombre de minutes indiqué, la session utilisateur expire et est terminée. Les utilisateurs peuvent indiquer leurs informations d'identification et se connecter pour créer une nouvelle session utilisateur.
-- Si la durée de vie d'un jeton d'accès fourni par un service d'identité externe est différente de la durée maximale d'inactivité, le cockpit JOC tente de renouveler le jeton d'accès auprès du service d'identité. Le renouvellement d'un jeton d'accès ne nécessite pas que l'utilisateur saisisse à nouveau ses identifiants de connexion.
-- Les services d'identité peuvent limiter la durée de vie des jetons d'accès (time to live) et limiter le renouvellement des jetons d'accès (maximum time to live). Si un jeton d'accès ne peut pas être renouvelé, la session de l'utilisateur est terminée et l'utilisateur doit se connecter.
+- Si la durée de vie d'un jeton d'accès fourni par un Service d'Identité externe est différente de la durée maximale d'inactivité, le cockpit JOC tente de renouveler le jeton d'accès auprès du Service d'Identité. Le renouvellement d'un jeton d'accès ne nécessite pas que l'utilisateur saisisse à nouveau ses identifiants de connexion.
+- Les Services d'Identité peuvent limiter la durée de vie des jetons d'accès (time to live) et limiter le renouvellement des jetons d'accès (maximum time to live). Si un jeton d'accès ne peut pas être renouvelé, la session de l'utilisateur est terminée et l'utilisateur doit se connecter.
 
 ### Paramètre : *initial_password*, Défaut : *initial*
 
@@ -24,7 +24,7 @@ Spécifie le mot de passe initial utilisé lors de la création de nouveaux comp
 
 ### Paramètre : *minimum_password\_length*, Défaut : *1*
 
-Spécifie la longueur minimale des mots de passe dans le service d'identité JOC.
+Spécifie la longueur minimale des mots de passe dans le Service d'Identité JOC.
 
 Pour tous les mots de passe spécifiés - y compris le *mot de passe initial* - la longueur minimale est indiquée.
 Notez que le nombre de caractères et le caractère arbitraire de la sélection des caractères sont des facteurs clés pour des mots de passe sûrs. La complexité du mot de passe, qui exige par exemple l'utilisation de chiffres et de caractères spéciaux, ne renforce pas sensiblement la sécurité du mot de passe, sauf dans le cas de mots de passe courts.

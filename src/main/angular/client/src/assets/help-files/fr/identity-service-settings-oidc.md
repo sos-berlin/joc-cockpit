@@ -1,11 +1,11 @@
-# Paramètres du service d'identité de l'OIDC
+# Paramètres du Service d'Identité de l'OIDC
 
-Les services d'identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
+Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
 
-Les services d'identité sont spécifiés à partir de la configuration suivante :
+Les Services d'Identité sont spécifiés à partir de la configuration suivante :
 
-- **General Configuration** qui contient les propriétés disponibles pour tous les services d'identité, voir [Identity Service - Configuration](/identity-service-configuration).
-- **Réglages** spécifiques au type de service d'identité de l'OIDC.
+- **General Configuration** qui contient les propriétés disponibles pour tous les Services d'Identité, voir [Identity Service - Configuration](/identity-service-configuration).
+- **Réglages** spécifiques au type de Service d'Identité de l'OIDC.
 
 ## Paramètres
 
@@ -19,7 +19,7 @@ Les paramètres suivants sont disponibles :
   - **Client Credentials Flow** est un flux simplifié pour le traitement par lots sans interaction avec l'utilisateur.
 - **OIDC Client ID ** identifie le client auprès du fournisseur d'identité OIDC.
 - **OIDC Client Secret** est le mot de passe attribué à l'*OIDC Client ID* dans le fournisseur d'identité OIDC.
-- **OIDC User Name Attribute** est le nom de l'attribut utilisé par le service d'identité de l'OIDC pour identifier le compte d'utilisateur.
+- **OIDC User Name Attribute** est le nom de l'attribut utilisé par le Service d'Identité de l'OIDC pour identifier le compte d'utilisateur.
   - La stratégie suivante est appliquée pour identifier l'attribut utilisé pour établir une correspondance avec le compte JOC Cockpit :
     - l'URL *https://\<identity-provider\>/.well-known/openid-configuration* est appelée.
     - la réponse est vérifiée pour l'objet *claims_supported*
@@ -27,7 +27,7 @@ Les paramètres suivants sont disponibles :
       - s'il est disponible et s'il comprend l'attribut *preferred_username*, cet attribut sera utilisé.
     - si aucun attribut n'a été identifié, l'attribut *email* est utilisé.
   - Si cela n'aboutit pas à un compte d'utilisateur identifiable, les utilisateurs peuvent spécifier l'attribut name. Les fournisseurs d'identité OIDC prennent souvent en charge des noms d'attribut tels que *username* ou *email*.
-- **OIDC Image** peut éventuellement être téléchargée et sera affichée sur la page de connexion. Les utilisateurs peuvent cliquer sur l'image pour se connecter au service d'identité OIDC.
+- **OIDC Image** peut éventuellement être téléchargée et sera affichée sur la page de connexion. Les utilisateurs peuvent cliquer sur l'image pour se connecter au Service d'Identité OIDC.
 - **OIDC Truststore Path** si indiqué doit inclure un certificat X.509 spécifié pour l'utilisation de la clé étendue de l'authentification du serveur pour le fournisseur d'identité.
   - Pour les connexions à des fournisseurs d'identité OIDC bien connus tels qu'Azure®, les utilisateurs doivent indiquer le chemin d'accès au fichier Java *cacerts* truststore fourni avec le JDK Java utilisé avec JOC Cockpit.
   - Le fichier de confiance doit inclure un certificat auto-signé d'une autorité de certification privée ou publique. En règle générale, le certificat CA est utilisé car, dans le cas contraire, la chaîne de certificats complète impliquée dans la signature du certificat d'authentification du serveur doit être disponible dans la base de données de confiance.
@@ -36,10 +36,10 @@ Les paramètres suivants sont disponibles :
   - Un chemin absolu peut être spécifié.
 - **OIDC Truststore Password** spécifie le mot de passe qui protège le Truststore. Pour le Truststore *cacerts* du JDK Java, le mot de passe par défaut est *changeit*.
 - **OIDC Truststore Type** est soit PKCS12, soit JKS (obsolète).
-- **OIDC Scopes** spécifient l'étendue pour laquelle les **OIDC Claims** seront renvoyées par le fournisseur de services d'identité OIDC. Les *OIDC Scopes* par défaut incluent *roles*, *groups*, *profile*
+- **OIDC Scopes** spécifient l'étendue pour laquelle les **OIDC Claims** seront renvoyées par le fournisseur de Services d'Identité OIDC. Les *OIDC Scopes* par défaut incluent *roles*, *groups*, *profile*
 - **OIDC Group/Roles Mapping** permet d'attribuer des rôles aux comptes.
-  - Une liste de revendications contenant les groupes configurés dans le fournisseur de services d'identité OIDC peut être spécifiée. Les revendications disponibles peuvent être mises à disposition en vérifiant le *JSON Web Token* lors de l'enregistrement.
- - Lors de l'affectation, les groupes disponibles auprès du fournisseur de services d'identité OIDC sont affectés aux rôles configurés avec le service d'identité. Un nombre quelconque de rôles peut être attribué à chaque groupe.
+  - Une liste de revendications contenant les groupes configurés dans le fournisseur de Services d'Identité OIDC peut être spécifiée. Les revendications disponibles peuvent être mises à disposition en vérifiant le *JSON Web Token* lors de l'enregistrement.
+ - Lors de l'affectation, les groupes disponibles auprès du fournisseur de Services d'Identité OIDC sont affectés aux rôles configurés avec le Service d'Identité. Un nombre quelconque de rôles peut être attribué à chaque groupe.
 
 ## Références
 

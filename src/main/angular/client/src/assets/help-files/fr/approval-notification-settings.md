@@ -1,21 +1,21 @@
 # Paramètres de notification d'approbation
 
-Le site [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) est proposé pour les situations dans lesquelles les utilisateurs ont l'intention d'effectuer des opérations telles que l'ajout ou l'annulation d'Ordres qui nécessitent l'approbation d'un deuxième utilisateur. Il peut s'agir de toute opération modifiant un objet de planification.
+Le site [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) est proposé pour les situations dans lesquelles les utilisateurs ont l'intention d'effectuer des opérations telles que l'ajout ou l'annulation d'Ordres qui nécessitent l'approbation d'un deuxième utilisateur. Il peut s'agir de toute opération modifiant un objet de scheduling.
 
 Le processus d'approbation implique les rôles suivants :
 
 - Un *Demandeur* demande à effectuer une intervention qui nécessite une approbation.
-- Un *approbateur* confirme ou refuse la demande d'approbation.
+- Un *Approbateur* confirme ou refuse la demande d'approbation.
 
 La fonctionnalité de base du processus d'approbation comprend :
 
-- mettre en œuvre le principe des 4 yeux : un *approbateur* doit confirmer l'intervention d'un *demandeur* avant que l'intervention puisse être exécutée dans le cadre du compte, des rôles et des autorisations du *demandeur*. 
+- mettre en œuvre le principe des 4 yeux : un *Approbateur* doit confirmer l'intervention d'un *Demandeur* avant que l'intervention puisse être exécutée dans le cadre du compte, des rôles et des autorisations du *Demandeur*. 
 - pour garder une trace des demandes d'approbation en attente.
-- pour offrir une solution de repli à un certain nombre d'*approbateurs*.
+- pour offrir une solution de repli à un certain nombre d'*Approbateurs*.
 
 ## Paramètres de notification d'approbation
 
-Les paramètres de notification comprennent les propriétés permettant d'envoyer un courrier aux *approbateurs* en cas d'arrivée de [Approval Requests](/approval-requests):
+Les paramètres de notification comprennent les propriétés permettant d'envoyer un courrier aux *Approbateurs* en cas d'arrivée de [Approval Requests](/approval-requests):
 
 - **Ressource de Tâche** contient les paramètres de connexion au serveur de messagerie. Pour plus de détails, voir [JS7 - eMailDefault Job Resource](https://kb.sos-berlin.com/display/JS7/JS7+-+eMailDefault+Job+Resource).
 - **Content Type**, **Charset**, **Encoding** sont communs à tout système envoyant du courrier.
@@ -51,4 +51,3 @@ Les paramètres de notification comprennent les propriétés permettant d'envoye
 
 - [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process)
 - [JS7 - eMailDefault Job Resource](https://kb.sos-berlin.com/display/JS7/JS7+-+eMailDefault+Job+Resource)
-

@@ -69,7 +69,7 @@ Spécifie la période de conservation pour [File Transfer History](/history-file
 
 ### Paramètre : *audit_log\_age*, Valeur par défaut : *90*d
 
-Spécifie la période de conservation du journal d'audit [Audit Log](/audit-log). Toutes les entrées du journal d'audit plus anciennes que la valeur spécifiée seront supprimées.
+Spécifie la période de conservation du Journal d'Audit [Audit Log](/audit-log). Toutes les entrées du Journal d'Audit plus anciennes que la valeur spécifiée seront supprimées.
 
 ### Paramètre : *daily_plan\_history\_age*, Valeur par défaut : *30*d
 

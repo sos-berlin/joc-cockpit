@@ -1,12 +1,12 @@
-# Fonctionnement initial - Enregistrement d'un Agent autonome
+# Opération initiale - Enregistrement d'un Agent Autonome
 
 L'opération initiale est effectuée après l'installation du Contrôleur JS7, de l'Agent et du JOC Cockpit. L'enregistrement de l'Agent a lieu après l'achèvement du site [Initial Operation - Register Controller](/initial-operation-register-controller).
 
-## Enregistrer un Agent autonome
+## Enregistrer un Agent Autonome
 
 Les utilisateurs doivent vérifier que les connexions réseau entre le serveur du Contrôleur et le serveur de l'Agent sont disponibles et que les règles du pare-feu autorisent les connexions au port de l'Agent.
 
-La page *Gestion des Contrôleurs/agents* est accessible à partir de l'icône de la roue dans la barre de menu principale et propose l'opération *Ajouter un Agent autonome* dans le menu d'action du Contrôleur. Cette opération fait apparaître la fenêtre contextuelle d'enregistrement d'un Agent autonome.
+La page *Gestion des Contrôleurs/Agents* est accessible à partir de l'icône de la roue dans la barre de menu principale et propose l'opération *Ajouter un Agent Autonome* dans le menu d'action du Contrôleur. Cette opération fait apparaître la fenêtre contextuelle d'enregistrement d'un Agent Autonome.
 
 Les utilisateurs fournissent les données suivantes :
 
@@ -26,11 +26,10 @@ Une fois l'enregistrement réussi, l'Agent sera affiché dans la vue [Resources 
 ### Aide contextuelle
 
 - [Dashboard - Product Status](/dashboard-product-status)
-- [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-cluster)
+- [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-Cluster)
 - [Initial Operation - Register Controller](/initial-operation-register-controller)
 
 ### Product Knowledge Base
 
 - [JS7 - How to troubleshoot Agent Initial Operation](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+troubleshoot+Agent+Initial+Operation)
 - [JS7 - Management of Agent Clusters](https://kb.sos-berlin.com/display/JS7/JS7+-+Management+of+Agent+Clusters)
-

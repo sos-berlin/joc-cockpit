@@ -1,6 +1,6 @@
 # Configuration - Inventaire - Opérations - Déployer un objet
 
-Le déploiement d'objets consiste à les transférer vers un ou plusieurs Contrôleurs. Cela s'applique aux objets tels que les Workflows et les ressources de tâche disponibles dans le dossier système *Contrôleur*.
+Le déploiement d'objets consiste à les transférer vers un ou plusieurs Contrôleurs. Cela s'applique aux objets tels que les Workflows et les Ressources de Tâche disponibles dans le dossier système *Contrôleur*.
 
 La vue *Configuration-&gt;Inventaire* permet de déployer un seul objet et de déployer des objets à partir de dossiers, voir [Deploy Folder](/configuration-inventory-operations-deploy-folder).
 
@@ -16,7 +16,7 @@ Par défaut, c'est le Contrôleur actuellement sélectionné qui sera utilisé.
 
 ## Mise à jour du Plan Quotidien
 
-Le déploiement d'objets tels que les Workflows, les Plannifications et les Calendriers a un impact sur le site [Daily Plan](/daily-plan). Il arrive fréquemment que la version mise à jour d'un objet soit utilisée pour les Ordres dans le Plan Quotidien. Les utilisateurs contrôlent le comportement à partir des options suivantes :
+Le déploiement d'objets tels que les Workflows, les Planifications et les Calendriers a un impact sur le site [Daily Plan](/daily-plan). Il arrive fréquemment que la version mise à jour d'un objet soit utilisée pour les Ordres dans le Plan Quotidien. Les utilisateurs contrôlent le comportement à partir des options suivantes :
 
 - **Mettre à jour le Plan Quotidien**
   - **Maintenant** spécifie la mise à jour du Plan Quotidien pour les Ordres planifiés à un moment donné à partir de maintenant.
@@ -26,7 +26,7 @@ Le déploiement d'objets tels que les Workflows, les Plannifications et les Cale
 
 ## Inclure les dépendances
 
-Les objets d'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un Verrou de Ressource ; une Plannification référençant un Calendrier et un ou plusieurs Workflows.
+Les objets d'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un Verrou de Ressource ; une Planification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lors du déploiement des objets, la cohérence est prise en compte, par exemple :
 

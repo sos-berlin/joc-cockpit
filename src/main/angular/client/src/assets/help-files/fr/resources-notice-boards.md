@@ -5,7 +5,7 @@ La vue *Tableau de Condition* affiche des informations en temps réel sur l'util
 Les Tableaux de Condition mettent en œuvre des dépendances entre les Workflows par l'utilisation d'Annonce. Une Annonce est un drapeau qui est attaché à un Tableau de Condition ou qui n'existe pas. Les Tableaux de Condition sont disponibles dans les versions suivantes :
 
 - **Les Tableaux de Condition globaux** implémentent les *Annonces* à l'échelle globale, ce qui rend le même Annonce disponible pour n'importe quel Workflow à n'importe quel moment. 
-- **Les tableaux de Condition programmables** mettent en œuvre des *Annonces* dans le cadre de la Plannification [Daily Plan](/daily-plan). L'Annonce existe ou n'existe pas en fonction de la date du *Plan Quotidien*, par exemple
+- **Les tableaux de Condition programmables** mettent en œuvre des *Annonces* dans le cadre de la Planification [Daily Plan](/daily-plan). L'Annonce existe ou n'existe pas en fonction de la date du *Plan Quotidien*, par exemple
   - Le Workflow 1 fonctionne du lundi au vendredi.
   - Le Workflow 2 se déroule du lundi au dimanche et dépend de l'exécution précédente du Workflow 1.
   - Le week-end, le Workflow 1 ne démarre pas. Pour permettre le démarrage du Workflow 2 le week-end, la dépendance est mise en correspondance avec le Plan Quotidien en utilisant les *Tableaux de Conditions Programmables* : si aucun Ordre n'est annoncé pour le Workflow 1, la dépendance peut être ignorée.

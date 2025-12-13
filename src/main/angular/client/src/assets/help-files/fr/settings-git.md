@@ -34,7 +34,7 @@ Indique si les modèles de tâches sont considérés comme locaux à un environn
 
 ### Paramètre : *git_hold\_tâche\_resources*, Valeur par défaut : *local*
 
-Indique si les ressources de tâches sont considérées comme locales à un environnement ou si elles sont destinées à être déployées avec Git.
+Indique si les Ressources de Tâches sont considérées comme locales à un environnement ou si elles sont destinées à être déployées avec Git.
 
 ### Paramètre : *git_hold\_calendars*, Valeur par défaut : *local*
 

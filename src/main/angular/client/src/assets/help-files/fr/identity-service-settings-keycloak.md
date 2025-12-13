@@ -1,11 +1,11 @@
-# Paramètres du service d'identité Keycloak
+# Paramètres du Service d'Identité Keycloak
 
-Les services d'identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
+Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
 
-Les services d'identité sont spécifiés à partir de la configuration suivante :
+Les Services d'Identité sont spécifiés à partir de la configuration suivante :
 
-- **General Configuration** qui contient les propriétés disponibles pour tous les services d'identité, voir [Identity Service - Configuration](/identity-service-configuration).
-- **Réglages** spécifiques au type de service d'identité Keycloak.
+- **General Configuration** qui contient les propriétés disponibles pour tous les Services d'Identité, voir [Identity Service - Configuration](/identity-service-configuration).
+- **Réglages** spécifiques au type de Service d'Identité Keycloak.
 
 ## Paramètres
 

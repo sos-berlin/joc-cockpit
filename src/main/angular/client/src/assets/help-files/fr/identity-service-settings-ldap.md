@@ -1,11 +1,11 @@
-# Paramètres du service d'identité LDAP
+# Paramètres du Service d'Identité LDAP
 
-Les services d'identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
+Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
 
-Les services d'identité sont spécifiés à partir de la configuration suivante :
+Les Services d'Identité sont spécifiés à partir de la configuration suivante :
 
-- **General Configuration** qui contient les propriétés disponibles pour tous les services d'identité, voir [Identity Service - Configuration](/identity-service-configuration).
-- **Paramètres** spécifiques au type de service d'identité LDAP.
+- **General Configuration** qui contient les propriétés disponibles pour tous les Services d'Identité, voir [Identity Service - Configuration](/identity-service-configuration).
+- **Paramètres** spécifiques au type de Service d'Identité LDAP.
 
 ## Paramètres
 

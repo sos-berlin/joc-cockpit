@@ -1,15 +1,15 @@
 # Gérer les Contrôleurs et les Agents
 
-La page *Gerer Contrôleurs/Agents* est utilisée pour 
+La page *Gerer Contrôleurs/Agents* est utilisée 
 
 - pour enregistrer des Contrôleurs autonomes et des Clusters de Contrôleurs,
-- pour enregistrer les Agents autonomes auprès des Contrôleurs,
-- d'enregistrer des Agents de grappe avec des Contrôleurs,
-  - spécifier une grappe d'*Agents Directeurs*, - spécifier un nombre quelconque de *sous-agents*
-  - en spécifiant un nombre quelconque de *Subagents* qui agissent en tant que nœuds de tâche.
-  - la spécification d'un nombre quelconque de *Clusters de sous-agents* qui régissent l'utilisation des Agents et auxquels peuvent être attribués des Jobs dans les Workflows.
+- pour enregistrer les Agents Autonomes auprès des Contrôleurs,
+- pour enregistrer des Agents Cluster avec des Contrôleurs,
+  - spécifier une grappe d'*Agents Directeurs*, - spécifier un nombre quelconque de *Sous-Agents*
+  - en spécifiant un nombre quelconque de *Sous-Agents* qui agissent en tant que nœuds de tâche.
+  - la spécification d'un nombre quelconque de *Clusters de Sous-Agents* qui régissent l'utilisation des Agents et auxquels peuvent être attribués des Jobs dans les Workflows.
 
-L'exploitation d'un cluster de Contrôleurs ou d'Agents est soumise aux conditions de licence [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License).
+L'exploitation d'un Cluster de Contrôleurs ou d'Agents est soumise aux conditions de licence [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License).
 
 ## Enregistrer le Contrôleur
 
@@ -22,11 +22,11 @@ Pour plus d'explications, voir [Initial Operation - Register Controller](/initia
 Pour un Contrôleur existant, les opérations suivantes sont proposées à partir de son menu d'action à 3 points :
 
 - **Modifier** permet de modifier les propriétés d'un Contrôleur, y compris les URL des instances de Contrôleur.
-- **Ajouter Agent Autonome** permet d'enregistrer un Agent autonome.
+- **Ajouter Agent Autonome** permet d'enregistrer un Agent Autonome.
   - Pour plus d'explications, voir [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone).
 - **Ajouter Agent Cluster** permet d'enregistrer une grappe d'Agents. 
   - L'opération comprend la spécification des *Agents Directeurs* et des *Sous-Agents*.
-  - Pour plus d'explications, voir [Initial Operation - Register Cluster Agent](/initial-operation-register-agent-cluster).
+  - Pour plus d'explications, voir [Initial Operation - Register Cluster Agent](/initial-operation-register-agent-Cluster).
 - **Créer un Jeton à usage unique** 
 - **Exporter la configuration des Agents** permet de télécharger un fichier d'exportation au format JSON contenant les configurations de l'Agent du Contrôleur sélectionné.
 - **Importer la configuration des Agents** permet de télécharger un fichier d'exportation au format JSON contenant les configurations de l'Agent précédemment exportées. Les Agents concernés seront enregistrés auprès du Contrôleur.
@@ -46,7 +46,7 @@ Les boutons de filtrage suivants pour les Agents sont disponibles en haut de l'�
 
 ### Aide contextuelle
 
-- [Initial Operation - Register Cluster Agent](/initial-operation-register-agent-cluster)
+- [Initial Operation - Register Cluster Agent](/initial-operation-register-agent-Cluster)
 - [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone)
 - [Initial Operation - Register Controller](/initial-operation-register-controller)
 
@@ -57,4 +57,3 @@ Les boutons de filtrage suivants pour les Agents sont disponibles en haut de l'�
 - [JS7 - Initial Operation for Standalone Controller](https://kb.sos-berlin.com/display/JS7/JS7+-+Initial+Operation+for+Standalone+Controller)
 - [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License)
 - [JS7 - Management of Controller Clusters](https://kb.sos-berlin.com/display/JS7/JS7+-+Management+of+Controller+Clusters)
-

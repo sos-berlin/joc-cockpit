@@ -1,6 +1,6 @@
 # Profil - Gestion des clés de signature
 
-L'onglet *Profil - Gestion de la clé de signature* contient le certificat de signature utilisé pour le déploiement des Workflows et des ressources de tâche.
+L'onglet *Profil - Gestion de la clé de signature* contient le certificat de signature utilisé pour le déploiement des Workflows et des Ressources de Tâche.
 
 - Si JOC Cockpit est utilisé avec le niveau de sécurité *faible*, le certificat de signature est stocké avec le compte *root* et est utilisé pour les opérations de déploiement de n'importe quel compte utilisateur.
 - Si JOC Cockpit est utilisé avec le niveau de sécurité *moyen*, le certificat de signature est stocké individuellement avec le compte d'utilisateur et est utilisé pour les opérations de déploiement du compte d'utilisateur correspondant.
@@ -31,7 +31,7 @@ Les opérations suivantes sont proposées :
 - **Générer** invoque une fenêtre contextuelle qui permet de générer la clé privée et le certificat de signature à partir de l'autorité de certification intégrée.
   - Les utilisateurs doivent vérifier que l'onglet [Profile - SSL Key Management](/profile-ssl-key-management) contient un certificat d'autorité de certification racine ou un certificat d'autorité de certification intermédiaire valide.
   - Lors de la génération des clés, les utilisateurs doivent sélectionner l'option *Use SSL CA* pour utiliser l'autorité de certification intégrée lors de la création et de la signature d'un nouveau certificat de signature.
-- l'option **Supprimer** supprime la clé privée et le certificat de signature. Dans les niveaux de sécurité *faible* et *moyen*, cela empêchera le déploiement des Workflows et des ressources de tâche.
+- l'option **Supprimer** supprime la clé privée et le certificat de signature. Dans les niveaux de sécurité *faible* et *moyen*, cela empêchera le déploiement des Workflows et des Ressources de Tâche.
 
 ## Références
 

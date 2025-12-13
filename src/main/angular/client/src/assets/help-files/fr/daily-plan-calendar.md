@@ -44,9 +44,9 @@ Les boutons de filtrage suivants limitent l'étendue des opérations :
 L'opération est disponible à partir d'un bouton situé sous le widget du Calendrier pour une date individuelle et pour une plage de dates.
 
 - Pour les jours sélectionnés, le Plan Quotidien sera créé.
-  - Les utilisateurs peuvent choisir de créer tous les Ordres ou les Ordres des Plannifications et Workflows sélectionnés, éventuellement limités par des dossiers.
-  - Les utilisateurs peuvent spécifier de remplacer les Ordres existants provenant des mêmes Plannifications et de soumettre immédiatement les Ordres au Contrôleur.
-  - Les utilisateurs peuvent inclure des Ordres provenant de Plannifications qui ne sont pas configurées pour être prises en compte par le Service du Plan Quotidien.
+  - Les utilisateurs peuvent choisir de créer tous les Ordres ou les Ordres des Planifications et Workflows sélectionnés, éventuellement limités par des dossiers.
+  - Les utilisateurs peuvent spécifier de remplacer les Ordres existants provenant des mêmes Planifications et de soumettre immédiatement les Ordres au Contrôleur.
+  - Les utilisateurs peuvent inclure des Ordres provenant de Planifications qui ne sont pas configurées pour être prises en compte par le Service du Plan Quotidien.
 - Si le Plan Quotidien pour une date donnée est créé, l'exécution suivante du Service de Plan Quotidien ne planifiera pas d'Ordres supplémentaires pour la même date. Cependant, le service soumettra des Ordres *planifiés* dans le cadre des jours à venir pour lesquels des Ordres doivent être soumis, voir la page [Settings - Daily Plan](/settings-daily-plan).
 
 ### Supprimer le Plan Quotidien

@@ -1,20 +1,20 @@
-# Configuration - Inventaire - Plannifications - Exécution
+# Configuration - Inventaire - Planifications - Exécution
 
-La vue *Plannification* permet de spécifier des règles pour la création d'Ordres à partir de la page [Daily Plan](/daily-plan).
+La vue *Planification* permet de spécifier des règles pour la création d'Ordres à partir de la page [Daily Plan](/daily-plan).
 
 Le bouton *Temps d'exécution* permet de spécifier les heures de début des Ordres à partir d'une fenêtre contextuelle : un Calendrier est d'abord attribué, puis des périodes sont spécifiées et, en option, des restrictions s'appliquent.
 
 ## Fuseau horaire
 
-Les heures d'exécution sont spécifiées à partir d'un **fuseau horaire** qui est alimenté par la page [Profile - Preferences](/profile-preferences) de l'utilisateur. Les identifiants de fuseaux horaires sont acceptés comme *UTC*, *Europe/Londres*, etc. Pour une liste complète des identificateurs de fuseaux horaires, voir [Liste des fuseaux horaires de la base de données tz] (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+Les heures d'exécution sont spécifiées à partir d'un **fuseau horaire** qui est alimenté par la page [Profile - Preferences](/profile-preferences) de l'utilisateur. Les identifiants de fuseaux horaires sont acceptés comme *UTC*, *Europe/London*, etc. Pour une liste complète des identificateurs de fuseaux horaires, voir [Liste des fuseaux horaires de la base de données tz] (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
 
 - Les heures de début des Ordres sont considérées dans le fuseau horaire spécifié.
 - Il est possible d'utiliser un fuseau horaire différent de celui de [Settings - Daily Plan](/settings-daily-plan) et pour les heures d'exécution des Ordres. Les utilisateurs doivent tenir compte du fait que 
   - Les Ordres se voient attribuer une date de Plan Quotidien.
-  - Les heures de début sont calculées à partir du fuseau horaire de la Plannification.
+  - Les heures de début sont calculées à partir du fuseau horaire de la Planification.
 - Par conséquent, le Plan Quotidien peut contenir des Ordres pour une date donnée qui se chevauchent avec un jour précédent ou ultérieur. Par exemple,
   - supposez que le fuseau horaire du Plan Quotidien est UTC,
-  - supposons que le fuseau horaire de la Plannification soit Asia/Calcutta (UTC+05:30) et que l'heure de début soit *23:00*,
+  - supposons que le fuseau horaire de la Planification soit Asia/Calcutta (UTC+05:30) et que l'heure de début soit *23:00*,
   - si un Ordre est créé pour le Plan Quotidien de mardi, il indiquera une heure de début pour mercredi *04:30* UTC. Le résultat est correct mais peut être considéré comme déroutant par les utilisateurs qui sont perdus dans les fuseaux horaires.
 
 Ce qui est le plus surprenant pour certains utilisateurs, c'est qu'un jour ne dure pas 24 heures, mais peut s'étendre jusqu'à 50 heures. La durée d'un jour est toujours de 24 heures car elle dépend de la rotation de la terre. Cependant, pour un fuseau horaire donné, il y a une couverture de 50 heures pour inclure toutes les heures possibles autour de la planète.
@@ -69,20 +69,20 @@ L'utilisation des Calendriers des jours non ouvrables est différente selon qu'i
 
 - Exemple :
   - Supposez un Calendrier de jours ouvrables du lundi au vendredi.
-  - Supposez une *Restriction* de Plannification pour le *4 du mois*.
+  - Supposez une *Restriction* de Planification pour le *4 du mois*.
   - Les jours résultants sont calculés à partir du Calendrier des jours ouvrables et du quatrième jour de la liste des jours résultants.
 - Les planifications peuvent également contenir des références à des Calendriers de jours non ouvrables.
-  - Les Calendriers des jours non ouvrables sont appliqués *après* le calcul de la *restriction* de chaque Plannification.
+  - Les Calendriers des jours non ouvrables sont appliqués *après* le calcul de la *restriction* de chaque Planification.
   - Si les utilisateurs souhaitent exclure certains jours non ouvrables du Calendrier *avant* d'appliquer la *restriction* du *4e jour du mois*, ils ont la possibilité de
     - de spécifier des jours non ouvrables dans les *fréquences exclues* du Calendrier des jours ouvrables.
     - pour spécifier les jours des Calendriers des jours non ouvrables auxquels s'ajoute la *restriction*
 
 ## Ordres cycliques vs. Workflow cycliques
 
-Les utilisateurs doivent tenir compte des implications des Ordres cycliques : ils créent des instances d'Ordre individuelles par cycle. Pour remplacer les Ordres cycliques créés par des Plannifications utilisant des intervalles de répétition, le site [JS7 - Cycle Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Cycle+Instruction) est disponible pour les Workflows cycliques.
+Les utilisateurs doivent tenir compte des implications des Ordres cycliques : ils créent des instances d'Ordre individuelles par cycle. Pour remplacer les Ordres cycliques créés par des Planifications utilisant des intervalles de répétition, le site [JS7 - Cycle Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Cycle+Instruction) est disponible pour les Workflows cycliques.
 
 - Exécution
-  - Une *Instruction de cycle* générant un Workflow complet est équivalente à l'utilisation d'Ordres cycliques à partir d'une Plannification.
+  - Une *Instruction de cycle* générant un Workflow complet est équivalente à l'utilisation d'Ordres cycliques à partir d'une Planification.
   - Une *Instruction de cycle* peut être utilisée pour exécuter des parties d'un Workflow par cycles.
 - Efficacité
   - Les planifications créent un certain nombre d'instances d'Ordres pour chaque période d'un Ordre cyclique. L'exécution d'un seul Workflow toutes les 30 secondes permet d'obtenir 2880 Ordres par jour.

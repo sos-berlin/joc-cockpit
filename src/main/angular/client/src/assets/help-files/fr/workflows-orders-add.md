@@ -40,7 +40,7 @@ Si un Ordre ne doit pas commencer au premier nœud du Workflow, une position peu
   - Si une position de bloc est spécifiée, n'importe quel nœud de même niveau à l'intérieur du bloc peut être spécifié avant lequel l'Ordre se terminera.
   - Il est possible de spécifier plusieurs positions de fin.
 - **Priorité** :
-  - Si l'Ordre doit répondre à une instruction de Verrouillage des Ressources dans le Workflow qui limite le parallélisme, sa *Priorité* détermine la position dans la file d'attente des Ordres en attente.
+  - Si l'Ordre doit répondre à une Instruction Resource-Lock des Ressources dans le Workflow qui limite le parallélisme, sa *Priorité* détermine la position dans la file d'attente des Ordres en attente.
   - les *priorités* sont spécifiées à partir de nombres entiers négatifs, nuls et positifs ou à partir des raccourcis proposés. Une *priorité* plus élevée est prioritaire. Les raccourcis offrent les valeurs suivantes :
     - **Basse** : -20000
     - **Inférieur à la normale** : -10000
@@ -50,7 +50,7 @@ Si un Ordre ne doit pas commencer au premier nœud du Workflow, une position peu
 
 ### Paramétrage de l'Ordre
 
-- **Paramétrage à partir d'une Plannification** : Si le Workflow est assigné à une Plannification, cette option peut être sélectionnée pour copier son paramétrage, tel que les variables et les Tags, dans l'Ordre actuel.
+- **Paramétrage à partir d'une Planification** : Si le Workflow est assigné à une Planification, cette option peut être sélectionnée pour copier son paramétrage, tel que les variables et les Tags, dans l'Ordre actuel.
 - **Modifier la variable** : 
   - Si le Workflow spécifie des variables sans valeurs par défaut, l'Ordre actuel doit spécifier les valeurs correspondantes.
   - Si le Workflow spécifie des variables avec des valeurs par défaut, alors le lien permet de sélectionner une variable pour laquelle une nouvelle valeur doit être spécifiée.
@@ -59,7 +59,7 @@ Si un Ordre ne doit pas commencer au premier nœud du Workflow, une position peu
 ### Ordres supplémentaires
 
 - **Ajouter un Ordre** : Si plusieurs Ordres doivent être ajoutés au Workflow, alors le lien ajoutera le paramétrage pour l'Ordre supplémentaire.
-- **Ajouter des Ordres à partir de Plannifications** : si le Workflow est assigné à une ou plusieurs Plannifications, alors pour chaque Plannification un Ordre paramétré à partir d'une Plannification sera ajouté.
+- **Ajouter des Ordres à partir de Planifications** : si le Workflow est assigné à une ou plusieurs Planifications, alors pour chaque Planification un Ordre paramétré à partir d'une Planification sera ajouté.
 
 ## Références
 

@@ -19,7 +19,7 @@ L'affichage est regroupé en un bloc par déploiement et en blocs par objet d'in
 - **Etat** indique si le déploiement a réussi ou échoué.
   - *Deployed* indique que tous les objets de l'inventaire ont été déployés avec succès.
   - *Not Deployed* indique qu'un ou plusieurs objets d'inventaire n'ont pas pu être déployés.
-- **Nombre d'entrées** indique le nombre d'objets d'inventaire tels que les Workflows, les ressources de tâche, etc. dans le champ d'application du déploiement.
+- **Nombre d'entrées** indique le nombre d'objets d'inventaire tels que les Workflows, les Ressources de Tâche, etc. dans le champ d'application du déploiement.
 
 ### Historique des déploiements par objet d'inventaire
 

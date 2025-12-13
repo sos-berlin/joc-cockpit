@@ -1,6 +1,6 @@
 # Configuration - Inventaire - Opérations - Révoquer l'objet
 
-La révocation d'objets permet de les supprimer du Contrôleur et de conserver les objets à l'état de projet dans l'inventaire. Cela s'applique aux objets tels que les Workflows et les ressources de tâche disponibles dans le dossier système *Controller*.
+La révocation d'objets permet de les supprimer du Contrôleur et de conserver les objets à l'état de projet dans l'inventaire. Cela s'applique aux objets tels que les Workflows et les Ressources de Tâche disponibles dans le dossier système *Controller*.
 
 La vue *Configuration-&gt;Inventaire* permet de révoquer un seul objet et de révoquer des objets à partir de dossiers, voir [Configuration - Inventory - Operations - Revoke Folder](/configuration-inventory-operations-revoke-folder).
 
@@ -16,18 +16,18 @@ Par défaut, le Contrôleur actuellement sélectionné est indiqué.
 
 ## Mise à jour du Plan Quotidien
 
-La révocation d'objets tels que les Workflows et les ressources de tâche a un impact sur le site [Daily Plan](/daily-plan). 
+La révocation d'objets tels que les Workflows et les Ressources de Tâche a un impact sur le site [Daily Plan](/daily-plan). 
 
 Les Ordres existants pour les Workflows associés seront rappelés par le Contrôleur et seront supprimés du Plan Quotidien.
 
 ## Inclure les dépendances
 
-Les objets d'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un Verrou de Ressource ; une Plannification référençant un Calendrier et un ou plusieurs Workflows.
+Les objets d'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un Verrou de Ressource ; une Planification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lors de la révocation d'objets, la cohérence est prise en compte, par exemple :
 
 - Si une ressource de tâche est référencée par un Workflow, la révocation de la ressource de tâche entraîne également la révocation du Workflow.
-- Si un Workflow est révoqué, une Plannification référençant le Workflow sera rappelée et les Ordres associés seront rappelés et supprimés du Plan Quotidien.
+- Si un Workflow est révoqué, une Planification référençant le Workflow sera rappelée et les Ordres associés seront rappelés et supprimés du Plan Quotidien.
 
 Les utilisateurs contrôlent la révocation cohérente des objets à partir des options suivantes :
 

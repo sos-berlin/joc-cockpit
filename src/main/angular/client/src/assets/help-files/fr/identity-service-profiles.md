@@ -1,10 +1,10 @@
-# Profils de services d'identité
+# Profils de Services d'Identité
 
-Les services d'identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
+Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
 
-Pour les utilisateurs qui se connectent avec un service d'identité, un *profil* est créé lors de la première connexion pour le service d'identité concerné.
+Pour les utilisateurs qui se connectent avec un Service d'Identité, un *profil* est créé lors de la première connexion pour le Service d'Identité concerné.
 
-- Si plusieurs services d'identité sont disponibles pour la connexion, l'utilisateur disposera d'un *profil* pour chaque service d'identité auquel il s'est connecté avec succès.
+- Si plusieurs Services d'Identité sont disponibles pour la connexion, l'utilisateur disposera d'un *profil* pour chaque Service d'Identité auquel il s'est connecté avec succès.
 - Le *Profil* est créé à partir du compte spécifié avec le paramètre *default_profile_account* dans la page [Settings - JOC Cockpit](/settings-joc). Par défaut, le *Profil* du compte *root* sera utilisé.
 - les *Profils* seront purgés s'ils ne sont pas utilisés pendant une période prolongée. La page [Settings - Cleanup Service](/settings-cleanup) précise la période maximale pendant laquelle un *Profil* restera en place si aucune connexion n'est effectuée à partir du compte d'utilisateur concerné.
 

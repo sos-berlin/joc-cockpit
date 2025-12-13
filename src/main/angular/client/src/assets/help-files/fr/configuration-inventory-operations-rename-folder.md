@@ -37,7 +37,7 @@ Les modifications apportées aux noms d'objets font passer les objets inclus à 
 
 ## Dépendances
 
-Les objets de l'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un Verrou de Ressource ; une Plannification référençant un Calendrier et un ou plusieurs Workflows.
+Les objets de l'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un Verrou de Ressource ; une Planification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lorsque vous renommez des objets, la cohérence est prise en compte et les objets référents sont mis à jour et mis à l'état de projet, par exemple :
 
@@ -45,10 +45,10 @@ Lorsque vous renommez des objets, la cohérence est prise en compte et les objet
   - le Workflow sera mis à jour pour refléter le nouveau nom,
   - le Workflow sera mis à l'état de brouillon,
   - une opération *Déployer* ultérieure permettra d'assurer le déploiement commun des deux objets.
-- Si un Workflow référencé par une Plannification est renommé, alors
-  - la Plannification sera mise à jour pour refléter le nouveau nom,
-  - la Plannification sera mise à l'état de brouillon,
-  - une opération *Deployer* ultérieure sur le Workflow inclura une opération *Release* sur la Plannification et vice versa.
+- Si un Workflow référencé par une Planification est renommé, alors
+  - la Planification sera mise à jour pour refléter le nouveau nom,
+  - la Planification sera mise à l'état de brouillon,
+  - une opération *Deployer* ultérieure sur le Workflow inclura une opération *Release* sur la Planification et vice versa.
 
 ## Références
 

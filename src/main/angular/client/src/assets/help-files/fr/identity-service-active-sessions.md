@@ -1,15 +1,15 @@
-# Sessions actives du service d'identité
+# Sessions actives du Service d'Identité
 
-Les services d'identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
+Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
 
 Les utilisateurs peuvent identifier les comptes détenant des sessions actives lorsqu'ils invoquent la vue *Gérer les Services d'Identité* à partir de l'icône de la roue dans la barre de menu.
 
-Les sessions actives sont affichées à partir du compte utilisé, du service d'identité utilisé pour la connexion et du temps de session restant.
+Les sessions actives sont affichées à partir du compte utilisé, du Service d'Identité utilisé pour la connexion et du temps de session restant.
 
 - JOC Cockpit ne limite pas le nombre de sessions par compte.
 - Le temps de session restant est limité par les facteurs suivants :
   - Le paramètre *session_idle_timeout* configuré sur la page [Settings - Identity Service](/settings-identity-service) limite la durée maximale pendant laquelle une session peut rester active sans activité de l'utilisateur.
-  - Les fournisseurs de services d'identité tels que OIDC et Keycloak peuvent limiter la durée maximale d'une session utilisateur.
+  - Les fournisseurs de Services d'Identité tels que OIDC et Keycloak peuvent limiter la durée maximale d'une session utilisateur.
 
 ## Opérations sur les sessions actives
 
@@ -32,4 +32,3 @@ Si vous sélectionnez une ou plusieurs sessions, l'opération *Annuler la sessio
 ### Product Knowledge Base
 
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
-

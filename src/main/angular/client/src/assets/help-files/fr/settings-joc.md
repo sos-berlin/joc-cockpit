@@ -4,16 +4,16 @@ Les paramètres suivants sont appliqués à JOC Cockpit. Les modifications prenn
 
 La page *Réglages* est accessible à partir de l'icône ![wheel icon](assets/images/wheel.png) dans la barre de menu.
 
-## Paramètres du journal d'audit
+## Paramètres du Journal d'Audit
 
 ### Paramètre : *force_comments\_for\_audit\_log*, Défaut : *false*
 
 Spécifie qu'une raison doit être ajoutée à l'adresse [Audit Log](/audit-log) pour tout changement appliqué à des objets tels que l'ajout d'un Ordre, l'annulation d'un Ordre, etc.
 
 Cela s'applique aux opérations effectuées à partir de l'interface graphique et aux opérations effectuées à partir de l'interface utilisateur [REST Web Service API](/rest-api)
-La spécification de la valeur *true* pour ce paramètre oblige toutes les requêtes API qui modifient des objets à fournir des arguments pour le journal d'audit.
+La spécification de la valeur *true* pour ce paramètre oblige toutes les requêtes API qui modifient des objets à fournir des arguments pour le Journal d'Audit.
 
-Notez que le site [Profile - Preferences](/profile-preferences) comprend un paramètre connexe, Activer les raisons pour le journal d'audit, qui a le même effet. Toutefois, son utilisation est volontaire et limitée au compte du profil. Le paramètre force\_comments\_for\_audit\_log impose ce comportement à tous les comptes d'utilisateurs, quels que soient les paramètres de profil des comptes d'utilisateurs individuels.
+Notez que le site [Profile - Preferences](/profile-preferences) comprend un paramètre connexe, Activer les raisons pour le Journal d'Audit, qui a le même effet. Toutefois, son utilisation est volontaire et limitée au compte du profil. Le paramètre force\_comments\_for\_audit\_log impose ce comportement à tous les comptes d'utilisateurs, quels que soient les paramètres de profil des comptes d'utilisateurs individuels.
 
 ### Paramètre : *comments_for\_audit\_log*
 
@@ -90,7 +90,7 @@ Le lien **Afficher la valeur de hachage** est disponible sur la page Paramètres
 
 Si un mot de passe est modifié dans la page Paramètres, il doit également être modifié dans le fichier private.conf du Contrôleur pour que les mots de passe correspondent.
 
-Il est recommandé de modifier d'abord le mot de passe dans le fichier private.conf de l'instance active du Contrôleur, puis dans la page Paramètres. Redémarrez ensuite l'instance du Contrôleur. Le JOC Cockpit se reconnectera alors à l'instance de Contrôleur active. Si un cluster de Contrôleurs est utilisé, la même modification doit être appliquée au fichier private.conf de l'instance de Contrôleur passive.
+Il est recommandé de modifier d'abord le mot de passe dans le fichier private.conf de l'instance active du Contrôleur, puis dans la page Paramètres. Redémarrez ensuite l'instance du Contrôleur. Le JOC Cockpit se reconnectera alors à l'instance de Contrôleur active. Si un Cluster de Contrôleurs est utilisé, la même modification doit être appliquée au fichier private.conf de l'instance de Contrôleur passive.
 
 ## Paramètres Unicode
 

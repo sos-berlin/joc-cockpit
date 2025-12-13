@@ -6,7 +6,7 @@ L'affichage Etat du produit fournit des informations sur les composants JS7 suiv
 - **Controller** orchestre les Agents et gère le déploiement des Ordres, des Workflows et des Jobs.
 - **Les Agents exécutent les travaux. 
 
-Les composants JS7 peuvent être exploités de manière autonome et dans le cadre d'un clustering actif-passif.
+Les composants JS7 peuvent être exploités de manière autonome et dans le cadre d'un Clustering actif-passif.
 
 ## État des composants et état des connexions
 
@@ -45,7 +45,7 @@ Le Contrôleur se connecte aux instances d'Agents. Dans un groupe de Contrôleur
 
 Opérations proposées pour toutes les instances visibles et saines du JOC Cockpit :
 
-- **Switch-over** dans un cluster passera le rôle actif à l'instance en attente, ce qui peut prendre de 20s à environ 60s. L'opération est proposée pour les instances en attente.
+- **Switch-over** dans un Cluster passera le rôle actif à l'instance en attente, ce qui peut prendre de 20s à environ 60s. L'opération est proposée pour les instances en attente.
 - **La mise à jour de l'URL** permet de modifier l'URL d'affichage. JOC Cockpit peut être accessible à partir d'un certain nombre d'URL et la première utilisée est affichée. Si ce n'est pas ce que souhaite l'utilisateur, il peut spécifier l'URL à afficher. L'opération ne modifie pas l'URL de JOC Cockpit mais son affichage.
 
 Les opérations sur JOC Cockpit sont proposées pour l'instance à laquelle le navigateur est connecté :
@@ -67,15 +67,15 @@ Les opérations sur JOC Cockpit sont proposées pour l'instance à laquelle le n
 
 Les instances de Contrôleur proposent les opérations suivantes à partir du menu d'action à 3 points dans le rectangle de chaque instance :
 
-- **Terminer**, **Terminer and Rédemarrer** pour arrêter l'instance. Pour l'instance active d'un cluster, le menu est élargi :
+- **Terminer**, **Terminer and Rédemarrer** pour arrêter l'instance. Pour l'instance active d'un Cluster, le menu est élargi :
   - **avec basculement** pour passer le rôle actif à l'instance en attente.
   - **sans basculement** : pour que le rôle actif reste dans l'instance active. Les utilisateurs doivent savoir qu'aucun basculement n'aura lieu et qu'aucune instance ne sera active.
-- les options **Avorter**, **Avorter et redémarrer** mettent fin de force à l'instance. S'il est appliqué à l'instance active d'un cluster, il forcera le basculement :
+- les options **Avorter**, **Avorter et redémarrer** mettent fin de force à l'instance. S'il est appliqué à l'instance active d'un Cluster, il forcera le basculement :
   - **avec basculement** transmet le rôle actif à l'instance en attente.
 - **Le fichier controller.log du Contrôleur peut être téléchargé à partir d'un fichier .gz au format gzip.
 
 Le rectangle d'état de la grappe permet d'effectuer les opérations suivantes à partir de son menu d'action à trois points :
 
-- **Switch-over** transmet le rôle actif à l'instance en attente. Cette opération est disponible si le cluster est couplé.
-- **Confirmer la perte de l'instance de Contrôleur** est applicable si aucune instance de JOC Cockpit n'était disponible lorsqu'une instance de Contrôleur d'un cluster est tombée en panne. JOC Cockpit est nécessaire en tant que témoin dans le cluster. Dans cette situation, les utilisateurs doivent vérifier quelle instance de Contrôleur était en veille au moment du crash et doivent confirmer que l'instance en veille est arrêtée pour permettre à l'instance active de reprendre.
+- **Switch-over** transmet le rôle actif à l'instance en attente. Cette opération est disponible si le Cluster est couplé.
+- **Confirmer la perte de l'instance de Contrôleur** est applicable si aucune instance de JOC Cockpit n'était disponible lorsqu'une instance de Contrôleur d'un Cluster est tombée en panne. JOC Cockpit est nécessaire en tant que témoin dans le Cluster. Dans cette situation, les utilisateurs doivent vérifier quelle instance de Contrôleur était en veille au moment du crash et doivent confirmer que l'instance en veille est arrêtée pour permettre à l'instance active de reprendre.
 

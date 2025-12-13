@@ -9,7 +9,7 @@ La vue *Modele de Tâche* permet de spécifier des modèles gérés de manière 
 Les modèles de tâches sont gérés à partir des vues suivants :
 
 - La page [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation), situé sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant les modèles de tâches. En outre, cette vue permet d'effectuer des opérations sur les modèles de tâches.
-- Le Vue *Modele de Tâche* sur le côté droit de la fenêtre contient les détails de la configuration de la Plannification.
+- Le Vue *Modele de Tâche* sur le côté droit de la fenêtre contient les détails de la configuration de la Planification.
 
 ## Vue des modèles de tâches
 
@@ -21,7 +21,7 @@ Pour un modèle de tâche, les entrées suivantes sont disponibles :
   - [Job Options](/configuration-inventory-workflow-job-options)
   - [Job Node Properties](/configuration-inventory-workflow-job-node-properties)
   - [Job Notifications](/configuration-inventory-workflow-job-notifications)
-  - [Job Tags](/configuration-inventory-workflow-job-Tags)
+  - [Job Tags](/configuration-inventory-workflow-job-tags)
 - les **Arguments** sont utilisés pour les travaux de la JVM. 
   - **Requis** spécifie si l'argument est requis ou s'il peut être supprimé lorsqu'il est utilisé dans un tâche.
   - **La description ajoute une explication à l'argument, qui peut inclure des Tags HTML.
@@ -88,7 +88,7 @@ Pour attribuer dynamiquement des valeurs aux **Arguments pour les tâches JVM** 
 - [Job Notifications](/configuration-inventory-workflow-tâche-notifications)
 - [Job Options](/configuration-inventory-workflow-tâche-options)
 - [Job Properties](/configuration-inventory-workflow-tâche-properties)
-- [Job Tags](/configuration-inventory-workflow-tâche-Tags)
+- [Job Tags](/configuration-inventory-workflow-tâche-tags)
 - [Object Naming Rules](/object-naming-rules)
 
 ### Product Knowledge Base

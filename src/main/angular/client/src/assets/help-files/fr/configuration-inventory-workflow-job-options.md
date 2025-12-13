@@ -6,7 +6,7 @@ L'interface graphique offre un certain nombre d'onglets pour spécifier les dét
 
 ## Options de tâche fréquemment utilisées
 
-- **Limite de Tâche** spécifie le nombre d'instances parallèles pour lesquelles le tâche peut être exécuté. Si plusieurs Ordres traitent le Workflow, ils peuvent exécuter le Job en parallèle. En plus du *Parallélisme*, la limite de processus s'applique et est appliquée par les Agents autonomes et les clusters d'Agents.
+- **Limite de Tâche** spécifie le nombre d'instances parallèles pour lesquelles le tâche peut être exécuté. Si plusieurs Ordres traitent le Workflow, ils peuvent exécuter le Job en parallèle. En plus du *Parallélisme*, la limite de processus s'applique et est appliquée par les Agents Autonomes et les Clusters d'Agents.
 - **criticité** spécifie l'importance des défaillances du tâche. La *Criticité* est disponible dans les notifications relatives aux échecs des tâches.
 
 ### Périodes d'exécution des tâches
@@ -85,7 +85,7 @@ Les options suivantes indiquent que les travaux exécutés avec des Agents pour 
   - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflows-tâche-properties)
   - [Configuration - Inventory - Workflows - Job Node Properties](/configuration-inventory-workflows-tâche-node-properties)
   - [Configuration - Inventory - Workflows - Job Notifications](/configuration-inventory-workflows-tâche-notifications)
-  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-tâche-Tags)
+  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-tâche-tags)
 - [Task History](/history-tasks)
 
 ### Product Knowledge Base

@@ -12,13 +12,13 @@ Les propriétés minimales d'un tâche sont les suivantes :
 - **Label** est un identifiant unique pour les instructions dans un Workflow. L'unicité est appliquée aux tâches et aux autres instructions. Si le même *nom de tâche* est utilisé plusieurs fois dans un Workflow, des *étiquettes* différentes doivent être utilisées.
 - **Agent** assigne un Agent pour l'exécution du tâche.
   - les *Agents Autonomes* sont sélectionnés à partir de leur *Nom d'Agent*.
-  - les *Agents Clusters* sont spécifiés en sélectionnant le *Groupe d'Agents* et le *Groupe de sous-agents* souhaité.
+  - les *Agents Clusters* sont spécifiés en sélectionnant le *Groupe d'Agents* et le *Groupe de Sous-Agents* souhaité.
 - Les *Scripts** contiennent les commandes shell, les appels aux scripts et les fichiers exécutables qui sont exécutés par le tâche pour la plate-forme Unix ou Windows correspondante.
 
 ## Propriétés optionnelles du tâche
 
 - **Titre** décrit l'objectif du tâche. Les utilisateurs peuvent ajouter des liens en utilisant la syntaxe markdown, par exemple \[Example\]\(https://example.com\). Le *Titre* est pris en compte lors du filtrage des résultats, par exemple dans la vue [Workflows](/workflows).
-- les **ressources de tâche** sont des objets d'inventaire qui contiennent des variables de paires clé/valeur qui peuvent être rendues disponibles à partir de variables de Workflow et de variables d'environnement. *Les ressources de tâche* peuvent être attribuées au niveau du tâche et au niveau du Workflow, ce qui les rend disponibles pour tous les travaux d'un Workflow. Pour plus de détails, consultez le site [Configuration - Inventory - Job Resources](/configuration-inventory-tâche-resources).
+- les **Ressources de Tâche** sont des objets d'inventaire qui contiennent des variables de paires clé/valeur qui peuvent être rendues disponibles à partir de variables de Workflow et de variables d'environnement. *Les Ressources de Tâche* peuvent être attribuées au niveau du tâche et au niveau du Workflow, ce qui les rend disponibles pour tous les travaux d'un Workflow. Pour plus de détails, consultez le site [Configuration - Inventory - Job Resources](/configuration-inventory-tâche-resources).
 - le **Code de retour** indique si un tâche est considéré comme un succès ou un échec. Par défaut, la valeur 0 indique un succès, les autres valeurs indiquent un échec. Un certain nombre de codes de retour peuvent être séparés par une virgule, par exemple *0,2,4,8*. Une plage de codes de retour peut être spécifiée par deux points, par exemple *0..8* ou *0,2,4,8,16..64*, séparés par une virgule. Les codes de retour négatifs sont indéfinis.
   - **Les codes de retour négatifs sont indéfinis.
   - **En cas d'échec** spécifie les codes de retour d'échec qui indiquent un échec.
@@ -58,7 +58,7 @@ La vue *Configuration - Inventaire* propose le curseur *Plus d'options* en haut 
   - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflows-tâche-options)
   - [Configuration - Inventory - Workflows - Job Node Properties](/configuration-inventory-workflows-tâche-node-properties)
   - [Configuration - Inventory - Workflows - Job Notifications](/configuration-inventory-workflows-tâche-notifications)
-  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-tâche-Tags)
+  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-tâche-tags)
 - [Resources - Documentations](/resources-documentations)
 
 ### Product Knowledge Base

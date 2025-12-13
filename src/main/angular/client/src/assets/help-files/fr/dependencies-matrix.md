@@ -1,6 +1,6 @@
 # Matrice de dépendance
 
-Les objets de l'inventaire JS7 sont liés par des dépendances. Par exemple, un Workflow référençant une ressource de tâche et un Verrou de Ressource ; une Plannification référençant un Calendrier et un ou plusieurs Workflows.
+Les objets de l'inventaire JS7 sont liés par des dépendances. Par exemple, un Workflow référençant une ressource de tâche et un Verrou de Ressource ; une Planification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lors du déploiement des objets, la cohérence est prise en compte, par exemple :
 
@@ -14,14 +14,14 @@ La matrice de dépendance des objets d'inventaire se présente comme suit :
 la matrice de dépendance des objets d'inventaire se présente de la manière suivante : | Domaine | Type d'objet | Références entrantes | | Références sortantes | | | | | | |
 | ----- | ----- | ----- | ----- |
 | Contrôleur
-| Workflow | Plannification | Workflow | Resource de Tâche | Tableau de Condition | Verrous de Ressource| Modèle de Tâche | Script Include |
+| Workflow | Planification | Workflow | Resource de Tâche | Tableau de Condition | Verrous de Ressource| Modèle de Tâche | Script Include |
 | Source de l'Ordre des Fichiers | | | Workflow |
 | Modèle de tâche - Inclure le script - Source d'Ordres de fichier - Workflow - Inclure le script - Inclure le modèle de tâche
 | | Tableau de Condition | Workflow
 | Workflow | Verrouillage des Ressources | Workflow | Automatisation | Verrouillage des Ressources
 | Automatisation
-| Calendrier | Plannification | | Workflow | Calendrier
-| Calendrier | Plannification
+| Calendrier | Planification | | Workflow | Calendrier
+| Calendrier | Planification
 | Modèle de tâche - Workflow
 | Workflow - Inclure un script - Workflow - Inclure un script - Workflow - Inclure un script - Workflow - Inclure un script - Workflow - Inclure un script - Workflow
 

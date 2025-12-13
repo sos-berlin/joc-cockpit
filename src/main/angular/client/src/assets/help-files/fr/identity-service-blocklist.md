@@ -1,10 +1,10 @@
-# Liste de blocage des services d'identité
+# Liste de Blocage des Services d'Identité
 
-Les services d'identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
+Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
 
-Les comptes d'utilisateurs administratifs peuvent ajouter des comptes de n'importe quel service d'identité à une liste de blocage :
+Les comptes d'utilisateurs administratifs peuvent ajouter des comptes de n'importe quel Service d'Identité à une liste de blocage :
 
-- Les comptes bloqués se voient refuser l'accès à JOC Cockpit, mais ne sont pas bloqués par le fournisseur de services d'identité (LDAP, OIDC, etc.).
+- Les comptes bloqués se voient refuser l'accès à JOC Cockpit, mais ne sont pas bloqués par le fournisseur de Services d'Identité (LDAP, OIDC, etc.).
 - Les comptes bloqués restent dans la liste de blocage jusqu'à ce qu'ils en soient retirés.
 
 ## Ajout de comptes à la liste de blocage
@@ -35,4 +35,3 @@ Une opération en masse est possible en utilisant le bouton *Supprimer de la lis
 ### Product Knowledge Base
 
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
-

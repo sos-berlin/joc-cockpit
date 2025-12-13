@@ -1,10 +1,10 @@
-# Comptes de service d'identité
+# Comptes de Service d'Identité
 
-Les services d'identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
+Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
 
-Les comptes utilisateurs seront gérés et stockés dans JOC Cockpit pour les types de services d'identité suivants :
+Les comptes utilisateurs seront gérés et stockés dans JOC Cockpit pour les types de Services d'Identité suivants :
 
-| Type de service d'identité | Documentation |
+| Type de Service d'Identité | Documentation |
 | ----- | ----- |
 *JOC* | [JS7 - JOC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+JOC+Identity+Service) | *KEYCLOAK-JOC* | 
 | *KEYCLOAK-JOC* | [JS7 - Keycloak Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Keycloak+Identity+Service) | | *LDAP-JOC* | 
@@ -13,9 +13,9 @@ Les comptes utilisateurs seront gérés et stockés dans JOC Cockpit pour les ty
 | *CERTIFICAT* | [JS7 - Certificate Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Certificate+Identity+Service) | *FIDO* | 
 | *FIDO* | [JS7 - FIDO Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Certificate+Identity+Service) | *FIDO* | 
 
-Pour les types de services d'identité suivants, les comptes utilisateurs ne sont pas gérés par JOC Cockpit mais par le fournisseur de services d'identité :
+Pour les types de Services d'Identité suivants, les comptes utilisateurs ne sont pas gérés par JOC Cockpit mais par le fournisseur de Services d'Identité :
 
-| Type de service d'identité | Documentation |
+| Type de Service d'Identité | Documentation |
 | ----- | ----- |
 *KEYCLOAK* | [JS7 - Keycloak Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Keycloak+Identity+Service) | *LDAP* | 
 | *LDAP* | [JS7 - LDAP Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+LDAP+Identity+Service) | *OIDC* | 
@@ -45,15 +45,15 @@ Les opérations suivantes sont disponibles dans le menu d'action à 3 points de 
 - **Forcer le changement de mot de passe** oblige le compte à changer son mot de passe lors de la prochaine connexion.
 - **Ajouter compte à la liste de blocage** interdit l'accès au compte pendant la durée de l'ajout du compte à la liste de blocage [Identity Service - Blocklist](/identity-service-blocklist).
 - **Désactiver** désactive le compte et interdit l'accès à partir de ce compte.
-- **Supprimer** supprime le compte du service d'identité.
+- **Supprimer** supprime le compte du Service d'Identité.
 - **Visualiser les Permissions** affiche la liste des autorisations résultant de la fusion des rôles du compte donné.
 
 ### Opérations en masse sur les comptes
 
 Les utilisateurs peuvent effectuer les opérations de masse suivantes à partir des boutons situés en haut de l'écran :
 
-- **Exporter** ajoute les comptes sélectionnés à un fichier d'exportation au format JSON qui peut être utilisé pour importer des comptes vers un autre service d'identité dans la même instance ou dans une instance différente de JOC Cockpit.
-- **Copier** copie les comptes sélectionnés dans un presse-papiers interne à partir duquel ils peuvent être collés dans un autre service d'identité de la même instance du Cockpit JOC.
+- **Exporter** ajoute les comptes sélectionnés à un fichier d'exportation au format JSON qui peut être utilisé pour importer des comptes vers un autre Service d'Identité dans la même instance ou dans une instance différente de JOC Cockpit.
+- **Copier** copie les comptes sélectionnés dans un presse-papiers interne à partir duquel ils peuvent être collés dans un autre Service d'Identité de la même instance du Cockpit JOC.
 
 Les utilisateurs peuvent sélectionner un ou plusieurs *comptes* pour effectuer les opérations ci-dessus en masse pour les *comptes* sélectionnés.
 
@@ -61,7 +61,7 @@ Les utilisateurs peuvent sélectionner un ou plusieurs *comptes* pour effectuer 
 - **Forcer le changement de mot de passe** oblige les comptes sélectionnés à changer leur mot de passe lors de la prochaine connexion.
 - **Désactiver** désactive les comptes sélectionnés et refuse l'accès aux comptes donnés.
 - **Activer** active les comptes sélectionnés et désactivés.
-- **Supprimer* les comptes sélectionnés du service d'identité.
+- **Supprimer* les comptes sélectionnés du Service d'Identité.
 
 ## Références
 

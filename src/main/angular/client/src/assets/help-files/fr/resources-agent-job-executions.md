@@ -7,7 +7,7 @@ Les Agents se présentent sous les formes suivantes :
 - **Les Agents Autonomes** exécutent des tâches sur des machines distantes ou à partir de conteneurs. Ils fonctionnent individuellement et sont gérés par le Contrôleur.
 - **Cluster d'Agents**
   - les **Agents Directeurs** orchestrent les *Sous-Agents* dans un Cluster d'Agents. En outre, ils peuvent être utilisés pour exécuter des tâches.
-  - les **Subagents** exécutent des Jobs sur des machines distantes sur site et à partir de conteneurs. Ils peuvent être considérés comme des nœuds de tâche dans un cluster d'Agents et sont gérés par des *Agents Directeurs*.
+  - les **Sous-Agents** exécutent des Jobs sur des machines distantes sur site et à partir de conteneurs. Ils peuvent être considérés comme des nœuds de tâche dans un Cluster d'Agents et sont gérés par des *Agents Directeurs*.
 
 ## Vue d'exécution des tâches 
 

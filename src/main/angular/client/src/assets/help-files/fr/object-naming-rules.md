@@ -2,7 +2,7 @@
 
 Les noms d'objets sont spécifiés à plusieurs endroits pour :
 
-- Workflows, Tâches, Variables, Tableaux de Condition, Verrous de Ressources, Sources d'Ordres de fichiers, Ressources de tâches, Dossiers,
+- Workflows, Tâches, Variables, Tableaux de Condition, Verrous de Ressources, Sources d'Ordres de fichiers, Ressources de Tâches, Dossiers,
 - Les Calendriers, les planifications, les scripts inclus, les modèles de tâches, les rapports.
 
 Le JS7 n'impose pas de conventions de dénomination pour les objets : les utilisateurs sont libres de choisir des conventions de dénomination à leur guise, par exemple pour les noms de tâches en utilisant :

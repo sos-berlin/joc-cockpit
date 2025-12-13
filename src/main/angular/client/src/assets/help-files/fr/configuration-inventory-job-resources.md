@@ -1,20 +1,20 @@
-# Configuration - Inventaire - Ressources de tâche
+# Configuration - Inventaire - Ressources de Tâche
 
-La vue *Ressources de tâche* permet de spécifier les ressources de tâche à utiliser avec les Workflows et les tâches.
+La vue *Ressources de Tâche* permet de spécifier les Ressources de Tâche à utiliser avec les Workflows et les tâches.
 
-Les ressources de tâches contiennent des variables de paires clé/valeur qui sont utilisées dans les buts suivants :
+Les Ressources de Tâches contiennent des variables de paires clé/valeur qui sont utilisées dans les buts suivants :
 
 - Pour les tâches JVM exécutés dans la machine virtuelle Java de l'Agent, les variables sont spécifiées à partir des *Arguments*. Lorsqu'une ressource de tâche est affectée à une tâche, les arguments du tâches correspondant sont remplis.
 - Pour les tâches Shell, les variables sont spécifiées dans *Environment Variables*. Lorsqu'une ressource est affectée à un tâches, les variables d'environnement sont créées automatiquement.
 
-Les ressources de tâche se voient attribuer un Workflow ou une tâche à partir de la propriété de l'objet correspondant, voir [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-tâche-options). Lorsqu'elles sont attribuées au niveau du Workflow, les variables de la ressource de tâches sont disponibles pour toutes les tâches du Workflow.
+Les Ressources de Tâche se voient attribuer un Workflow ou une tâche à partir de la propriété de l'objet correspondant, voir [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-tâche-options). Lorsqu'elles sont attribuées au niveau du Workflow, les variables de la ressource de tâches sont disponibles pour toutes les tâches du Workflow.
 
-Les ressources de tâche sont gérées à partir des vues suivantes :
+Les Ressources de Tâche sont gérées à partir des vues suivantes :
 
-- La page [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation), situé sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant des ressources de tâches. En outre, ce panneau permet d'effectuer des opérations sur les ressources de tâches.
+- La page [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation), situé sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant des Ressources de Tâches. En outre, ce panneau permet d'effectuer des opérations sur les Ressources de Tâches.
 - Le vue *Ressources des Tâche* sur le côté droit de la fenêtre contient les détails de la configuration des ressources.
 
-## Vue des ressources de tâche
+## Vue des Ressources de Tâche
 
 Pour une ressource de tâche, les entrées suivantes sont disponibles :
 
@@ -35,7 +35,7 @@ Les variables Resource de tâches sont configurées pour chaque onglet à partir
 
 Si la même variable est disponible à la fois pour les *Arguments* et les *Variables d'environnement*, la valeur de la Variable d'environnement peut faire référence au nom de l'*Argument* comme suit : *$argument-name*
 
-### Opérations sur les ressources de tâche
+### Opérations sur les Ressources de Tâche
 
 Pour les opérations disponibles, voir [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
 
