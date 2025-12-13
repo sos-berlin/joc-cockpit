@@ -6,9 +6,9 @@ Les Verrous de Ressources sont utilisés pour limiter le parallélisme des tâch
 Les Verrous de Ressources sont des blocs d'instructions qui peuvent s'étendre sur un certain nombre de tâches et d'instructions dans le même Workflow.
 
 - Les **verrous exclusifs** peuvent être utilisés par une seule tâche. L'accès exclusif est configuré soit à partir du Verrou de Ressource, soit à partir de l'utilisation dans le Workflow.
-- Les **verrous partagés** peuvent être utilisés par un nombre configurable de travaux.
+- Les **verrous partagés** peuvent être utilisés par un nombre configurable de tâches.
   - Une *capacité* est attribuée au Verrou de Ressource, par exemple 6.
-  - Chaque utilisation du Verrou de Ressource par un ensemble de travaux se voit attribuer un *poids*, par exemple 3 et 4 pour l'utilisation dans les Workflows A et B. Cela permet l'exécution en parallèle de deux Ordres pour le Workflow A et interdit l'exécution en parallèle d'Ordres pour les Workflows A et B.
+  - Chaque utilisation du Verrou de Ressource par un ensemble de tâches se voit attribuer un *poids*, par exemple 3 et 4 pour l'utilisation dans les Workflows A et B. Cela permet l'exécution en parallèle de deux Ordres pour le Workflow A et interdit l'exécution en parallèle d'Ordres pour les Workflows A et B.
 
 ## Vue de navigation
 

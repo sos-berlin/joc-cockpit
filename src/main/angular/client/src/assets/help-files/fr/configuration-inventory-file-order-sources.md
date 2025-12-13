@@ -17,7 +17,7 @@ Les sources d'Ordres de fichier sont gérées à partir des vues suivants :
 
 ## Vue des Sources d'Ordres de fichier
 
-Pour une source d'Ordre de fichier, les entrées suivantes sont disponibles :
+Pour une Source d'Ordre de Fichier, les entrées suivantes sont disponibles :
 
 - **Nom** est l'identifiant unique d'une source de commande de fichiers, voir [Object Naming Rules](/object-naming-rules).
 - **Titre** contient une explication facultative de l'objectif de la source de commande de fichiers.
@@ -41,7 +41,7 @@ Pour une source d'Ordre de fichier, les entrées suivantes sont disponibles :
     - **Au-dessus de la normale** : 10000
     - **Haut** : 20000
 
-### Opérations sur les sources d'Ordre de fichier
+### Opérations sur les Sources d'Ordre de Fichier
 
 Pour les opérations disponibles, voir [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
 

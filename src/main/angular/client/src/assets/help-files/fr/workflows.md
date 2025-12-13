@@ -28,8 +28,8 @@ Le résumé de l'Ordre est indiqué pour les Ordres liés aux Workflows affiché
 
 - Le **Nom du Workflow** est le nom unique attribué à un Workflow.
   - En cliquant sur le *Nom du Workflow*, vous ferez apparaître le panneau *Historique* dans la partie inférieure de la fenêtre qui affiche l'historique récent de l'exécution du Workflow.
-  - En cliquant sur la grande icône de flèche vers le bas, vous afficherez tous les travaux et toutes les instructions de Workflow.
-  - En cliquant sur la petite icône flèche vers le bas, vous afficherez les travaux et les instructions de Workflow de niveau supérieur.
+  - En cliquant sur la grande icône de flèche vers le bas, vous afficherez tous les tâches et toutes les instructions de Workflow.
+  - En cliquant sur la petite icône flèche vers le bas, vous afficherez les tâches et les instructions de Workflow de niveau supérieur.
   - En cliquant sur l'icône en forme de crayon, vous accédez à la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
   - En cliquant sur l'icône +, une fenêtre contextuelle s'ouvre sur [Add Orders](/workflows-orders-add).
 - les icônes **Vue tabulaire**, **Vue graphique** sont disponibles pour afficher les Workflows
@@ -46,7 +46,7 @@ Le résumé de l'Ordre est indiqué pour les Ordres liés aux Workflows affiché
     - Les utilisateurs peuvent cliquer sur l'ID de l'Ordre indiqué pour afficher le journal de sortie de l'Ordre à partir de [Order Log View](/order-log). Le journal comprend la sortie créée par tous les tâches exécutés avec le Workflow.
   - En cliquant sur le *No. d'Ordres*, une fenêtre contextuelle s'ouvre, affichant tous les Ordres associés et proposant des opérations sur des Ordres individuels et des opérations en masse sur des Ordres sélectionnés.
 
-### Affichage des travaux et des instructions de Workflow
+### Affichage des tâches et des instructions de Workflow
 
 Lorsqu'un Workflow est développé à l'aide de l'icône flèche vers le bas disponible pour un Workflow, ses tâches et Instructions de Workflow seront affichés.
 

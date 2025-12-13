@@ -1,6 +1,6 @@
 # Historique des transferts de fichiers
 
-La vue *Historique des transferts de fichiers* résume l'historique d'exécution des Ordres pour les travaux de transfert de fichiers gérés par YADE.
+La vue *Historique des transferts de fichiers* résume l'historique d'exécution des Ordres pour les tâches de transfert de fichiers gérés par YADE.
 
 Pour le journal créé à partir des tâches de transfert de fichiers, voir [Task History](/history-tasks). Pour l'Historique des Ordres, voir [Order History](/history-orders).
 

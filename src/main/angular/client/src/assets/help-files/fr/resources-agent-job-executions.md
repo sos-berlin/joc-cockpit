@@ -1,6 +1,6 @@
 # Exécution des tâches de l'Agent
 
-La vue *Exécution des travaux des Agents* résume les travaux exécutés par les Agents au cours d'une période donnée.
+La vue *Exécution des tâches des Agents* résume les tâches exécutés par les Agents au cours d'une période donnée.
 
 Les Agents se présentent sous les formes suivantes :
 

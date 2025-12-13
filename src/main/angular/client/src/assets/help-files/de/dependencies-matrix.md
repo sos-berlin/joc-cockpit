@@ -11,9 +11,9 @@ Einzelheiten finden Sie unter [JS7 - Inventory Object Dependencies](https://kb.s
 
 Die Abhängigkeitsmatrix der Inventarobjekte sieht wie folgt aus:
 
-| Bereich |Objekttyp | Eingehende Referenzen | | Ausgehende Referenzen |      |      |      |      |
+| Bereich |Objekttyp | Eingehende Referenzen |      | Ausgehende Referenzen |      |      |      |      |
 | ----- | ----- | ----- | ----- |
-| Controller | Arbeitsablauf | Arbeitsablauf
+| Controller |
 |      | Arbeitsablauf | Arbeitsablauf | Zeitplan | Arbeitsablauf | Job-Ressource | Notizbrett | Ressourcen-Sperre | Job-Vorlage | Skript-Baustein |
 |      | Dateiauftragsquelle |      |      | Arbeitsablauf |
 |      | Job-Ressource | Arbeitsablauf |

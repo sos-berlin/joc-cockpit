@@ -1,6 +1,6 @@
-# Statut de l'Agent
+# Ressources - Statut de l'Agent
 
-La vue *Agent* résume l'état de la connexion des Agents enregistrés.
+La vue *Agents* résume l'état de la connexion des Agents enregistrés.
 
 ## Architecture
 
@@ -13,8 +13,8 @@ La vue *Agent* résume l'état de la connexion des Agents enregistrés.
 
 ### Connexions
 
-- **Les connexions de l'Agent Autonome** et de l'Agent Directeur** sont établies par le Contrôleur. 
-- les connexions **Sous-Agents** dans un Cluster d'Agents sont établies par les *Agents Directeurs*.
+- Les connexions de l'**Agent Autonome** et de l'**Agent Directeur** sont établies par le Contrôleur. 
+- Les connexions **Sous-Agents** dans un Cluster d'Agents sont établies par les *Agents Directeurs*.
 
 ## État de la connexion
 
@@ -23,7 +23,7 @@ L'affichage de l'état des Agents utilise les indicateurs de couleur suivants :
 - **La couleur verte** indique des connexions d'Agents saines.
 - **La couleur jaune** indique que les Agents sont en train de se réinitialiser, ce qui signifie qu'ils sont en train d'initialiser leur journal et de redémarrer.
 - **La couleur rouge** indique l'échec des connexions aux Agents, par exemple si l'Agent n'est pas joignable.
-- **La couleur grise** indique un état de connexion *inconnu*, par exemple si un Agent directeur n'est pas joignable, l'état est *inconnu* pour les Sous-Agents.
+- **La couleur grise** indique un état de connexion *inconnu*, par exemple si un Agent Directeur n'est pas joignable, l'état est *inconnu* pour les Sous-Agents.
 
 Les utilisateurs doivent tenir compte des implications suivantes :
 
@@ -34,4 +34,3 @@ Les utilisateurs doivent tenir compte des implications suivantes :
 ## Références
 
 - [JS7 - Agent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster)
-

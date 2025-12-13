@@ -27,7 +27,7 @@ Pour chaque jour, le numéro du jour dans le mois et le nombre d'Ordres projeté
 - **Ordres Orange** : Ils indiquent les Ordres projetés qui sont calculés sur la base des règles d'heure de début.
 - **Projection inversée** :
   - *Non coché* : La projection indique les jours pour lesquels les Ordres sont calculés et le nombre d'Ordres. Les utilisateurs peuvent cliquer sur un jour individuel pour identifier les heures de début des Ordres.
-  - *Coché* : Lorsque la projection est inversée, les jours pour lesquels les Ordres sont calculés et le nombre d'Ordres sont indiqués : Lorsque vous inversez la projection, les jours pour lesquels il existe des Planifications qui ne créeront pas d'Ordres sont mis en évidence. Lorsque vous cliquez sur le jour concerné, les planifications sans Ordres s'affichent.
+  - *Coché* : Lorsque la projection est inversée, les jours pour lesquels les Ordres sont calculés et le nombre d'Ordres sont indiqués : Lorsque vous inversez la projection, les jours pour lesquels il existe des Planifications qui ne créeront pas d'Ordres sont mis en évidence. Lorsque vous cliquez sur le jour concerné, les Planifications sans Ordres s'affichent.
 
 ### Filtre avancé
 
@@ -43,7 +43,7 @@ Le filtre permet de limiter l'affichage des Ordres à certains dossiers contenan
 
 ### Exportation de la projection
 
-La projectios peut être exportées vers un fichier .xlsx avec la date du Plan Quotidien sur l'axe des x et le Workflow et la Planification sur l'axe des y.
+La projection peut être exportées vers un fichier .xlsx avec la date du Plan Quotidien sur l'axe des x et le Workflow et la Planification sur l'axe des y.
 
 - Le raccourci *Exporter* permet d'exporter les Ordres visibles dans la fenêtre. 
 - Le bouton *Exporter* permet de sélectionner les Ordres à exporter :
@@ -58,4 +58,3 @@ La projectios peut être exportées vers un fichier .xlsx avec la date du Plan Q
 - [Daily Plan](/daily-plan)
 - [Settings - Daily Plan](/settings-daily-plan)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)
-

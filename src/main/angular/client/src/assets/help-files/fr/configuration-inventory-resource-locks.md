@@ -26,7 +26,7 @@ Les Verrous de Ressources sont gérés à partir des vues suivants :
 - La vue [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation), situé sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant des Verrous de Ressources. En outre, cette vue permet d'effectuer des opérations sur les verrouillages de ressources.
 - La vue  *verous des ressources* sur le côté droit de la fenêtre contient les détails de la configuration du verrous des ressource.
 
-## vue verrous de ressource
+## vue Verrous de Ressource
 
 Pour un Verrou de Ressource, les entrées suivantes sont disponibles :
 
@@ -38,13 +38,13 @@ Pour un Verrou de Ressource, les entrées suivantes sont disponibles :
     - l'utilisation *exclusive* tente d'acquérir le verrou exclusivement, indépendamment de sa *capacité*. 
     - *L'utilisation *partagée* vérifie si le *poids* de l'Instruction Resource-Lock correspond à la *capacité* restante.
 
-### Opérations sur les verrous de ressource
+### Opérations sur les Verrous de Ressource
 
 Pour les opérations disponibles, voir [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
 
 ### Ordre de priorité
 
-Les verrous de ressource prennent en compte les *priorités* des Ordres. Lors de l'ajout d'Ordres à partir de [Configuration - Inventory - Schedules](/configuration-inventory-schedules) et lors de l'ajout d'Ordres ad hoc à l'aide de [Workflows - Add Orders](/workflows-orders-add), la *Priorité* peut être spécifiée.
+Les Verrous de Ressource prennent en compte les *priorités* des Ordres. Lors de l'ajout d'Ordres à partir de [Configuration - Inventory - Schedules](/configuration-inventory-schedules) et lors de l'ajout d'Ordres ad hoc à l'aide de [Workflows - Add Orders](/workflows-orders-add), la *Priorité* peut être spécifiée.
 
 Si plusieurs Ordres sont en attente devant un Verrou de Ressource, l'Ordre ayant la *Priorité* la plus élevée sera le premier à acquérir le Verrou de Ressource.
 

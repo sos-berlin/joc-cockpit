@@ -6,7 +6,7 @@ JOC Cockpit permet de gérer [JS7 - Inventory Changes](https://kb.sos-berlin.com
 - pour le déploiement  via  [JS7 - Inventory Export and Import](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Export+and+Import),
 - pour le déploiement via [JS7 - Git Repository Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+Git+Repository+Interface).
 
-Les Changements comprennent les objets d'inventaire tels que les Workflows, les Planifications, etc. et les objets référencés, par exemple une ressource de tâche référencée par un Workflow.
+Les Changements comprennent les objets d'inventaire tels que les Workflows, les Planifications, etc. et les objets référencés, par exemple une Ressource de Tâche référencée par un Workflow.
 
 - Les utilisateurs peuvent ajouter des objets d'inventaire directement à une modification.
 - Les objets référencés sont automatiquement associés à un Changement.

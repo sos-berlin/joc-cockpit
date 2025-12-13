@@ -1,4 +1,4 @@
-# Workflow
+# Tableau de Bord - Workflow
 
 L'Affichage *Workflows* fournit des informations sur l'état des Workflows.
 

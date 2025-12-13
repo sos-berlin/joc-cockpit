@@ -1,4 +1,4 @@
-# Configuration - Inventaire - Opérations - Renommer un dossier
+# Configuration - Inventaire - Opérations - Renommer Dossier
 
 Les objets de l'inventaire peuvent être renommés ou déplacés. Cela s'applique aux objets, aux dossiers ou aux deux. Pour renommer des objets, voir [Configuration - Inventory - Operations - Rename Object](/configuration-inventory-operations-rename-object). 
 
@@ -10,45 +10,45 @@ Lorsque vous renommez un dossier utilisateur, vous avez la possibilité de modif
 
 ## Renommer un dossier
 
-<img src="rename-folder.png" alt="Rename Folder" width="400" height="150" />
+<img src="rename-folder.png" alt="Renommer Dossier" width="400" height="150" />
 
 Les utilisateurs peuvent modifier l'emplacement et le nom d'un dossier. Ce qui suit suppose que le dossier **myWorkflows** se trouve dans la hiérarchie des dossiers **/Test/Users** :
 
 - Si le nom du dossier est modifié, le dossier reste dans la hiérarchie de dossiers donnée.
-- Pour le nouveau nom, les utilisateurs peuvent spécifier une hiérarchie de dossiers différente à partir d'un chemin d'accès absolu précédé d'une barre oblique, tel que **/Test/vosFluxdeTravail** :
-  - si le dossier **/Test/vosFluxdeTravail** n'existe pas, il sera créé.
+- Pour le nouveau nom, les utilisateurs peuvent spécifier une hiérarchie de dossiers différente à partir d'un chemin d'accès absolu précédé d'une barre oblique, tel que **/Test/yourWorklows** :
+  - si le dossier **/Test/yourWorkflows** n'existe pas, il sera créé.
   - le dossier est renommé **myWorkflows** en **yourWorkflows**.
-- Un chemin relatif peut être spécifié comme dans **Workflows/vosWorkflows** :
-  - le dossier **vosflows** sera créé dans le dossier actuel.
+- Un chemin relatif peut être spécifié comme dans **Workflows/yourWorkflows** :
+  - le dossier **yourWorkflows** sera créé dans le dossier actuel.
   - le dossier sera renommé et se trouvera dans **/Test/Users/Workflows/yourWorkflows**.
 
-Les modifications apportées au nom ou à l'emplacement des dossiers laissent les objets inclus dans l'état déployé/libéré.
+Les modifications apportées au nom ou à l'emplacement des dossiers laissent les objets inclus dans l'état déployé/publié.
 
 ## Renommer des objets de manière récursive
 
-<img src="rename-folder-object.png" alt="Rename Folder Objects Recursively" width="400" height="180" />
+<img src="rename-folder-object.png" alt="Renommer objets du dossier de manière récursive" width="400" height="180" />
 
 Les utilisateurs peuvent modifier les noms des objets inclus dans un dossier et dans les sous-dossiers de manière récursive.
 
 - **Recherche** attend une chaîne qui sera recherchée dans les noms d'objets.
-- **Replace** attend une chaîne qui remplacera la chaîne recherchée.
+- **Remplacement** attend une chaîne qui remplacera la chaîne recherchée.
 
 Les modifications apportées aux noms d'objets font passer les objets inclus à l'état de brouillon.
 
 ## Dépendances
 
-Les objets de l'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un Verrou de Ressource ; une Planification référençant un Calendrier et un ou plusieurs Workflows.
+Les objets de l'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource; une Planification référençant un Calendrier et un ou plusieurs Workflows.
 
-Lorsque vous renommez des objets, la cohérence est prise en compte et les objets référents sont mis à jour et mis à l'état de projet, par exemple :
+Lorsque vous renommez des objets, la cohérence est prise en compte et les objets référents sont mis à jour et mis à l'état de brouillon, par exemple :
 
-- Si une ressource de tâche référencée par un Workflow est renommée, alors 
+- Si une Ressource de Tâche référencée par un Workflow est renommée, alors 
   - le Workflow sera mis à jour pour refléter le nouveau nom,
   - le Workflow sera mis à l'état de brouillon,
   - une opération *Déployer* ultérieure permettra d'assurer le déploiement commun des deux objets.
 - Si un Workflow référencé par une Planification est renommé, alors
   - la Planification sera mise à jour pour refléter le nouveau nom,
   - la Planification sera mise à l'état de brouillon,
-  - une opération *Deployer* ultérieure sur le Workflow inclura une opération *Release* sur la Planification et vice versa.
+  - une opération *Deployer* ultérieure sur le Workflow inclura une opération *Publier* sur la Planification et vice versa.
 
 ## Références
 
@@ -63,4 +63,3 @@ Lorsque vous renommez des objets, la cohérence est prise en compte et les objet
 ### Product Knowledge Base
 
 - [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies)
-

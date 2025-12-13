@@ -23,8 +23,8 @@ Cette fonction est disponible en cliquant sur le lien suivant :<br/>**&gt; Advan
 
 La recherche avancée permet d'effectuer une recherche par attributs d'objets :
 
-- **Nom de l'Agent** renvoie les Verrous de Ressources pour les Workflows qui incluent des travaux exécutés avec l'Agent spécifié.
-- **Compter les Tâches** renvoie les Verrous de Ressources pour les Workflows qui utilisent le nombre minimum de Jobs spécifié avec le terme **De**. S'il est utilisé avec le terme **à**, il renvoie les Workflows qui comprennent un nombre de travaux compris entre *From* et *To*. Si le terme *To* est utilisé seul, les Workflows renvoyés n'incluent pas un nombre de travaux supérieur au terme *To*.
+- **Nom de l'Agent** renvoie les Verrous de Ressources pour les Workflows qui incluent des tâches exécutés avec l'Agent spécifié.
+- **Compter les Tâches** renvoie les Verrous de Ressources pour les Workflows qui utilisent le nombre minimum de Jobs spécifié avec le terme **De**. S'il est utilisé avec le terme **à**, il renvoie les Workflows qui comprennent un nombre de tâches compris entre *From* et *To*. Si le terme *To* est utilisé seul, les Workflows renvoyés n'incluent pas un nombre de tâches supérieur au terme *To*.
 - l'option **Nom de la Tâche** renverra les Verrous de Ressources pour les Workflows qui incluent des emplois correspondant au nom donné. Si vous utilisez la case à cocher *Correspondance exacte* pour **Nom de la Tâche**, le terme de recherche saisi doit correspondre entièrement au nom du poste, en tenant compte des majuscules et des minuscules.
 
 ### Recherche de dépendance
@@ -32,7 +32,7 @@ La recherche avancée permet d'effectuer une recherche par attributs d'objets :
 Le méta-caractère de recherche **\*** est utilisé pour spécifier que les dépendances sont recherchées, par exemple vers un Verrou de Ressource quel que soit le nom qu'il utilise :
 
 - le méta-caractère **\*** pour **Condition** renverra les Verrous de Ressources pour les Workflows utilisant un Tableau de Condition,
-- **\*** Le méta-caractère **Source d'Ordre de Fichier** renverra les Verrous de Ressources pour les Workflows référencés par une source d'Ordre de fichier.
+- **\*** Le méta-caractère **Source d'Ordre de Fichier** renverra les Verrous de Ressources pour les Workflows référencés par une Source d'Ordre de Fichier.
 
 ## Références
 

@@ -23,7 +23,7 @@ Ce qui est le plus surprenant pour certains utilisateurs, c'est qu'un jour ne du
 
 Il convient tout d'abord d'attribuer un Calendrier :
 
-- **Calendrier des Jours Ouvrés** est disponible à partir d'un bouton portant le même nom et spécifie les jours pour lesquels les Ordres doivent être créés. En cas d'utilisation répétée, il ajoutera des entrées d'exécution avec des périodes par Calendrier de jours ouvrables.
+- **Calendrier des Jours Ouvrés** est disponible à partir d'un bouton portant le même nom et spécifie les jours pour lesquels les Ordres doivent être créés. En cas d'utilisation répétée, il ajoutera des entrées d'exécution avec des périodes par Calendrier de jours ouvrés.
 - **Calendrier des jours Non-Ouvrés** est disponible à partir d'un bouton portant le même nom et permet de spécifier les jours pour lesquels aucun Ordre ne doit être créé. Vous pouvez ajouter autant de Calendriers de jours non ouvrables que vous le souhaitez et ils seront fusionnés.
 
 ## Périodes
@@ -35,12 +35,12 @@ Ensuite, il convient de spécifier une ou plusieurs périodes pour les heures de
   - l'option **Pendant les jours non-ouvrés** indique ce qui doit se passer si une période correspond à un jour indiqué par un Calendrier de jours fériés.
     - **supprimer l'exécution** est le comportement par défaut pour ne pas créer un Ordre.
     - **ignore les jours Non-Ouvrés** est le comportement par défaut pour ne pas créer d'Ordres.
-    - **avant le jour Non-Ouvrés** ajoute un Ordre au prochain jour ouvrable précédant le jour non ouvrable. Par exemple, un Calendrier de jours ouvrables spécifie du lundi au jeudi :
-      - Un Calendrier des jours ouvrables spécifie les jours ouvrables du lundi au jeudi. 
+    - **avant le jour Non-Ouvrés** ajoute un Ordre au prochain jour ouvrable précédant le jour non ouvrable. Par exemple, un Calendrier de jours ouvrés spécifie du lundi au jeudi :
+      - Un Calendrier des jours ouvrés spécifie les jours ouvrés du lundi au jeudi. 
       - Un Calendrier de jours non ouvrables indique qu'un lundi spécifique de l'année est un jour non ouvrable.
       - Le jour précédant le jour chômé sera le dimanche précédent. Si les week-ends sont exclus et ajoutés au Calendrier des jours non ouvrables, le jour résultant sera le vendredi précédent.
     - **après le Non-Ouvrés** ajoute un Ordre au jour ouvrable suivant le jour férié. Par exemple :
-      - Un Calendrier de jours ouvrables indique mar-ven pour les jours ouvrables. 
+      - Un Calendrier de jours ouvrés indique mar-ven pour les jours ouvrés. 
       - Un Calendrier de jours non ouvrables indique un vendredi spécifique de l'année comme jour non ouvrable.
       - Le jour suivant le jour chômé sera le samedi suivant. Si les week-ends sont exclus et ajoutés au Calendrier des jours non ouvrables, le jour suivant sera le lundi suivant.        
 - **Répétition** spécifie une période répétée pour les Ordres cycliques. La syntaxe suivante est utilisée pour la saisie : *HH:MM:SS*.
@@ -53,7 +53,7 @@ Ensuite, il convient de spécifier une ou plusieurs périodes pour les heures de
 
 *Les restrictions* sont utilisées pour limiter les jours pour lesquels des Ordres seront créés :
 
-- Les Calendriers des jours ouvrables et des jours non ouvrables attribués sont fusionnés pour obtenir des jours pour l'exécution du Workflow par les Ordres.
+- Les Calendriers des jours ouvrés et des jours non ouvrables attribués sont fusionnés pour obtenir des jours pour l'exécution du Workflow par les Ordres.
 - Les restrictions appliquent et maintiennent des règles similaires à [Configuration - Inventory - Calendars](/configuration-inventory-calendars):
   - **Jours de semaine** spécifiez le jour de la semaine.
   - **Jours de semaine Spécifiques** spécifient les jours de la semaine relatifs tels que le premier ou le dernier lundi d'un mois.
@@ -68,13 +68,13 @@ Ensuite, il convient de spécifier une ou plusieurs périodes pour les heures de
 L'utilisation des Calendriers des jours non ouvrables est différente selon qu'il s'agit d'un *temps d'exécution* ou d'une *restriction* :
 
 - Exemple :
-  - Supposez un Calendrier de jours ouvrables du lundi au vendredi.
+  - Supposez un Calendrier de jours ouvrés du lundi au vendredi.
   - Supposez une *Restriction* de Planification pour le *4 du mois*.
-  - Les jours résultants sont calculés à partir du Calendrier des jours ouvrables et du quatrième jour de la liste des jours résultants.
-- Les planifications peuvent également contenir des références à des Calendriers de jours non ouvrables.
+  - Les jours résultants sont calculés à partir du Calendrier des jours ouvrés et du quatrième jour de la liste des jours résultants.
+- Les Planifications peuvent également contenir des références à des Calendriers de jours non ouvrables.
   - Les Calendriers des jours non ouvrables sont appliqués *après* le calcul de la *restriction* de chaque Planification.
   - Si les utilisateurs souhaitent exclure certains jours non ouvrables du Calendrier *avant* d'appliquer la *restriction* du *4e jour du mois*, ils ont la possibilité de
-    - de spécifier des jours non ouvrables dans les *fréquences exclues* du Calendrier des jours ouvrables.
+    - de spécifier des jours non ouvrables dans les *fréquences exclues* du Calendrier des jours ouvrés.
     - pour spécifier les jours des Calendriers des jours non ouvrables auxquels s'ajoute la *restriction*
 
 ## Ordres cycliques vs. Workflow cycliques
@@ -85,7 +85,7 @@ Les utilisateurs doivent tenir compte des implications des Ordres cycliques : il
   - Une *Instruction de cycle* générant un Workflow complet est équivalente à l'utilisation d'Ordres cycliques à partir d'une Planification.
   - Une *Instruction de cycle* peut être utilisée pour exécuter des parties d'un Workflow par cycles.
 - Efficacité
-  - Les planifications créent un certain nombre d'instances d'Ordres pour chaque période d'un Ordre cyclique. L'exécution d'un seul Workflow toutes les 30 secondes permet d'obtenir 2880 Ordres par jour.
+  - Les Planifications créent un certain nombre d'instances d'Ordres pour chaque période d'un Ordre cyclique. L'exécution d'un seul Workflow toutes les 30 secondes permet d'obtenir 2880 Ordres par jour.
   - les *Instructions de cycle* entraînent l'exécution cyclique d'un Workflow à partir d'un seul Ordre.
   - Le traitement de Workflows cycliques est de loin plus efficace que le traitement d'Ordres cycliques.
 - Gestion des erreurs

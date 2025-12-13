@@ -2,22 +2,22 @@
 
 La vue *Planification* permet de spécifier des règles pour la création d'Ordres à partir de la page [Daily Plan](/daily-plan). Pour plus de détails, voir [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules).
 
-- Les planifications déterminent le moment où les Ordres pour l'exécution du Workflow commenceront. Un ou plusieurs Workflows leur sont attribués et, en option, des variables utilisées par les tâches dans les Workflows donnés.
+- Les Planifications déterminent le moment où les Ordres pour l'exécution du Workflow commenceront. Un ou plusieurs Workflows leur sont attribués et, en option, des variables utilisées par les tâches dans les Workflows donnés.
   - les **dates de démarrage** sont spécifiées par [Configuration - Inventory - Calendars](/configuration-inventory-calendars) et limitent les jours d'exécution des Workflows.
   - les **Heures de démarrage** sont spécifiées par les Planifications qui indiquent un ou plusieurs moments de la journée. Elles peuvent également limiter les jours d'exécution des Workflows.
 - Les Planifications créent des Ordres sur une base quotidienne
   - pour l'exécution ponctuelle des Workflows. Cela inclut les Workflows démarrant à un certain nombre d'heures par jour.
   - pour l'exécution cyclique de Workflows. Ceci spécifie l'exécution répétée des Workflows sur la base d'intervalles configurables.
-- Les planifications sont appliquées par le site [Daily Plan](/daily-plan) afin de créer des Ordres pour les dates et heures résultantes.
-  - Les planifications peuvent être appliquées manuellement à partir de la vue du Plan Quotidien.
-  - Les planifications sont appliquées automatiquement par [Daily Plan Service](/service-daily-plan).
+- Les Planifications sont appliquées par le site [Daily Plan](/daily-plan) afin de créer des Ordres pour les dates et heures résultantes.
+  - Les Planifications peuvent être appliquées manuellement à partir de la vue du Plan Quotidien.
+  - Les Planifications sont appliquées automatiquement par [Daily Plan Service](/service-daily-plan).
 
-Les planifications sont gérées à partir des panneaux suivants :
+Les Planifications sont gérées à partir des panneaux suivants :
 
-- La page [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation), situé sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant les planifications. En outre, ce panneau permet d'effectuer des opérations sur les planifications.
-- La*vue des planifications* sur le côté droit de la fenêtre contient les détails de la configuration de la Planification.
+- La page [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation), situé sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant les Planifications. En outre, ce panneau permet d'effectuer des opérations sur les Planifications.
+- La *vue des Planifications* sur le côté droit de la fenêtre contient les détails de la configuration de la Planification.
 
-## vue Planification
+## Vue Planification
 
 Pour une Planification, les entrées suivantes sont disponibles :
 
@@ -31,13 +31,13 @@ Pour une Planification, les entrées suivantes sont disponibles :
 
 - **Nom de l'Ordre** : Un nom optionnel qui peut être utilisé pour filtrer les Ordres dans un certain nombre de vues.
 - **Nom Tags** : Il est possible de spécifier un nombre quelconque d'étiquettes qui seront ajoutées à l'Ordre. Les tag de l'Ordre sont affichées dans un certain nombre de vues si elles sont spécifiées à partir de la page [Settings - JOC Cockpit](/settings-joc).
-- **Ignorer si la période d'heures d'admission  ne corrrespond pas à la date de l'Ordre** : Les commandes peuvent être limitées à certains jours et/ou à certains créneaux horaires. Les Ordres qui arrivent en dehors d'un créneau horaire doivent attendre le prochain créneau disponible. Cette option force les travaux à démarrer indépendamment de ces limitations.
+- **Ignorer si la période d'heures d'admission  ne corrrespond pas à la date de l'Ordre** : Les commandes peuvent être limitées à certains jours et/ou à certains créneaux horaires. Les Ordres qui arrivent en dehors d'un créneau horaire doivent attendre le prochain créneau disponible. Cette option force les tâches à démarrer indépendamment de ces limitations.
 
 ### Position de l'Ordre
 
 Si un Ordre ne doit pas démarrer à partir du premier nœud du Workflow, une position peut être spécifiée.
 
-- **Position de blocage ** : Pour les Workflows contenant des instructions de blocage telles que Try/Catch, ResourceLock, Fork/Join, l'instruction correspondante peut être sélectionnée.
+- **Position de blocage** : Pour les Workflows contenant des instructions de blocage telles que Try/Catch, ResourceLock, Fork/Join, l'instruction correspondante peut être sélectionnée.
 - **Position de Départ avant Instruction** : Si aucune *Position de départ* n'est spécifiée, l'Ordre commencera à partir du premier nœud.
   - Si aucune *position de blocage* n'est spécifiée, il est possible de sélectionner n'importe quelle instruction de niveau supérieur dans le Workflow à partir de laquelle l'Ordre commencera.
   - Si une *position de bloc* est spécifiée, la *position de départ* est un nœud de même niveau à l'intérieur du bloc.
@@ -69,7 +69,7 @@ L'attribution de valeurs aux variables comprend la spécification de chaînes de
 
 Le bouton *Temps d'exécution* permet de spécifier les heures de début des Ordres à partir d'une fenêtre contextuelle. Pour plus de détails, voir [Configuration - Inventory - Schedules - Run-time](/configuration-inventory-schedules-run-time).
 
-## Opérations sur les planifications
+## Opérations sur les Planifications
 
 Pour les opérations disponibles, voir [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
 
@@ -98,4 +98,3 @@ Pour les opérations disponibles, voir [Configuration - Inventory - Navigation P
 - [JS7 - Order Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+Variables)
 - [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules)
 - [Liste des fuseaux horaires de la base de données tz](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
-

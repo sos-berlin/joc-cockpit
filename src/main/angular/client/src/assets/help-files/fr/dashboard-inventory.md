@@ -1,8 +1,8 @@
-# Inventaire
+# Tableau de Bord - Inventaire
 
 L'Affichage *Inventaire* fournit des informations sur le nombre d'objets en cours d'utilisation.
 
-<img src="dashboard-inventory.png" alt="Inventory" width="330" height="80" />
+<img src="dashboard-inventory.png" alt="Inventaire" width="330" height="80" />
 
 ## Inventaire des objets
 
@@ -16,4 +16,3 @@ Le récapitulatif de l'inventaire compte les objets déployés et validés. Il n
 ## Références
 
 - [JS7 - Inventory](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory)
-

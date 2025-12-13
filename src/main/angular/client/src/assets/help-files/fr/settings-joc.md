@@ -43,7 +43,7 @@ Ce paramètre active la case à cocher *Se souvenir de moi* qui est disponible d
 
 Spécifie le préfixe/suffixe à utiliser pour les noms d'objets lors des opérations de copier-coller dans l'interface graphique du JOC Cockpit.
 
-- Dans l'inventaire JS7, les noms d'objets sont uniques pour chaque type d'objet : par exemple, les Workflows utilisent des noms uniques, mais une ressource de tâche peut utiliser le même nom qu'un Workflow.
+- Dans l'inventaire JS7, les noms d'objets sont uniques pour chaque type d'objet : par exemple, les Workflows utilisent des noms uniques, mais une Ressource de Tâche peut utiliser le même nom qu'un Workflow.
 - Par conséquent, un nouveau nom d'objet doit être créé lors des opérations de copier-coller. Pour ce faire, vous pouvez ajouter un préfixe ou un suffixe au choix de l'utilisateur.
 
 ### Paramètre : *restore_suffix*, *restore\_prefix*, Défaut : *restored*
@@ -71,7 +71,7 @@ Ces paramètres peuvent être utilisés pour désactiver des vues individuelles 
 
 ### Setting : *display_folders\_in\_views*, Défaut : *true*
 
-Spécifie que dans les vues telles que *Workflows*, *Plan Quotidien*, *Ressources - Calendriers*, *Ressources - Verrous de Ressources*, *Ressources - Tableaux de Condition*, les noms des objets de planification et les chemins d'accès sont affichés. Si la valeur *false* est utilisée pour ce paramètre, le chemin est omis dans l'affichage des objets. Dans JS7, tous les noms d'objets sont uniques.
+Spécifie que dans les vues telles que *Workflows*, *Plan Quotidien*, *Ressources - Calendriers*, *Ressources - Verrous de Ressources*, *Ressources - Tableaux de Condition*, les noms des objets et les chemins d'accès sont affichés. Si la valeur *false* est utilisée pour ce paramètre, le chemin est omis dans l'affichage des objets. Dans JS7, tous les noms d'objets sont uniques.
 
 ## Paramètres du Contrôleur
 
@@ -82,7 +82,7 @@ JS7 offre une configuration cohérente sans utiliser de mots de passe. Cela incl
 Cela s'applique aux deux connexions établies entre le JOC Cockpit et les Contrôleurs, qui sont reflétées par des paramètres distincts pour le *controller\_connection\_joc\_password* et le *controller\_connection\_history\_password* :
 
 - L'interface graphique du cockpit JOC utilise une connexion pour recevoir des événements, par exemple sur les transitions d'état des Ordres.
-- Le service Historique est connecté à un Contrôleur pour recevoir des informations sur l'historique, telles que l'état d'exécution des travaux et toute sortie de journal des travaux.
+- Le service Historique est connecté à un Contrôleur pour recevoir des informations sur l'historique, telles que l'état d'exécution des tâches et toute sortie de journal des tâches.
 
 Le mot de passe est spécifié en texte clair dans la page Paramètres et sous forme de valeur hachée dans le fichier private.conf du Contrôleur.
 
@@ -162,7 +162,7 @@ Par défaut, les arguments spécifiés pour les tâches doivent contenir des val
 
 ### Paramètre : *allow_undeclared\_variables*, Défaut : *false*
 
-Par défaut, toutes les variables de l'Ordre doivent être déclarées dans le Workflow. Ce paramètre modifie le comportement par défaut et permet aux Ordres de spécifier des variables arbitraires. Les utilisateurs doivent savoir que les travaux et les instructions connexes échoueront s'ils font référence à des variables qui ne sont pas spécifiées par les Ordres entrants.
+Par défaut, toutes les variables de l'Ordre doivent être déclarées dans le Workflow. Ce paramètre modifie le comportement par défaut et permet aux Ordres de spécifier des variables arbitraires. Les utilisateurs doivent savoir que les tâches et les instructions connexes échoueront s'ils font référence à des variables qui ne sont pas spécifiées par les Ordres entrants.
 
 ## Paramètres des Tags
 

@@ -47,11 +47,11 @@ Wenn Sie die Tastenkombination STRG+Leertaste drücken, während sich der Cursor
 
 ### Parametrierung
 
-Skript-Bausteine können wie folgt parametrisiert werden:
+Skript-Bausteine können wie folgt parametriert werden:
 
-- **\#\#:!include *script-include-name* --replace="search-literal", "replacement-literal "**
-- **::!include *script-include-name* --replace="search-literal", "replacement-literal "**
-- **//!include *script-include-name* --replace="search-literal", "replacement-literal "**
+- **\#\#:!include *script-include-name* --replace="search-literal", "replacement-literal"**
+- **::!include *script-include-name* --replace="search-literal", "replacement-literal"**
+- **//!include *script-include-name* --replace="search-literal", "replacement-literal"**
 
 Das *Such-Literal* wird im Skript-Baustein nachgeschlagen und durch das *Ersatz-Literal* ersetzt, wenn der Arbeitsablauf, der den entsprechenden Job enthält, ausgerollt wird.
 

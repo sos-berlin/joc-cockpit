@@ -6,8 +6,8 @@ La vue *Journal de l'Ordre* offre un journal en cours d'exécution qui est mis �
 
 La vue *Ordre Log View* permet de filtrer à partir d'un certain nombre de critères disponibles en haut de la fenêtre :
 
-- **Main** spécifie que les détails concernant les débuts d'Ordres, les débuts de travaux et le paramétrage sur les débuts de travaux seront affichés. Cette sortie est indiquée par le qualificatif [MAIN].
-- **Les événements de succès** sont indiqués par le qualificatif [SUCCESS] et affichent des détails tels que le paramétrage résultant lorsque les travaux sont terminés.
+- **Main** spécifie que les détails concernant les débuts d'Ordres, les débuts de tâches et le paramétrage sur les débuts de tâches seront affichés. Cette sortie est indiquée par le qualificatif [MAIN].
+- **Les événements de succès** sont indiqués par le qualificatif [SUCCESS] et affichent des détails tels que le paramétrage résultant lorsque les tâches sont terminés.
 - **stdout** spécifie si la sortie écrite par les Jobs sur le canal stdout sera affichée à l'aide du qualificateur [STDOUT].
 - **Debug** s'applique aux Jobs de la JVM qui utilisent [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API). Ces Jobs peuvent se voir ajouter l'argument *log_level* contenant la valeur *debug* ou*trace*. Si une sortie de débogage est disponible pour un tâche, elle sera affichée à l'aide du qualificateur [DEBUG].
 

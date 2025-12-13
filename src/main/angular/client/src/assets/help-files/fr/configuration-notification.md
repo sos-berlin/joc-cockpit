@@ -70,14 +70,14 @@ Les fragments se présentent sous différentes formes pour les types de notifica
 
 - **Workflows** : Il est possible d'ajouter un nombre quelconque de configurations de Workflow, qui se distinguent par un nom unique attribué à l'élément.
   - **Workflow** : Un Workflow peut être spécifié par son nom. L'attribut *Path* permet une expression régulière spécifiant une partie du chemin du Workflow.
-    - **WorkflowJob** : Cet élément peut être utilisé pour limiter les notifications à des travaux spécifiques dans un Workflow.
+    - **WorkflowJob** : Cet élément peut être utilisé pour limiter les notifications à des tâches spécifiques dans un Workflow.
       - Il est possible de spécifier l'attribut *Job Name* et/ou son attribut *Label*. Pour les deux attributs, des valeurs constantes et des expressions régulières peuvent être utilisées, par exemple *.\** pour spécifier l'envoi d'un courrier électronique pour n'importe quel tâche.
       - Pour les versions antérieures à 2.7.1 :
         - Il est nécessaire que la criticité, qui est l'une des valeurs suivantes : *TOUT*, *NORMAL* ou *CRITICAL*, soit spécifiée lors de l'utilisation de l'élément.
       - Pour les versions à partir de la 2.7.1 :
         - La criticité peut être une ou plusieurs des valeurs suivantes : *MINOR*, *NORMAL*, *MAJOR*, *CRITICAL*.
         - La criticité *TOUT* est obsolète.
-      - Les attributs **return_code_from** et **return_code_to** peuvent éventuellement être utilisés pour limiter les notifications aux travaux qui se terminent avec le code de retour donné. Le code de retour pour les Jobs Shell correspond au code de sortie du système d'exploitation.
+      - Les attributs **return_code_from** et **return_code_to** peuvent éventuellement être utilisés pour limiter les notifications aux tâches qui se terminent avec le code de retour donné. Le code de retour pour les Jobs Shell correspond au code de sortie du système d'exploitation.
     - Vide : Si aucun élément *WorkflowJob* n'est spécifié, la notification s'applique à tout [JS7 - Workflow Instructions](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflow+Instructions), y compris le [JS7 - Fail Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Fail+Instruction), sinon elle s'applique aux occurrences du [JS7 - Job Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Instruction).
 
 ### Notifications

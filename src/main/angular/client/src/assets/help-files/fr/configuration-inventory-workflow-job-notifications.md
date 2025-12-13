@@ -1,4 +1,4 @@
-# Configuration - Inventaire - Workflow - Notifications de travaux
+# Configuration - Inventaire - Workflow - Notifications de tâches
 
 La vue *Workflow* permet de concevoir des Workflow à partir d'une séquence d'instructions. Les utilisateurs peuvent glisser-déposer les *instructions de tâche* depuis la *barre d'outils* vers une position dans le Workflow.
 

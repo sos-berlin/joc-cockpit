@@ -8,7 +8,7 @@ Les utilisateurs qui sont satisfaits des valeurs par défaut et qui souhaitent s
 
 - **Nom de l'Ordre** : Un nom optionnel qui peut être utilisé pour filtrer les Ordres dans un certain nombre de vues.
 - **Nom Tag** : Vous pouvez spécifier un nombre quelconque Tag qui seront ajoutées à l'Ordre. Les Tags sont affichées dans un certain nombre de vues si elles sont spécifiées sur la page [Settings - JOC Cockpit](/settings-joc).
-- **Ignorer les heures d'admission des Tâches** : Les tâches peuvent être limités à certains jours et/ou à certains créneaux horaires. Les Ordres qui arrivent en dehors d'un créneau horaire doivent attendre le prochain créneau disponible. Cette option force les travaux à démarrer indépendamment de ces limitations.
+- **Ignorer les heures d'admission des Tâches** : Les tâches peuvent être limités à certains jours et/ou à certains créneaux horaires. Les Ordres qui arrivent en dehors d'un créneau horaire doivent attendre le prochain créneau disponible. Cette option force les tâches à démarrer indépendamment de ces limitations.
 
 ### Heure de début
 

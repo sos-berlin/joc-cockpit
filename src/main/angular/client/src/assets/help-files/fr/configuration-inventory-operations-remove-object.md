@@ -22,20 +22,20 @@ Les Ordres existants pour les Workflows associés seront annulés à partir des 
 
 ## Inclure les dépendances
 
-Les objets d'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un Verrou de Ressource ; une Planification référençant un Calendrier et un ou plusieurs Workflows.
+Les objets d'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource ; une Planification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lors de la suppression d'objets, la cohérence est prise en compte, par exemple :
 
-- Si une ressource de tâche est référencée par un Workflow, alors la suppression de la ressource de tâche inclut la révocation du Workflow.
+- Si une Ressource de Tâche est référencée par un Workflow, alors la suppression de la Ressource de Tâche inclut la révocation du Workflow.
 - Si un Workflow est supprimé, la Planification faisant référence à ce Workflow sera rappelée et les Ordres associés seront annulés et supprimés du Plan Quotidien.
 
 Les utilisateurs contrôlent la suppression cohérente des objets à partir des options suivantes :
 
 - **Inclure les dépendances**
   - si cette option est cochée, elle inclura à la fois les objets référents et les objets référencés.
-    - Si des objets liés ont été précédemment déployés ou libérés, une suppression/révocation commune est proposée : l'objet pour lequel l'opération *Remove* est effectuée sera supprimé, tandis que la révocation des objets liés est proposée. La révocation des objets apparentés sera appliquée, si les relations entre les objets l'exigent.
-    - Ceci s'applique également aux objets en statut de brouillon qui ont été précédemment déployés ou libérés.
-  - si la case n'est pas cochée, les dépendances ne sont pas prises en compte. Les utilisateurs doivent vérifier si les objets liés sont valides et déployés/libérés. Le Contrôleur émettra des messages d'erreur en cas d'objets manquants en raison d'une révocation incohérente.
+    - Si des objets liés ont été précédemment déployés ou publiés, une suppression/révocation commune est proposée : l'objet pour lequel l'opération *Remove* est effectuée sera supprimé, tandis que la révocation des objets liés est proposée. La révocation des objets apparentés sera appliquée, si les relations entre les objets l'exigent.
+    - Ceci s'applique également aux objets en statut de brouillon qui ont été précédemment déployés ou publiés.
+  - si la case n'est pas cochée, les dépendances ne sont pas prises en compte. Les utilisateurs doivent vérifier si les objets liés sont valides et déployés/publiés. Le Contrôleur émettra des messages d'erreur en cas d'objets manquants en raison d'une révocation incohérente.
 
 ## Références
 

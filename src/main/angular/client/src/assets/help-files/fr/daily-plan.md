@@ -82,7 +82,7 @@ Les boutons de filtrage suivants limitent la portée des opérations :
 - **Copier les Ordres**
   - **Heure de début** : Copie les Ordres à une date future du Plan Quotidien. La saisie de la date et de l'heure est similaire à la modification de l'heure de début d'un Ordre.
   - **Conserver l'affectation du Plan Quotidien** : Les dépendances basées sur le Calendrier des tableaux d'affichage seront résolues à la date du Plan Quotidien d'origine.
-  - **Ignorer les heures d'admission des tâches** : Les tâches peuvent être limités à certains jours et/ou à certains créneaux horaires. Les Ordres qui arrivent doivent attendre le prochain créneau horaire disponible. Cette option permet de forcer les travaux à démarrer indépendamment de ces limitations.
+  - **Ignorer les heures d'admission des tâches** : Les tâches peuvent être limités à certains jours et/ou à certains créneaux horaires. Les Ordres qui arrivent doivent attendre le prochain créneau horaire disponible. Cette option permet de forcer les tâches à démarrer indépendamment de ces limitations.
 
 #### Modifier l'heure de début
 

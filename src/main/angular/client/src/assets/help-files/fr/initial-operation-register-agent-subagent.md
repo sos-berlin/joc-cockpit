@@ -24,7 +24,7 @@ La page *Gestion des Contrôleurs/agents* est accessible à partir de l'icône d
 
 Les utilisateurs fournissent les données suivantes :
 
-- **ID Sous-Agent** est l'identifiant unique d'un Sous-Agent qui ne peut pas être modifié pendant la durée de vie du Sous-Agent. L'*ID du Sous-Agent* n'est pas visible avec les travaux et les Workflows.
+- **ID Sous-Agent** est l'identifiant unique d'un Sous-Agent qui ne peut pas être modifié pendant la durée de vie du Sous-Agent. L'*ID du Sous-Agent* n'est pas visible avec les tâches et les Workflows.
 - **Titre** est une description qui peut être ajoutée pour un Sous-Agent.
 - **URL** attend l'URL du protocole, de l'hôte et du port utilisés par les Agents Directeur pour se connecter au Sous-Agent, par exemple http://localhost:4445.
   - L'URL commence par le protocole *http* si le Sous-Agent utilise le protocole HTTP ordinaire. Le protocole *https* est utilisé si le Sous-Agent est configuré pour HTTPS.

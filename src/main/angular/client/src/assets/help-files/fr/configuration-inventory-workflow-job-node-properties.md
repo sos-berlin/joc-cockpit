@@ -10,9 +10,9 @@ Un nœud est la position d'une tâche dans le Workflow. Si le même tâche appar
 
 Si la même tâche est utilisé avec différents paramètres à chaque occurrence dans le Workflow, les *Propriétés de nœud* peuvent être utilisées. Elles offrent des paires clé/valeur qui créent des variables de nœud.
 
-- **Nom** spécifie le nom de la variable de nœud qui peut être utilisée dans les travaux Shell en attribuant un environnement à la variable de nœud
-  - dans les travaux Shell, en attribuant à une variable d'environnement le *nom* de la variable de nœud à l'aide de la syntaxe *$myNodeVariable*.
-  - dans les travaux JVM en attribuant à une variable de tâche le *nom* de la variable de nœud à l'aide de la syntaxe *$myNodeVariable*.
+- **Nom** spécifie le nom de la variable de nœud qui peut être utilisée dans les tâches Shell en attribuant un environnement à la variable de nœud
+  - dans les tâches Shell, en attribuant à une variable d'environnement le *nom* de la variable de nœud à l'aide de la syntaxe *$myNodeVariable*.
+  - dans les tâches JVM en attribuant à une variable de tâche le *nom* de la variable de nœud à l'aide de la syntaxe *$myNodeVariable*.
 - **Valeur** accepte des chaînes de caractères, des nombres et des références à des variables de Workflow comme dans *$myWorkflowVariable*.
 
 Les noms des variables de nœud sont sensibles à la casse.

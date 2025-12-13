@@ -2,14 +2,14 @@
 
 Les noms d'objets sont spécifiés à plusieurs endroits pour :
 
-- Workflows, Tâches, Variables, Tableaux de Condition, Verrous de Ressources, Sources d'Ordres de fichiers, Ressources de Tâches, Dossiers,
-- Les Calendriers, les planifications, les scripts inclus, les modèles de tâches, les rapports.
+- Workflows, Tâches, Variables, Tableaux de Condition, Verrous de Ressources, Sources d'Ordres de Fichiers, Ressources de Tâches, Dossiers,
+- Les Calendriers, les Planifications, les Blocks Scripts, les Modèles de Tâches, les rapports.
 
 Le JS7 n'impose pas de conventions de dénomination pour les objets : les utilisateurs sont libres de choisir des conventions de dénomination à leur guise, par exemple pour les noms de tâches en utilisant :
 
 - le style camel case comme dans : *loadDataWarehouseDaily*
-- style tiret comme dans : loadDataWarehouseDaily** : *load-data-warehouse-daily*
-- style mixte comme dans : loadDataWarehouse** : *DataWarehouse-Load-Daily* (entrepôt de données)
+- style tiret comme dans : *load-data-warehouse-daily*
+- style mixte comme dans : *DataWarehouse-Load-Daily*
 
 ## Jeu de caractères
 
@@ -75,4 +75,3 @@ La longueur maximale des noms d'objets est la suivante :
 - [Identifiants Java](https://docs.oracle.com/javase/specs/jls/se7/html/jls-3.html#jls-3.8)
 - [JS7 - Fork-Join Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Fork-Join+Instruction)
 - [JS7 - Object Naming Rules](https://kb.sos-berlin.com/display/JS7/JS7+-+Object+Naming+Rules)
-

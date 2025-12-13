@@ -2,10 +2,10 @@
 
 La vue *Calendriers* affiche des informations sur l'utilisation des Calendriers.
 
-- **Les Calendriers des jours ouvrables** indiquent les jours pour lesquels des Ordres doivent être créés à partir du *Plan Quotidien*.
-- **Les Calendriers des jours non ouvrables** indiquent les jours pour lesquels aucun Ordre ne doit être créé. la dépendance peut être ignorée.
+- **Les Calendriers des jours ouvrés** indiquent les jours pour lesquels des Ordres doivent être créés à partir du *Plan Quotidien*.
+- **Les Calendriers des jours non ouvrés** indiquent les jours pour lesquels aucun Ordre ne doit être créé. la dépendance peut être ignorée.
 
-Les Calendriers sont référencés par les planifications utilisées par le Plan Quotidien pour créer des Ordres.
+Les Calendriers sont référencés par les Planifications utilisées par le Plan Quotidien pour créer des Ordres.
 
 ## Panneau de navigation
 
@@ -26,7 +26,7 @@ L'icône de recherche rapide permet de rechercher des Calendriers en fonction de
 Les informations suivantes sont affichées :
 
 - **Nom** est le nom unique du Calendrier.
-- **Type** : *Calendrier des jours ouvrables* ou *Calendrier des jours non ouvrables*.
+- **Type** : *Calendrier des jours ouvrés* ou *Calendrier des jours non ouvrés*.
 - **Validité du**, **Validité jusqu'au** indique facultativement la période de validité. Les Calendriers sans période de validité sont valables pour une période illimitée.
 
 ### Opérations sur les Calendriers

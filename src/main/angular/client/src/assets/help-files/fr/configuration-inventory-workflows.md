@@ -1,6 +1,6 @@
 # Configuration - Inventaire - Workflow
 
-La *Vue Workflow* permet de concevoir des Workflows à partir d'une séquence d'instructions qui façonnent le Workflow pour un [Directed acyclic graph] (https://en.wikipedia.org/wiki/Directed_acyclic_graph). 
+La vue *Inventaire-&gt;Workflow* permet de concevoir des Workflows à partir d'une séquence d'instructions qui façonnent le Workflow pour un [Directed acyclic graph] (https://en.wikipedia.org/wiki/Directed_acyclic_graph). 
 
 - Les utilisateurs peuvent glisser-déposer des instructions à partir de la *barre d'outils* pour créer des modèles de Workflow tels qu'une séquence de tâches, des tâches de bifurcation et de jonction, une exécution conditionnelle, etc.
 - La page [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) permet de naviguer par Tags et par dossiers. En outre, la vue permet d'effectuer des opérations sur les Workflows.
@@ -11,7 +11,7 @@ La *barre d'outils* contient les instructions suivantes :
 
 - **Job** met en œuvre un tâche. Les Workflows peuvent inclure un nombre quelconque de Jobs. Pour plus d'informations, consultez le site [JS7 - Job Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Instruction).
 - L'instruction **Try/Catch** met en œuvre la gestion des exceptions à partir d'un bloc *Try* qui contient des Jobs ou d'autres instructions. Si un tâche échoue, les instructions du bloc *Catch* sont exécutées. Un bloc *Catch* vide résoudra l'état d'erreur d'une instruction ayant échoué précédemment. Pour plus d'informations, consultez le site [JS7 - Try-Catch Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Try-Catch+Instruction).
-- L'instruction **Retry** met en œuvre l'exécution répétée d'une séquence de travaux ou d'autres instructions en cas d'échec. Si l'un des Jobs du bloc *Retry* échoue, l'Ordre est déplacé au début du bloc *Retry* pour répéter l'exécution. Pour plus de détails, voir [JS7 - Retry Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Retry+Instruction).
+- L'instruction **Retry** met en œuvre l'exécution répétée d'une séquence de tâches ou d'autres instructions en cas d'échec. Si l'un des Jobs du bloc *Retry* échoue, l'Ordre est déplacé au début du bloc *Retry* pour répéter l'exécution. Pour plus de détails, voir [JS7 - Retry Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Retry+Instruction).
 - L'instruction **Finish** fait en sorte qu'un Ordre quitte le Workflow avec un résultat positif ou négatif dans [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History). Pour plus de détails, voir [JS7 - Finish Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Finish+Instruction).
 - L'instruction **Fail** fait échouer un Ordre. Sans traitement d'erreur supplémentaire, l'Ordre restera dans l'état *failed* (échec), voir [Order States](/order-states). Une instruction *Try/Catch* ou *Retry* est déclenchée par l'instruction *Fail*. Pour plus de détails, voir [JS7 - Fail Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Fail+Instruction).
 - l'instruction **Fork** permet aux Ordres d'être bifurqués et joints pour permettre le traitement parallèle des Jobs et d'autres instructions dans un Workflow. Les branches sont créées en faisant glisser et en déposant des instructions sur l'instruction *Fork*. Lorsqu'un Ordre entre dans la *Instruction de tâche*, un Ordre enfant est créé pour chaque branche. Pour plus de détails, consultez le site [JS7 - Fork-Join Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Fork-Join+Instruction).
@@ -23,7 +23,7 @@ La *barre d'outils* contient les instructions suivantes :
   - L'instruction permet de créer dynamiquement un certain nombre d'Ordres enfants et de branches et d'exécuter la même séquence de Jobs ou d'autres instructions sur un certain nombre de Sous-agents : les utilisateurs peuvent exécuter les mêmes Jobs en parallèle sur un certain nombre de serveurs ou de conteneurs exploitant des Sous-agents. Les cas d'utilisation comprennent par exemple l'exécution de tâches de sauvegarde similaires sur un plus grand nombre de serveurs. Pour plus d'informations, consultez le site [JS7 - ForkList-Join Instruction for Agent Clusters](https://kb.sos-berlin.com/display/JS7/JS7+-+ForkList-Join+Instruction+for+Agent+Clusters).
 - L'Instruction **Cycle** offre une exécution répétée de tout ou partie des Jobs et autres instructions d'un Workflow. Il s'agit d'une instruction en bloc qui peut générer un Workflow complet ou des Jobs et instructions sélectionnés dans un Workflow. L'instruction *Cycle* peut être imbriquée. Pour plus de détails, consultez le site [JS7 - Cycle Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Cycle+Instruction).
 - L'instruction **Break** est utilisée dans une instruction de cycle pour mettre fin au cycle et faire en sorte qu'un Ordre quitte le cycle. Pour plus de détails, voir [JS7 - Break Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Break+Instruction).
-- L'instruction **Resource-Lock** est une instruction de bloc utilisée pour spécifier un ou plusieurs travaux et d'autres instructions en vue d'une exclusion mutuelle, afin d'empêcher l'exécution de travaux en parallèle dans le même Workflow ou dans des Workflows différents. *Les instructions de verrouillage* peuvent être imbriquées. Pour plus de détails, voir [JS7 - Lock Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Lock+Instruction).
+- L'instruction **Resource-Lock** est une instruction de bloc utilisée pour spécifier un ou plusieurs tâches et d'autres instructions en vue d'une exclusion mutuelle, afin d'empêcher l'exécution de tâches en parallèle dans le même Workflow ou dans des Workflows différents. *Les instructions de verrouillage* peuvent être imbriquées. Pour plus de détails, voir [JS7 - Lock Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Lock+Instruction).
 - L'instruction **Sleep** est utilisée pour retarder la poursuite du traitement dans un Workflow d'une durée spécifiée en secondes. Pour plus de détails, voir [JS7 - Sleep Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Sleep+Instruction).
 - L'instruction **Prompt** interrompt l'exécution d'un Ordre dans un Workflow jusqu'à ce que le *Prompt* soit confirmée. L'Ordre est assigné à l'état *prompting*. Les utilisateurs peuvent confirmer ou annuler les Ordres *prompting*, voir [Order States](/order-states). Pour plus de détails, voir [JS7 - Prompt Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Prompt+Instruction).
 - l'instruction **AdmissionTimes** interrompt l'exécution d'un Ordre dans un Workflow jusqu'à ce que le créneau horaire donné soit atteint. L'Ordre se voit attribuer l'état *attente*. En outre, les Ordres peuvent être interrompus s'ils dépassent le temps imparti. L'instruction peut être configurée de manière à ce qu'un Ordre ignore toutes les instructions incluses dans le cas où aucun créneau horaire correspondant n'est trouvé pour la date du plan journalier de l'Ordre. Pour plus de détails, consultez [[JS7 - AdmissionTime Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+AdmissionTime+Instruction).
@@ -35,27 +35,27 @@ La *barre d'outils* contient les instructions suivantes :
 - L'instruction **Case** est utilisée pour le traitement conditionnel des tâches et d'autres instructions dans un Workflow. Cette instruction étend l'instruction *If*. L'instruction *Case* peut être utilisée avec des instructions *Case-When* répétées et éventuellement avec une instruction *Case-Else* unique. Pour plus de détails, voir [JS7 - Case Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Case+Instruction).
 - L'instruction **CaseWhen** est utilisée pour vérifier un prédicat similaire à l'instruction *If*. L'instruction peut apparaître autant de fois que vous le souhaitez dans une *Instruction Cas*.
 - L'instruction **CaseElse** est utilisée si toutes les vérifications des instructions *CaseWhen* échouent.
-- l'instruction **StickySubagent** peut être utilisée pour exécuter un certain nombre de tâches avec le même Sous-Agent d'un Cluster d'Agents. L'instruction de bloc vérifie le premier Sous-Agent disponible d'une Cluster de Sous-Agents. Ce Sous-Agent sera utilisé pour les travaux suivants au sein de l'instruction en bloc. L'utilisation des Cluster d'Agents est soumise aux conditions d'utilisation des Cluster d'Agents sur le site [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License). Pour plus d'informations, consultez le site [JS7 - StickySubagent Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+StickySubagent+Instruction+for+Agent+Clusters).
+- l'instruction **StickySubagent** peut être utilisée pour exécuter un certain nombre de tâches avec le même Sous-Agent d'un Cluster d'Agents. L'instruction de bloc vérifie le premier Sous-Agent disponible d'une Cluster de Sous-Agents. Ce Sous-Agent sera utilisé pour les tâches suivants au sein de l'instruction en bloc. L'utilisation des Cluster d'Agents est soumise aux conditions d'utilisation des Cluster d'Agents sur le site [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License). Pour plus d'informations, consultez le site [JS7 - StickySubagent Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+StickySubagent+Instruction+for+Agent+Clusters).
 - l'instruction **Options** est une instruction de bloc qui régit la gestion des erreurs pour l'instruction *Lock* et l'instruction *ConsumeNotices*. Si l'instruction *Options* est en place et spécifie la propriété *Stop on Failure*, les Ordres *défaillants* resteront avec l'instruction défaillante, par exemple un Job. Si l'instruction n'est pas en place, les Ordres qui échouent dans une *Instruction Resource-Lock* ou une *Instruction ConsumeNotices* seront déplacés au début du bloc d'instructions et resteront dans l'état *défaillant*. Pour plus de détails, voir [JS7 - Options Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Options+Instruction).
 - **Coller** permet de glisser-déposer une instruction précédemment copiée ou coupée dans le Workflow.
 
-## Vue Workflow
+## Panneau Workflow
 
-La vue contient la représentation graphique d'un Workflow.
+Le panneau contient la représentation graphique d'un Workflow.
 
-- Les utilisateurs peuvent faire glisser et déposer des instructions de la *vue de la barre d'outils* vers le Workflow.
+- Les utilisateurs peuvent faire glisser et déposer des instructions de la *barre d'outils* vers le Workflow.
   - Pour glisser-déposer la première instruction d'un Workflow, les utilisateurs maintiennent la touche de la souris enfoncée et déposent l'instruction dans la zone de dépôt indiquée du Workflow.
   - Pour glisser-déposer d'autres instructions, maintenez la touche de la souris enfoncée, naviguez jusqu'à la ligne de connexion souhaitée entre les instructions et relâchez la touche de la souris.
 - Pour l'instruction *Fork*, les utilisateurs peuvent glisser-déposer une instruction *Job* directement sur le nœud *Fork* pour créer une nouvelle branche.
 - Pour l'instruction *If*, les utilisateurs peuvent faire glisser et déposer une instruction *Job* directement sur le bloc *If* : la première instruction représente la branche *vraie*, la seconde instruction glissée et déposée pour créer la branche *Sinon*.
 
-Les Workflows sont automatiquement enregistrés dans l'inventaire. Cela se produit toutes les 30 secondes et lorsque vous quittez la *vue de Workflow*.
+Les Workflows sont automatiquement enregistrés dans l'inventaire. Cela se produit toutes les 30 secondes et lorsque vous quittez la vue *Workflow*.
 
 Pour un Workflow, les entrées suivantes sont disponibles :
 
 - **Nom** est l'identifiant unique d'un Workflow, voir [Object Naming Rules](/object-naming-rules).
 - **Titre** contient une explication facultative de l'objectif du Workflow.
-- les **Ressources de Tâche** sont des objets d'inventaire qui contiennent des variables de paires clé/valeur qui peuvent être rendues disponibles à partir des variables de Workflow et des variables d'environnement. *Les Ressources de Tâche* peuvent être attribuées au niveau du tâche et au niveau du Workflow, ce qui les rend disponibles pour tous les travaux d'un Workflow. Pour plus d'informations, consultez le site [Configuration - Inventory - Job Resources](/configuration-inventory-tâche-resources).
+- les **Ressources de Tâche** sont des objets d'inventaire qui contiennent des variables de paires clé/valeur qui peuvent être rendues disponibles à partir des variables de Workflow et des variables d'environnement. *Les Ressources de Tâche* peuvent être attribuées au niveau du tâche et au niveau du Workflow, ce qui les rend disponibles pour tous les tâches d'un Workflow. Pour plus d'informations, consultez le site [Configuration - Inventory - Job Resources](/configuration-inventory-tâche-resources).
 - **Fuseau horaire** qui est renseigné à partir de l'adresse [Profile - Preferences](/profile-preferences) de l'utilisateur. Les identifiants de fuseaux horaires sont acceptés comme *UTC*, *Europe/London*, etc. Pour une liste complète des identificateurs de fuseaux horaires, voir [Liste des fuseaux horaires de la base de données tz] (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
   - Le *fuseau horaire* est appliqué aux périodes dans les délais d'admission des emplois et dans les *instructions de cycle*.
   - Il est possible d'utiliser un *fuseau horaire* différent de celui de la base de données [Settings - Daily Plan](/settings-daily-plan). Toutefois, cela peut entraîner des résultats déroutants.
@@ -107,7 +107,7 @@ Le bouton *Déployer* permet de déployer un Contrôleur en un seul clic. En deh
 Lorsque vous passez la souris sur une instruction, le menu d'action à 3 points vous propose les opérations suivantes :
 
 - **Toutes les instructions** proposent les opérations *Copier*, *Couper* et *Enlever*. Les instructions en bloc telles que l'instruction *Fork* proposent en outre l'opération *Remove All* : alors que l'opération *Remove* supprime uniquement l'instruction, l'opération *Remove All* supprime l'instruction et toutes les instructions incluses, telles que les Jobs.
-- **Job Instruction** propose l'opération *Make Job Template* qui permet de créer un modèle de tâche à partir du tâche en cours. Le Job Template peut être utilisé par d'autres Jobs dans le même Workflow ou dans des Workflows différents.
+- **Job Instruction** propose l'opération *Créer Modèle de Tâche* qui permet de créer un Modèle de Tâche à partir du tâche en cours. Le Modèle de Tâche peut être utilisé par d'autres Jobs dans le même Workflow ou dans des Workflows différents.
 
 #### Opérations Copier, Couper, Coller
 
@@ -116,9 +116,9 @@ Lorsque vous passez la souris sur une instruction, le menu d'action à 3 points 
 - le raccourci clavier **Ctrl+C** permet de copier les instructions surlignées.
 - le raccourci clavier **Ctrl+X** permet de couper les instructions surlignées.
 
-*les opérations *Coller** sont disponibles dans le *Panneau de la barre d'outils* qui permet de faire glisser et de déposer les instructions copiées ou coupées dans le Workflow.
+L'opération **Coller** est disponibles dans le *Panneau de la barre d'outils* qui permet de faire glisser et de déposer les instructions copiées ou coupées dans le Workflow.
 
-- **Le raccourci clavier *Ctrl+V** colle les instructions copiées ou coupées lorsque l'utilisateur clique sur une ligne de connexion entre les instructions du Workflow.
+- Le raccourci clavier **Ctrl+V** colle les instructions copiées ou coupées lorsque l'utilisateur clique sur une ligne de connexion entre les instructions du Workflow.
 
 #### Panneau des opérations
 
@@ -130,7 +130,7 @@ Lorsque vous cliquez sur le canevas du *Panneau de Workflow*, un *Panneau d'opé
   - **L'option Zoom par défaut** permet d'établir la taille par défaut des instructions de Workflow.
   - **Adapter au panneau** permet de choisir une taille pour les instructions de workflow qui permet au Workflow de s'adapter à la taille du panneau.
 - Opérations Annuler, Refaire
-  - **L'option Annuler** permet d'annuler la dernière modification. Vous pouvez annuler jusqu'à 20 opérations.
+  - **Annuler** permet d'annuler la dernière modification. Vous pouvez annuler jusqu'à 20 opérations.
   - **Rétablir** rejoue la dernière modification qui a été annulée.
 - Opérations de téléchargement, de chargement
   - **Télécharger JSON** téléchargera le Workflow au format JSON dans un fichier .json.

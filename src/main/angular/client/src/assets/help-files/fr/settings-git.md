@@ -1,6 +1,6 @@
 # Paramètres - Git
 
-Le JOC Cockpit propose [JS7 - Inventory Git Integration](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Git+Integration) pour la versionnification et le déploiement des objets de planification en utilisant les dépôts Git.
+Le JOC Cockpit propose [JS7 - Inventory Git Integration](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Git+Integration) pour la versionnification et le déploiement des objets en utilisant les dépôts Git.
 
 La page *Réglages* est accessible à partir de l'icône ![wheel icon](assets/images/wheel.png) dans la barre de menu.
 
@@ -18,7 +18,7 @@ Spécifie si [Resource Locks](/resources-resource-locks) est considéré comme l
 
 ### Paramètre : *git\_hold\_file\_order\_sources*, Valeur par défaut : *rollout*
 
-Ordonne si les sources d'Ordre de fichier sont considérées comme locales à un environnement ou destinées à être déployées avec Git.
+Ordonne si les Sources d'Ordre de Fichier sont considérées comme locales à un environnement ou destinées à être déployées avec Git.
 
 ### Paramètre : *git_hold\Nnotice\Nboards*, Valeur par défaut : *rollout*
 
@@ -26,11 +26,11 @@ Spécifie si [Notice Boards](/resources-notice-boards) est considéré comme loc
 
 ### Paramètre : *git\_hold\_script\_includes*, Valeur par défaut : *rollout*
 
-Spécifie si les Script Includes sont considérés comme locaux à un environnement ou s'ils sont destinés à être déployés avec Git.
+Spécifie si les Blocs Scripts sont considérés comme locaux à un environnement ou s'ils sont destinés à être déployés avec Git.
 
 ### Paramètre : *git_hold\_tâche\_templates*, Valeur par défaut : *rollout*
 
-Indique si les modèles de tâches sont considérés comme locaux à un environnement ou s'ils sont destinés à être déployés avec Git.
+Indique si les Modèles de Tâches sont considérés comme locaux à un environnement ou s'ils sont destinés à être déployés avec Git.
 
 ### Paramètre : *git_hold\_tâche\_resources*, Valeur par défaut : *local*
 
@@ -42,7 +42,7 @@ Indique si les Calendriers sont considérés comme locaux à un environnement ou
 
 ### Paramètre : *git_hold\_schedules*, Valeur par défaut : *local*
 
-Indique si les planifications sont considérées comme locales à un environnement ou si elles sont destinées à être déployées avec Git.
+Indique si les Planifications sont considérées comme locales à un environnement ou si elles sont destinées à être déployées avec Git.
 
 ## Références
 

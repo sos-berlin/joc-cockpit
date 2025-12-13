@@ -23,8 +23,8 @@ Cette fonction est disponible en cliquant sur le lien suivant :<br/>**&gt; Reche
 
 La recherche avancée permet d'effectuer une recherche par attributs d'objets :
 
-- **Nom de l'Agent** renvoie les Calendriers des Workflows qui incluent les travaux exécutés avec l'Agent spécifié.
-- **Compter les Tâches** renvoie les Calendriers des Workflows qui utilisent le nombre minimum de Jobs spécifié avec le terme **De**. S'il est utilisé avec le terme **à**, il renvoie les Workflows qui incluent un nombre de travaux compris entre *De* et *à*. Si le terme *à* est utilisé seul, les Workflows qui ne comprennent pas un nombre de travaux supérieur au terme *à* seront renvoyés.
+- **Nom de l'Agent** renvoie les Calendriers des Workflows qui incluent les tâches exécutés avec l'Agent spécifié.
+- **Compter les Tâches** renvoie les Calendriers des Workflows qui utilisent le nombre minimum de Jobs spécifié avec le terme **De**. S'il est utilisé avec le terme **à**, il renvoie les Workflows qui incluent un nombre de tâches compris entre *De* et *à*. Si le terme *à* est utilisé seul, les Workflows qui ne comprennent pas un nombre de tâches supérieur au terme *à* seront renvoyés.
 - **Nom de la Tâche** renvoie les Calendriers des Workflows qui correspondent aux tâches au nom indiqué. Si vous utilisez la case à cocher *Correspondance exacte* pour **Nom de la tâche**, le terme de recherche saisi doit correspondre entièrement au nom de la tâche, en tenant compte des majuscules et des minuscules.
 
 ### Recherche de dépendance
@@ -32,7 +32,7 @@ La recherche avancée permet d'effectuer une recherche par attributs d'objets :
 Le méta-caractère de recherche **\*** est utilisé pour spécifier que les dépendances sont recherchées, par exemple vers un Verrou de Ressource quel que soit le nom qu'il utilise :
 
 - **\*** Le méta-caractère de **Verrou** renverra les Calendriers des Workflows utilisant les verrous des ressources,
-- **\*** Le métacaractère **Source D'Ordre de Fichier** renverra les Calendriers des Workflows référencés par un Source D'Ordre de Fichier.
+- **\*** Le métacaractère **Source d'Ordre de Fichier** renverra les Calendriers des Workflows référencés par un Source d'Ordre de Fichier.
 
 ## Références
 

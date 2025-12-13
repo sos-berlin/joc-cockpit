@@ -1,4 +1,4 @@
-# Configuration - Inventaire - Opérations - Dossier de déploiement
+# Configuration - Inventaire - Opérations - Déploiement de Dossier
 
 Le déploiement d'objets consiste à les transférer vers un ou plusieurs Contrôleurs. Cela s'applique aux objets tels que les Workflows et les Ressources de Tâche disponibles dans le dossier système *Contrôleur*.
 
@@ -29,13 +29,13 @@ Le déploiement d'objets tels que les Workflows, les Planifications et les Calen
 Le **Type de déploiement** vous permet de choisir entre 
 
 - **Les objets individuels** disponibles dans le dossier sélectionné.
-- [Change](/changes)**Les utilisateurs sélectionnent le changement souhaité dans la liste des changements disponibles dans une zone de liste.
+- **Changements**: Les utilisateurs sélectionnent le [Change](/changes) souhaité dans la liste des changements disponibles.
 
 ## Filtrage des objets
 
 Les objets peuvent être filtrés à partir des options suivantes :
 
-- **Draft** spécifie que les objets en état de draft doivent être déployés.
+- **Brouillon** spécifie que les objets en état de brouillon doivent être déployés.
 - **Déployé** spécifie que les objets à l'état déployé doivent être inclus dans le déploiement.
 
 ## Inclure les sous-dossiers
@@ -44,20 +44,20 @@ L'option **Gérer Récursivement** permet d'ajouter des objets de sous-dossiers 
 
 ## Inclure les dépendances
 
-Les objets de l'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une ressource de tâche et un Verrou de Ressource ; une Planification référençant un Calendrier et un ou plusieurs Workflows.
+Les objets de l'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource; une Planification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lors du déploiement des objets, la cohérence est prise en compte, par exemple :
 
-- Si une ressource de tâche est créée et est référencée par un Workflow nouvellement créé, alors le déploiement du Workflow inclut le déploiement de la ressource de tâche.
-- Si une ressource de tâche est référencée par un Workflow déployé et qu'elle doit être révoquée ou supprimée, le Workflow doit également être révoqué ou supprimé.
+- Si une Ressource de Tâche est créée et est référencée par un Workflow nouvellement créé, alors le déploiement du Workflow inclut le déploiement de la Ressource de Tâche.
+- Si une Ressource de Tâche est référencée par un Workflow déployé et qu'elle doit être révoquée ou supprimée, le Workflow doit également être révoqué ou supprimé.
 
 Les utilisateurs contrôlent la cohérence du déploiement à partir des options suivantes :
 
 - **Inclure les dépendances**
   - si cette option est cochée, elle inclura à la fois les objets référencés et les objets référencés.
-    - Si les objets liés sont à l'état de projet, un déploiement commun est proposé. Il sera appliqué, si nécessaire, en cas de modification des relations entre les objets.
-    - Si les objets liés sont au statut déployé/publié, le déploiement commun est facultatif. Les utilisateurs peuvent sélectionner des objets liés pour le déploiement commun.
-  - si la case n'est pas cochée, les dépendances ne sont pas prises en compte. Les utilisateurs doivent vérifier si les objets liés sont valides et déployés/libérés. Le Contrôleur émettra des messages d'erreur en cas d'objets manquants en raison d'un déploiement incohérent.
+    - Si les objets liés sont à l'état de brouillon, un déploiement commun est proposé. Il sera appliqué, si nécessaire, en cas de modification des relations entre les objets.
+    - Si les objets liés sont dans l'état déployé/publié, le déploiement commun est facultatif. Les utilisateurs peuvent sélectionner des objets liés pour le déploiement commun.
+  - si la case n'est pas cochée, les dépendances ne sont pas prises en compte. Les utilisateurs doivent vérifier si les objets liés sont valides et déployés/publiés. Le Contrôleur émettra des messages d'erreur en cas d'objets manquants en raison d'un déploiement incohérent.
 
 ## Références
 
@@ -71,4 +71,3 @@ Les utilisateurs contrôlent la cohérence du déploiement à partir des options
 ### Product Knowledge Base
 
 - [JS7 - Inventory Object Dependencies](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Object+Dependencies)
-

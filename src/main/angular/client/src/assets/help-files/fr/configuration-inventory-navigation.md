@@ -28,10 +28,10 @@ La hiérarchie des dossiers connaît les types de dossiers suivants :
     - [Condition](/configuration-inventory-notice-boards) spécifient les dépendances entre les Workflows. Pour plus de détails, voir [JS7 - Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards).
     - [Verrous de Ressource](/configuration-inventory-resource-locks) limitent l'exécution parallèle des tâches et d'autres instructions. Pour plus de détails, voir [JS7 - Resource Locks](https://kb.sos-berlin.com/display/JS7/JS7+-+Resource+Locks).
   - les objets **Automatisation** sont utilisés pour l'automatisation dans JOC Cockpit :
-    - [Blocs Script](/configuration-inventory-script-includes) les objets **Automatisation** sont des extraits de code qui peuvent être réutilisés dans un certain nombre de Shell Jobs. Pour plus d'informations, voir [JS7 - Script Includes](https://kb.sos-berlin.com/display/JS7/JS7+-+Script+Includes).
+    - [Blocs Scripts](/configuration-inventory-script-includes) les objets **Automatisation** sont des extraits de code qui peuvent être réutilisés dans un certain nombre de Shell Jobs. Pour plus d'informations, voir [JS7 - Script Includes](https://kb.sos-berlin.com/display/JS7/JS7+-+Script+Includes).
     - [Planifications](/configuration-inventory-schedules) déterminent le moment où les Ordres pour l'exécution du Workflow commenceront. Un ou plusieurs Workflows leur sont attribués et, éventuellement, des variables d'Ordre qui sont utilisées par les Jobs dans le Workflow donné. Ils utilisent un ou plusieurs *Calendriers*. Pour plus d'informations, consultez le site [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules).
-    - [Calendriers](/configuration-inventory-calendars) les *Calendriers* spécifient les jours au cours desquels les événements de planification peuvent se produire. Ils contiennent des règles pour les jours récurrents et des listes de jours qui sont utilisés par les *Planifications* pour créer des Ordres pour l'exécution du Workflow avec [Daily Plan](/daily-plan). Pour plus de détails, voir [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars).
-    - [Modèles de Tâche](/configuration-inventory-tâche-templates) les modèles de Jobs sont fournis par les modèles de Jobs de l'utilisateur ou par des classes Java qui sont livrées avec JS7 et peuvent être utilisées pour toutes les plates-formes OS. Pour plus de détails, voir [JS7 - Job Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Templates).
+    - [Calendriers](/configuration-inventory-calendars) les *Calendriers* spécifient les jours au cours desquels les événements de Planification peuvent se produire. Ils contiennent des règles pour les jours récurrents et des listes de jours qui sont utilisés par les *Planifications* pour créer des Ordres pour l'exécution du Workflow avec [Daily Plan](/daily-plan). Pour plus de détails, voir [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars).
+    - [Modèles de Tâche](/configuration-inventory-tâche-templates) sont fournis par les Modèles de Jobs de l'utilisateur ou par des classes Java qui sont livrées avec JS7 et peuvent être utilisées pour toutes les plates-formes OS. Pour plus de détails, voir [JS7 - Job Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Templates).
     - [Rapports](/configuration-inventory-reports) résumer les résultats de l'exécution des Workflows et des Jobs pour des périodes données. Pour plus de détails, voir [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports).
 - les **Dossiers utilisateur** sont créés par l'utilisateur à n'importe quel niveau de la hiérarchie. Chaque *dossier utilisateur* contient un ensemble de *dossiers d'inventaire*.
 
@@ -65,7 +65,7 @@ Des Tags peuvent être ajoutées à partir de l'icône +. Des Ordres ascendant e
 - En cliquant sur l'tag correspondante, les Workflows auxquels l'tag est attribuée s'affichent.
 - Les Tags offrent les opérations suivantes à partir de leur menu d'action à 3 points :
   - **Renommer** permet de modifier le nom de l'tga.
-  - **Supprimer** permet de supprimer l'tga et son affectation aux Workflows et aux travaux.
+  - **Supprimer** permet de supprimer l'tga et son affectation aux Workflows et aux tâches.
 
 ## Opérations
 
@@ -87,24 +87,24 @@ Les opérations suivantes sont disponibles pour les *dossiers d'inventaire* :
 - Opérations sur les objets du Contrôleur
   - *Workflows*
     - **Nouveau** permet de créer un Workflow.
-    - **Renommer** permet de renommer un Workflow. Les dépendances d'objets seront prises en compte et les objets d'inventaire référents tels que *Planifications* et *Sources d'Ordre de Fichier* conserveront le nom mis à jour. Le Workflow et les objets qui s'y réfèrent seront mis à l'état de *projet*. Pour plus de détails, voir [Rename Folder](/configuration-inventory-operations-rename-folder).
+    - **Renommer** permet de renommer un Workflow. Les dépendances d'objets seront prises en compte et les objets d'inventaire référents tels que *Planifications* et *Sources d'Ordre de Fichier* conserveront le nom mis à jour. Le Workflow et les objets qui s'y réfèrent seront mis à l'état de *brouillon*. Pour plus de détails, voir [Rename Folder](/configuration-inventory-operations-rename-folder).
     - **Gestion des Tags** permet d'ajouter et de supprimer des Tags vers/depuis les Workflows dans le dossier, voir [Manage Tags](/configuration-inventory-operations-manage-tags).
     - **Export** permet de créer un fichier d'archive d'exportation au format .zip ou .tar.gz qui contient la hiérarchie des dossiers et la représentation JSON des Workflows. Pour plus de détails, voir [Export Folder](/configuration-inventory-operations-export-folder).
     - **Git Repository** offre une intégration avec un serveur Git. Les Workflows peuvent être engagés dans des dépôts Git et peuvent être tirés et poussés. Pour plus de détails, voir [Git - Clone Repository](/configuration-inventory-operations-git-clone).
     - **Changement** offre des opérations pour la gestion des changements des Workflows. Les utilisateurs peuvent ajouter un Workflow en cours de construction à un *Change* qui permet le déploiement commun et l'exportation des objets modifiés. Pour plus de détails, voir [Changes](/changes).
     - **Déployer** mettra les Workflows à la disposition du Contrôleur et des Agents. Les Workflows seront mis à l'état *deployed*. Pour plus de détails, voir [Deploy Folder](/configuration-inventory-operations-deploy-folder).
-    - **Révoquer** annule une opération *Deploy* précédente. Les Workflows passeront à l'état de *projet*. Cela implique que les Ordres pour les Workflows seront supprimés du site [Daily Plan](/daily-plan). Les dépendances sont prises en compte et les objets de référence tels que *Schedules* et *File Ordre Sources* seront également révoqués/rappelés. Pour plus de détails, voir [Revoke Folder](/configuration-inventory-operations-revoke-folder).
+    - **Révoquer** annule une opération *Deploy* précédente. Les Workflows passeront à l'état de *brouillon*. Cela implique que les Ordres pour les Workflows seront supprimés du site [Daily Plan](/daily-plan). Les dépendances sont prises en compte et les objets de référence tels que *Schedules* et *Sources d'Ordre de Fichier* seront également révoqués/rappelés. Pour plus de détails, voir [Revoke Folder](/configuration-inventory-operations-revoke-folder).
     - **Supprimer** déplace les Workflows vers la Corbeille. Les Workflows supprimés peuvent être restaurés ou supprimés définitivement de la Corbeille. Pour plus d'informations, consultez le site [Remove Folder](/configuration-inventory-operations-remove-folder).
     - **Rétablir le brouillon** supprimera la version actuelle du brouillon des Workflows. Si une version précédemment *déployée* existe, elle deviendra la version actuelle du Workflow concerné.
-    - **Mettre à jour les Tâches à partir des Modèles** mettra à jour les tâches des Workflows dans le *dossier d'inventaire* sélectionné à partir des *modèles de tâche* situés dans n'importe quel dossier.
-  - les *Sources d'Ordre de fichier*, *Ressources de Tâche*, *vue d'affichage*, *verrous de ressource* offrent des opérations similaires à celles des *Workflows*.
+    - **Mettre à jour les Tâches à partir des Modèles** mettra à jour les tâches des Workflows dans le *dossier d'inventaire* sélectionné à partir des *Modèles de Tâche* situés dans n'importe quel dossier.
+  - les *Sources d'Ordre de Fichier*, *Ressources de Tâche*, *Conditions*, *Verrous de Ressource* offrent des opérations similaires à celles des *Workflows*.
 - Opérations sur les objets d'automatisation
   - **Valider** rend les objets *brouillons* disponibles
     - pour une utilisation avec d'autres objets, par exemple les *inclusions de scripts* seront prises en compte pour le prochain déploiement des Workflows, les *modèles d'emploi* peuvent être mis à jour dans le référencement des Workflows.
     - pour une utilisation avec [Daily Plan](/daily-plan), par exemple *Planifications* sera pris en compte pour la création d'Ordres.
     - pour plus de détails, voir [Release Folder](/configuration-inventory-operations-release-folder).
-  - **Retirer** annule une opération *Release* précédente. Les objets d'inventaire seront mis à l'état de *projet*. Cela signifie que les *Planifications* et *Calendriers* provisoires ne seront pas pris en compte par le site [Daily Plan](/daily-plan). L'opération prend en compte les dépendances entre objets et rappellera/révocera également les objets référents. Pour plus de détails, voir [Recall Folder](/configuration-inventory-operations-recall-folder).
-  - **Appliquer un modèle de Tâche** mettra à jour les tâches dans les Workflows situés dans n'importe quel dossier contenant des références à des *Modele de Tâches* inclus dans le *dossier d'inventaire* sélectionné ou dans n'importe quel sous-dossier.
+  - **Retirer** annule une opération *Release* précédente. Les objets d'inventaire seront mis à l'état de *brouillon*. Cela signifie que les *Planifications* et *Calendriers* provisoires ne seront pas pris en compte par le site [Daily Plan](/daily-plan). L'opération prend en compte les dépendances entre objets et rappellera/révocera également les objets référents. Pour plus de détails, voir [Recall Folder](/configuration-inventory-operations-recall-folder).
+  - **Appliquer un Modèle de Tâche** mettra à jour les tâches dans les Workflows situés dans n'importe quel dossier contenant des références à des *Modele de Tâches* inclus dans le *dossier d'inventaire* sélectionné ou dans n'importe quel sous-dossier.
   - D'autres opérations sont disponibles, similaires aux *Opérations sur les objets du Contrôleur*.
 
 #### Opérations sur les dossiers d'utilisateurs
@@ -123,11 +123,11 @@ Les opérations suivantes sont disponibles pour les *dossiers d'inventaire* :
   - **Changement** offre des opérations de gestion des modifications des objets de l'inventaire. Les utilisateurs peuvent ajouter des objets tels que des Workflows en cours de construction à un *Change* qui permet le déploiement commun et l'exportation des objets modifiés. Pour plus de détails, voir [Changes](/changes).
 - Opérations sur les objets du Contrôleur
   - l'opération **Déployer** met les objets à la disposition du Contrôleur et des Agents. Les objets de l'inventaire seront mis à l'état *déployé*. Pour plus de détails, voir [Deploy Folder](/configuration-inventory-operations-deploy-folder).
-  - **Révoquer** annule une opération de *Déploiement* précédente. Les objets d'inventaire passeront à l'état de *projet*. Cela signifie que les Ordres pour les Workflows seront supprimés de la base de données [Daily Plan](/daily-plan). Pour plus de détails, voir [Revoke Folder](/configuration-inventory-operations-revoke-folder).
+  - **Révoquer** annule une opération de *Déploiement* précédente. Les objets d'inventaire passeront à l'état de *brouillon*. Cela signifie que les Ordres pour les Workflows seront supprimés de la base de données [Daily Plan](/daily-plan). Pour plus de détails, voir [Revoke Folder](/configuration-inventory-operations-revoke-folder).
   - **Revalider** vérifie la validité des objets d'inventaire qui peuvent devenir incohérents, par exemple après l'importation d'objets.
   - **Synchroniser** permet de synchroniser l'état des objets de la Planification avec le Contrôleur et l'inventaire :
-    - *Synchroniser avec le Contrôleur* *Déploie* ou *Révoque* les objets d'inventaire vers/depuis le Contrôleur et les Agents en fonction de leur état d'inventaire *déployé* ou *projeté*. Cette opération peut être utilisée en cas de perte de journal lorsque la mémoire d'un Contrôleur est effacée et que le Contrôleur est initialisé.
-    - l'opération *Synchroniser avec l'inventaire* place les objets d'inventaire dans l'état *déployé* ou *projeté* en fonction de la disponibilité de l'objet auprès du Contrôleur.
+    - *Synchroniser avec le Contrôleur* *Déploie* ou *Révoque* les objets d'inventaire vers/depuis le Contrôleur et les Agents en fonction de leur état d'inventaire *déployé* ou *brouillon*. Cette opération peut être utilisée en cas de perte de journal lorsque la mémoire d'un Contrôleur est effacée et que le Contrôleur est initialisé.
+    - l'opération *Synchroniser avec l'inventaire* place les objets d'inventaire dans l'état *déployé* ou *brouillon* en fonction de la disponibilité de l'objet auprès du Contrôleur.
 - Opérations sur les objets d'automatisation
   - **Publier** rend les objets *draft* disponibles
     - pour une utilisation avec d'autres objets, par exemple les *Bloc Script* seront prises en compte pour le prochain déploiement des Workflows, les *Modèles de Tâche* peuvent être mis à jour dans le référencement des Workflows.
@@ -138,8 +138,8 @@ Les opérations suivantes sont disponibles pour les *dossiers d'inventaire* :
   - l'opération **Supprimer** déplace le dossier, tous les sous-dossiers et les objets inclus dans la Corbeille. Les objets d'inventaire supprimés peuvent être restaurés ou supprimés définitivement de la Corbeille. Pour plus de détails, voir [Remove Folder](/configuration-inventory-operations-remove-folder).
   - la commande **Rétablir le brouillon** supprime la version actuelle des objets du dossier et des sous-dossiers. Si une version *déployée* ou *publiée* existe, elle deviendra la version actuelle de l'objet concerné.
 - Opérations sur les modèles de tâche
-  - **Mettre à jour les Tâches à partir des Modèles** mettra à jour les travaux dans les Workflows situés dans n'importe quel dossier qui contient des références à des *modèles de travaux* inclus dans le *dossier de l'utilisateur* sélectionné ou dans n'importe quel sous-dossier.
-  - **Appliquer le modèle aux tâches** mettra à jour les tâches dans les Workflows situés dans le *Dossier de l'utilisateur* sélectionné à partir des *Modèles de Tâches* situés dans n'importe quel dossier.
+  - **Mettre à jour les Tâches à partir des Modèles** mettra à jour les tâches dans les Workflows situés dans n'importe quel dossier qui contient des références à des *Modèles de Tâches* inclus dans le *dossier de l'utilisateur* sélectionné ou dans n'importe quel sous-dossier.
+  - **Appliquer le Modèle aux Tâches** mettra à jour les tâches dans les Workflows situés dans le *Dossier de l'utilisateur* sélectionné à partir des *Modèles de Tâches* situés dans n'importe quel dossier.
 
 ### Opérations au niveau de l'objet
 
@@ -148,7 +148,7 @@ Les opérations suivantes sont proposées pour les objets d'inventaire individue
 - Tous les objets
   - **Couper** va *couper* l'objet pour le coller ultérieurement à un autre endroit de la hiérarchie des dossiers.
   - **Copier** permet de *copier* l'objet pour le coller ultérieurement.
-  - **Renommer** permet de modifier le nom de l'objet. Les dépendances des objets seront prises en compte et les objets d'inventaire référencés conserveront le nom mis à jour. L'objet renommé et les objets référents seront mis à l'état de *projet*. Pour plus de détails, voir [Rename Object](/configuration-inventory-operations-rename-object).
+  - **Renommer** permet de modifier le nom de l'objet. Les dépendances des objets seront prises en compte et les objets d'inventaire référencés conserveront le nom mis à jour. L'objet renommé et les objets référents seront mis à l'état de *brouillon*. Pour plus de détails, voir [Rename Object](/configuration-inventory-operations-rename-object).
   - **Changement** propose des opérations de gestion des Changements des objets de l'inventaire. Les utilisateurs peuvent ajouter des objets tels que des Workflows en cours de construction à un *Changement* qui permet le déploiement commun et l'exportation des objets modifiés. Pour plus de détails, consultez [Changes](/changes).
   - **Afficher les dépendances** affiche la liste des objets référents et des objets référencés. Par exemple, un Workflow peut contenir des références à des Ressources de Tâche et peut être référencé par des *Planifications* ou des *Sources d'Ordre*.
   - **Nouveau brouillon** crée une version brouillon à partir d'une version précédemment *déployée* ou *publiée* de l'objet.

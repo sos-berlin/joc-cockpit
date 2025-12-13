@@ -1,4 +1,4 @@
-# Transfert de fichiers
+# Tableau de Bord - Transfert de fichiers
 
 La vue *Transfert de fichiers* fournit un résumé des transferts de fichiers précédents réalisés par le client YADE.
 
@@ -9,7 +9,7 @@ La vue *Transfert de fichiers* fournit un résumé des transferts de fichiers pr
 L'Historique récapitule les transferts réussis et échoué.
 
 - les transferts **réussis** comprennent les tâches réussies et les tâches échouées qui se sont rétablies, par exemple après une nouvelle tentative.
-- **Les transferts échoués** indiquent les tâches qui ont échoué de façon permanente.
+- Les transferts **échoués** indiquent les tâches qui ont échoué de façon permanente.
 
 En cliquant sur le numéro indiqué, vous accédez à la vue *Historique des transferts de fichiers* qui affiche les transferts en détail.
 
@@ -26,4 +26,3 @@ Le bouton déroulant situé dans le coin supérieur droit du panneau permet de s
 ## Références
 
 - [JS7 - File Transfer](https://kb.sos-berlin.com/display/JS7/JS7+-+File+Transfer)
-

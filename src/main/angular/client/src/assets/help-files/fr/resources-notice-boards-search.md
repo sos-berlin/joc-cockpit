@@ -23,8 +23,8 @@ Cette fonction est disponible en cliquant sur le lien suivant :<br/>**&gt; Reche
 
 La recherche avancée permet d'effectuer une recherche par attributs d'objets :
 
-- **Nom de l'Agent** renvoie aux Tableaux de Condition des Workflows qui incluent des travaux exécutés avec l'Agent spécifié.
-- **Compter les Tâches ** renvoie aux Tableaux de Condition des Workflows qui utilisent le nombre minimum de Jobs spécifié dans le terme **From**. S'il est utilisé avec le terme **To**, le système renverra les Workflows comprenant un nombre de travaux compris entre *From* et *To*. Si le terme *To* est utilisé seul, les Workflows renvoyés n'incluent pas un nombre de travaux supérieur au terme *To*.
+- **Nom de l'Agent** renvoie aux Tableaux de Condition des Workflows qui incluent des tâches exécutés avec l'Agent spécifié.
+- **Compter les Tâches ** renvoie aux Tableaux de Condition des Workflows qui utilisent le nombre minimum de Jobs spécifié dans le terme **From**. S'il est utilisé avec le terme **To**, le système renverra les Workflows comprenant un nombre de tâches compris entre *From* et *To*. Si le terme *To* est utilisé seul, les Workflows renvoyés n'incluent pas un nombre de tâches supérieur au terme *To*.
 - l'option **Nom de la Tâche** renverra les Tableaux de Condition des Workflows qui comprennent des postes correspondant au nom donné. Si vous utilisez la case à cocher *Correspondance exacte* pour **Nom de l'emploi**, le terme de recherche saisi doit correspondre entièrement au nom de l'emploi, en tenant compte des majuscules et des minuscules.
 
 ### Recherche de dépendances
@@ -32,7 +32,7 @@ La recherche avancée permet d'effectuer une recherche par attributs d'objets :
 Le méta-caractère de recherche **\*** est utilisé pour spécifier que les dépendances sont recherchées, par exemple vers un Verrou de Ressource quel que soit le nom qu'il utilise :
 
 - le méta-caractère **\*** pour **Verrou de Ressources** renverra des Tableaux de Condition pour les Workflows utilisant un Verrou de Ressources,
-- **\*** le métacaractère **Sources D'Ordre de Fichier** renverra les Tableaux de Condition des Workflows référencés par une Source d'Ordre de Fichiers.
+- **\*** le métacaractère **Sources d'Ordre de Fichier** renverra les Tableaux de Condition des Workflows référencés par une Source d'Ordre de Fichiers.
 
 ## Références
 

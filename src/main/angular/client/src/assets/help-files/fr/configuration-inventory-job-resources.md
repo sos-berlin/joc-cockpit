@@ -4,10 +4,10 @@ La vue *Ressources de Tâche* permet de spécifier les Ressources de Tâche à u
 
 Les Ressources de Tâches contiennent des variables de paires clé/valeur qui sont utilisées dans les buts suivants :
 
-- Pour les tâches JVM exécutés dans la machine virtuelle Java de l'Agent, les variables sont spécifiées à partir des *Arguments*. Lorsqu'une ressource de tâche est affectée à une tâche, les arguments du tâches correspondant sont remplis.
+- Pour les tâches JVM exécutés dans la machine virtuelle Java de l'Agent, les variables sont spécifiées à partir des *Arguments*. Lorsqu'une Ressource de Tâche est affectée à une tâche, les arguments du tâches correspondant sont remplis.
 - Pour les tâches Shell, les variables sont spécifiées dans *Environment Variables*. Lorsqu'une ressource est affectée à un tâches, les variables d'environnement sont créées automatiquement.
 
-Les Ressources de Tâche se voient attribuer un Workflow ou une tâche à partir de la propriété de l'objet correspondant, voir [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-tâche-options). Lorsqu'elles sont attribuées au niveau du Workflow, les variables de la ressource de tâches sont disponibles pour toutes les tâches du Workflow.
+Les Ressources de Tâche se voient attribuer un Workflow ou une tâche à partir de la propriété de l'objet correspondant, voir [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-tâche-options). Lorsqu'elles sont attribuées au niveau du Workflow, les variables de la Ressource de Tâches sont disponibles pour toutes les tâches du Workflow.
 
 Les Ressources de Tâche sont gérées à partir des vues suivantes :
 
@@ -16,7 +16,7 @@ Les Ressources de Tâche sont gérées à partir des vues suivantes :
 
 ## Vue des Ressources de Tâche
 
-Pour une ressource de tâche, les entrées suivantes sont disponibles :
+Pour une Ressource de Tâche, les entrées suivantes sont disponibles :
 
 - **Nom** est l'identifiant unique d'une ressource, voir [Object Naming Rules](/object-naming-rules).
 - **Titre** contient une explication facultative de l'objectif de la ressource.

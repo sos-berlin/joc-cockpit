@@ -21,9 +21,9 @@ Le modèle de rapport compte les exécutions de tâches parallèles avec les Age
 - Le Job1 commence après le Job2 et avant que le Job2 ne se termine ou
 - Le Job1 se termine après le démarrage du Job2 et avant la fin du Job2.
 
-## Modèle de rapport : Les n premiers travaux à haute criticité avec le plus grand/le plus petit nombre d'exécutions échouées
+## Modèle de rapport : Les n premiers tâches à haute criticité avec le plus grand/le plus petit nombre d'exécutions échouées
 
-Le modèle de rapport comptabilise les échecs d'exécution des travaux dont la criticité est élevée. La criticité est un attribut du tâche, voir JS7 - Job Instruction.
+Le modèle de rapport comptabilise les échecs d'exécution des tâches dont la criticité est élevée. La criticité est un attribut du tâche, voir JS7 - Job Instruction.
 
 Le comptage s'effectue de la même manière que pour le modèle de rapport : Top n Tâches avec le plus grand/le plus petit nombre d'échecs d'exécution.
 
@@ -53,7 +53,7 @@ Exemple :
   - 00:02-00:07
   - 00:04-00:09
 
-Le nombre de travaux en cours d'exécution est compté par étape.
+Le nombre de tâches en cours d'exécution est compté par étape.
 
 ## Modèle de rapport : Top n périodes avec le plus grand/le plus petit nombre d'exécutions de Workflows
 
@@ -63,7 +63,7 @@ Le nombre d'Ordres en cours d'exécution est compté par étape.
 
 ## Modèle de rapport : Top n Jobs avec le plus grand/le plus petit nombre d'exécutions réussies
 
-Le modèle de rapport compte les tâches qui ont été exécutées avec succès. Les travaux qui ont échoué ne sont pas pris en compte.
+Le modèle de rapport compte les tâches qui ont été exécutées avec succès. Les tâches qui ont échoué ne sont pas pris en compte.
 
 Pour connaître les raisons possibles de l'échec d'un tâche, reportez-vous au modèle de rapport : Top n Jobs avec le plus grand/le plus petit nombre d'échecs d'exécution.
 

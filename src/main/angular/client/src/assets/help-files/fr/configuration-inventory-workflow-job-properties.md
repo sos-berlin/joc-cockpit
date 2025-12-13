@@ -1,12 +1,12 @@
-# Configuration - Inventaire - Workflow - Propriétés du tâche
+# Configuration - Inventaire - Workflow - Propriétés Job
 
 Le panneau *Workflow* permet de concevoir des Workflow à partir d'une séquence d'instructions. Les utilisateurs peuvent glisser-déposer les *instructions de tâche* depuis la *barre d'outils* vers une position dans le Workflow.
 
 L'interface graphique propose un certain nombre d'onglets pour spécifier les détails du tâche. Le premier onglet concerne les *Propriétés du tâche*.
 
-## Propriétés requises pour le tâche
+## Propriétés requises pour le Job
 
-Les propriétés minimales d'un tâche sont les suivantes :
+Les propriétés minimales d'une tâche sont les suivantes :
 
 - **Nom** identifie le Job à partir d'un nom unique. Si plus d'un Job dans le Workflow utilise le même nom, alors une seule copie du Job est stockée et les autres occurrences référencent le Job en utilisant différents *Etiquettes du Job*.
 - **Label** est un identifiant unique pour les instructions dans un Workflow. L'unicité est appliquée aux tâches et aux autres instructions. Si le même *nom de tâche* est utilisé plusieurs fois dans un Workflow, des *étiquettes* différentes doivent être utilisées.
@@ -18,23 +18,24 @@ Les propriétés minimales d'un tâche sont les suivantes :
 ## Propriétés optionnelles du tâche
 
 - **Titre** décrit l'objectif du tâche. Les utilisateurs peuvent ajouter des liens en utilisant la syntaxe markdown, par exemple \[Example\]\(https://example.com\). Le *Titre* est pris en compte lors du filtrage des résultats, par exemple dans la vue [Workflows](/workflows).
-- les **Ressources de Tâche** sont des objets d'inventaire qui contiennent des variables de paires clé/valeur qui peuvent être rendues disponibles à partir de variables de Workflow et de variables d'environnement. *Les Ressources de Tâche* peuvent être attribuées au niveau du tâche et au niveau du Workflow, ce qui les rend disponibles pour tous les travaux d'un Workflow. Pour plus de détails, consultez le site [Configuration - Inventory - Job Resources](/configuration-inventory-tâche-resources).
-- le **Code de retour** indique si un tâche est considéré comme un succès ou un échec. Par défaut, la valeur 0 indique un succès, les autres valeurs indiquent un échec. Un certain nombre de codes de retour peuvent être séparés par une virgule, par exemple *0,2,4,8*. Une plage de codes de retour peut être spécifiée par deux points, par exemple *0..8* ou *0,2,4,8,16..64*, séparés par une virgule. Les codes de retour négatifs sont indéfinis.
+- les **Ressources de Tâche** sont des objets d'inventaire qui contiennent des variables de paires clé/valeur qui peuvent être rendues disponibles à partir de variables de Workflow et de variables d'environnement. *Les Ressources de Tâche* peuvent être attribuées au niveau du tâche et au niveau du Workflow, ce qui les rend disponibles pour tous les tâches d'un Workflow. Pour plus de détails, consultez le site [Configuration - Inventory - Job Resources](/configuration-inventory-tâche-resources).
+- le **Code de retour** indique si une tâche est considérée comme un succès ou un échec. Par défaut, la valeur 0 indique un succès, les autres valeurs indiquent un échec. Un certain nombre de codes de retour peuvent être séparés par une virgule, par exemple *0,2,4,8*. Une plage de codes de retour peut être spécifiée par deux points, par exemple *0..8* ou *0,2,4,8,16..64*, séparés par une virgule. Les codes de retour négatifs sont indéfinis.
   - **Les codes de retour négatifs sont indéfinis.
   - **En cas d'échec** spécifie les codes de retour d'échec qui indiquent un échec.
-  - **Ignorer** ne considère pas les codes de retour comme un indicateur de réussite ou d'échec d'un tâche.
+  - **Ignorer** ne considère pas les codes de retour comme un indicateur de réussite ou d'échec d'une tâche.
 - le **Code de retour sur avertissement** est un sous-ensemble des codes de retour réussis. Si un code de retour réussi est spécifié en tant qu'avertissement, une notification sera créée, mais le flux de l'Ordre dans le Workflow ne sera pas affecté par les avertissements.
 
-### Classes d'emploi
+### Catégorie de Tâche
 
 - **Catégorie de Tâche** spécifie le type de tâche exécuté. Pour plus d'informations, consultez le site [JS7 - Job Classes](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Classes).
-  - les tâches **Shell** sont exécutés avec le shell du système d'exploitation, par exemple le Shell Windows ou le Shell Unix disponible à partir de /bin/sh. Les travaux Shell peuvent inclure des commandes Shell, des appels à des scripts et des fichiers exécutables. Les travaux Shell permettent d'utiliser des langages de script tels que Node.js, Perl, Python, PowerShell, etc. Ils nécessitent l'installation d'un interpréteur avec le système d'exploitation qui peut être exécuté à partir de la ligne de commande.
+  - les tâches **Shell** sont exécutés avec le shell du système d'exploitation, par exemple le Shell Windows ou le Shell Unix disponible à partir de /bin/sh. Les tâches Shell peuvent inclure des commandes Shell, des appels à des scripts et des fichiers exécutables. Les tâches Shell permettent d'utiliser des langages de script tels que Node.js, Perl, Python, PowerShell, etc. Ils nécessitent l'installation d'un interpréteur avec le système d'exploitation qui peut être exécuté à partir de la ligne de commande.
   - les tâche **JVM Jobs** sont mis en œuvre dans un certain nombre de langages exploités pour une machine virtuelle Java pour laquelle l'Agent JS7 propose le site [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API). Les langages pris en charge sont les suivants :
-    - *Job Templates*
+    - *Modèles de Tâche*
       - **JITL Jobs** sont des tâches Java livrés avec JS7 et utilisés à partir de [JS7 - Integration Job Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+Integration+Job+Templates), par exemple pour accéder à des bases de données, à des hôtes distants par SSH, etc.
     - tâches définis par l'utilisateur
       - les taĉhes **Java** sont exécutés dans la JVM fournie par l'Agent JS7.
-      - les tâches **JavaScript** nécessitent l'utilisation de la machine virtuelle Java Oracle® GraalVM avec l'Agent JS7. La JVM fournit l'interpréteur/compilateur pour JavaScript.
+      - les tâches **JavaScript** et **Python** nécessitent l'utilisation des bibliothèques Oracle® Graal Polyglot.
+      de la machine virtuelle Java Oracle® GraalVM avec l'Agent JS7. Les bibliothèques fournissent le compilateur JIT.
 
 ### Variables d'environnement
 
@@ -67,4 +68,3 @@ La vue *Configuration - Inventaire* propose le curseur *Plus d'options* en haut 
 - [JS7 - Job API](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+API)
 - [JS7 - Job Classes](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Classes)
 - [JS7 - Job Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Instruction)
-

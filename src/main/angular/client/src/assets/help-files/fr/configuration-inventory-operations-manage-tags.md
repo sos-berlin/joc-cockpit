@@ -4,7 +4,7 @@ JS7 propose [JS7 - Tagging](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging)
 
 - Les Tags sont gérées à partir de l'inventaire disponible dans la vue *Configuration* du JOC Cockpit.
   - Un nombre quelconque de Tags est attribué aux Workflows.
-  - Les planifications se voient attribuer un nombre quelconque de Tags qui sont ajoutées aux Ordres créés par [Daily Plan Service](/service-daily-plan).
+  - Les Planifications se voient attribuer un nombre quelconque de Tags qui sont ajoutées aux Ordres créés par [Daily Plan Service](/service-daily-plan).
 - Les Tags peuvent être appliquées lors de l'ajout manuel d'Ordres ad hoc.
 - Les Tags peuvent être utilisées dans les vues *Workflows*, *Aperçu des Ordres*, *Plan Quotidien* et *Historique* pour filtrer les Workflows et les Ordres.
 
@@ -12,7 +12,7 @@ JS7 propose [JS7 - Tagging](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging)
 
 Les utilisateurs peuvent ajouter, mettre à jour et supprimer des Tags pour un seul Workflow.
 
-<img src="Tags-manage-object.png" alt="Manage Tags for Workflow" width="600" height="125" />
+<img src="Tags-manage-object.png" alt="Gérer Tags pour les Workflow" width="600" height="125" />
 
 Lors de la saisie des Tags, la liste des Tags existantes est proposée. A part cela, les utilisateurs peuvent taper le nom d'une nouveau tag. Les noms des Tags sont sensibles à la casse.
 
@@ -20,7 +20,7 @@ Lors de la saisie des Tags, la liste des Tags existantes est proposée. A part c
 
 Les utilisateurs peuvent ajouter, mettre à jour et supprimer des Tags pour tous les Workflows disponibles dans le dossier sélectionné et dans les sous-dossiers de manière récursive.
 
-<img src="Tags-manage-folder.png" alt="Manage Tags for Workflows from Folders" width="600" height="210" />
+<img src="Tags-manage-folder.png" alt="Gérer Tags pour les Workflows à partir des dossiers" width="600" height="210" />
 
 La *Liste des Tags* indique le nom de la tag et les Workflows auxquels la Tag est attribuée. Les utilisateurs peuvent supprimer l'attribution d'un tag.
 
@@ -38,4 +38,3 @@ La *Liste des Tags* indique le nom de la tag et les Workflows auxquels la Tag es
   - [JS7 - Tagging - Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging+-+Jobs)
   - [JS7 - Tagging - Orders](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging+-+Orders)
   - [JS7 - Tagging - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging+-+Workflows)
-

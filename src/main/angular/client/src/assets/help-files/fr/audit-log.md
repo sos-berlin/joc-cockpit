@@ -1,6 +1,6 @@
 # Journal d'Audit
 
-Le *Journal d'Audit* garde la trace des modifications apportées aux objets de planification.
+Le *Journal d'Audit* garde la trace des modifications apportées aux objets.
 
 ## Demande
 

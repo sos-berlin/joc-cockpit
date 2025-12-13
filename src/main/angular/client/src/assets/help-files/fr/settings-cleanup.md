@@ -33,7 +33,7 @@ S'il est défini sur *vrai*, les paramètres suivants sont pris en compte :
 - **history\_pause\_duration** : période pendant laquelle le Service Historique sera mis en pause.
 - **history\_pause\_delay** : délai après la reprise du Service Historique à partir d'une pause et pendant lequel le Service de Nettoyage attendra jusqu'à ce qu'il redémarre.
 
-Les utilisateurs qui exécutent des travaux 24 heures sur 24, 7 jours sur 7, sans que le Service Historique ne soit suffisamment inactif pour permettre au Service de nettoyage de s'activer, doivent activer le paramètre pour forcer l'exécution du Service de nettoyage. L'absence de purge de la base de données se traduira par une baisse des performances et une augmentation de la consommation de ressources de la base de données.
+Les utilisateurs qui exécutent des tâches 24 heures sur 24, 7 jours sur 7, sans que le Service Historique ne soit suffisamment inactif pour permettre au Service de nettoyage de s'activer, doivent activer le paramètre pour forcer l'exécution du Service de nettoyage. L'absence de purge de la base de données se traduira par une baisse des performances et une augmentation de la consommation de ressources de la base de données.
 
 ### Paramètre : *history_pause\duration*, Défaut : *60*s
 
@@ -81,7 +81,7 @@ Spécifie la période de rétention des entrées dans la vue *Moniteur*. Comme i
 
 ### Paramètre : *notification_history\_age*, Valeur par défaut : *1*d
 
-Spécifie la durée de conservation des notifications, par exemple pour les erreurs et les avertissements relatifs aux travaux. Les notifications étant généralement traitées le jour même, il n'est pas recommandé de prévoir des périodes de conservation plus longues.
+Spécifie la durée de conservation des notifications, par exemple pour les erreurs et les avertissements relatifs aux tâches. Les notifications étant généralement traitées le jour même, il n'est pas recommandé de prévoir des périodes de conservation plus longues.
 
 ### Paramètre : *profile_age*, Valeur par défaut : *365*d
 
