@@ -1,4 +1,4 @@
-# Profils de Services d'Identité
+# Service d'Identité - Profils
 
 Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Services d'Identité](/identity-services).
 
@@ -12,7 +12,7 @@ Pour les utilisateurs qui se connectent avec un Service d'Identité, un *profil*
 
 La vue Secondaire affiche la liste des *Profils* actifs et la date de la dernière connexion. Les opérations suivantes sont disponibles pour les *Profils* individuellement :
 
-- En cliquant sur le *Profil*, vous accédez à la sous-vue [Identity Service - Roles](/identity-service-roles) pour afficher les rôles utilisés par le *Profil* en question.
+- En cliquant sur le *Profil*, vous accédez à la sous-vue [Service d'Identité - Rôles](/identity-service-roles) pour afficher les rôles utilisés par le *Profil* en question.
 - Le menu d'action d'un *Profil* propose les opérations suivantes :
   - **Supprimer les Préférences du profil** rétablit les valeurs par défaut de [Profil - Préférences](/profile-preferences). Les autres paramètres du *Profil* tels que *Gestion Git* et *Gestion des favoris* restent en place. L'opération peut être utilisée pour imposer l'application du *Profil* du compte par défaut.
   - **Supprimer le profil** efface le *Profil* du compte de l'utilisateur. Lors de la prochaine connexion du compte concerné, un nouveau *Profil* sera créé.
@@ -23,15 +23,14 @@ Les utilisateurs peuvent sélectionner un ou plusieurs *profils* pour effectuer 
 
 ### Aide contextuelle
 
-- [Identity Service - Configuration](/identity-service-configuration)
-- [Identity Service - Accounts](/identity-service-accounts) 
-- [Identity Service - Roles](/identity-service-roles) 
-- [Services d'Identité](/identity-services)
 - [Profil - Préférences](/profile-preferences) 
-- [Réglages - Service d'Assainissement](/settings-cleanup)
 - [Réglages - JOC Cockpit](/settings-joc)
+- [Réglages - Service d'Assainissement](/settings-cleanup)
+- [Services d'Identité](/identity-services)
+- [Service d'Identité - Comptes](/identity-service-accounts)
+- [Service d'Identité - Configuration](/identity-service-configuration)
+- [Service d'Identité - Rôles](/identity-service-roles)
 
 ### Product Knowledge Base
 
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
-

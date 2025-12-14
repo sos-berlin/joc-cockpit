@@ -9,7 +9,7 @@ Pour plus de détails, voir [JS7 - Inventory Favorites](https://kb.sos-berlin.co
 
 ## Agents favoris
 
-Les utilisateurs peuvent trouver un plus grand nombre d'Agents dans leur environnement à partir de [Agents Autonomes](/initial-operation-register-agent-standalone) et de [Clusters de Sous-Agents](/initial-operation-register-agent-subagent-Cluster). Au lieu de faire défiler de longues listes, les utilisateurs peuvent spécifier leurs *Agents favoris* qui figureront en haut de la liste des Agents assignables.
+Les utilisateurs peuvent trouver un plus grand nombre d'Agents dans leur environnement à partir de [Agents Autonomes](/initial-operation-register-agent-standalone) et de [Clusters de Sous-Agents](/initial-operation-register-agent-subagent-cluster). Au lieu de faire défiler de longues listes, les utilisateurs peuvent spécifier leurs *Agents favoris* qui figureront en haut de la liste des Agents assignables.
 
 ### Ajouter des Agents favoris
 
@@ -67,8 +67,8 @@ Les opérations suivantes sont disponibles à partir du menu d'action à 3 point
 
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
 - [Configuration - Inventaire - Workflow - Propriétés de Tâche](/configuration-inventory-workflow-job-properties)
-- [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone)
-- [Initial Operation - Register Subagent Clusters](/initial-operation-register-agent-subagent-Cluster)
+- [Opération initiale - Enregistrer Agent Autonome](/initial-operation-register-agent-standalone)
+- [Initial Operation - Register Subagent Clusters](/initial-operation-register-agent-subagent-cluster)
 - [Profil](/profile)
 
 ### Product Knowledge Base

@@ -1,8 +1,8 @@
-# Gérer le Certificat de Cryptage
+# Gérer les Certificats de Cryptage
 
 La page [JS7 - Encryption and Decryption](https://kb.sos-berlin.com/display/JS7/JS7+-+Encryption+and+Decryption) offre un moyen sûr de traiter les secrets utilisés dans les tâches. Les utilisateurs peuvent chiffrer et déchiffrer des données sensibles telles que des mots de passe en utilisant des clés asymétriques.
 
-Pour plus de détails, voir [Manage Encryption Keys](/encryption-manage-keys).
+Pour plus de détails, voir [Gérer les Clés de Chiffrement](/encryption-manage-keys).
 
 La page *Gérer les Clefs de Cryptage* permet de spécifier les propriétés du certificat.
 
@@ -46,7 +46,7 @@ Les opérations suivantes sont disponibles à partir des liens :
 
 ### Aide contextuelle
 
-- [Manage Encryption Keys](/encryption-manage-keys)
+- [Gérer les Clés de Chiffrement](/encryption-manage-keys)
 
 ### Product Knowledge Base
 

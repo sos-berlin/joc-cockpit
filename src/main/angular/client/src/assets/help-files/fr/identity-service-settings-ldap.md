@@ -1,10 +1,10 @@
-# Paramètres du Service d'Identité LDAP
+# Service d'Identité - LDAP - Paramètres
 
 Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Services d'Identité](/identity-services).
 
 Les Services d'Identité sont spécifiés à partir de la configuration suivante :
 
-- **General Configuration** qui contient les propriétés disponibles pour tous les Services d'Identité, voir [Identity Service - Configuration](/identity-service-configuration).
+- **General Configuration** qui contient les propriétés disponibles pour tous les Services d'Identité, voir [Service d'Identité - Configuration](/identity-service-configuration).
 - **Paramètres** spécifiques au type de Service d'Identité LDAP.
 
 ## Paramètres
@@ -69,8 +69,8 @@ Pour plus de détails, voir
 
 ### Aide contextuelle
 
-- [Identity Service - Configuration](/identity-service-configuration)
 - [Services d'Identité](/identity-services)
+- [Service d'Identité - Configuration](/identity-service-configuration)
 
 ### Product Knowledge Base
 
@@ -78,4 +78,3 @@ Pour plus de détails, voir
   - [JS7 - LDAP Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+LDAP+Identity+Service)
     - [JS7 - LDAP Identity Service Configuration](https://kb.sos-berlin.com/display/JS7/JS7+-+LDAP+Identity+Service+Configuration)
     - [JS7 - LDAP over TLS using STARTTLS and LDAP over SSL using LDAPS](https://kb.sos-berlin.com/display/JS7/JS7+-+LDAP+over+TLS+using+STARTTLS+and+LDAP+over+SSL+using+LDAPS)
-

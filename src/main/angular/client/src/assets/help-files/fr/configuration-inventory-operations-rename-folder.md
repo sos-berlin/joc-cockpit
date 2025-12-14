@@ -56,8 +56,8 @@ Lorsque vous renommez des objets, la cohérence est prise en compte et les objet
 
 - [Configuration - Inventaire - Opérations - Renommer Objet](/configuration-inventory-operations-rename-object)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
-- [Plan Quotidien](/daily-plan)
 - [Matrice de Dépendance](/dependencies-matrix)
+- [Plan Quotidien](/daily-plan)
 - [Règles de Dénomination des Objets](/object-naming-rules)
 
 ### Product Knowledge Base

@@ -47,8 +47,8 @@ Les utilisateurs contrôlent la révocation cohérente des objets à partir des 
 
 - [Configuration - Inventaire - Opérations - Révoquer Objet](/configuration-inventory-operations-revoke-object)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
-- [Plan Quotidien](/daily-plan)
 - [Matrice de Dépendance](/dependencies-matrix)
+- [Plan Quotidien](/daily-plan)
 
 ### Product Knowledge Base
 

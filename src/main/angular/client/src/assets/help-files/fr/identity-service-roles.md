@@ -1,4 +1,4 @@
-# Rôles du Service d'Identité
+# Service d'Identité - Rôles
 
 Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Services d'Identité](/identity-services).
 
@@ -79,7 +79,7 @@ Les opérations en bloc suivantes sont disponibles lorsque vous sélectionnez un
 
 ### Aide contextuelle
 
-- [Identity Service - Permissions](/identity-service-permissions)
+- [Service d'Identité - Permissions](/identity-service-permissions)
 - [Services d'Identité](/identity-services)
 
 ### Product Knowledge Base
@@ -87,4 +87,3 @@ Les opérations en bloc suivantes sont disponibles lorsque vous sélectionnez un
 - [JS7 - Default Roles and Permissions](https://kb.sos-berlin.com/display/JS7/JS7+-+Default+Roles+and+Permissions)
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
 - [JS7 - Gestion des comptes d'utilisateurs, des rôles et des autorisations](https://kb.sos-berlin.com/display/JS7/JS7+-+Gestion+des+comptes+d'utilisateurs%2C+Rôles+et+Permissions)
-

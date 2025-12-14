@@ -1,6 +1,6 @@
-# Opération initiale - Engregistrement du Cluster de Sous-Agents
+# Opération initiale - Engregistrer Cluster de Sous-Agents
 
-L'opération initiale est effectuée après l'installation du Contrôleur JS7, de l'Agent et du cockpit JOC. L'enregistrement d'un Cluster de Sous-Agents a lieu après l'achèvement de [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-Cluster).
+L'opération initiale est effectuée après l'installation du Contrôleur JS7, de l'Agent et du cockpit JOC. L'enregistrement d'un Cluster de Sous-Agents a lieu après l'achèvement de [Opération initiale - Enregistrer Cluster Agents](/initial-operation-register-agent-cluster).
 
 ## Architecture
 
@@ -26,17 +26,17 @@ L'enregistrement d'une Cluster de Sous-Agents comprend l'enregistrement des él�
   - *actif-passif* : seul le premier Sous-Agent sera utilisé pour l'exécution de la tâche. S'il n'est pas disponible, le Sous-Agent suivant sera utilisé. Pour plus d'informations, voir [JS7 - Agent Cluster - Active-Passive Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Active-Passive+Subagent+Cluster).
   - *basé sur les métriques* : sur la base de règles telles que la consommation de CPU et de mémoire, le Sous-Agent suivant sera sélectionné pour l'exécution de la tâche. Pour plus de détails, voir [JS7 - Agent Cluster - Metrics-based Subagent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster+-+Metrics-based+Subagent+Cluster).
 
-Pour plus d'informations, voir [Initial Operation - Subagent Cluster](/initial-operation-agent-subagent-Cluster)
+Pour plus d'informations, voir [Opération initiale - Cluster Sous-Agents](/initial-operation-agent-subagent-cluster)
 
 ## Références
 
 ### Aide contextuelle
 
+- [Opération initiale - Enregistrer Contrôleur](/initial-operation-register-controller)
+- [Opération initiale - Enregistrer Cluster Agents](/initial-operation-register-agent-cluster)
+- [Opération initiale - Enregistrer Sous-Agent](/initial-operation-register-agent-subagent)
+- [Opération initiale - Cluster Sous-Agents](/initial-operation-agent-subagent-cluster)
 - [Tableau de Bord - État du Produit](/dashboard-product-status)
-- [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-Cluster)
-- [Initial Operation - Register Controller](/initial-operation-register-controller)
-- [Initial Operation - Register Subagent](/initial-operation-register-agent-subagent)
-- [Initial Operation - Subagent Cluster](/initial-operation-agent-subagent-Cluster)
 
 ### Product Knowledge Base
 

@@ -37,8 +37,8 @@ Les utilisateurs contrôlent le déploiement cohérent à partir des options sui
 
 - [Configuration - Inventaire - Opérations - Retirer Dossier](/configuration-inventory-operations-recall-folder)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
-- [Plan Quotidien](/daily-plan)
 - [Matrice de Dépendance](/dependencies-matrix)
+- [Plan Quotidien](/daily-plan)
 
 ### Product Knowledge Base
 

@@ -1,4 +1,4 @@
-# Permissions du Service d'Identité
+# Service d'Identité - Permissions
 
 Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Services d'Identité](/identity-services).
 
@@ -56,7 +56,7 @@ Dans le coin supérieur droit, les boutons suivants permettent d'afficher les au
 
 ### Aide contextuelle
 
-- [Identity Service - Roles](/identity-service-roles)
+- [Service d'Identité - Rôles](/identity-service-roles)
 - [Services d'Identité](/identity-services)
 
 ### Product Knowledge Base

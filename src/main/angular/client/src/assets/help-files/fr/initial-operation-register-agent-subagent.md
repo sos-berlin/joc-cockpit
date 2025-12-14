@@ -1,6 +1,6 @@
-# Opération initiale - Enregistrement du Sous-Agent
+# Opération initiale - Enregistrer Sous-Agent
 
-L'opération initiale est effectuée après l'installation du Contrôleur JS7, de l'Agent et du JOC Cockpit. L'enregistrement du Sous-Agent a lieu après l'achèvement de [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-Cluster).
+L'opération initiale est effectuée après l'installation du Contrôleur JS7, de l'Agent et du JOC Cockpit. L'enregistrement du Sous-Agent a lieu après l'achèvement de [Opération initiale - Enregistrer Cluster Agents](/initial-operation-register-agent-cluster).
 
 ## Architecture
 
@@ -30,18 +30,18 @@ Les utilisateurs fournissent les données suivantes :
   - L'URL commence par le protocole *http* si le Sous-Agent utilise le protocole HTTP ordinaire. Le protocole *https* est utilisé si le Sous-Agent est configuré pour HTTPS.
   - Le nom d'hôte peut être *localhost* si le Sous-Agent est installé sur la même machine que les Agents Director. Dans le cas contraire, il convient d'indiquer le FQDN de l'hôte du Sous-Agent.
   - Le *port* du Subagent est déterminé lors de l'installation. 
-  - **Comme Cluster Sous-Agent** crée éventuellement un Cluster Sous-Agent pour le Sous-Agent, voir [Initial Operation - Register Subagent Cluster](/initial-operation-register-agent-subagent-Cluster).
+  - **Comme Cluster Sous-Agent** crée éventuellement un Cluster Sous-Agent pour le Sous-Agent, voir [Opération initiale - Enregistrer Cluster Sous-Agents](/initial-operation-register-agent-subagent-cluster).
 
-Une fois l'enregistrement réussi, le Sous-Agent sera affiché dans la vue [Resources - Agents](/resources-agents).
+Une fois l'enregistrement réussi, le Sous-Agent sera affiché dans la vue [Ressources - Agents](/resources-agents).
 
 ## Références
 
 ### Aide contextuelle
 
+- [Opération initiale - Enregistrer Contrôleur](/initial-operation-register-controller)
+- [Opération initiale - Enregistrer Cluster Agents](/initial-operation-register-agent-cluster)
+- [Opération initiale - Enregistrer Cluster Sous-Agents](/initial-operation-register-agent-subagent-cluster)
 - [Tableau de Bord - État du Produit](/dashboard-product-status)
-- [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-Cluster)
-- [Initial Operation - Register Controller](/initial-operation-register-controller)
-- [Initial Operation - Register Subagent Cluster](/initial-operation-register-agent-subagent-Cluster)
 
 ### Product Knowledge Base
 

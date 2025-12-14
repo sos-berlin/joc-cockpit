@@ -16,7 +16,7 @@ Pour plus de détails, voir [JS7 - Identity Services](https://kb.sos-berlin.com/
 Par défaut, les utilisateurs trouvent le Service d'Identité JOC-INITIAL qui est ajouté lors de l'installation initiale.
 
 - Le Service d'Identité contient le compte utilisateur unique *root* avec le mot de passe *root*. Les utilisateurs doivent modifier le mot de passe du compte utilisateur *root* lors de la première connexion.
-- Les utilisateurs peuvent ajouter [Identity Service - Accounts](/identity-service-accounts) et [Identity Service - Roles](/identity-service-roles) au Service d'Identité.
+- Les utilisateurs peuvent ajouter [Service d'Identité - Comptes](/identity-service-accounts) et [Service d'Identité - Rôles](/identity-service-roles) au Service d'Identité.
 - Les utilisateurs peuvent modifier le Service d'Identité existant ou ajouter de nouveaux Services d'Identité.
 
 ## Utilisation des Services d'Identité
@@ -41,7 +41,7 @@ Pour chaque Service d'Identité, les propriétés suivantes sont affichées :
 
 ## Opérations sur les Services d'Identité
 
-Les utilisateurs peuvent cliquer sur l'un des Services d'Identité pour accéder à la vue [Identity Service - Roles](/identity-service-roles) ou [Identity Service - Accounts](/identity-service-accounts) si le service est proposé.
+Les utilisateurs peuvent cliquer sur l'un des Services d'Identité pour accéder à la vue [Service d'Identité - Rôles](/identity-service-roles) ou [Service d'Identité - Comptes](/identity-service-accounts) si le service est proposé.
 
 Les utilisateurs peuvent ajouter un Service d'Identité à partir du bouton correspondant dans le coin supérieur droit de l'écran.
 
@@ -56,9 +56,9 @@ Pour les Services d'Identité existants, les opérations suivantes sont proposé
 
 ### Aide contextuelle
 
-- [Identity Service - Accounts](/identity-service-accounts)
-- [Identity Service - Configuration](/identity-service-configuration)
-- [Identity Service - Roles](/identity-service-roles)
+- [Service d'Identité - Comptes](/identity-service-accounts)
+- [Service d'Identité - Configuration](/identity-service-configuration)
+- [Service d'Identité - Rôles](/identity-service-roles)
 
 ### Product Knowledge Base
 

@@ -1,6 +1,6 @@
-# Opération initiale - Enregistrement d'un Agent Autonome
+# Opération initiale - Enregistrer Agent Autonome
 
-L'opération initiale est effectuée après l'installation du Contrôleur JS7, de l'Agent et du JOC Cockpit. L'enregistrement de l'Agent a lieu après l'achèvement de [Initial Operation - Register Controller](/initial-operation-register-controller).
+L'opération initiale est effectuée après l'installation du Contrôleur JS7, de l'Agent et du JOC Cockpit. L'enregistrement de l'Agent a lieu après l'achèvement de[Opération initiale - Enregistrer Contrôleur](/initial-operation-register-controller).
 
 ## Enregistrer un Agent Autonome
 
@@ -19,15 +19,15 @@ Les utilisateurs fournissent les données suivantes :
   - Le nom d'hôte peut être *localhost* si l'Agent est installé sur la même machine que le Contrôleur. Sinon, le FQDN de l'hôte de l'Agent doit être spécifié.
   - Le *port* de l'Agent est déterminé lors de l'installation. 
 
-Une fois l'enregistrement réussi, l'Agent sera affiché dans la vue [Resources - Agents](/resources-agents).
+Une fois l'enregistrement réussi, l'Agent sera affiché dans la vue [Ressources - Agents](/resources-agents).
 
 ## Références
 
 ### Aide contextuelle
 
+- [Opération initiale - Enregistrer Contrôleur](/initial-operation-register-controller)
+- [Opération initiale - Enregistrer Cluster Agents](/initial-operation-register-agent-cluster)
 - [Tableau de Bord - État du Produit](/dashboard-product-status)
-- [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-Cluster)
-- [Initial Operation - Register Controller](/initial-operation-register-controller)
 
 ### Product Knowledge Base
 

@@ -1,6 +1,6 @@
 # Opération initiale - Enregistrer Agents Cluster
 
-L'opération initiale est effectuée après l'installation du Contrôleur JS7, de l'Agent et du JOC Cockpit. L'enregistrement d'un Cluster d'Agents s'effectue apres l'enregistrement [Initial Operation - Register Controller](/initial-operation-register-controller).
+L'opération initiale est effectuée après l'installation du Contrôleur JS7, de l'Agent et du JOC Cockpit. L'enregistrement d'un Cluster d'Agents s'effectue apres l'enregistrement[Opération initiale - Enregistrer Contrôleur](/initial-operation-register-controller).
 
 L'exploitation d'un Cluster d'Agents est soumise aux conditions de licence [JS7 - License](https://kb.sos-berlin.com/display/JS7/JS7+-+License).
 
@@ -26,7 +26,7 @@ L'exploitation d'un Cluster d'Agents est soumise aux conditions de licence [JS7 
 
 ## Enregistrer un Cluster d'Agents
 
-L'enregistrement d'un Cluster d'Agents comprend l'enregistrement des Agents Directeurs Primaire et Secondaires. Pour l'enregistrement ultérieur des Sous-Agents, voir [Initial Operation - Register Subagent](/initial-operation-register-agent-subagent).
+L'enregistrement d'un Cluster d'Agents comprend l'enregistrement des Agents Directeurs Primaire et Secondaires. Pour l'enregistrement ultérieur des Sous-Agents, voir [Opération initiale - Enregistrer Sous-Agent](/initial-operation-register-agent-subagent).
 
 Les conditions préalables à l'installation sont les suivantes
 
@@ -52,23 +52,23 @@ Les utilisateurs fournissent les données suivantes :
 	est configuré pour HTTPS.
     - Le nom d'hôte peut être *localhost* si l'Agent Agent Directeur est installé sur la même machine que le Contrôleur. Dans le cas contraire, il convient d'indiquer le FQDN de l'hôte de l'Agent administrateur.
     - Le *port* de l'Agent Directeur est déterminé lors de l'installation. 
-  - **Comme propre Cluster de Sous-Agents** crée facultativement des Clusters de Sous-Agents pour chaque Agent Directeur Agent Primaire et Secondaire, voir [Initial Operation - Register Subagent Cluster](/initial-operation-register-agent-subagent-Cluster).
+  - **Comme propre Cluster de Sous-Agents** crée facultativement des Clusters de Sous-Agents pour chaque Agent Directeur Agent Primaire et Secondaire, voir [Opération initiale - Enregistrer Cluster Sous-Agents](/initial-operation-register-agent-subagent-cluster).
 - **Agent Directeur Secondaire**
   - **ID Sous-Agent** est l'identifiant unique de l'Agent Directeur Secondaire qui ne peut pas être modifié pendant la durée de vie de l'Agent Directeur. Le *Subagent ID* n'est pas visible avec les Jobs et les Workflows.
   - **Titre** est une description qui peut être ajoutée pour un Agent Directeur.
   - **URL** attend l'URL du protocole, de l'hôte et du port utilisés par le Contrôleur pour se connecter à l'Agent Directeur Secondaire, de la même manière que pour l'*Agent Directeur Primaire*.
 
-Une fois l'enregistrement réussi, l'Agent sera affiché dans la vue [Resources - Agents](/resources-agents).
+Une fois l'enregistrement réussi, l'Agent sera affiché dans la vue [Ressources - Agents](/resources-agents).
 
 ## Références
 
 ### Aide contextuelle
 
+- [Opération initiale - Enregistrer Contrôleur](/initial-operation-register-controller)
+- [Opération initiale - Enregistrer Agent Autonome](/initial-operation-register-agent-standalone)
+- [Opération initiale - Enregistrer Sous-Agent](/initial-operation-register-agent-subagent)
+- [Opération initiale - Enregistrer Cluster Sous-Agents](/initial-operation-register-agent-subagent-cluster)
 - [Tableau de Bord - État du Produit](/dashboard-product-status)
-- [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone)
-- [Initial Operation - Register Subagent](/initial-operation-register-agent-subagent)
-- [Initial Operation - Register Subagent Cluster](/initial-operation-register-agent-subagent-Cluster)
-- [Initial Operation - Register Controller](/initial-operation-register-controller)
 
 ### Product Knowledge Base
 

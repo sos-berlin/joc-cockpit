@@ -1,4 +1,4 @@
-# Configuration du compte du Service d'Identité
+# Service d'Identité - Configuration du Compte
 
 Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Services d'Identité](/identity-services).
 
@@ -13,20 +13,20 @@ Les propriétés suivantes sont disponibles pour un compte :
   - Un *mot de passe* individuel peut être spécifié. S'il est laissé vide, le *mot_de_passe initial* spécifié sur la page [Réglages - Service d'Identité](/settings-identity-service) sera utilisé. Le *mot de passe* doit correspondre à l'exigence de *longueur_de_mot_de_passe_minimum* de la même page de paramètres.
   - Quelle que soit la source utilisée pour le *mot de passe*, l'utilisateur doit modifier le *mot de passe* du compte lors de sa prochaine connexion.
 - la propriété **Confirmer le mot de passe** est utilisée pour répéter un *mot de passe* spécifié individuellement. Si la propriété *Mot de passe* est vide, la propriété *Confirmation du mot de passe* doit l'être également.
-- **Roles** spécifie la liste des [Identity Service - Roles](/identity-service-roles) auxquels le compte est attribué.
+- **Roles** spécifie la liste des [Service d'Identité - Rôles](/identity-service-roles) auxquels le compte est attribué.
 - **Forcer le changement de mot de passe** indique si le compte d'utilisateur doit changer son *mot de passe* lors de la prochaine connexion. Le changement de mot de passe est imposé pour empêcher l'utilisation continue du *mot de passe* spécifié individuellement et du *mot de passe* initial.
 - Les propriétés disponibles pour les comptes existants sont les suivantes :
-  - **Bloqué** spécifie que le compte doit être ajouté à [Identity Service - Blocklist](/identity-service-blocklist) et que l'accès lui sera refusé.
+  - **Bloqué** spécifie que le compte doit être ajouté à [Service d'Identité - Liste de Blocage](/identity-service-blocklist) et que l'accès lui sera refusé.
   - **Désactivé** indique que le compte est inactif et que l'accès lui est refusé.
 
 ## Références
 
 ### Aide contextuelle
 
-- [Identity Service - Blocklist](/identity-service-blocklist)
-- [Identity Service - Roles](/identity-service-roles) 
-- [Services d'Identité](/identity-services)
 - [Réglages - Service d'Identité](/settings-identity-service)
+- [Services d'Identité](/identity-services)
+- [Service d'Identité - Liste de Blocage](/identity-service-blocklist)
+- [Service d'Identité - Rôles](/identity-service-roles) 
 
 ### Product Knowledge Base
 

@@ -1,4 +1,4 @@
-# Échecs de Connexion
+# Service d'Identité - Échecs de Connexion
 
 Les Services d'Identité règlent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Services d'Identité](/identity-services).
 
@@ -14,15 +14,15 @@ Les utilisateurs doivent savoir que les données historiques relatives aux éche
 
 Les utilisateurs peuvent effectuer les opérations suivantes sur les connexions échouées :
 
-- **Ajouter à la liste de blocage** ajoute le compte concerné à la liste [Identity Service - Blocklist](/identity-service-blocklist) qui interdit toute connexion ultérieure. Cette opération est disponible si un compte est indiqué. Pour les connexions effectuées sans compte, l'espace réservé *\*none* est indiqué.
+- **Ajouter à la liste de blocage** ajoute le compte concerné à la liste [Service d'Identité - Liste de Blocage](/identity-service-blocklist) qui interdit toute connexion ultérieure. Cette opération est disponible si un compte est indiqué. Pour les connexions effectuées sans compte, l'espace réservé *\*none* est indiqué.
 
 ## Références
 
 ### Aide contextuelle
 
-- [Service d'Assainissement](/service-cleanup)
-- [Identity Service - Blocklist](/identity-service-blocklist)
 - [Services d'Identité](/identity-services)
+- [Service d'Identité - Liste de Blocage](/identity-service-blocklist)
+- [Service d'Assainissement](/service-cleanup)
 
 ### Product Knowledge Base
 

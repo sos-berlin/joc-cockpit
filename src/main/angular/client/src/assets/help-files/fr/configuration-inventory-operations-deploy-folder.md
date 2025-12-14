@@ -65,8 +65,8 @@ Les utilisateurs contrôlent la cohérence du déploiement à partir des options
 
 - [Configuration - Inventaire - Opérations - Deployer Objet](/configuration-inventory-operations-deploy-object)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
-- [Plan Quotidien](/daily-plan)
 - [Matrice de Dépendance](/dependencies-matrix)
+- [Plan Quotidien](/daily-plan)
 
 ### Product Knowledge Base
 

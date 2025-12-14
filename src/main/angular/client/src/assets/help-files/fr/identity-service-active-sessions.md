@@ -1,4 +1,4 @@
-# Séances actives des Services d'Identité
+# Service d'Identité - Séances actives
 
 Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Services d'Identité](/identity-services).
 
@@ -15,7 +15,7 @@ Les séances actives sont affichées à partir du compte utilisé, du Service d'
 
 Les utilisateurs peuvent effectuer les opérations suivantes sur les séances actives :
 
-- **Ajouter à la Liste de Blocage** ajoute le compte concerné à la liste [Identity Service - Blocklist](/identity-service-blocklist) qui interdit toute connexion ultérieure. Cette opération ne met pas fin à la séance en cours du compte.
+- **Ajouter à la Liste de Blocage** ajoute le compte concerné à la liste [Service d'Identité - Liste de Blocage](/identity-service-blocklist) qui interdit toute connexion ultérieure. Cette opération ne met pas fin à la séance en cours du compte.
 - **Annuler la séance** met fin de force à la séance en cours du compte. Cela n'empêchera pas le compte d'effectuer une nouvelle opération de connexion.
 - **Annuler toutes les séances du compte**, similaire à *Annuler la séance*, met fin à toutes les séances du compte donné.
 
@@ -25,9 +25,9 @@ Si vous sélectionnez une ou plusieurs séances, l'opération *Annuler la séanc
 
 ### Aide contextuelle
 
-- [Identity Service - Blocklist](/identity-service-blocklist)
-- [Services d'Identité](/identity-services)
 - [Réglages - Service d'Identité](/settings-identity-service)
+- [Services d'Identité](/identity-services)
+- [Service d'Identité - Liste de Blocage](/identity-service-blocklist)
 
 ### Product Knowledge Base
 

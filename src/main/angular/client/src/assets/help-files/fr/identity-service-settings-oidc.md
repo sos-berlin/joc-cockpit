@@ -1,10 +1,10 @@
-# Paramètres du Service d'Identité de l'OIDC
+# Service d'Identité - OIDC - Paramètres
 
 Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Services d'Identité](/identity-services).
 
 Les Services d'Identité sont spécifiés à partir de la configuration suivante :
 
-- **General Configuration** qui contient les propriétés disponibles pour tous les Services d'Identité, voir [Identity Service - Configuration](/identity-service-configuration).
+- **General Configuration** qui contient les propriétés disponibles pour tous les Services d'Identité, voir [Service d'Identité - Configuration](/identity-service-configuration).
 - **Réglages** spécifiques au type de Service d'Identité de l'OIDC.
 
 ## Paramètres
@@ -45,11 +45,10 @@ Les paramètres suivants sont disponibles :
 
 ### Aide contextuelle
 
-- [Identity Service - Configuration](/identity-service-configuration)
 - [Services d'Identité](/identity-services)
+- [Service d'Identité - Configuration](/identity-service-configuration)
 
 ### Product Knowledge Base
 
 - [JS7 - Identity Services](https://kb.sos-berlin.com/display/JS7/JS7+-+Identity+Services)
 - [JS7 - OIDC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+OIDC+Identity+Service)
-

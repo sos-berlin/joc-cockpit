@@ -1,11 +1,11 @@
-# Configuration du Service d'Identité
+# Service d'Identité - Configuration
 
 Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Services d'Identité](/identity-services).
 
 Les Services d'Identité sont spécifiés à partir de la configuration suivante :
 
 - **Configuration générale** qui contient les propriétés disponibles pour tous les Services d'Identité.
-- **Réglages** spécifiques au type de Service d'Identité, voir [Identity Service - Settings](/identity-service-settings).
+- **Réglages** spécifiques au type de Service d'Identité, voir [Réglages - Service d'Identité](/settings-identity-service).
 
 ## Configuration générale
 
@@ -25,7 +25,7 @@ Pour tout Service d'Identité, les propriétés suivantes sont affichées :
 
 ### Aide contextuelle
 
-- [Identity Service - Settings](/identity-service-settings)
+- [Réglages - Service d'Identité](/settings-identity-service)
 - [Services d'Identité](/identity-services)
 
 ### Product Knowledge Base

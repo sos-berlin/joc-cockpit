@@ -109,13 +109,13 @@ Les utilisateurs doivent tenir compte des implications des Ordres cycliques : il
 - [Configuration - Inventaire - Calendriers](/configuration-inventory-calendars)
 - [Configuration - Inventaire - Planifications](/configuration-inventory-schedules)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
-- [Plan Quotidien](/daily-plan)
-- [Service du Plan Qutotidien](/service-daily-plan)
-- [Règles de Dénomination des Objets](/object-naming-rules)
 - [Historique des Ordres](/history-orders)
+- [Historique des Tâches](/history-tasks)
+- [Plan Quotidien](/daily-plan)
 - [Profil - Préférences](/profile-preferences)
 - [Réglages - Plan Quotidien](/settings-daily-plan)
-- [Historique des Tâches](/history-tasks)
+- [Règles de Dénomination des Objets](/object-naming-rules)
+- [Service du Plan Qutotidien](/service-daily-plan)
 
 ### Product Knowledge Base
 

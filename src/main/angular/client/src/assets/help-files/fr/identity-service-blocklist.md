@@ -1,4 +1,4 @@
-# Liste de Blocage des Services d'Identité
+# Service d'Identité - Liste de Blocage
 
 Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Services d'Identité](/identity-services).
 
@@ -13,8 +13,8 @@ La sous-vue *Liste de Bloacage* permet d'ajouter des comptes à la liste de bloc
 
 Les comptes d'utilisateurs peuvent être ajoutés à la liste de blocage à partir des vues Secondaires suivantes :
 
-- [Audit Log - Failed Logins](/identity-service-faíled-logins) les comptes d'utilisateurs peuvent être ajoutés à la liste de blocage à partir des vues Secondaires suivantes: : si des comptes sont identifiés comme ayant fréquemment échoué à l'ouverture de séance, cela peut indiquer une attaque. Ces comptes peuvent être ajoutés à la liste de blocage.
-- [Identity Service - Active Sessions](/identity-service-active-sessions) si des comptes dans des séances actives sont identifiés comme étant indésirables, ils peuvent être ajoutés à la liste de blocage.
+- [Service d'Identité - Échecs de Connexion](/identity-service-faíled-logins) les comptes d'utilisateurs peuvent être ajoutés à la liste de blocage à partir des vues Secondaires suivantes: : si des comptes sont identifiés comme ayant fréquemment échoué à l'ouverture de séance, cela peut indiquer une attaque. Ces comptes peuvent être ajoutés à la liste de blocage.
+- [Service d'Identité - Séances actives](/identity-service-active-sessions) si des comptes dans des séances actives sont identifiés comme étant indésirables, ils peuvent être ajoutés à la liste de blocage.
 
 Les deux vues Secondaires permettent d'ajouter des comptes individuels à la liste de blocage et d'ajouter des comptes sélectionnés à partir d'une opération en bloc.
 
@@ -28,9 +28,9 @@ Une opération en masse est possible en utilisant le bouton *Supprimer de la lis
 
 ### Aide contextuelle
 
-- [Audit Log - Failed Logins](/identity-service-faíled-logins)
-- [Identity Service - Active Sessions](/identity-service-active-sessions)
 - [Services d'Identité](/identity-services)
+- [Service d'Identité - Échecs de Connexion](/identity-service-faíled-logins)
+- [Service d'Identité - Séances actives](/identity-service-active-sessions)
 
 ### Product Knowledge Base
 

@@ -26,9 +26,9 @@ Pour les types de Services d'Identité suivants, les comptes utilisateurs ne son
 Pour chaque compte, les propriétés suivantes sont affichées :
 
 - **Compte** indique le compte tel qu'il a été spécifié lors de la connexion.
-- **Rôles** indique la liste des [Identity Service - Roles](/identity-service-roles) auxquels le compte est associé.
+- **Rôles** indique la liste des [Service d'Identité - Rôles](/identity-service-roles) auxquels le compte est associé.
 - **Forcer le changement de mot de passe** indique si le compte utilisateur doit changer son mot de passe lors de la prochaine connexion.
-- **Bloqué** indique que le compte a été ajouté à un [Identity Service - Blocklist](/identity-service-blocklist) et que l'accès lui est refusé.
+- **Bloqué** indique que le compte a été ajouté à un [Service d'Identité - Liste de Blocage](/identity-service-blocklist) et que l'accès lui est refusé.
 - **Désactivé** indique que le compte est inactif et que l'accès lui est refusé.
 
 ## Opérations sur les comptes
@@ -39,11 +39,11 @@ Les utilisateurs peuvent ajouter un compte en utilisant le bouton correspondant 
 
 Les opérations suivantes sont disponibles dans le menu d'action à 3 points de chaque compte :
 
-- **Modifier** permet de spécifier l'adresse [Identity Service - Account Configuration](/identity-service-account-configuration).
+- **Modifier** permet de spécifier l'adresse [Service d'Identité - Configuration du Compte](/identity-service-account-configuration).
 - **Dupliquer** permet de copier le compte sélectionné dans un nouveau compte. Les utilisateurs doivent spécifier le nom du nouveau compte.
 - **Réinitialiser le mot de passe** supprime le mot de passe du compte et attribue le mot de passe spécifié avec le paramètre *initial_password* dans la page [Réglages - Service d'Identité](/settings-identity-service). Le compte utilisateur concerné doit se connecter avec le *mot_de_passe initial* et doit modifier son mot de passe lors de la prochaine connexion.
 - **Forcer le changement de mot de passe** oblige le compte à changer son mot de passe lors de la prochaine connexion.
-- **Ajouter compte à la Liste de Blocage** interdit l'accès au compte pendant la durée de l'ajout du compte à la Liste de Blocage [Identity Service - Blocklist](/identity-service-blocklist).
+- **Ajouter compte à la Liste de Blocage** interdit l'accès au compte pendant la durée de l'ajout du compte à la Liste de Blocage [Service d'Identité - Liste de Blocage](/identity-service-blocklist).
 - **Désactiver** désactive le compte et interdit l'accès à partir de ce compte.
 - **Supprimer** supprime le compte du Service d'Identité.
 - **Visualiser les Permissions** affiche la liste des autorisations résultant de la fusion des rôles du compte donné.
@@ -67,13 +67,13 @@ Les utilisateurs peuvent sélectionner un ou plusieurs *comptes* pour effectuer 
 
 ### Aide contextuelle
 
-- [Identity Service - Configuration](/identity-service-configuration)
-- [Identity Service - Account Configuration](/identity-service-account-configuration)
-- [Identity Service - Roles](/identity-service-roles) 
-- [Identity Service - Blocklist](/identity-service-blocklist)
-- [Services d'Identité](/identity-services)
-- [Réglages - Service d'Identité](/settings-identity-service)
 - [Réglages - JOC Cockpit](/settings-joc)
+- [Réglages - Service d'Identité](/settings-identity-service)
+- [Services d'Identité](/identity-services)
+- [Service d'Identité - Configuration](/identity-service-configuration)
+- [Service d'Identité - Configuration du Compte](/identity-service-account-configuration)
+- [Service d'Identité - Liste de Blocage](/identity-service-blocklist)
+- [Service d'Identité - Rôles](/identity-service-roles) 
 
 ### Product Knowledge Base
 

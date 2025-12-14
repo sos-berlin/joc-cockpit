@@ -1,4 +1,4 @@
-# Opération initiale - Registrer Contrôleur
+# Opération initiale - Enregistrer Contrôleur
 
 L'opération initiale est effectuée après l'installation du Contrôleur JS7, de l'Agent et du JOC Cockpit.
 
@@ -13,7 +13,7 @@ L'exploitation d'un Cluster de Contrôleurs est soumise aux conditions de licenc
 Pour un Contrôleur Autonome, l'opération initiale comprend
 
 - l'enregistrement d'un Contrôleur Autonome,
-- l'enregistrement des Agents, voir [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone) et [Initial Operation - Register Cluster Agent](/initial-operation-register-agent-Cluster).
+- l'enregistrement des Agents, voir [Opération initiale - Enregistrer Agent Autonome](/initial-operation-register-agent-standalone) et [Opération initiale - Enregistrer Agents Cluster](/initial-operation-register-agent-cluster).
 
 Pour un Cluster de Contrôleurs, l'opération initiale comprend
 
@@ -67,9 +67,9 @@ Lorsque les informations d'enregistrement sont soumises, JOC Cockpit établit un
 
 ### Aide contextuelle
 
+- [Opération initiale - Enregistrer Agent Autonome](/initial-operation-register-agent-standalone)
+- [Opération initiale - Enregistrer Agents Cluster](/initial-operation-register-agent-cluster)
 - [Tableau de Bord - État du Produit](/dashboard-product-status)
-- [Initial Operation - Register Cluster Agent](/initial-operation-register-agent-Cluster)
-- [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone)
 
 ### Product Knowledge Base
 

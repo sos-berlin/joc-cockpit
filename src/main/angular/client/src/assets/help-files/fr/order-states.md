@@ -27,8 +27,8 @@ En cliquant sur le nombre d'Ordres indiqué, vous accédez à la vue [Aperçu de
 
 ### Aide contextuelle
 
-- [Plan Quotidien](/daily-plan)
 - [Aperçu des Ordres](/orders-overview)
+- [Plan Quotidien](/daily-plan)
 - [Workflows](/workflows)
 
 ### Product Knowledge Base

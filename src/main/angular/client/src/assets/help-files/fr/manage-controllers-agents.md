@@ -15,7 +15,7 @@ L'exploitation d'un Cluster de Contrôleurs ou d'Agents est soumise aux conditio
 
 L'opération d'enregistrement d'un Contrôleur est disponible à partir du bouton *Nouveau Contrôleur*. Lors de la première utilisation de JOC Cockpit, la fenêtre contextuelle permettant d'enregistrer un Contrôleur s'affiche automatiquement.
 
-Pour plus d'explications, voir [Initial Operation - Register Controller](/initial-operation-register-controller).
+Pour plus d'explications, voir[Opération initiale - Enregistrer Contrôleur](/initial-operation-register-controller).
 
 ## Opérations sur les Contrôleurs
 
@@ -23,10 +23,10 @@ Pour un Contrôleur existant, les opérations suivantes sont proposées à parti
 
 - **Modifier** permet de modifier les propriétés d'un Contrôleur, y compris les URL des instances de Contrôleur.
 - **Ajouter Agent Autonome** permet d'enregistrer un Agent Autonome.
-  - Pour plus d'explications, voir [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone).
+  - Pour plus d'explications, voir [Opération initiale - Enregistrer Agent Autonome](/initial-operation-register-agent-standalone).
 - **Ajouter Agent Cluster** permet d'enregistrer un Cluster d'Agents. 
   - L'opération comprend la spécification des *Agents Directeurs* et des *Sous-Agents*.
-  - Pour plus d'explications, voir [Initial Operation - Register Cluster Agent](/initial-operation-register-agent-Cluster).
+  - Pour plus d'explications, voir [Opération initiale - Enregistrer Agents Cluster](/initial-operation-register-agent-cluster).
 - **Créer un Jeton à usage unique** 
 - **Exporter la configuration des Agents** permet de télécharger un fichier d'exportation au format JSON contenant les configurations de l'Agent du Contrôleur sélectionné.
 - **Importer la configuration des Agents** permet de télécharger un fichier d'exportation au format JSON contenant les configurations de l'Agent précédemment exportées. Les Agents concernés seront enregistrés auprès du Contrôleur.
@@ -46,9 +46,9 @@ Les boutons de filtrage suivants pour les Agents sont disponibles en haut de l'�
 
 ### Aide contextuelle
 
-- [Initial Operation - Register Cluster Agent](/initial-operation-register-agent-Cluster)
-- [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone)
-- [Initial Operation - Register Controller](/initial-operation-register-controller)
+- [Opération initiale - Enregistrer Contrôleur](/initial-operation-register-controller)
+- [Opération initiale - Enregistrer Agent Autonome](/initial-operation-register-agent-standalone)
+- [Opération initiale - Enregistrer Agents Cluster](/initial-operation-register-agent-cluster)
 
 ### Product Knowledge Base
 

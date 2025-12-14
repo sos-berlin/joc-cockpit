@@ -1,6 +1,6 @@
 # Opération initiale - Cluster de Sous-Agents
 
-L'opération initiale est effectuée après l'installation du Contrôleur JS7, de l'Agent et du JOC Cockpit. L'enregistrement d'un Cluster de Sous-Agents a lieu après l'enregistrement [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-Cluster).
+L'opération initiale est effectuée après l'installation du Contrôleur JS7, de l'Agent et du JOC Cockpit. L'enregistrement d'un Cluster de Sous-Agents a lieu après l'enregistrement [Opération initiale - Enregistrer Cluster Agents](/initial-operation-register-agent-cluster).
 
 ## Cluster de Sous-Agents
 
@@ -60,8 +60,8 @@ Expressions pour les priorités basées sur les métriques :
 
 ### Aide contextuelle
 
-- [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-Cluster)
-- [Initial Operation - Register Subagent Cluster](/initial-operation-register-agent-subagent-Cluster)
+- [Opération initiale - Enregistrer Cluster Agents](/initial-operation-register-agent-cluster)
+- [Opération initiale - Enregistrer Cluster Sous-Agents](/initial-operation-register-agent-subagent-cluster)
 
 ### Product Knowledge Base
 

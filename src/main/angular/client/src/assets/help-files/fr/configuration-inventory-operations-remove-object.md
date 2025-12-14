@@ -43,8 +43,8 @@ Les utilisateurs contrôlent la suppression cohérente des objets à partir des 
 
 - [Configuration - Inventaire - Opérations - Supprimer Dossier](/configuration-inventory-operations-remove-folder)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
-- [Plan Quotidien](/daily-plan)
 - [Matrice de Dépendance](/dependencies-matrix)
+- [Plan Quotidien](/daily-plan)
 
 ### Product Knowledge Base
 

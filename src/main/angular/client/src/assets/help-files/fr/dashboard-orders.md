@@ -51,10 +51,10 @@ Le bouton déroulant situé dans le coin supérieur droit de l'affichage permet 
 
 ### Aide contextuelle
 
-- [Plan Quotidien](/daily-plan)
-- [Sources d'Ordre Fichier](/configuration-inventory-file-order-sources)
 - [Aperçu des Ordres](/orders-overview)
+- [Plan Quotidien](/daily-plan)
 - [Profil - Préférences](/profile-preferences)
+- [Sources d'Ordre Fichier](/configuration-inventory-file-order-sources)
 - [Workflows](/workflows)
 
 ### Product Knowledge Base
