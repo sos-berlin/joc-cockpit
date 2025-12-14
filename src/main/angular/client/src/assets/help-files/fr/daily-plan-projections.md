@@ -2,7 +2,7 @@
 
 Le Plan Quotidien contient les Ordres qui sont soumis au Contrôleur et aux Agents quelques jours à l'avance à des fins de résilience. En outre, il offre la projection des heures de début des Ordres qui sont calculées pour les six mois à venir.
 
-Les utilisateurs qui souhaitent disposer d'une période de projection plus longue peuvent modifier le paramètre correspondant sur la page [Settings - Daily Plan](/settings-daily-plan).
+Les utilisateurs qui souhaitent disposer d'une période de projection plus longue peuvent modifier le paramètre correspondant sur la page [Réglages - Plan Quotidien](/settings-daily-plan).
 
 ### Dates, périodes et fuseaux horaires
 
@@ -55,6 +55,6 @@ La projection peut être exportées vers un fichier .xlsx avec la date du Plan Q
 
 ## Références
 
-- [Daily Plan](/daily-plan)
-- [Settings - Daily Plan](/settings-daily-plan)
+- [Plan Quotidien](/daily-plan)
+- [Réglages - Plan Quotidien](/settings-daily-plan)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)

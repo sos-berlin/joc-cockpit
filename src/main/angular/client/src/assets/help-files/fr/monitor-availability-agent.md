@@ -6,7 +6,7 @@ Si un Cluster d'Agents est utilisée, la disponibilité de du Cluster est prise 
 
 Le coin supérieur droit de l'écran propose la case à cocher *Contrôleur actuel* : si elle n'est pas cochée, la disponibilité sera affichée pour les Agents de tous les Contrôleurs connectés ; dans le cas contraire, l'information est affichée pour les Agents enregistrés auprès du Contrôleur actuellement sélectionné uniquement.
 
-Les utilisateurs doivent savoir que les données historiques relatives à la disponibilité des Agents sont susceptibles d'être supprimées par le [Cleanup Service](/service-cleanup).
+Les utilisateurs doivent savoir que les données historiques relatives à la disponibilité des Agents sont susceptibles d'être supprimées par le [Service d'Assainissement](/service-cleanup).
 
 ## Filtres de date
 
@@ -34,6 +34,6 @@ Montre la disponibilité par Agent et par jour dans la période donnée.
 
 ## Références
 
-- [Cleanup Service](/service-cleanup)
-- [Monitor - Availability - Controller](/monitor-availability-controller)
+- [Service d'Assainissement](/service-cleanup)
+- [Moniteur - Disponibilité de Contrôleur](/monitor-availability-controller)
 - [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor)

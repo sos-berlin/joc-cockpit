@@ -8,14 +8,14 @@ La page *Réglages* est accessible à partir de l'icône ![wheel icon](assets/im
 
 ### Aide contextuelle
 
-- [Settings - Daily Plan](/settings-daily-plan)
-- [Settings - Cleanup Service](/settings-cleanup)
-- [Settings - Identity Service](/settings-identity-service)
-- [Settings - JOC Cockpit](/settings-joc)
-- [Settings - User](/settings-user)
-- [Settings - Log Notification](/settings-log-notification)
-- [Settings - Git](/settings-git)
-- [Settings - Kiosk](/settings-kiosk)
+- [Réglages - Plan Quotidien](/settings-daily-plan)
+- [Réglages - Service d'Assainissement](/settings-cleanup)
+- [Réglages - Service d'Identité](/settings-identity-service)
+- [Réglages - JOC Cockpit](/settings-joc)
+- [Réglages - Utilisateur](/settings-user)
+- [Réglages - Notifications des Journaux](/settings-log-notification)
+- [Réglages - Git](/settings-git)
+- [Réglages - Mode Kiosque](/settings-kiosk)
 
 ### Product Knowledge Base
 

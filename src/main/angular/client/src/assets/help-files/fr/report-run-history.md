@@ -2,17 +2,17 @@
 
 La vue [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) offre un aperçu de l'exécution passée des Workflows et des Tâches :
 
-- Les rapports sont créés à partir de [Report Templates](/report-templates) prédéfinis qui sont paramétrés à partir de [Configuration - Inventory - Reports](/configuration-inventory-reports).
+- Les rapports sont créés à partir de [Maquettes de Rapport](/report-templates) prédéfinis qui sont paramétrés à partir de [Configuration - Inventaire - Modèles de Rapport](/configuration-inventory-reports).
 - Les utilisateurs exécutent les rapports à partir de la vue [Report Creation](/report-creation) ou de [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation). La vue *Historique de l'exécution des rapports* fournit des informations sur les exécutions passées des rapports.
-- Les rapports sont visualisés dans la vue [Reports](/reports).
+- Les rapports sont visualisés dans la vue [Rapports](/reports).
 
 ## Affichage de l'Historique d'exécution des rapports
 
 L'Historique des exécutions de rapports est affiché à partir des propriétés suivantes :
 
-- **Nom** indique le nom unique d'une configuration de rapport tel que spécifié dans la vue [Configuration - Inventory - Reports](/configuration-inventory-reports).
+- **Nom** indique le nom unique d'une configuration de rapport tel que spécifié dans la vue [Configuration - Inventaire - Modèles de Rapport](/configuration-inventory-reports).
 - **ID du Contrôleur** indique le Contrôleur pour lequel le rapport est créé.
-- **Modèle de Rapport ** indique le [Report Template](/report-templates) utilisé.
+- **Modèle de Rapport ** indique le [Maquette de Rapport](/report-templates) utilisé.
 - **Etat** indique l'une des valeurs suivantes : *running*, *successful*, *failed*.
 - **Fréquences** indique les *fréquences de rapport* qui divisent la *période de rapport* en unités égales.
 - **No. of Reports** indique le nombre de rapports qui ont été créés pour la configuration du rapport.
@@ -23,9 +23,9 @@ L'Historique des exécutions de rapports est affiché à partir des propriétés
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Reports](/configuration-inventory-reports)
-- [Reports](/reports)
-- [Report - Creation](/report-creation)
+- [Configuration - Inventaire - Modèles de Rapport](/configuration-inventory-reports)
+- [Rapports](/reports)
+- [Création des Rapports](/report-creation)
 
 ### Product Knowledge Base
 

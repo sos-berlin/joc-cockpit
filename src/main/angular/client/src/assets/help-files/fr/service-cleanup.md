@@ -4,11 +4,11 @@ Le Service d'Assainissement purgera le site [JS7 - Database](https://kb.sos-berl
 
 Cela inclut les données provenant des sources suivantes :
 
-- [Order History](/history-orders)
-- [Task History](/history-tasks)
-- [File Transfer History](/history-file-transfers)
-- [Daily Plan](/daily-plan)
-- [Audit Log](/audit-log)
+- [Historique des Ordres](/history-orders)
+- [Historique des Tâches](/history-tasks)
+- [Historique des Transferts de Fichiers](/history-file-transfers)
+- [Plan Quotidien](/daily-plan)
+- [Journal d'Audit](/audit-log)
 
 Pour chaque tâche exécutée au cours de la journée, une entrée dans l'"Historique des tâches" sera créée, de même pour l'"Historique des Ordres". En fonction du nombre de tâches quotidiens, cela peut représenter un nombre considérable.
 
@@ -21,21 +21,20 @@ Le Service d'Assainissement est lancé en fonction de ses paramètres et il peut
 
 ## Paramètres du Service d'Assainissement
 
-Pour plus de détails sur la configuration du Service d'Assainissement, voir [Settings - Cleanup](/settings-cleanup).
+Pour plus de détails sur la configuration du Service d'Assainissement, voir [Réglages - Cleanup](/settings-cleanup).
 
 ## Références
 
 ### Aide contextuelle
 
-- [Audit Log](/audit-log)
-- [Daily Plan](/daily-plan)
-- [File Transfer History](/history-file-transfers)
-- [Order History](/history-orders)
-- [Task History](/history-tasks)
-- [Settings - Cleanup](/settings-cleanup)
+- [Journal d'Audit](/audit-log)
+- [Historique des Ordres](/history-orders)
+- [Historique des Tâches](/history-tasks)
+- [Historique des Transferts de Fichiers](/history-file-transfers)
+- [Plan Quotidien](/daily-plan)
+- [Réglages - Cleanup](/settings-cleanup)
 
 ### Product Knowledge Base
 
 - [JS7 - Cleanup Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Cleanup+Service)
 - [JS7 - Database](https://kb.sos-berlin.com/display/JS7/JS7+-+Database)
-

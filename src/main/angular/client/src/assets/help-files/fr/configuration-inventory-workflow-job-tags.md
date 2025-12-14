@@ -20,11 +20,11 @@ Les groupes de Tags peuvent être utilisés pour organiser les Tags qui doivent 
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-  - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflows-job-options)
-  - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflows-job-properties)
-  - [Configuration - Inventory - Workflows - Job Node Properties](/configuration-inventory-workflows-job-node-properties)
-  - [Configuration - Inventory - Workflows - Job Notifications](/configuration-inventory-workflows-job-notifications)
+- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
+  - [Configuration - Inventaire - Workflow - Options de Tâche](/configuration-inventory-workflows-job-options)
+  - [Configuration - Inventaire - Workflow - Propriétés de Tâche](/configuration-inventory-workflows-job-properties)
+  - [Configuration - Inventaire - Workflow - Propriétés du Nœud de Tâche](/configuration-inventory-workflows-job-node-properties)
+  - [Configuration - Inventaire - Workflow - Notifications de Tâche](/configuration-inventory-workflows-job-notifications)
 - [Tags](/Tags)
 
 ### Product Knowledge Base

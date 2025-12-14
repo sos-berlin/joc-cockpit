@@ -1,6 +1,6 @@
 # Réglages - Service d'Identité
 
-Les paramètres suivants sont appliqués à tout [Identity Services](/identity-services). Les modifications prennent effet immédiatement.
+Les paramètres suivants sont appliqués à tout [Services d'Identité](/identity-services). Les modifications prennent effet immédiatement.
 
 La page *Réglages* est accessible à partir de l'icône ![wheel icon](assets/images/wheel.png) dans la barre de menu.
 
@@ -33,8 +33,8 @@ Notez que le nombre de caractères et le caractère arbitraire de la sélection 
 
 ### Aide contextuelle
 
-- [Identity Services](/identity-services)
-- [Settings](/settings)
+- [Réglages](/settings)
+- [Services d'Identité](/identity-services)
 
 ### Product Knowledge Base
 

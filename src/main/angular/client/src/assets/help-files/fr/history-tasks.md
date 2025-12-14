@@ -2,29 +2,29 @@
 
 La vue *Historique des Tâches* résume l'historique de l'exécution des tâches qui sont indiqués indépendamment du Workflow et de l'Ordre pour lesquels ils ont été exécutés.
 
-L'Historique des Tâches est sujet à une purge de la base de données effectuée par le [Cleanup Service](/service-cleanup).
+L'Historique des Tâches est sujet à une purge de la base de données effectuée par le [Service d'Assainissement](/service-cleanup).
 
-Pour l'Historique des Ordres, voir [Order History](/history-orders).
+Pour l'Historique des Ordres, voir [Historique des Ordres](/history-orders).
 
 ## Vue de navigation
 
 La vue de gauche permet de filtrer les Tags des Workflows et des Ordres qui ont déclenché l'exécution de la tâche.
 
-- les **Tags de Workflow** sont attribuées à partir de la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
-- les **Tags d'Ordres** sont attribuées à partir de la vue [Configuration - Inventory - Schedules](/configuration-inventory-schedules).
+- les **Tags de Workflow** sont attribuées à partir de la vue [Configuration - Inventaire - Workflows](/configuration-inventory-workflows).
+- les **Tags d'Ordres** sont attribuées à partir de la vue [Configuration - Inventaire - Planifications](/configuration-inventory-schedules).
 
-Les Tags sont sélectionnées à partir des icônes + et - et peuvent être recherchées à l'aide de l'icône de recherche. L'affichage des Tags doit être activé à partir de la page [Settings - JOC Cockpit](/settings-joc).
+Les Tags sont sélectionnées à partir des icônes + et - et peuvent être recherchées à l'aide de l'icône de recherche. L'affichage des Tags doit être activé à partir de la page [Réglages - JOC Cockpit](/settings-joc).
 
 ## Historique
 
-L'affichage est limité à un maximum de 5000 entrées, sauf indication contraire sur la page [Profile - Preferences](/profile-preferences).
+L'affichage est limité à un maximum de 5000 entrées, sauf indication contraire sur la page [Profil - Préférences](/profile-preferences).
 
 ### Historique des Tâches
 
 - **Nom de la Tâche** indique la tâche en question.
 - **Workflow** indique le Workflow pour lequel la tâche a été exécuté.
   - En cliquant sur le nom du Workflow, vous accédez à la vue [Workflows](/workflows).
-  - En cliquant sur l'icône en forme de crayon, vous accédez à la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
+  - En cliquant sur l'icône en forme de crayon, vous accédez à la vue [Configuration - Inventaire - Workflows](/configuration-inventory-workflows).
 - **Label** indique la position de la tâche dans le Workflow. Les utilisateurs attribuent des *Labels* aux tâches qui seront affichés. Si la même tâche apparaît plus d'une fois dans un Workflow, il sera indiqué par des *Labels* différentes.
 - **Statut Historique** indique le résultat de la tâche.
   - Si les tâches sont terminés, le *Historique Status* sera soit *succès*, soit *échoué*.
@@ -32,10 +32,10 @@ L'affichage est limité à un maximum de 5000 entrées, sauf indication contrair
 
 ### Accès à la sortie du journal
 
-- **Nom** : En cliquant sur le *Nom de la tâche*, vous afficherez le journal de sortie de la tâche à partir de [Task Log View](/task-log).
+- **Nom** : En cliquant sur le *Nom de la tâche*, vous afficherez le journal de sortie de la tâche à partir de [Affichage du Journal de Tâche](/task-log).
 - **Icône de téléchargement** : en cliquant sur l'icône, vous téléchargez le journal de la tâche dans un fichier.
 
-Par défaut, l'affichage des journaux de tâches est limité à une taille de 10 Mo et, dans le cas contraire, les journaux sont téléchargés dans des fichiers. Les utilisateurs peuvent ajuster la limite à partir de la page [Settings - JOC Cockpit](/settings-joc).
+Par défaut, l'affichage des journaux de tâches est limité à une taille de 10 Mo et, dans le cas contraire, les journaux sont téléchargés dans des fichiers. Les utilisateurs peuvent ajuster la limite à partir de la page [Réglages - JOC Cockpit](/settings-joc).
 
 ### Opérations sur l'Historique de la Tâche
 
@@ -63,13 +63,13 @@ Les utilisateurs peuvent appliquer les filtres disponibles en haut de la fenêtr
 
 ### Aide contextuelle
 
-- [Cleanup Service](/service-cleanup)
-- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Order History](/history-orders)
-- [Profile - Preferences](/profile-preferences)
-- [Settings - JOC Cockpit](/settings-joc)
-- [Task Log View](/task-log)
+- [Service d'Assainissement](/service-cleanup)
+- [Configuration - Inventaire - Planifications](/configuration-inventory-schedules)
+- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
+- [Historique des Ordres](/history-orders)
+- [Profil - Préférences](/profile-preferences)
+- [Réglages - JOC Cockpit](/settings-joc)
+- [Affichage du Journal de Tâche](/task-log)
 
 ### Product Knowledge Base
 

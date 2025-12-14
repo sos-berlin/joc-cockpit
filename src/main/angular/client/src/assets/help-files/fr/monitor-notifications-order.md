@@ -7,7 +7,7 @@ Les notifications sont configurées à partir de la page [Configuration - Notifi
 - Le fragment *notify_on_failure_gui* spécifie si les notifications deviennent visibles dans cette vue.
 - En plus d'être affichées dans cette vue, les notifications peuvent être transmises par courrier électronique et à partir de la ligne de commande, par exemple à des produits System Monitor tiers. Pour plus de détails, consultez [Configuration - Notification ](/configuration-notification).
 
-Les utilisateurs doivent savoir que les notifications peuvent être purgées par le [Cleanup Service](/service-cleanup). Par défaut, les notifications sont purgées si elles datent de plus d'un jour.
+Les utilisateurs doivent savoir que les notifications peuvent être purgées par le [Service d'Assainissement](/service-cleanup). Par défaut, les notifications sont purgées si elles datent de plus d'un jour.
 
 ## Affichage des notifications
 
@@ -15,7 +15,7 @@ Les notifications sont affichées à partir des éléments d'information suivant
 
 - **Workflow** spécifie le nom d'un Workflow. 
   - En cliquant sur le nom du Workflow, vous accédez à la vue [Workflows](/workflows).
-  - En cliquant sur l'icône représentant un crayon à gauche du nom du Workflow, vous accédez à la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
+  - En cliquant sur l'icône représentant un crayon à gauche du nom du Workflow, vous accédez à la vue [Configuration - Inventaire - Workflows](/configuration-inventory-workflows).
 - **ID Ordre** spécifie l'identifiant unique d'un Ordre.
 - **Tâche** est indiqué si l'avertissement ou l'erreur a été causé par une tâche.
 - **Type** est l'un des éléments suivants
@@ -51,10 +51,10 @@ Le haut de la page propose un certain nombre de boutons de filtrage qui peuvent 
 
 ### Aide contextuelle
 
-- [Cleanup Service](/service-cleanup)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
 - [Configuration - Notification](/configuration-notification)
-- [Monitor - System Notifications](/monitor-notifications-system)
+- [Moniteur - Notifications du Système](/monitor-notifications-system)
+- [Service d'Assainissement](/service-cleanup)
 - [Workflows](/workflows)
 
 ### Product Knowledge Base

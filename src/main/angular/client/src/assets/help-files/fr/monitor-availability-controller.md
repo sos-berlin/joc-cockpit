@@ -1,4 +1,4 @@
-# Disponibilité de Contrôleur
+# Moniteur - Disponibilité de Contrôleur
 
 La vue affiche les indicateurs de disponibilité des Contrôleurs.
 
@@ -6,7 +6,7 @@ Si un Cluster de Contrôleurs est utilisé, la disponibilité du Cluster est pri
 
 Dans le coin supérieur droit de l'écran, vous pouvez cocher la case *Contrôleur actuel* : si cette case n'est pas cochée, la disponibilité sera affichée pour tous les Contrôleurs connectés; dans le cas contraire, les informations ne seront affichées que pour le Contrôleur actuellement sélectionné.
 
-Les utilisateurs doivent savoir que les données historiques relatives à la disponibilité des Contrôleurs sont susceptibles d'être purgées par le [Cleanup Service](/service-cleanup).
+Les utilisateurs doivent savoir que les données historiques relatives à la disponibilité des Contrôleurs sont susceptibles d'être purgées par le [Service d'Assainissement](/service-cleanup).
 
 ## Filtres de date
 
@@ -14,7 +14,7 @@ Le coin supérieur droit du panneau permet de sélectionner une plage de dates p
 
 - **Semaine** fait basculer le curseur de date sur une période d'une semaine.
 - **Mois** fait basculer la barre de défilement de la date sur une période d'un mois.
-- L'option **"Plage"** permet de spécifier la date de début et la date de fin.
+- L'option **Plage** permet de spécifier la date de début et la date de fin.
 
 ## Temps d'exécution
 
@@ -34,6 +34,6 @@ Affiche la disponibilité par Contrôleur et par jour dans la période donnée.
 
 ## Références
 
-- [Cleanup Service](/service-cleanup)
-- [Monitor - Availability - Agent](/monitor-availability-agent)
+- [Moniteur - Disponibilité de l'Agent](/monitor-availability-agent)
+- [Service d'Assainissement](/service-cleanup)
 - [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor)

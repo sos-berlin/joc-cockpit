@@ -1,6 +1,6 @@
 # Configuration du compte du Service d'Identité
 
-Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
+Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Services d'Identité](/identity-services).
 
 Pour un certain nombre de Services d'Identité, les opérations d'ajout, de mise à jour et de suppression de comptes sont disponibles, par exemple pour le site [JS7 - JOC Identity Service](https://kb.sos-berlin.com/display/JS7/JS7+-+JOC+Identity+Service).
 
@@ -10,7 +10,7 @@ Les propriétés suivantes sont disponibles pour un compte :
 
 - **Compte** spécifie le compte utilisé pour se connecter.
 - **Mot de passe** est disponible pour le type de Service d'Identité *JOC*. Le *mot de passe* sera haché avant d'être stocké dans la base de données. Lors de la connexion, une opération de hachage similaire est effectuée pour comparer les mots de passe. 
-  - Un *mot de passe* individuel peut être spécifié. S'il est laissé vide, le *mot_de_passe initial* spécifié sur la page [Settings - Identity Service](/settings-identity-service) sera utilisé. Le *mot de passe* doit correspondre à l'exigence de *longueur_de_mot_de_passe_minimum* de la même page de paramètres.
+  - Un *mot de passe* individuel peut être spécifié. S'il est laissé vide, le *mot_de_passe initial* spécifié sur la page [Réglages - Service d'Identité](/settings-identity-service) sera utilisé. Le *mot de passe* doit correspondre à l'exigence de *longueur_de_mot_de_passe_minimum* de la même page de paramètres.
   - Quelle que soit la source utilisée pour le *mot de passe*, l'utilisateur doit modifier le *mot de passe* du compte lors de sa prochaine connexion.
 - la propriété **Confirmer le mot de passe** est utilisée pour répéter un *mot de passe* spécifié individuellement. Si la propriété *Mot de passe* est vide, la propriété *Confirmation du mot de passe* doit l'être également.
 - **Roles** spécifie la liste des [Identity Service - Roles](/identity-service-roles) auxquels le compte est attribué.
@@ -25,8 +25,8 @@ Les propriétés suivantes sont disponibles pour un compte :
 
 - [Identity Service - Blocklist](/identity-service-blocklist)
 - [Identity Service - Roles](/identity-service-roles) 
-- [Identity Services](/identity-services)
-- [Settings - Identity Service](/settings-identity-service)
+- [Services d'Identité](/identity-services)
+- [Réglages - Service d'Identité](/settings-identity-service)
 
 ### Product Knowledge Base
 

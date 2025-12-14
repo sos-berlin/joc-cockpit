@@ -2,7 +2,7 @@
 
 Les objets de l'inventaire peuvent être renommés ou déplacés. Cela s'applique aux objets, aux dossiers d'utilisateurs ou aux deux. Pour renommer des dossiers d'utilisateurs, voir [Configuration - Inventory - Operations - Rename Folder](/configuration-inventory-operations-rename-folder). 
 
-Lorsque vous renommez des objets, [Object Naming Rules](/object-naming-rules) s'applique.
+Lorsque vous renommez des objets, [Règles de Dénomination des Objets](/object-naming-rules) s'applique.
 
 L'opération *Renommer* est disponible à partir de la vue *Navigation* et est proposée pour les objets et les dossiers d'utilisateurs à partir de leur menu d'action à 3 points.
 
@@ -42,7 +42,7 @@ Lorsque vous renommez des objets, la cohérence est prise en compte et les objet
 
 - [Configuration - Inventory - Operations - Rename Folder](/configuration-inventory-operations-rename-folder)
 - [Dependency Matrix](/dependencies-matrix)
-- [Object Naming Rules](/object-naming-rules)
+- [Règles de Dénomination des Objets](/object-naming-rules)
 
 ### Product Knowledge Base
 

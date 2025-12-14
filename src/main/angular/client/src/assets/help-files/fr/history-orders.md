@@ -2,43 +2,43 @@
 
 La vue *Historique des Ordres* résume l'historique de l'exécution des Ordres. Cela inclut l'historique d'exécution des tâches utilisés dans les Workflows déclenchés par les Ordres associés.
 
-L'Historique des Ordres est sujet à une purge de la base de données effectuée par le [Cleanup Service](/service-cleanup).
+L'Historique des Ordres est sujet à une purge de la base de données effectuée par le [Service d'Assainissement](/service-cleanup).
 
-Pour l'Historique des tâches, voir [Task History](/history-tasks).
+Pour l'Historique des Tâches, voir [Historique des Tâches](/history-tasks).
 
 ## Vue de navigation
 
 La vue de gauche permet de filtrer les Tags des Workflows et des Ordres.
 
-- les **Tags de Workflow** sont attribuées à partir de la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
-- les **Tags d'Ordres** sont attribuées à partir de la vue [Configuration - Inventory - Schedules](/configuration-inventory-schedules).
+- les **Tags de Workflow** sont attribuées à partir de la vue [Configuration - Inventaire - Workflows](/configuration-inventory-workflows).
+- les **Tags d'Ordres** sont attribuées à partir de la vue [Configuration - Inventaire - Planifications](/configuration-inventory-schedules).
 
-Les Tags sont sélectionnées à partir des icônes + et - et peuvent être recherchées à l'aide de l'icône Recherche rapide. L'affichage des Tags doit être activé à partir de la page [Settings - JOC Cockpit](/settings-joc).
+Les Tags sont sélectionnées à partir des icônes + et - et peuvent être recherchées à l'aide de l'icône Recherche rapide. L'affichage des Tags doit être activé à partir de la page [Réglages - JOC Cockpit](/settings-joc).
 
 ## Vue Historique
 
-L'affichage est limité à un maximum de 5000 entrées, sauf indication contraire sur la page [Profile - Preferences](/profile-preferences).
+L'affichage est limité à un maximum de 5000 entrées, sauf indication contraire sur la page [Profil - Préférences](/profile-preferences).
 
 ### Historique des Ordres
 
 - **L'ID de l'Ordre** est l'identifiant unique attribué à un Ordre. En cliquant sur l'icône flèche vers le bas, vous afficherez les variables de l'Ordre et les tâches passés par l'Ordre. 
 - **Workflow** indique le Workflow passé par l'Ordre.
   - En cliquant sur le nom du Workflow, vous accédez à la vue [Workflows](/workflows).
-  - En cliquant sur l'icône en forme de crayon, vous accédez à la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
+  - En cliquant sur l'icône en forme de crayon, vous accédez à la vue [Configuration - Inventaire - Workflows](/configuration-inventory-workflows).
 - **Label** indique la dernière position de l'Ordre dans le Workflow. Les utilisateurs peuvent attribuer des *Labels* aux instructions du Workflow qui seront affichées, sinon la position technique sera indiquée.
 - **Historique** indique l'état de l'historique qui est le dernier résultat dans la vie de l'Ordre.
   - Si les Ordres sont terminés, le *Statut de l'historique* sera *succès* ou *échec*.
   - Si les Ordres ne sont pas terminés, le *Statut de l'Historique* sera *en cours*.
-- **Ordre State** indique le dernier état de l'Ordre, voir [Order States](/order-states).
+- **Ordre State** indique le dernier état de l'Ordre, voir [États d'Ordre](/order-states).
   - Si les Ordres sont terminés, l'*état de l'Ordre* sera *réussi* ou *échec*.
   - Si les Ordres ne sont pas terminés, l'état de l'Ordre sera *en cours de traitement*.
 
 ### Accès à la sortie du journal
 
-- **ID Ordre ** : En cliquant sur l'ID de l'Ordre, vous afficherez le journal de sortie de l'Ordre à partir de [Order Log View](/order-log). Le journal comprend les données de sortie créées par tous les tâches exécutés avec le Workflow.
+- **ID Ordre ** : En cliquant sur l'ID de l'Ordre, vous afficherez le journal de sortie de l'Ordre à partir de [Affichage du Journal d'Ordre](/order-log). Le journal comprend les données de sortie créées par tous les tâches exécutés avec le Workflow.
 - **Icône de téléchargement** : cliquez sur l'icône pour télécharger le journal de l'Ordre dans un fichier.
 
-Par défaut, l'affichage des journaux de l'Ordre est limité à une taille de 10 Mo et, dans le cas contraire, les journaux sont téléchargés dans des fichiers. Les utilisateurs peuvent ajuster la limite à partir de la page [Settings - JOC Cockpit](/settings-joc).
+Par défaut, l'affichage des journaux de l'Ordre est limité à une taille de 10 Mo et, dans le cas contraire, les journaux sont téléchargés dans des fichiers. Les utilisateurs peuvent ajuster la limite à partir de la page [Réglages - JOC Cockpit](/settings-joc).
 
 ### Opérations sur l'Historique des tâches
 
@@ -65,14 +65,14 @@ L'utilisateur peut appliquer les filtres disponibles en haut de la fenêtre pour
 
 ### Aide contextuelle
 
-- [Cleanup Service](/service-cleanup)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
-- [Order Log View](/order-log)
-- [Order States](/order-states)
-- [Profile - Preferences](/profile-preferences)
-- [Settings - JOC Cockpit](/settings-joc)
-- [Task History](/history-tasks)
+- [Affichage du Journal d'Ordre](/order-log)
+- [Configuration - Inventaire - Planifications](/configuration-inventory-schedules)
+- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
+- [États d'Ordre](/order-states)
+- [Historique des Tâches](/history-tasks)
+- [Profil - Préférences](/profile-preferences)
+- [Réglages - JOC Cockpit](/settings-joc)
+- [Service d'Assainissement](/service-cleanup)
 - [Workflows](/workflows)
 
 ### Product Knowledge Base

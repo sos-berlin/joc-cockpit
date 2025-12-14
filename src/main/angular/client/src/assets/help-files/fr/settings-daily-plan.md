@@ -1,6 +1,6 @@
 # Réglages - Plan Quotidien
 
-Les paramètres suivants sont appliqués au [Daily Plan](/daily-plan). Les modifications prennent effet immédiatement.
+Les paramètres suivants sont appliqués au [Plan Quotidien](/daily-plan). Les modifications prennent effet immédiatement.
 
 La page *Réglages* est accessible à partir de l'icône ![wheel icon](assets/images/wheel.png) dans la barre de menu.
 
@@ -8,7 +8,7 @@ La page *Réglages* est accessible à partir de l'icône ![wheel icon](assets/im
 
 ### Paramètre : *time\_zone*, Défaut : *UTC*
 
-Spécifie le fuseau horaire appliqué à l'heure de début du [Daily Plan Service](/service-daily-plan) et à la période du Plan Quotidien.
+Spécifie le fuseau horaire appliqué à l'heure de début du [Service du Plan Qutotidien](/service-daily-plan) et à la période du Plan Quotidien.
 
 ### Paramètre : *period\_begin*, Défaut : *00:00*
 
@@ -32,21 +32,21 @@ Par défaut, le service du Plan Quotidien soumet les Ordres à partir d'une tran
 
 ### Paramètre : *age\_of\_plans\_to\_be\_closed\_automatically*, Défaut : *1*
 
-Spécifie le nombre de jours après lequel le Plan Quotidien sera fermé et ne permettra pas d'ajouter des Ordres qui résolvent des dépendances pour [Resources - Notice Boards](/resources-notice-boards) pour la date d'origine.
+Spécifie le nombre de jours après lequel le Plan Quotidien sera fermé et ne permettra pas d'ajouter des Ordres qui résolvent des dépendances pour [Ressources - Tableaux de Condition](/resources-notice-boards) pour la date d'origine.
 
 ### Paramètre : *projections\_month\_ahead*, Défaut : *6*
 
-Spécifie le nombre de mois à l'avance pour lequel [Daily Plan - Projections](/daily-plan-projections) est calculé et qui indique l'exécution future de l'Ordre.
+Spécifie le nombre de mois à l'avance pour lequel [Projection du Plan Quotidien](/daily-plan-projections) est calculé et qui indique l'exécution future de l'Ordre.
 
 ## Références
 
 ### Aide contextuelle
 
-- [Daily Plan](/daily-plan)
-- [Daily Plan - Projections](/daily-plan-projections)
-- [Daily Plan Service](/service-daily-plan)
-- [Resources - Notice Boards](/resources-notice-boards)
-- [Settings](/settings)
+- [Plan Quotidien](/daily-plan)
+- [Projection du Plan Quotidien](/daily-plan-projections)
+- [Réglages](/settings)
+- [Ressources - Tableaux de Condition](/resources-notice-boards)
+- [Service du Plan Qutotidien](/service-daily-plan)
 
 ### Product Knowledge Base
 

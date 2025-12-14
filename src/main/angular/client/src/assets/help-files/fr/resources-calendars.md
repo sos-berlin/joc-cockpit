@@ -42,5 +42,5 @@ Le site [Resources - Calendars - Search](/resources-calendars-search) propose de
 ## Références
 
 - [Resources - Calendars - Search](/resources-calendars-search)
-- [Daily Plan](/daily-plan)
+- [Plan Quotidien](/daily-plan)
 - [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars)

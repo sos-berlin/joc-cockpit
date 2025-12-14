@@ -10,20 +10,20 @@ Les tâches Shell peuvent être utilisées pour un certain nombre de langages de
 
 Les Blocs Scripts sont gérés à partir des panneaux suivants :
 
-- La page [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation), sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant les Blocs Scripts. En outre, cette vue permet d'effectuer des opérations sur les inclusions de scripts.
+- La page [Configuration - Inventaire - Navigation](/configuration-inventory-navigation), sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant les Blocs Scripts. En outre, cette vue permet d'effectuer des opérations sur les inclusions de scripts.
 - La vue *Blocs Scripts*, sur le côté droit de la fenêtre, contient les détails de la configuration des scripts inclus.
 
 ## Vue Blocs Scripts
 
 Pour un script inclus, les entrées suivantes sont disponibles :
 
-- **Nom** est l'identifiant unique d'un Bloc Script, voir [Object Naming Rules](/object-naming-rules).
+- **Nom** est l'identifiant unique d'un Bloc Script, voir [Règles de Dénomination des Objets](/object-naming-rules).
 - **Titre** contient une explication facultative de l'objectif de l'inclusion de script.
 - **Bloc Script** contient l'extrait de code.
 
 ## Opérations sur les Blocs Scripts
 
-Pour les opérations disponibles, voir [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
+Pour les opérations disponibles, voir [Configuration - Inventaire - Navigation](/configuration-inventory-navigation).
 
 ## Utilisation dans les tâches
 
@@ -79,9 +79,9 @@ Le Bloc Script écrira le contenu du *Script de la Tâche* dans un fichier tempo
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
-- [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options)
-- [Object Naming Rules](/object-naming-rules)
+- [Configuration - Inventaire - Navigation](/configuration-inventory-navigation)
+- [Configuration - Inventaire - Workflow - Options de Tâche](/configuration-inventory-workflow-job-options)
+- [Règles de Dénomination des Objets](/object-naming-rules)
 
 ### Product Knowledge Base
 

@@ -12,7 +12,7 @@ Les notifications globales sont configurées à partir de [Notifications](/notif
 
 Les notifications permettent d'utiliser différents canaux :
 
-- Mise à disposition de la notification dans les vues [Monitor - Order Notifications](/monitor-notifications-order) et [Monitor - System Notifications](/monitor-notifications-system) 
+- Mise à disposition de la notification dans les vues [Moniteur - Notifications d'Ordre](/monitor-notifications-order) et [Moniteur - Notifications du Système](/monitor-notifications-system) 
 - Envoi de notifications par courrier électronique.
 - Exécution d'une commande Shell. Par exemple, les outils tiers de surveillance du système offrent souvent une interface de ligne de commande qui peut être paramétrée pour alimenter la surveillance du système à partir d'événements relatifs à l'exécution réussie ou non d'une tâche.
 
@@ -32,13 +32,13 @@ Les notifications spécifiques par tâche ont la priorité sur les notifications
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-  - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflows-job-options)
-  - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflows-job-properties)
-  - [Configuration - Inventory - Workflows - Job Node Properties](/configuration-inventory-workflows-job-node-properties)
-  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-job-tags)
-- [Monitor - Order Notifications](/monitor-notifications-order)
-- [Monitor - System Notifications](/monitor-notifications-system)
+- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
+  - [Configuration - Inventaire - Workflow - Options de Tâche](/configuration-inventory-workflows-job-options)
+  - [Configuration - Inventaire - Workflow - Propriétés de Tâche](/configuration-inventory-workflows-job-properties)
+  - [Configuration - Inventaire - Workflow - Propriétés du Nœud de Tâche](/configuration-inventory-workflows-job-node-properties)
+  - [Configuration - Inventaire - Workflow - Tags Tâche](/configuration-inventory-workflows-job-tags)
+- [Moniteur - Notifications d'Ordre](/monitor-notifications-order)
+- [Moniteur - Notifications du Système](/monitor-notifications-system)
 - [Notifications](/notifications)
 
 ### Product Knowledge Base

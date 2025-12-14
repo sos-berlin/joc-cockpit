@@ -18,5 +18,5 @@ Indique si des rappels supplémentaires doivent être effectués.
 
 ## Références
 
-- [Settings](/settings)
+- [Réglages](/settings)
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)

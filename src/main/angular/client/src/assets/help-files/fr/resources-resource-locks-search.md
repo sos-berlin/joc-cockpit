@@ -36,4 +36,4 @@ Le métacaractère de recherche **\*** est utilisé pour spécifier que les dép
 
 ## Références
 
-- [Resources - Resource Locks](/resources-resource-locks)
+- [Ressources - Verrous de Ressource](/resources-resource-locks)

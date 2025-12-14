@@ -15,7 +15,7 @@ La fonctionnalité de base du processus d'autorisation comprend :
 
 ## Paramètres de Notification d'Autorisation
 
-Les paramètres de notification comprennent les propriétés permettant d'envoyer un courrier aux *Approbateurs* en cas d'arrivée de [Approval Requests](/approval-requests):
+Les paramètres de notification comprennent les propriétés permettant d'envoyer un courrier aux *Approbateurs* en cas d'arrivée de [Demandes d'Autorisation](/approval-requests):
 
 - **Ressource de Tâche** contient les paramètres de connexion au serveur de messagerie. Pour plus de détails, voir [JS7 - eMailDefault Job Resource](https://kb.sos-berlin.com/display/JS7/JS7+-+eMailDefault+Job+Resource).
 - **Content Type**, **Charset**, **Encoding** sont communs à tout système envoyant du courrier.
@@ -42,10 +42,10 @@ Les paramètres de notification comprennent les propriétés permettant d'envoye
 
 ### Aide contextuelle
 
-- [Approval Notification Settings](/approval-notification-settings)
-- [Approval Request](/approval-request)
-- [Approval Requests](/approval-requests)
-- [Approver Profiles](/approval-profiles)
+- [Paramètres de Notification d'Autorisation](/approval-notification-settings)
+- [Demande d'Autorisation](/approval-request)
+- [Demandes d'Autorisation](/approval-requests)
+- [Profils Approbateur](/approval-profiles)
 
 ### Product Knowledge Base
 

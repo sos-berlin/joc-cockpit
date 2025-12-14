@@ -18,11 +18,11 @@ L'interface graphique offre un certain nombre d'onglets pour spécifier les dét
 - **Avertir si plus court de** déclenche un avertissement et une notification correspondante si la tâche se termine avant la période spécifiée. Les formats d'entrée sont les suivants :
   - *1* ou *1s* : un nombre ou un nombre suivi de *s* spécifie la période d'exécution en secondes.
   - *01:02:03* : spécifie 1 heure, 2 minutes et 3 secondes pour la période d'exécution.
-  - *30%* : spécifie une période d'exécution 30% plus courte que la moyenne des exécutions précédentes de la tâche. Le calcul utilise le [Task History](/history-tasks) qui est soumis à une purge par le [Cleanup Service](/service-cleanup).
+  - *30%* : spécifie une période d'exécution 30% plus courte que la moyenne des exécutions précédentes de la tâche. Le calcul utilise le [Historique des Tâches](/history-tasks) qui est soumis à une purge par le [Service d'Assainissement](/service-cleanup).
 - **Avertir si plus long de** émet un avertissement et une notification correspondante si la tâche dépasse la période spécifiée. Les formats d'entrée sont les suivants : *1* ou *1s* :
   - *1* ou *1s* : un nombre ou un nombre suivi de *s* spécifie la période d'exécution en secondes.
   - *01:02:03* : spécifie 1 heure, 2 minutes et 3 secondes pour la période d'exécution.
-  - *30%* : spécifie une période d'exécution 30% plus longue que la moyenne des exécutions précédentes de la tâche. Le calcul utilise le [Task History](/history-tasks) qui est soumis à une purge par le [Cleanup Service](/service-cleanup).
+  - *30%* : spécifie une période d'exécution 30% plus longue que la moyenne des exécutions précédentes de la tâche. Le calcul utilise le [Historique des Tâches](/history-tasks) qui est soumis à une purge par le [Service d'Assainissement](/service-cleanup).
 
 ### Sortie du journal des tâches
 
@@ -80,13 +80,13 @@ Les options suivantes indiquent que les tâches exécutés avec des Agents pour 
 
 ### Aide contextuelle
 
-- [Cleanup Service](/service-cleanup)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-  - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflows-job-properties)
-  - [Configuration - Inventory - Workflows - Job Node Properties](/configuration-inventory-workflows-job-node-properties)
-  - [Configuration - Inventory - Workflows - Job Notifications](/configuration-inventory-workflows-job-notifications)
-  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-job-tags)
-- [Task History](/history-tasks)
+- [Service d'Assainissement](/service-cleanup)
+- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
+  - [Configuration - Inventaire - Workflow - Propriétés de Tâche](/configuration-inventory-workflows-job-properties)
+  - [Configuration - Inventaire - Workflow - Propriétés du Nœud de Tâche](/configuration-inventory-workflows-job-node-properties)
+  - [Configuration - Inventaire - Workflow - Notifications de Tâche](/configuration-inventory-workflows-job-notifications)
+  - [Configuration - Inventaire - Workflow - Tags Tâche](/configuration-inventory-workflows-job-tags)
+- [Historique des Tâches](/history-tasks)
 
 ### Product Knowledge Base
 

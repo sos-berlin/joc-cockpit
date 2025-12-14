@@ -1,6 +1,6 @@
 # Réglages - Cleanup
 
-Les paramètres suivants sont appliqués au [Cleanup Service](/service-cleanup). Les changements sont effectifs immédiatement.
+Les paramètres suivants sont appliqués au [Service d'Assainissement](/service-cleanup). Les changements sont effectifs immédiatement.
 
 La page *Réglages* est accessible à partir de l'icône ![wheel icon](assets/images/wheel.png) dans la barre de menu.
 
@@ -57,7 +57,7 @@ Spécifie le nombre maximum de connexions parallèles à la base de données uti
 
 ### Paramètre : *order\_history\_age*, Valeur par défaut : *90*d
 
-Spécifie la période de conservation pour les historiques [Order History](/history-orders) et [Task History](/history-tasks). Toutes les entrées de l'historique plus anciennes que la valeur spécifiée seront purgées.
+Spécifie la période de conservation pour les historiques [Historique des Ordres](/history-orders) et [Historique des Tâches](/history-tasks). Toutes les entrées de l'historique plus anciennes que la valeur spécifiée seront purgées.
 
 ### Paramètre : *order\_history\_logs\_age*, Ordre : *90*d
 
@@ -65,15 +65,15 @@ Spécifie la période de conservation des journaux des Ordres et des tâches. To
 
 ### Paramètre : *file\_transfer\_history\_age*, Valeur par défaut : *90*d
 
-Spécifie la période de conservation pour [File Transfer History](/history-file-transfers). Toutes les entrées plus anciennes que la valeur spécifiée seront supprimées.
+Spécifie la période de conservation pour [Historique des Transferts de Fichiers](/history-file-transfers). Toutes les entrées plus anciennes que la valeur spécifiée seront supprimées.
 
 ### Paramètre : *audit\_log\_age*, Valeur par défaut : *90*d
 
-Spécifie la période de conservation du Journal d'Audit [Audit Log](/audit-log). Toutes les entrées du Journal d'Audit plus anciennes que la valeur spécifiée seront supprimées.
+Spécifie la période de conservation du Journal d'Audit [Journal d'Audit](/audit-log). Toutes les entrées du Journal d'Audit plus anciennes que la valeur spécifiée seront supprimées.
 
 ### Paramètre : *daily\_plan\_history\_age*, Valeur par défaut : *30*d
 
-Spécifie la période de conservation de l'historique des soumissions à l'adresse [Daily Plan](/daily-plan). Toutes les entrées de l'historique antérieures à la valeur spécifiée seront supprimées.
+Spécifie la période de conservation de l'historique des soumissions à l'adresse [Plan Quotidien](/daily-plan). Toutes les entrées de l'historique antérieures à la valeur spécifiée seront supprimées.
 
 ### Paramètre : *monitoring\_history\_age*, Valeur par défaut : *1*d
 
@@ -85,7 +85,7 @@ Spécifie la durée de conservation des notifications, par exemple pour les erre
 
 ### Paramètre : *profile\_age*, Valeur par défaut : *365*d
 
-Spécifie la période de rétention pour les [Profiles](/profile) inutilisés, c'est-à-dire les profils des comptes d'utilisateurs qui ne se sont pas connectés pendant la période donnée.
+Spécifie la période de rétention pour les [Profils](/profile) inutilisés, c'est-à-dire les profils des comptes d'utilisateurs qui ne se sont pas connectés pendant la période donnée.
 
 ### Paramètre : *failed\_login\_history\_age*, Valeur par défaut : *90*d
 
@@ -93,7 +93,7 @@ Spécifie la période de conservation de l'historique des connexions échouées.
 
 ### Paramètre : *reporting\_age*, Valeur par défaut : *365*d
 
-Spécifie la période de rétention pour [Reports](/reports).
+Spécifie la période de rétention pour [Rapports](/reports).
 
 ### Paramètre : *deployment\_history\_versions*, Valeur par défaut : *10*
 
@@ -103,14 +103,14 @@ Indique le nombre de versions à conserver pour chaque objet déployé. Les vers
 
 ### Aide contextuelle
 
-- [Audit Log](/audit-log)
-- [Daily Plan](/daily-plan)
-- [Daily Plan - Projections](/daily-plan-projections)
-- [Profile](/profile)
-- [Reports](/reports)
-- [Resources - Notice Boards](/resources-notice-boards)
-- [Cleanup Service](/service-cleanup)
-- [Settings](/settings)
+- [Journal d'Audit](/audit-log)
+- [Plan Quotidien](/daily-plan)
+- [Profil](/profile)
+- [Projection du Plan Quotidien](/daily-plan-projections)
+- [Rapports](/reports)
+- [Réglages](/settings)
+- [Ressources - Tableaux de Condition](/resources-notice-boards)
+- [Service d'Assainissement](/service-cleanup)
 
 ### Product Knowledge Base
 

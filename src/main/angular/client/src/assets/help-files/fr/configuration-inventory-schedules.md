@@ -1,6 +1,6 @@
 # Configuration - Inventaire - Planifications
 
-La vue *Planification* permet de spécifier des règles pour la création d'Ordres à partir de la page [Daily Plan](/daily-plan). Pour plus de détails, voir [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules).
+La vue *Planification* permet de spécifier des règles pour la création d'Ordres à partir de la page [Plan Quotidien](/daily-plan). Pour plus de détails, voir [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules).
 
 - Les Planifications déterminent le moment où les Ordres pour l'exécution du Workflow commenceront. Un ou plusieurs Workflows leur sont attribués et, en option, des variables utilisées par les tâches dans les Workflows donnés.
   - les **dates de démarrage** sont spécifiées par [Configuration - Inventory - Calendars](/configuration-inventory-calendars) et limitent les jours d'exécution des Workflows.
@@ -8,29 +8,29 @@ La vue *Planification* permet de spécifier des règles pour la création d'Ordr
 - Les Planifications créent des Ordres sur une base quotidienne
   - pour l'exécution ponctuelle des Workflows. Cela inclut les Workflows démarrant à un certain nombre d'heures par jour.
   - pour l'exécution cyclique de Workflows. Ceci spécifie l'exécution répétée des Workflows sur la base d'intervalles configurables.
-- Les Planifications sont appliquées par le [Daily Plan](/daily-plan) afin de créer des Ordres pour les dates et heures résultantes.
+- Les Planifications sont appliquées par le [Plan Quotidien](/daily-plan) afin de créer des Ordres pour les dates et heures résultantes.
   - Les Planifications peuvent être appliquées manuellement à partir de la vue du Plan Quotidien.
-  - Les Planifications sont appliquées automatiquement par [Daily Plan Service](/service-daily-plan).
+  - Les Planifications sont appliquées automatiquement par [Service du Plan Qutotidien](/service-daily-plan).
 
 Les Planifications sont gérées à partir des panneaux suivants :
 
-- La page [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation), situé sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant les Planifications. En outre, ce panneau permet d'effectuer des opérations sur les Planifications.
+- La page [Configuration - Inventaire - Navigation](/configuration-inventory-navigation), situé sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant les Planifications. En outre, ce panneau permet d'effectuer des opérations sur les Planifications.
 - La *vue des Planifications* sur le côté droit de la fenêtre contient les détails de la configuration de la Planification.
 
 ## Vue Planification
 
 Pour une Planification, les entrées suivantes sont disponibles :
 
-- **Name** est l'identifiant unique d'une Planification, voir [Object Naming Rules](/object-naming-rules).
+- **Name** est l'identifiant unique d'une Planification, voir [Règles de Dénomination des Objets](/object-naming-rules).
 - **Titre** contient une explication facultative de l'objectif de la Planification.
 - **Noms des Workflows** contient la liste des Workflows qui doivent être lancés.
-- **Planifier l'Ordre automatiquement** spécifie que la Planification sera prise en compte par le [Daily Plan Service](/service-daily-plan).
-- **Soumettre l'Ordre au Contrôleur lorsqu'il est planifié** spécifie que les Ordres seront soumis immédiatement à un Contrôleur lorsqu'ils sont planifiés. Sans cette option, le service Plan Quotidien soumettra des Ordres *planifiés* basés sur [Settings - Daily Plan](/settings-daily-plan).
+- **Planifier l'Ordre automatiquement** spécifie que la Planification sera prise en compte par le [Service du Plan Qutotidien](/service-daily-plan).
+- **Soumettre l'Ordre au Contrôleur lorsqu'il est planifié** spécifie que les Ordres seront soumis immédiatement à un Contrôleur lorsqu'ils sont planifiés. Sans cette option, le service Plan Quotidien soumettra des Ordres *planifiés* basés sur [Réglages - Plan Quotidien](/settings-daily-plan).
 
 ### Paramétrage de l'Ordre
 
 - **Nom de l'Ordre** : Un nom optionnel qui peut être utilisé pour filtrer les Ordres dans un certain nombre de vues.
-- **Nom Tags** : Il est possible de spécifier un nombre quelconque de Tags qui seront ajoutées à l'Ordre. Les Tags de l'Ordre sont affichées dans un certain nombre de vues si elles sont spécifiées à partir de la page [Settings - JOC Cockpit](/settings-joc).
+- **Nom Tags** : Il est possible de spécifier un nombre quelconque de Tags qui seront ajoutées à l'Ordre. Les Tags de l'Ordre sont affichées dans un certain nombre de vues si elles sont spécifiées à partir de la page [Réglages - JOC Cockpit](/settings-joc).
 - **Ignorer si la période d'heures d'admission  ne corrrespond pas à la date de l'Ordre** : Les commandes peuvent être limitées à certains jours et/ou à certains créneaux horaires. Les Ordres qui arrivent en dehors d'un créneau horaire doivent attendre le prochain créneau disponible. Cette option force les tâches à démarrer indépendamment de ces limitations.
 
 ### Position de l'Ordre
@@ -71,23 +71,23 @@ Le bouton *Temps d'exécution* permet de spécifier les heures de début des Ord
 
 ## Opérations sur les Planifications
 
-Pour les opérations disponibles, voir [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
+Pour les opérations disponibles, voir [Configuration - Inventaire - Navigation](/configuration-inventory-navigation).
 
 ## Références
 
 ### Aide contextuelle
 
 - [Configuration - Inventory - Calendars](/configuration-inventory-calendars)
-- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
+- [Configuration - Inventaire - Navigation](/configuration-inventory-navigation)
 - [Configuration - Inventory - Schedules - Run-time](/configuration-inventory-schedules-run-time)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
-- [Daily Plan Service](/service-daily-plan)
-- [Object Naming Rules](/object-naming-rules)
-- [Order History](/history-orders)
-- [Profile - Preferences](/profile-preferences)
-- [Settings - Daily Plan](/settings-daily-plan)
-- [Task History](/history-tasks)
+- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
+- [Plan Quotidien](/daily-plan)
+- [Service du Plan Qutotidien](/service-daily-plan)
+- [Règles de Dénomination des Objets](/object-naming-rules)
+- [Historique des Ordres](/history-orders)
+- [Profil - Préférences](/profile-preferences)
+- [Réglages - Plan Quotidien](/settings-daily-plan)
+- [Historique des Tâches](/history-tasks)
 
 ### Product Knowledge Base
 

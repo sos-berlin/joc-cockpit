@@ -1,4 +1,4 @@
-# Règles de dénomination des objets
+# Règles de Dénomination des Objets
 
 Les noms d'objets sont spécifiés à plusieurs endroits pour :
 

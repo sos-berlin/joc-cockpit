@@ -1,6 +1,6 @@
 # Liste de Blocage des Services d'Identité
 
-Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
+Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Services d'Identité](/identity-services).
 
 Les comptes d'utilisateurs administratifs peuvent ajouter des comptes de n'importe quel Service d'Identité à une liste de blocage :
 
@@ -30,7 +30,7 @@ Une opération en masse est possible en utilisant le bouton *Supprimer de la lis
 
 - [Audit Log - Failed Logins](/identity-service-faíled-logins)
 - [Identity Service - Active Sessions](/identity-service-active-sessions)
-- [Identity Services](/identity-services)
+- [Services d'Identité](/identity-services)
 
 ### Product Knowledge Base
 

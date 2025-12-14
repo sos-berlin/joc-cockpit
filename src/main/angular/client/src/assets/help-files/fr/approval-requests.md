@@ -15,11 +15,11 @@ La fonctionnalité de base du processus d'autorisation comprend :
 
 ## Liste des Demandes d'Autorisation
 
-Les demandes d'autorisation sont ajoutées par les utilisateurs qui demandent la confirmation d'une intervention, voir [Approval Request](/approval-request).
+Les demandes d'autorisation sont ajoutées par les utilisateurs qui demandent la confirmation d'une intervention, voir [Demande d'Autorisation](/approval-request).
 
 La liste des demandes d'autorisation est proposée avec les propriétés suivantes :
 
-- **Date Status Demande** est la date à laquelle la demande a été ajoutée à [Approval Request](/approval-request).
+- **Date Status Demande** est la date à laquelle la demande a été ajoutée comme [Demande d'Autorisation](/approval-request).
 - **Titre** est spécifié par le *Demandeur* lors de l'ajout de la demande d'autorisation.
 - **Demandeur** indique le compte d'utilisateur qui a introduit la demande d'autorisation.
 - **Status Demande** est l'un des suivants : *requested*, *approved*, *withdrawn*, *executed*.
@@ -34,9 +34,9 @@ La liste des demandes d'autorisation est proposée avec les propriétés suivant
 
 ### Aide contextuelle
 
-- [Approval Notification Settings](/approval-notification-settings)
-- [Approver Profiles](/approval-profiles)
-- [Approval Request](/approval-request)
+- [Paramètres de Notification d'Autorisation](/approval-notification-settings)
+- [Profils Approbateur](/approval-profiles)
+- [Demande d'Autorisation](/approval-request)
 - [REST Web Service API](/rest-api)
 
 ### Product Knowledge Base

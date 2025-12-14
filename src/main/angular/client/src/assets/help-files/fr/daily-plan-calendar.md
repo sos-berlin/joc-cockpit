@@ -2,7 +2,7 @@
 
 Un certain nombre d'opérations sont disponibles à partir du Calendrier du Plan Quotidien. 
 
-Pour les opérations générales disponibles à partir du Plan Quotidien, voir [Daily Plan](/daily-plan).
+Pour les opérations générales disponibles à partir du Plan Quotidien, voir [Plan Quotidien](/daily-plan).
 
 ## Sélection d'une date unique
 
@@ -47,18 +47,17 @@ L'opération est disponible à partir d'un bouton situé sous le widget du Calen
   - Les utilisateurs peuvent choisir de créer tous les Ordres ou les Ordres des Planifications et Workflows sélectionnés, éventuellement limités par des dossiers.
   - Les utilisateurs peuvent spécifier de remplacer les Ordres existants provenant des mêmes Planifications et de soumettre immédiatement les Ordres au Contrôleur.
   - Les utilisateurs peuvent inclure des Ordres provenant de Planifications qui ne sont pas configurées pour être prises en compte par le Service du Plan Quotidien.
-- Si le Plan Quotidien pour une date donnée est créé, l'exécution suivante du Service de Plan Quotidien ne planifiera pas d'Ordres supplémentaires pour la même date. Cependant, le service soumettra des Ordres *planifiés* dans le cadre des jours à venir pour lesquels des Ordres doivent être soumis, voir la page [Settings - Daily Plan](/settings-daily-plan).
+- Si le Plan Quotidien pour une date donnée est créé, l'exécution suivante du Service de Plan Quotidien ne planifiera pas d'Ordres supplémentaires pour la même date. Cependant, le service soumettra des Ordres *planifiés* dans le cadre des jours à venir pour lesquels des Ordres doivent être soumis, voir la page [Réglages - Plan Quotidien](/settings-daily-plan).
 
 ### Supprimer le Plan Quotidien
 
 L'opération est disponible à partir d'un bouton situé sous le widget du Calendrier pour une date individuelle et pour une plage de dates.
 
 - Pour les jours sélectionnés, le Plan Quotidien sera supprimé, à condition qu'aucun Ordre *soumis* ou *terminés* ne soit disponible. Si des Ordres *planifiés* sont disponibles, ils seront abandonnés avec le Plan Quotidien.
-- Si le Plan Quotidien pour une date donnée est supprimé, la prochaine exécution du Service de Plan Quotidien planifiera les Ordres pour cette date, à condition que la date soit dans le champ des jours à venir pour lesquels les Ordres sont planifiés, voir [Settings - Daily Plan](/settings-daily-plan).
+- Si le Plan Quotidien pour une date donnée est supprimé, la prochaine exécution du Service de Plan Quotidien planifiera les Ordres pour cette date, à condition que la date soit dans le champ des jours à venir pour lesquels les Ordres sont planifiés, voir [Réglages - Plan Quotidien](/settings-daily-plan).
 
 ## Références
 
-- [Daily Plan](/daily-plan)
-- [Settings - Daily Plan](/settings-daily-plan)
+- [Plan Quotidien](/daily-plan)
+- [Réglages - Plan Quotidien](/settings-daily-plan)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)
-

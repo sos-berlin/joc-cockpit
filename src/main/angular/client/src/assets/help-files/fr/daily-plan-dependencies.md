@@ -16,7 +16,7 @@ Le widget Calendrier permet de sélectionner une date du Plan Quotidien pour laq
 Les opérations sur les dates de plan sont les suivantes :
 
 - **Ouvrir le plan** : Cela se produit automatiquement si de nouveaux Ordres sont ajoutés pour une date de plan. Les utilisateurs peuvent rouvrir un plan fermé.
-- **Fermer le plan** : Un plan ouvert est fermé et ne permet pas l'ajout d'Ordres. Cela se produit automatiquement pour les dates de plan passées avec un délai d'un jour. Les utilisateurs peuvent ajuster le paramètre correspondant à partir de la page [Settings - Daily Plan](/settings-daily-plan). Les utilisateurs peuvent fermer un plan ouvert plus tôt pour empêcher l'ajout d'Ordres.
+- **Fermer le plan** : Un plan ouvert est fermé et ne permet pas l'ajout d'Ordres. Cela se produit automatiquement pour les dates de plan passées avec un délai d'un jour. Les utilisateurs peuvent ajuster le paramètre correspondant à partir de la page [Réglages - Plan Quotidien](/settings-daily-plan). Les utilisateurs peuvent fermer un plan ouvert plus tôt pour empêcher l'ajout d'Ordres.
 
 ## Affichage des dépendances
 
@@ -54,10 +54,10 @@ Si les deux boutons de filtrage sont inactifs, tous les Workflows et dépendance
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Notice Boards](/configuration-inventory-notice-boards)
-- [Daily Plan](/daily-plan)
-- [Resources - Notice Boards](/resources-notice-boards)
-- [Settings - Daily Plan](/settings-daily-plan)
+- [Configuration - Inventaire - Tableaux de Condition](/configuration-inventory-notice-boards)
+- [Plan Quotidien](/daily-plan)
+- [Réglages - Plan Quotidien](/settings-daily-plan)
+- [Ressources - Tableaux de Condition](/resources-notice-boards)
 
 ### Product Knowledge Base
 

@@ -1,6 +1,6 @@
 # Configuration - Inventaire - Opérations - Retirer Dossier
 
-La rétractation d'objets les désactive, par exemple, pour une utilisation avec le [Daily Plan](/daily-plan). Cela s'applique à des objets tels que les Planifications et les Calendriers disponibles dans le dossier système *Automatisation*.
+La rétractation d'objets les désactive, par exemple, pour une utilisation avec le [Plan Quotidien](/daily-plan). Cela s'applique à des objets tels que les Planifications et les Calendriers disponibles dans le dossier système *Automatisation*.
 
 La vue *Configuration-&gt;Inventaire* permet de retirer un seul objet, voir [Configuration - Inventory - Operations - Recall Object](/configuration-inventory-operations-recall-object), et de retirer des objets à partir de dossiers.
 
@@ -10,7 +10,7 @@ Lorsque vous retirer des objets d'un dossier à l'aide de l'opération *Retirer*
 
 ## Mise à jour du Plan Quotidien
 
-La rétractation d'objets tels que les Planifications et les Calendriers a un impact sur la vue [Daily Plan](/daily-plan). 
+La rétractation d'objets tels que les Planifications et les Calendriers a un impact sur la vue [Plan Quotidien](/daily-plan). 
 
 Les Ordres existants pour les Workflows référencés par les Planifications associées seront retirés du Contrôleur et seront supprimés du Plan Quotidien.
 
@@ -36,8 +36,8 @@ Les utilisateurs contrôlent le déploiement cohérent à partir des options sui
 ### Aide contextuelle
 
 - [Configuration - Inventory - Operations - Recall Object](/configuration-inventory-operations-recall-object)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
+- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
+- [Plan Quotidien](/daily-plan)
 - [Dependency Matrix](/dependencies-matrix)
 
 ### Product Knowledge Base

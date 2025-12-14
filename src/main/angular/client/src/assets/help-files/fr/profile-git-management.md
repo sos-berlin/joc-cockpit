@@ -30,8 +30,8 @@ Les opérations suivantes sont proposées dans le menu d'action de chaque connex
 
 ### Aide contextuelle
 
-- [Profile](/profile)
-- [Profile - SSL Key Management](/profile-ssl-key-management)
+- [Profil](/profile)
+- [Profil - Gestion Clés SSL](/profile-ssl-key-management)
 
 ### Product Knowledge Base
 

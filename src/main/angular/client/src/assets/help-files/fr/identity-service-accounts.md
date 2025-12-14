@@ -1,6 +1,6 @@
 # Service d'Identité - Comptes
 
-Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
+Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Services d'Identité](/identity-services).
 
 Les comptes utilisateurs seront gérés et stockés dans JOC Cockpit pour les types de Services d'Identité suivants :
 
@@ -41,7 +41,7 @@ Les opérations suivantes sont disponibles dans le menu d'action à 3 points de 
 
 - **Modifier** permet de spécifier l'adresse [Identity Service - Account Configuration](/identity-service-account-configuration).
 - **Dupliquer** permet de copier le compte sélectionné dans un nouveau compte. Les utilisateurs doivent spécifier le nom du nouveau compte.
-- **Réinitialiser le mot de passe** supprime le mot de passe du compte et attribue le mot de passe spécifié avec le paramètre *initial_password* dans la page [Settings - Identity Service](/settings-identity-service). Le compte utilisateur concerné doit se connecter avec le *mot_de_passe initial* et doit modifier son mot de passe lors de la prochaine connexion.
+- **Réinitialiser le mot de passe** supprime le mot de passe du compte et attribue le mot de passe spécifié avec le paramètre *initial_password* dans la page [Réglages - Service d'Identité](/settings-identity-service). Le compte utilisateur concerné doit se connecter avec le *mot_de_passe initial* et doit modifier son mot de passe lors de la prochaine connexion.
 - **Forcer le changement de mot de passe** oblige le compte à changer son mot de passe lors de la prochaine connexion.
 - **Ajouter compte à la Liste de Blocage** interdit l'accès au compte pendant la durée de l'ajout du compte à la Liste de Blocage [Identity Service - Blocklist](/identity-service-blocklist).
 - **Désactiver** désactive le compte et interdit l'accès à partir de ce compte.
@@ -57,7 +57,7 @@ Les utilisateurs peuvent effectuer les opérations de masse suivantes à partir 
 
 Les utilisateurs peuvent sélectionner un ou plusieurs *comptes* pour effectuer les opérations ci-dessus en masse pour les *comptes* sélectionnés.
 
-- **Réinitialiser le mot de passe** supprime le mot de passe des comptes sélectionnés et attribue le mot de passe spécifié avec le paramètre *initial_password* dans la page [Settings - Identity Service](/settings-identity-service). Les comptes utilisateurs concernés doivent se connecter avec le *mot_de_passe initial* et doivent changer leur mot de passe lors de la prochaine connexion.
+- **Réinitialiser le mot de passe** supprime le mot de passe des comptes sélectionnés et attribue le mot de passe spécifié avec le paramètre *initial_password* dans la page [Réglages - Service d'Identité](/settings-identity-service). Les comptes utilisateurs concernés doivent se connecter avec le *mot_de_passe initial* et doivent changer leur mot de passe lors de la prochaine connexion.
 - **Forcer le changement de mot de passe** oblige les comptes sélectionnés à changer leur mot de passe lors de la prochaine connexion.
 - **Désactiver** désactive les comptes sélectionnés et refuse l'accès aux comptes donnés.
 - **Activer** active les comptes sélectionnés et désactivés.
@@ -71,9 +71,9 @@ Les utilisateurs peuvent sélectionner un ou plusieurs *comptes* pour effectuer 
 - [Identity Service - Account Configuration](/identity-service-account-configuration)
 - [Identity Service - Roles](/identity-service-roles) 
 - [Identity Service - Blocklist](/identity-service-blocklist)
-- [Identity Services](/identity-services)
-- [Settings - Identity Service](/settings-identity-service)
-- [Settings - JOC Cockpit](/settings-joc)
+- [Services d'Identité](/identity-services)
+- [Réglages - Service d'Identité](/settings-identity-service)
+- [Réglages - JOC Cockpit](/settings-joc)
 
 ### Product Knowledge Base
 

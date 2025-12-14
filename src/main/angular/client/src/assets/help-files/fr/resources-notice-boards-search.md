@@ -36,4 +36,4 @@ Le métacaractère de recherche **\*** est utilisé pour spécifier que les dép
 
 ## Références
 
-- [Resources - Notice Boards](/resources-notice-boards)
+- [Ressources - Tableaux de Condition](/resources-notice-boards)

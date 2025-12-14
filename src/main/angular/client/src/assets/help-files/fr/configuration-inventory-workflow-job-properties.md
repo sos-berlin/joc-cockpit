@@ -18,7 +18,7 @@ Les propriétés minimales d'une tâche sont les suivantes :
 ## Propriétés optionnelles de la tâche
 
 - **Titre** décrit l'objectif de la tâche. Les utilisateurs peuvent ajouter des liens en utilisant la syntaxe markdown, par exemple \[Example\]\(https://example.com\). Le *Titre* est pris en compte lors du filtrage des résultats, par exemple dans la vue [Workflows](/workflows).
-- **Ressources de Tâche** sont des objets d'inventaire qui contiennent des variables de paires clé/valeur qui peuvent être rendues disponibles à partir de variables de Workflow et de variables d'environnement. *Les Ressources de Tâche* peuvent être attribuées au niveau de la tâche et au niveau du Workflow, ce qui les rend disponibles pour tous les tâches d'un Workflow. Pour plus de détails, consultez [Configuration - Inventory - Job Resources](/configuration-inventory-job-resources).
+- **Ressources de Tâche** sont des objets d'inventaire qui contiennent des variables de paires clé/valeur qui peuvent être rendues disponibles à partir de variables de Workflow et de variables d'environnement. *Les Ressources de Tâche* peuvent être attribuées au niveau de la tâche et au niveau du Workflow, ce qui les rend disponibles pour tous les tâches d'un Workflow. Pour plus de détails, consultez [Configuration - Inventaire - Ressources de Tâche](/configuration-inventory-job-resources).
 - **Code de retour** indique si une tâche est considérée comme un succès ou un échec. Par défaut, la valeur 0 indique un succès, les autres valeurs indiquent un échec. Un certain nombre de codes de retour peuvent être séparés par une virgule, par exemple *0,2,4,8*. Une plage de codes de retour peut être spécifiée par deux points, par exemple *0..8* ou *0,2,4,8,16..64*, séparés par une virgule. Les codes de retour négatifs sont indéfinis.
   - **Les codes de retour négatifs sont indéfinis.
   - **En cas d'échec** spécifie les codes de retour d'échec qui indiquent un échec.
@@ -48,19 +48,19 @@ Pour les tâches *Shell*, le paramétrage est disponible à partir des variables
 
 La vue *Configuration - Inventaire* propose le curseur *Plus d'options* en haut de la fenêtre, qui est inactif par défaut. L'utilisation de ce curseur permet d'accéder à des options supplémentaires.
 
-- **Documentation** contient une référence à [Resources - Documentations](/resources-documentations) qui peut être utilisée pour expliquer la tâche. La référence à la documentation est visible dans la vue [Workflows](/workflows).
+- **Documentation** contient une référence à [Ressources - Documentations](/resources-documentations) qui peut être utilisée pour expliquer la tâche. La référence à la documentation est visible dans la vue [Workflows](/workflows).
 
 ## Références
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Job Resources](/configuration-inventory-job-resources)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-  - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflows-job-options)
-  - [Configuration - Inventory - Workflows - Job Node Properties](/configuration-inventory-workflows-job-node-properties)
-  - [Configuration - Inventory - Workflows - Job Notifications](/configuration-inventory-workflows-job-notifications)
-  - [Configuration - Inventory - Workflows - Job Tags](/configuration-inventory-workflows-job-tags)
-- [Resources - Documentations](/resources-documentations)
+- [Configuration - Inventaire - Ressources de Tâche](/configuration-inventory-job-resources)
+- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
+  - [Configuration - Inventaire - Workflow - Options de Tâche](/configuration-inventory-workflows-job-options)
+  - [Configuration - Inventaire - Workflow - Propriétés du Nœud de Tâche](/configuration-inventory-workflows-job-node-properties)
+  - [Configuration - Inventaire - Workflow - Notifications de Tâche](/configuration-inventory-workflows-job-notifications)
+  - [Configuration - Inventaire - Workflow - Tags Tâche](/configuration-inventory-workflows-job-tags)
+- [Ressources - Documentations](/resources-documentations)
 
 ### Product Knowledge Base
 

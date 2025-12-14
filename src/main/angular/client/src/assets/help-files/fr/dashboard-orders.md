@@ -2,7 +2,7 @@
 
 L'affichage *Ordres* fournit des informations sur les Ordres provenant des sources suivantes :
 
-- Ordres ajoutés par le [Daily Plan](/daily-plan)
+- Ordres ajoutés par le [Plan Quotidien](/daily-plan)
 - Ordres ajoutés à la demande par les utilisateurs de la vue [Workflows](/workflows) 
 - Ordres ajoutés à partir de [File Order Sources](/configuration-inventory-file-order-sources) qui surveillent les répertoires pour les fichiers entrants
 
@@ -23,14 +23,14 @@ L'affichage *Ordres* fournit des informations sur l'état actuel des Ordres. L'a
 - **Bloqué**: Les Ordres ne peuvent pas démarrer, par exemple si l'Agent n'est pas joignable depuis l'ajout de l'Ordre.
 - **Échoué**: Les Ordres indiquent qu'une tâche a échoué ou qu'une *instruction Fail* empêche la poursuite de l'Ordre. 
 
-En cliquant sur le nombre d'Ordres indiqué, vous accédez [Orders Overview](/orders-overview) qui affiche les Ordres en détail.
+En cliquant sur le nombre d'Ordres indiqué, vous accédez [Aperçu des Ordres](/orders-overview) qui affiche les Ordres en détail.
 
 ## Filtres
 
 Le bouton déroulant situé dans le coin supérieur droit de l'affichage permet de sélectionner des Ordres dans une fourchette de dates :
 
 - **Tous** affiche tous les Ordres disponibles auprès du Contrôleur et des Agents.
-- **Aujourd'hui** Les Ordres sont liés à la journée en cours qui est calculée à partir du fuseau horaire de l'utilisateur [Profile - Preferences](/profile-preferences).
+- **Aujourd'hui** Les Ordres sont liés à la journée en cours qui est calculée à partir du fuseau horaire de l'utilisateur [Profil - Préférences](/profile-preferences).
   - **Ordres à venir** Ordres sans heure de début,
   - **Ordres prévus** avec une heure de début pour le jour en cours,
   - **Ordres en progression** à partir de n'importe quelle date antérieure,
@@ -51,10 +51,10 @@ Le bouton déroulant situé dans le coin supérieur droit de l'affichage permet 
 
 ### Aide contextuelle
 
-- [Daily Plan](/daily-plan)
+- [Plan Quotidien](/daily-plan)
 - [File Order Sources](/configuration-inventory-file-order-sources)
-- [Orders Overview](/orders-overview)
-- [Profile - Preferences](/profile-preferences)
+- [Aperçu des Ordres](/orders-overview)
+- [Profil - Préférences](/profile-preferences)
 - [Workflows](/workflows)
 
 ### Product Knowledge Base

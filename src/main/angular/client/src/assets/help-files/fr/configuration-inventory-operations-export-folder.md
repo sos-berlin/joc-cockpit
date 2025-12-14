@@ -63,7 +63,7 @@ Les utilisateurs contrôlent la cohérence de l'exportation à partir des option
 ### Aide contextuelle
 
 - [Changes](/changes)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
+- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
 - [Dependency Matrix](/dependencies-matrix)
 
 ### Product Knowledge Base

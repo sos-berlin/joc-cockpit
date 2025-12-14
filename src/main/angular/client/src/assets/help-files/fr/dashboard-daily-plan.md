@@ -29,8 +29,8 @@ Le bouton déroulant situé dans le coin supérieur droit de l'affichage permet 
 
 ## Références
 
-- [Daily Plan](/daily-plan)
+- [Plan Quotidien](/daily-plan)
 - [Dashboard - Orders](/dashboard-orders)
-- [Order History](/history-orders)
+- [Historique des Ordres](/history-orders)
 - [JS7 - Daily Plan](https://kb.sos-berlin.com/display/JS7/JS7+-+Daily+Plan)
 - [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History)

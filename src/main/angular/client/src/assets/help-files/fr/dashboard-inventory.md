@@ -8,10 +8,10 @@ L'affichage *Inventaire* fournit des informations sur le nombre d'objets en cour
 
 Le récapitulatif de l'inventaire compte les objets déployés et validés. Il ne compte pas les objets brouillon qui n'ont pas été déployés ou validés.
 
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Configuration - Inventory - Workflow - Job Properties](/configuration-inventory-workflow-job-properties)
+- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
+- [Configuration - Inventaire - Workflow - Propriétés de Tâche](/configuration-inventory-workflow-job-properties)
 - [Configuration - Inventory - Resource Locks](/configuration-inventory-resource-locks)
-- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
+- [Configuration - Inventaire - Planifications](/configuration-inventory-schedules)
 
 ## Références
 

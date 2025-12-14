@@ -4,7 +4,7 @@ La vue *Aperçu des Ordres* permet de surveiller et de contrôler les Ordres pou
 
 - Les utilisateurs peuvent identifier les Ordres en cours de traitement sur [Order State](/order-states).
 - Les utilisateurs peuvent assurer la transition des Ordres, par exemple en annulant des Ordres *en exécution*.
-- La vue contient les Ordres qui sont ajoutés par [Daily Plan](/daily-plan) et les Ordres qui ont été ajoutés sur demande.
+- La vue contient les Ordres qui sont ajoutés par [Plan Quotidien](/daily-plan) et les Ordres qui ont été ajoutés sur demande.
 
 ## Vue de sélection de l'état de l'Ordre
 
@@ -14,10 +14,10 @@ Le vue de gauche indique le nombre d'Ordres disponibles par état. Si vous cliqu
 
 La vue central est organisé en onglets qui permettent de filtrer les Ordres par Tags.
 
-- les **Tags de Workflow** sont attribuées à partir de la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
-- les **Tags d'Ordres** sont attribuées à partir de la vue [Configuration - Inventory - Schedules](/configuration-inventory-schedules).
+- les **Tags de Workflow** sont attribuées à partir de la vue [Configuration - Inventaire - Workflows](/configuration-inventory-workflows).
+- les **Tags d'Ordres** sont attribuées à partir de la vue [Configuration - Inventaire - Planifications](/configuration-inventory-schedules).
 
-Les Tags sont sélectionnées à partir des icônes + et - et peuvent être recherchées à l'aide de l'icône de recherche rapide. L'affichage des Tags doit être activé à partir de la page [Settings - JOC Cockpit](/settings-joc).
+Les Tags sont sélectionnées à partir des icônes + et - et peuvent être recherchées à l'aide de l'icône de recherche rapide. L'affichage des Tags doit être activé à partir de la page [Réglages - JOC Cockpit](/settings-joc).
 
 ## Vue Ordre
 
@@ -27,7 +27,7 @@ Cette vue présente la liste des Ordres pour l'état donné :
   - En cliquant sur l'icône de la flèche vers le bas, vous afficherez les variables de l'Ordre.
 - **Workflow** est le nom unique attribué à un Workflow.
   - En cliquant sur le *Workflow*, vous accédez à la vue [Workflows](/workflows).
-  - En cliquant sur l'icône en forme de crayon, vous accédez à la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
+  - En cliquant sur l'icône en forme de crayon, vous accédez à la vue [Configuration - Inventaire - Workflows](/configuration-inventory-workflows).
 - **Label** indique la position de l'Ordre à partir du *Label* de l'instruction de Workflow. En l'absence de *Label*, la position technique est indiquée.
 - **État** indique le [Order State](/order-states).
   - Le passage de la souris sur l'indicateur d'état permet d'afficher des détails s'ils sont disponibles. Par exemple, les Ordres *en attente* indiquent des raisons telles que *en attente d'un processus*, *en attente d'une condition*, etc.
@@ -50,10 +50,10 @@ Cette vue s'affiche sur la partie inférieure de la fenêtre lorsque l'utilisate
 
 #### Accès à la sortie du journal
 
-- **ID Ordre** : En cliquant sur le *ID Ordre* dans la vue *Historique*, vous afficherez le journal de sortie de l'Ordre à partir de la vue [Order Log View](/order-log). Le journal comprend les données de sortie créées par toutes les tâches exécutées avec le Workflow.
+- **ID Ordre** : En cliquant sur le *ID Ordre* dans la vue *Historique*, vous afficherez le journal de sortie de l'Ordre à partir de la vue [Affichage du Journal d'Ordre](/order-log). Le journal comprend les données de sortie créées par toutes les tâches exécutées avec le Workflow.
 - **Icône de téléchargement** : cliquez sur l'icône pour télécharger le journal de l'Ordre dans un fichier.
 
-Par défaut, l'affichage des journaux de l'Ordre est limité à une taille de 10 Mo et, dans le cas contraire, les journaux sont téléchargés dans des fichiers. Les utilisateurs peuvent ajuster la limite à partir de la page [Settings - JOC Cockpit](/settings-joc).
+Par défaut, l'affichage des journaux de l'Ordre est limité à une taille de 10 Mo et, dans le cas contraire, les journaux sont téléchargés dans des fichiers. Les utilisateurs peuvent ajuster la limite à partir de la page [Réglages - JOC Cockpit](/settings-joc).
 
 ### Journal d'Audit
 
@@ -62,10 +62,10 @@ Le *Journal d'Audit* indique les opérations de modification effectuées sur l'O
 - **Créé** indique la date à laquelle l'opération a été effectuée.
 - **Compte** indique le compte d'utilisateur qui a effectué l'opération.
 - **Demande** indique le point de terminaison de l'API REST qui a été appelé.
-- **Catégorie** précise la classification de l'opération telle que CONTROLLER lors de l'annulation d'Ordres ou DAILYPLAN lors de la création d'Ordres à partir du [Daily Plan](/daily-plan).
+- **Catégorie** précise la classification de l'opération telle que CONTROLLER lors de l'annulation d'Ordres ou DAILYPLAN lors de la création d'Ordres à partir du [Plan Quotidien](/daily-plan).
 - **Raison** explique pourquoi un Ordre a été modifié. Le JOC Cockpit peut être configuré pour imposer la spécification des raisons lors de la modification d'objets.
-  - Ce paramètre est disponible à l'adresse [Profile - Preferences](/profile-preferences).
-  - Le paramètre peut être appliqué à partir de la page [Settings - JOC Cockpit](/settings-joc).
+  - Ce paramètre est disponible à l'adresse [Profil - Préférences](/profile-preferences).
+  - Le paramètre peut être appliqué à partir de la page [Réglages - JOC Cockpit](/settings-joc).
 - **Temps passé** similaire à la spécification des *motifs*, le temps passé sur une opération peut être ajouté lors de la modification des Ordres.
 - **Lien vers le ticket** similaire à la spécification de *Raison* une référence à un système de tickets peut être ajoutée lors de la modification des Ordres.
 
@@ -116,7 +116,7 @@ Les utilisateurs peuvent appliquer des filtres pour limiter l'affichage des Ordr
 Ce bouton déroulant permet de sélectionner des Ordres à partir d'une plage de dates :
 
 - **Tous** spécifie les Ordres planifiés pour n'importe quelle date passée et future qui sont affichés.
-- **Aujourd'hui** Les Ordres sont liés à la journée en cours qui est calculée à partir du fuseau horaire dans [Profile - Preferences](/profile-preferences).
+- **Aujourd'hui** Les Ordres sont liés à la journée en cours qui est calculée à partir du fuseau horaire dans [Profil - Préférences](/profile-preferences).
 - **Prochaine heure** inclut les Ordres qui devraient commencer dans l'heure qui suit.
 - **12 prochaines heures** comprennent les Ordres qui devraient commencer dans les 12 prochaines heures.
 - **24 heures suivantes** comprennent les Ordres qui devraient commencer dans les 24 heures suivantes.
@@ -141,13 +141,13 @@ Le filtre limite l'affichage aux *Identifiants d'Ordres* et aux *Noms de Workflo
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
-- [Order Log View](/order-log)
+- [Configuration - Inventaire - Planifications](/configuration-inventory-schedules)
+- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
+- [Plan Quotidien](/daily-plan)
+- [Affichage du Journal d'Ordre](/order-log)
 - [Order State](/order-states)
-- [Profile - Preferences](/profile-preferences)
-- [Settings - JOC Cockpit](/settings-joc)
+- [Profil - Préférences](/profile-preferences)
+- [Réglages - JOC Cockpit](/settings-joc)
 - [Workflows - Add Orders](/workflows-orders-add)
 
 ### Product Knowledge Base

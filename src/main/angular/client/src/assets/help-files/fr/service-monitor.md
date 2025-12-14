@@ -2,9 +2,9 @@
 
 Le service Surveillance est utilisé pour signaler l'état de santé des produits JS7 et pour signaler les problèmes d'exécution du Workflow. Le service de Surveillance alimente les sous-vues *Moniteur* dans JOC Cockpit :
 
-- vérifier la disponibilité des produits JS7 et signaler dans les sous-vues [Monitor - Controller Availability](/monitor-availability-controller) et [Monitor - Agent Availability](/monitor-availability-agent).
-- vérifier les Contrôleurs et les Agents connectés pour détecter les avertissements et les erreurs survenus pendant le fonctionnement des produits. Les résultats sont ajoutés à la sous-vue [Monitor - System Notifications](/monitor-notifications-system).
-- vérifier les résultats de l'exécution du Workflow et de l'exécution du Job à partir de tous les Contrôleurs connectés et ajouter des notifications à la vue [Monitor - Order Notifications](/monitor-notifications-order).
+- vérifier la disponibilité des produits JS7 et signaler dans les sous-vues [Moniteur - Disponibilité de Contrôleur](/monitor-availability-controller) et [Moniteur - Disponibilité de l'Agent](/monitor-availability-agent).
+- vérifier les Contrôleurs et les Agents connectés pour détecter les avertissements et les erreurs survenus pendant le fonctionnement des produits. Les résultats sont ajoutés à la sous-vue [Moniteur - Notifications du Système](/monitor-notifications-system).
+- vérifier les résultats de l'exécution du Workflow et de l'exécution du Job à partir de tous les Contrôleurs connectés et ajouter des notifications à la vue [Moniteur - Notifications d'Ordre](/monitor-notifications-order).
 
 Par conséquent, les erreurs et les avertissements qui se produisent pendant l'exécution du Workflow deviendront visibles dans les sous-vues *Monitor* de l'interface graphique et peuvent être transmis par [JS7 - Notifications](https://kb.sos-berlin.com/display/JS7/JS7+-+Notifications). En raison de la nature asynchrone des produits JS7, cette tâche est exécutée par un service d'arrière-plan.
 
@@ -16,10 +16,10 @@ Le service de Surveillance est lancé automatiquement au démarrage de JOC Cockp
 
 ### Aide contextuelle
 
-- [Monitor - Agent Availability](/monitor-availability-agent)
-- [Monitor - Controller Availability](/monitor-availability-controller)
-- [Monitor - Order Notifications](/monitor-notifications-order)
-- [Monitor - System Notifications](/monitor-notifications-system)
+- [Moniteur - Disponibilité de l'Agent](/monitor-availability-agent)
+- [Moniteur - Disponibilité de Contrôleur](/monitor-availability-controller)
+- [Moniteur - Notifications d'Ordre](/monitor-notifications-order)
+- [Moniteur - Notifications du Système](/monitor-notifications-system)
 
 ### Product Knowledge Base
 

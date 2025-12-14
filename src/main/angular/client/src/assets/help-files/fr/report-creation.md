@@ -1,19 +1,19 @@
-# Création de rapports
+# Création de Rapports
 
 La vue [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) offre un aperçu de l'exécution passée des Workflows et des Tâches :
 
-- Les rapports sont créés à partir de [Report Templates](/report-templates) prédéfinis qui sont paramétrés à partir de [Configuration - Inventory - Reports](/configuration-inventory-reports).
-- Les utilisateurs exécutent les rapports à partir de la vue *Report Creation* ou de [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation). La vue [Report - Run History](/report-run-history) fournit des informations sur les exécutions antérieures des rapports.
-- Les rapports sont visualisés dans la vue [Reports](/reports).
+- Les rapports sont créés à partir de [Maquettes de Rapport](/report-templates) prédéfinis qui sont paramétrés à partir de [Configuration - Inventaire - Modèles de Rapport](/configuration-inventory-reports).
+- Les utilisateurs exécutent les rapports à partir de la vue *Report Creation* ou de [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation). La vue [Historique de l'Exécution des Rapports](/report-run-history) fournit des informations sur les exécutions antérieures des rapports.
+- Les rapports sont visualisés dans la vue [Rapports](/reports).
 
 ## Affichage des configurations des rapports
 
-Les rapports sont configurés dans la vue [Configuration - Inventory - Reports](/configuration-inventory-reports).
+Les rapports sont configurés dans la vue [Configuration - Inventaire - Modèles de Rapport](/configuration-inventory-reports).
 
 Les configurations des rapports sont disponibles 
 
 - à partir du *Vue de dossier* qui permet de naviguer vers les configurations de rapport.
-- à partir du *Vue de configuration des rapports* qui affiche les détails de la configuration des rapports sélectionnée.
+- à partir du *Vue Modèles de Rapport* qui affiche les détails de la configuration des rapports sélectionnée.
 
 ### Vue des dossiers
 
@@ -27,8 +27,8 @@ Cette vue permet de naviguer dans les dossiers d'inventaire qui contiennent les 
 
 La vue affiche les configurations de rapport disponibles dans le dossier sélectionné. Les configurations de rapport sont affichées avec les propriétés suivantes :
 
-- **Nom** indique le nom unique d'une configuration de rapport tel que spécifié dans la vue [Configuration - Inventory - Reports](/configuration-inventory-reports).
-- **Modèle de rapport** indique le [Report Template](/report-templates) utilisé.
+- **Nom** indique le nom unique d'un Modèle de Rapport tel que spécifié dans la vue [Configuration - Inventaire - Modèles de Rapport](/configuration-inventory-reports).
+- **Maquette de rapport** indique le [Maquette de Rapport](/report-templates) utilisé.
 - **Fréquences** indique les *fréquences de rapport* qui divisent la *période de rapport* en unités égales.
 - **Mois de**, **Mois à** indique le début et la fin de la *Période de rapport*.
 
@@ -42,14 +42,13 @@ Les utilisateurs peuvent sélectionner un certain nombre de configurations de ra
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Reports](/configuration-inventory-reports)
-- [Reports](/reports)
-- [Report - Run History](/report-run-history)
-- [Report Templates](/report-templates)
+- [Configuration - Inventaire - Modèles de Rapport](/configuration-inventory-reports)
+- [Historique de l'Exécution des Rapports](/report-run-history)
+- [Maquettes de Rapport](/report-templates)
+- [Rapports](/reports)
 
 ### Product Knowledge Base
 
 - [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports)
 - [JS7 - Reports - Configuration](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Configuration)
 - [JS7 - Reports - Templates](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Templates)
-

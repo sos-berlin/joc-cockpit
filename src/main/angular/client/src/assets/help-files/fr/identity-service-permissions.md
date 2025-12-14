@@ -1,6 +1,6 @@
 # Permissions du Service d'Identité
 
-Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
+Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Services d'Identité](/identity-services).
 
 Pour l'autorisation, le JS7 propose un modèle d'accès basé sur les rôles (RBAC) qui comprend les éléments suivants
 
@@ -57,7 +57,7 @@ Dans le coin supérieur droit, les boutons suivants permettent d'afficher les au
 ### Aide contextuelle
 
 - [Identity Service - Roles](/identity-service-roles)
-- [Identity Services](/identity-services)
+- [Services d'Identité](/identity-services)
 
 ### Product Knowledge Base
 

@@ -5,7 +5,7 @@ La vue *Tableaux de Condition* affiche des informations en temps réel sur l'uti
 Les Tableaux de Condition mettent en œuvre des dépendances entre les Workflows par l'utilisation d'Annonce. Une Annonce est un drapeau qui est attaché à un Tableau de Condition ou qui n'existe pas. Les Tableaux de Condition sont disponibles dans les versions suivantes :
 
 - **Tableau de Condition Global** implément les *Annonces* à l'échelle globale, ce qui rend le même Annonce disponible pour n'importe quel Workflow à n'importe quel moment. 
-- **Tableau de Condition Planifiable** met en œuvre des *Annonces* dans le cadre du [Daily Plan](/daily-plan). L'Annonce existe ou n'existe pas en fonction de la date du *Plan Quotidien*, par exemple
+- **Tableau de Condition Planifiable** met en œuvre des *Annonces* dans le cadre du [Plan Quotidien](/daily-plan). L'Annonce existe ou n'existe pas en fonction de la date du *Plan Quotidien*, par exemple
   - Le Workflow 1 fonctionne du lundi au vendredi.
   - Le Workflow 2 se déroule du lundi au dimanche et dépend de l'exécution précédente du Workflow 1.
   - Le week-end, le Workflow 1 ne démarre pas. Pour permettre le démarrage du Workflow 2 le week-end, la dépendance est mise en correspondance avec le Plan Quotidien en utilisant les *Tableaux de Condition Planifiables* : si aucun Ordre n'est annoncé pour le Workflow 1, la dépendance peut être ignorée.
@@ -34,7 +34,7 @@ L'icône de recherche rapide permet de rechercher des tableaux d'affichage en fo
 
 L'affichage se concentre sur les *Tableaux de Condition* et les Ordres qui y sont liés.
 
-La vue [Daily Plan - Dependencies](/daily-plan-dependencies) est axée sur l'affichage des *Tableaux de Condition*, des *Annonces* et des Ordres liés à une date spécifique du Plan Quotidien.
+La vue [Dépendances du Plan Quotidien](/daily-plan-dependencies) est axée sur l'affichage des *Tableaux de Condition*, des *Annonces* et des Ordres liés à une date spécifique du Plan Quotidien.
 
 ### Affichage des Tableaux de Condition
 
@@ -67,9 +67,9 @@ Le site [Resources - Notice Boards - Search](/resources-notice-boards-search) pr
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Notice Boards](/configuration-inventory-notice-boards)
-- [Daily Plan](/daily-plan)
-- [Daily Plan - Dependencies](/daily-plan-dependencies)
+- [Configuration - Inventaire - Tableaux de Condition](/configuration-inventory-notice-boards)
+- [Plan Quotidien](/daily-plan)
+- [Dépendances du Plan Quotidien](/daily-plan-dependencies)
 - [Resources - Notice Boards - Search](/resources-notice-boards-search)
 
 ### Product Knowledge Base

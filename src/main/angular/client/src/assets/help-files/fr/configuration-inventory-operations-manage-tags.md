@@ -4,7 +4,7 @@ JS7 propose [JS7 - Tagging](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging)
 
 - Les Tags sont gérées à partir de l'inventaire disponible dans la vue *Configuration* du JOC Cockpit.
   - Un nombre quelconque de Tags est attribué aux Workflows.
-  - Les Planifications se voient attribuer un nombre quelconque de Tags qui sont ajoutées aux Ordres créés par [Daily Plan Service](/service-daily-plan).
+  - Les Planifications se voient attribuer un nombre quelconque de Tags qui sont ajoutées aux Ordres créés par [Service du Plan Qutotidien](/service-daily-plan).
 - Les Tags peuvent être appliquées lors de l'ajout manuel d'Ordres ad hoc.
 - Les Tags peuvent être utilisées dans les vues *Workflows*, *Aperçu des Ordres*, *Plan Quotidien* et *Historique* pour filtrer les Workflows et les Ordres.
 
@@ -29,8 +29,8 @@ La *Liste des Tags* indique le nom de la tag et les Workflows auxquels la Tag es
 ### Aide contextuelle
 
 - [Configuration - Inventory - Navigation](/configuration-inventory-navigation)
-- [Configuration - Inventory - Workflow - Job Tags](/configuration-inventory-workflow-job-tags)
-- [Daily Plan](/daily-plan)
+- [Configuration - Inventaire - Workflow - Tags Tâche](/configuration-inventory-workflow-job-tags)
+- [Plan Quotidien](/daily-plan)
 
 ### Product Knowledge Base
 

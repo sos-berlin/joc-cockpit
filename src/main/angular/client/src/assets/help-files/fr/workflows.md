@@ -3,7 +3,7 @@
 La vue *Workflows* permet de surveiller et de contrôler les Workflows.
 
 - Les utilisateurs peuvent identifier les Ordres en cours de traitement pour des Workflows spécifiques.
-- Les utilisateurs peuvent ajouter des Ordres à des Workflows sur demande. Ces Ordres ne sont pas ajoutés au [Daily Plan](/daily-plan), mais sont ajoutés de manière ad hoc.
+- Les utilisateurs peuvent ajouter des Ordres à des Workflows sur demande. Ces Ordres ne sont pas ajoutés au [Plan Quotidien](/daily-plan), mais sont ajoutés de manière ad hoc.
 
 ## Panneau de navigation
 
@@ -11,10 +11,10 @@ Le menu de gauche est organisé en onglets qui permettent de naviguer à partir 
 
 - **La navigation par dossier** offre l'icône chevron vers le bas lorsque vous survolez le nom d'un dossier. Cela permet d'afficher les Workflows du dossier en cours et de tous les sous-dossiers. L'utilisation de l'icône de chevron vers le haut réinitialise la sélection au dossier actuel.
 - Le filtrage par tag est proposé à partir des onglets suivants :
-  - les **Tags Workflow** sont attribuées à partir de la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
-  - les **Tags Ordre** sont attribuées à partir de la vue [Configuration - Inventory - Schedules](/configuration-inventory-schedules).
+  - les **Tags Workflow** sont attribuées à partir de la vue [Configuration - Inventaire - Workflows](/configuration-inventory-workflows).
+  - les **Tags Ordre** sont attribuées à partir de la vue [Configuration - Inventaire - Planifications](/configuration-inventory-schedules).
 
-Les Tags sont sélectionnées à partir des icônes + et - et peuvent être recherchées à l'aide de l'icône Recherche rapide. L'affichage des Tags doit être activé à partir de la page [Settings - JOC Cockpit](/settings-joc).
+Les Tags sont sélectionnées à partir des icônes + et - et peuvent être recherchées à l'aide de l'icône Recherche rapide. L'affichage des Tags doit être activé à partir de la page [Réglages - JOC Cockpit](/settings-joc).
 
 ## Panneau Workflow
 
@@ -30,7 +30,7 @@ Le résumé de l'Ordre est indiqué pour les Ordres liés aux Workflows affiché
   - En cliquant sur le *Nom du Workflow*, vous ferez apparaître le panneau *Historique* dans la partie inférieure de la fenêtre qui affiche l'historique récent de l'exécution du Workflow.
   - En cliquant sur la grande icône de flèche vers le bas, vous afficherez tous les tâches et toutes les instructions de Workflow.
   - En cliquant sur la petite icône flèche vers le bas, vous afficherez les tâches et les instructions de Workflow de niveau supérieur.
-  - En cliquant sur l'icône en forme de crayon, vous accédez à la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
+  - En cliquant sur l'icône en forme de crayon, vous accédez à la vue [Configuration - Inventaire - Workflows](/configuration-inventory-workflows).
   - En cliquant sur l'icône +, une fenêtre contextuelle s'ouvre sur [Add Orders](/workflows-orders-add).
 - les icônes **Vue tabulaire**, **Vue graphique** sont disponibles pour afficher les Workflows
   - en format tabulaire qui se concentre sur une structure concise et économise de l'espace dans la fenêtre.
@@ -43,7 +43,7 @@ Le résumé de l'Ordre est indiqué pour les Ordres liés aux Workflows affiché
   - **Les Workflows en attente** attendent la confirmation par un ou plusieurs Agents que le Workflow est suspendu ou repris.
 - **No. d'Ordres** indique le nombre d'Ordres assignés au Workflow. 
   - Jusqu'à trois Ordres sont affichés directement avec le Workflow. Ils offrent un menu d'action pour les opérations de l'Ordre.
-    - Les utilisateurs peuvent cliquer sur l'ID de l'Ordre indiqué pour afficher le journal de sortie de l'Ordre à partir de [Order Log View](/order-log). Le journal comprend la sortie créée par tous les tâches exécutés avec le Workflow.
+    - Les utilisateurs peuvent cliquer sur l'ID de l'Ordre indiqué pour afficher le journal de sortie de l'Ordre à partir de [Affichage du Journal d'Ordre](/order-log). Le journal comprend la sortie créée par tous les tâches exécutés avec le Workflow.
   - En cliquant sur le *No. d'Ordres*, une fenêtre contextuelle s'ouvre, affichant tous les Ordres associés et proposant des opérations sur des Ordres individuels et des opérations en masse sur des Ordres sélectionnés.
 
 ### Affichage des tâches et des instructions de Workflow
@@ -61,16 +61,16 @@ Cette vue s'affiche dans la partie inférieure de la fenêtre lorsque les utilis
 - **État** indique le dernier résultat dans la vie de l'Ordre.
   - Si les Ordres sont terminés, le *Statut de l'historique* sera *succès* ou *échec*.
   - Si les Ordres ne sont pas terminés, l'état de l'historique sera *en cours*.
-- **État de l'Ordre** indique le dernier état de l'Ordre, voir [Order States](/order-states).
+- **État de l'Ordre** indique le dernier état de l'Ordre, voir [États d'Ordre](/order-states).
   - Si les Ordres sont terminés, l'*état de l'Ordre* sera *réussi* ou *échoué*.
   - Si les Ordres ne sont pas terminés, l'état de l'Ordre sera *en cours de traitement*.
 
 Les options suivantes sont disponibles pour l'accès à la sortie du journal :
 
-- **Identification de l'Ordre** : en cliquant sur l'ID de l'Ordre, vous afficherez le journal de l'Ordre à partir de [Order Log View](/order-log). Le journal comprend les données créées par tous les tâches exécutés avec le Workflow.
+- **Identification de l'Ordre** : en cliquant sur l'ID de l'Ordre, vous afficherez le journal de l'Ordre à partir de [Affichage du Journal d'Ordre](/order-log). Le journal comprend les données créées par tous les tâches exécutés avec le Workflow.
 - **Icône de téléchargement** : cliquez sur l'icône pour télécharger le journal de l'Ordre dans un fichier.
 
-Par défaut, l'affichage des journaux de l'Ordre est limité à une taille de 10 Mo et, dans le cas contraire, les journaux sont téléchargés dans des fichiers. Les utilisateurs peuvent ajuster la limite à partir de la page [Settings - JOC Cockpit](/settings-joc).
+Par défaut, l'affichage des journaux de l'Ordre est limité à une taille de 10 Mo et, dans le cas contraire, les journaux sont téléchargés dans des fichiers. Les utilisateurs peuvent ajuster la limite à partir de la page [Réglages - JOC Cockpit](/settings-joc).
 
 ### Historique des Processus
 
@@ -78,24 +78,24 @@ Par défaut, l'affichage des journaux de l'Ordre est limité à une taille de 10
 - **Label** indique la position de la tâche dans le Workflow.
 - **Status** est le résultat de l'exécution de la tâche indiqué par *en progression*, *succès* ou *échoué*.
 - **Heure de démarrage**, **Heure de fin** indiquent le début et la fin de l'exécution de la tâche.
-- **Criticité** est spécifiée à l'adresse [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflow-job-options) et indique la pertinence d'une tâche :
+- **Criticité** est spécifiée à l'adresse [Configuration - Inventaire - Workflow - Options de Tâche](/configuration-inventory-workflow-job-options) et indique la pertinence d'une tâche :
   - *Mineur*
   - *Normal*
   - *Majeur*
   - *Critique*
-- **Code de retour** est le code de sortie d'une tâche Shell ou le code de retour d'une tâche JVM. Le panneau [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-job-properties) permet de configurer les codes de retour en cas de succès ou d'échec de l'exécution d'une tâche.
+- **Code de retour** est le code de sortie d'une tâche Shell ou le code de retour d'une tâche JVM. Le panneau [Configuration - Inventaire - Workflow - Propriétés de Tâche](/configuration-inventory-workflow-job-properties) permet de configurer les codes de retour en cas de succès ou d'échec de l'exécution d'une tâche.
 
 Pour accéder à la sortie du journal, l'action suivante est disponible :
 
-- **Tâches** : en cliquant sur le *nom de tâche*, vous afficherez le journal de sortie de la taĉhe à partir de [Task Log View](/task-log). 
+- **Tâches** : en cliquant sur le *nom de tâche*, vous afficherez le journal de sortie de la taĉhe à partir de [Affichage du Journal de Tâche](/task-log). 
 
-Par défaut, l'affichage des journaux de tâches est limité à une taille de 10 Mo et, dans le cas contraire, les journaux sont téléchargés dans des fichiers. Les utilisateurs peuvent ajuster la limite à partir de la page [Settings - JOC Cockpit](/settings-joc).
+Par défaut, l'affichage des journaux de tâches est limité à une taille de 10 Mo et, dans le cas contraire, les journaux sont téléchargés dans des fichiers. Les utilisateurs peuvent ajuster la limite à partir de la page [Réglages - JOC Cockpit](/settings-joc).
 
 ### Journal d'Audit
 
-Cette vue affiche les mêmes informations que le [Audit Log](/audit-log) en se concentrant sur le Workflow en cours.
+Cette vue affiche les mêmes informations que le [Journal d'Audit](/audit-log) en se concentrant sur le Workflow en cours.
 
-Le nombre d'entrées du Journal d'Audit affichées peut être modifié à partir du paramètre *Nombre maximum d'entrées du Journal d'Audit par objet* dans le site de l'utilisateur [Profile - Preferences](/profile-preferences).
+Le nombre d'entrées du Journal d'Audit affichées peut être modifié à partir du paramètre *Nombre maximum d'entrées du Journal d'Audit par objet* dans le site de l'utilisateur [Profil - Préférences](/profile-preferences).
 
 ## Opérations
 
@@ -149,15 +149,15 @@ Le site [Workflows - Search](/workflows-search) offre des critères pour recherc
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-  - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflow-job-properties)
-  - [Configuration - Inventory - Workflows - Job Options](/configuration-inventory-workflow-job-options)
-- [Daily Plan](/daily-plan)
-- [Order Log View](/order-log)
-- [Order States](/order-states)
-- [Profile - Preferences](/profile-preferences)
-- [Settings - JOC Cockpit](/settings-joc)
+- [Configuration - Inventaire - Planifications](/configuration-inventory-schedules)
+- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
+  - [Configuration - Inventaire - Workflow - Propriétés de Tâche](/configuration-inventory-workflow-job-properties)
+  - [Configuration - Inventaire - Workflow - Options de Tâche](/configuration-inventory-workflow-job-options)
+- [Plan Quotidien](/daily-plan)
+- [Affichage du Journal d'Ordre](/order-log)
+- [États d'Ordre](/order-states)
+- [Profil - Préférences](/profile-preferences)
+- [Réglages - JOC Cockpit](/settings-joc)
 - [Workflows - Add Orders](/workflows-orders-add)
 - [Workflows - Search](/workflows-search)
 

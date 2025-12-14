@@ -1,6 +1,6 @@
 # Configuration du Service d'Identité
 
-Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
+Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Services d'Identité](/identity-services).
 
 Les Services d'Identité sont spécifiés à partir de la configuration suivante :
 
@@ -15,7 +15,7 @@ Pour tout Service d'Identité, les propriétés suivantes sont affichées :
 - **Type du Service d'Identité** est l'un des suivants : JOC, LDAP, OIDC, CERTIFICATE, FIDO, KEYCLOAK. Pour LDAP, OIDC et KEYCLOAK, les types de service supplémentaires LDAP-JOC, OIDC-JOC et KEYCLOAK-JOC peuvent être utilisés pour stocker l'attribution des rôles avec JOC Cockpit.
 - **Séquence** indique l'Ordre dans lequel le Service d'Identité sera déclenché pour l'authentification.
   - Les utilisateurs peuvent spécifier une valeur entière pour indiquer l'Ordre.
-  - Les utilisateurs peuvent modifier l'Ordre en déplaçant le service dans la liste de [Identity Services](/identity-services).
+  - Les utilisateurs peuvent modifier l'Ordre en déplaçant le service dans la liste de [Services d'Identité](/identity-services).
 - **Requis** indique que le Service d'Identité sera déclenché en plus des Services d'Identité dont l'Ordre est antérieur.
 - **Désactivée** indique que le Service d'Identité est inactif et ne sera pas utilisé pour la connexion.
 - **Schéma d'Authentification** est l'un des deux suivants : *single-factor* ou *two-factor*. 
@@ -26,7 +26,7 @@ Pour tout Service d'Identité, les propriétés suivantes sont affichées :
 ### Aide contextuelle
 
 - [Identity Service - Settings](/identity-service-settings)
-- [Identity Services](/identity-services)
+- [Services d'Identité](/identity-services)
 
 ### Product Knowledge Base
 

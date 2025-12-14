@@ -14,7 +14,7 @@ Indique si les Workflows sont considérés comme locaux à un environnement ou s
 
 ### Paramètre : *git\_hold\_resource\_locks*, Défaut : *rollout*
 
-Spécifie si [Resource Locks](/resources-resource-locks) est considéré comme local à un environnement ou destiné à être déployé avec Git.
+Spécifie si [Ressources - Verrous de Ressource](/resources-resource-locks) est considéré comme local à un environnement ou destiné à être déployé avec Git.
 
 ### Paramètre : *git\_hold\_file\_order\_sources*, Défaut : *rollout*
 
@@ -22,7 +22,7 @@ Ordonne si les Sources d'Ordre de Fichier sont considérées comme locales à un
 
 ### Paramètre : *git\_hold\_notice\_boards*, Défaut : *rollout*
 
-Spécifie si [Notice Boards](/resources-notice-boards) est considéré comme local à un environnement ou destiné à être déployé avec Git.
+Spécifie si [Ressources - Tableaux de Condition](/resources-notice-boards) est considéré comme local à un environnement ou destiné à être déployé avec Git.
 
 ### Paramètre : *git\_hold\_script\_includes*, Défaut : *rollout*
 
@@ -48,10 +48,10 @@ Indique si les Planifications sont considérées comme locales à un environneme
 
 ### Aide contextuelle
 
-- [Profile - Git Management](/profile-git-management)
-- [Resources - Notice Boards](/resources-notice-boards)
-- [Resources - Resource Locks](/resources-resource-locks)
-- [Settings](/settings)
+- [Profil - Git](/profile-git-management)
+- [Réglages](/settings)
+- [Ressources - Tableaux de Condition](/resources-notice-boards)
+- [Ressources - Verrous de Ressource](/resources-resource-locks)
 
 ### Product Knowledge Base
 

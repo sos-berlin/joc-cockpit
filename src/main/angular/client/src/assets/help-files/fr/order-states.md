@@ -1,14 +1,14 @@
-# Sources d'Ordres
+# États d'Ordre
 
 Les Ordres peuvent être ajoutés à partir des sources suivantes :
 
-- Ordres ajoutés depuis la vue [Daily Plan](/daily-plan)
+- Ordres ajoutés depuis la vue [Plan Quotidien](/daily-plan)
 - Ordres ajoutés à la demande par les utilisateurs à partir de la vue [Workflows](/workflows) 
 - Ordres ajoutés à partir de Sources d'Ordres de Fichier qui surveillent les répertoires pour les fichiers entrants
 
-## États des Ordres
+## États d'Ordre
 
-Les *États d'Ordres* suivants sont disponibles :
+Les *États d'Ordre* suivants sont disponibles :
 
 - **À venir**: Les Ordres ont été ajoutés aux Workflows sans spécifier d'heure de début, une heure de début peut leur être attribuée ultérieurement.
 - **Prévu**: Les Ordres ont été ajoutés aux Workflows et sont planifiés pour être exécutés à une date et une heure ultérieures.
@@ -21,12 +21,17 @@ Les *États d'Ordres* suivants sont disponibles :
 - **Bloqué**: Les Ordres bloqués ne peuvent pas démarrer, par exemple si l'Agent n'est pas joignable depuis l'ajout de l'Ordre.
 - **Echoué**: Les Ordres échoués indiquent qu'une tâche a échoué ou qu'une *instruction Fail* empêche la poursuite de l'Ordre. 
 
-En cliquant sur le nombre d'Ordres indiqué, vous accédez à la vue [Orders Overview](/orders-overview) qui affiche les détails des Ordres.
+En cliquant sur le nombre d'Ordres indiqué, vous accédez à la vue [Aperçu des Ordres](/orders-overview) qui affiche les détails des Ordres.
 
 ## Références
 
-- [Daily Plan](/daily-plan)
-- [Orders Overview](/orders-overview)
+### Aide contextuelle
+
+- [Plan Quotidien](/daily-plan)
+- [Aperçu des Ordres](/orders-overview)
 - [Workflows](/workflows)
+
+### Product Knowledge Base
+
 - [JS7 - Orders](https://kb.sos-berlin.com/display/JS7/JS7+-+Orders)
 - [JS7 - Order State Transitions](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+State+Transitions)

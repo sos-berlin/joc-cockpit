@@ -77,10 +77,10 @@ Pour connaître les raisons de l'échec d'un Workflow, reportez-vous au *Modèle
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Reports](/configuration-inventory-reports)
-- [Reports](/reports)
-- [Report - Creation](/report-creation)
-- [Report - Run History](/report-run-history)
+- [Configuration - Inventaire - Modèles de Rapport](/configuration-inventory-reports)
+- [Rapports](/reports)
+- [Création des Rapports](/report-creation)
+- [Historique de l'Exécution des Rapports](/report-run-history)
 
 ### Product Knowledge Base
 

@@ -12,14 +12,14 @@ Les sources d'Ordres de fichier se voient attribuer un Workflow auquel elles ajo
 
 Les sources d'Ordres de fichier sont gérées à partir des vues suivants :
 
-- La page [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation), sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant les sources d'Ordres de fichiers. En outre, cette vue permet d'effectuer des opérations sur les sources d'Ordres de fichiers.
+- La page [Configuration - Inventaire - Navigation](/configuration-inventory-navigation), sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant les sources d'Ordres de fichiers. En outre, cette vue permet d'effectuer des opérations sur les sources d'Ordres de fichiers.
 - La *vue des sources d'Ordres de fichier* sur le côté droit de la fenêtre contient les détails de la configuration des sources de commandes de fichiers.
 
 ## Vue des Sources d'Ordres de fichier
 
 Pour une Source d'Ordre de Fichier, les entrées suivantes sont disponibles :
 
-- **Nom** est l'identifiant unique d'une source de commande de fichiers, voir [Object Naming Rules](/object-naming-rules).
+- **Nom** est l'identifiant unique d'une source de commande de fichiers, voir [Règles de Dénomination des Objets](/object-naming-rules).
 - **Titre** contient une explication facultative de l'objectif de la source de commande de fichiers.
 - **Tag Name** permet de spécifier un certain nombre de Tags qui seront assignés aux Ordres créés pour les fichiers entrants.
 - **Nom du Workflow** spécifie le nom d'un Workflow auquel les Ordres seront ajoutés pour les fichiers entrants.
@@ -28,7 +28,7 @@ Pour une Source d'Ordre de Fichier, les entrées suivantes sont disponibles :
 - **Pattern** spécifie une [expression régulière] Java (https://en.wikipedia.org/wiki/Regular_expression) qui doit correspondre aux noms des fichiers entrants. Les expressions régulières diffèrent de l'utilisation de caractères génériques. Par exemple, 
   - **.\*** correspond à n'importe quel nom de fichier,
   - **.\*\.csv$** correspond aux noms de fichiers portant l'extension .csv.
-- **Fuseau horaire** spécifie le fuseau horaire applicable pour affecter les Ordres des fichiers entrants à la date du Plan Quotidien correspondante, voir [Daily Plan](/daily-plan). Les identifiants de fuseaux horaires sont acceptés comme *UTC*, *Europe/London*, etc. Pour une liste complète des identifiants de fuseaux horaires, voir [Liste des fuseaux horaires de la base de données tz] (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+- **Fuseau horaire** spécifie le fuseau horaire applicable pour affecter les Ordres des fichiers entrants à la date du Plan Quotidien correspondante, voir [Plan Quotidien](/daily-plan). Les identifiants de fuseaux horaires sont acceptés comme *UTC*, *Europe/London*, etc. Pour une liste complète des identifiants de fuseaux horaires, voir [Liste des fuseaux horaires de la base de données tz] (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
 - **Delay** spécifie le nombre de secondes pendant lesquelles l'Agent attendra jusqu'à ce que le fichier entrant soit considéré comme stable.
   - Sous Unix, les fichiers peuvent être écrits en même temps que l'Agent les lit. Cela ne s'applique pas aux environnements Windows qui, par défaut, ne permettent pas de lire et d'écrire des fichiers en même temps.
   - Dans un premier temps, l'Agent vérifie la taille du fichier et l'heure de modification. Dans un deuxième temps, l'Agent attendra le *délai* et répétera la vérification. Si la taille du fichier et l'horodatage de la modification sont inchangés, l'Agent créera l'Ordre et, dans le cas contraire, répétera la deuxième étape.
@@ -43,15 +43,15 @@ Pour une Source d'Ordre de Fichier, les entrées suivantes sont disponibles :
 
 ### Opérations sur les Sources d'Ordre de Fichier
 
-Pour les opérations disponibles, voir [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
+Pour les opérations disponibles, voir [Configuration - Inventaire - Navigation](/configuration-inventory-navigation).
 
 ## Références
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
-- [Daily Plan](/daily-plan)
-- [Object Naming Rules](/object-naming-rules)
+- [Configuration - Inventaire - Navigation](/configuration-inventory-navigation)
+- [Plan Quotidien](/daily-plan)
+- [Règles de Dénomination des Objets](/object-naming-rules)
 - [Expression régulière] (https://en.wikipedia.org/wiki/Regular_expression)
 
 ### Product Knowledge Base

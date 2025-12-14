@@ -2,10 +2,10 @@
 
 Cette vue affiche les notifications émises par les produits JS7.
 
-- Les notifications système nécessitent la configuration du *Service de notification de journal* à partir de la page [Settings](/settings) section [Settings - Log Notification](/settings-log-notification). S'il est configuré, le Cockpit JOC agit comme un service syslog qui reçoit les avertissements et les erreurs des Contrôleurs et des Agents enregistrés dans le Cockpit JOC.
+- Les notifications système nécessitent la configuration du *Service de notification de journal* à partir de la page [Réglages](/settings) section [Réglages - Notifications des Journaux](/settings-log-notification). S'il est configuré, le Cockpit JOC agit comme un service syslog qui reçoit les avertissements et les erreurs des Contrôleurs et des Agents enregistrés dans le Cockpit JOC.
 - Outre l'affichage des notifications dans cette vue, celles-ci peuvent être transmises par courrier et à partir de la ligne de commande, par exemple à des produits System Monitor tiers. Pour plus d'informations, consultez le site [Configuration - Notification ](/configuration-notification).
 
-Les utilisateurs doivent savoir que les notifications peuvent être purgées par le [Cleanup Service](/service-cleanup). Par défaut, les notifications sont purgées si elles datent de plus d'un jour.
+Les utilisateurs doivent savoir que les notifications peuvent être purgées par le [Service d'Assainissement](/service-cleanup). Par défaut, les notifications sont purgées si elles datent de plus d'un jour.
 
 ## Affichage des notifications
 
@@ -61,11 +61,11 @@ Les boutons suivants permettent de filtrer le type de notifications :
 
 ### Aide contextuelle
 
-- [Cleanup Service](/service-cleanup)
 - [Configuration - Notification ](/configuration-notification)
-- [Settings](/settings)
-- [Settings - Log Notification](/settings-log-notification)
-- [Monitor - Order Notifications](/monitor-notifications-order)
+- [Moniteur - Notifications d'Ordre](/monitor-notifications-order)
+- [Réglages](/settings)
+- [Réglages - Notifications des Journaux](/settings-log-notification)
+- [Service d'Assainissement](/service-cleanup)
 - [Workflows](/workflows)
 
 ### Product Knowledge Base

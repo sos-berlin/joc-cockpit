@@ -8,12 +8,12 @@ La page *Réglages* est accessible à partir de l'icône ![wheel icon](assets/im
 
 ### Paramètre : *force\_comments\_for\_audit\_log*, Défaut : *false*
 
-Spécifie qu'une raison doit être ajoutée à l'adresse [Audit Log](/audit-log) pour tout changement appliqué à des objets tels que l'ajout d'un Ordre, l'annulation d'un Ordre, etc.
+Spécifie qu'une raison doit être ajoutée à l'adresse [Journal d'Audit](/audit-log) pour tout changement appliqué à des objets tels que l'ajout d'un Ordre, l'annulation d'un Ordre, etc.
 
 Cela s'applique aux opérations effectuées à partir de l'interface graphique et aux opérations effectuées à partir de l'interface utilisateur [REST Web Service API](/rest-api)
 La spécification de la valeur *true* pour ce paramètre oblige toutes les requêtes API qui modifient des objets à fournir des arguments pour le Journal d'Audit.
 
-Notez que le site [Profile - Preferences](/profile-preferences) comprend un paramètre connexe, Activer les raisons pour le Journal d'Audit, qui a le même effet. Toutefois, son utilisation est volontaire et limitée au compte du profil. Le paramètre force\_comments\_for\_audit\_log impose ce comportement à tous les comptes d'utilisateurs, quels que soient les paramètres de profil des comptes d'utilisateurs individuels.
+Notez que le site [Profil - Préférences](/profile-preferences) comprend un paramètre connexe, Activer les raisons pour le Journal d'Audit, qui a le même effet. Toutefois, son utilisation est volontaire et limitée au compte du profil. Le paramètre force\_comments\_for\_audit\_log impose ce comportement à tous les comptes d'utilisateurs, quels que soient les paramètres de profil des comptes d'utilisateurs individuels.
 
 ### Paramètre : *comments\_for\_audit\_log*
 
@@ -23,7 +23,7 @@ La liste contient des motifs bien connus de modification des objets. Les utilisa
 
 ### Paramètre : *default\_profile\_account*, Défaut : *root*
 
-Lorsque des comptes d'utilisateurs sont ajoutés au JOC Cockpit à l'aide de [Identity Services](/identity-services), [Profile - Preferences](/profile-preferences) est créé avec des paramètres individuels pour chaque compte d'utilisateur.
+Lorsque des comptes d'utilisateurs sont ajoutés au JOC Cockpit à l'aide de [Services d'Identité](/identity-services), [Profil - Préférences](/profile-preferences) est créé avec des paramètres individuels pour chaque compte d'utilisateur.
 
 - Ce paramètre indique le compte utilisé comme modèle pour le profil lors de la création de comptes d'utilisateur. 
 - Par défaut, le compte *root* est utilisé, ce qui revient à dire que le profil d'un nouveau compte est alimenté par des paramètres tels que la langue, le thème, etc. du compte de profil par défaut.
@@ -190,11 +190,11 @@ Spécifie les options Java utilisées lors de la création de rapports. La valeu
 
 ### Aide contextuelle
 
-- [Audit Log](/audit-log)
-- [Identity Services](/identity-services)
-- [Profile - Preferences](/profile-preferences)
+- [Journal d'Audit](/audit-log)
+- [Profil - Préférences](/profile-preferences)
+- [Réglages](/settings)
 - [REST Web Service API](/rest-api)
-- [Settings](/settings)
+- [Services d'Identité](/identity-services)
 
 ### Product Knowledge Base
 

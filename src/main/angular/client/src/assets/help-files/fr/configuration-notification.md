@@ -2,7 +2,7 @@
 
 JS7 fournit des notifications en cas d'avertissements et d'erreurs des produits JS7 et en cas d'échec des Tâches et des Workflows. Des notifications peuvent également être envoyées en cas d'exécution réussie des Tâches et des Workflows.
 
-- Les notifications sont basées sur une surveillance continue par le JOC Cockpit à partir de [Monitor Service](/service-monitor) et sont visualisées dans la vue [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor). Il s'agit notamment de
+- Les notifications sont basées sur une surveillance continue par le JOC Cockpit à partir de [Service de Surveillance](/service-monitor) et sont visualisées dans la vue [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor). Il s'agit notamment de
   - la surveillance de la disponibilité du Contrôleur et des Agents,
   - la surveillance de l'exécution des Workflows et des Jobs.
 - Les notifications sont transmises par l'un des moyens suivants :
@@ -87,8 +87,8 @@ Ils activent les notifications effectives par des références aux éléments *F
 #### SystemNotification
 
 - **SystemNotification** : Sélectionne un ou plusieurs des *Fragments de surveillance* ci-dessus. Il est possible de sélectionner plusieurs *Fragments* du même type.
-  - Les notifications sont créées à partir des erreurs et des avertissements du système qui sont identifiés dans les fichiers journaux du produit JS7, voir [Log Notification Service](/service-log-notification).
-  - L'élément est utilisé pour remplir la sous-vue [Monitor - System Notifications](/monitor-notifications-system) de JOC Cockpit.
+  - Les notifications sont créées à partir des erreurs et des avertissements du système qui sont identifiés dans les fichiers journaux du produit JS7, voir [Service de Notification des Journaux](/service-log-notification).
+  - L'élément est utilisé pour remplir la sous-vue [Moniteur - Notifications du Système](/monitor-notifications-system) de JOC Cockpit.
 
 #### Notification
 
@@ -117,12 +117,12 @@ La page Notification propose les opérations suivantes à partir des boutons con
 
 ### Aide contextuelle
 
-- [Log Notification Service](/service-log-notification)
-- [Monitor - Agent Availability](/monitor-availability-agent)
-- [Monitor - Controller Availability](/monitor-availability-controller)
-- [Monitor - Order Notifications](/monitor-notifications-order)
-- [Monitor - System Notifications](/monitor-notifications-system)
-- [Monitor Service](/service-monitor)
+- [Moniteur - Disponibilité de l'Agent](/monitor-availability-agent)
+- [Moniteur - Disponibilité de Contrôleur](/monitor-availability-controller)
+- [Moniteur - Notifications d'Ordre](/monitor-notifications-order)
+- [Moniteur - Notifications du Système](/monitor-notifications-system)
+- [Service de Notification des Journaux](/service-log-notification)
+- [Service de Surveillance](/service-monitor)
 
 ### Product Knowledge Base
 

@@ -5,7 +5,7 @@ La vue *Tableau de Condition* permet de spécifier les panneaux d'affichage à u
 Les Tableaux de Condition mettent en œuvre des dépendances entre les Workflows :
 
 - Les Tableaux de Condition permettent d'ajouter des Annonces 
-  - sans intervention de l'utilisateur, voir [Resources - Notice Boards](/resources-notice-boards).
+  - sans intervention de l'utilisateur, voir [Ressources - Tableaux de Condition](/resources-notice-boards).
   - à partir de l'instruction *PostNotices* d'un Workflow, voir [JS7 - PostNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+PostNotices+Instruction).
 - Les Workflows peuvent être configurés de manière à ce que les Ordres attendent des Annonces à partir des instructions suivantes :
   - l'instruction *ExpectNotices* est utilisée pour vérifier si des Annonces sont disponibles sur un ou plusieurs Tableaux de Condition ajoutés par une instruction *PostNotices* ou par l'utilisateur. Si l'Annonce n'existe pas, l'Ordre restera par défaut en *attente* avec l'instruction. Un Workflow peut inclure un nombre quelconque d'instructions *ExpectNotices* pour attendre des Annonces provenant du même Tableau de Condition ou différents. Pour plus de détails, voir [JS7 - ExpectNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ExpectNotices+Instruction).
@@ -14,21 +14,21 @@ Les Tableaux de Condition mettent en œuvre des dépendances entre les Workflows
 Les saveurs suivantes sont disponibles pour les Tableaux de Condition :
 
 - **Tableau de Condition Globaul** mettent en œuvre des Annonces de portée globale, ce qui rend la même Annonce disponible pour n'importe quel Workflow à n'importe quel moment.
-- **Tableau de Condition Planifiable** implémentent les Annonces dans le cadre de la Planification [Daily Plan](/daily-plan). Une Annonce existe dans le cadre d'une date du *Plan Quotidien*, par exemple
+- **Tableau de Condition Planifiable** implémentent les Annonces dans le cadre de la Planification [Plan Quotidien](/daily-plan). Une Annonce existe dans le cadre d'une date du *Plan Quotidien*, par exemple
   - Le Workflow 1 se déroule du lundi au vendredi.
   - Le Workflow 2 se déroule du lundi au dimanche et dépend de l'exécution précédente du Workflow 1.
   - Le week-end, le Workflow 1 ne démarre pas. Pour permettre le démarrage du Workflow 2 pendant les week-ends, la dépendance est mappée au Plan Quotidien par l'utilisation de *Tableaux de Condition Planifiable* : pour les jours où aucun Ordre n'est annoncé pour le Workflow 1, la dépendance est ignorée.
 
 Les Tableaux de Condition sont gérés à partir des vues suivants :
 
-- Le page [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation), situé sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant les Tableaux de Condition. En outre, ce panneau permet d'effectuer des opérations sur les Tableaux de Condition.
+- Le page [Configuration - Inventaire - Navigation](/configuration-inventory-navigation), situé sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant les Tableaux de Condition. En outre, ce panneau permet d'effectuer des opérations sur les Tableaux de Condition.
 - Le vue *Tableau de Condition*, sur le côté droit de la fenêtre, contient les détails de la configuration.
 
 ## Vue des Tableaux de Condition
 
 Pour un Tableau de Condition, les entrées suivantes sont disponibles :
 
-- **Nom** est l'identifiant unique du Tableau de Condition, voir [Object Naming Rules](/object-naming-rules).
+- **Nom** est l'identifiant unique du Tableau de Condition, voir [Règles de Dénomination des Objets](/object-naming-rules).
 - **Titre** contient une explication facultative de l'objectif du Tableau de Condition.
 - **Type de Condition** est l'un des suivants : *Tableau de Condition Global* ou *Tableau de Condition Planifiable*
 
@@ -51,7 +51,7 @@ Pour un Tableau de Condition, les entrées suivantes sont disponibles :
 
 ### Opérations sur les Tableaux de Condition
 
-Pour les opérations disponibles, voir [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
+Pour les opérations disponibles, voir [Configuration - Inventaire - Navigation](/configuration-inventory-navigation).
 
 ## Utilisation avec des instructions de Workflow
 
@@ -76,10 +76,10 @@ Les instructions de Workflow pour les Tableaux de Condition offrent les options 
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
-- [Daily Plan - Dependencies](/daily-plan-dependencies)
-- [Object Naming Rules](/object-naming-rules)
-- [Resources - Notice Boards](/resources-notice-boards)
+- [Configuration - Inventaire - Navigation](/configuration-inventory-navigation)
+- [Dépendances du Plan Quotidien](/daily-plan-dependencies)
+- [Règles de Dénomination des Objets](/object-naming-rules)
+- [Ressources - Tableaux de Condition](/resources-notice-boards)
 
 ### Product Knowledge Base
 

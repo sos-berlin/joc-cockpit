@@ -1,6 +1,6 @@
 # Configuration - Inventaire - Calendriers
 
-La vue *Calendrier* permet de spécifier des Calendriers basés sur des règles qui sont utilisés par [Configuration - Inventory - Schedules](/configuration-inventory-schedules) pour créer des Ordres à partir du [Daily Plan](/daily-plan). Pour plus de détails, voir [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars).
+La vue *Calendrier* permet de spécifier des Calendriers basés sur des règles qui sont utilisés par [Configuration - Inventaire - Planifications](/configuration-inventory-schedules) pour créer des Ordres à partir du [Plan Quotidien](/daily-plan). Pour plus de détails, voir [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars).
 
 - Les Calendriers spécifient les jours pour lesquels les Workflows seront exécutés.
   - **Les Calendriers des jours ouvrés** spécifient les jours d'exécution des Workflows.
@@ -11,14 +11,14 @@ La vue *Calendrier* permet de spécifier des Calendriers basés sur des règles 
 
 Les Calendriers sont gérés à partir des panneaux suivants :
 
-- La vue [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation), sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant les Calendriers. En outre, ce panneau permet d'effectuer des opérations sur les Calendriers.
+- La vue [Configuration - Inventaire - Navigation](/configuration-inventory-navigation), sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant les Calendriers. En outre, ce panneau permet d'effectuer des opérations sur les Calendriers.
 - La *vue des Calendriers* sur le côté droit de la fenêtre contient les détails de la configuration des Calendriers.
 
 ## Vue Calendrier
 
 Pour un Calendrier, les entrées suivantes sont disponibles :
 
-- **Nom** est l'identifiant unique d'un Calendrier, voir [Object Naming Rules](/object-naming-rules).
+- **Nom** est l'identifiant unique d'un Calendrier, voir [Règles de Dénomination des Objets](/object-naming-rules).
 - **Titre** contient une explication facultative de l'objectif du Calendrier.
 - **Type** : Calendrier des jours ouvrés ou Calendrier des jours non ouvrés.
 - **Valide du**, **Valide au** spécifient facultativement la période de validité d'un Calendrier. Avant et après la période de validité, un Calendrier ne renverra pas de jours résultants. Si aucune période de validité n'est spécifiée, le Calendrier sera valable pour une période illimitée.
@@ -82,16 +82,16 @@ Une autre solution consiste à spécifier le *Type de fréquence **Tous** à par
 
 ## Opérations sur les Calendriers
 
-Pour les opérations disponibles, voir [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
+Pour les opérations disponibles, voir [Configuration - Inventaire - Navigation](/configuration-inventory-navigation).
 
 ## Références
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
+- [Configuration - Inventaire - Navigation](/configuration-inventory-navigation)
 - [Configuration - Inventory - Schedules - Run-time](/configuration-inventory-schedules-run-time)
-- [Daily Plan](/daily-plan)
-- [Object Naming Rules](/object-naming-rules)
+- [Plan Quotidien](/daily-plan)
+- [Règles de Dénomination des Objets](/object-naming-rules)
 
 ### Product Knowledge Base
 

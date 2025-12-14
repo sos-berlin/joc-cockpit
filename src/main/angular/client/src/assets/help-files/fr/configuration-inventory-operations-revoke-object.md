@@ -16,7 +16,7 @@ Par défaut, le Contrôleur actuellement sélectionné est indiqué.
 
 ## Mise à jour du Plan Quotidien
 
-La révocation d'objets tels que les Workflows et les Ressources de Tâche a un impact sur le [Daily Plan](/daily-plan). 
+La révocation d'objets tels que les Workflows et les Ressources de Tâche a un impact sur le [Plan Quotidien](/daily-plan). 
 
 Les Ordres existants pour les Workflows associés seront retirés par le Contrôleur et seront supprimés du Plan Quotidien.
 
@@ -42,8 +42,8 @@ Les utilisateurs contrôlent la révocation cohérente des objets à partir des 
 ### Aide contextuelle
 
 - [Configuration - Inventory - Operations - Revoke Folder](/configuration-inventory-operations-revoke-folder)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
+- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
+- [Plan Quotidien](/daily-plan)
 - [Dependency Matrix](/dependencies-matrix)
 
 ### Product Knowledge Base

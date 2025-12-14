@@ -1,6 +1,6 @@
 # Paramètres du Service d'Identité LDAP
 
-Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
+Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Services d'Identité](/identity-services).
 
 Les Services d'Identité sont spécifiés à partir de la configuration suivante :
 
@@ -70,7 +70,7 @@ Pour plus de détails, voir
 ### Aide contextuelle
 
 - [Identity Service - Configuration](/identity-service-configuration)
-- [Identity Services](/identity-services)
+- [Services d'Identité](/identity-services)
 
 ### Product Knowledge Base
 

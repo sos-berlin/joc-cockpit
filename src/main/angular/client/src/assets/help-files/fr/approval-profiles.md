@@ -21,7 +21,7 @@ La liste des profils d'Approbateurs est proposée avec les propriétés suivante
 
 - **Nom du compte** spécifie le compte utilisateur de l'Approbateur.
 - **Prénom**, **Nom de famille** de l'*Approbateur*.
-- **E-Mail** spécifie l'adresse e-mail de l'*Approbateur*. Si cette adresse est spécifiée, l'*Approbateur* recevra par courrier électronique une notification concernant l'arrivée de [Approval Requests](/approval-requests).
+- **E-Mail** spécifie l'adresse e-mail de l'*Approbateur*. Si cette adresse est spécifiée, l'*Approbateur* recevra par courrier électronique une notification concernant l'arrivée des [Demandes d'Autorisation](/approval-requests).
 
 ## Opérations sur les Profils des Approbateurs
 
@@ -34,9 +34,9 @@ Le menu d'action à 3 points d'un profil d'Approbateur propose les opérations s
 
 ### Aide contextuelle
 
-- [Approval Notification Settings](/approval-notification-settings)
-- [Approval Request](/approval-request)
-- [Approval Requests](/approval-requests)
+- [Paramètres de Notification d'Autorisation](/approval-notification-settings)
+- [Demande d'Autorisation](/approval-request)
+- [Demandes d'Autorisation](/approval-requests)
 
 ### Product Knowledge Base
 

@@ -2,7 +2,7 @@
 
 La vue *Historique des Transferts de Fichiers* résume l'historique d'exécution des Ordres pour les tâches de transfert de fichiers gérés par YADE.
 
-Pour le journal créé à partir des tâches de transfert de fichiers, voir [Task History](/history-tasks). Pour l'Historique des Ordres, voir [Order History](/history-orders).
+Pour le journal créé à partir des tâches de transfert de fichiers, voir [Historique des Tâches](/history-tasks). Pour l'Historique des Ordres, voir [Historique des Ordres](/history-orders).
 
 ## Historique
 
@@ -17,7 +17,7 @@ L'affichage est regroupé en un bloc pour l'opération de transfert et en blocs 
 - **Opération** : *COPY*, *MOVE*, *REMOVE*, *GETLIST*.
 - **Workflow** indique le Workflow exécuté par l'Ordre.
   - En cliquant sur le nom du Workflow, vous accédez à la vue [Workflows](/workflows).
-  - En cliquant sur l'icône en forme de crayon, vous accédez à la vue [Configuration - Inventory - Workflows](/configuration-inventory-workflows).
+  - En cliquant sur l'icône en forme de crayon, vous accédez à la vue [Configuration - Inventaire - Workflows](/configuration-inventory-workflows).
 - **ID Ordre** est l'identifiant unique attribué à un Ordre.
 - **Total** indique le nombre de fichiers inclus dans le transfert.
 
@@ -53,9 +53,9 @@ Pour *Source* et *Cible*, les détails suivants sont affichés :
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Order History](/history-orders)
-- [Task History](/history-tasks)
+- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
+- [Historique des Ordres](/history-orders)
+- [Historique des Tâches](/history-tasks)
 
 ### Product Knowledge Base
 

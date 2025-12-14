@@ -2,17 +2,17 @@
 
 La vue [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) offre un aperçu de l'exécution passée des Workflows et des Tâches :
 
-- Les rapports sont créés à partir de [Report Templates](/report-templates) prédéfinis qui sont paramétrés à partir de [Configuration - Inventory - Reports](/configuration-inventory-reports).
-- Les utilisateurs exécutent les rapports à partir de la vue [Report - Creation](/report-creation) ou de [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation). La vue [Report - Run History](/report-run-history) fournit des informations sur les exécutions antérieures des rapports.
+- Les rapports sont créés à partir de [Maquettes de Rapport](/report-templates) prédéfinis qui sont paramétrés à partir de [Configuration - Inventaire - Modèles de Rapport](/configuration-inventory-reports).
+- Les utilisateurs exécutent les rapports à partir de la vue [Création des Rapports](/report-creation) ou de [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation). La vue [Historique de l'Exécution des Rapports](/report-run-history) fournit des informations sur les exécutions antérieures des rapports.
 - Les rapports sont visualisés dans la vue *Rapports*.
 
-Les rapports [Report - Run History](/report-run-history) sont soumis à une purge de la base de données effectuée par le [Cleanup Service](/service-cleanup).
+Les rapports [Historique de l'Exécution des Rapports](/report-run-history) sont soumis à une purge de la base de données effectuée par le [Service d'Assainissement](/service-cleanup).
 
-Pour l'exécution des rapports, voir [Report - Creation](/report-creation). Pour vérifier l'exécution des rapports, voir [Report - Run History](/report-run-history).
+Pour l'exécution des rapports, voir [Création des Rapports](/report-creation). Pour vérifier l'exécution des rapports, voir [Historique de l'Exécution des Rapports](/report-run-history).
 
 ## Liste des rapports
 
-Les rapports affichés sont regroupés par [Report Templates](/report-templates) et par Ordre *le plus élevé*, *le plus bas*. 
+Les rapports affichés sont regroupés par [Maquettes de Rapport](/report-templates) et par Ordre *le plus élevé*, *le plus bas*. 
 
 - Le développement du *Modèle de rapport* permet de sélectionner le tri *le plus élevé*, *le plus bas*.
 - Le développement du tri permet d'afficher les rapports disponibles.
@@ -44,10 +44,10 @@ Les utilisateurs peuvent effectuer les opérations suivantes sur les rapports :
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Reports](/configuration-inventory-reports)
-- [Report - Creation](/report-creation)
-- [Report - Run History](/report-run-history)
-- [Report Templates](/report-templates)
+- [Configuration - Inventaire - Modèles de Rapport](/configuration-inventory-reports)
+- [Création des Rapports](/report-creation)
+- [Historique de l'Exécution des Rapports](/report-run-history)
+- [Maquettes de Rapport](/report-templates)
 
 ### Product Knowledge Base
 

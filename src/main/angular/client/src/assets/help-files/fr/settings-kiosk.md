@@ -29,28 +29,28 @@ Les utilisateurs peuvent modifier la présentation du tableau de bord pour le co
 
 ### Paramètre : *view\_monitor\_order\_notification\_duration*, Défaut : *15*
 
-Spécifie la durée en secondes pendant laquelle la vue [Monitor - Order Notifications](/monitor-notifications-order) sera affichée.
+Spécifie la durée en secondes pendant laquelle la vue [Moniteur - Notifications d'Ordre](/monitor-notifications-order) sera affichée.
 
 - La valeur 0 indique que la vue ne sera pas affichée.
 - Une valeur &gt;10 indique la durée souhaitée.
 
 ### Paramètre : *view\_monitor\_system\_notification\_duration*, Défaut : *15*
 
-Spécifie la durée en secondes pendant laquelle la vue [Monitor - System Notifications](/monitor-notifications-system) sera affichée.
+Spécifie la durée en secondes pendant laquelle la vue [Moniteur - Notifications du Système](/monitor-notifications-system) sera affichée.
 
 - La valeur 0 indique que la vue ne sera pas affichée.
 - Une valeur &gt;10 indique la durée souhaitée.
 
 ### Paramètre : *view\_history\_tasks\_duration*, Défaut : *30*
 
-Spécifie la durée en secondes pendant laquelle la vue [Task History](/history-tasks) sera affichée.
+Spécifie la durée en secondes pendant laquelle la vue [Historique des Tâches](/history-tasks) sera affichée.
 
 - La valeur 0 indique que la vue ne sera pas affichée.
 - Une valeur &gt;10 indique la durée souhaitée.
 
 ### Paramètre : *view\_history\_orders\_duration*, Défaut : *0*
 
-Spécifie la durée en secondes pendant laquelle la vue [Order History](/history-orders) sera affichée.
+Spécifie la durée en secondes pendant laquelle la vue [Historique des Ordres](/history-orders) sera affichée.
 
 La valeur 0 indique que la vue ne sera pas affichée.
 Une valeur &gt;10 indique la durée souhaitée.
@@ -59,11 +59,11 @@ Une valeur &gt;10 indique la durée souhaitée.
 
 ### Aide contextuelle
 
-- [Monitor - Order Notifications](/monitor-notifications-order)
-- [Monitor - System Notifications](/monitor-notifications-system)
-- [Order History](/history-orders)
-- [Task History](/history-tasks)
-- [Settings](/settings)
+- [Moniteur - Notifications d'Ordre](/monitor-notifications-order)
+- [Moniteur - Notifications du Système](/monitor-notifications-system)
+- [Historique des Ordres](/history-orders)
+- [Historique des Tâches](/history-tasks)
+- [Réglages](/settings)
 
 ### Product Knowledge Base
 

@@ -16,7 +16,7 @@ Lors de la suppression d'un objet, celui-ci sera supprimé de tous les Contrôle
 
 ## Mise à jour du Plan Quotidien
 
-La suppression d'objets tels que les Workflows et les Planifications a un impact sur la vue [Daily Plan](/daily-plan). 
+La suppression d'objets tels que les Workflows et les Planifications a un impact sur la vue [Plan Quotidien](/daily-plan). 
 
 Les Ordres existants pour les Workflows associés seront annulés à partir des Contrôleurs et seront supprimés du Plan Quotidien.
 
@@ -42,8 +42,8 @@ Les utilisateurs contrôlent la suppression cohérente des objets à partir des 
 ### Aide contextuelle
 
 - [Configuration - Inventory - Operations - Remove Folder](/configuration-inventory-operations-remove-folder)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
+- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
+- [Plan Quotidien](/daily-plan)
 - [Dependency Matrix](/dependencies-matrix)
 
 ### Product Knowledge Base

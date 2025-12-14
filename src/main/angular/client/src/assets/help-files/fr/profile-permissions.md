@@ -20,7 +20,7 @@ Les autorisations sont indiquées par instance de Contrôleur. Les autorisations
 
 ### Aide contextuelle
 
-- [Profile](/profile)
+- [Profil](/profile)
 
 ### Product Knowledge Base
 

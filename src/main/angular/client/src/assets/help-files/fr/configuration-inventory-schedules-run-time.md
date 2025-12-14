@@ -1,15 +1,15 @@
 # Configuration - Inventaire - Planifications - Temps d'Exécution
 
-La vue *Planification* permet de spécifier des règles pour la création d'Ordres à partir de la page [Daily Plan](/daily-plan).
+La vue *Planification* permet de spécifier des règles pour la création d'Ordres à partir de la page [Plan Quotidien](/daily-plan).
 
 Le bouton *Temps d'exécution* permet de spécifier les heures de démarrage des Ordres à partir d'une fenêtre contextuelle : un Calendrier est d'abord attribué, puis des périodes sont spécifiées et, en option, des restrictions s'appliquent.
 
 ## Fuseau horaire
 
-Les heures d'exécution sont spécifiées à partir d'un **fuseau horaire** qui est alimenté par la page [Profile - Preferences](/profile-preferences) de l'utilisateur. Les identifiants de fuseaux horaires sont acceptés comme *UTC*, *Europe/London*, etc. Pour une liste complète des identificateurs de fuseaux horaires, voir [Liste des fuseaux horaires de la base de données tz] (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+Les heures d'exécution sont spécifiées à partir d'un **fuseau horaire** qui est alimenté par la page [Profil - Préférences](/profile-preferences) de l'utilisateur. Les identifiants de fuseaux horaires sont acceptés comme *UTC*, *Europe/London*, etc. Pour une liste complète des identificateurs de fuseaux horaires, voir [Liste des fuseaux horaires de la base de données tz] (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
 
 - Les heures de début des Ordres sont considérées dans le fuseau horaire spécifié.
-- Il est possible d'utiliser un fuseau horaire différent de celui de [Settings - Daily Plan](/settings-daily-plan) et pour les heures d'exécution des Ordres. Les utilisateurs doivent tenir compte du fait que 
+- Il est possible d'utiliser un fuseau horaire différent de celui de [Réglages - Plan Quotidien](/settings-daily-plan) et pour les heures d'exécution des Ordres. Les utilisateurs doivent tenir compte du fait que 
   - Les Ordres se voient attribuer une date de Plan Quotidien.
   - Les heures de début sont calculées à partir du fuseau horaire de la Planification.
 - Par conséquent, le Plan Quotidien peut contenir des Ordres pour une date donnée qui se chevauchent avec un jour précédent ou ultérieur. Par exemple,
@@ -99,7 +99,7 @@ Les utilisateurs doivent tenir compte des implications des Ordres cycliques : il
     - Toutes les opérations effectuées sur les Ordres cycliques sont appliquées à toutes les instances d'Ordre incluses, par exemple, la reprise de l'exécution après un échec. Il en résulte une exécution parallèle d'Ordres dont l'exécution était précédemment planifiée par intervalles.
     - Pour les Workflows cycliques, un seul Ordre attend l'intervention de l'utilisateur.
 - Journalisation
-  - Pour chaque instance d'Ordre d'un Ordre cyclique, une entrée distincte est créée dans [Order History](/history-orders) et dans [Task History](/history-tasks).
+  - Pour chaque instance d'Ordre d'un Ordre cyclique, une entrée distincte est créée dans [Historique des Ordres](/history-orders) et dans [Historique des Tâches](/history-tasks).
   - Pour un Workflow cyclique, il existe une entrée unique dans l'Historique des Ordres qui est ajoutée à la sortie du journal de chaque cycle. Des entrées individuelles par exécution de tâche sont ajoutées à l'Historique des tâches.
 
 ## Références
@@ -107,15 +107,15 @@ Les utilisateurs doivent tenir compte des implications des Ordres cycliques : il
 ### Aide contextuelle
 
 - [Configuration - Inventory - Calendars](/configuration-inventory-calendars)
-- [Configuration - Inventory - Schedules](/configuration-inventory-schedules)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
-- [Daily Plan Service](/service-daily-plan)
-- [Object Naming Rules](/object-naming-rules)
-- [Order History](/history-orders)
-- [Profile - Preferences](/profile-preferences)
-- [Settings - Daily Plan](/settings-daily-plan)
-- [Task History](/history-tasks)
+- [Configuration - Inventaire - Planifications](/configuration-inventory-schedules)
+- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
+- [Plan Quotidien](/daily-plan)
+- [Service du Plan Qutotidien](/service-daily-plan)
+- [Règles de Dénomination des Objets](/object-naming-rules)
+- [Historique des Ordres](/history-orders)
+- [Profil - Préférences](/profile-preferences)
+- [Réglages - Plan Quotidien](/settings-daily-plan)
+- [Historique des Tâches](/history-tasks)
 
 ### Product Knowledge Base
 

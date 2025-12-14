@@ -1,6 +1,6 @@
 # Configuration - Inventaire - Opérations - Publier Dossier
 
-La publication d'objets permet de les activer, par exemple pour les utiliser avec le [Daily Plan](/daily-plan). Cela s'applique à des objets tels que les Planifications et les Calendriers disponibles dans le dossier système *Automatisation*.
+La publication d'objets permet de les activer, par exemple pour les utiliser avec le [Plan Quotidien](/daily-plan). Cela s'applique à des objets tels que les Planifications et les Calendriers disponibles dans le dossier système *Automatisation*.
 
 La vue *Configuration-&gt;Inventaire* permet de publier un seul objet, voir [Configuration - Inventory - Operations - Release Object](/configuration-inventory-operations-release-object) et publier les objets des dossiers.
 
@@ -10,7 +10,7 @@ Lorsque vous publiez des objets de dossiers en utilisant l'opération *Publier* 
 
 ## Mise à jour du Plan Quotidien
 
-La publication d'objets tels que les Planifications et les Calendriers a un impact sur le [Daily Plan](/daily-plan). Il arrive fréquemment que la version mise à jour d'un objet soit utilisée pour les Ordres dans le Plan Quotidien. Les utilisateurs contrôlent le comportement à partir des options suivantes :
+La publication d'objets tels que les Planifications et les Calendriers a un impact sur le [Plan Quotidien](/daily-plan). Il arrive fréquemment que la version mise à jour d'un objet soit utilisée pour les Ordres dans le Plan Quotidien. Les utilisateurs contrôlent le comportement à partir des options suivantes :
 
 - **Mettre à jour le Plan Quotidien**
   - **Maintenant** spécifie la mise à jour du Plan Quotidien pour les Ordres planifiés à un moment donné à partir de maintenant.
@@ -44,8 +44,8 @@ Les utilisateurs contrôlent le déploiement cohérent à partir des options sui
 ### Aide contextuelle
 
 - [Configuration - Inventory - Operations - Release Object](/configuration-inventory-operations-release-object)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
+- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
+- [Plan Quotidien](/daily-plan)
 - [Dependency Matrix](/dependencies-matrix)
 
 ### Product Knowledge Base

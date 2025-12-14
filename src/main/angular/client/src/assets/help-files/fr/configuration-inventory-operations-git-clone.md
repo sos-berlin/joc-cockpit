@@ -10,7 +10,7 @@ Les dépôts Git sont associés à des dossiers d'inventaire de premier niveau.
 -<jetty-base\> Les référentiels de JOC Cockpit sont situés dans le répertoire *COPY00 /resources/joc/repositories* du système de fichiers. 
   - Le sous-répertoire *local* indique un référentiel utilisé pour les objets locaux à une instance de JOC Cockpit, par exemple, les Job Resources qui contiennent des paramètres spécifiques à un environnement.
   - Le sous-répertoire *rollout* indique un référentiel utilisé pour les objets qui seront déployés dans d'autres environnements, par exemple les Workflows qui doivent être utilisés dans tous les environnements sans modification.
-  - Pour la correspondance entre les types d'objets d'inventaire et les types de référentiels Git, voir [Settings - Git](/settings-git).
+  - Pour la correspondance entre les types d'objets d'inventaire et les types de référentiels Git, voir [Réglages - Git](/settings-git).
 - Les utilisateurs peuvent accéder aux référentiels du JOC Cockpit à partir du système de fichiers et peuvent utiliser un client Git pour des opérations connexes, par exemple la gestion des branches.
 
 L'opération *Clone* est disponible à partir du panneau *Navigation* et est proposée pour les dossiers de premier niveau à partir de leur menu d'action à 3 points. La hiérarchie du menu comprend *Dépôt Git-&gt;Local|Rollout-&gt;Git-&gt;Clone*.

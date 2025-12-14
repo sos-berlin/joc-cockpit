@@ -8,14 +8,14 @@ La vue *Modèle de Tâche* permet de spécifier des modèles gérés de manière
 
 Les Modèles de Tâche sont gérés à partir des vues suivants :
 
-- La page [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation), situé sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant les Modèles de Tâche. En outre, cette vue permet d'effectuer des opérations sur les Modèles de Tâche.
+- La page [Configuration - Inventaire - Navigation](/configuration-inventory-navigation), situé sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant les Modèles de Tâche. En outre, cette vue permet d'effectuer des opérations sur les Modèles de Tâche.
 - Le Vue *Modèle de Tâche* sur le côté droit de la fenêtre contient les détails de la configuration de la Planification.
 
 ## Vue des Modèles de Tâche
 
 Pour un Modèle de Tâche, les entrées suivantes sont disponibles :
 
-- **Nom** est l'identifiant unique d'un modèle de poste, voir [Object Naming Rules](/object-naming-rules).
+- **Nom** est l'identifiant unique d'un modèle de poste, voir [Règles de Dénomination des Objets](/object-naming-rules).
 - Les autres entrées correspondent aux entrées d'une tâche :
   - [Job Properties](/configuration-inventory-workflow-job-properties)
   - [Job Options](/configuration-inventory-workflow-job-options)
@@ -28,7 +28,7 @@ Pour un Modèle de Tâche, les entrées suivantes sont disponibles :
 
 ## Opérations sur les Modèles de Tâche
 
-Pour les opérations générales, voir [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
+Pour les opérations générales, voir [Configuration - Inventaire - Navigation](/configuration-inventory-navigation).
 
 Les Modèles de Tâchee offrent les opérations suivantes pour mettre à jour les tâches :
 
@@ -83,13 +83,13 @@ Pour attribuer dynamiquement des valeurs aux **Arguments pour les tâches JVM** 
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
+- [Configuration - Inventaire - Navigation](/configuration-inventory-navigation)
 - [Job Node Properties](/configuration-inventory-workflow-job-node-properties)
 - [Job Notifications](/configuration-inventory-workflow-job-notifications)
 - [Job Options](/configuration-inventory-workflow-job-options)
 - [Job Properties](/configuration-inventory-workflow-job-properties)
 - [Job Tags](/configuration-inventory-workflow-job-tags)
-- [Object Naming Rules](/object-naming-rules)
+- [Règles de Dénomination des Objets](/object-naming-rules)
 
 ### Product Knowledge Base
 

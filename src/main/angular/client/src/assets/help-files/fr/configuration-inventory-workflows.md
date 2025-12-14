@@ -3,7 +3,7 @@
 La vue *Inventaire-&gt;Workflow* permet de concevoir des Workflows à partir d'une séquence d'instructions qui façonnent le Workflow pour un [Directed acyclic graph] (https://en.wikipedia.org/wiki/Directed_acyclic_graph). 
 
 - Les utilisateurs peuvent glisser-déposer des instructions à partir de la *barre d'outils* pour créer des modèles de Workflow tels qu'une séquence de tâches, des tâches de bifurcation et de jonction, une exécution conditionnelle, etc.
-- La page [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation) permet de naviguer par Tags et par dossiers. En outre, la vue permet d'effectuer des opérations sur les Workflows.
+- La page [Configuration - Inventaire - Navigation](/configuration-inventory-navigation) permet de naviguer par Tags et par dossiers. En outre, la vue permet d'effectuer des opérations sur les Workflows.
 
 ## Barre d'outils
 
@@ -13,7 +13,7 @@ La *barre d'outils* contient les instructions suivantes :
 - L'instruction **Try/Catch** met en œuvre la gestion des exceptions à partir d'un bloc *Try* qui contient des Jobs ou d'autres instructions. Si une tâche échoue, les instructions du bloc *Catch* sont exécutées. Un bloc *Catch* vide résoudra l'état d'erreur d'une instruction ayant échoué précédemment. Pour plus d'informations, consultez le site [JS7 - Try-Catch Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Try-Catch+Instruction).
 - L'instruction **Retry** met en œuvre l'exécution répétée d'une séquence de tâches ou d'autres instructions en cas d'échec. Si l'un des Jobs du bloc *Retry* échoue, l'Ordre est déplacé au début du bloc *Retry* pour répéter l'exécution. Pour plus de détails, voir [JS7 - Retry Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Retry+Instruction).
 - L'instruction **Finish** fait en sorte qu'un Ordre quitte le Workflow avec un résultat positif ou négatif dans [JS7 - Order History](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+History). Pour plus de détails, voir [JS7 - Finish Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Finish+Instruction).
-- L'instruction **Fail** fait échouer un Ordre. Sans traitement d'erreur supplémentaire, l'Ordre restera dans l'état *échoué*, voir [Order States](/order-states). Une instruction *Try/Catch* ou *Retry* est déclenchée par l'instruction *Fail*. Pour plus de détails, voir [JS7 - Fail Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Fail+Instruction).
+- L'instruction **Fail** fait échouer un Ordre. Sans traitement d'erreur supplémentaire, l'Ordre restera dans l'état *échoué*, voir [États d'Ordre](/order-states). Une instruction *Try/Catch* ou *Retry* est déclenchée par l'instruction *Fail*. Pour plus de détails, voir [JS7 - Fail Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Fail+Instruction).
 - l'instruction **Fork** permet aux Ordres d'être bifurqués et joints pour permettre le traitement parallèle des Jobs et d'autres instructions dans un Workflow. Les branches sont créées en faisant glisser et en déposant des instructions sur l'instruction *Fork*. Lorsqu'un Ordre entre dans la *Instruction de tâche*, un Ordre enfant est créé pour chaque branche. Pour plus de détails, consultez le site [JS7 - Fork-Join Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Fork-Join+Instruction).
   - Chaque Ordre enfant transmettra les nœuds de sa branche indépendamment des Ordres enfants parallèles.
   - Les Ordres enfants peuvent renvoyer des résultats aux Ordres parents en leur transmettant des variables.
@@ -25,7 +25,7 @@ La *barre d'outils* contient les instructions suivantes :
 - L'instruction **Break** est utilisée dans une *instruction Cycle* pour mettre fin au cycle et faire en sorte qu'un Ordre quitte le cycle. Pour plus de détails, voir [JS7 - Break Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Break+Instruction).
 - L'instruction **Lock** est une instruction de bloc utilisée pour spécifier un ou plusieurs tâches et d'autres instructions en vue d'une exclusion mutuelle, afin d'empêcher l'exécution de tâches en parallèle dans le même Workflow ou dans des Workflows différents. *Les instructions de verrouillage* peuvent être imbriquées. Pour plus de détails, voir [JS7 - Lock Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Lock+Instruction).
 - L'instruction **Sleep** est utilisée pour retarder la poursuite du traitement dans un Workflow d'une durée spécifiée en secondes. Pour plus de détails, voir [JS7 - Sleep Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Sleep+Instruction).
-- L'instruction **Prompt** interrompt l'exécution d'un Ordre dans un Workflow jusqu'à ce que le *Prompt* soit confirmée. L'Ordre est assigné à l'état *prompting*. Les utilisateurs peuvent confirmer ou annuler les Ordres *prompting*, voir [Order States](/order-states). Pour plus de détails, voir [JS7 - Prompt Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Prompt+Instruction).
+- L'instruction **Prompt** interrompt l'exécution d'un Ordre dans un Workflow jusqu'à ce que le *Prompt* soit confirmée. L'Ordre est assigné à l'état *prompting*. Les utilisateurs peuvent confirmer ou annuler les Ordres *prompting*, voir [États d'Ordre](/order-states). Pour plus de détails, voir [JS7 - Prompt Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Prompt+Instruction).
 - l'instruction **AdmissionTimes** interrompt l'exécution d'un Ordre dans un Workflow jusqu'à ce que le créneau horaire donné soit atteint. L'Ordre se voit attribuer l'état *attente*. En outre, les Ordres peuvent être interrompus s'ils dépassent le temps imparti. L'instruction peut être configurée de manière à ce qu'un Ordre ignore toutes les instructions incluses dans le cas où aucun créneau horaire correspondant n'est trouvé pour la date du plan journalier de l'Ordre. Pour plus de détails, consultez [[JS7 - AdmissionTime Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+AdmissionTime+Instruction).
 - l'instruction **AddOrder** est utilisée dans un Workflow pour créer un Ordre pour un autre Workflow. Par défaut, les Ordres ajoutés sont exécutés de manière asynchrone dans un Workflow séparé et en parallèle avec l'Ordre actuel, c'est-à-dire que le résultat de leur exécution n'est pas synchronisé et n'a pas d'impact sur l'Ordre actuel. Si l'exécution de l'Ordre ajouté est synchronisée, les instructions *ExpectNotices* et *ConsumeNotices* peuvent être utilisées. Pour plus de détails, voir [JS7 - AddOrder Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+AddOrder+Instruction).
 - l'instruction **PostNotices** est utilisée pour créer un ou plusieurs avis pour les tableaux d'affichage. Les avis sont attendus par les instructions *ExpectNotices* et *ConsumeNotices* correspondantes d'un même Workflow ou de différents Workflows. Un Workflow peut inclure un nombre quelconque d'instructions *PostNotices* pour publier des avis sur le même tableau d'affichage ou sur des tableaux d'affichage différents. La publication d'un avis ne bloque pas la poursuite de l'exécution d'un Ordre dans un Workflow. L'Ordre se poursuit immédiatement après la publication de l'avis. Pour plus de détails, voir [JS7 - PostNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+PostNotices+Instruction).
@@ -53,12 +53,12 @@ Les Workflows sont automatiquement enregistrés dans l'inventaire. Cela se produ
 
 Pour un Workflow, les entrées suivantes sont disponibles :
 
-- **Nom** est l'identifiant unique d'un Workflow, voir [Object Naming Rules](/object-naming-rules).
+- **Nom** est l'identifiant unique d'un Workflow, voir [Règles de Dénomination des Objets](/object-naming-rules).
 - **Titre** contient une explication facultative de l'objectif du Workflow.
-- les **Ressources de Tâche** sont des objets d'inventaire qui contiennent des variables de paires clé/valeur qui peuvent être rendues disponibles à partir des variables de Workflow et des variables d'environnement. *Les Ressources de Tâche* peuvent être attribuées au niveau de la Tâche et au niveau du Workflow, ce qui les rend disponibles pour tous les Tâches d'un Workflow. Pour plus d'informations, consultez [Configuration - Inventory - Job Resources](/configuration-inventory-job-resources).
-- **Fuseau horaire** qui est renseigné à partir de l'adresse [Profile - Preferences](/profile-preferences) de l'utilisateur. Les identifiants de fuseaux horaires sont acceptés comme *UTC*, *Europe/London*, etc. Pour une liste complète des identificateurs de fuseaux horaires, voir [Liste des fuseaux horaires de la base de données tz] (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
+- les **Ressources de Tâche** sont des objets d'inventaire qui contiennent des variables de paires clé/valeur qui peuvent être rendues disponibles à partir des variables de Workflow et des variables d'environnement. *Les Ressources de Tâche* peuvent être attribuées au niveau de la Tâche et au niveau du Workflow, ce qui les rend disponibles pour tous les Tâches d'un Workflow. Pour plus d'informations, consultez [Configuration - Inventaire - Ressources de Tâche](/configuration-inventory-job-resources).
+- **Fuseau horaire** qui est renseigné à partir de l'adresse [Profil - Préférences](/profile-preferences) de l'utilisateur. Les identifiants de fuseaux horaires sont acceptés comme *UTC*, *Europe/London*, etc. Pour une liste complète des identificateurs de fuseaux horaires, voir [Liste des fuseaux horaires de la base de données tz] (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones).
   - Le *fuseau horaire* est appliqué aux périodes dans les délais d'admission et dans l'*instruction Cycle*.
-  - Il est possible d'utiliser un *fuseau horaire* différent de celui de la base de données [Settings - Daily Plan](/settings-daily-plan). Toutefois, cela peut entraîner des résultats déroutants.
+  - Il est possible d'utiliser un *fuseau horaire* différent de celui de la base de données [Réglages - Plan Quotidien](/settings-daily-plan). Toutefois, cela peut entraîner des résultats déroutants.
 - **Autoriser les variables non déclarées** permet d'utiliser des variables d'Ordre qui ne sont pas déclarées avec le Workflow. Cela signifie que les Ordres peuvent contenir des variables dont le type de données n'a pas été vérifié et dont l'utilisation n'est pas obligatoire. Les Jobs échoueront lorsqu'ils feront référence à des variables non déclarées qui ne sont pas disponibles dans un Ordre.
 
 ### Variables du Workflow
@@ -100,7 +100,7 @@ En haut du *Panneau Workflow*, les utilisateurs trouvent les indicateurs de stat
 - **valide** / **non valide** indique à partir de la couleur bleue / orange si le Workflow est cohérent et prêt à être déployé. *Les Workflows non valides* ne peuvent pas être déployés, mais les modifications sont enregistrées dans l'inventaire. Par exemple, l'affectation d'un Agent manquant à une tâche rendra le Workflow *invalide*. Dans l'indicateur de statut *non valide*, l'icône d'information (i) est disponible et affiche la raison pour laquelle le Workflow est +non valide*
 - **déployé** / **non déployé** indique si la version actuelle du Workflow a été *déployée* ou s'il s'agit d'un brouillon qui n'a pas été *déployé*.
 
-Le bouton *Déployer* permet de déployer un Contrôleur en un seul clic. En dehors de cela, les opérations de déploiement sont disponibles au niveau du dossier, voir [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation).
+Le bouton *Déployer* permet de déployer un Contrôleur en un seul clic. En dehors de cela, les opérations de déploiement sont disponibles au niveau du dossier, voir [Configuration - Inventaire - Navigation](/configuration-inventory-navigation).
 
 #### Opérations sur les instructions
 
@@ -142,11 +142,11 @@ Lorsque vous cliquez sur le canevas du *Panneau de Workflow*, un *Panneau d'opé
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Job Resources](/configuration-inventory-job-resources)
-- [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation)
-- [Daily Plan](/daily-plan)
-- [Order History](/history-orders)
-- [Order States](/order-states)
+- [Configuration - Inventaire - Ressources de Tâche](/configuration-inventory-job-resources)
+- [Configuration - Inventaire - Navigation](/configuration-inventory-navigation)
+- [Plan Quotidien](/daily-plan)
+- [Historique des Ordres](/history-orders)
+- [États d'Ordre](/order-states)
 
 ### Product Knowledge Base
 

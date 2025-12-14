@@ -2,11 +2,11 @@
 
 La vue *Plan Quotidien* donne un aperçu des Ordres programmés pour une exécution future et permet aux utilisateurs de gérer le *Plan Quotidien*. 
 
-Le  [Daily Plan Service](/service-daily-plan) est utilisé pour créer et soumettre aux Contrôleurs les Ordres du Plan Quotidien. Le service fonctionne en arrière-plan et agit quotidiennement pour planifier et soumettre des Ordres quelques jours à l'avance.
+Le  [Service du Plan Qutotidien](/service-daily-plan) est utilisé pour créer et soumettre aux Contrôleurs les Ordres du Plan Quotidien. Le service fonctionne en arrière-plan et agit quotidiennement pour planifier et soumettre des Ordres quelques jours à l'avance.
 
-Le Plan Quotidien est soumis à une purge de la base de données effectuée par le [Cleanup Service](/service-cleanup).
+Le Plan Quotidien est soumis à une purge de la base de données effectuée par le [Service d'Assainissement](/service-cleanup).
 
-Pour les opérations liées au *Panneau du Calendrier*, voir [Daily Plan - Calendar](/daily-plan-calendar).
+Pour les opérations liées au *Panneau du Calendrier*, voir [Calendrier du Plan Quotidien](/daily-plan-calendar).
 
 ## Ordres
 
@@ -14,7 +14,7 @@ Le Plan Quotidien comprend les Ordres ayant l'un des états suivants :
 
 - **Planifié** : Les Ordres ont été créés mais n'ont pas été *soumis* au Contrôleur et aux Agents.
 - **Soumis** : Les Ordres ont été transmis au Contrôleur et aux Agents qui lanceront les Ordres de manière autonome. Ce statut s'applique aux Ordres planifiés pour une exécution future et aux Ordres en cours d'exécution.
-- **Terminé** : Les Ordres ont été exécutés. La vue [Order History](/history-orders) explique si l'exécution a réussi ou échoué.
+- **Terminé** : Les Ordres ont été exécutés. La vue [Historique des Ordres](/history-orders) explique si l'exécution a réussi ou échoué.
 
 ## Transitions de l'état des Ordres
 
@@ -125,11 +125,11 @@ Une position peut être spécifiée si les Ordres ne doivent pas commencer au pr
 
 ### Aide contextuelle
 
-- [Cleanup Service](/service-cleanup)
-- [Daily Plan - Calendar](/daily-plan-calendar)
-- [Daily Plan Service](/service-daily-plan)
-- [Order History](/history-orders)
-- [Settings - Daily Plan](/settings-daily-plan)
+- [Service d'Assainissement](/service-cleanup)
+- [Calendrier du Plan Quotidien](/daily-plan-calendar)
+- [Service du Plan Qutotidien](/service-daily-plan)
+- [Historique des Ordres](/history-orders)
+- [Réglages - Plan Quotidien](/settings-daily-plan)
 
 ### Product Knowledge Base
 

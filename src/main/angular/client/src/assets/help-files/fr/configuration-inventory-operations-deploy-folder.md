@@ -16,7 +16,7 @@ Par défaut, le Contrôleur actuellement sélectionné sera utilisé.
 
 ## Mise à jour du Plan Quotidien
 
-Le déploiement d'objets tels que les Workflows, les Planifications et les Calendriers a un impact sur le [Daily Plan](/daily-plan). Il arrive fréquemment que la version mise à jour d'un objet soit utilisée pour les Ordres dans le Plan Quotidien. Les utilisateurs contrôlent le comportement à partir des options suivantes :
+Le déploiement d'objets tels que les Workflows, les Planifications et les Calendriers a un impact sur le [Plan Quotidien](/daily-plan). Il arrive fréquemment que la version mise à jour d'un objet soit utilisée pour les Ordres dans le Plan Quotidien. Les utilisateurs contrôlent le comportement à partir des options suivantes :
 
 - **Mettre à jour le Plan Quotidien**
   - **Maintenant** spécifie la mise à jour du Plan Quotidien pour les Ordres planifiés à un moment donné à partir de maintenant.
@@ -64,8 +64,8 @@ Les utilisateurs contrôlent la cohérence du déploiement à partir des options
 ### Aide contextuelle
 
 - [Configuration - Inventory - Operations - Deploy Object](/configuration-inventory-operations-deploy-object)
-- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
-- [Daily Plan](/daily-plan)
+- [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
+- [Plan Quotidien](/daily-plan)
 - [Dependency Matrix](/dependencies-matrix)
 
 ### Product Knowledge Base
