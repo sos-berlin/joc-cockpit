@@ -1,4 +1,4 @@
-# Identity Service Permissions
+# Identity Service - Permissions
 
 Identity Services rule access to JOC Cockpit by authentication and authorization, see [Identity Services](/identity-services).
 

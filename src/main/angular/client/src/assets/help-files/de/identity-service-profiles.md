@@ -1,4 +1,4 @@
-# Identitätsdienst - Profile
+# Identitätsdienste - Profile
 
 Identitätsdienste regeln den Zugriff auf JOC Cockpit durch Authentifizierung und Autorisierung, siehe [Identitätsdienste](/identity-services).
 

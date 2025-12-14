@@ -1,4 +1,4 @@
-# LDAP Identitätsdienst Einstellungen
+# Identitätsdienste - LDAP Einstellungen
 
 Identitätsdienste regeln den Zugriff auf JOC Cockpit durch Authentifizierung und Autorisierung, siehe [Identitätsdienste](/identity-services).
 

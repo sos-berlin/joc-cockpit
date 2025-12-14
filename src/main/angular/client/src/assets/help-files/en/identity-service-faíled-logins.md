@@ -1,4 +1,4 @@
-# Failed Logins
+# Identity Service - Failed Logins
 
 Identity Services rule access to JOC Cockpit by authentication and authorization, see [Identity Services](/identity-services).
 

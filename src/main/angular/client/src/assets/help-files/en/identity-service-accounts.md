@@ -1,4 +1,4 @@
-# Identity Service Accounts
+# Identity Service - Accounts
 
 Identity Services rule access to JOC Cockpit by authentication and authorization, see [Identity Services](/identity-services).
 

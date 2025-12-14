@@ -1,4 +1,4 @@
-# Identity Service Blocklist
+# Identity Service - Blocklist
 
 Identity Services rule access to JOC Cockpit by authentication and authorization, see [Identity Services](/identity-services).
 

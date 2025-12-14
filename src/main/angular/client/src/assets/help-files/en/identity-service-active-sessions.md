@@ -1,4 +1,4 @@
-# Identity Service Active Sessions
+# Identity Service - Active Sessions
 
 Identity Services rule access to JOC Cockpit by authentication and authorization, see [Identity Services](/identity-services).
 
