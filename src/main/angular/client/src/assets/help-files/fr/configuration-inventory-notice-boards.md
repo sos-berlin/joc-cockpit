@@ -19,7 +19,7 @@ Les saveurs suivantes sont disponibles pour les Tableaux de Condition :
   - Le Workflow 2 se déroule du lundi au dimanche et dépend de l'exécution précédente du Workflow 1.
   - Le week-end, le Workflow 1 ne démarre pas. Pour permettre le démarrage du Workflow 2 pendant les week-ends, la dépendance est mappée au Plan Quotidien par l'utilisation de *Tableaux de Condition Planifiable* : pour les jours où aucun Ordre n'est annoncé pour le Workflow 1, la dépendance est ignorée.
 
-Les Tableaux de Conditions sont gérés à partir des vues suivants :
+Les Tableaux de Condition sont gérés à partir des vues suivants :
 
 - Le page [Configuration - Inventory - Navigation Panel](/configuration-inventory-navigation), situé sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant les Tableaux de Condition. En outre, ce panneau permet d'effectuer des opérations sur les Tableaux de Condition.
 - Le vue *Tableau de Condition*, sur le côté droit de la fenêtre, contient les détails de la configuration.

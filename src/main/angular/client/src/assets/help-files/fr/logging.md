@@ -13,7 +13,7 @@ Pour activer la journalisation, la case suivante doit être cochée :
 
 - **Log Enabled**
 
-La sortie du journal sera disponible dans la vue *Logging*. Les paramètres de journalisation sont conservés et sont également actifs pour les sessions ultérieures des utilisateurs.
+La sortie du journal sera disponible dans la vue *Logging*. Les paramètres de journalisation sont conservés et sont également actifs pour les séances ultérieures des utilisateurs.
 
 ## Opérations sur la sortie du journal
 

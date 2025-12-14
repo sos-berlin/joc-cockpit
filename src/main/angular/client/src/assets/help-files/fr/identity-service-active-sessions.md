@@ -1,25 +1,25 @@
-# Sessions actives du Service d'Identité
+# Séances actives des Services d'Identité
 
 Les Services d'Identité régissent l'accès au JOC Cockpit par l'authentification et l'autorisation, voir [Identity Services](/identity-services).
 
-Les utilisateurs peuvent identifier les comptes détenant des sessions actives lorsqu'ils invoquent la vue *Gérer les Services d'Identité* à partir de l'icône de la roue dans la barre de menu.
+Les utilisateurs peuvent identifier les comptes détenant des séances actives lorsqu'ils invoquent la vue *Gérer les Services d'Identité* à partir de l'icône de la roue dans la barre de menu.
 
-Les sessions actives sont affichées à partir du compte utilisé, du Service d'Identité utilisé pour la connexion et du temps de session restant.
+Les séances actives sont affichées à partir du compte utilisé, du Service d'Identité utilisé pour la connexion et du temps de séance restant.
 
-- JOC Cockpit ne limite pas le nombre de sessions par compte.
-- Le temps de session restant est limité par les facteurs suivants :
-  - Le paramètre *session_idle_timeout* configuré sur la page [Settings - Identity Service](/settings-identity-service) limite la durée maximale pendant laquelle une session peut rester active sans activité de l'utilisateur.
-  - Les fournisseurs de Services d'Identité tels que OIDC et Keycloak peuvent limiter la durée maximale d'une session utilisateur.
+- JOC Cockpit ne limite pas le nombre de séances par compte.
+- Le temps de séance restant est limité par les facteurs suivants :
+  - Le paramètre *session_idle_timeout* configuré sur la page [Settings - Identity Service](/settings-identity-service) limite la durée maximale pendant laquelle une séance peut rester active sans activité de l'utilisateur.
+  - Les fournisseurs de Services d'Identité tels que OIDC et Keycloak peuvent limiter la durée maximale d'une séance utilisateur.
 
-## Opérations sur les sessions actives
+## Opérations sur les séances actives
 
-Les utilisateurs peuvent effectuer les opérations suivantes sur les sessions actives :
+Les utilisateurs peuvent effectuer les opérations suivantes sur les séances actives :
 
-- **Ajouter à la Liste de Blocage** ajoute le compte concerné à la liste [Identity Service - Blocklist](/identity-service-blocklist) qui interdit toute connexion ultérieure. Cette opération ne met pas fin à la session en cours du compte.
-- **Annuler la session** met fin de force à la session en cours du compte. Cela n'empêchera pas le compte d'effectuer une nouvelle opération de connexion.
-- **Annuler toutes les sessions du compte**, similaire à *Annuler la session*, met fin à toutes les sessions du compte donné.
+- **Ajouter à la Liste de Blocage** ajoute le compte concerné à la liste [Identity Service - Blocklist](/identity-service-blocklist) qui interdit toute connexion ultérieure. Cette opération ne met pas fin à la séance en cours du compte.
+- **Annuler la séance** met fin de force à la séance en cours du compte. Cela n'empêchera pas le compte d'effectuer une nouvelle opération de connexion.
+- **Annuler toutes les séances du compte**, similaire à *Annuler la séance*, met fin à toutes les séances du compte donné.
 
-Si vous sélectionnez une ou plusieurs sessions, l'opération *Annuler la session* est disponible en bloc à l'aide du bouton correspondant dans le coin supérieur droit de la vue Secondaire.
+Si vous sélectionnez une ou plusieurs séances, l'opération *Annuler la séance* est disponible en bloc à l'aide du bouton correspondant dans le coin supérieur droit de la vue Secondaire.
 
 ## Références
 

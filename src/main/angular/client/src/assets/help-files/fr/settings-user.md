@@ -1,4 +1,4 @@
-# Paramètres - Utilisateur
+# Réglages - Utilisateur
 
 Les utilisateurs reçoivent une fenêtre de bienvenue lorsqu'ils se connectent à JOC Cockpit pour la première fois.
 
@@ -8,11 +8,11 @@ La page *Réglages* est accessible à partir de l'icône ![wheel icon](assets/im
 
 ## Paramètres de l'utilisateur
 
-### Paramètre : *welcome_got\_it*, Défaut : *false*
+### Paramètre : *welcome\_got\_it*, Défaut : *false*
 
 Indique si le message de bienvenue est accepté et empêche l'envoi d'autres rappels.
 
-### Paramètre : *welcome_do\_not\_remind\_me*, Défaut : *false*
+### Paramètre : *welcome\_do\_not\_remind\_me*, Défaut : *false*
 
 Indique si des rappels supplémentaires doivent être effectués.
 
@@ -20,4 +20,3 @@ Indique si des rappels supplémentaires doivent être effectués.
 
 - [Settings](/settings)
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)
-

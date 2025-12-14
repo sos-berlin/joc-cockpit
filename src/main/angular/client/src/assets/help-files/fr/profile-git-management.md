@@ -38,4 +38,3 @@ Les opérations suivantes sont proposées dans le menu d'action de chaque connex
 - [JS7 - Git Repository Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+Git+Repository+Interface)
 - [JS7 - Inventory Git Integration](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Git+Integration)
 - [JS7 - Profiles - Git Management](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles+-+Git+Management)
-

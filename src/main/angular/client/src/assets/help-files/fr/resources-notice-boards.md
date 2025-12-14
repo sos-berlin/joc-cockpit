@@ -1,19 +1,19 @@
-# Ressources - Tableau de Condition
+# Ressources - Tableaux de Condition
 
-La vue *Tableau de Condition* affiche des informations en temps réel sur l'utilisation des conditions.
+La vue *Tableaux de Condition* affiche des informations en temps réel sur l'utilisation des conditions.
 
 Les Tableaux de Condition mettent en œuvre des dépendances entre les Workflows par l'utilisation d'Annonce. Une Annonce est un drapeau qui est attaché à un Tableau de Condition ou qui n'existe pas. Les Tableaux de Condition sont disponibles dans les versions suivantes :
 
-- **Les Tableaux de Condition globaux** implémentent les *Annonces* à l'échelle globale, ce qui rend le même Annonce disponible pour n'importe quel Workflow à n'importe quel moment. 
-- **Les tableaux de Condition programmables** mettent en œuvre des *Annonces* dans le cadre de la Planification [Daily Plan](/daily-plan). L'Annonce existe ou n'existe pas en fonction de la date du *Plan Quotidien*, par exemple
+- **Tableau de Condition Global** implément les *Annonces* à l'échelle globale, ce qui rend le même Annonce disponible pour n'importe quel Workflow à n'importe quel moment. 
+- **Tableau de Condition Planifiable** met en œuvre des *Annonces* dans le cadre du [Daily Plan](/daily-plan). L'Annonce existe ou n'existe pas en fonction de la date du *Plan Quotidien*, par exemple
   - Le Workflow 1 fonctionne du lundi au vendredi.
   - Le Workflow 2 se déroule du lundi au dimanche et dépend de l'exécution précédente du Workflow 1.
-  - Le week-end, le Workflow 1 ne démarre pas. Pour permettre le démarrage du Workflow 2 le week-end, la dépendance est mise en correspondance avec le Plan Quotidien en utilisant les *Tableaux de Conditions Programmables* : si aucun Ordre n'est annoncé pour le Workflow 1, la dépendance peut être ignorée.
+  - Le week-end, le Workflow 1 ne démarre pas. Pour permettre le démarrage du Workflow 2 le week-end, la dépendance est mise en correspondance avec le Plan Quotidien en utilisant les *Tableaux de Condition Planifiables* : si aucun Ordre n'est annoncé pour le Workflow 1, la dépendance peut être ignorée.
 
 *Les Tableaux de Condition* sont référencés dans les Workflows à partir des instructions suivantes :
 
-- **PostNotices Instruction** affiche un ou plusieurs *Annonces*.
-- instruction **ExpectNotices** attend qu'un ou plusieurs *Annonces* soient présents.
+- l'instruction **PostNotices** affiche un ou plusieurs *Annonces*.
+- l'instruction **ExpectNotices** attend qu'un ou plusieurs *Annonces* soient présents.
 - l'instruction **ConsumeNotices** est une instruction en bloc qui
   - peut couvrir un certain nombre de tâches et d'instructions de Workflow dans le même Workflow,
   - attend la présence d'une ou plusieurs *Annonces* et supprime les *Annonces* à la fin du bloc.
@@ -32,11 +32,11 @@ L'icône de recherche rapide permet de rechercher des tableaux d'affichage en fo
 
 ## Tableau de Condition
 
-L'affichage se concentre sur les *Tableaux de Condition*, les ** et les Ordres qui y sont liés.
+L'affichage se concentre sur les *Tableaux de Condition* et les Ordres qui y sont liés.
 
-La vue [Daily Plan - Dependencies](/daily-plan-dependencies) est axée sur l'affichage des *Tableaux de Conditions*, des *Annonces* et des Ordres liés à une date spécifique du Plan Quotidien.
+La vue [Daily Plan - Dependencies](/daily-plan-dependencies) est axée sur l'affichage des *Tableaux de Condition*, des *Annonces* et des Ordres liés à une date spécifique du Plan Quotidien.
 
-### Affichage des Tableaux de Conditions
+### Affichage des Tableaux de Condition
 
 Les informations suivantes sont affichées :
 
@@ -44,8 +44,8 @@ Les informations suivantes sont affichées :
 - **Date de déploiement** est la date à laquelle le Tableau de Condition a été déployé.
 - **État** est l'une des valeurs suivantes : *Synchronisé* et *Non synchronisé* si le Tableau de Condition n'a pas été déployé sur le Contrôleur.
 - **Nombre d'Annonce** indique le nombre d'*Annonce* pour le Tableau de Condition.
-  - **Les Tableaux de Condition globaux** contiennent des *Annonce* uniques.
-  - **Les tableaux de Condition programmables** contiennent des *Annonces* par date du Plan Quotidien.
+  - **Tableau de Condition Global** contient des *Annonces* uniques.
+  - **Tableau de Condition Planifiable** contient des *Annonces* par date du Plan Quotidien.
 - **Nombre d'Ordres en attente** indique le nombre d'Ordres qui attendent la publication d'une *Annonce*.
 
 ### Affichage des Annonces et des Ordres

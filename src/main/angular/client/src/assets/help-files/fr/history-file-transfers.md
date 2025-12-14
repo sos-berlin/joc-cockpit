@@ -1,6 +1,6 @@
-# Historique des transferts de fichiers
+# Historique des Transferts de Fichiers
 
-La vue *Historique des transferts de fichiers* résume l'historique d'exécution des Ordres pour les tâches de transfert de fichiers gérés par YADE.
+La vue *Historique des Transferts de Fichiers* résume l'historique d'exécution des Ordres pour les tâches de transfert de fichiers gérés par YADE.
 
 Pour le journal créé à partir des tâches de transfert de fichiers, voir [Task History](/history-tasks). Pour l'Historique des Ordres, voir [Order History](/history-orders).
 
@@ -47,7 +47,7 @@ Pour *Source* et *Cible*, les détails suivants sont affichés :
   - **DELETED** indique que le fichier a été supprimé lorsqu'il est utilisé avec l'opération *REMOVE*.
   - **SKIPPED** indique que le fichier a été exclu du transfert, par exemple lors de l'utilisation de l'opération *GETLIST*.
 - **Taille** indique le nombre d'octets transférés.
-- **Integrity Hash** indique un hachage MD5 si les options correspondantes ont été utilisées pour le transfert.
+- **Hash d'Intégrité** indique un hachage MD5 si les options correspondantes ont été utilisées pour le transfert.
 
 ## Références
 

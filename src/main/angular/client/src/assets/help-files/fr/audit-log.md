@@ -17,7 +17,7 @@ La requête identifie le point de terminaison utilisé et propose d'afficher le 
 
 # Audit Trail
 
-Le JOC Cockpit peut être configuré pour écrire un *Audit Trail* qui garde une trace de toutes les requêtes API REST. L'*Audit Trail* comprend des informations sur les sessions utilisateur et n'est pas disponible à partir de l'interface graphique du JOC Cockpit.
+Le JOC Cockpit peut être configuré pour écrire un *Audit Trail* qui garde une trace de toutes les requêtes API REST. L'*Audit Trail* comprend des informations sur les séances utilisateur et n'est pas disponible à partir de l'interface graphique du JOC Cockpit.
 
 L'*Audit Trail* peut être activée par les administrateurs et est disponible à partir des fichiers journaux sur le disque.
 

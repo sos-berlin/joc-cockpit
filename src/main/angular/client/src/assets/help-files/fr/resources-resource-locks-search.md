@@ -1,4 +1,4 @@
-# Recherche d'un Verrou de Ressource
+# Ressources - Recherche Verrou de Ressource
 
 La vue *Recherche Verrou de Resource* est utilisé pour rechercher des Verrous de Ressources sur la base de critères tels que
 

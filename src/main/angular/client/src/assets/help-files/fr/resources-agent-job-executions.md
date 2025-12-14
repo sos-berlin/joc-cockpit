@@ -1,10 +1,10 @@
-# Exécution des tâches de l'Agent
+# Ressources - Exécution des Tâches de l'Agent
 
-La vue *Exécution des tâches des Agents* résume les tâches exécutés par les Agents au cours d'une période donnée.
+La vue *Exécution des Tâches des Agents* résume les tâches exécutés par les Agents au cours d'une période donnée.
 
 Les Agents se présentent sous les formes suivantes :
 
-- **Les Agents Autonomes** exécutent des tâches sur des machines distantes ou à partir de conteneurs. Ils fonctionnent individuellement et sont gérés par le Contrôleur.
+- **Agents Autonomes** exécutent des tâches sur des machines distantes ou à partir de conteneurs. Ils fonctionnent individuellement et sont gérés par le Contrôleur.
 - **Cluster d'Agents**
   - les **Agents Directeurs** orchestrent les *Sous-Agents* dans un Cluster d'Agents. En outre, ils peuvent être utilisés pour exécuter des tâches.
   - les **Sous-Agents** exécutent des Jobs sur des machines distantes sur site et à partir de conteneurs. Ils peuvent être considérés comme des nœuds de tâche dans un Cluster d'Agents et sont gérés par des *Agents Directeurs*.
@@ -15,7 +15,7 @@ Les informations suivantes sont affichées :
 
 - **ID Agent** est le nom unique d'un Agent.
 - **URL** est l'URL qui permet d'accéder à l'Agent à partir du Contrôleur.
-- **Nombre d'exécutions de Tâches réussis** correspond à ce que le titre suggère.
+- **Nombre d'exécutions de tâches réussis** correspond à ce que le titre suggère.
 - **Le nombre de tâches exécutées** comprend les tâches exécutées avec succès et celles qui ont échoué.
 
 ## Exportation des tâches exécutées par les Agents
@@ -38,4 +38,3 @@ Le *filtre avancé* permet d'exporter des données en fonction des critères sp�
 ## Références
 
 - [JS7 - Agent Cluster](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Cluster)
-

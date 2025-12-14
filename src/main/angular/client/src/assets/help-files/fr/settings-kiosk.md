@@ -1,4 +1,4 @@
-# Paramètres - Mode Kiosque
+# Réglages - Mode Kiosque
 
 JOC Cockpit peut être utilisé sur [JS7 - Kiosk Mode](https://kb.sos-berlin.com/display/JS7/JS7+-+Kiosk+Mode) qui comprend
 
@@ -18,7 +18,7 @@ Indique le nom du rôle auquel est attribué un compte utilisé pour les opérat
 - Le rôle doit inclure des autorisations de lecture seule.
 - Le rôle est le seul à qui le compte est attribué.
 
-### Paramètre : *view_dashboard\_duration*, Valeur par défaut : *20*
+### Paramètre : *view\_dashboard\_duration*, Défaut : *20*
 
 Spécifie la durée en secondes pendant laquelle le tableau de bord sera affiché.
 
@@ -27,28 +27,28 @@ Les utilisateurs peuvent modifier la présentation du tableau de bord pour le co
 - La valeur 0 indique que la vue ne sera pas affichée.
 - Une valeur &gt;10 indique la durée souhaitée.
 
-### Paramètre : *view_monitor\_order\_notification\_duration*, Valeur par défaut : *15*
+### Paramètre : *view\_monitor\_order\_notification\_duration*, Défaut : *15*
 
 Spécifie la durée en secondes pendant laquelle la vue [Monitor - Order Notifications](/monitor-notifications-order) sera affichée.
 
 - La valeur 0 indique que la vue ne sera pas affichée.
 - Une valeur &gt;10 indique la durée souhaitée.
 
-### Paramètre : *view_monitor\_system\_notification\_duration*, Valeur par défaut : *15*
+### Paramètre : *view\_monitor\_system\_notification\_duration*, Défaut : *15*
 
 Spécifie la durée en secondes pendant laquelle la vue [Monitor - System Notifications](/monitor-notifications-system) sera affichée.
 
 - La valeur 0 indique que la vue ne sera pas affichée.
 - Une valeur &gt;10 indique la durée souhaitée.
 
-### Paramètre : *view_history\_tasks\_duration*, Valeur par défaut : *30*
+### Paramètre : *view\_history\_tasks\_duration*, Défaut : *30*
 
 Spécifie la durée en secondes pendant laquelle la vue [Task History](/history-tasks) sera affichée.
 
 - La valeur 0 indique que la vue ne sera pas affichée.
 - Une valeur &gt;10 indique la durée souhaitée.
 
-### Paramètre : *view_history\_orders\_duration*, Défaut : *0*
+### Paramètre : *view\_history\_orders\_duration*, Défaut : *0*
 
 Spécifie la durée en secondes pendant laquelle la vue [Order History](/history-orders) sera affichée.
 

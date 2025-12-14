@@ -1,4 +1,4 @@
-# Profil - Gestion des clés SSL
+# Profil - Gestion des Clés SSL
 
 L'onglet *Profil - Gestion des clés SSL* offre l'autorité de certification intégrée qui permet de créer des certificats d'authentification serveur et des certificats d'authentification client pour les connexions TLS/SSL aux produits JS7.
 
@@ -38,4 +38,3 @@ Les opérations suivantes sont proposées :
   - [JS7 - Certificate Authority - Rollout Certificates for HTTPS Connections](https://kb.sos-berlin.com/display/JS7/JS7+-+Certificate+Authority+-+Rollout+Certificates+for+HTTPS+Connections)
 - [JS7 - Comment créer des certificats X.509 SSL TLS](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+create+X.509+SSL+TLS+Certificates)
 - [JS7 - Profiles - SSL Key Management](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles+-+SSL+Key+Management)
-
