@@ -25,7 +25,6 @@ Kennzeichnungsgruppen können verwendet werden, um Kennzeichnungen zu organisier
   - [Konfiguration - Inventar - Arbeitsabläufe - Job-Eigenschaften](/configuration-inventory-workflows-job-properties)
   - [Konfiguration - Inventar - Arbeitsabläufe - Job-Knoteneigenschaften](/configuration-inventory-workflows-job-node-properties)
   - [Konfiguration - Inventar - Arbeitsabläufe - Job-Benachrichtigungen](/configuration-inventory-workflows-job-notifications)
-- [Kennzeichnungen](/tags)
 
 ### Product Knowledge Base
 

@@ -54,7 +54,7 @@ Ensuite, il convient de spécifier une ou plusieurs périodes pour les heures de
 Les *Restrictions* sont utilisées pour limiter les jours pour lesquels des Ordres seront créés :
 
 - Les Calendriers des jours ouvrés et des jours non ouvrés attribués sont fusionnés pour obtenir des jours pour l'exécution du Workflow par les Ordres.
-- Les restrictions appliquent et maintiennent des règles similaires à [Configuration - Inventory - Calendars](/configuration-inventory-calendars):
+- Les restrictions appliquent et maintiennent des règles similaires à [Configuration - Inventaire - Calendriers](/configuration-inventory-calendars):
   - **Jours de semaine** spécifiez le jour de la semaine.
   - **Jours de semaine spécifiques** spécifient les jours de la semaine relatifs tels que le premier ou le dernier lundi d'un mois.
   - **Jours spécifiques** indiquent les jours de l'année.
@@ -106,7 +106,7 @@ Les utilisateurs doivent tenir compte des implications des Ordres cycliques : il
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Calendars](/configuration-inventory-calendars)
+- [Configuration - Inventaire - Calendriers](/configuration-inventory-calendars)
 - [Configuration - Inventaire - Planifications](/configuration-inventory-schedules)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
 - [Plan Quotidien](/daily-plan)

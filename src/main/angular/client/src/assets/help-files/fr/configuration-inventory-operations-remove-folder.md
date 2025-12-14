@@ -4,7 +4,7 @@ La suppression d'objets consiste à les supprimer des Contrôleurs et de l'inven
 
 La suppression d'un dossier inclut la suppression récursive des sous-dossiers. Les objets supprimés restent disponibles dans la corbeille de l'inventaire.
 
-La vue *Configuration-&gt;Inventaire* permet de supprimer un seul objet, voir [Configuration - Inventory - Operations - Remove Object](/configuration-inventory-operations-remove-object), et de supprimer des objets de dossiers.
+La vue *Configuration-&gt;Inventaire* permet de supprimer un seul objet, voir [Configuration - Inventaire - Opérations - Supprimer Objet](/configuration-inventory-operations-remove-object), et de supprimer des objets de dossiers.
 
 Lorsque vous supprimez un dossier à l'aide de l'opération *Supprimer* disponible dans le menu d'action à 3 points du dossier dans le panneau de navigation, une fenêtre contextuelle s'affiche comme suit :
 
@@ -22,7 +22,7 @@ Les Ordres existants pour les Workflows associés seront annulés à partir des 
 
 ## Inclure les dépendances
 
-Les objets d'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource; une Planification référençant un Calendrier et un ou plusieurs Workflows.
+Les objets d'inventaire sont liés par des dépendances, voir [Matrice de Dépendance](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource; une Planification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lors de la suppression d'objets, la cohérence est prise en compte, par exemple :
 
@@ -41,10 +41,10 @@ Les utilisateurs contrôlent la suppression cohérente des objets à partir des 
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Operations - Remove Object](/configuration-inventory-operations-remove-object)
+- [Configuration - Inventaire - Opérations - Supprimer Objet](/configuration-inventory-operations-remove-object)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
 - [Plan Quotidien](/daily-plan)
-- [Dependency Matrix](/dependencies-matrix)
+- [Matrice de Dépendance](/dependencies-matrix)
 
 ### Product Knowledge Base
 

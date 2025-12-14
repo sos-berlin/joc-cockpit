@@ -10,7 +10,7 @@ Les utilisateurs qui sont satisfaits des valeurs par défaut et qui souhaitent s
 - **Tag** : Vous pouvez spécifier un nombre quelconque Tag qui seront ajoutées à l'Ordre. Les Tags sont affichées dans un certain nombre de vues si elles sont spécifiées sur la page [Réglages - JOC Cockpit](/settings-joc).
 - **Ignorer les heures d'Admission** : Les tâches peuvent être limités à certains jours et/ou à certains créneaux horaires. Les Ordres qui arrivent en dehors d'un créneau horaire doivent attendre le prochain créneau disponible. Cette option force les tâches à démarrer indépendamment de ces limitations.
 
-### Heure de début
+### Heure de démarrage
 
 - **Maintenant** : L'Ordre commencera immédiatement.
 - **Date spécifique** : L'Ordre commencera à la date et à l'heure spécifiées.
@@ -19,7 +19,7 @@ Les utilisateurs qui sont satisfaits des valeurs par défaut et qui souhaitent s
   - **15m** : 15 minutes plus tard
   - **1h** : 1 heure plus tard
   - **1h 15m 30s** ou **01:15:30** : 1 heure, 15 minutes et 30 secondes plus tard
-- **Sand démarrage** : L'Ordre ne démarrera pas mais sera disponible à partir de l'état *à venir* et une heure de démarrage pourra lui être attribuée ultérieurement.
+- **Sans démarrage** : L'Ordre ne démarrera pas mais sera disponible à partir de l'état *à venir* et une heure de démarrage pourra lui être attribuée ultérieurement.
 
 ### Dépendances de l'Ordre
 

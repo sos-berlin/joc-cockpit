@@ -47,7 +47,7 @@ Pour les opérations générales, voir [Configuration - Inventaire - Navigation]
 Les opérations sur les rapports sont disponibles à partir des vues suivantes :
 
 - Les rapports sont créés à partir de la vue [Création des Rapports](/report-creation).
-- L'exécution des rapports est disponible à partir de la vue [Historique de l'Exécution des Rapports](/report-run-history).
+- L'exécution des rapports est disponible à partir de la vue [Historique d'Exécution des Rapports](/report-run-history).
 - Les rapports sont visualisés à partir de la vue [Rapports](/reports).
 
 ## Références
@@ -56,7 +56,7 @@ Les opérations sur les rapports sont disponibles à partir des vues suivantes :
 
 - [Création des Rapports](/report-creation)
 - [Configuration - Inventaire - Navigation](/configuration-inventory-navigation)
-- [Historique de l'Exécution des Rapports](/report-run-history)
+- [Historique d'Exécution des Rapports](/report-run-history)
 - [Maquettes de Rapport](/report-templates)
 - [Rapports](/reports)
 - [Règles de Dénomination des Objets](/object-naming-rules)

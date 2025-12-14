@@ -56,20 +56,20 @@ La *Liste d'ignorés* est gérée à partir du bouton connexe dans le coin supé
 Les utilisateurs peuvent appliquer les filtres disponibles en haut de la fenêtre pour limiter l'affichage des tâches :
 
 - les boutons de filtrage **Succès**, **Echoué**, **En Progression** limitent l'affichage aux tâches ayant le *Historique Status* correspondant.
-- les boutons de filtrage **Date Range** permettent de choisir la plage de dates pour l'affichage des tâches.
+- les boutons de filtrage **Plage de Dates** permettent de choisir la plage de dates pour l'affichage des tâches.
 - la case à cocher **Contrôleur actuel** limite l'affichage des tâches au Contrôleur actuellement sélectionné.
 
 ## Références
 
 ### Aide contextuelle
 
-- [Service d'Assainissement](/service-cleanup)
+- [Affichage du Journal de Tâche](/task-log)
 - [Configuration - Inventaire - Planifications](/configuration-inventory-schedules)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
 - [Historique des Ordres](/history-orders)
 - [Profil - Préférences](/profile-preferences)
 - [Réglages - JOC Cockpit](/settings-joc)
-- [Affichage du Journal de Tâche](/task-log)
+- [Service d'Assainissement](/service-cleanup)
 
 ### Product Knowledge Base
 

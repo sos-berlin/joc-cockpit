@@ -2,7 +2,7 @@
 
 La publication d'objets permet de les activer, par exemple pour les utiliser dans la vue [Plan Quotidien](/daily-plan). Cela s'applique à des objets tels que les Planifications et les Calendriers disponibles dans le dossier système *Automatisation*.
 
-La vue *Configuration-&gt;Inventaire* permet de publier un seul objet et de publier des objets à partir de dossiers, voir [Configuration - Inventory - Operations - Release Folder](/configuration-inventory-operations-release-folder).
+La vue *Configuration-&gt;Inventaire* permet de publier un seul objet et de publier des objets à partir de dossiers, voir [Configuration - Inventaire - Opérations - Publier Dossier](/configuration-inventory-operations-release-folder).
 
 Lorsque vous publiez un seul objet à partir du bouton *Publier* correspondant, une fenêtre contextuelle s'affiche comme suit :
 
@@ -20,7 +20,7 @@ La publication d'objets tels que les Planifications et les Calendriers a un impa
 
 ## Inclure les dépendances
 
-Les objets d'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource ; une Planification référençant un Calendrier et un ou plusieurs Workflows.
+Les objets d'inventaire sont liés par des dépendances, voir [Matrice de Dépendance](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource ; une Planification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lors de la publication des objets, la cohérence est prise en compte, par exemple :
 
@@ -39,10 +39,10 @@ Les utilisateurs contrôlent le déploiement cohérent à partir des options sui
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Operations - Release Folder](/configuration-inventory-operations-release-folder)
+- [Configuration - Inventaire - Opérations - Publier Dossier](/configuration-inventory-operations-release-folder)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
 - [Plan Quotidien](/daily-plan)
-- [Dependency Matrix](/dependencies-matrix)
+- [Matrice de Dépendance](/dependencies-matrix)
 
 ### Product Knowledge Base
 

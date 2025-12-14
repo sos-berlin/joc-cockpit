@@ -32,7 +32,7 @@ Pour plus d'informations, voir [Initial Operation - Subagent Cluster](/initial-o
 
 ### Aide contextuelle
 
-- [Dashboard - Product Status](/dashboard-product-status)
+- [Tableau de Bord - État du Produit](/dashboard-product-status)
 - [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-Cluster)
 - [Initial Operation - Register Controller](/initial-operation-register-controller)
 - [Initial Operation - Register Subagent](/initial-operation-register-agent-subagent)

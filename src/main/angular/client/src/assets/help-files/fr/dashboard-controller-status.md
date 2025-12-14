@@ -28,4 +28,4 @@ Les instances de Contrôleur offrent les opérations suivantes à partir du menu
 
 ## Références
 
-- [Dashboard - Product Status](/dashboard-product-status)
+- [Tableau de Bord - État du Produit](/dashboard-product-status)

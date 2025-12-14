@@ -37,10 +37,10 @@ Les opérations suivantes sont disponibles :
 
 ## Rechercher
 
-Le site [Resources - Calendars - Search](/resources-calendars-search) propose des critères de recherche des Calendriers à partir des dépendances. Par exemple, en recherchant les Workflows comprenant un nom de tâche spécifique, les Calendriers utilisés par les Planifications pour le Workflow seront renvoyés.
+Le site [Ressources - Calendriers - Recherche](/resources-calendars-search) propose des critères de recherche des Calendriers à partir des dépendances. Par exemple, en recherchant les Workflows comprenant un nom de tâche spécifique, les Calendriers utilisés par les Planifications pour le Workflow seront renvoyés.
 
 ## Références
 
-- [Resources - Calendars - Search](/resources-calendars-search)
+- [Ressources - Calendriers - Recherche](/resources-calendars-search)
 - [Plan Quotidien](/daily-plan)
 - [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars)

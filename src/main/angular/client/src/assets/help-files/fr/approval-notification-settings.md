@@ -19,7 +19,7 @@ Les paramètres de notification comprennent les propriétés permettant d'envoye
 
 - **Ressource de Tâche** contient les paramètres de connexion au serveur de messagerie. Pour plus de détails, voir [JS7 - eMailDefault Job Resource](https://kb.sos-berlin.com/display/JS7/JS7+-+eMailDefault+Job+Resource).
 - **Content Type**, **Charset**, **Encoding** sont communs à tout système envoyant du courrier.
-- **Mail de demande d'autorisation**
+- **Mail de Demande d'Autorisation**
   - **Cc**, **Bcc** indiquent éventuellement les destinataires des copies et des copies carbone de la notification.
   - **L'objet**, **le corps** du courrier peuvent inclure des caractères de remplacement qui seront substitués lors de l'envoi du courrier. Les caractères génériques sont spécifiés en utilisant le format $\{placeholder\}.
     - Les caractères génériques suivants sont disponibles :
@@ -42,9 +42,9 @@ Les paramètres de notification comprennent les propriétés permettant d'envoye
 
 ### Aide contextuelle
 
-- [Paramètres de Notification d'Autorisation](/approval-notification-settings)
 - [Demande d'Autorisation](/approval-request)
 - [Demandes d'Autorisation](/approval-requests)
+- [Paramètres de Notification d'Autorisation](/approval-notification-settings)
 - [Profils Approbateur](/approval-profiles)
 
 ### Product Knowledge Base

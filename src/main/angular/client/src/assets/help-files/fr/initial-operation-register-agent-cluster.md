@@ -64,7 +64,7 @@ Une fois l'enregistrement réussi, l'Agent sera affiché dans la vue [Resources 
 
 ### Aide contextuelle
 
-- [Dashboard - Product Status](/dashboard-product-status)
+- [Tableau de Bord - État du Produit](/dashboard-product-status)
 - [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone)
 - [Initial Operation - Register Subagent](/initial-operation-register-agent-subagent)
 - [Initial Operation - Register Subagent Cluster](/initial-operation-register-agent-subagent-Cluster)

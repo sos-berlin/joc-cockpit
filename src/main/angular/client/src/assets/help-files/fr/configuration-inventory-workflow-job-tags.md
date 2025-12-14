@@ -25,7 +25,6 @@ Les groupes de Tags peuvent être utilisés pour organiser les Tags qui doivent 
   - [Configuration - Inventaire - Workflow - Propriétés de Tâche](/configuration-inventory-workflows-job-properties)
   - [Configuration - Inventaire - Workflow - Propriétés du Nœud de Tâche](/configuration-inventory-workflows-job-node-properties)
   - [Configuration - Inventaire - Workflow - Notifications de Tâche](/configuration-inventory-workflows-job-notifications)
-- [Tags](/Tags)
 
 ### Product Knowledge Base
 

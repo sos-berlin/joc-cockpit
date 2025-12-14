@@ -8,19 +8,19 @@ La page *Réglages* est accessible à partir de l'icône ![wheel icon](assets/im
 
 Les paramètres suivants s'appliquent au service de notification des journaux. Les modifications prennent effet immédiatement.
 
-## Paramètres du service de notification des journaux
+## Paramètres du Service de Notification des Journaux
 
 ### Paramètre : *log\_server\_active*, Défaut : *false*
 
-Spécifie que le service de notification des journaux est démarré avec JOC Cockpit.
+Spécifie que le Service de Notification des Journaux est démarré avec JOC Cockpit.
 
 ### Paramètre : *log\_server\_port*, Défaut : *4245*
 
-Spécifie le port UDP sur lequel le service de notification des journaux écoutera.
+Spécifie le port UDP sur lequel le Service de Notification des Journaux écoutera.
 
 ### Paramètre : *log\_server\_max\_messages\_per\_second*, Défaut : *1000*
 
-Indique le nombre maximum de messages par seconde que le service de notification des journaux traitera.
+Indique le nombre maximum de messages par seconde que le Service de Notification des Journaux traitera.
 
 ## Références
 

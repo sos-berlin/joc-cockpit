@@ -32,9 +32,9 @@ Lorsque la demande d'autorisation est soumise, elle devient visible dans la vue 
 
 ### Aide contextuelle
 
+- [Demandes d'Autorisation](/approval-requests)
 - [Paramètres de Notification d'Autorisation](/approval-notification-settings)
 - [Profils Approbateur](/approval-profiles)
-- [Demandes d'Autorisation](/approval-requests)
 
 ### Product Knowledge Base
 

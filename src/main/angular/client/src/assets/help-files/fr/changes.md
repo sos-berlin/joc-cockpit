@@ -17,9 +17,9 @@ La page *Gestion des Changements* permet d'ajouter, de mettre à jour et de supp
 
 Les Changements existantes sont affichées dans une liste :
 
-- le **Menu d'action** permet de mettre à jour et de supprimer l'entrée du Changement.
-- le **Nom** est le nom unique que les utilisateurs attribuent à une modification.
-- le **Titre** explique l'objet de la modification.
+- **Menu d'action** permet de mettre à jour et de supprimer l'entrée du Changement.
+- **Nom** est le nom unique que les utilisateurs attribuent à une modification.
+- **Titre** explique l'objet de la modification.
 - **Status** est l'une des options suivantes : *Open* (ouvert) ou *Closed* (fermé). Les Changements fermées ne sont pas proposées pour les opérations de déploiement ou d'exportation.
 - **Propriétaire** indique le compte propriétaire du Changement.
 - **Objets** propose une icône permettant d'afficher les objets concernés par le Changement.
@@ -28,18 +28,18 @@ Les Changements existantes sont affichées dans une liste :
 
 Les boutons suivants sont disponibles en haut de l'écran :
 
-- **Ajouter un Changement** permet d'ajouter un Changement. Trouvez des détails à partir de [Changes - Properties](/changes-properties).
+- **Ajouter un Changement** permet d'ajouter un Changement. Trouvez des détails à partir de [Changements - Propriétés](/changes-properties).
 
 Dans la *Liste des modifications*, les opérations suivantes sont proposées avec le menu d'action correspondant à 3 points :
 
-- **Éditer** permet de mettre à jour les propriétés du Changement. Pour plus d'informations, consultez les [Changes - Properties](/changes-properties).
+- **Éditer** permet de mettre à jour les propriétés du Changement. Pour plus d'informations, consultez les [Changements - Propriétés](/changes-properties).
 - **Supprimer** permet de supprimer l'entrée du Changement.
 
 ## Références
 
 ### Aide contextuelle
 
-- [Changes - Properties](/changes-properties)
+- [Changements - Propriétés](/changes-properties)
 
 ### Product Knowledge Base
 

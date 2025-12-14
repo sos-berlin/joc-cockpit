@@ -2,9 +2,9 @@
 
 La vue *Planification* permet de spécifier des règles pour la création d'Ordres à partir de la page [Plan Quotidien](/daily-plan). Pour plus de détails, voir [JS7 - Schedules](https://kb.sos-berlin.com/display/JS7/JS7+-+Schedules).
 
-- Les Planifications déterminent le moment où les Ordres pour l'exécution du Workflow commenceront. Un ou plusieurs Workflows leur sont attribués et, en option, des variables utilisées par les tâches dans les Workflows donnés.
-  - les **dates de démarrage** sont spécifiées par [Configuration - Inventory - Calendars](/configuration-inventory-calendars) et limitent les jours d'exécution des Workflows.
-  - les **Heures de démarrage** sont spécifiées par les Planifications qui indiquent un ou plusieurs moments de la journée. Elles peuvent également limiter les jours d'exécution des Workflows.
+- Les Planifications déterminent le moment où les Ordres pour l'exécution du Workflow commenceront. Un ou plusieurs Workflows leur sont attribués et, en option, des variables utilisées par les tâches dans les Workflows donnés :
+  - les **dates de démarrage** sont spécifiées par [Configuration - Inventaire - Calendriers](/configuration-inventory-calendars) et limitent les jours d'exécution des Workflows.
+  - les **heures de démarrage** sont spécifiées par les Planifications qui indiquent un ou plusieurs moments de la journée. Elles peuvent également limiter les jours d'exécution des Workflows.
 - Les Planifications créent des Ordres sur une base quotidienne
   - pour l'exécution ponctuelle des Workflows. Cela inclut les Workflows démarrant à un certain nombre d'heures par jour.
   - pour l'exécution cyclique de Workflows. Ceci spécifie l'exécution répétée des Workflows sur la base d'intervalles configurables.
@@ -21,7 +21,7 @@ Les Planifications sont gérées à partir des panneaux suivants :
 
 Pour une Planification, les entrées suivantes sont disponibles :
 
-- **Name** est l'identifiant unique d'une Planification, voir [Règles de Dénomination des Objets](/object-naming-rules).
+- **Nom** est l'identifiant unique d'une Planification, voir [Règles de Dénomination des Objets](/object-naming-rules).
 - **Titre** contient une explication facultative de l'objectif de la Planification.
 - **Noms des Workflows** contient la liste des Workflows qui doivent être lancés.
 - **Planifier l'Ordre automatiquement** spécifie que la Planification sera prise en compte par le [Service du Plan Qutotidien](/service-daily-plan).
@@ -67,7 +67,7 @@ L'attribution de valeurs aux variables comprend la spécification de chaînes de
 
 ## Temps d'exécution
 
-Le bouton *Temps d'exécution* permet de spécifier les heures de début des Ordres à partir d'une fenêtre contextuelle. Pour plus de détails, voir [Configuration - Inventory - Schedules - Run-time](/configuration-inventory-schedules-run-time).
+Le bouton *Temps d'exécution* permet de spécifier les heures de début des Ordres à partir d'une fenêtre contextuelle. Pour plus de détails, voir [Configuration - Inventaire - Plannifications - Temps d'Execution](/configuration-inventory-schedules-run-time).
 
 ## Opérations sur les Planifications
 
@@ -77,17 +77,17 @@ Pour les opérations disponibles, voir [Configuration - Inventaire - Navigation]
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Calendars](/configuration-inventory-calendars)
+- [Configuration - Inventaire - Calendriers](/configuration-inventory-calendars)
 - [Configuration - Inventaire - Navigation](/configuration-inventory-navigation)
-- [Configuration - Inventory - Schedules - Run-time](/configuration-inventory-schedules-run-time)
+- [Configuration - Inventaire - Plannifications - Temps d'Execution](/configuration-inventory-schedules-run-time)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
-- [Plan Quotidien](/daily-plan)
-- [Service du Plan Qutotidien](/service-daily-plan)
-- [Règles de Dénomination des Objets](/object-naming-rules)
 - [Historique des Ordres](/history-orders)
+- [Historique des Tâches](/history-tasks)
+- [Plan Quotidien](/daily-plan)
 - [Profil - Préférences](/profile-preferences)
 - [Réglages - Plan Quotidien](/settings-daily-plan)
-- [Historique des Tâches](/history-tasks)
+- [Règles de Dénomination des Objets](/object-naming-rules)
+- [Service du Plan Qutotidien](/service-daily-plan)
 
 ### Product Knowledge Base
 

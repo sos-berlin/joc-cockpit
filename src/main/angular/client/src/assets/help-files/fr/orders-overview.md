@@ -1,8 +1,8 @@
-# Vue Aperçu des Ordres
+# Aperçu des Ordres
 
 La vue *Aperçu des Ordres* permet de surveiller et de contrôler les Ordres pour les Workflows.
 
-- Les utilisateurs peuvent identifier les Ordres en cours de traitement sur [Order State](/order-states).
+- Les utilisateurs peuvent identifier les Ordres en cours de traitement sur [État d'Ordre](/order-states).
 - Les utilisateurs peuvent assurer la transition des Ordres, par exemple en annulant des Ordres *en exécution*.
 - La vue contient les Ordres qui sont ajoutés par [Plan Quotidien](/daily-plan) et les Ordres qui ont été ajoutés sur demande.
 
@@ -14,8 +14,8 @@ Le vue de gauche indique le nombre d'Ordres disponibles par état. Si vous cliqu
 
 La vue central est organisé en onglets qui permettent de filtrer les Ordres par Tags.
 
-- les **Tags de Workflow** sont attribuées à partir de la vue [Configuration - Inventaire - Workflows](/configuration-inventory-workflows).
-- les **Tags d'Ordres** sont attribuées à partir de la vue [Configuration - Inventaire - Planifications](/configuration-inventory-schedules).
+- **Tags de Workflow** sont attribuées à partir de la vue [Configuration - Inventaire - Workflows](/configuration-inventory-workflows).
+- **Tags d'Ordres** sont attribuées à partir de la vue [Configuration - Inventaire - Planifications](/configuration-inventory-schedules).
 
 Les Tags sont sélectionnées à partir des icônes + et - et peuvent être recherchées à l'aide de l'icône de recherche rapide. L'affichage des Tags doit être activé à partir de la page [Réglages - JOC Cockpit](/settings-joc).
 
@@ -29,9 +29,9 @@ Cette vue présente la liste des Ordres pour l'état donné :
   - En cliquant sur le *Workflow*, vous accédez à la vue [Workflows](/workflows).
   - En cliquant sur l'icône en forme de crayon, vous accédez à la vue [Configuration - Inventaire - Workflows](/configuration-inventory-workflows).
 - **Label** indique la position de l'Ordre à partir du *Label* de l'instruction de Workflow. En l'absence de *Label*, la position technique est indiquée.
-- **État** indique le [Order State](/order-states).
+- **État** indique le [État d'Ordre](/order-states).
   - Le passage de la souris sur l'indicateur d'état permet d'afficher des détails s'ils sont disponibles. Par exemple, les Ordres *en attente* indiquent des raisons telles que *en attente d'un processus*, *en attente d'une condition*, etc.
-- **Prévu pour** indique la date de début de l'Ordre.
+- **Prévu pour** indique la date de démarrage de l'Ordre.
 
 ## Vue Historique
 
@@ -45,7 +45,7 @@ Cette vue s'affiche sur la partie inférieure de la fenêtre lorsque l'utilisate
   - Si les Ordres sont terminés, le *Statut de l'historique* sera *succès* ou *échec*.
   - Si les Ordres ne sont pas terminés, le *Statut de l'Historique* sera *en cours*.
 - **Heure prévue** indique la date et l'heure initiales pour lesquelles l'Ordre a été planifié.
-- **Heure de démarrage** indique la date et l'heure effectives de début de l'Ordre.
+- **Heure de démarrage** indique la date et l'heure effectives de démarrage de l'Ordre.
 - **Heure de fin** indique la date et l'heure auxquelles l'Ordre s'est achevé.
 
 #### Accès à la sortie du journal
@@ -141,14 +141,14 @@ Le filtre limite l'affichage aux *Identifiants d'Ordres* et aux *Noms de Workflo
 
 ### Aide contextuelle
 
+- [Affichage du Journal d'Ordre](/order-log)
 - [Configuration - Inventaire - Planifications](/configuration-inventory-schedules)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
+- [État d'Ordre](/order-states)
 - [Plan Quotidien](/daily-plan)
-- [Affichage du Journal d'Ordre](/order-log)
-- [Order State](/order-states)
 - [Profil - Préférences](/profile-preferences)
 - [Réglages - JOC Cockpit](/settings-joc)
-- [Workflows - Add Orders](/workflows-orders-add)
+- [Workflows - Ajouter des Ordres](/workflows-orders-add)
 
 ### Product Knowledge Base
 

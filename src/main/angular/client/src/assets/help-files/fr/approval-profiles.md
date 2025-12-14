@@ -1,4 +1,4 @@
-# Profils des Approbateurs
+# Profils d'Approbateurs
 
 Le profil [JS7 - Approval Process](https://kb.sos-berlin.com/display/JS7/JS7+-+Approval+Process) est proposé pour les situations dans lesquelles les utilisateurs ont l'intention d'effectuer des opérations telles que l'ajout ou l'annulation d'Ordres qui nécessitent l'autorisation d'un second utilisateur. Il peut s'agir de toute opération modifiant un objet de scheduling.
 
@@ -34,9 +34,9 @@ Le menu d'action à 3 points d'un profil d'Approbateur propose les opérations s
 
 ### Aide contextuelle
 
-- [Paramètres de Notification d'Autorisation](/approval-notification-settings)
 - [Demande d'Autorisation](/approval-request)
 - [Demandes d'Autorisation](/approval-requests)
+- [Paramètres de Notification d'Autorisation](/approval-notification-settings)
 
 ### Product Knowledge Base
 

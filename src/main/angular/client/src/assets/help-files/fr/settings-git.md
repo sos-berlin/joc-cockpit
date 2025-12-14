@@ -6,7 +6,7 @@ La page *Réglages* est accessible à partir de l'icône ![wheel icon](assets/im
 
 Les paramètres suivants sont appliqués pour l'utilisation des référentiels Git. Les modifications entrent en vigueur immédiatement.
 
-## Paramètres du dépôt Git
+## Paramètres du Dépôt Git
 
 ### Paramètre : *git\_hold\_workflows*, Défaut : *rollout*
 

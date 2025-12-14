@@ -1,6 +1,6 @@
 # Configuration - Inventaire - Opérations - Renommer Objet
 
-Les objets de l'inventaire peuvent être renommés ou déplacés. Cela s'applique aux objets, aux dossiers d'utilisateurs ou aux deux. Pour renommer des dossiers d'utilisateurs, voir [Configuration - Inventory - Operations - Rename Folder](/configuration-inventory-operations-rename-folder). 
+Les objets de l'inventaire peuvent être renommés ou déplacés. Cela s'applique aux objets, aux dossiers d'utilisateurs ou aux deux. Pour renommer des dossiers d'utilisateurs, voir [Configuration - Inventaire - Opérations - Renommer Dossier](/configuration-inventory-operations-rename-folder). 
 
 Lorsque vous renommez des objets, [Règles de Dénomination des Objets](/object-naming-rules) s'applique.
 
@@ -23,7 +23,7 @@ Les utilisateurs peuvent modifier l'emplacement et le nom d'un objet. Ce qui sui
 
 ## Dépendances
 
-Les objets de l'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource; une Planification référençant un Calendrier et un ou plusieurs Workflows.
+Les objets de l'inventaire sont liés par des dépendances, voir [Matrice de Dépendance](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource; une Planification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lorsque vous renommez des objets, la cohérence est prise en compte et les objets référents sont mis à jour et mis à l'état de brouillon, par exemple :
 
@@ -40,8 +40,8 @@ Lorsque vous renommez des objets, la cohérence est prise en compte et les objet
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Operations - Rename Folder](/configuration-inventory-operations-rename-folder)
-- [Dependency Matrix](/dependencies-matrix)
+- [Configuration - Inventaire - Opérations - Renommer Dossier](/configuration-inventory-operations-rename-folder)
+- [Matrice de Dépendance](/dependencies-matrix)
 - [Règles de Dénomination des Objets](/object-naming-rules)
 
 ### Product Knowledge Base

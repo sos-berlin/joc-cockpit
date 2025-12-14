@@ -3,7 +3,7 @@
 La vue [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) offre un aperçu de l'exécution passée des Workflows et des Tâches :
 
 - Les rapports sont créés à partir de [Maquettes de Rapport](/report-templates) prédéfinis qui sont paramétrés à partir de [Configuration - Inventaire - Modèles de Rapport](/configuration-inventory-reports).
-- Les utilisateurs exécutent les rapports à partir de la vue *Report Creation* ou de [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation). La vue [Historique de l'Exécution des Rapports](/report-run-history) fournit des informations sur les exécutions antérieures des rapports.
+- Les utilisateurs exécutent les rapports à partir de la vue *Report Creation* ou de [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation). La vue [Historique d'Exécution des Rapports](/report-run-history) fournit des informations sur les exécutions antérieures des rapports.
 - Les rapports sont visualisés dans la vue [Rapports](/reports).
 
 ## Affichage des configurations des rapports
@@ -43,7 +43,7 @@ Les utilisateurs peuvent sélectionner un certain nombre de configurations de ra
 ### Aide contextuelle
 
 - [Configuration - Inventaire - Modèles de Rapport](/configuration-inventory-reports)
-- [Historique de l'Exécution des Rapports](/report-run-history)
+- [Historique d'Exécution des Rapports](/report-run-history)
 - [Maquettes de Rapport](/report-templates)
 - [Rapports](/reports)
 

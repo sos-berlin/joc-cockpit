@@ -6,7 +6,7 @@ La fenêtre pop-up de bienvenue fournit des liens permettant de télécharger le
 
 La page *Réglages* est accessible à partir de l'icône ![wheel icon](assets/images/wheel.png) dans la barre de menu.
 
-## Paramètres de l'utilisateur
+## Paramètres de l'Utilisateur
 
 ### Paramètre : *welcome\_got\_it*, Défaut : *false*
 

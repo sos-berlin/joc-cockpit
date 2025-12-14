@@ -2,7 +2,7 @@
 
 La rétractation d'objets les désactive, par exemple, pour une utilisation avec le [Plan Quotidien](/daily-plan). Cela s'applique à des objets tels que les Planifications et les Calendriers disponibles dans le dossier système *Automatisation*.
 
-La vue *Configuration-&gt;Inventaire* permet de retirer un seul objet, voir [Configuration - Inventory - Operations - Recall Object](/configuration-inventory-operations-recall-object), et de retirer des objets à partir de dossiers.
+La vue *Configuration-&gt;Inventaire* permet de retirer un seul objet, voir [Configuration - Inventaire - Opérations - Retirer Objet](/configuration-inventory-operations-recall-object), et de retirer des objets à partir de dossiers.
 
 Lorsque vous retirer des objets d'un dossier à l'aide de l'opération *Retirer* disponible dans le menu d'action à 3 points du dossier dans le panneau de navigation, une fenêtre contextuelle s'affiche comme suit :
 
@@ -16,7 +16,7 @@ Les Ordres existants pour les Workflows référencés par les Planifications ass
 
 ## Inclure les dépendances
 
-Les objets d'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource; une Planification référençant un Calendrier et un ou plusieurs Workflows.
+Les objets d'inventaire sont liés par des dépendances, voir [Matrice de Dépendance](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource; une Planification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lors de la rétractation des objets, la cohérence est prise en compte, par exemple :
 
@@ -35,10 +35,10 @@ Les utilisateurs contrôlent le déploiement cohérent à partir des options sui
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Operations - Recall Object](/configuration-inventory-operations-recall-object)
+- [Configuration - Inventaire - Opérations - Retirer Objet](/configuration-inventory-operations-recall-object)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
 - [Plan Quotidien](/daily-plan)
-- [Dependency Matrix](/dependencies-matrix)
+- [Matrice de Dépendance](/dependencies-matrix)
 
 ### Product Knowledge Base
 

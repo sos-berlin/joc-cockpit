@@ -142,11 +142,11 @@ Lorsque vous cliquez sur le canevas du *Panneau de Workflow*, un *Panneau d'opé
 
 ### Aide contextuelle
 
-- [Configuration - Inventaire - Ressources de Tâche](/configuration-inventory-job-resources)
 - [Configuration - Inventaire - Navigation](/configuration-inventory-navigation)
-- [Plan Quotidien](/daily-plan)
-- [Historique des Ordres](/history-orders)
+- [Configuration - Inventaire - Ressources de Tâche](/configuration-inventory-job-resources)
 - [États d'Ordre](/order-states)
+- [Historique des Ordres](/history-orders)
+- [Plan Quotidien](/daily-plan)
 
 ### Product Knowledge Base
 

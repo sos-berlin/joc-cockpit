@@ -13,7 +13,7 @@ Les Tableaux de Condition mettent en œuvre des dépendances entre les Workflows
 
 Les saveurs suivantes sont disponibles pour les Tableaux de Condition :
 
-- **Tableau de Condition Globaul** mettent en œuvre des Annonces de portée globale, ce qui rend la même Annonce disponible pour n'importe quel Workflow à n'importe quel moment.
+- **Tableau de Condition Global** mettent en œuvre des Annonces de portée globale, ce qui rend la même Annonce disponible pour n'importe quel Workflow à n'importe quel moment.
 - **Tableau de Condition Planifiable** implémentent les Annonces dans le cadre de la Planification [Plan Quotidien](/daily-plan). Une Annonce existe dans le cadre d'une date du *Plan Quotidien*, par exemple
   - Le Workflow 1 se déroule du lundi au vendredi.
   - Le Workflow 2 se déroule du lundi au dimanche et dépend de l'exécution précédente du Workflow 1.

@@ -34,9 +34,9 @@ La liste des demandes d'autorisation est proposée avec les propriétés suivant
 
 ### Aide contextuelle
 
+- [Demande d'Autorisation](/approval-request)
 - [Paramètres de Notification d'Autorisation](/approval-notification-settings)
 - [Profils Approbateur](/approval-profiles)
-- [Demande d'Autorisation](/approval-request)
 - [REST Web Service API](/rest-api)
 
 ### Product Knowledge Base

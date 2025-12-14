@@ -3,12 +3,12 @@
 La vue [JS7 - Reports](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports) offre un aperçu de l'exécution passée des Workflows et des Tâches :
 
 - Les rapports sont créés à partir de [Maquettes de Rapport](/report-templates) prédéfinis qui sont paramétrés à partir de [Configuration - Inventaire - Modèles de Rapport](/configuration-inventory-reports).
-- Les utilisateurs exécutent les rapports à partir de la vue [Création des Rapports](/report-creation) ou de [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation). La vue [Historique de l'Exécution des Rapports](/report-run-history) fournit des informations sur les exécutions antérieures des rapports.
+- Les utilisateurs exécutent les rapports à partir de la vue [Création des Rapports](/report-creation) ou de [JS7 - Reports - Automation](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Automation). La vue [Historique d'Exécution des Rapports](/report-run-history) fournit des informations sur les exécutions antérieures des rapports.
 - Les rapports sont visualisés dans la vue *Rapports*.
 
-Les rapports [Historique de l'Exécution des Rapports](/report-run-history) sont soumis à une purge de la base de données effectuée par le [Service d'Assainissement](/service-cleanup).
+Les rapports [Historique d'Exécution des Rapports](/report-run-history) sont soumis à une purge de la base de données effectuée par le [Service d'Assainissement](/service-cleanup).
 
-Pour l'exécution des rapports, voir [Création des Rapports](/report-creation). Pour vérifier l'exécution des rapports, voir [Historique de l'Exécution des Rapports](/report-run-history).
+Pour l'exécution des rapports, voir [Création des Rapports](/report-creation). Pour vérifier l'exécution des rapports, voir [Historique d'Exécution des Rapports](/report-run-history).
 
 ## Liste des rapports
 
@@ -46,7 +46,7 @@ Les utilisateurs peuvent effectuer les opérations suivantes sur les rapports :
 
 - [Configuration - Inventaire - Modèles de Rapport](/configuration-inventory-reports)
 - [Création des Rapports](/report-creation)
-- [Historique de l'Exécution des Rapports](/report-run-history)
+- [Historique d'Exécution des Rapports](/report-run-history)
 - [Maquettes de Rapport](/report-templates)
 
 ### Product Knowledge Base

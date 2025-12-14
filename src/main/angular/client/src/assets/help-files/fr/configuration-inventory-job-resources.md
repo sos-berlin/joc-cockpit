@@ -41,10 +41,14 @@ Pour les opérations disponibles, voir [Configuration - Inventaire - Navigation]
 
 ## Références
 
+### Aide contextuelle
+
 - [Configuration - Inventaire - Workflow - Options de Tâche](/configuration-inventory-workflow-job-options)
 - [Configuration - Inventaire - Navigation](/configuration-inventory-navigation)
 - [Règles de Dénomination des Objets](/object-naming-rules)
+
+### Product Knowledge Base
+
 - [JS7 - Assignment of Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Assignment+of+Variables)
 - [JS7 - Expressions for Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Expressions+for+Variables)
 - [JS7 - Order Variables](https://kb.sos-berlin.com/display/JS7/JS7+-+Order+Variables)
-

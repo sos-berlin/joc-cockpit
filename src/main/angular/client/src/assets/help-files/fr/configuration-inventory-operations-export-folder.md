@@ -39,13 +39,13 @@ Le *Type d'Export* permet de limiter l'exportation à certains types d'objets de
 
 ### Exportation d'objets à partir de Changements
 
-Le *Type d'Export* permet de sélectionner une modification dans la liste [Changes](/changes). L'exportation sera limitée aux objets liés au Changement.
+Le *Type d'Export* permet de sélectionner une modification dans la liste [Changements](/changes). L'exportation sera limitée aux objets liés au Changement.
 
 <img src="export-change.png" alt="Exporter Changement" width="600" height="320" />
 
 ## Inclure les dépendances
 
-Les objets de l'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource ; une Planification référençant un Calendrier et un ou plusieurs Workflows.
+Les objets de l'inventaire sont liés par des dépendances, voir [Matrice de Dépendance](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource ; une Planification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lors de l'exportation d'objets, la cohérence est prise en compte, par exemple :
 
@@ -62,9 +62,9 @@ Les utilisateurs contrôlent la cohérence de l'exportation à partir des option
 
 ### Aide contextuelle
 
-- [Changes](/changes)
+- [Changements](/changes)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
-- [Dependency Matrix](/dependencies-matrix)
+- [Matrice de Dépendance](/dependencies-matrix)
 
 ### Product Knowledge Base
 

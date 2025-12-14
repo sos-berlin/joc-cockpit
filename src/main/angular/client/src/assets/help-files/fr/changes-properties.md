@@ -25,11 +25,10 @@ Les Changements possèdent les propriétés suivantes :
 
 ### Aide contextuelle
 
-- [Changes](/changes)
+- [Changements](/changes)
 
 ### Product Knowledge Base
 
 - [JS7 - Git Repository Interface](https://kb.sos-berlin.com/display/JS7/JS7+-+Git+Repository+Interface)
 - [JS7 - Inventory Export and Import](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Export+and+Import)
 - [JS7 - Inventory Changes](https://kb.sos-berlin.com/display/JS7/JS7+-+Inventory+Changes)
-

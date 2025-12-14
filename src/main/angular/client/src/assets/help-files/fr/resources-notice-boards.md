@@ -61,16 +61,16 @@ Les opérations suivantes sont disponibles :
 
 ## Recherche
 
-Le site [Resources - Notice Boards - Search](/resources-notice-boards-search) propose des critères de recherche des tableaux d'affichage à partir des dépendances. Par exemple, si vous recherchez les Workflows comprenant un nom de tâche spécifique, vous obtiendrez les tableaux d'affichage utilisés par le Workflow.
+Le site [Ressources - Tableaux de Condition - Recherche](/resources-notice-boards-search) propose des critères de recherche des tableaux d'affichage à partir des dépendances. Par exemple, si vous recherchez les Workflows comprenant un nom de tâche spécifique, vous obtiendrez les tableaux d'affichage utilisés par le Workflow.
 
 ## Références
 
 ### Aide contextuelle
 
 - [Configuration - Inventaire - Tableaux de Condition](/configuration-inventory-notice-boards)
-- [Plan Quotidien](/daily-plan)
 - [Dépendances du Plan Quotidien](/daily-plan-dependencies)
-- [Resources - Notice Boards - Search](/resources-notice-boards-search)
+- [Plan Quotidien](/daily-plan)
+- [Ressources - Tableaux de Condition - Recherche](/resources-notice-boards-search)
 
 ### Product Knowledge Base
 

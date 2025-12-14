@@ -2,7 +2,7 @@
 
 La révocation d'objets permet de les supprimer du Contrôleur et de conserver les objets à l'état de brouillon dans l'inventaire. Cela s'applique aux objets tels que les Workflows et les Ressources de Tâche disponibles dans le dossier système *Controller*.
 
-La vue *Configuration-&gt;Inventaire* permet de révoquer un seul objet et de révoquer des objets à partir de dossiers, voir [Configuration - Inventory - Operations - Revoke Folder](/configuration-inventory-operations-revoke-folder).
+La vue *Configuration-&gt;Inventaire* permet de révoquer un seul objet et de révoquer des objets à partir de dossiers, voir [Configuration - Inventaire - Opérations - Révoquer Dossier](/configuration-inventory-operations-revoke-folder).
 
 Lorsque vous révoquez un objet unique à partir de l'opération *Revoquer* disponible dans le menu d'action à 3 points de l'objet dans le panneau de navigation, une fenêtre contextuelle s'affiche comme suit :
 
@@ -22,7 +22,7 @@ Les Ordres existants pour les Workflows associés seront retirés par le Contrô
 
 ## Inclure les dépendances
 
-Les objets d'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource; une Planification référençant un Calendrier et un ou plusieurs Workflows.
+Les objets d'inventaire sont liés par des dépendances, voir [Matrice de Dépendance](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource; une Planification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lors de la révocation d'objets, la cohérence est prise en compte, par exemple :
 
@@ -41,10 +41,10 @@ Les utilisateurs contrôlent la révocation cohérente des objets à partir des 
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Operations - Revoke Folder](/configuration-inventory-operations-revoke-folder)
+- [Configuration - Inventaire - Opérations - Révoquer Dossier](/configuration-inventory-operations-revoke-folder)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
 - [Plan Quotidien](/daily-plan)
-- [Dependency Matrix](/dependencies-matrix)
+- [Matrice de Dépendance](/dependencies-matrix)
 
 ### Product Knowledge Base
 

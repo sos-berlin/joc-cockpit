@@ -2,9 +2,9 @@
 
 La vue *Calendrier* permet de spécifier des Calendriers basés sur des règles qui sont utilisés par [Configuration - Inventaire - Planifications](/configuration-inventory-schedules) pour créer des Ordres à partir du [Plan Quotidien](/daily-plan). Pour plus de détails, voir [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars).
 
-- Les Calendriers spécifient les jours pour lesquels les Workflows seront exécutés.
-  - **Les Calendriers des jours ouvrés** spécifient les jours d'exécution des Workflows.
-  - **Les Calendriers des jours non ouvrés** indiquent les jours pour lesquels les Workflows ne seront pas exécutés.
+- Les Calendriers spécifient les jours pour lesquels les Workflows seront exécutés :
+  - les **Calendriers des jours ouvrés** spécifient les jours d'exécution des Workflows.
+  - les **Calendriers des jours non ouvrés** indiquent les jours pour lesquels les Workflows ne seront pas exécutés.
 - Les Planifications 
   - contiennent des références à un nombre quelconque de Calendriers de jours ouvrés et de Calendriers de jours non ouvrés qui sont fusionnés pour recevoir la liste des jours résultants.
   - déterminent le moment où les Ordres d'exécution des Workflows commenceront. 
@@ -27,8 +27,8 @@ Pour un Calendrier, les entrées suivantes sont disponibles :
 
 Les fréquences se présentent sous deux formes qui peuvent être combinées :
 
-- les **fréquences incluses** spécifient les jours à prendre en compte.
-- les **fréquences exclues** spécifient les jours qui seront retirés de la liste des jours résultants.
+- les **Fréquences incluses** spécifient les jours à prendre en compte.
+- les **Fréquences exclues** spécifient les jours qui seront retirés de la liste des jours résultants.
 
 Les *fréquences exclues* ont pour effet de refuser l'utilisation des dates spécifiées et d'annuler les *fréquences incluses* pour les jours correspondants.
 
@@ -48,7 +48,7 @@ Les règles correspondantes s'appliquent aux Calendriers des jours non ouvrés :
 
 Un Calendrier peut contenir un nombre quelconque de *fréquences* qui seront fusionnées. Le bouton *Ajouter une fréquence* est proposé pour chacune des *Fréquences incluses* et des *Fréquences exclues*.
 
-#### Types de fréquences
+#### Types de Fréquences
 
 Lors de l'ajout de *fréquences*, un certain nombre de types peuvent être sélectionnés :
 
@@ -89,7 +89,7 @@ Pour les opérations disponibles, voir [Configuration - Inventaire - Navigation]
 ### Aide contextuelle
 
 - [Configuration - Inventaire - Navigation](/configuration-inventory-navigation)
-- [Configuration - Inventory - Schedules - Run-time](/configuration-inventory-schedules-run-time)
+- [Configuration - Inventaire - Plannifications - Temps d'Execution](/configuration-inventory-schedules-run-time)
 - [Plan Quotidien](/daily-plan)
 - [Règles de Dénomination des Objets](/object-naming-rules)
 

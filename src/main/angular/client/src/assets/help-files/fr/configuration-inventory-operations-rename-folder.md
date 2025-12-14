@@ -1,6 +1,6 @@
 # Configuration - Inventaire - Opérations - Renommer Dossier
 
-Les objets de l'inventaire peuvent être renommés ou déplacés. Cela s'applique aux objets, aux dossiers ou aux deux. Pour renommer des objets, voir [Configuration - Inventory - Operations - Rename Object](/configuration-inventory-operations-rename-object). 
+Les objets de l'inventaire peuvent être renommés ou déplacés. Cela s'applique aux objets, aux dossiers ou aux deux. Pour renommer des objets, voir [Configuration - Inventaire - Opérations - Renommer Objet](/configuration-inventory-operations-rename-object). 
 
 Pour renommer des dossiers, [Règles de Dénomination des Objets](/object-naming-rules) s'applique.
 
@@ -37,7 +37,7 @@ Les modifications apportées aux noms d'objets font passer les objets inclus à 
 
 ## Dépendances
 
-Les objets de l'inventaire sont liés par des dépendances, voir [Dependency Matrix](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource; une Planification référençant un Calendrier et un ou plusieurs Workflows.
+Les objets de l'inventaire sont liés par des dépendances, voir [Matrice de Dépendance](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource; une Planification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lorsque vous renommez des objets, la cohérence est prise en compte et les objets référents sont mis à jour et mis à l'état de brouillon, par exemple :
 
@@ -54,10 +54,10 @@ Lorsque vous renommez des objets, la cohérence est prise en compte et les objet
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Operations - Rename Object](/configuration-inventory-operations-rename-object)
+- [Configuration - Inventaire - Opérations - Renommer Objet](/configuration-inventory-operations-rename-object)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
 - [Plan Quotidien](/daily-plan)
-- [Dependency Matrix](/dependencies-matrix)
+- [Matrice de Dépendance](/dependencies-matrix)
 - [Règles de Dénomination des Objets](/object-naming-rules)
 
 ### Product Knowledge Base

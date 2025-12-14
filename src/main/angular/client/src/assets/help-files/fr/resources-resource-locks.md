@@ -22,7 +22,7 @@ L'icône de recherche rapide permet de rechercher les Verrous de Ressource en fo
 - Si vous tapez **Test**, vous obtiendrez les Verrous de Ressource portant des noms tels que *test-lock-1* et *TEST-lock-2*. 
 - Si vous tapez **\*Test**, vous obtiendrez des Verrous de Ressource portant des noms tels que *test-lock-1* et *my-TEST-lock-2*
 
-## Panneau de Verrou des Ressource
+## Panneau de Verrou de Ressource
 
 ### Affichage des Verrous de Ressource
 
@@ -46,5 +46,5 @@ La fonction *Recherche* offre des critères permettant de rechercher des Verrous
 
 ## Références
 
-- [Resources - Resource Locks - Search](/resources-resource-locks-search)
+- [Ressources - Verrou de Ressource - Recherche](/resources-resource-locks-search)
 - [JS7 - Resource Locks](https://kb.sos-berlin.com/display/JS7/JS7+-+Resource+Locks)

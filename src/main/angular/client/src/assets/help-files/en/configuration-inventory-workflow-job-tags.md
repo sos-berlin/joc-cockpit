@@ -25,7 +25,6 @@ Tag Groups can be used to organize Tags that should share a common group. For ex
   - [Configuration - Inventory - Workflows - Job Properties](/configuration-inventory-workflows-job-properties)
   - [Configuration - Inventory - Workflows - Job Node Properties](/configuration-inventory-workflows-job-node-properties)
   - [Configuration - Inventory - Workflows - Job Notifications](/configuration-inventory-workflows-job-notifications)
-- [Tags](/tags)
 
 ### Product Knowledge Base
 

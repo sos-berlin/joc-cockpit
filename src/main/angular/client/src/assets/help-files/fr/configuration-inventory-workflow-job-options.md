@@ -60,7 +60,7 @@ La *période d'exécution* est spécifiée à partir de son *début* et de sa *d
 
 La vue *Configuration - Inventaire* propose un curseur *Plus d'options* en haut de la fenêtre, qui est inactif par défaut. L'utilisation de ce curseur permet d'accéder à des options supplémentaires.
 
-- **Délai de Grâce** est appliqué aux tâches sous Unix qui reçoivent un signal SIGTERM lorsqu'ils dépassent leur *Timeout* ou lorsqu'ils sont interrompus de force par l'intervention de l'utilisateur. Si la tâche ne se termine pas en réponse au signal SIGTERM, l'Agent enverra un signal SIGKILL après le *Grace Timeout* pour terminer la tâche de force. Pour plus de détails, voir [JS7 - FAQ - How does JobScheduler terminate Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+FAQ+-+How+does+JobScheduler+terminate+Jobs) et [JS7 - Agent Operation](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Operation).
+- **Délai de Grâce** est appliqué aux tâches sous Unix qui reçoivent un signal SIGTERM lorsqu'ils dépassent leur *Timeout* ou lorsqu'ils sont interrompus de force par l'intervention de l'utilisateur. Si la tâche ne se termine pas en réponse au signal SIGTERM, l'Agent enverra un signal SIGKILL après le *Délai de Grâce* pour terminer la tâche de force. Pour plus de détails, voir [JS7 - FAQ - How does JobScheduler terminate Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+FAQ+-+How+does+JobScheduler+terminate+Jobs) et [JS7 - Agent Operation](https://kb.sos-berlin.com/display/JS7/JS7+-+Agent+Operation).
 - **Compatibilité** offre le niveau de compatibilité *v1* pour les utilisateurs de la branche 1.x de JobScheduler. En mode compatibilité, le comportement suivant est modifié :
   - *Les variables d'environnement* ne doivent pas être spécifiées mais sont automatiquement créées pour toutes les variables de Workflow. Les noms des variables d'environnement sont préfixés à partir de *SCHEDULER_PARAM_* en utilisant uniquement des lettres majuscules.
   - Pour l'utilisation des arguments de tâche, le mode de compatibilité offre un onglet correspondant.
@@ -80,13 +80,13 @@ Les options suivantes indiquent que les tâches exécutés avec des Agents pour 
 
 ### Aide contextuelle
 
-- [Service d'Assainissement](/service-cleanup)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
   - [Configuration - Inventaire - Workflow - Propriétés de Tâche](/configuration-inventory-workflows-job-properties)
   - [Configuration - Inventaire - Workflow - Propriétés du Nœud de Tâche](/configuration-inventory-workflows-job-node-properties)
   - [Configuration - Inventaire - Workflow - Notifications de Tâche](/configuration-inventory-workflows-job-notifications)
   - [Configuration - Inventaire - Workflow - Tags Tâche](/configuration-inventory-workflows-job-tags)
 - [Historique des Tâches](/history-tasks)
+- [Service d'Assainissement](/service-cleanup)
 
 ### Product Knowledge Base
 

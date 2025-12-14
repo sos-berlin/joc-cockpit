@@ -31,8 +31,8 @@ la matrice de dépendance des objets d'inventaire se présente de la manière su
 
 ### Aide contextuelle
 
-- [Configuration - Inventory - Operations - Deploy Folder](/configuration-inventory-operations-deploy-folder)
-- [Configuration - Inventory - Operations - Deploy Object](/configuration-inventory-operations-deploy-object)
+- [Configuration - Inventaire - Opérations - Deployer Dossier](/configuration-inventory-operations-deploy-folder)
+- [Configuration - Inventaire - Opérations - Deployer Objet](/configuration-inventory-operations-deploy-object)
 
 ### Product Knowledge Base
 

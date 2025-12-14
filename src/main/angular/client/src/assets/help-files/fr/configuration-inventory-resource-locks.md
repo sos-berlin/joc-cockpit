@@ -1,4 +1,4 @@
-# Configuration - Inventaire - Verrou des Ressource
+# Configuration - Inventaire - Verrou de Ressource
 
 La vue *Verrous des Ressource* permet de spécifier les Verrous de Ressource à utiliser avec les Workflows.
 
@@ -24,9 +24,9 @@ Les dispositions suivantes s'appliquent à l'utilisation des Verrous de Ressourc
 Les Verrous de Ressource sont gérés à partir des vues suivants :
 
 - La vue [Configuration - Inventaire - Navigation](/configuration-inventory-navigation), situé sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant des Verrous de Ressource. En outre, cette vue permet d'effectuer des opérations sur les Verrous de Ressource.
-- La vue *Verrous des Ressource* sur le côté droit de la fenêtre contient les détails de la configuration du Verrou des Ressource.
+- La vue *Verrous des Ressource* sur le côté droit de la fenêtre contient les détails de la configuration du Verrou de Ressource.
 
-## vue Verrous de Ressource
+## Vue Verrous de Ressource
 
 Pour un Verrou de Ressource, les entrées suivantes sont disponibles :
 
@@ -42,9 +42,9 @@ Pour un Verrou de Ressource, les entrées suivantes sont disponibles :
 
 Pour les opérations disponibles, voir [Configuration - Inventaire - Navigation](/configuration-inventory-navigation).
 
-### Ordre de priorité
+### Priorité des Ordres
 
-Les Verrous de Ressource prennent en compte les *priorités* des Ordres. Lors de l'ajout d'Ordres à partir de [Configuration - Inventaire - Planifications](/configuration-inventory-schedules) et lors de l'ajout d'Ordres ad hoc à l'aide de [Workflows - Add Orders](/workflows-orders-add), la *priorité* peut être spécifiée.
+Les Verrous de Ressource prennent en compte les *priorités* des Ordres. Lors de l'ajout d'Ordres à partir de [Configuration - Inventaire - Planifications](/configuration-inventory-schedules) et lors de l'ajout d'Ordres ad hoc à l'aide de [Workflows - Ajouter des Ordres](/workflows-orders-add), la *priorité* peut être spécifiée.
 
 Si plusieurs Ordres sont en attente devant un Verrou de Ressource, l'Ordre ayant la *priorité* la plus élevée sera le premier à acquérir le Verrou de Ressource.
 

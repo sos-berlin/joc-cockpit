@@ -20,7 +20,7 @@ Les Tags sont sélectionnées à partir des icônes + et - et peuvent être rech
 
 ### Résumé de l'Ordre
 
-La partie supérieure de la fenêtre contient le récapitulatif des Ordres, comme sur le [Dashboard - Orders](/dashboard-orders). Les utilisateurs peuvent cliquer sur le nombre d'Ordres indiqué pour un état donné afin d'ouvrir une fenêtre contextuelle qui affichera la liste des Ordres.
+La partie supérieure de la fenêtre contient le récapitulatif des Ordres, comme sur le [Tableau de Bord - Ordres](/dashboard-orders). Les utilisateurs peuvent cliquer sur le nombre d'Ordres indiqué pour un état donné afin d'ouvrir une fenêtre contextuelle qui affichera la liste des Ordres.
 
 Le résumé de l'Ordre est indiqué pour les Ordres liés aux Workflows affichés pour les dossiers ou les Tags sélectionnés.
 
@@ -143,23 +143,23 @@ Le *Filtre avancé* offre des critères plus détaillés pour le filtrage des Wo
 
 ## Recherche
 
-Le site [Workflows - Search](/workflows-search) offre des critères pour rechercher des Workflows à partir de dépendances, par exemple rechercher des Workflows incluant un nom de tâche spécifique, ou utilisant des tableaux d'affichage spécifiques.
+Le site [Workflows - Recherche](/workflows-search) offre des critères pour rechercher des Workflows à partir de dépendances, par exemple rechercher des Workflows incluant un nom de tâche spécifique, ou utilisant des tableaux d'affichage spécifiques.
 
 ## Références
 
 ### Aide contextuelle
 
+- [Affichage du Journal d'Ordre](/order-log)
 - [Configuration - Inventaire - Planifications](/configuration-inventory-schedules)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
-  - [Configuration - Inventaire - Workflow - Propriétés de Tâche](/configuration-inventory-workflow-job-properties)
   - [Configuration - Inventaire - Workflow - Options de Tâche](/configuration-inventory-workflow-job-options)
-- [Plan Quotidien](/daily-plan)
-- [Affichage du Journal d'Ordre](/order-log)
+  - [Configuration - Inventaire - Workflow - Propriétés de Tâche](/configuration-inventory-workflow-job-properties)
 - [États d'Ordre](/order-states)
+- [Plan Quotidien](/daily-plan)
 - [Profil - Préférences](/profile-preferences)
 - [Réglages - JOC Cockpit](/settings-joc)
-- [Workflows - Add Orders](/workflows-orders-add)
-- [Workflows - Search](/workflows-search)
+- [Workflows - Ajouter des Ordres](/workflows-orders-add)
+- [Workflows - Recherche](/workflows-search)
 
 ### Product Knowledge Base
 

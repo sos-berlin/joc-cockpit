@@ -28,7 +28,7 @@ Lorsque des comptes d'utilisateurs sont ajoutés au JOC Cockpit à l'aide de [Se
 - Ce paramètre indique le compte utilisé comme modèle pour le profil lors de la création de comptes d'utilisateur. 
 - Par défaut, le compte *root* est utilisé, ce qui revient à dire que le profil d'un nouveau compte est alimenté par des paramètres tels que la langue, le thème, etc. du compte de profil par défaut.
 
-## Paramètres de connexion
+## Paramètres de Connexion
 
 ### Paramètre : *enable\_remember\_me*, Défaut : *true*
 
@@ -37,7 +37,7 @@ Ce paramètre active la case à cocher *Se souvenir de moi* qui est disponible d
 - Certains utilisateurs peuvent considérer que le stockage des informations d'identification dans les données du navigateur constitue un risque pour la sécurité.
 - Ce paramètre peut être désactivé afin de ne pas proposer le stockage des informations d'identification de l'utilisateur.
 
-## Paramètres de l'inventaire
+## Paramètres de l'Inventaire
 
 ### Paramètres : *copy\_paste\_suffix*, *copy\_paste\_prefix*, Défaut : *copy*
 
@@ -60,9 +60,9 @@ Les opérations d'exportation et d'importation de l'inventaire JS7 permettent d'
 - Lorsque des objets sont importés, leurs noms peuvent entrer en conflit avec des noms d'objets existants.
 - Ce paramètre permet à l'utilisateur de spécifier les valeurs de préfixe et de suffixe à utiliser lors de l'importation d'objets.
 
-## Paramètres vue
+## Paramètres Vue
 
-### Paramètre : *show\_view\_\*
+### Paramètre : *show\_view\_\**
 
 Ces paramètres peuvent être utilisés pour désactiver des vues individuelles qui sont disponibles à partir de l'interface graphique du cockpit JOC par les éléments du menu principal tels que Plan Quotidien, Moniteur, Workflow, etc.
 
@@ -98,13 +98,13 @@ Il est recommandé de modifier d'abord le mot de passe dans le fichier private.c
 
 L'encodage est appliqué si JOC Cockpit est utilisé dans un environnement Windows. Windows ne prend pas en charge Unicode mais utilise des pages de code. Si la page de code Windows ne peut pas être détectée automatiquement, les utilisateurs peuvent spécifier la page de code. Une valeur fréquemment utilisée est *UTF-8*.
 
-## Paramètres de licence
+## Paramètres de Licence
 
 ### Paramètre : *disable\_warning\_on\_license\_expiration*, Défaut : *false*
 
 JS7 propose d'afficher des avertissements en cas d'expiration prochaine de la licence. La fonction d'affichage des avertissements d'expiration de licence peut être désactivée en attribuant à ce paramètre la valeur *vrai*.
 
-## Paramètres du journal
+## Paramètres du Journal
 
 ### Paramètre : *log\_ext\_directory*
 
@@ -146,13 +146,13 @@ Si la valeur de la taille du journal d'une tâche est dépassée, le service His
 
 Si cette valeur pour la taille de la sortie du journal d'une tâche est dépassée, le service Historique tronquera la sortie du journal et utilisera les 100 premiers Ko pour le journal de la tâche. Le fichier journal d'origine sera supprimé. La taille est spécifiée en Mo.
 
-## Paramètres du lien
+## Paramètres du Lien
 
 ### Paramètre : *joc\_reverse\_proxy\_url*
 
 Si JOC Cockpit n'est pas accessible à partir de son URL d'origine mais uniquement à partir d'un service de reverse proxy, cette valeur indique l'URL à utiliser, par exemple pour les notifications par e-mail,
 
-## Job Settings
+## Paramètres de Tâche
 
 ### Paramètre : *allow\_empty\_arguments*, Défaut : *false*
 
@@ -174,13 +174,13 @@ Indique le nombre de Tags affichés avec chaque Ordre. La valeur 0 supprime l'af
 
 Indique le nombre de Tags affichées pour chaque Workflow. La valeur 0 supprime l'affichage des Tags.
 
-## Paramètres d'autorisation
+## Paramètres d'Autorisation
 
 ### Paramètre : *approval\_requestor\_role*
 
 Indique le nom du rôle de demandeur auquel sont attribués les comptes soumis au processus d'approbation.
 
-## Paramètres du rapport
+## Paramètres du Rapport
 
 ### Paramètre : *report\_java\_options*, Défaut : *-Xmx54M*
 

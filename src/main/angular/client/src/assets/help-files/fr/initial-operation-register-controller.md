@@ -34,7 +34,7 @@ Une fois l'enregistrement réussi, les instances du Contrôleur sont affichées 
 
 Les utilisateurs fournissent les données suivantes :
 
-- **Légende** est le titre du Contrôleur qui sera affiché avec le rectangle du Contrôleur dans le panneau [Dashboard - Product Status](/dashboard-product-status).
+- **Légende** est le titre du Contrôleur qui sera affiché avec le rectangle du Contrôleur dans le panneau [Tableau de Bord - État du Produit](/dashboard-product-status).
 - **Connexion de JOC Cockpit au Contrôleur** attend l'URL du protocole, de l'hôte et du port utilisés par JOC Cockpit pour se connecter au Contrôleur, par exemple http://localhost:4444.
   - L'URL commence par le protocole *http* si le Contrôleur utilise le protocole HTTP ordinaire. Le protocole *https* est utilisé si le Contrôleur est configuré pour HTTPS.
   - Le nom d'hôte peut être *localhost* si le Contrôleur est installé sur la même machine que JOC Cockpit. Sinon, le FQDN de l'hôte du Contrôleur doit être spécifié.
@@ -53,11 +53,11 @@ Les conditions préalables à l'installation sont les suivantes :
 Les utilisateurs fournissent les données suivantes :
 
 - **Contrôleur Primaire** est l'instance de Contrôleur à laquelle sera initialement attribué le rôle actif. Le rôle actif peut être modifié ultérieurement.
-  - **Légende** est le titre du Contrôleur qui sera affiché avec le rectangle du Contrôleur dans la vue [Dashboard - Product Status](/dashboard-product-status).
+  - **Légende** est le titre du Contrôleur qui sera affiché avec le rectangle du Contrôleur dans la vue [Tableau de Bord - État du Produit](/dashboard-product-status).
   - **Connexion de JOC Cockpit au Contrôleur Primaire** attend l'URL du protocole, de l'hôte et du port utilisés par JOC Cockpit pour se connecter au Contrôleur principal, par exemple http://primary-server:4444.
   - **Connexion du Contrôleur Secondaire au Contrôleur Primaire** est, dans la plupart des cas, identique à la connexion du JOC Cockpit au Contrôleur principal. Une URL différente est appliquée si un serveur proxy est utilisé entre le Contrôleur principal et le Contrôleur Secondaire. L'URL est utilisée par le Contrôleur Secondaire pour se connecter au Contrôleur Primaire.
 - **Contrôleur Secondaire** est l'instance de Contrôleur à laquelle sera initialement attribué le rôle de Contrôleur en attente.
-  - **Légende** est le titre du Contrôleur qui sera affiché avec le rectangle du Contrôleur dans le panneau [Dashboard - Product Status](/dashboard-product-status).
+  - **Légende** est le titre du Contrôleur qui sera affiché avec le rectangle du Contrôleur dans le panneau [Tableau de Bord - État du Produit](/dashboard-product-status).
   - **Connexion de JOC Cockpit au Contrôleur Secondaire** attend l'URL du protocole, l'hôte et le port utilisés par JOC Cockpit pour se connecter au Contrôleur Secondaire, par exemple http://secondary-server:4444.
   - **Connexion du Contrôleur Primaire au Contrôleur Secondaire** est identique à la connexion du JOC Cockpit au Contrôleur Secondaire. Une URL différente est appliquée si un serveur proxy est utilisé entre le Contrôleur Primaire et le Contrôleur Secondaire. L'URL est utilisée par le Contrôleur Primaire pour se connecter au Contrôleur Secondaire.
 
@@ -67,7 +67,7 @@ Lorsque les informations d'enregistrement sont soumises, JOC Cockpit établit un
 
 ### Aide contextuelle
 
-- [Dashboard - Product Status](/dashboard-product-status)
+- [Tableau de Bord - État du Produit](/dashboard-product-status)
 - [Initial Operation - Register Cluster Agent](/initial-operation-register-agent-Cluster)
 - [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone)
 
