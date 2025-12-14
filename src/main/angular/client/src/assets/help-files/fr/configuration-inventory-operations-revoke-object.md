@@ -16,7 +16,7 @@ Par défaut, le Contrôleur actuellement sélectionné est indiqué.
 
 ## Mise à jour du Plan Quotidien
 
-La révocation d'objets tels que les Workflows et les Ressources de Tâche a un impact sur le site [Daily Plan](/daily-plan). 
+La révocation d'objets tels que les Workflows et les Ressources de Tâche a un impact sur le [Daily Plan](/daily-plan). 
 
 Les Ordres existants pour les Workflows associés seront retirés par le Contrôleur et seront supprimés du Plan Quotidien.
 

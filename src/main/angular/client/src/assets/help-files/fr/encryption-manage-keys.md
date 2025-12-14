@@ -34,12 +34,12 @@ Les certificats de cryptage existants sont affichés dans une liste :
 
 Les boutons suivants sont disponibles en haut de l'écran :
 
-- **Ajouter certificat** permet d'ajouter un certificat à partir d'un copier/coller. Pour plus d'informations, consultez le site [Manage Encryption Certificate](/encryption-manage-certificate).
+- **Ajouter certificat** permet d'ajouter un certificat à partir d'un copier/coller. Pour plus d'informations, consultez [Manage Encryption Certificate](/encryption-manage-certificate).
 - **Importer certificat** permet de télécharger un fichier de certificat.
 
 À partir de la *Liste des certificats*, les opérations suivantes sont proposées avec le menu d'action à 3 points correspondant :
 
-- **Mettre à jour le certificat** permet de modifier l'entrée du certificat. Pour plus de détails, consultez le site [Manage Encryption Certificate](/encryption-manage-certificate).
+- **Mettre à jour le certificat** permet de modifier l'entrée du certificat. Pour plus de détails, consultez [Manage Encryption Certificate](/encryption-manage-certificate).
 - **Supprimer le certificat** permet de supprimer l'entrée du certificat.
 
 ## Références

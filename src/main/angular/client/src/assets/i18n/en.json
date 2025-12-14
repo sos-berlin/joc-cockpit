@@ -2203,7 +2203,7 @@
       },
       "report": {
         "name": "The name of a Report Template is unique in the inventory. For the name of the Report Template most Unicode characters can be used, dots and hyphens, however, no spaces, no leading or trailing dots or hyphens.",
-        "title": "The Title of the Report Templatet can be specified.",
+        "title": "The Title of the Report Template can be specified.",
         "template": "Specifies the Report Model to be applied.",
         "frequencies": "The frequency specifies the cycle that divides the reporting period, for example 5 minutes, 1 day etc.",
         "controllerId": "The report can be limited to data of a specific Controller",

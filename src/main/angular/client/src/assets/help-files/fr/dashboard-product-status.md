@@ -17,13 +17,13 @@ Le JOC Cockpit se connecte à la base de données et aux instances du Contrôleu
 - État du composant
   - L'état du composant est indiqué par la couleur de la tuile dans le coin supérieur gauche du rectangle du JOC Cockpit.
   - **Une tuile de couleur verte** indique que l'instance du JOC Cockpit est en bonne santé.
-  - **Une tuile de couleur rouge indique un état inconnu. 
+  - **Une tuile de couleur rouge** indique un état inconnu. 
 - État de la connexion à la base de données
   - **Une ligne de couleur verte** indique que la connexion est saine.
   - **Une ligne de couleur jaune** indique des problèmes de connexion, par exemple si JOC Cockpit ne reçoit pas de battements de cœur de la base de données.
 - État de la connexion du Contrôleur
   - **Une ligne de couleur verte** indique que la connexion avec le Contrôleur est saine.
-  - **Une ligne de couleur rouge indique un échec de la connexion au Contrôleur.
+  - **Une ligne de couleur rouge** indique un échec de la connexion au Contrôleur.
 
 ### Contrôleur
 
@@ -76,5 +76,5 @@ Les instances de Contrôleur proposent les opérations suivantes à partir du me
 
 Le rectangle d'état du Cluster permet d'effectuer les opérations suivantes à partir de son menu d'action à trois points :
 
-- **Switch-over** transmet le rôle actif à l'instance en attente. Cette opération est disponible si le Cluster est couplé.
+- **Bascule manuelle** transmet le rôle actif à l'instance en attente. Cette opération est disponible si le Cluster est couplé.
 - **Confirmer la perte de l'instance de Contrôleur** est applicable si aucune instance de JOC Cockpit n'était disponible lorsqu'une instance de Contrôleur d'un Cluster est tombée en panne. JOC Cockpit est nécessaire en tant que témoin dans le Cluster. Dans cette situation, les utilisateurs doivent vérifier quelle instance de Contrôleur était en veille au moment du crash et doivent confirmer que l'instance en veille est arrêtée pour permettre à l'instance active de reprendre.

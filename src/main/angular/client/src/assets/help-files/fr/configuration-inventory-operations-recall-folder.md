@@ -1,6 +1,6 @@
 # Configuration - Inventaire - Opérations - Retirer Dossier
 
-La rétractation d'objets les désactive, par exemple, pour une utilisation avec le site [Daily Plan](/daily-plan). Cela s'applique à des objets tels que les Planifications et les Calendriers disponibles dans le dossier système *Automatisation*.
+La rétractation d'objets les désactive, par exemple, pour une utilisation avec le [Daily Plan](/daily-plan). Cela s'applique à des objets tels que les Planifications et les Calendriers disponibles dans le dossier système *Automatisation*.
 
 La vue *Configuration-&gt;Inventaire* permet de retirer un seul objet, voir [Configuration - Inventory - Operations - Recall Object](/configuration-inventory-operations-recall-object), et de retirer des objets à partir de dossiers.
 

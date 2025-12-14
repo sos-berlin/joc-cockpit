@@ -24,7 +24,7 @@ Pour un Contrôleur existant, les opérations suivantes sont proposées à parti
 - **Modifier** permet de modifier les propriétés d'un Contrôleur, y compris les URL des instances de Contrôleur.
 - **Ajouter Agent Autonome** permet d'enregistrer un Agent Autonome.
   - Pour plus d'explications, voir [Initial Operation - Register Standalone Agent](/initial-operation-register-agent-standalone).
-- **Ajouter Agent Cluster** permet d'enregistrer une grappe d'Agents. 
+- **Ajouter Agent Cluster** permet d'enregistrer un Cluster d'Agents. 
   - L'opération comprend la spécification des *Agents Directeurs* et des *Sous-Agents*.
   - Pour plus d'explications, voir [Initial Operation - Register Cluster Agent](/initial-operation-register-agent-Cluster).
 - **Créer un Jeton à usage unique** 

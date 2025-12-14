@@ -1,6 +1,6 @@
 # Paramètres - Cleanup
 
-Les paramètres suivants sont appliqués au site [Cleanup Service](/service-cleanup). Les changements sont effectifs immédiatement.
+Les paramètres suivants sont appliqués au [Cleanup Service](/service-cleanup). Les changements sont effectifs immédiatement.
 
 La page *Réglages* est accessible à partir de l'icône ![wheel icon](assets/images/wheel.png) dans la barre de menu.
 

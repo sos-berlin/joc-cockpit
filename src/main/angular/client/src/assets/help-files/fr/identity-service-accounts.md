@@ -28,7 +28,7 @@ Pour chaque compte, les propriétés suivantes sont affichées :
 - **Compte** indique le compte tel qu'il a été spécifié lors de la connexion.
 - **Rôles** indique la liste des [Identity Service - Roles](/identity-service-roles) auxquels le compte est associé.
 - **Forcer le changement de mot de passe** indique si le compte utilisateur doit changer son mot de passe lors de la prochaine connexion.
-- **Bloqué** indique que le compte a été ajouté à un site [Identity Service - Blocklist](/identity-service-blocklist) et que l'accès lui est refusé.
+- **Bloqué** indique que le compte a été ajouté à un [Identity Service - Blocklist](/identity-service-blocklist) et que l'accès lui est refusé.
 - **Désactivé** indique que le compte est inactif et que l'accès lui est refusé.
 
 ## Opérations sur les comptes

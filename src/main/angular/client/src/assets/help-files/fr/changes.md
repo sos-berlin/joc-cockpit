@@ -32,7 +32,7 @@ Les boutons suivants sont disponibles en haut de l'écran :
 
 Dans la *Liste des modifications*, les opérations suivantes sont proposées avec le menu d'action correspondant à 3 points :
 
-- **Éditer** permet de mettre à jour les propriétés du Changement. Pour plus d'informations, consultez le site [Changes - Properties](/changes-properties).
+- **Éditer** permet de mettre à jour les propriétés du Changement. Pour plus d'informations, consultez les [Changes - Properties](/changes-properties).
 - **Supprimer** permet de supprimer l'entrée du Changement.
 
 ## Références

@@ -1,9 +1,9 @@
-# Verrous de Ressources
+# Verrous de Ressource
 
-La vue *Verrous de Ressources* affiche des informations en temps réel sur l'utilisation des Verrous de Ressources.
+La vue *Verrous de Ressource* affiche des informations en temps réel sur l'utilisation des Verrous de Ressource.
 
-Les Verrous de Ressources sont utilisés pour limiter le parallélisme des tâches et des instructions dans les Workflows.
-Les Verrous de Ressources sont des blocs d'instructions qui peuvent s'étendre sur un certain nombre de tâches et d'instructions dans le même Workflow.
+Les Verrous de Ressource sont utilisés pour limiter le parallélisme des tâches et des instructions dans les Workflows.
+Les Verrous de Ressource sont des blocs d'instructions qui peuvent s'étendre sur un certain nombre de tâches et d'instructions dans le même Workflow.
 
 - Les **verrous exclusifs** peuvent être utilisés par une seula tâche. L'accès exclusif est configuré soit à partir du Verrou de Ressource, soit à partir de l'utilisation dans le Workflow.
 - Les **verrous partagés** peuvent être utilisés par un nombre configurable de tâches.
@@ -12,29 +12,29 @@ Les Verrous de Ressources sont des blocs d'instructions qui peuvent s'étendre s
 
 ## Vue de navigation
 
-La vue de gauche affiche l'arborescence des dossiers d'inventaire contenant les Verrous de Ressources.
+La vue de gauche affiche l'arborescence des dossiers d'inventaire contenant les Verrous de Ressource.
 
-- Un clic sur le dossier affiche les verrouillages de ressources de ce dossier.
-- En cliquant sur l'icône en forme de chevron vers le bas disponible lorsque vous survolez un dossier, vous affichez les verrouillages de ressources du dossier et de tous les sous-dossiers.
+- Un clic sur le dossier affiche les Verrous de Ressource de ce dossier.
+- En cliquant sur l'icône en forme de chevron vers le bas disponible lorsque vous survolez un dossier, vous affichez les Verrous de Ressource du dossier et de tous les sous-dossiers.
 
-L'icône de recherche rapide permet de rechercher les verrouillages de ressources en fonction des données saisies par l'utilisateur :
+L'icône de recherche rapide permet de rechercher les Verrous de Ressource en fonction des données saisies par l'utilisateur :
 
-- Si vous tapez **Test**, vous obtiendrez les verrouillages de ressources portant des noms tels que *test-lock-1* et *TEST-lock-2*. 
-- Si vous tapez **\*Test**, vous obtiendrez des Verrous de Ressources portant des noms tels que *test-lock-1* et *my-TEST-lock-2*
+- Si vous tapez **Test**, vous obtiendrez les Verrous de Ressource portant des noms tels que *test-lock-1* et *TEST-lock-2*. 
+- Si vous tapez **\*Test**, vous obtiendrez des Verrous de Ressource portant des noms tels que *test-lock-1* et *my-TEST-lock-2*
 
-## Panneau de Verrouillage des Ressources
+## Panneau de Verrou des Ressource
 
-### Affichage des Verrous de Ressources
+### Affichage des Verrous de Ressource
 
 Les informations suivantes sont affichées :
 
 - **Nom** est le nom unique d'un Verrou de Ressource.
 - **Date de déploiement** est la date à laquelle le Verrou de Ressource a été déployé.
-- **L'état** est l'un des deux suivants : *Synchronisé* et *Non synchronisé* si le Verrou de Ressource n'a pas été déployé sur le Contrôleur.
-- **Nombre Acquis** indique le *poids* cumulé des Ordres parallèles qui ont acquis le verrou.
-- **Ordre Vérouillés** indique le nombre d'Ordres qui ont acquis le verrou.
+- **État** est l'un des deux suivants : *Synchronisé* et *Non synchronisé* si le Verrou de Ressource n'a pas été déployé sur le Contrôleur.
+- **Nombre acquis** indique le *poids* cumulé des Ordres parallèles qui ont acquis le verrou.
+- **Ordre vérouillés** indique le nombre d'Ordres qui ont acquis le verrou.
 - **Ordres en attente** indique le nombre d'Ordres qui attendent d'acquérir le verrou.
-- **Limite** indique la *limite* disponible dans l'écluse. *Les écluses exclusives* ont une *limite* de 1, les *écluses partagées* ont une *limite* individuelle.
+- **Limite** indique la *limite* disponible dans le verrou. Les *verrous exclusives* ont une *limite* de 1, les *verrous partagées* ont une *limite* individuelle.
 
 ### Affichage des Ordres
 
@@ -42,7 +42,7 @@ En cliquant sur l'icône de la flèche vers le bas, vous développerez le Verrou
 
 ## Recherche
 
-La fonction *Recherche* offre des critères permettant de rechercher des verrouillages de ressources à partir de dépendances. Par exemple, si vous recherchez des Workflows comprenant un nom de la tâche spécifique, vous obtiendrez les Verrous de Ressources utilisés par le Workflow.
+La fonction *Recherche* offre des critères permettant de rechercher des Verrous de Ressource à partir de dépendances. Par exemple, si vous recherchez des Workflows comprenant un nom d'une tâche spécifique, vous obtiendrez les Verrous de Ressource utilisés par le Workflow.
 
 ## Références
 

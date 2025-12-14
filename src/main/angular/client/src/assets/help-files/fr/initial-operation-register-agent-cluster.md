@@ -36,14 +36,14 @@ Les conditions préalables à l'installation sont les suivantes
 
 Les utilisateurs doivent vérifier que les connexions réseau entre le serveur du Contrôleur et les serveurs des deux Agents Director sont disponibles et que les règles du pare-feu autorisent les connexions aux ports des Agents Director.
 
-La page *Gérer Contrôleurs/Agents* est accessible à partir de l'icône de la roue dans la barre de menu principale et propose l'opération *Ajouter Agent Cluster* dans le menu d'action du Contrôleur. Cette opération fait apparaître la fenêtre contextuelle d'enregistrement d'un Agent Cluster.
+La page *Gérer Contrôleurs/Agents* est accessible à partir de l'icône de la roue dans la barre de menu principale et propose l'opération *Ajouter Agent Cluster* dans le menu d'action du Contrôleur. Cette opération fait apparaître la fenêtre contextuelle d'enregistrement d'un Cluster d'Agents.
 
 Les utilisateurs fournissent les données suivantes :
 
 - **Id Agent** est l'identifiant unique du Cluster d'Agents, qui ne peut pas être modifié pendant la durée de vie du groupe. L'*Identifiant de l'Agent* n'est pas visible avec les tâches et les Workflows.
 - **Nom du Cluster Agent** est le nom unique d'un Cluster d'Agents. Lors de l'attribution d'un Agent à une tâche, le *nom du Cluster Agents* est utilisé. Si vous modifiez le *nom du Cluster d'Agents* par la suite, vous devez continuer à utiliser le *nom du Clsuter Agent* précédent à partir d'un *nom d'alias*.
 - le **Titre** est une description qui peut être ajoutée pour un Cluster d'Agents.
-- les **Noms d'Alias** sont des noms alternatifs pour le même Cluster d'Agents. Lorsque vous attribuez un Agent à une tâche, les *noms de groupe d'alias* vous seront également proposés. *Les noms de grappes d'alias* peuvent être utilisés, par exemple, si un environnement de test comprend moins de Cluster d'Agents que l'environnement de production : pour que les affectations d'Agents restent inchangées d'un environnement à l'autre, les Cluster d'Agents manquantes sont mappées à partir des *noms de grappes d'alias* de la même grappe d'Agents.
+- les **Noms d'Alias** sont des noms alternatifs pour le même Cluster d'Agents. Lorsque vous attribuez un Agent à une tâche, les *Noms d'Alias* vous seront également proposés. Les *Noms d'Alias* peuvent être utilisés, par exemple, si un environnement de test comprend moins de Cluster d'Agents que l'environnement de production : pour que les affectations d'Agents restent inchangées d'un environnement à l'autre, les Cluster d'Agents manquantes sont mappées à partir des *Noms d'Alias* du même Custer d'Agents.
 - **Agent Directeur Primaire**
   - **ID Sous-Agent** est l'identifiant unique de l'Agent Directeur Primaire qui ne peut pas être modifié pendant la durée de vie de l'Agent Directeur. L'*ID du Sous-Agent* n'est pas visible avec les Jobs et les Workflows.
   - **Titre** est une description qui peut être ajoutée pour un Agent Directeur.

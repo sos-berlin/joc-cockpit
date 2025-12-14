@@ -31,7 +31,7 @@ Le menu d'action à 3 points d'un élément propose les opérations suivantes :
 - **Ajouter un nœud enfant** permet d'ajouter des nœuds à l'élément actuel. Les types de nœuds disponibles sont indiqués.
 - **Afficher tous les nœuds enfants du nœud sélectionné** fait apparaître une fenêtre contextuelle qui affiche les nœuds enfants possibles. Cette fonction permet de parcourir les nœuds enfants et de rechercher les nœuds enfants par leur nom.
 - **Copier/coller** permet de copier un nœud, y compris les nœuds enfants. Le collage est disponible à partir du menu d'action du nœud parent.
-- **Supprimer** supprime le nœud et tous les nœuds enfants.
+- **Supprimer** le nœud et tous les nœuds enfants.
 
 ### Fragments
 
@@ -55,7 +55,7 @@ Les fragments se présentent sous différentes formes pour les types de notifica
     - **To** : Spécifie l'adresse électronique du destinataire. Plusieurs destinataires peuvent être séparés par une virgule.
   - Les éléments suivants sont facultatifs pour l'envoi du courrier :
     - **CC** : Le destinataire des copies carbone. Plusieurs destinataires peuvent être séparés par une virgule.
-    - **BCC** : Le destinataire des copies carbone en aveugle. Les destinataires multiples peuvent être séparés par une virgule.
+    - **Bcc** : Le destinataire des copies carbone en aveugle. Les destinataires multiples peuvent être séparés par une virgule.
     - **From** : L'adresse électronique du compte utilisé pour envoyer le courrier. Considérez que la configuration de votre serveur de messagerie détermine si un compte spécifique ou arbitraire peut être utilisé.
 - **CommandFragment**
   - **MessageRef** : Spécifie la référence à un élément *Message* qui fournit le contenu qui sera transmis avec l'élément Command. Le contenu du message est disponible dans la variable de contrôle *$\{MESSAGE\}* et peut être utilisé avec les éléments suivants.
@@ -106,13 +106,12 @@ Ils activent les notifications effectives par des références aux éléments *F
 La page Notification propose les opérations suivantes à partir des boutons connexes situés en haut de la page :
 
 - **Nouveau** : démarre à partir d'une configuration vide.
-- **Remove** : supprime la configuration actuelle.
+- **Supprimer** : supprime la configuration actuelle.
 - **Revenir au brouillon** : crée un nouveau brouillon à partir de la version la plus récente. Les modifications en cours seront perdues.
-- **Télécharger** : permet de télécharger un fichier XML contenant la configuration.
 - **Télécharger** : permet de télécharger la configuration dans un fichier XML.
 - **Éditer XML** : permet d'éditer directement la configuration au format XML.
 - **Valider** : valide la configuration par rapport à un schéma XSD. Cela garantit que la configuration XML est bien formée et formellement correcte.
-- **Release** : publie la configuration dans JOC Cockpit. Les modifications entrent en vigueur immédiatement.
+- **Publier** : publie la configuration dans JOC Cockpit. Les modifications entrent en vigueur immédiatement.
 
 ## Références
 
@@ -138,4 +137,3 @@ La page Notification propose les opérations suivantes à partir des boutons con
 - [JS7 - Workflow Instructions](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflow+Instructions)
   - [JS7 - Fail Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Fail+Instruction)
   - [JS7 - Job Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Instruction)
-

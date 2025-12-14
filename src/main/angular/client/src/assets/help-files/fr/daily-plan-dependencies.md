@@ -22,22 +22,22 @@ Les opérations sur les dates de plan sont les suivantes :
 
 Les objets suivants sont affichés :
 
-- **Posting Workflow** : Sur le côté gauche s'affiche le Workflow qui affiche les Annonces.
-- **Annonce** : Dans la partie centrale s'affiche le nom du panneau d'affichage qui crée l'Annonce.
-- **Workflow de réception** : Sur le côté droit s'affiche le Workflow qui attend ou consomme l'Annonce.
+- **Workflow d'envoi** : Sur le côté gauche s'affiche le Workflow qui affiche les Annonces.
+- **Annonce** : Dans la partie centrale s'affiche le nom du Tableau de Condition qui crée l'Annonce.
+- **Workflow en attente** : Sur le côté droit s'affiche le Workflow qui attend ou consomme l'Annonce.
 
 Les relations suivantes sont indiquées :
 
-- **Posting Workflow** : Crée un ou plusieurs Annonces qui sont attendus/consommés par un ou plusieurs *Workflows de réception*.
-- **Workflow de réception** : Attend/consomme un ou plusieurs Annonces provenant du même ou de différents *flux de tâche d'envoi*.
+- **Workflow 'envoi** : Crée un ou plusieurs Annonces qui sont attendus/consommés par un ou plusieurs *Workflows en attente*.
+- **Workflow en attente** : Attend/consomme un ou plusieurs Annonces provenant du même ou de différents *Workflows d'envoi*.
 
 L'état de réalisation des dépendances est indiqué par des lignes :
 
-- **Ligne de couleur bleue** : Un Annonce est indiqué pour un moment futur où l'Ordre du *Posting Workflow* commencera et créera l'Annonce.
-- **Ligne de couleur verdâtre** : La dépendance n'est pas résolue, un Annonce a été publié mais n'est pas encore traité par tous les *Workflows de réception*.
-  - **Workflow de réception en couleur verte** : Le Workflow de réception* a été créé mais n'a pas encore été traité par tous les *flux de tâche de réception : L'Ordre du *Flux de tâche récepteur* est lancé mais n'a pas procédé à l'instruction de flux de tâche qui vérifie les Annonces.
-  - **Workflow de réception de couleur bleue** : L'Ordre du *Receiving Workflow* est planifié pour démarrer à un moment ultérieur de la journée.
-- **Ligne en couleur grise** : La dépendance est résolue, l'Annonce a été posté et a été consommé par un *Workflow de réception*.
+- **Ligne de couleur bleue** : Un Annonce est indiqué pour un moment futur où l'Ordre du *Workflow d'envoi* commencera et créera l'Annonce.
+- **Ligne de couleur verdâtre** : La dépendance n'est pas résolue, un Annonce a été publié mais n'est pas encore traité par tous les *Workflows en attente*.
+  - **Workflow en attente en couleur verte** : Le *Workflow en attente* a été démarrée mais n'a pas encore été traité. L'Ordre du *Workflow en attente* est lancé mais n'a pas procédé à l'instruction qui vérifie les Annonces.
+  - **Workflow en attente de couleur bleue** : L'Ordre du *Workflow en attente* est planifié pour démarrer à un moment ultérieur de la journée.
+- **Ligne en couleur grise** : La dépendance est résolue, l'Annonce a été posté et a été consommé par un *Workflow en attente*.
 
 ## Filtres
 
@@ -69,4 +69,3 @@ Si les deux boutons de filtrage sont inactifs, tous les Workflows et dépendance
   - [JS7 - PostNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+PostNotices+Instruction)
   - [JS7 - ExpectNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ExpectNotices+Instruction)
   - [JS7 - ConsumeNotices Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+ConsumeNotices+Instruction)
-

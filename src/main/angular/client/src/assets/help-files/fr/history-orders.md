@@ -35,7 +35,7 @@ L'affichage est limité à un maximum de 5000 entrées, sauf indication contrair
 
 ### Accès à la sortie du journal
 
-- **ID Ordre ** : En cliquant sur l'ID de l'Ordre, vous afficherez le journal de sortie de l'Ordre à partir du site [Order Log View](/order-log). Le journal comprend les données de sortie créées par tous les tâches exécutés avec le Workflow.
+- **ID Ordre ** : En cliquant sur l'ID de l'Ordre, vous afficherez le journal de sortie de l'Ordre à partir de [Order Log View](/order-log). Le journal comprend les données de sortie créées par tous les tâches exécutés avec le Workflow.
 - **Icône de téléchargement** : cliquez sur l'icône pour télécharger le journal de l'Ordre dans un fichier.
 
 Par défaut, l'affichage des journaux de l'Ordre est limité à une taille de 10 Mo et, dans le cas contraire, les journaux sont téléchargés dans des fichiers. Les utilisateurs peuvent ajuster la limite à partir de la page [Settings - JOC Cockpit](/settings-joc).

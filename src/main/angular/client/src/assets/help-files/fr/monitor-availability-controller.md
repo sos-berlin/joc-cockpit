@@ -1,4 +1,4 @@
-# Disponibilité du Contrôleur
+# Disponibilité de Contrôleur
 
 La vue affiche les indicateurs de disponibilité des Contrôleurs.
 
@@ -37,4 +37,3 @@ Affiche la disponibilité par Contrôleur et par jour dans la période donnée.
 - [Cleanup Service](/service-cleanup)
 - [Monitor - Availability - Agent](/monitor-availability-agent)
 - [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor)
-

@@ -10,7 +10,7 @@ Lorsque vous publiez un seul objet à partir du bouton *Publier* correspondant, 
 
 ## Mise à jour du Plan Quotidien
 
-La publication d'objets tels que les Planifications et les Calendriers a un impact sur le site [Daily Plan](/daily-plan). Il arrive fréquemment que la version mise à jour d'un objet soit utilisée pour les Ordres dans le Plan Quotidien. Les utilisateurs contrôlent le comportement à partir des options suivantes :
+La publication d'objets tels que les Planifications et les Calendriers a un impact sur le [Daily Plan](/daily-plan). Il arrive fréquemment que la version mise à jour d'un objet soit utilisée pour les Ordres dans le Plan Quotidien. Les utilisateurs contrôlent le comportement à partir des options suivantes :
 
 - **Mettre à jour le Plan Quotidien**
   - **Maintenant** spécifie la mise à jour du Plan Quotidien pour les Ordres planifiés à un moment donné à partir de maintenant.

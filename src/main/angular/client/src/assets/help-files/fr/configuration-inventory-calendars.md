@@ -1,6 +1,6 @@
 # Configuration - Inventaire - Calendriers
 
-La vue *Calendrier* permet de spécifier des Calendriers basés sur des règles qui sont utilisés par [Configuration - Inventory - Schedules](/configuration-inventory-schedules) pour créer des Ordres à partir du site [Daily Plan](/daily-plan). Pour plus de détails, voir [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars).
+La vue *Calendrier* permet de spécifier des Calendriers basés sur des règles qui sont utilisés par [Configuration - Inventory - Schedules](/configuration-inventory-schedules) pour créer des Ordres à partir du [Daily Plan](/daily-plan). Pour plus de détails, voir [JS7 - Calendars](https://kb.sos-berlin.com/display/JS7/JS7+-+Calendars).
 
 - Les Calendriers spécifient les jours pour lesquels les Workflows seront exécutés.
   - **Les Calendriers des jours ouvrés** spécifient les jours d'exécution des Workflows.

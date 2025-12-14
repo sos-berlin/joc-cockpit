@@ -8,7 +8,7 @@ La vue *Planification* permet de spécifier des règles pour la création d'Ordr
 - Les Planifications créent des Ordres sur une base quotidienne
   - pour l'exécution ponctuelle des Workflows. Cela inclut les Workflows démarrant à un certain nombre d'heures par jour.
   - pour l'exécution cyclique de Workflows. Ceci spécifie l'exécution répétée des Workflows sur la base d'intervalles configurables.
-- Les Planifications sont appliquées par le site [Daily Plan](/daily-plan) afin de créer des Ordres pour les dates et heures résultantes.
+- Les Planifications sont appliquées par le [Daily Plan](/daily-plan) afin de créer des Ordres pour les dates et heures résultantes.
   - Les Planifications peuvent être appliquées manuellement à partir de la vue du Plan Quotidien.
   - Les Planifications sont appliquées automatiquement par [Daily Plan Service](/service-daily-plan).
 

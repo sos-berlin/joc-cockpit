@@ -8,7 +8,7 @@ Les utilisateurs qui sont satisfaits des valeurs par défaut et qui souhaitent s
 
 - **Nom de l'Ordre** : Un nom optionnel qui peut être utilisé pour filtrer les Ordres dans un certain nombre de vues.
 - **Tag** : Vous pouvez spécifier un nombre quelconque Tag qui seront ajoutées à l'Ordre. Les Tags sont affichées dans un certain nombre de vues si elles sont spécifiées sur la page [Settings - JOC Cockpit](/settings-joc).
-- **Ignorer les heures d'admission des tâches** : Les tâches peuvent être limités à certains jours et/ou à certains créneaux horaires. Les Ordres qui arrivent en dehors d'un créneau horaire doivent attendre le prochain créneau disponible. Cette option force les tâches à démarrer indépendamment de ces limitations.
+- **Ignorer les heures d'Admission** : Les tâches peuvent être limités à certains jours et/ou à certains créneaux horaires. Les Ordres qui arrivent en dehors d'un créneau horaire doivent attendre le prochain créneau disponible. Cette option force les tâches à démarrer indépendamment de ces limitations.
 
 ### Heure de début
 
@@ -40,7 +40,7 @@ Si un Ordre ne doit pas commencer au premier nœud du Workflow, une position peu
   - Si une position de bloc est spécifiée, n'importe quel nœud de même niveau à l'intérieur du bloc peut être spécifié avant lequel l'Ordre se terminera.
   - Il est possible de spécifier plusieurs positions de fin.
 - **Priorité** :
-  - Si l'Ordre doit répondre à une Instruction Resource-Lock des Ressources dans le Workflow qui limite le parallélisme, sa *Priorité* détermine la position dans la file d'attente des Ordres en attente.
+  - Si l'Ordre doit répondre à une *instruction Lock* des Ressources dans le Workflow qui limite le parallélisme, sa *Priorité* détermine la position dans la file d'attente des Ordres en attente.
   - les *Priorités* sont spécifiées à partir de nombres entiers négatifs, nuls et positifs ou à partir des raccourcis proposés. Une *Priorité* plus élevée est prioritaire. Les raccourcis offrent les valeurs suivantes :
     - **Basse** : -20000
     - **Inférieur à la normale** : -10000

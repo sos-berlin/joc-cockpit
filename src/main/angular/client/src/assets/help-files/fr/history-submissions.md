@@ -1,6 +1,6 @@
 # Historique des soumissions
 
-L'*Historique des soumissions* conserve la trace des Ordres soumis à partir du site [Daily Plan](/daily-plan).
+L'*Historique des soumissions* conserve la trace des Ordres soumis à partir du [Daily Plan](/daily-plan).
 
 Les Ordres sont créés par le Plan Quotidien en deux étapes : d'abord ils sont *planifiés*, ensuite ils sont *soumis* au Contrôleur et aux Agents. La soumission signifie que les Ordres seront lancés de manière autonome par les Agents.
 

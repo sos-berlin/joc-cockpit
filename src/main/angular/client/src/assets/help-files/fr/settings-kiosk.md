@@ -1,4 +1,4 @@
-# Paramètres - Kiosque
+# Paramètres - Mode Kiosque
 
 JOC Cockpit peut être utilisé sur [JS7 - Kiosk Mode](https://kb.sos-berlin.com/display/JS7/JS7+-+Kiosk+Mode) qui comprend
 
@@ -8,7 +8,7 @@ JOC Cockpit peut être utilisé sur [JS7 - Kiosk Mode](https://kb.sos-berlin.com
 
 La page *Réglages* est accessible à partir de l'icône ![wheel icon](assets/images/wheel.png) dans la barre de menu.
 
-## Paramètres du kiosque
+## Paramètres du Mode Kiosque
 
 ### Paramètre : *kiosk\_role*, Défaut : *kiosque*
 
@@ -27,14 +27,14 @@ Les utilisateurs peuvent modifier la présentation du tableau de bord pour le co
 - La valeur 0 indique que la vue ne sera pas affichée.
 - Une valeur &gt;10 indique la durée souhaitée.
 
-### Setting : *view_monitor\_order\_notification\_duration*, Valeur par défaut : *15*
+### Paramètre : *view_monitor\_order\_notification\_duration*, Valeur par défaut : *15*
 
 Spécifie la durée en secondes pendant laquelle la vue [Monitor - Order Notifications](/monitor-notifications-order) sera affichée.
 
 - La valeur 0 indique que la vue ne sera pas affichée.
 - Une valeur &gt;10 indique la durée souhaitée.
 
-### Setting : *view_monitor\_system\_notification\_duration*, Valeur par défaut : *15*
+### Paramètre : *view_monitor\_system\_notification\_duration*, Valeur par défaut : *15*
 
 Spécifie la durée en secondes pendant laquelle la vue [Monitor - System Notifications](/monitor-notifications-system) sera affichée.
 
@@ -69,4 +69,3 @@ Une valeur &gt;10 indique la durée souhaitée.
 
 - [JS7 - Kiosk Mode](https://kb.sos-berlin.com/display/JS7/JS7+-+Kiosk+Mode)
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)
-

@@ -6,10 +6,10 @@ La vue *Transfert de fichiers* fournit un résumé des transferts de fichiers pr
 
 ## Historique des transferts de fichiers
 
-L'Historique récapitule les transferts réussis et échoué.
+L'Historique récapitule les transferts réussis et échoué :
 
 - les transferts **réussis** comprennent les tâches réussies et les tâches échouées qui se sont rétablies, par exemple après une nouvelle tentative.
-- Les transferts **échoués** indiquent les tâches qui ont échoué de façon permanente.
+- les transferts **échoués** indiquent les tâches qui ont échoué de façon permanente.
 
 En cliquant sur le numéro indiqué, vous accédez à la vue *Historique des transferts de fichiers* qui affiche les transferts en détail.
 

@@ -1,10 +1,10 @@
 # Tableau de Bord - Historique
 
-L'Affichage *Historique* fournit des informations sur l'exécution passée des Ordres et des Tâches.
+L'affichage *Historique* fournit des informations sur l'exécution passée des Ordres et des Tâches.
 
 <img src="dashboard-history.png" alt="Historique" width="330" height="80" />
 
-## Historique Statut
+## Historique
 
 Le statut Historique est le statut final lorsqu'un Ordre ou une Tâche est terminé. L'Historique ne prend pas en compte les Ordres et les Tâches en cours. Aucune opération n'est disponible sur les Ordres ou les Tâches indiqués - ils font partie de l'historique.
 

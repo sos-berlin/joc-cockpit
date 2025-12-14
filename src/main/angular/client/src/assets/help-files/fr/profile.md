@@ -17,10 +17,10 @@ Pour plus de détails, voir [JS7 - Profiles](https://kb.sos-berlin.com/display/J
 
 ## Changer le mot de passe
 
-En cliquant sur le lien correspondant, les utilisateurs peuvent modifier leur mot de passe si le site [Identity Services](/identity-services) actif comprend un service de type *JOC* qui a été utilisé pour le login actuel.
+En cliquant sur le lien correspondant, les utilisateurs peuvent modifier leur mot de passe si le [Identity Services](/identity-services) actif comprend un service de type *JOC* qui a été utilisé pour le login actuel.
 
 - **Ancien mot de passe** s'attend à ce que le mot de passe actuellement utilisé soit spécifié.
-- **Le nouveau mot de passe** s'attend à ce que le nouveau mot de passe soit spécifié.
+- **Nouveau mot de passe** s'attend à ce que le nouveau mot de passe soit spécifié.
     - Une longueur minimale de mot de passe est requise, comme configuré à l'adresse [Settings - Identity Service](/settings-identity-service).
     - L'*ancien mot de passe* et le *nouveau mot de passe* doivent être différents.
 
@@ -47,4 +47,3 @@ Les paramètres des *profils d'utilisateur* sont disponibles dans les sections s
 ### Product Knowledge Base
 
 - [JS7 - Profiles](https://kb.sos-berlin.com/display/JS7/JS7+-+Profiles)
-

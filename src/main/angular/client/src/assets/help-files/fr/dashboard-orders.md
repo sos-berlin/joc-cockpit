@@ -1,8 +1,8 @@
 # Tableau de Bord - Ordres
 
-L'Affichage *Ordres* fournit des informations sur les Ordres provenant des sources suivantes :
+L'affichage *Ordres* fournit des informations sur les Ordres provenant des sources suivantes :
 
-- Ordres ajoutés par le système de gestion de l'information [Daily Plan](/daily-plan)
+- Ordres ajoutés par le [Daily Plan](/daily-plan)
 - Ordres ajoutés à la demande par les utilisateurs de la vue [Workflows](/workflows) 
 - Ordres ajoutés à partir de [File Order Sources](/configuration-inventory-file-order-sources) qui surveillent les répertoires pour les fichiers entrants
 
@@ -23,7 +23,7 @@ L'affichage *Ordres* fournit des informations sur l'état actuel des Ordres. L'a
 - **Bloqué**: Les Ordres ne peuvent pas démarrer, par exemple si l'Agent n'est pas joignable depuis l'ajout de l'Ordre.
 - **Échoué**: Les Ordres indiquent qu'une tâche a échoué ou qu'une *instruction Fail* empêche la poursuite de l'Ordre. 
 
-En cliquant sur le nombre d'Ordres indiqué, vous accédez au site [Orders Overview](/orders-overview) qui affiche les Ordres en détail.
+En cliquant sur le nombre d'Ordres indiqué, vous accédez [Orders Overview](/orders-overview) qui affiche les Ordres en détail.
 
 ## Filtres
 

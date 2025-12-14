@@ -93,8 +93,8 @@ Les opérations suivantes sont disponibles pour les *dossiers d'inventaire* :
     - **Git Repository** offre une intégration avec un serveur Git. Les Workflows peuvent être engagés dans des dépôts Git et peuvent être tirés et poussés. Pour plus de détails, voir [Git - Clone Repository](/configuration-inventory-operations-git-clone).
     - **Changement** offre des opérations pour la gestion des changements des Workflows. Les utilisateurs peuvent ajouter un Workflow en cours de construction à un *Change* qui permet le déploiement commun et l'exportation des objets modifiés. Pour plus de détails, voir [Changes](/changes).
     - **Déployer** mettra les Workflows à la disposition du Contrôleur et des Agents. Les Workflows seront mis à l'état *deployed*. Pour plus de détails, voir [Deploy Folder](/configuration-inventory-operations-deploy-folder).
-    - **Révoquer** annule une opération *Deploy* précédente. Les Workflows passeront à l'état de *brouillon*. Cela implique que les Ordres pour les Workflows seront supprimés du site [Daily Plan](/daily-plan). Les dépendances sont prises en compte et les objets de référence tels que *Schedules* et *Sources d'Ordre de Fichier* seront également révoqués/rappelés. Pour plus de détails, voir [Revoke Folder](/configuration-inventory-operations-revoke-folder).
-    - **Supprimer** déplace les Workflows vers la Corbeille. Les Workflows supprimés peuvent être restaurés ou supprimés définitivement de la Corbeille. Pour plus d'informations, consultez le site [Remove Folder](/configuration-inventory-operations-remove-folder).
+    - **Révoquer** annule une opération *Deployer* précédente. Les Workflows passeront à l'état de *brouillon*. Cela implique que les Ordres pour les Workflows seront supprimés du [Daily Plan](/daily-plan). Les dépendances sont prises en compte et les objets de référence tels que *Schedules* et *Sources d'Ordre de Fichier* seront également révoqués/rappelés. Pour plus de détails, voir [Revoke Folder](/configuration-inventory-operations-revoke-folder).
+    - **Supprimer** déplace les Workflows vers la Corbeille. Les Workflows supprimés peuvent être restaurés ou supprimés définitivement de la Corbeille. Pour plus d'informations, consultez [Remove Folder](/configuration-inventory-operations-remove-folder).
     - **Rétablir le brouillon** supprimera la version actuelle du brouillon des Workflows. Si une version précédemment *déployée* existe, elle deviendra la version actuelle du Workflow concerné.
     - **Mettre à jour les Tâches à partir des Modèles** mettra à jour les tâches des Workflows dans le *dossier d'inventaire* sélectionné à partir des *Modèles de Tâche* situés dans n'importe quel dossier.
   - les *Sources d'Ordre de Fichier*, *Ressources de Tâche*, *Conditions*, *Verrous de Ressource* offrent des opérations similaires à celles des *Workflows*.
@@ -103,7 +103,7 @@ Les opérations suivantes sont disponibles pour les *dossiers d'inventaire* :
     - pour une utilisation avec d'autres objets, par exemple les *Blocs Scripts* seront prises en compte pour le prochain déploiement des Workflows, les *Modèles de Tâche* peuvent être mis à jour dans le référencement des Workflows.
     - pour une utilisation avec [Daily Plan](/daily-plan), par exemple *Planifications* sera pris en compte pour la création d'Ordres.
     - pour plus de détails, voir [Release Folder](/configuration-inventory-operations-release-folder).
-  - **Retirer** annule une opération *Publier* précédente. Les objets d'inventaire seront mis à l'état de *brouillon*. Cela signifie que les *Planifications* et *Calendriers* provisoires ne seront pas pris en compte par le site [Daily Plan](/daily-plan). L'opération prend en compte les dépendances entre objets et retirera/révocera également les objets référents. Pour plus de détails, voir [Recall Folder](/configuration-inventory-operations-recall-folder).
+  - **Retirer** annule une opération *Publier* précédente. Les objets d'inventaire seront mis à l'état de *brouillon*. Cela signifie que les *Planifications* et *Calendriers* provisoires ne seront pas pris en compte par le [Daily Plan](/daily-plan). L'opération prend en compte les dépendances entre objets et retirera/révocera également les objets référents. Pour plus de détails, voir [Recall Folder](/configuration-inventory-operations-recall-folder).
   - **Appliquer un Modèle de Tâche** mettra à jour les tâches dans les Workflows situés dans n'importe quel dossier contenant des références à des *Modeles de Tâche* inclus dans le *dossier d'inventaire* sélectionné ou dans n'importe quel sous-dossier.
   - D'autres opérations sont disponibles, similaires aux *Opérations sur les objets du Contrôleur*.
 
@@ -158,16 +158,16 @@ Les opérations suivantes sont proposées pour les objets d'inventaire individue
     - **Télécharger JSON** télécharge l'objet au format JSON dans un fichier .json.
     - **Télécharger JSON** permet de télécharger un fichier .json qui remplacera l'objet.
   - Opérations de suppression
-    - l'opération **Remove** déplace l'objet dans la Corbeille. Les objets d'inventaire supprimés peuvent être restaurés ou supprimés définitivement de la Corbeille. Pour plus d'informations, consultez le site [Remove Object](/configuration-inventory-operations-remove-object).
+    - l'opération **Remove** déplace l'objet dans la Corbeille. Les objets d'inventaire supprimés peuvent être restaurés ou supprimés définitivement de la Corbeille. Pour plus d'informations, consultez [Remove Object](/configuration-inventory-operations-remove-object).
     - **Rétablir le brouillon** supprime la version actuelle du brouillon de l'objet. S'il existe une version *déployée* ou *publiée* antérieure, elle deviendra la version actuelle de l'objet.
 - Objets du Contrôleur
   - **La gestion des Tags** est disponible pour les Workflows et permet d'ajouter ou de supprimer des Tags dans le Workflow.
   - **Déployer** rendra l'objet disponible pour le Contrôleur et les Agents. L'objet sera placé dans l'état *déployé*. Le déploiement prend en compte les dépendances des objets référencés et des objets d'inventaire référençant. Pour plus de détails, voir [Deploy Object](/configuration-inventory-operations-deploy-object).
-  - **Révoquer** annule l'opération de *Déploiement* . L'objet sera remis à l'état de *brouillon*. Dans le cas des Workflows, cela signifie que les Ordres seront retirés du site [Daily Plan](/daily-plan). Pour plus de détails, voir [Revoke Object](/configuration-inventory-operations-revoke-object).
+  - **Révoquer** annule l'opération de *Déploiement* . L'objet sera remis à l'état de *brouillon*. Dans le cas des Workflows, cela signifie que les Ordres seront retirés du [Daily Plan](/daily-plan). Pour plus de détails, voir [Revoke Object](/configuration-inventory-operations-revoke-object).
 - Objets d'Automatisation
   - **Publier** rend les objets *brouillon* disponibles
     - pour une utilisation avec d'autres objets, par exemple les *Blocs Scripts* seront prises en compte pour le prochain déploiement des Workflows, les *Modèles de Tâche* peuvent être mis à jour dans le référencement des Workflows.
-    - pour une utilisation avec [Daily Plan](/daily-plan), par exemple *Planifications* sera pris en compte pour la création d'Ordres.
+    - pour une utilisation avec le [Daily Plan](/daily-plan), par exemple *Planifications* sera pris en compte pour la création d'Ordres.
     - pour plus de détails, voir [Release Object](/configuration-inventory-operations-release-object).
   - **Retirer** annule l'opération *Publier* . Les objets d'inventaire seront mis à l'état de *brouillon*. Cela signifie que les *Planifications* et les *Calendriers* provisoires ne seront pas pris en compte par le système [Daily Plan](/daily-plan). Pour plus de détails, voir [Recall Object](/configuration-inventory-operations-recall-object).
 

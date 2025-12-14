@@ -1,6 +1,6 @@
-# Paramètres
+# Réglages
 
-JOC Cockpit propose des paramètres [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings) qui peut être modifié à partir de l'interface graphique et qui s'applique immédiatement sans redémarrer JOC Cockpit.
+JOC Cockpit propose des paramètres [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings) qui peuvent être modifié à partir de l'interface graphique et qui s'applique immédiatement sans redémarrer JOC Cockpit.
 
 La page *Réglages* est accessible à partir de l'icône ![wheel icon](assets/images/wheel.png) dans la barre de menu.
 
@@ -20,4 +20,3 @@ La page *Réglages* est accessible à partir de l'icône ![wheel icon](assets/im
 ### Product Knowledge Base
 
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)
-

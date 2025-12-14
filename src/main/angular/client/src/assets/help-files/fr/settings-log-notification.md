@@ -1,6 +1,6 @@
 # Paramètres - Service de notification des journaux
 
-Le site [Log Notification Service](/service-log-notification) implémente un serveur syslog qui reçoit les avertissements et les erreurs des produits JS7 tels que les Contrôleurs et les Agents. Le service peut être configuré pour envoyer des notifications, par exemple, par courrier électronique.
+Le [Log Notification Service](/service-log-notification) implémente un serveur syslog qui reçoit les avertissements et les erreurs des produits JS7 tels que les Contrôleurs et les Agents. Le service peut être configuré pour envoyer des notifications, par exemple, par courrier électronique.
 
 Les notifications sont affichées sur la page [Monitor - System Notifications](/monitor-notifications-system).
 
@@ -34,4 +34,3 @@ Indique le nombre maximum de messages par seconde que le service de notification
 
 - [JS7 - Log Notification Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Notification+Service)
 - [JS7 - Settings](https://kb.sos-berlin.com/display/JS7/JS7+-+Settings)
-

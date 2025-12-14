@@ -1,4 +1,4 @@
-moniteur # - Notifications d'Ordres
+# Moniteur - Notifications d'Ordres
 
 La vue affiche les notifications émises par les Workflows.
 
@@ -22,7 +22,7 @@ Les notifications sont affichées à partir des éléments d'information suivant
   - **Succès** qui indique que l'Ordre a été exécuté avec succès, à condition que les notifications soient configurées pour signaler cet état.
   - **Avertissement** qui est déclenché par des tâches Shell pour lesquels des codes de retour spécifiques sont configurés pour être des *Avertissements* qui n'affecteront pas le flux d'un Ordre mais qui déclencheront la Notification correspondante.
   - **Erreur** qui peut être levée par des Jobs ou d'autres instructions de Workflow. La notification est déclenchée indépendamment du fait qu'un Workflow puisse appliquer une gestion d'erreur comme dans l'instruction *Try/Catch* ou *Retry* qui permettra à un Ordre de continuer dans le Workflow.
-  - **Rétabli** qui indique qu'un Ordre précédemment *défaillant* s'est rétabli et a été traité avec succès dans le Workflow.
+  - **Rétabli** qui indique qu'un Ordre précédemment *échoué* s'est rétabli et a été traité avec succès dans le Workflow.
 - **Code de retour** indique le code de sortie des Jobs Shell ou le code de retour des Jobs JVM qui ont émis la Notification.
 - **Message** contient le message d'erreur ou d'avertissement.
 - **Crée** indique la date à laquelle la notification a été émise.
@@ -61,4 +61,3 @@ Le haut de la page propose un certain nombre de boutons de filtrage qui peuvent 
 
 - [JS7 - Monitor](https://kb.sos-berlin.com/display/JS7/JS7+-+Monitor)
 - [JS7 - Notifications](https://kb.sos-berlin.com/display/JS7/JS7+-+Notifications)
-

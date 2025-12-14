@@ -62,7 +62,7 @@ Le *Journal d'Audit* indique les opérations de modification effectuées sur l'O
 - **Créé** indique la date à laquelle l'opération a été effectuée.
 - **Compte** indique le compte d'utilisateur qui a effectué l'opération.
 - **Demande** indique le point de terminaison de l'API REST qui a été appelé.
-- **Catégorie** précise la classification de l'opération telle que CONTROLLER lors de l'annulation d'Ordres ou DAILYPLAN lors de la création d'Ordres à partir du site [Daily Plan](/daily-plan).
+- **Catégorie** précise la classification de l'opération telle que CONTROLLER lors de l'annulation d'Ordres ou DAILYPLAN lors de la création d'Ordres à partir du [Daily Plan](/daily-plan).
 - **Raison** explique pourquoi un Ordre a été modifié. Le JOC Cockpit peut être configuré pour imposer la spécification des raisons lors de la modification d'objets.
   - Ce paramètre est disponible à l'adresse [Profile - Preferences](/profile-preferences).
   - Le paramètre peut être appliqué à partir de la page [Settings - JOC Cockpit](/settings-joc).
@@ -116,11 +116,11 @@ Les utilisateurs peuvent appliquer des filtres pour limiter l'affichage des Ordr
 Ce bouton déroulant permet de sélectionner des Ordres à partir d'une plage de dates :
 
 - **Tous** spécifie les Ordres planifiés pour n'importe quelle date passée et future qui sont affichés.
-- **Aujourd'hui** Les Ordres sont liés à la journée en cours qui est calculée à partir du fuseau horaire dans le site [Profile - Preferences](/profile-preferences).
+- **Aujourd'hui** Les Ordres sont liés à la journée en cours qui est calculée à partir du fuseau horaire dans [Profile - Preferences](/profile-preferences).
 - **Prochaine heure** inclut les Ordres qui devraient commencer dans l'heure qui suit.
 - **12 prochaines heures** comprennent les Ordres qui devraient commencer dans les 12 prochaines heures.
 - **24 heures suivantes** comprennent les Ordres qui devraient commencer dans les 24 heures suivantes.
-- **Prochain Jour** comprend les Ordres qui devraient commencer jusqu'à la fin du jour suivant.
+- **Prochain jour** comprend les Ordres qui devraient commencer jusqu'à la fin du jour suivant.
 - **7 Prochains jours** comprennent les Ordres qui devraient commencer dans les 7 prochains jours.
 
 ### Boutons de filtrage de l'État

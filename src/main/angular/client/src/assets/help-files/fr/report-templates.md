@@ -57,7 +57,7 @@ Le nombre de tâches en cours d'exécution est compté par étape.
 
 ## Modèle de rapport : Top n périodes avec le plus grand/le plus petit nombre d'exécutions de Workflows
 
-Le modèle de rapport divise la *période de rapport* en étapes. La durée d'une étape est déterminée par le paramètre *Step Duration* (Durée de l'étape) dans le site [JS7 - Reports - Configuration](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Configuration). Le début de l'étape suivante est déterminé par le paramètre *Step Overlap* (Chevauchement d'étape) dans la configuration du rapport.
+Le modèle de rapport divise la *période de rapport* en étapes. La durée d'une étape est déterminée par le paramètre *Durée de l'étape* dans le site [JS7 - Reports - Configuration](https://kb.sos-berlin.com/display/JS7/JS7+-+Reports+-+Configuration). Le début de l'étape suivante est déterminé par le paramètre *Chevauchement d'étape* dans la configuration du rapport.
 
 Le nombre d'Ordres en cours d'exécution est compté par étape.
 
@@ -90,4 +90,3 @@ Pour connaître les raisons de l'échec d'un Workflow, reportez-vous au *Modèle
 - Instructions Workflow
   - [JS7 - Finish Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Finish+Instruction)
   - [JS7 - Retry Instruction](https://kb.sos-berlin.com/display/JS7/JS7+-+Retry+Instruction)
-

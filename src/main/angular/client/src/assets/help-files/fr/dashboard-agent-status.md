@@ -1,6 +1,6 @@
 # Tableau de Bord - Statut de l'Agent
 
-L'Affichage *Agent Status* indique l'état de la connexion des Agents enregistrés.
+L'affichage *Agent Status* indique l'état de la connexion des Agents enregistrés.
 
 <img src="dashboard-agent-status.png" alt="Agent Status" width="332" height="135" />
 
@@ -16,7 +16,7 @@ L'Affichage *Agent Status* indique l'état de la connexion des Agents enregistr�
 ### Connexions
 
 - Les connexions à l'**Agent Autonome** et de l'**Agent Directeur** sont établies par le Contrôleur. 
-- les connexions **Sous-Agent** dans un Cluster d'Agents sont établies par les *Agents Directeurs*.
+- Les connexions **Sous-Agent** dans un Cluster d'Agents sont établies par les *Agents Directeurs*.
 
 ## État de la connexion
 

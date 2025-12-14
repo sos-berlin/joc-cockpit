@@ -32,7 +32,7 @@ L'affichage est limité à un maximum de 5000 entrées, sauf indication contrair
 
 ### Accès à la sortie du journal
 
-- **Nom** : En cliquant sur le *Nom de la tâche*, vous afficherez le journal de sortie de la tâche à partir du site [Task Log View](/task-log).
+- **Nom** : En cliquant sur le *Nom de la tâche*, vous afficherez le journal de sortie de la tâche à partir de [Task Log View](/task-log).
 - **Icône de téléchargement** : en cliquant sur l'icône, vous téléchargez le journal de la tâche dans un fichier.
 
 Par défaut, l'affichage des journaux de tâches est limité à une taille de 10 Mo et, dans le cas contraire, les journaux sont téléchargés dans des fichiers. Les utilisateurs peuvent ajuster la limite à partir de la page [Settings - JOC Cockpit](/settings-joc).

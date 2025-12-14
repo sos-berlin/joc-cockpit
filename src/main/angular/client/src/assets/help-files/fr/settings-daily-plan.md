@@ -1,6 +1,6 @@
 # Paramètres - Plan Quotidien
 
-Les paramètres suivants sont appliqués au site [Daily Plan](/daily-plan). Les modifications prennent effet immédiatement.
+Les paramètres suivants sont appliqués au [Daily Plan](/daily-plan). Les modifications prennent effet immédiatement.
 
 La page *Réglages* est accessible à partir de l'icône ![wheel icon](assets/images/wheel.png) dans la barre de menu.
 
@@ -8,7 +8,7 @@ La page *Réglages* est accessible à partir de l'icône ![wheel icon](assets/im
 
 ### Paramètre : *time_zone*, Défaut : *UTC*
 
-Spécifie le fuseau horaire appliqué à l'heure de début du site [Daily Plan Service](/service-daily-plan) et à la période du Plan Quotidien.
+Spécifie le fuseau horaire appliqué à l'heure de début du [Daily Plan Service](/service-daily-plan) et à la période du Plan Quotidien.
 
 ### Paramètre : *period_begin*, Valeur par défaut : *00:00*
 

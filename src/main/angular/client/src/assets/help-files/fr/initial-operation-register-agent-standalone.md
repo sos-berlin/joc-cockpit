@@ -1,6 +1,6 @@
 # Opération initiale - Enregistrement d'un Agent Autonome
 
-L'opération initiale est effectuée après l'installation du Contrôleur JS7, de l'Agent et du JOC Cockpit. L'enregistrement de l'Agent a lieu après l'achèvement du site [Initial Operation - Register Controller](/initial-operation-register-controller).
+L'opération initiale est effectuée après l'installation du Contrôleur JS7, de l'Agent et du JOC Cockpit. L'enregistrement de l'Agent a lieu après l'achèvement de [Initial Operation - Register Controller](/initial-operation-register-controller).
 
 ## Enregistrer un Agent Autonome
 

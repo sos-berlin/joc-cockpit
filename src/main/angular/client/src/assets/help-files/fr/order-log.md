@@ -27,7 +27,7 @@ La sortie du journal indique les horodatages provenant de différentes sources :
 - **Heure de la Tâche** : La sortie des tâches utilise le fuseau horaire du serveur sur lequel la tâche sera exécuté ou le fuseau horaire spécifié dans l'implémentation de la tâche.
 - **Heure du Contrôleur** : Les événements finaux tels que *OrderFinished* sont créés par le Contrôleur et reflètent l'horloge en temps réel du Contrôleur.
 
-Le *Ordre Log View* convertit les horodatages en fonction du fuseau horaire de l'utilisateur, si le paramètre correspondant dans le site [Profile - Preferences](/profile-preferences) est actif. Sinon, les fuseaux horaires du Contrôleur et de l'Agent seront utilisés.
+Le *Ordre Log View* convertit les horodatages en fonction du fuseau horaire de l'utilisateur, si le paramètre correspondant dans [Profile - Preferences](/profile-preferences) est actif. Sinon, les fuseaux horaires du Contrôleur et de l'Agent seront utilisés.
 
 Si les horloges en temps réel du Contrôleur et de l'Agent ne sont pas synchronisées, la sortie du journal peut suggérer un déplacement dans le temps.
 

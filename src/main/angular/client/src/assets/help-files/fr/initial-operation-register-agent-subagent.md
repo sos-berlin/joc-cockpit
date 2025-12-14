@@ -1,6 +1,6 @@
 # Opération initiale - Enregistrement du Sous-Agent
 
-L'opération initiale est effectuée après l'installation du Contrôleur JS7, de l'Agent et du JOC Cockpit. L'enregistrement du Sous-Agent a lieu après l'achèvement du site [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-Cluster).
+L'opération initiale est effectuée après l'installation du Contrôleur JS7, de l'Agent et du JOC Cockpit. L'enregistrement du Sous-Agent a lieu après l'achèvement de [Initial Operation - Register Agent Cluster](/initial-operation-register-agent-Cluster).
 
 ## Architecture
 

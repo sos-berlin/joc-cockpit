@@ -1,6 +1,6 @@
 # Tableau de Bord - Workflow
 
-L'Affichage *Workflows* fournit des informations sur l'état des Workflows.
+L'affichage *Workflows* fournit des informations sur l'état des Workflows.
 
 <img src="dashboard-workflows.png" alt="Workflows" width="330" height="80" />
 
@@ -19,4 +19,3 @@ En cliquant sur le nombre de Workflows indiqué, vous accédez à la vue *Workfl
 
 - [Workflows](/workflows)
 - [JS7 - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows)
-

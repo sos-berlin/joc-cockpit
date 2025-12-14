@@ -33,7 +33,7 @@ Pour une Source d'Ordre de Fichier, les entrées suivantes sont disponibles :
   - Sous Unix, les fichiers peuvent être écrits en même temps que l'Agent les lit. Cela ne s'applique pas aux environnements Windows qui, par défaut, ne permettent pas de lire et d'écrire des fichiers en même temps.
   - Dans un premier temps, l'Agent vérifie la taille du fichier et l'heure de modification. Dans un deuxième temps, l'Agent attendra le *délai* et répétera la vérification. Si la taille du fichier et l'horodatage de la modification sont inchangés, l'Agent créera l'Ordre et, dans le cas contraire, répétera la deuxième étape.
 - **Priorité**
-  - Si un Ordre rencontre une *instruction *Resource-Lock* dans le Workflow qui limite le parallélisme, alors sa *Priorité* détermine la position dans la file d'attente des Ordres en *attente*.
+  - Si un Ordre rencontre une *instruction *Lock* dans le Workflow qui limite le parallélisme, alors sa *Priorité* détermine la position dans la file d'attente des Ordres en *attente*.
   - les *priorités* sont spécifiées à partir d'entiers négatifs, nuls et positifs ou à partir des raccourcis proposés. Une *priorité* plus élevée est prioritaire. Les raccourcis offrent les valeurs suivantes :
     - **Basse** : -20000
     - **Inférieur à la normale** : -10000

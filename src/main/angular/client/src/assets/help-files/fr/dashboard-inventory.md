@@ -1,6 +1,6 @@
 # Tableau de Bord - Inventaire
 
-L'Affichage *Inventaire* fournit des informations sur le nombre d'objets en cours d'utilisation.
+L'affichage *Inventaire* fournit des informations sur le nombre d'objets en cours d'utilisation.
 
 <img src="dashboard-inventory.png" alt="Inventaire" width="330" height="80" />
 

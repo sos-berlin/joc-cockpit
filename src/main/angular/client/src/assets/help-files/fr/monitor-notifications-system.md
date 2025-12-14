@@ -22,12 +22,12 @@ Les notifications sont affichées à partir des éléments d'information suivant
   - **<*Controller-ID*>** indique l'identifiant unique d'un Contrôleur si la *Catégorie CONTROLLER* est spécifiée.
   - **<*Agent-Name*>(<*Director-Agent*>)** indique le nom de l'Agent si la *Catégorie AGENT* est spécifiée.
   - **<*Java-class*>** indique le nom de la classe Java qui a émis la notification.
-- le type **Type** est l'un des suivants
+- **Type** est l'un des suivants
   - **WARNING** qui indique un avertissement dans le journal du produit JS7.
   - **ERROR** qui indique une erreur dans le journal du produit JS7.
 - **Message** contient le message d'erreur ou d'avertissement.
 - **Exception** indique l'exception à l'origine de la notification.
-- **Created** indique la date à laquelle la notification a été émise.
+- **Creé** indique la date à laquelle la notification a été émise.
 
 Un avertissement ou une erreur peut donner lieu à un certain nombre de notifications en fonction de la configuration correspondante, par exemple l'affichage de la notification avec cette vue et la transmission de la notification par courrier électronique. 
 
@@ -46,7 +46,7 @@ Le haut de la page propose un certain nombre de boutons de filtre qui peuvent ê
 Les boutons suivants filtrent la source des notifications :
 
 - **Tous** affiche les notifications de tous les produits JS7.
-- **Système**
+- **Système** limite les notifications aux problèmes survenus dans le système d'exploitation.
 - **JOC** limite l'affichage des notifications aux Ordres *échoués*. 
 - **Contrôleur** limite l'affichage des notifications aux Ordres qui ont provoqué des avertissements.
 - **Agent** limite l'affichage des notifications aux Ordres qui ont d'abord échoué, puis se sont rétablis en poursuivant avec succès le Workflow.
