@@ -1,12 +1,13 @@
 import {Component, inject} from '@angular/core';
 import {HttpHeaders} from '@angular/common/http';
 import {NzUploadFile} from 'ng-zorro-antd/upload';
-import {NZ_MODAL_DATA, NzModalRef} from "ng-zorro-antd/modal";
+import {NZ_MODAL_DATA, NzModalRef, NzModalService} from "ng-zorro-antd/modal";
 import {TranslateService} from "@ngx-translate/core";
 import {ToastrService} from "ngx-toastr";
 import {CoreService} from "../../services/core.service";
 import {ByteToSizePipe} from '../../pipes/core.pipe';
 import {AuthService} from '../guard';
+import {HelpViewerComponent} from "../help-viewer/help-viewer.component";
 
 @Component({
   standalone: false,
@@ -85,7 +86,7 @@ export class FileUploaderComponent {
   controller: any;
 
   constructor(private activeModal: NzModalRef, private toasterService: ToastrService, private authService: AuthService,
-              private coreService: CoreService, private translate: TranslateService) {
+              private coreService: CoreService, private translate: TranslateService, private modal: NzModalService) {
 
   }
 
@@ -601,4 +602,20 @@ export class FileUploaderComponent {
   private store(url, obj): void {
     this.coreService.post(url, obj).subscribe();
   }
+
+  helpPage(key): void{
+    this.modal.create({
+      nzTitle: undefined,
+      nzContent: HelpViewerComponent,
+      nzClassName: 'lg',
+      nzData: {
+        preferences: this.preferences,
+        helpKey: key
+      },
+      nzFooter: null,
+      nzClosable: false,
+      nzMaskClosable: false
+    })
+  }
+
 }
