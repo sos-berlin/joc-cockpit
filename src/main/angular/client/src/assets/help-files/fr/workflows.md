@@ -10,7 +10,7 @@ La vue *Workflows* permet de surveiller et de contrôler les Workflows.
 Le menu de gauche est organisé en onglets qui permettent de naviguer à partir de dossiers et de filtrer par Tags pour les Workflows et les Ordres.
 
 - **La navigation par dossier** offre l'icône chevron vers le bas lorsque vous survolez le nom d'un dossier. Cela permet d'afficher les Workflows du dossier en cours et de tous les sous-dossiers. L'utilisation de l'icône de chevron vers le haut réinitialise la sélection au dossier actuel.
-- Le filtrage par tag est proposé à partir des onglets suivants :
+- Le filtrage par Tag est proposé à partir des onglets suivants :
   - les **Tags Workflow** sont attribuées à partir de la vue [Configuration - Inventaire - Workflows](/configuration-inventory-workflows).
   - les **Tags Ordre** sont attribuées à partir de la vue [Configuration - Inventaire - Planifications](/configuration-inventory-schedules).
 

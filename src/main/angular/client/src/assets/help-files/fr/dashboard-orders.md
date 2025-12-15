@@ -4,7 +4,7 @@ L'affichage *Ordres* fournit des informations sur les Ordres provenant des sourc
 
 - Ordres ajoutés par le [Plan Quotidien](/daily-plan)
 - Ordres ajoutés à la demande par les utilisateurs de la vue [Workflows](/workflows) 
-- Ordres ajoutés à partir de [Sources d'Ordre Fichier](/configuration-inventory-file-order-sources) qui surveillent les répertoires pour les fichiers entrants
+- Ordres ajoutés à partir de [Sources d'Ordres de Fichiers](/configuration-inventory-file-order-sources) qui surveillent les répertoires pour les fichiers entrants
 
 <img src="dashboard-orders-fr.png" alt="Ordres" width="330" height="140" />
 
@@ -54,7 +54,7 @@ Le bouton déroulant situé dans le coin supérieur droit de l'affichage permet 
 - [Aperçu des Ordres](/orders-overview)
 - [Plan Quotidien](/daily-plan)
 - [Profil - Préférences](/profile-preferences)
-- [Sources d'Ordre Fichier](/configuration-inventory-file-order-sources)
+- [Sources d'Ordres de Fichiers](/configuration-inventory-file-order-sources)
 - [Workflows](/workflows)
 
 ### Product Knowledge Base

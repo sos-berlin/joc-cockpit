@@ -8,13 +8,13 @@ L'interface graphique propose un certain nombre d'onglets pour spécifier les d�
 
 Il est possible d'ajouter un nombre quelconque de Tags à une tâche. Ils sont affichés dans la vue [Workflows](/workflows) et sont optionnellement inclus dans les notifications. Pour plus de détails, voir [JS7 - Tagging Jobs](https://kb.sos-berlin.com/display/JS7/JS7+-+Tagging+-+Jobs).
 
-- **Tags** permet d'ajouter ou de supprimer des Tags. Elles peuvent être sélectionnées dans la liste des Tags existantes. La saisie d'un nom d'un tag.
+- **Tags** permet d'ajouter ou de supprimer des Tags. Elles peuvent être sélectionnées dans la liste des Tags existantes. La saisie d'un nom d'un Tag.
 
 ## Groupes de Tags
 
 Les groupes de Tags peuvent être utilisés pour organiser les Tags qui doivent partager un groupe commun. Par exemple, une tâche doit être assigné à l'une des priorités de ticket P1, P2, P3, P4 en fonction de la criticité de la tâche. Les utilisateurs peuvent saisir le groupe de Tags et le tag en les séparant par deux points, comme dans *TicketPriority:P1*, *TicketPriority:P2*, etc. La priorité de ticket d'une tâche devient disponible lorsque des notifications sont créées en cas d'échec et peut être utilisée pour alimenter un système de tickets.
 
-- **Tag-Group:Tag** permet d'ajouter ou de supprimer le tag correspondant dans le groupe de Tags spécifié. Le groupe de Tags sera créé s'il n'existe pas.
+- **Tag-Group:Tag** permet d'ajouter ou de supprimer le Tag correspondant dans le groupe de Tags spécifié. Le groupe de Tags sera créé s'il n'existe pas.
 
 ## Références
 

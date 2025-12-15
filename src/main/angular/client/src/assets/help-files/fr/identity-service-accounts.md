@@ -53,7 +53,7 @@ Les opérations suivantes sont disponibles dans le menu d'action à 3 points de 
 Les utilisateurs peuvent effectuer les opérations de masse suivantes à partir des boutons situés en haut de l'écran :
 
 - **Exporter** ajoute les comptes sélectionnés à un fichier d'exportation au format JSON qui peut être utilisé pour importer des comptes vers un autre Service d'Identité dans la même instance ou dans une instance différente de JOC Cockpit.
-- **Copier** copie les comptes sélectionnés dans un presse-papiers interne à partir duquel ils peuvent être collés dans un autre Service d'Identité de la même instance du Cockpit JOC.
+- **Copier** copie les comptes sélectionnés dans un presse-papiers interne à partir duquel ils peuvent être collés dans un autre Service d'Identité de la même instance du JOC Cockpit.
 
 Les utilisateurs peuvent sélectionner un ou plusieurs *comptes* pour effectuer les opérations ci-dessus en masse pour les *comptes* sélectionnés.
 

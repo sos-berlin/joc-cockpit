@@ -8,7 +8,7 @@ Git Repositories werden den Inventarordnern der obersten Ebene zugeordnet.
 
 - Die erste Operation besteht darin, ein entferntes Repository in ein lokales Repository zu klonen, das von JOC Cockpit verwaltet wird.
 - Die Repositories von JOC Cockpit befinden sich im Dateisystemverzeichnis *\<jetty-base\>/resources/joc/repositories*. 
-  - Das Unterverzeichnis *local* bezeichnet ein Repository, das für Objekte verwendet wird, die für eine JOC Cockpit-Instanz lokal sind, z.B. Job-Ressourcen, die spezifische Einstellungen für eine Umgebung enthalten.
+  - Das Unterverzeichnis *local* bezeichnet ein Repository, das für Objekte verwendet wird, die für eine JOC Cockpit Instanz lokal sind, z.B. Job-Ressourcen, die spezifische Einstellungen für eine Umgebung enthalten.
   - Das Unterverzeichnis *rollout* steht für ein Repository, das für Objekte verwendet wird, die in andere Umgebungen ausgerollt werden, z.B. Workflows, die in jeder Umgebung ohne Änderungen verwendet werden sollen.
   - Für die Zuordnung von Inventarobjekttypen zu Git-Repository-Typen siehe [Einstellungen - Git](/settings-git).
 - Benutzer können über das Dateisystem auf die Repositories des JOC Cockpit zugreifen und einen Git-Client für verwandte Operationen verwenden, zum Beispiel für die Verwaltung von Zweigen.

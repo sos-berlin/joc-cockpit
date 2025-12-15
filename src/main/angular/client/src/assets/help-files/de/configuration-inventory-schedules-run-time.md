@@ -35,7 +35,7 @@ Als nächstes sollten Sie einen oder mehrere Zeiträume für Startzeiten angeben
   - **Bei Nicht-Arbeitstag** gibt an, was geschehen soll, wenn ein Zeitraum auf einen Tag trifft, der in einem Kalender für Nicht-Arbeitstage angegeben ist.
     - **Ausführung verhindern** ist das Standardverhalten, um keine Aufträge zu erstellen.
     - **Nicht-Arbeitstag ignorieren** setzt den Nicht-Arbeitstagskalender außer Kraft und erstellt einen Auftrag.
-    - **Vor Nicht-Arbeitstag** fügt einen Auftrag für den nächsten Arbeitstag vor dem Nicht-Arbeitstag hinzu. Ein Beispiel:
+    - **vor Nicht-Arbeitstag** fügt einen Auftrag für den nächsten Arbeitstag vor dem Nicht-Arbeitstag hinzu. Ein Beispiel:
       - Ein Arbeitstagskalender gibt Mo-Do für Arbeitstage an. 
       - Ein Kalender für Nicht-Arbeitstage gibt einen bestimmten Montag im Jahr als Nicht-Arbeitstag an.
       - Der nächste Tag vor dem Nicht-Arbeitstag ist dann der vorherige Sonntag. Wenn Wochenenden ausgeschlossen sind und dem Kalender für Nicht-Arbeitstage hinzugefügt werden, ist der nächste Tag der vorhergehende Freitag.

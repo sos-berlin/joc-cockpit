@@ -82,10 +82,10 @@ Die folgenden Optionen legen für Jobs, die mit Agenten für Windows ausgeführt
 
 - [Bereinigungsdienst](/service-cleanup)
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Eigenschaften](/configuration-inventory-workflows-job-properties)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Knoteneigenschaften](/configuration-inventory-workflows-job-node-properties)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Benachrichtigungen](/configuration-inventory-workflows-job-notifications)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Kennzeichnungen](/configuration-inventory-workflows-job-tags)
+  - [Konfiguration - Inventar - Arbeitsablauf - Job-Eigenschaften](/configuration-inventory-workflow-job-properties)
+  - [Konfiguration - Inventar - Arbeitsablauf - Job-Knoteneigenschaften](/configuration-inventory-workflow-job-node-properties)
+  - [Konfiguration - Inventar - Arbeitsablauf - Job-Benachrichtigungen](/configuration-inventory-workflow-job-notifications)
+  - [Konfiguration - Inventar - Arbeitsablauf - Job-Kennzeichnungen](/configuration-inventory-workflow-job-tags)
 - [Prozesshistorie](/history-tasks)
 
 ### Product Knowledge Base

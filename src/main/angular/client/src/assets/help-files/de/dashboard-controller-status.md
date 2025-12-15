@@ -11,7 +11,7 @@ Jede angezeigte Controller Instanz bietet die folgenden Attribute:
 - **Status** gibt den Status der Komponente an, d.h. *betriebsfähig* oder *unbekannt*, wenn die Controller Instanz nicht erreicht werden kann.
 - **Cluster Rolle** gibt die *aktive* oder *Standby* Rolle einer Controller Instanz in einem Cluster an.
 
-Wenn Sie auf die *Controller ID* einer Instanz klicken, wechselt das Dashboard zur Anzeige des Produktstatus des entsprechenden Controller.
+Wenn Sie auf die *Controller ID* einer Instanz klicken, wechselt die Übersichtsansicht zur Anzeige des Produktstatus des entsprechenden Controller.
 
 ## Operationen für Controller Instanzen
 

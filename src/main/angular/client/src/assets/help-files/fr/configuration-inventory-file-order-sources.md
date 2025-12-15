@@ -13,7 +13,7 @@ Les Sources d'Ordres de Fichiers se voient attribuer un Workflow auquel elles aj
 Les Sources d'Ordres de Fichiers sont gérées à partir des vues suivants :
 
 - La page [Configuration - Inventaire - Navigation](/configuration-inventory-navigation), sur le côté gauche de la fenêtre, permet de naviguer dans les dossiers contenant les Sources d'Ordres de Fichiers. En outre, cette vue permet d'effectuer des opérations sur les Sources d'Ordres de Fichiers.
-- La vue des *Sources d'Ordres de Fichiers* sur le côté droit de la fenêtre contient les détails de la configuration des Sources d'Ordre de Fichierss.
+- La vue des *Sources d'Ordres de Fichiers* sur le côté droit de la fenêtre contient les détails de la configuration des Sources d'Ordres de Fichiers.
 
 ## Vue des Sources d'Ordres de Fichiers
 

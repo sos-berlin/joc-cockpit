@@ -8,7 +8,7 @@ Der Überwachungsdienst wird verwendet, um den Zustand von JS7 Produkten und Pro
 
 Dadurch werden Fehler und Warnungen, die während der Ausführung von Arbeitsabläufen auftreten, in den *Überwachung*-Unteransichten der Benutzeroberfläche sichtbar und können von [JS7 - Notifications](https://kb.sos-berlin.com/display/JS7/JS7+-+Notifications) weitergeleitet werden. Aufgrund der asynchronen Natur von JS7 Produkten wird diese Aufgabe von einem Hintergrunddienst ausgeführt.
 
-Der Überwachungsdienst wird automatisch beim Start von JOC Cockpit gestartet. Er kann in der Dashboard-Ansicht aus dem Rechteck der aktiven JOC Cockpit-Instanzen mit der Operation *Dienst neu starten - Überwachungsdienst* neu gestartet werden.
+Der Überwachungsdienst wird automatisch beim Start von JOC Cockpit gestartet. Er kann in der Übersichtsansicht aus dem Rechteck der aktiven JOC Cockpit Instanzen mit der Operation *Dienst neu starten - Überwachungsdienst* neu gestartet werden.
 
 <img src="dashboard-restart-monitor-service.png" alt="Restart Monitor Service" width="750" height="280" />
 

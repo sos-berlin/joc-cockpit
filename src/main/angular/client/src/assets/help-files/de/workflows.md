@@ -83,8 +83,8 @@ Standardmäßig ist die Anzeige von Auftragsprotokollen auf eine Größe von 10 
 - **Adresse** zeigt die Position des Jobs im Arbeitsablauf an.
 - **Status** ist das Ergebnis der Job-Ausführung, eines von *in Verarbeitung*, *erfolgreich* oder *fehlgeschlagen*.
 - **Startzeit**, **Endezeit** geben den Beginn und das Ende der Ausführung des Jobs an.
-- **Kritikalität** wird mit [Konfiguration - Inventar - Arbeitsabläufe - Job-Optionen](/configuration-inventory-workflow-job-options) konfiguriert und zeigt die Relevanz eines Jobs an: *Minor*, *Normal*, *Major*, *Critical*.
-- **Rückgabewert** ist der Exit Code eines Shell Jobs oder der Return Code eines JVM Jobs. Der Bereich [Konfiguration - Inventar - Arbeitsabläufe - Job-Eigenschaften](/configuration-inventory-workflow-job-properties) bietet die Möglichkeit, Rückgabewerte für die erfolgreiche und fehlgeschlagene Ausführung von Jobs zu konfigurieren.
+- **Kritikalität** wird mit [Konfiguration - Inventar - Arbeitsablauf - Job-Optionen](/configuration-inventory-workflow-job-options) konfiguriert und zeigt die Relevanz eines Jobs an: *Minor*, *Normal*, *Major*, *Critical*.
+- **Rückgabewert** ist der Exit Code eines Shell Jobs oder der Return Code eines JVM Jobs. Der Bereich [Konfiguration - Inventar - Arbeitsablauf - Job-Eigenschaften](/configuration-inventory-workflow-job-properties) bietet die Möglichkeit, Rückgabewerte für die erfolgreiche und fehlgeschlagene Ausführung von Jobs zu konfigurieren.
 
 Für den Zugriff auf Protokollausgaben ist die folgende Aktion verfügbar:
 
@@ -157,8 +157,8 @@ Die [Arbeitsablaufsuche](/workflows-search) bietet Kriterien für die Suche nach
 - [Aufträge hinzufügen](/workflows-orders-add)
 - [Einstellungen - JOC Cockpit](/settings-joc)
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Eigenschaften](/configuration-inventory-workflow-job-properties)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Optionen](/configuration-inventory-workflow-job-options)
+  - [Konfiguration - Inventar - Arbeitsablauf - Job-Eigenschaften](/configuration-inventory-workflow-job-properties)
+  - [Konfiguration - Inventar - Arbeitsablauf - Job-Optionen](/configuration-inventory-workflow-job-options)
 - [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules)
 - [Profil - Einstellungen](/profile-preferences)
 - [Tagesplan](/daily-plan)

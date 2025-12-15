@@ -11,7 +11,7 @@ La page *Réglages* est accessible à partir de l'icône ![wheel icon](assets/im
 Spécifie la durée maximale en minutes d'une séance inactive dans JOC Cockpit.
 
 - Si les utilisateurs sont inactifs pendant le nombre de minutes indiqué, la séance utilisateur expire et est terminée. Les utilisateurs peuvent indiquer leurs informations d'identification et se connecter pour créer une nouvelle séance utilisateur.
-- Si la durée de vie d'un jeton d'accès fourni par un Service d'Identité externe est différente de la durée maximale d'inactivité, le cockpit JOC tente de renouveler le jeton d'accès auprès du Service d'Identité. Le renouvellement d'un jeton d'accès ne nécessite pas que l'utilisateur saisisse à nouveau ses identifiants de connexion.
+- Si la durée de vie d'un jeton d'accès fourni par un Service d'Identité externe est différente de la durée maximale d'inactivité, le JOC Cockpit tente de renouveler le jeton d'accès auprès du Service d'Identité. Le renouvellement d'un jeton d'accès ne nécessite pas que l'utilisateur saisisse à nouveau ses identifiants de connexion.
 - Les Services d'Identité peuvent limiter la durée de vie des jetons d'accès (time to live) et limiter le renouvellement des jetons d'accès (maximum time to live). Si un jeton d'accès ne peut pas être renouvelé, la séance de l'utilisateur est terminée et l'utilisateur doit se connecter.
 
 ### Paramètre : *initial\_password*, Défaut : *initial*

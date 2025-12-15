@@ -14,7 +14,7 @@ Les utilisateurs peuvent ajouter, mettre à jour et supprimer des Tags pour un s
 
 <img src="Tags-manage-object.png" alt="Gérer Tags pour les Workflow" width="600" height="125" />
 
-Lors de la saisie des Tags, la liste des Tags existantes est proposée. A part cela, les utilisateurs peuvent taper le nom d'une nouveau tag. Les noms des Tags sont sensibles à la casse.
+Lors de la saisie des Tags, la liste des Tags existantes est proposée. A part cela, les utilisateurs peuvent taper le nom d'un nouveau Tag. Les noms des Tags sont sensibles à la casse.
 
 ## Gérer les Tags pour les Workflows à partir des dossiers
 
@@ -22,7 +22,7 @@ Les utilisateurs peuvent ajouter, mettre à jour et supprimer des Tags pour tous
 
 <img src="Tags-manage-folder.png" alt="Gérer Tags pour les Workflows à partir des dossiers" width="600" height="210" />
 
-La *Liste des Tags* indique le nom de la tag et les Workflows auxquels la Tag est attribuée. Les utilisateurs peuvent supprimer l'attribution d'un tag.
+La *Liste des Tags* indique le nom du Tag et les Workflows auxquels la Tag est attribuée. Les utilisateurs peuvent supprimer l'attribution d'un tag.
 
 ## Références
 

@@ -43,9 +43,9 @@ Le *Type d'Export* permet de sélectionner une modification dans la liste [Chang
 
 <img src="export-change.png" alt="Exporter Changement" width="600" height="320" />
 
-## Inclure les dépendances
+## Inclut les Dépendances
 
-Les objets de l'inventaire sont liés par des dépendances, voir [Matrice de Dépendance](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource ; une Planification référençant un Calendrier et un ou plusieurs Workflows.
+Les objets de l'inventaire sont liés par des dépendances, voir [Matrice des Dépendances](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource ; une Planification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lors de l'exportation d'objets, la cohérence est prise en compte, par exemple :
 
@@ -54,7 +54,7 @@ Lors de l'exportation d'objets, la cohérence est prise en compte, par exemple :
 
 Les utilisateurs contrôlent la cohérence de l'exportation à partir des options suivantes :
 
-- **Inclure les dépendances**
+- **Inclut les Dépendances**
   - si cette option est cochée, elle inclura à la fois les objets référents et les objets référencés situés dans n'importe quel dossier.
   - si la case n'est pas cochée, les dépendances ne sont pas prises en compte. Les utilisateurs doivent vérifier si les objets liés sont valides et déployés/publiés. Le Contrôleur émettra des messages d'erreur en cas d'objets manquants en raison d'un déploiement incohérent.
   
@@ -64,7 +64,7 @@ Les utilisateurs contrôlent la cohérence de l'exportation à partir des option
 
 - [Changements](/changes)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
-- [Matrice de Dépendance](/dependencies-matrix)
+- [Matrice des Dépendances](/dependencies-matrix)
 
 ### Product Knowledge Base
 

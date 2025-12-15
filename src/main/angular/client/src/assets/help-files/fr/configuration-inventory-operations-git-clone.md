@@ -33,7 +33,7 @@ Les valeurs ci-dessus sont données à titre d'exemple. Veuillez spécifier les 
 
 ### Aide contextuelle
 
-- [Matrice de Dépendance](/dependencies-matrix)
+- [Matrice des Dépendances](/dependencies-matrix)
 
 ### Product Knowledge Base
 

@@ -26,7 +26,7 @@ Die Anzeige erfolgt gruppiert in einem Block pro Ausrollen und in Blöcken pro I
 Wenn Sie auf das Pfeil-nach-unten-Symbol neben dem *Ausrolldatum* klicken, werden Details zu jedem Inventarobjekt angezeigt:
 
 - **Meldung** zeigt eine Fehlermeldung im Falle eines fehlgeschlagenen Ausrollens an.
-- **Objekttyp** gibt den Typ des Inventarobjekts an, z.B. *Workflow*, *Job Resource* usw.
+- **Objekttyp** gibt den Typ des Inventarobjekts an, z.B. *Workflow*, *Job-Ressource* usw.
 - **Pfad** gibt den Inventarordner und den Objektnamen an. Für Arbeitsabläufe
   - klicken Sie auf den Namen des Arbeitsablaufs, um die Ansicht [Arbeitsabläufe](/workflows) aufzurufen,
   - klicken Sie auf das Bleistiftsymbol, um zur Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows) zu gelangen.
@@ -36,5 +36,5 @@ Wenn Sie auf das Pfeil-nach-unten-Symbol neben dem *Ausrolldatum* klicken, werde
 ## Referenzen
 
 - [Arbeitsabläufe](/workflows)
-- [Configuration - Inventory- Workflows](/configuration-inventory-workflows)
+- [Configuration - Inventory - Workflows](/configuration-inventory-workflows)
 - [JS7 - Deployment of Scheduling Objects](https://kb.sos-berlin.com/display/JS7/JS7+-+Deployment+of+Scheduling+Objects)

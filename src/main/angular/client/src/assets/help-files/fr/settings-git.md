@@ -18,7 +18,7 @@ Spécifie si [Ressources - Verrous de Ressource](/resources-resource-locks) est 
 
 ### Paramètre : *git\_hold\_file\_order\_sources*, Défaut : *rollout*
 
-Ordonne si les Sources d'Ordre de Fichier sont considérées comme locales à un environnement ou destinées à être déployées avec Git.
+Ordonne si les Sources d'Ordres de Fichiers sont considérées comme locales à un environnement ou destinées à être déployées avec Git.
 
 ### Paramètre : *git\_hold\_notice\_boards*, Défaut : *rollout*
 

@@ -24,9 +24,9 @@ Le déploiement d'objets tels que les Workflows, les Planifications et les Calen
   - **Non** spécifie que le Plan Quotidien ne sera pas mis à jour. Les Ordres existants s'en tiendront à l'utilisation des versions d'objets précédemment déployées.
 - **Inclure les Ordres tardifs d'aujourd'hui** si coché, cela inclura les Ordres qui ont été planifiés pour une heure passée dans la journée en cours, mais qui sont retardés et n'ont pas démarré.
 
-## Inclure les dépendances
+## Inclut les Dépendances
 
-Les objets d'inventaire sont liés par des dépendances, voir [Matrice de Dépendance](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource; une Planification référençant un Calendrier et un ou plusieurs Workflows.
+Les objets d'inventaire sont liés par des dépendances, voir [Matrice des Dépendances](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource; une Planification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lors du déploiement des objets, la cohérence est prise en compte, par exemple :
 
@@ -35,7 +35,7 @@ Lors du déploiement des objets, la cohérence est prise en compte, par exemple 
 
 Les utilisateurs contrôlent la cohérence du déploiement à partir des options suivantes :
 
-- **Inclure les dépendances**
+- **Inclut les Dépendances**
   - si cette option est cochée, elle inclura à la fois les objets référencés et les objets référencés.
     - Si les objets liés sont à l'état de brouillon, un déploiement commun est proposé. Il sera appliqué, si nécessaire, en cas de modification des relations entre les objets.
     - Si les objets liés sont dans l'état déployé/publié, le déploiement commun est facultatif. Les utilisateurs peuvent sélectionner des objets liés pour le déploiement commun.
@@ -47,7 +47,7 @@ Les utilisateurs contrôlent la cohérence du déploiement à partir des options
 
 - [Configuration - Inventaire - Opérations - Deployer Dossier](/configuration-inventory-operations-deploy-folder)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
-- [Matrice de Dépendance](/dependencies-matrix)
+- [Matrice des Dépendances](/dependencies-matrix)
 - [Plan Quotidien](/daily-plan)
 
 ### Product Knowledge Base

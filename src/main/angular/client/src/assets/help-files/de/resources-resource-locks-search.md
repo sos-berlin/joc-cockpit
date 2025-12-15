@@ -31,7 +31,7 @@ Die erweiterte Suche ermöglicht die Suche nach Attributen:
 
 Mit dem Such-Metazeichen **\*** können Sie festlegen, dass Abhängigkeiten gesucht werden, z.B. zu einer Ressourcen-Sperre unabhängig von deren Namen:
 
-- **\*** Metazeichen für **Notice Boards** liefert Ressourcen-Sperren für Arbeitsabläufe, die ein Notice Board verwenden,
+- **\*** Metazeichen für **Notizbretter** liefert Ressourcen-Sperren für Arbeitsabläufe, die ein Notice Board verwenden,
 - **\*** Metazeichen für **Dateiauftragsquellen** gibt Ressourcen-Sperren für Arbeitsabläufe zurück, auf die eine Dateiauftragsquelle verweist.
 
 ## Referenzen

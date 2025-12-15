@@ -2,7 +2,7 @@
 
 Cette vue affiche les notifications émises par les produits JS7.
 
-- Les notifications système nécessitent la configuration du *Service de notification de journal* à partir de la page [Réglages](/settings) section [Réglages - Notifications des Journaux](/settings-log-notification). S'il est configuré, le Cockpit JOC agit comme un service syslog qui reçoit les avertissements et les erreurs des Contrôleurs et des Agents enregistrés dans le Cockpit JOC.
+- Les notifications système nécessitent la configuration du *Service de notification de journal* à partir de la page [Réglages](/settings) section [Réglages - Notifications des Journaux](/settings-log-notification). S'il est configuré, le JOC Cockpit agit comme un service syslog qui reçoit les avertissements et les erreurs des Contrôleurs et des Agents enregistrés dans le JOC Cockpit.
 - Outre l'affichage des notifications dans cette vue, celles-ci peuvent être transmises par courrier et à partir de la ligne de commande, par exemple à des produits System Monitor tiers. Pour plus d'informations, consultez le site [Configuration - Notification ](/configuration-notification).
 
 Les utilisateurs doivent savoir que les notifications peuvent être purgées par le [Service d'Assainissement](/service-cleanup). Par défaut, les notifications sont purgées si elles datent de plus d'un jour.
@@ -12,7 +12,7 @@ Les utilisateurs doivent savoir que les notifications peuvent être purgées par
 Les notifications sont affichées à partir des éléments d'information suivants :
 
 - **ID JOC Cockpit** spécifie l'identifiant unique de l'instance du JOC Cockpit. 
-  - **Le préfixe** est généralement *joc* pour une instance du cockpit JOC qui offre un accès à l'interface graphique.
+  - **Le préfixe** est généralement *joc* pour une instance du JOC Cockpit qui offre un accès à l'interface graphique.
   - **Le numéro de série** est le numéro attribué à l'instance du JOC Cockpit lors de l'installation.
 - **Catégorie** indique le produit JS7 qui a émis la notification, parmi *JOC*, *CONTROLLER*, *AGENT*.
 - **Source** indique la source de la notification 

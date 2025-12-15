@@ -23,7 +23,7 @@ La hiérarchie des dossiers connaît les types de dossiers suivants :
 - **Dossiers d'inventaire** contiennent les types d'objets suivants :
   - les objets **Contrôleur** sont déployés dans un Contrôleur et des Agents :
     - [Workflows](/configuration-inventory-workflows) incluent les Tâches et autres instructions de Workflow. Pour plus d'informations, consultez le site [JS7 - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows).
-    - [Sources d'Ordre de Fichier](/configuration-inventory-file-order-sources) sont utilisés pour le File Watching afin de démarrer automatiquement les Workflows en cas d'arrivée d'un fichier dans un répertoire. Pour plus de détails, voir [JS7 - File Watching](https://kb.sos-berlin.com/display/JS7/JS7+-+File+Watching).
+    - [Sources d'Ordres de Fichiers](/configuration-inventory-file-order-sources) sont utilisés pour le File Watching afin de démarrer automatiquement les Workflows en cas d'arrivée d'un fichier dans un répertoire. Pour plus de détails, voir [JS7 - File Watching](https://kb.sos-berlin.com/display/JS7/JS7+-+File+Watching).
     - [Resources de Tâche](/configuration-inventory-job-resources) sont utilisés pour centraliser la configuration des variables qui sont réutilisées dans un certain nombre de Jobs. Pour plus de détails, voir [JS7 - Job Resources](https://kb.sos-berlin.com/display/JS7/JS7+-+Job+Resources).
     - [Tableaux de Condition](/configuration-inventory-notice-boards) spécifient les dépendances entre les Workflows. Pour plus de détails, voir [JS7 - Notice Boards](https://kb.sos-berlin.com/display/JS7/JS7+-+Notice+Boards).
     - [Verrous de Ressource](/configuration-inventory-resource-locks) limitent l'exécution parallèle des tâches et d'autres instructions. Pour plus de détails, voir [JS7 - Resource Locks](https://kb.sos-berlin.com/display/JS7/JS7+-+Resource+Locks).
@@ -62,10 +62,10 @@ Les Tags sont considérées comme un moyen alternatif de naviguer entre les obje
 
 Des Tags peuvent être ajoutées à partir de l'icône +. Des Ordres ascendant et descendant sont disponibles. L'affichage des Tags dans d'autres vues doit être activé à partir de la page [Réglages - JOC Cockpit](/settings-joc).
 
-- En cliquant sur l'tag correspondante, les Workflows auxquels l'tag est attribuée s'affichent.
+- En cliquant sur le Tag correspondante, les Workflows auxquels le Tag est attribuée s'affichent.
 - Les Tags offrent les opérations suivantes à partir de leur menu d'action à 3 points :
-  - **Renommer** permet de modifier le nom de l'tga.
-  - **Supprimer** permet de supprimer l'tga et son affectation aux Workflows et aux tâches.
+  - **Renommer** permet de modifier le nom du Tag.
+  - **Supprimer** permet de supprimer le Tag et son affectation aux Workflows et aux tâches.
 
 ## Opérations
 
@@ -87,17 +87,17 @@ Les opérations suivantes sont disponibles pour les *dossiers d'inventaire* :
 - Opérations sur les objets du Contrôleur
   - *Workflows*
     - **Nouveau** permet de créer un Workflow.
-    - **Renommer** permet de renommer un Workflow. Les dépendances d'objets seront prises en compte et les objets d'inventaire référents tels que *Planifications* et *Sources d'Ordre de Fichier* conserveront le nom mis à jour. Le Workflow et les objets qui s'y réfèrent seront mis à l'état de *brouillon*. Pour plus de détails, voir [Renommer Dossier](/configuration-inventory-operations-rename-folder).
+    - **Renommer** permet de renommer un Workflow. Les dépendances d'objets seront prises en compte et les objets d'inventaire référents tels que *Planifications* et *Sources d'Ordres de Fichiers* conserveront le nom mis à jour. Le Workflow et les objets qui s'y réfèrent seront mis à l'état de *brouillon*. Pour plus de détails, voir [Renommer Dossier](/configuration-inventory-operations-rename-folder).
     - **Gestion des Tags** permet d'ajouter et de supprimer des Tags vers/depuis les Workflows dans le dossier, voir [Gérer Tags](/configuration-inventory-operations-manage-tags).
     - **Export** permet de créer un fichier d'archive d'exportation au format .zip ou .tar.gz qui contient la hiérarchie des dossiers et la représentation JSON des Workflows. Pour plus de détails, voir [Exporter Dossier](/configuration-inventory-operations-export-folder).
     - **Dépôt Git** offre une intégration avec un serveur Git. Les Workflows peuvent être engagés dans des dépôts Git et peuvent être tirés et poussés. Pour plus de détails, voir [Git - Cloner Dépôt](/configuration-inventory-operations-git-clone).
-    - **Changement** offre des opérations pour la gestion des changements des Workflows. Les utilisateurs peuvent ajouter un Workflow en cours de construction à un *Change* qui permet le déploiement commun et l'exportation des objets modifiés. Pour plus de détails, voir [Changements](/changes).
+    - **Changement** offre des opérations pour la gestion des changements des Workflows. Les utilisateurs peuvent ajouter un Workflow en cours de construction à un *Changement* qui permet le déploiement commun et l'exportation des objets modifiés. Pour plus de détails, voir [Changements](/changes).
     - **Déployer** mettra les Workflows à la disposition du Contrôleur et des Agents. Les Workflows seront mis à l'état *deployed*. Pour plus de détails, voir [Deployer Dossier](/configuration-inventory-operations-deploy-folder).
-    - **Révoquer** annule une opération *Deployer* précédente. Les Workflows passeront à l'état de *brouillon*. Cela implique que les Ordres pour les Workflows seront supprimés du [Plan Quotidien](/daily-plan). Les dépendances sont prises en compte et les objets de référence tels que *Schedules* et *Sources d'Ordre de Fichier* seront également révoqués/rappelés. Pour plus de détails, voir [Révoquer Dossier](/configuration-inventory-operations-revoke-folder).
+    - **Révoquer** annule une opération *Deployer* précédente. Les Workflows passeront à l'état de *brouillon*. Cela implique que les Ordres pour les Workflows seront supprimés du [Plan Quotidien](/daily-plan). Les dépendances sont prises en compte et les objets de référence tels que *Schedules* et *Sources d'Ordres de Fichiers* seront également révoqués/retirés. Pour plus de détails, voir [Révoquer Dossier](/configuration-inventory-operations-revoke-folder).
     - **Supprimer** déplace les Workflows vers la Corbeille. Les Workflows supprimés peuvent être restaurés ou supprimés définitivement de la Corbeille. Pour plus d'informations, consultez [Supprimer Dossier](/configuration-inventory-operations-remove-folder).
     - **Rétablir le brouillon** supprimera la version actuelle du brouillon des Workflows. Si une version précédemment *déployée* existe, elle deviendra la version actuelle du Workflow concerné.
     - **Mettre à jour les Tâches à partir des Modèles** mettra à jour les tâches des Workflows dans le *dossier d'inventaire* sélectionné à partir des *Modèles de Tâche* situés dans n'importe quel dossier.
-  - les *Sources d'Ordre de Fichier*, *Ressources de Tâche*, *Conditions*, *Verrous de Ressource* offrent des opérations similaires à celles des *Workflows*.
+  - les *Sources d'Ordres de Fichiers*, *Ressources de Tâche*, *Tableaux de Conditions*, *Verrous de Ressource* offrent des opérations similaires à celles des *Workflows*.
 - Opérations sur les objets d'automatisation
   - **Valider** rend les objets *brouillons* disponibles
     - pour une utilisation avec d'autres objets, par exemple les *Blocs Scripts* seront prises en compte pour le prochain déploiement des Workflows, les *Modèles de Tâche* peuvent être mis à jour dans le référencement des Workflows.
@@ -119,8 +119,8 @@ Les opérations suivantes sont disponibles pour les *dossiers d'inventaire* :
   - **Renommer** permet de renommer le dossier et éventuellement les objets d'inventaire inclus. Pour plus de détails, voir [Renommer Dossier](/configuration-inventory-operations-rename-folder).
   - **Gestion des Tags** permet d'ajouter et de supprimer des Tags aux/depuis les Workflows dans la hiérarchie de dossiers donnée, voir [Gérer Tags](/configuration-inventory-operations-manage-tags).
   - **Export** permet de créer un fichier d'archive d'exportation au format .zip ou .tar.gz qui contient la hiérarchie des dossiers et la représentation JSON des objets d'inventaire inclus. Pour plus de détails, voir [Exporter Dossier](/configuration-inventory-operations-export-folder).
-  - **Git Repository** offre une intégration avec un serveur Git. Les objets de l'inventaire peuvent être déposés dans des dépôts Git et peuvent être extraits et poussés. Pour plus de détails, voir [Git - Cloner Dépôt](/configuration-inventory-operations-git-clone).
-  - **Changement** offre des opérations de gestion des modifications des objets de l'inventaire. Les utilisateurs peuvent ajouter des objets tels que des Workflows en cours de construction à un *Change* qui permet le déploiement commun et l'exportation des objets modifiés. Pour plus de détails, voir [Changements](/changes).
+  - **Git Dépôt** offre une intégration avec un serveur Git. Les objets de l'inventaire peuvent être déposés dans des dépôts Git et peuvent être extraits et poussés. Pour plus de détails, voir [Git - Cloner Dépôt](/configuration-inventory-operations-git-clone).
+  - **Changement** offre des opérations de gestion des modifications des objets de l'inventaire. Les utilisateurs peuvent ajouter des objets tels que des Workflows en cours de construction à un *Changement* qui permet le déploiement commun et l'exportation des objets modifiés. Pour plus de détails, voir [Changements](/changes).
 - Opérations sur les objets du Contrôleur
   - l'opération **Déployer** met les objets à la disposition du Contrôleur et des Agents. Les objets de l'inventaire seront mis à l'état *déployé*. Pour plus de détails, voir [Deployer Dossier](/configuration-inventory-operations-deploy-folder).
   - **Révoquer** annule une opération de *Déploiement* précédente. Les objets d'inventaire passeront à l'état de *brouillon*. Cela signifie que les Ordres pour les Workflows seront supprimés de la base de données [Plan Quotidien](/daily-plan). Pour plus de détails, voir [Révoquer Dossier](/configuration-inventory-operations-revoke-folder).
@@ -180,7 +180,7 @@ Les opérations suivantes sont proposées pour les objets d'inventaire individue
 - [Règles de Dénomination des Objets](/object-naming-rules)
 - Objets du Contrôleur
   - [Workflows](/configuration-inventory-workflows)
-  - [Sources d'Ordre Fichier](/configuration-inventory-file-order-sources)
+  - [Sources d'Ordres de Fichiers](/configuration-inventory-file-order-sources)
   - [Ressources de Tâche](/configuration-inventory-job-resources)
   - [Tableaux de Condition](/configuration-inventory-notice-boards)
     - [Ressources - Tableaux de Condition](/resources-notice-boards)

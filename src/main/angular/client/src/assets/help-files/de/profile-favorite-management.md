@@ -13,7 +13,7 @@ Unter [Standalone Agent](/initial-operation-register-agent-standalone) und [Suba
 
 ### Hinzufügen von bevorzugten Agenten
 
-*Bevorzugte Agenten* können direkt bei der Zuweisung von Agenten auf der Registerkarte [Konfiguration - Inventar - Arbeitsabläufe - Job-Eigenschaften](/configuration-inventory-workflow-job-properties) hinzugefügt werden. Wenn Sie auf den Link \* für einen Agenten klicken, wird der entsprechende Agent zur Liste der Favoriten hinzugefügt.
+*Bevorzugte Agenten* können direkt bei der Zuweisung von Agenten auf der Registerkarte [Konfiguration - Inventar - Arbeitsablauf - Job-Eigenschaften](/configuration-inventory-workflow-job-properties) hinzugefügt werden. Wenn Sie auf den Link \* für einen Agenten klicken, wird der entsprechende Agent zur Liste der Favoriten hinzugefügt.
 
 Benutzer können *Bevorugte Agenten* von ihrem *Profil* aus über die Schaltfläche *Favoriten hinzufügen* verwalten. Dies ermöglicht die Auswahl des Agenten, der hinzugefügt werden soll.
 
@@ -68,7 +68,7 @@ Die folgenden Operationen sind über das 3-Punkte Aktionsmenü einer *Bevorzugte
 - [Erste Inbetriebnahme - Registrierung Standalone Agent](/initial-operation-register-agent-standalone)
 - [Erste Inbetriebnahme - Registrierung Subagent Cluster](/initial-operation-register-agent-subagent-cluster)
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
-- [Konfiguration - Inventar - Arbeitsabläufe - Job-Eigenschaften](/configuration-inventory-workflow-job-properties)
+- [Konfiguration - Inventar - Arbeitsablauf - Job-Eigenschaften](/configuration-inventory-workflow-job-properties)
 - [Profil](/profile)
 
 ### Product Knowledge Base

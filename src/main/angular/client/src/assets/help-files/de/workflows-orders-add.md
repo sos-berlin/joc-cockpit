@@ -43,7 +43,7 @@ Wenn ein Auftrag nicht mit dem ersten Knoten im Arbeitsablauf beginnen soll, kan
   - Wenn der Auftrag auf eine Ressourcen-Sperre im Arbeitsablauf trifft, die die Parallelität einschränkt, dann bestimmt seine *Priorität* die Position in der Warteschlange der *wartenden* Aufträge.
   - *Prioritäten* werden mit negativen, null und positiven Ganzzahlen oder mit den angebotenen Abkürzungen angegeben. Eine höhere *Priorität* hat Vorrang. Die Abkürzungen bieten die folgenden Werte:
     - **Niedrig**: -20000
-    - **Niedrig Normal**: -10000
+    - **Niedriger als Normal**: -10000
     - **Normal**: 0
     - **Höher als Normal**: 10000
     - **Hoch**: 20000
@@ -63,6 +63,6 @@ Wenn ein Auftrag nicht mit dem ersten Knoten im Arbeitsablauf beginnen soll, kan
 
 ## Referenzen
 
-- [Einstellungen - JOC Cockpit](/settings-joc)
 - [Arbeitsabläufe](/workflows)
+- [Einstellungen - JOC Cockpit](/settings-joc)
 - [JS7 - Workflows](https://kb.sos-berlin.com/display/JS7/JS7+-+Workflows)

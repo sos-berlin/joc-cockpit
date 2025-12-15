@@ -52,7 +52,7 @@ Die folgenden Operationen sind über das 3-Punkte Aktionsmenü eines jeden Konto
 
 Benutzer finden die folgenden Massenoperationen über Schaltflächen am oberen Bildschirmrand:
 
-- **Exportieren** fügt ausgewählte Konten zu einer Exportdatei im JSON-Format hinzu, die für den Import von Konten in einen anderen Identitätsdienst in derselben oder einer anderen JOC Cockpit-Instanz verwendet werden kann.
+- **Exportieren** fügt ausgewählte Konten zu einer Exportdatei im JSON-Format hinzu, die für den Import von Konten in einen anderen Identitätsdienst in derselben oder einer anderen JOC Cockpit Instanz verwendet werden kann.
 - **Kopieren** kopiert die ausgewählten Konten in eine interne Zwischenablage, aus der sie in einen anderen Identitätsdienst in derselben JOC Cockpit Instanz eingefügt werden können.
 
 Benutzer können ein oder mehrere *Konten* auswählen, um die oben genannten Operationen für die ausgewählten *Konten* im Ganzen durchzuführen.

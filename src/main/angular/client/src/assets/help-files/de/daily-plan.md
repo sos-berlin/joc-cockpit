@@ -100,7 +100,7 @@ Für verwandte Arbeitsabläufe, die Variablen angeben, können die Werte geände
 
 Eine Position kann angegeben werden, wenn der Auftrag nicht beim ersten Knoten im Arbeitsablauf, sondern bei einem späteren Knoten beginnen soll.
 
-- **Blockposition**: Für Arbeitsabläufe, die Blockanweisungen wie *Try/Catch*, *Resource Lock*, *Fork/Join* enthalten, kann die entsprechende Anweisung ausgewählt werden.
+- **Blockposition**: Für Arbeitsabläufe, die Blockanweisungen wie *Try/Catch*, *Lock*, *Fork/Join* enthalten, kann die entsprechende Anweisung ausgewählt werden.
 - **Startposition**: Wenn keine *Startposition* angegeben ist, beginnt der Auftrag beim ersten Knoten im Arbeitsablauf oder bei der *Blockposition*
   - Wenn keine *Blockposition* angegeben wird, kann eine beliebige Anweisung der obersten Ebene im Arbeitsablauf ausgewählt werden, von der aus der Auftrag gestartet wird.
   - Wenn eine *Blockposition* angegeben ist, dann ist die Startposition ein Knoten auf gleicher Ebene innerhalb des Blocks.
@@ -115,7 +115,7 @@ Eine Position kann angegeben werden, wenn der Auftrag nicht beim ersten Knoten i
   - Wenn ein Auftrag auf eine *Ressourcen-Sperre* im Arbeitsablauf trifft, die die Parallelität einschränkt, dann bestimmt seine *Priorität* die Position in der Warteschlange der *wartenden* Aufträge.
   - die *Prioritäten* werden durch negative, null und positive Ganzzahlen oder durch die angebotenen Abkürzungen festgelegt. Eine höhere *Priorität* hat Vorrang. Die Abkürzungen bieten die folgenden Werte:
     - **Niedrig**: -20000
-    - **Niedrig Normal**: -10000
+    - **Niedriger als Normal**: -10000
     - **Normal**: 0
     - **Höher als Normal**: 10000
     - **Hoch**: 20000

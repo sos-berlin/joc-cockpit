@@ -9,7 +9,7 @@ Der Bereich *Inventar* liefert Informationen über die Anzahl der verwendeten Ob
 Die Inventarübersicht zählt die ausgerollten und freigegebenen Objekte. Entwürfe von Objekten, die noch nicht ausgerollt oder freigegeben wurden, werden nicht gezählt.
 
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
-- [Konfiguration - Inventar - Arbeitsabläufe - Job-Eigenschaften](/configuration-inventory-workflow-job-properties)
+- [Konfiguration - Inventar - Arbeitsablauf - Job-Eigenschaften](/configuration-inventory-workflow-job-properties)
 - [Konfiguration - Inventar - Ressourcen-Sperren](/configuration-inventory-resource-locks)
 - [Konfiguration - Inventar - Zeitpläne](/configuration-inventory-schedules)
 

@@ -28,7 +28,7 @@ Les boutons de filtrage suivants limitent l'étendue des opérations :
 
 ### Annuler les Ordres
 
-- Lorsqu'elle est appliquée aux Ordres *soumis* dans la plage de dates sélectionnée, les Ordres sont rappelés par le Contrôleur et les Agents.
+- Lorsqu'elle est appliquée aux Ordres *soumis* dans la plage de dates sélectionnée, les Ordres sont retirés par le Contrôleur et les Agents.
 - Lorsqu'elle est appliquée à des Ordres *soumis* ou *terminés*, les Ordres seront remis à l'état *planifié*.
 - L'opération est ignorée pour les Ordres *planifiés*.
 

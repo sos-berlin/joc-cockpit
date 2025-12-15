@@ -20,9 +20,9 @@ La suppression d'objets tels que les Workflows et les Planifications a un impact
 
 Les Ordres existants pour les Workflows associés seront annulés à partir des Contrôleurs et seront supprimés du Plan Quotidien.
 
-## Inclure les dépendances
+## Inclut les Dépendances
 
-Les objets d'inventaire sont liés par des dépendances, voir [Matrice de Dépendance](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource; une Planification référençant un Calendrier et un ou plusieurs Workflows.
+Les objets d'inventaire sont liés par des dépendances, voir [Matrice des Dépendances](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource; une Planification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lors de la suppression d'objets, la cohérence est prise en compte, par exemple :
 
@@ -31,7 +31,7 @@ Lors de la suppression d'objets, la cohérence est prise en compte, par exemple 
 
 Les utilisateurs contrôlent la suppression cohérente des objets à partir des options suivantes :
 
-- **Inclure les dépendances**
+- **Inclut les Dépendances**
   - si cette option est cochée, elle inclura à la fois les objets référents et les objets référencés.
     - Si des objets liés ont été précédemment déployés ou publiés, une suppression/révocation commune est proposée : l'objet pour lequel l'opération *Supprimer* est effectuée sera supprimé, les objets liés se verront proposer d'être révoqués/retirés. La révocation sera appliquée, si les relations entre les objets l'exigent.
     - Ceci s'applique également aux objets en état de brouillon qui ont été précédemment déployés ou publiés.
@@ -43,7 +43,7 @@ Les utilisateurs contrôlent la suppression cohérente des objets à partir des 
 
 - [Configuration - Inventaire - Opérations - Supprimer Objet](/configuration-inventory-operations-remove-object)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
-- [Matrice de Dépendance](/dependencies-matrix)
+- [Matrice des Dépendances](/dependencies-matrix)
 - [Plan Quotidien](/daily-plan)
 
 ### Product Knowledge Base

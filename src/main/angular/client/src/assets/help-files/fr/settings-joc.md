@@ -64,7 +64,7 @@ Les opérations d'exportation et d'importation de l'inventaire JS7 permettent d'
 
 ### Paramètre : *show\_view\_\**
 
-Ces paramètres peuvent être utilisés pour désactiver des vues individuelles qui sont disponibles à partir de l'interface graphique du cockpit JOC par les éléments du menu principal tels que Plan Quotidien, Moniteur, Workflow, etc.
+Ces paramètres peuvent être utilisés pour désactiver des vues individuelles qui sont disponibles à partir de l'interface graphique du JOC Cockpit par les éléments du menu principal tels que Plan Quotidien, Moniteur, Workflow, etc.
 
 - Ce paramètre fonctionne indépendamment des rôles et des autorisations par défaut.
 - Ce paramètre fonctionne indépendamment des rôles et des autorisations par défaut. Par conséquent, un compte d'utilisateur peut être autorisé à consulter les données de la vue Moniteur, bien que cette vue ne soit pas proposée à partir de l'interface graphique. En même temps, les données de la vue Moniteur seront disponibles pour ce compte lorsque vous utiliserez le site [REST Web Service API](/rest-api).
@@ -77,11 +77,11 @@ Spécifie que dans les vues telles que *Workflows*, *Plan Quotidien*, *Ressource
 
 ### Paramètre : *controller\_connection\_joc\_password*, *controller\_connection\_history\_password*
 
-JS7 offre une configuration cohérente sans utiliser de mots de passe. Cela inclut la connexion entre le cockpit JOC et les Contrôleurs, qui peut être sécurisée par l'authentification mutuelle du serveur HTTPS et du client. Si les utilisateurs ne souhaitent pas configurer l'authentification mutuelle pour les connexions aux Contrôleurs, un mot de passe doit être utilisé pour identifier le JOC Cockpit avec le Contrôleur.
+JS7 offre une configuration cohérente sans utiliser de mots de passe. Cela inclut la connexion entre le JOC Cockpit et les Contrôleurs, qui peut être sécurisée par l'authentification mutuelle du serveur HTTPS et du client. Si les utilisateurs ne souhaitent pas configurer l'authentification mutuelle pour les connexions aux Contrôleurs, un mot de passe doit être utilisé pour identifier le JOC Cockpit avec le Contrôleur.
 
 Cela s'applique aux deux connexions établies entre le JOC Cockpit et les Contrôleurs, qui sont reflétées par des paramètres distincts pour le *controller\_connection\_joc\_password* et le *controller\_connection\_history\_password* :
 
-- L'interface graphique du cockpit JOC utilise une connexion pour recevoir des événements, par exemple sur les transitions d'état des Ordres.
+- L'interface graphique du JOC Cockpit utilise une connexion pour recevoir des événements, par exemple sur les transitions d'état des Ordres.
 - Le service Historique est connecté à un Contrôleur pour recevoir des informations sur l'historique, telles que l'état d'exécution des tâches et toute sortie de journal des tâches.
 
 Le mot de passe est spécifié en texte clair dans la page Paramètres et sous forme de valeur hachée dans le fichier private.conf du Contrôleur.

@@ -71,8 +71,8 @@ Im 3-Punkte Aktionsmenü jeder Rolle werden die folgenden Operationen angeboten:
 
 Die folgenden Massenoperationen sind verfügbar, wenn Sie eine oder mehrere Rollen auswählen:
 
-- **Export** bietet eine Datei im JSON-Format zum Herunterladen an, die die Konfiguration der ausgewählten Rollen enthält. Die Exportdatei kann für den Import mit der gleichen oder einer anderen JOC Cockpit-Instanz verwendet werden.
-- **Kopieren** fügt die Rollen in die interne Zwischenablage ein, um sie später in einen anderen Identity Service in derselben JOC Cockpit-Instanz einzufügen.
+- **Export** bietet eine Datei im JSON-Format zum Herunterladen an, die die Konfiguration der ausgewählten Rollen enthält. Die Exportdatei kann für den Import mit der gleichen oder einer anderen JOC Cockpit Instanz verwendet werden.
+- **Kopieren** fügt die Rollen in die interne Zwischenablage ein, um sie später in einen anderen Identity Service in derselben JOC Cockpit Instanz einzufügen.
 - **Löschen** löscht die ausgewählten Rollen aus dem Inventar und aus allen Benutzerkonten, denen die Rollen zugewiesen sind.
 
 ## Referenzen

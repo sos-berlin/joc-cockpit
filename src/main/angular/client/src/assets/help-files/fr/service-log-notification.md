@@ -1,6 +1,6 @@
 # Service de Notification des Journaux
 
-[JS7 - Log Management](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Management) est proposé avec le Cockpit JOC pour la surveillance de la sortie des journaux et l'envoi des notifications créées par les instances du Contrôleur, de l'Agent et du Cockpit JOC.
+[JS7 - Log Management](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Management) est proposé avec le JOC Cockpit pour la surveillance de la sortie des journaux et l'envoi des notifications créées par les instances du Contrôleur, de l'Agent et du JOC Cockpit.
 
 Le site [JS7 - Log Notification Service](https://kb.sos-berlin.com/display/JS7/JS7+-+Log+Notification+Service) est accessible à partir de l'instance active de JOC Cockpit :
 

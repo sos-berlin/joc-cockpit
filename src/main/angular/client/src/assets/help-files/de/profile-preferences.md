@@ -67,7 +67,7 @@ Die Einstellungen gelten für die Paginierung auf jeder Seite:
 
 ### Einstellungen für Editor
 
-- **Tabulatorbreite** wird auf der Registerkarte [Konfiguration - Inventar - Arbeitsabläufe - Job-Eigenschaften](/configuration-inventory-workflow-job-properties) verwendet, wenn Sie das *Job-Skript* bearbeiten. Die Einstellung gibt die Anzahl der Leerzeichen an, die der Größe entsprechen, wenn Sie die TAB-Taste drücken.
+- **Tabulatorbreite** wird auf der Registerkarte [Konfiguration - Inventar - Arbeitsablauf - Job-Eigenschaften](/configuration-inventory-workflow-job-properties) verwendet, wenn Sie das *Job-Skript* bearbeiten. Die Einstellung gibt die Anzahl der Leerzeichen an, die der Größe entsprechen, wenn Sie die TAB-Taste drücken.
 
 ### Einstellungen für Ansichten
 
@@ -84,7 +84,7 @@ Die Einstellungen gelten für die Paginierung auf jeder Seite:
 - **Begründungen für Prüfprotokoll aktivieren** zwingt den Benutzer, einen Grund anzugeben, wenn er Objekte ändert, z.B. Aufträge hinzufügt oder abbricht, Arbeitsabläufe aussetzt usw. Die Einstellung kann über die entsprechende Seite [Einstellungen - JOC Cockpit](/settings-joc) überregelt werden.
 - **Zeitzone für Zeitstempel der Protokolle verwenden** ist anwendbar, wenn Agenten auf Servern in verschiedenen Zeitzonen oder in einer anderen Zeitzone als der des Controller Servers laufen. In dieser Situation könnte ein Auftragsprotokoll, das die Protokollausgabe einer Reihe von Jobs enthält, die mit möglicherweise unterschiedlichen Agenten ausgeführt wurden, verwirrend aussehen. Die Einstellung konvertiert die Zeitstempel des Protokolls in die im Benutzerprofil angegebene *Zeitzone*.
 - **Aktueller Controller** gilt, wenn mehr als ein Controller mit JOC Cockpit verbunden ist. Die Option wird in einer Reihe von Ansichten angeboten, zum Beispiel in der Ansicht [Auftragshistorie](/history-orders). Wenn diese Option aktiviert ist, wird die Anzeige auf Aufträge beschränkt, die an den aktuell ausgewählten Controller übermittelt wurden, andernfalls werden Aufträge aller verbundenen Controller angezeigt. Die Einstellung bestimmt den Standardwert für verwandte *Aktueller Controller*-Optionen in JOC Cockpit Ansichten.
-- **Kurzinfo für Objekte des Inventars ausschalten** bezieht sich auf die Ansicht *Konfiguration-&gt;Inventar*, die Kurzinfos anbietet, zum Beispiel für [Konfiguration - Inventar - Arbeitsabläufe - Job-Eigenschaften](/configuration-inventory-workflow-job-properties). Kurzinfos werden eingeblendet, wenn die Maus auf die Beschriftung eines Eingabefeldes bewegt wird, um den Benutzern die möglichen Eingaben zu erläutern. Während dies für Benutzer, die mit JS7 nicht allzu vertraut sind, nützlich ist, sind Kurzinfos für erfahrene Benutzer möglicherweise nicht erforderlich.
+- **Kurzinfo für Objekte des Inventars ausschalten** bezieht sich auf die Ansicht *Konfiguration-&gt;Inventar*, die Kurzinfos anbietet, zum Beispiel für [Konfiguration - Inventar - Arbeitsablauf - Job-Eigenschaften](/configuration-inventory-workflow-job-properties). Kurzinfos werden eingeblendet, wenn die Maus auf die Beschriftung eines Eingabefeldes bewegt wird, um den Benutzern die möglichen Eingaben zu erläutern. Während dies für Benutzer, die mit JS7 nicht allzu vertraut sind, nützlich ist, sind Kurzinfos für erfahrene Benutzer möglicherweise nicht erforderlich.
 - **Lizenzwarnung akzeptiert** bezieht sich auf die Verwendung von Subskriptionslizenzen, die in der Regel auf ein Jahr begrenzt sind. Vor Ablauf der Lizenz werden entsprechende Warnungen von JOC Cockpit angezeigt. Der Benutzer kann die Warnungen zum Ablauf der Lizenz unterdrücken. Details finden Sie unter [JS7 - How to manage License Expiration Warnings](https://kb.sos-berlin.com/display/JS7/JS7+-+How+to+manage+License+Expiration+Warnings).
 - **Mehr Optionen anzeigen** aktiviert den entsprechenden Schieberegler in der Ansicht *Konfiguration-&gt;Inventar*. Er bietet detailliertere Optionen für die Auftragskonfiguration, zum Beispiel auf der Registerkarte [Configuration - Inventory - Workflow - Job Options](/configuration-inventory-workflow-job-options).
 - **Listenvariable einklappen** gilt für die Ansicht [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows), die die Angabe von Arbeitsablauf-Variablen aus einer Reihe von Datentypen bietet. Wenn der Datentyp *Liste* (Array) verwendet wird, kann er eine größere Anzahl von Einträgen aufnehmen. Die Benutzer möchten möglicherweise nicht sofort sehen, dass die Listenvariablen bei der Bearbeitung eines Arbeitsablaufs erweitert werden.
@@ -117,8 +117,8 @@ Die Einstellungen gelten für die Anzeige von Arbeitsablauf-Anweisungen in der A
 - [Einstellungen - JOC Cockpit](/settings-joc)
 - [Einstellungen - Tagesplan](/settings-daily-plan)
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Optionen](/configuration-inventory-workflow-job-options)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Eigenschaften](/configuration-inventory-workflow-job-properties)
+  - [Konfiguration - Inventar - Arbeitsablauf - Job-Optionen](/configuration-inventory-workflow-job-options)
+  - [Konfiguration - Inventar - Arbeitsablauf - Job-Eigenschaften](/configuration-inventory-workflow-job-properties)
 - [Profil](/profile)
    - [Profil - Berechtigungen](/profile-permissions)
 - [Prüfprotokoll](/audit-log)

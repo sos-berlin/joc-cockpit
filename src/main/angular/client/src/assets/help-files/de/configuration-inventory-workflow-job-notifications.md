@@ -34,10 +34,10 @@ Spezifische Benachrichtigungen pro Job haben Vorrang vor den globalen Benachrich
 
 - [Benachrichtigungen](/notifications)
 - [Konfiguration - Inventar - Arbeitsabläufe](/configuration-inventory-workflows)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Optionen](/configuration-inventory-workflows-job-options)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Eigenschaften](/configuration-inventory-workflows-job-properties)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Knoteneigenschaften](/configuration-inventory-workflows-job-node-properties)
-  - [Konfiguration - Inventar - Arbeitsabläufe - Job-Kennzeichnungen](/configuration-inventory-workflows-job-tags)
+  - [Konfiguration - Inventar - Arbeitsablauf - Job-Optionen](/configuration-inventory-workflow-job-options)
+  - [Konfiguration - Inventar - Arbeitsablauf - Job-Eigenschaften](/configuration-inventory-workflow-job-properties)
+  - [Konfiguration - Inventar - Arbeitsablauf - Job-Knoteneigenschaften](/configuration-inventory-workflow-job-node-properties)
+  - [Konfiguration - Inventar - Arbeitsablauf - Job-Kennzeichnungen](/configuration-inventory-workflow-job-tags)
 - [Überwachung - Auftragsbenachrichtigungen](/monitor-notifications-order)
 - [Überwachung - Systembenachrichtigungen](/monitor-notifications-system)
 

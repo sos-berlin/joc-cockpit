@@ -4,7 +4,7 @@ Les Ordres peuvent être ajoutés à partir des sources suivantes :
 
 - Ordres ajoutés depuis la vue [Plan Quotidien](/daily-plan)
 - Ordres ajoutés à la demande par les utilisateurs à partir de la vue [Workflows](/workflows) 
-- Ordres ajoutés à partir de Sources d'Ordres de Fichier qui surveillent les répertoires pour les fichiers entrants
+- Ordres ajoutés à partir de Sources d'Ordres de Fichiers qui surveillent les répertoires pour les fichiers entrants
 
 ## États d'Ordre
 

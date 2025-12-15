@@ -37,7 +37,7 @@ Für einen Zeitplan sind die folgenden Eingaben möglich:
 
 Wenn ein Auftrag nicht vom ersten Knoten im Arbeitsablauf aus starten soll, kann eine Position angegeben werden.
 
-- **Block Position**: Für Arbeitsabläufe mit Blockanweisungen wie Try/Catch, Lock, Fork/Join kann die entsprechende Anweisung ausgewählt werden.
+- **Blockposition**: Für Arbeitsabläufe mit Blockanweisungen wie Try/Catch, Lock, Fork/Join kann die entsprechende Anweisung ausgewählt werden.
 - **Startposition**: Wenn keine *Startposition* angegeben wird, beginnt der Auftrag mit dem ersten Knoten.
   - Wenn keine *Blockposition* angegeben wird, kann eine beliebige Anweisung der ersten Ebene im Arbeitsablauf ausgewählt werden, von der aus der Auftrag gestartet werden soll.
   - Wenn eine *Blockposition* angegeben ist, ist die *Startposition* ein Knoten auf gleicher Ebene innerhalb des Blocks.

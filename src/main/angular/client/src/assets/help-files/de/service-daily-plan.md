@@ -6,7 +6,7 @@ Der Tagesplandienst führt bestehende [JS7 - Schedules](https://kb.sos-berlin.co
 
 Eine ähnliche Funktionalität steht in der Ansicht *Tagesplan* für die manuelle Verwendung durch Benutzer zur Verfügung. Der Tagesplandienst führt diese Aufgabe jedoch automatisch aus.
 
-Der Tagesplandienst wird auf der Grundlage seiner Einstellungen gestartet und kann in der Dashboard-Ansicht aus dem Rechteck der aktiven JOC Cockpit-Instanzen mit der Operation *Dienst starten - Tagesplandienst* gestartet werden. Es hat keinen negativen Einfluss, den Tagesplandienst mehrmals am Tag zu starten.
+Der Tagesplandienst wird auf der Grundlage seiner Einstellungen gestartet und kann in der Übersichtsansicht aus dem Rechteck der aktiven JOC Cockpit Instanzen mit der Operation *Dienst starten - Tagesplandienst* gestartet werden. Es hat keinen negativen Einfluss, den Tagesplandienst mehrmals am Tag zu starten.
 
 <img src="dashboard-run-daily-plan-service.png" alt="Run Daily Plan Service" width="750" height="280" />
 

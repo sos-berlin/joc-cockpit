@@ -37,7 +37,7 @@ Les modifications apportées aux noms d'objets font passer les objets inclus à 
 
 ## Dépendances
 
-Les objets de l'inventaire sont liés par des dépendances, voir [Matrice de Dépendance](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource; une Planification référençant un Calendrier et un ou plusieurs Workflows.
+Les objets de l'inventaire sont liés par des dépendances, voir [Matrice des Dépendances](/dependencies-matrix). Par exemple, un Workflow référençant une Ressource de Tâche et un Verrou de Ressource; une Planification référençant un Calendrier et un ou plusieurs Workflows.
 
 Lorsque vous renommez des objets, la cohérence est prise en compte et les objets référents sont mis à jour et mis à l'état de brouillon, par exemple :
 
@@ -56,7 +56,7 @@ Lorsque vous renommez des objets, la cohérence est prise en compte et les objet
 
 - [Configuration - Inventaire - Opérations - Renommer Objet](/configuration-inventory-operations-rename-object)
 - [Configuration - Inventaire - Workflows](/configuration-inventory-workflows)
-- [Matrice de Dépendance](/dependencies-matrix)
+- [Matrice des Dépendances](/dependencies-matrix)
 - [Plan Quotidien](/daily-plan)
 - [Règles de Dénomination des Objets](/object-naming-rules)
 

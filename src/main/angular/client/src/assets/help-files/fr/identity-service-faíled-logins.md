@@ -5,7 +5,7 @@ Les Services d'Identité règlent l'accès au JOC Cockpit par l'authentification
 Les comptes d'utilisateurs qui ne parviennent pas à se connecter sont enregistrés dans la sous-vue *Échecs de Connexion*.
 
 - La liste des connexions échouées comprend des entrées pour tous les Services d'Identité qui ont été déclenchés sans succès. Si plusieurs Services d'Identité optionnels sont utilisés, la connexion est considérée comme réussie si l'un des Services d'Identité a été déclenché avec succès. Dans ce cas, aucun échec de connexion n'est signalé.
-- Le Cockpit JOC met en œuvre des délais pour les échecs répétés de connexion afin d'empêcher l'analyse des temps de réponse et de prévenir les attaques par force brute.
+- Le JOC Cockpit met en œuvre des délais pour les échecs répétés de connexion afin d'empêcher l'analyse des temps de réponse et de prévenir les attaques par force brute.
 - Notez qu'un certain nombre de fournisseurs d'identité, par exemple LDAP utilisé pour l'accès à Active Directory, peuvent ne pas accepter des tentatives de connexion échouées à plusieurs reprises et bloquer le compte d'utilisateur concerné.
 
 Les utilisateurs doivent savoir que les données historiques relatives aux échecs de connexion sont susceptibles d'être supprimées par le [Service d'Assainissement](/service-cleanup).

@@ -76,7 +76,7 @@ Les boutons de filtrage suivants limitent la portée des opérations :
 - **Soumettre des Ordres**
   - Lorsqu'il s'agit d'Ordres *planifiés*, ils passent à l'état *soumis* et sont transmis au Contrôleur et aux Agents.
 - **Annuler les Ordres**
-  - Lorsqu'il s'agit d'Ordres *soumis*, les Ordres sont rappelés par le Contrôleur et les Agents et passent à l'état *planifié*.
+  - Lorsqu'il s'agit d'Ordres *soumis*, les Ordres sont retirés par le Contrôleur et les Agents et passent à l'état *planifié*.
 - **Supprimer les Ordres**
   - Lorsqu'il s'agit d'Ordres *planifiés*, les Ordres sont retirés du Plan Quotidien. Une exécution ultérieure du Service Plan Quotidien n'essaiera pas d'ajouter des Ordres à la date donnée.
 - **Copier les Ordres**

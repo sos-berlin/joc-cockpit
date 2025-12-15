@@ -10,7 +10,7 @@ Es werden die Rollen angezeigt, die dem Benutzerkonto zugewiesen wurden. Die dar
 
 ### JOC Cockpit Berechtigungen
 
-Die Berechtigungen werden für alle JOC Cockpit-Instanzen angezeigt.
+Die Berechtigungen werden für alle JOC Cockpit Instanzen angezeigt.
  
 ### Controller Berechtigungen
 
