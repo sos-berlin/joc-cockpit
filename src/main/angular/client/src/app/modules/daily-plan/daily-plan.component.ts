@@ -2218,10 +2218,17 @@ export class DailyPlanComponent {
     let d;
     if (date) {
       d = date;
-    } else if (this.selectedYear && this.selectedMonth) {
-      d = new Date(this.selectedYear, this.selectedMonth, 1);
     } else {
-      d = new Date();
+      const calendar = $('#full-calendar').data('calendar');
+      if (calendar && calendar.getYear) {
+        const calendarYear = calendar.getYear();
+        const calendarMonth = calendar.getMonth ? calendar.getMonth() : this.selectedMonth;
+        d = new Date(calendarYear, calendarMonth, 1);
+      } else if (this.selectedYear && (this.selectedMonth || this.selectedMonth === 0)) {
+        d = new Date(this.selectedYear, this.selectedMonth, 1);
+      } else {
+        d = new Date();
+      }
     }
     const firstDay = new Date(d.getFullYear(), d.getMonth(), 1);
     const lastDay = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 0);
