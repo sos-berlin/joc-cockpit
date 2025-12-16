@@ -52,7 +52,12 @@
                   @if (!calendar) {
                     <label nz-checkbox [(ngModel)]="cal.isChecked" name="'chk-'+ {{cal.id}}"></label>
                   }
-                  <span (click)="selectObject(cal.name)" class="m-t-xs" [ngClass]="{'p-l-sm': !calendar, 'cursor': calendar}"><i class="fa fa-calendar p-r-xs text-sm"></i>{{cal.name}}</span>
+                  <span (click)="selectObject(cal)" class="m-t-xs" [ngClass]="{'p-l-sm': !calendar, 'cursor': calendar}">
+                    <i class="fa fa-calendar p-r-xs text-sm"></i>{{cal.name}}
+                    @if (!cal.released) {
+                      <span class="text-warning text-xs" [nz-tooltip]="'runtime.label.notReleased' | translate"> (Draft)</span>
+                    }
+                  </span>
                 </div>
               }
             </ng-container>

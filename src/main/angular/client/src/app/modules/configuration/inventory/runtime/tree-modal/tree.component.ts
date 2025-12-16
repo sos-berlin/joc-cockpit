@@ -80,8 +80,10 @@ export class TreeModalComponent {
     this.searchTerm.next(searchValue);
   }
 
-  selectObject(name): void {
-    this.activeModal.close([{calendarName: name, periods: []}]);
+  selectObject(cal): void {
+    const calendarName = typeof cal === 'string' ? cal : cal.name;
+    const released = typeof cal === 'object' ? cal.released : undefined;
+    this.activeModal.close([{calendarName: calendarName, periods: [], released: released}]);
   }
 
   selectNode(e): void {
@@ -126,7 +128,11 @@ export class TreeModalComponent {
         if (nodes[i].calendars) {
           for (let j = 0; j < nodes[i].calendars.length; j++) {
             if (nodes[i].calendars[j].isChecked) {
-              self.objects.push({calendarName: nodes[i].calendars[j].name, periods: []});
+              self.objects.push({
+                calendarName: nodes[i].calendars[j].name,
+                periods: [],
+                released: nodes[i].calendars[j].released
+              });
             }
           }
         }

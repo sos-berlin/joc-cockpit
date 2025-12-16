@@ -1703,11 +1703,80 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
     this.editor.showPlanned = false;
   }
 
+  hasUnreleasedCalendars(): boolean {
+    const hasUnreleasedWorkingDay = this.calendars.some(cal => cal.released === false);
+    const hasUnreleasedNonWorkingDay = this.nonWorkingDayCalendars.some(cal => cal.released === false);
+    return hasUnreleasedWorkingDay || hasUnreleasedNonWorkingDay;
+  }
+
+  canShowPreview(): boolean {
+    return this.calendars.length > 0 && !this.hasUnreleasedCalendars();
+  }
+
+  private enrichCalendarsWithReleaseStatus(): void {
+    // Use inventory/search API to get all calendars with released status
+    this.coreService.post('inventory/search', {
+      returnType: 'CALENDAR'
+    }).subscribe({
+      next: (res: any) => {
+        if (res.results && res.results.length > 0) {
+          // Enrich working day calendars
+          if (this.calendars && this.calendars.length > 0) {
+            this.calendars.forEach(calendar => {
+              const calData = res.results.find(result =>
+                result.objectType === 'WORKINGDAYSCALENDAR' && (
+                  calendar.calendarName === result.path ||
+                  calendar.calendarName === result.name ||
+                  calendar.calendarName.endsWith('/' + result.name) ||
+                  result.path.endsWith('/' + calendar.calendarName)
+                )
+              );
+              if (calData) {
+                calendar.released = calData.released;
+              }
+            });
+          }
+
+          if (this.nonWorkingDayCalendars && this.nonWorkingDayCalendars.length > 0) {
+            this.nonWorkingDayCalendars.forEach((cal, index) => {
+              const calName = typeof cal === 'string' ? cal : cal.calendarName;
+              const calData = res.results.find(result =>
+                result.objectType === 'NONWORKINGDAYSCALENDAR' && (
+                  calName === result.path ||
+                  calName === result.name ||
+                  calName.endsWith('/' + result.name) ||
+                  result.path.endsWith('/' + calName)
+                )
+              );
+              if (calData) {
+                if (typeof this.nonWorkingDayCalendars[index] === 'object') {
+                  this.nonWorkingDayCalendars[index].released = calData.released;
+                } else {
+                  this.nonWorkingDayCalendars[index] = {
+                    calendarName: calData.path,
+                    released: calData.released
+                  };
+                }
+              }
+            });
+          }
+
+          this.ref.detectChanges();
+        }
+      },
+      error: (err) => {
+        console.error('Failed to fetch calendar release status', err);
+      }
+    });
+  }
+
   private init(): void {
 
     if (this.schedule.configuration) {
       this.calendars = this.schedule.configuration.calendars;
       this.nonWorkingDayCalendars = this.schedule.configuration.nonWorkingDayCalendars;
+
+      this.enrichCalendarsWithReleaseStatus();
     }
     if (this.calendars.length > 0) {
       this.timeZone = this.calendars[0].timeZone;

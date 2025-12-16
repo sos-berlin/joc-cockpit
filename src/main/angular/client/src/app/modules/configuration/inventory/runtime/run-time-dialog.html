@@ -13,7 +13,9 @@
                       class="btn btn-sm btn-grey m-r-sm m-t-sm"
                       translate type="button">runtime.button.assignNonWorkingDayCalendar
               </button>
-              <button (click)="planFromRuntime()" [disabled]="(!calendars || calendars.length === 0)"
+              <button (click)="planFromRuntime()"
+                      [disabled]="!canShowPreview()"
+                      [nz-tooltip]="hasUnreleasedCalendars() ? ('runtime.message.calendarNotReleased' | translate) : (!calendars || calendars.length === 0 ? ('runtime.message.noCalendarsAssigned' | translate) : null)"
                       class="btn btn-sm btn-grey m-t-sm"
                       translate type="button">runtime.button.showYearView
               </button>
@@ -44,9 +46,14 @@
                         @for (calendar of calendars; track $index; let i =$index) {
                           <tr [ngClass]="{'disable-link' : isTrash}">
                             <td class="cursor">
-                              <a (click)="previewCalendar(calendar, 'WORKINGDAYSCALENDAR');">
+                              <a (click)="calendar.released !== false && previewCalendar(calendar, 'WORKINGDAYSCALENDAR')"
+                                 [ngClass]="{'text-muted': calendar.released === false}"
+                                 [nz-tooltip]="calendar.released === false ? ('runtime.label.notReleased' | translate) : null">
                                 <i class="fa fa-calendar text-success"></i>&nbsp;
                                 {{calendar.calendarName}} @if (calendar.title) {<i>-</i>} {{calendar.title}}
+                                @if (calendar.released === false) {
+                                  <span class="text-warning text-xs"> (Draft)</span>
+                                }
                               </a>
                               <a (click)="editWorkingCal(calendar)"
                                  class="text-xs text-hover-primary m-l-sm"><i class="fa fa-pencil"></i>
@@ -88,9 +95,14 @@
                         @for (holiday of nonWorkingDayCalendars; track $index; let i =$index) {
                           <tr [ngClass]="{'disable-link' : isTrash}">
                             <td>
-                              <a (click)="previewCalendar(holiday, 'NONWORKINGDAYSCALENDAR');">
+                              <a (click)="holiday.released !== false && previewCalendar(holiday, 'NONWORKINGDAYSCALENDAR')"
+                                 [ngClass]="{'text-muted': holiday.released === false}"
+                                 [nz-tooltip]="holiday.released === false ? ('runtime.label.notReleased' | translate) : null">
                                 <i class="fa fa-calendar text-danger"></i>&nbsp;
                                 {{holiday.calendarName}}
+                                @if (holiday.released === false) {
+                                  <span class="text-warning text-xs"> (Draft)</span>
+                                }
                               </a>&nbsp;
                               <a (click)="removeNonWorkingCal(i)"
                                  class="text-xs text-hover-primary m-l-sm"><i class="fa fa-times text-hover-color"></i>
@@ -124,6 +136,9 @@
                      class="p-r-xs fa fa-calendar"></i>
                   {{calendar.calendarName }}
                 </label>
+                  <span class="text-muted text-xs m-l-sm">
+                    <i class="fa fa-info-circle m-r-xs"></i> <span translate>runtime.label.usingReleasedCalendars</span>
+                  </span>
               }
               <ul class="nav navbar-nav navbar-nav-inline pull-right nav-active-border nav-active-border2 b-primary">
                 <li class="nav-item">
