@@ -16,7 +16,7 @@
       <nz-autocomplete #auto>
         @for (option of objectList | orderBy: 'name'; track option) {
           <ng-container>
-            <nz-auto-option (click)="selectObject(option.name)" [nzValue]="option.path" class="min-ht-opt">
+            <nz-auto-option (click)="selectObject(option)" [nzValue]="option.path" class="min-ht-opt">
               <div class="node-wrapper p-l">
                 <div [nzTooltipMouseEnterDelay]="0.5" [nz-tooltip]="option.path?.substring(0, option.path?.lastIndexOf('/')) || '/'"
                      class="node-content-wrapper2" nzTooltipPlacement="right">

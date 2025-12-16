@@ -81,8 +81,20 @@ export class TreeModalComponent {
   }
 
   selectObject(cal): void {
-    const calendarName = typeof cal === 'string' ? cal : cal.name;
-    const released = typeof cal === 'object' ? cal.released : undefined;
+    let calendarName: string;
+    let released: boolean | undefined;
+
+    if (typeof cal === 'string') {
+      calendarName = cal;
+      released = undefined;
+    } else if (cal && typeof cal === 'object') {
+      calendarName = cal.name || cal.calendarName || cal.path;
+      released = cal.released;
+    } else {
+      calendarName = cal;
+      released = undefined;
+    }
+
     this.activeModal.close([{calendarName: calendarName, periods: [], released: released}]);
   }
 
@@ -155,15 +167,11 @@ export class TreeModalComponent {
       if (searchValueWithoutSpecialChars.length >= 2) {
         const request: any = {
           search: value,
-          returnTypes: ["CALENDAR"]
+          returnType: "CALENDAR"
         };
-        if (this.obj.token) {
-          request.token = this.obj.token;
-        }
-        this.coreService.post('inventory/quick/search', request).subscribe({
+        this.coreService.post('inventory/search', request).subscribe({
           next: (res: any) => {
-            this.obj.token = res.token;
-            this.objectList = res.results;
+            this.objectList = res.results || [];
           }
         });
       }
