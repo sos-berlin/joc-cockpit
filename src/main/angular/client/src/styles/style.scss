@@ -8028,7 +8028,7 @@ tr.tr-border td:first-child {
 .ant-dropdown-menu-submenu-title,
 .ant-dropdown-menu-item > a, .ant-dropdown-menu-submenu-title > a,
 .anticon-clock-circle {
-  color: var(--text-color);
+  color: var(--text-color) !important;
 }
 
 .ant-select-dropdown-menu-item-active > a,

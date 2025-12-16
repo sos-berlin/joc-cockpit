@@ -566,7 +566,7 @@ export class FileTransferComponent {
       this.isCustomizationSelected(true);
     }
     let obj: any = {
-      controllerId: this.yadeFilters.current == true ? this.schedulerIds.selected : '',
+      controllerId: this.yadeFilters.current == true ? '' : this.schedulerIds.selected,
       limit: parseInt(this.preferences.maxFileTransferRecords, 10) || 5000,
       compact: true
     };
