@@ -4440,5 +4440,23 @@
     "Empty": {
       "description": "Aucune donnée"
     }
+  },
+  "of": "of",
+  "helpSearch": {
+    "placeholder": "Find in document...",
+    "button.search": "Search",
+    "button.previous": "Previous",
+    "button.next": "Next",
+    "button.close": "Close search",
+    "label.matchCase": "Match case",
+    "label.wholeWord": "Match whole word",
+    "status.noResults": "No results",
+    "status.matchCount": "{{current}} of {{total}}",
+    "tooltip.search": "Search in document (Ctrl+F)",
+    "tooltip.previous": "Previous (Shift+Enter)",
+    "tooltip.next": "Next (Enter)",
+    "tooltip.close": "Close search (Esc)",
+    "tooltip.matchCase": "Match case",
+    "tooltip.wholeWord": "Match whole word"
   }
 }

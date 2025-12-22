@@ -58,6 +58,8 @@ export class AddRestrictionComponent {
   };
   nonWorkingDayCalendarsSelected = false;
 
+  calendarReleaseStatus: Map<string, boolean> = new Map();
+
   daysOptions = [
     {label: 'monday', value: '1', checked: false},
     {label: 'tuesday', value: '2', checked: false},
@@ -1320,6 +1322,9 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   toDate: any;
   calendarTitle = new Date().getFullYear();
 
+  // Store released status separately to avoid modifying schedule JSON
+  calendarReleaseStatus: Map<string, boolean> = new Map();
+
   constructor(private coreService: CoreService, public modal: NzModalService,
               private calendarService: CalendarService, private ref: ChangeDetectorRef) {
   }
@@ -1704,8 +1709,15 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   }
 
   hasUnreleasedCalendars(): boolean {
-    const hasUnreleasedWorkingDay = this.calendars.some(cal => cal.released === false);
-    const hasUnreleasedNonWorkingDay = this.nonWorkingDayCalendars.some(cal => cal.released === false);
+    const hasUnreleasedWorkingDay = this.calendars.some(cal =>
+      !this.isCalendarReleased(cal.calendarName)
+    );
+
+    const hasUnreleasedNonWorkingDay = this.nonWorkingDayCalendars.some(cal => {
+      const calName = typeof cal === 'string' ? cal : cal.calendarName;
+      return !this.isCalendarReleased(calName);
+    });
+
     return hasUnreleasedWorkingDay || hasUnreleasedNonWorkingDay;
   }
 
@@ -1714,52 +1726,17 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   }
 
   private enrichCalendarsWithReleaseStatus(): void {
-    // Use inventory/search API to get all calendars with released status
     this.coreService.post('inventory/search', {
       returnType: 'CALENDAR'
     }).subscribe({
       next: (res: any) => {
         if (res.results && res.results.length > 0) {
-          // Enrich working day calendars
-          if (this.calendars && this.calendars.length > 0) {
-            this.calendars.forEach(calendar => {
-              const calData = res.results.find(result =>
-                result.objectType === 'WORKINGDAYSCALENDAR' && (
-                  calendar.calendarName === result.path ||
-                  calendar.calendarName === result.name ||
-                  calendar.calendarName.endsWith('/' + result.name) ||
-                  result.path.endsWith('/' + calendar.calendarName)
-                )
-              );
-              if (calData) {
-                calendar.released = calData.released;
-              }
-            });
-          }
+          this.calendarReleaseStatus.clear();
 
-          if (this.nonWorkingDayCalendars && this.nonWorkingDayCalendars.length > 0) {
-            this.nonWorkingDayCalendars.forEach((cal, index) => {
-              const calName = typeof cal === 'string' ? cal : cal.calendarName;
-              const calData = res.results.find(result =>
-                result.objectType === 'NONWORKINGDAYSCALENDAR' && (
-                  calName === result.path ||
-                  calName === result.name ||
-                  calName.endsWith('/' + result.name) ||
-                  result.path.endsWith('/' + calName)
-                )
-              );
-              if (calData) {
-                if (typeof this.nonWorkingDayCalendars[index] === 'object') {
-                  this.nonWorkingDayCalendars[index].released = calData.released;
-                } else {
-                  this.nonWorkingDayCalendars[index] = {
-                    calendarName: calData.path,
-                    released: calData.released
-                  };
-                }
-              }
-            });
-          }
+          res.results.forEach(result => {
+            this.calendarReleaseStatus.set(result.path, result.released);
+            this.calendarReleaseStatus.set(result.name, result.released);
+          });
 
           this.ref.detectChanges();
         }
@@ -1768,6 +1745,22 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
         console.error('Failed to fetch calendar release status', err);
       }
     });
+  }
+
+  isCalendarReleased(calendarName: string): boolean {
+    if (!calendarName) return true;
+
+    if (this.calendarReleaseStatus.has(calendarName)) {
+      return this.calendarReleaseStatus.get(calendarName) || false;
+    }
+
+    for (const [key, value] of this.calendarReleaseStatus.entries()) {
+      if (key.endsWith('/' + calendarName) || calendarName.endsWith('/' + key)) {
+        return value;
+      }
+    }
+
+    return true;
   }
 
   private init(): void {

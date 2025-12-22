@@ -2,6 +2,7 @@ import { Component, ElementRef, HostListener, OnDestroy, OnInit, inject } from '
 import { finalize, takeUntil, catchError, timeout, retryWhen, delay, take } from 'rxjs/operators';
 import { Subject, lastValueFrom, of } from 'rxjs';
 import { NZ_MODAL_DATA, NzModalRef } from 'ng-zorro-antd/modal';
+import { TranslateService } from '@ngx-translate/core';
 import { HelpService, HelpRenderResult } from '../../services/help.service';
 import { CoreService } from '../../services/core.service';
 import { HttpClient } from '@angular/common/http';
@@ -39,6 +40,14 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
   private readonly RETRY_ATTEMPTS = 2;
   private readonly RETRY_DELAY = 2000;
 
+  searchText = '';
+  searchCaseSensitive = false;
+  searchWholeWord = false;
+  currentMatchIndex = -1;
+  totalMatches = 0;
+  private searchMatches: { element: HTMLElement; originalHtml: string }[] = [];
+  showSearchBar = false;
+
   private readonly destroy$ = new Subject<void>();
 
   constructor(
@@ -48,6 +57,7 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
     public coreService: CoreService,
     private readonly http: HttpClient,
     private toasterService: ToastrService,
+    private translate: TranslateService,
   ) {}
 
   ngOnInit(): void {
@@ -56,7 +66,6 @@ export class HelpViewerComponent implements OnInit, OnDestroy {
     this.title = this.modalData.title;
     this.preferences = sessionStorage['preferences'] ? JSON.parse(sessionStorage['preferences']) : {};
 
-    // Use user's profile language instead of separate help language filter
     const userLanguage = this.preferences.locale || localStorage['$SOS$LANG'] || 'en';
     this.help.setLanguage(userLanguage);
 
@@ -506,5 +515,230 @@ onClick(e: MouseEvent): void {
       .replace(/[^a-z0-9-]/g, '')
       .replace(/-+/g, '-')
       .replace(/^-|-$/g, '');
+  }
+
+
+  toggleSearchBar(): void {
+    this.showSearchBar = !this.showSearchBar;
+    if (!this.showSearchBar) {
+      this.clearSearch();
+    } else {
+      setTimeout(() => {
+        const searchInput = document.getElementById('help-search-input') as HTMLInputElement;
+        if (searchInput) searchInput.focus();
+      }, 100);
+    }
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardShortcut(event: KeyboardEvent): void {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'f') {
+      event.preventDefault();
+      if (!this.showSearchBar) {
+        this.toggleSearchBar();
+      }
+    }
+    if (event.key === 'Escape' && this.showSearchBar) {
+      this.toggleSearchBar();
+    }
+    if (event.key === 'Enter' && this.showSearchBar && this.searchText) {
+      event.preventDefault();
+      if (event.shiftKey) {
+        this.findPrevious();
+      } else {
+        this.findNext();
+      }
+    }
+  }
+
+  performSearch(): void {
+    this.clearHighlights();
+
+    if (!this.searchText || this.searchText.trim().length === 0) {
+      this.totalMatches = 0;
+      this.currentMatchIndex = -1;
+      return;
+    }
+
+    const root = this.host.nativeElement.querySelector('.help-md') as HTMLElement | null;
+    if (!root) return;
+
+    const searchTerm = this.searchText.trim();
+    this.searchMatches = [];
+
+    this.highlightMatches(root, searchTerm);
+
+    this.totalMatches = this.searchMatches.length;
+
+    if (this.totalMatches > 0) {
+      this.currentMatchIndex = 0;
+      this.scrollToMatch(0);
+    } else {
+      this.currentMatchIndex = -1;
+    }
+  }
+
+  handleSearchKeyDown(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      if (event.shiftKey) {
+        this.findPrevious();
+      } else {
+        this.findNext();
+      }
+    } else if (event.key === 'Escape') {
+      event.preventDefault();
+      this.toggleSearchBar();
+    }
+  }
+
+  private highlightMatches(element: HTMLElement, searchTerm: string): void {
+    const walker = document.createTreeWalker(
+      element,
+      NodeFilter.SHOW_TEXT,
+      {
+        acceptNode: (node) => {
+          const parent = node.parentElement;
+          if (parent && (parent.tagName === 'SCRIPT' || parent.tagName === 'STYLE')) {
+            return NodeFilter.FILTER_REJECT;
+          }
+          if (node.textContent && node.textContent.trim().length > 0) {
+            return NodeFilter.FILTER_ACCEPT;
+          }
+          return NodeFilter.FILTER_SKIP;
+        }
+      }
+    );
+
+    const textNodes: Text[] = [];
+    let currentNode: Node | null;
+
+    while ((currentNode = walker.nextNode())) {
+      textNodes.push(currentNode as Text);
+    }
+
+    textNodes.forEach(textNode => {
+      const text = textNode.textContent || '';
+      const matches = this.findMatchesInText(text, searchTerm);
+
+      if (matches.length > 0) {
+        const parent = textNode.parentElement;
+        if (!parent) return;
+
+        const span = document.createElement('span');
+        span.className = 'help-search-container';
+
+        let lastIndex = 0;
+        matches.forEach((match, idx) => {
+          if (match.start > lastIndex) {
+            span.appendChild(document.createTextNode(text.substring(lastIndex, match.start)));
+          }
+
+          const mark = document.createElement('mark');
+          mark.className = 'help-search-highlight';
+          mark.textContent = text.substring(match.start, match.end);
+          mark.setAttribute('data-match-index', String(this.searchMatches.length));
+          span.appendChild(mark);
+
+          this.searchMatches.push({
+            element: mark,
+            originalHtml: text.substring(match.start, match.end)
+          });
+
+          lastIndex = match.end;
+        });
+
+        if (lastIndex < text.length) {
+          span.appendChild(document.createTextNode(text.substring(lastIndex)));
+        }
+
+        parent.replaceChild(span, textNode);
+      }
+    });
+  }
+
+  private findMatchesInText(text: string, searchTerm: string): { start: number; end: number }[] {
+    const matches: { start: number; end: number }[] = [];
+
+    let searchText = this.searchCaseSensitive ? text : text.toLowerCase();
+    let searchPattern = this.searchCaseSensitive ? searchTerm : searchTerm.toLowerCase();
+
+    if (this.searchWholeWord) {
+      const regex = new RegExp(`\\b${this.escapeRegex(searchPattern)}\\b`, this.searchCaseSensitive ? 'g' : 'gi');
+      let match;
+      while ((match = regex.exec(text)) !== null) {
+        matches.push({ start: match.index, end: match.index + match[0].length });
+      }
+    } else {
+      let index = searchText.indexOf(searchPattern);
+      while (index !== -1) {
+        matches.push({ start: index, end: index + searchPattern.length });
+        index = searchText.indexOf(searchPattern, index + 1);
+      }
+    }
+
+    return matches;
+  }
+
+  private escapeRegex(str: string): string {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  findNext(): void {
+    if (this.totalMatches === 0) return;
+
+    this.currentMatchIndex = (this.currentMatchIndex + 1) % this.totalMatches;
+    this.scrollToMatch(this.currentMatchIndex);
+  }
+
+  findPrevious(): void {
+    if (this.totalMatches === 0) return;
+
+    this.currentMatchIndex = (this.currentMatchIndex - 1 + this.totalMatches) % this.totalMatches;
+    this.scrollToMatch(this.currentMatchIndex);
+  }
+
+  private scrollToMatch(index: number): void {
+    this.searchMatches.forEach(match => {
+      match.element.classList.remove('help-search-current');
+    });
+
+    if (index >= 0 && index < this.searchMatches.length) {
+      const match = this.searchMatches[index];
+      match.element.classList.add('help-search-current');
+
+      match.element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+        inline: 'nearest'
+      });
+    }
+  }
+
+  clearSearch(): void {
+    this.searchText = '';
+    this.clearHighlights();
+    this.totalMatches = 0;
+    this.currentMatchIndex = -1;
+  }
+
+  private clearHighlights(): void {
+    const containers = this.host.nativeElement.querySelectorAll('.help-search-container');
+    containers.forEach(container => {
+      const parent = container.parentElement;
+      if (parent) {
+        const textContent = container.textContent || '';
+        parent.replaceChild(document.createTextNode(textContent), container);
+      }
+    });
+
+    this.searchMatches = [];
+  }
+
+  getSearchStatus(): string {
+    if (!this.searchText || this.totalMatches === 0) {
+      return this.translate.instant('helpSearch.status.noResults');
+    }
+    return `${this.currentMatchIndex + 1} ${this.translate.instant('of')} ${this.totalMatches}`;
   }
 }

@@ -7,7 +7,7 @@ import {TranslateService} from '@ngx-translate/core';
 import {clone, extend, groupBy, isArray, isEmpty, isEqual, sortBy} from 'underscore';
 import {ClipboardService} from 'ngx-clipboard';
 import {saveAs} from 'file-saver';
-import {audit, catchError, debounceTime} from 'rxjs/operators';
+import {catchError, debounceTime} from 'rxjs/operators';
 import {NzFormatEmitEvent, NzTreeNode} from 'ng-zorro-antd/tree';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {CdkDragDrop, moveItemInArray} from "@angular/cdk/drag-drop";
@@ -278,7 +278,7 @@ export class CreateTagModalComponent {
     this.coreService.post('inventory/workflow/tags/store/folder',
       obj
     ).subscribe({
-      next: (res) => {
+      next: () => {
         this.activeModal.close('DONE');
       }, error: () => {
         this.submitted = false;
@@ -510,7 +510,6 @@ export class SingleDeployComponent {
   isAffectedCollapsed: boolean = true;
   isReferencedCollapsed: boolean = true;
   filteredAffectedItems: any[] = [];
-  selectAllFilteredAffected: { [key: string]: boolean } = {};
   relatedObjectsByType: { [key: string]: any[] } = {};
   relatedObjectTypes: string[] = [];
   selectAllRelated: { [key: string]: boolean } = {};
@@ -695,8 +694,7 @@ export class SingleDeployComponent {
           }
           resolve();
         })
-        .catch((err) => {
-
+        .catch(() => {
           reject();
         });
     });
@@ -1233,7 +1231,7 @@ export class SingleDeployComponent {
         }
         this.loading = false;
       },
-      error: (err) => {
+      error: () => {
         this.loading = false;
       }
     });
@@ -1716,114 +1714,114 @@ export class SingleDeployComponent {
     this.rebuildRelatedObjects();
   }
 
-private rebuildRelatedObjects(): void {
+  private rebuildRelatedObjects(): void {
 
-  const selectedParentIds = new Set<number>();
+    const selectedParentIds = new Set<number>();
 
-  Object.keys(this.affectedObjectsByType).forEach(type => {
-    this.affectedObjectsByType[type].forEach((obj: any) => {
-      if (obj.selected) {
-        selectedParentIds.add(obj.id);
-      }
-    });
-  });
-
-  Object.keys(this.referencedObjectsByType).forEach(type => {
-    this.referencedObjectsByType[type].forEach((obj: any) => {
-      if (obj.selected) {
-        selectedParentIds.add(obj.id);
-      }
-    });
-  });
-
-  if (selectedParentIds.size === 0) {
-    this.relatedObjectsByType = {};
-    this.relatedObjectTypes = [];
-    this.relatedParentMap.clear();
-    this.ref.detectChanges();
-    return;
-  }
-
-  const objectsMap = this.dependencies?.objects || {};
-  const tempRelatedByType: { [key: string]: any[] } = {};
-  const seenRelatedIds = new Set<number>();
-  const tempParentMap: Map<number, Set<number>> = new Map();
-
-  const existingIds = new Set<number>();
-
-  Object.values(this.affectedObjectsByType).forEach((arr: any[]) => {
-    arr.forEach(obj => existingIds.add(obj.id));
-  });
-
-  Object.values(this.referencedObjectsByType).forEach((arr: any[]) => {
-    arr.forEach(obj => existingIds.add(obj.id));
-  });
-
-  (this.dependencies.requestedItems || []).forEach((id: number) => {
-    existingIds.add(id);
-  });
-
-  selectedParentIds.forEach(selectedId => {
-    const dep = objectsMap[selectedId];
-    if (!dep) return;
-
-    const allDepsIds = [
-      ...(dep.enforcedReferencedBy || []),
-      ...(dep.enforcedReferences || [])
-
-    ];
-
-    allDepsIds.forEach(relatedId => {
-
-      if (existingIds.has(relatedId)) {
-        return;
-      }
-
-      const relatedObj = objectsMap[relatedId];
-      if (!relatedObj) return;
-
-      if (!tempParentMap.has(relatedId)) {
-        tempParentMap.set(relatedId, new Set());
-      }
-      tempParentMap.get(relatedId)!.add(selectedId);
-
-      if (seenRelatedIds.has(relatedId)) {
-        return;
-      }
-
-      seenRelatedIds.add(relatedId);
-
-      const type = relatedObj.objectType;
-      if (!tempRelatedByType[type]) {
-        tempRelatedByType[type] = [];
-      }
-
-      const isEnforced = true;
-
-      const state = this.getDependencyState(relatedObj, isEnforced);
-
-      tempRelatedByType[type].push({
-        ...relatedObj,
-        enforce: true,
-        selected: state.selected,
-        disabled: state.disabled,
-        change: relatedObj.deployed
+    Object.keys(this.affectedObjectsByType).forEach(type => {
+      this.affectedObjectsByType[type].forEach((obj: any) => {
+        if (obj.selected) {
+          selectedParentIds.add(obj.id);
+        }
       });
     });
-  });
 
-  this.relatedParentMap = tempParentMap;
+    Object.keys(this.referencedObjectsByType).forEach(type => {
+      this.referencedObjectsByType[type].forEach((obj: any) => {
+        if (obj.selected) {
+          selectedParentIds.add(obj.id);
+        }
+      });
+    });
 
-  this.relatedObjectsByType = tempRelatedByType;
-  this.relatedObjectTypes = Object.keys(tempRelatedByType);
+    if (selectedParentIds.size === 0) {
+      this.relatedObjectsByType = {};
+      this.relatedObjectTypes = [];
+      this.relatedParentMap.clear();
+      this.ref.detectChanges();
+      return;
+    }
 
-  this.relatedObjectTypes.forEach(type => {
-    this.relatedCollapsed[type] = true;
-    this.updateParentCheckboxRelated(type);
-  });
+    const objectsMap = this.dependencies?.objects || {};
+    const tempRelatedByType: { [key: string]: any[] } = {};
+    const seenRelatedIds = new Set<number>();
+    const tempParentMap: Map<number, Set<number>> = new Map();
 
-  this.ref.detectChanges();
-}
+    const existingIds = new Set<number>();
+
+    Object.values(this.affectedObjectsByType).forEach((arr: any[]) => {
+      arr.forEach(obj => existingIds.add(obj.id));
+    });
+
+    Object.values(this.referencedObjectsByType).forEach((arr: any[]) => {
+      arr.forEach(obj => existingIds.add(obj.id));
+    });
+
+    (this.dependencies.requestedItems || []).forEach((id: number) => {
+      existingIds.add(id);
+    });
+
+    selectedParentIds.forEach(selectedId => {
+      const dep = objectsMap[selectedId];
+      if (!dep) return;
+
+      const allDepsIds = [
+        ...(dep.enforcedReferencedBy || []),
+        ...(dep.enforcedReferences || [])
+
+      ];
+
+      allDepsIds.forEach(relatedId => {
+
+        if (existingIds.has(relatedId)) {
+          return;
+        }
+
+        const relatedObj = objectsMap[relatedId];
+        if (!relatedObj) return;
+
+        if (!tempParentMap.has(relatedId)) {
+          tempParentMap.set(relatedId, new Set());
+        }
+        tempParentMap.get(relatedId)!.add(selectedId);
+
+        if (seenRelatedIds.has(relatedId)) {
+          return;
+        }
+
+        seenRelatedIds.add(relatedId);
+
+        const type = relatedObj.objectType;
+        if (!tempRelatedByType[type]) {
+          tempRelatedByType[type] = [];
+        }
+
+        const isEnforced = true;
+
+        const state = this.getDependencyState(relatedObj, isEnforced);
+
+        tempRelatedByType[type].push({
+          ...relatedObj,
+          enforce: true,
+          selected: state.selected,
+          disabled: state.disabled,
+          change: relatedObj.deployed
+        });
+      });
+    });
+
+    this.relatedParentMap = tempParentMap;
+
+    this.relatedObjectsByType = tempRelatedByType;
+    this.relatedObjectTypes = Object.keys(tempRelatedByType);
+
+    this.relatedObjectTypes.forEach(type => {
+      this.relatedCollapsed[type] = true;
+      this.updateParentCheckboxRelated(type);
+    });
+
+    this.ref.detectChanges();
+  }
 
 
   getIcon(objectType: string): string {
@@ -3413,114 +3411,114 @@ export class DeployComponent {
     return objects.filter(obj => obj.objectType === type);
   }
 
-private rebuildRelatedObjects(): void {
-  this.relatedObjectsByType = {};
-  this.relatedObjectTypes = [];
-  this.relatedParentMap.clear();
+  private rebuildRelatedObjects(): void {
+    this.relatedObjectsByType = {};
+    this.relatedObjectTypes = [];
+    this.relatedParentMap.clear();
 
-  if (!this.dependencies?.objects) {
-    this.ref.detectChanges();
-    return;
-  }
-
-  const objectsMap = this.dependencies.objects;
-
-  const selectedParentIds = new Set<number>();
-  Object.keys(this.affectedObjectsByType).forEach((type) => {
-    this.affectedObjectsByType[type].forEach((obj: any) => {
-      if (obj.selected && obj.id) {
-        selectedParentIds.add(obj.id);
-      }
-    });
-  });
-
-  Object.keys(this.referencedObjectsByType).forEach((type) => {
-    this.referencedObjectsByType[type].forEach((obj: any) => {
-      if (obj.selected && obj.id) {
-        selectedParentIds.add(obj.id);
-      }
-    });
-  });
-
-  if (selectedParentIds.size === 0) {
-    this.ref.detectChanges();
-    return;
-  }
-
-  const existingIds = new Set<number>();
-  Object.values(this.affectedObjectsByType).forEach((arr: any) => {
-    arr.forEach((obj) => existingIds.add(obj.id));
-  });
-  Object.values(this.referencedObjectsByType).forEach((arr: any) => {
-    arr.forEach((obj) => existingIds.add(obj.id));
-  });
-
-  (this.dependencies.requestedItems || []).forEach((id: number) => existingIds.add(id));
-
-  const relatedObjectsById = new Map<number, any>();
-  const parentMap = new Map<number, Set<number>>();
-
-  selectedParentIds.forEach((parentId) => {
-    const parentObj = objectsMap[parentId];
-    if (!parentObj) return;
-
-    const allDependencyIds = [
-      ...(parentObj.enforcedReferencedBy || []),
-      ...(parentObj.enforcedReferences || [])
-
-    ];
-
-    allDependencyIds.forEach((depId) => {
-
-      if (existingIds.has(depId)) return;
-
-      const depObj = objectsMap[depId];
-      if (!depObj) return;
-
-      if (!parentMap.has(depId)) {
-        parentMap.set(depId, new Set());
-      }
-      parentMap.get(depId)!.add(parentId);
-
-      if (!relatedObjectsById.has(depId)) {
-
-        const isEnforced = true;
-
-        const state = this.getDependencyState(depObj, isEnforced);
-
-        relatedObjectsById.set(depId, {
-          ...depObj,
-          enforce: true,
-          selected: state.selected,
-          disabled: state.disabled,
-          change: depObj.deployed
-        });
-      }
-    });
-  });
-
-  const tempRelatedByType: { [key: string]: any[] } = {};
-  relatedObjectsById.forEach((obj) => {
-    const type = obj.objectType;
-    if (!tempRelatedByType[type]) {
-      tempRelatedByType[type] = [];
+    if (!this.dependencies?.objects) {
+      this.ref.detectChanges();
+      return;
     }
-    tempRelatedByType[type].push(obj);
-  });
 
-  this.relatedParentMap = parentMap;
-  this.relatedObjectsByType = tempRelatedByType;
-  this.relatedObjectTypes = Object.keys(tempRelatedByType);
+    const objectsMap = this.dependencies.objects;
 
-  this.relatedObjectTypes.forEach((type) => {
-    if (this.relatedCollapsed[type] === undefined) {
-      this.relatedCollapsed[type] = true;
+    const selectedParentIds = new Set<number>();
+    Object.keys(this.affectedObjectsByType).forEach((type) => {
+      this.affectedObjectsByType[type].forEach((obj: any) => {
+        if (obj.selected && obj.id) {
+          selectedParentIds.add(obj.id);
+        }
+      });
+    });
+
+    Object.keys(this.referencedObjectsByType).forEach((type) => {
+      this.referencedObjectsByType[type].forEach((obj: any) => {
+        if (obj.selected && obj.id) {
+          selectedParentIds.add(obj.id);
+        }
+      });
+    });
+
+    if (selectedParentIds.size === 0) {
+      this.ref.detectChanges();
+      return;
     }
-    this.updateParentCheckboxRelated(type);
-  });
 
-  this.ref.detectChanges();
-}
+    const existingIds = new Set<number>();
+    Object.values(this.affectedObjectsByType).forEach((arr: any) => {
+      arr.forEach((obj) => existingIds.add(obj.id));
+    });
+    Object.values(this.referencedObjectsByType).forEach((arr: any) => {
+      arr.forEach((obj) => existingIds.add(obj.id));
+    });
+
+    (this.dependencies.requestedItems || []).forEach((id: number) => existingIds.add(id));
+
+    const relatedObjectsById = new Map<number, any>();
+    const parentMap = new Map<number, Set<number>>();
+
+    selectedParentIds.forEach((parentId) => {
+      const parentObj = objectsMap[parentId];
+      if (!parentObj) return;
+
+      const allDependencyIds = [
+        ...(parentObj.enforcedReferencedBy || []),
+        ...(parentObj.enforcedReferences || [])
+
+      ];
+
+      allDependencyIds.forEach((depId) => {
+
+        if (existingIds.has(depId)) return;
+
+        const depObj = objectsMap[depId];
+        if (!depObj) return;
+
+        if (!parentMap.has(depId)) {
+          parentMap.set(depId, new Set());
+        }
+        parentMap.get(depId)!.add(parentId);
+
+        if (!relatedObjectsById.has(depId)) {
+
+          const isEnforced = true;
+
+          const state = this.getDependencyState(depObj, isEnforced);
+
+          relatedObjectsById.set(depId, {
+            ...depObj,
+            enforce: true,
+            selected: state.selected,
+            disabled: state.disabled,
+            change: depObj.deployed
+          });
+        }
+      });
+    });
+
+    const tempRelatedByType: { [key: string]: any[] } = {};
+    relatedObjectsById.forEach((obj) => {
+      const type = obj.objectType;
+      if (!tempRelatedByType[type]) {
+        tempRelatedByType[type] = [];
+      }
+      tempRelatedByType[type].push(obj);
+    });
+
+    this.relatedParentMap = parentMap;
+    this.relatedObjectsByType = tempRelatedByType;
+    this.relatedObjectTypes = Object.keys(tempRelatedByType);
+
+    this.relatedObjectTypes.forEach((type) => {
+      if (this.relatedCollapsed[type] === undefined) {
+        this.relatedCollapsed[type] = true;
+      }
+      this.updateParentCheckboxRelated(type);
+    });
+
+    this.ref.detectChanges();
+  }
 
   hasDependencies(): any {
     const selectedObjects = [];
@@ -5194,114 +5192,114 @@ export class ExportComponent {
     return dependencies;
   }
 
-private rebuildRelatedObjects(): void {
-  this.relatedObjectsByType = {};
-  this.relatedObjectTypes = [];
-  this.relatedParentMap.clear();
+  private rebuildRelatedObjects(): void {
+    this.relatedObjectsByType = {};
+    this.relatedObjectTypes = [];
+    this.relatedParentMap.clear();
 
-  if (!this.dependencies?.objects) {
-    this.ref.detectChanges();
-    return;
-  }
-
-  const objectsMap = this.dependencies.objects;
-
-  const selectedParentIds = new Set<number>();
-  Object.keys(this.affectedObjectsByType).forEach((type) => {
-    this.affectedObjectsByType[type].forEach((obj: any) => {
-      if (obj.selected && obj.id) {
-        selectedParentIds.add(obj.id);
-      }
-    });
-  });
-
-  Object.keys(this.referencedObjectsByType).forEach((type) => {
-    this.referencedObjectsByType[type].forEach((obj: any) => {
-      if (obj.selected && obj.id) {
-        selectedParentIds.add(obj.id);
-      }
-    });
-  });
-
-  if (selectedParentIds.size === 0) {
-    this.ref.detectChanges();
-    return;
-  }
-
-  const existingIds = new Set<number>();
-  Object.values(this.affectedObjectsByType).forEach((arr: any) => {
-    arr.forEach((obj) => existingIds.add(obj.id));
-  });
-  Object.values(this.referencedObjectsByType).forEach((arr: any) => {
-    arr.forEach((obj) => existingIds.add(obj.id));
-  });
-
-  (this.dependencies.requestedItems || []).forEach((id: number) => existingIds.add(id));
-
-  const relatedObjectsById = new Map<number, any>();
-  const parentMap = new Map<number, Set<number>>();
-
-  selectedParentIds.forEach((parentId) => {
-    const parentObj = objectsMap[parentId];
-    if (!parentObj) return;
-
-    const allDependencyIds = [
-      ...(parentObj.enforcedReferencedBy || []),
-      ...(parentObj.enforcedReferences || [])
-
-    ];
-
-    allDependencyIds.forEach((depId) => {
-
-      if (existingIds.has(depId)) return;
-
-      const depObj = objectsMap[depId];
-      if (!depObj) return;
-
-      if (!parentMap.has(depId)) {
-        parentMap.set(depId, new Set());
-      }
-      parentMap.get(depId)!.add(parentId);
-
-      if (!relatedObjectsById.has(depId)) {
-
-        const isEnforced = true;
-
-        const state = this.getDependencyState(depObj, isEnforced);
-
-        relatedObjectsById.set(depId, {
-          ...depObj,
-          enforce: true,
-          selected: state.selected,
-          disabled: state.disabled,
-          change: depObj.deployed
-        });
-      }
-    });
-  });
-
-  const tempRelatedByType: { [key: string]: any[] } = {};
-  relatedObjectsById.forEach((obj) => {
-    const type = obj.objectType;
-    if (!tempRelatedByType[type]) {
-      tempRelatedByType[type] = [];
+    if (!this.dependencies?.objects) {
+      this.ref.detectChanges();
+      return;
     }
-    tempRelatedByType[type].push(obj);
-  });
 
-  this.relatedParentMap = parentMap;
-  this.relatedObjectsByType = tempRelatedByType;
-  this.relatedObjectTypes = Object.keys(tempRelatedByType);
+    const objectsMap = this.dependencies.objects;
 
-  this.relatedObjectTypes.forEach((type) => {
-    if (this.relatedCollapsed[type] === undefined) {
-      this.relatedCollapsed[type] = true;
+    const selectedParentIds = new Set<number>();
+    Object.keys(this.affectedObjectsByType).forEach((type) => {
+      this.affectedObjectsByType[type].forEach((obj: any) => {
+        if (obj.selected && obj.id) {
+          selectedParentIds.add(obj.id);
+        }
+      });
+    });
+
+    Object.keys(this.referencedObjectsByType).forEach((type) => {
+      this.referencedObjectsByType[type].forEach((obj: any) => {
+        if (obj.selected && obj.id) {
+          selectedParentIds.add(obj.id);
+        }
+      });
+    });
+
+    if (selectedParentIds.size === 0) {
+      this.ref.detectChanges();
+      return;
     }
-    this.updateParentCheckboxRelated(type);
-  });
 
-  this.ref.detectChanges();
-}
+    const existingIds = new Set<number>();
+    Object.values(this.affectedObjectsByType).forEach((arr: any) => {
+      arr.forEach((obj) => existingIds.add(obj.id));
+    });
+    Object.values(this.referencedObjectsByType).forEach((arr: any) => {
+      arr.forEach((obj) => existingIds.add(obj.id));
+    });
+
+    (this.dependencies.requestedItems || []).forEach((id: number) => existingIds.add(id));
+
+    const relatedObjectsById = new Map<number, any>();
+    const parentMap = new Map<number, Set<number>>();
+
+    selectedParentIds.forEach((parentId) => {
+      const parentObj = objectsMap[parentId];
+      if (!parentObj) return;
+
+      const allDependencyIds = [
+        ...(parentObj.enforcedReferencedBy || []),
+        ...(parentObj.enforcedReferences || [])
+
+      ];
+
+      allDependencyIds.forEach((depId) => {
+
+        if (existingIds.has(depId)) return;
+
+        const depObj = objectsMap[depId];
+        if (!depObj) return;
+
+        if (!parentMap.has(depId)) {
+          parentMap.set(depId, new Set());
+        }
+        parentMap.get(depId)!.add(parentId);
+
+        if (!relatedObjectsById.has(depId)) {
+
+          const isEnforced = true;
+
+          const state = this.getDependencyState(depObj, isEnforced);
+
+          relatedObjectsById.set(depId, {
+            ...depObj,
+            enforce: true,
+            selected: state.selected,
+            disabled: state.disabled,
+            change: depObj.deployed
+          });
+        }
+      });
+    });
+
+    const tempRelatedByType: { [key: string]: any[] } = {};
+    relatedObjectsById.forEach((obj) => {
+      const type = obj.objectType;
+      if (!tempRelatedByType[type]) {
+        tempRelatedByType[type] = [];
+      }
+      tempRelatedByType[type].push(obj);
+    });
+
+    this.relatedParentMap = parentMap;
+    this.relatedObjectsByType = tempRelatedByType;
+    this.relatedObjectTypes = Object.keys(tempRelatedByType);
+
+    this.relatedObjectTypes.forEach((type) => {
+      if (this.relatedCollapsed[type] === undefined) {
+        this.relatedCollapsed[type] = true;
+      }
+      this.updateParentCheckboxRelated(type);
+    });
+
+    this.ref.detectChanges();
+  }
 
   onDependencyModeChange(): void {
 
@@ -8613,114 +8611,114 @@ export class RepositoryComponent {
     }, 0);
   }
 
-private rebuildRelatedObjects(): void {
-  this.relatedObjectsByType = {};
-  this.relatedObjectTypes = [];
-  this.relatedParentMap.clear();
+  private rebuildRelatedObjects(): void {
+    this.relatedObjectsByType = {};
+    this.relatedObjectTypes = [];
+    this.relatedParentMap.clear();
 
-  if (!this.dependencies?.objects) {
-    this.ref.detectChanges();
-    return;
-  }
-
-  const objectsMap = this.dependencies.objects;
-
-  const selectedParentIds = new Set<number>();
-  Object.keys(this.affectedObjectsByType).forEach((type) => {
-    this.affectedObjectsByType[type].forEach((obj: any) => {
-      if (obj.selected && obj.id) {
-        selectedParentIds.add(obj.id);
-      }
-    });
-  });
-
-  Object.keys(this.referencedObjectsByType).forEach((type) => {
-    this.referencedObjectsByType[type].forEach((obj: any) => {
-      if (obj.selected && obj.id) {
-        selectedParentIds.add(obj.id);
-      }
-    });
-  });
-
-  if (selectedParentIds.size === 0) {
-    this.ref.detectChanges();
-    return;
-  }
-
-  const existingIds = new Set<number>();
-  Object.values(this.affectedObjectsByType).forEach((arr: any) => {
-    arr.forEach((obj) => existingIds.add(obj.id));
-  });
-  Object.values(this.referencedObjectsByType).forEach((arr: any) => {
-    arr.forEach((obj) => existingIds.add(obj.id));
-  });
-
-  (this.dependencies.requestedItems || []).forEach((id: number) => existingIds.add(id));
-
-  const relatedObjectsById = new Map<number, any>();
-  const parentMap = new Map<number, Set<number>>();
-
-  selectedParentIds.forEach((parentId) => {
-    const parentObj = objectsMap[parentId];
-    if (!parentObj) return;
-
-    const allDependencyIds = [
-      ...(parentObj.enforcedReferencedBy || []),
-      ...(parentObj.enforcedReferences || [])
-
-    ];
-
-    allDependencyIds.forEach((depId) => {
-
-      if (existingIds.has(depId)) return;
-
-      const depObj = objectsMap[depId];
-      if (!depObj) return;
-
-      if (!parentMap.has(depId)) {
-        parentMap.set(depId, new Set());
-      }
-      parentMap.get(depId)!.add(parentId);
-
-      if (!relatedObjectsById.has(depId)) {
-
-        const isEnforced = true;
-
-        const state = this.getDependencyState(depObj, isEnforced);
-
-        relatedObjectsById.set(depId, {
-          ...depObj,
-          enforce: true,
-          selected: state.selected,
-          disabled: state.disabled,
-          change: depObj.deployed
-        });
-      }
-    });
-  });
-
-  const tempRelatedByType: { [key: string]: any[] } = {};
-  relatedObjectsById.forEach((obj) => {
-    const type = obj.objectType;
-    if (!tempRelatedByType[type]) {
-      tempRelatedByType[type] = [];
+    if (!this.dependencies?.objects) {
+      this.ref.detectChanges();
+      return;
     }
-    tempRelatedByType[type].push(obj);
-  });
 
-  this.relatedParentMap = parentMap;
-  this.relatedObjectsByType = tempRelatedByType;
-  this.relatedObjectTypes = Object.keys(tempRelatedByType);
+    const objectsMap = this.dependencies.objects;
 
-  this.relatedObjectTypes.forEach((type) => {
-    if (this.relatedCollapsed[type] === undefined) {
-      this.relatedCollapsed[type] = true;
+    const selectedParentIds = new Set<number>();
+    Object.keys(this.affectedObjectsByType).forEach((type) => {
+      this.affectedObjectsByType[type].forEach((obj: any) => {
+        if (obj.selected && obj.id) {
+          selectedParentIds.add(obj.id);
+        }
+      });
+    });
+
+    Object.keys(this.referencedObjectsByType).forEach((type) => {
+      this.referencedObjectsByType[type].forEach((obj: any) => {
+        if (obj.selected && obj.id) {
+          selectedParentIds.add(obj.id);
+        }
+      });
+    });
+
+    if (selectedParentIds.size === 0) {
+      this.ref.detectChanges();
+      return;
     }
-    this.updateParentCheckboxRelated(type);
-  });
 
-  this.ref.detectChanges();
-}
+    const existingIds = new Set<number>();
+    Object.values(this.affectedObjectsByType).forEach((arr: any) => {
+      arr.forEach((obj) => existingIds.add(obj.id));
+    });
+    Object.values(this.referencedObjectsByType).forEach((arr: any) => {
+      arr.forEach((obj) => existingIds.add(obj.id));
+    });
+
+    (this.dependencies.requestedItems || []).forEach((id: number) => existingIds.add(id));
+
+    const relatedObjectsById = new Map<number, any>();
+    const parentMap = new Map<number, Set<number>>();
+
+    selectedParentIds.forEach((parentId) => {
+      const parentObj = objectsMap[parentId];
+      if (!parentObj) return;
+
+      const allDependencyIds = [
+        ...(parentObj.enforcedReferencedBy || []),
+        ...(parentObj.enforcedReferences || [])
+
+      ];
+
+      allDependencyIds.forEach((depId) => {
+
+        if (existingIds.has(depId)) return;
+
+        const depObj = objectsMap[depId];
+        if (!depObj) return;
+
+        if (!parentMap.has(depId)) {
+          parentMap.set(depId, new Set());
+        }
+        parentMap.get(depId)!.add(parentId);
+
+        if (!relatedObjectsById.has(depId)) {
+
+          const isEnforced = true;
+
+          const state = this.getDependencyState(depObj, isEnforced);
+
+          relatedObjectsById.set(depId, {
+            ...depObj,
+            enforce: true,
+            selected: state.selected,
+            disabled: state.disabled,
+            change: depObj.deployed
+          });
+        }
+      });
+    });
+
+    const tempRelatedByType: { [key: string]: any[] } = {};
+    relatedObjectsById.forEach((obj) => {
+      const type = obj.objectType;
+      if (!tempRelatedByType[type]) {
+        tempRelatedByType[type] = [];
+      }
+      tempRelatedByType[type].push(obj);
+    });
+
+    this.relatedParentMap = parentMap;
+    this.relatedObjectsByType = tempRelatedByType;
+    this.relatedObjectTypes = Object.keys(tempRelatedByType);
+
+    this.relatedObjectTypes.forEach((type) => {
+      if (this.relatedCollapsed[type] === undefined) {
+        this.relatedCollapsed[type] = true;
+      }
+      this.updateParentCheckboxRelated(type);
+    });
+
+    this.ref.detectChanges();
+  }
 
   private getDependencyState(refObj: any, isEnforced: boolean): { selected: boolean; disabled: boolean } {
     let selected = false;

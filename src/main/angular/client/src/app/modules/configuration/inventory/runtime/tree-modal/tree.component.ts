@@ -149,6 +149,7 @@ export class TreeModalComponent {
           }
         }
         recursive(nodes[i].children);
+
       }
     }
 
