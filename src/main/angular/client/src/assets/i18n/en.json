@@ -604,6 +604,7 @@
     "label.stickToDailyPlanDate": "Keep Daily Plan assignment",
     "label.updateDependencies": "Update Dependencies",
     "label.closedPlanType": "The plan is closed.",
+    "label.none": "None",
     "button.all": "All",
     "button.save": "Submit",
     "button.apply": "Apply",

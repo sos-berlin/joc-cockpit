@@ -604,6 +604,7 @@
     "label.clipboard": "クリップボード",
     "label.stickToDailyPlanDate": "実行計画日付を守る",
     "label.closedPlanType": "この実行計画はクローズされました",
+    "label.none": "None",
     "button.all": "全て",
     "button.save": "保存",
     "button.apply": "適用",

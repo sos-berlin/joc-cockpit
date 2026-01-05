@@ -604,6 +604,7 @@
     "label.stickToDailyPlanDate": "Maintenir l'adhérence au Plan Quotidien",
     "label.updateDependencies": "Actualiser les dépendances",
     "label.closedPlanType": "Le plan est fermé.",
+    "label.none": "None",
     "button.all": "Tous",
     "button.save": "Enregistrer",
     "button.apply": "Appliquer",
