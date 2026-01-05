@@ -604,6 +604,7 @@
     "label.stickToDailyPlanDate": "Zuordnung zum Tagesplan beibehalten",
     "label.updateDependencies": "Abhängigkeiten aktualisieren",
     "label.closedPlanType": "The plan is closed.",
+    "label.none": "None",
     "button.all": "Alle",
     "button.save": "Speichern",
     "button.apply": "Anwenden",

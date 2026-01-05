@@ -319,7 +319,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
     filter.type = type;
     if (type === 'ORDER') {
       filter.order.selectedView = false;
-      filter.order.workflow = this.workflow.path;
+      filter.order.workflow = this.workflow.name;
       if (this.orderHistory[this.orderHistory.length - 1]) {
         const plannedTime = new Date(this.orderHistory[this.orderHistory.length - 1].plannedTime);
         if (plannedTime.getFullYear() === 10000) {
@@ -331,7 +331,7 @@ export class WorkflowHistoryComponent implements OnChanges, OnInit, OnDestroy {
 
     } else {
       filter.task.selectedView = false;
-      filter.task.workflow = this.workflow.path;
+      filter.task.workflow = this.workflow.name;
       if (this.taskHistory[this.taskHistory.length - 1]) {
         filter.task.fromDate = new Date(this.taskHistory[this.taskHistory.length - 1].startTime);
       }

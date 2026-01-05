@@ -576,7 +576,8 @@ export class SearchComponent {
   checkOptions = [
     {status: 'PLANNED', text: 'planned'},
     {status: 'SUBMITTED', text: 'submitted'},
-    {status: 'FINISHED', text: 'finished'}
+    {status: 'FINISHED', text: 'finished'},
+    {status: 'NONE', text: 'none'}
   ];
 
   constructor(private authService: AuthService, public coreService: CoreService, private modal: NzModalService,) {
@@ -1895,7 +1896,7 @@ export class DailyPlanComponent {
     if (filter.late) {
       obj.late = true;
     }
-    if (filter.state && filter.state !== 'ALL' && !isArray(filter.state)) {
+    if (filter.state && filter.state !== 'ALL' && filter.state !== 'NONE' && !isArray(filter.state)) {
       obj.states = [filter.state];
     }
     return obj;
