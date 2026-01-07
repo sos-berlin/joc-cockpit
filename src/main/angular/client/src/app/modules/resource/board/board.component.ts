@@ -59,7 +59,9 @@ export class PostModalComponent {
     this.singular = this.modalData.singular;
     this.globalSingle = this.modalData.globalSingle;
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.zones = this.coreService.getTimeZoneList();
+    this.coreService.getTimeZoneList((timezones) => {
+      this.zones = timezones;
+    });
     this.postObj.timeZone = this.coreService.getTimeZone();
     this.postObj.at = 'later';
     if (this.showNoticeId) {

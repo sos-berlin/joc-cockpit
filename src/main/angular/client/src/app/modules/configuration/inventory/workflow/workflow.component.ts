@@ -5299,7 +5299,9 @@ export class WorkflowComponent {
       this.refresh(res);
     });
 
-    this.zones = coreService.getTimeZoneList();
+    coreService.getTimeZoneList((timezones) => {
+      this.zones = timezones;
+    });
     this.translate.get('inventory.tooltips.workflow.forkList.infoOfListVariable').subscribe(translatedValue => {
       translatedValue = translatedValue.replace(new RegExp(/\n/, 'gi'), '<br\>');
       this.info1 = this.coreService.convertTextToLink(translatedValue, '');

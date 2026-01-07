@@ -100,7 +100,9 @@ export class UpdateObjectComponent {
 
   private init(): void {
     if (this.type === InventoryObject.WORKFLOW || this.type === InventoryObject.FILEORDERSOURCE) {
-      this.zones = this.coreService.getTimeZoneList();
+      this.coreService.getTimeZoneList((timezones) => {
+        this.zones = timezones;
+      });
     } else if (this.type === 'CALENDAR') {
       this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     } else if (this.type === InventoryObject.NOTICEBOARD) {
