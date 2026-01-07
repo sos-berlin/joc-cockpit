@@ -57,6 +57,42 @@
                 <version>1.6.0</version>
                 <executions>
                     <execution>
+                        <id>remove previous modules</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <executable>rm</executable>
+                            <arguments>
+                                <argument>-rf</argument>
+                                <argument>node_modules/</argument>
+                            </arguments>
+                            <workingDirectory>${basedir}/target/angular/client</workingDirectory>
+                            <target>
+                                <echo message="remove previous modules" />
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>remove previous package-lock.json</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <executable>rm</executable>
+                            <arguments>
+                                <argument>-rf</argument>
+                                <argument>package-lock.json</argument>
+                            </arguments>
+                            <workingDirectory>${basedir}/target/angular/client</workingDirectory>
+                            <target>
+                                <echo message="remove previous package-lock.json" />
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>npm install</id>
                         <goals>
                             <goal>exec</goal>
