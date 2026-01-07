@@ -150,7 +150,9 @@ export class AddOrderModalComponent {
     this.workflow = this.modalData.workflow;
     this.allowEmptyArguments = sessionStorage['allowEmptyArguments'] === 'true';
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.zones = this.coreService.getTimeZoneList();
+    this.coreService.getTimeZoneList((timezones) => {
+      this.zones = timezones;
+    });
     this.display = this.preferences.auditLog;
     this.comments.radio = 'predefined';
 

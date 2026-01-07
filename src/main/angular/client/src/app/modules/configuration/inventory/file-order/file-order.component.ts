@@ -116,7 +116,9 @@ export class FileOrderComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.zones = this.coreService.getTimeZoneList();
+    this.coreService.getTimeZoneList((timezones) => {
+      this.zones = timezones;
+    });
     this.fetchTags();
   }
 

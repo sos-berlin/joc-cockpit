@@ -792,7 +792,9 @@ export class ModifyStartTimeModalComponent {
     }
 
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
-    this.zones = this.coreService.getTimeZoneList();
+    this.coreService.getTimeZoneList((timezones) => {
+      this.zones = timezones;
+    });
     this.dateType.timeZone = this.preferences.zone;
   }
 

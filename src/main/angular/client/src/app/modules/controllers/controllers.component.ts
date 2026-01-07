@@ -252,7 +252,9 @@ export class CreateTokenModalComponent {
     if (sessionStorage['preferences']) {
       this.preferences = JSON.parse(sessionStorage['preferences']) || {};
     }
-    this.zones = this.coreService.getTimeZoneList();
+    this.coreService.getTimeZoneList((timezones) => {
+      this.zones = timezones;
+    });
     this.display = this.preferences.auditLog;
     this.dateFormat = this.coreService.getDateFormat(this.preferences.dateFormat);
     this.token.timezone = this.preferences.zone;

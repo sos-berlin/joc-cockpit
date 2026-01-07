@@ -809,7 +809,7 @@ export class RemoveKeyModalComponent {
   templateUrl: './user.component.html'
 })
 export class UserComponent {
-  zones: any = {};
+  zones: any = [];
   preferences: any = {};
   username = '';
   permission: any = {};
@@ -1001,9 +1001,11 @@ export class UserComponent {
     this.identityServiceType = this.authService.currentUserIdentityService.substring(0, this.authService.currentUserIdentityService.lastIndexOf(':'));
     this.identityServiceName = this.authService.currentUserIdentityService.substring(this.authService.currentUserIdentityService.lastIndexOf(':') + 1);
     this.setPreferences();
-    this.zones = this.coreService.getTimeZoneList();
     this.timeZone = this.coreService.getTimeZone();
-    this.zones.unshift(this.timeZone, '-----------------------------');
+    this.coreService.getTimeZoneList((timezones) => {
+      this.zones = timezones.filter(tz => tz !== this.timeZone);
+      this.zones.unshift(this.timeZone, '-----------------------------');
+    });
     this.configObj.accountName = this.username;
     this.entryPerPage.push({value: this.preferences.maxEntryPerPage, name: this.preferences.maxEntryPerPage});
     this.initializeOrderStateColors();
@@ -1082,7 +1084,6 @@ export class UserComponent {
   groupLimit(): void {
     this.isGroupBtnActive = true;
   }
-
 
   setPreferences(): void {
     this.username = this.authService.currentUserData;
@@ -1233,14 +1234,11 @@ export class UserComponent {
 
   }
 
-
-
   resetDefault(): void {
     // Reset colors to default
     this.initializeOrderStateColors();
     this.savePreferences();
   }
-
 
   resetProfile(): void {
     const modal = this.modal.create({

@@ -1330,7 +1330,9 @@ export class RunTimeComponent implements OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes): void {
-    this.zones = this.coreService.getTimeZoneList();
+    this.coreService.getTimeZoneList((timezones) => {
+      this.zones = timezones;
+    });
     this.init();
   }
 
